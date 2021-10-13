@@ -92,7 +92,7 @@ The current build functionality is described below, also check out our Changelog
 
 # Deployment
 
-If you want to self-host, check out the installation manual [here](/documentation/installation). You will neex knowledge of Static Web Apps, Azure Functions, and Azure Keyvault
+If you want to self-host, check out the installation manual [here](documentation/installation.md). You will need some knowledge of Static Web Apps, Azure Functions, and Azure Keyvault
 
 # Security
 Authentication is handled by Azure AD using static web apps security. This means the API is only reachable for authenticated users you've invited. For most of the security info related to that check out our staticwebapp.config.json and/or the doc pages on static web apps. Do you see something that might be a security risk, even the smallest? report it and we will handle it asap. Check out our security reporting options [here](documentation/security)
