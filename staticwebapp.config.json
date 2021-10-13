@@ -1,0 +1,60 @@
+{
+    "routes": [
+        {
+            "route": "/images/*",
+            "headers": {
+                "cache-control": "must-revalidate, max-age=15770000"
+            }
+        },
+        {
+            "route": "/login",
+            "rewrite": "/.auth/login/aad"
+        },
+        {
+            "route": "/.auth/login/twitter",
+            "statusCode": 404
+        },
+        {
+            "route": "/.auth/login/github",
+            "statusCode": 404
+        },
+        {
+            "route": "/logout",
+            "redirect": "/.auth/logout"
+        },
+        {
+            "route": "*",
+            "allowedRoles": [
+                "reader"
+            ]
+        }
+    ],
+    "navigationFallback": {
+        "rewrite": "/error-404-1.html",
+        "exclude": [
+            "/images/*.{png,jpg,gif}",
+            "/css/*"
+        ]
+    },
+    "responseOverrides": {
+        "400": {
+            "rewrite": "/invalid-invitation-error.html"
+        },
+        "401": {
+            "redirect": "/login",
+            "statusCode": 302
+        },
+        "403": {
+            "rewrite": "/error-403.html"
+        },
+        "404": {
+            "rewrite": "/error-404-1.html"
+        }
+    },
+    "globalHeaders": {
+        "content-security-policy": "default-src https: 'unsafe-eval' 'unsafe-inline'; object-src 'none'"
+    },
+    "mimeTypes": {
+        ".json": "text/json"
+    }
+}
