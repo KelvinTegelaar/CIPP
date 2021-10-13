@@ -35,8 +35,21 @@ For company sponsors, depending on sponsor level you can get the following benef
 
 # How does it look?!
 
-SCREEENNNSHOOOTTTTTTSSS. Gifs of some standard actions here.
+click on the buttons below for a full screenshot. :)
 
+Generic Administration Pages:
+
+<kbd><a href="assets/screenshots/homepage.png"><img border="1" src="assets/screenshots/homepage.png" width="250"/></a></kbd>
+<kbd><a href="assets/screenshots/users.png"><img border="1" src="assets/screenshots/users.png" width="250"/></a></kbd>
+<kbd><a href="assets/screenshots/Standards.png"><img border="1" src="assets/screenshots/Standards.png" width="250"/></a></kbd>
+<kbd><a href="assets/screenshots/tenants.png"><img border="1" src="assets/screenshots/tenants.png" width="250"/></a></kbd>
+
+Wizards:
+
+<kbd><a href="assets/screenshots/AddautopilotDevice.png"><img border="1" src="assets/screenshots/AddautopilotDevice.png" width="250"/></a></kbd>
+<kbd><a href="assets/screenshots/AddIntunePolicy.png"><img border="1" src="assets/screenshots/AddIntunePolicy.png" width="250"/></a></kbd>
+<kbd><a href="assets/screenshots/AppAdd.png"><img border="1" src="assets/screenshots/AppAdd.png" width="250"/></a></kbd>
+<kbd><a href="assets/screenshots/AddautopilotDevice.png"><img border="1" src="assets/screenshots/AddautopilotDevice.png" width="250"/></a></kbd>
 # What is the functionality?
 
 The current build functionality is described below, also check out our Changelog in the documentation folder. Any unmarked items are in development.
