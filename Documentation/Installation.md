@@ -59,6 +59,9 @@ Click here to run the automated setup. This does most of the work for you. If yo
 
 The first 20 minutes the application can respond pretty slow, this is due to downloading some PowerShell modules from Microsoft. I can't make that any faster but just note before you get started. :)
 
+## It's not working, I'm having issues
+
+Before you create an issue, please restart both the Static Web App and Azure Function host, this solves 99,9% of all issues. Turn it off, turn it on again. ;)
 # Adding a custom domain name
 
 At the moment of deployment, the application will use a randomly generated name. To change this, go to your Resource Group in Azure, click on cipp-swa-xxxx and click on Custom Domains. You'll be able to add your own domain name here.
