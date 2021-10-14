@@ -4,6 +4,46 @@
 
 For the installation and maintenance, we assume you have some knowledge of Github, and have setup the Secure Application Model prior to install. Haven't setup the Secure Application model yet? Check out [this](https://www.cyberdrain.com/connect-to-exchange-online-automated-when-mfa-is-enabled-using-the-secureapp-model/) script.
 
+You'll also need the following permissions for your secure application model, to add permissions follow these instructions:
+
+- Go to the Azure Portal.
+- Click on Azure Active Directory, now click on “App Registrations”.
+- Find your Secure App Model application. You can search based on the ApplicationID.
+- Go to “API Permissions” and click Add a permission.
+- Choose “Microsoft Graph” and “Delegated permission”.
+- Add the permission you need.
+- Finally, click on “Grant Admin Consent for Company Name.
+
+## Permissions
+
+For full functionality, you'll need the following permissions for your Secure Application Model:
+
+- TeamMember.Read.All
+- Sites.Read.All
+- Directory.AccessAsUser.All
+- Directory.Read.All
+- User.Read
+- Applications.readwrite.all
+- auditlog.read.all
+- Channnel.readbasic.all
+- channelmember.readwrite.all
+- device.readwrite.all
+- DeviceManagemagementConfiguration(all)
+- Mail.Send
+- Mail.Send.Shared
+- Policy.Readwrite.all
+- Reports.read.all
+- SecurityEvents.Read.all
+- Teams.Read.all
+- User.ReadWrite.All
+- Groups.RaadWrite.All
+
+
+If you don't want people to be able to write, remove the read/write permission for Read. 
+
+
+## Getting started
+
 You'll need the following to get started;
 
 - Your Secure Application Model information
