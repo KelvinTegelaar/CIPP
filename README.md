@@ -1,5 +1,10 @@
 <p align="center"><a href="https://cyberdrain.com" target="_blank" rel="noopener noreferrer"><img src="assets/img/CyberDrain.png" alt="CyberDrain Logo"></a></p>
 
+<center><h1>Sponsored by</h1></center>
+
+<p align="center"><a href="https://oit.co" target="_blank" rel="noopener noreferrer"><img  width="550" height="220" src="assets/img/oitpsonsor.webp" alt="CyberDrain Logo"></a></p>
+
+
 # What is this?
 
 The CyberDrain Improved Partner Portal is a portal to help manage administration for Microsoft Partners. The current Microsoft partner landscape makes it fairly hard to manage multi tenant situations, with loads of manual work. Microsoft Lighthouse might resolve this in the future but development of this is lagging far behind development of the current market for Microsoft Partners.
@@ -114,7 +119,7 @@ If you decide to contribute; remember that keeping the portal fast is a key comp
 I'd like to give special thanks to the people that made this project possible;
 
 - [Kyle Hansloven](https://huntress.com) 
-- [Ray Orsini](https://oitvoip.co)
+- [Ray Orsini](https://oit.co)
 - The Team at [MSP.zone/MSP'R'Us](https://msp.zone)
 - Gavin Stone at [MSPGeek](https://mspgeek.org)
 - MSP2.0 for helping with some visual input.
