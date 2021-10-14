@@ -15,9 +15,9 @@ I'm also annoyed the untransparant behaviour that many companies in our market a
 I was recently on a call with one of my friends and he said he was changing the world. That insipred me to change the world just a little bit too. :) I'm hoping that this is one of the tools that make you smile.
 # What's the pricing?
 
-This project is **Sponsorware**. The sponsorware structure for this project is pretty simple; the code is available to everyone and free to use. You will need some technical know-how to put it all together. Sponsors receive the following benefits
+This project is **FREE** but we do have a **Sponsorware** component. The sponsorware structure for this project is pretty simple; the code is available to everyone and free to use. You will need some technical know-how to put it all together. Sponsors receive the following benefits
 
-For users of the project that sponsor:
+### For users of the project that sponsor:
 
 - The project will be hosted for you.
 - The hosted version will always be the latest release and automatically updated.
@@ -27,7 +27,7 @@ For users of the project that sponsor:
 
 Sponsorship allows me to sink some more time into this project and keep it free, so please consider it. :)
 
-For company sponsors, depending on sponsor level you can get the following benefits;
+### For company sponsors, depending on sponsor level you can get the following benefits;
 
 - Your company logo will be featured on this readme page at the top.
 - Your company logo will be featured on https://cyberdrain.com
@@ -95,7 +95,7 @@ The current build functionality is described below, also check out our Changelog
 If you want to self-host, check out the installation manual [here](documentation/installation.md). You will need some knowledge of Static Web Apps, Azure Functions, and Azure Keyvault
 
 # Security
-Authentication is handled by Azure AD using static web apps security. This means the API is only reachable for authenticated users you've invited. For most of the security info related to that check out our staticwebapp.config.json and/or the doc pages on static web apps. Do you see something that might be a security risk, even the smallest? report it and we will handle it asap. Check out our security reporting options [here](documentation/security)
+Authentication is handled by Azure AD using static web apps security. This means the API is only reachable for authenticated users you've invited. For most of the security info related to that check out our staticwebapp.config.json and/or the doc pages on static web apps. Do you see something that might be a security risk, even the smallest? report it and we will handle it asap. Check out our security reporting options [here](documentation/security.md)
 # Contributions
 
 Feel free to send pull requests or fill out issues when you encounter them, sponsors get a priority on issues and bugs. I'm also completely open to adding direct maintainers/contributors and working together.

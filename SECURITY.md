@@ -4,7 +4,7 @@
 
 ## Supported Versions
 
-Any build that is upped to a [release](/releases) is a supported version and should not have any security bugs. Feel free to report for any of the current releases. If you find an issue in an older release that is already removed feel free to also report this in case of regression, I'd rather know we made a mistake at one point in time and avoid that for the future.
+Any build that is upped to a [release](releases) is a supported version and should not have any security bugs. Feel free to report for any of the current releases. If you find an issue in an older release that is already removed feel free to also report this in case of regression, I'd rather know we made a mistake at one point in time and avoid that for the future.
 
 ## Reporting a Vulnerability
 
