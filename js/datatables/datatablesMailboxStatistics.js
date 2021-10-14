@@ -20,7 +20,7 @@ $(document).ready(function () {
             responsive: true,
             "ajax": {
 
-                "url": "/api/ListSites?Tenantfilter=" + TenantID,
+                "url": "/api/ListMailboxStatistics?Tenantfilter=" + TenantID,
                 "dataSrc": "",
             },
             dom: 'fBlrtip',
