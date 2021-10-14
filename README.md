@@ -1,5 +1,10 @@
 <p align="center"><a href="https://cyberdrain.com" target="_blank" rel="noopener noreferrer"><img src="assets/img/CyberDrain.png" alt="CyberDrain Logo"></a></p>
 
+<center><h1>Sponsored by</h1></center>
+
+<p align="center"><a href="https://oit.co" target="_blank" rel="noopener noreferrer"><img  width="550" height="220" src="assets/img/oitpsonsor.webp" alt="CyberDrain Logo"></a></p>
+
+
 # What is this?
 
 The CyberDrain Improved Partner Portal is a portal to help manage administration for Microsoft Partners. The current Microsoft partner landscape makes it fairly hard to manage multi tenant situations, with loads of manual work. Microsoft Lighthouse might resolve this in the future but development of this is lagging far behind development of the current market for Microsoft Partners.
@@ -97,7 +102,7 @@ The current build functionality is described below, also check out our Changelog
 If you want to self-host, check out the installation manual [here](Documentation/Installation.md). You will need some knowledge of Static Web Apps, Azure Functions, and Azure Keyvault
 
 # Security
-Authentication is handled by Azure AD using static web apps security. This means the API is only reachable for authenticated users you've invited. For most of the security info related to that check out our staticwebapp.config.json and/or the doc pages on static web apps. Do you see something that might be a security risk, even the smallest? report it and we will handle it asap. Check out our security reporting options [here](documentation/security.md)
+Authentication is handled by Azure AD using static web apps security. This means the API is only reachable for authenticated users you've invited. For most of the security info related to that check out our staticwebapp.config.json and/or the doc pages on static web apps. Do you see something that might be a security risk, even the smallest? report it and we will handle it asap. Check out our security reporting options [here](https://github.com/KelvinTegelaar/CIPP/security)
 # Contributions
 
 Feel free to send pull requests or fill out issues when you encounter them, sponsors get a priority on issues and bugs. I'm also completely open to adding direct maintainers/contributors and working together.
@@ -114,7 +119,7 @@ If you decide to contribute; remember that keeping the portal fast is a key comp
 I'd like to give special thanks to the people that made this project possible;
 
 - [Kyle Hansloven](https://huntress.com) 
-- [Ray Orsini](https://oitvoip.co)
+- [Ray Orsini](https://oit.co)
 - The Team at [MSP.zone/MSP'R'Us](https://msp.zone)
 - Gavin Stone at [MSPGeek](https://mspgeek.org)
 - MSP2.0 for helping with some visual input.

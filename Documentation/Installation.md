@@ -18,25 +18,38 @@ You'll also need the following permissions for your secure application model, to
 
 For full functionality, you'll need the following permissions for your Secure Application Model:
 
-- TeamMember.Read.All
-- Sites.Read.All
+- Application.ReadWrite.All
+- AuditLog.Read.All
+- Channel.ReadBasic.All
+- ChannelMember.ReadWrite.All
+- Device.Read.All
+- DeviceManagementConfiguration.ReadWrite.All
 - Directory.AccessAsUser.All
 - Directory.Read.All
-- User.Read
-- Applications.readwrite.all
-- auditlog.read.all
-- Channnel.readbasic.all
-- channelmember.readwrite.all
-- device.readwrite.all
-- DeviceManagemagementConfiguration(all)
+- Group.ReadWrite.All
 - Mail.Send
 - Mail.Send.Shared
-- Policy.Readwrite.all
-- Reports.read.all
-- SecurityEvents.Read.all
-- Teams.Read.all
+- Policy.Read.All
+- Policy.Read.ConditionalAccess
+- Policy.Read.PermissionGrant
+- Policy.ReadWrite.ApplicationConfiguration
+- Policy.ReadWrite.AuthenticationFlows
+- Policy.ReadWrite.AuthenticationMethod
+- Policy.ReadWrite.Authorization
+- Policy.ReadWrite.ConditionalAccess
+- Policy.ReadWrite.ConsentRequest
+- Policy.ReadWrite.DeviceConfiguration
+- Policy.ReadWrite.FeatureRollout
+- Policy.ReadWrite.MobilityManagement
+- Policy.ReadWrite.PermissionGrant
+- Policy.ReadWrite.TrustFramework
+- Reports.Read.All
+- SecurityEvents.Read.All
+- Sites.Read.All
+- TeamMember.Read.All
+- Team.ReadBasic.All
+- User.Read
 - User.ReadWrite.All
-- Groups.RaadWrite.All
 
 
 If you don't want people to be able to write, remove the read/write permission for Read. 
