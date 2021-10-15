@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    let tenant = getParameterByName("Tenantfilter");
     let searchParams = new URLSearchParams(window.location.search)
     if (searchParams.has('page')) {
         let param = searchParams.get('page')
@@ -8,7 +7,8 @@ $(document).ready(function () {
 
     $(".SpecialNavLink").on('click', 'a', function (e) {
         e.preventDefault();
-        if(tenant){
+        let tenant = searchParams.get('Tenantfilter');
+        if(tenant && tenant !== ''){
             history.pushState(null, null, '?page=' + $(this).attr('href') + '&Tenantfilter=' + tenant);
         }
         else {
@@ -35,12 +35,3 @@ $(document).ready(function () {
     $('#usernamelower').text(jsonOptions.clientPrincipal.userDetails);
     $('#usernameupper').text(jsonOptions.clientPrincipal.userDetails);
 });
-
-function getParameterByName(name, url = window.location.href) {
-    name = name.replace(/[\[\]]/g, '\\$&');
-    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-        results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, ' '));
-}
