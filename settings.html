@@ -6,7 +6,7 @@
                     <div class="col-auto mb-3">
                         <h1 class="page-header-title">
                             <div class="page-header-icon"><i data-feather="user"></i></div>
-                            Generic Settings - WARNING: This page is not yet active.
+                            Generic Settings
                         </h1>
                     </div>
                 </div>
@@ -26,61 +26,46 @@
         </section>
         <hr class="mt-0 mb-4" />
         <div class="row">
-            <div class="col-xl-4">
-                <!-- Profile picture card-->
-                <div class="card mb-4 mb-xl-0">
-                    <div class="card-header">Custom Logo</div>
-                    <div class="card-body text-center">
-                        <!-- Profile picture image-->
-                        <img class="img-account-profile rounded-circle mb-2" src="assets/img/Logo.png" alt="" />
-                        <!-- Profile picture help block-->
-                        <div class="small font-italic text-muted mb-4">This is the logo that appears next to the CIPP
-                            header.</div>
-                        <!-- Profile picture upload button-->
-                        <form id="logoform" Method="POST">
-                            <input type="file" id="file" style="display:none;" accept="image/png, image/jpeg, image/gif"
-                                onchange="form.submit()" />
-                        </form>
-                        <button class="btn btn-primary" onclick="thisFileUpload();" type="button">Upload new
-                            image</button>
-                    </div>
-                </div>
-            </div>
             <div class="col-xl-8">
                 <!-- Account details card-->
                 <div class="card card-header-actions mb-4">
                     <div class="card-header">
-                        Settings - WARNING: This page is not yet active.
+                        Permissions Settings
                     </div>
                     <div class="card-body">
                         <form>
                             <!-- Form Group (email updates checkboxes)-->
                             <div class="mb-0">
-                                <label class="small mb-2">Choose which functionality you want enabled</label>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" id="checkAccountChanges" type="checkbox" checked />
-                                    <label class="form-check-label" for="checkAccountChanges">Tenant
-                                        Administration</label>
-                                </div>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" id="checkAccountGroups" type="checkbox" checked />
-                                    <label class="form-check-label" for="checkAccountGroups">Endpoint Management</label>
-                                </div>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" id="checkProductUpdates" type="checkbox" checked />
-                                    <label class="form-check-label" for="checkProductUpdates">Teams & Sharepoint
-                                        Management</label>
-                                </div>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" id="checkProductNew" type="checkbox" disabled />
-                                    <label class="form-check-label" for="checkProductNew">Scripting & Monitoring</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" id="checkSecurity" type="checkbox" disabled />
-                                    <label class="form-check-label" for="checkSecurity">Security Management</label>
-                                </div>
+                                <label class="small mb-2">Permissions check</label>
+                                <section id="PermissionsCheck">Click the button below to start a permissions and keys
+                                    check. </section>
                             </div><br />
-                            <button class="btn btn-primary" type="button">Save changes</button>
+                            <button onclick='PostForm("StandardsForm","api/AccessChecks?Permissions=true")'
+                                class="btn btn-primary" type="button">Run permissions check</button>
+
+                        </form>
+                    </div>
+
+                </div>
+                <!-- Save changes button-->
+                </form>
+            </div>
+            <div class="col-xl-8">
+                <!-- Account details card-->
+                <div class="card card-header-actions mb-4">
+                    <div class="card-header">
+                        Tenant Settings - not yet active
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <!-- Form Group (email updates checkboxes)-->
+                            <div class="mb-0">
+                                <label class="small mb-2">Tenants check</label>
+                                <section id="PermissionsCheck">Click the button below to see if we can access tenants.
+                                </section>
+                            </div><br />
+                            <button onclick='PostForm("StandardsForm","api/AccessChecks?Tenants=true")'
+                                class="btn btn-primary" disabled type="button">Run tenants check</button>
 
                         </form>
                     </div>
@@ -94,29 +79,26 @@
     </div>
     </div>
 </main>
-<script>
-    function thisFileUpload() {
-        document.getElementById("file").click();
-    };
-</script>
-<script type="text/javascript">
-    document.getElementById('file').onchange = function () {
-        upload();
-    };
-    function upload() {
-        var upload = document.getElementById('file');
-        var image = upload.files[0];
-        $.ajax({
-            url: "/api/uploadlogo",
-            type: "POST",
-            data: new FormData($('#logoform')[0]),
-            contentType: false,
-            cache: false,
-            processData: false,
-            success: function (msg) { }
-        });
-    };
-</script>
-</body>
 
-</html>
+
+<button class="btn btn-primary" id="PopModal" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"
+    style="display:none;"></button>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Results</h5>
+            </div>
+            <div class="modal-body">
+                <section id="APIContent">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only"></span>
+                    </div></span>
+                </section>
+            </div>
+            <div class="modal-footer"><button class="btn btn-secondary" type="button"
+                    data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
