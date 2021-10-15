@@ -6,26 +6,20 @@ $(document).ready(function () {
     }
 
     var dataList = document.getElementById('datalistOptions');
-    var jsonOptions = (function () {
-        var json = null;
-        $.ajax({
-            'async': false,
-            'global': false,
-            'url': 'api/ListTenants',
-            'dataType': "json",
-            'success': function (data) {
-                json = data;
-            }
-        });
-        return json;
-    })();
-    // Loop over the JSON array.
-    jsonOptions.forEach(function (item) {
-        var option = document.createElement('option');
+    $.ajax({
+        'async': true,
+        'global': false,
+        'url': 'api/ListTenants',
+        'dataType': "json",
+        'success': function (data) {
+            data.forEach(function (item) {
+                var option = document.createElement('option');
 
-        option.value = item.displayName;
-        option.text = item.defaultDomainName;
-        dataList.appendChild(option);
+                option.value = item.displayName;
+                option.text = item.defaultDomainName;
+                dataList.appendChild(option);
+            });
+        }
     });
 
 });
