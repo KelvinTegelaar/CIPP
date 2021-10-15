@@ -39,27 +39,27 @@ $(document).ready(function () {
                 { "data": "defaultDomainName" },
                 {
                     "data": "customerId",
-                    render: function (customerId, type, row) { return '<a href="https://portal.office.com/Partner/BeginClientSession.aspx?CTID=' + customerId + '&CSDEST=o365admincenter"><i class="fas fa-cog fa-fw"></i></a>' }
+                    render: function (customerId, type, row) { return '<a target="_blank" target="_blank" href="https://portal.office.com/Partner/BeginClientSession.aspx?CTID=' + customerId + '&CSDEST=o365admincenter"><i class="fas fa-cog fa-fw"></i></a>' }
                 },
                 {
                     "data": "defaultDomainName",
-                    render: function (defaultDomainName, type, row) { return '<a href="https://outlook.office365.com/ecp/?rfr=Admin_o365&exsvurl=1&delegatedOrg=' + defaultDomainName + '""><i class="fas fa-cog fa-fw"></i></a>' }
+                    render: function (defaultDomainName, type, row) { return '<a target="_blank" href="https://outlook.office365.com/ecp/?rfr=Admin_o365&exsvurl=1&delegatedOrg=' + defaultDomainName + '""><i class="fas fa-cog fa-fw"></i></a>' }
                 },
                 {
                     "data": "defaultDomainName",
-                    render: function (defaultDomainName, type, row) { return '<a href="https://aad.portal.azure.com/' + defaultDomainName + '"><i class="fas fa-cog fa-fw"></i></a>' }
+                    render: function (defaultDomainName, type, row) { return '<a target="_blank" href="https://aad.portal.azure.com/' + defaultDomainName + '"><i class="fas fa-cog fa-fw"></i></a>' }
                 },
                 {
                     "data": "defaultDomainName",
-                    render: function (defaultDomainName, type, row) { return '<a href="https://admin.teams.microsoft.com/?delegatedOrg=' + defaultDomainName + '"><i class="fas fa-cog fa-fw"></i></a>' }
+                    render: function (defaultDomainName, type, row) { return '<a target="_blank" href="https://admin.teams.microsoft.com/?delegatedOrg=' + defaultDomainName + '"><i class="fas fa-cog fa-fw"></i></a>' }
                 },
                 {
                     "data": "defaultDomainName",
-                    render: function (defaultDomainName, type, row) { return '<a href="https://portal.azure.com/' + defaultDomainName + '""><i class="fas fa-cog fa-fw"></i></a>' }
+                    render: function (defaultDomainName, type, row) { return '<a target="_blank" href="https://portal.azure.com/' + defaultDomainName + '""><i class="fas fa-cog fa-fw"></i></a>' }
                 },
                 {
                     "data": "defaultDomainName",
-                    render: function (defaultDomainName, type, row) { return '<a href="https://endpoint.microsoft.com/' + defaultDomainName + '"><i class="fas fa-cog fa-fw"></i></a>' }
+                    render: function (defaultDomainName, type, row) { return '<a target="_blank" href="https://endpoint.microsoft.com/' + defaultDomainName + '"><i class="fas fa-cog fa-fw"></i></a>' }
                 },
 
                 { "data": "domains" }
