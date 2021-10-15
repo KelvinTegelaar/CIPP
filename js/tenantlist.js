@@ -1,3 +1,4 @@
+var tenants = [];
 $(document).ready(function () {
     let searchParams = new URLSearchParams(window.location.search)
     if (searchParams.has('Tenantfilter')) {
@@ -13,31 +14,25 @@ $(document).ready(function () {
         'dataType': "json",
         'success': function (data) {
             data.forEach(function (item) {
+                tenants.push(item);
                 var option = document.createElement('option');
-
-                option.value = item.displayName;
-                option.text = item.defaultDomainName;
+                option.value = item.defaultDomainName;
+                option.text = item.displayName;
                 dataList.appendChild(option);
             });
         }
     });
-
 });
 
 function onInput() {
     var val = document.getElementById("exampleDataList").value;
-    var opts = document.getElementById('datalistOptions').childNodes;
-    for (var i = 0; i < opts.length; i++) {
-        if (opts[i].value === val) {
-            let searchParams = new URLSearchParams(window.location.search)
-            if (searchParams.has('Tenantfilter')) {
-                var href = new URL(window.location.href)
-                href.searchParams.set('Tenantfilter', opts[i].text);
-                window.location.href = href.toString()
-            } else {
-                window.location.href = window.location.href + "&Tenantfilter=" + opts[i].text;
-            }
-        }
+    var existingTenant = tenants.filter(obj => {
+        return obj.defaultDomainName == val;
+    });
+
+    if(existingTenant.length > 0) {
+        history.pushState(null, null, '?page=SharepointList&Tenantfilter=' + existingTenant[0].defaultDomainName);
+        $('#bodycontent').load('SharepointList.html');
     }
 }
 
