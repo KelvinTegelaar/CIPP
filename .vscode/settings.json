@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/522a3c55-d74a-4f1e-a543-815597de6ede/resourceGroups/Allixo-ENG-CIPP/providers/Microsoft.Web/sites/allixocippapp",
+    "appService.deploySubpath": "."
+}
