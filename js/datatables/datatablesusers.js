@@ -30,9 +30,9 @@ $(document).ready(function () {
             dom: 'fBlrtip',
             buttons: [
                 { extend: 'copyHtml5', className: 'btn btn-primary' },
-                { extend: 'excelHtml5', className: 'btn btn-primary', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: {columns: [ 0,1,2,3,4 ]}   },
-                { extend: 'csvHtml5', className: 'btn btn-primary', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: {columns: [ 0,1,2,3,4 ]}  },
-                { extend: 'pdfHtml5', className: 'btn btn-primary', orientation: 'landscape', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: {columns: [ 0,1,2,3,4 ]} },
+                { extend: 'excelHtml5', className: 'btn btn-primary', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4] } },
+                { extend: 'csvHtml5', className: 'btn btn-primary', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4] } },
+                { extend: 'pdfHtml5', className: 'btn btn-primary', orientation: 'landscape', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4] } },
             ],
             "columns": [
                 { "data": "displayName" },
@@ -42,7 +42,7 @@ $(document).ready(function () {
                 { "data": "LicJoined" },
                 {
                     "data": "id",
-                    render: function (id, type, row) { return '<a href=index?page=EditUser&Tenantfilter=' + TenantID + '&UserID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Edit User" class="fas fa-cog fa-fw"></i></a><nothing class="APILink">' + '<a href=api/ConvertToSharedMailbox?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Convert to Shared" class="fas fa-share-alt fa-fw"></i></a>' + '<a href=api/DisableUser?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Disable User" class="fas fa-ban fa-fw"></i></a>' + '<a href=api/ResetPass?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Reset password" class="fas fa-key fa-fw"></i></i></a></nothing>'; }
+                    render: function (id, type, row) { return '<a href=index?page=EditUser&Tenantfilter=' + TenantID + '&UserID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Edit User" class="fas fa-cog fa-fw"></i></a><nothing class="APILink">' + '<a href=api/ConvertToSharedMailbox?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Convert to Shared" class="fas fa-share-alt fa-fw"></i></a>' + '<a href=api/DisableUser?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Block Sign in" class="fas fa-ban fa-fw"></i></a>' + '<a href=api/ResetPass?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Reset password" class="fas fa-key fa-fw"></i></i></a></nothing>'; }
                 }
             ],
             "order": [[0, "asc"]],

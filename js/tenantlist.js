@@ -1,7 +1,11 @@
 $(document).ready(function () {
+ 
     let searchParams = new URLSearchParams(window.location.search)
     if (searchParams.has('Tenantfilter')) {
         var TenantID = searchParams.get('Tenantfilter')
+    } else {
+        $(":input").prop("disabled", true);
+        $("#exampleDataList").prop("disabled", false);
     }
 
     var dataList = document.getElementById('datalistOptions');
@@ -15,6 +19,7 @@ $(document).ready(function () {
         },
         'success': function (data) {
             data.forEach(function (item) {
+                $("#exampleDataList").prop("disabled", false);
                 var option = document.createElement('option');
 
                 option.value = item.displayName;
@@ -29,6 +34,7 @@ $(document).ready(function () {
         },
         'error': function (xhr, ajaxOptions, thrownError) {
             $("#exampleDataList").val('Could not load tenants: Failed to connect to API:' + thrownError);
+            $("#exampleDataList").prop("disabled", false);
         }
 
     });
