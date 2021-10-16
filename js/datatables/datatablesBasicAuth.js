@@ -16,9 +16,7 @@ $(document).ready(function () {
     pageLength: 25,
     responsive: true,
     ajax: {
-      url:
-        "/api/ListTeamsActivity?type=TeamsUserActivityUser&Tenantfilter=" +
-        TenantID,
+      url: "/api/BasicAuth?Tenantfilter=" + TenantID,
       dataSrc: "",
     },
     dom: "fBlrtip",
@@ -27,27 +25,21 @@ $(document).ready(function () {
       {
         extend: "excelHtml5",
         className: "btn btn-primary",
-        title: "Teams Activity - " + TenantID + " - " + todayDate,
+        title: "Basic Auth - " + TenantID + " - " + todayDate,
       },
       {
         extend: "csvHtml5",
         className: "btn btn-primary",
-        title: "Teams Activity - " + TenantID + " - " + todayDate,
+        title: "Basic Auth - " + TenantID + " - " + todayDate,
       },
       {
         extend: "pdfHtml5",
         className: "btn btn-primary",
         orientation: "landscape",
-        title: "Teams Activity - " + TenantID + " - " + todayDate,
+        title: "Basic Auth - " + TenantID + " - " + todayDate,
       },
     ],
-    columns: [
-      { data: "UPN" },
-      { data: "LastActive" },
-      { data: "TeamsChat" },
-      { data: "CallCount" },
-      { data: "MeetingCount" },
-    ],
+    columns: [{ data: "UPN" }, { data: "BasicAuth" }],
     order: [[0, "asc"]],
   });
   $(".dataTables_paginate").addClass("btn-group datatable-pagination");
