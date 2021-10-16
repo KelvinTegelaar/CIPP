@@ -16,7 +16,7 @@ $(document).ready(function () {
     pageLength: 25,
     responsive: true,
     ajax: {
-      url: "/api/BasicAuth?Tenantfilter=" + TenantID,
+      url: "/api/ListBasicAuth?Tenantfilter=" + TenantID,
       dataSrc: "",
     },
     dom: "fBlrtip",
