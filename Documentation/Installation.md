@@ -98,6 +98,12 @@ The first 20 minutes the application can respond pretty slow, this is due to dow
 ## It's not working, I'm having issues
 
 Before you create an issue, please restart both the Static Web App and Azure Function host, this solves 99,9% of all issues. Turn it off, turn it on again. ;)
+
+## I can't deploy in my region
+
+This is most likely because of the Azure Static Web Apps component. This component is global by default (it picks the datacenter closest to you.) but some regions don't allow deployment. Use the alternative installation button. This will deploy in Central US; but the app will still be located in your nearest datacenter so you won't notice any latency.
+
+[![Deploy To Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FKelvinTegelaar%2FCIPP%2Fmaster%2FDocumentation%2FAzureDeploymentTemplate_regionoptions.json)
 # Adding a custom domain name
 
 At the moment of deployment, the application will use a randomly generated name. To change this, go to your Resource Group in Azure, click on cipp-swa-xxxx and click on Custom Domains. You'll be able to add your own domain name here.

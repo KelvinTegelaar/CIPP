@@ -21,26 +21,33 @@ $(document).ready(function () {
             responsive: true,
             "ajax": {
 
-                "url": "/api/ListTeams?type=List&Tenantfilter=" + TenantID,
+                "url": "/api/ListMailboxCAS?Tenantfilter=" + TenantID,
                 "dataSrc": "",
             },
             dom: 'fBlrtip',
             buttons: [
                 { extend: 'copyHtml5', className: 'btn btn-primary' },
-                { extend: 'excelHtml5', className: 'btn btn-primary', title: 'Teams List - ' + TenantID + " - " + todayDate, exportOptions: {columns: [ 0,1,2,3 ]}   },
-                { extend: 'csvHtml5', className: 'btn btn-primary', title: 'Teams List - ' + TenantID + " - " + todayDate, exportOptions: {columns: [ 0,1,2,3 ]}  },
-                { extend: 'pdfHtml5', className: 'btn btn-primary', orientation: 'landscape', title: 'Teams List - ' + TenantID + " - " + todayDate, exportOptions: {columns: [ 0,1,2,3 ]} },
+                { extend: 'excelHtml5', className: 'btn btn-primary', title: 'Mailbox CAS Settings - ' + TenantID + " - " + todayDate },
+                { extend: 'csvHtml5', className: 'btn btn-primary', title: 'Mailbox CAS Settings - ' + TenantID + " - " + todayDate },
+                { extend: 'pdfHtml5', className: 'btn btn-primary', orientation: 'landscape', title: 'Mailbox CAS Settings - ' + TenantID + " - " + todayDate},
             ],
             "columns": [
                 { "data": "displayName" },
-                { "data": "description" },
-                { "data": "visibility" },
-                { "data": "mailNickname" },
-                {
-                    "data": "id",
-                    render: function (id, type, row) { return '<a href=index.html?page=EditGroup&GroupID=' + id + '&Tenantfilter=' + TenantID + '><i class="fas fa-cog fa-fw"></i></a>'; }
-                }
+                { "data": "primarySmtpAddress" },                
+                { "data": "ecpenabled" },
+                { "data": "owaenabled" },
+                { "data": "imapenabled" },
+                { "data": "popenabled" },
+                { "data": "mapienabled" },
+                { "data": "ewsenabled" },
+                { "data": "activesyncenabled" },
             ],
+            'columnDefs': [
+                {
+                    "targets": [2,3,4,5,6,7,8], // your case first column
+                    "className": "text-center"
+               }
+             ],
             "order": [[0, "asc"]],
         });
     $('.dataTables_paginate').addClass("btn-group datatable-pagination");
