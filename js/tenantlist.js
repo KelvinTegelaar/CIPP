@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    $(":input").prop("disabled", true);
     let searchParams = new URLSearchParams(window.location.search)
     if (searchParams.has('Tenantfilter')) {
         var TenantID = searchParams.get('Tenantfilter')
@@ -15,6 +16,7 @@ $(document).ready(function () {
         },
         'success': function (data) {
             data.forEach(function (item) {
+                $(":input").prop("disabled", false);
                 var option = document.createElement('option');
 
                 option.value = item.displayName;
@@ -29,6 +31,7 @@ $(document).ready(function () {
         },
         'error': function (xhr, ajaxOptions, thrownError) {
             $("#exampleDataList").val('Could not load tenants: Failed to connect to API:' + thrownError);
+            $(":input").prop("disabled", false);
         }
 
     });
