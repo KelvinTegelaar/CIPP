@@ -33,18 +33,6 @@ $(document).ready(function () {
       { data: "TeamsChat" },
       { data: "CallCountB" },
       { data: "MeetingCount" },
-      {
-        data: "UPN",
-        render: function (id, type, row) {
-          return (
-            "<a href=index.html?page=EditGroup&GroupID=" +
-            id +
-            "&Tenantfilter=" +
-            TenantID +
-            '><i class="fas fa-cog fa-fw"></i></a>'
-          );
-        },
-      },
     ],
     order: [[0, "asc"]],
   });
