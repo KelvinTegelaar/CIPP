@@ -3,6 +3,7 @@ $(document).ready(function () {
     if (searchParams.has('page')) {
         var TenantID = searchParams.get('Tenantfilter')
     }
+    var todayDate = new Date().toISOString().slice(0, 10);
     $('.datatable-1').dataTable(
         {
             language: {
@@ -26,9 +27,9 @@ $(document).ready(function () {
             dom: 'fBlrtip',
             buttons: [
                 { extend: 'copyHtml5', className: 'btn btn-primary' },
-                { extend: 'excelHtml5', className: 'btn btn-primary' },
-                { extend: 'csvHtml5', className: 'btn btn-primary' },
-                { extend: 'pdfHtml5', className: 'btn btn-primary' },
+                { extend: 'excelHtml5', className: 'btn btn-primary', title: 'Sharepoint List - ' + TenantID + " - " + todayDate, exportOptions: {columns: [ 0,1,2,3,4,5,6 ]}   },
+                { extend: 'csvHtml5', className: 'btn btn-primary', title: 'Sharepoint List - ' + TenantID + " - " + todayDate, exportOptions: {columns: [ 0,1,2,3,4,5,6 ]}  },
+                { extend: 'pdfHtml5', className: 'btn btn-primary', orientation: 'landscape', title: 'Sharepoint List - ' + TenantID + " - " + todayDate, exportOptions: {columns: [ 0,1,2,3,4,5,6 ]} },
             ],
             "columns": [
                 { "data": "displayName" },
