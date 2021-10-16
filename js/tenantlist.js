@@ -2,7 +2,6 @@ $(document).ready(function () {
     let searchParams = new URLSearchParams(window.location.search)
     if (searchParams.has('Tenantfilter')) {
         var TenantID = searchParams.get('Tenantfilter')
-        $("#exampleDataList").val(TenantID);
     }
 
     var dataList = document.getElementById('datalistOptions');
@@ -21,7 +20,11 @@ $(document).ready(function () {
                 option.value = item.displayName;
                 option.text = item.defaultDomainName;
                 dataList.appendChild(option);
-                $("#exampleDataList").val('');
+                if (TenantID) {
+                    $("#exampleDataList").val(TenantID);
+                } else {
+                    $("#exampleDataList").val('');
+                }
             });
         },
         'error': function (xhr, ajaxOptions, thrownError) {
