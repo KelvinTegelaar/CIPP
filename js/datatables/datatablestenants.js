@@ -1,7 +1,6 @@
 
 $(document).ready(function () {
-
-
+    var todayDate = new Date().toISOString().slice(0, 10);
     var oTable = $('.datatable-1').dataTable(
         {
             language: {
@@ -30,9 +29,9 @@ $(document).ready(function () {
             dom: 'fBlrtip',
             buttons: [
                 { extend: 'copyHtml5', className: 'btn btn-primary' },
-                { extend: 'excelHtml5', className: 'btn btn-primary' },
-                { extend: 'csvHtml5', className: 'btn btn-primary' },
-                { extend: 'pdfHtml5', className: 'btn btn-primary' },
+                { extend: 'excelHtml5', className: 'btn btn-primary', title: 'Tenant Management List - ' + todayDate, exportOptions: {columns: [ 0,1 ]}   },
+                { extend: 'csvHtml5', className: 'btn btn-primary', title: 'Tenant Management List - ' + todayDate, exportOptions: {columns: [ 0,1 ]}  },
+                { extend: 'pdfHtml5', className: 'btn btn-primary', orientation: 'landscape', title: 'Tenant Management List - ' + todayDate, exportOptions: {columns: [ 0,1 ]} },
             ],
             "columns": [
                 { "data": "displayName" },

@@ -4,6 +4,7 @@ $(document).ready(function () {
         var TenantID = searchParams.get('Tenantfilter')
     }
     var todayDate = new Date().toISOString().slice(0, 10);
+
     $('.datatable-1').dataTable(
         {
             language: {
@@ -21,25 +22,23 @@ $(document).ready(function () {
             responsive: true,
             "ajax": {
 
-                "url": "/api/ListTeams?type=List&Tenantfilter=" + TenantID,
+                "url": "/api/ListMailboxes?Tenantfilter=" + TenantID,
                 "dataSrc": "",
             },
             dom: 'fBlrtip',
             buttons: [
                 { extend: 'copyHtml5', className: 'btn btn-primary' },
-                { extend: 'excelHtml5', className: 'btn btn-primary', title: 'Teams List - ' + TenantID + " - " + todayDate, exportOptions: {columns: [ 0,1,2,3 ]}   },
-                { extend: 'csvHtml5', className: 'btn btn-primary', title: 'Teams List - ' + TenantID + " - " + todayDate, exportOptions: {columns: [ 0,1,2,3 ]}  },
-                { extend: 'pdfHtml5', className: 'btn btn-primary', orientation: 'landscape', title: 'Teams List - ' + TenantID + " - " + todayDate, exportOptions: {columns: [ 0,1,2,3 ]} },
+                { extend: 'excelHtml5', className: 'btn btn-primary', title: 'Mailbox List - ' + TenantID + " - " + todayDate },
+                { extend: 'csvHtml5', className: 'btn btn-primary', title: 'Mailbox List - ' + TenantID + " - " + todayDate },
+                { extend: 'pdfHtml5', className: 'btn btn-primary', orientation: 'landscape', title: 'Mailbox List - ' + TenantID + " - " + todayDate, exportOptions: {columns: [ 0,1,2,4,5 ]} },
             ],
             "columns": [
+                { "data": "UPN" },
                 { "data": "displayName" },
-                { "data": "description" },
-                { "data": "visibility" },
-                { "data": "mailNickname" },
-                {
-                    "data": "id",
-                    render: function (id, type, row) { return '<a href=index.html?page=EditGroup&GroupID=' + id + '&Tenantfilter=' + TenantID + '><i class="fas fa-cog fa-fw"></i></a>'; }
-                }
+                { "data": "primarySmtpAddress" },                
+                { "data": "recipientType" },
+                { "data": "recipientTypeDetails" },
+                { "data": "AdditionalEmailAddresses" },
             ],
             "order": [[0, "asc"]],
         });
