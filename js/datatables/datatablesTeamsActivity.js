@@ -31,7 +31,7 @@ $(document).ready(function () {
       { data: "UPN" },
       { data: "LastActive" },
       { data: "TeamsChat" },
-      { data: "CallCountB" },
+      { data: "CallCount" },
       { data: "MeetingCount" },
     ],
     order: [[0, "asc"]],
