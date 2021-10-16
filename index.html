@@ -33,15 +33,15 @@
         <ul class="navbar-nav align-items-center ms-auto">
             <!-- Documentation Dropdown-->
             <li class="nav-item dropdown no-caret d-none d-md-block me-3">
-                <a class="nav-link dropdown-toggle" id="navbarDropdownDocs" href="javascript:void(0);" role="button"
+                <a class="nav-link dropdown-toggle" id="navbarDropdownDocs" href="" role="button"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <div class="fw-500">Documentation</div>
                     <i class="fas fa-chevron-right dropdown-arrow"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end py-0 me-sm-n15 me-lg-0 o-hidden animated--fade-in-up"
                     aria-labelledby="navbarDropdownDocs">
-                    <a class="dropdown-item py-3" href="https://github.com/KelvinTegelaar/CIPP/tree/master/Documentation"
-                        target="_blank">
+                    <a class="dropdown-item py-3"
+                        href="https://github.com/KelvinTegelaar/CIPP/tree/master/Documentation" target="_blank">
                         <div class="icon-stack bg-primary-soft text-primary me-4"><i data-feather="book"></i></div>
                         <div>
                             <div class="small text-gray-500">Documentation</div>
@@ -57,7 +57,8 @@
                         </div>
                     </a>
                     <div class="dropdown-divider m-0"></div>
-                    <a class="dropdown-item py-3" href="https://github.com/KelvinTegelaar/CIPP/blob/master/Documentation/Changelog.md"
+                    <a class="dropdown-item py-3"
+                        href="https://github.com/KelvinTegelaar/CIPP/blob/master/Documentation/Changelog.md"
                         target="_blank">
                         <div class="icon-stack bg-primary-soft text-primary me-4"><i data-feather="file-text"></i></div>
                         <div>
@@ -70,9 +71,9 @@
             <!-- Navbar Search Dropdown-->
             <!-- Alerts Dropdown-->
             <li class="nav-item dropdown no-caret d-none d-sm-block me-3 dropdown-notifications">
-                <a class="btn btn-icon btn-transparent-dark dropdown-toggle" id="navbarDropdownAlerts"
-                    href="javascript:void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false"><i data-feather="bell"></i></a>
+                <a class="btn btn-icon btn-transparent-dark dropdown-toggle" id="navbarDropdownAlerts" href=""
+                    role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i
+                        data-feather="bell"></i></a>
                 <div class="dropdown-menu dropdown-menu-end border-0 shadow animated--fade-in-up"
                     aria-labelledby="navbarDropdownAlerts">
                     <h6 class="dropdown-header dropdown-notifications-header">
@@ -102,9 +103,9 @@
             </li>
             <!-- User Dropdown-->
             <li class="nav-item dropdown no-caret dropdown-user me-3 me-lg-4">
-                <a class="btn btn-icon btn-transparent-dark dropdown-toggle" id="navbarDropdownUserImage"
-                    href="javascript:void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false"><img class="img-fluid" src="assets/img/profilepic.png" /></a>
+                <a class="btn btn-icon btn-transparent-dark dropdown-toggle" id="navbarDropdownUserImage" href=""
+                    role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img
+                        class="img-fluid" src="assets/img/profilepic.png" /></a>
                 <div class="dropdown-menu dropdown-menu-end border-0 shadow animated--fade-in-up"
                     aria-labelledby="navbarDropdownUserImage">
                     <h6 class="dropdown-header d-flex align-items-center">
@@ -139,14 +140,14 @@
                         <!-- Sidenav Menu Heading (Core)-->
                         <div class="sidenav-menu-heading">Tenant Administration</div>
                         <!-- Sidenav Accordion (Dashboard)-->
+
+                        <a class="nav-link" href="" data-bs-toggle="collapse" data-bs-target="#collapseTenantAdmin"
+                            aria-expanded="false" aria-controls="collapseTenantAdmin">
+                            <div class="nav-link-icon"><i data-feather="settings"></i></div>
+                            Administration
+                            <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
                         <section class="SpecialNavLink">
-                            <a class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
-                                data-bs-target="#collapseTenantAdmin" aria-expanded="false"
-                                aria-controls="collapseTenantAdmin">
-                                <div class="nav-link-icon"><i data-feather="settings"></i></div>
-                                Administration
-                                <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                            </a>
                             <div class="collapse show" id="collapseTenantAdmin" data-bs-parent="#accordionSidenav">
                                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
                                     <a class="nav-link" href="users">Users</a>
@@ -154,161 +155,167 @@
                                     <a class="nav-link" href="tenants">Tenants</a>
                                 </nav>
                             </div>
+                        </section>
 
-                            <section class="SpecialNavLink">
-                                <a class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
-                                    data-bs-target="#collapseStandards" aria-expanded="false"
-                                    aria-controls="collapseStandards">
-                                    <div class="nav-link-icon"><i data-feather="book-open"></i></div>
-                                    Standards
-                                    <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                                </a>
-                                <div class="collapse" id="collapseStandards" data-bs-parent="#accordionSidenav">
-                                    <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
-                                        <a class="nav-link" href="standards">List applied standards</a>
-                                        <a class="nav-link" href="Addstandard">Add standard</a>
-                                    </nav>
-                                </div>
+                        <a class="nav-link" href="" data-bs-toggle="collapse" data-bs-target="#collapseStandards"
+                            aria-expanded="false" aria-controls="collapseStandards">
+                            <div class="nav-link-icon"><i data-feather="book-open"></i></div>
+                            Standards
+                            <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <section class="SpecialNavLink">
+                            <div class="collapse" id="collapseStandards" data-bs-parent="#accordionSidenav">
+                                <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
+                                    <a class="nav-link" href="standards">List applied standards</a>
+                                    <a class="nav-link" href="Addstandard">Add standard</a>
+                                </nav>
+                            </div>
+                        </section>
 
-                                <!-- Sidenav Heading (Custom)-->
-                                <div class="sidenav-menu-heading">Endpoint Management</div>
-                                <!-- Sidenav Accordion (Pages)-->
-                                <a class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse"
-                                    data-bs-target="#collapseApplications" aria-expanded="false"
-                                    aria-controls="collapseApplications">
-                                    <div class="nav-link-icon"><i data-feather="chrome"></i></div>
-                                    Applications
-                                    <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                                </a>
-                                <div class="collapse" id="collapseApplications" data-bs-parent="#accordionSidenav">
-                                    <nav class="sidenav-menu-nested nav accordion " id="accordionSidenavApps">
-                                        <a class="nav-link" href="AllAppsList">List</a>
-                                        <a class="nav-link" href="AddChocoApp">Add Choco app</a>
-                                    </nav>
-                                </div>
-                                <!-- Nested Sidenav Accordion (Pages -> Authentication)-->
+                        <!-- Sidenav Heading (Custom)-->
+                        <div class="sidenav-menu-heading">Endpoint Management</div>
+                        <!-- Sidenav Accordion (Pages)-->
+                        <a class="nav-link" href="" data-bs-toggle="collapse" data-bs-target="#collapseApplications"
+                            aria-expanded="false" aria-controls="collapseApplications">
+                            <div class="nav-link-icon"><i data-feather="chrome"></i></div>
+                            Applications
+                            <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <section class="SpecialNavLink">
+                            <div class="collapse" id="collapseApplications" data-bs-parent="#accordionSidenav">
+                                <nav class="sidenav-menu-nested nav accordion " id="accordionSidenavApps">
+                                    <a class="nav-link" href="AllAppsList">List</a>
+                                    <a class="nav-link" href="AddChocoApp">Add Choco app</a>
+                                </nav>
+                            </div>
+                        </section>
+                        <!-- Nested Sidenav Accordion (Pages -> Authentication)-->
 
-                                <!-- Nested Sidenav Accordion (Pages -> Error)-->
-
-
-                                <!-- Sidenav Accordion (Applications)-->
-                                <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
-                                    data-bs-target="#collapseApps" aria-expanded="false" aria-controls="collapseApps">
-                                    <div class="nav-link-icon"><i data-feather="tablet"></i></div>
-                                    Autopilot
-                                    <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                                </a>
-                                <div class="collapse" id="collapseApps" data-bs-parent="#accordionSidenav">
-                                    <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavAppsMenu">
-                                        <!-- Nested Sidenav Accordion (Apps -> Knowledge Base)-->
-
-                                        <a class="nav-link" href="AddDevice">Add Device</a>
-                                        <a class="nav-link" href="AddProfile">Add Profile</a>
-                                        <a class="nav-link" href="AddESP">Add Status Page</a>
-                                        <a class="nav-link" href="AutopilotDeviceList">List Devices</a>
-                                        <a class="nav-link" href="AutopilotProfileList">List Profiles</a>
-                                        <a class="nav-link" href="AutopilotESPList">List Status Pages</a>
-                                        <!-- Nested Sidenav Accordion (Apps -> User Management)-->
-
-                                    </nav>
-                                </div>
-                                <!-- Sidenav Accordion (Flows)-->
-                                <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
-                                    data-bs-target="#collapseFlows" aria-expanded="false" aria-controls="collapseFlows">
-                                    <div class="nav-link-icon"><i data-feather="repeat"></i></div>
-                                    Intune
-                                    <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                                </a>
-                                <div class="collapse" id="collapseFlows" data-bs-parent="#accordionSidenav">
-                                    <nav class="sidenav-menu-nested nav">
-                                        <a class="nav-link" href="IntunePolicyList">List Policies</a>
-                                        <a class="nav-link" href="AddPolicy">Add Policy</a>
-                                    </nav>
-                                </div>
+                        <!-- Nested Sidenav Accordion (Pages -> Error)-->
 
 
-                                <!-- Sidenav Heading (UI Toolkit)-->
-                                <div class="sidenav-menu-heading">Teams & Sharepoint</div>
-                                <!-- Sidenav Accordion (Layout)-->
-                                <!-- Sidenav Accordion (Utilities)-->
-                                <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
-                                    data-bs-target="#collapseOnedrive" aria-expanded="false"
-                                    aria-controls="collapseOnedrive">
-                                    <div class="nav-link-icon"><i data-feather="hard-drive"></i></div>
-                                    OneDrive
-                                    <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                                </a>
-                                <div class="collapse" id="collapseOnedrive" data-bs-parent="#accordionSidenav">
-                                    <nav class="sidenav-menu-nested nav">
-                                        <a class="nav-link" href="OnedriveList">List Onedrive</a>
-                                    </nav>
-                                </div>
-                                <!-- Sidenav Accordion (Components)-->
-                                <!-- Sidenav Accordion (Utilities)-->
-                                <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
-                                    data-bs-target="#collapseSharepoint" aria-expanded="false"
-                                    aria-controls="collapseSharepoint">
-                                    <div class="nav-link-icon"><i data-feather="share"></i></div>
-                                    Sharepoint
-                                    <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                                </a>
-                                <div class="collapse" id="collapseSharepoint" data-bs-parent="#accordionSidenav">
-                                    <nav class="sidenav-menu-nested nav">
-                                        <a class="nav-link" href="SharepointList">List Sharepoint</a>
-                                    </nav>
-                                </div>
-                                <!-- Sidenav Accordion (Utilities)-->
-                                <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
-                                    data-bs-target="#collapseUtilities" aria-expanded="false"
-                                    aria-controls="collapseUtilities">
-                                    <div class="nav-link-icon"><i data-feather="users"></i></div>
-                                    Teams
-                                    <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                                </a>
-                                <div class="collapse" id="collapseUtilities" data-bs-parent="#accordionSidenav">
-                                    <nav class="sidenav-menu-nested nav">
-                                        <a class="nav-link" href="TeamsList">List Teams</a>
-                                        <a class="nav-link" href="AddTeam">Add Team</a>
-                                    </nav>
-                                </div>
-                            </section>
+                        <!-- Sidenav Accordion (Applications)-->
+                        <a class="nav-link collapsed" href="" data-bs-toggle="collapse" data-bs-target="#collapseApps"
+                            aria-expanded="false" aria-controls="collapseApps">
+                            <div class="nav-link-icon"><i data-feather="tablet"></i></div>
+                            Autopilot
+                            <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <div class="collapse" id="collapseApps" data-bs-parent="#accordionSidenav">
+                            <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavAppsMenu">
+                                <section class="SpecialNavLink">
+                                    <!-- Nested Sidenav Accordion (Apps -> Knowledge Base)-->
+                                    <a class="nav-link" href="AddDevice">Add Device</a>
+                                    <a class="nav-link" href="AddProfile">Add Profile</a>
+                                    <a class="nav-link" href="AddESP">Add Status Page</a>
+                                    <a class="nav-link" href="AutopilotDeviceList">List Devices</a>
+                                    <a class="nav-link" href="AutopilotProfileList">List Profiles</a>
+                                    <a class="nav-link" href="AutopilotESPList">List Status Pages</a>
+                                    <!-- Nested Sidenav Accordion (Apps -> User Management)-->
+                                </section>
+                            </nav>
+                        </div>
+                        <!-- Sidenav Accordion (Flows)-->
+                        <a class="nav-link collapsed" href="" data-bs-toggle="collapse" data-bs-target="#collapseFlows"
+                            aria-expanded="false" aria-controls="collapseFlows">
+                            <div class="nav-link-icon"><i data-feather="repeat"></i></div>
+                            Intune
+                            <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <div class="collapse" id="collapseFlows" data-bs-parent="#accordionSidenav">
+                            <nav class="sidenav-menu-nested nav">
+                                <section class="SpecialNavLink">
+                                    <a class="nav-link" href="IntunePolicyList">List Policies</a>
+                                    <a class="nav-link" href="AddPolicy">Add Policy</a>
+                            </nav>
+                        </div>
+                        </section>
+
+                        <!-- Sidenav Heading (UI Toolkit)-->
+                        <div class="sidenav-menu-heading">Teams & Sharepoint</div>
+                        <!-- Sidenav Accordion (Layout)-->
+                        <!-- Sidenav Accordion (Utilities)-->
+                        <a class="nav-link collapsed" href="" data-bs-toggle="collapse"
+                            data-bs-target="#collapseOnedrive" aria-expanded="false" aria-controls="collapseOnedrive">
+                            <div class="nav-link-icon"><i data-feather="hard-drive"></i></div>
+                            OneDrive
+                            <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <div class="collapse" id="collapseOnedrive" data-bs-parent="#accordionSidenav">
+                            <nav class="sidenav-menu-nested nav">
+                                <section class="SpecialNavLink">
+                                    <a class="nav-link" href="OnedriveList">List Onedrive</a>
+                                </section>
+                            </nav>
+                        </div>
+                        <!-- Sidenav Accordion (Components)-->
+                        <!-- Sidenav Accordion (Utilities)-->
+                        <a class="nav-link collapsed" href="" data-bs-toggle="collapse"
+                            data-bs-target="#collapseSharepoint" aria-expanded="false"
+                            aria-controls="collapseSharepoint">
+                            <div class="nav-link-icon"><i data-feather="share"></i></div>
+                            Sharepoint
+                            <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <div class="collapse" id="collapseSharepoint" data-bs-parent="#accordionSidenav">
+                            <nav class="sidenav-menu-nested nav">
+                                <section class="SpecialNavLink">
+                                    <a class="nav-link" href="SharepointList">List Sharepoint</a>
+                                </section>
+                            </nav>
+                        </div>
+                        <!-- Sidenav Accordion (Utilities)-->
+                        <a class="nav-link collapsed" href="" data-bs-toggle="collapse"
+                            data-bs-target="#collapseUtilities" aria-expanded="false" aria-controls="collapseUtilities">
+                            <div class="nav-link-icon"><i data-feather="users"></i></div>
+                            Teams
+                            <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <div class="collapse" id="collapseUtilities" data-bs-parent="#accordionSidenav">
+                            <nav class="sidenav-menu-nested nav">
+                                <section class="SpecialNavLink">
+                                    <a class="nav-link" href="TeamsList">List Teams</a>
+                                    <a class="nav-link" href="AddTeam">Add Team</a>
+                                </section>
+                            </nav>
+                        </div>
+                        </section>
 
 
-                            <!-- Sidenav Heading (Email Start)-->
-                            <div class="sidenav-menu-heading">Email & Exchange</div>
-                            <!-- Sidenav Accordion (Layout)-->
-                            <!-- Sidenav Accordion (Utilities)-->
-                            <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse"
-                                data-bs-target="#collapseEmail" aria-expanded="false"
-                                aria-controls="collapseEmail">
-                                <div class="nav-link-icon"><i data-feather="mail"></i></div>
-                                Reports
-                                <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                            </a>
-                            <div class="collapse" id="collapseEmail" data-bs-parent="#accordionSidenav">
-                                <nav class="sidenav-menu-nested nav">
+                        <!-- Sidenav Heading (Email Start)-->
+                        <div class="sidenav-menu-heading">Email & Exchange</div>
+                        <!-- Sidenav Accordion (Layout)-->
+                        <!-- Sidenav Accordion (Utilities)-->
+                        <a class="nav-link collapsed" href="" data-bs-toggle="collapse" data-bs-target="#collapseEmail"
+                            aria-expanded="false" aria-controls="collapseEmail">
+                            <div class="nav-link-icon"><i data-feather="mail"></i></div>
+                            Reports
+                            <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <div class="collapse" id="collapseEmail" data-bs-parent="#accordionSidenav">
+                            <nav class="sidenav-menu-nested nav">
+                                <section class="SpecialNavLink">
                                     <a class="nav-link" href="MailboxStatisticsList">Mailbox Statistics</a>
                                     <a class="nav-link" href="MailboxList">Mailbox List</a>
                                     <a class="nav-link" href="MailboxCASList">Mailbox Client Access Settings</a>
                                 </nav>
                             </div>                            
-                        </section>
-
-
-                            <!-- Sidenav Heading (Addons)-->
-                            <div class="sidenav-menu-heading">CIPP Settings</div>
-                            <!-- Sidenav Link (Charts)-->
-                            <a class="nav-link" href="https://github.com/KelvinTegelaar/CIPP">
-                                <div class="nav-link-icon"><i data-feather="book"></i></div>
-                                Documentation
-                            </a>
-                            <!-- Sidenav Link (Tables)-->
-                            <section class="SpecialNavLink">
-                                <a class="nav-link" href="settings">
-                                    <div class="nav-link-icon"><i data-feather="filter"></i></div>
-                                    Configuration settings
-                                </a>
                             </section>
+
+                        <!-- Sidenav Heading (Addons)-->
+                        <div class="sidenav-menu-heading">CIPP Settings</div>
+                        <!-- Sidenav Link (Charts)-->
+                        <a class="nav-link" href="https://github.com/KelvinTegelaar/CIPP">
+                            <div class="nav-link-icon"><i data-feather="book"></i></div>
+                            Documentation
+                        </a>
+                        <!-- Sidenav Link (Tables)-->
+                        <section class="SpecialNavLink">
+                            <a class="nav-link" href="settings">
+                                <div class="nav-link-icon"><i data-feather="filter"></i></div>
+                                Configuration settings
+                            </a>
+                        </section>
                     </div>
                 </div>
                 <!-- Sidenav Footer-->
