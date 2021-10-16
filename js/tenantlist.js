@@ -11,6 +11,9 @@ $(document).ready(function () {
         'global': false,
         'url': 'api/ListTenants',
         'dataType': "json",
+        'beforeSend': function () {
+            $("#exampleDataList").val('Loading tenants...');
+        },
         'success': function (data) {
             data.forEach(function (item) {
                 var option = document.createElement('option');
@@ -18,8 +21,13 @@ $(document).ready(function () {
                 option.value = item.displayName;
                 option.text = item.defaultDomainName;
                 dataList.appendChild(option);
+                $("#exampleDataList").val('');
             });
+        },
+        'error': function (xhr, ajaxOptions, thrownError) {
+            $("#exampleDataList").val('Could not load tenants: Failed to connect to API:' + thrownError);
         }
+
     });
 
 });
