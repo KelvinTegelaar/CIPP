@@ -15,9 +15,7 @@ $(document).ready(function () {
     pageLength: 25,
     responsive: true,
     ajax: {
-      url:
-        "/api/ListSites?type=TeamsUserActivityUserDetail&Tenantfilter=" +
-        TenantID,
+      url: "/api/ListSites?type=TeamsUserActivityUser&Tenantfilter=" + TenantID,
       dataSrc: "",
     },
     dom: "fBlrtip",
