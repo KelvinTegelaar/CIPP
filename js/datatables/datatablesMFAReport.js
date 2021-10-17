@@ -40,10 +40,11 @@ $(document).ready(function () {
       },
     ],
     columns: [
-      { data: "Display Name" },
+      { data: "DisplayName" },
       { data: "UserPrincipalName" },
-      { data: "Per User MFA" },
-      { data: "MFA Registered via CA Policy/Security Defaults" },
+      { data: "PerUserMFA" },
+      { data: "MFARegisteredviaCAPolicy/SecurityDefaults" },
+      { data: "isLicensed" },
     ],
     order: [[0, "asc"]],
   });
