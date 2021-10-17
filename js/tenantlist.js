@@ -1,10 +1,10 @@
 $(document).ready(function () {
- 
+
     let searchParams = new URLSearchParams(window.location.search)
     if (searchParams.has('Tenantfilter')) {
         var TenantID = searchParams.get('Tenantfilter')
     } else {
-        $(":input").prop("disabled", true);
+        $(":text").prop("disabled", true);
         $("#exampleDataList").prop("disabled", false);
     }
 

@@ -10,7 +10,7 @@ Any build that is upped to a [release](releases) is a supported version and shou
 
 Reporting a vunerability is best done via our [Security](SECURITY.md) page. This way all contributors are alerted and we can discuss the issue in private. it'll help in making the fix available as soon as possible without endangering other users of the product. 
 
-We will pubicly release any security report after resolution, including all communications, if you'd rather have just the bug report public, please let us know in the report.
+We will pubicly release any security report after resolution, including all communications, if you'd rather have only the bug report public, please let us know in the report.
 
 ## Notifications and security advisories
 
