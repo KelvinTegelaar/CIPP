@@ -39,6 +39,10 @@ $(document).ready(function () {
                 { "data": "recipientType" },
                 { "data": "recipientTypeDetails" },
                 { "data": "AdditionalEmailAddresses" },
+                {
+                    "data": "UPN",
+                    render: function (id, type, row) { return '<a href=index.html?page=MailboxMobileDevices&Mailbox=' + id + '&Tenantfilter=' + TenantID + ' title="Mobile Device Information"><i class="fas fa-mobile-alt fa-fw"></i></a>'; }
+                }
             ],
             "order": [[0, "asc"]],
         });
