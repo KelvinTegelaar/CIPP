@@ -134,7 +134,7 @@
 body {
   margin: 0;
   font-family: var(--bs-body-font-family);
-  font-size: var(--bs-body-font-size);
+  font-size: 0.85rem;
   font-weight: var(--bs-body-font-weight);
   line-height: var(--bs-body-line-height);
   color: var(--bs-body-color);
@@ -21026,3 +21026,6 @@ pre[class*=language-] {
   color: #ff6666;
 }
 
+div#DataTables_Table_0_length{ 
+  padding-top: 10px; 
+}

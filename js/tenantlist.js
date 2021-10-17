@@ -1,8 +1,11 @@
 $(document).ready(function () {
+
     let searchParams = new URLSearchParams(window.location.search)
     if (searchParams.has('Tenantfilter')) {
         var TenantID = searchParams.get('Tenantfilter')
-        $("#exampleDataList").val(TenantID);
+    } else {
+        $(":text").prop("disabled", true);
+        $("#exampleDataList").prop("disabled", false);
     }
 
     var dataList = document.getElementById('datalistOptions');
@@ -11,15 +14,29 @@ $(document).ready(function () {
         'global': false,
         'url': 'api/ListTenants',
         'dataType': "json",
+        'beforeSend': function () {
+            $("#exampleDataList").val('Loading tenants...');
+        },
         'success': function (data) {
             data.forEach(function (item) {
+                $("#exampleDataList").prop("disabled", false);
                 var option = document.createElement('option');
 
                 option.value = item.displayName;
                 option.text = item.defaultDomainName;
                 dataList.appendChild(option);
+                if (TenantID) {
+                    $("#exampleDataList").val(TenantID);
+                } else {
+                    $("#exampleDataList").val('');
+                }
             });
+        },
+        'error': function (xhr, ajaxOptions, thrownError) {
+            $("#exampleDataList").val('Could not load tenants: Failed to connect to API:' + thrownError);
+            $("#exampleDataList").prop("disabled", false);
         }
+
     });
 
 });

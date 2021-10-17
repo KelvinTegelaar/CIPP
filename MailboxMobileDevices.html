@@ -6,7 +6,7 @@
                     <div class="col-auto mb-3">
                         <h1 class="page-header-title">
                             <div class="page-header-icon"><i data-feather="user"></i></div>
-                            Teams List
+                            <div id="breadcrumbReplace">Mailbox Mobile Device Report</div>
                         </h1>
                     </div>
                     <div class="col-12 col-xl-auto mb-3">
@@ -25,36 +25,41 @@
     </header>
     <!-- Main page content-->
     <div class="container-fluid px-4">
-        <div><label for="exampleDataList" class="form-label">Tenant Selector</label>
-            <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Type to search..."
-                style="width: 50%;" oninput='onInput()'>
-            <datalist id="datalistOptions">
-                <option value="Select a tenant" text="Select a tenant">
-            </datalist>
-        </div><br>
         <div class="card">
-            <div class="card-header">Teams list</div>
+            <div class="card-header" id="replaceTitle">Mobile Device Report</div>
             <div class="card-body">
                 <table id="datatablesSimple">
                     <table cellpadding="0" cellspacing="0" class="datatable-1 table table-striped" width="100%">
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Description</th>
-                                <th>Visibility</th>
-                                <th>Alias</th>
-                                <th>Actions</th>
+                                <th>Client Type</th>
+                                <th>Client Version</th>
+                                <th>Access State</th>
+                                <th>Friendly Name</th>
+                                <th>Model</th>
+                                <th>OS</th>
+                                <th>Device Type</th>
+                                <th>First Sync</th>
+                                <th>Last Sync Attempt</th>
+                                <th>Last Success Sync</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody id='AccountTable'>
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th>Name</th>
-                                <th>Description</th>
-                                <th>Visibility</th>
-                                <th>Alias</th>
-                                <th>Actions</th>
+                                <th>Client Type</th>
+                                <th>Client Version</th>
+                                <th>Access State</th>
+                                <th>Friendly Name</th>
+                                <th>Model</th>
+                                <th>OS</th>
+                                <th>Device Type</th>
+                                <th>First Sync</th>
+                                <th>Last Sync Attempt</th>
+                                <th>Last Success Sync</th>
+                                <th>Status</th>
                             </tr>
                         </tfoot>
                     </table>
@@ -64,7 +69,7 @@
 </main>
 <script src="js/datatables/jquery.dataTables.js"></script>
 <script src="js/tenantlist.js"></script>
-<script src="js/datatables/datatablesTeams.js"></script>
+<script src="js/datatables/datatablesMailboxMobileDevices.js"></script>
 
 </body>
 
