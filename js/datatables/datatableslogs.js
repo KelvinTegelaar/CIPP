@@ -17,10 +17,10 @@ $(document).ready(function () {
             },
             dom: 'fBlrtip',
             buttons: [
-                { extend: 'copyHtml5', className: 'btn btn-primary' },
-                { extend: 'excelHtml5', className: 'btn btn-primary' },
-                { extend: 'csvHtml5', className: 'btn btn-primary' },
-                { extend: 'pdfHtml5', className: 'btn btn-primary' },
+                { extend: 'copyHtml5', className: 'btn btn-primary btn-sm' },
+                { extend: 'excelHtml5', className: 'btn btn-primary btn-sm' },
+                { extend: 'csvHtml5', className: 'btn btn-primary btn-sm' },
+                { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm' },
             ],
             "columns": [
                 { "data": "DateTime" },
