@@ -16,7 +16,7 @@ $(document).ready(function () {
     pageLength: 25,
     responsive: true,
     ajax: {
-      url: "/api/ListMFAStats?Tenantfilter=" + TenantID,
+      url: "/api/ListMFAStats?TenantFilter=" + TenantID,
       dataSrc: "",
     },
     dom: "fBlrtip",
@@ -39,13 +39,7 @@ $(document).ready(function () {
         title: "Mailbox Statistics - " + TenantID + " - " + todayDate,
       },
     ],
-    columns: [
-      { data: "DisplayName" },
-      { data: "UserPrincipalName" },
-      { data: "PerUserMFA" },
-      { data: "MFARegisteredviaCAPolicy/SecurityDefaults" },
-      { data: "isLicensed" },
-    ],
+    columns: [{ data: "UPN" }, { data: "isMFAEnabled" }],
     order: [[0, "asc"]],
   });
   $(".dataTables_paginate").addClass("btn-group datatable-pagination");
