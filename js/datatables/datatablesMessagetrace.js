@@ -21,6 +21,7 @@ $(document).ready(function () {
                 },
                 "columnDefs": [
                     { "className": "dt-center", "targets": [-1] },
+                    { "width": "10%", "targets": 0 }
 
                 ],
                 "deferRender": true,
@@ -33,10 +34,10 @@ $(document).ready(function () {
                 },
                 dom: 'fBlrtip',
                 buttons: [
-                    { extend: 'copyHtml5', className: 'btn btn-primary' },
-                    { extend: 'excelHtml5', className: 'btn btn-primary', title: 'Mailbox Statistics - ' + TenantID + " - " + todayDate },
-                    { extend: 'csvHtml5', className: 'btn btn-primary', title: 'Mailbox Statistics - ' + TenantID + " - " + todayDate },
-                    { extend: 'pdfHtml5', className: 'btn btn-primary', orientation: 'landscape', title: 'Mailbox Statistics - ' + TenantID + " - " + todayDate },
+                    { extend: 'copyHtml5', className: 'btn btn-primary btn-sm' },
+                    { extend: 'excelHtml5', className: 'btn btn-primary btn-sm', title: 'Mailbox Statistics - ' + TenantID + " - " + todayDate },
+                    { extend: 'csvHtml5', className: 'btn btn-primary btn-sm', title: 'Mailbox Statistics - ' + TenantID + " - " + todayDate },
+                    { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', orientation: 'landscape', title: 'Mailbox Statistics - ' + TenantID + " - " + todayDate },
                 ],
                 "columns": [
                     { "data": "Date" },
@@ -45,7 +46,7 @@ $(document).ready(function () {
                     { "data": "Subject" },
                     { "data": "Status" }
                 ],
-                "order": [[0, "asc"]],
+                "order": [[0, "desc"]],
             });
         $('.dataTables_paginate').addClass("btn-group datatable-pagination");
         $('.dataTables_paginate > a').wrapInner('<span />');
