@@ -25,14 +25,15 @@ $(document).ready(function () {
 });
 
 function onInput() {
+    let searchParams = new URLSearchParams(window.location.search);
     var val = document.getElementById("exampleDataList").value;
     var existingTenant = tenants.filter(obj => {
         return obj.defaultDomainName == val;
     });
 
     if(existingTenant.length > 0) {
-        history.pushState(null, null, '?page=SharepointList&Tenantfilter=' + existingTenant[0].defaultDomainName);
-        $('#bodycontent').load('SharepointList.html');
+        history.pushState(null, null, '?page='+ searchParams.get('page') + '&Tenantfilter=' + existingTenant[0].defaultDomainName);
+        $('#bodycontent').load(searchParams.get('page') + '.html');
     }
 }
 
