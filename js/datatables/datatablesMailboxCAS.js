@@ -26,10 +26,10 @@ $(document).ready(function () {
             },
             dom: 'fBlrtip',
             buttons: [
-                { extend: 'copyHtml5', className: 'btn btn-primary' },
-                { extend: 'excelHtml5', className: 'btn btn-primary', title: 'Mailbox CAS Settings - ' + TenantID + " - " + todayDate },
-                { extend: 'csvHtml5', className: 'btn btn-primary', title: 'Mailbox CAS Settings - ' + TenantID + " - " + todayDate },
-                { extend: 'pdfHtml5', className: 'btn btn-primary', orientation: 'landscape', title: 'Mailbox CAS Settings - ' + TenantID + " - " + todayDate},
+                { extend: 'copyHtml5', className: 'btn btn-primary btn-sm' },
+                { extend: 'excelHtml5', className: 'btn btn-primary btn-sm', title: 'Mailbox CAS Settings - ' + TenantID + " - " + todayDate },
+                { extend: 'csvHtml5', className: 'btn btn-primary btn-sm', title: 'Mailbox CAS Settings - ' + TenantID + " - " + todayDate },
+                { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', orientation: 'landscape', title: 'Mailbox CAS Settings - ' + TenantID + " - " + todayDate},
             ],
             "columns": [
                 { "data": "displayName" },

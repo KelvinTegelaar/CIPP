@@ -29,20 +29,21 @@ $(document).ready(function () {
             },
             dom: 'fBlrtip',
             buttons: [
-                { extend: 'copyHtml5', className: 'btn btn-primary' },
-                { extend: 'excelHtml5', className: 'btn btn-primary', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4] } },
-                { extend: 'csvHtml5', className: 'btn btn-primary', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4] } },
-                { extend: 'pdfHtml5', className: 'btn btn-primary', orientation: 'landscape', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4] } },
+                { extend: 'copyHtml5', className: 'btn btn-primary btn-sm' },
+                { extend: 'excelHtml5', className: 'btn btn-primary btn-sm', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4] } },
+                { extend: 'csvHtml5', className: 'btn btn-primary btn-sm', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4] } },
+                { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', orientation: 'landscape', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4] } },
             ],
             "columns": [
                 { "data": "displayName" },
                 { "data": "mail" },
                 { "data": "userType" },
                 { "data": "accountEnabled" },
+                { "data": "onPremisesSyncEnabled" },
                 { "data": "LicJoined" },
                 {
                     "data": "id",
-                    render: function (id, type, row) { return '<a href=index?page=EditUser&Tenantfilter=' + TenantID + '&UserID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Edit User" class="fas fa-cog fa-fw"></i></a><nothing class="APILink">' + '<a href=api/ConvertToSharedMailbox?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Convert to Shared" class="fas fa-share-alt fa-fw"></i></a>' + '<a href=api/DisableUser?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Block Sign in" class="fas fa-ban fa-fw"></i></a>' + '<a href=api/ResetPass?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Reset password" class="fas fa-key fa-fw"></i></i></a></nothing>'; }
+                    render: function (id, type, row) { return '<a href=index.html?page=EditUser&Tenantfilter=' + TenantID + '&UserID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Edit User" class="fas fa-cog fa-fw"></i></a><nothing class="APILink">' + '<a href=api/ConvertToSharedMailbox?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Convert to Shared" class="fas fa-share-alt fa-fw"></i></a>' + '<a href=api/DisableUser?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Block Sign in" class="fas fa-ban fa-fw"></i></a>' + '<a href=api/ResetPass?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Reset password" class="fas fa-key fa-fw"></i></i></a></nothing>'; }
                 }
             ],
             "order": [[0, "asc"]],

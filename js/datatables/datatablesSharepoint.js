@@ -26,10 +26,10 @@ $(document).ready(function () {
             },
             dom: 'fBlrtip',
             buttons: [
-                { extend: 'copyHtml5', className: 'btn btn-primary' },
-                { extend: 'excelHtml5', className: 'btn btn-primary', title: 'Sharepoint List - ' + TenantID + " - " + todayDate, exportOptions: {columns: [ 0,1,2,3,4,5,6 ]}   },
-                { extend: 'csvHtml5', className: 'btn btn-primary', title: 'Sharepoint List - ' + TenantID + " - " + todayDate, exportOptions: {columns: [ 0,1,2,3,4,5,6 ]}  },
-                { extend: 'pdfHtml5', className: 'btn btn-primary', orientation: 'landscape', title: 'Sharepoint List - ' + TenantID + " - " + todayDate, exportOptions: {columns: [ 0,1,2,3,4,5,6 ]} },
+                { extend: 'copyHtml5', className: 'btn btn-primary btn-sm' },
+                { extend: 'excelHtml5', className: 'btn btn-primary btn-sm', title: 'Sharepoint List - ' + TenantID + " - " + todayDate, exportOptions: {columns: [ 0,1,2,3,4,5,6 ]}   },
+                { extend: 'csvHtml5', className: 'btn btn-primary btn-sm', title: 'Sharepoint List - ' + TenantID + " - " + todayDate, exportOptions: {columns: [ 0,1,2,3,4,5,6 ]}  },
+                { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', orientation: 'landscape', title: 'Sharepoint List - ' + TenantID + " - " + todayDate, exportOptions: {columns: [ 0,1,2,3,4,5,6 ]} },
             ],
             "columns": [
                 { "data": "displayName" },

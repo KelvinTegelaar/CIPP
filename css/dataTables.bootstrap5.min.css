@@ -144,7 +144,7 @@ table.dataTable tbody tr.selected {
 
 table.dataTable tbody th,
 table.dataTable tbody td {
-	padding: 8px 10px
+	padding: 4px 5px
 }
 
 table.dataTable.row-border tbody th,
