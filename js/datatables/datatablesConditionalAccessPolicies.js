@@ -32,6 +32,7 @@ $(document).ready(function () {
                     { extend: 'copyHtml5', className: 'btn btn-primary btn-sm' },
                     { extend: 'excelHtml5', className: 'btn btn-primary btn-sm', title: 'Conditional Access Report - ' + TenantID + " - " + todayDate },
                     { extend: 'csvHtml5', className: 'btn btn-primary btn-sm', title: 'Conditional Access Report - ' + TenantID + " - " + todayDate },                    
+                    { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', orientation: 'landscape', pageSize: 'A2', title: 'Conditional Access Report - ' + TenantID + " - " + todayDate },
                 ],
                 "scrollX": true,
                 "columns": [
