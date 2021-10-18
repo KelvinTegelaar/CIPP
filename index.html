@@ -137,6 +137,36 @@
                             <div class="nav-link-icon"><i data-feather="home"></i></div>
                             Home
                         </a>
+                        <div class="sidenav-menu-heading">Identity Management</div>
+                        <!-- Sidenav Accordion (Dashboard)-->
+
+                        <a class="nav-link" href="" data-bs-toggle="collapse" data-bs-target="#collapseIdentity"
+                            aria-expanded="false" aria-controls="collapseIdentity">
+                            <div class="nav-link-icon"><i data-feather="tool"></i></div>
+                            Administration
+                            <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <section class="SpecialNavLink">
+                            <div class="collapse" id="collapseIdentity" data-bs-parent="#accordionSidenav">
+                                <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
+                                    <a class="nav-link" href="users">Users</a>
+                                    <a class="nav-link" href="groups">Groups</a>
+                                </nav>
+                            </div>
+                        </section>
+                        <a class="nav-link" href="" data-bs-toggle="collapse" data-bs-target="#collapseIDReports"
+                            aria-expanded="false" aria-controls="collapseIDReports">
+                            <div class="nav-link-icon"><i data-feather="bar-chart-2"></i></div>
+                            Reports
+                            <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <section class="SpecialNavLink">
+                            <div class="collapse" id="collapseIDReports" data-bs-parent="#accordionSidenav">
+                                <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
+                                    <a class="nav-link" href="MFAReport">MFA Report</a>
+                                </nav>
+                            </div>
+                        </section>
                         <!-- Sidenav Menu Heading (Core)-->
                         <div class="sidenav-menu-heading">Tenant Administration</div>
                         <!-- Sidenav Accordion (Dashboard)-->
@@ -169,36 +199,7 @@
                                 </nav>
                             </div>
                         </section>
-                        <div class="sidenav-menu-heading">Identity Management</div>
-                        <!-- Sidenav Accordion (Dashboard)-->
 
-                        <a class="nav-link" href="" data-bs-toggle="collapse" data-bs-target="#collapseIdentity"
-                            aria-expanded="false" aria-controls="collapseIdentity">
-                            <div class="nav-link-icon"><i data-feather="tool"></i></div>
-                            Administration
-                            <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                        </a>
-                        <section class="SpecialNavLink">
-                            <div class="collapse" id="collapseIdentity" data-bs-parent="#accordionSidenav">
-                                <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
-                                    <a class="nav-link" href="users">Users</a>
-                                    <a class="nav-link" href="groups">Groups</a>
-                                </nav>
-                            </div>
-                        </section>
-                        <a class="nav-link" href="" data-bs-toggle="collapse" data-bs-target="#collapseIDReports"
-                            aria-expanded="false" aria-controls="collapseIDReports">
-                            <div class="nav-link-icon"><i data-feather="bar-chart-2"></i></div>
-                            Reports
-                            <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                        </a>
-                        <section class="SpecialNavLink">
-                            <div class="collapse" id="collapseIDReports" data-bs-parent="#accordionSidenav">
-                                <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
-                                    <a class="nav-link" href="MFAReport">MFA Report</a>
-                                </nav>
-                            </div>
-                        </section>
                         <!-- Sidenav Heading (Custom)-->
                         <div class="sidenav-menu-heading">Endpoint Management</div>
                         <!-- Sidenav Accordion (Pages)-->
