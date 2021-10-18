@@ -1,6 +1,6 @@
 
 $(document).ready(function () {
-
+    var todayDate = new Date().toISOString().slice(0, 10);
 
     var oTable = $('.datatable-1').dataTable(
         {
@@ -23,10 +23,10 @@ $(document).ready(function () {
             },
             dom: 'fBlrtip',
             buttons: [
-                { extend: 'copyHtml5', className: 'btn btn-primary' },
-                { extend: 'excelHtml5', className: 'btn btn-primary' },
-                { extend: 'csvHtml5', className: 'btn btn-primary' },
-                { extend: 'pdfHtml5', className: 'btn btn-primary' },
+                { extend: 'copyHtml5', className: 'btn btn-primary btn-sm' },
+                { extend: 'excelHtml5', className: 'btn btn-primary btn-sm', title: 'Applied Standards - ' + todayDate, exportOptions: {columns: [ 0,1,2 ]}   },
+                { extend: 'csvHtml5', className: 'btn btn-primary btn-sm', title: 'Applied Standards - ' + todayDate, exportOptions: {columns: [ 0,1,2 ]}  },
+                { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', orientation: 'landscape', title: 'Applied Standards - ' + todayDate, exportOptions: {columns: [ 0,1,2 ]} },
             ],
             "columns": [
                 { "data": "displayName" },

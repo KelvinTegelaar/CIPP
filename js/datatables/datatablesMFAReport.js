@@ -15,7 +15,7 @@ $(document).ready(function () {
                 }
             },
             "columnDefs": [
-                { "className": "dt-center", "targets": [-1] },
+                { "className": "dt-center", "targets": [1, 2, 3, 4] },
                 { "width": "10%", "targets": -1 }
 
             ],
@@ -24,7 +24,7 @@ $(document).ready(function () {
             responsive: true,
             "ajax": {
 
-                "url": "/api/ListUsers?TenantFilter=" + TenantID,
+                "url": "/api/ListMFAUsers?TenantFilter=" + TenantID,
                 "dataSrc": "",
             },
             dom: 'fBlrtip',
@@ -35,16 +35,11 @@ $(document).ready(function () {
                 { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', orientation: 'landscape', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4] } },
             ],
             "columns": [
-                { "data": "displayName" },
-                { "data": "mail" },
-                { "data": "userType" },
-                { "data": "accountEnabled" },
-                { "data": "onPremisesSyncEnabled" },
-                { "data": "LicJoined" },
-                {
-                    "data": "id",
-                    render: function (id, type, row) { return '<a href=index.html?page=EditUser&Tenantfilter=' + TenantID + '&UserID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Edit User" class="fas fa-cog fa-fw"></i></a><nothing class="APILink">' + '<a href=api/ConvertToSharedMailbox?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Convert to Shared" class="fas fa-share-alt fa-fw"></i></a>' + '<a href=api/DisableUser?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Block Sign in" class="fas fa-ban fa-fw"></i></a>' + '<a href=api/ResetPass?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Reset password" class="fas fa-key fa-fw"></i></i></a></nothing>'; }
-                }
+                { "data": "UPN" },
+                { "data": "PerUser" },
+                { "data": "MFARegistration" },
+                { "data": "CoveredByCA" },
+                { "data": "CoveredBySD" }
             ],
             "order": [[0, "asc"]],
         });

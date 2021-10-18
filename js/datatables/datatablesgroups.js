@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    var todayDate = new Date().toISOString().slice(0, 10);
     let searchParams = new URLSearchParams(window.location.search)
     if (searchParams.has('page')) {
         var TenantID = searchParams.get('Tenantfilter')
@@ -25,10 +26,10 @@ $(document).ready(function () {
             },
             dom: 'fBlrtip',
             buttons: [
-                { extend: 'copyHtml5', className: 'btn btn-primary' },
-                { extend: 'excelHtml5', className: 'btn btn-primary' },
-                { extend: 'csvHtml5', className: 'btn btn-primary' },
-                { extend: 'pdfHtml5', className: 'btn btn-primary' },
+                { extend: 'copyHtml5', className: 'btn btn-primary btn-sm' },
+                { extend: 'excelHtml5', className: 'btn btn-primary btn-sm', title: 'Group List - ' + TenantID + " - " + todayDate, exportOptions: {columns: [ 0,1,2,3 ]}   },
+                { extend: 'csvHtml5', className: 'btn btn-primary btn-sm', title: 'Group List - ' + TenantID + " - " + todayDate, exportOptions: {columns: [ 0,1,2,3 ]}  },
+                { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', orientation: 'landscape', title: 'Group List - ' + TenantID + " - " + todayDate, exportOptions: {columns: [ 0,1,2,3 ]} },
             ],
             "columns": [
                 { "data": "displayName" },
