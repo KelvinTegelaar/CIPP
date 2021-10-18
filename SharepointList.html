@@ -26,8 +26,8 @@
     <!-- Main page content-->
     <div class="container-fluid px-4">
         <div><label for="exampleDataList" class="form-label">Tenant Selector</label>
-            <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Type to search..."
-                style="width: 50%;" oninput='onInput()'>
+            <input autocomplete="off" class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Type to search..."
+                style="width: 50%;" onkeyup='onInput()'>
             <datalist id="datalistOptions">
                 <option value="Select a tenant" text="Select a tenant">
             </datalist>
