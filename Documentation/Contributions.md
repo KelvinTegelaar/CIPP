@@ -9,6 +9,7 @@ Contributions to CIPP are welcome by everyone. There's a couple of things to kee
 - The interface is made entirely in Bootstrap and Jquery. For Datatables we use the JQuery Datatables plugin.
 - Avoid adding a deploy YML to your development repo. We'll remove those, but it's just an annoyance. If you want to both deploy and develop it's better to create two instances of the repo. 
 
+When contributing, or planning to contribute, please create an issue in the tracker [here](issues). If you are fixing a bug, file a complete bug report and assign it to yourself, if you are adding a feature, please add "Feature Request" to the title and assign it to yourself.
 ## Creating two instances
 
 - Make a clone of your forked repo

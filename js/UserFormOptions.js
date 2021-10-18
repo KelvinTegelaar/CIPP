@@ -1,8 +1,9 @@
 $(document).ready(function () {
     //gets the current Tenantfilter
     let searchParams = new URLSearchParams(window.location.search)
+    var TenantID = '';
     if (searchParams.has('Tenantfilter')) {
-        var TenantID = searchParams.get('Tenantfilter')
+        TenantID = searchParams.get('Tenantfilter')
     }
     //checks if a userid is present, and if so, we prefill the form.
     if (searchParams.has('UserID')) {
@@ -109,6 +110,9 @@ $(document).ready(function () {
         });
     })();
 
-
+    //append tenant in back to users
+    if(TenantID !== '') {
+        var href = $(".back-to-users").attr("href");
+        $(".back-to-users").attr("href", href + "&Tenantfilter=" + TenantID);
+    }
 });
-
