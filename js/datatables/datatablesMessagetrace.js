@@ -21,6 +21,7 @@ $(document).ready(function () {
                 },
                 "columnDefs": [
                     { "className": "dt-center", "targets": [-1] },
+                    { "width": "10%", "targets": 0 }
 
                 ],
                 "deferRender": true,
@@ -45,7 +46,7 @@ $(document).ready(function () {
                     { "data": "Subject" },
                     { "data": "Status" }
                 ],
-                "order": [[0, "asc"]],
+                "order": [[0, "desc"]],
             });
         $('.dataTables_paginate').addClass("btn-group datatable-pagination");
         $('.dataTables_paginate > a').wrapInner('<span />');
