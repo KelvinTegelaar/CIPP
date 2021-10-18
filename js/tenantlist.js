@@ -1,3 +1,4 @@
+var tenants = [];
 $(document).ready(function () {
 
     let searchParams = new URLSearchParams(window.location.search)
@@ -19,11 +20,11 @@ $(document).ready(function () {
         },
         'success': function (data) {
             data.forEach(function (item) {
+                tenants.push(item);
                 $("#exampleDataList").prop("disabled", false);
                 var option = document.createElement('option');
-
-                option.value = item.displayName;
-                option.text = item.defaultDomainName;
+                option.value = item.defaultDomainName;
+                option.text = item.displayName;
                 dataList.appendChild(option);
                 if (TenantID) {
                     $("#exampleDataList").val(TenantID);
@@ -38,23 +39,18 @@ $(document).ready(function () {
         }
 
     });
-
 });
 
 function onInput() {
+    let searchParams = new URLSearchParams(window.location.search);
     var val = document.getElementById("exampleDataList").value;
-    var opts = document.getElementById('datalistOptions').childNodes;
-    for (var i = 0; i < opts.length; i++) {
-        if (opts[i].value === val) {
-            let searchParams = new URLSearchParams(window.location.search)
-            if (searchParams.has('Tenantfilter')) {
-                var href = new URL(window.location.href)
-                href.searchParams.set('Tenantfilter', opts[i].text);
-                window.location.href = href.toString()
-            } else {
-                window.location.href = window.location.href + "&Tenantfilter=" + opts[i].text;
-            }
-        }
+    var existingTenant = tenants.filter(obj => {
+        return obj.defaultDomainName == val;
+    });
+
+    if(existingTenant.length > 0) {
+        history.pushState(null, null, '?page='+ searchParams.get('page') + '&Tenantfilter=' + existingTenant[0].defaultDomainName);
+        $('#bodycontent').load(searchParams.get('page') + '.html');
     }
 }
 
