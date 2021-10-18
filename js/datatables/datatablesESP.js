@@ -3,6 +3,7 @@ $(document).ready(function () {
     if (searchParams.has('page')) {
         var TenantID = searchParams.get('Tenantfilter')
     }
+    var todayDate = new Date().toISOString().slice(0, 10);
     $('.datatable-1').dataTable(
         {
             language: {
@@ -25,10 +26,10 @@ $(document).ready(function () {
             },
             dom: 'fBlrtip',
             buttons: [
-                { extend: 'copyHtml5', className: 'btn btn-primary' },
-                { extend: 'excelHtml5', className: 'btn btn-primary' },
-                { extend: 'csvHtml5', className: 'btn btn-primary' },
-                { extend: 'pdfHtml5', className: 'btn btn-primary' },
+                { extend: 'copyHtml5', className: 'btn btn-primary btn-sm' },
+                { extend: 'excelHtml5', className: 'btn btn-primary btn-sm', title: 'Enrollment Status Page - ' + TenantID + " - " + todayDate, exportOptions: {columns: [ 0,1,2,3,4,5,6 ]}   },
+                { extend: 'csvHtml5', className: 'btn btn-primary btn-sm', title: 'Enrollment Status Page - ' + TenantID + " - " + todayDate, exportOptions: {columns: [ 0,1,2,3,4,5,6 ]}  },
+                { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', orientation: 'landscape', title: 'Enrollment Status Page - ' + TenantID + " - " + todayDate, exportOptions: {columns: [ 0,1,2,3,4,5,6 ]} },
             ],
             "columns": [
                 { "data": "displayName" },

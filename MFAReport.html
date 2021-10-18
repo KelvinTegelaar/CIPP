@@ -6,7 +6,7 @@
                     <div class="col-auto mb-3">
                         <h1 class="page-header-title">
                             <div class="page-header-icon"><i data-feather="user"></i></div>
-                            Users List
+                            MFA Report
                         </h1>
                     </div>
                     <div class="col-12 col-xl-auto mb-3">
@@ -36,32 +36,28 @@
             <br>
         </div>
         <div class="card">
-            <div class="card-header">Users list</div>
+            <div class="card-header">MFA User Report</div>
             <div class="card-body">
                 <table id="datatablesSimple">
                     <table cellpadding="0" cellspacing="0" class="datatable-1 table table-striped" width="100%">
                         <thead>
                             <tr>
-                                <th>Display Name</th>
-                                <th>E-mail</th>
-                                <th>User Type</th>
-                                <th>Account Enabled</th>
-                                <th>On Premise Sync</th>
-                                <th>Licenses</th>
-                                <th>Actions</th>
+                                <th>User Principal Name</th>
+                                <th>Per User MFA Status</th>
+                                <th>Registered for Conditional MFA</th>
+                                <th>Enforced via Conditional Access</th>
+                                <th>Enforced via Security Defaults</th>
                             </tr>
                         </thead>
                         <tbody id='AccountTable'>
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th>Display Name</th>
-                                <th>E-mail</th>
-                                <th>User Type</th>
-                                <th>Account Enabled</th>
-                                <th>On Premise Sync</th>
-                                <th>Licenses</th>
-                                <th>Actions</th>
+                                <th>User Principal Name</th>
+                                <th>Per User MFA Status</th>
+                                <th>Registered for Conditional MFA</th>
+                                <th>Enforced via Conditional Access</th>
+                                <th>Enforced via Security Defaults</th>
                             </tr>
                         </tfoot>
                     </table>
@@ -92,7 +88,7 @@
 </main>
 <script src="js/tenantlist.js"></script>
 <script src="js/datatables/jquery.dataTables.js"></script>
-<script src="js/datatables/datatablesusers.js"></script>
+<script src="js/datatables/datatablesMFAReport.js"></script>
 </body>
 
 </html>
