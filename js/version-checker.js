@@ -37,7 +37,7 @@ if (RemoteCIPPVersion == LocalCIPPVersion) {
 } else
 {
     console.log("CIPP Remote and Local Versions are Different")
-    document.getElementById('versionalertcipp').innerHTML = '<div><strong>WARNING:&nbsp;&nbsp;</strong> The version of CIPP you are running is out of date. Your version is ' + LocalCIPPVersion + ' and the latest version is ' + RemoteCIPPVersion + '. Please Update your CIPP Repository.</div>';
+    document.getElementById('versionalertcipp').innerHTML = '<div><strong>WARNING:&nbsp;&nbsp;</strong> The version of CIPP that you are running is out of date. Your version is ' + LocalCIPPVersion + ' and the latest version is ' + RemoteCIPPVersion + '. Please Update your CIPP Repository.</div>';
     document.getElementById('versionalertcipp').classList.remove("d-none");
 }
 
