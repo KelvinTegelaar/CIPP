@@ -24,9 +24,11 @@ $(document).ready(function () {
             ],
             "columns": [
                 { "data": "DateTime" },
+                { "data": "API" },
+                { "data": "Tenant" },
                 { "data": "Message" },
                 { "data": "User" },
-                { "data": "Sev" },
+                { "data": "Severity" }
             ],
             "order": [[0, "desc"]],
         });

@@ -69,7 +69,7 @@ function onExcludeInput() {
                 $.ajax({
                     'async': true,
                     'global': false,
-                    'url': 'api/ExcludeTenant?AddExclusion=True&TenantFilter=' + opts[i].text,
+                    'url': 'api/ExcludeTenant?AddExclusion=True&TenantFilter=' + opts[i].value,
                     'dataType': "json",
                     'success': function (data) {
                         json = data;

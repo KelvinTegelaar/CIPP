@@ -32,7 +32,7 @@ $(document).ready(function () {
                     { extend: 'copyHtml5', className: 'btn btn-primary btn-sm' },
                     { extend: 'excelHtml5', className: 'btn btn-primary btn-sm', title: 'Mailbox List - ' + TenantID + " - " + todayDate },
                     { extend: 'csvHtml5', className: 'btn btn-primary btn-sm', title: 'Mailbox List - ' + TenantID + " - " + todayDate },
-                    { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', orientation: 'landscape', title: 'Mailbox List - ' + TenantID + " - " + todayDate, exportOptions: {columns: [ 0,1,2,4,5 ]} },
+                    { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', pageSize: 'A2', orientation: 'landscape', title: 'Mailbox List - ' + TenantID + " - " + todayDate, exportOptions: {columns: [ 0,1,2,4,5 ]} },
                 ],
                 "columns": [
                     { "data": "UPN" },
