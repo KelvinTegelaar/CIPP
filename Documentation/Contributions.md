@@ -4,6 +4,7 @@
 
 Contributions to CIPP are welcome by everyone. There's a couple of things to keep in mind;
 
+- These repositories are going through rapid changes. Every pull request should update version_latest.txt with versioning that follows https://semver.org
 - Speed and Security are two of our pillars, if it isn't fast, it isn't good, and if it isn't secure, it can't be accepted :) 
 - We try to use native APIs over Powershell Modules. Powershell modules tend to slow the entire processing. We currently only have Az.Keyvault and Az.Accounts loaded and prefer to keep it that way.
 - The interface is made entirely in Bootstrap and Jquery. For Datatables we use the JQuery Datatables plugin.
