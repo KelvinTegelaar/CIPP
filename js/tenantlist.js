@@ -37,8 +37,14 @@ $(document).ready(function () {
             $("#exampleDataList").val('Could not load tenants: Failed to connect to API:' + thrownError);
             $("#exampleDataList").prop("disabled", false);
         }
-
     });
+
+    //added datatable error handling here instead of editing all the files
+    $.fn.dataTable.ext.errMode = function(settings, helpPage, message) {
+        $("#AccountTable tr td").text("Error!");
+        $("#toasty .toast-body").text("An error occured. Please review the log.");
+        $("#toasty").toast("show");
+    }
 });
 
 function onInput() {
