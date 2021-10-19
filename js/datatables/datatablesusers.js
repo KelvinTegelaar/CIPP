@@ -3,7 +3,7 @@ $(document).ready(function () {
     let searchParams = new URLSearchParams(window.location.search)
     var TenantID = '';
     if (searchParams.has('Tenantfilter')) {
-        TenantID = searchParams.get('Tenantfilter')
+        TenantID = searchParams.get('Tenantfilter');
     }
 
     if(TenantID !== '') {

@@ -1,9 +1,9 @@
 var tenants = [];
 $(document).ready(function () {
-
     let searchParams = new URLSearchParams(window.location.search)
+    var tenantSelectID = '';
     if (searchParams.has('Tenantfilter')) {
-        var TenantID = searchParams.get('Tenantfilter')
+        tenantSelectID = searchParams.get('Tenantfilter')
     } else {
         $(":text").prop("disabled", true);
         $("#exampleDataList").prop("disabled", false);
@@ -26,8 +26,8 @@ $(document).ready(function () {
                 option.value = item.defaultDomainName;
                 option.text = item.displayName;
                 dataList.appendChild(option);
-                if (TenantID) {
-                    $("#exampleDataList").val(TenantID);
+                if (tenantSelectID !== '') {
+                    $("#exampleDataList").val(tenantSelectID);
                 } else {
                     $("#exampleDataList").val('');
                 }
