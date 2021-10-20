@@ -107,7 +107,6 @@ window.addEventListener('DOMContentLoaded', event => {
         })();
         document.getElementById("PopModal").click();
     });
-
 });
 //retrieving form data to normal json object
 function getFormData($form) {
@@ -142,4 +141,3 @@ function PostForm(FormID, PostAPI) {
     });
 
 }
-
