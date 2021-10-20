@@ -18,6 +18,8 @@ $(document).ready(function () {
         }
 
         $('#bodycontent').load($(this).attr('href') + '.html');
+        $(".sidenav-menu a").removeClass("active");
+        $(".sidenav-menu a[aria-expanded='true']").addClass("active");
         $(".SpecialNavLink a").removeClass("active");
         $(this).addClass("active");
     });
