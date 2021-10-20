@@ -85,8 +85,15 @@ window.addEventListener('DOMContentLoaded', event => {
     });
     //API GET call + modal pop-up
     $(document.body).on('click', '.APILink a', function (e) {
-        $('#APIContent').html('<div class="spinner-border text-primary" role="status"><span class="sr-only"></span></div></span>');
+        $('#APIContent').html('<label class="form-check-label" >Are you sure you want to ' + $(this).attr('actionname') + '?</label><br><nothing class="APIConfirmed"><a href="' + $(this).attr('href') + '"><button id="Confirmed" class="btn btn-primary APIConfirmed">Yes</button></a></nothing><nothing class="APIDenied">  <button data-bs-dismiss="modal" class="btn btn-primary APIDenied">No</button>');
         e.preventDefault();
+        document.getElementById("PopModal").click();
+    });
+
+
+    $(document.body).on('click', '.APIConfirmed a', function (e) {
+        e.preventDefault();
+        $('#APIContent').html('<div class="spinner-border text-primary" role="status"><span class="sr-only"></span></div></span>');
         var usedurl = $(this).attr('href');
         var jsonOptions = (function () {
             var json = null;
@@ -105,9 +112,11 @@ window.addEventListener('DOMContentLoaded', event => {
             });
             return json;
         })();
-        document.getElementById("PopModal").click();
     });
 });
+
+
+
 //retrieving form data to normal json object
 function getFormData($form) {
     var unindexed_array = $form.serializeArray();
