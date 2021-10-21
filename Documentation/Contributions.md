@@ -4,11 +4,17 @@
 
 Contributions to CIPP are welcome by everyone. There's a couple of things to keep in mind;
 
+- These repositories are going through rapid changes. Every pull request should update version_latest.txt with versioning that follows https://semver.org
 - Speed and Security are two of our pillars, if it isn't fast, it isn't good, and if it isn't secure, it can't be accepted :) 
 - We try to use native APIs over Powershell Modules. Powershell modules tend to slow the entire processing. We currently only have Az.Keyvault and Az.Accounts loaded and prefer to keep it that way.
 - The interface is made entirely in Bootstrap and Jquery. For Datatables we use the JQuery Datatables plugin.
 - Avoid adding a deploy YML to your development repo. We'll remove those, but it's just an annoyance. If you want to both deploy and develop it's better to create two instances of the repo. 
 
+When contributing, or planning to contribute, please create an issue in the tracker [here](issues). If you are fixing a bug, file a complete bug report and assign it to yourself, if you are adding a feature, please add "Feature Request" to the title and assign it to yourself.
+
+# Pull Requests
+
+We do not accept PRs or commits against Master. Master is always the final version. For both CIPP and CIPP-API we have two brances. Dev and Master. Please make any PR against Dev, when Dev is promoted to final we'll PR that against master.
 ## Creating two instances
 
 - Make a clone of your forked repo

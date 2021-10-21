@@ -137,6 +137,36 @@
                             <div class="nav-link-icon"><i data-feather="home"></i></div>
                             Home
                         </a>
+                        <div class="sidenav-menu-heading">Identity Management</div>
+                        <!-- Sidenav Accordion (Dashboard)-->
+
+                        <a class="nav-link" href="" data-bs-toggle="collapse" data-bs-target="#collapseIdentity"
+                            aria-expanded="false" aria-controls="collapseIdentity">
+                            <div class="nav-link-icon"><i data-feather="tool"></i></div>
+                            Administration
+                            <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <section class="SpecialNavLink">
+                            <div class="collapse" id="collapseIdentity" data-bs-parent="#accordionSidenav">
+                                <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
+                                    <a class="nav-link" href="users">Users</a>
+                                    <a class="nav-link" href="groups">Groups</a>
+                                </nav>
+                            </div>
+                        </section>
+                        <a class="nav-link" href="" data-bs-toggle="collapse" data-bs-target="#collapseIDReports"
+                            aria-expanded="false" aria-controls="collapseIDReports">
+                            <div class="nav-link-icon"><i data-feather="bar-chart-2"></i></div>
+                            Reports
+                            <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <section class="SpecialNavLink">
+                            <div class="collapse" id="collapseIDReports" data-bs-parent="#accordionSidenav">
+                                <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
+                                    <a class="nav-link" href="MFAReport">MFA Report</a>
+                                </nav>
+                            </div>
+                        </section>
                         <!-- Sidenav Menu Heading (Core)-->
                         <div class="sidenav-menu-heading">Tenant Administration</div>
                         <!-- Sidenav Accordion (Dashboard)-->
@@ -169,36 +199,7 @@
                                 </nav>
                             </div>
                         </section>
-                        <div class="sidenav-menu-heading">Identity Management</div>
-                        <!-- Sidenav Accordion (Dashboard)-->
 
-                        <a class="nav-link" href="" data-bs-toggle="collapse" data-bs-target="#collapseIdentity"
-                            aria-expanded="false" aria-controls="collapseIdentity">
-                            <div class="nav-link-icon"><i data-feather="tool"></i></div>
-                            Administration
-                            <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                        </a>
-                        <section class="SpecialNavLink">
-                            <div class="collapse" id="collapseIdentity" data-bs-parent="#accordionSidenav">
-                                <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
-                                    <a class="nav-link" href="users">Users</a>
-                                    <a class="nav-link" href="groups">Groups</a>
-                                </nav>
-                            </div>
-                        </section>
-                        <a class="nav-link" href="" data-bs-toggle="collapse" data-bs-target="#collapseIDReports"
-                            aria-expanded="false" aria-controls="collapseIDReports">
-                            <div class="nav-link-icon"><i data-feather="bar-chart-2"></i></div>
-                            Reports
-                            <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                        </a>
-                        <section class="SpecialNavLink">
-                            <div class="collapse" id="collapseIDReports" data-bs-parent="#accordionSidenav">
-                                <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
-                                    <a class="nav-link" href="MFAReport">MFA Report</a>
-                                </nav>
-                            </div>
-                        </section>
                         <!-- Sidenav Heading (Custom)-->
                         <div class="sidenav-menu-heading">Endpoint Management</div>
                         <!-- Sidenav Accordion (Pages)-->
@@ -252,7 +253,8 @@
                         <div class="collapse" id="collapseFlows" data-bs-parent="#accordionSidenav">
                             <nav class="sidenav-menu-nested nav">
                                 <section class="SpecialNavLink">
-                                    <a class="nav-link" href="IntunePolicyList">List Policies</a>
+                                    <a class="nav-link" href="IntunePolicyList">List Intune Policies</a>
+                                    <a class="nav-link" href="ConditionalAccessPoliciesList">Conditional Access Policies</a>
                                     <a class="nav-link" href="AddPolicy">Add Policy</a>
                             </nav>
                         </div>
@@ -363,6 +365,16 @@
         <div id="layoutSidenav_content">
             <main>
                 <section id="bodycontent">
+                    <div class="alert alert-warning align-items-center d-none" id="versionalertcipp" role="alert">
+                        <div>
+                          Placeholder
+                        </div>
+                      </div>
+                      <div class="alert alert-warning align-items-center d-none" id="versionalertcippapi" role="alert">
+                        <div>
+                          Placeholder
+                        </div>
+                      </div>
                     <!-- Main page content-->
                     <div class="container-xl px-4 mt-5">
                         <!-- Custom page header alternative example-->
@@ -374,16 +386,39 @@
                         </div>
                         <!-- Illustration dashboard card example-->
                         <div class="row">
-                            <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="col-xl-4 col-md-8 mb-4">
                                 <!-- Dashboard info widget 4-->
                                 <div class="card border-start-lg border-start-info h-100">
                                     <div class="card-body">
                                         <div class="d-flex align-items-center">
                                             <div class="flex-grow-1">
-                                                <div class="small fw-bold text-info mb-1">Version</div>
-                                                <div class="h5">1.0.0</div>
+                                                <div class="small fw-bold text-info mb-1">Your CIPP Version</div>
+                                                <div class="h5" id="dashversionlocalcipp">Unknown</div>
                                             </div>
-                                            <div class="ms-2"><i class="fas fa-percentage fa-2x text-gray-200"></i>
+                                            <div class="flex-grow-1">
+                                                <div class="small fw-bold text-info mb-1">Latest CIPP Version</div>
+                                                <div class="h5" id="dashversionremotecipp">Unknown</div>
+                                            </div>
+                                            <div class="ms-2"><i class="fas fa-code-branch fa-2x text-gray-200"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-4 col-md-8 mb-4">
+                                <!-- Dashboard info widget 4-->
+                                <div class="card border-start-lg border-start-info h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-grow-1">
+                                                <div class="small fw-bold text-info mb-1">Your CIPP API Version</div>
+                                                <div class="h5" id="dashversionlocalcippapi">Unknown</div>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <div class="small fw-bold text-info mb-1">Latest CIPP API Version</div>
+                                                <div class="h5" id="dashversionremotecippapi">Unknown</div>
+                                            </div>
+                                            <div class="ms-2"><i class="fas fa-code-branch fa-2x text-gray-200"></i>
                                             </div>
                                         </div>
                                     </div>
@@ -443,16 +478,28 @@
                         </div>
                     </div>
                 </section>
+                <div class="toast position-absolute top-0 end-0 p-3" id="toasty">
+                    <div class="toast-header">
+                        <strong class="me-auto">Alert!</strong>
+                        <small class="text-muted">just now</small>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                      </div>
+                      <div class="toast-body">
+                        Message Here
+                      </div>
+                </div>
             </main>
         </div>
     </div>
-
 </body>
+
+
 <script src="js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 <script src="js/scripts.js"></script>
 <script data-search-pseudo-elements defer src="js/fa.all.min.js" crossorigin="anonymous"></script>
 <script src="js/feather.min.js" crossorigin="anonymous"></script>
 <script src="js/jquery-3.6.0.min.js"></script>
 <script src="js/menu-loader.js"></script>
+<script src="js/version-checker.js"></script>
 
 </html>
