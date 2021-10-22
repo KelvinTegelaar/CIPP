@@ -29,6 +29,12 @@ jobs:
            failure-message: "You have not updated version_latest.txt. This is a required file to update at each PR. Please sync your latest changes and update the version number."
 
        - name: Prevent changes to workflow files
-         uses: danieljimeneznz/ensure-files-changed@v4.1.1
+         uses: DovnarAlexander/github-action-file-detection@v0.3.0
          with:
-           prevent-changes-to: ".github/workflows/*.yml"
+    # Find-like wildcard to find files\directories.
+           wildcard: ".github/workflows/*.yml"
+    # Type of find command. Supported values: f (file), d (directory), l (link), p (pipe), s (socket).
+    # Exit code for non-empty find result.
+           exit_code_found: 1
+    # Exit code for empty find result.
+           exit_code_not_found: 0
