@@ -27,3 +27,8 @@ jobs:
          with:
            file-pattern: version_latest.txt
            failure-message: "You have not updated version_latest.txt. This is a required file to update at each PR. Please sync your latest changes and update the version number."
+
+       - name: Prevent changes to workflow files
+         uses: danieljimeneznz/ensure-files-changed@v4.1.1
+         with:
+           prevent-changes-to: ".github/workflows/*.yml"
