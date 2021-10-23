@@ -1,12 +1,9 @@
 var tenants = [];
 $(document).ready(function () {
   let searchParams = new URLSearchParams(window.location.search)
-  var tenantSelectID = '';
+  var TenantID = '';
   if (searchParams.has('Tenantfilter')) {
-    tenantSelectID = searchParams.get('Tenantfilter')
-  } else {
-    $(":text").prop("disabled", true);
-    $("#exampleDataList").prop("disabled", false);
+    TenantID = searchParams.get('Tenantfilter')
   }
 
   var todayDate = new Date().toISOString().slice(0, 10);
