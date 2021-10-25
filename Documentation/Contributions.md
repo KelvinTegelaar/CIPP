@@ -12,6 +12,9 @@ Contributions to CIPP are welcome by everyone. There's a couple of things to kee
 
 When contributing, or planning to contribute, please create an issue in the tracker [here](issues). If you are fixing a bug, file a complete bug report and assign it to yourself, if you are adding a feature, please add "Feature Request" to the title and assign it to yourself.
 
+# Feature requests
+
+Feature requests that request integration with anything but M365 will be closed. We're not intergrating directly with third party products until version 2.0. Pull requests that have integration components will be discussed and evaluated on a case-by-case basis.
 # Pull Requests
 
 We do not accept PRs or commits against Master. Master is always the final version. For both CIPP and CIPP-API we have two brances. Dev and Master. Please make any PR against Dev, when Dev is promoted to final we'll PR that against master.
