@@ -1,5 +1,6 @@
-$(document).ready(function () {
 
+$(document).ready(function () {
+    var tenants = [];
     let searchParams = new URLSearchParams(window.location.search)
     var tenantSelectID = '';
     if (searchParams.has('Tenantfilter')) {
