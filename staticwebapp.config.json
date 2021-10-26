@@ -1,7 +1,7 @@
 {
     "routes": [
         {
-            "route": "/images/*",
+            "route": "/assets/*",
             "headers": {
                 "cache-control": "must-revalidate, max-age=15770000"
             }
@@ -23,29 +23,38 @@
             "redirect": "/.auth/logout"
         },
         {
+            "route": "settings*.html",
+            "allowedRoles": [
+                "admin",
+                "reader"
+            ]
+        },
+        {
             "route": "*",
             "allowedRoles": [
-                "reader"
+                "reader",
+                "admin"
             ]
         }
     ],
     "navigationFallback": {
         "rewrite": "/error-404-1.html",
         "exclude": [
-            "/images/*.{png,jpg,gif}",
+            "/assets/*.{png,jpg,gif}",
             "/css/*"
         ]
     },
     "responseOverrides": {
-        "400": {
-            "rewrite": "/invalid-invitation-error.html"
-        },
         "401": {
             "redirect": "/login",
             "statusCode": 302
         },
         "403": {
-            "rewrite": "/error-403.html"
+            "redirect": "error-403.html",
+            "exclude": [
+                "/assets/illustrations/*.{png,jpg,gif}",
+                "/css/*"
+            ]
         },
         "404": {
             "rewrite": "/error-404-1.html"
