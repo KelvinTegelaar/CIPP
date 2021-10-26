@@ -24,9 +24,9 @@ $(document).ready(function () {
             dom: 'fBlrtip',
             buttons: [
                 { extend: 'copyHtml5', className: 'btn btn-primary btn-sm' },
-                { extend: 'excelHtml5', className: 'btn btn-primary btn-sm', title: 'Applied Standards - ' + todayDate, exportOptions: {columns: [ 0,1,2 ]}   },
-                { extend: 'csvHtml5', className: 'btn btn-primary btn-sm', title: 'Applied Standards - ' + todayDate, exportOptions: {columns: [ 0,1,2 ]}  },
-                { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', orientation: 'landscape', title: 'Applied Standards - ' + todayDate, exportOptions: {columns: [ 0,1,2 ]} },
+                { extend: 'excelHtml5', className: 'btn btn-primary btn-sm', title: 'Applied Standards - ' + todayDate, exportOptions: { columns: [0, 1, 2] } },
+                { extend: 'csvHtml5', className: 'btn btn-primary btn-sm', title: 'Applied Standards - ' + todayDate, exportOptions: { columns: [0, 1, 2] } },
+                { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', orientation: 'landscape', title: 'Applied Standards - ' + todayDate, exportOptions: { columns: [0, 1, 2] } },
             ],
             "columns": [
                 { "data": "displayName" },
@@ -34,7 +34,7 @@ $(document).ready(function () {
                 { "data": "appliedBy" },
                 {
                     "data": "displayName",
-                    render: function (id, type, row) { return '<nothing class="APILink"><a href="api/RemoveStandard?ID=' + id + '"><i class="fas fa-trash-alt fa-fw"></i></a></nothing>' }
+                    render: function (id, type, row) { return '<nothing class="APILink"><a actionname="remove standards for ' + row.displayName + '" href="api/RemoveStandard?ID=' + id + '"><i class="fas fa-trash-alt fa-fw"></i></a></nothing>' }
                 },
             ],
             "order": [[0, "asc"]],

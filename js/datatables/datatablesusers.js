@@ -6,7 +6,7 @@ $(document).ready(function () {
         TenantID = searchParams.get('Tenantfilter');
     }
 
-    if(TenantID !== '') {
+    if (TenantID !== '') {
         $('.datatable-1').dataTable(
             {
                 language: {
@@ -18,13 +18,13 @@ $(document).ready(function () {
                 "columnDefs": [
                     { "className": "dt-center", "targets": [-1] },
                     { "width": "10%", "targets": -1 }
-    
+
                 ],
                 "deferRender": true,
                 "pageLength": 25,
                 responsive: true,
                 "ajax": {
-    
+
                     "url": "/api/ListUsers?TenantFilter=" + TenantID,
                     "dataSrc": "",
                 },
@@ -44,7 +44,14 @@ $(document).ready(function () {
                     { "data": "LicJoined" },
                     {
                         "data": "id",
-                        render: function (id, type, row) { return '<a href=index.html?page=EditUser&Tenantfilter=' + TenantID + '&UserID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Edit User" class="fas fa-cog fa-fw"></i></a><nothing class="APILink">' + '<a href=api/ConvertToSharedMailbox?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Convert to Shared" class="fas fa-share-alt fa-fw"></i></a>' + '<a href=api/DisableUser?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Block Sign in" class="fas fa-ban fa-fw"></i></a>' + '<a href=api/ResetPass?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Reset password" class="fas fa-key fa-fw"></i></i></a></nothing>'; }
+                        render: function (id, type, row) {
+                            return '<a href=index.html?page=EditUser&Tenantfilter=' + TenantID + '&UserID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Edit User" class="fas fa-cog fa-fw"></i></a><nothing class="APILink">' +
+                                '<a actionname="convert ' + row.displayName + ' to a shared mailbox" href=api/ConvertToSharedMailbox?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Convert to Shared" class="fas fa-share-alt fa-fw"></i></a>' +
+                                '<a actionname="disable ' + row.displayName + '" href=api/DisableUser?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Block Sign in" class="fas fa-ban fa-fw"></i></a>' +
+                                '<a actionname="reset the password for ' + row.displayName + '" href=api/ResetPass?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Reset password" class="fas fa-key fa-fw"></i></i></a>' +
+                                '<a actionname="Delete ' + row.displayName + '" href=api/RemoveUser?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Delete user" class="fas fa-user-times fa-fw"></i></i></a></nothing>';
+                            ;
+                        }
                     }
                 ],
                 "order": [[0, "asc"]],
@@ -54,7 +61,7 @@ $(document).ready(function () {
     else {
         $("#AccountTable").append("<tr><td colspan='8'>Select a Tenant to get started.</td></tr>")
     }
-    
+
     $('.dataTables_paginate').addClass("btn-group datatable-pagination");
     $('.dataTables_paginate > a').wrapInner('<span />');
 });

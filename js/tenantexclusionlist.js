@@ -25,7 +25,7 @@ $(document).ready(function () {
                 '</div>' +
                 '<div class="ms-4 small">' +
                 '<div class="badge bg-light text-dark me-3">Added by ' + item.User + '</div>' +
-                '<nothing class="APILink"><a href="api/ExcludeTenant?RemoveExclusion=True&TenantFilter=' + item.Name + '">Remove</a></nothing>' +
+                '<nothing class="APILink"><a actionname="Remove the exclusion for ' + item.Name + '" href="api/ExcludeTenant?RemoveExclusion=True&TenantFilter=' + item.Name + '">Remove</a></nothing>' +
                 '</div>' +
                 '</div>' +
                 '<hr />';
@@ -42,7 +42,7 @@ $(document).ready(function () {
             '</div>' +
             '<div class="ms-4 small">' +
             '<div class="badge bg-light text-dark me-3">Added by ' + jsonOptions.User + '</div>' +
-            '<nothing class="APILink"><a href="api/ExcludeTenant?RemoveExclusion=True&TenantFilter=' + jsonOptions.Name + '">Remove</a></nothing>' +
+            '<nothing class="APILink"> <a actionname="Remove the exclusion for ' + jsonOptions.Name + '" href="api/ExcludeTenant?RemoveExclusion=True&TenantFilter=' + jsonOptions.Name + '">Remove</a></nothing>' +
             '</div>' +
             '</div>' +
             '<hr />';

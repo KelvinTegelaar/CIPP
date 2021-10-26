@@ -5,6 +5,8 @@ $(document).ready(function () {
     if (searchParams.has('Tenantfilter')) {
         TenantID = searchParams.get('Tenantfilter')
     }
+    //checks if the default location has been set, and if so, use that again.
+
     //checks if a userid is present, and if so, we prefill the form.
     if (searchParams.has('UserID')) {
         var UserID = searchParams.get('UserID')
@@ -57,9 +59,14 @@ $(document).ready(function () {
             option.text = item.Name;
             UsageLocationList.appendChild(option);
         });
+        var LastLocation = localStorage.getItem('DefaultLocation')
+        if (LastLocation) {
+            $('#LocationDataList').val(LastLocation)
+        }
     }).fail(function () {
         console.log("An error has occurred.");
     });
+
     //Creates licenses checkboxes
 
     (function () {
@@ -111,8 +118,12 @@ $(document).ready(function () {
     })();
 
     //append tenant in back to users
-    if(TenantID !== '') {
+    if (TenantID !== '') {
         var href = $(".back-to-users").attr("href");
         $(".back-to-users").attr("href", href + "&Tenantfilter=" + TenantID);
     }
+    //checks if a user location has been filled in, and if so, add it as the default 
+    $("#LocationDataList").change(function () {
+        localStorage.setItem('DefaultLocation', $(this).val())
+    });
 });
