@@ -55,6 +55,7 @@ For full functionality, you'll need the following permissions for your Secure Ap
 | Policy.ReadWrite.AuthenticationMethod                   | Delegated, Application | Read and write authentication method policies                     |
 | Policy.ReadWrite.Authorization                          | Delegated              | Read and write your organization's authorization policy           |
 | Policy.ReadWrite.ConsentRequest                         | Delegated, Application | Read and write consent request policy                             |
+| Policy.ReadWrite.ConditionalAccess                      | Delegated, Application | Read and write conditional access policy
 | Policy.ReadWrite.DeviceConfiguration                    | Delegated              | Read and write your organization's device configuration policies  |
 | PrivilegedAccess.Read.AzureResources                    | Delegated              | Read privileged access to Azure resources                         |
 | PrivilegedAccess.ReadWrite.AzureADGroup                 | Application            | Read and write privileged access to Azure AD groups               |
