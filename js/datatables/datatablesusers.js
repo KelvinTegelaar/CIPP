@@ -9,6 +9,26 @@ $(document).ready(function () {
     if (TenantID !== '') {
         $('.datatable-1').dataTable(
             {
+                initComplete: function () {
+                    this.api().columns().every(function () {
+                        var column = this;
+                        var select = $('<select><option value=""></option></select>')
+                            .appendTo($(column.footer()).empty())
+                            .on('change', function () {
+                                var val = $.fn.dataTable.util.escapeRegex(
+                                    $(this).val()
+                                );
+
+                                column
+                                    .search(val ? '^' + val + '$' : '', true, false)
+                                    .draw();
+                            });
+
+                        column.data().unique().sort().each(function (d, j) {
+                            select.append('<option value="' + d + '">' + d + '</option>')
+                        });
+                    });
+                },
                 language: {
                     paginate: {
                         next: '<i class="fas fa-arrow-right"></i>',
@@ -52,6 +72,12 @@ $(document).ready(function () {
                                 '<a actionname="Delete ' + row.displayName + '" href=api/RemoveUser?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Delete user" class="fas fa-user-times fa-fw"></i></i></a></nothing>';
                             ;
                         }
+                    }
+                ],
+                'columnDefs': [
+                    {
+                        "targets": [2, 3, 4, 5], // your case first column
+                        "className": "text-center align-middle"
                     }
                 ],
                 "order": [[0, "asc"]],
