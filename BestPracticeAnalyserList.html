@@ -1,0 +1,100 @@
+<main>
+    <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
+        <div class="container-fluid px-4">
+            <div class="page-header-content">
+                <div class="row align-items-center justify-content-between pt-3">
+                    <div class="col-auto mb-3">
+                        <h1 class="page-header-title">
+                            <div class="page-header-icon"><i data-feather="user"></i></div>
+                            Best Practice Analyser List
+                        </h1>
+                    </div>
+                    <div class="col-12 col-xl-auto mb-3">
+                        <a class="btn btn-sm btn-light text-primary" href="index.html?page=users.html">
+                            <i class="me-1" data-feather="users"></i>
+                            Manage Users
+                        </a>
+                        <a class="btn btn-sm btn-light text-primary" href="index.html?page=users.html">
+                            <i class="me-1" data-feather="user-plus"></i>
+                            Manage Groups
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- Main page content-->
+    <div class="container-fluid px-4">
+        <div class="card">
+            <div class="card-header">Best Practice Analyser</div>
+            <div class="card-body">
+                <table id="datatablesSimple">
+                    <table cellpadding="0" cellspacing="0" class="datatable-1 table table-striped" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Tenant</th>
+                                <th>Last Refresh</th>
+                                <th>Unified Audit Log Enabled</th>
+                                <th>Security Defaults Enabled</th>
+                                <th>Message Copy for Sent As</th>
+                                <th>User Cannot Consent to Apps</th>
+                                <th>Passwords Do Not Expire</th>
+                                <th>Privacy in Reports Enabled</th>
+                                <th>Self Service Password Reset Enabled</th>
+                                <th>Modern Auth Enabled</th>
+                                <th>Shared Mailboxes Logins Disabled</th>
+                                <th>Unused Licenses</th>
+                            </tr>
+                        </thead>
+                        <tbody id='AccountTable'>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Tenant</th>
+                                <th>Last Refresh</th>
+                                <th>Unified Audit Log Enabled</th>
+                                <th>Security Defaults Enabled</th>
+                                <th>Message Copy for Sent As</th>
+                                <th>User Cannot Consent to Apps</th>
+                                <th>Passwords Do Not Expire</th>
+                                <th>Privacy in Reports Enabled</th>
+                                <th>Self Service Password Reset Enabled</th>
+                                <th>Modern Auth Enabled</th>
+                                <th>Shared Mailboxes Logins Disabled</th>
+                                <th>Unused Licenses</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+            </div>
+        </div>
+    </div>
+</main>
+<script src="js/datatables/jquery.dataTables.js"></script>
+<script src="js/tenantlist.js"></script>
+<script src="js/datatables/datatablesBestPracticeAnalyser.js"></script>
+
+</body>
+
+<button class="btn btn-primary" id="PopModal" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"
+    style="display:none;"></button>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Results</h5>
+            </div>
+            <div class="modal-body">
+                <section id="APIContent">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only"></span>
+                    </div></span>
+                </section>
+            </div>
+            <div class="modal-footer"><button class="btn btn-secondary" type="button"
+                    data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+
+    </html>

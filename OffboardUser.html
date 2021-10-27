@@ -83,7 +83,6 @@
 
                                     <hr class="my-4" />
                                     <div class="d-flex justify-content-between">
-
                                         <button class="btn btn-light disabled" type="button" disabled>Previous</button>
                                         <a class="nav-link active wizardbutton" href="#wizard2-tab">
                                             <button class="btn btn-primary btnNext" type="button">Next</button></a>
@@ -99,23 +98,14 @@
                                     <h3 class="text-primary">Step 2</h3>
                                     <h5 class="card-title mb-4">Choose the user</h5>
                                     Please choose the user to offboard.
-                                    <table id="datatable-1" class="datatable-1 table table-striped dataTable"
-                                        cellspacing="0" width="100%">
-                                        <thead>
-                                            <tr>
-                                                <th>Serial number</th>
-                                                <th>Device Manufacturer</th>
-                                                <th>Device Model</th>
-                                                <th>Windows Product Key ID</th>
-                                                <th>Hardware Hash</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
 
-                                        </tbody>
-                                    </table>
-                                    <button class="btn btn-primary" id="but_add" type="button">Add Row</button>
-                                    <input type="hidden" id="Devices" name="Devices" value="">
+                                    <div> <input class="form-control" name="User" list="UserlistOptions" id="Userlist"
+                                            placeholder="Type to search..." style="width: 50%;"
+                                            oninput='onInputUserList()'>
+                                        <datalist id="UserlistOptions">
+                                            <option value="Select a user" text="Select a user">
+                                        </datalist>
+                                    </div>
                                     <hr class="my-4" />
                                     <div class="d-flex justify-content-between">
                                         <a class="nav-link active wizardbutton" href="#wizard1-tab">
@@ -136,75 +126,70 @@
                                     <h3 class="text-primary">Step 3</h3>
                                     <h5 class="card-title mb-4">Choose offboarding options</h5>
                                     <div class="form-check mb-2">
-                                        <input class="form-check-input" id="OauthConsent" name="OauthConsent"
+                                        <input class="form-check-input" id="RemoveLicenses" name="RemoveLicenses"
                                             type="checkbox" value="true" checked />
-                                        <label class="form-next buttocheck-label" for="OauthConsent">Remove
+                                        <label class="form-next buttocheck-label" for="RemoveLicenses">Remove
                                             licenses</label>
                                     </div>
                                     <div class="form-check mb-2">
-                                        <input class="form-check-input" id="PasswordExpireDisabled"
-                                            name="PasswordExpireDisabled" type="checkbox" value="true" checked />
-                                        <label class="form-next buttocheck-label" for="PasswordExpireDisabled">Convert
+                                        <input class="form-check-input" id="ConvertToShared" name="ConvertToShared"
+                                            type="checkbox" value="true" checked />
+                                        <label class="form-next buttocheck-label" for="ConvertToShared">Convert
                                             to Shared Mailbox</label>
                                     </div>
                                     <div class="form-check mb-2">
-                                        <input class="form-check-input" id="AnonReportDisable" name="AnonReportDisable"
+                                        <input class="form-check-input" id="DisableSignIn" name="DisableSignIn"
                                             type="checkbox" value="true" checked />
-                                        <label class="form-next buttocheck-label" for="AnonReportDisable">Disable
+                                        <label class="form-next buttocheck-label" for="DisableSignIn">Disable
                                             sign-in
                                         </label>
                                     </div>
                                     <div class="form-check mb-2">
-                                        <input class="form-check-input" id="SSPR" name="SSPR" type="checkbox"
+                                        <input class="form-check-input" id="ResetPass" name="ResetPass" type="checkbox"
                                             value="true" checked />
-                                        <label class="form-next buttocheck-label" for="SSPR">Reset password</label>
+                                        <label class="form-next buttocheck-label" for="ResetPass">Reset password</label>
                                     </div>
                                     <div class="form-check mb-2">
-                                        <input class="form-check-input" id="ModernAuth" name="ModernAuth"
+                                        <input class="form-check-input" id="RemoveGroups" name="RemoveGroups"
                                             type="checkbox" value="true" checked />
-                                        <label class="form-next buttocheck-label" for="ModernAuth">Remove from all
+                                        <label class="form-next buttocheck-label" for="RemoveGroups">Remove from all
                                             groups</label>
                                     </div>
+
                                     <div class="form-check mb-2">
-                                        <input class="form-check-input" id="DisableBasicAuth" name="DisableBasicAuth"
+                                        <input class="form-check-input" id="HideFromGAL" name="HideFromGAL"
                                             type="checkbox" value="true" checked />
-                                        <label class="form-next buttocheck-label" for="DisableBasicAuth">Delete
-                                            user</label>
-                                    </div>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" id="DisableSharedMailbox"
-                                            name="DisableSharedMailbox" type="checkbox" value="true" checked />
-                                        <label class="form-next buttocheck-label" for="DisableSharedMailbox">Hide from
-                                            Global Address List</label>
-                                    </div>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" id="DisableSharedMailbox"
-                                            name="DisableSharedMailbox" type="checkbox" value="true" checked />
-                                        <label class="form-next buttocheck-label" for="DisableSharedMailbox">Hide from
+                                        <label class="form-next buttocheck-label" for="HideFromGAL">Hide from
                                             Global Address List</label>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="small mb-1" for="Username">Out of office</label>
-                                        <input class="form-control" id="Username" type="text"
-                                            placeholder="Leave blank to not set" value="" name="Username" />
+                                        <label class="small mb-1" for="OOO">Out of office</label>
+                                        <input class="form-control" id="OOO" type="text"
+                                            placeholder="Leave blank to not set" value="" name="OOO" />
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="small mb-1" for="Username">Give other user full access on
+                                        <label class="small mb-1" for="AccessNoAutomap">Give other user full access on
                                             mailbox without automapping</label>
-                                        <input class="form-control" id="Username" type="text"
-                                            placeholder="Leave blank to not set" value="" name="Username" />
+                                        <input class="form-control" id="AccessNoAutomap" type="text"
+                                            placeholder="Leave blank to not set" value="" name="AccessNoAutomap" />
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="small mb-1" for="Username">Give other user full access on
+                                        <label class="small mb-1" for="AccessAutomap">Give other user full access on
                                             mailbox with automapping</label>
-                                        <input class="form-control" id="Username" type="text"
-                                            placeholder="Leave blank to not set" value="" name="Username" />
+                                        <input class="form-control" id="AccessAutomap" type="text"
+                                            placeholder="Leave blank to not set" value="" name="AccessAutomap" />
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="small mb-1" for="Username">Give other user full access on
+                                        <label class="small mb-1" for="OnedriveAccess">Give other user full access on
                                             Onedrive</label>
-                                        <input class="form-control" id="Username" type="text"
-                                            placeholder="Leave blank to not set" value="" name="Username" />
+                                        <input class="form-control" id="OnedriveAccess" type="text"
+                                            placeholder="Leave blank to not set" value="" name="OnedriveAccess" />
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" id="DeleteUser" name="DeleteUser"
+                                            type="checkbox" value="true" />
+                                        <label class="form-next buttocheck-label" for="DeleteUser">Delete
+                                            user</label>
                                     </div>
                                     <hr class="my-4" />
                                     <div class="d-flex justify-content-between">
@@ -234,7 +219,7 @@
                                     <button class="btn btn-light" type="button">Previous</button></a>
                                 <a class="nav-link active wizardbutton" href="#wizard4-tab">
                                     <button class="btn btn-primary"
-                                        onclick='PostForm("AutopilotForm","api/AddAPDevice")'
+                                        onclick='PostForm("AutopilotForm","api/offboarduser")'
                                         type="button">Apply</button>
                                 </a>
                             </div>
@@ -249,7 +234,7 @@
 </body>
 <script src="js/datatables/bootstable.min.js"></script>
 <script src="js/tenantlist.js"></script>
-<script src="js/datatables/datatablesaddautopilot.js"></script>
+<script src="js/Userlist.js"></script>
 
 <button class="btn btn-primary" id="PopModal" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"
     style="display:none;"></button>

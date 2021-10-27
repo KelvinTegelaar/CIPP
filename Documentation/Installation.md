@@ -55,6 +55,7 @@ For full functionality, you'll need the following permissions for your Secure Ap
 | Policy.ReadWrite.AuthenticationMethod                   | Delegated, Application | Read and write authentication method policies                     |
 | Policy.ReadWrite.Authorization                          | Delegated              | Read and write your organization's authorization policy           |
 | Policy.ReadWrite.ConsentRequest                         | Delegated, Application | Read and write consent request policy                             |
+| Policy.ReadWrite.ConditionalAccess                      | Delegated, Application | Read and write conditional access policy
 | Policy.ReadWrite.DeviceConfiguration                    | Delegated              | Read and write your organization's device configuration policies  |
 | PrivilegedAccess.Read.AzureResources                    | Delegated              | Read privileged access to Azure resources                         |
 | PrivilegedAccess.ReadWrite.AzureADGroup                 | Application            | Read and write privileged access to Azure AD groups               |
@@ -98,6 +99,54 @@ The first 20 minutes the application can respond pretty slow, this is due to dow
 ## It's not working, I'm having issues
 
 Before you create an issue, please restart both the Static Web App and Azure Function host, this solves 99,9% of all issues. Turn it off, turn it on again. ;)
+
+Another option is that you've deployed your Secure Application Model incorrectly. You must use the script in the blog above to be 100% sure it has been created as expected. You can use the script below to check what's going on.
+
+```powershell
+$ApplicationId = 'xxxx-xxxx-xxx-xxxx-xxxx'
+$ApplicationSecret = 'TheSecretTheSecrey' | ConvertTo-SecureString -AsPlainText -Force
+$TenantID = 'YourTenantID'
+$RefreshToken = 'RefreshToken'
+$ExchangeRefreshToken = 'ExchangeRefreshToken'
+$upn = 'UPN-Used-To-Generate-Tokens'
+$credential = New-Object System.Management.Automation.PSCredential($ApplicationId, $ApplicationSecret)
+ 
+$aadGraphToken = New-PartnerAccessToken -ApplicationId $ApplicationId -Credential $credential -RefreshToken $refreshToken -Scopes 'https://graph.windows.net/.default' -ServicePrincipal -Tenant $tenantID
+$graphToken = New-PartnerAccessToken -ApplicationId $ApplicationId -Credential $credential -RefreshToken $refreshToken -Scopes 'https://graph.microsoft.com/.default' -ServicePrincipal -Tenant $tenantID
+ 
+Connect-MsolService -AdGraphAccessToken $aadGraphToken.AccessToken -MsGraphAccessToken $graphToken.AccessToken
+$customers = Get-MsolPartnerContract -All
+foreach ($customer in $customers) {
+    try {
+        $Baseuri = "https://graph.microsoft.com/beta"
+        $CustGraphToken = New-PartnerAccessToken -ApplicationId $ApplicationId -Credential $credential -RefreshToken $refreshToken -Scopes "https://graph.microsoft.com/.default" -ServicePrincipal -Tenant $CustomerTenant
+        $Header = @{
+            Authorization = "Bearer $($CustGraphToken.AccessToken)"
+        }
+        $SecureDefaultsState = (Invoke-RestMethod -Uri "$baseuri/policies/identitySecurityDefaultsEnforcementPolicy" -Headers $Header -Method get -ContentType "application/json")
+
+    }
+    catch {
+        Write-Error "Could not connect to Graph API for $($customer.DefaultDomainName). $_"
+    }
+    try {
+
+        $token = New-PartnerAccessToken -ApplicationId 'a0c73c16-a7e3-4564-9a95-2bdf47383716'-RefreshToken $ExchangeRefreshToken -Scopes 'https://outlook.office365.com/.default' -Tenant $customer.TenantId
+        $tokenValue = ConvertTo-SecureString "Bearer $($token.AccessToken)" -AsPlainText -Force
+        $credential = New-Object System.Management.Automation.PSCredential($upn, $tokenValue)
+        $customerId = $customer.DefaultDomainName
+        $session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri "https://ps.outlook.com/powershell-liveid?DelegatedOrg=$($customerId)&BasicAuthToOAuthConversion=true" -Credential $credential -Authentication Basic -AllowRedirection
+        $session = Import-PSSession $session
+        #From here you can enter your own commands
+        $Exchange = get-mailbox
+        #end of commands
+        $PSSession = Remove-PSSession $session
+    }
+    catch {
+        Write-Error "Could not connect to Exchange for $($customer.DefaultDomainName). $_"
+    }
+}
+```
 
 ## I can't deploy in my region
 

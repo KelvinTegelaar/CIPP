@@ -188,7 +188,16 @@
                                     <input class="form-control" id="BusinessPhone" type="text"
                                         placeholder="Business #..." value="" name="BusinessPhone" />
                                 </div>
+                                <div class="col-mb-3">
+                                    <label class="small mb-1" for="UserlistOptions">Copy group membership from other
+                                        user</label>
+                                    <input class="form-control" name="CopyFrom" list="UserlistOptions" id="Userlist"
+                                        placeholder="Leave blank to not copy.">
+                                    <datalist id="UserlistOptions">
+                                    </datalist>
+                                </div>
                             </div>
+
                             <button class="btn btn-primary" onclick='PostForm("Userform","api/EditUser")'' type="button">Edit User</button>
 
                         </div>
@@ -236,3 +245,4 @@
         </div>
 </main>
 <script src="js/UserFormOptions.js"></script>
+<script src="js/Userlist.js"></script>
