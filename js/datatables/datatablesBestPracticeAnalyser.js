@@ -36,8 +36,8 @@ $(document).ready(function () {
                     text: 'Force Refresh All Data',
                     className: 'btn btn-primary btn-sm',
                     action: function (e, dt, button, config) {
-                        alert('A data refresh has been started! This will take a few minutes. You will know it has finished when the Last Refresh column is up-to-date. DO NOT CLICK THE BUTTON AGAIN!');                        
-                        window.location = '/api/BestPracticeAnalyser_OrchestrationStarter';
+                        PostForm("None", '/api/BestPracticeAnalyser_OrchestrationStarter')
+                        document.getElementById("PopModal").click();
                     }
                 }
             ],
@@ -56,7 +56,7 @@ $(document).ready(function () {
                         if (data === "") {
                             return '<h5><span class="badge bg-secondary">No Data</span></h5>'
                         }
-                         else {
+                        else {
                             return '<i class="fas fa-times-circle text-danger fa-2x"></i></a>';
                         }
                     }
@@ -69,7 +69,7 @@ $(document).ready(function () {
                         }
                         if (data === true) {
                             return '<i class="fas fa-check-circle text-success fa-2x"></i>';
-                        } 
+                        }
                         if (data === "") {
                             return '<h5><span class="badge bg-secondary">No Data</span></h5>'
                         } else {
@@ -102,7 +102,7 @@ $(document).ready(function () {
                         }
                         if (data === true) {
                             return '<i class="fas fa-times-circle text-danger fa-2x"></i>';
-                        } 
+                        }
                         if (data === "") {
                             return '<h5><span class="badge bg-secondary">No Data</span></h5>'
                         } else {
@@ -118,7 +118,7 @@ $(document).ready(function () {
                         }
                         if (data === true) {
                             return '<i class="fas fa-check-circle text-success fa-2x"></i>';
-                        } 
+                        }
                         if (data === "") {
                             return '<h5><span class="badge bg-secondary">No Data</span></h5>'
                         } else {
@@ -170,7 +170,7 @@ $(document).ready(function () {
                         }
                         if (data === true) {
                             return '<i class="fas fa-check-circle text-success fa-2x"></i>';
-                        } 
+                        }
                         if (data === "") {
                             return '<h5><span class="badge bg-secondary">No Data</span></h5>'
                         } else {
