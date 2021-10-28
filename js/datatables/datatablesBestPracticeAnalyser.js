@@ -8,6 +8,7 @@ $(document).ready(function () {
     var todayDate = new Date().toISOString().slice(0, 10);
     $('.datatable-1').dataTable(
         {
+            "scrollX": true,
             language: {
                 paginate: {
                     next: '<i class="fas fa-arrow-right"></i>',
