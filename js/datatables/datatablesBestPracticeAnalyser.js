@@ -36,7 +36,8 @@ $(document).ready(function () {
                     text: 'Force Refresh All Data',
                     className: 'btn btn-primary btn-sm',
                     action: function (e, dt, button, config) {
-                        PostForm("None", '/api/BestPracticeAnalyser_OrchestrationStarter')
+                        $('#APIContent').html('<label class="form-check-label" >Are you sure you want to start the Best Practice Analysis? This will slow down normal usage considerably.</label><br><nothing class="APIConfirmed"><a href="/api/BestPracticeAnalyser_OrchestrationStarter"><button id="Confirmed" class="btn btn-primary APIConfirmed">Yes</button></a></nothing><nothing class="APIDenied">  <button data-bs-dismiss="modal" class="btn btn-primary APIDenied">No</button>');
+
                         document.getElementById("PopModal").click();
                     }
                 }
