@@ -32,7 +32,6 @@ $(document).ready(function () {
                 $('#Devices').val(csvResult);
             }
             reader.readAsText(csvFile);
-            //$('#Devices').val(csvdata)
         }
     });
 });
