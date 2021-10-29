@@ -8,6 +8,7 @@ $(document).ready(function () {
     var todayDate = new Date().toISOString().slice(0, 10);
     $('.datatable-1').dataTable(
         {
+            "scrollX": true,
             language: {
                 paginate: {
                     next: '<i class="fas fa-arrow-right"></i>',
@@ -36,7 +37,8 @@ $(document).ready(function () {
                     text: 'Force Refresh All Data',
                     className: 'btn btn-primary btn-sm',
                     action: function (e, dt, button, config) {
-                        PostForm("None", '/api/BestPracticeAnalyser_OrchestrationStarter')
+                        $('#APIContent').html('<center><label class="form-check-label" >Are you sure you want to force the Best Practice Analysis to run? This will slow down normal usage considerably. Please note: this runs at midnight automatically every day. <br /><br /></label><br><nothing class="APIConfirmed"><a href="/api/BestPracticeAnalyser_OrchestrationStarter"><button id="Confirmed" class="btn btn-primary APIConfirmed">Yes</button></a></nothing><nothing class="APIDenied">  <button data-bs-dismiss="modal" class="btn btn-primary APIDenied">No</button></center>');
+
                         document.getElementById("PopModal").click();
                     }
                 }
