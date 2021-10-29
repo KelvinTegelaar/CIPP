@@ -62,7 +62,12 @@ const Home = () => {
           </CCard>
         </CCol>
         <CCol xs>
-          <CCard textColor={'black'} className="mb-3" style={{ maxWidth: '18rem' }}>
+          <CCard
+            color={remoteCipp && (remoteCipp === localCipp ? '' : 'danger')}
+            textColor={'black'}
+            className="mb-3"
+            style={{ maxWidth: '18rem' }}
+          >
             <CCardHeader>
               CIPP Version
               {remoteCipp && remoteCipp === localCipp ? (
@@ -79,7 +84,12 @@ const Home = () => {
               </CCardText>
             </CCardBody>
           </CCard>
-          <CCard textColor={'black'} className="mb-3" style={{ maxWidth: '18rem' }}>
+          <CCard
+            color={remoteCippApi && (remoteCippApi === localCippApi ? '' : 'danger')}
+            textColor={'black'}
+            className="mb-3"
+            style={{ maxWidth: '18rem' }}
+          >
             <CCardHeader>
               CIPP API Version
               {remoteCippApi && remoteCippApi === localCippApi ? (

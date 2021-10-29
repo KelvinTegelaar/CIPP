@@ -11,6 +11,14 @@ import {
   cilPuzzle,
   cilSpeedometer,
   cilStar,
+  cilList,
+  cilLibraryBuilding,
+  cilLibrary,
+  cilPaperPlane,
+  cilShieldAlt,
+  cilStorage,
+  cilRoom,
+  cilGroup,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
@@ -52,7 +60,7 @@ const _nav = [
     component: CNavGroup,
     name: 'Reports',
     to: '/identity/reports',
-    icon: <CIcon icon={cilCursor} customClassName="nav-icon" />,
+    icon: <CIcon icon={cilList} customClassName="nav-icon" />,
     items: [
       {
         component: CNavItem,
@@ -92,7 +100,7 @@ const _nav = [
     component: CNavGroup,
     name: 'Standards',
     to: '/tenant/standards',
-    icon: <CIcon icon={cilCursor} customClassName="nav-icon" />,
+    icon: <CIcon icon={cilLibraryBuilding} customClassName="nav-icon" />,
     items: [
       {
         component: CNavItem,
@@ -119,7 +127,7 @@ const _nav = [
     component: CNavGroup,
     name: 'Applications',
     to: '/endpoint/applications',
-    icon: <CIcon icon={cilCursor} customClassName="nav-icon" />,
+    icon: <CIcon icon={cilLibrary} customClassName="nav-icon" />,
     items: [
       {
         component: CNavItem,
@@ -137,7 +145,7 @@ const _nav = [
     component: CNavGroup,
     name: 'Autopilot',
     to: '/endpoint/autopilot',
-    icon: <CIcon icon={cilCursor} customClassName="nav-icon" />,
+    icon: <CIcon icon={cilPaperPlane} customClassName="nav-icon" />,
     items: [
       {
         component: CNavItem,
@@ -175,7 +183,7 @@ const _nav = [
     component: CNavGroup,
     name: 'Intune',
     to: '/endpoint/intune',
-    icon: <CIcon icon={cilCursor} customClassName="nav-icon" />,
+    icon: <CIcon icon={cilShieldAlt} customClassName="nav-icon" />,
     items: [
       {
         component: CNavItem,
@@ -202,7 +210,7 @@ const _nav = [
     component: CNavGroup,
     name: 'OneDrive',
     to: '/teamsshare/onedrive',
-    icon: <CIcon icon={cilCursor} customClassName="nav-icon" />,
+    icon: <CIcon icon={cilStorage} customClassName="nav-icon" />,
     items: [
       {
         component: CNavItem,
@@ -215,7 +223,7 @@ const _nav = [
     component: CNavGroup,
     name: 'Sharepoint',
     to: '/teamsshare/sharepoint',
-    icon: <CIcon icon={cilCursor} customClassName="nav-icon" />,
+    icon: <CIcon icon={cilRoom} customClassName="nav-icon" />,
     items: [
       {
         component: CNavItem,
@@ -228,7 +236,7 @@ const _nav = [
     component: CNavGroup,
     name: 'Teams',
     to: '/teamsshare/teams',
-    icon: <CIcon icon={cilCursor} customClassName="nav-icon" />,
+    icon: <CIcon icon={cilGroup} customClassName="nav-icon" />,
     items: [
       {
         component: CNavItem,
