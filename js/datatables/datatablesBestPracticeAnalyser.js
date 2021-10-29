@@ -32,7 +32,7 @@ $(document).ready(function () {
                 { extend: 'copyHtml5', className: 'btn btn-primary btn-sm' },
                 { extend: 'excelHtml5', className: 'btn btn-primary btn-sm', title: 'Best Practice Analyser - ' + todayDate, exportOptions: { orthogonal: "export" } },
                 { extend: 'csvHtml5', className: 'btn btn-primary btn-sm', title: 'Best Practice Analyser - ' + todayDate, exportOptions: { orthogonal: "export" } },
-                { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', pageSize: 'A2', orientation: 'landscape', title: 'Best Practice Analyser - ' + todayDate, exportOptions: { columns: [0, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11], orthogonal: "export" } },
+                { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', pageSize: 'A2', orientation: 'landscape', title: 'Best Practice Analyser - ' + todayDate, exportOptions: { columns: [0, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12], orthogonal: "export" } },
                 {
                     text: 'Force Refresh All Data',
                     className: 'btn btn-primary btn-sm',
@@ -107,7 +107,7 @@ $(document).ready(function () {
                             return '<h5><span class="badge bg-success">On All Users</span></h5>';
                         }
                         if (data === "FAIL") {
-                            return '<button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#' + row.GUID + 'SendAs">' + row.MessageCopyForSendAsCount + ' Users Off</button><!-- Modal --><div class="modal fade" id="' + row.GUID + 'SendAs" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="exampleModalLabel">Mailboxes where Message Copy to Send As Not On</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"> ' + row.MessageCopyForSendList + '</div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button></div></div></div></div>'
+                            return '<button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#' + row.GUID + 'SendAs">' + row.MessageCopyForSendAsCount + ' Users</button><!-- Modal --><div class="modal fade" id="' + row.GUID + 'SendAs" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="exampleModalLabel">Mailboxes where Message Copy to Send As Not On</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"> ' + row.MessageCopyForSendList + '</div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button></div></div></div></div>'
                         }
                         else {
                             return '<h5><span class="badge bg-secondary">No Data</span></h5>'
@@ -244,7 +244,7 @@ $(document).ready(function () {
                         }
                         if (data > 0) {
                             //return '<h5><span class="badge bg-danger">' + data + ' Users Enabled</span></h5>'
-                            return '<button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#' + row.GUID + 'SharedMailbox">' + row.DisabledSharedMailboxLoginsCount + ' Users Enabled</button><!-- Modal --><div class="modal fade" id="' + row.GUID + 'SharedMailbox" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="exampleModalLabel">Shared Mailboxes with Enabled User Accounts</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"> ' + row.DisabledSharedMailboxLogins + '</div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button></div></div></div></div>'
+                            return '<button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#' + row.GUID + 'SharedMailbox">' + row.DisabledSharedMailboxLoginsCount + ' User(s)</button><!-- Modal --><div class="modal fade" id="' + row.GUID + 'SharedMailbox" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="exampleModalLabel">Shared Mailboxes with Enabled User Accounts</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"> ' + row.DisabledSharedMailboxLogins + '</div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button></div></div></div></div>'
                         }
                         if (data === 0) {
                             return '<h5><span class="badge bg-success">None Enabled</span></h5>';
@@ -267,20 +267,36 @@ $(document).ready(function () {
                             }
                         }
                         if (data === "FAIL") {
-                            return '<button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#' + row.GUID + 'UnusedLicenses">' + row.UnusedLicensesCount + ' SKUs Unassigned Licenses</button><!-- Modal --><div class="modal fade" id="' + row.GUID + 'UnusedLicenses" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="exampleModalLabel">SKUs with Unassigned Licenses</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"> ' + row.UnusedLicenseList + '</div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button></div></div></div></div>'
+                            return '<button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#' + row.GUID + 'UnusedLicenses">' + row.UnusedLicensesCount + ' SKUs</button><!-- Modal --><div class="modal fade" id="' + row.GUID + 'UnusedLicenses" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="exampleModalLabel">SKUs with Unassigned Licenses</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"> ' + row.UnusedLicenseList + '</div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button></div></div></div></div>'
                         }
                         if (data === "PASS") {
-                            return '<h5><span class="badge bg-success">No Unused Licenses</span></h5>';
+                            return '<h5><span class="badge bg-success">No Unused</span></h5>';
                         }
                         else {
                             return '<h5><span class="badge bg-secondary">No Data</span></h5>'
                         }
                     }
+                },
+                {
+                    "data": "SecureScoreCurrent",
+                    "render": function (data, type, row) {
+                        if (type === "export") {
+                            return data + ' / ' + row.SecureScoreMax;
+                        }
+                        if (type === "sort" || type === "filter") {
+                            return row.SecureScorePercentage;
+                        }
+                        if (data === "") { return '<h5><span class="badge bg-secondary">No Data</span></h5>'}
+                        if (row.SecureScorePercentage <= 40){var colourCalculation="bg-danger"}
+                        if (row.SecureScorePercentage > 40 && row.SecureScorePercentage <= 75) { var colourCalculation = "bg-warning" }
+                        if (row.SecureScorePercentage > 75) { var colourCalculation = "bg-success" }
+                        return '<div class="progress"><div class="progress-bar ' + colourCalculation + '" role="progressbar" style="width: ' + row.SecureScorePercentage +'%" aria-valuenow="' + data + '" aria-valuemin="0" aria-valuemax="' + row.SecureScoreMax + '">' + row.SecureScorePercentage + '%</div></div>'
+                    }
                 }
             ],
             'columnDefs': [
                 {
-                    "targets": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], // your case first column
+                    "targets": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], // your case first column
                     "className": "text-center align-middle"
                 }
             ],
