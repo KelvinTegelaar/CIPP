@@ -21029,3 +21029,8 @@ pre[class*=language-] {
 div#DataTables_Table_0_length{ 
   padding-top: 10px; 
 }
+
+.sidenav-footer {
+overflow: auto;
+overflow-wrap: anywhere;
+}
