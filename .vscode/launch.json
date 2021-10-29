@@ -1,0 +1,35 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "command": "swa start --ssl --ssl-cert ./.vscode/cert.crt --ssl-key ./.vscode/key.key --swa-config-location . http://localhost:3000 --api-location http://localhost:7071",
+            "name": "Run emulator",
+            "request": "launch",
+            "type": "node-terminal",
+        },
+        {
+            "command": "npm start",
+            "name": "Run frontend",
+            "request": "launch",
+            "type": "node-terminal",
+            "preLaunchTask": "RunAPI"
+        },
+        {
+          "name": "Launch Edge",
+          "request": "launch",
+          "type": "pwa-msedge",
+          "url": "https://localhost:4280",
+          "webRoot": "${workspaceFolder}"
+        },
+    ],
+    "compounds": [
+      {
+        "name": "Launch it all 🚀",
+        "configurations": [
+          "Run frontend",
+          "Run emulator",
+          "Launch Edge"
+        ]
+      }
+    ]
+  }
