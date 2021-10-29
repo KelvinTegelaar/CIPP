@@ -21031,6 +21031,6 @@ div#DataTables_Table_0_length{
 }
 
 .sidenav-footer {
-overflow: auto;
+overflow: hidden;
 overflow-wrap: anywhere;
 }
