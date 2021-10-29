@@ -50,7 +50,13 @@ $(document).ready(function () {
                     "data": "UnifiedAuditLog",
                     "render": function (data, type, row) {
                         if (type === "export" || type === "sort" || type === "filter") {
-                            return data;
+                            if (data === true) {
+                                return 'PASS: Unified Log is Enabled'
+                            } else if (data === false) {
+                                return 'FAIL: Unified Log is Disabled'
+                            } else {
+                                return 'No Data'
+                            }
                         }
                         if (data === true) {
                             return '<i class="fas fa-check-circle text-success fa-2x"></i>';
@@ -67,7 +73,13 @@ $(document).ready(function () {
                     "data": "SecureDefaultState",
                     "render": function (data, type, row) {
                         if (type === "export" || type === "sort" || type === "filter") {
-                            return data;
+                            if (data === true) {
+                                return 'PASS: Security Defaults Enabled'
+                            } else if (data === false) {
+                                return 'WARN: Security Defaults Disabled'
+                            } else {
+                                return 'No Data'
+                            }
                         }
                         if (data === true) {
                             return '<i class="fas fa-check-circle text-success fa-2x"></i>';
@@ -83,7 +95,13 @@ $(document).ready(function () {
                     "data": "MessageCopyForSend",
                     "render": function (data, type, row) {
                         if (type === "export" || type === "sort" || type === "filter") {
-                            return data;
+                            if (data === "PASS") {
+                                return 'PASS: Message Copy Send As Enabled'
+                            } else if (data === "FAIL") {
+                                return 'WARN: Message Copy Send As Disabled'
+                            } else {
+                                return 'No Data'
+                            }
                         }
                         if (data === "PASS") {
                             return '<h5><span class="badge bg-success">On All Users</span></h5>';
@@ -100,7 +118,13 @@ $(document).ready(function () {
                     "data": "AdminConsentForApplications",
                     "render": function (data, type, row) {
                         if (type === "export" || type === "sort" || type === "filter") {
-                            return data;
+                            if (data === true) {
+                                return 'FAIL: Users can consent to Oauth Apps'
+                            } else if (data === false) {
+                                return 'PASS: Users cannot consent to Oauth Apps'
+                            } else {
+                                return 'No Data'
+                            }
                         }
                         if (data === true) {
                             return '<i class="fas fa-times-circle text-danger fa-2x"></i>';
@@ -116,7 +140,13 @@ $(document).ready(function () {
                     "data": "DoNotExpirePasswords",
                     "render": function (data, type, row) {
                         if (type === "export" || type === "sort" || type === "filter") {
-                            return data;
+                            if (data === true) {
+                                return 'PASS: Passwords do not expire'
+                            } else if (data === false) {
+                                return 'FAIL: Passwords are set to expire'
+                            } else {
+                                return 'No Data'
+                            }
                         }
                         if (data === true) {
                             return '<i class="fas fa-check-circle text-success fa-2x"></i>';
@@ -132,7 +162,13 @@ $(document).ready(function () {
                     "data": "PrivacyEnabled",
                     "render": function (data, type, row) {
                         if (type === "export" || type === "sort" || type === "filter") {
-                            return data;
+                            if (data === true) {
+                                return 'WARN: Privacy in Reports Enabled'
+                            } else if (data === false) {
+                                return 'PASS: Privacy in Reports Disabled'
+                            } else {
+                                return 'No Data'
+                            }
                         }
                         if (data === true) {
                             return '<i class="fas fa-exclamation-triangle text-warning fa-2x"></i>';
@@ -148,7 +184,15 @@ $(document).ready(function () {
                     "data": "SelfServicePasswordReset",
                     "render": function (data, type, row) {
                         if (type === "export" || type === "sort" || type === "filter") {
-                            return data;
+                            if (data === "Off") {
+                                return 'WARN: Self Service Password Reset Off for All Users'
+                            } else if (data === "Specific Users") {
+                                return 'WARN: Self Service Password Reset On for Specific Users Only'
+                            } else if (data === "On") {
+                                return 'PASS: Self Service Password Enabled All Users'
+                            } else {
+                                return 'No Data'
+                            }
                         }
                         if (data === "Off") {
                             return '<h5><span class="badge bg-warning text-dark">Off All Users</span><h5>';
@@ -168,7 +212,13 @@ $(document).ready(function () {
                     "data": "EnableModernAuth",
                     "render": function (data, type, row) {
                         if (type === "export" || type === "sort" || type === "filter") {
-                            return data;
+                            if (data === true) {
+                                return 'PASS: Modern Auth Enabled'
+                            } else if (data === false) {
+                                return 'FAIL: Modern Auth Disabled'
+                            } else {
+                                return 'No Data'
+                            }
                         }
                         if (data === true) {
                             return '<i class="fas fa-check-circle text-success fa-2x"></i>';
@@ -184,7 +234,13 @@ $(document).ready(function () {
                     "data": "DisabledSharedMailboxLoginsCount",
                     "render": function (data, type, row) {
                         if (type === "export" || type === "sort" || type === "filter") {
-                            return data;
+                            if (data > 0) {
+                                return 'FAIL: Shared Mailboxes with Logins - ' + row.DisabledSharedMailboxLogins
+                            } else if (data === 0) {
+                                return 'PASS: No Shared Mailboxes with Logins'
+                            } else {
+                                return 'No Data'
+                            }
                         }
                         if (data > 0) {
                             //return '<h5><span class="badge bg-danger">' + data + ' Users Enabled</span></h5>'
@@ -202,7 +258,13 @@ $(document).ready(function () {
                     "data": "UnusedLicensesResult",
                     "render": function (data, type, row) {
                         if (type === "export" || type === "sort" || type === "filter") {
-                            return data;
+                            if (data === 'PASS') {
+                                return 'PASS: No Unused Licenses'
+                            } else if (data === 'FAIL') {
+                                return 'FAIL: There are ' + row.UnusedLicensesCount + ' unused licenses. ' + row.UnusedLicenseList
+                            } else {
+                                return 'No Data'
+                            }
                         }
                         if (data === "FAIL") {
                             return '<button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#' + row.GUID + 'UnusedLicenses">' + row.UnusedLicensesCount + ' SKUs Unassigned Licenses</button><!-- Modal --><div class="modal fade" id="' + row.GUID + 'UnusedLicenses" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="exampleModalLabel">SKUs with Unassigned Licenses</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"> ' + row.UnusedLicenseList + '</div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button></div></div></div></div>'
