@@ -50,7 +50,7 @@
             "statusCode": 302
         },
         "403": {
-            "redirect": "error-403.html",
+            "redirect": "/error-403.html",
             "exclude": [
                 "/assets/illustrations/*.{png,jpg,gif}",
                 "/css/*"
