@@ -44,6 +44,7 @@
                                 <th>Modern Auth Enabled</th>
                                 <th>Shared Mailboxes Logins Disabled</th>
                                 <th>Unused Licenses</th>
+                                <th>Microsoft Secure Score</th>
                             </tr>
                         </thead>
                         <tbody id='AccountTable'>
@@ -60,8 +61,9 @@
                                 <th>Privacy in Reports Enabled</th>
                                 <th>Self Service Password Reset Enabled</th>
                                 <th>Modern Auth Enabled</th>
-                                <th>Shared Mailboxes Logins Disabled</th>
+                                <th>Shared Mailboxes Logins Enabled</th>
                                 <th>Unused Licenses</th>
+                                <th>Microsoft Secure Score</th>
                             </tr>
                         </tfoot>
                     </table>
@@ -70,10 +72,28 @@
     </div>
 </main>
 <script src="js/datatables/jquery.dataTables.js"></script>
-<script src="js/tenantlist.js"></script>
 <script src="js/datatables/datatablesBestPracticeAnalyser.js"></script>
 
 </body>
 
+<button class="btn btn-primary" id="PopModal" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"
+    style="display:none;"></button>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Results</h5>
+            </div>
+            <div class="modal-body">
+                <section id="APIContent">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only"></span>
+                    </div></span>
+                </section>
+            </div>
 
-</html>
+        </div>
+    </div>
+
+    </html>
