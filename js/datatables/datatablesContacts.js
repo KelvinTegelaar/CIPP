@@ -43,8 +43,7 @@ $(document).ready(function () {
                     {
                         "data": "id",
                         render: function (id, type, row) {
-                            return '<a href=index.html?page=EditContact&Tenantfilter=' + TenantID + '&ContactID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Contact" class="fas fa-cog fa-fw"></i></a><nothing class="APILink">' +
-                                '<a actionname="Delete ' + row.displayName + '" href=api/RemoveContact?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Delete Contact" class="fas fa-user-times fa-fw"></i></i></a></nothing>';
+                            return '<a target="_blank" href=' + row.editURL + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Contact" class="fas fa-cog fa-fw"></i></a><nothing class="APILink">';
                             ;
                         }
                     }
