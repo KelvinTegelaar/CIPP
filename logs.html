@@ -30,25 +30,17 @@
                             <input type="hidden" value="logs" name="page">
                             <!-- Form Group (email address)-->
                             <div class="row gx-3 mb-3">
-                                <div class="mb-3">
-                                    <label class="small mb-1" for="exampleDataList">Select a tenant</label>
-                                    <input name="Tenantfilter" class="form-control" list="datalistOptions"
-                                        id="exampleDataList" placeholder="Type to search..." oninput='onInput()'>
-                                    <datalist id="datalistOptions">
-                                        <option value="Select a tenant" text="Select a tenant">
-                                    </datalist>
-                                </div>
                                 <!-- Form Group (first name)-->
-                                <div class="col-md-6">
+                                <div class="col-mb-3">
                                     <label class="small mb-1" for="User">User</label>
-                                    <input class="form-control" id="User" type="text" placeholder="Username..." value=""
-                                        name="User" />
+                                    <input class="form-control" id="User" type="text" placeholder="Wildcards Allowed"
+                                        value="" name="User" />
                                 </div>
                                 <!-- Form Group (last name)-->
-                                <div class="col-md-6">
+                                <div class="col-mb-3">
                                     <label class="small mb-1" for="Severity">Severity</label>
                                     <input class="form-control" id="Severity" type="text"
-                                        placeholder="Debug,Info,Warn,Error,Critical..." value="" name="Severity" />
+                                        placeholder="Debug,Info,Warn,Error,Critical" value="" name="Severity" />
                                 </div>
                             </div>
                             <!-- Form Group (Group Selection Checkboxes)-->
@@ -106,6 +98,7 @@
 </main>
 <script src="js/datatables/jquery.dataTables.js"></script>
 <script src="js/datatables/datatableslogs.js"></script>
+
 </body>
 
 </html>

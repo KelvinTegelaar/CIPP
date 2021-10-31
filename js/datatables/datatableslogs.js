@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    let querystring = window.location.search;
     $('.datatable-1').dataTable(
         {
             language: {
@@ -12,7 +13,7 @@ $(document).ready(function () {
             responsive: true,
             "ajax": {
 
-                "url": "/api/logs",
+                "url": "/api/logs" + querystring,
                 "dataSrc": "",
             },
             dom: 'fBlrtip',
