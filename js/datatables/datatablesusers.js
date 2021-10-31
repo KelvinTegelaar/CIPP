@@ -66,6 +66,7 @@ $(document).ready(function () {
                         "data": "id",
                         render: function (id, type, row) {
                             return '<a href=index.html?page=EditUser&Tenantfilter=' + TenantID + '&UserID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Edit User" class="fas fa-cog fa-fw"></i></a><nothing class="APILink">' +
+                                '<a actionname="send push for ' + row.displayName + '" href=api/SendPush?TenantFilter=' + TenantID + '&UserEmail=' + row.mail + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Send MFA Push to User" class="fas fa-exchange-alt fa-fw"></i></i></a>' +
                                 '<a actionname="convert ' + row.displayName + ' to a shared mailbox" href=api/ConvertToSharedMailbox?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Convert to Shared" class="fas fa-share-alt fa-fw"></i></a>' +
                                 '<a actionname="disable ' + row.displayName + '" href=api/DisableUser?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Block Sign in" class="fas fa-ban fa-fw"></i></a>' +
                                 '<a actionname="reset the password for ' + row.displayName + '" href=api/ResetPass?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Reset password" class="fas fa-key fa-fw"></i></i></a>' +
