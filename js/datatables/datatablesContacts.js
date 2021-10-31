@@ -31,9 +31,9 @@ $(document).ready(function () {
                 dom: 'fBlrtip',
                 buttons: [
                     { extend: 'copyHtml5', className: 'btn btn-primary btn-sm' },
-                    { extend: 'excelHtml5', className: 'btn btn-primary btn-sm', title: 'Contact List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4] } },
-                    { extend: 'csvHtml5', className: 'btn btn-primary btn-sm', title: 'Contact List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4] } },
-                    { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', orientation: 'landscape', title: 'Contact List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4] } },
+                    { extend: 'excelHtml5', className: 'btn btn-primary btn-sm', title: 'Contact List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3] } },
+                    { extend: 'csvHtml5', className: 'btn btn-primary btn-sm', title: 'Contact List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3] } },
+                    { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', orientation: 'landscape', title: 'Contact List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3] } },
                 ],
                 "columns": [
                     { "data": "displayName" },
