@@ -40,7 +40,7 @@ $(document).ready(function () {
                         $('#currentMembers').append('<li>' + item.displayName + ' - ' + item.mail + ' - Owner</li>')
                     });
                 } else {
-                    $('#currentMembers').append('<li>' + data.displayName + ' - ' + data.mail + '- Owner</li>')
+                    $('#currentMembers').append('<li>' + data.displayName + ' - ' + data.mail + ' - Owner</li>')
                 }
             }
         }
@@ -55,10 +55,10 @@ $(document).ready(function () {
                 if (Array.isArray(data)) {
                     // Loop over the JSON array.
                     data.forEach(function (item) {
-                        $('#currentMembers').append('<li>' + item.displayName + ' - ' + item.mail + '- Member</li>')
+                        $('#currentMembers').append('<li>' + item.displayName + ' - ' + item.mail + ' - Member</li>')
                     });
                 } else {
-                    $('#currentMembers').append('<li>' + data.displayName + ' - ' + data.mail + '- Member</li>')
+                    $('#currentMembers').append('<li>' + data.displayName + ' - ' + data.mail + ' - Member</li>')
                 }
             }
         }
