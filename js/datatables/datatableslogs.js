@@ -13,7 +13,7 @@ $(document).ready(function () {
             responsive: true,
             "ajax": {
 
-                "url": "/api/logs" + querystring,
+                "url": "/api/Listlogs" + querystring,
                 "dataSrc": "",
             },
             dom: 'fBlrtip',
