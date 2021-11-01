@@ -12,9 +12,12 @@ Contributions to CIPP are welcome by everyone. There's a couple of things to kee
 
 When contributing, or planning to contribute, please create an issue in the tracker [here](issues). If you are fixing a bug, file a complete bug report and assign it to yourself, if you are adding a feature, please add "Feature Request" to the title and assign it to yourself.
 
+# Feature requests
+
+Feature requests that request integration with anything but M365 will be closed. We're not integrating directly with third party products until version 2.0. Pull requests that have integration components will be discussed and evaluated on a case-by-case basis.
 # Pull Requests
 
-We do not accept PRs or commits against Master. Master is always the final version. For both CIPP and CIPP-API we have two brances. Dev and Master. Please make any PR against Dev, when Dev is promoted to final we'll PR that against master.
+We do not accept PRs or commits against Master. Master is always the final version. For both CIPP and CIPP-API we have two branches. Dev and Master. Please make any PR against Dev, when Dev is promoted to final we'll PR that against master.
 ## Creating two instances
 
 - Make a clone of your forked repo
@@ -58,7 +61,7 @@ jobs:
 
 # Local development guide
 
-So you want to jump in on helping us make this awesome? You'll need a local development environment. I'm assuming you have *some* programming experience. You'll need a couple of tools to get start
+So you want to jump in on helping us make this awesome? You'll need a local development environment. I'm assuming you have *some* programming experience. You'll need a couple of tools to get started
 
 - Install [node.js](https://nodejs.org/en/)
 - Install .NET Core 2 and .NET Core 5
@@ -73,14 +76,14 @@ Starting only the frontend:
 ```
 swa start "C:\PathToYourLocallyDownloadedFrontEn" --swa-config-location "C:\AnyInvalidPath"
 ```
-We use an invalid path on purpose, because our config in the CIPP folder on works for cloud engines and not the local emulator.
+We use an invalid path on purpose, because our config in the CIPP folder only works for cloud engines and not the local emulator.
 
 Starting only the APIs:
 ```
 func start --script-root "C:\FolderTo\CIPP-API"
  ```
 
- For starting both, we recommend two seperate instances. You can also have the SWA utility start the API but this brings in some added difficulties because you can't see the API logs directly in the console.
+ For starting both, we recommend two separate instances. You can also have the SWA utility start the API but this brings in some added difficulties because you can't see the API logs directly in the console.
 ```
 func start --script-root "C:\FolderTo\CIPP-API"
 swa start "C:\PathToYourLocallyDownloadedFrontEn" --swa-config-location "C:\AnyInvalidPath" --api-location http://localhost:7071/

@@ -50,6 +50,7 @@ $(document).ready(function () {
       ],
       columns: [
         { data: "UPN" },
+        { data: "AccountEnabled" },
         { data: "PerUser" },
         { data: "MFARegistration" },
         { data: "CoveredByCA" },

@@ -26,33 +26,22 @@
         <div class="row">
             <div class="col-lg-8">
                 <!-- Change password card-->
-                <div class="card mb-4">
-                    <div class="card-header">Switch to Demo mode</div>
+                <div class="card card-header-actions mb-4">
+                    <div class="card-header">
+                        Access backend
+                    </div>
                     <div class="card-body">
-                        <form>
-                            <div class="card-body">
-                                <!-- Account privacy optinos-->
-                                <h5 class="mb-1">Demo mode - Only works on CyberDrain development. UNDER
-                                    DEVELOPMENT. PREVIEW ONLY</h5>
-                                <p class="small text-muted">By entering demo mode, data is replaced with fake
-                                    information to show people the product.</p>
+                        <div class="mb-0">
+                            <label class="small mb-2">Function App</label>
+                            <section id="PermissionsCheck">Click the button below to create URLs to your backend Azure
+                                Function. You can manage backend features here such as Access keys and timezone settings
+                            </section>
+                        </div><br />
+                        <!-- Form Group (email updates checkboxes)-->
 
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" id="radioPrivacy1" type="radio" name="radioPrivacy"
-                                    checked />
-                                <label class="form-check-label" for="radioPrivacy1">Disabled (Product uses real
-                                    APIs)</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" id="radioPrivacy2" type="radio" name="radioPrivacy" />
-                                <label class="form-check-label" for="radioPrivacy2">Enabled (Product uses fake
-                                    data)</label>
-                            </div>
+                        <button onclick='PostForm("TenantChecker","api/GenerateBackendURLs")' class="btn btn-primary"
+                            type="button">Get backend links</button>
 
-                            <hr class="my-4" />
-
-                            <button class="btn btn-primary" type="button">Save</button>
                         </form>
                     </div>
                 </div>
@@ -102,3 +91,38 @@
         </div>
     </div>
 </main>
+<script>
+    var UsageLocationList = document.getElementById('TimezoneOptions');
+    $.getJSON("js/timezones.json", function (data) {
+        data.forEach(function (item) {
+            var option = document.createElement('option');
+            option.value = item.timezone
+            option.text = item.display;
+            UsageLocationList.appendChild(option);
+        });
+    }).fail(function () {
+        console.log("An error has occurred.");
+    });
+
+</script>
+<button class="btn btn-primary" id="PopModal" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"
+    style="display:none;"></button>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Results</h5>
+            </div>
+            <div class="modal-body">
+                <section id="APIContent">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only"></span>
+                    </div></span>
+                </section>
+            </div>
+            <div class="modal-footer"><button class="btn btn-secondary" type="button"
+                    data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
