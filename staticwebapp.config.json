@@ -47,6 +47,14 @@
             ]
         },
         {
+            "route": "/api/AddStandardsDeploy",
+            "allowedRoles": [
+                "admin",
+                "editor",
+                "reader"
+            ]
+        },
+        {
             "route": "/api/ExecExcludeTenant",
             "allowedRoles": [
                 "admin",
