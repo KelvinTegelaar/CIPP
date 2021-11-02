@@ -36,7 +36,13 @@ $(document).ready(function () {
                     { "data": "uninstallCommandLine" },
                     {
                         "data": "id",
-                        render: function (id, type, row) { return '<a href=index.html?page=EditApp&TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Edit App" class="fas fa-cog fa-fw"></i></a><nothing class="APILink">' + '<a actionname="assign ' + row.displayName + ' to all users" href=api/AssignApp?AssignTo=AllUsers&TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Assign to all users" class="fas fa-user-friends fa-fw"></i></a>' + '<a actionname="assign ' + row.displayName + ' to all devices" href=api/AssignApp?AssignTo=AllDevices&TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Assign to all devices" class="fas fa-laptop fa-fw"></i></a>' + '<a actionname="assign ' + row.displayName + ' to all users and devices" href=api/AssignApp?AssignTo=Both&TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Assign globally(All devices, all Users)" class="fas fa-globe fa-fw"></i></i></a>' + '<a href=AppReport.html?TenantFilter=' + TenantID + '&ID=' + id + '></nothing>'; }
+                        render: function (id, type, row) {
+                            return '<a href=index.html?page=EditApp&TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Edit App" class="fas fa-cog fa-fw">' +
+                                '</i></a><nothing class="APILink">' +
+                                '<a actionname="assign ' + row.displayName + ' to all users" href=api/ExecAssignApp?AssignTo=AllUsers&TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Assign to all users" class="fas fa-user-friends fa-fw"></i></a>' +
+                                '<a actionname="assign ' + row.displayName + ' to all devices" href=api/ExecAssignApp?AssignTo=AllDevices&TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Assign to all devices" class="fas fa-laptop fa-fw"></i></a>' +
+                                '<a actionname="assign ' + row.displayName + ' to all users and devices" href=api/ExecAssignApp?AssignTo=Both&TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Assign globally(All devices, all Users)" class="fas fa-globe fa-fw"></i></i></a>'
+                        }
                     }
                 ],
                 "order": [[0, "asc"]],

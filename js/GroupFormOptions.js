@@ -27,6 +27,25 @@ $(document).ready(function () {
             }
         }
         )
+
+        $.ajax({
+            'async': true,
+            'global': false,
+            'url': 'api/ListGroups?TenantFilter=' + TenantID + '&GroupID=' + GroupID + '&owners=true',
+            'dataType': "json",
+            'success': function (data) {
+                if (Array.isArray(data)) {
+                    // Loop over the JSON array.
+                    data.forEach(function (item) {
+                        $('#currentMembers').append('<li>' + item.displayName + ' - ' + item.mail + ' - Owner</li>')
+                    });
+                } else {
+                    $('#currentMembers').append('<li>' + data.displayName + ' - ' + data.mail + ' - Owner</li>')
+                }
+            }
+        }
+        )
+
         $.ajax({
             'async': true,
             'global': false,
@@ -36,10 +55,10 @@ $(document).ready(function () {
                 if (Array.isArray(data)) {
                     // Loop over the JSON array.
                     data.forEach(function (item) {
-                        $('#currentMembers').append('<li>' + item.displayName + ' - ' + item.mail + '</li>')
+                        $('#currentMembers').append('<li>' + item.displayName + ' - ' + item.mail + ' - Member</li>')
                     });
                 } else {
-                    $('#currentMembers').append('<li>' + data.displayName + ' - ' + data.mail + '</li>')
+                    $('#currentMembers').append('<li>' + data.displayName + ' - ' + data.mail + ' - Member</li>')
                 }
             }
         }

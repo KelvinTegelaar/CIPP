@@ -23,17 +23,75 @@
             "redirect": "/.auth/logout"
         },
         {
+            "route": "/api/add*",
+            "allowedRoles": [
+                "admin",
+                "editor",
+                "reader"
+            ]
+        },
+        {
+            "route": "/api/edit*",
+            "allowedRoles": [
+                "admin",
+                "editor",
+                "reader"
+            ]
+        },
+        {
+            "route": "/api/ExecSendPush",
+            "allowedRoles": [
+                "admin",
+                "editor",
+                "reader"
+            ]
+        },
+        {
+            "route": "/api/AddStandardsDeploy",
+            "allowedRoles": [
+                "admin",
+                "editor",
+                "reader"
+            ]
+        },
+        {
+            "route": "/api/ExecExcludeTenant",
+            "allowedRoles": [
+                "admin",
+                "editor",
+                "reader"
+            ]
+        },
+        {
+            "route": "/api/Exec*",
+            "allowedRoles": [
+                "admin",
+                "editor",
+                "reader"
+            ]
+        },
+        {
+            "route": "/api/Remove*",
+            "allowedRoles": [
+                "admin",
+                "editor",
+                "reader"
+            ]
+        },
+        {
             "route": "settings*.html",
             "allowedRoles": [
                 "admin",
+                "editor",
                 "reader"
             ]
         },
         {
             "route": "*",
             "allowedRoles": [
-                "reader",
-                "admin"
+                "admin",
+                "editor",
+                "reader"
             ]
         }
     ],
