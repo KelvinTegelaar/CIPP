@@ -42,6 +42,7 @@ For full functionality, you'll need the following permissions for your Secure Ap
 | DeviceManagementServiceConfig.ReadWrite.All             | Delegated, Application | Read and write Microsoft Intune configuration                     |
 | Directory.AccessAsUser.All                              | Delegated              | Access directory as the signed in user                            |
 | Directory.Read.All                                      | Application            | Read directory data                                               |
+| Domain.Read.All                                         | Delegated              | Read domain data                            |
 | Group.Create                                            | Application            | Create groups                                                     |
 | Group.Read.All                                          | Application            | Read all groups                                                   |
 | Group.ReadWrite.All                                     | Delegated, Application | Read and write all groups                                         |
