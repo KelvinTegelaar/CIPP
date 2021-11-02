@@ -19974,8 +19974,6 @@ body {
   display: flex;
   align-items: center;
   line-height: normal;
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
   position: relative;
 }
 .sidenav .sidenav-menu .nav .nav-link .nav-link-icon {
