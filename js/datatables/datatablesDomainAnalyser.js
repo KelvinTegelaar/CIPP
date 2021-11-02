@@ -32,7 +32,7 @@ $(document).ready(function () {
                 { extend: 'copyHtml5', className: 'btn btn-primary btn-sm' },
                 { extend: 'excelHtml5', className: 'btn btn-primary btn-sm', title: 'Domain Analyser - ' + todayDate, exportOptions: { orthogonal: "export" } },
                 { extend: 'csvHtml5', className: 'btn btn-primary btn-sm', title: 'Domain Analyser - ' + todayDate, exportOptions: { orthogonal: "export" } },
-                { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', pageSize: 'A2', orientation: 'landscape', title: 'Domain Analyser - ' + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19], orthogonal: "export" } },
+                { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', pageSize: 'A2', orientation: 'landscape', title: 'Domain Analyser - ' + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], orthogonal: "export" } },
                 {
                     text: 'Force Refresh All Data',
                     className: 'btn btn-primary btn-sm',
@@ -44,9 +44,23 @@ $(document).ready(function () {
                 }
             ],
             "columns": [
-                { "data": "Tenant" },
                 { "data": "Domain" },
-                { "data": "Score" },
+                {
+                    "data": "Score",
+                    "render": function (data, type, row) {
+                        if (type === "export") {
+                            return data + ' / ' + row.MaximumScore;
+                        }
+                        if (type === "sort" || type === "filter") {
+                            return row.ScorePercentage;
+                        }
+                        if (data === "") { return '<h5><span class="badge bg-secondary">No Data</span></h5>' }
+                        if (row.ScorePercentage <= 40) { var colourCalculation = "bg-danger" }
+                        if (row.ScorePercentage > 40 && row.ScorePercentage <= 75) { var colourCalculation = "bg-warning" }
+                        if (row.ScorePercentage > 75) { var colourCalculation = "bg-success" }
+                        return '<div class="progress"><div class="progress-bar ' + colourCalculation + '" role="progressbar" style="width: ' + row.ScorePercentage + '%" aria-valuenow="' + data + '" aria-valuemin="0" aria-valuemax="' + row.MaximumScore + '">' + row.ScorePercentage + '%</div></div>'
+                    }
+                },
                 { "data": "MailProvider" },
                 {
                     "data": "SPFPassTest",
@@ -61,7 +75,13 @@ $(document).ready(function () {
                             }
                         }
                         if (data === true) {
+                            if (row.SPFPassAll === true) {
                             return '<h5><span class="badge bg-success">SPF Pass</span></h5>';
+                            }
+                            else
+                            {
+                                return '<h5><span class="badge bg-danger">SPF Soft Fail</span></h5>';
+                            }
                         }
                         if (data === false) {
                             return '<h5><span class="badge bg-danger">SPF Fail</span></h5>';                            
@@ -125,7 +145,7 @@ $(document).ready(function () {
                             } else if (data === "None") {
                                 return 'FAIL: DMARC Reporting Only'
                             } else {
-                                return 'No Data'
+                                return 'No DMARC'
                             }
                         }
                         if (data === "Reject") {
@@ -135,7 +155,7 @@ $(document).ready(function () {
                         } else if (data === "None") {
                             return '<h5><span class="badge bg-danger">Report Only</span></h5>'
                         } else {
-                            return '<h5><span class="badge bg-secondary">No Data</span></h5>'
+                            return '<h5><span class="badge bg-secondary">No DMARC</span></h5>'
                         }
                     }
                 },
@@ -148,7 +168,7 @@ $(document).ready(function () {
                             } else if (data === false) {
                                 return 'FAIL: DMARC All Mail Not Considered'
                             } else {
-                                return 'No Data'
+                                return 'No DMARC'
                             }
                         }
                         if (data === true) {
@@ -157,7 +177,7 @@ $(document).ready(function () {
                         if (data === false) {
                             return '<h5><span class="badge bg-danger">Partial or None Analysed</span></h5>';
                         } else {
-                            return '<h5><span class="badge bg-secondary">No Data</span></h5>'
+                            return '<h5><span class="badge bg-secondary">No DMARC</span></h5>'
                         }
                     }
                 },
@@ -205,20 +225,19 @@ $(document).ready(function () {
                         }
                     }
                 },
-                { "data": "ScoreExplanation" },
-                { "data": "IsDefault" },
-                { "data": "IsVerified" },
-                { "data": "DMARCFullPolicy" },
-                { "data": "SupportedServices" },
-                { "data": "AuthenticationType" },
-                { "data": "ExpectedMXRecord" },
-                { "data": "ActualMXRecord" },
-                { "data": "ExpectedSPFRecord" },
-                { "data": "ActualSPFRecord" }
+                {
+                    "data": "ActualMXRecord",
+                    "render": function (data, type, row) {
+                        if (type === "export" || type === "sort" || type === "filter") {
+                                return 'No Data'
+                            }
+                        return '<button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#' + row.GUID + 'MoreInfo">More</button><!-- Modal --><div class="modal fade" id="' + row.GUID + 'MoreInfo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="exampleModalLabel">More Information</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"><h3>Tenant: ' + row.Tenant + '</h3><br /><br /><strong>Score Explanation: </strong>' + row.ScoreExplanation + '<br /><br /><strong>Expected SPF Record: </strong> ' + row.ExpectedSPFRecord + '<br /><strong>Actual SPF Record: </strong>' + row.ActualSPFRecord + '<br /><br /><strong>DMARC Full Policy: </strong>' + row.DMARCFullPolicy + '<br /><br /><strong>Expected MX Record: </strong>' + row.ExpectedMXRecord + '<br /><strong>Actual MX Record: </strong>' + row.ActualMXRecord + '<br /><br /><strong>Supported Services: </strong>' + row.SupportedServices + '<br /><strong>Is Default Domain: </strong>' + row.IsDefault + '<br /><strong>Data Last Refreshed:</strong>' + row.LastRefresh + '</div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button></div></div></div></div>'
+                    }
+                }
             ],
             'columnDefs': [
                 {
-                    "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19], // your case first column
+                    "targets": [1, 2, 3, 4, 5, 6, 7, 8, 9], // your case first column
                     "className": "text-center align-middle"
                 }
             ],
