@@ -23,6 +23,14 @@
             "redirect": "/.auth/logout"
         },
         {
+            "route": "/api/AddStandardsDeploy",
+            "allowedRoles": [
+                "admin",
+                "editor",
+                "reader"
+            ]
+        },
+        {
             "route": "/api/add*",
             "allowedRoles": [
                 "admin",
@@ -40,14 +48,6 @@
         },
         {
             "route": "/api/ExecSendPush",
-            "allowedRoles": [
-                "admin",
-                "editor",
-                "reader"
-            ]
-        },
-        {
-            "route": "/api/AddStandardsDeploy",
             "allowedRoles": [
                 "admin",
                 "editor",
@@ -119,7 +119,7 @@
         }
     },
     "globalHeaders": {
-        "content-security-policy": "default-src https: 'unsafe-eval' 'unsafe-inline'; object-src 'none'"
+        "content-security-policy": "default-src https: 'unsafe-eval' 'unsafe-inline'; object-src 'none'; img-src 'self' data: *"
     },
     "mimeTypes": {
         ".json": "text/json"
