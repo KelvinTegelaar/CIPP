@@ -11,8 +11,10 @@ The CyberDrain Improved Partner Portal is a portal to help manage administration
 
 This project is a way to help you with administration, with user management, and deploying your own prefered standards. It's not a replacement for security tools, or a way to cut costs on specific subscriptions. The tool should assist you in removing the gripes with standard partner management and save you several hours per engineer per month.
 
-# Beta at version 1.0.0?
-Yup! Because this is the first *public* release, we're still calling it beta. There's just been enough development to reach the 1.0 milestone.
+# Deployment and Getting Started
+
+If you want to self-host, check out the installation manual [here](Documentation/Installation.md). You will need some knowledge of Static Web Apps, Azure Functions, and Azure Keyvault
+
 # Why are you making this?
 
 I'm kind of done waiting for vendors to catch up to what we actually need. All RMM vendors are dramaticaly slow adopting cloud management. Microsoft themselves don't understand the Managed services markets, there are vendors that have tried jumping into the gap but either have unreasonable fees, weird constructions, require Global Admins without MFA, or just don't innovate at a pace that is required of cloud services right now.
@@ -96,10 +98,6 @@ The current build functionality is described below, also check out our Changelog
 - [X] Set selected defaults across selected tenants
 - [ ] Monitor defaults across tenants.
 - [ ] Tenant Alerting
-
-# Deployment
-
-If you want to self-host, check out the installation manual [here](Documentation/Installation.md). You will need some knowledge of Static Web Apps, Azure Functions, and Azure Keyvault
 
 # Security
 Authentication is handled by Azure AD using static web apps security. This means the API is only reachable for authenticated users you've invited. For most of the security info related to that check out our staticwebapp.config.json and/or the doc pages on static web apps. Do you see something that might be a security risk, even the smallest? report it and we will handle it asap. Check out our security reporting options [here](https://github.com/KelvinTegelaar/CIPP/security)
