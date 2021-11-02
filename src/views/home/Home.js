@@ -43,21 +43,20 @@ const Home = () => {
   })
 
   return (
-    <>
+    <div>
       <h3>Dashboard</h3>
       <CRow xs={{ cols: 1, gutter: 4 }} md={{ cols: 2 }}>
         <CCol xs>
           <CCard>
             <CCardImage orientation="top" src="img/data-report.svg" />
-            <CCardBody>
+            <CCardBody className="text-center">
               <CCardTitle>New User</CCardTitle>
-              <CCardText className="text-center">
-                Ready to make a new user for any managed tenant? click below to jump to the wizard.
-                <br />
-                <CButton color="primary" className="mt-2">
-                  Add user
-                </CButton>
+              <CCardText>
+                Ready to make a new user for any managed tenant? Click below to jump to the wizard.
               </CCardText>
+              <CButton color="primary" className="mt-2">
+                Add user
+              </CButton>
             </CCardBody>
           </CCard>
         </CCol>
@@ -77,11 +76,9 @@ const Home = () => {
               )}
             </CCardHeader>
             <CCardBody>
-              <CCardText>
-                Remote: {remoteCipp ? remoteCipp : <CSpinner size="sm" />}
-                <br />
-                Local: {localCipp ? localCipp : <CSpinner size="sm" />}
-              </CCardText>
+              Remote: {remoteCipp ? remoteCipp : <CSpinner size="sm" />}
+              <br />
+              Local: {localCipp ? localCipp : <CSpinner size="sm" />}
             </CCardBody>
           </CCard>
           <CCard
@@ -99,16 +96,14 @@ const Home = () => {
               )}
             </CCardHeader>
             <CCardBody>
-              <CCardText>
-                Remote: {remoteCippApi ? remoteCippApi : <CSpinner size="sm" />}
-                <br />
-                Local: {localCippApi ? localCippApi : <CSpinner size="sm" />}
-              </CCardText>
+              Remote: {remoteCippApi ? remoteCippApi : <CSpinner size="sm" />}
+              <br />
+              Local: {localCippApi ? localCippApi : <CSpinner size="sm" />}
             </CCardBody>
           </CCard>
         </CCol>
       </CRow>
-    </>
+    </div>
   )
 }
 
