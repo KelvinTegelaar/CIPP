@@ -76,15 +76,14 @@ $(document).ready(function () {
                         }
                         if (data === true) {
                             if (row.SPFPassAll === true) {
-                            return '<h5><span class="badge bg-success">SPF Pass</span></h5>';
+                                return '<h5><span class="badge bg-success">SPF Pass</span></h5>';
                             }
-                            else
-                            {
+                            else {
                                 return '<h5><span class="badge bg-danger">SPF Soft Fail</span></h5>';
                             }
                         }
                         if (data === false) {
-                            return '<h5><span class="badge bg-danger">SPF Fail</span></h5>';                            
+                            return '<h5><span class="badge bg-danger">SPF Fail</span></h5>';
                         } else {
                             return '<h5><span class="badge bg-secondary">No Data</span></h5>'
                         }
@@ -117,7 +116,13 @@ $(document).ready(function () {
                     "render": function (data, type, row) {
                         if (type === "export" || type === "sort" || type === "filter") {
                             if (data === true) {
-                                return 'PASS: DMARC Record Present'
+                                if (row.DMARCReportingActive === true) {
+                                    return 'PASS: DMARC Record Present'
+                                }
+                                if (row.DMARCReportingActive === false) {
+                                    return 'WARN: DMARC Present Reporting Not Configured'
+                                }
+
                             } else if (data === false) {
                                 return 'FAIL: DMARC Not Present'
                             } else {
@@ -125,7 +130,15 @@ $(document).ready(function () {
                             }
                         }
                         if (data === true) {
-                            return '<h5><span class="badge bg-success">DMARC Present</span></h5>';
+                            if (row.DMARCReportingActive === true) {
+                                return '<h5><span class="badge bg-success">DMARC Present</span></h5>';
+                            }
+                            if (row.DMARCReportingActive === false) {
+                                return '<h5><span class="badge bg-warning">DMARC Present No Reporting</span></h5>';
+                            }
+                            if (!row.DMARCReportingActive) {
+                                return '<h5><span class="badge bg-danger">DMARC Present No Reporting Data</span></h5>';
+                            }
                         }
                         if (data === false) {
                             return '<h5><span class="badge bg-danger">DMARC Missing</span></h5>';
@@ -155,7 +168,7 @@ $(document).ready(function () {
                         } else if (data === "None") {
                             return '<h5><span class="badge bg-danger">Report Only</span></h5>'
                         } else {
-                            return '<h5><span class="badge bg-secondary">No DMARC</span></h5>'
+                            return '<h5><span class="badge bg-danger">No DMARC</span></h5>'
                         }
                     }
                 },
@@ -177,7 +190,7 @@ $(document).ready(function () {
                         if (data === false) {
                             return '<h5><span class="badge bg-danger">Partial or None Analysed</span></h5>';
                         } else {
-                            return '<h5><span class="badge bg-secondary">No DMARC</span></h5>'
+                            return '<h5><span class="badge bg-danger">No DMARC</span></h5>'
                         }
                     }
                 },
@@ -221,7 +234,7 @@ $(document).ready(function () {
                         if (data === false) {
                             return '<h5><span class="badge bg-danger">DKIM Disabled</span></h5>';
                         } else {
-                            return '<h5><span class="badge bg-secondary">No Data</span></h5>'
+                            return '<h5><span class="badge bg-warning">No Data</span></h5>'
                         }
                     }
                 },
@@ -229,9 +242,9 @@ $(document).ready(function () {
                     "data": "ActualMXRecord",
                     "render": function (data, type, row) {
                         if (type === "export" || type === "sort" || type === "filter") {
-                                return 'No Data'
-                            }
-                        return '<button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#' + row.GUID + 'MoreInfo">More</button><!-- Modal --><div class="modal fade" id="' + row.GUID + 'MoreInfo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="exampleModalLabel">More Information</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"><h3>Tenant: ' + row.Tenant + '</h3><br /><br /><strong>Score Explanation: </strong>' + row.ScoreExplanation + '<br /><br /><strong>Expected SPF Record: </strong> ' + row.ExpectedSPFRecord + '<br /><strong>Actual SPF Record: </strong>' + row.ActualSPFRecord + '<br /><br /><strong>DMARC Full Policy: </strong>' + row.DMARCFullPolicy + '<br /><br /><strong>Expected MX Record: </strong>' + row.ExpectedMXRecord + '<br /><strong>Actual MX Record: </strong>' + row.ActualMXRecord + '<br /><br /><strong>Supported Services: </strong>' + row.SupportedServices + '<br /><strong>Is Default Domain: </strong>' + row.IsDefault + '<br /><strong>Data Last Refreshed:</strong>' + row.LastRefresh + '</div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button></div></div></div></div>'
+                            return 'No Data'
+                        }
+                        return '<button type="button" class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#' + row.GUID + 'MoreInfo">More</button><!-- Modal --><div class="modal fade" id="' + row.GUID + 'MoreInfo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="exampleModalLabel">More Information</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"><h3>Tenant: ' + row.Tenant + '</h3><br /><br /><strong>Score Explanation: </strong>' + row.ScoreExplanation + '<br /><br /><strong>Expected SPF Record: </strong> ' + row.ExpectedSPFRecord + '<br /><strong>Actual SPF Record: </strong>' + row.ActualSPFRecord + '<br /><br /><strong>DMARC Full Policy: </strong>' + row.DMARCFullPolicy + '<br /><br /><strong>Expected MX Record: </strong>' + row.ExpectedMXRecord + '<br /><strong>Actual MX Record: </strong>' + row.ActualMXRecord + '<br /><br /><strong>Supported Services: </strong>' + row.SupportedServices + '<br /><strong>Is Default Domain: </strong>' + row.IsDefault + '<br /><strong>Data Last Refreshed:</strong>' + row.LastRefresh + '</div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button></div></div></div></div>'
                     }
                 }
             ],
