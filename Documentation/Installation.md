@@ -60,7 +60,7 @@ For full functionality, you'll need the following permissions for your Secure Ap
 | PrivilegedAccess.Read.AzureResources                    | Delegated              | Read privileged access to Azure resources                         |
 | PrivilegedAccess.ReadWrite.AzureADGroup                 | Application            | Read and write privileged access to Azure AD groups               |
 | PrivilegedAccess.ReadWrite.AzureResources               | Delegated              | Read and write privileged access to Azure resources               |
-| profile                                                 | Delegated              | View users' basic profile                                         |
+| OpenID permissions - profile                            | Delegated              | View users' basic profile                                         |
 | Reports.Read.All                                        | Delegated, Application | Read all usage reports                                            |
 | RoleManagement.ReadWrite.Directory                      | Delegated, Application | Read and write directory RBAC settings                            |
 | SecurityActions.ReadWrite.All                           | Delegated              | Read and update your organization's security actions              |
