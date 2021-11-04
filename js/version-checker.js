@@ -65,7 +65,8 @@ $(function () {
         });
         return json;
     })();
-    if ($.inArray('reader', jsonOptions.userRoles)) {
+    var readerrole = $.inArray('reader', jsonOptions.clientPrincipal.userRoles)
+    if (readerrole != -1) {
         document.getElementById('oldrole').classList.remove("d-none");
     }
 });
