@@ -25,25 +25,27 @@
         {
             "route": "/api/AddStandardsDeploy",
             "allowedRoles": [
-                "admin",
-                "editor",
-                "reader"
+                "admin"
+            ]
+        },
+        {
+            "route": "/api/RemoveStandard",
+            "allowedRoles": [
+                "admin"
             ]
         },
         {
             "route": "/api/add*",
             "allowedRoles": [
                 "admin",
-                "editor",
-                "reader"
+                "editor"
             ]
         },
         {
             "route": "/api/edit*",
             "allowedRoles": [
                 "admin",
-                "editor",
-                "reader"
+                "editor"
             ]
         },
         {
@@ -57,33 +59,27 @@
         {
             "route": "/api/ExecExcludeTenant",
             "allowedRoles": [
-                "admin",
-                "editor",
-                "reader"
+                "admin"
             ]
         },
         {
             "route": "/api/Exec*",
             "allowedRoles": [
                 "admin",
-                "editor",
-                "reader"
+                "editor"
             ]
         },
         {
             "route": "/api/Remove*",
             "allowedRoles": [
                 "admin",
-                "editor",
-                "reader"
+                "editor"
             ]
         },
         {
             "route": "settings*.html",
             "allowedRoles": [
-                "admin",
-                "editor",
-                "reader"
+                "admin"
             ]
         },
         {
