@@ -1,5 +1,6 @@
 const initialState = {
   tenants: [],
+  currentTenant: '',
   loading: false,
 }
 
@@ -25,5 +26,9 @@ export function listTenants() {
 
 export function getTenant({ tenant }) {
   // etc
+  return {}
+}
+
+export function setTenant({ tenantId }) {
   return {}
 }
