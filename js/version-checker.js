@@ -35,7 +35,7 @@ $(function () {
             document.getElementById('dashversionlocalcippapi').innerHTML = LocalCIPPAPIVersion;
             document.getElementById('dashversionremotecippapi').innerHTML = RemoteCIPPAPIVersion;
 
-            if (RemoteCIPPVersion == LocalCIPPVersion) {
+            if (LocalCIPPVersion >= RemoteCIPPVersion) {
                 console.log("CIPP Local Version is same as Remote");
             } else {
                 console.log("CIPP Remote and Local Versions are Different")
@@ -43,7 +43,7 @@ $(function () {
                 document.getElementById('versionalertcipp').classList.remove("d-none");
             }
 
-            if (RemoteCIPPAPIVersion == LocalCIPPAPIVersion) {
+            if (LocalCIPPAPIVersion >= RemoteCIPPAPIVersion) {
                 console.log("CIPPAPI Local Version is same as Remote");
             } else {
                 console.log("CIPPAPI Remote and Local Versions are Different")
