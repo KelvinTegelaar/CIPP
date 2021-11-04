@@ -53,7 +53,7 @@
             "allowedRoles": [
                 "admin",
                 "editor",
-                "reader"
+                "read-only"
             ]
         },
         {
@@ -87,6 +87,7 @@
             "allowedRoles": [
                 "admin",
                 "editor",
+                "read-only",
                 "reader"
             ]
         }
