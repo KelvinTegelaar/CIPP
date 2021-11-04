@@ -1,10 +1,8 @@
 <p align="center"><a href="https://cyberdrain.com" target="_blank" rel="noopener noreferrer"><img src="assets/img/CyberDrain.png" alt="CyberDrain Logo"></a></p>
 
 <center><h1>Sponsored by</h1></center>
-
-<p align="center"><a href="https://oit.co" target="_blank" rel="noopener noreferrer"><img  width="550" height="220" src="assets/img/oitpsonsor.webp" alt="CyberDrain Logo"></a></p>
-
-
+<p align="center"><a href="https://oit.co" target="_blank" rel="noopener noreferrer"><img  width="270" height="110" src="assets/img/oitpsonsor.webp" alt="OITVoip"></a><a href="https://www.genuinetechnology.com/" target="_blank" rel="noopener noreferrer"><img  width="110" height="130" src="assets/img/Genuine-logo-vertical-light_dark.png" alt="Genuine Technology Group"></a></p>
+</p>
 # What is this?
 
 The CyberDrain Improved Partner Portal is a portal to help manage administration for Microsoft Partners. The current Microsoft partner landscape makes it fairly hard to manage multi tenant situations, with loads of manual work. Microsoft Lighthouse might resolve this in the future but development of this is lagging far behind development of the current market for Microsoft Partners.
