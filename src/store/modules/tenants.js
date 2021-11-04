@@ -12,6 +12,8 @@ export default function reducer(state = initialState, action = {}) {
       return { ...state, tenants: action.result, loading: false }
     case 'FAILURE':
       return { ...state, loading: false, tenants: [] }
+    case 'SELECT_TENANT':
+      return { ...state, selectedTenant: action.tenant }
     default:
       return state
   }
@@ -29,6 +31,9 @@ export function getTenant({ tenant }) {
   return {}
 }
 
-export function setTenant({ tenantId }) {
-  return {}
+export function setTenant({ tenant }) {
+  return {
+    type: 'SELECT_TENANT',
+    tenant,
+  }
 }
