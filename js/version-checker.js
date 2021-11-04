@@ -52,4 +52,20 @@ $(function () {
             }
         });
     }
+    var jsonOptions = (function () {
+        var json = null;
+        $.ajax({
+            'async': false,
+            'global': false,
+            'url': '.auth/me',
+            'dataType': "json",
+            'success': function (data) {
+                json = data;
+            }
+        });
+        return json;
+    })();
+    if ($.inArray('reader', jsonOptions.userRoles)) {
+        document.getElementById('oldrole').classList.remove("d-none");
+    }
 });

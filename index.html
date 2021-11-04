@@ -190,8 +190,11 @@
                             <div class="collapse" id="collapseTenantAdmin" data-bs-parent="#accordionSidenav">
                                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
                                     <a class="nav-link" apilink="tenants" href="index.html?page=tenants">Tenants</a>
-                                    <a class="nav-link" apilink="DomainAnalyserList" href="index.html?page=DomainAnalyserList">Domains</a>
-                                    <a class="nav-link" apilink="ConditionalAccessPoliciesList" href="index.html?page=ConditionalAccessPoliciesList">Conditional Access Policies</a>
+                                    <a class="nav-link" apilink="DomainAnalyserList"
+                                        href="index.html?page=DomainAnalyserList">Domains</a>
+                                    <a class="nav-link" apilink="ConditionalAccessPoliciesList"
+                                        href="index.html?page=ConditionalAccessPoliciesList">Conditional Access
+                                        Policies</a>
                                 </nav>
                             </div>
                         </section>
@@ -418,6 +421,15 @@
                     <div class="alert alert-warning align-items-center d-none" id="versionalertcippapi" role="alert">
                         <div>
                             Placeholder
+                        </div>
+                    </div>
+                    <div class="alert alert-danger align-items-center d-none" id="oldrole" role="alert">
+                        <div>
+                            <b>Error: </b>We have introduced a new role management system. You are currently accessing
+                            the system as a
+                            unsupported role. Please remove the old role "reader" and change your role to "read-only",
+                            "editor",
+                            or "admin"
                         </div>
                     </div>
                     <!-- Main page content-->
