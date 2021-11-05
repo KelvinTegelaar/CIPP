@@ -113,6 +113,54 @@ $(document).ready(function () {
                     $("#UserDevices").append(tbl_body);
                 }
             }
+            ),
+            $.ajax({
+                'async': true,
+                'global': false,
+                'url': 'api/ListUserSigninLogs?TenantFilter=' + TenantID + '&UserID=' + UserID,
+                'dataType': "json",
+                'success': function (data, type, row) {
+                    var tbl_body = document.createElement("tbody");
+                    $.each(data, function (index, value) {
+                        var tbl_row =`<tr><td>${value.Date}</td>
+                        <td>${value.Application}</td>
+                        <td>${value.LoginStatus}</td>
+                        <td>${value.ConditionalAccessStatus}</td>
+                        <td>${value.OverallLoginStatus}</td>
+                        <td>${value.IPAddress}</td>
+                        <td>${value.Town}</td>
+                        <td>${value.State}</td>
+                        <td>${value.Country}</td>
+                        <td>${value.Device}</td>
+                        <td>${value.DeviceCompliant}</td>
+                        <td>${value.OS}</td>
+                        <td>${value.Browser}</td>
+                        <td>
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target=#"${row.GUID}MoreInfo">More</button>
+                        <!-- Modal -->
+                        <div class="modal fade" id="${row.GUID}MoreInfo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">More Information</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <h3>Conditional Access Policies Applied</h3><br /><br />
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </td></tr>`
+                                        
+                        $(tbl_body).append(tbl_row);
+                    });
+                    $("#UserSignIn").append(tbl_body);
+                }
+            }
             )
     }
     //only shows input when needed
