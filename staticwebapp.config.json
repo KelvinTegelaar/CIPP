@@ -29,6 +29,16 @@
             ]
         },
         {
+            "route": "/error-403.html",
+            "allowedRoles": [
+                "admin",
+                "editor",
+                "readonly",
+                "authenticated",
+                "anonymous"
+            ]
+        },
+        {
             "route": "/api/RemoveStandard",
             "allowedRoles": [
                 "admin"
@@ -106,6 +116,7 @@
         },
         "403": {
             "redirect": "/error-403.html",
+            "statusCode": 403,
             "exclude": [
                 "/assets/illustrations/*.{png,jpg,gif}",
                 "/css/*"
