@@ -34,13 +34,14 @@
                         <div class="mb-0">
                             <label class="small mb-2">Function App</label>
                             <section id="PermissionsCheck">Click the button below to create URLs to your backend Azure
-                                Function. You can manage backend features here such as Access keys and timezone settings
+                                Function. You can manage backend features here such as Access keys and timezone
+                                settings.
                             </section>
                         </div><br />
                         <!-- Form Group (email updates checkboxes)-->
 
-                        <button onclick='PostForm("TenantChecker","api/GenerateBackendURLs")' class="btn btn-primary"
-                            type="button">Get backend links</button>
+                        <button onclick='PostForm("TenantChecker","api/ExecBackendURLs")' class="btn btn-primary"
+                            type="button">Get backend URLs</button>
 
                         </form>
                     </div>
@@ -91,20 +92,7 @@
         </div>
     </div>
 </main>
-<script>
-    var UsageLocationList = document.getElementById('TimezoneOptions');
-    $.getJSON("js/timezones.json", function (data) {
-        data.forEach(function (item) {
-            var option = document.createElement('option');
-            option.value = item.timezone
-            option.text = item.display;
-            UsageLocationList.appendChild(option);
-        });
-    }).fail(function () {
-        console.log("An error has occurred.");
-    });
 
-</script>
 <button class="btn btn-primary" id="PopModal" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"
     style="display:none;"></button>
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"

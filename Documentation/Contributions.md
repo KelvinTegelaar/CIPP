@@ -18,6 +18,15 @@ Feature requests that request integration with anything but M365 will be closed.
 # Pull Requests
 
 We do not accept PRs or commits against Master. Master is always the final version. For both CIPP and CIPP-API we have two branches. Dev and Master. Please make any PR against Dev, when Dev is promoted to final we'll PR that against master.
+
+# Naming Standards
+
+We follow a naming standard, as based on the name a user might get access to an API or not. Our current naming standard is as follows;
+ListBla - Everything that generates a list (users)
+EditBla - Anything that edits an exisiting object (edit user)
+AddBla - Anything that adds an object (add user)
+RemoveBla - Anything that deletes or removes an object (remove user)
+ExecBla - Anything that executes an action (send mfa request to user)
 ## Creating two instances
 
 - Make a clone of your forked repo
@@ -64,7 +73,7 @@ jobs:
 So you want to jump in on helping us make this awesome? You'll need a local development environment. I'm assuming you have *some* programming experience. You'll need a couple of tools to get started
 
 - Install [node.js](https://nodejs.org/en/)
-- Install .NET Core 2 and .NET Core 5
+- Install [.NET Core 2 SDK](https://dotnet.microsoft.com/download/dotnet/2.2) and [.NET Core 5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
 - After installation execute the following commands:
 ```
 npm install -g @azure/static-web-apps-cli
@@ -98,6 +107,7 @@ Local.settings.json example:
   "IsEncrypted": false,
   "Values": {
     "FUNCTIONS_WORKER_RUNTIME": "powershell",
+    "FUNCTIONS_WORKER_RUNTIME_VERSION": "~7",
     "AzureWebJobsStorage": "DefaultEndpointsProtocol=AzureStorageConnectionStringhere",
     "applicationid": "appid",
     "applicationsecret": "applicationsecret",

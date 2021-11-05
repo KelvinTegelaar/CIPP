@@ -6,7 +6,7 @@
                     <div class="col-auto mb-3">
                         <h1 class="page-header-title">
                             <div class="page-header-icon"><i data-feather="user"></i></div>
-                            Best Practice Analyser List
+                            Domain Analyser List
                         </h1>
                     </div>
                     <div class="col-12 col-xl-auto mb-3">
@@ -26,44 +26,40 @@
     <!-- Main page content-->
     <div class="container-fluid px-4">
         <div class="card">
-            <div class="card-header">Best Practice Analyser</div>
+            <div class="card-header">Domain Analyser</div>
             <div class="card-body">
                 <table id="datatablesSimple">
                     <table cellpadding="0" cellspacing="0" class="datatable-1 table table-striped" width="100%">
                         <thead>
                             <tr>
-                                <th>Tenant</th>
-                                <th>Last Refresh</th>
-                                <th>Unified Audit Log Enabled</th>
-                                <th>Security Defaults Enabled</th>
-                                <th>Message Copy for Sent As</th>
-                                <th>User Cannot Consent to Apps</th>
-                                <th>Passwords Do Not Expire</th>
-                                <th>Privacy in Reports Enabled</th>
-                                <th>Self Service Password Reset Enabled</th>
-                                <th>Modern Auth Enabled</th>
-                                <th>Shared Mailboxes Logins Disabled</th>
-                                <th>Unused Licenses</th>
-                                <th>Microsoft Secure Score</th>
+                                <th>Domain</th>
+                                <th>Security Score</th>
+                                <th>Mail Provider</th>
+                                <th>SPF Pass Test</th>
+                                <th>MX Pass Test</th>
+                                <th>DMARC Present</th>
+                                <th>DMARC Action Policy</th>
+                                <th>DMARC % Pass</th>
+                                <th>DNSSec Enabled</th>
+                                <th>DKIM Enabled</th>
+                                <th>More Info</th>
                             </tr>
                         </thead>
                         <tbody id='AccountTable'>
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th>Tenant</th>
-                                <th>Last Refresh</th>
-                                <th>Unified Audit Log Enabled</th>
-                                <th>Security Defaults Enabled</th>
-                                <th>Message Copy for Sent As</th>
-                                <th>User Cannot Consent to Apps</th>
-                                <th>Passwords Do Not Expire</th>
-                                <th>Privacy in Reports Enabled</th>
-                                <th>Self Service Password Reset Enabled</th>
-                                <th>Modern Auth Enabled</th>
-                                <th>Shared Mailboxes Logins Enabled</th>
-                                <th>Unused Licenses</th>
-                                <th>Microsoft Secure Score</th>
+                                <th>Domain</th>
+                                <th>Security Score</th>
+                                <th>Mail Provider</th>
+                                <th>SPF Pass Test</th>
+                                <th>MX Pass Test</th>
+                                <th>DMARC Present</th>
+                                <th>DMARC Action Policy</th>
+                                <th>DMARC % Pass</th>
+                                <th>DNSSec Enabled</th>
+                                <th>DKIM Enabled</th>
+                                <th>More Info</th>
                             </tr>
                         </tfoot>
                     </table>
@@ -72,7 +68,7 @@
     </div>
 </main>
 <script src="js/datatables/jquery.dataTables.js"></script>
-<script src="js/datatables/datatablesBestPracticeAnalyser.js"></script>
+<script src="js/datatables/datatablesDomainAnalyser.js"></script>
 
 </body>
 
