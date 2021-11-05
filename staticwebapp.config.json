@@ -111,8 +111,12 @@
     },
     "responseOverrides": {
         "401": {
-            "redirect": "/login",
-            "statusCode": 302
+            "redirect": "/error-401.html",
+            "statusCode": 401,
+            "exclude": [
+                "/assets/illustrations/*.{png,jpg,gif}",
+                "/css/*"
+            ]
         },
         "403": {
             "redirect": "/error-403.html",
