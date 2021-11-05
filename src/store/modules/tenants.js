@@ -1,10 +1,11 @@
 const initialState = {
   tenants: [],
-  currentTenant: '',
+  selectedTenant: {},
   loading: false,
 }
 
 export default function reducer(state = initialState, action = {}) {
+  console.log(action)
   switch (action.type) {
     case 'LOADING':
       return { ...state, loading: true }

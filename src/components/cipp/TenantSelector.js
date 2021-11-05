@@ -12,14 +12,11 @@ const TenantSelector = () => {
     dispatch(listTenants())
   }, [])
 
-  const activated = (tenantId) => {
-    dispatch(
-      setTenant(
-        tenants.filter((t) => {
-          return t.tenantId === tenantId
-        }),
-      ),
-    )
+  const activated = (customerId) => {
+    var selectedTenant = tenants.filter((t) => {
+      return t.customerId === customerId
+    })
+    dispatch(setTenant(selectedTenant[0]))
   }
 
   return (
