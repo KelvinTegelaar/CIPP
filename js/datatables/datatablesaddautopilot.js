@@ -10,8 +10,29 @@ $(document).ready(function () {
     });
 
     $("#SendData").click(function (e) {
-        var SendingData = TableToCSV('datatable-1', ',');
-        $('#Devices').val(SendingData)
+        var currentdata = $('#Devices').val()
+        if (currentdata == "") {
+            var SendingData = TableToCSV('datatable-1', ',');
+            $('#Devices').val(SendingData)
+        }
     });
 
+
+    $('#upload').click(function (e) {
+        e.preventDefault();
+        $('#filename').click()
+    });
+    $('#filename').change(function (e) {
+        var csv = $('#filename');
+        var csvFile = csv[0].files[0];
+        if (csvFile != undefined) {
+            reader = new FileReader();
+            reader.onload = function (e) {
+                csvResult = e.target.result
+                $('#Devices').val(csvResult);
+            }
+            reader.readAsText(csvFile);
+        }
+    });
 });
+

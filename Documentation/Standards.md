@@ -31,6 +31,25 @@ Microsoft announced some of the APIs and reports will no longer contain names, t
 
 Does what it says on the tin. Requires users to register 2 formats to reset their password themselves without admin intervention.
 
+## Enable Modern Authentication
+
+Enables Modern Auth. Is already enabled if your tenant has been created after 2018.
+
+## Disable Basic Authentication
+
+Disables most forms of user basic authentication, allows smtp authentication as MS does not consider this a legacy protocol(yet)
+
+## Disable Shared Mailbox AAD account
+
+Shared mailboxes allow logon to them by users if the password is reset, this a security risk as you do not know who has this password. Microsoft's recommendation is disabling the user account.
+
+## Enable auto expanding archives
+
+Allows archives to expand.
+
+## Enable per-user MFA for all users
+
+Allows you to deploy per-user MFA for all the users in the tenant. Does not allow any exclusions. If you'd like to make exclusions, please use Conditional Access instead.
 # Current known issues / Limitations
 
 - These jobs run asynchronously every 3 hours per default, you can check the log for the current operation by looking for "Standards API"

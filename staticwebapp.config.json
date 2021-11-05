@@ -23,17 +23,82 @@
             "redirect": "/.auth/logout"
         },
         {
-            "route": "settings*.html",
+            "route": "/api/AddStandardsDeploy",
+            "allowedRoles": [
+                "admin"
+            ]
+        },
+        {
+            "route": "/error-403.html",
             "allowedRoles": [
                 "admin",
-                "reader"
+                "editor",
+                "readonly",
+                "authenticated",
+                "anonymous"
+            ]
+        },
+        {
+            "route": "/api/RemoveStandard",
+            "allowedRoles": [
+                "admin"
+            ]
+        },
+        {
+            "route": "/api/add*",
+            "allowedRoles": [
+                "admin",
+                "editor"
+            ]
+        },
+        {
+            "route": "/api/edit*",
+            "allowedRoles": [
+                "admin",
+                "editor"
+            ]
+        },
+        {
+            "route": "/api/ExecSendPush",
+            "allowedRoles": [
+                "admin",
+                "editor",
+                "readonly"
+            ]
+        },
+        {
+            "route": "/api/ExecExcludeTenant",
+            "allowedRoles": [
+                "admin"
+            ]
+        },
+        {
+            "route": "/api/Exec*",
+            "allowedRoles": [
+                "admin",
+                "editor"
+            ]
+        },
+        {
+            "route": "/api/Remove*",
+            "allowedRoles": [
+                "admin",
+                "editor"
+            ]
+        },
+        {
+            "route": "settings*.html",
+            "allowedRoles": [
+                "admin"
             ]
         },
         {
             "route": "*",
             "allowedRoles": [
-                "reader",
-                "admin"
+                "admin",
+                "editor",
+                "readonly",
+                "reader"
             ]
         }
     ],
@@ -47,10 +112,15 @@
     "responseOverrides": {
         "401": {
             "redirect": "/login",
-            "statusCode": 302
+            "statusCode": 302,
+            "exclude": [
+                "/assets/illustrations/*.{png,jpg,gif}",
+                "/css/*"
+            ]
         },
         "403": {
-            "redirect": "error-403.html",
+            "redirect": "/error-403.html",
+            "statusCode": 403,
             "exclude": [
                 "/assets/illustrations/*.{png,jpg,gif}",
                 "/css/*"
@@ -61,7 +131,7 @@
         }
     },
     "globalHeaders": {
-        "content-security-policy": "default-src https: 'unsafe-eval' 'unsafe-inline'; object-src 'none'"
+        "content-security-policy": "default-src https: 'unsafe-eval' 'unsafe-inline'; object-src 'none'; img-src 'self' data: *"
     },
     "mimeTypes": {
         ".json": "text/json"

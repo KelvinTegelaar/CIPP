@@ -10,14 +10,14 @@ $(document).ready(function () {
         e.preventDefault();
         searchParams = new URLSearchParams(window.location.search)
         currentTenant = searchParams.get('Tenantfilter');
-        if(currentTenant && currentTenant !== ''){
-            history.pushState(null, null, '?page=' + $(this).attr('href') + '&Tenantfilter=' + currentTenant);
+        if (currentTenant && currentTenant !== '') {
+            history.pushState(null, null, '?page=' + $(this).attr('apilink') + '&Tenantfilter=' + currentTenant);
         }
         else {
-            history.pushState(null, null, '?page=' + $(this).attr('href'));
+            history.pushState(null, null, '?page=' + $(this).attr('apilink'));
         }
 
-        $('#bodycontent').load($(this).attr('href') + '.html');
+        $('#bodycontent').load($(this).attr('apilink') + '.html');
         $(".sidenav-menu a").removeClass("active");
         $(".sidenav-menu a[aria-expanded='true']").addClass("active");
         $(".SpecialNavLink a").removeClass("active");
