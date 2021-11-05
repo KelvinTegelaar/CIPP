@@ -106,9 +106,18 @@
                                 <div class="col-xxl-6 col-xl-8">
                                     <h3 class="text-primary">Step 2</h3>
                                     <h5 class="card-title mb-4">Enter the raw JSON for this policy. See
-                                        <a href="https://github.com/KelvinTegelaar/CIPP/blob/master/Documentation/DeployPolicy.md">this
+                                        <a
+                                            href="https://github.com/KelvinTegelaar/CIPP/blob/master/Documentation/DeployPolicy.md">this
                                             link</a> for more information
                                     </h5>
+                                    <div class="mb-3">
+                                        <label for="TemplateType">Select policy type</label>
+                                        <select name="TemplateType" class="form-control" id="TemplateType">
+                                            <option value="Admin">Administrative Template</option>
+                                            <option value="Catalog">Settings Catalog</option>
+                                            <option value="Device">Custom Configuration</option>
+                                        </select>
+                                    </div>
                                     <div class="mb-3">
                                         <label class="small mb-1" for="inputEmailAddress">Policy Name</label>
                                         <input class="form-control" id="inputEmailAddress"

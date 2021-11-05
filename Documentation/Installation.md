@@ -42,6 +42,7 @@ For full functionality, you'll need the following permissions for your Secure Ap
 | DeviceManagementServiceConfig.ReadWrite.All             | Delegated, Application | Read and write Microsoft Intune configuration                     |
 | Directory.AccessAsUser.All                              | Delegated              | Access directory as the signed in user                            |
 | Directory.Read.All                                      | Application            | Read directory data                                               |
+| Domain.Read.All                                         | Delegated              | Read domain data                            |
 | Group.Create                                            | Application            | Create groups                                                     |
 | Group.Read.All                                          | Application            | Read all groups                                                   |
 | Group.ReadWrite.All                                     | Delegated, Application | Read and write all groups                                         |
@@ -97,6 +98,8 @@ Click here to run the automated setup. This does most of the work for you. If yo
 
 The first 20 minutes the application can respond pretty slow, this is due to downloading some PowerShell modules from Microsoft. I can't make that any faster but just note before you get started. :)
 
+For updating the application, check out our updating document [here](/documentation/updating.md)
+
 ## It's not working, I'm having issues
 
 Before you create an issue, please restart both the Static Web App and Azure Function host, this solves 99,9% of all issues. Turn it off, turn it on again. ;)
@@ -120,7 +123,7 @@ $customers = Get-MsolPartnerContract -All
 foreach ($customer in $customers) {
     try {
         $Baseuri = "https://graph.microsoft.com/beta"
-        $CustGraphToken = New-PartnerAccessToken -ApplicationId $ApplicationId -Credential $credential -RefreshToken $refreshToken -Scopes "https://graph.microsoft.com/.default" -ServicePrincipal -Tenant $CustomerTenant
+        $CustGraphToken = New-PartnerAccessToken -ApplicationId $ApplicationId -Credential $credential -RefreshToken $refreshToken -Scopes "https://graph.microsoft.com/.default" -ServicePrincipal -Tenant $customer.customerid
         $Header = @{
             Authorization = "Bearer $($CustGraphToken.AccessToken)"
         }
