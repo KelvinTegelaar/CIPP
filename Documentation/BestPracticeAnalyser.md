@@ -8,7 +8,7 @@ The Best Practice Analyser is a series of checks that run against all of your 36
 
 In the left hand menu, navigate to **Tenant Administration > Standards > Best Practice Analyser**. If this is your first ever run you may see an error initially because there is no data; this is expected.
 ## How do I refresh or generate the data?
-**Reports are generated / refreshed automatically at midnight on a daily basis.**
+###**Reports are generated / refreshed automatically at midnight on a daily basis.**
 If you wish to manually refresh at another time there is button called **Force Refresh All Data**. You only need to click this once.
 
 ---
