@@ -129,3 +129,18 @@
             </div>
         </div>
     </div>
+    <script>
+        $.ajax({
+            'async': true,
+            'global': false,
+            'url': 'api/ListNotificationConfig',
+            'dataType': "json",
+            'success': function (data) {
+                //basic fields
+                $('#email').val(data.email)
+                $('#Webhook').val(data.Webhook)
+
+            }
+        }
+        )
+    </script>
