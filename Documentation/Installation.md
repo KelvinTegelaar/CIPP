@@ -98,7 +98,7 @@ Click here to run the automated setup. This does most of the work for you. If yo
 
 The first 20 minutes the application can respond pretty slow, this is due to downloading some PowerShell modules from Microsoft. I can't make that any faster but just note before you get started. :)
 
-For updating the application, check out our updating document [here](/documentation/updating.md)
+For updating the application, check out our updating document [here](/documentation/Updating.md)
 
 ## It's not working, I'm having issues
 
