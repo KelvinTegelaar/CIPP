@@ -3,6 +3,9 @@ import React from 'react'
 const Home = React.lazy(() => import('./views/home/Home'))
 const Users = React.lazy(() => import('./views/identity/administration/Users'))
 const Groups = React.lazy(() => import('./views/identity/administration/Groups'))
+const BestPracticeAnalyzer = React.lazy(() =>
+  import('./views/tenant/standards/BestPracticeAnalyser'),
+)
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -11,6 +14,19 @@ const routes = [
   { path: '/identity/administration', name: 'Administration' },
   { path: '/identity/administration/users', name: 'Users', component: Users },
   { path: '/identity/administration/groups', name: 'Groups', component: Groups },
+  {
+    path: '/tenant',
+    name: 'Tenant',
+  },
+  {
+    path: '/tenant/standards',
+    name: 'Standards',
+  },
+  {
+    path: '/tenant/standards/bpareport',
+    name: 'Best Practice Report',
+    component: BestPracticeAnalyzer,
+  },
 ]
 
 export default routes

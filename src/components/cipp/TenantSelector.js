@@ -12,17 +12,18 @@ const TenantSelector = () => {
     dispatch(listTenants())
   }, [])
 
-  const activated = (customerId) => {
-    var selectedTenant = tenants.filter((t) => {
+  const activated = (customerId, b, c) => {
+    const selectedTenant = tenants.filter((t) => {
       return t.customerId === customerId
     })
-    dispatch(setTenant(selectedTenant[0]))
+    dispatch(setTenant({ tenant: selectedTenant[0] }))
   }
 
   return (
     <div>
       <SelectSearch
         search
+        // onChange={(tenantId) => dispatch(setTenant({ tenant: tenantId }))}
         onChange={activated}
         filterOptions={fuzzySearch}
         placeholder="Select Tenant"
