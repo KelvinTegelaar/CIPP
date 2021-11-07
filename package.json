@@ -4,8 +4,10 @@
   "description": "The CyberDrain Improved Partner Portal is a portal to help manage administration for Microsoft Partners.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "npx eslint . & npx prettier --check .",
-    "lint:fix": "npx eslint . --fix & npx prettier --write .",
+    "lint": "npx eslint .",
+    "lint:fix": "npx eslint . --fix",
+    "prettier": "npx prettier --check .",
+    "prettier:fix": "npx prettier --write .",
     "prepare": "npx husky install"
   },
   "repository": {
