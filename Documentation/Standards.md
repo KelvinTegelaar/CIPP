@@ -7,7 +7,7 @@ The Standards page allows you to (re)set specific standards over your entire cli
 In the next version, we will be adding more standardized options and settings, we'll also allow you to send an alert to either your RMM system or e-mail. Below are the standards explained
 ## Enable the Unified Audit Log
 
-Enables organisation customisation and the unified audit log for the tenant, allow you to use the logging engine Microsoft has. We have opted not to enable Mailbox logging as this is enabled default on all mailboxes now, and changing the settings is not recommended.
+Enables organisation customisation and the unified audit log for the tenant, allowing you to use the logging engine Microsoft has. We have opted not to enable Mailbox logging as this is enabled default on all mailboxes now, and changing the settings is not recommended.
 ## Enable Security Defaults
 
 Enables Microsoft's Security Defaults for Azure AD. For more info about Security Defaults, Check out Microsoft's blog [here](https://docs.microsoft.com/en-us/azure/active-directory/fundamentals/concept-fundamentals-security-defaults), Or CyberDrain's blog [here](https://www.cyberdrain.com/automating-with-powershell-enabling-secure-defaults-and-sd-explained/)
@@ -23,11 +23,11 @@ This setting enables users to no longer add applications themselves, but instead
 
 Does what it says on the tin.
 
-## Enable usernames instead of pseudo aonoymised names in reports
+## Enable usernames instead of pseudo anonymised names in reports
 
 Microsoft announced some of the APIs and reports will no longer contain names, to comply with legal requests by specific countries. This proves an issue for a lot of MSPs because those reports are required for engineers to monitor and react on. This changes that setting to allow to see usernames again.
 
-## Enable Self service password reset
+## Enable Self-service password reset
 
 Does what it says on the tin. Requires users to register 2 formats to reset their password themselves without admin intervention.
 
@@ -41,7 +41,7 @@ Disables most forms of user basic authentication, allows smtp authentication as 
 
 ## Disable Shared Mailbox AAD account
 
-Shared mailboxes allow logon to them by users if the password is reset, this a security risk as you do not know who has this password. Microsoft's recommendation is disabling the user account.
+Shared mailboxes allow logon to them by users if the password is reset, this is a security risk as you do not know who has this password. Microsoft's recommendation is disabling the user account.
 
 ## Enable auto expanding archives
 
@@ -53,4 +53,4 @@ Allows you to deploy per-user MFA for all the users in the tenant. Does not allo
 # Current known issues / Limitations
 
 - These jobs run asynchronously every 3 hours per default, you can check the log for the current operation by looking for "Standards API"
-- The job engine might slow down other APIs temporarily if it has a lot to process.(loads of settings, loads of tenants).
+- The job engine might slow down other APIs temporarily if it has a lot to process. (loads of settings, loads of tenants).
