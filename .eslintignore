@@ -1,0 +1,23 @@
+# Ignore artifacts:
+build
+.github
+
+# Ignore assets
+assets
+
+# Ignore vendor libs:
+css/bootstrap.min.css
+css/dataTables.bootstrap5.min.css
+css/styles.css
+js/datatables
+js/bootstrap.bundle.min.js
+js/fa.all.min.js
+js/feather.min.js
+js/jquery-3.6.0.min.js
+js/litepicker.js
+js/markdown.js
+js/countrylist.json
+
+# Ignore markdown (for now)
+*.md
+Documentation

@@ -1,2 +1,8 @@
+# editor, github and lint
 .github/
 .vscode/
+.idea/
+.husky/
+
+# node packages
+node_modules

@@ -1,0 +1,38 @@
+{
+  "name": "cipp",
+  "version": "1.3.0",
+  "description": "The CyberDrain Improved Partner Portal is a portal to help manage administration for Microsoft Partners.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "npx eslint . & npx prettier --check .",
+    "lint:fix": "npx eslint . --fix & npx prettier --write .",
+    "prepare": "npx husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KelvinTegelaar/CIPP.git"
+  },
+  "author": "Kelvin Tegelaar",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/KelvinTegelaar/CIPP/issues"
+  },
+  "homepage": "https://github.com/KelvinTegelaar/CIPP#readme",
+  "engines": {
+    "node": "16",
+    "npm": ">=7"
+  },
+  "devDependencies": {
+    "eslint": "^8.2.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-html": "^6.2.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "husky": "^7.0.4",
+    "lint-staged": "^11.2.6",
+    "prettier": "2.4.1"
+  },
+  "lint-staged": {
+    "*.js": "npx eslint --cache --fix",
+    "*.html": "npx prettier --write ."
+  }
+}
