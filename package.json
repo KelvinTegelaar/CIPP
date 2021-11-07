@@ -8,8 +8,7 @@
     "lint": "npx eslint .",
     "lint:fix": "npx eslint . --fix",
     "prettier": "npx prettier --check .",
-    "prettier:fix": "npx prettier --write .",
-    "prepare": "npx husky install"
+    "prettier:fix": "npx prettier --write ."
   },
   "repository": {
     "type": "git",
