@@ -115,6 +115,7 @@ $(document).ready(function () {
                             <div class="dropdown">
                                 <i class="fas fa-bars dropdown-toggle text-primary" data-bs-toggle="dropdown" style="cursor:hand;"></i>
                                 <ul class="dropdown-menu" style="min-width:260px;">
+                                    <li><a class="dropdown-item" href=index.html?page=ViewUser&Tenantfilter=${TenantID}&UserID=${id}><i data-bs-toggle="tooltip" data-bs-placement="top" title="View User" class="fas fa-eye fa-fw"></i><nothing class="APILink">View User</a></li>
                                     <li><a class="dropdown-item" href=index.html?page=EditUser&Tenantfilter=${TenantID}&UserID=${id}><i data-bs-toggle="tooltip" data-bs-placement="top" title="Edit User" class="fas fa-cog fa-fw"></i><nothing class="APILink">Edit User</a></li>
                                     <li><a class="dropdown-item${accountDisabledDD}" actionname="send push for ${row.displayName}" href=api/ExecSendPush?TenantFilter=${TenantID}&UserEmail=${row.mail}><i data-bs-toggle="tooltip" data-bs-placement="top" title="Send MFA Push to User" class="fas fa-exchange-alt fa-fw"></i></i>Send MFA Push</a></li>
                                     <li><a class="dropdown-item${mailDisabledDD}" actionname="convert ${row.displayName} to a shared mailbox" href=api/ExecConvertToSharedMailbox?TenantFilter=${TenantID}&ID=${id}><i data-bs-toggle="tooltip" data-bs-placement="top" title="Convert to Shared" class="fas fa-share-alt fa-fw"></i>Convert to Shared Mailbox</a></li>
