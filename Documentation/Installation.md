@@ -2,7 +2,7 @@
 
 # Prerequisites
 
-For the installation and maintenance, we assume you have some knowledge of Github, and have setup the Secure Application Model prior to install. Haven't setup the Secure Application model yet? Check out [this](https://www.cyberdrain.com/connect-to-exchange-online-automated-when-mfa-is-enabled-using-the-secureapp-model/) script. For a step-by-step guide of how setting up the Secure Application Model, see [this](https://www.gavsto.com/secure-application-model-for-the-layman-and-step-by-step/).
+For the installation and maintenance, we assume you have some knowledge of Github, and have setup the Secure Application Model prior to install. Haven't set up the Secure Application model yet? Check out [this](https://www.cyberdrain.com/connect-to-exchange-online-automated-when-mfa-is-enabled-using-the-secureapp-model/) script. For a step-by-step guide of how to set up the Secure Application Model, see [this](https://www.gavsto.com/secure-application-model-for-the-layman-and-step-by-step/).
 
 You'll also need the following permissions for your secure application model, to add permissions follow these instructions:
 
@@ -92,7 +92,7 @@ You'll need the following to get started;
 
 # Automated setup
 
-Click here to run the automated setup. This does most of the work for you. If you don't want to use the automated installer, use the instructions below, but be warned that this is really not advised, there's a lot of moving parts where one could make a mistake.
+Click here to run the automated setup. This does most of the work for you. If you don't want to use the automated installer, use the instructions below, but be warned that this is really not advised, there are a lot of moving parts where one could make a mistake.
 
 [![Deploy To Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FKelvinTegelaar%2FCIPP%2Fmaster%2FDocumentation%2FAzureDeploymentTemplate.json)
 
@@ -162,7 +162,7 @@ This is most likely because of the Azure Static Web Apps component. This compone
 At the moment of deployment, the application will use a randomly generated name. To change this, go to your Resource Group in Azure, click on cipp-swa-xxxx and click on Custom Domains. You'll be able to add your own domain name here.
 # Adding users to allow the usage of the CIPP
 
-After deployment, go to your resource group in Azure and click on cipp-swa-xxxx. Click on Role Management and invite the users you want. Currently we only support the "reader" role, so make sure you enter that in the roles field.
+After deployment, go to your resource group in Azure and click on cipp-swa-xxxx. Click on Role Management and invite the users you want. Currently, we only support the "reader" role, so make sure you enter that in the roles field.
 
 # Manual instructions
 ## Create Azure Function host
@@ -179,7 +179,7 @@ Create an Azure Keyvault and give the system managed identity access to update, 
 
 ## Create an Azure Static Web App
 
-Create a Premium Azure Static WebApp in the Azure portal and use the CIPP Repo fork you've made as the source. Each time an update is executed you must create a pull based on the latest version to upgrade the frontend.
+Create a Premium Azure Static WebApp in the Azure portal and use the CIPP Repo fork you've made as the source. Each time an update is executed, you must create a pull based on the latest version to upgrade the frontend.
 
 After creation, perform the following changes:
 - Attach the Function App to the functions
