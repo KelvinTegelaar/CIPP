@@ -4,6 +4,7 @@
   "description": "The CyberDrain Improved Partner Portal is a portal to help manage administration for Microsoft Partners.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "swa start . --swa-config-location c:\\asdf --api-location http://localhost:7071",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint . --fix",
     "prettier": "npx prettier --check .",
@@ -32,6 +33,10 @@
     "husky": "^7.0.4",
     "lint-staged": "^11.2.6",
     "prettier": "2.4.1"
+  },
+  "peerDependencies": {
+    "@azure/static-web-apps-cli": "^0.8.0",
+    "azure-functions-core-tools": "^3.0.3904"
   },
   "lint-staged": {
     "*.js": "npx eslint --cache --fix",

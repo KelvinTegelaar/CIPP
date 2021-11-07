@@ -10,7 +10,11 @@ css/bootstrap.min.css
 css/dataTables.bootstrap5.min.css
 css/styles.css
 js/countrylist.json
-js/datatables
+js/datatables/Buttons-2.0.1
+js/datatables/JSZip-2.5.0
+js/datatables/pdfmake-0.1.36
+js/datatables/bootstable.min.js
+js/datatables/jquery.dataTables.js
 js/bootstrap.bundle.min.js
 js/fa.all.min.js
 js/feather.min.js
