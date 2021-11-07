@@ -149,9 +149,10 @@
                         <section class="SpecialNavLink">
                             <div class="collapse" id="collapseIdentity" data-bs-parent="#accordionSidenav">
                                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
-                                    <a class="nav-link" href="users">Users</a>
-                                    <a class="nav-link" href="groups">Groups</a>
-                                    <a class="nav-link" href="OffboardUser">Offboarding Wizard</a>
+                                    <a class="nav-link" apilink="users" href="index.html?page=users">Users</a>
+                                    <a class="nav-link" apilink="groups" href="index.html?page=groups">Groups</a>
+                                    <a class="nav-link" apilink="OffboardUser"
+                                        href="index.html?page=OffboardUser">Offboarding Wizard</a>
 
                                 </nav>
                             </div>
@@ -165,9 +166,12 @@
                         <section class="SpecialNavLink">
                             <div class="collapse" id="collapseIDReports" data-bs-parent="#accordionSidenav">
                                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
-                                    <a class="nav-link" href="DeviceList">Devices</a>
-                                    <a class="nav-link" href="MFAReport">MFA Report</a>
-                                    <a class="nav-link" href="BasicAuth">Basic Auth Report</a>
+                                    <a class="nav-link" apilink="DeviceList"
+                                        href="index.html?page=DeviceList">Devices</a>
+                                    <a class="nav-link" apilink="MFAReport" href="index.html?page=MFAReport">MFA
+                                        Report</a>
+                                    <a class="nav-link" apilink="BasicAuth" href="index.html?page=BasicAuth">Basic Auth
+                                        Report</a>
 
                                 </nav>
                             </div>
@@ -185,7 +189,10 @@
                         <section class="SpecialNavLink">
                             <div class="collapse" id="collapseTenantAdmin" data-bs-parent="#accordionSidenav">
                                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
-                                    <a class="nav-link" href="tenants">Tenants</a>
+                                    <a class="nav-link" apilink="tenants" href="index.html?page=tenants">Tenants</a>
+                                    <a class="nav-link" apilink="ConditionalAccessPoliciesList"
+                                        href="index.html?page=ConditionalAccessPoliciesList">Conditional Access
+                                        Policies</a>
                                 </nav>
                             </div>
                         </section>
@@ -199,10 +206,15 @@
                         <section class="SpecialNavLink">
                             <div class="collapse" id="collapseStandards" data-bs-parent="#accordionSidenav">
                                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
-                                    <a class="nav-link" href="standards">List applied standards</a>
-                                    <a class="nav-link" href="Addstandard">Add standard</a>
-                                    <a class="nav-link" href="BestPracticeAnalyserList">Best Practice Analyser
+                                    <a class="nav-link" apilink="standards" href="index.html?page=standards">List
+                                        standards</a>
+                                    <a class="nav-link" apilink="Addstandard" href="index.html?page=Addstandard">Apply
+                                        standard</a>
+                                    <a class="nav-link" apilink="BestPracticeAnalyserList"
+                                        href="index.html?page=BestPracticeAnalyserList">Best Practices Analyser
                                         Report</a>
+                                    <a class="nav-link" apilink="DomainAnalyserList"
+                                        href="index.html?page=DomainAnalyserList">Domains Analyser</a>
                                 </nav>
                             </div>
                         </section>
@@ -219,8 +231,10 @@
                         <section class="SpecialNavLink">
                             <div class="collapse" id="collapseApplications" data-bs-parent="#accordionSidenav">
                                 <nav class="sidenav-menu-nested nav accordion " id="accordionSidenavApps">
-                                    <a class="nav-link" href="AllAppsList">List</a>
-                                    <a class="nav-link" href="AddChocoApp">Add Choco app</a>
+                                    <a class="nav-link" apilink="AllAppsList"
+                                        href="index.html?page=AllAppsList">List</a>
+                                    <a class="nav-link" apilink="AddChocoApp" href="index.html?page=AddChocoApp">Add
+                                        Choco app</a>
                                 </nav>
                             </div>
                         </section>
@@ -240,12 +254,18 @@
                             <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavAppsMenu">
                                 <section class="SpecialNavLink">
                                     <!-- Nested Sidenav Accordion (Apps -> Knowledge Base)-->
-                                    <a class="nav-link" href="AddDevice">Add Device</a>
-                                    <a class="nav-link" href="AddProfile">Add Profile</a>
-                                    <a class="nav-link" href="AddESP">Add Status Page</a>
-                                    <a class="nav-link" href="AutopilotDeviceList">List Devices</a>
-                                    <a class="nav-link" href="AutopilotProfileList">List Profiles</a>
-                                    <a class="nav-link" href="AutopilotESPList">List Status Pages</a>
+                                    <a class="nav-link" apilink="AddDevice" href="index.html?page=AddDevice">Add
+                                        Device</a>
+                                    <a class="nav-link" apilink="AddProfile" href="index.html?page=AddProfile">Add
+                                        Profile</a>
+                                    <a class="nav-link" apilink="AddESP" href="index.html?page=AddESP">Add Status
+                                        Page</a>
+                                    <a class="nav-link" apilink="AutopilotDeviceList"
+                                        href="index.html?page=AutopilotDeviceList">List Devices</a>
+                                    <a class="nav-link" apilink="AutopilotProfileList"
+                                        href="index.html?page=AutopilotProfileList">List Profiles</a>
+                                    <a class="nav-link" apilink="AutopilotESPList"
+                                        href="index.html?page=AutopilotESPList">List Status Pages</a>
                                     <!-- Nested Sidenav Accordion (Apps -> User Management)-->
                                 </section>
                             </nav>
@@ -260,10 +280,10 @@
                         <div class="collapse" id="collapseFlows" data-bs-parent="#accordionSidenav">
                             <nav class="sidenav-menu-nested nav">
                                 <section class="SpecialNavLink">
-                                    <a class="nav-link" href="IntunePolicyList">List Intune Policies</a>
-                                    <a class="nav-link" href="ConditionalAccessPoliciesList">Conditional Access
-                                        Policies</a>
-                                    <a class="nav-link" href="AddPolicy">Add Policy</a>
+                                    <a class="nav-link" apilink="IntunePolicyList"
+                                        href="index.html?page=IntunePolicyList">List Intune Policies</a>
+                                    <a class="nav-link" apilink="AddPolicy" href="index.html?page=AddPolicy">Add
+                                        Policy</a>
                             </nav>
                         </div>
                         </section>
@@ -281,7 +301,8 @@
                         <div class="collapse" id="collapseOnedrive" data-bs-parent="#accordionSidenav">
                             <nav class="sidenav-menu-nested nav">
                                 <section class="SpecialNavLink">
-                                    <a class="nav-link" href="OnedriveList">List Onedrive</a>
+                                    <a class="nav-link" apilink="OnedriveList" href="index.html?page=OnedriveList">List
+                                        Onedrive</a>
                                 </section>
                             </nav>
                         </div>
@@ -297,7 +318,8 @@
                         <div class="collapse" id="collapseSharepoint" data-bs-parent="#accordionSidenav">
                             <nav class="sidenav-menu-nested nav">
                                 <section class="SpecialNavLink">
-                                    <a class="nav-link" href="SharepointList">List Sharepoint</a>
+                                    <a class="nav-link" apilink="SharepointList"
+                                        href="index.html?page=SharepointList">List Sharepoint</a>
                                 </section>
                             </nav>
                         </div>
@@ -311,9 +333,12 @@
                         <div class="collapse" id="collapseUtilities" data-bs-parent="#accordionSidenav">
                             <nav class="sidenav-menu-nested nav">
                                 <section class="SpecialNavLink">
-                                    <a class="nav-link" href="TeamsList">List Teams</a>
-                                    <a class="nav-link" href="AddTeam">Add Team</a>
-                                    <a class="nav-link" href="TeamsActivity">Teams Activity</a>
+                                    <a class="nav-link" apilink="TeamsList" href="index.html?page=TeamsList">List
+                                        Teams</a>
+                                    <a class="nav-link" apilink="AddTeam" href="index.html?page=AddTeam">Add
+                                        Team</a>
+                                    <a class="nav-link" apilink="TeamsActivity"
+                                        href="index.html?page=TeamsActivity">Teams Activity</a>
                                 </section>
                             </nav>
                         </div>
@@ -324,6 +349,19 @@
                         <div class="sidenav-menu-heading">Email & Exchange</div>
                         <!-- Sidenav Accordion (Layout)-->
                         <!-- Sidenav Accordion (Utilities)-->
+                        <a class="nav-link" href="" data-bs-toggle="collapse" data-bs-target="#collapseContact"
+                            aria-expanded="false" aria-controls="collapseContact">
+                            <div class="nav-link-icon"><i data-feather="tool"></i></div>
+                            Administration
+                            <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <section class="SpecialNavLink">
+                            <div class="collapse" id="collapseContact" data-bs-parent="#accordionSidenav">
+                                <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
+                                    <a class="nav-link" apilink="contacts" href="index.html?page=contacts">Contacts</a>
+                                </nav>
+                            </div>
+                        </section>
                         <a class="nav-link collapsed" href="" data-bs-toggle="collapse" data-bs-target="#collapseEmail"
                             aria-expanded="false" aria-controls="collapseEmail">
                             <div class="nav-link-icon"><i data-feather="mail"></i></div>
@@ -333,10 +371,14 @@
                         <div class="collapse" id="collapseEmail" data-bs-parent="#accordionSidenav">
                             <nav class="sidenav-menu-nested nav">
                                 <section class="SpecialNavLink">
-                                    <a class="nav-link" href="MailboxStatisticsList">Mailbox Statistics</a>
-                                    <a class="nav-link" href="MailboxList">Mailbox List</a>
-                                    <a class="nav-link" href="MailboxCASList">Mailbox Client Access Settings</a>
-                                    <a class="nav-link" href="Messagetrace">Message Trace</a>
+                                    <a class="nav-link" apilink="MailboxStatisticsList"
+                                        href="index.html?page=MailboxStatisticsList">Mailbox Statistics</a>
+                                    <a class="nav-link" apilink="MailboxList" href="index.html?page=MailboxList">Mailbox
+                                        List</a>
+                                    <a class="nav-link" apilink="MailboxCASList"
+                                        href="index.html?page=MailboxCASList">Mailbox Client Access Settings</a>
+                                    <a class="nav-link" apilink="Messagetrace"
+                                        href="index.html?page=Messagetrace">Message Trace</a>
                             </nav>
                         </div>
                         </section>
@@ -349,7 +391,7 @@
                         </a>
                         <!-- Sidenav Link (Tables)-->
                         <section class="SpecialNavLink">
-                            <a class="nav-link" href="settings">
+                            <a class="nav-link" apilink="settings">
                                 <div class="nav-link-icon"><i data-feather="filter"></i></div>
                                 Configuration settings
                             </a>
@@ -381,6 +423,17 @@
                             Placeholder
                         </div>
                     </div>
+                    <div class="alert alert-danger align-items-center d-none" id="oldrole" role="alert">
+                        <div>
+                            <b>Error: </b>We have introduced a new role management system. You are currently accessing
+                            the system as a
+                            unsupported role. Please remove the old role "reader" and change your role to "readonly",
+                            "editor",
+                            or "admin". Find the documentation about this <a
+                                href="https://github.com/KelvinTegelaar/CIPP/tree/master/Documentation/Roles.md"
+                                target="_blank">here</a>
+                        </div>
+                    </div>
                     <!-- Main page content-->
                     <div class="container-xl px-4 mt-5">
                         <!-- Custom page header alternative example-->
@@ -399,11 +452,19 @@
                                         <div class="d-flex align-items-center">
                                             <div class="flex-grow-1">
                                                 <div class="small fw-bold text-info mb-1">Your CIPP Version</div>
-                                                <div class="h5" id="dashversionlocalcipp">Unknown</div>
+                                                <div class="h5" id="dashversionlocalcipp">
+                                                    <div class="spinner-border text-primary" role="status">
+                                                        <span class="sr-only"></span>
+                                                    </div></span>
+                                                </div>
                                             </div>
                                             <div class="flex-grow-1">
                                                 <div class="small fw-bold text-info mb-1">Latest CIPP Version</div>
-                                                <div class="h5" id="dashversionremotecipp">Unknown</div>
+                                                <div class="h5" id="dashversionremotecipp">
+                                                    <div class="spinner-border text-primary" role="status">
+                                                        <span class="sr-only"></span>
+                                                    </div></span>
+                                                </div>
                                             </div>
                                             <div class="ms-2"><i class="fas fa-code-branch fa-2x text-gray-200"></i>
                                             </div>
@@ -418,11 +479,19 @@
                                         <div class="d-flex align-items-center">
                                             <div class="flex-grow-1">
                                                 <div class="small fw-bold text-info mb-1">Your CIPP API Version</div>
-                                                <div class="h5" id="dashversionlocalcippapi">Unknown</div>
+                                                <div class="h5" id="dashversionlocalcippapi">
+                                                    <div class="spinner-border text-primary" role="status">
+                                                        <span class="sr-only"></span>
+                                                    </div></span>
+                                                </div>
                                             </div>
                                             <div class="flex-grow-1">
                                                 <div class="small fw-bold text-info mb-1">Latest CIPP API Version</div>
-                                                <div class="h5" id="dashversionremotecippapi">Unknown</div>
+                                                <div class="h5" id="dashversionremotecippapi">
+                                                    <div class="spinner-border text-primary" role="status">
+                                                        <span class="sr-only"></span>
+                                                    </div></span>
+                                                </div>
                                             </div>
                                             <div class="ms-2"><i class="fas fa-code-branch fa-2x text-gray-200"></i>
                                             </div>
