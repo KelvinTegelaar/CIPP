@@ -50,10 +50,10 @@ $(document).ready(function () {
                 },
                 dom: 'fBlrtip',
                 buttons: [
-                    { extend: 'copyHtml5', className: 'btn btn-primary btn-sm' },
-                    { extend: 'excelHtml5', className: 'btn btn-primary btn-sm', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4] } },
-                    { extend: 'csvHtml5', className: 'btn btn-primary btn-sm', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4] } },
-                    { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', orientation: 'landscape', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4] } },
+                    { extend: 'copyHtml5', className: 'btn btn-primary btn-sm', exportOptions: { orthogonal: "export" } },
+                    { extend: 'excelHtml5', className: 'btn btn-primary btn-sm', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4], orthogonal: "export" } },
+                    { extend: 'csvHtml5', className: 'btn btn-primary btn-sm', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4], orthogonal: "export" } },
+                    { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', orientation: 'landscape', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4], orthogonal: "export" } },
                 ],
                 "columns": [
                     { "data": "displayName" },
@@ -87,9 +87,9 @@ $(document).ready(function () {
                         "render": function (data, type, row) {
                             if (type === "export" || type === "sort" || type === "filter") {
                                 if (data === true) {
-                                    return 'Account Enabled'
+                                    return 'On Premises Sync Enabled'
                                 } else if (data === false) {
-                                    return 'Account Disabled'
+                                    return 'On Premises Sync Disabled'
                                 } else {
                                     return 'No Data'
                                 }
