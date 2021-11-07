@@ -73,7 +73,7 @@ jobs:
 So you want to jump in on helping us make this awesome? You'll need a local development environment. I'm assuming you have *some* programming experience. You'll need a couple of tools to get started
 
 - Install [node.js](https://nodejs.org/en/)
-- Install .NET Core 2 and .NET Core 5
+- Install [.NET Core 2 SDK](https://dotnet.microsoft.com/download/dotnet/2.2) and [.NET Core 5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
 - After installation execute the following commands:
 ```
 npm install -g @azure/static-web-apps-cli
@@ -107,6 +107,7 @@ Local.settings.json example:
   "IsEncrypted": false,
   "Values": {
     "FUNCTIONS_WORKER_RUNTIME": "powershell",
+    "FUNCTIONS_WORKER_RUNTIME_VERSION": "~7",
     "AzureWebJobsStorage": "DefaultEndpointsProtocol=AzureStorageConnectionStringhere",
     "applicationid": "appid",
     "applicationsecret": "applicationsecret",

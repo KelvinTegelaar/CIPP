@@ -61,7 +61,7 @@ For full functionality, you'll need the following permissions for your Secure Ap
 | PrivilegedAccess.Read.AzureResources                    | Delegated              | Read privileged access to Azure resources                         |
 | PrivilegedAccess.ReadWrite.AzureADGroup                 | Application            | Read and write privileged access to Azure AD groups               |
 | PrivilegedAccess.ReadWrite.AzureResources               | Delegated              | Read and write privileged access to Azure resources               |
-| profile                                                 | Delegated              | View users' basic profile                                         |
+| OpenID permissions - profile                            | Delegated              | View users' basic profile                                         |
 | Reports.Read.All                                        | Delegated, Application | Read all usage reports                                            |
 | RoleManagement.ReadWrite.Directory                      | Delegated, Application | Read and write directory RBAC settings                            |
 | SecurityActions.ReadWrite.All                           | Delegated              | Read and update your organization's security actions              |
@@ -98,7 +98,7 @@ Click here to run the automated setup. This does most of the work for you. If yo
 
 The first 20 minutes the application can respond pretty slow, this is due to downloading some PowerShell modules from Microsoft. I can't make that any faster but just note before you get started. :)
 
-For updating the application, check out our updating document [here](/documentation/updating.md)
+For updating the application, check out our updating document [here](/documentation/Updating.md)
 
 ## It's not working, I'm having issues
 

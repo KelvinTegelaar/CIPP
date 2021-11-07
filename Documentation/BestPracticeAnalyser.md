@@ -3,15 +3,13 @@
 # Best Practice Analyser
 
 The Best Practice Analyser is a series of checks that run against all of your 365 tenants. The Best Practice concept of this has been wideless discussed with numerous MSPs. Most of these Best Practices have been derived from the standards portion of CIPP. The Best Practice Analyser is entirely read only. It will not make any changes to your tenants.
-## Current known issues / Limitations
 
-The final plan will be to have the data refresh once a day. With version 1.2.0 you will need to refresh the data manually.
 ## How do I get started?
 
 In the left hand menu, navigate to **Tenant Administration > Standards > Best Practice Analyser**. If this is your first ever run you may see an error initially because there is no data; this is expected.
 ## How do I refresh or generate the data?
-
-At the top of the page there is button called **Force Refresh All Data**. You only need to click this once.
+### Reports are generated / refreshed automatically at midnight on a daily basis.
+If you wish to manually refresh at another time there is button called **Force Refresh All Data**. You only need to click this once.
 
 ---
 
@@ -56,6 +54,3 @@ Please ensure that you have given adequate time for the Best Practice Analyser t
 
 # I have something to add or an idea for Best Practices
 Excellent! Please add them to the Github Issues as a feature request
-
-
-

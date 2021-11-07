@@ -29,6 +29,16 @@
             ]
         },
         {
+            "route": "/error-403.html",
+            "allowedRoles": [
+                "admin",
+                "editor",
+                "readonly",
+                "authenticated",
+                "anonymous"
+            ]
+        },
+        {
             "route": "/api/RemoveStandard",
             "allowedRoles": [
                 "admin"
@@ -102,10 +112,15 @@
     "responseOverrides": {
         "401": {
             "redirect": "/login",
-            "statusCode": 302
+            "statusCode": 302,
+            "exclude": [
+                "/assets/illustrations/*.{png,jpg,gif}",
+                "/css/*"
+            ]
         },
         "403": {
             "redirect": "/error-403.html",
+            "statusCode": 403,
             "exclude": [
                 "/assets/illustrations/*.{png,jpg,gif}",
                 "/css/*"

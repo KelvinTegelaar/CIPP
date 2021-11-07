@@ -190,8 +190,6 @@
                             <div class="collapse" id="collapseTenantAdmin" data-bs-parent="#accordionSidenav">
                                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
                                     <a class="nav-link" apilink="tenants" href="index.html?page=tenants">Tenants</a>
-                                    <a class="nav-link" apilink="DomainAnalyserList"
-                                        href="index.html?page=DomainAnalyserList">Domains</a>
                                     <a class="nav-link" apilink="ConditionalAccessPoliciesList"
                                         href="index.html?page=ConditionalAccessPoliciesList">Conditional Access
                                         Policies</a>
@@ -213,8 +211,10 @@
                                     <a class="nav-link" apilink="Addstandard" href="index.html?page=Addstandard">Apply
                                         standard</a>
                                     <a class="nav-link" apilink="BestPracticeAnalyserList"
-                                        href="index.html?page=BestPracticeAnalyserList">Best Practice Analyser
+                                        href="index.html?page=BestPracticeAnalyserList">Best Practices Analyser
                                         Report</a>
+                                    <a class="nav-link" apilink="DomainAnalyserList"
+                                        href="index.html?page=DomainAnalyserList">Domains Analyser</a>
                                 </nav>
                             </div>
                         </section>
@@ -282,8 +282,14 @@
                                 <section class="SpecialNavLink">
                                     <a class="nav-link" apilink="IntunePolicyList"
                                         href="index.html?page=IntunePolicyList">List Intune Policies</a>
-                                    <a class="nav-link" apilink="AddPolicy" href="index.html?page=AddPolicy">Add
+                                    <a class="nav-link" apilink="AddPolicy" href="index.html?page=AddPolicy">Apply
                                         Policy</a>
+                                    <a class="nav-link" apilink="AddIntunePolicyTemplate"
+                                        href="index.html?page=AddIntunePolicyTemplate">Add
+                                        Policy Template</a>
+                                    <a class="nav-link" apilink="IntunePolicyTemplates"
+                                        href="index.html?page=IntunePolicyTemplates">List
+                                        Templates</a>
                             </nav>
                         </div>
                         </section>
@@ -429,7 +435,9 @@
                             the system as a
                             unsupported role. Please remove the old role "reader" and change your role to "readonly",
                             "editor",
-                            or "admin"
+                            or "admin". Find the documentation about this <a
+                                href="https://github.com/KelvinTegelaar/CIPP/tree/master/Documentation/Roles.md"
+                                target="_blank">here</a>
                         </div>
                     </div>
                     <!-- Main page content-->
@@ -450,11 +458,19 @@
                                         <div class="d-flex align-items-center">
                                             <div class="flex-grow-1">
                                                 <div class="small fw-bold text-info mb-1">Your CIPP Version</div>
-                                                <div class="h5" id="dashversionlocalcipp">Unknown</div>
+                                                <div class="h5" id="dashversionlocalcipp">
+                                                    <div class="spinner-border text-primary" role="status">
+                                                        <span class="sr-only"></span>
+                                                    </div></span>
+                                                </div>
                                             </div>
                                             <div class="flex-grow-1">
                                                 <div class="small fw-bold text-info mb-1">Latest CIPP Version</div>
-                                                <div class="h5" id="dashversionremotecipp">Unknown</div>
+                                                <div class="h5" id="dashversionremotecipp">
+                                                    <div class="spinner-border text-primary" role="status">
+                                                        <span class="sr-only"></span>
+                                                    </div></span>
+                                                </div>
                                             </div>
                                             <div class="ms-2"><i class="fas fa-code-branch fa-2x text-gray-200"></i>
                                             </div>
@@ -469,11 +485,19 @@
                                         <div class="d-flex align-items-center">
                                             <div class="flex-grow-1">
                                                 <div class="small fw-bold text-info mb-1">Your CIPP API Version</div>
-                                                <div class="h5" id="dashversionlocalcippapi">Unknown</div>
+                                                <div class="h5" id="dashversionlocalcippapi">
+                                                    <div class="spinner-border text-primary" role="status">
+                                                        <span class="sr-only"></span>
+                                                    </div></span>
+                                                </div>
                                             </div>
                                             <div class="flex-grow-1">
                                                 <div class="small fw-bold text-info mb-1">Latest CIPP API Version</div>
-                                                <div class="h5" id="dashversionremotecippapi">Unknown</div>
+                                                <div class="h5" id="dashversionremotecippapi">
+                                                    <div class="spinner-border text-primary" role="status">
+                                                        <span class="sr-only"></span>
+                                                    </div></span>
+                                                </div>
                                             </div>
                                             <div class="ms-2"><i class="fas fa-code-branch fa-2x text-gray-200"></i>
                                             </div>
