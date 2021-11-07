@@ -3,6 +3,7 @@
 .vscode/
 .idea/
 .husky/
+.eslintcache
 
 # node packages
 node_modules
