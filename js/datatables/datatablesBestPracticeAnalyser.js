@@ -235,7 +235,8 @@ $(document).ready(function () {
                     "render": function (data, type, row) {
                         if (type === "export" || type === "sort" || type === "filter") {
                             if (data > 0) {
-                                return 'FAIL: Shared Mailboxes with Logins - ' + row.DisabledSharedMailboxLogins
+                                var newExportableShared = row.DisabledSharedMailboxLogins.replace(/<br \/>/g, ' | ');
+                                return 'FAIL: Shared Mailboxes with Logins - ' + newExportableShared
                             } else if (data === 0) {
                                 return 'PASS: No Shared Mailboxes with Logins'
                             } else {
