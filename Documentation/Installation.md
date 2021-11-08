@@ -102,7 +102,7 @@ For updating the application, check out our updating document [here](/documentat
 
 ## It's not working, I'm having issues
 
-Before you create an issue, please restart both the Static Web App and Azure Function host, this solves 99,9% of all issues. Turn it off, turn it on again. ;)
+Before you create an issue, please restart the Azure Function host, this solves 99,9% of all issues. Turn it off, turn it on again. ;)
 
 Another option is that you've deployed your Secure Application Model incorrectly. You must use the script in the blog above to be 100% sure it has been created as expected. You can use the script below to check what's going on.
 
@@ -162,7 +162,7 @@ This is most likely because of the Azure Static Web Apps component. This compone
 At the moment of deployment, the application will use a randomly generated name. To change this, go to your Resource Group in Azure, click on cipp-swa-xxxx and click on Custom Domains. You'll be able to add your own domain name here.
 # Adding users to allow the usage of the CIPP
 
-After deployment, go to your resource group in Azure and click on cipp-swa-xxxx. Click on Role Management and invite the users you want. Currently we only support the "reader" role, so make sure you enter that in the roles field.
+After deployment, go to your resource group in Azure and click on cipp-swa-xxxx. Click on Role Management and invite the users you want. Currently we support three roles, reader, editor, and admin. More info about the roles can be found [here](https://github.com/KelvinTegelaar/CIPP/blob/master/Documentation/Roles.md)
 
 # Manual instructions
 ## Create Azure Function host
