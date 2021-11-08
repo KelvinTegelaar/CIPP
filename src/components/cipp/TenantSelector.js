@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 const TenantSelector = () => {
   const dispatch = useDispatch()
   const tenants = useSelector((state) => state.tenants.tenants)
-  const tenantsLoading = useSelector((state) => state.tenants.loading)
+  //const tenantsLoading = useSelector((state) => state.tenants.loading)
 
   useEffect(async () => {
     dispatch(listTenants())

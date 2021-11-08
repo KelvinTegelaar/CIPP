@@ -1,7 +1,7 @@
-import React, { lazy, useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import CIcon from '@coreui/icons-react'
 import * as icon from '@coreui/icons'
-import axios from 'axios'
 import {
   CCard,
   CCardHeader,
@@ -15,32 +15,20 @@ import {
   CButton,
 } from '@coreui/react'
 
+import { loadVersion } from '../../store/modules/version'
+
 const Home = () => {
-  const [remoteCipp, setremoteCipp] = useState()
-  const [localCipp, setLocalCipp] = useState()
-  const [remoteCippApi, setRemoteCippApi] = useState()
-  const [localCippApi, setLocalCippApi] = useState()
+  const dispatch = useDispatch()
+  const versions = useSelector((state) => state.version.versions)
+
   useEffect(() => {
-    const RemoteURLCIPP =
-      'https://raw.githubusercontent.com/KelvinTegelaar/CIPP/master/version_latest.txt'
-    const LocalURLCIPP = '/version_latest.txt'
-    const RemoteURLCIPPAPI =
-      'https://raw.githubusercontent.com/KelvinTegelaar/CIPP-API/master/version_latest.txt'
-    const LocalURLCIPPAPI = '/api/GetVersion'
-    axios
-      .all([
-        axios.get(RemoteURLCIPP),
-        axios.get(LocalURLCIPP),
-        axios.get(RemoteURLCIPPAPI),
-        axios.get(LocalURLCIPPAPI),
-      ])
-      .then((response) => {
-        setremoteCipp(response[0].data)
-        setLocalCipp(response[1].data)
-        setRemoteCippApi(response[2].data)
-        setLocalCippApi(response[3].data)
-      })
-  })
+    async function load() {
+      dispatch(loadVersion())
+      console.log(versions)
+    }
+
+    load()
+  }, [])
 
   return (
     <div>
@@ -62,43 +50,43 @@ const Home = () => {
         </CCol>
         <CCol xs>
           <CCard
-            color={remoteCipp && (remoteCipp === localCipp ? '' : 'danger')}
+            color={versions.OutOfDateCIPP ? 'danger' : ''}
             textColor={'black'}
             className="mb-3"
             style={{ maxWidth: '18rem' }}
           >
             <CCardHeader>
               CIPP Version
-              {remoteCipp && remoteCipp === localCipp ? (
-                <CIcon icon={icon.cilCheckCircle} size="lg" />
-              ) : (
+              {versions.OutOfDateCIPP ? (
                 <CIcon icon={icon.cilXCircle} />
+              ) : (
+                <CIcon icon={icon.cilCheckCircle} size="lg" />
               )}
             </CCardHeader>
             <CCardBody>
-              Remote: {remoteCipp ? remoteCipp : <CSpinner size="sm" />}
+              Remote: {!versions.loading ? versions.RemoteCIPPVersion : <CSpinner size="sm" />}
               <br />
-              Local: {localCipp ? localCipp : <CSpinner size="sm" />}
+              Local: {!versions.loading ? versions.LocalCIPPVersion : <CSpinner size="sm" />}
             </CCardBody>
           </CCard>
           <CCard
-            color={remoteCippApi && (remoteCippApi === localCippApi ? '' : 'danger')}
+            color={versions.OutOfDateCIPPAPI ? 'danger' : ''}
             textColor={'black'}
             className="mb-3"
             style={{ maxWidth: '18rem' }}
           >
             <CCardHeader>
               CIPP API Version
-              {remoteCippApi && remoteCippApi === localCippApi ? (
-                <CIcon icon={icon.cilCheckCircle} size="lg" />
-              ) : (
+              {versions.OutOfDateCIPPAPI ? (
                 <CIcon icon={icon.cilXCircle} />
+              ) : (
+                <CIcon icon={icon.cilCheckCircle} size="lg" />
               )}
             </CCardHeader>
             <CCardBody>
-              Remote: {remoteCippApi ? remoteCippApi : <CSpinner size="sm" />}
+              Remote: {!versions.loading ? versions.RemoteCIPPAPIVersion : <CSpinner size="sm" />}
               <br />
-              Local: {localCippApi ? localCippApi : <CSpinner size="sm" />}
+              Local: {!versions.loading ? versions.LocalCIPPAPIVersion : <CSpinner size="sm" />}
             </CCardBody>
           </CCard>
         </CCol>
