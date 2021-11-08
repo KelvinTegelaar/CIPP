@@ -117,3 +117,46 @@ Local.settings.json example:
   }
 }
 ```
+
+# Configuring Editor
+
+Install the package development dependencies by running
+
+```shell
+npm i
+```
+
+
+## VSCode
+
+VSCode requires several plugins to pick up configuration files that enforce code style and quality.
+
+- [EditorConfig](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)
+- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+
+## WebStorm
+
+WebStorm automatically supports and enables ESLint and EditorConfig
+
+- File > Settings > Langauges & Frameworks > JavaScript > Code Quality Tools > ESLint
+- Check Automatic ESLint configuration
+
+## VisualStudio
+
+VisualStudio automatically supports [EditorConfig](https://docs.microsoft.com/en-us/visualstudio/ide/create-portable-custom-editor-options?view=vs-2019) but ESLint support must be enabled through options. 
+- Tools > Options > Text Editor > Javascript/Typescript > Linting
+- Check Enable ESLint 
+
+## Package Scripts
+
+ESLint and Prettier can be triggered manually by package scripts:
+
+```shell
+  npm run lint
+  npm run lint:fix
+  
+  npm run prettier
+  npm run prettier:fix
+```
+
+Appending `:fix` will attempt to automatically fix style issues. Note that these commands will check all the project's source files. 
