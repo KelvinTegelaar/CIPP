@@ -102,7 +102,7 @@ For updating the application, check out our updating document [here](/documentat
 
 ## It's not working, I'm having issues
 
-Before you create an issue, please restart both the Azure Function host, this solves 99,9% of all issues. Turn it off, turn it on again. ;)
+Before you create an issue, please restart the Azure Function host, this solves 99,9% of all issues. Turn it off, turn it on again. ;)
 
 Another option is that you've deployed your Secure Application Model incorrectly. You must use the script in the blog above to be 100% sure it has been created as expected. You can use the script below to check what's going on.
 
