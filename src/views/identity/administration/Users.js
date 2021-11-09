@@ -64,13 +64,17 @@ const Users = () => {
     load()
   }, [])
 
+  const action = (tenant) => {
+    dispatch(listUsers({ tenant: tenant }))
+  }
+
   return (
     <div>
-      <TenantSelector />
+      <TenantSelector action={action} />
       <hr />
-      {!users.loaded && users.loading && <CSpinner />}
-      {users.loaded && !users.loading && (
-        <div className="bg-white rounded p-5">
+      <div className="bg-white rounded p-5">
+        {!users.loaded && users.loading && <CSpinner />}
+        {users.loaded && !users.loading && users.users.length > 0 && (
           <ToolkitProvider keyField="id" columns={columns} data={users.users} search>
             {(props) => (
               <div>
@@ -87,8 +91,8 @@ const Users = () => {
               </div>
             )}
           </ToolkitProvider>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }

@@ -4,7 +4,12 @@ import { listTenants } from 'src/store/modules/tenants'
 import { useDispatch, useSelector } from 'react-redux'
 import { setCurrentTenant } from '../../store/modules/app'
 
-const TenantSelector = () => {
+const TenantSelector = (props) => {
+  {/*eslint-disable */}
+  const { action } = props
+  {
+    /*eslint-enable */
+  }
   const dispatch = useDispatch()
   const tenants = useSelector((state) => state.tenants.tenants)
   const currentTenant = useSelector((state) => state.app.currentTenant)
@@ -18,6 +23,7 @@ const TenantSelector = () => {
       return t.customerId === customerId
     })
     dispatch(setCurrentTenant({ tenant: selectedTenant[0] }))
+    action(selectedTenant[0])
   }
 
   return (

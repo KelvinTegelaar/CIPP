@@ -11,11 +11,11 @@ const USERS_LOAD_ERROR = 'users/USERS_LOAD_ERROR'
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
     case USERS_LOAD:
-      return { ...state, loading: true }
+      return { ...state, loading: true, loaded: false }
     case USERS_LOAD_SUCCESS:
       return { ...state, users: action.result, loading: false, loaded: true }
     case USERS_LOAD_ERROR:
-      return { ...state, loading: false, users: [] }
+      return { ...state, loading: false, loaded: false, users: [] }
     default:
       return state
   }
