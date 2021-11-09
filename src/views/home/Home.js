@@ -24,7 +24,6 @@ const Home = () => {
   useEffect(() => {
     async function load() {
       dispatch(loadVersion())
-      console.log(versions)
     }
 
     load()

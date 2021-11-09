@@ -26,12 +26,13 @@ export function listTenants() {
   }
 }
 
-export function getTenant({ tenant }) {
+export function getTenant() {
   // etc
   return {}
 }
 
 export function setTenant({ tenant }) {
+  console.log(tenant)
   return {
     type: 'SELECT_TENANT',
     tenant,

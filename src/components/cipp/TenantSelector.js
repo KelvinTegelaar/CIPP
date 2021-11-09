@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react'
 import SelectSearch, { fuzzySearch } from 'react-select-search'
-import { listTenants, setTenant } from 'src/store/modules/tenants'
+import { listTenants } from 'src/store/modules/tenants'
 import { useDispatch, useSelector } from 'react-redux'
+import { setCurrentTenant } from '../../store/modules/app'
 
 const TenantSelector = () => {
   const dispatch = useDispatch()
   const tenants = useSelector((state) => state.tenants.tenants)
-  //const tenantsLoading = useSelector((state) => state.tenants.loading)
+  let currentTenant = useSelector((state) => state.app.currentTenant)
 
   useEffect(async () => {
     dispatch(listTenants())
@@ -16,20 +17,20 @@ const TenantSelector = () => {
     const selectedTenant = tenants.filter((t) => {
       return t.customerId === customerId
     })
-    dispatch(setTenant({ tenant: selectedTenant[0] }))
+    dispatch(setCurrentTenant({ tenant: selectedTenant[0] }))
   }
 
   return (
     <div>
       <SelectSearch
         search
-        // onChange={(tenantId) => dispatch(setTenant({ tenant: tenantId }))}
         onChange={activated}
         filterOptions={fuzzySearch}
         placeholder="Select Tenant"
-        options={tenants.map(({ customerId, displayName }) => ({
+        value={currentTenant && currentTenant.customerId}
+        options={tenants.map(({ customerId, defaultDomainName }) => ({
           value: customerId,
-          name: displayName,
+          name: defaultDomainName,
         }))}
       />
     </div>
