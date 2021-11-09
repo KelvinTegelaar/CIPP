@@ -7,7 +7,7 @@ import { setCurrentTenant } from '../../store/modules/app'
 const TenantSelector = () => {
   const dispatch = useDispatch()
   const tenants = useSelector((state) => state.tenants.tenants)
-  let currentTenant = useSelector((state) => state.app.currentTenant)
+  const currentTenant = useSelector((state) => state.app.currentTenant)
 
   useEffect(async () => {
     dispatch(listTenants())
@@ -21,19 +21,17 @@ const TenantSelector = () => {
   }
 
   return (
-    <div>
-      <SelectSearch
-        search
-        onChange={activated}
-        filterOptions={fuzzySearch}
-        placeholder="Select Tenant"
-        value={currentTenant && currentTenant.customerId}
-        options={tenants.map(({ customerId, defaultDomainName }) => ({
-          value: customerId,
-          name: defaultDomainName,
-        }))}
-      />
-    </div>
+    <SelectSearch
+      search
+      onChange={activated}
+      filterOptions={fuzzySearch}
+      placeholder="Select Tenant"
+      value={currentTenant && currentTenant.customerId}
+      options={tenants.map(({ customerId, defaultDomainName }) => ({
+        value: customerId,
+        name: defaultDomainName,
+      }))}
+    />
   )
 }
 

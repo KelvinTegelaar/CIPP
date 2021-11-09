@@ -32,7 +32,6 @@ export function getTenant() {
 }
 
 export function setTenant({ tenant }) {
-  console.log(tenant)
   return {
     type: 'SELECT_TENANT',
     tenant,

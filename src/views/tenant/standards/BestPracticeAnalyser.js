@@ -128,13 +128,7 @@ const BestPracticeAnalyzer = () => {
         </div>
       )}
       {!bpa.loading && bpa.loaded && (
-        <ToolkitProvider
-          keyField="bpareport"
-          columns={columns}
-          data={bpa.report}
-          search
-          pagination={pagination}
-        >
+        <ToolkitProvider keyField="bpareport" columns={columns} data={bpa.report} search>
           {(props) => (
             <div>
               {/* eslint-disable-next-line react/prop-types */}
@@ -149,7 +143,7 @@ const BestPracticeAnalyzer = () => {
               </CButton>
               <hr />
               {/* eslint-disable-next-line react/prop-types */}
-              <BootstrapTable {...props.baseProps} />
+              <BootstrapTable {...props.baseProps} pagination={pagination} />
             </div>
           )}
         </ToolkitProvider>
