@@ -1,26 +1,39 @@
 <p align="center"><a href="https://cyberdrain.com" target="_blank" rel="noopener noreferrer"><img src="assets/img/CyberDrain.png" alt="CyberDrain Logo"></a></p>
 
 <center><h1>Sponsored by</h1></center>
-<p align="center"><a href="https://oit.co" target="_blank" rel="noopener noreferrer"><img  width="270" height="110" src="assets/img/oitpsonsor.webp" alt="OITVoip"></a><a href="https://www.genuinetechnology.com/" target="_blank" rel="noopener noreferrer"><img  width="110" height="130" src="assets/img/Genuine-logo-vertical-light_dark.png" alt="Genuine Technology Group"></a></p>
+<p align="center"><a href="https://oit.co" target="_blank" rel="noopener noreferrer"><img  width="270" height="110" src="assets/img/oitpsonsor.webp" alt="OITVoip"></a><a href="https://www.genuinetechnology.com/" target="_blank" rel="noopener noreferrer"><img  width="110" height="130" src="assets/img/Genuine-logo-vertical-light_dark.png" alt="Genuine Technology Group"></a>
 </p>
 
 # What is this?
 
-The CyberDrain Improved Partner Portal is a portal to help manage administration for Microsoft Partners. The current Microsoft partner landscape makes it fairly hard to manage multi-tenant situations, with loads of manual work. Microsoft Lighthouse might resolve this in the future but the development of this is lagging far behind the development of the current market for Microsoft Partners.
+The CyberDrain Improved Partner Portal is a portal to help manage administration for Microsoft Partners.
+The current Microsoft partner landscape makes it fairly hard to manage multi-tenant situations, with loads of manual work.
+Microsoft Lighthouse might resolve this in the future but the development of this is lagging far behind the development of the current market for Microsoft Partners.
 
-This project is a way to help you with administration, user management, and deploying your own preferred standards. It's not a replacement for security tools or a way to cut costs on specific subscriptions. The tool should assist you in removing the gripes with standard partner management and save you several hours per engineer per month.
+This project is a way to help you with administration, user management, and deploying your own preferred standards.
+It's not a replacement for security tools or a way to cut costs on specific subscriptions.
+The tool should assist you in removing the gripes with standard partner management and save you several hours per engineer per month.
 
 # Deployment and Getting Started
 
-If you want to self-host, check out the installation manual [here](Documentation/Installation.md). You will need some knowledge of Static Web Apps, Azure Functions, and Azure Keyvault
+If you want to self-host, check out the installation manual [here](Documentation/Installation.md).
+You will need some knowledge of Static Web Apps, Azure Functions, and Azure Key Vault.
 
 # Why are you making this?
 
 I'm kind of done waiting for vendors to catch up to what we actually need. All RMM vendors are dramatically slow at adopting cloud management. Microsoft themselves don't understand the Managed services markets, there are vendors that have tried jumping into the gap but either have unreasonable fees, weird constructions, require Global Admins without MFA, or just don't innovate at a pace that is required of cloud services right now.
 
-I'm also annoyed by the untransparent behaviour that many companies in our market are showing. Most are claiming that working with the Microsoft Partner APIs is difficult and requires a very heavy development team. I'm a guy that had no web design knowledge before this and created the first release of this app in 3 weekends. Vendors that claim high difficulty or issues with integration are simply not giving this *any* priority. This is also why the [changelog](/Documentation/Changelog.md) contains how many hours I have spent to build each release. These hours are directly taken from my VSCode Extensions. 
+I'm also annoyed by the un-transparent behaviour that many companies in our market are showing.
+Most are claiming that working with the Microsoft Partner APIs is difficult and requires a very heavy development team.
+I'm a guy that had no web design knowledge before this and created the first release of this app in 3 weekends.
+Vendors that claim high difficulty or issues with integration are simply not giving this _any_ priority.
+This is also why the [changelog](/Documentation/Changelog.md) contains how many hours I have spent to build each release.
+These hours are directly taken from my VSCode Extensions.
 
-I was recently on a call with one of my friends and he said he was changing the world. That inspired me to change the world just a little bit too. :) I'm hoping that this is one of the tools that make you smile.
+I was recently on a call with one of my friends and he said he was changing the world.
+That inspired me to change the world just a little bit too. :)
+I'm hoping that this is one of the tools that make you smile.
+
 # What's the pricing?
 
 This project is **FREE** but we do have a **Sponsorware** component. The sponsorware structure for this project is pretty simple; the code is available to everyone and free to use. You will need some technical know-how to put it all together. Sponsors receive the following benefits
@@ -58,55 +71,71 @@ Wizards:
 <kbd><a href="assets/screenshots/AddIntunePolicy.png"><img border="1" src="assets/screenshots/AddIntunePolicy.png" width="250"/></a></kbd>
 <kbd><a href="assets/screenshots/AppAdd.png"><img border="1" src="assets/screenshots/AppAdd.png" width="250"/></a></kbd>
 <kbd><a href="assets/screenshots/AddautopilotDevice.png"><img border="1" src="assets/screenshots/AddautopilotDevice.png" width="250"/></a></kbd>
+
 # What is the functionality?
 
 The current build functionality is described below, also check out our Changelog in the documentation folder. Any unmarked items are in development.
 
 ## General
-  - [x] Allow adding/removing tenants to skip
-  - [ ] Create two user levels for access to settings: User and Admin, Admin can add exclusions/remove exclusions/access complete logs.
-  - [ ] Allow export of logs to SIEM/External SOC
 
-## Applications    
+- [x] Allow adding/removing tenants to skip
+- [ ] Create two user levels for access to settings: User and Admin, Admin can add exclusions/remove exclusions/access complete logs.
+- [ ] Allow export of logs to SIEM/External SOC
+
+## Applications
+
 - [x] List all applications in tenants
 - [x] List installation status of a specific application per device
 - [ ] Add/Remove custom applications via win32(intunewin) to multiple tenants
-- [X] Add Office Apps to multiple tenants
-- [X] Add/Remove Chocolatey Apps to multiple tenants
+- [x] Add Office Apps to multiple tenants
+- [x] Add/Remove Chocolatey Apps to multiple tenants
 - [ ] Add/Remove Ninite Pro Apps to multiple tenants
-- [X] Assign Apps to All Devices or All Users
+- [x] Assign Apps to All Devices or All Users
 - [ ] Report on the installation status
 - [ ] Assign apps to specific groups
 
 ## Devices
-- [X] Add autopilot configuration
-- [X] Add Enrollment Status Pages
-- [X] Add Autopilot Devices
-- [X] Add Administrative templates / Policies
+
+- [x] Add autopilot configuration
+- [x] Add Enrollment Status Pages
+- [x] Add Autopilot Devices
+- [x] Add Administrative templates / Policies
 
 ## Users
-- [X] List all administered users with tenant filtering options
-- [X] Convert user to a shared mailbox
-- [X] View/edit licenses
-- [X] List users
-- [X] Add/Remove users to groups
+
+- [x] List all administered users with tenant filtering options
+- [x] Convert user to a shared mailbox
+- [x] View/edit licenses
+- [x] List users
+- [x] Add/Remove users to groups
 - [ ] User alerting
 
 ## Tenant Administration
-- [X] Deploy any custom graph command
-- [X] Set selected defaults across selected tenants
+
+- [x] Deploy any custom graph command
+- [x] Set selected defaults across selected tenants
 - [ ] Monitor defaults across tenants.
 - [ ] Tenant Alerting
 
 # Security
-Authentication is handled by Azure AD using static web apps security. This means the API is only reachable for authenticated users you've invited. For most of the security info related to that check out our staticwebapp.config.json and/or the doc pages on static web apps. Do you see something that might be a security risk, even the smallest? report it and we will handle it asap. Check out our security reporting options [here](https://github.com/KelvinTegelaar/CIPP/security)
+
+Authentication is handled by Azure AD using static web apps security.
+This means the API is only reachable for authenticated users you've invited.
+For most of the security info related to that check out our `staticwebapp.config.json` and/or the doc pages on static web apps.
+Do you see something that might be a security risk, even the smallest?
+Report it and we will handle it asap.
+Check out our security reporting options [here](https://github.com/KelvinTegelaar/CIPP/security)
+
 # Contributions
 
-Feel free to send pull requests or fill out issues when you encounter them, sponsors get a priority on issues and bugs. I'm also completely open to adding direct maintainers/contributors and working together.
+Feel free to send pull requests or fill out issues when you encounter them, sponsors get a priority on issues and bugs.
+I'm also completely open to adding direct maintainers/contributors and working together.
 
-If you decide to contribute; remember that keeping the portal fast is a key component. CIPP is supposed to go brrrrr, any improvements that help with speed are welcomed.
+If you decide to contribute; remember that keeping the portal fast is a key component.
+CIPP is supposed to go brrrrr, any improvements that help with speed are welcomed.
 
 ## Welcomed changes/contributions in no particular order
+
 - the code quality and repetitive code on the functions can use some work
 - HTML and JQuery definitely needs consolidation and improvement, as I am not a web developer I did what I could... :)
 - Spelling and grammar check, both of APIs and the actual text.
@@ -115,7 +144,7 @@ If you decide to contribute; remember that keeping the portal fast is a key comp
 
 I'd like to give special thanks to the people that made this project possible;
 
-- [Kyle Hansloven](https://huntress.com) 
+- [Kyle Hansloven](https://huntress.com)
 - [Ray Orsini](https://oit.co)
 - The Team at [MSP.zone/MSP'R'Us](https://msp.zone)
 - Gavin Stone at [MSPGeek](https://mspgeek.org)
