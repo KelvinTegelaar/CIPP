@@ -121,33 +121,35 @@ const BestPracticeAnalyzer = () => {
 
   return (
     <div>
-      <h3>Best Practice Analyzer Report</h3>
-      {!bpa.loaded && bpa.loading && (
-        <div className="pt-3 text-center">
-          <div className="sk-spinner sk-spinner-pulse" />
-        </div>
-      )}
-      {!bpa.loading && bpa.loaded && (
-        <ToolkitProvider keyField="bpareport" columns={columns} data={bpa.report} search>
-          {(props) => (
-            <div>
-              {/* eslint-disable-next-line react/prop-types */}
-              <SearchBar {...props.searchProps} />
-              {/* eslint-disable-next-line react/prop-types */}
-              <ExportCSVButton {...props.csvProps}>
-                <CButton>CSV</CButton>
-              </ExportCSVButton>
-              {/* @TODO make modal confirm */}
-              <CButton onClick={() => dispatch(forceRefreshBestPracticeReport())}>
-                Force Refresh Data
-              </CButton>
-              <hr />
-              {/* eslint-disable-next-line react/prop-types */}
-              <BootstrapTable {...props.baseProps} pagination={pagination} />
-            </div>
-          )}
-        </ToolkitProvider>
-      )}
+      <div className="bg-white rounded p-5">
+        <h3>Best Practice Analyzer Report</h3>
+        {!bpa.loaded && bpa.loading && (
+          <div className="pt-3 text-center">
+            <div className="sk-spinner sk-spinner-pulse" />
+          </div>
+        )}
+        {!bpa.loading && bpa.loaded && (
+          <ToolkitProvider keyField="bpareport" columns={columns} data={bpa.report} search>
+            {(props) => (
+              <div>
+                {/* eslint-disable-next-line react/prop-types */}
+                <SearchBar {...props.searchProps} />
+                {/* eslint-disable-next-line react/prop-types */}
+                <ExportCSVButton {...props.csvProps}>
+                  <CButton>CSV</CButton>
+                </ExportCSVButton>
+                {/* @TODO make modal confirm */}
+                <CButton onClick={() => dispatch(forceRefreshBestPracticeReport())}>
+                  Force Refresh Data
+                </CButton>
+                <hr />
+                {/* eslint-disable-next-line react/prop-types */}
+                <BootstrapTable {...props.baseProps} pagination={pagination} />
+              </div>
+            )}
+          </ToolkitProvider>
+        )}
+      </div>
     </div>
   )
 }

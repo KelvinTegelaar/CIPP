@@ -224,38 +224,40 @@ const DomainsAnalyser = () => {
 
   return (
     <div>
-      <h3>Domains Analyser Report</h3>
-      {!domains.loaded && domains.loading && (
-        <div className="pt-3 text-center">
-          <div className="sk-spinner sk-spinner-pulse" />
-        </div>
-      )}
-      {domains.loaded && !domains.loading && (
-        <ToolkitProvider
-          keyField="domains-analyser-table"
-          columns={columns}
-          data={domains.report}
-          search
-        >
-          {(props) => (
-            <div>
-              {/* eslint-disable-next-line react/prop-types */}
-              <SearchBar {...props.searchProps} />
-              {/* eslint-disable-next-line react/prop-types */}
-              <ExportCSVButton {...props.csvProps}>
-                <CButton>CSV</CButton>
-              </ExportCSVButton>
-              {/* @TODO make modal confirm */}
-              <CButton onClick={() => dispatch(forceRefreshDomainAnalyserReport())}>
-                Force Refresh Data
-              </CButton>
-              <hr />
-              {/* eslint-disable-next-line react/prop-types */}
-              <BootstrapTable {...props.baseProps} pagination={pagination} striped />
-            </div>
-          )}
-        </ToolkitProvider>
-      )}
+      <div className="bg-white rounded p-5">
+        <h3>Domains Analyser Report</h3>
+        {!domains.loaded && domains.loading && (
+          <div className="pt-3 text-center">
+            <div className="sk-spinner sk-spinner-pulse" />
+          </div>
+        )}
+        {domains.loaded && !domains.loading && (
+          <ToolkitProvider
+            keyField="domains-analyser-table"
+            columns={columns}
+            data={domains.report}
+            search
+          >
+            {(props) => (
+              <div>
+                {/* eslint-disable-next-line react/prop-types */}
+                <SearchBar {...props.searchProps} />
+                {/* eslint-disable-next-line react/prop-types */}
+                <ExportCSVButton {...props.csvProps}>
+                  <CButton>CSV</CButton>
+                </ExportCSVButton>
+                {/* @TODO make modal confirm */}
+                <CButton onClick={() => dispatch(forceRefreshDomainAnalyserReport())}>
+                  Force Refresh Data
+                </CButton>
+                <hr />
+                {/* eslint-disable-next-line react/prop-types */}
+                <BootstrapTable {...props.baseProps} pagination={pagination} striped />
+              </div>
+            )}
+          </ToolkitProvider>
+        )}
+      </div>
     </div>
   )
 }
