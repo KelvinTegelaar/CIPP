@@ -10,6 +10,8 @@ const client = new ApiClient()
 const persistConfig = {
   key: 'root',
   storage,
+  // dont store the modal state
+  blacklist: ['modal'],
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
