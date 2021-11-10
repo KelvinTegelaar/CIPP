@@ -5,6 +5,12 @@ const initialState = {
     loaded: false,
     updateMessage: null,
   },
+  domains: {
+    report: [],
+    loading: false,
+    loaded: false,
+    updateMessage: null,
+  },
 }
 
 const BPA_LOAD = 'standards/BPA_LOAD'
@@ -14,6 +20,14 @@ const BPA_LOAD_SUCCESS = 'standards/BPA_LOAD_SUCCESS'
 const BPA_UPDATE = 'standards/BPA_UPDATE'
 const BPA_UPDATE_ERROR = 'standards/BPA_UPDATE_ERROR'
 const BPA_UPDATE_SUCCESS = 'standards/BPA_UPDATE_SUCCESS'
+
+const DOMAINS_LOAD = 'standards/DOMAINS_LOAD'
+const DOMAINS_LOAD_ERROR = 'standards/DOMAINS_LOAD_ERROR'
+const DOMAINS_LOAD_SUCCESS = 'standards/DOMAINS_LOAD_SUCCESS'
+
+const DOMAINS_UPDATE = 'standards/DOMAINS_UPDATE'
+const DOMAINS_UPDATE_ERROR = 'standards/DOMAINS_UPDATE_ERROR'
+const DOMAINS_UPDATE_SUCCESS = 'standards/DOMAINS_UPDATE_SUCCESS'
 
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
@@ -69,6 +83,34 @@ export default function reducer(state = initialState, action = {}) {
           updateMessage: action.result,
         },
       }
+    case DOMAINS_LOAD:
+      return {
+        ...state,
+        domains: {
+          ...state.domains,
+          loading: true,
+          loaded: false,
+        },
+      }
+    case DOMAINS_LOAD_SUCCESS:
+      return {
+        ...state,
+        domains: {
+          ...state.domains,
+          loading: false,
+          loaded: true,
+          report: action.result,
+        },
+      }
+    case DOMAINS_LOAD_ERROR:
+      return {
+        ...state,
+        domains: {
+          ...state.domains,
+          loading: false,
+          loaded: false,
+        },
+      }
     default:
       return state
   }
@@ -86,5 +128,21 @@ export function forceRefreshBestPracticeReport() {
     types: [BPA_UPDATE, BPA_UPDATE_SUCCESS, BPA_UPDATE_ERROR],
     promise: (client) =>
       client.get('/api/BestPracticeAnalyser_OrchestrationStarter').then((result) => result.data),
+  }
+}
+
+export function loadDomainsAnalyserReport() {
+  return {
+    types: [DOMAINS_LOAD, DOMAINS_LOAD_SUCCESS, DOMAINS_LOAD_ERROR],
+    promise: (client) => client.get('/api/DomainAnalyser_List').then((result) => result.data),
+  }
+}
+
+export function forceRefreshDomainAnalyserReport() {
+  return {
+    // @TODO not bound to store
+    types: [DOMAINS_UPDATE, DOMAINS_UPDATE_SUCCESS, DOMAINS_UPDATE_ERROR],
+    promise: (client) =>
+      client.get('/api/DomainAnalyser_OrchestrationStarter').then((result) => result.data),
   }
 }

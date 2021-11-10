@@ -6,6 +6,7 @@ const Groups = React.lazy(() => import('./views/identity/administration/Groups')
 const BestPracticeAnalyzer = React.lazy(() =>
   import('./views/tenant/standards/BestPracticeAnalyser'),
 )
+const DomainsAnalyser = React.lazy(() => import('./views/tenant/standards/DomainsAnalyser'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -26,6 +27,11 @@ const routes = [
     path: '/tenant/standards/bpareport',
     name: 'Best Practice Report',
     component: BestPracticeAnalyzer,
+  },
+  {
+    path: '/tenant/standards/domains-analyser',
+    name: 'Domains Analyser',
+    component: DomainsAnalyser,
   },
 ]
 
