@@ -1,5 +1,12 @@
 import React, { useEffect } from 'react'
 import { CSpinner } from '@coreui/react'
+import {
+  CDropdown,
+  CDropdownDivider,
+  CDropdownItem,
+  CDropdownMenu,
+  CDropdownToggle,
+} from '@coreui/react'
 import TenantSelector from 'src/components/cipp/TenantSelector'
 import BootstrapTable from 'react-bootstrap-table-next'
 import ToolkitProvider, { Search, CSVExport } from 'react-bootstrap-table2-toolkit'
@@ -11,6 +18,22 @@ import { listUsers } from '../../../store/modules/users'
 const { SearchBar } = Search
 
 const pagination = paginationFactory()
+
+const dropdown = (cell, row, rowIndex, formatExtraData) => {
+  return (
+    <CDropdown>
+      <CDropdownToggle color="primary">...</CDropdownToggle>
+      <CDropdownMenu>
+        <CDropdownItem href="#">Edit User</CDropdownItem>
+        <CDropdownItem href="#">Send MFA Push To User</CDropdownItem>
+        <CDropdownItem href="#">Convert To Shared</CDropdownItem>
+        <CDropdownItem href="#">Block Sign-in</CDropdownItem>
+        <CDropdownItem href="#">Reset Password</CDropdownItem>
+        <CDropdownItem href="#">Delete User</CDropdownItem>
+      </CDropdownMenu>
+    </CDropdown>
+  )
+}
 
 const columns = [
   {
@@ -42,13 +65,11 @@ const columns = [
     text: 'Licenses',
     dataField: 'LicJoined',
   },
+  {
+    text: 'Action',
+    formatter: dropdown,
+  },
 ]
-
-const selectRow = {
-  mode: 'checkbox',
-  clickToSelect: true,
-  selectColumnPosition: 'right',
-}
 
 const Users = () => {
   const dispatch = useDispatch()
@@ -85,7 +106,6 @@ const Users = () => {
                 <BootstrapTable
                   {...props.baseProps}
                   pagination={pagination}
-                  selectRow={selectRow}
                 />
                 {/*eslint-enable */}
               </div>
