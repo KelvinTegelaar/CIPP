@@ -1,19 +1,13 @@
 import React, { useEffect } from 'react'
 import { CSpinner } from '@coreui/react'
-import {
-  CDropdown,
-  CDropdownDivider,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
-} from '@coreui/react'
+import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 import TenantSelector from 'src/components/cipp/TenantSelector'
 import BootstrapTable from 'react-bootstrap-table-next'
 import ToolkitProvider, { Search, CSVExport } from 'react-bootstrap-table2-toolkit'
 import paginationFactory, { PaginationProvider } from 'react-bootstrap-table2-paginator'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { listUsers } from '../../../store/modules/users'
+import { listUsers } from '../../../store/modules/identity'
 
 const { SearchBar } = Search
 
@@ -74,10 +68,10 @@ const columns = [
 const Users = () => {
   const dispatch = useDispatch()
   const tenant = useSelector((state) => state.app.currentTenant)
-  const users = useSelector((state) => state.users)
+  const users = useSelector((state) => state.identity.users)
   useEffect(() => {
     async function load() {
-      if (tenant) {
+      if (Object.keys(tenant).length !== 0) {
         dispatch(listUsers({ tenant: tenant }))
       }
     }
@@ -94,9 +88,11 @@ const Users = () => {
       <TenantSelector action={action} />
       <hr />
       <div className="bg-white rounded p-5">
+        <h3>Users</h3>
+        {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         {!users.loaded && users.loading && <CSpinner />}
-        {users.loaded && !users.loading && users.users.length > 0 && (
-          <ToolkitProvider keyField="id" columns={columns} data={users.users} search>
+        {users.loaded && !users.loading && Object.keys(tenant).length !== 0 && (
+          <ToolkitProvider keyField="id" columns={columns} data={users.list} search>
             {(props) => (
               <div>
                 {/* eslint-disable-next-line react/prop-types */}

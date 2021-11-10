@@ -4,7 +4,7 @@ import modal from './modal'
 import tenants from './tenants'
 import standards from './standards'
 import version from './version'
-import users from './users'
+import identity from './identity'
 
 export default combineReducers({
   app,
@@ -12,5 +12,5 @@ export default combineReducers({
   tenants,
   standards,
   version,
-  users,
+  identity,
 })
