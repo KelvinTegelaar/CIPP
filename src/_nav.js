@@ -110,6 +110,11 @@ const _nav = [
         name: 'Best Practice Analyzer',
         to: '/tenant/standards/bpareport',
       },
+      {
+        component: CNavItem,
+        name: 'Domains Analyser',
+        to: '/tenant/standards/domains-analyser',
+      },
     ],
   },
   {
