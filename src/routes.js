@@ -12,6 +12,7 @@ const Domains = React.lazy(() => import('./views/tenant/administration/Domains')
 const Conditionalaccess = React.lazy(() =>
   import('./views/tenant/administration/Conditionalaccess'),
 )
+const BasicAuthReport = React.lazy(() => import('./views/identity/reports/BasicAuthReport'))
 const BestPracticeAnalyzer = React.lazy(() =>
   import('./views/tenant/standards/BestPracticeAnalyser'),
 )
@@ -32,6 +33,11 @@ const routes = [
   {
     path: '/tenant',
     name: 'Tenant',
+  },
+  {
+    path: '/identity/reports/basic-auth-report',
+    name: 'Basic Auth Report',
+    component: BasicAuthReport,
   },
   { path: '/tenant/administration', name: 'Administration' },
   { path: '/tenant/administration/tenants', name: 'Tenants', component: Tenants },
