@@ -87,6 +87,16 @@ const _nav = [
         name: 'Tenants',
         to: '/tenant/administration/tenants',
       },
+      {
+        component: CNavItem,
+        name: 'Domains',
+        to: '/tenant/administration/domains',
+      },
+      {
+        component: CNavItem,
+        name: 'Conditional Access',
+        to: '/tenant/administration/conditionalaccesspolicies',
+      },
     ],
   },
   {

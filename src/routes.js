@@ -5,6 +5,11 @@ const Users = React.lazy(() => import('./views/identity/administration/Users'))
 const Groups = React.lazy(() => import('./views/identity/administration/Groups'))
 const Devices = React.lazy(() => import('./views/identity/reports/Devices'))
 const MFAReport = React.lazy(() => import('./views/identity/reports/MFAReport'))
+const Tenants = React.lazy(() => import('./views/tenant/administration/Tenants'))
+const Domains = React.lazy(() => import('./views/tenant/administration/Domains'))
+const Conditionalaccess = React.lazy(() =>
+  import('./views/tenant/administration/Conditionalaccess'),
+)
 const BestPracticeAnalyzer = React.lazy(() =>
   import('./views/tenant/standards/BestPracticeAnalyser'),
 )
@@ -23,6 +28,14 @@ const routes = [
   {
     path: '/tenant',
     name: 'Tenant',
+  },
+  { path: '/tenant/administration', name: 'Administration' },
+  { path: '/tenant/administration/tenants', name: 'Tenants', component: Tenants },
+  { path: '/tenant/administration/domains', name: 'Domains', component: Domains },
+  {
+    path: '/tenant/administration/conditionalaccesspolicies',
+    name: 'Conditional Access',
+    component: Conditionalaccess,
   },
   {
     path: '/tenant/standards',
