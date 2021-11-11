@@ -41,3 +41,9 @@ export function setCurrentTenant({ tenant }) {
     currentTenant: tenant,
   }
 }
+
+export function getCurrentTenant() {
+  return (dispatch, getState) => {
+    return getState().app.currentTenant
+  }
+}
