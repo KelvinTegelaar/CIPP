@@ -68,7 +68,7 @@ const _nav = [
       {
         component: CNavItem,
         name: 'Basic Auth Report',
-        to: '/identity/reports/basicauthreport',
+        to: '/identity/reports/basic-auth-report',
       },
     ],
   },
