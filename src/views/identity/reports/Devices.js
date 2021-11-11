@@ -87,7 +87,6 @@ const Devices = () => {
   const dispatch = useDispatch()
   const tenant = useSelector((state) => state.app.currentTenant)
   const devices = useSelector((state) => state.identity.devices)
-  console.log(devices)
   useEffect(() => {
     async function load() {
       if (Object.keys(tenant).length !== 0) {
