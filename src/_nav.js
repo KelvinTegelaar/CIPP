@@ -63,7 +63,7 @@ const _nav = [
       {
         component: CNavItem,
         name: 'MFA Report',
-        to: '/identity/reports/mfareport',
+        to: '/identity/reports/mfa-report',
       },
       {
         component: CNavItem,
@@ -108,7 +108,7 @@ const _nav = [
       {
         component: CNavItem,
         name: 'Best Practice Analyzer',
-        to: '/tenant/standards/bpareport',
+        to: '/tenant/standards/bpa-report',
       },
       {
         component: CNavItem,
