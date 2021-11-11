@@ -86,6 +86,7 @@ const Groups = () => {
                 <BootstrapTable
                   {...props.baseProps}
                   pagination={pagination}
+                  wrapperClasses="table-responsive"
                 />
                 {/*eslint-enable */}
               </div>

@@ -251,8 +251,14 @@ const DomainsAnalyser = () => {
                   Force Refresh Data
                 </CButton>
                 <hr />
-                {/* eslint-disable-next-line react/prop-types */}
-                <BootstrapTable {...props.baseProps} pagination={pagination} striped />
+                {/*eslint-disable */}
+                <BootstrapTable
+                  {...props.baseProps}
+                  pagination={pagination}
+                  striped
+                  wrapperClasses="table-responsive"  
+                />
+                {/*eslint-enable */}
               </div>
             )}
           </ToolkitProvider>
