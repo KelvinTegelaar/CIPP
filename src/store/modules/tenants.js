@@ -4,15 +4,21 @@ const initialState = {
   loading: false,
 }
 
+const LOADING = 'tenants/LOADING'
+const LOADING_SUCCESS = 'tenants/LOADING'
+const LOADING_FAILURE = 'tenants/LOADING'
+
+const SET_TENANT = 'tenants/SET_TENANT'
+
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
-    case 'LOADING':
+    case LOADING:
       return { ...state, loading: true }
-    case 'SUCCESS':
+    case LOADING_SUCCESS:
       return { ...state, tenants: action.result, loading: false }
-    case 'FAILURE':
+    case LOADING_FAILURE:
       return { ...state, loading: false, tenants: [] }
-    case 'SELECT_TENANT':
+    case SET_TENANT:
       return { ...state, selectedTenant: action.tenant }
     default:
       return state
@@ -21,19 +27,14 @@ export default function reducer(state = initialState, action = {}) {
 
 export function listTenants() {
   return {
-    types: ['LOADING', 'SUCCESS', 'FAILURE'],
+    types: [LOADING, LOADING_SUCCESS, LOADING_FAILURE],
     promise: (client) => client.get('/api/ListTenants').then((result) => result.data),
   }
 }
 
-export function getTenant() {
-  // etc
-  return {}
-}
-
 export function setTenant({ tenant }) {
   return {
-    type: 'SELECT_TENANT',
+    type: SET_TENANT,
     tenant,
   }
 }
