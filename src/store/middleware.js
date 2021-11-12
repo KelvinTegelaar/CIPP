@@ -1,3 +1,5 @@
+import { showToast } from './modules/toast'
+
 export default function clientMiddleware(client) {
   return ({ dispatch, getState }) =>
     (next) =>
@@ -10,7 +12,9 @@ export default function clientMiddleware(client) {
       const { promise, types, ...rest } = action
 
       // if action.promise is not defined, dispatch action as normal
-      if (!promise) return next(action)
+      if (!promise) {
+        return next(action)
+      }
 
       // order of transient request states
       // started, success, fail
@@ -24,12 +28,32 @@ export default function clientMiddleware(client) {
 
       // dispatch success/failures to reducer
       actionPromise
-        .then((result) => {
-          return next({ ...rest, result, type: SUCCESS })
-        })
-        .catch((error) => {
-          next({ ...rest, error, type: FAILURE })
-        })
+        .then((result) => next({ ...rest, result, type: SUCCESS }))
+        .catch((error) => next({ ...rest, error, type: FAILURE }))
+
       return actionPromise
+    }
+}
+
+// this will catch all errors, or any actions with prop `error` set
+export function errorMiddleware() {
+  return ({ dispatch, getState }) =>
+    (next) =>
+    (action) => {
+      if (action.error) {
+        console.error(action)
+        const message =
+          (action && action.error && action.error.message) || 'A generic error has occurred.'
+
+        dispatch(
+          showToast({
+            title: 'An Uncaught Error Has Occurred',
+            message: message,
+            toastError: action.error,
+          }),
+        )
+      }
+
+      return next(action)
     }
 }
