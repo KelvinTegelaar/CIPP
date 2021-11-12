@@ -40,6 +40,11 @@ export default function reducer(state = initialState, action = {}) {
           loaded: true,
         },
       }
+    case MFA_LOAD_FAIL:
+      return {
+        ...state,
+        mfa: initialState.mfa,
+      }
     case BASIC_AUTH_LOAD:
       return {
         ...state,
@@ -58,6 +63,11 @@ export default function reducer(state = initialState, action = {}) {
           loading: false,
           loaded: true,
         },
+      }
+    case BASIC_AUTH_LOAD_FAIL:
+      return {
+        ...state,
+        basicAuth: initialState.basicAuth,
       }
     default:
       return state
