@@ -12,6 +12,7 @@ import {
   cilStorage,
   cilRoom,
   cilGroup,
+  cilFilter,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
@@ -45,7 +46,7 @@ const _nav = [
       {
         component: CNavItem,
         name: 'Offboarding Wizard',
-        to: '/identity/administration/offboardingwizard',
+        to: '/identity/administration/offboarding-wizard',
       },
     ],
   },
@@ -89,13 +90,8 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Domains',
-        to: '/tenant/administration/domains',
-      },
-      {
-        component: CNavItem,
-        name: 'Conditional Access',
-        to: '/tenant/administration/conditionalaccesspolicies',
+        name: 'Conditional Access Policies',
+        to: '/tenant/administration/conditional-access-policies',
       },
     ],
   },
@@ -108,12 +104,12 @@ const _nav = [
       {
         component: CNavItem,
         name: 'List Applied Standards',
-        to: '/tenant/standards/listappliedstandards',
+        to: '/tenant/standards/list-applied-standards',
       },
       {
         component: CNavItem,
         name: 'Add Standard',
-        to: '/tenant/standards/addstandard',
+        to: '/tenant/standards/add-standard',
       },
       {
         component: CNavItem,
@@ -145,7 +141,7 @@ const _nav = [
       {
         component: CNavItem,
         name: 'Add Choco App',
-        to: '/endpoint/applications/addchocoapp',
+        to: '/endpoint/applications/add-choco-app',
       },
     ],
   },
@@ -158,32 +154,32 @@ const _nav = [
       {
         component: CNavItem,
         name: 'Add Device',
-        to: '/endpoint/autopilot/adddevice',
+        to: '/endpoint/autopilot/add-device',
       },
       {
         component: CNavItem,
         name: 'Add Profile',
-        to: '/endpoint/autopilot/addprofile',
+        to: '/endpoint/autopilot/add-profile',
       },
       {
         component: CNavItem,
         name: 'Add Status Page',
-        to: '/endpoint/autopilot/addstatuspage',
+        to: '/endpoint/autopilot/add-status-page',
       },
       {
         component: CNavItem,
         name: 'List Devices',
-        to: '/endpoint/autopilot/listdevices',
+        to: '/endpoint/autopilot/list-devices',
       },
       {
         component: CNavItem,
         name: 'List Profiles',
-        to: '/endpoint/autopilot/listprofiles',
+        to: '/endpoint/autopilot/list-profiles',
       },
       {
         component: CNavItem,
         name: 'List Status Pages',
-        to: '/endpoint/autopilot/liststatuspages',
+        to: '/endpoint/autopilot/list-status-pages',
       },
     ],
   },
@@ -196,17 +192,17 @@ const _nav = [
       {
         component: CNavItem,
         name: 'List Intune Policies',
-        to: '/endpoint/intune/listpolicies',
+        to: '/endpoint/intune/list-policies',
       },
       {
         component: CNavItem,
         name: 'Conditional Access Policies',
-        to: '/endpoint/intune/capolicies',
+        to: '/endpoint/intune/ca-policies',
       },
       {
         component: CNavItem,
         name: 'Add Policy',
-        to: '/endpoint/intune/addpolicy',
+        to: '/endpoint/intune/add-policy',
       },
     ],
   },
@@ -217,49 +213,71 @@ const _nav = [
   {
     component: CNavGroup,
     name: 'OneDrive',
-    to: '/teamsshare/onedrive',
+    to: '/teams-share/onedrive',
     icon: <CIcon icon={cilStorage} customClassName="nav-icon" />,
     items: [
       {
         component: CNavItem,
         name: 'List OneDrive',
-        to: '/teamsshare/onedrive/list',
+        to: '/teams-share/onedrive/list',
       },
     ],
   },
   {
     component: CNavGroup,
     name: 'Sharepoint',
-    to: '/teamsshare/sharepoint',
+    to: '/teams-share/sharepoint',
     icon: <CIcon icon={cilRoom} customClassName="nav-icon" />,
     items: [
       {
         component: CNavItem,
         name: 'List Sharepoint',
-        to: '/teamsshare/sharepoint/listsharepoint',
+        to: '/teams-share/sharepoint/list-sharepoint',
       },
     ],
   },
   {
     component: CNavGroup,
     name: 'Teams',
-    to: '/teamsshare/teams',
+    to: '/teams-share/teams',
     icon: <CIcon icon={cilGroup} customClassName="nav-icon" />,
     items: [
       {
         component: CNavItem,
         name: 'List Teams',
-        to: '/teamsshare/teams/listteam',
+        to: '/teams-share/teams/list-team',
       },
       {
         component: CNavItem,
         name: 'Add Team',
-        to: '/teamsshare/teams/addteam',
+        to: '/teams-share/teams/add-team',
       },
       {
         component: CNavItem,
         name: 'Teams Activity',
-        to: '/teamsshare/teams/teamsactivity',
+        to: '/teams-share/teams/teams-activity',
+      },
+    ],
+  },
+  {
+    component: CNavTitle,
+    name: 'Settings',
+  },
+  {
+    component: CNavGroup,
+    name: 'CIPP',
+    to: '/cipp/cipp',
+    icon: <CIcon icon={cilFilter} customClassName="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Documentation',
+        href: 'https://github.com/KelvinTegelaar/CIPP',
+      },
+      {
+        component: CNavItem,
+        name: 'Settings',
+        to: '/cipp/settings',
       },
     ],
   },
