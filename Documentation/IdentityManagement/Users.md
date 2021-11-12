@@ -1,5 +1,3 @@
-<p align="center"><a href="https://cyberdrain.com" target="_blank" rel="noopener noreferrer"><img src="../assets/img/CyberDrain.png" alt="CyberDrain Logo"></a></p>
-
 # Groups
 
 Using the users pages you can easily edit users and add users to groups or change their licenses, you can also create new users. There's also several quick buttons;

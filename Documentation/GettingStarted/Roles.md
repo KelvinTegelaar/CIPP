@@ -1,5 +1,3 @@
-<p align="center"><a href="https://cyberdrain.com" target="_blank" rel="noopener noreferrer"><img src="../assets/img/CyberDrain.png" alt="CyberDrain Logo"></a></p>
-
 # Role management
 
 With version 1.3: Gin. We've introduced a new role management system. These roles are as follows;

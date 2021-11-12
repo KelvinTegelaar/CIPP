@@ -1,8 +1,6 @@
-<p align="center"><a href="https://cyberdrain.com" target="_blank" rel="noopener noreferrer"><img src="../assets/img/CyberDrain.png" alt="CyberDrain Logo"></a></p>
-
 # Deploying policies
 
-To create a policy an get it's raw JSON information you'll have to go to the [endpoint.microsoft.com](https://endpoint.microsoft.com) portal.
+To create a policy and get it's raw JSON information you'll have to go to the [endpoint.microsoft.com](https://endpoint.microsoft.com) portal.
 
 - Go to Devices -> Configuration Profiles
 - Create a new configuration profile
