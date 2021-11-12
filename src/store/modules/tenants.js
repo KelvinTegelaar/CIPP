@@ -5,8 +5,8 @@ const initialState = {
 }
 
 const LOADING = 'tenants/LOADING'
-const LOADING_SUCCESS = 'tenants/LOADING'
-const LOADING_FAILURE = 'tenants/LOADING'
+const LOADING_SUCCESS = 'tenants/LOADING_SUCCESS'
+const LOADING_FAILURE = 'tenants/LOADING_FAILURE'
 
 const SET_TENANT = 'tenants/SET_TENANT'
 
