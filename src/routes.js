@@ -1,7 +1,7 @@
 import React from 'react'
 
 const Home = React.lazy(() => import('./views/home/Home'))
-const Profile = React.lazy(() => import('./views/profile/Profile'))
+const ViewProfile = React.lazy(() => import('./views/profile/ViewProfile'))
 const Settings = React.lazy(() => import('./views/profile/Settings'))
 const Users = React.lazy(() => import('./views/identity/administration/Users'))
 const Groups = React.lazy(() => import('./views/identity/administration/Groups'))
@@ -21,7 +21,8 @@ const DomainsAnalyser = React.lazy(() => import('./views/tenant/standards/Domain
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/home', name: 'Home', component: Home },
-  { path: '/profile', name: 'Profile', component: Profile },
+  { path: '/profile', name: 'Profile' },
+  { path: '/profile/view', name: 'View', component: ViewProfile },
   { path: '/profile/settings', name: 'Settings', component: Settings },
   { path: '/identity', name: 'Identity' },
   { path: '/identity/administration', name: 'Administration' },
