@@ -1,0 +1,21 @@
+@mixin default() {
+    .body {
+        background-color: #ebedef;
+    }
+}
+@mixin cyberdrain() {
+    .wrapper {
+        background-color: rgb(247, 127, 0) !important;
+    }
+    .body {
+        background-color: rgb(247, 127, 0);
+    }
+}
+@mixin dark() {
+    .wrapper {
+        background-color: #222 !important;
+    }
+    .body {
+        background-color: #222;
+    }
+}

@@ -2,11 +2,14 @@ const initialState = {
   sidebarShow: true,
   sidebarUnfoldable: false,
   currentTenant: {},
+  themes: ['default', 'cyberdrain', 'dark'],
+  currentTheme: 'default',
 }
 
 const TOGGLE_SHOW = 'app/TOGGLE_SHOW'
 const TOGGLE_UNFOLDABLE = 'app/TOGGLE_UNFOLDABLE'
 const SET_TENANT = 'app/SET_TENANT'
+const SET_THEME = 'app/SET_THEME'
 
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
@@ -16,6 +19,8 @@ export default function reducer(state = initialState, action = {}) {
       return { ...state, sidebarUnfoldable: action.sidebarUnfoldable }
     case SET_TENANT:
       return { ...state, currentTenant: action.currentTenant }
+    case SET_THEME:
+      return { ...state, currentTheme: action.currentTheme }
     default:
       return state
   }
@@ -45,5 +50,12 @@ export function setCurrentTenant({ tenant }) {
 export function getCurrentTenant() {
   return (dispatch, getState) => {
     return getState().app.currentTenant
+  }
+}
+
+export function setCurrentTheme({ theme }) {
+  return {
+    type: SET_THEME,
+    currentTheme: theme,
   }
 }
