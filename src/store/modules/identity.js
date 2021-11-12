@@ -77,7 +77,7 @@ export default function reducer(state = initialState, action = {}) {
           loaded: true,
         },
       }
-    case USERS_LOAD_ERROR:
+    case GROUPS_LOAD_ERROR:
       return {
         ...state,
         users: {

@@ -1,14 +1,11 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Route, Redirect } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
-import { loadClientPrincipal } from 'src/store/modules/profile'
+import { useDispatch } from 'react-redux'
+import { getClientPrincipal, loadClientPrincipal } from '../store/modules/profile'
 
 export const PrivateRoute = ({ ...rest }) => {
   const dispatch = useDispatch()
-  useEffect(async () => {
-    dispatch(loadClientPrincipal())
-  }, [])
-  const profile = useSelector((state) => state.profile)
-  console.log(profile)
-  return profile.isLoggedIn ? <Route {...rest} /> : <Redirect to="/login" />
+  dispatch(loadClientPrincipal())
+  const clientPrincipal = dispatch(getClientPrincipal())
+  return Object.keys(clientPrincipal).length === 0 ? <Redirect to="/login" /> : <Route {...rest} />
 }
