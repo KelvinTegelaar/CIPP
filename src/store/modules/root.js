@@ -5,6 +5,7 @@ import identity from './identity'
 import modal from './modal'
 import reports from './reports'
 import tenants from './tenants'
+import toast from './toast'
 import standards from './standards'
 import version from './version'
 
@@ -15,6 +16,7 @@ export default combineReducers({
   modal,
   reports,
   tenants,
+  toast,
   standards,
   version,
 })
