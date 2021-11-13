@@ -97,6 +97,7 @@ const Tenants = () => {
               <BootstrapTable
                 {...props.baseProps}
                 pagination={pagination}
+                striped
                 wrapperClasses="table-responsive"
               />
               {/*eslint-enable */}
