@@ -2,6 +2,7 @@ const initialState = {
   visible: false,
   body: undefined,
   title: undefined,
+  size: undefined,
 }
 
 const SET_VISIBLE = 'modal/SET_VISIBLE'
@@ -20,6 +21,7 @@ export default function reducer(state = initialState, action = {}) {
         ...state,
         body: action.body,
         title: action.title,
+        size: action.size,
       }
     case RESET_MODAL:
       return initialState
@@ -46,10 +48,18 @@ export function resetModal() {
   }
 }
 
-export function setModalContent({ body, title }) {
+/**
+ *
+ * @param {Element} body
+ * @param {String} title
+ * @param {String} [size] ['sm', 'lg', 'xl'] defaults to None
+ * @returns {{size, type: string, body, title}}
+ */
+export function setModalContent({ body, title, size }) {
   return {
     type: SET_CONTENT,
     body: body,
     title,
+    size,
   }
 }
