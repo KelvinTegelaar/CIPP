@@ -4,13 +4,13 @@ import { CButton, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle } 
 import { hideModal } from '../store/modules/modal'
 
 export default function SharedModal() {
-  const { body, title, visible } = useSelector((store) => store.modal)
+  const { body, title, visible, size } = useSelector((store) => store.modal)
   const dispatch = useDispatch()
 
   const hideAction = () => dispatch(hideModal())
 
   return (
-    <CModal scrollable visible={visible} onClose={hideAction}>
+    <CModal size={size} scrollable visible={visible} onClose={hideAction}>
       <CModalHeader onClose={hideAction}>
         <CModalTitle>{title}</CModalTitle>
       </CModalHeader>
