@@ -10,7 +10,7 @@ const MFAReport = React.lazy(() => import('./views/identity/reports/MFAReport'))
 const Tenants = React.lazy(() => import('./views/tenant/administration/Tenants'))
 const Domains = React.lazy(() => import('./views/tenant/administration/Domains'))
 const ConditionalAccess = React.lazy(() =>
-  import('./views/tenant/administration/Conditionalaccess'),
+  import('./views/tenant/administration/ConditionalAccess'),
 )
 const BasicAuthReport = React.lazy(() => import('./views/identity/reports/BasicAuthReport'))
 const BestPracticeAnalyzer = React.lazy(() =>
