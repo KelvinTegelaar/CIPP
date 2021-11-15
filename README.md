@@ -16,7 +16,7 @@ The tool should assist you in removing the gripes with standard partner manageme
 
 # Deployment and Getting Started
 
-If you want to self-host, check out the installation manual [here](Documentation/Installation.md).
+If you want to self-host, check out the installation manual [here](https://kelvintegelaar.github.io/CIPP/).
 You will need some knowledge of Static Web Apps, Azure Functions, and Azure Key Vault.
 
 # Why are you making this?
@@ -27,7 +27,7 @@ I'm also annoyed by the un-transparent behaviour that many companies in our mark
 Most are claiming that working with the Microsoft Partner APIs is difficult and requires a very heavy development team.
 I'm a guy that had no web design knowledge before this and created the first release of this app in 3 weekends.
 Vendors that claim high difficulty or issues with integration are simply not giving this _any_ priority.
-This is also why the [changelog](/Documentation/Changelog.md) contains how many hours I have spent to build each release.
+This is also why the [changelog](https://kelvintegelaar.github.io/CIPP/GettingStarted/Changelog.html) contains how many hours I have spent to build each release.
 These hours are directly taken from my VSCode Extensions.
 
 I was recently on a call with one of my friends and he said he was changing the world.
@@ -86,13 +86,12 @@ The current build functionality is described below, also check out our Changelog
 
 - [x] List all applications in tenants
 - [x] List installation status of a specific application per device
-- [ ] Add/Remove custom applications via win32(intunewin) to multiple tenants
+- [x] Add/Remove custom applications via win32(intunewin) to multiple tenants
 - [x] Add Office Apps to multiple tenants
 - [x] Add/Remove Chocolatey Apps to multiple tenants
-- [ ] Add/Remove Ninite Pro Apps to multiple tenants
 - [x] Assign Apps to All Devices or All Users
-- [ ] Report on the installation status
-- [ ] Assign apps to specific groups
+- [x] Report on the installation status
+- [x]] Assign apps to specific groups
 
 ## Devices
 
@@ -108,14 +107,14 @@ The current build functionality is described below, also check out our Changelog
 - [x] View/edit licenses
 - [x] List users
 - [x] Add/Remove users to groups
-- [ ] User alerting
+- [x] User alerting
 
 ## Tenant Administration
 
 - [x] Deploy any custom graph command
 - [x] Set selected defaults across selected tenants
-- [ ] Monitor defaults across tenants.
-- [ ] Tenant Alerting
+- [x] Monitor defaults across tenants.
+- [x] Tenant Alerting
 
 # Security
 
