@@ -1,2 +1,6 @@
+# Ignore all files in .github and .vscode directories.
 .github/
 .vscode/
+# Except pre-approved CI/CD files.
+!.github/workflows/Version_Check.yml
+!.github/workflows/Docs.yml

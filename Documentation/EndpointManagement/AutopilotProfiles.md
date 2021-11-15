@@ -1,5 +1,3 @@
-<p align="center"><a href="https://cyberdrain.com" target="_blank" rel="noopener noreferrer"><img src="../assets/img/CyberDrain.png" alt="CyberDrain Logo"></a></p>
-
 # Adding Autopilot Profiles
 
 This page will allow you to add Autopilot profiles, Autopilot profiles allow you to setup devices exactly how you want them. You can create multiple profiles with this Wizard. 

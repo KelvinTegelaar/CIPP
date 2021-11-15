@@ -1,5 +1,3 @@
-<p align="center"><a href="https://cyberdrain.com" target="_blank" rel="noopener noreferrer"><img src="../assets/img/CyberDrain.png" alt="CyberDrain Logo"></a></p>
-
 # Adding a Chocolatey App
 
 You can add a Chocolatey app by executing this wizard. The wizard will guide you through the steps. If you have a personal repository you can enter the URL for this repo too.

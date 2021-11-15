@@ -1,14 +1,12 @@
-<p align="center"><a href="https://cyberdrain.com" target="_blank" rel="noopener noreferrer"><img src="../assets/img/CyberDrain.png" alt="CyberDrain Logo"></a></p>
-
 # Security Policy
 
 ## Supported Versions
 
-Any build that is upped to a [release](/releases) is a supported version and should not have any security bugs. Feel free to report for any of the current releases. If you find an issue in an older release that is already removed feel free to also report this in case of regression, I'd rather know we made a mistake at one point in time and avoid that for the future.
+Any build that is upped to a [release](https://github.com/KelvinTegelaar/CIPP/releases) is a supported version and should not have any security bugs. Feel free to report for any of the current releases. If you find an issue in an older release that is already removed feel free to also report this in case of regression, I'd rather know we made a mistake at one point in time and avoid that for the future.
 
 ## Reporting a Vulnerability
 
-Reporting a vunerability is best done via our [Security](security.md) page. This way all contributors are alerted and we can discuss the issue in private. it'll help in making the fix available as soon as possible without endangering other users of the product. 
+Reporting a vunerability is best done via the instructions in the [Security Policy](https://github.com/KelvinTegelaar/CIPP/security/policy). This way all contributors are alerted and we can discuss the issue in private. it'll help in making the fix available as soon as possible without endangering other users of the product. 
 
 We will pubicly release any security report after resolution, including all communications, if you'd rather have just the bug report public, please let us know in the report.
 
