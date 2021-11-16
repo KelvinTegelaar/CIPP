@@ -5,6 +5,7 @@ site_author: 'Kelvin Tegelaar'
 docs_dir: Documentation
 repo_name: 'KelvinTegelaar/CIPP'
 repo_url: 'https://github.com/KelvinTegelaar/CIPP'
+edit_uri: 'edit/master/Documentation/'
 nav:
     - Home: index.md
     - Getting Started:
@@ -65,10 +66,30 @@ theme:
 extra_css:
   - css/extra.css
 markdown_extensions:
+  - abbr
+  - admonitions
+  - def_list
+  - tables
   - toc:
       permalink: true
-  - pymdownx.highlight: 
+  - pymdownx.betterem
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.highlight:
+      auto_title: true
       linenums: true
+      use_pygments: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+  - pymdownx.smartsymbols
+  - pymdownx.snippets
   - pymdownx.superfences
 extra:
   social:
@@ -77,3 +98,9 @@ extra:
     - icon: fontawesome/brands/github
       link: https://github.com/KelvinTegelaar/CIPP
 copyright: Copyright &copy; 2021 CyberDrain
+
+plugins:
+    - search
+    - git-revision-date-localized:
+        type: timeago
+    
