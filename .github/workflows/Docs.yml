@@ -8,12 +8,6 @@ on:
     paths:
       - "mkdocs.yml"
       - "Documentation/**"
-  pull_request:
-    branches:
-      - master
-    paths:
-      - "mkdocs.yml"
-      - "Documentation/**"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -29,6 +23,8 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       # Builds the documentation site according to the config in `mkdocs.yml` in the repo root.
       - name: Deploy MkDocs
         uses: mhausenblas/mkdocs-deploy-gh-pages@1.21
