@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react'
-import ToolkitProvider, { CSVExport, Search } from 'react-bootstrap-table2-toolkit'
+import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit'
 import paginationFactory from 'react-bootstrap-table2-paginator'
-import CellBadge from '../../../components/cipp/CellBadge'
 import { useDispatch, useSelector } from 'react-redux'
 import { listTenants } from '../../../store/modules/tenants'
 import BootstrapTable from 'react-bootstrap-table-next'
-import { CButton, CSpinner } from '@coreui/react'
+import { CSpinner } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilCog } from '@coreui/icons'
 

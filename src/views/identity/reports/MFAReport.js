@@ -113,7 +113,7 @@ const MFAReport = () => {
       {mfa.loaded && !mfa.loading && (
         <>
           <hr />
-          <ToolkitProvider keyField="mfa-report" columns={columns} data={mfa.report} search>
+          <ToolkitProvider keyField="UPN" columns={columns} data={mfa.report} search>
             {(props) => (
               <div>
                 {/* eslint-disable-next-line react/prop-types */}
