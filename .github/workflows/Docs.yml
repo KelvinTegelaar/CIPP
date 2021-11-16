@@ -1,19 +1,18 @@
-# This is a basic workflow to help you get started with Actions
+name: Documentation
 
-name: CI
-
-# Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
     branches: 
       - master
     paths:
+      - "mkdocs.yml"
       - "Documentation/**"
   pull_request:
     branches:
       - master
     paths:
+      - "mkdocs.yml"
       - "Documentation/**"
 
   # Allows you to run this workflow manually from the Actions tab
@@ -30,7 +29,7 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
+      # Builds the documentation site according to the config in `mkdocs.yml` in the repo root.
       - name: Deploy MkDocs
         uses: mhausenblas/mkdocs-deploy-gh-pages@1.21
         env:
