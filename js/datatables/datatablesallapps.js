@@ -37,11 +37,21 @@ $(document).ready(function () {
                     {
                         "data": "id",
                         render: function (id, type, row) {
-                            return '<a href=index.html?page=EditApp&TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Edit App" class="fas fa-cog fa-fw">' +
-                                '</i></a><nothing class="APILink">' +
-                                '<a actionname="assign ' + row.displayName + ' to all users" href=api/ExecAssignApp?AssignTo=AllUsers&TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Assign to all users" class="fas fa-user-friends fa-fw"></i></a>' +
-                                '<a actionname="assign ' + row.displayName + ' to all devices" href=api/ExecAssignApp?AssignTo=AllDevices&TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Assign to all devices" class="fas fa-laptop fa-fw"></i></a>' +
-                                '<a actionname="assign ' + row.displayName + ' to all users and devices" href=api/ExecAssignApp?AssignTo=Both&TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Assign globally(All devices, all Users)" class="fas fa-globe fa-fw"></i></i></a>'
+                            var tblmenu = `
+                            <div class="dropdown">
+                            
+                                <i class="fas fa-bars dropdown-toggle text-primary" data-bs-toggle="dropdown" style="cursor:hand;"></i>
+                                <ul class="dropdown-menu" style="min-width:260px;">
+                                    <li><a class="dropdown-item" href=index.html?page=EditApp&TenantFilter=${TenantID}&ID=${id}><i data-bs-toggle="tooltip" data-bs-placement="top" title="Edit App" class="fas fa-cog fa-fw"></i>Edit Application</a></li>
+                                    <nothing class="APILink">
+                                    <li><a class="dropdown-item" actionname="assign ${row.displayName} to all users" href=api/ExecAssignApp?AssignTo=AllUsers&TenantFilter=${TenantID}&ID=${id}><i data-bs-toggle="tooltip" data-bs-placement="top" title="Assign to all users" class="fas fa-user-friends fa-fw"></i>Assign to all Users</a></li>
+                                    <li><a class="dropdown-item"actionname="assign ${row.displayName} to all devices" href=api/ExecAssignApp?AssignTo=AllDevices&TenantFilter=${TenantID}&ID=${id}><i data-bs-toggle="tooltip" data-bs-placement="top" title="Assign to all devices" class="fas fa-laptop fa-fw"></i>Assign to all Devices</a></li>
+                                    <li><a class="dropdown-item" actionname="assign ${row.displayName} to all users and devices" href=api/ExecAssignApp?AssignTo=Both&TenantFilter=${TenantID}&ID=${id}><i data-bs-toggle="tooltip" data-bs-placement="top" title="Assign globally(All devices, all Users)" class="fas fa-globe fa-fw"></i></i>Assign Globally(All devices, All users)</a></li>
+                                    </nothing>
+                                    </ul>
+                                    
+                            </div>`
+                            return tblmenu;
                         }
                     }
                 ],

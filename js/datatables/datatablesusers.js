@@ -109,20 +109,23 @@ $(document).ready(function () {
                     {
                         "data": "id",
                         render: function (id, type, row) {
-                            if (row.accountEnabled === false){accountDisabledDD = ' disabled'}else{accountDisabledDD = ''};
+                            if (row.accountEnabled === false) { accountDisabledDD = ' disabled' } else { accountDisabledDD = '' };
                             if (row.mail === null) { mailDisabledDD = ' disabled' } else { mailDisabledDD = '' };
                             var tblmenu = `
                             <div class="dropdown">
+                            <nothing class="APILink">
                                 <i class="fas fa-bars dropdown-toggle text-primary" data-bs-toggle="dropdown" style="cursor:hand;"></i>
                                 <ul class="dropdown-menu" style="min-width:260px;">
-                                    <li><a class="dropdown-item" href=index.html?page=ViewUser&Tenantfilter=${TenantID}&UserID=${id}><i data-bs-toggle="tooltip" data-bs-placement="top" title="View User" class="fas fa-eye fa-fw"></i><nothing class="APILink">View User</a></li>
-                                    <li><a class="dropdown-item" href=index.html?page=EditUser&Tenantfilter=${TenantID}&UserID=${id}><i data-bs-toggle="tooltip" data-bs-placement="top" title="Edit User" class="fas fa-cog fa-fw"></i><nothing class="APILink">Edit User</a></li>
+                                    <li><a class="dropdown-item" href=index.html?page=ViewUser&Tenantfilter=${TenantID}&UserID=${id}><i data-bs-toggle="tooltip" data-bs-placement="top" title="View User" class="fas fa-eye fa-fw"></i>View User</a></li>
+                                    <li><a class="dropdown-item" href=index.html?page=EditUser&Tenantfilter=${TenantID}&UserID=${id}><i data-bs-toggle="tooltip" data-bs-placement="top" title="Edit User" class="fas fa-cog fa-fw"></i>Edit User</a></li>
                                     <li><a class="dropdown-item${accountDisabledDD}" actionname="send push for ${row.displayName}" href=api/ExecSendPush?TenantFilter=${TenantID}&UserEmail=${row.mail}><i data-bs-toggle="tooltip" data-bs-placement="top" title="Send MFA Push to User" class="fas fa-exchange-alt fa-fw"></i></i>Send MFA Push</a></li>
                                     <li><a class="dropdown-item${mailDisabledDD}" actionname="convert ${row.displayName} to a shared mailbox" href=api/ExecConvertToSharedMailbox?TenantFilter=${TenantID}&ID=${id}><i data-bs-toggle="tooltip" data-bs-placement="top" title="Convert to Shared" class="fas fa-share-alt fa-fw"></i>Convert to Shared Mailbox</a></li>
                                     <li><a class="dropdown-item${accountDisabledDD}" actionname="disable ${row.displayName}" href=api/ExecDisableUser?TenantFilter=${TenantID}&ID=${id}><i data-bs-toggle="tooltip" data-bs-placement="top" title="Block Sign in" class="fas fa-ban fa-fw"></i>Block Sign-In</a></li>
-                                    <li><a class="dropdown-item" actionname="reset the password for ${row.displayName}" href=api/ExecResetPass?TenantFilter=${TenantID}&ID=${id}><i data-bs-toggle="tooltip" data-bs-placement="top" title="Reset password" class="fas fa-key fa-fw"></i></i>Reset Password</a></li>
+                                    <li><a class="dropdown-item" actionname="reset the password for ${row.displayName}" href=api/ExecResetPass?MustChange=true&TenantFilter=${TenantID}&ID=${id}><i data-bs-toggle="tooltip" data-bs-placement="top" title="Reset password" class="fas fa-key fa-fw"></i></i>Reset Password (Must change)</a></li>
+                                    <li><a class="dropdown-item" actionname="reset the password for ${row.displayName}" href=api/ExecResetPass?MustChange=false&TenantFilter=${TenantID}&ID=${id}><i data-bs-toggle="tooltip" data-bs-placement="top" title="Reset password" class="fas fa-key fa-fw"></i></i>Reset Password</a></li>
                                     <li><a class="dropdown-item" actionname="Delete ${row.displayName}" href=api/RemoveUser?TenantFilter=${TenantID}&ID=${id}><i data-bs-toggle="tooltip" data-bs-placement="top" title="Delete user" class="fas fa-user-times fa-fw"></i></i>Delete User</a></nothing></li>
-                                </ul>
+                                    </ul>
+                                    </nothing>
                             </div>`
                             return tblmenu;
                         }
