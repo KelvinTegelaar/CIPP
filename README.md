@@ -1,7 +1,7 @@
 <p align="center"><a href="https://cyberdrain.com" target="_blank" rel="noopener noreferrer"><img src="assets/img/CyberDrain.png" alt="CyberDrain Logo"></a></p>
 
 <center><h1>Sponsored by</h1></center>
-<p align="center"><a href="https://oit.co" target="_blank" rel="noopener noreferrer"><img height="75" src="https://kelvintegelaar.github.io/CIPP/images/sponsors/OIT.webp" alt="OITVoip" style="padding: 20px 0;" /></a><a href="https://www.genuinetechnology.com/" target="_blank" rel="noopener noreferrer"><img height="75" src="https://kelvintegelaar.github.io/CIPP/images/sponsors/GenuineTechnologyGroup.png" alt="Genuine Technology Group" style="padding: 20px 0;" /></a><a href="https://www.ninjaone.com" target="_blank" rel="noopener noreferrer"><img height="75" src="https://kelvintegelaar.github.io/CIPP/images/sponsors/NinjaOne.png" alt="NinjaOne" style="padding: 20px 0;" /></a></p>
+<p align="center"><a href="https://oit.co" target="_blank" rel="noopener noreferrer" style="padding: 20px 0;"><img height="75" src="https://kelvintegelaar.github.io/CIPP/images/sponsors/OIT.webp" alt="OITVoip" style="padding: 20px 0;" /></a><a href="https://www.genuinetechnology.com/" target="_blank" rel="noopener noreferrer"><img height="75" src="https://kelvintegelaar.github.io/CIPP/images/sponsors/GenuineTechnologyGroup.png" alt="Genuine Technology Group" /></a><a href="https://www.ninjaone.com" target="_blank" rel="noopener noreferrer" style="padding: 20px 0;"><img height="75" src="https://kelvintegelaar.github.io/CIPP/images/sponsors/NinjaOne.png" alt="NinjaOne" /></a></p>
 </p>
 
 # What is this?
