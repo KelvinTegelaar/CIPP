@@ -45,7 +45,7 @@ For full functionality, you'll need the following permissions for your Secure Ap
 !!! info "Duplicate Permissions"
     Some permissions may appear to be duplicated in the Delegated and Application permissions tables below. This is *by design* and you do need to add both permissions!
 
-## Delegated Permissions
+### Delegated Permissions
 
 You'll need to add the following **Delegated permissions**:
 
