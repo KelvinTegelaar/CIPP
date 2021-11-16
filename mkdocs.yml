@@ -78,7 +78,6 @@ markdown_extensions:
   - pymdownx.critic
   - pymdownx.details
   - pymdownx.highlight:
-      auto_title: true
       linenums: true
       use_pygments: true
   - pymdownx.inlinehilite
