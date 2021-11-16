@@ -67,7 +67,7 @@ extra_css:
   - css/extra.css
 markdown_extensions:
   - abbr
-  - admonitions
+  - admonition
   - def_list
   - tables
   - toc:
