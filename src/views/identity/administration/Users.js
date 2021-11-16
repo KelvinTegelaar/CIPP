@@ -3,8 +3,8 @@ import { CSpinner } from '@coreui/react'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 import TenantSelector from 'src/components/cipp/TenantSelector'
 import BootstrapTable from 'react-bootstrap-table-next'
-import ToolkitProvider, { Search, CSVExport } from 'react-bootstrap-table2-toolkit'
-import paginationFactory, { PaginationProvider } from 'react-bootstrap-table2-paginator'
+import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit'
+import paginationFactory from 'react-bootstrap-table2-paginator'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { listUsers } from '../../../store/modules/identity'
@@ -92,7 +92,7 @@ const Users = () => {
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         {!users.loaded && users.loading && <CSpinner />}
         {users.loaded && !users.loading && Object.keys(tenant).length !== 0 && (
-          <ToolkitProvider keyField="id" columns={columns} data={users.list} search>
+          <ToolkitProvider keyField="displayName" columns={columns} data={users.list} search>
             {(props) => (
               <div>
                 {/* eslint-disable-next-line react/prop-types */}

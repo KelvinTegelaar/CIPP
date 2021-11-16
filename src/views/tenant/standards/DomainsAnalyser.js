@@ -4,10 +4,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import BootstrapTable from 'react-bootstrap-table-next'
 import ToolkitProvider, { Search, CSVExport } from 'react-bootstrap-table2-toolkit'
 import paginationFactory from 'react-bootstrap-table2-paginator'
-import { CButton, CProgress, CProgressBar } from '@coreui/react'
+import { CButton } from '@coreui/react'
 
 import {
-  forceRefreshBestPracticeReport,
   forceRefreshDomainAnalyserReport,
   loadDomainsAnalyserReport,
 } from '../../../store/modules/standards'
@@ -211,6 +210,7 @@ const DomainsAnalyser = () => {
     },
     {
       text: 'More Info',
+      dataField: 'Domain',
       sort: true,
       formatter: (cell, row) => {
         return (
@@ -232,12 +232,7 @@ const DomainsAnalyser = () => {
           </div>
         )}
         {domains.loaded && !domains.loading && (
-          <ToolkitProvider
-            keyField="domains-analyser-table"
-            columns={columns}
-            data={domains.report}
-            search
-          >
+          <ToolkitProvider keyField="Domain" columns={columns} data={domains.report} search>
             {(props) => (
               <div>
                 {/* eslint-disable-next-line react/prop-types */}
@@ -256,7 +251,7 @@ const DomainsAnalyser = () => {
                   {...props.baseProps}
                   pagination={pagination}
                   striped
-                  wrapperClasses="table-responsive"  
+                  wrapperClasses="table-responsive"
                 />
                 {/*eslint-enable */}
               </div>
