@@ -31,12 +31,12 @@ For the installation and maintenance, we assume you have some knowledge of GitHu
 You'll also need the following permissions for your secure application model, to add permissions follow these instructions:
 
 * Go to the [Azure Portal](https://portal.azure.com).
-- Click on [**Azure Active Directory**](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Overview), now click on [**App Registrations**](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps).
-- Find your Secure App Model application. You can search based on the Application ID.
-- Go to **API Permissions** and click **Add a permission**.
-- Choose “Microsoft Graph” and “Delegated permission” or "Application Permissions"
-- Add the permission you need
-- Finally, click on “Grant Admin Consent” for Company Name.
+* Click on [**Azure Active Directory**](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Overview), now click on [**App Registrations**](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps).
+* Find your Secure App Model application. You can search based on the Application ID.
+* Go to **API Permissions** and click **Add a permission**.
+* Choose “Microsoft Graph” and “Delegated permission” or "Application Permissions"
+* Add the permission you need
+* Finally, click on “Grant Admin Consent” for Company Name.
 
 ## Permissions
 
