@@ -14,7 +14,7 @@ $(".postbec").click(function (e) {
 
             data.SuspectUserDevices.forEach(function (item) {
                 devicestable.push(`<tr>
-                  <td>${item.ClientType}</td>
+                  <td>${item.clientType}</td>
                 <td>${item.FirstSyncTime}</td>
                 <td>${item.DeviceUserAgent}</td>
                 </tr>`)
@@ -33,7 +33,7 @@ $(".postbec").click(function (e) {
             $("#investigationdata").html(devicetablecomplete)
         },
         'error': function (xhr, ajaxOptions, thrownError) {
-            $("#investigationdata").html('NONO')
+            $("#investigationdata").html('Error - could not retrieve information from API. Please run HAWK instead.')
         }
     });
 })

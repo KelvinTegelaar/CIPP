@@ -1,201 +1,137 @@
 <main>
-    <header class="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
-        <div class="container-xl px-4">
-            <div class="page-header-content pt-4">
-                <div class="row align-items-center justify-content-between">
-                    <div class="col-auto mt-4">
-                        <h1 class="page-header-title">
-                            <div class="page-header-icon"><i data-feather="arrow-right-circle"></i></div>
-                            BEC Investigation Wizard
-                        </h1>
-                        <div class="page-header-subtitle">This wizard guides you through discovering and remediating
-                            e-mail fraud.
+    <form name="edituserform" id="Userform">
+        <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
+            <div class="container-xl px-4">
+                <div class="page-header-content">
+                    <div class="row align-items-center justify-content-between pt-3">
+                        <div class="col-auto mb-3">
+                            <h1 class="page-header-title">
+                                <div class="page-header-icon"><i data-feather="user-plus"></i></div>
+                                Business Email Compromise Analysis
+                            </h1>
+                        </div>
+                        <div class="col-12 col-xl-auto mb-3">
+                            <a class="btn btn-sm btn-light text-primary back-to-users" href="index.html?page=users">
+                                <i class="me-1" data-feather="arrow-left"></i>
+                                Back to Users
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </header>
-    <!-- Main page content-->
-    <div class="container-xl px-4 mt-n10">
-        <!-- Wizard card example with navigation-->
-        <div class="card">
-            <div class="card-header border-bottom">
-                <!-- Wizard navigation-->
-                <div class="nav nav-pills nav-justified flex-column flex-xl-row nav-wizard" id="cardTab" role="tablist">
-                    <!-- Wizard navigation item 1-->
-                    <a class="nav-item nav-link active" id="wizard1-tab" href="#wizard1" data-bs-toggle="tab" role="tab"
-                        aria-controls="wizard1" aria-selected="true">
-                        <div class="wizard-step-icon">1</div>
-                        <div class="wizard-step-text">
-                            <div class="wizard-step-text-name">Tenant choice</div>
-                            <div class="wizard-step-text-details">Choose a tenant for investigation</div>
+        </header>
+        <!-- Main page content-->
+        <div class="container-xl px-4 mt-4">
+            <div class="row">
+                <div class="col-6">
+                    <!-- Account details card-->
+                    <div class="card mb-4">
+                        <div class="card-header">Last Tenant Sign Ins</div>
+                        <div class="card-body">
+                            <!-- Form Row-->
+                            <button class="btn btn-primary" onclick='PostForm("Userform","api/EditUser")'' type="button">Edit User</button>
                         </div>
-                    </a>
-                    <!-- Wizard navigation item 2-->
-                    <a class="nav-item nav-link" id="wizard2-tab" href="#wizard2" data-bs-toggle="tab" role="tab"
-                        aria-controls="wizard2" aria-selected="true">
-                        <div class="wizard-step-icon">2</div>
-                        <div class="wizard-step-text">
-                            <div class="wizard-step-text-name">User details</div>
-                            <div class="wizard-step-text-details">Choose a suspect user for investigation</div>
-                        </div>
-                    </a>
-                    <!-- Wizard navigation item 3-->
-                    <a class="nav-item nav-link" id="wizard3-tab" href="#wizard3" data-bs-toggle="tab" role="tab"
-                        aria-controls="wizard3" aria-selected="true">
-                        <div class="wizard-step-icon">3</div>
-                        <div class="wizard-step-text">
-                            <div class="wizard-step-text-name">Information</div>
-                            <div class="wizard-step-text-details">Information retrieved
-                            </div>
-                        </div>
-                    </a>
-                    <!-- Wizard navigation item 4-->
-                    <a class="nav-item nav-link" id="wizard4-tab" href="#wizard4" data-bs-toggle="tab" role="tab"
-                        aria-controls="wizard4" aria-selected="true">
-                        <div class="wizard-step-icon">4</div>
-                        <div class="wizard-step-text">
-                            <div class="wizard-step-text-name">Review &amp; Remediate</div>
-                            <div class="wizard-step-text-details">Review and choose to remediate if required</div>
-                        </div>
-                    </a>
+                    </div>
                 </div>
-            </div>
-            <div class="card-body">
-                <form id=BECForm>
-                    <div class="tab-content" id="cardTabContent">
-                        <!-- Wizard tab pane item 1-->
-
-                        <div class="tab-pane py-5 py-xl-10 fade show active" id="wizard1" role="tabpanel"
-                            aria-labelledby="wizard1-tab">
-                            <div class="row justify-content-center">
-                                <div class="col-xxl-6 col-xl-8">
-                                    <h3 class="text-primary">Step 1</h3>
-                                    <h5 class="card-title mb-4">Choose a tenant</h5>
-
-                                    <div> <input class="form-control" name="tenantfilter" list="datalistOptions"
-                                            id="exampleDataList" placeholder="Type to search..." oninput='onInput()'>
-                                        <datalist id="datalistOptions">
-                                            <option value="Select a tenant" text="Select a tenant">
-                                        </datalist>
-                                    </div>
-
-                                    <hr class="my-4" />
-                                    <div class="d-flex justify-content-between">
-                                        <button class="btn btn-light disabled" type="button" disabled>Previous</button>
-                                        <a class="nav-link active wizardbutton" href="#wizard2-tab">
-                                            <button class="btn btn-primary btnNext" type="button">Next</button></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Wizard tab pane item 2-->
-                        <div class="tab-pane py-5 py-xl-10 fade" id="wizard2" role="tabpanel"
-                            aria-labelledby="wizard2-tab">
-                            <div class="row justify-content-center">
-                                <div class="col-xxl-6 col-xl-8">
-                                    <h3 class="text-primary">Step 2</h3>
-                                    <h5 class="card-title mb-4">Choose the user</h5>
-                                    Please choose the user you suspect of being compromised.
-
-                                    <div> <input class="form-control" name="User" list="UserlistOptions" id="Userlist"
-                                            placeholder="Type to search..." oninput='onInputUserList()'>
-                                        <datalist id="UserlistOptions">
-                                            <option value="Select a user" text="Select a user">
-                                        </datalist>
-                                    </div>
-                                    <hr class="my-4" />
-                                    <div class="d-flex justify-content-between">
-                                        <a class="nav-link active wizardbutton" href="#wizard1-tab">
-                                            <button class="btn btn-light" type="button">Previous</button></a>
-                                        <a id="SendData" class="nav-link active wizardbutton postbec"
-                                            href="#wizard3-tab">
-                                            <button class="btn btn-primary">Start investigation</button>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Wizard tab pane item 3-->
-                        <div class="tab-pane py-5 py-xl-10 fade" id="wizard3" role="tabpanel"
-                            aria-labelledby="wizard3-tab">
-                            <div class="row justify-content-center">
-                                <div class="col-xxl-6 col-xl-8">
-                                    <h3 class="text-primary">Step 3</h3>
-                                    <h5 class="card-title mb-4">We've found the following information for the last 7
-                                        days. Do you need more information or are you unsure about the accuracy, please
-                                        execute a HAWK(Url to HAWK here) check instead.</h5>
-                                    <section id="investigationdata">
-                                        <div class="spinner-border text-primary" role="status">
-                                            <span class="sr-only"></span>
-                                        </div></span>
-                                    </section>
-                                    <hr class="my-4" />
-                                    <div class="d-flex justify-content-between">
-                                        <a class="nav-link active wizardbutton" href="#wizard2-tab">
-                                            <button class="btn btn-light" type="button">Previous</button></a>
-                                        <a class="nav-link active wizardbutton" href="#wizard4-tab">
-                                            <button class="btn btn-primary" type="button">Next</button>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                </form>
-                <!-- Wizard tab pane item 4-->
-                <div class="tab-pane py-5 py-xl-10 fade" id="wizard4" role="tabpanel" aria-labelledby="wizard4-tab">
-                    <div class="row justify-content-center">
-                        <div class="col-xxl-6 col-xl-8">
-                            <h3 class="text-primary">Step 4</h3>
-                            <h5 class="card-title mb-4">Confirm and apply
-                            </h5>
-                            <div class="row small text-muted">
-                            </div>
-
-                            <hr class="my-4" />
-                            <div class="d-flex justify-content-between">
-                                <a class="nav-link active wizardbutton" href="#wizard3-tab">
-                                    <button class="btn btn-light" type="button">Previous</button></a>
-                                <a class="nav-link active wizardbutton" href="#wizard4-tab">
-                                    <button class="btn btn-primary"
-                                        onclick='PostForm("AutopilotForm","api/Execoffboarduser")'
-                                        type="button">Apply</button>
-                                </a>
-                            </div>
+                <div class=col-6>
+                    <div class="card mb-4">
+                        <div class="card-header">Account Rules</div>
+                        <div class="card-body">This is the (raw) information for this account. <div
+                                class="mb-3">
+                                <pre id="RawJson"></pre>
                         </div>
                     </div>
                 </div>
             </div>
+                <div class=col-6>
+                    <div class="card mb-4">
+                        <div class="card-header">Account Devices</div>
+                        <div class="card-body">This is the (raw) information for this account. <div class="mb-3">
+                                <pre id="RawJson"></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                            <div class=col-6>
+                                <div class="card mb-4">
+                                    <div class="card-header">New Users</div>
+                                    <div class="card-body">This is the (raw) information for this account. <div class="mb-3">
+                                            <pre id="RawJson"></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                        <div class=col-6>
+                                            <div class="card mb-4">
+                                                <div class="card-header">Changed Users</div>
+                                                <div class="card-body">This is the (raw) information for this account. <div class="mb-3">
+                                                        <pre id="RawJson"></pre>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                                        <div class=col-6>
+                    <div class="card mb-4">
+                        <div class="card-header">Deleted users</div>
+                        <div class="card-body">This is the (raw) information for this account. <div
+                                class="mb-3">
+                                <pre id="RawJson"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                            <div class=col-6>
+                    <div class="card mb-4">
+                        <div class="card-header">Application Changes</div>
+                        <div class="card-body">This is the (raw) information for this account. <div
+                                class="mb-3">
+                                <pre id="RawJson"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                            <div class=col-6>
+                                <div class="card mb-4">
+                                    <div class="card-header">Password Reset/Changes</div>
+                                    <div class="card-body">This is the (raw) information for this account. <div class="mb-3">
+                                            <pre id="RawJson"></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                            <div class=col-6>
+                    <div class="card mb-4">
+                        <div class="card-header">Mailbox permission changes</div>
+                        <div class="card-body">This is the (raw) information for this account. <div
+                                class="mb-3">
+                                <pre id="RawJson"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    </form>
+    <button class="btn btn-primary" id="PopModal" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"
+        style="display:none;"></button>
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Results</h5>
+                </div>
+                <div class="modal-body">
+                    <section id="APIContent">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only"></span>
+                        </div></span>
+                    </section>
+                </div>
+                <div class="modal-footer"><button class="btn btn-secondary" type="button"
+                        data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
         </div>
-    </div>
-    </div>
 </main>
-</body>
-<script src="js/datatables/bootstable.min.js"></script>
-<script src="js/tenantlist.js"></script>
+<script src="js/UserFormOptions.js"></script>
 <script src="js/Userlist.js"></script>
-<script src="js/BECList.js"></script>
-
-<button class="btn btn-primary" id="PopModal" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"
-    style="display:none;"></button>
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Results</h5>
-            </div>
-            <div class="modal-body">
-                <section id="APIContent">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="sr-only"></span>
-                    </div></span>
-                </section>
-            </div>
-            <div class="modal-footer"><button class="btn btn-secondary" type="button"
-                    data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
