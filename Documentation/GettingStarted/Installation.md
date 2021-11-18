@@ -189,7 +189,7 @@ You'll need the following to get started;
 
 ## Automated Installation
 
-Click the button below to run the automated setup. This does most of the work for you. If you don't want to use the automated installer, use the [manual installation instructions](#manual-installation) below, but be warned that this is really not advised, there's a lot of moving parts where one could make a mistake. You will need to use the manual installation instructions if you wish to host your repo in [Azure DevOps](https://dev.azure.com) or on a [GitLab](https://www.gitlab.com) instance.
+After you have completed the requirements in the [Getting Started](#getting-started) section, click the button below to run the automated setup. This does most of the work for you. If you don't want to use the automated installer, use the [manual installation instructions](#manual-installation) below, but be warned that this is really not advised, there's a lot of moving parts where one could make a mistake. You will need to use the manual installation instructions if you wish to host your repo in [Azure DevOps](https://dev.azure.com) or on a [GitLab](https://www.gitlab.com) instance.
 
 [![Deploy To Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FKelvinTegelaar%2FCIPP%2Fmaster%2FDocumentation%2FAzureDeploymentTemplate.json)
 
