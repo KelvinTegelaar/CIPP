@@ -1,0 +1,146 @@
+<main>
+
+  <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
+    <div class="container-xl px-4">
+      <div class="page-header-content">
+        <div class="row align-items-center justify-content-between pt-3">
+          <div class="col-auto mb-3">
+            <h1 class="page-header-title">
+              <div class="page-header-icon">
+                <i data-feather="user-plus"></i>
+              </div> Individual Domain Checker
+            </h1>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <!-- Main page content-->
+  <div class="container-xl px-4 mt-4">
+    <div class="row">
+      <div class="col-xl-6">
+        <!-- Account details card-->
+        <div class="card mb-4">
+          <div class="card-header">Email Security Domain Checker</div>
+          <div class="card-body">
+            <!-- Form Row-->
+            <div class="row gx-3 mb-3">
+              <!-- Form Group (first name)-->
+              <div class="col-md-6">
+                <form name="domaincheckform" id="DomainForm">
+                  <label class="small mb-1" for="DomainToCheck">Domain Name</label>
+                  <input class="form-control" id="DomainToCheck" type="text" placeholder="Enter Domain Name" value=""
+                    name="DomainToCheck" /><br />
+                </form>
+                <button class="btn btn-primary" onclick='ExecuteDomainAPICall()' type="button" id="submitCheck">Check
+                  Domain&nbsp;&nbsp;<span id="loaderspin" class="spinner-border spinner-border-sm invisible" role="status" aria-hidden="true"></span></button>
+              </div>
+              <div class="col-md-6">
+                <div class="row">
+                  <div class="col-4">
+                    <p id="mxindicator" class="bg-dark text-light text-center">MX</p>
+                  </div>
+                  <div class="col-4">
+                    <p id="spfindicator" class="bg-dark text-light text-center">SPF</p>
+                  </div>
+                  <div class="col-4">
+                    <p id="dmarcindicator" class="bg-dark text-light text-center">DMARC</p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-6">
+                    <p id="dkimindicator" class="bg-dark text-light text-center">DKIM</p>
+                  </div>
+                  <div class="col-6">
+                    <p id="dnssecindicator" class="bg-dark text-light text-center">DNSSEC</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Submit buttons-->
+
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-6">
+        <div class="card">
+          <div class="card-header" id="mxCard">
+            <h5 id="mxHeader">MX Results</h5>
+          </div>
+          <div class="card-body">
+            <p class="card-text bg-secondary text-white px-2" id="domainResultsMXRecord"></p>
+            <p class="card-text" id="domainResultsMXMailProvider"></p>
+            <p class="card-text" id="domainResultsMXRecordPasses"></p>
+            <p class="card-text" id="domainResultsMXRecordFails"></p>
+            <p class="card-text" id="domainResultsMXRecordWarns"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="container-xl px-4 mt-4">
+    <div class="row">
+      <div class="col-xl-6">
+        <div class="card">
+          <div class="card-header" id="spfCard">
+            <h5 id="spfHeader">SPF Results</h5>
+          </div>
+          <div class="card-body">
+            <p class="card-text bg-secondary text-white px-2" id="domainResultsSPFRecord"></p>
+            <p class="card-text" id="domainResultsSPFPasses"></p>
+            <p class="card-text" id="domainResultsSPFFails"></p>
+            <p class="card-text" id="domainResultsSPFWarns"></p>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-6">
+        <div class="card">
+          <div class="card-header" id="dmarcCard">
+            <h5 id="dmarcHeader">DMARC Results</h5>
+          </div>
+          <div class="card-body">
+            <p class="card-text bg-secondary text-white px-2" id="domainResultsDMARCRecord"></p>
+            <p class="card-text" id="domainResultsDMARCPasses"></p>
+            <p class="card-text" id="domainResultsDMARCFails"></p>
+            <p class="card-text" id="domainResultsDMARCWarns"></p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="container-xl px-4 mt-4">
+    <div class="row">
+      <div class="col-xl-6">
+        <div class="card">
+          <div class="card-header" id="dnssecCard">
+            <h5 id="dnssecHeader">DNSSEC Results</h5>
+          </div>
+          <div class="card-body">
+            <p class="card-text bg-secondary text-white px-2" id="domainResultsDNSSECRecord"></p>
+            <p class="card-text" id="domainResultsDNSSECRecordPasses"></p>
+            <p class="card-text" id="domainResultsDNSSECRecordFails"></p>
+            <p class="card-text" id="domainResultsDNSSECRecordWarns"></p>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-6">
+        <div class="card">
+          <div class="card-header" id="dkimCard">
+            <h5 id="dkimHeader">DKIM Results</h5>
+          </div>
+          <div class="card-body">
+            <p class="card-text bg-secondary text-white px-2" id="domainResultsDKIMRecord"></p>
+            <p class="card-text" id="domainResultsDKIMRecordPasses"></p>
+            <p class="card-text" id="domainResultsDKIMRecordFails"></p>
+            <p class="card-text" id="domainResultsDKIMRecordWarns"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</main>
+<script src="js/DomainFormChecker.js"></script>
