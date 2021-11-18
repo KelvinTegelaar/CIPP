@@ -1,7 +1,8 @@
 function ExecuteDomainAPICall() {
     var form = $('#DomainForm');
     var postdata = getFormData(form); //ThisCreatesANiceSpinnerWhileWeWait
-    $('#APIContent').html('<div class="spinner-border text-primary" role="status"><span class= "sr-only" ></span ></div ></span > ');
+    var loaderspinelement = document.getElementById("loaderspin");
+    loaderspinelement.classList.remove("invisible");
             $.ajax({
       'async': true,
       'global': false,
@@ -11,11 +12,17 @@ function ExecuteDomainAPICall() {
       'contentType': "application/json",
       'success': function (data) {
 
+        var loaderspinelement = document.getElementById("loaderspin");
+        loaderspinelement.classList.add("invisible");
+
         // Clear existing data
         ClearExistingClasses();
 
         // Get the Background Colour for SPF
         GenerateHTMLColour('spfCard', data[0].SPFFinalState)
+
+        // Get the Background Colour for SPF Indicator
+        GenerateHTMLColour('spfindicator', data[0].SPFFinalState)
 
         // Get the Background Font Colour for SPF
         GenerateHTMLHeaderColour('spfHeader', data[0].SPFFinalState)
@@ -34,6 +41,9 @@ function ExecuteDomainAPICall() {
         // Get the Background Colour for DMARC
         GenerateHTMLColour('dmarcCard', data[0].DMARCFinalState)
 
+        // Get the Background Colour for DMARC Indicator
+        GenerateHTMLColour('dmarcindicator', data[0].DMARCFinalState)
+
         // Get the Background Font Colour for DMARC
         console.log(data[0].DMARCFinalState)
         GenerateHTMLHeaderColour('dmarcHeader', data[0].DMARCFinalState)
@@ -50,6 +60,9 @@ function ExecuteDomainAPICall() {
         // Get the Background Colour for MX
         GenerateHTMLColour('mxCard', data[0].MXFinalState)
 
+        // Get the Background Colour for MX Indicator
+        GenerateHTMLColour('mxindicator', data[0].MXFinalState)
+
         // Get the Background Font Colour for MX
         console.log(data[0].MXFinalState)
         GenerateHTMLHeaderColour('mxHeader', data[0].MXFinalState)
@@ -63,14 +76,17 @@ function ExecuteDomainAPICall() {
         $('#domainResultsMXRecordPasses').html(GenerateHTMLResult(arrMXPasses));
         $('#domainResultsMXRecordFails').html(GenerateHTMLResult(arrMXFails));
         $('#domainResultsMXRecordWarns').html(GenerateHTMLResult(arrMXWarns));
-        $('#domainResultsMXMailProvider').html(data[0].MXResults.MailProvider.Name);
+        $('#domainResultsMXMailProvider').html('<h4><span class="badge bg-primary">Mail Provider: ' + data[0].MXResults.MailProvider.Name + '</span></h4>');
 
 
 
         // Get the Background Colour for DNSSEC
         GenerateHTMLColour('dnssecCard', data[0].DNSSECFinalState)
 
-        // Get the Background Font Colour for MX
+        // Get the Background Colour for DNSSEC Indicator
+        GenerateHTMLColour('dnssecindicator', data[0].DNSSECFinalState)
+
+        // Get the Background Font Colour for DNSSEC
         console.log(data[0].DNSSECFinalState)
         GenerateHTMLHeaderColour('dnssecHeader', data[0].DNSSECFinalState)
 
@@ -85,12 +101,32 @@ function ExecuteDomainAPICall() {
         $('#domainResultsDNSSECRecordFails').html(GenerateHTMLResult(arrDNSSECFails));
         $('#domainResultsDNSSECRecordWarns').html(GenerateHTMLResult(arrDNSSECWarns));
 
+
+
+        // Get the Background Colour for DKIM
+        GenerateHTMLColour('dkimCard', data[0].DKIMFinalState)
+
+        // Get the Background Colour for DKIM Indicator
+        GenerateHTMLColour('dkimindicator', data[0].DKIMFinalState)
+
+        // Get the Background Font Colour for DKIM
+        console.log(data[0].DKIMFinalState)
+        GenerateHTMLHeaderColour('dkimHeader', data[0].DNSSECFinalState)
+
+        var arrDKIMFails = data[0].DKIMResults.ValidationFails.join("<br />");
+        var arrDKIMWarns = data[0].DKIMResults.ValidationWarns.join("<br />");
+        var arrDKIMPasses = data[0].DKIMResults.ValidationPasses.join("<br />");
+
+        $('#domainResultsDKIMRecord').html(data[0].DKIMResults.Records[0].Record);
+        $('#domainResultsDKIMRecordPasses').html(GenerateHTMLResult(arrDKIMPasses));
+        $('#domainResultsDKIMRecordFails').html(GenerateHTMLResult(arrDKIMFails));
+        $('#domainResultsDKIMRecordWarns').html(GenerateHTMLResult(arrDKIMWarns));
+
       },
       'error': function (xhr, ajaxOptions, thrownError) {
         $('#domainResultsDiv').html('Failed to connect to API: ' + thrownError);
       }
     });
-
   }
 function GenerateHTMLResult(result) {
   if(result.includes('PASS')) {
@@ -116,6 +152,9 @@ function ClearExistingClasses() {
   var spfelement = document.getElementById("spfCard");
   spfelement.classList.remove("bg-success", "bg-warn", "bg-danger");
 
+  var spfindicator = document.getElementById("spfindicator");
+  spfindicator.classList.remove("bg-success", "bg-warn", "bg-danger", "bg-dark");
+
   // DMARC Clear
   $('#domainResultsDMARCRecord').html('');
   $('#domainResultsDMARCPasses').html('');
@@ -123,6 +162,9 @@ function ClearExistingClasses() {
   $('#domainResultsDMARCFails').html('');
   var dmarcelement = document.getElementById("dmarcCard");
   dmarcelement.classList.remove("bg-success", "bg-warn", "bg-danger");
+
+  var dmarcindicator = document.getElementById("dmarcindicator");
+  dmarcindicator.classList.remove("bg-success", "bg-warn", "bg-danger", "bg-dark");
 
   // MX Clear
   $('#domainResultsMXRecord').html('');
@@ -133,6 +175,9 @@ function ClearExistingClasses() {
   var mxelement = document.getElementById("mxCard");
   mxelement.classList.remove("bg-success", "bg-warn", "bg-danger");
 
+  var mxindicator = document.getElementById("mxindicator");
+  mxindicator.classList.remove("bg-success", "bg-warn", "bg-danger", "bg-dark");
+
   // DNSSEC Clear
   $('#domainResultsDNSSECRecord').html('');
   $('#domainResultsDNSSECRecordPasses').html('');
@@ -140,11 +185,23 @@ function ClearExistingClasses() {
   $('#domainResultsDNSSECRecordWarns').html('');
   var dnssecelement = document.getElementById("dnssecCard");
   dnssecelement.classList.remove("bg-success", "bg-warn", "bg-danger");
+
+  var dnssecindicator = document.getElementById("dnssecindicator");
+  dnssecindicator.classList.remove("bg-success", "bg-warn", "bg-danger", "bg-dark");
+
+  // DKIM Clear
+  $('#domainResultsDKIMRecord').html('');
+  $('#domainResultsDKIMRecordPasses').html('');
+  $('#domainResultsDKIMRecordFails').html('');
+  $('#domainResultsDKIMRecordWarns').html('');
+  var dkimelement = document.getElementById("dkimCard");
+  dkimelement.classList.remove("bg-success", "bg-warn", "bg-danger");
+
+  var dkimindicator = document.getElementById("dkimindicator");
+  dkimindicator.classList.remove("bg-success", "bg-warn", "bg-danger", "bg-dark");
 }
 
 function GenerateHTMLColour(id, data) {
-  console.log('ID' + id);
-  console.log('DATA' + data);
   var element = document.getElementById(id);
   if (data === 'Fail') {
     element.classList.add("bg-danger");
@@ -158,8 +215,6 @@ function GenerateHTMLColour(id, data) {
 }
 
 function GenerateHTMLHeaderColour(id, data) {
-  console.log('ID' + id);
-  console.log('DATA' + data);
   var element = document.getElementById(id);
   if (data === 'Fail') {
     element.classList.add("text-white");

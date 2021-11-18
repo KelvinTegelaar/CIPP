@@ -30,13 +30,35 @@
                 <form name="domaincheckform" id="DomainForm">
                   <label class="small mb-1" for="DomainToCheck">Domain Name</label>
                   <input class="form-control" id="DomainToCheck" type="text" placeholder="Enter Domain Name" value=""
-                    name="DomainToCheck" />
+                    name="DomainToCheck" /><br />
                 </form>
+                <button class="btn btn-primary" onclick='ExecuteDomainAPICall()' type="button" id="submitCheck">Check
+                  Domain&nbsp;&nbsp;<span id="loaderspin" class="spinner-border spinner-border-sm invisible" role="status" aria-hidden="true"></span></button>
+              </div>
+              <div class="col-md-6">
+                <div class="row">
+                  <div class="col-4">
+                    <p id="mxindicator" class="bg-dark text-light text-center">MX</p>
+                  </div>
+                  <div class="col-4">
+                    <p id="spfindicator" class="bg-dark text-light text-center">SPF</p>
+                  </div>
+                  <div class="col-4">
+                    <p id="dmarcindicator" class="bg-dark text-light text-center">DMARC</p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-6">
+                    <p id="dkimindicator" class="bg-dark text-light text-center">DKIM</p>
+                  </div>
+                  <div class="col-6">
+                    <p id="dnssecindicator" class="bg-dark text-light text-center">DNSSEC</p>
+                  </div>
+                </div>
               </div>
             </div>
-            <!-- Submit button-->
-            <button class="btn btn-primary" onclick='ExecuteDomainAPICall()' type="button" id="submitCheck">Check
-              Domain</button>
+            <!-- Submit buttons-->
+
           </div>
         </div>
       </div>
@@ -47,10 +69,10 @@
           </div>
           <div class="card-body">
             <p class="card-text bg-secondary text-white px-2" id="domainResultsMXRecord"></p>
+            <p class="card-text" id="domainResultsMXMailProvider"></p>
             <p class="card-text" id="domainResultsMXRecordPasses"></p>
             <p class="card-text" id="domainResultsMXRecordFails"></p>
             <p class="card-text" id="domainResultsMXRecordWarns"></p>
-            <p class="card-text" id="domainResultsMXMailProvider"></p>
           </div>
         </div>
       </div>
@@ -104,7 +126,21 @@
           </div>
         </div>
       </div>
+      <div class="col-xl-6">
+        <div class="card">
+          <div class="card-header" id="dkimCard">
+            <h5 id="dkimHeader">DKIM Results</h5>
+          </div>
+          <div class="card-body">
+            <p class="card-text bg-secondary text-white px-2" id="domainResultsDKIMRecord"></p>
+            <p class="card-text" id="domainResultsDKIMRecordPasses"></p>
+            <p class="card-text" id="domainResultsDKIMRecordFails"></p>
+            <p class="card-text" id="domainResultsDKIMRecordWarns"></p>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
   </div>
 </main>
 <script src="js/DomainFormChecker.js"></script>
