@@ -1,8 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { Form } from 'react-final-form'
-import { CButton, CNav, CNavItem, CNavLink } from '@coreui/react'
-import BootstrapTable from 'react-bootstrap-table-next'
+import { CButton, CCardHeader, CNav, CNavItem, CNavLink } from '@coreui/react'
 
 export default class Wizard extends React.Component {
   static propTypes = {
@@ -14,13 +13,17 @@ export default class Wizard extends React.Component {
     previousPage: PropTypes.func,
   }
 
+  static defaultProps = {
+    initialValues: {},
+  }
+
   static Page = ({ children }) => children
 
   constructor(props) {
     super(props)
     this.state = {
       page: 0,
-      values: props.initialValues || {},
+      values: props.initialValues,
     }
   }
 
@@ -64,39 +67,42 @@ export default class Wizard extends React.Component {
 
     return (
       <>
-        <CNav variant="pills" role="tablist" className="nav-justified nav-wizard">
-          {React.Children.map(children, ({ props: { description, title } }, idx) => (
-            <CNavItem key={`wizard-nav-item-${idx}`} style={{ cursor: 'pointer' }}>
-              <CNavLink active={idx === page}>
-                <div className="wizard-step-icon">{idx + 1}</div>
-                <div className="wizard-step-text">
-                  <div className="wizard-step-text-name">{title}</div>
-                  <div className="wizard-step-text-details">{description}</div>
-                </div>
-              </CNavLink>
-            </CNavItem>
-          ))}
-        </CNav>
+        <CCardHeader>
+          <CNav variant="pills" role="tablist" className="nav-justified nav-wizard">
+            {React.Children.map(children, ({ props: { description, title } }, idx) => (
+              <CNavItem key={`wizard-nav-item-${idx}`} style={{ cursor: 'pointer' }}>
+                <CNavLink active={idx === page}>
+                  <div className="wizard-step-icon">{idx + 1}</div>
+                  <div className="wizard-step-text">
+                    <div className="wizard-step-text-name">{title}</div>
+                    <div className="wizard-step-text-details">{description}</div>
+                  </div>
+                </CNavLink>
+              </CNavItem>
+            ))}
+          </CNav>
+        </CCardHeader>
         <Form initialValues={values} validate={this.validate} onSubmit={this.handleSubmit}>
           {({ handleSubmit, submitting, values }) => (
-            <form onSubmit={handleSubmit}>
-              {activePage}
-              <div className="d-flex justify-content-between">
-                {page > 0 && (
-                  <CButton type="button" onClick={this.previous}>
-                    « Previous
-                  </CButton>
-                )}
-                {!isLastPage && <CButton type="submit">Next »</CButton>}
-                {isLastPage && (
-                  <CButton type="submit" disabled={submitting}>
-                    Submit
-                  </CButton>
-                )}
-              </div>
-
+            <>
+              <form onSubmit={handleSubmit}>
+                {activePage}
+                <div className="d-flex justify-content-between">
+                  {page > 0 && (
+                    <CButton type="button" onClick={this.previous}>
+                      « Previous
+                    </CButton>
+                  )}
+                  {!isLastPage && <CButton type="submit">Next »</CButton>}
+                  {isLastPage && (
+                    <CButton type="submit" disabled={submitting}>
+                      Submit
+                    </CButton>
+                  )}
+                </div>
+              </form>
               <pre>{JSON.stringify(values, 0, 2)}</pre>
-            </form>
+            </>
           )}
         </Form>
       </>

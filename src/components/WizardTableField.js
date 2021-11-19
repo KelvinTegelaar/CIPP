@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import BootstrapTable from 'react-bootstrap-table-next'
 import paginationFactory from 'react-bootstrap-table2-paginator'
+const pagination = paginationFactory()
 
 /**
  * Table with checkboxes
@@ -24,30 +25,32 @@ export default class WizardTableField extends React.Component {
 
   constructor(props) {
     super(props)
-    // Bootstrap table's selected uses indexes to track checkboxes
-    // match state from react-final-form
-    const { fieldProps } = props
 
-    let initiallySelected = props.data
-      .map((el, idx) => {
+    // Bootstrap table's selected uses keyField to track checkboxes
+    // match state from react-final-form on rerender
+    const { fieldProps, keyField } = props
+
+    const previouslySelected = props.data
+      .map((el) => {
         if (fieldProps.input.value.includes(el)) {
-          return idx
+          return el[keyField]
         }
         return undefined
       })
       .filter((el) => el !== undefined)
 
     this.state = {
-      selected: initiallySelected,
+      selected: previouslySelected,
     }
   }
 
-  handleOnSelect = (row, isSelect, rowIndex) => {
-    const { keyField, fieldProps } = this.props
+  handleOnSelect = (row, isSelect) => {
+    const { fieldProps, keyField } = this.props
+
     if (isSelect) {
       fieldProps.input.onChange([...fieldProps.input.value, row])
       this.setState(() => ({
-        selected: [...this.state.selected, rowIndex],
+        selected: [...this.state.selected, row[keyField]],
       }))
     } else {
       fieldProps.input.onChange(
@@ -60,12 +63,11 @@ export default class WizardTableField extends React.Component {
   }
 
   handleOnSelectAll = (isSelect, rows) => {
-    const { fieldProps } = this.props
-    const ids = rows.map((el, idx) => idx)
+    const { fieldProps, keyField } = this.props
     if (isSelect) {
       fieldProps.input.onChange(rows)
       this.setState(() => ({
-        selected: ids,
+        selected: rows.map((el) => el[keyField]),
       }))
     } else {
       fieldProps.input.onChange([])
@@ -77,9 +79,6 @@ export default class WizardTableField extends React.Component {
 
   render() {
     const { keyField, columns, data } = this.props
-    const pagination = paginationFactory()
-
-    console.log('wizard table state', this.state)
 
     return (
       <BootstrapTable
@@ -87,6 +86,8 @@ export default class WizardTableField extends React.Component {
         data={data}
         pagination={pagination}
         columns={columns}
+        striped
+        wrapperClasses="table-responsive"
         selectRow={{
           mode: 'checkbox',
           clickToSelect: true,
