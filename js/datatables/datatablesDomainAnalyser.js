@@ -45,6 +45,7 @@ $(document).ready(function () {
             ],
             "columns": [
                 { "data": "Domain" },
+                { "data": "Tenant" },
                 {
                     "data": "Score",
                     "render": function (data, type, row) {
@@ -252,6 +253,10 @@ $(document).ready(function () {
                 {
                     "targets": [1, 2, 3, 4, 5, 6, 7, 8, 9], // your case first column
                     "className": "text-center align-middle"
+                },
+                {
+                  "targets": [ 1 ],
+                  "visible": false
                 }
             ],
             "order": [[0, "asc"]],
