@@ -90,7 +90,7 @@ $(document).ready(function () {
             }
         },
         'error': function (xhr, ajaxOptions, thrownError) {
-            $("#investigationdata").html('Error - could not retrieve information from API. Please run HAWK instead.')
+            $("#loader").html('<i class="fas fa-times-circle text-danger fa-2x"></i>Error - could not retrieve information from API. Please run HAWK instead.')
         }
     });
 })
