@@ -6,17 +6,17 @@
                     <div class="col-auto mb-3">
                         <h1 class="page-header-title">
                             <div class="page-header-icon"><i data-feather="user"></i></div>
-                            Groups List
+                            Phishing Policies
                         </h1>
                     </div>
                     <div class="col-12 col-xl-auto mb-3">
-                        <a class="btn btn-sm btn-light text-primary" href="index.html?page=users">
+                        <a class="btn btn-sm btn-light text-primary" href="index.html?page=users.html">
                             <i class="me-1" data-feather="users"></i>
                             Manage Users
                         </a>
-                        <a class="btn btn-sm btn-light text-primary" href="index.html?page=AddGroup">
+                        <a class="btn btn-sm btn-light text-primary" href="index.html?page=users.html">
                             <i class="me-1" data-feather="user-plus"></i>
-                            Add New Group
+                            Manage Groups
                         </a>
                     </div>
                 </div>
@@ -33,19 +33,19 @@
             </datalist>
         </div><br>
         <div class="card">
-            <div class="card-header">Groups list</div>
+            <div class="card-header">Phishing Policies</div>
             <div class="card-body">
                 <table id="datatablesSimple">
                     <table cellpadding="0" cellspacing="0" class="datatable-1 table table-striped" width="100%">
                         <thead>
                             <tr>
                                 <th>Name</th>
-                                <th>Group Type</th>
-                                <th>Dynamic Group</th>
-                                <th>Teams Enabled</th>
-                                <th>On-Premises Sync Enabled</th>
-                                <th>Email</th>
-                                <th>Actions</th>
+                                <th>Phishing Threshold</th>
+                                <th>Enabled</th>
+                                <th>Priority</th>
+                                <th>Excluded Domains</th>
+                                <th>Excluded Senders</th>
+                                <th>Last Modified</th>
                             </tr>
                         </thead>
                         <tbody id='AccountTable'>
@@ -53,12 +53,12 @@
                         <tfoot>
                             <tr>
                                 <th>Name</th>
-                                <th>Group Type</th>
-                                <th>Dynamic Group</th>
-                                <th>Teams Enabled</th>
-                                <th>On-Premises Sync Enabled</th>
-                                <th>Email</th>
-                                <th>Actions</th>
+                                <th>Phishing Threshold</th>
+                                <th>Enabled</th>
+                                <th>Priority</th>
+                                <th>Excluded Domains</th>
+                                <th>Excluded Senders</th>
+                                <th>Last Modified</th>
                             </tr>
                         </tfoot>
                     </table>
@@ -68,7 +68,7 @@
 </main>
 <script src="js/datatables/jquery.dataTables.js"></script>
 <script src="js/tenantlist.js"></script>
-<script src="js/datatables/datatablesgroups.js"></script>
+<script src="js/datatables/datatablesPhishPolicies.js"></script>
 
 </body>
 

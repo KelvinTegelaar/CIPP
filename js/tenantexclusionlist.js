@@ -1,53 +1,53 @@
 $(document).ready(function () {
-    var jsonOptions = (function () {
-        var json = null;
+    (function () {
         $.ajax({
-            'async': false,
+            'async': true,
             'global': false,
             'url': 'api/ExecExcludeTenant?List=true',
             'dataType': "json",
             'success': function (data) {
-                json = data;
+                if (Array.isArray(data)) {
+                    // Loop over the JSON array.
+                    var html = [];
+                    data.forEach(function (item) {
+                        var htmldata = `<div class="d-flex align-items-center justify-content-between px-4">
+                            <div class="d-flex align-items-center">
+                            <i class="fas fa-exclamation-triangle fa-2x text-yellow"></i></i>
+                            <div class="ms-4">
+                            <div class="small">${item.Name}</div>
+                            <div class="text-xs text-muted">Added on ${item.Date}</div>
+                            </div>
+                            </div>
+                            <div class="ms-4 small">
+                            <div class="badge bg-light text-dark me-3">Added by ${item.User}</div>
+                            <nothing class="APILink"><a actionname="Remove the exclusion for ${item.Name}" href="api/ExecExcludeTenant?RemoveExclusion=True&TenantFilter=${item.Name}">Remove</a></nothing>
+                            </div>
+                            </div>
+                            <hr />`;
+                        html.push(htmldata)
+                    });
+                } else {
+                    var html = '<div class="d-flex align-items-center justify-content-between px-4">' +
+                        '<div class="d-flex align-items-center">' +
+                        '<i class="fas fa-exclamation-triangle fa-2x text-yellow"></i></i>' +
+                        '<div class="ms-4">' +
+                        '<div class="small">' + data.Name + '</div>' +
+                        '<div class="text-xs text-muted">Added on ' + data.Date + '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="ms-4 small">' +
+                        '<div class="badge bg-light text-dark me-3">Added by ' + data.User + '</div>' +
+                        '<nothing class="APILink"> <a actionname="Remove the exclusion for ' + data.Name + '" href="api/ExecExcludeTenant?RemoveExclusion=True&TenantFilter=' + data.Name + '">Remove</a></nothing>' +
+                        '</div>' +
+                        '</div>' +
+                        '<hr />';
+                }
+                $('#ExclusionList').append(html)
             }
         });
         return json;
     })();
-    if (Array.isArray(jsonOptions)) {
-        // Loop over the JSON array.
-        jsonOptions.forEach(function (item) {
-            var html = '<div class="d-flex align-items-center justify-content-between px-4">' +
-                '<div class="d-flex align-items-center">' +
-                '<i class="fas fa-exclamation-triangle fa-2x text-yellow"></i></i>' +
-                '<div class="ms-4">' +
-                '<div class="small">' + item.Name + '</div>' +
-                '<div class="text-xs text-muted">Added on ' + item.Date + '</div>' +
-                '</div>' +
-                '</div>' +
-                '<div class="ms-4 small">' +
-                '<div class="badge bg-light text-dark me-3">Added by ' + item.User + '</div>' +
-                '<nothing class="APILink"><a actionname="Remove the exclusion for ' + item.Name + '" href="api/ExecExcludeTenant?RemoveExclusion=True&TenantFilter=' + item.Name + '">Remove</a></nothing>' +
-                '</div>' +
-                '</div>' +
-                '<hr />';
-            $('#ExclusionList').append(html)
-        });
-    } else {
-        var html = '<div class="d-flex align-items-center justify-content-between px-4">' +
-            '<div class="d-flex align-items-center">' +
-            '<i class="fas fa-exclamation-triangle fa-2x text-yellow"></i></i>' +
-            '<div class="ms-4">' +
-            '<div class="small">' + jsonOptions.Name + '</div>' +
-            '<div class="text-xs text-muted">Added on ' + jsonOptions.Date + '</div>' +
-            '</div>' +
-            '</div>' +
-            '<div class="ms-4 small">' +
-            '<div class="badge bg-light text-dark me-3">Added by ' + jsonOptions.User + '</div>' +
-            '<nothing class="APILink"> <a actionname="Remove the exclusion for ' + jsonOptions.Name + '" href="api/ExecExcludeTenant?RemoveExclusion=True&TenantFilter=' + jsonOptions.Name + '">Remove</a></nothing>' +
-            '</div>' +
-            '</div>' +
-            '<hr />';
-        $('#ExclusionList').append(html)
-    }
+
 
 });
 

@@ -1,3 +1,12 @@
+
+# editor, github and lint
+.github/
+.vscode/
+.idea/
+.husky/
+.eslintcache
+# node packages
+node_modules
 # Ignore all files in .github and .vscode directories.
 .github/
 .vscode/
