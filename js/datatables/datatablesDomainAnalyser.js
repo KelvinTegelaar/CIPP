@@ -32,7 +32,7 @@ $(document).ready(function () {
                 { extend: 'copyHtml5', className: 'btn btn-primary btn-sm' },
                 { extend: 'excelHtml5', className: 'btn btn-primary btn-sm', title: 'Domain Analyser - ' + todayDate, exportOptions: { orthogonal: "export" } },
                 { extend: 'csvHtml5', className: 'btn btn-primary btn-sm', title: 'Domain Analyser - ' + todayDate, exportOptions: { orthogonal: "export" } },
-                { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', pageSize: 'A2', orientation: 'landscape', title: 'Domain Analyser - ' + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], orthogonal: "export" } },
+                { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', pageSize: 'A2', orientation: 'landscape', title: 'Domain Analyser - ' + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], orthogonal: "export" } },
                 {
                     text: 'Force Refresh All Data',
                     className: 'btn btn-primary btn-sm',
@@ -251,7 +251,7 @@ $(document).ready(function () {
             ],
             'columnDefs': [
                 {
-                    "targets": [1, 2, 3, 4, 5, 6, 7, 8, 9], // your case first column
+                    "targets": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], // your case first column
                     "className": "text-center align-middle"
                 },
                 {
