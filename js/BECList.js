@@ -4,6 +4,9 @@ $(document).ready(function () {
     var UserID = '';
     UserID = searchParams.get('UserID')
     TenantID = searchParams.get('Tenantfilter')
+    $('#TenantFilter').val(TenantID)
+    $('#UserID').val(UserID)
+
     $.ajax({
         'async': true,
         'global': false,
