@@ -18,4 +18,6 @@ We report any security notification via the Github notification and advisory sys
 
 ## Bounties and Rewards
 
-This project is an open-source sponsorware effort, which makes it hard to create a monetary reward without breaking the bank very quickly. for *critical* level bugs, that cause RCE/API data leaks/etc I will award a 50 dollar reward. For other bugs,  I potentially am able to reward with some swag such as an official CyberDrain T-shirt or hoodie :)
+
+This project is an open-source sponsorware effort, which makes it hard to create a monetary reward without breaking the bank very quickly. for *critical* level bugs, that cause RCE/API data leaks/etc I will award a 50 dollar reward. For other bugs, I potentially am able to reward with some swag such as an official CyberDrain T-shirt or hoodie :)
+

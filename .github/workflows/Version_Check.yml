@@ -4,9 +4,15 @@ name: Check if version.txt has been updated.
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
+  # Triggers the workflow on push or pull request events but only for the master branch. Exclude when changes are to documentation or CI files only.
   pull_request:
     branches: [ master ]
+    paths:
+      - '**'
+      - '!.github/**'
+      - '!mkdocs.yml'
+      - '!Documentation/**'
+      - '!docsoverrides/**'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
