@@ -1,3 +1,11 @@
+// block default form and execute API call instead
+$(document).ready(function () {
+  $('#DomainForm').submit(function (e) {
+    e.preventDefault();
+    ExecuteDomainAPICall();
+  });
+});
+
 function ExecuteDomainAPICall() {
   var form = $('#DomainForm');
   var postdata = getFormData(form); //ThisCreatesANiceSpinnerWhileWeWait
