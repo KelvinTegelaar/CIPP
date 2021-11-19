@@ -27,6 +27,15 @@ $(document).ready(function () {
                 { extend: 'excelHtml5', className: 'btn btn-primary btn-sm', title: 'Applied Standards - ' + todayDate, exportOptions: { columns: [0, 1, 2] } },
                 { extend: 'csvHtml5', className: 'btn btn-primary btn-sm', title: 'Applied Standards - ' + todayDate, exportOptions: { columns: [0, 1, 2] } },
                 { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', orientation: 'landscape', title: 'Applied Standards - ' + todayDate, exportOptions: { columns: [0, 1, 2] } },
+                {
+                    text: 'Apply Standards Now',
+                    className: 'btn btn-primary btn-sm',
+                    action: function (e, dt, button, config) {
+                        $('#APIContent').html('<center><label class="form-check-label" >Are you sure you want to force the Standards to run now? This will slow down normal usage considerably. Please note: this runs automaticly every 3 hours. <br /><br /></label><br><nothing class="APIConfirmed"><a href="/api/Standards_OrchestrationStarter"><button id="Confirmed" class="btn btn-primary APIConfirmed">Yes</button></a></nothing><nothing class="APIDenied">  <button data-bs-dismiss="modal" class="btn btn-primary APIDenied">No</button></center>');
+
+                        document.getElementById("PopModal").click();
+                    }
+                }
             ],
             "columns": [
                 { "data": "displayName" },
