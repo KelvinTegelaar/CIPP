@@ -6,13 +6,13 @@ This project is a way to help you with administration, with user management, and
 
 # Deployment and Getting Started
 
-If you want to self-host, check out the [installation manual](\GettingStarted\Installation.md). You will need some knowledge of Static Web Apps, Azure Functions, and Azure KeyVault
+If you want to self-host, check out the [installation manual](https://kelvintegelaar.github.io/CIPP/GettingStarted/Installation.html). You will need some knowledge of Static Web Apps, Azure Functions, and Azure KeyVault
 
 # Why are you making this?
 
 I'm kind of done waiting for vendors to catch up to what we actually need. All RMM vendors are dramaticaly slow adopting cloud management. Microsoft themselves don't understand the Managed services markets, there are vendors that have tried jumping into the gap but either have unreasonable fees, weird constructions, require Global Admins without MFA, or just don't innovate at a pace that is required of cloud services right now.
 
-I'm also annoyed the untransparant behaviour that many companies in our market are showing. Most are claiming that working with the Microsoft Partner APIs is difficult, and requires a very heavy development team. I'm a guy that had no webdesign knowledge before this and created the first release of this app in 3 weekends. Vendors that claim high difficulty or issues with integration are simply not giving this *any* priority. This is also why the [changelog](\GettingStarted\Changelog.md) contains how many hours I've spend to built each release. These hours are directly taken from my VSCode Extensions. 
+I'm also annoyed the untransparant behaviour that many companies in our market are showing. Most are claiming that working with the Microsoft Partner APIs is difficult, and requires a very heavy development team. I'm a guy that had no webdesign knowledge before this and created the first release of this app in 3 weekends. Vendors that claim high difficulty or issues with integration are simply not giving this *any* priority. This is also why the [changelog](https://kelvintegelaar.github.io/CIPP/GettingStarted/Changelog.html) contains how many hours I've spend to built each release. These hours are directly taken from my VSCode Extensions. 
 
 I was recently on a call with one of my friends and he said he was changing the world. That insipred me to change the world just a little bit too. :) I'm hoping that this is one of the tools that make you smile.
 
