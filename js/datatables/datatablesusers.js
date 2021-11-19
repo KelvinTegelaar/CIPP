@@ -12,21 +12,30 @@ $(document).ready(function () {
                 initComplete: function () {
                     this.api().columns().every(function () {
                         var column = this;
-                        var select = $('<select class="form-in-datatable"><option value=""></option></select>')
-                            .appendTo($(column.footer()).empty())
-                            .on('change', function () {
-                                var val = $.fn.dataTable.util.escapeRegex(
-                                    $(this).val()
-                                );
+                        if ([2, 3, 4, 5].includes(column.index())) {
 
-                                column
-                                    .search(val ? '^' + val + '$' : '', true, false)
-                                    .draw();
-                            });
+                            var select = $('<select class="form-in-datatable"><option value=""></option></select>')
+                                .appendTo($(column.footer()).empty())
+                                .on('change', function () {
+                                    var val = $.fn.dataTable.util.escapeRegex(
+                                        $(this).val()
+                                    );
 
-                        column.data().unique().sort().each(function (d, j) {
-                            select.append('<option value="' + d + '">' + d + '</option>')
-                        });
+                                    column
+                                        .search(val ? '^' + val + '$' : '', true, false)
+                                        .draw();
+                                });
+                            if (column.index() === 5) {
+                                column.data().unique().sort().each(function (d, j) {
+                                    select.append('<option value="' + d + '">' + d + '</option>')
+                                });
+                            } else if (column.index() === 2) {
+                                select.append('<option value="guest">Guest</option><option value="member">Member</option>')
+                            } else {
+                                select.append('<option value="true">Enabled</option><option value="false">Disabled</option>')
+
+                            }
+                        }
                     });
                 },
                 language: {
@@ -50,34 +59,93 @@ $(document).ready(function () {
                 },
                 dom: 'fBlrtip',
                 buttons: [
-                    { extend: 'copyHtml5', className: 'btn btn-primary btn-sm' },
-                    { extend: 'excelHtml5', className: 'btn btn-primary btn-sm', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4] } },
-                    { extend: 'csvHtml5', className: 'btn btn-primary btn-sm', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4] } },
-                    { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', orientation: 'landscape', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4] } },
+                    { extend: 'copyHtml5', className: 'btn btn-primary btn-sm', exportOptions: { orthogonal: "export" } },
+                    { extend: 'excelHtml5', className: 'btn btn-primary btn-sm', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4], orthogonal: "export" } },
+                    { extend: 'csvHtml5', className: 'btn btn-primary btn-sm', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4], orthogonal: "export" } },
+                    { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', orientation: 'landscape', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4], orthogonal: "export" } },
                 ],
                 "columns": [
                     { "data": "displayName" },
                     { "data": "mail" },
                     { "data": "userType" },
-                    { "data": "accountEnabled" },
-                    { "data": "onPremisesSyncEnabled" },
+                    {
+                        "data": "accountEnabled",
+                        "render": function (data, type, row) {
+                            if (type === "export" || type === "sort" || type === "filter") {
+                                if (data === true) {
+                                    return 'Account Enabled'
+                                } else if (data === false) {
+                                    return 'Account Disabled'
+                                } else {
+                                    return 'No Data'
+                                }
+                            }
+                            if (data === true) {
+                                return '<i class="fas fa-check-circle text-success" style="font-size:1.3rem;"></i>';
+                            }
+                            if (data === "") {
+                                return '<h5><span class="badge bg-secondary" style="font-size:1.3rem;">No Data</span></h5>'
+                            }
+                            else {
+                                return '<i class="fas fa-times-circle text-danger" style="font-size:1.3rem;"></i></a>';
+                            }
+                        }
+                    },
+                    {
+                        "data": "onPremisesSyncEnabled",
+                        "render": function (data, type, row) {
+                            if (type === "export" || type === "sort" || type === "filter") {
+                                if (data === true) {
+                                    return 'On Premises Sync Enabled'
+                                } else if (data === false) {
+                                    return 'On Premises Sync Disabled'
+                                } else {
+                                    return 'No Data'
+                                }
+                            }
+                            if (data === true) {
+                                return '<i class="fas fa-check-circle text-success" style="font-size:1.3rem;"></i>';
+                            }
+                            if (data === "") {
+                                return '<h5><span class="badge bg-secondary" style="font-size:1.3rem;">No Data</span></h5>'
+                            }
+                            else {
+                                return '<i class="fas fa-times-circle text-muted" style="font-size:1.3rem;"></i></a>';
+                            }
+                        }
+                    },
                     { "data": "LicJoined" },
                     {
                         "data": "id",
                         render: function (id, type, row) {
-                            return '<a href=index.html?page=EditUser&Tenantfilter=' + TenantID + '&UserID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Edit User" class="fas fa-cog fa-fw"></i></a><nothing class="APILink">' +
-                                '<a actionname="send push for ' + row.displayName + '" href=api/ExecSendPush?TenantFilter=' + TenantID + '&UserEmail=' + row.mail + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Send MFA Push to User" class="fas fa-exchange-alt fa-fw"></i></i></a>' +
-                                '<a actionname="convert ' + row.displayName + ' to a shared mailbox" href=api/ExecConvertToSharedMailbox?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Convert to Shared" class="fas fa-share-alt fa-fw"></i></a>' +
-                                '<a actionname="disable ' + row.displayName + '" href=api/ExecDisableUser?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Block Sign in" class="fas fa-ban fa-fw"></i></a>' +
-                                '<a actionname="reset the password for ' + row.displayName + '" href=api/ExecResetPass?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Reset password" class="fas fa-key fa-fw"></i></i></a>' +
-                                '<a actionname="Delete ' + row.displayName + '" href=api/RemoveUser?TenantFilter=' + TenantID + '&ID=' + id + '><i data-bs-toggle="tooltip" data-bs-placement="top" title="Delete user" class="fas fa-user-times fa-fw"></i></i></a></nothing>';
-                            ;
+                            if (row.accountEnabled === false) { accountDisabledDD = ' disabled' } else { accountDisabledDD = '' };
+                            if (row.mail === null) { mailDisabledDD = ' disabled' } else { mailDisabledDD = '' };
+                            var tblmenu = `
+                            <div class="dropdown">
+                           
+                                <i class="fas fa-bars dropdown-toggle text-primary" data-bs-toggle="dropdown" style="cursor:hand;"></i>
+                                <ul class="dropdown-menu" style="min-width:260px;">
+                                    <li><a class="dropdown-item" href=index.html?page=ViewUser&Tenantfilter=${TenantID}&UserID=${id}><i data-bs-toggle="tooltip" data-bs-placement="top" title="View User" class="fas fa-eye fa-fw"></i>View User</a></li>
+                                    <li><a class="dropdown-item" href=index.html?page=EditUser&Tenantfilter=${TenantID}&UserID=${id}><i data-bs-toggle="tooltip" data-bs-placement="top" title="Edit User" class="fas fa-cog fa-fw"></i>Edit User</a></li>
+                                    <li><a class="dropdown-item" href=index.html?page=BECview&Tenantfilter=${TenantID}&UserID=${id}><i data-bs-toggle="tooltip" data-bs-placement="top" title="Research Compromised Account" class="fas fa-search-location fa-fw"></i>Research Compromised Account</a></li>
+                                    <nothing class="APILink">
+                                    <li><a class="dropdown-item${accountDisabledDD}" actionname="send push for ${row.displayName}" href=api/ExecSendPush?TenantFilter=${TenantID}&UserEmail=${row.mail}><i data-bs-toggle="tooltip" data-bs-placement="top" title="Send MFA Push to User" class="fas fa-exchange-alt fa-fw"></i></i>Send MFA Push</a></li>
+                                    <li><a class="dropdown-item${mailDisabledDD}" actionname="convert ${row.displayName} to a shared mailbox" href=api/ExecConvertToSharedMailbox?TenantFilter=${TenantID}&ID=${id}><i data-bs-toggle="tooltip" data-bs-placement="top" title="Convert to Shared" class="fas fa-share-alt fa-fw"></i>Convert to Shared Mailbox</a></li>
+                                    <li><a class="dropdown-item${accountDisabledDD}" actionname="disable ${row.displayName}" href=api/ExecDisableUser?TenantFilter=${TenantID}&ID=${id}><i data-bs-toggle="tooltip" data-bs-placement="top" title="Block Sign in" class="fas fa-ban fa-fw"></i>Block Sign-In</a></li>
+                                    <li><a class="dropdown-item" actionname="reset the password for ${row.displayName}" href=api/ExecResetPass?MustChange=true&TenantFilter=${TenantID}&ID=${id}><i data-bs-toggle="tooltip" data-bs-placement="top" title="Reset password" class="fas fa-key fa-fw"></i></i>Reset Password (Must change)</a></li>
+                                    <li><a class="dropdown-item" actionname="reset the password for ${row.displayName}" href=api/ExecResetPass?MustChange=false&TenantFilter=${TenantID}&ID=${id}><i data-bs-toggle="tooltip" data-bs-placement="top" title="Reset password" class="fas fa-key fa-fw"></i></i>Reset Password</a></li>
+                                    <li><a class="dropdown-item" actionname="Delete ${row.displayName}" href=api/RemoveUser?TenantFilter=${TenantID}&ID=${id}><i data-bs-toggle="tooltip" data-bs-placement="top" title="Delete user" class="fas fa-user-times fa-fw"></i></i>Delete User</a></nothing></li>
+                                   </nothing>
+                                    </ul>
+                                    
+                            </div>`
+                            return tblmenu;
                         }
                     }
                 ],
                 'columnDefs': [
                     {
-                        "targets": [2, 3, 4, 5], // your case first column
+                        "targets": [2, 3, 4, 5, 6], // your case first column
                         "className": "text-center align-middle"
                     }
                 ],
