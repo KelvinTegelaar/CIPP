@@ -35,26 +35,36 @@
                         </div>
                         <div class="d-flex align-items-center">
                             <div class="flex-grow-1" id="ActionDetails">
+                                <strong>Loading Data: </strong>
+                                <nothing id="loader">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="sr-only"></span>
+
+                                    </div>
+                                </nothing>
+                                <br /><br />
+
+
                                 Use this information as a guide to check if a tenant or e-mail address might have been
                                 compromised. All this data is
                                 retrieved from the last 7 days of logs.<br<><br>
                                     <br<><br>If you need more extensive information, run
                                         the
-                                        HAWK tool to investigate further.
+                                        <a href="https://cloudforensicator.com/" target="_blank">HAWK</a> tool to
+                                        investigate further.
 
-                                        <br<><br>
+                                        <br><br>
 
-                                            If you believe this user to be compromised. Hit the button below to execute
-                                            the
-                                            following tasks:
+                                        If you believe this user to be compromised. Hit the button below to execute
+                                        the
+                                        following tasks:
 
-                                            <li>Block user signin</li>
-                                            <li>Reset user password</li>
-                                            <li>Disconnect all current sessions</li>
-                                            <li>Enable per user MFA</li>
-                                            <li>Delete all rules</li>
-                                            <button class="btn btn-primary"
-                                                onclick='PostForm("Userform","api/EditUser")'' type="button">Remediate User</button>
+                                        <li>Block user signin</li>
+                                        <li>Reset user password</li>
+                                        <li>Disconnect all current sessions</li>
+                                        <li>Enable per user MFA</li>
+                                        <li>Delete all rules</li>
+                                        <button class="btn btn-primary" onclick='PostForm("Userform","api/EditUser")'' type="button">Remediate User</button>
                                 
                                                             </div>
                                                         </div>
@@ -70,7 +80,7 @@
                             <div class="flex-grow-1">
                                 <div class="h2">Recently Added Rules (Tenant)</div>
                             </div>
-                            <div class="ms-2"><i class="fas fa-lock fa-2x text-gray-200"></i>
+                            <div class="ms-2"><i class="fas fa-pencil-ruler fa-2x text-gray-200"></i>
                             </div>
                         </div>
                         <div class="d-flex align-items-center">
@@ -102,7 +112,7 @@
                             <div class="flex-grow-1">
                                 <div class="h2">Devices (User)</div>
                             </div>
-                            <div class="ms-2"><i class="fas fa-lock fa-2x text-gray-200"></i>
+                            <div class="ms-2"><i class="fas fa-tablet-alt fa-2x text-gray-200"></i>
                             </div>
                         </div>
                         <div class="d-flex align-items-center">
@@ -168,7 +178,7 @@
                                     <div class="flex-grow-1">
                                         <div class="h2">Newly created users (Tenant)</div>
                                     </div>
-                                    <div class="ms-2"><i class="fas fa-laptop fa-2x text-gray-200"></i>
+                                    <div class="ms-2"><i class="fas fa-users fa-2x text-gray-200"></i>
                                     </div>
                                 </div>
                                 <div class="d-flex align-items-center">
@@ -198,7 +208,7 @@
                             <div class="flex-grow-1">
                                 <div class="h2">Password Changes (Tenant)</div>
                             </div>
-                            <div class="ms-2"><i class="fas fa-laptop fa-2x text-gray-200"></i>
+                            <div class="ms-2"><i class="fas fa-key fa-2x text-gray-200"></i>
                             </div>
                         </div>
                         <div class="d-flex align-items-center">
@@ -229,7 +239,7 @@
                             <div class="flex-grow-1">
                                 <div class="h2">Mailbox Permissions changes (Tenant)</div>
                             </div>
-                            <div class="ms-2"><i class="fas fa-laptop fa-2x text-gray-200"></i>
+                            <div class="ms-2"><i class="fas fa-mail-bulk fa-2x text-gray-200"></i>
                             </div>
                         </div>
                         <div class="d-flex align-items-center">
@@ -260,7 +270,7 @@
                             <div class="flex-grow-1">
                                 <div class="h2">Application Changes (Tenant)</div>
                             </div>
-                            <div class="ms-2"><i class="fas fa-laptop fa-2x text-gray-200"></i>
+                            <div class="ms-2"><i class="fas fa-calendar-check fa-2x text-gray-200"></i>
                             </div>
                         </div>
                         <div class="d-flex align-items-center">
@@ -290,7 +300,7 @@
                                     <div class="flex-grow-1">
                                         <div class="h2">Mailbox Logons (Tenant)</div>
                                     </div>
-                                    <div class="ms-2"><i class="fas fa-laptop fa-2x text-gray-200"></i>
+                                    <div class="ms-2"><i class="fas fa-sign-in-alt fa-2x text-gray-200"></i>
                                     </div>
                                 </div>
                                 <div class="d-flex align-items-center">
