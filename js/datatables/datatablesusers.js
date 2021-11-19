@@ -25,10 +25,16 @@ $(document).ready(function () {
                                         .search(val ? '^' + val + '$' : '', true, false)
                                         .draw();
                                 });
+                            if (column.index() === 5) {
+                                column.data().unique().sort().each(function (d, j) {
+                                    select.append('<option value="' + d + '">' + d + '</option>')
+                                });
+                            } else if (column.index() === 2) {
+                                select.append('<option value="guest">Guest</option><option value="member">Member</option>')
+                            } else {
+                                select.append('<option value="true">Enabled</option><option value="false">Disabled</option>')
 
-                            column.data().unique().sort().each(function (d, j) {
-                                select.append('<option value="' + d + '">' + d + '</option>')
-                            });
+                            }
                         }
                     });
                 },
