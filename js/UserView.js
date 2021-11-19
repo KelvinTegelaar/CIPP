@@ -386,8 +386,15 @@ $(document).ready(function () {
                     } else {
                         MailboxActiveSyncEnabled = '<td><i class="fas fa-times-circle text-muted fa-2x"></i></a></td>';
                     }
+                    var SpamBlocked;
+                    if (data[0].BlockedForSpam === true) {
+                        SpamBlocked = '<td><i class="fas fa-times-circle text-danger fa-2x"></i></td>';
+                    } else {
+                        SpamBlocked = '<td><i class="fas fa-check-circle text-muted fa-2x"></i></a></td>';
+                    }
 
                     var emailSettings = `<table class="table"><tbody>
+                    <tr><td>User Not Restricted</td><td>${SpamBlocked}</td></tr>
                     <tr><td>Litation Hold</td><td>${litiationHold}</td></tr>
                     <tr><td>Hidden from Address Lists</td><td>${hiddenFromAddress}</td></tr>
                     <tr><td>EWS Enabled</td><td>${hiddenFromAddress}</td></tr>
