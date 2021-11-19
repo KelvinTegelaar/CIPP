@@ -64,8 +64,8 @@
                                         <li>Disconnect all current sessions</li>
                                         <li>Disable all inbox rules</li>
                                         <form name=Remediate id="Remediate">
-                                            <input type="hidden" value="" id="UserID">
-                                            <input type="hidden" value="" id="TenantFilter">
+                                            <input type="hidden" name="UserID" value="" id="UserID">
+                                            <input type="hidden" name="TenantFilter" value="" id="TenantFilter">
                                         </form>
                                         <button class="btn btn-primary"
                                             onclick='PostForm("Remediate","api/ExecBECRemediate")'
