@@ -108,8 +108,8 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Add Standard',
-        to: '/tenant/standards/add-standard',
+        name: 'Apply Standard',
+        to: '/tenant/standards/apply-standard',
       },
       {
         component: CNavItem,
