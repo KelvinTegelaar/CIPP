@@ -1,5 +1,3 @@
-<p align="center"><a href="https://cyberdrain.com" target="_blank" rel="noopener noreferrer"><img src="../assets/img/CyberDrain.png" alt="CyberDrain Logo"></a></p>
-
 # Adding Autopilot Devices
 
 Adding autopilot devices can be done by following the Wizard using the standard Microsoft Partner APIs. These APIs allow you to add devices in three ways:

@@ -1,5 +1,3 @@
-<p align="center"><a href="https://cyberdrain.com" target="_blank" rel="noopener noreferrer"><img src="../assets/img/CyberDrain.png" alt="CyberDrain Logo"></a></p>
-
 # Backend access
 
 You can gain access to the Azure backend by browsing to your Azure Portal. We also include an easy way to jump to the correct locations via the configuration settings -> Security page. Clicking on "Get backend URLS" gives you all the important URLs for your specific environment.

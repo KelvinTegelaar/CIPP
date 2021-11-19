@@ -1,0 +1,105 @@
+site_url: ''
+site_name: CyberDrain Improved Partner Portal (CIPP)
+site_description: 'The CyberDrain Improved Partner Portal is a portal to help manage administration for Microsoft Partners. The current Microsoft partner landscape makes it fairly hard to manage multi tenant situations, with loads of manual work. Microsoft Lighthouse might resolve this in the future but development of this is lagging far behind development of the current market for Microsoft Partners.'
+site_author: 'Kelvin Tegelaar'
+docs_dir: Documentation
+repo_name: 'KelvinTegelaar/CIPP'
+repo_url: 'https://github.com/KelvinTegelaar/CIPP'
+edit_uri: 'edit/master/Documentation/'
+nav:
+    - Home: index.md
+    - Getting Started:
+      - Installation: GettingStarted/Installation.md
+      - Roles: GettingStarted/Roles.md
+      - Frequently Asked Questions: GettingStarted/FAQ.md
+      - Security: GettingStarted/Security.md
+      - Updating: GettingStarted/Updating.md
+      - Changelog: GettingStarted/Changelog.md
+      - Contributions: GettingStarted/Contributions.md
+    - Identity Management:
+      - Users: IdentityManagement/Users.md
+      - Groups: IdentityManagement/Groups.md
+      # - Offboarding Wizard: IdentityManagement/OffboardingWizard.md
+    - Tenant Administration:
+      - Tenants: TenantAdministration/Tenants.md
+      # - Conditional Access Policies: TenantAdministration/ConditionalAccessPolicies.md
+      - Standards: TenantAdministration/Standards.md
+      - Best Practices Analyser: TenantAdministration/BestPracticesAnalyser.md
+      - Domain Analyser: TenantAdministration/DomainAnalyser.md
+    - Endpoint Management:
+      - Applications: EndpointManagement/Applications.md
+      - Add Choco App: EndpointManagement/AddChocoApp.md
+      - Autopilot Devices: EndpointManagement/AutopilotDevices.md
+      - Autopilot Profiles: EndpointManagement/AutopilotProfiles.md
+      - Autopilot Status Page: EndpointManagement/AutopilotStatusPage.md
+      - Intune Policy Templates: EndpointManagement/IntunePolicyTemplates.md
+    - OneDrive, Sharepoint and Teams:
+      - OneDrive: OneDriveTeamsSharepoint/OneDrive.md
+      # Sharepoint: OneDriveTeamsSharepoint/Sharepoint.md
+      # Teams: OneDriveTeamsSharepoint/Teams.md
+    - CIPP Settings:
+      - Configuration Settings: CIPPSettings/ConfigurationSettings.md
+      - Backend Access: CIPPSettings/BackendAccess.md
+
+theme:
+  name: 'material'
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/lightbulb-outline
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/lightbulb
+        name: Switch to light mode
+  logo: images/CyberDrainIconOrangeWhite.png
+  favicon: images/CyberDrainWhite.png
+  features:
+    - navigation.instant
+    - navigation.tabs
+    - navigation.top
+    - toc.integrate
+  icon:
+    repo: fontawesome/brands/github
+  custom_dir: 'docsoverrides'
+extra_css:
+  - css/extra.css
+markdown_extensions:
+  - abbr
+  - admonition
+  - def_list
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.betterem
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.highlight:
+      linenums: true
+      use_pygments: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.tabbed
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+  - pymdownx.smartsymbols
+  - pymdownx.snippets
+  - pymdownx.superfences
+extra:
+  social:
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/kelvintegelaar
+    - icon: fontawesome/brands/github
+      link: https://github.com/KelvinTegelaar/CIPP
+copyright: Copyright &copy; 2021 CyberDrain
+
+plugins:
+    - search
+    - git-revision-date-localized:
+        type: timeago
+    
