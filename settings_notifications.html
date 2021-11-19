@@ -6,7 +6,7 @@
                     <div class="col-auto mb-3">
                         <h1 class="page-header-title">
                             <div class="page-header-icon"><i data-feather="user"></i></div>
-                            Notification Settings - UNDER DEVELOPMENT. PREVIEW ONLY
+                            Notification Settings
                         </h1>
                     </div>
                 </div>
@@ -28,107 +28,119 @@
                 <!-- Email notifications preferences card-->
                 <div class="card card-header-actions mb-4">
                     <div class="card-header">
-                        Email Notifications
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" id="flexSwitchCheckChecked" type="checkbox" disabled />
-                            <label class="form-check-label" for="flexSwitchCheckChecked"></label>
-                        </div>
+                        Notifications
                     </div>
                     <div class="card-body">
-                        <form>
+                        <form id="Notifcations" name="Notifcations">
                             <!-- Form Group (default email)-->
                             <div class="mb-3">
-                                <label class="small mb-1" for="inputNotificationEmail">Notification
+                                <label class="small mb-1" for="Email">Notification
                                     email</label>
-                                <input class="form-control" id="inputNotificationEmail" type="email"
-                                    value="helpdesk@yourmsp.com" disabled />
+                                <input class="form-control" id="email" type="email" placeholder="leave blank for none"
+                                    name="email" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="small mb-1" for="Webhook">Webhook URL (Slack, Teams, Discord)</label>
+                                <input class="form-control" id="Webhook" name="Webhook"
+                                    placeholder="leave blank for none" value="" />
                             </div>
                             <!-- Form Group (email updates checkboxes)-->
                             <div class="mb-0">
-                                <label class="small mb-2">Choose which types of email updates you receive</label>
+                                <label class="small mb-2">Choose which types of updates you want to receive. This
+                                    notification will be sent every 30 minutes.</label>
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" id="checkAccountChanges" type="checkbox" disabled />
-                                    <label class="form-check-label" for="checkAccountChanges">New Accounts</label>
+                                    <input class="form-check-input" value="true" name="AddUser" id="AddUser"
+                                        type="checkbox" />
+                                    <label class="form-check-label" for="AddUser">New Accounts created via
+                                        CIPP</label>
                                 </div>
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" id="checkAccountGroups" type="checkbox" disabled />
-                                    <label class="form-check-label" for="checkAccountGroups">New Apps</label>
+                                    <input class="form-check-input" value="true" name="RemoveUser" id="RemoveUser"
+                                        type="checkbox" />
+                                    <label class="form-check-label" for="RemoveUser">Removed Accounts via CIPP</label>
                                 </div>
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" id="checkProductUpdates" type="checkbox" disabled />
-                                    <label class="form-check-label" for="checkProductUpdates">New Policies</label>
+                                    <input class="form-check-input" value="true" name="AddChocoApp" id="AddChocoApp"
+                                        type="checkbox" />
+                                    <label class="form-check-label" for="AddChocoApp">New applictions added via
+                                        CIPP</label>
                                 </div>
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" id="checkProductNew" type="checkbox" disabled />
-                                    <label class="form-check-label" for="checkProductNew">Deleted Items</label>
+                                    <input class="form-check-input" value="true" name="Addpolicy" id="Addpolicy"
+                                        type="checkbox" />
+                                    <label class="form-check-label" for="Addpolicy">New Policies added via
+                                        CIPP</label>
                                 </div>
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" id="checkPromotional" type="checkbox" disabled />
-                                    <label class="form-check-label" for="checkPromotional">Edited items</label>
+                                    <input class="form-check-input" value="true" name="AddStandardsDeploy"
+                                        id="AddStandardsDeploy" type="checkbox" />
+                                    <label class="form-check-label" for="AddStandardsDeploy">New Standards added via
+                                        CIPP</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" value="true" name="RemoveStandard"
+                                        id="RemoveStandard" type="checkbox" />
+                                    <label class="form-check-label" for="RemoveStandard">Removed Standards via
+                                        CIPP</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" id="checkSecurity" type="checkbox" disabled />
-                                    <label class="form-check-label" for="checkSecurity">System Notifications</label>
+                                    <input class="form-check-input" value="true" name="TokensUpdater" id="TokensUpdater"
+                                        type="checkbox" />
+                                    <label class="form-check-label" for="TokensUpdater">Token events</label>
                                 </div>
+
                             </div>
                         </form>
+                        <button onclick='PostForm("Notifcations","api/ExecNotificationConfig")' class="btn btn-primary"
+                            type="button">Set Notification settings</button>
+
                     </div>
                 </div>
                 <!-- SMS push notifications card-->
-                <div class="card card-header-actions mb-4">
-                    <div class="card-header">
-                        Webhook Notifications
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" id="smsToggleSwitch" type="checkbox" disabled />
-                            <label class="form-check-label" for="smsToggleSwitch"></label>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <form>
-                            <!-- Form Group (default SMS number)-->
-                            <div class="mb-3">
-                                <label class="small mb-1" for="inputNotificationSms">Webhook URL</label>
-                                <input class="form-control" id="inputNotificationSms"
-                                    value=" https://yourwebhookorsomething" disabled />
-                            </div>
-                            <!-- Form Group (SMS updates checkboxes)-->
-                            <div class="mb-0">
-                                <label class="small mb-2">Choose which types of push notifications you receive</label>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" id="checkSmsComment" type="checkbox" disabled />
-                                    <label class="form-check-label" for="checkSmsComment">Someone makes a major
-                                        change</label>
-                                </div>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" id="checkSmsShare" type="checkbox" disabled />
-                                    <label class="form-check-label" for="checkSmsShare">Someone creates accounts or
-                                        groups</label>
-                                </div>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" id="checkSmsFollow" type="checkbox" disabled />
-                                    <label class="form-check-label" for="checkSmsFollow">Someone adds excluded
-                                        tenants</label>
-                                </div>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" id="checkSmsGroup" type="checkbox" disabled />
-                                    <label class="form-check-label" for="checkSmsGroup">When a standard could not be
-                                        applied</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" id="checkSmsPrivateMessage" type="checkbox"
-                                        disabled />
-                                    <label class="form-check-label" for="checkSmsPrivateMessage">When we rollover
-                                        logs</label>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <!-- Notifications preferences card-->
 
             </div>
         </div>
+        <div class="col-lg-4">
+            <!-- Notifications preferences card-->
+
+        </div>
+    </div>
     </div>
 </main>
+
+<button class="btn btn-primary" id="PopModal" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"
+    style="display:none;"></button>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Results</h5>
+            </div>
+            <div class="modal-body">
+                <section id="APIContent">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only"></span>
+                    </div></span>
+                </section>
+            </div>
+            <div class="modal-footer"><button class="btn btn-secondary" type="button"
+                    data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        $.ajax({
+            'async': true,
+            'global': false,
+            'url': 'api/ListNotificationConfig',
+            'dataType': "json",
+            'success': function (data) {
+                //basic fields
+                $('#email').val(data.email)
+                $('#Webhook').val(data.Webhook)
+
+            }
+        }
+        )
+    </script>

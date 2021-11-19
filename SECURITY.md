@@ -14,8 +14,10 @@ We will publicly release any security report after the resolution, including all
 
 ## Notifications and security advisories
 
-We report any security notification via the Github notication and advisory system. Sponsors that are hosted will also receive a notification in case a major bug has been found.
+We report any security notification via the Github notification and advisory system. Sponsors that are hosted will also receive a notification in case a major bug has been found.
 
 ## Bounties and Rewards
 
+
 This project is an open-source sponsorware effort, which makes it hard to create a monetary reward without breaking the bank very quickly. for *critical* level bugs, that cause RCE/API data leaks/etc I will award a 50 dollar reward. For other bugs, I potentially am able to reward with some swag such as an official CyberDrain T-shirt or hoodie :)
+

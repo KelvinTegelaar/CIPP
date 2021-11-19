@@ -129,78 +129,96 @@
                                     These standards will be applied every 3 hours on a repeated schedule.
                                     <div class="form-check mb-2">
                                         <input class="form-check-input" id="AuditLog" name="AuditLog" type="checkbox"
-                                            value="true" checked />
+                                            value="true" />
                                         <label class="form-next buttocheck-label" for="AuditLog">Enable the
                                             Unified Audit Log</label>
                                     </div>
                                     <div class="form-check mb-2">
                                         <input class="form-check-input" id="SecurityDefaults" name="SecurityDefaults"
-                                            type="checkbox" value="true" checked />
+                                            type="checkbox" value="true" />
                                         <label class="form-next buttocheck-label" for="SecurityDefaults">Enable Security
                                             Defaults</label>
                                     </div>
                                     <div class="form-check mb-2">
                                         <input class="form-check-input" id="DelegateSentItems" name="DelegateSentItems"
-                                            type="checkbox" value="true" checked />
+                                            type="checkbox" value="true" />
                                         <label class="form-next buttocheck-label" for="DelegateSentItems">Set mailbox
                                             Sent Items delegation (Sent items for shared mailboxes)</label>
                                     </div>
                                     <div class="form-check mb-2">
                                         <input class="form-check-input" id="OauthConsent" name="OauthConsent"
-                                            type="checkbox" value="true" checked />
+                                            type="checkbox" value="true" />
                                         <label class="form-next buttocheck-label" for="OauthConsent">Require
                                             admin consent for applications (Prevent OAuth phishing)</label>
                                     </div>
                                     <div class="form-check mb-2">
                                         <input class="form-check-input" id="PasswordExpireDisabled"
-                                            name="PasswordExpireDisabled" type="checkbox" value="true" checked />
+                                            name="PasswordExpireDisabled" type="checkbox" value="true" />
                                         <label class="form-next buttocheck-label" for="PasswordExpireDisabled">Do not
                                             expire passwords</label>
                                     </div>
                                     <div class="form-check mb-2">
                                         <input class="form-check-input" id="AnonReportDisable" name="AnonReportDisable"
-                                            type="checkbox" value="true" checked />
+                                            type="checkbox" value="true" />
                                         <label class="form-next buttocheck-label" for="AnonReportDisable">Enable
                                             Usernames instead of pseudo anonymised names
                                             in reports</label>
                                     </div>
                                     <div class="form-check mb-2">
                                         <input class="form-check-input" id="SSPR" name="SSPR" type="checkbox"
-                                            value="true" checked />
+                                            value="true" />
                                         <label class="form-next buttocheck-label" for="SSPR">Enable Self
                                             Service Password Reset</label>
                                     </div>
                                     <div class="form-check mb-2">
                                         <input class="form-check-input" id="ModernAuth" name="ModernAuth"
-                                            type="checkbox" value="true" checked />
+                                            type="checkbox" value="true" />
                                         <label class="form-next buttocheck-label" for="ModernAuth">Enable Modern
                                             Authentication</label>
                                     </div>
                                     <div class="form-check mb-2">
                                         <input class="form-check-input" id="DisableBasicAuth" name="DisableBasicAuth"
-                                            type="checkbox" value="true" checked />
+                                            type="checkbox" value="true" />
                                         <label class="form-next buttocheck-label" for="DisableBasicAuth">Disable Basic
                                             Authentication</label>
                                     </div>
                                     <div class="form-check mb-2">
                                         <input class="form-check-input" id="DisableSharedMailbox"
-                                            name="DisableSharedMailbox" type="checkbox" value="true" checked />
+                                            name="DisableSharedMailbox" type="checkbox" value="true" />
                                         <label class="form-next buttocheck-label" for="DisableSharedMailbox">Disable
                                             Shared Mailbox AAD accounts</label>
                                     </div>
                                     <div class="form-check mb-2">
                                         <input class="form-check-input" id="AutoExpandArchive" name="AutoExpandArchive"
-                                            type="checkbox" value="true" checked />
+                                            type="checkbox" value="true" />
                                         <label class="form-next buttocheck-label" for="AutoExpandArchive">Enable
                                             Auto-expanding archives</label>
                                     </div>
                                     <div class="form-check mb-2">
+                                        <input class="form-check-input" id="SpoofWarn" name="SpoofWarn" type="checkbox"
+                                            value="true" />
+                                        <label class="form-next buttocheck-label" for="SpoofWarn">Enable
+                                            Spoofing warnings for Outlook (This e-mail is external identifiers)</label>
+                                    </div>
+                                    <div class="form-check mb-2">
                                         <input class="form-check-input" id="LegacyMFA" name="LegacyMFA" type="checkbox"
-                                            value="true" checked />
+                                            value="true" />
                                         <label class="form-next buttocheck-label" for="LegacyMFA">Enable
                                             per-user MFA for all users</label>
                                     </div>
 
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" id="UndoSSPR" name="UndoSSPR" type="checkbox"
+                                            value="true" />
+                                        <label class="form-next buttocheck-label" for="UndoSSPR">Undo SSPR
+                                            Standard</label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" id="UndoOauth" name="UndoOauth" type="checkbox"
+                                            value="true" />
+                                        <label class="form-next buttocheck-label" for="UndoOauth">Undo App Consent
+                                            Standard</label>
+                                    </div>
                                     <hr class="my-4" />
                                     <div class="d-flex justify-content-between">
                                         <a class="nav-link active wizardbutton" href="#wizard1-tab">

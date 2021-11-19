@@ -18,7 +18,7 @@ $(document).ready(function () {
             "pageLength": 10,
             "ajax": {
 
-                "url": "/api/ListStandards",
+                "url": "/api/ListIntuneTemplates",
                 "dataSrc": "",
             },
             dom: 'fBlrtip',
@@ -27,23 +27,15 @@ $(document).ready(function () {
                 { extend: 'excelHtml5', className: 'btn btn-primary btn-sm', title: 'Applied Standards - ' + todayDate, exportOptions: { columns: [0, 1, 2] } },
                 { extend: 'csvHtml5', className: 'btn btn-primary btn-sm', title: 'Applied Standards - ' + todayDate, exportOptions: { columns: [0, 1, 2] } },
                 { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', orientation: 'landscape', title: 'Applied Standards - ' + todayDate, exportOptions: { columns: [0, 1, 2] } },
-                {
-                    text: 'Apply Standards Now',
-                    className: 'btn btn-primary btn-sm',
-                    action: function (e, dt, button, config) {
-                        $('#APIContent').html('<center><label class="form-check-label" >Are you sure you want to force the Standards to run now? This will slow down normal usage considerably. Please note: this runs automaticly every 3 hours. <br /><br /></label><br><nothing class="APIConfirmed"><a href="/api/Standards_OrchestrationStarter"><button id="Confirmed" class="btn btn-primary APIConfirmed">Yes</button></a></nothing><nothing class="APIDenied">  <button data-bs-dismiss="modal" class="btn btn-primary APIDenied">No</button></center>');
-
-                        document.getElementById("PopModal").click();
-                    }
-                }
             ],
             "columns": [
-                { "data": "displayName" },
-                { "data": "standardName" },
-                { "data": "appliedBy" },
+                { "data": "Displayname" },
+                { "data": "Description" },
+                { "data": "Type" },
+                { "data": "RAWJson" },
                 {
-                    "data": "displayName",
-                    render: function (id, type, row) { return '<nothing class="APILink"><a actionname="remove standards for ' + row.displayName + '" href="api/RemoveStandard?ID=' + id + '"><i class="fas fa-trash-alt fa-fw"></i></a></nothing>' }
+                    "data": "GUID",
+                    render: function (id, type, row) { return '<nothing class="APILink"><a actionname="remove policy template ' + row.Displayname + '" href="api/RemoveIntuneTemplate?ID=' + id + '"><i class="fas fa-trash-alt fa-fw"></i></a></nothing>' }
                 },
             ],
             "order": [[0, "asc"]],
