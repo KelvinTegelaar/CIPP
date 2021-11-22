@@ -63,6 +63,62 @@ $(document).ready(function () {
                     { extend: 'excelHtml5', className: 'btn btn-primary btn-sm', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4], orthogonal: "export" } },
                     { extend: 'csvHtml5', className: 'btn btn-primary btn-sm', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4], orthogonal: "export" } },
                     { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', orientation: 'landscape', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4], orthogonal: "export" } },
+                    {
+                      text: 'Account Enabled',
+                      className: 'dt-button btn btn-secondary btn-sm',
+                      action: function (e, dt, node, config) {
+                        dt.columns().search('').draw();
+                        dt.columns(3).search('Account Enabled').draw();
+                      }
+                    },
+                    {
+                      text: 'Account Disabled',
+                      className: 'dt-button btn btn-secondary btn-sm',
+                      action: function (e, dt, node, config) {
+                        dt.columns().search('').draw();
+                        dt.columns(3).search('Account Disabled').draw();
+                      }
+                    },
+                    {
+                      text: 'Members Only',
+                      className: 'dt-button btn btn-secondary btn-sm',
+                      action: function (e, dt, node, config) {
+                        dt.columns().search('').draw();
+                        dt.columns(2).search('Member').draw();
+                      }
+                    },
+                    {
+                      text: 'Guests Only',
+                      className: 'dt-button btn btn-secondary btn-sm',
+                      action: function (e, dt, node, config) {
+                        dt.columns().search('').draw();
+                        dt.columns(2).search('Guest').draw();
+                      }
+                    },
+                    {
+                      text: 'Licensed Only',
+                      className: 'dt-button btn btn-secondary btn-sm',
+                      action: function (e, dt, node, config) {
+                        dt.columns().search('').draw();
+                        dt.columns(5).search('^(?!\s*$).+', true, false).draw();
+                      }
+                    },
+                    {
+                      text: 'Licensed + Enabled',
+                      className: 'dt-button btn btn-secondary btn-sm',
+                      action: function (e, dt, node, config) {
+                        dt.columns().search('').draw();
+                        dt.columns(5).search('^(?!\s*$).+', true, false).draw();
+                        dt.columns(3).search('Account Enabled').draw();
+                      }
+                    },
+                    {
+                      text: 'All Results',
+                      className: 'dt-button btn btn-secondary btn-sm',
+                      action: function (e, dt, node, config) {
+                        dt.columns().search('').draw();
+                      }
+                    }
                 ],
                 "columns": [
                     { "data": "displayName" },
@@ -122,7 +178,7 @@ $(document).ready(function () {
                             if (row.mail === null) { mailDisabledDD = ' disabled' } else { mailDisabledDD = '' };
                             var tblmenu = `
                             <div class="dropdown">
-                           
+
                                 <i class="fas fa-bars dropdown-toggle text-primary" data-bs-toggle="dropdown" style="cursor:hand;"></i>
                                 <ul class="dropdown-menu" style="min-width:260px;">
                                     <li><a class="dropdown-item" href=index.html?page=ViewUser&Tenantfilter=${TenantID}&UserID=${id}><i data-bs-toggle="tooltip" data-bs-placement="top" title="View User" class="fas fa-eye fa-fw"></i>View User</a></li>
@@ -137,7 +193,7 @@ $(document).ready(function () {
                                     <li><a class="dropdown-item" actionname="Delete ${row.displayName}" href=api/RemoveUser?TenantFilter=${TenantID}&ID=${id}><i data-bs-toggle="tooltip" data-bs-placement="top" title="Delete user" class="fas fa-user-times fa-fw"></i></i>Delete User</a></nothing></li>
                                    </nothing>
                                     </ul>
-                                    
+
                             </div>`
                             return tblmenu;
                         }
