@@ -1,34 +1,34 @@
 <main>
-    <form name="edituserform" id="Userform">
-        <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
-            <div class="container-xl px-4">
-                <div class="page-header-content">
-                    <div class="row align-items-center justify-content-between pt-3">
-                        <div class="col-auto mb-3">
-                            <h1 class="page-header-title">
-                                <div class="page-header-icon"><i data-feather="user-plus"></i></div>
-                                Edit Mailbox Permissions
-                            </h1>
-                        </div>
-                        <div class="col-12 col-xl-auto mb-3">
-                            <a class="btn btn-sm btn-light text-primary" href="index.html?page=groups">
-                                <i class="me-1" data-feather="arrow-left"></i>
-                                Back to Groups
-                            </a>
-                        </div>
+    <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
+        <div class="container-xl px-4">
+            <div class="page-header-content">
+                <div class="row align-items-center justify-content-between pt-3">
+                    <div class="col-auto mb-3">
+                        <h1 class="page-header-title">
+                            <div class="page-header-icon"><i data-feather="user-plus"></i></div>
+                            Edit Mailbox Permissions
+                        </h1>
+                    </div>
+                    <div class="col-12 col-xl-auto mb-3">
+                        <a class="btn btn-sm btn-light text-primary" href="index.html?page=groups">
+                            <i class="me-1" data-feather="arrow-left"></i>
+                            Back to Groups
+                        </a>
                     </div>
                 </div>
             </div>
-        </header>
-        <!-- Main page content-->
-        <div class="container-xl px-4 mt-4">
-            <div class="row">
-                <div class="col-6">
-                    <!-- Account details card-->
-                    <div class="card mb-4">
-                        <div class="card-header">Group Details</div>
+        </div>
+    </header>
+    <!-- Main page content-->
+    <div class="container-xl px-4 mt-4">
+        <div class="row">
+            <div class="col-6">
+                <!-- Account details card-->
+                <div class="card mb-4">
+                    <div class="card-header">Group Details</div>
 
-                        <div class="card-body">
+                    <div class="card-body">
+                        <form name="edituserform" id="Userform">
 
                             <!-- Form Row-->
                             <div class="row gx-3 mb-3">
@@ -36,7 +36,7 @@
                             </div>
 
                             <input id="UserID" type="hidden" value="" name="UserID" />
-                            <input id="tenantID" type="hidden" value="" name="tenantID" />
+                            <input id="Tenantfilter" type="hidden" value="" name="Tenantfilter" />
                             <!-- Form Group (email address)-->
 
                             <!-- Form Group (Group Selection Checkboxes)-->
@@ -65,31 +65,31 @@
                                     placeholder="Enter one e-mail per line, leave blank if no changes are to be made."
                                     value=""></textarea>
                             </div> <!-- Submit button-->
-
-                            <button class="btn btn-primary" onclick='PostForm("Userform","api/EditMailboxPermissions")'
-                                type="button">Edit
-                                group</button>
-
-                        </div>
+                        </form>
+                        <button class="btn btn-primary" onclick='PostForm("Userform","api/ExecEditMailboxPermissions")'
+                            type="button">Edit
+                            group</button>
 
                     </div>
 
                 </div>
-                <div class=col-6>
-                    <div class="card mb-4">
-                        <div class="card-header">Mailbox Membership</div>
-                        <div class="card-body">These are the current permissions: <div class="mb-3">
-                                <section id="currentMembers">
-                                </section>
-                            </div>
+
+            </div>
+            <div class=col-6>
+                <div class="card mb-4">
+                    <div class="card-header">Mailbox Membership</div>
+                    <div class="card-body">These are the current permissions: <div class="mb-3">
+                            <section id="currentMembers">
+                            </section>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        </div>
-        </div>
-    </form>
+    </div>
+    </div>
+    </div>
+
     <button class="btn btn-primary" id="PopModal" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"
         style="display:none;"></button>
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"

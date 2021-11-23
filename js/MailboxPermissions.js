@@ -7,6 +7,8 @@ $(document).ready(function () {
     //checks if a GroupID is present, and if so, we prefill the form.
     if (searchParams.has('UserID')) {
         var UserID = searchParams.get('UserID')
+        $('#UserID').val(UserID)
+        $('#Tenantfilter').val(TenantID)
         $.ajax({
             'async': true,
             'global': false,
