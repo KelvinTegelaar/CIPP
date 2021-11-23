@@ -129,6 +129,11 @@
                                     placeholder="Enter one alias per line, leave blank if no changes are to be made."
                                     value=""></textarea>
                             </div> <!-- Submit button-->
+                            <div class="mb-3">
+                                <label class="small mb-1" for="Jobtitle">Job title</label>
+                                <input class="form-control" id="Jobtitle" placeholder="Enter the job title" value=""
+                                    name="Jobtitle" />
+                            </div>
                             <div class="row gx-3 mb-3">
                                 <!-- Form Group (first name)-->
                                 <div class="col-md-6">
@@ -196,6 +201,7 @@
                                     <datalist id="UserlistOptions">
                                     </datalist>
                                 </div>
+
                             </div>
 
                             <button class="btn btn-primary" onclick='PostForm("Userform","api/EditUser")'' type="button">Edit User</button>
