@@ -99,12 +99,6 @@
             ]
         },
         {
-            "route": "*standard.html",
-            "allowedRoles": [
-                "admin"
-            ]
-        },
-        {
             "route": "*",
             "allowedRoles": [
                 "admin",
