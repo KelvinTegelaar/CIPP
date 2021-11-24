@@ -150,3 +150,27 @@ function PostForm(FormID, PostAPI) {
     });
 
 }
+var tries = 0;
+function GetAPIData(url, guid) {
+    return new Promise((resolve, reject) => {
+        let ajaxsettings = {
+            type: 'GET',
+            url: url + '?GUID=' + guid,
+            success: function (data) {
+                tries++;
+                if (data.Waiting) {
+                    setTimeout(function () {
+                        $.ajax(ajaxsettings);
+                    }, 5000);
+                } else {
+                    if (tries >= 60) {
+                        reject("Failed to retrieve data in 5 minutes");
+                    } else {
+                        resolve(data);
+                    }
+                }
+            }
+        }
+        $.ajax(ajaxsettings);
+    })
+}

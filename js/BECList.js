@@ -8,30 +8,7 @@ $(document).ready(function () {
     $('#UserID').val(UserID)
 
     //This function keeps trying to get the data until the variable 'waiting' disappears. It repeats every 5 seconds to a maximum of 300 seconds.
-    var tries = 0;
-    function GetAPIData(url, guid) {
-        return new Promise((resolve, reject) => {
-            let ajaxsettings = {
-                type: 'GET',
-                url: url + '?GUID=' + guid,
-                success: function (data) {
-                    tries++;
-                    if (data.Waiting) {
-                        setTimeout(function () {
-                            $.ajax(ajaxsettings);
-                        }, 5000);
-                    } else {
-                        if (tries >= 60) {
-                            reject("Failed to retrieve data in 5 minutes");
-                        } else {
-                            resolve(data);
-                        }
-                    }
-                }
-            }
-            $.ajax(ajaxsettings);
-        })
-    }
+
 
     $.ajax({
         'async': true,
