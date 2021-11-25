@@ -189,7 +189,7 @@ You'll need the following to get started;
 
 ## Automated Installation
 
-After you have completed the requirements in the [Getting Started](#getting-started) section, click the button below to run the automated setup. This does most of the work for you. If you don't want to use the automated installer, use the [manual installation instructions](#manual-installation) below, but be warned that this is really not advised, there's a lot of moving parts where one could make a mistake. You will need to use the manual installation instructions if you wish to host your repo in [Azure DevOps](https://dev.azure.com) or on a [GitLab](https://www.gitlab.com) instance.
+After you have completed the prerequisites in the [Getting Started](#getting-started-with-cipp) section above, click the button below to run the automated setup. This does most of the work for you. If you don't want to use the automated installer, use the [manual installation instructions](#manual-instructions-here-be-dragons) below, but be warned that this is really not advised, there's a lot of moving parts where one could make a mistake. You will need to use the manual installation instructions if you wish to host your repo in [Azure DevOps](https://dev.azure.com) or on a [GitLab](https://www.gitlab.com) instance.
 
 [![Deploy To Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FKelvinTegelaar%2FCIPP%2Fmaster%2FDocumentation%2FAzureDeploymentTemplate.json)
 
@@ -197,7 +197,7 @@ After you have completed the requirements in the [Getting Started](#getting-star
 
 This is because the Azure Static Web Apps (SWA) component is global by default (it picks the datacenter closest to you) however some regions don't allow deployment. Regions that allow SWA at the moment are Central US, East US 2, East Asia, West Europe and West US 2.  To work around this use the alternative installation button below. This will deploy the Static Web App in Central US region however the SWA will still be served from your nearest datacenter and other parts of CIPP will be located in the region you chose so you won't notice any latency.
 
-[![Deploy To Azure - Static Web App in Central US](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FKelvinTegelaar%2FCIPP%2Fmaster%2FDocumentation%2FAzureDeploymentTemplate_regionoptions.json)
+[![Deploy To Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FKelvinTegelaar%2FCIPP%2Fmaster%2FDocumentation%2FAzureDeploymentTemplate_regionoptions.json)
 
 ## Adding users to CIPP
 
@@ -207,19 +207,19 @@ You should now be able to browse to the custom domain or the default domain, and
 
 ## It's not working, I'm having issues
 
-For the first 30 minutes or more the application will respond pretty slowly, this is because, amonmg other things, the Function App (CIPP-API) has to download PowerShell modules from Microsoft. We can't make this run any faster at this time. If you have waited for at least 30 minutes and things are still not working restart the Azure Function App (Azure Portal > CIPP Resource Group > Function App > Overview > Restart), this solves 99,9% of all issues. Turn it off, turn it on again. ;)
+For the first 30 minutes or more the application will respond pretty slowly, this is because, among other things, the Function App (CIPP-API) has to download PowerShell modules from Microsoft. We can't make this run any faster at this time. If you have waited for at least 30 minutes and things are still not working restart the Azure Function App (Azure Portal > CIPP Resource Group > Function App > Overview > Restart), this solves 99,9% of all issues. Turn it off, turn it on again. ;)
 
-If you are still stuck, check out the [FAQ](FAQ.md) page and if needed - create an issue [on GitHub](https://github.com/KelvinTegelaar/CIPP) or seek help [on Discord](https://discord.gg/kYgsfrX2)
+If you are still stuck, check out the [FAQ](FAQ.md) page and if needed - create an issue [on GitHub](https://github.com/KelvinTegelaar/CIPP/issues) or seek help [on the CIPP Discord](https://discord.gg/cyberdrain)
 
 ## Updating CIPP
 
-To update CIPP to a new version see the [updating](updating.md) section of this documentation.
+To update CIPP to a new version see the [updating](Updating.md) section of this documentation.
 
 ## Adding a custom domain name
 
 At the moment of deployment, the application will use a randomly generated name. To change this, go to your Resource Group in Azure, click on your Static Web App (`cipp-swa-xxxx` if using automatic deployment) and click on Custom Domains. You'll be able to add your own domain name here. [Microsoft Docs - Set up a custom domain with free certificate in Azure Static Web Apps](https://docs.microsoft.com/en-us/azure/static-web-apps/custom-domain?tabs=azure-dns)
 
-## Manual Instructions - Here be Dragons!
+## Manual Instructions - Here be Dragons
 
 If you don't want to, or can't, install CIPP automatically you can use the following steps to create the required Azure services manually.
 
