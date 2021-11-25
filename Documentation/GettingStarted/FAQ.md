@@ -2,7 +2,7 @@
 
 `Why can't I install CIPP using the "Deploy to Azure" button?`
 
-:    If you're experiencing issues with installation please report these in `#cipp-issues` on the [CIPP Discord](https://discord.gg/kYgsfrX2)
+:    If you're experiencing issues with installation please report these in `#cipp-issues` on the [CIPP Discord](https://discord.gg/cyberdrain)
 
 `Why can't I get details for a particular tenant / any tenants?`
 
