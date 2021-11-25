@@ -12,6 +12,7 @@ $(document).ready(function () {
         'success': function (GUID) {
             //when succesfull, we get a GUID as a return. We use the GUID to get the actual data instead.
             GetAPIData("api/ExecAlertsList", GUID.GUID).then((data) => {
+              console.log(data);
                 //here we process the actual data returned by the GetAPIData feature
                 $('#loader').html(`<i class="fas fa-check-circle text-success fa-2x"></i>`)
 
