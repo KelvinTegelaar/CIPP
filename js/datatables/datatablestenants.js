@@ -16,7 +16,7 @@ $(document).ready(function () {
                     "visible": false,
                     "searchable": true,
                 },
-                { "className": "dt-center", "targets": [2, 3, 4, 5, 6, 7] },
+                { "className": "dt-center", "targets": [2, 3, 4, 5, 6, 7, 8] },
 
             ],
             "deferRender": true,
@@ -60,8 +60,14 @@ $(document).ready(function () {
                     "data": "defaultDomainName",
                     render: function (defaultDomainName, type, row) { return '<a target="_blank" href="https://endpoint.microsoft.com/' + defaultDomainName + '"><i class="fas fa-cog fa-fw"></i></a>' }
                 },
+                {
+                    "data": "defaultDomainName",
+                    render: function (defaultDomainName, type, row) { return '<a href=index.html?page=EditTenant' + '&Tenantfilter=' + defaultDomainName + '><i class="fas fa-cog fa-fw"></i></a>'; }
+                },
+                { 
+                    "data": "domains" 
+                }
 
-                { "data": "domains" }
 
             ],
             "order": [[0, "asc"]],
