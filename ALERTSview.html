@@ -15,10 +15,43 @@
     </header>
     <!-- Main page content-->
     <div class="container-fluid px-4">
-
+      <div class="row">
+        <div class="col-12">
+          <div class="card border-start-lg border-start-info h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="col-2 ps-2 border-start border-primary border-5">
+                    <h3>New Alerts</h3>
+                    <h1 class="text-secondary" style="font-size:2rem;" id="NewAlerts"></h1>
+                  </div>
+                  <div class="col-2 ps-2 border-start border-primary border-5">
+                    <h3>In Progress Alerts</h3>
+                    <h1 class="text-secondary" style="font-size:2rem;" id="InProgressAlerts"></h1>
+                  </div>
+                  <div class="col-2 ps-2 border-start border-primary border-5">
+                    <h3>High Severity Alerts</h3>
+                    <h1 class="text-danger" style="font-size:2rem;" id="HighSeverityAlerts"></h1>
+                  </div>
+                  <div class="col-2 ps-2 border-start border-primary border-5">
+                    <h3>Medium Severity Alerts</h3>
+                    <h1 class="text-warning" style="font-size:2rem;" id="MediumSeverityAlerts"></h1>
+                  </div>
+                  <div class="col-2 ps-2 border-start border-primary border-5">
+                    <h3>Low Severity Alerts</h3>
+                    <h1 class="text-secondary" style="font-size:2rem;" id="LowSeverityAlerts"></h1>
+                  </div>
+                  <div class="col-2 ps-2 border-start border-primary border-5">
+                    <h3>Informational Alerts</h3>
+                    <h1 class="text-secondary" style="font-size:2rem;" id="InformationalSeverityAlerts"></h1>
+                  </div>
+                </div>
+            </div>
+        </div>
+        </div>
+      </div>
         <div class="row">
-            <div class="col-8">
-                <!-- Alerts -->
+            <div class="col-12">
+                <!-- Alerts Here -->
                 <div class="card border-start-lg border-start-info h-100">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
@@ -36,6 +69,10 @@
                                             <th>Tenant</th>
                                             <th>Alert ID</th>
                                             <th>Alert Title</th>
+                                            <th>Category</th>
+                                            <th>Event Date</th>
+                                            <th>Severity</th>
+                                            <th>Status</th>
                                         </tr>
                                     </thead>
                                 </table>

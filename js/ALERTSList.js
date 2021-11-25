@@ -13,12 +13,22 @@ $(document).ready(function () {
             //when succesfull, we get a GUID as a return. We use the GUID to get the actual data instead.
             GetAPIData("api/ExecAlertsList", GUID.GUID).then((data) => {
               console.log(data);
-                //here we process the actual data returned by the GetAPIData feature
+                //here we process the actual data returned by the GetAPIData feature!
                 $('#loader').html(`<i class="fas fa-check-circle text-success fa-2x"></i>`)
 
-                if (data != "") {
-                    data.forEach(function (item) {
-                        $('#Passwords').append(`<tr><td>${item.Tenant}</td><td>${item.Id}</td><td>${item.Title}</td></tr>`);
+                if (data.MSResults != "") {
+                  $("#NewAlerts").html(data.NewAlertsCount);
+                  $("#InProgressAlerts").html(data.InProgressAlertsCount);
+                  $("#HighSeverityAlerts").html(data.SeverityHighAlertsCount);
+                  $("#MediumSeverityAlerts").html(data.SeverityMediumAlertsCount);
+                  $("#LowSeverityAlerts").html(data.SeverityLowAlertsCount);
+                  $("#InformationalSeverityAlerts").html(data.SeverityInformationalCount);
+
+                    data.MSResults.forEach(function (item) {
+                        if (item.Id !== null) {
+                          $('#Passwords').append(`<tr><td>${item.Tenant}</td><td>${item.Id}</td><td>${item.Title}</td><td>${item.Category}</td><td>${item.EventDateTime}</td><td>${item.Severity}</td><td>${item.Status}</td></tr>`);
+                        }
+
                     });
                 } else {
                     $('#Passwords').append(`<tr><td>Something went WRONG!</td><td></td><td></td></tr>`);
