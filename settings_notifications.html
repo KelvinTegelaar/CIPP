@@ -139,7 +139,13 @@
                 //basic fields
                 $('#email').val(data.email)
                 $('#Webhook').val(data.Webhook)
-
+                if (data.AddUser) { $("#AddUser").prop("checked", true); }
+                if (data.RemoveUser) { $("#RemoveUser").prop("checked", true); }
+                if (data.RemoveStandard) { $("#RemoveStandard").prop("checked", true); }
+                if (data.Addpolicy) { $("#Addpolicy").prop("checked", true); }
+                if (data.AddChocoApp) { $("#AddChocoApp").prop("checked", true); }
+                if (data.TokensUpdater) { $("#TokensUpdater").prop("checked", true); }
+                if (data.AddStandardsDeploy) { $("#AddStandardsDeploy").prop("checked", true); }
             }
         }
         )
