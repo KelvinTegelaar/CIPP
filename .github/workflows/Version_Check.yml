@@ -7,6 +7,8 @@ on:
   # Triggers the workflow on push or pull request events but only for the master branch. Exclude when changes are to documentation or CI files only.
   pull_request:
     branches: [ master ]
+    paths:
+      - '**'
     paths-ignore:
       - '.github/**'
       - 'mkdocs.yml'
