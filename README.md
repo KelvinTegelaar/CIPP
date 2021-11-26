@@ -61,17 +61,17 @@ Sponsorship allows me to sink some more time into this project and keep it free,
 
 Check out the GIFs below to see how some of the workflows work.
 
-Generic Administration Pages:
 
-<kbd><a href="assets/screenshots/homepage.png"><img border="1" src="assets/screenshots/homepage.png" width="250"/></a></kbd>
-<kbd><a href="assets/screenshots/users.png"><img border="1" src="assets/screenshots/users.png" width="250"/></a></kbd>
-<kbd><a href="assets/screenshots/Standards.png"><img border="1" src="assets/screenshots/Standards.png" width="250"/></a></kbd>
 
-Wizards:
+<kbd><a href="assets/screenshots/AssignLicense.gif"><img border="1" src="assets/screenshots/AssignLicense.gif" width="250"/></a></kbd>
+<kbd><a href="assets/screenshots/OffboardUser.gif"><img border="1" src="assets/screenshots/OffboardUser.gif" width="250"/></a></kbd>
+<kbd><a href="assets/screenshots/SetStandard.gif"><img border="1" src="assets/screenshots/SetStandard.gif" width="250"/></a></kbd>
 
-<kbd><a href="assets/screenshots/AddautopilotDevice.png"><img border="1" src="assets/screenshots/AddautopilotDevice.png" width="250"/></a></kbd>
-<kbd><a href="assets/screenshots/AddIntunePolicy.png"><img border="1" src="assets/screenshots/AddIntunePolicy.png" width="250"/></a></kbd>
-<kbd><a href="assets/screenshots/AppAdd.png"><img border="1" src="assets/screenshots/AppAdd.png" width="250"/></a></kbd>
+
+
+<kbd><a href="assets/screenshots/AddautopilotDevice.png"><img border="1" src="assets/screenshots/IntunePolicyEngine.gif" width="250"/></a></kbd>
+<kbd><a href="assets/screenshots/AddIntunePolicy.png"><img border="1" src="assets/screenshots/MyChocoApp.gif" width="250"/></a></kbd>
+<kbd><a href="assets/screenshots/Teams.gif"><img border="1" src="assets/screenshots/Teams.gif" width="250"/></a></kbd>
 # What is the functionality?
 
 The current build functionality is described below, also check out our Changelog in the documentation folder, as the tool has a very rapid development schedule the list below might be out of date.
