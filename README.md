@@ -1,5 +1,4 @@
-[![CyberDrain Light](assets/img/CIPP.png#gh-dark-mode-only)](https://cyberdrain.com)
-[![CyberDrain Dark](assets/img/CIPP-Light.png#gh-light-mode-only)](https://cyberdrain.com)
+[![CyberDrain Light](assets/img/CIPP.png#gh-dark-mode-only)![CyberDrain Dark](assets/img/CIPP-Light.png#gh-light-mode-only)](https://cyberdrain.com)
 
 <hr>
 
@@ -15,18 +14,11 @@
 <center><h1>Sponsored by</h1></center>
 <p align="center">
 
-[![OIT Dark](assets/img/oitpsonsor_light.png#gh-dark-mode-only)](https://oit.co)
+[![OIT Dark](assets/img/oitpsonsor_light.png#gh-dark-mode-only)![OIT Light](assets/img/oitpsonsor_light.png#gh-light-mode-only)]](https://oit.co)
 
-[![Genuine Technology Services Dark](assets/img/Genuine-logo-vertical-light.png#gh-dark-mode-only)](https://www.genuinetechnology.com/)
+[![Genuine Technology Services Dark](assets/img/Genuine-logo-vertical-light.png#gh-dark-mode-only)![Genuine Technology Services Light](assets/img/Genuine-logo-vertical-light.png#gh-light-mode-only)](https://www.genuinetechnology.com/)
 
-[![NinjaOne Dark](assets/img/NinjaOne-Light.png#gh-dark-mode-only)](https://www.ninjaone.com)
-
-
-[![OIT Light](assets/img/oitpsonsor_light.png#gh-light-mode-only)](https://oit.co)
-
-[![Genuine Technology Services Light](assets/img/Genuine-logo-vertical-light.png#gh-light-mode-only)](https://www.genuinetechnology.com/)
-
-[![NinjaOne Light](assets/img/NinjaOne-Dark.png#gh-light-mode-only)](https://www.ninjaone.com)
+[![NinjaOne Dark](assets/img/NinjaOne-Light.png#gh-dark-mode-only)![NinjaOne Light](assets/img/NinjaOne-Dark.png#gh-light-mode-only)](https://www.ninjaone.com)
 
 </p>
 
