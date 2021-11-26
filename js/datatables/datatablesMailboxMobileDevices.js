@@ -1,8 +1,8 @@
 $(document).ready(function () {
     let searchParams = new URLSearchParams(window.location.search)
     if (searchParams.has('page')) {
-        var TenantID = searchParams.get('Tenantfilter')
-        var Mailbox = searchParams.get('Mailbox')
+        var TenantID = escapeHTML(searchParams.get('Tenantfilter'))
+        var Mailbox = escapeHTML(searchParams.get('Mailbox'))
     }
     
     document.getElementById('replaceTitle').innerHTML = 'Mobile Devices Report for ' + Mailbox;
