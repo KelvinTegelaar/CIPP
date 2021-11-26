@@ -3,10 +3,10 @@
 
 <hr>
 
-![GitHub Latest Release](https://img.shields.io/github/v/release/KelvinTegelaar/CIPP?label=Latest%20Release)
+![GitHub Latest Release](https://img.shields.io/github/v/release/KelvinTegelaar/CIPP?label=Latest%20Release&style=for-the-badge)
 ![CodeQL Security Analysis Status](https://img.shields.io/github/workflow/status/KelvinTegelaar/CIPP/CodeQL?label=CodeQL%20Security&style=for-the-badge)
-![GitHub Enhancement Requests](https://img.shields.io/github/issues/KelvinTegelaar/CIPP/enhancement?label=Enhancement%20Requests)
-![GitHub Bugs](https://img.shields.io/github/issues/KelvinTegelaar/CIPP/bug?label=Bugs)
+![GitHub Enhancement Requests](https://img.shields.io/github/issues/KelvinTegelaar/CIPP/enhancement?label=Enhancement%20Requests&style=for-the-badge)
+![GitHub Bugs](https://img.shields.io/github/issues/KelvinTegelaar/CIPP/bug?label=Bugs&style=for-the-badge)
 ![Discord](https://img.shields.io/discord/905453405936447518?style=for-the-badge)
 ![GitHub Sponsors](https://img.shields.io/github/sponsors/KelvinTegelaar?style=for-the-badge)
 
