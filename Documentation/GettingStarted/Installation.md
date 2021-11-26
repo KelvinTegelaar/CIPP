@@ -47,8 +47,7 @@ For full functionality, you'll need the following permissions for your Secure Ap
 
 ### Delegated Permissions
 
-You'll need to add the following **Delegated permissions**:
-
+??? You'll need to add the following **Delegated permissions**:
 | API / Permissions name                                  | Description                                                       |
 | ------------------------------------------------------- | ----------------------------------------------------------------- |
 | Application.Read.All                                    | Read applications                                                 |
