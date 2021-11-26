@@ -1,32 +1,32 @@
-![CyberDrain Light](assets/img/CIPP.png#gh-dark-mode-only)
-![CyberDrain Dark](assets/img/CIPP-Light.png#gh-light-mode-only)
+[![CyberDrain Light](assets/img/CIPP.png#gh-dark-mode-only)](https://cyberdrain.com)
+[![CyberDrain Dark](assets/img/CIPP-Light.png#gh-light-mode-only)](https://cyberdrain.com)
 
 <hr>
 
-![GitHub Latest Release](https://img.shields.io/github/v/release/KelvinTegelaar/CIPP?label=Latest%20Release&style=for-the-badge)
+[![GitHub Latest Release](https://img.shields.io/github/v/release/KelvinTegelaar/CIPP?label=Latest%20Release&style=for-the-badge)](https://github.com/KelvinTegelaar/CIPP/releases)
 ![CodeQL Security Analysis Status](https://img.shields.io/github/workflow/status/KelvinTegelaar/CIPP/CodeQL?label=CodeQL%20Security&style=for-the-badge)
-![GitHub Enhancement Requests](https://img.shields.io/github/issues/KelvinTegelaar/CIPP/enhancement?label=Enhancement%20Requests&style=for-the-badge)
-![GitHub Bugs](https://img.shields.io/github/issues/KelvinTegelaar/CIPP/bug?label=Bugs&style=for-the-badge)
-![Discord](https://img.shields.io/discord/905453405936447518?style=for-the-badge)
-![GitHub Sponsors](https://img.shields.io/github/sponsors/KelvinTegelaar?style=for-the-badge)
+[![GitHub Enhancement Requests](https://img.shields.io/github/issues/KelvinTegelaar/CIPP/enhancement?label=Enhancement%20Requests&style=for-the-badge)](https://github.com/KelvinTegelaar/CIPP/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement)
+[![GitHub Bugs](https://img.shields.io/github/issues/KelvinTegelaar/CIPP/bug?label=Bugs&style=for-the-badge)](https://github.com/KelvinTegelaar/CIPP/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement+label%3Abug)
+[![Discord](https://img.shields.io/discord/905453405936447518?label=Discord&style=for-the-badge)](https://discord.com/invite/cyberdrain)
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/KelvinTegelaar?style=for-the-badge)](https://github.com/sponsors/KelvinTegelaar)
 
 <hr>
 
 <center><h1>Sponsored by</h1></center>
 <p align="center">
 
-![OIT Dark](assets/img/oitpsonsor_light.png#gh-dark-mode-only) 
+[![OIT Dark](assets/img/oitpsonsor_light.png#gh-dark-mode-only)](https://oit.co)
 
-![Genuine Technology Services Dark](assets/img/Genuine-logo-vertical-light.png#gh-dark-mode-only) 
+[![Genuine Technology Services Dark](assets/img/Genuine-logo-vertical-light.png#gh-dark-mode-only)](https://www.genuinetechnology.com/)
 
-![NinjaOne Dark](assets/img/NinjaOne-Light.png#gh-dark-mode-only) 
+[![NinjaOne Dark](assets/img/NinjaOne-Light.png#gh-dark-mode-only)](https://www.ninjaone.com)
 
 
-![OIT Light](assets/img/oitpsonsor_light.png#gh-light-mode-only) 
+[![OIT Light](assets/img/oitpsonsor_light.png#gh-light-mode-only)](https://oit.co)
 
-![Genuine Technology Services Light](assets/img/Genuine-logo-vertical-light.png#gh-light-mode-only) 
+[![Genuine Technology Services Light](assets/img/Genuine-logo-vertical-light.png#gh-light-mode-only)](https://www.genuinetechnology.com/)
 
-![NinjaOne Light](assets/img/NinjaOne-Dark.png#gh-light-mode-only) 
+[![NinjaOne Light](assets/img/NinjaOne-Dark.png#gh-light-mode-only)](https://www.ninjaone.com)
 
 </p>
 
