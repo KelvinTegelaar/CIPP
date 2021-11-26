@@ -36,15 +36,38 @@ $(document).ready(function () {
                 ],
                 "columns": [
                     { "data": "managedDeviceName" },
-                    { "data": "malwareProtectionEnabled" },
+                    {
+                        "data": "malwareProtectionEnabled",
+                        "render": function (data, type, row) {
+                            if (type === "export" || type === "sort" || type === "filter") {
+                                if (data === true) {
+                                    return 'Enabled'
+                                } else if (data === false) {
+                                    return 'Disabled'
+                                } else {
+                                    return 'No Data'
+                                }
+                            }
+                            if (data === true) {
+                                return '<i class="fas fa-check-circle text-success" style="font-size:1.3rem;"></i>';
+                            }
+                            if (data === "") {
+                                return '<h5><span class="badge bg-secondary" style="font-size:1.3rem;">No Data</span></h5>'
+                            }
+                            else {
+                                return '<i class="fas fa-times-circle text-muted" style="font-size:1.3rem;"></i></a>';
+                            }
+
+                        }
+                    },
                     {
                         "data": "realTimeProtectionEnabled",
                         "render": function (data, type, row) {
                             if (type === "export" || type === "sort" || type === "filter") {
                                 if (data === true) {
-                                    return 'Is Dynamic Group'
+                                    return 'Enabled'
                                 } else if (data === false) {
-                                    return 'Not a Dynamic Group'
+                                    return 'Disabled'
                                 } else {
                                     return 'No Data'
                                 }
@@ -65,31 +88,9 @@ $(document).ready(function () {
                         "render": function (data, type, row) {
                             if (type === "export" || type === "sort" || type === "filter") {
                                 if (data === true) {
-                                    return 'Teams Enabled'
+                                    return 'Enabled'
                                 } else if (data === false) {
-                                    return 'Not Team Enabled'
-                                } else {
-                                    return 'No Data'
-                                }
-                            }
-                            if (data === true) {
-                                return '<img src="assets/img/logos/ms_teams_logo.png" />';
-                            }
-                            if (data === false) {
-                                return '<img src="assets/img/logos/ms_teams_logo_muted.png" />';
-                            } else {
-                                return '<i class="fas fa-times-circle text-danger fa-2x"></i></a>';
-                            }
-                        }
-                    },
-                    {
-                        "data": "managedDeviceHealthState",
-                        "render": function (data, type, row) {
-                            if (type === "export" || type === "sort" || type === "filter") {
-                                if (data === true) {
-                                    return 'On-Premises Sync Enabled'
-                                } else if (data === false) {
-                                    return 'On-Premises Sync Disabled'
+                                    return 'Disabled'
                                 } else {
                                     return 'No Data'
                                 }
@@ -98,18 +99,151 @@ $(document).ready(function () {
                                 return '<i class="fas fa-check-circle text-success" style="font-size:1.3rem;"></i>';
                             }
                             if (data === "") {
-                                return '<i class="fas fa-times-circle text-muted" style="font-size:1.3rem;"></i>'
+                                return '<h5><span class="badge bg-secondary" style="font-size:1.3rem;">No Data</span></h5>'
                             }
                             else {
-                                return '<i class="fas fa-times-circle text-muted" style="font-size:1.3rem;"></i>';
+                                return '<i class="fas fa-times-circle text-muted" style="font-size:1.3rem;"></i></a>';
                             }
                         }
                     },
-                    { "data": "quickScanOverdue" },
-                    { "data": "fullScanOverdue" },
-                    { "data": "signatureUpdateOverdue" },
-                    { "data": "rebootRequired" },
-                    { "data": "attentionRequired" },
+                    {
+                        "data": "managedDeviceHealthState",
+                        "render": function (data, type, row) {
+                            if (type === "export" || type === "sort" || type === "filter") {
+                                if (data === true) {
+                                    return 'Enabled'
+                                } else if (data === false) {
+                                    return 'Disabled'
+                                } else {
+                                    return 'No Data'
+                                }
+                            }
+                            if (data === 'Clean') {
+                                return '<i class="fas fa-check-circle text-success" style="font-size:1.3rem;"></i>';
+                            }
+                            if (data === "") {
+                                return '<h5><span class="badge bg-secondary" style="font-size:1.3rem;">No Data</span></h5>'
+                            }
+                            else {
+                                return '<i class="fas fa-times-circle text-muted" style="font-size:1.3rem;"></i></a>';
+                            }
+                        }
+                    },
+                    {
+                        "data": "quickScanOverdue",
+                        "render": function (data, type, row) {
+                            if (type === "export" || type === "sort" || type === "filter") {
+                                if (data === true) {
+                                    return 'Enabled'
+                                } else if (data === false) {
+                                    return 'Disabled'
+                                } else {
+                                    return 'No Data'
+                                }
+                            }
+                            if (data === 'false') {
+                                return '<i class="fas fa-check-circle text-success" style="font-size:1.3rem;"></i>';
+                            }
+                            if (data === "") {
+                                return '<h5><span class="badge bg-secondary" style="font-size:1.3rem;">No Data</span></h5>'
+                            }
+                            else {
+                                return '<i class="fas fa-times-circle text-muted" style="font-size:1.3rem;"></i></a>';
+                            }
+                        }
+                    },
+                    {
+                        "data": "fullScanOverdue",
+                        "render": function (data, type, row) {
+                            if (type === "export" || type === "sort" || type === "filter") {
+                                if (data === true) {
+                                    return 'Enabled'
+                                } else if (data === false) {
+                                    return 'Disabled'
+                                } else {
+                                    return 'No Data'
+                                }
+                            }
+                            if (data === 'false') {
+                                return '<i class="fas fa-check-circle text-success" style="font-size:1.3rem;"></i>';
+                            }
+                            if (data === "") {
+                                return '<h5><span class="badge bg-secondary" style="font-size:1.3rem;">No Data</span></h5>'
+                            }
+                            else {
+                                return '<i class="fas fa-times-circle text-muted" style="font-size:1.3rem;"></i></a>';
+                            }
+                        }
+                    },
+                    {
+                        "data": "signatureUpdateOverdue",
+                        "render": function (data, type, row) {
+                            if (type === "export" || type === "sort" || type === "filter") {
+                                if (data === true) {
+                                    return 'Enabled'
+                                } else if (data === false) {
+                                    return 'Disabled'
+                                } else {
+                                    return 'No Data'
+                                }
+                            }
+                            if (data === 'false') {
+                                return '<i class="fas fa-check-circle text-success" style="font-size:1.3rem;"></i>';
+                            }
+                            if (data === "") {
+                                return '<h5><span class="badge bg-secondary" style="font-size:1.3rem;">No Data</span></h5>'
+                            }
+                            else {
+                                return '<i class="fas fa-times-circle text-muted" style="font-size:1.3rem;"></i></a>';
+                            }
+                        }
+                    },
+                    {
+                        "data": "rebootRequired",
+                        "render": function (data, type, row) {
+                            if (type === "export" || type === "sort" || type === "filter") {
+                                if (data === true) {
+                                    return 'Enabled'
+                                } else if (data === false) {
+                                    return 'Disabled'
+                                } else {
+                                    return 'No Data'
+                                }
+                            }
+                            if (data === 'false') {
+                                return '<i class="fas fa-check-circle text-success" style="font-size:1.3rem;"></i>';
+                            }
+                            if (data === "") {
+                                return '<h5><span class="badge bg-secondary" style="font-size:1.3rem;">No Data</span></h5>'
+                            }
+                            else {
+                                return '<i class="fas fa-times-circle text-muted" style="font-size:1.3rem;"></i></a>';
+                            }
+                        }
+                    },
+                    {
+                        "data": "attentionRequired",
+                        "render": function (data, type, row) {
+                            if (type === "export" || type === "sort" || type === "filter") {
+                                if (data === true) {
+                                    return 'Enabled'
+                                } else if (data === false) {
+                                    return 'Disabled'
+                                } else {
+                                    return 'No Data'
+                                }
+                            }
+                            if (data === 'false') {
+                                return '<i class="fas fa-check-circle text-success" style="font-size:1.3rem;"></i>';
+                            }
+                            if (data === "") {
+                                return '<h5><span class="badge bg-secondary" style="font-size:1.3rem;">No Data</span></h5>'
+                            }
+                            else {
+                                return '<i class="fas fa-times-circle text-muted" style="font-size:1.3rem;"></i></a>';
+                            }
+                        }
+                    },
                     {
                         "data": "managedDeviceId",
                         render: function (id, type, row) {
@@ -132,8 +266,9 @@ $(document).ready(function () {
 
                 ],
                 'columnDefs': [
+                    { "width": "15%", "targets": 0 },
                     {
-                        "targets": [1, 2, 3, 4, 6], // your case first column
+                        "targets": '_all', // your case first column
                         "className": "text-center align-middle"
                     }
                 ],
