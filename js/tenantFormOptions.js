@@ -16,9 +16,9 @@ $(document).ready(function () {
             'dataType': "json",
             'success': function (data) {
                 //basic fields
-                $('#displayName').val(data.displayName)
-                $('#defaultDomainName').val(data.defaultDomainName)
-                $('#id').val(data.id)
+                $('#displayName').val(data[0].displayName)
+                $('#defaultDomainName').val(data[0].defaultDomainName)
+                $('#id').val(data[0].id)
                 //extended fields
                 $('#RawJson').text(JSON.stringify(data, null, 2))
             }
