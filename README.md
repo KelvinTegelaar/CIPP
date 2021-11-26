@@ -1,4 +1,4 @@
-[CyberDrain Light](assets/img/CIPP.png#gh-dark-mode-only)
+![CyberDrain Light](assets/img/CIPP.png#gh-dark-mode-only)
 ![CyberDrain Dark](assets/img/CIPP-Light.png#gh-light-mode-only)
 <hr>
 
