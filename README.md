@@ -3,7 +3,7 @@
 
 
 <center><h1>Sponsored by</h1></center>
-<p align="center"><a href="https://oit.co" target="_blank" rel="noopener noreferrer"><img height="75" src="https://kelvintegelaar.github.io/CIPP/images/sponsors/OIT.webp" alt="OITVoip" /></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.genuinetechnology.com/" target="_blank" rel="noopener noreferrer"><img height="75" src="https://kelvintegelaar.github.io/CIPP/images/sponsors/GenuineTechnologyGroup.png" alt="Genuine Technology Group" /></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.ninjaone.com" target="_blank" rel="noopener noreferrer"><img height="75" src="https://kelvintegelaar.github.io/CIPP/images/sponsors/NinjaOne.png" alt="NinjaOne" /></a></p>
+<p align="center"><a href="https://oit.co" target="_blank" rel="noopener noreferrer"><img height="75" src="https://kelvintegelaar.github.io/CIPP/images/sponsors/OIT.webp" alt="OITVoip" /></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.genuinetechnology.com/" target="_blank" rel="noopener noreferrer"><img height="75" src="https://kelvintegelaar.github.io/CIPP/images/sponsors/GenuineTechnologyGroup.png" alt="Genuine Technology Group" /></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.ninjaone.com" target="_blank" rel="noopener noreferrer"><img height="75" src="https://kelvintegelaar.github.io/CIPP/images/sponsors/NinjaOne.png#gh-light-mode-only" alt="NinjaOne" /></a></p>
 </p>
 
 # What is this?
