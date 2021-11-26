@@ -72,6 +72,18 @@ $(document).ready(function () {
                 </tr>`);
 
             })
+
+            data[0].InstalledApps.forEach(function (item) {
+                if (item.teamsAppDefinition.description === null) { item.teamsAppDefinition.description = "None" }
+                if (item.teamsAppDefinition.createdBy === null) { item.teamsAppDefinition.createdBy = "Unknown" }
+                $('#Apps').append(`<tr>
+                <td>${item.teamsAppDefinition.displayName}</td>
+                <td>${item.teamsAppDefinition.description}</td>
+                <td>${item.teamsAppDefinition.version}</td>
+                <td>${item.teamsAppDefinition.createdBy}</td>
+                </tr>`);
+
+            })
         },
         'error': function (xhr, ajaxOptions, thrownError) {
             $("#loader").html('<i class="fas fa-times-circle text-danger fa-2x"></i>Error - could not retrieve information for this team.')
