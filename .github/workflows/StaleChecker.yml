@@ -9,9 +9,9 @@ jobs:
     steps:
       - uses: actions/stale@v4
         with:
-          stale-issue-message: 'This issue is stale because it has been open 10 days with no activity. Remove stale label or comment or this will be closed in 4 days.'
+          stale-issue-message: 'This issue is stale because it has been open 10 days with no activity. We will close this issue soon. If you want this feature implemented you can contribute via https://kelvintegelaar.github.io/CIPP/GettingStarted/Contributions.html. please notify the team if you are working on this yourself.'
           close-issue-message: 'This issue was closed because it has been stalled for 14 days with no activity.'
           stale-issue-label: 'no-activity'
           exempt-issue-labels: 'planned'
-          days-before-stale: 10
-          days-before-close: 4
+          days-before-stale: 9
+          days-before-close: 14
