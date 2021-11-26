@@ -1,5 +1,5 @@
-![GitHub Light](assets/img/CIPP-Light.png#gh-dark-mode-only)
-![GitHub Dark](assets/img/CIPP.png#gh-light-mode-only)
+![GitHub Light](assets/img/CIPP.png#gh-dark-mode-only)
+![GitHub Dark](assets/img/CIPP-Light.png#gh-light-mode-only)
 
 
 <center><h1>Sponsored by</h1></center>
