@@ -8,7 +8,7 @@
 ![GitHub Dark](assets/img/oitpsonsor_light.png#gh-dark-mode-only) ![GitHub Dark](assets/img/Genuine-logo-vertical-light.png#gh-dark-mode-only) ![GitHub Dark](assets/img/NinjaOne-Light.png#gh-dark-mode-only) 
 
 
-![GitHub Light](assets/img/oitpsonsor_light.png#gh-light-mode-only) ![GitHub Light](assets/img/Genuine-logo-vertical-light.png#gh-light-mode-only) ![GitHub Light](assets/img/NinjaOne-Light.png#gh-light-mode-only) 
+![GitHub Light](assets/img/oitpsonsor_light.png#gh-light-mode-only) ![GitHub Light](assets/img/Genuine-logo-vertical-light.png#gh-light-mode-only) ![GitHub Light](assets/img/NinjaOne-Dark.png#gh-light-mode-only) 
 
 </p>
 
