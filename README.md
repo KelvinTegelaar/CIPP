@@ -14,8 +14,8 @@
 <center><h1>Sponsored by</h1></center>
 <p align="center">
 
-![OIT](assets/img/oitpsonsor_light.png)
-![Genuine Technology Services](assets/img/Genuine-logo-vertical-light.png#gh-dark-mode-only)
+![OIT](assets/img/oitpsonsor_light.png)&nbsp;&nbsp;&nbsp;&nbsp;
+![Genuine Technology Services](assets/img/Genuine-logo-vertical-light.png#gh-dark-mode-only)&nbsp;&nbsp;&nbsp;&nbsp;
 ![NinjaOne](assets/img/NinjaOne-Light.png#gh-dark-mode-only)
 ![NinjaOne](assets/img/NinjaOne-Dark.png#gh-light-mode-only)
 
