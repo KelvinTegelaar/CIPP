@@ -1,5 +1,5 @@
-[![CyberDrain Light](assets/img/CIPP.png#gh-dark-mode-only)![CyberDrain Dark](assets/img/CIPP-Light.png#gh-light-mode-only)](https://cyberdrain.com)
-
+[CyberDrain Light](assets/img/CIPP.png#gh-dark-mode-only)
+![CyberDrain Dark](assets/img/CIPP-Light.png#gh-light-mode-only)
 <hr>
 
 [![GitHub Latest Release](https://img.shields.io/github/v/release/KelvinTegelaar/CIPP?label=Latest%20Release&style=for-the-badge)](https://github.com/KelvinTegelaar/CIPP/releases)
@@ -14,11 +14,10 @@
 <center><h1>Sponsored by</h1></center>
 <p align="center">
 
-[![OIT Dark](assets/img/oitpsonsor_light.png#gh-dark-mode-only)![OIT Light](assets/img/oitpsonsor_light.png#gh-light-mode-only)]](https://oit.co)
-
-[![Genuine Technology Services Dark](assets/img/Genuine-logo-vertical-light.png#gh-dark-mode-only)![Genuine Technology Services Light](assets/img/Genuine-logo-vertical-light.png#gh-light-mode-only)](https://www.genuinetechnology.com/)
-
-[![NinjaOne Dark](assets/img/NinjaOne-Light.png#gh-dark-mode-only)![NinjaOne Light](assets/img/NinjaOne-Dark.png#gh-light-mode-only)](https://www.ninjaone.com)
+![OIT](assets/img/oitpsonsor_light.png)
+![Genuine Technology Services](assets/img/Genuine-logo-vertical-light.png#gh-dark-mode-only)
+![NinjaOne](assets/img/NinjaOne-Light.png#gh-dark-mode-only)
+![NinjaOne](assets/img/NinjaOne-Dark.png#gh-light-mode-only)
 
 </p>
 
