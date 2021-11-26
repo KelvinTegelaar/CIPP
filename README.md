@@ -7,7 +7,7 @@
 [![GitHub Enhancement Requests](https://img.shields.io/github/issues/KelvinTegelaar/CIPP/enhancement?label=Enhancement%20Requests&style=for-the-badge)](https://github.com/KelvinTegelaar/CIPP/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement)
 [![GitHub Bugs](https://img.shields.io/github/issues/KelvinTegelaar/CIPP/bug?label=Bugs&style=for-the-badge)](https://github.com/KelvinTegelaar/CIPP/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement+label%3Abug)
 [![Discord](https://img.shields.io/discord/905453405936447518?label=Discord&style=for-the-badge)](https://discord.com/invite/cyberdrain)
-[![GitHub Sponsors](https://img.shields.io/github/sponsors/KelvinTegelaar?style=for-the-badge)](https://github.com/sponsors/KelvinTegelaar)
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/KelvinTegelaar?label=Public%20Sponsors&style=for-the-badge)](https://github.com/sponsors/KelvinTegelaar)
 
 <hr>
 
