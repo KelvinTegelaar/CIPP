@@ -1,5 +1,3 @@
-# Groups
-
 Using the users pages you can easily edit users and add users to groups or change their licenses, you can also create new users. There's also several quick buttons;
 
 - Convert user to shared mailbox
