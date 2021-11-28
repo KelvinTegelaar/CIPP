@@ -47,8 +47,7 @@ For full functionality, you'll need the following permissions for your Secure Ap
 
 ### Delegated Permissions
 
-You'll need to add the following **Delegated permissions**:
-
+??? note "You'll need to add the following **Delegated permissions**:"
 | API / Permissions name                                  | Description                                                       |
 | ------------------------------------------------------- | ----------------------------------------------------------------- |
 | Application.Read.All                                    | Read applications                                                 |
@@ -134,6 +133,7 @@ You'll need to add the following **Delegated permissions**:
 | UserAuthenticationMethod.ReadWrite                      | Read and write user authentication methods                        |
 | UserAuthenticationMethod.ReadWrite.All                  | Read and write all users' authentication methods                  |
 
+
 ### Application Permissions
 
 You'll need to add the following **Application permissions**:
@@ -176,6 +176,7 @@ You'll need to add the following **Application permissions**:
 | TeamMember.ReadWriteNonOwnerRole.All                    | Add and remove members with non-owner role for all teams          |
 | User.ReadWrite.All                                      | Read and write all users' full profiles                           |
 | UserAuthenticationMethod.ReadWrite.All                  | Read and write all users' authentication methods                  |
+
 
 ## Getting started with CIPP
 
