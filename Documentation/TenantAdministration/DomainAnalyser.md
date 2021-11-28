@@ -1,5 +1,3 @@
-<p align="center"><a href="https://cyberdrain.com" target="_blank" rel="noopener noreferrer"><img src="../assets/img/CyberDrain.png" alt="CyberDrain Logo"></a></p>
-
 # Domain Analyser
 
 The domain analyser is a series of best practice checks that run against all email enabled domains that can been found in your delegated 365 tenants. It analyses the DNS records that are available and assesses SPF, DMARC, DKIM and DNSSEC. Please note - clicking **More** at the end of each row will give you extended information about the problems identified.
@@ -21,8 +19,8 @@ Red is bad and generally not something that should be happening on your tenant.
 Orange is either a warning or subjective. It does not necessarily indicate something is wrong.
 Green means there are no issues or the setting is set in a manner that is generally agreed as Best Practice.
 
-## Security Score
-This is a custom security score with weightings that has been put together to help you determine which domains you should look at first.
+## Microsoft Secure Score
+This is Microsoft Secure Score as found in 365 tenants here: [Tenant Secure Score](https://security.microsoft.com/securescore?viewid=overview). For further information on how to improve 365 tenant security using Secure Score actions see Microsoft's documentation [here](https://docs.microsoft.com/en-us/microsoft-365/security/defender/microsoft-secure-score?view=o365-worldwide). In many cases the [CIPP Standards](https://kelvintegelaar.github.io/CIPP/TenantAdministration/Standards.html) will result in improvements in a tenant's Secure Score.
 
 ## SPF Pass Test
 This is looking primarily for two conditions; that you are using the recommended SPF record that Microsoft suggests. It also looks to ensure that your domains are set to hard fail as opposed to soft fail.
@@ -40,7 +38,7 @@ Your DMARC record is only as good as the action set on it. If you have never add
 It is possible to configure your DMARC to only pay attention to a certain percent of mail. This test makes sure it is assessing 100% of it.
 
 ## DNSSEC
-DNSSEC is the "Domain Name System Security Extensions) and is a feature of DNS that authenticates responses to domain name lookups, prenving attackers from manipulating or poisoning the responses to DNS requests. This test is a simple enable/disable test.
+DNSSEC is the "Domain Name System Security Extensions) and is a feature of DNS that authenticates responses to domain name lookups, preventing attackers from manipulating or poisoning the responses to DNS requests. This test is a simple enable/disable test.
 
 ## DKIM Enabled
 DKIM (DomainKeys Identified Mail) is an email security standard designed to make sure messages aren't altered in transit between the sending and recipient servers. It uses public-key cryptography to sign email with a private key as it leaves a sending server. This is a simple enabled/disabled test.

@@ -3,14 +3,19 @@ $(document).ready(function () {
     let searchParams = new URLSearchParams(window.location.search)
     var TenantID = '';
     if (searchParams.has('Tenantfilter')) {
-        TenantID = searchParams.get('Tenantfilter')
+
+        TenantID = escapeHTML(searchParams.get('Tenantfilter'))
+
     }
     //checks if the default location has been set, and if so, use that again.
     var DisplayName
     var EmailAddress
     //checks if a userid is present, and if so, we prefill the form.
     if (searchParams.has('UserID')) {
-        var UserID = searchParams.get('UserID')
+
+
+
+        var UserID = escapeHTML(searchParams.get('UserID'))
         $('#userID').val(UserID)
         $('#tenantID').val(TenantID)
         $.ajax({
@@ -150,7 +155,7 @@ $(document).ready(function () {
                             displayLink = `<a target="_blank" href="https://endpoint.microsoft.com/${TenantID}#blade/Microsoft_Intune_Devices/DeviceSettingsMenuBlade/overview/mdmDeviceId/${value.EPMID}">${value.displayName}</a>`;
                         }
 
-                        
+
 
                         var tbl_row = `<tr><td>${displayLink}</td>
                         ${accountEnabled}
