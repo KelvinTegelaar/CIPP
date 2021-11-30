@@ -60,7 +60,8 @@ Create a file in the root directory with the name local.settings.json. See the S
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "ApplicationId": "APPLICATIONID",
     "ApplicationSecret": "APPLICATION SECRET",
-    "RefreshToken": "REFRESH TOKEN"
+    "RefreshToken": "REFRESH TOKEN",
+    "ExchangeRefreshToken": "EXCHANGE REFRESH TOKEN"
   }
 }
 ```
