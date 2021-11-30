@@ -4,3 +4,56 @@
   will-change: auto;
   @include transition(padding .15s);
 }
+
+// copied from https://github.com/KelvinTegelaar/CIPP/blob/dev/css/styles.css#L20329-L20379
+.nav-wizard .nav-link {
+  display: flex;
+  align-items: center;
+  padding: 2rem;
+}
+.nav-wizard .nav-link .wizard-step-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.5rem;
+  width: 2.5rem;
+  flex-shrink: 0;
+  margin-right: 1rem;
+  border-radius: 0.35rem;
+  background-color: #f77f00;
+  color: white;
+}
+.nav-wizard .nav-link .wizard-step-icon i,
+.nav-wizard .nav-link .wizard-step-icon svg,
+.nav-wizard .nav-link .wizard-step-icon .feather {
+  color: white;
+}
+.nav-wizard .nav-link .wizard-step-text {
+  line-height: 1;
+  text-align: left;
+}
+.nav-wizard .nav-link .wizard-step-text .wizard-step-text-name {
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+  color: #f77f00;
+}
+.nav-wizard .nav-link .wizard-step-text .wizard-step-text-details {
+  font-weight: 400;
+  font-size: 0.875rem;
+  color: #69707a;
+}
+.nav-wizard .nav-link.active .wizard-step-icon {
+  background-color: #fff;
+  color: #f77f00;
+}
+.nav-wizard .nav-link.active .wizard-step-icon i,
+.nav-wizard .nav-link.active .wizard-step-icon svg,
+.nav-wizard .nav-link.active .wizard-step-icon .feather {
+  color: #f77f00;
+}
+.nav-wizard .nav-link.active .wizard-step-text .wizard-step-text-name {
+  color: #fff;
+}
+.nav-wizard .nav-link.active .wizard-step-text .wizard-step-text-details {
+  color: rgba(255, 255, 255, 0.5);
+}

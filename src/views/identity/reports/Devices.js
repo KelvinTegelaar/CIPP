@@ -109,7 +109,7 @@ const Devices = () => {
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         {!devices.loaded && devices.loading && <CSpinner />}
         {devices.loaded && !devices.loading && Object.keys(tenant).length !== 0 && (
-          <ToolkitProvider keyField="id" columns={columns} data={devices.list} search>
+          <ToolkitProvider keyField="displayName" columns={columns} data={devices.list} search>
             {(props) => (
               <div>
                 {/* eslint-disable-next-line react/prop-types */}

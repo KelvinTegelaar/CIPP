@@ -11,6 +11,11 @@ const initialState = {
     loaded: false,
     updateMessage: null,
   },
+  deploy: {
+    loading: false,
+    loaded: false,
+    updateMessage: null,
+  },
 }
 
 const BPA_LOAD = 'standards/BPA_LOAD'
@@ -28,6 +33,10 @@ const DOMAINS_LOAD_SUCCESS = 'standards/DOMAINS_LOAD_SUCCESS'
 const DOMAINS_UPDATE = 'standards/DOMAINS_UPDATE'
 const DOMAINS_UPDATE_ERROR = 'standards/DOMAINS_UPDATE_ERROR'
 const DOMAINS_UPDATE_SUCCESS = 'standards/DOMAINS_UPDATE_SUCCESS'
+
+const APPLY_STANDARDS = 'standards/APPLY_STANDARDS'
+const APPLY_STANDARDS_ERROR = 'standards/APPLY_STANDARDS_ERROR'
+const APPLY_STANDARDS_SUCCESS = 'standards/APPLY_STANDARDS_SUCCESS'
 
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
@@ -111,6 +120,25 @@ export default function reducer(state = initialState, action = {}) {
           loaded: false,
         },
       }
+    case APPLY_STANDARDS:
+      return {
+        ...state,
+        deploy: {
+          ...state.deploy,
+          loading: true,
+          loaded: false,
+        },
+      }
+    case APPLY_STANDARDS_SUCCESS:
+      return {
+        ...state,
+        deploy: {
+          ...state,
+          loading: false,
+          loaded: true,
+          updateMessage: action.result,
+        },
+      }
     default:
       return state
   }
@@ -144,5 +172,18 @@ export function forceRefreshDomainAnalyserReport() {
     types: [DOMAINS_UPDATE, DOMAINS_UPDATE_SUCCESS, DOMAINS_UPDATE_ERROR],
     promise: (client) =>
       client.get('/api/DomainAnalyser_OrchestrationStarter').then((result) => result.data),
+  }
+}
+
+export function applyStandards({ tenants = [], standards = {} }) {
+  return {
+    types: [APPLY_STANDARDS, APPLY_STANDARDS_SUCCESS, APPLY_STANDARDS_ERROR],
+    promise: (client) =>
+      client.post('/api/AddStandardsDeploy', {
+        data: {
+          tenants: tenants.map((tenant) => tenant.defaultDomainName),
+          standards,
+        },
+      }),
   }
 }

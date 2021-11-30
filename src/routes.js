@@ -23,7 +23,7 @@ const OffboardingWizard = React.lazy(() =>
 const ListAppliedStandards = React.lazy(() =>
   import('./views/tenant/standards/ListAppliedStandards'),
 )
-const AddStandard = React.lazy(() => import('./views/tenant/standards/AddStandard'))
+const ApplyStandard = React.lazy(() => import('./views/tenant/standards/ApplyStandard'))
 const ApplicationsList = React.lazy(() => import('./views/endpoint/applications/ApplicationsList'))
 const ApplicationsAddChocoApp = React.lazy(() =>
   import('./views/endpoint/applications/ApplicationsAddChocoApp'),
@@ -99,9 +99,9 @@ const routes = [
     component: ListAppliedStandards,
   },
   {
-    path: '/tenant/standards/add-standard',
-    name: 'Add Standard',
-    component: AddStandard,
+    path: '/tenant/standards/apply-standard',
+    name: 'Apply Standard',
+    component: ApplyStandard,
   },
   {
     path: '/tenant/standards/bpa-report',

@@ -57,12 +57,7 @@ const BasicAuthReport = () => {
         {basicAuth.loaded && !basicAuth.loading && (
           <>
             <hr />
-            <ToolkitProvider
-              keyField="basic-auth-report"
-              columns={columns}
-              data={basicAuth.report}
-              search
-            >
+            <ToolkitProvider keyField="UPN" columns={columns} data={basicAuth.report} search>
               {(props) => (
                 <div>
                   {/* eslint-disable-next-line react/prop-types */}
