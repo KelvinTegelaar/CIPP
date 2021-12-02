@@ -12,7 +12,7 @@ $(document).ready(function () {
                 initComplete: function () {
                     this.api().columns().every(function () {
                         var column = this;
-                        if ([2, 3, 4, 5].includes(column.index())) {
+                        if ([5].includes(column.index())) {
 
                             var select = $('<select class="form-in-datatable"><option value=""></option></select>')
                                 .appendTo($(column.footer()).empty())
@@ -29,11 +29,6 @@ $(document).ready(function () {
                                 column.data().unique().sort().each(function (d, j) {
                                     select.append('<option value="' + d + '">' + d + '</option>')
                                 });
-                            } else if (column.index() === 2) {
-                                select.append('<option value="guest">Guest</option><option value="member">Member</option>')
-                            } else {
-                                select.append('<option value="true">Enabled</option><option value="false">Disabled</option>')
-
                             }
                         }
                     });
@@ -64,60 +59,60 @@ $(document).ready(function () {
                     { extend: 'csvHtml5', className: 'btn btn-primary btn-sm', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4], orthogonal: "export" } },
                     { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', orientation: 'landscape', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4], orthogonal: "export" } },
                     {
-                      text: 'Account Enabled',
-                      className: 'dt-button btn btn-secondary btn-sm',
-                      action: function (e, dt, node, config) {
-                        dt.columns().search('').draw();
-                        dt.columns(3).search('Account Enabled').draw();
-                      }
+                        text: 'Account Enabled',
+                        className: 'dt-button btn btn-secondary btn-sm',
+                        action: function (e, dt, node, config) {
+                            dt.columns().search('').draw();
+                            dt.columns(3).search('Account Enabled').draw();
+                        }
                     },
                     {
-                      text: 'Account Disabled',
-                      className: 'dt-button btn btn-secondary btn-sm',
-                      action: function (e, dt, node, config) {
-                        dt.columns().search('').draw();
-                        dt.columns(3).search('Account Disabled').draw();
-                      }
+                        text: 'Account Disabled',
+                        className: 'dt-button btn btn-secondary btn-sm',
+                        action: function (e, dt, node, config) {
+                            dt.columns().search('').draw();
+                            dt.columns(3).search('Account Disabled').draw();
+                        }
                     },
                     {
-                      text: 'Members Only',
-                      className: 'dt-button btn btn-secondary btn-sm',
-                      action: function (e, dt, node, config) {
-                        dt.columns().search('').draw();
-                        dt.columns(2).search('Member').draw();
-                      }
+                        text: 'Members Only',
+                        className: 'dt-button btn btn-secondary btn-sm',
+                        action: function (e, dt, node, config) {
+                            dt.columns().search('').draw();
+                            dt.columns(2).search('Member').draw();
+                        }
                     },
                     {
-                      text: 'Guests Only',
-                      className: 'dt-button btn btn-secondary btn-sm',
-                      action: function (e, dt, node, config) {
-                        dt.columns().search('').draw();
-                        dt.columns(2).search('Guest').draw();
-                      }
+                        text: 'Guests Only',
+                        className: 'dt-button btn btn-secondary btn-sm',
+                        action: function (e, dt, node, config) {
+                            dt.columns().search('').draw();
+                            dt.columns(2).search('Guest').draw();
+                        }
                     },
                     {
-                      text: 'Licensed Only',
-                      className: 'dt-button btn btn-secondary btn-sm',
-                      action: function (e, dt, node, config) {
-                        dt.columns().search('').draw();
-                        dt.columns(5).search('^(?!\s*$).+', true, false).draw();
-                      }
+                        text: 'Licensed Only',
+                        className: 'dt-button btn btn-secondary btn-sm',
+                        action: function (e, dt, node, config) {
+                            dt.columns().search('').draw();
+                            dt.columns(5).search('^(?!\s*$).+', true, false).draw();
+                        }
                     },
                     {
-                      text: 'Licensed + Enabled',
-                      className: 'dt-button btn btn-secondary btn-sm',
-                      action: function (e, dt, node, config) {
-                        dt.columns().search('').draw();
-                        dt.columns(5).search('^(?!\s*$).+', true, false).draw();
-                        dt.columns(3).search('Account Enabled').draw();
-                      }
+                        text: 'Licensed + Enabled',
+                        className: 'dt-button btn btn-secondary btn-sm',
+                        action: function (e, dt, node, config) {
+                            dt.columns().search('').draw();
+                            dt.columns(5).search('^(?!\s*$).+', true, false).draw();
+                            dt.columns(3).search('Account Enabled').draw();
+                        }
                     },
                     {
-                      text: 'All Results',
-                      className: 'dt-button btn btn-secondary btn-sm',
-                      action: function (e, dt, node, config) {
-                        dt.columns().search('').draw();
-                      }
+                        text: 'All Results',
+                        className: 'dt-button btn btn-secondary btn-sm',
+                        action: function (e, dt, node, config) {
+                            dt.columns().search('').draw();
+                        }
                     }
                 ],
                 "columns": [
