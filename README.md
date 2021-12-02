@@ -1,22 +1,23 @@
-![GitHub Light](assets/img/CIPP.png#gh-dark-mode-only)
-![GitHub Dark](assets/img/CIPP-Light.png#gh-light-mode-only)
+![CyberDrain Light](assets/img/CIPP.png#gh-dark-mode-only)
+![CyberDrain Dark](assets/img/CIPP-Light.png#gh-light-mode-only)
+<hr>
 
+[![GitHub Latest Release](https://img.shields.io/github/v/release/KelvinTegelaar/CIPP?label=Latest%20Release&style=for-the-badge)](https://github.com/KelvinTegelaar/CIPP/releases)
+![CodeQL Security Analysis Status](https://img.shields.io/github/workflow/status/KelvinTegelaar/CIPP/CodeQL?label=CodeQL%20Security&style=for-the-badge)
+[![GitHub Enhancement Requests](https://img.shields.io/github/issues/KelvinTegelaar/CIPP/enhancement?label=Enhancement%20Requests&style=for-the-badge)](https://github.com/KelvinTegelaar/CIPP/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement)
+[![GitHub Bugs](https://img.shields.io/github/issues/KelvinTegelaar/CIPP/bug?label=Bugs&style=for-the-badge)](https://github.com/KelvinTegelaar/CIPP/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement+label%3Abug)
+[![Discord](https://img.shields.io/discord/905453405936447518?label=Discord&style=for-the-badge)](https://discord.com/invite/cyberdrain)
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/KelvinTegelaar?label=Public%20Sponsors&style=for-the-badge)](https://github.com/sponsors/KelvinTegelaar)
+
+<hr>
 
 <center><h1>Sponsored by</h1></center>
 <p align="center">
 
-![GitHub Dark](assets/img/oitpsonsor_light.png#gh-dark-mode-only) 
-
-![GitHub Dark](assets/img/Genuine-logo-vertical-light.png#gh-dark-mode-only) 
-
-![GitHub Dark](assets/img/NinjaOne-Light.png#gh-dark-mode-only) 
-
-
-![GitHub Light](assets/img/oitpsonsor_light.png#gh-light-mode-only) 
-
-![GitHub Light](assets/img/Genuine-logo-vertical-light.png#gh-light-mode-only) 
-
-![GitHub Light](assets/img/NinjaOne-Dark.png#gh-light-mode-only) 
+![OIT](assets/img/oitpsonsor_light.png)&nbsp;&nbsp;&nbsp;&nbsp;
+![Genuine Technology Services](assets/img/Genuine-logo-vertical-light.png)&nbsp;&nbsp;&nbsp;&nbsp;
+![NinjaOne](assets/img/NinjaOne-Light.png#gh-dark-mode-only)
+![NinjaOne](assets/img/NinjaOne-Dark.png#gh-light-mode-only)
 
 </p>
 

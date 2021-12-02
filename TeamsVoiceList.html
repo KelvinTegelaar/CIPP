@@ -6,17 +6,17 @@
                     <div class="col-auto mb-3">
                         <h1 class="page-header-title">
                             <div class="page-header-icon"><i data-feather="user"></i></div>
-                            Defender List
+                            Teams Voice List
                         </h1>
                     </div>
                     <div class="col-12 col-xl-auto mb-3">
-                        <a class="btn btn-sm btn-light text-primary" href="index.html?page=users">
+                        <a class="btn btn-sm btn-light text-primary" href="index.html?page=users.html">
                             <i class="me-1" data-feather="users"></i>
                             Manage Users
                         </a>
-                        <a class="btn btn-sm btn-light text-primary" href="index.html?page=AddGroup">
+                        <a class="btn btn-sm btn-light text-primary" href="index.html?page=users.html">
                             <i class="me-1" data-feather="user-plus"></i>
-                            Add New Group
+                            Manage Groups
                         </a>
                     </div>
                 </div>
@@ -33,22 +33,20 @@
             </datalist>
         </div><br>
         <div class="card">
-            <div class="card-header">Groups list</div>
+            <div class="card-header">Teams list</div>
             <div class="card-body">
                 <table id="datatablesSimple">
                     <table cellpadding="0" cellspacing="0" class="datatable-1 table table-striped" width="100%">
                         <thead>
                             <tr>
-                                <th>Device Name</th>
-                                <th>Malware Protection enabled</th>
-                                <th>Real Time Protection Enabled</th>
-                                <th>Network Inspection Enabled</th>
-                                <th>Last reported Health State</th>
-                                <th>Quick Scan overdue</th>
-                                <th>Full Scan overdue</th>
-                                <th>Signature Update Required</th>
-                                <th>Reboot Required</th>
-                                <th>Attention Required</th>
+                                <th>Assigned to user</th>
+                                <th>Phone Number</th>
+                                <th>Number Type</th>
+                                <th>Country</th>
+                                <th>Location</th>
+                                <th>Activation State</th>
+                                <th>Operator Connect</th>
+                                <th>Purchased on</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -56,17 +54,16 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th>Device Name</th>
-                                <th>Malware Protection enabled</th>
-                                <th>Real Time Protection Enabled</th>
-                                <th>Network Inspection Enabled</th>
-                                <th>Last reported Health State</th>
-                                <th>Quick Scan overdue</th>
-                                <th>Full Scan overdue</th>
-                                <th>Signature Update Required</th>
-                                <th>Reboot Required</th>
-                                <th>Attention Required</th>
+                                <th>Assigned to user</th>
+                                <th>Phone Number</th>
+                                <th>Number Type</th>
+                                <th>Country</th>
+                                <th>Location</th>
+                                <th>Activation State</th>
+                                <th>Operator Connect</th>
+                                <th>Purchased on</th>
                                 <th>Actions</th>
+
                             </tr>
                         </tfoot>
                     </table>
@@ -76,7 +73,7 @@
 </main>
 <script src="js/datatables/jquery.dataTables.js"></script>
 <script src="js/tenantlist.js"></script>
-<script src="js/datatables/datatablesDefender.js"></script>
+<script src="js/datatables/datatablesTeamsVoice.js"></script>
 
 </body>
 
