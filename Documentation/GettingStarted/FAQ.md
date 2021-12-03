@@ -2,7 +2,7 @@
 
 `Why can't I install CIPP using the "Deploy to Azure" button?`
 
-:    If you're experiencing issues with installation please report these in `#cipp-issues` on the [CIPP Discord](https://discord.gg/kYgsfrX2)
+:    If you're experiencing issues with installation please report these in `#cipp-issues` on the [CIPP Discord](https://discord.gg/cyberdrain)
 
 `Why can't I get details for a particular tenant / any tenants?`
 
@@ -84,6 +84,7 @@
                 (Invoke-RestMethod -Uri "https://graph.microsoft.com/v1.0/users" -Method GET -Headers $script:GraphHeader).value
             }
         ```
+
         If your entire tenant list does not load, there is a big chance there is something wrong with your token configuration. Execute the permissions check in the Configuration Settings and see if that succeeds. If the permissions check fails you have either made a typo, have not performed all consents, or you are being blocked by conditional access.
 
         To reload the keys you can go to configuration settings -> security -> Backend access and click on the keyvault. Give your user permissions to change and read the keys. Correct the keys if required by uploading a new version.

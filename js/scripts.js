@@ -149,6 +149,7 @@ function PostForm(FormID, PostAPI) {
         }
     });
 
+
 }
 var tries = 0;
 function GetAPIData(url, guid) {
@@ -182,6 +183,7 @@ function escapeHTML(text) {
         return {
             '"': '&quot;', '&': '&amp;', "'": '&#39;',
             '/': '&#47;',  '<': '&lt;',  '>': '&gt;'
+
         }[a];
     });
 }

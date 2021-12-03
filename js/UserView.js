@@ -10,6 +10,7 @@ $(document).ready(function () {
     var EmailAddress
     //checks if a userid is present, and if so, we prefill the form.
     if (searchParams.has('UserID')) {
+
         var UserID = escapeHTML(searchParams.get('UserID'))
         $('#userID').val(UserID)
         $('#tenantID').val(TenantID)
@@ -150,7 +151,7 @@ $(document).ready(function () {
                             displayLink = `<a target="_blank" href="https://endpoint.microsoft.com/${TenantID}#blade/Microsoft_Intune_Devices/DeviceSettingsMenuBlade/overview/mdmDeviceId/${value.EPMID}">${value.displayName}</a>`;
                         }
 
-                        
+
 
                         var tbl_row = `<tr><td>${displayLink}</td>
                         ${accountEnabled}
