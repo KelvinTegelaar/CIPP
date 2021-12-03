@@ -93,6 +93,12 @@
             ]
         },
         {
+            "route": "standards.html",
+            "allowedRoles": [
+                "admin"
+            ]
+        },
+        {
             "route": "*",
             "allowedRoles": [
                 "admin",

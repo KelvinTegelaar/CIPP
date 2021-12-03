@@ -45,7 +45,7 @@ $(document).ready(function () {
           className: "btn btn-primary btn-sm",
           orientation: "landscape",
           title: "User List - " + TenantID + " - " + todayDate,
-          exportOptions: { columns: [0, 1, 2, 3, 4] },
+          exportOptions: { columns: [0, 1, 2, 3, 4, 5] },
         },
       ],
       columns: [
