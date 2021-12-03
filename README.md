@@ -29,7 +29,7 @@ This project is a way to help you with administration, with user management, and
 
 # Deployment and Getting Started
 
-If you want to self-host, check out the installation manual [here](https://kelvintegelaar.github.io/CIPP/GettingStarted/Installation.html). You will need some knowledge of Static Web Apps, Azure Functions, and Azure Keyvault
+If you want to self-host, check out the installation manual [here](https://cipp.app/GettingStarted/Installation/). You will need some knowledge of Static Web Apps, Azure Functions, and Azure Keyvault
 
 # Why are you making this?
 
