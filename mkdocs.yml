@@ -33,6 +33,7 @@ nav:
       - Autopilot Profiles: EndpointManagement/AutopilotProfiles.md
       - Autopilot Status Page: EndpointManagement/AutopilotStatusPage.md
       - Intune Policy Templates: EndpointManagement/IntunePolicyTemplates.md
+      - Defender: EndpointManagement/Defender.md
     - OneDrive, Sharepoint and Teams:
       - OneDrive: OneDriveTeamsSharepoint/OneDrive.md
       # Sharepoint: OneDriveTeamsSharepoint/Sharepoint.md
