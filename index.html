@@ -166,8 +166,7 @@
                                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
                                     <a class="nav-link" apilink="DeviceList"
                                         href="index.html?page=DeviceList">Devices</a>
-                                    <a class="nav-link" apilink="Roles"
-                                        href="index.html?page=Rolest">Roles</a>
+                                    <a class="nav-link" apilink="Roles" href="index.html?page=Rolest">Roles</a>
                                     <a class="nav-link" apilink="MFAReport" href="index.html?page=MFAReport">MFA
                                         Report</a>
                                     <a class="nav-link" apilink="BasicAuth" href="index.html?page=BasicAuth">Basic Auth
@@ -217,8 +216,8 @@
                                         href="index.html?page=DomainAnalyserList">Domains Analyser</a>
                                     <a class="nav-link" apilink="CheckDomain"
                                         href="index.html?page=CheckDomain">Individual Domain Check</a>
-                                        <a class="nav-link" apilink="AlertsList"
-                                        href="index.html?page=AlertsList">Alerts List (Alpha)</a>
+                                    <a class="nav-link" apilink="AlertsList" href="index.html?page=AlertsList">Alerts
+                                        List (Alpha)</a>
                                 </nav>
                             </div>
                         </section>
@@ -274,18 +273,19 @@
                                 </section>
                             </nav>
                         </div>
-                        <!-- Sidenav Accordion (Flows)-->
-                        <a class="nav-link collapsed" href="" data-bs-toggle="collapse" data-bs-target="#collapseFlows"
-                            aria-expanded="false" aria-controls="collapseFlows">
+
+                        <a class="nav-link collapsed" href="" data-bs-toggle="collapse"
+                            data-bs-target="#collapseDefender" aria-expanded="false" aria-controls="collapseDefender">
                             <div class="nav-link-icon"><i data-feather="repeat"></i></div>
                             Intune
                             <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                         </a>
-                        <div class="collapse" id="collapseFlows" data-bs-parent="#accordionSidenav">
+                        <div class="collapse" id="collapseDefender" data-bs-parent="#accordionSidenav">
                             <nav class="sidenav-menu-nested nav">
                                 <section class="SpecialNavLink">
                                     <a class="nav-link" apilink="IntunePolicyList"
-                                        href="index.html?page=IntunePolicyList">List Intune Policies</a>
+                                        href="index.html?page=IntunePolicyList">List Intune
+                                        Policies</a>
                                     <a class="nav-link" apilink="AddPolicy" href="index.html?page=AddPolicy">Apply
                                         Policy</a>
                                     <a class="nav-link" apilink="AddIntunePolicyTemplate"
@@ -294,6 +294,19 @@
                                     <a class="nav-link" apilink="IntunePolicyTemplates"
                                         href="index.html?page=IntunePolicyTemplates">List
                                         Templates</a>
+                            </nav>
+                        </div>
+                        <a class="nav-link collapsed" href="" data-bs-toggle="collapse" data-bs-target="#collapseFlows"
+                            aria-expanded="false" aria-controls="collapseFlows">
+                            <div class="nav-link-icon"><i data-feather="shield"></i></div>
+                            Defender
+                            <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <div class="collapse" id="collapseFlows" data-bs-parent="#accordionSidenav">
+                            <nav class="sidenav-menu-nested nav">
+                                <section class="SpecialNavLink">
+                                    <a class="nav-link" apilink="Defender" href="index.html?page=Defender">List
+                                        Defender for endpoint (Alpha)</a>
                             </nav>
                         </div>
                         </section>
@@ -343,10 +356,11 @@
                         <div class="collapse" id="collapseUtilities" data-bs-parent="#accordionSidenav">
                             <nav class="sidenav-menu-nested nav">
                                 <section class="SpecialNavLink">
+                                    <a class="nav-link" apilink="TeamsVoiceList"
+                                        href="index.html?page=TeamsVoiceList">Business Voice</a>
                                     <a class="nav-link" apilink="TeamsList" href="index.html?page=TeamsList">List
                                         Teams</a>
-                                    <a class="nav-link" apilink="TeamsVoiceList"
-                                        href="index.html?page=TeamsVoiceList">Business Voice Settings</a>
+
                                     <a class="nav-link" apilink="AddTeam" href="index.html?page=AddTeam">Add
                                         Team</a>
                                     <a class="nav-link" apilink="TeamsActivity"
