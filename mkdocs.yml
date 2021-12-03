@@ -63,7 +63,7 @@ theme:
     - toc.integrate
   icon:
     repo: fontawesome/brands/github
-  custom_dir: 'docsoverrides'
+  custom_dir: 'Overrides'
 extra_css:
   - css/extra.css
 markdown_extensions:
