@@ -84,3 +84,11 @@
                 (Invoke-RestMethod -Uri "https://graph.microsoft.com/v1.0/users" -Method GET -Headers $script:GraphHeader).value
             }
         ```
+
+        If your entire tenant list does not load, there is a big chance there is something wrong with your token configuration. Execute the permissions check in the Configuration Settings and see if that succeeds. If the permissions check fails you have either made a typo, have not performed all consents, or you are being blocked by conditional access.
+
+        To reload the keys you can go to configuration settings -> security -> Backend access and click on the keyvault. Give your user permissions to change and read the keys. Correct the keys if required by uploading a new version.
+        
+        After uploading a new version your old keys will still be cached by the function app. Go to configuration settings -> security -> Backend access and click on "Function App (configuration). This leads you to a configuration page. Rename the variable you've changed temporarily. For example if you have renamed "TenantID" you can rename "TenantID" to "TenantID2" temporarily.
+
+        Now restart the function app via the overview page. Go back to the configuration page and revert to the original name of the variable. Restart the application once more and it will no longer use the cached version.

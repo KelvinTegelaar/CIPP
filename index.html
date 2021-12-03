@@ -57,8 +57,7 @@
                     </a>
                     <div class="dropdown-divider m-0"></div>
                     <a class="dropdown-item py-3"
-                        href="https://github.com/KelvinTegelaar/CIPP/blob/master/Documentation/Changelog.md"
-                        target="_blank">
+                        href="https://kelvintegelaar.github.io/CIPP/GettingStarted/Changelog.html" target="_blank">
                         <div class="icon-stack bg-primary-soft text-primary me-4"><i data-feather="file-text"></i></div>
                         <div>
                             <div class="small text-gray-500">Changelog</div>
@@ -167,6 +166,7 @@
                                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
                                     <a class="nav-link" apilink="DeviceList"
                                         href="index.html?page=DeviceList">Devices</a>
+                                    <a class="nav-link" apilink="Roles" href="index.html?page=Rolest">Roles</a>
                                     <a class="nav-link" apilink="MFAReport" href="index.html?page=MFAReport">MFA
                                         Report</a>
                                     <a class="nav-link" apilink="BasicAuth" href="index.html?page=BasicAuth">Basic Auth
@@ -216,6 +216,8 @@
                                         href="index.html?page=DomainAnalyserList">Domains Analyser</a>
                                     <a class="nav-link" apilink="CheckDomain"
                                         href="index.html?page=CheckDomain">Individual Domain Check</a>
+                                    <a class="nav-link" apilink="AlertsList" href="index.html?page=AlertsList">Alerts
+                                        List (Alpha)</a>
                                 </nav>
                             </div>
                         </section>
@@ -271,18 +273,19 @@
                                 </section>
                             </nav>
                         </div>
-                        <!-- Sidenav Accordion (Flows)-->
-                        <a class="nav-link collapsed" href="" data-bs-toggle="collapse" data-bs-target="#collapseFlows"
-                            aria-expanded="false" aria-controls="collapseFlows">
+
+                        <a class="nav-link collapsed" href="" data-bs-toggle="collapse"
+                            data-bs-target="#collapseDefender" aria-expanded="false" aria-controls="collapseDefender">
                             <div class="nav-link-icon"><i data-feather="repeat"></i></div>
                             Intune
                             <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                         </a>
-                        <div class="collapse" id="collapseFlows" data-bs-parent="#accordionSidenav">
+                        <div class="collapse" id="collapseDefender" data-bs-parent="#accordionSidenav">
                             <nav class="sidenav-menu-nested nav">
                                 <section class="SpecialNavLink">
                                     <a class="nav-link" apilink="IntunePolicyList"
-                                        href="index.html?page=IntunePolicyList">List Intune Policies</a>
+                                        href="index.html?page=IntunePolicyList">List Intune
+                                        Policies</a>
                                     <a class="nav-link" apilink="AddPolicy" href="index.html?page=AddPolicy">Apply
                                         Policy</a>
                                     <a class="nav-link" apilink="AddIntunePolicyTemplate"
@@ -291,6 +294,19 @@
                                     <a class="nav-link" apilink="IntunePolicyTemplates"
                                         href="index.html?page=IntunePolicyTemplates">List
                                         Templates</a>
+                            </nav>
+                        </div>
+                        <a class="nav-link collapsed" href="" data-bs-toggle="collapse" data-bs-target="#collapseFlows"
+                            aria-expanded="false" aria-controls="collapseFlows">
+                            <div class="nav-link-icon"><i data-feather="shield"></i></div>
+                            Defender
+                            <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <div class="collapse" id="collapseFlows" data-bs-parent="#accordionSidenav">
+                            <nav class="sidenav-menu-nested nav">
+                                <section class="SpecialNavLink">
+                                    <a class="nav-link" apilink="Defender" href="index.html?page=Defender">List
+                                        Defender for endpoint (Alpha)</a>
                             </nav>
                         </div>
                         </section>
@@ -340,8 +356,11 @@
                         <div class="collapse" id="collapseUtilities" data-bs-parent="#accordionSidenav">
                             <nav class="sidenav-menu-nested nav">
                                 <section class="SpecialNavLink">
+                                    <a class="nav-link" apilink="TeamsVoiceList"
+                                        href="index.html?page=TeamsVoiceList">Business Voice</a>
                                     <a class="nav-link" apilink="TeamsList" href="index.html?page=TeamsList">List
                                         Teams</a>
+
                                     <a class="nav-link" apilink="AddTeam" href="index.html?page=AddTeam">Add
                                         Team</a>
                                     <a class="nav-link" apilink="TeamsActivity"
@@ -365,7 +384,10 @@
                         <section class="SpecialNavLink">
                             <div class="collapse" id="collapseContact" data-bs-parent="#accordionSidenav">
                                 <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
+                                    <a class="nav-link" apilink="MailboxList"
+                                        href="index.html?page=MailboxList">Mailboxes</a>
                                     <a class="nav-link" apilink="contacts" href="index.html?page=contacts">Contacts</a>
+
                                 </nav>
                             </div>
                         </section>
@@ -380,8 +402,6 @@
                                 <section class="SpecialNavLink">
                                     <a class="nav-link" apilink="MailboxStatisticsList"
                                         href="index.html?page=MailboxStatisticsList">Mailbox Statistics</a>
-                                    <a class="nav-link" apilink="MailboxList" href="index.html?page=MailboxList">Mailbox
-                                        List</a>
                                     <a class="nav-link" apilink="MailboxCASList"
                                         href="index.html?page=MailboxCASList">Mailbox Client Access Settings</a>
                                     <a class="nav-link" apilink="Messagetrace"

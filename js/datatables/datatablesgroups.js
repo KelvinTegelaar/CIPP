@@ -33,6 +33,69 @@ $(document).ready(function () {
                     { extend: 'excelHtml5', className: 'btn btn-primary btn-sm', title: 'Group List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4, 5], orthogonal: "export" } },
                     { extend: 'csvHtml5', className: 'btn btn-primary btn-sm', title: 'Group List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4, 5], orthogonal: "export" } },
                     { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', orientation: 'landscape', pageSize: 'A2', title: 'Group List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4, 5], orthogonal: "export" } },
+                    {
+                      text: 'Security Groups',
+                      className: 'dt-button btn btn-secondary btn-sm',
+                      action: function (e, dt, node, config) {
+                        dt.columns().search('').draw();
+                        dt.columns(1).search('Security').draw();
+                      }
+                    },
+                    {
+                      text: 'Microsoft 365 Groups',
+                      className: 'dt-button btn btn-secondary btn-sm',
+                      action: function (e, dt, node, config) {
+                        dt.columns().search('').draw();
+                        dt.columns(1).search('Microsoft 365').draw();
+                      }
+                    },
+                    {
+                      text: 'Distribution List Groups',
+                      className: 'dt-button btn btn-secondary btn-sm',
+                      action: function (e, dt, node, config) {
+                        dt.columns().search('').draw();
+                        dt.columns(1).search('Distribution List').draw();
+                      }
+                    },
+                    {
+                      text: 'Mail-Enabled Security Groups',
+                      className: 'dt-button btn btn-secondary btn-sm',
+                      action: function (e, dt, node, config) {
+                        dt.columns().search('').draw();
+                        dt.columns(1).search('Mail-Enabled Security').draw();
+                      }
+                    },
+                    {
+                      text: 'Teams Enabled',
+                      className: 'dt-button btn btn-secondary btn-sm',
+                      action: function (e, dt, node, config) {
+                        dt.columns().search('').draw();
+                        dt.columns(3).search('Teams Enabled').draw();
+                      }
+                    },
+                    {
+                      text: 'No Teams Enabled',
+                      className: 'dt-button btn btn-secondary btn-sm',
+                      action: function (e, dt, node, config) {
+                        dt.columns().search('').draw();
+                        dt.columns(3).search('Not Team Enabled').draw();
+                      }
+                    },
+                    {
+                      text: 'Dynamic Groups',
+                      className: 'dt-button btn btn-secondary btn-sm',
+                      action: function (e, dt, node, config) {
+                        dt.columns().search('').draw();
+                        dt.columns(2).search('Is Dynamic Group').draw();
+                      }
+                    },
+                    {
+                      text: 'All Results',
+                      className: 'dt-button btn btn-secondary btn-sm',
+                      action: function (e, dt, node, config) {
+                        dt.columns().search('').draw();
+                      }
+                    }
                 ],
                 "columns": [
                     { "data": "displayName" },
@@ -42,7 +105,7 @@ $(document).ready(function () {
                         "render": function (data, type, row) {
                             if (type === "export" || type === "sort" || type === "filter") {
                                 if (data === true) {
-                                    return 'Dynamic Group'
+                                    return 'Is Dynamic Group'
                                 } else if (data === false) {
                                     return 'Not a Dynamic Group'
                                 } else {
@@ -67,7 +130,7 @@ $(document).ready(function () {
                                 if (data === true) {
                                     return 'Teams Enabled'
                                 } else if (data === false) {
-                                    return 'Not Teams Enabled'
+                                    return 'Not Team Enabled'
                                 } else {
                                     return 'No Data'
                                 }
