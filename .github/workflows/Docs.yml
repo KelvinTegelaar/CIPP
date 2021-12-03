@@ -7,7 +7,7 @@ on:
       - documentation
     paths:
       - "mkdocs.yml"
-      - "Documentation/**"
+      - "docs/**"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -31,5 +31,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CONFIG_FILE: mkdocs.yml
-          REQUIREMENTS: Documentation/requirements.txt
+          REQUIREMENTS: docs/requirements.txt
           CUSTOM_DOMAIN: cipp.app
