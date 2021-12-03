@@ -2,10 +2,10 @@ site_url: 'https://cipp.app'
 site_name: CyberDrain Improved Partner Portal (CIPP)
 site_description: 'The CyberDrain Improved Partner Portal is a portal to help manage administration for Microsoft Partners. The current Microsoft partner landscape makes it fairly hard to manage multi tenant situations, with loads of manual work. Microsoft Lighthouse might resolve this in the future but development of this is lagging far behind development of the current market for Microsoft Partners.'
 site_author: 'Kelvin Tegelaar'
-docs_dir: Documentation
+docs_dir: docs
 repo_name: 'KelvinTegelaar/CIPP'
 repo_url: 'https://github.com/KelvinTegelaar/CIPP'
-edit_uri: 'edit/documentation/Documentation/'
+edit_uri: 'edit/documentation/docs/'
 nav:
     - Home: index.md
     - Getting Started:
@@ -64,7 +64,7 @@ theme:
     - toc.integrate
   icon:
     repo: fontawesome/brands/github
-  custom_dir: 'Overrides'
+  custom_dir: 'overrides'
 extra_css:
   - css/extra.css
 markdown_extensions:
