@@ -1,0 +1,142 @@
+<main>
+    <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
+        <div class="container-fluid px-4">
+            <div class="page-header-content">
+                <div class="row align-items-center justify-content-between pt-3">
+                    <div class="col-auto mb-3">
+                        <h1 class="page-header-title">
+                            <div class="page-header-icon"><i data-feather="user"></i></div>
+                            Microsoft 365 Security Alerts
+                        </h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- Main page content-->
+    <div class="container-fluid px-4">
+      <div class="row">
+        <div class="col-12">
+          <div class="card border-start-lg border-start-info h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="col-2 ps-2 border-start border-primary border-5">
+                    <h3>New Alerts <div class="text-center">
+                      <div class="spinner-border text-primary" role="status" id="newalertsloadingspinner">
+                        <span class="visually-hidden">Loading...</span>
+                      </div>
+                    </div></h3>
+                    <h1 class="text-secondary" style="font-size:2rem;" id="NewAlerts"></h1>
+                  </div>
+                  <div class="col-2 ps-2 border-start border-primary border-5">
+                    <h3>In Progress Alerts <div class="text-center">
+                      <div class="spinner-border text-primary" role="status" id="inprogressalertsloadingspinner">
+                        <span class="visually-hidden">Loading...</span>
+                      </div>
+                    </div></h3>
+                    <h1 class="text-secondary" style="font-size:2rem;" id="InProgressAlerts"></h1>
+                  </div>
+                  <div class="col-2 ps-2 border-start border-primary border-5">
+                    <h3>High Severity Alerts <div class="text-center">
+                      <div class="spinner-border text-primary" role="status" id="highseverityalertsloadingspinner">
+                        <span class="visually-hidden">Loading...</span>
+                      </div>
+                    </div></h3>
+                    <h1 class="text-danger" style="font-size:2rem;" id="HighSeverityAlerts"></h1>
+                  </div>
+                  <div class="col-2 ps-2 border-start border-primary border-5">
+                    <h3>Medium Severity Alerts <div class="text-center">
+                      <div class="spinner-border text-primary" role="status" id="mediumseverityalertsloadingspinner">
+                        <span class="visually-hidden">Loading...</span>
+                      </div>
+                    </div></h3>
+                    <h1 class="text-warning" style="font-size:2rem;" id="MediumSeverityAlerts"></h1>
+                  </div>
+                  <div class="col-2 ps-2 border-start border-primary border-5">
+                    <h3>Low Severity Alerts <div class="text-center">
+                      <div class="spinner-border text-primary" role="status" id="lowseverityalertsloadingspinner">
+                        <span class="visually-hidden">Loading...</span>
+                      </div>
+                    </div></h3>
+                    <h1 class="text-secondary" style="font-size:2rem;" id="LowSeverityAlerts"></h1>
+                  </div>
+                  <div class="col-2 ps-2 border-start border-primary border-5">
+                    <h3>Informational Alerts <div class="text-center">
+                      <div class="spinner-border text-primary" role="status" id="informationalalertsloadingspinner">
+                        <span class="visually-hidden">Loading...</span>
+                      </div>
+                    </div></h3>
+                    <h1 class="text-secondary" style="font-size:2rem;" id="InformationalSeverityAlerts"></h1>
+                  </div>
+                </div>
+            </div>
+        </div>
+        </div>
+      </div>
+        <div class="card">
+            <div class="card-body">
+                <table id="datatablesSimple">
+                    <table cellpadding="0" cellspacing="0" class="datatable-1 table table-striped" width="100%">
+                      <div class="alert alert-primary" role="alert" id="pageloadwarning">
+                        <strong>Warning! </strong>This page is pulling data from all your tenants and may take a minute or two to load.
+                      </div>
+                        <thead>
+                            <tr>
+                                <th>Tenant</th>
+                                <th>Alert ID</th>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Event Date</th>
+                                <th>Severity</th>
+                                <th>Status</th>
+                                <th>More</th>
+                            </tr>
+                        </thead>
+                        <tbody id='AccountTable'>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                              <th>Tenant</th>
+                              <th>Alert ID</th>
+                              <th>Title</th>
+                              <th>Category</th>
+                              <th>Event Date</th>
+                              <th>Severity</th>
+                              <th>Status</th>
+                              <th>More</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+            </div>
+        </div>
+    </div>
+</main>
+<script src="js/datatables/jquery.dataTables.js"></script>
+<script src="js/tenantlist.js"></script>
+<script src="js/datatables/datatablesAlerts.js"></script>
+
+</body>
+<button class="btn btn-primary" id="PopModal" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"
+    style="display:none;"></button>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Results</h5>
+            </div>
+            <div class="modal-body">
+                <section id="APIContent">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only"></span>
+                    </div></span>
+                </section>
+            </div>
+            <div class="modal-footer"><button class="btn btn-secondary" type="button"
+                    data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+    </main>
+
+    </html>
