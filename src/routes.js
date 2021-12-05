@@ -4,6 +4,8 @@ const Home = React.lazy(() => import('./views/home/Home'))
 const ViewProfile = React.lazy(() => import('./views/profile/ViewProfile'))
 const Settings = React.lazy(() => import('./views/profile/Settings'))
 const Users = React.lazy(() => import('./views/identity/administration/Users'))
+const EditUser = React.lazy(() => import('./views/identity/administration/EditUser'))
+const ViewUser = React.lazy(() => import('./views/identity/administration/ViewUser'))
 const Groups = React.lazy(() => import('./views/identity/administration/Groups'))
 const Devices = React.lazy(() => import('./views/identity/reports/Devices'))
 const MFAReport = React.lazy(() => import('./views/identity/reports/MFAReport'))
@@ -61,6 +63,8 @@ const routes = [
   { path: '/profile/view', name: 'View', component: ViewProfile },
   { path: '/profile/settings', name: 'Settings', component: Settings },
   { path: '/identity', name: 'Identity' },
+  { path: '/identity/administration/users/edit', name: 'Edit User', component: EditUser },
+  { path: '/identity/administration/users/view', name: 'View User', component: ViewUser },
   { path: '/identity/administration', name: 'Administration' },
   { path: '/identity/administration/users', name: 'Users', component: Users },
   { path: '/identity/administration/groups', name: 'Groups', component: Groups },
