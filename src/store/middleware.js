@@ -36,11 +36,12 @@ export default function clientMiddleware(client) {
 }
 
 // this will catch all errors, or any actions with prop `error` set
+// set action.hideToastError to `true` to ignore this middleware
 export function errorMiddleware() {
   return ({ dispatch, getState }) =>
     (next) =>
     (action) => {
-      if (action.error) {
+      if (action.error && !action.hideToastError) {
         console.error(action)
         const message =
           (action && action.error && action.error.message) || 'A generic error has occurred.'
