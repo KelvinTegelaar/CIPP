@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import BootstrapTable from 'react-bootstrap-table-next'
-import ToolkitProvider, { Search, CSVExport } from 'react-bootstrap-table2-toolkit'
+import ToolkitProvider, { CSVExport, Search } from 'react-bootstrap-table2-toolkit'
 import paginationFactory from 'react-bootstrap-table2-paginator'
 import { CButton } from '@coreui/react'
 
@@ -210,7 +210,8 @@ const DomainsAnalyser = () => {
     },
     {
       text: 'More Info',
-      dataField: 'Domain',
+      dataField: 'moreInfo',
+      isDummyField: true,
       sort: true,
       formatter: (cell, row) => {
         return (

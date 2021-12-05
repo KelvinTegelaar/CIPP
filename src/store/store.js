@@ -1,12 +1,16 @@
-import { createStore, applyMiddleware, compose } from 'redux'
-import { persistStore, persistReducer } from 'redux-persist'
+import { applyMiddleware, compose, createStore } from 'redux'
+import { persistReducer, persistStore } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import ApiClient from './ApiClient'
 import clientMiddleware, { errorMiddleware } from './middleware'
 import rootReducer from './modules/root'
 
 const client = new ApiClient()
-const middleware = [clientMiddleware(client), errorMiddleware()]
+let middleware = [clientMiddleware(client), errorMiddleware()]
+
+if (process.env.NODE_ENV !== 'production') {
+  middleware = [require('redux-immutable-state-invariant').default(), ...middleware]
+}
 
 const persistConfig = {
   key: 'root',
@@ -25,6 +29,11 @@ const composeEnhancers =
 const configure = () => {
   let store = createStore(persistedReducer, composeEnhancers(applyMiddleware(...middleware)))
   let persistor = persistStore(store)
+
+  if (process.env.NODE_ENV !== 'production' && module.hot) {
+    module.hot.accept('./modules/root', () => store.replaceReducer(rootReducer))
+  }
+
   return { store, persistor }
 }
 

@@ -50,7 +50,7 @@ export function resetModal() {
 
 /**
  *
- * @param {Element} body
+ * @param {JSX.Element|String} body
  * @param {String} title
  * @param {String} [size] ['sm', 'lg', 'xl'] defaults to None
  * @returns {{size, type: string, body, title}}
