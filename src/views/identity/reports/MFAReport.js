@@ -100,7 +100,7 @@ const MFAReport = () => {
   }, [])
 
   return (
-    <div>
+    <div className="bg-white rounded p-5">
       <h3>MFA Report</h3>
       <hr />
       <TenantSelector action={handleTenantSelect} />
