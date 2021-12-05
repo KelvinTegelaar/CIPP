@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react'
-import { CSpinner } from '@coreui/react'
-import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
+import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle, CSpinner } from '@coreui/react'
 import TenantSelector from 'src/components/cipp/TenantSelector'
 import BootstrapTable from 'react-bootstrap-table-next'
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit'
 import paginationFactory from 'react-bootstrap-table2-paginator'
 import { useDispatch, useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
+import { cilSettings, cilUser } from '@coreui/icons'
+import CIcon from '@coreui/icons-react'
 
 import { listUsers } from '../../../store/modules/identity'
 
@@ -18,7 +20,21 @@ const dropdown = (cell, row, rowIndex, formatExtraData) => {
     <CDropdown>
       <CDropdownToggle color="primary">...</CDropdownToggle>
       <CDropdownMenu>
-        <CDropdownItem href="#">Edit User</CDropdownItem>
+        <CDropdownItem href="#">
+          <Link
+            className="dropdown-item"
+            to={`/identity/administration/users/view?userId=${row.id}&tenantDomain=${row.primDomain}`}
+          >
+            <CIcon icon={cilUser} className="me-2" />
+            View User
+          </Link>
+        </CDropdownItem>
+        <CDropdownItem href="#">
+          <Link className="dropdown-item" to="/identity/administration/users/edit">
+            <CIcon icon={cilSettings} className="me-2" />
+            Edit User
+          </Link>
+        </CDropdownItem>
         <CDropdownItem href="#">Send MFA Push To User</CDropdownItem>
         <CDropdownItem href="#">Convert To Shared</CDropdownItem>
         <CDropdownItem href="#">Block Sign-in</CDropdownItem>
