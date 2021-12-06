@@ -7,6 +7,7 @@ import {
   CCard,
   CCardBody,
   CCardHeader,
+  CCardTitle,
   CTable,
   CTableBody,
   CTableDataCell,
@@ -119,8 +120,8 @@ export default function UserSigninLogs({ userId, tenantDomain }) {
     },
     {
       text: 'Device Compliant',
-      dataField: 'OverallLoginStatus',
-      formatter,
+      isDummyField: true,
+      formatter: (cell, row) => formatter(row.OverallLoginStatus),
     },
     {
       text: 'OS',
@@ -149,7 +150,7 @@ export default function UserSigninLogs({ userId, tenantDomain }) {
   return (
     <CCard>
       <CCardHeader className="d-flex justify-content-between">
-        User Sign in Logs
+        <CCardTitle>User Sign in Logs</CCardTitle>
         <CIcon icon={cilLaptop} />
       </CCardHeader>
       <CCardBody>

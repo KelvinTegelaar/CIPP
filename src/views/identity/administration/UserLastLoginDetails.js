@@ -6,6 +6,7 @@ import {
   CCard,
   CCardBody,
   CCardHeader,
+  CCardTitle,
   CSpinner,
   CTable,
   CTableBody,
@@ -45,7 +46,7 @@ export default function UserLastLoginDetails({
   return (
     <CCard>
       <CCardHeader className="d-flex justify-content-between">
-        Last Login Details
+        <CCardTitle>Last Login Details</CCardTitle>
         <CIcon icon={cilClock} />
       </CCardHeader>
       <CCardBody>

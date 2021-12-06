@@ -11,7 +11,7 @@ import {
   cilUserX,
   cilSettings,
 } from '@coreui/icons'
-import { CCard, CCardBody, CCardHeader } from '@coreui/react'
+import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
 
 export default function UserActions({ displayName, tenantDomain, userId, userEmail }) {
   // @TODO make these work
@@ -43,7 +43,7 @@ export default function UserActions({ displayName, tenantDomain, userId, userEma
   return (
     <CCard>
       <CCardHeader className="d-flex justify-content-between">
-        Actions
+        <CCardTitle>Actions</CCardTitle>
         <CIcon icon={cilSettings} />
       </CCardHeader>
       <CCardBody>

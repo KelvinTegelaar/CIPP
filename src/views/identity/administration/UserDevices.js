@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import { listUserDevices } from '../../../store/modules/identity'
-import { CCard, CCardBody, CCardHeader, CLink } from '@coreui/react'
+import { CCard, CCardBody, CCardHeader, CCardTitle, CLink } from '@coreui/react'
 import BootstrapTable from 'react-bootstrap-table-next'
 import CellBoolean from '../../../components/cipp/CellBoolean'
 import CIcon from '@coreui/icons-react'
@@ -113,7 +113,7 @@ export default function UserDevices({ userId, tenantDomain }) {
   return (
     <CCard>
       <CCardHeader className="d-flex justify-content-between">
-        User Devices
+        <CCardTitle>User Devices</CCardTitle>
         <CIcon icon={cilLaptop} />
       </CCardHeader>
       <CCardBody>

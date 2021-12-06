@@ -6,6 +6,7 @@ import {
   CCard,
   CCardBody,
   CCardHeader,
+  CCardTitle,
   CSpinner,
   CTable,
   CTableBody,
@@ -38,7 +39,7 @@ export default function UserEmailDetails({ user: { user, loading, loaded, error 
   return (
     <CCard>
       <CCardHeader className="d-flex justify-content-between">
-        Email Details
+        <CCardTitle>Email Details</CCardTitle>
         <CIcon icon={cilEnvelopeClosed} />
       </CCardHeader>
       <CCardBody>

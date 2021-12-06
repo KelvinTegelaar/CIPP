@@ -6,6 +6,7 @@ import {
   CCard,
   CCardBody,
   CCardHeader,
+  CCardTitle,
   CSpinner,
   CTable,
   CTableBody,
@@ -24,7 +25,7 @@ export default function UserEmailPermissions({
   return (
     <CCard>
       <CCardHeader className="d-flex justify-content-between">
-        Email Permissions
+        <CCardTitle>Email Permissions</CCardTitle>
         <div>
           <CIcon icon={cilEnvelopeClosed} className="me-2" />
           <CIcon icon={cilSettings} />

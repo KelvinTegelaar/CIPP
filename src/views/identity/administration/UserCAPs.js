@@ -4,6 +4,7 @@ import {
   CCard,
   CCardBody,
   CCardHeader,
+  CCardTitle,
   CSpinner,
   CTable,
   CTableBody,
@@ -17,7 +18,7 @@ export default function UserCAPs({ cap: { policies, loading, loaded, error } = {
   return (
     <CCard>
       <CCardHeader className="d-flex justify-content-between">
-        Applied Conditional Access Policies
+        <CCardTitle>Applied Conditional Access Policies</CCardTitle>
         <CIcon icon={cilLockLocked} />
       </CCardHeader>
       <CCardBody>
