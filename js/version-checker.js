@@ -17,8 +17,6 @@ $(document).ready(function () {
                 $.ajax(ajaxsettings);
             })
         }
-
-
         GetVersion().then((LocalVersionCIPP) => {
             var json = null;
             $.ajax({
