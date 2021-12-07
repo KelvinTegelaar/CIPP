@@ -19974,8 +19974,6 @@ body {
   display: flex;
   align-items: center;
   line-height: normal;
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
   position: relative;
 }
 .sidenav .sidenav-menu .nav .nav-link .nav-link-icon {
@@ -21028,4 +21026,27 @@ pre[class*=language-] {
 
 div#DataTables_Table_0_length{ 
   padding-top: 10px; 
+}
+
+.sidenav-footer {
+overflow: hidden;
+overflow-wrap: anywhere;
+}
+
+.form-in-datatable {
+  display: block;
+  width: 100%;
+  /* padding: 0.875rem 1.125rem; */
+  /* font-size: 0.875rem; */
+  /* font-weight: 400; */
+  /* line-height: 1; */
+  /* color: #69707a; */
+  /* background-color: #fff; */
+  /* background-clip: padding-box; */
+  /* border: 1px solid #c5ccd6; */
+  /* -webkit-appearance: none; */
+  -moz-appearance: none;
+  /* appearance: none; */
+  border-radius: 0.35rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }

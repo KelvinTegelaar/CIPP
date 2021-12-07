@@ -1,7 +1,7 @@
 {
     "routes": [
         {
-            "route": "/images/*",
+            "route": "/assets/*",
             "headers": {
                 "cache-control": "must-revalidate, max-age=15770000"
             }
@@ -23,8 +23,87 @@
             "redirect": "/.auth/logout"
         },
         {
+            "route": "/api/AddStandardsDeploy",
+            "allowedRoles": [
+                "admin"
+            ]
+        },
+        {
+            "route": "/error-403.html",
+            "allowedRoles": [
+                "admin",
+                "editor",
+                "readonly",
+                "authenticated",
+                "anonymous"
+            ]
+        },
+        {
+            "route": "/api/RemoveStandard",
+            "allowedRoles": [
+                "admin"
+            ]
+        },
+        {
+            "route": "/api/add*",
+            "allowedRoles": [
+                "admin",
+                "editor"
+            ]
+        },
+        {
+            "route": "/api/edit*",
+            "allowedRoles": [
+                "admin",
+                "editor"
+            ]
+        },
+        {
+            "route": "/api/ExecSendPush",
+            "allowedRoles": [
+                "admin",
+                "editor",
+                "readonly"
+            ]
+        },
+        {
+            "route": "/api/ExecExcludeTenant",
+            "allowedRoles": [
+                "admin"
+            ]
+        },
+        {
+            "route": "/api/Exec*",
+            "allowedRoles": [
+                "admin",
+                "editor"
+            ]
+        },
+        {
+            "route": "/api/Remove*",
+            "allowedRoles": [
+                "admin",
+                "editor"
+            ]
+        },
+        {
+            "route": "settings*.html",
+            "allowedRoles": [
+                "admin"
+            ]
+        },
+        {
+            "route": "standards.html",
+            "allowedRoles": [
+                "admin"
+            ]
+        },
+        {
             "route": "*",
             "allowedRoles": [
+                "admin",
+                "editor",
+                "readonly",
                 "reader"
             ]
         }
@@ -32,27 +111,33 @@
     "navigationFallback": {
         "rewrite": "/error-404-1.html",
         "exclude": [
-            "/images/*.{png,jpg,gif}",
+            "/assets/*.{png,jpg,gif}",
             "/css/*"
         ]
     },
     "responseOverrides": {
-        "400": {
-            "rewrite": "/invalid-invitation-error.html"
-        },
         "401": {
             "redirect": "/login",
-            "statusCode": 302
+            "statusCode": 302,
+            "exclude": [
+                "/assets/illustrations/*.{png,jpg,gif}",
+                "/css/*"
+            ]
         },
         "403": {
-            "rewrite": "/error-403.html"
+            "redirect": "/error-403.html",
+            "statusCode": 403,
+            "exclude": [
+                "/assets/illustrations/*.{png,jpg,gif}",
+                "/css/*"
+            ]
         },
         "404": {
             "rewrite": "/error-404-1.html"
         }
     },
     "globalHeaders": {
-        "content-security-policy": "default-src https: 'unsafe-eval' 'unsafe-inline'; object-src 'none'"
+        "content-security-policy": "default-src https: 'unsafe-eval' 'unsafe-inline'; object-src 'none'; img-src 'self' data: *"
     },
     "mimeTypes": {
         ".json": "text/json"

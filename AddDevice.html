@@ -102,7 +102,10 @@
                                     methods:
                                     <li> Hardware Hash (available from OEM or on-device script)</li>
                                     <li> Combination of Manufacturer, Device Model, Device Serial Number</li>
-                                    <li>Windows Product Key ID</li>
+                                    <li>Windows Product Key ID</li><br />
+                                    You can also upload a CSV file if your vendor has supplied you with one<br />
+                                    <button class="btn btn-primary" id="upload">Upload CSV</button>
+
                                     <table id="datatable-1" class="datatable-1 table table-striped dataTable"
                                         cellspacing="0" width="100%">
                                         <thead>
@@ -119,6 +122,7 @@
                                         </tbody>
                                     </table>
                                     <button class="btn btn-primary" id="but_add" type="button">Add Row</button>
+                                    <input type="file" name="filename" id="filename" accept=".csv" hidden>
                                     <input type="hidden" id="Devices" name="Devices" value="">
                                     <hr class="my-4" />
                                     <div class="d-flex justify-content-between">

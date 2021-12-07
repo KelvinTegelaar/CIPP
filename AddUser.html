@@ -131,10 +131,19 @@
 
                             </div>
                             <div class="mb-3">
-                                <label class="small mb-1" for="AddedAliasses">Aliasses</label>
-                                <textarea name="AddedAliasses" class="form-control" id="AddedAliasses" type="email"
-                                    placeholder="Enter one alias per line, leave blank if no aliasses are required."
+                                <label class="small mb-1" for="AddedAliases">Aliases</label>
+                                <textarea name="AddedAliases" class="form-control" id="AddedAliases" type="email"
+                                    placeholder="Enter one alias per line, leave blank if no Aliases are required."
                                     value=""></textarea>
+                                <div class="col-mb-3">
+                                    <label class="small mb-1" for="UserlistOptions">Copy group membership from other
+                                        user</label>
+                                    <input class="form-control" name="CopyFrom" list="UserlistOptions" id="Userlist"
+                                        placeholder="Leave blank to not copy.">
+                                    <datalist id="UserlistOptions">
+                                    </datalist>
+                                </div>
+
                             </div> <!-- Submit button-->
                             <button class="btn btn-primary" onclick='PostForm("Userform","api/AddUser")'' type="button">Add
                                 user</button>
@@ -169,4 +178,5 @@
         </div>
 </main>
 <script src="js/tenantlist.js"></script>
+<script src="js/Userlist.js"></script>
 <script src="js/UserFormOptions.js"></script>

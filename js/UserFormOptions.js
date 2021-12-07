@@ -27,6 +27,7 @@ $(document).ready(function () {
                 $('#LocationDataList').val(data[0].usageLocation)
                 //extended fields
                 $('#streetAddress').val(data[0].streetAddress)
+                $('#Jobtitle').val(data[0].jobTitle)
                 $('#City').val(data[0].city)
                 $('#Country').val(data[0].country)
                 $('#CompanyName').val(data[0].companyName)
@@ -36,9 +37,13 @@ $(document).ready(function () {
                 $('#BusinessPhone').val(data[0].businessPhones)
                 // list raw information
                 $('#RawJson').text(JSON.stringify(data, null, 2))
+
             }
+
         }
+
         )
+
     }
     //only shows input when needed
     $('input[type="checkbox"]').click(function () {
@@ -126,4 +131,10 @@ $(document).ready(function () {
     $("#LocationDataList").change(function () {
         localStorage.setItem('DefaultLocation', $(this).val())
     });
+
+    $('#inputFirstName, #inputLastName').on('input', function () {
+        $('#inputEmailAddress').val($('#inputFirstName').val() + ' ' + $('#inputLastName').val())
+
+    });
+
 });
