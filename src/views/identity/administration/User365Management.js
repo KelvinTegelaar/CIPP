@@ -1,5 +1,5 @@
 import React from 'react'
-import { CCard, CCardBody, CCardHeader } from '@coreui/react'
+import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilPeople, cilSettings, cilLaptop } from '@coreui/icons'
 import { CLink } from '@coreui/react'
@@ -9,7 +9,7 @@ export default function User365Management({ tenantDomain, userId }) {
   return (
     <CCard>
       <CCardHeader className="d-flex justify-content-between">
-        M365 Management
+        <CCardTitle>M365 Management</CCardTitle>
         <CIcon icon={cilSettings} />
       </CCardHeader>
       <CCardBody>

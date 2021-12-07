@@ -12,9 +12,12 @@ const TenantSelector = (props) => {
   const tenants = useSelector((state) => state.tenants.tenants)
   const currentTenant = useSelector((state) => state.app.currentTenant)
 
-  useEffect(async () => {
-    dispatch(listTenants())
-  }, [])
+  useEffect(() => {
+    async function load() {
+      dispatch(listTenants())
+    }
+    load()
+  }, [dispatch])
 
   const activated = (customerId, b, c) => {
     const selectedTenant = tenants.filter((t) => {

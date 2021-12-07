@@ -1,77 +1,304 @@
-import { CFormCheck, CFormInput, CFormLabel, CFormSwitch, CFormText } from '@coreui/react'
+import {
+  CFormCheck,
+  CFormFeedback,
+  CFormInput,
+  CFormLabel,
+  CFormSelect,
+  CFormSwitch,
+  CFormTextarea,
+} from '@coreui/react'
+import SelectSearch, { fuzzySearch } from 'react-select-search'
 import { Field } from 'react-final-form'
 import React from 'react'
 import PropTypes from 'prop-types'
+
 /*
   wrapper classes for React Final Form with CoreUI
  */
-
 const sharedPropTypes = {
-  label: PropTypes.string,
   name: PropTypes.string.isRequired,
-  input: {
+  className: PropTypes.string,
+  label: PropTypes.string,
+  validate: PropTypes.func,
+  input: PropTypes.shape({
     name: PropTypes.string,
     value: PropTypes.any,
     onChange: PropTypes.func,
-  },
+    meta: PropTypes.shape({
+      touched: PropTypes.bool,
+      error: PropTypes.any,
+    }),
+  }),
 }
 
-export const RFFCFormCheck = (props) => {
-  const { name, label } = props
+export const RFFCFormFeedback = ({ meta }) => {
   return (
-    <Field name={name}>
-      {(props) => (
-        <CFormCheck
-          id={name}
-          label={label}
-          value={props.input.value}
-          onChange={props.input.onChange}
-        />
-      )}
-    </Field>
+    <CFormFeedback invalid={meta.error && meta.touched} valid={!meta.error && meta.touched}>
+      {meta.touched && meta.error}
+    </CFormFeedback>
   )
 }
 
-RFFCFormCheck.propTypes = sharedPropTypes
-
-export const RFFCFormSwitch = (props) => {
-  const { name, label } = props
-  return (
-    <Field name={name}>
-      {(props) => (
-        <CFormSwitch
-          id={name}
-          label={label}
-          value={props.input.value}
-          onChange={props.input.onChange}
-        />
-      )}
-    </Field>
-  )
+RFFCFormFeedback.propTypes = {
+  meta: PropTypes.shape({
+    error: PropTypes.any,
+    touched: PropTypes.bool,
+  }),
 }
 
-RFFCFormSwitch.propTypes = sharedPropTypes
-
-export const RFFCFormText = (props) => {
-  const { name, label, type } = props
+export const RFFCFormCheck = ({ name, label, className = 'mb-3', validate }) => {
   return (
-    <Field name={name}>
-      {(props) => (
-        <>
-          <CFormLabel htmlFor={name}>{label}</CFormLabel>
-          <CFormInput
-            type={type}
+    <Field name={name} type="checkbox" validate={validate}>
+      {({ input, meta }) => (
+        <div className={className}>
+          <CFormCheck
+            {...input}
+            // @todo revisit this, only shows green when checked
+            valid={!meta.error && meta.touched && validate}
+            invalid={meta.error && meta.touched && validate}
             id={name}
-            area-describedby={name}
-            value={props.input.value}
-            onChange={props.input.onChange}
+            label={label}
           />
-        </>
+          <RFFCFormFeedback meta={meta} />
+        </div>
       )}
     </Field>
   )
 }
-RFFCFormText.propTypes = {
+
+RFFCFormCheck.propTypes = {
   ...sharedPropTypes,
-  type: PropTypes.string,
+}
+
+export const RFFCFormSwitch = ({ name, label, className = 'mb-3', validate }) => {
+  return (
+    <Field name={name} type="checkbox" validate={validate}>
+      {({ meta, input }) => (
+        <div className={className}>
+          <CFormSwitch
+            {...input}
+            // @todo revisit this, only shows green when checked
+            valid={!meta.error && meta.touched && validate}
+            invalid={meta.error && meta.touched && validate}
+            id={name}
+            label={label}
+          />
+          {input.value && <RFFCFormFeedback meta={meta} />}
+        </div>
+      )}
+    </Field>
+  )
+}
+
+RFFCFormSwitch.propTypes = {
+  ...sharedPropTypes,
+}
+
+export const RFFCFormInput = ({
+  name,
+  label,
+  type = 'text',
+  placeholder,
+  className = 'mb-3',
+  validate,
+}) => {
+  return (
+    <Field name={name} validate={validate}>
+      {({ input, meta }) => {
+        return (
+          <div className={className}>
+            {label && <CFormLabel htmlFor={name}>{label}</CFormLabel>}
+            <CFormInput
+              {...input}
+              valid={!meta.error && meta.touched}
+              invalid={meta.error && meta.touched}
+              type={type}
+              id={name}
+              area-describedby={name}
+              placeholder={placeholder}
+            />
+            <RFFCFormFeedback meta={meta} />
+          </div>
+        )
+      }}
+    </Field>
+  )
+}
+RFFCFormInput.propTypes = {
+  ...sharedPropTypes,
+  type: PropTypes.oneOf(['color', 'file', 'text', 'password']),
+  placeholder: PropTypes.string,
+}
+
+export const RFFCFormRadio = ({ name, label, value, className = 'mb-3', validate }) => {
+  return (
+    <Field name={name} type="radio" value={value} validate={validate}>
+      {({ meta, input }) => (
+        <div className={className}>
+          <CFormCheck
+            {...input}
+            valid={!meta.error && meta.touched}
+            invalid={meta.error && meta.touched}
+            type="radio"
+            name={name}
+            label={label}
+          />
+          <RFFCFormFeedback meta={meta} />
+        </div>
+      )}
+    </Field>
+  )
+}
+
+RFFCFormRadio.propTypes = {
+  ...sharedPropTypes,
+}
+
+export const RFFCFormTextarea = ({
+  name,
+  label,
+  value,
+  placeholder,
+  className = 'mb-3',
+  validate,
+}) => {
+  return (
+    <Field name={name} type="radio" value={value} validate={validate}>
+      {({ meta, input }) => {
+        return (
+          <div className={className}>
+            <CFormLabel htmlFor={name}>{label}</CFormLabel>
+            <CFormTextarea
+              {...input}
+              valid={!meta.error && meta.touched}
+              invalid={meta.error && meta.touched}
+              id={name}
+              placeholder={placeholder}
+            />
+            <RFFCFormFeedback meta={meta} />
+          </div>
+        )
+      }}
+    </Field>
+  )
+}
+
+RFFCFormTextarea.propTypes = {
+  ...sharedPropTypes,
+  placeholder: PropTypes.string,
+}
+
+export const RFFCFormSelect = ({
+  name,
+  label,
+  values = [],
+  placeholder,
+  className = 'mb-3',
+  validate,
+}) => {
+  // handler for ignoring the first element ('the placeholder')
+  const selectValidate = (value, allValues, meta) => {
+    if (validate) {
+      if (value !== placeholder) {
+        return validate(value, allValues, meta)
+      }
+      return null
+    }
+  }
+
+  return (
+    <Field name={name} validate={selectValidate}>
+      {({ input, meta }) => (
+        <div className={className}>
+          {label && <CFormLabel>{label}</CFormLabel>}
+          <CFormSelect
+            {...input}
+            valid={!meta.error && meta.touched}
+            invalid={meta.error && meta.touched}
+          >
+            <option value={placeholder}>{placeholder}</option>
+            {values.map(({ label, value }, idx) => (
+              <option key={`${idx}-${value}`} value={value}>
+                {label}
+              </option>
+            ))}
+          </CFormSelect>
+          <RFFCFormFeedback meta={meta} />
+        </div>
+      )}
+    </Field>
+  )
+}
+
+RFFCFormSelect.propTypes = {
+  ...sharedPropTypes,
+  placeholder: PropTypes.string.isRequired,
+  values: PropTypes.arrayOf(PropTypes.shape({ label: PropTypes.string, value: PropTypes.any })),
+}
+
+export function Condition({ when, is, children }) {
+  return (
+    <Field name={when} subscription={{ value: true }}>
+      {({ input: { value } }) => (value === is ? children : null)}
+    </Field>
+  )
+}
+
+Condition.propTypes = {
+  when: PropTypes.string.isRequired,
+  is: PropTypes.any,
+  children: PropTypes.oneOfType([PropTypes.element, PropTypes.arrayOf(PropTypes.element)]),
+}
+
+const RFFSelectSearchClasses = {
+  container: 'form-select is-valid',
+  value: 'select-search__value',
+  input: 'select-search__input form-select',
+  select: 'select-search__select',
+  row: 'select-search__row',
+  options: 'select-search__options',
+  option: 'select-search__option',
+  group: 'select-search__group',
+  'group-header': 'select-search__group-header',
+  'is-selected': 'select-search.is-selected',
+  'is-highlighted': 'select-search.is-highlighted',
+  'is-loading': 'select-search.is-loading',
+  'has-focus': 'select-search.has-focus',
+}
+
+export const RFFSelectSearch = ({ name, label, values = [], placeholder, validate }) => {
+  return (
+    <Field name={name} validate={validate}>
+      {({ meta, input }) => {
+        return (
+          <div>
+            <CFormLabel htmlFor={name}>{label}</CFormLabel>
+            <SelectSearch
+              {...input}
+              valid={!meta.error && meta.touched}
+              invalid={meta.error && meta.touched}
+              search
+              id={name}
+              // @todo fix this override so the styling is the same as coreui or override render?
+              className={(key) => RFFSelectSearchClasses[key]}
+              name={name}
+              options={values}
+              filterOptions={fuzzySearch}
+              value={input.value}
+              onChange={input.onChange}
+              placeholder={placeholder}
+            />
+            <RFFCFormFeedback meta={meta} />
+          </div>
+        )
+      }}
+    </Field>
+  )
+}
+
+RFFSelectSearch.propTypes = {
+  ...sharedPropTypes,
+  placeholder: PropTypes.string,
+  values: PropTypes.arrayOf(PropTypes.shape({ value: PropTypes.string, name: PropTypes.string }))
+    .isRequired,
 }

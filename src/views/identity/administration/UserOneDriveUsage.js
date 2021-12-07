@@ -5,6 +5,7 @@ import {
   CCard,
   CCardBody,
   CCardHeader,
+  CCardTitle,
   CSpinner,
   CTable,
   CTableBody,
@@ -77,7 +78,7 @@ export default function UserOneDriveUsage({ userUPN, tenantDomain }) {
   return (
     <CCard>
       <CCardHeader className="d-flex justify-content-between">
-        One Drive Details
+        <CCardTitle>One Drive Details</CCardTitle>
         <CIcon icon={cilFolder} />
       </CCardHeader>
       <CCardBody>

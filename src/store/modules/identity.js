@@ -15,7 +15,7 @@ const initialState = {
   licenses: {
     loading: false,
     loaded: false,
-    licenses: [],
+    list: [],
   },
   cap: {
     loading: false,
@@ -47,6 +47,11 @@ const initialState = {
     loading: false,
     loaded: false,
   },
+  domains: {
+    list: [],
+    loading: false,
+    loaded: false,
+  },
 }
 
 const USERS_LOAD = 'users/USERS_LOAD'
@@ -60,6 +65,10 @@ const GROUPS_LOAD_ERROR = 'groups/GROUPS_LOAD_ERROR'
 const DEVICES_LOAD = 'devices/DEVICES_LOAD'
 const DEVICES_LOAD_SUCCESS = 'devices/DEVICES_LOAD_SUCCESS'
 const DEVICES_LOAD_ERROR = 'devices/DEVICES_LOAD_ERROR'
+
+const DOMAINS_LOAD = 'users/DOMAINS_LOAD'
+const DOMAINS_LOAD_SUCCESS = 'users/DOMAINS_LOAD_SUCCESS'
+const DOMAINS_LOAD_FAIL = 'users/DOMAINS_LOAD_FAIL'
 
 const USER_LOAD = 'user/USER_LOAD'
 const USER_LOAD_SUCCESS = 'user/USER_LOAD_SUCCESS'
@@ -222,7 +231,7 @@ export default function reducer(state = initialState, action = {}) {
         licenses: {
           loading: false,
           loaded: true,
-          licenses: action.result,
+          list: action.result,
         },
       }
     case LICENSE_LOAD_FAIL:
@@ -399,6 +408,31 @@ export default function reducer(state = initialState, action = {}) {
         groups: initialState.groups,
         mailbox: initialState.mailbox,
       }
+    case DOMAINS_LOAD:
+      return {
+        ...state,
+        domains: {
+          ...initialState.domains,
+          loading: true,
+        },
+      }
+    case DOMAINS_LOAD_SUCCESS:
+      return {
+        ...state,
+        domains: {
+          loading: false,
+          loaded: true,
+          list: [...action.result],
+        },
+      }
+    case DOMAINS_LOAD_FAIL:
+      return {
+        ...state,
+        domains: {
+          ...initialState.domains,
+          error: action.error,
+        },
+      }
     default:
       return state
   }
@@ -430,6 +464,16 @@ export function listDevices({ tenant }) {
     promise: (client) =>
       client
         .get('/api/ListDevices?Tenantfilter=' + tenant.defaultDomainName)
+        .then((result) => result.data),
+  }
+}
+
+export function listDomains({ tenantDomain }) {
+  return {
+    types: [DOMAINS_LOAD, DOMAINS_LOAD_SUCCESS, DOMAINS_LOAD_FAIL],
+    promise: (client) =>
+      client
+        .get('/api/ListDomains', { params: { tenantFilter: tenantDomain } })
         .then((result) => result.data),
   }
 }
@@ -477,13 +521,13 @@ export function listUserGroups({ tenantDomain, userId }) {
   }
 }
 
-export function listLicenses({ tenantDomain, userId }) {
+export function listLicenses({ tenantDomain }) {
   return {
     types: [LICENSE_LOAD, LICENSE_LOAD_SUCCESS, LICENSE_LOAD_FAIL],
     hideToastError: true,
     promise: (client) =>
       client
-        .get('/api/ListLicenses', { params: { userId, tenantFilter: tenantDomain } })
+        .get('/api/ListLicenses', { params: { tenantFilter: tenantDomain } })
         .then((result) => result.data),
   }
 }

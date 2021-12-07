@@ -4,6 +4,7 @@ import {
   CCard,
   CCardBody,
   CCardHeader,
+  CCardTitle,
   CSpinner,
   CTable,
   CTableBody,
@@ -82,7 +83,7 @@ export default function UserDetails({
   return (
     <CCard>
       <CCardHeader className="d-flex justify-content-between">
-        {user.displayName}
+        <CCardTitle>{user.displayName}</CCardTitle>
         <CIcon icon={cilContact} />
       </CCardHeader>
       <CCardBody className="card-body">
