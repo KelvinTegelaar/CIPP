@@ -1,17 +1,17 @@
 {
-  "name": "@coreui/coreui-free-react-admin-template",
-  "version": "4.0.0",
-  "description": "CoreUI Free React Admin Template",
-  "homepage": ".",
+  "name": "CIPP",
+  "version": "1.5.1",
+  "description": "The CyberDrain Improved Partner Portal is a portal to help manage administration for Microsoft Partners.",
+  "homepage": "https://cipp.app/",
   "bugs": {
-    "url": "https://github.com/coreui/coreui-free-react-admin-template/issues"
+    "url": "https://github.com/KelvinTegelaar/CIPP/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:coreui/coreui-free-react-admin-template.git"
+    "url": "git@github.com:KelvinTegelaar/CIPP.git"
   },
-  "license": "MIT",
-  "author": "The CoreUI Team (https://github.com/orgs/coreui/people)",
+  "license": "AGPL-3.0",
+  "author": "CIPP Contributors",
   "scripts": {
     "build": "react-scripts build",
     "changelog": "auto-changelog --starting-version 3.0.0 --commit-limit false --hide-credit",
@@ -69,7 +69,7 @@
     "sass": "^1.43.2"
   },
   "engines": {
-    "node": ">=10",
-    "npm": ">=6"
+    "node": "16",
+    "npm": ">=7"
   }
 }
