@@ -1,0 +1,52 @@
+<main>
+    <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
+        <div class="container-fluid px-4">
+            <div class="page-header-content">
+                <div class="row align-items-center justify-content-between pt-3">
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- Main page content-->
+    <div class="container-fluid px-4">
+        <div><label for="exampleDataList" class="form-label">Tenant Selector</label>
+            <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Type to search..."
+                style="width: 50%;" oninput='onInput()'>
+            <datalist id="datalistOptions">
+                <option value="Select a tenant" text="Select a tenant">
+            </datalist>
+        </div><br>
+        <div class="card">
+            <div class="card-header">Roles List</div>
+            <div class="card-body">
+                <table id="datatablesSimple">
+                    <table cellpadding="0" cellspacing="0" class="datatable-1 table table-striped" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Members</th>
+                            </tr>
+                        </thead>
+                        <tbody id='RolesTable'>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Members</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+            </div>
+        </div>
+    </div>
+</main>
+<script src="js/datatables/jquery.dataTables.js"></script>
+<script src="js/tenantlist.js"></script>
+<script src="js/datatables/datatablesRoles.js"></script>
+
+</body>
+
+
+</html>
