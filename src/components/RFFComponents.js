@@ -11,6 +11,7 @@ import SelectSearch, { fuzzySearch } from 'react-select-search'
 import { Field } from 'react-final-form'
 import React from 'react'
 import PropTypes from 'prop-types'
+import classNames from 'classnames'
 
 /*
   wrapper classes for React Final Form with CoreUI
@@ -280,7 +281,15 @@ export const RFFSelectSearch = ({ name, label, values = [], placeholder, validat
               search
               id={name}
               // @todo fix this override so the styling is the same as coreui or override render?
-              className={(key) => RFFSelectSearchClasses[key]}
+              className={(key) => {
+                if (key === 'container') {
+                  return classNames('form-select', {
+                    'is-valid': !meta.error && meta.touched,
+                    'is-invalid': meta.error && meta.touched,
+                  })
+                }
+                return RFFSelectSearchClasses[key]
+              }}
               name={name}
               options={values}
               filterOptions={fuzzySearch}
