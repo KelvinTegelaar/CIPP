@@ -48,7 +48,7 @@ const columns = [
 ]
 
 export default function UserEmailUsage({
-  mailbox: { details = {}, loading = false, loaded = false, error },
+  mailbox: { report = {}, loading = false, loaded = false, error },
 }) {
   return (
     <CCard>
@@ -69,11 +69,11 @@ export default function UserEmailUsage({
                   <CTableRow key={index}>
                     <CTableDataCell>{column.text}</CTableDataCell>
                     {!column.formatter && (
-                      <CTableDataCell>{details[column.dataField] ?? 'n/a'}</CTableDataCell>
+                      <CTableDataCell>{report[column.dataField] ?? 'n/a'}</CTableDataCell>
                     )}
                     {column.formatter && (
                       <CTableDataCell>
-                        {column.formatter(details[column.dataField], details)}
+                        {column.formatter(report[column.dataField], report)}
                       </CTableDataCell>
                     )}
                   </CTableRow>

@@ -6,9 +6,9 @@ import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit'
 import paginationFactory from 'react-bootstrap-table2-paginator'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { cilSettings, cilUser } from '@coreui/icons'
+import { cilSettings } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
-import { listSharepointSites } from '../../../store/modules/identity'
+import { listSharepointSitesUsage } from '../../../store/modules/sharepoint'
 
 const { SearchBar } = Search
 
@@ -74,20 +74,21 @@ const columns = [
 const SharepointList = () => {
   const dispatch = useDispatch()
   const tenant = useSelector((state) => state.app.currentTenant)
-  const sharepoint = useSelector((state) => state.identity.sharepoint)
+  const sharepoint = useSelector((state) => state.sharepoint.usage)
 
   useEffect(() => {
     async function load() {
       if (Object.keys(tenant).length !== 0) {
-        dispatch(listSharepointSites({ tenant: tenant }))
+        dispatch(listSharepointSitesUsage({ tenantDomain: tenant.defaultDomainName }))
       }
     }
 
     load()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const action = (tenant) => {
-    dispatch(listSharepointSites({ tenant: tenant }))
+    dispatch(listSharepointSitesUsage({ tenantDomain: tenant.defaultDomainName }))
   }
 
   return (

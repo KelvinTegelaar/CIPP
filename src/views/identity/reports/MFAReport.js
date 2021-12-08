@@ -94,8 +94,11 @@ const MFAReport = () => {
   }
 
   useEffect(() => {
-    if (tenantSelected) {
+    async function load() {
       dispatch(loadMFAReport({ domain: tenant.defaultDomainName }))
+    }
+    if (tenantSelected) {
+      load()
     }
   }, [])
 

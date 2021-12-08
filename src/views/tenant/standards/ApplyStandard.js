@@ -1,5 +1,5 @@
 import React from 'react'
-import { CAlert, CCard, CCol, CFormCheck, CFormSwitch, CRow } from '@coreui/react'
+import { CAlert, CCard, CCol, CRow } from '@coreui/react'
 import { Field } from 'react-final-form'
 import CIcon from '@coreui/icons-react'
 import { cilWarning } from '@coreui/icons'

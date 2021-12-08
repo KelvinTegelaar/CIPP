@@ -15,7 +15,7 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilClock, cilFolder } from '@coreui/icons'
 import CellProgressBar from '../../../components/cipp/CellProgressBar'
-import { listOneDriveUsage } from '../../../store/modules/identity'
+import { listOneDriveUsage } from '../../../store/modules/oneDrive'
 
 const columns = [
   {
@@ -71,7 +71,7 @@ export default function UserOneDriveUsage({ userUPN, tenantDomain }) {
     loading = false,
     loaded = false,
     error = undefined,
-  } = useSelector((state) => state.identity.oneDrive) ?? {}
+  } = useSelector((state) => state.oneDrive.usage) || {}
 
   const noUsage = Object.keys(report).length === 0 ?? false
 

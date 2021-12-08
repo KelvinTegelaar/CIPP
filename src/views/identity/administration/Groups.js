@@ -6,7 +6,7 @@ import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreu
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit'
 import BootstrapTable from 'react-bootstrap-table-next'
 import paginationFactory from 'react-bootstrap-table2-paginator'
-import { listGroups } from '../../../store/modules/identity'
+import { listGroups } from '../../../store/modules/groups'
 
 const { SearchBar } = Search
 const pagination = paginationFactory()
@@ -45,6 +45,7 @@ const columns = [
   },
   {
     text: 'Action',
+    isDummyField: true,
     formatter: dropdown,
   },
 ]
@@ -52,7 +53,7 @@ const columns = [
 const Groups = () => {
   const dispatch = useDispatch()
   const tenant = useSelector((state) => state.app.currentTenant)
-  const groups = useSelector((state) => state.identity.groups)
+  const groups = useSelector((state) => state.groups.groups)
   useEffect(() => {
     async function load() {
       if (Object.keys(tenant).length !== 0) {
@@ -93,6 +94,7 @@ const Groups = () => {
             )}
           </ToolkitProvider>
         )}
+        {!groups.loaded && !groups.loading && groups.error && <span>Failed to load groups</span>}
       </div>
     </div>
   )
