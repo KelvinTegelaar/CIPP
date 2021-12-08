@@ -9,7 +9,8 @@ import { Link } from 'react-router-dom'
 import { cilSettings, cilUser } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 
-import { listUsers } from '../../../store/modules/identity'
+import { listUsers } from '../../../store/modules/users'
+import CellBoolean from '../../../components/cipp/CellBoolean'
 
 const { SearchBar } = Search
 
@@ -30,7 +31,10 @@ const dropdown = (cell, row, rowIndex, formatExtraData) => {
           </Link>
         </CDropdownItem>
         <CDropdownItem href="#">
-          <Link className="dropdown-item" to="/identity/administration/users/edit">
+          <Link
+            className="dropdown-item"
+            to={`/identity/administration/users/edit?userId=${row.id}&tenantDomain=${row.primDomain}`}
+          >
             <CIcon icon={cilSettings} className="me-2" />
             Edit User
           </Link>
@@ -64,11 +68,13 @@ const columns = [
   {
     text: 'Account Enabled',
     dataField: 'accountEnabled',
+    formatter: (cell) => CellBoolean({ cell }),
     sort: true,
   },
   {
     text: 'On Premise Sync',
     dataField: 'onPremisesSyncEnabled',
+    formatter: (cell) => CellBoolean({ cell }),
     sort: true,
   },
   {
@@ -84,7 +90,8 @@ const columns = [
 const Users = () => {
   const dispatch = useDispatch()
   const tenant = useSelector((state) => state.app.currentTenant)
-  const users = useSelector((state) => state.identity.users)
+  const users = useSelector((state) => state.users.users)
+
   useEffect(() => {
     async function load() {
       if (Object.keys(tenant).length !== 0) {
@@ -93,6 +100,7 @@ const Users = () => {
     }
 
     load()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const action = (tenant) => {
@@ -106,6 +114,7 @@ const Users = () => {
       <div className="bg-white rounded p-5">
         <h3>Users</h3>
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
+        {!users.loading && users.error && <span>Error loading users</span>}
         {!users.loaded && users.loading && <CSpinner />}
         {users.loaded && !users.loading && Object.keys(tenant).length !== 0 && (
           <ToolkitProvider keyField="displayName" columns={columns} data={users.list} search>

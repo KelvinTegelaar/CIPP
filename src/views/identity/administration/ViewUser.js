@@ -1,25 +1,21 @@
 import React, { useEffect, useState } from 'react'
-import CIcon from '@coreui/icons-react'
-import { cilClock, cilCog, cilContact, cilFolder } from '@coreui/icons'
-import { CCard, CCardBody, CCardHeader, CCol, CRow, CSpinner } from '@coreui/react'
+import { CCard, CCol, CRow } from '@coreui/react'
 import PropTypes from 'prop-types'
 
 import useQuery from '../../../hooks/useQuery'
 import { useDispatch, useSelector } from 'react-redux'
 import { setModalContent, showModal } from '../../../store/modules/modal'
 import {
-  listOneDriveUsage,
   listUser,
   listUserConditionalAccessPolicies,
-  listUserMailboxDetails,
   unloadViewUser,
-} from '../../../store/modules/identity'
+} from '../../../store/modules/users'
+import { listUserMailboxDetails } from '../../../store/modules/mailbox'
 import UserDevices from './UserDevices'
 import UserDetails from './UserDetails'
 import UserLastLoginDetails from './UserLastLoginDetails'
 import UserCAPs from './UserCAPs'
 import UserActions from './UserActions'
-import OneDriveList from '../../teams-share/onedrive/OneDriveList'
 import UserOneDriveUsage from './UserOneDriveUsage'
 import User365Management from './User365Management'
 import UserEmailDetails from './UserEmailDetails'
@@ -35,15 +31,13 @@ const ViewUser = (props) => {
   const userId = query.get('userId')
   const tenantDomain = query.get('tenantDomain')
 
-  const identity = useSelector((store) => store.identity)
+  const users = useSelector((state) => state.users) || {}
+  const mailbox = useSelector((state) => state.mailbox) || {}
 
+  const { user = {}, loading: userLoading = false, loaded: userLoaded, error: userError } = users
   const {
-    user = {},
-    loading: userLoading = false,
-    loaded: userLoaded,
-    error: userError,
-  } = identity.user
-
+    details: { loaded: mailboxLoaded = false },
+  } = mailbox
   const [queryError, setQueryError] = useState(false)
 
   useEffect(() => {
@@ -71,11 +65,11 @@ const ViewUser = (props) => {
         <>
           <CRow>
             <CCol xl={4}>
-              <UserDetails user={identity.user} />
+              <UserDetails user={users.user} />
             </CCol>
             <CCol xl={4}>
-              <UserLastLoginDetails user={identity.user} style={{ paddingBottom: '24px' }} />
-              <UserCAPs cap={identity.cap} />
+              <UserLastLoginDetails user={users.user} style={{ paddingBottom: '24px' }} />
+              <UserCAPs cap={users.userCAPs} />
             </CCol>
             <CCol xl={4}>
               <UserActions
@@ -94,21 +88,17 @@ const ViewUser = (props) => {
 
           <CRow>
             <CCol xl={4}>
-              <UserEmailDetails user={identity.user} />
+              <UserEmailDetails user={users.user} />
             </CCol>
             <CCol xl={4}>
-              {identity.mailbox && identity.mailbox.loaded && (
+              {mailboxLoaded && (
                 <>
-                  <UserEmailUsage mailbox={identity.mailbox} />
-                  <UserEmailPermissions mailbox={identity.mailbox} />
+                  <UserEmailUsage mailbox={mailbox.details} />
+                  <UserEmailPermissions mailbox={mailbox.details} />
                 </>
               )}
             </CCol>
-            <CCol xl={4}>
-              {identity.mailbox && identity.mailbox.loaded && (
-                <UserEmailSettings mailbox={identity.mailbox} />
-              )}
-            </CCol>
+            <CCol xl={4}>{mailboxLoaded && <UserEmailSettings mailbox={mailbox.details} />}</CCol>
           </CRow>
 
           <CRow>
@@ -128,6 +118,7 @@ const ViewUser = (props) => {
           </CRow>
         </>
       )}
+      {userError && <span>Error loading user</span>}
     </CCard>
   )
 }

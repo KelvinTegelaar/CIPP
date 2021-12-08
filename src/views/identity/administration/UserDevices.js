@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
-import { listUserDevices } from '../../../store/modules/identity'
+import { listUserDevices } from '../../../store/modules/devices'
 import { CCard, CCardBody, CCardHeader, CCardTitle, CLink } from '@coreui/react'
 import BootstrapTable from 'react-bootstrap-table-next'
 import CellBoolean from '../../../components/cipp/CellBoolean'
@@ -105,10 +105,10 @@ export default function UserDevices({ userId, tenantDomain }) {
     dispatch(listUserDevices({ tenantDomain, userId }))
   }, [])
 
-  const { devices = [], loading, loaded, error } = useSelector((store) => store.identity.devices)
+  const { list = [], loading, loaded, error } = useSelector((store) => store.devices.userDevices)
 
   // inject tenant domain into devices for column render
-  const mapped = devices.map((device) => ({ ...device, tenantDomain }))
+  const mapped = list.map((device) => ({ ...device, tenantDomain }))
 
   return (
     <CCard>

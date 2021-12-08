@@ -14,7 +14,7 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked } from '@coreui/icons'
 
-export default function UserCAPs({ cap: { policies, loading, loaded, error } = {} }) {
+export default function UserCAPs({ cap: { list = [], loading, loaded, error } = {} }) {
   return (
     <CCard>
       <CCardHeader className="d-flex justify-content-between">
@@ -26,7 +26,7 @@ export default function UserCAPs({ cap: { policies, loading, loaded, error } = {
         {loaded && !error && (
           <CTable>
             <CTableBody>
-              {policies.map((policy, index) => (
+              {list.map((policy, index) => (
                 <CTableRow key={index}>
                   <CTableDataCell>{policy.displayName ?? 'n/a'}</CTableDataCell>
                 </CTableRow>

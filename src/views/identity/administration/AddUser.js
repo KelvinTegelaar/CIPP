@@ -7,16 +7,16 @@ import {
   CCardTitle,
   CCol,
   CForm,
-  CFormInput,
-  CFormLabel,
-  CFormSelect,
   CInputGroup,
   CInputGroupText,
   CRow,
   CSpinner,
 } from '@coreui/react'
 import TenantSelector from '../../../components/cipp/TenantSelector'
-import { listDomains, listLicenses, listUsers } from '../../../store/modules/identity'
+
+import { listDomains } from '../../../store/modules/domains'
+import { listLicenses } from '../../../store/modules/licenses'
+import { listUsers } from '../../../store/modules/users'
 import { useDispatch, useSelector } from 'react-redux'
 import { Form } from 'react-final-form'
 import {
@@ -40,7 +40,9 @@ const passwordRequired = (value, values) => {
 
 export default function AddUser() {
   const dispatch = useDispatch()
-  const identity = useSelector((state) => state.identity) || {}
+  const domains = useSelector((state) => state.domains) || {}
+  const licenses = useSelector((state) => state.licenses) || {}
+  const users = useSelector((state) => state.users) || {}
   const app = useSelector((state) => state.app) ?? {}
   const { currentTenant = {} } = app
   const {
@@ -50,14 +52,18 @@ export default function AddUser() {
       loaded: licenseLoaded,
       error: licenseError,
     } = {},
+  } = licenses
+  const {
     domains: {
       list: domainsList = [],
       loading: domainsLoading,
       loaded: domainsLoaded,
       error: domainsError,
     } = {},
+  } = domains
+  const {
     users: { list: usersList = [], loading: usersLoading, loaded: usersLoaded, error: usersError },
-  } = identity
+  } = users
 
   const action = () => {
     dispatch(listLicenses({ tenantDomain: currentTenant.defaultDomainName }))

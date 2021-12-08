@@ -1,7 +1,5 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import { useDispatch, useSelector } from 'react-redux'
-import { listUser } from '../../../store/modules/identity'
 import {
   CCard,
   CCardBody,
@@ -15,7 +13,6 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilClock } from '@coreui/icons'
-import UserDetails from './UserDetails'
 
 const columns = [
   {

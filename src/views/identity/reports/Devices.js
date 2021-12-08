@@ -5,7 +5,7 @@ import { CSpinner } from '@coreui/react'
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit'
 import BootstrapTable from 'react-bootstrap-table-next'
 import paginationFactory from 'react-bootstrap-table2-paginator'
-import { listDevices } from '../../../store/modules/identity'
+import { listDevices } from '../../../store/modules/devices'
 
 const { SearchBar } = Search
 const pagination = paginationFactory()
@@ -86,7 +86,8 @@ const columns = [
 const Devices = () => {
   const dispatch = useDispatch()
   const tenant = useSelector((state) => state.app.currentTenant)
-  const devices = useSelector((state) => state.identity.devices)
+  const { list = [], loading, loaded, error } = useSelector((state) => state.devices.devices)
+
   useEffect(() => {
     async function load() {
       if (Object.keys(tenant).length !== 0) {
@@ -95,11 +96,13 @@ const Devices = () => {
     }
 
     load()
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tenant, dispatch])
 
   const action = (tenant) => {
-    dispatch(listDevices({ tenant: tenant }))
+    dispatch(listDevices({ tenantDomain: tenant.defaultDomainName }))
   }
+
   return (
     <div>
       <TenantSelector action={action} />
@@ -107,9 +110,9 @@ const Devices = () => {
       <div className="bg-white rounded p-5">
         <h3>Devices</h3>
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-        {!devices.loaded && devices.loading && <CSpinner />}
-        {devices.loaded && !devices.loading && Object.keys(tenant).length !== 0 && (
-          <ToolkitProvider keyField="displayName" columns={columns} data={devices.list} search>
+        {!loaded && loading && <CSpinner />}
+        {loaded && !loading && !error && Object.keys(tenant).length !== 0 && (
+          <ToolkitProvider keyField="displayName" columns={columns} data={list} search>
             {(props) => (
               <div>
                 {/* eslint-disable-next-line react/prop-types */}

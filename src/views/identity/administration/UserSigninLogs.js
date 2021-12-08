@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
-import { listUserSigninLogs } from '../../../store/modules/identity'
+import { listUserSigninLogs } from '../../../store/modules/users'
 import {
   CButton,
   CCard,
   CCardBody,
   CCardHeader,
   CCardTitle,
+  CSpinner,
   CTable,
   CTableBody,
   CTableDataCell,
@@ -35,15 +36,15 @@ const rowStyle = (row, rowIndex) => {
 
 export default function UserSigninLogs({ userId, tenantDomain }) {
   const dispatch = useDispatch()
-  const signin = useSelector((store) => store.identity.signin)
+  const signin = useSelector((store) => store.users.userSignInLogs)
 
-  const { logs = [], loading = false, loaded = false, error = undefined } = signin ?? {}
+  const { list = [], loading = false, loaded = false, error = undefined } = signin ?? {}
 
   useEffect(() => {
     dispatch(listUserSigninLogs({ tenantDomain, userId }))
   }, [])
 
-  const mapped = logs.map((val) => ({ ...val, tenantDomain }))
+  const mapped = list.map((val) => ({ ...val, tenantDomain }))
 
   const handleClickAppliedCAPs = ({ row }) => {
     dispatch(
@@ -154,6 +155,7 @@ export default function UserSigninLogs({ userId, tenantDomain }) {
         <CIcon icon={cilLaptop} />
       </CCardHeader>
       <CCardBody>
+        {loading && !loaded && <CSpinner />}
         {!loading && loaded && (
           <BootstrapTable
             keyField="id"
