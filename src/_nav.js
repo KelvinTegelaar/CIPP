@@ -45,6 +45,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Roles',
+        to: '/identity/administration/roles',
+      },
+      {
+        component: CNavItem,
         name: 'Offboarding Wizard',
         to: '/identity/administration/offboarding-wizard',
       },

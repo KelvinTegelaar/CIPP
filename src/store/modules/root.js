@@ -15,6 +15,7 @@ import tenants from './tenants'
 import toast from './toast'
 import users from './users'
 import version from './version'
+import roles from './roles'
 
 export default combineReducers({
   app,
@@ -33,4 +34,5 @@ export default combineReducers({
   toast,
   users,
   version,
+  roles,
 })
