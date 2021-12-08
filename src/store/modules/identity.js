@@ -52,11 +52,20 @@ const initialState = {
     loading: false,
     loaded: false,
   },
+  sharepoint: {
+    list: [],
+    loading: false,
+    loaded: false,
+  },
 }
 
 const USERS_LOAD = 'users/USERS_LOAD'
 const USERS_LOAD_SUCCESS = 'users/USERS_LOAD_SUCCESS'
 const USERS_LOAD_ERROR = 'users/USERS_LOAD_ERROR'
+
+const SHAREPOINT_LOAD = 'sharepoint/SHAREPOINT_LOAD'
+const SHAREPOINT_LOAD_SUCCESS = 'sharepoint/SHAREPOINT_LOAD_SUCCESS'
+const SHAREPOINT_LOAD_ERROR = 'sharepoint/SHAREPOINT_LOAD_ERROR'
 
 const GROUPS_LOAD = 'groups/GROUPS_LOAD'
 const GROUPS_LOAD_SUCCESS = 'groups/GROUPS_LOAD_SUCCESS'
@@ -433,6 +442,35 @@ export default function reducer(state = initialState, action = {}) {
           error: action.error,
         },
       }
+    case SHAREPOINT_LOAD:
+      return {
+        ...state,
+        sharepoint: {
+          ...state.sharepoint,
+          loading: true,
+          loaded: false,
+        },
+      }
+    case SHAREPOINT_LOAD_SUCCESS:
+      return {
+        ...state,
+        sharepoint: {
+          ...state.sharepoint,
+          loading: false,
+          loaded: true,
+          list: action.result,
+        },
+      }
+    case SHAREPOINT_LOAD_ERROR:
+      return {
+        ...state,
+        sharepoint: {
+          ...state.sharepoint,
+          loading: false,
+          loaded: false,
+          error: action.error,
+        },
+      }
     default:
       return state
   }
@@ -444,6 +482,16 @@ export function listUsers({ tenant }) {
     promise: (client) =>
       client
         .get('/api/ListUsers?TenantFilter=' + tenant.defaultDomainName)
+        .then((result) => result.data),
+  }
+}
+
+export function listSharepointSites({ tenant }) {
+  return {
+    types: [SHAREPOINT_LOAD, SHAREPOINT_LOAD_SUCCESS, SHAREPOINT_LOAD_ERROR],
+    promise: (client) =>
+      client
+        .get('/api/ListSites?type=SharePointSiteUsage&Tenantfilter=' + tenant.defaultDomainName)
         .then((result) => result.data),
   }
 }
