@@ -272,7 +272,7 @@ const _nav = [
       {
         component: CNavItem,
         name: 'Documentation',
-        href: 'https://github.com/KelvinTegelaar/CIPP',
+        href: 'https://cipp.app',
       },
       {
         component: CNavItem,
