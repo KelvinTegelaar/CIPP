@@ -8,6 +8,7 @@ const AddUser = React.lazy(() => import('./views/identity/administration/AddUser
 const EditUser = React.lazy(() => import('./views/identity/administration/EditUser'))
 const ViewUser = React.lazy(() => import('./views/identity/administration/ViewUser'))
 const Groups = React.lazy(() => import('./views/identity/administration/Groups'))
+const EditGroup = React.lazy(() => import('./views/identity/administration/EditGroup'))
 const Devices = React.lazy(() => import('./views/identity/reports/Devices'))
 const MFAReport = React.lazy(() => import('./views/identity/reports/MFAReport'))
 const Tenants = React.lazy(() => import('./views/tenant/administration/Tenants'))
@@ -70,6 +71,8 @@ const routes = [
   { path: '/identity/administration', name: 'Administration' },
   { path: '/identity/administration/users', name: 'Users', component: Users },
   { path: '/identity/administration/groups', name: 'Groups', component: Groups },
+  { path: '/identity/administration/EditGroup', name: 'Edit Group', component: EditGroup },
+
   {
     path: '/identity/administration/offboarding-wizard',
     name: 'Offboarding Wizard',

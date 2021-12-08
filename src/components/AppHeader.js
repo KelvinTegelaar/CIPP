@@ -9,11 +9,12 @@ import {
   CHeaderToggler,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
+import { CImage } from '@coreui/react'
 import { cilMenu } from '@coreui/icons'
 
 import { AppBreadcrumb } from './index'
 import { AppHeaderDropdown } from './header/index'
-import { logo } from 'src/assets/brand/logo'
+import cyberdrainlogo from 'src/assets/images/CIPP.png'
 import { toggleSidebarShow } from '../store/modules/app'
 
 const AppHeader = () => {
@@ -30,7 +31,7 @@ const AppHeader = () => {
           <CIcon icon={cilMenu} size="lg" />
         </CHeaderToggler>
         <CHeaderBrand className="mx-auto d-md-none" to="/">
-          <CIcon icon={logo} height={48} alt="Logo" />
+          <CImage src={cyberdrainlogo} height={48} alt="Logo" />
         </CHeaderBrand>
         <CHeaderNav className="ms-3">
           <AppHeaderDropdown />
