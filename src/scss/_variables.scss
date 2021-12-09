@@ -36,10 +36,10 @@
 // fusv-enable
 
 // $high-emphasis:            rgba(shift-color($gray-base, +26), .95) !default;
-$medium-emphasis: rgba(247, 127, 0) !default;
+//$medium-emphasis: rgba(247, 127, 0) !default;
 // $disabled:                 rgba(shift-color($gray-base, +26), .38) !default;
 
-$high-emphasis-inverse: rgba(247, 127, 0) !default;
+//$high-emphasis-inverse: rgba(247, 127, 0) !default;
 // $medium-emphasis-inverse:  rgba($white, .6) !default;
 // $disabled-inverse:         rgba($white, .38) !default;
 
@@ -75,15 +75,15 @@ $high-emphasis-inverse: rgba(247, 127, 0) !default;
 // scss-docs-end colors-map
 
 // fusv-disable
-// $primary-dark:  #1f1498 !default;
-// $primary-base:  #321fdb !default;
-// $primary-50:    #988fed !default;
-// $primary-25:    #ccc7f6 !default;
+$primary-dark: rgb(226, 92, 9) !default;
+$primary-base: rgba(247, 127, 0) !default;
+$primary-50: rgba(247, 128, 0, 0.514) !default;
+$primary-25: rgba(247, 128, 0, 0.219) !default;
 
-// $secondary-dark:  #212233 !default;
-// $secondary-base:  #9da5b1 !default;
-// $secondary-50:    #9da5b1 !default;
-// $secondary-25:    #ced2d8 !default;
+$secondary-dark: rgb(1, 42, 65) !default;
+$secondary-base: rgba(0, 48, 73) !default;
+$secondary-50: rgba(0, 47, 73, 0.479) !default;
+$secondary-25: rgba(0, 47, 73, 0.205) !default;
 
 // $success-dark:  #1b9e3e !default;
 // $success-base:  #2eb85c !default;
@@ -1654,9 +1654,9 @@ $sidebar-nav-link-padding-x: 0.6rem !default;
 // $sidebar-nav-link-hover-bg:                rgba($white, .05) !default;
 // $sidebar-nav-link-hover-icon-color:        $high-emphasis-inverse !default;
 
-// $sidebar-nav-link-active-color:            $high-emphasis-inverse !default;
+$sidebar-nav-link-active-color: rgba(247, 127, 0) !default;
 // $sidebar-nav-link-active-bg:               rgba($white, .05) !default;
-// $sidebar-nav-link-active-icon-color:       $high-emphasis-inverse !default;
+$sidebar-nav-link-active-icon-color: rgba(247, 127, 0) !default;
 
 // $sidebar-nav-link-disabled-color:          $disabled-inverse !default;
 // $sidebar-nav-link-disabled-icon-color:     $sidebar-nav-link-icon-color !default;
