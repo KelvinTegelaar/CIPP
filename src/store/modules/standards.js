@@ -11,6 +11,12 @@ const initialState = {
     loaded: false,
     updateMessage: null,
   },
+  list: {
+    list: [],
+    loading: false,
+    loaded: false,
+    updateMessage: null,
+  },
   deploy: {
     loading: false,
     loaded: false,
@@ -38,6 +44,10 @@ const APPLY_STANDARDS = 'standards/APPLY_STANDARDS'
 const APPLY_STANDARDS_ERROR = 'standards/APPLY_STANDARDS_ERROR'
 const APPLY_STANDARDS_SUCCESS = 'standards/APPLY_STANDARDS_SUCCESS'
 
+const LIST_STANDARDS = 'standards/LIST_STANDARDS'
+const LIST_STANDARDS_ERROR = 'standards/LIST_STANDARDS_ERROR'
+const LIST_STANDARDS_SUCCESS = 'standards/LIST_STANDARDS_SUCCESS'
+
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
     case BPA_LOAD:
@@ -64,6 +74,34 @@ export default function reducer(state = initialState, action = {}) {
         ...state,
         bpa: {
           ...state.bpa,
+          loading: false,
+          loaded: false,
+        },
+      }
+    case LIST_STANDARDS:
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          loading: true,
+          loaded: false,
+        },
+      }
+    case LIST_STANDARDS_SUCCESS:
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          list: action.result,
+          loading: false,
+          loaded: true,
+        },
+      }
+    case LIST_STANDARDS_ERROR:
+      return {
+        ...state,
+        list: {
+          ...state.list,
           loading: false,
           loaded: false,
         },
@@ -141,6 +179,13 @@ export default function reducer(state = initialState, action = {}) {
       }
     default:
       return state
+  }
+}
+
+export function listAppliedStandards() {
+  return {
+    types: [LIST_STANDARDS, LIST_STANDARDS_ERROR, LIST_STANDARDS_SUCCESS],
+    promise: (client) => client.get('/api/ListStandards').then((result) => result.data),
   }
 }
 

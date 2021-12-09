@@ -14,6 +14,7 @@ const Devices = React.lazy(() => import('./views/identity/reports/Devices'))
 const MFAReport = React.lazy(() => import('./views/identity/reports/MFAReport'))
 const Tenants = React.lazy(() => import('./views/tenant/administration/Tenants'))
 const Domains = React.lazy(() => import('./views/tenant/administration/Domains'))
+const EditTenant = React.lazy(() => import('./views/tenant/administration/EditTenant'))
 const ConditionalAccess = React.lazy(() =>
   import('./views/tenant/administration/ConditionalAccess'),
 )
@@ -59,7 +60,6 @@ const TeamsListTeam = React.lazy(() => import('./views/teams-share/teams/TeamsLi
 const TeamsAddTeam = React.lazy(() => import('./views/teams-share/teams/TeamsAddTeam'))
 const TeamsActivity = React.lazy(() => import('./views/teams-share/teams/TeamsActivity'))
 const CIPPSettings = React.lazy(() => import('./views/cipp/CIPPSettings'))
-const EditTenant = React.lazy(() => import('./views/tenant/administration/EditTenant'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
