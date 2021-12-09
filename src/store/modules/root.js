@@ -10,6 +10,7 @@ import oneDrive from './oneDrive'
 import profile from './profile'
 import reports from './reports'
 import sharepoint from './sharepoint'
+import teams from './teams'
 import standards from './standards'
 import tenants from './tenants'
 import toast from './toast'
@@ -31,6 +32,7 @@ export default combineReducers({
   profile,
   reports,
   sharepoint,
+  teams,
   standards,
   tenants,
   toast,

@@ -24,7 +24,7 @@ const columns = [
     formatter: (cell) => CellBoolean({ cell: !cell }),
   },
   {
-    text: 'Litation Hold',
+    text: 'Litigation Hold',
     dataField: 'LitiationHold',
     formatter,
   },

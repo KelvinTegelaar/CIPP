@@ -175,31 +175,41 @@ export function listUser({ tenantDomain, userId }) {
     dispatch({
       types: [USER_LOAD, USER_LOAD_SUCCESS, USER_LOAD_FAIL],
       hideToastError: true,
-      promise: (client) =>
-        client
-          .get('/api/ListUsers', { params: { TenantFilter: tenantDomain, userId } })
-          .then((result) => {
-            if (result.data && result.data.length > 0) {
-              return result.data[0]
-            }
-            dispatch(setModalContent({ body: 'Error loading user', title: 'User Not Found' }))
-            dispatch(showModal())
+      promise: async (client) => {
+        try {
+          const result = await client.get('/api/ListUsers', {
+            params: { TenantFilter: tenantDomain, userId },
           })
-          .catch((error) => {
-            dispatch(
-              setModalContent({
-                body: (
-                  <div>
-                    Error loading user
-                    <br />
-                    <pre>{JSON.stringify(error, null, 2)}</pre>
-                  </div>
-                ),
-                title: 'User Not Found',
-              }),
-            )
-            dispatch(showModal())
-          }),
+
+          if (result.data && result.data.length > 0) {
+            return result.data[0]
+          }
+
+          dispatch(setModalContent({ body: 'Error loading user', title: 'User Not Found' }))
+          dispatch(showModal())
+          dispatch({
+            type: USER_LOAD_FAIL,
+            hideToastError: true,
+            error: new Error('User not found'),
+          })
+          return {}
+        } catch (error) {
+          dispatch(
+            setModalContent({
+              body: (
+                <div>
+                  Error loading user
+                  <br />
+                  <pre>{JSON.stringify(error, null, 2)}</pre>
+                </div>
+              ),
+              title: 'User Not Found',
+            }),
+          )
+          dispatch(showModal())
+          return error
+        }
+      },
     })
 }
 
