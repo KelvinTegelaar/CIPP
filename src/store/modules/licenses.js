@@ -48,6 +48,12 @@ export function listLicenses({ tenantDomain }) {
     promise: (client) =>
       client
         .get('/api/ListLicenses', { params: { tenantFilter: tenantDomain } })
-        .then((result) => result.data),
+        .then((result) => result.data)
+        .then((result) => {
+          if (Array.isArray(result)) {
+            return result
+          }
+          return []
+        }),
   }
 }
