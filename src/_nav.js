@@ -126,6 +126,16 @@ const _nav = [
         name: 'Domains Analyser',
         to: '/tenant/standards/domains-analyser',
       },
+      {
+        component: CNavItem,
+        name: 'Individual Domain Check',
+        to: '/tenant/standards/Individual-domains',
+      },
+      {
+        component: CNavItem,
+        name: 'Alert List (Alpha)',
+        to: '/tenant/standards/alert-list',
+      },
     ],
   },
   {
@@ -209,6 +219,29 @@ const _nav = [
         name: 'Add Policy',
         to: '/endpoint/intune/add-policy',
       },
+      {
+        component: CNavItem,
+        name: 'Add Policy Template',
+        to: '/endpoint/intune/add-policy-template',
+      },
+      {
+        component: CNavItem,
+        name: 'List Templates',
+        to: '/endpoint/intune/list-templates',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
+    name: 'Defender',
+    to: '/endpoint/defender',
+    icon: <CIcon icon={cilShieldAlt} customClassName="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'List Defender for endpoint (Alpha)',
+        to: '/endpoint/intune/list-defender',
+      },
     ],
   },
   {
@@ -247,6 +280,11 @@ const _nav = [
     to: '/teams-share/teams',
     icon: <CIcon icon={cilGroup} customClassName="nav-icon" />,
     items: [
+      {
+        component: CNavItem,
+        name: 'Business Voice',
+        to: '/teams-share/teams/business-voice',
+      },
       {
         component: CNavItem,
         name: 'List Teams',
