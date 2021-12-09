@@ -17,44 +17,14 @@ const Formatter = (cell) => CellBoolean({ cell })
 
 const columns = [
   {
-    text: 'Assigned to User',
-    dataField: 'AssignedTo',
+    text: 'Tenant Name',
+    dataField: 'TenantID',
     sort: true,
   },
   {
-    text: 'Phone Number',
-    dataField: 'TelephoneNumber',
+    text: 'Standard',
+    dataField: 'Standard',
     sort: true,
-  },
-  {
-    text: 'Number Type',
-    dataField: 'NumberType',
-    sort: false,
-  },
-  {
-    text: 'Country',
-    dataField: 'IsoCountryCode',
-    sort: false,
-  },
-  {
-    text: 'Location',
-    dataField: 'PlaceName',
-    sort: false,
-  },
-  {
-    text: 'Activation State',
-    dataField: 'ActivationState',
-    formatter: Formatter,
-  },
-  {
-    text: 'Operator Connect',
-    dataField: 'IsOperatorConnect',
-    formatter: Formatter,
-  },
-  {
-    text: 'Purchased on',
-    dataField: 'AcquisitionDate',
-    sort: false,
   },
 ]
 
@@ -78,39 +48,40 @@ const StandardsList = () => {
       <div className="bg-white rounded p-5">
         <h3>Standards List</h3>
         {!standardsList.loaded && standardsList.loading && <CSpinner />}
-        {standardsList.loaded && !standardsList.loading && Object.keys(tenant).length !== 0 && (
-          <ToolkitProvider
-            keyField="displayName"
-            columns={columns}
-            data={standardsList.list}
-            search
-          >
-            {(props) => (
-              <div>
-                {/* eslint-disable-next-line react/prop-types */}
-                <SearchBar {...props.searchProps} />
-                <hr />
-                {/* eslint-disable-next-line react/prop-types */}
-                <ExportCSVButton {...props.csvProps}>
-                  <CButton>CSV</CButton>
-                </ExportCSVButton>
-                <ExportPDFButton
-                  pdfdata={standardsList.list}
-                  pdfheaders={columns}
-                  pdfsize="A4"
-                  reportname="MFA Report"
-                ></ExportPDFButton>
-                {/*eslint-disable */}
-                <BootstrapTable
-                  {...props.baseProps}
-                  pagination={pagination}
-                  wrapperClasses="table-responsive"
-                />
-                {/*eslint-enable */}
-              </div>
-            )}
-          </ToolkitProvider>
-        )}
+        {standardsList.loaded &&
+          !standardsList.loading(
+            <ToolkitProvider
+              keyField="displayName"
+              columns={columns}
+              data={standardsList.list}
+              search
+            >
+              {(props) => (
+                <div>
+                  {/* eslint-disable-next-line react/prop-types */}
+                  <SearchBar {...props.searchProps} />
+                  <hr />
+                  {/* eslint-disable-next-line react/prop-types */}
+                  <ExportCSVButton {...props.csvProps}>
+                    <CButton>CSV</CButton>
+                  </ExportCSVButton>
+                  <ExportPDFButton
+                    pdfdata={standardsList.list}
+                    pdfheaders={columns}
+                    pdfsize="A4"
+                    reportname="MFA Report"
+                  ></ExportPDFButton>
+                  {/*eslint-disable */}
+                  <BootstrapTable
+                    {...props.baseProps}
+                    pagination={pagination}
+                    wrapperClasses="table-responsive"
+                  />
+                  {/*eslint-enable */}
+                </div>
+              )}
+            </ToolkitProvider>,
+          )}
         {!standardsList.loaded && !standardsList.loading && standardsList.error && (
           <span>Failed to load Standards</span>
         )}
