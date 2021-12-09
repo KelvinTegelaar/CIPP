@@ -28,6 +28,7 @@ function ExportPDFButton(props) {
       columns: headerObj,
       body: pdfdata,
       theme: 'grid',
+      headStyles: { fillColor: [247, 127, 0] },
     }
 
     doc.text(title, marginLeft, 40)
