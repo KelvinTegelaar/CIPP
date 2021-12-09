@@ -50,12 +50,3 @@ body {
     @include dark();
   }
 }
-
-//compressing the menu for a better look
-.sidebar-nav .nav-link {
-  padding: 0.4rem 0.6rem;
-}
-
-.sidebar {
-  --cui-sidebar-width: 17rem;
-}
