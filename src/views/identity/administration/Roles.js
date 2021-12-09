@@ -51,7 +51,7 @@ const Roles = () => {
       <TenantSelector action={action} />
       <hr />
       <div className="bg-white rounded p-5">
-        <h3>Groups</h3>
+        <h3>Azure Active Directy Roles</h3>
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         {!roles.loaded && roles.loading && <CSpinner />}
         {roles.loaded && !roles.loading && Object.keys(tenant).length !== 0 && (
