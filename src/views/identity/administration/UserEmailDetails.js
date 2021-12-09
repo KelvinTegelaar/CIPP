@@ -35,7 +35,7 @@ const columns = [
   },
 ]
 
-export default function UserEmailDetails({ user: { user, loading, loaded, error } }) {
+export default function UserEmailDetails({ user, loading, loaded, error }) {
   return (
     <CCard>
       <CCardHeader className="d-flex justify-content-between">
@@ -73,4 +73,7 @@ export default function UserEmailDetails({ user: { user, loading, loaded, error 
 
 UserEmailDetails.propTypes = {
   user: PropTypes.object,
+  loading: PropTypes.bool,
+  loaded: PropTypes.bool,
+  error: PropTypes.any,
 }
