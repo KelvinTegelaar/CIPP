@@ -17,6 +17,7 @@ import users from './users'
 import version from './version'
 import roles from './roles'
 import businessVoice from './businessVoice'
+import listApi from './listapi'
 
 export default combineReducers({
   app,
@@ -37,4 +38,5 @@ export default combineReducers({
   version,
   roles,
   businessVoice,
+  listApi,
 })

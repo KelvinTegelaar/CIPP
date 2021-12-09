@@ -92,16 +92,13 @@ export default function reducer(state = initialState, action = {}) {
         ...state,
         list: {
           ...state.list,
-          loading: false,
-          loaded: true,
-          list: action.error,
+          error: action.error,
         },
       }
     case LIST_STANDARDS_SUCCESS:
       return {
         ...state,
         list: {
-          ...state.list,
           loading: false,
           loaded: true,
           list: action.result,
