@@ -48,40 +48,39 @@ const StandardsList = () => {
       <div className="bg-white rounded p-5">
         <h3>Standards List</h3>
         {!standardsList.loaded && standardsList.loading && <CSpinner />}
-        {standardsList.loaded &&
-          !standardsList.loading(
-            <ToolkitProvider
-              keyField="displayName"
-              columns={columns}
-              data={standardsList.list}
-              search
-            >
-              {(props) => (
-                <div>
-                  {/* eslint-disable-next-line react/prop-types */}
-                  <SearchBar {...props.searchProps} />
-                  <hr />
-                  {/* eslint-disable-next-line react/prop-types */}
-                  <ExportCSVButton {...props.csvProps}>
-                    <CButton>CSV</CButton>
-                  </ExportCSVButton>
-                  <ExportPDFButton
-                    pdfdata={standardsList.list}
-                    pdfheaders={columns}
-                    pdfsize="A4"
-                    reportname="MFA Report"
-                  ></ExportPDFButton>
-                  {/*eslint-disable */}
-                  <BootstrapTable
-                    {...props.baseProps}
-                    pagination={pagination}
-                    wrapperClasses="table-responsive"
-                  />
-                  {/*eslint-enable */}
-                </div>
-              )}
-            </ToolkitProvider>,
-          )}
+        {standardsList.loaded && !standardsList.loading && (
+          <ToolkitProvider
+            keyField="displayName"
+            columns={columns}
+            data={standardsList.list}
+            search
+          >
+            {(props) => (
+              <div>
+                {/* eslint-disable-next-line react/prop-types */}
+                <SearchBar {...props.searchProps} />
+                <hr />
+                {/* eslint-disable-next-line react/prop-types */}
+                <ExportCSVButton {...props.csvProps}>
+                  <CButton>CSV</CButton>
+                </ExportCSVButton>
+                <ExportPDFButton
+                  pdfdata={standardsList.list}
+                  pdfheaders={columns}
+                  pdfsize="A4"
+                  reportname="MFA Report"
+                ></ExportPDFButton>
+                {/*eslint-disable */}
+                <BootstrapTable
+                  {...props.baseProps}
+                  pagination={pagination}
+                  wrapperClasses="table-responsive"
+                />
+                {/*eslint-enable */}
+              </div>
+            )}
+          </ToolkitProvider>
+        )}
         {!standardsList.loaded && !standardsList.loading && standardsList.error && (
           <span>Failed to load Standards</span>
         )}

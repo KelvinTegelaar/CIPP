@@ -82,7 +82,8 @@ export default function reducer(state = initialState, action = {}) {
       return {
         ...state,
         list: {
-          ...initialState.list,
+          ...state.list,
+          loaded: false,
           loading: true,
         },
       }
@@ -90,17 +91,20 @@ export default function reducer(state = initialState, action = {}) {
       return {
         ...state,
         list: {
+          ...state.list,
           loading: false,
           loaded: true,
-          list: action.result,
+          list: action.error,
         },
       }
     case LIST_STANDARDS_SUCCESS:
       return {
         ...state,
         list: {
-          ...initialState.list,
-          error: action.error,
+          ...state.list,
+          loading: false,
+          loaded: true,
+          list: action.result,
         },
       }
     case BPA_UPDATE:
