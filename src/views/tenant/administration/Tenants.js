@@ -4,9 +4,11 @@ import paginationFactory from 'react-bootstrap-table2-paginator'
 import { useDispatch, useSelector } from 'react-redux'
 import { listTenants } from '../../../store/modules/tenants'
 import BootstrapTable from 'react-bootstrap-table-next'
-import { CSpinner } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilCog } from '@coreui/icons'
+import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle, CSpinner } from '@coreui/react'
+import { cilSettings } from '@coreui/icons'
+import { Link } from 'react-router-dom'
 
 const { SearchBar } = Search
 const pagination = paginationFactory()
@@ -18,6 +20,22 @@ const linkCog = (url) => (cell) =>
       <CIcon icon={cilCog} />
     </a>
   )
+
+const dropdown = (cell, row, rowIndex, formatExtraData) => {
+  return (
+    <CDropdown>
+      <CDropdownToggle color="primary">...</CDropdownToggle>
+      <CDropdownMenu>
+        <CDropdownItem href="#">
+          <Link className="dropdown-item" to="/tenant/administration/EditTenant">
+            <CIcon icon={cilSettings} className="me-2" />
+            Edit Tenant
+          </Link>
+        </CDropdownItem>
+      </CDropdownMenu>
+    </CDropdown>
+  )
+}
 
 const columns = [
   {
@@ -64,6 +82,11 @@ const columns = [
     dataField: 'defaultDomainName',
     formatter: linkCog((cell) => `https://endpoint.microsoft.com/${cell}`),
   },
+  {
+    text: 'Action',
+    formatter: dropdown,
+  },
+
   // @todo not used at the moment?
   // {
   //   text: 'Domains',

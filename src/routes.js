@@ -57,6 +57,7 @@ const TeamsListTeam = React.lazy(() => import('./views/teams-share/teams/TeamsLi
 const TeamsAddTeam = React.lazy(() => import('./views/teams-share/teams/TeamsAddTeam'))
 const TeamsActivity = React.lazy(() => import('./views/teams-share/teams/TeamsActivity'))
 const CIPPSettings = React.lazy(() => import('./views/cipp/CIPPSettings'))
+const EditTenant = React.lazy(() => import('./views/tenant/administration/EditTenant'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -72,6 +73,7 @@ const routes = [
   { path: '/identity/administration/users', name: 'Users', component: Users },
   { path: '/identity/administration/groups', name: 'Groups', component: Groups },
   { path: '/identity/administration/EditGroup', name: 'Edit Group', component: EditGroup },
+  { path: '/tenant/administration/EditTenant', name: 'Edit Tenant', component: EditTenant },
 
   {
     path: '/identity/administration/offboarding-wizard',
