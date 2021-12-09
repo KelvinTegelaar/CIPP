@@ -14,63 +14,6 @@ const { SearchBar } = Search
 
 const pagination = paginationFactory()
 
-const dropdown = (cell, row, rowIndex, formatExtraData) => {
-  return (
-    <CDropdown>
-      <CDropdownToggle color="primary">...</CDropdownToggle>
-      <CDropdownMenu>
-        <CDropdownItem href="#">
-          <Link className="dropdown-item" to="/identity/administration/EditGroup">
-            <CIcon icon={cilSettings} className="me-2" />
-            Edit Site Members
-          </Link>
-        </CDropdownItem>
-      </CDropdownMenu>
-    </CDropdown>
-  )
-}
-
-const columns = [
-  {
-    text: 'Display Name',
-    dataField: 'displayName',
-    sort: true,
-  },
-  {
-    text: 'UPN',
-    dataField: 'UPN',
-    sort: true,
-  },
-  {
-    text: 'Last Active',
-    dataField: 'LastActive',
-    sort: true,
-  },
-  {
-    text: 'File Count',
-    dataField: 'FileCount',
-    sort: true,
-  },
-  {
-    text: 'Used (GB)',
-    dataField: 'UsedGB',
-    sort: true,
-  },
-  {
-    text: 'Allocated',
-    dataField: 'Allocated',
-  },
-  {
-    text: 'URL',
-    dataField: 'URL',
-    sort: true,
-  },
-  {
-    text: 'Action',
-    formatter: dropdown,
-  },
-]
-
 const SharepointList = () => {
   const dispatch = useDispatch()
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -90,6 +33,66 @@ const SharepointList = () => {
   const action = (tenant) => {
     dispatch(listSharepointSitesUsage({ tenantDomain: tenant.defaultDomainName }))
   }
+
+  const dropdown = (cell, row, rowIndex, formatExtraData) => {
+    return (
+      <CDropdown>
+        <CDropdownToggle color="primary">...</CDropdownToggle>
+        <CDropdownMenu>
+          <CDropdownItem href="#">
+            <Link
+              className="dropdown-item"
+              to={`/identity/administration/EditGroup?groupId=${row.UPN}&tenantDomain=${tenant.defaultDomainName}`}
+            >
+              <CIcon icon={cilSettings} className="me-2" />
+              Edit Site Members
+            </Link>
+          </CDropdownItem>
+        </CDropdownMenu>
+      </CDropdown>
+    )
+  }
+
+  const columns = [
+    {
+      text: 'Display Name',
+      dataField: 'displayName',
+      sort: true,
+    },
+    {
+      text: 'UPN',
+      dataField: 'UPN',
+      sort: true,
+    },
+    {
+      text: 'Last Active',
+      dataField: 'LastActive',
+      sort: true,
+    },
+    {
+      text: 'File Count',
+      dataField: 'FileCount',
+      sort: true,
+    },
+    {
+      text: 'Used (GB)',
+      dataField: 'UsedGB',
+      sort: true,
+    },
+    {
+      text: 'Allocated',
+      dataField: 'Allocated',
+    },
+    {
+      text: 'URL',
+      dataField: 'URL',
+      sort: true,
+    },
+    {
+      text: 'Action',
+      formatter: dropdown,
+    },
+  ]
 
   return (
     <div>
