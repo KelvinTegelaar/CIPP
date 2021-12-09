@@ -101,7 +101,6 @@ const MFAReport = () => {
       load()
     }
   }, [])
-  const headers = columns.map(({ dataField }) => dataField)
 
   return (
     <div className="bg-white rounded p-5">
@@ -128,7 +127,7 @@ const MFAReport = () => {
                 </ExportCSVButton>
                 <ExportPDFButton
                   pdfdata={mfa.report}
-                  pdfheaders={headers}
+                  pdfheaders={columns}
                   pdfsize="A4"
                   reportname="MFA Report"
                 ></ExportPDFButton>

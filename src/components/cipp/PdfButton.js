@@ -7,25 +7,31 @@ import PropTypes from 'prop-types'
 function ExportPDFButton(props) {
   const exportPDF = (pdfdata, pdfheaders, pdfsize = 'A4', reportname) => {
     const unit = 'pt'
-    console.log(pdfdata)
+    //console.log(pdfheaders)
     const size = pdfsize // Use A1, A2, A3 or A4
     const orientation = 'landscape' // portrait or landscape
 
     const marginLeft = 40
     const doc = new jsPDF(orientation, unit, size)
-    const pdfdatafinal = pdfdata.map((pdfdata) => pdfheaders)
 
     doc.setFontSize(10)
+    let headerObj = []
+    pdfheaders.forEach((item) => {
+      let returnobj = { header: item.text, dataKey: item.dataField }
+      headerObj.push(returnobj)
+    })
 
+    console.log(headerObj)
     const title = reportname
     let content = {
-      head: [pdfheaders],
+      startY: 50,
+      columns: headerObj,
       body: pdfdata,
       theme: 'grid',
     }
 
     doc.text(title, marginLeft, 40)
-    doc.autoTable(pdfheaders, pdfdata)
+    doc.autoTable(content)
     doc.save(reportname + '.pdf')
   }
 
