@@ -21,6 +21,7 @@ const sharedPropTypes = {
   className: PropTypes.string,
   label: PropTypes.string,
   validate: PropTypes.func,
+  disabled: PropTypes.bool,
   input: PropTypes.shape({
     name: PropTypes.string,
     value: PropTypes.any,
@@ -47,7 +48,7 @@ RFFCFormFeedback.propTypes = {
   }),
 }
 
-export const RFFCFormCheck = ({ name, label, className = 'mb-3', validate }) => {
+export const RFFCFormCheck = ({ name, label, className = 'mb-3', validate, disabled = false }) => {
   return (
     <Field name={name} type="checkbox" validate={validate}>
       {({ input, meta }) => (
@@ -57,6 +58,7 @@ export const RFFCFormCheck = ({ name, label, className = 'mb-3', validate }) => 
             // @todo revisit this, only shows green when checked
             valid={!meta.error && meta.touched && validate}
             invalid={meta.error && meta.touched && validate}
+            disabled={disabled}
             id={name}
             label={label}
           />
@@ -71,7 +73,7 @@ RFFCFormCheck.propTypes = {
   ...sharedPropTypes,
 }
 
-export const RFFCFormSwitch = ({ name, label, className = 'mb-3', validate }) => {
+export const RFFCFormSwitch = ({ name, label, className = 'mb-3', validate, disabled = false }) => {
   return (
     <Field name={name} type="checkbox" validate={validate}>
       {({ meta, input }) => (
@@ -81,6 +83,7 @@ export const RFFCFormSwitch = ({ name, label, className = 'mb-3', validate }) =>
             // @todo revisit this, only shows green when checked
             valid={!meta.error && meta.touched && validate}
             invalid={meta.error && meta.touched && validate}
+            disabled={disabled}
             id={name}
             label={label}
           />
@@ -102,6 +105,7 @@ export const RFFCFormInput = ({
   placeholder,
   className = 'mb-3',
   validate,
+  disabled = false,
 }) => {
   return (
     <Field name={name} validate={validate}>
@@ -115,6 +119,7 @@ export const RFFCFormInput = ({
               invalid={meta.error && meta.touched}
               type={type}
               id={name}
+              disabled={disabled}
               area-describedby={name}
               placeholder={placeholder}
             />
@@ -131,7 +136,14 @@ RFFCFormInput.propTypes = {
   placeholder: PropTypes.string,
 }
 
-export const RFFCFormRadio = ({ name, label, value, className = 'mb-3', validate }) => {
+export const RFFCFormRadio = ({
+  name,
+  label,
+  value,
+  className = 'mb-3',
+  validate,
+  disabled = false,
+}) => {
   return (
     <Field name={name} type="radio" value={value} validate={validate}>
       {({ meta, input }) => (
@@ -140,6 +152,7 @@ export const RFFCFormRadio = ({ name, label, value, className = 'mb-3', validate
             {...input}
             valid={!meta.error && meta.touched}
             invalid={meta.error && meta.touched}
+            disabled={disabled}
             type="radio"
             name={name}
             label={label}
@@ -162,6 +175,7 @@ export const RFFCFormTextarea = ({
   placeholder,
   className = 'mb-3',
   validate,
+  disabled = false,
 }) => {
   return (
     <Field name={name} type="radio" value={value} validate={validate}>
@@ -173,6 +187,7 @@ export const RFFCFormTextarea = ({
               {...input}
               valid={!meta.error && meta.touched}
               invalid={meta.error && meta.touched}
+              disabled={disabled}
               id={name}
               placeholder={placeholder}
             />
@@ -196,6 +211,7 @@ export const RFFCFormSelect = ({
   placeholder,
   className = 'mb-3',
   validate,
+  disabled = false,
 }) => {
   // handler for ignoring the first element ('the placeholder')
   const selectValidate = (value, allValues, meta) => {
@@ -216,6 +232,7 @@ export const RFFCFormSelect = ({
             {...input}
             valid={!meta.error && meta.touched}
             invalid={meta.error && meta.touched}
+            disabled={disabled}
           >
             <option value={placeholder}>{placeholder}</option>
             {values.map(({ label, value }, idx) => (
@@ -267,7 +284,14 @@ const RFFSelectSearchClasses = {
   'has-focus': 'select-search.has-focus',
 }
 
-export const RFFSelectSearch = ({ name, label, values = [], placeholder, validate }) => {
+export const RFFSelectSearch = ({
+  name,
+  label,
+  values = [],
+  placeholder,
+  validate,
+  disabled = false,
+}) => {
   return (
     <Field name={name} validate={validate}>
       {({ meta, input }) => {
@@ -290,6 +314,7 @@ export const RFFSelectSearch = ({ name, label, values = [], placeholder, validat
                 }
                 return RFFSelectSearchClasses[key]
               }}
+              disabled={disabled}
               name={name}
               options={values}
               filterOptions={fuzzySearch}

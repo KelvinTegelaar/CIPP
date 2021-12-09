@@ -6,9 +6,9 @@ const initialState = {
   },
 }
 
-const DOMAINS_LOAD = 'users/DOMAINS_LOAD'
-const DOMAINS_LOAD_SUCCESS = 'users/DOMAINS_LOAD_SUCCESS'
-const DOMAINS_LOAD_FAIL = 'users/DOMAINS_LOAD_FAIL'
+const DOMAINS_LOAD = 'domains/DOMAINS_LOAD'
+const DOMAINS_LOAD_SUCCESS = 'domains/DOMAINS_LOAD_SUCCESS'
+const DOMAINS_LOAD_FAIL = 'domains/DOMAINS_LOAD_FAIL'
 
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
@@ -48,6 +48,12 @@ export function listDomains({ tenantDomain }) {
     promise: (client) =>
       client
         .get('/api/ListDomains', { params: { tenantFilter: tenantDomain } })
-        .then((result) => result.data),
+        .then((result) => result.data)
+        .then((result) => {
+          if (Array.isArray(result)) {
+            return result
+          }
+          return []
+        }),
   }
 }

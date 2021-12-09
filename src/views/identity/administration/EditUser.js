@@ -91,6 +91,9 @@ const EditUser = () => {
     ...user,
   }
 
+  // this is dumb
+  const formDisabled = queryError === true || !!userError || !user || Object.keys(user).length === 0
+
   return (
     <CCard className="bg-white rounded p-5">
       {!queryError && (
@@ -117,10 +120,16 @@ const EditUser = () => {
                                   type="text"
                                   name="givenName"
                                   label="Edit First Name"
+                                  disabled={formDisabled}
                                 />
                               </CCol>
                               <CCol md={6}>
-                                <RFFCFormInput type="text" name="surname" label="Edit Last Name" />
+                                <RFFCFormInput
+                                  type="text"
+                                  name="surname"
+                                  label="Edit Last Name"
+                                  disabled={formDisabled}
+                                />
                               </CCol>
                             </CRow>
                             <CRow>
@@ -129,6 +138,7 @@ const EditUser = () => {
                                   type="text"
                                   name="displayName"
                                   label="Edit Display Name"
+                                  disabled={formDisabled}
                                 />
                               </CCol>
                             </CRow>
@@ -138,18 +148,23 @@ const EditUser = () => {
                                   type="text"
                                   name="mailNickname"
                                   label="Edit Username"
+                                  disabled={formDisabled}
                                 />
                               </CCol>
                               <CCol md={6}>
-                                <RFFCFormSelect
-                                  // label="Domain"
-                                  name="domain"
-                                  placeholder={domainsLoaded ? 'Select domain' : 'Loading...'}
-                                  values={domainsList.map((domain) => ({
-                                    value: domain.id,
-                                    label: domain.id,
-                                  }))}
-                                />
+                                {!domainsLoaded && domainsLoading && <CSpinner />}
+                                {domainsLoaded && !domainsLoading && (
+                                  <RFFCFormSelect
+                                    // label="Domain"
+                                    name="primDomain"
+                                    disabled={formDisabled}
+                                    placeholder={domainsLoaded ? 'Select domain' : 'Loading...'}
+                                    values={domainsList.map((domain) => ({
+                                      value: domain.id,
+                                      label: domain.id,
+                                    }))}
+                                  />
+                                )}
                                 {!domainsLoaded && !domainsLoading && domainsError && (
                                   <span>Failed to load list of domains</span>
                                 )}
@@ -158,8 +173,13 @@ const EditUser = () => {
                             <CRow>
                               <CCol md={12}>
                                 <CFormLabel>Settings</CFormLabel>
-                                <RFFCFormCheck name="Autopassword" label="Reset Password" />
                                 <RFFCFormCheck
+                                  disabled={formDisabled}
+                                  name="Autopassword"
+                                  label="Reset Password"
+                                />
+                                <RFFCFormCheck
+                                  disabled={formDisabled}
                                   name="RequirePasswordChange"
                                   label="Require password change at next logon"
                                 />
@@ -172,6 +192,7 @@ const EditUser = () => {
                                     value: Code,
                                     name: Name,
                                   }))}
+                                  disabled={formDisabled}
                                   name="Usagelocation"
                                   placeholder="Type to search..."
                                   label="Usage Location"
@@ -180,7 +201,11 @@ const EditUser = () => {
                             </CRow>
                             <CRow>
                               <CCol md={12}>
-                                <RFFCFormSwitch name="keepLicenses" label="Keep current licenses" />
+                                <RFFCFormSwitch
+                                  name="keepLicenses"
+                                  label="Keep current licenses"
+                                  disabled={formDisabled}
+                                />
                                 <Condition when="keepLicenses" is={false}>
                                   <span>Licenses</span>
                                   <br />
@@ -191,6 +216,7 @@ const EditUser = () => {
                                   {licenseLoaded &&
                                     licenseList.map((license) => (
                                       <RFFCFormCheck
+                                        disabled={formDisabled}
                                         key={license.id}
                                         name={`Licenses.${license.skuId}`}
                                         label={license.skuPartNumber}
@@ -201,23 +227,48 @@ const EditUser = () => {
                             </CRow>
                             <CRow>
                               <CCol md={12}>
-                                <RFFCFormInput name="jobTitle" label="Job Title" type="text" />
+                                <RFFCFormInput
+                                  name="jobTitle"
+                                  label="Job Title"
+                                  type="text"
+                                  disabled={formDisabled}
+                                />
                               </CCol>
                             </CRow>
                             <CRow>
                               <CCol md={6}>
-                                <RFFCFormInput name="streetAddress" label="Street" type="text" />
+                                <RFFCFormInput
+                                  name="streetAddress"
+                                  label="Street"
+                                  type="text"
+                                  disabled={formDisabled}
+                                />
                               </CCol>
                               <CCol md={6}>
-                                <RFFCFormInput name="postalCode" label="Street" type="text" />
+                                <RFFCFormInput
+                                  name="postalCode"
+                                  label="Postal Code"
+                                  type="text"
+                                  disabled={formDisabled}
+                                />
                               </CCol>
                             </CRow>
                             <CRow>
                               <CCol md={6}>
-                                <RFFCFormInput name="city" label="city" type="text" />
+                                <RFFCFormInput
+                                  name="city"
+                                  label="city"
+                                  type="text"
+                                  disabled={formDisabled}
+                                />
                               </CCol>
                               <CCol md={6}>
-                                <RFFCFormInput name="country" label="Country" type="text" />
+                                <RFFCFormInput
+                                  name="country"
+                                  label="Country"
+                                  type="text"
+                                  disabled={formDisabled}
+                                />
                               </CCol>
                             </CRow>
                             <CRow>
@@ -226,21 +277,33 @@ const EditUser = () => {
                                   name="companyName"
                                   label="Company Name"
                                   type="text"
+                                  disabled={formDisabled}
                                 />
                               </CCol>
                               <CCol md={6}>
-                                <RFFCFormInput name="department" label="Department" type="text" />
+                                <RFFCFormInput
+                                  name="department"
+                                  label="Department"
+                                  type="text"
+                                  disabled={formDisabled}
+                                />
                               </CCol>
                             </CRow>
                             <CRow>
                               <CCol md={6}>
-                                <RFFCFormInput name="mobilePhone" label="Mobile #" type="text" />
+                                <RFFCFormInput
+                                  name="mobilePhone"
+                                  label="Mobile #"
+                                  type="text"
+                                  disabled={formDisabled}
+                                />
                               </CCol>
                               <CCol md={6}>
                                 <RFFCFormInput
                                   name="businessPhones"
                                   label="Business #"
                                   type="text"
+                                  disabled={formDisabled}
                                 />
                               </CCol>
                             </CRow>
@@ -248,6 +311,7 @@ const EditUser = () => {
                               <CCol md={12}>
                                 <RFFSelectSearch
                                   label="Copy group membership from other user"
+                                  disabled={formDisabled}
                                   values={
                                     (!usersError &&
                                       usersLoaded &&
@@ -267,7 +331,7 @@ const EditUser = () => {
                             </CRow>
                             <CRow className="mb-3">
                               <CCol md={6}>
-                                <CButton type="submit" disabled={submitting}>
+                                <CButton type="submit" disabled={submitting || formDisabled}>
                                   Edit User
                                 </CButton>
                               </CCol>
