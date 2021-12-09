@@ -8,7 +8,7 @@ import BootstrapTable from 'react-bootstrap-table-next'
 import paginationFactory from 'react-bootstrap-table2-paginator'
 import { Loading } from '../../../components'
 import CellBoolean from '../../../components/cipp/CellBoolean'
-
+import ExportPDFButton from '../../../components/cipp/PdfButton'
 const { SearchBar } = Search
 const { ExportCSVButton } = CSVExport
 const pagination = paginationFactory()
@@ -125,15 +125,21 @@ const MFAReport = () => {
                 <ExportCSVButton {...props.csvProps}>
                   <CButton>CSV</CButton>
                 </ExportCSVButton>
+                <ExportPDFButton
+                  pdfdata={mfa.report}
+                  pdfheaders={columns}
+                  pdfsize="A4"
+                  reportname="MFA Report"
+                ></ExportPDFButton>
                 <hr />
                 {/*eslint-disable */}
-              <BootstrapTable
-                {...props.baseProps}
-                pagination={pagination}
-                striped
-                wrapperClasses="table-responsive"
-              />
-              {/*eslint-enable */}
+                <BootstrapTable
+                  {...props.baseProps}
+                  pagination={pagination}
+                  striped
+                  wrapperClasses="table-responsive"
+                />
+                {/*eslint-enable */}
               </div>
             )}
           </ToolkitProvider>

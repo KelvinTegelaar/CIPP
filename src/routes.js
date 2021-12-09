@@ -8,6 +8,7 @@ const AddUser = React.lazy(() => import('./views/identity/administration/AddUser
 const EditUser = React.lazy(() => import('./views/identity/administration/EditUser'))
 const ViewUser = React.lazy(() => import('./views/identity/administration/ViewUser'))
 const Groups = React.lazy(() => import('./views/identity/administration/Groups'))
+const Roles = React.lazy(() => import('./views/identity/administration/Roles'))
 const EditGroup = React.lazy(() => import('./views/identity/administration/EditGroup'))
 const Devices = React.lazy(() => import('./views/identity/reports/Devices'))
 const MFAReport = React.lazy(() => import('./views/identity/reports/MFAReport'))
@@ -53,6 +54,7 @@ const IntuneCAPolicies = React.lazy(() => import('./views/endpoint/intune/Intune
 const IntuneAddPolicy = React.lazy(() => import('./views/endpoint/intune/IntuneAddPolicy'))
 const OneDriveList = React.lazy(() => import('./views/teams-share/onedrive/OneDriveList'))
 const SharepointList = React.lazy(() => import('./views/teams-share/sharepoint/SharepointList'))
+const BusinessVoice = React.lazy(() => import('./views/teams-share/teams/BusinessVoice'))
 const TeamsListTeam = React.lazy(() => import('./views/teams-share/teams/TeamsListTeam'))
 const TeamsAddTeam = React.lazy(() => import('./views/teams-share/teams/TeamsAddTeam'))
 const TeamsActivity = React.lazy(() => import('./views/teams-share/teams/TeamsActivity'))
@@ -72,6 +74,9 @@ const routes = [
   { path: '/identity/administration', name: 'Administration' },
   { path: '/identity/administration/users', name: 'Users', component: Users },
   { path: '/identity/administration/groups', name: 'Groups', component: Groups },
+  { path: '/identity/administration/roles', name: 'Roles', component: Roles },
+  { path: '/teams-share/teams/business-voice', name: 'BusinessVoice', component: BusinessVoice },
+
   { path: '/identity/administration/EditGroup', name: 'Edit Group', component: EditGroup },
   { path: '/tenant/administration/EditTenant', name: 'Edit Tenant', component: EditTenant },
 
