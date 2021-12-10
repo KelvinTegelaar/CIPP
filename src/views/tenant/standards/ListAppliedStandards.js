@@ -18,12 +18,17 @@ const Formatter = (cell) => CellBoolean({ cell })
 const columns = [
   {
     text: 'Tenant Name',
-    dataField: 'TenantID',
+    dataField: 'displayName',
     sort: true,
   },
   {
     text: 'Standard',
-    dataField: 'Standard',
+    dataField: 'standardName',
+    sort: true,
+  },
+  {
+    text: 'Applied By',
+    dataField: 'appliedBy',
     sort: true,
   },
 ]
@@ -34,9 +39,7 @@ const StandardsList = () => {
   const standardsList = useSelector((state) => state.standards.list)
   useEffect(() => {
     async function load() {
-      if (Object.keys(tenant).length !== 0) {
-        dispatch(listAppliedStandards())
-      }
+      dispatch(listAppliedStandards())
     }
 
     load()
