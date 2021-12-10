@@ -1,16 +1,15 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle, CSpinner } from '@coreui/react'
 import TenantSelector from 'src/components/cipp/TenantSelector'
 import BootstrapTable from 'react-bootstrap-table-next'
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit'
 import paginationFactory from 'react-bootstrap-table2-paginator'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { cilSettings, cilUser } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
-
-import { listUsers } from '../../../store/modules/users'
 import CellBoolean from '../../../components/cipp/CellBoolean'
+import { useListUsersQuery } from '../../../store/api/users'
 
 const { SearchBar } = Search
 
@@ -88,36 +87,28 @@ const columns = [
 ]
 
 const Users = () => {
-  const dispatch = useDispatch()
   const tenant = useSelector((state) => state.app.currentTenant)
-  const users = useSelector((state) => state.users.users)
 
-  useEffect(() => {
-    async function load() {
-      if (Object.keys(tenant).length !== 0) {
-        dispatch(listUsers({ tenant: tenant }))
-      }
-    }
+  const {
+    data: users,
+    isFetching: usersLoading,
+    error: usersError,
+    ...rest
+  } = useListUsersQuery({ tenantDomain: tenant?.defaultDomainName })
 
-    load()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  const action = (tenant) => {
-    dispatch(listUsers({ tenant: tenant }))
-  }
+  console.log(rest)
 
   return (
     <div>
-      <TenantSelector action={action} />
+      <TenantSelector />
       <hr />
       <div className="bg-white rounded p-5">
         <h3>Users</h3>
-        {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-        {!users.loading && users.error && <span>Error loading users</span>}
-        {!users.loaded && users.loading && <CSpinner />}
-        {users.loaded && !users.loading && Object.keys(tenant).length !== 0 && (
-          <ToolkitProvider keyField="displayName" columns={columns} data={users.list} search>
+        {Object.keys(tenant).length === 0 && <div>Select a tenant to get started.</div>}
+        {!usersLoading && usersError && <div>Error loading users</div>}
+        {usersLoading && <CSpinner />}
+        {!usersLoading && Object.keys(tenant).length !== 0 && (
+          <ToolkitProvider keyField="displayName" columns={columns} data={users} search>
             {(props) => (
               <div>
                 {/* eslint-disable-next-line react/prop-types */}

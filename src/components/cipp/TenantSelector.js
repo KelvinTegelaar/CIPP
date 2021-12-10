@@ -2,24 +2,19 @@ import React, { useEffect } from 'react'
 import SelectSearch, { fuzzySearch } from 'react-select-search'
 import { listTenants } from 'src/store/modules/tenants'
 import { useDispatch, useSelector } from 'react-redux'
-import { setCurrentTenant } from '../../store/modules/app'
+// import { setCurrentTenant } from '../../store/modules/app'
 import PropTypes from 'prop-types'
+import { useListTenantsQuery } from '../../store/api/tenants'
+import { setCurrentTenant } from '../../store/features/app'
 
 const TenantSelector = (props) => {
   const { action } = props
 
   const dispatch = useDispatch()
-  const tenants = useSelector((state) => state.tenants.tenants)
   const currentTenant = useSelector((state) => state.app.currentTenant)
+  const { data: tenants = [], isLoading, error } = useListTenantsQuery()
 
-  useEffect(() => {
-    async function load() {
-      dispatch(listTenants())
-    }
-    load()
-  }, [dispatch])
-
-  const activated = (customerId, b, c) => {
+  const activated = (customerId) => {
     const selectedTenant = tenants.filter((t) => {
       return t.customerId === customerId
     })
@@ -29,12 +24,19 @@ const TenantSelector = (props) => {
     }
   }
 
+  let placeholder = 'Select Tenant'
+  if (isLoading) {
+    placeholder = 'Loading...'
+  } else if (error) {
+    placeholder = 'Error loading tenants'
+  }
+
   return (
     <SelectSearch
       search
       onChange={activated}
       filterOptions={fuzzySearch}
-      placeholder="Select Tenant"
+      placeholder={placeholder}
       value={currentTenant && currentTenant.customerId}
       options={tenants.map(({ customerId, defaultDomainName }) => ({
         value: customerId,

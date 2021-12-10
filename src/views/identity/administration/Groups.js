@@ -7,6 +7,8 @@ import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit'
 import BootstrapTable from 'react-bootstrap-table-next'
 import paginationFactory from 'react-bootstrap-table2-paginator'
 import { listGroups } from '../../../store/modules/groups'
+import { useListUsersQuery } from '../../../store/api/users'
+import { useListGroupsQuery } from '../../../store/api/groups'
 
 const { SearchBar } = Search
 const pagination = paginationFactory()
@@ -51,33 +53,25 @@ const columns = [
 ]
 
 const Groups = () => {
-  const dispatch = useDispatch()
   const tenant = useSelector((state) => state.app.currentTenant)
-  const groups = useSelector((state) => state.groups.groups)
-  useEffect(() => {
-    async function load() {
-      if (Object.keys(tenant).length !== 0) {
-        dispatch(listGroups({ tenant: tenant }))
-      }
-    }
 
-    load()
-  }, [])
-
-  const action = (tenant) => {
-    dispatch(listGroups({ tenant: tenant }))
-  }
+  const {
+    data: groups,
+    isFetching,
+    error: groupsError,
+  } = useListGroupsQuery({ tenantDomain: tenant?.defaultDomainName })
 
   return (
     <div>
-      <TenantSelector action={action} />
+      <TenantSelector />
       <hr />
       <div className="bg-white rounded p-5">
         <h3>Groups</h3>
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-        {!groups.loaded && groups.loading && <CSpinner />}
-        {groups.loaded && !groups.loading && Object.keys(tenant).length !== 0 && (
-          <ToolkitProvider keyField="displayName" columns={columns} data={groups.list} search>
+        {isFetching && <CSpinner />}
+        {!isFetching && groupsError && <span>Failed to load groups</span>}
+        {!isFetching && !groupsError && Object.keys(tenant).length !== 0 && (
+          <ToolkitProvider keyField="displayName" columns={columns} data={groups} search>
             {(props) => (
               <div>
                 {/* eslint-disable-next-line react/prop-types */}
@@ -94,7 +88,6 @@ const Groups = () => {
             )}
           </ToolkitProvider>
         )}
-        {!groups.loaded && !groups.loading && groups.error && <span>Failed to load groups</span>}
       </div>
     </div>
   )
