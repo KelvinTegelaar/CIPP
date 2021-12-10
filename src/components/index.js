@@ -7,7 +7,7 @@ import AppSidebar from './AppSidebar'
 import DocsCallout from './DocsCallout'
 import DocsLink from './DocsLink'
 import DocsExample from './DocsExample'
-import Loading from './Loading'
+import Loading, { FullScreenLoading } from './Loading'
 import SharedModal from './SharedModal'
 
 export {
@@ -20,6 +20,7 @@ export {
   DocsCallout,
   DocsLink,
   DocsExample,
+  FullScreenLoading,
   Loading,
   SharedModal,
 }

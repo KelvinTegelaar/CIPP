@@ -11,7 +11,7 @@ import { FullScreenLoading } from './components'
 
 ReactDOM.render(
   <Provider store={store}>
-    <PersistGate loading={null} persistor={persistor}>
+    <PersistGate loading={<FullScreenLoading />} persistor={persistor}>
       <App />
     </PersistGate>
   </Provider>,
