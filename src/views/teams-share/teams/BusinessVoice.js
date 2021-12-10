@@ -1,59 +1,70 @@
 import React, { useEffect } from 'react'
+import { useSelector } from 'react-redux'
+import CippDatatable from 'src/components/cipp/CippDatatable'
 import CellBoolean from '../../../components/cipp/CellBoolean'
-import CIPPApi from '../../../components/cipp/CIPPApiComponent'
+import TenantSelector from 'src/components/cipp/TenantSelector'
 
 const Formatter = (cell) => CellBoolean({ cell })
 const columns = [
   {
-    text: 'Assigned to User',
-    dataField: 'AssignedTo',
+    name: 'Assigned to User',
+    selector: 'AssignedTo',
     sort: true,
   },
   {
-    text: 'Phone Number',
-    dataField: 'TelephoneNumber',
+    name: 'Phone Number',
+    selector: 'TelephoneNumber',
     sort: true,
   },
   {
-    text: 'Number Type',
-    dataField: 'NumberType',
+    name: 'Number Type',
+    selector: 'NumberType',
     sort: false,
   },
   {
-    text: 'Country',
-    dataField: 'IsoCountryCode',
+    name: 'Country',
+    selector: 'IsoCountryCode',
     sort: false,
   },
   {
-    text: 'Location',
-    dataField: 'PlaceName',
+    name: 'Location',
+    selector: 'PlaceName',
     sort: false,
   },
   {
-    text: 'Activation State',
-    dataField: 'ActivationState',
+    name: 'Activation State',
+    selector: 'ActivationState',
     formatter: Formatter,
   },
   {
-    text: 'Operator Connect',
-    dataField: 'IsOperatorConnect',
+    name: 'Operator Connect',
+    selector: 'IsOperatorConnect',
     formatter: Formatter,
   },
   {
-    text: 'Purchased on',
-    dataField: 'AcquisitionDate',
+    name: 'Purchased on',
+    selector: 'AcquisitionDate',
     sort: false,
   },
 ]
 
 const BusinessVoice = () => {
+  const tenant = useSelector((state) => state.app.currentTenant)
   return (
-    <CIPPApi
-      columns={columns}
-      apiurl="/api/ListTeamsVoice"
-      reportname="Teams overview"
-      title="Teams Voice table"
-    ></CIPPApi>
+    <div>
+      <TenantSelector />
+      <hr />
+      <div className="bg-white rounded p-5">
+        <h3>Teams Activity</h3>
+        {Object.keys(tenant).length === 0 && <span> Select a tenant to get started.</span>}
+        <CippDatatable
+          reportName={`${tenant?.defaultDomainName}-Businessvoice`}
+          path="/api/ListTeamsVoice"
+          columns={columns}
+          params={{ TenantFilter: tenant?.defaultDomainName }}
+        />
+      </div>
+    </div>
   )
 }
 

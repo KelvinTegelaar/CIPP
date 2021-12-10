@@ -1,8 +1,8 @@
 import React from 'react'
 import ToolkitProvider, { CSVExport, Search } from 'react-bootstrap-table2-toolkit'
-import BootstrapTable from 'react-bootstrap-table-next'
 import ExportPDFButton from 'src/components/cipp/PdfButton'
 import { CButton, CSpinner } from '@coreui/react'
+import DataTable from 'react-data-table-component'
 
 import paginationFactory from 'react-bootstrap-table2-paginator'
 import { useListDatatableQuery } from '../../store/api/datatable'
@@ -14,7 +14,12 @@ const pagination = paginationFactory()
 
 export default function CippDatatable({ path, params, columns, reportName }) {
   const { data, isFetching, error } = useListDatatableQuery({ path, params })
-
+  const actionsMemo = React.useMemo(
+    () => (
+      <ExportPDFButton pdfdata={data} pdfheaders={columns} pdfsize="A4" reportname={reportName} />
+    ),
+    [],
+  )
   return (
     <div>
       {isFetching && <CSpinner />}
@@ -24,26 +29,17 @@ export default function CippDatatable({ path, params, columns, reportName }) {
           {/* eslint-disable-next-line react/prop-types */}
           {(props) => (
             <div>
-              {/* eslint-disable-next-line react/prop-types */}
-              <SearchBar {...props.searchProps} />
               <hr />
-              {/* eslint-disable-next-line react/prop-types */}
-              <ExportCSVButton {...props.csvProps}>
-                <CButton>CSV</CButton>
-              </ExportCSVButton>
-              <ExportPDFButton
-                pdfdata={data}
-                pdfheaders={columns}
-                pdfsize="A4"
-                reportname={reportName}
-              />
               {/* eslint-disable */}
-              <BootstrapTable
-                {...props.baseProps}
-                pagination={pagination}
+              <DataTable
+                selectableRows={props.selectableRows}
+                pagination
+                responsive
+                dense
                 striped
-                condensed
-                wrapperClasses="table-responsive"
+                columns={columns}
+                data={data}
+                actions={actionsMemo}
               />
               {/* eslint-enable */}
             </div>
