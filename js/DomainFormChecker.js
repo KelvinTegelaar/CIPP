@@ -80,11 +80,33 @@ function ExecuteDomainAPICall() {
       var arrMXPasses = data[0].MXResults.ValidationPasses.join("<br />");
 
       console.log(data[0]);
-      $('#domainResultsMXRecord').html(data[0].MXResults.Records.Hostname);
+      // Firstly, lets count how many records we have
+      let newarray = [];
+
+      console.log(data[0].MXResults.Records.length);
+      console.log(data[0].MXResults.Records.Priority);
+      console.log(data[0].MXResults.Records.Hostname);
+
+      if (data[0].MXResults.Records instanceof Array) {
+        if (data[0].MXResults.Records.length > 0) { data[0].MXResults.Records.forEach(item => newarray.push(item.Priority + ' ' + item.Hostname + '<br />')); }
+      }
+      else {
+        newarray = data[0].MXResults.Records.Priority + ' ' + data[0].MXResults.Records.Hostname;
+      }
+
+      $('#domainResultsMXRecord').html(newarray);
+
       $('#domainResultsMXRecordPasses').html(GenerateHTMLResult(arrMXPasses));
       $('#domainResultsMXRecordFails').html(GenerateHTMLResult(arrMXFails));
       $('#domainResultsMXRecordWarns').html(GenerateHTMLResult(arrMXWarns));
-      $('#domainResultsMXMailProvider').html('<h4><span class="badge bg-primary">Mail Provider: ' + data[0].MXResults.MailProvider.Name + '</span></h4>');
+
+      if (data[0].MXResults.MailProvider.Name == null) {
+        $('#domainResultsMXMailProvider').html('<h4><span class="badge bg-primary">Mail Provider: Unknown</span></h4>');
+      }
+      else
+      {
+        $('#domainResultsMXMailProvider').html('<h4><span class="badge bg-primary">Mail Provider: ' + data[0].MXResults.MailProvider.Name + '</span></h4>');
+      }
 
 
 
@@ -125,10 +147,13 @@ function ExecuteDomainAPICall() {
       var arrDKIMWarns = data[0].DKIMResults.ValidationWarns.join("<br />");
       var arrDKIMPasses = data[0].DKIMResults.ValidationPasses.join("<br />");
 
-      $('#domainResultsDKIMRecord').html(data[0].DKIMResults.Records[0].Record);
       $('#domainResultsDKIMRecordPasses').html(GenerateHTMLResult(arrDKIMPasses));
       $('#domainResultsDKIMRecordFails').html(GenerateHTMLResult(arrDKIMFails));
       $('#domainResultsDKIMRecordWarns').html(GenerateHTMLResult(arrDKIMWarns));
+
+      var DKIMFinal = ""
+      if (data[0].DKIMResults.Records.length === 0) { DKIMFinal = "" } else { DKIMFinal = data[0].DKIMResults.Records[0].Record }
+      $('#domainResultsDKIMRecord').html(DKIMFinal);
 
     },
     'error': function (xhr, ajaxOptions, thrownError) {

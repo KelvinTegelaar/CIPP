@@ -1,0 +1,103 @@
+<main>
+    <form name="edituserform" id="Userform">
+        <header class="page-header page-header-compact page-header-light border-bottom bg-white mb-4">
+            <div class="container-xl px-4">
+                <div class="page-header-content">
+                    <div class="row align-items-center justify-content-between pt-3">
+                        <div class="col-auto mb-3">
+                            <h1 class="page-header-title">
+                                <div class="page-header-icon"><i data-feather="user-plus"></i></div>
+                                Edit Tenant
+                            </h1>
+                        </div>
+                        <div class="col-12 col-xl-auto mb-3">
+                            <a class="btn btn-sm btn-light text-primary back-to-tenant-list" href="index.html?page=tenants">
+                                <i class="me-1" data-feather="arrow-left"></i>
+                                Back to Tenants
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- Main page content-->
+        <div class="container-xl px-4 mt-4">
+            <div class="row">
+                <div class="col-6">
+                    <!-- Account details card-->
+                    <div class="card mb-4">
+                        <div class="card-header">Tenant Details</div>
+
+                        <div class="card-body">
+                            
+                            <!-- Form Row-->
+                            <div class="row gx-3 mb-3">
+                                
+                                
+                                <!-- Form Group (displayName)-->
+                                <div class="col-md-6">
+                                    <label class="small mb-1" for="displayName">Edit Display Name</label>
+                                    <input class="form-control" id="displayName" type="text"
+                                        placeholder="Tenant Display Name..." value="" name="DisplayName" />
+                                    <input id="tenantID" type="hidden" value="" name="tenantID" />
+                                    <input id="id" type="hidden" value="" name="id" />
+                                </div>
+                            </div>
+                            <div class="row gx-3 mb-3">
+                                <!-- Form Group (defaultDomain)-->
+                                <div class="col-md-6">
+                                    <label class="small mb-1" for="defaultDomainName">Edit Default Domain</label>
+                                    <input class="form-control" list="defaultDomainOption" id="defaultDomainName" name="defaultDomainName"
+                                        placeholder="Type to search...">
+                                    <datalist id="DomainOption">
+                                        <option text="Default Domain">
+                                    </datalist>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" onclick='PostForm("Userform","api/EditTenant")'' type="button">Edit Tenant</button>
+
+                        </div>
+                        
+                    </div>
+                  
+                </div>
+                <div class=col-6>
+                    <div class="card mb-4">
+                        <div class="card-header">Account information</div>
+                        <div class="card-body">This is the (raw) information for this account. <div
+                                class="mb-3">
+                                <pre id="RawJson">
+</pre>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        </div>
+        </div>
+    </form>
+    <button class="btn btn-primary" id="PopModal" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"
+        style="display:none;"></button>
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Results</h5>
+                </div>
+                <div class="modal-body">
+                    <section id="APIContent">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only"></span>
+                        </div></span>
+                    </section>
+                </div>
+                <div class="modal-footer"><button class="btn btn-secondary" type="button"
+                        data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+</main>
+<script src="js/tenantFormOptions.js"></script>

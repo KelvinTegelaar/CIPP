@@ -182,7 +182,8 @@ function escapeHTML(text) {
     return text.replace(/[\"&'\/<>]/g, function (a) {
         return {
             '"': '&quot;', '&': '&amp;', "'": '&#39;',
-            '/': '&#47;', '<': '&lt;', '>': '&gt;'
+            '/': '&#47;',  '<': '&lt;',  '>': '&gt;'
+
         }[a];
     });
 }
