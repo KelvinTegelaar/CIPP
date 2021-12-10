@@ -7,6 +7,7 @@ import { toastsSlice } from './features/toasts'
 // apis
 import { appApi } from './api/app'
 import { authApi } from './api/auth'
+import { datatableApi } from './api/datatable'
 import { groupsApi } from './api/groups'
 import { tenantsApi } from './api/tenants'
 import { usersApi } from './api/users'
@@ -24,6 +25,7 @@ export const root = {
   // apis
   [appApi.reducerPath]: appApi.reducer,
   [authApi.reducerPath]: authApi.reducer,
+  [datatableApi.reducerPath]: datatableApi.reducer,
   [groupsApi.reducerPath]: groupsApi.reducer,
   [tenantsApi.reducerPath]: tenantsApi.reducer,
   [usersApi.reducerPath]: usersApi.reducer,
@@ -32,6 +34,7 @@ export const root = {
 export const apiMiddleware = [
   appApi.middleware,
   authApi.middleware,
+  datatableApi.middleware,
   groupsApi.middleware,
   tenantsApi.middleware,
   usersApi.middleware,
