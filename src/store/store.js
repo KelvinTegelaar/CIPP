@@ -1,40 +1,16 @@
-import { applyMiddleware, compose, createStore } from 'redux'
-import { persistReducer, persistStore } from 'redux-persist'
-import storage from 'redux-persist/lib/storage'
-import ApiClient from './ApiClient'
-import clientMiddleware, { errorMiddleware } from './middleware'
-import rootReducer from './modules/root'
+import { configureStore, combineReducers } from '@reduxjs/toolkit'
+import { persistStore, FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE } from 'redux-persist'
+import { unauthenticatedMiddleware } from './middleware/unauthenticatedMiddleware'
+import { rootReducer, apiMiddleware } from './root'
 
-const client = new ApiClient()
-let middleware = [clientMiddleware(client), errorMiddleware()]
+export const store = configureStore({
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }).concat([unauthenticatedMiddleware, ...apiMiddleware]),
+})
 
-if (process.env.NODE_ENV !== 'production') {
-  middleware = [require('redux-immutable-state-invariant').default(), ...middleware]
-}
-
-const persistConfig = {
-  key: 'root',
-  storage,
-  // dont store the modal/toast state
-  blacklist: ['modal', 'toast'],
-}
-
-const persistedReducer = persistReducer(persistConfig, rootReducer)
-// @todo check if this works in prod
-const composeEnhancers =
-  (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ &&
-    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ trace: true, traceLimit: 25 })) ||
-  compose
-
-const configure = () => {
-  let store = createStore(persistedReducer, composeEnhancers(applyMiddleware(...middleware)))
-  let persistor = persistStore(store)
-
-  if (process.env.NODE_ENV !== 'production' && module.hot) {
-    module.hot.accept('./modules/root', () => store.replaceReducer(rootReducer))
-  }
-
-  return { store, persistor }
-}
-
-export default configure
+export const persistor = persistStore(store)

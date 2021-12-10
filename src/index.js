@@ -5,10 +5,9 @@ import ReactDOM from 'react-dom'
 import App from './App'
 import * as serviceWorker from './serviceWorker'
 import { Provider } from 'react-redux'
+import { store, persistor } from './store'
 import { PersistGate } from 'redux-persist/integration/react'
-import storeConfig from './store'
-
-const { store, persistor } = storeConfig()
+import { FullScreenLoading } from './components'
 
 ReactDOM.render(
   <Provider store={store}>
