@@ -1,17 +1,8 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import TenantSelector from 'src/components/cipp/TenantSelector'
-import { useDispatch, useSelector } from 'react-redux'
-import { CSpinner } from '@coreui/react'
+import { useSelector } from 'react-redux'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
-import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit'
-import BootstrapTable from 'react-bootstrap-table-next'
-import paginationFactory from 'react-bootstrap-table2-paginator'
-import { listGroups } from '../../../store/modules/groups'
-import { useListUsersQuery } from '../../../store/api/users'
-import { useListGroupsQuery } from '../../../store/api/groups'
-
-const { SearchBar } = Search
-const pagination = paginationFactory()
+import CippDatatable from '../../../components/cipp/CippDatatable'
 
 const dropdown = (cell, row, rowIndex, formatExtraData) => {
   return (
@@ -55,12 +46,6 @@ const columns = [
 const Groups = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
-  const {
-    data: groups,
-    isFetching,
-    error: groupsError,
-  } = useListGroupsQuery({ tenantDomain: tenant?.defaultDomainName })
-
   return (
     <div>
       <TenantSelector />
@@ -68,26 +53,12 @@ const Groups = () => {
       <div className="bg-white rounded p-5">
         <h3>Groups</h3>
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-        {isFetching && <CSpinner />}
-        {!isFetching && groupsError && <span>Failed to load groups</span>}
-        {!isFetching && !groupsError && Object.keys(tenant).length !== 0 && (
-          <ToolkitProvider keyField="displayName" columns={columns} data={groups} search>
-            {(props) => (
-              <div>
-                {/* eslint-disable-next-line react/prop-types */}
-                <SearchBar {...props.searchProps} />
-                <hr />
-                {/*eslint-disable */}
-                <BootstrapTable
-                  {...props.baseProps}
-                  pagination={pagination}
-                  wrapperClasses="table-responsive"
-                />
-                {/*eslint-enable */}
-              </div>
-            )}
-          </ToolkitProvider>
-        )}
+        <CippDatatable
+          reportName={`${tenant?.defaultDomainName}-Groups`}
+          path="/api/ListGroups"
+          columns={columns}
+          params={{ TenantFilter: tenant?.defaultDomainName }}
+        />
       </div>
     </div>
   )
