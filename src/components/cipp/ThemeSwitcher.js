@@ -1,7 +1,7 @@
 import React from 'react'
 import { CButtonGroup, CButton, CCardTitle, CCard, CCardBody } from '@coreui/react'
 import { useDispatch, useSelector } from 'react-redux'
-import { setCurrentTheme } from 'src/store/modules/app'
+import { setCurrentTheme } from 'src/store/features/app'
 
 function caps(str) {
   return str.charAt(0).toUpperCase() + str.slice(1)

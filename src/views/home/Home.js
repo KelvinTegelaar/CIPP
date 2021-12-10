@@ -14,20 +14,19 @@ import {
   CCardTitle,
   CButton,
 } from '@coreui/react'
-
-import { loadVersion } from '../../store/modules/version'
+import {
+  useLoadVersionLocalQuery,
+  useLoadVersionRemoteQuery,
+  useLoadVersionsQuery,
+} from '../../store/api/app'
 
 const Home = () => {
-  const dispatch = useDispatch()
-  const versions = useSelector((state) => state.version.versions)
+  // const { data: localVersion } = useLoadVersionLocalQuery()
+  // const { data: versions, isLoading } = useLoadVersionRemoteQuery(localVersion)
 
-  useEffect(() => {
-    async function load() {
-      dispatch(loadVersion())
-    }
+  const { data: versions, isLoading } = useLoadVersionsQuery()
 
-    load()
-  }, [])
+  console.log(versions, isLoading)
 
   return (
     <div>
@@ -49,43 +48,43 @@ const Home = () => {
         </CCol>
         <CCol xs>
           <CCard
-            color={versions.OutOfDateCIPP ? 'danger' : ''}
+            color={versions?.OutOfDateCIPP ? 'danger' : ''}
             textColor={'black'}
             className="mb-3"
             style={{ maxWidth: '18rem' }}
           >
             <CCardHeader>
               CIPP Version
-              {versions.OutOfDateCIPP ? (
+              {versions?.OutOfDateCIPP ? (
                 <CIcon icon={icon.cilXCircle} />
               ) : (
                 <CIcon icon={icon.cilCheckCircle} size="lg" />
               )}
             </CCardHeader>
             <CCardBody>
-              Remote: {!versions.loading ? versions.RemoteCIPPVersion : <CSpinner size="sm" />}
+              Remote: {!isLoading ? versions.RemoteCIPPVersion : <CSpinner size="sm" />}
               <br />
-              Local: {!versions.loading ? versions.LocalCIPPVersion : <CSpinner size="sm" />}
+              Local: {!isLoading ? versions.LocalCIPPVersion : <CSpinner size="sm" />}
             </CCardBody>
           </CCard>
           <CCard
-            color={versions.OutOfDateCIPPAPI ? 'danger' : ''}
+            color={versions?.OutOfDateCIPPAPI ? 'danger' : ''}
             textColor={'black'}
             className="mb-3"
             style={{ maxWidth: '18rem' }}
           >
             <CCardHeader>
               CIPP API Version
-              {versions.OutOfDateCIPPAPI ? (
+              {versions?.OutOfDateCIPPAPI ? (
                 <CIcon icon={icon.cilXCircle} />
               ) : (
                 <CIcon icon={icon.cilCheckCircle} size="lg" />
               )}
             </CCardHeader>
             <CCardBody>
-              Remote: {!versions.loading ? versions.RemoteCIPPAPIVersion : <CSpinner size="sm" />}
+              Remote: {!isLoading ? versions.RemoteCIPPAPIVersion : <CSpinner size="sm" />}
               <br />
-              Local: {!versions.loading ? versions.LocalCIPPAPIVersion : <CSpinner size="sm" />}
+              Local: {!isLoading ? versions.LocalCIPPAPIVersion : <CSpinner size="sm" />}
             </CCardBody>
           </CCard>
         </CCol>

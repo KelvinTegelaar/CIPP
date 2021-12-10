@@ -1,11 +1,17 @@
 import React from 'react'
 import { Route, Redirect } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import { getClientPrincipal, loadClientPrincipal } from '../store/modules/profile'
+import { useLoadClientPrincipalQuery } from '../store/api/auth'
+import { FullScreenLoading } from './Loading'
 
 export const PrivateRoute = ({ ...rest }) => {
-  const dispatch = useDispatch()
-  dispatch(loadClientPrincipal())
-  const clientPrincipal = dispatch(getClientPrincipal())
-  return Object.keys(clientPrincipal).length === 0 ? <Redirect to="/login" /> : <Route {...rest} />
+  const { data: clientPrincipal, error, isLoading } = useLoadClientPrincipalQuery()
+
+  if (isLoading) {
+    return <FullScreenLoading />
+  }
+  return Object.keys(clientPrincipal).length === 0 || error ? (
+    <Redirect to="/login" />
+  ) : (
+    <Route {...rest} />
+  )
 }

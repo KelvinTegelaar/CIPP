@@ -1,3 +1,3 @@
-import storeConfig from './store'
+import { store, persistor } from './store'
 
-export default storeConfig
+export { store, persistor }

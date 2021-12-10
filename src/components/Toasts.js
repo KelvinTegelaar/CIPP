@@ -6,20 +6,19 @@ import {
   CToaster,
   CToastClose,
   CToastHeader,
-  CAccordion,
-  CButton,
   CCollapse,
   CCard,
   CCardBody,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilExpandDown, cilExpandUp } from '@coreui/icons'
+// import { closeToast } from '../store/modules/toast'
 import { closeToast } from '../store/modules/toast'
 import PropTypes from 'prop-types'
 
 const Toasts = () => {
   const dispatch = useDispatch()
-  const toasts = useSelector((state) => state.toast.toasts)
+  const toasts = useSelector((state) => state.toasts.toasts)
 
   return (
     <CToaster placement={'top-end'}>
