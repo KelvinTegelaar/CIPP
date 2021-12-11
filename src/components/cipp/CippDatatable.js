@@ -1,10 +1,9 @@
 import React from 'react'
 import ExportPDFButton from 'src/components/cipp/PdfButton'
-import { CButton, CSpinner } from '@coreui/react'
+import { CButton, CSpinner, CFormInput } from '@coreui/react'
 import DataTable, { TableProps } from 'react-data-table-component'
 import { useListDatatableQuery } from '../../store/api/datatable'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 
 export default function CippDatatable({
   path,
@@ -23,31 +22,21 @@ export default function CippDatatable({
   const { data = [], isFetching, error } = useListDatatableQuery({ path, params })
   const actionsMemo = React.useMemo(
     () => (
-      <ExportPDFButton pdfdata={data} pdfheaders={columns} pdfsize="A4" reportname={reportName} />
+      <ExportPDFButton pdfData={data} pdfHeaders={columns} pdfSize="A4" reportName={reportName} />
     ),
     [columns, data, reportName],
   )
-  const TextField = styled.input`
-    height: 32px;
-    width: 200px;
-    border-radius: 3px;
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    border: 1px solid #e5e5e5;
-    padding: 0 32px 0 16px;
 
-    &:hover {
-      cursor: pointer;
-    }
-  `
   {
     /* eslint-disable */
   }
   const FilterComponent = ({ filterText, onFilter, onClear }) => (
     <>
-      <TextField
+      <CFormInput
+        style={{
+          height: '32px',
+          width: '200px',
+        }}
         id="search"
         type="text"
         placeholder="Filter"
@@ -55,7 +44,7 @@ export default function CippDatatable({
         value={filterText}
         onChange={onFilter}
       />
-      <CButton className="text-white" type="button" size="sm" onClick={onClear}>
+      <CButton type="button" size="sm" className="text-white" onClick={onClear}>
         Clear
       </CButton>
     </>
