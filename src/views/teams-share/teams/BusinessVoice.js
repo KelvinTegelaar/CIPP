@@ -9,42 +9,44 @@ const columns = [
   {
     name: 'Assigned to User',
     selector: 'AssignedTo',
-    sort: true,
+    sortable: true,
   },
   {
     name: 'Phone Number',
     selector: 'TelephoneNumber',
-    sort: true,
+    sortable: true,
   },
   {
     name: 'Number Type',
     selector: 'NumberType',
-    sort: false,
+    sortable: true,
   },
   {
     name: 'Country',
     selector: 'IsoCountryCode',
-    sort: false,
+    sortable: true,
   },
   {
     name: 'Location',
     selector: 'PlaceName',
-    sort: false,
+    sortable: true,
   },
   {
     name: 'Activation State',
     selector: 'ActivationState',
     formatter: Formatter,
+    sortable: true,
   },
   {
     name: 'Operator Connect',
     selector: 'IsOperatorConnect',
     formatter: Formatter,
+    sortable: true,
   },
   {
     name: 'Purchased on',
     selector: 'AcquisitionDate',
-    sort: false,
+    sortable: true,
   },
 ]
 

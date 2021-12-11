@@ -1,145 +1,122 @@
-import React, { useEffect } from 'react'
-import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit'
-import paginationFactory from 'react-bootstrap-table2-paginator'
-import { useDispatch, useSelector } from 'react-redux'
-import { loadConditionalAccessPolicies } from '../../../store/modules/tenants'
-import BootstrapTable from 'react-bootstrap-table-next'
-import { CSpinner } from '@coreui/react'
+import React from 'react'
+import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
+import CippDatatable from '../../../components/cipp/CippDatatable'
+import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 
-const { SearchBar } = Search
-const pagination = paginationFactory()
-
+const dropdown = (row, index, column) => {
+  return (
+    <CDropdown>
+      <CDropdownToggle color="primary">...</CDropdownToggle>
+      <CDropdownMenu>
+        <CDropdownItem href="#">Edit Group</CDropdownItem>
+      </CDropdownMenu>
+    </CDropdown>
+  )
+}
 const columns = [
   {
-    text: 'Name',
-    dataField: 'displayName',
-    sort: true,
+    name: 'Name',
+    selector: 'displayName',
+    sortable: true,
   },
   {
-    text: 'State',
-    dataField: 'state',
-    sort: true,
+    name: 'State',
+    selector: 'state',
+    sortable: true,
   },
   {
-    text: 'Last Modified',
-    dataField: 'modifiedDateTime',
-    sort: true,
+    name: 'Last Modified',
+    selector: 'modifiedDateTime',
+    sortable: true,
   },
   {
-    text: 'Client App Types',
-    dataField: 'clientAppTypes',
-    sort: true,
+    name: 'Client App Types',
+    selector: 'clientAppTypes',
+    sortable: true,
   },
   {
-    text: 'Platform Inc',
-    dataField: 'includePlatforms',
-    sort: true,
+    name: 'Platform Inc',
+    selector: 'includePlatforms',
+    sortable: true,
   },
   {
-    text: 'Platform Exc',
-    dataField: 'excludePlatforms',
-    sort: true,
+    name: 'Platform Exc',
+    selector: 'excludePlatforms',
+    sortable: true,
   },
   {
-    text: 'Include Locations',
-    dataField: 'includeLocations',
-    sort: true,
+    name: 'Include Locations',
+    selector: 'includeLocations',
+    sortable: true,
   },
   {
-    text: 'Exclude Locations',
-    dataField: 'excludeLocations',
-    sort: true,
+    name: 'Exclude Locations',
+    selector: 'excludeLocations',
+    sortable: true,
   },
   {
-    text: 'Include Users',
-    dataField: 'includeUsers',
-    sort: true,
+    name: 'Include Users',
+    selector: 'includeUsers',
+    sortable: true,
   },
   {
-    text: 'Exclude Users',
-    dataField: 'excludeUsers',
-    sort: true,
+    name: 'Exclude Users',
+    selector: 'excludeUsers',
+    sortable: true,
   },
   {
-    text: 'Include Groups',
-    dataField: 'includeGroups',
-    sort: true,
+    name: 'Include Groups',
+    selector: 'includeGroups',
+    sortable: true,
   },
   {
-    text: 'Exclude Groups',
-    dataField: 'excludeGroups',
-    sort: true,
+    name: 'Exclude Groups',
+    selector: 'excludeGroups',
+    sortable: true,
   },
   {
-    text: 'Include Applications',
-    dataField: 'includeApplications',
-    sort: true,
+    name: 'Include Applications',
+    selector: 'includeApplications',
+    sortable: true,
   },
   {
-    text: 'Exclude Applications',
-    dataField: 'excludeApplications',
-    sort: true,
+    name: 'Exclude Applications',
+    selector: 'excludeApplications',
+    sortable: true,
   },
   {
-    text: 'Control Operator',
-    dataField: 'grantControlsOperator',
-    sort: true,
+    name: 'Control Operator',
+    selector: 'grantControlsOperator',
+    sortable: true,
   },
   {
-    text: 'Built-in Controls',
-    dataField: 'builtInControls',
-    sort: true,
+    name: 'Built-in Controls',
+    selector: 'builtInControls',
+    sortable: true,
   },
 ]
 
-const ConditionalAccess = () => {
-  const dispatch = useDispatch()
-  const {
-    tenant,
-    cap: { policies, loading, loaded },
-  } = useSelector((state) => state.tenants)
-
-  const tenantSelected = tenant && tenant.defaultDomainName
-
-  useEffect(() => {
-    if (tenantSelected) {
-      dispatch(loadConditionalAccessPolicies({ domain: tenantSelected.defaultDomainName }))
-    }
-  }, [])
-
-  const action = (selected) =>
-    dispatch(loadConditionalAccessPolicies({ domain: selected.defaultDomainName }))
+const RolesList = () => {
+  const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
     <div>
-      <TenantSelector action={action} />
+      <TenantSelector />
       <hr />
       <div className="bg-white rounded p-5">
-        <h3>Conditional Access Policies</h3>
-        {!loaded && loading && <CSpinner />}
-        {loaded && !loading && (
-          <ToolkitProvider keyField="displayName" columns={columns} data={policies} search>
-            {(props) => (
-              <div>
-                {/* eslint-disable-next-line react/prop-types */}
-                <SearchBar {...props.searchProps} />
-                <hr />
-                {/*eslint-disable */}
-                <BootstrapTable
-                  {...props.baseProps}
-                  pagination={pagination}
-                  striped
-                  wrapperClasses="table-responsive"
-                />
-                {/*eslint-enable */}
-              </div>
-            )}
-          </ToolkitProvider>
-        )}
+        <h3>Applications List</h3>
+        {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
+        <CippDatatable
+          keyField="id"
+          reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
+          path="/api/ListAPDevices"
+          columns={columns}
+          params={{ TenantFilter: tenant?.defaultDomainName }}
+        />
       </div>
     </div>
   )
 }
 
-export default ConditionalAccess
+export default RolesList

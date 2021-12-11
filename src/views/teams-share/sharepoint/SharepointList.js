@@ -1,128 +1,72 @@
-import React, { useEffect } from 'react'
-import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle, CSpinner } from '@coreui/react'
-import TenantSelector from 'src/components/cipp/TenantSelector'
-import BootstrapTable from 'react-bootstrap-table-next'
-import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit'
-import paginationFactory from 'react-bootstrap-table2-paginator'
-import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
-import { cilSettings } from '@coreui/icons'
-import CIcon from '@coreui/icons-react'
-import { listSharepointSitesUsage } from '../../../store/modules/sharepoint'
+import React from 'react'
+import { useSelector } from 'react-redux'
+import TenantSelector from '../../../components/cipp/TenantSelector'
+import CippDatatable from '../../../components/cipp/CippDatatable'
+import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 
-const { SearchBar } = Search
+const dropdown = (row, index, column) => {
+  return (
+    <CDropdown>
+      <CDropdownToggle color="primary">...</CDropdownToggle>
+      <CDropdownMenu>
+        <CDropdownItem href="#">Edit Group</CDropdownItem>
+      </CDropdownMenu>
+    </CDropdown>
+  )
+}
+const columns = [
+  {
+    name: 'Name',
+    selector: 'displayName',
+    sort: true,
+  },
+  {
+    name: 'UPN',
+    selector: 'UPN',
+    sort: true,
+  },
+  {
+    name: 'Last Active',
+    selector: 'LastActive',
+    sort: true,
+  },
+  {
+    name: 'File Count (Total)',
+    selector: 'FileCount',
+    sort: true,
+  },
+  {
+    name: 'Used (GB)',
+    selector: 'UsedGB',
+    sort: true,
+  },
+  {
+    name: 'Allocated (GB)',
+    selector: 'Allocated',
+    sort: true,
+  },
+]
 
-const pagination = paginationFactory()
-
-const SharepointList = () => {
-  const dispatch = useDispatch()
+const RolesList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
-  const sharepoint = useSelector((state) => state.sharepoint.usage)
-
-  useEffect(() => {
-    async function load() {
-      if (Object.keys(tenant).length !== 0) {
-        dispatch(listSharepointSitesUsage({ tenantDomain: tenant.defaultDomainName }))
-      }
-    }
-
-    load()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  const action = (tenant) => {
-    dispatch(listSharepointSitesUsage({ tenantDomain: tenant.defaultDomainName }))
-  }
-
-  const dropdown = (cell, row, rowIndex, formatExtraData) => {
-    return (
-      <CDropdown>
-        <CDropdownToggle color="primary">...</CDropdownToggle>
-        <CDropdownMenu>
-          <CDropdownItem href="#">
-            <Link
-              className="dropdown-item"
-              to={`/identity/administration/EditGroup?groupId=${row.UPN}&tenantDomain=${tenant.defaultDomainName}`}
-            >
-              <CIcon icon={cilSettings} className="me-2" />
-              Edit Site Members
-            </Link>
-          </CDropdownItem>
-        </CDropdownMenu>
-      </CDropdown>
-    )
-  }
-
-  const columns = [
-    {
-      text: 'Display Name',
-      dataField: 'displayName',
-      sort: true,
-    },
-    {
-      text: 'UPN',
-      dataField: 'UPN',
-      sort: true,
-    },
-    {
-      text: 'Last Active',
-      dataField: 'LastActive',
-      sort: true,
-    },
-    {
-      text: 'File Count',
-      dataField: 'FileCount',
-      sort: true,
-    },
-    {
-      text: 'Used (GB)',
-      dataField: 'UsedGB',
-      sort: true,
-    },
-    {
-      text: 'Allocated',
-      dataField: 'Allocated',
-    },
-    {
-      text: 'URL',
-      dataField: 'URL',
-      sort: true,
-    },
-    {
-      text: 'Action',
-      formatter: dropdown,
-    },
-  ]
 
   return (
     <div>
-      <TenantSelector action={action} />
+      <TenantSelector />
       <hr />
       <div className="bg-white rounded p-5">
-        <h3>Sharepoint Site List</h3>
+        <h3>Applications List</h3>
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-        {!sharepoint.loaded && sharepoint.loading && <CSpinner />}
-        {sharepoint.loaded && !sharepoint.loading && Object.keys(tenant).length !== 0 && (
-          <ToolkitProvider keyField="url" columns={columns} data={sharepoint.list} search>
-            {(props) => (
-              <div>
-                {/* eslint-disable-next-line react/prop-types */}
-                <SearchBar {...props.searchProps} />
-                <hr />
-                {/*eslint-disable */}
-                <BootstrapTable
-                  {...props.baseProps}
-                  pagination={pagination}
-                  wrapperClasses="table-responsive"
-                />
-                {/*eslint-enable */}
-              </div>
-            )}
-          </ToolkitProvider>
-        )}
+        <CippDatatable
+          keyField="id"
+          reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
+          path="/api/ListAPDevices"
+          columns={columns}
+          params={{ TenantFilter: tenant?.defaultDomainName }}
+        />
       </div>
     </div>
   )
 }
 
-export default SharepointList
+export default RolesList

@@ -1,95 +1,57 @@
-import React, { useEffect } from 'react'
-import TenantSelector from 'src/components/cipp/TenantSelector'
-import { useDispatch, useSelector } from 'react-redux'
-import { CSpinner } from '@coreui/react'
-import ToolkitProvider, { CSVExport, Search } from 'react-bootstrap-table2-toolkit'
-import BootstrapTable from 'react-bootstrap-table-next'
-import paginationFactory from 'react-bootstrap-table2-paginator'
-import { listAppliedStandards } from '../../../store/modules/standards'
-import ExportPDFButton from '../../../components/cipp/PdfButton'
-import { CButton } from '@coreui/react'
-import CellBoolean from '../../../components/cipp/CellBoolean'
+import React from 'react'
+import { useSelector } from 'react-redux'
+import TenantSelector from '../../../components/cipp/TenantSelector'
+import CippDatatable from '../../../components/cipp/CippDatatable'
+import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 
-const { ExportCSVButton } = CSVExport
-const { SearchBar } = Search
-const pagination = paginationFactory()
-const Formatter = (cell) => CellBoolean({ cell })
-
+const dropdown = (row, index, column) => {
+  return (
+    <CDropdown>
+      <CDropdownToggle color="primary">...</CDropdownToggle>
+      <CDropdownMenu>
+        <CDropdownItem href="#">Edit Group</CDropdownItem>
+      </CDropdownMenu>
+    </CDropdown>
+  )
+}
 const columns = [
   {
-    text: 'Tenant Name',
-    dataField: 'displayName',
-    sort: true,
+    name: 'Tenant Name',
+    selector: 'displayName',
+    sortable: true,
   },
   {
-    text: 'Standard',
-    dataField: 'standardName',
-    sort: true,
+    name: 'Standard',
+    selector: 'standardName',
+    sortable: true,
   },
   {
-    text: 'Applied By',
-    dataField: 'appliedBy',
-    sort: true,
+    name: 'Applied By',
+    selector: 'appliedBy',
+    sortable: true,
   },
 ]
 
-const StandardsList = () => {
-  const dispatch = useDispatch()
+const RolesList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
-  const standardsList = useSelector((state) => state.standards.list)
-  useEffect(() => {
-    async function load() {
-      dispatch(listAppliedStandards())
-    }
-
-    load()
-  }, [])
 
   return (
     <div>
+      <TenantSelector />
       <hr />
       <div className="bg-white rounded p-5">
-        <h3>Standards List</h3>
-        {!standardsList.loaded && standardsList.loading && <CSpinner />}
-        {standardsList.loaded && !standardsList.loading && (
-          <ToolkitProvider
-            keyField="displayName"
-            columns={columns}
-            data={standardsList.list}
-            search
-          >
-            {(props) => (
-              <div>
-                {/* eslint-disable-next-line react/prop-types */}
-                <SearchBar {...props.searchProps} />
-                <hr />
-                {/* eslint-disable-next-line react/prop-types */}
-                <ExportCSVButton {...props.csvProps}>
-                  <CButton>CSV</CButton>
-                </ExportCSVButton>
-                <ExportPDFButton
-                  pdfdata={standardsList.list}
-                  pdfheaders={columns}
-                  pdfsize="A4"
-                  reportname="MFA Report"
-                ></ExportPDFButton>
-                {/*eslint-disable */}
-                <BootstrapTable
-                  {...props.baseProps}
-                  pagination={pagination}
-                  wrapperClasses="table-responsive"
-                />
-                {/*eslint-enable */}
-              </div>
-            )}
-          </ToolkitProvider>
-        )}
-        {!standardsList.loaded && !standardsList.loading && standardsList.error && (
-          <span>Failed to load Standards</span>
-        )}
+        <h3>Applications List</h3>
+        {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
+        <CippDatatable
+          keyField="id"
+          reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
+          path="/api/ListAPDevices"
+          columns={columns}
+          params={{ TenantFilter: tenant?.defaultDomainName }}
+        />
       </div>
     </div>
   )
 }
 
-export default StandardsList
+export default RolesList

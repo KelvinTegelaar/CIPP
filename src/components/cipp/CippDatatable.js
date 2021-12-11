@@ -19,9 +19,6 @@ const FilterComponent = ({ filterText, onFilter, onClear }) => (
       value={filterText}
       onChange={onFilter}
     />
-    <CButton type="button" size="sm" className="text-white" onClick={onClear}>
-      Clear
-    </CButton>
   </>
 )
 

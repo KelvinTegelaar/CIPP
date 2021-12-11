@@ -17,20 +17,24 @@ const dropdown = (row, index, column) => {
 
 const columns = [
   {
-    selector: (row) => row['displayName'],
+    selector: 'displayName',
     name: 'Name',
+    sortable: true,
   },
   {
-    selector: (row) => row['publishingState'],
+    selector: 'publishingState',
     name: 'Published',
+    sortable: true,
   },
   {
-    selector: (row) => row['installCommandLine'],
+    selector: 'installCommandLine',
     name: 'installCommandLine',
+    sortable: true,
   },
   {
-    selector: (row) => row['uninstallCommandLine'],
+    selector: 'uninstallCommandLine',
     name: 'uninstallCommandLine',
+    sortable: true,
   },
   {
     name: 'Actions',

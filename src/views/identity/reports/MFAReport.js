@@ -1,152 +1,72 @@
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { loadMFAReport } from '../../../store/modules/reports'
+import React from 'react'
+import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
-import ToolkitProvider, { CSVExport, Search } from 'react-bootstrap-table2-toolkit'
-import { CButton } from '@coreui/react'
-import BootstrapTable from 'react-bootstrap-table-next'
-import paginationFactory from 'react-bootstrap-table2-paginator'
-import { Loading } from '../../../components'
-import CellBoolean from '../../../components/cipp/CellBoolean'
-import ExportPDFButton from '../../../components/cipp/PdfButton'
-const { SearchBar } = Search
-const { ExportCSVButton } = CSVExport
-const pagination = paginationFactory()
-const Formatter = (cell) => CellBoolean({ cell })
+import CippDatatable from '../../../components/cipp/CippDatatable'
+import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
+
+const dropdown = (row, index, column) => {
+  return (
+    <CDropdown>
+      <CDropdownToggle color="primary">...</CDropdownToggle>
+      <CDropdownMenu>
+        <CDropdownItem href="#">Edit Group</CDropdownItem>
+      </CDropdownMenu>
+    </CDropdown>
+  )
+}
 
 const columns = [
   {
-    text: 'User Principal Name',
-    dataField: 'UPN',
-    sort: true,
+    selector: 'serialNumber',
+    name: 'Serial',
+    sortable: true,
   },
   {
-    text: 'Account Enabled',
-    dataField: 'AccountEnabled',
-    sort: true,
-    formatter: Formatter,
+    selector: 'model',
+    name: 'Model',
+    sortable: true,
   },
   {
-    text: 'Per User MFA Status',
-    dataField: 'PerUser',
-    sort: true,
-    formatter: (cell) => {
-      if (cell === 'Enforced') {
-        return (
-          <div>
-            <CellBoolean cell={true} /> Enforced
-          </div>
-        )
-      } else if (cell === 'Disabled') {
-        return (
-          <div>
-            <CellBoolean cell={false} /> Disabled
-          </div>
-        )
-      }
-      return cell
-    },
+    selector: 'manufacturer',
+    name: 'Manufacturer',
+    sortable: true,
   },
   {
-    text: 'Registered for Conditional MFA',
-    dataField: 'MFARegistration',
-    sort: true,
-    formatter: Formatter,
+    selector: 'groupTag',
+    name: 'Group Tag',
+    sortable: true,
   },
   {
-    text: 'Enforced via Conditional Access',
-    dataField: 'CoveredByCA',
-    sort: true,
-    formatter: (cell) => {
-      if (cell === 'All Users') {
-        return (
-          <div>
-            <CellBoolean cell={true} /> All Users
-          </div>
-        )
-      } else if (cell === 'None') {
-        return (
-          <div>
-            <CellBoolean cell={false} /> None
-          </div>
-        )
-      }
-      return cell
-    },
+    selector: 'enrollmentState',
+    name: 'Enrollment',
+    sortable: true,
   },
   {
-    text: 'Enforced via Security Defaults',
-    dataField: 'CoveredBySD',
-    sort: true,
-    formatter: Formatter,
+    name: 'Actions',
+    cell: dropdown,
   },
 ]
 
-const MFAReport = () => {
-  const dispatch = useDispatch()
-  const mfa = useSelector((state) => state.reports.mfa)
+const RolesList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
-  const tenantSelected = tenant && tenant.defaultDomainName
-
-  const handleTenantSelect = (tenant) => {
-    dispatch(loadMFAReport({ domain: tenant.defaultDomainName }))
-  }
-
-  useEffect(() => {
-    async function load() {
-      dispatch(loadMFAReport({ domain: tenant.defaultDomainName }))
-    }
-    if (tenantSelected) {
-      load()
-    }
-  }, [])
-
   return (
-    <div className="bg-white rounded p-5">
-      <h3>MFA Report</h3>
+    <div>
+      <TenantSelector />
       <hr />
-      <TenantSelector action={handleTenantSelect} />
-      {!tenantSelected && !mfa.loading && !mfa.loaded && <>Select a Tenant</>}
-      {mfa.loading && !mfa.loaded && (
-        <div style={{ padding: 20 }}>
-          <Loading />
-        </div>
-      )}
-      {mfa.loaded && !mfa.loading && (
-        <>
-          <hr />
-          <ToolkitProvider keyField="UPN" columns={columns} data={mfa.report} search>
-            {(props) => (
-              <div>
-                {/* eslint-disable-next-line react/prop-types */}
-                <SearchBar {...props.searchProps} />
-                {/* eslint-disable-next-line react/prop-types */}
-                <ExportCSVButton {...props.csvProps}>
-                  <CButton>CSV</CButton>
-                </ExportCSVButton>
-                <ExportPDFButton
-                  pdfdata={mfa.report}
-                  pdfheaders={columns}
-                  pdfsize="A4"
-                  reportname="MFA Report"
-                ></ExportPDFButton>
-                <hr />
-                {/*eslint-disable */}
-                <BootstrapTable
-                  {...props.baseProps}
-                  pagination={pagination}
-                  striped
-                  wrapperClasses="table-responsive"
-                />
-                {/*eslint-enable */}
-              </div>
-            )}
-          </ToolkitProvider>
-        </>
-      )}
+      <div className="bg-white rounded p-5">
+        <h3>Applications List</h3>
+        {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
+        <CippDatatable
+          keyField="id"
+          reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
+          path="/api/ListAPDevices"
+          columns={columns}
+          params={{ TenantFilter: tenant?.defaultDomainName }}
+        />
+      </div>
     </div>
   )
 }
 
-export default MFAReport
+export default RolesList

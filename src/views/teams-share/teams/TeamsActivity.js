@@ -1,104 +1,72 @@
-import React, { useEffect } from 'react'
-import { CSpinner } from '@coreui/react'
-import TenantSelector from 'src/components/cipp/TenantSelector'
-import BootstrapTable from 'react-bootstrap-table-next'
-import ToolkitProvider, { Search, CSVExport } from 'react-bootstrap-table2-toolkit'
-import paginationFactory from 'react-bootstrap-table2-paginator'
-import { useDispatch, useSelector } from 'react-redux'
-import { listTeamsActivity } from '../../../store/modules/teams'
-import { CButton } from '@coreui/react'
+import React from 'react'
+import { useSelector } from 'react-redux'
+import TenantSelector from '../../../components/cipp/TenantSelector'
+import CippDatatable from '../../../components/cipp/CippDatatable'
+import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 
-const { SearchBar } = Search
-const pagination = paginationFactory()
-const { ExportCSVButton } = CSVExport
-
+const dropdown = (row, index, column) => {
+  return (
+    <CDropdown>
+      <CDropdownToggle color="primary">...</CDropdownToggle>
+      <CDropdownMenu>
+        <CDropdownItem href="#">Edit Group</CDropdownItem>
+      </CDropdownMenu>
+    </CDropdown>
+  )
+}
 const columns = [
   {
-    text: 'UPN',
-    dataField: 'UPN',
+    name: 'Name',
+    selector: 'displayName',
     sort: true,
   },
   {
-    text: 'Last Active',
-    dataField: 'LastActive',
+    name: 'UPN',
+    selector: 'UPN',
     sort: true,
   },
   {
-    text: 'Teams Chat Message Count',
-    dataField: 'TeamsChat',
+    name: 'Last Active',
+    selector: 'LastActive',
     sort: true,
   },
   {
-    text: 'Call Count',
-    dataField: 'CallCount',
+    name: 'File Count (Total)',
+    selector: 'FileCount',
     sort: true,
   },
   {
-    text: 'Meeting Count',
-    dataField: 'MeetingCount',
+    name: 'Used (GB)',
+    selector: 'UsedGB',
+    sort: true,
+  },
+  {
+    name: 'Allocated (GB)',
+    selector: 'Allocated',
     sort: true,
   },
 ]
 
-const ListTeamActivity = () => {
-  const dispatch = useDispatch()
+const RolesList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
-  const teamsActivity = useSelector((state) => state.teams.activity)
-
-  useEffect(() => {
-    async function load() {
-      if (Object.keys(tenant).length !== 0) {
-        dispatch(listTeamsActivity({ tenantDomain: tenant.defaultDomainName }))
-      }
-    }
-
-    load()
-    // eslist-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  const action = (tenant) => {
-    dispatch(listTeamsActivity({ tenantDomain: tenant.defaultDomainName }))
-  }
 
   return (
     <div>
-      <TenantSelector action={action} />
+      <TenantSelector />
       <hr />
       <div className="bg-white rounded p-5">
-        <h3>Teams Activity</h3>
-        {Object.keys(tenant).length === 0 && <span> Select a tenant to get started.</span>}
-        {!teamsActivity.loaded && teamsActivity.loading && <CSpinner />}
-        {teamsActivity.loaded && !teamsActivity.loading && Object.keys(tenant).length !== 0 && (
-          <ToolkitProvider
-            keyField="UPN"
-            columns={columns}
-            data={teamsActivity.list}
-            search
-            exportCSV={{ filename: `${tenant.displayName} Teams Acitivty List` }}
-          >
-            {(props) => (
-              <div>
-                {/* eslint-disable-next-line react/prop-types */}
-                <SearchBar {...props.searchProps} />
-                {/* eslint-disable-next-line react/prop-types */}
-                <ExportCSVButton {...props.csvProps}>
-                  <CButton>CSV</CButton>
-                </ExportCSVButton>
-                <hr />
-                {/*eslint-disable */}
-                <BootstrapTable
-                  {...props.baseProps}
-                  pagination = {pagination}
-                  wrapperClasses = "table-responsive"
-                  />
-                  {/*eslint-enable */}
-              </div>
-            )}
-          </ToolkitProvider>
-        )}
+        <h3>Applications List</h3>
+        {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
+        <CippDatatable
+          keyField="id"
+          reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
+          path="/api/ListAPDevices"
+          columns={columns}
+          params={{ TenantFilter: tenant?.defaultDomainName }}
+        />
       </div>
     </div>
   )
 }
 
-export default ListTeamActivity
+export default RolesList

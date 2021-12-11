@@ -1,135 +1,96 @@
-import React, { useEffect } from 'react'
-import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit'
-import paginationFactory from 'react-bootstrap-table2-paginator'
-import { useDispatch, useSelector } from 'react-redux'
-import { listTenants } from '../../../store/modules/tenants'
-import BootstrapTable from 'react-bootstrap-table-next'
-import CIcon from '@coreui/icons-react'
-import { cilCog } from '@coreui/icons'
-import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle, CSpinner } from '@coreui/react'
-import { cilSettings } from '@coreui/icons'
-import { Link } from 'react-router-dom'
+import React from 'react'
+import { useSelector } from 'react-redux'
+import TenantSelector from '../../../components/cipp/TenantSelector'
+import CippDatatable from '../../../components/cipp/CippDatatable'
+import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 
-const { SearchBar } = Search
-const pagination = paginationFactory()
-
-// eslint-disable-next-line react/display-name
-const linkCog = (url) => (cell) =>
-  (
-    <a href={url(cell)} target="_blank" rel="noreferrer">
-      <CIcon icon={cilCog} />
-    </a>
-  )
-
-const dropdown = (cell, row, rowIndex, formatExtraData) => {
+const dropdown = (row, index, column) => {
   return (
     <CDropdown>
       <CDropdownToggle color="primary">...</CDropdownToggle>
       <CDropdownMenu>
-        <CDropdownItem href="#">
-          <Link className="dropdown-item" to="/tenant/administration/EditTenant">
-            <CIcon icon={cilSettings} className="me-2" />
-            Edit Tenant
-          </Link>
-        </CDropdownItem>
+        <CDropdownItem href="#">Edit Group</CDropdownItem>
       </CDropdownMenu>
     </CDropdown>
   )
 }
-
 const columns = [
   {
-    text: 'Name',
-    dataField: 'displayName',
-    sort: true,
+    name: 'Name',
+    selector: 'displayName',
+    sortable: true,
   },
   {
-    text: 'Default Domain',
-    dataField: 'defaultDomainName',
+    name: 'Default Domain',
+    selector: 'defaultDomainName',
   },
   {
-    text: 'M365 Portal',
-    dataField: 'customerId',
+    name: 'M365 Portal',
+    selector: 'customerId',
     formatter: linkCog(
       (cell) =>
         `https://portal.office.com/Partner/BeginClientSession.aspx?CTID=${cell}&CSDEST=o365admincenter`,
     ),
   },
   {
-    text: 'Exchange Portal',
-    dataField: 'defaultDomainName',
+    name: 'Exchange Portal',
+    selector: 'defaultDomainName',
     formatter: linkCog(
       (cell) => `https://outlook.office365.com/ecp/?rfr=Admin_o365&exsvurl=1&delegatedOrg=${cell}`,
     ),
   },
   {
-    text: 'AAD Portal',
-    dataField: 'defaultDomainName',
+    name: 'AAD Portal',
+    selector: 'defaultDomainName',
     formatter: linkCog((cell) => `https://aad.portal.azure.com/${cell}`),
   },
   {
-    text: 'Teams Portal',
-    dataField: 'defaultDomainName',
+    name: 'Teams Portal',
+    selector: 'defaultDomainName',
     formatter: linkCog((cell) => `https://admin.teams.microsoft.com/?delegatedOrg=${cell}`),
   },
   {
-    text: 'Azure Portal',
-    dataField: 'defaultDomainName',
+    name: 'Azure Portal',
+    selector: 'defaultDomainName',
     formatter: linkCog((cell) => `https://portal.azure.com/${cell}`),
   },
   {
-    text: 'MEM (Intune) Portal',
-    dataField: 'defaultDomainName',
+    name: 'MEM (Intune) Portal',
+    selector: 'defaultDomainName',
     formatter: linkCog((cell) => `https://endpoint.microsoft.com/${cell}`),
   },
   {
-    text: 'Action',
+    name: 'Action',
     formatter: dropdown,
   },
 
   // @todo not used at the moment?
   // {
-  //   text: 'Domains',
-  //   dataField: 'defaultDomainName',
+  //   name: 'Domains',
+  //   selector: 'defaultDomainName',
   // },
 ]
 
-const Tenants = () => {
-  const dispatch = useDispatch()
-  const { tenants, loading, loaded } = useSelector((state) => state.tenants)
-
-  useEffect(() => {
-    dispatch(listTenants())
-  }, [])
+const RolesList = () => {
+  const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
     <div>
+      <TenantSelector />
       <hr />
       <div className="bg-white rounded p-5">
-        <h3>Tenants</h3>
-        {!loaded && loading && <CSpinner />}
-        {loaded && !loading && (
-          <ToolkitProvider keyField="displayName" columns={columns} data={tenants} search>
-            {(props) => (
-              <div>
-                {/* eslint-disable-next-line react/prop-types */}
-                <SearchBar {...props.searchProps} />
-                <hr />
-                {/*eslint-disable */}
-              <BootstrapTable
-                {...props.baseProps}
-                pagination={pagination}
-                striped
-                wrapperClasses="table-responsive"
-              />
-              {/*eslint-enable */}
-              </div>
-            )}
-          </ToolkitProvider>
-        )}
+        <h3>Applications List</h3>
+        {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
+        <CippDatatable
+          keyField="id"
+          reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
+          path="/api/ListAPDevices"
+          columns={columns}
+          params={{ TenantFilter: tenant?.defaultDomainName }}
+        />
       </div>
     </div>
   )
 }
 
-export default Tenants
+export default RolesList

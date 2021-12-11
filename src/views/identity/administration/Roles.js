@@ -1,81 +1,72 @@
-import React, { useEffect } from 'react'
-import TenantSelector from 'src/components/cipp/TenantSelector'
-import { useDispatch, useSelector } from 'react-redux'
-import { CSpinner } from '@coreui/react'
-import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit'
-import BootstrapTable from 'react-bootstrap-table-next'
-import paginationFactory from 'react-bootstrap-table2-paginator'
-import { listRoles } from '../../../store/modules/roles'
+import React from 'react'
+import { useSelector } from 'react-redux'
+import TenantSelector from '../../../components/cipp/TenantSelector'
+import CippDatatable from '../../../components/cipp/CippDatatable'
+import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 
-const { SearchBar } = Search
-const pagination = paginationFactory()
+const dropdown = (row, index, column) => {
+  return (
+    <CDropdown>
+      <CDropdownToggle color="primary">...</CDropdownToggle>
+      <CDropdownMenu>
+        <CDropdownItem href="#">Edit Group</CDropdownItem>
+      </CDropdownMenu>
+    </CDropdown>
+  )
+}
 
 const columns = [
   {
-    text: 'Display Name',
-    dataField: 'DisplayName',
-    sort: true,
+    selector: 'serialNumber',
+    name: 'Serial',
+    sortable: true,
   },
   {
-    text: 'Description',
-    dataField: 'Description',
-    sort: true,
+    selector: 'model',
+    name: 'Model',
+    sortable: true,
   },
   {
-    text: 'Members',
-    dataField: 'Members',
-    sort: false,
+    selector: 'manufacturer',
+    name: 'Manufacturer',
+    sortable: true,
+  },
+  {
+    selector: 'groupTag',
+    name: 'Group Tag',
+    sortable: true,
+  },
+  {
+    selector: 'enrollmentState',
+    name: 'Enrollment',
+    sortable: true,
+  },
+  {
+    name: 'Actions',
+    cell: dropdown,
   },
 ]
 
-const Roles = () => {
-  const dispatch = useDispatch()
+const RolesList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
-  const roles = useSelector((state) => state.roles.roles)
-  useEffect(() => {
-    async function load() {
-      if (Object.keys(tenant).length !== 0) {
-        dispatch(listRoles({ tenant: tenant }))
-      }
-    }
-
-    load()
-  }, [])
-
-  const action = (tenant) => {
-    dispatch(listRoles({ tenant: tenant }))
-  }
 
   return (
     <div>
-      <TenantSelector action={action} />
+      <TenantSelector />
       <hr />
       <div className="bg-white rounded p-5">
-        <h3>Azure Active Directy Roles</h3>
+        <h3>Applications List</h3>
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-        {!roles.loaded && roles.loading && <CSpinner />}
-        {roles.loaded && !roles.loading && Object.keys(tenant).length !== 0 && (
-          <ToolkitProvider keyField="displayName" columns={columns} data={roles.list} search>
-            {(props) => (
-              <div>
-                {/* eslint-disable-next-line react/prop-types */}
-                <SearchBar {...props.searchProps} />
-                <hr />
-                {/*eslint-disable */}
-                <BootstrapTable
-                  {...props.baseProps}
-                  pagination={pagination}
-                  wrapperClasses="table-responsive"
-                />
-                {/*eslint-enable */}
-              </div>
-            )}
-          </ToolkitProvider>
-        )}
-        {!roles.loaded && !roles.loading && roles.error && <span>Failed to load groups</span>}
+        <CippDatatable
+          keyField="id"
+          reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
+          path="/api/ListAPDevices"
+          columns={columns}
+          params={{ TenantFilter: tenant?.defaultDomainName }}
+        />
       </div>
     </div>
   )
 }
 
-export default Roles
+export default RolesList
