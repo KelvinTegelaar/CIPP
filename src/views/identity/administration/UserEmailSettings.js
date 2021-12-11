@@ -13,7 +13,8 @@ import {
   CTableDataCell,
   CTableRow,
 } from '@coreui/react'
-import CellBoolean from '../../../components/cipp/CellBoolean'
+import { CellBoolean } from '../../../components/cipp'
+import { useListMailboxDetailsQuery } from '../../../store/api/mailbox'
 
 const formatter = (cell) => CellBoolean({ cell })
 
@@ -75,9 +76,8 @@ const columns = [
   },
 ]
 
-export default function UserEmailSettings({
-  mailbox: { details = {}, loading = false, loaded = false, error },
-}) {
+export default function UserEmailSettings({ userId, tenantDomain }) {
+  const { data: details, isFetching, error } = useListMailboxDetailsQuery({ userId, tenantDomain })
   return (
     <CCard>
       <CCardHeader className="d-flex justify-content-between">
@@ -88,8 +88,9 @@ export default function UserEmailSettings({
         </div>
       </CCardHeader>
       <CCardBody>
-        {loading && !loaded && <CSpinner />}
-        {loaded && !error && (
+        {isFetching && <CSpinner />}
+        {!isFetching && error && <span>Error loading email settings</span>}
+        {!isFetching && !error && (
           <CTable>
             <CTableBody>
               {columns.map((column, index) => {
@@ -110,12 +111,12 @@ export default function UserEmailSettings({
             </CTableBody>
           </CTable>
         )}
-        {!loaded && !loading && error && <>Error loading email details</>}
       </CCardBody>
     </CCard>
   )
 }
 
 UserEmailSettings.propTypes = {
-  mailbox: PropTypes.object,
+  tenantDomain: PropTypes.string.isRequired,
+  userId: PropTypes.string.isRequired,
 }

@@ -1,22 +1,27 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import { useDispatch, useSelector } from 'react-redux'
-import { listUserDevices } from '../../../store/modules/devices'
-import { CCard, CCardBody, CCardHeader, CCardTitle, CLink } from '@coreui/react'
-import BootstrapTable from 'react-bootstrap-table-next'
-import CellBoolean from '../../../components/cipp/CellBoolean'
+import { CCard, CCardBody, CCardHeader, CCardTitle, CLink, CSpinner } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLaptop } from '@coreui/icons'
-import CellNullText from '../../../components/cipp/CellNullText'
+import DataTable from 'react-data-table-component'
+
+import {
+  CellBoolean,
+  cellBooleanFormatter,
+  CellNullText,
+  cellNullTextFormatter,
+} from '../../../components/cipp'
+import { useListUserDevicesQuery } from '../../../store/api/devices'
+import cellGetProperty from '../../../components/cipp/cellGetProperty'
 
 const formatter = (cell) => CellBoolean({ cell })
 const nullFormatter = (cell) => CellNullText({ cell })
 
 const columns = [
   {
-    text: 'Display Name',
-    dataField: 'displayName',
-    formatter: (cell, row) => {
+    name: 'Display Name',
+    selector: 'displayName',
+    cell: (row, index, column) => {
       if (row.EPMID === null) {
         return row.displayName ?? 'n/a'
       } else {
@@ -32,83 +37,81 @@ const columns = [
     },
   },
   {
-    text: 'Enabled',
-    dataField: 'accountEnabled',
-    formatter,
+    name: 'Enabled',
+    selector: 'accountEnabled',
+    cell: cellNullTextFormatter(),
   },
   {
-    text: 'Compliant',
-    dataField: 'isCompliant',
-    formatter,
+    name: 'Compliant',
+    selector: 'isCompliant',
+    cell: cellNullTextFormatter(),
   },
   {
-    text: 'Manufacturer',
-    dataField: 'manufacturer',
-    formatter: (cell) => CellNullText({ cell }),
+    name: 'Manufacturer',
+    selector: 'manufacturer',
+    cell: cellNullTextFormatter(),
   },
   {
-    text: 'Model',
-    dataField: 'model',
-    formatter: (cell) => CellNullText({ cell }),
+    name: 'Model',
+    selector: 'model',
+    cell: cellNullTextFormatter(),
   },
   {
-    text: 'Operating System',
-    dataField: 'operatingSystem',
-    formatter: nullFormatter,
+    name: 'Operating System',
+    selector: 'operatingSystem',
+    cell: cellNullTextFormatter(),
   },
   {
-    text: 'OS Version',
-    dataField: 'operatingSystemVersion',
-    formatter: nullFormatter,
+    name: 'OS Version',
+    selector: 'operatingSystemVersion',
+    cell: cellNullTextFormatter(),
   },
   {
-    text: 'Created',
-    dataField: 'createdDateTime',
-    formatter: nullFormatter,
+    name: 'Created',
+    selector: 'createdDateTime',
+    cell: cellNullTextFormatter(),
   },
   {
-    text: 'Approx Last SignIn',
-    dataField: 'approximateLastSignInDateTime',
-    formatter: nullFormatter,
+    name: 'Approx Last SignIn',
+    selector: 'approximateLastSignInDateTime',
+    cell: cellNullTextFormatter(),
   },
   {
-    text: 'Ownership',
-    dataField: 'deviceOwnership',
-    formatter: (cell) => CellNullText({ cell }),
+    name: 'Ownership',
+    selector: 'deviceOwnership',
+    cell: cellNullTextFormatter(),
   },
   {
-    text: 'Enrollment Type',
-    dataField: 'enrollmentType',
-    formatter: (cell) => CellNullText({ cell }),
+    name: 'Enrollment Type',
+    selector: 'enrollmentType',
+    cell: cellNullTextFormatter(),
   },
   {
-    text: 'Management Type',
-    dataField: 'managementType',
-    formatter: (cell) => CellNullText({ cell }),
+    name: 'Management Type',
+    selector: 'managementType',
+    cell: cellNullTextFormatter(),
   },
   {
-    text: 'On-Premises Sync Enabled',
-    dataField: 'onPremisesSyncEnabled',
-    formatter: (cell) => CellBoolean({ cell }),
+    name: 'On-Premises Sync Enabled',
+    selector: 'onPremisesSyncEnabled',
+    cell: cellBooleanFormatter(),
   },
   {
-    text: 'Trust Type',
-    dataField: 'trustType',
-    formatter: nullFormatter,
+    name: 'Trust Type',
+    selector: 'trustType',
+    cell: cellNullTextFormatter(),
   },
 ]
 
 export default function UserDevices({ userId, tenantDomain }) {
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    dispatch(listUserDevices({ tenantDomain, userId }))
-  }, [])
-
-  const { list = [], loading, loaded, error } = useSelector((store) => store.devices.userDevices)
+  const {
+    data: devices = [],
+    isFetching,
+    error,
+  } = useListUserDevicesQuery({ userId, tenantDomain })
 
   // inject tenant domain into devices for column render
-  const mapped = list.map((device) => ({ ...device, tenantDomain }))
+  const mapped = devices.map((device) => ({ ...device, tenantDomain }))
 
   return (
     <CCard>
@@ -117,18 +120,20 @@ export default function UserDevices({ userId, tenantDomain }) {
         <CIcon icon={cilLaptop} />
       </CCardHeader>
       <CCardBody>
-        {!loading && loaded && (
-          <BootstrapTable
+        {isFetching && <CSpinner />}
+        {!isFetching && error && <>Error loading devices</>}
+        {!isFetching && !error && (
+          <DataTable
             keyField="ID"
             columns={columns}
             data={mapped}
             striped
+            responsive
             bordered={false}
             condensed
             wrapperClasses="table-responsive"
           />
         )}
-        {error && <div>Error loading devices</div>}
       </CCardBody>
     </CCard>
   )

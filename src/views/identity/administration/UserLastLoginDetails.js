@@ -13,6 +13,7 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilClock } from '@coreui/icons'
+import { useListUserQuery } from '../../../store/api/users'
 
 const columns = [
   {
@@ -37,9 +38,9 @@ const columns = [
   },
 ]
 
-export default function UserLastLoginDetails({
-  user: { user = {}, loading = false, loaded = false, error = undefined },
-}) {
+export default function UserLastLoginDetails({ tenantDomain, userId }) {
+  const { data: user = {}, isFetching, error } = useListUserQuery({ tenantDomain, userId })
+
   return (
     <CCard>
       <CCardHeader className="d-flex justify-content-between">
@@ -47,8 +48,9 @@ export default function UserLastLoginDetails({
         <CIcon icon={cilClock} />
       </CCardHeader>
       <CCardBody>
-        {loading && !loaded && <CSpinner />}
-        {loaded && !error && (
+        {!isFetching && error && <span>Error loading user details</span>}
+        {!error && isFetching && <CSpinner />}
+        {!isFetching && !error && (
           <CTable>
             <CTableBody>
               {columns.map((column, index) => (
@@ -60,12 +62,12 @@ export default function UserLastLoginDetails({
             </CTableBody>
           </CTable>
         )}
-        {!loaded && !loading && error && <>Error loading user</>}
       </CCardBody>
     </CCard>
   )
 }
 
 UserLastLoginDetails.propTypes = {
-  user: PropTypes.object.isRequired,
+  tenantDomain: PropTypes.string.isRequired,
+  userId: PropTypes.string.isRequired,
 }

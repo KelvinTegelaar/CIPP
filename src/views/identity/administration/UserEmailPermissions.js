@@ -13,11 +13,11 @@ import {
   CTableDataCell,
   CTableRow,
 } from '@coreui/react'
+import { useListMailboxDetailsQuery } from '../../../store/api/mailbox'
 
-export default function UserEmailPermissions({
-  mailbox: { details = {}, loading = false, loaded = false, error },
-}) {
-  let permissions = (details && details.Permissions) || []
+export default function UserEmailPermissions({ userId, tenantDomain }) {
+  const { data: report, isFetching, error } = useListMailboxDetailsQuery({ userId, tenantDomain })
+  let permissions = (report && report.Permissions) || []
   if (!Array.isArray(permissions)) {
     permissions = [permissions]
   }
@@ -32,8 +32,10 @@ export default function UserEmailPermissions({
         </div>
       </CCardHeader>
       <CCardBody>
-        {loading && !loaded && <CSpinner />}
-        {loaded && !error && (
+        {!isFetching && error && <span>Error loading email permissions.</span>}
+        {!isFetching && !error && permissions.length === 0 && <span>No permissions found.</span>}
+        {!error && isFetching && <CSpinner />}
+        {!isFetching && !error && (
           <CTable>
             <CTableBody>
               {permissions.map((value, index) => {
@@ -47,13 +49,12 @@ export default function UserEmailPermissions({
             </CTableBody>
           </CTable>
         )}
-        {!loaded && !loading && error && <>Error loading email permissions.</>}
-        {loaded && !loading && !error && permissions.length === 0 && <>No permissions found.</>}
       </CCardBody>
     </CCard>
   )
 }
 
 UserEmailPermissions.propTypes = {
-  mailbox: PropTypes.object,
+  tenantDomain: PropTypes.string.isRequired,
+  userId: PropTypes.string.isRequired,
 }

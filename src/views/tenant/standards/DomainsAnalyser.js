@@ -1,23 +1,17 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import { useDispatch, useSelector } from 'react-redux'
-import BootstrapTable from 'react-bootstrap-table-next'
-import ToolkitProvider, { CSVExport, Search } from 'react-bootstrap-table2-toolkit'
-import paginationFactory from 'react-bootstrap-table2-paginator'
+import { useDispatch } from 'react-redux'
 import { CButton } from '@coreui/react'
 
 import {
-  forceRefreshDomainAnalyserReport,
-  loadDomainsAnalyserReport,
-} from '../../../store/modules/standards'
-
-import CellProgressBar from '../../../components/cipp/CellProgressBar'
-import CellBadge from '../../../components/cipp/CellBadge'
-import { setModalContent, showModal } from '../../../store/modules/modal'
-
-const { SearchBar } = Search
-const { ExportCSVButton } = CSVExport
-const pagination = paginationFactory()
+  CellBadge,
+  CellProgressBar,
+  CippDatatable,
+  cellBooleanFormatter,
+  cellProgressBarFormatter,
+} from '../../../components/cipp'
+import { setModalContent, showModal } from '../../../store/features/modal'
+import cellGetProperty from '../../../components/cipp/cellGetProperty'
 
 const MoreInfoCard = ({ row }) => {
   return (
@@ -64,12 +58,6 @@ MoreInfoCard.propTypes = {
 
 const DomainsAnalyser = () => {
   const dispatch = useDispatch()
-  const domains = useSelector((state) => state.standards.domains)
-
-  useEffect(() => {
-    dispatch(loadDomainsAnalyserReport())
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   const handleMoreInfo = ({ row }) => {
     dispatch(
@@ -83,34 +71,37 @@ const DomainsAnalyser = () => {
 
   const columns = [
     {
-      text: 'Domain',
-      dataField: 'Domain',
+      name: 'Domain',
+      selector: 'Domain',
       sort: true,
     },
     {
-      text: 'Security Score',
-      dataField: 'Score',
-      sort: true,
-      formatter: (cell, row) => {
-        if (!cell) {
-          return <CellBadge color="info" label="No Data" />
+      name: 'Security Score',
+      selector: (row) => {
+        if (!row['Score']) {
+          return ''
+        } else {
+          return row['ScorePercentage']
         }
-        return CellProgressBar({ value: row.ScorePercentage })
       },
+      sort: true,
+      cell: cellProgressBarFormatter(),
     },
     {
-      text: 'Mail Provider',
-      dataField: 'MailProvider',
+      name: 'Mail Provider',
+      selector: 'MailProvider',
       sort: true,
-      formatter: (cell) => {
+      cell: (row, index, column) => {
+        const cell = cellGetProperty(row, index, column)
         return <CellBadge label={cell} color={cell === 'Unknown' ? 'warning' : 'info'} />
       },
     },
     {
-      text: 'SPF Pass Test',
-      dataField: 'SPFPassTest',
+      name: 'SPF Pass Test',
+      selector: 'SPFPassTest',
       sort: true,
-      formatter: (cell, row) => {
+      cell: (row, index, column) => {
+        const cell = cellGetProperty(row, index, column)
         if (cell === true) {
           if (row.SPFPassAll === true) {
             return <CellBadge color="success" label="SPF Pass" />
@@ -124,10 +115,11 @@ const DomainsAnalyser = () => {
       },
     },
     {
-      text: 'MX Pass Test',
-      dataField: 'MXPassTest',
+      name: 'MX Pass Test',
+      selector: 'MXPassTest',
       sort: true,
-      formatter: (cell) => {
+      cell: (row, index, column) => {
+        const cell = cellGetProperty(row, index, column)
         if (cell === true) {
           return <CellBadge color="success" label="MX Pass" />
         } else if (cell === false) {
@@ -137,10 +129,12 @@ const DomainsAnalyser = () => {
       },
     },
     {
-      text: 'DMARC Present',
-      dataField: 'DMARCPresent',
+      name: 'DMARC Present',
+      selector: 'DMARCPresent',
       sort: true,
-      formatter: (cell, row) => {
+      cell: (row, index, column) => {
+        const cell = cellGetProperty(row, index, column)
+
         if (cell === true) {
           if (row.DMARCReportingActive === true) {
             return <CellBadge color="success">DMARC Present</CellBadge>
@@ -153,10 +147,12 @@ const DomainsAnalyser = () => {
       },
     },
     {
-      text: 'DMARC Action Policy',
-      dataField: 'DMARCActionPolicy',
+      name: 'DMARC Action Policy',
+      selector: 'DMARCActionPolicy',
       sort: true,
-      formatter: (cell, row) => {
+      cell: (row, index, column) => {
+        const cell = cellGetProperty(row, index, column)
+
         if (cell === 'Reject') {
           return <CellBadge color="success">Reject</CellBadge>
         } else if (cell === 'Quarantine') {
@@ -168,10 +164,12 @@ const DomainsAnalyser = () => {
       },
     },
     {
-      text: 'DMARC % Pass',
-      dataField: 'DMARCPercentagePass',
+      name: 'DMARC % Pass',
+      selector: 'DMARCPercentagePass',
       sort: true,
-      formatter: (cell) => {
+      cell: (row, index, column) => {
+        const cell = cellGetProperty(row, index, column)
+
         if (cell === true) {
           return <CellBadge color="success">All Mail Analysed</CellBadge>
         }
@@ -182,10 +180,12 @@ const DomainsAnalyser = () => {
       },
     },
     {
-      text: 'DNSSec Enabled',
-      dataField: 'DNSSECPresent',
+      name: 'DNSSec Enabled',
+      selector: 'DNSSECPresent',
       sort: true,
-      formatter: (cell) => {
+      cell: (row, index, column) => {
+        const cell = cellGetProperty(row, index, column)
+
         if (cell === true) {
           return <CellBadge color="success">DNSSEC Enabled</CellBadge>
         }
@@ -196,10 +196,11 @@ const DomainsAnalyser = () => {
       },
     },
     {
-      text: 'DKIM Enabled',
-      dataField: 'DKIMEnabled',
+      name: 'DKIM Enabled',
+      selector: (row) => row['DKIMEnabled'],
       sort: true,
-      formatter: (cell) => {
+      cell: (row, index, column) => {
+        const cell = column.selector(row)
         if (cell === true) {
           return <CellBadge color="success">DKIM Enabled</CellBadge>
         }
@@ -210,14 +211,14 @@ const DomainsAnalyser = () => {
       },
     },
     {
-      text: 'More Info',
+      name: 'More Info',
       dataField: 'moreInfo',
       isDummyField: true,
       sort: true,
-      formatter: (cell, row) => {
+      cell: (row) => {
         return (
           <CButton size="sm" onClick={() => handleMoreInfo({ row })}>
-            More Information
+            More Info
           </CButton>
         )
       },
@@ -228,38 +229,11 @@ const DomainsAnalyser = () => {
     <div>
       <div className="bg-white rounded p-5">
         <h3>Domains Analyser Report</h3>
-        {!domains.loaded && domains.loading && (
-          <div className="pt-3 text-center">
-            <div className="sk-spinner sk-spinner-pulse" />
-          </div>
-        )}
-        {domains.loaded && !domains.loading && (
-          <ToolkitProvider keyField="Domain" columns={columns} data={domains.report} search>
-            {(props) => (
-              <div>
-                {/* eslint-disable-next-line react/prop-types */}
-                <SearchBar {...props.searchProps} />
-                {/* eslint-disable-next-line react/prop-types */}
-                <ExportCSVButton {...props.csvProps}>
-                  <CButton>CSV</CButton>
-                </ExportCSVButton>
-                {/* @TODO make modal confirm */}
-                <CButton onClick={() => dispatch(forceRefreshDomainAnalyserReport())}>
-                  Force Refresh Data
-                </CButton>
-                <hr />
-                {/*eslint-disable */}
-                <BootstrapTable
-                  {...props.baseProps}
-                  pagination={pagination}
-                  striped
-                  wrapperClasses="table-responsive"
-                />
-                {/*eslint-enable */}
-              </div>
-            )}
-          </ToolkitProvider>
-        )}
+        <CippDatatable
+          reportName="Domains-Analyzer"
+          path="/api/DomainAnalyser_List"
+          columns={columns}
+        />
       </div>
     </div>
   )

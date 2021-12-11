@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { CCard, CCol, CRow } from '@coreui/react'
+import { CCard, CCol, CRow, CSpinner } from '@coreui/react'
 import PropTypes from 'prop-types'
 
 import useQuery from '../../../hooks/useQuery'
 import { useDispatch, useSelector } from 'react-redux'
 import { setModalContent, showModal } from '../../../store/modules/modal'
+// import { setModal } from '../../../store/features/modal'
 import {
   listUser,
   listUserConditionalAccessPolicies,
@@ -24,21 +25,24 @@ import UserEmailSettings from './UserEmailSettings'
 import UserEmailPermissions from './UserEmailPermissions'
 import UserGroups from './UserGroups'
 import UserSigninLogs from './UserSigninLogs'
+import {
+  useListUserConditionalAccessPoliciesQuery,
+  useListUserQuery,
+  useListUsersQuery,
+} from '../../../store/api/users'
 
 const ViewUser = (props) => {
   const dispatch = useDispatch()
   let query = useQuery()
   const userId = query.get('userId')
   const tenantDomain = query.get('tenantDomain')
-
-  const users = useSelector((state) => state.users) || {}
-  const mailbox = useSelector((state) => state.mailbox) || {}
-
-  const { user = {}, loading: userLoading = false, loaded: userLoaded, error: userError } = users
-  const {
-    details: { loaded: mailboxLoaded = false },
-  } = mailbox
   const [queryError, setQueryError] = useState(false)
+
+  const {
+    data: user = {},
+    isFetching: userFetching,
+    error: userError,
+  } = useListUserQuery({ tenantDomain, userId })
 
   useEffect(() => {
     if (!userId || !tenantDomain) {
@@ -48,57 +52,48 @@ const ViewUser = (props) => {
           title: 'Invalid Request',
         }),
       )
-      dispatch(showModal())
       setQueryError(true)
-    } else {
-      dispatch(listUser({ tenantDomain, userId }))
-      dispatch(listUserConditionalAccessPolicies({ tenantDomain, userId }))
-      dispatch(listUserMailboxDetails({ tenantDomain, userId }))
     }
     // unload this component's state when the component will unmount
-    return () => dispatch(unloadViewUser())
-  }, [])
+    // return () => dispatch(unloadViewUser())
+  }, [tenantDomain, userId, dispatch])
 
   return (
     <CCard className="bg-white rounded p-5">
-      {!queryError && (
+      {userFetching && <CSpinner />}
+      {!userFetching && userError && <span>Error loading user</span>}
+      {!queryError && !userFetching && (
         <>
           <CRow>
             <CCol xl={4}>
-              <UserDetails user={users.user} />
+              <UserDetails tenantDomain={tenantDomain} userId={userId} />
             </CCol>
             <CCol xl={4}>
-              <UserLastLoginDetails user={users.user} style={{ paddingBottom: '24px' }} />
-              <UserCAPs cap={users.userCAPs} />
-            </CCol>
-            <CCol xl={4}>
-              <UserActions
-                displayName={user.displayName}
+              <UserLastLoginDetails
                 tenantDomain={tenantDomain}
                 userId={userId}
-                userEmail={user.mail}
+                style={{ paddingBottom: '24px' }}
               />
+              <UserCAPs tenantDomain={tenantDomain} userId={userId} />
+            </CCol>
+            <CCol xl={4}>
+              <UserActions tenantDomain={tenantDomain} userId={userId} />
               <User365Management tenantDomain={tenantDomain} userId={userId} />
-              {/* we need the UPN before we can load OneDrive */}
-              {!userLoading && userLoaded && (
-                <UserOneDriveUsage userUPN={user.userPrincipalName} tenantDomain={tenantDomain} />
-              )}
+              <UserOneDriveUsage userUPN={user.userPrincipalName} tenantDomain={tenantDomain} />
             </CCol>
           </CRow>
 
           <CRow>
             <CCol xl={4}>
-              <UserEmailDetails user={users.user} />
+              <UserEmailDetails user={user} error={userError} isFetching={userFetching} />
             </CCol>
             <CCol xl={4}>
-              {mailboxLoaded && (
-                <>
-                  <UserEmailUsage mailbox={mailbox.details} />
-                  <UserEmailPermissions mailbox={mailbox.details} />
-                </>
-              )}
+              <UserEmailUsage userId={userId} tenantDomain={tenantDomain} />
+              <UserEmailPermissions userId={userId} tenantDomain={tenantDomain} />
             </CCol>
-            <CCol xl={4}>{mailboxLoaded && <UserEmailSettings mailbox={mailbox.details} />}</CCol>
+            <CCol xl={4}>
+              <UserEmailSettings userId={userId} tenantDomain={tenantDomain} />
+            </CCol>
           </CRow>
 
           <CRow>
@@ -118,7 +113,6 @@ const ViewUser = (props) => {
           </CRow>
         </>
       )}
-      {userError && <span>Error loading user</span>}
     </CCard>
   )
 }

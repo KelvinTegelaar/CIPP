@@ -13,8 +13,14 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked } from '@coreui/icons'
+import { useListUserConditionalAccessPoliciesQuery } from '../../../store/api/users'
 
-export default function UserCAPs({ cap: { list = [], loading, loaded, error } = {} }) {
+export default function UserCAPs({ tenantDomain, userId }) {
+  const {
+    data: list,
+    isFetching,
+    error,
+  } = useListUserConditionalAccessPoliciesQuery({ tenantDomain, userId })
   return (
     <CCard>
       <CCardHeader className="d-flex justify-content-between">
@@ -22,8 +28,9 @@ export default function UserCAPs({ cap: { list = [], loading, loaded, error } = 
         <CIcon icon={cilLockLocked} />
       </CCardHeader>
       <CCardBody>
-        {loading && !loaded && <CSpinner />}
-        {loaded && !error && (
+        {!isFetching && error && <span>Error loading user details</span>}
+        {!error && isFetching && <CSpinner />}
+        {!isFetching && !error && (
           <CTable>
             <CTableBody>
               {list.map((policy, index) => (
@@ -34,12 +41,12 @@ export default function UserCAPs({ cap: { list = [], loading, loaded, error } = 
             </CTableBody>
           </CTable>
         )}
-        {!loaded && !loading && error && <>Error loading user CAPs</>}
       </CCardBody>
     </CCard>
   )
 }
 
 UserCAPs.propTypes = {
-  cap: PropTypes.object,
+  tenantDomain: PropTypes.string.isRequired,
+  userId: PropTypes.string.isRequired,
 }

@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
-import { listUserSigninLogs } from '../../../store/modules/users'
 import {
   CButton,
   CCard,
@@ -17,10 +16,12 @@ import {
   CTableRow,
 } from '@coreui/react'
 import BootstrapTable from 'react-bootstrap-table-next'
-import CellBoolean from '../../../components/cipp/CellBoolean'
+import { CellBoolean } from '../../../components/cipp'
 import CIcon from '@coreui/icons-react'
 import { cilLaptop } from '@coreui/icons'
-import { setModalContent, showModal } from '../../../store/modules/modal'
+import { setModalContent } from '../../../store/features/modal'
+// import { setModalContent, showModal } from '../../../store/modules/modal'
+import { useListUserSigninLogsQuery } from '../../../store/api/users'
 
 const formatter = (cell) => CellBoolean({ cell })
 
@@ -36,13 +37,11 @@ const rowStyle = (row, rowIndex) => {
 
 export default function UserSigninLogs({ userId, tenantDomain }) {
   const dispatch = useDispatch()
-  const signin = useSelector((store) => store.users.userSignInLogs)
-
-  const { list = [], loading = false, loaded = false, error = undefined } = signin ?? {}
-
-  useEffect(() => {
-    dispatch(listUserSigninLogs({ tenantDomain, userId }))
-  }, [])
+  const {
+    data: list = [],
+    isFetching,
+    error,
+  } = useListUserSigninLogsQuery({ userId, tenantDomain })
 
   const mapped = list.map((val) => ({ ...val, tenantDomain }))
 
@@ -69,9 +68,9 @@ export default function UserSigninLogs({ userId, tenantDomain }) {
           </CTable>
         ),
         title: 'Conditional Access Policies Applied',
+        visible: true,
       }),
     )
-    dispatch(showModal())
   }
 
   const columns = [
@@ -155,8 +154,9 @@ export default function UserSigninLogs({ userId, tenantDomain }) {
         <CIcon icon={cilLaptop} />
       </CCardHeader>
       <CCardBody>
-        {loading && !loaded && <CSpinner />}
-        {!loading && loaded && (
+        {!isFetching && error && <span>Error loading user sign-in logs</span>}
+        {!error && isFetching && <CSpinner />}
+        {!isFetching && !error && (
           <BootstrapTable
             keyField="id"
             columns={columns}
@@ -168,7 +168,6 @@ export default function UserSigninLogs({ userId, tenantDomain }) {
             wrapperClasses="table-responsive"
           />
         )}
-        {error && <div>Error loading sign-in logs</div>}
       </CCardBody>
     </CCard>
   )

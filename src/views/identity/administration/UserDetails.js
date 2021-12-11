@@ -13,6 +13,7 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilContact } from '@coreui/icons'
+import { useListUserQuery } from '../../../store/api/users'
 
 const columns = [
   {
@@ -77,9 +78,9 @@ const columns = [
   },
 ]
 
-export default function UserDetails({
-  user: { user = {}, loading = false, loaded = false, error = undefined },
-}) {
+export default function UserDetails({ tenantDomain, userId }) {
+  const { data: user = {}, isFetching, error } = useListUserQuery({ tenantDomain, userId })
+
   return (
     <CCard>
       <CCardHeader className="d-flex justify-content-between">
@@ -87,8 +88,9 @@ export default function UserDetails({
         <CIcon icon={cilContact} />
       </CCardHeader>
       <CCardBody className="card-body">
-        {loading && !loaded && <CSpinner />}
-        {loaded && !error && (
+        {!isFetching && error && <span>Error loading user details</span>}
+        {!error && isFetching && <CSpinner />}
+        {!isFetching && !error && (
           <CTable className="table">
             <CTableBody>
               {columns.map((column, index) => (
@@ -100,12 +102,12 @@ export default function UserDetails({
             </CTableBody>
           </CTable>
         )}
-        {!loaded && !loading && error && <>Error loading user details</>}
       </CCardBody>
     </CCard>
   )
 }
 
 UserDetails.propTypes = {
-  user: PropTypes.object.isRequired,
+  tenantDomain: PropTypes.string.isRequired,
+  userId: PropTypes.string.isRequired,
 }

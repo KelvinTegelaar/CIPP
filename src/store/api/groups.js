@@ -56,6 +56,12 @@ export const groupsApi = createApi({
         },
       }),
     }),
+    listUserGroups: builder.query({
+      query: ({ tenantDomain, userId }) => ({
+        path: '/api/ListUserGroups',
+        params: { tenantFilter: tenantDomain, userId },
+      }),
+    }),
   }),
 })
 export const {
@@ -65,4 +71,5 @@ export const {
   useListGroupsQuery,
   useListGroupMembersQuery,
   useListGroupOwnersQuery,
+  useListUserGroupsQuery,
 } = groupsApi

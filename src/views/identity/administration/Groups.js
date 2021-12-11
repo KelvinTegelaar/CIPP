@@ -3,6 +3,8 @@ import TenantSelector from 'src/components/cipp/TenantSelector'
 import { useSelector } from 'react-redux'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 import CippDatatable from '../../../components/cipp/CippDatatable'
+import cellGetProperty from '../../../components/cipp/cellGetProperty'
+import { cellBooleanFormatter } from '../../../components/cipp'
 
 const dropdown = (cell, row, rowIndex, formatExtraData) => {
   return (
@@ -17,29 +19,40 @@ const dropdown = (cell, row, rowIndex, formatExtraData) => {
 
 const columns = [
   {
-    text: 'Name',
-    dataField: 'displayName',
-    sort: true,
+    name: 'Name',
+    selector: 'displayName',
+    sortable: true,
   },
   {
-    text: 'Group Type',
-    dataField: 'groupTypes',
-    sort: true,
+    name: 'Group Type',
+    selector: 'calculatedGroupType',
+    sortable: true,
   },
   {
-    text: 'Security Group',
-    dataField: 'securityEnabled',
-    sort: true,
+    name: 'Dynamic Group',
+    selector: 'dynamicGroupBool',
+    cell: cellBooleanFormatter(),
+    sortable: true,
   },
   {
-    text: 'Email',
-    dataField: 'mail',
-    sort: true,
+    name: 'Teams Enabled',
+    selector: 'teamsEnabled',
+    sortable: true,
+    cell: cellBooleanFormatter(),
   },
   {
-    text: 'Action',
-    isDummyField: true,
-    formatter: dropdown,
+    name: 'On-Prem Sync',
+    selector: 'onPremisesSyncEnabled',
+    cell: cellBooleanFormatter({ warning: true }),
+  },
+  {
+    name: 'Email',
+    selector: 'mail',
+    sortable: true,
+  },
+  {
+    name: 'Action',
+    cell: dropdown,
   },
 ]
 

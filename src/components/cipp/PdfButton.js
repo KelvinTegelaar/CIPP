@@ -1,14 +1,14 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { CButton } from '@coreui/react'
 import jsPDF from 'jspdf'
 import 'jspdf-autotable'
 import PropTypes from 'prop-types'
 
 function ExportPDFButton(props) {
-  const exportPDF = (pdfdata, pdfheaders, pdfsize = 'A4', reportname) => {
+  const exportPDF = (pdfData, pdfHeaders, pdfSize = 'A4', reportName) => {
     const unit = 'pt'
     //console.log(pdfheaders)
-    const size = pdfsize // Use A1, A2, A3 or A4
+    const size = pdfSize // Use A1, A2, A3 or A4
     const orientation = 'landscape' // portrait or landscape
 
     const marginLeft = 40
@@ -16,29 +16,29 @@ function ExportPDFButton(props) {
 
     doc.setFontSize(10)
     let headerObj = []
-    pdfheaders.forEach((item) => {
+    pdfHeaders.forEach((item) => {
       let returnobj = { header: item.text, dataKey: item.dataField }
       headerObj.push(returnobj)
     })
 
     console.log(headerObj)
-    const title = reportname
+    const title = reportName
     let content = {
       startY: 50,
       columns: headerObj,
-      body: pdfdata,
+      body: pdfData,
       theme: 'grid',
       headStyles: { fillColor: [247, 127, 0] },
     }
 
     doc.text(title, marginLeft, 40)
     doc.autoTable(content)
-    doc.save(reportname + '.pdf')
+    doc.save(reportName + '.pdf')
   }
 
   return (
     <CButton
-      onClick={() => exportPDF(props.pdfdata, props.pdfheaders, props.pdfsize, props.reportname)}
+      onClick={() => exportPDF(props.pdfData, props.pdfHeaders, props.pdfSize, props.reportName)}
     >
       PDF
     </CButton>
@@ -47,8 +47,8 @@ function ExportPDFButton(props) {
 export default ExportPDFButton
 
 ExportPDFButton.propTypes = {
-  pdfdata: PropTypes.oneOfType([PropTypes.element, PropTypes.string, PropTypes.array]),
-  pdfheaders: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
-  pdfsize: PropTypes.oneOf(['A1', 'A2', 'A3', 'A4']),
-  reportname: PropTypes.oneOfType([PropTypes.element, PropTypes.string, PropTypes.number]),
+  pdfData: PropTypes.oneOfType([PropTypes.element, PropTypes.string, PropTypes.array]),
+  pdfHeaders: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+  pdfSize: PropTypes.oneOf(['A1', 'A2', 'A3', 'A4']),
+  reportName: PropTypes.oneOfType([PropTypes.element, PropTypes.string, PropTypes.number]),
 }

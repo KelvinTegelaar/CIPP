@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import { CBadge } from '@coreui/react'
+import cellGetProperty from './cellGetProperty'
 
-const CellBadge = ({ label = '', color = '', children, ...rest }) => {
+export const CellBadge = ({ label = '', color = '', children, ...rest }) => {
   return (
     <CBadge color={color} {...rest}>
       {label}
@@ -17,4 +18,9 @@ CellBadge.propTypes = {
   color: PropTypes.oneOf(['primary', 'info', 'success', 'warning', 'danger']),
 }
 
-export default CellBadge
+export const cellBadgeFormatter =
+  ({ color, ...rest } = {}) =>
+  (row, index, column, id) => {
+    const label = cellGetProperty(row, index, column, id)
+    return CellBadge({ label, color, rest })
+  }

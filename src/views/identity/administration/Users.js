@@ -1,21 +1,13 @@
-import React, { useEffect, useState } from 'react'
-import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle, CSpinner } from '@coreui/react'
+import React from 'react'
+import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 import TenantSelector from 'src/components/cipp/TenantSelector'
-import BootstrapTable from 'react-bootstrap-table-next'
-import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit'
-import paginationFactory from 'react-bootstrap-table2-paginator'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { cilSettings, cilUser } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
-import CellBoolean from '../../../components/cipp/CellBoolean'
-import { useListUsersQuery } from '../../../store/api/users'
+import { CippDatatable, cellBooleanFormatter } from '../../../components/cipp'
 
-const { SearchBar } = Search
-
-const pagination = paginationFactory()
-
-const dropdown = (cell, row, rowIndex, formatExtraData) => {
+const dropdown = (row, rowIndex, formatExtraData) => {
   return (
     <CDropdown>
       <CDropdownToggle color="primary">...</CDropdownToggle>
@@ -50,53 +42,44 @@ const dropdown = (cell, row, rowIndex, formatExtraData) => {
 
 const columns = [
   {
-    text: 'Display Name',
-    dataField: 'displayName',
-    sort: true,
+    name: 'Display Name',
+    selector: 'displayName',
+    sortable: true,
   },
   {
-    text: 'Email',
-    dataField: 'mail',
-    sort: true,
+    name: 'Email',
+    selector: 'mail',
+    sortable: true,
   },
   {
-    text: 'User Type',
-    dataField: 'userType',
-    sort: true,
+    name: 'User Type',
+    selector: 'userType',
+    sortable: true,
   },
   {
-    text: 'Account Enabled',
-    dataField: 'accountEnabled',
-    formatter: (cell) => CellBoolean({ cell }),
-    sort: true,
+    name: 'Account Enabled',
+    selector: 'accountEnabled',
+    cell: cellBooleanFormatter(),
+    sortable: true,
   },
   {
-    text: 'On Premise Sync',
-    dataField: 'onPremisesSyncEnabled',
-    formatter: (cell) => CellBoolean({ cell }),
-    sort: true,
+    name: 'On Premise Sync',
+    selector: 'onPremisesSyncEnabled',
+    cell: cellBooleanFormatter(),
+    sortable: true,
   },
   {
-    text: 'Licenses',
-    dataField: 'LicJoined',
+    name: 'Licenses',
+    selector: 'LicJoined',
   },
   {
-    text: 'Action',
-    formatter: dropdown,
+    name: 'Action',
+    cell: dropdown,
   },
 ]
 
 const Users = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
-
-  const {
-    data: users,
-    isFetching: usersLoading,
-    error: usersError,
-    ...rest
-  } = useListUsersQuery({ tenantDomain: tenant?.defaultDomainName })
-
-  console.log(rest)
 
   return (
     <div>
@@ -104,27 +87,13 @@ const Users = () => {
       <hr />
       <div className="bg-white rounded p-5">
         <h3>Users</h3>
-        {Object.keys(tenant).length === 0 && <div>Select a tenant to get started.</div>}
-        {!usersLoading && usersError && <div>Error loading users</div>}
-        {usersLoading && <CSpinner />}
-        {!usersLoading && Object.keys(tenant).length !== 0 && (
-          <ToolkitProvider keyField="displayName" columns={columns} data={users} search>
-            {(props) => (
-              <div>
-                {/* eslint-disable-next-line react/prop-types */}
-                <SearchBar {...props.searchProps} />
-                <hr />
-                {/*eslint-disable */}
-                <BootstrapTable
-                  {...props.baseProps}
-                  pagination={pagination}
-                  wrapperClasses="table-responsive"
-                />
-                {/*eslint-enable */}
-              </div>
-            )}
-          </ToolkitProvider>
-        )}
+        {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
+        <CippDatatable
+          reportName={`${tenant?.defaultDomainName}-Users`}
+          path="/api/ListUsers"
+          columns={columns}
+          params={{ TenantFilter: tenant?.defaultDomainName }}
+        />
       </div>
     </div>
   )
