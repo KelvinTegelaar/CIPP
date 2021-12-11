@@ -13,7 +13,8 @@ import {
   CTableDataCell,
   CTableRow,
 } from '@coreui/react'
-import CellProgressBar from '../../../components/cipp/CellProgressBar'
+import { CellProgressBar } from '../../../components/cipp'
+import { useListMailboxDetailsQuery } from '../../../store/api/mailbox'
 
 const columns = [
   {
@@ -47,9 +48,8 @@ const columns = [
   },
 ]
 
-export default function UserEmailUsage({
-  mailbox: { report = {}, loading = false, loaded = false, error },
-}) {
+export default function UserEmailUsage({ userId, tenantDomain }) {
+  const { data: report, isFetching, error } = useListMailboxDetailsQuery({ userId, tenantDomain })
   return (
     <CCard>
       <CCardHeader className="d-flex justify-content-between">
@@ -60,8 +60,9 @@ export default function UserEmailUsage({
         </div>
       </CCardHeader>
       <CCardBody>
-        {loading && !loaded && <CSpinner />}
-        {loaded && !error && (
+        {isFetching && <CSpinner />}
+        {!isFetching && error && <>Error loading email usage.</>}
+        {!isFetching && !error && (
           <CTable>
             <CTableBody>
               {columns.map((column, index) => {
@@ -82,12 +83,12 @@ export default function UserEmailUsage({
             </CTableBody>
           </CTable>
         )}
-        {!loaded && !loading && error && <>Error loading email details</>}
       </CCardBody>
     </CCard>
   )
 }
 
 UserEmailUsage.propTypes = {
-  mailbox: PropTypes.object,
+  tenantDomain: PropTypes.string.isRequired,
+  userId: PropTypes.string.isRequired,
 }

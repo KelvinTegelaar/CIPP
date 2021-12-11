@@ -35,7 +35,7 @@ const columns = [
   },
 ]
 
-export default function UserEmailDetails({ user, loading, loaded, error }) {
+export default function UserEmailDetails({ user, isFetching, error }) {
   return (
     <CCard>
       <CCardHeader className="d-flex justify-content-between">
@@ -43,8 +43,9 @@ export default function UserEmailDetails({ user, loading, loaded, error }) {
         <CIcon icon={cilEnvelopeClosed} />
       </CCardHeader>
       <CCardBody>
-        {loading && !loaded && <CSpinner />}
-        {loaded && !error && (
+        {isFetching && <CSpinner />}
+        {!isFetching && error && <>Error loading user</>}
+        {!isFetching && !error && (
           <CTable>
             <CTableBody>
               {columns.map((column, index) => {
@@ -65,7 +66,6 @@ export default function UserEmailDetails({ user, loading, loaded, error }) {
             </CTableBody>
           </CTable>
         )}
-        {!loaded && !loading && error && <>Error loading user</>}
       </CCardBody>
     </CCard>
   )
@@ -73,7 +73,6 @@ export default function UserEmailDetails({ user, loading, loaded, error }) {
 
 UserEmailDetails.propTypes = {
   user: PropTypes.object,
-  loading: PropTypes.bool,
-  loaded: PropTypes.bool,
+  isFetching: PropTypes.bool,
   error: PropTypes.any,
 }

@@ -13,9 +13,10 @@ import {
   CTableRow,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilClock, cilFolder } from '@coreui/icons'
-import CellProgressBar from '../../../components/cipp/CellProgressBar'
+import { cilFolder } from '@coreui/icons'
+import { CellProgressBar } from '../../../components/cipp'
 import { listOneDriveUsage } from '../../../store/modules/oneDrive'
+import { useListOneDriveUsageQuery } from '../../../store/api/oneDrive'
 
 const columns = [
   {
@@ -60,18 +61,11 @@ const columns = [
  */
 
 export default function UserOneDriveUsage({ userUPN, tenantDomain }) {
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    dispatch(listOneDriveUsage({ userUPN, tenantDomain }))
-  }, [])
-
   const {
-    report = {},
-    loading = false,
-    loaded = false,
-    error = undefined,
-  } = useSelector((state) => state.oneDrive.usage) || {}
+    data: report = [],
+    isFetching,
+    error,
+  } = useListOneDriveUsageQuery({ userUPN, tenantDomain })
 
   const noUsage = Object.keys(report).length === 0 ?? false
 
@@ -82,8 +76,10 @@ export default function UserOneDriveUsage({ userUPN, tenantDomain }) {
         <CIcon icon={cilFolder} />
       </CCardHeader>
       <CCardBody>
-        {loading && !loaded && <CSpinner />}
-        {loaded && !error && !noUsage && (
+        {!error && isFetching && <CSpinner />}
+        {!isFetching && error && <span>Error loading usage report</span>}
+        {!isFetching && noUsage && <>No usage reported</>}
+        {!isFetching && !error && !noUsage && (
           <CTable>
             <CTableBody>
               {columns.map((column, index) => {
@@ -104,8 +100,6 @@ export default function UserOneDriveUsage({ userUPN, tenantDomain }) {
             </CTableBody>
           </CTable>
         )}
-        {loaded && !loading && noUsage && <>No usage reported</>}
-        {!loaded && !loading && error && <>Error loading user</>}
       </CCardBody>
     </CCard>
   )

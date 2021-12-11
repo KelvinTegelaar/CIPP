@@ -2,11 +2,12 @@ import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import { listUserGroups } from '../../../store/modules/groups'
-import { CCard, CCardBody, CCardHeader, CCardTitle, CLink } from '@coreui/react'
+import { CCard, CCardBody, CCardHeader, CCardTitle, CLink, CSpinner } from '@coreui/react'
 import BootstrapTable from 'react-bootstrap-table-next'
-import CellBoolean from '../../../components/cipp/CellBoolean'
+import { CellBoolean } from '../../../components/cipp'
 import CIcon from '@coreui/icons-react'
 import { cilGroup } from '@coreui/icons'
+import { useListUserGroupsQuery } from '../../../store/api/groups'
 
 const formatter = (cell) => CellBoolean({ cell })
 
@@ -55,15 +56,7 @@ const columns = [
 ]
 
 export default function UserGroups({ userId, tenantDomain }) {
-  const dispatch = useDispatch()
-  // const groups = useSelector((store) => store.identity.groups)
-  const { list = [], loading, loaded, error } = useSelector((store) => store.groups.userGroups)
-
-  // const { list = [], loading, loaded, error } = groups
-
-  useEffect(() => {
-    dispatch(listUserGroups({ tenantDomain, userId }))
-  }, [])
+  const { data: list = [], isFetching, error } = useListUserGroupsQuery({ userId, tenantDomain })
 
   // inject tenantDomain into list for formatter
   const mapped = list.map((val) => ({ ...val, tenantDomain }))
@@ -75,7 +68,9 @@ export default function UserGroups({ userId, tenantDomain }) {
         <CIcon icon={cilGroup} />
       </CCardHeader>
       <CCardBody>
-        {!loading && loaded && (
+        {isFetching && <CSpinner />}
+        {!isFetching && error && <>Error loading groups</>}
+        {!isFetching && !error && (
           <BootstrapTable
             keyField="id"
             columns={columns}
@@ -86,7 +81,6 @@ export default function UserGroups({ userId, tenantDomain }) {
             wrapperClasses="table-responsive"
           />
         )}
-        {error && <div>Error loading groups</div>}
       </CCardBody>
     </CCard>
   )
