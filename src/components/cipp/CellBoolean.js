@@ -52,3 +52,5 @@ export const cellBooleanFormatter =
     const cell = cellGetProperty(row, index, column, id)
     return CellBoolean({ cell, reverse, warning })
   }
+
+export default CellBoolean
