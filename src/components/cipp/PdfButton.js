@@ -39,6 +39,7 @@ function ExportPDFButton(props) {
   return (
     <CButton
       size="sm"
+      className="text-white"
       onClick={() => exportPDF(props.pdfData, props.pdfHeaders, props.pdfSize, props.reportName)}
     >
       PDF
