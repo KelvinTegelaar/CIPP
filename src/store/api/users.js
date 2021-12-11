@@ -22,16 +22,16 @@ export const usersApi = createApi({
       }),
     }),
     listUser: builder.query({
-      queryFn: ({ tenantDomain, userId }) =>
-        axiosQuery({
-          path: '/api/ListUsers',
-          params: { userId, TenantFilter: tenantDomain },
-        }).then(({ data }) => {
-          if (data?.length > 0) {
-            return { data: data[0] }
-          }
-          return { data: {} }
-        }),
+      query: ({ tenantDomain, userId }) => ({
+        path: '/api/ListUsers',
+        params: { userId, TenantFilter: tenantDomain },
+      }),
+      transformResponse: (response) => {
+        if (response?.length > 0) {
+          return response[0]
+        }
+        return {}
+      },
     }),
     listUserConditionalAccessPolicies: builder.query({
       query: ({ tenantDomain, userId }) => ({

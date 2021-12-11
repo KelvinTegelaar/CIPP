@@ -10,6 +10,12 @@ export const mailboxApi = createApi({
         path: '/api/ListUserMailboxDetails',
         params: { userId, tenantFilter: tenantDomain },
       }),
+      transformResponse: (response) => {
+        if (response?.length > 0) {
+          return response[0]
+        }
+        return {}
+      },
     }),
   }),
 })

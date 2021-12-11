@@ -16,7 +16,11 @@ import { cilLockLocked } from '@coreui/icons'
 import { useListUserConditionalAccessPoliciesQuery } from '../../../store/api/users'
 
 export default function UserCAPs({ tenantDomain, userId }) {
-  const { data: list, isFetching, error } = useListUserConditionalAccessPoliciesQuery({})
+  const {
+    data: list,
+    isFetching,
+    error,
+  } = useListUserConditionalAccessPoliciesQuery({ tenantDomain, userId })
   return (
     <CCard>
       <CCardHeader className="d-flex justify-content-between">
