@@ -12,8 +12,11 @@ import {
   cilSettings,
 } from '@coreui/icons'
 import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
+import { useListUserQuery } from '../../../store/api/users'
 
-export default function UserActions({ displayName, tenantDomain, userId, userEmail }) {
+export default function UserActions({ tenantDomain, userId }) {
+  const { data: user, isFetching, error } = useListUserQuery({ tenantDomain, userId })
+
   // @TODO make these work
   const handlePush = () => {
     alert('pushy')
@@ -80,8 +83,6 @@ export default function UserActions({ displayName, tenantDomain, userId, userEma
 }
 
 UserActions.propTypes = {
-  displayName: PropTypes.string,
-  tenantDomain: PropTypes.string,
-  userId: PropTypes.string,
-  userEmail: PropTypes.string,
+  tenantDomain: PropTypes.string.isRequired,
+  userId: PropTypes.string.isRequired,
 }
