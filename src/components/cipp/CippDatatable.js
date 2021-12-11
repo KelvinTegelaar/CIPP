@@ -56,7 +56,7 @@ export default function CippDatatable({
         onChange={onFilter}
       />
       <CButton type="button" size="sm" onClick={onClear}>
-        X
+        Clear
       </CButton>
     </>
   )
