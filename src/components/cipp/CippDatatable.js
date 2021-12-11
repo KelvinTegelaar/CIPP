@@ -5,6 +5,32 @@ import DataTable, { TableProps } from 'react-data-table-component'
 import { useListDatatableQuery } from '../../store/api/datatable'
 import PropTypes from 'prop-types'
 
+const FilterComponent = ({ filterText, onFilter, onClear }) => (
+  <>
+    <CFormInput
+      style={{
+        height: '32px',
+        width: '200px',
+      }}
+      id="search"
+      type="text"
+      placeholder="Filter"
+      aria-label="Search Input"
+      value={filterText}
+      onChange={onFilter}
+    />
+    <CButton type="button" size="sm" className="text-white" onClick={onClear}>
+      Clear
+    </CButton>
+  </>
+)
+
+FilterComponent.propTypes = {
+  filterText: PropTypes.string,
+  onFilter: PropTypes.func,
+  onClear: PropTypes.func,
+}
+
 export default function CippDatatable({
   path,
   params,
@@ -27,29 +53,6 @@ export default function CippDatatable({
     [columns, data, reportName],
   )
 
-  {
-    /* eslint-disable */
-  }
-  const FilterComponent = ({ filterText, onFilter, onClear }) => (
-    <>
-      <CFormInput
-        style={{
-          height: '32px',
-          width: '200px',
-        }}
-        id="search"
-        type="text"
-        placeholder="Filter"
-        aria-label="Search Input"
-        value={filterText}
-        onChange={onFilter}
-      />
-      <CButton type="button" size="sm" className="text-white" onClick={onClear}>
-        Clear
-      </CButton>
-    </>
-  )
-
   const [filterText, setFilterText] = React.useState('')
   const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false)
   const filteredItems = data.filter(
@@ -63,9 +66,7 @@ export default function CippDatatable({
         setFilterText('')
       }
     }
-    {
-      /* eslint-disable */
-    }
+
     return (
       <FilterComponent
         onFilter={(e) => setFilterText(e.target.value)}
@@ -74,6 +75,7 @@ export default function CippDatatable({
       />
     )
   }, [filterText, resetPaginationToggle])
+
   return (
     <div>
       {isFetching && <CSpinner />}
@@ -81,7 +83,6 @@ export default function CippDatatable({
       {!isFetching && !error && (
         <div>
           <hr />
-          {/* eslint-disable */}
           <DataTable
             subHeader={subheader}
             subHeaderComponent={subHeaderComponentMemo}
@@ -95,7 +96,6 @@ export default function CippDatatable({
             data={filteredItems}
             {...rest}
           />
-          {/* eslint-enable */}
         </div>
       )}
     </div>
