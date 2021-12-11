@@ -3,9 +3,13 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
   visible: false,
   body: undefined,
+  componentType: 'text',
+  componentProps: {},
+  data: undefined,
   title: undefined,
   size: undefined,
 }
+
 export const REDUCER_PATH = 'modal'
 export const modalSlice = createSlice({
   name: REDUCER_PATH,
@@ -20,16 +24,14 @@ export const modalSlice = createSlice({
     hideModal: (state) => {
       state.visible = false
     },
-    resetModal: (state) => {
-      state = initialState
+    resetModal: () => {
+      return { ...initialState }
     },
-    setContent: (state, { title, body, size }) => {
-      state.title = title
-      state.body = body
-      state.size = size
+    setModalContent: (state, { payload }) => {
+      return { ...initialState, ...payload }
     },
   },
 })
 
-export const { resetModal, setVisible, setContent, hideModal, showModal } = modalSlice.actions
+export const { resetModal, setVisible, setModalContent, hideModal, showModal } = modalSlice.actions
 export default modalSlice.reducer

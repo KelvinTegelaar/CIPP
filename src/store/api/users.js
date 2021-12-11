@@ -1,4 +1,4 @@
-import { baseQuery } from './baseQuery'
+import { axiosQuery, baseQuery } from './baseQuery'
 import { createApi } from '@reduxjs/toolkit/query/react'
 
 export const USERS_API_REDUCER_PATH = 'users'
@@ -22,10 +22,16 @@ export const usersApi = createApi({
       }),
     }),
     listUser: builder.query({
-      query: ({ tenantDomain, userId }) => ({
-        path: '/api/ListUsers',
-        params: { userId, TenantFilter: tenantDomain },
-      }),
+      queryFn: ({ tenantDomain, userId }) =>
+        axiosQuery({
+          path: '/api/ListUsers',
+          params: { userId, TenantFilter: tenantDomain },
+        }).then(({ data }) => {
+          if (data?.length > 0) {
+            return { data: data[0] }
+          }
+          return { data: {} }
+        }),
     }),
     listUserConditionalAccessPolicies: builder.query({
       query: ({ tenantDomain, userId }) => ({
