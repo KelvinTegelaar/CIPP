@@ -1,8 +1,10 @@
 import { CProgress, CProgressBar } from '@coreui/react'
 import PropTypes from 'prop-types'
 import React from 'react'
+import cellGetProperty from './cellGetProperty'
+import { CellBadge } from './CellBadge'
 
-const CellProgressBar = ({ value, reverse = false }) => {
+export const CellProgressBar = ({ value, reverse = false }) => {
   let color
   if (!reverse) {
     switch (value) {
@@ -30,13 +32,19 @@ const CellProgressBar = ({ value, reverse = false }) => {
         color = 'success'
     }
   }
-  return (
-    <CProgress className="mb-3">
-      <CProgressBar value={value} color={color}>
-        {value}
-      </CProgressBar>
-    </CProgress>
-  )
+  if (value) {
+    return (
+      <div style={{ width: '100%' }}>
+        <CProgress className="mb-3">
+          <CProgressBar value={value} color={color}>
+            {value}
+          </CProgressBar>
+        </CProgress>
+      </div>
+    )
+  } else {
+    return <CellBadge label="No Data" color="info" />
+  }
 }
 
 CellProgressBar.propTypes = {
@@ -44,4 +52,9 @@ CellProgressBar.propTypes = {
   reverse: PropTypes.bool,
 }
 
-export default CellProgressBar
+export const cellProgressBarFormatter =
+  ({ reverse } = {}) =>
+  (row, index, column, id) => {
+    const value = cellGetProperty(row, index, column, id)
+    return CellProgressBar({ value, reverse })
+  }
