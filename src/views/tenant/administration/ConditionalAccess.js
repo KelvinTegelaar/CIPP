@@ -97,7 +97,7 @@ const columns = [
   },
 ]
 
-const RolesList = () => {
+const CondtionalAccessList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
@@ -105,7 +105,7 @@ const RolesList = () => {
       <TenantSelector />
       <hr />
       <div className="bg-white rounded p-5">
-        <h3>Applications List</h3>
+        <h3>Conditional Access Overview</h3>
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         <CippDatatable
           keyField="id"
@@ -119,4 +119,4 @@ const RolesList = () => {
   )
 }
 
-export default RolesList
+export default CondtionalAccessList

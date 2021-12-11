@@ -17,33 +17,19 @@ const dropdown = (row, index, column) => {
 
 const columns = [
   {
-    selector: 'serialNumber',
-    name: 'Serial',
+    selector: 'DisplayName',
+    name: 'Role Name',
     sortable: true,
   },
   {
-    selector: 'model',
-    name: 'Model',
+    selector: 'Description',
+    name: 'Description',
     sortable: true,
   },
   {
-    selector: 'manufacturer',
-    name: 'Manufacturer',
+    selector: 'Members',
+    name: 'Members',
     sortable: true,
-  },
-  {
-    selector: 'groupTag',
-    name: 'Group Tag',
-    sortable: true,
-  },
-  {
-    selector: 'enrollmentState',
-    name: 'Enrollment',
-    sortable: true,
-  },
-  {
-    name: 'Actions',
-    cell: dropdown,
   },
 ]
 
@@ -55,12 +41,12 @@ const RolesList = () => {
       <TenantSelector />
       <hr />
       <div className="bg-white rounded p-5">
-        <h3>Applications List</h3>
+        <h3>Azure Active Directory Roles</h3>
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         <CippDatatable
           keyField="id"
-          reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
-          path="/api/ListAPDevices"
+          reportName={`${tenant?.defaultDomainName}-Roles`}
+          path="/api/ListRoles"
           columns={columns}
           params={{ TenantFilter: tenant?.defaultDomainName }}
         />

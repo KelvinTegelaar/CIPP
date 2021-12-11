@@ -17,8 +17,8 @@ const dropdown = (row, index, column) => {
 
 const columns = [
   {
-    selector: 'serialNumber',
-    name: 'Serial',
+    selector: 'displayName',
+    name: 'Display Name',
     sortable: true,
   },
   {
@@ -47,7 +47,7 @@ const columns = [
   },
 ]
 
-const RolesList = () => {
+const DevicesList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
@@ -55,12 +55,12 @@ const RolesList = () => {
       <TenantSelector />
       <hr />
       <div className="bg-white rounded p-5">
-        <h3>Applications List</h3>
+        <h3>Devices</h3>
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         <CippDatatable
           keyField="id"
           reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
-          path="/api/ListAPDevices"
+          path="/api/ListDevices"
           columns={columns}
           params={{ TenantFilter: tenant?.defaultDomainName }}
         />
@@ -69,4 +69,4 @@ const RolesList = () => {
   )
 }
 
-export default RolesList
+export default DevicesList

@@ -47,7 +47,7 @@ const columns = [
   },
 ]
 
-const RolesList = () => {
+const TeamsActivityList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
@@ -69,4 +69,4 @@ const RolesList = () => {
   )
 }
 
-export default RolesList
+export default TeamsActivityList

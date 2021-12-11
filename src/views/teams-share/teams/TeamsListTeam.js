@@ -45,9 +45,13 @@ const columns = [
     selector: 'Allocated',
     sort: true,
   },
+  {
+    name: 'Actions',
+    cell: dropdown,
+  },
 ]
 
-const RolesList = () => {
+const TeamsList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
@@ -69,4 +73,4 @@ const RolesList = () => {
   )
 }
 
-export default RolesList
+export default TeamsList
