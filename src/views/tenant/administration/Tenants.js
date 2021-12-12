@@ -72,26 +72,23 @@ const columns = [
   // },
 ]
 
-const RolesList = () => {
+const TenantsList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
     <div>
-      <TenantSelector />
       <hr />
       <div className="bg-white rounded p-5">
         <h3>Applications List</h3>
-        {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         <CippDatatable
           keyField="id"
           reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
-          path="/api/ListAPDevices"
+          path="/api/ListTenants"
           columns={columns}
-          params={{ TenantFilter: tenant?.defaultDomainName }}
         />
       </div>
     </div>
   )
 }
 
-export default RolesList
+export default TenantsList

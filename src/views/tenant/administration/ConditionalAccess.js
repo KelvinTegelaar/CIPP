@@ -99,7 +99,7 @@ const CondtionalAccessList = () => {
         <CippDatatable
           keyField="id"
           reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
-          path="/api/ListCondtionalAccessPolicies"
+          path="/api/ListConditionalAccessPolicies"
           columns={columns}
           params={{ TenantFilter: tenant?.defaultDomainName }}
         />
