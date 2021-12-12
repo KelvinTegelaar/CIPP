@@ -79,7 +79,7 @@ const TenantsList = () => {
     <div>
       <hr />
       <div className="bg-white rounded p-5">
-        <h3>Applications List</h3>
+        <h3>Tenant List</h3>
         <CippDatatable
           keyField="id"
           reportName={`${tenant?.defaultDomainName}-Autopilot-List`}

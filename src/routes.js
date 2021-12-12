@@ -51,11 +51,11 @@ const AutopilotListProfiles = React.lazy(() =>
 const AutopilotListStatusPages = React.lazy(() =>
   import('./views/endpoint/autopilot/AutopilotListStatusPages'),
 )
-const IntuneListPolicies = React.lazy(() => import('./views/endpoint/intune/IntuneListPolicies'))
-const IntuneCAPolicies = React.lazy(() => import('./views/endpoint/intune/IntuneCAPolicies'))
-const IntuneAddPolicy = React.lazy(() => import('./views/endpoint/intune/IntuneAddPolicy'))
+const IntuneListPolicies = React.lazy(() => import('./views/endpoint/MEM/MEMListPolicies'))
+const IntuneCAPolicies = React.lazy(() => import('./views/endpoint/MEM/MEMCAPolicies'))
+const IntuneAddPolicy = React.lazy(() => import('./views/endpoint/MEM/MEMAddPolicy'))
 const IntuneListPolicyTemplate = React.lazy(() =>
-  import('./views/endpoint/intune/IntuneListPolicyTemplate'),
+  import('./views/endpoint/MEM/MEMListPolicyTemplate'),
 )
 const OneDriveList = React.lazy(() => import('./views/teams-share/onedrive/OneDriveList'))
 const SharepointList = React.lazy(() => import('./views/teams-share/sharepoint/SharepointList'))
@@ -205,26 +205,26 @@ const routes = [
     component: AutopilotListStatusPages,
   },
   {
-    path: '/endpoint/intune',
-    name: 'Intune',
+    path: '/endpoint/MEM',
+    name: 'MEM',
   },
   {
-    path: '/endpoint/intune/list-policies',
+    path: '/endpoint/MEM/list-policies',
     name: 'List Status Pages',
     component: IntuneListPolicies,
   },
   {
-    path: '/endpoint/intune/ca-policies',
+    path: '/endpoint/MEM/ca-policies',
     name: 'List Status Pages',
     component: IntuneCAPolicies,
   },
   {
-    path: '/endpoint/intune/add-policy',
+    path: '/endpoint/MEM/add-policy',
     name: 'Add Intune Policy',
     component: IntuneAddPolicy,
   },
   {
-    path: '/endpoint/intune/list-templates',
+    path: '/endpoint/MEM/list-templates',
     name: 'List Intune Policy Template',
     component: IntuneListPolicyTemplate,
   },

@@ -45,7 +45,7 @@ const OneDriveList = () => {
       <TenantSelector />
       <hr />
       <div className="bg-white rounded p-5">
-        <h3>Onedrive Report</h3>
+        <h3>OneDrive Report</h3>
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         <CippDatatable
           keyField="id"

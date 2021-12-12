@@ -80,7 +80,7 @@ const ContactsList = () => {
       <TenantSelector />
       <hr />
       <div className="bg-white rounded p-5">
-        <h3>Applications List</h3>
+        <h3>Contacts List</h3>
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         <CippDatatable
           keyField="id"
