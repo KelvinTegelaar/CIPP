@@ -60,6 +60,20 @@ const TeamsListTeam = React.lazy(() => import('./views/teams-share/teams/TeamsLi
 const TeamsAddTeam = React.lazy(() => import('./views/teams-share/teams/TeamsAddTeam'))
 const TeamsActivity = React.lazy(() => import('./views/teams-share/teams/TeamsActivity'))
 const CIPPSettings = React.lazy(() => import('./views/cipp/CIPPSettings'))
+const ContactsList = React.lazy(() => import('./views/email-exchange/administration/ContactsList'))
+const MailboxesList = React.lazy(() =>
+  import('./views/email-exchange/administration/MailboxesList'),
+)
+const MailboxClientAccessSettingsList = React.lazy(() =>
+  import('./views/email-exchange/reports/MailboxClientAccessSettingsList'),
+)
+const MailboxStatisticsList = React.lazy(() =>
+  import('./views/email-exchange/reports/MailboxStatisticsList'),
+)
+const MessageTrace = React.lazy(() => import('./views/email-exchange/reports/MessageTrace'))
+const PhishingPoliciesList = React.lazy(() =>
+  import('./views/email-exchange/reports/PhishingPoliciesList'),
+)
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -240,6 +254,48 @@ const routes = [
     path: '/teams-share/teams/teams-activity',
     name: 'List Teams',
     component: TeamsActivity,
+  },
+  {
+    name: 'Email & Exchange',
+    path: '/email',
+  },
+  {
+    name: 'Email Administration',
+    path: '/email/administration',
+  },
+  {
+    name: 'List Contacts',
+    path: '/email/administration/contacts',
+    component: ContactsList,
+  },
+  {
+    name: 'List Mailboxes',
+    path: '/email/administration/mailboxes',
+    component: MailboxesList,
+  },
+  {
+    name: 'Email Reports',
+    path: '/email/reports',
+  },
+  {
+    name: 'Mailbox Statistics',
+    path: '/email/reports/mailbox-statistics',
+    component: MailboxStatisticsList,
+  },
+  {
+    name: 'Mailbox Client Access Settings',
+    path: '/email/reports/mailbox-cas-settings',
+    component: MailboxClientAccessSettingsList,
+  },
+  {
+    name: 'Message Trace',
+    path: '/email/reports/message-trace',
+    component: MessageTrace,
+  },
+  {
+    name: 'Phishing Policies',
+    path: '/email/reports/phishing-policies',
+    component: PhishingPoliciesList,
   },
   {
     path: '/cipp',

@@ -316,12 +316,12 @@ const _nav = [
       {
         component: CNavItem,
         name: 'Mailboxes',
-        to: '/email/exchange/mailboxes',
+        to: '/email/administration/mailboxes',
       },
       {
         component: CNavItem,
         name: 'Contacts',
-        to: '/email/exchange/contacts',
+        to: '/email/administration/contacts',
       },
     ],
   },
