@@ -4,6 +4,29 @@ import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 
+import { Link } from 'react-router-dom'
+import { faUser, faCog } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+const dropdown = (row, rowIndex, formatExtraData) => {
+  return (
+    <CDropdown>
+      <CDropdownToggle color="primary">...</CDropdownToggle>
+      <CDropdownMenu>
+        <CDropdownItem href="#">
+          <Link
+            className="dropdown-item"
+            to={`/identity/administration/users/edit?userId=${row.id}&tenantDomain=${row.primDomain}`}
+          >
+            <FontAwesomeIcon icon={faCog} className="me-2" />
+            Edit User
+          </Link>
+        </CDropdownItem>
+      </CDropdownMenu>
+    </CDropdown>
+  )
+}
+
 const columns = [
   {
     name: 'Name',
@@ -34,6 +57,10 @@ const columns = [
     name: 'Allocated (GB)',
     selector: (row) => row['Allocated'],
     sort: true,
+  },
+  {
+    name: 'Actions',
+    cell: dropdown,
   },
 ]
 

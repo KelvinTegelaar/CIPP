@@ -236,7 +236,7 @@ const _nav = [
       {
         component: CNavItem,
         name: 'List Defender for endpoint (Alpha)',
-        to: '/endpoint/intune/list-defender',
+        to: '/endpoint/MEM/list-defender',
       },
     ],
   },
@@ -334,7 +334,7 @@ const _nav = [
       {
         component: CNavItem,
         name: 'Mailbox Client Access Settings',
-        to: '/email/reports/mailbox-client-access-settings',
+        to: '/email/reports/mailbox-cas-settings',
       },
       {
         component: CNavItem,

@@ -30,9 +30,16 @@ const dropdown = (row, rowIndex, formatExtraData) => {
             Edit User
           </Link>
         </CDropdownItem>
+        <CDropdownItem href="#">
+          <Link className="dropdown-item" to={`/identity/administration/ViewBec`}>
+            <FontAwesomeIcon icon={faUser} className="me-2" />
+            Research Compromised Account
+          </Link>
+        </CDropdownItem>
         <CDropdownItem href="#">Send MFA Push To User</CDropdownItem>
         <CDropdownItem href="#">Convert To Shared</CDropdownItem>
         <CDropdownItem href="#">Block Sign-in</CDropdownItem>
+        <CDropdownItem href="#">Reset Password (Must Change)</CDropdownItem>
         <CDropdownItem href="#">Reset Password</CDropdownItem>
         <CDropdownItem href="#">Delete User</CDropdownItem>
       </CDropdownMenu>

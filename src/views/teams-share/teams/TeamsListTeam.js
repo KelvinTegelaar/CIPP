@@ -3,17 +3,31 @@ import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
+import { faUser, faCog } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Link } from 'react-router-dom'
 
-const dropdown = (row, index, column) => {
-  return (
-    <CDropdown>
-      <CDropdownToggle color="primary">...</CDropdownToggle>
-      <CDropdownMenu>
-        <CDropdownItem href="#">Edit Group</CDropdownItem>
-      </CDropdownMenu>
-    </CDropdown>
-  )
-}
+const dropdown = (row, rowIndex, formatExtraData) => (
+  <CDropdown>
+    <CDropdownToggle color="primary">...</CDropdownToggle>
+    <CDropdownMenu>
+      <CDropdownItem href="#">
+        <Link className="dropdown-item" to={`/teams-share/teams/view-team-settings}`}>
+          <FontAwesomeIcon icon={faCog} className="me-2" />
+          View Team Settings
+        </Link>
+      </CDropdownItem>
+      <CDropdownItem href="#">
+        <Link className="dropdown-item" to={`/identity/administration/EditGroup}`}>
+          <FontAwesomeIcon icon={faCog} className="me-2" />
+          Edit Group
+        </Link>
+      </CDropdownItem>
+      <CDropdownItem href="#">Delete Team</CDropdownItem>
+    </CDropdownMenu>
+  </CDropdown>
+)
+
 const columns = [
   {
     name: 'Name',

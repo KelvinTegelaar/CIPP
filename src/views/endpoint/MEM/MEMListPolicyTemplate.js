@@ -9,7 +9,7 @@ const dropdown = (row, index, column) => {
     <CDropdown>
       <CDropdownToggle color="primary">...</CDropdownToggle>
       <CDropdownMenu>
-        <CDropdownItem href="#">Edit Group</CDropdownItem>
+        <CDropdownItem href="#">Delete Template</CDropdownItem>
       </CDropdownMenu>
     </CDropdown>
   )
