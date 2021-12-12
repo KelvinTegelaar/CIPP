@@ -3,8 +3,8 @@ import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreu
 import TenantSelector from 'src/components/cipp/TenantSelector'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { cilSettings, cilUser } from '@coreui/icons'
-import CIcon from '@coreui/icons-react'
+import { faUser, faCog } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippDatatable, cellBooleanFormatter } from '../../../components/cipp'
 
 const dropdown = (row, rowIndex, formatExtraData) => {
@@ -17,7 +17,7 @@ const dropdown = (row, rowIndex, formatExtraData) => {
             className="dropdown-item"
             to={`/identity/administration/users/view?userId=${row.id}&tenantDomain=${row.primDomain}`}
           >
-            <CIcon icon={cilUser} className="me-2" />
+            <FontAwesomeIcon icon={faUser} className="me-2" />
             View User
           </Link>
         </CDropdownItem>
@@ -26,7 +26,7 @@ const dropdown = (row, rowIndex, formatExtraData) => {
             className="dropdown-item"
             to={`/identity/administration/users/edit?userId=${row.id}&tenantDomain=${row.primDomain}`}
           >
-            <CIcon icon={cilSettings} className="me-2" />
+            <FontAwesomeIcon icon={faCog} className="me-2" />
             Edit User
           </Link>
         </CDropdownItem>

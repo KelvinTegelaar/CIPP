@@ -5,9 +5,7 @@ import { useLoadClientPrincipalQuery } from '../../../store/api/auth'
 import { FullScreenLoading } from '../../../components'
 
 const Login = () => {
-  const { data: clientPrincipal, error, isLoading } = useLoadClientPrincipalQuery()
-
-  console.log('client principal', clientPrincipal)
+  const { data: clientPrincipal, isLoading } = useLoadClientPrincipalQuery()
 
   if (isLoading) {
     return <FullScreenLoading />
@@ -16,7 +14,6 @@ const Login = () => {
     window.location.href = root + '/.auth/login/azure'
     return <CSpinner />
   } else {
-    console.log('weewoo')
     return <Redirect to="/" />
   }
 }

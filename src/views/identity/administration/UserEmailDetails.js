@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import CIcon from '@coreui/icons-react'
-import { cilEnvelopeClosed } from '@coreui/icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons'
 import {
   CCard,
   CCardBody,
@@ -40,7 +40,7 @@ export default function UserEmailDetails({ user, isFetching, error }) {
     <CCard>
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>Email Details</CCardTitle>
-        <CIcon icon={cilEnvelopeClosed} />
+        <FontAwesomeIcon icon={faEnvelope} />
       </CCardHeader>
       <CCardBody>
         {isFetching && <CSpinner />}

@@ -1,7 +1,11 @@
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import CIcon from '@coreui/icons-react'
-import * as icon from '@coreui/icons'
+import React from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faTimesCircle,
+  faCheckCircle,
+  faExclamationCircle,
+} from '@fortawesome/free-solid-svg-icons'
+
 import {
   CCard,
   CCardHeader,
@@ -14,19 +18,10 @@ import {
   CCardTitle,
   CButton,
 } from '@coreui/react'
-import {
-  useLoadVersionLocalQuery,
-  useLoadVersionRemoteQuery,
-  useLoadVersionsQuery,
-} from '../../store/api/app'
+import { useLoadVersionsQuery } from '../../store/api/app'
 
 const Home = () => {
-  // const { data: localVersion } = useLoadVersionLocalQuery()
-  // const { data: versions, isLoading } = useLoadVersionRemoteQuery(localVersion)
-
   const { data: versions, isLoading } = useLoadVersionsQuery()
-
-  console.log(versions, isLoading)
 
   return (
     <div>
@@ -56,9 +51,9 @@ const Home = () => {
             <CCardHeader>
               CIPP Version
               {versions?.OutOfDateCIPP ? (
-                <CIcon icon={icon.cilXCircle} />
+                <FontAwesomeIcon icon={faTimesCircle} />
               ) : (
-                <CIcon icon={icon.cilCheckCircle} size="lg" />
+                <FontAwesomeIcon icon={faCheckCircle} size="lg" />
               )}
             </CCardHeader>
             <CCardBody>
@@ -76,9 +71,9 @@ const Home = () => {
             <CCardHeader>
               CIPP API Version
               {versions?.OutOfDateCIPPAPI ? (
-                <CIcon icon={icon.cilXCircle} />
+                <FontAwesomeIcon icon={faTimesCircle} />
               ) : (
-                <CIcon icon={icon.cilCheckCircle} size="lg" />
+                <FontAwesomeIcon icon={faCheckCircle} size="lg" />
               )}
             </CCardHeader>
             <CCardBody>

@@ -10,9 +10,8 @@ import {
   CCard,
   CCardBody,
 } from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import { cilExpandDown, cilExpandUp } from '@coreui/icons'
-// import { closeToast } from '../store/modules/toast'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons'
 import { closeToast } from '../store/modules/toast'
 import PropTypes from 'prop-types'
 
@@ -46,8 +45,8 @@ const Toast = ({ message, title, onClose, error }) => {
       <div className="d-flex">
         <CToastBody className="me-2 mt-2">{message}</CToastBody>
         <div className="me-2 m-auto">
-          <CIcon
-            icon={visible ? cilExpandUp : cilExpandDown}
+          <FontAwesomeIcon
+            icon={visible ? faCaretUp : faCaretDown}
             onClick={() => setVisible(!visible)}
           />
           <CToastClose onClick={onClose} />

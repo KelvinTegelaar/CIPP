@@ -15,7 +15,7 @@ export const appSlice = createSlice({
   initialState,
   reducers: {
     toggleSidebarShow: (state, action) => {
-      state.sidebarShow = action.payload?.sidebarShow
+      state.sidebarShow = !state.sidebarShow
     },
     toggleSidebarUnfoldable: (state, action) => {
       state.sidebarUnfoldable = action.payload?.unfoldable

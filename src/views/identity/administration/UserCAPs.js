@@ -11,8 +11,8 @@ import {
   CTableDataCell,
   CTableRow,
 } from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import { cilLockLocked } from '@coreui/icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faLockOpen } from '@fortawesome/free-solid-svg-icons'
 import { useListUserConditionalAccessPoliciesQuery } from '../../../store/api/users'
 
 export default function UserCAPs({ tenantDomain, userId }) {
@@ -25,7 +25,7 @@ export default function UserCAPs({ tenantDomain, userId }) {
     <CCard>
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>Applied Conditional Access Policies</CCardTitle>
-        <CIcon icon={cilLockLocked} />
+        <FontAwesomeIcon icon={faLockOpen} />
       </CCardHeader>
       <CCardBody>
         {!isFetching && error && <span>Error loading user details</span>}

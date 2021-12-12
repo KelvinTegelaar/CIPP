@@ -1,5 +1,6 @@
 import { CellBadge, cellBadgeFormatter } from './CellBadge'
 import { CellBoolean, cellBooleanFormatter } from './CellBoolean'
+import { CellDate, cellDateFormatter } from './CellDate'
 import { CellNullText, cellNullTextFormatter } from './CellNullText'
 import { CellProgressBar, cellProgressBarFormatter } from './CellProgressBar'
 import CippDatatable from './CippDatatable'
@@ -12,6 +13,8 @@ export {
   cellBadgeFormatter,
   CellBoolean,
   cellBooleanFormatter,
+  CellDate,
+  cellDateFormatter,
   CellNullText,
   cellNullTextFormatter,
   CellProgressBar,

@@ -11,8 +11,8 @@ import {
   CTableDataCell,
   CTableRow,
 } from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import { cilClock } from '@coreui/icons'
+import { faClock } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useListUserQuery } from '../../../store/api/users'
 
 const columns = [
@@ -45,7 +45,7 @@ export default function UserLastLoginDetails({ tenantDomain, userId }) {
     <CCard>
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>Last Login Details</CCardTitle>
-        <CIcon icon={cilClock} />
+        <FontAwesomeIcon icon={faClock} />
       </CCardHeader>
       <CCardBody>
         {!isFetching && error && <span>Error loading user details</span>}

@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import {
   CButton,
   CCard,
@@ -17,10 +17,9 @@ import {
 } from '@coreui/react'
 import BootstrapTable from 'react-bootstrap-table-next'
 import { CellBoolean } from '../../../components/cipp'
-import CIcon from '@coreui/icons-react'
-import { cilLaptop } from '@coreui/icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faLaptop } from '@fortawesome/free-solid-svg-icons'
 import { setModalContent } from '../../../store/features/modal'
-// import { setModalContent, showModal } from '../../../store/modules/modal'
 import { useListUserSigninLogsQuery } from '../../../store/api/users'
 
 const formatter = (cell) => CellBoolean({ cell })
@@ -151,7 +150,7 @@ export default function UserSigninLogs({ userId, tenantDomain }) {
     <CCard>
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>User Sign in Logs</CCardTitle>
-        <CIcon icon={cilLaptop} />
+        <FontAwesomeIcon icon={faLaptop} />
       </CCardHeader>
       <CCardBody>
         {!isFetching && error && <span>Error loading user sign-in logs</span>}

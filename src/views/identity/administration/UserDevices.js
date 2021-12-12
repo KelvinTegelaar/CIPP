@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { CCard, CCardBody, CCardHeader, CCardTitle, CLink, CSpinner } from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import { cilLaptop } from '@coreui/icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faLaptop } from '@fortawesome/free-solid-svg-icons'
 import DataTable from 'react-data-table-component'
 
 import {
@@ -12,10 +12,6 @@ import {
   cellNullTextFormatter,
 } from '../../../components/cipp'
 import { useListUserDevicesQuery } from '../../../store/api/devices'
-import cellGetProperty from '../../../components/cipp/cellGetProperty'
-
-const formatter = (cell) => CellBoolean({ cell })
-const nullFormatter = (cell) => CellNullText({ cell })
 
 const columns = [
   {
@@ -117,7 +113,7 @@ export default function UserDevices({ userId, tenantDomain }) {
     <CCard>
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>User Devices</CCardTitle>
-        <CIcon icon={cilLaptop} />
+        <FontAwesomeIcon icon={faLaptop} />
       </CCardHeader>
       <CCardBody>
         {isFetching && <CSpinner />}
