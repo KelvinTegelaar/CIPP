@@ -17,28 +17,23 @@ const dropdown = (row, index, column) => {
 
 const columns = [
   {
-    selector: 'serialNumber',
-    name: 'Serial',
+    selector: 'Displayname',
+    name: 'Policy Name',
     sortable: true,
   },
   {
-    selector: 'model',
-    name: 'Model',
+    selector: 'Description',
+    name: 'Description',
     sortable: true,
   },
   {
-    selector: 'manufacturer',
-    name: 'Manufacturer',
+    selector: 'Type',
+    name: 'Type',
     sortable: true,
   },
   {
-    selector: 'groupTag',
-    name: 'Group Tag',
-    sortable: true,
-  },
-  {
-    selector: 'enrollmentState',
-    name: 'Enrollment',
+    selector: 'RAWJson',
+    name: 'Raw JSON',
     sortable: true,
   },
   {
@@ -46,21 +41,19 @@ const columns = [
     cell: dropdown,
   },
 ]
-
+//todo: Add expandableRow instead of raw json in table.
 const AutopilotListTemplates = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
     <div>
-      <TenantSelector />
       <hr />
       <div className="bg-white rounded p-5">
-        <h3>Autopilot Device List</h3>
-        {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
+        <h3>Available Intune Templates</h3>
         <CippDatatable
           keyField="id"
           reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
-          path="/api/ListAPDevices"
+          path="/api/ListIntuneTemplates"
           columns={columns}
           params={{ TenantFilter: tenant?.defaultDomainName }}
         />

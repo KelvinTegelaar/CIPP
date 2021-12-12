@@ -54,6 +54,9 @@ const AutopilotListStatusPages = React.lazy(() =>
 const IntuneListPolicies = React.lazy(() => import('./views/endpoint/intune/IntuneListPolicies'))
 const IntuneCAPolicies = React.lazy(() => import('./views/endpoint/intune/IntuneCAPolicies'))
 const IntuneAddPolicy = React.lazy(() => import('./views/endpoint/intune/IntuneAddPolicy'))
+const IntuneListPolicyTemplate = React.lazy(() =>
+  import('./views/endpoint/intune/IntuneListPolicyTemplate'),
+)
 const OneDriveList = React.lazy(() => import('./views/teams-share/onedrive/OneDriveList'))
 const SharepointList = React.lazy(() => import('./views/teams-share/sharepoint/SharepointList'))
 const BusinessVoice = React.lazy(() => import('./views/teams-share/teams/BusinessVoice'))
@@ -219,6 +222,11 @@ const routes = [
     path: '/endpoint/intune/add-policy',
     name: 'Add Intune Policy',
     component: IntuneAddPolicy,
+  },
+  {
+    path: '/endpoint/intune/list-templates',
+    name: 'List Intune Policy Template',
+    component: IntuneListPolicyTemplate,
   },
   {
     path: '/teams-share',
