@@ -1,8 +1,12 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import TenantSelector from '../../../components/cipp/TenantSelector'
-import CippDatatable from '../../../components/cipp/CippDatatable'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
+import {
+  cellBooleanFormatter,
+  cellDateFormatter,
+  TenantSelector,
+  CippDatatable,
+} from '../../../components/cipp'
 
 const dropdown = (row, index, column) => {
   return (
@@ -17,33 +21,79 @@ const dropdown = (row, index, column) => {
 
 const columns = [
   {
+    name: 'Name',
     selector: 'displayName',
-    name: 'Display Name',
     sortable: true,
   },
   {
-    selector: 'model',
-    name: 'Model',
+    name: 'Enabled',
+    selector: 'accountEnabled',
     sortable: true,
+    cell: cellBooleanFormatter(),
   },
   {
-    selector: 'manufacturer',
+    name: 'Compliant',
+    selector: 'isCompliant',
+    sortable: true,
+    cell: cellBooleanFormatter(),
+  },
+  {
     name: 'Manufacturer',
+    selector: 'manufacturer',
     sortable: true,
   },
   {
-    selector: 'groupTag',
-    name: 'Group Tag',
+    name: 'Model',
+    selector: 'model',
     sortable: true,
   },
   {
-    selector: 'enrollmentState',
-    name: 'Enrollment',
+    name: 'Operating System',
+    selector: 'operatingSystem',
     sortable: true,
   },
   {
-    name: 'Actions',
-    cell: dropdown,
+    name: 'Operating System Version',
+    selector: 'operatingSystemVersion',
+    sortable: true,
+  },
+  {
+    name: 'Created',
+    selector: 'createdDateTime',
+    sortable: true,
+    cell: cellDateFormatter({ format: 'short', showTime: false }),
+  },
+  {
+    name: 'Approx Last SignIn',
+    selector: 'approximateLastSignInDateTime',
+    sortable: true,
+    cell: cellDateFormatter(),
+  },
+  {
+    name: 'Ownership',
+    selector: 'deviceOwnership',
+    sortable: true,
+  },
+  {
+    name: 'Enrollment Type',
+    selector: 'enrollmentType',
+    sortable: true,
+  },
+  {
+    name: 'Management Type',
+    selector: 'managementType',
+    sortable: true,
+  },
+  {
+    name: 'On-Premises Sync Enabled',
+    selector: 'onPremisesSyncEnabled',
+    cell: cellBooleanFormatter(),
+    sortable: true,
+  },
+  {
+    name: 'Trust Type',
+    selector: 'trustType',
+    sortable: true,
   },
 ]
 
