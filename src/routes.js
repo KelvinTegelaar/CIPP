@@ -4,7 +4,7 @@ const Home = React.lazy(() => import('./views/home/Home'))
 const ViewProfile = React.lazy(() => import('./views/profile/ViewProfile'))
 const Settings = React.lazy(() => import('./views/profile/Settings'))
 const Users = React.lazy(() => import('./views/identity/administration/Users'))
-const BECView = React.lazy(() => import('./views/identity/administration/ViewBEC'))
+const ViewBEC = React.lazy(() => import('./views/identity/administration/ViewBEC'))
 const AddUser = React.lazy(() => import('./views/identity/administration/AddUser'))
 const EditUser = React.lazy(() => import('./views/identity/administration/EditUser'))
 const ViewUser = React.lazy(() => import('./views/identity/administration/ViewUser'))
@@ -113,7 +113,7 @@ const routes = [
   { path: '/identity/administration/users/add', name: 'Add User', component: AddUser },
   { path: '/identity/administration/users/edit', name: 'Edit User', component: EditUser },
   { path: '/identity/administration/users/view', name: 'View User', component: ViewUser },
-  { path: '/identity/administration/ViewBec', name: 'View BEC', component: BECView },
+  { path: '/identity/administration/ViewBec', name: 'View BEC', component: ViewBEC },
   { path: '/identity/administration', name: 'Administration' },
   { path: '/identity/administration/users', name: 'Users', component: Users },
   { path: '/identity/administration/groups', name: 'Groups', component: Groups },
@@ -196,8 +196,8 @@ const routes = [
     component: ApplicationsList,
   },
   {
-    path: '/endpoint/applications/Edit-MEM-Application',
-    name: 'EditMEMApplication',
+    path: '/endpoint/applications/edit-mem-application',
+    name: 'Edit Endpoint Manager Application',
     component: EditMEMApplication,
   },
   {
@@ -402,6 +402,10 @@ const routes = [
   {
     name: 'Security Administration',
     path: '/security/administration',
+  },
+  {
+    name: 'Security Reports',
+    path: '/security/reports',
   },
   {
     name: 'List Alerts',
