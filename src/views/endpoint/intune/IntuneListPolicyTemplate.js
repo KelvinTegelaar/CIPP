@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
-import CippDatatable from '../../../components/cipp/CippDatatable'
+import CippDatatable, { ExpanderComponentProps } from '../../../components/cipp/CippDatatable'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 
 const dropdown = (row, index, column) => {
@@ -36,7 +36,11 @@ const columns = [
     cell: dropdown,
   },
 ]
-//todo: Add expandableRow instead of raw json in table.
+
+//todo: expandable with RAWJson property.
+/* eslint-disable-next-line react/prop-types */
+const ExpandedComponent = ({ data }) => <pre>{JSON.stringify(data, null, 2)}</pre>
+
 const AutopilotListTemplates = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
@@ -50,8 +54,8 @@ const AutopilotListTemplates = () => {
           reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
           path="/api/ListIntuneTemplates"
           columns={columns}
-          expandableRows
-          expandableRowExpanded={(row) => row.RAWJson}
+          expandableRows={true}
+          expandableRowExpanded={ExpandedComponent}
           params={{ TenantFilter: tenant?.defaultDomainName }}
         />
       </div>

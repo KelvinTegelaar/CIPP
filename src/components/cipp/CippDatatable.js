@@ -39,8 +39,8 @@ export default function CippDatatable({
     dense = true,
     striped = true,
     subheader = true,
-    expandableRows = false,
-    expandableRowExpanded = [],
+    expandableRows,
+    expandableRowExpanded,
     ...rest
   } = {},
 }) {
