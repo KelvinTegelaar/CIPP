@@ -3,96 +3,85 @@ import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
-
-const dropdown = (row, index, column) => {
-  return (
-    <CDropdown>
-      <CDropdownToggle color="primary">...</CDropdownToggle>
-      <CDropdownMenu>
-        <CDropdownItem href="#">Edit Group</CDropdownItem>
-      </CDropdownMenu>
-    </CDropdown>
-  )
-}
 const columns = [
   {
     name: 'Name',
-    selector: 'displayName',
+    selector: (row) => row['displayName'],
     sortable: true,
   },
   {
     name: 'State',
-    selector: 'state',
+    selector: (row) => row['state'],
     sortable: true,
   },
   {
     name: 'Last Modified',
-    selector: 'modifiedDateTime',
+    selector: (row) => row['modifiedDateTime'],
     sortable: true,
   },
   {
     name: 'Client App Types',
-    selector: 'clientAppTypes',
+    selector: (row) => row['clientAppTypes'],
     sortable: true,
   },
   {
     name: 'Platform Inc',
-    selector: 'includePlatforms',
+    selector: (row) => row['includePlatforms'],
     sortable: true,
   },
   {
     name: 'Platform Exc',
-    selector: 'excludePlatforms',
+    selector: (row) => row['excludePlatforms'],
     sortable: true,
   },
   {
     name: 'Include Locations',
-    selector: 'includeLocations',
+    selector: (row) => row['includeLocations'],
     sortable: true,
   },
   {
     name: 'Exclude Locations',
-    selector: 'excludeLocations',
+    selector: (row) => row['excludeLocations'],
     sortable: true,
   },
   {
     name: 'Include Users',
-    selector: 'includeUsers',
+    selector: (row) => row['includeUsers'],
     sortable: true,
   },
   {
     name: 'Exclude Users',
-    selector: 'excludeUsers',
+    selector: (row) => row['excludeUsers'],
     sortable: true,
   },
   {
     name: 'Include Groups',
-    selector: 'includeGroups',
+    selector: (row) => row['includeGroups'],
     sortable: true,
   },
   {
     name: 'Exclude Groups',
-    selector: 'excludeGroups',
+    selector: (row) => row['excludeGroups'],
     sortable: true,
   },
   {
     name: 'Include Applications',
-    selector: 'includeApplications',
+    selector: (row) => row['includeApplications'],
     sortable: true,
   },
   {
     name: 'Exclude Applications',
-    selector: 'excludeApplications',
+    selector: (row) => row['excludeApplications'],
     sortable: true,
   },
   {
     name: 'Control Operator',
-    selector: 'grantControlsOperator',
+    selector: (row) => row['grantControlsOperator'],
     sortable: true,
   },
   {
     name: 'Built-in Controls',
-    selector: 'builtInControls',
+    selector: (row) => row['builtInControls'],
     sortable: true,
   },
 ]
@@ -110,7 +99,7 @@ const CondtionalAccessList = () => {
         <CippDatatable
           keyField="id"
           reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
-          path="/api/ListAPDevices"
+          path="/api/ListCondtionalAccessPolicies"
           columns={columns}
           params={{ TenantFilter: tenant?.defaultDomainName }}
         />

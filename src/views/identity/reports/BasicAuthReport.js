@@ -5,14 +5,14 @@ import CippDatatable from '../../../components/cipp/CippDatatable'
 
 const columns = [
   {
-    text: 'User Principal Name',
-    dataField: 'UPN',
-    sort: true,
+    name: 'User Principal Name',
+    selector: (row) => row['UPN'],
+    sortable: true,
   },
   {
-    text: 'Basic Auth',
-    dataField: 'BasicAuth',
-    sort: true,
+    name: 'Basic Auth',
+    selector: (row) => row['BasicAuth'],
+    sortable: true,
   },
 ]
 

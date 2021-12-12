@@ -43,34 +43,34 @@ const dropdown = (row, rowIndex, formatExtraData) => {
 const columns = [
   {
     name: 'Display Name',
-    selector: 'displayName',
+    selector: (row) => row['displayName'],
     sortable: true,
   },
   {
     name: 'Email',
-    selector: 'mail',
+    selector: (row) => row['mail'],
     sortable: true,
   },
   {
     name: 'User Type',
-    selector: 'userType',
+    selector: (row) => row['userType'],
     sortable: true,
   },
   {
     name: 'Account Enabled',
-    selector: 'accountEnabled',
+    selector: (row) => row['accountEnabled'],
     cell: cellBooleanFormatter(),
     sortable: true,
   },
   {
     name: 'On Premise Sync',
-    selector: 'onPremisesSyncEnabled',
+    selector: (row) => row['onPremisesSyncEnabled'],
     cell: cellBooleanFormatter(),
     sortable: true,
   },
   {
     name: 'Licenses',
-    selector: 'LicJoined',
+    selector: (row) => row['LicJoined'],
   },
   {
     name: 'Action',

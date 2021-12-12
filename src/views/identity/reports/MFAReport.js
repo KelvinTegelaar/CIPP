@@ -4,46 +4,37 @@ import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 
-const dropdown = (row, index, column) => {
-  return (
-    <CDropdown>
-      <CDropdownToggle color="primary">...</CDropdownToggle>
-      <CDropdownMenu>
-        <CDropdownItem href="#">Edit Group</CDropdownItem>
-      </CDropdownMenu>
-    </CDropdown>
-  )
-}
-
+//TODO: Add CellBoolean
 const columns = [
   {
-    selector: 'serialNumber',
-    name: 'Serial',
+    selector: (row) => row['serialNumber'],
+    name: 'User Principal Name',
     sortable: true,
   },
   {
-    selector: 'model',
-    name: 'Model',
+    selector: (row) => row['model'],
+    name: 'Account Enabled',
     sortable: true,
   },
   {
-    selector: 'manufacturer',
-    name: 'Manufacturer',
+    selector: (row) => row['manufacturer'],
+    name: 'Per user MFA Status',
     sortable: true,
   },
   {
-    selector: 'groupTag',
-    name: 'Group Tag',
+    selector: (row) => row['groupTag'],
+    name: 'Registered for Conditional MFA',
     sortable: true,
   },
   {
-    selector: 'enrollmentState',
-    name: 'Enrollment',
+    selector: (row) => row['enrollmentState'],
+    name: 'Enforced via Conditional Access',
     sortable: true,
   },
   {
-    name: 'Actions',
-    cell: dropdown,
+    selector: (row) => row['enrollmentState'],
+    name: 'Enforced via Security Defaults',
+    sortable: true,
   },
 ]
 
@@ -60,7 +51,7 @@ const MFAList = () => {
         <CippDatatable
           keyField="id"
           reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
-          path="/api/ListAPDevices"
+          path="/api/ListMFAUsers"
           columns={columns}
           params={{ TenantFilter: tenant?.defaultDomainName }}
         />

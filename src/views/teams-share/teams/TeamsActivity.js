@@ -16,33 +16,28 @@ const dropdown = (row, index, column) => {
 }
 const columns = [
   {
-    name: 'Name',
-    selector: 'displayName',
-    sort: true,
-  },
-  {
-    name: 'UPN',
-    selector: 'UPN',
+    name: 'User Prinicipal Name',
+    selector: (row) => row['UPN'],
     sort: true,
   },
   {
     name: 'Last Active',
-    selector: 'LastActive',
+    selector: (row) => row['LastActive'],
     sort: true,
   },
   {
-    name: 'File Count (Total)',
-    selector: 'FileCount',
+    name: 'Meeting Count',
+    selector: (row) => row['MeetingCount'],
     sort: true,
   },
   {
-    name: 'Used (GB)',
-    selector: 'UsedGB',
+    name: 'Call Count',
+    selector: (row) => row['CallCount'],
     sort: true,
   },
   {
-    name: 'Allocated (GB)',
-    selector: 'Allocated',
+    name: 'Chat Count',
+    selector: (row) => row['ChatCount'],
     sort: true,
   },
 ]
@@ -55,7 +50,7 @@ const TeamsActivityList = () => {
       <TenantSelector />
       <hr />
       <div className="bg-white rounded p-5">
-        <h3>Applications List</h3>
+        <h3>Teams Activity List</h3>
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         <CippDatatable
           keyField="id"

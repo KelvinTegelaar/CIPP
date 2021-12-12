@@ -20,34 +20,34 @@ const dropdown = (cell, row, rowIndex, formatExtraData) => {
 const columns = [
   {
     name: 'Name',
-    selector: 'displayName',
+    selector: (row) => row['displayName'],
     sortable: true,
   },
   {
     name: 'Group Type',
-    selector: 'calculatedGroupType',
+    selector: (row) => row['calculatedGroupType'],
     sortable: true,
   },
   {
     name: 'Dynamic Group',
-    selector: 'dynamicGroupBool',
+    selector: (row) => row['dynamicGroupBool'],
     cell: cellBooleanFormatter(),
     sortable: true,
   },
   {
     name: 'Teams Enabled',
-    selector: 'teamsEnabled',
+    selector: (row) => row['teamsEnabled'],
     sortable: true,
     cell: cellBooleanFormatter(),
   },
   {
     name: 'On-Prem Sync',
-    selector: 'onPremisesSyncEnabled',
+    selector: (row) => row['onPremisesSyncEnabled'],
     cell: cellBooleanFormatter({ warning: true }),
   },
   {
     name: 'Email',
-    selector: 'mail',
+    selector: (row) => row['mail'],
     sortable: true,
   },
   {

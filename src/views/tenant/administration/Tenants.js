@@ -17,16 +17,17 @@ const dropdown = (row, index, column) => {
 const columns = [
   {
     name: 'Name',
-    selector: 'displayName',
+    selector: (row) => row['displayName'],
     sortable: true,
   },
   {
     name: 'Default Domain',
-    selector: 'defaultDomainName',
+    selector: (row) => row['defaultDomainName'],
+    sortable: true,
   },
   {
     name: 'M365 Portal',
-    selector: 'customerId',
+    selector: (row) => row['customerId'],
     //formatter: linkCog(
     //  (cell) =>
     //    `https://portal.office.com/Partner/BeginClientSession.aspx?CTID=${cell}&CSDEST=o365admincenter`,
@@ -34,29 +35,29 @@ const columns = [
   },
   {
     name: 'Exchange Portal',
-    selector: 'defaultDomainName',
+    selector: (row) => row['defaultDomainName'],
     //  formatter: linkCog(
     //  (cell) => `https://outlook.office365.com/ecp/?rfr=Admin_o365&exsvurl=1&delegatedOrg=${cell}`,
     // ),
   },
   {
     name: 'AAD Portal',
-    selector: 'defaultDomainName',
+    selector: (row) => row['defaultDomainName'],
     //   formatter: linkCog((cell) => `https://aad.portal.azure.com/${cell}`),
   },
   {
     name: 'Teams Portal',
-    selector: 'defaultDomainName',
+    selector: (row) => row['defaultDomainName'],
     //   formatter: linkCog((cell) => `https://admin.teams.microsoft.com/?delegatedOrg=${cell}`),
   },
   {
     name: 'Azure Portal',
-    selector: 'defaultDomainName',
+    selector: (row) => row['defaultDomainName'],
     //  formatter: linkCog((cell) => `https://portal.azure.com/${cell}`),
   },
   {
     name: 'MEM (Intune) Portal',
-    selector: 'defaultDomainName',
+    selector: (row) => row['defaultDomainName'],
     //   formatter: linkCog((cell) => `https://endpoint.microsoft.com/${cell}`),
   },
   {

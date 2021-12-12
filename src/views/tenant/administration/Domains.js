@@ -17,82 +17,82 @@ const dropdown = (row, index, column) => {
 const columns = [
   {
     name: 'Name',
-    selector: 'displayName',
+    selector: (row) => row['displayName'],
     sortable: true,
   },
   {
     name: 'State',
-    selector: 'state',
+    selector: (row) => row['state'],
     sortable: true,
   },
   {
     name: 'Last Modified',
-    selector: 'modifiedDateTime',
+    selector: (row) => row['modifiedDateTime'],
     sortable: true,
   },
   {
     name: 'Client App Types',
-    selector: 'clientAppTypes',
+    selector: (row) => row['clientAppTypes'],
     sortable: true,
   },
   {
     name: 'Platform Inc',
-    selector: 'includePlatforms',
+    selector: (row) => row['includePlatforms'],
     sortable: true,
   },
   {
     name: 'Platform Exc',
-    selector: 'excludePlatforms',
+    selector: (row) => row['excludePlatforms'],
     sortable: true,
   },
   {
     name: 'Include Locations',
-    selector: 'includeLocations',
+    selector: (row) => row['includeLocations'],
     sortable: true,
   },
   {
     name: 'Exclude Locations',
-    selector: 'excludeLocations',
+    selector: (row) => row['excludeLocations'],
     sortable: true,
   },
   {
     name: 'Include Users',
-    selector: 'includeUsers',
+    selector: (row) => row['includeUsers'],
     sortable: true,
   },
   {
     name: 'Exclude Users',
-    selector: 'excludeUsers',
+    selector: (row) => row['excludeUsers'],
     sortable: true,
   },
   {
     name: 'Include Groups',
-    selector: 'includeGroups',
+    selector: (row) => row['includeGroups'],
     sortable: true,
   },
   {
     name: 'Exclude Groups',
-    selector: 'excludeGroups',
+    selector: (row) => row['excludeGroups'],
     sortable: true,
   },
   {
     name: 'Include Applications',
-    selector: 'includeApplications',
+    selector: (row) => row['includeApplications'],
     sortable: true,
   },
   {
     name: 'Exclude Applications',
-    selector: 'excludeApplications',
+    selector: (row) => row['excludeApplications'],
     sortable: true,
   },
   {
     name: 'Control Operator',
-    selector: 'grantControlsOperator',
+    selector: (row) => row['grantControlsOperator'],
     sortable: true,
   },
   {
     name: 'Built-in Controls',
-    selector: 'builtInControls',
+    selector: (row) => row['builtInControls'],
     sortable: true,
   },
 ]

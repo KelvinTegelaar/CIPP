@@ -17,17 +17,17 @@ const dropdown = (row, index, column) => {
 
 const columns = [
   {
-    selector: 'DisplayName',
+    selector: (row) => row['DisplayName'],
     name: 'Role Name',
     sortable: true,
   },
   {
-    selector: 'Description',
+    selector: (row) => row['Description'],
     name: 'Description',
     sortable: true,
   },
   {
-    selector: 'Members',
+    selector: (row) => row['Members'],
     name: 'Members',
     sortable: true,
   },

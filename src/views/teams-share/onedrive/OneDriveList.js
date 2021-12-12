@@ -4,45 +4,35 @@ import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 
-const dropdown = (row, index, column) => {
-  return (
-    <CDropdown>
-      <CDropdownToggle color="primary">...</CDropdownToggle>
-      <CDropdownMenu>
-        <CDropdownItem href="#">Edit Group</CDropdownItem>
-      </CDropdownMenu>
-    </CDropdown>
-  )
-}
 const columns = [
   {
     name: 'Name',
-    selector: 'displayName',
+    selector: (row) => row['displayName'],
     sort: true,
   },
   {
     name: 'UPN',
-    selector: 'UPN',
+    selector: (row) => row['UPN'],
     sort: true,
   },
   {
     name: 'Last Active',
-    selector: 'LastActive',
+    selector: (row) => row['LastActive'],
     sort: true,
   },
   {
     name: 'File Count (Total)',
-    selector: 'FileCount',
+    selector: (row) => row['FileCount'],
     sort: true,
   },
   {
     name: 'Used (GB)',
-    selector: 'UsedGB',
+    selector: (row) => row['UsedGB'],
     sort: true,
   },
   {
     name: 'Allocated (GB)',
-    selector: 'Allocated',
+    selector: (row) => row['Allocated'],
     sort: true,
   },
 ]
@@ -59,8 +49,8 @@ const OneDriveList = () => {
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         <CippDatatable
           keyField="id"
-          reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
-          path="/api/ListAPDevices"
+          reportName={`${tenant?.defaultDomainName}-OneDrive-Report`}
+          path="/api/ListSites?type=OneDriveUsageAccount"
           columns={columns}
           params={{ TenantFilter: tenant?.defaultDomainName }}
         />

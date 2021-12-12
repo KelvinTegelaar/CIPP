@@ -8,91 +8,80 @@ import {
   CippDatatable,
 } from '../../../components/cipp'
 
-const dropdown = (row, index, column) => {
-  return (
-    <CDropdown>
-      <CDropdownToggle color="primary">...</CDropdownToggle>
-      <CDropdownMenu>
-        <CDropdownItem href="#">Edit Group</CDropdownItem>
-      </CDropdownMenu>
-    </CDropdown>
-  )
-}
-
 const columns = [
   {
     name: 'Name',
-    selector: 'displayName',
+    selector: (row) => row['displayName'],
     sortable: true,
   },
   {
     name: 'Enabled',
-    selector: 'accountEnabled',
+    selector: (row) => row['accountEnabled'],
     sortable: true,
     cell: cellBooleanFormatter(),
   },
   {
     name: 'Compliant',
-    selector: 'isCompliant',
+    selector: (row) => row['isCompliant'],
     sortable: true,
     cell: cellBooleanFormatter(),
   },
   {
     name: 'Manufacturer',
-    selector: 'manufacturer',
+    selector: (row) => row['manufacturer'],
     sortable: true,
   },
   {
     name: 'Model',
-    selector: 'model',
+    selector: (row) => row['model'],
     sortable: true,
   },
   {
     name: 'Operating System',
-    selector: 'operatingSystem',
+    selector: (row) => row['operatingSystem'],
     sortable: true,
   },
   {
     name: 'Operating System Version',
-    selector: 'operatingSystemVersion',
+    selector: (row) => row['operatingSystemVersion'],
     sortable: true,
   },
   {
     name: 'Created',
-    selector: 'createdDateTime',
+    selector: (row) => row['createdDateTime'],
     sortable: true,
     cell: cellDateFormatter({ format: 'short', showTime: false }),
   },
   {
     name: 'Approx Last SignIn',
-    selector: 'approximateLastSignInDateTime',
+    selector: (row) => row['approximateLastSignInDateTime'],
     sortable: true,
     cell: cellDateFormatter(),
   },
   {
     name: 'Ownership',
-    selector: 'deviceOwnership',
+    selector: (row) => row['deviceOwnership'],
     sortable: true,
   },
   {
     name: 'Enrollment Type',
-    selector: 'enrollmentType',
+    selector: (row) => row['enrollmentType'],
     sortable: true,
   },
   {
     name: 'Management Type',
-    selector: 'managementType',
+    selector: (row) => row['managementType'],
     sortable: true,
   },
   {
     name: 'On-Premises Sync Enabled',
-    selector: 'onPremisesSyncEnabled',
+    selector: (row) => row['onPremisesSyncEnabled'],
     cell: cellBooleanFormatter(),
     sortable: true,
   },
   {
     name: 'Trust Type',
-    selector: 'trustType',
+    selector: (row) => row['trustType'],
     sortable: true,
   },
 ]

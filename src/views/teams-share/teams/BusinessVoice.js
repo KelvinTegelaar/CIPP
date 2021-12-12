@@ -8,44 +8,44 @@ const Formatter = (cell) => CellBoolean({ cell })
 const columns = [
   {
     name: 'Assigned to User',
-    selector: 'AssignedTo',
+    selector: (row) => row['AssignedTo'],
     sortable: true,
   },
   {
     name: 'Phone Number',
-    selector: 'TelephoneNumber',
+    selector: (row) => row['TelephoneNumber'],
     sortable: true,
   },
   {
     name: 'Number Type',
-    selector: 'NumberType',
+    selector: (row) => row['NumberType'],
     sortable: true,
   },
   {
     name: 'Country',
-    selector: 'IsoCountryCode',
+    selector: (row) => row['IsoCountryCode'],
     sortable: true,
   },
   {
     name: 'Location',
-    selector: 'PlaceName',
+    selector: (row) => row['PlaceName'],
     sortable: true,
   },
   {
     name: 'Activation State',
-    selector: 'ActivationState',
+    selector: (row) => row['ActivationState'],
     formatter: Formatter,
     sortable: true,
   },
   {
     name: 'Operator Connect',
-    selector: 'IsOperatorConnect',
+    selector: (row) => row['IsOperatorConnect'],
     formatter: Formatter,
     sortable: true,
   },
   {
     name: 'Purchased on',
-    selector: 'AcquisitionDate',
+    selector: (row) => row['AcquisitionDate'],
     sortable: true,
   },
 ]
@@ -57,7 +57,7 @@ const BusinessVoice = () => {
       <TenantSelector />
       <hr />
       <div className="bg-white rounded p-5">
-        <h3>Teams Activity</h3>
+        <h3>Teams Business Voice</h3>
         {Object.keys(tenant).length === 0 && <span> Select a tenant to get started.</span>}
         <CippDatatable
           reportName={`${tenant?.defaultDomainName}-Businessvoice`}
