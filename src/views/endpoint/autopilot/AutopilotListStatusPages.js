@@ -3,9 +3,7 @@ import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
-import CellBoolean from '../../../components/cipp/CellBoolean'
-
-const Formatter = (cell) => CellBoolean({ cell })
+import { cellBooleanFormatter } from '../../../components/cipp'
 const dropdown = (row, index, column) => {
   return (
     <CDropdown>
@@ -37,25 +35,25 @@ const columns = [
     selector: 'showInstallationProgress',
     name: 'Show Installation Progress',
     sortable: true,
-    formatter: Formatter,
+    cell: cellBooleanFormatter(),
   },
   {
     selector: 'blockDeviceSetupRetryByUser',
     name: 'Block Retries',
     sortable: true,
-    formatter: Formatter,
+    cell: cellBooleanFormatter(),
   },
   {
     selector: 'allowDeviceResetOnInstallFailure',
     name: 'Allow reset on failure',
     sortable: true,
-    formatter: Formatter,
+    cell: cellBooleanFormatter(),
   },
   {
     selector: 'allowDeviceUseOnInstallFailure',
     name: 'Allow usage on failure',
     sortable: true,
-    formatter: Formatter,
+    cell: cellBooleanFormatter(),
   },
   {
     name: 'Actions',
@@ -71,7 +69,7 @@ const AutopilotListESP = () => {
       <TenantSelector />
       <hr />
       <div className="bg-white rounded p-5">
-        <h3>Applications List</h3>
+        <h3>Autopilot Status Page List</h3>
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         <CippDatatable
           keyField="id"

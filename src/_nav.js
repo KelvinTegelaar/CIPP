@@ -212,11 +212,6 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Conditional Access Policies',
-        to: '/endpoint/intune/ca-policies',
-      },
-      {
-        component: CNavItem,
         name: 'Add Policy',
         to: '/endpoint/intune/add-policy',
       },

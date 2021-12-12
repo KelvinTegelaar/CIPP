@@ -47,7 +47,7 @@ const columns = [
   },
 ]
 
-const AutopilotListDevices = () => {
+const AutopilotListTemplates = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
@@ -69,4 +69,4 @@ const AutopilotListDevices = () => {
   )
 }
 
-export default AutopilotListDevices
+export default AutopilotListTemplates

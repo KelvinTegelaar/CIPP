@@ -29,6 +29,7 @@ const OffboardingWizard = React.lazy(() =>
 const ListAppliedStandards = React.lazy(() =>
   import('./views/tenant/standards/ListAppliedStandards'),
 )
+const IndividualDomain = React.lazy(() => import('./views/tenant/standards/IndividualDomain'))
 const ApplyStandard = React.lazy(() => import('./views/tenant/standards/ApplyStandard'))
 const ApplicationsList = React.lazy(() => import('./views/endpoint/applications/ApplicationsList'))
 const ApplicationsAddChocoApp = React.lazy(() =>
@@ -142,6 +143,11 @@ const routes = [
     path: '/tenant/standards/domains-analyser',
     name: 'Domains Analyser',
     component: DomainsAnalyser,
+  },
+  {
+    path: '/tenant/standards/Individual-domains',
+    name: 'Individual Domain Check',
+    component: IndividualDomain,
   },
   {
     path: '/endpoint',

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
+import { cellBooleanFormatter } from '../../../components/cipp'
 
 const dropdown = (row, index, column) => {
   return (
@@ -35,6 +36,7 @@ const columns = [
     selector: 'extractHardwareHash',
     name: 'Convert to Autopilot',
     sortable: true,
+    cell: cellBooleanFormatter(),
   },
   {
     selector: 'deviceNameTemplate',
@@ -55,7 +57,7 @@ const AutopilotListProfiles = () => {
       <TenantSelector />
       <hr />
       <div className="bg-white rounded p-5">
-        <h3>Applications List</h3>
+        <h3>Autopilot Profile List</h3>
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         <CippDatatable
           keyField="id"
