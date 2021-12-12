@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import CIcon from '@coreui/icons-react'
-import { cilSettings, cilEnvelopeClosed } from '@coreui/icons'
+import { faCog, faEnvelope } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   CCard,
   CCardBody,
@@ -27,8 +27,8 @@ export default function UserEmailPermissions({ userId, tenantDomain }) {
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>Email Permissions</CCardTitle>
         <div>
-          <CIcon icon={cilEnvelopeClosed} className="me-2" />
-          <CIcon icon={cilSettings} />
+          <FontAwesomeIcon icon={faEnvelope} className="me-2" />
+          <FontAwesomeIcon icon={faCog} />
         </div>
       </CCardHeader>
       <CCardBody>

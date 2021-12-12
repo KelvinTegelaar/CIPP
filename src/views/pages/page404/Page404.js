@@ -8,8 +8,8 @@ import {
   CInputGroupText,
   CRow,
 } from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import { cilMagnifyingGlass } from '@coreui/icons'
+import { faSearch } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const Page404 = () => {
   return (
@@ -26,7 +26,7 @@ const Page404 = () => {
             </div>
             <CInputGroup className="input-prepend">
               <CInputGroupText>
-                <CIcon icon={cilMagnifyingGlass} />
+                <FontAwesomeIcon icon={faSearch} />
               </CInputGroupText>
               <CFormInput type="text" placeholder="What are you looking for?" />
               <CButton color="info">Search</CButton>

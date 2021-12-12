@@ -11,8 +11,8 @@ import {
   CTableDataCell,
   CTableRow,
 } from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import { cilContact } from '@coreui/icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPortrait } from '@fortawesome/free-solid-svg-icons'
 import { useListUserQuery } from '../../../store/api/users'
 
 const columns = [
@@ -85,7 +85,7 @@ export default function UserDetails({ tenantDomain, userId }) {
     <CCard>
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>{user.displayName}</CCardTitle>
-        <CIcon icon={cilContact} />
+        <FontAwesomeIcon icon={faPortrait} />
       </CCardHeader>
       <CCardBody className="card-body">
         {!isFetching && error && <span>Error loading user details</span>}

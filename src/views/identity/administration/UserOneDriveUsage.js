@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import { useDispatch, useSelector } from 'react-redux'
 import {
   CCard,
   CCardBody,
@@ -12,10 +11,9 @@ import {
   CTableDataCell,
   CTableRow,
 } from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import { cilFolder } from '@coreui/icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faFolder } from '@fortawesome/free-solid-svg-icons'
 import { CellProgressBar } from '../../../components/cipp'
-import { listOneDriveUsage } from '../../../store/modules/oneDrive'
 import { useListOneDriveUsageQuery } from '../../../store/api/oneDrive'
 
 const columns = [
@@ -73,7 +71,7 @@ export default function UserOneDriveUsage({ userUPN, tenantDomain }) {
     <CCard>
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>One Drive Details</CCardTitle>
-        <CIcon icon={cilFolder} />
+        <FontAwesomeIcon icon={faFolder} />
       </CCardHeader>
       <CCardBody>
         {!error && isFetching && <CSpinner />}

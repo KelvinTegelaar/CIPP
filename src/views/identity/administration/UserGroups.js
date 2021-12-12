@@ -1,12 +1,10 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import { useDispatch, useSelector } from 'react-redux'
-import { listUserGroups } from '../../../store/modules/groups'
 import { CCard, CCardBody, CCardHeader, CCardTitle, CLink, CSpinner } from '@coreui/react'
 import BootstrapTable from 'react-bootstrap-table-next'
 import { CellBoolean } from '../../../components/cipp'
-import CIcon from '@coreui/icons-react'
-import { cilGroup } from '@coreui/icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUsers } from '@fortawesome/free-solid-svg-icons'
 import { useListUserGroupsQuery } from '../../../store/api/groups'
 
 const formatter = (cell) => CellBoolean({ cell })
@@ -65,7 +63,7 @@ export default function UserGroups({ userId, tenantDomain }) {
     <CCard>
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>User Groups</CCardTitle>
-        <CIcon icon={cilGroup} />
+        <FontAwesomeIcon icon={faUsers} />
       </CCardHeader>
       <CCardBody>
         {isFetching && <CSpinner />}

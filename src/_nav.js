@@ -1,27 +1,28 @@
 import React from 'react'
-import CIcon from '@coreui/icons-react'
-import {
-  cilCursor,
-  cilPuzzle,
-  cilSpeedometer,
-  cilList,
-  cilLibraryBuilding,
-  cilLibrary,
-  cilPaperPlane,
-  cilShieldAlt,
-  cilStorage,
-  cilRoom,
-  cilGroup,
-  cilFilter,
-} from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faHome,
+  faWrench,
+  faChartBar,
+  faCog,
+  faBook,
+  faTablet,
+  faShieldAlt,
+  faExchangeAlt,
+  faHdd,
+  faLink,
+  faUsers,
+  faEnvelope,
+} from '@fortawesome/free-solid-svg-icons'
+import { faChrome } from '@fortawesome/free-brands-svg-icons'
 
 const _nav = [
   {
     component: CNavItem,
     name: 'Home',
     to: '/home',
-    icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
+    icon: <FontAwesomeIcon icon={faHome} className="nav-icon" />,
   },
   {
     component: CNavTitle,
@@ -31,7 +32,7 @@ const _nav = [
     component: CNavGroup,
     name: 'Administration',
     to: '/identity/administration',
-    icon: <CIcon icon={cilPuzzle} customClassName="nav-icon" />,
+    icon: <FontAwesomeIcon icon={faWrench} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
@@ -59,7 +60,7 @@ const _nav = [
     component: CNavGroup,
     name: 'Reports',
     to: '/identity/reports',
-    icon: <CIcon icon={cilList} customClassName="nav-icon" />,
+    icon: <FontAwesomeIcon icon={faChartBar} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
@@ -86,7 +87,7 @@ const _nav = [
     component: CNavGroup,
     name: 'Administration',
     to: '/tenant/administration',
-    icon: <CIcon icon={cilCursor} customClassName="nav-icon" />,
+    icon: <FontAwesomeIcon icon={faCog} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
@@ -104,7 +105,7 @@ const _nav = [
     component: CNavGroup,
     name: 'Standards',
     to: '/tenant/standards',
-    icon: <CIcon icon={cilLibraryBuilding} customClassName="nav-icon" />,
+    icon: <FontAwesomeIcon icon={faBook} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
@@ -146,7 +147,7 @@ const _nav = [
     component: CNavGroup,
     name: 'Applications',
     to: '/endpoint/applications',
-    icon: <CIcon icon={cilLibrary} customClassName="nav-icon" />,
+    icon: <FontAwesomeIcon icon={faChrome} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
@@ -164,7 +165,7 @@ const _nav = [
     component: CNavGroup,
     name: 'Autopilot',
     to: '/endpoint/autopilot',
-    icon: <CIcon icon={cilPaperPlane} customClassName="nav-icon" />,
+    icon: <FontAwesomeIcon icon={faTablet} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
@@ -202,7 +203,7 @@ const _nav = [
     component: CNavGroup,
     name: 'Intune',
     to: '/endpoint/intune',
-    icon: <CIcon icon={cilShieldAlt} customClassName="nav-icon" />,
+    icon: <FontAwesomeIcon icon={faExchangeAlt} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
@@ -235,7 +236,7 @@ const _nav = [
     component: CNavGroup,
     name: 'Defender',
     to: '/endpoint/defender',
-    icon: <CIcon icon={cilShieldAlt} customClassName="nav-icon" />,
+    icon: <FontAwesomeIcon icon={faShieldAlt} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
@@ -252,7 +253,7 @@ const _nav = [
     component: CNavGroup,
     name: 'OneDrive',
     to: '/teams-share/onedrive',
-    icon: <CIcon icon={cilStorage} customClassName="nav-icon" />,
+    icon: <FontAwesomeIcon icon={faHdd} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
@@ -265,7 +266,7 @@ const _nav = [
     component: CNavGroup,
     name: 'Sharepoint',
     to: '/teams-share/sharepoint',
-    icon: <CIcon icon={cilRoom} customClassName="nav-icon" />,
+    icon: <FontAwesomeIcon icon={faLink} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
@@ -278,7 +279,7 @@ const _nav = [
     component: CNavGroup,
     name: 'Teams',
     to: '/teams-share/teams',
-    icon: <CIcon icon={cilGroup} customClassName="nav-icon" />,
+    icon: <FontAwesomeIcon icon={faUsers} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
@@ -304,13 +305,63 @@ const _nav = [
   },
   {
     component: CNavTitle,
+    name: 'Email & Exchange',
+  },
+  {
+    component: CNavGroup,
+    name: 'Administration',
+    to: '/email/exchange',
+    icon: <FontAwesomeIcon icon={faWrench} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Mailboxes',
+        to: '/email/exchange/mailboxes',
+      },
+      {
+        component: CNavItem,
+        name: 'Contacts',
+        to: '/email/exchange/contacts',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
+    name: 'Reports',
+    to: '/email/reports',
+    icon: <FontAwesomeIcon icon={faEnvelope} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Mailbox Statistics',
+        to: '/email/reports/mailbox-statistics',
+      },
+      {
+        component: CNavItem,
+        name: 'Mailbox Client Access Settings',
+        to: '/email/reports/mailbox-client-access-settings',
+      },
+      {
+        component: CNavItem,
+        name: 'Message Trace',
+        to: '/email/reports/message-trace',
+      },
+      {
+        component: CNavItem,
+        name: 'Phishing Policies',
+        to: '/email/reports/phishing-policies',
+      },
+    ],
+  },
+  {
+    component: CNavTitle,
     name: 'Settings',
   },
   {
     component: CNavGroup,
     name: 'CIPP',
     to: '/cipp/cipp',
-    icon: <CIcon icon={cilFilter} customClassName="nav-icon" />,
+    icon: <FontAwesomeIcon icon={faWrench} className="nav-icon" />,
     items: [
       {
         component: CNavItem,

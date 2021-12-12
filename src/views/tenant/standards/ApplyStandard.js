@@ -1,14 +1,15 @@
 import React from 'react'
 import { CAlert, CCard, CCol, CRow } from '@coreui/react'
 import { Field } from 'react-final-form'
-import CIcon from '@coreui/icons-react'
-import { cilWarning } from '@coreui/icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { useDispatch, useSelector } from 'react-redux'
 import Wizard from '../../../components/Wizard'
 import WizardTableField from '../../../components/WizardTableField'
 import PropTypes from 'prop-types'
 import { RFFCFormSwitch } from '../../../components/RFFComponents'
 import { applyStandards } from '../../../store/modules/standards'
+import { useListTenantsQuery } from '../../../store/api/tenants'
 
 const Error = ({ name }) => (
   <Field
@@ -17,7 +18,7 @@ const Error = ({ name }) => (
     render={({ meta: { touched, error } }) =>
       touched && error ? (
         <CAlert color="danger">
-          <CIcon icon={cilWarning} color="danger" />
+          <FontAwesomeIcon icon={faExclamationTriangle} color="danger" />
           {error}
         </CAlert>
       ) : null
@@ -33,10 +34,8 @@ const required = (value) => (value ? undefined : 'Required')
 const requiredArray = (value) => (value && value.length !== 0 ? undefined : 'Required')
 
 const ApplyStandard = () => {
-  const { tenants } = useSelector((state) => state.tenants)
+  const { data: tenants = [] } = useListTenantsQuery()
   const dispatch = useDispatch()
-
-  // @todo load tenants
 
   const handleSubmit = async (values) => {
     alert(JSON.stringify(values, null, 2))
@@ -63,7 +62,7 @@ const ApplyStandard = () => {
                 description="Choose the tenants to create the standard for."
               >
                 <CAlert color="warning" className="d-flex align-items-center">
-                  <CIcon color="warning" icon={cilWarning} size="4xl" />
+                  <FontAwesomeIcon color="warning" icon={faExclamationTriangle} size="2x" />
                   WARNING! Setting a standard will make changes to your tenants and set these
                   standards on every 365 tenant you select. If you want to review only, please use
                   the Best Practice Analyser.

@@ -1,13 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import CIcon from '@coreui/icons-react'
-import { cilXCircle, cilCheckCircle, cilWarning } from '@coreui/icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faTimesCircle,
+  faCheckCircle,
+  faExclamationCircle,
+} from '@fortawesome/free-solid-svg-icons'
 import { CellBadge } from './CellBadge'
 import cellGetProperty from './cellGetProperty'
 
-const IconWarning = () => <CIcon icon={cilWarning} className="text-warning" />
-const IconError = () => <CIcon icon={cilXCircle} className="text-danger" />
-const IconSuccess = () => <CIcon icon={cilCheckCircle} className="text-success" />
+const IconWarning = () => <FontAwesomeIcon icon={faExclamationCircle} className="text-warning" />
+const IconError = () => <FontAwesomeIcon icon={faTimesCircle} className="text-danger" />
+const IconSuccess = () => <FontAwesomeIcon icon={faCheckCircle} className="text-success" />
 
 export function CellBoolean({ cell, warning = false, reverse = false }) {
   let normalized = cell

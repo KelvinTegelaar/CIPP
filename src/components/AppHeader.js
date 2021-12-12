@@ -7,15 +7,15 @@ import {
   CHeaderDivider,
   CHeaderNav,
   CHeaderToggler,
+  CImage,
 } from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import { CImage } from '@coreui/react'
-import { cilMenu } from '@coreui/icons'
+import { faBars } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { AppBreadcrumb } from './index'
 import { AppHeaderDropdown } from './header/index'
 import cyberdrainlogo from 'src/assets/images/CIPP.png'
-import { toggleSidebarShow } from '../store/modules/app'
+import { toggleSidebarShow } from '../store/features/app'
 
 const AppHeader = () => {
   const dispatch = useDispatch()
@@ -28,7 +28,7 @@ const AppHeader = () => {
           className="ps-1"
           onClick={() => dispatch(toggleSidebarShow({ sidebarShow }))}
         >
-          <CIcon icon={cilMenu} size="lg" />
+          <FontAwesomeIcon icon={faBars} size="lg" />
         </CHeaderToggler>
         <CHeaderBrand className="mx-auto d-md-none" to="/">
           <CImage src={cyberdrainlogo} height={48} alt="Logo" />
