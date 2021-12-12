@@ -119,7 +119,7 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Best Practice Analyzer',
+        name: 'Best Practice Analyser',
         to: '/tenant/standards/bpa-report',
       },
       {
@@ -201,29 +201,29 @@ const _nav = [
   },
   {
     component: CNavGroup,
-    name: 'Intune',
-    to: '/endpoint/intune',
+    name: 'MEM (Intune)',
+    to: '/endpoint/MEM',
     icon: <FontAwesomeIcon icon={faExchangeAlt} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
-        name: 'List Intune Policies',
-        to: '/endpoint/intune/list-policies',
+        name: 'List MEM Policies',
+        to: '/endpoint/MEM/list-policies',
       },
       {
         component: CNavItem,
-        name: 'Add Policy',
-        to: '/endpoint/intune/add-policy',
+        name: 'Apply Policy',
+        to: '/endpoint/MEM/add-policy',
       },
       {
         component: CNavItem,
         name: 'Add Policy Template',
-        to: '/endpoint/intune/add-policy-template',
+        to: '/endpoint/MEM/add-policy-template',
       },
       {
         component: CNavItem,
         name: 'List Templates',
-        to: '/endpoint/intune/list-templates',
+        to: '/endpoint/MEM/list-templates',
       },
     ],
   },

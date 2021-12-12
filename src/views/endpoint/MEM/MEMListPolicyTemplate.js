@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
-import CippDatatable from '../../../components/cipp/CippDatatable'
+import CippDatatable, { ExpanderComponentProps } from '../../../components/cipp/CippDatatable'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 
 const dropdown = (row, index, column) => {
@@ -17,13 +17,18 @@ const dropdown = (row, index, column) => {
 
 const columns = [
   {
-    selector: (row) => row['displayName'],
-    name: 'Name',
+    selector: 'Displayname',
+    name: 'Policy Name',
     sortable: true,
   },
   {
-    selector: (row) => row['PolicyTypeName'],
-    name: 'Profile Type',
+    selector: 'Description',
+    name: 'Description',
+    sortable: true,
+  },
+  {
+    selector: 'Type',
+    name: 'Type',
     sortable: true,
   },
   {
@@ -32,21 +37,25 @@ const columns = [
   },
 ]
 
-const IntuneList = () => {
+//todo: expandable with RAWJson property.
+/* eslint-disable-next-line react/prop-types */
+const ExpandedComponent = ({ data }) => <pre>{JSON.stringify(data, null, 2)}</pre>
+
+const AutopilotListTemplates = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
     <div>
-      <TenantSelector />
       <hr />
       <div className="bg-white rounded p-5">
-        <h3>Intune Policy List</h3>
-        {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
+        <h3>Available Endpoint Manager Templates</h3>
         <CippDatatable
           keyField="id"
-          reportName={`${tenant?.defaultDomainName}-Applications-List`}
-          path="/api/ListIntunePolicy?type=ESP"
+          reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
+          path="/api/ListIntuneTemplates"
           columns={columns}
+          expandableRows={true}
+          expandableRowExpanded={ExpandedComponent}
           params={{ TenantFilter: tenant?.defaultDomainName }}
         />
       </div>
@@ -54,4 +63,4 @@ const IntuneList = () => {
   )
 }
 
-export default IntuneList
+export default AutopilotListTemplates

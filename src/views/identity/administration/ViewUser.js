@@ -60,6 +60,8 @@ const ViewUser = (props) => {
 
   return (
     <CCard className="bg-white rounded p-5">
+      <h3>View User Information</h3>
+      <br />
       {userFetching && <CSpinner />}
       {!userFetching && userError && <span>Error loading user</span>}
       {!queryError && !userFetching && (

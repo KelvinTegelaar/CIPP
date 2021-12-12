@@ -1,7 +1,7 @@
 import React from 'react'
 
 const MessageTrace = () => {
-  return <div>message trace</div>
+  return <div>Message Trace</div>
 }
 
 export default MessageTrace
