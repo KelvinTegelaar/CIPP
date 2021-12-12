@@ -39,6 +39,8 @@ export default function CippDatatable({
     dense = true,
     striped = true,
     subheader = true,
+    expandableRows = false,
+    expandableRowExpanded = [],
     ...rest
   } = {},
 }) {
@@ -91,6 +93,8 @@ export default function CippDatatable({
             striped={striped}
             columns={columns}
             data={filteredItems}
+            expandableRows={expandableRows}
+            expandableRowExpanded={expandableRowExpanded}
             {...rest}
           />
         </div>

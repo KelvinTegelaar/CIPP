@@ -32,11 +32,6 @@ const columns = [
     sortable: true,
   },
   {
-    selector: 'RAWJson',
-    name: 'Raw JSON',
-    sortable: true,
-  },
-  {
     name: 'Actions',
     cell: dropdown,
   },
@@ -55,6 +50,8 @@ const AutopilotListTemplates = () => {
           reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
           path="/api/ListIntuneTemplates"
           columns={columns}
+          expandableRows
+          expandableRowExpanded={(row) => row.RAWJson}
           params={{ TenantFilter: tenant?.defaultDomainName }}
         />
       </div>
