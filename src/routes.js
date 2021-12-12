@@ -404,7 +404,7 @@ const routes = [
     path: '/security/administration',
   },
   {
-    name: 'Defender',
+    name: 'List Alerts',
     path: '/security/reports/list-alerts',
     component: SecurityComplianceAlerts,
   },
