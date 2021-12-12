@@ -21,28 +21,18 @@ const columns = [
     sort: true,
   },
   {
-    name: 'UPN',
-    selector: 'UPN',
+    name: 'Description',
+    selector: 'description',
     sort: true,
   },
   {
-    name: 'Last Active',
-    selector: 'LastActive',
+    name: 'Visibility',
+    selector: 'visibility',
     sort: true,
   },
   {
-    name: 'File Count (Total)',
-    selector: 'FileCount',
-    sort: true,
-  },
-  {
-    name: 'Used (GB)',
-    selector: 'UsedGB',
-    sort: true,
-  },
-  {
-    name: 'Allocated (GB)',
-    selector: 'Allocated',
+    name: 'Mail nickname',
+    selector: 'mailNickname',
     sort: true,
   },
   {
@@ -59,12 +49,12 @@ const TeamsList = () => {
       <TenantSelector />
       <hr />
       <div className="bg-white rounded p-5">
-        <h3>Applications List</h3>
+        <h3>Teams List</h3>
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         <CippDatatable
           keyField="id"
           reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
-          path="/api/ListAPDevices"
+          path="/api/ListTeams?type=list"
           columns={columns}
           params={{ TenantFilter: tenant?.defaultDomainName }}
         />

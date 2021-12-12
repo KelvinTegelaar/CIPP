@@ -37,7 +37,7 @@ const columns = [
   },
   {
     name: 'Chat Count',
-    selector: (row) => row['ChatCount'],
+    selector: (row) => row['TeamsChat'],
     sort: true,
   },
 ]
@@ -54,8 +54,8 @@ const TeamsActivityList = () => {
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         <CippDatatable
           keyField="id"
-          reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
-          path="/api/ListAPDevices"
+          reportName={`${tenant?.defaultDomainName}-TeamActivity-List`}
+          path="/api/ListTeamsActivity?type=TeamsUserActivityUser"
           columns={columns}
           params={{ TenantFilter: tenant?.defaultDomainName }}
         />
