@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   CToast,
@@ -11,9 +12,13 @@ import {
   CCardBody,
 } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons'
-import { closeToast } from '../store/modules/toast'
-import PropTypes from 'prop-types'
+import {
+  faExpandAlt,
+  faCaretSquareUp,
+  faCompressAlt,
+  faTimes,
+} from '@fortawesome/free-solid-svg-icons'
+import { closeToast } from '../store/features/toasts'
 
 const Toasts = () => {
   const dispatch = useDispatch()
@@ -41,24 +46,24 @@ const Toast = ({ message, title, onClose, error }) => {
 
   return (
     <CToast autohide={false} visible={true} className="align-items-center" onClose={onClose}>
-      <CToastHeader>{title}</CToastHeader>
-      <div className="d-flex">
-        <CToastBody className="me-2 mt-2">{message}</CToastBody>
-        <div className="me-2 m-auto">
+      <CToastHeader className="d-flex justify-content-between">
+        <div>{title}</div>
+        <FontAwesomeIcon size="2x" icon={faTimes} onClick={onClose} />
+      </CToastHeader>
+      <CToastBody>
+        <div className="d-flex justify-content-between">
+          <div>{message}</div>
           <FontAwesomeIcon
-            icon={visible ? faCaretUp : faCaretDown}
+            size="2x"
+            style={{ padding: '3px' }}
+            icon={visible ? faCompressAlt : faExpandAlt}
             onClick={() => setVisible(!visible)}
           />
-          <CToastClose onClick={onClose} />
         </div>
-      </div>
-      <CCollapse visible={visible}>
-        <CCard className="mt-3">
-          <CCardBody>
-            <pre>{JSON.stringify(error, null, 2)}</pre>
-          </CCardBody>
-        </CCard>
-      </CCollapse>
+        <CCollapse visible={visible}>
+          <pre>{JSON.stringify(error, null, 2)}</pre>
+        </CCollapse>
+      </CToastBody>
     </CToast>
   )
 }

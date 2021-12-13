@@ -10,18 +10,18 @@ export const toastsSlice = createSlice({
   name: TOAST_REDUCER_PATH,
   initialState,
   reducers: {
-    showToast: (state, { message, title, toastError }) => {
+    showToast: (state, { payload: { message, title, toastError } }) => {
       state.currentIndex++
       state.toasts.push({ message, title, toastError, index: state.currentIndex })
     },
-    closeToast: (state, { index }) => {
-      state.toasts.filter((el) => el.index !== index)
+    closeToast: (state, { payload: { index } }) => {
+      state.toasts = state.toasts.filter((el) => el.index !== index)
     },
-    resetToast: (state) => {
-      state = initialState
+    resetToast: () => {
+      return { ...initialState }
     },
   },
 })
 
-export const { showToast } = toastsSlice.actions
+export const { showToast, closeToast, resetToast } = toastsSlice.actions
 export default toastsSlice.reducer
