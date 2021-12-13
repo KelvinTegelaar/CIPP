@@ -7,7 +7,9 @@ import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreu
 const dropdown = (row, rowIndex, formatExtraData) => {
   return (
     <CDropdown>
-      <CDropdownToggle color="primary">...</CDropdownToggle>
+      <CDropdownToggle size="sm" variant="ghost" color="primary">
+        <FontAwesomeIcon icon={faBars} />
+      </CDropdownToggle>
       <CDropdownMenu>
         <CDropdownItem href="#">Delete Device</CDropdownItem>
       </CDropdownMenu>

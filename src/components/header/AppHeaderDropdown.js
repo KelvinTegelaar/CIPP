@@ -1,6 +1,6 @@
 import React from 'react'
 import { CAvatar, CDropdown, CDropdownHeader, CDropdownMenu, CDropdownToggle } from '@coreui/react'
-import { faUser, faCog } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faCog, faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom'
 import avatar0 from './../../assets/images/avatars/0.jpg'

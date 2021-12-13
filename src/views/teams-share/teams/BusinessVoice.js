@@ -4,13 +4,15 @@ import CippDatatable from 'src/components/cipp/CippDatatable'
 import CellBoolean from '../../../components/cipp/CellBoolean'
 import TenantSelector from 'src/components/cipp/TenantSelector'
 import { Link } from 'react-router-dom'
-import { faUser, faCog } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faCog, faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 
 const dropdown = (row, rowIndex, formatExtraData) => (
   <CDropdown>
-    <CDropdownToggle color="primary">...</CDropdownToggle>
+    <CDropdownToggle size="sm" variant="ghost" color="primary">
+      <FontAwesomeIcon icon={faBars} />
+    </CDropdownToggle>
     <CDropdownMenu>
       <CDropdownItem href="#">
         <Link className="dropdown-item" to={`/teams-share/teams/view-team-settings}`}>

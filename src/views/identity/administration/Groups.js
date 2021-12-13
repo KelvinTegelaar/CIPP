@@ -5,11 +5,15 @@ import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreu
 import CippDatatable from '../../../components/cipp/CippDatatable'
 import cellGetProperty from '../../../components/cipp/cellGetProperty'
 import { cellBooleanFormatter } from '../../../components/cipp'
+import { faUser, faCog, faBars } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const dropdown = (cell, row, rowIndex, formatExtraData) => {
   return (
     <CDropdown>
-      <CDropdownToggle color="primary">...</CDropdownToggle>
+      <CDropdownToggle size="sm" variant="ghost" color="primary">
+        <FontAwesomeIcon icon={faBars} />
+      </CDropdownToggle>
       <CDropdownMenu>
         <CDropdownItem href="#">Edit Group</CDropdownItem>
       </CDropdownMenu>

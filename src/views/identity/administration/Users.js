@@ -3,14 +3,16 @@ import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreu
 import TenantSelector from 'src/components/cipp/TenantSelector'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { faUser, faCog } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faCog, faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippDatatable, cellBooleanFormatter } from '../../../components/cipp'
 
 const dropdown = (row, rowIndex, formatExtraData) => {
   return (
     <CDropdown>
-      <CDropdownToggle color="primary">...</CDropdownToggle>
+      <CDropdownToggle size="sm" variant="ghost" color="primary">
+        <FontAwesomeIcon icon={faBars} />
+      </CDropdownToggle>
       <CDropdownMenu>
         <CDropdownItem href="#">
           <Link
@@ -81,6 +83,7 @@ const columns = [
   },
   {
     name: 'Action',
+    button: true,
     cell: dropdown,
   },
 ]

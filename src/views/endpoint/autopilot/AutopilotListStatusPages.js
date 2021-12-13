@@ -11,7 +11,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 const dropdown = (row, rowIndex, formatExtraData) => {
   return (
     <CDropdown>
-      <CDropdownToggle color="primary">...</CDropdownToggle>
+      <CDropdownToggle size="sm" variant="ghost" color="primary">
+        <FontAwesomeIcon icon={faBars} />
+      </CDropdownToggle>
       <CDropdownMenu>
         <CDropdownItem href="#">
           <Link className="dropdown-item" to={`/endpoint/autopilot/AutopilotEditStatusPage}`}>

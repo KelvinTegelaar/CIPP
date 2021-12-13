@@ -94,6 +94,7 @@ export default function CippDatatable({
         <div>
           <hr />
           <DataTable
+            sty
             subHeader={subheader}
             subHeaderComponent={subHeaderComponentMemo}
             paginationResetDefaultPage={resetPaginationToggle}

@@ -10,7 +10,9 @@ import { faCog } from '@fortawesome/free-solid-svg-icons'
 const dropdown = (row, index, column) => {
   return (
     <CDropdown>
-      <CDropdownToggle color="primary">...</CDropdownToggle>
+      <CDropdownToggle size="sm" variant="ghost" color="primary">
+        <FontAwesomeIcon icon={faBars} />
+      </CDropdownToggle>
       <CDropdownMenu>
         <CDropdownItem href="#">
           <Link className="dropdown-item" to={`/tenant/administration/EditTenant`}>

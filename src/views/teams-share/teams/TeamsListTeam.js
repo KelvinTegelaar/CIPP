@@ -3,13 +3,15 @@ import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
-import { faUser, faCog } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faCog, faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom'
 
 const dropdown = (row, rowIndex, formatExtraData) => (
   <CDropdown>
-    <CDropdownToggle color="primary">...</CDropdownToggle>
+    <CDropdownToggle size="sm" variant="ghost" color="primary">
+      <FontAwesomeIcon icon={faBars} />
+    </CDropdownToggle>
     <CDropdownMenu>
       <CDropdownItem href="#">
         <Link className="dropdown-item" to={`/teams-share/teams/view-team-settings}`}>
