@@ -3,7 +3,7 @@ import { baseQuery } from './baseQuery'
 
 export const domainsApi = createApi({
   reducerPath: 'domains',
-  baseQuery: baseQuery(() => ({})),
+  baseQuery: baseQuery(),
   endpoints: (builder) => ({
     listDomains: builder.query({
       query: ({ tenantDomain }) => ({

@@ -3,7 +3,7 @@ import { baseQuery } from './baseQuery'
 
 export const licensesApi = createApi({
   reducerPath: 'licenses',
-  baseQuery: baseQuery(() => ({})),
+  baseQuery: baseQuery(),
   endpoints: (builder) => ({
     listLicenses: builder.query({
       query: ({ tenantDomain }) => ({
