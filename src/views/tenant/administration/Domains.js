@@ -2,20 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
-import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 
-const dropdown = (row, index, column) => {
-  return (
-    <CDropdown>
-      <CDropdownToggle size="sm" variant="ghost" color="primary">
-        <FontAwesomeIcon icon={faBars} />
-      </CDropdownToggle>
-      <CDropdownMenu>
-        <CDropdownItem href="#">Edit Group</CDropdownItem>
-      </CDropdownMenu>
-    </CDropdown>
-  )
-}
 const columns = [
   {
     name: 'Name',

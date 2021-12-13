@@ -4,7 +4,7 @@ import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 import { Link } from 'react-router-dom'
-import { faUser } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const dropdown = (row, rowIndex, formatExtraData) => {
