@@ -41,16 +41,27 @@ export default function CippDatatable({
     subheader = true,
     expandableRows,
     expandableRowExpanded,
+    actions = [],
     ...rest
   } = {},
 }) {
   const { data = [], isFetching, error } = useListDatatableQuery({ path, params })
-  const actionsMemo = React.useMemo(
-    () => (
-      <ExportPDFButton pdfData={data} pdfHeaders={columns} pdfSize="A4" reportName={reportName} />
-    ),
-    [columns, data, reportName],
-  )
+
+  const defaultActions = [
+    <ExportPDFButton
+      key="export-pdf-action"
+      pdfData={data}
+      pdfHeaders={columns}
+      pdfSize="A4"
+      reportName={reportName}
+    />,
+  ]
+
+  actions.forEach((action) => {
+    defaultActions.push(action)
+  })
+
+  const actionsMemo = React.useMemo(() => defaultActions, [defaultActions])
 
   const [filterText, setFilterText] = React.useState('')
   const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false)
@@ -95,6 +106,8 @@ export default function CippDatatable({
             data={filteredItems}
             expandableRows={expandableRows}
             expandableRowExpanded={expandableRowExpanded}
+            defaultSortAsc
+            defaultSortFieldId={1}
             {...rest}
           />
         </div>

@@ -9,9 +9,8 @@ export const axiosQuery = async ({ path, method = 'get', params, data, hideToast
       data,
       params,
     })
-    return { data: result.data }
-  } catch (axiosError) {
-    const error = axiosError
+    return { data: result?.data }
+  } catch (error) {
     return {
       error: {
         status: error.response?.status,

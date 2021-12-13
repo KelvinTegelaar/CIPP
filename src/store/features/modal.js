@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
   visible: false,
   body: undefined,
+  confirm: false,
   componentType: 'text',
   componentProps: {},
   data: undefined,
