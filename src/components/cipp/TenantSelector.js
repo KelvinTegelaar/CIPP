@@ -42,8 +42,7 @@ const TenantSelector = (props) => {
       value={currentTenant && currentTenant.customerId && currentTenant.displayName}
       options={tenants.map(({ customerId, displayName, defaultDomainName }) => ({
         value: customerId,
-        // eslint-disable-next-line prettier/prettier
-        name: [displayName] + " | " + [defaultDomainName],
+        name: [displayName] + [` (${defaultDomainName})`],
       }))}
     />
   )
