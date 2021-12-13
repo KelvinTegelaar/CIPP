@@ -4,12 +4,12 @@ import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 
-const dropdown = (row, index, column) => {
+const dropdown = (row, rowIndex, formatExtraData) => {
   return (
     <CDropdown>
       <CDropdownToggle color="primary">...</CDropdownToggle>
       <CDropdownMenu>
-        <CDropdownItem href="#">Edit Group</CDropdownItem>
+        <CDropdownItem href="#">Delete Device</CDropdownItem>
       </CDropdownMenu>
     </CDropdown>
   )

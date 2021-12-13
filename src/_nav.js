@@ -132,10 +132,22 @@ const _nav = [
         name: 'Individual Domain Check',
         to: '/tenant/standards/Individual-domains',
       },
+    ],
+  },
+  {
+    component: CNavTitle,
+    name: 'Security & Compliance',
+  },
+  {
+    component: CNavGroup,
+    name: 'Reports',
+    to: '/security/reports',
+    icon: <FontAwesomeIcon icon={faChrome} className="nav-icon" />,
+    items: [
       {
         component: CNavItem,
-        name: 'Alert List (Alpha)',
-        to: '/tenant/standards/alert-list',
+        name: 'List Alerts',
+        to: '/security/reports/list-alerts',
       },
     ],
   },
@@ -236,7 +248,7 @@ const _nav = [
       {
         component: CNavItem,
         name: 'List Defender for endpoint (Alpha)',
-        to: '/endpoint/intune/list-defender',
+        to: '/endpoint/MEM/list-defender',
       },
     ],
   },
@@ -334,7 +346,7 @@ const _nav = [
       {
         component: CNavItem,
         name: 'Mailbox Client Access Settings',
-        to: '/email/reports/mailbox-client-access-settings',
+        to: '/email/reports/mailbox-cas-settings',
       },
       {
         component: CNavItem,

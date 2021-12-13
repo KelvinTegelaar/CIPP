@@ -4,12 +4,21 @@ import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 import { cellBooleanFormatter } from '../../../components/cipp'
-const dropdown = (row, index, column) => {
+import { Link } from 'react-router-dom'
+import { faUser } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+const dropdown = (row, rowIndex, formatExtraData) => {
   return (
     <CDropdown>
       <CDropdownToggle color="primary">...</CDropdownToggle>
       <CDropdownMenu>
-        <CDropdownItem href="#">Edit Group</CDropdownItem>
+        <CDropdownItem href="#">
+          <Link className="dropdown-item" to={`/endpoint/autopilot/AutopilotEditStatusPage}`}>
+            <FontAwesomeIcon icon={faUser} className="me-2" />
+            Edit Status Page
+          </Link>
+        </CDropdownItem>
       </CDropdownMenu>
     </CDropdown>
   )

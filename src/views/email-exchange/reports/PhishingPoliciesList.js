@@ -2,18 +2,6 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
-import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
-
-const dropdown = (row, index, column) => {
-  return (
-    <CDropdown>
-      <CDropdownToggle color="primary">...</CDropdownToggle>
-      <CDropdownMenu>
-        <CDropdownItem href="#">Edit</CDropdownItem>
-      </CDropdownMenu>
-    </CDropdown>
-  )
-}
 
 const columns = [
   {
@@ -59,10 +47,6 @@ const columns = [
     name: 'MEM (Intune) Portal',
     selector: 'defaultDomainName',
     //   formatter: linkCog((cell) => `https://endpoint.microsoft.com/${cell}`),
-  },
-  {
-    name: 'Action',
-    formatter: dropdown,
   },
 
   // @todo not used at the moment?

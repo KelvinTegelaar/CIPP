@@ -3,13 +3,24 @@ import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
+import { Link } from 'react-router-dom'
+import { faUser } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-const dropdown = (row, index, column) => {
+const dropdown = (row, rowIndex, formatExtraData) => {
   return (
     <CDropdown>
       <CDropdownToggle color="primary">...</CDropdownToggle>
       <CDropdownMenu>
-        <CDropdownItem href="#">Edit Group</CDropdownItem>
+        <CDropdownItem href="#">
+          <Link className="dropdown-item" to={`/endpoint/MEM/EditMEMApplication`}>
+            <FontAwesomeIcon icon={faUser} className="me-2" />
+            Edit Application
+          </Link>
+        </CDropdownItem>
+        <CDropdownItem href="#">Assign to All Users</CDropdownItem>
+        <CDropdownItem href="#">Assign to All Devices</CDropdownItem>
+        <CDropdownItem href="#">Assign Globally (All Users / All Devices)</CDropdownItem>
       </CDropdownMenu>
     </CDropdown>
   )
@@ -37,7 +48,7 @@ const columns = [
     sortable: true,
   },
   {
-    name: 'Actions',
+    name: 'Action',
     cell: dropdown,
   },
 ]

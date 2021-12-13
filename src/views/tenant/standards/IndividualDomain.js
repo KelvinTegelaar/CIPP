@@ -1,8 +1,11 @@
 import React from 'react'
-import ThemeSwitcher from 'src/components/cipp/ThemeSwitcher'
 
-const IndividualDomain = () => {
-  return <ThemeSwitcher />
+const IndividualDomainCheck = (props) => {
+  return (
+    <div>
+      <h3>Individual Domain Check</h3>
+    </div>
+  )
 }
 
-export default IndividualDomain
+export default IndividualDomainCheck

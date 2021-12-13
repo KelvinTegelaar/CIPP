@@ -3,18 +3,42 @@ import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
+import { Link } from 'react-router-dom'
+import { faUser, faCog } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-const dropdown = (row, index, column) => {
+const dropdown = (row, rowIndex, formatExtraData) => {
   return (
     <CDropdown>
       <CDropdownToggle color="primary">...</CDropdownToggle>
       <CDropdownMenu>
-        <CDropdownItem href="#">Edit</CDropdownItem>
+        <CDropdownItem href="#">
+          <Link
+            className="dropdown-item"
+            to={`/identity/administration/users/view?userId=${row.id}&tenantDomain=${row.primDomain}`}
+          >
+            <FontAwesomeIcon icon={faUser} className="me-2" />
+            View User
+          </Link>
+        </CDropdownItem>
+        <CDropdownItem href="#">
+          <Link className="dropdown-item" to={`/email/administration/edit-mailbox-permissions`}>
+            <FontAwesomeIcon icon={faCog} className="me-2" />
+            Edit Mailbox Permissions
+          </Link>
+        </CDropdownItem>
+        <CDropdownItem href="#">
+          <Link className="dropdown-item" to={`/email/administration/view-mobile-devices`}>
+            <FontAwesomeIcon icon={faCog} className="me-2" />
+            View Mobile Devices
+          </Link>
+        </CDropdownItem>
+        <CDropdownItem href="#">Convert To Shared Mailbox</CDropdownItem>
+        <CDropdownItem href="#">Convert To User Mailbox</CDropdownItem>
       </CDropdownMenu>
     </CDropdown>
   )
 }
-
 const columns = [
   {
     name: 'Name',
@@ -62,7 +86,7 @@ const columns = [
   },
   {
     name: 'Action',
-    formatter: dropdown,
+    cell: dropdown,
   },
 
   // @todo not used at the moment?

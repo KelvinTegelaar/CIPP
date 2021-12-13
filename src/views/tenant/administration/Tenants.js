@@ -3,17 +3,26 @@ import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
+import { Link } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCog } from '@fortawesome/free-solid-svg-icons'
 
 const dropdown = (row, index, column) => {
   return (
     <CDropdown>
       <CDropdownToggle color="primary">...</CDropdownToggle>
       <CDropdownMenu>
-        <CDropdownItem href="#">Edit Group</CDropdownItem>
+        <CDropdownItem href="#">
+          <Link className="dropdown-item" to={`/tenant/administration/EditTenant`}>
+            <FontAwesomeIcon icon={faCog} className="me-2" />
+            Edit Tenant
+          </Link>
+        </CDropdownItem>
       </CDropdownMenu>
     </CDropdown>
   )
 }
+
 const columns = [
   {
     name: 'Name',
@@ -62,7 +71,7 @@ const columns = [
   },
   {
     name: 'Action',
-    formatter: dropdown,
+    cell: dropdown,
   },
 
   // @todo not used at the moment?

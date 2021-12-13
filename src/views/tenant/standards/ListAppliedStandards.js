@@ -9,7 +9,7 @@ const dropdown = (row, index, column) => {
     <CDropdown>
       <CDropdownToggle color="primary">...</CDropdownToggle>
       <CDropdownMenu>
-        <CDropdownItem href="#">Edit Group</CDropdownItem>
+        <CDropdownItem href="#">Delete Stnadard</CDropdownItem>
       </CDropdownMenu>
     </CDropdown>
   )
@@ -29,6 +29,10 @@ const columns = [
     name: 'Applied By',
     selector: (row) => row['appliedBy'],
     sortable: true,
+  },
+  {
+    name: 'Action',
+    cell: dropdown,
   },
 ]
 
