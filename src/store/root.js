@@ -11,7 +11,9 @@ import { appApi } from './api/app'
 import { authApi } from './api/auth'
 import { datatableApi } from './api/datatable'
 import { devicesApi } from './api/devices'
+import { domainsApi } from './api/domains'
 import { groupsApi } from './api/groups'
+import { licensesApi } from './api/licenses'
 import { mailboxApi } from './api/mailbox'
 import { oneDriveApi } from './api/oneDrive'
 import { reportsApi } from './api/reports'
@@ -34,7 +36,9 @@ export const root = {
   [authApi.reducerPath]: authApi.reducer,
   [datatableApi.reducerPath]: datatableApi.reducer,
   [devicesApi.reducerPath]: devicesApi.reducer,
+  [domainsApi.reducerPath]: domainsApi.reducer,
   [groupsApi.reducerPath]: groupsApi.reducer,
+  [licensesApi.reducerPath]: licensesApi.reducer,
   [mailboxApi.reducerPath]: mailboxApi.reducer,
   [oneDriveApi.reducerPath]: oneDriveApi.reducer,
   [reportsApi.reducerPath]: reportsApi.reducer,
@@ -47,7 +51,9 @@ export const apiMiddleware = [
   authApi.middleware,
   datatableApi.middleware,
   devicesApi.middleware,
+  domainsApi.middleware,
   groupsApi.middleware,
+  licensesApi.middleware,
   mailboxApi.middleware,
   oneDriveApi.middleware,
   reportsApi.middleware,

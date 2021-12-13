@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import {
   CButton,
+  CCallout,
   CCard,
   CCardBody,
   CCardHeader,
@@ -13,10 +14,7 @@ import {
 } from '@coreui/react'
 import useQuery from '../../../hooks/useQuery'
 import { setModalContent, showModal } from '../../../store/modules/modal'
-import { listUser, listUsers } from '../../../store/modules/users'
-import { listDomains } from '../../../store/modules/domains'
-import { listLicenses } from '../../../store/modules/licenses'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { Form } from 'react-final-form'
 import {
   Condition,
@@ -27,6 +25,9 @@ import {
   RFFSelectSearch,
 } from '../../../components/RFFComponents'
 import countryList from '../../../assets/countrylist.json'
+import { useEditUserMutation, useListUserQuery, useListUsersQuery } from '../../../store/api/users'
+import { useListDomainsQuery } from '../../../store/api/domains'
+import { useListLicensesQuery } from '../../../store/api/licenses'
 
 const EditUser = () => {
   const dispatch = useDispatch()
@@ -36,39 +37,33 @@ const EditUser = () => {
 
   const [queryError, setQueryError] = useState(false)
 
-  const domains = useSelector((state) => state.domains) || {}
-  const licenses = useSelector((state) => state.licenses) || {}
-  const users = useSelector((state) => state.users) || {}
+  const [editUser, { error: editUserError, isFetching: editUserIsFetching }] = useEditUserMutation()
 
   const {
-    licenses: {
-      list: licenseList = [],
-      loading: licenseLoading,
-      loaded: licenseLoaded,
-      error: licenseError,
-    } = {},
-  } = licenses
+    data: user = {},
+    isFetching: userIsFetching,
+    error: userError,
+  } = useListUserQuery({ tenantDomain, userId })
+
   const {
-    domains: {
-      list: domainsList = [],
-      loading: domainsLoading,
-      loaded: domainsLoaded,
-      error: domainsError,
-    } = {},
-  } = domains
+    data: users = [],
+    isFetching: usersIsFetching,
+    error: usersError,
+  } = useListUsersQuery({ tenantDomain })
+
   const {
-    users: { list: usersList = [], loading: usersLoading, loaded: usersLoaded, error: usersError },
-    user: { user = {}, loading: userLoading, loaded: userLoaded, error: userError },
-  } = users
+    data: domains = [],
+    isFetching: domainsIsFetching,
+    error: domainsError,
+  } = useListDomainsQuery({ tenantDomain, userId })
+
+  const {
+    data: licenses = [],
+    isFetching: licensesIsFetching,
+    error: licensesError,
+  } = useListLicensesQuery({ tenantDomain })
 
   useEffect(() => {
-    async function load() {
-      dispatch(listUser({ tenantDomain, userId }))
-      dispatch(listUsers({ tenant: { defaultDomainName: tenantDomain } }))
-      dispatch(listDomains({ tenantDomain }))
-      dispatch(listLicenses({ tenantDomain }))
-    }
-
     if (!userId || !tenantDomain) {
       dispatch(
         setModalContent({
@@ -79,7 +74,7 @@ const EditUser = () => {
       dispatch(showModal())
       setQueryError(true)
     } else {
-      load()
+      setQueryError(false)
     }
   }, [userId, tenantDomain, dispatch])
 
@@ -94,10 +89,22 @@ const EditUser = () => {
   // this is dumb
   const formDisabled = queryError === true || !!userError || !user || Object.keys(user).length === 0
 
+  console.log({ queryError, userError, user })
+
   return (
     <CCard className="bg-white rounded p-5">
       {!queryError && (
         <>
+          {formDisabled && (
+            <CRow>
+              <CCol md={12}>
+                <CCallout color="danger">
+                  {/* @todo add more descriptive help message here */}
+                  Failed to load user
+                </CCallout>
+              </CCol>
+            </CRow>
+          )}
           <CRow>
             <CCol md={6}>
               <CCard>
@@ -105,9 +112,9 @@ const EditUser = () => {
                   <CCardTitle>Account Details</CCardTitle>
                 </CCardHeader>
                 <CCardBody>
-                  {!userLoaded && userLoading && <CSpinner />}
-                  {!userLoaded && !userLoading && userError && <span>Error loading user</span>}
-                  {userLoaded && !userLoading && (
+                  {userIsFetching && <CSpinner />}
+                  {userError && <span>Error loading user</span>}
+                  {!userIsFetching && (
                     <Form
                       initialValues={{ ...initialState }}
                       onSubmit={onSubmit}
@@ -152,22 +159,22 @@ const EditUser = () => {
                                 />
                               </CCol>
                               <CCol md={6}>
-                                {!domainsLoaded && domainsLoading && <CSpinner />}
-                                {domainsLoaded && !domainsLoading && (
+                                {domainsIsFetching && <CSpinner />}
+                                {!domainsIsFetching && (
                                   <RFFCFormSelect
                                     // label="Domain"
                                     name="primDomain"
                                     disabled={formDisabled}
-                                    placeholder={domainsLoaded ? 'Select domain' : 'Loading...'}
-                                    values={domainsList.map((domain) => ({
+                                    placeholder={
+                                      !domainsIsFetching ? 'Select domain' : 'Loading...'
+                                    }
+                                    values={domains?.map((domain) => ({
                                       value: domain.id,
                                       label: domain.id,
                                     }))}
                                   />
                                 )}
-                                {!domainsLoaded && !domainsLoading && domainsError && (
-                                  <span>Failed to load list of domains</span>
-                                )}
+                                {domainsError && <span>Failed to load list of domains</span>}
                               </CCol>
                             </CRow>
                             <CRow>
@@ -209,12 +216,10 @@ const EditUser = () => {
                                 <Condition when="keepLicenses" is={false}>
                                   <span>Licenses</span>
                                   <br />
-                                  {licenseLoading && !licenseLoaded && <CSpinner />}
-                                  {!licenseLoading && !licenseLoaded && licenseError && (
-                                    <span>Error loading licenses</span>
-                                  )}
-                                  {licenseLoaded &&
-                                    licenseList.map((license) => (
+                                  {licensesIsFetching && <CSpinner />}
+                                  {licensesError && <span>Error loading licenses</span>}
+                                  {!licensesIsFetching &&
+                                    licenses?.map((license) => (
                                       <RFFCFormCheck
                                         disabled={formDisabled}
                                         key={license.id}
@@ -312,21 +317,14 @@ const EditUser = () => {
                                 <RFFSelectSearch
                                   label="Copy group membership from other user"
                                   disabled={formDisabled}
-                                  values={
-                                    (!usersError &&
-                                      usersLoaded &&
-                                      usersList.map((user) => {
-                                        // value, name
-                                        return { value: user.id, name: user.displayName }
-                                      })) ||
-                                    []
-                                  }
-                                  placeholder={usersLoaded ? 'Select user' : 'Loading...'}
+                                  values={users?.map((user) => ({
+                                    value: user.id,
+                                    name: user.displayName,
+                                  }))}
+                                  placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                                   name="CopyFrom"
                                 />
-                                {!usersLoaded && !usersLoading && usersError && (
-                                  <span>Failed to load list of users</span>
-                                )}
+                                {usersError && <span>Failed to load list of users</span>}
                               </CCol>
                             </CRow>
                             <CRow className="mb-3">
@@ -355,8 +353,8 @@ const EditUser = () => {
                   <CCardTitle>Account Information</CCardTitle>
                 </CCardHeader>
                 <CCardBody>
-                  {!userLoaded && userLoading && <CSpinner />}
-                  {userLoaded && !userLoading && (
+                  {userIsFetching && <CSpinner />}
+                  {!userIsFetching && (
                     <>
                       This is the (raw) information for this account.
                       <pre>{JSON.stringify(user, null, 2)}</pre>
