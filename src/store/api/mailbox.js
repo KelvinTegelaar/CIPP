@@ -3,7 +3,7 @@ import { baseQuery } from './baseQuery'
 
 export const mailboxApi = createApi({
   reducerPath: 'mailbox',
-  baseQuery: baseQuery(() => ({})),
+  baseQuery: baseQuery(),
   endpoints: (builder) => ({
     listMailboxDetails: builder.query({
       query: ({ userId, tenantDomain }) => ({

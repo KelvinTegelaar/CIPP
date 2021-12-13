@@ -1,16 +1,53 @@
 import React from 'react'
-import { CButton } from '@coreui/react'
+import { CButton, CSpinner } from '@coreui/react'
 import { useDispatch } from 'react-redux'
-import moment from 'moment'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCheck, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import {
   cellBooleanFormatter,
   CippDatatable,
   CellBadge,
   CellBoolean,
   CellProgressBar,
+  cellDateFormatter,
 } from '../../../components/cipp'
 import { setModalContent } from '../../../store/features/modal'
-// import { useListBestPracticeAnalyserQuery } from '../../../store/api/reports'
+import { useExecBestPracticeAnalyserMutation } from '../../../store/api/reports'
+
+const RefreshAction = () => {
+  const [execBestPracticeAnalyser, { isLoading, isSuccess, error }] =
+    useExecBestPracticeAnalyserMutation()
+  const dispatch = useDispatch()
+
+  const onClick = () => {
+    dispatch(
+      setModalContent({
+        componentType: 'confirm',
+        title: 'Confirm',
+        body: (
+          <div>
+            Are you sure you want to force the Best Practice Analysis to run? This will slow down
+            normal usage considerably. <br />
+            <i>Please note: this runs at midnight automatically every day.</i>
+          </div>
+        ),
+        onConfirm: () => execBestPracticeAnalyser(),
+        confirmLabel: 'Continue',
+        cancelLabel: 'Cancel',
+        visible: true,
+      }),
+    )
+  }
+
+  return (
+    <CButton onClick={onClick} size="sm" className="text-white">
+      {isLoading && <CSpinner size="sm" />}
+      {error && <FontAwesomeIcon icon={faExclamationTriangle} />}
+      {isSuccess && <FontAwesomeIcon icon={faCheck} />}
+      Force Refresh All Data
+    </CButton>
+  )
+}
 
 const BestPracticeAnalyser = () => {
   const dispatch = useDispatch()
@@ -82,13 +119,14 @@ const BestPracticeAnalyser = () => {
     {
       name: 'Tenant',
       selector: (row) => row['Tenant'],
-      sort: true,
+      sortable: true,
     },
     {
       name: 'Last Refresh',
       selector: (row) => row['LastRefresh'],
-      format: (cell) => <div>{moment.utc(cell).format('MMM D YYYY')}</div>,
-      sort: true,
+      // format: (cell) => <div>{moment.utc(cell).format('MMM D YYYY')}</div>,
+      cell: cellDateFormatter({ format: 'short' }),
+      sortable: true,
     },
     {
       name: 'Unified Audit Log Enabled',
@@ -212,6 +250,9 @@ const BestPracticeAnalyser = () => {
         <CippDatatable
           reportName={`Best-Practices-Report`}
           path="/api/BestPracticeAnalyser_List"
+          tableProps={{
+            actions: [<RefreshAction key="refresh-action-button" />],
+          }}
           columns={columns}
         />
       </div>

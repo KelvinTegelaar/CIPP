@@ -3,7 +3,7 @@ import { baseQuery } from './baseQuery'
 
 export const oneDriveApi = createApi({
   reducerPath: 'oneDrive',
-  baseQuery: baseQuery(() => ({})),
+  baseQuery: baseQuery(),
   endpoints: (builder) => ({
     listOneDriveUsage: builder.query({
       query: ({ userUPN, tenantDomain }) => ({

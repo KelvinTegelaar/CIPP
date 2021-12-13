@@ -265,7 +265,7 @@ export function Condition({ when, is, children }) {
 Condition.propTypes = {
   when: PropTypes.string.isRequired,
   is: PropTypes.any,
-  children: PropTypes.oneOfType([PropTypes.element, PropTypes.arrayOf(PropTypes.element)]),
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 }
 
 const RFFSelectSearchClasses = {

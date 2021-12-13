@@ -3,7 +3,7 @@ import { baseQuery } from './baseQuery'
 
 export const groupsApi = createApi({
   reducerPath: 'groups',
-  baseQuery: baseQuery(() => ({})),
+  baseQuery: baseQuery(),
   endpoints: (builder) => ({
     addGroup: builder.mutation({
       query: ({ group }) => ({
