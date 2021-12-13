@@ -1,9 +1,9 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable, { ExpanderComponentProps } from '../../../components/cipp/CippDatatable'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
-
+import { faBars } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 const dropdown = (row, index, column) => {
   return (
     <CDropdown>
