@@ -10,7 +10,7 @@ import { faCog, faBars } from '@fortawesome/free-solid-svg-icons'
 const dropdown = (row, index, column) => {
   return (
     <CDropdown>
-      <CDropdownToggle size="sm" variant="ghost" color="primary">
+      <CDropdownToggle size="sm" color="link">
         <FontAwesomeIcon icon={faBars} />
       </CDropdownToggle>
       <CDropdownMenu>
