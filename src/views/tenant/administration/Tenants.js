@@ -39,37 +39,86 @@ const columns = [
   {
     name: 'M365 Portal',
     selector: (row) => row['customerId'],
-    //formatter: linkCog(
-    //  (cell) =>
-    //    `https://portal.office.com/Partner/BeginClientSession.aspx?CTID=${cell}&CSDEST=o365admincenter`,
-    //),
+    cell: (row) => (
+      <a
+        href={`https://portal.office.com/Partner/BeginClientSession.aspx?CTID=${row.customerId}&CSDEST=o365admincenter`}
+        target="_blank"
+        className="dlink"
+        rel="noreferrer"
+      >
+        <FontAwesomeIcon icon={faCog} className="me-2" />
+      </a>
+    ),
   },
   {
     name: 'Exchange Portal',
     selector: (row) => row['defaultDomainName'],
-    //  formatter: linkCog(
-    //  (cell) => `https://outlook.office365.com/ecp/?rfr=Admin_o365&exsvurl=1&delegatedOrg=${cell}`,
-    // ),
+    cell: (row) => (
+      <a
+        href={`https://outlook.office365.com/ecp/?rfr=Admin_o365&exsvurl=1&delegatedOrg=${row.defaultDomainName}`}
+        target="_blank"
+        className="dlink"
+        rel="noreferrer"
+      >
+        <FontAwesomeIcon icon={faCog} className="me-2" />
+      </a>
+    ),
   },
   {
     name: 'AAD Portal',
     selector: (row) => row['defaultDomainName'],
-    //   formatter: linkCog((cell) => `https://aad.portal.azure.com/${cell}`),
+    cell: (row) => (
+      <a
+        href={`https://aad.portal.azure.com/${row.defaultDomainName}`}
+        target="_blank"
+        className="dlink"
+        rel="noreferrer"
+      >
+        <FontAwesomeIcon icon={faCog} className="me-2" />
+      </a>
+    ),
   },
   {
     name: 'Teams Portal',
     selector: (row) => row['defaultDomainName'],
-    //   formatter: linkCog((cell) => `https://admin.teams.microsoft.com/?delegatedOrg=${cell}`),
+    cell: (row) => (
+      <a
+        href={`https://admin.teams.microsoft.com/?delegatedOrg=${row.defaultDomainName}`}
+        target="_blank"
+        className="dlink"
+        rel="noreferrer"
+      >
+        <FontAwesomeIcon icon={faCog} className="me-2" />
+      </a>
+    ),
   },
   {
     name: 'Azure Portal',
     selector: (row) => row['defaultDomainName'],
-    //  formatter: linkCog((cell) => `https://portal.azure.com/${cell}`),
+    cell: (row) => (
+      <a
+        href={`https://portal.azure.com/${row.defaultDomainName}`}
+        target="_blank"
+        className="dlink"
+        rel="noreferrer"
+      >
+        <FontAwesomeIcon icon={faCog} className="me-2" />
+      </a>
+    ),
   },
   {
     name: 'MEM (Intune) Portal',
     selector: (row) => row['defaultDomainName'],
-    //   formatter: linkCog((cell) => `https://endpoint.microsoft.com/${cell}`),
+    cell: (row) => (
+      <a
+        href={`https://endpoint.microsoft.com/${row.defaultDomainName}`}
+        target="_blank"
+        className="dlink"
+        rel="noreferrer"
+      >
+        <FontAwesomeIcon icon={faCog} className="me-2" />
+      </a>
+    ),
   },
   {
     name: 'Action',
@@ -93,7 +142,7 @@ const TenantsList = () => {
         <h3>Tenant List</h3>
         <CippDatatable
           keyField="id"
-          reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
+          reportName={`${tenant?.defaultDomainName}-Tenants-List`}
           path="/api/ListTenants"
           columns={columns}
         />
