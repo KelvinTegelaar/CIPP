@@ -39,6 +39,7 @@ const columns = [
   {
     name: 'M365 Portal',
     selector: (row) => row['customerId'],
+    center: true,
     cell: (row) => (
       <a
         href={`https://portal.office.com/Partner/BeginClientSession.aspx?CTID=${row.customerId}&CSDEST=o365admincenter`}
@@ -53,6 +54,7 @@ const columns = [
   {
     name: 'Exchange Portal',
     selector: (row) => row['defaultDomainName'],
+    center: true,
     cell: (row) => (
       <a
         href={`https://outlook.office365.com/ecp/?rfr=Admin_o365&exsvurl=1&delegatedOrg=${row.defaultDomainName}`}
@@ -67,6 +69,7 @@ const columns = [
   {
     name: 'AAD Portal',
     selector: (row) => row['defaultDomainName'],
+    center: true,
     cell: (row) => (
       <a
         href={`https://aad.portal.azure.com/${row.defaultDomainName}`}
@@ -81,6 +84,7 @@ const columns = [
   {
     name: 'Teams Portal',
     selector: (row) => row['defaultDomainName'],
+    center: true,
     cell: (row) => (
       <a
         href={`https://admin.teams.microsoft.com/?delegatedOrg=${row.defaultDomainName}`}
@@ -95,6 +99,7 @@ const columns = [
   {
     name: 'Azure Portal',
     selector: (row) => row['defaultDomainName'],
+    center: true,
     cell: (row) => (
       <a
         href={`https://portal.azure.com/${row.defaultDomainName}`}
@@ -109,6 +114,7 @@ const columns = [
   {
     name: 'MEM (Intune) Portal',
     selector: (row) => row['defaultDomainName'],
+    center: true,
     cell: (row) => (
       <a
         href={`https://endpoint.microsoft.com/${row.defaultDomainName}`}
@@ -122,6 +128,7 @@ const columns = [
   },
   {
     name: 'Action',
+    center: true,
     cell: dropdown,
   },
 
