@@ -40,7 +40,10 @@ export default function CippDatatable({
     striped = true,
     subheader = true,
     expandableRows,
-    expandableRowExpanded,
+    expandableRowsComponent,
+    expandableRowsHideExpander,
+    expandOnRowClicked,
+    highlightOnHover = true,
     actions = [],
     ...rest
   } = {},
@@ -106,7 +109,10 @@ export default function CippDatatable({
             columns={columns}
             data={filteredItems}
             expandableRows={expandableRows}
-            expandableRowExpanded={expandableRowExpanded}
+            expandableRowsComponent={expandableRowsComponent}
+            expandableRowsHideExpander={expandableRowsHideExpander}
+            highlightOnHover={highlightOnHover}
+            expandOnRowClicked={expandOnRowClicked}
             defaultSortAsc
             defaultSortFieldId={1}
             {...rest}
