@@ -17,7 +17,23 @@ export const domainsApi = createApi({
         return response
       },
     }),
+    listDomainTests: builder.query({
+      query: ({ domain }) => ({
+        path: '/api/ListDomainTests',
+        data: {
+          DomainToCheck: domain,
+        },
+        method: 'post',
+      }),
+      transformResponse: (response) => {
+        if (Array.isArray(response) && response?.length > 0) {
+          return response[0]
+        }
+        return {}
+      },
+    }),
   }),
 })
 
-export const { useListDomainsQuery } = domainsApi
+export const { useListDomainsQuery, useListDomainTestsQuery, useLazyListDomainTestsQuery } =
+  domainsApi

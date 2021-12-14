@@ -173,7 +173,7 @@ const routes = [
     component: DomainsAnalyser,
   },
   {
-    path: '/tenant/standards/Individual-domains',
+    path: '/tenant/standards/individual-domains',
     name: 'Individual Domain Check',
     component: IndividualDomain,
   },
