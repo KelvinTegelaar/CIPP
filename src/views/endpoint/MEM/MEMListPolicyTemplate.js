@@ -42,7 +42,7 @@ const columns = [
 
 //todo: expandable with RAWJson property.
 /* eslint-disable-next-line react/prop-types */
-const ExpandedComponent = ({ data }) => <pre>{JSON.stringify(data, null, 2)}</pre>
+const ExpandedComponent = ({ data }) => <pre>{data.RAWJson}</pre>
 
 const AutopilotListTemplates = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -53,12 +53,16 @@ const AutopilotListTemplates = () => {
       <div className="bg-white rounded p-5">
         <h3>Available Endpoint Manager Templates</h3>
         <CippDatatable
+          tableProps={{
+            expandableRows: true,
+            expandableRowsComponent: ExpandedComponent,
+            expandableRowsHideExpander: true,
+            expandOnRowClicked: true,
+          }}
           keyField="id"
           reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
           path="/api/ListIntuneTemplates"
           columns={columns}
-          expandableRows={true}
-          expandableRowExpanded={ExpandedComponent}
           params={{ TenantFilter: tenant?.defaultDomainName }}
         />
       </div>
