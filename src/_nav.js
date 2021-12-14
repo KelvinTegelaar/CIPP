@@ -130,7 +130,7 @@ const _nav = [
       {
         component: CNavItem,
         name: 'Individual Domain Check',
-        to: '/tenant/standards/Individual-domains',
+        to: '/tenant/standards/individual-domains',
       },
     ],
   },
