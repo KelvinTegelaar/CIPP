@@ -79,7 +79,7 @@ const IndividualDomainCheck = () => {
         <CRow className="mb-4">
           <CCol md={6}>
             <CCard>
-              <CCardHeader className="bg-info text-white">
+              <CCardHeader className="bg-primary text-white">
                 <CCardTitle>Email Security Domain Checker</CCardTitle>
               </CCardHeader>
               <CCardBody>
