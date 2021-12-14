@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom'
 
 const dropdown = (row, rowIndex, formatExtraData) => (
   <CDropdown>
-    <CDropdownToggle size="sm" variant="ghost" color="primary">
+    <CDropdownToggle size="sm" color="link">
       <FontAwesomeIcon icon={faBars} />
     </CDropdownToggle>
     <CDropdownMenu>
