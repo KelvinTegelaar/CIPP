@@ -110,7 +110,6 @@ export default function CippDatatable({
             data={filteredItems}
             expandableRows={expandableRows}
             expandableRowsComponent={expandableRowsComponent}
-            expandableRowsHideExpander={expandableRowsHideExpander}
             highlightOnHover={highlightOnHover}
             expandOnRowClicked={expandOnRowClicked}
             defaultSortAsc

@@ -56,7 +56,6 @@ const AutopilotListTemplates = () => {
           tableProps={{
             expandableRows: true,
             expandableRowsComponent: ExpandedComponent,
-            expandableRowsHideExpander: true,
             expandOnRowClicked: true,
           }}
           keyField="id"
