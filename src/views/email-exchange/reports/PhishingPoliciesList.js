@@ -41,6 +41,11 @@ const columns = [
     sortable: true,
     cell: cellDateFormatter(),
   },
+  {
+    selector: (row) => row['Priority'],
+    name: 'Priority',
+    sortable: true,
+  },
 ]
 
 const MailboxList = () => {
@@ -55,7 +60,7 @@ const MailboxList = () => {
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         <CippDatatable
           keyField="id"
-          reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
+          reportName={`${tenant?.defaultDomainName}-PhishingPolicies-List`}
           path="/api/ListPhishPolicies"
           columns={columns}
           params={{ TenantFilter: tenant?.defaultDomainName }}

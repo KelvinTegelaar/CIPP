@@ -52,7 +52,7 @@ const MailboxStatsList = () => {
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         <CippDatatable
           keyField="id"
-          reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
+          reportName={`${tenant?.defaultDomainName}-MailboxStatistics-List`}
           path="/api/ListMailboxStatistics"
           columns={columns}
           params={{ TenantFilter: tenant?.defaultDomainName }}

@@ -84,7 +84,7 @@ const AutopilotListESP = () => {
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         <CippDatatable
           keyField="id"
-          reportName={`${tenant?.defaultDomainName}-AutopilotProfile-List`}
+          reportName={`${tenant?.defaultDomainName}-AutopilotStatusPages-List`}
           path="/api/ListAutopilotConfig?type=ESP"
           columns={columns}
           params={{ TenantFilter: tenant?.defaultDomainName }}
