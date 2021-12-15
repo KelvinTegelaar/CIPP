@@ -70,7 +70,7 @@ const EditMEMApplication = React.lazy(() =>
 const IntuneListPolicyTemplate = React.lazy(() =>
   import('./views/endpoint/MEM/MEMListPolicyTemplate'),
 )
-const ListDefender = React.lazy(() => import('./views/endpoint/MEM/ListDefender'))
+const ListDefender = React.lazy(() => import('./views/endpoint/defender/ListDefender'))
 const OneDriveList = React.lazy(() => import('./views/teams-share/onedrive/OneDriveList'))
 const SharepointList = React.lazy(() => import('./views/teams-share/sharepoint/SharepointList'))
 const BusinessVoice = React.lazy(() => import('./views/teams-share/teams/BusinessVoice'))
@@ -284,7 +284,7 @@ const routes = [
     component: IntuneListPolicyTemplate,
   },
   {
-    path: '/endpoint/MEM/list-defender',
+    path: '/endpoint/defender/list-defender',
     name: 'List Defender',
     component: ListDefender,
   },
