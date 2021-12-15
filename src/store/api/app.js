@@ -23,7 +23,65 @@ export const appApi = createApi({
         params: { localversion: localVersion },
       }),
     }),
+    execPermissionsAccessCheck: builder.query({
+      query: () => ({
+        path: '/api/ExecAccessChecks',
+        params: {
+          Permissions: true,
+        },
+      }),
+      transformResponse: (result) => {
+        if (!result) {
+          return []
+        }
+        if (!Array.isArray(result.Results)) {
+          return [result.Results]
+        }
+        return result.Results
+      },
+    }),
+    execTenantsAccessCheck: builder.query({
+      query: ({ tenantDomains }) => ({
+        path: '/api/ExecAccessChecks',
+        params: {
+          Tenants: true,
+        },
+        data: {
+          tenantid: tenantDomains.join(','),
+        },
+        method: 'post',
+      }),
+      transformResponse: (response) => {
+        if (!response?.Results) {
+          return []
+        }
+        return response?.Results.map((res) =>
+          res
+            .replace('<br>', '')
+            .split(': ')
+            .reduce((pv, cv) => ({ tenantDomain: pv, result: cv })),
+        )
+      },
+    }),
+    execClearCache: builder.query({
+      query: () => ({
+        path: '/api/ListTenants',
+        params: {
+          ClearCache: true,
+        },
+      }),
+    }),
   }),
 })
 
-export const { useLoadVersionLocalQuery, useLoadVersionRemoteQuery, useLoadVersionsQuery } = appApi
+export const {
+  useLoadVersionLocalQuery,
+  useLoadVersionRemoteQuery,
+  useLoadVersionsQuery,
+  useExecPermissionsAccessCheckQuery,
+  useLazyExecPermissionsAccessCheckQuery,
+  useExecTenantsAccessCheckQuery,
+  useLazyExecTenantsAccessCheckQuery,
+  useExecClearCacheQuery,
+  useLazyExecClearCacheQuery,
+} = appApi
