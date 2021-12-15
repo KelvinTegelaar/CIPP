@@ -9,6 +9,8 @@ import {
   CListGroup,
   CListGroupItem,
   CSpinner,
+  CButton,
+  CButtonGroup,
 } from '@coreui/react'
 import avatar0 from './../../assets/images/avatars/0.jpg'
 import { authApi } from '../../store/api/auth'
@@ -51,10 +53,31 @@ const ViewProfile = () => {
           <CCard className="w-50">
             <ThemeSwitcher />
           </CCard>
-        </CCol>
-        <CCol xs>
-          <CCard className="w-50">
-            <ThemeSwitcher />
+          <br></br>
+          <CCard style={{ width: '18rem' }} className="p-2">
+            <CCardBody>
+              <CCardTitle>Table Size</CCardTitle>
+            </CCardBody>
+            <CButtonGroup role="group" aria-label="Basic example">
+              <CButton>25</CButton>
+              <CButton color={'secondary'}>50</CButton>
+              <CButton color={'secondary'}>100</CButton>
+              <CButton color={'secondary'}>200</CButton>
+              <CButton color={'secondary'}>500</CButton>
+            </CButtonGroup>
+          </CCard>
+          <br></br>
+          <CCard style={{ width: '18rem' }} className="p-2">
+            <CCardBody>
+              <CCardTitle>Default Home Page</CCardTitle>
+            </CCardBody>
+            <CButtonGroup role="group" aria-label="Basic example">
+              <CButton>25</CButton>
+              <CButton color={'secondary'}>50</CButton>
+              <CButton color={'secondary'}>100</CButton>
+              <CButton color={'secondary'}>200</CButton>
+              <CButton color={'secondary'}>500</CButton>
+            </CButtonGroup>
           </CCard>
         </CCol>
       </CRow>
