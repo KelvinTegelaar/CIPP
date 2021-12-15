@@ -6,6 +6,7 @@ import { CellProgressBar, cellProgressBarFormatter } from './CellProgressBar'
 import CippDatatable from './CippDatatable'
 import PdfButton from './PdfButton'
 import TenantSelector from './TenantSelector'
+import TenantSelectorMultiple from './TenantSelectorMultiple'
 import ThemeSwitcher from './ThemeSwitcher'
 
 export {
@@ -22,5 +23,6 @@ export {
   CippDatatable,
   PdfButton,
   TenantSelector,
+  TenantSelectorMultiple,
   ThemeSwitcher,
 }
