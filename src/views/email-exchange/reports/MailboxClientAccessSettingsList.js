@@ -2,61 +2,59 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
+import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
+import { cellBooleanFormatter } from '../../../components/cipp'
 
 const columns = [
   {
-    name: 'Name',
-    selector: 'displayName',
+    selector: (row) => row['displayName'],
+    name: 'Display Name',
     sortable: true,
   },
   {
-    name: 'Default Domain',
-    selector: 'defaultDomainName',
+    selector: (row) => row['primarySmtpAddress'],
+    name: 'Primary E-mail',
+    sortable: true,
   },
   {
-    name: 'M365 Portal',
-    selector: 'customerId',
-    //formatter: linkCog(
-    //  (cell) =>
-    //    `https://portal.office.com/Partner/BeginClientSession.aspx?CTID=${cell}&CSDEST=o365admincenter`,
-    //),
+    selector: (row) => row['ecpenabled'],
+    name: 'ECP Enabled',
+    sortable: true,
+    cell: cellBooleanFormatter(),
   },
   {
-    name: 'Exchange Portal',
-    selector: 'defaultDomainName',
-    //  formatter: linkCog(
-    //  (cell) => `https://outlook.office365.com/ecp/?rfr=Admin_o365&exsvurl=1&delegatedOrg=${cell}`,
-    // ),
+    selector: (row) => row['ewsenabled'],
+    name: 'EWS Enabled',
+    sortable: true,
+    cell: cellBooleanFormatter(),
   },
   {
-    name: 'AAD Portal',
-    selector: 'defaultDomainName',
-    //   formatter: linkCog((cell) => `https://aad.portal.azure.com/${cell}`),
+    selector: (row) => row['imapenabled'],
+    name: 'IMAP Enabled',
+    sortable: true,
+    cell: cellBooleanFormatter(),
   },
   {
-    name: 'Teams Portal',
-    selector: 'defaultDomainName',
-    //   formatter: linkCog((cell) => `https://admin.teams.microsoft.com/?delegatedOrg=${cell}`),
+    selector: (row) => row['mapienabled'],
+    name: 'MAPI Enabled',
+    sortable: true,
+    cell: cellBooleanFormatter(),
   },
   {
-    name: 'Azure Portal',
-    selector: 'defaultDomainName',
-    //  formatter: linkCog((cell) => `https://portal.azure.com/${cell}`),
+    selector: (row) => row['owaenabled'],
+    name: 'OWA Enabled',
+    sortable: true,
+    cell: cellBooleanFormatter(),
   },
   {
-    name: 'MEM (Intune) Portal',
-    selector: 'defaultDomainName',
-    //   formatter: linkCog((cell) => `https://endpoint.microsoft.com/${cell}`),
+    selector: (row) => row['popenabled'],
+    name: 'POP Enabled',
+    sortable: true,
+    cell: cellBooleanFormatter(),
   },
-
-  // @todo not used at the moment?
-  // {
-  //   name: 'Domains',
-  //   selector: 'defaultDomainName',
-  // },
 ]
 
-const MailboxClientAccessSettingsList = () => {
+const MailboxCASList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
@@ -68,7 +66,7 @@ const MailboxClientAccessSettingsList = () => {
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         <CippDatatable
           keyField="id"
-          reportName={`${tenant?.defaultDomainName}-Mailbox-Client-Access-Settings`}
+          reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
           path="/api/ListMailboxCAS"
           columns={columns}
           params={{ TenantFilter: tenant?.defaultDomainName }}
@@ -78,4 +76,4 @@ const MailboxClientAccessSettingsList = () => {
   )
 }
 
-export default MailboxClientAccessSettingsList
+export default MailboxCASList

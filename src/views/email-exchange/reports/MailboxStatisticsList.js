@@ -3,80 +3,44 @@ import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
-import { faUser, faCog, faBars } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { cellBooleanFormatter } from '../../../components/cipp'
 
-const dropdown = (row, index, column) => {
-  return (
-    <CDropdown>
-      <CDropdownToggle size="sm" color="link">
-        <FontAwesomeIcon icon={faBars} />
-      </CDropdownToggle>
-      <CDropdownMenu>
-        <CDropdownItem href="#">Edit</CDropdownItem>
-      </CDropdownMenu>
-    </CDropdown>
-  )
-}
-
+//TODO: Add CellBoolean
 const columns = [
   {
-    name: 'Name',
-    selector: 'displayName',
+    selector: (row) => row['UPN'],
+    name: 'User Prinicipal Name',
     sortable: true,
   },
   {
-    name: 'Default Domain',
-    selector: 'defaultDomainName',
+    selector: (row) => row['displayName'],
+    name: 'Display Name',
+    sortable: true,
   },
   {
-    name: 'M365 Portal',
-    selector: 'customerId',
-    //formatter: linkCog(
-    //  (cell) =>
-    //    `https://portal.office.com/Partner/BeginClientSession.aspx?CTID=${cell}&CSDEST=o365admincenter`,
-    //),
+    selector: (row) => row['LastActive'],
+    name: 'Last Active',
+    sortable: true,
   },
   {
-    name: 'Exchange Portal',
-    selector: 'defaultDomainName',
-    //  formatter: linkCog(
-    //  (cell) => `https://outlook.office365.com/ecp/?rfr=Admin_o365&exsvurl=1&delegatedOrg=${cell}`,
-    // ),
+    selector: (row) => row['UsedGB'],
+    name: 'Used Space(GB)',
+    sortable: true,
   },
   {
-    name: 'AAD Portal',
-    selector: 'defaultDomainName',
-    //   formatter: linkCog((cell) => `https://aad.portal.azure.com/${cell}`),
+    selector: (row) => row['ItemCount'],
+    name: 'Item Count (Total)',
+    sortable: true,
   },
   {
-    name: 'Teams Portal',
-    selector: 'defaultDomainName',
-    //   formatter: linkCog((cell) => `https://admin.teams.microsoft.com/?delegatedOrg=${cell}`),
+    selector: (row) => row['HasArchive'],
+    name: 'Archiving Enabled',
+    sortable: true,
+    cell: cellBooleanFormatter(),
   },
-  {
-    name: 'Azure Portal',
-    selector: 'defaultDomainName',
-    //  formatter: linkCog((cell) => `https://portal.azure.com/${cell}`),
-  },
-  {
-    name: 'MEM (Intune) Portal',
-    selector: 'defaultDomainName',
-    //   formatter: linkCog((cell) => `https://endpoint.microsoft.com/${cell}`),
-  },
-  {
-    name: 'Action',
-    formatter: dropdown,
-  },
-
-  // @todo not used at the moment?
-  // {
-  //   name: 'Domains',
-  //   selector: 'defaultDomainName',
-  // },
 ]
 
-const MailboxStatisticsList = () => {
+const MailboxStatsList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
@@ -88,7 +52,7 @@ const MailboxStatisticsList = () => {
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         <CippDatatable
           keyField="id"
-          reportName={`${tenant?.defaultDomainName}-Mailbox-Statistics`}
+          reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
           path="/api/ListMailboxStatistics"
           columns={columns}
           params={{ TenantFilter: tenant?.defaultDomainName }}
@@ -98,4 +62,4 @@ const MailboxStatisticsList = () => {
   )
 }
 
-export default MailboxStatisticsList
+export default MailboxStatsList

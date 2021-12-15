@@ -2,61 +2,48 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
+import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
+import { cellBooleanFormatter, cellDateFormatter } from '../../../components/cipp'
 
+//TODO: Add CellBoolean
 const columns = [
   {
+    selector: (row) => row['Name'],
     name: 'Name',
-    selector: 'displayName',
     sortable: true,
   },
   {
-    name: 'Default Domain',
-    selector: 'defaultDomainName',
+    selector: (row) => row['PhishThresholdLevel'],
+    name: 'Phish Threshold Level',
+    sortable: true,
   },
   {
-    name: 'M365 Portal',
-    selector: 'customerId',
-    //formatter: linkCog(
-    //  (cell) =>
-    //    `https://portal.office.com/Partner/BeginClientSession.aspx?CTID=${cell}&CSDEST=o365admincenter`,
-    //),
+    selector: (row) => row['Enabled'],
+    name: 'Enabled',
+    sortable: true,
+    cell: cellBooleanFormatter(),
   },
   {
-    name: 'Exchange Portal',
-    selector: 'defaultDomainName',
-    //  formatter: linkCog(
-    //  (cell) => `https://outlook.office365.com/ecp/?rfr=Admin_o365&exsvurl=1&delegatedOrg=${cell}`,
-    // ),
+    selector: (row) => row['ExcludedSenders'],
+    name: 'Excluded Senders',
+    sortable: true,
+    cell: cellBooleanFormatter(),
   },
   {
-    name: 'AAD Portal',
-    selector: 'defaultDomainName',
-    //   formatter: linkCog((cell) => `https://aad.portal.azure.com/${cell}`),
+    selector: (row) => row['ExcludedDomains'],
+    name: 'Excluded Domains',
+    sortable: true,
+    cell: cellBooleanFormatter(),
   },
   {
-    name: 'Teams Portal',
-    selector: 'defaultDomainName',
-    //   formatter: linkCog((cell) => `https://admin.teams.microsoft.com/?delegatedOrg=${cell}`),
+    selector: (row) => row['WhenChangedUTC'],
+    name: 'Last Change Date',
+    sortable: true,
+    cell: cellDateFormatter(),
   },
-  {
-    name: 'Azure Portal',
-    selector: 'defaultDomainName',
-    //  formatter: linkCog((cell) => `https://portal.azure.com/${cell}`),
-  },
-  {
-    name: 'MEM (Intune) Portal',
-    selector: 'defaultDomainName',
-    //   formatter: linkCog((cell) => `https://endpoint.microsoft.com/${cell}`),
-  },
-
-  // @todo not used at the moment?
-  // {
-  //   name: 'Domains',
-  //   selector: 'defaultDomainName',
-  // },
 ]
 
-const PhishingPoliciesList = () => {
+const MailboxList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
@@ -64,11 +51,11 @@ const PhishingPoliciesList = () => {
       <TenantSelector />
       <hr />
       <div className="bg-white rounded p-5">
-        <h3>Phishing Policies</h3>
+        <h3>Phising Policy List</h3>
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         <CippDatatable
           keyField="id"
-          reportName={`${tenant?.defaultDomainName}-Phishing-Policies`}
+          reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
           path="/api/ListPhishPolicies"
           columns={columns}
           params={{ TenantFilter: tenant?.defaultDomainName }}
@@ -78,4 +65,4 @@ const PhishingPoliciesList = () => {
   )
 }
 
-export default PhishingPoliciesList
+export default MailboxList
