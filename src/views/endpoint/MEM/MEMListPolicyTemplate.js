@@ -59,7 +59,7 @@ const AutopilotListTemplates = () => {
             expandOnRowClicked: true,
           }}
           keyField="id"
-          reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
+          reportName={`${tenant?.defaultDomainName}-MEMPolicyTemplates-List`}
           path="/api/ListIntuneTemplates"
           columns={columns}
           params={{ TenantFilter: tenant?.defaultDomainName }}

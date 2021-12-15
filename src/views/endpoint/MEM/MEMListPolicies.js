@@ -54,7 +54,7 @@ const IntuneList = () => {
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         <CippDatatable
           keyField="id"
-          reportName={`${tenant?.defaultDomainName}-Applications-List`}
+          reportName={`${tenant?.defaultDomainName}-MEMPolicies-List`}
           path="/api/ListIntunePolicy?type=ESP"
           columns={columns}
           params={{ TenantFilter: tenant?.defaultDomainName }}

@@ -69,7 +69,7 @@ const TeamsList = () => {
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         <CippDatatable
           keyField="id"
-          reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
+          reportName={`${tenant?.defaultDomainName}-Teams-List`}
           path="/api/ListTeams?type=list"
           columns={columns}
           params={{ TenantFilter: tenant?.defaultDomainName }}

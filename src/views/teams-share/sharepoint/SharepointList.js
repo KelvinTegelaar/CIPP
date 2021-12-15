@@ -74,7 +74,7 @@ const SharepointList = () => {
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         <CippDatatable
           keyField="id"
-          reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
+          reportName={`${tenant?.defaultDomainName}-Sharepoint-List`}
           path="/api/ListSites?type=SharePointSiteUsage"
           columns={columns}
           params={{ TenantFilter: tenant?.defaultDomainName }}
