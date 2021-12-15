@@ -23,22 +23,19 @@ const columns = [
     sortable: true,
   },
   {
-    selector: (row) => row['recpientType'],
+    selector: (row) => row['recipientType'],
     name: 'Recipient Type',
     sortable: true,
-    cell: cellBooleanFormatter(),
   },
   {
-    selector: (row) => row['recpientTypeDetails'],
+    selector: (row) => row['recipientTypeDetails'],
     name: 'Recipient Type Details',
     sortable: true,
-    cell: cellBooleanFormatter(),
   },
   {
     selector: (row) => row['AdditionalEmailAddresses'],
     name: 'Additional Email Addresses',
     sortable: true,
-    cell: cellBooleanFormatter(),
   },
 ]
 
