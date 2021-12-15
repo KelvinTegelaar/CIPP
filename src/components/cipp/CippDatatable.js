@@ -114,6 +114,8 @@ export default function CippDatatable({
             expandOnRowClicked={expandOnRowClicked}
             defaultSortAsc
             defaultSortFieldId={1}
+            paginationPerPage={25}
+            paginationRowsPerPageOptions={[25, 50, 100, 200, 500]}
             {...rest}
           />
         </div>
