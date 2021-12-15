@@ -3,86 +3,34 @@ import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
-import { Link } from 'react-router-dom'
-import { faUser, faCog, faBars } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { cellBooleanFormatter } from '../../../components/cipp'
 
-const dropdown = (row, index, column) => {
-  return (
-    <CDropdown>
-      <CDropdownToggle size="sm" color="link">
-        <FontAwesomeIcon icon={faBars} />
-      </CDropdownToggle>
-      <CDropdownMenu>
-        <CDropdownItem href="#">
-          <Link className="dropdown-item" to={`/email/administration/edit-contact`}>
-            <FontAwesomeIcon icon={faUser} className="me-2" />
-            View User
-          </Link>
-        </CDropdownItem>
-      </CDropdownMenu>
-    </CDropdown>
-  )
-}
-
+//TODO: Add CellBoolean
 const columns = [
   {
-    name: 'Name',
-    selector: 'displayName',
+    selector: (row) => row['displayName'],
+    name: 'Display Name',
     sortable: true,
   },
   {
-    name: 'Default Domain',
-    selector: 'defaultDomainName',
+    selector: (row) => row['mail'],
+    name: 'E-Mail Address',
+    sortable: true,
   },
   {
-    name: 'M365 Portal',
-    selector: 'customerId',
-    //formatter: linkCog(
-    //  (cell) =>
-    //    `https://portal.office.com/Partner/BeginClientSession.aspx?CTID=${cell}&CSDEST=o365admincenter`,
-    //),
+    selector: (row) => row['company'],
+    name: 'Company',
+    sortable: true,
   },
   {
-    name: 'Exchange Portal',
-    selector: 'defaultDomainName',
-    //  formatter: linkCog(
-    //  (cell) => `https://outlook.office365.com/ecp/?rfr=Admin_o365&exsvurl=1&delegatedOrg=${cell}`,
-    // ),
+    selector: (row) => row['onPremisesSyncEnabled'],
+    name: 'On Premises Sync',
+    sortable: true,
+    cell: cellBooleanFormatter(),
   },
-  {
-    name: 'AAD Portal',
-    selector: 'defaultDomainName',
-    //   formatter: linkCog((cell) => `https://aad.portal.azure.com/${cell}`),
-  },
-  {
-    name: 'Teams Portal',
-    selector: 'defaultDomainName',
-    //   formatter: linkCog((cell) => `https://admin.teams.microsoft.com/?delegatedOrg=${cell}`),
-  },
-  {
-    name: 'Azure Portal',
-    selector: 'defaultDomainName',
-    //  formatter: linkCog((cell) => `https://portal.azure.com/${cell}`),
-  },
-  {
-    name: 'MEM (Intune) Portal',
-    selector: 'defaultDomainName',
-    //   formatter: linkCog((cell) => `https://endpoint.microsoft.com/${cell}`),
-  },
-  {
-    name: 'Action',
-    cell: dropdown,
-  },
-
-  // @todo not used at the moment?
-  // {
-  //   name: 'Domains',
-  //   selector: 'defaultDomainName',
-  // },
 ]
 
-const ContactsList = () => {
+const ContactList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
@@ -94,7 +42,7 @@ const ContactsList = () => {
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         <CippDatatable
           keyField="id"
-          reportName={`${tenant?.defaultDomainName}-Contacts`}
+          reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
           path="/api/ListContacts"
           columns={columns}
           params={{ TenantFilter: tenant?.defaultDomainName }}
@@ -104,4 +52,4 @@ const ContactsList = () => {
   )
 }
 
-export default ContactsList
+export default ContactList
