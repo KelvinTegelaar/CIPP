@@ -79,8 +79,8 @@ const IndividualDomainCheck = () => {
         <CRow className="mb-4">
           <CCol md={6}>
             <CCard>
-              <CCardHeader className="bg-primary text-white">
-                <CCardTitle>Email Security Domain Checker</CCardTitle>
+              <CCardHeader component="h5" className="bg-primary text-white">
+                Email Security Domain Checker
               </CCardHeader>
               <CCardBody>
                 <Form
@@ -141,8 +141,11 @@ const ResultsCard = ({ children, data, type }) => {
 
   return (
     <CCard>
-      <CCardHeader className={classNames(bgColorMap[finalState], textColorMap[finalState])}>
-        <CCardTitle>{type} Results</CCardTitle>
+      <CCardHeader
+        className={classNames(bgColorMap[finalState], textColorMap[finalState])}
+        component="h5"
+      >
+        {type} Results
       </CCardHeader>
       <CCardBody>
         {/* records and additional information is specific to each type
