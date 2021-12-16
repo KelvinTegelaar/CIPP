@@ -11,7 +11,6 @@ import {
   CCard,
   CCardBody,
   CCardHeader,
-  CCardTitle,
   CCol,
   CCollapse,
   CForm,
@@ -74,11 +73,11 @@ const IndividualDomainCheck = () => {
   }
 
   return (
-    <CCard className="bg-white rounded p-5">
+    <CCard className="bg-white rounded p-3">
       <CCardBody>
-        <CRow className="mb-4">
+        <CRow xs={{ cols: 1, gutter: 4 }} xl={{ cols: 2, gutter: 4 }}>
           <CCol md={6}>
-            <CCard>
+            <CCard className="h-100">
               <CCardHeader component="h5" className="bg-primary text-white">
                 Email Security Domain Checker
               </CCardHeader>
@@ -105,12 +104,8 @@ const IndividualDomainCheck = () => {
             </CCard>
           </CCol>
           <CCol md={6}>{isSuccess && <MXResultsCard domain={domain} />}</CCol>
-        </CRow>
-        <CRow className="mb-4">
           <CCol md={6}>{isSuccess && <SPFResultsCard domain={domain} />}</CCol>
           <CCol md={6}>{isSuccess && <DMARCResultsCard domain={domain} />}</CCol>
-        </CRow>
-        <CRow className="mb-4">
           <CCol md={6}>{isSuccess && <DNSSECResultsCard domain={domain} />}</CCol>
           <CCol md={6}>{isSuccess && <DKIMResultsCard domain={domain} />}</CCol>
         </CRow>
@@ -140,7 +135,7 @@ const ResultsCard = ({ children, data, type }) => {
   const validationFails = results?.ValidationFails || []
 
   return (
-    <CCard>
+    <CCard className="h-100">
       <CCardHeader
         className={classNames(bgColorMap[finalState], textColorMap[finalState])}
         component="h5"
