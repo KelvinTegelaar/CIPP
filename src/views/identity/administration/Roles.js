@@ -28,16 +28,22 @@ const columns = [
     selector: (row) => row['Description'],
     name: 'Description',
     sortable: true,
+    wrap: true,
   },
   {
-    selector: (row) => row['Members'],
+    selector: (row) => 'Click to Expand',
     name: 'Members',
-    sortable: true,
   },
 ]
 
 const RolesList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
+
+  // eslint-disable-next-line react/prop-types
+  const ExpandedComponent = ({ data }) => (
+    // eslint-disable-next-line react/prop-types
+    <pre>{JSON.stringify(data.Members, null, 2)}</pre>
+  )
 
   return (
     <div>
@@ -47,6 +53,11 @@ const RolesList = () => {
         <h3>Azure Active Directory Roles</h3>
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         <CippDatatable
+          tableProps={{
+            expandableRows: true,
+            expandableRowsComponent: ExpandedComponent,
+            expandOnRowClicked: true,
+          }}
           keyField="id"
           reportName={`${tenant?.defaultDomainName}-Roles`}
           path="/api/ListRoles"

@@ -9,6 +9,7 @@ const columns = [
     name: 'Name',
     selector: (row) => row['displayName'],
     sortable: true,
+    wrap: true,
   },
   {
     name: 'State',
@@ -99,7 +100,7 @@ const CondtionalAccessList = () => {
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         <CippDatatable
           keyField="id"
-          reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
+          reportName={`${tenant?.defaultDomainName}-ConditionalAccess-List`}
           path="/api/ListConditionalAccessPolicies"
           columns={columns}
           params={{ TenantFilter: tenant?.defaultDomainName }}

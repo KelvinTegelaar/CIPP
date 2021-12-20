@@ -51,7 +51,7 @@ const TenantsList = () => {
 
         <CippDatatable
           keyField="id"
-          reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
+          reportName={`${tenant?.defaultDomainName}-AppliedStandards-List`}
           path="/api/ListStandards"
           columns={columns}
           params={{ TenantFilter: tenant?.defaultDomainName }}
