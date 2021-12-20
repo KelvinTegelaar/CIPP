@@ -9,8 +9,9 @@ const AddUser = React.lazy(() => import('./views/identity/administration/AddUser
 const EditUser = React.lazy(() => import('./views/identity/administration/EditUser'))
 const ViewUser = React.lazy(() => import('./views/identity/administration/ViewUser'))
 const Groups = React.lazy(() => import('./views/identity/administration/Groups'))
-const Roles = React.lazy(() => import('./views/identity/administration/Roles'))
 const EditGroup = React.lazy(() => import('./views/identity/administration/EditGroup'))
+const ViewGroup = React.lazy(() => import('./views/identity/administration/ViewGroup'))
+const Roles = React.lazy(() => import('./views/identity/administration/Roles'))
 const Devices = React.lazy(() => import('./views/identity/reports/Devices'))
 const MFAReport = React.lazy(() => import('./views/identity/reports/MFAReport'))
 const Tenants = React.lazy(() => import('./views/tenant/administration/Tenants'))
@@ -87,7 +88,6 @@ const EditMailboxPermissions = React.lazy(() =>
 const ViewMobileDevices = React.lazy(() =>
   import('./views/email-exchange/administration/ViewMobileDevices'),
 )
-
 const MailboxesList = React.lazy(() =>
   import('./views/email-exchange/administration/MailboxesList'),
 )
@@ -116,13 +116,15 @@ const routes = [
   { path: '/identity/administration/ViewBec', name: 'View BEC', component: ViewBEC },
   { path: '/identity/administration', name: 'Administration' },
   { path: '/identity/administration/users', name: 'Users', component: Users },
+  { path: '/identity/administration/groups/edit', name: 'Edit Group', component: EditGroup },
+  {
+    path: '/identity/administration/groups/view',
+    name: 'View Group',
+    component: ViewGroup,
+  },
   { path: '/identity/administration/groups', name: 'Groups', component: Groups },
   { path: '/identity/administration/roles', name: 'Roles', component: Roles },
   { path: '/teams-share/teams/business-voice', name: 'BusinessVoice', component: BusinessVoice },
-
-  { path: '/identity/administration/EditGroup', name: 'Edit Group', component: EditGroup },
-  { path: '/tenant/administration/EditTenant', name: 'Edit Tenant', component: EditTenant },
-
   {
     path: '/identity/administration/offboarding-wizard',
     name: 'Offboarding Wizard',
@@ -142,6 +144,7 @@ const routes = [
   },
   { path: '/tenant/administration', name: 'Administration' },
   { path: '/tenant/administration/tenants', name: 'Tenants', component: Tenants },
+  { path: '/tenant/administration/tenants/edit', name: 'Edit Tenant', component: EditTenant },
   { path: '/tenant/administration/domains', name: 'Domains', component: Domains },
   {
     path: '/tenant/administration/conditional-access-policies',

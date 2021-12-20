@@ -12,11 +12,12 @@ import {
   CRow,
   CSpinner,
 } from '@coreui/react'
-import TenantSelector from '../../../components/cipp/TenantSelector'
+import { TenantSelector } from '../../../components/cipp'
 
-import { listDomains } from '../../../store/modules/domains'
-import { listLicenses } from '../../../store/modules/licenses'
-import { listUsers } from '../../../store/modules/users'
+import { useListDomainsQuery } from '../../../store/api/domains'
+import { useListLicensesQuery } from '../../../store/api/licenses'
+import { useListUsersQuery, useAddUserMutation } from '../../../store/api/users'
+
 import { useDispatch, useSelector } from 'react-redux'
 import { Form } from 'react-final-form'
 import {
@@ -40,40 +41,36 @@ const passwordRequired = (value, values) => {
 
 export default function AddUser() {
   const dispatch = useDispatch()
-  const domains = useSelector((state) => state.domains) || {}
-  const licenses = useSelector((state) => state.licenses) || {}
-  const users = useSelector((state) => state.users) || {}
   const app = useSelector((state) => state.app) ?? {}
   const { currentTenant = {} } = app
-  const {
-    licenses: {
-      list: licenseList = [],
-      loading: licenseLoading,
-      loaded: licenseLoaded,
-      error: licenseError,
-    } = {},
-  } = licenses
-  const {
-    domains: {
-      list: domainsList = [],
-      loading: domainsLoading,
-      loaded: domainsLoaded,
-      error: domainsError,
-    } = {},
-  } = domains
-  const {
-    users: { list: usersList = [], loading: usersLoading, loaded: usersLoaded, error: usersError },
-  } = users
+  const tenantDomain = currentTenant?.defaultDomainName
 
-  const action = () => {
-    dispatch(listLicenses({ tenantDomain: currentTenant.defaultDomainName }))
-    dispatch(listDomains({ tenantDomain: currentTenant.defaultDomainName }))
-    dispatch(listUsers({ tenantDomain: currentTenant.defaultDomainName }))
-  }
+  const [addUser, { data: addUserResult, isFetching: addUserFetching, error: addUserError }] =
+    useAddUserMutation()
+  const {
+    data: licenseList = [],
+    isFetching: licensesFetching,
+    isSuccess: licensesSuccess,
+    error: licensesError,
+  } = useListLicensesQuery({ tenantDomain })
+
+  const {
+    data: usersList = [],
+    isFetching: usersFetching,
+    isSuccess: usersSuccess,
+    error: usersError,
+  } = useListUsersQuery({ tenantDomain })
+
+  const {
+    data: domainsList = [],
+    isFetching: domainsFetching,
+    error: domainsError,
+  } = useListDomainsQuery({ tenantDomain })
 
   const onSubmit = async (values) => {
     // eslint-disable-next-line no-undef
-    // @todo bind this
+    // @todo bind this to create user
+    // addUser({ user: values })
     window.alert(JSON.stringify(values, 0, 2))
   }
 
@@ -83,20 +80,9 @@ export default function AddUser() {
     mustChangePass: false,
   }
 
-  useEffect(() => {
-    async function load() {
-      if (currentTenant.defaultDomainName) {
-        dispatch(listLicenses({ tenantDomain: currentTenant.defaultDomainName }))
-        dispatch(listDomains({ tenantDomain: currentTenant.defaultDomainName }))
-        dispatch(listUsers({ tenant: currentTenant }))
-      }
-    }
-    load()
-  }, [currentTenant, dispatch])
-
   return (
     <div>
-      <TenantSelector action={action} />
+      <TenantSelector />
       <hr />
       <div className="bg-white rounded p-5">
         <CCard>
@@ -123,14 +109,14 @@ export default function AddUser() {
                         <RFFCFormSelect
                           // label="Domain"
                           name="domain"
-                          placeholder={domainsLoaded ? 'Select domain' : 'Loading...'}
+                          placeholder={domainsFetching ? 'Loading...' : 'Select domain'}
                           values={domainsList.map((domain) => ({
                             value: domain.id,
                             label: domain.id,
                           }))}
                           validate={required}
                         />
-                        {!domainsLoaded && !domainsLoading && domainsError && (
+                        {!domainsFetching && domainsError && (
                           <span>Failed to load list of domains</span>
                         )}
                       </CInputGroup>
@@ -210,11 +196,9 @@ export default function AddUser() {
                       <Condition when="License" is={true}>
                         <span>Licenses</span>
                         <br />
-                        {licenseLoading && !licenseLoaded && <CSpinner />}
-                        {!licenseLoading && !licenseLoaded && licenseError && (
-                          <span>Error loading licenses</span>
-                        )}
-                        {licenseLoaded &&
+                        {licensesFetching && <CSpinner />}
+                        {!licensesFetching && licensesError && <span>Error loading licenses</span>}
+                        {licensesSuccess &&
                           licenseList.map((license) => (
                             <RFFCFormCheck
                               key={license.id}
@@ -241,19 +225,17 @@ export default function AddUser() {
                         label="Copy group membership from other user"
                         values={
                           (!usersError &&
-                            usersLoaded &&
+                            usersSuccess &&
                             usersList.map((user) => {
                               // value, name
                               return { value: user.id, name: user.displayName }
                             })) ||
                           []
                         }
-                        placeholder={usersLoaded ? 'Select user' : 'Loading...'}
+                        placeholder={usersFetching ? 'Loading...' : 'Select user'}
                         name="CopyFrom"
                       />
-                      {!usersLoaded && !usersLoading && usersError && (
-                        <span>Failed to load list of users</span>
-                      )}
+                      {!usersSuccess && usersError && <span>Failed to load list of users</span>}
                     </CCol>
                   </CRow>
                   <CRow>
@@ -271,6 +253,8 @@ export default function AddUser() {
                       </CButton>
                     </CCol>
                   </CRow>
+                  {/* @todo remove this message */}
+                  Note: does not submit at the moment
                   {process.env.NODE_ENV !== 'production' && (
                     <>
                       <pre>{JSON.stringify(values, null, 2)}</pre>

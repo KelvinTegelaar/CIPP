@@ -9,29 +9,29 @@ import {
   CSpinner,
 } from '@coreui/react'
 import avatar0 from './../../assets/images/avatars/0.jpg'
-import { authApi } from '../../store/api/auth'
+import { useLoadClientPrincipalQuery } from '../../store/api/auth'
 
 const ViewProfile = () => {
-  const { data: profile, isLoading } = authApi.endpoints.loadClientPrincipal.useQueryState()
+  const { data: profile, isFetching } = useLoadClientPrincipalQuery()
 
   return (
     <CCard style={{ width: '30rem' }}>
-      {isLoading && <CSpinner />}
-      {!isLoading && (
+      {isFetching && <CSpinner />}
+      {!isFetching && (
         <>
           <CCardImage orientation="top" src={avatar0} />
           <CCardBody>
-            <CCardTitle>Identity: {profile.clientPrincipal.userDetails}</CCardTitle>
+            <CCardTitle>Identity: {profile.clientPrincipal?.userDetails}</CCardTitle>
           </CCardBody>
           <CListGroup flush>
             <CListGroupItem>
-              Identity Provider: {profile.clientPrincipal.identityProvider}
+              Identity Provider: {profile.clientPrincipal?.identityProvider}
             </CListGroupItem>
-            <CListGroupItem>User ID: {profile.clientPrincipal.userId}</CListGroupItem>
+            <CListGroupItem>User ID: {profile.clientPrincipal?.userId}</CListGroupItem>
             <CListGroupItem>
-              Roles ({profile.clientPrincipal.userRoles.length})
+              Roles ({profile.clientPrincipal?.userRoles.length})
               <ul>
-                {profile.clientPrincipal.userRoles.map((r, index) => (
+                {profile.clientPrincipal?.userRoles.map((r, index) => (
                   <li key={index}>{r}</li>
                 ))}
               </ul>
