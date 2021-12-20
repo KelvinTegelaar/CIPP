@@ -34,6 +34,7 @@ export default function CippDatatable({
   reportName,
   columns = [],
   tableProps: {
+    theme = 'dark',
     pagination = true,
     responsive = true,
     dense = true,
@@ -99,9 +100,10 @@ export default function CippDatatable({
         <div>
           <hr />
           <DataTable
-            sty
+            // theme={theme}
             subHeader={subheader}
             subHeaderComponent={subHeaderComponentMemo}
+            subHeaderAlign="left"
             paginationResetDefaultPage={resetPaginationToggle}
             actions={actionsMemo}
             pagination={pagination}
