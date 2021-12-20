@@ -3,19 +3,27 @@ import TenantSelector from 'src/components/cipp/TenantSelector'
 import { useSelector } from 'react-redux'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 import CippDatatable from '../../../components/cipp/CippDatatable'
-import cellGetProperty from '../../../components/cipp/cellGetProperty'
 import { cellBooleanFormatter } from '../../../components/cipp'
-import { faUser, faCog, faBars } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faCog } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Link } from 'react-router-dom'
 
-const dropdown = (cell, row, rowIndex, formatExtraData) => {
+const dropdown = (row = {}) => {
   return (
     <CDropdown>
       <CDropdownToggle size="sm" color="link">
         <FontAwesomeIcon icon={faBars} />
       </CDropdownToggle>
       <CDropdownMenu>
-        <CDropdownItem href="#">Edit Group</CDropdownItem>
+        <CDropdownItem href="#">
+          <Link
+            className="dropdown-item"
+            to={`/identity/administration/groups/edit?groupId=${row.id}&tenantDomain=${row.primDomain}`}
+          >
+            <FontAwesomeIcon icon={faCog} className="me-2" />
+            Edit Group
+          </Link>
+        </CDropdownItem>
       </CDropdownMenu>
     </CDropdown>
   )

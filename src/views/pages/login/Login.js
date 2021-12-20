@@ -1,20 +1,22 @@
 import React from 'react'
 import { CSpinner } from '@coreui/react'
-import { Redirect } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import { useLoadClientPrincipalQuery } from '../../../store/api/auth'
 import { FullScreenLoading } from '../../../components'
 
 const Login = () => {
-  const { data: clientPrincipal, isLoading } = useLoadClientPrincipalQuery()
+  const { data: profile, isFetching, error } = useLoadClientPrincipalQuery()
 
-  if (isLoading) {
+  const isAuthenticated = !!profile?.clientPrincipal || error
+
+  if (isFetching) {
     return <FullScreenLoading />
-  } else if (Object.keys(clientPrincipal).length === 0) {
+  } else if (!isAuthenticated) {
     const root = window.location.protocol + '//' + window.location.host
     window.location.href = root + '/.auth/login/azure'
     return <CSpinner />
   } else {
-    return <Redirect to="/" />
+    return <Navigate to="/home" />
   }
 }
 
