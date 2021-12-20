@@ -248,7 +248,7 @@ const _nav = [
       {
         component: CNavItem,
         name: 'List Defender for endpoint (Alpha)',
-        to: '/endpoint/MEM/list-defender',
+        to: '/endpoint/defender/list-defender',
       },
     ],
   },

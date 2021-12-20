@@ -21,36 +21,49 @@ const columns = [
     name: 'ECP Enabled',
     sortable: true,
     cell: cellBooleanFormatter(),
+    center: true,
   },
   {
     selector: (row) => row['ewsenabled'],
     name: 'EWS Enabled',
     sortable: true,
     cell: cellBooleanFormatter(),
+    center: true,
   },
   {
     selector: (row) => row['imapenabled'],
     name: 'IMAP Enabled',
     sortable: true,
     cell: cellBooleanFormatter(),
+    center: true,
   },
   {
     selector: (row) => row['mapienabled'],
     name: 'MAPI Enabled',
     sortable: true,
     cell: cellBooleanFormatter(),
+    center: true,
   },
   {
     selector: (row) => row['owaenabled'],
     name: 'OWA Enabled',
     sortable: true,
     cell: cellBooleanFormatter(),
+    center: true,
   },
   {
     selector: (row) => row['popenabled'],
     name: 'POP Enabled',
     sortable: true,
     cell: cellBooleanFormatter(),
+    center: true,
+  },
+  {
+    selector: (row) => row['activesyncenabled'],
+    name: 'ActiveSync Enabled',
+    sortable: true,
+    cell: cellBooleanFormatter(),
+    center: true,
   },
 ]
 
@@ -66,7 +79,7 @@ const MailboxCASList = () => {
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         <CippDatatable
           keyField="id"
-          reportName={`${tenant?.defaultDomainName}-Autopilot-List`}
+          reportName={`${tenant?.defaultDomainName}-ClientAccessSettings-List`}
           path="/api/ListMailboxCAS"
           columns={columns}
           params={{ TenantFilter: tenant?.defaultDomainName }}

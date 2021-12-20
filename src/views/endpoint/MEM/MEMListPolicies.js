@@ -45,6 +45,12 @@ const columns = [
 const IntuneList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
+  // eslint-disable-next-line react/prop-types
+  const ExpandedComponent = ({ data }) => (
+    // eslint-disable-next-line react/prop-types
+    <pre>{JSON.stringify(data, null, 2)}</pre>
+  )
+
   return (
     <div>
       <TenantSelector />
@@ -53,8 +59,13 @@ const IntuneList = () => {
         <h3>Endpoint Manager - Policy List</h3>
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         <CippDatatable
+          tableProps={{
+            expandableRows: true,
+            expandableRowsComponent: ExpandedComponent,
+            expandOnRowClicked: true,
+          }}
           keyField="id"
-          reportName={`${tenant?.defaultDomainName}-Applications-List`}
+          reportName={`${tenant?.defaultDomainName}-MEMPolicies-List`}
           path="/api/ListIntunePolicy?type=ESP"
           columns={columns}
           params={{ TenantFilter: tenant?.defaultDomainName }}
