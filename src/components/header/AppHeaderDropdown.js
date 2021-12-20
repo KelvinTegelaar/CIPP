@@ -1,6 +1,6 @@
 import React from 'react'
 import { CAvatar, CDropdown, CDropdownHeader, CDropdownMenu, CDropdownToggle } from '@coreui/react'
-import { faUser, faCog, faBars } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faCog, faBars, faBook } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom'
 import avatar0 from './../../assets/images/avatars/0.jpg'
@@ -22,9 +22,9 @@ const AppHeaderDropdown = () => {
           <FontAwesomeIcon icon={faUser} className="me-2" />
           Profile
         </Link>
-        <Link className="dropdown-item" to="/profile/settings">
-          <FontAwesomeIcon icon={faCog} className="me-2" />
-          Settings
+        <Link className="dropdown-item" to="/logs">
+          <FontAwesomeIcon icon={faBook} className="me-2" />
+          Logbook
         </Link>
       </CDropdownMenu>
     </CDropdown>
