@@ -1,7 +1,7 @@
 import React from 'react'
 import ExportPDFButton from 'src/components/cipp/PdfButton'
 import { CButton, CSpinner, CFormInput } from '@coreui/react'
-import DataTable, { TableProps } from 'react-data-table-component'
+import DataTable from 'react-data-table-component'
 import { useListDatatableQuery } from '../../store/api/datatable'
 import PropTypes from 'prop-types'
 
@@ -50,21 +50,23 @@ export default function CippDatatable({
 }) {
   const { data = [], isFetching, error } = useListDatatableQuery({ path, params })
 
-  const defaultActions = [
-    <ExportPDFButton
-      key="export-pdf-action"
-      pdfData={data}
-      pdfHeaders={columns}
-      pdfSize="A4"
-      reportName={reportName}
-    />,
-  ]
+  const actionsMemo = React.useMemo(() => {
+    const defaultActions = [
+      <ExportPDFButton
+        key="export-pdf-action"
+        pdfData={data}
+        pdfHeaders={columns}
+        pdfSize="A4"
+        reportName={reportName}
+      />,
+    ]
 
-  actions.forEach((action) => {
-    defaultActions.push(action)
-  })
+    actions.forEach((action) => {
+      defaultActions.push(action)
+    })
 
-  const actionsMemo = React.useMemo(() => defaultActions, [defaultActions])
+    return defaultActions
+  }, [columns, data, reportName, actions])
 
   const [filterText, setFilterText] = React.useState('')
   const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false)
@@ -129,5 +131,5 @@ CippDatatable.propTypes = {
   params: PropTypes.object,
   reportName: PropTypes.string.isRequired,
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
-  tableProps: PropTypes.shape(TableProps),
+  tableProps: PropTypes.object,
 }

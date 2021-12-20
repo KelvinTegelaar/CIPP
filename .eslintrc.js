@@ -19,6 +19,7 @@ module.exports = {
   ],
   plugins: ['react', 'react-hooks'],
   rules: {
+    'react/no-children-prop': 'off', // disabled for react router v6
     // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
     // e.g. "@typescript-eslint/explicit-function-return-type": "off",
   },

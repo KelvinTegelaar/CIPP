@@ -1,17 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { CCard, CCol, CRow, CSpinner } from '@coreui/react'
 import PropTypes from 'prop-types'
-
 import useQuery from '../../../hooks/useQuery'
-import { useDispatch, useSelector } from 'react-redux'
-import { setModalContent, showModal } from '../../../store/modules/modal'
-// import { setModal } from '../../../store/features/modal'
-import {
-  listUser,
-  listUserConditionalAccessPolicies,
-  unloadViewUser,
-} from '../../../store/modules/users'
-import { listUserMailboxDetails } from '../../../store/modules/mailbox'
+import { useDispatch } from 'react-redux'
+import { setModalContent } from '../../../store/features/modal'
 import UserDevices from './UserDevices'
 import UserDetails from './UserDetails'
 import UserLastLoginDetails from './UserLastLoginDetails'
@@ -25,11 +17,7 @@ import UserEmailSettings from './UserEmailSettings'
 import UserEmailPermissions from './UserEmailPermissions'
 import UserGroups from './UserGroups'
 import UserSigninLogs from './UserSigninLogs'
-import {
-  useListUserConditionalAccessPoliciesQuery,
-  useListUserQuery,
-  useListUsersQuery,
-} from '../../../store/api/users'
+import { useListUserQuery } from '../../../store/api/users'
 
 const ViewUser = (props) => {
   const dispatch = useDispatch()
@@ -50,6 +38,7 @@ const ViewUser = (props) => {
         setModalContent({
           body: 'Error invalid request, could not load requested user.',
           title: 'Invalid Request',
+          visible: true,
         }),
       )
       setQueryError(true)

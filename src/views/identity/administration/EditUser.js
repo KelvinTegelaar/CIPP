@@ -13,7 +13,6 @@ import {
   CSpinner,
 } from '@coreui/react'
 import useQuery from '../../../hooks/useQuery'
-import { setModalContent, showModal } from '../../../store/modules/modal'
 import { useDispatch } from 'react-redux'
 import { Form } from 'react-final-form'
 import {
@@ -28,6 +27,7 @@ import countryList from '../../../assets/countrylist.json'
 import { useEditUserMutation, useListUserQuery, useListUsersQuery } from '../../../store/api/users'
 import { useListDomainsQuery } from '../../../store/api/domains'
 import { useListLicensesQuery } from '../../../store/api/licenses'
+import { setModalContent } from '../../../store/features/modal'
 
 const EditUser = () => {
   const dispatch = useDispatch()
@@ -69,9 +69,9 @@ const EditUser = () => {
         setModalContent({
           body: 'Error invalid request, could not load requested user.',
           title: 'Invalid Request',
+          visible: true,
         }),
       )
-      dispatch(showModal())
       setQueryError(true)
     } else {
       setQueryError(false)
