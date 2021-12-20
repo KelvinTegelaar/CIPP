@@ -104,7 +104,7 @@ const PhishingPoliciesList = React.lazy(() =>
 const SecurityComplianceAlerts = React.lazy(() => import('./views/security/reports/ListAlerts'))
 
 const routes = [
-  { path: '/', exact: true, name: 'Home' },
+  // { path: '/', exact: true, name: 'Home' },
   { path: '/home', name: 'Home', component: Home },
   { path: '/profile', name: 'Profile' },
   { path: '/profile/view', name: 'View', component: ViewProfile },

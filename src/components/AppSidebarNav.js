@@ -1,8 +1,32 @@
 import React from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
+import { NavLink as BaseNavLink, useLocation } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 import { CBadge } from '@coreui/react'
+
+const NavLink = React.forwardRef(({ activeClassName, activeStyle, ...props }, ref) => {
+  return (
+    <BaseNavLink
+      ref={ref}
+      {...props}
+      className={({ isActive }) =>
+        [props.className, isActive ? activeClassName : null].filter(Boolean).join(' ')
+      }
+      style={({ isActive }) => ({
+        ...props.style,
+        ...(isActive ? activeStyle : null),
+      })}
+    />
+  )
+})
+
+NavLink.displayName = 'NavLink'
+NavLink.propTypes = {
+  activeClassName: PropTypes.string,
+  activeStyle: PropTypes.object,
+  className: PropTypes.string,
+  style: PropTypes.object,
+}
 
 export const AppSidebarNav = ({ items }) => {
   const location = useLocation()

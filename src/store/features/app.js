@@ -14,7 +14,7 @@ export const appSlice = createSlice({
   name: 'app',
   initialState,
   reducers: {
-    toggleSidebarShow: (state, action) => {
+    toggleSidebarShow: (state) => {
       state.sidebarShow = !state.sidebarShow
     },
     toggleSidebarUnfoldable: (state, action) => {
@@ -26,11 +26,19 @@ export const appSlice = createSlice({
     setCurrentTheme: (state, action) => {
       state.currentTheme = action.payload?.theme
     },
+    setSidebarVisible: (state, action) => {
+      state.sidebarShow = action.payload?.visible
+    },
   },
 })
 
-export const { toggleSidebarShow, toggleSidebarUnfoldable, setCurrentTenant, setCurrentTheme } =
-  appSlice.actions
+export const {
+  toggleSidebarShow,
+  toggleSidebarUnfoldable,
+  setCurrentTenant,
+  setCurrentTheme,
+  setSidebarVisible,
+} = appSlice.actions
 
 export default persistReducer(
   {

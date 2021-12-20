@@ -15,7 +15,7 @@ import 'simplebar/dist/simplebar.min.css'
 
 // sidebar nav config
 import navigation from '../_nav'
-import { toggleSidebarShow, toggleSidebarUnfoldable } from '../store/modules/app'
+import { setSidebarVisible } from '../store/features/app'
 
 const AppSidebar = () => {
   const dispatch = useDispatch()
@@ -28,7 +28,7 @@ const AppSidebar = () => {
       unfoldable={unfoldable}
       visible={sidebarShow}
       onVisibleChange={(visible) => {
-        dispatch(toggleSidebarShow({ sidebarShow: !visible }))
+        dispatch(setSidebarVisible({ visible }))
       }}
     >
       <CSidebarBrand className="d-none d-md-flex" to="/">
