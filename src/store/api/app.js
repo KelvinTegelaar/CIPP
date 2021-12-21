@@ -53,9 +53,6 @@ export const appApi = createApi({
         addChocoApp,
       }) => ({
         path: '/api/ExecNotificationConfig',
-        params: {
-          Tenants: true,
-        },
         data: {
           email: email,
           webhook: webhook,

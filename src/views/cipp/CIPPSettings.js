@@ -16,6 +16,7 @@ import {
   CRow,
   CTabContent,
   CTabPane,
+  CForm,
 } from '@coreui/react'
 import {
   useLazyExecClearCacheQuery,
@@ -31,7 +32,8 @@ import DataTable from 'react-data-table-component'
 import { useListTenantsQuery } from '../../store/api/tenants'
 import { setModalContent } from '../../store/features/modal'
 import { useDispatch } from 'react-redux'
-import { RFFCFormSwitch } from '../../components/RFFComponents'
+import { TenantSelector } from '../../components/cipp'
+import { RFFCFormSwitch, RFFCFormInput } from '../../components/RFFComponents'
 import { Form } from 'react-final-form'
 
 const CIPPSettings = () => {
@@ -243,7 +245,24 @@ const ExcludedTenantsSettings = () => {
   return (
     <>
       <CRow className="mb-3">
-        <CCol md={6}></CCol>
+        <CCol md={12}>
+          <CCard>
+            <CCardHeader>
+              <CCardTitle>
+                Excluded Tenant List
+                <CButton
+                  style={{ position: 'absolute', right: '5px' }}
+                  className="text-white"
+                  size="sm"
+                  href="#"
+                >
+                  Add Excluded Tenant
+                </CButton>
+              </CCardTitle>
+            </CCardHeader>
+            <CCardBody></CCardBody>
+          </CCard>
+        </CCol>
       </CRow>
     </>
   )
@@ -338,6 +357,13 @@ const SecuritySettings = () => {
 const NotificationsSettings = () => {
   //to post settings
   const [configNotifications, notificationConfigResult] = useLazyExecNotificationConfigQuery()
+
+  const onSubmit = (values) => {
+    // @todo bind this
+    window.alert(JSON.stringify(values))
+    console.log(values)
+    configNotifications(values)
+  }
   //to get current settings
   const [listNotification, notificationListResult] = useLazyListNotificationConfigQuery()
   //todo: Replace with prettier sliders etc
@@ -349,66 +375,72 @@ const NotificationsSettings = () => {
         <span>Error loading data</span>
       )}
       {notificationListResult.isSuccess && (
-        <CCol md={6}>
-          <CFormLabel>Email: </CFormLabel>
-          <CFormInput
-            size="sm"
-            name="email"
-            value={notificationListResult.data?.email}
-            placeholder="E-mail Address"
-          ></CFormInput>
-          <br />
-          <CFormLabel>Webhook Address: </CFormLabel>
-          <CFormInput
-            size="sm"
-            name="email"
-            value={notificationListResult.data?.Webhook}
-            placeholder="Webhook Address"
-          ></CFormInput>
-          <br />
-          <CFormLabel>
-            Choose which types of updates you want to receive. This notification will be sent every
-            30 minutes.
-          </CFormLabel>
-          <br />
-          <CFormCheck
-            checked={notificationListResult.data?.AddUser}
-            name="AddUser"
-            label="New Accounts created via CIPP"
-          />
-          <CFormCheck
-            checked={notificationListResult.data?.RemoveUser}
-            name="RemoveUser"
-            label="Removed Accounts via CIPP"
-          />
-          <CFormCheck
-            checked={notificationListResult.data?.AddChocoApp}
-            name="AddChocoApp"
-            label="New applictions added via CIPP"
-          />
-          <CFormCheck
-            checked={notificationListResult.data?.Addpolicy}
-            name="Addpolicy"
-            label="New Policies added via CIPP"
-          />
-          <CFormCheck
-            checked={notificationListResult.data?.AddStandardsDeploy}
-            name="AddStandardsDeploy"
-            label="New Standards added via CIPP"
-          />
-          <CFormCheck
-            checked={notificationListResult.data?.RemoveStandard}
-            name="RemoveStandard"
-            label="Removed Standards via CIPP"
-          />
-          <CFormCheck
-            checked={notificationListResult.data?.AddUser}
-            name="AddUser"
-            label="Token Refresh Events"
-          />
-          <br></br>
-          <CButton className="text-white">Set Notification Settings</CButton>
-        </CCol>
+        <Form
+          initialValues={{ ...notificationListResult.data }}
+          onSubmit={onSubmit}
+          render={({ handleSubmit, submitting, values }) => {
+            return (
+              <CForm onSubmit={handleSubmit}>
+                <CCol md={6}>
+                  <CCol md={6}>
+                    <RFFCFormInput type="text" name="email" label="E-mail" />
+                  </CCol>
+                  <CCol md={6}>
+                    <RFFCFormInput type="text" name="webhook" label="Webhook" />
+                  </CCol>
+                  <CFormLabel>
+                    Choose which types of updates you want to receive. This notification will be
+                    sent every 30 minutes.
+                  </CFormLabel>
+                  <br />
+                  <CFormCheck
+                    checked={notificationListResult.data?.AddUser}
+                    name="AddUser"
+                    label="New Accounts created via CIPP"
+                  />
+                  <CFormCheck
+                    checked={notificationListResult.data?.RemoveUser}
+                    name="RemoveUser"
+                    label="Removed Accounts via CIPP"
+                  />
+                  <CFormCheck
+                    checked={notificationListResult.data?.AddChocoApp}
+                    name="AddChocoApp"
+                    label="New applictions added via CIPP"
+                  />
+                  <CFormCheck
+                    checked={notificationListResult.data?.Addpolicy}
+                    name="Addpolicy"
+                    label="New Policies added via CIPP"
+                  />
+                  <CFormCheck
+                    checked={notificationListResult.data?.AddStandardsDeploy}
+                    name="AddStandardsDeploy"
+                    label="New Standards added via CIPP"
+                  />
+                  <CFormCheck
+                    checked={notificationListResult.data?.RemoveStandard}
+                    name="RemoveStandard"
+                    label="Removed Standards via CIPP"
+                  />
+                  <CFormCheck
+                    checked={notificationListResult.data?.AddUser}
+                    name="AddUser"
+                    label="Token Refresh Events"
+                  />
+                  <br></br>
+                  <CButton
+                    className="text-white"
+                    disabled={notificationConfigResult.isFetching}
+                    type="submit"
+                  >
+                    Set Notification Settings
+                  </CButton>
+                </CCol>
+              </CForm>
+            )
+          }}
+        />
       )}
     </>
   )
