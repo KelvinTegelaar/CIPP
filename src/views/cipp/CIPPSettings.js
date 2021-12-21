@@ -31,6 +31,7 @@ import {
   useLazyListExcludedTenantsQuery,
   useLazyListNotificationConfigQuery,
   useLazyExecExcludeTenantQuery,
+  useLazyExecAddExcludeTenantQuery,
 } from '../../store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faTrash, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
@@ -252,6 +253,8 @@ const GeneralSettings = () => {
 const ExcludedTenantsSettings = () => {
   const [excludedTenants, exTenantResult] = useLazyListExcludedTenantsQuery()
   const [removeExcludedTenant, exRemovalResult] = useLazyExecExcludeTenantQuery()
+  const [addExcludedTenant, exAddResult] = useLazyExecAddExcludeTenantQuery()
+
   const dispatch = useDispatch()
   const handleRemoveExclusion = (domain) => {
     dispatch(
@@ -279,7 +282,7 @@ const ExcludedTenantsSettings = () => {
             <TenantSelector />
           </div>
         ),
-        //onConfirm: () => clearCache(),
+        //onConfirm: () => addExcludedTenant(),
         confirmLabel: 'Continue',
         cancelLabel: 'Cancel',
         visible: true,
