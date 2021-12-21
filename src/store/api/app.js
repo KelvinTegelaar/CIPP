@@ -40,6 +40,47 @@ export const appApi = createApi({
         return result.Results
       },
     }),
+    execNotificationConfig: builder.query({
+      query: ({
+        email,
+        webhook,
+        tokenUpdater,
+        removeuser,
+        removeStandard,
+        addPolicy,
+        addUser,
+        AddStandardsDeploy,
+        addChocoApp,
+      }) => ({
+        path: '/api/ExecNotificationConfig',
+        params: {
+          Tenants: true,
+        },
+        data: {
+          email: email,
+          webhook: webhook,
+          tokenUpdater: tokenUpdater,
+          removeuser: removeuser,
+          removeStandard: removeStandard,
+          addPolicy: addPolicy,
+          addUser: addUser,
+          AddStandardsDeploy: AddStandardsDeploy,
+          addChocoApp: addChocoApp,
+        },
+        method: 'post',
+      }),
+      transformResponse: (response) => {
+        if (!response?.Results) {
+          return []
+        }
+        return response?.Results.map((res) =>
+          res
+            .replace('<br>', '')
+            .split(': ')
+            .reduce((pv, cv) => ({ tenantDomain: pv, result: cv })),
+        )
+      },
+    }),
     execTenantsAccessCheck: builder.query({
       query: ({ tenantDomains }) => ({
         path: '/api/ExecAccessChecks',
@@ -71,6 +112,11 @@ export const appApi = createApi({
         },
       }),
     }),
+    listNotificationConfig: builder.query({
+      query: () => ({
+        path: '/api/listNotificationConfig',
+      }),
+    }),
   }),
 })
 
@@ -84,4 +130,6 @@ export const {
   useLazyExecTenantsAccessCheckQuery,
   useExecClearCacheQuery,
   useLazyExecClearCacheQuery,
+  useLazyExecNotificationConfigQuery,
+  useLazyListNotificationConfigQuery,
 } = appApi

@@ -8,6 +8,9 @@ import {
   CCardTitle,
   CCol,
   CContainer,
+  CFormCheck,
+  CFormInput,
+  CFormLabel,
   CNav,
   CNavItem,
   CRow,
@@ -16,8 +19,10 @@ import {
 } from '@coreui/react'
 import {
   useLazyExecClearCacheQuery,
+  useLazyExecNotificationConfigQuery,
   useLazyExecPermissionsAccessCheckQuery,
   useLazyExecTenantsAccessCheckQuery,
+  useLazyListNotificationConfigQuery,
 } from '../../store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
@@ -26,6 +31,8 @@ import DataTable from 'react-data-table-component'
 import { useListTenantsQuery } from '../../store/api/tenants'
 import { setModalContent } from '../../store/features/modal'
 import { useDispatch } from 'react-redux'
+import { RFFCFormSwitch } from '../../components/RFFComponents'
+import { Form } from 'react-final-form'
 
 const CIPPSettings = () => {
   const [active, setActive] = useState(1)
@@ -42,7 +49,7 @@ const CIPPSettings = () => {
               Excluded Tenants
             </CNavItem>
             <CNavItem active={active === 3} onClick={() => setActive(3)} href="javascript:void(0);">
-              Security
+              Backend
             </CNavItem>
             <CNavItem active={active === 4} onClick={() => setActive(4)} href="javascript:void(0);">
               Notifications
@@ -140,8 +147,6 @@ const GeneralSettings = () => {
     )
   }
 
-  console.log(accessCheckResult)
-
   return (
     <div>
       <CRow className="mb-3">
@@ -235,13 +240,136 @@ const GeneralSettings = () => {
 }
 
 const ExcludedTenantsSettings = () => {
-  return <div>exclude tenants</div>
+  return (
+    <>
+      <CRow className="mb-3">
+        <CCol md={6}></CCol>
+      </CRow>
+    </>
+  )
 }
 
 const SecuritySettings = () => {
-  return <div>security</div>
+  return (
+    <div>
+      <>
+        <CRow className="mb-3">
+          <CCol md={4}>
+            <CCard>
+              <CCardHeader>
+                <CCardTitle>Resource Group</CCardTitle>
+              </CCardHeader>
+              <CCardBody>
+                The Resource group contains all the CIPP resources in your tenant, except the SAM
+                Application <br /> <br />
+                <CButton>Go to Resource Group</CButton>
+              </CCardBody>
+            </CCard>
+          </CCol>
+          <CCol md={4}>
+            <CCard>
+              <CCardHeader>
+                <CCardTitle>Key Vault</CCardTitle>
+              </CCardHeader>
+              <CCardBody>
+                The keyvault allows you to check token information. By default you do not have
+                access.
+                <br /> <br />
+                <CButton>Go to Keyvault</CButton>
+              </CCardBody>
+            </CCard>
+          </CCol>
+          <CCol md={4}>
+            <CCard>
+              <CCardHeader>
+                <CCardTitle>Static Web App (Role Management)</CCardTitle>
+              </CCardHeader>
+              <CCardBody>
+                The Statis Web App role management allows you to invite other users to the
+                application.
+                <br /> <br />
+                <CButton>Go to Role Management</CButton>
+              </CCardBody>
+            </CCard>
+          </CCol>
+        </CRow>
+        <CRow className="mb-3">
+          <CCol md={4}>
+            <CCard>
+              <CCardHeader>
+                <CCardTitle>Function App (Deployment Center)</CCardTitle>
+              </CCardHeader>
+              <CCardBody>
+                The Function App Deployment Center allows you to run updates on the API
+                <br /> <br />
+                <CButton>Go to Function App Deployment Center</CButton>
+              </CCardBody>
+            </CCard>
+          </CCol>
+          <CCol md={4}>
+            <CCard>
+              <CCardHeader>
+                <CCardTitle>Function App (Configuration)</CCardTitle>
+              </CCardHeader>
+              <CCardBody>
+                At the Function App Configuration you can check the status of the API access to your
+                keyvault <br /> <br />
+                <CButton>Go to Function App Configuration</CButton>
+              </CCardBody>
+            </CCard>
+          </CCol>
+          <CCol md={4}>
+            <CCard>
+              <CCardHeader>
+                <CCardTitle>Function App (Overview)</CCardTitle>
+              </CCardHeader>
+              <CCardBody>
+                At the function App Overview, you can stop and start the backend API <br /> <br />
+                <CButton>Go to Function App Overview</CButton>
+              </CCardBody>
+            </CCard>
+          </CCol>
+        </CRow>
+      </>
+    </div>
+  )
 }
 
 const NotificationsSettings = () => {
-  return <div>notifications</div>
+  //to post settings
+  const [configNotifications, notificationConfigResult] = useLazyExecNotificationConfigQuery()
+  //to get current settings
+  const [listNotification, notificationListResult] = useLazyListNotificationConfigQuery()
+  //todo: Replace with prettier sliders etc.
+  return (
+    <>
+      {notificationListResult.isFetching && <FontAwesomeIcon icon={faCircleNotch} spin size="1x" />}
+      {!notificationListResult.isFetching && notificationListResult.error && (
+        <span>Error loading data</span>
+      )}
+
+      <CCol md={6}>
+        <CFormLabel>Email: </CFormLabel>
+        <CFormInput size="sm" placeholder="E-mail Address"></CFormInput>
+        <br />
+        <CFormLabel>Webhook Address: </CFormLabel>
+        <CFormInput size="sm" placeholder="Webhook Address"></CFormInput>
+        <br />
+        <CFormLabel>
+          Choose which types of updates you want to receive. This notification will be sent every 30
+          minutes.
+        </CFormLabel>
+        <br />
+        <CFormCheck label="New Accounts created via CIPP" />
+        <CFormCheck label="Removed Accounts via CIPP" />
+        <CFormCheck label="New applictions added via CIPP" />
+        <CFormCheck label="New Policies added via CIPP" />
+        <CFormCheck label="New Standards added via CIPP" />
+        <CFormCheck label="Removed Standards via CIPP" />
+        <CFormCheck label="Token Refresh Events" />
+        <br></br>
+        <CButton className="text-white">Set Notification Settings</CButton>
+      </CCol>
+    </>
+  )
 }
