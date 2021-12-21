@@ -57,7 +57,7 @@ export const appApi = createApi({
           email: email,
           webhook: webhook,
           tokenUpdater: tokenUpdater,
-          removeuser: removeUser,
+          removeUser: removeUser,
           removeStandard: removeStandard,
           addPolicy: addPolicy,
           addUser: addUser,
