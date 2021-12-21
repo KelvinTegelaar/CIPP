@@ -21,6 +21,7 @@ const _nav = [
   {
     component: CNavItem,
     name: 'Home',
+    section: 'Home',
     to: '/home',
     icon: <FontAwesomeIcon icon={faHome} className="nav-icon" />,
   },
@@ -30,6 +31,7 @@ const _nav = [
   },
   {
     component: CNavGroup,
+    section: 'Identity Management',
     name: 'Administration',
     to: '/identity/administration',
     icon: <FontAwesomeIcon icon={faWrench} className="nav-icon" />,
@@ -59,6 +61,7 @@ const _nav = [
   {
     component: CNavGroup,
     name: 'Reports',
+    section: 'Identity Management',
     to: '/identity/reports',
     icon: <FontAwesomeIcon icon={faChartBar} className="nav-icon" />,
     items: [
@@ -86,6 +89,7 @@ const _nav = [
   {
     component: CNavGroup,
     name: 'Administration',
+    section: 'Tenant Administration',
     to: '/tenant/administration',
     icon: <FontAwesomeIcon icon={faCog} className="nav-icon" />,
     items: [
@@ -104,6 +108,7 @@ const _nav = [
   {
     component: CNavGroup,
     name: 'Standards',
+    section: 'Tenant Administration',
     to: '/tenant/standards',
     icon: <FontAwesomeIcon icon={faBook} className="nav-icon" />,
     items: [
@@ -141,6 +146,7 @@ const _nav = [
   {
     component: CNavGroup,
     name: 'Reports',
+    section: 'Security & Compliance',
     to: '/security/reports',
     icon: <FontAwesomeIcon icon={faChrome} className="nav-icon" />,
     items: [
@@ -158,6 +164,7 @@ const _nav = [
   {
     component: CNavGroup,
     name: 'Applications',
+    section: 'Endpoint Management',
     to: '/endpoint/applications',
     icon: <FontAwesomeIcon icon={faChrome} className="nav-icon" />,
     items: [
@@ -176,6 +183,7 @@ const _nav = [
   {
     component: CNavGroup,
     name: 'Autopilot',
+    section: 'Endpoint Management',
     to: '/endpoint/autopilot',
     icon: <FontAwesomeIcon icon={faTablet} className="nav-icon" />,
     items: [
@@ -214,6 +222,7 @@ const _nav = [
   {
     component: CNavGroup,
     name: 'MEM (Intune)',
+    section: 'Endpoint Management',
     to: '/endpoint/MEM',
     icon: <FontAwesomeIcon icon={faExchangeAlt} className="nav-icon" />,
     items: [
@@ -242,6 +251,7 @@ const _nav = [
   {
     component: CNavGroup,
     name: 'Defender',
+    section: 'Endpoint Management',
     to: '/endpoint/defender',
     icon: <FontAwesomeIcon icon={faShieldAlt} className="nav-icon" />,
     items: [
@@ -259,6 +269,7 @@ const _nav = [
   {
     component: CNavGroup,
     name: 'OneDrive',
+    section: 'Teams & Sharepoint',
     to: '/teams-share/onedrive',
     icon: <FontAwesomeIcon icon={faHdd} className="nav-icon" />,
     items: [
@@ -272,6 +283,7 @@ const _nav = [
   {
     component: CNavGroup,
     name: 'Sharepoint',
+    section: 'Teams & Sharepoint',
     to: '/teams-share/sharepoint',
     icon: <FontAwesomeIcon icon={faLink} className="nav-icon" />,
     items: [
@@ -285,6 +297,7 @@ const _nav = [
   {
     component: CNavGroup,
     name: 'Teams',
+    section: 'Teams & Sharepoint',
     to: '/teams-share/teams',
     icon: <FontAwesomeIcon icon={faUsers} className="nav-icon" />,
     items: [
@@ -317,6 +330,7 @@ const _nav = [
   {
     component: CNavGroup,
     name: 'Administration',
+    section: 'Email & Exchange',
     to: '/email/exchange',
     icon: <FontAwesomeIcon icon={faWrench} className="nav-icon" />,
     items: [
@@ -335,6 +349,7 @@ const _nav = [
   {
     component: CNavGroup,
     name: 'Reports',
+    section: 'Email & Exchange',
     to: '/email/reports',
     icon: <FontAwesomeIcon icon={faEnvelope} className="nav-icon" />,
     items: [
@@ -367,6 +382,7 @@ const _nav = [
   {
     component: CNavGroup,
     name: 'CIPP',
+    section: 'Settings',
     to: '/cipp/cipp',
     icon: <FontAwesomeIcon icon={faWrench} className="nav-icon" />,
     items: [
