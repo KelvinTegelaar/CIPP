@@ -46,6 +46,7 @@
     "core-js": "^3.18.3",
     "enzyme": "^3.11.0",
     "final-form": "^4.20.4",
+    "fuzzysort": "^1.1.4",
     "jspdf": "^2.4.0",
     "jspdf-autotable": "^3.5.23",
     "moment": "^2.29.1",
