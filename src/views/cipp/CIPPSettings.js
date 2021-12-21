@@ -340,36 +340,76 @@ const NotificationsSettings = () => {
   const [configNotifications, notificationConfigResult] = useLazyExecNotificationConfigQuery()
   //to get current settings
   const [listNotification, notificationListResult] = useLazyListNotificationConfigQuery()
-  //todo: Replace with prettier sliders etc.
+  //todo: Replace with prettier sliders etc
   return (
     <>
+      {notificationListResult.isUninitialized && listNotification()}
       {notificationListResult.isFetching && <FontAwesomeIcon icon={faCircleNotch} spin size="1x" />}
       {!notificationListResult.isFetching && notificationListResult.error && (
         <span>Error loading data</span>
       )}
-
-      <CCol md={6}>
-        <CFormLabel>Email: </CFormLabel>
-        <CFormInput size="sm" placeholder="E-mail Address"></CFormInput>
-        <br />
-        <CFormLabel>Webhook Address: </CFormLabel>
-        <CFormInput size="sm" placeholder="Webhook Address"></CFormInput>
-        <br />
-        <CFormLabel>
-          Choose which types of updates you want to receive. This notification will be sent every 30
-          minutes.
-        </CFormLabel>
-        <br />
-        <CFormCheck label="New Accounts created via CIPP" />
-        <CFormCheck label="Removed Accounts via CIPP" />
-        <CFormCheck label="New applictions added via CIPP" />
-        <CFormCheck label="New Policies added via CIPP" />
-        <CFormCheck label="New Standards added via CIPP" />
-        <CFormCheck label="Removed Standards via CIPP" />
-        <CFormCheck label="Token Refresh Events" />
-        <br></br>
-        <CButton className="text-white">Set Notification Settings</CButton>
-      </CCol>
+      {notificationListResult.isSuccess && (
+        <CCol md={6}>
+          <CFormLabel>Email: </CFormLabel>
+          <CFormInput
+            size="sm"
+            name="email"
+            value={notificationListResult.data?.email}
+            placeholder="E-mail Address"
+          ></CFormInput>
+          <br />
+          <CFormLabel>Webhook Address: </CFormLabel>
+          <CFormInput
+            size="sm"
+            name="email"
+            value={notificationListResult.data?.Webhook}
+            placeholder="Webhook Address"
+          ></CFormInput>
+          <br />
+          <CFormLabel>
+            Choose which types of updates you want to receive. This notification will be sent every
+            30 minutes.
+          </CFormLabel>
+          <br />
+          <CFormCheck
+            checked={notificationListResult.data?.AddUser}
+            name="AddUser"
+            label="New Accounts created via CIPP"
+          />
+          <CFormCheck
+            checked={notificationListResult.data?.RemoveUser}
+            name="RemoveUser"
+            label="Removed Accounts via CIPP"
+          />
+          <CFormCheck
+            checked={notificationListResult.data?.AddChocoApp}
+            name="AddChocoApp"
+            label="New applictions added via CIPP"
+          />
+          <CFormCheck
+            checked={notificationListResult.data?.Addpolicy}
+            name="Addpolicy"
+            label="New Policies added via CIPP"
+          />
+          <CFormCheck
+            checked={notificationListResult.data?.AddStandardsDeploy}
+            name="AddStandardsDeploy"
+            label="New Standards added via CIPP"
+          />
+          <CFormCheck
+            checked={notificationListResult.data?.RemoveStandard}
+            name="RemoveStandard"
+            label="Removed Standards via CIPP"
+          />
+          <CFormCheck
+            checked={notificationListResult.data?.AddUser}
+            name="AddUser"
+            label="Token Refresh Events"
+          />
+          <br></br>
+          <CButton className="text-white">Set Notification Settings</CButton>
+        </CCol>
+      )}
     </>
   )
 }
