@@ -394,36 +394,36 @@ const NotificationsSettings = () => {
                   </CFormLabel>
                   <br />
                   <RFFCFormSwitch
-                    name="AddUser"
+                    name="addUser"
                     label="New Accounts created via CIPP"
                     value={false}
                   />
                   <RFFCFormSwitch
-                    name="RemoveUser"
+                    name="removeUser"
                     label="Removed Accounts via CIPP"
                     value={false}
                   />
                   <RFFCFormSwitch
-                    name="AddChocoApp"
+                    name="addChocoApp"
                     label="New Applications added via CIPP"
                     value={false}
                   />
                   <RFFCFormSwitch
-                    name="Addpolicy"
+                    name="addPolicy"
                     label="New Policies added via CIPP"
                     value={false}
                   />
                   <RFFCFormSwitch
-                    name="AddStandardsDeploy"
+                    name="addStandardsDeploy"
                     label="New Standards added via CIPP"
                     value={false}
                   />
                   <RFFCFormSwitch
-                    name="RemoveStandard"
+                    name="removeStandard"
                     label="Removed Standards via CIPP"
                     value={false}
                   />
-                  <RFFCFormSwitch name="TokensUpdater" label="Token Refresh Events" value={false} />
+                  <RFFCFormSwitch name="tokenUpdater" label="Token Refresh Events" value={false} />
 
                   <br></br>
                   <CButton
