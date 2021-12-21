@@ -265,8 +265,7 @@ const ExcludedTenantsSettings = () => {
         visible: true,
       }),
     )
-    exTenantResult.isUninitialized = true
-    exTenantResult.isSuccess = false
+    //todo, reload the table too
   }
 
   const handleExcludeTenant = () => {
