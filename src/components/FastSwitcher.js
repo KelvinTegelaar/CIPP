@@ -4,7 +4,7 @@ import { CFormInput, CModal, CModalBody } from '@coreui/react'
 import { hideSwitcher, initialize, mapNav } from '../store/features/switcher'
 import { useNavigate } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import FuzzySearch from 'fuzzy-search'
+//import FuzzySearch from 'fuzzy-search'
 import fuzzysort from 'fuzzysort'
 
 const searchItems = mapNav()
