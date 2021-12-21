@@ -288,7 +288,6 @@ const ExcludedTenantsSettings = () => {
         visible: true,
       }),
     )
-    dispatch(setCurrentTenant())
   }
 
   return (
