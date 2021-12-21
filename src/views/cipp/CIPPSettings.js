@@ -393,41 +393,38 @@ const NotificationsSettings = () => {
                     sent every 30 minutes.
                   </CFormLabel>
                   <br />
-                  <CFormCheck
-                    checked={notificationListResult.data?.AddUser}
+                  <RFFCFormSwitch
                     name="AddUser"
                     label="New Accounts created via CIPP"
+                    value={false}
                   />
-                  <CFormCheck
-                    checked={notificationListResult.data?.RemoveUser}
+                  <RFFCFormSwitch
                     name="RemoveUser"
                     label="Removed Accounts via CIPP"
+                    value={false}
                   />
-                  <CFormCheck
-                    checked={notificationListResult.data?.AddChocoApp}
+                  <RFFCFormSwitch
                     name="AddChocoApp"
-                    label="New applictions added via CIPP"
+                    label="New Applications added via CIPP"
+                    value={false}
                   />
-                  <CFormCheck
-                    checked={notificationListResult.data?.Addpolicy}
+                  <RFFCFormSwitch
                     name="Addpolicy"
                     label="New Policies added via CIPP"
+                    value={false}
                   />
-                  <CFormCheck
-                    checked={notificationListResult.data?.AddStandardsDeploy}
+                  <RFFCFormSwitch
                     name="AddStandardsDeploy"
                     label="New Standards added via CIPP"
+                    value={false}
                   />
-                  <CFormCheck
-                    checked={notificationListResult.data?.RemoveStandard}
+                  <RFFCFormSwitch
                     name="RemoveStandard"
                     label="Removed Standards via CIPP"
+                    value={false}
                   />
-                  <CFormCheck
-                    checked={notificationListResult.data?.AddUser}
-                    name="AddUser"
-                    label="Token Refresh Events"
-                  />
+                  <RFFCFormSwitch name="TokensUpdater" label="Token Refresh Events" value={false} />
+
                   <br></br>
                   <CButton
                     className="text-white"
