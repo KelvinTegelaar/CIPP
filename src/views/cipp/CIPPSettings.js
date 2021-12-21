@@ -17,12 +17,17 @@ import {
   CTabContent,
   CTabPane,
   CForm,
+  CListGroup,
+  CListGroupItem,
+  CBadge,
+  CLink,
 } from '@coreui/react'
 import {
   useLazyExecClearCacheQuery,
   useLazyExecNotificationConfigQuery,
   useLazyExecPermissionsAccessCheckQuery,
   useLazyExecTenantsAccessCheckQuery,
+  useLazyListExcludedTenantsQuery,
   useLazyListNotificationConfigQuery,
 } from '../../store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -145,6 +150,7 @@ const GeneralSettings = () => {
         confirmLabel: 'Continue',
         cancelLabel: 'Cancel',
         visible: true,
+        size: 'xl',
       }),
     )
   }
@@ -242,8 +248,31 @@ const GeneralSettings = () => {
 }
 
 const ExcludedTenantsSettings = () => {
+  const [excludedTenants, exTenantResult] = useLazyListExcludedTenantsQuery()
+
+  const dispatch = useDispatch()
+  const handleExcludeTenant = () => {
+    dispatch(
+      setModalContent({
+        componentType: 'confirm',
+        title: 'Select tenant',
+        body: (
+          <div style={{ overflow: 'visible' }}>
+            <div>Select a tenant to exclude</div>
+            <TenantSelector />
+          </div>
+        ),
+        //onConfirm: () => clearCache(),
+        confirmLabel: 'Continue',
+        cancelLabel: 'Cancel',
+        visible: true,
+      }),
+    )
+  }
+
   return (
     <>
+      {exTenantResult.isUninitialized && excludedTenants()}
       <CRow className="mb-3">
         <CCol md={12}>
           <CCard>
@@ -255,12 +284,20 @@ const ExcludedTenantsSettings = () => {
                   className="text-white"
                   size="sm"
                   href="#"
+                  onClick={() => handleExcludeTenant()}
                 >
                   Add Excluded Tenant
                 </CButton>
               </CCardTitle>
             </CCardHeader>
-            <CCardBody></CCardBody>
+            <CCardBody>
+              <CListGroup>
+                <CListGroupItem>
+                  <div>Bla.onmicrosoft.com</div>
+                  <CBadge color="secondary">Added By Kelvin@limenetworks.nl on 12/12/2021</CBadge>
+                </CListGroupItem>
+              </CListGroup>
+            </CCardBody>
           </CCard>
         </CCol>
       </CRow>

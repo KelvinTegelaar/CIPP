@@ -114,6 +114,14 @@ export const appApi = createApi({
         path: '/api/listNotificationConfig',
       }),
     }),
+    listExcludedTenants: builder.query({
+      query: () => ({
+        path: '/api/ExecExcludeTenant',
+        params: {
+          list: true,
+        },
+      }),
+    }),
   }),
 })
 
@@ -129,4 +137,5 @@ export const {
   useLazyExecClearCacheQuery,
   useLazyExecNotificationConfigQuery,
   useLazyListNotificationConfigQuery,
+  useLazyListExcludedTenantsQuery,
 } = appApi

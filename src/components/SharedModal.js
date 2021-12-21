@@ -107,7 +107,7 @@ export const ConfirmModal = ({
   }
 
   return (
-    <CModal size={size} scrollable visible={visible} onClose={handleClose}>
+    <CModal size={size} visible={visible} onClose={handleClose}>
       <CModalHeader onClose={handleClose} closeButton>
         <CModalTitle>{title}</CModalTitle>
       </CModalHeader>
