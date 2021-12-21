@@ -21,6 +21,7 @@ import {
   CListGroupItem,
   CBadge,
   CLink,
+  CAlert,
 } from '@coreui/react'
 import {
   useLazyExecClearCacheQuery,
@@ -29,9 +30,10 @@ import {
   useLazyExecTenantsAccessCheckQuery,
   useLazyListExcludedTenantsQuery,
   useLazyListNotificationConfigQuery,
+  useLazyExecExcludeTenantQuery,
 } from '../../store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
+import { faCircleNotch, faTrash, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { TenantSelectorMultiple } from '../../components/cipp'
 import DataTable from 'react-data-table-component'
 import { useListTenantsQuery } from '../../store/api/tenants'
@@ -249,8 +251,24 @@ const GeneralSettings = () => {
 
 const ExcludedTenantsSettings = () => {
   const [excludedTenants, exTenantResult] = useLazyListExcludedTenantsQuery()
-
+  const [removeExcludedTenant, exRemovalResult] = useLazyExecExcludeTenantQuery()
   const dispatch = useDispatch()
+  const handleRemoveExclusion = (domain) => {
+    dispatch(
+      setModalContent({
+        componentType: 'confirm',
+        title: 'Confirm',
+        body: <div>Are you sure you want to remove the exclusion for {domain}?</div>,
+        onConfirm: () => removeExcludedTenant(domain),
+        confirmLabel: 'Continue',
+        cancelLabel: 'Cancel',
+        visible: true,
+      }),
+    )
+    exTenantResult.isUninitialized = true
+    exTenantResult.isSuccess = false
+  }
+
   const handleExcludeTenant = () => {
     dispatch(
       setModalContent({
@@ -272,6 +290,7 @@ const ExcludedTenantsSettings = () => {
 
   return (
     <>
+      {exRemovalResult.isSuccess && <CAlert color="success">{exRemovalResult.data.Results}</CAlert>}
       {exTenantResult.isUninitialized && excludedTenants()}
       <CRow className="mb-3">
         <CCol md={12}>
@@ -291,12 +310,31 @@ const ExcludedTenantsSettings = () => {
               </CCardTitle>
             </CCardHeader>
             <CCardBody>
-              <CListGroup>
-                <CListGroupItem>
-                  <div>Bla.onmicrosoft.com</div>
-                  <CBadge color="secondary">Added By Kelvin@limenetworks.nl on 12/12/2021</CBadge>
-                </CListGroupItem>
-              </CListGroup>
+              {exTenantResult.isSuccess && (
+                <CListGroup>
+                  {exTenantResult.data.map((name) => (
+                    <CListGroupItem key={name.Name}>
+                      {name.Name}
+                      <CBadge
+                        color="secondary"
+                        shape="rounded-pill"
+                        style={{ position: 'absolute', right: '40px' }}
+                      >
+                        Added by {name.User} on {name.Date}
+                      </CBadge>
+                      <CLink href="#">
+                        <FontAwesomeIcon
+                          style={{ position: 'absolute', right: '15px' }}
+                          color="primary"
+                          icon={faTrashAlt}
+                          size="sm"
+                          onClick={() => handleRemoveExclusion(name.Name)}
+                        />
+                      </CLink>
+                    </CListGroupItem>
+                  ))}
+                </CListGroup>
+              )}
             </CCardBody>
           </CCard>
         </CCol>
@@ -304,7 +342,6 @@ const ExcludedTenantsSettings = () => {
     </>
   )
 }
-
 const SecuritySettings = () => {
   return (
     <div>

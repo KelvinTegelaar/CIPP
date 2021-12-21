@@ -122,6 +122,15 @@ export const appApi = createApi({
         },
       }),
     }),
+    ExecExcludeTenant: builder.query({
+      query: (tenantfilter) => ({
+        path: '/api/ExecExcludeTenant',
+        params: {
+          RemoveExclusion: true,
+          TenantFilter: tenantfilter,
+        },
+      }),
+    }),
   }),
 })
 
@@ -138,4 +147,5 @@ export const {
   useLazyExecNotificationConfigQuery,
   useLazyListNotificationConfigQuery,
   useLazyListExcludedTenantsQuery,
+  useLazyExecExcludeTenantQuery,
 } = appApi
