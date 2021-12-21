@@ -90,8 +90,6 @@ const ResultsRow = ({ match = [] }) => {
   const { name, section, icon, to } = match?.obj
   const [nameMatch, sectionMatch, toMatch] = match
 
-  console.log({ nameMatch, sectionMatch, toMatch })
-
   const handleHighlight = (match, fallback) => {
     if (!match) {
       return fallback
