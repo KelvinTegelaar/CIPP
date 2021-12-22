@@ -11,9 +11,9 @@ import {
   CSpinner,
 } from '@coreui/react'
 import useQuery from '../../../hooks/useQuery'
-import { setModalContent, showModal } from '../../../store/modules/modal'
-import { listSharepointSites } from '../../../store/modules/sharepoint'
-import { useDispatch, useSelector } from 'react-redux'
+import { setModalContent } from '../../../store/features/modal'
+import { useListGroupQuery } from '../../../store/api/groups'
+import { useDispatch } from 'react-redux'
 import { Form } from 'react-final-form'
 import { RFFCFormInput } from '../../../components/RFFComponents'
 
@@ -25,42 +25,35 @@ const EditGroup = () => {
 
   const [queryError, setQueryError] = useState(false)
 
-  const sharepoint = useSelector((state) => state.sharepoint)
-
   const {
-    sites: {
-      list: sharepointSiteList = [],
-      loading: sharepointSiteListLoading,
-      loaded: sharepointSiteListLoaded,
-      error: sharepointSiteListError,
-    },
-  } = sharepoint
+    data: group = {},
+    isFetching,
+    error,
+    isSuccess,
+  } = useListGroupQuery({ tenantDomain, groupId })
 
   useEffect(() => {
-    async function load() {
-      dispatch(listSharepointSites({ tenantDomain, groupId }))
-    }
-
     if (!groupId || !tenantDomain) {
       dispatch(
         setModalContent({
           body: 'Error: Invalid request. Could not load requested group.',
           title: 'Invalid Request',
+          visible: true,
         }),
       )
-      dispatch(showModal())
       setQueryError(true)
-    } else {
-      load()
     }
   }, [groupId, tenantDomain, dispatch])
 
   const onSubmit = (values) => {
+    // @todo bind this
     window.alert(JSON.stringify(values))
   }
-  const initialState = {
-    ...sharepoint,
+  const initialValues = {
+    ...group,
   }
+
+  console.log('edit group')
 
   return (
     <CCard className="bg-white rounded p-5">
@@ -73,13 +66,11 @@ const EditGroup = () => {
                   <CCardTitle>Group Details</CCardTitle>
                 </CCardHeader>
                 <CCardBody>
-                  {!sharepointSiteListLoaded && sharepointSiteListLoading && <CSpinner />}
-                  {!sharepointSiteListLoaded &&
-                    !sharepointSiteListLoading &&
-                    sharepointSiteListError && <span>Error loading Sharepoint groups</span>}
-                  {sharepointSiteListLoaded && !sharepointSiteListLoading && (
+                  {isFetching && <CSpinner />}
+                  {error && <span>Error loading Group</span>}
+                  {isSuccess && (
                     <Form
-                      initialValues={{ ...initialState }}
+                      initialValues={{ ...initialValues }}
                       onSubmit={onSubmit}
                       render={({ handleSubmit, submitting, values }) => {
                         return (
@@ -138,11 +129,11 @@ const EditGroup = () => {
                   <CCardTitle>Group Inforamtion</CCardTitle>
                 </CCardHeader>
                 <CCardBody>
-                  {!sharepointSiteListLoaded && sharepointSiteListLoading && <CSpinner />}
-                  {sharepointSiteListLoaded && !sharepointSiteListLoading && (
+                  {isFetching && <CSpinner />}
+                  {isSuccess && (
                     <>
                       This is the (raw) information for this group.
-                      <pre>{JSON.stringify(sharepointSiteList, null, 2)}</pre>
+                      <pre>{JSON.stringify(group, null, 2)}</pre>
                     </>
                   )}
                 </CCardBody>

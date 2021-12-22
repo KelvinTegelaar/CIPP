@@ -9,7 +9,7 @@ import { CippDatatable, cellBooleanFormatter } from '../../../components/cipp'
 
 const dropdown = (row, rowIndex, formatExtraData) => {
   return (
-    <CDropdown>
+    <CDropdown style={{ position: 'fixed', zIndex: 1000 }}>
       <CDropdownToggle size="sm" color="link">
         <FontAwesomeIcon icon={faBars} />
       </CDropdownToggle>
@@ -79,7 +79,7 @@ const columns = [
   },
   {
     name: 'Licenses',
-    selector: (row) => row['LicJoined'],
+    selector: (row) => 'Click to Expand',
   },
   {
     name: 'Action',
@@ -91,6 +91,12 @@ const columns = [
 const Users = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
+  // eslint-disable-next-line react/prop-types
+  const ExpandedComponent = ({ data }) => (
+    // eslint-disable-next-line react/prop-types
+    <pre>{JSON.stringify(data.LicJoined, null, 2)}</pre>
+  )
+
   return (
     <div>
       <TenantSelector />
@@ -99,6 +105,11 @@ const Users = () => {
         <h3>Users</h3>
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         <CippDatatable
+          tableProps={{
+            expandableRows: true,
+            expandableRowsComponent: ExpandedComponent,
+            expandOnRowClicked: true,
+          }}
           reportName={`${tenant?.defaultDomainName}-Users`}
           path="/api/ListUsers"
           columns={columns}

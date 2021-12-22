@@ -15,12 +15,13 @@ import {
   CTableHeaderCell,
   CTableRow,
 } from '@coreui/react'
-import BootstrapTable from 'react-bootstrap-table-next'
-import { CellBoolean } from '../../../components/cipp'
+import { CellBoolean, cellBooleanFormatter } from '../../../components/cipp'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLaptop } from '@fortawesome/free-solid-svg-icons'
 import { setModalContent } from '../../../store/features/modal'
 import { useListUserSigninLogsQuery } from '../../../store/api/users'
+import DataTable from 'react-data-table-component'
+import cellGetProperty from '../../../components/cipp/cellGetProperty'
 
 const formatter = (cell) => CellBoolean({ cell })
 
@@ -74,68 +75,68 @@ export default function UserSigninLogs({ userId, tenantDomain }) {
 
   const columns = [
     {
-      text: 'Date',
-      dataField: 'Date',
+      name: 'Date',
+      selector: (row) => row['Date'],
     },
     {
-      text: 'Application',
-      dataField: 'Application',
+      name: 'Application',
+      selector: (row) => row['Application'],
     },
     {
-      text: 'Login Status',
-      dataField: 'LoginStatus',
+      name: 'Login Status',
+      selector: (row) => row['LoginStatus'],
     },
     {
-      text: 'Conditional Access Status',
-      dataField: 'ConditionalAccessStatus',
+      name: 'Conditional Access Status',
+      selector: (row) => row['ConditionalAccessStatus'],
       // @TODO someone make these either return 'success' or 'Success' not both
-      formatter: (cell) => CellBoolean({ cell: cell === 'success' }),
+      cell: cellBooleanFormatter,
     },
     {
-      text: 'Overall Login Status',
-      dataField: 'OverallLoginStatus',
+      name: 'Overall Login Status',
+      selector: (row) => row['OverallLoginStatus'],
       // @TODO someone make these either return 'success' or 'Success' not both
-      formatter: (cell) => CellBoolean({ cell: cell === 'Success' }),
+      cell: cellBooleanFormatter,
     },
     {
-      text: 'IP Address',
-      dataField: 'IPAddress',
+      name: 'IP Address',
+      selector: (row) => row['IPAddress'],
     },
     {
-      text: 'Town',
-      dataField: 'Town',
+      name: 'Town',
+      selector: (row) => row['Town'],
     },
     {
-      text: 'State',
-      dataField: 'State',
+      name: 'State',
+      selector: (row) => row['State'],
     },
     {
-      text: 'Country',
-      dataField: 'Country',
+      name: 'Country',
+      selector: (row) => row['Country'],
     },
     {
-      text: 'Device',
-      dataField: 'Device',
+      name: 'Device',
+      selector: (row) => row['Device'],
     },
     {
-      text: 'Device Compliant',
-      isDummyField: true,
-      formatter: (cell, row) => formatter(row.OverallLoginStatus),
+      name: 'Device Compliant',
+      selector: (row) => row['OverallLoginStatus'],
     },
     {
-      text: 'OS',
-      dataField: 'OS',
+      name: 'OS',
+      selector: (row) => row['OS'],
     },
     {
-      text: 'Browser',
-      dataField: 'Browser',
+      name: 'Browser',
+      selector: (row) => row['Browser'],
     },
     {
-      text: 'Applied CAPs',
-      dataField: 'AppliedCAPs',
-      formatter: (cell, row) => {
+      name: 'Applied CAPs',
+      selector: (row) => row['AppliedCAPs'],
+      formatter: (row, index, column) => {
+        const cell = cellGetProperty(row, index, column)
         if (!cell) {
-          return
+          return null
         }
         return (
           <CButton size="sm" onClick={() => handleClickAppliedCAPs({ row })}>
@@ -156,13 +157,13 @@ export default function UserSigninLogs({ userId, tenantDomain }) {
         {!isFetching && error && <span>Error loading user sign-in logs</span>}
         {!error && isFetching && <CSpinner />}
         {!isFetching && !error && (
-          <BootstrapTable
+          <DataTable
             keyField="id"
             columns={columns}
             data={mapped}
             striped
             bordered={false}
-            condensed
+            dense
             rowStyle={rowStyle}
             wrapperClasses="table-responsive"
           />

@@ -13,11 +13,11 @@ import {
   CButtonGroup,
 } from '@coreui/react'
 import avatar0 from './../../assets/images/avatars/0.jpg'
-import { authApi } from '../../store/api/auth'
+import { useLoadClientPrincipalQuery } from '../../store/api/auth'
 import ThemeSwitcher from 'src/components/cipp/ThemeSwitcher'
 
 const ViewProfile = () => {
-  const { data: profile, isLoading } = authApi.endpoints.loadClientPrincipal.useQueryState()
+  const { data: profile, isFetching, isLoading } = useLoadClientPrincipalQuery()
 
   return (
     <>

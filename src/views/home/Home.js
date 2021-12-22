@@ -48,15 +48,14 @@ const Home = () => {
             className="mb-3"
             style={{ maxWidth: '18rem' }}
           >
-            <CCardHeader>
-              CIPP Version
-              {versions?.OutOfDateCIPP ? (
-                <FontAwesomeIcon icon={faTimesCircle} />
-              ) : (
-                <FontAwesomeIcon icon={faCheckCircle} size="lg" />
-              )}
-            </CCardHeader>
+            <CCardHeader>CIPP Version</CCardHeader>
             <CCardBody>
+              {versions?.OutOfDateCIPP ? (
+                <FontAwesomeIcon icon={faTimesCircle} color="red" size="lg" />
+              ) : (
+                <FontAwesomeIcon icon={faCheckCircle} color="green" size="lg" />
+              )}
+              <br />
               Remote: {!isLoading ? versions.RemoteCIPPVersion : <CSpinner size="sm" />}
               <br />
               Local: {!isLoading ? versions.LocalCIPPVersion : <CSpinner size="sm" />}
@@ -68,15 +67,14 @@ const Home = () => {
             className="mb-3"
             style={{ maxWidth: '18rem' }}
           >
-            <CCardHeader>
-              CIPP API Version
-              {versions?.OutOfDateCIPPAPI ? (
-                <FontAwesomeIcon icon={faTimesCircle} />
-              ) : (
-                <FontAwesomeIcon icon={faCheckCircle} size="lg" />
-              )}
-            </CCardHeader>
+            <CCardHeader>CIPP API Version</CCardHeader>
             <CCardBody>
+              {versions?.OutOfDateCIPPAPI ? (
+                <FontAwesomeIcon icon={faTimesCircle} color="red" size="lg" />
+              ) : (
+                <FontAwesomeIcon icon={faCheckCircle} color="green" size="lg" />
+              )}
+              <br />
               Remote: {!isLoading ? versions.RemoteCIPPAPIVersion : <CSpinner size="sm" />}
               <br />
               Local: {!isLoading ? versions.LocalCIPPAPIVersion : <CSpinner size="sm" />}

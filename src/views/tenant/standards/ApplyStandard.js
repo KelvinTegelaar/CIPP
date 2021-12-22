@@ -8,7 +8,6 @@ import Wizard from '../../../components/Wizard'
 import WizardTableField from '../../../components/WizardTableField'
 import PropTypes from 'prop-types'
 import { RFFCFormSwitch } from '../../../components/RFFComponents'
-import { applyStandards } from '../../../store/modules/standards'
 import { useListTenantsQuery } from '../../../store/api/tenants'
 
 const Error = ({ name }) => (
@@ -30,7 +29,6 @@ Error.propTypes = {
   name: PropTypes.string.isRequired,
 }
 
-const required = (value) => (value ? undefined : 'Required')
 const requiredArray = (value) => (value && value.length !== 0 ? undefined : 'Required')
 
 const ApplyStandard = () => {
@@ -39,7 +37,8 @@ const ApplyStandard = () => {
 
   const handleSubmit = async (values) => {
     alert(JSON.stringify(values, null, 2))
-    dispatch(applyStandards({ tenants: values.selectedTenants, standards: values.standards }))
+    // @todo hook this up
+    // dispatch(applyStandards({ tenants: values.selectedTenants, standards: values.standards }))
   }
 
   const formValues = {
@@ -49,13 +48,9 @@ const ApplyStandard = () => {
 
   return (
     <div className="bg-white rounded p-5">
-      <h3 className="header">Apply Standard Wizard</h3>
-      <div className="subheader">
-        This wizard guides you through adding standards for your tenants
-      </div>
       <CCard>
         <CRow className="row justify-content-center">
-          <CCol xxl={6}>
+          <CCol xxl={12}>
             <Wizard initialValues={{ ...formValues }} onSubmit={handleSubmit}>
               <Wizard.Page
                 title="Tenant Choice"
@@ -160,7 +155,7 @@ const ApplyStandard = () => {
               </Wizard.Page>
             </Wizard>
             {/* @todo remove this message */}
-            Note: this does submit at the moment
+            Note: this does not submit at the moment
           </CCol>
         </CRow>
       </CCard>

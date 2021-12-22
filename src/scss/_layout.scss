@@ -1,8 +1,8 @@
 .wrapper {
   width: 100%;
-  @include ltr-rtl("padding-left", var(--cui-sidebar-occupy-start, 0));
+  @include ltr-rtl('padding-left', var(--cui-sidebar-occupy-start, 0));
   will-change: auto;
-  @include transition(padding .15s);
+  @include transition(padding 0.15s);
 }
 
 // copied from https://github.com/KelvinTegelaar/CIPP/blob/dev/css/styles.css#L20329-L20379
@@ -29,7 +29,6 @@
   color: white;
 }
 .nav-wizard .nav-link .wizard-step-text {
-  line-height: 1;
   text-align: left;
 }
 .nav-wizard .nav-link .wizard-step-text .wizard-step-text-name {

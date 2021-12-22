@@ -19,18 +19,15 @@ const Page404 = () => {
           <CCol md={6}>
             <div className="clearfix">
               <h1 className="float-start display-3 me-4">404</h1>
-              <h4 className="pt-3">Oops! You{"'"}re lost.</h4>
+              <h4 className="pt-3">Oops! You might be lost.</h4>
               <p className="text-medium-emphasis float-start">
                 The page you are looking for was not found.
+                <br /> <br />
+                <CButton className="text-white" href="/">
+                  Back to home
+                </CButton>
               </p>
             </div>
-            <CInputGroup className="input-prepend">
-              <CInputGroupText>
-                <FontAwesomeIcon icon={faSearch} />
-              </CInputGroupText>
-              <CFormInput type="text" placeholder="What are you looking for?" />
-              <CButton color="info">Search</CButton>
-            </CInputGroup>
           </CCol>
         </CRow>
       </CContainer>

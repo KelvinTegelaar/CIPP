@@ -40,6 +40,44 @@ export const appApi = createApi({
         return result.Results
       },
     }),
+    execNotificationConfig: builder.query({
+      query: ({
+        email,
+        webhook,
+        tokenUpdater,
+        removeUser,
+        removeStandard,
+        addPolicy,
+        addUser,
+        addStandardsDeploy,
+        addChocoApp,
+      }) => ({
+        path: '/api/ExecNotificationConfig',
+        data: {
+          email: email,
+          webhook: webhook,
+          tokenUpdater: tokenUpdater,
+          removeUser: removeUser,
+          removeStandard: removeStandard,
+          addPolicy: addPolicy,
+          addUser: addUser,
+          addStandardsDeploy: addStandardsDeploy,
+          addChocoApp: addChocoApp,
+        },
+        method: 'post',
+      }),
+      transformResponse: (response) => {
+        if (!response?.Results) {
+          return []
+        }
+        return response?.Results.map((res) =>
+          res
+            .replace('<br>', '')
+            .split(': ')
+            .reduce((pv, cv) => ({ tenantDomain: pv, result: cv })),
+        )
+      },
+    }),
     execTenantsAccessCheck: builder.query({
       query: ({ tenantDomains }) => ({
         path: '/api/ExecAccessChecks',
@@ -71,6 +109,37 @@ export const appApi = createApi({
         },
       }),
     }),
+    listNotificationConfig: builder.query({
+      query: () => ({
+        path: '/api/listNotificationConfig',
+      }),
+    }),
+    listExcludedTenants: builder.query({
+      query: () => ({
+        path: '/api/ExecExcludeTenant',
+        params: {
+          list: true,
+        },
+      }),
+    }),
+    ExecExcludeTenant: builder.query({
+      query: (tenantfilter) => ({
+        path: '/api/ExecExcludeTenant',
+        params: {
+          RemoveExclusion: true,
+          TenantFilter: tenantfilter,
+        },
+      }),
+    }),
+    ExecAddExcludeTenant: builder.query({
+      query: (tenantfilter) => ({
+        path: '/api/ExecExcludeTenant',
+        params: {
+          AddExclusion: true,
+          TenantFilter: tenantfilter,
+        },
+      }),
+    }),
   }),
 })
 
@@ -84,4 +153,9 @@ export const {
   useLazyExecTenantsAccessCheckQuery,
   useExecClearCacheQuery,
   useLazyExecClearCacheQuery,
+  useLazyExecNotificationConfigQuery,
+  useLazyListNotificationConfigQuery,
+  useLazyListExcludedTenantsQuery,
+  useLazyExecExcludeTenantQuery,
+  useLazyExecAddExcludeTenantQuery,
 } = appApi

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Form } from 'react-final-form'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import useQuery from '../../../hooks/useQuery'
 import { useLazyListDomainTestsQuery, useListDomainTestsQuery } from '../../../store/api/domains'
 import {
@@ -51,24 +51,22 @@ const textColorMap = {
 }
 
 const IndividualDomainCheck = () => {
-  const history = useHistory()
-  const location = useLocation()
-  const query = useQuery()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [domain, setDomain] = useState('')
   const [trigger, { data, isFetching, isSuccess, ...rest }] = useLazyListDomainTestsQuery()
 
   useEffect(() => {
     // check if domain query is set
-    const domainQuery = query.get('domain')
+    const domainQuery = searchParams.get('domain')
     if (domainQuery) {
       setDomain(domainQuery)
       trigger({ domain: domainQuery })
     }
-  }, [query, trigger])
+  }, [searchParams, trigger])
 
   const onSubmit = (values) => {
     setDomain(values.domain)
-    history.replace({ pathname: location.pathname, search: `?domain=${values.domain}` })
+    setSearchParams({ domain: values.domain }, { replace: true })
     trigger({ domain: values.domain })
   }
 

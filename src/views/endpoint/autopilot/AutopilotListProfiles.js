@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const dropdown = (row, rowIndex, formatExtraData) => {
   return (
-    <CDropdown>
+    <CDropdown style={{ position: 'fixed', zIndex: 1000 }}>
       <CDropdownToggle size="sm" color="link">
         <FontAwesomeIcon icon={faBars} />
       </CDropdownToggle>
@@ -31,11 +31,13 @@ const columns = [
     selector: 'displayName',
     name: 'Name',
     sortable: true,
+    wrap: true,
   },
   {
     selector: 'Description',
     name: 'Description',
     sortable: true,
+    wrap: true,
   },
   {
     selector: 'language',
@@ -62,6 +64,12 @@ const columns = [
 const AutopilotListProfiles = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
+  // eslint-disable-next-line react/prop-types
+  const ExpandedComponent = ({ data }) => (
+    // eslint-disable-next-line react/prop-types
+    <pre>{JSON.stringify(data, null, 2)}</pre>
+  )
+
   return (
     <div>
       <TenantSelector />
@@ -70,6 +78,11 @@ const AutopilotListProfiles = () => {
         <h3>Autopilot Profile List</h3>
         {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
         <CippDatatable
+          tableProps={{
+            expandableRows: true,
+            expandableRowsComponent: ExpandedComponent,
+            expandOnRowClicked: true,
+          }}
           keyField="id"
           reportName={`${tenant?.defaultDomainName}-AutopilotProfile-List`}
           path="/api/ListAutopilotConfig?type=ApProfile"

@@ -45,6 +45,12 @@ export const usersApi = createApi({
         params: { userId, tenantFilter: tenantDomain },
       }),
     }),
+    addUser: builder.mutation({
+      query: ({ user }) => ({
+        path: '/api/AddUser',
+        data: user,
+      }),
+    }),
   }),
 })
 
@@ -54,5 +60,6 @@ export const {
   useListUserQuery,
   useListUserConditionalAccessPoliciesQuery,
   useListUserSigninLogsQuery,
+  useAddUserMutation,
 } = usersApi
 export default usersApi

@@ -1622,7 +1622,7 @@ $sidebar-width: 17rem !default;
 // $sidebar-padding-y:                        0 !default;
 // $sidebar-padding-x:                        0 !default;
 // $sidebar-color:                            $high-emphasis-inverse !default;
-// $sidebar-bg:                               $gray-base !default;
+$sidebar-bg: #003049 !default;
 // $sidebar-border-width:                     0 !default;
 // $sidebar-border-color:                     transparent !default;
 // $sidebar-transition:                       margin-left .15s, margin-right .15s, box-shadow .075s, transform .15s, width .15s, z-index 0s ease .15s !default;
@@ -1649,7 +1649,7 @@ $sidebar-width: 17rem !default;
 // $sidebar-nav-title-color:                  $medium-emphasis-inverse !default;
 // $sidebar-nav-title-transition:             height .15s, margin .15s !default;
 
-$sidebar-nav-link-padding-y: 0.4rem !default;
+$sidebar-nav-link-padding-y: 0.2rem !default;
 $sidebar-nav-link-padding-x: 0.6rem !default;
 // $sidebar-nav-link-color:                   $medium-emphasis-inverse !default;
 // $sidebar-nav-link-bg:                      transparent !default;

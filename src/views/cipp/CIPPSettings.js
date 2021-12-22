@@ -8,24 +8,41 @@ import {
   CCardTitle,
   CCol,
   CContainer,
+  CFormCheck,
+  CFormInput,
+  CFormLabel,
   CNav,
   CNavItem,
   CRow,
   CTabContent,
   CTabPane,
+  CForm,
+  CListGroup,
+  CListGroupItem,
+  CBadge,
+  CLink,
+  CAlert,
 } from '@coreui/react'
 import {
   useLazyExecClearCacheQuery,
+  useLazyExecNotificationConfigQuery,
   useLazyExecPermissionsAccessCheckQuery,
   useLazyExecTenantsAccessCheckQuery,
+  useLazyListExcludedTenantsQuery,
+  useLazyListNotificationConfigQuery,
+  useLazyExecExcludeTenantQuery,
+  useLazyExecAddExcludeTenantQuery,
 } from '../../store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
+import { faCircleNotch, faTrash, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { TenantSelectorMultiple } from '../../components/cipp'
 import DataTable from 'react-data-table-component'
 import { useListTenantsQuery } from '../../store/api/tenants'
 import { setModalContent } from '../../store/features/modal'
 import { useDispatch } from 'react-redux'
+import { TenantSelector } from '../../components/cipp'
+import { RFFCFormSwitch, RFFCFormInput } from '../../components/RFFComponents'
+import { Form } from 'react-final-form'
 
 const CIPPSettings = () => {
   const [active, setActive] = useState(1)
@@ -42,7 +59,7 @@ const CIPPSettings = () => {
               Excluded Tenants
             </CNavItem>
             <CNavItem active={active === 3} onClick={() => setActive(3)} href="javascript:void(0);">
-              Security
+              Backend
             </CNavItem>
             <CNavItem active={active === 4} onClick={() => setActive(4)} href="javascript:void(0);">
               Notifications
@@ -136,11 +153,10 @@ const GeneralSettings = () => {
         confirmLabel: 'Continue',
         cancelLabel: 'Cancel',
         visible: true,
+        size: 'xl',
       }),
     )
   }
-
-  console.log(accessCheckResult)
 
   return (
     <div>
@@ -235,13 +251,270 @@ const GeneralSettings = () => {
 }
 
 const ExcludedTenantsSettings = () => {
-  return <div>exclude tenants</div>
-}
+  const [excludedTenants, exTenantResult] = useLazyListExcludedTenantsQuery()
+  const [removeExcludedTenant, exRemovalResult] = useLazyExecExcludeTenantQuery()
+  const [addExcludedTenant, exAddResult] = useLazyExecAddExcludeTenantQuery()
 
+  const dispatch = useDispatch()
+  const handleRemoveExclusion = (domain) => {
+    dispatch(
+      setModalContent({
+        componentType: 'confirm',
+        title: 'Confirm',
+        body: <div>Are you sure you want to remove the exclusion for {domain}?</div>,
+        onConfirm: () => removeExcludedTenant(domain),
+        confirmLabel: 'Continue',
+        cancelLabel: 'Cancel',
+        visible: true,
+      }),
+    )
+    //todo, reload the table too
+  }
+
+  const handleExcludeTenant = () => {
+    dispatch(
+      setModalContent({
+        componentType: 'confirm',
+        title: 'Select tenant',
+        body: (
+          <div style={{ overflow: 'visible' }}>
+            <div>Select a tenant to exclude</div>
+            <TenantSelector />
+          </div>
+        ),
+        //onConfirm: () => addExcludedTenant(),
+        confirmLabel: 'Continue',
+        cancelLabel: 'Cancel',
+        visible: true,
+      }),
+    )
+  }
+
+  return (
+    <>
+      {exRemovalResult.isSuccess && <CAlert color="success">{exRemovalResult.data.Results}</CAlert>}
+      {exTenantResult.isUninitialized && excludedTenants()}
+      <CRow className="mb-3">
+        <CCol md={12}>
+          <CCard>
+            <CCardHeader>
+              <CCardTitle>
+                Excluded Tenant List
+                <CButton
+                  style={{ position: 'absolute', right: '5px' }}
+                  className="text-white"
+                  size="sm"
+                  href="#"
+                  onClick={() => handleExcludeTenant()}
+                >
+                  Add Excluded Tenant
+                </CButton>
+              </CCardTitle>
+            </CCardHeader>
+            <CCardBody>
+              {exTenantResult.isSuccess && (
+                <CListGroup>
+                  {exTenantResult.data.map((name) => (
+                    <CListGroupItem key={name.Name}>
+                      {name.Name}
+                      <CBadge
+                        color="secondary"
+                        shape="rounded-pill"
+                        style={{ position: 'absolute', right: '40px' }}
+                      >
+                        Added by {name.User} on {name.Date}
+                      </CBadge>
+                      <CLink href="#">
+                        <FontAwesomeIcon
+                          style={{ position: 'absolute', right: '15px' }}
+                          color="primary"
+                          icon={faTrashAlt}
+                          size="sm"
+                          onClick={() => handleRemoveExclusion(name.Name)}
+                        />
+                      </CLink>
+                    </CListGroupItem>
+                  ))}
+                </CListGroup>
+              )}
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </CRow>
+    </>
+  )
+}
 const SecuritySettings = () => {
-  return <div>security</div>
+  return (
+    <div>
+      <>
+        <CRow className="mb-3">
+          <CCol md={4}>
+            <CCard>
+              <CCardHeader>
+                <CCardTitle>Resource Group</CCardTitle>
+              </CCardHeader>
+              <CCardBody>
+                The Resource group contains all the CIPP resources in your tenant, except the SAM
+                Application <br /> <br />
+                <CButton>Go to Resource Group</CButton>
+              </CCardBody>
+            </CCard>
+          </CCol>
+          <CCol md={4}>
+            <CCard>
+              <CCardHeader>
+                <CCardTitle>Key Vault</CCardTitle>
+              </CCardHeader>
+              <CCardBody>
+                The keyvault allows you to check token information. By default you do not have
+                access.
+                <br /> <br />
+                <CButton>Go to Keyvault</CButton>
+              </CCardBody>
+            </CCard>
+          </CCol>
+          <CCol md={4}>
+            <CCard>
+              <CCardHeader>
+                <CCardTitle>Static Web App (Role Management)</CCardTitle>
+              </CCardHeader>
+              <CCardBody>
+                The Statis Web App role management allows you to invite other users to the
+                application.
+                <br /> <br />
+                <CButton>Go to Role Management</CButton>
+              </CCardBody>
+            </CCard>
+          </CCol>
+        </CRow>
+        <CRow className="mb-3">
+          <CCol md={4}>
+            <CCard>
+              <CCardHeader>
+                <CCardTitle>Function App (Deployment Center)</CCardTitle>
+              </CCardHeader>
+              <CCardBody>
+                The Function App Deployment Center allows you to run updates on the API
+                <br /> <br />
+                <CButton>Go to Function App Deployment Center</CButton>
+              </CCardBody>
+            </CCard>
+          </CCol>
+          <CCol md={4}>
+            <CCard>
+              <CCardHeader>
+                <CCardTitle>Function App (Configuration)</CCardTitle>
+              </CCardHeader>
+              <CCardBody>
+                At the Function App Configuration you can check the status of the API access to your
+                keyvault <br /> <br />
+                <CButton>Go to Function App Configuration</CButton>
+              </CCardBody>
+            </CCard>
+          </CCol>
+          <CCol md={4}>
+            <CCard>
+              <CCardHeader>
+                <CCardTitle>Function App (Overview)</CCardTitle>
+              </CCardHeader>
+              <CCardBody>
+                At the function App Overview, you can stop and start the backend API <br /> <br />
+                <CButton>Go to Function App Overview</CButton>
+              </CCardBody>
+            </CCard>
+          </CCol>
+        </CRow>
+      </>
+    </div>
+  )
 }
 
 const NotificationsSettings = () => {
-  return <div>notifications</div>
+  //to post settings
+  const [configNotifications, notificationConfigResult] = useLazyExecNotificationConfigQuery()
+
+  const onSubmit = (values) => {
+    // @todo bind this
+    window.alert(JSON.stringify(values))
+    console.log(values)
+    configNotifications(values)
+  }
+  //to get current settings
+  const [listNotification, notificationListResult] = useLazyListNotificationConfigQuery()
+  //todo: Replace with prettier sliders etc
+  return (
+    <>
+      {notificationListResult.isUninitialized && listNotification()}
+      {notificationListResult.isFetching && <FontAwesomeIcon icon={faCircleNotch} spin size="1x" />}
+      {!notificationListResult.isFetching && notificationListResult.error && (
+        <span>Error loading data</span>
+      )}
+      {notificationListResult.isSuccess && (
+        <Form
+          initialValues={{ ...notificationListResult.data }}
+          onSubmit={onSubmit}
+          render={({ handleSubmit, submitting, values }) => {
+            return (
+              <CForm onSubmit={handleSubmit}>
+                <CCol md={6}>
+                  <CCol md={6}>
+                    <RFFCFormInput type="text" name="email" label="E-mail" />
+                  </CCol>
+                  <CCol md={6}>
+                    <RFFCFormInput type="text" name="webhook" label="Webhook" />
+                  </CCol>
+                  <CFormLabel>
+                    Choose which types of updates you want to receive. This notification will be
+                    sent every 30 minutes.
+                  </CFormLabel>
+                  <br />
+                  <RFFCFormSwitch
+                    name="addUser"
+                    label="New Accounts created via CIPP"
+                    value={false}
+                  />
+                  <RFFCFormSwitch
+                    name="removeUser"
+                    label="Removed Accounts via CIPP"
+                    value={false}
+                  />
+                  <RFFCFormSwitch
+                    name="addChocoApp"
+                    label="New Applications added via CIPP"
+                    value={false}
+                  />
+                  <RFFCFormSwitch
+                    name="addPolicy"
+                    label="New Policies added via CIPP"
+                    value={false}
+                  />
+                  <RFFCFormSwitch
+                    name="addStandardsDeploy"
+                    label="New Standards added via CIPP"
+                    value={false}
+                  />
+                  <RFFCFormSwitch
+                    name="removeStandard"
+                    label="Removed Standards via CIPP"
+                    value={false}
+                  />
+                  <RFFCFormSwitch name="tokenUpdater" label="Token Refresh Events" value={false} />
+
+                  <br></br>
+                  <CButton
+                    className="text-white"
+                    disabled={notificationConfigResult.isFetching}
+                    type="submit"
+                  >
+                    Set Notification Settings
+                  </CButton>
+                </CCol>
+              </CForm>
+            )
+          }}
+        />
+      )}
+    </>
+  )
 }

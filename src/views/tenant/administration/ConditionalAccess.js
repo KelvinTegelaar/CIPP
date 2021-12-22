@@ -9,6 +9,7 @@ const columns = [
     name: 'Name',
     selector: (row) => row['displayName'],
     sortable: true,
+    wrap: true,
   },
   {
     name: 'State',

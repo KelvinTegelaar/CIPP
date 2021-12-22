@@ -1,13 +1,9 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import SelectSearch, { fuzzySearch } from 'react-select-search'
-import { listTenants } from 'src/store/modules/tenants'
 import { useDispatch, useSelector } from 'react-redux'
-// import { setCurrentTenant } from '../../store/modules/app'
 import PropTypes from 'prop-types'
 import { useListTenantsQuery } from '../../store/api/tenants'
 import { setCurrentTenant } from '../../store/features/app'
-import { faUser, faCog, faBars, faArrowUp } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const TenantSelector = (props) => {
   const { action } = props
@@ -39,7 +35,8 @@ const TenantSelector = (props) => {
       onChange={activated}
       filterOptions={fuzzySearch}
       placeholder={placeholder}
-      value={currentTenant && currentTenant.customerId && currentTenant.displayName}
+      disabled={isLoading}
+      value={currentTenant && currentTenant.customerId}
       options={tenants.map(({ customerId, displayName, defaultDomainName }) => ({
         value: customerId,
         name: [displayName] + [` (${defaultDomainName})`],
