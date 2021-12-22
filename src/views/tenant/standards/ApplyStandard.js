@@ -48,13 +48,9 @@ const ApplyStandard = () => {
 
   return (
     <div className="bg-white rounded p-5">
-      <h3 className="header">Apply Standard Wizard</h3>
-      <div className="subheader">
-        This wizard guides you through adding standards for your tenants
-      </div>
       <CCard>
         <CRow className="row justify-content-center">
-          <CCol xxl={6}>
+          <CCol xxl={12}>
             <Wizard initialValues={{ ...formValues }} onSubmit={handleSubmit}>
               <Wizard.Page
                 title="Tenant Choice"

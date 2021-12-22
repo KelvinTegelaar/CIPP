@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom'
 
 const dropdown = (row, rowIndex, formatExtraData) => (
-  <CDropdown>
+  <CDropdown style={{ position: 'fixed', zIndex: 1000 }}>
     <CDropdownToggle size="sm" color="link">
       <FontAwesomeIcon icon={faBars} />
     </CDropdownToggle>

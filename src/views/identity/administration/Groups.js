@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom'
 
 const dropdown = (row = {}) => {
   return (
-    <CDropdown>
+    <CDropdown style={{ position: 'fixed', zIndex: 1000 }}>
       <CDropdownToggle size="sm" color="link">
         <FontAwesomeIcon icon={faBars} />
       </CDropdownToggle>
