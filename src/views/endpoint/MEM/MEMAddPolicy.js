@@ -16,6 +16,7 @@ import {
 import { useListTenantsQuery } from '../../../store/api/tenants'
 import { TenantSelector } from 'src/components/cipp'
 import { useListUsersQuery } from 'src/store/api/users'
+import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
 const Error = ({ name }) => (
   <Field
@@ -38,6 +39,8 @@ Error.propTypes = {
 
 const requiredArray = (value) => (value && value.length !== 0 ? undefined : 'Required')
 const ApplyPolicy = () => {
+  const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
+
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
   const {
     data: users = [],
@@ -48,9 +51,9 @@ const ApplyPolicy = () => {
   const dispatch = useDispatch()
 
   const handleSubmit = async (values) => {
-    alert(JSON.stringify(values, null, 2))
+    //alert(JSON.stringify(values, null, 2))
     // @todo hook this up
-    // dispatch(applyStandards({ tenants: values.selectedTenants, standards: values.standards }))
+    // genericPostRequest({ url: 'api/AddIntuneTemplate', values: { values } })
   }
 
   const formValues = {

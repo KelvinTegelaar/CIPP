@@ -140,6 +140,13 @@ export const appApi = createApi({
         },
       }),
     }),
+    GenericPostRequest: builder.query({
+      query: ({ url, values }) => ({
+        path: url,
+        data: values,
+        method: 'post',
+      }),
+    }),
   }),
 })
 
@@ -158,4 +165,5 @@ export const {
   useLazyListExcludedTenantsQuery,
   useLazyExecExcludeTenantQuery,
   useLazyExecAddExcludeTenantQuery,
+  useLazyGenericPostRequestQuery,
 } = appApi
