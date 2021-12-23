@@ -67,7 +67,7 @@ export default class Wizard extends React.Component {
 
     return (
       <>
-        <CCardHeader>
+        <CCardHeader className="bg-transparent">
           <CNav variant="pills" role="tablist" className="nav-justified nav-wizard">
             {React.Children.map(children, ({ props: { description, title } }, idx) => (
               <CNavItem key={`wizard-nav-item-${idx}`} style={{ cursor: 'pointer' }}>
@@ -78,6 +78,7 @@ export default class Wizard extends React.Component {
                     <div className="wizard-step-text-details">{description}</div>
                   </div>
                 </CNavLink>
+                <br></br>
               </CNavItem>
             ))}
           </CNav>
@@ -89,19 +90,22 @@ export default class Wizard extends React.Component {
                 {activePage}
                 <div className="d-flex justify-content-between">
                   {page > 0 && (
-                    <CButton type="button" onClick={this.previous}>
+                    <CButton type="button" className="text-white" onClick={this.previous}>
                       « Previous
                     </CButton>
                   )}
-                  {!isLastPage && <CButton type="submit">Next »</CButton>}
+                  {!isLastPage && (
+                    <CButton className="text-white" type="submit">
+                      Next »
+                    </CButton>
+                  )}
                   {isLastPage && (
-                    <CButton type="submit" disabled={submitting}>
+                    <CButton type="submit" className="text-white" disabled={submitting}>
                       Submit
                     </CButton>
                   )}
                 </div>
               </form>
-              <pre>{JSON.stringify(values, 0, 2)}</pre>
             </>
           )}
         </Form>
