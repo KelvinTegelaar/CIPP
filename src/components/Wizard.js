@@ -2,6 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form } from 'react-final-form'
 import { CButton, CCardHeader, CNav, CNavItem, CNavLink } from '@coreui/react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 
 export default class Wizard extends React.Component {
   static propTypes = {
@@ -103,6 +105,7 @@ export default class Wizard extends React.Component {
                     <>
                       <CButton type="submit" className="text-white" disabled={submitting}>
                         Submit
+                        {submitting && <FontAwesomeIcon icon={faCircleNotch} spin size="1x" />}
                       </CButton>
                     </>
                   )}
