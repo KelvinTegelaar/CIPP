@@ -95,7 +95,7 @@ const EditUser = () => {
     <CCard className="bg-white rounded p-5">
       {!queryError && (
         <>
-          {formDisabled && (
+          {queryError && (
             <CRow>
               <CCol md={12}>
                 <CCallout color="danger">
@@ -164,6 +164,7 @@ const EditUser = () => {
                                   <RFFCFormSelect
                                     // label="Domain"
                                     name="primDomain"
+                                    label="Primary Domain name"
                                     disabled={formDisabled}
                                     placeholder={
                                       !domainsIsFetching ? 'Select domain' : 'Loading...'
@@ -224,7 +225,7 @@ const EditUser = () => {
                                         disabled={formDisabled}
                                         key={license.id}
                                         name={`Licenses.${license.skuId}`}
-                                        label={license.skuPartNumber}
+                                        label={`${license.skuPartNumber} (${license.availableUnits} available)`}
                                       />
                                     ))}
                                 </Condition>

@@ -7,7 +7,8 @@ import { faUser, faCog, faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippDatatable, cellBooleanFormatter } from '../../../components/cipp'
 
-const dropdown = (row, rowIndex, formatExtraData) => {
+const Dropdown = (row, rowIndex, formatExtraData) => {
+  const tenant = useSelector((state) => state.app.currentTenant)
   return (
     <CDropdown style={{ position: 'fixed', zIndex: 1000 }}>
       <CDropdownToggle size="sm" color="link">
@@ -17,7 +18,7 @@ const dropdown = (row, rowIndex, formatExtraData) => {
         <CDropdownItem href="#">
           <Link
             className="dropdown-item"
-            to={`/identity/administration/users/view?userId=${row.id}&tenantDomain=${row.primDomain}`}
+            to={`/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`}
           >
             <FontAwesomeIcon icon={faUser} className="me-2" />
             View User
@@ -26,7 +27,7 @@ const dropdown = (row, rowIndex, formatExtraData) => {
         <CDropdownItem href="#">
           <Link
             className="dropdown-item"
-            to={`/identity/administration/users/edit?userId=${row.id}&tenantDomain=${row.primDomain}`}
+            to={`/identity/administration/users/edit?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`}
           >
             <FontAwesomeIcon icon={faCog} className="me-2" />
             Edit User
@@ -84,7 +85,7 @@ const columns = [
   {
     name: 'Action',
     button: true,
-    cell: dropdown,
+    cell: Dropdown,
   },
 ]
 
