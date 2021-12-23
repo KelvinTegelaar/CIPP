@@ -1,19 +1,25 @@
 import React from 'react'
-import { CAlert, CCard, CCol, CFormLabel, CRow } from '@coreui/react'
-import { Field } from 'react-final-form'
+import {
+  CAlert,
+  CBadge,
+  CCard,
+  CCol,
+  CFormLabel,
+  CListGroup,
+  CListGroupItem,
+  CRow,
+} from '@coreui/react'
+import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
+import {
+  faExclamationTriangle,
+  faTimesCircle,
+  faCheckCircle,
+} from '@fortawesome/free-solid-svg-icons'
 import { useDispatch, useSelector } from 'react-redux'
 import Wizard from '../../../components/Wizard'
-import WizardTableField from '../../../components/WizardTableField'
 import PropTypes from 'prop-types'
-import {
-  RFFCFormCheck,
-  RFFCFormInput,
-  RFFCFormSwitch,
-  RFFSelectSearch,
-} from '../../../components/RFFComponents'
-import { useListTenantsQuery } from '../../../store/api/tenants'
+import { RFFCFormInput, RFFCFormSwitch, RFFSelectSearch } from '../../../components/RFFComponents'
 import { TenantSelector } from 'src/components/cipp'
 import { useListUsersQuery } from 'src/store/api/users'
 
@@ -53,11 +59,6 @@ const OffboardingWizard = () => {
     // dispatch(applyStandards({ tenants: values.selectedTenants, standards: values.standards }))
   }
 
-  const formValues = {
-    selectedTenants: [],
-    standards: {},
-  }
-
   return (
     <div className="bg-white rounded p-5">
       <CRow className="row justify-content-center">
@@ -73,7 +74,6 @@ const OffboardingWizard = () => {
               </center>
               <hr className="my-4" />
               <Field name="selectedTenants">{(props) => <TenantSelector />}</Field>
-              <Error name="selectedTenants" />
               <hr className="my-4" />
             </Wizard.Page>
             <Wizard.Page
@@ -163,7 +163,111 @@ const OffboardingWizard = () => {
                 <h5 className="mb-4">Confirm and apply</h5>
                 <hr className="my-4" />
               </center>
-              <div className="mb-2">Show JSON here</div>
+              <div className="mb-2">
+                <FormSpy>
+                  {(props) => {
+                    /* eslint-disable react/prop-types */
+                    return (
+                      <>
+                        <CRow>
+                          <CCol md={3}></CCol>
+                          <CCol md={6}>
+                            <CListGroup flush>
+                              <CListGroupItem className="d-flex justify-content-between align-items-center">
+                                Remove Licenses
+                                <FontAwesomeIcon
+                                  color="#f77f00"
+                                  size="lg"
+                                  icon={props.values.RemoveLicenses ? faCheckCircle : faTimesCircle}
+                                />
+                              </CListGroupItem>
+                              <CListGroupItem className="d-flex justify-content-between align-items-center">
+                                Convert to Shared
+                                <FontAwesomeIcon
+                                  color="#f77f00"
+                                  size="lg"
+                                  icon={
+                                    props.values.ConvertoSharedMailbox
+                                      ? faCheckCircle
+                                      : faTimesCircle
+                                  }
+                                />
+                              </CListGroupItem>
+                              <CListGroupItem className="d-flex justify-content-between align-items-center">
+                                Disable Sign-in
+                                <FontAwesomeIcon
+                                  color="#f77f00"
+                                  size="lg"
+                                  icon={props.values.DisableUser ? faCheckCircle : faTimesCircle}
+                                />
+                              </CListGroupItem>
+                              <CListGroupItem className="d-flex justify-content-between align-items-center">
+                                Reset Password
+                                <FontAwesomeIcon
+                                  color="#f77f00"
+                                  size="lg"
+                                  icon={props.values.ResetPassword ? faCheckCircle : faTimesCircle}
+                                />
+                              </CListGroupItem>
+                              <CListGroupItem className="d-flex justify-content-between align-items-center">
+                                Remove from all groups
+                                <FontAwesomeIcon
+                                  color="#f77f00"
+                                  size="lg"
+                                  icon={props.values.RemoveGroups ? faCheckCircle : faTimesCircle}
+                                />
+                              </CListGroupItem>
+                              <CListGroupItem className="d-flex justify-content-between align-items-center">
+                                Hide from Global Address List
+                                <FontAwesomeIcon
+                                  color="#f77f00"
+                                  size="lg"
+                                  icon={props.values.HideGAL ? faCheckCircle : faTimesCircle}
+                                />
+                              </CListGroupItem>
+                              <CListGroupItem className="d-flex justify-content-between align-items-center">
+                                Set Out of Office
+                                <FontAwesomeIcon
+                                  color="#f77f00"
+                                  size="lg"
+                                  icon={props.values.OOO ? faCheckCircle : faTimesCircle}
+                                />
+                              </CListGroupItem>
+                              <CListGroupItem className="d-flex justify-content-between align-items-center">
+                                Give another user access to the mailbox with automap
+                                <FontAwesomeIcon
+                                  color="#f77f00"
+                                  size="lg"
+                                  icon={props.values.UserNoAutomap ? faCheckCircle : faTimesCircle}
+                                />
+                              </CListGroupItem>
+                              <CListGroupItem className="d-flex justify-content-between align-items-center">
+                                Give another user access to the mailbox without automap
+                                <FontAwesomeIcon
+                                  color="#f77f00"
+                                  size="lg"
+                                  icon={props.values.UserAutomap ? faCheckCircle : faTimesCircle}
+                                />
+                              </CListGroupItem>
+                              <CListGroupItem className="d-flex justify-content-between align-items-center">
+                                Give another user access to OneDrive
+                                <FontAwesomeIcon
+                                  color="#f77f00"
+                                  size="lg"
+                                  icon={props.values.OneDrive ? faCheckCircle : faTimesCircle}
+                                />
+                              </CListGroupItem>
+                            </CListGroup>
+                          </CCol>
+
+                          {/* eslint-disable-next-line react/prop-types */}
+                          <pre>{JSON.stringify(props.values, undefined, 3)}</pre>
+                        </CRow>
+                      </>
+                    )
+                  }}
+                </FormSpy>
+              </div>
               <hr className="my-4" />
             </Wizard.Page>
           </Wizard>

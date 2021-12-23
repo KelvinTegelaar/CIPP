@@ -100,9 +100,11 @@ export default class Wizard extends React.Component {
                     </CButton>
                   )}
                   {isLastPage && (
-                    <CButton type="submit" className="text-white" disabled={submitting}>
-                      Submit
-                    </CButton>
+                    <>
+                      <CButton type="submit" className="text-white" disabled={submitting}>
+                        Submit
+                      </CButton>
+                    </>
                   )}
                 </div>
               </form>
