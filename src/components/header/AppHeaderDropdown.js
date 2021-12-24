@@ -22,7 +22,7 @@ const AppHeaderDropdown = () => {
           <FontAwesomeIcon icon={faUser} className="me-2" />
           Profile
         </Link>
-        <Link className="dropdown-item" to="/logs">
+        <Link className="dropdown-item" to="/cipp/logs">
           <FontAwesomeIcon icon={faBook} className="me-2" />
           Logbook
         </Link>
