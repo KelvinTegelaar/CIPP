@@ -1,7 +1,16 @@
 import React from 'react'
 import TenantSelector from 'src/components/cipp/TenantSelector'
 import { useSelector } from 'react-redux'
-import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
+import {
+  CDropdown,
+  CDropdownItem,
+  CDropdownMenu,
+  CDropdownToggle,
+  CCard,
+  CCardHeader,
+  CCardTitle,
+  CCardBody,
+} from '@coreui/react'
 import CippDatatable from '../../../components/cipp/CippDatatable'
 import { cellBooleanFormatter } from '../../../components/cipp'
 import { faBars, faCog } from '@fortawesome/free-solid-svg-icons'
@@ -75,16 +84,20 @@ const Groups = () => {
     <div>
       <TenantSelector />
       <hr />
-      <div className="bg-white rounded p-5">
-        <h3>Groups</h3>
-        {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-        <CippDatatable
-          reportName={`${tenant?.defaultDomainName}-Groups`}
-          path="/api/ListGroups"
-          columns={columns}
-          params={{ TenantFilter: tenant?.defaultDomainName }}
-        />
-      </div>
+      <CCard>
+        <CCardHeader>
+          <CCardTitle className="text-primary">Mobile Devices</CCardTitle>
+        </CCardHeader>
+        <CCardBody>
+          {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
+          <CippDatatable
+            reportName={`${tenant?.defaultDomainName}-Groups`}
+            path="/api/ListGroups"
+            columns={columns}
+            params={{ TenantFilter: tenant?.defaultDomainName }}
+          />
+        </CCardBody>
+      </CCard>
     </div>
   )
 }
