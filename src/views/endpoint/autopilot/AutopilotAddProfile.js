@@ -70,7 +70,7 @@ const AddAPProfile = () => {
   return (
     <CCard>
       <CCardHeader>
-        <CCardTitle className="text-primary">Mobile Devices</CCardTitle>
+        <CCardTitle className="text-primary">Autopilot add Profile Wizard</CCardTitle>
       </CCardHeader>
       <CCardBody>
         <CRow className="row justify-content-center">

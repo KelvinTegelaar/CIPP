@@ -34,7 +34,7 @@ const BasicAuthReport = () => {
       <hr />
       <CCard>
         <CCardHeader>
-          <CCardTitle className="text-primary">Mobile Devices</CCardTitle>
+          <CCardTitle className="text-primary">Basic Authentication Reports</CCardTitle>
         </CCardHeader>
         <CCardBody>
           {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}

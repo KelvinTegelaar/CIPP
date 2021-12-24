@@ -73,7 +73,7 @@ const ApplicationsList = () => {
       <hr />
       <CCard>
         <CCardHeader>
-          <CCardTitle className="text-primary">Mobile Devices</CCardTitle>
+          <CCardTitle className="text-primary">Applications List</CCardTitle>
         </CCardHeader>
         <CCardBody>
           <h3>Applications List</h3>

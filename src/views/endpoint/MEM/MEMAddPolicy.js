@@ -73,7 +73,7 @@ const ApplyPolicy = () => {
   return (
     <CCard>
       <CCardHeader>
-        <CCardTitle className="text-primary">Mobile Devices</CCardTitle>
+        <CCardTitle className="text-primary">Add Intune Policy</CCardTitle>
       </CCardHeader>
       <CCardBody>
         {' '}

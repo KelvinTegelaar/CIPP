@@ -70,7 +70,7 @@ const AddAPDevice = () => {
   return (
     <CCard>
       <CCardHeader>
-        <CCardTitle className="text-primary">Mobile Devices</CCardTitle>
+        <CCardTitle className="text-primary">Add Autopilot Device Wizard</CCardTitle>
       </CCardHeader>
       <CCardBody>
         <CRow className="row justify-content-center">

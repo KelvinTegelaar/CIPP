@@ -70,7 +70,7 @@ const AddStatusPage = () => {
   return (
     <CCard>
       <CCardHeader>
-        <CCardTitle className="text-primary">Mobile Devices</CCardTitle>
+        <CCardTitle className="text-primary">Autopilot Add Status Page</CCardTitle>
       </CCardHeader>
       <CCardBody>
         {' '}
