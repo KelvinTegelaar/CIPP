@@ -1,14 +1,31 @@
 import React from 'react'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 import TenantSelector from 'src/components/cipp/TenantSelector'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { faUser, faCog, faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippDatatable, cellBooleanFormatter } from '../../../components/cipp'
+import { setModalContent } from 'src/store/features/modal'
 
 const Dropdown = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
+  const dispatch = useDispatch()
+  const handleDropdownEvent = (apiurl, message) => {
+    dispatch(
+      setModalContent({
+        componentType: 'confirm',
+        title: 'Confirm',
+        body: <div>{message}?</div>,
+        //onConfirm: () => removeExcludedTenant(apiurl),
+        confirmLabel: 'Continue',
+        cancelLabel: 'Cancel',
+        visible: true,
+      }),
+    )
+    //todo, reload the table too. Currently not done because it has a memo, and the table does not reload because of this automatically.
+  }
+
   return (
     <CDropdown style={{ position: 'fixed', zIndex: 1000 }}>
       <CDropdownToggle size="sm" color="link">
@@ -39,7 +56,17 @@ const Dropdown = (row, rowIndex, formatExtraData) => {
             Research Compromised Account
           </Link>
         </CDropdownItem>
-        <CDropdownItem href="#">Send MFA Push To User</CDropdownItem>
+        <CDropdownItem
+          onClick={() =>
+            handleDropdownEvent(
+              'api/test',
+              `Are you sure you want to send a multifactor push to ${row.displayName}`,
+            )
+          }
+          href="#"
+        >
+          Send MFA Push To User
+        </CDropdownItem>
         <CDropdownItem href="#">Convert To Shared</CDropdownItem>
         <CDropdownItem href="#">Block Sign-in</CDropdownItem>
         <CDropdownItem href="#">Reset Password (Must Change)</CDropdownItem>

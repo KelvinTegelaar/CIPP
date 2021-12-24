@@ -268,7 +268,7 @@ const ExcludedTenantsSettings = () => {
         visible: true,
       }),
     )
-    //todo, reload the table too
+    //todo, reload the table too. Currently not done because it has a memo, and the table does not reload because of this automatically.
   }
 
   const handleExcludeTenant = () => {
