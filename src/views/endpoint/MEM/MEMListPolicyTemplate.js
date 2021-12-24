@@ -1,7 +1,16 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import CippDatatable, { ExpanderComponentProps } from '../../../components/cipp/CippDatatable'
-import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
+import {
+  CDropdown,
+  CDropdownItem,
+  CDropdownMenu,
+  CDropdownToggle,
+  CCard,
+  CCardHeader,
+  CCardTitle,
+  CCardBody,
+} from '@coreui/react'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
@@ -50,21 +59,25 @@ const AutopilotListTemplates = () => {
   return (
     <div>
       <hr />
-      <div className="bg-white rounded p-5">
-        <h3>Available Endpoint Manager Templates</h3>
-        <CippDatatable
-          tableProps={{
-            expandableRows: true,
-            expandableRowsComponent: ExpandedComponent,
-            expandOnRowClicked: true,
-          }}
-          keyField="id"
-          reportName={`${tenant?.defaultDomainName}-MEMPolicyTemplates-List`}
-          path="/api/ListIntuneTemplates"
-          columns={columns}
-          params={{ TenantFilter: tenant?.defaultDomainName }}
-        />
-      </div>
+      <CCard>
+        <CCardHeader>
+          <CCardTitle className="text-primary">Available endpoint manager templates</CCardTitle>
+        </CCardHeader>
+        <CCardBody>
+          <CippDatatable
+            tableProps={{
+              expandableRows: true,
+              expandableRowsComponent: ExpandedComponent,
+              expandOnRowClicked: true,
+            }}
+            keyField="id"
+            reportName={`${tenant?.defaultDomainName}-MEMPolicyTemplates-List`}
+            path="/api/ListIntuneTemplates"
+            columns={columns}
+            params={{ TenantFilter: tenant?.defaultDomainName }}
+          />
+        </CCardBody>
+      </CCard>
     </div>
   )
 }
