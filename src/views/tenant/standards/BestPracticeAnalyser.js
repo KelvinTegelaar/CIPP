@@ -40,7 +40,7 @@ const RefreshAction = () => {
   }
 
   return (
-    <CButton onClick={onClick} size="sm" className="text-white">
+    <CButton onClick={onClick} size="sm" className="text-white m-1">
       {isLoading && <CSpinner size="sm" />}
       {error && <FontAwesomeIcon icon={faExclamationTriangle} />}
       {isSuccess && <FontAwesomeIcon icon={faCheck} />}

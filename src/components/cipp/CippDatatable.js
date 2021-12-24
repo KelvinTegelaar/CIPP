@@ -18,7 +18,7 @@ const FilterComponent = ({ filterText, onFilter, onClear }) => (
       aria-label="Search Input"
       value={filterText}
       onChange={onFilter}
-      className="d-flex justify-content-center"
+      className="d-flex justify-content-start"
     />
   </>
 )
@@ -80,14 +80,16 @@ export default function CippDatatable({
       defaultActions.push(action)
     })
     return (
-      <div className="w-100 p-3 d-flex justify-content-between">
-        <FilterComponent
-          onFilter={(e) => setFilterText(e.target.value)}
-          onClear={handleClear}
-          filterText={filterText}
-        />
-        {defaultActions}
-      </div>
+      <>
+        <div className="w-50 p-3 d-flex justify-content-start">
+          <FilterComponent
+            onFilter={(e) => setFilterText(e.target.value)}
+            onClear={handleClear}
+            filterText={filterText}
+          />
+        </div>
+        <div className="w-50 d-flex justify-content-end">{defaultActions}</div>
+      </>
     )
   }, [filterText, resetPaginationToggle, columns, data, reportName, actions])
 

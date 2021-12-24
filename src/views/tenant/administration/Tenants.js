@@ -24,7 +24,10 @@ const dropdown = (row, index, column) => {
       </CDropdownToggle>
       <CDropdownMenu>
         <CDropdownItem href="#">
-          <Link className="dropdown-item" to={`/tenant/administration/EditTenant`}>
+          <Link
+            className="dropdown-item"
+            to={`/tenant/administration/tenants/Edit?TenantFilter=${row.defaultDomainName}`}
+          >
             <FontAwesomeIcon icon={faCog} className="me-2" />
             Edit Tenant
           </Link>
