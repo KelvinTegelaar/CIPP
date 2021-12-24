@@ -184,7 +184,7 @@ const Users = () => {
       <hr />
       <CCard>
         <CCardHeader>
-          <CCardTitle className="text-primary">Offboarding Wizard</CCardTitle>
+          <CCardTitle className="text-primary">Users list</CCardTitle>
         </CCardHeader>
         <CCardBody>
           {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
