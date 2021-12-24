@@ -7,7 +7,7 @@ import { faUser, faCog, faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippDatatable, cellBooleanFormatter } from '../../../components/cipp'
 import { setModalContent } from 'src/store/features/modal'
-
+import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
 const Dropdown = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
   const dispatch = useDispatch()
@@ -182,21 +182,25 @@ const Users = () => {
     <div>
       <TenantSelector />
       <hr />
-      <div className="bg-white rounded p-5">
-        <h3>Users</h3>
-        {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-        <CippDatatable
-          tableProps={{
-            expandableRows: true,
-            expandableRowsComponent: ExpandedComponent,
-            expandOnRowClicked: true,
-          }}
-          reportName={`${tenant?.defaultDomainName}-Users`}
-          path="/api/ListUsers"
-          columns={columns}
-          params={{ TenantFilter: tenant?.defaultDomainName }}
-        />
-      </div>
+      <CCard>
+        <CCardHeader>
+          <CCardTitle className="text-primary">Offboarding Wizard</CCardTitle>
+        </CCardHeader>
+        <CCardBody>
+          {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
+          <CippDatatable
+            tableProps={{
+              expandableRows: true,
+              expandableRowsComponent: ExpandedComponent,
+              expandOnRowClicked: true,
+            }}
+            reportName={`${tenant?.defaultDomainName}-Users`}
+            path="/api/ListUsers"
+            columns={columns}
+            params={{ TenantFilter: tenant?.defaultDomainName }}
+          />
+        </CCardBody>
+      </CCard>
     </div>
   )
 }
