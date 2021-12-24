@@ -16,7 +16,7 @@ const Dropdown = (row, rowIndex, formatExtraData) => {
       setModalContent({
         componentType: 'confirm',
         title: 'Confirm',
-        body: <div>{message}?</div>,
+        body: <div>{message}</div>,
         //onConfirm: () => removeExcludedTenant(apiurl),
         confirmLabel: 'Continue',
         cancelLabel: 'Cancel',
@@ -60,18 +60,65 @@ const Dropdown = (row, rowIndex, formatExtraData) => {
           onClick={() =>
             handleDropdownEvent(
               'api/test',
-              `Are you sure you want to send a multifactor push to ${row.displayName}`,
+              `Are you sure you want to send a multifactor push to ${row.displayName}?`,
             )
           }
           href="#"
         >
           Send MFA Push To User
         </CDropdownItem>
-        <CDropdownItem href="#">Convert To Shared</CDropdownItem>
-        <CDropdownItem href="#">Block Sign-in</CDropdownItem>
-        <CDropdownItem href="#">Reset Password (Must Change)</CDropdownItem>
-        <CDropdownItem href="#">Reset Password</CDropdownItem>
-        <CDropdownItem href="#">Delete User</CDropdownItem>
+        <CDropdownItem
+          onClick={() =>
+            handleDropdownEvent(
+              'api/test',
+              `Are you sure you want to convert ${row.displayName} to a shared mailbox?`,
+            )
+          }
+          href="#"
+        >
+          Convert To Shared
+        </CDropdownItem>
+        <CDropdownItem
+          onClick={() =>
+            handleDropdownEvent(
+              'api/test',
+              `Are you sure you want to block sign in for ${row.displayName}?`,
+            )
+          }
+          href="#"
+        >
+          Block Sign-in
+        </CDropdownItem>
+        <CDropdownItem
+          onClick={() =>
+            handleDropdownEvent(
+              'api/test',
+              `Are you sure you want to reset the password for ${row.displayName}?`,
+            )
+          }
+          href="#"
+        >
+          Reset Password (Must Change)
+        </CDropdownItem>
+        <CDropdownItem
+          onClick={() =>
+            handleDropdownEvent(
+              'api/test',
+              `Are you sure you want to reset the password for ${row.displayName}?`,
+            )
+          }
+          href="#"
+        >
+          Reset Password
+        </CDropdownItem>
+        <CDropdownItem
+          onClick={() =>
+            handleDropdownEvent('api/test', `Are you sure you want to delete ${row.displayName}?`)
+          }
+          href="#"
+        >
+          Delete User
+        </CDropdownItem>
       </CDropdownMenu>
     </CDropdown>
   )
@@ -122,6 +169,7 @@ const Users = () => {
   // eslint-disable-next-line react/prop-types
   const ExpandedComponent = ({ data }) => (
     // eslint-disable-next-line react/prop-types
+    //why not in table?
     <pre>{JSON.stringify(data.LicJoined, null, 2)}</pre>
   )
 
