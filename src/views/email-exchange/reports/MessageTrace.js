@@ -94,7 +94,12 @@ const MessageTrace = () => {
             <CCollapse visible={visibleA}>
               <CCardBody>
                 <Form
-                  initialValues={(sender, recipient, days)}
+                  initialValues={{
+                    tenantFilter: tenant.defaultDomainName,
+                    sender: sender,
+                    recipient: recipient,
+                    days: days,
+                  }}
                   onSubmit={handleSubmit}
                   render={({ handleSubmit, submitting, values }) => {
                     return (
