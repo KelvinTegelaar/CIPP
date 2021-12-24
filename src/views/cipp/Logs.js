@@ -173,7 +173,7 @@ const Logs = () => {
       <hr />
       <CCard>
         <CCardHeader>
-          <CCardTitle className="text-primary">Message Trace Results</CCardTitle>
+          <CCardTitle className="text-primary">Log file results</CCardTitle>
         </CCardHeader>
         <CCardBody>
           <CippDatatable

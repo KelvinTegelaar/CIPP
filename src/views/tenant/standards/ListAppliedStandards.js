@@ -2,7 +2,16 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
-import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
+import {
+  CDropdown,
+  CDropdownItem,
+  CDropdownMenu,
+  CDropdownToggle,
+  CCard,
+  CCardBody,
+  CCardTitle,
+  CCardHeader,
+} from '@coreui/react'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
@@ -45,18 +54,20 @@ const TenantsList = () => {
 
   return (
     <div>
-      <hr />
-      <div className="bg-white rounded p-5">
-        <h3>Applied Standards</h3>
-
-        <CippDatatable
-          keyField="id"
-          reportName={`${tenant?.defaultDomainName}-AppliedStandards-List`}
-          path="/api/ListStandards"
-          columns={columns}
-          params={{ TenantFilter: tenant?.defaultDomainName }}
-        />
-      </div>
+      <CCard>
+        <CCardHeader>
+          <CCardTitle className="text-primary">Applied Standards</CCardTitle>
+        </CCardHeader>
+        <CCardBody>
+          <CippDatatable
+            keyField="id"
+            reportName={`${tenant?.defaultDomainName}-AppliedStandards-List`}
+            path="/api/ListStandards"
+            columns={columns}
+            params={{ TenantFilter: tenant?.defaultDomainName }}
+          />
+        </CCardBody>
+      </CCard>
     </div>
   )
 }

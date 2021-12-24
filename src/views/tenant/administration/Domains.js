@@ -2,6 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
+import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
 
 const columns = [
   {
@@ -93,17 +94,21 @@ const RolesList = () => {
     <div>
       <TenantSelector />
       <hr />
-      <div className="bg-white rounded p-5">
-        <h3>Applications List</h3>
-        {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-        <CippDatatable
-          keyField="id"
-          reportName={`${tenant?.defaultDomainName}-Domains-List`}
-          path="/api/ListAPDevices"
-          columns={columns}
-          params={{ TenantFilter: tenant?.defaultDomainName }}
-        />
-      </div>
+      <CCard>
+        <CCardHeader>
+          <CCardTitle className="text-primary">Domains</CCardTitle>
+        </CCardHeader>
+        <CCardBody>
+          {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
+          <CippDatatable
+            keyField="id"
+            reportName={`${tenant?.defaultDomainName}-Domains-List`}
+            path="/api/ListAPDevices"
+            columns={columns}
+            params={{ TenantFilter: tenant?.defaultDomainName }}
+          />
+        </CCardBody>
+      </CCard>
     </div>
   )
 }

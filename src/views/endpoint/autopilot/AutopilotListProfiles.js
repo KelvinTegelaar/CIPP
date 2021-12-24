@@ -2,7 +2,16 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
-import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
+import {
+  CDropdown,
+  CDropdownItem,
+  CDropdownMenu,
+  CDropdownToggle,
+  CCard,
+  CCardHeader,
+  CCardTitle,
+  CCardBody,
+} from '@coreui/react'
 import { cellBooleanFormatter } from '../../../components/cipp'
 import { Link } from 'react-router-dom'
 import { faUser, faBars } from '@fortawesome/free-solid-svg-icons'
@@ -74,22 +83,26 @@ const AutopilotListProfiles = () => {
     <div>
       <TenantSelector />
       <hr />
-      <div className="bg-white rounded p-5">
-        <h3>Autopilot Profile List</h3>
-        {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-        <CippDatatable
-          tableProps={{
-            expandableRows: true,
-            expandableRowsComponent: ExpandedComponent,
-            expandOnRowClicked: true,
-          }}
-          keyField="id"
-          reportName={`${tenant?.defaultDomainName}-AutopilotProfile-List`}
-          path="/api/ListAutopilotConfig?type=ApProfile"
-          columns={columns}
-          params={{ TenantFilter: tenant?.defaultDomainName }}
-        />
-      </div>
+      <CCard>
+        <CCardHeader>
+          <CCardTitle className="text-primary">Mobile Devices</CCardTitle>
+        </CCardHeader>
+        <CCardBody>
+          {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
+          <CippDatatable
+            tableProps={{
+              expandableRows: true,
+              expandableRowsComponent: ExpandedComponent,
+              expandOnRowClicked: true,
+            }}
+            keyField="id"
+            reportName={`${tenant?.defaultDomainName}-AutopilotProfile-List`}
+            path="/api/ListAutopilotConfig?type=ApProfile"
+            columns={columns}
+            params={{ TenantFilter: tenant?.defaultDomainName }}
+          />
+        </CCardBody>
+      </CCard>
     </div>
   )
 }

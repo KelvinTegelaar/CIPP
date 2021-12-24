@@ -1,5 +1,5 @@
 import React from 'react'
-import { CButton, CSpinner } from '@coreui/react'
+import { CButton, CSpinner, CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
 import { useDispatch } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
@@ -245,17 +245,21 @@ const BestPracticeAnalyser = () => {
   return (
     <div>
       <hr />
-      <div className="bg-white rounded p-5">
-        <h3>Best Practices Report</h3>
-        <CippDatatable
-          reportName={`Best-Practices-Report`}
-          path="/api/BestPracticeAnalyser_List"
-          tableProps={{
-            actions: [<RefreshAction key="refresh-action-button" />],
-          }}
-          columns={columns}
-        />
-      </div>
+      <CCard>
+        <CCardHeader>
+          <CCardTitle className="text-primary">Best Practice Analyser</CCardTitle>
+        </CCardHeader>
+        <CCardBody>
+          <CippDatatable
+            reportName={`Best-Practices-Report`}
+            path="/api/BestPracticeAnalyser_List"
+            tableProps={{
+              actions: [<RefreshAction key="refresh-action-button" />],
+            }}
+            columns={columns}
+          />
+        </CCardBody>
+      </CCard>
     </div>
   )
 }

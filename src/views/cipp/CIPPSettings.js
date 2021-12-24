@@ -49,8 +49,10 @@ const CIPPSettings = () => {
   return (
     <CContainer>
       <CCard>
+        <CCardHeader>
+          <CCardTitle className="text-primary">CIPP Settings</CCardTitle>
+        </CCardHeader>
         <CCardBody>
-          <h3 className="mb-4">CIPP Settings</h3>
           <CNav variant="tabs" role="tablist">
             <CNavItem active={active === 1} onClick={() => setActive(1)} href="javascript:void(0);">
               General

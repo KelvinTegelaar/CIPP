@@ -15,6 +15,7 @@ import {
   CCollapse,
   CForm,
   CRow,
+  CCardTitle,
 } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -71,7 +72,10 @@ const IndividualDomainCheck = () => {
   }
 
   return (
-    <CCard className="bg-white rounded p-3">
+    <CCard>
+      <CCardHeader>
+        <CCardTitle className="text-primary">Individual Domain Check</CCardTitle>
+      </CCardHeader>
       <CCardBody>
         <CRow xs={{ cols: 1, gutter: 4 }} xl={{ cols: 2, gutter: 4 }}>
           <CCol md={6}>

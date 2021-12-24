@@ -2,7 +2,16 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
-import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
+import {
+  CCard,
+  CCardBody,
+  CCardHeader,
+  CCardTitle,
+  CDropdown,
+  CDropdownItem,
+  CDropdownMenu,
+  CDropdownToggle,
+} from '@coreui/react'
 import { cellBooleanFormatter } from '../../../components/cipp'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faCog, faBars } from '@fortawesome/free-solid-svg-icons'
@@ -92,22 +101,26 @@ const MailboxList = () => {
     <div>
       <TenantSelector />
       <hr />
-      <div className="bg-white rounded p-5">
-        <h3>Mailbox List</h3>
-        {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-        <CippDatatable
-          tableProps={{
-            expandableRows: true,
-            expandableRowsComponent: ExpandedComponent,
-            expandOnRowClicked: true,
-          }}
-          keyField="id"
-          reportName={`${tenant?.defaultDomainName}-Mailbox-List`}
-          path="/api/ListMailboxes"
-          columns={columns}
-          params={{ TenantFilter: tenant?.defaultDomainName }}
-        />
-      </div>
+      <CCard>
+        <CCardHeader>
+          <CCardTitle className="text-primary">Mailbox list</CCardTitle>
+        </CCardHeader>
+        <CCardBody>
+          {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
+          <CippDatatable
+            tableProps={{
+              expandableRows: true,
+              expandableRowsComponent: ExpandedComponent,
+              expandOnRowClicked: true,
+            }}
+            keyField="id"
+            reportName={`${tenant?.defaultDomainName}-Mailbox-List`}
+            path="/api/ListMailboxes"
+            columns={columns}
+            params={{ TenantFilter: tenant?.defaultDomainName }}
+          />
+        </CCardBody>
+      </CCard>
     </div>
   )
 }

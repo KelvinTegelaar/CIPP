@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { useDispatch } from 'react-redux'
-import { CButton } from '@coreui/react'
+import { CButton, CCard, CCardHeader, CCardTitle, CCardBody } from '@coreui/react'
 
 import {
   CellBadge,
@@ -227,14 +227,18 @@ const DomainsAnalyser = () => {
 
   return (
     <div>
-      <div className="bg-white rounded p-5">
-        <h3>Domains Analyser Report</h3>
-        <CippDatatable
-          reportName="Domains-Analyzer"
-          path="/api/DomainAnalyser_List"
-          columns={columns}
-        />
-      </div>
+      <CCard>
+        <CCardHeader>
+          <CCardTitle className="text-primary">Domain Analyser</CCardTitle>
+        </CCardHeader>
+        <CCardBody>
+          <CippDatatable
+            reportName="Domains-Analyzer"
+            path="/api/DomainAnalyser_List"
+            columns={columns}
+          />
+        </CCardBody>
+      </CCard>
     </div>
   )
 }
