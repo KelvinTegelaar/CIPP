@@ -20,47 +20,60 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronRight, faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { CippDatatable, TenantSelector } from 'src/components/cipp'
 import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 const columns = [
   {
-    name: 'Display Name',
-    selector: (row) => row['displayName'],
+    name: 'Date',
+    selector: (row) => row['Date'],
     sortable: true,
   },
   {
-    name: 'Email',
-    selector: (row) => row['mail'],
+    name: 'Recipient',
+    selector: (row) => row['RecipientAddress'],
     sortable: true,
   },
   {
-    name: 'User Type',
-    selector: (row) => row['userType'],
+    name: 'Sender',
+    selector: (row) => row['SenderAddress'],
     sortable: true,
   },
   {
-    name: 'Account Enabled',
-    selector: (row) => row['accountEnabled'],
+    name: 'Subject',
+    selector: (row) => row['Subject'],
     sortable: true,
   },
   {
-    name: 'On Premise Sync',
-    selector: (row) => row['onPremisesSyncEnabled'],
+    name: 'Status',
+    selector: (row) => row['Status'],
     sortable: true,
-  },
-  {
-    name: 'Licenses',
-    selector: (row) => 'Click to Expand',
   },
 ]
 
 const MessageTrace = () => {
+  let navigate = useNavigate()
   const tenant = useSelector((state) => state.app.currentTenant)
-
-  const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
+  let query = useQuery()
+  const sender = query.get('sender')
+  const recipient = query.get('recipient')
+  const days = query.get('days')
+  const tenantFilter = query.get('tenantfilter')
+  const SearchNow = query.get('SearchNow')
+  //const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const [visibleA, setVisibleA] = useState(false)
 
   const handleSubmit = async (values) => {
-    // alert(JSON.stringify(values, null, 2))
+    const shippedValues = {
+      tenantFilter: tenant.defaultDomainName,
+      SearchNow: true,
+      ...values,
+    }
+    var queryString = Object.keys(shippedValues)
+      .map((key) => key + '=' + shippedValues[key])
+      .join('&')
+
+    //alert(JSON.stringify(values, null, 2))
+    navigate(`?${queryString}`)
     // @todo hook this up
     // genericPostRequest({ url: 'api/AddIntuneTemplate', values })
   }
@@ -81,6 +94,7 @@ const MessageTrace = () => {
             <CCollapse visible={visibleA}>
               <CCardBody>
                 <Form
+                  initialValues={(sender, recipient, days)}
                   onSubmit={handleSubmit}
                   render={({ handleSubmit, submitting, values }) => {
                     return (
@@ -97,7 +111,7 @@ const MessageTrace = () => {
                           <CCol>
                             <RFFCFormInput
                               type="text"
-                              name="Recipient"
+                              name="recipient"
                               label="Recipient"
                               placeholder="Enter an e-mail address"
                             />
@@ -107,7 +121,7 @@ const MessageTrace = () => {
                           <CCol>
                             <RFFCFormInput
                               type="text"
-                              name="Sender"
+                              name="sender"
                               label="Sender"
                               placeholder="Enter an e-mail address"
                             />
@@ -116,7 +130,7 @@ const MessageTrace = () => {
                         <CRow>
                           <CCol>
                             <RFFCFormSelect
-                              name="Days"
+                              name="days"
                               label="How many days back to search"
                               placeholder="2"
                               values={[
@@ -161,12 +175,21 @@ const MessageTrace = () => {
           <CCardTitle className="text-primary">Message Trace Results</CCardTitle>
         </CCardHeader>
         <CCardBody>
-          <CippDatatable
-            reportName={`${tenant?.defaultDomainName}-Messagetrace`}
-            path="/api/ListUsers"
-            columns={columns}
-            params={{ TenantFilter: tenant?.defaultDomainName }}
-          />
+          {!SearchNow && <span>Execute a search to get started.</span>}
+
+          {SearchNow && (
+            <CippDatatable
+              reportName={`${tenant?.defaultDomainName}-Messagetrace`}
+              path="/api/listMessagetrace"
+              params={{
+                tenantFilter: tenant.defaultDomainName,
+                sender: sender,
+                recipient: recipient,
+                days: days,
+              }}
+              columns={columns}
+            />
+          )}
         </CCardBody>
       </CCard>
     </>
