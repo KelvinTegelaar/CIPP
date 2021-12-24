@@ -484,7 +484,7 @@ $link-hover-decoration: null !default;
 // $font-size-root effects the value of `rem`, which is used for as well font sizes, paddings and margins
 // $font-size-base effects the font size of the body text
 // $font-size-root:              null !default;
-// $font-size-base:              1rem !default; // Assumes the browser default, typically `16px`
+$font-size-base: 1rem !default; // Assumes the browser default, typically `16px`
 // $font-size-sm:                $font-size-base * .875 !default;
 // $font-size-lg:                $font-size-base * 1.25 !default;
 
@@ -506,7 +506,7 @@ $link-hover-decoration: null !default;
 // $h2-font-size:                $font-size-base * 2 !default;
 // $h3-font-size:                $font-size-base * 1.75 !default;
 // $h4-font-size:                $font-size-base * 1.5 !default;
-// $h5-font-size:                $font-size-base * 1.25 !default;
+$h5-font-size: $font-size-base;
 // $h6-font-size:                $font-size-base !default;
 // scss-docs-end font-variables
 
