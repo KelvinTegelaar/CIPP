@@ -17,13 +17,12 @@ const Dropdown = (row, rowIndex, formatExtraData) => {
         componentType: 'confirm',
         title: 'Confirm',
         body: <div>{message}</div>,
-        //onConfirm: () => removeExcludedTenant(apiurl),
+        //onConfirm: () => USeLazyGenericGet? or something...(apiurl),
         confirmLabel: 'Continue',
         cancelLabel: 'Cancel',
         visible: true,
       }),
     )
-    //todo, reload the table too. Currently not done because it has a memo, and the table does not reload because of this automatically.
   }
 
   return (
@@ -129,32 +128,38 @@ const columns = [
     name: 'Display Name',
     selector: (row) => row['displayName'],
     sortable: true,
+    exportselector: 'displayName',
   },
   {
     name: 'Email',
     selector: (row) => row['mail'],
     sortable: true,
+    exportselector: 'mail',
   },
   {
     name: 'User Type',
     selector: (row) => row['userType'],
     sortable: true,
+    exportselector: 'userType',
   },
   {
     name: 'Account Enabled',
     selector: (row) => row['accountEnabled'],
     cell: cellBooleanFormatter(),
     sortable: true,
+    exportselector: 'accountEnabled',
   },
   {
     name: 'On Premise Sync',
     selector: (row) => row['onPremisesSyncEnabled'],
     cell: cellBooleanFormatter(),
     sortable: true,
+    exportselector: 'onPremisesSyncEnabled',
   },
   {
     name: 'Licenses',
     selector: (row) => 'Click to Expand',
+    exportselector: 'LicJoined',
   },
   {
     name: 'Action',
@@ -168,8 +173,8 @@ const Users = () => {
 
   // eslint-disable-next-line react/prop-types
   const ExpandedComponent = ({ data }) => (
-    // eslint-disable-next-line react/prop-types
     //why not in table?
+    // eslint-disable-next-line react/prop-types
     <pre>{JSON.stringify(data.LicJoined, null, 2)}</pre>
   )
 

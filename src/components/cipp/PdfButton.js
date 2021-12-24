@@ -7,7 +7,6 @@ import PropTypes from 'prop-types'
 function ExportPDFButton(props) {
   const exportPDF = (pdfData, pdfHeaders, pdfSize = 'A4', reportName) => {
     const unit = 'pt'
-    console.log(pdfHeaders)
     const size = pdfSize // Use A1, A2, A3 or A4
     const orientation = 'landscape' // portrait or landscape
 
@@ -17,8 +16,8 @@ function ExportPDFButton(props) {
     doc.setFontSize(10)
     let headerObj = []
     pdfHeaders.forEach((item) => {
-      if (item.name != 'Action') {
-        let returnobj = { header: item.name, dataKey: item.selector }
+      if (item.exportselector) {
+        let returnobj = { header: item.name, dataKey: item.exportselector }
         headerObj.push(returnobj)
       }
     })

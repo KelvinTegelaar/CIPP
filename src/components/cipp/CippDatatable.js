@@ -18,6 +18,7 @@ const FilterComponent = ({ filterText, onFilter, onClear }) => (
       aria-label="Search Input"
       value={filterText}
       onChange={onFilter}
+      className="d-flex justify-content-center"
     />
   </>
 )
@@ -51,24 +52,6 @@ export default function CippDatatable({
 }) {
   const { data = [], isFetching, error } = useListDatatableQuery({ path, params })
 
-  const actionsMemo = React.useMemo(() => {
-    const defaultActions = [
-      <ExportPDFButton
-        key="export-pdf-action"
-        pdfData={data}
-        pdfHeaders={columns}
-        pdfSize="A4"
-        reportName={reportName}
-      />,
-    ]
-
-    actions.forEach((action) => {
-      defaultActions.push(action)
-    })
-
-    return defaultActions
-  }, [columns, data, reportName, actions])
-
   const [filterText, setFilterText] = React.useState('')
   const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false)
   const filteredItems = data.filter(
@@ -83,14 +66,30 @@ export default function CippDatatable({
       }
     }
 
+    const defaultActions = [
+      <ExportPDFButton
+        key="export-pdf-action"
+        pdfData={data}
+        pdfHeaders={columns}
+        pdfSize="A4"
+        reportName={reportName}
+      />,
+    ]
+
+    actions.forEach((action) => {
+      defaultActions.push(action)
+    })
     return (
-      <FilterComponent
-        onFilter={(e) => setFilterText(e.target.value)}
-        onClear={handleClear}
-        filterText={filterText}
-      />
+      <div className="w-100 p-3 d-flex justify-content-between">
+        <FilterComponent
+          onFilter={(e) => setFilterText(e.target.value)}
+          onClear={handleClear}
+          filterText={filterText}
+        />
+        {defaultActions}
+      </div>
     )
-  }, [filterText, resetPaginationToggle])
+  }, [filterText, resetPaginationToggle, columns, data, reportName, actions])
 
   return (
     <div>
@@ -98,14 +97,13 @@ export default function CippDatatable({
       {!isFetching && error && <span>Error loading data</span>}
       {!isFetching && !error && (
         <div>
-          <hr />
           <DataTable
             // theme={theme}
             subHeader={subheader}
             subHeaderComponent={subHeaderComponentMemo}
             subHeaderAlign="left"
             paginationResetDefaultPage={resetPaginationToggle}
-            actions={actionsMemo}
+            //actions={actionsMemo}
             pagination={pagination}
             responsive={responsive}
             dense={dense}
