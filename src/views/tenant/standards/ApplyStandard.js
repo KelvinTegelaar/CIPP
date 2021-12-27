@@ -39,12 +39,19 @@ const ApplyStandard = () => {
   const dispatch = useDispatch()
 
   const handleSubmit = async (values) => {
-    alert(JSON.stringify({ tenants: values.selectedTenants, standards: values.standards }, null, 2))
-    // @todo hook this up
-    // genericPostRequest({
-    // tenants: values.selectedTenants.defaultDomainName,
-    // standards: values.standards,
-    // })
+    // @todo: clean this up api sided so we don't need to perform weird tricks.
+    var result = Object.keys(values.standards).filter(function (x) {
+      if (values.standards[x] === false) {
+        delete values.standards[x]
+      }
+    })
+
+    const shippedTenants = values.selectedTenants.map(
+      (tenant) =>
+        (values.standards[`Select_${tenant.defaultDomainName}`] = tenant.defaultDomainName),
+    )
+    //filter on only objects that are 'true'
+    genericPostRequest({ url: 'api/AddStandardsDeploy', values: values.standards })
   }
 
   const formValues = {
@@ -162,15 +169,19 @@ const ApplyStandard = () => {
                   <h5 className="card-title mb-4">Confirm and apply</h5>
                 </center>
                 <hr className="my-4" />
-                <CAlert color="warning" className="d-flex align-items-center">
-                  <FontAwesomeIcon color="warning" icon={faExclamationTriangle} size="2x" />
-
-                  <center>
-                    WARNING! Setting a standard will make changes to your tenants and set these
-                    standards on every 365 tenant you select. If you want to review only, please use
-                    the Best Practice Analyser.
-                  </center>
-                </CAlert>
+                {!postResults.isSuccess && (
+                  <CAlert color="warning" className="d-flex align-items-center">
+                    <FontAwesomeIcon color="warning" icon={faExclamationTriangle} size="2x" />
+                    <center>
+                      WARNING! Setting a standard will make changes to your tenants and set these
+                      standards on every 365 tenant you select. If you want to review only, please
+                      use the Best Practice Analyser.
+                    </center>
+                  </CAlert>
+                )}
+                {postResults.isSuccess && (
+                  <CAlert color="success">{postResults.data?.Results}</CAlert>
+                )}
                 <hr className="my-4" />
               </Wizard.Page>
             </Wizard>
