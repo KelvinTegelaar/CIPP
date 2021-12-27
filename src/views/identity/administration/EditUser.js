@@ -28,6 +28,7 @@ import { useEditUserMutation, useListUserQuery, useListUsersQuery } from '../../
 import { useListDomainsQuery } from '../../../store/api/domains'
 import { useListLicensesQuery } from '../../../store/api/licenses'
 import { setModalContent } from '../../../store/features/modal'
+import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
 const EditUser = () => {
   const dispatch = useDispatch()
@@ -77,9 +78,39 @@ const EditUser = () => {
       setQueryError(false)
     }
   }, [userId, tenantDomain, dispatch])
-
+  const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const onSubmit = (values) => {
-    window.alert(JSON.stringify(values))
+    //need to fix copyfrom in api
+    if (!values.copyFrom) {
+      values.copyFrom = ''
+    }
+    const shippedValues = {
+      //AddedAliases: values.AddedAliases,
+      BusinessPhone: values.businessPhones,
+      RemoveAllLicenses: values.RemoveAllLicenses,
+      City: values.city,
+      CompanyName: values.companyName,
+      CopyFrom: values.copyFrom,
+      Country: values.country,
+      Department: values.department,
+      DisplayName: values.displayName,
+      Domain: values.primDomain,
+      FirstName: values.firstName,
+      Jobtitle: values.jobTitle,
+      LastName: values.surname,
+      License: values.licenses,
+      MobilePhone: values.mobilePhone,
+      Password: values.password,
+      PostalCode: values.postalCode,
+      Usagelocation: values.usageLocation,
+      UserID: userId,
+      Username: values.mailNickname,
+      streetAddress: values.streetAddress,
+      tenantID: tenantDomain,
+      ...values.license,
+    }
+    //window.alert(JSON.stringify(shippedValues))
+    genericPostRequest({ url: 'api/EditUser', values: shippedValues })
   }
   const initialState = {
     keepLicenses: true,
@@ -88,8 +119,6 @@ const EditUser = () => {
 
   // this is dumb
   const formDisabled = queryError === true || !!userError || !user || Object.keys(user).length === 0
-
-  console.log({ queryError, userError, user })
 
   return (
     <CCard className="bg-white rounded p-5">
@@ -210,13 +239,19 @@ const EditUser = () => {
                             <CRow>
                               <CCol md={12}>
                                 <RFFCFormSwitch
-                                  name="keepLicenses"
-                                  label="Keep current licenses"
+                                  name="licenses"
+                                  label="Change licenses"
                                   disabled={formDisabled}
                                 />
-                                <Condition when="keepLicenses" is={false}>
+                                <Condition when="licenses" is={true}>
                                   <span>Licenses</span>
                                   <br />
+                                  <RFFCFormCheck
+                                    disabled={formDisabled}
+                                    key={'license.id'}
+                                    name={'RemoveAllLicenses'}
+                                    label={'Remove all licenses'}
+                                  />
                                   {licensesIsFetching && <CSpinner />}
                                   {licensesError && <span>Error loading licenses</span>}
                                   {!licensesIsFetching &&
@@ -224,7 +259,7 @@ const EditUser = () => {
                                       <RFFCFormCheck
                                         disabled={formDisabled}
                                         key={license.id}
-                                        name={`Licenses.${license.skuId}`}
+                                        name={`license.License_${license.skuId}`}
                                         label={`${license.skuPartNumber} (${license.availableUnits} available)`}
                                       />
                                     ))}
@@ -319,7 +354,7 @@ const EditUser = () => {
                                   label="Copy group membership from other user"
                                   disabled={formDisabled}
                                   values={users?.map((user) => ({
-                                    value: user.id,
+                                    value: user.mail,
                                     name: user.displayName,
                                   }))}
                                   placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}

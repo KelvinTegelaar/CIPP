@@ -91,23 +91,15 @@ const AddAPDevice = () => {
               </Wizard.Page>
               <Wizard.Page
                 title="Select User"
-                description="Select the user to offboard from the tenant."
+                description="Enter the Autopilot device information list"
               >
                 <center>
                   <h3 className="text-primary">Step 2</h3>
-                  <h5>Select the user that will be offboarded</h5>
+                  <h5>Enter autopilot information</h5>
                 </center>
                 <hr className="my-4" />
                 <div className="mb-2">
-                  <RFFSelectSearch
-                    label={'Users in ' + tenantDomain}
-                    values={users?.map((user) => ({
-                      value: user.id,
-                      name: user.displayName,
-                    }))}
-                    placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
-                    name="SelectedUser"
-                  />
+                  Stuff here
                   {usersError && <span>Failed to load list of users</span>}
                 </div>
                 <hr className="my-4" />

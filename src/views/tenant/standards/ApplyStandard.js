@@ -9,6 +9,7 @@ import WizardTableField from '../../../components/WizardTableField'
 import PropTypes from 'prop-types'
 import { RFFCFormSwitch } from '../../../components/RFFComponents'
 import { useListTenantsQuery } from '../../../store/api/tenants'
+import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
 const Error = ({ name }) => (
   <Field
@@ -33,12 +34,17 @@ const requiredArray = (value) => (value && value.length !== 0 ? undefined : 'Req
 
 const ApplyStandard = () => {
   const { data: tenants = [] } = useListTenantsQuery()
+  const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
+
   const dispatch = useDispatch()
 
   const handleSubmit = async (values) => {
-    alert(JSON.stringify(values, null, 2))
+    alert(JSON.stringify({ tenants: values.selectedTenants, standards: values.standards }, null, 2))
     // @todo hook this up
-    // dispatch(applyStandards({ tenants: values.selectedTenants, standards: values.standards }))
+    // genericPostRequest({
+    // tenants: values.selectedTenants.defaultDomainName,
+    // standards: values.standards,
+    // })
   }
 
   const formValues = {
