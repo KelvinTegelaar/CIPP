@@ -68,7 +68,7 @@ const ApplyStandard = () => {
   return (
     <CCard className="col-8">
       <CCardHeader>
-        <CCardTitle className="text-primary">Standards Wizard</CCardTitle>
+        <CCardTitle className="text-primary">Chocolatey App Wizard</CCardTitle>
       </CCardHeader>
       <CCardBody>
         <CRow className="row justify-content-center">
