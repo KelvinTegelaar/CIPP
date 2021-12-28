@@ -33,6 +33,7 @@ import { setModalContent } from '../../../store/features/modal'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
+import { object } from 'prop-types'
 
 const EditUser = () => {
   const dispatch = useDispatch()
@@ -88,6 +89,8 @@ const EditUser = () => {
     if (!values.CopyFrom) {
       values.CopyFrom = ''
     }
+    //@todo: need to fix this in api so this hacky shit is no longer needed.
+
     const shippedValues = {
       AddedAliases: values.addedAliases,
       BusinessPhone: values.businessPhones,
