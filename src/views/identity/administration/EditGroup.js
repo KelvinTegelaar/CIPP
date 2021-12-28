@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import {
+  CAlert,
   CButton,
   CCard,
   CCardBody,
@@ -11,6 +12,12 @@ import {
   CListGroupItem,
   CRow,
   CSpinner,
+  CTable,
+  CTableBody,
+  CTableDataCell,
+  CTableHead,
+  CTableHeaderCell,
+  CTableRow,
 } from '@coreui/react'
 import useQuery from '../../../hooks/useQuery'
 import { setModalContent } from '../../../store/features/modal'
@@ -41,18 +48,18 @@ const EditGroup = () => {
 
   const {
     data: members = {},
-    membersisFetching,
-    membersError,
-    membersIsSuccess,
+    isFetching: membersisFetching,
+    error: membersError,
+    isSuccess: membersIsSuccess,
   } = useListGroupMembersQuery({ tenantDomain, groupId })
 
   const {
     data: owners = {},
-    ownersisFetching,
-    ownersError,
-    ownersIsSuccess,
+    isFeteching: ownersisFetching,
+    error: ownersError,
+    isSuccess: ownersIsSuccess,
   } = useListGroupOwnersQuery({ tenantDomain, groupId })
-
+  console.log(members.isSuccess)
   useEffect(() => {
     if (!groupId || !tenantDomain) {
       dispatch(
@@ -132,6 +139,9 @@ const EditGroup = () => {
                                 </CButton>
                               </CCol>
                             </CRow>
+                            {postResults.isSuccess && (
+                              <CAlert color="success">{postResults.data.Results}</CAlert>
+                            )}
                             {/*<CRow>*/}
                             {/* <CCol>*/}
                             {/*   <pre>{JSON.stringify(values, null, 2)}</pre>*/}
@@ -155,27 +165,34 @@ const EditGroup = () => {
                   {membersError && <span>Error loading members</span>}
                   {ownersError && <span>Error loading Group owners</span>}
 
-                  {membersIsSuccess && (
+                  {membersIsSuccess && ownersIsSuccess && (
                     <>
                       These are the current members;
-                      <CListGroup flush>
-                        {owners.map(({ owner }) => (
-                          <CListGroupItem
-                            key={owner}
-                            className="d-flex justify-content-between align-items-center"
-                          >
-                            {owners.displayName} - Owner
-                          </CListGroupItem>
-                        ))}
-                        {members.map(({ member }) => (
-                          <CListGroupItem
-                            key={member}
-                            className="d-flex justify-content-between align-items-center"
-                          >
-                            {member.displayName} - Member
-                          </CListGroupItem>
-                        ))}
-                      </CListGroup>
+                      <CTable>
+                        <CTableHead>
+                          <CTableRow>
+                            <CTableHeaderCell scope="col">Name</CTableHeaderCell>
+                            <CTableHeaderCell scope="col">Mail</CTableHeaderCell>
+                            <CTableHeaderCell scope="col">Role</CTableHeaderCell>
+                          </CTableRow>
+                        </CTableHead>
+                        <CTableBody>
+                          {owners.map((owner) => (
+                            <CTableRow key={owner.displayName}>
+                              <CTableDataCell>{owner.displayName}</CTableDataCell>
+                              <CTableDataCell>{owner.mail}</CTableDataCell>
+                              <CTableDataCell>Owner</CTableDataCell>
+                            </CTableRow>
+                          ))}
+                          {members.map((member) => (
+                            <CTableRow key={member.displayName}>
+                              <CTableDataCell>{member.displayName}</CTableDataCell>
+                              <CTableDataCell>{member.mail}</CTableDataCell>
+                              <CTableDataCell>Member</CTableDataCell>
+                            </CTableRow>
+                          ))}
+                        </CTableBody>
+                      </CTable>
                     </>
                   )}
                 </CCardBody>
