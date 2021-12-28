@@ -174,26 +174,70 @@ const ApplyStandard = () => {
                             <CCol md={6}>
                               <CListGroup flush>
                                 <CListGroupItem className="d-flex justify-content-between align-items-center">
-                                  Chocolatey Package: {props.values.packagename}
+                                  Timeout: {props.values.TimeOutInMinutes}
+                                  <FontAwesomeIcon
+                                    color="#f77f00"
+                                    size="lg"
+                                    icon={
+                                      props.values.TimeOutInMinutes ? faCheckCircle : faTimesCircle
+                                    }
+                                  />
                                 </CListGroupItem>
                                 <CListGroupItem className="d-flex justify-content-between align-items-center">
-                                  Application name: {props.values.applicationName}
+                                  Show Progress
+                                  <FontAwesomeIcon
+                                    color="#f77f00"
+                                    size="lg"
+                                    icon={props.values.ShowProgress ? faCheckCircle : faTimesCircle}
+                                  />
                                 </CListGroupItem>
                                 <CListGroupItem className="d-flex justify-content-between align-items-center">
-                                  Description: {props.values.description}
+                                  Turn on log collection
+                                  <FontAwesomeIcon
+                                    color="#f77f00"
+                                    size="lg"
+                                    icon={props.values.EnableLog ? faCheckCircle : faTimesCircle}
+                                  />
                                 </CListGroupItem>
                                 <CListGroupItem className="d-flex justify-content-between align-items-center">
-                                  Custom Repo:
-                                  {props.values.customRepo ? props.values.customRepo : ' No'}
+                                  Show OOBE page
+                                  <FontAwesomeIcon
+                                    color="#f77f00"
+                                    size="lg"
+                                    icon={props.values.OBEEOnly ? faCheckCircle : faTimesCircle}
+                                  />
                                 </CListGroupItem>
                                 <CListGroupItem className="d-flex justify-content-between align-items-center">
-                                  Install as System: {props.values.InstallAsSystem ? 'Yes' : 'No'}
+                                  Block during setup
+                                  <FontAwesomeIcon
+                                    color="#f77f00"
+                                    size="lg"
+                                    icon={props.values.blockDevice ? faCheckCircle : faTimesCircle}
+                                  />
                                 </CListGroupItem>
                                 <CListGroupItem className="d-flex justify-content-between align-items-center">
-                                  Disable Restart: {props.values.DisableRestart ? 'Yes' : 'No'}
+                                  Allow retry
+                                  <FontAwesomeIcon
+                                    color="#f77f00"
+                                    size="lg"
+                                    icon={props.values.Allowretry ? faCheckCircle : faTimesCircle}
+                                  />
                                 </CListGroupItem>
                                 <CListGroupItem className="d-flex justify-content-between align-items-center">
-                                  Assign to: {props.values.AssignTo}
+                                  Allow device reset
+                                  <FontAwesomeIcon
+                                    color="#f77f00"
+                                    size="lg"
+                                    icon={props.values.AllowReset ? faCheckCircle : faTimesCircle}
+                                  />
+                                </CListGroupItem>
+                                <CListGroupItem className="d-flex justify-content-between align-items-center">
+                                  Allow usage if failed
+                                  <FontAwesomeIcon
+                                    color="#f77f00"
+                                    size="lg"
+                                    icon={props.values.AllowFail ? faCheckCircle : faTimesCircle}
+                                  />
                                 </CListGroupItem>
                               </CListGroup>
                             </CCol>
