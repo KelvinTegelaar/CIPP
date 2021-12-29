@@ -11,6 +11,7 @@ import {
   CFormLabel,
   CRow,
   CSpinner,
+  CAlert,
 } from '@coreui/react'
 import useQuery from '../../../hooks/useQuery'
 import { useDispatch } from 'react-redux'
@@ -21,6 +22,7 @@ import {
   RFFCFormInput,
   RFFCFormSelect,
   RFFCFormSwitch,
+  RFFCFormTextarea,
   RFFSelectSearch,
 } from '../../../components/RFFComponents'
 import countryList from '../../../assets/countrylist.json'
@@ -29,6 +31,9 @@ import { useListDomainsQuery } from '../../../store/api/domains'
 import { useListLicensesQuery } from '../../../store/api/licenses'
 import { setModalContent } from '../../../store/features/modal'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
+import { object } from 'prop-types'
 
 const EditUser = () => {
   const dispatch = useDispatch()
@@ -38,7 +43,7 @@ const EditUser = () => {
 
   const [queryError, setQueryError] = useState(false)
 
-  const [editUser, { error: editUserError, isFetching: editUserIsFetching }] = useEditUserMutation()
+  //const [editUser, { error: editUserError, isFetching: editUserIsFetching }] = useEditUserMutation()
 
   const {
     data: user = {},
@@ -80,17 +85,19 @@ const EditUser = () => {
   }, [userId, tenantDomain, dispatch])
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const onSubmit = (values) => {
-    //need to fix copyfrom in api
-    if (!values.copyFrom) {
-      values.copyFrom = ''
+    //@todo: need to fix copyfrom in api so this is no longer required
+    if (!values.CopyFrom) {
+      values.CopyFrom = ''
     }
+    //@todo: need to fix this in api so this hacky shit is no longer needed.
+
     const shippedValues = {
-      //AddedAliases: values.AddedAliases,
+      AddedAliases: values.addedAliases,
       BusinessPhone: values.businessPhones,
       RemoveAllLicenses: values.RemoveAllLicenses,
       City: values.city,
       CompanyName: values.companyName,
-      CopyFrom: values.copyFrom,
+      CopyFrom: values.CopyFrom,
       Country: values.country,
       Department: values.department,
       DisplayName: values.displayName,
@@ -124,6 +131,7 @@ const EditUser = () => {
     <CCard className="bg-white rounded p-5">
       {!queryError && (
         <>
+          {postResults.isSuccess && <CAlert color="success">{postResults.data?.Results}</CAlert>}
           {queryError && (
             <CRow>
               <CCol md={12}>
@@ -205,6 +213,17 @@ const EditUser = () => {
                                   />
                                 )}
                                 {domainsError && <span>Failed to load list of domains</span>}
+                              </CCol>
+                            </CRow>
+                            <CRow>
+                              <CCol md={12}>
+                                <RFFCFormTextarea
+                                  type="text"
+                                  name="addedAliases"
+                                  label="Add Aliases"
+                                  placeholder="Enter one alias per line"
+                                  disabled={formDisabled}
+                                />
                               </CCol>
                             </CRow>
                             <CRow>
@@ -367,14 +386,15 @@ const EditUser = () => {
                               <CCol md={6}>
                                 <CButton type="submit" disabled={submitting || formDisabled}>
                                   Edit User
+                                  {postResults.isFetching && (
+                                    <FontAwesomeIcon icon={faCircleNotch} spin size="1x" />
+                                  )}
                                 </CButton>
                               </CCol>
                             </CRow>
-                            {/*<CRow>*/}
-                            {/*  <CCol>*/}
-                            {/*    <pre>{JSON.stringify(values, null, 2)}</pre>*/}
-                            {/*  </CCol>*/}
-                            {/*</CRow>*/}
+                            {postResults.isSuccess && (
+                              <CAlert color="success">{postResults.data?.Results}</CAlert>
+                            )}
                           </CForm>
                         )
                       }}

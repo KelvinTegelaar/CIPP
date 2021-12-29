@@ -65,9 +65,7 @@ const EditAutopilotStatusPage = React.lazy(() =>
 const IntuneCAPolicies = React.lazy(() => import('./views/endpoint/MEM/MEMCAPolicies'))
 const IntuneAddPolicy = React.lazy(() => import('./views/endpoint/MEM/MEMAddPolicy'))
 const MEMAddPolicyTemplate = React.lazy(() => import('./views/endpoint/MEM/MEMAddPolicyTemplate'))
-const EditMEMApplication = React.lazy(() =>
-  import('./views/endpoint/applications/EditMEMApplication'),
-)
+
 const IntuneListPolicyTemplate = React.lazy(() =>
   import('./views/endpoint/MEM/MEMListPolicyTemplate'),
 )
@@ -197,11 +195,6 @@ const routes = [
     path: '/endpoint/applications/list',
     name: 'List',
     component: ApplicationsList,
-  },
-  {
-    path: '/endpoint/applications/edit-mem-application',
-    name: 'Edit Endpoint Manager Application',
-    component: EditMEMApplication,
   },
   {
     path: '/endpoint/applications/add-choco-app',

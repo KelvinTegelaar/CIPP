@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import {
+  CAlert,
   CButton,
   CCard,
   CCardBody,
@@ -7,15 +8,28 @@ import {
   CCardTitle,
   CCol,
   CForm,
+  CListGroup,
+  CListGroupItem,
   CRow,
   CSpinner,
+  CTable,
+  CTableBody,
+  CTableDataCell,
+  CTableHead,
+  CTableHeaderCell,
+  CTableRow,
 } from '@coreui/react'
 import useQuery from '../../../hooks/useQuery'
 import { setModalContent } from '../../../store/features/modal'
-import { useListGroupQuery } from '../../../store/api/groups'
+import {
+  useListGroupMembersQuery,
+  useListGroupOwnersQuery,
+  useListGroupQuery,
+} from '../../../store/api/groups'
 import { useDispatch } from 'react-redux'
 import { Form } from 'react-final-form'
 import { RFFCFormInput } from '../../../components/RFFComponents'
+import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
 const EditGroup = () => {
   const dispatch = useDispatch()
@@ -32,6 +46,20 @@ const EditGroup = () => {
     isSuccess,
   } = useListGroupQuery({ tenantDomain, groupId })
 
+  const {
+    data: members = {},
+    isFetching: membersisFetching,
+    error: membersError,
+    isSuccess: membersIsSuccess,
+  } = useListGroupMembersQuery({ tenantDomain, groupId })
+
+  const {
+    data: owners = {},
+    isFeteching: ownersisFetching,
+    error: ownersError,
+    isSuccess: ownersIsSuccess,
+  } = useListGroupOwnersQuery({ tenantDomain, groupId })
+  console.log(members.isSuccess)
   useEffect(() => {
     if (!groupId || !tenantDomain) {
       dispatch(
@@ -44,17 +72,19 @@ const EditGroup = () => {
       setQueryError(true)
     }
   }, [groupId, tenantDomain, dispatch])
-
+  const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const onSubmit = (values) => {
-    // @todo bind this
-    window.alert(JSON.stringify(values))
+    const shippedValues = {
+      tenantID: tenantDomain,
+      GroupID: groupId,
+      AddMember: values.AddMembers,
+      AddOwner: values.AddOwners,
+      RemoveMember: values.RemoveMembers,
+      RemoveOwner: values.RemoveOwners,
+    }
+    //window.alert(JSON.stringify(shippedValues))
+    genericPostRequest({ url: 'api/EditGroup', values: shippedValues })
   }
-  const initialValues = {
-    ...group,
-  }
-
-  console.log('edit group')
-
   return (
     <CCard className="bg-white rounded p-5">
       {!queryError && (
@@ -70,7 +100,6 @@ const EditGroup = () => {
                   {error && <span>Error loading Group</span>}
                   {isSuccess && (
                     <Form
-                      initialValues={{ ...initialValues }}
                       onSubmit={onSubmit}
                       render={({ handleSubmit, submitting, values }) => {
                         return (
@@ -110,6 +139,9 @@ const EditGroup = () => {
                                 </CButton>
                               </CCol>
                             </CRow>
+                            {postResults.isSuccess && (
+                              <CAlert color="success">{postResults.data.Results}</CAlert>
+                            )}
                             {/*<CRow>*/}
                             {/* <CCol>*/}
                             {/*   <pre>{JSON.stringify(values, null, 2)}</pre>*/}
@@ -126,7 +158,49 @@ const EditGroup = () => {
             <CCol md={6}>
               <CCard>
                 <CCardHeader>
-                  <CCardTitle>Group Inforamtion</CCardTitle>
+                  <CCardTitle>Group members</CCardTitle>
+                </CCardHeader>
+                <CCardBody>
+                  {membersisFetching && <CSpinner />}
+                  {membersError && <span>Error loading members</span>}
+                  {ownersError && <span>Error loading Group owners</span>}
+
+                  {membersIsSuccess && ownersIsSuccess && (
+                    <>
+                      These are the current members;
+                      <CTable>
+                        <CTableHead>
+                          <CTableRow>
+                            <CTableHeaderCell scope="col">Name</CTableHeaderCell>
+                            <CTableHeaderCell scope="col">Mail</CTableHeaderCell>
+                            <CTableHeaderCell scope="col">Role</CTableHeaderCell>
+                          </CTableRow>
+                        </CTableHead>
+                        <CTableBody>
+                          {owners.map((owner) => (
+                            <CTableRow key={owner.displayName}>
+                              <CTableDataCell>{owner.displayName}</CTableDataCell>
+                              <CTableDataCell>{owner.mail}</CTableDataCell>
+                              <CTableDataCell>Owner</CTableDataCell>
+                            </CTableRow>
+                          ))}
+                          {members.map((member) => (
+                            <CTableRow key={member.displayName}>
+                              <CTableDataCell>{member.displayName}</CTableDataCell>
+                              <CTableDataCell>{member.mail}</CTableDataCell>
+                              <CTableDataCell>Member</CTableDataCell>
+                            </CTableRow>
+                          ))}
+                        </CTableBody>
+                      </CTable>
+                    </>
+                  )}
+                </CCardBody>
+              </CCard>
+              <br></br>
+              <CCard>
+                <CCardHeader>
+                  <CCardTitle>Group Information</CCardTitle>
                 </CCardHeader>
                 <CCardBody>
                   {isFetching && <CSpinner />}
