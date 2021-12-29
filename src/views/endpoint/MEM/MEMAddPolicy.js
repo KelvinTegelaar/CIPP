@@ -65,14 +65,21 @@ const ApplyStandard = () => {
     const shippedTenants = values.selectedTenants.map(
       (tenant) => (values[`Select_${tenant.defaultDomainName}`] = tenant.defaultDomainName),
     )
-    genericPostRequest({ url: 'api/AddAutopilotConfig', values: values })
+    genericPostRequest({ url: 'api/AddPolicy', values: values })
   }
 
-  const handleSelect = async (GUID) => {
-    //fill form
+  const handleSelect = (event) => {
+    //
+    //let template = intuneTemplates.data.filter(function (obj) {
+    //  return obj.GUID == values
+    //})
+    console.log(event)
+    formValues.DisplayName = 'test'
   }
+
   const formValues = {
-    Assignto: true,
+    TemplateType: 'Admin',
+    AssignTo: 'on',
   }
 
   return (
@@ -123,99 +130,89 @@ const ApplyStandard = () => {
                   <h3 className="text-primary">Step 2</h3>
                   <h5 className="card-title mb-4">
                     Enter the raw JSON for this policy. See{' '}
-                    <a href="https://github.com/KelvinTegelaar/CIPP/blob/master/Documentation/DeployPolicy.md">
-                      this
-                    </a>{' '}
-                    for more information.
+                    <a href="https://cipp.app/EndpointManagement/IntunePolicyTemplates">this</a> for
+                    more information.
                   </h5>
                 </center>
                 <hr className="my-4" />
-                <CForm onSubmit={handleSubmit}>
-                  <CRow>
-                    <CCol md={12}>
-                      {intuneTemplates.isUninitialized &&
-                        intuneGetRequest({ url: 'api/ListIntuneTemplates' })}
-                      {intuneTemplates.isSuccess && (
-                        <RFFSelectSearch
-                          values={intuneTemplates.data?.map((template) => ({
-                            value: template.GUID,
-                            name: template.Displayname,
-                          }))}
-                          name="TemplateList"
-                          placeholder="Type to search..."
-                          label="Please choose a template to apply, or enter the information manually."
-                        />
-                      )}
-                    </CCol>
-                  </CRow>
-                  <CRow>
-                    <CCol>
-                      <RFFCFormSelect
-                        name="TemplateType"
-                        label="Select Policy Type"
-                        placeholder="Select a template type"
-                        values={[
-                          { label: 'Administrative Template', value: 'Admin' },
-                          { label: 'Settings Catalog', value: 'Catalog' },
-                          { label: 'Custom Configuration', value: 'Device' },
-                        ]}
+                <CRow>
+                  <CCol md={12}>
+                    {intuneTemplates.isUninitialized &&
+                      intuneGetRequest({ url: 'api/ListIntuneTemplates' })}
+                    {intuneTemplates.isSuccess && (
+                      <RFFSelectSearch
+                        onChange={(event) => handleSelect(event)}
+                        values={intuneTemplates.data?.map((template) => ({
+                          value: template.GUID,
+                          name: template.Displayname,
+                        }))}
+                        name="TemplateList"
+                        placeholder="Type to search..."
+                        label="Please choose a template to apply, or enter the information manually."
                       />
-                    </CCol>
-                  </CRow>
-                  <CRow>
-                    <CCol md={12}>
-                      <RFFCFormInput
-                        type="text"
-                        name="DisplayName"
-                        label="Policy Display Name"
-                        placeholder="Enter a name"
-                      />
-                    </CCol>
-                  </CRow>
-                  <CRow>
-                    <CCol md={12}>
-                      <RFFCFormInput
-                        type="text"
-                        name="Description"
-                        label="Description"
-                        placeholder="leave blank for none"
-                      />
-                    </CCol>
-                  </CRow>
-                  <CRow>
-                    <CCol md={12}>
-                      <RFFCFormTextarea
-                        type="text"
-                        name="Description"
-                        label="Raw JSON"
-                        placeholder="Enter RAW JSON information"
-                      />
-                    </CCol>
-                  </CRow>
-                  <RFFCFormRadio
-                    value=""
-                    name="AssignTo"
-                    label="Do not assign"
-                    validate={false}
-                  ></RFFCFormRadio>
-                  <RFFCFormRadio
-                    value="allLicensedUsers"
-                    name="AssignTo"
-                    label="Assign to all users"
-                    validate={false}
-                  ></RFFCFormRadio>
-                  <RFFCFormRadio
-                    value="AllDevices"
-                    name="AssignTo"
-                    label="Assign to all devices"
-                    validate={false}
-                  ></RFFCFormRadio>
-                  <RFFCFormRadio
-                    value="AllDevicesAndUsers"
-                    name="AssignTo"
-                    label="Assign to all users and devices"
-                  ></RFFCFormRadio>
-                </CForm>
+                    )}
+                  </CCol>
+                </CRow>
+                <CRow>
+                  <CCol>
+                    <RFFCFormSelect
+                      name="TemplateType"
+                      label="Select Policy Type"
+                      placeholder="Select a template type"
+                      values={[
+                        { label: 'Administrative Template', value: 'Admin' },
+                        { label: 'Settings Catalog', value: 'Catalog' },
+                        { label: 'Custom Configuration', value: 'Device' },
+                      ]}
+                    />
+                  </CCol>
+                </CRow>
+                <CRow>
+                  <CCol md={12}>
+                    <RFFCFormInput
+                      type="text"
+                      name="DisplayName"
+                      label="Policy Display Name"
+                      placeholder="Enter a name"
+                    />
+                  </CCol>
+                </CRow>
+                <CRow>
+                  <CCol md={12}>
+                    <RFFCFormInput
+                      type="text"
+                      name="Description"
+                      label="Description"
+                      placeholder="leave blank for none"
+                    />
+                  </CCol>
+                </CRow>
+                <CRow>
+                  <CCol md={12}>
+                    <RFFCFormTextarea
+                      type="text"
+                      name="RawJSON"
+                      label="Raw JSON"
+                      placeholder="Enter RAW JSON information"
+                    />
+                  </CCol>
+                </CRow>
+                <RFFCFormRadio value="" name="AssignTo" label="Do not assign"></RFFCFormRadio>
+                <RFFCFormRadio
+                  value="allLicensedUsers"
+                  name="AssignTo"
+                  label="Assign to all users"
+                ></RFFCFormRadio>
+                <RFFCFormRadio
+                  value="AllDevices"
+                  name="AssignTo"
+                  label="Assign to all devices"
+                ></RFFCFormRadio>
+                <RFFCFormRadio
+                  value="AllDevicesAndUsers"
+                  name="AssignTo"
+                  label="Assign to all users and devices"
+                ></RFFCFormRadio>
                 <hr className="my-4" />
               </Wizard.Page>
               <Wizard.Page title="Review and Confirm" description="Confirm the settings to apply">
