@@ -3,29 +3,35 @@ import {
   CAlert,
   CCard,
   CCol,
-  CFormLabel,
   CRow,
   CCardTitle,
   CCardHeader,
   CCardBody,
+  CForm,
+  CListGroup,
+  CListGroupItem,
 } from '@coreui/react'
-import { Field } from 'react-final-form'
+import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
+import {
+  faCheckCircle,
+  faExclamationTriangle,
+  faTimesCircle,
+} from '@fortawesome/free-solid-svg-icons'
 import { useDispatch, useSelector } from 'react-redux'
 import Wizard from '../../../components/Wizard'
 import WizardTableField from '../../../components/WizardTableField'
 import PropTypes from 'prop-types'
 import {
-  RFFCFormCheck,
   RFFCFormInput,
+  RFFCFormRadio,
+  RFFCFormSelect,
   RFFCFormSwitch,
+  RFFCFormTextarea,
   RFFSelectSearch,
 } from '../../../components/RFFComponents'
 import { useListTenantsQuery } from '../../../store/api/tenants'
-import { TenantSelector } from 'src/components/cipp'
-import { useListUsersQuery } from 'src/store/api/users'
-import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
 const Error = ({ name }) => (
   <Field
@@ -47,143 +53,287 @@ Error.propTypes = {
 }
 
 const requiredArray = (value) => (value && value.length !== 0 ? undefined : 'Required')
-const ApplyPolicy = () => {
-  const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
-  const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
-  const {
-    data: users = [],
-    isFetching: usersIsFetching,
-    error: usersError,
-  } = useListUsersQuery({ tenantDomain })
+const ApplyStandard = () => {
+  const { data: tenants = [] } = useListTenantsQuery()
+  const [intuneGetRequest, intuneTemplates] = useLazyGenericGetRequestQuery()
+  const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
   const dispatch = useDispatch()
 
   const handleSubmit = async (values) => {
-    //alert(JSON.stringify(values, null, 2))
-    // @todo hook this up
-    // genericPostRequest({ url: 'api/AddIntuneTemplate', values: { values } })
+    const shippedTenants = values.selectedTenants.map(
+      (tenant) => (values[`Select_${tenant.defaultDomainName}`] = tenant.defaultDomainName),
+    )
+    genericPostRequest({ url: 'api/AddPolicy', values: values })
+  }
+
+  const handleSelect = (event) => {
+    //
+    //let template = intuneTemplates.data.filter(function (obj) {
+    //  return obj.GUID == values
+    //})
+    console.log(event)
+    formValues.DisplayName = 'test'
   }
 
   const formValues = {
-    selectedTenants: [],
-    standards: {},
+    TemplateType: 'Admin',
+    AssignTo: 'on',
   }
 
   return (
-    <CCard>
+    <CCard className="col-8">
       <CCardHeader>
-        <CCardTitle className="text-primary">Add Intune Policy</CCardTitle>
+        <CCardTitle className="text-primary">Add Intune policy</CCardTitle>
       </CCardHeader>
       <CCardBody>
-        {' '}
         <CRow className="row justify-content-center">
-          <CCol xxl={8}>
-            <Wizard onSubmit={handleSubmit}>
+          <CCol xxl={12}>
+            <Wizard initialValues={{ ...formValues }} onSubmit={handleSubmit}>
               <Wizard.Page
                 title="Tenant Choice"
-                description="Choose the tenants for offboarding the user"
+                description="Choose the tenants to create the ESP for."
               >
                 <center>
                   <h3 className="text-primary">Step 1</h3>
-                  <h5 className="card-title mb-4">Choose a tenant</h5>
+                  <h5 className="card-title mb-4">Choose tenants</h5>
                 </center>
                 <hr className="my-4" />
-                <Field name="selectedTenants">{(props) => <TenantSelector />}</Field>
+                <Field name="selectedTenants" validate={requiredArray}>
+                  {(props) => (
+                    <WizardTableField
+                      keyField="customerId"
+                      data={tenants}
+                      columns={[
+                        {
+                          dataField: 'displayName',
+                          text: 'Tenant Name',
+                        },
+                        {
+                          dataField: 'defaultDomainName',
+                          text: 'Domain Name',
+                        },
+                      ]}
+                      fieldProps={props}
+                    />
+                  )}
+                </Field>
                 <Error name="selectedTenants" />
                 <hr className="my-4" />
               </Wizard.Page>
               <Wizard.Page
-                title="Select User"
-                description="Select the user to offboard from the tenant."
+                title="Select Options"
+                description="Select which options you want to apply."
               >
                 <center>
                   <h3 className="text-primary">Step 2</h3>
-                  <h5>Select the user that will be offboarded</h5>
+                  <h5 className="card-title mb-4">
+                    Enter the raw JSON for this policy. See{' '}
+                    <a href="https://cipp.app/EndpointManagement/IntunePolicyTemplates">this</a> for
+                    more information.
+                  </h5>
                 </center>
                 <hr className="my-4" />
-                <div className="mb-2">
-                  <RFFSelectSearch
-                    label={'Users in ' + tenantDomain}
-                    values={users?.map((user) => ({
-                      value: user.id,
-                      name: user.displayName,
-                    }))}
-                    placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
-                    name="SelectedUser"
-                  />
-                  {usersError && <span>Failed to load list of users</span>}
-                </div>
-                <hr className="my-4" />
-              </Wizard.Page>
-              <Wizard.Page
-                title="Offboarding Settings"
-                description="Select the offboarding options."
-              >
-                <center>
-                  <h3 className="text-primary">Step 3</h3>
-                  <h5>Choose offboarding options</h5>
-                </center>
-                <hr className="my-4" />
-                <div className="mb-2">
-                  <RFFCFormSwitch name="RemoveLicenses" label="Remove Licenses" />
-                  <RFFCFormSwitch name="ConvertoSharedMailbox" label="Convert to Shared Mailbox" />
-                  <RFFCFormSwitch name="DisableUser" label="Disable Sign in" />
-                  <RFFCFormSwitch name="ResetPassword" label="Reset Password" />
-                  <RFFCFormSwitch name="RemoveGroups" label="Remove from all groups" />
-                  <RFFCFormSwitch name="HideGAL" label="Hide from Global Address List" />
-                  <CCol md={6}>
+                <CRow>
+                  <CCol md={12}>
+                    {intuneTemplates.isUninitialized &&
+                      intuneGetRequest({ url: 'api/ListIntuneTemplates' })}
+                    {intuneTemplates.isSuccess && (
+                      <RFFSelectSearch
+                        onChange={(event) => handleSelect(event)}
+                        values={intuneTemplates.data?.map((template) => ({
+                          value: template.GUID,
+                          name: template.Displayname,
+                        }))}
+                        name="TemplateList"
+                        placeholder="Type to search..."
+                        label="Please choose a template to apply, or enter the information manually."
+                      />
+                    )}
+                  </CCol>
+                </CRow>
+                <CRow>
+                  <CCol>
+                    <RFFCFormSelect
+                      name="TemplateType"
+                      label="Select Policy Type"
+                      placeholder="Select a template type"
+                      values={[
+                        { label: 'Administrative Template', value: 'Admin' },
+                        { label: 'Settings Catalog', value: 'Catalog' },
+                        { label: 'Custom Configuration', value: 'Device' },
+                      ]}
+                    />
+                  </CCol>
+                </CRow>
+                <CRow>
+                  <CCol md={12}>
                     <RFFCFormInput
-                      name="OOO"
-                      label="Out of Office"
                       type="text"
-                      placeholder="leave blank to not set"
+                      name="DisplayName"
+                      label="Policy Display Name"
+                      placeholder="Enter a name"
                     />
                   </CCol>
-                  <CCol md={6}>
-                    <RFFSelectSearch
-                      label="Give other user full access on mailbox without automapping"
-                      values={users?.map((user) => ({
-                        value: user.id,
-                        name: user.displayName,
-                      }))}
-                      placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
-                      name="UserNoAutomap"
+                </CRow>
+                <CRow>
+                  <CCol md={12}>
+                    <RFFCFormInput
+                      type="text"
+                      name="Description"
+                      label="Description"
+                      placeholder="leave blank for none"
                     />
                   </CCol>
-                  <CCol md={6}>
-                    <RFFSelectSearch
-                      label="Give other user full access on mailbox with automapping"
-                      values={users?.map((user) => ({
-                        value: user.id,
-                        name: user.displayName,
-                      }))}
-                      placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
-                      name="UserAutomap"
+                </CRow>
+                <CRow>
+                  <CCol md={12}>
+                    <RFFCFormTextarea
+                      type="text"
+                      name="RawJSON"
+                      label="Raw JSON"
+                      placeholder="Enter RAW JSON information"
                     />
                   </CCol>
-                  <CCol md={6}>
-                    <RFFSelectSearch
-                      label="Give other user full access on Onedrive"
-                      values={users?.map((user) => ({
-                        value: user.id,
-                        name: user.displayName,
-                      }))}
-                      placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
-                      name="UserAutomapOneDrive"
-                    />
-                  </CCol>
-                  <RFFCFormSwitch name="Delete User" label="Delete user" />
-                </div>
+                </CRow>
+                <RFFCFormRadio value="" name="AssignTo" label="Do not assign"></RFFCFormRadio>
+                <RFFCFormRadio
+                  value="allLicensedUsers"
+                  name="AssignTo"
+                  label="Assign to all users"
+                ></RFFCFormRadio>
+                <RFFCFormRadio
+                  value="AllDevices"
+                  name="AssignTo"
+                  label="Assign to all devices"
+                ></RFFCFormRadio>
+                <RFFCFormRadio
+                  value="AllDevicesAndUsers"
+                  name="AssignTo"
+                  label="Assign to all users and devices"
+                ></RFFCFormRadio>
                 <hr className="my-4" />
               </Wizard.Page>
               <Wizard.Page title="Review and Confirm" description="Confirm the settings to apply">
                 <center>
-                  <h3 className="text-primary">Step 4</h3>
-                  <h5 className="mb-4">Confirm and apply</h5>
-                  <hr className="my-4" />
+                  <h3 className="text-primary">Step 3</h3>
+                  <h5 className="card-title mb-4">Confirm and apply</h5>
                 </center>
-                <div className="mb-2">Show JSON here</div>
+                <hr className="my-4" />
+                {!postResults.isSuccess && (
+                  <FormSpy>
+                    {(props) => {
+                      /* eslint-disable react/prop-types */
+                      return (
+                        <>
+                          <CRow>
+                            <CCol md={3}></CCol>
+                            <CCol md={6}>
+                              <CListGroup flush>
+                                <CListGroupItem className="d-flex justify-content-between align-items-center">
+                                  Display Name: {props.values.DisplayName}
+                                  <FontAwesomeIcon
+                                    color="#f77f00"
+                                    size="lg"
+                                    icon={props.values.DisplayName ? faCheckCircle : faTimesCircle}
+                                  />
+                                </CListGroupItem>
+                                <CListGroupItem className="d-flex justify-content-between align-items-center">
+                                  Naming template: {props.values.DeviceNameTemplate}
+                                  <FontAwesomeIcon
+                                    color="#f77f00"
+                                    size="lg"
+                                    icon={
+                                      props.values.DeviceNameTemplate
+                                        ? faCheckCircle
+                                        : faTimesCircle
+                                    }
+                                  />
+                                </CListGroupItem>
+                                <CListGroupItem className="d-flex justify-content-between align-items-center">
+                                  Self-Deploying
+                                  <FontAwesomeIcon
+                                    color="#f77f00"
+                                    size="lg"
+                                    icon={
+                                      props.values.DeploymentMode ? faCheckCircle : faTimesCircle
+                                    }
+                                  />
+                                </CListGroupItem>
+                                <CListGroupItem className="d-flex justify-content-between align-items-center">
+                                  Hide Terms
+                                  <FontAwesomeIcon
+                                    color="#f77f00"
+                                    size="lg"
+                                    icon={props.values.HideTerms ? faCheckCircle : faTimesCircle}
+                                  />
+                                </CListGroupItem>
+                                <CListGroupItem className="d-flex justify-content-between align-items-center">
+                                  Hide Privacy
+                                  <FontAwesomeIcon
+                                    color="#f77f00"
+                                    size="lg"
+                                    icon={props.values.HidePrivacy ? faCheckCircle : faTimesCircle}
+                                  />
+                                </CListGroupItem>
+                                <CListGroupItem className="d-flex justify-content-between align-items-center">
+                                  Convert to Autopilot device
+                                  <FontAwesomeIcon
+                                    color="#f77f00"
+                                    size="lg"
+                                    icon={props.values.CollectHash ? faCheckCircle : faTimesCircle}
+                                  />
+                                </CListGroupItem>
+                                <CListGroupItem className="d-flex justify-content-between align-items-center">
+                                  Standard Account
+                                  <FontAwesomeIcon
+                                    color="#f77f00"
+                                    size="lg"
+                                    icon={
+                                      props.values.NotLocalAdmin ? faCheckCircle : faTimesCircle
+                                    }
+                                  />
+                                </CListGroupItem>
+                                <CListGroupItem className="d-flex justify-content-between align-items-center">
+                                  Allow Whiteglove
+                                  <FontAwesomeIcon
+                                    color="#f77f00"
+                                    size="lg"
+                                    icon={
+                                      props.values.allowWhiteglove ? faCheckCircle : faTimesCircle
+                                    }
+                                  />
+                                </CListGroupItem>
+                                <CListGroupItem className="d-flex justify-content-between align-items-center">
+                                  Automatically setup keyboard
+                                  <FontAwesomeIcon
+                                    color="#f77f00"
+                                    size="lg"
+                                    icon={props.values.Autokeyboard ? faCheckCircle : faTimesCircle}
+                                  />
+                                </CListGroupItem>
+                                <CListGroupItem className="d-flex justify-content-between align-items-center">
+                                  Allow Whiteglove
+                                  <FontAwesomeIcon
+                                    color="#f77f00"
+                                    size="lg"
+                                    icon={
+                                      props.values.HideChangeAccount ? faCheckCircle : faTimesCircle
+                                    }
+                                  />
+                                </CListGroupItem>
+                              </CListGroup>
+                            </CCol>
+                          </CRow>
+                        </>
+                      )
+                    }}
+                  </FormSpy>
+                )}
+                {postResults.isSuccess && (
+                  <CAlert color="success">{postResults.data?.Results}</CAlert>
+                )}
                 <hr className="my-4" />
               </Wizard.Page>
             </Wizard>
@@ -194,4 +344,4 @@ const ApplyPolicy = () => {
   )
 }
 
-export default ApplyPolicy
+export default ApplyStandard

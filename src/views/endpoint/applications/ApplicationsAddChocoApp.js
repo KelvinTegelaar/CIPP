@@ -1,8 +1,23 @@
 import React from 'react'
-import { CAlert, CCard, CCol, CRow, CCardTitle, CCardHeader, CCardBody, CForm } from '@coreui/react'
-import { Field } from 'react-final-form'
+import {
+  CAlert,
+  CCard,
+  CCol,
+  CRow,
+  CCardTitle,
+  CCardHeader,
+  CCardBody,
+  CForm,
+  CListGroup,
+  CListGroupItem,
+} from '@coreui/react'
+import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
+import {
+  faCheckCircle,
+  faExclamationTriangle,
+  faTimesCircle,
+} from '@fortawesome/free-solid-svg-icons'
 import { useDispatch, useSelector } from 'react-redux'
 import Wizard from '../../../components/Wizard'
 import WizardTableField from '../../../components/WizardTableField'
@@ -39,30 +54,21 @@ const ApplyStandard = () => {
   const dispatch = useDispatch()
 
   const handleSubmit = async (values) => {
-    // @todo: clean this up api sided so we don't need to perform weird tricks.
-    var result = Object.keys(values.standards).filter(function (x) {
-      if (values.standards[x] === false) {
-        delete values.standards[x]
-      }
-    })
-
     const shippedTenants = values.selectedTenants.map(
-      (tenant) =>
-        (values.standards[`Select_${tenant.defaultDomainName}`] = tenant.defaultDomainName),
+      (tenant) => (values[`Select_${tenant.defaultDomainName}`] = tenant.defaultDomainName),
     )
-    //filter on only objects that are 'true'
-    genericPostRequest({ url: 'api/AddStandardsDeploy', values: values.standards })
+    genericPostRequest({ url: 'api/AddChocoApp', values: values })
   }
 
   const formValues = {
-    selectedTenants: [],
-    standards: {},
+    InstallAsSystem: true,
+    DisableRestart: true,
   }
 
   return (
     <CCard className="col-8">
       <CCardHeader>
-        <CCardTitle className="text-primary">Standards Wizard</CCardTitle>
+        <CCardTitle className="text-primary">Chocolatey App Wizard</CCardTitle>
       </CCardHeader>
       <CCardBody>
         <CRow className="row justify-content-center">
@@ -111,32 +117,50 @@ const ApplyStandard = () => {
                 <CForm onSubmit={handleSubmit}>
                   <CRow>
                     <CCol md={6}>
-                      <RFFCFormInput type="text" name="givenName" label="Chocolatey package name" />
-                    </CCol>
-                    <CCol md={6}>
-                      <RFFCFormInput type="text" name="surname" label="Application name" />
-                    </CCol>
-                  </CRow>
-                  <CRow>
-                    <CCol md={12}>
-                      <RFFCFormInput type="text" name="displayName" label="Description" />
-                    </CCol>
-                  </CRow>
-                  <CRow>
-                    <CCol md={12}>
                       <RFFCFormInput
                         type="text"
-                        name="mailNickname"
-                        label="Custom repository URL"
+                        name="packagename"
+                        label="Chocolatey package name"
                       />
                     </CCol>
+                    <CCol md={6}>
+                      <RFFCFormInput type="text" name="applicationName" label="Application name" />
+                    </CCol>
                   </CRow>
-                  <RFFCFormSwitch name="InstallAsSystem" label="Install as system" />
-                  <RFFCFormRadio name="Assign" label="Do not assign"></RFFCFormRadio>
-                  <RFFCFormRadio name="Assign" label="Assign to all users"></RFFCFormRadio>
-                  <RFFCFormRadio name="Assign" label="Assign to all devices"></RFFCFormRadio>
+                  <CRow>
+                    <CCol md={12}>
+                      <RFFCFormInput type="text" name="description" label="Description" />
+                    </CCol>
+                  </CRow>
+                  <CRow>
+                    <CCol md={12}>
+                      <RFFCFormInput type="text" name="customRepo" label="Custom repository URL" />
+                    </CCol>
+                  </CRow>
+                  <RFFCFormSwitch value={true} name="InstallAsSystem" label="Install as system" />
+                  <RFFCFormSwitch name="DisableRestart" label="Disable Restart" />
+
                   <RFFCFormRadio
-                    name="Assign"
+                    value=""
+                    name="AssignTo"
+                    label="Do not assign"
+                    validate={false}
+                  ></RFFCFormRadio>
+                  <RFFCFormRadio
+                    value="allLicensedUsers"
+                    name="AssignTo"
+                    label="Assign to all users"
+                    validate={false}
+                  ></RFFCFormRadio>
+                  <RFFCFormRadio
+                    value="AllDevices"
+                    name="AssignTo"
+                    label="Assign to all devices"
+                    validate={false}
+                  ></RFFCFormRadio>
+                  <RFFCFormRadio
+                    value="AllDevicesAndUsers"
+                    name="AssignTo"
                     label="Assign to all users and devices"
                   ></RFFCFormRadio>
                 </CForm>
@@ -149,14 +173,44 @@ const ApplyStandard = () => {
                 </center>
                 <hr className="my-4" />
                 {!postResults.isSuccess && (
-                  <CAlert color="warning" className="d-flex align-items-center">
-                    <FontAwesomeIcon color="warning" icon={faExclamationTriangle} size="2x" />
-                    <center>
-                      WARNING! Setting a standard will make changes to your tenants and set these
-                      standards on every 365 tenant you select. If you want to review only, please
-                      use the Best Practice Analyser.
-                    </center>
-                  </CAlert>
+                  <FormSpy>
+                    {(props) => {
+                      /* eslint-disable react/prop-types */
+                      return (
+                        <>
+                          <CRow>
+                            <CCol md={3}></CCol>
+                            <CCol md={6}>
+                              <CListGroup flush>
+                                <CListGroupItem className="d-flex justify-content-between align-items-center">
+                                  Chocolatey Package: {props.values.packagename}
+                                </CListGroupItem>
+                                <CListGroupItem className="d-flex justify-content-between align-items-center">
+                                  Application name: {props.values.applicationName}
+                                </CListGroupItem>
+                                <CListGroupItem className="d-flex justify-content-between align-items-center">
+                                  Description: {props.values.description}
+                                </CListGroupItem>
+                                <CListGroupItem className="d-flex justify-content-between align-items-center">
+                                  Custom Repo:
+                                  {props.values.customRepo ? props.values.customRepo : ' No'}
+                                </CListGroupItem>
+                                <CListGroupItem className="d-flex justify-content-between align-items-center">
+                                  Install as System: {props.values.InstallAsSystem ? 'Yes' : 'No'}
+                                </CListGroupItem>
+                                <CListGroupItem className="d-flex justify-content-between align-items-center">
+                                  Disable Restart: {props.values.DisableRestart ? 'Yes' : 'No'}
+                                </CListGroupItem>
+                                <CListGroupItem className="d-flex justify-content-between align-items-center">
+                                  Assign to: {props.values.AssignTo}
+                                </CListGroupItem>
+                              </CListGroup>
+                            </CCol>
+                          </CRow>
+                        </>
+                      )
+                    }}
+                  </FormSpy>
                 )}
                 {postResults.isSuccess && (
                   <CAlert color="success">{postResults.data?.Results}</CAlert>

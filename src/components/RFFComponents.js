@@ -292,6 +292,7 @@ export const RFFSelectSearch = ({
   values = [],
   placeholder,
   validate,
+  onChange,
   disabled = false,
 }) => {
   return (
@@ -321,7 +322,7 @@ export const RFFSelectSearch = ({
               options={values}
               filterOptions={fuzzySearch}
               value={input.value}
-              onChange={input.onChange}
+              onChange={onChange}
               placeholder={placeholder}
             />
             <RFFCFormFeedback meta={meta} />
