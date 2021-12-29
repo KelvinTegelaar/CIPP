@@ -83,7 +83,7 @@ const ApplyStandard = () => {
             <Wizard initialValues={{ ...formValues }} onSubmit={handleSubmit}>
               <Wizard.Page
                 title="Tenant Choice"
-                description="Choose the tenants to create the ESP for."
+                description="Choose the tenants to create the profile for."
               >
                 <center>
                   <h3 className="text-primary">Step 1</h3>
