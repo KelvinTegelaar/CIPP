@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { Form } from 'react-final-form'
 import { useSearchParams } from 'react-router-dom'
 import useQuery from '../../../hooks/useQuery'
 import { useLazyListDomainTestsQuery, useListDomainTestsQuery } from '../../../store/api/domains'
 import {
-  CBadge,
   CButton,
   CCallout,
   CCard,
@@ -14,8 +13,19 @@ import {
   CCol,
   CCollapse,
   CForm,
+  CFormTextarea,
   CRow,
   CCardTitle,
+  CListGroup,
+  CListGroupItem,
+  CTableDataCell,
+  CTableHead,
+  CTableRow,
+  CTable,
+  CTableHeaderCell,
+  CTableBody,
+  CBadge,
+  CTooltip,
 } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -90,7 +100,7 @@ const IndividualDomainCheck = () => {
                   render={({ handleSubmit, submitting, pristine }) => {
                     return (
                       <CForm onSubmit={handleSubmit}>
-                        <RFFCFormInput name="domain" label="Domain Name" />
+                        <RFFCFormInput spellCheck={false} name="domain" label="Domain Name" />
                         <CButton type="submit" disabled={submitting || isFetching} className="mt-4">
                           {isFetching && (
                             <FontAwesomeIcon icon={faCircleNotch} spin size="1x" className="mx-1" />
@@ -181,11 +191,31 @@ ResultsCard.propTypes = {
 
 const SPFResultsCard = ({ domain }) => {
   const { data } = useListDomainTestsQuery({ domain })
+  const textareaRef = useRef(null)
   let record = data?.SPFResults?.Record
+
+  const textareaStyle = {
+    overflow: 'hidden',
+    resize: 'none',
+  }
+
+  useEffect(() => {
+    textareaRef.current.style.height = '0px'
+    const scrollHeight = textareaRef.current.scrollHeight
+    textareaRef.current.style.height = scrollHeight + 'px'
+  }, [record])
 
   return (
     <ResultsCard data={data} type="SPF">
-      <div className="bg-secondary text-white">{record}</div>
+      {record && (
+        <CFormTextarea
+          style={textareaStyle}
+          ref={textareaRef}
+          className="bg-secondary text-white mb-2"
+          rows="2"
+          value={record}
+        />
+      )}
     </ResultsCard>
   )
 }
@@ -200,18 +230,79 @@ const MXResultsCard = ({ domain }) => {
   if (!Array.isArray(records)) {
     records = [records]
   }
-
+  const [visible, setVisible] = useState(false)
   return (
     <ResultsCard data={data} type="MX">
-      <div className="bg-secondary text-white">
-        {records.map((record, key) => (
-          <div key={`${key}-mx-record`}>
-            {record?.Priority} {record?.Hostname}
-            <br />
-          </div>
-        ))}
+      <div className="mb-2">
+        <CBadge
+          style={{ fontSize: 14, border: '1px solid var(--cui-btn-border-color, transparent)' }}
+          color="info"
+        >
+          Mail Provider: {mailProviderName || 'Unknown'}
+        </CBadge>
+        <CTooltip content="Click to toggle mail provider/MX record details">
+          <CBadge
+            className="ms-1 btn"
+            onClick={() => setVisible(!visible)}
+            style={{ fontSize: 14 }}
+            color="primary"
+          >
+            {(visible && 'Hide') || 'Show'} Details
+          </CBadge>
+        </CTooltip>
       </div>
-      <CBadge className="bg-info">Mail Provider: {mailProviderName || 'Unknown'}</CBadge>
+      <CCollapse visible={visible} className="mb-2">
+        <CCardTitle>Documentation</CCardTitle>
+        <div className="mb-2">
+          <CListGroup>
+            {data?.MXResults?.MailProvider?._MxComment && (
+              <CListGroupItem
+                component="a"
+                target="_blank"
+                href={data?.MXResults?.MailProvider?._MxComment}
+              >
+                MX Record
+              </CListGroupItem>
+            )}
+            {data?.MXResults?.MailProvider?._SpfComment && (
+              <CListGroupItem
+                component="a"
+                target="_blank"
+                href={data?.MXResults?.MailProvider?._SpfComment}
+              >
+                SPF Record
+              </CListGroupItem>
+            )}
+            {data?.MXResults?.MailProvider?._DkimComment && (
+              <CListGroupItem
+                component="a"
+                target="_blank"
+                href={data?.MXResults?.MailProvider?._DkimComment}
+              >
+                DKIM Record
+              </CListGroupItem>
+            )}
+          </CListGroup>
+        </div>
+        {records.length > 0 && (
+          <CTable>
+            <CTableHead>
+              <CTableRow>
+                <CTableHeaderCell scope="col">Priority</CTableHeaderCell>
+                <CTableHeaderCell scope="col">Hostname</CTableHeaderCell>
+              </CTableRow>
+            </CTableHead>
+            <CTableBody>
+              {records.map((record, key) => (
+                <CTableRow key={`${key}-mx-record`}>
+                  <CTableDataCell>{record?.Priority}</CTableDataCell>
+                  <CTableDataCell>{record?.Hostname}</CTableDataCell>
+                </CTableRow>
+              ))}
+            </CTableBody>
+          </CTable>
+        )}
+      </CCollapse>
     </ResultsCard>
   )
 }
@@ -221,10 +312,30 @@ MXResultsCard.propTypes = sharedProps
 const DMARCResultsCard = ({ domain }) => {
   const { data } = useListDomainTestsQuery({ domain })
   let record = data?.DMARCResults?.Record
+  const textareaRef = useRef(null)
+
+  const textareaStyle = {
+    overflow: 'hidden',
+    resize: 'none',
+  }
+
+  useEffect(() => {
+    textareaRef.current.style.height = '0px'
+    const scrollHeight = textareaRef.current.scrollHeight
+    textareaRef.current.style.height = scrollHeight + 'px'
+  }, [record])
 
   return (
     <ResultsCard data={data} type="DMARC">
-      <div className="bg-secondary text-white">{record}</div>
+      {record && (
+        <CFormTextarea
+          style={textareaStyle}
+          ref={textareaRef}
+          className="bg-secondary text-white mb-2"
+          rows="2"
+          value={record}
+        />
+      )}
     </ResultsCard>
   )
 }
@@ -234,6 +345,7 @@ DMARCResultsCard.propTypes = sharedProps
 const DNSSECResultsCard = ({ domain }) => {
   const { data } = useListDomainTestsQuery({ domain })
   let keys = data?.DNSSECResults?.Keys
+  const [visible, setVisible] = useState(false)
 
   if (!Array.isArray(keys)) {
     keys = [keys]
@@ -241,14 +353,29 @@ const DNSSECResultsCard = ({ domain }) => {
 
   return (
     <ResultsCard data={data} type="DNSSEC">
-      <div className="bg-secondary text-white">
+      {keys.length > 0 && (
+        <div className="mb-2">
+          <CTooltip content="Click to toggle DNSSEC records">
+            <CBadge
+              className="btn"
+              onClick={() => setVisible(!visible)}
+              style={{ fontSize: 14 }}
+              color="primary"
+            >
+              {(visible && 'Hide') || 'Show'} Records
+            </CBadge>
+          </CTooltip>
+        </div>
+      )}
+      <CCollapse visible={visible} className="mb-2">
         {keys.map((key, idx) => (
-          <div key={`${idx}-dnssec-key`}>
-            {key}
-            <br />
-          </div>
+          <CFormTextarea
+            className="bg-secondary text-white mb-2"
+            key={`${idx}-dnssec-key`}
+            value={key}
+          ></CFormTextarea>
         ))}
-      </div>
+      </CCollapse>
     </ResultsCard>
   )
 }
@@ -258,21 +385,36 @@ DNSSECResultsCard.propTypes = sharedProps
 const DKIMResultsCard = ({ domain }) => {
   const { data } = useListDomainTestsQuery({ domain })
   let records = data?.DKIMResults?.Records
-
+  const [visible, setVisible] = useState(false)
   if (!Array.isArray(records)) {
     records = [records]
   }
 
   return (
     <ResultsCard data={data} type="DKIM">
-      <div className="bg-secondary text-white">
+      {records.length > 0 && (
+        <div className="mb-2">
+          <CTooltip content="Click to toggle DKIM records">
+            <CBadge
+              className="btn"
+              onClick={() => setVisible(!visible)}
+              style={{ fontSize: 14 }}
+              color="primary"
+            >
+              {(visible && 'Hide') || 'Show'} Records
+            </CBadge>
+          </CTooltip>
+        </div>
+      )}
+      <CCollapse visible={visible} className="mb-2">
         {records.map((record, idx) => (
-          <div key={`${idx}-dkim-record`}>
-            {record?.Record}
-            <br />
-          </div>
+          <CFormTextarea
+            className="bg-secondary text-white mb-2"
+            key={`${idx}-dkim-record`}
+            value={record?.Record}
+          ></CFormTextarea>
         ))}
-      </div>
+      </CCollapse>
     </ResultsCard>
   )
 }
