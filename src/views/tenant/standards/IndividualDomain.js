@@ -216,18 +216,19 @@ const SPFResultsCard = ({ domain }) => {
   const [copyAlertVisible, setCopyAlertVisible] = useState(false)
 
   useEffect(() => {
-    textareaRef.current.style.height = '0px'
-    const scrollHeight = textareaRef.current.scrollHeight
-    textareaRef.current.style.height = scrollHeight + 'px'
+    if (textareaRef && textareaRef.current) {
+      textareaRef.current.style.height = '0px'
+      const scrollHeight = textareaRef.current.scrollHeight
+      textareaRef.current.style.height = scrollHeight + 'px'
+    }
   }, [record])
-
   return (
     <ResultsCard data={data} type="SPF">
       {record && (
         <div style={{ position: 'relative' }}>
           <CButton
             onClick={copyToClipboard}
-            style={{ position: 'absolute', top: '8px', right: '8px' }}
+            style={{ position: 'absolute', top: '4px', right: '4px' }}
             size="sm"
             color="light"
           >
@@ -237,8 +238,8 @@ const SPFResultsCard = ({ domain }) => {
             style={textareaStyle}
             ref={textareaRef}
             className="bg-secondary text-white mb-2"
-            rows="2"
             value={record}
+            readOnly
           />
           <CAlert visible={copyAlertVisible} color="info">
             Copied!
@@ -360,10 +361,13 @@ const DMARCResultsCard = ({ domain }) => {
     resize: 'none',
     paddingRight: '40px',
   }
+
   useEffect(() => {
-    textareaRef.current.style.height = '0px'
-    const scrollHeight = textareaRef.current.scrollHeight
-    textareaRef.current.style.height = scrollHeight + 'px'
+    if (textareaRef && textareaRef.current) {
+      textareaRef.current.style.height = '0px'
+      const scrollHeight = textareaRef.current.scrollHeight
+      textareaRef.current.style.height = scrollHeight + 'px'
+    }
   }, [record])
 
   return (
@@ -372,7 +376,7 @@ const DMARCResultsCard = ({ domain }) => {
         <div style={{ position: 'relative' }}>
           <CButton
             onClick={copyToClipboard}
-            style={{ position: 'absolute', top: '8px', right: '8px' }}
+            style={{ position: 'absolute', top: '4px', right: '4px' }}
             size="sm"
             color="light"
           >
@@ -382,8 +386,8 @@ const DMARCResultsCard = ({ domain }) => {
             style={textareaStyle}
             ref={textareaRef}
             className="bg-secondary text-white mb-2"
-            rows="2"
             value={record}
+            readOnly
           />
           <CAlert visible={copyAlertVisible} color="info">
             Copied!
@@ -427,6 +431,7 @@ const DNSSECResultsCard = ({ domain }) => {
             className="bg-secondary text-white mb-2"
             key={`${idx}-dnssec-key`}
             value={key}
+            readOnly
           ></CFormTextarea>
         ))}
       </CCollapse>
@@ -466,6 +471,7 @@ const DKIMResultsCard = ({ domain }) => {
             className="bg-secondary text-white mb-2"
             key={`${idx}-dkim-record`}
             value={record?.Record}
+            readOnly
           ></CFormTextarea>
         ))}
       </CCollapse>
