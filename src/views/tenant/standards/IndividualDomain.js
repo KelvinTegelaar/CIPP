@@ -5,6 +5,7 @@ import { useSearchParams } from 'react-router-dom'
 import useQuery from '../../../hooks/useQuery'
 import { useLazyListDomainTestsQuery, useListDomainTestsQuery } from '../../../store/api/domains'
 import {
+  CAlert,
   CButton,
   CCallout,
   CCard,
@@ -35,6 +36,7 @@ import {
   faExclamationTriangle,
   faExpandAlt,
   faTimesCircle,
+  faCopy,
 } from '@fortawesome/free-solid-svg-icons'
 import { RFFCFormInput } from '../../../components/RFFComponents'
 import classNames from 'classnames'
@@ -194,10 +196,24 @@ const SPFResultsCard = ({ domain }) => {
   const textareaRef = useRef(null)
   let record = data?.SPFResults?.Record
 
+  function copyToClipboard(e) {
+    textareaRef.current.select()
+    document.execCommand('copy')
+    //e.target.focus()
+    window.getSelection().removeAllRanges()
+    setCopyAlertVisible()
+    window.setTimeout(() => {
+      setCopyAlertVisible(false)
+    }, 2000)
+  }
+
   const textareaStyle = {
     overflow: 'hidden',
     resize: 'none',
+    paddingRight: '40px',
   }
+
+  const [copyAlertVisible, setCopyAlertVisible] = useState(false)
 
   useEffect(() => {
     textareaRef.current.style.height = '0px'
@@ -208,13 +224,26 @@ const SPFResultsCard = ({ domain }) => {
   return (
     <ResultsCard data={data} type="SPF">
       {record && (
-        <CFormTextarea
-          style={textareaStyle}
-          ref={textareaRef}
-          className="bg-secondary text-white mb-2"
-          rows="2"
-          value={record}
-        />
+        <div style={{ position: 'relative' }}>
+          <CButton
+            onClick={copyToClipboard}
+            style={{ position: 'absolute', top: '8px', right: '8px' }}
+            size="sm"
+            color="light"
+          >
+            <FontAwesomeIcon icon={faCopy} />
+          </CButton>
+          <CFormTextarea
+            style={textareaStyle}
+            ref={textareaRef}
+            className="bg-secondary text-white mb-2"
+            rows="2"
+            value={record}
+          />
+          <CAlert visible={copyAlertVisible} color="info">
+            Copied!
+          </CAlert>
+        </div>
       )}
     </ResultsCard>
   )
@@ -314,11 +343,23 @@ const DMARCResultsCard = ({ domain }) => {
   let record = data?.DMARCResults?.Record
   const textareaRef = useRef(null)
 
+  function copyToClipboard(e) {
+    textareaRef.current.select()
+    document.execCommand('copy')
+    //e.target.focus()
+    window.getSelection().removeAllRanges()
+    setCopyAlertVisible()
+    window.setTimeout(() => {
+      setCopyAlertVisible(false)
+    }, 2000)
+  }
+  const [copyAlertVisible, setCopyAlertVisible] = useState(false)
+
   const textareaStyle = {
     overflow: 'hidden',
     resize: 'none',
+    paddingRight: '40px',
   }
-
   useEffect(() => {
     textareaRef.current.style.height = '0px'
     const scrollHeight = textareaRef.current.scrollHeight
@@ -328,13 +369,26 @@ const DMARCResultsCard = ({ domain }) => {
   return (
     <ResultsCard data={data} type="DMARC">
       {record && (
-        <CFormTextarea
-          style={textareaStyle}
-          ref={textareaRef}
-          className="bg-secondary text-white mb-2"
-          rows="2"
-          value={record}
-        />
+        <div style={{ position: 'relative' }}>
+          <CButton
+            onClick={copyToClipboard}
+            style={{ position: 'absolute', top: '8px', right: '8px' }}
+            size="sm"
+            color="light"
+          >
+            <FontAwesomeIcon icon={faCopy} />
+          </CButton>
+          <CFormTextarea
+            style={textareaStyle}
+            ref={textareaRef}
+            className="bg-secondary text-white mb-2"
+            rows="2"
+            value={record}
+          />
+          <CAlert visible={copyAlertVisible} color="info">
+            Copied!
+          </CAlert>
+        </div>
       )}
     </ResultsCard>
   )
