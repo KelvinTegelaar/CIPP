@@ -152,7 +152,7 @@ If you decide to contribute; remember that keeping the portal fast is a key comp
 
 I'd like to give special thanks to the people that made this project possible;
 
-- [Kyle Hansloven](https://huntress.com) 
+- [Kyle Hanslovan](https://huntress.com) 
 - [Ray Orsini](https://oit.co)
 - The Team at [MSP.zone/MSP'R'Us](https://msp.zone)
 - Gavin Stone at [MSPGeek](https://mspgeek.org)
