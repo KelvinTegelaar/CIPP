@@ -43,7 +43,7 @@ const TeamsAddTeam = () => {
         <CCol md={6}>
           <CCard>
             <CCardHeader>
-              <CCardTitle className="text-primary">Account Details</CCardTitle>
+              <CCardTitle className="text-primary">Add Team</CCardTitle>
             </CCardHeader>
             <CCardBody>
               <Form
@@ -87,8 +87,9 @@ const TeamsAddTeam = () => {
                       </CRow>
                       <CRow className="mb-3">
                         <CCol>
+                          <hr></hr>
                           <CButton className="text-white" type="submit" disabled={submitting}>
-                            Add Template
+                            Add Team
                           </CButton>
                         </CCol>
                       </CRow>

@@ -2,7 +2,16 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
-import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
+import {
+  CCard,
+  CCardBody,
+  CCardHeader,
+  CCardTitle,
+  CDropdown,
+  CDropdownItem,
+  CDropdownMenu,
+  CDropdownToggle,
+} from '@coreui/react'
 
 import { Link } from 'react-router-dom'
 import { faUser, faCog, faBars } from '@fortawesome/free-solid-svg-icons'
@@ -73,17 +82,21 @@ const OneDriveList = () => {
     <div>
       <TenantSelector />
       <hr />
-      <div className="bg-white rounded p-5">
-        <h3>OneDrive Report</h3>
-        {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-        <CippDatatable
-          keyField="id"
-          reportName={`${tenant?.defaultDomainName}-OneDrive-Report`}
-          path="/api/ListSites?type=OneDriveUsageAccount"
-          columns={columns}
-          params={{ TenantFilter: tenant?.defaultDomainName }}
-        />
-      </div>
+      <CCard>
+        <CCardHeader>
+          <CCardTitle className="text-primary">OneDrive Report</CCardTitle>
+        </CCardHeader>
+        <CCardBody>
+          {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
+          <CippDatatable
+            keyField="id"
+            reportName={`${tenant?.defaultDomainName}-OneDrive-Report`}
+            path="/api/ListSites?type=OneDriveUsageAccount"
+            columns={columns}
+            params={{ TenantFilter: tenant?.defaultDomainName }}
+          />
+        </CCardBody>
+      </CCard>
     </div>
   )
 }

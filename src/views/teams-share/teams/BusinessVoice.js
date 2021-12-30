@@ -6,7 +6,16 @@ import TenantSelector from 'src/components/cipp/TenantSelector'
 import { Link } from 'react-router-dom'
 import { faUser, faCog, faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
+import {
+  CCard,
+  CCardBody,
+  CCardHeader,
+  CCardTitle,
+  CDropdown,
+  CDropdownItem,
+  CDropdownMenu,
+  CDropdownToggle,
+} from '@coreui/react'
 
 const dropdown = (row, rowIndex, formatExtraData) => (
   <CDropdown style={{ position: 'fixed', zIndex: 1000 }}>
@@ -80,16 +89,20 @@ const BusinessVoice = () => {
     <div>
       <TenantSelector />
       <hr />
-      <div className="bg-white rounded p-5">
-        <h3>Teams Business Voice</h3>
-        {Object.keys(tenant).length === 0 && <span> Select a tenant to get started.</span>}
-        <CippDatatable
-          reportName={`${tenant?.defaultDomainName}-Businessvoice`}
-          path="/api/ListTeamsVoice"
-          columns={columns}
-          params={{ TenantFilter: tenant?.defaultDomainName }}
-        />
-      </div>
+      <CCard>
+        <CCardHeader>
+          <CCardTitle className="text-primary">Teams Business Voice</CCardTitle>
+        </CCardHeader>
+        <CCardBody>
+          {Object.keys(tenant).length === 0 && <span> Select a tenant to get started.</span>}
+          <CippDatatable
+            reportName={`${tenant?.defaultDomainName}-Businessvoice`}
+            path="/api/ListTeamsVoice"
+            columns={columns}
+            params={{ TenantFilter: tenant?.defaultDomainName }}
+          />
+        </CCardBody>
+      </CCard>
     </div>
   )
 }
