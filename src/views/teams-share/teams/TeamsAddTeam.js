@@ -85,12 +85,12 @@ const TeamsAddTeam = () => {
                       </CRow>
                       <CRow>
                         <CCol>
-                          <RFFCFormSelect
+                          <RFFSelectSearch
                             label="Select owner.  This user must have a teams license."
                             values={users?.map((user) => ({
                               //temporary using formselect over formsearch as formsearch got bugged somehow
                               value: user.mail,
-                              label: `${user.displayName} - (${user.mail})`,
+                              name: `${user.displayName} - (${user.mail})`,
                             }))}
                             placeholder={!usersIsFetching ? 'Select owner' : 'Loading...'}
                             name="owner"
