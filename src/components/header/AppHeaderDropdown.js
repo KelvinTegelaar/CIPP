@@ -8,7 +8,6 @@ import { authApi } from '../../store/api/auth'
 
 const AppHeaderDropdown = () => {
   const { data: profile, isLoading } = authApi.endpoints.loadClientPrincipal.useQueryState()
-  console.log(profile)
   return (
     <CDropdown variant="nav-item">
       <CDropdownToggle placement="bottom-end" className="py-0" caret={false}>
