@@ -58,9 +58,8 @@ const TeamsAddTeam = () => {
               <CCardTitle className="text-primary">Add Team</CCardTitle>
             </CCardHeader>
             <CCardBody>
-              <Form
-                onSubmit={handleSubmit}
-                render={({ handleSubmit, submitting, values }) => {
+              <Form onSubmit={handleSubmit}>
+                {({ handleSubmit, submitting, values }) => {
                   return (
                     <CForm onSubmit={handleSubmit}>
                       <CRow>
@@ -89,7 +88,7 @@ const TeamsAddTeam = () => {
                             label="Select owner.  This user must have a teams license."
                             values={users?.map((user) => ({
                               //temporary using formselect over formsearch as formsearch got bugged somehow
-                              value: user.mail,
+                              value: `${user.mail}`,
                               name: `${user.displayName} - (${user.mail})`,
                             }))}
                             placeholder={!usersIsFetching ? 'Select owner' : 'Loading...'}
@@ -109,7 +108,7 @@ const TeamsAddTeam = () => {
                     </CForm>
                   )
                 }}
-              />
+              </Form>
             </CCardBody>
           </CCard>
         </CCol>
