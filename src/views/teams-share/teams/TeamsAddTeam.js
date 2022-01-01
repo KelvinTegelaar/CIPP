@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import {
+  CAlert,
   CButton,
   CCard,
   CCardBody,
@@ -21,34 +22,44 @@ import {
   RFFSelectSearch,
 } from '../../../components/RFFComponents'
 import { useListUsersQuery } from 'src/store/api/users'
+import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
 const TeamsAddTeam = () => {
+  const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
+
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
   const {
     data: users = [],
     isFetching: usersIsFetching,
     error: usersError,
   } = useListUsersQuery({ tenantDomain })
-  const onSubmit = (values) => {
-    // @todo bind this
-    window.alert(JSON.stringify(values))
-  }
 
+  const handleSubmit = async (values) => {
+    // @todo hook this up
+    const shippedValues = {
+      tenantID: tenantDomain,
+      displayName: values.displayName,
+      description: values.description,
+      owner: values.owner,
+    }
+    //alert(JSON.stringify(shippedValues, null, 2))
+    genericPostRequest({ url: 'api/AddTeam', values: shippedValues })
+  }
   return (
     <>
       <TenantSelector />
       <hr className="my-4" />
+      {postResults.isSuccess && <CAlert color="success">{postResults.data.Results}</CAlert>}
 
       <CRow>
         <CCol md={6}>
           <CCard>
             <CCardHeader>
-              <CCardTitle className="text-primary">Account Details</CCardTitle>
+              <CCardTitle className="text-primary">Add Team</CCardTitle>
             </CCardHeader>
             <CCardBody>
-              <Form
-                onSubmit={onSubmit}
-                render={({ handleSubmit, submitting, values }) => {
+              <Form onSubmit={handleSubmit}>
+                {({ handleSubmit, submitting, values }) => {
                   return (
                     <CForm onSubmit={handleSubmit}>
                       <CRow>
@@ -74,33 +85,30 @@ const TeamsAddTeam = () => {
                       <CRow>
                         <CCol>
                           <RFFSelectSearch
-                            label="Select owner(s)"
+                            label="Select owner.  This user must have a teams license."
                             values={users?.map((user) => ({
-                              value: user.id,
-                              name: user.displayName,
+                              //temporary using formselect over formsearch as formsearch got bugged somehow
+                              value: `${user.mail}`,
+                              name: `${user.displayName} - (${user.mail})`,
                             }))}
-                            placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
-                            name="Owner"
+                            placeholder={!usersIsFetching ? 'Select owner' : 'Loading...'}
+                            name="owner"
                           />
                           {usersError && <span>Failed to load list of users</span>}
                         </CCol>
                       </CRow>
                       <CRow className="mb-3">
                         <CCol>
+                          <hr></hr>
                           <CButton className="text-white" type="submit" disabled={submitting}>
-                            Add Template
+                            Add Team
                           </CButton>
                         </CCol>
                       </CRow>
-                      {/*<CRow>*/}
-                      {/* <CCol>*/}
-                      {/*   <pre>{JSON.stringify(values, null, 2)}</pre>*/}
-                      {/* </CCol>*/}
-                      {/*</CRow>*/}
                     </CForm>
                   )
                 }}
-              />
+              </Form>
             </CCardBody>
           </CCard>
         </CCol>

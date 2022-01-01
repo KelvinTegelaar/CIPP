@@ -106,6 +106,7 @@ export const RFFCFormInput = ({
   className = 'mb-3',
   validate,
   disabled = false,
+  spellCheck = true,
 }) => {
   return (
     <Field name={name} validate={validate}>
@@ -122,6 +123,7 @@ export const RFFCFormInput = ({
               disabled={disabled}
               area-describedby={name}
               placeholder={placeholder}
+              spellCheck={spellCheck}
             />
             <RFFCFormFeedback meta={meta} />
           </div>
@@ -178,7 +180,7 @@ export const RFFCFormTextarea = ({
   disabled = false,
 }) => {
   return (
-    <Field name={name} type="radio" value={value} validate={validate}>
+    <Field name={name} value={value} validate={validate}>
       {({ meta, input }) => {
         return (
           <div className={className}>
@@ -190,6 +192,7 @@ export const RFFCFormTextarea = ({
               disabled={disabled}
               id={name}
               placeholder={placeholder}
+              //value={value}
             />
             <RFFCFormFeedback meta={meta} />
           </div>
@@ -290,6 +293,7 @@ export const RFFSelectSearch = ({
   values = [],
   placeholder,
   validate,
+  onChange,
   disabled = false,
 }) => {
   return (
@@ -303,6 +307,7 @@ export const RFFSelectSearch = ({
               valid={!meta.error && meta.touched}
               invalid={meta.error && meta.touched}
               search
+              name={name}
               id={name}
               // @todo fix this override so the styling is the same as coreui or override render?
               className={(key) => {
@@ -315,10 +320,10 @@ export const RFFSelectSearch = ({
                 return RFFSelectSearchClasses[key]
               }}
               disabled={disabled}
-              name={name}
               options={values}
               filterOptions={fuzzySearch}
               value={input.value}
+              //commented out this on change, because even when it was not set it was using the value, causing issues with the event.
               onChange={input.onChange}
               placeholder={placeholder}
             />

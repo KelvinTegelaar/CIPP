@@ -7,7 +7,6 @@ import {
   CCardTitle,
   CCardHeader,
   CCardBody,
-  CForm,
   CListGroup,
   CListGroupItem,
 } from '@coreui/react'
@@ -18,7 +17,6 @@ import {
   faExclamationTriangle,
   faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons'
-import { useDispatch, useSelector } from 'react-redux'
 import Wizard from '../../../components/Wizard'
 import WizardTableField from '../../../components/WizardTableField'
 import PropTypes from 'prop-types'
@@ -26,12 +24,12 @@ import {
   RFFCFormInput,
   RFFCFormRadio,
   RFFCFormSelect,
-  RFFCFormSwitch,
   RFFCFormTextarea,
   RFFSelectSearch,
 } from '../../../components/RFFComponents'
 import { useListTenantsQuery } from '../../../store/api/tenants'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import { OnChange } from 'react-final-form-listeners'
 
 const Error = ({ name }) => (
   <Field
@@ -53,26 +51,45 @@ Error.propTypes = {
 }
 
 const requiredArray = (value) => (value && value.length !== 0 ? undefined : 'Required')
-
+let rawdisabled = false
 const ApplyStandard = () => {
   const { data: tenants = [] } = useListTenantsQuery()
   const [intuneGetRequest, intuneTemplates] = useLazyGenericGetRequestQuery()
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
-  const dispatch = useDispatch()
-
   const handleSubmit = async (values) => {
-    const shippedTenants = values.selectedTenants.map(
+    values.selectedTenants.map(
       (tenant) => (values[`Select_${tenant.defaultDomainName}`] = tenant.defaultDomainName),
     )
-    genericPostRequest({ url: 'api/AddAutopilotConfig', values: values })
+    genericPostRequest({ url: 'api/AddPolicy', values: values })
   }
+  /* eslint-disable react/prop-types */
+  const WhenFieldChanges = ({ field, set }) => (
+    <Field name={set} subscription={{}}>
+      {(
+        // No subscription. We only use Field to get to the change function
+        { input: { onChange } },
+      ) => (
+        <FormSpy subscription={{}}>
+          {({ form }) => (
+            <OnChange name={field}>
+              {(value) => {
+                let template = intuneTemplates.data.filter(function (obj) {
+                  return obj.GUID === value
+                })
+                console.log(template[0][set])
+                onChange(template[0][set])
+                rawdisabled = true
+              }}
+            </OnChange>
+          )}
+        </FormSpy>
+      )}
+    </Field>
+  )
 
-  const handleSelect = async (GUID) => {
-    //fill form
-  }
   const formValues = {
-    Assignto: true,
+    TemplateType: 'Admin',
   }
 
   return (
@@ -86,7 +103,7 @@ const ApplyStandard = () => {
             <Wizard initialValues={{ ...formValues }} onSubmit={handleSubmit}>
               <Wizard.Page
                 title="Tenant Choice"
-                description="Choose the tenants to create the ESP for."
+                description="Choose the tenants to create the policy for."
               >
                 <center>
                   <h3 className="text-primary">Step 1</h3>
@@ -123,100 +140,93 @@ const ApplyStandard = () => {
                   <h3 className="text-primary">Step 2</h3>
                   <h5 className="card-title mb-4">
                     Enter the raw JSON for this policy. See{' '}
-                    <a href="https://github.com/KelvinTegelaar/CIPP/blob/master/Documentation/DeployPolicy.md">
-                      this
-                    </a>{' '}
-                    for more information.
+                    <a href="https://cipp.app/EndpointManagement/IntunePolicyTemplates">this</a> for
+                    more information.
                   </h5>
                 </center>
                 <hr className="my-4" />
-                <CForm onSubmit={handleSubmit}>
-                  <CRow>
-                    <CCol md={12}>
-                      {intuneTemplates.isUninitialized &&
-                        intuneGetRequest({ url: 'api/ListIntuneTemplates' })}
-                      {intuneTemplates.isSuccess && (
-                        <RFFSelectSearch
-                          values={intuneTemplates.data?.map((template) => ({
-                            value: template.GUID,
-                            name: template.Displayname,
-                          }))}
-                          name="TemplateList"
-                          placeholder="Type to search..."
-                          label="Please choose a template to apply, or enter the information manually."
-                        />
-                      )}
-                    </CCol>
-                  </CRow>
-                  <CRow>
-                    <CCol>
+                <CRow>
+                  <CCol md={12}>
+                    {intuneTemplates.isUninitialized &&
+                      intuneGetRequest({ url: 'api/ListIntuneTemplates' })}
+                    {intuneTemplates.isSuccess && (
                       <RFFCFormSelect
-                        name="TemplateType"
-                        label="Select Policy Type"
-                        placeholder="Select a template type"
-                        values={[
-                          { label: 'Administrative Template', value: 'Admin' },
-                          { label: 'Settings Catalog', value: 'Catalog' },
-                          { label: 'Custom Configuration', value: 'Device' },
-                        ]}
+                        name="TemplateList"
+                        values={intuneTemplates.data?.map((template) => ({
+                          value: template.GUID,
+                          label: template.Displayname,
+                        }))}
+                        placeholder="Select a template"
+                        label="Please choose a template to apply, or enter the information manually."
                       />
-                    </CCol>
-                  </CRow>
-                  <CRow>
-                    <CCol md={12}>
-                      <RFFCFormInput
-                        type="text"
-                        name="DisplayName"
-                        label="Policy Display Name"
-                        placeholder="Enter a name"
-                      />
-                    </CCol>
-                  </CRow>
-                  <CRow>
-                    <CCol md={12}>
-                      <RFFCFormInput
-                        type="text"
-                        name="Description"
-                        label="Description"
-                        placeholder="leave blank for none"
-                      />
-                    </CCol>
-                  </CRow>
-                  <CRow>
-                    <CCol md={12}>
-                      <RFFCFormTextarea
-                        type="text"
-                        name="Description"
-                        label="Raw JSON"
-                        placeholder="Enter RAW JSON information"
-                      />
-                    </CCol>
-                  </CRow>
-                  <RFFCFormRadio
-                    value=""
-                    name="AssignTo"
-                    label="Do not assign"
-                    validate={false}
-                  ></RFFCFormRadio>
-                  <RFFCFormRadio
-                    value="allLicensedUsers"
-                    name="AssignTo"
-                    label="Assign to all users"
-                    validate={false}
-                  ></RFFCFormRadio>
-                  <RFFCFormRadio
-                    value="AllDevices"
-                    name="AssignTo"
-                    label="Assign to all devices"
-                    validate={false}
-                  ></RFFCFormRadio>
-                  <RFFCFormRadio
-                    value="AllDevicesAndUsers"
-                    name="AssignTo"
-                    label="Assign to all users and devices"
-                  ></RFFCFormRadio>
-                </CForm>
+                    )}
+                  </CCol>
+                </CRow>
+                <CRow>
+                  <CCol>
+                    <RFFCFormSelect
+                      name="Type"
+                      label="Select Policy Type"
+                      placeholder="Select a template type"
+                      values={[
+                        { label: 'Administrative Template', value: 'Admin' },
+                        { label: 'Settings Catalog', value: 'Catalog' },
+                        { label: 'Custom Configuration', value: 'Device' },
+                      ]}
+                    />
+                  </CCol>
+                </CRow>
+                <CRow>
+                  <CCol md={12}>
+                    <RFFCFormInput
+                      type="text"
+                      name="Displayname"
+                      label="Policy Display Name"
+                      placeholder="Enter a name"
+                    />
+                  </CCol>
+                </CRow>
+                <CRow>
+                  <CCol md={12}>
+                    <RFFCFormInput
+                      type="text"
+                      name="Description"
+                      label="Description"
+                      placeholder="leave blank for none"
+                    />
+                  </CCol>
+                </CRow>
+                <CRow>
+                  <CCol md={12}>
+                    <RFFCFormTextarea
+                      type="text"
+                      name="RAWJson"
+                      label="Raw JSON"
+                      placeholder="Enter RAW JSON information"
+                    />
+                  </CCol>
+                </CRow>
+                <RFFCFormRadio value="" name="AssignTo" label="Do not assign"></RFFCFormRadio>
+                <RFFCFormRadio
+                  value="allLicensedUsers"
+                  name="AssignTo"
+                  label="Assign to all users"
+                ></RFFCFormRadio>
+                <RFFCFormRadio
+                  value="AllDevices"
+                  name="AssignTo"
+                  label="Assign to all devices"
+                ></RFFCFormRadio>
+                <RFFCFormRadio
+                  value="AllDevicesAndUsers"
+                  name="AssignTo"
+                  label="Assign to all users and devices"
+                ></RFFCFormRadio>
                 <hr className="my-4" />
+                <WhenFieldChanges field="TemplateList" set="Description" />
+                <WhenFieldChanges field="TemplateList" set="Displayname" />
+                <WhenFieldChanges field="TemplateList" set="RAWJson" />
+                <WhenFieldChanges field="TemplateList" set="Type" />
               </Wizard.Page>
               <Wizard.Page title="Review and Confirm" description="Confirm the settings to apply">
                 <center>
@@ -235,95 +245,35 @@ const ApplyStandard = () => {
                             <CCol md={6}>
                               <CListGroup flush>
                                 <CListGroupItem className="d-flex justify-content-between align-items-center">
-                                  Display Name: {props.values.DisplayName}
+                                  Display Name: {props.values.Displayname}
                                   <FontAwesomeIcon
                                     color="#f77f00"
                                     size="lg"
-                                    icon={props.values.DisplayName ? faCheckCircle : faTimesCircle}
+                                    icon={props.values.Displayname ? faCheckCircle : faTimesCircle}
                                   />
                                 </CListGroupItem>
                                 <CListGroupItem className="d-flex justify-content-between align-items-center">
-                                  Naming template: {props.values.DeviceNameTemplate}
+                                  Description: {props.values.Description}
                                   <FontAwesomeIcon
                                     color="#f77f00"
                                     size="lg"
-                                    icon={
-                                      props.values.DeviceNameTemplate
-                                        ? faCheckCircle
-                                        : faTimesCircle
-                                    }
+                                    icon={props.values.Description ? faCheckCircle : faTimesCircle}
                                   />
                                 </CListGroupItem>
                                 <CListGroupItem className="d-flex justify-content-between align-items-center">
-                                  Self-Deploying
+                                  Type: {props.values.Type}
                                   <FontAwesomeIcon
                                     color="#f77f00"
                                     size="lg"
-                                    icon={
-                                      props.values.DeploymentMode ? faCheckCircle : faTimesCircle
-                                    }
+                                    icon={props.values.Type ? faCheckCircle : faTimesCircle}
                                   />
                                 </CListGroupItem>
                                 <CListGroupItem className="d-flex justify-content-between align-items-center">
-                                  Hide Terms
+                                  Assign to: {props.values.AssignTo}
                                   <FontAwesomeIcon
                                     color="#f77f00"
                                     size="lg"
-                                    icon={props.values.HideTerms ? faCheckCircle : faTimesCircle}
-                                  />
-                                </CListGroupItem>
-                                <CListGroupItem className="d-flex justify-content-between align-items-center">
-                                  Hide Privacy
-                                  <FontAwesomeIcon
-                                    color="#f77f00"
-                                    size="lg"
-                                    icon={props.values.HidePrivacy ? faCheckCircle : faTimesCircle}
-                                  />
-                                </CListGroupItem>
-                                <CListGroupItem className="d-flex justify-content-between align-items-center">
-                                  Convert to Autopilot device
-                                  <FontAwesomeIcon
-                                    color="#f77f00"
-                                    size="lg"
-                                    icon={props.values.CollectHash ? faCheckCircle : faTimesCircle}
-                                  />
-                                </CListGroupItem>
-                                <CListGroupItem className="d-flex justify-content-between align-items-center">
-                                  Standard Account
-                                  <FontAwesomeIcon
-                                    color="#f77f00"
-                                    size="lg"
-                                    icon={
-                                      props.values.NotLocalAdmin ? faCheckCircle : faTimesCircle
-                                    }
-                                  />
-                                </CListGroupItem>
-                                <CListGroupItem className="d-flex justify-content-between align-items-center">
-                                  Allow Whiteglove
-                                  <FontAwesomeIcon
-                                    color="#f77f00"
-                                    size="lg"
-                                    icon={
-                                      props.values.allowWhiteglove ? faCheckCircle : faTimesCircle
-                                    }
-                                  />
-                                </CListGroupItem>
-                                <CListGroupItem className="d-flex justify-content-between align-items-center">
-                                  Automatically setup keyboard
-                                  <FontAwesomeIcon
-                                    color="#f77f00"
-                                    size="lg"
-                                    icon={props.values.Autokeyboard ? faCheckCircle : faTimesCircle}
-                                  />
-                                </CListGroupItem>
-                                <CListGroupItem className="d-flex justify-content-between align-items-center">
-                                  Allow Whiteglove
-                                  <FontAwesomeIcon
-                                    color="#f77f00"
-                                    size="lg"
-                                    icon={
-                                      props.values.HideChangeAccount ? faCheckCircle : faTimesCircle
-                                    }
+                                    icon={props.values.AssignTo ? faCheckCircle : faTimesCircle}
                                   />
                                 </CListGroupItem>
                               </CListGroup>
