@@ -1,6 +1,6 @@
 import React from 'react'
 import ExportPDFButton from 'src/components/cipp/PdfButton'
-import { CButton, CSpinner, CFormInput } from '@coreui/react'
+import { CSpinner, CFormInput } from '@coreui/react'
 import DataTable from 'react-data-table-component'
 import { useListDatatableQuery } from '../../store/api/datatable'
 import PropTypes from 'prop-types'
@@ -45,6 +45,8 @@ export default function CippDatatable({
     expandableRowsComponent,
     expandableRowsHideExpander,
     expandOnRowClicked,
+    selectableRows,
+    onSelectedRowsChange,
     highlightOnHover = true,
     actions = [],
     ...rest
@@ -102,6 +104,8 @@ export default function CippDatatable({
           <DataTable
             // theme={theme}
             subHeader={subheader}
+            selectableRows={selectableRows}
+            onSelectedRowsChange={onSelectedRowsChange}
             subHeaderComponent={subHeaderComponentMemo}
             subHeaderAlign="left"
             paginationResetDefaultPage={resetPaginationToggle}

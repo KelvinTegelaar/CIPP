@@ -3,7 +3,6 @@ import { CAlert, CCard, CCol, CRow, CCardTitle, CCardHeader, CCardBody } from '@
 import { Field } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
-import { useDispatch, useSelector } from 'react-redux'
 import Wizard from '../../../components/Wizard'
 import WizardTableField from '../../../components/WizardTableField'
 import PropTypes from 'prop-types'
@@ -30,23 +29,20 @@ Error.propTypes = {
   name: PropTypes.string.isRequired,
 }
 
-const requiredArray = (value) => (value && value.length !== 0 ? undefined : 'Required')
-
 const ApplyStandard = () => {
   const { data: tenants = [] } = useListTenantsQuery()
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
-  const dispatch = useDispatch()
-
   const handleSubmit = async (values) => {
     // @todo: clean this up api sided so we don't need to perform weird tricks.
-    var result = Object.keys(values.standards).filter(function (x) {
+    Object.keys(values.standards).filter(function (x) {
       if (values.standards[x] === false) {
         delete values.standards[x]
       }
+      return null
     })
 
-    const shippedTenants = values.selectedTenants.map(
+    values.selectedTenants.map(
       (tenant) =>
         (values.standards[`Select_${tenant.defaultDomainName}`] = tenant.defaultDomainName),
     )
@@ -77,19 +73,23 @@ const ApplyStandard = () => {
                   <h5 className="card-title mb-4">Choose a tenant</h5>
                 </center>
                 <hr className="my-4" />
-                <Field name="selectedTenants" validate={requiredArray}>
+                <Field name="selectedTenants">
                   {(props) => (
                     <WizardTableField
-                      keyField="customerId"
+                      keyField="defaultDomainName"
                       data={tenants}
                       columns={[
                         {
-                          dataField: 'displayName',
-                          text: 'Tenant Name',
+                          name: 'Display Name',
+                          selector: (row) => row['displayName'],
+                          sortable: true,
+                          exportselector: 'displayName',
                         },
                         {
-                          dataField: 'defaultDomainName',
-                          text: 'Domain Name',
+                          name: 'Default Domain Name',
+                          selector: (row) => row['defaultDomainName'],
+                          sortable: true,
+                          exportselector: 'mail',
                         },
                       ]}
                       fieldProps={props}

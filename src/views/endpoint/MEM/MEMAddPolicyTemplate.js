@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import {
   CAlert,
   CButton,
@@ -9,25 +9,13 @@ import {
   CCol,
   CForm,
   CRow,
-  CSpinner,
 } from '@coreui/react'
-import useQuery from '../../../hooks/useQuery'
-import { setModalContent } from '../../../store/features/modal'
-import { useListGroupQuery } from '../../../store/api/groups'
-import { useDispatch } from 'react-redux'
 import { Form } from 'react-final-form'
-import {
-  RFFCFormInput,
-  RFFCFormSelect,
-  RFFCFormTextarea,
-  RFFSelectSearch,
-} from '../../../components/RFFComponents'
-import { useListUsersQuery } from 'src/store/api/users'
+import { RFFCFormInput, RFFCFormSelect, RFFCFormTextarea } from '../../../components/RFFComponents'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
 const MEMAddPolicyTemplate = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
-  const dispatch = useDispatch()
 
   const handleSubmit = async (values) => {
     // alert(JSON.stringify(values, null, 2))

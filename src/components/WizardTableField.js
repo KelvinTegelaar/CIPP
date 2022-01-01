@@ -1,8 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import BootstrapTable from 'react-bootstrap-table-next'
-import paginationFactory from 'react-bootstrap-table2-paginator'
-const pagination = paginationFactory()
+import { CippDatatable } from './cipp'
 
 /**
  * Table with checkboxes
@@ -44,57 +42,23 @@ export default class WizardTableField extends React.Component {
     }
   }
 
-  handleOnSelect = (row, isSelect) => {
-    const { fieldProps, keyField } = this.props
-
-    if (isSelect) {
-      fieldProps.input.onChange([...fieldProps.input.value, row])
-      this.setState(() => ({
-        selected: [...this.state.selected, row[keyField]],
-      }))
-    } else {
-      fieldProps.input.onChange(
-        fieldProps.input.value.filter((el) => el[keyField] !== row[keyField]),
-      )
-      this.setState(() => ({
-        selected: this.state.selected.filter((el) => el !== row[keyField]),
-      }))
-    }
-  }
-
-  handleOnSelectAll = (isSelect, rows) => {
-    const { fieldProps, keyField } = this.props
-    if (isSelect) {
-      fieldProps.input.onChange(rows)
-      this.setState(() => ({
-        selected: rows.map((el) => el[keyField]),
-      }))
-    } else {
-      fieldProps.input.onChange([])
-      this.setState(() => ({
-        selected: [],
-      }))
-    }
+  handleSelect = ({ selectedRows }) => {
+    console.log(selectedRows)
+    this.setState(() => ({
+      selected: selectedRows,
+    }))
   }
 
   render() {
     const { keyField, columns, data } = this.props
-
     return (
-      <BootstrapTable
+      <CippDatatable
         keyField={keyField}
         data={data}
-        pagination={pagination}
         columns={columns}
         striped
-        wrapperClasses="table-responsive"
-        selectRow={{
-          mode: 'checkbox',
-          clickToSelect: true,
-          selected: this.state.selected,
-          onSelect: this.handleOnSelect,
-          onSelectAll: this.handleOnSelectAll,
-        }}
+        path="/api/ListTenants"
+        tableProps={{ selectableRows: true, onSelectedRowsChange: this.handleSelect }}
       />
     )
   }

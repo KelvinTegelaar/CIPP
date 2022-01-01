@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import {
   CAlert,
   CButton,
@@ -9,18 +9,11 @@ import {
   CCol,
   CForm,
   CRow,
-  CSpinner,
 } from '@coreui/react'
-import useQuery from '../../../hooks/useQuery'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Form } from 'react-final-form'
 import TenantSelector from '../../../components/cipp/TenantSelector'
-import {
-  RFFCFormInput,
-  RFFCFormSelect,
-  RFFCFormTextarea,
-  RFFSelectSearch,
-} from '../../../components/RFFComponents'
+import { RFFCFormInput, RFFSelectSearch } from '../../../components/RFFComponents'
 import { useListUsersQuery } from 'src/store/api/users'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
