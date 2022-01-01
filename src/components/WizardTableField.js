@@ -11,7 +11,7 @@ import { CippDatatable } from './cipp'
 export default class WizardTableField extends React.Component {
   static propTypes = {
     keyField: PropTypes.string.isRequired,
-    data: PropTypes.array.isRequired,
+    path: PropTypes.string.isRequired,
     columns: PropTypes.array.isRequired,
     fieldProps: PropTypes.object,
   }
@@ -21,31 +21,10 @@ export default class WizardTableField extends React.Component {
     columns: [],
   }
 
-  constructor(props) {
-    super(props)
-
-    // Bootstrap table's selected uses keyField to track checkboxes
-    // match state from react-final-form on rerender
-    const { fieldProps, keyField } = props
-
-    const previouslySelected = props.data
-      .map((el) => {
-        if (fieldProps.input.value.includes(el)) {
-          return el[keyField]
-        }
-        return undefined
-      })
-      .filter((el) => el !== undefined)
-
-    this.state = {
-      selected: previouslySelected,
-    }
-  }
-
   handleSelect = ({ selectedRows }) => {
     console.log(selectedRows)
     const { fieldProps, keyField } = this.props
-    if (selectedRows != []) {
+    if (selectedRows !== []) {
       fieldProps.input.onChange(selectedRows)
       this.setState(() => ({
         selected: selectedRows.map((el) => el[keyField]),
@@ -76,14 +55,13 @@ export default class WizardTableField extends React.Component {
   }
 
   render() {
-    const { keyField, columns, data } = this.props
+    const { keyField, columns, path } = this.props
     return (
       <CippDatatable
         keyField={keyField}
-        data={data}
         columns={columns}
         striped
-        path="/api/ListTenants"
+        path={path}
         tableProps={{
           selectableRows: true,
           onSelectedRowsChange: this.handleSelect,

@@ -1,28 +1,12 @@
 import React from 'react'
-import {
-  CAlert,
-  CCard,
-  CCol,
-  CFormLabel,
-  CRow,
-  CCardHeader,
-  CCardTitle,
-  CCardBody,
-} from '@coreui/react'
+import { CAlert, CCard, CCol, CRow, CCardHeader, CCardTitle, CCardBody } from '@coreui/react'
 import { Field } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { useDispatch, useSelector } from 'react-redux'
 import Wizard from '../../../components/Wizard'
-import WizardTableField from '../../../components/WizardTableField'
 import PropTypes from 'prop-types'
-import {
-  RFFCFormCheck,
-  RFFCFormInput,
-  RFFCFormSwitch,
-  RFFSelectSearch,
-} from '../../../components/RFFComponents'
-import { useListTenantsQuery } from '../../../store/api/tenants'
+import { RFFCFormInput, RFFCFormSwitch, RFFSelectSearch } from '../../../components/RFFComponents'
 import { TenantSelector } from 'src/components/cipp'
 import { useListUsersQuery } from 'src/store/api/users'
 

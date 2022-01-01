@@ -77,7 +77,7 @@ const ApplyStandard = () => {
                   {(props) => (
                     <WizardTableField
                       keyField="defaultDomainName"
-                      data={tenants}
+                      path="/api/ListTenants"
                       columns={[
                         {
                           name: 'Display Name',
