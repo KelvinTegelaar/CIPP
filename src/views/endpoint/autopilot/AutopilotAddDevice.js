@@ -3,7 +3,7 @@ import { CAlert, CCard, CCol, CRow, CCardHeader, CCardTitle, CCardBody } from '@
 import { Field } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import Wizard from '../../../components/Wizard'
 import PropTypes from 'prop-types'
 import { RFFCFormInput, RFFCFormSwitch, RFFSelectSearch } from '../../../components/RFFComponents'
@@ -29,7 +29,6 @@ Error.propTypes = {
   name: PropTypes.string.isRequired,
 }
 
-const requiredArray = (value) => (value && value.length !== 0 ? undefined : 'Required')
 const AddAPDevice = () => {
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
   const {
@@ -38,17 +37,10 @@ const AddAPDevice = () => {
     error: usersError,
   } = useListUsersQuery({ tenantDomain })
 
-  const dispatch = useDispatch()
-
   const handleSubmit = async (values) => {
     alert(JSON.stringify(values, null, 2))
     // @todo hook this up
     // dispatch(applyStandards({ tenants: values.selectedTenants, standards: values.standards }))
-  }
-
-  const formValues = {
-    selectedTenants: [],
-    standards: {},
   }
 
   return (

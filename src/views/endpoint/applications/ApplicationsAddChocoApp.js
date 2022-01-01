@@ -14,12 +14,10 @@ import {
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
-import { useDispatch } from 'react-redux'
 import Wizard from '../../../components/Wizard'
 import WizardTableField from '../../../components/WizardTableField'
 import PropTypes from 'prop-types'
 import { RFFCFormInput, RFFCFormRadio, RFFCFormSwitch } from '../../../components/RFFComponents'
-import { useListTenantsQuery } from '../../../store/api/tenants'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
 const Error = ({ name }) => (
@@ -44,13 +42,10 @@ Error.propTypes = {
 const requiredArray = (value) => (value && value.length !== 0 ? undefined : 'Required')
 
 const ApplyStandard = () => {
-  const { data: tenants = [] } = useListTenantsQuery()
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
-  const dispatch = useDispatch()
-
   const handleSubmit = async (values) => {
-    const shippedTenants = values.selectedTenants.map(
+    values.selectedTenants.map(
       (tenant) => (values[`Select_${tenant.defaultDomainName}`] = tenant.defaultDomainName),
     )
     genericPostRequest({ url: 'api/AddChocoApp', values: values })

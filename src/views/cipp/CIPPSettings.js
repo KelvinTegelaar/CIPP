@@ -8,8 +8,6 @@ import {
   CCardTitle,
   CCol,
   CContainer,
-  CFormCheck,
-  CFormInput,
   CFormLabel,
   CNav,
   CNavItem,
@@ -31,10 +29,9 @@ import {
   useLazyListExcludedTenantsQuery,
   useLazyListNotificationConfigQuery,
   useLazyExecExcludeTenantQuery,
-  useLazyExecAddExcludeTenantQuery,
 } from '../../store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleNotch, faTrash, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+import { faCircleNotch, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { TenantSelectorMultiple } from '../../components/cipp'
 import DataTable from 'react-data-table-component'
 import { useListTenantsQuery } from '../../store/api/tenants'
@@ -54,16 +51,16 @@ const CIPPSettings = () => {
         </CCardHeader>
         <CCardBody>
           <CNav variant="tabs" role="tablist">
-            <CNavItem active={active === 1} onClick={() => setActive(1)} href="javascript:void(0);">
+            <CNavItem active={active === 1} onClick={() => setActive(1)} href="#">
               General
             </CNavItem>
-            <CNavItem active={active === 2} onClick={() => setActive(2)} href="javascript:void(0);">
+            <CNavItem active={active === 2} onClick={() => setActive(2)} href="#">
               Excluded Tenants
             </CNavItem>
-            <CNavItem active={active === 3} onClick={() => setActive(3)} href="javascript:void(0);">
+            <CNavItem active={active === 3} onClick={() => setActive(3)} href="#">
               Backend
             </CNavItem>
-            <CNavItem active={active === 4} onClick={() => setActive(4)} href="javascript:void(0);">
+            <CNavItem active={active === 4} onClick={() => setActive(4)} href="#">
               Notifications
             </CNavItem>
           </CNav>
@@ -255,7 +252,6 @@ const GeneralSettings = () => {
 const ExcludedTenantsSettings = () => {
   const [excludedTenants, exTenantResult] = useLazyListExcludedTenantsQuery()
   const [removeExcludedTenant, exRemovalResult] = useLazyExecExcludeTenantQuery()
-  const [addExcludedTenant, exAddResult] = useLazyExecAddExcludeTenantQuery()
 
   const dispatch = useDispatch()
   const handleRemoveExclusion = (domain) => {

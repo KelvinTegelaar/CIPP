@@ -2,16 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
-import {
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCardTitle,
-  CDropdown,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
-} from '@coreui/react'
+import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
 import { cellBooleanFormatter } from '../../../components/cipp'
 
 //TODO: Add CellBoolean

@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import {
-  CAlert,
   CButton,
   CCard,
   CCardBody,
@@ -10,14 +9,13 @@ import {
   CCollapse,
   CForm,
   CRow,
-  CSpinner,
 } from '@coreui/react'
 import useQuery from '../../hooks/useQuery'
 import { Form } from 'react-final-form'
-import { RFFCFormInput, RFFCFormSelect, RFFCFormTextarea } from '../../components/RFFComponents'
+import { RFFCFormInput, RFFCFormSelect } from '../../components/RFFComponents'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronRight, faChevronDown } from '@fortawesome/free-solid-svg-icons'
-import { CippDatatable, TenantSelector } from 'src/components/cipp'
+import { CippDatatable } from 'src/components/cipp'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
@@ -61,8 +59,6 @@ const Logs = () => {
   const sender = query.get('sender')
   const recipient = query.get('recipient')
   const days = query.get('days')
-  const tenantFilter = query.get('tenantfilter')
-  const SearchNow = query.get('SearchNow')
   //const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const [visibleA, setVisibleA] = useState(false)
 
