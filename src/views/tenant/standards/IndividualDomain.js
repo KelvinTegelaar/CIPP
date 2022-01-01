@@ -37,6 +37,7 @@ import {
   faExpandAlt,
   faTimesCircle,
   faCopy,
+  faExternalLinkAlt,
 } from '@fortawesome/free-solid-svg-icons'
 import { RFFCFormInput } from '../../../components/RFFComponents'
 import classNames from 'classnames'
@@ -48,6 +49,8 @@ const IconRedX = () => <FontAwesomeIcon icon={faTimesCircle} className="text-dan
 const IconWarning = () => (
   <FontAwesomeIcon icon={faExclamationTriangle} className="text-warning mx-2" />
 )
+const IconExternalLink = () => <FontAwesomeIcon icon={faExternalLinkAlt} />
+const IconCopy = () => <FontAwesomeIcon icon={faCopy} />
 
 const bgColorMap = {
   [undefined]: 'bg-primary',
@@ -84,13 +87,13 @@ const IndividualDomainCheck = () => {
   }
 
   return (
-    <CCard>
-      <CCardHeader>
-        <CCardTitle className="text-primary">Individual Domain Check</CCardTitle>
+    <CCard className="mb-4">
+      <CCardHeader className="text-primary" component="h5">
+        Individual Domain Check
       </CCardHeader>
       <CCardBody>
         <CRow xs={{ cols: 1, gutter: 4 }} xl={{ cols: 2, gutter: 4 }}>
-          <CCol md={6}>
+          <CCol>
             <CCard className="h-100">
               <CCardHeader component="h5" className="bg-primary text-white">
                 Email Security Domain Checker
@@ -103,7 +106,12 @@ const IndividualDomainCheck = () => {
                     return (
                       <CForm onSubmit={handleSubmit}>
                         <RFFCFormInput spellCheck={false} name="domain" label="Domain Name" />
-                        <CButton type="submit" disabled={submitting || isFetching} className="mt-4">
+                        <CButton
+                          type="submit"
+                          disabled={submitting || isFetching}
+                          className="mt-4"
+                          color="primary"
+                        >
                           {isFetching && (
                             <FontAwesomeIcon icon={faCircleNotch} spin size="1x" className="mx-1" />
                           )}
@@ -117,11 +125,11 @@ const IndividualDomainCheck = () => {
               </CCardBody>
             </CCard>
           </CCol>
-          <CCol md={6}>{isSuccess && <MXResultsCard domain={domain} />}</CCol>
-          <CCol md={6}>{isSuccess && <SPFResultsCard domain={domain} />}</CCol>
-          <CCol md={6}>{isSuccess && <DMARCResultsCard domain={domain} />}</CCol>
-          <CCol md={6}>{isSuccess && <DNSSECResultsCard domain={domain} />}</CCol>
-          <CCol md={6}>{isSuccess && <DKIMResultsCard domain={domain} />}</CCol>
+          <CCol>{isSuccess && <MXResultsCard domain={domain} />}</CCol>
+          <CCol>{isSuccess && <SPFResultsCard domain={domain} />}</CCol>
+          <CCol>{isSuccess && <DMARCResultsCard domain={domain} />}</CCol>
+          <CCol>{isSuccess && <DNSSECResultsCard domain={domain} />}</CCol>
+          <CCol>{isSuccess && <DKIMResultsCard domain={domain} />}</CCol>
         </CRow>
       </CCardBody>
     </CCard>
@@ -232,7 +240,7 @@ const SPFResultsCard = ({ domain }) => {
             size="sm"
             color="light"
           >
-            <FontAwesomeIcon icon={faCopy} />
+            <IconCopy />
           </CButton>
           <CFormTextarea
             style={textareaStyle}
@@ -282,56 +290,63 @@ const MXResultsCard = ({ domain }) => {
         </CTooltip>
       </div>
       <CCollapse visible={visible} className="mb-2">
-        <CCardTitle>Documentation</CCardTitle>
-        <div className="mb-2">
-          <CListGroup>
-            {data?.MXResults?.MailProvider?._MxComment && (
-              <CListGroupItem
-                component="a"
-                target="_blank"
-                href={data?.MXResults?.MailProvider?._MxComment}
-              >
-                MX Record
-              </CListGroupItem>
+        <CRow lg={{ cols: 1, gutter: 2 }} xl={{ cols: 2, gutter: 4 }}>
+          <CCol xl={8}>
+            {records.length > 0 && (
+              <div>
+                <CCardTitle>MX Records</CCardTitle>
+                <CTable striped small>
+                  <CTableHead>
+                    <CTableRow>
+                      <CTableHeaderCell scope="col">Priority</CTableHeaderCell>
+                      <CTableHeaderCell scope="col">Hostname</CTableHeaderCell>
+                    </CTableRow>
+                  </CTableHead>
+                  <CTableBody>
+                    {records.map((record, key) => (
+                      <CTableRow key={`${key}-mx-record`}>
+                        <CTableDataCell>{record?.Priority}</CTableDataCell>
+                        <CTableDataCell>{record?.Hostname}</CTableDataCell>
+                      </CTableRow>
+                    ))}
+                  </CTableBody>
+                </CTable>
+              </div>
             )}
-            {data?.MXResults?.MailProvider?._SpfComment && (
-              <CListGroupItem
-                component="a"
-                target="_blank"
-                href={data?.MXResults?.MailProvider?._SpfComment}
-              >
-                SPF Record
-              </CListGroupItem>
-            )}
-            {data?.MXResults?.MailProvider?._DkimComment && (
-              <CListGroupItem
-                component="a"
-                target="_blank"
-                href={data?.MXResults?.MailProvider?._DkimComment}
-              >
-                DKIM Record
-              </CListGroupItem>
-            )}
-          </CListGroup>
-        </div>
-        {records.length > 0 && (
-          <CTable>
-            <CTableHead>
-              <CTableRow>
-                <CTableHeaderCell scope="col">Priority</CTableHeaderCell>
-                <CTableHeaderCell scope="col">Hostname</CTableHeaderCell>
-              </CTableRow>
-            </CTableHead>
-            <CTableBody>
-              {records.map((record, key) => (
-                <CTableRow key={`${key}-mx-record`}>
-                  <CTableDataCell>{record?.Priority}</CTableDataCell>
-                  <CTableDataCell>{record?.Hostname}</CTableDataCell>
-                </CTableRow>
-              ))}
-            </CTableBody>
-          </CTable>
-        )}
+          </CCol>
+          <CCol xl={4}>
+            <CCardTitle>Mail Provider Info</CCardTitle>
+            <CListGroup>
+              {data?.MXResults?.MailProvider?._MxComment && (
+                <CListGroupItem
+                  component="a"
+                  target="_blank"
+                  href={data?.MXResults?.MailProvider?._MxComment}
+                >
+                  <IconExternalLink /> MX Record
+                </CListGroupItem>
+              )}
+              {data?.MXResults?.MailProvider?._SpfComment && (
+                <CListGroupItem
+                  component="a"
+                  target="_blank"
+                  href={data?.MXResults?.MailProvider?._SpfComment}
+                >
+                  <IconExternalLink /> SPF Record
+                </CListGroupItem>
+              )}
+              {data?.MXResults?.MailProvider?._DkimComment && (
+                <CListGroupItem
+                  component="a"
+                  target="_blank"
+                  href={data?.MXResults?.MailProvider?._DkimComment}
+                >
+                  <IconExternalLink /> DKIM Record
+                </CListGroupItem>
+              )}
+            </CListGroup>
+          </CCol>
+        </CRow>
       </CCollapse>
     </ResultsCard>
   )
@@ -380,7 +395,7 @@ const DMARCResultsCard = ({ domain }) => {
             size="sm"
             color="light"
           >
-            <FontAwesomeIcon icon={faCopy} />
+            <IconCopy />
           </CButton>
           <CFormTextarea
             style={textareaStyle}
