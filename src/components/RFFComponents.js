@@ -323,7 +323,8 @@ export const RFFSelectSearch = ({
               options={values}
               filterOptions={fuzzySearch}
               value={input.value}
-              onChange={onChange}
+              //commented out this on change, because even when it was not set it was using the value, causing issues with the event.
+              onChange={input.onChange}
               placeholder={placeholder}
             />
             <RFFCFormFeedback meta={meta} />
