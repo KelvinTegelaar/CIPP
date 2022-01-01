@@ -44,9 +44,35 @@ export default class WizardTableField extends React.Component {
 
   handleSelect = ({ selectedRows }) => {
     console.log(selectedRows)
-    this.setState(() => ({
-      selected: selectedRows,
-    }))
+    const { fieldProps, keyField } = this.props
+    if (selectedRows != []) {
+      fieldProps.input.onChange(selectedRows)
+      this.setState(() => ({
+        selected: selectedRows.map((el) => el[keyField]),
+      }))
+    } else {
+      fieldProps.input.onChange([])
+      this.setState(() => ({
+        selected: [],
+      }))
+    }
+  }
+
+  handleOnSelect = (row, isSelect, rowIndex) => {
+    const { keyField, fieldProps } = this.props
+    if (isSelect) {
+      fieldProps.input.onChange([...fieldProps.input.value, row])
+      this.setState(() => ({
+        selected: [...this.state.selected, rowIndex],
+      }))
+    } else {
+      fieldProps.input.onChange(
+        fieldProps.input.value.filter((el) => el[keyField] !== row[keyField]),
+      )
+      this.setState(() => ({
+        selected: this.state.selected.filter((el) => el !== row[keyField]),
+      }))
+    }
   }
 
   render() {
@@ -58,7 +84,11 @@ export default class WizardTableField extends React.Component {
         columns={columns}
         striped
         path="/api/ListTenants"
-        tableProps={{ selectableRows: true, onSelectedRowsChange: this.handleSelect }}
+        tableProps={{
+          selectableRows: true,
+          onSelectedRowsChange: this.handleSelect,
+          subheader: false,
+        }}
       />
     )
   }
