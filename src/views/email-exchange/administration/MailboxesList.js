@@ -17,7 +17,7 @@ import { faUser, faCog, faBars } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
 
 const dropdown = (row, rowIndex, formatExtraData) => (
-  <CDropdown style={{ position: 'fixed', zIndex: 1000 }}>
+  <CDropdown>
     <CDropdownToggle size="sm" color="link">
       <FontAwesomeIcon icon={faBars} />
     </CDropdownToggle>

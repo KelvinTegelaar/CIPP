@@ -16,7 +16,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const dropdown = (row, index, column) => {
   return (
-    <CDropdown style={{ position: 'fixed', zIndex: 1000 }}>
+    <CDropdown>
       <CDropdownToggle size="sm" variant="ghost" color="primary">
         <FontAwesomeIcon icon={faBars} />
       </CDropdownToggle>

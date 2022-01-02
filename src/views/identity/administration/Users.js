@@ -26,7 +26,7 @@ const Dropdown = (row, rowIndex, formatExtraData) => {
   }
 
   return (
-    <CDropdown style={{ position: 'fixed', zIndex: 1000 }}>
+    <CDropdown>
       <CDropdownToggle size="sm" color="link">
         <FontAwesomeIcon icon={faBars} />
       </CDropdownToggle>
