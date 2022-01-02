@@ -91,6 +91,19 @@ $link-shade-percentage: 20% !default;
 $link-hover-color: shift-color($link-color, $link-shade-percentage) !default;
 $link-hover-decoration: null !default;
 
+$cyberdrain-orange: #f77f00;
+$cyberdrain-blue: #00a0ff;
+$cyberdrain-dark-bg: #2e363a;
+
+$search-bg-color: #ffffff;
+$search-border-color: #eeeeee;
+$search-selected-option-bg: #2fcc8b;
+$search-selected-option-color: #ffffff;
+$search-option-highlight-color: rgba(47, 204, 139, 0.1);
+$search-selected-option-highlight-bg: #2eb378;
+$search-selected-option-highlight-color: #ffffff;
+$search-group-header-bg: #eeeeee;
+
 // $success-dark:  #1b9e3e !default;
 // $success-base:  #2eb85c !default;
 // $success-50:    #96dbad !default;

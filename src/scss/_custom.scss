@@ -38,20 +38,6 @@
   white-space: normal !important;
 }
 
-@media (prefers-color-scheme: no-preference) {
-  @include default();
-  @include cyberdrain();
-}
-
-@media (prefers-color-scheme: light) {
-  @include default();
-  @include cyberdrain();
-}
-
-@media (prefers-color-scheme: dark) {
-  @include dark();
-}
-
 body {
   @include default();
   &.cyberdrain {

@@ -10,7 +10,7 @@ function caps(str) {
 
 const ThemeSwitcher = () => {
   const dispatch = useDispatch()
-  const preferredTheme = useMediaPredicate('(prefers-color-scheme: dark)') ? 'dark' : 'light'
+  const preferredTheme = useMediaPredicate('(prefers-color-scheme: dark)') ? 'dark' : 'cyberdrain'
   const theme = useSelector((state) => state.app.currentTheme) || preferredTheme
   const themes = useSelector((state) => state.app.themes)
 
