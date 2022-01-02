@@ -23,7 +23,7 @@ const dropdown = (row, rowIndex, formatExtraData) => {
       <CDropdownToggle size="sm" color="link">
         <FontAwesomeIcon icon={faBars} />
       </CDropdownToggle>
-      <CDropdownMenu>
+      <CDropdownMenu style={{ position: 'fixed', right: 0, zIndex: 1000 }}>
         <CDropdownItem href="#">
           <Link className="dropdown-item" to={`/endpoint/autopilot/AutopilotEditProfile}`}>
             <FontAwesomeIcon icon={faUser} className="me-2" />

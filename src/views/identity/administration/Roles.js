@@ -20,7 +20,7 @@ const dropdown = (row, index, column) => {
       <CDropdownToggle size="sm" color="link">
         <FontAwesomeIcon icon={faBars} />
       </CDropdownToggle>
-      <CDropdownMenu>
+      <CDropdownMenu style={{ position: 'fixed', right: 0, zIndex: 1000 }}>
         <CDropdownItem href="#">Edit Group</CDropdownItem>
       </CDropdownMenu>
     </CDropdown>
