@@ -76,7 +76,6 @@ const ApplicationsList = () => {
           <CCardTitle className="text-primary">Applications List</CCardTitle>
         </CCardHeader>
         <CCardBody>
-          <h3>Applications List</h3>
           {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
           <CippDatatable
             keyField="id"

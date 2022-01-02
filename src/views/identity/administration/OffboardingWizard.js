@@ -1,11 +1,9 @@
 import React from 'react'
 import {
   CAlert,
-  CBadge,
   CCard,
   CCardBody,
   CCol,
-  CFormLabel,
   CListGroup,
   CListGroupItem,
   CRow,
@@ -19,7 +17,7 @@ import {
   faTimesCircle,
   faCheckCircle,
 } from '@fortawesome/free-solid-svg-icons'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import Wizard from '../../../components/Wizard'
 import PropTypes from 'prop-types'
 import { RFFCFormInput, RFFCFormSwitch, RFFSelectSearch } from '../../../components/RFFComponents'

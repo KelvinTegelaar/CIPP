@@ -1,8 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import BootstrapTable from 'react-bootstrap-table-next'
-import paginationFactory from 'react-bootstrap-table2-paginator'
-const pagination = paginationFactory()
+import { CippDatatable } from './cipp'
 
 /**
  * Table with checkboxes
@@ -13,7 +11,7 @@ const pagination = paginationFactory()
 export default class WizardTableField extends React.Component {
   static propTypes = {
     keyField: PropTypes.string.isRequired,
-    data: PropTypes.array.isRequired,
+    path: PropTypes.string.isRequired,
     columns: PropTypes.array.isRequired,
     fieldProps: PropTypes.object,
   }
@@ -23,34 +21,28 @@ export default class WizardTableField extends React.Component {
     columns: [],
   }
 
-  constructor(props) {
-    super(props)
-
-    // Bootstrap table's selected uses keyField to track checkboxes
-    // match state from react-final-form on rerender
-    const { fieldProps, keyField } = props
-
-    const previouslySelected = props.data
-      .map((el) => {
-        if (fieldProps.input.value.includes(el)) {
-          return el[keyField]
-        }
-        return undefined
-      })
-      .filter((el) => el !== undefined)
-
-    this.state = {
-      selected: previouslySelected,
+  handleSelect = ({ selectedRows }) => {
+    console.log(selectedRows)
+    const { fieldProps, keyField } = this.props
+    if (selectedRows !== []) {
+      fieldProps.input.onChange(selectedRows)
+      this.setState(() => ({
+        selected: selectedRows.map((el) => el[keyField]),
+      }))
+    } else {
+      fieldProps.input.onChange([])
+      this.setState(() => ({
+        selected: [],
+      }))
     }
   }
 
-  handleOnSelect = (row, isSelect) => {
-    const { fieldProps, keyField } = this.props
-
+  handleOnSelect = (row, isSelect, rowIndex) => {
+    const { keyField, fieldProps } = this.props
     if (isSelect) {
       fieldProps.input.onChange([...fieldProps.input.value, row])
       this.setState(() => ({
-        selected: [...this.state.selected, row[keyField]],
+        selected: [...this.state.selected, rowIndex],
       }))
     } else {
       fieldProps.input.onChange(
@@ -62,38 +54,18 @@ export default class WizardTableField extends React.Component {
     }
   }
 
-  handleOnSelectAll = (isSelect, rows) => {
-    const { fieldProps, keyField } = this.props
-    if (isSelect) {
-      fieldProps.input.onChange(rows)
-      this.setState(() => ({
-        selected: rows.map((el) => el[keyField]),
-      }))
-    } else {
-      fieldProps.input.onChange([])
-      this.setState(() => ({
-        selected: [],
-      }))
-    }
-  }
-
   render() {
-    const { keyField, columns, data } = this.props
-
+    const { keyField, columns, path } = this.props
     return (
-      <BootstrapTable
+      <CippDatatable
         keyField={keyField}
-        data={data}
-        pagination={pagination}
         columns={columns}
         striped
-        wrapperClasses="table-responsive"
-        selectRow={{
-          mode: 'checkbox',
-          clickToSelect: true,
-          selected: this.state.selected,
-          onSelect: this.handleOnSelect,
-          onSelectAll: this.handleOnSelectAll,
+        path={path}
+        tableProps={{
+          selectableRows: true,
+          onSelectedRowsChange: this.handleSelect,
+          subheader: false,
         }}
       />
     )

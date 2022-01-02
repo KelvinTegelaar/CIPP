@@ -14,7 +14,7 @@ import {
 } from '@coreui/react'
 import { cellBooleanFormatter } from '../../../components/cipp'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser, faCog, faBars } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faBars } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
 
 const dropdown = (row, rowIndex, formatExtraData) => (

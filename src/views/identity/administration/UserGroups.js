@@ -1,8 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { CCard, CCardBody, CCardHeader, CCardTitle, CLink, CSpinner } from '@coreui/react'
-import BootstrapTable from 'react-bootstrap-table-next'
-import { CellBoolean } from '../../../components/cipp'
+import { CellBoolean, CippDatatable } from '../../../components/cipp'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUsers } from '@fortawesome/free-solid-svg-icons'
 import { useListUserGroupsQuery } from '../../../store/api/groups'
@@ -69,13 +68,11 @@ export default function UserGroups({ userId, tenantDomain }) {
         {isFetching && <CSpinner />}
         {!isFetching && error && <>Error loading groups</>}
         {!isFetching && !error && (
-          <BootstrapTable
+          <CippDatatable
             keyField="id"
             columns={columns}
             data={mapped}
-            striped
             bordered={false}
-            condensed
             wrapperClasses="table-responsive"
           />
         )}

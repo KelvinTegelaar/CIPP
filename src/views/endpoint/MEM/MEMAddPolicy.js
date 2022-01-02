@@ -113,16 +113,20 @@ const ApplyStandard = () => {
                 <Field name="selectedTenants" validate={requiredArray}>
                   {(props) => (
                     <WizardTableField
-                      keyField="customerId"
-                      data={tenants}
+                      keyField="defaultDomainName"
+                      path="/api/ListTenants"
                       columns={[
                         {
-                          dataField: 'displayName',
-                          text: 'Tenant Name',
+                          name: 'Display Name',
+                          selector: (row) => row['displayName'],
+                          sortable: true,
+                          exportselector: 'displayName',
                         },
                         {
-                          dataField: 'defaultDomainName',
-                          text: 'Domain Name',
+                          name: 'Default Domain Name',
+                          selector: (row) => row['defaultDomainName'],
+                          sortable: true,
+                          exportselector: 'mail',
                         },
                       ]}
                       fieldProps={props}
