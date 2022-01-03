@@ -11,6 +11,7 @@ import {
   CSpinner,
   CButton,
   CButtonGroup,
+  CCardHeader,
 } from '@coreui/react'
 import avatar0 from './../../assets/images/avatars/0.jpg'
 import { useLoadClientPrincipalQuery } from '../../store/api/auth'
@@ -21,9 +22,10 @@ const ViewProfile = () => {
 
   return (
     <>
-      <CRow xs={{ cols: 2 }} md={{ cols: 2 }} className="g-4">
-        <CCol xs>
-          <CCard className="w-100">
+      <CRow>
+        <CCol className="col-3">
+          <CCard>
+            <CCardHeader>Profile</CCardHeader>
             {(isFetching || isLoading) && <CSpinner />}
             {!isLoading && (
               <>
@@ -49,36 +51,8 @@ const ViewProfile = () => {
             )}
           </CCard>
         </CCol>
-        <CCol xs>
-          <CCard className="w-50">
-            <ThemeSwitcher />
-          </CCard>
-          <br></br>
-          <CCard style={{ width: '18rem' }} className="p-2">
-            <CCardBody>
-              <CCardTitle>Table Size</CCardTitle>
-            </CCardBody>
-            <CButtonGroup role="group" aria-label="Basic example">
-              <CButton>25</CButton>
-              <CButton color={'secondary'}>50</CButton>
-              <CButton color={'secondary'}>100</CButton>
-              <CButton color={'secondary'}>200</CButton>
-              <CButton color={'secondary'}>500</CButton>
-            </CButtonGroup>
-          </CCard>
-          <br></br>
-          <CCard style={{ width: '18rem' }} className="p-2">
-            <CCardBody>
-              <CCardTitle>Default Home Page</CCardTitle>
-            </CCardBody>
-            <CButtonGroup role="group" aria-label="Basic example">
-              <CButton>25</CButton>
-              <CButton color={'secondary'}>50</CButton>
-              <CButton color={'secondary'}>100</CButton>
-              <CButton color={'secondary'}>200</CButton>
-              <CButton color={'secondary'}>500</CButton>
-            </CButtonGroup>
-          </CCard>
+        <CCol className="col-3">
+          <ThemeSwitcher />
         </CCol>
       </CRow>
     </>

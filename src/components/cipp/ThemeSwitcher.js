@@ -1,5 +1,5 @@
 import React from 'react'
-import { CButtonGroup, CButton, CCardTitle, CCard, CCardBody } from '@coreui/react'
+import { CButtonGroup, CButton, CCardTitle, CCard, CCardBody, CCardHeader } from '@coreui/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setCurrentTheme } from 'src/store/features/app'
 import { useMediaPredicate } from 'react-media-hook'
@@ -22,10 +22,8 @@ const ThemeSwitcher = () => {
   }
 
   return (
-    <CCard style={{ width: '18rem' }} className="p-2">
-      <CCardBody>
-        <CCardTitle>Select Theme</CCardTitle>
-      </CCardBody>
+    <CCard>
+      <CCardHeader>Select Theme</CCardHeader>
       <CButtonGroup role="group" aria-label="Basic example">
         {themes.map((t, index) => (
           <CButton
