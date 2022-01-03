@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { CCard, CCardHeader, CCardTitle, CCardBody, CCol, CRow, CSpinner } from '@coreui/react'
+import { CCard, CCardBody, CCardHeader, CCardTitle, CCol, CRow, CSpinner } from '@coreui/react'
 import PropTypes from 'prop-types'
 import useQuery from '../../../hooks/useQuery'
 import { useDispatch } from 'react-redux'
@@ -52,60 +52,69 @@ const ViewUser = (props) => {
       <CCardHeader>
         <CCardTitle className="text-primary">View User Information</CCardTitle>
       </CCardHeader>
-      <br />
-      {userFetching && <CSpinner />}
-      {!userFetching && userError && <span>Error loading user</span>}
-      {!queryError && !userFetching && (
-        <CCardBody>
-          <CRow>
-            <CCol xl={4}>
-              <UserDetails tenantDomain={tenantDomain} userId={userId} />
-            </CCol>
-            <CCol xl={4}>
-              <UserLastLoginDetails
-                tenantDomain={tenantDomain}
-                userId={userId}
-                style={{ paddingBottom: '24px' }}
-              />
-              <UserCAPs tenantDomain={tenantDomain} userId={userId} />
-            </CCol>
-            <CCol xl={4}>
-              <UserActions tenantDomain={tenantDomain} userId={userId} />
-              <User365Management tenantDomain={tenantDomain} userId={userId} />
-              <UserOneDriveUsage userUPN={user.userPrincipalName} tenantDomain={tenantDomain} />
-            </CCol>
-          </CRow>
-
-          <CRow>
-            <CCol xl={4}>
-              <UserEmailDetails user={user} error={userError} isFetching={userFetching} />
-            </CCol>
-            <CCol xl={4}>
-              <UserEmailUsage userId={userId} tenantDomain={tenantDomain} />
-              <UserEmailPermissions userId={userId} tenantDomain={tenantDomain} />
-            </CCol>
-            <CCol xl={4}>
-              <UserEmailSettings userId={userId} tenantDomain={tenantDomain} />
-            </CCol>
-          </CRow>
-
-          <CRow>
-            <CCol xl={12}>
-              <UserDevices userId={userId} tenantDomain={tenantDomain} />
-            </CCol>
-          </CRow>
-          <CRow>
-            <CCol xl={12}>
-              <UserGroups userId={userId} tenantDomain={tenantDomain} />
-            </CCol>
-          </CRow>
-          <CRow>
-            <CCol xl={12}>
-              <UserSigninLogs userId={userId} tenantDomain={tenantDomain} />
-            </CCol>
-          </CRow>
-        </CCardBody>
-      )}
+      <CCardBody>
+        <br />
+        {userFetching && <CSpinner />}
+        {!userFetching && userError && <span>Error loading user</span>}
+        {!queryError && !userFetching && (
+          <>
+            <CRow>
+              <CCol xl={4}>
+                <UserDetails tenantDomain={tenantDomain} userId={userId} />
+              </CCol>
+              <CCol xl={4}>
+                <UserLastLoginDetails
+                  tenantDomain={tenantDomain}
+                  userId={userId}
+                  style={{ paddingBottom: '24px' }}
+                />
+                <br></br>
+                <UserCAPs tenantDomain={tenantDomain} userId={userId} />
+              </CCol>
+              <CCol xl={4}>
+                <UserActions tenantDomain={tenantDomain} userId={userId} />
+                <br></br>
+                <User365Management tenantDomain={tenantDomain} userId={userId} />
+                <br></br>
+                <UserOneDriveUsage userUPN={user.userPrincipalName} tenantDomain={tenantDomain} />
+              </CCol>
+            </CRow>
+            <br></br>
+            <CRow>
+              <CCol xl={4}>
+                <UserEmailDetails user={user} error={userError} isFetching={userFetching} />
+              </CCol>
+              <CCol xl={4}>
+                <UserEmailUsage userId={userId} tenantDomain={tenantDomain} />
+                <br></br>
+                <UserEmailPermissions userId={userId} tenantDomain={tenantDomain} />
+              </CCol>
+              <CCol xl={4}>
+                <UserEmailSettings userId={userId} tenantDomain={tenantDomain} />
+              </CCol>
+            </CRow>
+            <br></br>
+            <CRow>
+              <CCol xl={12}>
+                <UserDevices userId={userId} tenantDomain={tenantDomain} />
+                <br></br>
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol xl={12}>
+                <UserGroups userId={userId} tenantDomain={tenantDomain} />
+                <br></br>
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol xl={12}>
+                <UserSigninLogs userId={userId} tenantDomain={tenantDomain} />
+                <br></br>
+              </CCol>
+            </CRow>
+          </>
+        )}
+      </CCardBody>
     </CCard>
   )
 }

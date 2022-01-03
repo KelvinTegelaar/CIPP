@@ -53,23 +53,23 @@ export default function UserActions({ tenantDomain, userId }) {
           <FontAwesomeIcon icon={faCog} className="me-2" />
           Edit User
         </Link>
-        <Link className="dropdown-item" onClick={handlePush}>
+        <Link to="#" className="dropdown-item" onClick={handlePush}>
           <FontAwesomeIcon icon={faSync} className="me-2" />
           Send MFA Push to User
         </Link>
-        <Link className="dropdown-item" onClick={handleConvert}>
+        <Link to="#" className="dropdown-item" onClick={handleConvert}>
           <FontAwesomeIcon icon={faShareAlt} className="me-2" />
           Convert to Shared Mailbox
         </Link>
-        <Link className="dropdown-item" onClick={handleDisable}>
+        <Link to="#" className="dropdown-item" onClick={handleDisable}>
           <FontAwesomeIcon icon={faBan} className="me-2" />
           Block Sign In
         </Link>
-        <Link className="dropdown-item" onClick={handleResetPassword}>
+        <Link to="#" className="dropdown-item" onClick={handleResetPassword}>
           <FontAwesomeIcon icon={faLockOpen} className="me-2" />
           Reset Password
         </Link>
-        <Link className="dropdown-item" onClick={handleDelete}>
+        <Link to="#" className="dropdown-item" onClick={handleDelete}>
           <FontAwesomeIcon icon={faUserTimes} className="me-2" />
           Delete User
         </Link>

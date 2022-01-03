@@ -5,13 +5,14 @@ import { CellBoolean, CippDatatable } from '../../../components/cipp'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUsers } from '@fortawesome/free-solid-svg-icons'
 import { useListUserGroupsQuery } from '../../../store/api/groups'
+import DataTable from 'react-data-table-component'
 
 const formatter = (cell) => CellBoolean({ cell })
 
 const columns = [
   {
-    text: 'Display Name',
-    dataField: 'DisplayName',
+    name: 'Display Name',
+    selector: 'DisplayName',
     formatter: (cell, row) => {
       return (
         <CLink
@@ -23,31 +24,31 @@ const columns = [
     },
   },
   {
-    text: 'Mail Enabled',
-    dataField: 'MailEnabled',
+    name: 'Mail Enabled',
+    selector: 'MailEnabled',
     formatter,
   },
   {
-    text: 'Email Address',
-    dataField: 'Mail',
+    name: 'Email Address',
+    selector: 'Mail',
   },
   {
-    text: 'Security Group',
-    dataField: 'SecurityGroup',
+    name: 'Security Group',
+    selector: 'SecurityGroup',
     formatter,
   },
   {
-    text: 'Group Types',
-    dataField: 'GroupTypes',
+    name: 'Group Types',
+    selector: 'GroupTypes',
   },
   {
-    text: 'On Premises Sync',
-    dataField: 'OnPremisesSync',
+    name: 'On Premises Sync',
+    selector: 'OnPremisesSync',
     formatter,
   },
   {
-    text: 'Assignable To Role',
-    dataField: 'IsAssignableToRole',
+    name: 'Assignable To Role',
+    selector: 'IsAssignableToRole',
     formatter,
   },
 ]
@@ -68,11 +69,13 @@ export default function UserGroups({ userId, tenantDomain }) {
         {isFetching && <CSpinner />}
         {!isFetching && error && <>Error loading groups</>}
         {!isFetching && !error && (
-          <CippDatatable
+          <DataTable
             keyField="id"
             columns={columns}
             data={mapped}
+            striped
             bordered={false}
+            dense
             wrapperClasses="table-responsive"
           />
         )}
