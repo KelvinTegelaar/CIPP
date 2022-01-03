@@ -3,7 +3,16 @@ import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreu
 import TenantSelector from 'src/components/cipp/TenantSelector'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { faUser, faCog, faBars } from '@fortawesome/free-solid-svg-icons'
+import {
+  faUser,
+  faCog,
+  faBars,
+  faUserTimes,
+  faKey,
+  faBan,
+  faExchangeAlt,
+  faSync,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippDatatable, cellBooleanFormatter } from '../../../components/cipp'
 import { setModalContent } from 'src/store/features/modal'
@@ -54,30 +63,22 @@ const Dropdown = (row, rowIndex, formatExtraData) => {
       <CDropdownToggle size="sm" color="link">
         <FontAwesomeIcon icon={faBars} />
       </CDropdownToggle>
-      <CDropdownMenu style={{ position: 'fixed', right: 0, zIndex: 1000 }}>
-        <CDropdownItem href="#">
-          <Link
-            className="dropdown-item"
-            to={`/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`}
-          >
-            <FontAwesomeIcon icon={faUser} className="me-2" />
-            View User
-          </Link>
+      <CDropdownMenu>
+        <CDropdownItem
+          href={`/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`}
+        >
+          <FontAwesomeIcon icon={faUser} />
+          View User
         </CDropdownItem>
-        <CDropdownItem href="#">
-          <Link
-            className="dropdown-item"
-            to={`/identity/administration/users/edit?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`}
-          >
-            <FontAwesomeIcon icon={faCog} className="me-2" />
-            Edit User
-          </Link>
+        <CDropdownItem
+          href={`/identity/administration/users/edit?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`}
+        >
+          <FontAwesomeIcon icon={faCog} size="sm" />
+          Edit User
         </CDropdownItem>
-        <CDropdownItem href="#">
-          <Link className="dropdown-item" to={`/identity/administration/ViewBec`}>
-            <FontAwesomeIcon icon={faUser} className="me-2" />
-            Research Compromised Account
-          </Link>
+        <CDropdownItem href={`/identity/administration/ViewBec`}>
+          <FontAwesomeIcon icon={faUser} />
+          Research Compromised Account
         </CDropdownItem>
         <CDropdownItem
           onClick={() =>
@@ -88,6 +89,7 @@ const Dropdown = (row, rowIndex, formatExtraData) => {
           }
           href="#"
         >
+          <FontAwesomeIcon icon={faExchangeAlt} />
           Send MFA Push To User
         </CDropdownItem>
         <CDropdownItem
@@ -99,6 +101,7 @@ const Dropdown = (row, rowIndex, formatExtraData) => {
           }
           href="#"
         >
+          <FontAwesomeIcon icon={faSync} />
           Convert To Shared
         </CDropdownItem>
         <CDropdownItem
@@ -110,6 +113,7 @@ const Dropdown = (row, rowIndex, formatExtraData) => {
           }
           href="#"
         >
+          <FontAwesomeIcon icon={faBan} />
           Block Sign-in
         </CDropdownItem>
         <CDropdownItem
@@ -121,6 +125,7 @@ const Dropdown = (row, rowIndex, formatExtraData) => {
           }
           href="#"
         >
+          <FontAwesomeIcon icon={faKey} />
           Reset Password (Must Change)
         </CDropdownItem>
         <CDropdownItem
@@ -132,6 +137,7 @@ const Dropdown = (row, rowIndex, formatExtraData) => {
           }
           href="#"
         >
+          <FontAwesomeIcon icon={faKey} />
           Reset Password
         </CDropdownItem>
         <CDropdownItem
@@ -143,6 +149,7 @@ const Dropdown = (row, rowIndex, formatExtraData) => {
           }
           href="#"
         >
+          <FontAwesomeIcon icon={faUserTimes} />
           Delete User
         </CDropdownItem>
       </CDropdownMenu>
