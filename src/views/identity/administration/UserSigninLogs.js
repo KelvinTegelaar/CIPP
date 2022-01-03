@@ -76,63 +76,63 @@ export default function UserSigninLogs({ userId, tenantDomain }) {
   const columns = [
     {
       name: 'Date',
-      selector: (row) => row['Date'],
+      selector: 'Date',
     },
     {
       name: 'Application',
-      selector: (row) => row['Application'],
+      selector: 'Application',
     },
     {
       name: 'Login Status',
-      selector: (row) => row['LoginStatus'],
+      selector: 'LoginStatus',
     },
     {
       name: 'Conditional Access Status',
-      selector: (row) => row['ConditionalAccessStatus'],
+      dataField: 'ConditionalAccessStatus',
       // @TODO someone make these either return 'success' or 'Success' not both
       cell: cellBooleanFormatter,
     },
     {
       name: 'Overall Login Status',
-      selector: (row) => row['OverallLoginStatus'],
+      dataField: 'OverallLoginStatus',
       // @TODO someone make these either return 'success' or 'Success' not both
       cell: cellBooleanFormatter,
     },
     {
       name: 'IP Address',
-      selector: (row) => row['IPAddress'],
+      dataField: 'IPAddress',
     },
     {
       name: 'Town',
-      selector: (row) => row['Town'],
+      dataField: 'Town',
     },
     {
       name: 'State',
-      selector: (row) => row['State'],
+      dataField: 'State',
     },
     {
       name: 'Country',
-      selector: (row) => row['Country'],
+      dataField: 'Country',
     },
     {
       name: 'Device',
-      selector: (row) => row['Device'],
+      dataField: 'Device',
     },
     {
       name: 'Device Compliant',
-      selector: (row) => row['OverallLoginStatus'],
+      dataField: 'OverallLoginStatus',
     },
     {
       name: 'OS',
-      selector: (row) => row['OS'],
+      dataField: 'OS',
     },
     {
       name: 'Browser',
-      selector: (row) => row['Browser'],
+      dataField: 'Browser',
     },
     {
       name: 'Applied CAPs',
-      selector: (row) => row['AppliedCAPs'],
+      dataField: 'AppliedCAPs',
       formatter: (row, index, column) => {
         const cell = cellGetProperty(row, index, column)
         if (!cell) {
