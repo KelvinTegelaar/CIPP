@@ -434,7 +434,7 @@ const NotificationsSettings = () => {
 
   const onSubmit = (values) => {
     // @todo bind this
-    window.alert(JSON.stringify(values))
+    // window.alert(JSON.stringify(values))
     console.log(values)
     configNotifications(values)
   }
@@ -507,6 +507,9 @@ const NotificationsSettings = () => {
                   >
                     Set Notification Settings
                   </CButton>
+                  {notificationConfigResult.isSuccess && (
+                    <CAlert color="success">{notificationConfigResult.data.Results}</CAlert>
+                  )}
                 </CCol>
               </CForm>
             )
