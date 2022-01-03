@@ -2,7 +2,6 @@ import React from 'react'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 import TenantSelector from 'src/components/cipp/TenantSelector'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
 import {
   faUser,
   faCog,
