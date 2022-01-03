@@ -1,5 +1,5 @@
-import React, { Component, Suspense } from 'react'
-import { HashRouter, BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
+import React, { Suspense } from 'react'
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
 import { PrivateRoute } from './components/PrivateRoute'
 import './scss/style.scss'
 import { FullScreenLoading } from './components'

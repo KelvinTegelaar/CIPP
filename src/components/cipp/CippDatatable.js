@@ -1,7 +1,7 @@
 import React from 'react'
 import ExportPDFButton from 'src/components/cipp/PdfButton'
 import { CSpinner, CFormInput } from '@coreui/react'
-import DataTable from 'react-data-table-component'
+import DataTable, { createTheme } from 'react-data-table-component'
 import { useListDatatableQuery } from '../../store/api/datatable'
 import PropTypes from 'prop-types'
 
@@ -35,7 +35,7 @@ export default function CippDatatable({
   reportName,
   columns = [],
   tableProps: {
-    theme = 'dark',
+    theme = 'cyberdrain',
     pagination = true,
     responsive = true,
     dense = true,
@@ -58,6 +58,40 @@ export default function CippDatatable({
   const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false)
   const filteredItems = data.filter(
     (item) => JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !== -1,
+  )
+
+  createTheme(
+    'cyberdrain',
+    {
+      text: {
+        primary: 'var(--cipp-table-primary-colour)',
+        secondary: 'var(--cipp-table-secondary-colour)',
+      },
+      background: {
+        default: 'var(--cipp-table-bg)',
+      },
+      context: {
+        background: 'var(--cipp-table-context-bg)',
+        text: 'var(--cipp-table-context-color)',
+      },
+      divider: {
+        default: 'var(--cipp-table-divider)',
+      },
+      button: {
+        default: 'var(--cipp-table-button-bg)',
+        hover: 'var(--cipp-table-button-hover-bg)',
+        focus: 'var(--cipp-table-button-focus-bg)',
+        disabled: 'var(--cipp-table-button-disabled-bg)',
+      },
+      sortFocus: {
+        default: 'var(--cipp-table-sort-focus-bg)',
+      },
+      striped: {
+        default: 'var(--cipp-table-striped-bg)',
+        text: 'var(--cipp-table-striped-color)',
+      },
+    },
+    'default',
   )
 
   const subHeaderComponentMemo = React.useMemo(() => {
@@ -102,7 +136,7 @@ export default function CippDatatable({
       {!isFetching && !error && (
         <div>
           <DataTable
-            // theme={theme}
+            theme={theme}
             subHeader={subheader}
             selectableRows={selectableRows}
             onSelectedRowsChange={onSelectedRowsChange}

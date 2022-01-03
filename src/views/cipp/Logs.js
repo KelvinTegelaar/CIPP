@@ -81,10 +81,10 @@ const Logs = () => {
   return (
     <>
       <CRow>
-        <CCol md={4}>
-          <CCard>
+        <CCol>
+          <CCard className="options-card">
             <CCardHeader>
-              <CCardTitle className="text-primary d-flex justify-content-between">
+              <CCardTitle className="d-flex justify-content-between">
                 Log file settings
                 <CButton size="sm" variant="ghost" onClick={() => setVisibleA(!visibleA)}>
                   <FontAwesomeIcon icon={visibleA ? faChevronDown : faChevronRight} />
@@ -167,9 +167,9 @@ const Logs = () => {
         </CCol>
       </CRow>
       <hr />
-      <CCard>
+      <CCard className="page-card">
         <CCardHeader>
-          <CCardTitle className="text-primary">Log file results</CCardTitle>
+          <CCardTitle className="text-primary">Log File Results</CCardTitle>
         </CCardHeader>
         <CCardBody>
           <CippDatatable

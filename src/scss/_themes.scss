@@ -1,13 +1,15 @@
 :root {
-  // Cyberdrain Variables
-  --cyberdrain-primary: #f77f00;
-  --cyberdrain-secondary: #003049;
-  --cyberdrain-light: #ebedef;
-  --cyberdrain-dark: #2e363a;
-  --cyberdrain-accent-blue: #3e5c66;
-  --cyberdrain-accent-green: #005c63;
-  --cyberdrain-accent-grey: #ebf0df;
-  // CoreUI Framework Theme-Independent Variables
+  // CyberDrain variables.
+  --cyberdrain-primary: #f77f00; // Orange
+  --cyberdrain-secondary: #003049; // Prussian Blue
+  --cyberdrain-light: #ebedef; // Cultured
+  --cyberdrain-light-striped: #c6ccd2; // Silver Sand
+  --cyberdrain-dark: #2e363a; // Gunmetal
+  --cyberdrain-dark-striped: #48555b; // Charcoal
+  --cyberdrain-accent-blue: #3e5c66; // Deep Space Sparkle
+  --cyberdrain-accent-green: #005c63; // Midnight Green Eagle Green
+  --cyberdrain-accent-beige: #ebf0df; // Beige
+  // Core UI theme-independent variables.
   --cui-blue: #0d6efd;
   --cui-indigo: #6610f2;
   --cui-purple: #6f42c1;
@@ -59,9 +61,9 @@
   --cui-body-line-height: 1.5;
   --cui-card-cap-color: var(--cyberdrain-light);
   --cui-card-cap-bg: var(--cyberdrain-accent-blue);
-  --cui-border-radius: 0rem;
-  // CIPP Theme-independent Variables
-  --cipp-border-radius: 0rem;
+  --cui-border-radius: ;
+  // CIPP theme-independent variables.
+  --cipp-border-radius: 0;
   --cipp-search-selected-option-color: var(--cyberdrain-light);
   --cipp-search-selected-option-bg: var(--cyberdrain-accent-green);
   --cipp-search-selected-option-highlight: rgba(0 ,92 , 99, 0.1);
@@ -71,6 +73,7 @@
 
 [data-theme="default"],
 [data-theme="cyberdrain"] {
+  // Core UI CyberDrain theme variables.
   --cui-body-color: var(--cyberdrain-dark);
   --cui-body-bg: var(--cyberdrain-light);
   --cui-header-color: var(--cyberdrain-dark);
@@ -84,10 +87,41 @@
   --cui-card-border-color: var(--cyberdrain-dark);
   --cui-list-group-color: var(--cyberdrain-dark);
   --cui-list-group-bg: var(--cyberdrain-light);
+  --cui-input-bg: var(--cyberdrain-light);
+  --cui-input-focus-bg: var(--cyberdrain-light-striped);
+  --cui-input-color: var(--cyberdrain-dark);
+  --cui-input-focus-color: var(--cyberdrain-dark);
+  --cui-input-border-colour: var(--cyberdrain-dark);
+  --cui-input-focus-border-colour: var(--cyberdrain-primary);
+  --cui-form-select-color: var(--cyberdrain-dark);
+  --cui-form-select-bg: var(--cyberdrain-light);
+  --cui-form-select-border-color: var(--cyberdrain-dark);
+  --cui-toast-background-color: var(--cyberdrain-light);
+  --cui-toast-color: var(--cyberdrain-dark);
+  --cui-toast-header-background-color: var(--cyberdrain-light);
+  --cui-toast-header-color: var(--cyberdrain-primary);
+  --cui-toast-border-color: var(--cyberdrain-dark);
+  .table {
+    --cui-table-color: var(--cyberdrain-dark);
+  }
+  // CIPP CyberDrain theme variables.
   --cipp-search-color: var(--cyberdrain-dark);
   --cipp-search-bg: var(--cyberdrain-light);
   --cipp-search-option-color: var(--cyberdrain-dark);
   --cipp-search-border-color: var(--cyberdrain-dark);
+  --cipp-table-primary-colour: var(--cyberdrain-dark);
+  --cipp-table-secondary-colour: var(--cyberdrain-secondary);
+  --cipp-table-bg: var(--cyberdrain-light);
+  --cipp-table-context-bg: var(--cyberdrain-primary);
+  --cipp-table-context-color: var(--cyberdrain-light);
+  --cipp-table-divider: var(--cyberdrain-dark);
+  --cipp-table-button-bg: var(--cui-btn-bg);
+  --cipp-table-button-hover-bg: var(--cui-btn-hover-bg);
+  --cipp-table-button-focus-bg: var(--cui-btn-active-bg);
+  --cipp-table-button-disabled-bg: var(--cui-btn-disabled-bg);
+  --cipp-table-sort-focus-bg: var(--cyberdrain-secondary);
+  --cipp-table-striped-bg: var(--cyberdrain-light-striped);
+  --cipp-table-striped-colour: var(--cyberdrain-dark-striped);
   .header-toggler {
     &:hover {
       color: var(--cui-header-color);
@@ -95,6 +129,7 @@
   }
 }
 [data-theme="impact"] {
+  // Core UI Impact theme variables.
   --cui-body-color: var(--cyberdrain-light);
   --cui-body-bg: var(--cyberdrain-dark);
   --cui-header-color: var(--cyberdrain-light);
@@ -103,15 +138,46 @@
   --cui-header-border-color: var(--cyberdrain-light);
   --cui-footer-bg: var(--cyberdrain-dark);
   --cui-footer-border-color: var(--cyberdrain-light);
-  --cui-card-color: var(--cyberdrain-dark);
-  --cui-card-bg: var(--cyberdrain-light);
+  --cui-card-color: var(--cyberdrain-light);
+  --cui-card-bg: var(--cyberdrain-dark);
   --cui-card-border-color: var(--cyberdrain-light);
   --cui-list-group-color: var(--cyberdrain-light);
   --cui-list-group-bg: var(--cyberdrain-dark);
+  --cui-input-bg: var(--cyberdrain-dark);
+  --cui-input-focus-bg: var(--cyberdrain-dark-striped);
+  --cui-input-color: var(--cyberdrain-light);
+  --cui-input-focus-color: var(--cyberdrain-primary);
+  --cui-input-border-colour: var(--cyberdrain-light);
+  --cui-input-focus-border-color: var(--cyberdrain-primary);
+  --cui-form-select-color: var(--cyberdrain-light);
+  --cui-form-select-bg: var(--cyberdrain-dark);
+  --cui-form-select-border-color: var(--cyberdrain-light);
+  --cui-toast-background-color: var(--cyberdrain-dark);
+  --cui-toast-color: var(--cyberdrain-light);
+  --cui-toast-header-background-color: var(--cyberdrain-dark);
+  --cui-toast-header-color: var(--cyberdrain-primary);
+  --cui-toast-border-color: var(--cyberdrain-light);
+  .table {
+    --cui-table-color: var(--cyberdrain-light);
+  }
+  // CIPP Impact theme variables.
   --cipp-search-color: var(--cyberdrain-light);
   --cipp-search-bg: var(--cyberdrain-dark);
   --cipp-search-option-color: var(--cyberdrain-light);
   --cipp-search-border-color: var(--cyberdrain-light);
+  --cipp-table-primary-colour: var(--cyberdrain-light);
+  --cipp-table-secondary-colour: var(--cui-gray-100);
+  --cipp-table-bg: var(--cyberdrain-dark);
+  --cipp-table-context-bg: var(--cyberdrain-primary);
+  --cipp-table-context-color: var(--cyberdrain-light);
+  --cipp-table-divider: var(--cyberdrain-light);
+  --cipp-table-button-bg: var(--cui-btn-bg);
+  --cipp-table-button-hover-bg: var(--cui-btn-hover-bg);
+  --cipp-table-button-focus-bg: var(--cui-btn-active-bg);
+  --cipp-table-button-disabled-bg: var(--cui-btn-disabled-bg);
+  --cipp-table-sort-focus-bg: var(--cyberdrain-secondary);
+  --cipp-table-striped-bg: var(--cyberdrain-dark-striped);
+  --cipp-table-striped-colour: var(--cyberdrain-light-striped);
   .header-toggler {
     &:hover {
       color: var(--cui-header-color);

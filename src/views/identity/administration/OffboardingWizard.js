@@ -64,12 +64,12 @@ const OffboardingWizard = () => {
   }
 
   return (
-    <CCard>
+    <CCard className="page-card">
       <CCardHeader>
         <CCardTitle className="text-primary">Offboarding Wizard</CCardTitle>
       </CCardHeader>
       <CCardBody>
-        <div className="bg-white rounded p-5">
+        <div className="p-5">
           <CRow className="row justify-content-center">
             <CCol xxl={8}>
               <Wizard onSubmit={handleSubmit}>

@@ -42,7 +42,7 @@ export default function UserLastLoginDetails({ tenantDomain, userId }) {
   const { data: user = {}, isFetching, error } = useListUserQuery({ tenantDomain, userId })
 
   return (
-    <CCard>
+    <CCard className="options-card">
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>Last Login Details</CCardTitle>
         <FontAwesomeIcon icon={faClock} />

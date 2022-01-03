@@ -13,7 +13,7 @@ import {
   CDropdownToggle,
 } from '@coreui/react'
 import { Link } from 'react-router-dom'
-import { faUser, faCog, faBars } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const dropdown = (row, rowIndex, formatExtraData) => {
@@ -64,9 +64,9 @@ const IntuneList = () => {
     <div>
       <TenantSelector />
       <hr />
-      <CCard>
+      <CCard className="page-card">
         <CCardHeader>
-          <CCardTitle className="text-primary">Policy List</CCardTitle>
+          <CCardTitle className="text-primary">Policies</CCardTitle>
         </CCardHeader>
         <CCardBody>
           {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}

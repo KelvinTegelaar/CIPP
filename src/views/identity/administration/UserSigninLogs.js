@@ -15,15 +15,13 @@ import {
   CTableHeaderCell,
   CTableRow,
 } from '@coreui/react'
-import { CellBoolean, cellBooleanFormatter } from '../../../components/cipp'
+import { cellBooleanFormatter } from '../../../components/cipp'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLaptop } from '@fortawesome/free-solid-svg-icons'
 import { setModalContent } from '../../../store/features/modal'
 import { useListUserSigninLogsQuery } from '../../../store/api/users'
 import DataTable from 'react-data-table-component'
 import cellGetProperty from '../../../components/cipp/cellGetProperty'
-
-const formatter = (cell) => CellBoolean({ cell })
 
 const rowStyle = (row, rowIndex) => {
   const style = {}
@@ -148,7 +146,7 @@ export default function UserSigninLogs({ userId, tenantDomain }) {
   ]
 
   return (
-    <CCard>
+    <CCard className="options-card">
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>User Sign in Logs</CCardTitle>
         <FontAwesomeIcon icon={faLaptop} />

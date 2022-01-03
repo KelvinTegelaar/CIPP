@@ -23,7 +23,7 @@ export default function UserEmailPermissions({ userId, tenantDomain }) {
   }
 
   return (
-    <CCard>
+    <CCard className="options-card">
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>Email Permissions</CCardTitle>
         <div>

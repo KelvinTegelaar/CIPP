@@ -59,7 +59,7 @@ export default function UserGroups({ userId, tenantDomain }) {
   const mapped = list.map((val) => ({ ...val, tenantDomain }))
 
   return (
-    <CCard>
+    <CCard className="options-card">
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>User Groups</CCardTitle>
         <FontAwesomeIcon icon={faUsers} />

@@ -2,30 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
-import {
-  CDropdown,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
-  CCard,
-  CCardHeader,
-  CCardTitle,
-  CCardBody,
-} from '@coreui/react'
-import { faUser, faCog, faBars } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-const dropdown = (row, index, column) => {
-  return (
-    <CDropdown>
-      <CDropdownToggle size="sm" color="link">
-        <FontAwesomeIcon icon={faBars} />
-      </CDropdownToggle>
-      <CDropdownMenu style={{ position: 'fixed', right: 0, zIndex: 1000 }}>
-        <CDropdownItem href="#">Edit Group</CDropdownItem>
-      </CDropdownMenu>
-    </CDropdown>
-  )
-}
+import { CCard, CCardHeader, CCardTitle, CCardBody } from '@coreui/react'
 
 const columns = [
   {
@@ -58,7 +35,7 @@ const RolesList = () => {
     <div>
       <TenantSelector />
       <hr />
-      <CCard>
+      <CCard className="page-card">
         <CCardHeader>
           <CCardTitle className="text-primary">Roles</CCardTitle>
         </CCardHeader>

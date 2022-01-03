@@ -28,9 +28,9 @@ const MEMAddPolicyTemplate = () => {
       <CRow>
         {postResults.isSuccess && <CAlert color="success">{postResults.data.Results}</CAlert>}
         <CCol md={6}>
-          <CCard>
+          <CCard className="page-card">
             <CCardHeader>
-              <CCardTitle className="text-primary">Template details</CCardTitle>
+              <CCardTitle className="text-primary">Template Details</CCardTitle>
             </CCardHeader>
             <CCardBody>
               <Form

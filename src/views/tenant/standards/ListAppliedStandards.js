@@ -103,7 +103,7 @@ const TenantsList = () => {
 
   return (
     <div>
-      <CCard>
+      <CCard className="page-card">
         <CCardHeader>
           <CCardTitle className="text-primary">Applied Standards</CCardTitle>
         </CCardHeader>

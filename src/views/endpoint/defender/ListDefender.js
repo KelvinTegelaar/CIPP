@@ -12,8 +12,7 @@ import {
   CCardTitle,
   CCardBody,
 } from '@coreui/react'
-import { Link } from 'react-router-dom'
-import { faUser, faCog, faBars } from '@fortawesome/free-solid-svg-icons'
+import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { cellBooleanFormatter } from '../../../components/cipp'
 
@@ -105,7 +104,7 @@ const DefenderState = () => {
     <div>
       <TenantSelector />
       <hr />
-      <CCard>
+      <CCard className="page-card">
         <CCardHeader>
           <CCardTitle className="text-primary">Defender Status</CCardTitle>
         </CCardHeader>

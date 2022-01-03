@@ -81,7 +81,7 @@ const Groups = () => {
     <div>
       <TenantSelector />
       <hr />
-      <CCard>
+      <CCard className="page-card">
         <CCardHeader>
           <CCardTitle className="text-primary">Groups</CCardTitle>
         </CCardHeader>

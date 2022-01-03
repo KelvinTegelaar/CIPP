@@ -83,9 +83,9 @@ const AutopilotListProfiles = () => {
     <div>
       <TenantSelector />
       <hr />
-      <CCard>
+      <CCard className="page-card">
         <CCardHeader>
-          <CCardTitle className="text-primary">Autopilot list profiles</CCardTitle>
+          <CCardTitle className="text-primary">Autopilot Profiles</CCardTitle>
         </CCardHeader>
         <CCardBody>
           {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}

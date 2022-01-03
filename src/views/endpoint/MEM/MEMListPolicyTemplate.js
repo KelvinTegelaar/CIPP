@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import CippDatatable, { ExpanderComponentProps } from '../../../components/cipp/CippDatatable'
+import CippDatatable from '../../../components/cipp/CippDatatable'
 import {
   CDropdown,
   CDropdownItem,
@@ -114,9 +114,9 @@ const AutopilotListTemplates = () => {
   return (
     <div>
       <hr />
-      <CCard>
+      <CCard className="page-card">
         <CCardHeader>
-          <CCardTitle className="text-primary">Available endpoint manager templates</CCardTitle>
+          <CCardTitle className="text-primary">Available Endpoint Manager Templates</CCardTitle>
         </CCardHeader>
         <CCardBody>
           <CippDatatable

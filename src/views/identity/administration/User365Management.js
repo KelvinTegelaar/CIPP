@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 
 export default function User365Management({ tenantDomain, userId }) {
   return (
-    <CCard>
+    <CCard className="options-card">
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>M365 Management</CCardTitle>
         <FontAwesomeIcon icon={faCog} />

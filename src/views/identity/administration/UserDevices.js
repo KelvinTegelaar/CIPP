@@ -5,12 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLaptop } from '@fortawesome/free-solid-svg-icons'
 import DataTable from 'react-data-table-component'
 
-import {
-  CellBoolean,
-  cellBooleanFormatter,
-  CellNullText,
-  cellNullTextFormatter,
-} from '../../../components/cipp'
+import { cellBooleanFormatter, cellNullTextFormatter } from '../../../components/cipp'
 import { useListUserDevicesQuery } from '../../../store/api/devices'
 
 const columns = [
@@ -110,7 +105,7 @@ export default function UserDevices({ userId, tenantDomain }) {
   const mapped = devices.map((device) => ({ ...device, tenantDomain }))
 
   return (
-    <CCard>
+    <CCard className="options-card">
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>User Devices</CCardTitle>
         <FontAwesomeIcon icon={faLaptop} />

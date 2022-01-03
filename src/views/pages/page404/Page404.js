@@ -28,6 +28,13 @@ const Page404 = () => {
                 </CButton>
               </p>
             </div>
+            <CInputGroup className="input-prepend">
+              <CInputGroupText>
+                <FontAwesomeIcon icon={faSearch} />
+              </CInputGroupText>
+              <CFormInput type="text" placeholder="What are you looking for?" />
+              <CButton color="info">Search</CButton>
+            </CInputGroup>
           </CCol>
         </CRow>
       </CContainer>

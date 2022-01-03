@@ -23,7 +23,7 @@ const EditTenant = () => {
   let query = useQuery()
   const tenantDomain = query.get('TenantFilter')
   const [queryError, setQueryError] = useState(false)
-  const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
+  const [genericPostRequest] = useLazyGenericPostRequestQuery()
 
   const { data: tenant = {}, isFetching, error, isSuccess } = useListTenantQuery(tenantDomain)
 
@@ -50,7 +50,7 @@ const EditTenant = () => {
   }
   console.log(initialValues)
   return (
-    <CCard>
+    <CCard className="page-card">
       <CCardHeader className="text-primary">
         <CCardTitle>Tenant Details</CCardTitle>
       </CCardHeader>

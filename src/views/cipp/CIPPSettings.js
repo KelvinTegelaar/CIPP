@@ -45,7 +45,7 @@ const CIPPSettings = () => {
   const [active, setActive] = useState(1)
   return (
     <CContainer>
-      <CCard>
+      <CCard className="page-card">
         <CCardHeader>
           <CCardTitle className="text-primary">CIPP Settings</CCardTitle>
         </CCardHeader>

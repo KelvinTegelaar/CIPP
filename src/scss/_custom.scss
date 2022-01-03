@@ -63,4 +63,29 @@
 
 .card {
   border-radius: var(--cipp-border-radius);
+  &.page-card {
+    .card-header {
+      background: var(--cui-body-bg);
+    }
+    .card-title {
+      font-size: 1.25rem;
+    }
+  }
+  &.options-card {
+    .card-title {
+      line-height: 2rem;
+      margin-bottom: 0rem;
+    }
+  }
+}
+
+.form-control {
+  border-radius: var(--cipp-border-radius);
+}
+
+.form-select {
+  border-radius: var(--cipp-border-radius);
+  .select-search__input {
+    border: 0px;
+  }
 }

@@ -94,7 +94,7 @@ const RolesList = () => {
     <div>
       <TenantSelector />
       <hr />
-      <CCard>
+      <CCard className="page-card">
         <CCardHeader>
           <CCardTitle className="text-primary">Domains</CCardTitle>
         </CCardHeader>

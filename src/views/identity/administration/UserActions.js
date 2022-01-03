@@ -11,11 +11,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
-import { useListUserQuery } from '../../../store/api/users'
 
 export default function UserActions({ tenantDomain, userId }) {
-  const { data: user, isFetching, error } = useListUserQuery({ tenantDomain, userId })
-
   // @TODO make these work
   const handlePush = () => {
     alert('pushy')
@@ -43,7 +40,7 @@ export default function UserActions({ tenantDomain, userId }) {
   }
 
   return (
-    <CCard>
+    <CCard className="options-card">
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>Actions</CCardTitle>
         <FontAwesomeIcon icon={faCog} />

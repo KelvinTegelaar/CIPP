@@ -5,6 +5,7 @@ import { CellNullText, cellNullTextFormatter } from './CellNullText'
 import { CellProgressBar, cellProgressBarFormatter } from './CellProgressBar'
 import CippDatatable from './CippDatatable'
 import PdfButton from './PdfButton'
+import StatusIcon from './StatusIcon'
 import TenantSelector from './TenantSelector'
 import TenantSelectorMultiple from './TenantSelectorMultiple'
 import ThemeSwitcher from './ThemeSwitcher'
@@ -22,6 +23,7 @@ export {
   cellProgressBarFormatter,
   CippDatatable,
   PdfButton,
+  StatusIcon,
   TenantSelector,
   TenantSelectorMultiple,
   ThemeSwitcher,

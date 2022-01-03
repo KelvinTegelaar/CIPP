@@ -26,14 +26,13 @@ import {
   RFFSelectSearch,
 } from '../../../components/RFFComponents'
 import countryList from '../../../assets/countrylist.json'
-import { useEditUserMutation, useListUserQuery, useListUsersQuery } from '../../../store/api/users'
+import { useListUserQuery, useListUsersQuery } from '../../../store/api/users'
 import { useListDomainsQuery } from '../../../store/api/domains'
 import { useListLicensesQuery } from '../../../store/api/licenses'
 import { setModalContent } from '../../../store/features/modal'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
-import { object } from 'prop-types'
 
 const EditUser = () => {
   const dispatch = useDispatch()
@@ -128,7 +127,7 @@ const EditUser = () => {
   const formDisabled = queryError === true || !!userError || !user || Object.keys(user).length === 0
 
   return (
-    <CCard className="bg-white rounded p-5">
+    <CCard className="page-card">
       {!queryError && (
         <>
           {postResults.isSuccess && <CAlert color="success">{postResults.data?.Results}</CAlert>}

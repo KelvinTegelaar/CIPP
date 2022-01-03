@@ -21,10 +21,10 @@ const ViewProfile = () => {
 
   return (
     <>
-      <CRow xs={{ cols: 3 }} md={{ cols: 5 }} className="g-4">
+      <CRow xs={{ cols: 2 }} md={{ cols: 2 }} className="g-4">
         <CCol xs>
           <CCard className="w-100">
-            {isLoading && <CSpinner />}
+            {(isFetching || isLoading) && <CSpinner />}
             {!isLoading && (
               <>
                 <CCardImage orientation="top" src={avatar0} />

@@ -2,16 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
-import {
-  CDropdown,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
-  CCard,
-  CCardHeader,
-  CCardTitle,
-  CCardBody,
-} from '@coreui/react'
+import { CCard, CCardHeader, CCardTitle, CCardBody } from '@coreui/react'
 const columns = [
   {
     name: 'User Principal Name',
@@ -32,7 +23,7 @@ const BasicAuthReport = () => {
     <div>
       <TenantSelector />
       <hr />
-      <CCard>
+      <CCard className="page-card">
         <CCardHeader>
           <CCardTitle className="text-primary">Basic Authentication Reports</CCardTitle>
         </CCardHeader>

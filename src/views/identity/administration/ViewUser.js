@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { CCard, CCol, CRow, CSpinner } from '@coreui/react'
+import { CCard, CCardHeader, CCardTitle, CCardBody, CCol, CRow, CSpinner } from '@coreui/react'
 import PropTypes from 'prop-types'
 import useQuery from '../../../hooks/useQuery'
 import { useDispatch } from 'react-redux'
@@ -48,13 +48,15 @@ const ViewUser = (props) => {
   }, [tenantDomain, userId, dispatch])
 
   return (
-    <CCard className="bg-white rounded p-5">
-      <h3>View User Information</h3>
+    <CCard className="page-card">
+      <CCardHeader>
+        <CCardTitle className="text-primary">View User Information</CCardTitle>
+      </CCardHeader>
       <br />
       {userFetching && <CSpinner />}
       {!userFetching && userError && <span>Error loading user</span>}
       {!queryError && !userFetching && (
-        <>
+        <CCardBody>
           <CRow>
             <CCol xl={4}>
               <UserDetails tenantDomain={tenantDomain} userId={userId} />
@@ -102,7 +104,7 @@ const ViewUser = (props) => {
               <UserSigninLogs userId={userId} tenantDomain={tenantDomain} />
             </CCol>
           </CRow>
-        </>
+        </CCardBody>
       )}
     </CCard>
   )

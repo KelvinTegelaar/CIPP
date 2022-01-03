@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import CippDatatable from '../../../components/cipp/CippDatatable'
 import {
   CCard,
@@ -10,12 +10,9 @@ import {
   CDropdownItem,
   CDropdownMenu,
   CDropdownToggle,
-  CSpinner,
 } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCog, faBars } from '@fortawesome/free-solid-svg-icons'
-import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
-import { setModalContent } from 'src/store/features/modal'
 
 const Dropdown = (row, index, column) => {
   return (
@@ -149,9 +146,9 @@ const TenantsList = () => {
   return (
     <div>
       <hr />
-      <CCard>
+      <CCard className="page-card">
         <CCardHeader>
-          <CCardTitle className="text-primary">Tenant list</CCardTitle>
+          <CCardTitle className="text-primary">Tenants</CCardTitle>
         </CCardHeader>
         <CCardBody>
           <CippDatatable
