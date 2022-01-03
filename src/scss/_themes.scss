@@ -101,8 +101,20 @@
   --cui-toast-header-background-color: var(--cyberdrain-light);
   --cui-toast-header-color: var(--cyberdrain-primary);
   --cui-toast-border-color: var(--cyberdrain-dark);
+  --cui-modal-content-bg: var(--cyberdrain-light);
+  --cui-modal-content-color: var(--cyberdrain-dark);
+  --cui-modal-content-border-color: var(--cyberdrain-dark);
+  --cui-modal-header-bg: var(--cyberdrain-light);
+  --cui-modal-header-color: var(--cyberdrain-dark);
+  --cui-modal-header-border-color: var(--cyberdrain-dark);
+  --cui-modal-footer-bg: var(--cyberdrain-light);
+  --cui-modal-footer-color: var(--cyberdrain-dark);
+  --cui-modal-footer-border-color: var(--cyberdrain-dark);
   .table {
+    --cui-table-bg: var(--cyberdrain-light);
     --cui-table-color: var(--cyberdrain-dark);
+    --cui-table-striped-bg: var(--cyberdrain-light-striped);
+    --cui-table-striped-color: var(--cyberdrain-dark-striped);
   }
   // CIPP CyberDrain theme variables.
   --cipp-search-color: var(--cyberdrain-dark);
@@ -157,8 +169,20 @@
   --cui-toast-header-background-color: var(--cyberdrain-dark);
   --cui-toast-header-color: var(--cyberdrain-primary);
   --cui-toast-border-color: var(--cyberdrain-light);
+  --cui-modal-content-bg: var(--cyberdrain-dark);
+  --cui-modal-content-color: var(--cyberdrain-light);
+  --cui-modal-content-border-color: var(--cyberdrain-light);
+  --cui-modal-header-bg: var(--cyberdrain-dark);
+  --cui-modal-header-color: var(--cyberdrain-light);
+  --cui-modal-header-border-color: var(--cyberdrain-light);
+  --cui-modal-footer-bg: var(--cyberdrain-dark);
+  --cui-modal-footer-color: var(--cyberdrain-light);
+  --cui-modal-footer-border-color: var(--cyberdrain-light);
   .table {
+    --cui-table-bg: var(--cyberdrain-dark);
     --cui-table-color: var(--cyberdrain-light);
+    --cui-table-striped-bg: var(--cyberdrain-dark-striped);
+    --cui-table-striped-color: var(--cyberdrain-light-striped);
   }
   // CIPP Impact theme variables.
   --cipp-search-color: var(--cyberdrain-light);
