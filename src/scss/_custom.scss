@@ -77,6 +77,11 @@
       margin-bottom: 0rem;
     }
   }
+  .card-header {
+    &:first-child {
+      border-radius: var(--cipp-border-radius);
+    }
+  }
 }
 
 .form-control {
