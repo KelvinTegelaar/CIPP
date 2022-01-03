@@ -1,6 +1,5 @@
 // Here you can add other styles
 @import 'tenantselector';
-@import '_themes';
 
 // https://gist.github.com/ffoodd/000b59f431e3e64e4ce1a24d5bb36034
 .sr-only {
@@ -38,19 +37,6 @@
   white-space: normal !important;
 }
 
-body {
-  @include default();
-  &.cyberdrain {
-    @include cyberdrain();
-  }
-  &.dark {
-    @include dark();
-  }
-  @media (prefers-color-scheme: dark) {
-    @include dark();
-  }
-}
-
 //added some code for slightly prettier scrollbars
 
 /* custom scrollbar */
@@ -71,4 +57,10 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background-color: #a8bbbf;
+}
+
+/* cui overrides */
+
+.card {
+  border-radius: var(--cipp-border-radius);
 }

@@ -16,7 +16,7 @@ const AppHeaderDropdown = () => {
         </CAvatar>
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
-        <CDropdownHeader className="bg-light fw-semibold py-2">Settings</CDropdownHeader>
+        <CDropdownHeader className="fw-semibold py-2">Settings</CDropdownHeader>
         <Link className="dropdown-item" to="/profile/view">
           <FontAwesomeIcon icon={faUser} className="me-2" />
           Profile

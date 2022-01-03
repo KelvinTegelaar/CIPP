@@ -10,14 +10,15 @@ function caps(str) {
 
 const ThemeSwitcher = () => {
   const dispatch = useDispatch()
-  const preferredTheme = useMediaPredicate('(prefers-color-scheme: dark)') ? 'dark' : 'cyberdrain'
+  const preferredTheme = useMediaPredicate('(prefers-color-scheme: dark)') ? 'impact' : 'cyberdrain'
   const theme = useSelector((state) => state.app.currentTheme) || preferredTheme
   const themes = useSelector((state) => state.app.themes)
 
   const SwitchTheme = (t) => {
     dispatch(setCurrentTheme({ theme: t }))
     document.body.classList = []
-    document.body.classList.add(t)
+    document.body.classList.add(`theme-${t}`)
+    document.body.dataset.theme = t
   }
 
   return (

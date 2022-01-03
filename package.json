@@ -76,7 +76,7 @@
     "prettier": "2.4.1",
     "react-scripts": "^5.0.0",
     "redux-immutable-state-invariant": "^2.1.0",
-    "sass": "^1.43.2"
+    "sass": "^1.44"
   },
   "engines": {
     "node": "16",
