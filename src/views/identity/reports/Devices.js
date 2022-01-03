@@ -1,15 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import {
-  CDropdown,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
-  CCard,
-  CCardHeader,
-  CCardTitle,
-  CCardBody,
-} from '@coreui/react'
+import { CCard, CCardHeader, CCardTitle, CCardBody } from '@coreui/react'
 import {
   cellBooleanFormatter,
   cellDateFormatter,
@@ -102,7 +93,7 @@ const DevicesList = () => {
     <div>
       <TenantSelector />
       <hr />
-      <CCard>
+      <CCard className="page-card">
         <CCardHeader>
           <CCardTitle className="text-primary">Devices</CCardTitle>
         </CCardHeader>

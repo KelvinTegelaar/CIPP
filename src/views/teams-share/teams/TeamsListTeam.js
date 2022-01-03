@@ -12,7 +12,7 @@ import {
   CDropdownMenu,
   CDropdownToggle,
 } from '@coreui/react'
-import { faUser, faCog, faBars } from '@fortawesome/free-solid-svg-icons'
+import { faCog, faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom'
 
@@ -73,9 +73,9 @@ const TeamsList = () => {
     <div>
       <TenantSelector />
       <hr />
-      <CCard>
+      <CCard className="page-card">
         <CCardHeader>
-          <CCardTitle className="text-primary">Teams list</CCardTitle>
+          <CCardTitle className="text-primary">Teams</CCardTitle>
         </CCardHeader>
         <CCardBody>
           {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}

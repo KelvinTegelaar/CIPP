@@ -12,7 +12,9 @@ import FastSwitcher from '../components/FastSwitcher'
 const DefaultLayout = () => {
   const theme = useSelector((state) => state.app.currentTheme)
   useEffect(() => {
-    document.body.classList.add(theme)
+    document.body.classList = []
+    document.body.classList.add(`theme-${theme}`)
+    document.body.dataset.theme = theme
   })
 
   const dispatch = useDispatch()
@@ -29,7 +31,7 @@ const DefaultLayout = () => {
       <SharedModal />
       <Toasts />
       <AppSidebar />
-      <div className="wrapper d-flex flex-column min-vh-100 bg-light">
+      <div className="wrapper d-flex flex-column min-vh-100">
         <AppHeader />
         <div className="body flex-grow-1 px-3">
           <CContainer fluid>

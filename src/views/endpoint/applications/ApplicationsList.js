@@ -71,9 +71,9 @@ const ApplicationsList = () => {
     <div>
       <TenantSelector />
       <hr />
-      <CCard>
+      <CCard className="page-card">
         <CCardHeader>
-          <CCardTitle className="text-primary">Applications List</CCardTitle>
+          <CCardTitle className="text-primary">Applications</CCardTitle>
         </CCardHeader>
         <CCardBody>
           {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}

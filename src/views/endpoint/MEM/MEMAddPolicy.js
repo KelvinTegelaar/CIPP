@@ -25,9 +25,7 @@ import {
   RFFCFormRadio,
   RFFCFormSelect,
   RFFCFormTextarea,
-  RFFSelectSearch,
 } from '../../../components/RFFComponents'
-import { useListTenantsQuery } from '../../../store/api/tenants'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { OnChange } from 'react-final-form-listeners'
 
@@ -51,9 +49,7 @@ Error.propTypes = {
 }
 
 const requiredArray = (value) => (value && value.length !== 0 ? undefined : 'Required')
-let rawdisabled = false
-const ApplyStandard = () => {
-  const { data: tenants = [] } = useListTenantsQuery()
+const AddPolicy = () => {
   const [intuneGetRequest, intuneTemplates] = useLazyGenericGetRequestQuery()
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
@@ -79,7 +75,6 @@ const ApplyStandard = () => {
                 })
                 console.log(template[0][set])
                 onChange(template[0][set])
-                rawdisabled = true
               }}
             </OnChange>
           )}
@@ -93,7 +88,7 @@ const ApplyStandard = () => {
   }
 
   return (
-    <CCard className="col-8">
+    <CCard className="page-card col-8">
       <CCardHeader>
         <CCardTitle className="text-primary">Add Intune policy</CCardTitle>
       </CCardHeader>
@@ -301,4 +296,4 @@ const ApplyStandard = () => {
   )
 }
 
-export default ApplyStandard
+export default AddPolicy

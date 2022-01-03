@@ -1,5 +1,5 @@
 {
-  "name": "CIPP",
+  "name": "cipp",
   "version": "1.5.1",
   "description": "The CyberDrain Improved Partner Portal is a portal to help manage administration for Microsoft Partners.",
   "homepage": "https://cipp.app/",
@@ -59,12 +59,14 @@
     "react-dom": "^17.0.2",
     "react-final-form": "^6.5.7",
     "react-final-form-listeners": "^1.0.3",
+    "react-media-hook": "^0.4.9",
     "react-redux": "^7.2.5",
     "react-router-dom": "^6.1.1",
     "react-select-search": "^3.0.8",
     "redux": "4.1.1",
     "redux-persist": "^6.0.0",
     "simplebar-react": "^2.3.6",
+    "source-map-loader": "^3.0.0",
     "styled-components": "^5.3.3"
   },
   "devDependencies": {
@@ -72,9 +74,9 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "prettier": "2.4.1",
-    "react-scripts": "4.0.3",
+    "react-scripts": "^5.0.0",
     "redux-immutable-state-invariant": "^2.1.0",
-    "sass": "^1.43.2"
+    "sass": "^1.44"
   },
   "engines": {
     "node": "16",

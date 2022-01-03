@@ -82,7 +82,7 @@ export default function UserDetails({ tenantDomain, userId }) {
   const { data: user = {}, isFetching, error } = useListUserQuery({ tenantDomain, userId })
 
   return (
-    <CCard>
+    <CCard className="options-card">
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>{user.displayName}</CCardTitle>
         <FontAwesomeIcon icon={faPortrait} />

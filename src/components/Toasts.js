@@ -1,23 +1,9 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  CToast,
-  CToastBody,
-  CToaster,
-  CToastClose,
-  CToastHeader,
-  CCollapse,
-  CCard,
-  CCardBody,
-} from '@coreui/react'
+import { CToast, CToastBody, CToaster, CToastHeader, CCollapse } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faExpandAlt,
-  faCaretSquareUp,
-  faCompressAlt,
-  faTimes,
-} from '@fortawesome/free-solid-svg-icons'
+import { faExpandAlt, faCompressAlt, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { closeToast } from '../store/features/toasts'
 
 const Toasts = () => {

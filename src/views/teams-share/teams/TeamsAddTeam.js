@@ -46,7 +46,7 @@ const TeamsAddTeam = () => {
 
       <CRow>
         <CCol md={6}>
-          <CCard>
+          <CCard className="page-card">
             <CCardHeader>
               <CCardTitle className="text-primary">Add Team</CCardTitle>
             </CCardHeader>

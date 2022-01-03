@@ -7,7 +7,6 @@ import Wizard from '../../../components/Wizard'
 import WizardTableField from '../../../components/WizardTableField'
 import PropTypes from 'prop-types'
 import { RFFCFormSwitch } from '../../../components/RFFComponents'
-import { useListTenantsQuery } from '../../../store/api/tenants'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
 const Error = ({ name }) => (
@@ -30,7 +29,6 @@ Error.propTypes = {
 }
 
 const ApplyStandard = () => {
-  const { data: tenants = [] } = useListTenantsQuery()
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
   const handleSubmit = async (values) => {
@@ -56,7 +54,7 @@ const ApplyStandard = () => {
   }
 
   return (
-    <CCard>
+    <CCard className="page-card">
       <CCardHeader>
         <CCardTitle className="text-primary">Standards Wizard</CCardTitle>
       </CCardHeader>

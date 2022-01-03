@@ -69,7 +69,7 @@ const MobileDeviceList = () => {
     <div>
       <TenantSelector />
       <hr />
-      <CCard>
+      <CCard className="page-card">
         <CCardHeader>
           <CCardTitle className="text-primary">Mobile Devices</CCardTitle>
         </CCardHeader>

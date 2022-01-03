@@ -79,7 +79,7 @@ const columns = [
 export default function UserEmailSettings({ userId, tenantDomain }) {
   const { data: details, isFetching, error } = useListMailboxDetailsQuery({ userId, tenantDomain })
   return (
-    <CCard>
+    <CCard className="options-card">
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>Email Settings</CCardTitle>
         <div>

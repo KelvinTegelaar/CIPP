@@ -68,7 +68,7 @@ const ApplyStandard = () => {
   }
 
   return (
-    <CCard className="col-8">
+    <CCard className=" page-card col-8">
       <CCardHeader>
         <CCardTitle className="text-primary">Autopilot Profile Wizard</CCardTitle>
       </CCardHeader>

@@ -2,8 +2,8 @@ import React, { useEffect, useState, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { Form } from 'react-final-form'
 import { useSearchParams } from 'react-router-dom'
-import useQuery from '../../../hooks/useQuery'
 import { useLazyListDomainTestsQuery, useListDomainTestsQuery } from '../../../store/api/domains'
+import StatusIcon from 'src/components/cipp/StatusIcon'
 import {
   CAlert,
   CButton,
@@ -40,7 +40,6 @@ import {
   faExternalLinkAlt,
 } from '@fortawesome/free-solid-svg-icons'
 import { RFFCFormInput } from '../../../components/RFFComponents'
-import classNames from 'classnames'
 
 // const required = (value) => (value ? undefined : 'Required')
 
@@ -51,20 +50,6 @@ const IconWarning = () => (
 )
 const IconExternalLink = () => <FontAwesomeIcon icon={faExternalLinkAlt} />
 const IconCopy = () => <FontAwesomeIcon icon={faCopy} />
-
-const bgColorMap = {
-  [undefined]: 'bg-primary',
-  Fail: 'bg-danger',
-  Pass: 'bg-success',
-  Warn: 'bg-warning',
-}
-
-const textColorMap = {
-  [undefined]: 'text-white',
-  Fail: 'text-white',
-  Pass: 'text-white',
-  Warn: 'text-black',
-}
 
 const IndividualDomainCheck = () => {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -87,7 +72,7 @@ const IndividualDomainCheck = () => {
   }
 
   return (
-    <CCard className="mb-4">
+    <CCard className="page-card mb-4">
       <CCardHeader className="text-primary" component="h5">
         Individual Domain Check
       </CCardHeader>
@@ -95,9 +80,7 @@ const IndividualDomainCheck = () => {
         <CRow xs={{ cols: 1, gutter: 4 }} xl={{ cols: 2, gutter: 4 }}>
           <CCol>
             <CCard className="h-100">
-              <CCardHeader component="h5" className="bg-primary text-white">
-                Email Security Domain Checker
-              </CCardHeader>
+              <CCardHeader component="h5">Email Security Domain Checker</CCardHeader>
               <CCardBody>
                 <Form
                   initialValues={{ domain }}
@@ -157,12 +140,9 @@ const ResultsCard = ({ children, data, type }) => {
   const validationFails = results?.ValidationFails || []
 
   return (
-    <CCard className="h-100">
-      <CCardHeader
-        className={classNames(bgColorMap[finalState], textColorMap[finalState])}
-        component="h5"
-      >
-        {type} Results
+    <CCard className="page-card h-100">
+      <CCardHeader component="h5">
+        <StatusIcon finalState={finalState} /> {type} Results
       </CCardHeader>
       <CCardBody>
         {/* records and additional information is specific to each type

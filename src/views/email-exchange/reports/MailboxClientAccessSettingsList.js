@@ -74,9 +74,9 @@ const MailboxCASList = () => {
     <div>
       <TenantSelector />
       <hr />
-      <CCard>
+      <CCard className="page-card">
         <CCardHeader>
-          <CCardTitle className="text-primary">Mailbox client Access Settings</CCardTitle>
+          <CCardTitle className="text-primary">Mailbox Client Access Settings</CCardTitle>
         </CCardHeader>
         <CCardBody>
           {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}

@@ -77,11 +77,11 @@ const MessageTrace = () => {
   return (
     <>
       <CRow>
-        <CCol md={4}>
-          <CCard>
+        <CCol>
+          <CCard className="options-card">
             <CCardHeader>
-              <CCardTitle className="text-primary d-flex justify-content-between">
-                Message Trace settings
+              <CCardTitle className="d-flex justify-content-between">
+                Message Trace Settings
                 <CButton size="sm" variant="ghost" onClick={() => setVisibleA(!visibleA)}>
                   <FontAwesomeIcon icon={visibleA ? faChevronDown : faChevronRight} />
                 </CButton>
@@ -171,7 +171,7 @@ const MessageTrace = () => {
         </CCol>
       </CRow>
       <hr />
-      <CCard>
+      <CCard className="page-card">
         <CCardHeader>
           <CCardTitle className="text-primary">Message Trace Results</CCardTitle>
         </CCardHeader>

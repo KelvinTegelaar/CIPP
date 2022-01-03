@@ -2,14 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { useDispatch } from 'react-redux'
 import { CButton, CCard, CCardHeader, CCardTitle, CCardBody } from '@coreui/react'
-
-import {
-  CellBadge,
-  CellProgressBar,
-  CippDatatable,
-  cellBooleanFormatter,
-  cellProgressBarFormatter,
-} from '../../../components/cipp'
+import { CellBadge, CippDatatable, cellProgressBarFormatter } from '../../../components/cipp'
 import { setModalContent, showModal } from '../../../store/features/modal'
 import cellGetProperty from '../../../components/cipp/cellGetProperty'
 
@@ -227,7 +220,7 @@ const DomainsAnalyser = () => {
 
   return (
     <div>
-      <CCard>
+      <CCard className="page-card">
         <CCardHeader>
           <CCardTitle className="text-primary">Domain Analyser</CCardTitle>
         </CCardHeader>

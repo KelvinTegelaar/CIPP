@@ -44,7 +44,7 @@ const AddAPDevice = () => {
   }
 
   return (
-    <CCard>
+    <CCard className="page-card">
       <CCardHeader>
         <CCardTitle className="text-primary">Add Autopilot Device Wizard</CCardTitle>
       </CCardHeader>

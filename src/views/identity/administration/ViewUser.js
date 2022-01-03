@@ -48,7 +48,7 @@ const ViewUser = (props) => {
   }, [tenantDomain, userId, dispatch])
 
   return (
-    <CCard>
+    <CCard className="page-card">
       <CCardHeader>
         <CCardTitle className="text-primary">View User Information</CCardTitle>
       </CCardHeader>

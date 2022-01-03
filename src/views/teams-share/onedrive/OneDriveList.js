@@ -14,7 +14,7 @@ import {
 } from '@coreui/react'
 
 import { Link } from 'react-router-dom'
-import { faUser, faCog, faBars } from '@fortawesome/free-solid-svg-icons'
+import { faCog, faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const dropdown = (row, rowIndex, formatExtraData) => {
@@ -82,7 +82,7 @@ const OneDriveList = () => {
     <div>
       <TenantSelector />
       <hr />
-      <CCard>
+      <CCard className="page-card">
         <CCardHeader>
           <CCardTitle className="text-primary">OneDrive Report</CCardTitle>
         </CCardHeader>

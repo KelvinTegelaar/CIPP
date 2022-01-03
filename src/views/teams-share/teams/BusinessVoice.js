@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useSelector } from 'react-redux'
 import CippDatatable from 'src/components/cipp/CippDatatable'
 import CellBoolean from '../../../components/cipp/CellBoolean'
 import TenantSelector from 'src/components/cipp/TenantSelector'
 import { Link } from 'react-router-dom'
-import { faUser, faCog, faBars } from '@fortawesome/free-solid-svg-icons'
+import { faCog, faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   CCard,
@@ -89,7 +89,7 @@ const BusinessVoice = () => {
     <div>
       <TenantSelector />
       <hr />
-      <CCard>
+      <CCard className="page-card">
         <CCardHeader>
           <CCardTitle className="text-primary">Teams Business Voice</CCardTitle>
         </CCardHeader>

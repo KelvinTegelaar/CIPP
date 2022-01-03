@@ -8,8 +8,6 @@ import {
   CCardTitle,
   CCol,
   CForm,
-  CListGroup,
-  CListGroupItem,
   CRow,
   CSpinner,
   CTable,
@@ -55,7 +53,7 @@ const EditGroup = () => {
 
   const {
     data: owners = {},
-    isFeteching: ownersisFetching,
+    isFetching: ownersisFetching,
     error: ownersError,
     isSuccess: ownersIsSuccess,
   } = useListGroupOwnersQuery({ tenantDomain, groupId })
@@ -86,7 +84,7 @@ const EditGroup = () => {
     genericPostRequest({ url: 'api/EditGroup', values: shippedValues })
   }
   return (
-    <CCard className="bg-white rounded p-5">
+    <CCard className="page-card">
       {!queryError && (
         <>
           <CRow>
@@ -161,9 +159,9 @@ const EditGroup = () => {
                   <CCardTitle>Group members</CCardTitle>
                 </CCardHeader>
                 <CCardBody>
-                  {membersisFetching && <CSpinner />}
+                  {(membersisFetching || ownersisFetching) && <CSpinner />}
                   {membersError && <span>Error loading members</span>}
-                  {ownersError && <span>Error loading Group owners</span>}
+                  {ownersError && <span>Error loading owners</span>}
 
                   {membersIsSuccess && ownersIsSuccess && (
                     <>

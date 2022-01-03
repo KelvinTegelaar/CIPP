@@ -245,7 +245,7 @@ const BestPracticeAnalyser = () => {
   return (
     <div>
       <hr />
-      <CCard>
+      <CCard className="page-card">
         <CCardHeader>
           <CCardTitle className="text-primary">Best Practice Analyser</CCardTitle>
         </CCardHeader>

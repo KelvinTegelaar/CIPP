@@ -220,9 +220,9 @@ const Users = () => {
     <div>
       <TenantSelector />
       <hr />
-      <CCard>
+      <CCard className="page-card">
         <CCardHeader>
-          <CCardTitle className="text-primary">Users list</CCardTitle>
+          <CCardTitle className="text-primary">Users</CCardTitle>
         </CCardHeader>
         <CCardBody>
           {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}

@@ -1,4 +1,4 @@
-import { axiosQuery, baseQuery } from './baseQuery'
+import { baseQuery } from './baseQuery'
 import { createApi } from '@reduxjs/toolkit/query/react'
 
 export const USERS_API_REDUCER_PATH = 'users'

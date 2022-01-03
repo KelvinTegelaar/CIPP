@@ -59,7 +59,7 @@ const AddGroup = () => {
         <>
           <CRow>
             <CCol md={6}>
-              <CCard>
+              <CCard className="page-card">
                 <CCardHeader>
                   <CCardTitle>Group Details</CCardTitle>
                 </CCardHeader>

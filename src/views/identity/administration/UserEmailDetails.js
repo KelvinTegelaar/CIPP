@@ -37,7 +37,7 @@ const columns = [
 
 export default function UserEmailDetails({ user, isFetching, error }) {
   return (
-    <CCard>
+    <CCard className="options-card">
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>Email Details</CCardTitle>
         <FontAwesomeIcon icon={faEnvelope} />

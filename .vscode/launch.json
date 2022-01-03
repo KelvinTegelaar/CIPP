@@ -12,7 +12,11 @@
             "name": "Run frontend",
             "request": "launch",
             "type": "node-terminal",
-            "preLaunchTask": "RunAPI"
+            "preLaunchTask": "RunAPI",
+            "resolveSourceMapLocations": [
+              "${workspaceFolder}/**",
+              "!**/node_modules/**"
+            ]
         },
         {
           "name": "Launch Edge",

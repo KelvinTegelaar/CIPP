@@ -22,7 +22,7 @@ export default function UserCAPs({ tenantDomain, userId }) {
     error,
   } = useListUserConditionalAccessPoliciesQuery({ tenantDomain, userId })
   return (
-    <CCard>
+    <CCard className="options-card">
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>Applied Conditional Access Policies</CCardTitle>
         <FontAwesomeIcon icon={faLockOpen} />

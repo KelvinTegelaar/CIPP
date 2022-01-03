@@ -2,31 +2,8 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
-import {
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCardTitle,
-  CDropdown,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
-} from '@coreui/react'
-import { faUser, faCog, faBars } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
 
-const dropdown = (row, index, column) => {
-  return (
-    <CDropdown>
-      <CDropdownToggle size="sm" color="link">
-        <FontAwesomeIcon icon={faBars} />
-      </CDropdownToggle>
-      <CDropdownMenu style={{ position: 'fixed', right: 0, zIndex: 1000 }}>
-        <CDropdownItem href="#">Edit Group</CDropdownItem>
-      </CDropdownMenu>
-    </CDropdown>
-  )
-}
 const columns = [
   {
     name: 'User Prinicipal Name',
@@ -62,7 +39,7 @@ const TeamsActivityList = () => {
     <div>
       <TenantSelector />
       <hr />
-      <CCard>
+      <CCard className="page-card">
         <CCardHeader>
           <CCardTitle className="text-primary">Teams Activity List</CCardTitle>
         </CCardHeader>

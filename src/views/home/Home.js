@@ -1,11 +1,6 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faTimesCircle,
-  faCheckCircle,
-  faExclamationCircle,
-} from '@fortawesome/free-solid-svg-icons'
-
+import { faTimesCircle, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 import {
   CCard,
   CCardHeader,
@@ -36,7 +31,7 @@ const Home = () => {
                 Ready to make a new user for any managed tenant? Click below to jump to the wizard.
               </CCardText>
               <CButton color="primary" className="mt-2">
-                Add user
+                Add a user
               </CButton>
             </CCardBody>
           </CCard>

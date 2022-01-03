@@ -35,7 +35,7 @@ export const CellProgressBar = ({ value, reverse = false }) => {
   if (value) {
     return (
       <div style={{ width: '100%' }}>
-        <CProgress className="mb-3">
+        <CProgress>
           <CProgressBar value={value} color={color}>
             {value}
           </CProgressBar>

@@ -68,9 +68,9 @@ export default function UserOneDriveUsage({ userUPN, tenantDomain }) {
   const noUsage = Object.keys(report).length === 0 ?? false
 
   return (
-    <CCard>
+    <CCard className="options-card">
       <CCardHeader className="d-flex justify-content-between">
-        <CCardTitle>One Drive Details</CCardTitle>
+        <CCardTitle>OneDrive Details</CCardTitle>
         <FontAwesomeIcon icon={faFolder} />
       </CCardHeader>
       <CCardBody>

@@ -6,7 +6,7 @@ const initialState = {
   sidebarShow: true,
   sidebarUnfoldable: false,
   currentTenant: {},
-  themes: ['default', 'cyberdrain', 'dark'],
+  themes: ['default', 'cyberdrain', 'impact'],
   currentTheme: 'default',
 }
 

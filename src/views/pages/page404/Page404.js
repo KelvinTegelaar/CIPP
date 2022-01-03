@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const Page404 = () => {
   return (
-    <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
+    <div className="min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
         <CRow className="justify-content-center">
           <CCol md={6}>
@@ -28,6 +28,13 @@ const Page404 = () => {
                 </CButton>
               </p>
             </div>
+            <CInputGroup className="input-prepend">
+              <CInputGroupText>
+                <FontAwesomeIcon icon={faSearch} />
+              </CInputGroupText>
+              <CFormInput type="text" placeholder="What are you looking for?" />
+              <CButton color="info">Search</CButton>
+            </CInputGroup>
           </CCol>
         </CRow>
       </CContainer>
