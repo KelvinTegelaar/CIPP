@@ -102,7 +102,7 @@ const EditUser = () => {
       Department: values.department,
       DisplayName: values.displayName,
       Domain: values.primDomain,
-      FirstName: values.firstName,
+      firstName: values.givenName,
       Jobtitle: values.jobTitle,
       LastName: values.surname,
       License: values.licenses,
