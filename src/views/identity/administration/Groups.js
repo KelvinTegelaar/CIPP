@@ -15,23 +15,20 @@ import CippDatatable from '../../../components/cipp/CippDatatable'
 import { cellBooleanFormatter } from '../../../components/cipp'
 import { faBars, faCog } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Link } from 'react-router-dom'
 
-const dropdown = (row = {}) => {
+const Dropdown = (row = {}) => {
+  const tenant = useSelector((state) => state.app.currentTenant)
   return (
-    <CDropdown style={{ position: 'fixed', zIndex: 1000 }}>
+    <CDropdown>
       <CDropdownToggle size="sm" color="link">
         <FontAwesomeIcon icon={faBars} />
       </CDropdownToggle>
       <CDropdownMenu>
-        <CDropdownItem href="#">
-          <Link
-            className="dropdown-item"
-            to={`/identity/administration/groups/edit?groupId=${row.id}&tenantDomain=${row.primDomain}`}
-          >
-            <FontAwesomeIcon icon={faCog} className="me-2" />
-            Edit Group
-          </Link>
+        <CDropdownItem
+          href={`/identity/administration/groups/edit?groupId=${row.id}&tenantDomain=${tenant.defaultDomainName}`}
+        >
+          <FontAwesomeIcon icon={faCog} />
+          Edit Group
         </CDropdownItem>
       </CDropdownMenu>
     </CDropdown>
@@ -73,7 +70,7 @@ const columns = [
   },
   {
     name: 'Action',
-    cell: dropdown,
+    cell: Dropdown,
   },
 ]
 
@@ -91,6 +88,9 @@ const Groups = () => {
         <CCardBody>
           {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
           <CippDatatable
+            tableProps={{
+              responsive: false,
+            }}
             reportName={`${tenant?.defaultDomainName}-Groups`}
             path="/api/ListGroups"
             columns={columns}

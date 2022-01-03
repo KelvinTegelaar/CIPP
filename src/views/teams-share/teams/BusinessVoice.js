@@ -18,11 +18,11 @@ import {
 } from '@coreui/react'
 
 const dropdown = (row, rowIndex, formatExtraData) => (
-  <CDropdown style={{ position: 'fixed', zIndex: 1000 }}>
+  <CDropdown>
     <CDropdownToggle size="sm" color="link">
       <FontAwesomeIcon icon={faBars} />
     </CDropdownToggle>
-    <CDropdownMenu>
+    <CDropdownMenu style={{ position: 'fixed', right: 0, zIndex: 1000 }}>
       <CDropdownItem href="#">
         <Link className="dropdown-item" to={`/teams-share/teams/view-team-settings}`}>
           <FontAwesomeIcon icon={faCog} className="me-2" />
