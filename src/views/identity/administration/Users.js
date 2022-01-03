@@ -7,17 +7,41 @@ import { faUser, faCog, faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippDatatable, cellBooleanFormatter } from '../../../components/cipp'
 import { setModalContent } from 'src/store/features/modal'
-import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
+import { CCard, CCardBody, CCardHeader, CCardTitle, CSpinner } from '@coreui/react'
+import { useLazyGenericGetRequestQuery } from '../../../store/api/app'
 const Dropdown = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
   const dispatch = useDispatch()
+  const [ExecuteGetRequest, GetRequestResult] = useLazyGenericGetRequestQuery()
+  const handleDropdownConfirm = (apiurl) => {
+    ExecuteGetRequest({ url: apiurl })
+    //this isnt working all the way yet.
+    dispatch(
+      setModalContent({
+        componentType: 'ok',
+        title: 'Results',
+        body: (
+          <div>
+            {GetRequestResult.isSuccess && (
+              <>
+                <CSpinner />
+              </>
+            )}
+            {GetRequestResult.isSuccess && GetRequestResult.data.Results}
+          </div>
+        ),
+        confirmLabel: 'Continue',
+        visible: true,
+      }),
+    )
+  }
   const handleDropdownEvent = (apiurl, message) => {
     dispatch(
       setModalContent({
         componentType: 'confirm',
         title: 'Confirm',
         body: <div>{message}</div>,
-        //onConfirm: () => USeLazyGenericGet? or something...(apiurl),
+        onConfirm: () => handleDropdownConfirm(apiurl),
         confirmLabel: 'Continue',
         cancelLabel: 'Cancel',
         visible: true,
@@ -58,7 +82,7 @@ const Dropdown = (row, rowIndex, formatExtraData) => {
         <CDropdownItem
           onClick={() =>
             handleDropdownEvent(
-              'api/test',
+              `/api/ExecSendPush?TenantFilter=${tenant.defaultDomainName}&UserEmail=${row.mail}`,
               `Are you sure you want to send a multifactor push to ${row.displayName}?`,
             )
           }
@@ -69,7 +93,7 @@ const Dropdown = (row, rowIndex, formatExtraData) => {
         <CDropdownItem
           onClick={() =>
             handleDropdownEvent(
-              'api/test',
+              `api/ExecConvertToSharedMailbox?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
               `Are you sure you want to convert ${row.displayName} to a shared mailbox?`,
             )
           }
@@ -80,7 +104,7 @@ const Dropdown = (row, rowIndex, formatExtraData) => {
         <CDropdownItem
           onClick={() =>
             handleDropdownEvent(
-              'api/test',
+              `api/ExecDisableUser?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
               `Are you sure you want to block sign in for ${row.displayName}?`,
             )
           }
@@ -91,7 +115,7 @@ const Dropdown = (row, rowIndex, formatExtraData) => {
         <CDropdownItem
           onClick={() =>
             handleDropdownEvent(
-              'api/test',
+              `api/ExecResetPass?MustChange=true&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
               `Are you sure you want to reset the password for ${row.displayName}?`,
             )
           }
@@ -102,7 +126,7 @@ const Dropdown = (row, rowIndex, formatExtraData) => {
         <CDropdownItem
           onClick={() =>
             handleDropdownEvent(
-              'api/test',
+              `api/ExecResetPass?MustChange=false&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
               `Are you sure you want to reset the password for ${row.displayName}?`,
             )
           }
@@ -112,7 +136,10 @@ const Dropdown = (row, rowIndex, formatExtraData) => {
         </CDropdownItem>
         <CDropdownItem
           onClick={() =>
-            handleDropdownEvent('api/test', `Are you sure you want to delete ${row.displayName}?`)
+            handleDropdownEvent(
+              `api/RemoveUser?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+              `Are you sure you want to delete ${row.displayName}?`,
+            )
           }
           href="#"
         >
@@ -160,6 +187,11 @@ const columns = [
     name: 'Licenses',
     selector: (row) => 'Click to Expand',
     exportselector: 'LicJoined',
+  },
+  {
+    name: 'id',
+    selector: (row) => row['id'],
+    omit: true,
   },
   {
     name: 'Action',
