@@ -73,7 +73,8 @@ export default function UserGroups({ userId, tenantDomain }) {
             columns={columns}
             data={mapped}
             bordered={false}
-            wrapperClasses="table-responsive"
+            path={`api/ListUserGroups?TenantFilter=${tenantDomain}&UserID=${userId}`}
+            reportName={`${tenantDomain}-groupss`}
           />
         )}
       </CCardBody>
