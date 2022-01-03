@@ -1,6 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
-import TenantSelector from '../../../components/cipp/TenantSelector'
+import { useDispatch, useSelector } from 'react-redux'
 import CippDatatable from '../../../components/cipp/CippDatatable'
 import {
   CCard,
@@ -11,26 +10,25 @@ import {
   CDropdownItem,
   CDropdownMenu,
   CDropdownToggle,
+  CSpinner,
 } from '@coreui/react'
-import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCog, faBars } from '@fortawesome/free-solid-svg-icons'
+import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
+import { setModalContent } from 'src/store/features/modal'
 
-const dropdown = (row, index, column) => {
+const Dropdown = (row, index, column) => {
   return (
     <CDropdown>
       <CDropdownToggle size="sm" color="link">
         <FontAwesomeIcon icon={faBars} />
       </CDropdownToggle>
       <CDropdownMenu style={{ position: 'fixed', right: 0, zIndex: 1000 }}>
-        <CDropdownItem href="#">
-          <Link
-            className="dropdown-item"
-            to={`/tenant/administration/tenants/Edit?TenantFilter=${row.defaultDomainName}`}
-          >
-            <FontAwesomeIcon icon={faCog} className="me-2" />
-            Edit Tenant
-          </Link>
+        <CDropdownItem
+          href={`/tenant/administration/tenants/Edit?TenantFilter=${row.defaultDomainName}`}
+        >
+          <FontAwesomeIcon icon={faCog} className="me-2" />
+          Edit Tenant
         </CDropdownItem>
       </CDropdownMenu>
     </CDropdown>
@@ -141,14 +139,8 @@ const columns = [
   {
     name: 'Action',
     center: true,
-    cell: dropdown,
+    cell: Dropdown,
   },
-
-  // @todo not used at the moment?
-  // {
-  //   name: 'Domains',
-  //   selector: 'defaultDomainName',
-  // },
 ]
 
 const TenantsList = () => {

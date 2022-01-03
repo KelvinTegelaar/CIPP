@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import CippDatatable, { ExpanderComponentProps } from '../../../components/cipp/CippDatatable'
 import {
   CDropdown,
@@ -10,18 +10,68 @@ import {
   CCardHeader,
   CCardTitle,
   CCardBody,
+  CSpinner,
 } from '@coreui/react'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { setModalContent } from 'src/store/features/modal'
+import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 
-const dropdown = (row, index, column) => {
+const Dropdown = (row, index, column) => {
+  const dispatch = useDispatch()
+  const [ExecuteGetRequest, GetRequestResult] = useLazyGenericGetRequestQuery()
+  const handleDropdownConfirm = (apiurl) => {
+    ExecuteGetRequest({ url: apiurl })
+    //this isnt working all the way yet.
+    dispatch(
+      setModalContent({
+        componentType: 'ok',
+        title: 'Results',
+        body: (
+          <div>
+            {GetRequestResult.isSuccess && (
+              <>
+                <CSpinner />
+              </>
+            )}
+            {GetRequestResult.isSuccess && GetRequestResult.data.Results}
+          </div>
+        ),
+        confirmLabel: 'Continue',
+        visible: true,
+      }),
+    )
+  }
+  const handleDropdownEvent = (apiurl, message) => {
+    dispatch(
+      setModalContent({
+        componentType: 'confirm',
+        title: 'Confirm',
+        body: <div>{message}</div>,
+        onConfirm: () => handleDropdownConfirm(apiurl),
+        confirmLabel: 'Continue',
+        cancelLabel: 'Cancel',
+        visible: true,
+      }),
+    )
+  }
   return (
     <CDropdown>
       <CDropdownToggle size="sm" variant="ghost" color="primary">
         <FontAwesomeIcon icon={faBars} />
       </CDropdownToggle>
-      <CDropdownMenu style={{ position: 'fixed', right: 0, zIndex: 1000 }}>
-        <CDropdownItem href="#">Delete Template</CDropdownItem>
+      <CDropdownMenu>
+        <CDropdownItem
+          onClick={() =>
+            handleDropdownEvent(
+              `api/RemoveIntuneTemplate?ID=${row.GUID}`,
+              `Are you sure you want to delete the standard ${row.Displayname}`,
+            )
+          }
+          href="#"
+        >
+          Delete Standard
+        </CDropdownItem>
       </CDropdownMenu>
     </CDropdown>
   )
@@ -29,23 +79,28 @@ const dropdown = (row, index, column) => {
 
 const columns = [
   {
-    selector: 'Displayname',
-    name: 'Policy Name',
+    name: 'Display Name',
+    selector: (row) => row['Displayname'],
     sortable: true,
   },
   {
-    selector: 'Description',
     name: 'Description',
+    selector: (row) => row['Description'],
     sortable: true,
   },
   {
-    selector: 'Type',
     name: 'Type',
+    selector: (row) => row['Type'],
     sortable: true,
   },
   {
-    name: 'Actions',
-    cell: dropdown,
+    name: 'GUID',
+    selector: (row) => row['GUID'],
+    omit: true,
+  },
+  {
+    name: 'Action',
+    cell: Dropdown,
   },
 ]
 
@@ -69,6 +124,7 @@ const AutopilotListTemplates = () => {
               expandableRows: true,
               expandableRowsComponent: ExpandedComponent,
               expandOnRowClicked: true,
+              responsive: false,
             }}
             keyField="id"
             reportName={`${tenant?.defaultDomainName}-MEMPolicyTemplates-List`}
