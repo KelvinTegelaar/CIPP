@@ -225,6 +225,7 @@ const Users = () => {
               expandableRows: true,
               expandableRowsComponent: ExpandedComponent,
               expandOnRowClicked: true,
+              responsive: false,
             }}
             reportName={`${tenant?.defaultDomainName}-Users`}
             path="/api/ListUsers"
