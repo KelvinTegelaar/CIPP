@@ -68,13 +68,18 @@
       background: var(--cui-body-bg);
     }
     .card-title {
-      font-size: 1.25rem;
+      font-size: 1rem;
     }
   }
   &.options-card {
     .card-title {
       line-height: 2rem;
       margin-bottom: 0rem;
+    }
+  }
+  .card-header {
+    &:first-child {
+      border-radius: var(--cipp-border-radius);
     }
   }
 }

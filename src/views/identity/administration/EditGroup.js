@@ -84,7 +84,7 @@ const EditGroup = () => {
     genericPostRequest({ url: 'api/EditGroup', values: shippedValues })
   }
   return (
-    <CCard className="page-card">
+    <>
       {!queryError && (
         <>
           <CRow>
@@ -214,7 +214,7 @@ const EditGroup = () => {
           </CRow>
         </>
       )}
-    </CCard>
+    </>
   )
 }
 
