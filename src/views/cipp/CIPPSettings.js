@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react'
 import {
   CButton,
+  CButtonGroup,
   CCallout,
   CCard,
   CCardBody,
@@ -35,10 +36,11 @@ import { faCircleNotch, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { TenantSelectorMultiple } from '../../components/cipp'
 import DataTable from 'react-data-table-component'
 import { useListTenantsQuery } from '../../store/api/tenants'
+import { useLazyEditDnsConfigQuery, useLazyGetDnsConfigQuery } from '../../store/api/domains'
 import { setModalContent } from '../../store/features/modal'
 import { useDispatch } from 'react-redux'
 import { TenantSelector } from '../../components/cipp'
-import { RFFCFormSwitch, RFFCFormInput } from '../../components/RFFComponents'
+import { RFFCFormSwitch, RFFCFormInput, RFFCFormRadio } from '../../components/RFFComponents'
 import { Form } from 'react-final-form'
 
 const CIPPSettings = () => {
@@ -63,6 +65,9 @@ const CIPPSettings = () => {
             <CNavItem active={active === 4} onClick={() => setActive(4)} href="#">
               Notifications
             </CNavItem>
+            <CNavItem active={active === 5} onClick={() => setActive(5)} href="#">
+              DNS
+            </CNavItem>
           </CNav>
           <CTabContent>
             <CTabPane visible={active === 1} className="mt-3">
@@ -76,6 +81,9 @@ const CIPPSettings = () => {
             </CTabPane>
             <CTabPane visible={active === 4} className="mt-3">
               <NotificationsSettings />
+            </CTabPane>
+            <CTabPane visible={active === 5} className="mt-3">
+              <DNSSettings />
             </CTabPane>
           </CTabContent>
         </CCardBody>
@@ -515,6 +523,50 @@ const NotificationsSettings = () => {
             )
           }}
         />
+      )}
+    </>
+  )
+}
+const DNSSettings = () => {
+  const [getDnsConfig, getDnsConfigResult] = useLazyGetDnsConfigQuery()
+  const [editDnsConfig, editDnsConfigResult] = useLazyEditDnsConfigQuery()
+
+  const [alertVisible, setAlertVisible] = useState(false)
+
+  const switchResolver = (resolver) => {
+    editDnsConfig({ resolver })
+    getDnsConfig()
+    setAlertVisible(true)
+    setTimeout(() => {
+      setAlertVisible(false)
+    }, 2000)
+  }
+
+  const resolvers = ['Google', 'Cloudflare']
+
+  return (
+    <>
+      {(editDnsConfigResult.isSuccess || editDnsConfigResult.isError) && (
+        <CAlert color="success" visible={alertVisible}>
+          {editDnsConfigResult.data.Results}
+        </CAlert>
+      )}
+      {getDnsConfigResult.isUninitialized && getDnsConfig()}
+      {getDnsConfigResult.isSuccess && (
+        <CCard>
+          <CCardHeader>DNS Resolver</CCardHeader>
+          <CButtonGroup role="group" aria-label="Resolver">
+            {resolvers.map((r, index) => (
+              <CButton
+                onClick={() => switchResolver(r)}
+                color={r === getDnsConfigResult.data.Resolver ? 'primary' : 'secondary'}
+                key={index}
+              >
+                {r}
+              </CButton>
+            ))}
+          </CButtonGroup>
+        </CCard>
       )}
     </>
   )

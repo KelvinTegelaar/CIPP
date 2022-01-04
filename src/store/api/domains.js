@@ -32,8 +32,30 @@ export const domainsApi = createApi({
         return {}
       },
     }),
+    editDnsConfig: builder.query({
+      query: ({ resolver }) => ({
+        path: '/api/ExecDnsConfig',
+        params: {
+          Action: 'SetConfig',
+          Resolver: resolver,
+        },
+      }),
+    }),
+    getDnsConfig: builder.query({
+      query: () => ({
+        path: '/api/ExecDnsConfig',
+        params: { Action: 'GetConfig' },
+      }),
+    }),
   }),
 })
 
-export const { useListDomainsQuery, useListDomainTestsQuery, useLazyListDomainTestsQuery } =
-  domainsApi
+export const {
+  useListDomainsQuery,
+  useListDomainTestsQuery,
+  useLazyListDomainTestsQuery,
+  useEditDnsConfigQuery,
+  useLazyEditDnsConfigQuery,
+  useGetDnsConfigQuery,
+  useLazyGetDnsConfigQuery,
+} = domainsApi
