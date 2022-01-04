@@ -1,8 +1,9 @@
 import React from 'react'
-import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
+import { CButton, CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 import TenantSelector from 'src/components/cipp/TenantSelector'
 import { useDispatch, useSelector } from 'react-redux'
 import {
+  faPlus,
   faUser,
   faCog,
   faBars,
@@ -66,7 +67,7 @@ const Dropdown = (row, rowIndex, formatExtraData) => {
         <CDropdownItem
           href={`/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`}
         >
-          <FontAwesomeIcon icon={faUser} />
+          <FontAwesomeIcon className='pr-1' icon={faUser} />
           View User
         </CDropdownItem>
         <CDropdownItem
@@ -222,7 +223,12 @@ const Users = () => {
       <hr />
       <CCard className="page-card">
         <CCardHeader>
-          <CCardTitle className="text-primary">Users</CCardTitle>
+          <CCardTitle className="text-primary d-flex justify-content-between">
+            Users
+            <CButton size='sm' color='primary' href='/identity/administration/users/add'>
+              <FontAwesomeIcon icon={faPlus} className='pe-1' />Add User
+            </CButton>
+          </CCardTitle>
         </CCardHeader>
         <CCardBody>
           {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}

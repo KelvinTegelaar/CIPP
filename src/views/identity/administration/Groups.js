@@ -2,6 +2,7 @@ import React from 'react'
 import TenantSelector from 'src/components/cipp/TenantSelector'
 import { useSelector } from 'react-redux'
 import {
+  CButton,
   CDropdown,
   CDropdownItem,
   CDropdownMenu,
@@ -13,7 +14,7 @@ import {
 } from '@coreui/react'
 import CippDatatable from '../../../components/cipp/CippDatatable'
 import { cellBooleanFormatter } from '../../../components/cipp'
-import { faBars, faCog } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faBars, faCog } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const Dropdown = (row = {}) => {
@@ -83,7 +84,12 @@ const Groups = () => {
       <hr />
       <CCard className="page-card">
         <CCardHeader>
-          <CCardTitle className="text-primary">Groups</CCardTitle>
+          <CCardTitle className="text-primary d-flex justify-content-between">
+            Groups
+            <CButton size='sm' color='primary' href='/identity/administration/groups/add'>
+              <FontAwesomeIcon icon={faPlus} className='pe-1' />Add Group
+            </CButton>
+          </CCardTitle>
         </CCardHeader>
         <CCardBody>
           {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}

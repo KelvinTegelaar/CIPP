@@ -1,6 +1,6 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimesCircle, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faUserFriends, faUsers } from '@fortawesome/free-solid-svg-icons'
 import {
   CCard,
   CCardHeader,
@@ -9,70 +9,78 @@ import {
   CRow,
   CCol,
   CSpinner,
-  CCardImage,
   CCardTitle,
   CButton,
 } from '@coreui/react'
-import { useLoadVersionsQuery } from '../../store/api/app'
+import { useLoadVersionsQuery } from 'src/store/api/app'
+import StatusIcon from 'src/components/cipp/StatusIcon'
 
 const Home = () => {
   const { data: versions, isLoading } = useLoadVersionsQuery()
-
   return (
     <div>
       <h3>Dashboard</h3>
       <CRow xs={{ cols: 1, gutter: 4 }} md={{ cols: 2 }}>
         <CCol xs>
           <CCard>
-            <CCardImage orientation="top" src="img/data-report.svg" />
+            <CCardHeader>
+              <CCardTitle>Quick Create</CCardTitle>
+            </CCardHeader>
             <CCardBody className="text-center">
-              <CCardTitle>New User</CCardTitle>
               <CCardText>
-                Ready to make a new user for any managed tenant? Click below to jump to the wizard.
+                Ready to add a new user, group or team for any managed tenant? Click the buttons below to jump to the relevant wizard. 
               </CCardText>
-              <CButton color="primary" className="mt-2">
-                Add a user
+              <CButton className="m-1" color="primary" href='/identity/administration/users/add'>
+                <FontAwesomeIcon icon={faUser} className='pe-1' /> Add a User
+              </CButton>
+              <CButton className="m-1" color="primary" href='/identity/administration/groups/add'>
+                <FontAwesomeIcon icon={faUserFriends} className='pe-1' /> Add a Group
+              </CButton>
+              <CButton className="m-1" color="primary" href='/teams-share/teams/add-team'>
+                <FontAwesomeIcon icon={faUsers} className='pe-1' /> Add a Team
               </CButton>
             </CCardBody>
           </CCard>
         </CCol>
         <CCol xs>
-          <CCard
-            color={versions?.OutOfDateCIPP ? 'danger' : ''}
-            textColor={'black'}
-            className="mb-3"
-            style={{ maxWidth: '18rem' }}
-          >
-            <CCardHeader>CIPP Version</CCardHeader>
+          <CCard className="mb-3" style={{ maxWidth: '18rem' }}>
+            <CCardHeader>
+              <CCardTitle>
+                <StatusIcon type='negatedboolean' status={versions?.OutOfDateCIPP} />CIPP Version
+              </CCardTitle>
+            </CCardHeader>
             <CCardBody>
-              {versions?.OutOfDateCIPP ? (
-                <FontAwesomeIcon icon={faTimesCircle} color="red" size="lg" />
+              <p>
+                Latest: {!isLoading ? versions.RemoteCIPPVersion : <CSpinner size="sm" />}
+              </p>
+              <p>
+                Current: {!isLoading ? versions.LocalCIPPVersion : <CSpinner size="sm" />}
+              </p>
+              {!isLoading && !versions.OutOfDateCIPP ? (
+                <p class="text-success">You're running the latest and greatest version of CIPP!</p>
               ) : (
-                <FontAwesomeIcon icon={faCheckCircle} color="green" size="lg" />
+                <p class="text-danger">Your CIPP version is out of date!</p>
               )}
-              <br />
-              Remote: {!isLoading ? versions.RemoteCIPPVersion : <CSpinner size="sm" />}
-              <br />
-              Local: {!isLoading ? versions.LocalCIPPVersion : <CSpinner size="sm" />}
             </CCardBody>
           </CCard>
-          <CCard
-            color={versions?.OutOfDateCIPPAPI ? 'danger' : ''}
-            textColor={'black'}
-            className="mb-3"
-            style={{ maxWidth: '18rem' }}
-          >
-            <CCardHeader>CIPP API Version</CCardHeader>
+          <CCard className="mb-3" style={{ maxWidth: '18rem' }}>
+            <CCardHeader>
+              <CCardTitle>
+                <StatusIcon type='negatedboolean' status={versions?.OutOfDateCIPPAPI} />CIPP API Version
+              </CCardTitle>
+            </CCardHeader>
             <CCardBody>
-              {versions?.OutOfDateCIPPAPI ? (
-                <FontAwesomeIcon icon={faTimesCircle} color="red" size="lg" />
+              <p>
+                Latest: {!isLoading ? versions.RemoteCIPPAPIVersion : <CSpinner size="sm" />}
+              </p>
+              <p>
+                Current: {!isLoading ? versions.LocalCIPPAPIVersion : <CSpinner size="sm" />}
+              </p>
+              {!isLoading && !versions.OutOfDateCIPPAPI ? (
+                <p class="text-success">You're running the latest and greatest version of CIPP API!</p>
               ) : (
-                <FontAwesomeIcon icon={faCheckCircle} color="green" size="lg" />
+                <p class="text-danger">Your CIPP API version is out of date!</p>
               )}
-              <br />
-              Remote: {!isLoading ? versions.RemoteCIPPAPIVersion : <CSpinner size="sm" />}
-              <br />
-              Local: {!isLoading ? versions.LocalCIPPAPIVersion : <CSpinner size="sm" />}
             </CCardBody>
           </CCard>
         </CCol>

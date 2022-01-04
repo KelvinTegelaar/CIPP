@@ -3,6 +3,8 @@ import { CButton } from '@coreui/react'
 import jsPDF from 'jspdf'
 import 'jspdf-autotable'
 import PropTypes from 'prop-types'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faFilePdf } from '@fortawesome/free-solid-svg-icons'
 
 function ExportPDFButton(props) {
   const exportPDF = (pdfData, pdfHeaders, pdfSize = 'A4', reportName) => {
@@ -40,10 +42,10 @@ function ExportPDFButton(props) {
   return (
     <CButton
       size="sm"
-      className="text-white m-1"
+      className="m-1"
       onClick={() => exportPDF(props.pdfData, props.pdfHeaders, props.pdfSize, props.reportName)}
     >
-      PDF
+      <FontAwesomeIcon icon={faFilePdf} className='pe-1' size='lg' />PDF
     </CButton>
   )
 }
