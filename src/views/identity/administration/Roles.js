@@ -1,8 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import TenantSelector from '../../../components/cipp/TenantSelector'
-import CippDatatable from '../../../components/cipp/CippDatatable'
-import { CCard, CCardHeader, CCardTitle, CCardBody } from '@coreui/react'
+import { CippPageList } from '../../../components/CippPage'
 
 const columns = [
   {
@@ -32,30 +30,20 @@ const RolesList = () => {
   )
 
   return (
-    <div>
-      <TenantSelector />
-      <hr />
-      <CCard className="page-card">
-        <CCardHeader>
-          <CCardTitle className="text-primary">Roles</CCardTitle>
-        </CCardHeader>
-        <CCardBody>
-          {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-          <CippDatatable
-            tableProps={{
-              expandableRows: true,
-              expandableRowsComponent: ExpandedComponent,
-              expandOnRowClicked: true,
-            }}
-            keyField="id"
-            reportName={`${tenant?.defaultDomainName}-Roles`}
-            path="/api/ListRoles"
-            columns={columns}
-            params={{ TenantFilter: tenant?.defaultDomainName }}
-          />
-        </CCardBody>
-      </CCard>
-    </div>
+    <CippPageList
+      title="Roles"
+      datatable={{
+        reportName: `${tenant?.defaultDomainName}-Roles`,
+        path: '/api/ListRoles',
+        columns,
+        params: { TenantFilter: tenant?.defaultDomainName },
+        tableProps: {
+          expandableRows: true,
+          expandableRowsComponent: ExpandedComponent,
+          expandOnRowClicked: true,
+        },
+      }}
+    />
   )
 }
 
