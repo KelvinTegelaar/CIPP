@@ -14,6 +14,7 @@ import {
   CCol,
   CCollapse,
   CForm,
+  CFormLabel,
   CFormTextarea,
   CRow,
   CCardTitle,
@@ -455,12 +456,15 @@ const DKIMResultsCard = ({ domain }) => {
       )}
       <CCollapse visible={visible} className="mb-2">
         {records.map((record, idx) => (
-          <CFormTextarea
-            className="bg-secondary text-white mb-2"
-            key={`${idx}-dkim-record`}
-            value={record?.Record}
-            readOnly
-          ></CFormTextarea>
+          <div key={`${idx}-dkim-record`}>
+            {/*<CFormLabel>{record?.Selector}</CFormLabel>
+            # TODO: Update API to expose selector name */}
+            <CFormTextarea
+              className="bg-secondary text-white mb-2"
+              value={record?.Record}
+              readOnly
+            ></CFormTextarea>
+          </div>
         ))}
       </CCollapse>
     </ResultsCard>
