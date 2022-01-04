@@ -547,8 +547,10 @@ const DNSSettings = () => {
   return (
     <>
       {(editDnsConfigResult.isSuccess || editDnsConfigResult.isError) && (
-        <CAlert color="success" visible={alertVisible}>
-          {editDnsConfigResult.data.Results}
+        <CAlert color={editDnsConfigResult.isSuccess ? 'success' : 'danger'} visible={alertVisible}>
+          {editDnsConfigResult.isSuccess
+            ? editDnsConfigResult.data.Results
+            : 'Error setting resolver'}
         </CAlert>
       )}
       {getDnsConfigResult.isUninitialized && getDnsConfig()}
