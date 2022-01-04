@@ -52,7 +52,7 @@ const ApplyStandard = () => {
     values.selectedTenants.map(
       (tenant) => (values[`Select_${tenant.defaultDomainName}`] = tenant.defaultDomainName),
     )
-    genericPostRequest({ url: 'api/AddAutopilotConfig', values: values })
+    genericPostRequest({ path: '/api/AddAutopilotConfig', values: values })
   }
 
   const formValues = {

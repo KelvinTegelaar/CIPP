@@ -60,7 +60,7 @@ const OffboardingWizard = () => {
       ...values,
     }
     //alert(JSON.stringify(values, null, 2))
-    genericPostRequest({ url: 'api/Execoffboarduser', values: shippedValues })
+    genericPostRequest({ path: '/api/ExecOffboardUser', values: shippedValues })
   }
 
   return (

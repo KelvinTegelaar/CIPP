@@ -28,6 +28,38 @@ export const tenantsApi = createApi({
         params: { TenantFilter: domain },
       }),
     }),
+    listExcludedTenants: builder.query({
+      query: () => ({
+        path: '/api/ExecExcludeTenant',
+        params: {
+          list: true,
+        },
+      }),
+      transformResponse: (response) => {
+        if (!Array.isArray(response)) {
+          return []
+        }
+        return response
+      },
+    }),
+    execExcludeTenant: builder.query({
+      query: (tenantfilter) => ({
+        path: '/api/ExecExcludeTenant',
+        params: {
+          RemoveExclusion: true,
+          TenantFilter: tenantfilter,
+        },
+      }),
+    }),
+    execAddExcludeTenant: builder.query({
+      query: (tenantfilter) => ({
+        path: '/api/ExecExcludeTenant',
+        params: {
+          AddExclusion: true,
+          TenantFilter: tenantfilter,
+        },
+      }),
+    }),
   }),
 })
 
@@ -36,4 +68,7 @@ export const {
   useListTenantQuery,
   useEditTenantMutation,
   useListConditionalAccessPoliciesQuery,
+  useLazyListExcludedTenantsQuery,
+  useLazyExecExcludeTenantQuery,
+  useLazyExecAddExcludeTenantQuery,
 } = tenantsApi

@@ -116,7 +116,7 @@ const EditUser = () => {
       ...values.license,
     }
     //window.alert(JSON.stringify(shippedValues))
-    genericPostRequest({ url: 'api/EditUser', values: shippedValues })
+    genericPostRequest({ path: '/api/EditUser', values: shippedValues })
   }
   const initialState = {
     keepLicenses: true,
