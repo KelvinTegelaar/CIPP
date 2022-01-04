@@ -35,6 +35,7 @@ export default function CippDatatable({
   reportName,
   columns = [],
   tableProps: {
+    keyField = 'id',
     theme = 'cyberdrain',
     pagination = true,
     responsive = true,
@@ -171,5 +172,6 @@ CippDatatable.propTypes = {
   params: PropTypes.object,
   reportName: PropTypes.string.isRequired,
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
+  keyField: PropTypes.string,
   tableProps: PropTypes.object,
 }
