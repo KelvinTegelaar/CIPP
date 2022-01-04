@@ -17,7 +17,9 @@ import { cellBooleanFormatter } from '../../../components/cipp'
 import { setModalContent } from 'src/store/features/modal'
 import { CSpinner } from '@coreui/react'
 import { useLazyGenericGetRequestQuery } from '../../../store/api/app'
-import { CippPageList } from '../../../components/CippPage'
+import { CippPageList } from '../../../components'
+import { TitleButton } from '../../../components/cipp'
+
 const Dropdown = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
   const dispatch = useDispatch()
@@ -67,7 +69,7 @@ const Dropdown = (row, rowIndex, formatExtraData) => {
         <CDropdownItem
           href={`/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`}
         >
-          <FontAwesomeIcon className='pr-1' icon={faUser} />
+          <FontAwesomeIcon className="pr-1" icon={faUser} />
           View User
         </CDropdownItem>
         <CDropdownItem
@@ -220,6 +222,9 @@ const Users = () => {
   return (
     <CippPageList
       title="Users"
+      titleButton={
+        <TitleButton href="/identity/administration/users/add" title="Add User" icon={faPlus} />
+      }
       datatable={{
         columns,
         path: '/api/ListUsers',

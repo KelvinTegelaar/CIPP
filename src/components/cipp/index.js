@@ -9,6 +9,7 @@ import StatusIcon from './StatusIcon'
 import TenantSelector from './TenantSelector'
 import TenantSelectorMultiple from './TenantSelectorMultiple'
 import ThemeSwitcher from './ThemeSwitcher'
+import TitleButton from './TitleButton'
 
 export {
   CellBadge,
@@ -27,4 +28,5 @@ export {
   TenantSelector,
   TenantSelectorMultiple,
   ThemeSwitcher,
+  TitleButton,
 }
