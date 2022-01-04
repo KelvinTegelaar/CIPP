@@ -14,7 +14,6 @@ import {
   CCol,
   CCollapse,
   CForm,
-  CFormLabel,
   CFormTextarea,
   CRow,
   CCardTitle,
@@ -136,7 +135,7 @@ const ResultsCard = ({ children, data, type }) => {
   return (
     <CCard className="h-100">
       <CCardHeader component="h5">
-        <StatusIcon finalState={finalState} /> {type} Results
+        <StatusIcon type='finalstate' finalState={finalState} />{type} Results
       </CCardHeader>
       <CCardBody>
         {/* records and additional information is specific to each type

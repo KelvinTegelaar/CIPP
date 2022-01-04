@@ -2,8 +2,10 @@
   // CyberDrain variables.
   --cyberdrain-primary: #f77f00; // Orange
   --cyberdrain-secondary: #003049; // Prussian Blue
-  --cyberdrain-light: #ebedef; // Cultured
-  --cyberdrain-light-striped: #c6ccd2; // Silver Sand
+  --cyberdrain-lighter: #ffffff; // White
+  --cyberdrain-light: #f4f5f6; // Cultured
+  --cyberdrain-light-striped: #d2d6da; // Light Gray
+  --cyberdrain-darker: #242A2E; //Charleston Green
   --cyberdrain-dark: #2e363a; // Gunmetal
   --cyberdrain-dark-striped: #48555b; // Charcoal
   --cyberdrain-accent-blue: #3e5c66; // Deep Space Sparkle
@@ -74,42 +76,47 @@
 [data-theme="default"],
 [data-theme="cyberdrain"] {
   // Core UI CyberDrain theme variables.
-  --cui-body-color: var(--cyberdrain-dark);
   --cui-body-bg: var(--cyberdrain-light);
-  --cui-header-color: var(--cyberdrain-dark);
-  --cui-header-bg: var(--cyberdrain-light);
-  --cui-header-divider-border-color: var(--cyberdrain-dark);
-  --cui-header-border-color: var(--cyberdrain-dark);
-  --cui-footer-bg: var(--cyberdrain-light);
-  --cui-footer-border-color: var(--cyberdrain-dark);
-  --cui-card-color: var(--cyberdrain-dark);
+  --cui-body-color: var(--cyberdrain-dark);
+  --cui-btn-link-color: var(--cyberdrain-dark);
   --cui-card-bg: var(--cyberdrain-light);
   --cui-card-border-color: var(--cyberdrain-dark);
-  --cui-list-group-color: var(--cyberdrain-dark);
-  --cui-list-group-bg: var(--cyberdrain-light);
-  --cui-input-bg: var(--cyberdrain-light);
-  --cui-input-focus-bg: var(--cyberdrain-light-striped);
-  --cui-input-color: var(--cyberdrain-dark);
-  --cui-input-focus-color: var(--cyberdrain-dark);
-  --cui-input-border-colour: var(--cyberdrain-dark);
-  --cui-input-focus-border-colour: var(--cyberdrain-primary);
-  --cui-form-select-color: var(--cyberdrain-dark);
+  --cui-card-color: var(--cyberdrain-dark);
+  --cui-dropdown-bg: var(--cyberdrain-light);
+  --cui-dropdown-color: var(--cyberdrain-dark);
+  --cui-dropdown-border-color: var(--cyberdrain-dark);
+  --cui-dropdown-link-color: var(--cyberdrain-dark);
+  --cui-footer-bg: var(--cyberdrain-light);
+  --cui-footer-border-color: var(--cyberdrain-dark);
   --cui-form-select-bg: var(--cyberdrain-light);
   --cui-form-select-border-color: var(--cyberdrain-dark);
+  --cui-form-select-color: var(--cyberdrain-dark);
+  --cui-header-bg: var(--cyberdrain-light);
+  --cui-header-border-color: var(--cyberdrain-dark);
+  --cui-header-color: var(--cyberdrain-dark);
+  --cui-header-divider-border-color: var(--cyberdrain-dark);
+  --cui-input-bg: var(--cyberdrain-light);
+  --cui-input-border-colour: var(--cyberdrain-dark);
+  --cui-input-color: var(--cyberdrain-dark);
+  --cui-input-focus-bg: var(--cyberdrain-light-striped);
+  --cui-input-focus-border-colour: var(--cyberdrain-primary);
+  --cui-input-focus-color: var(--cyberdrain-dark);
+  --cui-list-group-bg: var(--cyberdrain-light);
+  --cui-list-group-color: var(--cyberdrain-dark);
+  --cui-modal-content-bg: var(--cyberdrain-light);
+  --cui-modal-content-border-color: var(--cyberdrain-dark);
+  --cui-modal-content-color: var(--cyberdrain-dark);
+  --cui-modal-footer-bg: var(--cyberdrain-light);
+  --cui-modal-footer-border-color: var(--cyberdrain-dark);
+  --cui-modal-footer-color: var(--cyberdrain-dark);
+  --cui-modal-header-bg: var(--cyberdrain-light);
+  --cui-modal-header-border-color: var(--cyberdrain-dark);
+  --cui-modal-header-color: var(--cyberdrain-dark);
   --cui-toast-background-color: var(--cyberdrain-light);
+  --cui-toast-border-color: var(--cyberdrain-dark);
   --cui-toast-color: var(--cyberdrain-dark);
   --cui-toast-header-background-color: var(--cyberdrain-light);
   --cui-toast-header-color: var(--cyberdrain-primary);
-  --cui-toast-border-color: var(--cyberdrain-dark);
-  --cui-modal-content-bg: var(--cyberdrain-light);
-  --cui-modal-content-color: var(--cyberdrain-dark);
-  --cui-modal-content-border-color: var(--cyberdrain-dark);
-  --cui-modal-header-bg: var(--cyberdrain-light);
-  --cui-modal-header-color: var(--cyberdrain-dark);
-  --cui-modal-header-border-color: var(--cyberdrain-dark);
-  --cui-modal-footer-bg: var(--cyberdrain-light);
-  --cui-modal-footer-color: var(--cyberdrain-dark);
-  --cui-modal-footer-border-color: var(--cyberdrain-dark);
   .table {
     --cui-table-bg: var(--cyberdrain-light);
     --cui-table-color: var(--cyberdrain-dark);
@@ -117,21 +124,23 @@
     --cui-table-striped-color: var(--cyberdrain-dark-striped);
   }
   // CIPP CyberDrain theme variables.
-  --cipp-search-color: var(--cyberdrain-dark);
   --cipp-search-bg: var(--cyberdrain-light);
-  --cipp-search-option-color: var(--cyberdrain-dark);
   --cipp-search-border-color: var(--cyberdrain-dark);
-  --cipp-table-primary-colour: var(--cyberdrain-dark);
-  --cipp-table-secondary-colour: var(--cyberdrain-secondary);
+  --cipp-search-color: var(--cyberdrain-dark);
+  --cipp-search-option-color: var(--cyberdrain-dark);
   --cipp-table-bg: var(--cyberdrain-light);
+  --cipp-table-button-bg: var(--cui-btn-bg);
+  --cipp-table-button-disabled-bg: var(--cui-btn-disabled-bg);
+  --cipp-table-button-focus-bg: var(--cui-btn-active-bg);
+  --cipp-table-button-hover-bg: var(--cui-btn-hover-bg);
   --cipp-table-context-bg: var(--cyberdrain-primary);
   --cipp-table-context-color: var(--cyberdrain-light);
   --cipp-table-divider: var(--cyberdrain-dark);
-  --cipp-table-button-bg: var(--cui-btn-bg);
-  --cipp-table-button-hover-bg: var(--cui-btn-hover-bg);
-  --cipp-table-button-focus-bg: var(--cui-btn-active-bg);
-  --cipp-table-button-disabled-bg: var(--cui-btn-disabled-bg);
+  --cipp-table-primary-colour: var(--cyberdrain-dark);
+  --cipp-table-secondary-colour: var(--cyberdrain-secondary);
   --cipp-table-sort-focus-bg: var(--cyberdrain-secondary);
+  --cipp-table-highlight-on-hover-bg: white;
+  --cipp-table-highlight-on-hover-color: var(--cyberdrain-dark);
   --cipp-table-striped-bg: var(--cyberdrain-light-striped);
   --cipp-table-striped-colour: var(--cyberdrain-dark-striped);
   .header-toggler {
@@ -142,42 +151,47 @@
 }
 [data-theme="impact"] {
   // Core UI Impact theme variables.
-  --cui-body-color: var(--cyberdrain-light);
   --cui-body-bg: var(--cyberdrain-dark);
-  --cui-header-color: var(--cyberdrain-light);
-  --cui-header-bg: var(--cyberdrain-dark);
-  --cui-header-divider-border-color: var(--cyberdrain-light);
-  --cui-header-border-color: var(--cyberdrain-light);
-  --cui-footer-bg: var(--cyberdrain-dark);
-  --cui-footer-border-color: var(--cyberdrain-light);
-  --cui-card-color: var(--cyberdrain-light);
+  --cui-body-color: var(--cyberdrain-light);
+  --cui-btn-link-color: var(--cyberdrain-light);
   --cui-card-bg: var(--cyberdrain-dark);
   --cui-card-border-color: var(--cyberdrain-light);
-  --cui-list-group-color: var(--cyberdrain-light);
-  --cui-list-group-bg: var(--cyberdrain-dark);
-  --cui-input-bg: var(--cyberdrain-dark);
-  --cui-input-focus-bg: var(--cyberdrain-dark-striped);
-  --cui-input-color: var(--cyberdrain-light);
-  --cui-input-focus-color: var(--cyberdrain-primary);
-  --cui-input-border-colour: var(--cyberdrain-light);
-  --cui-input-focus-border-color: var(--cyberdrain-primary);
-  --cui-form-select-color: var(--cyberdrain-light);
+  --cui-card-color: var(--cyberdrain-light);
+  --cui-dropdown-bg: var(--cyberdrain-dark);
+  --cui-dropdown-color: var(--cyberdrain-light);
+  --cui-dropdown-border-color: var(--cyberdrain-light);
+  --cui-dropdown-link-color: var(--cyberdrain-light);
+  --cui-footer-bg: var(--cyberdrain-dark);
+  --cui-footer-border-color: var(--cyberdrain-light);
   --cui-form-select-bg: var(--cyberdrain-dark);
   --cui-form-select-border-color: var(--cyberdrain-light);
+  --cui-form-select-color: var(--cyberdrain-light);
+  --cui-header-bg: var(--cyberdrain-dark);
+  --cui-header-border-color: var(--cyberdrain-light);
+  --cui-header-color: var(--cyberdrain-light);
+  --cui-header-divider-border-color: var(--cyberdrain-light);
+  --cui-input-bg: var(--cyberdrain-dark);
+  --cui-input-border-colour: var(--cyberdrain-light);
+  --cui-input-color: var(--cyberdrain-light);
+  --cui-input-focus-bg: var(--cyberdrain-dark-striped);
+  --cui-input-focus-border-color: var(--cyberdrain-primary);
+  --cui-input-focus-color: var(--cyberdrain-primary);
+  --cui-list-group-bg: var(--cyberdrain-dark);
+  --cui-list-group-color: var(--cyberdrain-light);
+  --cui-modal-content-bg: var(--cyberdrain-dark);
+  --cui-modal-content-border-color: var(--cyberdrain-light);
+  --cui-modal-content-color: var(--cyberdrain-light);
+  --cui-modal-footer-bg: var(--cyberdrain-dark);
+  --cui-modal-footer-border-color: var(--cyberdrain-light);
+  --cui-modal-footer-color: var(--cyberdrain-light);
+  --cui-modal-header-bg: var(--cyberdrain-dark);
+  --cui-modal-header-border-color: var(--cyberdrain-light);
+  --cui-modal-header-color: var(--cyberdrain-light);
   --cui-toast-background-color: var(--cyberdrain-dark);
+  --cui-toast-border-color: var(--cyberdrain-light);
   --cui-toast-color: var(--cyberdrain-light);
   --cui-toast-header-background-color: var(--cyberdrain-dark);
   --cui-toast-header-color: var(--cyberdrain-primary);
-  --cui-toast-border-color: var(--cyberdrain-light);
-  --cui-modal-content-bg: var(--cyberdrain-dark);
-  --cui-modal-content-color: var(--cyberdrain-light);
-  --cui-modal-content-border-color: var(--cyberdrain-light);
-  --cui-modal-header-bg: var(--cyberdrain-dark);
-  --cui-modal-header-color: var(--cyberdrain-light);
-  --cui-modal-header-border-color: var(--cyberdrain-light);
-  --cui-modal-footer-bg: var(--cyberdrain-dark);
-  --cui-modal-footer-color: var(--cyberdrain-light);
-  --cui-modal-footer-border-color: var(--cyberdrain-light);
   .table {
     --cui-table-bg: var(--cyberdrain-dark);
     --cui-table-color: var(--cyberdrain-light);
@@ -185,21 +199,23 @@
     --cui-table-striped-color: var(--cyberdrain-light-striped);
   }
   // CIPP Impact theme variables.
-  --cipp-search-color: var(--cyberdrain-light);
   --cipp-search-bg: var(--cyberdrain-dark);
-  --cipp-search-option-color: var(--cyberdrain-light);
   --cipp-search-border-color: var(--cyberdrain-light);
-  --cipp-table-primary-colour: var(--cyberdrain-light);
-  --cipp-table-secondary-colour: var(--cui-gray-100);
+  --cipp-search-color: var(--cyberdrain-light);
+  --cipp-search-option-color: var(--cyberdrain-light);
   --cipp-table-bg: var(--cyberdrain-dark);
+  --cipp-table-button-bg: var(--cui-btn-bg);
+  --cipp-table-button-disabled-bg: var(--cui-btn-disabled-bg);
+  --cipp-table-button-focus-bg: var(--cui-btn-active-bg);
+  --cipp-table-button-hover-bg: var(--cui-btn-hover-bg);
   --cipp-table-context-bg: var(--cyberdrain-primary);
   --cipp-table-context-color: var(--cyberdrain-light);
   --cipp-table-divider: var(--cyberdrain-light);
-  --cipp-table-button-bg: var(--cui-btn-bg);
-  --cipp-table-button-hover-bg: var(--cui-btn-hover-bg);
-  --cipp-table-button-focus-bg: var(--cui-btn-active-bg);
-  --cipp-table-button-disabled-bg: var(--cui-btn-disabled-bg);
+  --cipp-table-primary-colour: var(--cyberdrain-light);
+  --cipp-table-secondary-colour: var(--cui-gray-100);
   --cipp-table-sort-focus-bg: var(--cyberdrain-secondary);
+  --cipp-table-highlight-on-hover-bg: var(--cyberdrain-darker);
+  --cipp-table-highlight-on-hover-color: var(--cyberdrain-light);
   --cipp-table-striped-bg: var(--cyberdrain-dark-striped);
   --cipp-table-striped-colour: var(--cyberdrain-light-striped);
   .header-toggler {

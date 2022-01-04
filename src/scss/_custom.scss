@@ -61,14 +61,20 @@
 
 /* cui overrides */
 
+.btn {
+  border-radius: var(--cipp-border-radius);
+}
+
 .card {
   border-radius: var(--cipp-border-radius);
   &.page-card {
     .card-header {
-      background: var(--cui-body-bg);
+      background: var(--cyberdrain-accent-green);
     }
     .card-title {
       font-size: 1rem;
+      line-height: 2rem;
+      margin-bottom: 0rem;
     }
   }
   &.options-card {
@@ -84,6 +90,10 @@
   }
 }
 
+.dropdown-menu {
+  border-radius: var(--cipp-border-radius);
+}
+
 .form-control {
   border-radius: var(--cipp-border-radius);
 }
@@ -93,4 +103,8 @@
   .select-search__input {
     border: 0px;
   }
+}
+
+.modal-content {
+  border-radius: var(--cipp-border-radius);
 }

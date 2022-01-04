@@ -2,6 +2,7 @@ import React from 'react'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
+  faPlus,
   faUser,
   faCog,
   faBars,
@@ -66,7 +67,7 @@ const Dropdown = (row, rowIndex, formatExtraData) => {
         <CDropdownItem
           href={`/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`}
         >
-          <FontAwesomeIcon icon={faUser} />
+          <FontAwesomeIcon className='pr-1' icon={faUser} />
           View User
         </CDropdownItem>
         <CDropdownItem

@@ -87,6 +87,10 @@ export default function CippDatatable({
       sortFocus: {
         default: 'var(--cipp-table-sort-focus-bg)',
       },
+      highlightOnHover: {
+        default: 'var(--cipp-table-highlight-on-hover-bg)',
+        text: 'var(--cipp-table-highlight-on-hover-color)',
+      },
       striped: {
         default: 'var(--cipp-table-striped-bg)',
         text: 'var(--cipp-table-striped-color)',

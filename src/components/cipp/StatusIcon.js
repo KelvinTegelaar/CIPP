@@ -14,15 +14,35 @@ const IconWarning = () => (
 )
 
 function StatusIcon(props) {
-  const finalState = props.finalState
-  if (finalState === 'Pass') {
-    return <IconGreenCheck />
-  } else if (finalState === 'Fail') {
-    return <IconRedX />
-  } else if (finalState === 'Warn') {
-    return <IconWarning />
-  } else {
-    return ''
+  if (props.type === 'finalstate') {
+    const finalState = props.finalState
+    if (finalState === 'Pass') {
+      return <IconGreenCheck />
+    } else if (finalState === 'Fail') {
+      return <IconRedX />
+    } else if (finalState === 'Warn') {
+      return <IconWarning />
+    } else {
+      return ''
+    }
+  } else if (props.type === 'boolean') {
+    const status = props.status
+    if (status === true) {
+      return <IconGreenCheck />
+    } else if (status === false) {
+      return <IconRedX />
+    } else {
+      return ''
+    }
+  } else if (props.type === 'negatedboolean') {
+    const status = props.status
+    if (status === false) {
+      return <IconGreenCheck />
+    } else if (status === true) {
+      return <IconRedX />
+    } else {
+      return ''
+    }
   }
 }
 
@@ -30,4 +50,5 @@ export default StatusIcon
 
 StatusIcon.propTypes = {
   finalState: PropTypes.string,
+  status: PropTypes.bool,
 }
