@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import {
+  CAlert,
   CButton,
   CCard,
   CCardBody,
@@ -10,137 +11,105 @@ import {
   CRow,
   CSpinner,
 } from '@coreui/react'
-import useQuery from '../../../hooks/useQuery'
-import { setModalContent } from '../../../store/features/modal'
-import { useListGroupQuery } from '../../../store/api/groups'
-import { useDispatch } from 'react-redux'
 import { Form } from 'react-final-form'
-import { RFFCFormInput } from '../../../components/RFFComponents'
+import { RFFCFormCheck, RFFCFormInput, RFFCFormSelect } from '../../../components/RFFComponents'
+import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import { useListDomainsQuery } from 'src/store/api/domains'
+import { useSelector } from 'react-redux'
+import { TenantSelector } from 'src/components/cipp'
 
 const AddGroup = () => {
-  const dispatch = useDispatch()
-  let query = useQuery()
-  const groupId = query.get('groupId')
-  const tenantDomain = query.get('tenantDomain')
-
-  const [queryError, setQueryError] = useState(false)
-
+  const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
   const {
-    data: group = {},
-    isFetching,
-    error,
-    isSuccess,
-  } = useListGroupQuery({ tenantDomain, groupId })
+    data: domains = [],
+    isFetching: domainsIsFetching,
+    error: domainsError,
+  } = useListDomainsQuery({ tenantDomain })
 
-  useEffect(() => {
-    if (!groupId || !tenantDomain) {
-      dispatch(
-        setModalContent({
-          body: 'Error: Invalid request. Could not load requested group.',
-          title: 'Invalid Request',
-          visible: true,
-        }),
-      )
-      setQueryError(true)
-    }
-  }, [groupId, tenantDomain, dispatch])
-
+  const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const onSubmit = (values) => {
-    // @todo bind this
-    window.alert(JSON.stringify(values))
+    const shippedValues = {
+      tenantID: tenantDomain,
+      domain: values.domain,
+      displayName: values.displayName,
+      username: values.username,
+      isAssignableToRole: values.isAssignableToRole,
+    }
+    //window.alert(JSON.stringify(shippedValues))
+    genericPostRequest({ path: '/api/AddGroup', values: shippedValues })
   }
-  const initialValues = {
-    ...group,
-  }
-
   return (
-    <CCard className="bg-white rounded p-5">
-      {!queryError && (
-        <>
-          <CRow>
-            <CCol md={6}>
-              <CCard className="page-card">
-                <CCardHeader>
-                  <CCardTitle>Group Details</CCardTitle>
-                </CCardHeader>
-                <CCardBody>
-                  {isFetching && <CSpinner />}
-                  {error && <span>Error loading Group</span>}
-                  {isSuccess && (
-                    <Form
-                      initialValues={{ ...initialValues }}
-                      onSubmit={onSubmit}
-                      render={({ handleSubmit, submitting, values }) => {
-                        return (
-                          <CForm onSubmit={handleSubmit}>
-                            <CRow>
-                              <CCol md={6}>
-                                <RFFCFormInput type="text" name="AddMembers" label="Add Member" />
-                              </CCol>
-                            </CRow>
-                            <CRow>
-                              <CCol md={6}>
-                                <RFFCFormInput
-                                  type="text"
-                                  name="RemoveMembers"
-                                  label="Remove Member"
-                                />
-                              </CCol>
-                            </CRow>
-                            <CRow>
-                              <CCol md={6}>
-                                <RFFCFormInput type="text" name="AddOwners" label="Add Owner" />
-                              </CCol>
-                            </CRow>
-                            <CRow>
-                              <CCol md={6}>
-                                <RFFCFormInput
-                                  type="text"
-                                  name="RemoveOwners"
-                                  label="Remove Owner"
-                                />
-                              </CCol>
-                            </CRow>
-                            <CRow className="mb-3">
-                              <CCol md={6}>
-                                <CButton type="submit" disabled={submitting}>
-                                  Edit Group
-                                </CButton>
-                              </CCol>
-                            </CRow>
-                            {/*<CRow>*/}
-                            {/* <CCol>*/}
-                            {/*   <pre>{JSON.stringify(values, null, 2)}</pre>*/}
-                            {/* </CCol>*/}
-                            {/*</CRow>*/}
-                          </CForm>
-                        )
-                      }}
-                    />
-                  )}
-                </CCardBody>
-              </CCard>
-            </CCol>
-            <CCol md={6}>
-              <CCard>
-                <CCardHeader>
-                  <CCardTitle>Group Inforamtion</CCardTitle>
-                </CCardHeader>
-                <CCardBody>
-                  {isFetching && <CSpinner />}
-                  {isSuccess && (
-                    <>
-                      This is the (raw) information for this group.
-                      <pre>{JSON.stringify(group, null, 2)}</pre>
-                    </>
-                  )}
-                </CCardBody>
-              </CCard>
-            </CCol>
-          </CRow>
-        </>
-      )}
-    </CCard>
+    <>
+      <CCol md={6}>
+        <TenantSelector />
+      </CCol>
+      <br></br>
+      <>
+        <CRow>
+          <CCol md={6}>
+            <CCard>
+              <CCardHeader>
+                <CCardTitle>Group Details</CCardTitle>
+              </CCardHeader>
+              <CCardBody>
+                <Form
+                  onSubmit={onSubmit}
+                  render={({ handleSubmit, submitting, values }) => {
+                    return (
+                      <CForm onSubmit={handleSubmit}>
+                        <CRow>
+                          <CCol md={8}>
+                            <RFFCFormInput type="text" name="displayName" label="Display Name" />
+                          </CCol>
+                        </CRow>
+                        <CRow>
+                          <CCol md={8}>
+                            <RFFCFormInput type="text" name="description" label="Description" />
+                          </CCol>
+                        </CRow>
+                        <CRow>
+                          <CCol md={4}>
+                            <RFFCFormInput type="text" name="username" label="Username" />
+                          </CCol>
+                          <CCol md={4}>
+                            {domainsIsFetching && <CSpinner />}
+                            {!domainsIsFetching && (
+                              <RFFCFormSelect
+                                // label="Domain"
+                                name="domain"
+                                label="Primary Domain name"
+                                placeholder={!domainsIsFetching ? 'Select domain' : 'Loading...'}
+                                values={domains?.map((domain) => ({
+                                  value: domain.id,
+                                  label: domain.id,
+                                }))}
+                              />
+                            )}
+                            {domainsError && <span>Failed to load list of domains</span>}
+                          </CCol>
+                          <RFFCFormCheck name="isAssignableToRole" label="Azure Role Group" />
+                        </CRow>
+                        <CRow className="mb-3">
+                          <CCol md={6}>
+                            <CButton type="submit" disabled={submitting}>
+                              Add Group
+                            </CButton>
+                          </CCol>
+                        </CRow>
+                        {postResults.isSuccess && (
+                          <CAlert color="success">{postResults.data.Results}</CAlert>
+                        )}
+                      </CForm>
+                    )
+                  }}
+                />
+              </CCardBody>
+            </CCard>
+          </CCol>
+          <CCol md={6}></CCol>
+        </CRow>
+      </>
+    </>
   )
 }
 
