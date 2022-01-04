@@ -14,6 +14,7 @@ import {
   CCol,
   CCollapse,
   CForm,
+  CFormLabel,
   CFormTextarea,
   CRow,
   CCardTitle,
@@ -72,50 +73,43 @@ const IndividualDomainCheck = () => {
   }
 
   return (
-    <CCard className="page-card mb-4">
-      <CCardHeader className="text-primary" component="h5">
-        Individual Domain Check
-      </CCardHeader>
-      <CCardBody>
-        <CRow xs={{ cols: 1, gutter: 4 }} xl={{ cols: 2, gutter: 4 }}>
-          <CCol>
-            <CCard className="h-100">
-              <CCardHeader component="h5">Email Security Domain Checker</CCardHeader>
-              <CCardBody>
-                <Form
-                  initialValues={{ domain }}
-                  onSubmit={onSubmit}
-                  render={({ handleSubmit, submitting, pristine }) => {
-                    return (
-                      <CForm onSubmit={handleSubmit}>
-                        <RFFCFormInput spellCheck={false} name="domain" label="Domain Name" />
-                        <CButton
-                          type="submit"
-                          disabled={submitting || isFetching}
-                          className="mt-4"
-                          color="primary"
-                        >
-                          {isFetching && (
-                            <FontAwesomeIcon icon={faCircleNotch} spin size="1x" className="mx-1" />
-                          )}
-                          Check Domain
-                        </CButton>
-                      </CForm>
-                    )
-                  }}
-                />
-                <DomainCheckError domain={domain} {...rest} />
-              </CCardBody>
-            </CCard>
-          </CCol>
-          <CCol>{isSuccess && <MXResultsCard domain={domain} />}</CCol>
-          <CCol>{isSuccess && <SPFResultsCard domain={domain} />}</CCol>
-          <CCol>{isSuccess && <DMARCResultsCard domain={domain} />}</CCol>
-          <CCol>{isSuccess && <DNSSECResultsCard domain={domain} />}</CCol>
-          <CCol>{isSuccess && <DKIMResultsCard domain={domain} />}</CCol>
-        </CRow>
-      </CCardBody>
-    </CCard>
+    <CRow xs={{ cols: 1, gutter: 4 }} xl={{ cols: 2, gutter: 4 }} className="mb-5">
+      <CCol>
+        <CCard className="h-100">
+          <CCardHeader component="h5">Email Security Domain Checker</CCardHeader>
+          <CCardBody>
+            <Form
+              initialValues={{ domain }}
+              onSubmit={onSubmit}
+              render={({ handleSubmit, submitting, pristine }) => {
+                return (
+                  <CForm onSubmit={handleSubmit}>
+                    <RFFCFormInput spellCheck={false} name="domain" label="Domain Name" />
+                    <CButton
+                      type="submit"
+                      disabled={submitting || isFetching}
+                      className="mt-4"
+                      color="primary"
+                    >
+                      {isFetching && (
+                        <FontAwesomeIcon icon={faCircleNotch} spin size="1x" className="mx-1" />
+                      )}
+                      Check Domain
+                    </CButton>
+                  </CForm>
+                )
+              }}
+            />
+            <DomainCheckError domain={domain} {...rest} />
+          </CCardBody>
+        </CCard>
+      </CCol>
+      <CCol>{isSuccess && <MXResultsCard domain={domain} />}</CCol>
+      <CCol>{isSuccess && <SPFResultsCard domain={domain} />}</CCol>
+      <CCol>{isSuccess && <DMARCResultsCard domain={domain} />}</CCol>
+      <CCol>{isSuccess && <DNSSECResultsCard domain={domain} />}</CCol>
+      <CCol>{isSuccess && <DKIMResultsCard domain={domain} />}</CCol>
+    </CRow>
   )
 }
 
@@ -140,7 +134,7 @@ const ResultsCard = ({ children, data, type }) => {
   const validationFails = results?.ValidationFails || []
 
   return (
-    <CCard className="page-card h-100">
+    <CCard className="h-100">
       <CCardHeader component="h5">
         <StatusIcon finalState={finalState} /> {type} Results
       </CCardHeader>
@@ -462,12 +456,15 @@ const DKIMResultsCard = ({ domain }) => {
       )}
       <CCollapse visible={visible} className="mb-2">
         {records.map((record, idx) => (
-          <CFormTextarea
-            className="bg-secondary text-white mb-2"
-            key={`${idx}-dkim-record`}
-            value={record?.Record}
-            readOnly
-          ></CFormTextarea>
+          <div key={`${idx}-dkim-record`}>
+            {/*<CFormLabel>{record?.Selector}</CFormLabel>
+            # TODO: Update API to expose selector name */}
+            <CFormTextarea
+              className="bg-secondary text-white mb-2"
+              value={record?.Record}
+              readOnly
+            ></CFormTextarea>
+          </div>
         ))}
       </CCollapse>
     </ResultsCard>
