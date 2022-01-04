@@ -57,7 +57,7 @@ const AddPolicy = () => {
     values.selectedTenants.map(
       (tenant) => (values[`Select_${tenant.defaultDomainName}`] = tenant.defaultDomainName),
     )
-    genericPostRequest({ url: 'api/AddPolicy', values: values })
+    genericPostRequest({ path: '/api/AddPolicy', values: values })
   }
   /* eslint-disable react/prop-types */
   const WhenFieldChanges = ({ field, set }) => (
@@ -147,7 +147,7 @@ const AddPolicy = () => {
                 <CRow>
                   <CCol md={12}>
                     {intuneTemplates.isUninitialized &&
-                      intuneGetRequest({ url: 'api/ListIntuneTemplates' })}
+                      intuneGetRequest({ path: 'api/ListIntuneTemplates' })}
                     {intuneTemplates.isSuccess && (
                       <RFFCFormSelect
                         name="TemplateList"

@@ -36,7 +36,7 @@ const TeamsAddTeam = () => {
       owner: values.owner,
     }
     //alert(JSON.stringify(shippedValues, null, 2))
-    genericPostRequest({ url: 'api/AddTeam', values: shippedValues })
+    genericPostRequest({ path: '/api/AddTeam', values: shippedValues })
   }
   return (
     <>
