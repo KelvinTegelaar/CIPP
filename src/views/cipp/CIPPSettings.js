@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   CButton,
   CButtonGroup,
@@ -27,10 +27,13 @@ import {
   useLazyExecNotificationConfigQuery,
   useLazyExecPermissionsAccessCheckQuery,
   useLazyExecTenantsAccessCheckQuery,
-  useLazyListExcludedTenantsQuery,
   useLazyListNotificationConfigQuery,
-  useLazyExecExcludeTenantQuery,
 } from '../../store/api/app'
+import {
+  useLazyListExcludedTenantsQuery,
+  useLazyExecAddExcludeTenantQuery,
+  useLazyExecExcludeTenantQuery,
+} from '../../store/api/tenants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { TenantSelectorMultiple } from '../../components/cipp'
@@ -42,53 +45,48 @@ import { useDispatch } from 'react-redux'
 import { TenantSelector } from '../../components/cipp'
 import { RFFCFormSwitch, RFFCFormInput, RFFCFormRadio } from '../../components/RFFComponents'
 import { Form } from 'react-final-form'
+import { CippPage } from '../../components/CippPage'
+import useConfirmModal from '../../hooks/useConfirmModal'
 
 const CIPPSettings = () => {
   const [active, setActive] = useState(1)
   return (
-    <CContainer>
-      <CCard className="page-card">
-        <CCardHeader>
-          <CCardTitle className="text-primary">CIPP Settings</CCardTitle>
-        </CCardHeader>
-        <CCardBody>
-          <CNav variant="tabs" role="tablist">
-            <CNavItem active={active === 1} onClick={() => setActive(1)} href="#">
-              General
-            </CNavItem>
-            <CNavItem active={active === 2} onClick={() => setActive(2)} href="#">
-              Excluded Tenants
-            </CNavItem>
-            <CNavItem active={active === 3} onClick={() => setActive(3)} href="#">
-              Backend
-            </CNavItem>
-            <CNavItem active={active === 4} onClick={() => setActive(4)} href="#">
-              Notifications
-            </CNavItem>
-            <CNavItem active={active === 5} onClick={() => setActive(5)} href="#">
-              DNS
-            </CNavItem>
-          </CNav>
-          <CTabContent>
-            <CTabPane visible={active === 1} className="mt-3">
-              <GeneralSettings />
-            </CTabPane>
-            <CTabPane visible={active === 2} className="mt-3">
-              <ExcludedTenantsSettings />
-            </CTabPane>
-            <CTabPane visible={active === 3} className="mt-3">
-              <SecuritySettings />
-            </CTabPane>
-            <CTabPane visible={active === 4} className="mt-3">
-              <NotificationsSettings />
-            </CTabPane>
-            <CTabPane visible={active === 5} className="mt-3">
-              <DNSSettings />
-            </CTabPane>
-          </CTabContent>
-        </CCardBody>
-      </CCard>
-    </CContainer>
+    <CippPage title="Settings" tenantSelector={false}>
+      <CNav variant="tabs" role="tablist">
+        <CNavItem active={active === 1} onClick={() => setActive(1)} href="#">
+          General
+        </CNavItem>
+        <CNavItem active={active === 2} onClick={() => setActive(2)} href="#">
+          Excluded Tenants
+        </CNavItem>
+        <CNavItem active={active === 3} onClick={() => setActive(3)} href="#">
+          Backend
+        </CNavItem>
+        <CNavItem active={active === 4} onClick={() => setActive(4)} href="#">
+          Notifications
+        </CNavItem>
+        <CNavItem active={active === 5} onClick={() => setActive(5)} href="#">
+          DNS
+        </CNavItem>
+      </CNav>
+      <CTabContent>
+        <CTabPane visible={active === 1} className="mt-3">
+          <GeneralSettings />
+        </CTabPane>
+        <CTabPane visible={active === 2} className="mt-3">
+          <ExcludedTenantsSettings />
+        </CTabPane>
+        <CTabPane visible={active === 3} className="mt-3">
+          <SecuritySettings />
+        </CTabPane>
+        <CTabPane visible={active === 4} className="mt-3">
+          <NotificationsSettings />
+        </CTabPane>
+        <CTabPane visible={active === 5} className="mt-3">
+          <DNSSettings />
+        </CTabPane>
+      </CTabContent>
+    </CippPage>
   )
 }
 
@@ -150,20 +148,10 @@ const GeneralSettings = () => {
     checkAccess({ tenantDomains })
   }
 
-  const handleClearCache = () => {
-    dispatch(
-      setModalContent({
-        componentType: 'confirm',
-        title: 'Confirm',
-        body: <div>Are you sure you want to clear the cache?</div>,
-        onConfirm: () => clearCache(),
-        confirmLabel: 'Continue',
-        cancelLabel: 'Cancel',
-        visible: true,
-        size: 'xl',
-      }),
-    )
-  }
+  const handleClearCache = useConfirmModal({
+    body: <div>Are you sure you want to clear the cache?</div>,
+    onConfirm: () => clearCache(),
+  })
 
   return (
     <div>
@@ -258,8 +246,19 @@ const GeneralSettings = () => {
 }
 
 const ExcludedTenantsSettings = () => {
-  const [excludedTenants, exTenantResult] = useLazyListExcludedTenantsQuery()
+  const [
+    listExcludedTenants,
+    {
+      data: excludedTenants = [],
+      isFetching: excludedTenantsFetching,
+      isSuccess: excludedTenantsSuccess,
+    },
+  ] = useLazyListExcludedTenantsQuery()
   const [removeExcludedTenant, exRemovalResult] = useLazyExecExcludeTenantQuery()
+
+  useEffect(() => {
+    listExcludedTenants()
+  }, [])
 
   const dispatch = useDispatch()
   const handleRemoveExclusion = (domain) => {
@@ -299,7 +298,6 @@ const ExcludedTenantsSettings = () => {
   return (
     <>
       {exRemovalResult.isSuccess && <CAlert color="success">{exRemovalResult.data.Results}</CAlert>}
-      {exTenantResult.isUninitialized && excludedTenants()}
       <CRow className="mb-3">
         <CCol md={12}>
           <CCard>
@@ -318,9 +316,9 @@ const ExcludedTenantsSettings = () => {
               </CCardTitle>
             </CCardHeader>
             <CCardBody>
-              {exTenantResult.isSuccess && (
+              {excludedTenantsSuccess && (
                 <CListGroup>
-                  {exTenantResult.data.map((name) => (
+                  {excludedTenants.map((name) => (
                     <CListGroupItem key={name.Name}>
                       {name.Name}
                       <CBadge

@@ -13,34 +13,26 @@ import {
 } from '../../../components/cipp'
 import { setModalContent } from '../../../store/features/modal'
 import { useExecBestPracticeAnalyserMutation } from '../../../store/api/reports'
+import useConfirmModal from '../../../hooks/useConfirmModal'
 
 const RefreshAction = () => {
   const [execBestPracticeAnalyser, { isLoading, isSuccess, error }] =
     useExecBestPracticeAnalyserMutation()
   const dispatch = useDispatch()
 
-  const onClick = () => {
-    dispatch(
-      setModalContent({
-        componentType: 'confirm',
-        title: 'Confirm',
-        body: (
-          <div>
-            Are you sure you want to force the Best Practice Analysis to run? This will slow down
-            normal usage considerably. <br />
-            <i>Please note: this runs at midnight automatically every day.</i>
-          </div>
-        ),
-        onConfirm: () => execBestPracticeAnalyser(),
-        confirmLabel: 'Continue',
-        cancelLabel: 'Cancel',
-        visible: true,
-      }),
-    )
-  }
+  const showModal = useConfirmModal({
+    body: (
+      <div>
+        Are you sure you want to force the Best Practice Analysis to run? This will slow down normal
+        usage considerably. <br />
+        <i>Please note: this runs at midnight automatically every day.</i>
+      </div>
+    ),
+    onConfirm: () => execBestPracticeAnalyser(),
+  })
 
   return (
-    <CButton onClick={onClick} size="sm" className="text-white m-1">
+    <CButton onClick={showModal} size="sm" className="text-white m-1">
       {isLoading && <CSpinner size="sm" />}
       {error && <FontAwesomeIcon icon={faExclamationTriangle} />}
       {isSuccess && <FontAwesomeIcon icon={faCheck} />}
@@ -51,7 +43,6 @@ const RefreshAction = () => {
 
 const BestPracticeAnalyser = () => {
   const dispatch = useDispatch()
-  // const { data, isFetching, error } = useListBestPracticeAnalyserQuery()
 
   const handleSharedMailboxes = ({ row }) => {
     dispatch(

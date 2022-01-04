@@ -1,6 +1,5 @@
 import React from 'react'
-import { CButton, CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
-import TenantSelector from 'src/components/cipp/TenantSelector'
+import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   faPlus,
@@ -14,10 +13,11 @@ import {
   faSync,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { CippDatatable, cellBooleanFormatter } from '../../../components/cipp'
+import { cellBooleanFormatter } from '../../../components/cipp'
 import { setModalContent } from 'src/store/features/modal'
-import { CCard, CCardBody, CCardHeader, CCardTitle, CSpinner } from '@coreui/react'
+import { CSpinner } from '@coreui/react'
 import { useLazyGenericGetRequestQuery } from '../../../store/api/app'
+import { CippPageList } from '../../../components/CippPage'
 const Dropdown = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
   const dispatch = useDispatch()
@@ -218,35 +218,21 @@ const Users = () => {
   )
 
   return (
-    <div>
-      <TenantSelector />
-      <hr />
-      <CCard className="page-card">
-        <CCardHeader>
-          <CCardTitle className="text-primary d-flex justify-content-between">
-            Users
-            <CButton size='sm' color='primary' href='/identity/administration/users/add'>
-              <FontAwesomeIcon icon={faPlus} className='pe-1' />Add User
-            </CButton>
-          </CCardTitle>
-        </CCardHeader>
-        <CCardBody>
-          {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-          <CippDatatable
-            tableProps={{
-              expandableRows: true,
-              expandableRowsComponent: ExpandedComponent,
-              expandOnRowClicked: true,
-              responsive: false,
-            }}
-            reportName={`${tenant?.defaultDomainName}-Users`}
-            path="/api/ListUsers"
-            columns={columns}
-            params={{ TenantFilter: tenant?.defaultDomainName }}
-          />
-        </CCardBody>
-      </CCard>
-    </div>
+    <CippPageList
+      title="Users"
+      datatable={{
+        columns,
+        path: '/api/ListUsers',
+        reportName: `${tenant?.defaultDomainName}-Users`,
+        params: { TenantFilter: tenant?.defaultDomainName },
+        tableProps: {
+          expandableRows: true,
+          expandableRowsComponent: ExpandedComponent,
+          expandOnRowClicked: true,
+          responsive: false,
+        },
+      }}
+    />
   )
 }
 
