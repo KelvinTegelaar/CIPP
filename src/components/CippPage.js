@@ -8,7 +8,7 @@ import { useSearchParams } from 'react-router-dom'
 import { setCurrentTenant } from '../store/features/app'
 import { useListTenantsQuery } from '../store/api/tenants'
 
-export function CippPage({ tenantSelector = true, title, children }) {
+export function CippPage({ tenantSelector = true, title, children, titleButton = null }) {
   const { data: tenants = [], isFetching, isError, isSuccess } = useListTenantsQuery()
   const tenant = useSelector((state) => state.app.currentTenant)
   const [searchParams, setSearchParams] = useSearchParams()
@@ -33,7 +33,10 @@ export function CippPage({ tenantSelector = true, title, children }) {
       {tenantSelector && <hr />}
       <CCard className="page-card">
         <CCardHeader>
-          <CCardTitle>{title}</CCardTitle>
+          <CCardTitle className="text-primary d-flex justify-content-between">
+            {title}
+            {titleButton}
+          </CCardTitle>
         </CCardHeader>
         <CCardBody>
           {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
@@ -48,16 +51,18 @@ CippPage.propTypes = {
   tenantSelector: PropTypes.bool,
   title: PropTypes.string,
   children: PropTypes.node,
+  titleButton: PropTypes.node,
 }
 
 export function CippPageList({
   tenantSelector = true,
   title,
+  titleButton,
   // see CippDatatable for full list
   datatable: { reportName, path, columns, params, ...rest },
 }) {
   return (
-    <CippPage tenantSelector={tenantSelector} title={title}>
+    <CippPage tenantSelector={tenantSelector} title={title} titleButton={titleButton}>
       <CippDatatable
         reportName={reportName}
         path={path}
@@ -72,10 +77,11 @@ export function CippPageList({
 CippPageList.propTypes = {
   tenantSelector: PropTypes.bool,
   title: PropTypes.string.isRequired,
+  titleButton: PropTypes.node,
   datatable: PropTypes.shape({
     reportName: PropTypes.string.isRequired,
     path: PropTypes.string.isRequired,
-    columns: PropTypes.array,
+    columns: PropTypes.array.isRequired,
     params: PropTypes.object,
   }),
 }
