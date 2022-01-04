@@ -81,7 +81,7 @@ const EditGroup = () => {
       RemoveOwner: values.RemoveOwners,
     }
     //window.alert(JSON.stringify(shippedValues))
-    genericPostRequest({ url: 'api/EditGroup', values: shippedValues })
+    genericPostRequest({ path: '/api/EditGroup', values: shippedValues })
   }
   return (
     <>

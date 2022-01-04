@@ -114,42 +114,16 @@ export const appApi = createApi({
         path: '/api/listNotificationConfig',
       }),
     }),
-    listExcludedTenants: builder.query({
-      query: () => ({
-        path: '/api/ExecExcludeTenant',
-        params: {
-          list: true,
-        },
-      }),
-    }),
-    ExecExcludeTenant: builder.query({
-      query: (tenantfilter) => ({
-        path: '/api/ExecExcludeTenant',
-        params: {
-          RemoveExclusion: true,
-          TenantFilter: tenantfilter,
-        },
-      }),
-    }),
-    ExecAddExcludeTenant: builder.query({
-      query: (tenantfilter) => ({
-        path: '/api/ExecExcludeTenant',
-        params: {
-          AddExclusion: true,
-          TenantFilter: tenantfilter,
-        },
-      }),
-    }),
-    GenericPostRequest: builder.query({
-      query: ({ url, values }) => ({
-        path: url,
+    genericPostRequest: builder.query({
+      query: ({ path, values }) => ({
+        path,
         data: values,
         method: 'post',
       }),
     }),
-    GenericGetRequest: builder.query({
-      query: ({ url, params }) => ({
-        path: url,
+    genericGetRequest: builder.query({
+      query: ({ path, params }) => ({
+        path,
         params: params,
         method: 'GET',
       }),
@@ -169,9 +143,6 @@ export const {
   useLazyExecClearCacheQuery,
   useLazyExecNotificationConfigQuery,
   useLazyListNotificationConfigQuery,
-  useLazyListExcludedTenantsQuery,
-  useLazyExecExcludeTenantQuery,
-  useLazyExecAddExcludeTenantQuery,
   useLazyGenericPostRequestQuery,
   useLazyGenericGetRequestQuery,
 } = appApi

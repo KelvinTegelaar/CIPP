@@ -20,7 +20,7 @@ const MEMAddPolicyTemplate = () => {
   const handleSubmit = async (values) => {
     // alert(JSON.stringify(values, null, 2))
     // @todo hook this up
-    genericPostRequest({ url: 'api/AddIntuneTemplate', values })
+    genericPostRequest({ path: '/api/AddIntuneTemplate', values })
   }
 
   return (

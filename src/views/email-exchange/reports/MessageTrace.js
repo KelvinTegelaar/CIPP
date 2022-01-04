@@ -71,7 +71,7 @@ const MessageTrace = () => {
     //alert(JSON.stringify(values, null, 2))
     navigate(`?${queryString}`)
     // @todo hook this up
-    // genericPostRequest({ url: 'api/AddIntuneTemplate', values })
+    // genericPostRequest({ path: '/api/AddIntuneTemplate', values })
   }
 
   return (

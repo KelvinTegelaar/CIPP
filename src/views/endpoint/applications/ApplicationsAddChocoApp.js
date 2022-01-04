@@ -48,7 +48,7 @@ const ApplyStandard = () => {
     values.selectedTenants.map(
       (tenant) => (values[`Select_${tenant.defaultDomainName}`] = tenant.defaultDomainName),
     )
-    genericPostRequest({ url: 'api/AddChocoApp', values: values })
+    genericPostRequest({ path: '/api/AddChocoApp', values: values })
   }
 
   const formValues = {

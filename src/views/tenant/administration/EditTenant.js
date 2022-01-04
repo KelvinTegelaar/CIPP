@@ -43,7 +43,7 @@ const EditTenant = () => {
   const onSubmit = (values) => {
     // @todo bind this
     //window.alert(JSON.stringify(values))
-    genericPostRequest({ url: 'api/EditTenant', values })
+    genericPostRequest({ path: '/api/EditTenant', values })
   }
   const initialValues = {
     ...tenant[0],

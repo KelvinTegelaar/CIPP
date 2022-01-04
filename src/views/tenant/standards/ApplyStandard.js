@@ -45,7 +45,7 @@ const ApplyStandard = () => {
         (values.standards[`Select_${tenant.defaultDomainName}`] = tenant.defaultDomainName),
     )
     //filter on only objects that are 'true'
-    genericPostRequest({ url: 'api/AddStandardsDeploy', values: values.standards })
+    genericPostRequest({ path: '/api/AddStandardsDeploy', values: values.standards })
   }
 
   const formValues = {
