@@ -65,9 +65,6 @@ const CIPPSettings = () => {
         <CNavItem active={active === 4} onClick={() => setActive(4)} href="#">
           Notifications
         </CNavItem>
-        <CNavItem active={active === 5} onClick={() => setActive(5)} href="#">
-          DNS
-        </CNavItem>
       </CNav>
       <CTabContent>
         <CTabPane visible={active === 1} className="mt-3">
@@ -81,9 +78,6 @@ const CIPPSettings = () => {
         </CTabPane>
         <CTabPane visible={active === 4} className="mt-3">
           <NotificationsSettings />
-        </CTabPane>
-        <CTabPane visible={active === 5} className="mt-3">
-          <DNSSettings />
         </CTabPane>
       </CTabContent>
     </CippPage>
@@ -157,7 +151,7 @@ const GeneralSettings = () => {
     <div>
       <CRow className="mb-3">
         <CCol md={6}>
-          <CCard>
+          <CCard className="h-100">
             <CCardHeader>
               <CCardTitle>Permissions Check</CCardTitle>
             </CCardHeader>
@@ -181,7 +175,7 @@ const GeneralSettings = () => {
           </CCard>
         </CCol>
         <CCol md={6}>
-          <CCard>
+          <CCard className="h-100">
             <CCardHeader>
               <CCardTitle>Clear Cache</CCardTitle>
             </CCardHeader>
@@ -206,8 +200,8 @@ const GeneralSettings = () => {
         </CCol>
       </CRow>
       <CRow className="mb-3">
-        <CCol md={12}>
-          <CCard>
+        <CCol md={6}>
+          <CCard className="h-100">
             <CCardHeader>
               <CCardTitle>Tenant Access Check</CCardTitle>
             </CCardHeader>
@@ -239,6 +233,9 @@ const GeneralSettings = () => {
               )}
             </CCardBody>
           </CCard>
+        </CCol>
+        <CCol>
+          <DNSSettings />
         </CCol>
       </CRow>
     </div>
@@ -544,28 +541,36 @@ const DNSSettings = () => {
 
   return (
     <>
-      {(editDnsConfigResult.isSuccess || editDnsConfigResult.isError) && (
-        <CAlert color={editDnsConfigResult.isSuccess ? 'success' : 'danger'} visible={alertVisible}>
-          {editDnsConfigResult.isSuccess
-            ? editDnsConfigResult.data.Results
-            : 'Error setting resolver'}
-        </CAlert>
-      )}
       {getDnsConfigResult.isUninitialized && getDnsConfig()}
       {getDnsConfigResult.isSuccess && (
-        <CCard>
-          <CCardHeader>DNS Resolver</CCardHeader>
-          <CButtonGroup role="group" aria-label="Resolver">
-            {resolvers.map((r, index) => (
-              <CButton
-                onClick={() => switchResolver(r)}
-                color={r === getDnsConfigResult.data.Resolver ? 'primary' : 'secondary'}
-                key={index}
+        <CCard className="h-100">
+          <CCardHeader>
+            <CCardTitle>DNS Resolver</CCardTitle>
+          </CCardHeader>
+          <CCardBody>
+            Select a DNS resolver to use for Domain Analysis. <br />
+            <CButtonGroup role="group" aria-label="Resolver" className="my-3">
+              {resolvers.map((r, index) => (
+                <CButton
+                  onClick={() => switchResolver(r)}
+                  color={r === getDnsConfigResult.data.Resolver ? 'primary' : 'secondary'}
+                  key={index}
+                >
+                  {r}
+                </CButton>
+              ))}
+            </CButtonGroup>
+            {(editDnsConfigResult.isSuccess || editDnsConfigResult.isError) && (
+              <CAlert
+                color={editDnsConfigResult.isSuccess ? 'success' : 'danger'}
+                visible={alertVisible}
               >
-                {r}
-              </CButton>
-            ))}
-          </CButtonGroup>
+                {editDnsConfigResult.isSuccess
+                  ? editDnsConfigResult.data.Results
+                  : 'Error setting resolver'}
+              </CAlert>
+            )}
+          </CCardBody>
         </CCard>
       )}
     </>
