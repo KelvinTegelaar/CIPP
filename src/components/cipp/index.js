@@ -3,6 +3,7 @@ import { CellBoolean, cellBooleanFormatter } from './CellBoolean'
 import { CellDate, cellDateFormatter } from './CellDate'
 import { CellNullText, cellNullTextFormatter } from './CellNullText'
 import { CellProgressBar, cellProgressBarFormatter } from './CellProgressBar'
+import CippTable from './CippTable'
 import CippDatatable from './CippDatatable'
 import PdfButton from './PdfButton'
 import StatusIcon from './StatusIcon'
@@ -23,6 +24,7 @@ export {
   CellProgressBar,
   cellProgressBarFormatter,
   CippDatatable,
+  CippTable,
   PdfButton,
   StatusIcon,
   TenantSelector,
