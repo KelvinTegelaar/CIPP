@@ -76,7 +76,7 @@ const IndividualDomainCheck = () => {
       <CCol>
         <CCard className="page-card h-100">
           <CCardHeader>
-            <CCardTitle>Email Security Domain Checker</CCardTitle>
+            <CCardTitle className="text-primary">Email Security Domain Checker</CCardTitle>
           </CCardHeader>
           <CCardBody>
             <Form
@@ -137,7 +137,7 @@ const ResultsCard = ({ children, data, type }) => {
   return (
     <CCard className="page-card h-100">
       <CCardHeader>
-        <CCardTitle>
+        <CCardTitle className="text-primary">
           <StatusIcon type="finalstate" finalState={finalState} />
           {type} Results
         </CCardTitle>
@@ -250,10 +250,7 @@ const MXResultsCard = ({ domain }) => {
   return (
     <ResultsCard data={data} type="MX">
       <div className="mb-2">
-        <CBadge
-          style={{ fontSize: 14, border: '1px solid var(--cui-btn-border-color, transparent)' }}
-          color="info"
-        >
+        <CBadge style={{ fontSize: 14 }} color="secondary">
           Mail Provider: {mailProviderName || 'Unknown'}
         </CBadge>
         <CTooltip content="Click to toggle mail provider/MX record details">
