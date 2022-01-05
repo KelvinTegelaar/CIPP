@@ -1,5 +1,6 @@
 import React from 'react'
 
+/* eslint-disable prettier/prettier */
 const Home = React.lazy(() => import('./views/home/Home'))
 const ViewProfile = React.lazy(() => import('./views/profile/ViewProfile'))
 const Logs = React.lazy(() => import('./views/cipp/Logs'))
@@ -18,58 +19,31 @@ const MFAReport = React.lazy(() => import('./views/identity/reports/MFAReport'))
 const Tenants = React.lazy(() => import('./views/tenant/administration/Tenants'))
 const Domains = React.lazy(() => import('./views/tenant/administration/Domains'))
 const EditTenant = React.lazy(() => import('./views/tenant/administration/EditTenant'))
-const ConditionalAccess = React.lazy(() =>
-  import('./views/tenant/administration/ConditionalAccess'),
-)
+const ConditionalAccess = React.lazy(() => import('./views/tenant/administration/ConditionalAccess'))
 const BasicAuthReport = React.lazy(() => import('./views/identity/reports/BasicAuthReport'))
-const BestPracticeAnalyzer = React.lazy(() =>
-  import('./views/tenant/standards/BestPracticeAnalyser'),
-)
+const BestPracticeAnalyzer = React.lazy(() => import('./views/tenant/standards/BestPracticeAnalyser'))
 const DomainsAnalyser = React.lazy(() => import('./views/tenant/standards/DomainsAnalyser'))
-const OffboardingWizard = React.lazy(() =>
-  import('./views/identity/administration/OffboardingWizard'),
-)
-const ListAppliedStandards = React.lazy(() =>
-  import('./views/tenant/standards/ListAppliedStandards'),
-)
+const OffboardingWizard = React.lazy(() => import('./views/identity/administration/OffboardingWizard'))
+const ListAppliedStandards = React.lazy(() => import('./views/tenant/standards/ListAppliedStandards'))
 const IndividualDomain = React.lazy(() => import('./views/tenant/standards/IndividualDomain'))
 const ApplyStandard = React.lazy(() => import('./views/tenant/standards/ApplyStandard'))
 const ListAlerts = React.lazy(() => import('./views/security/reports/ListAlerts'))
 const ApplicationsList = React.lazy(() => import('./views/endpoint/applications/ApplicationsList'))
-const ApplicationsAddChocoApp = React.lazy(() =>
-  import('./views/endpoint/applications/ApplicationsAddChocoApp'),
-)
+const ApplicationsAddChocoApp = React.lazy(() => import('./views/endpoint/applications/ApplicationsAddChocoApp'))
 const AutopilotAddDevice = React.lazy(() => import('./views/endpoint/autopilot/AutopilotAddDevice'))
-const AutopilotAddProfile = React.lazy(() =>
-  import('./views/endpoint/autopilot/AutopilotAddProfile'),
-)
-const AutopilotAddStatusPage = React.lazy(() =>
-  import('./views/endpoint/autopilot/AutopilotAddStatusPage'),
-)
-const AutopilotListDevices = React.lazy(() =>
-  import('./views/endpoint/autopilot/AutopilotListDevices'),
-)
-const AutopilotListProfiles = React.lazy(() =>
-  import('./views/endpoint/autopilot/AutopilotListProfiles'),
-)
-const AutopilotListStatusPages = React.lazy(() =>
-  import('./views/endpoint/autopilot/AutopilotListStatusPages'),
-)
+const AutopilotAddProfile = React.lazy(() => import('./views/endpoint/autopilot/AutopilotAddProfile'))
+const AutopilotAddStatusPage = React.lazy(() => import('./views/endpoint/autopilot/AutopilotAddStatusPage'))
+const AutopilotListDevices = React.lazy(() => import('./views/endpoint/autopilot/AutopilotListDevices'))
+const AutopilotListProfiles = React.lazy(() => import('./views/endpoint/autopilot/AutopilotListProfiles'))
+const AutopilotListStatusPages = React.lazy(() => import('./views/endpoint/autopilot/AutopilotListStatusPages'))
 const IntuneListPolicies = React.lazy(() => import('./views/endpoint/MEM/MEMListPolicies'))
 const MEMEditPolicy = React.lazy(() => import('./views/endpoint/MEM/MEMEditPolicy'))
-const EditAutopilotProfile = React.lazy(() =>
-  import('./views/endpoint/autopilot/AutopilotEditProfile'),
-)
-const EditAutopilotStatusPage = React.lazy(() =>
-  import('./views/endpoint/autopilot/AutopilotEditStatusPage'),
-)
+const EditAutopilotProfile = React.lazy(() => import('./views/endpoint/autopilot/AutopilotEditProfile'))
+const EditAutopilotStatusPage = React.lazy(() => import('./views/endpoint/autopilot/AutopilotEditStatusPage'))
 const IntuneCAPolicies = React.lazy(() => import('./views/endpoint/MEM/MEMCAPolicies'))
 const IntuneAddPolicy = React.lazy(() => import('./views/endpoint/MEM/MEMAddPolicy'))
 const MEMAddPolicyTemplate = React.lazy(() => import('./views/endpoint/MEM/MEMAddPolicyTemplate'))
-
-const IntuneListPolicyTemplate = React.lazy(() =>
-  import('./views/endpoint/MEM/MEMListPolicyTemplate'),
-)
+const IntuneListPolicyTemplate = React.lazy(() => import('./views/endpoint/MEM/MEMListPolicyTemplate'))
 const ListDefender = React.lazy(() => import('./views/endpoint/defender/ListDefender'))
 const OneDriveList = React.lazy(() => import('./views/teams-share/onedrive/OneDriveList'))
 const SharepointList = React.lazy(() => import('./views/teams-share/sharepoint/SharepointList'))
@@ -81,25 +55,13 @@ const TeamsActivity = React.lazy(() => import('./views/teams-share/teams/TeamsAc
 const CIPPSettings = React.lazy(() => import('./views/cipp/CIPPSettings'))
 const ContactsList = React.lazy(() => import('./views/email-exchange/administration/ContactsList'))
 const EditContact = React.lazy(() => import('./views/email-exchange/administration/EditContact'))
-const EditMailboxPermissions = React.lazy(() =>
-  import('./views/email-exchange/administration/EditMailboxPermissions'),
-)
-const ViewMobileDevices = React.lazy(() =>
-  import('./views/email-exchange/administration/ViewMobileDevices'),
-)
-const MailboxesList = React.lazy(() =>
-  import('./views/email-exchange/administration/MailboxesList'),
-)
-const MailboxClientAccessSettingsList = React.lazy(() =>
-  import('./views/email-exchange/reports/MailboxClientAccessSettingsList'),
-)
-const MailboxStatisticsList = React.lazy(() =>
-  import('./views/email-exchange/reports/MailboxStatisticsList'),
-)
+const EditMailboxPermissions = React.lazy(() => import('./views/email-exchange/administration/EditMailboxPermissions'))
+const ViewMobileDevices = React.lazy(() => import('./views/email-exchange/administration/ViewMobileDevices'))
+const MailboxesList = React.lazy(() => import('./views/email-exchange/administration/MailboxesList'))
+const MailboxClientAccessSettingsList = React.lazy(() => import('./views/email-exchange/reports/MailboxClientAccessSettingsList'))
+const MailboxStatisticsList = React.lazy(() => import('./views/email-exchange/reports/MailboxStatisticsList'))
 const MessageTrace = React.lazy(() => import('./views/email-exchange/reports/MessageTrace'))
-const PhishingPoliciesList = React.lazy(() =>
-  import('./views/email-exchange/reports/PhishingPoliciesList'),
-)
+const PhishingPoliciesList = React.lazy(() => import('./views/email-exchange/reports/PhishingPoliciesList'))
 const SecurityComplianceAlerts = React.lazy(() => import('./views/security/reports/ListAlerts'))
 
 const routes = [
