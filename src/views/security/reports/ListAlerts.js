@@ -7,6 +7,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPage } from '../../../components'
 import PropTypes from 'prop-types'
 import { faRedo } from '@fortawesome/free-solid-svg-icons'
+import cellGetProperty from '../../../components/cipp/cellGetProperty'
+import { useDispatch } from 'react-redux'
+import { showModal } from '../../../store/features/modal'
 
 const columns = [
   {
@@ -35,11 +38,6 @@ const columns = [
     selector: (row) => row['Status'],
     sortable: true,
   },
-  {
-    name: 'RawResult',
-    selector: (row) => row['RawResult'],
-    sortable: true,
-  },
 ]
 
 const AlertBox = ({ value, title, fetching }) => {
@@ -60,6 +58,7 @@ AlertBox.propTypes = {
 }
 
 const ListAlerts = () => {
+  const dispatch = useDispatch()
   const [execAlertsList, results] = useLazyExecAlertsListQuery()
   const { data: alerts = {}, isFetching, error } = results
   const {
@@ -75,6 +74,35 @@ const ListAlerts = () => {
   useEffect(() => {
     execAlertsList()
   }, [execAlertsList])
+
+  const handleShowModal = (value) =>
+    dispatch(
+      showModal({
+        title: 'More Information',
+        body: (
+          <div>
+            <pre>{JSON.stringify(value, null, 2)}</pre>
+          </div>
+        ),
+        visible: true,
+        size: 'xl',
+      }),
+    )
+
+  columns.push({
+    name: 'RawResult',
+    selector: (row) => row['RawResult'],
+    sortable: true,
+    cell: (row, index, column, id) => {
+      const value = cellGetProperty(row, index, column, id)
+
+      return (
+        <CButton size="sm" onClick={() => handleShowModal(value)}>
+          More
+        </CButton>
+      )
+    },
+  })
 
   return (
     <CippPage tenantSelector={false} title="List Alerts">
