@@ -18,6 +18,7 @@ import { licensesApi } from './api/licenses'
 import { mailboxApi } from './api/mailbox'
 import { oneDriveApi } from './api/oneDrive'
 import { reportsApi } from './api/reports'
+import { securityApi } from './api/security'
 import { tenantsApi } from './api/tenants'
 import { usersApi } from './api/users'
 
@@ -44,6 +45,7 @@ export const root = {
   [mailboxApi.reducerPath]: mailboxApi.reducer,
   [oneDriveApi.reducerPath]: oneDriveApi.reducer,
   [reportsApi.reducerPath]: reportsApi.reducer,
+  [securityApi.reducerPath]: securityApi.reducer,
   [tenantsApi.reducerPath]: tenantsApi.reducer,
   [usersApi.reducerPath]: usersApi.reducer,
 }
@@ -59,6 +61,7 @@ export const apiMiddleware = [
   mailboxApi.middleware,
   oneDriveApi.middleware,
   reportsApi.middleware,
+  securityApi.middleware,
   tenantsApi.middleware,
   usersApi.middleware,
 ]
