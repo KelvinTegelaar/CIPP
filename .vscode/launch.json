@@ -12,27 +12,19 @@
             "name": "Run frontend",
             "request": "launch",
             "type": "node-terminal",
-            "preLaunchTask": "RunAPI",
+            "preLaunchTask": "RunAllTasks",
             "resolveSourceMapLocations": [
               "${workspaceFolder}/**",
               "!**/node_modules/**"
             ]
-        },
-        {
-          "name": "Launch Edge",
-          "request": "launch",
-          "type": "pwa-msedge",
-          "url": "https://localhost:4280",
-          "webRoot": "${workspaceFolder}"
-        },
+        }
     ],
     "compounds": [
       {
         "name": "Launch it all 🚀",
         "configurations": [
           "Run frontend",
-          "Run emulator",
-          "Launch Edge"
+          "Run emulator"
         ]
       }
     ]
