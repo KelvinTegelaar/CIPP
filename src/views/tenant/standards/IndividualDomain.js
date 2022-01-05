@@ -74,8 +74,10 @@ const IndividualDomainCheck = () => {
   return (
     <CRow xs={{ cols: 1, gutter: 4 }} xl={{ cols: 2, gutter: 4 }} className="mb-5">
       <CCol>
-        <CCard className="h-100">
-          <CCardHeader component="h5">Email Security Domain Checker</CCardHeader>
+        <CCard className="page-card h-100">
+          <CCardHeader>
+            <CCardTitle>Email Security Domain Checker</CCardTitle>
+          </CCardHeader>
           <CCardBody>
             <Form
               initialValues={{ domain }}
@@ -133,9 +135,12 @@ const ResultsCard = ({ children, data, type }) => {
   const validationFails = results?.ValidationFails || []
 
   return (
-    <CCard className="h-100">
-      <CCardHeader component="h5">
-        <StatusIcon type='finalstate' finalState={finalState} />{type} Results
+    <CCard className="page-card h-100">
+      <CCardHeader>
+        <CCardTitle>
+          <StatusIcon type="finalstate" finalState={finalState} />
+          {type} Results
+        </CCardTitle>
       </CCardHeader>
       <CCardBody>
         {/* records and additional information is specific to each type
