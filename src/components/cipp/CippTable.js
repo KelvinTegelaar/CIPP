@@ -127,7 +127,7 @@ export default function CippTable({
     })
     return (
       <>
-        <div className="w-50 p-3 d-flex justify-content-start">
+        <div className="w-50 ms-n2 pb-3 pe-3 d-flex justify-content-start">
           <FilterComponent
             onFilter={(e) => setFilterText(e.target.value)}
             onClear={handleClear}
