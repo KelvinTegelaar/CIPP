@@ -133,7 +133,7 @@ export default function CippTable({
   }, [filterText, resetPaginationToggle, columns, data, reportName, actions])
 
   return (
-    <div>
+    <div className="ms-n3 me-n3">
       {isFetching && <CSpinner />}
       {!isFetching && error && <span>Error loading data</span>}
       {!isFetching && !error && (

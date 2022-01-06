@@ -69,17 +69,17 @@ const Dropdown = (row, rowIndex, formatExtraData) => {
         <CDropdownItem
           href={`/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`}
         >
-          <FontAwesomeIcon className="pr-1" icon={faUser} />
+          <FontAwesomeIcon icon={faUser} fixedWidth className="me-2" />
           View User
         </CDropdownItem>
         <CDropdownItem
           href={`/identity/administration/users/edit?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`}
         >
-          <FontAwesomeIcon icon={faCog} size="sm" />
+          <FontAwesomeIcon icon={faCog} fixedWidth className="me-2" />
           Edit User
         </CDropdownItem>
         <CDropdownItem href={`/identity/administration/ViewBec`}>
-          <FontAwesomeIcon icon={faUser} />
+          <FontAwesomeIcon icon={faUser} fixedWidth className="me-2" />
           Research Compromised Account
         </CDropdownItem>
         <CDropdownItem
@@ -91,7 +91,7 @@ const Dropdown = (row, rowIndex, formatExtraData) => {
           }
           href="#"
         >
-          <FontAwesomeIcon icon={faExchangeAlt} />
+          <FontAwesomeIcon icon={faExchangeAlt} fixedWidth className="me-2" />
           Send MFA Push To User
         </CDropdownItem>
         <CDropdownItem
@@ -103,7 +103,7 @@ const Dropdown = (row, rowIndex, formatExtraData) => {
           }
           href="#"
         >
-          <FontAwesomeIcon icon={faSync} />
+          <FontAwesomeIcon icon={faSync} fixedWidth className="me-2" />
           Convert To Shared
         </CDropdownItem>
         <CDropdownItem
@@ -115,7 +115,7 @@ const Dropdown = (row, rowIndex, formatExtraData) => {
           }
           href="#"
         >
-          <FontAwesomeIcon icon={faBan} />
+          <FontAwesomeIcon icon={faBan} fixedWidth className="me-2" />
           Block Sign-in
         </CDropdownItem>
         <CDropdownItem
@@ -127,7 +127,7 @@ const Dropdown = (row, rowIndex, formatExtraData) => {
           }
           href="#"
         >
-          <FontAwesomeIcon icon={faKey} />
+          <FontAwesomeIcon icon={faKey} fixedWidth className="me-2" />
           Reset Password (Must Change)
         </CDropdownItem>
         <CDropdownItem
@@ -139,7 +139,7 @@ const Dropdown = (row, rowIndex, formatExtraData) => {
           }
           href="#"
         >
-          <FontAwesomeIcon icon={faKey} />
+          <FontAwesomeIcon icon={faKey} fixedWidth className="me-2" />
           Reset Password
         </CDropdownItem>
         <CDropdownItem
@@ -151,7 +151,7 @@ const Dropdown = (row, rowIndex, formatExtraData) => {
           }
           href="#"
         >
-          <FontAwesomeIcon icon={faUserTimes} />
+          <FontAwesomeIcon icon={faUserTimes} fixedWidth className="me-2" />
           Delete User
         </CDropdownItem>
       </CDropdownMenu>
@@ -177,13 +177,15 @@ const columns = [
     selector: (row) => row['userType'],
     sortable: true,
     exportselector: 'userType',
+    minWidth: '75px',
   },
   {
-    name: 'Account Enabled',
+    name: 'Enabled',
     selector: (row) => row['accountEnabled'],
     cell: cellBooleanFormatter(),
     sortable: true,
     exportselector: 'accountEnabled',
+    maxWidth: '100px',
   },
   {
     name: 'On Premise Sync',
@@ -191,11 +193,13 @@ const columns = [
     cell: cellBooleanFormatter(),
     sortable: true,
     exportselector: 'onPremisesSyncEnabled',
+    maxWidth: '150px',
   },
   {
     name: 'Licenses',
-    selector: (row) => 'Click to Expand',
+    selector: (row) => row['LicJoined'],
     exportselector: 'LicJoined',
+    grow: 2,
   },
   {
     name: 'id',
@@ -212,13 +216,6 @@ const columns = [
 const Users = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
-  // eslint-disable-next-line react/prop-types
-  const ExpandedComponent = ({ data }) => (
-    //why not in table?
-    // eslint-disable-next-line react/prop-types
-    <pre>{JSON.stringify(data.LicJoined, null, 2)}</pre>
-  )
-
   return (
     <CippPageList
       title="Users"
@@ -231,9 +228,6 @@ const Users = () => {
         reportName: `${tenant?.defaultDomainName}-Users`,
         params: { TenantFilter: tenant?.defaultDomainName },
         tableProps: {
-          expandableRows: true,
-          expandableRowsComponent: ExpandedComponent,
-          expandOnRowClicked: true,
           responsive: false,
         },
       }}
