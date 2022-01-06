@@ -108,3 +108,27 @@
 .modal-content {
   border-radius: var(--cipp-border-radius);
 }
+
+/* CIPP specifics */
+
+.equalheight {
+  flex-grow: 1;
+}
+
+.nav-tabs {
+  .nav-link {
+    border-radius: var(--cipp-border-radius);
+  }
+}
+
+/* Tables */
+
+.rdt_TableBody {
+  .rdt_TableRow {
+    &:hover {
+      border-bottom-color:  var(--cipp-table-divider);
+      outline-style: none;
+    }
+  }
+}
+

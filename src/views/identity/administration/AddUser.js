@@ -386,7 +386,12 @@ const AddUser = () => {
                                 <CButton type="submit" disabled={submitting || formDisabled}>
                                   Edit User
                                   {postResults.isFetching && (
-                                    <FontAwesomeIcon icon={faCircleNotch} spin size="1x" />
+                                    <FontAwesomeIcon
+                                      icon={faCircleNotch}
+                                      spin
+                                      className="me-2"
+                                      size="1x"
+                                    />
                                   )}
                                 </CButton>
                               </CCol>

@@ -56,9 +56,16 @@ const MessageTrace = () => {
   const days = query.get('days')
   const SearchNow = query.get('SearchNow')
   //const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
-  const [visibleA, setVisibleA] = useState(false)
+  const [visibleA, setVisibleA] = useState(true)
 
   const handleSubmit = async (values) => {
+    setVisibleA(false)
+    Object.keys(values).filter(function (x) {
+      if (values[x] === null) {
+        delete values[x]
+      }
+      return null
+    })
     const shippedValues = {
       tenantFilter: tenant.defaultDomainName,
       SearchNow: true,

@@ -91,7 +91,7 @@ const _nav = [
     name: 'Administration',
     section: 'Tenant Administration',
     to: '/tenant/administration',
-    icon: <FontAwesomeIcon icon={faCog} className="nav-icon" />,
+    icon: <FontAwesomeIcon icon={faWrench} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
@@ -170,7 +170,7 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'List',
+        name: 'List Applications',
         to: '/endpoint/applications/list',
       },
       {

@@ -92,20 +92,22 @@ export default class Wizard extends React.Component {
                 {activePage}
                 <div className="d-flex justify-content-between">
                   {page > 0 && (
-                    <CButton type="button" className="text-white" onClick={this.previous}>
+                    <CButton className="me-auto" type="button" onClick={this.previous}>
                       « Previous
                     </CButton>
                   )}
                   {!isLastPage && (
-                    <CButton className="text-white" type="submit">
+                    <CButton className="ms-auto" type="submit">
                       Next »
                     </CButton>
                   )}
                   {isLastPage && (
                     <>
-                      <CButton type="submit" className="text-white" disabled={submitting}>
+                      <CButton type="submit" disabled={submitting}>
                         Submit
-                        {submitting && <FontAwesomeIcon icon={faCircleNotch} spin size="1x" />}
+                        {submitting && (
+                          <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                        )}
                       </CButton>
                     </>
                   )}
