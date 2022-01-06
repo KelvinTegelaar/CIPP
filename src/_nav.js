@@ -170,7 +170,7 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'List',
+        name: 'List Applications',
         to: '/endpoint/applications/list',
       },
       {

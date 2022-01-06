@@ -309,7 +309,6 @@ const ExcludedTenantsSettings = () => {
                 Excluded Tenant List
                 <CButton
                   style={{ position: 'absolute', right: '5px' }}
-                  className="text-white"
                   size="sm"
                   href="#"
                   onClick={() => handleExcludeTenant()}
@@ -511,11 +510,7 @@ const NotificationsSettings = () => {
                   <RFFCFormSwitch name="tokenUpdater" label="Token Refresh Events" value={false} />
 
                   <br></br>
-                  <CButton
-                    className="text-white"
-                    disabled={notificationConfigResult.isFetching}
-                    type="submit"
-                  >
+                  <CButton disabled={notificationConfigResult.isFetching} type="submit">
                     Set Notification Settings
                   </CButton>
                   {notificationConfigResult.isSuccess && (
