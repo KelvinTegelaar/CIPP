@@ -78,6 +78,10 @@
     }
   }
   &.options-card {
+    border-color: var(--cui-options-card-border-color);
+    .card-header {
+      border-bottom-color: var(--cui-options-card-border-color);
+    }
     .card-title {
       line-height: 2rem;
       margin-bottom: 0rem;
@@ -132,3 +136,8 @@
   }
 }
 
+.cipp-tablewrapper {
+  header {
+    padding-bottom: 1rem;
+  }
+}

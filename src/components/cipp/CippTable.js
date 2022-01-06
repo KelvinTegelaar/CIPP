@@ -32,7 +32,6 @@ export default function CippTable({
   data,
   isFetching = false,
   error,
-  disablePDFExport = false,
   reportName,
   columns = [],
   tableProps: {
@@ -50,6 +49,7 @@ export default function CippTable({
     selectableRows,
     onSelectedRowsChange,
     highlightOnHover = true,
+    disableDefaultActions = false,
     actions = [],
     ...rest
   } = {},
@@ -106,28 +106,26 @@ export default function CippTable({
       }
     }
 
-    const defaultActions = () => {
-      if (!disablePDFExport) {
-        return [
-          <ExportPDFButton
-            key="export-pdf-action"
-            pdfData={data}
-            pdfHeaders={columns}
-            pdfSize="A4"
-            reportName={reportName}
-          />,
-        ]
-      } else {
-        return null
-      }
-    }
+    let defaultActions = []
 
-    actions.forEach((action) => {
-      defaultActions.push(action)
-    })
+    if (disableDefaultActions === false) {
+      defaultActions = [
+        <ExportPDFButton
+          key="export-pdf-action"
+          pdfData={data}
+          pdfHeaders={columns}
+          pdfSize="A4"
+          reportName={reportName}
+        />,
+      ]
+
+      actions.forEach((action) => {
+        defaultActions.push(action)
+      })
+    }
     return (
       <>
-        <div className="w-50 ms-n2 pb-3 pe-3 d-flex justify-content-start">
+        <div className="w-50 ms-n2 d-flex justify-content-start">
           <FilterComponent
             onFilter={(e) => setFilterText(e.target.value)}
             onClear={handleClear}
@@ -140,12 +138,13 @@ export default function CippTable({
   }, [filterText, resetPaginationToggle, columns, data, reportName, actions])
 
   return (
-    <div className="ms-n3 me-n3">
+    <div className="ms-n3 me-n3 cipp-tablewrapper">
       {isFetching && <CSpinner />}
       {!isFetching && error && <span>Error loading data</span>}
       {!isFetching && !error && (
         <div>
           <DataTable
+            className="cipp-table"
             theme={theme}
             subHeader={subheader}
             selectableRows={selectableRows}
@@ -177,7 +176,6 @@ export default function CippTable({
 }
 
 export const CippTablePropTypes = {
-  disablePDFExport: PropTypes.bool,
   reportName: PropTypes.string.isRequired,
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
   keyField: PropTypes.string,

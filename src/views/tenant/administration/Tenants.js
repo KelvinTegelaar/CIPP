@@ -13,6 +13,7 @@ import {
 } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCog, faBars } from '@fortawesome/free-solid-svg-icons'
+import { CippPageList } from 'src/components'
 
 const Dropdown = (row, index, column) => {
   return (
@@ -144,22 +145,15 @@ const TenantsList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
-    <div>
-      <hr />
-      <CCard className="page-card">
-        <CCardHeader>
-          <CCardTitle className="text-primary">Tenants</CCardTitle>
-        </CCardHeader>
-        <CCardBody>
-          <CippDatatable
-            keyField="id"
-            reportName={`${tenant?.defaultDomainName}-Tenants-List`}
-            path="/api/ListTenants"
-            columns={columns}
-          />
-        </CCardBody>
-      </CCard>
-    </div>
+    <CippPageList
+      title="Tenants"
+      datatable={{
+        keyField: 'id',
+        columns,
+        reportName: `${tenant.tenantId}-Tenants-List`,
+        path: '/api/ListTenants',
+      }}
+    />
   )
 }
 
