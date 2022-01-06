@@ -139,7 +139,7 @@ export default function CippDatatable({
       {isFetching && <CSpinner />}
       {!isFetching && error && <span>Error loading data</span>}
       {!isFetching && !error && (
-        <div>
+        <div className="ms-n3 me-n3">
           <DataTable
             theme={theme}
             subHeader={subheader}

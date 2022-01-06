@@ -91,15 +91,6 @@ $link-shade-percentage: 20% !default;
 $link-hover-color: shift-color($link-color, $link-shade-percentage) !default;
 $link-hover-decoration: null !default;
 
-$cyberdrain-orange: #f77f00;
-$cyberdrain-orange-rgb: rgb(247, 127, 0);
-$cyberdrain-blue: #003049;
-$cyberdrain-blue-rgb: rgb(0, 48, 73);
-$cyberdrain-dark: #2e363a;
-$cyberdrain-dark-rgb: rgb(46, 54, 58);
-$cyberdrain-light: #ebedef;
-$cyberdrain-light-rgb: rgb(235, 237, 239);
-
 $search-bg-color: #ffffff;
 $search-border-color: #eeeeee;
 $search-selected-option-bg: #2fcc8b;
@@ -288,8 +279,8 @@ $search-group-header-bg: #eeeeee;
 // Quickly modify global styling by enabling or disabling optional features.
 
 // $enable-caret:                      true !default;
-// $enable-rounded:                    true !default;
-// $enable-shadows:                    false !default;
+$enable-rounded:                        false;
+$enable-shadows:                        true;
 // $enable-gradients:                  false !default;
 // $enable-transitions:                true !default;
 // $enable-reduced-motion:             true !default;
@@ -298,7 +289,7 @@ $search-group-header-bg: #eeeeee;
 // $enable-button-pointers:            true !default;
 // $enable-rfs:                        true !default;
 // $enable-validation-icons:           true !default;
-// $enable-negative-margins:           false !default;
+$enable-negative-margins:               true;
 // $enable-deprecation-messages:       true !default;
 // $enable-important-utilities:        true !default;
 // $enable-contrast-ratio-correction:  true !default;

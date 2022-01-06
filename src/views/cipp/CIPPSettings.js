@@ -8,7 +8,6 @@ import {
   CCardHeader,
   CCardTitle,
   CCol,
-  CContainer,
   CFormLabel,
   CNav,
   CNavItem,
@@ -31,7 +30,6 @@ import {
 } from '../../store/api/app'
 import {
   useLazyListExcludedTenantsQuery,
-  useLazyExecAddExcludeTenantQuery,
   useLazyExecExcludeTenantQuery,
 } from '../../store/api/tenants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -43,7 +41,7 @@ import { useLazyEditDnsConfigQuery, useLazyGetDnsConfigQuery } from '../../store
 import { setModalContent } from '../../store/features/modal'
 import { useDispatch } from 'react-redux'
 import { TenantSelector } from '../../components/cipp'
-import { RFFCFormSwitch, RFFCFormInput, RFFCFormRadio } from '../../components/RFFComponents'
+import { RFFCFormSwitch, RFFCFormInput } from '../../components/RFFComponents'
 import { Form } from 'react-final-form'
 import { CippPage } from '../../components/CippPage'
 import useConfirmModal from '../../hooks/useConfirmModal'
@@ -358,7 +356,7 @@ const SecuritySettings = () => {
               <CCardHeader>
                 <CCardTitle>Resource Group</CCardTitle>
               </CCardHeader>
-              <CCardBody>
+              <CCardBody className="equalheight">
                 The Resource group contains all the CIPP resources in your tenant, except the SAM
                 Application <br /> <br />
                 <CButton>Go to Resource Group</CButton>
@@ -370,7 +368,7 @@ const SecuritySettings = () => {
               <CCardHeader>
                 <CCardTitle>Key Vault</CCardTitle>
               </CCardHeader>
-              <CCardBody>
+              <CCardBody className="equalheight">
                 The keyvault allows you to check token information. By default you do not have
                 access.
                 <br /> <br />
@@ -383,7 +381,7 @@ const SecuritySettings = () => {
               <CCardHeader>
                 <CCardTitle>Static Web App (Role Management)</CCardTitle>
               </CCardHeader>
-              <CCardBody>
+              <CCardBody className="equalheight">
                 The Statis Web App role management allows you to invite other users to the
                 application.
                 <br /> <br />
@@ -398,7 +396,7 @@ const SecuritySettings = () => {
               <CCardHeader>
                 <CCardTitle>Function App (Deployment Center)</CCardTitle>
               </CCardHeader>
-              <CCardBody>
+              <CCardBody className="equalheight">
                 The Function App Deployment Center allows you to run updates on the API
                 <br /> <br />
                 <CButton>Go to Function App Deployment Center</CButton>
@@ -410,7 +408,7 @@ const SecuritySettings = () => {
               <CCardHeader>
                 <CCardTitle>Function App (Configuration)</CCardTitle>
               </CCardHeader>
-              <CCardBody>
+              <CCardBody className="equalheight">
                 At the Function App Configuration you can check the status of the API access to your
                 keyvault <br /> <br />
                 <CButton>Go to Function App Configuration</CButton>
@@ -422,7 +420,7 @@ const SecuritySettings = () => {
               <CCardHeader>
                 <CCardTitle>Function App (Overview)</CCardTitle>
               </CCardHeader>
-              <CCardBody>
+              <CCardBody className="equalheight">
                 At the function App Overview, you can stop and start the backend API <br /> <br />
                 <CButton>Go to Function App Overview</CButton>
               </CCardBody>
