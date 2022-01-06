@@ -93,7 +93,7 @@ const IndividualDomainCheck = () => {
                       color="primary"
                     >
                       {isFetching && (
-                        <FontAwesomeIcon icon={faCircleNotch} spin size="1x" className="mx-1" />
+                        <FontAwesomeIcon icon={faCircleNotch} spin size="1x" className="me-2" />
                       )}
                       Check Domain
                     </CButton>
