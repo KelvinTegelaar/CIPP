@@ -11,37 +11,12 @@ import cellGetProperty from '../../../components/cipp/cellGetProperty'
 import { useDispatch } from 'react-redux'
 import { showModal } from '../../../store/features/modal'
 
-const columns = [
-  {
-    name: 'Date',
-    selector: (row) => row['EventDateTime'],
-    sortable: true,
-    cell: cellDateFormatter(),
-  },
-  {
-    name: 'Tenant',
-    selector: (row) => row['Tenant'],
-    sortable: true,
-  },
-  {
-    name: 'Title',
-    selector: (row) => row['Title'],
-    sortable: true,
-  },
-  {
-    name: 'Severity',
-    selector: (row) => row['Severity'],
-    sortable: true,
-  },
-  {
-    name: 'Status',
-    selector: (row) => row['Status'],
-    sortable: true,
-  },
-]
-
 const AlertBox = ({ value, title, fetching }) => {
-  const displayValue = value ? value : 'n/a'
+  let displayValue = value
+  if (typeof value !== 'number') {
+    displayValue = 'n/a'
+  }
+
   return (
     <CCard>
       <CCardBody>
@@ -89,20 +64,48 @@ const ListAlerts = () => {
       }),
     )
 
-  columns.push({
-    name: 'RawResult',
-    selector: (row) => row['RawResult'],
-    sortable: true,
-    cell: (row, index, column, id) => {
-      const value = cellGetProperty(row, index, column, id)
-
-      return (
-        <CButton size="sm" onClick={() => handleShowModal(value)}>
-          More
-        </CButton>
-      )
+  const columns = [
+    {
+      name: 'Date',
+      selector: (row) => row['EventDateTime'],
+      sortable: true,
+      cell: cellDateFormatter(),
     },
-  })
+    {
+      name: 'Tenant',
+      selector: (row) => row['Tenant'],
+      sortable: true,
+    },
+    {
+      name: 'Title',
+      selector: (row) => row['Title'],
+      sortable: true,
+    },
+    {
+      name: 'Severity',
+      selector: (row) => row['Severity'],
+      sortable: true,
+    },
+    {
+      name: 'Status',
+      selector: (row) => row['Status'],
+      sortable: true,
+    },
+    {
+      name: 'More Info',
+      selector: (row) => row['MSResults'],
+      sortable: true,
+      cell: (row, index, column, id) => {
+        const value = cellGetProperty(row, index, column, id)
+
+        return (
+          <CButton size="sm" onClick={() => handleShowModal(value)}>
+            More
+          </CButton>
+        )
+      },
+    },
+  ]
 
   return (
     <CippPage tenantSelector={false} title="List Alerts">
