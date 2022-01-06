@@ -15,17 +15,19 @@ export function CippPage({ tenantSelector = true, title, children, titleButton =
   const dispatch = useDispatch()
 
   useEffect(() => {
-    const customerId = searchParams.get('customerId')
-    if (customerId && isSuccess) {
-      const currentTenant = tenants.filter((tenant) => tenant.customerId === customerId)
-      if (currentTenant.length > 0) {
-        dispatch(setCurrentTenant({ tenant: currentTenant[0] }))
+    if (tenantSelector) {
+      const customerId = searchParams.get('customerId')
+      if (customerId && isSuccess) {
+        const currentTenant = tenants.filter((tenant) => tenant.customerId === customerId)
+        if (currentTenant.length > 0) {
+          dispatch(setCurrentTenant({ tenant: currentTenant[0] }))
+        }
+      }
+      if (!customerId && Object.keys(tenant).length > 0) {
+        setSearchParams({ customerId: tenant?.customerId })
       }
     }
-    if (!customerId && Object.keys(tenant).length > 0) {
-      setSearchParams({ customerId: tenant?.customerId })
-    }
-  }, [searchParams, dispatch, tenants, isSuccess, tenant, setSearchParams])
+  }, [searchParams, dispatch, tenants, isSuccess, tenant, setSearchParams, tenantSelector])
 
   return (
     <div>
