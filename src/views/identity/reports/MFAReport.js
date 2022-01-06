@@ -4,6 +4,7 @@ import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
 import { cellBooleanFormatter } from '../../../components/cipp'
 import { CCard, CCardHeader, CCardTitle, CCardBody } from '@coreui/react'
+import { CippPage } from 'src/components/CippPage'
 
 //TODO: Add CellBoolean
 const columns = [
@@ -48,25 +49,16 @@ const MFAList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
-    <div>
-      <TenantSelector />
-      <hr />
-      <CCard className="page-card">
-        <CCardHeader>
-          <CCardTitle className="text-primary">MFA Report</CCardTitle>
-        </CCardHeader>
-        <CCardBody>
-          {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-          <CippDatatable
-            keyField="id"
-            reportName={`${tenant?.defaultDomainName}-MFAReport-List`}
-            path="/api/ListMFAUsers"
-            columns={columns}
-            params={{ TenantFilter: tenant?.defaultDomainName }}
-          />
-        </CCardBody>
-      </CCard>
-    </div>
+    <CippPage title="MFA Report">
+      {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
+      <CippDatatable
+        keyField="id"
+        reportName={`${tenant?.defaultDomainName}-MFAReport-List`}
+        path="/api/ListMFAUsers"
+        columns={columns}
+        params={{ TenantFilter: tenant?.defaultDomainName }}
+      />
+    </CippPage>
   )
 }
 

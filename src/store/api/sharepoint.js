@@ -1,9 +1,6 @@
-import { createApi } from '@reduxjs/toolkit/query/react'
-import { baseQuery } from './baseQuery'
+import { baseApi } from './baseApi'
 
-export const sharepointApi = createApi({
-  reducerPath: 'sharepoint',
-  baseQuery: baseQuery(),
+export const sharepointApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     listSharepointSites: builder.query({
       query: ({ tenantDomain, groupId }) => ({

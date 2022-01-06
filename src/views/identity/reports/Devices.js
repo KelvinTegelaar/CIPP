@@ -1,12 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { CCard, CCardHeader, CCardTitle, CCardBody } from '@coreui/react'
-import {
-  cellBooleanFormatter,
-  cellDateFormatter,
-  TenantSelector,
-  CippDatatable,
-} from '../../../components/cipp'
+import { CippPage } from 'src/components/CippPage'
+import { cellBooleanFormatter, cellDateFormatter, CippDatatable } from 'src/components/cipp'
 
 const columns = [
   {
@@ -90,25 +85,16 @@ const DevicesList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
-    <div>
-      <TenantSelector />
-      <hr />
-      <CCard className="page-card">
-        <CCardHeader>
-          <CCardTitle className="text-primary">Devices</CCardTitle>
-        </CCardHeader>
-        <CCardBody>
-          {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-          <CippDatatable
-            keyField="id"
-            reportName={`${tenant?.defaultDomainName}-Device-List`}
-            path="/api/ListDevices"
-            columns={columns}
-            params={{ TenantFilter: tenant?.defaultDomainName }}
-          />
-        </CCardBody>
-      </CCard>
-    </div>
+    <CippPage title="Devices">
+      {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
+      <CippDatatable
+        keyField="id"
+        reportName={`${tenant?.defaultDomainName}-Device-List`}
+        path="/api/ListDevices"
+        columns={columns}
+        params={{ TenantFilter: tenant?.defaultDomainName }}
+      />
+    </CippPage>
   )
 }
 

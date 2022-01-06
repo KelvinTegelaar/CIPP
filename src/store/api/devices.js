@@ -1,9 +1,6 @@
-import { baseQuery } from './baseQuery'
-import { createApi } from '@reduxjs/toolkit/query/react'
+import { baseApi } from './baseApi'
 
-export const devicesApi = createApi({
-  reducerPath: 'devices',
-  baseQuery: baseQuery({ baseUrl: '/' }),
+export const devicesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     listDevices: builder.query({
       query: ({ tenantDomain }) => ({ path: '/api/ListDevices', params: { tenantDomain } }),

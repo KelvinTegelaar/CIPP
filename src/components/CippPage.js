@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import TenantSelector from './cipp/TenantSelector'
-import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
+import { CCard, CCardBody, CCardHeader } from '@coreui/react'
 import CippDatatable from './cipp/CippDatatable'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
@@ -9,7 +9,7 @@ import { setCurrentTenant } from '../store/features/app'
 import { useListTenantsQuery } from '../store/api/tenants'
 
 export function CippPage({ tenantSelector = true, title, children, titleButton = null }) {
-  const { data: tenants = [], isFetching, isError, isSuccess } = useListTenantsQuery()
+  const { data: tenants = [], isSuccess } = useListTenantsQuery()
   const tenant = useSelector((state) => state.app.currentTenant)
   const [searchParams, setSearchParams] = useSearchParams()
   const dispatch = useDispatch()
@@ -29,19 +29,23 @@ export function CippPage({ tenantSelector = true, title, children, titleButton =
     }
   }, [searchParams, dispatch, tenants, isSuccess, tenant, setSearchParams, tenantSelector])
 
+  const handleTenantSelect = (tenant) => {
+    setSearchParams({ customerId: tenant.customerId })
+  }
+
   return (
     <div>
-      {tenantSelector && <TenantSelector />}
+      {tenantSelector && <TenantSelector action={handleTenantSelect} />}
       {tenantSelector && <hr />}
       <CCard className="page-card">
-        <CCardHeader>
-          <CCardTitle className="text-primary d-flex justify-content-between">
-            {title}
-            {titleButton}
-          </CCardTitle>
+        <CCardHeader component="h3" className="d-flex justify-content-between">
+          {title}
+          {titleButton}
         </CCardHeader>
         <CCardBody>
-          {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
+          {tenantSelector && Object.keys(tenant).length === 0 && (
+            <span>Select a tenant to get started.</span>
+          )}
           {children}
         </CCardBody>
       </CCard>

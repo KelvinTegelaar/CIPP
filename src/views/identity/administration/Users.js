@@ -25,7 +25,7 @@ const Dropdown = (row, rowIndex, formatExtraData) => {
   const dispatch = useDispatch()
   const [ExecuteGetRequest, GetRequestResult] = useLazyGenericGetRequestQuery()
   const handleDropdownConfirm = (apiurl) => {
-    ExecuteGetRequest({ url: apiurl })
+    ExecuteGetRequest({ path: apiurl })
     //this isnt working all the way yet.
     dispatch(
       setModalContent({

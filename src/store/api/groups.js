@@ -1,9 +1,6 @@
-import { createApi } from '@reduxjs/toolkit/query/react'
-import { baseQuery } from './baseQuery'
+import { baseApi } from './baseApi'
 
-export const groupsApi = createApi({
-  reducerPath: 'groups',
-  baseQuery: baseQuery(),
+export const groupsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     addGroup: builder.mutation({
       query: ({ group }) => ({

@@ -57,7 +57,7 @@ const Dropdown = (row, index, column) => {
   }
   return (
     <CDropdown>
-      <CDropdownToggle size="sm" variant="ghost" color="primary">
+      <CDropdownToggle size="sm" color="link">
         <FontAwesomeIcon icon={faBars} />
       </CDropdownToggle>
       <CDropdownMenu>
@@ -116,7 +116,7 @@ const AutopilotListTemplates = () => {
       <hr />
       <CCard className="page-card">
         <CCardHeader>
-          <CCardTitle className="text-primary">Available Endpoint Manager Templates</CCardTitle>
+          <CCardTitle>Available Endpoint Manager Templates</CCardTitle>
         </CCardHeader>
         <CCardBody>
           <CippDatatable

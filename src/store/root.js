@@ -8,19 +8,7 @@ import { toastsSlice } from './features/toasts'
 import { switcherSlice } from './features/switcher'
 
 // apis
-import { appApi } from './api/app'
-import { authApi } from './api/auth'
-import { datatableApi } from './api/datatable'
-import { devicesApi } from './api/devices'
-import { domainsApi } from './api/domains'
-import { groupsApi } from './api/groups'
-import { licensesApi } from './api/licenses'
-import { mailboxApi } from './api/mailbox'
-import { oneDriveApi } from './api/oneDrive'
-import { reportsApi } from './api/reports'
-import { securityApi } from './api/security'
-import { tenantsApi } from './api/tenants'
-import { usersApi } from './api/users'
+import { baseApi } from './api/baseApi'
 
 // actions
 import { RESET_STATE_ACTION_TYPE } from './actions/resetState'
@@ -34,37 +22,11 @@ export const root = {
   [switcherSlice.name]: switcherSlice.reducer,
   [toastsSlice.name]: toastsSlice.reducer,
 
-  // apis
-  [appApi.reducerPath]: appApi.reducer,
-  [authApi.reducerPath]: authApi.reducer,
-  [datatableApi.reducerPath]: datatableApi.reducer,
-  [devicesApi.reducerPath]: devicesApi.reducer,
-  [domainsApi.reducerPath]: domainsApi.reducer,
-  [groupsApi.reducerPath]: groupsApi.reducer,
-  [licensesApi.reducerPath]: licensesApi.reducer,
-  [mailboxApi.reducerPath]: mailboxApi.reducer,
-  [oneDriveApi.reducerPath]: oneDriveApi.reducer,
-  [reportsApi.reducerPath]: reportsApi.reducer,
-  [securityApi.reducerPath]: securityApi.reducer,
-  [tenantsApi.reducerPath]: tenantsApi.reducer,
-  [usersApi.reducerPath]: usersApi.reducer,
+  // api
+  [baseApi.reducerPath]: baseApi.reducer,
 }
 
-export const apiMiddleware = [
-  appApi.middleware,
-  authApi.middleware,
-  datatableApi.middleware,
-  devicesApi.middleware,
-  domainsApi.middleware,
-  groupsApi.middleware,
-  licensesApi.middleware,
-  mailboxApi.middleware,
-  oneDriveApi.middleware,
-  reportsApi.middleware,
-  securityApi.middleware,
-  tenantsApi.middleware,
-  usersApi.middleware,
-]
+export const apiMiddleware = [baseApi.middleware]
 
 const combinedReducer = combineReducers(root)
 

@@ -1,9 +1,6 @@
-import { createApi } from '@reduxjs/toolkit/query/react'
-import { baseQuery } from './baseQuery'
+import { baseApi } from './baseApi'
 
-export const mailboxApi = createApi({
-  reducerPath: 'mailbox',
-  baseQuery: baseQuery(),
+export const mailboxApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     listMailboxDetails: builder.query({
       query: ({ userId, tenantDomain }) => ({
