@@ -161,7 +161,7 @@ const GeneralSettings = () => {
                 className="mt-3"
               >
                 {permissionsResult.isFetching && (
-                  <FontAwesomeIcon icon={faCircleNotch} spin size="1x" />
+                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
                 )}
                 Run Permissions Check
               </CButton>
@@ -186,7 +186,7 @@ const GeneralSettings = () => {
                 className="mt-3"
               >
                 {clearCacheResult.isFetching && (
-                  <FontAwesomeIcon icon={faCircleNotch} spin size="1x" />
+                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
                 )}
                 Clear Cache
               </CButton>
@@ -222,7 +222,7 @@ const GeneralSettings = () => {
               <br />
               <CButton onClick={() => handleCheckAccess()} disabled={accessCheckResult.isFetching}>
                 {accessCheckResult.isFetching && (
-                  <FontAwesomeIcon icon={faCircleNotch} spin size="1x" />
+                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
                 )}
                 Run access check
               </CButton>
@@ -445,7 +445,9 @@ const NotificationsSettings = () => {
   return (
     <>
       {notificationListResult.isUninitialized && listNotification()}
-      {notificationListResult.isFetching && <FontAwesomeIcon icon={faCircleNotch} spin size="1x" />}
+      {notificationListResult.isFetching && (
+        <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+      )}
       {!notificationListResult.isFetching && notificationListResult.error && (
         <span>Error loading data</span>
       )}

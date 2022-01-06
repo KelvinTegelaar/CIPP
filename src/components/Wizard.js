@@ -105,7 +105,9 @@ export default class Wizard extends React.Component {
                     <>
                       <CButton type="submit" className="text-white" disabled={submitting}>
                         Submit
-                        {submitting && <FontAwesomeIcon icon={faCircleNotch} spin size="1x" />}
+                        {submitting && (
+                          <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                        )}
                       </CButton>
                     </>
                   )}
