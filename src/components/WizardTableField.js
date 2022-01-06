@@ -60,12 +60,12 @@ export default class WizardTableField extends React.Component {
       <CippDatatable
         keyField={keyField}
         columns={columns}
+        disablePDFExport={true}
         striped
         path={path}
         tableProps={{
           selectableRows: true,
           onSelectedRowsChange: this.handleSelect,
-          subheader: false,
         }}
       />
     )
