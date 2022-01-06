@@ -1,10 +1,6 @@
-import { createApi } from '@reduxjs/toolkit/query/react'
-import { baseQuery } from './baseQuery'
+import { baseApi } from './baseApi'
 
-export const AUTH_API_REDUCER_PATH = 'auth-api'
-export const authApi = createApi({
-  reducerPath: AUTH_API_REDUCER_PATH,
-  baseQuery: baseQuery(),
+export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     loadClientPrincipal: builder.query({
       query: () => ({ path: '/.auth/me' }),

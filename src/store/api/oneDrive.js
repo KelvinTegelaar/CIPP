@@ -1,9 +1,6 @@
-import { createApi } from '@reduxjs/toolkit/query/react'
-import { baseQuery } from './baseQuery'
+import { baseApi } from './baseApi'
 
-export const oneDriveApi = createApi({
-  reducerPath: 'oneDrive',
-  baseQuery: baseQuery(),
+export const oneDriveApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     listOneDriveUsage: builder.query({
       query: ({ userUPN, tenantDomain }) => ({

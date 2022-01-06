@@ -1,9 +1,6 @@
-import { createApi } from '@reduxjs/toolkit/query/react'
-import { baseQuery } from './baseQuery'
+import { baseApi } from './baseApi'
 
-export const securityApi = createApi({
-  reducerPath: 'security',
-  baseQuery: baseQuery({ baseUrl: '/' }),
+export const securityApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     execAlertsList: builder.query({
       queryFn: async (_args, _baseQueryApi, _options, baseQuery) => {
