@@ -34,11 +34,9 @@ export function CippPage({ tenantSelector = true, title, children, titleButton =
       {tenantSelector && <TenantSelector />}
       {tenantSelector && <hr />}
       <CCard className="page-card">
-        <CCardHeader>
-          <CCardTitle className="text-primary d-flex justify-content-between">
-            {title}
-            {titleButton}
-          </CCardTitle>
+        <CCardHeader component="h3" className="d-flex justify-content-between">
+          {title}
+          {titleButton}
         </CCardHeader>
         <CCardBody>
           {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
