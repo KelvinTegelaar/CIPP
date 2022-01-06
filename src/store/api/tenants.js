@@ -1,74 +1,84 @@
-import { baseQuery } from './baseQuery'
-import { createApi } from '@reduxjs/toolkit/query/react'
+import { baseApi } from './baseApi'
 
-export const TENANTS_API_REDUCER_PATH = 'tenants'
-export const tenantsApi = createApi({
-  reducerPath: TENANTS_API_REDUCER_PATH,
-  baseQuery: baseQuery({ baseUrl: '/' }),
-  endpoints: (builder) => ({
-    listTenants: builder.query({
-      query: () => ({ path: '/api/ListTenants' }),
-    }),
-    listTenant: builder.query({
-      query: (tenantDomain) => ({
-        path: '/api/ListTenants',
-        params: { TenantFilter: tenantDomain },
+export const tenantsApi = baseApi
+  .injectEndpoints({
+    endpoints: (builder) => ({
+      listTenants: builder.query({
+        query: () => ({ path: '/api/ListTenants' }),
+        providesTags: ['Tenants'],
       }),
-    }),
-    editTenant: builder.mutation({
-      query: (tenant) => ({
-        path: '/api/EditTenant',
-        method: 'post',
-        data: tenant,
+      listTenant: builder.query({
+        query: (tenantDomain) => ({
+          path: '/api/ListTenants',
+          params: { TenantFilter: tenantDomain },
+        }),
       }),
-    }),
-    listConditionalAccessPolicies: builder.query({
-      query: ({ domain }) => ({
-        path: '/api/ListConditionalAccessPolicies',
-        params: { TenantFilter: domain },
+      editTenant: builder.mutation({
+        query: (tenant) => ({
+          path: '/api/EditTenant',
+          method: 'post',
+          data: tenant,
+        }),
       }),
-    }),
-    listExcludedTenants: builder.query({
-      query: () => ({
-        path: '/api/ExecExcludeTenant',
-        params: {
-          list: true,
+      listConditionalAccessPolicies: builder.query({
+        query: ({ domain }) => ({
+          path: '/api/ListConditionalAccessPolicies',
+          params: { TenantFilter: domain },
+        }),
+        providesTags: ['ConditionalAccessPolicies'],
+      }),
+      listExcludedTenants: builder.query({
+        query: () => ({
+          path: '/api/ExecExcludeTenant',
+          params: {
+            list: true,
+          },
+        }),
+        transformResponse: (response) => {
+          // @todo fix in api
+          if (!Array.isArray(response) && Object.keys(response).length > 0) {
+            return [response]
+          }
+          if (!Array.isArray(response)) {
+            return []
+          }
+          return response
         },
+        providesTags: ['ExcludedTenants'],
       }),
-      transformResponse: (response) => {
-        if (!Array.isArray(response)) {
-          return []
-        }
-        return response
-      },
-    }),
-    execExcludeTenant: builder.query({
-      query: (tenantfilter) => ({
-        path: '/api/ExecExcludeTenant',
-        params: {
-          RemoveExclusion: true,
-          TenantFilter: tenantfilter,
-        },
+      execRemoveExcludeTenant: builder.mutation({
+        query: (tenantDomain) => ({
+          path: '/api/ExecExcludeTenant',
+          params: {
+            RemoveExclusion: true,
+            TenantFilter: tenantDomain,
+          },
+        }),
+        invalidatesTags: ['ExcludedTenants'],
       }),
-    }),
-    execAddExcludeTenant: builder.query({
-      query: (tenantfilter) => ({
-        path: '/api/ExecExcludeTenant',
-        params: {
-          AddExclusion: true,
-          TenantFilter: tenantfilter,
-        },
+      execAddExcludeTenant: builder.mutation({
+        query: (tenantDomain) => ({
+          path: '/api/ExecExcludeTenant',
+          params: {
+            AddExclusion: true,
+            TenantFilter: tenantDomain,
+          },
+        }),
+        invalidatesTags: ['ExcludedTenants'],
       }),
     }),
-  }),
-})
+  })
+  .enhanceEndpoints({
+    addTagTypes: ['ExcludedTenants', 'Tenants', 'ConditionalAccessPolicies'],
+  })
 
 export const {
   useListTenantsQuery,
   useListTenantQuery,
   useEditTenantMutation,
   useListConditionalAccessPoliciesQuery,
+  useListExcludedTenantsQuery,
   useLazyListExcludedTenantsQuery,
-  useLazyExecExcludeTenantQuery,
-  useLazyExecAddExcludeTenantQuery,
+  useExecRemoveExcludeTenantMutation,
+  useExecAddExcludeTenantMutation,
 } = tenantsApi

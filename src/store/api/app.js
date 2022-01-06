@@ -1,14 +1,11 @@
-import { createApi } from '@reduxjs/toolkit/query/react'
-import { baseQuery, axiosQuery } from './baseQuery'
+import { baseApi } from './baseApi'
 
-export const appApi = createApi({
-  reducerPath: 'app-api',
-  baseQuery: baseQuery({ baseUrl: '/' }),
+export const appApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     loadVersions: builder.query({
-      queryFn: () =>
-        axiosQuery({ path: '/version_latest.txt' }).then(({ data }) =>
-          axiosQuery({
+      queryFn: (_args, _baseQueryApi, _options, baseQuery) =>
+        baseQuery({ path: '/version_latest.txt' }).then(({ data }) =>
+          baseQuery({
             path: '/api/GetVersion',
             params: { localversion: data.replace('\r\n', '') },
           }),

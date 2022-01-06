@@ -1,9 +1,6 @@
-import { baseQuery } from './baseQuery'
-import { createApi } from '@reduxjs/toolkit/query/react'
+import { baseApi } from './baseApi'
 
-export const datatableApi = createApi({
-  reducerPath: 'datatable',
-  baseQuery: baseQuery({ baseUrl: '/' }),
+export const datatableApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     listDatatable: builder.query({
       query: ({ path, params }) => ({ path, params }),

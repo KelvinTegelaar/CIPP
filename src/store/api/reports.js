@@ -1,9 +1,6 @@
-import { createApi } from '@reduxjs/toolkit/query/react'
-import { baseQuery } from './baseQuery'
+import { baseApi } from './baseApi'
 
-export const reportsApi = createApi({
-  reducerPath: 'reports',
-  baseQuery: baseQuery(),
+export const reportsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     listBestPracticeAnalyser: builder.query({
       query: () => ({ path: '/api/BestPracticeAnalyser_List' }),
