@@ -2,6 +2,7 @@ import React from 'react'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
+  faPlus,
   faUser,
   faCog,
   faBars,
@@ -16,7 +17,9 @@ import { cellBooleanFormatter } from '../../../components/cipp'
 import { setModalContent } from 'src/store/features/modal'
 import { CSpinner } from '@coreui/react'
 import { useLazyGenericGetRequestQuery } from '../../../store/api/app'
-import { CippPageList } from '../../../components/CippPage'
+import { CippPageList } from '../../../components'
+import { TitleButton } from '../../../components/cipp'
+
 const Dropdown = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
   const dispatch = useDispatch()
@@ -216,6 +219,9 @@ const Users = () => {
   return (
     <CippPageList
       title="Users"
+      titleButton={
+        <TitleButton href="/identity/administration/users/add" title="Add User" icon={faPlus} />
+      }
       datatable={{
         columns,
         path: '/api/ListUsers',

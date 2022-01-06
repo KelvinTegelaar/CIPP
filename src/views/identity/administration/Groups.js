@@ -1,21 +1,11 @@
 import React from 'react'
-import TenantSelector from 'src/components/cipp/TenantSelector'
 import { useSelector } from 'react-redux'
-import {
-  CButton,
-  CDropdown,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
-  CCard,
-  CCardHeader,
-  CCardTitle,
-  CCardBody,
-} from '@coreui/react'
-import CippDatatable from '../../../components/cipp/CippDatatable'
+import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 import { cellBooleanFormatter } from '../../../components/cipp'
-import { faPlus, faBars, faCog } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faCog } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { CippPageList } from '../../../components'
+import { TitleButton } from '../../../components/cipp'
 
 const Dropdown = (row = {}) => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -79,32 +69,16 @@ const Groups = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
-    <div>
-      <TenantSelector />
-      <hr />
-      <CCard className="page-card">
-        <CCardHeader>
-          <CCardTitle className="text-primary d-flex justify-content-between">
-            Groups
-            <CButton size='sm' color='primary' href='/identity/administration/groups/add'>
-              <FontAwesomeIcon icon={faPlus} className='pe-1' />Add Group
-            </CButton>
-          </CCardTitle>
-        </CCardHeader>
-        <CCardBody>
-          {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-          <CippDatatable
-            tableProps={{
-              responsive: false,
-            }}
-            reportName={`${tenant?.defaultDomainName}-Groups`}
-            path="/api/ListGroups"
-            columns={columns}
-            params={{ TenantFilter: tenant?.defaultDomainName }}
-          />
-        </CCardBody>
-      </CCard>
-    </div>
+    <CippPageList
+      title="Groups"
+      titleButton={<TitleButton href="/identity/administration/groups/add" title="Add Group" />}
+      datatable={{
+        reportName: `${tenant?.defaultDomainName}-Groups`,
+        path: '/api/ListGroups',
+        params: { TenantFilter: tenant?.defaultDomainName },
+        columns,
+      }}
+    />
   )
 }
 
