@@ -147,6 +147,7 @@ const GeneralSettings = () => {
 
   const tableProps = {
     pagination: false,
+    subheader: false,
   }
 
   return (
