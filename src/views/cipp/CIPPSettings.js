@@ -34,7 +34,7 @@ import {
 } from '../../store/api/tenants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
-import { TenantSelectorMultiple } from '../../components/cipp'
+import { CippTable, TenantSelectorMultiple } from '../../components/cipp'
 import DataTable from 'react-data-table-component'
 import { useListTenantsQuery } from '../../store/api/tenants'
 import { useLazyEditDnsConfigQuery, useLazyGetDnsConfigQuery } from '../../store/api/domains'
@@ -145,6 +145,11 @@ const GeneralSettings = () => {
     onConfirm: () => clearCache(),
   })
 
+  const tableProps = {
+    pagination: false,
+    subheader: false,
+  }
+
   return (
     <div>
       <CRow className="mb-3">
@@ -227,7 +232,11 @@ const GeneralSettings = () => {
                 Run access check
               </CButton>
               {accessCheckResult.isSuccess && (
-                <DataTable columns={checkAccessColumns} data={accessCheckResult.data} />
+                <CippTable
+                  columns={checkAccessColumns}
+                  tableProps={tableProps}
+                  data={accessCheckResult.data}
+                />
               )}
             </CCardBody>
           </CCard>
