@@ -32,6 +32,7 @@ export default function CippTable({
   data,
   isFetching = false,
   error,
+  disablePDFExport = false,
   reportName,
   columns = [],
   tableProps: {
@@ -105,15 +106,21 @@ export default function CippTable({
       }
     }
 
-    const defaultActions = [
-      <ExportPDFButton
-        key="export-pdf-action"
-        pdfData={data}
-        pdfHeaders={columns}
-        pdfSize="A4"
-        reportName={reportName}
-      />,
-    ]
+    const defaultActions = () => {
+      if (!disablePDFExport) {
+        return [
+          <ExportPDFButton
+            key="export-pdf-action"
+            pdfData={data}
+            pdfHeaders={columns}
+            pdfSize="A4"
+            reportName={reportName}
+          />,
+        ]
+      } else {
+        return null
+      }
+    }
 
     actions.forEach((action) => {
       defaultActions.push(action)
@@ -170,6 +177,7 @@ export default function CippTable({
 }
 
 export const CippTablePropTypes = {
+  disablePDFExport: PropTypes.bool,
   reportName: PropTypes.string.isRequired,
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
   keyField: PropTypes.string,
