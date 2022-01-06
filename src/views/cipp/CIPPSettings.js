@@ -20,6 +20,7 @@ import {
   CBadge,
   CLink,
   CAlert,
+  CSpinner,
 } from '@coreui/react'
 import {
   useLazyExecClearCacheQuery,
@@ -29,22 +30,21 @@ import {
   useLazyListNotificationConfigQuery,
 } from '../../store/api/app'
 import {
-  useLazyListExcludedTenantsQuery,
-  useLazyExecExcludeTenantQuery,
+  useExecAddExcludeTenantMutation,
+  useExecRemoveExcludeTenantMutation,
+  useListExcludedTenantsQuery,
 } from '../../store/api/tenants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
-import { CippTable, TenantSelectorMultiple } from '../../components/cipp'
-import DataTable from 'react-data-table-component'
 import { useListTenantsQuery } from '../../store/api/tenants'
 import { useLazyEditDnsConfigQuery, useLazyGetDnsConfigQuery } from '../../store/api/domains'
 import { setModalContent } from '../../store/features/modal'
-import { useDispatch } from 'react-redux'
-import { TenantSelector } from '../../components/cipp'
-import { RFFCFormSwitch, RFFCFormInput } from '../../components/RFFComponents'
+import { useDispatch, useSelector } from 'react-redux'
+import { TenantSelector, CippTable, TenantSelectorMultiple } from '../../components/cipp'
+import { CippPage, RFFCFormSwitch, RFFCFormInput } from '../../components'
 import { Form } from 'react-final-form'
-import { CippPage } from '../../components/CippPage'
 import useConfirmModal from '../../hooks/useConfirmModal'
+import { setCurrentTenant } from '../../store/features/app'
 
 const CIPPSettings = () => {
   const [active, setActive] = useState(1)
@@ -96,7 +96,6 @@ const checkAccessColumns = [
 ]
 
 const GeneralSettings = () => {
-  const dispatch = useDispatch()
   const { data: tenants = [] } = useListTenantsQuery()
   const [checkPermissions, permissionsResult] = useLazyExecPermissionsAccessCheckQuery()
   const [clearCache, clearCacheResult] = useLazyExecClearCacheQuery()
@@ -250,48 +249,68 @@ const GeneralSettings = () => {
 }
 
 const ExcludedTenantsSettings = () => {
-  const [
-    listExcludedTenants,
-    {
-      data: excludedTenants = [],
-      isFetching: excludedTenantsFetching,
-      isSuccess: excludedTenantsSuccess,
-    },
-  ] = useLazyListExcludedTenantsQuery()
-  const [removeExcludedTenant, exRemovalResult] = useLazyExecExcludeTenantQuery()
+  const dispatch = useDispatch()
+  const currentTenant = useSelector((state) => state.app.currentTenant)
+  const {
+    data: excludedTenants = [],
+    isFetching: excludedTenantsFetching,
+    isSuccess: excludedTenantsSuccess,
+  } = useListExcludedTenantsQuery()
+  const [removeExcludeTenant, removeExcludeTenantResult] = useExecRemoveExcludeTenantMutation()
+  const [addExcludeTenant, addExcludeTenantResult] = useExecAddExcludeTenantMutation()
+  const [selectedTenant, setSelectedTenant] = useState()
 
   useEffect(() => {
-    listExcludedTenants()
+    // if a tenant is already selected and that's the tenant the
+    // user wants to exclude, we need to set that to the current state
+    setSelectedTenant(currentTenant)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const dispatch = useDispatch()
-  const handleRemoveExclusion = (domain) => {
+  const handleRemoveExclusion = (domain) =>
     dispatch(
       setModalContent({
         componentType: 'confirm',
-        title: 'Confirm',
+        title: 'Remove Exclusion',
         body: <div>Are you sure you want to remove the exclusion for {domain}?</div>,
-        onConfirm: () => removeExcludedTenant(domain),
+        onConfirm: () => removeExcludeTenant(domain),
         confirmLabel: 'Continue',
         cancelLabel: 'Cancel',
         visible: true,
       }),
     )
-    //todo, reload the table too. Currently not done because it has a memo, and the table does not reload because of this automatically.
+
+  const handleConfirmExcludeTenant = () => {
+    console.log('selected tenant', selectedTenant)
+    console.log('current tenant', currentTenant)
+
+    addExcludeTenant(selectedTenant.defaultDomainName)
+      .unwrap()
+      .then(() => {
+        // since we're re-using tenant selector,
+        // un-select it here after the tenant has been removed
+        dispatch(setCurrentTenant({}))
+      })
+  }
+
+  const handleSelectExcludeTenant = (tenant) => {
+    console.log('nani?', { tenant })
+    setSelectedTenant(tenant)
+    console.log('post set?', { selectedTenant })
   }
 
   const handleExcludeTenant = () => {
     dispatch(
       setModalContent({
         componentType: 'confirm',
-        title: 'Select tenant',
+        title: 'Add Exclusion',
         body: (
           <div style={{ overflow: 'visible' }}>
             <div>Select a tenant to exclude</div>
-            <TenantSelector />
+            <TenantSelector action={handleSelectExcludeTenant} />
           </div>
         ),
-        //onConfirm: () => addExcludedTenant(),
+        onConfirm: handleConfirmExcludeTenant,
         confirmLabel: 'Continue',
         cancelLabel: 'Cancel',
         visible: true,
@@ -301,7 +320,16 @@ const ExcludedTenantsSettings = () => {
 
   return (
     <>
-      {exRemovalResult.isSuccess && <CAlert color="success">{exRemovalResult.data.Results}</CAlert>}
+      {removeExcludeTenantResult.isSuccess && (
+        <CAlert color="success" dismissible>
+          {removeExcludeTenantResult.data?.Results}
+        </CAlert>
+      )}
+      {addExcludeTenantResult.isSuccess && (
+        <CAlert color="success" dismissible>
+          {addExcludeTenantResult.data?.Results}
+        </CAlert>
+      )}
       <CRow className="mb-3">
         <CCol md={12}>
           <CCard>
@@ -319,17 +347,18 @@ const ExcludedTenantsSettings = () => {
               </CCardTitle>
             </CCardHeader>
             <CCardBody>
+              {excludedTenantsFetching && <CSpinner />}
               {excludedTenantsSuccess && (
                 <CListGroup>
-                  {excludedTenants.map((name) => (
-                    <CListGroupItem key={name.Name}>
-                      {name.Name}
+                  {excludedTenants.map((excludedTenant, idx) => (
+                    <CListGroupItem key={idx}>
+                      {excludedTenant.Name}
                       <CBadge
                         color="secondary"
                         shape="rounded-pill"
                         style={{ position: 'absolute', right: '40px' }}
                       >
-                        Added by {name.User} on {name.Date}
+                        Added by {excludedTenant.User} on {excludedTenant.Date}
                       </CBadge>
                       <CLink href="#">
                         <FontAwesomeIcon
@@ -337,7 +366,7 @@ const ExcludedTenantsSettings = () => {
                           color="primary"
                           icon={faTrashAlt}
                           size="sm"
-                          onClick={() => handleRemoveExclusion(name.Name)}
+                          onClick={() => handleRemoveExclusion(excludedTenant.Name)}
                         />
                       </CLink>
                     </CListGroupItem>
