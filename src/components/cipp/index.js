@@ -11,6 +11,7 @@ import TenantSelector from './TenantSelector'
 import TenantSelectorMultiple from './TenantSelectorMultiple'
 import ThemeSwitcher from './ThemeSwitcher'
 import TitleButton from './TitleButton'
+import CippOffcanvas from './CippOffcanvas'
 
 export {
   CellBadge,
@@ -25,6 +26,7 @@ export {
   cellProgressBarFormatter,
   CippDatatable,
   CippTable,
+  CippOffcanvas,
   PdfButton,
   StatusIcon,
   TenantSelector,

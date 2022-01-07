@@ -16,7 +16,9 @@ import { Link } from 'react-router-dom'
 import { faUser, faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-const dropdown = (row, rowIndex, formatExtraData) => {
+const Dropdown = (row, rowIndex, formatExtraData) => {
+  const tenant = useSelector((state) => state.app.currentTenant)
+
   return (
     <CDropdown>
       <CDropdownToggle size="sm" color="link">
@@ -24,7 +26,10 @@ const dropdown = (row, rowIndex, formatExtraData) => {
       </CDropdownToggle>
       <CDropdownMenu style={{ position: 'fixed', right: 0, zIndex: 1000 }}>
         <CDropdownItem href="#">
-          <Link className="dropdown-item" to={`/endpoint/MEM/edit-policy`}>
+          <Link
+            className="dropdown-item"
+            to={`/endpoint/MEM/edit-policy?ID=${row.id}&tenantDomain=${tenant.defaultDomainName}`}
+          >
             <FontAwesomeIcon icon={faUser} className="me-2" />
             Edit Policy
           </Link>
@@ -46,8 +51,13 @@ const columns = [
     sortable: true,
   },
   {
+    selector: (row) => row['id'],
+    name: 'id',
+    omit: true,
+  },
+  {
     name: 'Actions',
-    cell: dropdown,
+    cell: Dropdown,
   },
 ]
 

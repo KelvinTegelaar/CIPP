@@ -1,12 +1,8 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import TenantSelector from '../../../components/cipp/TenantSelector'
-import CippDatatable from '../../../components/cipp/CippDatatable'
 import { cellBooleanFormatter } from '../../../components/cipp'
-import { CCard, CCardHeader, CCardTitle, CCardBody } from '@coreui/react'
-import { CippPage } from 'src/components/CippPage'
+import { CippPageList } from 'src/components/CippPage'
 
-//TODO: Add CellBoolean
 const columns = [
   {
     selector: (row) => row['UPN'],
@@ -49,16 +45,15 @@ const MFAList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
-    <CippPage title="MFA Report">
-      {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-      <CippDatatable
-        keyField="id"
-        reportName={`${tenant?.defaultDomainName}-MFAReport-List`}
-        path="/api/ListMFAUsers"
-        columns={columns}
-        params={{ TenantFilter: tenant?.defaultDomainName }}
-      />
-    </CippPage>
+    <CippPageList
+      title="MFA Report"
+      datatable={{
+        columns,
+        path: '/api/ListMFAUsers',
+        reportName: `${tenant?.defaultDomainName}-MFAReport-List`,
+        params: { TenantFilter: tenant?.defaultDomainName },
+      }}
+    />
   )
 }
 

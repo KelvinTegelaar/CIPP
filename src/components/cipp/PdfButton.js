@@ -19,7 +19,7 @@ function ExportPDFButton(props) {
     let headerObj = []
     pdfHeaders.forEach((item) => {
       if (item.exportselector) {
-        let returnobj = { header: item.name, dataKey: item.exportselector }
+        let returnobj = { header: item.name, dataKey: item.exportSelector }
         headerObj.push(returnobj)
       }
     })
