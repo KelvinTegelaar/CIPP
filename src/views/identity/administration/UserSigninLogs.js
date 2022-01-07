@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { useDispatch } from 'react-redux'
 import {
   CButton,
   CCard,
@@ -18,7 +17,7 @@ import {
 import { cellBooleanFormatter } from '../../../components/cipp'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLaptop } from '@fortawesome/free-solid-svg-icons'
-import { setModalContent } from '../../../store/features/modal'
+import { ModalService } from '../../../components'
 import { useListUserSigninLogsQuery } from '../../../store/api/users'
 import DataTable from 'react-data-table-component'
 import cellGetProperty from '../../../components/cipp/cellGetProperty'
@@ -34,7 +33,6 @@ const rowStyle = (row, rowIndex) => {
 }
 
 export default function UserSigninLogs({ userId, tenantDomain }) {
-  const dispatch = useDispatch()
   const {
     data: list = [],
     isFetching,
@@ -44,31 +42,28 @@ export default function UserSigninLogs({ userId, tenantDomain }) {
   const mapped = list.map((val) => ({ ...val, tenantDomain }))
 
   const handleClickAppliedCAPs = ({ row }) => {
-    dispatch(
-      setModalContent({
-        body: (
-          <CTable>
-            <CTableHead>
-              <CTableHeaderCell>Additional Details</CTableHeaderCell>
-              <CTableHeaderCell>Failure Reason</CTableHeaderCell>
-            </CTableHead>
-            <CTableBody>
-              {row &&
-                row.AppliedCAPs.map((value, idx) => {
-                  return (
-                    <CTableRow key={idx}>
-                      <CTableDataCell>{value.Name}</CTableDataCell>
-                      <CTableDataCell>{value.Result}</CTableDataCell>
-                    </CTableRow>
-                  )
-                })}
-            </CTableBody>
-          </CTable>
-        ),
-        title: 'Conditional Access Policies Applied',
-        visible: true,
-      }),
-    )
+    ModalService.open({
+      body: (
+        <CTable>
+          <CTableHead>
+            <CTableHeaderCell>Additional Details</CTableHeaderCell>
+            <CTableHeaderCell>Failure Reason</CTableHeaderCell>
+          </CTableHead>
+          <CTableBody>
+            {row &&
+              row.AppliedCAPs.map((value, idx) => {
+                return (
+                  <CTableRow key={idx}>
+                    <CTableDataCell>{value.Name}</CTableDataCell>
+                    <CTableDataCell>{value.Result}</CTableDataCell>
+                  </CTableRow>
+                )
+              })}
+          </CTableBody>
+        </CTable>
+      ),
+      title: 'Conditional Access Policies Applied',
+    })
   }
 
   const columns = [

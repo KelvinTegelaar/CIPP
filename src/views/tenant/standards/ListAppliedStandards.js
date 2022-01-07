@@ -1,6 +1,6 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import CippDatatable from '../../../components/cipp/CippDatatable'
+import { useSelector } from 'react-redux'
+import { CippDatatable } from '../../../components/cipp'
 import {
   CDropdown,
   CDropdownItem,
@@ -14,46 +14,37 @@ import {
 } from '@coreui/react'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { setModalContent } from 'src/store/features/modal'
+import { ModalService } from '../../../components'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 
 const Dropdown = (row, index, column) => {
-  const dispatch = useDispatch()
   const [ExecuteGetRequest, GetRequestResult] = useLazyGenericGetRequestQuery()
   const handleDropdownConfirm = (apiurl) => {
     ExecuteGetRequest({ url: apiurl })
     //this isnt working all the way yet.
-    dispatch(
-      setModalContent({
-        componentType: 'ok',
-        title: 'Results',
-        body: (
-          <div>
-            {GetRequestResult.isSuccess && (
-              <>
-                <CSpinner />
-              </>
-            )}
-            {GetRequestResult.isSuccess && GetRequestResult.data.Results}
-          </div>
-        ),
-        confirmLabel: 'Continue',
-        visible: true,
-      }),
-    )
+    ModalService.confirm({
+      title: 'Results',
+      body: (
+        <div>
+          {GetRequestResult.isSuccess && (
+            <>
+              <CSpinner />
+            </>
+          )}
+          {GetRequestResult.isSuccess && GetRequestResult.data.Results}
+        </div>
+      ),
+      confirmLabel: 'Continue',
+    })
   }
   const handleDropdownEvent = (apiurl, message) => {
-    dispatch(
-      setModalContent({
-        componentType: 'confirm',
-        title: 'Confirm',
-        body: <div>{message}</div>,
-        onConfirm: () => handleDropdownConfirm(apiurl),
-        confirmLabel: 'Continue',
-        cancelLabel: 'Cancel',
-        visible: true,
-      }),
-    )
+    ModalService.confirm({
+      title: 'Confirm',
+      body: <div>{message}</div>,
+      onConfirm: () => handleDropdownConfirm(apiurl),
+      confirmLabel: 'Continue',
+      cancelLabel: 'Cancel',
+    })
   }
   return (
     <CDropdown>
