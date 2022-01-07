@@ -3,7 +3,7 @@ import { CCard, CCardBody, CCardHeader, CCardTitle, CCol, CRow, CSpinner } from 
 import PropTypes from 'prop-types'
 import useQuery from '../../../hooks/useQuery'
 import { useDispatch } from 'react-redux'
-import { setModalContent } from '../../../store/features/modal'
+import { ModalService } from '../../../components'
 import UserDevices from './UserDevices'
 import UserDetails from './UserDetails'
 import UserLastLoginDetails from './UserLastLoginDetails'
@@ -34,13 +34,10 @@ const ViewUser = (props) => {
 
   useEffect(() => {
     if (!userId || !tenantDomain) {
-      dispatch(
-        setModalContent({
-          body: 'Error invalid request, could not load requested user.',
-          title: 'Invalid Request',
-          visible: true,
-        }),
-      )
+      ModalService.open({
+        body: 'Error invalid request, could not load requested user.',
+        title: 'Invalid Request',
+      })
       setQueryError(true)
     }
     // unload this component's state when the component will unmount

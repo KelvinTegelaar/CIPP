@@ -1,9 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { useDispatch } from 'react-redux'
 import { CButton, CCard, CCardHeader, CCardTitle, CCardBody } from '@coreui/react'
 import { CellBadge, CippDatatable, cellProgressBarFormatter } from '../../../components/cipp'
-import { setModalContent, showModal } from '../../../store/features/modal'
+import { ModalService } from '../../../components'
 import cellGetProperty from '../../../components/cipp/cellGetProperty'
 
 const MoreInfoCard = ({ row }) => {
@@ -50,16 +49,11 @@ MoreInfoCard.propTypes = {
 }
 
 const DomainsAnalyser = () => {
-  const dispatch = useDispatch()
-
   const handleMoreInfo = ({ row }) => {
-    dispatch(
-      setModalContent({
-        body: <MoreInfoCard row={row} />,
-        title: `${row.Tenant} More Information`,
-      }),
-    )
-    dispatch(showModal())
+    ModalService.open({
+      body: <MoreInfoCard row={row} />,
+      title: `${row.Tenant} More Information`,
+    })
   }
 
   const columns = [

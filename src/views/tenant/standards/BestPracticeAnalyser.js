@@ -1,6 +1,5 @@
 import React from 'react'
 import { CButton, CSpinner, CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
-import { useDispatch } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import {
@@ -11,24 +10,24 @@ import {
   CellProgressBar,
   cellDateFormatter,
 } from '../../../components/cipp'
-import { setModalContent } from '../../../store/features/modal'
+import { ModalService } from '../../../components'
 import { useExecBestPracticeAnalyserMutation } from '../../../store/api/reports'
-import useConfirmModal from '../../../hooks/useConfirmModal'
 
 const RefreshAction = () => {
   const [execBestPracticeAnalyser, { isLoading, isSuccess, error }] =
     useExecBestPracticeAnalyserMutation()
 
-  const showModal = useConfirmModal({
-    body: (
-      <div>
-        Are you sure you want to force the Best Practice Analysis to run? This will slow down normal
-        usage considerably. <br />
-        <i>Please note: this runs at midnight automatically every day.</i>
-      </div>
-    ),
-    onConfirm: () => execBestPracticeAnalyser(),
-  })
+  const showModal = () =>
+    ModalService.confirm({
+      body: (
+        <div>
+          Are you sure you want to force the Best Practice Analysis to run? This will slow down
+          normal usage considerably. <br />
+          <i>Please note: this runs at midnight automatically every day.</i>
+        </div>
+      ),
+      onConfirm: () => execBestPracticeAnalyser(),
+    })
 
   return (
     <CButton onClick={showModal} size="sm" className="text-white m-1">
@@ -41,17 +40,13 @@ const RefreshAction = () => {
 }
 
 const BestPracticeAnalyser = () => {
-  const dispatch = useDispatch()
-
   const handleSharedMailboxes = ({ row }) => {
-    dispatch(
-      setModalContent({
-        visible: true,
-        componentType: 'list',
-        data: row.DisabledSharedMailboxLogins.split('<br />'),
-        title: `Shared Mailboxes with Enabled User Accounts`,
-      }),
-    )
+    ModalService.open({
+      visible: true,
+      componentType: 'list',
+      data: row.DisabledSharedMailboxLogins.split('<br />'),
+      title: `Shared Mailboxes with Enabled User Accounts`,
+    })
   }
 
   const handleUnusedLicense = ({ row }) => {
@@ -79,30 +74,24 @@ const BestPracticeAnalyser = () => {
       )
       .sort((a, b) => b.SKU.toLocaleLowerCase().localeCompare(a.SKU.toLocaleLowerCase()))
 
-    dispatch(
-      setModalContent({
-        visible: true,
-        data: tabularized,
-        componentType: 'table',
-        componentProps: {
-          columns,
-          keyField: 'SKU',
-        },
-        title: `SKUs with Unassigned Licenses`,
-        size: 'lg',
-      }),
-    )
+    ModalService.open({
+      data: tabularized,
+      componentType: 'table',
+      componentProps: {
+        columns,
+        keyField: 'SKU',
+      },
+      title: `SKUs with Unassigned Licenses`,
+      size: 'lg',
+    })
   }
 
   const handleMessageCopy = ({ row }) => {
-    dispatch(
-      setModalContent({
-        visible: true,
-        data: row.MessageCopyForSendList.split('<br />'),
-        componentType: 'list',
-        title: 'Message Copy for Send As',
-      }),
-    )
+    ModalService.open({
+      data: row.MessageCopyForSendList.split('<br />'),
+      componentType: 'list',
+      title: 'Message Copy for Send As',
+    })
   }
 
   const columns = [

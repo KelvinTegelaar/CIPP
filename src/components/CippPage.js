@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import TenantSelector from './cipp/TenantSelector'
-import { CCard, CCardBody, CCardHeader } from '@coreui/react'
+import { CAlert, CCard, CCardBody, CCardHeader } from '@coreui/react'
 import CippDatatable from './cipp/CippDatatable'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
@@ -43,10 +43,13 @@ export function CippPage({ tenantSelector = true, title, children, titleButton =
           {titleButton}
         </CCardHeader>
         <CCardBody>
-          {tenantSelector && Object.keys(tenant).length === 0 && (
-            <span>Select a tenant to get started.</span>
+          {tenantSelector && Object.keys(tenant).length === 0 ? (
+            <CAlert className="mb-0" color="warning">
+              Select a tenant to get started.
+            </CAlert>
+          ) : (
+            children
           )}
-          {children}
         </CCardBody>
       </CCard>
     </div>
@@ -83,9 +86,9 @@ export function CippPageList({
 CippPageList.propTypes = {
   tenantSelector: PropTypes.bool,
   title: PropTypes.string.isRequired,
-  titleButton: PropTypes.node,
+  titleButton: PropTypes.element,
   datatable: PropTypes.shape({
-    reportName: PropTypes.string.isRequired,
+    reportName: PropTypes.string,
     path: PropTypes.string.isRequired,
     columns: PropTypes.array.isRequired,
     params: PropTypes.object,

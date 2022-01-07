@@ -3,7 +3,6 @@ import { combineReducers } from '@reduxjs/toolkit'
 // features
 import appReducer, { appSlice } from './features/app'
 import authReducer, { authSlice } from './features/auth'
-import { modalSlice } from './features/modal'
 import { toastsSlice } from './features/toasts'
 import { switcherSlice } from './features/switcher'
 
@@ -18,7 +17,6 @@ export const root = {
   // slices
   [appSlice.name]: appReducer,
   [authSlice.name]: authReducer,
-  [modalSlice.name]: modalSlice.reducer,
   [switcherSlice.name]: switcherSlice.reducer,
   [toastsSlice.name]: toastsSlice.reducer,
 

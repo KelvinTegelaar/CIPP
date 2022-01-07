@@ -1,19 +1,9 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import TenantSelector from '../../../components/cipp/TenantSelector'
-import CippDatatable from '../../../components/cipp/CippDatatable'
-import {
-  CDropdown,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
-  CCard,
-  CCardHeader,
-  CCardTitle,
-  CCardBody,
-} from '@coreui/react'
+import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { CippPageList } from 'src/components'
 
 const dropdown = (row, rowIndex, formatExtraData) => {
   return (
@@ -29,6 +19,11 @@ const dropdown = (row, rowIndex, formatExtraData) => {
 }
 
 const columns = [
+  {
+    selector: 'displayName',
+    name: 'Display Name',
+    sortable: true,
+  },
   {
     selector: 'serialNumber',
     name: 'Serial',
@@ -64,25 +59,16 @@ const AutopilotListDevices = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
-    <div>
-      <TenantSelector />
-      <hr />
-      <CCard className="page-card">
-        <CCardHeader>
-          <CCardTitle className="text-primary">Autopilot Devices</CCardTitle>
-        </CCardHeader>
-        <CCardBody>
-          {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-          <CippDatatable
-            keyField="id"
-            reportName={`${tenant?.defaultDomainName}-AutopilotDevices-List`}
-            path="/api/ListAPDevices"
-            columns={columns}
-            params={{ TenantFilter: tenant?.defaultDomainName }}
-          />
-        </CCardBody>
-      </CCard>
-    </div>
+    <CippPageList
+      title="Autopilot Devices"
+      datatable={{
+        keyField: 'id',
+        reportName: `${tenant?.defaultDomainName}-AutopilotDevices-List`,
+        path: `/api/ListAPDevices`,
+        columns,
+        params: { TenantFilter: tenant?.defaultDomainName },
+      }}
+    />
   )
 }
 
