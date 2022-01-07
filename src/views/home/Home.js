@@ -52,8 +52,10 @@ const Home = () => {
               </CCardTitle>
             </CCardHeader>
             <CCardBody>
-              <p>Latest: {!isLoading ? versions.RemoteCIPPVersion : <CSpinner size="sm" />}</p>
-              <p>Current: {!isLoading ? versions.LocalCIPPVersion : <CSpinner size="sm" />}</p>
+              <div>Latest: {!isLoading ? versions.RemoteCIPPVersion : <CSpinner size="sm" />}</div>
+              <div>
+                Current: {!isLoading ? versions.LocalCIPPAPIVersion : <CSpinner size="sm" />}
+              </div>
               {!versions?.OutOfDateCIPP ? (
                 <p className="text-success">
                   You&apos;re running the latest and greatest version of CIPP!
@@ -71,8 +73,12 @@ const Home = () => {
               </CCardTitle>
             </CCardHeader>
             <CCardBody>
-              <p>Latest: {!isLoading ? versions.RemoteCIPPAPIVersion : <CSpinner size="sm" />}</p>
-              <p>Current: {!isLoading ? versions.LocalCIPPAPIVersion : <CSpinner size="sm" />}</p>
+              <div>
+                Latest: {!isLoading ? versions?.RemoteCIPPAPIVersion : <CSpinner size="sm" />}
+              </div>
+              <div>
+                Current: {!isLoading ? versions?.LocalCIPPAPIVersion : <CSpinner size="sm" />}
+              </div>
               {!versions?.OutOfDateCIPPAPI ? (
                 <p className="text-success">
                   You&apos;re running the latest and greatest version of CIPP API!
