@@ -105,21 +105,17 @@ export default function CippTable({
         setFilterText('')
       }
     }
-
-    const defaultActions = () => {
-      if (!disablePDFExport) {
-        return [
-          <ExportPDFButton
-            key="export-pdf-action"
-            pdfData={data}
-            pdfHeaders={columns}
-            pdfSize="A4"
-            reportName={reportName}
-          />,
-        ]
-      } else {
-        return null
-      }
+    const defaultActions = []
+    if (!disablePDFExport) {
+      defaultActions.push([
+        <ExportPDFButton
+          key="export-pdf-action"
+          pdfData={data}
+          pdfHeaders={columns}
+          pdfSize="A4"
+          reportName={reportName}
+        />,
+      ])
     }
 
     actions.forEach((action) => {

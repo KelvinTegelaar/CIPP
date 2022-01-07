@@ -23,22 +23,22 @@ import { TitleButton } from '../../../components/cipp'
 const Dropdown = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
   const dispatch = useDispatch()
-  const [ExecuteGetRequest, GetRequestResult] = useLazyGenericGetRequestQuery()
+  const [ExecuteGetRequest, getRequestResult] = useLazyGenericGetRequestQuery()
   const handleDropdownConfirm = (apiurl) => {
     ExecuteGetRequest({ path: apiurl })
     //this isnt working all the way yet.
     dispatch(
       setModalContent({
-        componentType: 'ok',
+        componentType: 'text',
         title: 'Results',
         body: (
           <div>
-            {GetRequestResult.isSuccess && (
+            {!getRequestResult.isSuccess && (
               <>
                 <CSpinner />
               </>
             )}
-            {GetRequestResult.isSuccess && GetRequestResult.data.Results}
+            {getRequestResult.isSuccess && getRequestResult.data.Results}
           </div>
         ),
         confirmLabel: 'Continue',
