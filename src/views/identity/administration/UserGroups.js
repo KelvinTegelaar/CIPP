@@ -5,7 +5,6 @@ import { CellBoolean, CippDatatable } from '../../../components/cipp'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUsers } from '@fortawesome/free-solid-svg-icons'
 import { useListUserGroupsQuery } from '../../../store/api/groups'
-import DataTable from 'react-data-table-component'
 
 const formatter = (cell) => CellBoolean({ cell })
 
@@ -69,7 +68,7 @@ export default function UserGroups({ userId, tenantDomain }) {
         {isFetching && <CSpinner />}
         {!isFetching && error && <>Error loading groups</>}
         {!isFetching && !error && (
-          <DataTable
+          <CippDatatable
             keyField="id"
             columns={columns}
             data={mapped}

@@ -20,6 +20,7 @@ import {
   CBadge,
   CLink,
   CAlert,
+  CSpinner,
 } from '@coreui/react'
 import {
   useLazyExecClearCacheQuery,
@@ -35,7 +36,6 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { CippTable, TenantSelectorMultiple } from '../../components/cipp'
-import DataTable from 'react-data-table-component'
 import { useListTenantsQuery } from '../../store/api/tenants'
 import { useLazyEditDnsConfigQuery, useLazyGetDnsConfigQuery } from '../../store/api/domains'
 import { setModalContent } from '../../store/features/modal'
@@ -96,7 +96,6 @@ const checkAccessColumns = [
 ]
 
 const GeneralSettings = () => {
-  const dispatch = useDispatch()
   const { data: tenants = [] } = useListTenantsQuery()
   const [checkPermissions, permissionsResult] = useLazyExecPermissionsAccessCheckQuery()
   const [clearCache, clearCacheResult] = useLazyExecClearCacheQuery()
@@ -262,7 +261,7 @@ const ExcludedTenantsSettings = () => {
 
   useEffect(() => {
     listExcludedTenants()
-  }, [])
+  }, [listExcludedTenants])
 
   const dispatch = useDispatch()
   const handleRemoveExclusion = (domain) => {
@@ -319,7 +318,8 @@ const ExcludedTenantsSettings = () => {
               </CCardTitle>
             </CCardHeader>
             <CCardBody>
-              {excludedTenantsSuccess && (
+              {excludedTenantsFetching && <CSpinner />}
+              {!excludedTenantsFetching && excludedTenantsSuccess && (
                 <CListGroup>
                   {excludedTenants.map((name) => (
                     <CListGroupItem key={name.Name}>

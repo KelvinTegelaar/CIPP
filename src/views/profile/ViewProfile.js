@@ -9,8 +9,6 @@ import {
   CListGroup,
   CListGroupItem,
   CSpinner,
-  CButton,
-  CButtonGroup,
   CCardHeader,
 } from '@coreui/react'
 import avatar0 from './../../assets/images/avatars/0.jpg'

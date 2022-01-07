@@ -134,10 +134,30 @@
       outline-style: none;
     }
   }
+  .rdt_TableCell {
+    position: relative;
+  }
 }
 
 .cipp-tablewrapper {
   header {
     padding-bottom: 1rem;
+  }
+  .dropdown-menu {
+    z-index: 1000;
+    transform: translateZ(100px);
+  }
+}
+
+.dropdown-item {
+  a {
+    color: var(--cui-dropdown-link-color);
+    text-decoration: none;
+    width: 100%;
+    display: inline-block;
+    &:hover {
+      color: var(--cui-dropdown-link-hover-color);
+      text-decoration: none;
+    }
   }
 }

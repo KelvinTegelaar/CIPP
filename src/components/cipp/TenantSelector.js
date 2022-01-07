@@ -7,7 +7,7 @@ import { setCurrentTenant } from '../../store/features/app'
 import { useSearchParams } from 'react-router-dom'
 
 const TenantSelector = ({ action }) => {
-  const [searchParams, setSearchParams] = useSearchParams()
+  const setSearchParams = useSearchParams()
   const dispatch = useDispatch()
   const currentTenant = useSelector((state) => state.app.currentTenant)
   const { data: tenants = [], isLoading, error } = useListTenantsQuery()

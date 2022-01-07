@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import TenantSelector from './cipp/TenantSelector'
-import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
+import { CCard, CCardBody, CCardHeader } from '@coreui/react'
 import CippDatatable from './cipp/CippDatatable'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
@@ -9,7 +9,7 @@ import { setCurrentTenant } from '../store/features/app'
 import { useListTenantsQuery } from '../store/api/tenants'
 
 export function CippPage({ tenantSelector = true, title, children, titleButton = null }) {
-  const { data: tenants = [], isFetching, isError, isSuccess } = useListTenantsQuery()
+  const { data: tenants = [], isSuccess } = useListTenantsQuery()
   const tenant = useSelector((state) => state.app.currentTenant)
   const [searchParams, setSearchParams] = useSearchParams()
   const dispatch = useDispatch()

@@ -5,7 +5,6 @@ import {
   faHome,
   faWrench,
   faChartBar,
-  faCog,
   faBook,
   faTablet,
   faShieldAlt,
@@ -14,8 +13,9 @@ import {
   faLink,
   faUsers,
   faEnvelope,
+  faWindowRestore,
+  faUnlock,
 } from '@fortawesome/free-solid-svg-icons'
-import { faChrome } from '@fortawesome/free-brands-svg-icons'
 
 const _nav = [
   {
@@ -148,7 +148,7 @@ const _nav = [
     name: 'Reports',
     section: 'Security & Compliance',
     to: '/security/reports',
-    icon: <FontAwesomeIcon icon={faChrome} className="nav-icon" />,
+    icon: <FontAwesomeIcon icon={faUnlock} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
@@ -166,7 +166,7 @@ const _nav = [
     name: 'Applications',
     section: 'Endpoint Management',
     to: '/endpoint/applications',
-    icon: <FontAwesomeIcon icon={faChrome} className="nav-icon" />,
+    icon: <FontAwesomeIcon icon={faWindowRestore} className="nav-icon" />,
     items: [
       {
         component: CNavItem,

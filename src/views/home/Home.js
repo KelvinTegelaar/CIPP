@@ -28,16 +28,20 @@ const Home = () => {
             </CCardHeader>
             <CCardBody className="text-center">
               <CCardText>
-                Ready to add a new user, group or team for any managed tenant? Click the buttons below to jump to the relevant wizard. 
+                Ready to add a new user, group or team for any managed tenant? Click the buttons
+                below to jump to the relevant wizard.
               </CCardText>
-              <CButton className="m-1" color="primary" href='/identity/administration/users/add'>
-                <FontAwesomeIcon icon={faUser} className='pe-1' /> Add a User
+              <CButton className="m-1" color="primary" href="/identity/administration/users/add">
+                <FontAwesomeIcon icon={faUser} className="pe-1" />
+                Add a User
               </CButton>
-              <CButton className="m-1" color="primary" href='/identity/administration/groups/add'>
-                <FontAwesomeIcon icon={faUserFriends} className='pe-1' /> Add a Group
+              <CButton className="m-1" color="primary" href="/identity/administration/groups/add">
+                <FontAwesomeIcon icon={faUserFriends} className="pe-1" />
+                Add a Group
               </CButton>
-              <CButton className="m-1" color="primary" href='/teams-share/teams/add-team'>
-                <FontAwesomeIcon icon={faUsers} className='pe-1' /> Add a Team
+              <CButton className="m-1" color="primary" href="/teams-share/teams/add-team">
+                <FontAwesomeIcon icon={faUsers} className="pe-1" />
+                Add a Team
               </CButton>
             </CCardBody>
           </CCard>
@@ -46,40 +50,38 @@ const Home = () => {
           <CCard className="mb-3" style={{ maxWidth: '18rem' }}>
             <CCardHeader>
               <CCardTitle>
-                <StatusIcon type='negatedboolean' status={versions?.OutOfDateCIPP} />CIPP Version
+                <StatusIcon type="negatedboolean" status={versions?.OutOfDateCIPP} />
+                CIPP Version
               </CCardTitle>
             </CCardHeader>
             <CCardBody>
-              <p>
-                Latest: {!isLoading ? versions.RemoteCIPPVersion : <CSpinner size="sm" />}
-              </p>
-              <p>
-                Current: {!isLoading ? versions.LocalCIPPVersion : <CSpinner size="sm" />}
-              </p>
+              <p>Latest: {!isLoading ? versions.RemoteCIPPVersion : <CSpinner size="sm" />}</p>
+              <p>Current: {!isLoading ? versions.LocalCIPPVersion : <CSpinner size="sm" />}</p>
               {!isLoading && !versions.OutOfDateCIPP ? (
-                <p class="text-success">You're running the latest and greatest version of CIPP!</p>
+                <p className="text-success">
+                  You&apos;re running the latest and greatest version of CIPP!
+                </p>
               ) : (
-                <p class="text-danger">Your CIPP version is out of date!</p>
+                <p className="text-danger">Your CIPP version is out of date!</p>
               )}
             </CCardBody>
           </CCard>
           <CCard className="mb-3" style={{ maxWidth: '18rem' }}>
             <CCardHeader>
               <CCardTitle>
-                <StatusIcon type='negatedboolean' status={versions?.OutOfDateCIPPAPI} />CIPP API Version
+                <StatusIcon type="negatedboolean" status={versions?.OutOfDateCIPPAPI} />
+                CIPP API Version
               </CCardTitle>
             </CCardHeader>
             <CCardBody>
-              <p>
-                Latest: {!isLoading ? versions.RemoteCIPPAPIVersion : <CSpinner size="sm" />}
-              </p>
-              <p>
-                Current: {!isLoading ? versions.LocalCIPPAPIVersion : <CSpinner size="sm" />}
-              </p>
+              <p>Latest: {!isLoading ? versions.RemoteCIPPAPIVersion : <CSpinner size="sm" />}</p>
+              <p>Current: {!isLoading ? versions.LocalCIPPAPIVersion : <CSpinner size="sm" />}</p>
               {!isLoading && !versions.OutOfDateCIPPAPI ? (
-                <p class="text-success">You're running the latest and greatest version of CIPP API!</p>
+                <p className="text-success">
+                  You&apos;re running the latest and greatest version of CIPP API!
+                </p>
               ) : (
-                <p class="text-danger">Your CIPP API version is out of date!</p>
+                <p className="text-danger">Your CIPP API version is out of date!</p>
               )}
             </CCardBody>
           </CCard>

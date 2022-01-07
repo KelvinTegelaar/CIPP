@@ -135,7 +135,7 @@ export default function CippTable({
         <div className="w-50 d-flex justify-content-end">{defaultActions}</div>
       </>
     )
-  }, [filterText, resetPaginationToggle, columns, data, reportName, actions])
+  }, [filterText, resetPaginationToggle, columns, data, reportName, disableDefaultActions, actions])
 
   return (
     <div className="ms-n3 me-n3 cipp-tablewrapper">

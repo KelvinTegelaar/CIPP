@@ -1,31 +1,21 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import TenantSelector from '../../../components/cipp/TenantSelector'
-import CippDatatable from '../../../components/cipp/CippDatatable'
-import {
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCardTitle,
-  CDropdown,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
-} from '@coreui/react'
+import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 import { cellBooleanFormatter } from '../../../components/cipp'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faBars } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
+import { CippPageList } from 'src/components'
 
 const dropdown = (row, rowIndex, formatExtraData) => (
-  <CDropdown>
+  <CDropdown direction="dropstart" placement="left-start">
     <CDropdownToggle size="sm" color="link">
       <FontAwesomeIcon icon={faBars} />
     </CDropdownToggle>
     <CDropdownMenu>
       <CDropdownItem href="#">
         <Link className="dropdown-item" to={`/email/administration/edit-contact`}>
-          <FontAwesomeIcon icon={faUser} className="me-2" />
+          <FontAwesomeIcon icon={faUser} fixedWidth className="me-2" />
           Edit Contact
         </Link>
       </CDropdownItem>
@@ -66,25 +56,16 @@ const ContactList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
-    <div>
-      <TenantSelector />
-      <hr />
-      <CCard className="page-card">
-        <CCardHeader>
-          <CCardTitle className="text-primary">Contacts</CCardTitle>
-        </CCardHeader>
-        <CCardBody>
-          {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-          <CippDatatable
-            keyField="id"
-            reportName={`${tenant?.defaultDomainName}-Contacts-List`}
-            path="/api/ListContacts"
-            columns={columns}
-            params={{ TenantFilter: tenant?.defaultDomainName }}
-          />
-        </CCardBody>
-      </CCard>
-    </div>
+    <CippPageList
+      title="Contacts"
+      datatable={{
+        keyField: 'id',
+        reportName: `${tenant?.defaultDomainName}-Contacts-List`,
+        path: '/api/ListContacts',
+        columns,
+        params: { TenantFilter: tenant?.defaultDomainName },
+      }}
+    />
   )
 }
 

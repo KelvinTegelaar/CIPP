@@ -14,10 +14,11 @@ import useQuery from '../../../hooks/useQuery'
 import { Form } from 'react-final-form'
 import { RFFCFormInput, RFFCFormSelect } from '../../../components/RFFComponents'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronRight, faChevronDown } from '@fortawesome/free-solid-svg-icons'
+import { faChevronRight, faChevronDown, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { CippDatatable, TenantSelector } from 'src/components/cipp'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { CippPage } from 'src/components'
 
 const columns = [
   {
@@ -158,8 +159,9 @@ const MessageTrace = () => {
                         </CRow>
                         <CRow className="mb-3">
                           <CCol>
-                            <CButton className="text-white" type="submit" disabled={submitting}>
-                              Perform Search
+                            <CButton type="submit" disabled={submitting}>
+                              <FontAwesomeIcon className="me-2" icon={faSearch} />
+                              Search
                             </CButton>
                           </CCol>
                         </CRow>
@@ -178,28 +180,22 @@ const MessageTrace = () => {
         </CCol>
       </CRow>
       <hr />
-      <CCard className="page-card">
-        <CCardHeader>
-          <CCardTitle className="text-primary">Message Trace Results</CCardTitle>
-        </CCardHeader>
-        <CCardBody>
-          {!SearchNow && <span>Execute a search to get started.</span>}
-
-          {SearchNow && (
-            <CippDatatable
-              reportName={`${tenant?.defaultDomainName}-Messagetrace`}
-              path="/api/listMessagetrace"
-              params={{
-                tenantFilter: tenant.defaultDomainName,
-                sender: sender,
-                recipient: recipient,
-                days: days,
-              }}
-              columns={columns}
-            />
-          )}
-        </CCardBody>
-      </CCard>
+      <CippPage title="Message Trace Results" tenantSelector={false}>
+        {!SearchNow && <span>Execute a search to get started.</span>}
+        {SearchNow && (
+          <CippDatatable
+            reportName={`${tenant?.defaultDomainName}-Messagetrace`}
+            path="/api/listMessagetrace"
+            params={{
+              tenantFilter: tenant.defaultDomainName,
+              sender: sender,
+              recipient: recipient,
+              days: days,
+            }}
+            columns={columns}
+          />
+        )}
+      </CippPage>
     </>
   )
 }
