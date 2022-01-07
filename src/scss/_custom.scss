@@ -1,7 +1,3 @@
-// Here you can add other styles
-@import 'tenantselector';
-
-// https://gist.github.com/ffoodd/000b59f431e3e64e4ce1a24d5bb36034
 .sr-only {
   border: 0 !important;
   clip: rect(1px, 1px, 1px, 1px) !important; /* 1 */
@@ -162,11 +158,28 @@
   }
 }
 
-
 .cipp-offcanvas {
   background-color: var(--cui-body-bg);
   z-index: 1500;
   &.offcanvas-end {
     @include ltr-rtl-value-only("transform", none, none);
   }
+  .offcanvas-header {
+    background-color: var(--cipp-offcanvas-header-bg);
+    color: var(--cipp-offcanvas-header-color);
+  }
+  .offcanvas-title {
+    padding-bottom: 1rem;
+    padding-top: 0.5rem;
+    background-color: var(--cipp-offcanvas-title-bg);
+    color: var(--cipp-offcanvas-title-color);
+  }
+  .cipp-extendedinfo-label {
+    font-weight: bold;
+    border-bottom: 1px solid var(--cipp-offcanvas-label-border-color)
+  }
+}
+
+.list-group {
+  border-radius: var(--cipp-border-radius);
 }

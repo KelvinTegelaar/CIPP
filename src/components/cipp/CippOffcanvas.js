@@ -26,7 +26,12 @@ export default function CippOffcanvas({
   ))
   const actionsContent = actions.map((action, index) => (
     <CListGroup layout="horizontal-md" key={index}>
-      <CListGroupItem className="cipp-action" component="button" href={action.link}>
+      <CListGroupItem
+        className="cipp-action"
+        component="button"
+        color={action.color}
+        href={action.link}
+      >
         {action.icon}
         {action.label}
       </CListGroupItem>
@@ -42,7 +47,9 @@ export default function CippOffcanvas({
         aria-labelledby={title}
         onHide={onHide}
       >
-        <COffcanvasHeader>{title}</COffcanvasHeader>
+        <COffcanvasHeader>
+          <h2>{title}</h2>
+        </COffcanvasHeader>
         <COffcanvasBody>
           <COffcanvasTitle>Extended Information</COffcanvasTitle>
           {extendedInfoContent}
@@ -66,6 +73,7 @@ export const CippOffcanvasPropTypes = {
       label: PropTypes.string,
       link: PropTypes.string,
       icon: PropTypes.element,
+      color: PropTypes.string,
     }),
   ).isRequired,
   placement: PropTypes.string.isRequired,
