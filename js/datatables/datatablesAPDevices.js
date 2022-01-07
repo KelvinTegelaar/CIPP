@@ -32,6 +32,7 @@ $(document).ready(function () {
                 { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', orientation: 'landscape', title: 'Autopilot Device List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4] } },
             ],
             "columns": [
+                { "data": "displayName" },
                 { "data": "serialNumber" },
                 { "data": "manufacturer" },
                 { "data": "model" },
