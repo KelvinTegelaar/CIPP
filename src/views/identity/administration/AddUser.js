@@ -68,10 +68,10 @@ const AddUser = () => {
     if (!values.addedAliases) {
       values.addedAliases = ''
     }
+
     const shippedValues = {
       AddedAliases: values.addedAliases,
       BusinessPhone: values.businessPhones,
-      RemoveAllLicenses: values.RemoveAllLicenses,
       City: values.city,
       CompanyName: values.companyName,
       CopyFrom: values.CopyFrom,
@@ -79,7 +79,7 @@ const AddUser = () => {
       Department: values.department,
       DisplayName: values.displayName,
       Domain: values.primDomain,
-      FirstName: values.firstName,
+      FirstName: values.givenName,
       Jobtitle: values.jobTitle,
       LastName: values.surname,
       License: values.licenses,
@@ -200,7 +200,7 @@ const AddUser = () => {
                                     value: Code,
                                     name: Name,
                                   }))}
-                                  name="usagelocation"
+                                  name="usageLocation"
                                   placeholder="Type to search..."
                                   label="Usage Location"
                                 />
