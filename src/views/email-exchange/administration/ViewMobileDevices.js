@@ -1,10 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import TenantSelector from '../../../components/cipp/TenantSelector'
-import CippDatatable from '../../../components/cipp/CippDatatable'
-import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
-
 import useQuery from 'src/hooks/useQuery'
+import { CippPageList } from 'src/components'
 
 //TODO: Add CellBoolean
 const columns = [
@@ -71,25 +68,16 @@ const MobileDeviceList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
-    <div>
-      <TenantSelector />
-      <hr />
-      <CCard className="page-card">
-        <CCardHeader>
-          <CCardTitle className="text-primary">Mobile Devices</CCardTitle>
-        </CCardHeader>
-        <CCardBody>
-          {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-          <CippDatatable
-            keyField="id"
-            reportName={`${tenant?.defaultDomainName} Mailbox list`}
-            path="/api/ListMailboxMobileDevices"
-            columns={columns}
-            params={{ TenantFilter: tenant?.defaultDomainName, mailbox: userId }}
-          />
-        </CCardBody>
-      </CCard>
-    </div>
+    <CippPageList
+      title="Mobile Devices"
+      datatable={{
+        keyField: 'id',
+        reportName: `${tenant?.defaultDomainName}-MobileDevices-List`,
+        path: '/api/ListMailboxMobileDevices',
+        columns,
+        params: { TenantFilter: tenant?.defaultDomainName },
+      }}
+    />
   )
 }
 

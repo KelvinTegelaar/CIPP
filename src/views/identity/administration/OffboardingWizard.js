@@ -1,15 +1,5 @@
 import React from 'react'
-import {
-  CAlert,
-  CCard,
-  CCardBody,
-  CCol,
-  CListGroup,
-  CListGroupItem,
-  CRow,
-  CCardHeader,
-  CCardTitle,
-} from '@coreui/react'
+import { CAlert, CCol, CListGroup, CListGroupItem, CRow } from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {

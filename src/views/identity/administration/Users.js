@@ -61,7 +61,7 @@ const Dropdown = (row, rowIndex, formatExtraData) => {
   }
 
   return (
-    <CDropdown>
+    <CDropdown direction="dropstart" placement="left-start">
       <CDropdownToggle size="sm" color="link">
         <FontAwesomeIcon icon={faBars} />
       </CDropdownToggle>

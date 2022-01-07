@@ -1,7 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { CippPage } from 'src/components/CippPage'
-import CippDatatable from 'src/components/cipp/CippDatatable'
+import { CippPageList } from 'src/components/CippPage'
 const columns = [
   {
     name: 'User Principal Name',
@@ -19,15 +18,15 @@ const BasicAuthReport = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
-    <CippPage title="Basic Auth Report">
-      {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-      <CippDatatable
-        reportName={`${tenant?.defaultDomainName}-Basic-Auth-Report`}
-        path="/api/ListBasicAuth"
-        columns={columns}
-        params={{ TenantFilter: tenant?.defaultDomainName }}
-      />
-    </CippPage>
+    <CippPageList
+      title="Basic Auth Report"
+      datatable={{
+        columns,
+        path: '/api/ListBasicAuth',
+        reportName: `${tenant?.defaultDomainName}-Basic-Auth-Report`,
+        params: { TenantFilter: tenant?.defaultDomainName },
+      }}
+    />
   )
 }
 

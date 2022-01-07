@@ -51,4 +51,5 @@ export default StatusIcon
 StatusIcon.propTypes = {
   finalState: PropTypes.string,
   status: PropTypes.bool,
+  type: PropTypes.string,
 }

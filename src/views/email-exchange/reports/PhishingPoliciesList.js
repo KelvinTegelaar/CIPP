@@ -1,8 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import TenantSelector from '../../../components/cipp/TenantSelector'
-import CippDatatable from '../../../components/cipp/CippDatatable'
-import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
+import { CippPageList } from 'src/components'
 import { cellBooleanFormatter, cellDateFormatter } from '../../../components/cipp'
 
 //TODO: Add CellBoolean
@@ -52,25 +50,16 @@ const MailboxList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
-    <div>
-      <TenantSelector />
-      <hr />
-      <CCard className="page-card">
-        <CCardHeader>
-          <CCardTitle className="text-primary">Phishing Policies</CCardTitle>
-        </CCardHeader>
-        <CCardBody>
-          {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-          <CippDatatable
-            keyField="id"
-            reportName={`${tenant?.defaultDomainName}-PhishingPolicies-List`}
-            path="/api/ListPhishPolicies"
-            columns={columns}
-            params={{ TenantFilter: tenant?.defaultDomainName }}
-          />
-        </CCardBody>
-      </CCard>
-    </div>
+    <CippPageList
+      title="Phishing Policies"
+      datatable={{
+        keyField: 'id',
+        reportName: `${tenant?.defaultDomainName}-PhishingPolicies-List`,
+        path: '/api/ListPhishPolicies',
+        columns,
+        params: { TenantFilter: tenant?.defaultDomainName },
+      }}
+    />
   )
 }
 

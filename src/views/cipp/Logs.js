@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { CippPage } from 'src/components/CippPage'
 import {
   CButton,
   CCard,
@@ -10,11 +11,11 @@ import {
   CForm,
   CRow,
 } from '@coreui/react'
-import useQuery from '../../hooks/useQuery'
+import useQuery from 'src/hooks/useQuery'
 import { Form } from 'react-final-form'
-import { RFFCFormInput, RFFCFormSelect } from '../../components/RFFComponents'
+import { RFFCFormInput, RFFCFormSelect } from 'src/components/RFFComponents'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronRight, faChevronDown } from '@fortawesome/free-solid-svg-icons'
+import { faSearch, faChevronRight, faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { CippDatatable } from 'src/components/cipp'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -85,7 +86,7 @@ const Logs = () => {
           <CCard className="options-card">
             <CCardHeader>
               <CCardTitle className="d-flex justify-content-between">
-                Log file settings
+                Logbook Settings
                 <CButton size="sm" variant="ghost" onClick={() => setVisibleA(!visibleA)}>
                   <FontAwesomeIcon icon={visibleA ? faChevronDown : faChevronRight} />
                 </CButton>
@@ -147,8 +148,9 @@ const Logs = () => {
                         </CRow>
                         <CRow className="mb-3">
                           <CCol>
-                            <CButton className="text-white" type="submit" disabled={submitting}>
-                              Perform Search
+                            <CButton type="submit" disabled={submitting}>
+                              <FontAwesomeIcon icon={faSearch} className="me-2" />
+                              Search
                             </CButton>
                           </CCol>
                         </CRow>
@@ -167,24 +169,19 @@ const Logs = () => {
         </CCol>
       </CRow>
       <hr />
-      <CCard className="page-card">
-        <CCardHeader>
-          <CCardTitle className="text-primary">Log File Results</CCardTitle>
-        </CCardHeader>
-        <CCardBody>
-          <CippDatatable
-            reportName={`${tenant?.defaultDomainName}-Messagetrace`}
-            path="/api/Listlogs"
-            // params={{
-            // tenantFilter: tenant.defaultDomainName,
-            // sender: sender,
-            // recipient: recipient,
-            // days: days,
-            //}}
-            columns={columns}
-          />
-        </CCardBody>
-      </CCard>
+      <CippPage title="LogBook Results" tenantSelector={false}>
+        <CippDatatable
+          reportName={`${tenant?.defaultDomainName}-Messagetrace`}
+          path="/api/Listlogs"
+          // params={{
+          // tenantFilter: tenant.defaultDomainName,
+          // sender: sender,
+          // recipient: recipient,
+          // days: days,
+          //}}
+          columns={columns}
+        />
+      </CippPage>
     </>
   )
 }

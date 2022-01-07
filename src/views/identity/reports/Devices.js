@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { CippPage } from 'src/components/CippPage'
-import { cellBooleanFormatter, cellDateFormatter, CippDatatable } from 'src/components/cipp'
+import { CippPageList } from 'src/components/CippPage'
+import { cellBooleanFormatter, cellDateFormatter } from 'src/components/cipp'
 
 const columns = [
   {
@@ -85,16 +85,15 @@ const DevicesList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
-    <CippPage title="Devices">
-      {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-      <CippDatatable
-        keyField="id"
-        reportName={`${tenant?.defaultDomainName}-Device-List`}
-        path="/api/ListDevices"
-        columns={columns}
-        params={{ TenantFilter: tenant?.defaultDomainName }}
-      />
-    </CippPage>
+    <CippPageList
+      title="Devices"
+      datatable={{
+        columns,
+        path: '/api/ListDevices',
+        reportName: `${tenant?.defaultDomainName}-Device-List`,
+        params: { TenantFilter: tenant?.defaultDomainName },
+      }}
+    />
   )
 }
 

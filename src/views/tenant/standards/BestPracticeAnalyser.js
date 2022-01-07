@@ -18,7 +18,6 @@ import useConfirmModal from '../../../hooks/useConfirmModal'
 const RefreshAction = () => {
   const [execBestPracticeAnalyser, { isLoading, isSuccess, error }] =
     useExecBestPracticeAnalyserMutation()
-  const dispatch = useDispatch()
 
   const showModal = useConfirmModal({
     body: (
