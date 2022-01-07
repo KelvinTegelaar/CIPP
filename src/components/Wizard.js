@@ -1,12 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form } from 'react-final-form'
-import { CButton, CCardHeader, CNav, CNavItem, CNavLink } from '@coreui/react'
+import { CButton, CCardHeader, CNav, CNavItem, CNavLink, CRow, CCol } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
+import { CippPage } from 'src/components'
 
 export default class Wizard extends React.Component {
   static propTypes = {
+    wizardTitle: PropTypes.string,
     onSubmit: PropTypes.func.isRequired,
     children: PropTypes.arrayOf(PropTypes.element),
     initialValues: PropTypes.any,
@@ -26,6 +28,7 @@ export default class Wizard extends React.Component {
     this.state = {
       page: 0,
       values: props.initialValues,
+      wizardTitle: props.wizardTitle,
     }
   }
 
@@ -63,60 +66,69 @@ export default class Wizard extends React.Component {
 
   render() {
     const { children } = this.props
-    const { page, values } = this.state
+    const { page, values, wizardTitle } = this.state
     const activePage = React.Children.toArray(children)[page]
     const isLastPage = page === React.Children.count(children) - 1
 
     return (
-      <>
-        <CCardHeader className="bg-transparent">
-          <CNav variant="pills" role="tablist" className="nav-justified nav-wizard">
-            {React.Children.map(children, ({ props: { description, title } }, idx) => (
-              <CNavItem key={`wizard-nav-item-${idx}`} style={{ cursor: 'pointer' }}>
-                <CNavLink active={idx === page}>
-                  <div className="wizard-step-icon">{idx + 1}</div>
-                  <div className="wizard-step-text">
-                    <div className="wizard-step-text-name">{title}</div>
-                    <div className="wizard-step-text-details">{description}</div>
-                  </div>
-                </CNavLink>
-                <br></br>
-              </CNavItem>
-            ))}
-          </CNav>
-        </CCardHeader>
-        <Form initialValues={values} validate={this.validate} onSubmit={this.handleSubmit}>
-          {({ handleSubmit, submitting, values }) => (
-            <>
-              <form onSubmit={handleSubmit}>
-                {activePage}
-                <div className="d-flex justify-content-between">
-                  {page > 0 && (
-                    <CButton className="me-auto" type="button" onClick={this.previous}>
-                      « Previous
-                    </CButton>
-                  )}
-                  {!isLastPage && (
-                    <CButton className="ms-auto" type="submit">
-                      Next »
-                    </CButton>
-                  )}
-                  {isLastPage && (
-                    <>
-                      <CButton type="submit" disabled={submitting}>
-                        Submit
-                        {submitting && (
-                          <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-                        )}
-                      </CButton>
-                    </>
-                  )}
-                </div>
-              </form>
-            </>
-          )}
-        </Form>
-      </>
+      <CippPage title={wizardTitle} tenantSelector={false}>
+        <CRow className="row justify-content-center">
+          <CCol xxl={12}>
+            <CCardHeader className="bg-transparent">
+              <CNav variant="pills" role="tablist" className="nav-justified nav-wizard">
+                {React.Children.map(children, ({ props: { description, title } }, idx) => (
+                  <CNavItem key={`wizard-nav-item-${idx}`} style={{ cursor: 'pointer' }}>
+                    <CNavLink active={idx === page}>
+                      <div className="wizard-step-icon">{idx + 1}</div>
+                      <div className="wizard-step-text">
+                        <div className="wizard-step-text-name">{title}</div>
+                        <div className="wizard-step-text-details">{description}</div>
+                      </div>
+                    </CNavLink>
+                    <br></br>
+                  </CNavItem>
+                ))}
+              </CNav>
+            </CCardHeader>
+            <Form initialValues={values} validate={this.validate} onSubmit={this.handleSubmit}>
+              {({ handleSubmit, submitting, values }) => (
+                <>
+                  <form onSubmit={handleSubmit}>
+                    {activePage}
+                    <div className="d-flex justify-content-between">
+                      {page > 0 && (
+                        <CButton className="me-auto" type="button" onClick={this.previous}>
+                          « Previous
+                        </CButton>
+                      )}
+                      {!isLastPage && (
+                        <CButton className="ms-auto" type="submit">
+                          Next »
+                        </CButton>
+                      )}
+                      {isLastPage && (
+                        <>
+                          <CButton type="submit" disabled={submitting}>
+                            Submit
+                            {submitting && (
+                              <FontAwesomeIcon
+                                icon={faCircleNotch}
+                                spin
+                                className="me-2"
+                                size="1x"
+                              />
+                            )}
+                          </CButton>
+                        </>
+                      )}
+                    </div>
+                  </form>
+                </>
+              )}
+            </Form>
+          </CCol>
+        </CRow>
+      </CippPage>
     )
   }
 }
