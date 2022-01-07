@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { CButton } from '@coreui/react'
 import { useSelector } from 'react-redux'
-import { faPlus, faBars } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faEdit, faTrash, faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { cellBooleanFormatter, CippOffcanvas } from '../../../components/cipp'
 import { CippPageList } from '../../../components'
@@ -11,17 +11,26 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
   const [ocVisible, setOCVisible] = useState(false)
   return (
     <>
-      <CButton size="sm" color="link">
-        <FontAwesomeIcon icon={faBars} onClick={() => setOCVisible(true)} />
+      <CButton size="sm" variant="ghost" color="warning">
+        <FontAwesomeIcon icon={faEdit} href="" />
+      </CButton>
+      <CButton size="sm" variant="ghost" color="danger">
+        <FontAwesomeIcon icon={faTrash} href="" />
+      </CButton>
+      <CButton size="sm" color="link" onClick={() => setOCVisible(true)}>
+        <FontAwesomeIcon icon={faEllipsisV} />
       </CButton>
       <CippOffcanvas
         title="This is our first off Canvas"
-        extendedInfo={[{ label: 'Given Name: ', value: `${row.givenName}` }]}
+        extendedInfo={[
+          { label: 'Given Name: ', value: `${row.givenName}` },
+          { label: 'Surname:', value: `${row.surname}` },
+        ]}
         actions={[{ label: 'ThisIsAnActionButton', link: 'dothis', color: 'primary' }]}
         placement="end"
         visible={ocVisible}
         id={row.id}
-        onHide={() => setOCVisible(false)}
+        hideFunction={() => setOCVisible(false)}
       />
     </>
   )
