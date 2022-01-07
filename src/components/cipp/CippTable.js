@@ -106,6 +106,11 @@ export default function CippTable({
       }
     }
     const defaultActions = []
+
+    actions.forEach((action) => {
+      defaultActions.push(action)
+    })
+
     if (!disablePDFExport) {
       defaultActions.push([
         <ExportPDFButton
@@ -117,10 +122,6 @@ export default function CippTable({
         />,
       ])
     }
-
-    actions.forEach((action) => {
-      defaultActions.push(action)
-    })
     return (
       <>
         <div className="w-50 ms-n2 pb-3 pe-3 d-flex justify-content-start">
