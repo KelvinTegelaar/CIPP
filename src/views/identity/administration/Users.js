@@ -13,23 +13,26 @@ import { TitleButton } from '../../../components/cipp'
 const Dropdown = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
   const dispatch = useDispatch()
-  const [visible, setVisible] = useState(false)
   const [ExecuteGetRequest, getRequestResult] = useLazyGenericGetRequestQuery()
   const CreateOffCanvas = (row) => {
     console.log(row)
   }
+  const id = row.id
+  const [ocVisible, setOCVisible] = useState(false)
 
   return (
     <>
-      <CButton size="sm" color="link">
-        <FontAwesomeIcon icon={faBars} onClick={() => setVisible(true)} />
+      {console.log(row)}
+      <CButton size="sm" color="link" onClick={setOCVisible(true)}>
+        <FontAwesomeIcon icon={faBars} />
       </CButton>
       <CippOffcanvas
-        title="This is our virst off Canvas"
+        title="This is our first off Canvas"
         extendedInfo={[{ label: 'Given Name: ', value: `${row.givenName}` }]}
         actions={[{ label: 'ThisIsAnActionButton', link: 'dothis' }]}
-        position="top"
-        visible={visible}
+        placement="end"
+        isVisible={ocVisible}
+        id={row.id}
       />
     </>
   )
@@ -91,13 +94,13 @@ const columns = [
 
 const Users = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
-
+  const titleButton = (
+    <TitleButton href="/identity/administration/users/add" title="Add User" icon={faPlus} />
+  )
   return (
     <CippPageList
       title="Users"
-      titleButton={
-        <TitleButton href="/identity/administration/users/add" title="Add User" icon={faPlus} />
-      }
+      titleButton={titleButton}
       datatable={{
         columns,
         path: '/api/ListUsers',

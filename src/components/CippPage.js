@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
 import { setCurrentTenant } from '../store/features/app'
 import { useListTenantsQuery } from '../store/api/tenants'
+import { TitleButton } from './cipp'
 
 export function CippPage({ tenantSelector = true, title, children, titleButton = null }) {
   const { data: tenants = [], isSuccess } = useListTenantsQuery()
@@ -83,9 +84,9 @@ export function CippPageList({
 CippPageList.propTypes = {
   tenantSelector: PropTypes.bool,
   title: PropTypes.string.isRequired,
-  titleButton: PropTypes.node,
+  titleButton: PropTypes.element,
   datatable: PropTypes.shape({
-    reportName: PropTypes.string.isRequired,
+    reportName: PropTypes.string,
     path: PropTypes.string.isRequired,
     columns: PropTypes.array.isRequired,
     params: PropTypes.object,

@@ -8,8 +8,9 @@ import {
   COffcanvasBody,
   COffcanvasTitle,
 } from '@coreui/react'
+import { Row } from 'jspdf-autotable'
 
-export default function CippOffcanvas({ extendedInfo, actions, position, title, visible }) {
+export default function CippOffcanvas({ extendedInfo, actions, placement, title, isVisible, id }) {
   const extendedInfoContent = extendedInfo.map((info, index) => (
     <CListGroup layout="horizontal-md" key={index}>
       <CListGroupItem className="cipp-extendedinfo-label">{info.label}</CListGroupItem>
@@ -26,7 +27,13 @@ export default function CippOffcanvas({ extendedInfo, actions, position, title, 
   ))
   return (
     <>
-      <COffcanvas visible={visible} placement={position}>
+      <COffcanvas
+        className="cipp-offcanvas"
+        visible={isVisible}
+        placement={placement}
+        id={id}
+        aria-labelledby={title}
+      >
         <COffcanvasHeader>{title}</COffcanvasHeader>
         <COffcanvasBody>
           <COffcanvasTitle>Extended Information</COffcanvasTitle>
@@ -45,17 +52,18 @@ export const CippOffcanvasPropTypes = {
       label: PropTypes.string,
       value: PropTypes.any,
     }),
-  ),
+  ).isRequired,
   actions: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string,
       link: PropTypes.string,
-      icon: PropTypes.component,
+      icon: PropTypes.element,
     }),
-  ),
-  position: PropTypes.string,
-  title: PropTypes.string,
-  visible: PropTypes.bool,
+  ).isRequired,
+  placement: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  isVisible: PropTypes.bool,
+  id: PropTypes.string.isRequired,
 }
 
 CippOffcanvas.propTypes = CippOffcanvasPropTypes
