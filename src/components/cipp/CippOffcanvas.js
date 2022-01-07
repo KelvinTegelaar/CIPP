@@ -8,9 +8,16 @@ import {
   COffcanvasBody,
   COffcanvasTitle,
 } from '@coreui/react'
-import { Row } from 'jspdf-autotable'
 
-export default function CippOffcanvas({ extendedInfo, actions, placement, title, isVisible, id }) {
+export default function CippOffcanvas({
+  extendedInfo,
+  actions,
+  placement,
+  title,
+  visible,
+  id,
+  onHide,
+}) {
   const extendedInfoContent = extendedInfo.map((info, index) => (
     <CListGroup layout="horizontal-md" key={index}>
       <CListGroupItem className="cipp-extendedinfo-label">{info.label}</CListGroupItem>
@@ -29,10 +36,11 @@ export default function CippOffcanvas({ extendedInfo, actions, placement, title,
     <>
       <COffcanvas
         className="cipp-offcanvas"
-        visible={isVisible}
+        visible={visible}
         placement={placement}
         id={id}
         aria-labelledby={title}
+        onHide={onHide}
       >
         <COffcanvasHeader>{title}</COffcanvasHeader>
         <COffcanvasBody>
@@ -62,8 +70,9 @@ export const CippOffcanvasPropTypes = {
   ).isRequired,
   placement: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
-  isVisible: PropTypes.bool,
+  visible: PropTypes.bool,
   id: PropTypes.string.isRequired,
+  onHide: PropTypes.func.isRequired,
 }
 
 CippOffcanvas.propTypes = CippOffcanvasPropTypes

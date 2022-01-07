@@ -13,26 +13,26 @@ import { TitleButton } from '../../../components/cipp'
 const Dropdown = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
   const dispatch = useDispatch()
+  const [ocVisible, setOCVisible] = useState(false)
   const [ExecuteGetRequest, getRequestResult] = useLazyGenericGetRequestQuery()
   const CreateOffCanvas = (row) => {
     console.log(row)
   }
-  const id = row.id
-  const [ocVisible, setOCVisible] = useState(false)
 
   return (
     <>
       {console.log(row)}
-      <CButton size="sm" color="link" onClick={setOCVisible(true)}>
-        <FontAwesomeIcon icon={faBars} />
+      <CButton size="sm" color="link">
+        <FontAwesomeIcon icon={faBars} onClick={() => setOCVisible(true)} />
       </CButton>
       <CippOffcanvas
         title="This is our first off Canvas"
         extendedInfo={[{ label: 'Given Name: ', value: `${row.givenName}` }]}
         actions={[{ label: 'ThisIsAnActionButton', link: 'dothis' }]}
         placement="end"
-        isVisible={ocVisible}
+        visible={ocVisible}
         id={row.id}
+        onHide={() => setOCVisible(false)}
       />
     </>
   )

@@ -164,7 +164,7 @@
 
 
 .cipp-offcanvas {
-  background-color: var(cipp-body-bg);
+  background-color: var(--cui-body-bg);
   z-index: 1500;
   &.offcanvas-end {
     @include ltr-rtl-value-only("transform", none, none);
