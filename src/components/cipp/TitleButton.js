@@ -9,7 +9,7 @@ export default function TitleButton({ icon = faPlus, title, href }) {
   return (
     <Link to={href}>
       <CButton size="sm" color="primary">
-        <FontAwesomeIcon icon={faPlus} className="pe-1" />
+        <FontAwesomeIcon icon={icon ?? faPlus} className="pe-1" />
         {title}
       </CButton>
     </Link>
@@ -17,7 +17,7 @@ export default function TitleButton({ icon = faPlus, title, href }) {
 }
 
 TitleButton.propTypes = {
-  icon: PropTypes.node,
+  icon: PropTypes.any,
   title: PropTypes.string.isRequired,
   href: PropTypes.string.isRequired,
 }
