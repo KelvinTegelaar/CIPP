@@ -137,6 +137,7 @@ const TenantsList = () => {
   return (
     <CippPageList
       title="Tenants"
+      tenantSelector={false}
       datatable={{
         keyField: 'id',
         columns,
