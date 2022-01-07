@@ -3,13 +3,16 @@ import { CButton } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 
 export default function TitleButton({ icon = faPlus, title, href }) {
   return (
-    <CButton size="sm" color="primary" href={href}>
-      <FontAwesomeIcon icon={faPlus} className="pe-1" />
-      {title}
-    </CButton>
+    <Link to={href}>
+      <CButton size="sm" color="primary">
+        <FontAwesomeIcon icon={faPlus} className="pe-1" />
+        {title}
+      </CButton>
+    </Link>
   )
 }
 
