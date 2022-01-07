@@ -90,6 +90,7 @@ const AddUser = () => {
       Username: values.mailNickname,
       streetAddress: values.streetAddress,
       Autopassword: values.Autopassword,
+      MustChangePass: values.MustChangePass,
       tenantID: tenantDomain,
       ...values.license,
     }
@@ -188,7 +189,7 @@ const AddUser = () => {
                                   </CCol>
                                 </Condition>
                                 <RFFCFormCheck
-                                  name="RequirePasswordChange"
+                                  name="MustChangePass"
                                   label="Require password change at next logon"
                                 />
                               </CCol>
@@ -225,7 +226,7 @@ const AddUser = () => {
                                 </Condition>
                               </CCol>
                             </CRow>
-                            <CRow>
+                            {/* <CRow> Temporarily disabled, API does not support this yet.
                               <CCol md={12}>
                                 <RFFCFormInput name="jobTitle" label="Job Title" type="text" />
                               </CCol>
@@ -269,7 +270,7 @@ const AddUser = () => {
                                   type="text"
                                 />
                               </CCol>
-                            </CRow>
+                            </CRow> */}
                             <CRow className="mb-3">
                               <CCol md={12}>
                                 <RFFSelectSearch
