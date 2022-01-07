@@ -2,10 +2,9 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 import { Link } from 'react-router-dom'
-import { faUser, faBars } from '@fortawesome/free-solid-svg-icons'
+import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPageList } from 'src/components'
-import { relativeTimeRounding } from 'moment'
 
 const dropdown = (row, rowIndex, formatExtraData) => {
   return (

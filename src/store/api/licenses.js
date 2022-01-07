@@ -1,9 +1,6 @@
-import { createApi } from '@reduxjs/toolkit/query/react'
-import { baseQuery } from './baseQuery'
+import { baseApi } from './baseApi'
 
-export const licensesApi = createApi({
-  reducerPath: 'licenses',
-  baseQuery: baseQuery(),
+export const licensesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     listLicenses: builder.query({
       query: ({ tenantDomain }) => ({

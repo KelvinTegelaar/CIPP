@@ -1,58 +1,70 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
-import { cellBooleanFormatter } from '../../../components/cipp'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser, faBars } from '@fortawesome/free-solid-svg-icons'
-import { Link } from 'react-router-dom'
+import useQuery from 'src/hooks/useQuery'
 import { CippPageList } from 'src/components'
-
-const dropdown = (row, rowIndex, formatExtraData) => (
-  <CDropdown direction="dropstart" placement="left-start">
-    <CDropdownToggle size="sm" color="link">
-      <FontAwesomeIcon icon={faBars} />
-    </CDropdownToggle>
-    <CDropdownMenu>
-      <CDropdownItem href="#">
-        <Link className="dropdown-item" to={`/email/administration/edit-contact`}>
-          <FontAwesomeIcon icon={faUser} className="me-2" />
-          Edit Contact
-        </Link>
-      </CDropdownItem>
-    </CDropdownMenu>
-  </CDropdown>
-)
 
 //TODO: Add CellBoolean
 const columns = [
   {
-    selector: (row) => row['displayName'],
-    name: 'Display Name',
+    selector: (row) => row['clientType'],
+    name: 'Client Type',
     sortable: true,
   },
   {
-    selector: (row) => row['mail'],
-    name: 'E-Mail Address',
+    selector: (row) => row['clientVersion'],
+    name: 'Client Version',
     sortable: true,
   },
   {
-    selector: (row) => row['company'],
-    name: 'Company',
+    selector: (row) => row['deviceAccessState'],
+    name: 'Access State',
     sortable: true,
   },
   {
-    selector: (row) => row['onPremisesSyncEnabled'],
-    name: 'On Premises Sync',
+    selector: (row) => row['deviceFriendlyName'],
+    name: 'Friendly Name',
     sortable: true,
-    cell: cellBooleanFormatter(),
   },
   {
-    name: 'Actions',
-    cell: dropdown,
+    selector: (row) => row['deviceModel'],
+    name: 'Model',
+    sortable: true,
+  },
+  {
+    selector: (row) => row['deviceOS'],
+    name: 'OS',
+    sortable: true,
+  },
+  {
+    selector: (row) => row['deviceType'],
+    name: 'Device Type',
+    sortable: true,
+  },
+  {
+    selector: (row) => row['firstSync'],
+    name: 'First Sync',
+    sortable: true,
+  },
+  {
+    selector: (row) => row['lastSyncAttempt'],
+    name: 'Last Sync Attempt',
+    sortable: true,
+  },
+  {
+    selector: (row) => row['lastSuccessSync'],
+    name: 'Last Succesfull Sync',
+    sortable: true,
+  },
+  {
+    selector: (row) => row['status'],
+    name: 'Status',
+    sortable: true,
   },
 ]
 
 const MobileDeviceList = () => {
+  let query = useQuery()
+  const userId = query.get('UserID')
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (

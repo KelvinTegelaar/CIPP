@@ -32,16 +32,13 @@ const Home = () => {
                 below to jump to the relevant wizard.
               </CCardText>
               <CButton className="m-1" color="primary" href="/identity/administration/users/add">
-                <FontAwesomeIcon icon={faUser} className="pe-1" />
-                Add a User
+                <FontAwesomeIcon icon={faUser} className="pe-1" /> Add a User
               </CButton>
               <CButton className="m-1" color="primary" href="/identity/administration/groups/add">
-                <FontAwesomeIcon icon={faUserFriends} className="pe-1" />
-                Add a Group
+                <FontAwesomeIcon icon={faUserFriends} className="pe-1" /> Add a Group
               </CButton>
               <CButton className="m-1" color="primary" href="/teams-share/teams/add-team">
-                <FontAwesomeIcon icon={faUsers} className="pe-1" />
-                Add a Team
+                <FontAwesomeIcon icon={faUsers} className="pe-1" /> Add a Team
               </CButton>
             </CCardBody>
           </CCard>
@@ -57,7 +54,7 @@ const Home = () => {
             <CCardBody>
               <p>Latest: {!isLoading ? versions.RemoteCIPPVersion : <CSpinner size="sm" />}</p>
               <p>Current: {!isLoading ? versions.LocalCIPPVersion : <CSpinner size="sm" />}</p>
-              {!isLoading && !versions.OutOfDateCIPP ? (
+              {!versions?.OutOfDateCIPP ? (
                 <p className="text-success">
                   You&apos;re running the latest and greatest version of CIPP!
                 </p>
@@ -76,7 +73,7 @@ const Home = () => {
             <CCardBody>
               <p>Latest: {!isLoading ? versions.RemoteCIPPAPIVersion : <CSpinner size="sm" />}</p>
               <p>Current: {!isLoading ? versions.LocalCIPPAPIVersion : <CSpinner size="sm" />}</p>
-              {!isLoading && !versions.OutOfDateCIPPAPI ? (
+              {!versions?.OutOfDateCIPPAPI ? (
                 <p className="text-success">
                   You&apos;re running the latest and greatest version of CIPP API!
                 </p>

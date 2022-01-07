@@ -4,10 +4,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import { useListTenantsQuery } from '../../store/api/tenants'
 import { setCurrentTenant } from '../../store/features/app'
-import { useSearchParams } from 'react-router-dom'
 
 const TenantSelector = ({ action }) => {
-  const setSearchParams = useSearchParams()
   const dispatch = useDispatch()
   const currentTenant = useSelector((state) => state.app.currentTenant)
   const { data: tenants = [], isLoading, error } = useListTenantsQuery()
@@ -17,7 +15,6 @@ const TenantSelector = ({ action }) => {
       return t.customerId === customerId
     })
     dispatch(setCurrentTenant({ tenant: selectedTenant[0] }))
-    setSearchParams({ customerId: selectedTenant[0].customerId })
 
     if (typeof action === 'function') {
       action(selectedTenant[0])

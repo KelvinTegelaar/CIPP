@@ -31,6 +31,7 @@ FilterComponent.propTypes = {
 export default function CippTable({
   data,
   isFetching = false,
+  disablePDFExport = false,
   error,
   reportName,
   columns = [],
@@ -105,11 +106,14 @@ export default function CippTable({
         setFilterText('')
       }
     }
+    const defaultActions = []
 
-    let defaultActions = []
+    actions.forEach((action) => {
+      defaultActions.push(action)
+    })
 
-    if (disableDefaultActions === false) {
-      defaultActions = [
+    if (!disablePDFExport) {
+      defaultActions.push([
         <ExportPDFButton
           key="export-pdf-action"
           pdfData={data}
@@ -117,11 +121,7 @@ export default function CippTable({
           pdfSize="A4"
           reportName={reportName}
         />,
-      ]
-
-      actions.forEach((action) => {
-        defaultActions.push(action)
-      })
+      ])
     }
     return (
       <>
@@ -135,7 +135,7 @@ export default function CippTable({
         <div className="w-50 d-flex justify-content-end">{defaultActions}</div>
       </>
     )
-  }, [filterText, resetPaginationToggle, columns, data, reportName, disableDefaultActions, actions])
+  }, [filterText, resetPaginationToggle, columns, data, reportName, disablePDFExport, actions])
 
   return (
     <div className="ms-n3 me-n3 cipp-tablewrapper">
@@ -182,6 +182,7 @@ export const CippTablePropTypes = {
   tableProps: PropTypes.object,
   data: PropTypes.array,
   isFetching: PropTypes.bool,
+  disablePDFExport: PropTypes.bool,
   error: PropTypes.object,
 }
 

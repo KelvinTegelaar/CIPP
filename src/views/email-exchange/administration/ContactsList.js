@@ -1,28 +1,29 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
-import { cellBooleanFormatter } from '../../../components/cipp'
+import { CippPageList } from 'src/components'
+import { cellBooleanFormatter } from 'src/components/cipp'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faBars } from '@fortawesome/free-solid-svg-icons'
-import { Link } from 'react-router-dom'
-import { CippPageList } from 'src/components'
+const Dropdown = (row, rowIndex, formatExtraData) => {
+  const tenant = useSelector((state) => state.app.currentTenant)
 
-const dropdown = (row, rowIndex, formatExtraData) => (
-  <CDropdown direction="dropstart" placement="left-start">
-    <CDropdownToggle size="sm" color="link">
-      <FontAwesomeIcon icon={faBars} />
-    </CDropdownToggle>
-    <CDropdownMenu>
-      <CDropdownItem href="#">
-        <Link className="dropdown-item" to={`/email/administration/edit-contact`}>
-          <FontAwesomeIcon icon={faUser} fixedWidth className="me-2" />
+  return (
+    <CDropdown>
+      <CDropdownToggle size="sm" color="link">
+        <FontAwesomeIcon icon={faBars} />
+      </CDropdownToggle>
+      <CDropdownMenu>
+        <CDropdownItem
+          href={`https://outlook.office365.com/ecp/@${tenant.defaultDomainName}/UsersGroups/EditContact.aspx?exsvurl=1&realm=${tenant.customerId}&mkt=en-US&id=${row.id}`}
+        >
+          <FontAwesomeIcon icon={faUser} className="me-2" />
           Edit Contact
-        </Link>
-      </CDropdownItem>
-    </CDropdownMenu>
-  </CDropdown>
-)
-
+        </CDropdownItem>
+      </CDropdownMenu>
+    </CDropdown>
+  )
+}
 //TODO: Add CellBoolean
 const columns = [
   {
@@ -41,6 +42,11 @@ const columns = [
     sortable: true,
   },
   {
+    selector: (row) => row['id'],
+    name: 'id',
+    omit: true,
+  },
+  {
     selector: (row) => row['onPremisesSyncEnabled'],
     name: 'On Premises Sync',
     sortable: true,
@@ -48,7 +54,7 @@ const columns = [
   },
   {
     name: 'Actions',
-    cell: dropdown,
+    cell: Dropdown,
   },
 ]
 

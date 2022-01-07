@@ -29,9 +29,13 @@ export function CippPage({ tenantSelector = true, title, children, titleButton =
     }
   }, [searchParams, dispatch, tenants, isSuccess, tenant, setSearchParams, tenantSelector])
 
+  const handleTenantSelect = (tenant) => {
+    setSearchParams({ customerId: tenant.customerId })
+  }
+
   return (
     <div>
-      {tenantSelector && <TenantSelector />}
+      {tenantSelector && <TenantSelector action={handleTenantSelect} />}
       {tenantSelector && <hr />}
       <CCard className="page-card">
         <CCardHeader component="h3" className="d-flex justify-content-between">
@@ -39,7 +43,9 @@ export function CippPage({ tenantSelector = true, title, children, titleButton =
           {titleButton}
         </CCardHeader>
         <CCardBody>
-          {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
+          {tenantSelector && Object.keys(tenant).length === 0 && (
+            <span>Select a tenant to get started.</span>
+          )}
           {children}
         </CCardBody>
       </CCard>

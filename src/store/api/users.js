@@ -1,10 +1,6 @@
-import { baseQuery } from './baseQuery'
-import { createApi } from '@reduxjs/toolkit/query/react'
+import { baseApi } from './baseApi'
 
-export const USERS_API_REDUCER_PATH = 'users'
-export const usersApi = createApi({
-  reducerPath: USERS_API_REDUCER_PATH,
-  baseQuery: baseQuery({ baseUrl: '/' }),
+export const usersApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     editUser: builder.mutation({
       query: (user) => ({

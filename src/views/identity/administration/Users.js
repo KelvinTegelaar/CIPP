@@ -23,22 +23,22 @@ import { TitleButton } from '../../../components/cipp'
 const Dropdown = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
   const dispatch = useDispatch()
-  const [ExecuteGetRequest, GetRequestResult] = useLazyGenericGetRequestQuery()
+  const [ExecuteGetRequest, getRequestResult] = useLazyGenericGetRequestQuery()
   const handleDropdownConfirm = (apiurl) => {
     ExecuteGetRequest({ path: apiurl })
     //this isnt working all the way yet.
     dispatch(
       setModalContent({
-        componentType: 'ok',
+        componentType: 'text',
         title: 'Results',
         body: (
           <div>
-            {GetRequestResult.isSuccess && (
+            {!getRequestResult.isSuccess && (
               <>
                 <CSpinner />
               </>
             )}
-            {GetRequestResult.isSuccess && GetRequestResult.data.Results}
+            {getRequestResult.isSuccess && getRequestResult.data.Results}
           </div>
         ),
         confirmLabel: 'Continue',
@@ -164,19 +164,19 @@ const columns = [
     name: 'Display Name',
     selector: (row) => row['displayName'],
     sortable: true,
-    exportselector: 'displayName',
+    exportSelector: 'displayName',
   },
   {
     name: 'Email',
     selector: (row) => row['mail'],
     sortable: true,
-    exportselector: 'mail',
+    exportSelector: 'mail',
   },
   {
     name: 'User Type',
     selector: (row) => row['userType'],
     sortable: true,
-    exportselector: 'userType',
+    exportSelector: 'userType',
     minWidth: '75px',
   },
   {
@@ -184,7 +184,7 @@ const columns = [
     selector: (row) => row['accountEnabled'],
     cell: cellBooleanFormatter(),
     sortable: true,
-    exportselector: 'accountEnabled',
+    exportSelector: 'accountEnabled',
     maxWidth: '100px',
   },
   {
@@ -192,13 +192,13 @@ const columns = [
     selector: (row) => row['onPremisesSyncEnabled'],
     cell: cellBooleanFormatter(),
     sortable: true,
-    exportselector: 'onPremisesSyncEnabled',
+    exportSelector: 'onPremisesSyncEnabled',
     maxWidth: '150px',
   },
   {
     name: 'Licenses',
     selector: (row) => row['LicJoined'],
-    exportselector: 'LicJoined',
+    exportSelector: 'LicJoined',
     grow: 2,
   },
   {

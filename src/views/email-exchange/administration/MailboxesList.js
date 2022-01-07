@@ -28,7 +28,10 @@ const dropdown = (row, rowIndex, formatExtraData) => (
         </Link>
       </CDropdownItem>
       <CDropdownItem href="#">
-        <Link className="dropdown-item" to={`/email/administration/view-mobile-devices`}>
+        <Link
+          className="dropdown-item"
+          to={`/email/administration/view-mobile-devices?UserID=${row.primarySmtpAddress}`}
+        >
           <FontAwesomeIcon icon={faCog} className="me-2" />
           View Mobile Devices
         </Link>
