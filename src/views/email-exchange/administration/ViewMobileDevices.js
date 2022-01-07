@@ -1,6 +1,5 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import useQuery from 'src/hooks/useQuery'
 import { CippPageList } from 'src/components'
 
 //TODO: Add CellBoolean
@@ -63,8 +62,6 @@ const columns = [
 ]
 
 const MobileDeviceList = () => {
-  let query = useQuery()
-  const userId = query.get('UserID')
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
