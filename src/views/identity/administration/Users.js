@@ -1,34 +1,27 @@
 import React, { useState } from 'react'
-import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle, CButton } from '@coreui/react'
-import { useDispatch, useSelector } from 'react-redux'
+import { CButton } from '@coreui/react'
+import { useSelector } from 'react-redux'
 import { faPlus, faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { cellBooleanFormatter, CippOffcanvas } from '../../../components/cipp'
-import { CSpinner } from '@coreui/react'
-import { useLazyGenericGetRequestQuery } from '../../../store/api/app'
 import { CippPageList } from '../../../components'
 import { TitleButton } from '../../../components/cipp'
 
-const Dropdown = (row, rowIndex, formatExtraData) => {
-  const tenant = useSelector((state) => state.app.currentTenant)
-  const dispatch = useDispatch()
-  const [visible, setVisible] = useState(false)
-  const [ExecuteGetRequest, getRequestResult] = useLazyGenericGetRequestQuery()
-  const CreateOffCanvas = (row) => {
-    console.log(row)
-  }
-
+const Offcanvas = (row, rowIndex, formatExtraData) => {
+  const [ocVisible, setOCVisible] = useState(false)
   return (
     <>
       <CButton size="sm" color="link">
-        <FontAwesomeIcon icon={faBars} onClick={() => setVisible(true)} />
+        <FontAwesomeIcon icon={faBars} onClick={() => setOCVisible(true)} />
       </CButton>
       <CippOffcanvas
-        title="This is our virst off Canvas"
+        title="This is our first off Canvas"
         extendedInfo={[{ label: 'Given Name: ', value: `${row.givenName}` }]}
-        actions={[{ label: 'ThisIsAnActionButton', link: 'dothis' }]}
-        position="top"
-        visible={visible}
+        actions={[{ label: 'ThisIsAnActionButton', link: 'dothis', color: 'primary' }]}
+        placement="end"
+        visible={ocVisible}
+        id={row.id}
+        onHide={() => setOCVisible(false)}
       />
     </>
   )
@@ -84,19 +77,19 @@ const columns = [
   {
     name: 'Action',
     button: true,
-    cell: Dropdown,
+    cell: Offcanvas,
   },
 ]
 
 const Users = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
-
+  const titleButton = (
+    <TitleButton href="/identity/administration/users/add" title="Add User" icon={faPlus} />
+  )
   return (
     <CippPageList
       title="Users"
-      titleButton={
-        <TitleButton href="/identity/administration/users/add" title="Add User" icon={faPlus} />
-      }
+      titleButton={titleButton}
       datatable={{
         columns,
         path: '/api/ListUsers',

@@ -9,7 +9,15 @@ import {
   COffcanvasTitle,
 } from '@coreui/react'
 
-export default function CippOffcanvas({ extendedInfo, actions, position, title, visible }) {
+export default function CippOffcanvas({
+  extendedInfo,
+  actions,
+  placement,
+  title,
+  visible,
+  id,
+  onHide,
+}) {
   const extendedInfoContent = extendedInfo.map((info, index) => (
     <CListGroup layout="horizontal-md" key={index}>
       <CListGroupItem className="cipp-extendedinfo-label">{info.label}</CListGroupItem>
@@ -18,7 +26,12 @@ export default function CippOffcanvas({ extendedInfo, actions, position, title, 
   ))
   const actionsContent = actions.map((action, index) => (
     <CListGroup layout="horizontal-md" key={index}>
-      <CListGroupItem className="cipp-action" component="button" href={action.link}>
+      <CListGroupItem
+        className="cipp-action"
+        component="button"
+        color={action.color}
+        href={action.link}
+      >
         {action.icon}
         {action.label}
       </CListGroupItem>
@@ -26,8 +39,17 @@ export default function CippOffcanvas({ extendedInfo, actions, position, title, 
   ))
   return (
     <>
-      <COffcanvas visible={visible} placement={position}>
-        <COffcanvasHeader>{title}</COffcanvasHeader>
+      <COffcanvas
+        className="cipp-offcanvas"
+        visible={visible}
+        placement={placement}
+        id={id}
+        aria-labelledby={title}
+        onHide={onHide}
+      >
+        <COffcanvasHeader>
+          <h2>{title}</h2>
+        </COffcanvasHeader>
         <COffcanvasBody>
           <COffcanvasTitle>Extended Information</COffcanvasTitle>
           {extendedInfoContent}
@@ -45,17 +67,20 @@ export const CippOffcanvasPropTypes = {
       label: PropTypes.string,
       value: PropTypes.any,
     }),
-  ),
+  ).isRequired,
   actions: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string,
       link: PropTypes.string,
-      icon: PropTypes.component,
+      icon: PropTypes.element,
+      color: PropTypes.string,
     }),
-  ),
-  position: PropTypes.string,
-  title: PropTypes.string,
+  ).isRequired,
+  placement: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
   visible: PropTypes.bool,
+  id: PropTypes.string.isRequired,
+  onHide: PropTypes.func.isRequired,
 }
 
 CippOffcanvas.propTypes = CippOffcanvasPropTypes

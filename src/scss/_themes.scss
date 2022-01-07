@@ -66,6 +66,8 @@
   --cui-border-radius: ;
   // CIPP theme-independent variables.
   --cipp-border-radius: 0;
+  --cipp-offcanvas-header-bg: var(--cyberdrain-accent-green);
+  --cipp-offcanvas-header-color: var(--cyberdrain-light);
   --cipp-search-selected-option-color: var(--cyberdrain-light);
   --cipp-search-selected-option-bg: var(--cyberdrain-accent-green);
   --cipp-search-selected-option-highlight: rgba(0 ,92 , 99, 0.1);
@@ -160,6 +162,15 @@
       color: var(--cui-header-color);
     }
   }
+  .list-group-item-primary {
+    --cui-list-group-color: #944c00;
+    --cui-list-group-bg: #fde5cc;
+    --cui-list-group-hover-bg: #de7200;
+    --cui-list-group-action-hover-color: #944c00;
+    --cui-list-group-action-active-color: #fff;
+    --cui-list-group-action-active-bg: #944c00;
+    --cui-list-group-action-active-border-color: #944c00;
+  }
 }
 [data-theme="impact"] {
   // Core UI Impact theme variables.
@@ -246,5 +257,14 @@
     &:hover {
       color: var(--cui-header-color);
     }
+  }
+  .list-group-item-primary {
+    --cui-list-group-color: var(--cyberdrain-dark);
+    --cui-list-group-bg: var(--cyberdrain-primary);
+    --cui-list-group-hover-bg: var(--cyberdrain-darker);
+    --cui-list-group-action-hover-color: var(--cyberdrain-light);
+    --cui-list-group-action-active-color: var(--cyberdrain-light);
+    --cui-list-group-action-active-bg: var(--cyberdrain-secondary);
+    --cui-list-group-action-active-border-color: var(--cyberdrain-secondary);
   }
 }
