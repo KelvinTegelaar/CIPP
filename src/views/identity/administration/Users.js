@@ -95,9 +95,6 @@ const Users = () => {
         path: '/api/ListUsers',
         reportName: `${tenant?.defaultDomainName}-Users`,
         params: { TenantFilter: tenant?.defaultDomainName },
-        tableProps: {
-          responsive: false,
-        },
       }}
     />
   )
