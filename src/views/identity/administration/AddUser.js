@@ -24,12 +24,12 @@ import {
   RFFCFormSwitch,
   RFFCFormTextarea,
   RFFSelectSearch,
-} from '../../../components/RFFComponents'
+} from '../../../components'
 import countryList from '../../../assets/countrylist.json'
 import { useListUserQuery, useListUsersQuery } from '../../../store/api/users'
 import { useListDomainsQuery } from '../../../store/api/domains'
 import { useListLicensesQuery } from '../../../store/api/licenses'
-import { setModalContent } from '../../../store/features/modal'
+import { ModalService } from '../../../components'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
@@ -39,10 +39,7 @@ const AddUser = () => {
   let query = useQuery()
   const userId = query.get('userId')
   const tenantDomain = query.get('tenantDomain')
-
   const [queryError, setQueryError] = useState(false)
-
-  //const [editUser, { error: editUserError, isFetching: editUserIsFetching }] = useEditUserMutation()
 
   const {
     data: user = {},
@@ -70,13 +67,10 @@ const AddUser = () => {
 
   useEffect(() => {
     if (!userId || !tenantDomain) {
-      dispatch(
-        setModalContent({
-          body: 'Error invalid request, could not load requested user.',
-          title: 'Invalid Request',
-          visible: true,
-        }),
-      )
+      ModalService.open({
+        body: 'Error invalid request, could not load requested user.',
+        title: 'Invalid Request',
+      })
       setQueryError(true)
     } else {
       setQueryError(false)

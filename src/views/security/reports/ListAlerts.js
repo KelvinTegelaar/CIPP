@@ -8,8 +8,7 @@ import { CippPage } from '../../../components'
 import PropTypes from 'prop-types'
 import { faRedo } from '@fortawesome/free-solid-svg-icons'
 import cellGetProperty from '../../../components/cipp/cellGetProperty'
-import { useDispatch } from 'react-redux'
-import { showModal } from '../../../store/features/modal'
+import { ModalService } from '../../../components'
 
 const AlertBox = ({ value, title, fetching }) => {
   let displayValue = value
@@ -33,7 +32,6 @@ AlertBox.propTypes = {
 }
 
 const ListAlerts = () => {
-  const dispatch = useDispatch()
   const [execAlertsList, results] = useLazyExecAlertsListQuery()
   const { data: alerts = {}, isFetching, error } = results
   const {
@@ -51,18 +49,15 @@ const ListAlerts = () => {
   }, [execAlertsList])
 
   const handleShowModal = (value) =>
-    dispatch(
-      showModal({
-        title: 'More Information',
-        body: (
-          <div>
-            <pre>{JSON.stringify(value, null, 2)}</pre>
-          </div>
-        ),
-        visible: true,
-        size: 'xl',
-      }),
-    )
+    ModalService.open({
+      title: 'More Information',
+      body: (
+        <div>
+          <pre>{JSON.stringify(value, null, 2)}</pre>
+        </div>
+      ),
+      size: 'xl',
+    })
 
   const columns = [
     {

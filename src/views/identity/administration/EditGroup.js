@@ -18,15 +18,16 @@ import {
   CTableRow,
 } from '@coreui/react'
 import useQuery from '../../../hooks/useQuery'
-import { setModalContent } from '../../../store/features/modal'
+
 import {
   useListGroupMembersQuery,
   useListGroupOwnersQuery,
   useListGroupQuery,
 } from '../../../store/api/groups'
 import { useDispatch } from 'react-redux'
+import { ModalService } from '../../../components'
 import { Form } from 'react-final-form'
-import { RFFCFormInput } from '../../../components/RFFComponents'
+import { RFFCFormInput } from '../../../components'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
 const EditGroup = () => {
@@ -60,13 +61,10 @@ const EditGroup = () => {
   console.log(members.isSuccess)
   useEffect(() => {
     if (!groupId || !tenantDomain) {
-      dispatch(
-        setModalContent({
-          body: 'Error: Invalid request. Could not load requested group.',
-          title: 'Invalid Request',
-          visible: true,
-        }),
-      )
+      ModalService.open({
+        body: 'Error: Invalid request. Could not load requested group.',
+        title: 'Invalid Request',
+      })
       setQueryError(true)
     }
   }, [groupId, tenantDomain, dispatch])

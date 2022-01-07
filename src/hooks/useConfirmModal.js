@@ -1,6 +1,5 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
-import { setModalContent } from '../store/features/modal'
+import { ModalService } from '../components'
 
 export default function useConfirmModal({
   body,
@@ -8,21 +7,15 @@ export default function useConfirmModal({
   confirmLabel = 'Continue',
   cancelLabel = 'Cancel',
 }) {
-  const dispatch = useDispatch()
-
   const showModal = () =>
-    dispatch(
-      setModalContent({
-        componentType: 'confirm',
-        title: 'Confirm',
-        body: <div>{body}</div>,
-        onConfirm,
-        confirmLabel,
-        cancelLabel,
-        visible: true,
-        size: 'xl',
-      }),
-    )
+    ModalService.confirm({
+      title: 'Confirm',
+      body: <div>{body}</div>,
+      onConfirm,
+      confirmLabel,
+      cancelLabel,
+      size: 'xl',
+    })
 
   return showModal
 }

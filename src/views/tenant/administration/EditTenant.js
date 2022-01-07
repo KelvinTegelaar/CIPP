@@ -11,10 +11,9 @@ import {
   CSpinner,
 } from '@coreui/react'
 import useQuery from '../../../hooks/useQuery'
-import { setModalContent } from '../../../store/features/modal'
 import { useDispatch } from 'react-redux'
 import { Form } from 'react-final-form'
-import { RFFCFormInput } from '../../../components/RFFComponents'
+import { RFFCFormInput, ModalService } from '../../../components'
 import { useListTenantQuery } from 'src/store/api/tenants'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
@@ -29,13 +28,10 @@ const EditTenant = () => {
 
   useEffect(() => {
     if (!tenantDomain) {
-      dispatch(
-        setModalContent({
-          body: 'Error: Invalid request. Could not load requested group.',
-          title: 'Invalid Request',
-          visible: true,
-        }),
-      )
+      ModalService.open({
+        body: 'Error: Invalid request. Could not load requested group.',
+        title: 'Invalid Request',
+      })
       setQueryError(true)
     }
   }, [tenantDomain, dispatch])
