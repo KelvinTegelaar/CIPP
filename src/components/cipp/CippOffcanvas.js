@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
+  CButton,
   CListGroup,
   CListGroupItem,
   COffcanvas,
@@ -8,6 +9,8 @@ import {
   COffcanvasBody,
   COffcanvasTitle,
 } from '@coreui/react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
 
 export default function CippOffcanvas({
   extendedInfo,
@@ -16,7 +19,7 @@ export default function CippOffcanvas({
   title,
   visible,
   id,
-  onHide,
+  hideFunction,
 }) {
   const extendedInfoContent = extendedInfo.map((info, index) => (
     <CListGroup layout="horizontal-md" key={index}>
@@ -45,10 +48,13 @@ export default function CippOffcanvas({
         placement={placement}
         id={id}
         aria-labelledby={title}
-        onHide={onHide}
+        onHide={hideFunction}
       >
         <COffcanvasHeader>
           <h2>{title}</h2>
+          <CButton className="cipp-offcanvas-close" color="link" onClick={hideFunction}>
+            <FontAwesomeIcon size="lg" icon={faTimes} color="link" />
+          </CButton>
         </COffcanvasHeader>
         <COffcanvasBody>
           <COffcanvasTitle>Extended Information</COffcanvasTitle>
@@ -80,7 +86,7 @@ export const CippOffcanvasPropTypes = {
   title: PropTypes.string.isRequired,
   visible: PropTypes.bool,
   id: PropTypes.string.isRequired,
-  onHide: PropTypes.func.isRequired,
+  hideFunction: PropTypes.func.isRequired,
 }
 
 CippOffcanvas.propTypes = CippOffcanvasPropTypes
