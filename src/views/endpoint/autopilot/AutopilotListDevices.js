@@ -20,6 +20,11 @@ const dropdown = (row, rowIndex, formatExtraData) => {
 
 const columns = [
   {
+    selector: 'displayName',
+    name: 'Display Name',
+    sortable: true,
+  },
+  {
     selector: 'serialNumber',
     name: 'Serial',
     sortable: true,
