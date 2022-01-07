@@ -12,10 +12,10 @@ import {
   CSpinner,
 } from '@coreui/react'
 import useQuery from '../../../hooks/useQuery'
-import { setModalContent } from '../../../store/features/modal'
+import { ModalService } from '../../../components'
 import { useDispatch } from 'react-redux'
 import { Form } from 'react-final-form'
-import { RFFCFormInput, RFFCFormRadio } from '../../../components/RFFComponents'
+import { RFFCFormInput, RFFCFormRadio } from '../../../components'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { useListDevicePoliciesQuery } from 'src/store/api/devices'
 
@@ -36,13 +36,10 @@ const MEMEditPolicy = () => {
 
   useEffect(() => {
     if (!policyID || !tenantDomain) {
-      dispatch(
-        setModalContent({
-          body: 'Error: Invalid request. Could not load requested policy.',
-          title: 'Invalid Request',
-          visible: true,
-        }),
-      )
+      ModalService.open({
+        body: 'Error: Invalid request. Could not load requested policy.',
+        title: 'Invalid Request',
+      })
       setQueryError(true)
     }
   }, [policyID, tenantDomain, dispatch])

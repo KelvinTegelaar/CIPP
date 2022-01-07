@@ -1,6 +1,5 @@
 import React, { useEffect, Suspense, useCallback } from 'react'
-import { AppSidebar, AppFooter, AppHeader, FullScreenLoading } from '../components/index'
-import SharedModal from '../components/SharedModal'
+import { AppSidebar, AppFooter, AppHeader, FullScreenLoading, ModalRoot } from '../components/index'
 import Toasts from '../components/Toasts'
 import { useDispatch, useSelector } from 'react-redux'
 import { Outlet } from 'react-router-dom'
@@ -28,7 +27,7 @@ const DefaultLayout = () => {
   return (
     <div>
       <FastSwitcher />
-      <SharedModal />
+      <ModalRoot />
       <Toasts />
       <AppSidebar />
       <div className="wrapper d-flex flex-column min-vh-100">

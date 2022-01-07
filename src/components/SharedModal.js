@@ -1,7 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { CButton, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle } from '@coreui/react'
-import { resetModal } from '../store/features/modal'
 import DataTable from 'react-data-table-component'
 import PropTypes from 'prop-types'
 
@@ -36,27 +34,28 @@ const sharedProps = {
   onClose: PropTypes.func,
 }
 
-export default function SharedModal() {
-  const dispatch = useDispatch()
-  const modal = useSelector((store) => store.modal)
+export default function SharedModal(props) {
   const {
     componentType = 'text',
     componentProps = {},
     body = false,
     data,
     title,
-    visible,
+    visible = true,
     size,
     onClose = () => {},
-  } = modal
+    close,
+    ...rest
+  } = props
 
   const handleClose = () => {
-    dispatch(resetModal())
     onClose()
+    close()
   }
+  console.log('show modal', { props }, { rest })
 
   if (componentType === 'confirm') {
-    return <ConfirmModal {...modal} />
+    return <ConfirmModal {...props} {...rest} />
   }
 
   return (
@@ -89,21 +88,20 @@ export const ConfirmModal = ({
   title,
   visible,
   size,
+  close,
   onClose = () => {},
   onConfirm = () => {},
-  confirmLabel = 'Yes',
+  confirmLabel = 'Continue',
   cancelLabel = 'Cancel',
 }) => {
-  const dispatch = useDispatch()
-
   const handleClose = () => {
-    dispatch(resetModal())
     onClose()
+    close()
   }
 
   const handleConfirm = () => {
-    dispatch(resetModal())
     onConfirm()
+    close()
   }
 
   return (

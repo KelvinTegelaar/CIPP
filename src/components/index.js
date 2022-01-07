@@ -5,6 +5,7 @@ import AppHeaderDropdown from './header/AppHeaderDropdown'
 import AppSidebar from './AppSidebar'
 import Loading, { FullScreenLoading } from './Loading'
 import SharedModal from './SharedModal'
+import { ModalRoot, ModalService } from './ModalRoot'
 import { CippPage, CippPageList } from './CippPage'
 import {
   Condition,
@@ -29,6 +30,8 @@ export {
   Condition,
   FullScreenLoading,
   Loading,
+  ModalRoot,
+  ModalService,
   RFFCFormCheck,
   RFFCFormFeedback,
   RFFCFormInput,

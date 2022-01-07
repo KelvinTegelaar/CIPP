@@ -38,13 +38,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { useListTenantsQuery } from '../../store/api/tenants'
 import { useLazyEditDnsConfigQuery, useLazyGetDnsConfigQuery } from '../../store/api/domains'
-import { setModalContent } from '../../store/features/modal'
 import { useDispatch, useSelector } from 'react-redux'
 import { TenantSelector, CippTable, TenantSelectorMultiple } from '../../components/cipp'
 import { CippPage, RFFCFormSwitch, RFFCFormInput } from '../../components'
 import { Form } from 'react-final-form'
 import useConfirmModal from '../../hooks/useConfirmModal'
 import { setCurrentTenant } from '../../store/features/app'
+import { ModalService } from '../../components'
 
 const CIPPSettings = () => {
   const [active, setActive] = useState(1)
@@ -258,33 +258,25 @@ const ExcludedTenantsSettings = () => {
   } = useListExcludedTenantsQuery()
   const [removeExcludeTenant, removeExcludeTenantResult] = useExecRemoveExcludeTenantMutation()
   const [addExcludeTenant, addExcludeTenantResult] = useExecAddExcludeTenantMutation()
-  const [selectedTenant, setSelectedTenant] = useState()
+  // const [selectedTenant, setSelectedTenant] = useState()
+  const selectedTenant = useRef()
 
   useEffect(() => {
     // if a tenant is already selected and that's the tenant the
     // user wants to exclude, we need to set that to the current state
-    setSelectedTenant(currentTenant)
+    selectedTenant.current = currentTenant
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handleRemoveExclusion = (domain) =>
-    dispatch(
-      setModalContent({
-        componentType: 'confirm',
-        title: 'Remove Exclusion',
-        body: <div>Are you sure you want to remove the exclusion for {domain}?</div>,
-        onConfirm: () => removeExcludeTenant(domain),
-        confirmLabel: 'Continue',
-        cancelLabel: 'Cancel',
-        visible: true,
-      }),
-    )
+    ModalService.confirm({
+      title: 'Remove Exclusion',
+      body: <div>Are you sure you want to remove the exclusion for {domain}?</div>,
+      onConfirm: () => removeExcludeTenant(domain),
+    })
 
-  const handleConfirmExcludeTenant = () => {
-    console.log('selected tenant', selectedTenant)
-    console.log('current tenant', currentTenant)
-
-    addExcludeTenant(selectedTenant.defaultDomainName)
+  const handleConfirmExcludeTenant = (tenant) => {
+    addExcludeTenant(tenant.defaultDomainName)
       .unwrap()
       .then(() => {
         // since we're re-using tenant selector,
@@ -293,29 +285,17 @@ const ExcludedTenantsSettings = () => {
       })
   }
 
-  const handleSelectExcludeTenant = (tenant) => {
-    console.log('nani?', { tenant })
-    setSelectedTenant(tenant)
-    console.log('post set?', { selectedTenant })
-  }
-
-  const handleExcludeTenant = () => {
-    dispatch(
-      setModalContent({
-        componentType: 'confirm',
-        title: 'Add Exclusion',
-        body: (
-          <div style={{ overflow: 'visible' }}>
-            <div>Select a tenant to exclude</div>
-            <TenantSelector action={handleSelectExcludeTenant} />
-          </div>
-        ),
-        onConfirm: handleConfirmExcludeTenant,
-        confirmLabel: 'Continue',
-        cancelLabel: 'Cancel',
-        visible: true,
-      }),
-    )
+  const handleExcludeTenant = (selected) => {
+    ModalService.confirm({
+      body: (
+        <div style={{ overflow: 'visible' }}>
+          <div>Select a tenant to exclude</div>
+          <TenantSelector action={(tenant) => (selected.current = tenant)} />
+        </div>
+      ),
+      title: 'Add Exclusion',
+      onConfirm: () => handleConfirmExcludeTenant(selected.current),
+    })
   }
 
   return (
@@ -340,7 +320,7 @@ const ExcludedTenantsSettings = () => {
                   style={{ position: 'absolute', right: '5px' }}
                   size="sm"
                   href="#"
-                  onClick={() => handleExcludeTenant()}
+                  onClick={() => handleExcludeTenant(selectedTenant)}
                 >
                   Add Excluded Tenant
                 </CButton>
