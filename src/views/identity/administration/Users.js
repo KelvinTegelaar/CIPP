@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { cellBooleanFormatter } from '../../../components/cipp'
 import { CippPageList } from '../../../components'
 import { TitleButton } from '../../../components/cipp'
-import { CippGroupedOffcanvas } from 'src/components/cipp/CippOffcanvas'
+import CippGroupedOffcanvas from 'src/components/cipp/CippGroupedOffcanvas'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const [ocVisible, setOCVisible] = useState(false)

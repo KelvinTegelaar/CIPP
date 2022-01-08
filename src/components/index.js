@@ -7,7 +7,6 @@ import Loading, { FullScreenLoading } from './Loading'
 import SharedModal from './SharedModal'
 import { ModalRoot, ModalService } from './ModalRoot'
 import { CippPage, CippPageList } from './CippPage'
-import { CippOffcanvas, CippGroupedOffcanvas } from './cipp/CippOffcanvas'
 import {
   Condition,
   RFFCFormCheck,
@@ -28,8 +27,6 @@ export {
   AppSidebar,
   CippPage,
   CippPageList,
-  CippOffcanvas,
-  CippGroupedOffcanvas,
   Condition,
   FullScreenLoading,
   Loading,

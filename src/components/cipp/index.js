@@ -11,7 +11,8 @@ import TenantSelector from './TenantSelector'
 import TenantSelectorMultiple from './TenantSelectorMultiple'
 import ThemeSwitcher from './ThemeSwitcher'
 import TitleButton from './TitleButton'
-import { CippOffcanvas, CippGroupedOffcanvas } from './CippOffcanvas'
+import CippOffcanvas from './CippOffcanvas'
+import CippGroupedOffcanvas from './CippGroupedOffcanvas'
 
 export {
   CellBadge,
