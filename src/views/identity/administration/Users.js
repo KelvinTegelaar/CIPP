@@ -8,11 +8,17 @@ import { CippPageList } from '../../../components'
 import { TitleButton } from '../../../components/cipp'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
+  const tenant = useSelector((state) => state.app.currentTenant)
   const [ocVisible, setOCVisible] = useState(false)
   return (
     <>
-      <CButton size="sm" variant="ghost" color="warning">
-        <FontAwesomeIcon icon={faEdit} href="" />
+      <CButton
+        size="sm"
+        variant="ghost"
+        color="warning"
+        href={`/identity/administration/users/edit?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`}
+      >
+        <FontAwesomeIcon icon={faEdit} />
       </CButton>
       <CButton size="sm" variant="ghost" color="danger">
         <FontAwesomeIcon icon={faTrash} href="" />
@@ -36,8 +42,16 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             link: 'dothis',
             color: 'primary',
           },
-          { label: 'Edit User', link: 'dothis', color: 'primary' },
-          { label: 'Research Compromised Account', link: 'dothis', color: 'primary' },
+          {
+            label: 'Edit User',
+            link: `/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
+            color: 'primary',
+          },
+          {
+            label: 'Research Compromised Account',
+            link: `/identity/administration/users/edit?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
+            color: 'primary',
+          },
           { label: 'Send MFA Push', link: 'dothis', color: 'primary' },
           { label: 'Convert to shared mailbox', link: 'dothis', color: 'primary' },
           { label: 'Block Sign-in', link: 'dothis', color: 'primary' },
