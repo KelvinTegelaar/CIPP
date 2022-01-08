@@ -12,7 +12,41 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 
-export default function CippOffcanvas({
+export function CippOffcanvas(placement, title, visible, id, hideFunction) {
+  return (
+    <>
+      <COffcanvas
+        className="cipp-offcanvas"
+        visible={visible}
+        placement={placement}
+        id={id}
+        aria-labelledby={title}
+        onHide={hideFunction}
+      >
+        <COffcanvasHeader>
+          <h2>{title}</h2>
+          <CButton className="cipp-offcanvas-close" color="link" onClick={hideFunction}>
+            <FontAwesomeIcon size="lg" icon={faTimes} color="link" />
+          </CButton>
+        </COffcanvasHeader>
+        <COffcanvasBody>children</COffcanvasBody>
+      </COffcanvas>
+    </>
+  )
+}
+
+const CippOffcanvasPropTypes = {
+  children: PropTypes.node,
+  placement: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  visible: PropTypes.bool,
+  id: PropTypes.string.isRequired,
+  hideFunction: PropTypes.func.isRequired,
+}
+
+CippOffcanvas.propTypes = CippOffcanvasPropTypes
+
+export function CippGroupedOffcanvas(
   extendedInfo,
   actions,
   placement,
@@ -20,7 +54,9 @@ export default function CippOffcanvas({
   visible,
   id,
   hideFunction,
-}) {
+) {
+  console.log(extendedInfo)
+  console.log(actions)
   const extendedInfoContent = extendedInfo.map((info, index) => (
     <CListGroup layout="horizontal-md" key={index}>
       <CListGroupItem className="cipp-extendedinfo-label">{info.label}</CListGroupItem>
@@ -41,33 +77,22 @@ export default function CippOffcanvas({
     </CListGroup>
   ))
   return (
-    <>
-      <COffcanvas
-        className="cipp-offcanvas"
-        visible={visible}
-        placement={placement}
-        id={id}
-        aria-labelledby={title}
-        onHide={hideFunction}
-      >
-        <COffcanvasHeader>
-          <h2>{title}</h2>
-          <CButton className="cipp-offcanvas-close" color="link" onClick={hideFunction}>
-            <FontAwesomeIcon size="lg" icon={faTimes} color="link" />
-          </CButton>
-        </COffcanvasHeader>
-        <COffcanvasBody>
-          <COffcanvasTitle>Extended Information</COffcanvasTitle>
-          {extendedInfoContent}
-          <COffcanvasTitle>Actions</COffcanvasTitle>
-          {actionsContent}
-        </COffcanvasBody>
-      </COffcanvas>
-    </>
+    <CippOffcanvas
+      visible={visible}
+      placement={placement}
+      id={id}
+      title={title}
+      hideFunction={hideFunction}
+    >
+      <COffcanvasTitle>Extended Information</COffcanvasTitle>
+      {extendedInfoContent}
+      <COffcanvasTitle>Actions</COffcanvasTitle>
+      {actionsContent}
+    </CippOffcanvas>
   )
 }
 
-export const CippOffcanvasPropTypes = {
+const CippGroupedOffcanvasPropTypes = {
   extendedInfo: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string,
@@ -89,4 +114,4 @@ export const CippOffcanvasPropTypes = {
   hideFunction: PropTypes.func.isRequired,
 }
 
-CippOffcanvas.propTypes = CippOffcanvasPropTypes
+CippGroupedOffcanvas.propTypes = CippGroupedOffcanvasPropTypes

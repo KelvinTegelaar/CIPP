@@ -3,9 +3,10 @@ import { CButton } from '@coreui/react'
 import { useSelector } from 'react-redux'
 import { faPlus, faEdit, faTrash, faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { cellBooleanFormatter, CippOffcanvas } from '../../../components/cipp'
+import { cellBooleanFormatter } from '../../../components/cipp'
 import { CippPageList } from '../../../components'
 import { TitleButton } from '../../../components/cipp'
+import { CippGroupedOffcanvas } from 'src/components/cipp/CippOffcanvas'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const [ocVisible, setOCVisible] = useState(false)
@@ -20,7 +21,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
       <CButton size="sm" color="link" onClick={() => setOCVisible(true)}>
         <FontAwesomeIcon icon={faEllipsisV} />
       </CButton>
-      <CippOffcanvas
+      <CippGroupedOffcanvas
         title="This is our first off Canvas"
         extendedInfo={[
           { label: 'Given Name: ', value: `${row.givenName}` },
