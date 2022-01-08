@@ -64,14 +64,14 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
           {
             label: 'Research Compromised Account',
             link: `/identity/administration/users/bec?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
-            color: 'primary',
+            color: 'info',
           },
-          { label: 'Send MFA Push', link: 'dothis', color: 'primary' },
-          { label: 'Convert to shared mailbox', link: 'dothis', color: 'primary' },
-          { label: 'Block Sign-in', link: 'dothis', color: 'warning' },
-          { label: 'Reset Password (Must Change)', link: 'dothis', color: 'warning' },
-          { label: 'Reset Password', link: 'dothis', color: 'warning' },
-          { label: 'Delete User', link: 'dothis', color: 'danger' },
+          { label: 'Send MFA Push', link: 'dothis', color: 'info' },
+          { label: 'Convert to shared mailbox', link: 'dothis', color: 'info' },
+          { label: 'Block Sign-in', link: 'dothis', color: 'info' },
+          { label: 'Reset Password (Must Change)', link: 'dothis', color: 'info' },
+          { label: 'Reset Password', link: 'dothis', color: 'info' },
+          { label: 'Delete User', link: 'dothis', color: 'info' },
         ]}
         placement="end"
         visible={ocVisible}
