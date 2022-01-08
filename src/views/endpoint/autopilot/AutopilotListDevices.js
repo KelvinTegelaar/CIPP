@@ -1,20 +1,17 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
-import { faBars } from '@fortawesome/free-solid-svg-icons'
+import { CButton } from '@coreui/react'
+import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPageList } from 'src/components'
 
 const dropdown = (row, rowIndex, formatExtraData) => {
   return (
-    <CDropdown>
-      <CDropdownToggle size="sm" color="link">
-        <FontAwesomeIcon icon={faBars} />
-      </CDropdownToggle>
-      <CDropdownMenu style={{ position: 'fixed', right: 0, zIndex: 1000 }}>
-        <CDropdownItem href="#">Delete Device</CDropdownItem>
-      </CDropdownMenu>
-    </CDropdown>
+    <>
+      <CButton size="sm" variant="ghost" color="danger">
+        <FontAwesomeIcon icon={faTrash} href="" />
+      </CButton>
+    </>
   )
 }
 
