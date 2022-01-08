@@ -1,28 +1,25 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
-import { cellBooleanFormatter } from '../../../components/cipp'
-import { faBars, faCog } from '@fortawesome/free-solid-svg-icons'
+import { CButton, CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
+import { cellBooleanFormatter, CippOffcanvas } from '../../../components/cipp'
+import { faBars, faCog, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPageList } from '../../../components'
 import { TitleButton } from '../../../components/cipp'
 
-const Dropdown = (row = {}) => {
+const Offcanvas = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
   return (
-    <CDropdown>
-      <CDropdownToggle size="sm" color="link">
-        <FontAwesomeIcon icon={faBars} />
-      </CDropdownToggle>
-      <CDropdownMenu>
-        <CDropdownItem
-          href={`/identity/administration/groups/edit?groupId=${row.id}&tenantDomain=${tenant.defaultDomainName}`}
-        >
-          <FontAwesomeIcon icon={faCog} />
-          Edit Group
-        </CDropdownItem>
-      </CDropdownMenu>
-    </CDropdown>
+    <>
+      <CButton
+        size="sm"
+        variant="ghost"
+        color="warning"
+        href={`/identity/administration/groups/edit?groupId=${row.id}&tenantDomain=${tenant.defaultDomainName}`}
+      >
+        <FontAwesomeIcon icon={faEdit} />
+      </CButton>
+    </>
   )
 }
 
@@ -61,7 +58,7 @@ const columns = [
   },
   {
     name: 'Action',
-    cell: Dropdown,
+    cell: Offcanvas,
   },
 ]
 
