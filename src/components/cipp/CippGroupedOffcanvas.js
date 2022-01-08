@@ -31,10 +31,10 @@ export default function CippGroupedOffcanvas(props) {
       id={props.id}
       hideFunction={props.hideFunction}
     >
-      (<COffcanvasTitle>Extended Information</COffcanvasTitle>
+      <COffcanvasTitle>Extended Information</COffcanvasTitle>
       {extendedInfoContent}
       {<COffcanvasTitle>Actions</COffcanvasTitle>}
-      {actionsContent})
+      {actionsContent}
     </CippOffcanvas>
   )
 }

@@ -20,12 +20,13 @@ export default function CippOffcanvas(props) {
           <FontAwesomeIcon size="lg" icon={faTimes} color="link" />
         </CButton>
       </COffcanvasHeader>
-      <COffcanvasBody>children</COffcanvasBody>
+      <COffcanvasBody>{props.children}</COffcanvasBody>
     </COffcanvas>
   )
 }
 
 export const CippOffcanvasPropTypes = {
+  children: PropTypes.node,
   placement: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   visible: PropTypes.bool,

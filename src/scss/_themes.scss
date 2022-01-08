@@ -1,16 +1,31 @@
 :root {
   // CyberDrain variables.
   --cyberdrain-primary: #f77f00; // Orange
+  --cyberdrain-primary-rgb: rgb(247, 127, 0); // Orange
   --cyberdrain-secondary: #003049; // Prussian Blue
+  --cyberdrain-secondary-rgb: rgb(0, 48, 73); // Prussian Blue
   --cyberdrain-lighter: #ffffff; // White
   --cyberdrain-light: #f4f5f6; // Cultured
+  --cyberdrain-light-rgb: rgb(244, 245, 246); // Cultured
   --cyberdrain-light-striped: #d2d6da; // Light Gray
-  --cyberdrain-darker: #242A2E; //Charleston Green
+  --cyberdrain-darker: #20262a; //Charleston Green
   --cyberdrain-dark: #2e363a; // Gunmetal
+  --cyberdrain-dark-rgb: rgb(46, 54, 58); // Gunmetal
   --cyberdrain-dark-striped: #48555b; // Charcoal
   --cyberdrain-accent-blue: #3e5c66; // Deep Space Sparkle
+  --cyberdrain-accent-blue-rgb: rgb(62, 92, 102); // Deep Space Sparkle
   --cyberdrain-accent-green: #005c63; // Midnight Green Eagle Green
+  --cyberdrain-accent-green-rgb: rgb(0, 92, 99); // Midnight Green Eagle Green
   --cyberdrain-accent-beige: #ebf0df; // Beige
+  --cyberdrain-accent-beige-rgb: rgb(235, 240, 223); // Beige
+  --cyberdrain-success: #4fa000; // Green RYB
+  --cyberdrain-success-rgb: rgb(79, 160, 0); // Green RYB
+  --cyberdrain-info: #0096d8; // Carolina Blue
+  --cyberdrain-info-rgb: rgb(0, 150, 216); // Carolina Blue
+  --cyberdrain-warning: #bf7f00; // Dark Goldenrod
+  --cyberdrain-warning-rgb: rgb(191, 127, 0); // Dark Goldenrod
+  --cyberdrain-danger: #eb603d; // Orange Soda
+  --cyberdrain-danger-rgb: rgb(235, 96, 61); // Orange Soda
   // Core UI theme-independent variables.
   --cui-blue: #0d6efd;
   --cui-indigo: #6610f2;
@@ -36,24 +51,22 @@
   --cui-gray-900: #4f5d73;
   --cui-primary: var(--cyberdrain-primary);
   --cui-secondary: var(--cyberdrain-secondary);
-  --cui-success: #2eb85c;
-  --cui-info: #39f;
-  --cui-warning: #f9b115;
-  --cui-danger: #e55353;
+  --cui-success: var(--cyberdrain-success);
+  --cui-info: var(--cyberdrain-info);
+  --cui-warning: var(--cyberdrain-warning);
+  --cui-danger: var(--cyberdrain-danger);
   --cui-light: var(--cyberdrain-light);
-  --cui-dark: #4f5d73;
-  --cui-primary-rgb: 247, 127, 0;
-  --cui-secondary-rgb: 0, 48, 73;
-  --cui-success-rgb: 46, 184, 92;
-  --cui-info-rgb: 51, 153, 255;
-  --cui-warning-rgb: 249, 177, 21;
-  --cui-danger-rgb: 229, 83, 83;
-  --cui-light-rgb: 235, 237, 239;
-  --cui-dark-rgb: rgb(235, 237, 239);
-  --cui-white-rgb: 255, 255, 255;
-  --cui-black-rgb: 0, 0, 21;
-  --cui-body-color-rgb: rgb(235, 237, 239);
-  --cui-body-bg-rgb: rgb(46, 54, 58);
+  --cui-dark: var(--cyberdrain-dark);
+  --cui-primary-rgb: var(--cyberdrain-primary-rgb);
+  --cui-secondary-rgb: var(--cyberdrain-secondary-rgb);
+  --cui-success-rgb: var(--cyberdrain-success-rgb);
+  --cui-info-rgb: var(--cyberdrain-info-rgb);
+  --cui-warning-rgb: var(--cyberdrain-warning-rgb);
+  --cui-danger-rgb: var(--cyberdrain-danger-rgb);
+  --cui-light-rgb: var(--cyberdrain-light-rgb);
+  --cui-dark-rgb: var(--cyberdrain-dark-rgb);
+  --cui-white-rgb: rgb(255, 255, 255);
+  --cui-black-rgb: rgb(0, 0, 0);
   --cui-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --cui-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --cui-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
@@ -74,6 +87,110 @@
   --cipp-search-selected-option-highlight: rgba(0 ,92 , 99, 0.1);
   --cipp-search-header-bg: var(--cyberdrain-accent-blue);
   --cipp-search-header-color: var(--cyberdrain-light);
+  .btn-ghost-success {
+    --cui-btn-color: var(--cyberdrain-success);
+    --cui-btn-hover-bg: var(--cyberdrain-success);
+    --cui-btn-hover-border-color: var(--cyberdrain-success);
+    --cui-btn-hover-color: var(--cyberdrain-darker);
+    --cui-btn-active-bg: #58c67d;
+    --cui-btn-active-border-color: #43bf6c;
+    --cui-btn-active-color: var(--cyberdrain-darker);
+    --cui-btn-disabled-color: #2eb85c;
+    --cui-btn-shadow: rgba(46, 184, 92, 0.5);
+  }
+  .btn-ghost-info {
+    --cui-btn-color: var(--cyberdrain-info);
+    --cui-btn-hover-bg: var(--cyberdrain-info);
+    --cui-btn-hover-border-color: var(--cyberdrain-info);
+    --cui-btn-hover-color: var(--cyberdrain-darker);
+    --cui-btn-active-bg: #5cadff;
+    --cui-btn-active-border-color: #47a3ff;
+    --cui-btn-active-color: var(--cyberdrain-darker);
+    --cui-btn-disabled-color: #39f;
+    --cui-btn-shadow: rgba(51, 153, 255, 0.5);
+  }
+  .btn-ghost-warning {
+    --cui-btn-color: var(--cyberdrain-warning);
+    --cui-btn-hover-bg: var(--cyberdrain-warning);
+    --cui-btn-hover-border-color: var(--cyberdrain-warning);
+    --cui-btn-hover-color: var(--cyberdrain-darker);
+    --cui-btn-active-bg: #c78e11;
+    --cui-btn-active-border-color: #bb8510;
+    --cui-btn-active-color: var(--cyberdrain-darker);
+    --cui-btn-disabled-color: #f9b115;
+    --cui-btn-shadow: rgba(249, 177, 21, 0.5);
+  }
+  .btn-ghost-danger {
+    --cui-btn-color: var(--cyberdrain-danger);
+    --cui-btn-hover-bg: var(--cyberdrain-danger);
+    --cui-btn-hover-border-color: var(--cyberdrain-danger);
+    --cui-btn-hover-color: var(--cyberdrain-darker);
+    --cui-btn-active-bg: #ea7575;
+    --cui-btn-active-border-color: #e86464;
+    --cui-btn-active-color: var(--cyberdrain-darker);
+    --cui-btn-disabled-color: #e55353;
+    --cui-btn-shadow: rgba(229, 83, 83, 0.5);
+  }
+  .list-group-item-primary {
+    --cui-list-group-color: var(--cyberdrain-primary);
+    --cui-list-group-bg: var(--cyberdrain-darker);
+    --cui-list-group-border-color: var(--cyberdrain-darker);
+    --cui-list-group-hover-bg: var(--cyberdrain-primary);
+    --cui-list-group-action-hover-color: var(--cyberdrain-darker);
+    --cui-list-group-action-active-color: var(--cyberdrain-darker);
+    --cui-list-group-action-active-bg: var(--cyberdrain-primary);
+    --cui-list-group-action-active-border-color: var(--cyberdrain-darker);
+  }
+  .list-group-item-secondary {
+    --cui-list-group-color: var(--cyberdrain-light);
+    --cui-list-group-bg: var(--cyberdrain-darker);
+    --cui-list-group-border-color: var(--cyberdrain-darker);
+    --cui-list-group-hover-bg: var(--cyberdrain-secondary);
+    --cui-list-group-action-hover-color: var(--cyberdrain-light);
+    --cui-list-group-action-active-color: var(--cyberdrain-lighter);
+    --cui-list-group-action-active-bg: var(--cyberdrain-secondary);
+    --cui-list-group-action-active-border-color: var(--cyberdrain-secondary);
+  }
+  .list-group-item-success {
+    --cui-list-group-color: var(--cyberdrain-success);
+    --cui-list-group-bg: var(--cyberdrain-darker);
+    --cui-list-group-border-color: var(--cyberdrain-darker);
+    --cui-list-group-hover-bg: var(--cyberdrain-success);
+    --cui-list-group-action-hover-color: var(--cyberdrain-darker);
+    --cui-list-group-action-active-color: var(--cyberdrain-darker);
+    --cui-list-group-action-active-bg: var(--cyberdrain-success);
+    --cui-list-group-action-active-border-color: var(--cyberdrain-darker);
+  }
+  .list-group-item-info {
+    --cui-list-group-color: var(--cyberdrain-info);
+    --cui-list-group-bg: var(--cyberdrain-darker);
+    --cui-list-group-border-color: var(--cyberdrain-darker);
+    --cui-list-group-hover-bg: var(--cyberdrain-info);
+    --cui-list-group-action-hover-color: var(--cyberdrain-darker);
+    --cui-list-group-action-active-color: var(--cyberdrain-darker);
+    --cui-list-group-action-active-bg: var(--cyberdrain-info);
+    --cui-list-group-action-active-border-color: var(--cyberdrain-darker);
+  }
+  .list-group-item-warning {
+    --cui-list-group-color: var(--cyberdrain-warning);
+    --cui-list-group-bg: var(--cyberdrain-darker);
+    --cui-list-group-border-color: var(--cyberdrain-darker);
+    --cui-list-group-hover-bg: var(--cyberdrain-warning);
+    --cui-list-group-action-hover-color: var(--cyberdrain-darker);
+    --cui-list-group-action-active-color: var(--cyberdrain-darker);
+    --cui-list-group-action-active-bg: var(--cyberdrain-warning);
+    --cui-list-group-action-active-border-color: var(--cyberdrain-darker);
+  }
+  .list-group-item-danger {
+    --cui-list-group-color: var(--cyberdrain-danger);
+    --cui-list-group-bg: var(--cyberdrain-darker);
+    --cui-list-group-border-color: var(--cyberdrain-darker);
+    --cui-list-group-hover-bg: var(--cyberdrain-danger);
+    --cui-list-group-action-hover-color: var(--cyberdrain-darker);
+    --cui-list-group-action-active-color: var(--cyberdrain-darker);
+    --cui-list-group-action-active-bg: var(--cyberdrain-danger);
+    --cui-list-group-action-active-border-color: var(--cyberdrain-darker);
+  }
 }
 
 [data-theme="default"],
@@ -81,6 +198,8 @@
   // Core UI CyberDrain theme variables.
   --cui-body-bg: var(--cyberdrain-light);
   --cui-body-color: var(--cyberdrain-dark);
+  --cui-body-color-rgb: var(--cyberdrain-dark-rgb);
+  --cui-body-bg-rgb: var(--cyberdrain-light-rgb);
   --cui-btn-link-color: var(--cyberdrain-dark);
   --cui-card-bg: var(--cyberdrain-light);
   --cui-card-border-color: var(--cyberdrain-accent-green);
@@ -163,20 +282,13 @@
       color: var(--cui-header-color);
     }
   }
-  .list-group-item-primary {
-    --cui-list-group-color: #944c00;
-    --cui-list-group-bg: #fde5cc;
-    --cui-list-group-hover-bg: #de7200;
-    --cui-list-group-action-hover-color: #944c00;
-    --cui-list-group-action-active-color: #fff;
-    --cui-list-group-action-active-bg: #944c00;
-    --cui-list-group-action-active-border-color: #944c00;
-  }
 }
 [data-theme="impact"] {
   // Core UI Impact theme variables.
   --cui-body-bg: var(--cyberdrain-dark);
   --cui-body-color: var(--cyberdrain-light);
+  --cui-body-color-rgb: var(--cyberdrain-light-rgb);
+  --cui-body-bg-rgb: var(--cyberdrain-dark-rgb);
   --cui-btn-link-color: var(--cyberdrain-light);
   --cui-card-bg: var(--cyberdrain-dark);
   --cui-card-border-color: var(--cyberdrain-accent-green);

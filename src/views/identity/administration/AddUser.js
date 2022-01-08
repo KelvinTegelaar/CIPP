@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import {
   CButton,
   CCallout,
@@ -14,7 +14,6 @@ import {
   CAlert,
 } from '@coreui/react'
 import useQuery from '../../../hooks/useQuery'
-import { useDispatch } from 'react-redux'
 import { Form } from 'react-final-form'
 import {
   Condition,
@@ -29,23 +28,17 @@ import countryList from '../../../assets/countrylist.json'
 import { useListUserQuery, useListUsersQuery } from '../../../store/api/users'
 import { useListDomainsQuery } from '../../../store/api/domains'
 import { useListLicensesQuery } from '../../../store/api/licenses'
-import { ModalService } from '../../../components'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
+import { TenantSelector } from 'src/components/cipp'
+import { useSelector } from 'react-redux'
 
 const AddUser = () => {
-  const dispatch = useDispatch()
   let query = useQuery()
-  const userId = query.get('userId')
-  const tenantDomain = query.get('tenantDomain')
   const [queryError, setQueryError] = useState(false)
 
-  const {
-    data: user = {},
-    isFetching: userIsFetching,
-    error: userError,
-  } = useListUserQuery({ tenantDomain, userId })
+  const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
 
   const {
     data: users = [],
@@ -57,7 +50,7 @@ const AddUser = () => {
     data: domains = [],
     isFetching: domainsIsFetching,
     error: domainsError,
-  } = useListDomainsQuery({ tenantDomain, userId })
+  } = useListDomainsQuery({ tenantDomain })
 
   const {
     data: licenses = [],
@@ -65,17 +58,6 @@ const AddUser = () => {
     error: licensesError,
   } = useListLicensesQuery({ tenantDomain })
 
-  useEffect(() => {
-    if (!userId || !tenantDomain) {
-      ModalService.open({
-        body: 'Error invalid request, could not load requested user.',
-        title: 'Invalid Request',
-      })
-      setQueryError(true)
-    } else {
-      setQueryError(false)
-    }
-  }, [userId, tenantDomain, dispatch])
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const onSubmit = (values) => {
     //@todo: need to fix copyfrom in api so this is no longer required
@@ -83,11 +65,13 @@ const AddUser = () => {
       values.CopyFrom = ''
     }
     //@todo: need to fix this in api so this hacky shit is no longer needed.
+    if (!values.addedAliases) {
+      values.addedAliases = ''
+    }
 
     const shippedValues = {
       AddedAliases: values.addedAliases,
       BusinessPhone: values.businessPhones,
-      RemoveAllLicenses: values.RemoveAllLicenses,
       City: values.city,
       CompanyName: values.companyName,
       CopyFrom: values.CopyFrom,
@@ -95,7 +79,7 @@ const AddUser = () => {
       Department: values.department,
       DisplayName: values.displayName,
       Domain: values.primDomain,
-      FirstName: values.firstName,
+      FirstName: values.givenName,
       Jobtitle: values.jobTitle,
       LastName: values.surname,
       License: values.licenses,
@@ -103,48 +87,35 @@ const AddUser = () => {
       Password: values.password,
       PostalCode: values.postalCode,
       Usagelocation: values.usageLocation,
-      UserID: userId,
       Username: values.mailNickname,
       streetAddress: values.streetAddress,
+      Autopassword: values.Autopassword,
+      MustChangePass: values.MustChangePass,
       tenantID: tenantDomain,
       ...values.license,
     }
     //window.alert(JSON.stringify(shippedValues))
-    genericPostRequest({ path: '/api/EditUser', values: shippedValues })
+    genericPostRequest({ path: '/api/AddUser', values: shippedValues })
   }
   const initialState = {
-    keepLicenses: true,
-    ...user,
+    Autopassword: true,
   }
 
-  // this is dumb
-  const formDisabled = queryError === true || !!userError || !user || Object.keys(user).length === 0
-
   return (
-    <CCard className="page-card">
-      {!queryError && (
-        <>
-          {postResults.isSuccess && <CAlert color="success">{postResults.data?.Results}</CAlert>}
-          {queryError && (
+    <>
+      <TenantSelector />
+      <hr />
+      <CCard className="page-card">
+        {!queryError && (
+          <>
+            {postResults.isSuccess && <CAlert color="success">{postResults.data?.Results}</CAlert>}
             <CRow>
-              <CCol md={12}>
-                <CCallout color="danger">
-                  {/* @todo add more descriptive help message here */}
-                  Failed to load user
-                </CCallout>
-              </CCol>
-            </CRow>
-          )}
-          <CRow>
-            <CCol md={6}>
-              <CCard>
-                <CCardHeader>
-                  <CCardTitle>Account Details</CCardTitle>
-                </CCardHeader>
-                <CCardBody>
-                  {userIsFetching && <CSpinner />}
-                  {userError && <span>Error loading user</span>}
-                  {!userIsFetching && (
+              <CCol md={6}>
+                <CCard>
+                  <CCardHeader>
+                    <CCardTitle>Account Details</CCardTitle>
+                  </CCardHeader>
+                  <CCardBody>
                     <Form
                       initialValues={{ ...initialState }}
                       onSubmit={onSubmit}
@@ -153,20 +124,10 @@ const AddUser = () => {
                           <CForm onSubmit={handleSubmit}>
                             <CRow>
                               <CCol md={6}>
-                                <RFFCFormInput
-                                  type="text"
-                                  name="givenName"
-                                  label="Edit First Name"
-                                  disabled={formDisabled}
-                                />
+                                <RFFCFormInput type="text" name="givenName" label="First Name" />
                               </CCol>
                               <CCol md={6}>
-                                <RFFCFormInput
-                                  type="text"
-                                  name="surname"
-                                  label="Edit Last Name"
-                                  disabled={formDisabled}
-                                />
+                                <RFFCFormInput type="text" name="surname" label="Last Name" />
                               </CCol>
                             </CRow>
                             <CRow>
@@ -174,19 +135,13 @@ const AddUser = () => {
                                 <RFFCFormInput
                                   type="text"
                                   name="displayName"
-                                  label="Edit Display Name"
-                                  disabled={formDisabled}
+                                  label="Display Name"
                                 />
                               </CCol>
                             </CRow>
                             <CRow>
                               <CCol md={6}>
-                                <RFFCFormInput
-                                  type="text"
-                                  name="mailNickname"
-                                  label="Edit Username"
-                                  disabled={formDisabled}
-                                />
+                                <RFFCFormInput type="text" name="mailNickname" label="Username" />
                               </CCol>
                               <CCol md={6}>
                                 {domainsIsFetching && <CSpinner />}
@@ -195,7 +150,6 @@ const AddUser = () => {
                                     // label="Domain"
                                     name="primDomain"
                                     label="Primary Domain name"
-                                    disabled={formDisabled}
                                     placeholder={
                                       !domainsIsFetching ? 'Select domain' : 'Loading...'
                                     }
@@ -215,7 +169,6 @@ const AddUser = () => {
                                   name="addedAliases"
                                   label="Add Aliases"
                                   placeholder="Enter one alias per line"
-                                  disabled={formDisabled}
                                 />
                               </CCol>
                             </CRow>
@@ -223,13 +176,20 @@ const AddUser = () => {
                               <CCol md={12}>
                                 <CFormLabel>Settings</CFormLabel>
                                 <RFFCFormCheck
-                                  disabled={formDisabled}
                                   name="Autopassword"
-                                  label="Reset Password"
+                                  label="Automatically Set Password"
                                 />
+                                <Condition when="Autopassword" is={false}>
+                                  <CCol md={12}>
+                                    <RFFCFormInput
+                                      type="password"
+                                      name="password"
+                                      label="Password"
+                                    />
+                                  </CCol>
+                                </Condition>
                                 <RFFCFormCheck
-                                  disabled={formDisabled}
-                                  name="RequirePasswordChange"
+                                  name="MustChangePass"
                                   label="Require password change at next logon"
                                 />
                               </CCol>
@@ -241,8 +201,7 @@ const AddUser = () => {
                                     value: Code,
                                     name: Name,
                                   }))}
-                                  disabled={formDisabled}
-                                  name="Usagelocation"
+                                  name="usageLocation"
                                   placeholder="Type to search..."
                                   label="Usage Location"
                                 />
@@ -250,26 +209,15 @@ const AddUser = () => {
                             </CRow>
                             <CRow>
                               <CCol md={12}>
-                                <RFFCFormSwitch
-                                  name="licenses"
-                                  label="Change licenses"
-                                  disabled={formDisabled}
-                                />
+                                <RFFCFormSwitch name="licenses" label="Create user with license" />
                                 <Condition when="licenses" is={true}>
                                   <span>Licenses</span>
                                   <br />
-                                  <RFFCFormCheck
-                                    disabled={formDisabled}
-                                    key={'license.id'}
-                                    name={'RemoveAllLicenses'}
-                                    label={'Remove all licenses'}
-                                  />
                                   {licensesIsFetching && <CSpinner />}
                                   {licensesError && <span>Error loading licenses</span>}
                                   {!licensesIsFetching &&
                                     licenses?.map((license) => (
                                       <RFFCFormCheck
-                                        disabled={formDisabled}
                                         key={license.id}
                                         name={`license.License_${license.skuId}`}
                                         label={`${license.skuPartNumber} (${license.availableUnits} available)`}
@@ -278,50 +226,25 @@ const AddUser = () => {
                                 </Condition>
                               </CCol>
                             </CRow>
-                            <CRow>
+                            {/* <CRow> Temporarily disabled, API does not support this yet.
                               <CCol md={12}>
-                                <RFFCFormInput
-                                  name="jobTitle"
-                                  label="Job Title"
-                                  type="text"
-                                  disabled={formDisabled}
-                                />
+                                <RFFCFormInput name="jobTitle" label="Job Title" type="text" />
                               </CCol>
                             </CRow>
                             <CRow>
                               <CCol md={6}>
-                                <RFFCFormInput
-                                  name="streetAddress"
-                                  label="Street"
-                                  type="text"
-                                  disabled={formDisabled}
-                                />
+                                <RFFCFormInput name="streetAddress" label="Street" type="text" />
                               </CCol>
                               <CCol md={6}>
-                                <RFFCFormInput
-                                  name="postalCode"
-                                  label="Postal Code"
-                                  type="text"
-                                  disabled={formDisabled}
-                                />
+                                <RFFCFormInput name="postalCode" label="Postal Code" type="text" />
                               </CCol>
                             </CRow>
                             <CRow>
                               <CCol md={6}>
-                                <RFFCFormInput
-                                  name="city"
-                                  label="city"
-                                  type="text"
-                                  disabled={formDisabled}
-                                />
+                                <RFFCFormInput name="city" label="city" type="text" />
                               </CCol>
                               <CCol md={6}>
-                                <RFFCFormInput
-                                  name="country"
-                                  label="Country"
-                                  type="text"
-                                  disabled={formDisabled}
-                                />
+                                <RFFCFormInput name="country" label="Country" type="text" />
                               </CCol>
                             </CRow>
                             <CRow>
@@ -330,41 +253,28 @@ const AddUser = () => {
                                   name="companyName"
                                   label="Company Name"
                                   type="text"
-                                  disabled={formDisabled}
                                 />
                               </CCol>
                               <CCol md={6}>
-                                <RFFCFormInput
-                                  name="department"
-                                  label="Department"
-                                  type="text"
-                                  disabled={formDisabled}
-                                />
+                                <RFFCFormInput name="department" label="Department" type="text" />
                               </CCol>
                             </CRow>
                             <CRow>
                               <CCol md={6}>
-                                <RFFCFormInput
-                                  name="mobilePhone"
-                                  label="Mobile #"
-                                  type="text"
-                                  disabled={formDisabled}
-                                />
+                                <RFFCFormInput name="mobilePhone" label="Mobile #" type="text" />
                               </CCol>
                               <CCol md={6}>
                                 <RFFCFormInput
                                   name="businessPhones"
                                   label="Business #"
                                   type="text"
-                                  disabled={formDisabled}
                                 />
                               </CCol>
-                            </CRow>
+                            </CRow> */}
                             <CRow className="mb-3">
                               <CCol md={12}>
                                 <RFFSelectSearch
                                   label="Copy group membership from other user"
-                                  disabled={formDisabled}
                                   values={users?.map((user) => ({
                                     value: user.mail,
                                     name: user.displayName,
@@ -377,8 +287,8 @@ const AddUser = () => {
                             </CRow>
                             <CRow className="mb-3">
                               <CCol md={6}>
-                                <CButton type="submit" disabled={submitting || formDisabled}>
-                                  Edit User
+                                <CButton type="submit" disabled={submitting}>
+                                  Add User
                                   {postResults.isFetching && (
                                     <FontAwesomeIcon
                                       icon={faCircleNotch}
@@ -397,30 +307,14 @@ const AddUser = () => {
                         )
                       }}
                     />
-                  )}
-                </CCardBody>
-              </CCard>
-            </CCol>
-            <CCol md={6}>
-              <CCard>
-                <CCardHeader>
-                  <CCardTitle>Account Information</CCardTitle>
-                </CCardHeader>
-                <CCardBody>
-                  {userIsFetching && <CSpinner />}
-                  {!userIsFetching && (
-                    <>
-                      This is the (raw) information for this account.
-                      <pre>{JSON.stringify(user, null, 2)}</pre>
-                    </>
-                  )}
-                </CCardBody>
-              </CCard>
-            </CCol>
-          </CRow>
-        </>
-      )}
-    </CCard>
+                  </CCardBody>
+                </CCard>
+              </CCol>
+            </CRow>
+          </>
+        )}
+      </CCard>
+    </>
   )
 }
 
