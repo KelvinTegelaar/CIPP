@@ -1,25 +1,22 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
+import { CButton } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCog, faBars } from '@fortawesome/free-solid-svg-icons'
+import { faCog, faEdit } from '@fortawesome/free-solid-svg-icons'
 import { CippPageList } from 'src/components'
 
-const Dropdown = (row, index, column) => {
+const Offcanvas = (row, rowIndex, formatExtraData) => {
   return (
-    <CDropdown>
-      <CDropdownToggle size="sm" color="link">
-        <FontAwesomeIcon icon={faBars} />
-      </CDropdownToggle>
-      <CDropdownMenu style={{ position: 'fixed', right: 0, zIndex: 1000 }}>
-        <CDropdownItem
-          href={`/tenant/administration/tenants/Edit?TenantFilter=${row.defaultDomainName}`}
-        >
-          <FontAwesomeIcon icon={faCog} className="me-2" />
-          Edit Tenant
-        </CDropdownItem>
-      </CDropdownMenu>
-    </CDropdown>
+    <>
+      <CButton
+        size="sm"
+        variant="ghost"
+        color="warning"
+        href={`/tenant/administration/tenants/Edit?TenantFilter=${row.defaultDomainName}`}
+      >
+        <FontAwesomeIcon icon={faEdit} />
+      </CButton>
+    </>
   )
 }
 
@@ -127,7 +124,7 @@ const columns = [
   {
     name: 'Action',
     center: true,
-    cell: Dropdown,
+    cell: Offcanvas,
   },
 ]
 
