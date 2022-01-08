@@ -5,7 +5,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
-export default function TitleButton({ icon = faPlus, title, href }) {
+export default function TitleButton({ icon, title, href }) {
   return (
     <Link to={href}>
       <CButton size="sm" color="primary">
@@ -17,7 +17,7 @@ export default function TitleButton({ icon = faPlus, title, href }) {
 }
 
 TitleButton.propTypes = {
-  icon: PropTypes.any,
+  icon: PropTypes.object,
   title: PropTypes.string.isRequired,
   href: PropTypes.string.isRequired,
 }
