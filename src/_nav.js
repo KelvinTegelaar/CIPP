@@ -390,6 +390,7 @@ const _nav = [
         component: CNavItem,
         name: 'Documentation',
         href: 'https://cipp.app',
+        target: '_blank',
       },
       {
         component: CNavItem,

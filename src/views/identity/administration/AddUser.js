@@ -68,10 +68,10 @@ const AddUser = () => {
     if (!values.addedAliases) {
       values.addedAliases = ''
     }
+
     const shippedValues = {
       AddedAliases: values.addedAliases,
       BusinessPhone: values.businessPhones,
-      RemoveAllLicenses: values.RemoveAllLicenses,
       City: values.city,
       CompanyName: values.companyName,
       CopyFrom: values.CopyFrom,
@@ -79,7 +79,7 @@ const AddUser = () => {
       Department: values.department,
       DisplayName: values.displayName,
       Domain: values.primDomain,
-      FirstName: values.firstName,
+      FirstName: values.givenName,
       Jobtitle: values.jobTitle,
       LastName: values.surname,
       License: values.licenses,
@@ -90,6 +90,7 @@ const AddUser = () => {
       Username: values.mailNickname,
       streetAddress: values.streetAddress,
       Autopassword: values.Autopassword,
+      MustChangePass: values.MustChangePass,
       tenantID: tenantDomain,
       ...values.license,
     }
@@ -188,7 +189,7 @@ const AddUser = () => {
                                   </CCol>
                                 </Condition>
                                 <RFFCFormCheck
-                                  name="RequirePasswordChange"
+                                  name="MustChangePass"
                                   label="Require password change at next logon"
                                 />
                               </CCol>
@@ -200,7 +201,7 @@ const AddUser = () => {
                                     value: Code,
                                     name: Name,
                                   }))}
-                                  name="usagelocation"
+                                  name="usageLocation"
                                   placeholder="Type to search..."
                                   label="Usage Location"
                                 />
@@ -225,7 +226,7 @@ const AddUser = () => {
                                 </Condition>
                               </CCol>
                             </CRow>
-                            <CRow>
+                            {/* <CRow> Temporarily disabled, API does not support this yet.
                               <CCol md={12}>
                                 <RFFCFormInput name="jobTitle" label="Job Title" type="text" />
                               </CCol>
@@ -269,7 +270,7 @@ const AddUser = () => {
                                   type="text"
                                 />
                               </CCol>
-                            </CRow>
+                            </CRow> */}
                             <CRow className="mb-3">
                               <CCol md={12}>
                                 <RFFSelectSearch

@@ -1,18 +1,24 @@
 import React, { useState } from 'react'
 import { CButton } from '@coreui/react'
 import { useSelector } from 'react-redux'
-import { faPlus, faEdit, faTrash, faEllipsisV } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faEdit, faTrash, faEllipsisV, faCog } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { cellBooleanFormatter, CippOffcanvas } from '../../../components/cipp'
 import { CippPageList } from '../../../components'
 import { TitleButton } from '../../../components/cipp'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
+  const tenant = useSelector((state) => state.app.currentTenant)
   const [ocVisible, setOCVisible] = useState(false)
   return (
     <>
-      <CButton size="sm" variant="ghost" color="warning">
-        <FontAwesomeIcon icon={faEdit} href="" />
+      <CButton
+        size="sm"
+        variant="ghost"
+        color="warning"
+        href={`/identity/administration/users/edit?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`}
+      >
+        <FontAwesomeIcon icon={faEdit} />
       </CButton>
       <CButton size="sm" variant="ghost" color="danger">
         <FontAwesomeIcon icon={faTrash} href="" />
@@ -21,12 +27,38 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
         <FontAwesomeIcon icon={faEllipsisV} />
       </CButton>
       <CippOffcanvas
-        title="This is our first off Canvas"
+        title="User information"
         extendedInfo={[
-          { label: 'Given Name: ', value: `${row.givenName}` },
-          { label: 'Surname:', value: `${row.surname}` },
+          { label: 'Given Name', value: `${row.givenName}` },
+          { label: 'Surname', value: `${row.surname}` },
+          { label: 'Created on', value: `${row.createdDateTime}` },
+          { label: 'Job Title', value: `${row.jobTitle}` },
+          { label: 'Unique ID', value: `${row.id}` },
         ]}
-        actions={[{ label: 'ThisIsAnActionButton', link: 'dothis', color: 'primary' }]}
+        actions={[
+          {
+            icon: <FontAwesomeIcon icon={faCog} />,
+            label: 'View User',
+            link: `/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
+            color: 'primary',
+          },
+          {
+            label: 'Edit User',
+            link: `/identity/administration/users/edit?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
+            color: 'primary',
+          },
+          {
+            label: 'Research Compromised Account',
+            link: `/identity/administration/users/bec?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
+            color: 'primary',
+          },
+          { label: 'Send MFA Push', link: 'dothis', color: 'primary' },
+          { label: 'Convert to shared mailbox', link: 'dothis', color: 'primary' },
+          { label: 'Block Sign-in', link: 'dothis', color: 'primary' },
+          { label: 'Reset Password (Must Change)', link: 'dothis', color: 'primary' },
+          { label: 'Reset Password', link: 'dothis', color: 'primary' },
+          { label: 'Delete User', link: 'dothis', color: 'primary' },
+        ]}
         placement="end"
         visible={ocVisible}
         id={row.id}
