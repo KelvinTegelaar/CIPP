@@ -1,29 +1,69 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
-import { Link } from 'react-router-dom'
-import { faBars } from '@fortawesome/free-solid-svg-icons'
+import { CButton } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPageList } from 'src/components'
+import {
+  faCog,
+  faEllipsisV,
+  faGlobe,
+  faGlobeEurope,
+  faPager,
+  faUser,
+} from '@fortawesome/free-solid-svg-icons'
+import { CippOffcanvas } from 'src/components/cipp'
 
-const dropdown = (row, rowIndex, formatExtraData) => {
+const Offcanvas = (row, rowIndex, formatExtraData) => {
+  const tenant = useSelector((state) => state.app.currentTenant)
+  const [ocVisible, setOCVisible] = useState(false)
   return (
-    <CDropdown direction="dropstart" placement="left-start">
-      <CDropdownToggle size="sm" color="link">
-        <FontAwesomeIcon icon={faBars} />
-      </CDropdownToggle>
-      <CDropdownMenu data-coreui-boundary="div.body">
-        <CDropdownItem component="span">
-          <Link to={`/endpoint/MEM/EditMEMApplication`}>Edit Application</Link>
-        </CDropdownItem>
-        <CDropdownItem component="span">Assign to All Users</CDropdownItem>
-        <CDropdownItem component="span">Assign to All Devices</CDropdownItem>
-        <CDropdownItem component="span">Assign Globally (All Users / All Devices)</CDropdownItem>
-      </CDropdownMenu>
-    </CDropdown>
+    <>
+      {/* future version: add edit app <CButton size="sm" variant="ghost" color="warning" href={`/endpoint/MEM/EditMEMApplication`}>
+        <FontAwesomeIcon icon={faEdit} />
+      </CButton> */}
+      {/* Future version: add delete app. <CButton size="sm" variant="ghost" color="danger">
+        <FontAwesomeIcon icon={faTrash} href="" />
+      </CButton> */}
+      <CButton size="sm" color="link" onClick={() => setOCVisible(true)}>
+        <FontAwesomeIcon icon={faEllipsisV} />
+      </CButton>
+      <CippOffcanvas
+        title="User information"
+        extendedInfo={[
+          { label: 'Install as', value: `${row.installExperience.runAsAccount}` },
+          { label: 'Restart behaviour', value: `${row.installExperience.deviceRestartBehavior}` },
+          { label: 'Assigned to groups', value: `${row.isAssigned}` },
+          { label: 'Created at', value: `${row.createdDateTime}` },
+          { label: 'Modified at', value: `${row.lastModifiedDateTime}` },
+        ]}
+        actions={[
+          {
+            icon: <FontAwesomeIcon icon={faUser} />,
+            label: ' Assign to All Users',
+            link: `/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
+            color: 'primary',
+          },
+          {
+            icon: <FontAwesomeIcon icon={faPager} />,
+            label: ' Assign to All Devices',
+            link: `/identity/administration/users/edit?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
+            color: 'primary',
+          },
+          {
+            icon: <FontAwesomeIcon icon={faGlobeEurope} />,
+            label: ' Assign Globally (All Users / All Devices)',
+            link: `/identity/administration/users/bec?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
+            color: 'primary',
+          },
+        ]}
+        placement="end"
+        visible={ocVisible}
+        id={row.id}
+        hideFunction={() => setOCVisible(false)}
+      />
+    </>
   )
 }
-
 const columns = [
   {
     selector: (row) => row.displayName,
@@ -47,7 +87,7 @@ const columns = [
   },
   {
     name: 'Action',
-    cell: dropdown,
+    cell: Offcanvas,
     button: true,
   },
 ]
