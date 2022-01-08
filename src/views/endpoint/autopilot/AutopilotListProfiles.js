@@ -2,38 +2,26 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
-import {
-  CDropdown,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
-  CCard,
-  CCardHeader,
-  CCardTitle,
-  CCardBody,
-} from '@coreui/react'
+import { CCard, CCardHeader, CCardTitle, CCardBody } from '@coreui/react'
 import { cellBooleanFormatter } from '../../../components/cipp'
-import { Link } from 'react-router-dom'
-import { faUser, faBars } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
-const dropdown = (row, rowIndex, formatExtraData) => {
-  return (
-    <CDropdown>
-      <CDropdownToggle size="sm" color="link">
-        <FontAwesomeIcon icon={faBars} />
-      </CDropdownToggle>
-      <CDropdownMenu style={{ position: 'fixed', right: 0, zIndex: 1000 }}>
-        <CDropdownItem href="#">
-          <Link className="dropdown-item" to={`/endpoint/autopilot/AutopilotEditProfile}`}>
-            <FontAwesomeIcon icon={faUser} className="me-2" />
-            Edit Profile
-          </Link>
-        </CDropdownItem>
-      </CDropdownMenu>
-    </CDropdown>
-  )
-}
+//future version dropdown:
+// const dropdown = (row, rowIndex, formatExtraData) => {
+//   return (
+//     <CDropdown>
+//       <CDropdownToggle size="sm" color="link">
+//         <FontAwesomeIcon icon={faBars} />
+//       </CDropdownToggle>
+//       <CDropdownMenu style={{ position: 'fixed', right: 0, zIndex: 1000 }}>
+//         <CDropdownItem href="#">
+//           <Link className="dropdown-item" to={`/endpoint/autopilot/AutopilotEditProfile}`}>
+//             <FontAwesomeIcon icon={faUser} className="me-2" />
+//             Edit Profile
+//           </Link>
+//         </CDropdownItem>
+//       </CDropdownMenu>
+//     </CDropdown>
+//   )
+// }
 
 const columns = [
   {
@@ -63,10 +51,6 @@ const columns = [
     selector: 'deviceNameTemplate',
     name: 'Device Name Template',
     sortable: true,
-  },
-  {
-    name: 'Actions',
-    cell: dropdown,
   },
 ]
 

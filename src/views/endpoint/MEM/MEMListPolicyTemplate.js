@@ -11,8 +11,9 @@ import {
   CCardTitle,
   CCardBody,
   CSpinner,
+  CButton,
 } from '@coreui/react'
-import { faBars } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { ModalService } from '../../../components'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
@@ -47,24 +48,11 @@ const Dropdown = (row, index, column) => {
     })
   }
   return (
-    <CDropdown>
-      <CDropdownToggle size="sm" color="link">
-        <FontAwesomeIcon icon={faBars} />
-      </CDropdownToggle>
-      <CDropdownMenu>
-        <CDropdownItem
-          onClick={() =>
-            handleDropdownEvent(
-              `api/RemoveIntuneTemplate?ID=${row.GUID}`,
-              `Are you sure you want to delete the standard ${row.Displayname}`,
-            )
-          }
-          href="#"
-        >
-          Delete Standard
-        </CDropdownItem>
-      </CDropdownMenu>
-    </CDropdown>
+    <>
+      <CButton size="sm" variant="ghost" color="danger">
+        <FontAwesomeIcon icon={faTrash} href="" />
+      </CButton>
+    </>
   )
 }
 
@@ -115,7 +103,6 @@ const AutopilotListTemplates = () => {
               expandableRows: true,
               expandableRowsComponent: ExpandedComponent,
               expandOnRowClicked: true,
-              responsive: false,
             }}
             keyField="id"
             reportName={`${tenant?.defaultDomainName}-MEMPolicyTemplates-List`}

@@ -1,41 +1,26 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
-import {
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCardTitle,
-  CDropdown,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
-} from '@coreui/react'
-import { Link } from 'react-router-dom'
-import { faUser, faBars } from '@fortawesome/free-solid-svg-icons'
+import { CCard, CCardBody, CCardHeader, CCardTitle, CButton } from '@coreui/react'
+import { faEdit, faTrash, faEllipsisV, faCog } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { CippOffcanvas } from 'src/components/cipp'
 
 const Dropdown = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
-
+  const [ocVisible, setOCVisible] = useState(false)
   return (
-    <CDropdown>
-      <CDropdownToggle size="sm" color="link">
-        <FontAwesomeIcon icon={faBars} />
-      </CDropdownToggle>
-      <CDropdownMenu style={{ position: 'fixed', right: 0, zIndex: 1000 }}>
-        <CDropdownItem href="#">
-          <Link
-            className="dropdown-item"
-            to={`/endpoint/MEM/edit-policy?ID=${row.id}&tenantDomain=${tenant.defaultDomainName}`}
-          >
-            <FontAwesomeIcon icon={faUser} className="me-2" />
-            Edit Policy
-          </Link>
-        </CDropdownItem>
-      </CDropdownMenu>
-    </CDropdown>
+    <>
+      <CButton
+        size="sm"
+        variant="ghost"
+        color="warning"
+        href={`/endpoint/MEM/edit-policy?ID=${row.id}&tenantDomain=${tenant.defaultDomainName}`}
+      >
+        <FontAwesomeIcon icon={faEdit} />
+      </CButton>
+    </>
   )
 }
 

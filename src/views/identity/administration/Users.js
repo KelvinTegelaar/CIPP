@@ -50,23 +50,24 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
         ]}
         actions={[
           {
-            icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
+            icon: <FontAwesomeIcon icon={faEye} className="me-2" />,
             label: 'View User',
-            link: `/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
+            link: { viewLink },
             color: 'success',
           },
           {
+            icon: <FontAwesomeIcon icon={faEdit} className="me-2" />,
             label: 'Edit User',
-            link: `/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
-            color: 'warning',
+            link: { editLink },
+            color: 'info',
           },
           {
             label: 'Research Compromised Account',
-            link: `/identity/administration/users/edit?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
-            color: 'secondary',
+            link: `/identity/administration/users/bec?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
+            color: 'primary',
           },
-          { label: 'Send MFA Push', link: 'dothis', color: 'secondary' },
-          { label: 'Convert to shared mailbox', link: 'dothis', color: 'secondary' },
+          { label: 'Send MFA Push', link: 'dothis', color: 'primary' },
+          { label: 'Convert to shared mailbox', link: 'dothis', color: 'primary' },
           { label: 'Block Sign-in', link: 'dothis', color: 'warning' },
           { label: 'Reset Password (Must Change)', link: 'dothis', color: 'warning' },
           { label: 'Reset Password', link: 'dothis', color: 'warning' },
