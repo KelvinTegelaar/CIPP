@@ -1,33 +1,46 @@
 import React, { useState } from 'react'
 import { CButton } from '@coreui/react'
+import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { faPlus, faEdit, faTrash, faEllipsisV, faCog } from '@fortawesome/free-solid-svg-icons'
+import {
+  faPlus,
+  faEdit,
+  faTrash,
+  faEllipsisV,
+  faCog,
+  faEye,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { cellBooleanFormatter, CippOffcanvas } from '../../../components/cipp'
+import { cellBooleanFormatter } from '../../../components/cipp'
 import { CippPageList } from '../../../components'
 import { TitleButton } from '../../../components/cipp'
+import CippGroupedOffcanvas from 'src/components/cipp/CippGroupedOffcanvas'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
   const [ocVisible, setOCVisible] = useState(false)
+  const viewLink = `/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`
+  const editLink = `/identity/administration/users/edit?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`
   return (
     <>
-      <CButton
-        size="sm"
-        variant="ghost"
-        color="warning"
-        href={`/identity/administration/users/edit?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`}
-      >
-        <FontAwesomeIcon icon={faEdit} />
-      </CButton>
+      <Link to={viewLink}>
+        <CButton size="sm" variant="ghost" color="success">
+          <FontAwesomeIcon icon={faEye} />
+        </CButton>
+      </Link>
+      <Link to={editLink}>
+        <CButton size="sm" variant="ghost" color="warning">
+          <FontAwesomeIcon icon={faEdit} />
+        </CButton>
+      </Link>
       <CButton size="sm" variant="ghost" color="danger">
         <FontAwesomeIcon icon={faTrash} href="" />
       </CButton>
       <CButton size="sm" color="link" onClick={() => setOCVisible(true)}>
         <FontAwesomeIcon icon={faEllipsisV} />
       </CButton>
-      <CippOffcanvas
-        title="User information"
+      <CippGroupedOffcanvas
+        title="User Information"
         extendedInfo={[
           { label: 'Given Name', value: `${row.givenName}` },
           { label: 'Surname', value: `${row.surname}` },
@@ -37,27 +50,28 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
         ]}
         actions={[
           {
-            icon: <FontAwesomeIcon icon={faCog} />,
+            icon: <FontAwesomeIcon icon={faEye} className="me-2" />,
             label: 'View User',
-            link: `/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
-            color: 'primary',
+            link: { viewLink },
+            color: 'success',
           },
           {
+            icon: <FontAwesomeIcon icon={faEdit} className="me-2" />,
             label: 'Edit User',
-            link: `/identity/administration/users/edit?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
-            color: 'primary',
+            link: { editLink },
+            color: 'info',
           },
           {
             label: 'Research Compromised Account',
             link: `/identity/administration/users/bec?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
-            color: 'primary',
+            color: 'info',
           },
-          { label: 'Send MFA Push', link: 'dothis', color: 'primary' },
-          { label: 'Convert to shared mailbox', link: 'dothis', color: 'primary' },
-          { label: 'Block Sign-in', link: 'dothis', color: 'primary' },
-          { label: 'Reset Password (Must Change)', link: 'dothis', color: 'primary' },
-          { label: 'Reset Password', link: 'dothis', color: 'primary' },
-          { label: 'Delete User', link: 'dothis', color: 'primary' },
+          { label: 'Send MFA Push', link: 'dothis', color: 'info' },
+          { label: 'Convert to shared mailbox', link: 'dothis', color: 'info' },
+          { label: 'Block Sign-in', link: 'dothis', color: 'info' },
+          { label: 'Reset Password (Must Change)', link: 'dothis', color: 'info' },
+          { label: 'Reset Password', link: 'dothis', color: 'info' },
+          { label: 'Delete User', link: 'dothis', color: 'info' },
         ]}
         placement="end"
         visible={ocVisible}

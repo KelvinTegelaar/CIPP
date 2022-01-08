@@ -189,3 +189,29 @@
 .list-group {
   border-radius: var(--cipp-border-radius);
 }
+
+/* CIPP Text */
+
+.text-primary {
+  color: var(--cui-primary) !important;
+}
+
+.text-secondary {
+  color: var(--cui-secondary) !important;
+}
+
+.text-success {
+  color: var(--cui-success) !important;
+}
+
+.text-info {
+  color: var(--cui-info) !important;
+}
+
+.text-warning {
+  color: var(--cui-warning) !important;
+}
+
+.text-danger {
+  color: var(--cui-danger) !important;
+}
