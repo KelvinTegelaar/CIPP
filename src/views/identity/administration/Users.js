@@ -39,17 +39,17 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
           {
             icon: <FontAwesomeIcon icon={faCog} />,
             label: 'View User',
-            link: 'dothis',
-            color: 'primary',
-          },
-          {
-            label: 'Edit User',
             link: `/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
             color: 'primary',
           },
           {
-            label: 'Research Compromised Account',
+            label: 'Edit User',
             link: `/identity/administration/users/edit?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
+            color: 'primary',
+          },
+          {
+            label: 'Research Compromised Account',
+            link: `/identity/administration/users/bec?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
             color: 'primary',
           },
           { label: 'Send MFA Push', link: 'dothis', color: 'primary' },
