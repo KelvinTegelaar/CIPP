@@ -52,7 +52,7 @@ const IconRedX = () => <FontAwesomeIcon icon={faTimesCircle} className="text-dan
 const IconWarning = () => (
   <FontAwesomeIcon icon={faExclamationTriangle} className="text-warning mx-2" />
 )
-const IconExternalLink = () => <FontAwesomeIcon icon={faExternalLinkAlt} />
+const IconExternalLink = () => <FontAwesomeIcon icon={faExternalLinkAlt} className="me-2" />
 const IconCopy = () => <FontAwesomeIcon icon={faCopy} />
 
 const domainCheckProps = {
@@ -103,7 +103,7 @@ export default function IndividualDomainCheck({
       <CCol>
         <CCard className="page-card h-100">
           <CCardHeader>
-            <CCardTitle className="text-primary">Email Security Domain Checker</CCardTitle>
+            <CCardTitle>Email Security Domain Checker</CCardTitle>
           </CCardHeader>
           <CCardBody>
             <Form
@@ -188,7 +188,7 @@ const ResultsCard = ({ children, data, type }) => {
   return (
     <CCard className="page-card h-100">
       <CCardHeader>
-        <CCardTitle className="text-primary">
+        <CCardTitle>
           <StatusIcon type="finalstate" finalState={finalState} />
           {type} Results
         </CCardTitle>
