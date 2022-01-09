@@ -44,6 +44,8 @@ import {
   faCopy,
   faExternalLinkAlt,
 } from '@fortawesome/free-solid-svg-icons'
+import ReactMarkdown from 'react-markdown'
+import { ShadingPattern } from 'jspdf'
 
 // const required = (value) => (value ? undefined : 'Required')
 
@@ -202,19 +204,31 @@ const ResultsCard = ({ children, data, type }) => {
         {validationPasses.map((validation, idx) => (
           <div key={`${idx}-validation-${type}`}>
             <IconGreenCheck />
-            {String(validation.replace('PASS: ', ''))}
+            <ReactMarkdown
+              children={String(validation.replace('PASS: ', ''))}
+              components={{ p: 'span' }}
+              linkTarget="_blank"
+            />
           </div>
         ))}
         {validationWarns.map((validation, idx) => (
           <div key={`${idx}-validation-${type}`}>
             <IconWarning />
-            {String(validation.replace('WARN: ', ''))}
+            <ReactMarkdown
+              children={String(validation.replace('WARN: ', ''))}
+              components={{ p: 'span' }}
+              linkTarget="_blank"
+            />
           </div>
         ))}
         {validationFails.map((validation, idx) => (
           <div key={`${idx}-validation-${type}`}>
             <IconRedX />
-            {String(validation.replace('FAIL: ', ''))}
+            <ReactMarkdown
+              children={String(validation.replace('FAIL: ', ''))}
+              components={{ p: 'span' }}
+              linkTarget="_blank"
+            />
           </div>
         ))}
       </CCardBody>
