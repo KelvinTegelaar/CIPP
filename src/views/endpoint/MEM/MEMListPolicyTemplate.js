@@ -1,52 +1,11 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import CippDatatable from '../../../components/cipp/CippDatatable'
-import {
-  CDropdown,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
-  CCard,
-  CCardHeader,
-  CCardTitle,
-  CCardBody,
-  CSpinner,
-  CButton,
-} from '@coreui/react'
-import { faBars, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { CCard, CCardHeader, CCardTitle, CCardBody, CButton } from '@coreui/react'
+import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { ModalService } from '../../../components'
-import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 
 const Dropdown = (row, index, column) => {
-  const [ExecuteGetRequest, GetRequestResult] = useLazyGenericGetRequestQuery()
-  const handleDropdownConfirm = (apiurl) => {
-    ExecuteGetRequest({ url: apiurl })
-    //this isnt working all the way yet.
-    ModalService.confirm({
-      title: 'Results',
-      body: (
-        <div>
-          {GetRequestResult.isSuccess && (
-            <>
-              <CSpinner />
-            </>
-          )}
-          {GetRequestResult.isSuccess && GetRequestResult.data.Results}
-        </div>
-      ),
-      confirmLabel: 'Continue',
-    })
-  }
-  const handleDropdownEvent = (apiurl, message) => {
-    ModalService.confirm({
-      title: 'Confirm',
-      body: <div>{message}</div>,
-      onConfirm: () => handleDropdownConfirm(apiurl),
-      confirmLabel: 'Continue',
-      cancelLabel: 'Cancel',
-    })
-  }
   return (
     <>
       <CButton size="sm" variant="ghost" color="danger">

@@ -7,7 +7,7 @@ import {
   CDropdownToggle,
   CLink,
 } from '@coreui/react'
-import { faUser, faBook, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faBook } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom'
 import { authApi } from '../../store/api/auth'

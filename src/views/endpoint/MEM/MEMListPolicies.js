@@ -1,15 +1,13 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
 import { CCard, CCardBody, CCardHeader, CCardTitle, CButton } from '@coreui/react'
-import { faEdit, faTrash, faEllipsisV, faCog } from '@fortawesome/free-solid-svg-icons'
+import { faEdit } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { CippOffcanvas } from 'src/components/cipp'
 
 const Dropdown = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
-  const [ocVisible, setOCVisible] = useState(false)
   return (
     <>
       <CButton

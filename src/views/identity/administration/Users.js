@@ -2,14 +2,7 @@ import React, { useState } from 'react'
 import { CButton } from '@coreui/react'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import {
-  faPlus,
-  faEdit,
-  faTrash,
-  faEllipsisV,
-  faCog,
-  faEye,
-} from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faEdit, faTrash, faEllipsisV, faEye } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { cellBooleanFormatter } from '../../../components/cipp'
 import { CippPageList } from '../../../components'
