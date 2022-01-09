@@ -4,6 +4,7 @@ import { Form, Field } from 'react-final-form'
 import { useSearchParams } from 'react-router-dom'
 import { useLazyListDomainTestsQuery, useListDomainTestsQuery } from '../../../store/api/domains'
 import StatusIcon from 'src/components/cipp/StatusIcon'
+import CippOffcanvas from 'src/components/cipp/CippOffcanvas'
 import {
   CAlert,
   CButton,
@@ -29,9 +30,6 @@ import {
   CTableBody,
   CBadge,
   CTooltip,
-  COffcanvas,
-  COffcanvasHeader,
-  COffcanvasBody,
   COffcanvasTitle,
   CInputGroup,
 } from '@coreui/react'
@@ -45,7 +43,6 @@ import {
   faTimesCircle,
   faCopy,
   faExternalLinkAlt,
-  faTimes,
 } from '@fortawesome/free-solid-svg-icons'
 
 // const required = (value) => (value ? undefined : 'Required')
@@ -292,14 +289,77 @@ const SPFResultsCard = ({ domain }) => {
 
 SPFResultsCard.propTypes = sharedProps
 
-const MXResultsCard = ({ domain }) => {
-  const { data } = useListDomainTestsQuery({ domain })
-  const mailProviderName = data?.MXResults?.MailProvider?.Name
+const MXDetailView = (data) => {
   let records = data?.MXResults?.Records || []
 
   if (!Array.isArray(records)) {
     records = [records]
   }
+
+  return (
+    <>
+      {records.length > 0 && (
+        <div>
+          <COffcanvasTitle>MX Records</COffcanvasTitle>
+          <CTable striped small>
+            <CTableHead>
+              <CTableRow>
+                <CTableHeaderCell scope="col">Priority</CTableHeaderCell>
+                <CTableHeaderCell scope="col">Hostname</CTableHeaderCell>
+              </CTableRow>
+            </CTableHead>
+            <CTableBody>
+              {records.map((record, key) => (
+                <CTableRow key={`${key}-mx-record`}>
+                  <CTableDataCell>{record?.Priority}</CTableDataCell>
+                  <CTableDataCell>{record?.Hostname}</CTableDataCell>
+                </CTableRow>
+              ))}
+            </CTableBody>
+          </CTable>
+        </div>
+      )}
+      <COffcanvasTitle>Documentation</COffcanvasTitle>
+      <CListGroup>
+        {data?.MXResults?.MailProvider?._MxComment && (
+          <CListGroupItem
+            component="a"
+            target="_blank"
+            href={data?.MXResults?.MailProvider?._MxComment}
+          >
+            <IconExternalLink /> MX Record
+          </CListGroupItem>
+        )}
+        {data?.MXResults?.MailProvider?._SpfComment && (
+          <CListGroupItem
+            component="a"
+            target="_blank"
+            href={data?.MXResults?.MailProvider?._SpfComment}
+          >
+            <IconExternalLink /> SPF Record
+          </CListGroupItem>
+        )}
+        {data?.MXResults?.MailProvider?._DkimComment && (
+          <CListGroupItem
+            component="a"
+            target="_blank"
+            href={data?.MXResults?.MailProvider?._DkimComment}
+          >
+            <IconExternalLink /> DKIM Record
+          </CListGroupItem>
+        )}
+      </CListGroup>
+    </>
+  )
+}
+MXDetailView.propTypes = {
+  data: PropTypes.object,
+}
+
+const MXResultsCard = ({ domain }) => {
+  const { data } = useListDomainTestsQuery({ domain })
+  const mailProviderName = data?.MXResults?.MailProvider?.Name
+
   const [visible, setVisible] = useState(false)
   return (
     <ResultsCard data={data} type="MX">
@@ -318,72 +378,14 @@ const MXResultsCard = ({ domain }) => {
           </CBadge>
         </CTooltip>
       </div>
-      <COffcanvas
+      <CippOffcanvas
         visible={visible}
         placement="end"
         className="cipp-offcanvas"
-        onHide={() => setVisible(false)}
-      >
-        <COffcanvasHeader>
-          <h2>Mail Provider Info</h2>
-          <CButton className="cipp-offcanvas-close" color="link" onClick={() => setVisible(false)}>
-            <FontAwesomeIcon size="lg" icon={faTimes} color="link" />
-          </CButton>
-        </COffcanvasHeader>
-        <COffcanvasBody>
-          {records.length > 0 && (
-            <div>
-              <COffcanvasTitle>MX Records</COffcanvasTitle>
-              <CTable striped small>
-                <CTableHead>
-                  <CTableRow>
-                    <CTableHeaderCell scope="col">Priority</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Hostname</CTableHeaderCell>
-                  </CTableRow>
-                </CTableHead>
-                <CTableBody>
-                  {records.map((record, key) => (
-                    <CTableRow key={`${key}-mx-record`}>
-                      <CTableDataCell>{record?.Priority}</CTableDataCell>
-                      <CTableDataCell>{record?.Hostname}</CTableDataCell>
-                    </CTableRow>
-                  ))}
-                </CTableBody>
-              </CTable>
-            </div>
-          )}
-          <COffcanvasTitle>Documentation</COffcanvasTitle>
-          <CListGroup>
-            {data?.MXResults?.MailProvider?._MxComment && (
-              <CListGroupItem
-                component="a"
-                target="_blank"
-                href={data?.MXResults?.MailProvider?._MxComment}
-              >
-                <IconExternalLink /> MX Record
-              </CListGroupItem>
-            )}
-            {data?.MXResults?.MailProvider?._SpfComment && (
-              <CListGroupItem
-                component="a"
-                target="_blank"
-                href={data?.MXResults?.MailProvider?._SpfComment}
-              >
-                <IconExternalLink /> SPF Record
-              </CListGroupItem>
-            )}
-            {data?.MXResults?.MailProvider?._DkimComment && (
-              <CListGroupItem
-                component="a"
-                target="_blank"
-                href={data?.MXResults?.MailProvider?._DkimComment}
-              >
-                <IconExternalLink /> DKIM Record
-              </CListGroupItem>
-            )}
-          </CListGroup>
-        </COffcanvasBody>
-      </COffcanvas>
+        hideFunction={() => setVisible(false)}
+        title="Mail Provider Info"
+        children={MXDetailView(data)}
+      />
     </ResultsCard>
   )
 }
