@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { CButton, CCard, CCardHeader, CCardTitle, CCardBody } from '@coreui/react'
-import { CellBadge, CippDatatable, cellProgressBarFormatter } from '../../../components/cipp'
-import { ModalService } from '../../../components'
-import cellGetProperty from '../../../components/cipp/cellGetProperty'
+import { CellBadge, CippDatatable, cellProgressBarFormatter } from 'src/components/cipp'
+import { ModalService } from 'src/components'
+import cellGetProperty from 'src/components/cipp/cellGetProperty'
 
-const MoreInfoCard = ({ row }) => {
+const MoreInfoContent = ({ row }) => {
   return (
     <>
       <strong>Score Explanation: </strong>
@@ -44,14 +44,15 @@ const MoreInfoCard = ({ row }) => {
     </>
   )
 }
-MoreInfoCard.propTypes = {
+MoreInfoContent.propTypes = {
   row: PropTypes.object.isRequired,
 }
 
 const DomainsAnalyser = () => {
+  const [ocVisible, setOCVisible] = useState(false)
   const handleMoreInfo = ({ row }) => {
     ModalService.open({
-      body: <MoreInfoCard row={row} />,
+      body: <MoreInfoContent row={row} />,
       title: `${row.Tenant} More Information`,
     })
   }

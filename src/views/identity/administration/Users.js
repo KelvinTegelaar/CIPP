@@ -2,14 +2,7 @@ import React, { useState } from 'react'
 import { CButton } from '@coreui/react'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import {
-  faPlus,
-  faEdit,
-  faTrash,
-  faEllipsisV,
-  faCog,
-  faEye,
-} from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faEdit, faTrash, faEllipsisV, faEye } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { cellBooleanFormatter } from '../../../components/cipp'
 import { CippPageList } from '../../../components'
@@ -100,7 +93,8 @@ const columns = [
     selector: (row) => row['userType'],
     sortable: true,
     exportSelector: 'userType',
-    minWidth: '75px',
+    minWidth: '50px',
+    maxWidth: '140px',
   },
   {
     name: 'Enabled',
@@ -108,21 +102,23 @@ const columns = [
     cell: cellBooleanFormatter(),
     sortable: true,
     exportSelector: 'accountEnabled',
-    maxWidth: '100px',
+    minWidth: '50px',
+    maxWidth: '90px',
   },
   {
-    name: 'On Premise Sync',
+    name: 'AD Synced',
     selector: (row) => row['onPremisesSyncEnabled'],
     cell: cellBooleanFormatter(),
     sortable: true,
     exportSelector: 'onPremisesSyncEnabled',
-    maxWidth: '150px',
+    minWidth: '50px',
+    maxWidth: '110px',
   },
   {
     name: 'Licenses',
     selector: (row) => row['LicJoined'],
     exportSelector: 'LicJoined',
-    grow: 2,
+    grow: 3,
   },
   {
     name: 'id',
@@ -130,8 +126,7 @@ const columns = [
     omit: true,
   },
   {
-    name: 'Action',
-    button: true,
+    name: 'Actions',
     cell: Offcanvas,
   },
 ]
