@@ -42,7 +42,7 @@ export default function CippGroupedOffcanvas(props) {
       hideFunction={props.hideFunction}
     >
       <COffcanvasTitle>Extended Information</COffcanvasTitle>
-      <CTable small borderless responsive align="top">
+      <CTable small borderless responsive align="top" style={{ fontSize: 'smaller' }}>
         <CTableBody>{extendedInfoContent}</CTableBody>
       </CTable>
       {<COffcanvasTitle>Actions</COffcanvasTitle>}

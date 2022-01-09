@@ -139,28 +139,7 @@ const ViewBec = () => {
       selector: (row) => row['ResultStatus'],
     },
   ]
-  const mailboxColumns = [
-    {
-      name: 'IP',
-      selector: (row) => row['ClientIP'],
-    },
-    {
-      name: 'User',
-      selector: (row) => row['UserId'],
-    },
-    {
-      name: 'Client User Agent',
-      selector: (row) => row['ClientInfoString'],
-    },
-    {
-      name: 'Result',
-      selector: (row) => row['ResultStatus'],
-    },
-    {
-      name: 'Date',
-      selector: (row) => row['CreationTime'],
-    },
-  ]
+
   return (
     <div className="container overflow-hidden">
       <CRow>
