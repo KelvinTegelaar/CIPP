@@ -56,7 +56,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
           },
           {
             label: 'Research Compromised Account',
-            link: `/identity/administration/users/bec?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
+            link: `/identity/administration/ViewBec?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
             color: 'info',
           },
           { label: 'Send MFA Push', link: 'dothis', color: 'info' },
