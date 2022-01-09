@@ -90,7 +90,7 @@ export default function IndividualDomainCheck({
       setRowXs({ cols: 1, gutter: 4 })
       setRowXl({ cols: 2, gutter: 4 })
     }
-  }, [searchParams, trigger, isOffcanvas])
+  }, [searchParams, trigger, isOffcanvas, initialDomain])
 
   const onSubmit = (values) => {
     setDomain(values.domain)
