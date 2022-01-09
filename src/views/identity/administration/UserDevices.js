@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { CCard, CCardBody, CCardHeader, CCardTitle, CLink, CSpinner } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLaptop } from '@fortawesome/free-solid-svg-icons'
-import DataTable from 'react-data-table-component'
+import { CippDatatable } from '../../../components/cipp'
 
 import { cellBooleanFormatter, cellNullTextFormatter } from '../../../components/cipp'
 import { useListUserDevicesQuery } from '../../../store/api/devices'
@@ -114,15 +114,17 @@ export default function UserDevices({ userId, tenantDomain }) {
         {isFetching && <CSpinner />}
         {!isFetching && error && <>Error loading devices</>}
         {!isFetching && !error && (
-          <DataTable
-            keyField="ID"
+          <CippDatatable
+            path="/api/ListUserDevices"
+            params={{ tenantFilter: tenantDomain, userId }}
+            keyField="id"
             columns={columns}
             data={mapped}
             striped
-            responsive
             bordered={false}
-            condensed
-            wrapperClasses="table-responsive"
+            dense
+            responsive={true}
+            disablePDFExport={true}
           />
         )}
       </CCardBody>

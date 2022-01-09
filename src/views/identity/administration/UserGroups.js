@@ -69,13 +69,16 @@ export default function UserGroups({ userId, tenantDomain }) {
         {!isFetching && error && <>Error loading groups</>}
         {!isFetching && !error && (
           <CippDatatable
+            path="/api/ListUserGroups"
+            params={{ tenantFilter: tenantDomain, userId }}
             keyField="id"
             columns={columns}
             data={mapped}
             striped
             bordered={false}
             dense
-            wrapperClasses="table-responsive"
+            responsive={true}
+            disablePDFExport={true}
           />
         )}
       </CCardBody>
