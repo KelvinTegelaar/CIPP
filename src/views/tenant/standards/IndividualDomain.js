@@ -103,7 +103,7 @@ export default function IndividualDomainCheck({
       <CCol>
         <CCard className="page-card h-100">
           <CCardHeader>
-            <CCardTitle className="text-primary">Email Security Domain Checker</CCardTitle>
+            <CCardTitle>Email Security Domain Checker</CCardTitle>
           </CCardHeader>
           <CCardBody>
             <Form
@@ -188,7 +188,7 @@ const ResultsCard = ({ children, data, type }) => {
   return (
     <CCard className="page-card h-100">
       <CCardHeader>
-        <CCardTitle className="text-primary">
+        <CCardTitle>
           <StatusIcon type="finalstate" finalState={finalState} />
           {type} Results
         </CCardTitle>
