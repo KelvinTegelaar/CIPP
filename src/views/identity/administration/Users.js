@@ -98,7 +98,8 @@ const columns = [
     selector: (row) => row['userType'],
     sortable: true,
     exportSelector: 'userType',
-    minWidth: '75px',
+    minWidth: '50px',
+    maxWidth: '140px',
   },
   {
     name: 'Enabled',
@@ -106,15 +107,17 @@ const columns = [
     cell: cellBooleanFormatter(),
     sortable: true,
     exportSelector: 'accountEnabled',
-    maxWidth: '100px',
+    minWidth: '50px',
+    maxWidth: '90px',
   },
   {
-    name: 'On Premise Sync',
+    name: 'AD Synced',
     selector: (row) => row['onPremisesSyncEnabled'],
     cell: cellBooleanFormatter(),
     sortable: true,
     exportSelector: 'onPremisesSyncEnabled',
-    maxWidth: '150px',
+    minWidth: '50px',
+    maxWidth: '110px',
   },
   {
     name: 'Licenses',
@@ -128,7 +131,7 @@ const columns = [
     omit: true,
   },
   {
-    name: 'Action',
+    name: 'Actions',
     cell: Offcanvas,
   },
 ]

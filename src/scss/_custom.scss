@@ -197,6 +197,30 @@
 
 /* CIPP Text */
 
+.bg-primary {
+  background-color: var(--cui-primary) !important;
+}
+
+.bg-secondary {
+  background-color: var(--cui-secondary) !important;
+}
+
+.bg-success {
+  background-color: var(--cui-success) !important;
+}
+
+.bg-info {
+  background-color: var(--cui-info) !important;
+}
+
+.bg-warning {
+  background-color: var(--cui-warning) !important;
+}
+
+.bg-danger {
+  background-color: var(--cui-danger) !important;
+}
+
 .text-primary {
   color: var(--cui-primary) !important;
 }
