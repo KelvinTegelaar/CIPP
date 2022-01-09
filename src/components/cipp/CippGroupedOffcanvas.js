@@ -1,16 +1,23 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { CListGroup, CListGroupItem, COffcanvasTitle } from '@coreui/react'
+import {
+  CListGroup,
+  CListGroupItem,
+  COffcanvasTitle,
+  CTable,
+  CTableBody,
+  CTableDataCell,
+  CTableRow,
+} from '@coreui/react'
 import CippOffcanvas, { CippOffcanvasPropTypes } from './CippOffcanvas'
 
 export default function CippGroupedOffcanvas(props) {
   const extendedInfoContent = props.extendedInfo.map((info, index) => (
     <>
-      <CListGroupItem>
-        <div>
-          <b>{info.label}</b>: {info.value}
-        </div>
-      </CListGroupItem>
+      <CTableRow key={index}>
+        <CTableDataCell className="cipp-extendedinfo-label">{info.label}</CTableDataCell>
+        <CTableDataCell>{info.value}</CTableDataCell>
+      </CTableRow>
     </>
   ))
   const actionsContent = props.actions.map((action, index) => (
@@ -35,7 +42,9 @@ export default function CippGroupedOffcanvas(props) {
       hideFunction={props.hideFunction}
     >
       <COffcanvasTitle>Extended Information</COffcanvasTitle>
-      <CListGroup>{extendedInfoContent}</CListGroup>
+      <CTable small borderless responsive align="top">
+        <CTableBody>{extendedInfoContent}</CTableBody>
+      </CTable>
       {<COffcanvasTitle>Actions</COffcanvasTitle>}
       {actionsContent}
     </CippOffcanvas>
