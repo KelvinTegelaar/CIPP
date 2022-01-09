@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import PropTypes from 'prop-types'
-import { Form } from 'react-final-form'
+import { Form, Field } from 'react-final-form'
 import { useSearchParams } from 'react-router-dom'
 import { useLazyListDomainTestsQuery, useListDomainTestsQuery } from '../../../store/api/domains'
 import StatusIcon from 'src/components/cipp/StatusIcon'
@@ -14,6 +14,8 @@ import {
   CCol,
   CCollapse,
   CForm,
+  CFormLabel,
+  CFormInput,
   CFormTextarea,
   CRow,
   CCardTitle,
@@ -27,6 +29,11 @@ import {
   CTableBody,
   CBadge,
   CTooltip,
+  COffcanvas,
+  COffcanvasHeader,
+  COffcanvasBody,
+  COffcanvasTitle,
+  CInputGroup,
 } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -38,8 +45,8 @@ import {
   faTimesCircle,
   faCopy,
   faExternalLinkAlt,
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons'
-import { RFFCFormInput } from '../../../components/RFFComponents'
 
 // const required = (value) => (value ? undefined : 'Required')
 
@@ -51,19 +58,42 @@ const IconWarning = () => (
 const IconExternalLink = () => <FontAwesomeIcon icon={faExternalLinkAlt} />
 const IconCopy = () => <FontAwesomeIcon icon={faCopy} />
 
-const IndividualDomainCheck = () => {
+const domainCheckProps = {
+  readOnly: PropTypes.bool,
+  isOffcanvas: PropTypes.bool,
+  initialDomain: PropTypes.string,
+}
+
+export default function IndividualDomainCheck({
+  initialDomain = '',
+  readOnly = false,
+  isOffcanvas = false,
+}) {
   const [searchParams, setSearchParams] = useSearchParams()
   const [domain, setDomain] = useState('')
+  const [rowXs, setRowXs] = useState()
+  const [rowXl, setRowXl] = useState()
   const [trigger, { data, isFetching, isSuccess, ...rest }] = useLazyListDomainTestsQuery()
 
   useEffect(() => {
+    if (initialDomain) {
+      searchParams.set('domain', initialDomain)
+    }
     // check if domain query is set
     const domainQuery = searchParams.get('domain')
     if (domainQuery) {
       setDomain(domainQuery)
       trigger({ domain: domainQuery })
     }
-  }, [searchParams, trigger])
+
+    if (isOffcanvas) {
+      setRowXs({ cols: 1, gutter: 3 })
+      setRowXl({ cols: 1, gutter: 3 })
+    } else {
+      setRowXs({ cols: 1, gutter: 4 })
+      setRowXl({ cols: 2, gutter: 4 })
+    }
+  }, [searchParams, trigger, isOffcanvas])
 
   const onSubmit = (values) => {
     setDomain(values.domain)
@@ -72,7 +102,7 @@ const IndividualDomainCheck = () => {
   }
 
   return (
-    <CRow xs={{ cols: 1, gutter: 4 }} xl={{ cols: 2, gutter: 4 }} className="mb-5">
+    <CRow xs={rowXs} xl={rowXl} className="mb-5">
       <CCol>
         <CCard className="page-card h-100">
           <CCardHeader>
@@ -85,18 +115,40 @@ const IndividualDomainCheck = () => {
               render={({ handleSubmit, submitting, pristine }) => {
                 return (
                   <CForm onSubmit={handleSubmit}>
-                    <RFFCFormInput spellCheck={false} name="domain" label="Domain Name" />
-                    <CButton
-                      type="submit"
-                      disabled={submitting || isFetching}
-                      className="mt-4"
-                      color="primary"
-                    >
-                      {isFetching && (
-                        <FontAwesomeIcon icon={faCircleNotch} spin size="1x" className="me-2" />
-                      )}
-                      Check Domain
-                    </CButton>
+                    <Field name="domain">
+                      {({ input, meta }) => {
+                        return (
+                          <CInputGroup className="mb-3">
+                            <CFormInput
+                              {...input}
+                              valid={!meta.error && meta.touched}
+                              invalid={meta.error && meta.touched}
+                              type="text"
+                              id="domain"
+                              disabled={readOnly}
+                              placeholder="Domain Name"
+                              area-describedby="domain"
+                            />
+
+                            <CButton
+                              type="submit"
+                              disabled={submitting || isFetching || readOnly}
+                              color="primary"
+                            >
+                              {isFetching && (
+                                <FontAwesomeIcon
+                                  icon={faCircleNotch}
+                                  spin
+                                  size="1x"
+                                  className="me-2"
+                                />
+                              )}
+                              Check
+                            </CButton>
+                          </CInputGroup>
+                        )
+                      }}
+                    </Field>
                   </CForm>
                 )
               }}
@@ -114,7 +166,9 @@ const IndividualDomainCheck = () => {
   )
 }
 
-export default IndividualDomainCheck
+IndividualDomainCheck.propTypes = domainCheckProps
+
+/*export default IndividualDomainCheck*/
 
 const sharedProps = {
   domain: PropTypes.string,
@@ -256,73 +310,80 @@ const MXResultsCard = ({ domain }) => {
         <CTooltip content="Click to toggle mail provider/MX record details">
           <CBadge
             className="ms-1 btn"
-            onClick={() => setVisible(!visible)}
+            onClick={() => setVisible(true)}
             style={{ fontSize: 14 }}
             color="primary"
           >
-            {(visible && 'Hide') || 'Show'} Details
+            Details
           </CBadge>
         </CTooltip>
       </div>
-      <CCollapse visible={visible} className="mb-2">
-        <CRow lg={{ cols: 1, gutter: 2 }} xl={{ cols: 2, gutter: 4 }}>
-          <CCol xl={8}>
-            {records.length > 0 && (
-              <div>
-                <CCardTitle>MX Records</CCardTitle>
-                <CTable striped small>
-                  <CTableHead>
-                    <CTableRow>
-                      <CTableHeaderCell scope="col">Priority</CTableHeaderCell>
-                      <CTableHeaderCell scope="col">Hostname</CTableHeaderCell>
+      <COffcanvas
+        visible={visible}
+        placement="end"
+        className="cipp-offcanvas"
+        onHide={() => setVisible(false)}
+      >
+        <COffcanvasHeader>
+          <h2>Mail Provider Info</h2>
+          <CButton className="cipp-offcanvas-close" color="link" onClick={() => setVisible(false)}>
+            <FontAwesomeIcon size="lg" icon={faTimes} color="link" />
+          </CButton>
+        </COffcanvasHeader>
+        <COffcanvasBody>
+          {records.length > 0 && (
+            <div>
+              <COffcanvasTitle>MX Records</COffcanvasTitle>
+              <CTable striped small>
+                <CTableHead>
+                  <CTableRow>
+                    <CTableHeaderCell scope="col">Priority</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Hostname</CTableHeaderCell>
+                  </CTableRow>
+                </CTableHead>
+                <CTableBody>
+                  {records.map((record, key) => (
+                    <CTableRow key={`${key}-mx-record`}>
+                      <CTableDataCell>{record?.Priority}</CTableDataCell>
+                      <CTableDataCell>{record?.Hostname}</CTableDataCell>
                     </CTableRow>
-                  </CTableHead>
-                  <CTableBody>
-                    {records.map((record, key) => (
-                      <CTableRow key={`${key}-mx-record`}>
-                        <CTableDataCell>{record?.Priority}</CTableDataCell>
-                        <CTableDataCell>{record?.Hostname}</CTableDataCell>
-                      </CTableRow>
-                    ))}
-                  </CTableBody>
-                </CTable>
-              </div>
+                  ))}
+                </CTableBody>
+              </CTable>
+            </div>
+          )}
+          <COffcanvasTitle>Documentation</COffcanvasTitle>
+          <CListGroup>
+            {data?.MXResults?.MailProvider?._MxComment && (
+              <CListGroupItem
+                component="a"
+                target="_blank"
+                href={data?.MXResults?.MailProvider?._MxComment}
+              >
+                <IconExternalLink /> MX Record
+              </CListGroupItem>
             )}
-          </CCol>
-          <CCol xl={4}>
-            <CCardTitle>Mail Provider Info</CCardTitle>
-            <CListGroup>
-              {data?.MXResults?.MailProvider?._MxComment && (
-                <CListGroupItem
-                  component="a"
-                  target="_blank"
-                  href={data?.MXResults?.MailProvider?._MxComment}
-                >
-                  <IconExternalLink /> MX Record
-                </CListGroupItem>
-              )}
-              {data?.MXResults?.MailProvider?._SpfComment && (
-                <CListGroupItem
-                  component="a"
-                  target="_blank"
-                  href={data?.MXResults?.MailProvider?._SpfComment}
-                >
-                  <IconExternalLink /> SPF Record
-                </CListGroupItem>
-              )}
-              {data?.MXResults?.MailProvider?._DkimComment && (
-                <CListGroupItem
-                  component="a"
-                  target="_blank"
-                  href={data?.MXResults?.MailProvider?._DkimComment}
-                >
-                  <IconExternalLink /> DKIM Record
-                </CListGroupItem>
-              )}
-            </CListGroup>
-          </CCol>
-        </CRow>
-      </CCollapse>
+            {data?.MXResults?.MailProvider?._SpfComment && (
+              <CListGroupItem
+                component="a"
+                target="_blank"
+                href={data?.MXResults?.MailProvider?._SpfComment}
+              >
+                <IconExternalLink /> SPF Record
+              </CListGroupItem>
+            )}
+            {data?.MXResults?.MailProvider?._DkimComment && (
+              <CListGroupItem
+                component="a"
+                target="_blank"
+                href={data?.MXResults?.MailProvider?._DkimComment}
+              >
+                <IconExternalLink /> DKIM Record
+              </CListGroupItem>
+            )}
+          </CListGroup>
+        </COffcanvasBody>
+      </COffcanvas>
     </ResultsCard>
   )
 }
@@ -458,8 +519,7 @@ const DKIMResultsCard = ({ domain }) => {
       <CCollapse visible={visible} className="mb-2">
         {records.map((record, idx) => (
           <div key={`${idx}-dkim-record`}>
-            {/*<CFormLabel>{record?.Selector}</CFormLabel>
-            # TODO: Update API to expose selector name */}
+            <CFormLabel>{record?.Selector}._domainkey</CFormLabel>
             <CFormTextarea
               className="bg-secondary text-white mb-2"
               value={record?.Record}
