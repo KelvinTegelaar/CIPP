@@ -52,7 +52,7 @@ const IconRedX = () => <FontAwesomeIcon icon={faTimesCircle} className="text-dan
 const IconWarning = () => (
   <FontAwesomeIcon icon={faExclamationTriangle} className="text-warning mx-2" />
 )
-const IconExternalLink = () => <FontAwesomeIcon icon={faExternalLinkAlt} />
+const IconExternalLink = () => <FontAwesomeIcon icon={faExternalLinkAlt} className="me-2" />
 const IconCopy = () => <FontAwesomeIcon icon={faCopy} />
 
 const domainCheckProps = {
