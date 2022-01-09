@@ -45,7 +45,6 @@ import {
   faExternalLinkAlt,
 } from '@fortawesome/free-solid-svg-icons'
 import ReactMarkdown from 'react-markdown'
-import { ShadingPattern } from 'jspdf'
 
 // const required = (value) => (value ? undefined : 'Required')
 
