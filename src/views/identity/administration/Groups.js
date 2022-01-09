@@ -57,7 +57,7 @@ const columns = [
     sortable: true,
   },
   {
-    name: 'Action',
+    name: 'Actions',
     cell: Offcanvas,
   },
 ]
