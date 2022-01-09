@@ -44,7 +44,6 @@ import {
   faCopy,
   faExternalLinkAlt,
 } from '@fortawesome/free-solid-svg-icons'
-import ReactMarkdown from 'react-markdown'
 
 // const required = (value) => (value ? undefined : 'Required')
 
@@ -203,31 +202,19 @@ const ResultsCard = ({ children, data, type }) => {
         {validationPasses.map((validation, idx) => (
           <div key={`${idx}-validation-${type}`}>
             <IconGreenCheck />
-            <ReactMarkdown
-              children={String(validation.replace('PASS: ', ''))}
-              components={{ p: 'span' }}
-              linkTarget="_blank"
-            />
+            {String(validation.replace('PASS: ', ''))}
           </div>
         ))}
         {validationWarns.map((validation, idx) => (
           <div key={`${idx}-validation-${type}`}>
             <IconWarning />
-            <ReactMarkdown
-              children={String(validation.replace('WARN: ', ''))}
-              components={{ p: 'span' }}
-              linkTarget="_blank"
-            />
+            {String(validation.replace('WARN: ', ''))}
           </div>
         ))}
         {validationFails.map((validation, idx) => (
           <div key={`${idx}-validation-${type}`}>
             <IconRedX />
-            <ReactMarkdown
-              children={String(validation.replace('FAIL: ', ''))}
-              components={{ p: 'span' }}
-              linkTarget="_blank"
-            />
+            {String(validation.replace('FAIL: ', ''))}
           </div>
         ))}
       </CCardBody>
