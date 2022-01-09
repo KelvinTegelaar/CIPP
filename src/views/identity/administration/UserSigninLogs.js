@@ -69,15 +69,15 @@ export default function UserSigninLogs({ userId, tenantDomain }) {
   const columns = [
     {
       name: 'Date',
-      selector: 'Date',
+      selector: (row) => row['Date'],
     },
     {
       name: 'Application',
-      selector: 'Application',
+      selector: (row) => row['Application'],
     },
     {
       name: 'Login Status',
-      selector: 'LoginStatus',
+      selector: (row) => row['LoginStatus'],
     },
     {
       name: 'Conditional Access Status',

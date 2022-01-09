@@ -25,30 +25,30 @@ import { cellBooleanFormatter } from '../../../components/cipp'
 
 const columns = [
   {
-    selector: 'displayName',
+    selector: (row) => row['displayName'],
     name: 'Name',
     sortable: true,
     wrap: true,
   },
   {
-    selector: 'Description',
+    selector: (row) => row['Description'],
     name: 'Description',
     sortable: true,
     wrap: true,
   },
   {
-    selector: 'language',
+    selector: (row) => row['language'],
     name: 'Language',
     sortable: true,
   },
   {
-    selector: 'extractHardwareHash',
+    selector: (row) => row['extractHardwareHash'],
     name: 'Convert to Autopilot',
     sortable: true,
     cell: cellBooleanFormatter(),
   },
   {
-    selector: 'deviceNameTemplate',
+    selector: (row) => row['deviceNameTemplate'],
     name: 'Device Name Template',
     sortable: true,
   },

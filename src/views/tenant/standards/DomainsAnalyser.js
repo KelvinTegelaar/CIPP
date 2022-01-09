@@ -81,7 +81,7 @@ const DomainsAnalyser = () => {
   const columns = [
     {
       name: 'Domain',
-      selector: 'Domain',
+      selector: (row) => row['Domain'],
       sort: true,
     },
     {
@@ -98,7 +98,7 @@ const DomainsAnalyser = () => {
     },
     {
       name: 'Mail Provider',
-      selector: 'MailProvider',
+      selector: (row) => row['MailProvider'],
       sort: true,
       cell: (row, index, column) => {
         const cell = cellGetProperty(row, index, column)
@@ -107,7 +107,7 @@ const DomainsAnalyser = () => {
     },
     {
       name: 'SPF Pass Test',
-      selector: 'SPFPassTest',
+      selector: (row) => row['SPFPassTest'],
       sort: true,
       cell: (row, index, column) => {
         const cell = cellGetProperty(row, index, column)
@@ -125,7 +125,7 @@ const DomainsAnalyser = () => {
     },
     {
       name: 'MX Pass Test',
-      selector: 'MXPassTest',
+      selector: (row) => row['MXPassTest'],
       sort: true,
       cell: (row, index, column) => {
         const cell = cellGetProperty(row, index, column)
@@ -139,7 +139,7 @@ const DomainsAnalyser = () => {
     },
     {
       name: 'DMARC Present',
-      selector: 'DMARCPresent',
+      selector: (row) => row['DMARCPresent'],
       sort: true,
       cell: (row, index, column) => {
         const cell = cellGetProperty(row, index, column)
@@ -157,7 +157,7 @@ const DomainsAnalyser = () => {
     },
     {
       name: 'DMARC Action Policy',
-      selector: 'DMARCActionPolicy',
+      selector: (row) => row['DMARCActionPolicy'],
       sort: true,
       cell: (row, index, column) => {
         const cell = cellGetProperty(row, index, column)
@@ -174,7 +174,7 @@ const DomainsAnalyser = () => {
     },
     {
       name: 'DMARC % Pass',
-      selector: 'DMARCPercentagePass',
+      selector: (row) => row['DMARCPercentagePass'],
       sort: true,
       cell: (row, index, column) => {
         const cell = cellGetProperty(row, index, column)
@@ -190,7 +190,7 @@ const DomainsAnalyser = () => {
     },
     {
       name: 'DNSSec Enabled',
-      selector: 'DNSSECPresent',
+      selector: (row) => row['DNSSECPresent'],
       sort: true,
       cell: (row, index, column) => {
         const cell = cellGetProperty(row, index, column)

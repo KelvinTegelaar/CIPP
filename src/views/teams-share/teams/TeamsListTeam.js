@@ -42,22 +42,22 @@ const dropdown = (row, rowIndex, formatExtraData) => (
 const columns = [
   {
     name: 'Name',
-    selector: 'displayName',
+    selector: (row) => row['displayName'],
     sort: true,
   },
   {
     name: 'Description',
-    selector: 'description',
+    selector: (row) => row['description'],
     sort: true,
   },
   {
     name: 'Visibility',
-    selector: 'visibility',
+    selector: (row) => row['visibility'],
     sort: true,
   },
   {
     name: 'Mail nickname',
-    selector: 'mailNickname',
+    selector: (row) => row['mailNickname'],
     sort: true,
   },
   {

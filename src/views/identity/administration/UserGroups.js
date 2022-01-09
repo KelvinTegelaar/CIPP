@@ -11,7 +11,7 @@ const formatter = (cell) => CellBoolean({ cell })
 const columns = [
   {
     name: 'Display Name',
-    selector: 'DisplayName',
+    selector: (row) => row['DisplayName'],
     formatter: (cell, row) => {
       return (
         <CLink
@@ -24,30 +24,30 @@ const columns = [
   },
   {
     name: 'Mail Enabled',
-    selector: 'MailEnabled',
+    selector: (row) => row['MailEnabled'],
     formatter,
   },
   {
     name: 'Email Address',
-    selector: 'Mail',
+    selector: (row) => row['Mail'],
   },
   {
     name: 'Security Group',
-    selector: 'SecurityGroup',
+    selector: (row) => row['SecurityGroup'],
     formatter,
   },
   {
     name: 'Group Types',
-    selector: 'GroupTypes',
+    selector: (row) => row['GroupTypes'],
   },
   {
     name: 'On Premises Sync',
-    selector: 'OnPremisesSync',
+    selector: (row) => row['OnPremisesSync'],
     formatter,
   },
   {
     name: 'Assignable To Role',
-    selector: 'IsAssignableToRole',
+    selector: (row) => row['IsAssignableToRole'],
     formatter,
   },
 ]
