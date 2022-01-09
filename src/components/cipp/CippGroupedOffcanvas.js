@@ -5,10 +5,13 @@ import CippOffcanvas, { CippOffcanvasPropTypes } from './CippOffcanvas'
 
 export default function CippGroupedOffcanvas(props) {
   const extendedInfoContent = props.extendedInfo.map((info, index) => (
-    <CListGroup layout="horizontal-md" key={index}>
-      <CListGroupItem className="cipp-extendedinfo-label">{info.label}</CListGroupItem>
-      <CListGroupItem className="cipp-extendedinfo-value">{info.value}</CListGroupItem>
-    </CListGroup>
+    <>
+      <CListGroupItem>
+        <div>
+          <b>{info.label}</b>: {info.value}
+        </div>
+      </CListGroupItem>
+    </>
   ))
   const actionsContent = props.actions.map((action, index) => (
     <CListGroup layout="horizontal-md" key={index}>
@@ -32,7 +35,7 @@ export default function CippGroupedOffcanvas(props) {
       hideFunction={props.hideFunction}
     >
       <COffcanvasTitle>Extended Information</COffcanvasTitle>
-      {extendedInfoContent}
+      <CListGroup>{extendedInfoContent}</CListGroup>
       {<COffcanvasTitle>Actions</COffcanvasTitle>}
       {actionsContent}
     </CippOffcanvas>
