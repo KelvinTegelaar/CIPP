@@ -1,9 +1,15 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { CButton, CCard, CCardHeader, CCardTitle, CCardBody } from '@coreui/react'
-import { CellBadge, CippDatatable, cellProgressBarFormatter } from '../../../components/cipp'
-import { ModalService } from '../../../components'
+import {
+  CellBadge,
+  CippDatatable,
+  cellProgressBarFormatter,
+  CippOffcanvas,
+} from '../../../components/cipp'
+/*import { ModalService } from '../../../components'*/
 import cellGetProperty from '../../../components/cipp/cellGetProperty'
+import IndividualDomainCheck from './IndividualDomain'
 
 const MoreInfoCard = ({ row }) => {
   return (
@@ -48,12 +54,28 @@ MoreInfoCard.propTypes = {
   row: PropTypes.object.isRequired,
 }
 
+function checkDomain(tenantDomain) {
+  return (
+    <div key={tenantDomain}>
+      <IndividualDomainCheck initialDomain={tenantDomain} readOnly={true} isOffcanvas={true} />
+    </div>
+  )
+}
+checkDomain.propTypes = {
+  tenantDomain: PropTypes.string,
+}
+
 const DomainsAnalyser = () => {
+  const [individualDomainResults, setIndividualDomainResults] = useState()
+  const [domainCheckVisible, setDomainCheckVisible] = useState(false)
+
   const handleMoreInfo = ({ row }) => {
-    ModalService.open({
+    /*ModalService.open({
       body: <MoreInfoCard row={row} />,
       title: `${row.Tenant} More Information`,
-    })
+    })*/
+    setIndividualDomainResults(checkDomain(row.Domain))
+    setDomainCheckVisible(true)
   }
 
   const columns = [
@@ -226,6 +248,15 @@ const DomainsAnalyser = () => {
           />
         </CCardBody>
       </CCard>
+
+      <CippOffcanvas
+        id="individual-domain"
+        visible={domainCheckVisible}
+        hideFunction={() => setDomainCheckVisible(false)}
+        title="More Info"
+        placement="end"
+        children={individualDomainResults}
+      />
     </div>
   )
 }
