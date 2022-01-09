@@ -6,7 +6,7 @@ import { faCheckCircle, faRedo, faTimesCircle } from '@fortawesome/free-solid-sv
 import { useLazyExecBecCheckQuery } from 'src/store/api/users'
 import useQuery from 'src/hooks/useQuery'
 import { Link } from 'react-router-dom'
-import DataTable from 'react-data-table-component'
+import { CippTable } from '../../../components/cipp'
 
 const ViewBec = () => {
   let query = useQuery()
@@ -19,9 +19,151 @@ const ViewBec = () => {
     execBecView({ tenantFilter: tenantDomain, userId: userId })
   }, [execBecView, tenantDomain, userId])
 
+  const deviceColumns = [
+    {
+      name: 'Device Model',
+      selector: (row) => row['DeviceModel'],
+    },
+    {
+      name: 'First Sync Time',
+      selector: (row) => row['FirstSyncTime'],
+    },
+    {
+      name: 'Device User Agent',
+      selector: (row) => row['DeviceUserAgent'],
+    },
+  ]
+
+  const rulesColumns = [
+    {
+      name: 'Creator IP',
+      selector: (row) => row['ClientIP'],
+    },
+    {
+      name: 'Rule Name',
+      selector: (row) => row.Parameters[3]?.value,
+    },
+    {
+      name: 'Created on',
+      selector: (row) => row['CreationTime'],
+    },
+    {
+      name: 'Created for',
+      selector: (row) => row['UserId'],
+    },
+  ]
+
+  const logonColumns = [
+    {
+      name: 'App',
+      selector: (row) => row['AppDisplayName'],
+    },
+    {
+      name: 'Date Time',
+      selector: (row) => row['CreatedDateTime'],
+    },
+    {
+      name: 'Error code',
+      selector: (row) => row.Status?.ErrorCode,
+    },
+    {
+      name: 'Details',
+      selector: (row) => row.Status?.AdditionalDetails,
+    },
+  ]
+
+  const newUserColumns = [
+    {
+      name: 'Username',
+      selector: (row) => row['ObjectId'],
+    },
+    {
+      name: 'Date',
+      selector: (row) => row['CreationTime'],
+    },
+    {
+      name: 'By',
+      selector: (row) => row['UserId'],
+    },
+  ]
+
+  const passwordColumns = [
+    {
+      name: 'Username',
+      selector: (row) => row['ObjectId'],
+    },
+    {
+      name: 'Date',
+      selector: (row) => row['CreationTime'],
+    },
+    {
+      name: 'By',
+      selector: (row) => row['Operation'],
+    },
+  ]
+
+  const permissionColumns = [
+    {
+      name: 'Operation',
+      selector: (row) => row['Operation'],
+    },
+    {
+      name: 'Executed by',
+      selector: (row) => row['UserKey'],
+    },
+    {
+      name: 'Executed on',
+      selector: (row) => row['ObjectId'],
+    },
+    {
+      name: 'Permissions',
+      selector: (row) => (row.Item ? row.Item.ParentFolder.MemberRights : row.Parameters[3]?.Value),
+    },
+  ]
+
+  const appColumns = [
+    {
+      name: 'Type',
+      selector: (row) => row['Operation'],
+    },
+    {
+      name: 'User',
+      selector: (row) => row['UserId'],
+    },
+    {
+      name: 'Application',
+      selector: (row) => row['ObjectId'],
+    },
+    {
+      name: 'Result',
+      selector: (row) => row['ResultStatus'],
+    },
+  ]
+  const mailboxColumns = [
+    {
+      name: 'IP',
+      selector: (row) => row['ClientIP'],
+    },
+    {
+      name: 'User',
+      selector: (row) => row['UserId'],
+    },
+    {
+      name: 'Client User Agent',
+      selector: (row) => row['ClientInfoString'],
+    },
+    {
+      name: 'Result',
+      selector: (row) => row['ResultStatus'],
+    },
+    {
+      name: 'Date',
+      selector: (row) => row['CreationTime'],
+    },
+  ]
   return (
-    <>
-      <CRow className="gy-5">
+    <div className="container overflow-hidden">
+      <CRow>
         <CCol className="col-6">
           <CCard className="h-100">
             <CCardHeader>
@@ -45,7 +187,7 @@ const ViewBec = () => {
               </CCallout>
               <p>
                 Use this information as a guide to check if a tenant or e-mail address might have
-                been compromised.All this data is retrieved from the last 7 days of logs.
+                been compromised. All data is retrieved from the last 7 days of logs.
               </p>
               <p>
                 If you need more extensive information, run the{' '}
@@ -71,20 +213,23 @@ const ViewBec = () => {
               </CCardTitle>
             </CCardHeader>
             <CCardBody>
-              <DataTable
-                keyField="ID"
-                //columns={columns}
-                data={alerts?.SuspectUserDevices}
-                striped
-                responsive
-                bordered={false}
-                condensed
-                wrapperClasses="table-responsive"
-              />
+              {isSuccess && (
+                <CippTable
+                  keyField="ID"
+                  columns={deviceColumns}
+                  data={alerts.SuspectUserDevices}
+                  striped
+                  responsive={true}
+                  tableProps={{ subHeaderComponent: false, pagination: false }}
+                  wrapperClasses="table-responsive"
+                  reportName="none"
+                />
+              )}
             </CCardBody>
           </CCard>
         </CCol>
       </CRow>
+      <br></br>
       <CRow>
         <CCol className="col-6">
           <CCard className="h-100">
@@ -93,7 +238,21 @@ const ViewBec = () => {
                 Recently added rules (Tenant)
               </CCardTitle>
             </CCardHeader>
-            <CCardBody>Devices Table Here</CCardBody>
+            <CCardBody>
+              {' '}
+              {isSuccess && (
+                <CippTable
+                  keyField="ID"
+                  columns={rulesColumns}
+                  data={alerts.NewRules}
+                  striped
+                  responsive={true}
+                  tableProps={{ subHeaderComponent: false }}
+                  wrapperClasses="table-responsive"
+                  reportName="none"
+                />
+              )}
+            </CCardBody>
           </CCard>
         </CCol>
         <CCol className="col-6">
@@ -103,11 +262,25 @@ const ViewBec = () => {
                 Last Logon Details (User)
               </CCardTitle>
             </CCardHeader>
-            <CCardBody>Devices Table Here</CCardBody>
+            <CCardBody>
+              {isSuccess && (
+                <CippTable
+                  keyField="ID"
+                  columns={logonColumns}
+                  data={alerts.LastSuspectUserLogon}
+                  striped
+                  responsive={true}
+                  tableProps={{ subHeaderComponent: false }}
+                  wrapperClasses="table-responsive"
+                  reportName="none"
+                />
+              )}
+            </CCardBody>
           </CCard>
         </CCol>
       </CRow>
-      <CRow>
+      <br></br>
+      <CRow xs={{ gutter: 3 }}>
         <CCol className="col-12">
           <CCard className="h-100">
             <CCardHeader>
@@ -115,11 +288,24 @@ const ViewBec = () => {
                 Newly created users (Tenant)
               </CCardTitle>
             </CCardHeader>
-            <CCardBody>Devices Table Here</CCardBody>
+            <CCardBody>
+              {isSuccess && (
+                <CippTable
+                  keyField="ID"
+                  columns={newUserColumns}
+                  data={alerts.NewUsers}
+                  striped
+                  responsive={true}
+                  tableProps={{ subHeaderComponent: false }}
+                  wrapperClasses="table-responsive"
+                  reportName="none"
+                />
+              )}
+            </CCardBody>
           </CCard>
         </CCol>
       </CRow>
-      <CRow>
+      <CRow xs={{ gutter: 3 }}>
         <CCol className="col-12">
           <CCard className="h-100">
             <CCardHeader>
@@ -127,11 +313,25 @@ const ViewBec = () => {
                 Password Changes (Tenant)
               </CCardTitle>
             </CCardHeader>
-            <CCardBody>Devices Table Here</CCardBody>
+            <CCardBody>
+              {isSuccess && (
+                <CippTable
+                  keyField="ID"
+                  columns={passwordColumns}
+                  data={alerts.ChangedPasswords}
+                  striped
+                  responsive={true}
+                  tableProps={{ subHeaderComponent: false }}
+                  wrapperClasses="table-responsive"
+                  reportName="none"
+                />
+              )}
+            </CCardBody>
           </CCard>
         </CCol>
       </CRow>
-      <CRow>
+      <br></br>
+      <CRow className="g-2">
         <CCol className="col-12">
           <CCard className="h-100">
             <CCardHeader>
@@ -139,11 +339,25 @@ const ViewBec = () => {
                 Mailbox Permissions changes (Tenant)
               </CCardTitle>
             </CCardHeader>
-            <CCardBody>Devices Table Here</CCardBody>
+            <CCardBody>
+              {isSuccess && (
+                <CippTable
+                  keyField="ID"
+                  columns={permissionColumns}
+                  data={alerts.MailboxPermissionChanges}
+                  striped
+                  responsive={true}
+                  tableProps={{ subHeaderComponent: false }}
+                  wrapperClasses="table-responsive"
+                  reportName="none"
+                />
+              )}
+            </CCardBody>
           </CCard>
         </CCol>
       </CRow>
-      <CRow>
+      <br></br>
+      <CRow className="g-2">
         <CCol className="col-12">
           <CCard className="h-100">
             <CCardHeader>
@@ -151,11 +365,25 @@ const ViewBec = () => {
                 Application Changes (Tenant)
               </CCardTitle>
             </CCardHeader>
-            <CCardBody>Devices Table Here</CCardBody>
+            <CCardBody>
+              {isSuccess && (
+                <CippTable
+                  keyField="ID"
+                  columns={appColumns}
+                  data={alerts.AddedApps}
+                  striped
+                  responsive={true}
+                  tableProps={{ subHeaderComponent: false }}
+                  wrapperClasses="table-responsive"
+                  reportName="none"
+                />
+              )}
+            </CCardBody>
           </CCard>
         </CCol>
       </CRow>
-      <CRow>
+      <br></br>
+      <CRow className="g-2">
         <CCol className="col-12">
           <CCard className="h-100">
             <CCardHeader>
@@ -163,11 +391,25 @@ const ViewBec = () => {
                 Mailbox Logons (Tenant)
               </CCardTitle>
             </CCardHeader>
-            <CCardBody>Devices Table Here</CCardBody>
+            <CCardBody>
+              {isSuccess && (
+                <CippTable
+                  keyField="ID"
+                  columns={logonColumns}
+                  data={alerts.SuspectUserMailboxLogons}
+                  striped
+                  responsive={true}
+                  tableProps={{ subHeaderComponent: false }}
+                  wrapperClasses="table-responsive"
+                  reportName="none"
+                />
+              )}
+            </CCardBody>
           </CCard>
         </CCol>
       </CRow>
-    </>
+      <br></br>
+    </div>
   )
 }
 

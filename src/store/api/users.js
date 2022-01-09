@@ -70,6 +70,16 @@ export const usersApi = baseApi.injectEndpoints({
               clearInterval(interval)
               resolve({ error })
             }
+            if (data.Results) {
+              clearInterval(interval)
+              resolve({
+                error: {
+                  message: `Error: ${data.Results}`,
+                  status: 503,
+                  data: 'Request failed.',
+                },
+              })
+            }
             if (!data['Waiting'] === true) {
               if (!Array.isArray(data['MSResults'])) {
                 data['MSResults'] = []
