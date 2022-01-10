@@ -1,23 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { CListGroup, CListGroupItem, COffcanvasTitle } from '@coreui/react'
+import { CCallout, CListGroup, CListGroupItem, COffcanvasTitle, CSpinner } from '@coreui/react'
 import CippOffcanvas, { CippOffcanvasPropTypes } from './CippOffcanvas'
 import CippOffcanvasTable from './CippOffcanvasTable'
 import { ModalService } from '../ModalRoot'
+import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 
 export default function CippActionsOffcanvas(props) {
-  const executeModalRequest = (modalUrl) => {
-    ModalService.confirm({
-      body: (
-        <div style={{ overflow: 'visible' }}>
-          <div>Executed Request: {modalUrl}</div>
-        </div>
-      ),
-      title: 'Confirm',
-      //onConfirm: () => executeModalRequest(modalUrl),
-    })
-  }
-
+  const [genericGetRequest, getResults] = useLazyGenericGetRequestQuery()
   const handleModal = (modalMessage, modalUrl) => {
     ModalService.confirm({
       body: (
@@ -26,7 +16,7 @@ export default function CippActionsOffcanvas(props) {
         </div>
       ),
       title: 'Confirm',
-      onConfirm: () => executeModalRequest(modalUrl),
+      onConfirm: () => genericGetRequest({ path: modalUrl }),
     })
   }
   const extendedInfoContent = <CippOffcanvasTable rows={props.extendedInfo} guid={props.id} />
@@ -54,6 +44,15 @@ export default function CippActionsOffcanvas(props) {
       id={props.id}
       hideFunction={props.hideFunction}
     >
+      {getResults.isFetching && (
+        <CCallout color="info">
+          <CSpinner>Loading</CSpinner>
+        </CCallout>
+      )}
+      {getResults.isSuccess && <CCallout color="info">{getResults.data?.Results}</CCallout>}
+      {getResults.isError && (
+        <CCallout color="warning">Could not connect to API: {getResults.error.message}</CCallout>
+      )}
       <COffcanvasTitle>Extended Information</COffcanvasTitle>
       {extendedInfoContent}
       {<COffcanvasTitle>Actions</COffcanvasTitle>}
