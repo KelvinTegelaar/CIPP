@@ -85,14 +85,14 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             color: 'info',
             modal: true,
             modalUrl: `/api/ExecResetPass?MustChange=true&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
-            modalMessage: 'Are you sure you want to block the sign in for this user?',
+            modalMessage: 'Are you sure you want to reset the password for this user?',
           },
           {
             label: 'Reset Password',
             color: 'info',
             modal: true,
             modalUrl: `/api/ExecResetPass?MustChange=false&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
-            modalMessage: 'Are you sure you want to block the sign in for this user?',
+            modalMessage: 'Are you sure you want to reset the password for this user?',
           },
           {
             label: 'Delete User',
