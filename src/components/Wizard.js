@@ -72,9 +72,9 @@ export default class Wizard extends React.Component {
 
     return (
       <CippPage title={wizardTitle} tenantSelector={false}>
-        <CRow className="row justify-content-center">
+        <CRow className="row justify-content-center cipp-wizard">
           <CCol xxl={12}>
-            <CCardHeader className="bg-transparent">
+            <CCardHeader className="bg-transparent mb-4">
               <CNav variant="pills" role="tablist" className="nav-justified nav-wizard">
                 {React.Children.map(children, ({ props: { description, title } }, idx) => (
                   <CNavItem key={`wizard-nav-item-${idx}`} style={{ cursor: 'pointer' }}>

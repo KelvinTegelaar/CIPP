@@ -1,28 +1,37 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { CippDatatable } from '../../../components/cipp'
-import {
-  CCard,
-  CCardBody,
-  CCardTitle,
-  CCardHeader,
-  CSpinner,
-  CButton,
-  CCallout,
-} from '@coreui/react'
+import { CButton, CSpinner } from '@coreui/react'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { ModalService } from '../../../components'
+import { CippPageList, ModalService } from 'src/components'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 
 const TenantsList = () => {
-  const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
-  const Dropdown = (row, index, column) => {
-    const handleDropdownEvent = (apiurl, message) => {
+  const Actions = (row, index, column) => {
+    const [ExecuteGetRequest, GetRequestResult] = useLazyGenericGetRequestQuery()
+    const handleDeleteConfirm = (apiurl) => {
+      ExecuteGetRequest({ url: apiurl })
+      //this isnt working all the way yet.
+      ModalService.confirm({
+        title: 'Results',
+        body: (
+          <div>
+            {GetRequestResult.isSuccess && (
+              <>
+                <CSpinner />
+              </>
+            )}
+            {GetRequestResult.isSuccess && GetRequestResult.data.Results}
+          </div>
+        ),
+        confirmLabel: 'Continue',
+      })
+    }
+    const handleDelete = (apiurl, message) => {
       ModalService.confirm({
         title: 'Confirm',
         body: <div>{message}</div>,
-        onConfirm: () => ExecuteGetRequest({ path: apiurl }),
+        onConfirm: () => handleDeleteConfirm(apiurl),
         confirmLabel: 'Continue',
         cancelLabel: 'Cancel',
       })
@@ -33,13 +42,13 @@ const TenantsList = () => {
         variant="ghost"
         color="danger"
         onClick={() =>
-          handleDropdownEvent(
+          handleDelete(
             `api/RemoveStandard?ID=${row.displayName}`,
-            'Do you want to delete the standard?',
+            `Are you sure you want to remove the standard for ${row.displayName}. Note that this does not revert the effects of the standard.`,
           )
         }
       >
-        <FontAwesomeIcon icon={faTrash} href="" />
+        <FontAwesomeIcon icon={faTrash} />
       </CButton>
     )
   }
@@ -61,37 +70,23 @@ const TenantsList = () => {
     },
     {
       name: 'Action',
-      cell: Dropdown,
+      cell: Actions,
     },
   ]
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
-    <div>
-      <CCard className="page-card">
-        <CCardHeader>
-          <CCardTitle className="text-primary">Applied Standards</CCardTitle>
-        </CCardHeader>
-        <CCardBody>
-          {getResults.isFetching && (
-            <CCallout color="info">
-              <CSpinner>Loading</CSpinner>
-            </CCallout>
-          )}
-          {getResults.isSuccess && <CCallout color="info">{getResults.data?.Results}</CCallout>}
-          {getResults.isError && (
-            <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
-          )}
-          <CippDatatable
-            keyField="id"
-            reportName={`${tenant?.defaultDomainName}-AppliedStandards-List`}
-            path="/api/ListStandards"
-            columns={columns}
-            params={{ TenantFilter: tenant?.defaultDomainName }}
-          />
-        </CCardBody>
-      </CCard>
-    </div>
+    <CippPageList
+      title="Applied Standards"
+      tenantSelector={false}
+      datatable={{
+        keyField: 'id',
+        columns,
+        reportName: `${tenant?.defaultDomainName}-AppliedStandards-List`,
+        path: '/api/ListStandards',
+        params: { TenantFilter: tenant?.defaultDomainName },
+      }}
+    />
   )
 }
 
