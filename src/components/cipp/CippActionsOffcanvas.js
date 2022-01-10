@@ -13,6 +13,7 @@ export default function CippActionsOffcanvas(props) {
         component="button"
         color={action.color}
         href={action.link}
+        onClick={action.OnClick}
       >
         {action.icon}
         {action.label}
@@ -40,6 +41,7 @@ const CippActionsOffcanvasPropTypes = {
     PropTypes.shape({
       label: PropTypes.string,
       value: PropTypes.any,
+      onClick: PropTypes.func,
     }),
   ).isRequired,
   actions: PropTypes.arrayOf(
