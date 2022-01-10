@@ -147,7 +147,7 @@ const ViewBec = () => {
           <CCard className="h-100">
             <CCardHeader>
               <CCardTitle className="text-primary d-flex justify-content-between">
-                Alerts List
+                Business Email Compromise Overview
                 <CButton
                   size="sm"
                   onClick={() => execBecView({ tenantFilter: tenantDomain, userId: userId })}
