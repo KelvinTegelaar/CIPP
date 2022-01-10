@@ -1,27 +1,22 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
+import { CButton } from '@coreui/react'
 import { CippPageList } from 'src/components'
 import { cellBooleanFormatter } from 'src/components/cipp'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser, faBars } from '@fortawesome/free-solid-svg-icons'
+import { faEdit } from '@fortawesome/free-solid-svg-icons'
+import { Link } from 'react-router-dom'
 const Dropdown = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
-    <CDropdown>
-      <CDropdownToggle size="sm" color="link">
-        <FontAwesomeIcon icon={faBars} />
-      </CDropdownToggle>
-      <CDropdownMenu>
-        <CDropdownItem
-          href={`https://outlook.office365.com/ecp/@${tenant.defaultDomainName}/UsersGroups/EditContact.aspx?exsvurl=1&realm=${tenant.customerId}&mkt=en-US&id=${row.id}`}
-        >
-          <FontAwesomeIcon icon={faUser} className="me-2" />
-          Edit Contact
-        </CDropdownItem>
-      </CDropdownMenu>
-    </CDropdown>
+    <a
+      href={`https://outlook.office365.com/ecp/@${tenant.defaultDomainName}/UsersGroups/EditContact.aspx?exsvurl=1&realm=${tenant.customerId}&mkt=en-US&id=${row.id}`}
+    >
+      <CButton size="sm" variant="ghost" color="warning">
+        <FontAwesomeIcon icon={faEdit} />
+      </CButton>
+    </a>
   )
 }
 //TODO: Add CellBoolean
