@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { faPlus, faEdit, faTrash, faEllipsisV, faEye } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { cellBooleanFormatter } from '../../../components/cipp'
-import { CippPageList } from '../../../components'
-import { TitleButton } from '../../../components/cipp'
-import CippGroupedOffcanvas from 'src/components/cipp/CippGroupedOffcanvas'
+import { cellBooleanFormatter } from 'src/components/cipp'
+import { CippPageList } from 'src/components'
+import { TitleButton } from 'src/components/cipp'
+import CippActionsOffcanvas from 'src/components/cipp/CippActionsOffcanvas'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -32,7 +32,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
       <CButton size="sm" color="link" onClick={() => setOCVisible(true)}>
         <FontAwesomeIcon icon={faEllipsisV} />
       </CButton>
-      <CippGroupedOffcanvas
+      <CippActionsOffcanvas
         title="User Information"
         extendedInfo={[
           { label: 'Given Name', value: `${row.givenName}` },
@@ -45,13 +45,13 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
           {
             icon: <FontAwesomeIcon icon={faEye} className="me-2" />,
             label: 'View User',
-            link: { viewLink },
+            link: viewLink,
             color: 'success',
           },
           {
             icon: <FontAwesomeIcon icon={faEdit} className="me-2" />,
             label: 'Edit User',
-            link: { editLink },
+            link: editLink,
             color: 'info',
           },
           {
@@ -64,7 +64,12 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
           { label: 'Block Sign-in', link: 'dothis', color: 'info' },
           { label: 'Reset Password (Must Change)', link: 'dothis', color: 'info' },
           { label: 'Reset Password', link: 'dothis', color: 'info' },
-          { label: 'Delete User', link: 'dothis', color: 'info' },
+          {
+            icon: <FontAwesomeIcon icon={faTrash} className="me-2" />,
+            label: 'Delete User',
+            link: 'dothis',
+            color: 'danger',
+          },
         ]}
         placement="end"
         visible={ocVisible}
@@ -93,7 +98,8 @@ const columns = [
     selector: (row) => row['userType'],
     sortable: true,
     exportSelector: 'userType',
-    minWidth: '75px',
+    minWidth: '50px',
+    maxWidth: '140px',
   },
   {
     name: 'Enabled',
@@ -101,21 +107,23 @@ const columns = [
     cell: cellBooleanFormatter(),
     sortable: true,
     exportSelector: 'accountEnabled',
-    maxWidth: '100px',
+    minWidth: '50px',
+    maxWidth: '90px',
   },
   {
-    name: 'On Premise Sync',
+    name: 'AD Synced',
     selector: (row) => row['onPremisesSyncEnabled'],
     cell: cellBooleanFormatter(),
     sortable: true,
     exportSelector: 'onPremisesSyncEnabled',
-    maxWidth: '150px',
+    minWidth: '50px',
+    maxWidth: '110px',
   },
   {
     name: 'Licenses',
     selector: (row) => row['LicJoined'],
     exportSelector: 'LicJoined',
-    grow: 2,
+    grow: 5,
   },
   {
     name: 'id',
@@ -123,8 +131,7 @@ const columns = [
     omit: true,
   },
   {
-    name: 'Action',
-    button: true,
+    name: 'Actions',
     cell: Offcanvas,
   },
 ]

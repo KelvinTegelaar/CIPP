@@ -1,17 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { CCard, CCardBody, CCardHeader, CCardTitle, CLink, CSpinner } from '@coreui/react'
-import { CellBoolean, CippDatatable } from '../../../components/cipp'
+import { CellBoolean, CippDatatable } from 'src/components/cipp'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUsers } from '@fortawesome/free-solid-svg-icons'
-import { useListUserGroupsQuery } from '../../../store/api/groups'
+import { useListUserGroupsQuery } from 'src/store/api/groups'
 
 const formatter = (cell) => CellBoolean({ cell })
 
 const columns = [
   {
     name: 'Display Name',
-    selector: 'DisplayName',
+    selector: (row) => row['DisplayName'],
     formatter: (cell, row) => {
       return (
         <CLink
@@ -24,30 +24,30 @@ const columns = [
   },
   {
     name: 'Mail Enabled',
-    selector: 'MailEnabled',
+    selector: (row) => row['MailEnabled'],
     formatter,
   },
   {
     name: 'Email Address',
-    selector: 'Mail',
+    selector: (row) => row['Mail'],
   },
   {
     name: 'Security Group',
-    selector: 'SecurityGroup',
+    selector: (row) => row['SecurityGroup'],
     formatter,
   },
   {
     name: 'Group Types',
-    selector: 'GroupTypes',
+    selector: (row) => row['GroupTypes'],
   },
   {
     name: 'On Premises Sync',
-    selector: 'OnPremisesSync',
+    selector: (row) => row['OnPremisesSync'],
     formatter,
   },
   {
     name: 'Assignable To Role',
-    selector: 'IsAssignableToRole',
+    selector: (row) => row['IsAssignableToRole'],
     formatter,
   },
 ]
@@ -69,13 +69,16 @@ export default function UserGroups({ userId, tenantDomain }) {
         {!isFetching && error && <>Error loading groups</>}
         {!isFetching && !error && (
           <CippDatatable
+            path="/api/ListUserGroups"
+            params={{ tenantFilter: tenantDomain, userId }}
             keyField="id"
             columns={columns}
             data={mapped}
             striped
             bordered={false}
             dense
-            wrapperClasses="table-responsive"
+            responsive={true}
+            disablePDFExport={true}
           />
         )}
       </CCardBody>

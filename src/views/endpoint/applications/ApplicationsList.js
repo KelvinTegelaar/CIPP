@@ -3,15 +3,8 @@ import { useSelector } from 'react-redux'
 import { CButton } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPageList } from 'src/components'
-import {
-  faCog,
-  faEllipsisV,
-  faGlobe,
-  faGlobeEurope,
-  faPager,
-  faUser,
-} from '@fortawesome/free-solid-svg-icons'
-import { CippOffcanvas } from 'src/components/cipp'
+import { faEllipsisV, faGlobeEurope, faPager, faUser } from '@fortawesome/free-solid-svg-icons'
+import { CippActionsOffcanvas } from 'src/components/cipp'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -27,7 +20,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
       <CButton size="sm" color="link" onClick={() => setOCVisible(true)}>
         <FontAwesomeIcon icon={faEllipsisV} />
       </CButton>
-      <CippOffcanvas
+      <CippActionsOffcanvas
         title="User information"
         extendedInfo={[
           { label: 'Install as', value: `${row.installExperience.runAsAccount}` },

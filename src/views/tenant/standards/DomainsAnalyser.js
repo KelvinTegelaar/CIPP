@@ -11,7 +11,7 @@ import {
 import cellGetProperty from '../../../components/cipp/cellGetProperty'
 import IndividualDomainCheck from './IndividualDomain'
 
-const MoreInfoCard = ({ row }) => {
+const MoreInfoContent = ({ row }) => {
   return (
     <>
       <strong>Score Explanation: </strong>
@@ -50,7 +50,7 @@ const MoreInfoCard = ({ row }) => {
     </>
   )
 }
-MoreInfoCard.propTypes = {
+MoreInfoContent.propTypes = {
   row: PropTypes.object.isRequired,
 }
 

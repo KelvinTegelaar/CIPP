@@ -139,7 +139,6 @@ export default function CippTable({
 
   return (
     <div className="ms-n3 me-n3 cipp-tablewrapper">
-      {isFetching && <CSpinner />}
       {!isFetching && error && <span>Error loading data</span>}
       {!isFetching && !error && (
         <div>
@@ -166,6 +165,8 @@ export default function CippTable({
             defaultSortAsc
             defaultSortFieldId={1}
             paginationPerPage={25}
+            loading={isFetching}
+            progressComponent={<CSpinner size="sm" color="info" component="div" />}
             paginationRowsPerPageOptions={[25, 50, 100, 200, 500]}
             {...rest}
           />
