@@ -17,37 +17,37 @@ const dropdown = (row, rowIndex, formatExtraData) => {
 
 const columns = [
   {
-    selector: 'displayName',
+    selector: (row) => row['displayName'],
     name: 'Display Name',
     sortable: true,
   },
   {
-    selector: 'serialNumber',
+    selector: (row) => row['serialNumber'],
     name: 'Serial',
     sortable: true,
   },
   {
-    selector: 'model',
+    selector: (row) => row['model'],
     name: 'Model',
     sortable: true,
   },
   {
-    selector: 'manufacturer',
+    selector: (row) => row['manufacturer'],
     name: 'Manufacturer',
     sortable: true,
   },
   {
-    selector: 'groupTag',
+    selector: (row) => row['groupTag'],
     name: 'Group Tag',
     sortable: true,
   },
   {
-    selector: 'enrollmentState',
+    selector: (row) => row['enrollmentState'],
     name: 'Enrollment',
     sortable: true,
   },
   {
-    name: 'Actions',
+    name: (row) => row['Actions'],
     cell: dropdown,
   },
 ]

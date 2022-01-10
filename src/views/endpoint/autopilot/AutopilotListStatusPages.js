@@ -25,40 +25,40 @@ import { cellBooleanFormatter } from '../../../components/cipp'
 
 const columns = [
   {
-    selector: 'displayName',
+    selector: (row) => row['displayName'],
     name: 'Name',
     sortable: true,
   },
   {
-    selector: 'Description',
+    selector: (row) => row['Description'],
     name: 'Description',
     sortable: true,
   },
   {
-    selector: 'installProgressTimeoutInMinutes',
+    selector: (row) => row['installProgressTimeoutInMinutes'],
     name: 'Installation Timeout (Minutes)',
     sortable: true,
   },
   {
-    selector: 'showInstallationProgress',
+    selector: (row) => row['showInstallationProgress'],
     name: 'Show Installation Progress',
     sortable: true,
     cell: cellBooleanFormatter(),
   },
   {
-    selector: 'blockDeviceSetupRetryByUser',
+    selector: (row) => row['blockDeviceSetupRetryByUser'],
     name: 'Block Retries',
     sortable: true,
     cell: cellBooleanFormatter(),
   },
   {
-    selector: 'allowDeviceResetOnInstallFailure',
+    selector: (row) => row['allowDeviceResetOnInstallFailure'],
     name: 'Allow reset on failure',
     sortable: true,
     cell: cellBooleanFormatter(),
   },
   {
-    selector: 'allowDeviceUseOnInstallFailure',
+    selector: (row) => row['allowDeviceUseOnInstallFailure'],
     name: 'Allow usage on failure',
     sortable: true,
     cell: cellBooleanFormatter(),

@@ -14,7 +14,7 @@ import {
   CTableHeaderCell,
   CTableRow,
 } from '@coreui/react'
-import { cellBooleanFormatter } from '../../../components/cipp'
+import { cellBooleanFormatter, CippDatatable } from '../../../components/cipp'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLaptop } from '@fortawesome/free-solid-svg-icons'
 import { ModalService } from '../../../components'
@@ -69,15 +69,15 @@ export default function UserSigninLogs({ userId, tenantDomain }) {
   const columns = [
     {
       name: 'Date',
-      selector: 'Date',
+      selector: (row) => row['Date'],
     },
     {
       name: 'Application',
-      selector: 'Application',
+      selector: (row) => row['Application'],
     },
     {
       name: 'Login Status',
-      selector: 'LoginStatus',
+      selector: (row) => row['LoginStatus'],
     },
     {
       name: 'Conditional Access Status',
@@ -150,7 +150,8 @@ export default function UserSigninLogs({ userId, tenantDomain }) {
         {!isFetching && error && <span>Error loading user sign-in logs</span>}
         {!error && isFetching && <CSpinner />}
         {!isFetching && !error && (
-          <DataTable
+          <CippDatatable
+            path="/api/ListUserSigninLogs"
             keyField="id"
             columns={columns}
             data={mapped}

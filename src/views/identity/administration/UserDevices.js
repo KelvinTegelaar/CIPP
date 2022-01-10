@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { CCard, CCardBody, CCardHeader, CCardTitle, CLink, CSpinner } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLaptop } from '@fortawesome/free-solid-svg-icons'
-import DataTable from 'react-data-table-component'
+import { CippDatatable } from '../../../components/cipp'
 
 import { cellBooleanFormatter, cellNullTextFormatter } from '../../../components/cipp'
 import { useListUserDevicesQuery } from '../../../store/api/devices'
@@ -11,7 +11,7 @@ import { useListUserDevicesQuery } from '../../../store/api/devices'
 const columns = [
   {
     name: 'Display Name',
-    selector: 'displayName',
+    selector: (row) => row['displayName'],
     cell: (row, index, column) => {
       if (row.EPMID === null) {
         return row.displayName ?? 'n/a'
@@ -28,68 +28,68 @@ const columns = [
     },
   },
   {
-    name: 'Enabled',
-    selector: 'accountEnabled',
+    name: (row) => row['Enabled'],
+    selector: (row) => row['accountEnabled'],
     cell: cellNullTextFormatter(),
   },
   {
     name: 'Compliant',
-    selector: 'isCompliant',
+    selector: (row) => row['isCompliant'],
     cell: cellNullTextFormatter(),
   },
   {
     name: 'Manufacturer',
-    selector: 'manufacturer',
+    selector: (row) => row['manufacturer'],
     cell: cellNullTextFormatter(),
   },
   {
     name: 'Model',
-    selector: 'model',
+    selector: (row) => row['model'],
     cell: cellNullTextFormatter(),
   },
   {
     name: 'Operating System',
-    selector: 'operatingSystem',
+    selector: (row) => row['operatingSystem'],
     cell: cellNullTextFormatter(),
   },
   {
     name: 'OS Version',
-    selector: 'operatingSystemVersion',
+    selector: (row) => row['operatingSystemVersion'],
     cell: cellNullTextFormatter(),
   },
   {
     name: 'Created',
-    selector: 'createdDateTime',
+    selector: (row) => row['createdDateTime'],
     cell: cellNullTextFormatter(),
   },
   {
     name: 'Approx Last SignIn',
-    selector: 'approximateLastSignInDateTime',
+    selector: (row) => row['approximateLastSignInDateTime'],
     cell: cellNullTextFormatter(),
   },
   {
     name: 'Ownership',
-    selector: 'deviceOwnership',
+    selector: (row) => row['deviceOwnership'],
     cell: cellNullTextFormatter(),
   },
   {
     name: 'Enrollment Type',
-    selector: 'enrollmentType',
+    selector: (row) => row['enrollmentType'],
     cell: cellNullTextFormatter(),
   },
   {
     name: 'Management Type',
-    selector: 'managementType',
+    selector: (row) => row['managementType'],
     cell: cellNullTextFormatter(),
   },
   {
     name: 'On-Premises Sync Enabled',
-    selector: 'onPremisesSyncEnabled',
+    selector: (row) => row['onPremisesSyncEnabled'],
     cell: cellBooleanFormatter(),
   },
   {
     name: 'Trust Type',
-    selector: 'trustType',
+    selector: (row) => row['trustType'],
     cell: cellNullTextFormatter(),
   },
 ]
@@ -114,15 +114,17 @@ export default function UserDevices({ userId, tenantDomain }) {
         {isFetching && <CSpinner />}
         {!isFetching && error && <>Error loading devices</>}
         {!isFetching && !error && (
-          <DataTable
-            keyField="ID"
+          <CippDatatable
+            path="/api/ListUserDevices"
+            params={{ tenantFilter: tenantDomain, userId }}
+            keyField="id"
             columns={columns}
             data={mapped}
             striped
-            responsive
             bordered={false}
-            condensed
-            wrapperClasses="table-responsive"
+            dense
+            responsive={true}
+            disablePDFExport={true}
           />
         )}
       </CCardBody>
