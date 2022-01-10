@@ -3,19 +3,8 @@ import { useSelector } from 'react-redux'
 import CippDatatable from 'src/components/cipp/CippDatatable'
 import CellBoolean from '../../../components/cipp/CellBoolean'
 import TenantSelector from 'src/components/cipp/TenantSelector'
-import { Link } from 'react-router-dom'
-import { faCog, faBars } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCardTitle,
-  CDropdown,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
-} from '@coreui/react'
+
+import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
 
 const Formatter = (cell) => CellBoolean({ cell })
 const columns = [
