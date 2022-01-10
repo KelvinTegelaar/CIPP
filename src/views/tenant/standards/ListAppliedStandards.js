@@ -1,20 +1,9 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { CippDatatable } from '../../../components/cipp'
-import {
-  CDropdown,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
-  CCard,
-  CCardBody,
-  CCardTitle,
-  CCardHeader,
-  CSpinner,
-} from '@coreui/react'
-import { faBars } from '@fortawesome/free-solid-svg-icons'
+import { CButton, CSpinner } from '@coreui/react'
+import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { ModalService } from '../../../components'
+import { CippPageList, ModalService } from 'src/components'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 
 const Dropdown = (row, index, column) => {
@@ -37,7 +26,7 @@ const Dropdown = (row, index, column) => {
       confirmLabel: 'Continue',
     })
   }
-  const handleDropdownEvent = (apiurl, message) => {
+  const handleDelete = (apiurl, message) => {
     ModalService.confirm({
       title: 'Confirm',
       body: <div>{message}</div>,
@@ -47,24 +36,19 @@ const Dropdown = (row, index, column) => {
     })
   }
   return (
-    <CDropdown>
-      <CDropdownToggle size="sm" color="link">
-        <FontAwesomeIcon icon={faBars} />
-      </CDropdownToggle>
-      <CDropdownMenu>
-        <CDropdownItem
-          onClick={() =>
-            handleDropdownEvent(
-              `api/RemoveStandard?ID=${row.displayName}`,
-              `Are you sure you want to delete the standard for ${row.displayName}`,
-            )
-          }
-          href="#"
-        >
-          Delete Standard
-        </CDropdownItem>
-      </CDropdownMenu>
-    </CDropdown>
+    <CButton
+      size="sm"
+      variant="ghost"
+      color="danger"
+      onClick={() =>
+        handleDelete(
+          `api/RemoveStandard?ID=${row.displayName}`,
+          `Are you sure you want to remove the standard for ${row.displayName}. Note that this does not revert the effects of the standard.`,
+        )
+      }
+    >
+      <FontAwesomeIcon icon={faTrash} />
+    </CButton>
   )
 }
 const columns = [
@@ -93,22 +77,17 @@ const TenantsList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
-    <div>
-      <CCard className="page-card">
-        <CCardHeader>
-          <CCardTitle className="text-primary">Applied Standards</CCardTitle>
-        </CCardHeader>
-        <CCardBody>
-          <CippDatatable
-            keyField="id"
-            reportName={`${tenant?.defaultDomainName}-AppliedStandards-List`}
-            path="/api/ListStandards"
-            columns={columns}
-            params={{ TenantFilter: tenant?.defaultDomainName }}
-          />
-        </CCardBody>
-      </CCard>
-    </div>
+    <CippPageList
+      title="Applied Standards"
+      tenantSelector={false}
+      datatable={{
+        keyField: 'id',
+        columns,
+        reportName: `${tenant?.defaultDomainName}-AppliedStandards-List`,
+        path: '/api/ListStandards',
+        params: { TenantFilter: tenant?.defaultDomainName },
+      }}
+    />
   )
 }
 

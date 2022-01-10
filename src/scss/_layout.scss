@@ -5,57 +5,61 @@
   @include transition(padding 0.15s);
 }
 
-.nav-wizard .nav-link {
+.nav-wizard {
+  .nav-link {
   display: flex;
   align-items: center;
   padding: 2rem;
   color: var(--cyberdrain-light);
-  .wizard-step-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: 2.5rem;
-    width: 2.5rem;
-    flex-shrink: 0;
-    margin-right: 1rem;
-    border-radius: 0.35rem;
-    background-color: var(--cyberdrain-primary);
-    color: var(--cyberdrain-light);
-    i, svg, .feather {
-      color: var(--cyberdrain-light);
-    }
-  }
-  .wizard-step-text {
-    text-align: left;
-    .wizard-step-text-name {
-      font-size: 1rem;
-      margin-bottom: 0.25rem;
-      color: var(--cyberdrain-primary);
-    }
-    .wizard-step-text-details {
-      font-weight: 400;
-      font-size: 0.875rem;
-      color: var(--cui-body-color);
-    }
-  }
-  &.active {
     .wizard-step-icon {
-      background-color: var(--cyberdrain-light);
-      color: var(--cyberdrain-primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 2.5rem;
+      width: 2.5rem;
+      flex-shrink: 0;
+      margin-right: 1rem;
+      border-radius: 0.35rem;
+      background-color: var(--cyberdrain-primary);
+      color: var(--cui-body-bg);
+      font-weight: bolder;
       i, svg, .feather {
+        color: var(--cyberdrain-light);
+      }
+    }
+    .wizard-step-text {
+      text-align: left;
+      .wizard-step-text-name {
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
         color: var(--cyberdrain-primary);
+        font-weight: bolder;
+      }
+      .wizard-step-text-details {
+        font-weight: 400;
+        font-size: 0.875rem;
+        color: var(--cui-body-color);
+      }
+    }
+    &.active {
+      .wizard-step-icon {
+        background-color: var(--cui-body-bg);
+        color: var(--cyberdrain-primary);
+        i, svg, .feather {
+          color: var(--cyberdrain-primary);
+        }
+      }
+      .wizard-step-text {
+        .wizard-step-text-name {
+          color: var(--cyberdrain-dark);
+        }
+        .wizard-step-text-details {
+          color: var(--cyberdrain-dark);
+        }
+        i, svg, .feather {
+          color: var(--cyberdrain-primary);
+        }
       }
     }
   }
-}
-.nav-wizard .nav-link.active .wizard-step-icon i,
-.nav-wizard .nav-link.active .wizard-step-icon svg,
-.nav-wizard .nav-link.active .wizard-step-icon .feather {
-  color: var(--cyberdrain-primary);
-}
-.nav-wizard .nav-link.active .wizard-step-text .wizard-step-text-name {
-  color: var(--cyberdrain-light);
-}
-.nav-wizard .nav-link.active .wizard-step-text .wizard-step-text-details {
-  color: var(--cui-body-color);
 }

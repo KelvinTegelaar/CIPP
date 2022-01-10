@@ -169,9 +169,7 @@ const columns = [
 
 const Users = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
-  const titleButton = (
-    <TitleButton href="/identity/administration/users/add" title="Add User" icon={faPlus} />
-  )
+  const titleButton = <TitleButton href="/identity/administration/users/add" title="Add User" />
   return (
     <CippPageList
       title="Users"
