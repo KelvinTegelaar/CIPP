@@ -6,74 +6,73 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPageList, ModalService } from 'src/components'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 
-const Dropdown = (row, index, column) => {
-  const [ExecuteGetRequest, GetRequestResult] = useLazyGenericGetRequestQuery()
-  const handleDropdownConfirm = (apiurl) => {
-    ExecuteGetRequest({ url: apiurl })
-    //this isnt working all the way yet.
-    ModalService.confirm({
-      title: 'Results',
-      body: (
-        <div>
-          {GetRequestResult.isSuccess && (
-            <>
-              <CSpinner />
-            </>
-          )}
-          {GetRequestResult.isSuccess && GetRequestResult.data.Results}
-        </div>
-      ),
-      confirmLabel: 'Continue',
-    })
-  }
-  const handleDelete = (apiurl, message) => {
-    ModalService.confirm({
-      title: 'Confirm',
-      body: <div>{message}</div>,
-      onConfirm: () => handleDropdownConfirm(apiurl),
-      confirmLabel: 'Continue',
-      cancelLabel: 'Cancel',
-    })
-  }
-  return (
-    <CButton
-      size="sm"
-      variant="ghost"
-      color="danger"
-      onClick={() =>
-        handleDelete(
-          `api/RemoveStandard?ID=${row.displayName}`,
-          `Are you sure you want to remove the standard for ${row.displayName}. Note that this does not revert the effects of the standard.`,
-        )
-      }
-    >
-      <FontAwesomeIcon icon={faTrash} />
-    </CButton>
-  )
-}
-const columns = [
-  {
-    name: 'Tenant Name',
-    selector: (row) => row['displayName'],
-    sortable: true,
-  },
-  {
-    name: 'Standard',
-    selector: (row) => row['standardName'],
-    sortable: true,
-  },
-  {
-    name: 'Applied By',
-    selector: (row) => row['appliedBy'],
-    sortable: true,
-  },
-  {
-    name: 'Action',
-    cell: Dropdown,
-  },
-]
-
 const TenantsList = () => {
+  const Actions = (row, index, column) => {
+    const [ExecuteGetRequest, GetRequestResult] = useLazyGenericGetRequestQuery()
+    const handleDeleteConfirm = (apiurl) => {
+      ExecuteGetRequest({ url: apiurl })
+      //this isnt working all the way yet.
+      ModalService.confirm({
+        title: 'Results',
+        body: (
+          <div>
+            {GetRequestResult.isSuccess && (
+              <>
+                <CSpinner />
+              </>
+            )}
+            {GetRequestResult.isSuccess && GetRequestResult.data.Results}
+          </div>
+        ),
+        confirmLabel: 'Continue',
+      })
+    }
+    const handleDelete = (apiurl, message) => {
+      ModalService.confirm({
+        title: 'Confirm',
+        body: <div>{message}</div>,
+        onConfirm: () => handleDeleteConfirm(apiurl),
+        confirmLabel: 'Continue',
+        cancelLabel: 'Cancel',
+      })
+    }
+    return (
+      <CButton
+        size="sm"
+        variant="ghost"
+        color="danger"
+        onClick={() =>
+          handleDelete(
+            `api/RemoveStandard?ID=${row.displayName}`,
+            `Are you sure you want to remove the standard for ${row.displayName}. Note that this does not revert the effects of the standard.`,
+          )
+        }
+      >
+        <FontAwesomeIcon icon={faTrash} />
+      </CButton>
+    )
+  }
+  const columns = [
+    {
+      name: 'Tenant Name',
+      selector: (row) => row['displayName'],
+      sortable: true,
+    },
+    {
+      name: 'Standard',
+      selector: (row) => row['standardName'],
+      sortable: true,
+    },
+    {
+      name: 'Applied By',
+      selector: (row) => row['appliedBy'],
+      sortable: true,
+    },
+    {
+      name: 'Action',
+      cell: Actions,
+    },
+  ]
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (

@@ -3,35 +3,8 @@ import { useSelector } from 'react-redux'
 import CippDatatable from 'src/components/cipp/CippDatatable'
 import CellBoolean from '../../../components/cipp/CellBoolean'
 import TenantSelector from 'src/components/cipp/TenantSelector'
-import { Link } from 'react-router-dom'
-import { faCog, faBars } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCardTitle,
-  CDropdown,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
-} from '@coreui/react'
 
-const dropdown = (row, rowIndex, formatExtraData) => (
-  <CDropdown>
-    <CDropdownToggle size="sm" color="link">
-      <FontAwesomeIcon icon={faBars} />
-    </CDropdownToggle>
-    <CDropdownMenu style={{ position: 'fixed', right: 0, zIndex: 1000 }}>
-      <CDropdownItem href="#">
-        <Link className="dropdown-item" to={`/teams-share/teams/view-team-settings}`}>
-          <FontAwesomeIcon icon={faCog} className="me-2" />
-          View Team Settings
-        </Link>
-      </CDropdownItem>
-    </CDropdownMenu>
-  </CDropdown>
-)
+import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
 
 const Formatter = (cell) => CellBoolean({ cell })
 const columns = [
@@ -76,10 +49,6 @@ const columns = [
     name: 'Purchased on',
     selector: (row) => row['AcquisitionDate'],
     sortable: true,
-  },
-  {
-    name: 'Actions',
-    cell: dropdown,
   },
 ]
 

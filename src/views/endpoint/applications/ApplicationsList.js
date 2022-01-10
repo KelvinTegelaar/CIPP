@@ -33,20 +33,26 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
           {
             icon: <FontAwesomeIcon icon={faUser} />,
             label: ' Assign to All Users',
-            link: `/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
-            color: 'primary',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecAssignApp?AssignTo=AllUsers&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalMessage: `Are you sure you want to assign ${row.displayName} to all users?`,
           },
           {
             icon: <FontAwesomeIcon icon={faPager} />,
             label: ' Assign to All Devices',
-            link: `/identity/administration/users/edit?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
-            color: 'primary',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecAssignApp?AssignTo=AllDevices&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalMessage: `Are you sure you want to assign ${row.displayName} to all devices?`,
           },
           {
             icon: <FontAwesomeIcon icon={faGlobeEurope} />,
             label: ' Assign Globally (All Users / All Devices)',
-            link: `/identity/administration/users/bec?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
-            color: 'primary',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecAssignApp?AssignTo=Both&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalMessage: `Are you sure you want to assign ${row.displayName} to all users and devices?`,
           },
         ]}
         placement="end"
