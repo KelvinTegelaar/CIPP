@@ -68,7 +68,7 @@ const MEMEditPolicy = () => {
             <CCol md={6}>
               <CCard>
                 <CCardHeader>
-                  <CCardTitle>Group Details</CCardTitle>
+                  <CCardTitle>Policy Details</CCardTitle>
                 </CCardHeader>
                 <CCardBody>
                   {isFetching && <CSpinner />}

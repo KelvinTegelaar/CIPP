@@ -17,22 +17,6 @@ import {
   CDropdownToggle,
 } from '@coreui/react'
 
-const dropdown = (row, rowIndex, formatExtraData) => (
-  <CDropdown>
-    <CDropdownToggle size="sm" color="link">
-      <FontAwesomeIcon icon={faBars} />
-    </CDropdownToggle>
-    <CDropdownMenu style={{ position: 'fixed', right: 0, zIndex: 1000 }}>
-      <CDropdownItem href="#">
-        <Link className="dropdown-item" to={`/teams-share/teams/view-team-settings}`}>
-          <FontAwesomeIcon icon={faCog} className="me-2" />
-          View Team Settings
-        </Link>
-      </CDropdownItem>
-    </CDropdownMenu>
-  </CDropdown>
-)
-
 const Formatter = (cell) => CellBoolean({ cell })
 const columns = [
   {
@@ -76,10 +60,6 @@ const columns = [
     name: 'Purchased on',
     selector: (row) => row['AcquisitionDate'],
     sortable: true,
-  },
-  {
-    name: 'Actions',
-    cell: dropdown,
   },
 ]
 

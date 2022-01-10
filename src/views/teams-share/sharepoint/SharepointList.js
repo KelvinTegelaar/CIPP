@@ -2,37 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
-import {
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCardTitle,
-  CDropdown,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
-} from '@coreui/react'
-import { Link } from 'react-router-dom'
-import { faCog, faBars } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
-const dropdown = (row, rowIndex, formatExtraData) => {
-  return (
-    <CDropdown>
-      <CDropdownToggle size="sm" color="link">
-        <FontAwesomeIcon icon={faBars} />
-      </CDropdownToggle>
-      <CDropdownMenu style={{ position: 'fixed', right: 0, zIndex: 1000 }}>
-        <CDropdownItem href="#">
-          <Link className="dropdown-item" to={`/identity/administration/EditGroup}`}>
-            <FontAwesomeIcon icon={faCog} className="me-2" />
-            Edit Group
-          </Link>
-        </CDropdownItem>
-      </CDropdownMenu>
-    </CDropdown>
-  )
-}
+import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
 
 const columns = [
   {
@@ -64,10 +34,6 @@ const columns = [
     name: 'Allocated (GB)',
     selector: (row) => row['Allocated'],
     sort: true,
-  },
-  {
-    name: 'Actions',
-    cell: dropdown,
   },
 ]
 
