@@ -97,8 +97,12 @@ const ViewBec = () => {
       selector: (row) => row['CreationTime'],
     },
     {
-      name: 'By',
+      name: 'Operation',
       selector: (row) => row['Operation'],
+    },
+    {
+      name: 'By',
+      selector: (row) => row['UserId'],
     },
   ]
 

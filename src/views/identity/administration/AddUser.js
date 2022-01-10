@@ -24,7 +24,7 @@ import {
   RFFSelectSearch,
 } from '../../../components'
 import countryList from '../../../assets/countrylist.json'
-import { useListUserQuery, useListUsersQuery } from '../../../store/api/users'
+import { useListUsersQuery } from '../../../store/api/users'
 import { useListDomainsQuery } from '../../../store/api/domains'
 import { useListLicensesQuery } from '../../../store/api/licenses'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'

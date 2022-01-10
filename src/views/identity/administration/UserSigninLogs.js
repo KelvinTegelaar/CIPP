@@ -19,7 +19,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLaptop } from '@fortawesome/free-solid-svg-icons'
 import { ModalService } from '../../../components'
 import { useListUserSigninLogsQuery } from '../../../store/api/users'
-import DataTable from 'react-data-table-component'
 import cellGetProperty from '../../../components/cipp/cellGetProperty'
 
 const rowStyle = (row, rowIndex) => {
