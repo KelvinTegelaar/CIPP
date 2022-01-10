@@ -4,12 +4,10 @@ import { CTable, CTableBody, CTableRow, CTableDataCell } from '@coreui/react'
 
 export default function CippOffcanvasTable({ rows }) {
   const tableRows = rows.map((row, index) => (
-    <>
-      <CTableRow className="cipp-offcanvastable-row">
-        <CTableDataCell className="cipp-offcanvastable-label">{row.label}</CTableDataCell>
-        <CTableDataCell className="cipp-offcanvastable-value">{row.value}</CTableDataCell>
-      </CTableRow>
-    </>
+    <CTableRow className="cipp-offcanvastable-row" key={index}>
+      <CTableDataCell className="cipp-offcanvastable-label">{row.label}</CTableDataCell>
+      <CTableDataCell className="cipp-offcanvastable-value">{row.value}</CTableDataCell>
+    </CTableRow>
   ))
   return (
     <CTable small borderless responsive align="top" className="cipp-offcanvastable">
