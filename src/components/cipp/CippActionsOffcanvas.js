@@ -51,7 +51,7 @@ export default function CippActionsOffcanvas(props) {
       )}
       {getResults.isSuccess && <CCallout color="info">{getResults.data?.Results}</CCallout>}
       {getResults.isError && (
-        <CCallout color="warning">Could not connect to API: {getResults.error.message}</CCallout>
+        <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
       )}
       <COffcanvasTitle>Extended Information</COffcanvasTitle>
       {extendedInfoContent}
