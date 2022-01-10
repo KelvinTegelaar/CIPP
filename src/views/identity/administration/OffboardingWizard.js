@@ -1,5 +1,5 @@
 import React from 'react'
-import { CAlert, CCol, CListGroup, CListGroupItem, CRow } from '@coreui/react'
+import { CAlert, CCallout, CCol, CListGroup, CListGroupItem, CRow, CSpinner } from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -152,7 +152,12 @@ const OffboardingWizard = () => {
           <hr className="my-4" />
         </center>
         <div className="mb-2">
-          {postResults.isSuccess && <CAlert color="success">{postResults.data.Results}</CAlert>}
+          {postResults.isFetching && (
+            <CCallout color="info">
+              <CSpinner>Loading</CSpinner>
+            </CCallout>
+          )}
+          {postResults.isSuccess && <CCallout color="success">{postResults.data.Results}</CCallout>}
           {!postResults.isSuccess && (
             <FormSpy>
               {(props) => {
