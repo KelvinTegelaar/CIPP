@@ -3,8 +3,32 @@ import PropTypes from 'prop-types'
 import { CListGroup, CListGroupItem, COffcanvasTitle } from '@coreui/react'
 import CippOffcanvas, { CippOffcanvasPropTypes } from './CippOffcanvas'
 import CippOffcanvasTable from './CippOffcanvasTable'
+import { ModalService } from '../ModalRoot'
 
 export default function CippActionsOffcanvas(props) {
+  const executeModalRequest = (modalUrl) => {
+    ModalService.confirm({
+      body: (
+        <div style={{ overflow: 'visible' }}>
+          <div>Executed Request: {modalUrl}</div>
+        </div>
+      ),
+      title: 'Confirm',
+      //onConfirm: () => executeModalRequest(modalUrl),
+    })
+  }
+
+  const handleModal = (modalMessage, modalUrl) => {
+    ModalService.confirm({
+      body: (
+        <div style={{ overflow: 'visible' }}>
+          <div>{modalMessage}</div>
+        </div>
+      ),
+      title: 'Confirm',
+      onConfirm: () => executeModalRequest(modalUrl),
+    })
+  }
   const extendedInfoContent = <CippOffcanvasTable rows={props.extendedInfo} guid={props.id} />
   const actionsContent = props.actions.map((action, index) => (
     <CListGroup layout="horizontal-md" key={index}>
@@ -13,7 +37,9 @@ export default function CippActionsOffcanvas(props) {
         component="button"
         color={action.color}
         href={action.link}
-        onClick={action.OnClick}
+        onClick={
+          action.modal ? () => handleModal(action.modalMessage, action.modalUrl) : action.OnClick
+        }
       >
         {action.icon}
         {action.label}
@@ -42,6 +68,9 @@ const CippActionsOffcanvasPropTypes = {
       label: PropTypes.string,
       value: PropTypes.any,
       onClick: PropTypes.func,
+      modal: PropTypes.bool,
+      modalUrl: PropTypes.string,
+      modalMessage: PropTypes.string,
     }),
   ).isRequired,
   actions: PropTypes.arrayOf(

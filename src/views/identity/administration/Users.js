@@ -47,6 +47,9 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             label: 'View User',
             link: viewLink,
             color: 'success',
+            modal: true,
+            modalUrl: 'api/dostuff',
+            modalMessage: 'Are you sure you want to do this?',
           },
           {
             icon: <FontAwesomeIcon icon={faEdit} className="me-2" />,
