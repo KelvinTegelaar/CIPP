@@ -5,9 +5,7 @@ import CippOffcanvas, { CippOffcanvasPropTypes } from './CippOffcanvas'
 import CippOffcanvasTable from './CippOffcanvasTable'
 
 export default function CippActionsOffcanvas(props) {
-  const extendedInfoContent = (
-    <CippOffcanvasTable rows={props.extendedInfo} key={`${props.id}-table`} />
-  )
+  const extendedInfoContent = <CippOffcanvasTable rows={props.extendedInfo} guid={props.id} />
   const actionsContent = props.actions.map((action, index) => (
     <CListGroup layout="horizontal-md" key={index}>
       <CListGroupItem

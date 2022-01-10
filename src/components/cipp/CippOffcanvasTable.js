@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import { CTable, CTableBody, CTableRow, CTableDataCell } from '@coreui/react'
 
 export default function CippOffcanvasTable({ rows }) {
-  const tableRows = rows.map((row, index) => (
-    <CTableRow className="cipp-offcanvastable-row" key={index}>
+  const tableRows = rows.map((row, index, guid) => (
+    <CTableRow className="cipp-offcanvastable-row" key={`${guid}-${index}`}>
       <CTableDataCell className="cipp-offcanvastable-label">{row.label}</CTableDataCell>
       <CTableDataCell className="cipp-offcanvastable-value">{row.value}</CTableDataCell>
     </CTableRow>
@@ -23,4 +23,5 @@ CippOffcanvasTable.propTypes = {
       value: PropTypes.any,
     }),
   ).isRequired,
+  guid: PropTypes.string,
 }
