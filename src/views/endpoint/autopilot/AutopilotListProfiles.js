@@ -1,27 +1,65 @@
-import React from 'react'
+import React, { useState, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import TenantSelector from '../../../components/cipp/TenantSelector'
 import CippDatatable from '../../../components/cipp/CippDatatable'
 import { CCard, CCardHeader, CCardTitle, CCardBody } from '@coreui/react'
 import { cellBooleanFormatter } from '../../../components/cipp'
-//future version dropdown:
-// const dropdown = (row, rowIndex, formatExtraData) => {
-//   return (
-//     <CDropdown>
-//       <CDropdownToggle size="sm" color="link">
-//         <FontAwesomeIcon icon={faBars} />
-//       </CDropdownToggle>
-//       <CDropdownMenu style={{ position: 'fixed', right: 0, zIndex: 1000 }}>
-//         <CDropdownItem href="#">
-//           <Link className="dropdown-item" to={`/endpoint/autopilot/AutopilotEditProfile}`}>
-//             <FontAwesomeIcon icon={faUser} className="me-2" />
-//             Edit Profile
-//           </Link>
-//         </CDropdownItem>
-//       </CDropdownMenu>
-//     </CDropdown>
-//   )
+import { CButton } from '@coreui/react'
+import { faCopy, faEye } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { CippActionsOffcanvas } from 'src/components/cipp'
+
+// const Offcanvas = (row, rowIndex, formatExtraData) => {
+//  const [ocVisible, setOCVisible] = useState(false)
+//
+//  return (
+//    <>
+//      <CButton size="sm" variant="ghost" color="success" onClick={() => setOCVisible(true)}>
+//        <FontAwesomeIcon icon={faEye} />
+//      </CButton>
+//      <CippOffcanvas
+//        title="JSON (Raw)"
+//        placement="end"
+//        visible={ocVisible}
+//        id={row.id}
+//        hideFunction={() => setOCVisible(false)}
+//      >
+//        <p>
+//          {' '}
+//          <pre>{JSON.stringify(row, null, 2)}</pre>
+//        </p>
+//      </CippOffcanvas>
+//    </>
+//  )
 // }
+
+const Offcanvas = (row, rowIndex, formatExtraData) => {
+  const [ocVisible, setOCVisible] = useState(false)
+
+  return (
+    <>
+      <CButton size="sm" variant="ghost" color="success" onClick={() => setOCVisible(true)}>
+        <FontAwesomeIcon icon={faEye} />
+      </CButton>
+      <CippActionsOffcanvas
+        title="JSON (Raw)"
+        extendedInfo={[{ label: '', value: <pre>{JSON.stringify(row, null, 2)}</pre> }]}
+        actions={[
+          {
+            icon: <FontAwesomeIcon icon={faCopy} className="me-2" />,
+            label: 'Copy JSON',
+            color: 'info',
+            onClick: {},
+          },
+        ]}
+        placement="end"
+        visible={ocVisible}
+        id={row.id}
+        hideFunction={() => setOCVisible(false)}
+      />
+    </>
+  )
+}
 
 const columns = [
   {
@@ -52,16 +90,15 @@ const columns = [
     name: 'Device Name Template',
     sortable: true,
   },
+  {
+    selector: (row) => ['JSON'],
+    name: 'JSON',
+    cell: Offcanvas,
+  },
 ]
 
 const AutopilotListProfiles = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
-
-  // eslint-disable-next-line react/prop-types
-  const ExpandedComponent = ({ data }) => (
-    // eslint-disable-next-line react/prop-types
-    <pre>{JSON.stringify(data, null, 2)}</pre>
-  )
 
   return (
     <div>
@@ -74,11 +111,6 @@ const AutopilotListProfiles = () => {
         <CCardBody>
           {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
           <CippDatatable
-            tableProps={{
-              expandableRows: true,
-              expandableRowsComponent: ExpandedComponent,
-              expandOnRowClicked: true,
-            }}
             keyField="id"
             reportName={`${tenant?.defaultDomainName}-AutopilotProfile-List`}
             path="/api/ListAutopilotConfig?type=ApProfile"
