@@ -38,11 +38,3 @@ jobs:
       run: npm run build
       env:
         CI: true
-    - name: Install Linters
-      run: npm i --legacy-peer-deps -D eslint prettier
-    - uses: wearerequired/lint-action@v1
-      name: Lint
-      with:
-        eslint: true
-        eslint_args: "--max-warnings 0"
-        prettier: true
