@@ -384,8 +384,9 @@ const MXResultsCard = ({ domain }) => {
         className="cipp-offcanvas"
         hideFunction={() => setVisible(false)}
         title="Mail Provider Info"
-        children={MXDetailView(data)}
-      />
+      >
+        {MXDetailView(data)}
+      </CippOffcanvas>
     </ResultsCard>
   )
 }
