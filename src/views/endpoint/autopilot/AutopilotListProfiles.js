@@ -7,56 +7,49 @@ import { cellBooleanFormatter } from '../../../components/cipp'
 import { CButton } from '@coreui/react'
 import { faCopy, faEye } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { CippActionsOffcanvas } from 'src/components/cipp'
-
-// const Offcanvas = (row, rowIndex, formatExtraData) => {
-//  const [ocVisible, setOCVisible] = useState(false)
-//
-//  return (
-//    <>
-//      <CButton size="sm" variant="ghost" color="success" onClick={() => setOCVisible(true)}>
-//        <FontAwesomeIcon icon={faEye} />
-//      </CButton>
-//      <CippOffcanvas
-//        title="JSON (Raw)"
-//        placement="end"
-//        visible={ocVisible}
-//        id={row.id}
-//        hideFunction={() => setOCVisible(false)}
-//      >
-//        <p>
-//          {' '}
-//          <pre>{JSON.stringify(row, null, 2)}</pre>
-//        </p>
-//      </CippOffcanvas>
-//    </>
-//  )
-// }
+import { CippOffcanvas } from '../../../components/cipp'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
-  const [ocVisible, setOCVisible] = useState(false)
+  const [visible, setVisible] = useState(false)
+
+  const jsonContent = <pre>{JSON.stringify(row, null, 2)}</pre>
+
+  function CopyToClipboard() {
+    const copyText = jsonContent.props.children
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(copyText).then(
+        () => {
+          console.log('Copied Successfully')
+          console.log({ copyText })
+        },
+        (error) => {
+          console.log(error)
+        },
+      )
+    } else {
+      console.log(document.execCommand('copy'))
+      document.execCommand('copy')
+    }
+  }
 
   return (
     <>
-      <CButton size="sm" variant="ghost" color="success" onClick={() => setOCVisible(true)}>
+      <CButton size="sm" variant="ghost" color="success" onClick={() => setVisible(true)}>
         <FontAwesomeIcon icon={faEye} />
       </CButton>
-      <CippActionsOffcanvas
-        title="JSON (Raw)"
-        extendedInfo={[{ label: '', value: <pre>{JSON.stringify(row, null, 2)}</pre> }]}
-        actions={[
-          {
-            icon: <FontAwesomeIcon icon={faCopy} className="me-2" />,
-            label: 'Copy JSON',
-            color: 'info',
-            onClick: {},
-          },
-        ]}
-        placement="end"
-        visible={ocVisible}
+      <CippOffcanvas
+        visible={visible}
         id={row.id}
-        hideFunction={() => setOCVisible(false)}
-      />
+        placement="end"
+        className="cipp-offcanvas"
+        hideFunction={() => setVisible(false)}
+        title="JSON (Raw)"
+      >
+        {jsonContent}
+        <CButton size="sm" variant="ghost" color="info" onClick={CopyToClipboard}>
+          <FontAwesomeIcon icon={faCopy} />
+        </CButton>
+      </CippOffcanvas>
     </>
   )
 }
