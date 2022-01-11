@@ -157,7 +157,7 @@ const EditMailboxPermission = () => {
                             <CRow className="mb-3">
                               <CCol md={6}>
                                 <CButton type="submit" disabled={submitting || formDisabled}>
-                                  Edit User
+                                  Edit User Permissions
                                   {postResults.isFetching && (
                                     <FontAwesomeIcon
                                       icon={faCircleNotch}
