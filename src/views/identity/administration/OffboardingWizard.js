@@ -169,7 +169,13 @@ const OffboardingWizard = () => {
               <CSpinner>Loading</CSpinner>
             </CCallout>
           )}
-          {postResults.isSuccess && <CCallout color="success">{postResults.data.Results}</CCallout>}
+          {postResults.isSuccess && (
+            <CCallout color="success">
+              {postResults.data.Results.map((message, idx) => {
+                return <li key={idx}>{message}</li>
+              })}
+            </CCallout>
+          )}
           {!postResults.isSuccess && (
             <FormSpy>
               {(props) => {
