@@ -21,7 +21,7 @@ jobs:
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
-        node-version: 17.x
+        node-version: 16.x
     - name: Install Linters
       run: npm i --legacy-peer-deps -D eslint prettier
     - uses: wearerequired/lint-action@v1
