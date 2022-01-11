@@ -453,7 +453,7 @@ const NotificationsSettings = () => {
   const onSubmit = (values) => {
     // @todo bind this
     // window.alert(JSON.stringify(values))
-    console.log(values)
+    // console.log(values)
     configNotifications(values)
   }
   //to get current settings
@@ -475,6 +475,19 @@ const NotificationsSettings = () => {
           render={({ handleSubmit, submitting, values }) => {
             return (
               <CForm onSubmit={handleSubmit}>
+                {notificationConfigResult.isFetching && (
+                  <CCallout color="info">
+                    <CSpinner>Loading</CSpinner>
+                  </CCallout>
+                )}
+                {notificationConfigResult.isSuccess && (
+                  <CCallout color="info">{notificationConfigResult.data?.Results}</CCallout>
+                )}
+                {notificationConfigResult.isError && (
+                  <CCallout color="danger">
+                    Could not connect to API: {notificationConfigResult.error.message}
+                  </CCallout>
+                )}
                 <CCol md={6}>
                   <CCol md={6}>
                     <RFFCFormInput type="text" name="email" label="E-mail" />
@@ -523,9 +536,6 @@ const NotificationsSettings = () => {
                   <CButton disabled={notificationConfigResult.isFetching} type="submit">
                     Set Notification Settings
                   </CButton>
-                  {notificationConfigResult.isSuccess && (
-                    <CAlert color="success">{notificationConfigResult.data.Results}</CAlert>
-                  )}
                 </CCol>
               </CForm>
             )

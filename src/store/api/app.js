@@ -63,17 +63,6 @@ export const appApi = baseApi.injectEndpoints({
         },
         method: 'post',
       }),
-      transformResponse: (response) => {
-        if (!response?.Results) {
-          return []
-        }
-        return response?.Results.map((res) =>
-          res
-            .replace('<br>', '')
-            .split(': ')
-            .reduce((pv, cv) => ({ tenantDomain: pv, result: cv })),
-        )
-      },
     }),
     execTenantsAccessCheck: builder.query({
       query: ({ tenantDomains }) => ({
