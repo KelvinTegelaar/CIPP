@@ -17,7 +17,6 @@ import CippOffcanvas from '../cipp/CippOffcanvas'
 const AppHeaderDropdown = () => {
   const [profileVisible, setProfileVisible] = useState(false)
   const { data: profile } = authApi.endpoints.loadClientPrincipal.useQueryState()
-  const cippProfile = <CippProfile />
   return (
     <>
       <CDropdown variant="nav-item">
@@ -44,8 +43,9 @@ const AppHeaderDropdown = () => {
         hideFunction={() => setProfileVisible(false)}
         title="Profile"
         placement="end"
-        children={cippProfile}
-      />
+      >
+        <CippProfile />
+      </CippOffcanvas>
     </>
   )
 }

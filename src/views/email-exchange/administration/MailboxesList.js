@@ -19,7 +19,9 @@ const MailboxList = () => {
           <FontAwesomeIcon icon={faEye} />
         </CButton>
       </Link>
-      <Link to={'/email/administration/edit-mailbox-permissions'}>
+      <Link
+        to={`/email/administration/edit-mailbox-permissions?tenantDomain=${tenant.defaultDomainName}&userId=${row.UPN}`}
+      >
         <CButton size="sm" variant="ghost" color="warning">
           <FontAwesomeIcon icon={faEdit} />
         </CButton>

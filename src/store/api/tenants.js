@@ -1,6 +1,9 @@
 import { baseApi } from './baseApi'
 
 export const tenantsApi = baseApi
+  .enhanceEndpoints({
+    addTagTypes: ['ExcludedTenants', 'Tenants', 'ConditionalAccessPolicies'],
+  })
   .injectEndpoints({
     endpoints: (builder) => ({
       listTenants: builder.query({
@@ -67,9 +70,6 @@ export const tenantsApi = baseApi
         invalidatesTags: ['ExcludedTenants'],
       }),
     }),
-  })
-  .enhanceEndpoints({
-    addTagTypes: ['ExcludedTenants', 'Tenants', 'ConditionalAccessPolicies'],
   })
 
 export const {

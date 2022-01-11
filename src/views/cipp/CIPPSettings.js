@@ -27,6 +27,7 @@ import {
   useLazyExecNotificationConfigQuery,
   useLazyExecPermissionsAccessCheckQuery,
   useLazyExecTenantsAccessCheckQuery,
+  useLazyGenericGetRequestQuery,
   useLazyListNotificationConfigQuery,
 } from '../../store/api/app'
 import {
@@ -361,8 +362,11 @@ const ExcludedTenantsSettings = () => {
   )
 }
 const SecuritySettings = () => {
+  const [listBackend, listBackendResult] = useLazyGenericGetRequestQuery()
+
   return (
     <div>
+      {listBackendResult.isUninitialized && listBackend({ path: 'api/ExecBackendURLs' })}
       <>
         <CRow className="mb-3">
           <CCol md={4}>
@@ -373,7 +377,13 @@ const SecuritySettings = () => {
               <CCardBody className="equalheight">
                 The Resource group contains all the CIPP resources in your tenant, except the SAM
                 Application <br /> <br />
-                <CButton>Go to Resource Group</CButton>
+                <a
+                  target={'_blank'}
+                  href={listBackendResult.data?.Results?.ResourceGroup}
+                  rel="noreferrer"
+                >
+                  <CButton>Go to Resource Group</CButton>
+                </a>
               </CCardBody>
             </CCard>
           </CCol>
@@ -386,7 +396,13 @@ const SecuritySettings = () => {
                 The keyvault allows you to check token information. By default you do not have
                 access.
                 <br /> <br />
-                <CButton>Go to Keyvault</CButton>
+                <a
+                  target={'_blank'}
+                  href={listBackendResult.data?.Results?.KeyVault}
+                  rel="noreferrer"
+                >
+                  <CButton>Go to Keyvault</CButton>
+                </a>
               </CCardBody>
             </CCard>
           </CCol>
@@ -399,7 +415,13 @@ const SecuritySettings = () => {
                 The Statis Web App role management allows you to invite other users to the
                 application.
                 <br /> <br />
-                <CButton>Go to Role Management</CButton>
+                <a
+                  target={'_blank'}
+                  href={listBackendResult.data?.Results?.SWARoles}
+                  rel="noreferrer"
+                >
+                  <CButton>Go to Role Management</CButton>
+                </a>
               </CCardBody>
             </CCard>
           </CCol>
@@ -413,7 +435,13 @@ const SecuritySettings = () => {
               <CCardBody className="equalheight">
                 The Function App Deployment Center allows you to run updates on the API
                 <br /> <br />
-                <CButton>Go to Function App Deployment Center</CButton>
+                <a
+                  target={'_blank'}
+                  href={listBackendResult.data?.Results?.FunctionDeployment}
+                  rel="noreferrer"
+                >
+                  <CButton>Go to Function App Deployment Center</CButton>
+                </a>
               </CCardBody>
             </CCard>
           </CCol>
@@ -425,7 +453,13 @@ const SecuritySettings = () => {
               <CCardBody className="equalheight">
                 At the Function App Configuration you can check the status of the API access to your
                 keyvault <br /> <br />
-                <CButton>Go to Function App Configuration</CButton>
+                <a
+                  target={'_blank'}
+                  href={listBackendResult.data?.Results?.FunctionConfig}
+                  rel="noreferrer"
+                >
+                  <CButton>Go to Function App Configuration</CButton>
+                </a>
               </CCardBody>
             </CCard>
           </CCol>
@@ -436,7 +470,13 @@ const SecuritySettings = () => {
               </CCardHeader>
               <CCardBody className="equalheight">
                 At the function App Overview, you can stop and start the backend API <br /> <br />
-                <CButton>Go to Function App Overview</CButton>
+                <a
+                  target={'_blank'}
+                  href={listBackendResult.data?.Results?.FunctionApp}
+                  rel="noreferrer"
+                >
+                  <CButton>Go to Function App Overview</CButton>
+                </a>
               </CCardBody>
             </CCard>
           </CCol>

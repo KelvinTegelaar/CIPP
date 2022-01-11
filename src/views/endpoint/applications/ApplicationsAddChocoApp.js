@@ -1,5 +1,14 @@
 import React from 'react'
-import { CAlert, CCol, CRow, CForm, CListGroup, CListGroupItem } from '@coreui/react'
+import {
+  CAlert,
+  CCol,
+  CRow,
+  CForm,
+  CListGroup,
+  CListGroupItem,
+  CCallout,
+  CSpinner,
+} from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
@@ -186,7 +195,12 @@ const ApplyStandard = () => {
             }}
           </FormSpy>
         )}
-        {postResults.isSuccess && <CAlert color="success">{postResults.data?.Results}</CAlert>}
+        {postResults.isFetching && (
+          <CCallout color="info">
+            <CSpinner>Loading</CSpinner>
+          </CCallout>
+        )}
+        {postResults.isSuccess && <CCallout color="success">{postResults.data.Results}</CCallout>}
         <hr className="my-4" />
       </Wizard.Page>
     </Wizard>

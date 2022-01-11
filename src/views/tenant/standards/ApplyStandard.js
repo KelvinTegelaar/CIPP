@@ -1,5 +1,5 @@
 import React from 'react'
-import { CAlert } from '@coreui/react'
+import { CAlert, CCallout, CSpinner } from '@coreui/react'
 import { Field } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
@@ -153,7 +153,12 @@ const ApplyStandard = () => {
             </center>
           </CAlert>
         )}
-        {postResults.isSuccess && <CAlert color="success">{postResults.data?.Results}</CAlert>}
+        {postResults.isFetching && (
+          <CCallout color="info">
+            <CSpinner>Loading</CSpinner>
+          </CCallout>
+        )}
+        {postResults.isSuccess && <CCallout color="success">{postResults.data.Results}</CCallout>}
         <hr className="my-4" />
       </Wizard.Page>
     </Wizard>

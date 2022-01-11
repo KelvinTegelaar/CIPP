@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import {
   CButton,
+  CCallout,
   CCard,
   CCardBody,
   CCardHeader,
@@ -22,7 +23,7 @@ const EditTenant = () => {
   let query = useQuery()
   const tenantDomain = query.get('TenantFilter')
   const [queryError, setQueryError] = useState(false)
-  const [genericPostRequest] = useLazyGenericPostRequestQuery()
+  const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
   const { data: tenant = {}, isFetching, error, isSuccess } = useListTenantQuery(tenantDomain)
 
@@ -89,11 +90,14 @@ const EditTenant = () => {
                                 </CButton>
                               </CCol>
                             </CRow>
-                            {/*<CRow>*/}
-                            {/* <CCol>*/}
-                            {/*   <pre>{JSON.stringify(values, null, 2)}</pre>*/}
-                            {/* </CCol>*/}
-                            {/*</CRow>*/}
+                            {postResults.isFetching && (
+                              <CCallout color="info">
+                                <CSpinner>Loading</CSpinner>
+                              </CCallout>
+                            )}
+                            {postResults.isSuccess && (
+                              <CCallout color="success">{postResults.data.Results}</CCallout>
+                            )}
                           </CForm>
                         )
                       }}

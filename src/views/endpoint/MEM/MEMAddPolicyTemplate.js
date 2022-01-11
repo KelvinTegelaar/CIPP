@@ -1,7 +1,7 @@
 import React from 'react'
 import {
-  CAlert,
   CButton,
+  CCallout,
   CCard,
   CCardBody,
   CCardHeader,
@@ -9,6 +9,7 @@ import {
   CCol,
   CForm,
   CRow,
+  CSpinner,
 } from '@coreui/react'
 import { Form } from 'react-final-form'
 import { RFFCFormInput, RFFCFormSelect, RFFCFormTextarea } from '../../../components/RFFComponents'
@@ -26,7 +27,12 @@ const MEMAddPolicyTemplate = () => {
   return (
     <>
       <CRow>
-        {postResults.isSuccess && <CAlert color="success">{postResults.data.Results}</CAlert>}
+        {postResults.isFetching && (
+          <CCallout color="info">
+            <CSpinner>Loading</CSpinner>
+          </CCallout>
+        )}
+        {postResults.isSuccess && <CCallout color="success">{postResults.data.Results}</CCallout>}
         <CCol md={6}>
           <CCard className="page-card">
             <CCardHeader>

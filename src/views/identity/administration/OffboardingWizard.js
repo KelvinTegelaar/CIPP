@@ -1,5 +1,5 @@
 import React from 'react'
-import { CAlert, CCol, CListGroup, CListGroupItem, CRow } from '@coreui/react'
+import { CAlert, CCallout, CCol, CListGroup, CListGroupItem, CRow, CSpinner } from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -45,6 +45,18 @@ const OffboardingWizard = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
   const handleSubmit = async (values) => {
+    if (!values.AccessAutomap) {
+      values.AccessAutomap = ''
+    }
+    if (!values.AccessNoAutomap) {
+      values.AccessNoAutomap = ''
+    }
+    if (!values.OnedriveAccess) {
+      values.OnedriveAccess = ''
+    }
+    if (!values.OOO) {
+      values.OOO = ''
+    }
     const shippedValues = {
       TenantFilter: tenantDomain,
       ...values,
@@ -152,7 +164,18 @@ const OffboardingWizard = () => {
           <hr className="my-4" />
         </center>
         <div className="mb-2">
-          {postResults.isSuccess && <CAlert color="success">{postResults.data.Results}</CAlert>}
+          {postResults.isFetching && (
+            <CCallout color="info">
+              <CSpinner>Loading</CSpinner>
+            </CCallout>
+          )}
+          {postResults.isSuccess && (
+            <CCallout color="success">
+              {postResults.data.Results.map((message, idx) => {
+                return <li key={idx}>{message}</li>
+              })}
+            </CCallout>
+          )}
           {!postResults.isSuccess && (
             <FormSpy>
               {(props) => {
