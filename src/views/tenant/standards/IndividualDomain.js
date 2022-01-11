@@ -316,6 +316,7 @@ const MXResultsCard = ({ domain }) => {
         </CTooltip>
       </div>
       <CippOffcanvas
+        id="mx-provider-offcanvas"
         visible={visible}
         placement="end"
         className="cipp-offcanvas"
