@@ -4,10 +4,6 @@ on:
     branches:
       - master
       - react
-  pull_request:
-    branches:
-      - master
-      - react
   pull_request_target:
     branches:
       - master
