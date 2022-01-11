@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - master
+      - react
   pull_request:
     branches:
       - master
+      - react
 
 jobs:
   build:
