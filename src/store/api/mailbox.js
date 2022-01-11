@@ -16,7 +16,7 @@ export const mailboxApi = baseApi.injectEndpoints({
     }),
     listMailboxPermissions: builder.query({
       query: ({ userId, tenantDomain }) => ({
-        path: '/api//ListMailboxPermissions',
+        path: '/api/ListMailboxPermissions',
         params: { userId, tenantFilter: tenantDomain },
       }),
     }),
