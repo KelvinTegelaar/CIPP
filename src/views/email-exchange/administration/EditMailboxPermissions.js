@@ -189,7 +189,7 @@ const EditMailboxPermission = () => {
                   {userIsFetching && <CSpinner />}
                   {!userIsFetching && (
                     <>
-                      This is the (raw) information for this account.
+                      These are the current set permissions for this account:
                       <pre>{JSON.stringify(user, null, 2)}</pre>
                     </>
                   )}

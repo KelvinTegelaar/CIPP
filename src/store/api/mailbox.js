@@ -19,12 +19,6 @@ export const mailboxApi = baseApi.injectEndpoints({
         path: '/api//ListMailboxPermissions',
         params: { userId, tenantFilter: tenantDomain },
       }),
-      transformResponse: (response) => {
-        if (response?.length > 0) {
-          return response[0]
-        }
-        return {}
-      },
     }),
   }),
 })
