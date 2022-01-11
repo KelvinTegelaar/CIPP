@@ -5,7 +5,8 @@ import CippDatatable from '../../../components/cipp/CippDatatable'
 import { CCard, CCardHeader, CCardTitle, CCardBody } from '@coreui/react'
 import { cellBooleanFormatter } from '../../../components/cipp'
 import { CButton } from '@coreui/react'
-import { faCopy, faEye } from '@fortawesome/free-solid-svg-icons'
+import { faEye } from '@fortawesome/free-solid-svg-icons'
+import { faCopy } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippOffcanvas } from '../../../components/cipp'
 
@@ -35,7 +36,8 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
   return (
     <>
       <CButton size="sm" variant="ghost" color="success" onClick={() => setVisible(true)}>
-        <FontAwesomeIcon icon={faEye} />
+        <FontAwesomeIcon icon={faEye} className="me-2" />
+        View JSON
       </CButton>
       <CippOffcanvas
         visible={visible}
@@ -43,7 +45,6 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
         placement="end"
         className="cipp-offcanvas"
         hideFunction={() => setVisible(false)}
-        title="JSON (Raw)"
       >
         <CButton
           size="sm"
@@ -54,7 +55,9 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
         >
           <FontAwesomeIcon icon={faCopy} />
         </CButton>
-        <pre>{jsonContent}</pre>
+        <div className="mt-2">
+          <pre>{jsonContent}</pre>
+        </div>
       </CippOffcanvas>
     </>
   )
@@ -91,7 +94,7 @@ const columns = [
   },
   {
     selector: (row) => ['JSON'],
-    name: 'JSON',
+    name: '',
     cell: Offcanvas,
   },
 ]
