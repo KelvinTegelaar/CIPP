@@ -14,6 +14,7 @@ import {
 } from '@coreui/react'
 import { useLoadVersionsQuery } from 'src/store/api/app'
 import StatusIcon from 'src/components/cipp/StatusIcon'
+import { Link } from 'react-router-dom'
 
 const Home = () => {
   const { data: versions, isLoading } = useLoadVersionsQuery()
@@ -31,15 +32,21 @@ const Home = () => {
                 Ready to add a new user, group or team for any managed tenant? Click the buttons
                 below to jump to the relevant wizard.
               </CCardText>
-              <CButton className="m-1" color="primary" href="/identity/administration/users/add">
-                <FontAwesomeIcon icon={faUser} className="pe-1" /> Add a User
-              </CButton>
-              <CButton className="m-1" color="primary" href="/identity/administration/groups/add">
-                <FontAwesomeIcon icon={faUserFriends} className="pe-1" /> Add a Group
-              </CButton>
-              <CButton className="m-1" color="primary" href="/teams-share/teams/add-team">
-                <FontAwesomeIcon icon={faUsers} className="pe-1" /> Add a Team
-              </CButton>
+              <Link to="/identity/administration/users/add">
+                <CButton className="m-1" color="primary">
+                  <FontAwesomeIcon icon={faUser} className="pe-1" /> Add a User
+                </CButton>
+              </Link>
+              <Link to="/identity/administration/groups/add">
+                <CButton className="m-1" color="primary">
+                  <FontAwesomeIcon icon={faUserFriends} className="pe-1" /> Add a Group
+                </CButton>
+              </Link>
+              <Link to="/teams-share/teams/add-team">
+                <CButton className="m-1" color="primary">
+                  <FontAwesomeIcon icon={faUsers} className="pe-1" /> Add a Team
+                </CButton>
+              </Link>
             </CCardBody>
           </CCard>
         </CCol>
