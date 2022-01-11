@@ -12,10 +12,10 @@ import { CippOffcanvas } from '../../../components/cipp'
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const [visible, setVisible] = useState(false)
 
-  const jsonContent = <pre>{JSON.stringify(row, null, 2)}</pre>
+  const jsonContent = JSON.stringify(row, null, 2)
 
   function CopyToClipboard() {
-    const copyText = jsonContent.props.children
+    const copyText = jsonContent
     if (navigator.clipboard) {
       navigator.clipboard.writeText(copyText).then(
         () => {
@@ -45,10 +45,16 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
         hideFunction={() => setVisible(false)}
         title="JSON (Raw)"
       >
-        {jsonContent}
-        <CButton size="sm" variant="ghost" color="info" onClick={CopyToClipboard}>
+        <CButton
+          size="sm"
+          variant="ghost"
+          color="info"
+          onClick={CopyToClipboard}
+          className="float-end"
+        >
           <FontAwesomeIcon icon={faCopy} />
         </CButton>
+        <pre>{jsonContent}</pre>
       </CippOffcanvas>
     </>
   )
