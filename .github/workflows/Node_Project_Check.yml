@@ -29,9 +29,8 @@ jobs:
     - run: npm run build
       env:
         CI: true
-    
-    - name: Lint
-      uses: wearerequired/lint-action@v1
+    - uses: wearerequired/lint-action@v1
+      name: Lint
       with:
         eslint: true
         eslint_args: "--max-warnings 0"
