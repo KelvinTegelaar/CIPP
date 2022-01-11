@@ -9,6 +9,11 @@ on:
       - master
       - react
 
+permissions:
+  issues: write
+  pull_requests: write
+  discussions: write
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
   cancel-in-progress: true
