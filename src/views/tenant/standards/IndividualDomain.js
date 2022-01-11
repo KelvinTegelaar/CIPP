@@ -324,7 +324,7 @@ const MXResultsCard = ({ domain }) => {
         title="Mail Provider Info"
       >
         {records.length > 0 && (
-          <div>
+          <>
             <COffcanvasTitle>MX Records</COffcanvasTitle>
             <CTable striped small>
               <CTableHead>
@@ -342,7 +342,7 @@ const MXResultsCard = ({ domain }) => {
                 ))}
               </CTableBody>
             </CTable>
-          </div>
+          </>
         )}
         <COffcanvasTitle>Documentation</COffcanvasTitle>
         <CListGroup>
