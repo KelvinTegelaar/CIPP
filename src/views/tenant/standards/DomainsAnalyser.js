@@ -255,8 +255,9 @@ const DomainsAnalyser = () => {
         hideFunction={() => setDomainCheckVisible(false)}
         title="More Info"
         placement="end"
-        children={individualDomainResults}
-      />
+      >
+        {individualDomainResults}
+      </CippOffcanvas>
     </div>
   )
 }

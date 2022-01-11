@@ -289,82 +289,19 @@ const SPFResultsCard = ({ domain }) => {
 
 SPFResultsCard.propTypes = sharedProps
 
-const MXDetailView = (data) => {
+const MXResultsCard = ({ domain }) => {
+  const { data } = useListDomainTestsQuery({ domain })
+  const mailProviderName = data?.MXResults?.MailProvider?.Name
   let records = data?.MXResults?.Records || []
 
   if (!Array.isArray(records)) {
     records = [records]
   }
-
-  return (
-    <>
-      {records.length > 0 && (
-        <div>
-          <COffcanvasTitle>MX Records</COffcanvasTitle>
-          <CTable striped small>
-            <CTableHead>
-              <CTableRow>
-                <CTableHeaderCell scope="col">Priority</CTableHeaderCell>
-                <CTableHeaderCell scope="col">Hostname</CTableHeaderCell>
-              </CTableRow>
-            </CTableHead>
-            <CTableBody>
-              {records.map((record, key) => (
-                <CTableRow key={`${key}-mx-record`}>
-                  <CTableDataCell>{record?.Priority}</CTableDataCell>
-                  <CTableDataCell>{record?.Hostname}</CTableDataCell>
-                </CTableRow>
-              ))}
-            </CTableBody>
-          </CTable>
-        </div>
-      )}
-      <COffcanvasTitle>Documentation</COffcanvasTitle>
-      <CListGroup>
-        {data?.MXResults?.MailProvider?._MxComment && (
-          <CListGroupItem
-            component="a"
-            target="_blank"
-            href={data?.MXResults?.MailProvider?._MxComment}
-          >
-            <IconExternalLink /> MX Record
-          </CListGroupItem>
-        )}
-        {data?.MXResults?.MailProvider?._SpfComment && (
-          <CListGroupItem
-            component="a"
-            target="_blank"
-            href={data?.MXResults?.MailProvider?._SpfComment}
-          >
-            <IconExternalLink /> SPF Record
-          </CListGroupItem>
-        )}
-        {data?.MXResults?.MailProvider?._DkimComment && (
-          <CListGroupItem
-            component="a"
-            target="_blank"
-            href={data?.MXResults?.MailProvider?._DkimComment}
-          >
-            <IconExternalLink /> DKIM Record
-          </CListGroupItem>
-        )}
-      </CListGroup>
-    </>
-  )
-}
-MXDetailView.propTypes = {
-  data: PropTypes.object,
-}
-
-const MXResultsCard = ({ domain }) => {
-  const { data } = useListDomainTestsQuery({ domain })
-  const mailProviderName = data?.MXResults?.MailProvider?.Name
-
   const [visible, setVisible] = useState(false)
   return (
     <ResultsCard data={data} type="MX">
       <div className="mb-2">
-        <CBadge style={{ fontSize: 14 }} color="secondary">
+        <CBadge style={{ fontSize: 14 }} color="info">
           Mail Provider: {mailProviderName || 'Unknown'}
         </CBadge>
         <CTooltip content="Click to toggle mail provider/MX record details">
@@ -384,8 +321,59 @@ const MXResultsCard = ({ domain }) => {
         className="cipp-offcanvas"
         hideFunction={() => setVisible(false)}
         title="Mail Provider Info"
-        children={MXDetailView(data)}
-      />
+      >
+        {records.length > 0 && (
+          <div>
+            <COffcanvasTitle>MX Records</COffcanvasTitle>
+            <CTable striped small>
+              <CTableHead>
+                <CTableRow>
+                  <CTableHeaderCell scope="col">Priority</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">Hostname</CTableHeaderCell>
+                </CTableRow>
+              </CTableHead>
+              <CTableBody>
+                {records.map((record, key) => (
+                  <CTableRow key={`${key}-mx-record`}>
+                    <CTableDataCell>{record?.Priority}</CTableDataCell>
+                    <CTableDataCell>{record?.Hostname}</CTableDataCell>
+                  </CTableRow>
+                ))}
+              </CTableBody>
+            </CTable>
+          </div>
+        )}
+        <COffcanvasTitle>Documentation</COffcanvasTitle>
+        <CListGroup>
+          {data?.MXResults?.MailProvider?._MxComment && (
+            <CListGroupItem
+              component="a"
+              target="_blank"
+              href={data?.MXResults?.MailProvider?._MxComment}
+            >
+              <IconExternalLink /> MX Record
+            </CListGroupItem>
+          )}
+          {data?.MXResults?.MailProvider?._SpfComment && (
+            <CListGroupItem
+              component="a"
+              target="_blank"
+              href={data?.MXResults?.MailProvider?._SpfComment}
+            >
+              <IconExternalLink /> SPF Record
+            </CListGroupItem>
+          )}
+          {data?.MXResults?.MailProvider?._DkimComment && (
+            <CListGroupItem
+              component="a"
+              target="_blank"
+              href={data?.MXResults?.MailProvider?._DkimComment}
+            >
+              <IconExternalLink /> DKIM Record
+            </CListGroupItem>
+          )}
+        </CListGroup>
+      </CippOffcanvas>
     </ResultsCard>
   )
 }
@@ -498,6 +486,7 @@ const DKIMResultsCard = ({ domain }) => {
   const { data } = useListDomainTestsQuery({ domain })
   let records = data?.DKIMResults?.Records
   const [visible, setVisible] = useState(false)
+
   if (!Array.isArray(records)) {
     records = [records]
   }
