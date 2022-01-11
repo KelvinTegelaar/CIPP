@@ -1,0 +1,38 @@
+name: NodeJS Project Check
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x, 17.x]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Install and Build Test
+    - run: npm i --legacy-peer-deps
+    - run: npm run build
+      env:
+        CI: true
+    
+    - name: Lint
+      uses: wearerequired/lint-action@v1
+      with:
+        eslint: true
+        eslint_args: "--max-warnings 0"
+        prettier: true
