@@ -45,6 +45,18 @@ const OffboardingWizard = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
   const handleSubmit = async (values) => {
+    if (!values.AccessAutomap) {
+      values.AccessAutomap = ''
+    }
+    if (!values.AccessNoAutomap) {
+      values.AccessNoAutomap = ''
+    }
+    if (!values.OnedriveAccess) {
+      values.OnedriveAccess = ''
+    }
+    if (!values.OOO) {
+      values.OOO = ''
+    }
     const shippedValues = {
       TenantFilter: tenantDomain,
       ...values,
