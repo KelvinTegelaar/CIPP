@@ -7,7 +7,7 @@ export const appApi = baseApi.injectEndpoints({
         baseQuery({ path: '/version_latest.txt' }).then(({ data }) =>
           baseQuery({
             path: '/api/GetVersion',
-            params: { localversion: data.replace('\r\n', '') },
+            params: { localversion: data.replace(/(\r\n|\n|\r)/gm, '') },
           }),
         ),
     }),
