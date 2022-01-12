@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { CCard, CCardBody, CCardHeader, CCardTitle, CCol, CRow, CSpinner } from '@coreui/react'
+import { CCardBody, CCol, CRow, CSpinner } from '@coreui/react'
 import PropTypes from 'prop-types'
 import useQuery from '../../../hooks/useQuery'
 import { useDispatch } from 'react-redux'
-import { ModalService } from '../../../components'
+import { CippPage, ModalService } from '../../../components'
 import UserDevices from './UserDevices'
 import UserDetails from './UserDetails'
 import UserLastLoginDetails from './UserLastLoginDetails'
@@ -40,17 +40,11 @@ const ViewUser = (props) => {
       })
       setQueryError(true)
     }
-    // unload this component's state when the component will unmount
-    // return () => dispatch(unloadViewUser())
   }, [tenantDomain, userId, dispatch])
 
   return (
-    <CCard className="page-card">
-      <CCardHeader>
-        <CCardTitle className="text-primary">View User Information</CCardTitle>
-      </CCardHeader>
+    <CippPage tenantSelector={false} title="View User Information">
       <CCardBody>
-        <br />
         {userFetching && <CSpinner />}
         {!userFetching && userError && <span>Error loading user</span>}
         {!queryError && !userFetching && (
@@ -112,7 +106,7 @@ const ViewUser = (props) => {
           </>
         )}
       </CCardBody>
-    </CCard>
+    </CippPage>
   )
 }
 

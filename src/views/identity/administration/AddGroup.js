@@ -1,22 +1,10 @@
 import React from 'react'
-import {
-  CAlert,
-  CButton,
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCardTitle,
-  CCol,
-  CForm,
-  CRow,
-  CSpinner,
-} from '@coreui/react'
+import { CAlert, CButton, CCol, CForm, CRow, CSpinner } from '@coreui/react'
 import { Form } from 'react-final-form'
-import { RFFCFormCheck, RFFCFormInput, RFFCFormSelect } from '../../../components/RFFComponents'
+import { RFFCFormCheck, RFFCFormInput, RFFCFormSelect, CippPage } from '../../../components'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { useListDomainsQuery } from 'src/store/api/domains'
 import { useSelector } from 'react-redux'
-import { TenantSelector } from 'src/components/cipp'
 
 const AddGroup = () => {
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
@@ -39,77 +27,57 @@ const AddGroup = () => {
     genericPostRequest({ path: '/api/AddGroup', values: shippedValues })
   }
   return (
-    <>
-      <CCol md={6}>
-        <TenantSelector />
-      </CCol>
-      <br></br>
-      <>
-        <CRow>
-          <CCol md={6}>
-            <CCard>
-              <CCardHeader>
-                <CCardTitle>Group Details</CCardTitle>
-              </CCardHeader>
-              <CCardBody>
-                <Form
-                  onSubmit={onSubmit}
-                  render={({ handleSubmit, submitting, values }) => {
-                    return (
-                      <CForm onSubmit={handleSubmit}>
-                        <CRow>
-                          <CCol md={8}>
-                            <RFFCFormInput type="text" name="displayName" label="Display Name" />
-                          </CCol>
-                        </CRow>
-                        <CRow>
-                          <CCol md={8}>
-                            <RFFCFormInput type="text" name="description" label="Description" />
-                          </CCol>
-                        </CRow>
-                        <CRow>
-                          <CCol md={4}>
-                            <RFFCFormInput type="text" name="username" label="Username" />
-                          </CCol>
-                          <CCol md={4}>
-                            {domainsIsFetching && <CSpinner />}
-                            {!domainsIsFetching && (
-                              <RFFCFormSelect
-                                // label="Domain"
-                                name="domain"
-                                label="Primary Domain name"
-                                placeholder={!domainsIsFetching ? 'Select domain' : 'Loading...'}
-                                values={domains?.map((domain) => ({
-                                  value: domain.id,
-                                  label: domain.id,
-                                }))}
-                              />
-                            )}
-                            {domainsError && <span>Failed to load list of domains</span>}
-                          </CCol>
-                          <RFFCFormCheck name="isAssignableToRole" label="Azure Role Group" />
-                        </CRow>
-                        <CRow className="mb-3">
-                          <CCol md={6}>
-                            <CButton type="submit" disabled={submitting}>
-                              Add Group
-                            </CButton>
-                          </CCol>
-                        </CRow>
-                        {postResults.isSuccess && (
-                          <CAlert color="success">{postResults.data.Results}</CAlert>
-                        )}
-                      </CForm>
-                    )
-                  }}
-                />
-              </CCardBody>
-            </CCard>
-          </CCol>
-          <CCol md={6}></CCol>
-        </CRow>
-      </>
-    </>
+    <CippPage title="Add Group">
+      <Form
+        onSubmit={onSubmit}
+        render={({ handleSubmit, submitting, values }) => {
+          return (
+            <CForm onSubmit={handleSubmit}>
+              <CRow>
+                <CCol md={8}>
+                  <RFFCFormInput type="text" name="displayName" label="Display Name" />
+                </CCol>
+              </CRow>
+              <CRow>
+                <CCol md={8}>
+                  <RFFCFormInput type="text" name="description" label="Description" />
+                </CCol>
+              </CRow>
+              <CRow>
+                <CCol md={4}>
+                  <RFFCFormInput type="text" name="username" label="Username" />
+                </CCol>
+                <CCol md={4}>
+                  {domainsIsFetching && <CSpinner />}
+                  {!domainsIsFetching && (
+                    <RFFCFormSelect
+                      // label="Domain"
+                      name="domain"
+                      label="Primary Domain name"
+                      placeholder={!domainsIsFetching ? 'Select domain' : 'Loading...'}
+                      values={domains?.map((domain) => ({
+                        value: domain.id,
+                        label: domain.id,
+                      }))}
+                    />
+                  )}
+                  {domainsError && <span>Failed to load list of domains</span>}
+                </CCol>
+                <RFFCFormCheck name="isAssignableToRole" label="Azure Role Group" />
+              </CRow>
+              <CRow className="mb-3">
+                <CCol md={6}>
+                  <CButton type="submit" disabled={submitting}>
+                    Add Group
+                  </CButton>
+                </CCol>
+              </CRow>
+              {postResults.isSuccess && <CAlert color="success">{postResults.data.Results}</CAlert>}
+            </CForm>
+          )
+        }}
+      />
+    </CippPage>
   )
 }
 
