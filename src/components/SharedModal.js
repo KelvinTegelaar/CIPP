@@ -1,7 +1,7 @@
 import React from 'react'
 import { CButton, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle } from '@coreui/react'
-import DataTable from 'react-data-table-component'
 import PropTypes from 'prop-types'
+import { CippTable } from './cipp'
 
 /**
  *
@@ -13,7 +13,7 @@ import PropTypes from 'prop-types'
 function mapBodyComponent({ componentType, data, componentProps }) {
   switch (componentType) {
     case 'table':
-      return <DataTable data={data || []} {...componentProps} />
+      return <CippTable data={data || []} {...componentProps} />
     case 'list':
       return <div>{Array.isArray(data) && data.map((el, idx) => <div key={idx}>{el}</div>)}</div>
     case 'text':

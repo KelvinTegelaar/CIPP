@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons'
 
 function ExportPDFButton(props) {
-  const exportPDF = (pdfData, pdfHeaders, pdfSize = 'A4', reportName) => {
+  const exportPDF = (pdfData, pdfHeaders, pdfSize = 'A4', reportName = 'report') => {
     const unit = 'pt'
     const size = pdfSize // Use A1, A2, A3 or A4
     const orientation = 'landscape' // portrait or landscape

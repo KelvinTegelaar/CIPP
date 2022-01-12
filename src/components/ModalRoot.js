@@ -59,7 +59,7 @@ export function ModalRoot() {
     })
   }, [])
 
-  const ModalComponent = modal.body ? SharedModal : null
+  const ModalComponent = modal.body || modal.data ? SharedModal : null
 
   return <>{ModalComponent && <ModalComponent {...modal} visible close={modal.close} />}</>
 }

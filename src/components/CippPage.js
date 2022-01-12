@@ -69,9 +69,11 @@ export function CippPageList({
   titleButton,
   // see CippDatatable for full list
   datatable: { reportName, path, columns, params, ...rest },
+  children,
 }) {
   return (
     <CippPage tenantSelector={tenantSelector} title={title} titleButton={titleButton}>
+      {children}
       <CippDatatable
         reportName={reportName}
         path={path}
@@ -93,4 +95,5 @@ CippPageList.propTypes = {
     columns: PropTypes.array.isRequired,
     params: PropTypes.object,
   }),
+  children: PropTypes.node,
 }

@@ -1,16 +1,15 @@
 import React from 'react'
-import { CButton, CSpinner, CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
+import { CButton, CSpinner } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import {
   cellBooleanFormatter,
-  CippDatatable,
   CellBadge,
   CellBoolean,
   CellProgressBar,
   cellDateFormatter,
 } from '../../../components/cipp'
-import { ModalService } from '../../../components'
+import { CippPageList, ModalService } from '../../../components'
 import { useExecBestPracticeAnalyserMutation } from '../../../store/api/reports'
 
 const RefreshAction = () => {
@@ -32,8 +31,8 @@ const RefreshAction = () => {
   return (
     <CButton onClick={showModal} size="sm" className="text-white m-1">
       {isLoading && <CSpinner size="sm" />}
-      {error && <FontAwesomeIcon icon={faExclamationTriangle} />}
-      {isSuccess && <FontAwesomeIcon icon={faCheck} />}
+      {error && <FontAwesomeIcon icon={faExclamationTriangle} className="pe-1" />}
+      {isSuccess && <FontAwesomeIcon icon={faCheck} className="pe-1" />}
       Force Refresh All Data
     </CButton>
   )
@@ -54,14 +53,17 @@ const BestPracticeAnalyser = () => {
       {
         name: 'SKU',
         selector: (row) => row['SKU'],
+        sortable: true,
       },
       {
         name: 'Purchased',
         selector: (row) => row['Purchased'],
+        sortable: true,
       },
       {
         name: 'Consumed',
         selector: (row) => row['Consumed'],
+        sortable: true,
       },
     ]
 
@@ -222,24 +224,18 @@ const BestPracticeAnalyser = () => {
   ]
 
   return (
-    <div>
-      <hr />
-      <CCard className="page-card">
-        <CCardHeader>
-          <CCardTitle className="text-primary">Best Practice Analyser</CCardTitle>
-        </CCardHeader>
-        <CCardBody>
-          <CippDatatable
-            reportName={`Best-Practices-Report`}
-            path="/api/BestPracticeAnalyser_List"
-            tableProps={{
-              actions: [<RefreshAction key="refresh-action-button" />],
-            }}
-            columns={columns}
-          />
-        </CCardBody>
-      </CCard>
-    </div>
+    <CippPageList
+      title="Best Practice Analyser"
+      tenantSelector={false}
+      datatable={{
+        columns,
+        path: '/api/BestPracticeAnalyser_List',
+        reportName: 'Best-Practices-Report',
+        tableProps: {
+          actions: [<RefreshAction key="refresh-action-button" />],
+        },
+      }}
+    />
   )
 }
 
