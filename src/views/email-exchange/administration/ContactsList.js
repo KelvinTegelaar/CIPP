@@ -5,7 +5,6 @@ import { CippPageList } from 'src/components'
 import { cellBooleanFormatter } from 'src/components/cipp'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
-import { Link } from 'react-router-dom'
 const Dropdown = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
