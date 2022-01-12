@@ -1,25 +1,64 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { cellBooleanFormatter } from '../../../components/cipp'
-import { CippPageList } from '../../../components'
-//future version dropdown:
-// const dropdown = (row, rowIndex, formatExtraData) => {
-//   return (
-//     <CDropdown>
-//       <CDropdownToggle size="sm" color="link">
-//         <FontAwesomeIcon icon={faBars} />
-//       </CDropdownToggle>
-//       <CDropdownMenu style={{ position: 'fixed', right: 0, zIndex: 1000 }}>
-//         <CDropdownItem href="#">
-//           <Link className="dropdown-item" to={`/endpoint/autopilot/AutopilotEditProfile}`}>
-//             <FontAwesomeIcon icon={faUser} className="me-2" />
-//             Edit Profile
-//           </Link>
-//         </CDropdownItem>
-//       </CDropdownMenu>
-//     </CDropdown>
-//   )
-// }
+import { CButton } from '@coreui/react'
+import { faEye } from '@fortawesome/free-solid-svg-icons'
+import { faCopy } from '@fortawesome/free-regular-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { CippOffcanvas } from '../../../components/cipp'
+
+const Offcanvas = (row, rowIndex, formatExtraData) => {
+  const [visible, setVisible] = useState(false)
+
+  const jsonContent = JSON.stringify(row, null, 2)
+
+  function CopyToClipboard() {
+    const copyText = jsonContent
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(copyText).then(
+        () => {
+          console.log('Copied Successfully')
+          console.log({ copyText })
+        },
+        (error) => {
+          console.log(error)
+        },
+      )
+    } else {
+      console.log(document.execCommand('copy'))
+      document.execCommand('copy')
+    }
+  }
+
+  return (
+    <>
+      <CButton size="sm" variant="ghost" color="success" onClick={() => setVisible(true)}>
+        <FontAwesomeIcon icon={faEye} className="me-2" />
+        View JSON
+      </CButton>
+      <CippOffcanvas
+        visible={visible}
+        id={row.id}
+        placement="end"
+        className="cipp-offcanvas"
+        hideFunction={() => setVisible(false)}
+      >
+        <CButton
+          size="sm"
+          variant="ghost"
+          color="info"
+          onClick={CopyToClipboard}
+          className="float-end"
+        >
+          <FontAwesomeIcon icon={faCopy} />
+        </CButton>
+        <div className="mt-2">
+          <pre>{jsonContent}</pre>
+        </div>
+      </CippOffcanvas>
+    </>
+  )
+}
 
 const columns = [
   {
@@ -50,16 +89,15 @@ const columns = [
     name: 'Device Name Template',
     sortable: true,
   },
+  {
+    selector: (row) => ['JSON'],
+    name: '',
+    cell: Offcanvas,
+  },
 ]
 
 const AutopilotListProfiles = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
-
-  // eslint-disable-next-line react/prop-types
-  const ExpandedComponent = ({ data }) => (
-    // eslint-disable-next-line react/prop-types
-    <pre>{JSON.stringify(data, null, 2)}</pre>
-  )
 
   return (
     <CippPageList
