@@ -106,18 +106,13 @@ const MailboxList = () => {
       name: 'Additional Email Addresses',
       selector: (row) => 'Click to Expand',
       sortable: true,
+      omit: true,
     },
     {
       name: 'Actions',
       cell: dropdown,
     },
   ]
-
-  // eslint-disable-next-line react/prop-types
-  const ExpandedComponent = ({ data }) => (
-    // eslint-disable-next-line react/prop-types
-    <pre>{JSON.stringify(data.AdditionalEmailAddresses, null, 2)}</pre>
-  )
 
   return (
     <CippPageList
@@ -128,11 +123,6 @@ const MailboxList = () => {
         path: '/api/ListMailboxes',
         columns,
         params: { TenantFilter: tenant?.defaultDomainName },
-        tableProps: {
-          expandableRows: true,
-          expandableRowsComponent: ExpandedComponent,
-          expandOnRowClicked: true,
-        },
       }}
     />
   )
