@@ -6,6 +6,7 @@ import { faEye } from '@fortawesome/free-solid-svg-icons'
 import { faCopy } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippOffcanvas } from '../../../components/cipp'
+import { CippPageList } from 'src/components'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const [visible, setVisible] = useState(false)
@@ -109,11 +110,6 @@ const AutopilotListProfiles = () => {
         path: '/api/ListAutopilotConfig?type=ApProfile',
         params: {
           TenantFilter: tenant?.defaultDomainName,
-        },
-        tableProps: {
-          expandableRows: true,
-          expandableRowsComponent: ExpandedComponent,
-          expandOnRowClicked: true,
         },
       }}
     />
