@@ -72,6 +72,7 @@ const ApplyStandard = () => {
         <Field name="selectedTenants" validate={requiredArray}>
           {(props) => (
             <WizardTableField
+              reportName="Add-Choco-App-Tenant-Selector"
               keyField="defaultDomainName"
               path="/api/ListTenants"
               columns={[

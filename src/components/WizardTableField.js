@@ -10,6 +10,7 @@ import { CippDatatable } from './cipp'
  */
 export default class WizardTableField extends React.Component {
   static propTypes = {
+    reportName: PropTypes.string.isRequired,
     keyField: PropTypes.string.isRequired,
     path: PropTypes.string.isRequired,
     columns: PropTypes.array.isRequired,
@@ -55,9 +56,10 @@ export default class WizardTableField extends React.Component {
   }
 
   render() {
-    const { keyField, columns, path } = this.props
+    const { reportName, keyField, columns, path } = this.props
     return (
       <CippDatatable
+        reportName={reportName}
         keyField={keyField}
         columns={columns}
         actions={false}

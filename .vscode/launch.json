@@ -1,31 +1,25 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "command": "swa start --ssl --ssl-cert ./.vscode/cert.crt --ssl-key ./.vscode/key.key --swa-config-location . http://localhost:3000 --api-location http://localhost:7071",
-            "name": "Run emulator",
-            "request": "launch",
-            "type": "node-terminal",
-        },
-        {
-            "command": "npm start",
-            "name": "Run frontend",
-            "request": "launch",
-            "type": "node-terminal",
-            "preLaunchTask": "RunAllTasks",
-            "resolveSourceMapLocations": [
-              "${workspaceFolder}/**",
-              "!**/node_modules/**"
-            ]
-        }
-    ],
-    "compounds": [
-      {
-        "name": "Launch it all 🚀",
-        "configurations": [
-          "Run frontend",
-          "Run emulator"
-        ]
-      }
-    ]
-  }
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "command": "swa start --ssl --ssl-cert ./.vscode/cert.crt --ssl-key ./.vscode/key.key --swa-config-location . http://localhost:3000 --api-location http://localhost:7071",
+      "name": "Run emulator",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+    {
+      "command": "npm start",
+      "name": "Run frontend",
+      "request": "launch",
+      "type": "node-terminal",
+      "preLaunchTask": "RunAllTasks",
+      "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"]
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Launch it all 🚀",
+      "configurations": ["Run frontend", "Run emulator"]
+    }
+  ]
+}

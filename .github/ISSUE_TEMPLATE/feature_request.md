@@ -4,7 +4,6 @@ about: Suggest a new feature for CIPP.
 title: 'FEATURE REQUEST: '
 labels: ''
 assignees: ''
-
 ---
 
 **Is your feature request related to a problem? Please describe.**
