@@ -14,6 +14,7 @@ import TitleButton from './TitleButton'
 import CippOffcanvas from './CippOffcanvas'
 import CippActionsOffcanvas from './CippActionsOffcanvas'
 import CippOffcanvasTable from './CippOffcanvasTable'
+import CippCodeBlock from './CippCodeBlock'
 
 export {
   CellBadge,
@@ -37,4 +38,5 @@ export {
   TenantSelectorMultiple,
   ThemeSwitcher,
   TitleButton,
+  CippCodeBlock,
 }

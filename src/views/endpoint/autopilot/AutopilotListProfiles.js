@@ -7,29 +7,12 @@ import { faCopy } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippOffcanvas } from '../../../components/cipp'
 import { CippPageList } from 'src/components'
+import { CippCodeBlock } from '../../../components/cipp'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const [visible, setVisible] = useState(false)
 
   const jsonContent = JSON.stringify(row, null, 2)
-
-  function CopyToClipboard() {
-    const copyText = jsonContent
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(copyText).then(
-        () => {
-          console.log('Copied Successfully')
-          console.log({ copyText })
-        },
-        (error) => {
-          console.log(error)
-        },
-      )
-    } else {
-      console.log(document.execCommand('copy'))
-      document.execCommand('copy')
-    }
-  }
 
   return (
     <>
@@ -42,20 +25,15 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
         id={row.id}
         placement="end"
         className="cipp-offcanvas"
+        title="List Profile"
         hideFunction={() => setVisible(false)}
       >
-        <CButton
-          size="sm"
-          variant="ghost"
-          color="info"
-          onClick={CopyToClipboard}
-          className="float-end"
-        >
-          <FontAwesomeIcon icon={faCopy} />
-        </CButton>
-        <div className="mt-2">
-          <pre>{jsonContent}</pre>
-        </div>
+        <CippCodeBlock
+          code={jsonContent}
+          language="json"
+          showLineNumbers={true}
+          wrapLongLines={false}
+        />
       </CippOffcanvas>
     </>
   )
