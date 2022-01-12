@@ -1,14 +1,12 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import TenantSelector from '../../../components/cipp/TenantSelector'
-import CippDatatable from '../../../components/cipp/CippDatatable'
-import { CCard, CCardHeader, CCardTitle, CCardBody } from '@coreui/react'
 import { cellBooleanFormatter } from '../../../components/cipp'
 import { CButton } from '@coreui/react'
 import { faEye } from '@fortawesome/free-solid-svg-icons'
 import { faCopy } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippOffcanvas } from '../../../components/cipp'
+import { CippPageList } from 'src/components'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const [visible, setVisible] = useState(false)
@@ -103,25 +101,18 @@ const AutopilotListProfiles = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
-    <div>
-      <TenantSelector />
-      <hr />
-      <CCard className="page-card">
-        <CCardHeader>
-          <CCardTitle className="text-primary">Autopilot Profiles</CCardTitle>
-        </CCardHeader>
-        <CCardBody>
-          {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-          <CippDatatable
-            keyField="id"
-            reportName={`${tenant?.defaultDomainName}-AutopilotProfile-List`}
-            path="/api/ListAutopilotConfig?type=ApProfile"
-            columns={columns}
-            params={{ TenantFilter: tenant?.defaultDomainName }}
-          />
-        </CCardBody>
-      </CCard>
-    </div>
+    <CippPageList
+      title="Autopilot Profiles"
+      tenantSelector={true}
+      datatable={{
+        reportName: `${tenant?.defaultDomainName}-AutopilotProfile-List`,
+        columns,
+        path: '/api/ListAutopilotConfig?type=ApProfile',
+        params: {
+          TenantFilter: tenant?.defaultDomainName,
+        },
+      }}
+    />
   )
 }
 

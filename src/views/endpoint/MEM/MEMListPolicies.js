@@ -1,24 +1,19 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import TenantSelector from '../../../components/cipp/TenantSelector'
-import CippDatatable from '../../../components/cipp/CippDatatable'
-import { CCard, CCardBody, CCardHeader, CCardTitle, CButton } from '@coreui/react'
+import { CButton } from '@coreui/react'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { CippPageList } from '../../../components'
+import { Link } from 'react-router-dom'
 
 const Dropdown = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
   return (
-    <>
-      <CButton
-        size="sm"
-        variant="ghost"
-        color="warning"
-        href={`/endpoint/MEM/edit-policy?ID=${row.id}&tenantDomain=${tenant.defaultDomainName}`}
-      >
+    <Link to={`/endpoint/MEM/edit-policy?ID=${row.id}&tenantDomain=${tenant.defaultDomainName}`}>
+      <CButton size="sm" variant="ghost" color="warning">
         <FontAwesomeIcon icon={faEdit} />
       </CButton>
-    </>
+    </Link>
   )
 }
 
@@ -54,30 +49,21 @@ const IntuneList = () => {
   )
 
   return (
-    <div>
-      <TenantSelector />
-      <hr />
-      <CCard className="page-card">
-        <CCardHeader>
-          <CCardTitle className="text-primary">Policies</CCardTitle>
-        </CCardHeader>
-        <CCardBody>
-          {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-          <CippDatatable
-            tableProps={{
-              expandableRows: true,
-              expandableRowsComponent: ExpandedComponent,
-              expandOnRowClicked: true,
-            }}
-            keyField="id"
-            reportName={`${tenant?.defaultDomainName}-MEMPolicies-List`}
-            path="/api/ListIntunePolicy?type=ESP"
-            columns={columns}
-            params={{ TenantFilter: tenant?.defaultDomainName }}
-          />
-        </CCardBody>
-      </CCard>
-    </div>
+    <CippPageList
+      title="MEM Policies"
+      tenantSelector={true}
+      datatable={{
+        path: '/api/ListIntunePolicy?type=ESP',
+        params: { TenantFilter: tenant?.defaultDomainName },
+        columns,
+        reportName: `${tenant?.defaultDomainName}-MEMPolicies-List`,
+        tableProps: {
+          expandableRows: true,
+          expandableRowsComponent: ExpandedComponent,
+          expandOnRowClicked: true,
+        },
+      }}
+    />
   )
 }
 

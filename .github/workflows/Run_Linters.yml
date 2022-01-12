@@ -4,10 +4,16 @@ on:
     branches:
       - master
       - react
-  pull_request:
+  pull_request_target:
     branches:
       - master
       - react
+
+permissions:
+  issues: write
+  pull-requests: write
+  discussions: write
+  checks: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}

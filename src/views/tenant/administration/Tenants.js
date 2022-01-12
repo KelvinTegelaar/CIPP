@@ -4,21 +4,7 @@ import { CButton } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCog, faEdit } from '@fortawesome/free-solid-svg-icons'
 import { CippPageList } from 'src/components'
-
-const Offcanvas = (row, rowIndex, formatExtraData) => {
-  return (
-    <>
-      <CButton
-        size="sm"
-        variant="ghost"
-        color="warning"
-        href={`/tenant/administration/tenants/Edit?TenantFilter=${row.defaultDomainName}`}
-      >
-        <FontAwesomeIcon icon={faEdit} />
-      </CButton>
-    </>
-  )
-}
+import { Link } from 'react-router-dom'
 
 const columns = [
   {
@@ -124,7 +110,13 @@ const columns = [
   {
     name: 'Action',
     center: true,
-    cell: Offcanvas,
+    cell: (row) => (
+      <Link to={`/tenant/administration/tenants/Edit?TenantFilter=${row.defaultDomainName}`}>
+        <CButton size="sm" variant="ghost" color="warning">
+          <FontAwesomeIcon icon={faEdit} />
+        </CButton>
+      </Link>
+    ),
   },
 ]
 
