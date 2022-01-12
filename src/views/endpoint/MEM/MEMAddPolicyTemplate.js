@@ -12,7 +12,7 @@ import {
   CSpinner,
 } from '@coreui/react'
 import { Form } from 'react-final-form'
-import { RFFCFormInput, RFFCFormSelect, RFFCFormTextarea } from '../../../components/RFFComponents'
+import { CippPage, RFFCFormInput, RFFCFormSelect, RFFCFormTextarea } from '../../../components'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
 const MEMAddPolicyTemplate = () => {
@@ -25,7 +25,7 @@ const MEMAddPolicyTemplate = () => {
   }
 
   return (
-    <>
+    <CippPage tenantSelector={false} title="Add MEM Policy Template">
       <CRow>
         {postResults.isFetching && (
           <CCallout color="info">
@@ -107,7 +107,7 @@ const MEMAddPolicyTemplate = () => {
           </CCard>
         </CCol>
       </CRow>
-    </>
+    </CippPage>
   )
 }
 

@@ -1,8 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import TenantSelector from '../../../components/cipp/TenantSelector'
-import CippDatatable from '../../../components/cipp/CippDatatable'
-import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
+import { CippPageList } from '../../../components'
 const columns = [
   {
     name: 'Name',
@@ -87,30 +85,21 @@ const columns = [
   },
 ]
 
-const CondtionalAccessList = () => {
+const ConditionalAccessList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
-    <div>
-      <TenantSelector />
-      <hr />
-      <CCard className="page-card">
-        <CCardHeader>
-          <CCardTitle className="text-primary">Conditional Access</CCardTitle>
-        </CCardHeader>
-        <CCardBody>
-          {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-          <CippDatatable
-            keyField="id"
-            reportName={`${tenant?.defaultDomainName}-ConditionalAccess-List`}
-            path="/api/ListConditionalAccessPolicies"
-            columns={columns}
-            params={{ TenantFilter: tenant?.defaultDomainName }}
-          />
-        </CCardBody>
-      </CCard>
-    </div>
+    <CippPageList
+      title="Conditional Access"
+      tenantSelector={true}
+      datatable={{
+        reportName: `${tenant?.defaultDomainName}-ConditionalAccess-List`,
+        path: '/api/ListConditionalAccessPolicies',
+        params: { TenantFilter: tenant?.defaultDomainName },
+        columns,
+      }}
+    />
   )
 }
 
-export default CondtionalAccessList
+export default ConditionalAccessList

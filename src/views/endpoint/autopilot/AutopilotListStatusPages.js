@@ -1,9 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import TenantSelector from '../../../components/cipp/TenantSelector'
-import CippDatatable from '../../../components/cipp/CippDatatable'
-import { CCard, CCardHeader, CCardTitle, CCardBody } from '@coreui/react'
 import { cellBooleanFormatter } from '../../../components/cipp'
+import { CippPageList } from '../../../components'
 //future version dropdown
 // const dropdown = (row, rowIndex, formatExtraData) => {
 //   return (
@@ -69,25 +67,18 @@ const AutopilotListESP = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
-    <div>
-      <TenantSelector />
-      <hr />
-      <CCard className="page-card">
-        <CCardHeader>
-          <CCardTitle className="text-primary">Autopilot Status Pages</CCardTitle>
-        </CCardHeader>
-        <CCardBody>
-          {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-          <CippDatatable
-            keyField="id"
-            reportName={`${tenant?.defaultDomainName}-AutopilotStatusPages-List`}
-            path="/api/ListAutopilotConfig?type=ESP"
-            columns={columns}
-            params={{ TenantFilter: tenant?.defaultDomainName }}
-          />
-        </CCardBody>
-      </CCard>
-    </div>
+    <CippPageList
+      title="Autopilot Status Pages"
+      tenantSelector={true}
+      datatable={{
+        reportName: `${tenant?.defaultDomainName}-AutopilotStatusPages-List`,
+        path: '/api/ListAutopilotConfig?type=ESP',
+        columns,
+        params: {
+          TenantFilter: tenant?.defaultDomainName,
+        },
+      }}
+    />
   )
 }
 

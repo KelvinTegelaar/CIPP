@@ -1,15 +1,38 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { CButton, CCard, CCardHeader, CCardTitle, CCardBody } from '@coreui/react'
-import {
-  CellBadge,
-  CippDatatable,
-  cellProgressBarFormatter,
-  CippOffcanvas,
-} from '../../../components/cipp'
-/*import { ModalService } from '../../../components'*/
+import { CButton, CSpinner } from '@coreui/react'
+import { CellBadge, cellProgressBarFormatter, CippOffcanvas } from '../../../components/cipp'
 import cellGetProperty from '../../../components/cipp/cellGetProperty'
 import IndividualDomainCheck from './IndividualDomain'
+import { CippPageList, ModalService } from '../../../components'
+import { useExecDomainsAnalyserMutation } from '../../../store/api/reports'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCheck, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
+
+const RefreshAction = () => {
+  const [execDomainsAnalyser, { isLoading, isSuccess, error }] = useExecDomainsAnalyserMutation()
+
+  const showModal = () =>
+    ModalService.confirm({
+      body: (
+        <div>
+          Are you sure you want to force the Domain Analysis to run? This will slow down normal
+          usage considerably. <br />
+          <i>Please note: this runs at midnight automatically every day.</i>
+        </div>
+      ),
+      onConfirm: () => execDomainsAnalyser(),
+    })
+
+  return (
+    <CButton onClick={showModal} size="sm" className="text-white m-1">
+      {isLoading && <CSpinner size="sm" />}
+      {error && <FontAwesomeIcon icon={faExclamationTriangle} className="pe-1" />}
+      {isSuccess && <FontAwesomeIcon icon={faCheck} className="pe-1" />}
+      Force Refresh All Data
+    </CButton>
+  )
+}
 
 const MoreInfoContent = ({ row }) => {
   return (
@@ -235,20 +258,18 @@ const DomainsAnalyser = () => {
   ]
 
   return (
-    <div>
-      <CCard className="page-card">
-        <CCardHeader>
-          <CCardTitle className="text-primary">Domain Analyser</CCardTitle>
-        </CCardHeader>
-        <CCardBody>
-          <CippDatatable
-            reportName="Domains-Analyzer"
-            path="/api/DomainAnalyser_List"
-            columns={columns}
-          />
-        </CCardBody>
-      </CCard>
-
+    <CippPageList
+      title="Domain Analyser"
+      tenantSelector={false}
+      datatable={{
+        path: '/api/DomainAnalyser_List',
+        columns,
+        reportName: 'Domains-Analyzer',
+        tableProps: {
+          actions: [<RefreshAction key="refresh-action-button" />],
+        },
+      }}
+    >
       <CippOffcanvas
         id="individual-domain"
         visible={domainCheckVisible}
@@ -258,7 +279,7 @@ const DomainsAnalyser = () => {
       >
         {individualDomainResults}
       </CippOffcanvas>
-    </div>
+    </CippPageList>
   )
 }
 
