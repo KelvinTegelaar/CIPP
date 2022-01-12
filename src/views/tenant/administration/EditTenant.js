@@ -30,7 +30,7 @@ const EditTenant = () => {
   useEffect(() => {
     if (!tenantDomain) {
       ModalService.open({
-        body: 'Error: Invalid request. Could not load requested group.',
+        body: 'Error: Invalid request. Could not load requested tenant.',
         title: 'Invalid Request',
       })
       setQueryError(true)

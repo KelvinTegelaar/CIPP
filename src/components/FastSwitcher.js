@@ -116,8 +116,8 @@ const ResultsRow = ({ match = [] }) => {
           <div className="mx-1">{icon && icon}</div>
           <div className="flex-grow-1 d-flex flex-column">
             <div className="mx-1">{handleHighlight(nameMatch, name)}</div>
-            <div className="mx-1 text-muted">{handleHighlight(sectionMatch, section)}</div>
-            <small className="text-muted">{handleHighlight(toMatch, to)}</small>
+            <div className="mx-1">{handleHighlight(sectionMatch, section)}</div>
+            <small>{handleHighlight(toMatch, to)}</small>
           </div>
         </div>
       </div>
