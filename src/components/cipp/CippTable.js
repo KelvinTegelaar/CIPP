@@ -150,7 +150,7 @@ export default function CippTable({
     reportName,
     disablePDFExport,
     disableCSVExport,
-    actions
+    actions,
   ])
 
   return (

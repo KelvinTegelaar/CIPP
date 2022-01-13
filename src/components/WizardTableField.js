@@ -66,6 +66,7 @@ export default class WizardTableField extends React.Component {
         striped
         path={path}
         disablePDFExport={true}
+        disableCSVExport={true}
         tableProps={{
           selectableRows: true,
           onSelectedRowsChange: this.handleSelect,
