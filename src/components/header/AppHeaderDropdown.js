@@ -7,7 +7,7 @@ import {
   CDropdownToggle,
   CLink,
 } from '@coreui/react'
-import { faUser, faBook } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faBook, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom'
 import { authApi } from '../../store/api/auth'
@@ -34,6 +34,10 @@ const AppHeaderDropdown = () => {
           <Link className="dropdown-item" to="/cipp/logs">
             <FontAwesomeIcon icon={faBook} className="me-2" />
             Logbook
+          </Link>
+          <Link className="dropdown-item" to="/logout">
+            <FontAwesomeIcon icon={faSignOutAlt} className="me-2" />
+            Logout
           </Link>
         </CDropdownMenu>
       </CDropdown>

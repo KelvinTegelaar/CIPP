@@ -24,16 +24,19 @@ const columns = [
     selector: (row) => row['displayName'],
     name: 'Display Name',
     sortable: true,
+    exportSelector: 'displayName',
   },
   {
     selector: (row) => row['mail'],
     name: 'E-Mail Address',
     sortable: true,
+    exportSelector: 'mail',
   },
   {
     selector: (row) => row['company'],
     name: 'Company',
     sortable: true,
+    exportSelector: 'company',
   },
   {
     selector: (row) => row['id'],
@@ -44,6 +47,7 @@ const columns = [
     selector: (row) => row['onPremisesSyncEnabled'],
     name: 'On Premises Sync',
     sortable: true,
+    exportSelector: 'onPremisesSyncEnabled',
     cell: cellBooleanFormatter(),
   },
   {

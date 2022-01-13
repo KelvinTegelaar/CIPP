@@ -22,11 +22,13 @@ const columns = [
     selector: (row) => row['displayName'],
     name: 'Name',
     sortable: true,
+    exportSelector: 'displayName',
   },
   {
     selector: (row) => row['PolicyTypeName'],
     name: 'Profile Type',
     sortable: true,
+    exportSelector: 'PolicyTypeName',
   },
   {
     selector: (row) => row['id'],

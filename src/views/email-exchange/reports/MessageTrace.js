@@ -25,26 +25,31 @@ const columns = [
     name: 'Date',
     selector: (row) => row['Date'],
     sortable: true,
+    exportSelector: 'Date',
   },
   {
     name: 'Recipient',
     selector: (row) => row['RecipientAddress'],
     sortable: true,
+    exportSelector: 'Recipient',
   },
   {
     name: 'Sender',
     selector: (row) => row['SenderAddress'],
     sortable: true,
+    exportSelector: 'Sender',
   },
   {
     name: 'Subject',
     selector: (row) => row['Subject'],
     sortable: true,
+    exportSelector: 'Subject',
   },
   {
     name: 'Status',
     selector: (row) => row['Status'],
     sortable: true,
+    exportSelector: 'Status',
   },
 ]
 

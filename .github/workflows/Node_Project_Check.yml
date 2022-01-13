@@ -15,41 +15,23 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  install:
-    name: NPM Install
-    runs-on: ubuntu-lates
-    strategy:
-      matrix:
-        node-version: [16.x, 17.x]
-        os: [ubuntu-latest, windows-latest, macOS-latest]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Install Test
-        run: npm i --legacy-peer-deps
-        env:
-          CI: true
-  build:
-    name: NPM Build
+  install-build:
+    name: NPM Install and Build
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.x, 17.x]
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        node-version: [16.x]
+        os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Build Test
-        run: npm run install
-        env:
-          CI: true
-        run: npm run build
+      - name: Install and Build Test
+        run: |
+          npm install --legacy-peer-deps
+          npm run build
         env:
           CI: true
   scan:
@@ -57,9 +39,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: install dependencies
+      - name: Install Dependencies
         run: npm ci
-      - uses: oke-py/npm-audit-action@v1
+      - uses: oke-py/npm-audit-action@v1.8.2
         with:
           audit_level: moderate
           production_flag: true

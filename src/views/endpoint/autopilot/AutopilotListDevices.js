@@ -41,31 +41,37 @@ const AutopilotListDevices = () => {
       selector: (row) => row['displayName'],
       name: 'Display Name',
       sortable: true,
+      exportSelector: 'displayName',
     },
     {
       selector: (row) => row['serialNumber'],
       name: 'Serial',
       sortable: true,
+      exportSelector: 'serialNumber',
     },
     {
       selector: (row) => row['model'],
       name: 'Model',
       sortable: true,
+      exportSelector: 'model',
     },
     {
       selector: (row) => row['manufacturer'],
       name: 'Manufacturer',
       sortable: true,
+      exportSelector: 'manufacturer',
     },
     {
       selector: (row) => row['groupTag'],
       name: 'Group Tag',
       sortable: true,
+      exportSelector: 'groupTag',
     },
     {
       selector: (row) => row['enrollmentState'],
       name: 'Enrollment',
       sortable: true,
+      exportSelector: 'enrollmentState',
     },
     {
       name: (row) => row['Actions'],

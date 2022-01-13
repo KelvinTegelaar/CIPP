@@ -47,21 +47,25 @@ const AutopilotListTemplates = () => {
       name: 'Display Name',
       selector: (row) => row['Displayname'],
       sortable: true,
+      exportSelector: 'Displayname',
     },
     {
       name: 'Description',
       selector: (row) => row['Description'],
       sortable: true,
+      exportSelector: 'Description',
     },
     {
       name: 'Type',
       selector: (row) => row['Type'],
       sortable: true,
+      exportSelector: 'Type',
     },
     {
       name: 'GUID',
       selector: (row) => row['GUID'],
       omit: true,
+      exportSelector: 'GUID',
     },
     {
       name: 'Action',
