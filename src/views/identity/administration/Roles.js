@@ -31,17 +31,20 @@ const columns = [
     selector: (row) => row['DisplayName'],
     name: 'Role Name',
     sortable: true,
+    exportSelector: 'DisplayName',
   },
   {
     selector: (row) => row['Description'],
     name: 'Description',
     sortable: true,
     wrap: true,
+    exportSelector: 'Description',
   },
   {
     selector: (row) => 'View Members',
     name: 'Members',
     cell: Offcanvas,
+    exportSelector: 'Members',
   },
 ]
 

@@ -6,11 +6,13 @@ const columns = [
     name: 'User Principal Name',
     selector: (row) => row['UPN'],
     sortable: true,
+    exportSelector: 'UPN',
   },
   {
     name: 'Basic Auth',
     selector: (row) => row['BasicAuth'],
     sortable: true,
+    exportSelector: 'BasicAuth',
   },
 ]
 

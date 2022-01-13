@@ -68,21 +68,25 @@ const columns = [
     selector: (row) => row.displayName,
     name: 'Name',
     sortable: true,
+    exportSelector: 'displayName',
   },
   {
     selector: (row) => row.publishingState,
     name: 'Published',
     sortable: true,
+    exportSelector: 'publishingState',
   },
   {
     selector: (row) => row.installCommandLine,
     name: 'Install Command',
     sortable: true,
+    exportSelector: 'installCommandLine',
   },
   {
     selector: (row) => row.uninstallCommandLine,
     name: 'Uninstall Command',
     sortable: true,
+    exportSelector: 'uninstallCommandLine',
   },
   {
     name: 'Action',

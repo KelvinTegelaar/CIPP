@@ -8,11 +8,13 @@ const columns = [
     selector: (row) => row['displayName'],
     name: 'Display Name',
     sortable: true,
+    exportSelector: 'displayName',
   },
   {
     selector: (row) => row['primarySmtpAddress'],
     name: 'Primary E-mail',
     sortable: true,
+    exportSelector: 'primarySmtpAddress',
   },
   {
     selector: (row) => row['ecpenabled'],
@@ -20,6 +22,7 @@ const columns = [
     sortable: true,
     cell: cellBooleanFormatter(),
     center: true,
+    exportSelector: 'ecpenabled',
   },
   {
     selector: (row) => row['ewsenabled'],
@@ -27,6 +30,7 @@ const columns = [
     sortable: true,
     cell: cellBooleanFormatter(),
     center: true,
+    exportSelector: 'ewsenabled',
   },
   {
     selector: (row) => row['imapenabled'],
@@ -34,6 +38,7 @@ const columns = [
     sortable: true,
     cell: cellBooleanFormatter(),
     center: true,
+    exportSelector: 'imapenabled',
   },
   {
     selector: (row) => row['mapienabled'],
@@ -41,6 +46,7 @@ const columns = [
     sortable: true,
     cell: cellBooleanFormatter(),
     center: true,
+    exportSelector: 'mapienabled',
   },
   {
     selector: (row) => row['owaenabled'],
@@ -48,6 +54,7 @@ const columns = [
     sortable: true,
     cell: cellBooleanFormatter(),
     center: true,
+    exportSelector: 'owaenabled',
   },
   {
     selector: (row) => row['popenabled'],
@@ -55,6 +62,7 @@ const columns = [
     sortable: true,
     cell: cellBooleanFormatter(),
     center: true,
+    exportSelector: 'popenabled',
   },
   {
     selector: (row) => row['activesyncenabled'],
@@ -62,6 +70,7 @@ const columns = [
     sortable: true,
     cell: cellBooleanFormatter(),
     center: true,
+    exportSelector: 'activesyncenabled',
   },
 ]
 

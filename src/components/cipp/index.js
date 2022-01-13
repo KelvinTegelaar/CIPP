@@ -6,6 +6,7 @@ import { CellProgressBar, cellProgressBarFormatter } from './CellProgressBar'
 import CippTable from './CippTable'
 import CippDatatable from './CippDatatable'
 import PdfButton from './PdfButton'
+import CsvButton from './CsvButton'
 import StatusIcon from './StatusIcon'
 import TenantSelector from './TenantSelector'
 import TenantSelectorMultiple from './TenantSelectorMultiple'
@@ -33,6 +34,7 @@ export {
   CippActionsOffcanvas,
   CippOffcanvasTable,
   PdfButton,
+  CsvButton,
   StatusIcon,
   TenantSelector,
   TenantSelectorMultiple,

@@ -62,6 +62,7 @@
     "react-final-form": "^6.5.7",
     "react-final-form-listeners": "^1.0.3",
     "react-media-hook": "^0.4.9",
+    "react-papaparse": "^3.18.2",
     "react-redux": "^7.2.5",
     "react-router-dom": "^6.1.1",
     "react-select-search": "^3.0.8",
