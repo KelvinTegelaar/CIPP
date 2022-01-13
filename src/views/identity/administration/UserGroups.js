@@ -79,6 +79,7 @@ export default function UserGroups({ userId, tenantDomain }) {
             dense
             responsive={true}
             disablePDFExport={true}
+            disableCSVExport={true}
           />
         )}
       </CCardBody>
