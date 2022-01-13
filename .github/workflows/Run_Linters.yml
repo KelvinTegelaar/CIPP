@@ -50,5 +50,5 @@ jobs:
       - uses: reviewdog/action-eslint@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: eslint
+          reporter: github-pr-review
           eslint_flags: 'src/'
