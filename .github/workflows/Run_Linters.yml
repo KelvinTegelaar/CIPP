@@ -26,7 +26,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - uses: megalinter/megalinter@v5
+      - uses: megalinter/megalinter/flavors/javascript@v5
         name: Lint
         env:
           VALIDATE_ALL_CODEBASE: true
