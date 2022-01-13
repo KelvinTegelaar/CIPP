@@ -110,7 +110,10 @@
     ],
     "navigationFallback": {
         "rewrite": "index.html",
-        "exclude": ["/static/images/*.{png,jpg,gif}", "/static/css/*"]
+        "exclude": [
+            "/static/*.{png,jpg,gif}",
+            "/css/*"
+        ]
     },
     "responseOverrides": {
         "401": {
