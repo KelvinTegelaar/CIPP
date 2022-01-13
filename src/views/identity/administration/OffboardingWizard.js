@@ -187,6 +187,21 @@ const OffboardingWizard = () => {
                       <CCol md={6}>
                         <CListGroup flush>
                           <CListGroupItem className="d-flex justify-content-between align-items-center">
+                            <h4>Tenant:</h4>
+                            {tenantDomain}
+                          </CListGroupItem>
+                          <CListGroupItem className="d-flex justify-content-between align-items-center">
+                            <h4>User:</h4>
+                            {props.values.User}
+                          </CListGroupItem>
+                        </CListGroup>
+                      </CCol>
+                    </CRow>
+                    <CRow>
+                      <CCol md={3}></CCol>
+                      <CCol md={6}>
+                        <CListGroup flush>
+                          <CListGroupItem className="d-flex justify-content-between align-items-center">
                             Remove Licenses
                             <FontAwesomeIcon
                               color="#f77f00"
