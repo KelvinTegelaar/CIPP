@@ -104,7 +104,6 @@ const SecurityComplianceAlerts = React.lazy(() => import('./views/security/repor
 const routes = [
   // { path: '/', exact: true, name: 'Home' },
   { path: '/home', name: 'Home', component: Home },
-  { path: '/profile', name: 'Profile' },
   { path: '/cipp/logs', name: 'Logs', component: Logs },
   { path: '/identity', name: 'Identity' },
   { path: '/identity/administration/users/add', name: 'Add User', component: AddUser },
