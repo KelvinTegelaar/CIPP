@@ -1,6 +1,6 @@
 ---
 name: Lint Code Base
-on: # yamllint disable-line rule:truthy
+on:  # yamllint disable-line rule:truthy
   push:
     branches:
       - master
@@ -9,16 +9,13 @@ on: # yamllint disable-line rule:truthy
     branches:
       - master
       - react
-
 permissions:
   issues: write
   pull-requests: write
   checks: write
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
   cancel-in-progress: true
-
 jobs:
   lint:
     name: Lint Code Base
