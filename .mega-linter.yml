@@ -9,3 +9,6 @@ APPLY_FIXES: none # all, none, or list of linter keys
   # - SPELL # Uncomment to disable checks of spelling mistakes
 SHOW_ELAPSED_TIME: true
 FILEIO_REPORTER: false
+ENABLE: JAVASCRIPT,CSS,HTML,JSON,YAML,JSX
+DISABLE_LINTERS: JAVASCRIPT_STANDARD,CSS_STYLELINT
+SHOW_SKIPPED_LINTERS: false
