@@ -139,6 +139,7 @@ export default function UserDevices({ userId, tenantDomain }) {
             dense
             responsive={true}
             disablePDFExport={true}
+            disableCSVExport={true}
           />
         )}
       </CCardBody>

@@ -1,5 +1,6 @@
 import React from 'react'
 import ExportPDFButton from 'src/components/cipp/PdfButton'
+import ExportCsvButton from 'src/components/cipp/CsvButton'
 import { CSpinner, CFormInput } from '@coreui/react'
 import DataTable, { createTheme } from 'react-data-table-component'
 import PropTypes from 'prop-types'
@@ -32,6 +33,7 @@ export default function CippTable({
   data,
   isFetching = false,
   disablePDFExport = false,
+  disableCSVExport = false,
   error,
   reportName,
   columns = [],
@@ -123,6 +125,11 @@ export default function CippTable({
         />,
       ])
     }
+    if (!disableCSVExport) {
+      defaultActions.push([
+        <ExportCsvButton key="export-csv-action" csvData={data} reportName={reportName} />,
+      ])
+    }
     return (
       <>
         <div className="w-50 ms-n2 d-flex justify-content-start">
@@ -135,7 +142,16 @@ export default function CippTable({
         <div className="w-50 d-flex justify-content-end">{defaultActions}</div>
       </>
     )
-  }, [filterText, resetPaginationToggle, columns, data, reportName, disablePDFExport, actions])
+  }, [
+    filterText,
+    resetPaginationToggle,
+    columns,
+    data,
+    reportName,
+    disablePDFExport,
+    disableCSVExport,
+    actions,
+  ])
 
   return (
     <div className="ms-n3 me-n3 cipp-tablewrapper">
@@ -184,6 +200,7 @@ export const CippTablePropTypes = {
   data: PropTypes.array,
   isFetching: PropTypes.bool,
   disablePDFExport: PropTypes.bool,
+  disableCSVExport: PropTypes.bool,
   error: PropTypes.object,
 }
 
