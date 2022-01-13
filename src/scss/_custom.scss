@@ -243,3 +243,13 @@
 .text-danger {
   color: var(--cui-danger) !important;
 }
+
+/* Code Block */
+.cipp-code {
+  position: relative;
+  .cipp-code-copy-button {
+    position: absolute;
+    top: 0.1rem;
+    right: 0.1rem;
+  }
+}
