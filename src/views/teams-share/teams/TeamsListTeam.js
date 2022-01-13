@@ -11,7 +11,9 @@ const TeamsList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
   const dropdown = (row, rowIndex, formatExtraData) => (
     <>
-      <Link to={`ViewTeam&Tenantfilter=${tenant.defaultDomainName}&GroupID=${row.id}`}>
+      <Link
+        to={`/teams-share/teams/view-team-settings?tenantDomain=${tenant.defaultDomainName}&groupId=${row.id}`}
+      >
         <CButton size="sm" variant="ghost" color="success">
           <FontAwesomeIcon icon={faEye} />
         </CButton>
