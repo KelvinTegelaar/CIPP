@@ -29,7 +29,7 @@ const RefreshAction = () => {
     })
 
   return (
-    <CButton onClick={showModal} size="sm" className="text-white m-1">
+    <CButton onClick={showModal} size="sm" className="m-1">
       {isLoading && <CSpinner size="sm" />}
       {error && <FontAwesomeIcon icon={faExclamationTriangle} className="pe-1" />}
       {isSuccess && <FontAwesomeIcon icon={faCheck} className="pe-1" />}
