@@ -65,30 +65,36 @@ const ListAlerts = () => {
       selector: (row) => row['EventDateTime'],
       sortable: true,
       cell: cellDateFormatter(),
+      exportSelector: 'EventDateTime',
     },
     {
       name: 'Tenant',
       selector: (row) => row['Tenant'],
       sortable: true,
+      exportSelector: 'Tenant',
     },
     {
       name: 'Title',
       selector: (row) => row['Title'],
       sortable: true,
+      exportSelector: 'Title',
     },
     {
       name: 'Severity',
       selector: (row) => row['Severity'],
       sortable: true,
+      exportSelector: 'Severity',
     },
     {
       name: 'Status',
       selector: (row) => row['Status'],
       sortable: true,
+      exportSelector: 'Status',
     },
     {
       name: 'More Info',
       selector: (row) => row['MSResults'],
+      exportSelector: 'MSResults',
       sortable: true,
       cell: (row, index, column, id) => {
         const value = cellGetProperty(row, index, column, id)

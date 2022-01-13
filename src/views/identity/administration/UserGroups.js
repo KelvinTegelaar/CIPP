@@ -12,6 +12,7 @@ const columns = [
   {
     name: 'Display Name',
     selector: (row) => row['DisplayName'],
+    exportSelector: 'DisplayName',
     formatter: (cell, row) => {
       return (
         <CLink
@@ -25,29 +26,35 @@ const columns = [
   {
     name: 'Mail Enabled',
     selector: (row) => row['MailEnabled'],
+    exportSelector: 'MailEnabled',
     formatter,
   },
   {
     name: 'Email Address',
     selector: (row) => row['Mail'],
+    exportSelector: 'Mail',
   },
   {
     name: 'Security Group',
     selector: (row) => row['SecurityGroup'],
+    exportSelector: 'SecurityGroup',
     formatter,
   },
   {
     name: 'Group Types',
     selector: (row) => row['GroupTypes'],
+    exportSelector: 'GroupTypes',
   },
   {
     name: 'On Premises Sync',
     selector: (row) => row['OnPremisesSync'],
+    exportSelector: 'OnPremisessSync',
     formatter,
   },
   {
     name: 'Assignable To Role',
     selector: (row) => row['IsAssignableToRole'],
+    exportSelector: 'IsAssignableToRole',
     formatter,
   },
 ]

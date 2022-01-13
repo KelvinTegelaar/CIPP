@@ -106,6 +106,7 @@ const DomainsAnalyser = () => {
       name: 'Domain',
       selector: (row) => row['Domain'],
       sort: true,
+      exportSelector: 'Domain',
     },
     {
       name: 'Security Score',
@@ -117,11 +118,13 @@ const DomainsAnalyser = () => {
         }
       },
       sort: true,
+      exportSelector: 'ScorePercentage',
       cell: cellProgressBarFormatter(),
     },
     {
       name: 'Mail Provider',
       selector: (row) => row['MailProvider'],
+      exportSelector: 'MailProvider',
       sort: true,
       cell: (row, index, column) => {
         const cell = cellGetProperty(row, index, column)
@@ -131,6 +134,7 @@ const DomainsAnalyser = () => {
     {
       name: 'SPF Pass Test',
       selector: (row) => row['SPFPassTest'],
+      exportSelector: 'SPFPassTest',
       sort: true,
       cell: (row, index, column) => {
         const cell = cellGetProperty(row, index, column)
@@ -149,6 +153,7 @@ const DomainsAnalyser = () => {
     {
       name: 'MX Pass Test',
       selector: (row) => row['MXPassTest'],
+      exportSelector: 'MXPassTest',
       sort: true,
       cell: (row, index, column) => {
         const cell = cellGetProperty(row, index, column)
@@ -163,6 +168,7 @@ const DomainsAnalyser = () => {
     {
       name: 'DMARC Present',
       selector: (row) => row['DMARCPresent'],
+      exportSelector: 'DMARCPresent',
       sort: true,
       cell: (row, index, column) => {
         const cell = cellGetProperty(row, index, column)
@@ -181,6 +187,7 @@ const DomainsAnalyser = () => {
     {
       name: 'DMARC Action Policy',
       selector: (row) => row['DMARCActionPolicy'],
+      exportSelector: 'DMARCActionPolicy',
       sort: true,
       cell: (row, index, column) => {
         const cell = cellGetProperty(row, index, column)
@@ -198,6 +205,7 @@ const DomainsAnalyser = () => {
     {
       name: 'DMARC % Pass',
       selector: (row) => row['DMARCPercentagePass'],
+      exportSelector: 'DMARCPercentagePass',
       sort: true,
       cell: (row, index, column) => {
         const cell = cellGetProperty(row, index, column)
@@ -214,6 +222,7 @@ const DomainsAnalyser = () => {
     {
       name: 'DNSSec Enabled',
       selector: (row) => row['DNSSECPresent'],
+      exportSelector: 'DNSSECPresent',
       sort: true,
       cell: (row, index, column) => {
         const cell = cellGetProperty(row, index, column)
@@ -230,6 +239,7 @@ const DomainsAnalyser = () => {
     {
       name: 'DKIM Enabled',
       selector: (row) => row['DKIMEnabled'],
+      exportSelector: 'DKIMEnabled',
       sort: true,
       cell: (row, index, column) => {
         const cell = column.selector(row)
