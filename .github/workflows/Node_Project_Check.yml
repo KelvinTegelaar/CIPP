@@ -58,7 +58,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: install dependencies
         run: npm ci
-      - uses: oke-py/npm-audit-action@v1
+      - uses: oke-py/npm-audit-action@v1.8.2
         with:
           audit_level: moderate
           production_flag: true
