@@ -15,24 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  install:
-    name: NPM Install
-    runs-on: ubuntu-lates
-    strategy:
-      matrix:
-        node-version: [16.x]
-        os: [ubuntu-latest]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Install Test
-        run: npm i --legacy-peer-deps
-        env:
-          CI: true
-  build:
+  install-build:
     name: NPM Build
     runs-on: ubuntu-latest
     strategy:
