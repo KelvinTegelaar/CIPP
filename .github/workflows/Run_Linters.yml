@@ -12,7 +12,6 @@ on:
 permissions:
   issues: write
   pull-requests: write
-  discussions: write
   checks: write
 
 concurrency:
