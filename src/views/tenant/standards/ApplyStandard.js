@@ -71,6 +71,7 @@ const ApplyStandard = () => {
         <Field name="selectedTenants">
           {(props) => (
             <WizardTableField
+              reportName="Apply-Standard-Tenant-Selector"
               keyField="defaultDomainName"
               path="/api/ListTenants"
               columns={[

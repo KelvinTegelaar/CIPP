@@ -279,8 +279,8 @@ $search-group-header-bg: #eeeeee;
 // Quickly modify global styling by enabling or disabling optional features.
 
 // $enable-caret:                      true !default;
-$enable-rounded:                        true;
-$enable-shadows:                        true;
+$enable-rounded: true;
+$enable-shadows: true;
 // $enable-gradients:                  false !default;
 // $enable-transitions:                true !default;
 // $enable-reduced-motion:             true !default;
@@ -289,7 +289,7 @@ $enable-shadows:                        true;
 // $enable-button-pointers:            true !default;
 // $enable-rfs:                        true !default;
 // $enable-validation-icons:           true !default;
-$enable-negative-margins:               true;
+$enable-negative-margins: true;
 // $enable-deprecation-messages:       true !default;
 // $enable-important-utilities:        true !default;
 // $enable-contrast-ratio-correction:  true !default;
@@ -1651,10 +1651,9 @@ $sidebar-bg: #003049 !default;
 // $sidebar-backdrop-bg:                      $black !default;
 // $sidebar-backdrop-opacity:                 .5 !default;
 // $sidebar-backdrop-transition:              opacity .15s linear !default;
-
-// $sidebar-nav-title-padding-y:              .75rem !default;
+$sidebar-nav-title-padding-y: 0.5rem;
 // $sidebar-nav-title-padding-x:              1rem !default;
-// $sidebar-nav-title-margin-top:             1rem !default;
+$sidebar-nav-title-margin-top: 0.5rem;
 // $sidebar-nav-title-color:                  $medium-emphasis-inverse !default;
 // $sidebar-nav-title-transition:             height .15s, margin .15s !default;
 

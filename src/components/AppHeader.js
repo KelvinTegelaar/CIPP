@@ -11,9 +11,9 @@ import {
 } from '@coreui/react'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
 import { AppBreadcrumb } from './index'
-import { AppHeaderDropdown } from './header/index'
+import AppHeaderDropdown from 'src/components/header/AppHeaderDropdown'
+import AppHeaderSearch from 'src/components/header/AppHeaderSearch'
 import cyberdrainlogo from 'src/assets/images/CIPP.png'
 import { toggleSidebarShow } from '../store/features/app'
 
@@ -34,6 +34,7 @@ const AppHeader = () => {
           <CImage src={cyberdrainlogo} height={48} alt="Logo" />
         </CHeaderBrand>
         <CHeaderNav className="ms-3">
+          <AppHeaderSearch />
           <AppHeaderDropdown />
         </CHeaderNav>
       </CContainer>

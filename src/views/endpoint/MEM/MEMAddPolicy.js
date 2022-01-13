@@ -92,6 +92,7 @@ const AddPolicy = () => {
         <Field name="selectedTenants" validate={requiredArray}>
           {(props) => (
             <WizardTableField
+              reportName="Add-MEM-Policy-Tenant-Selector"
               keyField="defaultDomainName"
               path="/api/ListTenants"
               columns={[

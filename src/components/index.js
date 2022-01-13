@@ -2,6 +2,7 @@ import AppBreadcrumb from './AppBreadcrumb'
 import AppFooter from './AppFooter'
 import AppHeader from './AppHeader'
 import AppHeaderDropdown from './header/AppHeaderDropdown'
+import AppHeaderSearch from './header/AppHeaderSearch'
 import AppSidebar from './AppSidebar'
 import Loading, { FullScreenLoading } from './Loading'
 import SharedModal from './SharedModal'
@@ -24,6 +25,7 @@ export {
   AppFooter,
   AppHeader,
   AppHeaderDropdown,
+  AppHeaderSearch,
   AppSidebar,
   CippPage,
   CippPageList,

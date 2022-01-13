@@ -529,7 +529,6 @@ DKIMResultsCard.propTypes = sharedProps
 const DomainCheckError = (props) => {
   const [expanded, setExpanded] = useState(false)
   const { isError, domain, error } = props
-
   if (!isError) {
     return null
   }

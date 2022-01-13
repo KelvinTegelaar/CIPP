@@ -1,10 +1,13 @@
 # CIPP-ADMIN
+
 A React frontend to the CIPP-API
 
 # Developer Setup
+
 Requirements:
+
 - VSCode
-    - Azure Functions Extension
+  - Azure Functions Extension
 - Git
 - Node.js LTS
 - MSSQL Express
@@ -34,12 +37,13 @@ git clone https://github.com/redanthrax/CIPP-API.git
 The cipp-admin repo and the CIPP-API repo are expected to be next to eachother.
 
 - source_dir
-    - CIPP-API
-    - cipp-admin
+  - CIPP-API
+  - cipp-admin
 
 ```
 git clone https://github.com/redanthrax/cipp-admin.git
 ```
+
 cd into the cipp-admin directory
 
 ```
@@ -47,6 +51,7 @@ npm install --legacy-peer-deps
 ```
 
 # Setup variables for the API to connect to Azure
+
 Open the CIPP-API directory with VSCode
 
 Create a file in the root directory with the name local.settings.json. See the Secure App for values.
@@ -67,6 +72,7 @@ Create a file in the root directory with the name local.settings.json. See the S
 ```
 
 # Run the debug environment
+
 Open the cipp-admin directory with VSCode
 
 Select Debug from the Menu

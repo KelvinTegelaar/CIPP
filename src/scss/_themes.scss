@@ -67,8 +67,11 @@
   --cui-dark-rgb: var(--cyberdrain-dark-rgb);
   --cui-white-rgb: rgb(255, 255, 255);
   --cui-black-rgb: rgb(0, 0, 0);
-  --cui-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --cui-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --cui-font-sans-serif: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    'Noto Sans', 'Liberation Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
+  --cui-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+    monospace;
   --cui-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
   --cui-body-font-family: var(--cui-font-sans-serif);
   --cui-body-font-size: 1rem;
@@ -85,7 +88,7 @@
   --cipp-offcanvas-header-hover-color: var(--cyberdrain-lighter);
   --cipp-search-selected-option-color: var(--cyberdrain-light);
   --cipp-search-selected-option-bg: var(--cyberdrain-accent-green);
-  --cipp-search-selected-option-highlight: rgba(0 ,92 , 99, 0.1);
+  --cipp-search-selected-option-highlight: rgba(0, 92, 99, 0.1);
   --cipp-search-header-bg: var(--cyberdrain-accent-blue);
   --cipp-search-header-color: var(--cyberdrain-light);
   .btn-ghost-success {
@@ -194,8 +197,8 @@
   }
 }
 
-[data-theme="default"],
-[data-theme="cyberdrain"] {
+[data-theme='default'],
+[data-theme='cyberdrain'] {
   // Core UI CyberDrain theme variables.
   --cui-body-bg: var(--cyberdrain-light);
   --cui-body-color: var(--cyberdrain-dark);
@@ -285,7 +288,7 @@
     }
   }
 }
-[data-theme="impact"] {
+[data-theme='impact'] {
   // Core UI Impact theme variables.
   --cui-body-bg: var(--cyberdrain-dark);
   --cui-body-color: var(--cyberdrain-light);
