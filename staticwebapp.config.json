@@ -109,11 +109,8 @@
         }
     ],
     "navigationFallback": {
-        "rewrite": "/404",
-        "exclude": [
-            "/static/*.{png,jpg,gif}",
-            "/css/*"
-        ]
+        "rewrite": "index.html",
+        "exclude": ["/static/images/*.{png,jpg,gif}", "/static/css/*"]
     },
     "responseOverrides": {
         "401": {
