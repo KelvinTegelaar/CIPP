@@ -178,115 +178,111 @@ const OffboardingWizard = () => {
           )}
           {!postResults.isSuccess && (
             <FormSpy>
-              {(props) => {
-                /* eslint-disable react/prop-types */
-                return (
-                  <>
-                    <CRow>
-                      <CCol md={3}></CCol>
-                      <CCol md={6}>
-                        <CListGroup flush>
-                          <CListGroupItem className="d-flex justify-content-between align-items-center">
-                            <h4>Tenant:</h4>
-                            {tenantDomain}
-                          </CListGroupItem>
-                          <CListGroupItem className="d-flex justify-content-between align-items-center">
-                            <h4>User:</h4>
-                            {props.values.User}
-                          </CListGroupItem>
-                        </CListGroup>
-                      </CCol>
-                    </CRow>
-                    <CRow>
-                      <CCol md={3}></CCol>
-                      <CCol md={6}>
-                        <CListGroup flush>
-                          <CListGroupItem className="d-flex justify-content-between align-items-center">
-                            Remove Licenses
-                            <FontAwesomeIcon
-                              color="#f77f00"
-                              size="lg"
-                              icon={props.values.RemoveLicenses ? faCheckCircle : faTimesCircle}
-                            />
-                          </CListGroupItem>
-                          <CListGroupItem className="d-flex justify-content-between align-items-center">
-                            Convert to Shared
-                            <FontAwesomeIcon
-                              color="#f77f00"
-                              size="lg"
-                              icon={props.values.ConvertToShared ? faCheckCircle : faTimesCircle}
-                            />
-                          </CListGroupItem>
-                          <CListGroupItem className="d-flex justify-content-between align-items-center">
-                            Disable Sign-in
-                            <FontAwesomeIcon
-                              color="#f77f00"
-                              size="lg"
-                              icon={props.values.DisableSignIn ? faCheckCircle : faTimesCircle}
-                            />
-                          </CListGroupItem>
-                          <CListGroupItem className="d-flex justify-content-between align-items-center">
-                            Reset Password
-                            <FontAwesomeIcon
-                              color="#f77f00"
-                              size="lg"
-                              icon={props.values.ResetPass ? faCheckCircle : faTimesCircle}
-                            />
-                          </CListGroupItem>
-                          <CListGroupItem className="d-flex justify-content-between align-items-center">
-                            Remove from all groups
-                            <FontAwesomeIcon
-                              color="#f77f00"
-                              size="lg"
-                              icon={props.values.RemoveGroups ? faCheckCircle : faTimesCircle}
-                            />
-                          </CListGroupItem>
-                          <CListGroupItem className="d-flex justify-content-between align-items-center">
-                            Hide from Global Address List
-                            <FontAwesomeIcon
-                              color="#f77f00"
-                              size="lg"
-                              icon={props.values.HideFromGAL ? faCheckCircle : faTimesCircle}
-                            />
-                          </CListGroupItem>
-                          <CListGroupItem className="d-flex justify-content-between align-items-center">
-                            Set Out of Office
-                            <FontAwesomeIcon
-                              color="#f77f00"
-                              size="lg"
-                              icon={props.values.OOO ? faCheckCircle : faTimesCircle}
-                            />
-                          </CListGroupItem>
-                          <CListGroupItem className="d-flex justify-content-between align-items-center">
-                            Give another user access to the mailbox with automap
-                            <FontAwesomeIcon
-                              color="#f77f00"
-                              size="lg"
-                              icon={props.values.UserNoAutomap ? faCheckCircle : faTimesCircle}
-                            />
-                          </CListGroupItem>
-                          <CListGroupItem className="d-flex justify-content-between align-items-center">
-                            Give another user access to the mailbox without automap
-                            <FontAwesomeIcon
-                              color="#f77f00"
-                              size="lg"
-                              icon={props.values.UserAutomap ? faCheckCircle : faTimesCircle}
-                            />
-                          </CListGroupItem>
-                          <CListGroupItem className="d-flex justify-content-between align-items-center">
-                            Give another user access to OneDrive
-                            <FontAwesomeIcon
-                              color="#f77f00"
-                              size="lg"
-                              icon={props.values.OneDrive ? faCheckCircle : faTimesCircle}
-                            />
-                          </CListGroupItem>
-                        </CListGroup>
-                      </CCol>
-                    </CRow>
-                  </>
-                )
-              }}
+              {(props) => (
+                /* eslint-disable react/prop-types */ <>
+                  <CRow>
+                    <CCol md={{ span: 6, offset: 3 }}>
+                      <CListGroup flush>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          <h5>Selected Tenant:</h5>
+                          {tenantDomain}
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          <h5>Selected User:</h5>
+                          {props.values.User}
+                        </CListGroupItem>
+                      </CListGroup>
+                      <hr />
+                    </CCol>
+                  </CRow>
+                  <CRow>
+                    <CCol md={{ span: 6, offset: 3 }}>
+                      <CListGroup flush>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Remove Licenses
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.RemoveLicenses ? faCheckCircle : faTimesCircle}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Convert to Shared
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.ConvertToShared ? faCheckCircle : faTimesCircle}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Disable Sign-in
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.DisableSignIn ? faCheckCircle : faTimesCircle}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Reset Password
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.ResetPass ? faCheckCircle : faTimesCircle}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Remove from all groups
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.RemoveGroups ? faCheckCircle : faTimesCircle}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Hide from Global Address List
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.HideFromGAL ? faCheckCircle : faTimesCircle}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Set Out of Office
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.OOO ? faCheckCircle : faTimesCircle}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Give another user access to the mailbox with automap
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.UserNoAutomap ? faCheckCircle : faTimesCircle}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Give another user access to the mailbox without automap
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.UserAutomap ? faCheckCircle : faTimesCircle}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Give another user access to OneDrive
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.OneDrive ? faCheckCircle : faTimesCircle}
+                          />
+                        </CListGroupItem>
+                      </CListGroup>
+                    </CCol>
+                  </CRow>
+                </>
+              )}
             </FormSpy>
           )}
         </div>
