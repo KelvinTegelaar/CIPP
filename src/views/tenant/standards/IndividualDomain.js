@@ -4,9 +4,9 @@ import { Form, Field } from 'react-final-form'
 import { useSearchParams } from 'react-router-dom'
 import { useLazyListDomainTestsQuery, useListDomainTestsQuery } from '../../../store/api/domains'
 import StatusIcon from 'src/components/cipp/StatusIcon'
+import CippCodeBlock from 'src/components/cipp/CippCodeBlock'
 import CippOffcanvas from 'src/components/cipp/CippOffcanvas'
 import {
-  CAlert,
   CButton,
   CCallout,
   CCard,
@@ -17,7 +17,6 @@ import {
   CForm,
   CFormLabel,
   CFormInput,
-  CFormTextarea,
   CRow,
   CCardTitle,
   CListGroup,
@@ -41,7 +40,6 @@ import {
   faExclamationTriangle,
   faExpandAlt,
   faTimesCircle,
-  faCopy,
   faExternalLinkAlt,
 } from '@fortawesome/free-solid-svg-icons'
 
@@ -53,7 +51,6 @@ const IconWarning = () => (
   <FontAwesomeIcon icon={faExclamationTriangle} className="text-warning mx-2" />
 )
 const IconExternalLink = () => <FontAwesomeIcon icon={faExternalLinkAlt} className="me-2" />
-const IconCopy = () => <FontAwesomeIcon icon={faCopy} />
 
 const domainCheckProps = {
   readOnly: PropTypes.bool,
@@ -233,25 +230,6 @@ const SPFResultsCard = ({ domain }) => {
   const textareaRef = useRef(null)
   let record = data?.SPFResults?.Record
 
-  function copyToClipboard(e) {
-    textareaRef.current.select()
-    document.execCommand('copy')
-    //e.target.focus()
-    window.getSelection().removeAllRanges()
-    setCopyAlertVisible()
-    window.setTimeout(() => {
-      setCopyAlertVisible(false)
-    }, 2000)
-  }
-
-  const textareaStyle = {
-    overflow: 'hidden',
-    resize: 'none',
-    paddingRight: '40px',
-  }
-
-  const [copyAlertVisible, setCopyAlertVisible] = useState(false)
-
   useEffect(() => {
     if (textareaRef && textareaRef.current) {
       textareaRef.current.style.height = '0px'
@@ -262,26 +240,7 @@ const SPFResultsCard = ({ domain }) => {
   return (
     <ResultsCard data={data} type="SPF">
       {record && (
-        <div style={{ position: 'relative' }}>
-          <CButton
-            onClick={copyToClipboard}
-            style={{ position: 'absolute', top: '4px', right: '4px' }}
-            size="sm"
-            color="light"
-          >
-            <IconCopy />
-          </CButton>
-          <CFormTextarea
-            style={textareaStyle}
-            ref={textareaRef}
-            className="bg-secondary text-white mb-2"
-            value={record}
-            readOnly
-          />
-          <CAlert visible={copyAlertVisible} color="info">
-            Copied!
-          </CAlert>
-        </div>
+        <CippCodeBlock language="text" code={record} showLineNumbers={false} wrapLongLines={true} />
       )}
     </ResultsCard>
   )
@@ -384,57 +343,11 @@ MXResultsCard.propTypes = sharedProps
 const DMARCResultsCard = ({ domain }) => {
   const { data } = useListDomainTestsQuery({ domain })
   let record = data?.DMARCResults?.Record
-  const textareaRef = useRef(null)
-
-  function copyToClipboard(e) {
-    textareaRef.current.select()
-    document.execCommand('copy')
-    //e.target.focus()
-    window.getSelection().removeAllRanges()
-    setCopyAlertVisible()
-    window.setTimeout(() => {
-      setCopyAlertVisible(false)
-    }, 2000)
-  }
-  const [copyAlertVisible, setCopyAlertVisible] = useState(false)
-
-  const textareaStyle = {
-    overflow: 'hidden',
-    resize: 'none',
-    paddingRight: '40px',
-  }
-
-  useEffect(() => {
-    if (textareaRef && textareaRef.current) {
-      textareaRef.current.style.height = '0px'
-      const scrollHeight = textareaRef.current.scrollHeight
-      textareaRef.current.style.height = scrollHeight + 'px'
-    }
-  }, [record])
 
   return (
     <ResultsCard data={data} type="DMARC">
       {record && (
-        <div style={{ position: 'relative' }}>
-          <CButton
-            onClick={copyToClipboard}
-            style={{ position: 'absolute', top: '4px', right: '4px' }}
-            size="sm"
-            color="light"
-          >
-            <IconCopy />
-          </CButton>
-          <CFormTextarea
-            style={textareaStyle}
-            ref={textareaRef}
-            className="bg-secondary text-white mb-2"
-            value={record}
-            readOnly
-          />
-          <CAlert visible={copyAlertVisible} color="info">
-            Copied!
-          </CAlert>
-        </div>
+        <CippCodeBlock language="text" code={record} showLineNumbers={false} wrapLongLines={true} />
       )}
     </ResultsCard>
   )
@@ -469,12 +382,13 @@ const DNSSECResultsCard = ({ domain }) => {
       )}
       <CCollapse visible={visible} className="mb-2">
         {keys.map((key, idx) => (
-          <CFormTextarea
-            className="bg-secondary text-white mb-2"
+          <CippCodeBlock
+            language="text"
             key={`${idx}-dnssec-key`}
-            value={key}
-            readOnly
-          ></CFormTextarea>
+            code={key}
+            showLineNumbers={false}
+            wrapLongLines={true}
+          />
         ))}
       </CCollapse>
     </ResultsCard>
@@ -512,11 +426,15 @@ const DKIMResultsCard = ({ domain }) => {
         {records.map((record, idx) => (
           <div key={`${idx}-dkim-record`}>
             <CFormLabel>{record?.Selector}._domainkey</CFormLabel>
-            <CFormTextarea
-              className="bg-secondary text-white mb-2"
-              value={record?.Record}
-              readOnly
-            ></CFormTextarea>
+            {record && (
+              <CippCodeBlock
+                language="text"
+                key={`${idx}-dnssec-key`}
+                code={record?.Record}
+                showLineNumbers={false}
+                wrapLongLines={true}
+              />
+            )}
           </div>
         ))}
       </CCollapse>
