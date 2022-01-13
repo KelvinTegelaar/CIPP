@@ -21,7 +21,8 @@
     "test": "react-scripts test",
     "test:cov": "npm test -- --coverage --watchAll=false",
     "test:debug": "react-scripts --inspect-brk test --runInBand",
-    "start-api": "swa start --ssl --ssl-cert ./.vscode/cert.crt --ssl-key ./.vscode/key.key --swa-config-location . http://localhost:3000 --api-location http://localhost:7071"
+    "start-api": "swa start --ssl --ssl-cert ./.vscode/cert.crt --ssl-key ./.vscode/key.key --swa-config-location . http://localhost:3000 --api-location http://localhost:7071",
+    "prepare": "husky install"
   },
   "config": {
     "coreui_library_short_version": "4.1"
@@ -41,7 +42,6 @@
     "@reduxjs/toolkit": "^1.7.0",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.6.3",
     "axios": "^0.24.0",
-    "azurite": "^3.15.0",
     "chart.js": "^3.5.1",
     "classnames": "^2.3.1",
     "core-js": "^3.18.3",
@@ -72,8 +72,10 @@
   },
   "devDependencies": {
     "auto-changelog": "~2.3.0",
+    "azurite": "^3.15.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "husky": "^7.0.4",
     "prettier": "2.4.1",
     "react-scripts": "^5.0.0",
     "redux-immutable-state-invariant": "^2.1.0",
@@ -84,6 +86,6 @@
     "npm": ">=7"
   },
   "eslintIgnore": [
-		"node_modules/"
-	]
+    "node_modules/"
+  ]
 }
