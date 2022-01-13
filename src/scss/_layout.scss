@@ -1,32 +1,32 @@
 .wrapper {
-  width: 100%;
 
-  @include ltr-rtl("padding-left", var(--cui-sidebar-occupy-start, 0));
-
-  will-change: auto;
+  @include ltr-rtl('padding-left', var(--cui-sidebar-occupy-start, 0));
 
   @include transition(padding 0.15s);
+  width: 100%;
+
+  will-change: auto;
 }
 
 .nav-wizard {
   .nav-link {
-    display: flex;
     align-items: center;
-    padding: 2rem;
     color: var(--cyberdrain-light);
+    display: flex;
+    padding: 2rem;
 
     .wizard-step-icon {
-      width: 2.5rem;
-      height: 2.5rem;
-      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      margin-right: 1rem;
-      border-radius: 0.35rem;
       background-color: var(--cyberdrain-primary);
+      border-radius: 0.35rem;
       color: var(--cui-body-bg);
+      display: inline-flex;
+      flex-shrink: 0;
       font-weight: bolder;
+      height: 2.5rem;
+      justify-content: center;
+      margin-right: 1rem;
+      width: 2.5rem;
 
       i,
       svg,
@@ -39,16 +39,16 @@
       text-align: left;
 
       .wizard-step-text-name {
-        font-size: 1rem;
-        margin-bottom: 0.25rem;
         color: var(--cyberdrain-primary);
+        font-size: 1rem;
         font-weight: bolder;
+        margin-bottom: 0.25rem;
       }
 
       .wizard-step-text-details {
-        font-weight: 400;
-        font-size: 0.875rem;
         color: var(--cui-body-color);
+        font-size: 0.875rem;
+        font-weight: 400;
       }
     }
 

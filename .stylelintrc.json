@@ -1,23 +1,14 @@
 {
-    "extends": "stylelint-config-standard-scss",
-    "overrides": [
-        {
-            "files": ["**/*.scss"],
-            "customSyntax": "postcss-scss"
-        }
-    ],
-    "plugins": [
-		"stylelint-order"
-	],
+    "extends": "stylelint-config-sass-guidelines",
 	"rules": {
-		"order/order": [
-			"custom-properties",
-			"declarations"
+		"selector-class-pattern": null,
+		"max-nesting-depth": 5,
+		"selector-no-qualifying-type": [
+			true,
+			{
+				"ignore": ["attribute", "class"]
+			}
 		],
-		"order/properties-order": [
-			"width",
-			"height"
-		],
-		"selector-class-pattern": null
+		"selector-max-compound-selectors": 5
 	}
 }

@@ -1,25 +1,25 @@
 .sr-only {
-  width: 1px !important;
-  height: 1px !important;
-  clip-path: inset(50%) !important;
   border: 0 !important;
   clip: rect(1px, 1px, 1px, 1px) !important;
+  clip-path: inset(50%) !important;
+  height: 1px !important;
   margin: -1px !important;
   overflow: hidden !important;
   padding: 0 !important;
   position: absolute !important;
   white-space: nowrap !important;
+  width: 1px !important;
 
   &-focusable {
     &:focus,
     &:active {
-      width: auto !important;
-      height: auto !important;
       clip: auto !important;
       clip-path: none !important;
+      height: auto !important;
       margin: auto !important;
       overflow: visible !important;
       white-space: normal !important;
+      width: auto !important;
     }
   }
 }
@@ -35,10 +35,10 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #d6dee1;
-  border-radius: 20px;
-  border: 6px solid transparent;
   background-clip: content-box;
+  background-color: #d6dee1;
+  border: 6px solid transparent;
+  border-radius: 20px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -143,8 +143,8 @@
   }
 
   .dropdown-menu {
-    z-index: 1000;
     transform: translateZ(100px);
+    z-index: 1000;
   }
 }
 
@@ -155,9 +155,9 @@
 .dropdown-item {
   a {
     color: var(--cui-dropdown-link-color);
+    display: inline-block;
     text-decoration: none;
     width: 100%;
-    display: inline-block;
 
     &:hover {
       color: var(--cui-dropdown-link-hover-color);
@@ -171,7 +171,7 @@
   z-index: 1500;
 
   &.offcanvas-end {
-    @include ltr-rtl-value-only("transform", none, none);
+    @include ltr-rtl-value-only('transform', none, none);
   }
 
   .offcanvas-header {
@@ -188,15 +188,15 @@
   }
 
   .offcanvas-title {
-    padding-bottom: 1rem;
-    padding-top: 0.5rem;
     background-color: var(--cipp-offcanvas-title-bg);
     color: var(--cipp-offcanvas-title-color);
+    padding-bottom: 1rem;
+    padding-top: 0.5rem;
   }
 
   .cipp-extendedinfo-label {
-    font-weight: bold;
     border-bottom: 1px solid var(--cipp-offcanvas-label-border-color);
+    font-weight: bold;
   }
 }
 
@@ -260,7 +260,7 @@
 
   .cipp-code-copy-button {
     position: absolute;
-    top: 0.1rem;
     right: 0.1rem;
+    top: 0.1rem;
   }
 }

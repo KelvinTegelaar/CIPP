@@ -70,24 +70,24 @@
   --cui-font-sans-serif:
     system-ui,
     -apple-system,
-    "Segoe UI",
+    'Segoe UI',
     roboto,
-    "Helvetica Neue",
+    'Helvetica Neue',
     arial,
-    "Noto Sans",
-    "Liberation Sans",
+    'Noto Sans',
+    'Liberation Sans',
     sans-serif,
-    "Apple Color Emoji",
-    "Segoe UI Emoji",
-    "Segoe UI Symbol",
-    "Noto Color Emoji";
+    'Apple Color Emoji',
+    'Segoe UI Emoji',
+    'Segoe UI Symbol',
+    'Noto Color Emoji';
   --cui-font-monospace:
     sfmono-regular,
     menlo,
     monaco,
     consolas,
-    "Liberation Mono",
-    "Courier New",
+    'Liberation Mono',
+    'Courier New',
     monospace;
   --cui-gradient: linear-gradient(180deg, rgb(255 255 255 / 15%), rgb(255 255 255 / 0%));
   --cui-body-font-family: var(--cui-font-sans-serif);
@@ -225,8 +225,8 @@
   }
 }
 
-[data-theme="default"],
-[data-theme="cyberdrain"] {
+[data-theme='default'],
+[data-theme='cyberdrain'] {
   // Core UI CyberDrain theme variables.
   --cui-body-bg: var(--cyberdrain-light);
   --cui-body-color: var(--cyberdrain-dark);
@@ -285,13 +285,6 @@
   --cui-toast-header-background-color: var(--cyberdrain-accent-green);
   --cui-toast-header-color: var(--cyberdrain-light);
 
-  .table {
-    --cui-table-bg: var(--cyberdrain-light);
-    --cui-table-color: var(--cyberdrain-dark);
-    --cui-table-striped-bg: var(--cyberdrain-light-striped);
-    --cui-table-striped-color: var(--cyberdrain-dark-striped);
-  }
-
   // CIPP CyberDrain theme variables.
   --cipp-search-bg: var(--cyberdrain-light);
   --cipp-search-border-color: var(--cyberdrain-dark);
@@ -308,10 +301,17 @@
   --cipp-table-primary-colour: var(--cyberdrain-dark);
   --cipp-table-secondary-colour: var(--cyberdrain-secondary);
   --cipp-table-sort-focus-bg: var(--cyberdrain-secondary);
-  --cipp-table-highlight-on-hover-bg: white;
+  --cipp-table-highlight-on-hover-bg: #fff;
   --cipp-table-highlight-on-hover-color: var(--cyberdrain-dark);
   --cipp-table-striped-bg: var(--cyberdrain-light-striped);
   --cipp-table-striped-colour: var(--cyberdrain-dark-striped);
+
+  .table {
+    --cui-table-bg: var(--cyberdrain-light);
+    --cui-table-color: var(--cyberdrain-dark);
+    --cui-table-striped-bg: var(--cyberdrain-light-striped);
+    --cui-table-striped-color: var(--cyberdrain-dark-striped);
+  }
 
   /* stylelint-disable no-descending-specificity */
   .header-toggler {
@@ -322,7 +322,7 @@
   /* stylelint-enable no-descending-specificity */
 }
 
-[data-theme="impact"] {
+[data-theme='impact'] {
   // Core UI Impact theme variables.
   --cui-body-bg: var(--cyberdrain-dark);
   --cui-body-color: var(--cyberdrain-light);
@@ -381,13 +381,6 @@
   --cui-toast-header-background-color: var(--cyberdrain-accent-green);
   --cui-toast-header-color: var(--cyberdrain-light);
 
-  .table {
-    --cui-table-bg: var(--cyberdrain-dark);
-    --cui-table-color: var(--cyberdrain-light);
-    --cui-table-striped-bg: var(--cyberdrain-dark-striped);
-    --cui-table-striped-color: var(--cyberdrain-light-striped);
-  }
-
   // CIPP Impact theme variables.
   --cipp-search-bg: var(--cyberdrain-dark);
   --cipp-search-border-color: var(--cyberdrain-light);
@@ -408,6 +401,13 @@
   --cipp-table-highlight-on-hover-color: var(--cyberdrain-light);
   --cipp-table-striped-bg: var(--cyberdrain-dark-striped);
   --cipp-table-striped-colour: var(--cyberdrain-light-striped);
+
+  .table {
+    --cui-table-bg: var(--cyberdrain-dark);
+    --cui-table-color: var(--cyberdrain-light);
+    --cui-table-striped-bg: var(--cyberdrain-dark-striped);
+    --cui-table-striped-color: var(--cyberdrain-light-striped);
+  }
 
   /* stylelint-disable no-descending-specificity */
   .header-toggler {
