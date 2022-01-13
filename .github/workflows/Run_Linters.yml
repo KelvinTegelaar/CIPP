@@ -5,7 +5,7 @@ on:  # yamllint disable-line rule:truthy
     branches:
       - master
       - react
-  pull_request:
+  pull_request_target:
     branches:
       - master
       - react
@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        with: 
+        with:
           fetch-depth: 0
       - uses: actions/setup-node@v2
         with:
