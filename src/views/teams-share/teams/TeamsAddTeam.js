@@ -93,7 +93,7 @@ const TeamsAddTeam = () => {
                       <CRow className="mb-3">
                         <CCol>
                           <hr></hr>
-                          <CButton className="text-white" type="submit" disabled={submitting}>
+                          <CButton type="submit" disabled={submitting}>
                             Add Team
                           </CButton>
                         </CCol>

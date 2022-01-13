@@ -23,9 +23,7 @@ const Page404 = () => {
               <p className="text-medium-emphasis float-start">
                 The page you are looking for was not found.
                 <br /> <br />
-                <CButton className="text-white" href="/">
-                  Back to home
-                </CButton>
+                <CButton href="/">Back to home</CButton>
               </p>
             </div>
             <CInputGroup className="input-prepend">
