@@ -29,10 +29,10 @@ jobs:
       - uses: github/super-linter/slim@v4
         name: Lint
         env:
-          VALIDATE_ALL_CODEBASE: false
+          VALIDATE_ALL_CODEBASE: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: react
-          JAVASCRIPT_ES_CONFIG_FILE: .eslintrc.js
+          JAVASCRIPT_ES_CONFIG_FILE: .eslintrc.json
           LINTER_RULES_PATH: /
           VALIDATE_JSCPD_ALL_CODEBASE: false
           VALIDATE_ANSIBLE: false
