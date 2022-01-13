@@ -83,6 +83,7 @@ const ApplyStandard = () => {
         <Field name="selectedTenants" validate={requiredArray}>
           {(props) => (
             <WizardTableField
+              reportName="Add-Autopilot-Profile-Tenant-Selector"
               keyField="defaultDomainName"
               path="/api/ListTenants"
               columns={[

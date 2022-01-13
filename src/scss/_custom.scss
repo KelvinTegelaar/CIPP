@@ -126,7 +126,7 @@
 .rdt_TableBody {
   .rdt_TableRow {
     &:hover {
-      border-bottom-color:  var(--cipp-table-divider);
+      border-bottom-color: var(--cipp-table-divider);
       outline-style: none;
     }
   }
@@ -149,7 +149,6 @@
   font-size: smaller;
 }
 
-
 .dropdown-item {
   a {
     color: var(--cui-dropdown-link-color);
@@ -167,7 +166,7 @@
   background-color: var(--cui-body-bg);
   z-index: 1500;
   &.offcanvas-end {
-    @include ltr-rtl-value-only("transform", none, none);
+    @include ltr-rtl-value-only('transform', none, none);
   }
   .offcanvas-header {
     background-color: var(--cipp-offcanvas-header-bg);
@@ -187,7 +186,7 @@
   }
   .cipp-extendedinfo-label {
     font-weight: bold;
-    border-bottom: 1px solid var(--cipp-offcanvas-label-border-color)
+    border-bottom: 1px solid var(--cipp-offcanvas-label-border-color);
   }
 }
 

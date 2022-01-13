@@ -7,10 +7,10 @@
 
 .nav-wizard {
   .nav-link {
-  display: flex;
-  align-items: center;
-  padding: 2rem;
-  color: var(--cyberdrain-light);
+    display: flex;
+    align-items: center;
+    padding: 2rem;
+    color: var(--cyberdrain-light);
     .wizard-step-icon {
       display: inline-flex;
       align-items: center;
@@ -23,7 +23,9 @@
       background-color: var(--cyberdrain-primary);
       color: var(--cui-body-bg);
       font-weight: bolder;
-      i, svg, .feather {
+      i,
+      svg,
+      .feather {
         color: var(--cyberdrain-light);
       }
     }
@@ -45,7 +47,9 @@
       .wizard-step-icon {
         background-color: var(--cui-body-bg);
         color: var(--cyberdrain-primary);
-        i, svg, .feather {
+        i,
+        svg,
+        .feather {
           color: var(--cyberdrain-primary);
         }
       }
@@ -56,7 +60,9 @@
         .wizard-step-text-details {
           color: var(--cyberdrain-dark);
         }
-        i, svg, .feather {
+        i,
+        svg,
+        .feather {
           color: var(--cyberdrain-primary);
         }
       }
