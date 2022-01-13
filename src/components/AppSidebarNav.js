@@ -47,6 +47,7 @@ export const AppSidebarNav = ({ items }) => {
   const navItem = (item, index) => {
     const { component, name, badge, icon, ...rest } = item
     const Component = component
+    const navItemKey = `${item.name.toLowerCase().replace(' ', '-')}_${index}`
     return (
       <Component
         {...(rest.to &&
@@ -54,7 +55,7 @@ export const AppSidebarNav = ({ items }) => {
             component: NavLink,
             activeClassName: 'active',
           })}
-        key={index}
+        key={navItemKey}
         {...rest}
       >
         {navLink(name, icon, badge)}
@@ -64,10 +65,14 @@ export const AppSidebarNav = ({ items }) => {
   const navGroup = (item, index) => {
     const { component, name, icon, to, ...rest } = item
     const Component = component
+    const navGroupKey = `${item.name.toLowerCase().replace(' ', '-')}_${index}`
+    const navGroupIdx = `${item.section.toLowerCase().replace(' ', '-')}_${item.name
+      .toLowerCase()
+      .replace(' ', '-')}`
     return (
       <Component
-        idx={String(index)}
-        key={index}
+        idx={navGroupIdx}
+        key={navGroupKey}
         toggler={navLink(name, icon)}
         visible={location.pathname.startsWith(to)}
         {...rest}
