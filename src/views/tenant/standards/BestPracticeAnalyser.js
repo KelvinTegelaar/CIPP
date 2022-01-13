@@ -54,16 +54,19 @@ const BestPracticeAnalyser = () => {
         name: 'SKU',
         selector: (row) => row['SKU'],
         sortable: true,
+        exportSelector: 'SKU',
       },
       {
         name: 'Purchased',
         selector: (row) => row['Purchased'],
         sortable: true,
+        exportSelector: 'Purchased',
       },
       {
         name: 'Consumed',
         selector: (row) => row['Consumed'],
         sortable: true,
+        exportSelector: 'Consumed',
       },
     ]
 
@@ -101,6 +104,7 @@ const BestPracticeAnalyser = () => {
       name: 'Tenant',
       selector: (row) => row['Tenant'],
       sortable: true,
+      exportSelector: 'Tenant',
     },
     {
       name: 'Last Refresh',
@@ -108,20 +112,24 @@ const BestPracticeAnalyser = () => {
       // format: (cell) => <div>{moment.utc(cell).format('MMM D YYYY')}</div>,
       cell: cellDateFormatter({ format: 'short' }),
       sortable: true,
+      exportSelector: 'LastRefresh',
     },
     {
       name: 'Unified Audit Log Enabled',
       selector: (row) => row['UnifiedAuditLog'],
       cell: cellBooleanFormatter(),
+      exportSelector: 'UnifiedAuditLog',
     },
     {
       name: 'Security Defaults Enabled',
       selector: (row) => row['SecureDefaultState'],
       cell: cellBooleanFormatter({ warning: true }),
+      exportSelector: 'SecureDefaultState',
     },
     {
       name: 'Message Copy for Send As',
       selector: (row) => row['MessageCopyForSend'],
+      exportSelector: 'MessageCopyForSend',
       cell: (row, index, column) => {
         const cell = column.selector(row)
         if (cell === 'PASS') {
@@ -141,20 +149,24 @@ const BestPracticeAnalyser = () => {
       name: 'User Cannot Consent to Apps',
       selector: (row) => row['AdminConsentForApplications'],
       cell: cellBooleanFormatter({ reverse: true }),
+      exportSelector: 'AdminConsentForApplication',
     },
     {
       name: 'Passwords Do Not Expire',
       selector: (row) => row['DoNotExpirePasswords'],
       cell: cellBooleanFormatter(),
+      exportSelector: 'DoNotExpirePasswords',
     },
     {
       name: 'Privacy in Reports Enabled',
       selector: (row) => row['PrivacyEnabled'],
       cell: cellBooleanFormatter({ reverse: true, warning: true }),
+      exportSelector: 'PrivacyEnabled',
     },
     {
       name: 'Self Service Password Reset Enabled',
       selector: (row) => row['SelfServicePasswordReset'],
+      exportSelector: 'SelfServicePasswordReset',
       cell: (row, index, column) => {
         const cell = column.selector(row)
         if (cell === 'Off') {
@@ -170,11 +182,13 @@ const BestPracticeAnalyser = () => {
     {
       name: 'Modern Auth Enabled',
       selector: (row) => row['EnableModernAuth'],
+      exportSelector: 'EnabledModernAuth',
       cell: cellBooleanFormatter(),
     },
     {
       name: 'Shared Mailboxes Logins Disabled',
       selector: (row) => row['DisabledSharedMailboxLoginsCount'],
+      exportSelector: 'DisabledSharedMailboxLoginsCount',
       cell: (row, index, column) => {
         const cell = column.selector(row)
         if (cell > 0) {
@@ -196,6 +210,7 @@ const BestPracticeAnalyser = () => {
     {
       name: 'Unused Licenses',
       selector: (row) => row['UnusedLicensesResult'],
+      exportSelector: 'UnusedLicencesResult',
       cell: (row, index, column) => {
         const cell = column.selector(row)
         if (cell === 'FAIL') {
@@ -213,6 +228,7 @@ const BestPracticeAnalyser = () => {
     {
       name: 'Secure Score',
       selector: (row) => row['SecureScorePercentage'],
+      exportSelector: 'SecureScorePercentage',
       cell: (row, index, column) => {
         const cell = column.selector(row)
         if (!cell) {

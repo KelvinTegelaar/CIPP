@@ -11,11 +11,13 @@ const columns = [
     name: 'Name',
     selector: (row) => row['displayName'],
     sortable: true,
+    exportSelector: 'displayName',
   },
   {
     name: 'Default Domain',
     selector: (row) => row['defaultDomainName'],
     sortable: true,
+    exportSelector: 'defaultDomainName',
   },
   {
     name: 'M365 Portal',

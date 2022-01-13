@@ -25,31 +25,37 @@ const columns = [
     name: 'Date',
     selector: (row) => row['DateTime'],
     sortable: true,
+    exportSelector: 'DateTime',
   },
   {
     name: 'Tenant',
     selector: (row) => row['Tenant'],
     sortable: true,
+    exportSelector: 'Tenant',
   },
   {
     name: 'API',
     selector: (row) => row['API'],
     sortable: true,
+    exportSelector: 'API',
   },
   {
     name: 'Message',
     selector: (row) => row['Message'],
     sortable: true,
+    exportSelector: 'Message',
   },
   {
     name: 'User',
     selector: (row) => row['User'],
     sortable: true,
+    exportSelector: 'User',
   },
   {
     name: 'Severity',
     selector: (row) => row['Severity'],
     sortable: true,
+    exportSelector: 'Severity',
   },
 ]
 
@@ -171,7 +177,7 @@ const Logs = () => {
       <hr />
       <CippPage title="LogBook Results" tenantSelector={false}>
         <CippDatatable
-          reportName={`${tenant?.defaultDomainName}-Messagetrace`}
+          reportName={`CIPP-Logbook`}
           path="/api/Listlogs"
           // params={{
           // tenantFilter: tenant.defaultDomainName,

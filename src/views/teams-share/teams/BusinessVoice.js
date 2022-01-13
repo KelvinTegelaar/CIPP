@@ -12,31 +12,37 @@ const columns = [
     name: 'Assigned to User',
     selector: (row) => row['AssignedTo'],
     sortable: true,
+    exportSelector: 'AssignedTo',
   },
   {
     name: 'Phone Number',
     selector: (row) => row['TelephoneNumber'],
     sortable: true,
+    exportSelector: 'TelephoneNumber',
   },
   {
     name: 'Number Type',
     selector: (row) => row['NumberType'],
     sortable: true,
+    exportSelector: 'NumberType',
   },
   {
     name: 'Country',
     selector: (row) => row['IsoCountryCode'],
     sortable: true,
+    exportSelector: 'IsCountryCode',
   },
   {
     name: 'Location',
     selector: (row) => row['PlaceName'],
     sortable: true,
+    exportSelector: 'PlaceName',
   },
   {
     name: 'Activation State',
     selector: (row) => row['ActivationState'],
     formatter: Formatter,
+    exportSelector: 'ActivationState',
     sortable: true,
   },
   {
@@ -44,11 +50,13 @@ const columns = [
     selector: (row) => row['IsOperatorConnect'],
     formatter: Formatter,
     sortable: true,
+    exportSelector: 'IsOperatorConnect',
   },
   {
     name: 'Purchased on',
     selector: (row) => row['AcquisitionDate'],
     sortable: true,
+    exportSelector: 'AcquisitionDate',
   },
 ]
 

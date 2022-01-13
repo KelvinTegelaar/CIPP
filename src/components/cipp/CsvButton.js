@@ -7,7 +7,7 @@ import { faFileCsv } from '@fortawesome/free-solid-svg-icons'
 
 function ExportCsvButton(props) {
   return (
-    <CSVDownloader data={props.csvData} filename={`${props.reportName}.csv`}>
+    <CSVDownloader data={props.csvData} filename={`${props.reportName}`}>
       <CButton size="sm" className="m-1">
         <FontAwesomeIcon icon={faFileCsv} className="pe-1" size="lg" />
         CSV
