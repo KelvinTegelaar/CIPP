@@ -1,10 +1,10 @@
-name: Run Linters
+name: Lint Code Base
 on:
   push:
     branches:
       - master
       - react
-  pull_request_target:
+  pull_request:
     branches:
       - master
       - react
@@ -21,18 +21,13 @@ concurrency:
 
 jobs:
   lint:
+    name: Lint Code Base
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
         with:
-          node-version: 16.x
-      - name: Install Linters
-        run: npm i --legacy-peer-deps -D eslint prettier
-      - uses: wearerequired/lint-action@v1
+          fetch-depth: 0
+      - uses: github/super-linter:slim-v4
         name: Lint
-        with:
-          eslint: true
-          eslint_args: '--max-warnings 0'
-          prettier: true
+        env:
+          VALIDATE_ALL_CODEBASE: false

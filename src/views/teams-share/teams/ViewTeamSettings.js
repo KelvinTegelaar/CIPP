@@ -11,11 +11,10 @@ import {
   CSpinner,
 } from '@coreui/react'
 import PropTypes from 'prop-types'
-import useQuery from '../../../hooks/useQuery'
+import useQuery from 'src/hooks/useQuery'
 import { useDispatch } from 'react-redux'
-import { CippPage, ModalService } from '../../../components'
+import { CippPage, ModalService } from 'src/components'
 import { useListTeamSitesQuery } from 'src/store/api/sharepoint'
-import { CippTable } from 'src/components/cipp'
 
 const ViewTeamSettings = (props) => {
   const dispatch = useDispatch()
