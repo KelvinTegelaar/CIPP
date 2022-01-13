@@ -184,11 +184,11 @@ const OffboardingWizard = () => {
                     <CCol md={{ span: 6, offset: 3 }}>
                       <CListGroup flush>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          <h5>Selected Tenant:</h5>
+                          <h5 className="mb-0">Selected Tenant:</h5>
                           {tenantDomain}
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          <h5>Selected User:</h5>
+                          <h5 className="mb-0">Selected User:</h5>
                           {props.values.User}
                         </CListGroupItem>
                       </CListGroup>
