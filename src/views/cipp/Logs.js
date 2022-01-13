@@ -177,7 +177,7 @@ const Logs = () => {
       <hr />
       <CippPage title="LogBook Results" tenantSelector={false}>
         <CippDatatable
-          reportName={`${tenant?.defaultDomainName}-Logbook`}
+          reportName={`CIPP-Logbook`}
           path="/api/Listlogs"
           // params={{
           // tenantFilter: tenant.defaultDomainName,
