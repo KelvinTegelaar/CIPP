@@ -2,7 +2,6 @@ import React from 'react'
 
 /* eslint-disable prettier/prettier */
 const Home = React.lazy(() => import('./views/home/Home'))
-const ViewProfile = React.lazy(() => import('./views/profile/ViewProfile'))
 const Logs = React.lazy(() => import('./views/cipp/Logs'))
 const Users = React.lazy(() => import('./views/identity/administration/Users'))
 const ViewBEC = React.lazy(() => import('./views/identity/administration/ViewBEC'))
@@ -106,7 +105,6 @@ const routes = [
   // { path: '/', exact: true, name: 'Home' },
   { path: '/home', name: 'Home', component: Home },
   { path: '/profile', name: 'Profile' },
-  { path: '/profile/view', name: 'View', component: ViewProfile },
   { path: '/cipp/logs', name: 'Logs', component: Logs },
   { path: '/identity', name: 'Identity' },
   { path: '/identity/administration/users/add', name: 'Add User', component: AddUser },
