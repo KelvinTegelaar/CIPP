@@ -39,16 +39,19 @@ const TenantsList = () => {
       name: 'Tenant Name',
       selector: (row) => row['displayName'],
       sortable: true,
+      exportSelector: 'displayName',
     },
     {
       name: 'Standard',
       selector: (row) => row['standardName'],
       sortable: true,
+      exportSelector: 'standardName',
     },
     {
       name: 'Applied By',
       selector: (row) => row['appliedBy'],
       sortable: true,
+      exportSelector: 'appliedBy',
     },
     {
       name: 'Action',

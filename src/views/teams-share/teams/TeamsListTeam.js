@@ -33,21 +33,25 @@ const TeamsList = () => {
       name: 'Name',
       selector: (row) => row['displayName'],
       sort: true,
+      exportSelector: 'displayName',
     },
     {
       name: 'Description',
       selector: (row) => row['description'],
       sort: true,
+      exportSelector: 'description',
     },
     {
       name: 'Visibility',
       selector: (row) => row['visibility'],
       sort: true,
+      exportSelector: 'visibility',
     },
     {
       name: 'Mail nickname',
       selector: (row) => row['mailNickname'],
       sort: true,
+      exportSelector: 'mailNickname',
     },
     {
       name: 'ID',

@@ -44,28 +44,33 @@ const columns = [
     name: 'Name',
     sortable: true,
     wrap: true,
+    exportSelector: 'displayName',
   },
   {
     selector: (row) => row['Description'],
     name: 'Description',
     sortable: true,
     wrap: true,
+    exportSelector: 'Description',
   },
   {
     selector: (row) => row['language'],
     name: 'Language',
     sortable: true,
+    exportSelector: 'language',
   },
   {
     selector: (row) => row['extractHardwareHash'],
     name: 'Convert to Autopilot',
     sortable: true,
     cell: cellBooleanFormatter(),
+    exportSelector: 'extractHardwareHash',
   },
   {
     selector: (row) => row['deviceNameTemplate'],
     name: 'Device Name Template',
     sortable: true,
+    exportSelector: 'deviceNameTemplate',
   },
   {
     selector: (row) => ['JSON'],
