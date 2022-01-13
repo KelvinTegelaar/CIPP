@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-lates
     strategy:
       matrix:
-        node-version: [16.x, 17.x]
+        node-version: [16.x]
         os: [ubuntu-latest, windows-latest, macOS-latest]
     steps:
       - uses: actions/checkout@v2
@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.x, 17.x]
+        node-version: [16.x]
         os: [ubuntu-latest, windows-latest, macOS-latest]
     steps:
       - uses: actions/checkout@v2
