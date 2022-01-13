@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   install-build:
-    name: NPM Build
+    name: NPM Install and Build
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -28,7 +28,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Build Test
+      - name: Install and Build Test
         run: |
           npm install --legacy-peer-deps
           npm run build
@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: install dependencies
+      - name: Install Dependencies
         run: npm ci
       - uses: oke-py/npm-audit-action@v1.8.2
         with:
