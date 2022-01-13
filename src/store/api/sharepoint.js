@@ -12,6 +12,16 @@ export const sharepointApi = baseApi.injectEndpoints({
         },
       }),
     }),
+    listTeamSites: builder.query({
+      query: ({ tenantDomain, groupId }) => ({
+        path: '/api/ListTeams',
+        params: {
+          type: 'Team',
+          TenantFilter: tenantDomain,
+          id: groupId,
+        },
+      }),
+    }),
     listSharepointSitesUsage: builder.query({
       query: ({ tenantDomain }) => ({
         path: '/api/ListSites',
@@ -24,4 +34,4 @@ export const sharepointApi = baseApi.injectEndpoints({
   }),
 })
 
-export const { useListSharepointSitesQuery } = sharepointApi
+export const { useListSharepointSitesQuery, useListTeamSitesQuery } = sharepointApi
