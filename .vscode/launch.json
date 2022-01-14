@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "command": "swa start --ssl --ssl-cert ./.vscode/cert.crt --ssl-key ./.vscode/key.key --swa-config-location . http://localhost:3000 --api-location http://localhost:7071",
+      "command": "npm run start-api",
       "name": "Run emulator",
       "request": "launch",
       "type": "node-terminal"
