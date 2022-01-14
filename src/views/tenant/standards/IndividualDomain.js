@@ -14,13 +14,19 @@ import {
   CCardHeader,
   CCol,
   CCollapse,
+  CDropdown,
+  CDropdownMenu,
+  CDropdownToggle,
+  CHeaderNav,
   CForm,
   CFormLabel,
   CFormInput,
   CRow,
   CCardTitle,
+  CLink,
   CListGroup,
   CListGroupItem,
+  CNavItem,
   CTableDataCell,
   CTableHead,
   CTableRow,
@@ -28,7 +34,6 @@ import {
   CTableHeaderCell,
   CTableBody,
   CBadge,
-  CTooltip,
   COffcanvasTitle,
   CInputGroup,
 } from '@coreui/react'
@@ -41,6 +46,7 @@ import {
   faExpandAlt,
   faTimesCircle,
   faExternalLinkAlt,
+  faEllipsisV,
 } from '@fortawesome/free-solid-svg-icons'
 
 // const required = (value) => (value ? undefined : 'Required')
@@ -168,7 +174,8 @@ const sharedProps = {
   domain: PropTypes.string,
 }
 
-const ResultsCard = ({ children, data, type }) => {
+const ResultsCard = ({ children, data, type, menuOptions = [] }) => {
+  const [jsonVisible, setJsonVisible] = useState()
   if (!data) {
     return null
   }
@@ -182,40 +189,84 @@ const ResultsCard = ({ children, data, type }) => {
   const validationWarns = results?.ValidationWarns || []
   const validationFails = results?.ValidationFails || []
 
+  const jsonContent = JSON.stringify(results, null, 2)
+
   return (
-    <CCard className="page-card h-100">
-      <CCardHeader>
-        <CCardTitle>
-          <StatusIcon type="finalstate" finalState={finalState} />
-          {type} Results
-        </CCardTitle>
-      </CCardHeader>
-      <CCardBody>
-        {/* records and additional information is specific to each type
-         * child prop passed in adds the additional information
-         * above the generic passes/fails report
-         */}
-        {children}
-        {validationPasses.map((validation, idx) => (
-          <div key={`${idx}-validation-${type}`}>
-            <IconGreenCheck />
-            {String(validation.replace('PASS: ', ''))}
-          </div>
-        ))}
-        {validationWarns.map((validation, idx) => (
-          <div key={`${idx}-validation-${type}`}>
-            <IconWarning />
-            {String(validation.replace('WARN: ', ''))}
-          </div>
-        ))}
-        {validationFails.map((validation, idx) => (
-          <div key={`${idx}-validation-${type}`}>
-            <IconRedX />
-            {String(validation.replace('FAIL: ', ''))}
-          </div>
-        ))}
-      </CCardBody>
-    </CCard>
+    <>
+      <CCard className="page-card h-100">
+        <CCardHeader>
+          <CCardTitle>
+            <CHeaderNav className="justify-content-between">
+              <CNavItem>
+                <StatusIcon type="finalstate" finalState={finalState} />
+                {type} Results
+              </CNavItem>
+              <CDropdown variant="nav-item">
+                <CDropdownToggle placement="end" className="py-0" caret={false}>
+                  <FontAwesomeIcon icon={faEllipsisV} className="me-2" />
+                  More
+                </CDropdownToggle>
+                <CDropdownMenu className="py-0" placement="bottom-end">
+                  {menuOptions.map((option, idx) => (
+                    <CLink
+                      className="dropdown-item"
+                      key={`${idx}-menu-option`}
+                      href="#"
+                      onClick={option.clickFunction}
+                    >
+                      {option.title}
+                    </CLink>
+                  ))}
+                  <CLink className="dropdown-item" href="#" onClick={() => setJsonVisible(true)}>
+                    Show JSON
+                  </CLink>
+                </CDropdownMenu>
+              </CDropdown>
+            </CHeaderNav>
+          </CCardTitle>
+        </CCardHeader>
+        <CCardBody>
+          {/* records and additional information is specific to each type
+           * child prop passed in adds the additional information
+           * above the generic passes/fails report
+           */}
+          {children}
+          {validationPasses.map((validation, idx) => (
+            <div key={`${idx}-validation-${type}`}>
+              <IconGreenCheck />
+              {String(validation.replace('PASS: ', ''))}
+            </div>
+          ))}
+          {validationWarns.map((validation, idx) => (
+            <div key={`${idx}-validation-${type}`}>
+              <IconWarning />
+              {String(validation.replace('WARN: ', ''))}
+            </div>
+          ))}
+          {validationFails.map((validation, idx) => (
+            <div key={`${idx}-validation-${type}`}>
+              <IconRedX />
+              {String(validation.replace('FAIL: ', ''))}
+            </div>
+          ))}
+        </CCardBody>
+      </CCard>
+      <CippOffcanvas
+        id="json-offcanvas"
+        visible={jsonVisible}
+        placement="end"
+        className="cipp-offcanvas"
+        hideFunction={() => setJsonVisible(false)}
+        title="JSON"
+      >
+        <CippCodeBlock
+          language="json"
+          code={jsonContent}
+          showLineNumbers={true}
+          wrapLongLines={false}
+        />
+      </CippOffcanvas>
+    </>
   )
 }
 
@@ -223,6 +274,7 @@ ResultsCard.propTypes = {
   data: PropTypes.object,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   type: PropTypes.oneOf(['MX', 'SPF', 'DMARC', 'DNSSEC', 'DKIM']),
+  menuOptions: PropTypes.object,
 }
 
 const SPFResultsCard = ({ domain }) => {
@@ -257,23 +309,21 @@ const MXResultsCard = ({ domain }) => {
     records = [records]
   }
   const [visible, setVisible] = useState(false)
+
+  const menuOptions = [
+    {
+      title: 'Show Details',
+      clickFunction: () => {
+        setVisible(true)
+      },
+    },
+  ]
+
   return (
-    <ResultsCard data={data} type="MX">
-      <div className="mb-2">
-        <CBadge style={{ fontSize: 14 }} color="info">
-          Mail Provider: {mailProviderName || 'Unknown'}
-        </CBadge>
-        <CTooltip content="Click to toggle mail provider/MX record details">
-          <CBadge
-            className="ms-1 btn"
-            onClick={() => setVisible(true)}
-            style={{ fontSize: 14 }}
-            color="primary"
-          >
-            Details
-          </CBadge>
-        </CTooltip>
-      </div>
+    <ResultsCard data={data} type="MX" menuOptions={menuOptions}>
+      <CBadge style={{ fontSize: 14 }} color="info" className="mb-2">
+        Mail Provider: {mailProviderName || 'Unknown'}
+      </CBadge>
       <CippOffcanvas
         id="mx-provider-offcanvas"
         visible={visible}
@@ -360,27 +410,33 @@ const DNSSECResultsCard = ({ domain }) => {
   let keys = data?.DNSSECResults?.Keys
   const [visible, setVisible] = useState(false)
 
+  let menuOptions = []
+  if (keys.length > 0) {
+    menuOptions = [
+      {
+        title: 'Show Details',
+        clickFunction: () => {
+          setVisible(true)
+        },
+      },
+    ]
+  }
+
   if (!Array.isArray(keys)) {
     keys = [keys]
   }
 
   return (
-    <ResultsCard data={data} type="DNSSEC">
-      {keys.length > 0 && (
-        <div className="mb-2">
-          <CTooltip content="Click to toggle DNSSEC records">
-            <CBadge
-              className="btn"
-              onClick={() => setVisible(!visible)}
-              style={{ fontSize: 14 }}
-              color="primary"
-            >
-              {(visible && 'Hide') || 'Show'} Records
-            </CBadge>
-          </CTooltip>
-        </div>
-      )}
-      <CCollapse visible={visible} className="mb-2">
+    <>
+      <ResultsCard data={data} type="DNSSEC" menuOptions={menuOptions} />
+      <CippOffcanvas
+        id="dnssec-offcanvas"
+        visible={visible}
+        placement="end"
+        className="cipp-offcanvas"
+        hideFunction={() => setVisible(false)}
+        title="DNSSEC Records"
+      >
         {keys.map((key, idx) => (
           <CippCodeBlock
             language="text"
@@ -390,8 +446,8 @@ const DNSSECResultsCard = ({ domain }) => {
             wrapLongLines={true}
           />
         ))}
-      </CCollapse>
-    </ResultsCard>
+      </CippOffcanvas>
+    </>
   )
 }
 
@@ -402,27 +458,33 @@ const DKIMResultsCard = ({ domain }) => {
   let records = data?.DKIMResults?.Records
   const [visible, setVisible] = useState(false)
 
+  let menuOptions = []
+  if (records.length > 0) {
+    menuOptions = [
+      {
+        title: 'Show Details',
+        clickFunction: () => {
+          setVisible(true)
+        },
+      },
+    ]
+  }
+
   if (!Array.isArray(records)) {
     records = [records]
   }
 
   return (
-    <ResultsCard data={data} type="DKIM">
-      {records.length > 0 && (
-        <div className="mb-2">
-          <CTooltip content="Click to toggle DKIM records">
-            <CBadge
-              className="btn"
-              onClick={() => setVisible(!visible)}
-              style={{ fontSize: 14 }}
-              color="primary"
-            >
-              {(visible && 'Hide') || 'Show'} Records
-            </CBadge>
-          </CTooltip>
-        </div>
-      )}
-      <CCollapse visible={visible} className="mb-2">
+    <>
+      <ResultsCard data={data} type="DKIM" menuOptions={menuOptions} />
+      <CippOffcanvas
+        id="dkim-offcanvas"
+        visible={visible}
+        placement="end"
+        className="cipp-offcanvas"
+        hideFunction={() => setVisible(false)}
+        title="DKIM Records"
+      >
         {records.map((record, idx) => (
           <div key={`${idx}-dkim-record`}>
             <CFormLabel>{record?.Selector}._domainkey</CFormLabel>
@@ -437,8 +499,8 @@ const DKIMResultsCard = ({ domain }) => {
             )}
           </div>
         ))}
-      </CCollapse>
-    </ResultsCard>
+      </CippOffcanvas>
+    </>
   )
 }
 
