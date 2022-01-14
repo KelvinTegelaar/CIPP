@@ -58,11 +58,10 @@ const AddAPDevice = () => {
     },
     {
       name: 'Remove',
-      selector: (row) => row['index'],
       button: true,
       cell: (row, index) => {
         return (
-          <CButton onClick={() => handleRemove(index)} size="sm" variant="ghost" color="danger">
+          <CButton onClick={() => handleRemove(row)} size="sm" variant="ghost" color="danger">
             <FontAwesomeIcon icon={faTrash} />
           </CButton>
         )
@@ -88,8 +87,7 @@ const AddAPDevice = () => {
     //alert(JSON.stringify(values, null, 2))
     //find arr index, delete from state.
     console.log(itemindex)
-    var RemovedItems = autopilotData // make a separate copy of the array
-    RemovedItems.splice(itemindex, 1)
+    let RemovedItems = autopilotData.filter((item) => item !== itemindex)
     setAutopilotdata((prevState) => {
       return RemovedItems
     })
