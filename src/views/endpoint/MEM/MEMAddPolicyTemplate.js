@@ -14,6 +14,7 @@ import {
 import { Form } from 'react-final-form'
 import { CippPage, RFFCFormInput, RFFCFormSelect, RFFCFormTextarea } from '../../../components'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import { required, validJson } from 'src/validators'
 
 const MEMAddPolicyTemplate = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
@@ -51,6 +52,7 @@ const MEMAddPolicyTemplate = () => {
                             name="displayName"
                             label="Display Name"
                             placeholder="Enter the Display Name"
+                            validate={required}
                           />
                         </CCol>
                       </CRow>
@@ -61,6 +63,7 @@ const MEMAddPolicyTemplate = () => {
                             name="description"
                             label="Description"
                             placeholder="Enter the description"
+                            validate={required}
                           />
                         </CCol>
                       </CRow>
@@ -75,6 +78,7 @@ const MEMAddPolicyTemplate = () => {
                               { label: 'Settings Catalog', value: 'Catalog' },
                               { label: 'Custom Configuration', value: 'Device' },
                             ]}
+                            validate={required}
                           />
                         </CCol>
                       </CRow>
@@ -84,6 +88,7 @@ const MEMAddPolicyTemplate = () => {
                             name="RawJSON"
                             label="RAW Json"
                             placeholder="Enter RAW JSON Information"
+                            validate={validJson}
                           />
                         </CCol>
                       </CRow>
