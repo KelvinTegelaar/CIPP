@@ -58,6 +58,7 @@ const AddAPDevice = () => {
       name: 'Hardware Hash',
       selector: (row) => row['hardwareHash'],
       sortable: true,
+      width: '200px',
     },
     {
       name: 'Remove',
@@ -244,6 +245,14 @@ const AddAPDevice = () => {
             </CCallout>
           )}
           {postResults.isSuccess && <CCallout color="success">{postResults.data.Results}</CCallout>}
+          {autopilotData && (
+            <CippTable
+              reportName="none"
+              tableProps={{ subheader: false }}
+              data={autopilotData}
+              columns={tableColumns}
+            />
+          )}
         </center>
         <hr className="my-4" />
       </Wizard.Page>
