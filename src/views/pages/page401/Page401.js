@@ -1,30 +1,26 @@
 import React from 'react'
 import { CButton, CCol, CContainer, CRow } from '@coreui/react'
-import { FastSwitcher } from '../../../components'
 import { Helmet } from 'react-helmet'
-import { Link } from 'react-router-dom'
 
-const Page404 = () => {
+const Page401 = () => {
   return (
     <div className="min-vh-100 d-flex flex-row align-items-center">
       <Helmet>
-        <title>CIPP - 404</title>
+        <title>CIPP - 401</title>
       </Helmet>
       <CContainer>
         <CRow className="justify-content-center">
           <CCol md={6}>
             <div className="clearfix">
-              <h1 className="float-start display-3 me-4">404</h1>
-              <h4 className="pt-3">Oops! You might be lost.</h4>
+              <h1 className="float-start display-3 me-4">401</h1>
+              <h4 className="pt-3">Unauthorized</h4>
               <p className="float-start">
-                The page you are looking for was not found.
+                Access to this resource is denied.
                 <br /> <br />
-                <Link to="/">
-                  <CButton>Back to home</CButton>
-                </Link>
+                {/* trigger full page reload using href */}
+                <CButton href="/login">Back to login</CButton>
               </p>
             </div>
-            <FastSwitcher />
           </CCol>
         </CRow>
       </CContainer>
@@ -32,4 +28,4 @@ const Page404 = () => {
   )
 }
 
-export default Page404
+export default Page401

@@ -19,6 +19,9 @@ import {
   RFFCFormTextarea,
   RFFSelectSearch,
 } from 'src/components/RFFComponents'
+import { FastSwitcher, FastSwitcherModal } from './FastSwitcher'
+import { PrivateRoute } from './PrivateRoute'
+import ErrorBoundary from './ErrorBoundary'
 
 export {
   AppBreadcrumb,
@@ -30,10 +33,14 @@ export {
   CippPage,
   CippPageList,
   Condition,
+  ErrorBoundary,
+  FastSwitcher,
+  FastSwitcherModal,
   FullScreenLoading,
   Loading,
   ModalRoot,
   ModalService,
+  PrivateRoute,
   RFFCFormCheck,
   RFFCFormFeedback,
   RFFCFormInput,

@@ -4,67 +4,45 @@ import { CFormInput, CModal, CModalBody, CModalFooter, CModalTitle } from '@core
 import { hideSwitcher, mapNav } from 'src/store/features/switcher'
 import { useNavigate } from 'react-router-dom'
 import PropTypes from 'prop-types'
-//import FuzzySearch from 'fuzzy-search'
 import fuzzysort from 'fuzzysort'
 
 const searchItems = mapNav()
 
-export default function FastSwitcher() {
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
-  const switcher = useSelector((store) => store.switcher)
-  const searchRef = useRef(null)
-  const [searchValue, setSearchValue] = useState('')
+export const FastSwitcher = React.forwardRef(
+  ({ onConfirm = () => {}, onChange = () => {}, maxResults = 7, value = '' }, ref) => {
+    const [searchValue, setSearchValue] = useState(value)
+    const navigate = useNavigate()
 
-  useEffect(() => {
-    // delay focus
-    setTimeout(() => searchRef.current?.focus(), 100)
+    const results = fuzzysort.go(searchValue, searchItems, {
+      keys: ['name', 'section', 'to'],
+      limit: maxResults,
+      scoreFn: (a) =>
+        // rank scores name>section>url (to)
+        Math.max(
+          a[0] ? a[0].score : -1000,
+          a[1] ? a[1].score - 100 : -1000,
+          a[2] ? a[2].score - 200 : -1000,
+        ),
+    })
 
-    // clear search value when component dismounts
-    return () => setSearchValue('')
-  }, [switcher.visible])
-
-  const handleChange = (event) => {
-    setSearchValue(event.target?.value)
-  }
-
-  const handleClose = () => {
-    dispatch(hideSwitcher())
-  }
-
-  if (!switcher.visible) {
-    return null
-  }
-
-  const maxResults = 7
-
-  const results = fuzzysort.go(searchValue, searchItems, {
-    keys: ['name', 'section', 'to'],
-    limit: maxResults,
-    scoreFn: (a) =>
-      // rank scores name>section>url (to)
-      Math.max(
-        a[0] ? a[0].score : -1000,
-        a[1] ? a[1].score - 100 : -1000,
-        a[2] ? a[2].score - 200 : -1000,
-      ),
-  })
-
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      // on enter key, navigate to top result
-      dispatch(hideSwitcher())
-      navigate(results[0]?.obj?.to)
+    const handleChange = (event) => {
+      setSearchValue(event.target?.value)
+      onChange(event.target?.value)
     }
-  }
 
-  return (
-    <CModal visible={switcher.visible} alignment="center" onClose={handleClose} transition={false}>
-      <CModalBody>
-        <CModalTitle className="text-center mb-2">Search for pages or tasks...</CModalTitle>
+    const handleKeyDown = (event) => {
+      if (event.key === 'Enter') {
+        // on enter key, navigate to top result
+        onConfirm()
+        navigate(results[0]?.obj?.to)
+      }
+    }
+
+    return (
+      <div>
         <div>
           <CFormInput
-            ref={searchRef}
+            ref={ref}
             type="text"
             placeholder="What do you want to do?"
             onKeyDown={handleKeyDown}
@@ -73,6 +51,51 @@ export default function FastSwitcher() {
           />
         </div>
         <Results items={results} searchValue={searchValue} />
+      </div>
+    )
+  },
+)
+FastSwitcher.displayName = 'FastSwitcher'
+FastSwitcher.propTypes = {
+  ref: PropTypes.oneOfType([
+    // Either a function
+    PropTypes.func,
+    // Or the instance of a DOM native element (see the note about SSR)
+    PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
+  ]),
+  onConfirm: PropTypes.func,
+  onChange: PropTypes.func,
+  maxResults: PropTypes.number,
+  value: PropTypes.any,
+}
+
+export function FastSwitcherModal() {
+  const dispatch = useDispatch()
+  const switcher = useSelector((store) => store.switcher)
+  const searchRef = useRef(null)
+
+  useEffect(() => {
+    // delay focus
+    setTimeout(() => searchRef.current?.focus(), 100)
+  }, [switcher.visible])
+
+  if (!switcher.visible) {
+    return null
+  }
+
+  const handleClose = () => {
+    dispatch(hideSwitcher())
+  }
+
+  const handleConfirm = () => {
+    dispatch(hideSwitcher())
+  }
+
+  return (
+    <CModal visible={switcher.visible} alignment="center" onClose={handleClose} transition={false}>
+      <CModalBody>
+        <CModalTitle className="text-center mb-2">Search for pages or tasks...</CModalTitle>
+        <FastSwitcher ref={searchRef} onConfirm={handleConfirm} />
       </CModalBody>
       <CModalFooter>
         <span className="text-success">Tip:</span> Press <kbd>↵</kbd> to open the top result.
