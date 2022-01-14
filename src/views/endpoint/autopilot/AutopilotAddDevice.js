@@ -1,9 +1,8 @@
 import React from 'react'
-import { CAlert, CButton, CCol, CFormLabel, CRow } from '@coreui/react'
+import { CAlert, CButton, CCol, CRow } from '@coreui/react'
 import { Field } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
-import { useSelector } from 'react-redux'
+import { faExclamationTriangle, faPlus } from '@fortawesome/free-solid-svg-icons'
 import Wizard from '../../../components/Wizard'
 import PropTypes from 'prop-types'
 import { RFFCFormInput } from '../../../components/RFFComponents'
@@ -29,8 +28,6 @@ Error.propTypes = {
 }
 
 const AddAPDevice = () => {
-  const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
-
   const handleSubmit = async (values) => {
     alert(JSON.stringify(values, null, 2))
     // @todo hook this up
@@ -74,23 +71,26 @@ const AddAPDevice = () => {
         </CCol>
         <br></br>
         <CRow>
-          <CCol md={1}>
+          <CCol xs={'auto'}>
             <RFFCFormInput name="serialNumber" label="Serial Number" type="text" />
           </CCol>
-          <CCol md={1}>
+          <CCol xs={'auto'}>
             <RFFCFormInput name="deviceManufacturer" label="Device Manufacturer" type="text" />
           </CCol>
-          <CCol md={1}>
+          <CCol xs={'auto'}>
             <RFFCFormInput name="device Model" label="Device Model" type="text" />
           </CCol>
-          <CCol md={1}>
+          <CCol xs={'auto'}>
             <RFFCFormInput name="pkid" label="Windows Product ID" type="text" />
           </CCol>
-          <CCol md={1}>
+          <CCol xs={'auto'}>
             <RFFCFormInput name="HardwareHash" label="Hardware Hash" type="text" />
           </CCol>
-          <CCol md={1}>
-            <CButton name="addButton">Add</CButton>
+          <CCol xs={'auto'} className="align-self-end">
+            <CButton name="addButton" className="mb-3">
+              <FontAwesomeIcon icon={faPlus} className="me-2" />
+              Add
+            </CButton>
           </CCol>
         </CRow>
         <hr className="my-4" />
