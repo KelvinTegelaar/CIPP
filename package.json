@@ -21,7 +21,7 @@
     "test": "react-scripts test",
     "test:cov": "npm test -- --coverage --watchAll=false",
     "test:debug": "react-scripts --inspect-brk test --runInBand",
-    "start-api": "swa start --ssl --ssl-cert ./.vscode/cert.crt --ssl-key ./.vscode/key.key --swa-config-location . http://localhost:3000 --api-location http://localhost:7071",
+    "start-api": "swa start --ssl --ssl-cert ./.vscode/cert.crt --ssl-key ./.vscode/key.key --swa-config-location . http://localhost:3000 --api-location http://localhost:7071 --swa-config-location .vscode",
     "prepare": "husky install"
   },
   "config": {
@@ -61,6 +61,7 @@
     "react-dom": "^17.0.2",
     "react-final-form": "^6.5.7",
     "react-final-form-listeners": "^1.0.3",
+    "react-hotkeys-hook": "^3.4.4",
     "react-media-hook": "^0.4.9",
     "react-papaparse": "^3.18.2",
     "react-redux": "^7.2.5",

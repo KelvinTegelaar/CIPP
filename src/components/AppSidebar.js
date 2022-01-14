@@ -2,12 +2,12 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { CSidebar, CSidebarBrand, CSidebarNav } from '@coreui/react'
 import { CImage } from '@coreui/react'
-import { AppSidebarNav } from './AppSidebarNav'
+import { AppSidebarNav } from 'src/components/AppSidebarNav'
 import cyberdrainlogo from 'src/assets/images/CIPP.png'
 import SimpleBar from 'simplebar-react'
 import 'simplebar/dist/simplebar.min.css'
-import navigation from '../_nav'
-import { setSidebarVisible } from '../store/features/app'
+import navigation from 'src/_nav'
+import { setSidebarVisible } from 'src/store/features/app'
 
 const AppSidebar = () => {
   const dispatch = useDispatch()

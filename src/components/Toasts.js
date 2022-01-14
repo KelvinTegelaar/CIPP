@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { CToast, CToastBody, CToaster, CToastHeader, CCollapse } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExpandAlt, faCompressAlt, faTimes } from '@fortawesome/free-solid-svg-icons'
-import { closeToast } from '../store/features/toasts'
+import { closeToast } from 'src/store/features/toasts'
 
 const Toasts = () => {
   const dispatch = useDispatch()

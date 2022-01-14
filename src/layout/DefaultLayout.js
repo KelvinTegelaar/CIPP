@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Outlet } from 'react-router-dom'
 import { CContainer } from '@coreui/react'
 import { toggleSwitcher } from '../store/features/switcher'
-import useKeyboardShortcut from '../hooks/useKeyboardShortcut'
+import { useHotkeys } from 'react-hotkeys-hook'
 import FastSwitcher from '../components/FastSwitcher'
 
 const DefaultLayout = () => {
@@ -21,8 +21,22 @@ const DefaultLayout = () => {
     dispatch(toggleSwitcher())
   }, [dispatch])
 
-  useKeyboardShortcut(['Control', 'K'], handleFastSwitcher, { overrideSystem: true })
-  useKeyboardShortcut(['Meta', 'K'], handleFastSwitcher)
+  useHotkeys(
+    'ctrl+k',
+    (event) => {
+      handleFastSwitcher()
+      event.preventDefault()
+    },
+    { filterPreventDefault: false },
+  )
+  useHotkeys(
+    'cmd+k',
+    (event) => {
+      handleFastSwitcher()
+      event.preventDefault()
+    },
+    { filterPreventDefault: false },
+  )
 
   return (
     <div>

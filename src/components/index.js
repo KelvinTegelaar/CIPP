@@ -1,13 +1,13 @@
-import AppBreadcrumb from './AppBreadcrumb'
-import AppFooter from './AppFooter'
-import AppHeader from './AppHeader'
-import AppHeaderDropdown from './header/AppHeaderDropdown'
-import AppHeaderSearch from './header/AppHeaderSearch'
-import AppSidebar from './AppSidebar'
-import Loading, { FullScreenLoading } from './Loading'
-import SharedModal from './SharedModal'
-import { ModalRoot, ModalService } from './ModalRoot'
-import { CippPage, CippPageList } from './CippPage'
+import AppBreadcrumb from 'src/components/AppBreadcrumb'
+import AppFooter from 'src/components/AppFooter'
+import AppHeader from 'src/components/AppHeader'
+import AppHeaderDropdown from 'src/components/header/AppHeaderDropdown'
+import AppHeaderSearch from 'src/components/header/AppHeaderSearch'
+import AppSidebar from 'src/components/AppSidebar'
+import Loading, { FullScreenLoading } from 'src/components/Loading'
+import SharedModal from 'src/components/SharedModal'
+import { ModalRoot, ModalService } from 'src/components/ModalRoot'
+import { CippPage, CippPageList } from 'src/components/CippPage'
 import {
   Condition,
   RFFCFormCheck,
@@ -18,7 +18,7 @@ import {
   RFFCFormSwitch,
   RFFCFormTextarea,
   RFFSelectSearch,
-} from './RFFComponents'
+} from 'src/components/RFFComponents'
 
 export {
   AppBreadcrumb,

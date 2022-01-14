@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { CFormInput, CModal, CModalBody } from '@coreui/react'
-import { hideSwitcher, mapNav } from '../store/features/switcher'
+import { hideSwitcher, mapNav } from 'src/store/features/switcher'
 import { useNavigate } from 'react-router-dom'
 import PropTypes from 'prop-types'
 //import FuzzySearch from 'fuzzy-search'

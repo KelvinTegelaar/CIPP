@@ -1,5 +1,5 @@
 import React from 'react'
-import { useListTenantsQuery } from '../../store/api/tenants'
+import { useListTenantsQuery } from 'src/store/api/tenants'
 import SelectSearch, { fuzzySearch } from 'react-select-search'
 import PropTypes from 'prop-types'
 
