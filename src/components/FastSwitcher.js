@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { CFormInput, CModal, CModalBody } from '@coreui/react'
+import { CFormInput, CModal, CModalBody, CModalFooter, CModalTitle } from '@coreui/react'
 import { hideSwitcher, mapNav } from 'src/store/features/switcher'
 import { useNavigate } from 'react-router-dom'
 import PropTypes from 'prop-types'
@@ -61,11 +61,12 @@ export default function FastSwitcher() {
   return (
     <CModal visible={switcher.visible} alignment="center" onClose={handleClose} transition={false}>
       <CModalBody>
-        <div className="mb-3">
+        <CModalTitle className="text-center mb-2">Search for pages or tasks...</CModalTitle>
+        <div>
           <CFormInput
             ref={searchRef}
             type="text"
-            placeholder="Search..."
+            placeholder="What do you want to do?"
             onKeyDown={handleKeyDown}
             onChange={handleChange}
             value={searchValue}
@@ -73,6 +74,9 @@ export default function FastSwitcher() {
         </div>
         <Results items={results} searchValue={searchValue} />
       </CModalBody>
+      <CModalFooter>
+        <span className="text-success">Tip:</span> Press <kbd>↵</kbd> to open the top result.
+      </CModalFooter>
     </CModal>
   )
 }

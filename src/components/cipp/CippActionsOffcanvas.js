@@ -5,9 +5,11 @@ import CippOffcanvas, { CippOffcanvasPropTypes } from './CippOffcanvas'
 import CippOffcanvasTable from './CippOffcanvasTable'
 import { ModalService } from '../ModalRoot'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
+import { useNavigate } from 'react-router-dom'
 
 export default function CippActionsOffcanvas(props) {
   const [genericGetRequest, getResults] = useLazyGenericGetRequestQuery()
+  const handleLink = useNavigate()
   const handleModal = (modalMessage, modalUrl) => {
     ModalService.confirm({
       body: (
@@ -19,6 +21,13 @@ export default function CippActionsOffcanvas(props) {
       onConfirm: () => genericGetRequest({ path: modalUrl }),
     })
   }
+  const handleOnClick = (link, modal, modalMessage, modalUrl) => {
+    if (link) {
+      handleLink(link)
+    } else if (modal) {
+      handleModal(modalMessage, modalUrl)
+    }
+  }
   const extendedInfoContent = <CippOffcanvasTable rows={props.extendedInfo} guid={props.id} />
   const actionsContent = props.actions.map((action, index) => (
     <CListGroup layout="horizontal-md" key={index}>
@@ -26,9 +35,8 @@ export default function CippActionsOffcanvas(props) {
         className="cipp-action"
         component="button"
         color={action.color}
-        href={action.link}
-        onClick={
-          action.modal ? () => handleModal(action.modalMessage, action.modalUrl) : action.OnClick
+        onClick={() =>
+          handleOnClick(action.link, action.modal, action.modalMessage, action.modalUrl)
         }
       >
         {action.icon}
@@ -66,10 +74,6 @@ const CippActionsOffcanvasPropTypes = {
     PropTypes.shape({
       label: PropTypes.string,
       value: PropTypes.any,
-      onClick: PropTypes.func,
-      modal: PropTypes.bool,
-      modalUrl: PropTypes.string,
-      modalMessage: PropTypes.string,
     }),
   ).isRequired,
   actions: PropTypes.arrayOf(
@@ -78,6 +82,10 @@ const CippActionsOffcanvasPropTypes = {
       link: PropTypes.string,
       icon: PropTypes.element,
       color: PropTypes.string,
+      onClick: PropTypes.func,
+      modal: PropTypes.bool,
+      modalUrl: PropTypes.string,
+      modalMessage: PropTypes.string,
     }),
   ).isRequired,
   rowIndex: PropTypes.number,
