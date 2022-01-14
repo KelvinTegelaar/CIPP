@@ -1,5 +1,5 @@
 import React from 'react'
-import { CAlert, CButton, CCol } from '@coreui/react'
+import { CAlert, CButton, CCol, CFormLabel, CRow } from '@coreui/react'
 import { Field } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
@@ -73,7 +73,26 @@ const AddAPDevice = () => {
           <CButton>Upload CSV</CButton>
         </CCol>
         <br></br>
-        <CCol md={6}></CCol>
+        <CRow>
+          <CCol md={1}>
+            <RFFCFormInput name="serialNumber" label="Serial Number" type="text" />
+          </CCol>
+          <CCol md={1}>
+            <RFFCFormInput name="deviceManufacturer" label="Device Manufacturer" type="text" />
+          </CCol>
+          <CCol md={1}>
+            <RFFCFormInput name="device Model" label="Device Model" type="text" />
+          </CCol>
+          <CCol md={1}>
+            <RFFCFormInput name="pkid" label="Windows Product ID" type="text" />
+          </CCol>
+          <CCol md={1}>
+            <RFFCFormInput name="HardwareHash" label="Hardware Hash" type="text" />
+          </CCol>
+          <CCol md={1}>
+            <CButton name="addButton">Add</CButton>
+          </CCol>
+        </CRow>
         <hr className="my-4" />
       </Wizard.Page>
       <Wizard.Page
