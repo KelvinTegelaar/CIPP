@@ -8,72 +8,81 @@ import { Link } from 'react-router-dom'
 import { CippActionsOffcanvas } from 'src/components/cipp'
 
 const MailboxList = () => {
-  const [ocVisible, setOCVisible] = useState(false)
   const tenant = useSelector((state) => state.app.currentTenant)
-  const dropdown = (row, rowIndex, formatExtraData) => (
-    <>
-      <Link
-        to={`/identity/administration/users/view?userId=${row.UPN}&tenantDomain=${tenant.defaultDomainName}`}
-      >
-        <CButton size="sm" variant="ghost" color="success">
-          <FontAwesomeIcon icon={faEye} />
+
+  const Offcanvas = (row, rowIndex, formatExtraData) => {
+    const [ocVisible, setOCVisible] = useState(false)
+    return (
+      <>
+        <Link
+          to={`/identity/administration/users/view?userId=${row.UPN}&tenantDomain=${tenant.defaultDomainName}`}
+        >
+          <CButton size="sm" variant="ghost" color="success">
+            <FontAwesomeIcon icon={faEye} />
+          </CButton>
+        </Link>
+        <Link
+          to={`/email/administration/edit-mailbox-permissions?tenantDomain=${tenant.defaultDomainName}&userId=${row.UPN}`}
+        >
+          <CButton size="sm" variant="ghost" color="warning">
+            <FontAwesomeIcon icon={faEdit} />
+          </CButton>
+        </Link>
+        <Link to={`/email/administration/view-mobile-devices?UserID=${row.primarySmtpAddress}`}>
+          <CButton size="sm" variant="ghost" color="warning">
+            <FontAwesomeIcon icon={faMobileAlt} />
+          </CButton>
+        </Link>
+        <CButton size="sm" color="link" onClick={() => setOCVisible(true)}>
+          <FontAwesomeIcon icon={faEllipsisV} />
         </CButton>
-      </Link>
-      <Link
-        to={`/email/administration/edit-mailbox-permissions?tenantDomain=${tenant.defaultDomainName}&userId=${row.UPN}`}
-      >
-        <CButton size="sm" variant="ghost" color="warning">
-          <FontAwesomeIcon icon={faEdit} />
-        </CButton>
-      </Link>
-      <Link to={`/email/administration/view-mobile-devices?UserID=${row.primarySmtpAddress}`}>
-        <CButton size="sm" variant="ghost" color="warning">
-          <FontAwesomeIcon icon={faMobileAlt} />
-        </CButton>
-      </Link>
-      <CButton size="sm" color="link" onClick={() => setOCVisible(true)}>
-        <FontAwesomeIcon icon={faEllipsisV} />
-      </CButton>
-      <CippActionsOffcanvas
-        title="User Information"
-        extendedInfo={[
-          { label: 'Aditional Email Addresses', value: `${row.AdditionalEmailAddresses}` },
-        ]}
-        actions={[
-          {
-            label: 'Research Compromised Account',
-            link: `/identity/administration/ViewBec?userId=${row.UPN}&tenantDomain=${tenant.defaultDomainName}`,
-            color: 'info',
-          },
-          {
-            label: 'Send MFA Push',
-            color: 'info',
-            modal: true,
-            modalUrl: `/api/ExecSendPush?TenantFilter=${tenant.defaultDomainName}&UserEmail=${row.UPN}`,
-            modalMessage: 'Are you sure you want to send a MFA request?',
-          },
-          {
-            label: 'Convert to Shared Mailbox',
-            color: 'info',
-            modal: true,
-            modalUrl: `/api/ExecConvertToSharedMailbox?TenantFilter=${tenant.defaultDomainName}&ID=${row.UPN}`,
-            modalMessage: 'Are you sure you want to convert this user to a shared mailbox?',
-          },
-          {
-            label: 'Convert to User Mailbox',
-            color: 'info',
-            modal: true,
-            modalUrl: `/api/ExecConvertToSharedMailbox?TenantFilter=${tenant.defaultDomainName}&ID=${row.UPN}&ConvertToUser=true`,
-            modalMessage: 'Are you sure you want to convert this shared mailbox to a user mailbox?',
-          },
-        ]}
-        placement="end"
-        visible={ocVisible}
-        id={row.id}
-        hideFunction={() => setOCVisible(false)}
-      />
-    </>
-  )
+        <CippActionsOffcanvas
+          title="User Information"
+          extendedInfo={[
+            {
+              label: 'Aditional Email Addresses',
+              value: row.AdditionalEmailAddresses
+                ? `${row.AdditionalEmailAddresses}`
+                : 'No additional email addresses',
+            },
+          ]}
+          actions={[
+            {
+              label: 'Research Compromised Account',
+              link: `/identity/administration/ViewBec?userId=${row.UPN}&tenantDomain=${tenant.defaultDomainName}`,
+              color: 'info',
+            },
+            {
+              label: 'Send MFA Push',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecSendPush?TenantFilter=${tenant.defaultDomainName}&UserEmail=${row.UPN}`,
+              modalMessage: 'Are you sure you want to send a MFA request?',
+            },
+            {
+              label: 'Convert to Shared Mailbox',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecConvertToSharedMailbox?TenantFilter=${tenant.defaultDomainName}&ID=${row.UPN}`,
+              modalMessage: 'Are you sure you want to convert this user to a shared mailbox?',
+            },
+            {
+              label: 'Convert to User Mailbox',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecConvertToSharedMailbox?TenantFilter=${tenant.defaultDomainName}&ID=${row.UPN}&ConvertToUser=true`,
+              modalMessage:
+                'Are you sure you want to convert this shared mailbox to a user mailbox?',
+            },
+          ]}
+          placement="end"
+          visible={ocVisible}
+          id={row.id}
+          hideFunction={() => setOCVisible(false)}
+        />
+      </>
+    )
+  }
 
   //TODO: Add CellBoolean
   const columns = [
@@ -116,7 +125,7 @@ const MailboxList = () => {
     },
     {
       name: 'Actions',
-      cell: dropdown,
+      cell: Offcanvas,
     },
   ]
 
