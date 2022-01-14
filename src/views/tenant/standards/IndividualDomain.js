@@ -274,7 +274,7 @@ ResultsCard.propTypes = {
   data: PropTypes.object,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   type: PropTypes.oneOf(['MX', 'SPF', 'DMARC', 'DNSSEC', 'DKIM']),
-  menuOptions: PropTypes.object,
+  menuOptions: PropTypes.array,
 }
 
 const SPFResultsCard = ({ domain }) => {
