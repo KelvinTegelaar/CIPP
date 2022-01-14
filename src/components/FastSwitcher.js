@@ -61,7 +61,7 @@ export default function FastSwitcher() {
   return (
     <CModal visible={switcher.visible} alignment="center" onClose={handleClose} transition={false}>
       <CModalBody>
-        <div className="mb-3">
+        <div>
           <CFormInput
             ref={searchRef}
             type="text"
