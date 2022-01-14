@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { CAlert, CButton, CCol, CRow } from '@coreui/react'
+import { CAlert, CButton, CCallout, CCol, CRow, CSpinner } from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
@@ -8,6 +8,8 @@ import PropTypes from 'prop-types'
 import { RFFCFormInput } from '../../../components/RFFComponents'
 import { CippTable, TenantSelector } from 'src/components/cipp'
 import { CSVReader } from 'react-papaparse'
+import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import { useSelector } from 'react-redux'
 
 const Error = ({ name }) => (
   <Field
@@ -29,31 +31,32 @@ Error.propTypes = {
 }
 
 const AddAPDevice = () => {
+  const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const [autopilotData, setAutopilotdata] = useState(false)
   const tableColumns = [
     {
       name: 'serialNumber',
-      selector: (row) => row['serialNumber'],
+      selector: (row) => row['SerialNumber'],
       sortable: true,
     },
     {
       name: 'Device Manufacturer',
-      selector: (row) => row['deviceManufacturer'],
+      selector: (row) => row['oemManufacturerName'],
       sortable: true,
     },
     {
       name: 'Device Model',
-      selector: (row) => row['deviceModel'],
+      selector: (row) => row['modelName'],
       sortable: true,
     },
     {
       name: 'Windows Product ID',
-      selector: (row) => row['pkid'],
+      selector: (row) => row['productKey'],
       sortable: true,
     },
     {
       name: 'Hardware Hash',
-      selector: (row) => row['HardwareHash'],
+      selector: (row) => row['hardwareHash'],
       sortable: true,
     },
     {
@@ -70,21 +73,33 @@ const AddAPDevice = () => {
   ]
 
   const handleOnDrop = (data) => {
-    console.log('---------------------------')
-    console.log(data)
-    console.log('---------------------------')
+    const importdata = data.map((item) => {
+      return {
+        //Device serial number,Windows product ID,Hardware hash,Manufacturer name,Device Model
+        SerialNumber: item.data['Device serial number'],
+        productKey: item.data['Windows product ID'],
+        hardwareHash: item.data['Hardware hash'],
+        oemManufacturerName: item.data['Manufacturer name'],
+        modelName: item.data['Device Model'],
+      }
+    })
+    setAutopilotdata(importdata)
+    console.log(importdata)
   }
 
   const handleOnError = (err, file, inputElem, reason) => {
-    console.log('---------------------------')
-    console.log(err)
-    console.log('---------------------------')
+    //set upload error
   }
+  const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
 
   const handleSubmit = async (values) => {
-    alert(JSON.stringify(values, null, 2))
-    // @todo hook this up
-    // dispatch(applyStandards({ tenants: values.selectedTenants, standards: values.standards } ))
+    const shippedValues = {
+      TenantFilter: tenantDomain,
+      autopilotData,
+      ...values,
+    }
+    //alert(JSON.stringify(values, null, 2))
+    genericPostRequest({ path: '/api/AddAPDevice', values: shippedValues })
   }
   const addRowtoData = (values) => {
     setAutopilotdata((prevState) => {
@@ -137,26 +152,30 @@ const AddAPDevice = () => {
           <p>You can also upload a CSV file if your vendor has supplied you with one.</p>
         </div>
         <CCol xs={'auto'}>
-          <CSVReader onDrop={handleOnDrop} onError={handleOnError}>
+          <CSVReader
+            onDrop={handleOnDrop}
+            onError={handleOnError}
+            config={{ header: true, skipEmptyLines: true }}
+          >
             <span>Drop CSV file here or click to upload.</span>
           </CSVReader>
         </CCol>
         <br></br>
         <CRow>
           <CCol xs={'auto'}>
-            <RFFCFormInput autoFocus name="serialNumber" label="Serial Number" type="text" />
+            <RFFCFormInput autoFocus name="SerialNumber" label="Serial Number" type="text" />
           </CCol>
           <CCol xs={'auto'}>
-            <RFFCFormInput name="deviceManufacturer" label="Device Manufacturer" type="text" />
+            <RFFCFormInput name="oemManufacturerName" label="Device Manufacturer" type="text" />
           </CCol>
           <CCol xs={'auto'}>
-            <RFFCFormInput name="deviceModel" label="Device Model" type="text" />
+            <RFFCFormInput name="modelName" label="Device Model" type="text" />
           </CCol>
           <CCol xs={'auto'}>
-            <RFFCFormInput name="pkid" label="Windows Product ID" type="text" />
+            <RFFCFormInput name="productKey" label="Windows Product ID" type="text" />
           </CCol>
           <CCol xs={'auto'}>
-            <RFFCFormInput name="HardwareHash" label="Hardware Hash" type="text" />
+            <RFFCFormInput name="hardwareHash" label="Hardware Hash" type="text" />
           </CCol>
           <CCol xs={'auto'} className="align-self-end">
             <FormSpy>
@@ -219,6 +238,12 @@ const AddAPDevice = () => {
           <h3 className="text-primary">Step 4</h3>
           <h5 className="mb-4">Confirm and apply</h5>
           <hr className="my-4" />
+          {postResults.isFetching && (
+            <CCallout color="info">
+              <CSpinner>Loading</CSpinner>
+            </CCallout>
+          )}
+          {postResults.isSuccess && <CCallout color="success">{postResults.data.Results}</CCallout>}
         </center>
         <hr className="my-4" />
       </Wizard.Page>
