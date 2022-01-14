@@ -1,6 +1,6 @@
+---
 name: NodeJS Project Check
-
-on:
+on:  # yamllint disable-line rule:truthy
   push:
     branches:
       - master
@@ -9,11 +9,9 @@ on:
     branches:
       - master
       - react
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
   cancel-in-progress: true
-
 jobs:
   install-build:
     name: NPM Install and Build

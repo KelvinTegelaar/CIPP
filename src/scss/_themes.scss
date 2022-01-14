@@ -1,31 +1,31 @@
 :root {
   // CyberDrain variables.
   --cyberdrain-primary: #f77f00; // Orange
-  --cyberdrain-primary-rgb: rgb(247, 127, 0); // Orange
+  --cyberdrain-primary-rgb: rgb(247 127 0); // Orange
   --cyberdrain-secondary: #003049; // Prussian Blue
-  --cyberdrain-secondary-rgb: rgb(0, 48, 73); // Prussian Blue
-  --cyberdrain-lighter: #ffffff; // White
+  --cyberdrain-secondary-rgb: rgb(0 48 73); // Prussian Blue
+  --cyberdrain-lighter: #fff; // White
   --cyberdrain-light: #f4f5f6; // Cultured
-  --cyberdrain-light-rgb: rgb(244, 245, 246); // Cultured
+  --cyberdrain-light-rgb: rgb(244 245 246); // Cultured
   --cyberdrain-light-striped: #d2d6da; // Light Gray
-  --cyberdrain-darker: #20262a; //Charleston Green
+  --cyberdrain-darker: #20262a; // Charleston Green
   --cyberdrain-dark: #2e363a; // Gunmetal
-  --cyberdrain-dark-rgb: rgb(46, 54, 58); // Gunmetal
+  --cyberdrain-dark-rgb: rgb(46 54 58); // Gunmetal
   --cyberdrain-dark-striped: #48555b; // Charcoal
   --cyberdrain-accent-blue: #3e5c66; // Deep Space Sparkle
-  --cyberdrain-accent-blue-rgb: rgb(62, 92, 102); // Deep Space Sparkle
+  --cyberdrain-accent-blue-rgb: rgb(62 92 102); // Deep Space Sparkle
   --cyberdrain-accent-green: #005c63; // Midnight Green Eagle Green
-  --cyberdrain-accent-green-rgb: rgb(0, 92, 99); // Midnight Green Eagle Green
+  --cyberdrain-accent-green-rgb: rgb(0 92 99); // Midnight Green Eagle Green
   --cyberdrain-accent-beige: #ebf0df; // Beige
-  --cyberdrain-accent-beige-rgb: rgb(235, 240, 223); // Beige
+  --cyberdrain-accent-beige-rgb: rgb(235 240 223); // Beige
   --cyberdrain-success: #4fa000; // Green RYB
-  --cyberdrain-success-rgb: rgb(79, 160, 0); // Green RYB
+  --cyberdrain-success-rgb: rgb(79 160 0); // Green RYB
   --cyberdrain-info: #0096d8; // Carolina Blue
-  --cyberdrain-info-rgb: rgb(0, 150, 216); // Carolina Blue
+  --cyberdrain-info-rgb: rgb(0 150 216); // Carolina Blue
   --cyberdrain-warning: #bf7f00; // Dark Goldenrod
-  --cyberdrain-warning-rgb: rgb(191, 127, 0); // Dark Goldenrod
+  --cyberdrain-warning-rgb: rgb(191 127 0); // Dark Goldenrod
   --cyberdrain-danger: #eb603d; // Orange Soda
-  --cyberdrain-danger-rgb: rgb(235, 96, 61); // Orange Soda
+  --cyberdrain-danger-rgb: rgb(235 96 61); // Orange Soda
   // Core UI theme-independent variables.
   --cui-blue: #0d6efd;
   --cui-indigo: #6610f2;
@@ -65,22 +65,40 @@
   --cui-danger-rgb: var(--cyberdrain-danger-rgb);
   --cui-light-rgb: var(--cyberdrain-light-rgb);
   --cui-dark-rgb: var(--cyberdrain-dark-rgb);
-  --cui-white-rgb: rgb(255, 255, 255);
-  --cui-black-rgb: rgb(0, 0, 0);
-  --cui-font-sans-serif: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
-    'Noto Sans', 'Liberation Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-    'Segoe UI Symbol', 'Noto Color Emoji';
-  --cui-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+  --cui-white-rgb: rgb(255 255 255);
+  --cui-black-rgb: rgb(0 0 0);
+  --cui-font-sans-serif:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    roboto,
+    'Helvetica Neue',
+    arial,
+    'Noto Sans',
+    'Liberation Sans',
+    sans-serif,
+    'Apple Color Emoji',
+    'Segoe UI Emoji',
+    'Segoe UI Symbol',
+    'Noto Color Emoji';
+  --cui-font-monospace:
+    sfmono-regular,
+    menlo,
+    monaco,
+    consolas,
+    'Liberation Mono',
+    'Courier New',
     monospace;
-  --cui-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
+  --cui-gradient: linear-gradient(180deg, rgb(255 255 255 / 15%), rgb(255 255 255 / 0%));
   --cui-body-font-family: var(--cui-font-sans-serif);
   --cui-body-font-size: 1rem;
   --cui-body-font-weight: 400;
   --cui-body-line-height: 1.5;
   --cui-card-cap-color: var(--cyberdrain-light);
   --cui-card-cap-bg: var(--cyberdrain-accent-blue);
-  --cui-border-radius: ;
+  --cui-border-radius: 0;
   --cui-badge-color: var(--cyberdrain-dark);
+
   // CIPP theme-independent variables.
   --cipp-border-radius: 0;
   --cipp-offcanvas-header-bg: var(--cyberdrain-accent-green);
@@ -88,9 +106,10 @@
   --cipp-offcanvas-header-hover-color: var(--cyberdrain-lighter);
   --cipp-search-selected-option-color: var(--cyberdrain-light);
   --cipp-search-selected-option-bg: var(--cyberdrain-accent-green);
-  --cipp-search-selected-option-highlight: rgba(0, 92, 99, 0.1);
+  --cipp-search-selected-option-highlight: rgb(0 92 99 / 10%);
   --cipp-search-header-bg: var(--cyberdrain-accent-blue);
   --cipp-search-header-color: var(--cyberdrain-light);
+
   .btn-ghost-success {
     --cui-btn-color: var(--cyberdrain-success);
     --cui-btn-hover-bg: var(--cyberdrain-success);
@@ -100,8 +119,9 @@
     --cui-btn-active-border-color: #43bf6c;
     --cui-btn-active-color: var(--cyberdrain-darker);
     --cui-btn-disabled-color: #2eb85c;
-    --cui-btn-shadow: rgba(46, 184, 92, 0.5);
+    --cui-btn-shadow: rgb(46 184 92 / 50%);
   }
+
   .btn-ghost-info {
     --cui-btn-color: var(--cyberdrain-info);
     --cui-btn-hover-bg: var(--cyberdrain-info);
@@ -111,8 +131,9 @@
     --cui-btn-active-border-color: #47a3ff;
     --cui-btn-active-color: var(--cyberdrain-darker);
     --cui-btn-disabled-color: #39f;
-    --cui-btn-shadow: rgba(51, 153, 255, 0.5);
+    --cui-btn-shadow: rgb(51 153 255 / 50%);
   }
+
   .btn-ghost-warning {
     --cui-btn-color: var(--cyberdrain-warning);
     --cui-btn-hover-bg: var(--cyberdrain-warning);
@@ -122,8 +143,9 @@
     --cui-btn-active-border-color: #bb8510;
     --cui-btn-active-color: var(--cyberdrain-darker);
     --cui-btn-disabled-color: #f9b115;
-    --cui-btn-shadow: rgba(249, 177, 21, 0.5);
+    --cui-btn-shadow: rgb(249 177 21 / 50%);
   }
+
   .btn-ghost-danger {
     --cui-btn-color: var(--cyberdrain-danger);
     --cui-btn-hover-bg: var(--cyberdrain-danger);
@@ -133,8 +155,9 @@
     --cui-btn-active-border-color: #e86464;
     --cui-btn-active-color: var(--cyberdrain-darker);
     --cui-btn-disabled-color: #e55353;
-    --cui-btn-shadow: rgba(229, 83, 83, 0.5);
+    --cui-btn-shadow: rgb(229 83 83 / 50%);
   }
+
   .list-group-item-primary {
     --cui-list-group-color: var(--cyberdrain-primary);
     --cui-list-group-bg: var(--cyberdrain-darker);
@@ -145,6 +168,7 @@
     --cui-list-group-action-active-bg: var(--cyberdrain-primary);
     --cui-list-group-action-active-border-color: var(--cyberdrain-darker);
   }
+
   .list-group-item-secondary {
     --cui-list-group-color: var(--cyberdrain-light);
     --cui-list-group-bg: var(--cyberdrain-darker);
@@ -155,6 +179,7 @@
     --cui-list-group-action-active-bg: var(--cyberdrain-secondary);
     --cui-list-group-action-active-border-color: var(--cyberdrain-secondary);
   }
+
   .list-group-item-success {
     --cui-list-group-color: var(--cyberdrain-success);
     --cui-list-group-bg: var(--cyberdrain-darker);
@@ -165,6 +190,7 @@
     --cui-list-group-action-active-bg: var(--cyberdrain-success);
     --cui-list-group-action-active-border-color: var(--cyberdrain-darker);
   }
+
   .list-group-item-info {
     --cui-list-group-color: var(--cyberdrain-info);
     --cui-list-group-bg: var(--cyberdrain-darker);
@@ -175,6 +201,7 @@
     --cui-list-group-action-active-bg: var(--cyberdrain-info);
     --cui-list-group-action-active-border-color: var(--cyberdrain-darker);
   }
+
   .list-group-item-warning {
     --cui-list-group-color: var(--cyberdrain-warning);
     --cui-list-group-bg: var(--cyberdrain-darker);
@@ -185,6 +212,7 @@
     --cui-list-group-action-active-bg: var(--cyberdrain-warning);
     --cui-list-group-action-active-border-color: var(--cyberdrain-darker);
   }
+
   .list-group-item-danger {
     --cui-list-group-color: var(--cyberdrain-danger);
     --cui-list-group-bg: var(--cyberdrain-darker);
@@ -256,12 +284,7 @@
   --cui-toast-color: var(--cyberdrain-dark);
   --cui-toast-header-background-color: var(--cyberdrain-accent-green);
   --cui-toast-header-color: var(--cyberdrain-light);
-  .table {
-    --cui-table-bg: var(--cyberdrain-light);
-    --cui-table-color: var(--cyberdrain-dark);
-    --cui-table-striped-bg: var(--cyberdrain-light-striped);
-    --cui-table-striped-color: var(--cyberdrain-dark-striped);
-  }
+
   // CIPP CyberDrain theme variables.
   --cipp-search-bg: var(--cyberdrain-light);
   --cipp-search-border-color: var(--cyberdrain-dark);
@@ -278,16 +301,27 @@
   --cipp-table-primary-colour: var(--cyberdrain-dark);
   --cipp-table-secondary-colour: var(--cyberdrain-secondary);
   --cipp-table-sort-focus-bg: var(--cyberdrain-secondary);
-  --cipp-table-highlight-on-hover-bg: white;
+  --cipp-table-highlight-on-hover-bg: #fff;
   --cipp-table-highlight-on-hover-color: var(--cyberdrain-dark);
   --cipp-table-striped-bg: var(--cyberdrain-light-striped);
   --cipp-table-striped-colour: var(--cyberdrain-dark-striped);
+
+  .table {
+    --cui-table-bg: var(--cyberdrain-light);
+    --cui-table-color: var(--cyberdrain-dark);
+    --cui-table-striped-bg: var(--cyberdrain-light-striped);
+    --cui-table-striped-color: var(--cyberdrain-dark-striped);
+  }
+
+  /* stylelint-disable no-descending-specificity */
   .header-toggler {
     &:hover {
       color: var(--cui-header-color);
     }
   }
+  /* stylelint-enable no-descending-specificity */
 }
+
 [data-theme='impact'] {
   // Core UI Impact theme variables.
   --cui-body-bg: var(--cyberdrain-dark);
@@ -346,12 +380,7 @@
   --cui-toast-color: var(--cyberdrain-light);
   --cui-toast-header-background-color: var(--cyberdrain-accent-green);
   --cui-toast-header-color: var(--cyberdrain-light);
-  .table {
-    --cui-table-bg: var(--cyberdrain-dark);
-    --cui-table-color: var(--cyberdrain-light);
-    --cui-table-striped-bg: var(--cyberdrain-dark-striped);
-    --cui-table-striped-color: var(--cyberdrain-light-striped);
-  }
+
   // CIPP Impact theme variables.
   --cipp-search-bg: var(--cyberdrain-dark);
   --cipp-search-border-color: var(--cyberdrain-light);
@@ -372,11 +401,22 @@
   --cipp-table-highlight-on-hover-color: var(--cyberdrain-light);
   --cipp-table-striped-bg: var(--cyberdrain-dark-striped);
   --cipp-table-striped-colour: var(--cyberdrain-light-striped);
+
+  .table {
+    --cui-table-bg: var(--cyberdrain-dark);
+    --cui-table-color: var(--cyberdrain-light);
+    --cui-table-striped-bg: var(--cyberdrain-dark-striped);
+    --cui-table-striped-color: var(--cyberdrain-light-striped);
+  }
+
+  /* stylelint-disable no-descending-specificity */
   .header-toggler {
     &:hover {
       color: var(--cui-header-color);
     }
   }
+  /* stylelint-enable no-descending-specificity */
+
   .list-group-item-primary {
     --cui-list-group-color: var(--cyberdrain-dark);
     --cui-list-group-bg: var(--cyberdrain-primary);

@@ -1,41 +1,31 @@
 .sr-only {
   border: 0 !important;
-  clip: rect(1px, 1px, 1px, 1px) !important; /* 1 */
-  -webkit-clip-path: inset(50%) !important;
-  clip-path: inset(50%) !important; /* 2 */
+  clip: rect(1px, 1px, 1px, 1px) !important;
+  clip-path: inset(50%) !important;
   height: 1px !important;
   margin: -1px !important;
   overflow: hidden !important;
   padding: 0 !important;
   position: absolute !important;
+  white-space: nowrap !important;
   width: 1px !important;
-  white-space: nowrap !important; /* 3 */
+
+  &-focusable {
+    &:focus,
+    &:active {
+      clip: auto !important;
+      clip-path: none !important;
+      height: auto !important;
+      margin: auto !important;
+      overflow: visible !important;
+      white-space: normal !important;
+      width: auto !important;
+    }
+  }
 }
 
-/*
-	Use in conjunction with .sr-only to only display content when it's focused.
-	@note Useful for skip links
-	@see http://www.w3.org/TR/2013/NOTE-WCAG20-TECHS-20130905/G1
-	@note Based on a HTML5 Boilerplate technique, included in Bootstrap
-	@note Fixed a bug with position: static on iOS 10.0.2 + VoiceOver
-		@author Sylvain Pigeard
-		@see https://github.com/twbs/bootstrap/issues/20732
-*/
-.sr-only-focusable:focus,
-.sr-only-focusable:active {
-  clip: auto !important;
-  -webkit-clip-path: none !important;
-  clip-path: none !important;
-  height: auto !important;
-  margin: auto !important;
-  overflow: visible !important;
-  width: auto !important;
-  white-space: normal !important;
-}
+// added some code for slightly prettier scrollbars
 
-//added some code for slightly prettier scrollbars
-
-/* custom scrollbar */
 ::-webkit-scrollbar {
   width: 20px;
 }
@@ -45,10 +35,10 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #d6dee1;
-  border-radius: 20px;
-  border: 6px solid transparent;
   background-clip: content-box;
+  background-color: #d6dee1;
+  border: 6px solid transparent;
+  border-radius: 20px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -63,29 +53,35 @@
 
 .card {
   border-radius: var(--cipp-border-radius);
+
+  .card-header {
+    &:first-child {
+      border-radius: var(--cipp-border-radius);
+    }
+  }
+
   &.page-card {
     .card-header {
       background: var(--cyberdrain-accent-green);
     }
+
     .card-title {
       font-size: 1rem;
       line-height: 2rem;
-      margin-bottom: 0rem;
+      margin-bottom: 0;
     }
   }
+
   &.options-card {
     border-color: var(--cui-options-card-border-color);
+
     .card-header {
       border-bottom-color: var(--cui-options-card-border-color);
     }
+
     .card-title {
       line-height: 2rem;
-      margin-bottom: 0rem;
-    }
-  }
-  .card-header {
-    &:first-child {
-      border-radius: var(--cipp-border-radius);
+      margin-bottom: 0;
     }
   }
 }
@@ -100,8 +96,10 @@
 
 .form-select {
   border-radius: var(--cipp-border-radius);
+
+  /* stylelint-disable-next-line selector-class-pattern */
   .select-search__input {
-    border: 0px;
+    border: 0;
   }
 }
 
@@ -123,13 +121,17 @@
 
 /* Tables */
 
+/* stylelint-disable-next-line selector-class-pattern */
 .rdt_TableBody {
+  /* stylelint-disable-next-line selector-class-pattern */
   .rdt_TableRow {
     &:hover {
       border-bottom-color: var(--cipp-table-divider);
       outline-style: none;
     }
   }
+
+  /* stylelint-disable-next-line selector-class-pattern */
   .rdt_TableCell {
     position: relative;
   }
@@ -139,9 +141,10 @@
   header {
     padding-bottom: 1rem;
   }
+
   .dropdown-menu {
-    z-index: 1000;
     transform: translateZ(100px);
+    z-index: 1000;
   }
 }
 
@@ -152,9 +155,10 @@
 .dropdown-item {
   a {
     color: var(--cui-dropdown-link-color);
+    display: inline-block;
     text-decoration: none;
     width: 100%;
-    display: inline-block;
+
     &:hover {
       color: var(--cui-dropdown-link-hover-color);
       text-decoration: none;
@@ -165,28 +169,34 @@
 .cipp-offcanvas {
   background-color: var(--cui-body-bg);
   z-index: 1500;
+
   &.offcanvas-end {
     @include ltr-rtl-value-only('transform', none, none);
   }
+
   .offcanvas-header {
     background-color: var(--cipp-offcanvas-header-bg);
     color: var(--cipp-offcanvas-header-color);
+
     .btn {
       color: var(--cipp-offcanvas-header-color);
+
       :hover {
         color: var(--cipp-offcanvas-header-hover-color);
       }
     }
   }
+
   .offcanvas-title {
-    padding-bottom: 1rem;
-    padding-top: 0.5rem;
     background-color: var(--cipp-offcanvas-title-bg);
     color: var(--cipp-offcanvas-title-color);
+    padding-bottom: 1rem;
+    padding-top: 0.5rem;
   }
+
   .cipp-extendedinfo-label {
-    font-weight: bold;
     border-bottom: 1px solid var(--cipp-offcanvas-label-border-color);
+    font-weight: bold;
   }
 }
 
@@ -247,9 +257,10 @@
 /* Code Block */
 .cipp-code {
   position: relative;
+
   .cipp-code-copy-button {
     position: absolute;
-    top: 0.1rem;
     right: 0.1rem;
+    top: 0.1rem;
   }
 }
