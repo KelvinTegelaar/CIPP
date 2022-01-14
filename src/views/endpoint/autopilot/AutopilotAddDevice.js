@@ -7,6 +7,7 @@ import Wizard from '../../../components/Wizard'
 import PropTypes from 'prop-types'
 import { RFFCFormInput } from '../../../components/RFFComponents'
 import { CippTable, TenantSelector } from 'src/components/cipp'
+import { CSVReader } from 'react-papaparse'
 
 const Error = ({ name }) => (
   <Field
@@ -29,7 +30,6 @@ Error.propTypes = {
 
 const AddAPDevice = () => {
   const [autopilotData, setAutopilotdata] = useState(false)
-
   const tableColumns = [
     {
       name: 'serialNumber',
@@ -69,10 +69,22 @@ const AddAPDevice = () => {
     },
   ]
 
+  const handleOnDrop = (data) => {
+    console.log('---------------------------')
+    console.log(data)
+    console.log('---------------------------')
+  }
+
+  const handleOnError = (err, file, inputElem, reason) => {
+    console.log('---------------------------')
+    console.log(err)
+    console.log('---------------------------')
+  }
+
   const handleSubmit = async (values) => {
     alert(JSON.stringify(values, null, 2))
     // @todo hook this up
-    // dispatch(applyStandards({ tenants: values.selectedTenants, standards: values.standards }))
+    // dispatch(applyStandards({ tenants: values.selectedTenants, standards: values.standards } ))
   }
   const addRowtoData = (values) => {
     setAutopilotdata((prevState) => {
@@ -124,13 +136,15 @@ const AddAPDevice = () => {
           </p>
           <p>You can also upload a CSV file if your vendor has supplied you with one.</p>
         </div>
-        <CCol md={6}>
-          <CButton>Upload CSV</CButton>
+        <CCol xs={'auto'}>
+          <CSVReader onDrop={handleOnDrop} onError={handleOnError}>
+            <span>Drop CSV file here or click to upload.</span>
+          </CSVReader>
         </CCol>
         <br></br>
         <CRow>
           <CCol xs={'auto'}>
-            <RFFCFormInput name="serialNumber" label="Serial Number" type="text" />
+            <RFFCFormInput autoFocus name="serialNumber" label="Serial Number" type="text" />
           </CCol>
           <CCol xs={'auto'}>
             <RFFCFormInput name="deviceManufacturer" label="Device Manufacturer" type="text" />
@@ -162,20 +176,21 @@ const AddAPDevice = () => {
                 )
               }}
             </FormSpy>
-            <CRow>
-              <CCol md={{ span: 12, offset: 3 }}>
-                {autopilotData && (
-                  <CippTable
-                    reportName="none"
-                    tableProps={{ subheader: false }}
-                    data={autopilotData}
-                    columns={tableColumns}
-                  />
-                )}
-              </CCol>
-            </CRow>
           </CCol>
         </CRow>
+        <CRow>
+          <CCol>
+            {autopilotData && (
+              <CippTable
+                reportName="none"
+                tableProps={{ subheader: false }}
+                data={autopilotData}
+                columns={tableColumns}
+              />
+            )}
+          </CCol>
+        </CRow>
+
         <hr className="my-4" />
       </Wizard.Page>
       <Wizard.Page

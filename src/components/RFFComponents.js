@@ -107,6 +107,7 @@ export const RFFCFormInput = ({
   validate,
   disabled = false,
   spellCheck = true,
+  autoFocus = false,
 }) => {
   return (
     <Field name={name} validate={validate}>
@@ -124,6 +125,7 @@ export const RFFCFormInput = ({
               area-describedby={name}
               placeholder={placeholder}
               spellCheck={spellCheck}
+              autoFocus={autoFocus}
             />
             <RFFCFormFeedback meta={meta} />
           </div>
