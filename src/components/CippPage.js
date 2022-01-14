@@ -1,18 +1,27 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import TenantSelector from 'src/components/cipp/TenantSelector'
 import { CAlert, CCard, CCardBody, CCardHeader } from '@coreui/react'
 import CippDatatable from 'src/components/cipp/CippDatatable'
 import { useDispatch, useSelector } from 'react-redux'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, useNavigate } from 'react-router-dom'
 import { setCurrentTenant } from 'src/store/features/app'
 import { useListTenantsQuery } from 'src/store/api/tenants'
+import { queryString } from 'src/helpers'
 
 export function CippPage({ tenantSelector = true, title, children, titleButton = null }) {
   const { data: tenants = [], isSuccess } = useListTenantsQuery()
   const tenant = useSelector((state) => state.app.currentTenant)
   const [searchParams, setSearchParams] = useSearchParams()
+  const navigate = useNavigate()
   const dispatch = useDispatch()
+
+  const updateSearchParams = useCallback(
+    (params) => {
+      navigate(`${queryString(params)}`, { replace: true })
+    },
+    [navigate],
+  )
 
   useEffect(() => {
     if (tenantSelector) {
@@ -24,10 +33,10 @@ export function CippPage({ tenantSelector = true, title, children, titleButton =
         }
       }
       if (!customerId && Object.keys(tenant).length > 0) {
-        setSearchParams({ customerId: tenant?.customerId })
+        updateSearchParams({ customerId: tenant?.customerId })
       }
     }
-  }, [searchParams, dispatch, tenants, isSuccess, tenant, setSearchParams, tenantSelector])
+  }, [dispatch, isSuccess, searchParams, tenant, tenantSelector, tenants, updateSearchParams])
 
   const handleTenantSelect = (tenant) => {
     setSearchParams({ customerId: tenant.customerId })
