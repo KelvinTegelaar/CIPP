@@ -10,8 +10,8 @@ import {
   CListGroupItem,
   CSpinner,
 } from '@coreui/react'
-import avatar0 from './../assets/images/avatars/0.jpg'
-import { useLoadClientPrincipalQuery } from '../store/api/auth'
+import avatar0 from 'src/assets/images/avatars/0.jpg'
+import { useLoadClientPrincipalQuery } from 'src/store/api/auth'
 import ThemeSwitcher from 'src/components/cipp/ThemeSwitcher'
 
 const CippProfile = () => {
