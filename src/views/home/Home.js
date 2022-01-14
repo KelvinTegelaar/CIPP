@@ -21,8 +21,8 @@ const Home = () => {
   return (
     <div>
       <h3>Dashboard</h3>
-      <CRow xs={{ cols: 1, gutter: 4 }} md={{ cols: 2 }}>
-        <CCol xs>
+      <CRow>
+        <CCol xs={'auto'}>
           <CCard>
             <CCardHeader>
               <CCardTitle>Quick Create</CCardTitle>
@@ -50,7 +50,7 @@ const Home = () => {
             </CCardBody>
           </CCard>
         </CCol>
-        <CCol xs>
+        <CCol xs={'auto'}>
           <CCard className="mb-3" style={{ maxWidth: '18rem' }}>
             <CCardHeader>
               <CCardTitle>

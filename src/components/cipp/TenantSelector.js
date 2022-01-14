@@ -2,8 +2,8 @@ import React from 'react'
 import SelectSearch, { fuzzySearch } from 'react-select-search'
 import { useDispatch, useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
-import { useListTenantsQuery } from '../../store/api/tenants'
-import { setCurrentTenant } from '../../store/features/app'
+import { useListTenantsQuery } from 'src/store/api/tenants'
+import { setCurrentTenant } from 'src/store/features/app'
 
 const TenantSelector = ({ action }) => {
   const dispatch = useDispatch()

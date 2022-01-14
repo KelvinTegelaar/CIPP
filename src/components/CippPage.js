@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
-import TenantSelector from './cipp/TenantSelector'
+import TenantSelector from 'src/components/cipp/TenantSelector'
 import { CAlert, CCard, CCardBody, CCardHeader } from '@coreui/react'
-import CippDatatable from './cipp/CippDatatable'
+import CippDatatable from 'src/components/cipp/CippDatatable'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
-import { setCurrentTenant } from '../store/features/app'
-import { useListTenantsQuery } from '../store/api/tenants'
+import { setCurrentTenant } from 'src/store/features/app'
+import { useListTenantsQuery } from 'src/store/api/tenants'
 
 export function CippPage({ tenantSelector = true, title, children, titleButton = null }) {
   const { data: tenants = [], isSuccess } = useListTenantsQuery()

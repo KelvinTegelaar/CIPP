@@ -11,11 +11,11 @@ import {
 } from '@coreui/react'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { AppBreadcrumb } from './index'
+import AppBreadcrumb from 'src/components/AppBreadcrumb'
 import AppHeaderDropdown from 'src/components/header/AppHeaderDropdown'
 import AppHeaderSearch from 'src/components/header/AppHeaderSearch'
 import cyberdrainlogo from 'src/assets/images/CIPP.png'
-import { toggleSidebarShow } from '../store/features/app'
+import { toggleSidebarShow } from 'src/store/features/app'
 
 const AppHeader = () => {
   const dispatch = useDispatch()

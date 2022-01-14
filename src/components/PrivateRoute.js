@@ -1,9 +1,9 @@
 import React from 'react'
 import { Navigate } from 'react-router-dom'
-import { useLoadClientPrincipalQuery } from '../store/api/auth'
-import { FullScreenLoading } from './Loading'
+import { useLoadClientPrincipalQuery } from 'src/store/api/auth'
+import { FullScreenLoading } from 'src/components/Loading'
 import { useDispatch } from 'react-redux'
-import { updateAccessToken } from '../store/features/auth'
+import { updateAccessToken } from 'src/store/features/auth'
 import PropTypes from 'prop-types'
 
 export const PrivateRoute = ({ children }) => {
