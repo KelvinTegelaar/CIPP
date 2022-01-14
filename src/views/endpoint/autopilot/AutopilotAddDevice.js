@@ -1,14 +1,13 @@
 import React from 'react'
-import { CAlert, CCol } from '@coreui/react'
+import { CAlert, CButton, CCol, CFormLabel, CRow } from '@coreui/react'
 import { Field } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
 import Wizard from '../../../components/Wizard'
 import PropTypes from 'prop-types'
-import { RFFCFormInput, RFFCFormSwitch, RFFSelectSearch } from '../../../components/RFFComponents'
-import { TenantSelector } from 'src/components/cipp'
-import { useListUsersQuery } from 'src/store/api/users'
+import { RFFCFormInput } from '../../../components/RFFComponents'
+import { CippTable, TenantSelector } from 'src/components/cipp'
 
 const Error = ({ name }) => (
   <Field
@@ -31,11 +30,6 @@ Error.propTypes = {
 
 const AddAPDevice = () => {
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
-  const {
-    data: users = [],
-    isFetching: usersIsFetching,
-    error: usersError,
-  } = useListUsersQuery({ tenantDomain })
 
   const handleSubmit = async (values) => {
     alert(JSON.stringify(values, null, 2))
@@ -68,66 +62,57 @@ const AddAPDevice = () => {
         </center>
         <hr className="my-4" />
         <div className="mb-2">
-          Stuff here
-          {usersError && <span>Failed to load list of users</span>}
+          <p>
+            As a partner, you can register devices to Windows Autopilot using any one of these
+            methods: Hardware Hash (available from OEM or on-device script) Combination of
+            Manufacturer, Device Model, Device Serial Number Windows Product Key ID.
+          </p>
+          <p>You can also upload a CSV file if your vendor has supplied you with one.</p>
         </div>
+        <CCol md={6}>
+          <CButton>Upload CSV</CButton>
+        </CCol>
+        <br></br>
+        <CRow>
+          <CCol md={1}>
+            <RFFCFormInput name="serialNumber" label="Serial Number" type="text" />
+          </CCol>
+          <CCol md={1}>
+            <RFFCFormInput name="deviceManufacturer" label="Device Manufacturer" type="text" />
+          </CCol>
+          <CCol md={1}>
+            <RFFCFormInput name="device Model" label="Device Model" type="text" />
+          </CCol>
+          <CCol md={1}>
+            <RFFCFormInput name="pkid" label="Windows Product ID" type="text" />
+          </CCol>
+          <CCol md={1}>
+            <RFFCFormInput name="HardwareHash" label="Hardware Hash" type="text" />
+          </CCol>
+          <CCol md={1}>
+            <CButton name="addButton">Add</CButton>
+          </CCol>
+        </CRow>
         <hr className="my-4" />
       </Wizard.Page>
-      <Wizard.Page title="Offboarding Settings" description="Select the offboarding options.">
+      <Wizard.Page
+        title="Offboarding Settings"
+        description="Add a tag, group, or other info to this request"
+      >
         <center>
           <h3 className="text-primary">Step 3</h3>
-          <h5>Choose offboarding options</h5>
+          <h5>Choose options</h5>
         </center>
         <hr className="my-4" />
         <div className="mb-2">
-          <RFFCFormSwitch name="RemoveLicenses" label="Remove Licenses" />
-          <RFFCFormSwitch name="ConvertoSharedMailbox" label="Convert to Shared Mailbox" />
-          <RFFCFormSwitch name="DisableUser" label="Disable Sign in" />
-          <RFFCFormSwitch name="ResetPassword" label="Reset Password" />
-          <RFFCFormSwitch name="RemoveGroups" label="Remove from all groups" />
-          <RFFCFormSwitch name="HideGAL" label="Hide from Global Address List" />
           <CCol md={6}>
             <RFFCFormInput
-              name="OOO"
-              label="Out of Office"
+              name="GroupName"
+              label="Group Name"
               type="text"
-              placeholder="leave blank to not set"
+              placeholder="Leave blank"
             />
           </CCol>
-          <CCol md={6}>
-            <RFFSelectSearch
-              label="Give other user full access on mailbox without automapping"
-              values={users?.map((user) => ({
-                value: user.id,
-                name: user.displayName,
-              }))}
-              placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
-              name="UserNoAutomap"
-            />
-          </CCol>
-          <CCol md={6}>
-            <RFFSelectSearch
-              label="Give other user full access on mailbox with automapping"
-              values={users?.map((user) => ({
-                value: user.id,
-                name: user.displayName,
-              }))}
-              placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
-              name="UserAutomap"
-            />
-          </CCol>
-          <CCol md={6}>
-            <RFFSelectSearch
-              label="Give other user full access on Onedrive"
-              values={users?.map((user) => ({
-                value: user.id,
-                name: user.displayName,
-              }))}
-              placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
-              name="UserAutomapOneDrive"
-            />
-          </CCol>
-          <RFFCFormSwitch name="Delete User" label="Delete user" />
         </div>
         <hr className="my-4" />
       </Wizard.Page>
@@ -137,7 +122,6 @@ const AddAPDevice = () => {
           <h5 className="mb-4">Confirm and apply</h5>
           <hr className="my-4" />
         </center>
-        <div className="mb-2">Show JSON here</div>
         <hr className="my-4" />
       </Wizard.Page>
     </Wizard>
