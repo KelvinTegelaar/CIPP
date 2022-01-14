@@ -1,14 +1,5 @@
 import React, { useState } from 'react'
-import {
-  CAlert,
-  CButton,
-  CCol,
-  CRow,
-  CTable,
-  CTableBody,
-  CTableDataCell,
-  CTableRow,
-} from '@coreui/react'
+import { CAlert, CButton, CCol, CRow } from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
@@ -69,19 +60,15 @@ const AddAPDevice = () => {
       name: 'Remove',
       selector: (row) => row['index'],
       button: true,
-      cell: () => {
+      cell: (row, index) => {
         return (
-          <CButton onClick={() => handleRemove()} size="sm" variant="ghost" color="danger">
+          <CButton onClick={() => handleRemove(index)} size="sm" variant="ghost" color="danger">
             <FontAwesomeIcon icon={faTrash} />
           </CButton>
         )
       },
     },
   ]
-  const handleRemove = async (values) => {
-    alert(JSON.stringify(values, null, 2))
-    //find arr index, delete from state.
-  }
 
   const handleSubmit = async (values) => {
     alert(JSON.stringify(values, null, 2))
@@ -95,6 +82,16 @@ const AddAPDevice = () => {
       } else {
         return [values]
       }
+    })
+  }
+  const handleRemove = async (itemindex) => {
+    //alert(JSON.stringify(values, null, 2))
+    //find arr index, delete from state.
+    console.log(itemindex)
+    var RemovedItems = autopilotData // make a separate copy of the array
+    RemovedItems.splice(itemindex, 1)
+    setAutopilotdata((prevState) => {
+      return RemovedItems
     })
   }
   return (
