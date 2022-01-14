@@ -1,8 +1,8 @@
+---
 name: 'Close stale issues and PRs'
-on:
+on:  # yamllint disable-line rule:truthy
   schedule:
     - cron: '30 1 * * *'
-
 jobs:
   stale:
     runs-on: ubuntu-latest

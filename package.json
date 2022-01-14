@@ -79,16 +79,17 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "husky": "^7.0.4",
+    "postcss-scss": "^4.0.3",
     "prettier": "2.4.1",
     "react-scripts": "^5.0.0",
     "redux-immutable-state-invariant": "^2.1.0",
-    "sass": "^1.44"
+    "sass": "^1.44",
+    "stylelint": "^14.2.0",
+    "stylelint-config-sass-guidelines": "^9.0.1",
+    "stylelint-order": "^5.0.0"
   },
   "engines": {
     "node": "16",
     "npm": ">=7"
-  },
-  "eslintIgnore": [
-    "node_modules/"
-  ]
+  }
 }

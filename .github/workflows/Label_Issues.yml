@@ -1,5 +1,6 @@
+---
 name: Label Issues
-on:
+on:  # yamllint disable-line rule:truthy
   issues:
     types:
       - opened

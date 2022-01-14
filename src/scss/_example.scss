@@ -7,7 +7,7 @@
     background-color: $light-50 !important;
 
     @at-root .dark-theme & {
-      background-color: rgba(255, 255, 255, 0.1) !important;
+      background-color: rgb(255 255 255 / 10%) !important;
     }
   }
 
@@ -21,13 +21,25 @@
     background: transparent;
   }
 
-  & + p {
+  + p {
     margin-top: 1.5rem;
   }
 
   // Components examples
   .preview,
   .preview .col {
+
+    @include media-breakpoint-up(sm) {
+      .fixed-top,
+      .sticky-top {
+        margin: -1.5rem -1.5rem 1rem;
+      }
+
+      .fixed-bottom {
+        margin: 1rem -1.5rem -1.5rem;
+      }
+    }
+
     + p {
       margin-top: 2rem;
     }
@@ -46,8 +58,8 @@
     }
 
     > .dropdown-menu {
-      position: static;
       display: block;
+      position: static;
     }
 
     > :last-child {
@@ -65,6 +77,7 @@
     > .btn-group {
       margin: 0.25rem 0.125rem;
     }
+
     > .btn-toolbar + .btn-toolbar {
       margin-top: 0.5rem;
     }
@@ -81,29 +94,19 @@
     // Navbars
     .fixed-top,
     .sticky-top {
-      position: static;
       margin: -1rem -1rem 1rem;
+      position: static;
     }
 
     .fixed-bottom {
-      position: static;
       margin: 1rem -1rem -1rem;
-    }
-
-    @include media-breakpoint-up(sm) {
-      .fixed-top,
-      .sticky-top {
-        margin: -1.5rem -1.5rem 1rem;
-      }
-      .fixed-bottom {
-        margin: 1rem -1.5rem -1.5rem;
-      }
+      position: static;
     }
 
     // Pagination
     .pagination {
-      margin-top: 0.5rem;
       margin-bottom: 0.5rem;
+      margin-top: 0.5rem;
     }
   }
 }

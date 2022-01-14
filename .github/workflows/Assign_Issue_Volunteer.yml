@@ -1,7 +1,6 @@
+---
 name: 'Assign Issue to Volunteer'
-
-on: [issue_comment]
-
+on: [issue_comment]  # yamllint disable-line rule:truthy
 jobs:
   build:
     runs-on: ubuntu-latest
