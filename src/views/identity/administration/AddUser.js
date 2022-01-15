@@ -101,8 +101,11 @@ const AddUser = () => {
     //window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/AddUser', values: shippedValues })
   }
+  const usagelocation = useSelector((state) => state.app.usageLocation)
+
   const initialState = {
     Autopassword: true,
+    usageLocation: usagelocation,
   }
 
   return (
@@ -215,6 +218,7 @@ const AddUser = () => {
                             placeholder="Type to search..."
                             label="Usage Location"
                             validate={required}
+                            value={usagelocation}
                           />
                         </CCol>
                       </CRow>

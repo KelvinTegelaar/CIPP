@@ -29,6 +29,9 @@ export const appSlice = createSlice({
     setSidebarVisible: (state, action) => {
       state.sidebarShow = action.payload?.visible
     },
+    setDefaultusageLocation: (state, action) => {
+      state.usageLocation = action.payload?.usageLocation
+    },
   },
 })
 
@@ -38,6 +41,7 @@ export const {
   setCurrentTenant,
   setCurrentTheme,
   setSidebarVisible,
+  setDefaultusageLocation,
 } = appSlice.actions
 
 export default persistReducer(
