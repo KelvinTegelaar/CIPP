@@ -28,7 +28,7 @@ const MailboxList = () => {
             <FontAwesomeIcon icon={faEdit} />
           </CButton>
         </Link>
-        <Link to={`/email/administration/view-mobile-devices?UserID=${row.primarySmtpAddress}`}>
+        <Link to={`/email/administration/view-mobile-devices?userId=${row.primarySmtpAddress}`}>
           <CButton size="sm" variant="ghost" color="warning">
             <FontAwesomeIcon icon={faMobileAlt} />
           </CButton>
