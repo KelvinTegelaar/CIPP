@@ -37,6 +37,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
         title="User Information"
         extendedInfo={[
           { label: 'Created on', value: `${row.createdDateTime}` },
+          { label: 'UPN', value: `${row.userPrincipalName}` },
           { label: 'Given Name', value: `${row.givenName}` },
           { label: 'Surname', value: `${row.surname}` },
           { label: 'Job Title', value: `${row.jobTitle}` },
