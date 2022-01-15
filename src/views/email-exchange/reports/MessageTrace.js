@@ -12,7 +12,7 @@ import {
 } from '@coreui/react'
 import useQuery from '../../../hooks/useQuery'
 import { Form } from 'react-final-form'
-import { RFFCFormInput, RFFCFormSelect } from '../../../components/RFFComponents'
+import { RFFCFormInput, RFFCFormSelect } from '../../../components/forms/RFFComponents'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronRight, faChevronDown, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { CippDatatable, TenantSelector } from 'src/components/cipp'

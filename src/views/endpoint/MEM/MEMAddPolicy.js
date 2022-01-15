@@ -7,15 +7,15 @@ import {
   faExclamationTriangle,
   faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons'
-import Wizard from '../../../components/Wizard'
-import WizardTableField from '../../../components/WizardTableField'
+import Wizard from '../../../components/layout/Wizard'
+import WizardTableField from '../../../components/tables/WizardTableField'
 import PropTypes from 'prop-types'
 import {
   RFFCFormInput,
   RFFCFormRadio,
   RFFCFormSelect,
   RFFCFormTextarea,
-} from '../../../components/RFFComponents'
+} from '../../../components/forms/RFFComponents'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { OnChange } from 'react-final-form-listeners'
 

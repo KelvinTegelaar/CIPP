@@ -8,9 +8,9 @@ import {
   faCheckCircle,
 } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
-import Wizard from '../../../components/Wizard'
+import Wizard from 'src/components/layout/Wizard'
 import PropTypes from 'prop-types'
-import { RFFCFormInput, RFFCFormSwitch, RFFSelectSearch } from '../../../components/RFFComponents'
+import { RFFCFormInput, RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms/RFFComponents'
 import { TenantSelector } from 'src/components/cipp'
 import { useListUsersQuery } from 'src/store/api/users'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'

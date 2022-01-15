@@ -1,11 +1,11 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { CButton } from '@coreui/react'
-import { cellBooleanFormatter } from '../../../components/cipp'
+import { cellBooleanFormatter } from '../../../components/utilities'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPageList } from '../../../components'
-import { TitleButton } from '../../../components/cipp'
+import { TitleButton } from '../../../components/utilities'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)

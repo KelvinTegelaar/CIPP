@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react'
 import { CButton, CCallout, CCardGroup, CCardText } from '@coreui/react'
-import { CippTable, cellDateFormatter } from '../../../components/cipp'
+import CippTable from 'src/components/tables/CippTable'
+import { cellDateFormatter } from 'src/components/cipp/CellDate'
 import { CCard, CCardBody, CCardHeader, CCardTitle, CSpinner } from '@coreui/react'
-import { useLazyExecAlertsListQuery } from '../../../store/api/security'
+import { useLazyExecAlertsListQuery } from 'src/store/api/security'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { CippPage } from '../../../components'
+import { CippPage } from 'src/components/layout/CippPage'
 import PropTypes from 'prop-types'
 import { faRedo } from '@fortawesome/free-solid-svg-icons'
-import cellGetProperty from '../../../components/cipp/cellGetProperty'
-import { ModalService } from '../../../components'
+import { ModalService } from 'src/components/ModalRoot'
 
 const AlertBox = ({ value, title, fetching }) => {
   let displayValue = value
@@ -97,7 +97,7 @@ const ListAlerts = () => {
       exportSelector: 'MSResults',
       sortable: true,
       cell: (row, index, column, id) => {
-        const value = cellGetProperty(row, index, column, id)
+        const value = column.selector(row)
 
         return (
           <CButton size="sm" onClick={() => handleShowModal(value)}>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { ModalService } from 'src/components/ModalRoot'
+import { ModalService } from 'src/components/utilities/ModalRoot'
 
 export default function useConfirmModal({
   body,

@@ -14,12 +14,11 @@ import {
   CTableHeaderCell,
   CTableRow,
 } from '@coreui/react'
-import { cellBooleanFormatter, CippDatatable } from '../../../components/cipp'
+import { cellBooleanFormatter, CippDatatable } from 'src/components/cipp'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLaptop } from '@fortawesome/free-solid-svg-icons'
-import { ModalService } from '../../../components'
-import { useListUserSigninLogsQuery } from '../../../store/api/users'
-import cellGetProperty from '../../../components/cipp/cellGetProperty'
+import { ModalService } from 'src/components/ModalRoot'
+import { useListUserSigninLogsQuery } from 'src/store/api/users'
 
 const rowStyle = (row, rowIndex) => {
   const style = {}
@@ -126,7 +125,7 @@ export default function UserSigninLogs({ userId, tenantDomain }) {
       name: 'Applied CAPs',
       dataField: 'AppliedCAPs',
       formatter: (row, index, column) => {
-        const cell = cellGetProperty(row, index, column)
+        const cell = column.selector(row)
         if (!cell) {
           return null
         }

@@ -13,7 +13,7 @@ import {
   CTableDataCell,
   CTableRow,
 } from '@coreui/react'
-import { CellProgressBar } from '../../../components/cipp'
+import { CellProgressBar } from '../../../components/utilities'
 import { useListMailboxDetailsQuery } from '../../../store/api/mailbox'
 
 const columns = [
@@ -48,10 +48,10 @@ const columns = [
   },
 ]
 
-export default function UserEmailUsage({ userId, tenantDomain }) {
+export default function UserEmailUsage({ userId, tenantDomain, className }) {
   const { data: report, isFetching, error } = useListMailboxDetailsQuery({ userId, tenantDomain })
   return (
-    <CCard className="options-card">
+    <CCard className={`options-card ${className}`}>
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>Email Usage</CCardTitle>
         <div>
@@ -91,4 +91,5 @@ export default function UserEmailUsage({ userId, tenantDomain }) {
 UserEmailUsage.propTypes = {
   tenantDomain: PropTypes.string.isRequired,
   userId: PropTypes.string.isRequired,
+  className: PropTypes.string,
 }

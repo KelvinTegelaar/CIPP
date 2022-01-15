@@ -1,11 +1,11 @@
 import React, { Suspense } from 'react'
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
-import { PrivateRoute } from './components/PrivateRoute'
-import './scss/style.scss'
-import { FullScreenLoading } from './components'
-import routes from './routes'
+import { PrivateRoute } from 'src/components/utilities/PrivateRoute'
+import 'src/scss/style.scss'
+import { FullScreenLoading } from 'src/components/utilities/Loading'
+import routes from 'src/routes'
 import { CSpinner } from '@coreui/react'
-import ErrorBoundary from './components/ErrorBoundary'
+import ErrorBoundary from 'src/components/utilities/ErrorBoundary'
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))

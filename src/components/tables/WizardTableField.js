@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import CippDatatable from 'src/components/cipp/CippDatatable'
+import CippDatatable from 'src/components/tables/CippDatatable'
 
 /**
  * Table with checkboxes

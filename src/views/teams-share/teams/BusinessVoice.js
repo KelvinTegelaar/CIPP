@@ -1,8 +1,8 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import CippDatatable from 'src/components/cipp/CippDatatable'
-import CellBoolean from '../../../components/cipp/CellBoolean'
-import TenantSelector from 'src/components/cipp/TenantSelector'
+import CippDatatable from 'src/components/tables/CippDatatable'
+import CellBoolean from '../../../components/utilities/CellBoolean'
+import TenantSelector from 'src/components/utilities/TenantSelector'
 
 import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
 

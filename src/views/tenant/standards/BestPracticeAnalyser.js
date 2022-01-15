@@ -8,7 +8,7 @@ import {
   CellBoolean,
   CellProgressBar,
   cellDateFormatter,
-} from '../../../components/cipp'
+} from '../../../components/utilities'
 import { CippPageList, ModalService } from '../../../components'
 import { useExecBestPracticeAnalyserMutation } from '../../../store/api/reports'
 

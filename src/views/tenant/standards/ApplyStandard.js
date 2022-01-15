@@ -3,10 +3,10 @@ import { CAlert, CCallout, CSpinner } from '@coreui/react'
 import { Field } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
-import Wizard from '../../../components/Wizard'
-import WizardTableField from '../../../components/WizardTableField'
+import Wizard from '../../../components/layout/Wizard'
+import WizardTableField from '../../../components/tables/WizardTableField'
 import PropTypes from 'prop-types'
-import { RFFCFormSwitch } from '../../../components/RFFComponents'
+import { RFFCFormSwitch } from '../../../components/forms/RFFComponents'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
 const Error = ({ name }) => (

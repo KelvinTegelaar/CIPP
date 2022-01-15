@@ -35,9 +35,9 @@ const columns = [
   },
 ]
 
-export default function UserEmailDetails({ user, isFetching, error }) {
+export default function UserEmailDetails({ user, isFetching, error, className }) {
   return (
-    <CCard className="options-card">
+    <CCard className={`options-card ${className}`}>
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>Email Details</CCardTitle>
         <FontAwesomeIcon icon={faEnvelope} />
@@ -75,4 +75,5 @@ UserEmailDetails.propTypes = {
   user: PropTypes.object,
   isFetching: PropTypes.bool,
   error: PropTypes.any,
+  className: PropTypes.string,
 }

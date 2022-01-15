@@ -13,7 +13,7 @@ import {
 } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFolder } from '@fortawesome/free-solid-svg-icons'
-import { CellProgressBar } from '../../../components/cipp'
+import { CellProgressBar } from '../../../components/utilities'
 import { useListOneDriveUsageQuery } from '../../../store/api/oneDrive'
 
 const columns = [
@@ -58,7 +58,7 @@ const columns = [
   }
  */
 
-export default function UserOneDriveUsage({ userUPN, tenantDomain }) {
+export default function UserOneDriveUsage({ userUPN, tenantDomain, className }) {
   const {
     data: report = [],
     isFetching,
@@ -68,7 +68,7 @@ export default function UserOneDriveUsage({ userUPN, tenantDomain }) {
   const noUsage = Object.keys(report).length === 0 ?? false
 
   return (
-    <CCard className="options-card">
+    <CCard className={`options-card ${className}`}>
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>OneDrive Details</CCardTitle>
         <FontAwesomeIcon icon={faFolder} />
@@ -106,4 +106,5 @@ export default function UserOneDriveUsage({ userUPN, tenantDomain }) {
 UserOneDriveUsage.propTypes = {
   userUPN: PropTypes.string.isRequired,
   tenantDomain: PropTypes.string.isRequired,
+  className: PropTypes.string,
 }

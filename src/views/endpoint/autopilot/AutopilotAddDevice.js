@@ -3,9 +3,9 @@ import { CAlert, CButton, CCol, CRow } from '@coreui/react'
 import { Field } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle, faPlus } from '@fortawesome/free-solid-svg-icons'
-import Wizard from '../../../components/Wizard'
+import Wizard from '../../../components/layout/Wizard'
 import PropTypes from 'prop-types'
-import { RFFCFormInput } from '../../../components/RFFComponents'
+import { RFFCFormInput } from '../../../components/forms/RFFComponents'
 import { CippTable, TenantSelector } from 'src/components/cipp'
 
 const Error = ({ name }) => (

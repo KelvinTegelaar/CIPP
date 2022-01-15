@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { CippPageList } from 'src/components/CippPage'
+import { CippPageList } from 'src/components/layout/CippPage'
 const columns = [
   {
     name: 'User Principal Name',

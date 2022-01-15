@@ -2,12 +2,12 @@ import 'react-app-polyfill/stable'
 import 'core-js'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import App from './App'
-import * as serviceWorker from './serviceWorker'
+import App from 'src/App'
+import * as serviceWorker from 'src/serviceWorker'
 import { Provider } from 'react-redux'
-import { store, persistor } from './store'
+import { store, persistor } from 'src/store'
 import { PersistGate } from 'redux-persist/integration/react'
-import { FullScreenLoading } from './components'
+import { FullScreenLoading } from 'src/components/utilities/Loading'
 
 ReactDOM.render(
   <React.StrictMode>

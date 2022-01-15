@@ -1,6 +1,6 @@
 import React from 'react'
-import ExportPDFButton from 'src/components/cipp/PdfButton'
-import ExportCsvButton from 'src/components/cipp/CsvButton'
+import ExportPDFButton from 'src/components/buttons/PdfButton'
+import ExportCsvButton from 'src/components/buttons/CsvButton'
 import { CSpinner, CFormInput } from '@coreui/react'
 import DataTable, { createTheme } from 'react-data-table-component'
 import PropTypes from 'prop-types'

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { cellBooleanFormatter } from '../../../components/cipp'
+import { cellBooleanFormatter } from '../../../components/utilities'
 import { CippPageList } from '../../../components'
 
 const dropdown = (row, rowIndex, formatExtraData) => {

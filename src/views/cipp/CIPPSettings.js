@@ -29,23 +29,26 @@ import {
   useLazyExecTenantsAccessCheckQuery,
   useLazyGenericGetRequestQuery,
   useLazyListNotificationConfigQuery,
-} from '../../store/api/app'
+} from 'src/store/api/app'
 import {
   useExecAddExcludeTenantMutation,
   useExecRemoveExcludeTenantMutation,
   useListExcludedTenantsQuery,
-} from '../../store/api/tenants'
+} from 'src/store/api/tenants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
-import { useListTenantsQuery } from '../../store/api/tenants'
-import { useLazyEditDnsConfigQuery, useLazyGetDnsConfigQuery } from '../../store/api/domains'
+import { useListTenantsQuery } from 'src/store/api/tenants'
+import { useLazyEditDnsConfigQuery, useLazyGetDnsConfigQuery } from 'src/store/api/domains'
 import { useDispatch, useSelector } from 'react-redux'
-import { TenantSelector, CippTable, TenantSelectorMultiple } from '../../components/cipp'
-import { CippPage, RFFCFormSwitch, RFFCFormInput } from '../../components'
+import TenantSelector from 'src/components/utilities/TenantSelector'
+import CippTable from 'src/components/tables/CippTable'
+import TenantSelectorMultiple from 'src/components/utilities/TenantSelectorMultiple'
+import { CippPage } from 'src/components/layout/CippPage'
+import { RFFCFormSwitch, RFFCFormInput } from 'src/components/forms/RFFComponents'
 import { Form } from 'react-final-form'
-import useConfirmModal from '../../hooks/useConfirmModal'
-import { setCurrentTenant } from '../../store/features/app'
-import { ModalService } from '../../components'
+import useConfirmModal from 'src/hooks/useConfirmModal'
+import { setCurrentTenant } from 'src/store/features/app'
+import { ModalService } from 'src/components/utilities/ModalRoot'
 
 const CIPPSettings = () => {
   const [active, setActive] = useState(1)

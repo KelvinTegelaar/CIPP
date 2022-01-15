@@ -1,16 +1,16 @@
 import React, { useEffect, Suspense, useCallback } from 'react'
-import AppSidebar from 'src/components/AppSidebar'
-import AppFooter from 'src/components/AppFooter'
-import AppHeader from 'src/components/AppHeader'
-import FullScreenLoading from 'src/components/Loading'
-import { ModalRoot } from 'src/components/ModalRoot'
-import Toasts from 'src/components/Toasts'
+import AppSidebar from 'src/components/layout/AppSidebar'
+import AppFooter from 'src/components/layout/AppFooter'
+import AppHeader from 'src/components/layout/AppHeader'
+import FullScreenLoading from 'src/components/utilities/Loading'
+import { ModalRoot } from 'src/components/utilities/ModalRoot'
+import Toasts from 'src/components/utilities/Toasts'
 import { useDispatch, useSelector } from 'react-redux'
 import { Outlet } from 'react-router-dom'
 import { CContainer } from '@coreui/react'
 import { toggleSwitcher } from 'src/store/features/switcher'
 import { useHotkeys } from 'react-hotkeys-hook'
-import FastSwitcher from 'src/components/FastSwitcher'
+import FastSwitcher from 'src/components/utilities/FastSwitcher'
 
 const DefaultLayout = () => {
   const theme = useSelector((state) => state.app.currentTheme)

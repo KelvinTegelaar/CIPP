@@ -2,7 +2,6 @@ import React from 'react'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import { CTooltip } from '@coreui/react'
-import cellGetProperty from './cellGetProperty'
 
 /**
  *
@@ -65,6 +64,6 @@ CellDate.propTypes = {
 export const cellDateFormatter =
   ({ format = 'short', showTime = true, showDate = true } = {}) =>
   (row, index, column, id) => {
-    const cell = cellGetProperty(row, index, column, id)
+    const cell = column.selector(row)
     return CellDate({ cell, format, showDate, showTime })
   }

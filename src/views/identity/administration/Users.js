@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { cellBooleanFormatter } from 'src/components/cipp'
 import { CippPageList } from 'src/components'
 import { TitleButton } from 'src/components/cipp'
-import CippActionsOffcanvas from 'src/components/cipp/CippActionsOffcanvas'
+import CippActionsOffcanvas from 'src/components/utilities/CippActionsOffcanvas'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)

@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import CippDatatable from '../../../components/cipp/CippDatatable'
+import CippDatatable from '../../../components/tables/CippDatatable'
 import { CCardBody, CButton, CCallout, CSpinner } from '@coreui/react'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
