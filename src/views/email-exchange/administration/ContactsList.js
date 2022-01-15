@@ -5,7 +5,7 @@ import { CippPageList } from 'src/components/layout/CippPage'
 import { cellBooleanFormatter } from 'src/components/tables/CellBoolean'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
-const Dropdown = (row, rowIndex, formatExtraData) => {
+const Actions = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
@@ -52,7 +52,7 @@ const columns = [
   },
   {
     name: 'Actions',
-    cell: Dropdown,
+    cell: Actions,
   },
 ]
 

@@ -16,8 +16,8 @@ const AutopilotListTemplates = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
-  const dropdown = (row, index, column) => {
-    const handleDropdownEvent = (apiurl, message) => {
+  const Actions = (row, index, column) => {
+    const handleDeleteIntuneTemplate = (apiurl, message) => {
       ModalService.confirm({
         title: 'Confirm',
         body: <div>{message}</div>,
@@ -32,7 +32,7 @@ const AutopilotListTemplates = () => {
         variant="ghost"
         color="danger"
         onClick={() =>
-          handleDropdownEvent(
+          handleDeleteIntuneTemplate(
             `/api/RemoveIntuneTemplate?ID=${row.GUID}`,
             'Do you want to delete the template?',
           )
@@ -69,8 +69,8 @@ const AutopilotListTemplates = () => {
       exportSelector: 'GUID',
     },
     {
-      name: 'Action',
-      cell: dropdown,
+      name: 'Actions',
+      cell: Actions,
     },
   ]
 

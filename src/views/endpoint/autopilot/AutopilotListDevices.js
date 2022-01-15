@@ -10,8 +10,8 @@ import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 const AutopilotListDevices = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
-  const dropdown = (row, index, column) => {
-    const handleDropdownEvent = (apiurl, message) => {
+  const Actions = (row, index, column) => {
+    const handleDeleteAPDevice = (apiurl, message) => {
       ModalService.confirm({
         title: 'Confirm',
         body: <div>{message}</div>,
@@ -26,7 +26,7 @@ const AutopilotListDevices = () => {
         variant="ghost"
         color="danger"
         onClick={() =>
-          handleDropdownEvent(
+          handleDeleteAPDevice(
             `api/RemoveAPDevice?ID=${row.id}&tenantFilter=${tenant.defaultDomainName}`,
             'Do you want to delete the Autopilot Device?',
           )
@@ -76,7 +76,7 @@ const AutopilotListDevices = () => {
     },
     {
       name: (row) => row['Actions'],
-      cell: dropdown,
+      cell: Actions,
     },
   ]
 

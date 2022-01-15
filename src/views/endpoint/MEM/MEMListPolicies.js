@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPageList } from 'src/components/layout/CippPage'
 import { Link } from 'react-router-dom'
 
-const Dropdown = (row, rowIndex, formatExtraData) => {
+const Actions = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
   return (
     <Link to={`/endpoint/MEM/edit-policy?ID=${row.id}&tenantDomain=${tenant.defaultDomainName}`}>
@@ -37,7 +37,7 @@ const columns = [
   },
   {
     name: 'Actions',
-    cell: Dropdown,
+    cell: Actions,
   },
 ]
 

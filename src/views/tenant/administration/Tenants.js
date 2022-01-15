@@ -110,7 +110,7 @@ const columns = [
     ),
   },
   {
-    name: 'Action',
+    name: 'Actions',
     center: true,
     cell: (row) => (
       <Link to={`/tenant/administration/tenants/Edit?TenantFilter=${row.defaultDomainName}`}>

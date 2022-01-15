@@ -1,26 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle } from '@coreui/react'
-import { faBars } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { cellBooleanFormatter } from 'src/components/tables/CellBoolean'
 import { CippPageList } from 'src/components/layout/CippPage'
-
-const dropdown = (row, rowIndex, formatExtraData) => {
-  return (
-    <CDropdown>
-      <CDropdownToggle size="sm" color="link">
-        <FontAwesomeIcon icon={faBars} />
-      </CDropdownToggle>
-      <CDropdownMenu style={{ position: 'fixed', right: 0, zIndex: 1000 }}>
-        <CDropdownItem href="#">View Device</CDropdownItem>
-        <CDropdownItem href="#">Execute Quick Scan</CDropdownItem>
-        <CDropdownItem href="#">Execute Full Scan</CDropdownItem>
-        <CDropdownItem href="#">Remote Wipe</CDropdownItem>
-      </CDropdownMenu>
-    </CDropdown>
-  )
-}
 
 const columns = [
   {
@@ -90,10 +71,6 @@ const columns = [
     cell: cellBooleanFormatter(),
     sortable: true,
     exportSelector: 'attentionRequired',
-  },
-  {
-    name: 'Actions',
-    cell: dropdown,
   },
 ]
 

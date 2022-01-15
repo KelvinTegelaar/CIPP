@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom'
 
 const TeamsList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
-  const dropdown = (row, rowIndex, formatExtraData) => (
+  const Actions = (row, rowIndex, formatExtraData) => (
     <>
       <Link
         to={`/teams-share/teams/view-team-settings?tenantDomain=${tenant.defaultDomainName}&groupId=${row.id}`}
@@ -60,7 +60,7 @@ const TeamsList = () => {
     },
     {
       name: 'Actions',
-      cell: dropdown,
+      cell: Actions,
     },
   ]
 
