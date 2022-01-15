@@ -477,29 +477,31 @@ const DKIMResultsCard = ({ domain }) => {
   return (
     <>
       <ResultsCard data={data} type="DKIM" menuOptions={menuOptions} />
-      <CippOffcanvas
-        id="dkim-offcanvas"
-        visible={visible}
-        placement="end"
-        className="cipp-offcanvas"
-        hideFunction={() => setVisible(false)}
-        title="DKIM Records"
-      >
-        {records.map((record, idx) => (
-          <div key={`${idx}-dkim-record`}>
-            <CFormLabel>{record?.Selector}._domainkey</CFormLabel>
-            {record && (
-              <CippCodeBlock
-                language="text"
-                key={`${idx}-dnssec-key`}
-                code={record?.Record}
-                showLineNumbers={false}
-                wrapLongLines={true}
-              />
-            )}
-          </div>
-        ))}
-      </CippOffcanvas>
+      {records.length > 0 && (
+        <CippOffcanvas
+          id="dkim-offcanvas"
+          visible={visible}
+          placement="end"
+          className="cipp-offcanvas"
+          hideFunction={() => setVisible(false)}
+          title="DKIM Records"
+        >
+          {records.map((record, idx) => (
+            <div key={`${idx}-dkim-record`}>
+              <CFormLabel>{record?.Selector}._domainkey</CFormLabel>
+              {record?.Record && (
+                <CippCodeBlock
+                  language="text"
+                  key={`${idx}-dnssec-key`}
+                  code={record?.Record}
+                  showLineNumbers={false}
+                  wrapLongLines={true}
+                />
+              )}
+            </div>
+          ))}
+        </CippOffcanvas>
+      )}
     </>
   )
 }
