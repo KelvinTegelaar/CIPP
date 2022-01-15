@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { CButton, CSpinner } from '@coreui/react'
-import { CellBadge, cellProgressBarFormatter, CippOffcanvas } from '../../../components/cipp'
-import cellGetProperty from '../../../components/cipp/cellGetProperty'
-import IndividualDomainCheck from './IndividualDomain'
-import { CippPageList, ModalService } from '../../../components'
-import { useExecDomainsAnalyserMutation } from '../../../store/api/reports'
+import { CellBadge } from 'src/components/tables/CellBadge'
+import { cellProgressBarFormatter } from 'src/components/tables/CellProgressBar'
+import CippOffcanvas from 'src/components/utilities/CippOffcanvas'
+import IndividualDomainCheck from 'src/views/tenant/standards/IndividualDomain'
+import { CippPageList } from 'src/components/layout/CippPage'
+import { ModalService } from 'src/components/utilities/ModalRoot'
+import { useExecDomainsAnalyserMutation } from 'src/store/api/reports'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 
@@ -127,7 +129,7 @@ const DomainsAnalyser = () => {
       exportSelector: 'MailProvider',
       sort: true,
       cell: (row, index, column) => {
-        const cell = cellGetProperty(row, index, column)
+        const cell = column.selector(row)
         return <CellBadge label={cell} color={cell === 'Unknown' ? 'warning' : 'info'} />
       },
     },
@@ -137,7 +139,7 @@ const DomainsAnalyser = () => {
       exportSelector: 'SPFPassTest',
       sort: true,
       cell: (row, index, column) => {
-        const cell = cellGetProperty(row, index, column)
+        const cell = column.selector(row)
         if (cell === true) {
           if (row.SPFPassAll === true) {
             return <CellBadge color="success" label="SPF Pass" />
@@ -156,7 +158,7 @@ const DomainsAnalyser = () => {
       exportSelector: 'MXPassTest',
       sort: true,
       cell: (row, index, column) => {
-        const cell = cellGetProperty(row, index, column)
+        const cell = column.selector(row)
         if (cell === true) {
           return <CellBadge color="success" label="MX Pass" />
         } else if (cell === false) {
@@ -171,7 +173,7 @@ const DomainsAnalyser = () => {
       exportSelector: 'DMARCPresent',
       sort: true,
       cell: (row, index, column) => {
-        const cell = cellGetProperty(row, index, column)
+        const cell = column.selector(row)
 
         if (cell === true) {
           if (row.DMARCReportingActive === true) {
@@ -190,7 +192,7 @@ const DomainsAnalyser = () => {
       exportSelector: 'DMARCActionPolicy',
       sort: true,
       cell: (row, index, column) => {
-        const cell = cellGetProperty(row, index, column)
+        const cell = column.selector(row)
 
         if (cell === 'Reject') {
           return <CellBadge color="success">Reject</CellBadge>
@@ -208,7 +210,7 @@ const DomainsAnalyser = () => {
       exportSelector: 'DMARCPercentagePass',
       sort: true,
       cell: (row, index, column) => {
-        const cell = cellGetProperty(row, index, column)
+        const cell = column.selector(row)
 
         if (cell === true) {
           return <CellBadge color="success">All Mail Analysed</CellBadge>
@@ -225,7 +227,7 @@ const DomainsAnalyser = () => {
       exportSelector: 'DNSSECPresent',
       sort: true,
       cell: (row, index, column) => {
-        const cell = cellGetProperty(row, index, column)
+        const cell = column.selector(row)
 
         if (cell === true) {
           return <CellBadge color="success">DNSSEC Enabled</CellBadge>

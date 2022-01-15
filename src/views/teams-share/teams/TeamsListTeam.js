@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import TenantSelector from '../../../components/cipp/TenantSelector'
-import CippDatatable from '../../../components/cipp/CippDatatable'
+import TenantSelector from '../../../components/utilities/TenantSelector'
+import CippDatatable from '../../../components/tables/CippDatatable'
 import { CButton, CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
 import { faEye, faEdit } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom'
 
 const TeamsList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
-  const dropdown = (row, rowIndex, formatExtraData) => (
+  const Actions = (row, rowIndex, formatExtraData) => (
     <>
       <Link
         to={`/teams-share/teams/view-team-settings?tenantDomain=${tenant.defaultDomainName}&groupId=${row.id}`}
@@ -60,7 +60,7 @@ const TeamsList = () => {
     },
     {
       name: 'Actions',
-      cell: dropdown,
+      cell: Actions,
     },
   ]
 

@@ -13,7 +13,7 @@ import {
 } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPortrait } from '@fortawesome/free-solid-svg-icons'
-import { useListUserQuery } from '../../../store/api/users'
+import { useListUserQuery } from 'src/store/api/users'
 
 const columns = [
   {
@@ -78,11 +78,11 @@ const columns = [
   },
 ]
 
-export default function UserDetails({ tenantDomain, userId }) {
+export default function UserDetails({ tenantDomain, userId, className }) {
   const { data: user = {}, isFetching, error } = useListUserQuery({ tenantDomain, userId })
 
   return (
-    <CCard className="options-card">
+    <CCard className={`options-card ${className}`}>
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>{user.displayName}</CCardTitle>
         <FontAwesomeIcon icon={faPortrait} />
@@ -110,4 +110,5 @@ export default function UserDetails({ tenantDomain, userId }) {
 UserDetails.propTypes = {
   tenantDomain: PropTypes.string.isRequired,
   userId: PropTypes.string.isRequired,
+  className: PropTypes.string,
 }

@@ -13,9 +13,9 @@ import {
   CTableDataCell,
   CTableRow,
 } from '@coreui/react'
-import { useListMailboxDetailsQuery } from '../../../store/api/mailbox'
+import { useListMailboxDetailsQuery } from 'src/store/api/mailbox'
 
-export default function UserEmailPermissions({ userId, tenantDomain }) {
+export default function UserEmailPermissions({ userId, tenantDomain, className }) {
   const { data: report, isFetching, error } = useListMailboxDetailsQuery({ userId, tenantDomain })
   let permissions = (report && report.Permissions) || []
   if (!Array.isArray(permissions)) {
@@ -23,7 +23,7 @@ export default function UserEmailPermissions({ userId, tenantDomain }) {
   }
 
   return (
-    <CCard className="options-card">
+    <CCard className={`options-card ${className}`}>
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>Email Permissions</CCardTitle>
         <div>
@@ -57,4 +57,5 @@ export default function UserEmailPermissions({ userId, tenantDomain }) {
 UserEmailPermissions.propTypes = {
   tenantDomain: PropTypes.string.isRequired,
   userId: PropTypes.string.isRequired,
+  className: PropTypes.string,
 }

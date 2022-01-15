@@ -13,8 +13,8 @@ import {
   CTableDataCell,
   CTableRow,
 } from '@coreui/react'
-import { CellBoolean } from '../../../components/cipp'
-import { useListMailboxDetailsQuery } from '../../../store/api/mailbox'
+import CellBoolean from 'src/components/tables/CellBoolean'
+import { useListMailboxDetailsQuery } from 'src/store/api/mailbox'
 
 const formatter = (cell) => CellBoolean({ cell })
 
@@ -76,10 +76,10 @@ const columns = [
   },
 ]
 
-export default function UserEmailSettings({ userId, tenantDomain }) {
+export default function UserEmailSettings({ userId, tenantDomain, className }) {
   const { data: details, isFetching, error } = useListMailboxDetailsQuery({ userId, tenantDomain })
   return (
-    <CCard className="options-card">
+    <CCard className={`options-card ${className}`}>
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>Email Settings</CCardTitle>
         <div>
@@ -119,4 +119,5 @@ export default function UserEmailSettings({ userId, tenantDomain }) {
 UserEmailSettings.propTypes = {
   tenantDomain: PropTypes.string.isRequired,
   userId: PropTypes.string.isRequired,
+  className: PropTypes.string,
 }

@@ -12,7 +12,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
 
-export default function UserActions({ tenantDomain, userId }) {
+export default function UserActions({ tenantDomain, userId, className }) {
   // @TODO make these work
   const handlePush = () => {
     alert('pushy')
@@ -40,7 +40,7 @@ export default function UserActions({ tenantDomain, userId }) {
   }
 
   return (
-    <CCard className="options-card">
+    <CCard className={`options-card ${className}`}>
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>Actions</CCardTitle>
         <FontAwesomeIcon icon={faCog} />
@@ -81,4 +81,5 @@ export default function UserActions({ tenantDomain, userId }) {
 UserActions.propTypes = {
   tenantDomain: PropTypes.string.isRequired,
   userId: PropTypes.string.isRequired,
+  className: PropTypes.string,
 }

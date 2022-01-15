@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { CButton } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCog, faEdit } from '@fortawesome/free-solid-svg-icons'
-import { CippPageList } from 'src/components'
+import { CippPageList } from 'src/components/layout/CippPage'
 import { Link } from 'react-router-dom'
 
 const columns = [
@@ -110,7 +110,7 @@ const columns = [
     ),
   },
   {
-    name: 'Action',
+    name: 'Actions',
     center: true,
     cell: (row) => (
       <Link to={`/tenant/administration/tenants/Edit?TenantFilter=${row.defaultDomainName}`}>

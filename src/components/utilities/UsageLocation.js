@@ -2,7 +2,7 @@ import React from 'react'
 import { CCard, CCardHeader } from '@coreui/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setDefaultusageLocation } from 'src/store/features/app'
-import countryList from '../../assets/countrylist.json'
+import countryList from 'src/data/countryList'
 import SelectSearch, { fuzzySearch } from 'react-select-search'
 
 const UsageLocation = () => {

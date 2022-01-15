@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { CButton } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { CippPageList } from 'src/components'
+import { CippPageList } from 'src/components/layout/CippPage'
 import { faEllipsisV, faGlobeEurope, faPager, faUser } from '@fortawesome/free-solid-svg-icons'
-import { CippActionsOffcanvas } from 'src/components/cipp'
+import CippActionsOffcanvas from 'src/components/utilities/CippActionsOffcanvas'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -89,7 +89,7 @@ const columns = [
     exportSelector: 'uninstallCommandLine',
   },
   {
-    name: 'Action',
+    name: 'Actions',
     cell: Offcanvas,
     button: true,
   },

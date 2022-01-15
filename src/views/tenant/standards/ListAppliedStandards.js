@@ -3,13 +3,14 @@ import { useSelector } from 'react-redux'
 import { CSpinner, CButton, CCallout } from '@coreui/react'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { CippPageList, ModalService } from '../../../components'
+import { CippPageList } from 'src/components/layout/CippPage'
+import { ModalService } from 'src/components/utilities/ModalRoot'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 
 const TenantsList = () => {
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
-  const Dropdown = (row, index, column) => {
-    const handleDropdownEvent = (apiurl, message) => {
+  const Actions = (row, index, column) => {
+    const handleDeleteStandard = (apiurl, message) => {
       ModalService.confirm({
         title: 'Confirm',
         body: <div>{message}</div>,
@@ -24,7 +25,7 @@ const TenantsList = () => {
         variant="ghost"
         color="danger"
         onClick={() =>
-          handleDropdownEvent(
+          handleDeleteStandard(
             `api/RemoveStandard?ID=${row.displayName}`,
             'Do you want to delete the standard?',
           )
@@ -54,8 +55,8 @@ const TenantsList = () => {
       exportSelector: 'appliedBy',
     },
     {
-      name: 'Action',
-      cell: Dropdown,
+      name: 'Actions',
+      cell: Actions,
     },
   ]
   const tenant = useSelector((state) => state.app.currentTenant)

@@ -13,16 +13,16 @@ import {
 } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLockOpen } from '@fortawesome/free-solid-svg-icons'
-import { useListUserConditionalAccessPoliciesQuery } from '../../../store/api/users'
+import { useListUserConditionalAccessPoliciesQuery } from 'src/store/api/users'
 
-export default function UserCAPs({ tenantDomain, userId }) {
+export default function UserCAPs({ tenantDomain, userId, className }) {
   const {
     data: list,
     isFetching,
     error,
   } = useListUserConditionalAccessPoliciesQuery({ tenantDomain, userId })
   return (
-    <CCard className="options-card">
+    <CCard className={`options-card ${className}`}>
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>Applied Conditional Access Policies</CCardTitle>
         <FontAwesomeIcon icon={faLockOpen} />
@@ -49,4 +49,5 @@ export default function UserCAPs({ tenantDomain, userId }) {
 UserCAPs.propTypes = {
   tenantDomain: PropTypes.string.isRequired,
   userId: PropTypes.string.isRequired,
+  className: PropTypes.string,
 }

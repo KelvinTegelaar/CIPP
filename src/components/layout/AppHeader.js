@@ -11,7 +11,7 @@ import {
 } from '@coreui/react'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import AppBreadcrumb from 'src/components/AppBreadcrumb'
+import AppBreadcrumb from 'src/components/layout/AppBreadcrumb'
 import AppHeaderDropdown from 'src/components/header/AppHeaderDropdown'
 import AppHeaderSearch from 'src/components/header/AppHeaderSearch'
 import cyberdrainlogo from 'src/assets/images/CIPP.png'

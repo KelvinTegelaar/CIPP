@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { CippPage } from 'src/components/CippPage'
+import { CippPage } from 'src/components/layout/CippPage'
 import {
   CButton,
   CCard,
@@ -13,10 +13,10 @@ import {
 } from '@coreui/react'
 import useQuery from 'src/hooks/useQuery'
 import { Form } from 'react-final-form'
-import { RFFCFormInput, RFFCFormSelect } from 'src/components/RFFComponents'
+import { RFFCFormInput, RFFCFormSelect } from 'src/components/forms/RFFComponents'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch, faChevronRight, faChevronDown } from '@fortawesome/free-solid-svg-icons'
-import { CippDatatable } from 'src/components/cipp'
+import CippDatatable from 'src/components/tables/CippDatatable'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 

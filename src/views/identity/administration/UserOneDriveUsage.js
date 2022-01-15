@@ -13,8 +13,8 @@ import {
 } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFolder } from '@fortawesome/free-solid-svg-icons'
-import { CellProgressBar } from '../../../components/cipp'
-import { useListOneDriveUsageQuery } from '../../../store/api/oneDrive'
+import { CellProgressBar } from 'src/components/tables/CellProgressBar'
+import { useListOneDriveUsageQuery } from 'src/store/api/oneDrive'
 
 const columns = [
   {
@@ -46,19 +46,8 @@ const columns = [
     dataField: 'LastActive',
   },
 ]
-/**
- {
-    "UPN": "user@domain.com",
-    "displayName": "First last",
-    "LastActive": "2021-12-30",
-    "FileCount": "12345",
-    "UsedGB": 12.8,
-    "URL": "https://my-domain.sharepoint.com/personal/user_domain_com",
-    "Allocated": 1024
-  }
- */
 
-export default function UserOneDriveUsage({ userUPN, tenantDomain }) {
+export default function UserOneDriveUsage({ userUPN, tenantDomain, className }) {
   const {
     data: report = [],
     isFetching,
@@ -68,7 +57,7 @@ export default function UserOneDriveUsage({ userUPN, tenantDomain }) {
   const noUsage = Object.keys(report).length === 0 ?? false
 
   return (
-    <CCard className="options-card">
+    <CCard className={`options-card ${className}`}>
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>OneDrive Details</CCardTitle>
         <FontAwesomeIcon icon={faFolder} />
@@ -106,4 +95,5 @@ export default function UserOneDriveUsage({ userUPN, tenantDomain }) {
 UserOneDriveUsage.propTypes = {
   userUPN: PropTypes.string.isRequired,
   tenantDomain: PropTypes.string.isRequired,
+  className: PropTypes.string,
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { CippPageList } from 'src/components'
+import { CippPageList } from 'src/components/layout/CippPage'
 
 //TODO: Add CellBoolean
 const columns = [

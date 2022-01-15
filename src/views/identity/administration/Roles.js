@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { CippPageList } from '../../../components'
+import { CippPageList } from 'src/components/layout/CippPage'
 import { CButton } from '@coreui/react'
 import { faEye } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { CippOffcanvas } from 'src/components/cipp'
+import CippOffcanvas from 'src/components/utilities/CippOffcanvas'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const [ocVisible, setOCVisible] = useState(false)

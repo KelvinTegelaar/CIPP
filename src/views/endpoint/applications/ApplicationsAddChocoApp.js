@@ -12,10 +12,10 @@ import {
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
-import Wizard from '../../../components/Wizard'
-import WizardTableField from '../../../components/WizardTableField'
+import CippWizard from 'src/components/layout/CippWizard'
+import WizardTableField from 'src/components/tables/WizardTableField'
 import PropTypes from 'prop-types'
-import { RFFCFormInput, RFFCFormRadio, RFFCFormSwitch } from '../../../components/RFFComponents'
+import { RFFCFormInput, RFFCFormRadio, RFFCFormSwitch } from 'src/components/forms/RFFComponents'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
 const Error = ({ name }) => (
@@ -55,12 +55,12 @@ const ApplyStandard = () => {
   }
 
   return (
-    <Wizard
+    <CippWizard
       initialValues={{ ...formValues }}
       onSubmit={handleSubmit}
       wizardTitle="Chocolatey App Wizard"
     >
-      <Wizard.Page
+      <CippWizard.Page
         title="Tenant Choice"
         description="Choose the tenants to create the standard for."
       >
@@ -95,8 +95,11 @@ const ApplyStandard = () => {
         </Field>
         <Error name="selectedTenants" />
         <hr className="my-4" />
-      </Wizard.Page>
-      <Wizard.Page title="Select Standards" description="Select which standards you want to apply.">
+      </CippWizard.Page>
+      <CippWizard.Page
+        title="Select Standards"
+        description="Select which standards you want to apply."
+      >
         <center>
           <h3 className="text-primary">Step 2</h3>
           <h5 className="card-title mb-4">Supply the app information</h5>
@@ -149,8 +152,8 @@ const ApplyStandard = () => {
           ></RFFCFormRadio>
         </CForm>
         <hr className="my-4" />
-      </Wizard.Page>
-      <Wizard.Page title="Review and Confirm" description="Confirm the settings to apply">
+      </CippWizard.Page>
+      <CippWizard.Page title="Review and Confirm" description="Confirm the settings to apply">
         <center>
           <h3 className="text-primary">Step 3</h3>
           <h5 className="card-title mb-4">Confirm and apply</h5>
@@ -203,8 +206,8 @@ const ApplyStandard = () => {
         )}
         {postResults.isSuccess && <CCallout color="success">{postResults.data.Results}</CCallout>}
         <hr className="my-4" />
-      </Wizard.Page>
-    </Wizard>
+      </CippWizard.Page>
+    </CippWizard>
   )
 }
 

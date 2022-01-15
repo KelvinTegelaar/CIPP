@@ -1,7 +1,7 @@
 import React from 'react'
 import { useListDatatableQuery } from 'src/store/api/datatable'
 import PropTypes from 'prop-types'
-import CippTable, { CippTablePropTypes } from 'src/components/cipp/CippTable'
+import CippTable, { CippTablePropTypes } from 'src/components/tables/CippTable'
 
 export default function CippDatatable({ path, params, ...rest }) {
   const { data = [], isFetching, error } = useListDatatableQuery({ path, params })

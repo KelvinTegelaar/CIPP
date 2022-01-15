@@ -6,8 +6,7 @@ import {
   faCheckCircle,
   faExclamationCircle,
 } from '@fortawesome/free-solid-svg-icons'
-import { CellBadge } from './CellBadge'
-import cellGetProperty from './cellGetProperty'
+import { CellBadge } from 'src/components/tables/CellBadge'
 
 const IconWarning = () => <FontAwesomeIcon icon={faExclamationCircle} className="text-warning" />
 const IconError = () => <FontAwesomeIcon icon={faTimesCircle} className="text-danger" />
@@ -53,7 +52,7 @@ CellBoolean.propTypes = {
 export const cellBooleanFormatter =
   ({ reverse = false, warning = false } = {}) =>
   (row, index, column, id) => {
-    const cell = cellGetProperty(row, index, column, id)
+    const cell = column.selector(row)
     return CellBoolean({ cell, reverse, warning })
   }
 

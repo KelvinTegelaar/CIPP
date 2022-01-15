@@ -2,9 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form } from 'react-final-form'
 import { CButton, CCardHeader, CNav, CNavItem, CNavLink, CRow, CCol } from '@coreui/react'
-import { CippPage } from 'src/components/CippPage'
+import { CippPage } from 'src/components/layout/CippPage'
 
-export default class Wizard extends React.Component {
+export default class CippWizard extends React.Component {
   static propTypes = {
     wizardTitle: PropTypes.string,
     onSubmit: PropTypes.func.isRequired,
@@ -123,7 +123,7 @@ export default class Wizard extends React.Component {
   }
 }
 
-Wizard.Page.propTypes = {
+CippWizard.Page.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string,
 }

@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { cellBooleanFormatter } from '../../../components/cipp'
+import { cellBooleanFormatter } from 'src/components/tables/CellBoolean'
 import { CButton } from '@coreui/react'
 import { faEye } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { CippOffcanvas } from '../../../components/cipp'
-import { CippPageList } from 'src/components'
-import { CippCodeBlock } from '../../../components/cipp'
+import CippOffcanvas from 'src/components/utilities/CippOffcanvas'
+import { CippPageList } from 'src/components/layout/CippPage'
+import CippCodeBlock from 'src/components/utilities/CippCodeBlock'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const [visible, setVisible] = useState(false)

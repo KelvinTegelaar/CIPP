@@ -13,7 +13,7 @@ import {
   CSpinner,
   CAlert,
 } from '@coreui/react'
-import useQuery from '../../../hooks/useQuery'
+import useQuery from 'src/hooks/useQuery'
 import { useDispatch, useSelector } from 'react-redux'
 import { Form } from 'react-final-form'
 import {
@@ -24,12 +24,12 @@ import {
   RFFCFormSwitch,
   RFFCFormTextarea,
   RFFSelectSearch,
-} from '../../../components'
-import countryList from '../../../assets/countrylist.json'
-import { useListUserQuery, useListUsersQuery } from '../../../store/api/users'
-import { useListDomainsQuery } from '../../../store/api/domains'
-import { useListLicensesQuery } from '../../../store/api/licenses'
-import { ModalService } from '../../../components'
+} from 'src/components/forms/RFFComponents'
+import countryList from 'src/data/countryList'
+import { useListUserQuery, useListUsersQuery } from 'src/store/api/users'
+import { useListDomainsQuery } from 'src/store/api/domains'
+import { useListLicensesQuery } from 'src/store/api/licenses'
+import { ModalService } from 'src/components/utilities/ModalRoot'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'

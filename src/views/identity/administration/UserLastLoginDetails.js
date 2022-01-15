@@ -13,7 +13,7 @@ import {
 } from '@coreui/react'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useListUserQuery } from '../../../store/api/users'
+import { useListUserQuery } from 'src/store/api/users'
 
 const columns = [
   {
@@ -38,11 +38,11 @@ const columns = [
   },
 ]
 
-export default function UserLastLoginDetails({ tenantDomain, userId }) {
+export default function UserLastLoginDetails({ tenantDomain, userId, className }) {
   const { data: user = {}, isFetching, error } = useListUserQuery({ tenantDomain, userId })
 
   return (
-    <CCard className="options-card">
+    <CCard className={`options-card ${className}`}>
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>Last Login Details</CCardTitle>
         <FontAwesomeIcon icon={faClock} />
@@ -70,4 +70,5 @@ export default function UserLastLoginDetails({ tenantDomain, userId }) {
 UserLastLoginDetails.propTypes = {
   tenantDomain: PropTypes.string.isRequired,
   userId: PropTypes.string.isRequired,
+  className: PropTypes.string,
 }

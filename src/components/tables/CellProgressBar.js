@@ -1,8 +1,7 @@
 import { CProgress, CProgressBar } from '@coreui/react'
 import PropTypes from 'prop-types'
 import React from 'react'
-import cellGetProperty from './cellGetProperty'
-import { CellBadge } from './CellBadge'
+import { CellBadge } from 'src/components/tables/CellBadge'
 
 export const CellProgressBar = ({ value, reverse = false }) => {
   let color
@@ -55,6 +54,6 @@ CellProgressBar.propTypes = {
 export const cellProgressBarFormatter =
   ({ reverse } = {}) =>
   (row, index, column, id) => {
-    const value = cellGetProperty(row, index, column, id)
+    const value = column.selector(row)
     return CellProgressBar({ value, reverse })
   }

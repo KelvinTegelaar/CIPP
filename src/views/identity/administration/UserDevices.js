@@ -3,10 +3,10 @@ import PropTypes from 'prop-types'
 import { CCard, CCardBody, CCardHeader, CCardTitle, CLink, CSpinner } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLaptop } from '@fortawesome/free-solid-svg-icons'
-import { CippDatatable } from '../../../components/cipp'
-
-import { cellBooleanFormatter, cellNullTextFormatter } from '../../../components/cipp'
-import { useListUserDevicesQuery } from '../../../store/api/devices'
+import CippDatatable from 'src/components/tables/CippDatatable'
+import { cellBooleanFormatter } from 'src/components/tables/CellBoolean'
+import { cellNullTextFormatter } from 'src/components/tables/CellNullText'
+import { useListUserDevicesQuery } from 'src/store/api/devices'
 
 const columns = [
   {
@@ -108,7 +108,7 @@ const columns = [
   },
 ]
 
-export default function UserDevices({ userId, tenantDomain }) {
+export default function UserDevices({ userId, tenantDomain, className }) {
   const {
     data: devices = [],
     isFetching,
@@ -119,7 +119,7 @@ export default function UserDevices({ userId, tenantDomain }) {
   const mapped = devices.map((device) => ({ ...device, tenantDomain }))
 
   return (
-    <CCard className="options-card">
+    <CCard className={`options-card ${className}`}>
       <CCardHeader className="d-flex justify-content-between">
         <CCardTitle>User Devices</CCardTitle>
         <FontAwesomeIcon icon={faLaptop} />
@@ -150,4 +150,5 @@ export default function UserDevices({ userId, tenantDomain }) {
 UserDevices.propTypes = {
   userId: PropTypes.string.isRequired,
   tenantDomain: PropTypes.string.isRequired,
+  className: PropTypes.string,
 }

@@ -14,7 +14,6 @@ import {
 } from '@coreui/react'
 import { Form } from 'react-final-form'
 import {
-  CippPage,
   Condition,
   RFFCFormCheck,
   RFFCFormInput,
@@ -22,11 +21,12 @@ import {
   RFFCFormSwitch,
   RFFCFormTextarea,
   RFFSelectSearch,
-} from '../../../components'
-import countryList from '../../../assets/countrylist.json'
-import { useListUsersQuery } from '../../../store/api/users'
-import { useListDomainsQuery } from '../../../store/api/domains'
-import { useListLicensesQuery } from '../../../store/api/licenses'
+} from 'src/components/forms/RFFComponents'
+import { CippPage } from 'src/components/layout/CippPage'
+import countryList from 'src/data/countryList'
+import { useListUsersQuery } from 'src/store/api/users'
+import { useListDomainsQuery } from 'src/store/api/domains'
+import { useListLicensesQuery } from 'src/store/api/licenses'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'

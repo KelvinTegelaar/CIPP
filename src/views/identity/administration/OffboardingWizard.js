@@ -8,10 +8,10 @@ import {
   faCheckCircle,
 } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
-import Wizard from '../../../components/Wizard'
+import CippWizard from 'src/components/layout/CippWizard'
 import PropTypes from 'prop-types'
-import { RFFCFormInput, RFFCFormSwitch, RFFSelectSearch } from '../../../components/RFFComponents'
-import { TenantSelector } from 'src/components/cipp'
+import { RFFCFormInput, RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms/RFFComponents'
+import TenantSelector from 'src/components/utilities/TenantSelector'
 import { useListUsersQuery } from 'src/store/api/users'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
@@ -66,8 +66,8 @@ const OffboardingWizard = () => {
   }
 
   return (
-    <Wizard onSubmit={handleSubmit} wizardTitle="Offboarding Wizard">
-      <Wizard.Page
+    <CippWizard onSubmit={handleSubmit} wizardTitle="Offboarding Wizard">
+      <CippWizard.Page
         title="Tenant Choice"
         description="Choose the tenant in which to offboard a user"
       >
@@ -78,8 +78,11 @@ const OffboardingWizard = () => {
         <hr className="my-4" />
         <Field name="tenantFilter">{(props) => <TenantSelector />}</Field>
         <hr className="my-4" />
-      </Wizard.Page>
-      <Wizard.Page title="Select User" description="Select the user to offboard from the tenant.">
+      </CippWizard.Page>
+      <CippWizard.Page
+        title="Select User"
+        description="Select the user to offboard from the tenant."
+      >
         <center>
           <h3 className="text-primary">Step 2</h3>
           <h5>Select the user that will be offboarded</h5>
@@ -98,8 +101,8 @@ const OffboardingWizard = () => {
           {usersError && <span>Failed to load list of users</span>}
         </div>
         <hr className="my-4" />
-      </Wizard.Page>
-      <Wizard.Page title="Offboarding Settings" description="Select the offboarding options.">
+      </CippWizard.Page>
+      <CippWizard.Page title="Offboarding Settings" description="Select the offboarding options.">
         <center>
           <h3 className="text-primary">Step 3</h3>
           <h5>Choose offboarding options</h5>
@@ -156,8 +159,8 @@ const OffboardingWizard = () => {
           <RFFCFormSwitch name="DeleteUser" label="Delete user" />
         </div>
         <hr className="my-4" />
-      </Wizard.Page>
-      <Wizard.Page title="Review and Confirm" description="Confirm the settings to apply">
+      </CippWizard.Page>
+      <CippWizard.Page title="Review and Confirm" description="Confirm the settings to apply">
         <center>
           <h3 className="text-primary">Step 4</h3>
           <h5 className="mb-4">Confirm and apply</h5>
@@ -287,8 +290,8 @@ const OffboardingWizard = () => {
           )}
         </div>
         <hr className="my-4" />
-      </Wizard.Page>
-    </Wizard>
+      </CippWizard.Page>
+    </CippWizard>
   )
 }
 

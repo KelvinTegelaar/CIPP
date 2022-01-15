@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import TenantSelector from '../../../components/cipp/TenantSelector'
-import CippDatatable from '../../../components/cipp/CippDatatable'
+import TenantSelector from '../../../components/utilities/TenantSelector'
+import CippDatatable from '../../../components/tables/CippDatatable'
 import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
 
 const columns = [

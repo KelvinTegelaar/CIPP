@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import { Form, Field } from 'react-final-form'
 import { useSearchParams } from 'react-router-dom'
 import { useLazyListDomainTestsQuery, useListDomainTestsQuery } from '../../../store/api/domains'
-import StatusIcon from 'src/components/cipp/StatusIcon'
-import CippCodeBlock from 'src/components/cipp/CippCodeBlock'
-import CippOffcanvas from 'src/components/cipp/CippOffcanvas'
+import StatusIcon from 'src/components/utilities/StatusIcon'
+import CippCodeBlock from 'src/components/utilities/CippCodeBlock'
+import CippOffcanvas from 'src/components/utilities/CippOffcanvas'
 import {
   CButton,
   CCallout,
