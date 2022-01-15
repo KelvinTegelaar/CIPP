@@ -12,10 +12,10 @@ import {
   CTableRow,
 } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faLockOpen } from '@fortawesome/free-solid-svg-icons'
+import { faKey } from '@fortawesome/free-solid-svg-icons'
 import { useListUserConditionalAccessPoliciesQuery } from 'src/store/api/users'
 
-export default function UserCAPs({ tenantDomain, userId, className }) {
+export default function UserCAPs({ tenantDomain, userId, className = null }) {
   const {
     data: list,
     isFetching,
@@ -23,15 +23,15 @@ export default function UserCAPs({ tenantDomain, userId, className }) {
   } = useListUserConditionalAccessPoliciesQuery({ tenantDomain, userId })
   return (
     <CCard className={`options-card ${className}`}>
-      <CCardHeader className="d-flex justify-content-between">
+      <CCardHeader className="d-flex justify-content-between align-items-center">
         <CCardTitle>Applied Conditional Access Policies</CCardTitle>
-        <FontAwesomeIcon icon={faLockOpen} />
+        <FontAwesomeIcon icon={faKey} />
       </CCardHeader>
       <CCardBody>
         {!isFetching && error && <span>Error loading user details</span>}
         {!error && isFetching && <CSpinner />}
         {!isFetching && !error && (
-          <CTable>
+          <CTable responsive>
             <CTableBody>
               {list.map((policy, index) => (
                 <CTableRow key={index}>

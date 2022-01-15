@@ -15,7 +15,7 @@ import {
 } from '@coreui/react'
 import { useListMailboxDetailsQuery } from 'src/store/api/mailbox'
 
-export default function UserEmailPermissions({ userId, tenantDomain, className }) {
+export default function UserEmailPermissions({ userId, tenantDomain, className = null }) {
   const { data: report, isFetching, error } = useListMailboxDetailsQuery({ userId, tenantDomain })
   let permissions = (report && report.Permissions) || []
   if (!Array.isArray(permissions)) {
@@ -24,19 +24,19 @@ export default function UserEmailPermissions({ userId, tenantDomain, className }
 
   return (
     <CCard className={`options-card ${className}`}>
-      <CCardHeader className="d-flex justify-content-between">
+      <CCardHeader className="d-flex justify-content-between align-items-center">
         <CCardTitle>Email Permissions</CCardTitle>
-        <div>
+        <span>
           <FontAwesomeIcon icon={faEnvelope} className="me-2" />
           <FontAwesomeIcon icon={faCog} />
-        </div>
+        </span>
       </CCardHeader>
       <CCardBody>
         {!isFetching && error && <span>Error loading email permissions.</span>}
         {!isFetching && !error && permissions.length === 0 && <span>No permissions found.</span>}
         {!error && isFetching && <CSpinner />}
         {!isFetching && !error && (
-          <CTable>
+          <CTable responsive>
             <CTableBody>
               {permissions.map((value, index) => {
                 return (

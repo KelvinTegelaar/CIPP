@@ -38,12 +38,12 @@ const columns = [
   },
 ]
 
-export default function UserLastLoginDetails({ tenantDomain, userId, className }) {
+export default function UserLastLoginDetails({ tenantDomain, userId, className = null }) {
   const { data: user = {}, isFetching, error } = useListUserQuery({ tenantDomain, userId })
 
   return (
     <CCard className={`options-card ${className}`}>
-      <CCardHeader className="d-flex justify-content-between">
+      <CCardHeader className="d-flex justify-content-between align-items-center">
         <CCardTitle>Last Login Details</CCardTitle>
         <FontAwesomeIcon icon={faClock} />
       </CCardHeader>

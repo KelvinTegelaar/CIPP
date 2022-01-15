@@ -1,15 +1,16 @@
 import React from 'react'
 import { CCard, CCardBody, CCardHeader, CCardTitle, CLink } from '@coreui/react'
-import { faUsers, faCog, faLaptop } from '@fortawesome/free-solid-svg-icons'
+import { faUsers, faLaptop } from '@fortawesome/free-solid-svg-icons'
+import { faMicrosoft } from '@fortawesome/free-brands-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import PropTypes from 'prop-types'
 
 export default function User365Management({ tenantDomain, userId, className }) {
   return (
     <CCard className={`options-card ${className}`}>
-      <CCardHeader className="d-flex justify-content-between">
+      <CCardHeader className="d-flex justify-content-between align-items-center">
         <CCardTitle>M365 Management</CCardTitle>
-        <FontAwesomeIcon icon={faCog} />
+        <FontAwesomeIcon icon={faMicrosoft} />
       </CCardHeader>
       <CCardBody>
         <CLink

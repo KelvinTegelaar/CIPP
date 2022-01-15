@@ -78,12 +78,12 @@ const columns = [
   },
 ]
 
-export default function UserDetails({ tenantDomain, userId, className }) {
+export default function UserDetails({ tenantDomain, userId, className = null }) {
   const { data: user = {}, isFetching, error } = useListUserQuery({ tenantDomain, userId })
 
   return (
     <CCard className={`options-card ${className}`}>
-      <CCardHeader className="d-flex justify-content-between">
+      <CCardHeader className="d-flex justify-content-between align-items-center">
         <CCardTitle>{user.displayName}</CCardTitle>
         <FontAwesomeIcon icon={faPortrait} />
       </CCardHeader>
@@ -91,11 +91,13 @@ export default function UserDetails({ tenantDomain, userId, className }) {
         {!isFetching && error && <span>Error loading user details</span>}
         {!error && isFetching && <CSpinner />}
         {!isFetching && !error && (
-          <CTable className="table">
+          <CTable responsive>
             <CTableBody>
               {columns.map((column, index) => (
                 <CTableRow key={index}>
-                  <CTableDataCell>{column.text}</CTableDataCell>
+                  <CTableDataCell>
+                    <h5>{column.text}</h5>
+                  </CTableDataCell>
                   <CTableDataCell>{user[column.dataField]}</CTableDataCell>
                 </CTableRow>
               ))}
