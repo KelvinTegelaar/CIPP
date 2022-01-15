@@ -35,10 +35,10 @@ const columns = [
   },
 ]
 
-export default function UserEmailDetails({ user, isFetching, error, className }) {
+export default function UserEmailDetails({ user, isFetching, error, className = null }) {
   return (
     <CCard className={`options-card ${className}`}>
-      <CCardHeader className="d-flex justify-content-between">
+      <CCardHeader className="d-flex justify-content-between align-items-center">
         <CCardTitle>Email Details</CCardTitle>
         <FontAwesomeIcon icon={faEnvelope} />
       </CCardHeader>
@@ -46,12 +46,14 @@ export default function UserEmailDetails({ user, isFetching, error, className })
         {isFetching && <CSpinner />}
         {!isFetching && error && <>Error loading user</>}
         {!isFetching && !error && (
-          <CTable>
+          <CTable responsive>
             <CTableBody>
               {columns.map((column, index) => {
                 return (
                   <CTableRow key={index}>
-                    <CTableDataCell>{column.text}</CTableDataCell>
+                    <CTableDataCell>
+                      <h5>{column.text}</h5>
+                    </CTableDataCell>
                     {!column.formatter && (
                       <CTableDataCell>{user[column.dataField] ?? 'n/a'}</CTableDataCell>
                     )}

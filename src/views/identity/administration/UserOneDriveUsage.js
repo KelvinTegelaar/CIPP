@@ -12,7 +12,7 @@ import {
   CTableRow,
 } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFolder } from '@fortawesome/free-solid-svg-icons'
+import { faCloud } from '@fortawesome/free-solid-svg-icons'
 import { CellProgressBar } from 'src/components/tables/CellProgressBar'
 import { useListOneDriveUsageQuery } from 'src/store/api/oneDrive'
 
@@ -47,7 +47,7 @@ const columns = [
   },
 ]
 
-export default function UserOneDriveUsage({ userUPN, tenantDomain, className }) {
+export default function UserOneDriveUsage({ userUPN, tenantDomain, className = null }) {
   const {
     data: report = [],
     isFetching,
@@ -58,9 +58,9 @@ export default function UserOneDriveUsage({ userUPN, tenantDomain, className }) 
 
   return (
     <CCard className={`options-card ${className}`}>
-      <CCardHeader className="d-flex justify-content-between">
+      <CCardHeader className="d-flex justify-content-between align-items-center">
         <CCardTitle>OneDrive Details</CCardTitle>
-        <FontAwesomeIcon icon={faFolder} />
+        <FontAwesomeIcon icon={faCloud} />
       </CCardHeader>
       <CCardBody>
         {!error && isFetching && <CSpinner />}

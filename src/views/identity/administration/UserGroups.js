@@ -60,7 +60,7 @@ const columns = [
   },
 ]
 
-export default function UserGroups({ userId, tenantDomain, className }) {
+export default function UserGroups({ userId, tenantDomain, className = null }) {
   const { data: list = [], isFetching, error } = useListUserGroupsQuery({ userId, tenantDomain })
 
   // inject tenantDomain into list for formatter
@@ -68,7 +68,7 @@ export default function UserGroups({ userId, tenantDomain, className }) {
 
   return (
     <CCard className={`options-card ${className}`}>
-      <CCardHeader className="d-flex justify-content-between">
+      <CCardHeader className="d-flex justify-content-between align-items-center">
         <CCardTitle>User Groups</CCardTitle>
         <FontAwesomeIcon icon={faUsers} />
       </CCardHeader>

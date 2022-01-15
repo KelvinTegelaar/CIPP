@@ -108,7 +108,7 @@ const columns = [
   },
 ]
 
-export default function UserDevices({ userId, tenantDomain, className }) {
+export default function UserDevices({ userId, tenantDomain, className = null }) {
   const {
     data: devices = [],
     isFetching,
@@ -120,7 +120,7 @@ export default function UserDevices({ userId, tenantDomain, className }) {
 
   return (
     <CCard className={`options-card ${className}`}>
-      <CCardHeader className="d-flex justify-content-between">
+      <CCardHeader className="d-flex justify-content-between align-items-center">
         <CCardTitle>User Devices</CCardTitle>
         <FontAwesomeIcon icon={faLaptop} />
       </CCardHeader>

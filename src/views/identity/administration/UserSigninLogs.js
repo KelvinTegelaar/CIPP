@@ -141,7 +141,7 @@ export default function UserSigninLogs({ userId, tenantDomain }) {
 
   return (
     <CCard className="options-card">
-      <CCardHeader className="d-flex justify-content-between">
+      <CCardHeader className="d-flex justify-content-between align-items-center">
         <CCardTitle>User Sign in Logs</CCardTitle>
         <FontAwesomeIcon icon={faLaptop} />
       </CCardHeader>

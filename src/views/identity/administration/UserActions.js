@@ -8,11 +8,12 @@ import {
   faBan,
   faLockOpen,
   faUserTimes,
+  faEllipsisH,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
 
-export default function UserActions({ tenantDomain, userId, className }) {
+export default function UserActions({ tenantDomain, userId, className = null }) {
   // @TODO make these work
   const handlePush = () => {
     alert('pushy')
@@ -41,9 +42,9 @@ export default function UserActions({ tenantDomain, userId, className }) {
 
   return (
     <CCard className={`options-card ${className}`}>
-      <CCardHeader className="d-flex justify-content-between">
+      <CCardHeader className="d-flex justify-content-between align-items-center">
         <CCardTitle>Actions</CCardTitle>
-        <FontAwesomeIcon icon={faCog} />
+        <FontAwesomeIcon icon={faEllipsisH} />
       </CCardHeader>
       <CCardBody>
         <Link

@@ -48,16 +48,16 @@ const columns = [
   },
 ]
 
-export default function UserEmailUsage({ userId, tenantDomain, className }) {
+export default function UserEmailUsage({ userId, tenantDomain, className = null }) {
   const { data: report, isFetching, error } = useListMailboxDetailsQuery({ userId, tenantDomain })
   return (
     <CCard className={`options-card ${className}`}>
-      <CCardHeader className="d-flex justify-content-between">
+      <CCardHeader className="d-flex justify-content-between align-items-center">
         <CCardTitle>Email Usage</CCardTitle>
-        <div>
+        <span>
           <FontAwesomeIcon icon={faEnvelope} className="me-2" />
           <FontAwesomeIcon icon={faCog} />
-        </div>
+        </span>
       </CCardHeader>
       <CCardBody>
         {isFetching && <CSpinner />}
