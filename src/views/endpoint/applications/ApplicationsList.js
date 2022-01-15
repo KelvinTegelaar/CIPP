@@ -89,7 +89,7 @@ const columns = [
     exportSelector: 'uninstallCommandLine',
   },
   {
-    name: 'Action',
+    name: 'Actions',
     cell: Offcanvas,
     button: true,
   },
