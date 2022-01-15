@@ -67,7 +67,7 @@ const IntuneCAPolicies = React.lazy(() => import('src/views/endpoint/MEM/MEMCAPo
 const IntuneAddPolicy = React.lazy(() => import('src/views/endpoint/MEM/MEMAddPolicy'))
 const MEMAddPolicyTemplate = React.lazy(() => import('src/views/endpoint/MEM/MEMAddPolicyTemplate'))
 const IntuneListPolicyTemplate = React.lazy(() =>
-  import('src/views/endpoint/MEM/MEMListPolicyTemplate'),
+  import('src/views/endpoint/MEM/MEMListPolicyTemplates'),
 )
 const ListDefender = React.lazy(() => import('src/views/endpoint/defender/ListDefender'))
 const OneDriveList = React.lazy(() => import('src/views/teams-share/onedrive/OneDriveList'))

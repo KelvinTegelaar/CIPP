@@ -1,8 +1,8 @@
 import React from 'react'
 import { CSpinner } from '@coreui/react'
 import { Navigate } from 'react-router-dom'
-import { useLoadClientPrincipalQuery } from '../../../store/api/auth'
-import { FullScreenLoading } from '../../../components'
+import { useLoadClientPrincipalQuery } from 'src/store/api/auth'
+import { FullScreenLoading } from 'src/components/utilities/Loading'
 
 const Login = () => {
   const { data: profile, isFetching, error } = useLoadClientPrincipalQuery()

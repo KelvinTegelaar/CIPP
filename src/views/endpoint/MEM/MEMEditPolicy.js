@@ -11,11 +11,11 @@ import {
   CRow,
   CSpinner,
 } from '@coreui/react'
-import useQuery from '../../../hooks/useQuery'
-import { ModalService } from '../../../components'
+import useQuery from 'src/hooks/useQuery'
+import { ModalService } from 'src/components/utilities/ModalRoot'
 import { useDispatch } from 'react-redux'
 import { Form } from 'react-final-form'
-import { RFFCFormInput, RFFCFormRadio } from '../../../components'
+import { RFFCFormInput, RFFCFormRadio } from 'src/components/forms/RFFComponents'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { useListDevicePoliciesQuery } from 'src/store/api/devices'
 

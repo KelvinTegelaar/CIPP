@@ -3,10 +3,11 @@ import { CAlert, CButton, CCallout, CCol, CRow, CSpinner } from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
-import Wizard from '../../../components/Wizard'
+import CippWizard from 'src/components/layout/CippWizard'
 import PropTypes from 'prop-types'
-import { RFFCFormInput } from '../../../components/RFFComponents'
-import { CippTable, TenantSelector } from 'src/components/cipp'
+import { RFFCFormInput } from 'src/components/forms/RFFComponents'
+import CippTable from 'src/components/tables/CippTable'
+import TenantSelector from 'src/components/utilities/TenantSelector'
 import { CSVReader } from 'react-papaparse'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { useSelector } from 'react-redux'
@@ -121,8 +122,8 @@ const AddAPDevice = () => {
     })
   }
   return (
-    <Wizard onSubmit={handleSubmit} wizardTitle="Add Autopilot Device Wizard">
-      <Wizard.Page
+    <CippWizard onSubmit={handleSubmit} wizardTitle="Add Autopilot Device Wizard">
+      <CippWizard.Page
         title="Tenant Choice"
         description="Choose the tenant to add an Autopilot device to"
       >
@@ -134,8 +135,8 @@ const AddAPDevice = () => {
         <Field name="selectedTenants">{(props) => <TenantSelector />}</Field>
         <Error name="selectedTenants" />
         <hr className="my-4" />
-      </Wizard.Page>
-      <Wizard.Page
+      </CippWizard.Page>
+      <CippWizard.Page
         title="Enter Device Information"
         description="Enter the Autopilot device information"
       >
@@ -212,8 +213,8 @@ const AddAPDevice = () => {
         </CRow>
 
         <hr className="my-4" />
-      </Wizard.Page>
-      <Wizard.Page
+      </CippWizard.Page>
+      <CippWizard.Page
         title="Offboarding Settings"
         description="Add a tag, group, or other info to this request"
       >
@@ -233,8 +234,8 @@ const AddAPDevice = () => {
           </CCol>
         </div>
         <hr className="my-4" />
-      </Wizard.Page>
-      <Wizard.Page title="Review and Confirm" description="Confirm the settings to apply">
+      </CippWizard.Page>
+      <CippWizard.Page title="Review and Confirm" description="Confirm the settings to apply">
         <center>
           <h3 className="text-primary">Step 4</h3>
           <h5 className="mb-4">Confirm and apply</h5>
@@ -255,8 +256,8 @@ const AddAPDevice = () => {
           )}
         </center>
         <hr className="my-4" />
-      </Wizard.Page>
-    </Wizard>
+      </CippWizard.Page>
+    </CippWizard>
   )
 }
 

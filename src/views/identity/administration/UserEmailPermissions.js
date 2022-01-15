@@ -13,7 +13,7 @@ import {
   CTableDataCell,
   CTableRow,
 } from '@coreui/react'
-import { useListMailboxDetailsQuery } from '../../../store/api/mailbox'
+import { useListMailboxDetailsQuery } from 'src/store/api/mailbox'
 
 export default function UserEmailPermissions({ userId, tenantDomain, className }) {
   const { data: report, isFetching, error } = useListMailboxDetailsQuery({ userId, tenantDomain })

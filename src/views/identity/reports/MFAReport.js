@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { cellBooleanFormatter } from '../../../components/utilities'
+import { cellBooleanFormatter } from 'src/components/tables/CellBoolean'
 import { CippPageList } from 'src/components/layout/CippPage'
 
 const columns = [

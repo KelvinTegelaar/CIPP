@@ -11,10 +11,12 @@ import {
   CRow,
   CSpinner,
 } from '@coreui/react'
-import useQuery from '../../../hooks/useQuery'
+import useQuery from 'src/hooks/useQuery'
 import { useDispatch } from 'react-redux'
 import { Form } from 'react-final-form'
-import { RFFCFormInput, ModalService, CippPage } from '../../../components'
+import { CippPage } from 'src/components/layout/CippPage'
+import { ModalService } from 'src/components/utilities/ModalRoot'
+import { RFFCFormInput } from 'src/components/forms/RFFComponents'
 import { useListTenantQuery } from 'src/store/api/tenants'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 

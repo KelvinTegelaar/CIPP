@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { faEdit, faTrash, faEllipsisV, faEye } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { cellBooleanFormatter } from 'src/components/cipp'
-import { CippPageList } from 'src/components'
-import { TitleButton } from 'src/components/cipp'
+import { cellBooleanFormatter } from 'src/components/tables/CellBoolean'
+import { CippPageList } from 'src/components/layout/CippPage'
+import TitleButton from 'src/components/buttons/TitleButton'
 import CippActionsOffcanvas from 'src/components/utilities/CippActionsOffcanvas'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {

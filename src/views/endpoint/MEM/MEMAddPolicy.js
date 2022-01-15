@@ -7,15 +7,15 @@ import {
   faExclamationTriangle,
   faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons'
-import Wizard from '../../../components/layout/Wizard'
-import WizardTableField from '../../../components/tables/WizardTableField'
+import CippWizard from 'src/components/layout/CippWizard'
+import WizardTableField from 'src/components/tables/WizardTableField'
 import PropTypes from 'prop-types'
 import {
   RFFCFormInput,
   RFFCFormRadio,
   RFFCFormSelect,
   RFFCFormTextarea,
-} from '../../../components/forms/RFFComponents'
+} from 'src/components/forms/RFFComponents'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { OnChange } from 'react-final-form-listeners'
 
@@ -78,12 +78,15 @@ const AddPolicy = () => {
   }
 
   return (
-    <Wizard
+    <CippWizard
       initialValues={{ ...formValues }}
       onSubmit={handleSubmit}
       wizardTitle="Add Intune policy"
     >
-      <Wizard.Page title="Tenant Choice" description="Choose the tenants to create the policy for.">
+      <CippWizard.Page
+        title="Tenant Choice"
+        description="Choose the tenants to create the policy for."
+      >
         <center>
           <h3 className="text-primary">Step 1</h3>
           <h5 className="card-title mb-4">Choose tenants</h5>
@@ -115,8 +118,8 @@ const AddPolicy = () => {
         </Field>
         <Error name="selectedTenants" />
         <hr className="my-4" />
-      </Wizard.Page>
-      <Wizard.Page title="Select Options" description="Select which options you want to apply.">
+      </CippWizard.Page>
+      <CippWizard.Page title="Select Options" description="Select which options you want to apply.">
         <center>
           <h3 className="text-primary">Step 2</h3>
           <h5 className="card-title mb-4">
@@ -208,8 +211,8 @@ const AddPolicy = () => {
         <WhenFieldChanges field="TemplateList" set="Displayname" />
         <WhenFieldChanges field="TemplateList" set="RAWJson" />
         <WhenFieldChanges field="TemplateList" set="Type" />
-      </Wizard.Page>
-      <Wizard.Page title="Review and Confirm" description="Confirm the settings to apply">
+      </CippWizard.Page>
+      <CippWizard.Page title="Review and Confirm" description="Confirm the settings to apply">
         <center>
           <h3 className="text-primary">Step 3</h3>
           <h5 className="card-title mb-4">Confirm and apply</h5>
@@ -272,8 +275,8 @@ const AddPolicy = () => {
         )}
         {postResults.isSuccess && <CCallout color="success">{postResults.data.Results}</CCallout>}{' '}
         <hr className="my-4" />
-      </Wizard.Page>
-    </Wizard>
+      </CippWizard.Page>
+    </CippWizard>
   )
 }
 

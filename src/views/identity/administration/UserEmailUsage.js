@@ -13,8 +13,8 @@ import {
   CTableDataCell,
   CTableRow,
 } from '@coreui/react'
-import { CellProgressBar } from '../../../components/utilities'
-import { useListMailboxDetailsQuery } from '../../../store/api/mailbox'
+import { CellProgressBar } from 'src/components/tables/CellProgressBar'
+import { useListMailboxDetailsQuery } from 'src/store/api/mailbox'
 
 const columns = [
   {

@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react'
 import { CButton, CCallout, CCardGroup, CCardText } from '@coreui/react'
 import CippTable from 'src/components/tables/CippTable'
-import { cellDateFormatter } from 'src/components/cipp/CellDate'
+import { cellDateFormatter } from 'src/components/tables/CellDate'
 import { CCard, CCardBody, CCardHeader, CCardTitle, CSpinner } from '@coreui/react'
 import { useLazyExecAlertsListQuery } from 'src/store/api/security'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPage } from 'src/components/layout/CippPage'
 import PropTypes from 'prop-types'
 import { faRedo } from '@fortawesome/free-solid-svg-icons'
-import { ModalService } from 'src/components/ModalRoot'
+import { ModalService } from 'src/components/utilities/ModalRoot'
 
 const AlertBox = ({ value, title, fetching }) => {
   let displayValue = value

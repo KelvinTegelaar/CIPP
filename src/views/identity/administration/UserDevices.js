@@ -3,10 +3,10 @@ import PropTypes from 'prop-types'
 import { CCard, CCardBody, CCardHeader, CCardTitle, CLink, CSpinner } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLaptop } from '@fortawesome/free-solid-svg-icons'
-import { CippDatatable } from '../../../components/utilities'
-
-import { cellBooleanFormatter, cellNullTextFormatter } from '../../../components/utilities'
-import { useListUserDevicesQuery } from '../../../store/api/devices'
+import CippDatatable from 'src/components/tables/CippDatatable'
+import { cellBooleanFormatter } from 'src/components/tables/CellBoolean'
+import { cellNullTextFormatter } from 'src/components/tables/CellNullText'
+import { useListUserDevicesQuery } from 'src/store/api/devices'
 
 const columns = [
   {

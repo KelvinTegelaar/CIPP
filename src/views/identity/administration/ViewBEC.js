@@ -6,7 +6,7 @@ import { faCheckCircle, faRedo, faTimesCircle } from '@fortawesome/free-solid-sv
 import { useLazyExecBecCheckQuery } from 'src/store/api/users'
 import useQuery from 'src/hooks/useQuery'
 import { Link } from 'react-router-dom'
-import { CippTable } from '../../../components/utilities'
+import CippTable from 'src/components/tables/CippTable'
 
 const ViewBec = () => {
   let query = useQuery()

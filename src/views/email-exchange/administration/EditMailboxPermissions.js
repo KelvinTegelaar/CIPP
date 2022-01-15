@@ -12,12 +12,12 @@ import {
   CSpinner,
   CAlert,
 } from '@coreui/react'
-import useQuery from '../../../hooks/useQuery'
+import useQuery from 'src/hooks/useQuery'
 import { useDispatch } from 'react-redux'
 import { Form } from 'react-final-form'
-import { RFFSelectSearch } from '../../../components'
-import { useListUsersQuery } from '../../../store/api/users'
-import { ModalService } from '../../../components'
+import { RFFSelectSearch } from 'src/components/forms/RFFComponents'
+import { useListUsersQuery } from 'src/store/api/users'
+import { ModalService } from 'src/components/utilities/ModalRoot'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'

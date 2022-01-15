@@ -13,7 +13,7 @@ import {
 } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLockOpen } from '@fortawesome/free-solid-svg-icons'
-import { useListUserConditionalAccessPoliciesQuery } from '../../../store/api/users'
+import { useListUserConditionalAccessPoliciesQuery } from 'src/store/api/users'
 
 export default function UserCAPs({ tenantDomain, userId, className }) {
   const {

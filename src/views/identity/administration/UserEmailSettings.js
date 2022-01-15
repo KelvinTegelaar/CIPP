@@ -13,8 +13,8 @@ import {
   CTableDataCell,
   CTableRow,
 } from '@coreui/react'
-import { CellBoolean } from '../../../components/utilities'
-import { useListMailboxDetailsQuery } from '../../../store/api/mailbox'
+import CellBoolean from 'src/components/tables/CellBoolean'
+import { useListMailboxDetailsQuery } from 'src/store/api/mailbox'
 
 const formatter = (cell) => CellBoolean({ cell })
 

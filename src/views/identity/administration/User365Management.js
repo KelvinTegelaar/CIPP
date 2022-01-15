@@ -1,8 +1,7 @@
 import React from 'react'
-import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
+import { CCard, CCardBody, CCardHeader, CCardTitle, CLink } from '@coreui/react'
 import { faUsers, faCog, faLaptop } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { CLink } from '@coreui/react'
 import PropTypes from 'prop-types'
 
 export default function User365Management({ tenantDomain, userId, className }) {

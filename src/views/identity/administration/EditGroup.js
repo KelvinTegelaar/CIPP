@@ -17,17 +17,16 @@ import {
   CTableHeaderCell,
   CTableRow,
 } from '@coreui/react'
-import useQuery from '../../../hooks/useQuery'
-
+import useQuery from 'src/hooks/useQuery'
 import {
   useListGroupMembersQuery,
   useListGroupOwnersQuery,
   useListGroupQuery,
-} from '../../../store/api/groups'
+} from 'src/store/api/groups'
 import { useDispatch } from 'react-redux'
-import { ModalService } from '../../../components'
+import { ModalService } from 'src/components/utilities/ModalRoot'
 import { Form } from 'react-final-form'
-import { RFFCFormInput } from '../../../components'
+import { RFFCFormInput } from 'src/components/forms/RFFComponents'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
 const EditGroup = () => {

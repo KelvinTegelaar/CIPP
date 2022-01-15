@@ -16,10 +16,10 @@ import {
   faExclamationTriangle,
   faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons'
-import Wizard from '../../../components/layout/Wizard'
-import WizardTableField from '../../../components/tables/WizardTableField'
+import CippWizard from 'src/components/layout/CippWizard'
+import WizardTableField from 'src/components/tables/WizardTableField'
 import PropTypes from 'prop-types'
-import { RFFCFormInput, RFFCFormSwitch } from '../../../components/forms/RFFComponents'
+import { RFFCFormInput, RFFCFormSwitch } from 'src/components/forms/RFFComponents'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
 const Error = ({ name }) => (
@@ -66,12 +66,12 @@ const ApplyStandard = () => {
   }
 
   return (
-    <Wizard
+    <CippWizard
       initialValues={{ ...formValues }}
       onSubmit={handleSubmit}
       wizardTitle="Autopilot Profile Wizard"
     >
-      <Wizard.Page
+      <CippWizard.Page
         title="Tenant Choice"
         description="Choose the tenants to create the profile for."
       >
@@ -106,8 +106,8 @@ const ApplyStandard = () => {
         </Field>
         <Error name="selectedTenants" />
         <hr className="my-4" />
-      </Wizard.Page>
-      <Wizard.Page title="Select Options" description="Select which options you want to apply.">
+      </CippWizard.Page>
+      <CippWizard.Page title="Select Options" description="Select which options you want to apply.">
         <center>
           <h3 className="text-primary">Step 2</h3>
           <h5 className="card-title mb-4">Supply the ESP Information</h5>
@@ -172,8 +172,8 @@ const ApplyStandard = () => {
           />
         </CForm>
         <hr className="my-4" />
-      </Wizard.Page>
-      <Wizard.Page title="Review and Confirm" description="Confirm the settings to apply">
+      </CippWizard.Page>
+      <CippWizard.Page title="Review and Confirm" description="Confirm the settings to apply">
         <center>
           <h3 className="text-primary">Step 3</h3>
           <h5 className="card-title mb-4">Confirm and apply</h5>
@@ -284,8 +284,8 @@ const ApplyStandard = () => {
         )}
         {postResults.isSuccess && <CCallout color="success">{postResults.data.Results}</CCallout>}
         <hr className="my-4" />
-      </Wizard.Page>
-    </Wizard>
+      </CippWizard.Page>
+    </CippWizard>
   )
 }
 

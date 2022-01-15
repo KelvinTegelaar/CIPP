@@ -13,7 +13,7 @@ import {
 } from '@coreui/react'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useListUserQuery } from '../../../store/api/users'
+import { useListUserQuery } from 'src/store/api/users'
 
 const columns = [
   {

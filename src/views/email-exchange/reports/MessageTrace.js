@@ -10,15 +10,16 @@ import {
   CForm,
   CRow,
 } from '@coreui/react'
-import useQuery from '../../../hooks/useQuery'
+import useQuery from 'src/hooks/useQuery'
 import { Form } from 'react-final-form'
-import { RFFCFormInput, RFFCFormSelect } from '../../../components/forms/RFFComponents'
+import { RFFCFormInput, RFFCFormSelect } from 'src/components/forms/RFFComponents'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronRight, faChevronDown, faSearch } from '@fortawesome/free-solid-svg-icons'
-import { CippDatatable, TenantSelector } from 'src/components/cipp'
+import CippDatatable from 'src/components/tables/CippDatatable'
+import TenantSelector from 'src/components/utilities/TenantSelector'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { CippPage } from 'src/components'
+import { CippPage } from 'src/components/layout/CippPage'
 
 const columns = [
   {

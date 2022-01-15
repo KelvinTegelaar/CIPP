@@ -1,9 +1,8 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { cellBooleanFormatter } from '../../../components/utilities'
-import { CippPageList } from 'src/components'
+import { cellBooleanFormatter } from 'src/components/tables/CellBoolean'
+import { CippPageList } from 'src/components/layout/CippPage'
 
-//TODO: Add CellBoolean
 const columns = [
   {
     selector: (row) => row['UPN'],
