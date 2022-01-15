@@ -14,6 +14,8 @@ const EditGroup = React.lazy(() => import('src/views/identity/administration/Edi
 const ViewGroup = React.lazy(() => import('src/views/identity/administration/ViewGroup'))
 const Roles = React.lazy(() => import('src/views/identity/administration/Roles'))
 const Devices = React.lazy(() => import('src/views/identity/reports/Devices'))
+const Page404 = React.lazy(() => import('src/views/pages/page404/Page404'))
+const Page403 = React.lazy(() => import('src/views/pages/page403/Page403'))
 const MFAReport = React.lazy(() => import('src/views/identity/reports/MFAReport'))
 const Tenants = React.lazy(() => import('src/views/tenant/administration/Tenants'))
 const Domains = React.lazy(() => import('src/views/tenant/administration/Domains'))
@@ -35,11 +37,15 @@ const ListAppliedStandards = React.lazy(() =>
 const IndividualDomain = React.lazy(() => import('src/views/tenant/standards/IndividualDomain'))
 const ApplyStandard = React.lazy(() => import('src/views/tenant/standards/ApplyStandard'))
 const ListAlerts = React.lazy(() => import('src/views/security/reports/ListAlerts'))
-const ApplicationsList = React.lazy(() => import('src/views/endpoint/applications/ApplicationsList'))
+const ApplicationsList = React.lazy(() =>
+  import('src/views/endpoint/applications/ApplicationsList'),
+)
 const ApplicationsAddChocoApp = React.lazy(() =>
   import('src/views/endpoint/applications/ApplicationsAddChocoApp'),
 )
-const AutopilotAddDevice = React.lazy(() => import('src/views/endpoint/autopilot/AutopilotAddDevice'))
+const AutopilotAddDevice = React.lazy(() =>
+  import('src/views/endpoint/autopilot/AutopilotAddDevice'),
+)
 const AutopilotAddProfile = React.lazy(() =>
   import('src/views/endpoint/autopilot/AutopilotAddProfile'),
 )
@@ -78,7 +84,9 @@ const TeamsAddTeam = React.lazy(() => import('src/views/teams-share/teams/TeamsA
 const ViewTeamsSettings = React.lazy(() => import('src/views/teams-share/teams/ViewTeamSettings'))
 const TeamsActivity = React.lazy(() => import('src/views/teams-share/teams/TeamsActivity'))
 const CIPPSettings = React.lazy(() => import('src/views/cipp/CIPPSettings'))
-const ContactsList = React.lazy(() => import('src/views/email-exchange/administration/ContactsList'))
+const ContactsList = React.lazy(() =>
+  import('src/views/email-exchange/administration/ContactsList'),
+)
 const EditContact = React.lazy(() => import('src/views/email-exchange/administration/EditContact'))
 const EditMailboxPermissions = React.lazy(() =>
   import('src/views/email-exchange/administration/EditMailboxPermissions'),
@@ -105,6 +113,8 @@ const routes = [
   // { path: '/', exact: true, name: 'Home' },
   { path: '/home', name: 'Home', component: Home },
   { path: '/cipp/logs', name: 'Logs', component: Logs },
+  { path: '/cipp/404', name: 'Error', component: Page404 },
+  { path: '/cipp/403', name: 'Error', component: Page403 },
   { path: '/identity', name: 'Identity' },
   { path: '/identity/administration/users/add', name: 'Add User', component: AddUser },
   { path: '/identity/administration/users/edit', name: 'Edit User', component: EditUser },

@@ -82,12 +82,12 @@
       "exclude": ["/assets/illustrations/*.{png,jpg,gif}", "/css/*"]
     },
     "403": {
-      "redirect": "/error-403",
+      "redirect": "/cipp/403",
       "statusCode": 403,
       "exclude": ["/assets/illustrations/*.{png,jpg,gif}", "/css/*"]
     },
     "404": {
-      "rewrite": "/404"
+      "rewrite": "/cipp/404"
     }
   },
   "globalHeaders": {
