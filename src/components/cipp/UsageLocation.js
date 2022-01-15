@@ -17,7 +17,7 @@ const UsageLocation = () => {
 
   return (
     <CCard>
-      <CCardHeader>Select Theme</CCardHeader>
+      <CCardHeader>Select default usage location</CCardHeader>
       <SelectSearch
         options={countryList.map(({ Code, Name }) => ({
           value: Code,
