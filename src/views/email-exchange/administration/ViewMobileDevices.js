@@ -79,6 +79,7 @@ const MobileDeviceList = () => {
   const userId = query.get('userId')
   return (
     <CippPageList
+      tenantSelector={false}
       title="Mobile Devices"
       datatable={{
         keyField: 'id',
