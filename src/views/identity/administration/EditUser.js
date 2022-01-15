@@ -14,7 +14,7 @@ import {
   CAlert,
 } from '@coreui/react'
 import useQuery from '../../../hooks/useQuery'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Form } from 'react-final-form'
 import {
   Condition,
@@ -115,8 +115,11 @@ const EditUser = () => {
     //window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/EditUser', values: shippedValues })
   }
+  const usagelocation = useSelector((state) => state.app.usageLocation)
+
   const initialState = {
     keepLicenses: true,
+    usageLocation: usagelocation,
     ...user,
   }
 
@@ -245,7 +248,7 @@ const EditUser = () => {
                                     name: Name,
                                   }))}
                                   disabled={formDisabled}
-                                  name="Usagelocation"
+                                  name="UsageLocation"
                                   placeholder="Type to search..."
                                   label="Usage Location"
                                 />

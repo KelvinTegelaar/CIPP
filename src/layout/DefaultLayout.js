@@ -4,13 +4,13 @@ import AppFooter from 'src/components/layout/AppFooter'
 import AppHeader from 'src/components/layout/AppHeader'
 import FullScreenLoading from 'src/components/utilities/Loading'
 import { ModalRoot } from 'src/components/utilities/ModalRoot'
+import { FastSwitcherModal } from 'src/components/utilities/FastSwitcherModal'
 import Toasts from 'src/components/utilities/Toasts'
 import { useDispatch, useSelector } from 'react-redux'
 import { Outlet } from 'react-router-dom'
 import { CContainer } from '@coreui/react'
 import { toggleSwitcher } from 'src/store/features/switcher'
 import { useHotkeys } from 'react-hotkeys-hook'
-import FastSwitcher from 'src/components/utilities/FastSwitcher'
 
 const DefaultLayout = () => {
   const theme = useSelector((state) => state.app.currentTheme)
@@ -44,7 +44,7 @@ const DefaultLayout = () => {
 
   return (
     <div>
-      <FastSwitcher />
+      <FastSwitcherModal />
       <ModalRoot />
       <Toasts />
       <AppSidebar />

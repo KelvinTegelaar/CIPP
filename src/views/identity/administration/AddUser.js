@@ -31,8 +31,8 @@ import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
+import { required } from 'src/validators'
 
-const required = (value) => (value ? undefined : 'Required')
 const passwordRequired = (value, values) => {
   if (!values.Autopassword && !values.password) {
     return 'Password or automatically set password required'
@@ -101,8 +101,11 @@ const AddUser = () => {
     //window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/AddUser', values: shippedValues })
   }
+  const usagelocation = useSelector((state) => state.app.usageLocation)
+
   const initialState = {
     Autopassword: true,
+    usageLocation: usagelocation,
   }
 
   return (
@@ -215,6 +218,7 @@ const AddUser = () => {
                             placeholder="Type to search..."
                             label="Usage Location"
                             validate={required}
+                            value={usagelocation}
                           />
                         </CCol>
                       </CRow>

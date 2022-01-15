@@ -61,6 +61,7 @@
     "react-dom": "^17.0.2",
     "react-final-form": "^6.5.7",
     "react-final-form-listeners": "^1.0.3",
+    "react-helmet": "^6.1.0",
     "react-hotkeys-hook": "^3.4.4",
     "react-masonry-component": "^6.3.0",
     "react-media-hook": "^0.4.9",
@@ -76,6 +77,7 @@
     "styled-components": "^5.3.3"
   },
   "devDependencies": {
+    "@types/react-helmet": "^6.1.5",
     "auto-changelog": "~2.3.0",
     "azurite": "^3.15.0",
     "eslint-config-prettier": "^8.3.0",
