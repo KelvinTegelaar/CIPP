@@ -40,10 +40,22 @@ const MailboxList = () => {
           title="User Information"
           extendedInfo={[
             {
+              label: 'Display Name',
+              value: row.displayName,
+            },
+            {
+              label: 'User Principal Name',
+              value: row.UPN,
+            },
+            {
               label: 'Aditional Email Addresses',
               value: row.AdditionalEmailAddresses
                 ? `${row.AdditionalEmailAddresses}`
                 : 'No additional email addresses',
+            },
+            {
+              label: 'Mailbox Type',
+              value: row.recipientTypeDetails,
             },
           ]}
           actions={[
