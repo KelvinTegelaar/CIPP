@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import SharedModal from 'src/components/utilities/SharedModal'
+import { SharedModal } from 'src/components/utilities'
 
 export const ModalService = {
   on(event, callback) {

@@ -13,7 +13,7 @@ import {
   CButton,
 } from '@coreui/react'
 import { useLoadVersionsQuery } from 'src/store/api/app'
-import StatusIcon from 'src/components/utilities/StatusIcon'
+import { StatusIcon } from 'src/components/utilities'
 import { Link } from 'react-router-dom'
 
 const Home = () => {

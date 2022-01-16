@@ -1,7 +1,7 @@
 import React from 'react'
 import { CButton, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle } from '@coreui/react'
 import PropTypes from 'prop-types'
-import CippTable from 'src/components/tables/CippTable'
+import { CippTable } from 'src/components/tables'
 
 /**
  *

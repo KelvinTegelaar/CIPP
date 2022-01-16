@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux'
 import { CButton, CCallout, CSpinner } from '@coreui/react'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { CippPageList } from 'src/components/layout/CippPage'
-import { ModalService } from 'src/components/utilities/ModalRoot'
+import { CippPageList } from 'src/components/layout'
+import { ModalService } from 'src/components/utilities'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 
 const AutopilotListDevices = () => {

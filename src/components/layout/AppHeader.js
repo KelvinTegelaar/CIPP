@@ -4,16 +4,15 @@ import {
   CContainer,
   CHeader,
   CHeaderBrand,
-  CHeaderDivider,
+  // CHeaderDivider,
   CHeaderNav,
   CHeaderToggler,
   CImage,
 } from '@coreui/react'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import AppBreadcrumb from 'src/components/layout/AppBreadcrumb'
-import AppHeaderDropdown from 'src/components/header/AppHeaderDropdown'
-import AppHeaderSearch from 'src/components/header/AppHeaderSearch'
+// import AppBreadcrumb from 'src/components/layout/AppBreadcrumb'
+import { AppHeaderDropdown, AppHeaderSearch } from 'src/components/header'
 import cyberdrainlogo from 'src/assets/images/CIPP.png'
 import { toggleSidebarShow } from 'src/store/features/app'
 
@@ -38,10 +37,11 @@ const AppHeader = () => {
           <AppHeaderDropdown />
         </CHeaderNav>
       </CContainer>
-      <CHeaderDivider />
+      {/* Disabled until we have functional links for each breadcrumb level */}
+      {/*<CHeaderDivider />
       <CContainer fluid>
         <AppBreadcrumb />
-      </CContainer>
+      </CContainer>*/}
     </CHeader>
   )
 }

@@ -16,10 +16,10 @@ import {
   faExclamationTriangle,
   faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons'
-import CippWizard from 'src/components/layout/CippWizard'
-import WizardTableField from 'src/components/tables/WizardTableField'
+import { CippWizard } from 'src/components/layout'
+import { WizardTableField } from 'src/components/tables'
 import PropTypes from 'prop-types'
-import { RFFCFormInput, RFFCFormSwitch } from 'src/components/forms/RFFComponents'
+import { RFFCFormInput, RFFCFormSwitch } from 'src/components/forms'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
 const Error = ({ name }) => (

@@ -13,9 +13,9 @@ import {
 import PropTypes from 'prop-types'
 import useQuery from 'src/hooks/useQuery'
 import { useDispatch } from 'react-redux'
-import { CippPage } from 'src/components/layout/CippPage'
-import CippTable from 'src/components/tables/CippTable'
-import { ModalService } from 'src/components/utilities/ModalRoot'
+import { CippPage } from 'src/components/layout'
+import { CippTable } from 'src/components/tables'
+import { ModalService } from 'src/components/utilities'
 import { useListTeamSitesQuery } from 'src/store/api/sharepoint'
 
 const ViewTeamSettings = (props) => {

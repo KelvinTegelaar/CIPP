@@ -15,10 +15,10 @@ import {
   CTableRow,
 } from '@coreui/react'
 import { cellBooleanFormatter } from 'src/components/tables/CellBoolean'
-import CippDatatable from 'src/components/tables/CippDatatable'
+import { CippDatatable } from 'src/components/tables'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLaptop } from '@fortawesome/free-solid-svg-icons'
-import { ModalService } from 'src/components/utilities/ModalRoot'
+import { ModalService } from 'src/components/utilities'
 import { useListUserSigninLogsQuery } from 'src/store/api/users'
 
 const rowStyle = (row, rowIndex) => {

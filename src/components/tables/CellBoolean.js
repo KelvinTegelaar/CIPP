@@ -6,13 +6,13 @@ import {
   faCheckCircle,
   faExclamationCircle,
 } from '@fortawesome/free-solid-svg-icons'
-import { CellBadge } from 'src/components/tables/CellBadge'
+import { CellBadge } from 'src/components/tables'
 
 const IconWarning = () => <FontAwesomeIcon icon={faExclamationCircle} className="text-warning" />
 const IconError = () => <FontAwesomeIcon icon={faTimesCircle} className="text-danger" />
 const IconSuccess = () => <FontAwesomeIcon icon={faCheckCircle} className="text-success" />
 
-export function CellBoolean({ cell, warning = false, reverse = false }) {
+export default function CellBoolean({ cell, warning = false, reverse = false }) {
   let normalized = cell
   if (typeof cell === 'boolean') {
     normalized = cell
@@ -55,5 +55,3 @@ export const cellBooleanFormatter =
     const cell = column.selector(row)
     return CellBoolean({ cell, reverse, warning })
   }
-
-export default CellBoolean

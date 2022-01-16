@@ -44,7 +44,7 @@ export function CippMasonry({ children, className = null }) {
   }
 
   return (
-    <CContainer fluid={true}>
+    <CContainer fluid={true} className="px-0">
       <Masonry
         className={`cipp-masonry row g-4 ${className ?? ''}`}
         options={CippMasonryOptions}

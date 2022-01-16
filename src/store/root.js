@@ -1,17 +1,17 @@
 import { combineReducers } from '@reduxjs/toolkit'
 
 // features
-import appReducer, { appSlice } from './features/app'
-import authReducer, { authSlice } from './features/auth'
-import { toastsSlice } from './features/toasts'
-import { switcherSlice } from './features/switcher'
+import appReducer, { appSlice } from 'src/store/features/app'
+import authReducer, { authSlice } from 'src/store/features/auth'
+import { toastsSlice } from 'src/store/features/toasts'
+import { switcherSlice } from 'src/store/features/switcher'
 
 // apis
-import { baseApi } from './api/baseApi'
+import { baseApi } from 'src/store/api/baseApi'
 
 // actions
-import { RESET_STATE_ACTION_TYPE } from './actions/resetState'
-import { RESET_AUTH_ACTION_TYPE } from './actions/resetAuth'
+import { RESET_STATE_ACTION_TYPE } from 'src/store/actions/resetState'
+import { RESET_AUTH_ACTION_TYPE } from 'src/store/actions/resetAuth'
 
 export const root = {
   // slices

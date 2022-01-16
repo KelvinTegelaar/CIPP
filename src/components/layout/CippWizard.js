@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form } from 'react-final-form'
 import { CButton, CCardHeader, CNav, CNavItem, CNavLink, CRow, CCol } from '@coreui/react'
-import { CippPage } from 'src/components/layout/CippPage'
+import { CippPage } from 'src/components/layout'
 
 export default class CippWizard extends React.Component {
   static propTypes = {

@@ -1,4 +1,4 @@
-import { baseApi } from './baseApi'
+import { baseApi } from 'src/store/api/baseApi'
 
 export const licensesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({

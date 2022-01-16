@@ -12,8 +12,8 @@ import {
   CSpinner,
 } from '@coreui/react'
 import { Form } from 'react-final-form'
-import { CippPage } from 'src/components/layout/CippPage'
-import { RFFCFormInput, RFFCFormSelect, RFFCFormTextarea } from 'src/components/forms/RFFComponents'
+import { CippPage } from 'src/components/layout'
+import { RFFCFormInput, RFFCFormSelect, RFFCFormTextarea } from 'src/components/forms'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { required, validJson } from 'src/validators'
 

@@ -1,4 +1,4 @@
-import { baseApi } from './baseApi'
+import { baseApi } from 'src/store/api/baseApi'
 
 export const devicesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({

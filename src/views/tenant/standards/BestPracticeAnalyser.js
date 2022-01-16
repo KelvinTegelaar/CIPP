@@ -2,13 +2,15 @@ import React from 'react'
 import { CButton, CSpinner } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
-import { CippPageList } from 'src/components/layout/CippPage'
-import { ModalService } from 'src/components/utilities/ModalRoot'
-import { cellBooleanFormatter } from 'src/components/tables/CellBoolean'
-import { CellBadge } from 'src/components/tables/CellBadge'
-import CellBoolean from 'src/components/tables/CellBoolean'
-import { CellProgressBar } from 'src/components/tables/CellProgressBar'
-import { cellDateFormatter } from 'src/components/tables/CellDate'
+import { CippPageList } from 'src/components/layout'
+import { ModalService } from 'src/components/utilities'
+import {
+  CellBadge,
+  CellBoolean,
+  cellBooleanFormatter,
+  CellProgressBar,
+  cellDateFormatter,
+} from 'src/components/tables'
 import { useExecBestPracticeAnalyserMutation } from 'src/store/api/reports'
 
 const RefreshAction = () => {

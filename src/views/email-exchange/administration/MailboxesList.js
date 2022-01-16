@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { CippPageList } from 'src/components/layout/CippPage'
+import { CippPageList } from 'src/components/layout'
 import { CButton } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEdit, faEllipsisV, faMobileAlt } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
-import CippActionsOffcanvas from 'src/components/utilities/CippActionsOffcanvas'
+import { CippActionsOffcanvas } from 'src/components/utilities'
 
 const MailboxList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)

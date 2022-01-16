@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import TenantSelector from 'src/components/utilities/TenantSelector'
-import CippDatatable from 'src/components/tables/CippDatatable'
+import { TenantSelector } from 'src/components/utilities'
+import { CippDatatable } from 'src/components/tables'
 import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
 
 const OneDriveList = () => {

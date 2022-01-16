@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
-import { CToast, CToastBody, CToaster, CToastHeader, CCollapse } from '@coreui/react'
+import { CToast, CToastBody, CToaster, CToastHeader, CCollapse, CButton } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExpandAlt, faCompressAlt, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { closeToast } from 'src/store/features/toasts'
@@ -37,14 +37,16 @@ const Toast = ({ message, title, onClose, error }) => {
         <FontAwesomeIcon size="2x" icon={faTimes} onClick={onClose} />
       </CToastHeader>
       <CToastBody>
-        <div className="d-flex justify-content-between">
-          <div>{message}</div>
-          <FontAwesomeIcon
-            size="2x"
-            style={{ padding: '3px' }}
-            icon={visible ? faCompressAlt : faExpandAlt}
-            onClick={() => setVisible(!visible)}
-          />
+        <div className="d-flex justify-content-between align-items-center text-danger">
+          <strong>{message}</strong>
+          <CButton size="sm" variant="outline" color="light" onClick={() => setVisible(!visible)}>
+            Details
+            <FontAwesomeIcon
+              className="ms-1"
+              size="1x"
+              icon={visible ? faCompressAlt : faExpandAlt}
+            />
+          </CButton>
         </div>
         <CCollapse visible={visible}>
           <pre>{JSON.stringify(error, null, 2)}</pre>

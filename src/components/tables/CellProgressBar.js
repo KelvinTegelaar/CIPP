@@ -1,7 +1,7 @@
 import { CProgress, CProgressBar } from '@coreui/react'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { CellBadge } from 'src/components/tables/CellBadge'
+import { CellBadge } from 'src/components/tables'
 
 export const CellProgressBar = ({ value, reverse = false }) => {
   let color

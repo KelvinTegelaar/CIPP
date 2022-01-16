@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { CButton } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { CippPageList } from 'src/components/layout/CippPage'
+import { CippPageList } from 'src/components/layout'
 import { faEllipsisV, faGlobeEurope, faPager, faUser } from '@fortawesome/free-solid-svg-icons'
-import CippActionsOffcanvas from 'src/components/utilities/CippActionsOffcanvas'
+import { CippActionsOffcanvas } from 'src/components/utilities'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)

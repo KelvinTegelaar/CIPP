@@ -3,9 +3,7 @@ import PropTypes from 'prop-types'
 import { CCard, CCardBody, CCardHeader, CCardTitle, CLink, CSpinner } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLaptop } from '@fortawesome/free-solid-svg-icons'
-import CippDatatable from 'src/components/tables/CippDatatable'
-import { cellBooleanFormatter } from 'src/components/tables/CellBoolean'
-import { cellNullTextFormatter } from 'src/components/tables/CellNullText'
+import { CippDatatable, cellBooleanFormatter, cellNullTextFormatter } from 'src/components/tables'
 import { useListUserDevicesQuery } from 'src/store/api/devices'
 
 const columns = [

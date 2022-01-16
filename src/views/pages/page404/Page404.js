@@ -1,6 +1,6 @@
 import React from 'react'
 import { CButton, CCol, CContainer, CRow } from '@coreui/react'
-import { FastSwitcher } from 'src/components/utilities/FastSwitcher'
+import { FastSwitcher } from 'src/components/utilities'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 

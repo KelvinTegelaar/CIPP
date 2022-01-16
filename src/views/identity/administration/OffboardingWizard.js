@@ -8,10 +8,10 @@ import {
   faCheckCircle,
 } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
-import CippWizard from 'src/components/layout/CippWizard'
+import { CippWizard } from 'src/components/layout'
 import PropTypes from 'prop-types'
-import { RFFCFormInput, RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms/RFFComponents'
-import TenantSelector from 'src/components/utilities/TenantSelector'
+import { RFFCFormInput, RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms'
+import { TenantSelector } from 'src/components/utilities'
 import { useListUsersQuery } from 'src/store/api/users'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 

@@ -1,4 +1,4 @@
-import { baseApi } from './baseApi'
+import { baseApi } from 'src/store/api/baseApi'
 
 export const sharepointApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({

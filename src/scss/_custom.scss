@@ -61,6 +61,12 @@
   }
 
   &.page-card {
+    border-radius: var(--cipp-border-radius);
+
+    &:not(.datatable) {
+      border: 0;
+    }
+
     .card-header {
       background: var(--cyberdrain-accent-green);
     }
@@ -70,12 +76,23 @@
       line-height: 2rem;
       margin-bottom: 0;
     }
+
+    > .card-body {
+      padding: 1rem 0;
+    }
+
+    &.datatable {
+      .card-body {
+        padding: 1rem;
+      }
+    }
   }
 
   &.options-card {
     border-color: var(--cui-options-card-border-color);
 
     .card-header {
+      background: var(--cyberdrain-accent-blue);
       border-bottom-color: var(--cui-options-card-border-color);
     }
 

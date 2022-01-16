@@ -12,10 +12,10 @@ import {
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
-import CippWizard from 'src/components/layout/CippWizard'
-import WizardTableField from 'src/components/tables/WizardTableField'
+import { CippWizard } from 'src/components/layout'
+import { WizardTableField } from 'src/components/tables'
 import PropTypes from 'prop-types'
-import { RFFCFormInput, RFFCFormRadio, RFFCFormSwitch } from 'src/components/forms/RFFComponents'
+import { RFFCFormInput, RFFCFormRadio, RFFCFormSwitch } from 'src/components/forms'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
 const Error = ({ name }) => (

@@ -12,8 +12,8 @@ import {
 } from '@coreui/react'
 import { useSelector } from 'react-redux'
 import { Form } from 'react-final-form'
-import TenantSelector from 'src/components/utilities/TenantSelector'
-import { RFFCFormInput, RFFSelectSearch } from 'src/components/forms/RFFComponents'
+import { TenantSelector } from 'src/components/utilities'
+import { RFFCFormInput, RFFSelectSearch } from 'src/components/forms'
 import { useListUsersQuery } from 'src/store/api/users'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
