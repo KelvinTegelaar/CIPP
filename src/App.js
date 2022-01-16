@@ -7,6 +7,7 @@ import routes from 'src/routes'
 import { CSpinner } from '@coreui/react'
 import ErrorBoundary from 'src/components/utilities/ErrorBoundary'
 import { Helmet } from 'react-helmet'
+import adminRoutes from './adminRoutes'
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
@@ -55,6 +56,28 @@ const App = () => {
                           </Helmet>
                           <route.component />
                         </Suspense>
+                      }
+                    />
+                  )
+                )
+              })}
+              {adminRoutes.map((route, idx) => {
+                return (
+                  route.component && (
+                    <Route
+                      key={`route-${idx}`}
+                      path={route.path}
+                      exact={route.exact}
+                      name={route.name}
+                      element={
+                        <PrivateRoute routeType="admin">
+                          <Suspense fallback={<CSpinner color="primary" />}>
+                            <Helmet>
+                              <title>CIPP - {route.name}</title>
+                            </Helmet>
+                            <route.component />
+                          </Suspense>
+                        </PrivateRoute>
                       }
                     />
                   )

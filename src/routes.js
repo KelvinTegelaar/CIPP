@@ -157,7 +157,6 @@ const routes = [
     name: 'List Applied Standards',
     component: ListAppliedStandards,
   },
-  { path: '/tenant/standards/apply-standard', name: 'Apply Standard', component: ApplyStandard },
   {
     path: '/tenant/standards/bpa-report',
     name: 'Best Practice Report',
@@ -290,9 +289,6 @@ const routes = [
     path: '/security/reports/list-alerts',
     component: SecurityComplianceAlerts,
   },
-  { path: '/cipp', name: 'CIPP' },
-  { path: '/cipp/cipp', name: 'CIPP' },
-  { path: '/cipp/settings', name: 'Settings', component: CIPPSettings },
 ]
 
 export default routes
