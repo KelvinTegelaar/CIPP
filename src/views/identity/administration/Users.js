@@ -27,9 +27,6 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
           <FontAwesomeIcon icon={faEdit} />
         </CButton>
       </Link>
-      <CButton size="sm" variant="ghost" color="danger">
-        <FontAwesomeIcon icon={faTrash} href="" />
-      </CButton>
       <CButton size="sm" color="link" onClick={() => setOCVisible(true)}>
         <FontAwesomeIcon icon={faEllipsisV} />
       </CButton>
