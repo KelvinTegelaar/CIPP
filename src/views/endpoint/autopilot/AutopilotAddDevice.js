@@ -86,7 +86,7 @@ const AddAPDevice = () => {
       }
     })
     setAutopilotdata(importdata)
-    console.log(importdata)
+    // console.log(importdata)
   }
 
   const handleOnError = (err, file, inputElem, reason) => {
@@ -115,7 +115,7 @@ const AddAPDevice = () => {
   const handleRemove = async (itemindex) => {
     //alert(JSON.stringify(values, null, 2))
     //find arr index, delete from state.
-    console.log(itemindex)
+    //console.log(itemindex)
     let RemovedItems = autopilotData.filter((item) => item !== itemindex)
     setAutopilotdata((prevState) => {
       return RemovedItems

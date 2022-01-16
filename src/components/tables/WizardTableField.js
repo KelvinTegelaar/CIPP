@@ -23,7 +23,7 @@ export default class WizardTableField extends React.Component {
   }
 
   handleSelect = ({ selectedRows }) => {
-    console.log(selectedRows)
+    // console.log(selectedRows)
     const { fieldProps, keyField } = this.props
     if (selectedRows !== []) {
       fieldProps.input.onChange(selectedRows)

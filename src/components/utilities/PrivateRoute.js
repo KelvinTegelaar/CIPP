@@ -9,7 +9,7 @@ import PropTypes from 'prop-types'
 export const PrivateRoute = ({ children }) => {
   const dispatch = useDispatch()
   const { data: profile, error, isFetching } = useLoadClientPrincipalQuery()
-
+  console.log(children)
   if (isFetching) {
     return <FullScreenLoading />
   }

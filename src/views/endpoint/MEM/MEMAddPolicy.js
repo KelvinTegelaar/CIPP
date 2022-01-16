@@ -63,7 +63,7 @@ const AddPolicy = () => {
                 let template = intuneTemplates.data.filter(function (obj) {
                   return obj.GUID === value
                 })
-                console.log(template[0][set])
+                // console.log(template[0][set])
                 onChange(template[0][set])
               }}
             </OnChange>
