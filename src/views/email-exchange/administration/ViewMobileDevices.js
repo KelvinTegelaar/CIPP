@@ -1,6 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
+import useQuery from 'src/hooks/useQuery'
 
 //TODO: Add CellBoolean
 const columns = [
@@ -74,16 +75,18 @@ const columns = [
 
 const MobileDeviceList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
-
+  let query = useQuery()
+  const userId = query.get('userId')
   return (
     <CippPageList
+      tenantSelector={false}
       title="Mobile Devices"
       datatable={{
         keyField: 'id',
         reportName: `${tenant?.defaultDomainName}-MobileDevices-List`,
         path: '/api/ListMailboxMobileDevices',
         columns,
-        params: { TenantFilter: tenant?.defaultDomainName },
+        params: { TenantFilter: tenant?.defaultDomainName, mailbox: userId },
       }}
     />
   )

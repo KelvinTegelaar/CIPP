@@ -52,7 +52,7 @@ export default function SharedModal(props) {
     onClose()
     close()
   }
-  console.log('show modal', { props }, { rest })
+  //console.log('show modal', { props }, { rest })
 
   if (componentType === 'confirm') {
     return <ConfirmModal {...props} {...rest} />

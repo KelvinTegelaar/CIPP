@@ -28,7 +28,7 @@ const MailboxList = () => {
             <FontAwesomeIcon icon={faEdit} />
           </CButton>
         </Link>
-        <Link to={`/email/administration/view-mobile-devices?UserID=${row.primarySmtpAddress}`}>
+        <Link to={`/email/administration/view-mobile-devices?userId=${row.primarySmtpAddress}`}>
           <CButton size="sm" variant="ghost" color="warning">
             <FontAwesomeIcon icon={faMobileAlt} />
           </CButton>
@@ -40,10 +40,22 @@ const MailboxList = () => {
           title="User Information"
           extendedInfo={[
             {
+              label: 'Display Name',
+              value: row.displayName,
+            },
+            {
+              label: 'User Principal Name',
+              value: row.UPN,
+            },
+            {
               label: 'Aditional Email Addresses',
               value: row.AdditionalEmailAddresses
                 ? `${row.AdditionalEmailAddresses}`
                 : 'No additional email addresses',
+            },
+            {
+              label: 'Mailbox Type',
+              value: row.recipientTypeDetails,
             },
           ]}
           actions={[

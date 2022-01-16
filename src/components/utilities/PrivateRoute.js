@@ -6,10 +6,10 @@ import { useDispatch } from 'react-redux'
 import { updateAccessToken } from 'src/store/features/auth'
 import PropTypes from 'prop-types'
 
-export const PrivateRoute = ({ children }) => {
+export const PrivateRoute = ({ children, routeType }) => {
   const dispatch = useDispatch()
   const { data: profile, error, isFetching } = useLoadClientPrincipalQuery()
-
+  //console.log()
   if (isFetching) {
     return <FullScreenLoading />
   }
@@ -17,10 +17,15 @@ export const PrivateRoute = ({ children }) => {
   dispatch(updateAccessToken(profile))
 
   const isAuthenticated = !!profile?.clientPrincipal && !error
-
-  return !isAuthenticated ? <Navigate to="/login" /> : children
+  const isAdmin = profile?.clientPrincipal.userRoles.includes('admin')
+  if (routeType === 'admin') {
+    return !isAdmin ? <Navigate to="/403" /> : children
+  } else {
+    return !isAuthenticated ? <Navigate to="/login" /> : children
+  }
 }
 
 PrivateRoute.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
+  routeType: PropTypes.string,
 }

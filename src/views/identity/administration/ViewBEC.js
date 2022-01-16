@@ -72,6 +72,28 @@ const ViewBec = () => {
     },
   ]
 
+  const mailboxlogonColumns = [
+    {
+      name: 'IP',
+      selector: (row) => row['ClientIP'],
+    },
+    {
+      name: 'User',
+      selector: (row) => row['CreatedDateTime'],
+    },
+    {
+      name: 'User Agent',
+      selector: (row) => row['ClientInfoString'],
+    },
+    {
+      name: 'Result',
+      selector: (row) => row['ResultStatus'],
+    },
+    {
+      name: 'Data',
+      selector: (row) => row['CreationTime'],
+    },
+  ]
   const newUserColumns = [
     {
       name: 'Username',
@@ -121,7 +143,8 @@ const ViewBec = () => {
     },
     {
       name: 'Permissions',
-      selector: (row) => (row.Item ? row.Item.ParentFolder.MemberRights : row.Parameters[3]?.Value),
+      selector: (row) =>
+        row.Item ? row.Item.ParentFolder?.MemberRights : row.Parameters[3]?.Value,
     },
   ]
 
@@ -378,7 +401,7 @@ const ViewBec = () => {
               {isSuccess && (
                 <CippTable
                   keyField="ID"
-                  columns={logonColumns}
+                  columns={mailboxlogonColumns}
                   data={alerts.SuspectUserMailboxLogons}
                   striped
                   responsive={true}

@@ -20,7 +20,9 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
         id={row.id}
         hideFunction={() => setOCVisible(false)}
       >
-        {row.Members ? <p>{row.Members}</p> : <p>Role has no members.</p>}
+        <h5>Role Group Name:</h5> {row.DisplayName}
+        <br></br> <br></br>
+        <h5>Member Names:</h5> {row.Members ? <p>{row.Members}</p> : <p>Role has no members.</p>}
       </CippOffcanvas>
     </>
   )

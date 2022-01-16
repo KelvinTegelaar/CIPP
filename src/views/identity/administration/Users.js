@@ -14,6 +14,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
   const [ocVisible, setOCVisible] = useState(false)
   const viewLink = `/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`
   const editLink = `/identity/administration/users/edit?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`
+  //console.log(row)
   return (
     <>
       <Link to={viewLink}>
@@ -26,19 +27,23 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
           <FontAwesomeIcon icon={faEdit} />
         </CButton>
       </Link>
-      <CButton size="sm" variant="ghost" color="danger">
-        <FontAwesomeIcon icon={faTrash} href="" />
-      </CButton>
       <CButton size="sm" color="link" onClick={() => setOCVisible(true)}>
         <FontAwesomeIcon icon={faEllipsisV} />
       </CButton>
       <CippActionsOffcanvas
         title="User Information"
         extendedInfo={[
+          { label: 'Created on', value: `${row.createdDateTime}` },
+          { label: 'UPN', value: `${row.userPrincipalName}` },
           { label: 'Given Name', value: `${row.givenName}` },
           { label: 'Surname', value: `${row.surname}` },
-          { label: 'Created on', value: `${row.createdDateTime}` },
           { label: 'Job Title', value: `${row.jobTitle}` },
+          { label: 'Business Phone', value: `${row.businessPhones}` },
+          { label: 'Mobile Phone', value: `${row.mobilePhone}` },
+          { label: 'Mail', value: `${row.mail}` },
+          { label: 'City', value: `${row.city}` },
+          { label: 'Department', value: `${row.department}` },
+          { label: 'OnPrem Last Sync', value: `${row.onPremisesLastSyncDateTime}` },
           { label: 'Unique ID', value: `${row.id}` },
         ]}
         actions={[

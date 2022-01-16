@@ -57,7 +57,7 @@ const EditGroup = () => {
     error: ownersError,
     isSuccess: ownersIsSuccess,
   } = useListGroupOwnersQuery({ tenantDomain, groupId })
-  console.log(members.isSuccess)
+  // console.log(members.isSuccess)
   useEffect(() => {
     if (!groupId || !tenantDomain) {
       ModalService.open({
