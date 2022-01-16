@@ -83,7 +83,6 @@ const TeamsListTeam = React.lazy(() => import('src/views/teams-share/teams/Teams
 const TeamsAddTeam = React.lazy(() => import('src/views/teams-share/teams/TeamsAddTeam'))
 const ViewTeamsSettings = React.lazy(() => import('src/views/teams-share/teams/ViewTeamSettings'))
 const TeamsActivity = React.lazy(() => import('src/views/teams-share/teams/TeamsActivity'))
-const CIPPSettings = React.lazy(() => import('src/views/cipp/CIPPSettings'))
 const ContactsList = React.lazy(() =>
   import('src/views/email-exchange/administration/ContactsList'),
 )
