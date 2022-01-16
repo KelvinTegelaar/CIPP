@@ -19,7 +19,7 @@ export const PrivateRoute = ({ children, routeType }) => {
   const isAuthenticated = !!profile?.clientPrincipal && !error
   const isAdmin = profile?.clientPrincipal.userRoles.includes('admin')
   if (routeType === 'admin') {
-    return !isAdmin && !isAuthenticated ? <Navigate to="/403" /> : children
+    return !isAdmin ? <Navigate to="/403" /> : children
   } else {
     return !isAuthenticated ? <Navigate to="/login" /> : children
   }
