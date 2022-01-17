@@ -1,5 +1,5 @@
-![CyberDrain Light](assets/img/CIPP.png#gh-dark-mode-only)
-![CyberDrain Dark](assets/img/CIPP-Light.png#gh-light-mode-only)
+![CyberDrain Light](github_assets/img/CIPP.png#gh-dark-mode-only)
+![CyberDrain Dark](github_assets/img/CIPP-Light.png#gh-light-mode-only)
 
 <hr>
 
@@ -15,11 +15,11 @@
 <center><h1>Sponsored by</h1></center>
 <p align="center">
 
-![OIT](assets/img/oitpsonsor_light.png)&nbsp;&nbsp;&nbsp;&nbsp;
-![Genuine Technology Services](assets/img/Genuine-logo-vertical-light.png)&nbsp;&nbsp;&nbsp;&nbsp;
-![Immybot](assets/img/Immybot.png)&nbsp;&nbsp;&nbsp;&nbsp;
-![NinjaOne](assets/img/NinjaOne-Light.png#gh-dark-mode-only)
-![NinjaOne](assets/img/NinjaOne-Dark.png#gh-light-mode-only)
+![OIT](github_assets/img/oitpsonsor_light.png)&nbsp;&nbsp;&nbsp;&nbsp;
+![Genuine Technology Services](github_assets/img/Genuine-logo-vertical-light.png)&nbsp;&nbsp;&nbsp;&nbsp;
+![Immybot](github_assets/img/Immybot.png)&nbsp;&nbsp;&nbsp;&nbsp;
+![NinjaOne](github_assets/img/NinjaOne-Light.png#gh-dark-mode-only)
+![NinjaOne](github_assets/img/NinjaOne-Dark.png#gh-light-mode-only)
 
 </p>
 
@@ -65,13 +65,13 @@ Sponsorship allows me to sink some more time into this project and keep it free,
 
 Check out the GIFs below to see how some of the workflows work.
 
-<kbd><a href="assets/screenshots/AssignLicense.gif"><img border="1" src="assets/screenshots/AssignLicense.gif" width="250"/></a></kbd>
-<kbd><a href="assets/screenshots/OffboardUser.gif"><img border="1" src="assets/screenshots/OffboardUser.gif" width="250"/></a></kbd>
-<kbd><a href="assets/screenshots/SetStandard.gif"><img border="1" src="assets/screenshots/SetStandard.gif" width="250"/></a></kbd>
+<kbd><a href="github_assets/screenshots/AssignLicense.gif"><img border="1" src="github_assets/screenshots/AssignLicense.gif" width="250"/></a></kbd>
+<kbd><a href="github_assets/screenshots/OffboardUser.gif"><img border="1" src="github_assets/screenshots/OffboardUser.gif" width="250"/></a></kbd>
+<kbd><a href="github_assets/screenshots/SetStandard.gif"><img border="1" src="github_assets/screenshots/SetStandard.gif" width="250"/></a></kbd>
 
-<kbd><a href="assets/screenshots/AddautopilotDevice.png"><img border="1" src="assets/screenshots/IntunePolicyEngine.gif" width="250"/></a></kbd>
-<kbd><a href="assets/screenshots/AddIntunePolicy.png"><img border="1" src="assets/screenshots/MyChocoApp.gif" width="250"/></a></kbd>
-<kbd><a href="assets/screenshots/Teams.gif"><img border="1" src="assets/screenshots/Teams.gif" width="250"/></a></kbd>
+<kbd><a href="github_assets/screenshots/AddautopilotDevice.png"><img border="1" src="github_assets/screenshots/IntunePolicyEngine.gif" width="250"/></a></kbd>
+<kbd><a href="github_assets/screenshots/AddIntunePolicy.png"><img border="1" src="github_assets/screenshots/MyChocoApp.gif" width="250"/></a></kbd>
+<kbd><a href="github_assets/screenshots/Teams.gif"><img border="1" src="github_assets/screenshots/Teams.gif" width="250"/></a></kbd>
 
 # What is the functionality?
 
