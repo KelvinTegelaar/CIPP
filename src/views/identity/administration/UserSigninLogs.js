@@ -74,47 +74,44 @@ export default function UserSigninLogs({ userId, tenantDomain, className = null 
     },
     {
       name: 'Conditional Access Status',
-      dataField: 'ConditionalAccessStatus',
-      // @TODO someone make these either return 'success' or 'Success' not both
+      selector: (row) => row['ConditionalAccessStatus'],
       cell: cellBooleanFormatter,
     },
     {
       name: 'Overall Login Status',
-      dataField: 'OverallLoginStatus',
-      // @TODO someone make these either return 'success' or 'Success' not both
-      cell: cellBooleanFormatter,
+      selector: (row) => row['OverallLoginStatus'],
     },
     {
       name: 'IP Address',
-      dataField: 'IPAddress',
+      selector: (row) => row['IPAddress'],
     },
     {
       name: 'Town',
-      dataField: 'Town',
+      selector: (row) => row['Town'],
     },
     {
       name: 'State',
-      dataField: 'State',
+      selector: (row) => row['State'],
     },
     {
       name: 'Country',
-      dataField: 'Country',
+      selector: (row) => row['Country'],
     },
     {
       name: 'Device',
-      dataField: 'Device',
+      selector: (row) => row['Device'],
     },
     {
       name: 'Device Compliant',
-      dataField: 'OverallLoginStatus',
+      selector: (row) => row['DeviceCompliant'],
     },
     {
       name: 'OS',
-      dataField: 'OS',
+      selector: (row) => row['OS'],
     },
     {
       name: 'Browser',
-      dataField: 'Browser',
+      selector: (row) => row['Browser'],
     },
     {
       name: 'Applied CAPs',
