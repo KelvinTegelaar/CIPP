@@ -1,0 +1,32 @@
+---
+name: 'CodeQL'
+on:  # yamllint disable-line rule:truthy
+  push:
+    branches: [master, dev, react]
+  pull_request:
+    branches: [master, dev, react]
+  schedule:
+    - cron: '26 17 * * 0'
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ['javascript']
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1
+        with:
+          languages: ${{ matrix.language }}
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v1
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v1

@@ -1,0 +1,22 @@
+---
+name: Check for Version Update
+on:  # yamllint disable-line rule:truthy
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+jobs:
+  build:
+    name: 'Check for Version Update'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for Changed Files
+        uses: brettcannon/check-for-changed-files@v1.1.0
+        with:
+          file-pattern: version_latest.txt
+          failure-message: 'You have not updated version_latest.txt. This is a required file to update at each PR. Please sync your latest changes and update the version number.'
+      - name: Prevent changes to workflow files
+        uses: DovnarAlexander/github-action-file-detection@v0.3.0
+        with:
+          wildcard: '.github/workflows/*.yml'
+          exit_code_found: 1
+          exit_code_not_found: 0
