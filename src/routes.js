@@ -156,6 +156,7 @@ const routes = [
     name: 'List Applied Standards',
     component: ListAppliedStandards,
   },
+  { path: '/tenant/standards/apply-standard', name: 'Apply Standard', component: ApplyStandard },
   {
     path: '/tenant/standards/bpa-report',
     name: 'Best Practice Report',

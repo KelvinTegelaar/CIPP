@@ -24,12 +24,12 @@ import {
   RFFCFormSwitch,
   RFFCFormTextarea,
   RFFSelectSearch,
-} from 'src/components/forms/RFFComponents'
+} from 'src/components/forms'
 import countryList from 'src/data/countryList'
 import { useListUserQuery, useListUsersQuery } from 'src/store/api/users'
 import { useListDomainsQuery } from 'src/store/api/domains'
 import { useListLicensesQuery } from 'src/store/api/licenses'
-import { ModalService } from 'src/components/utilities/ModalRoot'
+import { ModalService } from 'src/components/utilities'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'

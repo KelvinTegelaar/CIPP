@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { CCallout, CListGroup, CListGroupItem, COffcanvasTitle, CSpinner } from '@coreui/react'
-import CippOffcanvas, { CippOffcanvasPropTypes } from 'src/components/utilities/CippOffcanvas'
-import CippOffcanvasTable from 'src/components/tables/CippOffcanvasTable'
-import { ModalService } from 'src/components/utilities/ModalRoot'
+import { CippOffcanvas, ModalService } from 'src/components/utilities'
+import { CippOffcanvasPropTypes } from 'src/components/utilities/CippOffcanvas'
+import { CippOffcanvasTable } from 'src/components/tables'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import { useNavigate } from 'react-router-dom'
 

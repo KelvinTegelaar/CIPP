@@ -1,8 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { persistStore, FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE } from 'redux-persist'
-import { unauthenticatedMiddleware } from './middleware/unauthenticatedMiddleware'
-import { errorMiddleware } from './middleware/errorMiddleware'
-import { rootReducer, apiMiddleware } from './root'
+import { unauthenticatedMiddleware } from 'src/store/middleware/unauthenticatedMiddleware'
+import { errorMiddleware } from 'src/store/middleware/errorMiddleware'
+import { rootReducer, apiMiddleware } from 'src/store/root'
 
 export const store = configureStore({
   reducer: rootReducer,

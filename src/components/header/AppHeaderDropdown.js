@@ -11,8 +11,7 @@ import { faUser, faBook, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom'
 import { authApi } from 'src/store/api/auth'
-import CippProfile from 'src/components/utilities/CippProfile'
-import CippOffcanvas from 'src/components/utilities/CippOffcanvas'
+import { CippProfile, CippOffcanvas } from 'src/components/utilities'
 
 const AppHeaderDropdown = () => {
   const [profileVisible, setProfileVisible] = useState(false)

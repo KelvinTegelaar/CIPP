@@ -21,8 +21,8 @@ import {
   RFFCFormSwitch,
   RFFCFormTextarea,
   RFFSelectSearch,
-} from 'src/components/forms/RFFComponents'
-import { CippPage } from 'src/components/layout/CippPage'
+} from 'src/components/forms'
+import { CippPage } from 'src/components/layout'
 import countryList from 'src/data/countryList'
 import { useListUsersQuery } from 'src/store/api/users'
 import { useListDomainsQuery } from 'src/store/api/domains'

@@ -1,6 +1,6 @@
 import { isRejectedWithValue } from '@reduxjs/toolkit'
-import { resetAuthAction } from '../actions'
-import { authApi } from '../api/auth'
+import { resetAuthAction } from 'src/store/actions'
+import { authApi } from 'src/store/api/auth'
 
 export const unauthenticatedMiddleware =
   ({ dispatch }) =>

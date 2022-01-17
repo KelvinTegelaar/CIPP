@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
 import {
   faCog,
   faSync,
@@ -10,8 +9,7 @@ import {
   faUserTimes,
   faEllipsisH,
 } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
+import { ActionContentCard } from 'src/components/contentcards'
 
 export default function UserActions({ tenantDomain, userId, className = null }) {
   // @TODO make these work
@@ -40,42 +38,49 @@ export default function UserActions({ tenantDomain, userId, className = null }) 
     // api/RemoveUser?TenantFilter= + TenantID + &ID= + UserID
   }
 
+  const editLink = `/identity/administration/users/edit?tenantDomain=${tenantDomain}&userId=${userId}`
+
+  const actions = [
+    {
+      label: 'Edit User',
+      link: editLink,
+      icon: faCog,
+    },
+    {
+      label: 'Send MFA Push',
+      link: '#',
+      icon: faSync,
+      onClick: handlePush,
+    },
+    {
+      label: 'Convert to Shared Mailbox',
+      link: '#',
+      icon: faShareAlt,
+      onClick: handleConvert,
+    },
+    {
+      label: 'Block Sign In',
+      link: '#',
+      icon: faBan,
+      onClick: handleDisable,
+    },
+    {
+      label: 'Reset Password',
+      link: '#',
+      icon: faLockOpen,
+      onClick: handleResetPassword,
+    },
+    {
+      label: 'Delete User',
+      link: '#',
+      icon: faUserTimes,
+      onClick: handleDelete,
+      color: 'danger',
+    },
+  ]
+
   return (
-    <CCard className={`options-card ${className}`}>
-      <CCardHeader className="d-flex justify-content-between align-items-center">
-        <CCardTitle>Actions</CCardTitle>
-        <FontAwesomeIcon icon={faEllipsisH} />
-      </CCardHeader>
-      <CCardBody>
-        <Link
-          className="dropdown-item"
-          to={`/identity/administration/users/edit?tenantDomain=${tenantDomain}&userId=${userId}`}
-        >
-          <FontAwesomeIcon icon={faCog} className="me-2" />
-          Edit User
-        </Link>
-        <Link to="#" className="dropdown-item" onClick={handlePush}>
-          <FontAwesomeIcon icon={faSync} className="me-2" />
-          Send MFA Push to User
-        </Link>
-        <Link to="#" className="dropdown-item" onClick={handleConvert}>
-          <FontAwesomeIcon icon={faShareAlt} className="me-2" />
-          Convert to Shared Mailbox
-        </Link>
-        <Link to="#" className="dropdown-item" onClick={handleDisable}>
-          <FontAwesomeIcon icon={faBan} className="me-2" />
-          Block Sign In
-        </Link>
-        <Link to="#" className="dropdown-item" onClick={handleResetPassword}>
-          <FontAwesomeIcon icon={faLockOpen} className="me-2" />
-          Reset Password
-        </Link>
-        <Link to="#" className="dropdown-item" onClick={handleDelete}>
-          <FontAwesomeIcon icon={faUserTimes} className="me-2" />
-          Delete User
-        </Link>
-      </CCardBody>
-    </CCard>
+    <ActionContentCard title="Actions" icon={faEllipsisH} content={actions} className={className} />
   )
 }
 

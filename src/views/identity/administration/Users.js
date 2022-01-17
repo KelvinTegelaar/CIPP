@@ -2,12 +2,12 @@ import React, { useState } from 'react'
 import { CButton } from '@coreui/react'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { faEdit, faTrash, faEllipsisV, faEye } from '@fortawesome/free-solid-svg-icons'
+import { faEdit, faEllipsisV, faEye } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { cellBooleanFormatter } from 'src/components/tables/CellBoolean'
-import { CippPageList } from 'src/components/layout/CippPage'
-import TitleButton from 'src/components/buttons/TitleButton'
-import CippActionsOffcanvas from 'src/components/utilities/CippActionsOffcanvas'
+import { cellBooleanFormatter } from 'src/components/tables'
+import { CippPageList } from 'src/components/layout'
+import { TitleButton } from 'src/components/buttons'
+import { CippActionsOffcanvas } from 'src/components/utilities'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)

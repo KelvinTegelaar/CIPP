@@ -1,7 +1,7 @@
 import React from 'react'
 import { Navigate } from 'react-router-dom'
 import { useLoadClientPrincipalQuery } from 'src/store/api/auth'
-import { FullScreenLoading } from 'src/components/utilities/Loading'
+import { FullScreenLoading } from 'src/components/utilities'
 import { useDispatch } from 'react-redux'
 import { updateAccessToken } from 'src/store/features/auth'
 import PropTypes from 'prop-types'

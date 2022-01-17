@@ -1,7 +1,7 @@
 import React from 'react'
 import { CAlert, CButton, CCol, CForm, CRow, CSpinner } from '@coreui/react'
 import { Form } from 'react-final-form'
-import { RFFCFormCheck, RFFCFormInput, RFFCFormSelect } from 'src/components/forms/RFFComponents'
+import { RFFCFormCheck, RFFCFormInput, RFFCFormSelect } from 'src/components/forms'
 import { CippPage } from 'src/components/layout/CippPage'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { useListDomainsQuery } from 'src/store/api/domains'

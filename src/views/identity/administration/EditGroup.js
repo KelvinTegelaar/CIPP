@@ -24,9 +24,9 @@ import {
   useListGroupQuery,
 } from 'src/store/api/groups'
 import { useDispatch } from 'react-redux'
-import { ModalService } from 'src/components/utilities/ModalRoot'
+import { ModalService } from 'src/components/utilities'
 import { Form } from 'react-final-form'
-import { RFFCFormInput } from 'src/components/forms/RFFComponents'
+import { RFFCFormInput } from 'src/components/forms'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
 const EditGroup = () => {

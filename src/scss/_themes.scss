@@ -288,7 +288,7 @@
   // CIPP CyberDrain theme variables.
   --cipp-fa-inverse-color: var(--cyberdrain-dark);
   --cipp-search-bg: var(--cyberdrain-light);
-  --cipp-search-border-color: var(--cyberdrain-dark);
+  --cipp-search-border-color: var(--cyberdrain-accent-green);
   --cipp-search-color: var(--cyberdrain-dark);
   --cipp-search-option-color: var(--cyberdrain-dark);
   --cipp-table-bg: var(--cyberdrain-light);
@@ -306,6 +306,24 @@
   --cipp-table-highlight-on-hover-color: var(--cyberdrain-dark);
   --cipp-table-striped-bg: var(--cyberdrain-light-striped);
   --cipp-table-striped-colour: var(--cyberdrain-dark-striped);
+
+  .btn-ghost-actioncard {
+    --cui-btn-bg: transparent;
+    --cui-btn-border-color: transparent;
+    --cui-btn-color: var(--cyberdrain-dark);
+    --cui-btn-hover-bg: var(--cyberdrain-dark);
+    --cui-btn-hover-border-color: var(--cyberdrain-dark);
+    --cui-btn-hover-color: var(--cyberdrain-light);
+    --cui-btn-active-bg: var(--cyberdrain-darker);
+    --cui-btn-active-border-color: var(--cyberdrain-darker);
+    --cui-btn-active-color: var(--cyberdrain-lighter);
+    --cui-btn-disabled-color: #e55353;
+    --cui-btn-shadow: rgb(229 83 83 / 50%);
+  }
+
+  .list-group-content-card {
+    --cui-list-group-border-color: var(--cyberdrain-accent-blue);
+  }
 
   .table {
     --cui-table-bg: var(--cyberdrain-light);
@@ -352,6 +370,9 @@
   --cui-input-bg: var(--cyberdrain-dark);
   --cui-input-border-colour: var(--cyberdrain-light);
   --cui-input-color: var(--cyberdrain-light);
+  --cui-input-disabled-bg: var(--cyberdrain-darker);
+  --cui-input-disabled-border-color: var(--cyberdrain-lighter);
+  --cui-input-disabled-color: var(--cyberdrain-lighter);
   --cui-input-focus-bg: var(--cyberdrain-dark-striped);
   --cui-input-focus-border-color: var(--cyberdrain-primary);
   --cui-input-focus-color: var(--cyberdrain-primary);
@@ -385,7 +406,7 @@
   // CIPP Impact theme variables.
   --cipp-fa-inverse-color: var(--cyberdrain-dark);
   --cipp-search-bg: var(--cyberdrain-dark);
-  --cipp-search-border-color: var(--cyberdrain-light);
+  --cipp-search-border-color: var(--cyberdrain-accent-green);
   --cipp-search-color: var(--cyberdrain-light);
   --cipp-search-option-color: var(--cyberdrain-light);
   --cipp-table-bg: var(--cyberdrain-dark);
@@ -403,6 +424,24 @@
   --cipp-table-highlight-on-hover-color: var(--cyberdrain-light);
   --cipp-table-striped-bg: var(--cyberdrain-dark-striped);
   --cipp-table-striped-colour: var(--cyberdrain-light-striped);
+
+  .btn-ghost-actioncard {
+    --cui-btn-bg: transparent;
+    --cui-btn-border-color: transparent;
+    --cui-btn-color: var(--cyberdrain-light);
+    --cui-btn-hover-bg: var(--cyberdrain-light);
+    --cui-btn-hover-border-color: var(--cyberdrain-light);
+    --cui-btn-hover-color: var(--cyberdrain-dark);
+    --cui-btn-active-bg: var(--cyberdrain-lighter);
+    --cui-btn-active-border-color: var(--cyberdrain-lighter);
+    --cui-btn-active-color: var(--cyberdrain-darker);
+    --cui-btn-disabled-color: #e55353;
+    --cui-btn-shadow: rgb(229 83 83 / 50%);
+  }
+
+  .list-group-content-card {
+    --cui-list-group-border-color: var(--cyberdrain-accent-blue);
+  }
 
   .table {
     --cui-table-bg: var(--cyberdrain-dark);

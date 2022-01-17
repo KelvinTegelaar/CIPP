@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import _nav from '../../_nav'
+import _nav from 'src/_nav'
 
 export const mapNav = () => {
   return _nav

@@ -12,8 +12,7 @@ import {
 } from '@coreui/react'
 import avatar0 from 'src/assets/images/avatars/0.jpg'
 import { useLoadClientPrincipalQuery } from 'src/store/api/auth'
-import ThemeSwitcher from 'src/components/utilities/ThemeSwitcher'
-import UsageLocation from 'src/components/utilities/UsageLocation'
+import { ThemeSwitcher, UsageLocation } from 'src/components/utilities'
 
 const CippProfile = () => {
   const { data: profile, isFetching, isLoading } = useLoadClientPrincipalQuery()

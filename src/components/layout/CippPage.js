@@ -1,15 +1,21 @@
 import React, { useCallback, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import TenantSelector from 'src/components/utilities/TenantSelector'
+import { TenantSelector } from 'src/components/utilities'
 import { CAlert, CCard, CCardBody, CCardHeader } from '@coreui/react'
-import CippDatatable from 'src/components/tables/CippDatatable'
+import { CippDatatable } from 'src/components/tables'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { setCurrentTenant } from 'src/store/features/app'
 import { useListTenantsQuery } from 'src/store/api/tenants'
 import { queryString } from 'src/helpers'
 
-export function CippPage({ tenantSelector = true, title, children, titleButton = null }) {
+export function CippPage({
+  tenantSelector = true,
+  title,
+  children,
+  titleButton = null,
+  className = null,
+}) {
   const { data: tenants = [], isSuccess } = useListTenantsQuery()
   const tenant = useSelector((state) => state.app.currentTenant)
   const [searchParams, setSearchParams] = useSearchParams()
@@ -46,8 +52,8 @@ export function CippPage({ tenantSelector = true, title, children, titleButton =
     <div>
       {tenantSelector && <TenantSelector action={handleTenantSelect} />}
       {tenantSelector && <hr />}
-      <CCard className="page-card">
-        <CCardHeader component="h3" className="d-flex justify-content-between">
+      <CCard className={`page-card ${className ?? ''}`}>
+        <CCardHeader component="h4" className="d-flex justify-content-between">
           {title}
           {titleButton}
         </CCardHeader>
@@ -66,6 +72,7 @@ export function CippPage({ tenantSelector = true, title, children, titleButton =
 }
 
 CippPage.propTypes = {
+  className: PropTypes.string,
   tenantSelector: PropTypes.bool,
   title: PropTypes.string,
   children: PropTypes.node,
@@ -79,9 +86,15 @@ export function CippPageList({
   // see CippDatatable for full list
   datatable: { reportName, path, columns, params, ...rest },
   children,
+  className = null,
 }) {
   return (
-    <CippPage tenantSelector={tenantSelector} title={title} titleButton={titleButton}>
+    <CippPage
+      className={`datatable ${className ?? ''}`}
+      tenantSelector={tenantSelector}
+      title={title}
+      titleButton={titleButton}
+    >
       {children}
       <CippDatatable
         reportName={reportName}
@@ -95,14 +108,11 @@ export function CippPageList({
 }
 
 CippPageList.propTypes = {
-  tenantSelector: PropTypes.bool,
-  title: PropTypes.string.isRequired,
-  titleButton: PropTypes.element,
+  ...CippPage.PropTypes,
   datatable: PropTypes.shape({
     reportName: PropTypes.string,
     path: PropTypes.string.isRequired,
     columns: PropTypes.array.isRequired,
     params: PropTypes.object,
   }),
-  children: PropTypes.node,
 }

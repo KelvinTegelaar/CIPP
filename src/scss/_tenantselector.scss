@@ -115,7 +115,7 @@
   &__select {
     background: var(--cipp-search-bg);
     border: 1px solid var(--cipp-search-border-color);
-    box-shadow: 0 0.0625rem 0.125rem rgb(0 0 0 / 15%);
+    box-shadow: 0.25rem 0.25rem 0.125rem rgb(0 0 0 / 50%);
     color: var(--cipp-search-color);
   }
 
@@ -172,8 +172,8 @@
   &:not(.is-loading) {
     &:not(.select-search--multiple) {
       .select-search__value::after {
-        border-bottom: 1px solid var(--cipp-search-border-color);
-        border-right: 1px solid var(--cipp-search-border-color);
+        border-bottom: 2px solid var(--cipp-search-color);
+        border-right: 2px solid var(--cipp-search-color);
         pointer-events: none;
         transform: rotate(45deg);
       }

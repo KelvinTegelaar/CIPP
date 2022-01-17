@@ -1,11 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { CCard, CCardBody, CCardHeader, CCardTitle, CLink, CSpinner } from '@coreui/react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { CLink } from '@coreui/react'
 import { faLaptop } from '@fortawesome/free-solid-svg-icons'
-import CippDatatable from 'src/components/tables/CippDatatable'
-import { cellBooleanFormatter } from 'src/components/tables/CellBoolean'
-import { cellNullTextFormatter } from 'src/components/tables/CellNullText'
+import { DatatableContentCard } from 'src/components/contentcards'
+import { cellBooleanFormatter, cellNullTextFormatter } from 'src/components/tables'
 import { useListUserDevicesQuery } from 'src/store/api/devices'
 
 const columns = [
@@ -119,31 +117,25 @@ export default function UserDevices({ userId, tenantDomain, className = null }) 
   const mapped = devices.map((device) => ({ ...device, tenantDomain }))
 
   return (
-    <CCard className={`options-card ${className}`}>
-      <CCardHeader className="d-flex justify-content-between align-items-center">
-        <CCardTitle>User Devices</CCardTitle>
-        <FontAwesomeIcon icon={faLaptop} />
-      </CCardHeader>
-      <CCardBody>
-        {isFetching && <CSpinner />}
-        {!isFetching && error && <>Error loading devices</>}
-        {!isFetching && !error && (
-          <CippDatatable
-            path="/api/ListUserDevices"
-            params={{ tenantFilter: tenantDomain, userId }}
-            keyField="id"
-            columns={columns}
-            data={mapped}
-            striped
-            bordered={false}
-            dense
-            responsive={true}
-            disablePDFExport={true}
-            disableCSVExport={true}
-          />
-        )}
-      </CCardBody>
-    </CCard>
+    <DatatableContentCard
+      title="User Devices"
+      icon={faLaptop}
+      datatable={{
+        reportName: 'ListUserDevices',
+        path: '/api/ListUserDevices',
+        params: { tenantFilter: tenantDomain, userId },
+        columns,
+        keyField: 'id',
+        responsive: true,
+        dense: true,
+        striped: true,
+        data: mapped,
+      }}
+      className={className}
+      isFetching={isFetching}
+      error={error}
+      errorMessage="Error fetching user devices"
+    />
   )
 }
 

@@ -1,14 +1,13 @@
 import React, { useEffect } from 'react'
 import { CButton, CCallout, CCardGroup, CCardText } from '@coreui/react'
-import CippTable from 'src/components/tables/CippTable'
-import { cellDateFormatter } from 'src/components/tables/CellDate'
+import { CippTable, cellDateFormatter } from 'src/components/tables'
 import { CCard, CCardBody, CCardHeader, CCardTitle, CSpinner } from '@coreui/react'
 import { useLazyExecAlertsListQuery } from 'src/store/api/security'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { CippPage } from 'src/components/layout/CippPage'
+import { CippPage } from 'src/components/layout'
 import PropTypes from 'prop-types'
-import { faRedo } from '@fortawesome/free-solid-svg-icons'
-import { ModalService } from 'src/components/utilities/ModalRoot'
+import { faEllipsisV, faRedo } from '@fortawesome/free-solid-svg-icons'
+import { ModalService } from 'src/components/utilities'
 
 const AlertBox = ({ value, title, fetching }) => {
   let displayValue = value
@@ -100,8 +99,8 @@ const ListAlerts = () => {
         const value = column.selector(row)
 
         return (
-          <CButton size="sm" onClick={() => handleShowModal(value)}>
-            More
+          <CButton size="sm" color="link" onClick={() => handleShowModal(value)}>
+            <FontAwesomeIcon icon={faEllipsisV} />
           </CButton>
         )
       },
@@ -134,9 +133,9 @@ const ListAlerts = () => {
           fetching={isFetching}
         />
       </CCardGroup>
-      <CCard>
+      <CCard class="content-card">
         <CCardHeader>
-          <CCardTitle className="text-primary d-flex justify-content-between">
+          <CCardTitle className="d-flex justify-content-between">
             Alerts List
             <CButton size="sm" onClick={() => execAlertsList()} disabled={isFetching}>
               {!isFetching && <FontAwesomeIcon icon={faRedo} className="me-2" />}

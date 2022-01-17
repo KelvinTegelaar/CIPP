@@ -31,7 +31,7 @@ export function CippMasonryItem({ size, children, className = null }) {
 
 CippMasonryItem.propTypes = {
   size: PropTypes.oneOf(['single', 'double', 'triple']),
-  children: PropTypes.arrayOf(PropTypes.element),
+  children: PropTypes.object,
   className: PropTypes.string,
 }
 
@@ -44,11 +44,10 @@ export function CippMasonry({ children, className = null }) {
   }
 
   return (
-    <CContainer fluid={true}>
+    <CContainer fluid={true} className="px-0">
       <Masonry
         className={`cipp-masonry row g-4 ${className ?? ''}`}
         options={CippMasonryOptions}
-        percentPosition={true}
         enableResizableChildren={true}
       >
         <CCol className="cipp-masonry-sizer" xl={4} lg={6} xs={12}></CCol>
@@ -59,6 +58,6 @@ export function CippMasonry({ children, className = null }) {
 }
 
 CippMasonry.propTypes = {
-  children: PropTypes.arrayOf(PropTypes.element),
+  children: PropTypes.array,
   className: PropTypes.string,
 }

@@ -1,12 +1,12 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import CippDatatable from 'src/components/tables/CippDatatable'
+import { CippDatatable } from 'src/components/tables'
 import { CCardBody, CButton, CCallout, CSpinner } from '@coreui/react'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
-import { CippPage } from 'src/components/layout/CippPage'
-import { ModalService } from 'src/components/utilities/ModalRoot'
+import { CippPage } from 'src/components/layout'
+import { ModalService } from 'src/components/utilities'
 
 //todo: expandable with RAWJson property.
 /* eslint-disable-next-line react/prop-types */

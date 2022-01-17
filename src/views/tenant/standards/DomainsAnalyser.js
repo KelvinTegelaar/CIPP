@@ -1,15 +1,13 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { CButton, CSpinner } from '@coreui/react'
-import { CellBadge } from 'src/components/tables/CellBadge'
-import { cellProgressBarFormatter } from 'src/components/tables/CellProgressBar'
-import CippOffcanvas from 'src/components/utilities/CippOffcanvas'
+import { CellBadge, cellProgressBarFormatter } from 'src/components/tables'
+import { CippOffcanvas, ModalService } from 'src/components/utilities'
 import IndividualDomainCheck from 'src/views/tenant/standards/IndividualDomain'
-import { CippPageList } from 'src/components/layout/CippPage'
-import { ModalService } from 'src/components/utilities/ModalRoot'
+import { CippPageList } from 'src/components/layout'
 import { useExecDomainsAnalyserMutation } from 'src/store/api/reports'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faEllipsisV, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 
 const RefreshAction = () => {
   const [execDomainsAnalyser, { isLoading, isSuccess, error }] = useExecDomainsAnalyserMutation()
@@ -36,49 +34,6 @@ const RefreshAction = () => {
   )
 }
 
-const MoreInfoContent = ({ row }) => {
-  return (
-    <>
-      <strong>Score Explanation: </strong>
-      {row.ScoreExplanation}
-      <br />
-      <br />
-      <strong>Expected SPF Record: </strong>
-      {row.ExpectedSPFRecord}
-      <br />
-      <strong>Actual SPF Record: </strong>
-      {row.ActualSPFRecord}
-      <br />
-      <br />
-      <strong>DMARC Full Policy: </strong>
-      {row.DMARCFullPolicy}
-      <br />
-      <br />
-      <strong>Expected MX Record: </strong>
-      {row.ExpectedMXRecord}
-      <br />
-      <br />
-      <strong>Actual MX Record: </strong>
-      {row.ActualMXRecord}
-      <br />
-      <br />
-      <strong>Supported Services: </strong>
-      {row.SupportedServices}
-      <br />
-      <br />
-      <strong>Is Default Domain: </strong>
-      {row.IsDefault}
-      <br />
-      <br />
-      <strong>Data Last Refreshed:</strong>
-      {row.LastRefresh}
-    </>
-  )
-}
-MoreInfoContent.propTypes = {
-  row: PropTypes.object.isRequired,
-}
-
 function checkDomain(tenantDomain) {
   return (
     <div key={tenantDomain}>
@@ -95,10 +50,6 @@ const DomainsAnalyser = () => {
   const [domainCheckVisible, setDomainCheckVisible] = useState(false)
 
   const handleMoreInfo = ({ row }) => {
-    /*ModalService.open({
-      body: <MoreInfoCard row={row} />,
-      title: `${row.Tenant} More Information`,
-    })*/
     setIndividualDomainResults(checkDomain(row.Domain))
     setDomainCheckVisible(true)
   }
@@ -261,8 +212,8 @@ const DomainsAnalyser = () => {
       sort: true,
       cell: (row) => {
         return (
-          <CButton size="sm" onClick={() => handleMoreInfo({ row })}>
-            More Info
+          <CButton size="sm" color="link" onClick={() => handleMoreInfo({ row })}>
+            <FontAwesomeIcon icon={faEllipsisV} />
           </CButton>
         )
       },

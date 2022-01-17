@@ -1,8 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import TenantSelector from 'src/components/utilities/TenantSelector'
-import CippDatatable from 'src/components/tables/CippDatatable'
-import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
+import { CippPageList } from 'src/components/layout'
 
 const OneDriveList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -45,25 +43,15 @@ const OneDriveList = () => {
     },
   ]
   return (
-    <div>
-      <TenantSelector />
-      <hr />
-      <CCard className="page-card">
-        <CCardHeader>
-          <CCardTitle className="text-primary">OneDrive Report</CCardTitle>
-        </CCardHeader>
-        <CCardBody>
-          {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-          <CippDatatable
-            keyField="id"
-            reportName={`${tenant?.defaultDomainName}-OneDrive-Report`}
-            path="/api/ListSites?type=OneDriveUsageAccount"
-            columns={columns}
-            params={{ TenantFilter: tenant?.defaultDomainName }}
-          />
-        </CCardBody>
-      </CCard>
-    </div>
+    <CippPageList
+      title="OneDrive List"
+      datatable={{
+        columns,
+        path: '/api/ListSites?type=OneDriveUsageAccount',
+        reportName: `${tenant?.defaultDomainName}-OneDrive-Report`,
+        params: { TenantFilter: tenant?.defaultDomainName },
+      }}
+    />
   )
 }
 
