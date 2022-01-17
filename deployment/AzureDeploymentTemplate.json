@@ -246,7 +246,7 @@
                     ],
                     "properties": {
                         "RepoUrl": "[parameters('GithubAPIRepository')]",
-                        "branch": "master",
+                        "branch": "main",
                         "publishRunbook": true,
                         "IsManualIntegration": true
                     }
@@ -298,7 +298,7 @@
             "location": "[resourceGroup().location]",
             "properties": {
                 "repositoryUrl": "[parameters('GithubRepository')]",
-                "branch": "master",
+                "branch": "main",
                 "repositoryToken": "[parameters('GithubToken')]",
                 "buildProperties": {
                     "appLocation": "/",
