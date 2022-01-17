@@ -1,0 +1,305 @@
+.sr-only {
+  border: 0 !important;
+  clip: rect(1px, 1px, 1px, 1px) !important;
+  clip-path: inset(50%) !important;
+  height: 1px !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  position: absolute !important;
+  white-space: nowrap !important;
+  width: 1px !important;
+
+  &-focusable {
+    &:focus,
+    &:active {
+      clip: auto !important;
+      clip-path: none !important;
+      height: auto !important;
+      margin: auto !important;
+      overflow: visible !important;
+      white-space: normal !important;
+      width: auto !important;
+    }
+  }
+}
+
+// added some code for slightly prettier scrollbars
+
+::-webkit-scrollbar {
+  width: 20px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-clip: content-box;
+  background-color: #d6dee1;
+  border: 6px solid transparent;
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #a8bbbf;
+}
+
+/* cui overrides */
+
+.btn {
+  border-radius: var(--cipp-border-radius);
+}
+
+.card {
+  border-radius: var(--cipp-border-radius);
+
+  .card-header {
+    &:first-child {
+      border-radius: var(--cipp-border-radius);
+    }
+  }
+
+  &.page-card {
+    border-radius: var(--cipp-border-radius);
+
+    &:not(.datatable) {
+      border: 0;
+    }
+
+    .card-header {
+      background: var(--cyberdrain-accent-green);
+    }
+
+    .card-title {
+      font-size: 1rem;
+      line-height: 2rem;
+      margin-bottom: 0;
+    }
+
+    > .card-body {
+      padding: 1rem 0;
+    }
+
+    &.datatable {
+      .card-body {
+        padding: 1rem;
+      }
+    }
+  }
+
+  &.options-card {
+    border-color: var(--cui-options-card-border-color);
+
+    .card-header {
+      background: var(--cyberdrain-accent-blue);
+      border-bottom-color: var(--cui-options-card-border-color);
+    }
+
+    .card-title {
+      line-height: 2rem;
+      margin-bottom: 0;
+    }
+  }
+
+  &.content-card {
+    border-color: var(--cui-options-card-border-color);
+
+    .card-header {
+      background: var(--cyberdrain-accent-blue);
+      border-bottom-color: var(--cui-options-card-border-color);
+    }
+
+    .card-title {
+      line-height: 2rem;
+      margin-bottom: 0;
+    }
+  }
+}
+
+.dropdown-menu {
+  border-radius: var(--cipp-border-radius);
+}
+
+.form-control {
+  border-radius: var(--cipp-border-radius);
+}
+
+.form-select {
+  border-radius: var(--cipp-border-radius);
+
+  /* stylelint-disable-next-line selector-class-pattern */
+  .select-search__input {
+    border: 0;
+  }
+}
+
+.modal-content {
+  border-radius: var(--cipp-border-radius);
+}
+
+/* CIPP specifics */
+
+.equalheight {
+  flex-grow: 1;
+}
+
+.nav-tabs {
+  .nav-link {
+    border-radius: var(--cipp-border-radius);
+  }
+}
+
+/* Tables */
+
+/* stylelint-disable-next-line selector-class-pattern */
+.rdt_TableBody {
+  /* stylelint-disable-next-line selector-class-pattern */
+  .rdt_TableRow {
+    &:hover {
+      border-bottom-color: var(--cipp-table-divider);
+      outline-style: none;
+    }
+  }
+
+  /* stylelint-disable-next-line selector-class-pattern */
+  .rdt_TableCell {
+    position: relative;
+  }
+}
+
+.cipp-tablewrapper {
+  header {
+    padding-bottom: 1rem;
+  }
+
+  .dropdown-menu {
+    transform: translateZ(100px);
+    z-index: 1000;
+  }
+}
+
+.cipp-offcanvastable {
+  font-size: smaller;
+}
+
+.dropdown-item {
+  a {
+    color: var(--cui-dropdown-link-color);
+    display: inline-block;
+    text-decoration: none;
+    width: 100%;
+
+    &:hover {
+      color: var(--cui-dropdown-link-hover-color);
+      text-decoration: none;
+    }
+  }
+}
+
+.cipp-offcanvas {
+  background-color: var(--cui-body-bg);
+  z-index: 1500;
+
+  &.offcanvas-end {
+    @include ltr-rtl-value-only('transform', none, none);
+  }
+
+  .offcanvas-header {
+    background-color: var(--cipp-offcanvas-header-bg);
+    color: var(--cipp-offcanvas-header-color);
+
+    .btn {
+      color: var(--cipp-offcanvas-header-color);
+
+      :hover {
+        color: var(--cipp-offcanvas-header-hover-color);
+      }
+    }
+  }
+
+  .offcanvas-title {
+    background-color: var(--cipp-offcanvas-title-bg);
+    color: var(--cipp-offcanvas-title-color);
+    padding-bottom: 1rem;
+    padding-top: 0.5rem;
+  }
+
+  .cipp-extendedinfo-label {
+    border-bottom: 1px solid var(--cipp-offcanvas-label-border-color);
+    font-weight: bold;
+  }
+}
+
+.list-group {
+  border-radius: var(--cipp-border-radius);
+}
+
+/* CIPP Text */
+
+.bg-primary {
+  background-color: var(--cui-primary) !important;
+}
+
+.bg-secondary {
+  background-color: var(--cui-secondary) !important;
+}
+
+.bg-success {
+  background-color: var(--cui-success) !important;
+}
+
+.bg-info {
+  background-color: var(--cui-info) !important;
+}
+
+.bg-warning {
+  background-color: var(--cui-warning) !important;
+}
+
+.bg-danger {
+  background-color: var(--cui-danger) !important;
+}
+
+.text-primary {
+  color: var(--cui-primary) !important;
+}
+
+.text-secondary {
+  color: var(--cui-secondary) !important;
+}
+
+.text-success {
+  color: var(--cui-success) !important;
+}
+
+.text-info {
+  color: var(--cui-info) !important;
+}
+
+.text-warning {
+  color: var(--cui-warning) !important;
+}
+
+.text-danger {
+  color: var(--cui-danger) !important;
+}
+
+/* Code Block */
+.cipp-code {
+  position: relative;
+
+  .cipp-code-copy-button {
+    position: absolute;
+    right: 0.1rem;
+    top: 0.1rem;
+  }
+}
+
+.btn-as-block {
+  display: block;
+}
+
+.fa-inverse {
+  color: var(--cipp-fa-inverse-color);
+}
