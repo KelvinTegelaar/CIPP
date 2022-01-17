@@ -246,7 +246,7 @@
                     ],
                     "properties": {
                         "RepoUrl": "[parameters('GithubAPIRepository')]",
-                        "branch": "main",
+                        "branch": "master",
                         "publishRunbook": true,
                         "IsManualIntegration": true
                     }
