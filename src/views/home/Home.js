@@ -17,7 +17,7 @@ import { StatusIcon } from 'src/components/utilities'
 import { Link } from 'react-router-dom'
 
 const Home = () => {
-  const { data: versions, isLoading } = useLoadVersionsQuery()
+  const { data: versions, isLoading, isSuccess } = useLoadVersionsQuery()
   return (
     <div>
       <h3>Dashboard</h3>
@@ -60,16 +60,15 @@ const Home = () => {
             </CCardHeader>
             <CCardBody>
               <div>Latest: {!isLoading ? versions.RemoteCIPPVersion : <CSpinner size="sm" />}</div>
-              <div>
-                Current: {!isLoading ? versions.LocalCIPPAPIVersion : <CSpinner size="sm" />}
-              </div>
-              {!versions?.OutOfDateCIPP ? (
-                <p className="text-success">
-                  You&apos;re running the latest and greatest version of CIPP!
-                </p>
-              ) : (
-                <p className="text-danger">Your CIPP version is out of date!</p>
-              )}
+              <div>Current: {!isLoading ? versions.LocalCIPPVersion : <CSpinner size="sm" />}</div>
+              {isSuccess &&
+                (!versions.OutOfDateCIPP ? (
+                  <p className="text-success">
+                    You&apos;re running the latest and greatest version of CIPP!
+                  </p>
+                ) : (
+                  <p className="text-danger">Your CIPP version is out of date!</p>
+                ))}
             </CCardBody>
           </CCard>
           <CCard className="mb-3" style={{ maxWidth: '18rem' }}>
@@ -86,13 +85,14 @@ const Home = () => {
               <div>
                 Current: {!isLoading ? versions?.LocalCIPPAPIVersion : <CSpinner size="sm" />}
               </div>
-              {!versions?.OutOfDateCIPPAPI ? (
-                <p className="text-success">
-                  You&apos;re running the latest and greatest version of CIPP API!
-                </p>
-              ) : (
-                <p className="text-danger">Your CIPP API version is out of date!</p>
-              )}
+              {isSuccess &&
+                (!versions.OutOfDateCIPPAPI ? (
+                  <p className="text-success">
+                    You&apos;re running the latest and greatest version of CIPP API!
+                  </p>
+                ) : (
+                  <p className="text-danger">Your CIPP API version is out of date!</p>
+                ))}
             </CCardBody>
           </CCard>
         </CCol>
