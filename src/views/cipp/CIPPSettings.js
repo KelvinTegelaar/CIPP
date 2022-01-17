@@ -171,9 +171,17 @@ const GeneralSettings = () => {
                 )}
                 Run Permissions Check
               </CButton>
-              {permissionsResult.status === 'fulfilled' && (
-                // @todo make this pretty after API is fixed
-                <div>{permissionsResult.data.map((result) => result)}</div>
+              {permissionsResult.isSuccess && (
+                <div>
+                  {permissionsResult.data.Results.MissingPermissions
+                    ? 'Your Secure Application Model is missing the following delegated permissions:'
+                    : 'Your Secure Application Model has all required permissions'}
+                  <CListGroup flush>
+                    {permissionsResult.data.Results.MissingPermissions.map((r, index) => (
+                      <CListGroupItem key={index}>{r}</CListGroupItem>
+                    ))}
+                  </CListGroup>
+                </div>
               )}
             </CCardBody>
           </CCard>

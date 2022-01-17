@@ -27,15 +27,6 @@ export const appApi = baseApi.injectEndpoints({
           Permissions: true,
         },
       }),
-      transformResponse: (result) => {
-        if (!result) {
-          return []
-        }
-        if (!Array.isArray(result.Results)) {
-          return [result.Results]
-        }
-        return result.Results
-      },
     }),
     execNotificationConfig: builder.query({
       query: ({
