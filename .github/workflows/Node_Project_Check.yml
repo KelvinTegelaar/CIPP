@@ -1,0 +1,48 @@
+---
+name: NodeJS Project Check
+on:  # yamllint disable-line rule:truthy
+  push:
+    branches:
+      - master
+      - react
+  pull_request:
+    branches:
+      - master
+      - react
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
+  cancel-in-progress: true
+jobs:
+  install-build:
+    name: NPM Install and Build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
+        os: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install and Build Test
+        run: |
+          npm install --legacy-peer-deps
+          npm run build
+        env:
+          CI: true
+  scan:
+    name: NPM Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Dependencies
+        run: npm ci
+      - uses: oke-py/npm-audit-action@v1.8.2
+        with:
+          audit_level: moderate
+          production_flag: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          dedupe_issues: true
+          issue_title: 'NPM Audit found vulnerabilities.'
