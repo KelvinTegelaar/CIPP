@@ -82,9 +82,7 @@
       "exclude": ["/assets/illustrations/*.{png,jpg,gif}", "/css/*"]
     },
     "403": {
-      "redirect": "/cipp/403",
-      "statusCode": 403,
-      "exclude": ["/assets/illustrations/*.{png,jpg,gif}", "/css/*"]
+      "rewrite": "/cipp/403"
     },
     "404": {
       "rewrite": "/cipp/404"
