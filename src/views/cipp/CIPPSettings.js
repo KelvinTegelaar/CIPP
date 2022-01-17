@@ -89,11 +89,11 @@ export default CIPPSettings
 const checkAccessColumns = [
   {
     name: 'Tenant Domain',
-    selector: (row) => row['tenantDomain'],
+    selector: (row) => row['TenantName'],
   },
   {
     name: 'Result',
-    selector: (row) => row['result'],
+    selector: (row) => row['Status'],
   },
 ]
 
@@ -244,7 +244,7 @@ const GeneralSettings = () => {
                 <CippTable
                   columns={checkAccessColumns}
                   tableProps={tableProps}
-                  data={accessCheckResult.data}
+                  data={accessCheckResult.data.Results}
                 />
               )}
             </CCardBody>
