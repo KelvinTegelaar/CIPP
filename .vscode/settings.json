@@ -1,0 +1,8 @@
+{
+  "stylelint.validate": ["css", "scss"],
+  "scss.validate": false,
+  "css.validate": false,
+  "less.validate": false,
+  "editor.tabSize": 2,
+  "files.eol": "\n",
+}
