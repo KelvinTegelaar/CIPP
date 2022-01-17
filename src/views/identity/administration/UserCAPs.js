@@ -1,19 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCardTitle,
-  CSpinner,
-  CTable,
-  CTableBody,
-  CTableDataCell,
-  CTableRow,
-} from '@coreui/react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faKey } from '@fortawesome/free-solid-svg-icons'
 import { useListUserConditionalAccessPoliciesQuery } from 'src/store/api/users'
+import { ListGroupContentCard } from 'src/components/contentcards'
 
 export default function UserCAPs({ tenantDomain, userId, className = null }) {
   const {
@@ -21,28 +10,22 @@ export default function UserCAPs({ tenantDomain, userId, className = null }) {
     isFetching,
     error,
   } = useListUserConditionalAccessPoliciesQuery({ tenantDomain, userId })
+  const content = []
+  list?.map((policy, index) =>
+    content.push({
+      body: policy.displayName ?? 'n/a',
+    }),
+  )
   return (
-    <CCard className={`options-card ${className}`}>
-      <CCardHeader className="d-flex justify-content-between align-items-center">
-        <CCardTitle>Applied Conditional Access Policies</CCardTitle>
-        <FontAwesomeIcon icon={faKey} />
-      </CCardHeader>
-      <CCardBody>
-        {!isFetching && error && <span>Error loading user details</span>}
-        {!error && isFetching && <CSpinner />}
-        {!isFetching && !error && (
-          <CTable responsive>
-            <CTableBody>
-              {list.map((policy, index) => (
-                <CTableRow key={index}>
-                  <CTableDataCell>{policy.displayName ?? 'n/a'}</CTableDataCell>
-                </CTableRow>
-              ))}
-            </CTableBody>
-          </CTable>
-        )}
-      </CCardBody>
-    </CCard>
+    <ListGroupContentCard
+      title="Applied Conditional Access Policies"
+      icon={faKey}
+      content={content}
+      className={className}
+      isFetching={isFetching}
+      error={error}
+      errorMessage="Failed to fetch conditional access policies"
+    />
   )
 }
 

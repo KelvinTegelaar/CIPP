@@ -2,11 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {
   CButton,
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCardTitle,
-  CSpinner,
   CTable,
   CTableBody,
   CTableDataCell,
@@ -14,10 +9,9 @@ import {
   CTableHeaderCell,
   CTableRow,
 } from '@coreui/react'
-import { cellBooleanFormatter } from 'src/components/tables/CellBoolean'
-import { CippDatatable } from 'src/components/tables'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faLaptop } from '@fortawesome/free-solid-svg-icons'
+import { cellBooleanFormatter } from 'src/components/tables'
+import { DatatableContentCard } from 'src/components/contentcards'
+import { faKey } from '@fortawesome/free-solid-svg-icons'
 import { ModalService } from 'src/components/utilities'
 import { useListUserSigninLogsQuery } from 'src/store/api/users'
 
@@ -31,7 +25,7 @@ const rowStyle = (row, rowIndex) => {
   return style
 }
 
-export default function UserSigninLogs({ userId, tenantDomain }) {
+export default function UserSigninLogs({ userId, tenantDomain, className = null }) {
   const {
     data: list = [],
     isFetching,
@@ -140,33 +134,30 @@ export default function UserSigninLogs({ userId, tenantDomain }) {
   ]
 
   return (
-    <CCard className="options-card">
-      <CCardHeader className="d-flex justify-content-between align-items-center">
-        <CCardTitle>User Sign in Logs</CCardTitle>
-        <FontAwesomeIcon icon={faLaptop} />
-      </CCardHeader>
-      <CCardBody>
-        {!isFetching && error && <span>Error loading user sign-in logs</span>}
-        {!error && isFetching && <CSpinner />}
-        {!isFetching && !error && (
-          <CippDatatable
-            path="/api/ListUserSigninLogs"
-            keyField="id"
-            columns={columns}
-            data={mapped}
-            striped
-            bordered={false}
-            dense
-            rowStyle={rowStyle}
-            wrapperClasses="table-responsive"
-          />
-        )}
-      </CCardBody>
-    </CCard>
+    <DatatableContentCard
+      title="User Sign In Logs"
+      icon={faKey}
+      className={className}
+      isFetching={isFetching}
+      error={error}
+      datatable={{
+        reportName: 'ListUserSigninLogs',
+        path: '/api/ListUserSigninLogs',
+        params: { tenantFilter: tenantDomain, userId },
+        columns,
+        keyField: 'id',
+        responsive: true,
+        dense: true,
+        rowStyle: rowStyle,
+        striped: true,
+        data: mapped,
+      }}
+    />
   )
 }
 
 UserSigninLogs.propTypes = {
   userId: PropTypes.string.isRequired,
   tenantDomain: PropTypes.string.isRequired,
+  className: PropTypes.string,
 }

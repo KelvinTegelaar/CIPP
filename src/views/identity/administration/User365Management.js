@@ -1,36 +1,31 @@
 import React from 'react'
-import { CCard, CCardBody, CCardHeader, CCardTitle, CLink } from '@coreui/react'
 import { faUsers, faLaptop } from '@fortawesome/free-solid-svg-icons'
 import { faMicrosoft } from '@fortawesome/free-brands-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import PropTypes from 'prop-types'
+import { ActionContentCard } from 'src/components/contentcards'
 
 export default function User365Management({ tenantDomain, userId, className }) {
+  const azureADLink = `https://portal.azure.com/${tenantDomain}/#blade/Microsoft_AAD_IAM/UserDetailsMenuBlade/Profile/userId/${userId}`
+  const endpointManagerLink = `https://endpoint.microsoft.com/${tenantDomain}/#blade/Microsoft_AAD_IAM/UserDetailsMenuBlade/Profile/userId/${userId}`
+  const actions = [
+    {
+      label: 'View in Azure AD',
+      link: azureADLink,
+      icon: faUsers,
+    },
+    {
+      label: 'View in Endpoint Manager',
+      link: endpointManagerLink,
+      icon: faLaptop,
+    },
+  ]
   return (
-    <CCard className={`options-card ${className}`}>
-      <CCardHeader className="d-flex justify-content-between align-items-center">
-        <CCardTitle>M365 Management</CCardTitle>
-        <FontAwesomeIcon icon={faMicrosoft} />
-      </CCardHeader>
-      <CCardBody>
-        <CLink
-          className="dropdown-item"
-          href={`https://portal.azure.com/${tenantDomain}/#blade/Microsoft_AAD_IAM/UserDetailsMenuBlade/Profile/userId/${userId}`}
-          target="_blank"
-        >
-          <FontAwesomeIcon icon={faUsers} className="me-2" />
-          View in Azure AD
-        </CLink>
-        <CLink
-          className="dropdown-item"
-          href={`https://endpoint.microsoft.com/${tenantDomain}/#blade/Microsoft_AAD_IAM/UserDetailsMenuBlade/Profile/userId/${userId}`}
-          target="_blank"
-        >
-          <FontAwesomeIcon icon={faLaptop} className="me-2" />
-          View in Endpoint Manager (Intune)
-        </CLink>
-      </CCardBody>
-    </CCard>
+    <ActionContentCard
+      title="M365 Management"
+      icon={faMicrosoft}
+      content={actions}
+      className={className}
+    />
   )
 }
 

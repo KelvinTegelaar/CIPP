@@ -101,6 +101,20 @@
       margin-bottom: 0;
     }
   }
+
+  &.content-card {
+    border-color: var(--cui-options-card-border-color);
+
+    .card-header {
+      background: var(--cyberdrain-accent-blue);
+      border-bottom-color: var(--cui-options-card-border-color);
+    }
+
+    .card-title {
+      line-height: 2rem;
+      margin-bottom: 0;
+    }
+  }
 }
 
 .dropdown-menu {

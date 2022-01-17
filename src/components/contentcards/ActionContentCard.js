@@ -1,23 +1,44 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippContentCard } from '../layout'
+import { CButton, CButtonGroup, CSpinner } from '@coreui/react'
 
-export default function ActionContentCard({ title, icon, content, className = null }) {
+export default function ActionContentCard({
+  title,
+  icon,
+  content,
+  className = null,
+  isFetching,
+  error,
+  errorMessage,
+}) {
   return (
-    <CippContentCard title={title} icon={icon} className={className ?? ''}>
-      {content.map((item, index) => (
-        <Link
-          className={item.className ?? ''}
-          href={item.link}
-          target={item.target ?? ''}
-          key={index}
-        >
-          <FontAwesomeIcon icon={item.icon} className="me-2" />
-          {item.label}
-        </Link>
-      ))}
+    <CippContentCard
+      title={title}
+      icon={icon}
+      className={`action-content-card ${className ?? ''} `}
+    >
+      {isFetching && <CSpinner />}
+      {!isFetching && error && <>{errorMessage}</>}
+      {!isFetching && !error && (
+        <CButtonGroup vertical role="group" variant="outline">
+          {content.map((item, index) => (
+            <CButton
+              href={item.link}
+              target={item.target ?? ''}
+              onClick={item.onClick}
+              key={index}
+              color={item.color ?? 'actioncard'}
+              variant="ghost"
+              className="text-start"
+            >
+              <FontAwesomeIcon icon={item.icon} className="me-2" fixedWidth />
+              {item.label}
+            </CButton>
+          ))}
+        </CButtonGroup>
+      )}
     </CippContentCard>
   )
 }
@@ -32,7 +53,11 @@ ActionContentCard.propTypes = {
       icon: PropTypes.element,
       color: PropTypes.string,
       target: PropTypes.string,
+      onClick: PropTypes.func,
     }),
   ).isRequired,
   className: PropTypes.string,
+  isFetching: PropTypes.bool,
+  error: PropTypes.object,
+  errorMessage: PropTypes.string,
 }

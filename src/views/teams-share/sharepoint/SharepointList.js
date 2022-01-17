@@ -1,8 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { TenantSelector } from 'src/components/utilities'
-import { CippDatatable } from 'src/components/tables'
-import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
+import { CippPageList } from 'src/components/layout'
 
 const columns = [
   {
@@ -47,25 +45,15 @@ const SharepointList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
-    <div>
-      <TenantSelector />
-      <hr />
-      <CCard className="page-card">
-        <CCardHeader>
-          <CCardTitle className="text-primary">Sharepoint List</CCardTitle>
-        </CCardHeader>
-        <CCardBody>
-          {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-          <CippDatatable
-            keyField="id"
-            reportName={`${tenant?.defaultDomainName}-Sharepoint-List`}
-            path="/api/ListSites?type=SharePointSiteUsage"
-            columns={columns}
-            params={{ TenantFilter: tenant?.defaultDomainName }}
-          />
-        </CCardBody>
-      </CCard>
-    </div>
+    <CippPageList
+      title="Sharepoint List"
+      datatable={{
+        columns,
+        path: '/api/ListSites?type=SharePointSiteUsage',
+        reportName: `${tenant?.defaultDomainName}-Sharepoint-List`,
+        params: { TenantFilter: tenant?.defaultDomainName },
+      }}
+    />
   )
 }
 

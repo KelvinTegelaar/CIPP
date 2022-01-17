@@ -1,9 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { CCard, CCardBody, CCardHeader, CCardTitle, CLink, CSpinner } from '@coreui/react'
-import CellBoolean from 'src/components/tables/CellBoolean'
-import CippDatatable from 'src/components/tables/CippDatatable'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { CLink } from '@coreui/react'
+import { DatatableContentCard } from 'src/components/contentcards'
+import { CellBoolean } from 'src/components/tables'
 import { faUsers } from '@fortawesome/free-solid-svg-icons'
 import { useListUserGroupsQuery } from 'src/store/api/groups'
 
@@ -67,31 +66,24 @@ export default function UserGroups({ userId, tenantDomain, className = null }) {
   const mapped = list.map((val) => ({ ...val, tenantDomain }))
 
   return (
-    <CCard className={`options-card ${className}`}>
-      <CCardHeader className="d-flex justify-content-between align-items-center">
-        <CCardTitle>User Groups</CCardTitle>
-        <FontAwesomeIcon icon={faUsers} />
-      </CCardHeader>
-      <CCardBody>
-        {isFetching && <CSpinner />}
-        {!isFetching && error && <>Error loading groups</>}
-        {!isFetching && !error && (
-          <CippDatatable
-            path="/api/ListUserGroups"
-            params={{ tenantFilter: tenantDomain, userId }}
-            keyField="id"
-            columns={columns}
-            data={mapped}
-            striped
-            bordered={false}
-            dense
-            responsive={true}
-            disablePDFExport={true}
-            disableCSVExport={true}
-          />
-        )}
-      </CCardBody>
-    </CCard>
+    <DatatableContentCard
+      title="User Groups"
+      icon={faUsers}
+      className={className}
+      isFetching={isFetching}
+      error={error}
+      datatable={{
+        reportName: 'ListUserGroups',
+        path: '/api/ListUserGroups',
+        params: { tenantFilter: tenantDomain, userId },
+        columns,
+        keyField: 'id',
+        responsive: true,
+        dense: true,
+        striped: true,
+        data: mapped,
+      }}
+    />
   )
 }
 

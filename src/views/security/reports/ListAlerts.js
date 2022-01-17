@@ -6,7 +6,7 @@ import { useLazyExecAlertsListQuery } from 'src/store/api/security'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPage } from 'src/components/layout'
 import PropTypes from 'prop-types'
-import { faRedo } from '@fortawesome/free-solid-svg-icons'
+import { faEllipsisV, faRedo } from '@fortawesome/free-solid-svg-icons'
 import { ModalService } from 'src/components/utilities'
 
 const AlertBox = ({ value, title, fetching }) => {
@@ -99,8 +99,8 @@ const ListAlerts = () => {
         const value = column.selector(row)
 
         return (
-          <CButton size="sm" onClick={() => handleShowModal(value)}>
-            More
+          <CButton size="sm" color="link" onClick={() => handleShowModal(value)}>
+            <FontAwesomeIcon icon={faEllipsisV} />
           </CButton>
         )
       },
@@ -133,9 +133,9 @@ const ListAlerts = () => {
           fetching={isFetching}
         />
       </CCardGroup>
-      <CCard>
+      <CCard class="content-card">
         <CCardHeader>
-          <CCardTitle className="text-primary d-flex justify-content-between">
+          <CCardTitle className="d-flex justify-content-between">
             Alerts List
             <CButton size="sm" onClick={() => execAlertsList()} disabled={isFetching}>
               {!isFetching && <FontAwesomeIcon icon={faRedo} className="me-2" />}

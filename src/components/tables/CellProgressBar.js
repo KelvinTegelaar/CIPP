@@ -6,29 +6,22 @@ import { CellBadge } from 'src/components/tables'
 export const CellProgressBar = ({ value, reverse = false }) => {
   let color
   if (!reverse) {
-    switch (value) {
-      case value <= 40:
-        color = 'danger'
-        break
-      case value <= 75:
-        color = 'warning'
-        break
-      case value > 75:
-        color = 'success'
-        break
-      default:
-        color = 'danger'
+    if (value <= 40) {
+      color = 'danger'
+    } else if (value <= 75) {
+      color = 'warning'
+    } else if (value > 75) {
+      color = 'success'
+    } else {
+      color = 'info'
     }
   } else {
-    switch (value) {
-      case value >= 95:
-        color = 'danger'
-        break
-      case value >= 90:
-        color = 'warning'
-        break
-      default:
-        color = 'success'
+    if (value >= 90) {
+      color = 'danger'
+    } else if (value >= 75) {
+      color = 'warning'
+    } else {
+      color = 'success'
     }
   }
   if (value) {

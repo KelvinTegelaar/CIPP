@@ -1,94 +1,55 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCardTitle,
-  CSpinner,
-  CTable,
-  CTableBody,
-  CTableDataCell,
-  CTableRow,
-} from '@coreui/react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCloud } from '@fortawesome/free-solid-svg-icons'
-import { CellProgressBar } from 'src/components/tables/CellProgressBar'
+import { ListGroupContentCard } from 'src/components/contentcards'
+import { CellProgressBar } from 'src/components/tables'
 import { useListOneDriveUsageQuery } from 'src/store/api/oneDrive'
-
-const columns = [
-  {
-    text: 'Site URL',
-    dataField: 'URL',
-  },
-  {
-    text: 'Usage',
-    formatter: (cell, row) => {
-      return `${row.UsedGB} / ${row.Allocated}`
-    },
-  },
-  {
-    text: 'Percent',
-    dataField: 'LastSigninStatus',
-    formatter: (cell, row) => {
-      return CellProgressBar({
-        value: Math.round((row.UsedGB / row.Allocated) * 100),
-        reverse: true,
-      })
-    },
-  },
-  {
-    text: 'Files',
-    dataField: 'FileCount',
-  },
-  {
-    text: 'Last Active',
-    dataField: 'LastActive',
-  },
-]
 
 export default function UserOneDriveUsage({ userUPN, tenantDomain, className = null }) {
   const {
-    data: report = [],
+    data: usage = [],
     isFetching,
     error,
   } = useListOneDriveUsageQuery({ userUPN, tenantDomain })
 
-  const noUsage = Object.keys(report).length === 0 ?? false
+  const noUsage = Object.keys(usage).length === 0 ?? false
+  console.log(usage)
+  const content = [
+    {
+      heading: 'Site URL',
+      body: usage[0]?.URL,
+    },
+    {
+      heading: 'Usage',
+      body: `${usage[0]?.UsedGB} / ${usage[0]?.Allocated}`,
+    },
+    {
+      heading: 'Percent',
+      body: CellProgressBar({
+        value: Math.round((usage[0]?.UsedGB / usage[0]?.Allocated) * 100),
+        reverse: true,
+      }),
+    },
+    {
+      heading: 'Files',
+      body: usage[0]?.FileCount,
+    },
+    {
+      heading: 'Last Active',
+      body: usage[0]?.LastActive,
+    },
+  ]
 
   return (
-    <CCard className={`options-card ${className}`}>
-      <CCardHeader className="d-flex justify-content-between align-items-center">
-        <CCardTitle>OneDrive Details</CCardTitle>
-        <FontAwesomeIcon icon={faCloud} />
-      </CCardHeader>
-      <CCardBody>
-        {!error && isFetching && <CSpinner />}
-        {!isFetching && error && <span>Error loading usage report</span>}
-        {!isFetching && noUsage && <>No usage reported</>}
-        {!isFetching && !error && !noUsage && (
-          <CTable>
-            <CTableBody>
-              {columns.map((column, index) => {
-                return (
-                  <CTableRow key={index}>
-                    <CTableDataCell>{column.text}</CTableDataCell>
-                    {!column.formatter && (
-                      <CTableDataCell>{report[column.dataField] ?? 'n/a'}</CTableDataCell>
-                    )}
-                    {column.formatter && (
-                      <CTableDataCell>
-                        {column.formatter(report[column.dataField], report)}
-                      </CTableDataCell>
-                    )}
-                  </CTableRow>
-                )
-              })}
-            </CTableBody>
-          </CTable>
-        )}
-      </CCardBody>
-    </CCard>
+    <ListGroupContentCard
+      title="OneDrive Details"
+      icon={faCloud}
+      content={content}
+      className={className}
+      isFetching={isFetching}
+      error={error}
+      errorMessage={!noUsage ? 'Failed to fetch OneDrive details' : 'No OneDrive usage'}
+    />
   )
 }
 

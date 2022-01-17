@@ -1,11 +1,10 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { TenantSelector } from 'src/components/utilities'
-import { CippDatatable } from 'src/components/tables'
-import { CButton, CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
+import { CButton } from '@coreui/react'
 import { faEye, faEdit } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom'
+import { CippPageList } from 'src/components/layout'
 
 const TeamsList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -65,25 +64,15 @@ const TeamsList = () => {
   ]
 
   return (
-    <div>
-      <TenantSelector />
-      <hr />
-      <CCard className="page-card">
-        <CCardHeader>
-          <CCardTitle className="text-primary">Teams</CCardTitle>
-        </CCardHeader>
-        <CCardBody>
-          {Object.keys(tenant).length === 0 && <span>Select a tenant to get started.</span>}
-          <CippDatatable
-            keyField="id"
-            reportName={`${tenant?.defaultDomainName}-Teams-List`}
-            path="/api/ListTeams?type=list"
-            columns={columns}
-            params={{ TenantFilter: tenant?.defaultDomainName }}
-          />
-        </CCardBody>
-      </CCard>
-    </div>
+    <CippPageList
+      title="Teams"
+      datatable={{
+        columns,
+        path: '/api/ListTeams?type=list',
+        reportName: `${tenant?.defaultDomainName}-Teams-List`,
+        params: { TenantFilter: tenant?.defaultDomainName },
+      }}
+    />
   )
 }
 

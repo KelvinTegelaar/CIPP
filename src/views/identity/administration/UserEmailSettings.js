@@ -1,118 +1,70 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { faCog, faEnvelope } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCardTitle,
-  CSpinner,
-  CTable,
-  CTableBody,
-  CTableDataCell,
-  CTableRow,
-} from '@coreui/react'
-import CellBoolean from 'src/components/tables/CellBoolean'
+import { faCog } from '@fortawesome/free-solid-svg-icons'
+import { CellBoolean } from 'src/components/tables'
 import { useListMailboxDetailsQuery } from 'src/store/api/mailbox'
+import { ListGroupContentCard } from 'src/components/contentcards'
 
 const formatter = (cell) => CellBoolean({ cell })
 
-const columns = [
-  {
-    text: 'User Not Restricted',
-    dataField: 'BlockedForSpam',
-    formatter: (cell) => CellBoolean({ cell: !cell }),
-  },
-  {
-    text: 'Litigation Hold',
-    dataField: 'LitiationHold',
-    formatter,
-  },
-  {
-    text: 'Hidden from Address Lists',
-    dataField: 'HiddenFromAddressLists',
-    formatter,
-  },
-  {
-    text: 'EWS Enabled',
-    dataField: 'EWSEnabled',
-    formatter,
-  },
-  {
-    text: 'MAPI Enabled',
-    dataField: 'MailboxMAPIEnabled',
-    formatter,
-  },
-  {
-    text: 'OWA Enabled',
-    dataField: 'MailboxOWAEnabled',
-    formatter,
-  },
-  {
-    text: 'IMAP Enabled',
-    dataField: 'MailboxImapEnabled',
-    formatter,
-  },
-  {
-    text: 'POP Enabled',
-    dataField: 'MailboxPopEnabled',
-    formatter,
-  },
-  {
-    text: 'Active Sync Enabled',
-    dataField: 'MailboxActiveSyncEnabled',
-    formatter,
-  },
-  {
-    text: 'Forward and Deliver',
-    dataField: 'ForwardAndDeliver',
-    formatter,
-  },
-  {
-    text: 'Forwarding Address',
-    dataField: 'ForwardingAddress',
-    formatter,
-  },
-]
-
 export default function UserEmailSettings({ userId, tenantDomain, className = null }) {
   const { data: details, isFetching, error } = useListMailboxDetailsQuery({ userId, tenantDomain })
+  const content = [
+    {
+      heading: 'User Not Restricted',
+      body: formatter(details?.BlockedForSpam),
+    },
+    {
+      heading: 'Litigation Hold',
+      body: formatter(details?.LitiationHold),
+    },
+    {
+      heading: 'Hidden from Address Lists',
+      body: formatter(details?.HiddenFromAddressLists),
+    },
+    {
+      heading: 'EWS Enabled',
+      body: formatter(details?.EWSEnabled),
+    },
+    {
+      heading: 'MAPI Enabled',
+      body: formatter(details?.MailboxMAPIEnabled),
+    },
+    {
+      heading: 'OWA Enabled',
+      body: formatter(details?.MailboxOWAEnabled),
+    },
+    {
+      heading: 'IMAP Enabled',
+      body: formatter(details?.MailboxImapEnabled),
+    },
+    {
+      heading: 'POP Enabled',
+      body: formatter(details?.MailboxPopEnabled),
+    },
+    {
+      heading: 'Active Sync Enabled',
+      body: formatter(details?.MailboxActiveSyncEnabled),
+    },
+    {
+      heading: 'Forward and Deliver',
+      body: formatter(details?.ForwardAndDeliver),
+    },
+    {
+      heading: 'Forwarding Address',
+      body: formatter(details?.ForwardingAddress),
+    },
+  ]
   return (
-    <CCard className={`options-card ${className}`}>
-      <CCardHeader className="d-flex justify-content-between align-items-center">
-        <CCardTitle>Email Settings</CCardTitle>
-        <span>
-          <FontAwesomeIcon icon={faEnvelope} className="me-2" />
-          <FontAwesomeIcon icon={faCog} />
-        </span>
-      </CCardHeader>
-      <CCardBody>
-        {isFetching && <CSpinner />}
-        {!isFetching && error && <span>Error loading email settings</span>}
-        {!isFetching && !error && (
-          <CTable>
-            <CTableBody>
-              {columns.map((column, index) => {
-                return (
-                  <CTableRow key={index}>
-                    <CTableDataCell>{column.text}</CTableDataCell>
-                    {!column.formatter && (
-                      <CTableDataCell>{details[column.dataField] ?? 'n/a'}</CTableDataCell>
-                    )}
-                    {column.formatter && (
-                      <CTableDataCell>
-                        {column.formatter(details[column.dataField], details)}
-                      </CTableDataCell>
-                    )}
-                  </CTableRow>
-                )
-              })}
-            </CTableBody>
-          </CTable>
-        )}
-      </CCardBody>
-    </CCard>
+    <ListGroupContentCard
+      title="Email Settings"
+      icon={faCog}
+      content={content}
+      className={className}
+      isFetching={isFetching}
+      error={error}
+      errorMsg="Unable to fetch email settings"
+    />
   )
 }
 

@@ -1,13 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { CSpinner } from '@coreui/react'
-import { CippTable } from 'src/components/tables'
+import { CippDatatable } from 'src/components/tables'
 import { CippContentCard } from 'src/components/layout'
 
-export default function TableContentCard({
+export default function DatatableContentCard({
   title,
   icon,
-  table: { reportName, columns, data, ...rest },
+  datatable: { reportName, path, columns, params, ...rest },
   className = null,
   isFetching,
   error,
@@ -22,15 +22,11 @@ export default function TableContentCard({
       {isFetching && <CSpinner />}
       {!isFetching && error && <>{errorMessage}</>}
       {!isFetching && !error && (
-        <CippTable
-          data={data}
+        <CippDatatable
           reportName={reportName}
+          path={path}
           columns={columns}
-          tableProps={{
-            striped: true,
-            responsive: true,
-            className: 'table-responsive',
-          }}
+          params={params}
           {...rest}
         />
       )}
@@ -38,13 +34,14 @@ export default function TableContentCard({
   )
 }
 
-TableContentCard.propTypes = {
+DatatableContentCard.propTypes = {
   title: PropTypes.string.isRequired,
   icon: PropTypes.object,
-  table: PropTypes.shape({
+  datatable: PropTypes.shape({
     reportName: PropTypes.string,
+    path: PropTypes.string.isRequired,
     columns: PropTypes.array.isRequired,
-    data: PropTypes.array.isRequired,
+    params: PropTypes.object,
   }),
   className: PropTypes.string,
   isFetching: PropTypes.bool,

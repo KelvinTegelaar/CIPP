@@ -1,111 +1,85 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCardTitle,
-  CSpinner,
-  CTable,
-  CTableBody,
-  CTableDataCell,
-  CTableRow,
-} from '@coreui/react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPortrait } from '@fortawesome/free-solid-svg-icons'
 import { useListUserQuery } from 'src/store/api/users'
-
-const columns = [
-  {
-    text: 'First Name',
-    dataField: 'givenName',
-  },
-  {
-    text: 'Last Name',
-    dataField: 'surname',
-  },
-  {
-    text: 'User Principal Name',
-    dataField: 'userPrincipalName',
-  },
-  {
-    text: 'Licenses',
-    dataField: 'LicJoined',
-  },
-  {
-    text: 'Alias',
-    dataField: 'mailNickname',
-  },
-  {
-    text: 'Primary Domain',
-    dataField: 'primDomain',
-  },
-  {
-    text: 'Usage Location',
-    dataField: 'usageLocation',
-  },
-  {
-    text: 'Street Address',
-    dataField: 'streetAddress',
-  },
-  {
-    text: 'City',
-    dataField: 'city',
-  },
-  {
-    text: 'Postcode',
-    dataField: 'postalCode',
-  },
-  {
-    text: 'Country',
-    dataField: 'country',
-  },
-  {
-    text: 'Company Name',
-    dataField: 'companyName',
-  },
-  {
-    text: 'Department',
-    dataField: 'department',
-  },
-  {
-    text: 'Mobile Phone',
-    dataField: 'mobilePhone',
-  },
-  {
-    text: 'Business Phone',
-    dataField: 'businessPhones',
-  },
-]
+import { ListGroupContentCard } from 'src/components/contentcards'
 
 export default function UserDetails({ tenantDomain, userId, className = null }) {
   const { data: user = {}, isFetching, error } = useListUserQuery({ tenantDomain, userId })
 
+  const content = [
+    {
+      heading: 'First Name',
+      body: user.givenName,
+    },
+    {
+      heading: 'Last Name',
+      body: user.surname,
+    },
+    {
+      heading: 'User Principal Name',
+      body: user.userPrincipalName,
+    },
+    {
+      heading: 'Licenses',
+      body: user.LicJoined,
+    },
+    {
+      heading: 'Alias',
+      body: user.mailNickname,
+    },
+    {
+      heading: 'Primary Domain',
+      body: user.primDomain,
+    },
+    {
+      heading: 'Usage Location',
+      body: user.usageLocation,
+    },
+    {
+      heading: 'Street Address',
+      body: user.streetAddress,
+    },
+    {
+      heading: 'City',
+      body: user.city,
+    },
+    {
+      heading: 'Postcode',
+      dataField: user.postalCode,
+    },
+    {
+      heading: 'Country',
+      body: user.country,
+    },
+    {
+      heading: 'Company Name',
+      body: user.companyName,
+    },
+    {
+      heading: 'Department',
+      body: user.department,
+    },
+    {
+      heading: 'Mobile Phone',
+      body: user.mobilePhone,
+    },
+    {
+      heading: 'Business Phone',
+      body: user.businessPhones,
+    },
+  ]
+
   return (
-    <CCard className={`options-card ${className}`}>
-      <CCardHeader className="d-flex justify-content-between align-items-center">
-        <CCardTitle>{user.displayName}</CCardTitle>
-        <FontAwesomeIcon icon={faPortrait} />
-      </CCardHeader>
-      <CCardBody className="card-body">
-        {!isFetching && error && <span>Error loading user details</span>}
-        {!error && isFetching && <CSpinner />}
-        {!isFetching && !error && (
-          <CTable responsive>
-            <CTableBody>
-              {columns.map((column, index) => (
-                <CTableRow key={index}>
-                  <CTableDataCell>
-                    <h5>{column.text}</h5>
-                  </CTableDataCell>
-                  <CTableDataCell>{user[column.dataField]}</CTableDataCell>
-                </CTableRow>
-              ))}
-            </CTableBody>
-          </CTable>
-        )}
-      </CCardBody>
-    </CCard>
+    <ListGroupContentCard
+      title="User Details"
+      icon={faPortrait}
+      content={content}
+      className={className}
+      isFetching={isFetching}
+      error={error}
+      errorMessage="Failed to fetch user details"
+    />
   )
 }
 

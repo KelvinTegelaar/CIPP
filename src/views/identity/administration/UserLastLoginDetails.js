@@ -1,69 +1,45 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCardTitle,
-  CSpinner,
-  CTable,
-  CTableBody,
-  CTableDataCell,
-  CTableRow,
-} from '@coreui/react'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { ListGroupContentCard } from 'src/components/contentcards'
 import { useListUserQuery } from 'src/store/api/users'
-
-const columns = [
-  {
-    text: 'Last Sign in Date',
-    dataField: 'LastSigninDate',
-  },
-  {
-    text: 'Last Sign in Application',
-    dataField: 'LastSigninApplication',
-  },
-  {
-    text: 'Last Sign in Status',
-    dataField: 'LastSigninStatus',
-  },
-  {
-    text: 'Last Sign in Result',
-    dataField: 'LastSigninResult',
-  },
-  {
-    text: 'Last Sign in Failure Reason',
-    dataField: 'LastSigninFailureReason',
-  },
-]
 
 export default function UserLastLoginDetails({ tenantDomain, userId, className = null }) {
   const { data: user = {}, isFetching, error } = useListUserQuery({ tenantDomain, userId })
 
+  const content = [
+    {
+      heading: 'Last Sign in Date',
+      body: user.LastSigninDate,
+    },
+    {
+      heading: 'Last Sign in Application',
+      body: user.LastSigninApplication,
+    },
+    {
+      heading: 'Last Sign in Status',
+      body: user.LastSigninStatus,
+    },
+    {
+      heading: 'Last Sign in Result',
+      body: user.LastSigninResult,
+    },
+    {
+      heading: 'Last Sign in Failure Reason',
+      body: user.LastSigninFailureReason,
+    },
+  ]
+
   return (
-    <CCard className={`options-card ${className}`}>
-      <CCardHeader className="d-flex justify-content-between align-items-center">
-        <CCardTitle>Last Login Details</CCardTitle>
-        <FontAwesomeIcon icon={faClock} />
-      </CCardHeader>
-      <CCardBody>
-        {!isFetching && error && <span>Error loading user details</span>}
-        {!error && isFetching && <CSpinner />}
-        {!isFetching && !error && (
-          <CTable>
-            <CTableBody>
-              {columns.map((column, index) => (
-                <CTableRow key={index}>
-                  <CTableDataCell>{column.text}</CTableDataCell>
-                  <CTableDataCell>{user[column.dataField] ?? 'n/a'}</CTableDataCell>
-                </CTableRow>
-              ))}
-            </CTableBody>
-          </CTable>
-        )}
-      </CCardBody>
-    </CCard>
+    <ListGroupContentCard
+      title="Last Login Details"
+      icon={faClock}
+      content={content}
+      className={className}
+      isFetching={isFetching}
+      error={error}
+      errorMessage="Failed to fetch last login details"
+    />
   )
 }
 
