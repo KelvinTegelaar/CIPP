@@ -4,10 +4,12 @@ on:  # yamllint disable-line rule:truthy
   push:
     branches:
       - master
+      - main
       - react
   pull_request_target:
     branches:
       - master
+      - main
       - react
 permissions:
   issues: write
