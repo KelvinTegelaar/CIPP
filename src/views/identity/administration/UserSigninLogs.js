@@ -75,7 +75,6 @@ export default function UserSigninLogs({ userId, tenantDomain, className = null 
     {
       name: 'Conditional Access Status',
       selector: (row) => row['ConditionalAccessStatus'],
-      cell: cellBooleanFormatter,
     },
     {
       name: 'Overall Login Status',
@@ -104,6 +103,7 @@ export default function UserSigninLogs({ userId, tenantDomain, className = null 
     {
       name: 'Device Compliant',
       selector: (row) => row['DeviceCompliant'],
+      cell: cellBooleanFormatter,
     },
     {
       name: 'OS',
