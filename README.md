@@ -69,8 +69,8 @@ Check out the GIFs below to see how some of the workflows work.
 <kbd><a href="github_assets/screenshots/OffboardUser.gif"><img border="1" src="github_assets/screenshots/OffboardUser.gif" width="250"/></a></kbd>
 <kbd><a href="github_assets/screenshots/SetStandard.gif"><img border="1" src="github_assets/screenshots/SetStandard.gif" width="250"/></a></kbd>
 
-<kbd><a href="github_assets/screenshots/AddautopilotDevice.png"><img border="1" src="github_assets/screenshots/IntunePolicyEngine.gif" width="250"/></a></kbd>
-<kbd><a href="github_assets/screenshots/AddIntunePolicy.png"><img border="1" src="github_assets/screenshots/MyChocoApp.gif" width="250"/></a></kbd>
+<kbd><a href="github_assets/screenshots/IntunePolicyEngine.gif"><img border="1" src="github_assets/screenshots/IntunePolicyEngine.gif" width="250"/></a></kbd>
+<kbd><a href="github_assets/screenshots/MyChocoApp.gif"><img border="1" src="github_assets/screenshots/MyChocoApp.gif" width="250"/></a></kbd>
 <kbd><a href="github_assets/screenshots/Teams.gif"><img border="1" src="github_assets/screenshots/Teams.gif" width="250"/></a></kbd>
 
 # What is the functionality?
