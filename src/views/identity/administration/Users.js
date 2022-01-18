@@ -38,6 +38,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
           { label: 'Given Name', value: `${row.givenName}` },
           { label: 'Surname', value: `${row.surname}` },
           { label: 'Job Title', value: `${row.jobTitle}` },
+          { label: 'Licenses', value: `${row.LicJoined}` },
           { label: 'Business Phone', value: `${row.businessPhones}` },
           { label: 'Mobile Phone', value: `${row.mobilePhone}` },
           { label: 'Mail', value: `${row.mail}` },
@@ -122,12 +123,14 @@ const columns = [
     selector: (row) => row['displayName'],
     sortable: true,
     exportSelector: 'displayName',
+    minWidth: '300px',
   },
   {
     name: 'Email',
     selector: (row) => row['mail'],
     sortable: true,
     exportSelector: 'mail',
+    minWidth: '350px',
   },
   {
     name: 'User Type',
