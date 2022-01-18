@@ -12,11 +12,13 @@ export default function User365Management({ tenantDomain, userId, className }) {
       label: 'View in Azure AD',
       link: azureADLink,
       icon: faUsers,
+      target: '_blank',
     },
     {
       label: 'View in Endpoint Manager',
       link: endpointManagerLink,
       icon: faLaptop,
+      target: '_blank',
     },
   ]
   return (
