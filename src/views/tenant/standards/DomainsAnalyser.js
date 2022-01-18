@@ -60,6 +60,7 @@ const DomainsAnalyser = () => {
       selector: (row) => row['Domain'],
       sort: true,
       exportSelector: 'Domain',
+      minWidth: '300px',
     },
     {
       name: 'Security Score',
