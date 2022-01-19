@@ -40,7 +40,8 @@ nav:
     - CIPP Settings:
       - Configuration Settings: CIPPSettings/ConfigurationSettings.md
       - Backend Access: CIPPSettings/BackendAccess.md
-
+    - FAQ:
+      - Configuration Settings: CIPPSettings/FAQ.md
 theme:
   name: 'material'
   palette:
