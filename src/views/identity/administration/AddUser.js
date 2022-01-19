@@ -112,7 +112,9 @@ const AddUser = () => {
     <CippPage tenantSelector={true} title="Add User">
       {postResults.isSuccess && (
         <CAlert color="success" dismissible>
-          {postResults.data?.Results}
+          {postResults.data?.Results.map((result, index) => (
+            <li key={index}>{result}</li>
+          ))}
         </CAlert>
       )}
       <CRow>
