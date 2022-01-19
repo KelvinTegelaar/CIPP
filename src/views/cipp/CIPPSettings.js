@@ -195,8 +195,9 @@ const GeneralSettings = () => {
               <CCardTitle>Clear Cache</CCardTitle>
             </CCardHeader>
             <CCardBody>
-              Click the button below to clear the tenant cache file, the Best Practice Analyser
-              cache and the Domain Analyser Cache. <br />
+              Click the button below to clear the all caches the application uses. This includes the
+              Best Practice Analyser, Tenant Cache, Domain Analyser, and personal settings such as
+              theme and usage location <br />
               <CButton
                 onClick={() => handleClearCache()}
                 disabled={clearCacheResult.isFetching}
