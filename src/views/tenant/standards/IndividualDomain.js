@@ -130,7 +130,7 @@ export default function IndividualDomainCheck({
 
                             <CButton
                               type="submit"
-                              disabled={submitting || isFetching || readOnly}
+                              disabled={submitting || isFetching}
                               color="primary"
                             >
                               {isFetching && (

@@ -95,10 +95,10 @@ const DomainsAnalyser = () => {
           if (row.SPFPassAll === true) {
             return <CellBadge color="success" label="SPF Pass" />
           } else {
-            return <CellBadge color="danger" label="SPF Soft Fail" />
+            return <CellBadge color="danger" label="SPF Fail" />
           }
         } else if (cell === false) {
-          return <CellBadge color="danger" label="SPF Fail" />
+          return <CellBadge color="danger" label="SPF Missing Expected" />
         }
         return <CellBadge color="info" label="No Data" />
       },
@@ -130,7 +130,7 @@ const DomainsAnalyser = () => {
           if (row.DMARCReportingActive === true) {
             return <CellBadge color="success">DMARC Present</CellBadge>
           }
-          return <CellBadge color="warning">DMARC Present No Reporting Data</CellBadge>
+          return <CellBadge color="warning">DMARC No Reporting</CellBadge>
         } else if (cell === false) {
           return <CellBadge color="danger">DMARC Missing</CellBadge>
         }
