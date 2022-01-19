@@ -37,7 +37,7 @@ const TenantsList = () => {
   }
   const columns = [
     {
-      name: 'Tenant Name',
+      name: 'Tenant Default Domain',
       selector: (row) => row['displayName'],
       sortable: true,
       exportSelector: 'displayName',
