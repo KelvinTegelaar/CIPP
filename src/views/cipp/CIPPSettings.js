@@ -143,7 +143,10 @@ const GeneralSettings = () => {
 
   const handleClearCache = useConfirmModal({
     body: <div>Are you sure you want to clear the cache?</div>,
-    onConfirm: () => clearCache(),
+    onConfirm: () => {
+      clearCache()
+      localStorage.clear()
+    },
   })
 
   const tableProps = {
