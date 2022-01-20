@@ -58,7 +58,7 @@ const DomainsAnalyser = () => {
     {
       name: 'Domain',
       selector: (row) => row['Domain'],
-      sort: true,
+      sortable: true,
       exportSelector: 'Domain',
       minWidth: '300px',
     },
@@ -71,7 +71,7 @@ const DomainsAnalyser = () => {
           return row['ScorePercentage']
         }
       },
-      sort: true,
+      sortable: true,
       exportSelector: 'ScorePercentage',
       cell: cellProgressBarFormatter(),
     },
@@ -79,7 +79,7 @@ const DomainsAnalyser = () => {
       name: 'Mail Provider',
       selector: (row) => row['MailProvider'],
       exportSelector: 'MailProvider',
-      sort: true,
+      sortable: true,
       cell: (row, index, column) => {
         const cell = column.selector(row)
         return <CellBadge label={cell} color={cell === 'Unknown' ? 'warning' : 'info'} />
@@ -89,7 +89,7 @@ const DomainsAnalyser = () => {
       name: 'SPF Pass Test',
       selector: (row) => row['SPFPassTest'],
       exportSelector: 'SPFPassTest',
-      sort: true,
+      sortable: true,
       cell: (row, index, column) => {
         const cell = column.selector(row)
         if (cell === true) {
@@ -108,7 +108,7 @@ const DomainsAnalyser = () => {
       name: 'MX Pass Test',
       selector: (row) => row['MXPassTest'],
       exportSelector: 'MXPassTest',
-      sort: true,
+      sortable: true,
       cell: (row, index, column) => {
         const cell = column.selector(row)
         if (cell === true) {
@@ -123,7 +123,7 @@ const DomainsAnalyser = () => {
       name: 'DMARC Present',
       selector: (row) => row['DMARCPresent'],
       exportSelector: 'DMARCPresent',
-      sort: true,
+      sortable: true,
       cell: (row, index, column) => {
         const cell = column.selector(row)
 
@@ -142,7 +142,7 @@ const DomainsAnalyser = () => {
       name: 'DMARC Action Policy',
       selector: (row) => row['DMARCActionPolicy'],
       exportSelector: 'DMARCActionPolicy',
-      sort: true,
+      sortable: true,
       cell: (row, index, column) => {
         const cell = column.selector(row)
 
@@ -160,7 +160,7 @@ const DomainsAnalyser = () => {
       name: 'DMARC % Pass',
       selector: (row) => row['DMARCPercentagePass'],
       exportSelector: 'DMARCPercentagePass',
-      sort: true,
+      sortable: true,
       cell: (row, index, column) => {
         const cell = column.selector(row)
 
@@ -177,7 +177,7 @@ const DomainsAnalyser = () => {
       name: 'DNSSec Enabled',
       selector: (row) => row['DNSSECPresent'],
       exportSelector: 'DNSSECPresent',
-      sort: true,
+      sortable: true,
       cell: (row, index, column) => {
         const cell = column.selector(row)
 
@@ -194,7 +194,7 @@ const DomainsAnalyser = () => {
       name: 'DKIM Enabled',
       selector: (row) => row['DKIMEnabled'],
       exportSelector: 'DKIMEnabled',
-      sort: true,
+      sortable: true,
       cell: (row, index, column) => {
         const cell = column.selector(row)
         if (cell === true) {
@@ -210,7 +210,7 @@ const DomainsAnalyser = () => {
       name: 'More Info',
       dataField: 'moreInfo',
       isDummyField: true,
-      sort: true,
+      sortable: true,
       cell: (row) => {
         return (
           <CButton size="sm" color="link" onClick={() => handleMoreInfo({ row })}>
