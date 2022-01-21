@@ -223,7 +223,7 @@ const DomainsAnalyser = () => {
 
   return (
     <CippPageList
-      title="Domain Analyser"
+      title="Domains Analyser"
       tenantSelector={false}
       datatable={{
         path: '/api/DomainAnalyser_List',
