@@ -23,7 +23,7 @@ import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 const EditTenant = () => {
   const dispatch = useDispatch()
   let query = useQuery()
-  const tenantDomain = query.get('TenantFilter')
+  const tenantDomain = query.get('tenantDomain')
   const [queryError, setQueryError] = useState(false)
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
@@ -32,7 +32,7 @@ const EditTenant = () => {
   useEffect(() => {
     if (!tenantDomain) {
       ModalService.open({
-        body: 'Error: Invalid request. Could not load requested tenant.',
+        body: 'Error: INvalid request. Could not load requested tenant.',
         title: 'Invalid Request',
       })
       setQueryError(true)
@@ -40,9 +40,14 @@ const EditTenant = () => {
   }, [tenantDomain, dispatch])
 
   const onSubmit = (values) => {
-    // @todo bind this
-    //window.alert(JSON.stringify(values))
-    genericPostRequest({ path: '/api/EditTenant', values })
+    const shippedValues = {
+      Tenant: tenantDomain,
+      tenantDisplayName: values.displayName,
+      tnenatDefaultDomainName: values.defaultDomainName,
+    }
+    window.alert(JSON.stringify(shippedValues))
+    genericPostRequest({ path: '/api/EditTenant', values: shippedValues })
+    console.log(postResults.data.Results)
   }
   const initialValues = {
     ...tenant[0],
