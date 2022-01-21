@@ -27,15 +27,6 @@ export const appApi = baseApi.injectEndpoints({
           Permissions: true,
         },
       }),
-      transformResponse: (result) => {
-        if (!result) {
-          return []
-        }
-        if (!Array.isArray(result.Results)) {
-          return [result.Results]
-        }
-        return result.Results
-      },
     }),
     execNotificationConfig: builder.query({
       query: ({
@@ -75,17 +66,6 @@ export const appApi = baseApi.injectEndpoints({
         },
         method: 'post',
       }),
-      transformResponse: (response) => {
-        if (!response?.Results) {
-          return []
-        }
-        return response?.Results.map((res) =>
-          res
-            .replace('<br>', '')
-            .split(': ')
-            .reduce((pv, cv) => ({ tenantDomain: pv, result: cv })),
-        )
-      },
     }),
     execClearCache: builder.query({
       query: () => ({
