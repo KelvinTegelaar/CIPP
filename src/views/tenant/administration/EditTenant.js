@@ -53,7 +53,6 @@ const EditTenant = () => {
       customerId: customerId,
     }
     genericPostRequest({ path: '/api/EditTenant', values: shippedValues })
-    console.log(shippedValues)
   }
   const initialValues = {
     ...tenant[0],
