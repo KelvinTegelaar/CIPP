@@ -23,26 +23,36 @@ import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 const EditTenant = () => {
   const dispatch = useDispatch()
   let query = useQuery()
-  const tenantDomain = query.get('TenantFilter')
+  const tenantDomain = query.get('tenantFilter')
+  const customerId = query.get('customerId')
   const [queryError, setQueryError] = useState(false)
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
-  const { data: tenant = {}, isFetching, error, isSuccess } = useListTenantQuery(tenantDomain)
+  const {
+    data: tenant = {},
+    isFetching,
+    error,
+    isSuccess,
+  } = useListTenantQuery(tenantDomain, customerId)
 
   useEffect(() => {
-    if (!tenantDomain) {
+    if (!tenantDomain || !customerId) {
       ModalService.open({
-        body: 'Error: Invalid request. Could not load requested tenant.',
+        body: 'Error: INvalid request. Could not load requested tenant.',
         title: 'Invalid Request',
       })
       setQueryError(true)
     }
-  }, [tenantDomain, dispatch])
+  }, [tenantDomain, customerId, dispatch])
 
   const onSubmit = (values) => {
-    // @todo bind this
-    //window.alert(JSON.stringify(values))
-    genericPostRequest({ path: '/api/EditTenant', values })
+    const shippedValues = {
+      tenantid: tenantDomain,
+      displayName: values.displayName,
+      defaultDomainName: values.defaultDomainName,
+      customerId: customerId,
+    }
+    genericPostRequest({ path: '/api/EditTenant', values: shippedValues })
   }
   const initialValues = {
     ...tenant[0],
