@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { TenantSelector } from 'src/components/utilities'
-import { CAlert, CCard, CCardBody, CCardHeader } from '@coreui/react'
+import { CCallout, CCard, CCardBody, CCardHeader } from '@coreui/react'
 import { CippDatatable } from 'src/components/tables'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams, useNavigate } from 'react-router-dom'
@@ -59,9 +59,9 @@ export function CippPage({
         </CCardHeader>
         <CCardBody>
           {tenantSelector && Object.keys(tenant).length === 0 ? (
-            <CAlert className="mb-0" color="warning">
+            <CCallout className="mb-0" color="warning">
               Select a tenant to get started.
-            </CAlert>
+            </CCallout>
           ) : (
             children
           )}
