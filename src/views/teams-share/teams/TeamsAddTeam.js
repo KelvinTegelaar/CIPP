@@ -1,5 +1,5 @@
 import React from 'react'
-import { CAlert, CButton, CCol, CForm, CRow } from '@coreui/react'
+import { CCallout, CButton, CCol, CForm, CRow } from '@coreui/react'
 import { useSelector } from 'react-redux'
 import { Form } from 'react-final-form'
 import { RFFCFormInput, RFFSelectSearch } from 'src/components/forms'
@@ -30,7 +30,7 @@ const TeamsAddTeam = () => {
   }
   return (
     <CippPage title="Add Team">
-      {postResults.isSuccess && <CAlert color="success">{postResults.data.Results}</CAlert>}
+      {postResults.isSuccess && <CCallout color="success">{postResults.data.Results}</CCallout>}
       <Form onSubmit={handleSubmit}>
         {({ handleSubmit, submitting, values }) => {
           return (

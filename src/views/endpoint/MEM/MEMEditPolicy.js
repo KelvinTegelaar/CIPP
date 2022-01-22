@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import {
-  CAlert,
+  CCallout,
   CButton,
   CCard,
   CCardBody,
@@ -133,7 +133,7 @@ const MEMEditPolicy = () => {
                               </CCol>
                             </CRow>
                             {postResults.isSuccess && (
-                              <CAlert color="success">{postResults.data.Results}</CAlert>
+                              <CCallout color="success">{postResults.data.Results}</CCallout>
                             )}
                           </CForm>
                         )

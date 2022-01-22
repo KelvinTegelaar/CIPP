@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import {
-  CAlert,
+  CCallout,
   CButton,
   CCard,
   CCardBody,
@@ -17,6 +17,8 @@ import {
   CTableHeaderCell,
   CTableRow,
 } from '@coreui/react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import useQuery from 'src/hooks/useQuery'
 import {
   useListGroupMembersQuery,
@@ -131,11 +133,19 @@ const EditGroup = () => {
                               <CCol md={6}>
                                 <CButton type="submit" disabled={submitting}>
                                   Edit Group
+                                  {postResults.isFetching && (
+                                    <FontAwesomeIcon
+                                      icon={faCircleNotch}
+                                      spin
+                                      className="ms-2"
+                                      size="1x"
+                                    />
+                                  )}
                                 </CButton>
                               </CCol>
                             </CRow>
                             {postResults.isSuccess && (
-                              <CAlert color="success">{postResults.data.Results}</CAlert>
+                              <CCallout color="success">{postResults.data.Results}</CCallout>
                             )}
                             {/*<CRow>*/}
                             {/* <CCol>*/}
