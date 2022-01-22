@@ -7,12 +7,13 @@ import { useLazyExecBecCheckQuery } from 'src/store/api/users'
 import useQuery from 'src/hooks/useQuery'
 import { Link } from 'react-router-dom'
 import { CippTable } from 'src/components/tables'
+import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
 const ViewBec = () => {
   let query = useQuery()
   const userId = query.get('userId')
   const tenantDomain = query.get('tenantDomain')
-
+  const [execBecRemediate, execRemediateResults] = useLazyGenericPostRequestQuery()
   const [execBecView, results] = useLazyExecBecCheckQuery()
   const { data: alerts = {}, isFetching, error, isSuccess } = results
   useEffect(() => {
@@ -207,7 +208,27 @@ const ViewBec = () => {
                 <li>Disconnect all current sessions</li>
                 <li>Disable all inbox rules for the user</li>
               </p>
-              <CButton>Remediate User</CButton>
+              <CButton
+                onClick={() =>
+                  execBecRemediate({
+                    path: '/api/execBecRemediate',
+                    values: { userId: userId, tenantFilter: tenantDomain },
+                  })
+                }
+              >
+                Remediate User
+              </CButton>
+              {!execRemediateResults.isSuccess && execRemediateResults.isError && (
+                <CCallout color="danger">Error. Could not remediate user</CCallout>
+              )}
+              {execRemediateResults.isFetching && (
+                <CCallout color="info">
+                  <CSpinner />
+                </CCallout>
+              )}
+              {execRemediateResults.isSuccess && (
+                <CCallout color="info">{execRemediateResults.data?.Results}</CCallout>
+              )}
             </CCardBody>
           </CCard>
         </CCol>

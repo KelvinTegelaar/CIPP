@@ -21,7 +21,6 @@ const columns = [
     selector: (row) => row['PerUser'],
     name: 'Per user MFA Status',
     sortable: true,
-    cell: cellBooleanFormatter(),
     exportSelector: 'PerUser',
   },
   {
@@ -35,7 +34,6 @@ const columns = [
     selector: (row) => row['CoveredByCA'],
     name: 'Enforced via Conditional Access',
     sortable: true,
-    cell: cellBooleanFormatter(),
     exportSelector: 'CoveredByCA',
   },
   {
