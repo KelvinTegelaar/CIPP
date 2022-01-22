@@ -11,7 +11,7 @@ on:  # yamllint disable-line rule:truthy
       - dev
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 jobs:
   install-build:
     name: NPM Install and Build
