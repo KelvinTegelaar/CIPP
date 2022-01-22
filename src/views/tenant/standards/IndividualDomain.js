@@ -4,13 +4,13 @@ import { Form, Field } from 'react-final-form'
 import { useSearchParams } from 'react-router-dom'
 import { useLazyListDomainTestsQuery, useListDomainTestsQuery } from 'src/store/api/domains'
 import { CippCodeBlock, CippOffcanvas, StatusIcon } from 'src/components/utilities'
+import { CippPage, CippMasonry, CippMasonryItem } from '../../../components/layout'
 import {
   CButton,
   CCallout,
   CCard,
   CCardBody,
   CCardHeader,
-  CCol,
   CCollapse,
   CDropdown,
   CDropdownMenu,
@@ -19,7 +19,6 @@ import {
   CForm,
   CFormLabel,
   CFormInput,
-  CRow,
   CCardTitle,
   CLink,
   CListGroup,
@@ -45,6 +44,7 @@ import {
   faTimesCircle,
   faExternalLinkAlt,
   faEllipsisV,
+  faInfoCircle,
 } from '@fortawesome/free-solid-svg-icons'
 
 // const required = (value) => (value ? undefined : 'Required')
@@ -69,8 +69,7 @@ export default function IndividualDomainCheck({
 }) {
   const [searchParams, setSearchParams] = useSearchParams()
   const [domain, setDomain] = useState('')
-  const [rowXs, setRowXs] = useState()
-  const [rowXl, setRowXl] = useState()
+  const [masonrySize, setMasonrySize] = useState()
   const [trigger, { data, isFetching, isSuccess, ...rest }] = useLazyListDomainTestsQuery()
 
   useEffect(() => {
@@ -85,11 +84,9 @@ export default function IndividualDomainCheck({
     }
 
     if (isOffcanvas) {
-      setRowXs({ cols: 1, gutter: 3 })
-      setRowXl({ cols: 1, gutter: 3 })
+      setMasonrySize('triple')
     } else {
-      setRowXs({ cols: 1, gutter: 4 })
-      setRowXl({ cols: 2, gutter: 4 })
+      setMasonrySize('single')
     }
   }, [searchParams, trigger, isOffcanvas, initialDomain])
 
@@ -100,67 +97,82 @@ export default function IndividualDomainCheck({
   }
 
   return (
-    <CRow xs={rowXs} xl={rowXl} className="mb-5">
-      <CCol>
-        <CCard className="page-card h-100">
-          <CCardHeader>
-            <CCardTitle>Email Security Domain Checker</CCardTitle>
-          </CCardHeader>
-          <CCardBody>
-            <Form
-              initialValues={{ domain }}
-              onSubmit={onSubmit}
-              render={({ handleSubmit, submitting, pristine }) => {
-                return (
-                  <CForm onSubmit={handleSubmit}>
-                    <Field name="domain">
-                      {({ input, meta }) => {
-                        return (
-                          <CInputGroup className="mb-3">
-                            <CFormInput
-                              {...input}
-                              valid={!meta.error && meta.touched}
-                              invalid={meta.error && meta.touched}
-                              type="text"
-                              id="domain"
-                              disabled={readOnly}
-                              placeholder="Domain Name"
-                              area-describedby="domain"
-                            />
+    <CippPage title="Individual Domain Check" tenantSelector={false}>
+      <CippMasonry>
+        <CippMasonryItem size={masonrySize}>
+          <CCard className="content-card h-100">
+            <CCardHeader>
+              <CCardTitle>
+                <FontAwesomeIcon icon={faInfoCircle} className="mx-2" />
+                Domain Info
+              </CCardTitle>
+            </CCardHeader>
+            <CCardBody>
+              <Form
+                initialValues={{ domain }}
+                onSubmit={onSubmit}
+                render={({ handleSubmit, submitting, pristine }) => {
+                  return (
+                    <CForm onSubmit={handleSubmit}>
+                      <Field name="domain">
+                        {({ input, meta }) => {
+                          return (
+                            <CInputGroup className="mb-3">
+                              <CFormInput
+                                {...input}
+                                valid={!meta.error && meta.touched}
+                                invalid={meta.error && meta.touched}
+                                type="text"
+                                id="domain"
+                                disabled={readOnly}
+                                placeholder="Domain Name"
+                                area-describedby="domain"
+                              />
 
-                            <CButton
-                              type="submit"
-                              disabled={submitting || isFetching}
-                              color="primary"
-                            >
-                              {isFetching && (
-                                <FontAwesomeIcon
-                                  icon={faCircleNotch}
-                                  spin
-                                  size="1x"
-                                  className="me-2"
-                                />
-                              )}
-                              Check
-                            </CButton>
-                          </CInputGroup>
-                        )
-                      }}
-                    </Field>
-                  </CForm>
-                )
-              }}
-            />
-            <DomainCheckError domain={domain} {...rest} />
-          </CCardBody>
-        </CCard>
-      </CCol>
-      <CCol>{isSuccess && <MXResultsCard domain={domain} />}</CCol>
-      <CCol>{isSuccess && <SPFResultsCard domain={domain} />}</CCol>
-      <CCol>{isSuccess && <DMARCResultsCard domain={domain} />}</CCol>
-      <CCol>{isSuccess && <DNSSECResultsCard domain={domain} />}</CCol>
-      <CCol>{isSuccess && <DKIMResultsCard domain={domain} />}</CCol>
-    </CRow>
+                              <CButton
+                                type="submit"
+                                disabled={submitting || isFetching}
+                                color="primary"
+                              >
+                                Check
+                                {isFetching && (
+                                  <FontAwesomeIcon
+                                    icon={faCircleNotch}
+                                    spin
+                                    size="1x"
+                                    className="ms-2"
+                                  />
+                                )}
+                              </CButton>
+                            </CInputGroup>
+                          )
+                        }}
+                      </Field>
+                    </CForm>
+                  )
+                }}
+              />
+              <DomainCheckError domain={domain} {...rest} />
+            </CCardBody>
+          </CCard>
+        </CippMasonryItem>
+        <CippMasonryItem size={masonrySize}>
+          {isSuccess && <MXResultsCard domain={domain} />}
+        </CippMasonryItem>
+        <CippMasonryItem size={masonrySize}>
+          {isSuccess && <SPFResultsCard domain={domain} />}
+        </CippMasonryItem>
+        <CippMasonryItem size={masonrySize}>
+          {isSuccess && <DMARCResultsCard domain={domain} />}
+        </CippMasonryItem>
+        <CippMasonryItem size={masonrySize}>
+          {isSuccess && <DKIMResultsCard domain={domain} />}
+        </CippMasonryItem>
+        <CippMasonryItem size={masonrySize}>
+          {isSuccess && <DNSSECResultsCard domain={domain} />}
+        </CippMasonryItem>
+      </CippMasonry>
+    </CippPage>
   )
 }
 
@@ -179,9 +191,6 @@ const ResultsCard = ({ children, data, type, menuOptions = [] }) => {
   }
 
   const results = data[`${type}Results`]
-  // const passCount = data[`${type}PassCount`]
-  // const warnCount = data[`${type}WarnCount`]
-  // const failCount = data[`${type}FailCount`]
   const finalState = data[`${type}FinalState`]
   const validationPasses = results?.ValidationPasses || []
   const validationWarns = results?.ValidationWarns || []
@@ -191,7 +200,7 @@ const ResultsCard = ({ children, data, type, menuOptions = [] }) => {
 
   return (
     <>
-      <CCard className="page-card h-100">
+      <CCard className="content-card h-100">
         <CCardHeader>
           <CCardTitle>
             <CHeaderNav className="justify-content-between">
