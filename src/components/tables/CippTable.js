@@ -28,6 +28,34 @@ FilterComponent.propTypes = {
   onClear: PropTypes.func,
 }
 
+const customSort = (rows, selector, direction) => {
+  return rows.sort((a, b) => {
+    // use the selector to resolve your field names by passing the sort comparitors
+    let aField
+    let bField
+    if (typeof selector(a) === 'string') {
+      aField = selector(a).toLowerCase()
+    } else {
+      aField = selector(a)
+    }
+    if (typeof selector(b) === 'string') {
+      bField = selector(b).toLowerCase()
+    } else {
+      bField = selector(b)
+    }
+
+    let comparison = 0
+
+    if (aField > bField) {
+      comparison = 1
+    } else if (aField < bField) {
+      comparison = -1
+    }
+
+    return direction === 'desc' ? comparison * -1 : comparison
+  })
+}
+
 export default function CippTable({
   data,
   isFetching = false,
@@ -49,6 +77,7 @@ export default function CippTable({
     expandableRowsHideExpander,
     expandOnRowClicked,
     selectableRows,
+    sortFunction = customSort,
     onSelectedRowsChange,
     highlightOnHover = true,
     disableDefaultActions = false,
@@ -179,6 +208,7 @@ export default function CippTable({
             expandOnRowClicked={expandOnRowClicked}
             defaultSortAsc
             defaultSortFieldId={1}
+            sortFunction={customSort}
             paginationPerPage={25}
             progressPending={isFetching}
             progressComponent={<CSpinner color="info" component="div" />}
