@@ -55,7 +55,6 @@ const EditTenant = () => {
       customerId: customerId,
     }
     genericPostRequest({ path: '/api/EditTenant', values: shippedValues })
-    localStorage.clear()
   }
   const initialValues = {
     ...tenant[0],
