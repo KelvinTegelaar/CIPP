@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react'
-import { CButton, CCallout, CCol, CRow } from '@coreui/react'
+import { CButton, CCallout, CCol, CRow, CLink } from '@coreui/react'
 import { CCard, CCardBody, CCardHeader, CCardTitle, CSpinner } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheckCircle, faRedo, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { useLazyExecBecCheckQuery } from 'src/store/api/users'
 import useQuery from 'src/hooks/useQuery'
-import { Link } from 'react-router-dom'
 import { CippTable } from 'src/components/tables'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
@@ -198,8 +197,8 @@ const ViewBec = () => {
               </p>
               <p>
                 If you need more extensive information, run the{' '}
-                <Link to="https://cloudforensicator.com/">HAWK</Link> tool to investigate further.
-                If you believe this user to be compromised.
+                <CLink href="https://cloudforensicator.com/">HAWK</CLink> tool to investigate{' '}
+                further. If you believe this user to be compromised.
               </p>
               <p>
                 Hit the button below to execute the following tasks:
