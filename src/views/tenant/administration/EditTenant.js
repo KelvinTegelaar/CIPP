@@ -19,6 +19,8 @@ import { ModalService } from 'src/components/utilities'
 import { RFFCFormInput } from 'src/components/forms/RFFComponents'
 import { useListTenantQuery } from 'src/store/api/tenants'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 
 const EditTenant = () => {
   const dispatch = useDispatch()
@@ -99,16 +101,25 @@ const EditTenant = () => {
                               <CCol md={6}>
                                 <CButton type="submit" disabled={submitting}>
                                   Edit Tenant
+                                  {postResults.isFetching && (
+                                    <FontAwesomeIcon
+                                      icon={faCircleNotch}
+                                      spin
+                                      className="ms-2"
+                                      size="1x"
+                                    />
+                                  )}
                                 </CButton>
                               </CCol>
                             </CRow>
-                            {postResults.isFetching && (
-                              <CCallout color="info">
-                                <CSpinner>Loading</CSpinner>
-                              </CCallout>
-                            )}
                             {postResults.isSuccess && (
-                              <CCallout color="success">{postResults.data.Results}</CCallout>
+                              <CCallout color="success">
+                                {postResults.data.Results}
+                                <br></br>
+                                <br></br>
+                                Please note that due to using Windows Graph, there can be a short
+                                delay before the change is seen.
+                              </CCallout>
                             )}
                           </CForm>
                         )
