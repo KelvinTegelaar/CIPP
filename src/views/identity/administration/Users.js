@@ -87,6 +87,13 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modalMessage: 'Are you sure you want to block the sign in for this user?',
           },
           {
+            label: 'Unblock Sign In',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecDisableUser?Enable=true&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalMessage: 'Are you sure you want to enable this user?',
+          },
+          {
             label: 'Reset Password (Must Change)',
             color: 'info',
             modal: true,
