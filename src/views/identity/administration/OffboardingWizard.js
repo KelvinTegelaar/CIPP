@@ -57,6 +57,9 @@ const OffboardingWizard = () => {
     if (!values.OOO) {
       values.OOO = ''
     }
+    if (!values.forward) {
+      values.forward = ''
+    }
     const shippedValues = {
       TenantFilter: tenantDomain,
       ...values,
@@ -154,6 +157,17 @@ const OffboardingWizard = () => {
               }))}
               placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
               name="UserAutomapOneDrive"
+            />
+          </CCol>
+          <CCol md={6}>
+            <RFFSelectSearch
+              label="Forward email to other user"
+              values={users?.map((user) => ({
+                value: user.mail,
+                name: user.displayName,
+              }))}
+              placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
+              name="forward"
             />
           </CCol>
           <RFFCFormSwitch name="DeleteUser" label="Delete user" />
@@ -279,6 +293,14 @@ const OffboardingWizard = () => {
                             color="#f77f00"
                             size="lg"
                             icon={props.values.OneDrive ? faCheckCircle : faTimesCircle}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Forward all e-mail to another user
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.forward ? faCheckCircle : faTimesCircle}
                           />
                         </CListGroupItem>
                       </CListGroup>
