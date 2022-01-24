@@ -35,6 +35,7 @@ const config = {
         theme: {
           customCss: require.resolve('./src/scss/custom.scss'),
         },
+        
       }),
     ],
   ],
@@ -147,7 +148,10 @@ const config = {
         path: 'docs/dev',
         routeBasePath: 'docs/dev',
         sidebarPath: require.resolve('./sidebarsDev.js'),
-        // ... other options
+        showLastUpdateAuthor: true,
+        showLastUpdateTime: true,
+        sidebarCollapsible: true,
+        sidebarCollapsed: false,
       },
     ],
   ]

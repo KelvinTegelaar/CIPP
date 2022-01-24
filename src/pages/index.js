@@ -35,7 +35,7 @@ export default function Home() {
   const {siteConfig} = useDocusaurusContext();
   return (
     <Layout
-      title={siteConfig.title}
+      title="Home"
       description="Multitenant management for Microsoft 365 done right...">
       <HomePageHeader />
       <main>

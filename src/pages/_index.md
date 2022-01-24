@@ -1,3 +1,4 @@
+<!-- markdownlint-disable-next-line MD041 -->
 ## What is this?
 
 The CyberDrain Improved Partner Portal is a portal designed for Microsoft 365 multi-tenant management. Currently Microsoft's partner systems make multi-tenant management fairly hard with a lot of manual work. Microsoft Lighthouse might resolve this in the future but development of this is progressing slowly and it's a long way away from where it needs to be...
@@ -20,7 +21,7 @@ I was recently on a call with one of my friends and he said he was changing the 
 
 This project is **FREE** but we do have a **Sponsor-ware** component. The sponsor-ware structure for this project is pretty simple; the code is available to everyone and free to use. You will need some technical know-how to put it all together. Sponsors receive the following benefits
 
-### For users of the project that sponsor:
+### For users of the project that sponsor
 
 - The project will be hosted for you.
 - The hosted version will always be the latest release and automatically updated.
@@ -30,25 +31,26 @@ This project is **FREE** but we do have a **Sponsor-ware** component. The sponso
 
 Sponsorship allows me to put some more time into this project and keep it free, so please consider it. :)
 
-### For company sponsors, depending on sponsor level you can get the following benefits;
+### For company sponsors, depending on sponsor level you can get the following benefits
 
-- Your company logo will be featured on the CIPP website at https://cipp.app.
+- Your company logo will be featured on the [CIPP website](https://cipp.app).
 - Your company logo will be featured on the [CIPP repository's README](https://github.com/KelvinTegelaar/CIPP) at the top.
-- Your company logo will be featured on https://cyberdrain.com
+- Your company logo will be featured on the [CyberDrain website](https://cyberdrain.com).
 - A small version of your company logo with a link to your homepage will be on the footer, each user will see this on each page.
 
 ## What is the functionality?
 
-Your best bet is to dive into the [User Guide](/docs/user/) to see what features CIPP currently offers. 
+Your best bet is to dive into the [User Guide](/docs/user/) to see what features CIPP currently offers.
 
 ## Security
-Authentication is handled by Azure AD using static web apps security. This means the API is only reachable for authenticated users you've invited. For most of the security info related to that check out our staticwebapp.config.json and/or the doc pages on static web apps. Do you see something that might be a security risk, even the smallest? report it and we will handle it asap. Check out our [security reporting options](/docs/user/security/).
+
+Authentication is handled by Azure AD using static web apps security. This means the API is only reachable for authenticated users you've invited. For most of the security info related to that check out our `staticwebapp.config.json` and/or the doc pages on static web apps. Do you see something that might be a security risk, even the smallest? report it and we will handle it asap. Check out our [security reporting options](/docs/user/security/).
 
 ## Special thanks
 
 I'd like to give special thanks to the people that made this project possible;
 
-- [Kyle Hansloven](https://huntress.com) 
+- [Kyle Hansloven](https://huntress.com)
 - [Ray Orsini](https://oit.co)
 - The Team at [MSP.zone/MSP'R'Us](https://msp.zone)
 - Gavin Stone at [MSPGeek](https://mspgeek.org)
