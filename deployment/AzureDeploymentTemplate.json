@@ -298,7 +298,7 @@
             "location": "[resourceGroup().location]",
             "properties": {
                 "repositoryUrl": "[parameters('GithubRepository')]",
-                "branch": "master",
+                "branch": "main",
                 "repositoryToken": "[parameters('GithubToken')]",
                 "buildProperties": {
                     "appLocation": "/",
