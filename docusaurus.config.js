@@ -8,7 +8,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/vsDark');
 const config = {
   title: 'CyberDrain Improved Partner Portal',
   tagline: 'Multi-tenant management for Microsoft 365 done right...',
-  url: 'https://cipp.app',
+  url: 'https://tender-shirley-88a2cf.netlify.app',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',

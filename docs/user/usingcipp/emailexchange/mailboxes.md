@@ -21,4 +21,4 @@ This will show you a list of all mobile devices which have connected to the mail
 
 ## More
 
-This will open the User Information drawer which will show you information on the selected user and provides quick links to the [researched compromised user](../identitymanagement/) tool, the Send MFA Push action and options to convert the mailbox to or from a Shared Mailbox.
+This will open the User Information drawer which will show you information on the selected user and provides quick links to the [researched compromised user](../../identitymanagement/) tool, the Send MFA Push action and options to convert the mailbox to or from a Shared Mailbox.

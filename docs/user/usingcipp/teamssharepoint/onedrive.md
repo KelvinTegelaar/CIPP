@@ -9,4 +9,4 @@ This page can be used to report on OneDrive and SharePoint usage. This usage all
 
 ## Current known issues / Limitations
 
-The data returned by this API might be pseudo-anonimzed. Run the [standard "Enable Usernames instead of pseudo anonymised names names in reports"](/tenantadministration/standards/) to prevent this.
+The data returned by this API might be pseudo-anonimzed. Run the [standard "Enable Usernames instead of pseudo anonymised names names in reports"](../../tenantadministration/standards/) to prevent this.

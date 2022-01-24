@@ -5,7 +5,7 @@ description: How to configure CIPP after you've completed installation.
 slug: /gettingstarted/postinstall
 ---
 
-At this point you should have completed all the steps in [manual installation](../manualinstall/) or [click to deploy installation](../ctdinstall/) and you're deployment has succeeded.
+At this point you should have completed all the steps in [manual installation or click to deploy installation](../installation/) and you're deployment has succeeded.
 
 ## Adding users to CIPP
 
