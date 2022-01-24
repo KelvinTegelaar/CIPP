@@ -1,0 +1,148 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+:root {
+  // CyberDrain variables.
+  --cyberdrain-primary: #f77f00; // Orange
+  --cyberdrain-primary-rgb: rgb(247 127 0); // Orange
+  --cyberdrain-secondary: #003049; // Prussian Blue
+  --cyberdrain-secondary-rgb: rgb(0 48 73); // Prussian Blue
+  --cyberdrain-lighter: #fff; // White
+  --cyberdrain-light: #f4f5f6; // Cultured
+  --cyberdrain-light-rgb: rgb(244 245 246); // Cultured
+  --cyberdrain-light-striped: #d2d6da; // Light Gray
+  --cyberdrain-darker: #20262a; // Charleston Green
+  --cyberdrain-dark: #2e363a; // Gunmetal
+  --cyberdrain-dark-rgb: rgb(46 54 58); // Gunmetal
+  --cyberdrain-dark-striped: #48555b; // Charcoal
+  --cyberdrain-accent-blue: #3e5c66; // Deep Space Sparkle
+  --cyberdrain-accent-blue-rgb: rgb(62 92 102); // Deep Space Sparkle
+  --cyberdrain-accent-green: #005c63; // Midnight Green Eagle Green
+  --cyberdrain-accent-green-rgb: rgb(0 92 99); // Midnight Green Eagle Green
+  --cyberdrain-accent-beige: #ebf0df; // Beige
+  --cyberdrain-accent-beige-rgb: rgb(235 240 223); // Beige
+  --cyberdrain-success: #4fa000; // Green RYB
+  --cyberdrain-success-rgb: rgb(79 160 0); // Green RYB
+  --cyberdrain-info: #0096d8; // Carolina Blue
+  --cyberdrain-info-rgb: rgb(0 150 216); // Carolina Blue
+  --cyberdrain-warning: #bf7f00; // Dark Goldenrod
+  --cyberdrain-warning-rgb: rgb(191 127 0); // Dark Goldenrod
+  --cyberdrain-danger: #eb603d; // Orange Soda
+  --cyberdrain-danger-rgb: rgb(235 96 61); // Orange Soda
+  // Docusaurus variables.
+  //// Theme Colours.
+  --ifm-color-primary: var(--cyberdrain-secondary);
+  --ifm-color-primary-dark: #002b42;
+  --ifm-color-primary-darker: #00293e;
+  --ifm-color-primary-darkest: #002233;
+  --ifm-color-primary-light: #003550;
+  --ifm-color-primary-lighter: #003754;
+  --ifm-color-primary-lightest: #003e5f;
+  --ifm-background-color: var(--cyberdrain-light);
+  --ifm-font-color-base: var(--cyberdrain-dark);
+  //// Geercal Colours.
+  --ifm-navbar-background-color: var(--cyberdrain-secondary);
+  --ifm-navbar-color: var(--cyberdrain-light);
+  --ifm-navbar-link-color: var(--cyberdrain-light);
+  --ifm-navbar-link-hover-color: var(--cyberdrain-primary);
+  //// Layout.
+  --ifm-button-border-radius: 0;
+}
+
+html[data-theme='dark'] {
+  // Docusaurus variables.
+  //// Theme Colours.
+  --ifm-color-primary: var(--cyberdrain-primary);
+  --ifm-color-primary-dark: #de7200;
+  --ifm-color-primary-darker: #d26c00;
+  --ifm-color-primary-darkest: #ad5900;
+  --ifm-color-primary-light: #ff8b11;
+  --ifm-color-primary-lighter: #ff911d;
+  --ifm-color-primary-lightest: #ffa342;
+  --ifm-background-color: var(--cyberdrain-dark);
+  --ifm-font-color-base: var(--cyberdrain-light);
+}
+
+footer {
+  --ifm-footer-background-color: var(--ifm-navbar-background-color);
+  --ifm-footer-color: var(--ifm-navbar-color);
+  --ifm-link-color: var(--cyberdrain-primary);
+  --ifm-link-hover-color: var(--cyberdrain-primary);
+  --ifm-footer-link-color: var(--ifm-navbar-link-color);
+  --ifm-footer-link-hover-color: var(--ifm-navbar-link-hover-color);
+}
+
+.docusaurus-highlight-code-line {
+  background-color: rgba(0, 0, 0, 0.1);
+  display: block;
+  margin: 0 calc(-1 * var(--ifm-pre-padding));
+  padding: 0 var(--ifm-pre-padding);
+}
+
+html[data-theme='dark'] .docusaurus-highlight-code-line {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.post__hero {
+  .hero__title {
+    font-size: 2rem;
+  }
+  .hero__subtitle {
+    font-size: 1rem;
+  }
+}
+
+.display--flex {
+  display: flex;
+}
+
+.width--full {
+  width: 100%;
+}
+
+.align-self-center {
+  align-self: center;
+}
+
+.text--center {
+  text-align: center;
+}
+
+.text--small {
+  font-size: 0.75rem;
+}
+
+
+/* Hacky Overrides */
+.tag_node_modules-\@docusaurus-theme-classic-lib-next-theme-Tag-styles-module {
+  &.tagRegular_node_modules-\@docusaurus-theme-classic-lib-next-theme-Tag-styles-module {
+    border-radius: 0;
+  }
+}
+
+/* CIPP */
+
+.hero--homepage {
+  --ifm-hero-background-color: var(--cyberdrain-accent-green);
+  --ifm-hero-text-color: var(--cyberdrain-light);
+}
+
+/* Header Icons */
+
+.header-github-link {
+  &:before {
+    background: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23fff' d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12'/%3E%3C/svg%3E") no-repeat;
+    content: "";
+    display: flex;
+    height: 24px;
+    width: 24px;
+    color: var(--ifm-navbar-link-color);
+  }
+  &:hover {
+    opacity: 0.6;
+  }
+}
