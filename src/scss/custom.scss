@@ -51,6 +51,10 @@
   --ifm-navbar-link-hover-color: var(--cyberdrain-primary);
   //// Layout.
   --ifm-button-border-radius: 0;
+  --ifm-card-border-radius: 0;
+  --ifm-pagination-nav-border-radius: 0;
+  --ifm-alert-border-radius: 0;
+  --ifm-global-radius: 0;
 }
 
 html[data-theme='dark'] {

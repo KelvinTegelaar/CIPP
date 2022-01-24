@@ -10,9 +10,9 @@ slug: /usingcipp/endpointmanagement/autopilotdevices
 Adding autopilot devices can be done by following the Wizard using the standard Microsoft Partner APIs. These APIs allow you to add devices in three ways:
 As a partner, you can register devices to Windows Autopilot using any one of these methods:
 
-* Hardware Hash (available from OEM or on-device script)
-* Combination of Manufacturer, Device Model, Device Serial Number
-* Windows Product Key ID
+- Hardware Hash (available from OEM or on-device script)
+- Combination of Manufacturer, Device Model, Device Serial Number
+- Windows Product Key ID
 
 ## Current known issues / Limitations
 
