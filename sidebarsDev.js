@@ -16,6 +16,7 @@ const sidebars = {
   // By default, Docusaurus generates a sidebar from the docs folder structure
   devSidebar: [
     'settingup',
+    'preparing',
     {
       type: 'category',
       label: 'CIPP React UI',

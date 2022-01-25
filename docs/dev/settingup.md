@@ -17,7 +17,7 @@ You'll want to have the following installed on the computer you're going to use 
   * [npm Intellisense](https://marketplace.visualstudio.com/items?itemName=christian-kohler.npm-intellisense)
   * [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
   * [Stylelint](https://marketplace.visualstudio.com/items?itemName=stylelint.vscode-stylelint)
-
+* [PowerShell 7](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.2) `winget install --exact PowerShell`
 * [git](https://git-scm.com/download/win) `winget install --exact git`
 * [node.js LTS](https://nodejs.org/en/download/) `winget install --exact "Node.js LTS"`
 * [.NET SDK 5](https://dotnet.microsoft.com/en-us/download/dotnet/5.0)

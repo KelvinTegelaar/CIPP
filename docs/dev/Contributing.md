@@ -1,4 +1,11 @@
-# Contributing
+---
+id: contributing
+title: Contributing.
+description: What you'll need to help develop the CIPP React frontend.
+slug: /contributing
+---
+
+<!-- markdownlint-disable MD033 -->
 
 Contributions to CIPP are welcome by everyone. There's a couple of things to keep in mind;
 
@@ -18,7 +25,8 @@ Feature requests that request integration with anything but M365 will be closed.
 
 We do not accept PRs or commits against Master. Master is always the final version. For both CIPP and CIPP-API we have at least two branches. Dev and Master. Please make any PR against Dev, when Dev is promoted to final we'll PR that against master.
 
-## Naming Standards
+<Details>
+<Summary>## Naming Standards</Summary>
 
 We follow a naming standard, as based on the name a user might get access to an API or not. Our current naming standard is as follows;
 ListBla - Everything that generates a list (users)
@@ -26,6 +34,8 @@ EditBla - Anything that edits an exisiting object (edit user)
 AddBla - Anything that adds an object (add user)
 RemoveBla - Anything that deletes or removes an object (remove user)
 ExecBla - Anything that executes an action (send mfa request to user)
+
+</Details>
 
 ## Creating two instances
 
