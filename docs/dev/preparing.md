@@ -11,4 +11,4 @@ We **strongly** recommend that you setup an entirely separate SAM app and KevVau
 
 :::
 
-So first you'll need tokens for a [Secure Application Model (SAM) application](../../user/gettingstarted/preparing)
+So first you'll need tokens for a [Secure Application Model (SAM) application](../../user/gettingstarted/prerequisites/)
