@@ -24,9 +24,11 @@ deployment fields.
 [Refresh your tokens with this script:](https://www.cyberdrain.com/automating-with-powershell-getting-new-secure-app-model-tokens/)
 
 ```powershell title="Update-SecureAcessModelTokens.ps1"
+### Update these variables ###
 $ApplicationId = 'ApplicationID'
 $ApplicationSecret = 'Secret' | Convertto-SecureString -AsPlainText -Force
 $TenantID = 'YourTenantID'
+### End of update section. ###
 $credential = New-Object System.Management.Automation.PSCredential($ApplicationId, $ApplicationSecret)
 $token = New-PartnerAccessToken -ApplicationId $ApplicationID -Scopes 'https://api.partnercenter.microsoft.com/user_impersonation' -ServicePrincipal -Credential $credential -Tenant $TenantID -UseAuthorizationCode
 $Exchangetoken = New-PartnerAccessToken -ApplicationId 'a0c73c16-a7e3-4564-9a95-2bdf47383716' -Scopes 'https://outlook.office365.com/.default' -Tenant $TenantID -UseDeviceAuthentication
