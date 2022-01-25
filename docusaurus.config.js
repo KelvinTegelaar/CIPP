@@ -35,7 +35,7 @@ const config = {
         theme: {
           customCss: require.resolve('./src/scss/custom.scss'),
         },
-        
+
       }),
     ],
   ],
@@ -71,7 +71,8 @@ const config = {
           },
           { to: 'changelog', label: 'Changelog', position: 'left' },
           { to: 'contributing', label: 'Contributing', position: 'left' },
-          {href: 'https://cyberdrain.com', label: 'CyberDrain', position: 'left'},
+          { to: 'troubleshooting', label: 'Troubleshooting', position: 'left' },
+          { href: 'https://cyberdrain.com', label: 'CyberDrain', position: 'left' },
           {
             to: 'https://github.com/KelvinTegelaar/CIPP',
             'aria-label': 'GitHub',
