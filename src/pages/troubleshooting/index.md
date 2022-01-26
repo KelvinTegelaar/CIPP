@@ -5,33 +5,63 @@ description: Find out the common fixes to problems that other users have had bef
 
 Below are some of the common issues that users have had from initial deployment, updating and general usage.
 
-Note that these steps have been added from the community - if you notice any mistakes, please either edit this page or get in touch
-via the [Discord server](https://discord.gg/Cyberdrain).  Please note the [Contributor Code of Conduct found here](/docs/dev/#contributor-code-of-conduct)
+Note that these steps have been added from the community - if you notice any mistakes, please either edit this page or get in touch via the [Discord server](https://discord.gg/Cyberdrain).  Please note the [Contributor Code of Conduct](/docs/dev/#contributor-code-of-conduct).
 
 ## Token Testing Script
 
 [Test your tokens with this script](https://www.gavsto.com/secure-application-model-for-the-layman-and-step-by-step/)
 
-This script does not test the CIPP configuration, only that the tokens 
-you are pasting into this script are correct.  
+This script does not test the CIPP configuration, only that the tokens you are pasting into this script are correct.  
 
-It is possible that you may have pasted the tokens incorrectly into the 
-deployment fields. 
-
+It is possible that you may have pasted the tokens incorrectly into the deployment fields.
 
 ## Refresh Secure Access Model Tokens
 
 [Refresh your tokens with this script:](https://www.cyberdrain.com/automating-with-powershell-getting-new-secure-app-model-tokens/)
 
-```powershell title="Update-SecureAcessModelTokens.ps1"
-### Update these variables ###
-$ApplicationId = 'ApplicationID'
-$ApplicationSecret = 'Secret' | Convertto-SecureString -AsPlainText -Force
-$TenantID = 'YourTenantID'
-### End of update section. ###
+```powershell title="Update-SecureAccessModelTokens.ps1"
+### User Input Variables ###
+
+### Enter the details of your Secure Access Model Application below ###
+
+$ApplicationId           = '<YOUR APPLICATION ID>'
+$ApplicationSecret       = '<YOUR APPLICATION SECRET>' | ConvertTo-SecureString -AsPlainText -Force
+$TenantID                = '<YOUR TENANT ID>'
+
+### Splat Params required for Updating Refresh Token ###
+
+$UpdateRefreshTokenParamaters = @{
+    ApplicationID        = $ApplicationId
+    ApplicationSecret    = $ApplicationSecret
+    Tenant               = $TenantID
+    Scopes               = 'https://api.partnercenter.microsoft.com/user_impersonation'
+    Credential           = $credential
+    UseAuthorizationCode = $true
+}
+
+### Splat Params required for Updating Exchange Refresh Token ###
+
+$UpdateExchangeTokenParamaters = @{
+    ApplicationID           = 'a0c73c16-a7e3-4564-9a95-2bdf47383716'
+    Scopes                  = 'https://outlook.office365.com/.default'
+    Tenant                  = $TenantID
+    UseDeviceAuthentication = $true
+}
+
+### Create credential object using UserEntered(ApplicationID) and UserEntered(ApplicationSecret) ###
+
 $credential = New-Object System.Management.Automation.PSCredential($ApplicationId, $ApplicationSecret)
-$token = New-PartnerAccessToken -ApplicationId $ApplicationID -Scopes 'https://api.partnercenter.microsoft.com/user_impersonation' -ServicePrincipal -Credential $credential -Tenant $TenantID -UseAuthorizationCode
-$Exchangetoken = New-PartnerAccessToken -ApplicationId 'a0c73c16-a7e3-4564-9a95-2bdf47383716' -Scopes 'https://outlook.office365.com/.default' -Tenant $TenantID -UseDeviceAuthentication
+
+### Create new Refresh Token using previously splatted paramaters ###
+
+$token = New-PartnerAccessToken @UpdateRefreshTokenParamaters
+
+### Create new Exchange Refresh Token using previously splatted paramaters ###
+
+$Exchangetoken = New-PartnerAccessToken @UpdateExchangeTokenParamaters 
+
+### Output Refresh Tokens and Exchange Refresh Tokens ###
+
 Write-Host "================ Secrets ================"
 Write-Host "`$ApplicationId         = $($applicationID)"
 Write-Host "`$ApplicationSecret     = $($ApplicationSecret)"
@@ -59,8 +89,7 @@ Write-Host "    SAVE THESE IN A SECURE LOCATION     "
 1. Go to Settings
 1. Click on **Backend**
 1. Click on **Go to Function App Configuration**
-1. At each item that has the source *Key Vault* there should be a green checkbox
-If there is no green checkbox, restart the function app and try in 30 minutes
+1. At each item that has the source *Key Vault* there should be a green checkbox. If there is no green checkbox, restart the function app and try in 30 minutes
 1. For each item with a green checkbox, click on **Edit**
 1. Rename the item
 
@@ -75,7 +104,7 @@ If there is no green checkbox, restart the function app and try in 30 minutes
 
 > e.g *RefreshToken*
 
-1. Stop the app once more for 5 minutes then start it again. 
+1. Stop the app once more for 5 minutes then start it again.
 
 The token cache should be cleared
 
@@ -93,10 +122,9 @@ If this is the only error during deployment, follow the below steps:
 
 ## Private Endpoint
 
-To protect CIPP as a private resource, that is only accessible over a VPN or IP
-whitelisting you can use Private Endpoint Connections. 
+To protect CIPP as a private resource, that is only accessible over a VPN or IP whitelisting you can use Private Endpoint Connections.
 
-To enable Private Endpoints you must already have an Azure VNET available, and understand how VNET  work. 
+To enable Private Endpoints you must already have an Azure VNET available, and understand how VNets work.
 
 1. Go to CIPP
 1. Go to Settings
@@ -115,7 +143,7 @@ To add Conditional Access to CIPP, follow the below steps:
 1. Go to your [Conditional Access Policies](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ConditionalAccessBlade/Policies)
 1. Select which users to apply the policy to, default suggestion is *"All Users"*
 1. Click on **Azure Static Web Apps** as the included app under "Cloud Apps or actions"
-1. Configure any condition you want. 
+1. Configure any condition you want.
 
 > e.g Trusted Locations, specific IPs, specific platforms, etc
 
@@ -126,12 +154,10 @@ Your app is now protected with Conditional Access.
 
 ## Admin Consent
 
-If you Azure Tenant requires admin approval for user apps, add consent by 
-following the below steps:
+If your Azure Tenant requires admin approval for user apps, add consent by following the below steps:
 
 1. Go to to [Azure Enterprise Applications](https://portal.azure.com/#blade/Microsoft_AAD_IAM/StartboardApplicationsMenuBlade/AllApps)
 1. Find *Azure Static Websites*
 1. Grant Admin Consent for all
 
 This will allow the users the ability to grant their own access now
-
