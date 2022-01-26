@@ -26,6 +26,9 @@ If you haven't setup the Secure App Model use the instructions below and then mo
 
 If you just need the script to setup the Secure Application Model (SAM) it's below.
 
+<details><summary>Secure App Model Setup Script</summary>
+<p>
+
 ```powershell title="New-SAMAzureADApplication.ps1"
 Param(
   [Parameter(Mandatory = $false)]
@@ -137,5 +140,8 @@ write-host "`$Exchange RefreshToken = $($ExchangeToken.Refreshtoken)" -Foregroun
 Write-Host "================ Secrets ================"
 Write-Host "    SAVE THESE IN A SECURE LOCATION     "
 ```
+
+</p>
+</details>
 
 Now that you have SAM setup, move onto configuring permissions using the Next button below...
