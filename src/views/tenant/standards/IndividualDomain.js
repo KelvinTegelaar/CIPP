@@ -511,30 +511,18 @@ const MXResultsCard = ({ domain }) => {
         )}
         <COffcanvasTitle>Documentation</COffcanvasTitle>
         <CListGroup>
-          {data?.MXResults?.MailProvider?._MxComment && (
-            <CListGroupItem
-              component="a"
-              target="_blank"
-              href={data?.MXResults?.MailProvider?._MxComment}
-            >
+          {data?.MailProvider?._MxComment && (
+            <CListGroupItem component="a" target="_blank" href={data?.MailProvider?._MxComment}>
               <IconExternalLink /> MX Record
             </CListGroupItem>
           )}
-          {data?.MXResults?.MailProvider?._SpfComment && (
-            <CListGroupItem
-              component="a"
-              target="_blank"
-              href={data?.MXResults?.MailProvider?._SpfComment}
-            >
+          {data?.MailProvider?._SpfComment && (
+            <CListGroupItem component="a" target="_blank" href={data?.MailProvider?._SpfComment}>
               <IconExternalLink /> SPF Record
             </CListGroupItem>
           )}
-          {data?.MXResults?.MailProvider?._DkimComment && (
-            <CListGroupItem
-              component="a"
-              target="_blank"
-              href={data?.MXResults?.MailProvider?._DkimComment}
-            >
+          {data?.MailProvider?._DkimComment && (
+            <CListGroupItem component="a" target="_blank" href={data?.MailProvider?._DkimComment}>
               <IconExternalLink /> DKIM Record
             </CListGroupItem>
           )}
