@@ -38,6 +38,15 @@ export const domainsApi = baseApi.injectEndpoints({
         },
       }),
     }),
+    execDnsHelper: builder.query({
+      query: ({ action, domain }) => ({
+        path: '/api/ExecDnsHelper',
+        params: {
+          Action: action,
+          Domain: domain,
+        },
+      }),
+    }),
     getDnsConfig: builder.query({
       query: () => ({
         path: '/api/ExecDnsConfig',
@@ -54,5 +63,6 @@ export const {
   useEditDnsConfigQuery,
   useLazyEditDnsConfigQuery,
   useGetDnsConfigQuery,
+  useExecDnsHelperQuery,
   useLazyGetDnsConfigQuery,
 } = domainsApi
