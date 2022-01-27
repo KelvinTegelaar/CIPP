@@ -47,6 +47,7 @@ const AddPolicy = () => {
     values.selectedTenants.map(
       (tenant) => (values[`Select_${tenant.defaultDomainName}`] = tenant.defaultDomainName),
     )
+    values.TemplateType = values.Type
     genericPostRequest({ path: '/api/AddPolicy', values: values })
   }
   /* eslint-disable react/prop-types */
