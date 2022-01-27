@@ -65,7 +65,7 @@ const ApplyStandard = () => {
             <WizardTableField
               reportName="Add-Choco-App-Tenant-Selector"
               keyField="defaultDomainName"
-              path="/api/ListTenants"
+              path="/api/ListTenants?AllTenantSelector=true"
               columns={[
                 {
                   name: 'Display Name',
