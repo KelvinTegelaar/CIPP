@@ -78,7 +78,7 @@ export default function IndividualDomainCheck({
     }
     // check if domain query is set
     const domainQuery = searchParams.get('domain')
-    if (domainQuery) {
+    if (domainQuery && domainQuery !== undefined) {
       setDomain(domainQuery)
     }
 
@@ -90,8 +90,10 @@ export default function IndividualDomainCheck({
   }, [searchParams, isOffcanvas, initialDomain])
 
   const onSubmit = (values) => {
-    setDomain(values.domain)
-    setSearchParams({ domain: values.domain }, { replace: true })
+    if (values.domain !== undefined) {
+      setDomain(values.domain)
+      setSearchParams({ domain: values.domain }, { replace: true })
+    }
   }
 
   return (
@@ -195,6 +197,7 @@ function ResultsCard({ children, data, type, menuOptions = [], error, errorMessa
   const validationFails = data?.ValidationFails || []
 
   let finalState = ''
+
   if (validationFails > 0) {
     finalState = 'Fail'
   } else if (validationFails.length === 0 && validationWarns.length > 0) {
@@ -402,7 +405,7 @@ function WhoisResultCard({ domain }) {
               className="cipp-offcanvas"
               hideFunction={() => setVisible(false)}
             >
-              <CippCodeBlock language="text" code={whoisReport?._Raw} />
+              <CippCodeBlock language="text" code={whoisReport?._Raw} showLineNumbers={false} />
             </CippOffcanvas>
           </>
         )}
