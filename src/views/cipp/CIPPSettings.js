@@ -89,11 +89,11 @@ export default CIPPSettings
 const checkAccessColumns = [
   {
     name: 'Tenant Domain',
-    selector: (row) => row['tenantDomain'],
+    selector: (row) => row['TenantName'],
   },
   {
     name: 'Result',
-    selector: (row) => row['result'],
+    selector: (row) => row['Status'],
   },
 ]
 
@@ -143,7 +143,10 @@ const GeneralSettings = () => {
 
   const handleClearCache = useConfirmModal({
     body: <div>Are you sure you want to clear the cache?</div>,
-    onConfirm: () => clearCache(),
+    onConfirm: () => {
+      clearCache()
+      localStorage.clear()
+    },
   })
 
   const tableProps = {
@@ -171,9 +174,17 @@ const GeneralSettings = () => {
                 )}
                 Run Permissions Check
               </CButton>
-              {permissionsResult.status === 'fulfilled' && (
-                // @todo make this pretty after API is fixed
-                <div>{permissionsResult.data.map((result) => result)}</div>
+              {permissionsResult.isSuccess && (
+                <div>
+                  {permissionsResult.data.Results.MissingPermissions
+                    ? 'Your Secure Application Model is missing the following delegated permissions:'
+                    : 'Your Secure Application Model has all required permissions'}
+                  <CListGroup flush>
+                    {permissionsResult.data.Results.MissingPermissions.map((r, index) => (
+                      <CListGroupItem key={index}>{r}</CListGroupItem>
+                    ))}
+                  </CListGroup>
+                </div>
               )}
             </CCardBody>
           </CCard>
@@ -184,8 +195,9 @@ const GeneralSettings = () => {
               <CCardTitle>Clear Cache</CCardTitle>
             </CCardHeader>
             <CCardBody>
-              Click the button below to clear the tenant cache file, the Best Practice Analyser
-              cache and the Domain Analyser Cache. <br />
+              Click the button below to clear the all caches the application uses. This includes the
+              Best Practice Analyser, Tenant Cache, Domain Analyser, and personal settings such as
+              theme and usage location <br />
               <CButton
                 onClick={() => handleClearCache()}
                 disabled={clearCacheResult.isFetching}
@@ -236,7 +248,7 @@ const GeneralSettings = () => {
                 <CippTable
                   columns={checkAccessColumns}
                   tableProps={tableProps}
-                  data={accessCheckResult.data}
+                  data={accessCheckResult.data.Results}
                 />
               )}
             </CCardBody>

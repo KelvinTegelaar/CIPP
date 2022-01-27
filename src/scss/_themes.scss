@@ -67,27 +67,10 @@
   --cui-dark-rgb: var(--cyberdrain-dark-rgb);
   --cui-white-rgb: rgb(255 255 255);
   --cui-black-rgb: rgb(0 0 0);
-  --cui-font-sans-serif:
-    system-ui,
-    -apple-system,
-    'Segoe UI',
-    roboto,
-    'Helvetica Neue',
-    arial,
-    'Noto Sans',
-    'Liberation Sans',
-    sans-serif,
-    'Apple Color Emoji',
-    'Segoe UI Emoji',
-    'Segoe UI Symbol',
-    'Noto Color Emoji';
-  --cui-font-monospace:
-    sfmono-regular,
-    menlo,
-    monaco,
-    consolas,
-    'Liberation Mono',
-    'Courier New',
+  --cui-font-sans-serif: system-ui, -apple-system, 'Segoe UI', roboto, 'Helvetica Neue', arial,
+    'Noto Sans', 'Liberation Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
+  --cui-font-monospace: sfmono-regular, menlo, monaco, consolas, 'Liberation Mono', 'Courier New',
     monospace;
   --cui-gradient: linear-gradient(180deg, rgb(255 255 255 / 15%), rgb(255 255 255 / 0%));
   --cui-body-font-family: var(--cui-font-sans-serif);
@@ -97,7 +80,7 @@
   --cui-card-cap-color: var(--cyberdrain-light);
   --cui-card-cap-bg: var(--cyberdrain-accent-blue);
   --cui-border-radius: 0;
-  --cui-badge-color: var(--cyberdrain-dark);
+  --cui-badge-color: var(--cyberdrain-light);
 
   // CIPP theme-independent variables.
   --cipp-border-radius: 0;
