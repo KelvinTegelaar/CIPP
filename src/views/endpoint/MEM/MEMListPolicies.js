@@ -5,7 +5,7 @@ import { faEdit, faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPageList } from 'src/components/layout'
 import { Link } from 'react-router-dom'
-import { CippActionsOffcanvas, CippOffcanvas } from 'src/components/utilities'
+import { CippActionsOffcanvas } from 'src/components/utilities'
 
 const Actions = (row, rowIndex, formatExtraData) => {
   const [ocVisible, setOCVisible] = useState(false)

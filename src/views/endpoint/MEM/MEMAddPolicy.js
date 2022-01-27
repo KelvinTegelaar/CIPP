@@ -98,7 +98,7 @@ const AddPolicy = () => {
             <WizardTableField
               reportName="Add-MEM-Policy-Tenant-Selector"
               keyField="defaultDomainName"
-              path="/api/ListTenants?AllTenantSelector=true"
+              path="/api/ListTenants"
               columns={[
                 {
                   name: 'Display Name',
