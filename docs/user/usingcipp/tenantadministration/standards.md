@@ -29,11 +29,11 @@ In the next version, we will be adding more standardized options and settings, w
 
 ### Impact Levels
 
-- **Low Impact** - Changes which have no user-facing impact or minimal impact.
-- **Medium Impact** - Changes which have a user impact that can be managed with a little communication.
-- **High Impact** - Changes which should be carefully thought through and ideally managed with customers - may have significant impacts on how users interact with Microsoft 365.
+* **Low Impact** - Changes which have no user-facing impact or minimal impact.
+* **Medium Impact** - Changes which have a user impact that can be managed with a little communication.
+* **High Impact** - Changes which should be carefully thought through and ideally managed with customers - may have significant impacts on how users interact with Microsoft 365.
 
 ## Current known issues / Limitations
 
-- These jobs run asynchronously every 3 hours per default, you can check the log for the current operation by looking for "Standards API"
-- The job engine might slow down other APIs temporarily if it has a lot to process.(loads of settings, loads of tenants).
+* These jobs run asynchronously every 3 hours per default, you can check the log for the current operation by looking for "Standards API"
+* The job engine might slow down other APIs temporarily if it has a lot to process.(loads of settings, loads of tenants).

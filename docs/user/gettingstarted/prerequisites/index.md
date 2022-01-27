@@ -7,11 +7,11 @@ slug: /gettingstarted/prerequisites
 
 You'll need the following to get started:
 
-- Your Secure Application Model information
-- A [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) of [the CIPP GitHub](https://github.com/KelvinTegelaar/CIPP) repository.
-- A [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) of [the CIPP API GitHub](https://github.com/KelvinTegelaar/CIPP-API) repository.
-- An active Azure Subscription.
-- A GitHub Personal Access Token. You can find instructions on what you need and the minimum permissions to do this [in Microsoft's Azure Static Web Apps documentation](https://docs.microsoft.com/en-us/azure/static-web-apps/publish-azure-resource-manager?tabs=azure-cli#create-a-github-personal-access-token). You only need to follow the "Create a GitHub Personal Access Token" section.
+* Your Secure Application Model information
+* A [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) of [the CIPP GitHub](https://github.com/KelvinTegelaar/CIPP) repository.
+* A [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) of [the CIPP API GitHub](https://github.com/KelvinTegelaar/CIPP-API) repository.
+* An active Azure Subscription.
+* A GitHub Personal Access Token. You can find instructions on what you need and the minimum permissions to do this [in Microsoft's Azure Static Web Apps documentation](https://docs.microsoft.com/en-us/azure/static-web-apps/publish-azure-resource-manager?tabs=azure-cli#create-a-github-personal-access-token). You only need to follow the "Create a GitHub Personal Access Token" section.
 
 For the installation and maintenance, we assume you have some knowledge of GitHub (or Git in general).
 
@@ -19,8 +19,8 @@ If you haven't setup the Secure App Model use the instructions below and then mo
 
 :::tip Setting up the Secure App Model
 
-- Haven't setup the Secure Application model yet? Check out [this CyberDrain blog post](https://www.cyberdrain.com/connect-to-exchange-online-automated-when-mfa-is-enabled-using-the-secureapp-model/).
-- For a step-by-step guide to setting up the Secure Application Model, see [this Gavsto blog post](https://www.gavsto.com/secure-application-model-for-the-layman-and-step-by-step/).
+* Haven't setup the Secure Application model yet? Check out [this CyberDrain blog post](https://www.cyberdrain.com/connect-to-exchange-online-automated-when-mfa-is-enabled-using-the-secureapp-model/).
+* For a step-by-step guide to setting up the Secure Application Model, see [this Gavsto blog post](https://www.gavsto.com/secure-application-model-for-the-layman-and-step-by-step/).
 
 :::
 

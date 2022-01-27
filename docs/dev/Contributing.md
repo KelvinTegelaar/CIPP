@@ -9,11 +9,11 @@ slug: /contributing
 
 Contributions to CIPP are welcome by everyone. There's a couple of things to keep in mind;
 
-- These repositories are going through rapid changes. Every pull request should update version_latest.txt with versioning that follows [Semantic Versioning](https://semver.org)
-- Speed and Security are two of our pillars, if it isn't fast, it isn't good, and if it isn't secure, it can't be accepted :)
-- We try to use native APIs over Powershell Modules. Powershell modules tend to slow the entire processing. We currently only have Az.Keyvault and Az.Accounts loaded and prefer to keep it that way.
-- The interface is made entirely in Bootstrap and Jquery. For Datatables we use the JQuery Datatables plugin.
-- Avoid adding a deploy YML to your development repo. We'll remove those, but it's just an annoyance. If you want to both deploy and develop it's better to create two instances of the repo.
+* These repositories are going through rapid changes. Every pull request should update version_latest.txt with versioning that follows [Semantic Versioning](https://semver.org)
+* Speed and Security are two of our pillars, if it isn't fast, it isn't good, and if it isn't secure, it can't be accepted :)
+* We try to use native APIs over Powershell Modules. Powershell modules tend to slow the entire processing. We currently only have Az.Keyvault and Az.Accounts loaded and prefer to keep it that way.
+* The interface is made entirely in Bootstrap and Jquery. For Datatables we use the JQuery Datatables plugin.
+* Avoid adding a deploy YML to your development repo. We'll remove those, but it's just an annoyance. If you want to both deploy and develop it's better to create two instances of the repo.
 
 When contributing, or planning to contribute, please create an issue in the tracker [here](https://github.com/KelvinTegelaar/CIPP/issues). If you are fixing a bug, file a complete bug report and assign it to yourself, if you are adding a feature, please add "Feature Request" to the title and assign it to yourself.
 
@@ -39,9 +39,9 @@ ExecBla - Anything that executes an action (send mfa request to user)
 
 ## Creating two instances
 
-- Make a clone of your forked repo
-- Optional: mark this repo as private
-- Add the following github action, this will sync the repos every hour:
+* Make a clone of your forked repo
+* Optional: mark this repo as private
+* Add the following github action, this will sync the repos every hour:
 
 ```YML
 # This is a basic workflow that is manually triggered
@@ -72,7 +72,7 @@ jobs:
         github_token: ${{ secrets.PAT }}
 ```
 
-- Go to settings of the repo
-- click on add secret
-- secret name "PAT"
-- Secret value: a self created [personal access token](https://github.com/settings/tokens)
+* Go to settings of the repo
+* click on add secret
+* secret name "PAT"
+* Secret value: a self created [personal access token](https://github.com/settings/tokens)

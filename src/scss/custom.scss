@@ -44,7 +44,9 @@
   --ifm-color-primary-lightest: #003e5f;
   --ifm-background-color: var(--cyberdrain-light);
   --ifm-font-color-base: var(--cyberdrain-dark);
-  //// Geercal Colours.
+  --ifm-color-primary-contrast-background: var(--cyberdrain-light-striped);
+  --ifm-color-primary-contrast-foreground: var(--cyberdrain-dark);
+  // Genenral Colors.
   --ifm-navbar-background-color: var(--cyberdrain-secondary);
   --ifm-navbar-color: var(--cyberdrain-light);
   --ifm-navbar-link-color: var(--cyberdrain-light);
@@ -69,6 +71,8 @@ html[data-theme='dark'] {
   --ifm-color-primary-lightest: #ffa342;
   --ifm-background-color: var(--cyberdrain-dark);
   --ifm-font-color-base: var(--cyberdrain-light);
+  --ifm-color-primary-contrast-background: var(--cyberdrain-dark-striped);
+  --ifm-color-primary-contrast-foreground: var(--cyberdrain-light);
 }
 
 footer {

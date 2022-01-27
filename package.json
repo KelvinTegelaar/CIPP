@@ -27,7 +27,8 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "redocusaurus": "^0.5.1",
-    "sass": "^1.49.0"
+    "sass": "^1.49.0",
+    "@octokit/core": "^3.5.1"
   },
   "browserslist": {
     "production": [

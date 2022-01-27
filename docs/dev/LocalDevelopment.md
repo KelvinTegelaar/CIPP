@@ -2,16 +2,16 @@
 
 So you want to jump in on helping us make this awesome? You'll need a local development environment. I'm assuming you have _some_ programming experience. You'll need a couple of tools to get started
 
-- Install [node.js](https://nodejs.org/en/)
-- Install [.NET Core 2 SDK](https://dotnet.microsoft.com/download/dotnet/2.2) and [.NET Core 5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
-- After installation execute the following commands:
+* Install [node.js](https://nodejs.org/en/)
+* Install [.NET Core 2 SDK](https://dotnet.microsoft.com/download/dotnet/2.2) and [.NET Core 5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
+* After installation execute the following commands:
 
 ```sh
 npm install -g @azure/static-web-apps-cli
 npm install -g azure-functions-core-tools@3
 ```
 
-- After these are installed, you can start a local development instance of the Azure Functions(APIs) the Static web app(Frontend) or both
+* After these are installed, you can start a local development instance of the Azure Functions(APIs) the Static web app(Frontend) or both
 
 Starting only the frontend:
 

@@ -43,11 +43,26 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      metadata: [
+        {
+          name: 'keywords',
+          content:
+            'CIPP, CyberDrain Improved Partner Portal, Microsoft 365, Management, Multi-Tenant, MSP, Azure, Microsoft Partner, Lighthouse',
+        },
+      ],
+      tableOfContents: {
+        minHeadingLevel: 2,
+        maxHeadingLevel: 5,
+      },
+      announcementBar: {
+        id: 'announcementBar-1', // Increment on change
+        content: `<span aria-label="star" role="img">⭐</span> If you like CIPP, please <a href="https://github.com/KelvinTegelaar/CIPP" target="_blank" rel="noopener noreferrer">star the project on GitHub</a> and <a href="https://github.com/sponsors/KelvinTegelaar" target="_blank" rel="noopener noreferrer">consider Sponsoring the project on GitHub</a>. Thanks! <span aria-label="heart" role="img">❤️</span>`,
+      },
       navbar: {
-        title: 'CyberDrain Improved Partner Portal',
+        title: `CyberDrain Improved Partner Portal`,
         logo: {
           alt: 'CIPP Logo',
-          src: 'img/CIPPLogo.png',
+          src: 'img/CyberDrainIconOrangeWhite.png',
         },
         items: [
           {
