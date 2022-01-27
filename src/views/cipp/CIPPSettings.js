@@ -179,7 +179,7 @@ const GeneralSettings = () => {
                     ? 'Your Secure Application Model is missing the following delegated permissions:'
                     : 'Your Secure Application Model has all required permissions'}
                   <CListGroup flush>
-                    {permissionsResult.data.Results.MissingPermissions.map((r, index) => (
+                    {permissionsResult.data.Results?.MissingPermissions?.map((r, index) => (
                       <CListGroupItem key={index}>{r}</CListGroupItem>
                     ))}
                   </CListGroup>
