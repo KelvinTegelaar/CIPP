@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Form, Field } from 'react-final-form'
 import { useSearchParams } from 'react-router-dom'
@@ -13,10 +13,6 @@ import {
   CCardBody,
   CCardHeader,
   CCollapse,
-  CDropdown,
-  CDropdownMenu,
-  CDropdownToggle,
-  CHeaderNav,
   CForm,
   CFormLabel,
   CFormInput,
@@ -24,8 +20,12 @@ import {
   CLink,
   CListGroup,
   CListGroupItem,
+  CNav,
   CNavItem,
+  CNavLink,
   CSpinner,
+  CTabContent,
+  CTabPane,
   CTableDataCell,
   CTableHead,
   CTableRow,
@@ -189,9 +189,60 @@ const sharedProps = {
   domain: PropTypes.string,
 }
 
-function ResultsCard({ children, data, type, menuOptions = [], error, errorMessage, isFetching }) {
-  const [jsonVisible, setJsonVisible] = useState()
+function DomainOffcanvasTabs({ children, jsonContent }) {
+  let initialActive = 1
+  if (!children) {
+    initialActive = 2
+  }
+  const [active, setActive] = useState(initialActive)
+  return (
+    <>
+      <CNav variant="pills" layout="fill">
+        {children && (
+          <CNavItem>
+            <CNavLink active={active === 1} onClick={() => setActive(1)}>
+              Details
+            </CNavLink>
+          </CNavItem>
+        )}
+        <CNavItem>
+          <CNavLink active={active === 2} onClick={() => setActive(2)}>
+            JSON
+          </CNavLink>
+        </CNavItem>
+      </CNav>
+      <CTabContent>
+        {children && (
+          <CTabPane visible={active === 1} className="mt-3">
+            {children}
+          </CTabPane>
+        )}
+        <CTabPane visible={active === 2} className="mt-3">
+          <CippCodeBlock
+            language="json"
+            code={jsonContent}
+            showLineNumbers={true}
+            wrapLongLines={false}
+          />
+        </CTabPane>
+      </CTabContent>
+    </>
+  )
+}
+DomainOffcanvasTabs.propTypes = {
+  children: PropTypes.node,
+  jsonContent: PropTypes.string,
+}
 
+function ResultsCard({
+  children,
+  data,
+  type,
+  headerClickFunction,
+  error,
+  errorMessage,
+  isFetching,
+}) {
   const validationPasses = data?.ValidationPasses || []
   const validationWarns = data?.ValidationWarns || []
   const validationFails = data?.ValidationFails || []
@@ -212,41 +263,18 @@ function ResultsCard({ children, data, type, menuOptions = [], error, errorMessa
     finalState = 'Fail'
   }
 
-  const jsonContent = JSON.stringify(data, null, 2)
-
   return (
     <>
-      <CCard className="content-card h-100">
-        <CCardHeader>
+      <CCard className="content-card">
+        <CCardHeader className="d-flex justify-content-between align-items-center">
           <CCardTitle>
-            <CHeaderNav className="justify-content-between">
-              <CNavItem>
-                {!isFetching && <StatusIcon type="finalstate" finalState={finalState} />}
-                {type} Results
-              </CNavItem>
-              <CDropdown variant="nav-item">
-                <CDropdownToggle placement="end" className="py-0" caret={false}>
-                  <FontAwesomeIcon icon={faEllipsisV} className="me-2" />
-                  More
-                </CDropdownToggle>
-                <CDropdownMenu className="py-0" placement="bottom-end">
-                  {menuOptions.map((option, idx) => (
-                    <CLink
-                      className="dropdown-item"
-                      key={`${idx}-menu-option`}
-                      href="#"
-                      onClick={option.clickFunction}
-                    >
-                      {option.title}
-                    </CLink>
-                  ))}
-                  <CLink className="dropdown-item" href="#" onClick={() => setJsonVisible(true)}>
-                    Show JSON
-                  </CLink>
-                </CDropdownMenu>
-              </CDropdown>
-            </CHeaderNav>
+            {!isFetching && <StatusIcon type="finalstate" finalState={finalState} />}
+            {type} Results
           </CCardTitle>
+          <CLink className="mx-2 card-header-link" onClick={headerClickFunction}>
+            <FontAwesomeIcon icon={faEllipsisV} className="me-2" />
+            More
+          </CLink>
         </CCardHeader>
         <CCardBody>
           {isFetching && <CSpinner />}
@@ -280,25 +308,6 @@ function ResultsCard({ children, data, type, menuOptions = [], error, errorMessa
           )}
         </CCardBody>
       </CCard>
-      <CippOffcanvas
-        id="json-offcanvas"
-        visible={jsonVisible}
-        placement="end"
-        className="cipp-offcanvas"
-        hideFunction={() => setJsonVisible(false)}
-        title="JSON"
-      >
-        {isFetching && <CSpinner />}
-        {!isFetching && error && <>{errorMessage}</>}
-        {!isFetching && !error && (
-          <CippCodeBlock
-            language="json"
-            code={jsonContent}
-            showLineNumbers={true}
-            wrapLongLines={false}
-          />
-        )}
-      </CippOffcanvas>
     </>
   )
 }
@@ -307,7 +316,7 @@ ResultsCard.propTypes = {
   data: PropTypes.object,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   type: PropTypes.oneOf(['MX', 'SPF', 'DMARC', 'DNSSEC', 'DKIM']),
-  menuOptions: PropTypes.array,
+  headerClickFunction: PropTypes.func,
   error: PropTypes.bool,
   errorMessage: PropTypes.string,
   isFetching: PropTypes.bool,
@@ -319,28 +328,44 @@ const SPFResultsCard = ({ domain }) => {
     action: 'ReadSpfRecord',
   })
 
-  const textareaRef = useRef(null)
   let record = data?.Record
+  const [visible, setVisible] = useState(false)
+  const headerClickFunction = () => {
+    setVisible(true)
+  }
+  const jsonContent = JSON.stringify(data, null, 2)
 
-  useEffect(() => {
-    if (textareaRef && textareaRef.current) {
-      textareaRef.current.style.height = '0px'
-      const scrollHeight = textareaRef.current.scrollHeight
-      textareaRef.current.style.height = scrollHeight + 'px'
-    }
-  }, [record])
   return (
-    <ResultsCard
-      data={data}
-      type="SPF"
-      isFetching={isFetching}
-      error={error}
-      errorMessage="Unable to load SPF Results"
-    >
-      {record && (
-        <CippCodeBlock language="text" code={record} showLineNumbers={false} wrapLongLines={true} />
-      )}
-    </ResultsCard>
+    <>
+      <ResultsCard
+        data={data}
+        type="SPF"
+        isFetching={isFetching}
+        headerClickFunction={headerClickFunction}
+        error={error}
+        errorMessage="Unable to load SPF Results"
+      >
+        {record && (
+          <CippCodeBlock
+            language="text"
+            code={record}
+            showLineNumbers={false}
+            wrapLongLines={true}
+          />
+        )}
+      </ResultsCard>
+      <CippOffcanvas
+        id="spf-offcanvas"
+        visible={visible}
+        placement="end"
+        className="cipp-offcanvas"
+        hideFunction={() => setVisible(false)}
+        title="SPF Details"
+      >
+        {!isFetching && error && <>Unable to load SPF details</>}
+        {!isFetching && !error && <DomainOffcanvasTabs jsonContent={jsonContent} />}
+      </CippOffcanvas>
+    </>
   )
 }
 SPFResultsCard.propTypes = sharedProps
@@ -352,43 +377,24 @@ function WhoisResultCard({ domain }) {
     isFetching,
     error,
   } = useExecDnsHelperQuery({ domain: domain, action: 'ReadWhoisRecord' })
+  const jsonContent = JSON.stringify(whoisReport, null, 2)
 
-  const menuOptions = [
-    {
-      title: 'Show Details',
-      clickFunction: () => {
-        setVisible(true)
-      },
-    },
-  ]
   return (
     <CCard className="content-card h-100">
-      <CCardHeader>
+      <CCardHeader className="d-flex justify-content-between align-items-center">
         <CCardTitle>
-          <CHeaderNav className="justify-content-between">
-            <CNavItem>
-              <FontAwesomeIcon icon={faGlobe} className="mx-2" /> WHOIS Results
-            </CNavItem>
-            <CDropdown variant="nav-item">
-              <CDropdownToggle placement="end" className="py-0" caret={false}>
-                <FontAwesomeIcon icon={faEllipsisV} className="me-2" />
-                More
-              </CDropdownToggle>
-              <CDropdownMenu className="py-0" placement="bottom-end">
-                {menuOptions.map((option, idx) => (
-                  <CLink
-                    className="dropdown-item"
-                    key={`${idx}-menu-option`}
-                    href="#"
-                    onClick={option.clickFunction}
-                  >
-                    {option.title}
-                  </CLink>
-                ))}
-              </CDropdownMenu>
-            </CDropdown>
-          </CHeaderNav>
+          <FontAwesomeIcon icon={faGlobe} className="mx-2" /> WHOIS Results
         </CCardTitle>
+        <CLink
+          href="#"
+          onClick={() => {
+            setVisible(true)
+          }}
+          className="mx-2 card-header-link"
+        >
+          <FontAwesomeIcon icon={faEllipsisV} className="me-2" />
+          More
+        </CLink>
       </CCardHeader>
       <CCardBody>
         {isFetching && <CSpinner />}
@@ -398,14 +404,16 @@ function WhoisResultCard({ domain }) {
             <h5>Registrar</h5>
             {whoisReport?._Registrar}
             <CippOffcanvas
-              title="WHOIS Info"
+              title="WHOIS Details"
               id="whois-offcanvas"
               visible={visible}
               placement="end"
               className="cipp-offcanvas"
               hideFunction={() => setVisible(false)}
             >
-              <CippCodeBlock language="text" code={whoisReport?._Raw} showLineNumbers={false} />
+              <DomainOffcanvasTabs jsonContent={jsonContent}>
+                <CippCodeBlock language="text" code={whoisReport?._Raw} showLineNumbers={false} />
+              </DomainOffcanvasTabs>
             </CippOffcanvas>
           </>
         )}
@@ -440,7 +448,7 @@ function NSResultCard({ domain }) {
       content={content}
       isFetching={isFetching}
       error={error}
-      errorMessage="Failed to fetch nameservers"
+      errorMessage="Unable to obtain nameservers"
     />
   )
 }
@@ -454,25 +462,21 @@ const MXResultsCard = ({ domain }) => {
   const mailProviderName = data?.MailProvider?.Name
   let records = data?.Records || []
 
+  const jsonContent = JSON.stringify(data, null, 2)
+
   if (!Array.isArray(records)) {
     records = [records]
   }
   const [visible, setVisible] = useState(false)
-
-  const menuOptions = [
-    {
-      title: 'Show Details',
-      clickFunction: () => {
-        setVisible(true)
-      },
-    },
-  ]
+  const headerClickFunction = () => {
+    setVisible(true)
+  }
 
   return (
     <ResultsCard
       data={data}
       type="MX"
-      menuOptions={menuOptions}
+      headerClickFunction={headerClickFunction}
       isFetching={isFetching}
       error={error}
       errorMessage="Unable to load MX Results"
@@ -486,47 +490,49 @@ const MXResultsCard = ({ domain }) => {
         placement="end"
         className="cipp-offcanvas"
         hideFunction={() => setVisible(false)}
-        title="Mail Provider Info"
+        title="MX Details"
       >
-        {records.length > 0 && (
-          <>
-            <COffcanvasTitle>MX Records</COffcanvasTitle>
-            <CTable striped small>
-              <CTableHead>
-                <CTableRow>
-                  <CTableHeaderCell scope="col">Priority</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Hostname</CTableHeaderCell>
-                </CTableRow>
-              </CTableHead>
-              <CTableBody>
-                {records.map((record, key) => (
-                  <CTableRow key={`${key}-mx-record`}>
-                    <CTableDataCell>{record?.Priority}</CTableDataCell>
-                    <CTableDataCell>{record?.Hostname}</CTableDataCell>
+        <DomainOffcanvasTabs jsonContent={jsonContent}>
+          {records.length > 0 && (
+            <>
+              <COffcanvasTitle>MX Records</COffcanvasTitle>
+              <CTable striped small>
+                <CTableHead>
+                  <CTableRow>
+                    <CTableHeaderCell scope="col">Priority</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Hostname</CTableHeaderCell>
                   </CTableRow>
-                ))}
-              </CTableBody>
-            </CTable>
-          </>
-        )}
-        <COffcanvasTitle>Documentation</COffcanvasTitle>
-        <CListGroup>
-          {data?.MailProvider?._MxComment && (
-            <CListGroupItem component="a" target="_blank" href={data?.MailProvider?._MxComment}>
-              <IconExternalLink /> MX Record
-            </CListGroupItem>
+                </CTableHead>
+                <CTableBody>
+                  {records.map((record, key) => (
+                    <CTableRow key={`${key}-mx-record`}>
+                      <CTableDataCell>{record?.Priority}</CTableDataCell>
+                      <CTableDataCell>{record?.Hostname}</CTableDataCell>
+                    </CTableRow>
+                  ))}
+                </CTableBody>
+              </CTable>
+            </>
           )}
-          {data?.MailProvider?._SpfComment && (
-            <CListGroupItem component="a" target="_blank" href={data?.MailProvider?._SpfComment}>
-              <IconExternalLink /> SPF Record
-            </CListGroupItem>
-          )}
-          {data?.MailProvider?._DkimComment && (
-            <CListGroupItem component="a" target="_blank" href={data?.MailProvider?._DkimComment}>
-              <IconExternalLink /> DKIM Record
-            </CListGroupItem>
-          )}
-        </CListGroup>
+          <COffcanvasTitle>Documentation</COffcanvasTitle>
+          <CListGroup>
+            {data?.MailProvider?._MxComment && (
+              <CListGroupItem component="a" target="_blank" href={data?.MailProvider?._MxComment}>
+                <IconExternalLink /> MX Record
+              </CListGroupItem>
+            )}
+            {data?.MailProvider?._SpfComment && (
+              <CListGroupItem component="a" target="_blank" href={data?.MailProvider?._SpfComment}>
+                <IconExternalLink /> SPF Record
+              </CListGroupItem>
+            )}
+            {data?.MailProvider?._DkimComment && (
+              <CListGroupItem component="a" target="_blank" href={data?.MailProvider?._DkimComment}>
+                <IconExternalLink /> DKIM Record
+              </CListGroupItem>
+            )}
+          </CListGroup>
+        </DomainOffcanvasTabs>
       </CippOffcanvas>
     </ResultsCard>
   )
@@ -540,19 +546,43 @@ function DMARCResultsCard({ domain }) {
     action: 'ReadDmarcPolicy',
   })
   let record = data?.Record
+  const [visible, setVisible] = useState(false)
+  const headerClickFunction = () => {
+    setVisible(true)
+  }
+  const jsonContent = JSON.stringify(data, null, 2)
 
   return (
-    <ResultsCard
-      data={data}
-      type="DMARC"
-      isFetching={isFetching}
-      error={error}
-      errorMessage="Unable to load DMARC Results"
-    >
-      {record && (
-        <CippCodeBlock language="text" code={record} showLineNumbers={false} wrapLongLines={true} />
-      )}
-    </ResultsCard>
+    <>
+      <ResultsCard
+        data={data}
+        type="DMARC"
+        isFetching={isFetching}
+        headerClickFunction={headerClickFunction}
+        error={error}
+        errorMessage="Unable to load DMARC Results"
+      >
+        {record && (
+          <CippCodeBlock
+            language="text"
+            code={record}
+            showLineNumbers={false}
+            wrapLongLines={true}
+          />
+        )}
+      </ResultsCard>
+      <CippOffcanvas
+        id="dmarc-offcanvas"
+        visible={visible}
+        placement="end"
+        className="cipp-offcanvas"
+        hideFunction={() => setVisible(false)}
+        title="DMARC Details"
+      >
+        {!isFetching && error && <>Unable to load DMARC details</>}
+        {!isFetching && !error && <DomainOffcanvasTabs jsonContent={jsonContent} />}
+      </CippOffcanvas>
+    </>
   )
 }
 
@@ -564,22 +594,15 @@ function DNSSECResultsCard({ domain }) {
     action: 'TestDNSSEC',
   })
   let keys = data?.Keys
+  const jsonContent = JSON.stringify(data, null, 2)
 
   if (!Array.isArray(keys)) {
     keys = []
   }
   const [visible, setVisible] = useState(false)
 
-  let menuOptions = []
-  if (keys.length > 0) {
-    menuOptions = [
-      {
-        title: 'Show Details',
-        clickFunction: () => {
-          setVisible(true)
-        },
-      },
-    ]
+  const headerClickFunction = () => {
+    setVisible(true)
   }
 
   if (!Array.isArray(keys)) {
@@ -591,7 +614,7 @@ function DNSSECResultsCard({ domain }) {
       <ResultsCard
         data={data}
         type="DNSSEC"
-        menuOptions={menuOptions}
+        headerClickFunction={headerClickFunction}
         isFetching={isFetching}
         error={error}
         errorMessage="Unable to load DNSSEC Results"
@@ -602,17 +625,26 @@ function DNSSECResultsCard({ domain }) {
         placement="end"
         className="cipp-offcanvas"
         hideFunction={() => setVisible(false)}
-        title="DNSSEC Records"
+        title="DNSSEC Details"
       >
-        {keys.map((key, idx) => (
-          <CippCodeBlock
-            language="text"
-            key={`${idx}-dnssec-key`}
-            code={key}
-            showLineNumbers={false}
-            wrapLongLines={true}
-          />
-        ))}
+        {!isFetching && !error && (
+          <DomainOffcanvasTabs jsonContent={jsonContent}>
+            {keys.length >
+            (
+              <>
+                {keys.map((key, idx) => (
+                  <CippCodeBlock
+                    language="text"
+                    key={`${idx}-dnssec-key`}
+                    code={key}
+                    showLineNumbers={false}
+                    wrapLongLines={true}
+                  />
+                ))}
+              </>
+            )}
+          </DomainOffcanvasTabs>
+        )}
       </CippOffcanvas>
     </>
   )
@@ -626,21 +658,15 @@ function DKIMResultsCard({ domain }) {
     action: 'ReadDkimRecord',
   })
   let records = data?.Records
+  const jsonContent = JSON.stringify(data, null, 2)
+
   if (!Array.isArray(records)) {
     records = []
   }
   const [visible, setVisible] = useState(false)
 
-  let menuOptions = []
-  if (records.length > 0) {
-    menuOptions = [
-      {
-        title: 'Show Details',
-        clickFunction: () => {
-          setVisible(true)
-        },
-      },
-    ]
+  const headerClickFunction = () => {
+    setVisible(true)
   }
 
   if (!Array.isArray(records)) {
@@ -652,34 +678,40 @@ function DKIMResultsCard({ domain }) {
       <ResultsCard
         data={data}
         type="DKIM"
-        menuOptions={menuOptions}
+        headerClickFunction={headerClickFunction}
         isFetching={isFetching}
         error={error}
         errorMessage="Unable to load DKIM Results"
       />
-      {records.length > 0 && (
+      {!isFetching && !error && (
         <CippOffcanvas
           id="dkim-offcanvas"
           visible={visible}
           placement="end"
           className="cipp-offcanvas"
           hideFunction={() => setVisible(false)}
-          title="DKIM Records"
+          title="DKIM Details"
         >
-          {records.map((record, idx) => (
-            <div key={`${idx}-dkim-record`}>
-              <CFormLabel>{record?.Selector}._domainkey</CFormLabel>
-              {record?.Record && (
-                <CippCodeBlock
-                  language="text"
-                  key={`${idx}-dnssec-key`}
-                  code={record?.Record}
-                  showLineNumbers={false}
-                  wrapLongLines={true}
-                />
-              )}
-            </div>
-          ))}
+          <DomainOffcanvasTabs jsonContent={jsonContent}>
+            {records.length > 0 && (
+              <>
+                {records.map((record, idx) => (
+                  <div key={`${idx}-dkim-record`}>
+                    <CFormLabel>{record?.Selector}._domainkey</CFormLabel>
+                    {record?.Record && (
+                      <CippCodeBlock
+                        language="text"
+                        key={`${idx}-dnssec-key`}
+                        code={record?.Record}
+                        showLineNumbers={false}
+                        wrapLongLines={true}
+                      />
+                    )}
+                  </div>
+                ))}
+              </>
+            )}
+          </DomainOffcanvasTabs>
         </CippOffcanvas>
       )}
     </>
