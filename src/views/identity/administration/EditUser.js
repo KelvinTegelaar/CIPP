@@ -263,7 +263,7 @@ const EditUser = () => {
                         <CCol md={12}>
                           <RFFCFormSwitch
                             name="licenses"
-                            label="Change licenses"
+                            label="Replace Licenses"
                             disabled={formDisabled}
                           />
                           <Condition when="licenses" is={true}>
