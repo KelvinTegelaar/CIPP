@@ -129,7 +129,7 @@ export default function IndividualDomainCheck({
                                 area-describedby="domain"
                               />
 
-                              <CButton type="submit" disabled={submitting} color="primary">
+                              <CButton type="submit" color="primary">
                                 Check
                               </CButton>
                             </CInputGroup>
@@ -221,7 +221,7 @@ function ResultsCard({ children, data, type, menuOptions = [], error, errorMessa
           <CCardTitle>
             <CHeaderNav className="justify-content-between">
               <CNavItem>
-                <StatusIcon type="finalstate" finalState={finalState} />
+                {!isFetching && <StatusIcon type="finalstate" finalState={finalState} />}
                 {type} Results
               </CNavItem>
               <CDropdown variant="nav-item">
