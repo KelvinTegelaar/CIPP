@@ -53,6 +53,7 @@ const columns = [
   {
     name: 'On-Prem Sync',
     selector: (row) => row['onPremisesSyncEnabled'],
+    sortable: true,
     cell: cellBooleanFormatter({ warning: true }),
     exportSelector: 'onPremisessSyncEnabled',
   },
