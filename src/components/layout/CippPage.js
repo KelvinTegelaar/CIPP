@@ -51,7 +51,9 @@ export function CippPage({
 
   return (
     <div>
-      {tenantSelector && <TenantSelector action={handleTenantSelect} />}
+      {tenantSelector && (
+        <TenantSelector action={handleTenantSelect} showAllTenantSelector={showAllTenantSelector} />
+      )}
       {tenantSelector && <hr />}
       <CCard className={`page-card ${className ?? ''}`}>
         <CCardHeader component="h4" className="d-flex justify-content-between">
@@ -83,6 +85,7 @@ CippPage.propTypes = {
 
 export function CippPageList({
   tenantSelector = true,
+  showAllTenantSelector = false,
   title,
   titleButton,
   // see CippDatatable for full list
@@ -94,6 +97,7 @@ export function CippPageList({
     <CippPage
       className={`datatable ${className ?? ''}`}
       tenantSelector={tenantSelector}
+      showAllTenantSelector={showAllTenantSelector}
       title={title}
       titleButton={titleButton}
     >
