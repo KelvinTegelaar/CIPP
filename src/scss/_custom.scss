@@ -1,4 +1,4 @@
-@use "sass:color";
+@use 'sass:color';
 
 .sr-only {
   border: 0 !important;
@@ -319,11 +319,13 @@
 }
 
 .rdt_TableRow.no-mfa {
+  background-color: color.adjust($cyberdrain-danger, $alpha: -0.5) !important;
+  
   .text-success {
     color: var(--cui-body-color) !important;
   }
+
   .text-danger {
     color: var(--cui-body-color) !important;
   }
-  background-color: color.adjust($cyberdrain-danger, $alpha: -0.5) !important;
 }
