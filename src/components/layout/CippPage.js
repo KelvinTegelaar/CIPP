@@ -11,12 +11,13 @@ import { queryString } from 'src/helpers'
 
 export function CippPage({
   tenantSelector = true,
+  showAllTenantSelector = false,
   title,
   children,
   titleButton = null,
   className = null,
 }) {
-  const { data: tenants = [], isSuccess } = useListTenantsQuery()
+  const { data: tenants = [], isSuccess } = useListTenantsQuery({ showAllTenantSelector })
   const tenant = useSelector((state) => state.app.currentTenant)
   const [searchParams, setSearchParams] = useSearchParams()
   const navigate = useNavigate()
@@ -50,7 +51,9 @@ export function CippPage({
 
   return (
     <div>
-      {tenantSelector && <TenantSelector action={handleTenantSelect} />}
+      {tenantSelector && (
+        <TenantSelector action={handleTenantSelect} showAllTenantSelector={showAllTenantSelector} />
+      )}
       {tenantSelector && <hr />}
       <CCard className={`page-card ${className ?? ''}`}>
         <CCardHeader component="h4" className="d-flex justify-content-between">
@@ -74,6 +77,7 @@ export function CippPage({
 CippPage.propTypes = {
   className: PropTypes.string,
   tenantSelector: PropTypes.bool,
+  showAllTenantSelector: PropTypes.bool,
   title: PropTypes.string,
   children: PropTypes.node,
   titleButton: PropTypes.node,
@@ -81,6 +85,7 @@ CippPage.propTypes = {
 
 export function CippPageList({
   tenantSelector = true,
+  showAllTenantSelector = false,
   title,
   titleButton,
   // see CippDatatable for full list
@@ -92,6 +97,7 @@ export function CippPageList({
     <CippPage
       className={`datatable ${className ?? ''}`}
       tenantSelector={tenantSelector}
+      showAllTenantSelector={showAllTenantSelector}
       title={title}
       titleButton={titleButton}
     >
