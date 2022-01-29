@@ -18,6 +18,8 @@ export const PrivateRoute = ({ children, routeType }) => {
   let roles
   if (null !== profile.clientPrincipal) {
     roles = profile?.clientPrincipal.userRoles
+  } else if (null === profile.clientPrincipal) {
+    return <Navigate to="/login" />
   }
   if (null === roles) {
     return <Navigate to="/login" />

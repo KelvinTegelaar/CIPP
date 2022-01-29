@@ -116,13 +116,14 @@
     }
 
     .card-header-link {
-      text-decoration: none;
-      font-weight: 500;
       color: var(--cui-headings-color);
+      font-weight: 500;
+      text-decoration: none;
+
       &:hover {
-        text-decoration: underline;
         color: var(--cyberdrain-light-striped);
         cursor: pointer;
+        text-decoration: underline;
       }
     }
   }
