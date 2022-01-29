@@ -2,34 +2,49 @@ import React from 'react'
 import { CButtonGroup, CButton, CCard, CCardHeader } from '@coreui/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setCurrentTheme } from 'src/store/features/app'
+import { useMediaPredicate } from 'react-media-hook'
 
-function caps(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1)
+function themeDisplayName(theme) {
+  switch (theme) {
+    case 'impact':
+      return 'Impact'
+    case 'cyberdrain':
+      return 'CyberDrain'
+    default:
+      return 'Default'
+  }
 }
 
 const ThemeSwitcher = () => {
   const dispatch = useDispatch()
-  const theme = useSelector((state) => state.app.currentTheme)
+  const currentTheme = useSelector((state) => state.app.currentTheme)
   const themes = useSelector((state) => state.app.themes)
-
-  const SwitchTheme = (t) => {
-    dispatch(setCurrentTheme({ theme: t }))
+  const preferredTheme = useMediaPredicate('(prefers-color-scheme: dark)') ? 'impact' : 'cyberdrain'
+  const SwitchTheme = (inputTheme) => {
+    var targetTheme
+    if (inputTheme === 'default') {
+      targetTheme = preferredTheme
+    } else {
+      targetTheme = inputTheme
+    }
+    dispatch(setCurrentTheme({ theme: inputTheme }))
     document.body.classList = []
-    document.body.classList.add(`theme-${t}`)
-    document.body.dataset.theme = t
+    document.body.classList.add(`theme-${targetTheme}`)
+    document.body.dataset.theme = targetTheme
   }
 
   return (
     <CCard>
       <CCardHeader>Select Theme</CCardHeader>
-      <CButtonGroup role="group" aria-label="Theme Switcher">
-        {themes.map((t, index) => (
+      <CButtonGroup role="group" aria-label="Theme Switcher" color="secondary">
+        {themes.map((theme, index) => (
           <CButton
-            onClick={() => SwitchTheme(t)}
-            color={t === theme ? 'primary' : 'secondary'}
+            onClick={() => SwitchTheme(theme)}
+            active={theme === currentTheme ? true : false}
+            color="secondary"
             key={index}
           >
-            {caps(t)}
+            {themeDisplayName(theme)}
           </CButton>
         ))}
       </CButtonGroup>
