@@ -258,15 +258,12 @@ const EditUser = () => {
                                 <br />
                                 {licensesIsFetching && <CSpinner />}
                                 {licensesError && <span>Error loading licenses</span>}
-                                {!licensesIsFetching &&
-                                  licenses?.map((license) => (
-                                    <RFFCFormCheck
-                                      disabled={formDisabled}
-                                      key={'license.id'}
-                                      name={'RemoveAllLicenses'}
-                                      label={'Remove all licenses'}
-                                    />
-                                  ))}
+                                <RFFCFormCheck
+                                  disabled={formDisabled}
+                                  key={'license.id'}
+                                  name={'RemoveAllLicenses'}
+                                  label={'Remove all licenses'}
+                                />
                                 {licensesIsFetching && <CSpinner />}
                                 {licensesError && <span>Error loading licenses</span>}
                                 {!licensesIsFetching &&
