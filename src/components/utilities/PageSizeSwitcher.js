@@ -9,7 +9,7 @@ const PageSizeSwitcher = () => {
   const currentTablePageSize = useSelector((state) => state.app.tablePageSize)
 
   const SwitchPageSize = (targetTablePageSize) => {
-    dispatch(setCurrentPageSize({ pageSize: targetTablePageSize}))
+    dispatch(setCurrentPageSize({ pageSize: targetTablePageSize }))
   }
 
   return (
