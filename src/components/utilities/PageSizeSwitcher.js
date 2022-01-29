@@ -23,7 +23,7 @@ const PageSizeSwitcher = () => {
             color="secondary"
             key={index}
           >
-            {t}
+            {tablePageSize}
           </CButton>
         ))}
       </CButtonGroup>
