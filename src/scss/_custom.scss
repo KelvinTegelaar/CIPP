@@ -114,6 +114,17 @@
       line-height: 2rem;
       margin-bottom: 0;
     }
+
+    .card-header-link {
+      text-decoration: none;
+      font-weight: 500;
+      color: var(--cui-headings-color);
+      &:hover {
+        text-decoration: underline;
+        color: var(--cyberdrain-light-striped);
+        cursor: pointer;
+      }
+    }
   }
 }
 

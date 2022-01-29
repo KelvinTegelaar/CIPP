@@ -40,6 +40,9 @@ const ListAlerts = React.lazy(() => import('src/views/security/reports/ListAlert
 const ApplicationsList = React.lazy(() =>
   import('src/views/endpoint/applications/ApplicationsList'),
 )
+const ApplicationsQueue = React.lazy(() =>
+  import('src/views/endpoint/applications/ListApplicationQueue'),
+)
 const ApplicationsAddChocoApp = React.lazy(() =>
   import('src/views/endpoint/applications/ApplicationsAddChocoApp'),
 )
@@ -176,6 +179,8 @@ const routes = [
   { path: '/endpoint', name: 'Endpoint' },
   { path: '/endpoint/applications', name: 'Applications' },
   { path: '/endpoint/applications/list', name: 'List', component: ApplicationsList },
+  { path: '/endpoint/applications/queue', name: 'Queue', component: ApplicationsQueue },
+
   {
     path: '/endpoint/applications/add-choco-app',
     name: 'Add Choco App',

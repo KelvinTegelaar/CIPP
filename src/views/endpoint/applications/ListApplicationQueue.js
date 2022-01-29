@@ -14,8 +14,9 @@ const RefreshAction = () => {
     ModalService.confirm({
       body: (
         <div>
-          Are you sure you want to run the standards now? <br />
-          <i>Please note: this runs every three hours automatically.</i>
+          Deploy Applications
+          <br />
+          <i>Please note: this runs every 24 hours, or when a new app is added automatically.</i>
         </div>
       ),
       onConfirm: () => execStandards({ path: 'api/Standards_OrchestrationStarter' }),
@@ -33,12 +34,12 @@ const RefreshAction = () => {
           <FontAwesomeIcon icon={faExclamationTriangle} className="pe-1" />
         )}
         {execStandardsResults.isSuccess && <FontAwesomeIcon icon={faCheck} className="pe-1" />}
-        Force Refresh All Data
+        Deploy now
       </CButton>
     </>
   )
 }
-const TenantsList = () => {
+const ListApplicationQueue = () => {
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
   const Actions = (row, index, column) => {
     const handleDeleteStandard = (apiurl, message) => {
@@ -57,8 +58,8 @@ const TenantsList = () => {
         color="danger"
         onClick={() =>
           handleDeleteStandard(
-            `api/RemoveStandard?ID=${row.displayName}`,
-            'Do you want to delete the standard?',
+            `api/RemoveQueuedApp?ID=${row.id}`,
+            'Do you want to delete the queued application?',
           )
         }
       >
@@ -68,22 +69,28 @@ const TenantsList = () => {
   }
   const columns = [
     {
-      name: 'Tenant Default Domain',
-      selector: (row) => row['displayName'],
+      name: 'Tenant',
+      selector: (row) => row['tenantName'],
       sortable: true,
-      exportSelector: 'displayName',
+      exportSelector: 'tenantName',
     },
     {
-      name: 'Standard',
-      selector: (row) => row['standardName'],
+      name: 'Application Name',
+      selector: (row) => row['applicationName'],
       sortable: true,
-      exportSelector: 'standardName',
+      exportSelector: 'applicationName',
     },
     {
-      name: 'Applied By',
-      selector: (row) => row['appliedBy'],
+      name: 'Install command',
+      selector: (row) => row['cmdLine'],
       sortable: true,
-      exportSelector: 'appliedBy',
+      exportSelector: 'cmdLine',
+    },
+    {
+      name: 'Assign To',
+      selector: (row) => row['assignTo'],
+      sortable: true,
+      exportSelector: 'assignTo',
     },
     {
       name: 'Actions',
@@ -104,7 +111,7 @@ const TenantsList = () => {
         <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
       )}
       <CippPageList
-        title="Applied Standards"
+        title="Queued Applications"
         tenantSelector={false}
         datatable={{
           tableProps: {
@@ -112,8 +119,8 @@ const TenantsList = () => {
           },
           keyField: 'id',
           columns,
-          reportName: `AppliedStandards-List`,
-          path: '/api/ListStandards',
+          reportName: `ApplicationQueue-List`,
+          path: '/api/ListApplicationQueue',
           params: { TenantFilter: tenant?.defaultDomainName },
         }}
       />
@@ -121,4 +128,4 @@ const TenantsList = () => {
   )
 }
 
-export default TenantsList
+export default ListApplicationQueue

@@ -73,7 +73,7 @@ const ApplyStandard = () => {
             <WizardTableField
               reportName="Apply-Standard-Tenant-Selector"
               keyField="defaultDomainName"
-              path="/api/ListTenants"
+              path="/api/ListTenants?AllTenantSelector=true"
               columns={[
                 {
                   name: 'Display Name',

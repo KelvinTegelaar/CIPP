@@ -175,6 +175,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'List Application Queue',
+        to: '/endpoint/applications/queue',
+      },
+      {
+        component: CNavItem,
         name: 'Add Choco App',
         to: '/endpoint/applications/add-choco-app',
       },

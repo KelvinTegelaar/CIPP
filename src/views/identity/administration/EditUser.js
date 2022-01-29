@@ -147,7 +147,7 @@ const EditUser = () => {
                       return (
                         <CForm onSubmit={handleSubmit}>
                           <CRow>
-                            <CCol md={6}>
+                            <CCol lg={6} xs={12}>
                               <RFFCFormInput
                                 type="text"
                                 name="givenName"
@@ -155,7 +155,7 @@ const EditUser = () => {
                                 disabled={formDisabled}
                               />
                             </CCol>
-                            <CCol md={6}>
+                            <CCol lg={6} xs={12}>
                               <RFFCFormInput
                                 type="text"
                                 name="surname"
@@ -165,7 +165,7 @@ const EditUser = () => {
                             </CCol>
                           </CRow>
                           <CRow>
-                            <CCol md={12}>
+                            <CCol xs={12}>
                               <RFFCFormInput
                                 type="text"
                                 name="displayName"
@@ -175,7 +175,7 @@ const EditUser = () => {
                             </CCol>
                           </CRow>
                           <CRow>
-                            <CCol md={6}>
+                            <CCol lg={6} xs={12}>
                               <RFFCFormInput
                                 type="text"
                                 name="mailNickname"
@@ -183,7 +183,7 @@ const EditUser = () => {
                                 disabled={formDisabled}
                               />
                             </CCol>
-                            <CCol md={6}>
+                            <CCol lg={6} xs={12}>
                               {domainsIsFetching && <CSpinner />}
                               {!domainsIsFetching && (
                                 <RFFCFormSelect
@@ -202,7 +202,7 @@ const EditUser = () => {
                             </CCol>
                           </CRow>
                           <CRow>
-                            <CCol md={12}>
+                            <CCol xs={12}>
                               <RFFCFormTextarea
                                 type="text"
                                 name="addedAliases"
@@ -213,13 +213,18 @@ const EditUser = () => {
                             </CCol>
                           </CRow>
                           <CRow>
-                            <CCol md={12}>
+                            <CCol xs={12}>
                               <CFormLabel>Settings</CFormLabel>
                               <RFFCFormCheck
                                 disabled={formDisabled}
                                 name="Autopassword"
                                 label="Reset Password"
                               />
+                              <Condition when="Autopassword" is={true}>
+                                <CCol xs={12}>
+                                  <RFFCFormInput type="password" name="password" label="Password" />
+                                </CCol>
+                              </Condition>
                               <RFFCFormCheck
                                 disabled={formDisabled}
                                 name="RequirePasswordChange"
@@ -228,7 +233,7 @@ const EditUser = () => {
                             </CCol>
                           </CRow>
                           <CRow className="mb-3">
-                            <CCol md={12}>
+                            <CCol xs={12}>
                               <RFFSelectSearch
                                 values={countryList.map(({ Code, Name }) => ({
                                   value: Code,
@@ -242,21 +247,26 @@ const EditUser = () => {
                             </CCol>
                           </CRow>
                           <CRow>
-                            <CCol md={12}>
+                            <CCol xs={12}>
                               <RFFCFormSwitch
                                 name="licenses"
-                                label="Change licenses"
+                                label="Replace Licenses"
                                 disabled={formDisabled}
                               />
                               <Condition when="licenses" is={true}>
                                 <span>Licenses</span>
                                 <br />
-                                <RFFCFormCheck
-                                  disabled={formDisabled}
-                                  key={'license.id'}
-                                  name={'RemoveAllLicenses'}
-                                  label={'Remove all licenses'}
-                                />
+                                {licensesIsFetching && <CSpinner />}
+                                {licensesError && <span>Error loading licenses</span>}
+                                {!licensesIsFetching &&
+                                  licenses?.map((license) => (
+                                    <RFFCFormCheck
+                                      disabled={formDisabled}
+                                      key={'license.id'}
+                                      name={'RemoveAllLicenses'}
+                                      label={'Remove all licenses'}
+                                    />
+                                  ))}
                                 {licensesIsFetching && <CSpinner />}
                                 {licensesError && <span>Error loading licenses</span>}
                                 {!licensesIsFetching &&
@@ -272,7 +282,7 @@ const EditUser = () => {
                             </CCol>
                           </CRow>
                           <CRow>
-                            <CCol md={12}>
+                            <CCol xs={12}>
                               <RFFCFormInput
                                 name="jobTitle"
                                 label="Job Title"
@@ -384,7 +394,11 @@ const EditUser = () => {
                             </CCol>
                           </CRow>
                           {postResults.isSuccess && (
-                            <CCallout color="success">{postResults.data?.Results}</CCallout>
+                            <CCallout color="success">
+                              {postResults.data.Results.map((message, idx) => {
+                                return <li key={idx}>{message}</li>
+                              })}
+                            </CCallout>
                           )}
                         </CForm>
                       )
