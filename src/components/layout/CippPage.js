@@ -11,12 +11,13 @@ import { queryString } from 'src/helpers'
 
 export function CippPage({
   tenantSelector = true,
+  showAllTenantSelector = false,
   title,
   children,
   titleButton = null,
   className = null,
 }) {
-  const { data: tenants = [], isSuccess } = useListTenantsQuery()
+  const { data: tenants = [], isSuccess } = useListTenantsQuery({ showAllTenantSelector })
   const tenant = useSelector((state) => state.app.currentTenant)
   const [searchParams, setSearchParams] = useSearchParams()
   const navigate = useNavigate()
@@ -74,6 +75,7 @@ export function CippPage({
 CippPage.propTypes = {
   className: PropTypes.string,
   tenantSelector: PropTypes.bool,
+  showAllTenantSelector: PropTypes.bool,
   title: PropTypes.string,
   children: PropTypes.node,
   titleButton: PropTypes.node,

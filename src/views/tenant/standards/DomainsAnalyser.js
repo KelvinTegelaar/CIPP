@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import { CButton, CSpinner } from '@coreui/react'
 import { CellBadge, cellProgressBarFormatter } from 'src/components/tables'
@@ -48,6 +49,7 @@ checkDomain.propTypes = {
 const DomainsAnalyser = () => {
   const [individualDomainResults, setIndividualDomainResults] = useState()
   const [domainCheckVisible, setDomainCheckVisible] = useState(false)
+  const currentTenant = useSelector((state) => state.app.currentTenant)
 
   const handleMoreInfo = ({ row }) => {
     setIndividualDomainResults(checkDomain(row.Domain))
@@ -224,9 +226,11 @@ const DomainsAnalyser = () => {
   return (
     <CippPageList
       title="Domains Analyser"
-      tenantSelector={false}
+      tenantSelector={true}
+      showAllTenantSelector={true}
       datatable={{
         path: '/api/DomainAnalyser_List',
+        params: { tenantFilter: currentTenant.defaultDomainName },
         columns,
         reportName: 'Domains-Analyzer',
         tableProps: {
