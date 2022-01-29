@@ -56,6 +56,14 @@ const DomainsAnalyser = () => {
     setDomainCheckVisible(true)
   }
 
+  const omitTenant = () => {
+    if (currentTenant.defaultDomainName === 'AllTenants') {
+      return false
+    } else {
+      return true
+    }
+  }
+
   const columns = [
     {
       name: 'Domain',
@@ -63,6 +71,14 @@ const DomainsAnalyser = () => {
       sortable: true,
       exportSelector: 'Domain',
       minWidth: '300px',
+    },
+    {
+      name: 'Tenant',
+      selector: (row) => row['Tenant'],
+      sortable: true,
+      exportSelector: 'Tenant',
+      minWidth: '300px',
+      omit: omitTenant(),
     },
     {
       name: 'Security Score',
