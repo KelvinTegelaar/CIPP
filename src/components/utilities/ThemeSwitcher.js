@@ -4,14 +4,23 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setCurrentTheme } from 'src/store/features/app'
 import { useMediaPredicate } from 'react-media-hook'
 
-function themeDisplayName(theme) {
+function themeInfo(theme) {
   switch (theme) {
     case 'impact':
-      return 'Impact'
+      return {
+        name: 'Impact',
+        description: "Impact is CIPP's dark theme.",
+      }
     case 'cyberdrain':
-      return 'CyberDrain'
+      return {
+        name: 'CyberDrain',
+        description: "CyberDrain is CIPP's light theme.",
+      }
     default:
-      return 'Default'
+      return {
+        name: 'Default',
+        description: 'Default uses your browser preferences to determine the theme.',
+      }
   }
 }
 
@@ -43,8 +52,9 @@ const ThemeSwitcher = () => {
             active={theme === currentTheme ? true : false}
             color="secondary"
             key={index}
+            title={themeInfo(theme).description}
           >
-            {themeDisplayName(theme)}
+            {themeInfo(theme).name}
           </CButton>
         ))}
       </CButtonGroup>
