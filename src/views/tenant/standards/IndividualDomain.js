@@ -63,7 +63,15 @@ const domainCheckProps = {
   initialDomain: PropTypes.string,
 }
 
-export default function IndividualDomainCheck({
+export default function IndividualDomainPage() {
+  return (
+    <CippPage title="Individual Domain Check" tenantSelector={false}>
+      <IndividualDomainCheck />
+    </CippPage>
+  )
+}
+
+export function IndividualDomainCheck({
   initialDomain = '',
   readOnly = false,
   isOffcanvas = false,
@@ -97,89 +105,87 @@ export default function IndividualDomainCheck({
   }
 
   return (
-    <CippPage title="Individual Domain Check" tenantSelector={false}>
-      <CippMasonry>
-        <CippMasonryItem size={masonrySize}>
-          <CCard className="content-card h-100">
-            <CCardHeader>
-              <CCardTitle>
-                <FontAwesomeIcon icon={faSearch} className="mx-2" />
-                Domain
-              </CCardTitle>
-            </CCardHeader>
-            <CCardBody>
-              <Form
-                initialValues={{ domain }}
-                onSubmit={onSubmit}
-                render={({ handleSubmit, submitting, pristine }) => {
-                  return (
-                    <CForm onSubmit={handleSubmit}>
-                      <Field name="domain">
-                        {({ input, meta }) => {
-                          return (
-                            <CInputGroup className="mb-3">
-                              <CFormInput
-                                {...input}
-                                valid={!meta.error && meta.touched}
-                                invalid={meta.error && meta.touched}
-                                type="text"
-                                id="domain"
-                                disabled={readOnly}
-                                placeholder="Domain Name"
-                                area-describedby="domain"
-                              />
+    <CippMasonry>
+      <CippMasonryItem size={masonrySize}>
+        <CCard className="content-card h-100">
+          <CCardHeader>
+            <CCardTitle>
+              <FontAwesomeIcon icon={faSearch} className="mx-2" />
+              Domain
+            </CCardTitle>
+          </CCardHeader>
+          <CCardBody>
+            <Form
+              initialValues={{ domain }}
+              onSubmit={onSubmit}
+              render={({ handleSubmit, submitting, pristine }) => {
+                return (
+                  <CForm onSubmit={handleSubmit}>
+                    <Field name="domain">
+                      {({ input, meta }) => {
+                        return (
+                          <CInputGroup className="mb-3">
+                            <CFormInput
+                              {...input}
+                              valid={!meta.error && meta.touched}
+                              invalid={meta.error && meta.touched}
+                              type="text"
+                              id="domain"
+                              disabled={readOnly}
+                              placeholder="Domain Name"
+                              area-describedby="domain"
+                            />
 
-                              <CButton type="submit" color="primary">
-                                Check
-                              </CButton>
-                            </CInputGroup>
-                          )
-                        }}
-                      </Field>
-                    </CForm>
-                  )
-                }}
-              />
-            </CCardBody>
-          </CCard>
+                            <CButton type="submit" color="primary">
+                              Check
+                            </CButton>
+                          </CInputGroup>
+                        )
+                      }}
+                    </Field>
+                  </CForm>
+                )
+              }}
+            />
+          </CCardBody>
+        </CCard>
+      </CippMasonryItem>
+      {domain && (
+        <CippMasonryItem size={masonrySize}>
+          <WhoisResultCard domain={domain} />
         </CippMasonryItem>
-        {domain && (
-          <CippMasonryItem size={masonrySize}>
-            <WhoisResultCard domain={domain} />
-          </CippMasonryItem>
-        )}
-        {domain && (
-          <CippMasonryItem size={masonrySize}>
-            <NSResultCard domain={domain} />
-          </CippMasonryItem>
-        )}
-        {domain && (
-          <CippMasonryItem size={masonrySize}>
-            <MXResultsCard domain={domain} />
-          </CippMasonryItem>
-        )}
-        {domain && (
-          <CippMasonryItem size={masonrySize}>
-            <SPFResultsCard domain={domain} />
-          </CippMasonryItem>
-        )}
-        {domain && (
-          <CippMasonryItem size={masonrySize}>
-            <DMARCResultsCard domain={domain} />
-          </CippMasonryItem>
-        )}
-        {domain && (
-          <CippMasonryItem size={masonrySize}>
-            <DKIMResultsCard domain={domain} />
-          </CippMasonryItem>
-        )}
-        {domain && (
-          <CippMasonryItem size={masonrySize}>
-            <DNSSECResultsCard domain={domain} />
-          </CippMasonryItem>
-        )}
-      </CippMasonry>
-    </CippPage>
+      )}
+      {domain && (
+        <CippMasonryItem size={masonrySize}>
+          <NSResultCard domain={domain} />
+        </CippMasonryItem>
+      )}
+      {domain && (
+        <CippMasonryItem size={masonrySize}>
+          <MXResultsCard domain={domain} />
+        </CippMasonryItem>
+      )}
+      {domain && (
+        <CippMasonryItem size={masonrySize}>
+          <SPFResultsCard domain={domain} />
+        </CippMasonryItem>
+      )}
+      {domain && (
+        <CippMasonryItem size={masonrySize}>
+          <DMARCResultsCard domain={domain} />
+        </CippMasonryItem>
+      )}
+      {domain && (
+        <CippMasonryItem size={masonrySize}>
+          <DKIMResultsCard domain={domain} />
+        </CippMasonryItem>
+      )}
+      {domain && (
+        <CippMasonryItem size={masonrySize}>
+          <DNSSECResultsCard domain={domain} />
+        </CippMasonryItem>
+      )}
+    </CippMasonry>
   )
 }
 
