@@ -170,6 +170,15 @@ const config = {
         sidebarCollapsed: false,
       },
     ],
+    [
+      require.resolve("@cmfcmf/docusaurus-search-local"),
+      {
+        indexDocs: true,
+        indexDocSidebarParentCategories: 3,
+        indexPages: true,
+        language: "en",
+      }
+    ]
   ]
 };
 
