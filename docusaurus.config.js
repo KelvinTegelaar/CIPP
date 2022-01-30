@@ -33,7 +33,10 @@ const config = {
         },
         blog: false,
         theme: {
-          customCss: require.resolve('./src/scss/custom.scss'),
+          customCss: [
+            require.resolve('./src/scss/custom.scss'),
+            require.resolve('./static/fonts/montserrat/stylesheet.css'),
+          ],
         },
 
       }),
