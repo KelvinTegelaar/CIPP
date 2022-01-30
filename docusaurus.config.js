@@ -35,7 +35,7 @@ const config = {
         theme: {
           customCss: [
             require.resolve('./src/scss/custom.scss'),
-            '/static/fonts/montserrat/style.css',
+            require.resolve('./static/fonts/montserrat/style.css'),
           ],
         },
 
