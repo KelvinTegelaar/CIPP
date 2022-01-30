@@ -37,6 +37,7 @@
   --cyberdrain-danger-rgb: rgb(235 96 61); // Orange Soda
   // Docusaurus variables.
   //// Theme Colours.
+  --ifm-button-color: var(--cyberdrain-dark);
   --ifm-color-primary: var(--cyberdrain-secondary);
   --ifm-color-primary-dark: #002b42;
   --ifm-color-primary-darker: #00293e;
@@ -44,6 +45,13 @@
   --ifm-color-primary-light: #003550;
   --ifm-color-primary-lighter: #003754;
   --ifm-color-primary-lightest: #003e5f;
+  --ifm-color-secondary: var(--cyberdrain-primary);
+  --ifm-color-secondary-dark: #de7200;
+  --ifm-color-secondary-darker: #d26c00;
+  --ifm-color-secondary-darkest: #ad5900;
+  --ifm-color-secondary-light: #ff8b11;
+  --ifm-color-secondary-lighter: #ff911d;
+  --ifm-color-secondary-lightest: #ffa342;
   --ifm-background-color: var(--cyberdrain-light);
   --ifm-font-color-base: var(--cyberdrain-dark);
   --ifm-color-primary-contrast-background: var(--cyberdrain-light-striped);
@@ -63,9 +71,16 @@
   --ifm-font-family-base: 'Montserrat', sans-serif;
 }
 
+html:not([data-theme='dark']) {
+  .button--primary:not(.button--outline) {
+    --ifm-button-color: var(--cyberdrain-light);
+  }
+}
+
 html[data-theme='dark'] {
   // Docusaurus variables.
   //// Theme Colours.
+  --ifm-button-color: var(--cyberdrain-light);
   --ifm-color-primary: var(--cyberdrain-primary);
   --ifm-color-primary-dark: #de7200;
   --ifm-color-primary-darker: #d26c00;
@@ -73,11 +88,35 @@ html[data-theme='dark'] {
   --ifm-color-primary-light: #ff8b11;
   --ifm-color-primary-lighter: #ff911d;
   --ifm-color-primary-lightest: #ffa342;
+  --ifm-color-secondary: var(--cyberdrain-secondary);
+  --ifm-color-secondary-dark: #002b42;
+  --ifm-color-secondary-darker: #00293e;
+  --ifm-color-secondary-darkest: #002233;
+  --ifm-color-secondary-light: #003550;
+  --ifm-color-secondary-lighter: #003754;
+  --ifm-color-secondary-lightest: #003e5f;
   --ifm-background-color: var(--cyberdrain-dark);
   --ifm-font-color-base: var(--cyberdrain-light);
   --ifm-color-primary-contrast-background: var(--cyberdrain-dark-striped);
   --ifm-color-primary-contrast-foreground: var(--cyberdrain-light);
+  .button--primary:not(.button--outline) {
+    --ifm-button-color: var(--cyberdrain-dark);
+  }
 }
+
+body.dark,
+body[data-theme='dark'] {
+  div#__docusaurus{
+    //// Search
+    --aa-background-color-rgb: var(--cyberdrain-dark-rgb);
+    --aa-input-background-color-rgb: var(--cyberdrain-secondary-rgb);
+    --aa-input-border-color-rgb: var(--cyberdrain-dark-rgb);
+    --aa-input-border-color-alpha: 1;
+    --aa-muted-color-rgb: var(--cyberdrain-light-rgb);
+    --aa-primary-color-rgb: var(--cyberdrain-primary-rgb);
+  }
+}
+
 
 footer {
   --ifm-footer-background-color: var(--ifm-navbar-background-color);
@@ -141,25 +180,191 @@ table {
   width: 100%;
 }
 
-/* CIPP */
-
-.hero--homepage {
-  --ifm-hero-background-color: var(--cyberdrain-accent-green);
-  --ifm-hero-text-color: var(--cyberdrain-light);
-}
-
 /* Header Icons */
 
 .header-github-link {
+  display: flex;
   &:before {
-    background: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23fff' d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12'/%3E%3C/svg%3E") no-repeat;
+    background: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23f4f5f6' d='M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12'/%3E%3C/svg%3E") no-repeat;
     content: "";
     display: flex;
     height: 24px;
     width: 24px;
-    color: var(--ifm-navbar-link-color);
+    margin-right: 0.5rem;
+    color: var(--ifm-dropdown-link-color);
   }
   &:hover {
     opacity: 0.6;
+  }
+}
+
+/* SVG Colours */
+
+svg[color='primary'] {
+  color: var(--ifm-color-primary);
+}
+
+svg[color='secondary'] {
+  color: var(--ifm-color-secondary);
+}
+
+svg[color='accent-green'] {
+  color: var(--cyberdrain-accent-green);
+}
+
+svg[color='accent-blue'] {
+  color: var(--cyberdrain-accent-blue);
+}
+
+/* Home Page overrides */
+
+.cipp-home {
+  h2 {
+    text-align: center;
+    text-transform: uppercase;
+    
+    .cipp-home--title {
+      text-decoration-line: underline;  
+    }
+  }
+
+  blockquote {
+    border-left: 5px solid var(--cyberdrain-secondary);
+    box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
+    color: var(--cyberdrain-light);
+    line-height: 1.2;
+    margin: 0 0 20px;
+    padding: 0.5rem 1rem 0.5rem 2rem;
+    position: relative;
+    &::before{
+      content: "\201C"; /*Unicode for Left Double Quote*/
+      font-size: 2.5rem;
+      font-weight: bold;
+      left: 10px;
+      position: absolute;
+      top:0px;
+    }
+  }
+}
+
+.homepage--github--buttons {
+  .cipp--gh--button {
+    background-color: var(--cyberdrain-secondary);
+    color: var(--cyberdrain-light);
+    &:hover {
+      background-color: transparent;
+      border-color: var(--cyberdrain-secondary);
+      color: var(--cyberdrain-secondary);
+    }
+  }
+
+  .cipp-api--gh--button {
+    border-color: var(--cyberdrain-secondary);
+    color: var(--cyberdrain-secondary);
+    &:hover {
+      background-color: var(--cyberdrain-secondary);
+      color: var(--cyberdrain-light);
+    }
+  }
+}
+
+.cipp-get-started--button {
+  background-color: transparent;
+  border-color: var(--cyberdrain-secondary);
+  color: var(--cyberdrain-secondary);
+  &:hover {
+    background-color: var(--cyberdrain-secondary);
+    color: var(--cyberdrain-light);
+  }
+}
+
+.what-is-cipp {
+  background-color: var(--cyberdrain-accent-blue);
+  color: var(--cyberdrain-light);
+}
+
+.why-does-cipp-exist {
+  background-color: var(--cyberdrain-accent-green);
+  color: var(--cyberdrain-light);
+}
+
+/* Announcement Bar */
+div[class^=announcementBar_] {
+  --stripe-color1: var(--ifm-color-secondary-lightest);
+  --stripe-color2: var(--ifm-color-secondary-light);
+  background: repeating-linear-gradient(35deg,var(--stripe-color1),var(--stripe-color1) 20px,var(--stripe-color2) 10px,var(--stripe-color2) 40px);
+  border-bottom: none;
+  font-weight: 700;
+}
+
+html[data-theme=dark] div[class^=announcementBar_] {
+  --stripe-color1: var(--ifm-color-secondary-darkest);
+  --stripe-color2: var(--ifm-color-secondary-dark);
+  
+  div[class^=announcementBarContent_] {
+    color: var(--cyberdrain-light);
+  }
+}
+
+
+/* Search Box */
+
+.aa-Autocomplete {
+  .aa-DetachedSearchButton {
+    background-color: var(--cyberdrain-secondary);
+    border-color: var(--cyberdrain-primary);
+    border-radius: 0;
+    border-style: solid;
+    border-width: 1px;
+    color: var(--cyberdrain-light);
+
+    .aa-DetachedSearchButtonIcon {
+      color: var(--cyberdrain-primary);
+    }
+  }
+}
+
+.aa-DetachedOverlay {
+  .aa-DetachedContainer {
+    border-radius: 0;
+    background: var(--ifm-background-color);
+
+    .aa-DetachedFormContainer {
+      border-radius: 0;
+      background: var(--ifm-background-color);
+
+      .aa-Form {
+        border-radius: 0;
+        background: var(--ifm-background-color);
+        color: var(--ifm-font-color-base);
+
+        &:focus-within {
+          border-color: var(--ifm-color-primary);
+          box-shadow: 0 0 0 2px var(--ifm-color-primary);
+        }
+      }
+
+      .aa-DetachedCancelButton {
+        border: 1px solid var(--ifm-color-primary);
+        border-radius: 0;
+        color : var(--ifm-color-primary);
+
+        &:hover {
+          background: var(--ifm-color-primary);
+          color: var(--ifm-background-color);
+        }
+      }
+
+      .aa-Label svg {
+        color: var(--ifm-color-primary);
+      }
+
+      .aa-Input {
+        color: var(--ifm-font-color-base);
+        &::placeholder {
+          color: var(--ifm-font-color-base);
+        }
+      }
+    }
   }
 }

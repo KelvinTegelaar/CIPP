@@ -87,13 +87,24 @@ const config = {
           { to: 'changelog', label: 'Changelog', position: 'left' },
           { to: 'contributing', label: 'Contributing', position: 'left' },
           { to: 'troubleshooting', label: 'Troubleshooting', position: 'left' },
-          { href: 'https://cyberdrain.com', label: 'CyberDrain', position: 'left' },
+          { to: 'https://discord.gg/cyberdrain', label: 'Community', position: 'left', target: '_blank' },
           {
-            to: 'https://github.com/KelvinTegelaar/CIPP',
-            'aria-label': 'GitHub',
+            type: 'dropdown',
             position: 'right',
-            className: 'header-github-link',
-          },
+            label: 'Repositories',
+            items: [
+              {
+                to: 'https://github.com/KelvinTegelaar/CIPP',
+                'aria-label': 'GitHub',
+                label: 'CIPP',
+              },
+              {
+                to: 'https://github.com/KelvinTegelaar/CIPP-API',
+                'aria-label': 'GitHub',
+                label: 'CIPP-API',
+              },
+            ]
+          }
         ],
       },
       footer: {

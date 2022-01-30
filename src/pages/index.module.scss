@@ -4,7 +4,7 @@
  */
 
  .hero {
-  background-color: var(--ifm-color-primary-contrast-background);
+  background-color: var(--cyberdrain-primary);
   padding: 48px;
 }
 
@@ -17,12 +17,12 @@
 }
 
 .heroSubtitle {
-  color: var(--ifm-color-primary-contrast-foreground);
+  color: var(--cyberdrain-dark);
   font-size: 60px;
   line-height: 1.2;
   margin: 0;
   strong {
-    color: var(--ifm-color-primary);
+    color: var(--cyberdrain-secondary);
   }
   & > span {
     margin-right: 2rem;
@@ -31,9 +31,8 @@
 
 .heroButtons {
   white-space: nowrap;
+
   & > * {
-    display: inline-flex;
-    align-items: center;
     margin-right: 0.75rem;
     padding: calc(
         var(--ifm-button-padding-vertical) * var(--ifm-button-size-multiplier)
@@ -51,22 +50,26 @@
   height: 1.15em;
 }
 
+.button--hero--primary {
+  --ifm-button-brackground-color: var(--cyberdrain-secondary);
+}
+
 .speechButton {
-  display: inline-flex;
-  align-items: center;
   position: relative;
   text-align: center;
   margin-left: 0.25em;
-  --ifm-button-background-color: var(--ifm-color-primary-contrast-foreground);
-  color: var(--ifm-color-primary-contrast-background);
+  --ifm-button-background-color: var(--cyberdrain-dark);
+  color: var(--cyberdrain-light);
+  border-color: var(--ifm-button-background-color);
   &:hover {
-    --ifm-button-background-color: var(--ifm-color-secondary-contrast-foreground);
+    --ifm-button-background-color: var(--cyberdrain-secondary);
+    --ifm-button-color: var(--cyberdrain-light);
   }
   &:after {
     content: '';
     position: absolute;
     border-left: 0.75em solid transparent;
-    border-right: 0.75em solid var(--ifm-color-primary-contrast-foreground);
+    border-right: 0.75em solid var(--ifm-button-background-color);
     border-top: 0.75em solid transparent;
     border-bottom: 0.75em solid transparent;
     left: -1.375em;

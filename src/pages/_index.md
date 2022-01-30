@@ -1,10 +1,4 @@
 <!-- markdownlint-disable-next-line MD041 -->
-## What is this?
-
-The CyberDrain Improved Partner Portal is a portal designed for Microsoft 365 multi-tenant management. Currently Microsoft's partner systems make multi-tenant management fairly hard with a lot of manual work. Microsoft Lighthouse might resolve this in the future but development of this is progressing slowly and it's a long way away from where it needs to be...
-
-This project is a way to help you with administration, user management, and deploying standards. It's not a replacement for security tools, or a way to cut costs on specific subscriptions. The tool should assist you in removing the gripes with standard partner management and save you several hours per month.
-
 ## Deployment and Getting Started
 
 If you want to self-host, check out the [installation manual](/docs/user/installation/). You will need some knowledge of Static Web Apps, Azure Functions, and Azure KeyVault
@@ -23,20 +17,20 @@ This project is **FREE** but we do have a **Sponsor-ware** component. The sponso
 
 ### For users of the project that sponsor
 
-- The project will be hosted for you.
-- The hosted version will always be the latest release and automatically updated.
-- You'll also receive a staging environment with the latest (nightly/beta) build, to see new features before they go live.
-- You will receive priority on support issues reported on Github.
-- You will be able to make 1 prioritized feature request per month.
+* The project will be hosted for you.
+* The hosted version will always be the latest release and automatically updated.
+* You'll also receive a staging environment with the latest (nightly/beta) build, to see new features before they go live.
+* You will receive priority on support issues reported on Github.
+* You will be able to make 1 prioritized feature request per month.
 
 Sponsorship allows me to put some more time into this project and keep it free, so please consider it. :)
 
 ### For company sponsors, depending on sponsor level you can get the following benefits
 
-- Your company logo will be featured on the [CIPP website](https://cipp.app).
-- Your company logo will be featured on the [CIPP repository's README](https://github.com/KelvinTegelaar/CIPP) at the top.
-- Your company logo will be featured on the [CyberDrain website](https://cyberdrain.com).
-- A small version of your company logo with a link to your homepage will be on the footer, each user will see this on each page.
+* Your company logo will be featured on the [CIPP website](https://cipp.app).
+* Your company logo will be featured on the [CIPP repository's README](https://github.com/KelvinTegelaar/CIPP) at the top.
+* Your company logo will be featured on the [CyberDrain website](https://cyberdrain.com).
+* A small version of your company logo with a link to your homepage will be on the footer, each user will see this on each page.
 
 ## What is the functionality?
 
@@ -50,9 +44,9 @@ Authentication is handled by Azure AD using static web apps security. This means
 
 I'd like to give special thanks to the people that made this project possible;
 
-- [Kyle Hansloven](https://huntress.com)
-- [Ray Orsini](https://oit.co)
-- The Team at [MSP.zone/MSP'R'Us](https://msp.zone)
-- Gavin Stone at [MSPGeek](https://mspgeek.org)
-- MSP2.0 for helping with some visual input.
-- Scott, Chris, Jon, and others that helped me with some of the internals of the app.
+* [Kyle Hansloven](https://huntress.com)
+* [Ray Orsini](https://oit.co)
+* The Team at [MSP.zone/MSP'R'Us](https://msp.zone)
+* Gavin Stone at [MSPGeek](https://mspgeek.org)
+* MSP2.0 for helping with some visual input.
+* Scott, Chris, Jon, and others that helped me with some of the internals of the app.

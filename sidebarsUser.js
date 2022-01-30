@@ -21,7 +21,7 @@ const sidebars = {
       link: {
         type: 'generated-index',
         title: 'Getting Started',
-        description: "This is documentation for people installing/deploying CIPP.",
+        description: "Work through the steps below to install and configure CIPP and get it connected to your Microsoft 365 customer tenants.",
         slug: '/gettingstarted',
       },
       collapsed: false,
@@ -39,7 +39,7 @@ const sidebars = {
       link: {
         type: 'generated-index',
         title: 'Using CIPP',
-        description: "This is documentation for people using the interface of CIPP and using the portal's functionality.",
+        description: "Find out about the interface of CIPP and what information you might find on each page. Includes known issues or limitations.",
         slug: '/usingcipp',
       },
       collapsed: false,
