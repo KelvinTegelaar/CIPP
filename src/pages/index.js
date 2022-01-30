@@ -33,68 +33,70 @@ function HomePageHeader() {
   }, []);
 
   return (
-    <header className={clsx('hero hero--homepage', styles.hero)}>
-      <div className={styles.heroInner}>
-        <div className={clsx(styles.heroSubtitle)}>
-          <span><strong>Free</strong> and <strong>open-source</strong> multi-tenant management for <strong>Microsoft 365</strong></span><br/>
-          <span className={clsx('homepage--github--buttons', styles.heroButtons)}>
-            {cippVersion && (
-              <>
-                {!!cippVersion && (
-                  <a
-                    href="https://github.com/KelvinTegelaar/CIPP/releases/"
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    className="button button--primary button--lg cipp--gh--button"
-                  >
-                    <FontAwesomeIcon icon={faGithub} fixedWidth />
-                    <span class="margin-horiz--xs">CIPP</span>
-                    {cippVersion.startsWith('v')
-                      ? cippVersion
-                      : `v${cippVersion}`}
-                  </a>
-                )}
-                {!!githubStars && (
-                  <a
-                    href="https://github.com/KelvinTegelaar/CIPP/stargazers"
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    className={clsx('button button--lg', styles.speechButton)}
-                  >
-                    <FontAwesomeIcon icon={faStar} fixedWidth />
-                    {githubStars}
-                  </a>
-                )}
-                {!!cippApiVersion && (
-                  <a
-                    href="https://github.com/KelvinTegelaar/CIPP-API/releases/"
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    className="button button--primary button--outline button--lg cipp-api--gh--button"
-                  >
-                    <FontAwesomeIcon icon={faGithub} fixedWidth />
-                    <span class="margin-horiz--xs">CIPP-API</span>
-                    {cippApiVersion.startsWith('v')
-                      ? cippApiVersion
-                      : `v${cippApiVersion}`}
-                  </a>
-                )}
-                
-              </>
-            )}
-          </span>
+    <div className="container-fluid">
+      <header className={clsx('hero hero--homepage', styles.hero)}>
+        <div className={styles.heroInner}>
+          <div className={clsx(styles.heroSubtitle)}>
+            <span><strong>Free</strong> and <strong>open-source</strong> multi-tenant management for <strong>Microsoft 365</strong></span><br/>
+            <div className={clsx('homepage--github--buttons', styles.heroButtons)}>
+              {cippVersion && (
+                <>
+                  {!!cippVersion && (
+                    
+                      <a
+                        href="https://github.com/KelvinTegelaar/CIPP/releases/"
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        className="button button--primary button--lg cipp--gh--button margin-top--lg"
+                      >
+                        <FontAwesomeIcon icon={faGithub} fixedWidth />
+                        <span class="margin-horiz--xs">CIPP</span>
+                        {cippVersion.startsWith('v')
+                          ? cippVersion
+                          : `v${cippVersion}`}
+                      </a>
+                  )}
+                  {!!githubStars && (
+                    <a
+                      href="https://github.com/KelvinTegelaar/CIPP/stargazers"
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      className={clsx('button button--lg margin-top--lg', styles.speechButton)}
+                    >
+                      <FontAwesomeIcon icon={faStar} fixedWidth />
+                      {githubStars}
+                    </a>
+                  )}
+                  {!!cippApiVersion && (
+                    <a
+                      href="https://github.com/KelvinTegelaar/CIPP-API/releases/"
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      className="button button--primary button--outline button--lg cipp-api--gh--button margin-top--lg"
+                    >
+                      <FontAwesomeIcon icon={faGithub} fixedWidth />
+                      <span class="margin-horiz--xs">CIPP-API</span>
+                      {cippApiVersion.startsWith('v')
+                        ? cippApiVersion
+                        : `v${cippApiVersion}`}
+                    </a>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+          <div className={clsx(styles.buttons)}>
+            <Link
+              className="button button--primary button--lg cipp-get-started--button"
+              to="/docs/user/gettingstarted/"
+            >
+              <span className="margin-right--xs">Get Started</span>
+              <FontAwesomeIcon icon={faPlay} fixedWidth />
+            </Link>
+          </div>
         </div>
-        <div className={clsx(styles.buttons)}>
-          <Link
-            className="button button--primary button--lg cipp-get-started--button"
-            to="/docs/user/gettingstarted/"
-          >
-            <span className="margin-right--xs">Get Started</span>
-            <FontAwesomeIcon icon={faPlay} fixedWidth />
-          </Link>
-        </div>
-      </div>
-    </header>
+      </header>
+    </div>
   );
 }
 
@@ -126,7 +128,7 @@ export default function Home() {
           </div>
           <div className="container text--center margin-vert--md">
             <Link className="button button--primary button--lg" to="/docs/dev">
-              Want to help? Check out the Developer Guide
+              Want to help?
             </Link>
           </div>
         </div>
@@ -137,7 +139,7 @@ export default function Home() {
           </div>
           <div className="container text--center margin-vert--md">
             <Link className="button button--primary button--lg" to="https://cyberdrain.com">
-              See more of Kelvin's work at CyberDrain.com
+              Learn more at CyberDrain.com
             </Link>
           </div>
         </div>
