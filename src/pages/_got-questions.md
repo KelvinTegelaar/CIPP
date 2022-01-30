@@ -3,7 +3,7 @@ You have questions? That's okay! We're here to help, you'll find the answer to s
 
 <details><summary>Who are the developers?</summary>
 
-We almost all work for Managed Service Providers (MSPs) who develop CIPP on a voluntary basis though some contributors may be paid to work on specific features or projects. The development team is lead by:
+We almost all work for Managed Service Providers (MSPs) who develop CIPP on a voluntary basis though some contributors may be paid to work on specific features or projects. The development team is led by:
 
 * [Kelvin Tegelaar](https://www.cyberdrain.com)
 * [Gavin Stone](https://www.gavsto.com)

@@ -35,6 +35,7 @@ const config = {
         theme: {
           customCss: [
             require.resolve('./src/scss/custom.scss'),
+            require.resolve('./static/fonts/montserrat/style.css'),
           ],
         },
 
@@ -188,6 +189,7 @@ const config = {
       {
         indexDocs: true,
         indexDocSidebarParentCategories: 3,
+        indexBlog: false,
         indexPages: true,
         language: "en",
       }
