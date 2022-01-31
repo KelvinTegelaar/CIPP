@@ -14,12 +14,12 @@ const RefreshAction = () => {
     ModalService.confirm({
       body: (
         <div>
-          Deploy Applications
+          Deploy all queued applications to tenants?
           <br />
-          <i>Please note: this runs every 24 hours, or when a new app is added automatically.</i>
+          <i>Please note: This job runs automatically every 12 hours.</i>
         </div>
       ),
-      onConfirm: () => execStandards({ path: 'api/Standards_OrchestrationStarter' }),
+      onConfirm: () => execStandards({ path: 'api/AddChocoApp_OrchestrationStarter' }),
     })
 
   return (

@@ -119,7 +119,7 @@ const ApplyStandard = () => {
           <RFFCFormSwitch name="DisableRestart" label="Disable Restart" />
 
           <RFFCFormRadio
-            value=""
+            value="On"
             name="AssignTo"
             label="Do not assign"
             validate={false}
