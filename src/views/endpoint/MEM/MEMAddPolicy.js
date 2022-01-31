@@ -98,7 +98,7 @@ const AddPolicy = () => {
             <WizardTableField
               reportName="Add-MEM-Policy-Tenant-Selector"
               keyField="defaultDomainName"
-              path="/api/ListTenants"
+              path="/api/ListTenants?AllTenantSelector=true"
               columns={[
                 {
                   name: 'Display Name',
@@ -274,7 +274,13 @@ const AddPolicy = () => {
             <CSpinner>Loading</CSpinner>
           </CCallout>
         )}
-        {postResults.isSuccess && <CCallout color="success">{postResults.data.Results}</CCallout>}{' '}
+        {postResults.isSuccess && (
+          <CCallout color="success">
+            {postResults.data.Results.map((message, idx) => {
+              return <li key={idx}>{message}</li>
+            })}
+          </CCallout>
+        )}
         <hr className="my-4" />
       </CippWizard.Page>
     </CippWizard>
