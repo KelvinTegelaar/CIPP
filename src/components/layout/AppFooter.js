@@ -1,11 +1,13 @@
 import React from 'react'
-import { CFooter } from '@coreui/react'
+import { CFooter, CHeaderBrand, CImage } from '@coreui/react'
+import huntressLogo from 'src/assets/images/huntress_teal.png'
 
 const AppFooter = () => {
   return (
     <CFooter>
-      <div></div>
-      <div className="ms-auto"></div>
+      <p className="white-text">
+        This application is sponsored by <CImage src={huntressLogo} height={30} alt="Logo" />
+      </p>
     </CFooter>
   )
 }
