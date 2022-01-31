@@ -1,5 +1,5 @@
 import React from 'react'
-import { CFooter, CHeaderBrand, CImage } from '@coreui/react'
+import { CFooter, CImage } from '@coreui/react'
 import huntressLogo from 'src/assets/images/huntress_teal.png'
 
 const AppFooter = () => {
