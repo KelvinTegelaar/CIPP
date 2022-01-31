@@ -49,6 +49,10 @@
 
 /* cui overrides */
 
+.badge {
+  border-radius: var(--cipp-border-radius);
+}
+
 .btn {
   border-radius: var(--cipp-border-radius);
 }
@@ -158,10 +162,20 @@
   flex-grow: 1;
 }
 
+.nav-pills {
+  .nav-link {
+    border-radius: var(--cipp-border-radius);
+  }
+}
+
 .nav-tabs {
   .nav-link {
     border-radius: var(--cipp-border-radius);
   }
+}
+
+.progress {
+  border-radius: var(--cipp-border-radius);
 }
 
 /* Tables */
@@ -320,7 +334,7 @@
 
 .rdt_TableRow.no-mfa {
   background-color: color.adjust($cyberdrain-danger, $alpha: -0.5) !important;
-  
+
   .text-success {
     color: var(--cui-body-color) !important;
   }
