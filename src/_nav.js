@@ -262,7 +262,7 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'List Defender for Endpoint',
+        name: 'Defender Status',
         to: '/endpoint/defender/list-defender',
       },
     ],
