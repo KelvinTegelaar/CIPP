@@ -15,6 +15,7 @@ import {
   CCollapse,
   CForm,
   CFormLabel,
+  CFormSwitch,
   CFormInput,
   CCardTitle,
   CLink,
@@ -39,6 +40,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faServer,
+  faCog,
   faCheckCircle,
   faCompressAlt,
   faExclamationTriangle,
@@ -78,6 +80,11 @@ export function IndividualDomainCheck({
 }) {
   const [searchParams, setSearchParams] = useSearchParams()
   const [domain, setDomain] = useState('')
+  const [spfOverride, setSpfOverride] = useState('')
+  const [dkimOverride, setDkimOverride] = useState('')
+  const [enableHttps, setEnableHttps] = useState(false)
+  const [httpsOverride, setHttpsOverride] = useState('')
+  const [optionsVisible, setOptionsVisible] = useState(false)
   const [masonrySize, setMasonrySize] = useState()
 
   useEffect(() => {
@@ -102,6 +109,20 @@ export function IndividualDomainCheck({
       setDomain(values.domain)
       setSearchParams({ domain: values.domain }, { replace: true })
     }
+
+    if (values.spfrecord !== spfOverride) {
+      setSpfOverride(values.spfrecord)
+    }
+    if (values.dkimselector !== dkimOverride) {
+      setDkimOverride(values.dkimselector)
+    }
+    if (values.subdomains !== httpsOverride) {
+      setHttpsOverride(values.subdomains)
+    }
+  }
+
+  const handleHttpsSwitch = (e) => {
+    setEnableHttps(e.target.checked)
   }
 
   return (
@@ -116,7 +137,12 @@ export function IndividualDomainCheck({
           </CCardHeader>
           <CCardBody>
             <Form
-              initialValues={{ domain }}
+              initialValues={{
+                domain,
+                spfrecord: spfOverride,
+                dkimselector: dkimOverride,
+                subdomains: httpsOverride,
+              }}
               onSubmit={onSubmit}
               render={({ handleSubmit, submitting, pristine }) => {
                 return (
@@ -124,25 +150,96 @@ export function IndividualDomainCheck({
                     <Field name="domain">
                       {({ input, meta }) => {
                         return (
-                          <CInputGroup className="mb-3">
+                          <>
+                            <CInputGroup className="mb-3">
+                              <CFormInput
+                                {...input}
+                                valid={!meta.error && meta.touched}
+                                invalid={meta.error && meta.touched}
+                                type="text"
+                                id="domain"
+                                disabled={readOnly}
+                                placeholder="Domain Name"
+                                area-describedby="domain"
+                              />
+                              <CButton type="submit" color="primary">
+                                Check
+                              </CButton>
+                              <CButton
+                                size="sm"
+                                variant="outline"
+                                color="light"
+                                onClick={() => setOptionsVisible(!optionsVisible)}
+                              >
+                                <FontAwesomeIcon className="mx-1" size="1x" icon={faCog} />
+                              </CButton>
+                            </CInputGroup>
+                          </>
+                        )
+                      }}
+                    </Field>
+
+                    <CCollapse visible={optionsVisible}>
+                      <h5>Options</h5>
+                      <Field name="spfrecord">
+                        {({ input, meta }) => {
+                          return (
                             <CFormInput
                               {...input}
                               valid={!meta.error && meta.touched}
                               invalid={meta.error && meta.touched}
                               type="text"
-                              id="domain"
-                              disabled={readOnly}
-                              placeholder="Domain Name"
-                              area-describedby="domain"
+                              id="spfrecord"
+                              className="mt-1"
+                              placeholder="Pre-validate SPF Record (e.g. v=spf1 ...)"
+                              area-describedby="spfrecord"
                             />
+                          )
+                        }}
+                      </Field>
+                      <Field name="dkimselector">
+                        {({ input, meta }) => {
+                          return (
+                            <CFormInput
+                              {...input}
+                              valid={!meta.error && meta.touched}
+                              invalid={meta.error && meta.touched}
+                              type="text"
+                              id="dkimselector"
+                              className="mt-1"
+                              placeholder="DKIM Selectors (e.g. selector1, selector2)"
+                              area-describedby="dkimselector"
+                            />
+                          )
+                        }}
+                      </Field>
 
-                            <CButton type="submit" color="primary">
-                              Check
-                            </CButton>
-                          </CInputGroup>
-                        )
-                      }}
-                    </Field>
+                      <CFormSwitch
+                        onChange={handleHttpsSwitch}
+                        label="Enable HTTPS check"
+                        id="enableHttpsCheck"
+                        className="mt-1"
+                      />
+
+                      {enableHttps && (
+                        <Field name="subdomains">
+                          {({ input, meta }) => {
+                            return (
+                              <CFormInput
+                                {...input}
+                                valid={!meta.error && meta.touched}
+                                invalid={meta.error && meta.touched}
+                                type="text"
+                                id="subdomains"
+                                className="mt-1"
+                                placeholder="HTTPS Subdomains (Default: www)"
+                                area-describedby="subdomains"
+                              />
+                            )
+                          }}
+                        </Field>
+                      )}
+                    </CCollapse>
                   </CForm>
                 )
               }}
@@ -160,6 +257,11 @@ export function IndividualDomainCheck({
           <NSResultCard domain={domain} />
         </CippMasonryItem>
       )}
+      {domain && enableHttps && (
+        <CippMasonryItem size={masonrySize}>
+          <HttpsResultCard domain={domain} httpsOverride={httpsOverride} />
+        </CippMasonryItem>
+      )}
       {domain && (
         <CippMasonryItem size={masonrySize}>
           <MXResultsCard domain={domain} />
@@ -167,7 +269,7 @@ export function IndividualDomainCheck({
       )}
       {domain && (
         <CippMasonryItem size={masonrySize}>
-          <SPFResultsCard domain={domain} />
+          <SPFResultsCard domain={domain} spfOverride={spfOverride} />
         </CippMasonryItem>
       )}
       {domain && (
@@ -177,7 +279,7 @@ export function IndividualDomainCheck({
       )}
       {domain && (
         <CippMasonryItem size={masonrySize}>
-          <DKIMResultsCard domain={domain} />
+          <DKIMResultsCard domain={domain} dkimOverride={dkimOverride} />
         </CippMasonryItem>
       )}
       {domain && (
@@ -240,6 +342,47 @@ DomainOffcanvasTabs.propTypes = {
   jsonContent: PropTypes.string,
 }
 
+function ValidationListContent({ data }) {
+  let validationPasses = data?.ValidationPasses || []
+  let validationWarns = data?.ValidationWarns || []
+  let validationFails = data?.ValidationFails || []
+
+  if (!Array.isArray(validationPasses)) {
+    validationPasses = [validationPasses]
+  }
+  if (!Array.isArray(validationWarns)) {
+    validationWarns = [validationWarns]
+  }
+  if (!Array.isArray(validationFails)) {
+    validationFails = [validationFails]
+  }
+  return (
+    <div>
+      {validationPasses.map((validation, idx) => (
+        <div key={`${idx}-validation`}>
+          <IconGreenCheck />
+          {validation}
+        </div>
+      ))}
+      {validationWarns.map((validation, idx) => (
+        <div key={`${idx}-validation`}>
+          <IconWarning />
+          {validation}
+        </div>
+      ))}
+      {validationFails.map((validation, idx) => (
+        <div key={`${idx}-validation`}>
+          <IconRedX />
+          {validation}
+        </div>
+      ))}
+    </div>
+  )
+}
+ValidationListContent.propTypes = {
+  data: PropTypes.object,
+}
+
 function ResultsCard({
   children,
   data,
@@ -249,9 +392,19 @@ function ResultsCard({
   errorMessage,
   isFetching,
 }) {
-  const validationPasses = data?.ValidationPasses || []
-  const validationWarns = data?.ValidationWarns || []
-  const validationFails = data?.ValidationFails || []
+  let validationPasses = data?.ValidationPasses || []
+  let validationWarns = data?.ValidationWarns || []
+  let validationFails = data?.ValidationFails || []
+
+  if (!Array.isArray(validationPasses)) {
+    validationPasses = [validationPasses]
+  }
+  if (!Array.isArray(validationWarns)) {
+    validationWarns = [validationWarns]
+  }
+  if (!Array.isArray(validationFails)) {
+    validationFails = [validationFails]
+  }
 
   let finalState = ''
 
@@ -295,19 +448,19 @@ function ResultsCard({
               {validationPasses.map((validation, idx) => (
                 <div key={`${idx}-validation-${type}`}>
                   <IconGreenCheck />
-                  {String(validation.replace('PASS: ', ''))}
+                  {validation}
                 </div>
               ))}
               {validationWarns.map((validation, idx) => (
                 <div key={`${idx}-validation-${type}`}>
                   <IconWarning />
-                  {String(validation.replace('WARN: ', ''))}
+                  {validation}
                 </div>
               ))}
               {validationFails.map((validation, idx) => (
                 <div key={`${idx}-validation-${type}`}>
                   <IconRedX />
-                  {String(validation.replace('FAIL: ', ''))}
+                  {validation}
                 </div>
               ))}
             </>
@@ -321,17 +474,19 @@ function ResultsCard({
 ResultsCard.propTypes = {
   data: PropTypes.object,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
-  type: PropTypes.oneOf(['MX', 'SPF', 'DMARC', 'DNSSEC', 'DKIM']),
+  type: PropTypes.oneOf(['HTTPS', 'MX', 'SPF', 'DMARC', 'DNSSEC', 'DKIM']),
   headerClickFunction: PropTypes.func,
   error: PropTypes.bool,
   errorMessage: PropTypes.string,
   isFetching: PropTypes.bool,
 }
 
-const SPFResultsCard = ({ domain }) => {
+const SPFResultsCard = ({ domain, spfOverride }) => {
+  console.log(spfOverride)
   const { data, isFetching, error } = useExecDnsHelperQuery({
-    domain: domain,
-    action: 'ReadSpfRecord',
+    Domain: domain,
+    Action: 'ReadSpfRecord',
+    Record: spfOverride,
   })
 
   let record = data?.Record
@@ -374,15 +529,17 @@ const SPFResultsCard = ({ domain }) => {
     </>
   )
 }
-SPFResultsCard.propTypes = sharedProps
-
+SPFResultsCard.propTypes = {
+  spfOverride: PropTypes.string,
+  ...sharedProps,
+}
 function WhoisResultCard({ domain }) {
   const [visible, setVisible] = useState(false)
   const {
     data: whoisReport,
     isFetching,
     error,
-  } = useExecDnsHelperQuery({ domain: domain, action: 'ReadWhoisRecord' })
+  } = useExecDnsHelperQuery({ Domain: domain, Action: 'ReadWhoisRecord' })
   const jsonContent = JSON.stringify(whoisReport, null, 2)
 
   return (
@@ -434,7 +591,7 @@ function NSResultCard({ domain }) {
     data: nsReport,
     isFetching,
     error,
-  } = useExecDnsHelperQuery({ domain: domain, action: 'ReadNSRecord' })
+  } = useExecDnsHelperQuery({ Domain: domain, Action: 'ReadNSRecord' })
   const content = []
   nsReport?.Records.map((ns, index) =>
     content.push({
@@ -460,10 +617,79 @@ function NSResultCard({ domain }) {
 }
 NSResultCard.propTypes = sharedProps
 
+const HttpsResultCard = ({ domain, httpsOverride }) => {
+  const { data, isFetching, error } = useExecDnsHelperQuery({
+    Domain: domain,
+    Action: 'TestHttpsCertificate',
+    Subdomains: httpsOverride,
+  })
+  let tests = data?.Tests || []
+
+  const jsonContent = JSON.stringify(data, null, 2)
+
+  if (!Array.isArray(tests)) {
+    tests = [tests]
+  }
+  const [visible, setVisible] = useState(false)
+  const headerClickFunction = () => {
+    setVisible(true)
+  }
+
+  return (
+    <ResultsCard
+      data={data}
+      type="HTTPS"
+      headerClickFunction={headerClickFunction}
+      isFetching={isFetching}
+      error={error}
+      errorMessage="Unable to load HTTPS Results"
+    >
+      <CippOffcanvas
+        id="https-offcanvas"
+        visible={visible}
+        placement="end"
+        className="cipp-offcanvas"
+        hideFunction={() => setVisible(false)}
+        title="HTTPS Details"
+      >
+        <DomainOffcanvasTabs jsonContent={jsonContent}>
+          {tests.length > 0 && (
+            <>
+              <COffcanvasTitle>HTTPS Certificates</COffcanvasTitle>
+              <CTable striped small>
+                <CTableHead>
+                  <CTableRow>
+                    <CTableHeaderCell scope="col">Hostname</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Expires</CTableHeaderCell>
+                  </CTableRow>
+                </CTableHead>
+                <CTableBody>
+                  {tests.map((test, key) => (
+                    <CTableRow key={`${key}-hostname`}>
+                      <CTableDataCell>{test?.Hostname}</CTableDataCell>
+                      <CTableDataCell>{test?.Certificate.NotAfter}</CTableDataCell>
+                    </CTableRow>
+                  ))}
+                </CTableBody>
+              </CTable>
+              <h5>Validation Details</h5>
+              {tests.map((test, key) => (
+                <ValidationListContent data={test} key={key} />
+              ))}
+            </>
+          )}
+        </DomainOffcanvasTabs>
+      </CippOffcanvas>
+    </ResultsCard>
+  )
+}
+
+HttpsResultCard.propTypes = { httpsOverride: PropTypes.string, ...sharedProps }
+
 const MXResultsCard = ({ domain }) => {
   const { data, isFetching, error } = useExecDnsHelperQuery({
-    domain: domain,
-    action: 'ReadMXRecord',
+    Domain: domain,
+    Action: 'ReadMXRecord',
   })
   const mailProviderName = data?.MailProvider?.Name
   let records = data?.Records || []
@@ -548,8 +774,8 @@ MXResultsCard.propTypes = sharedProps
 
 function DMARCResultsCard({ domain }) {
   const { data, isFetching, error } = useExecDnsHelperQuery({
-    domain: domain,
-    action: 'ReadDmarcPolicy',
+    Domain: domain,
+    Action: 'ReadDmarcPolicy',
   })
   let record = data?.Record
   const [visible, setVisible] = useState(false)
@@ -596,8 +822,8 @@ DMARCResultsCard.propTypes = sharedProps
 
 function DNSSECResultsCard({ domain }) {
   const { data, isFetching, error } = useExecDnsHelperQuery({
-    domain: domain,
-    action: 'TestDNSSEC',
+    Domain: domain,
+    Action: 'TestDNSSEC',
   })
   let keys = data?.Keys
   const jsonContent = JSON.stringify(data, null, 2)
@@ -658,10 +884,11 @@ function DNSSECResultsCard({ domain }) {
 
 DNSSECResultsCard.propTypes = sharedProps
 
-function DKIMResultsCard({ domain }) {
+function DKIMResultsCard({ domain, dkimOverride }) {
   const { data, isFetching, error } = useExecDnsHelperQuery({
-    domain: domain,
-    action: 'ReadDkimRecord',
+    Domain: domain,
+    Action: 'ReadDkimRecord',
+    Selector: dkimOverride,
   })
   let records = data?.Records
   const jsonContent = JSON.stringify(data, null, 2)
@@ -723,8 +950,7 @@ function DKIMResultsCard({ domain }) {
     </>
   )
 }
-
-DKIMResultsCard.propTypes = sharedProps
+DKIMResultsCard.propTypes = { dkimOverride: PropTypes.string, ...sharedProps }
 
 function DomainCheckError(props) {
   const [expanded, setExpanded] = useState(false)
