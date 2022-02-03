@@ -158,6 +158,7 @@ For full functionality, you'll need the following permissions for your Secure Ap
     | ChannelMessage.Send                                     | Send channel messages                                             |
     | ChannelSettings.Read.All                                | Read the names, descriptions, and settings of channels            |
     | ChannelSettings.ReadWrite.All                           | Read and write the names, descriptions, and settings of channels  |
+    | Channel.Delete.all                                      | Permission to delete a channel                                    |
     | ConsentRequest.Read.All                                 | Read consent requests                                             |
     | Device.Command                                          | Communicate with user devices                                     |
     | Device.Read                                             | Read user devices                                                 |
