@@ -17,7 +17,7 @@ You should now be able to browse to the custom domain or the default domain, and
 
 For the first 30 minutes or more the application will respond pretty slowly, this is because, among other things, the Function App (CIPP-API) has to download PowerShell modules from Microsoft. We can't make this run any faster at this time. If you have waited for at least 30 minutes and things are still not working restart the Azure Function App (Azure Portal > CIPP Resource Group > Function App > Overview > Restart), this solves 99,9% of all issues. Turn it off, turn it on again. ;)
 
-If you are still stuck, check out the [FAQ](/faq) page and if needed - create an issue [on GitHub](https://github.com/KelvinTegelaar/CIPP/issues) or seek help [on the CIPP Discord](https://discord.gg/cyberdrain)
+If you are still stuck, check out the [FAQ](/faq) or [Troubleshooting](/troubleshooting) page and if needed - create an issue [on GitHub](https://github.com/KelvinTegelaar/CIPP/issues) or seek help [on the CIPP Discord](https://discord.gg/cyberdrain)
 
 ## Adding a custom domain name
 
