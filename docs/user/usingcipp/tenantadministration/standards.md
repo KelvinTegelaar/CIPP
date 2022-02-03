@@ -5,9 +5,20 @@ description: Apply pre-defined standards to your Microsoft 365 CSP tenants.
 slug: /usingcipp/tenantadministration/standards
 ---
 
-The Standards page allows you to (re)set specific standards over your entire client base. The wizard allows you to select the most common settings and corrects them every 3 hours by default. If a user disables a setting it'll automatically be restored.
+## Overview
 
-In the next version, we will be adding more standardized options and settings, we'll also allow you to send an alert to either your RMM system or e-mail. Below are the standards explained
+:::danger Danger Will Robinson
+
+A standard applies actual configuration to the selected tenant, not just monitoring.
+
+Note that by default, Standards are not applied to any tenants upon setup / configuration of CIPP.  Applying any standard should be done with full understanding of the effects it will have, detailed below.
+:::
+
+The Standards page allows you to (re)set specific standards over your entire client base. The wizard allows you to select the most common settings and corrects them **every 3 hours** by default. If a user disables a setting it'll automatically be restored.
+
+In the next version, we will be adding more standardised options and settings, we'll also allow you to send an alert to either your RMM system or e-mail. 
+
+Below are the standards explained...
 
 ## Meet the Standards
 
@@ -29,11 +40,24 @@ In the next version, we will be adding more standardized options and settings, w
 
 ### Impact Levels
 
-* **Low Impact** - Changes which have no user-facing impact or minimal impact.
-* **Medium Impact** - Changes which have a user impact that can be managed with a little communication.
-* **High Impact** - Changes which should be carefully thought through and ideally managed with customers - may have significant impacts on how users interact with Microsoft 365.
+:::success Low Impact
+
+Changes which have no user-facing impact or minimal impact.
+
+:::
+:::caution Medium Impact
+
+Changes which have a user impact that can be managed with a little communication.
+:::
+:::danger High Impact
+
+Changes which should be carefully thought through and ideally managed with customers - may have significant impacts on how users interact with Microsoft 365.
+:::
 
 ## Current known issues / Limitations
 
 * These jobs run asynchronously every 3 hours per default, you can check the log for the current operation by looking for "Standards API"
 * The job engine might slow down other APIs temporarily if it has a lot to process.(loads of settings, loads of tenants).
+
+If you have any further issues, [please report this as a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).
+

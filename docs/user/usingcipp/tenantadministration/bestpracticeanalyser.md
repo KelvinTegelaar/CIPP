@@ -5,11 +5,10 @@ description: Audit your tenant against best practices.
 slug: /usingcipp/tenantadministration/bestpracticeanalyser
 ---
 
+## Overview
+
 The Best Practice Analyser is a series of checks that run against all of your 365 tenants. The Best Practice concept of this has been wideless discussed with numerous MSPs. Most of these Best Practices have been derived from the standards portion of CIPP. The Best Practice Analyser is entirely read only. It will not make any changes to your tenants.
 
-## Current known issues / Limitations
-
-The final plan will be to have the data refresh once a day. With version 1.2.0 you will need to refresh the data manually.
 
 ## How do I get started?
 
@@ -19,7 +18,8 @@ In the left hand menu, navigate to **Tenant Administration > Standards > Best Pr
 
 At the top of the page there is button called **Force Refresh All Data**. You only need to click this once.
 
----
+[Please see Limitations for this option](/docs/user/usingcipp/tenantadministration/bestpracticeanalyser/#current-known-issues--limitations)
+
 
 ## Interpreting Results
 
@@ -72,6 +72,16 @@ This is a clickable button which will show you where you have unused licenses. T
 
 Please ensure that you have given adequate time for the Best Practice Analyser to run. In an environment with 100 tenants this takes on average 15 minutes. Please ensure that your permissions are correct by going in to **CIPP Settings > Configuration Settings > Run Permission Check**. Make sure your CIPP-API and CIPP modules are both fully up-to-date. There is extensive logging in the log file in the root of the CIPP-API Function App.
 
+Note that if you are only seeing partial data after waiting a while for the data to populate, it is likely an issue with your Exchange Refresh Token which is used across the BPA.  You can test this with the Access Check by going to **CIPP Settings > Configuration Settings > Tenant Access Check**
+
 ## I have something to add or an idea for Best Practices
 
-Excellent! Please add them to the Github Issues as a feature request
+Excellent! [Please add them to the Github Issues as a feature request](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=feature_request.md&title=FEATURE+REQUEST%3A+)
+
+## Current known issues / Limitations
+
+* Currently the BPA runs every day at midnight and has a significant impact on the overall performance of CIPP for approximately 30 minutes.
+
+If you have any further issues, [please report this as a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).
+
+

@@ -224,7 +224,7 @@ Write-Host "All Tests Finished"
 
 </details>
 
-This script is taken from Gavin Stone's [excellent blog post on setting up the Secure Application Model](https://www.cyberdrain.com/automating-with-powershell-getting-new-secure-app-model-tokens/).
+This script is taken from Gavin Stone's [excellent blog post on setting up the Secure Application Model](https://www.gavsto.com/secure-application-model-for-the-layman-and-step-by-step/).
 
 This script does not test the CIPP configuration, only that the tokens you are pasting into this script are correct.  
 
