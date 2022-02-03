@@ -5,11 +5,9 @@ description: Check your managed domains against security and configuration best 
 slug: /usingcipp/tenantadministration/domainanalyser
 ---
 
+## Overview
+
 The domain analyser is a series of best practice checks that run against all email enabled domains that can been found in your delegated 365 tenants. It analyses the DNS records that are available and assesses SPF, DMARC, DKIM and DNSSEC. Please note - clicking **More** at the end of each row will give you extended information about the problems identified.
-
-## Current known issues / Limitations
-
-You may get odd results if you have different records setup for subdomains. As it stands at the moment you will only get DKIM results where the domains are utilising 365 or Google e-mail.
 
 ## How do I get started?
 
@@ -19,7 +17,6 @@ In the left hand menu, navigate to **Tenant Administration > Standards > Domain 
 
 At the top of the page there is button called **Force Refresh All Data**. You only need to click this once.
 
----
 
 ## Interpreting Results
 
@@ -62,8 +59,15 @@ DKIM (DomainKeys Identified Mail) is an email security standard designed to make
 
 ## I am having Problems
 
-The adding of this feature requires a new permission granting in your delegated permissions - Domain.Read.All. Please ensure that you have given adequate time for the Domain Analyser to run. In an environment with 100 tenants this takes on average 2 minutes. Please ensure that your permissions are correct by going in to **CIPP Settings > Configuration Settings > Run Permission Check**. Make sure your CIPP-API and CIPP modules are both fully up-to-date. There is extensive logging in the log file in the root of the CIPP-API Function App.
+The adding of this feature requires a new permission granting in your delegated permissions - *Domain.Read.All*. Please ensure that you have given adequate time for the Domain Analyser to run. In an environment with 100 tenants this takes on average 2 minutes. Please ensure that your permissions are correct by going in to **CIPP Settings > Configuration Settings > Run Permission Check**. Make sure your CIPP-API and CIPP modules are both fully up-to-date. There is extensive logging in the log file in the root of the CIPP-API Function App.
 
 ## I have something to add or an idea for Domain Analyser
 
-Excellent! Please add them to the Github Issues as a feature request
+Excellent! [Please add them to the Github Issues as a feature request](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=feature_request.md&title=FEATURE+REQUEST%3A+)
+
+## Current known issues / Limitations
+
+* You may get odd results if you have different records setup for subdomains. As it stands at the moment you will only get DKIM results where the domains are utilising 365 or Google e-mail.
+
+If you have any further issues, [please report this as a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).
+
