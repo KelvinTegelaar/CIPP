@@ -26,7 +26,3 @@ You can add tenants to the excluded tenant list to prevent CIPP from taking any 
 ## Access backend
 
 You can get the URLs to access backend features directly in the Azure AD portal from the Security tab.
-
-## Current known issues / Limitations
-
-None. This should work as expected. If you have any issues. Please report this as a bug.

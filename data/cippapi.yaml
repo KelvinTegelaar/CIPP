@@ -683,7 +683,7 @@ components:
       properties:
         id:
           type: number
-        isplayName:
+        displayName:
          type: string
         customer:
           type: string

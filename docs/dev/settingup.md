@@ -23,6 +23,12 @@ You'll want to have the following installed on the computer you're going to use 
 * [.NET SDK 5](https://dotnet.microsoft.com/en-us/download/dotnet/5.0)
 * [.NET SDK 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) `winget install --exact Microsoft.dotnet`
 
+:::info About these instructions
+
+This page will walk you through getting setup to develop for CIPP using the command line to perform operations with `git` and `npm`. There are graphical user interfaces for these tools but they won't be covered in this documentation. The commands below are broadly OS agnostic.
+
+:::
+
 Using `npm` (node package manager) which is included with `nodejs` you're going to install the *Azure Static Web Apps CLI* and the *Azure Functions Core Tools* globally.
 
 :::caution `npm install --global` Permissions
@@ -37,6 +43,10 @@ npm install --global @azure/static-web-apps-cli
 
 ```bash title="Installing the Azure Functions Core Tools"
 npm install --global azure-functions-core-tools@4 --unsafe-perms true
+```
+
+```bash title="Installing the Azurite storage emulator"
+npm install --global azurite
 ```
 
 Now we need to get the files downloaded for CIPP. In order to properly test as you develop the CIPP frontend we need a copy of your CIPP and CIPP-API repositories.
@@ -117,3 +127,9 @@ cd ..
 ```
 
 That's it - we've got our repositories set locally and on the dev branch, our local environment is setup and ready to develop the CIPP UI. Read on through this section for further instructions.
+
+:::info GitHub CLI
+
+You can install and use the [GitHub CLI](https://cli.github.com/) `winget install --id GitHub.cli` to interact with GitHub from your command line. This is a fantastic addition to your command-line Git workflows allowing you to create Pull Requests and Issues without having to open a browser.
+
+:::

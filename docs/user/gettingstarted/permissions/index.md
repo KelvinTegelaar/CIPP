@@ -32,7 +32,7 @@ Some permissions may appear to be duplicated in the Delegated and Application pe
 </summary>
 <p>
 
-:::note You'll need to add the following **delegated permissions**:
+:::note List of **delegated permissions** used by CIPP:
 
 | API / Permissions name                       | Description                                                       |
 | -------------------------------------------- | ----------------------------------------------------------------- |
@@ -124,9 +124,14 @@ Some permissions may appear to be duplicated in the Delegated and Application pe
 </p>
 </details>
 
+<details>
+<summary>
+
 ### Application Permissions
 
-:::note AND You'll need to add the following **Application permissions**:
+</summary>
+
+:::note List of **application permissions** used by CIPP:
 
 | API / Permissions name                                  | Description                                                       |
 | ------------------------------------------------------- | ----------------------------------------------------------------- |
@@ -168,3 +173,5 @@ Some permissions may appear to be duplicated in the Delegated and Application pe
 | UserAuthenticationMethod.ReadWrite.All                  | Read and write all users' authentication methods                  |
 
 :::
+
+</details>

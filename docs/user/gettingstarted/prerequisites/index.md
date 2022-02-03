@@ -17,7 +17,13 @@ For the installation and maintenance, we assume you have some knowledge of GitHu
 
 If you haven't setup the Secure App Model use the instructions below and then move onto the next page to configure the permissions for your SAM application.
 
-:::tip Setting up the Secure App Model
+:::danger Secure Application Model account
+
+We **strongly** recommend that you use a separate global administrator account for each Secure Application Model application you create. This avoids conflicts that occur when using existing accounts which may be in customer tenants as guest users and provides better tracing in audit logs.
+
+:::
+
+:::tip Setting up the Secure Application Model
 
 * Haven't setup the Secure Application model yet? Check out [this CyberDrain blog post](https://www.cyberdrain.com/connect-to-exchange-online-automated-when-mfa-is-enabled-using-the-secureapp-model/).
 * For a step-by-step guide to setting up the Secure Application Model, see [this Gavsto blog post](https://www.gavsto.com/secure-application-model-for-the-layman-and-step-by-step/).

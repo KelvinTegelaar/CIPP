@@ -1,6 +1,10 @@
+import DeployToAzure from './images/deployToAzure.svg';
+
 After you have completed the prerequisites in the [Prerequisites](../prerequisites/) section, click the button below to run the automated setup. This does most of the work for you. If you don't want to use the automated installer, use the [manual installation instructions](#manual-instructions-here-be-dragons) below, but be warned that this is really not advised, there's a lot of moving parts where one could make a mistake. You will need to use the manual installation instructions if you wish to host your repo in [Azure DevOps](https://dev.azure.com) or on a [GitLab](https://www.gitlab.com) instance.
 
-[![Deploy To Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FKelvinTegelaar%2FCIPP%2Fmain%2Fdeployment%2FAzureDeploymentTemplate.json)
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FKelvinTegelaar%2FCIPP%2Fmain%2Fdeployment%2FAzureDeploymentTemplate.json">
+    <DeployToAzure />
+</a>
 
 ### I can't deploy in my region
 
@@ -14,4 +18,6 @@ This is because the Azure Static Web Apps (SWA) component is global by default (
 
 To work around this use the alternative installation button below. This will deploy the Static Web App in *Central US* region however the SWA will still be served from your nearest datacenter and other parts of CIPP will be located in the region you chose so you won't notice any latency.
 
-[![Deploy To Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FKelvinTegelaar%2FCIPP%2Fmain%2Fdeployment%2FAzureDeploymentTemplate_regionoptions.json)
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FKelvinTegelaar%2FCIPP%2Fmain%2Fdeployment%2FAzureDeploymentTemplate_regionoptions.json" target="_blank">
+    <DeployToAzure />
+</a>

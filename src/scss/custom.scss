@@ -123,6 +123,17 @@ footer {
   --ifm-link-hover-color: var(--cyberdrain-primary);
   --ifm-footer-link-color: var(--ifm-navbar-link-color);
   --ifm-footer-link-hover-color: var(--ifm-navbar-link-hover-color);
+  a {
+    font-weight: normal;
+  }
+}
+
+a {
+  font-weight: bold;
+}
+
+.menu__link {
+  font-weight: normal;
 }
 
 .docusaurus-highlight-code-line {
@@ -166,6 +177,10 @@ html[data-theme='dark'] .docusaurus-highlight-code-line {
 }
 
 /* Hacky Overrides */
+details summary h3 {
+  --ifm-heading-margin-bottom: 0;
+}
+
 .tag_node_modules-\@docusaurus-theme-classic-lib-next-theme-Tag-styles-module {
   &.tagRegular_node_modules-\@docusaurus-theme-classic-lib-next-theme-Tag-styles-module {
     border-radius: 0;
@@ -370,4 +385,10 @@ html[data-theme='dark'] div[class^='announcementBar_'] {
       }
     }
   }
+}
+
+/* Deploy Button */
+
+.deploy-to-azure {
+  fill: var(--ifm-color-primary);
 }

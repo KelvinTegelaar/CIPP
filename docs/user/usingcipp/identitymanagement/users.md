@@ -15,4 +15,4 @@ We have not made any confirmation pop-ups, so clicking makes the activity start.
 
 ## Current known issues / Limitations
 
-Groups currently do not return all data such as external senders, and not all settings can be set by partners. Microsoft is aware and will fix this in a new release of the Graph API.
+None. This should work as expected. If you have any issues. [Please report this as a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).

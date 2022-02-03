@@ -9,12 +9,13 @@ import { faEye, faPlay } from '@fortawesome/free-solid-svg-icons';
 import { faStar } from '@fortawesome/free-regular-svg-icons';
 import HomePageFeatures from '@site/src/components/HomePage/HomePageFeatures';
 import { getGithubStars, getLatestTag } from '@site/src/utilities/githubHelper';
-import styles from './index.module.scss';
+
 import WhatIsCipp from './_what-is-cipp.md';
 import UnderTheHood from './_under-the-hood.md';
 import WhyDoesCippExist from './_why-does-cipp-exist.md';
 import GotQuestions from './_got-questions.md';
 import IndexContent from './_index.md';
+import styles from './index.module.scss';
 
 function HomePageHeader() {
   const {siteConfig} = useDocusaurusContext();

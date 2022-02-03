@@ -40,6 +40,17 @@ const config = {
 
       }),
     ],
+    [
+      'redocusaurus',
+      {
+        specs: [
+          {
+            spec: 'data/cippapi.yaml',
+            routePath: '/docs/api/',
+          },
+        ],
+      },
+    ],
   ],
 
   themeConfig:
@@ -58,7 +69,8 @@ const config = {
       },
       announcementBar: {
         id: 'announcementBar-1', // Increment on change
-        content: `<span aria-label="star" role="img">⭐</span> If you like CIPP, please <a href="https://github.com/KelvinTegelaar/CIPP" target="_blank" rel="noopener noreferrer">star the project on GitHub</a> and <a href="https://github.com/sponsors/KelvinTegelaar" target="_blank" rel="noopener noreferrer">consider Sponsoring the project on GitHub</a>. Thanks! <span aria-label="heart" role="img">❤️</span>`,
+        //content: `<span aria-label="star" role="img">⭐</span> If you like CIPP, please <a href="https://github.com/KelvinTegelaar/CIPP" target="_blank" rel="noopener noreferrer">star the project on GitHub</a> and <a href="https://github.com/sponsors/KelvinTegelaar" target="_blank" rel="noopener noreferrer">consider Sponsoring the project on GitHub</a>. Thanks! <span aria-label="heart" role="img">❤️</span>`,
+        content: `<span aria-label="warning" role="img">⚠️</span> This site is still under development. Please check <a href="https://cipp.app">cipp.app</a> for the latest live documentation and information on CIPP.`,
       },
       navbar: {
         title: `CyberDrain Improved Partner Portal`,
@@ -84,6 +96,14 @@ const config = {
                 label: 'Developer',
                 docsPluginId: 'dev',
               },
+              {
+                label: 'API',
+                to: '/docs/api/',
+              },
+              {
+                label: 'FAQ',
+                to: '/faq/',
+              }
             ],
           },
           { to: 'changelog', label: 'Changelog', position: 'left' },
@@ -103,7 +123,7 @@ const config = {
               {
                 to: 'https://github.com/KelvinTegelaar/CIPP-API',
                 'aria-label': 'GitHub',
-                label: 'CIPP-API',
+                label: 'CIPP-API'
               },
             ]
           }

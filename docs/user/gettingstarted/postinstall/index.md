@@ -9,7 +9,7 @@ At this point you should have completed all the steps in [manual installation or
 
 ## Adding users to CIPP
 
-After deployment, go to your resource group in Azure and click on your Static Web App (`cipp-swa-xxxx` if using automatic deployment). Click on Role Management and invite the users you want. Currently we support three roles, `reader`, `editor`, and `admin`. More info about the roles can be found on the [Roles](../roles/) page.
+After deployment, go to your resource group in Azure and click on your Static Web App (`cipp-swa-xxxx` if using click-to-deploy). Click on Role Management and invite the users you want. Currently we support three roles, `reader`, `editor`, and `admin`. More info about the roles can be found on the [Roles](../roles/) page.
 
 You should now be able to browse to the custom domain or the default domain, and use the CIPP control panel.
 
@@ -21,4 +21,4 @@ If you are still stuck, check out the [FAQ](/faq) page and if needed - create an
 
 ## Adding a custom domain name
 
-At the moment of deployment, the application will use a randomly generated name. To change this, go to your Resource Group in Azure, click on your Static Web App (`cipp-swa-xxxx` if using automatic deployment) and click on Custom Domains. You'll be able to add your own domain name here. [Microsoft Docs - Set up a custom domain with free certificate in Azure Static Web Apps](https://docs.microsoft.com/en-us/azure/static-web-apps/custom-domain?tabs=azure-dns)
+At the moment of deployment, the application will use a randomly generated name. To change this, go to your Resource Group in Azure, click on your Static Web App (`cipp-swa-xxxx` if using click-to-deploy) and click on Custom Domains. You'll be able to add your own domain name here. [Microsoft Docs - Set up a custom domain with free certificate in Azure Static Web Apps](https://docs.microsoft.com/en-us/azure/static-web-apps/custom-domain?tabs=azure-dns)
