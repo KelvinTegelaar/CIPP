@@ -57,6 +57,9 @@ const sidebars = {
           items: [
             'usingcipp/identitymanagement/users',
             'usingcipp/identitymanagement/groups',
+            'usingcipp/identitymanagement/roles',
+            'usingcipp/identitymanagement/offboardingwizard',
+            'usingcipp/identitymanagement/reports',
           ],
         },
         {
@@ -71,9 +74,11 @@ const sidebars = {
           collapsed: true,
           items: [
             'usingcipp/tenantadministration/tenants',
+            'usingcipp/tenantadministration/conditionalaccesspolicies',
             'usingcipp/tenantadministration/standards',
             'usingcipp/tenantadministration/bestpracticeanalyser',
             'usingcipp/tenantadministration/domainanalyser',
+            'usingcipp/tenantadministration/individualdomaincheck',
           ],
         },
         {
@@ -122,6 +127,8 @@ const sidebars = {
           collapsed: true,
           items: [
             'usingcipp/teamssharepoint/onedrive',
+            'usingcipp/teamssharepoint/sharepoint',
+            'usingcipp/teamssharepoint/teams',
           ],
         },
         {
@@ -136,6 +143,8 @@ const sidebars = {
           collapsed: true,
           items: [
             'usingcipp/emailexchange/mailboxes',
+            'usingcipp/emailexchange/contacts',
+            'usingcipp/emailexchange/reports',
           ],
         },
         {
