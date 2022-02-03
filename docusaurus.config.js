@@ -103,6 +103,10 @@ const config = {
               {
                 label: 'FAQ',
                 to: '/faq/',
+              },
+              {
+                label: 'Known Bugs',
+                to: '/bugs/',
               }
             ],
           },
