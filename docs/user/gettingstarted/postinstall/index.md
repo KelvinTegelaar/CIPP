@@ -25,4 +25,12 @@ If you are still stuck, check out the [FAQ](/faq) page and if needed - create an
 
 ## Adding a custom domain name
 
+:::tip Why setup a custom domain?
+
+1. The randomly generated domain uses azurewebsites.net which is often blocked by web filtering products as it's frequently used by spammers and phishing sites due to the ease of obtaining an azurewebsites.net subdomain.
+1. Your bookmark won't have to change if you redeploy.
+1. Easier to communicate internally and looks better for your team.
+
+:::
+
 At the moment of deployment, the application will use a randomly generated name. To change this, go to your Resource Group in Azure, click on your Static Web App (`cipp-swa-xxxx` if using click-to-deploy) and click on Custom Domains. You'll be able to add your own domain name here. [Microsoft Docs - Set up a custom domain with free certificate in Azure Static Web Apps](https://docs.microsoft.com/en-us/azure/static-web-apps/custom-domain?tabs=azure-dns)

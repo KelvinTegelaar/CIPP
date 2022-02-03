@@ -397,3 +397,11 @@ html[data-theme='dark'] div[class^='announcementBar_'] {
     fill: var(--ifm-background-color);
   }
 }
+
+.menu__list:not(:first-child) .menu__link--active:not(.menu__link--sublist) {
+  border-left-color: var(--ifm-menu-color-active) !important;
+  border-left-width: 4px;
+  border-left-style: solid;
+  font-weight: 500;
+  padding-left: 12px;
+}
