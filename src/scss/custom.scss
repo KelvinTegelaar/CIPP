@@ -390,5 +390,10 @@ html[data-theme='dark'] div[class^='announcementBar_'] {
 /* Deploy Button */
 
 .deploy-to-azure {
-  fill: var(--ifm-color-primary);
+  rect {
+    fill: var(--ifm-color-primary);
+  }
+  path {
+    fill: var(--ifm-background-color);
+  }
 }
