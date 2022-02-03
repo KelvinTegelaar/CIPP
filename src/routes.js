@@ -18,11 +18,13 @@ const Page404 = React.lazy(() => import('src/views/pages/page404/Page404'))
 const Page403 = React.lazy(() => import('src/views/pages/page403/Page403'))
 const MFAReport = React.lazy(() => import('src/views/identity/reports/MFAReport'))
 const Tenants = React.lazy(() => import('src/views/tenant/administration/Tenants'))
+const AlertWizard = React.lazy(() => import('src/views/tenant/administration/AlertWizard'))
 const Domains = React.lazy(() => import('src/views/tenant/administration/Domains'))
 const EditTenant = React.lazy(() => import('src/views/tenant/administration/EditTenant'))
 const ConditionalAccess = React.lazy(() =>
   import('src/views/tenant/administration/ConditionalAccess'),
 )
+
 const BasicAuthReport = React.lazy(() => import('src/views/identity/reports/BasicAuthReport'))
 const BestPracticeAnalyzer = React.lazy(() =>
   import('src/views/tenant/standards/BestPracticeAnalyser'),
@@ -148,6 +150,8 @@ const routes = [
   { path: '/tenant/administration/tenants', name: 'Tenants', component: Tenants },
   { path: '/tenant/administration/tenants/edit', name: 'Edit Tenant', component: EditTenant },
   { path: '/tenant/administration/domains', name: 'Domains', component: Domains },
+  { path: '/tenant/administration/alertswizard', name: 'Alerts Wizard', component: AlertWizard },
+
   {
     path: '/tenant/administration/conditional-access-policies',
     name: 'Conditional Access',
