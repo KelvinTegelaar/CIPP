@@ -7,7 +7,7 @@ slug: /preparing
 
 :::danger SAM Tokens for Dev
 
-We **strongly** recommend that you setup an entirely separate SAM app and KevVault for development purposes.
+We **strongly** recommend that you setup an entirely separate SAM app and KeyVault for development purposes.
 
 :::
 
