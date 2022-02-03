@@ -175,6 +175,7 @@ const sidebars = {
           items: [
             'usingcipp/settings/configurationsettings',
             'usingcipp/settings/backendaccess',
+            'usingcipp/settings/notifications',
           ],
         },
       ],
