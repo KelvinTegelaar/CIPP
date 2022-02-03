@@ -35,7 +35,7 @@ The Apply Policy wizard allows you to select one or multiple tenants and add an 
 
 ### Apply Policy - Detail
 
-The wizard can work in one of two ways, either by selecting a template from a predefined policy that you have already created, or by entering the raw JSON.  Please note that both adding of the template and how to obtain the raw JSON can be see by viewing the [Add Policy Template docuemtnation](/docs/user/gettingstarted/endpointmanagement/mempolicytemplates/#)]
+The wizard can work in one of two ways, either by selecting a template from a predefined policy that you have already created, or by entering the raw JSON.  Please note that both adding of the template and how to obtain the raw JSON can be see by viewing the [Add Policy Template documentation](/docs/user/usingcipp/endpointmanagement/mempolicytemplates/#add-policy-template---overview)]
 
 You can then decide whether to assign the policy to all users, all devices or both - or alternatively none at all.
 
