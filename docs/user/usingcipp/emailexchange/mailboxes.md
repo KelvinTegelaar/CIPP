@@ -5,20 +5,33 @@ description: View information on all mailboxes in your Microsoft 365 tenants.
 slug: /usingcipp/emailexchange/mailboxes
 ---
 
+## Overview
+
 You'll find information on mailboxes in the main table view, each row has a view button, an edit button, a view mobile devices button and a more information button.
 
-## View
+## Detail
 
-This will take you directly to the owner's user information page.
+|  Fields                     | Description                                          |
+| --------------------------- | ---------------------------------------------------  |
+| Display Name                | The display name of the selected user                |
+| User Principal Name         | The UPN of the selected user                         | 
+| Additional E-Mail Addresses | All proxyAddresses assigned to the user              |
+| Mailbox Type                | The Mailbox type, such as "User" or "Shared"         |
 
-## Edit
 
-This will allow you to edit the permissions assigned to the mailbox.
+* View Mailbox
+* Edit Mailbox - *This will allow you to edit the permissions assigned to the mailbox.*
+* View Mobile Devices *This will show you a list of all mobile devices which have connected to the mailbox with detailed information on each device.*
 
-## View Mobile Devices
+### Actions
 
-This will show you a list of all mobile devices which have connected to the mailbox with detailed information on each device.
+* Research Compromised Account
+* Send MFA Push
+* Convert to Shared Mailbox
+* Convert to User Mailbox
 
-## More
+## Current known issues / Limitations
 
-This will open the User Information drawer which will show you information on the selected user and provides quick links to the [researched compromised user](../../identitymanagement/) tool, the Send MFA Push action and options to convert the mailbox to or from a Shared Mailbox.
+There are currently no known issues with the Mailbox page.  If you have any issues, [please report this as a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).
+
+

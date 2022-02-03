@@ -1,20 +1,39 @@
 ---
 id: applications
-title: Applications
+title: List Applications
 description: Interact with Microsoft Endpoint Manager applications.
 slug: /usingcipp/endpointmanagement/applications
 ---
 
-## List Applications
+## Overivew 
 
 The list applications page will show you a list of all non-store applications configured for deployment in Microsoft Endpoint Manager / Intune.
 
 You can assign the application to All Users / All Devices from the more button.
 
-## Adding Generic Apps
+## Details
 
-This is not yet possible in the current release.
+|  Fields                    | Description                                                    |
+| -------------------------- | -------------------------------------------------------------- |
+| Install As                 | How the app should be installed                                |
+| Restart Behaviour          | Whether install of the app allows a restart                    | 
+| Assigned to Groups         | List the groups that app is assigned to                        |
+| Created At                 | Time the app was created                                       |
+| Modified At                | Last time the app was modified                                 |
+| Featured App               | Whether the app is a featured app in the portal                |
+| Publishing State           | Whether the app has been published                             |
+| # of Dependent Apps        | How many apps dependent apps are assigned to this application  |
+| Detection Type             | Detection rule, if one exists                                  |
+| Detetion File/Folder Name  | Detection Rule Folder Name Details                             |
+| Detection File/Fother Path | Detection Rule Path details                                    |
+
+### Actions
+
+* Assign to All Users
+* Assign to All Devices
+* Assign Globally (All Users / All Devices)
+
 
 ## Current known issues / Limitations
 
-None. This should work as expected. If you have any issues. Please report this as a bug.
+There are currently no known issues with the List Applications page.  If you have any issues, [please report this as a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).

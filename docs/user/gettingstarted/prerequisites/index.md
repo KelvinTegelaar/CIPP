@@ -19,7 +19,7 @@ If you haven't setup the Secure App Model use the instructions below and then mo
 
 :::danger Secure Application Model account
 
-We **strongly** recommend that you use a separate global administrator account for each Secure Application Model application you create. This avoids conflicts that occur when using existing accounts which may be in customer tenants as guest users and provides better tracing in audit logs.
+We **strongly** recommend that you use a separate global administrator account for each Secure Application Model application you create. This avoids conflicts that occur when using existing accounts which may be in customer tenants as guest users and provides better tracing in audit logs.  Note that this service account should be a Global Admin and given Partner Admin rights.
 
 :::
 

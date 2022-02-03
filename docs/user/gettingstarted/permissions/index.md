@@ -50,6 +50,7 @@ Some permissions may appear to be duplicated in the Delegated and Application pe
 | ChannelSettings.Read.All                     | Read the names, descriptions, and settings of channels            |
 | ChannelSettings.ReadWrite.All                | Read and write the names, descriptions, and settings of channels  |
 | ConsentRequest.Read.All                      | Read consent requests                                             |
+| Channel.Delete.All                           | Delete Channels                                                    |
 | Device.Command                               | Communicate with user devices                                     |
 | Device.Read                                  | Read user devices                                                 |
 | Device.Read.All                              | Read all devices                                                  |

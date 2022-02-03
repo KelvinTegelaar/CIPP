@@ -5,13 +5,41 @@ description: How to update CIPP when new versions are released.
 slug: /updating
 ---
 
-Updating your application to the latest release can be done by the following instructions:
+## Overview
 
-* Go to your CIPP fork on Github
+:::caution Manual vs Automatic Updating
+
+Note that the frontend updates automatically once you have done "Fetch & Merge" from GitHub, however the CIPP-API requires you to press a button on the resource in Azure itself.
+:::
+
+Updating your application to the latest release can be done by the following instructions
+
+
+
+## Detail
+
+### CIPP (Frontend)
+
+:::info CIPP
+
+Note that if you receive a workflow error, check the [Troubleshooting page for potential fixes](/troubleshooting)
+:::
+
+
+* Go to your own CIPP fork on Github 
+
+> e.g <https://github.com/Username/CIPP>
+
 * Click on Fetch Upstream
 * Click on Fetch and Merge
 
-You'll now download the latest version of the frontend. To update the backend you follow these instructions;
+### CIPP-API (Backend)
+
+:::info CIPP-API
+
+To update the backend, you must manually fetch from github and update the Azure resource yourself, following the below instructions
+
+:::
 
 * Go to your CIPP-API fork on Github
 * Click on Fetch Upstream
@@ -22,4 +50,9 @@ You'll now download the latest version of the frontend. To update the backend yo
 * Click on "Deployment Center"
 * Click on Sync.
 
+:::success Success!
+Check the [Dashboard](/docs/user/usingcipp/dashboard/overview) and you should see all green once updated.
+
 You've now updated the application.
+
+:::
