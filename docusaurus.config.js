@@ -179,6 +179,16 @@ const config = {
                 label: 'GitHub',
                 href: 'https://github.com/KelvinTegelaar/CIPP',
               },
+
+              {
+                label: 'Submit Feature Request',
+                href: 'https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=feature_request.md&title=FEATURE+REQUEST%3A+',
+              },
+              {
+                label: 'Submit Bug',
+                href: 'https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+',
+              },
+
             ],
           },
         ],
