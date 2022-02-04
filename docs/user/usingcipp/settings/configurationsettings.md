@@ -19,7 +19,7 @@ You can use the "Run permissions check" button to check that your CIPP Azure AD 
 
 :::caution Performance & Data
 
-Note that this option can severely impact performance of your CIPP Application and will also remove any personal settings such as theming
+Note that this option can severely impact performance of your CIPP Application and will also remove any personal settings such as the selected theme
 :::
 
 You can clear the cached information used by the tenant selector, best practices analyser and domain analyser features.

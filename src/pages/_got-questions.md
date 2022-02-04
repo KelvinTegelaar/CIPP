@@ -26,7 +26,7 @@ CIPP is built from the ground up with security in mind. It is built with [Azure 
 
 CIPP uses several automated code scanning tools to check for vulnerabilities and ensure that the code is as safe and secure as we can make it. You are free to audit the code (which you'll find in the GitHub repositories linked in the NavBar above) and report any issues you find.
 
-Paid code security audits will be undertaken as funding allows. If you think you've found a security issue please see our [security policy](/docs/dev/security#policy) for information on how to let us know.
+Paid code security audits will be undertaken as funding allows. If you think you've found a security issue please see our [security policy](docs/user/security/) for information on how to let us know.
 
 </details>
 

@@ -6,7 +6,7 @@ slug: /usingcipp/teamssharepoint/sharepoint
 ---
 
 :::tip Anonymous Data
-The data returned by this API might be pseudo-anonimzed. Run the [standard "Enable Usernames instead of pseudo anonymised names names in reports"](../../tenantadministration/standards/) to prevent this.
+The data returned by this API might be pseudo-anonimzed. Run the [standard "Enable Usernames instead of pseudo anonymised names in reports"](../../tenantadministration/standards/) to prevent this.
 :::
 
 ## Overview
