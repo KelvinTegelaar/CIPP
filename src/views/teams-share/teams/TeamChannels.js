@@ -9,18 +9,22 @@ export default function TeamChannels({ data, className = null, isFetching, error
     {
       name: 'Display Name',
       selector: (row) => row['displayName'],
+      sortable: true,
     },
     {
       name: 'Description',
       selector: (row) => row['description'],
+      sortable: true,
     },
     {
       name: 'Created at',
       selector: (row) => row['createdDateTime'],
+      sortable: true,
     },
     {
       name: 'Favorite by default',
       selector: (row) => row['isFavoriteByDefault'],
+      sortable: true,
     },
     {
       name: 'Channel Link',
@@ -33,6 +37,7 @@ export default function TeamChannels({ data, className = null, isFetching, error
     {
       name: 'Email',
       selector: (row) => row['email'],
+      sortable: true,
     },
   ]
 

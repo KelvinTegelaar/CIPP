@@ -1,5 +1,5 @@
 import React from 'react'
-import { CAlert, CCallout, CCol, CListGroup, CListGroupItem, CRow, CSpinner } from '@coreui/react'
+import { CCallout, CCol, CListGroup, CListGroupItem, CRow, CSpinner } from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -21,10 +21,10 @@ const Error = ({ name }) => (
     subscription={{ touched: true, error: true }}
     render={({ meta: { touched, error } }) =>
       touched && error ? (
-        <CAlert color="danger">
+        <CCallout color="danger">
           <FontAwesomeIcon icon={faExclamationTriangle} color="danger" />
           {error}
-        </CAlert>
+        </CCallout>
       ) : null
     }
   />
@@ -56,6 +56,9 @@ const OffboardingWizard = () => {
     }
     if (!values.OOO) {
       values.OOO = ''
+    }
+    if (!values.forward) {
+      values.forward = ''
     }
     const shippedValues = {
       TenantFilter: tenantDomain,
@@ -154,6 +157,17 @@ const OffboardingWizard = () => {
               }))}
               placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
               name="UserAutomapOneDrive"
+            />
+          </CCol>
+          <CCol md={6}>
+            <RFFSelectSearch
+              label="Forward email to other user"
+              values={users?.map((user) => ({
+                value: user.mail,
+                name: user.displayName,
+              }))}
+              placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
+              name="forward"
             />
           </CCol>
           <RFFCFormSwitch name="DeleteUser" label="Delete user" />
@@ -279,6 +293,14 @@ const OffboardingWizard = () => {
                             color="#f77f00"
                             size="lg"
                             icon={props.values.OneDrive ? faCheckCircle : faTimesCircle}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Forward all e-mail to another user
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.forward ? faCheckCircle : faTimesCircle}
                           />
                         </CListGroupItem>
                       </CListGroup>
