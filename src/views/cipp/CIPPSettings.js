@@ -89,10 +89,12 @@ const checkAccessColumns = [
   {
     name: 'Tenant Domain',
     selector: (row) => row['TenantName'],
+    grow: 0,
   },
   {
     name: 'Result',
     selector: (row) => row['Status'],
+    grow: 1,
   },
 ]
 
@@ -110,6 +112,7 @@ const GeneralSettings = () => {
     if (values.length <= maxSelected) {
       setSelectedTenants(values)
       setShowMaxSelected(false)
+      console.log(values)
     } else {
       setShowMaxSelected(true)
       // close the tenant selector, hacky but no other way to do this
@@ -126,18 +129,7 @@ const GeneralSettings = () => {
   }
 
   const handleCheckAccess = () => {
-    // convert customerId into tenant domain
-    // domain is not unique or it would be used as value
-    const mapped = tenants.reduce(
-      (current, { customerId, ...rest }) => ({
-        ...current,
-        [customerId]: { ...rest },
-      }),
-      {},
-    )
-    const tenantDomains = selectedTenants.map((customerId) => mapped[customerId].defaultDomainName)
-
-    checkAccess({ tenantDomains })
+    checkAccess({ tenantDomains: selectedTenants })
   }
 
   const handleClearCache = useConfirmModal({
