@@ -405,3 +405,13 @@ html[data-theme='dark'] div[class^='announcementBar_'] {
   font-weight: 500;
   padding-left: 12px;
 }
+
+/* Carousel */
+
+.alice-carousel {
+  .alice-carousel__stage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}

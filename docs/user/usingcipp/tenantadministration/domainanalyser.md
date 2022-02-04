@@ -17,7 +17,6 @@ In the left hand menu, navigate to **Tenant Administration > Standards > Domain 
 
 At the top of the page there is button called **Force Refresh All Data**. You only need to click this once.
 
-
 ## Interpreting Results
 
 The reporting here generally follows a standard colour theming.
@@ -25,9 +24,31 @@ Red is bad and generally not something that should be happening on your tenant.
 Orange is either a warning or subjective. It does not necessarily indicate something is wrong.
 Green means there are no issues or the setting is set in a manner that is generally agreed as Best Practice.
 
-### Microsoft Secure Score
+### Security Score
 
-This is Microsoft Secure Score as found in 365 tenants here: [Tenant Secure Score](https://security.microsoft.com/securescore?viewid=overview). For further information on how to improve 365 tenant security using Secure Score actions see Microsoft's documentation [here](https://docs.microsoft.com/en-us/microsoft-365/security/defender/microsoft-secure-score?view=o365-worldwide). In many cases the [CIPP Standards](https://kelvintegelaar.github.io/CIPP/TenantAdministration/Standards.html) will result in improvements in a tenant's Secure Score.
+This is a measure of the overall security of the domain and is calculated by taking the following into account:
+
+* SPF
+* MX
+* DMARC
+* DKIM
+* DNSSEC
+
+| Item                      | Description                                                      | Points  |
+|---------------------------|------------------------------------------------------------------|:-------:|
+| SPF Present               | SPF is present                                                   | 10      |
+| SPF MX Recommended        | SPF is present and is set as determined from the MX records.     | 10      |
+| SPF Correct All           | SPF is present and is set correctly.                             | 10      |
+| MX Provider Recommended   | MX records are present and are set as recommended by provider.   | 10      |
+| DMARC Present             | DMARC is present                                                 | 10      |
+| DMARC Set Quarantine      | DMARC is set to quarantine                                       | 20      |
+| DMARC Set Reject          | DMARC is set to reject                                           | 30      |
+| DMARC Reporting Active    | DMARC reporting is active                                        | 20      |
+| DMARC Percentage Good     | DMARC percentage is set to a value of 100                        | 20      |
+| DNSSEC Present            | DNSSEC is present                                                | 20      |
+| DKIM Active and Working   | DKIM is active and working                                       | 20      |
+| **Total Possible Points** |                                                                  | **180** |
+
 
 ### SPF Pass Test
 
@@ -59,7 +80,7 @@ DKIM (DomainKeys Identified Mail) is an email security standard designed to make
 
 ## I am having Problems
 
-The adding of this feature requires a new permission granting in your delegated permissions - *Domain.Read.All*. Please ensure that you have given adequate time for the Domain Analyser to run. In an environment with 100 tenants this takes on average 2 minutes. Please ensure that your permissions are correct by going in to **CIPP Settings > Configuration Settings > Run Permission Check**. Make sure your CIPP-API and CIPP modules are both fully up-to-date. There is extensive logging in the log file in the root of the CIPP-API Function App.
+The adding of this feature requires a new permission granting in your delegated permissions - _Domain.Read.All_. Please ensure that you have given adequate time for the Domain Analyser to run. In an environment with 100 tenants this takes on average 2 minutes. Please ensure that your permissions are correct by going in to **CIPP Settings > Configuration Settings > Run Permission Check**. Make sure your CIPP-API and CIPP modules are both fully up-to-date. There is extensive logging in the log file in the root of the CIPP-API Function App.
 
 ## I have something to add or an idea for Domain Analyser
 
@@ -70,4 +91,3 @@ Excellent! [Please add them to the Github Issues as a feature request](https://g
 * You may get odd results if you have different records setup for subdomains. As it stands at the moment you will only get DKIM results where the domains are utilising 365 or Google e-mail.
 
 If you have any further issues, [please report this as a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).
-

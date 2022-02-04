@@ -5,16 +5,17 @@ import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import { faEye, faPlay } from '@fortawesome/free-solid-svg-icons';
+import { faPlay } from '@fortawesome/free-solid-svg-icons';
 import { faStar } from '@fortawesome/free-regular-svg-icons';
 import HomePageFeatures from '@site/src/components/HomePage/HomePageFeatures';
+import Sponsors from '@site/src/components/Sponsors/Sponsors';
 import { getGithubStars, getLatestTag } from '@site/src/utilities/githubHelper';
 
+// Content imports
 import WhatIsCipp from './_what-is-cipp.md';
 import UnderTheHood from './_under-the-hood.md';
 import WhyDoesCippExist from './_why-does-cipp-exist.md';
 import GotQuestions from './_got-questions.md';
-import IndexContent from './_index.md';
 import styles from './index.module.scss';
 
 function HomePageHeader() {
@@ -51,7 +52,7 @@ function HomePageHeader() {
                         className="button button--primary button--lg cipp--gh--button margin-top--lg"
                       >
                         <FontAwesomeIcon icon={faGithub} fixedWidth />
-                        <span class="margin-horiz--xs">CIPP</span>
+                        <span className="margin-horiz--xs">CIPP</span>
                         {cippVersion.startsWith('v')
                           ? cippVersion
                           : `v${cippVersion}`}
@@ -76,7 +77,7 @@ function HomePageHeader() {
                       className="button button--primary button--outline button--lg cipp-api--gh--button margin-top--lg"
                     >
                       <FontAwesomeIcon icon={faGithub} fixedWidth />
-                      <span class="margin-horiz--xs">CIPP-API</span>
+                      <span className="margin-horiz--xs">CIPP-API</span>
                       {cippApiVersion.startsWith('v')
                         ? cippApiVersion
                         : `v${cippApiVersion}`}
@@ -151,6 +152,7 @@ export default function Home() {
           </div>
         </div>
       </main>
+      <Sponsors />
     </Layout>
   );
 }

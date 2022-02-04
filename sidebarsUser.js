@@ -44,21 +44,7 @@ const sidebars = {
       },
       collapsed: false,
       items: [
-        {
-          type: 'category',
-          label: 'Dashboard',
-          link: {
-            type: 'generated-index',
-            title: 'Dashboard',
-            description: "This area of CIPP is used as an overview and quick link access to parts of CIPP, as well as confirming the frontend/backend versions",
-            slug: '/usingcipp/dashboard',
-          },
-          collapsed: true,
-          items: [
-            'usingcipp/dashboard/overview',
-          ],
-        },
-
+        'usingcipp/dashboard/dashboard',
         {
           type: 'category',
           label: 'Identity Management',

@@ -2,24 +2,18 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "command": "npm run start-api",
-      "name": "Run emulator",
-      "request": "launch",
-      "type": "node-terminal"
-    },
-    {
-      "command": "npm start",
-      "name": "Run frontend",
+      "command": "npm run start",
+      "name": "Run Docusaurus",
       "request": "launch",
       "type": "node-terminal",
-      "preLaunchTask": "RunAllTasks",
-      "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"]
+      "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"],
+      "cwd": "${workspaceFolder}"
     }
   ],
   "compounds": [
     {
-      "name": "Launch it all 🚀",
-      "configurations": ["Run frontend", "Run emulator"]
+      "name": "Docusaurus 🦕",
+      "configurations": ["Run Docusaurus"]
     }
   ]
 }

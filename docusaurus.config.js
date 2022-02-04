@@ -226,6 +226,12 @@ const config = {
         indexPages: true,
         language: "en",
       }
+    ],
+    [
+      'docusaurus-plugin-plausible',
+      {
+        domain: 'cipp.app',
+      },
     ]
   ]
 };
