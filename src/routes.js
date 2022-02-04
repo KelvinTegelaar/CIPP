@@ -110,6 +110,7 @@ const PhishingPoliciesList = React.lazy(() =>
   import('src/views/email-exchange/reports/PhishingPoliciesList'),
 )
 const SecurityComplianceAlerts = React.lazy(() => import('src/views/security/reports/ListAlerts'))
+const License = React.lazy(() => import('src/views/pages/license/License'))
 
 const routes = [
   // { path: '/', exact: true, name: 'Home' },
@@ -293,6 +294,11 @@ const routes = [
     name: 'List Alerts',
     path: '/security/reports/list-alerts',
     component: SecurityComplianceAlerts,
+  },
+  {
+    name: 'License',
+    path: '/license',
+    component: License,
   },
 ]
 

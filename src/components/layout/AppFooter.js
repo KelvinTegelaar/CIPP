@@ -1,13 +1,22 @@
 import React from 'react'
-import { CFooter, CImage } from '@coreui/react'
+import { CFooter, CImage, CLink } from '@coreui/react'
+import { Link } from 'react-router-dom'
 import huntressLogo from 'src/assets/images/huntress_teal.png'
 
 const AppFooter = () => {
   return (
-    <CFooter>
-      <p className="white-text">
-        This application is sponsored by <CImage src={huntressLogo} height={30} alt="Logo" />
-      </p>
+    <CFooter classname="d-flex justify-content-between align-items-center">
+      <div className="sponsors">
+        <p>
+          This application is sponsored by
+          <CLink href="https://www.huntress.com/">
+            <CImage src={huntressLogo} alt="Huntress" />
+          </CLink>
+        </p>
+      </div>
+      <nav className="footer-nav">
+        <Link to="/license">License</Link>
+      </nav>
     </CFooter>
   )
 }
