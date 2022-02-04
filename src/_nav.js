@@ -103,11 +103,12 @@ const _nav = [
         name: 'Conditional Access Policies',
         to: '/tenant/administration/conditional-access-policies',
       },
-      {
-        component: CNavItem,
-        name: 'Alerts Wizard',
-        to: '/tenant/administration/alertswizard',
-      },
+      // Temp removed due to not ready for release
+      //    {
+      //       component: CNavItem,
+      //     name: 'Alerts Wizard',
+      //     to: '/tenant/administration/alertswizard',
+      //    },
     ],
   },
   {
