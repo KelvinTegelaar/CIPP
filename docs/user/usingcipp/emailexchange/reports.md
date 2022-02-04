@@ -14,7 +14,7 @@ There are currently multiple reports that can be run within the Exchange side of
 #### Mailbox Statistics
 
 :::tip Anonymous Data
-The data returned by this API might be pseudo-anonimzed. Run the [standard "Enable Usernames instead of pseudo anonymised names names in reports"](../../tenantadministration/standards/) to prevent this.
+The data returned by this API might be pseudo-anonimzed. Run the [standard "Enable Usernames instead of pseudo anonymised names in reports"](../../tenantadministration/standards/) to prevent this.
 :::
 
 This report lists all mailboxes and pulls activity date, total space used, number of items in the mailbox and whether archiving is enabled.
