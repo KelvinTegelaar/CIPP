@@ -41,16 +41,19 @@ const ListAlertsQueue = () => {
       selector: (row) => row['tenantName'],
       sortable: true,
       exportSelector: 'tenantName',
+      grow: 0,
     },
     {
       name: 'Alerts',
       selector: (row) => row['alerts'],
       sortable: true,
       exportSelector: 'alerts',
+      grow: 1,
     },
     {
       name: 'Actions',
       cell: Actions,
+      grow: 0,
     },
   ]
   const tenant = useSelector((state) => state.app.currentTenant)
