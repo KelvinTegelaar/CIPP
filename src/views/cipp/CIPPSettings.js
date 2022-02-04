@@ -246,6 +246,7 @@ const GeneralSettings = () => {
               </CButton>
               {accessCheckResult.isSuccess && (
                 <CippTable
+                  reportName="none"
                   columns={checkAccessColumns}
                   tableProps={tableProps}
                   data={accessCheckResult.data.Results}
