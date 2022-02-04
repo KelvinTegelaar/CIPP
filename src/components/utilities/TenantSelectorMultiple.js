@@ -28,7 +28,7 @@ const TenantSelectorMultiple = React.forwardRef(
         value={values}
         disabled={isLoading}
         options={tenants.map(({ customerId, defaultDomainName, displayName }) => ({
-          value: defaultDomainName,
+          value: customerId,
           name: [displayName] + [` (${defaultDomainName})`],
         }))}
         multiple
