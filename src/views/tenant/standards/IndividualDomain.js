@@ -287,6 +287,11 @@ export function IndividualDomainCheck({
           <DNSSECResultsCard domain={domain} />
         </CippMasonryItem>
       )}
+      {domain && (
+        <CippMasonryItem size={masonrySize}>
+          <MtaStsResultCard domain={domain} />
+        </CippMasonryItem>
+      )}
     </CippMasonry>
   )
 }
@@ -474,7 +479,7 @@ function ResultsCard({
 ResultsCard.propTypes = {
   data: PropTypes.object,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
-  type: PropTypes.oneOf(['HTTPS', 'MX', 'SPF', 'DMARC', 'DNSSEC', 'DKIM']),
+  type: PropTypes.oneOf(['HTTPS', 'MX', 'SPF', 'DMARC', 'DNSSEC', 'DKIM', 'MTA-STS']),
   headerClickFunction: PropTypes.func,
   error: PropTypes.bool,
   errorMessage: PropTypes.string,
@@ -685,6 +690,102 @@ const HttpsResultCard = ({ domain, httpsOverride }) => {
 }
 
 HttpsResultCard.propTypes = { httpsOverride: PropTypes.string, ...sharedProps }
+
+const MtaStsResultCard = ({ domain }) => {
+  const { data, isFetching, error } = useExecDnsHelperQuery({
+    Domain: domain,
+    Action: 'TestMtaSts',
+  })
+
+  const jsonContent = JSON.stringify(data, null, 2)
+
+  const [visible, setVisible] = useState(false)
+  const headerClickFunction = () => {
+    setVisible(true)
+  }
+
+  return (
+    <ResultsCard
+      data={data}
+      type="MTA-STS"
+      headerClickFunction={headerClickFunction}
+      isFetching={isFetching}
+      error={error}
+      errorMessage="Unable to load MTA-STS Results"
+    >
+      {!isFetching && !error && (
+        <CippOffcanvas
+          id="mtasts-offcanvas"
+          visible={visible}
+          placement="end"
+          className="cipp-offcanvas"
+          hideFunction={() => setVisible(false)}
+          title="MTA-STS Details"
+        >
+          <DomainOffcanvasTabs jsonContent={jsonContent}>
+            <h4>MTA-STS Record</h4>
+            {data.StsRecord.Record !== '' && (
+              <CippCodeBlock
+                language="text"
+                code={data.StsRecord.Record}
+                showLineNumbers={false}
+                wrapLongLines={true}
+              />
+            )}
+            <ValidationListContent data={data.StsRecord} />
+
+            <h4 className="mt-4">MTA-STS Policy</h4>
+            {data?.StsPolicy.Version !== '' && (
+              <CListGroup className="my-3">
+                {data?.StsPolicy.Version !== '' && (
+                  <CListGroupItem className="d-flex justify-content-between align-items-center">
+                    <h6 className="w-50 mb-0">Version</h6>
+                    {data?.StsPolicy.Version}
+                  </CListGroupItem>
+                )}
+                {data?.StsPolicy.Mode !== '' && (
+                  <CListGroupItem className="d-flex justify-content-between align-items-center">
+                    <h6 className="w-50 mb-0">Mode</h6>
+                    {data?.StsPolicy.Mode}
+                  </CListGroupItem>
+                )}
+                {data?.StsPolicy.Mx.map((mx, key) => (
+                  <CListGroupItem
+                    className="d-flex justify-content-between align-items-center"
+                    key={key}
+                  >
+                    <h6 className="w-50 mb-0">MX</h6>
+                    {mx}
+                  </CListGroupItem>
+                ))}
+                {data?.StsPolicy.MaxAge !== '' && (
+                  <CListGroupItem className="d-flex justify-content-between align-items-center">
+                    <h6 className="w-50 mb-0">Max Age</h6>
+                    {data?.StsPolicy.MaxAge}
+                  </CListGroupItem>
+                )}
+              </CListGroup>
+            )}
+            <ValidationListContent data={data?.StsPolicy} />
+
+            <h4 className="mt-4">TLSRPT Record</h4>
+            {data.TlsRptRecord.Record !== '' && (
+              <CippCodeBlock
+                language="text"
+                code={data.TlsRptRecord.Record}
+                showLineNumbers={false}
+                wrapLongLines={true}
+              />
+            )}
+            <ValidationListContent data={data.TlsRptRecord} />
+          </DomainOffcanvasTabs>
+        </CippOffcanvas>
+      )}
+    </ResultsCard>
+  )
+}
+
+MtaStsResultCard.propTypes = sharedProps
 
 const MXResultsCard = ({ domain }) => {
   const { data, isFetching, error } = useExecDnsHelperQuery({
