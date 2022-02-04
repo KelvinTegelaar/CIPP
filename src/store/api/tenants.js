@@ -7,7 +7,10 @@ export const tenantsApi = baseApi
   .injectEndpoints({
     endpoints: (builder) => ({
       listTenants: builder.query({
-        query: () => ({ path: '/api/ListTenants' }),
+        query: ({ showAllTenantSelector }) => ({
+          path: '/api/ListTenants',
+          params: { AllTenantSelector: showAllTenantSelector },
+        }),
         providesTags: ['Tenants'],
       }),
       listTenant: builder.query({

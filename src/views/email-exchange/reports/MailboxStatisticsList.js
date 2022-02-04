@@ -29,6 +29,12 @@ const columns = [
     exportSelector: 'UsedGB',
   },
   {
+    selector: (row) => row['QuotaGB'],
+    name: 'Quota (GB)',
+    sortable: true,
+    exportSelector: 'QuotaGB',
+  },
+  {
     selector: (row) => row['ItemCount'],
     name: 'Item Count (Total)',
     sortable: true,

@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react'
-import { CButton, CCallout, CCol, CRow } from '@coreui/react'
+import { CButton, CCallout, CCol, CRow, CLink } from '@coreui/react'
 import { CCard, CCardBody, CCardHeader, CCardTitle, CSpinner } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheckCircle, faRedo, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { useLazyExecBecCheckQuery } from 'src/store/api/users'
 import useQuery from 'src/hooks/useQuery'
-import { Link } from 'react-router-dom'
 import { CippTable } from 'src/components/tables'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
@@ -24,14 +23,17 @@ const ViewBec = () => {
     {
       name: 'Device Model',
       selector: (row) => row['DeviceModel'],
+      sortable: true,
     },
     {
       name: 'First Sync Time',
       selector: (row) => row['FirstSyncTime'],
+      sortable: true,
     },
     {
       name: 'Device User Agent',
       selector: (row) => row['DeviceUserAgent'],
+      sortable: true,
     },
   ]
 
@@ -39,18 +41,22 @@ const ViewBec = () => {
     {
       name: 'Creator IP',
       selector: (row) => row['ClientIP'],
+      sortable: true,
     },
     {
       name: 'Rule Name',
       selector: (row) => row.Parameters[3]?.value,
+      sortable: true,
     },
     {
       name: 'Created on',
       selector: (row) => row['CreationTime'],
+      sortable: true,
     },
     {
       name: 'Created for',
       selector: (row) => row['UserId'],
+      sortable: true,
     },
   ]
 
@@ -58,18 +64,22 @@ const ViewBec = () => {
     {
       name: 'App',
       selector: (row) => row['AppDisplayName'],
+      sortable: true,
     },
     {
       name: 'Date Time',
       selector: (row) => row['CreatedDateTime'],
+      sortable: true,
     },
     {
       name: 'Error code',
       selector: (row) => row.Status?.ErrorCode,
+      sortable: true,
     },
     {
       name: 'Details',
       selector: (row) => row.Status?.AdditionalDetails,
+      sortable: true,
     },
   ]
 
@@ -77,36 +87,44 @@ const ViewBec = () => {
     {
       name: 'IP',
       selector: (row) => row['ClientIP'],
+      sortable: true,
     },
     {
       name: 'User',
       selector: (row) => row['CreatedDateTime'],
+      sortable: true,
     },
     {
       name: 'User Agent',
       selector: (row) => row['ClientInfoString'],
+      sortable: true,
     },
     {
       name: 'Result',
       selector: (row) => row['ResultStatus'],
+      sortable: true,
     },
     {
       name: 'Data',
       selector: (row) => row['CreationTime'],
+      sortable: true,
     },
   ]
   const newUserColumns = [
     {
       name: 'Username',
       selector: (row) => row['ObjectId'],
+      sortable: true,
     },
     {
       name: 'Date',
       selector: (row) => row['CreationTime'],
+      sortable: true,
     },
     {
       name: 'By',
       selector: (row) => row['UserId'],
+      sortable: true,
     },
   ]
 
@@ -114,18 +132,22 @@ const ViewBec = () => {
     {
       name: 'Username',
       selector: (row) => row['ObjectId'],
+      sortable: true,
     },
     {
       name: 'Date',
       selector: (row) => row['CreationTime'],
+      sortable: true,
     },
     {
       name: 'Operation',
       selector: (row) => row['Operation'],
+      sortable: true,
     },
     {
       name: 'By',
       selector: (row) => row['UserId'],
+      sortable: true,
     },
   ]
 
@@ -133,19 +155,23 @@ const ViewBec = () => {
     {
       name: 'Operation',
       selector: (row) => row['Operation'],
+      sortable: true,
     },
     {
       name: 'Executed by',
       selector: (row) => row['UserKey'],
+      sortable: true,
     },
     {
       name: 'Executed on',
       selector: (row) => row['ObjectId'],
+      sortable: true,
     },
     {
       name: 'Permissions',
       selector: (row) =>
         row.Item ? row.Item.ParentFolder?.MemberRights : row.Parameters[3]?.Value,
+      sortable: true,
     },
   ]
 
@@ -153,18 +179,22 @@ const ViewBec = () => {
     {
       name: 'Type',
       selector: (row) => row['Operation'],
+      sortable: true,
     },
     {
       name: 'User',
       selector: (row) => row['UserId'],
+      sortable: true,
     },
     {
       name: 'Application',
       selector: (row) => row['ObjectId'],
+      sortable: true,
     },
     {
       name: 'Result',
       selector: (row) => row['ResultStatus'],
+      sortable: true,
     },
   ]
 
@@ -198,8 +228,8 @@ const ViewBec = () => {
               </p>
               <p>
                 If you need more extensive information, run the{' '}
-                <Link to="https://cloudforensicator.com/">HAWK</Link> tool to investigate further.
-                If you believe this user to be compromised.
+                <CLink href="https://cloudforensicator.com/">HAWK</CLink> tool to investigate{' '}
+                further. If you believe this user to be compromised.
               </p>
               <p>
                 Hit the button below to execute the following tasks:

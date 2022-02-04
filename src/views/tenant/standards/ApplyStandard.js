@@ -1,5 +1,5 @@
 import React from 'react'
-import { CAlert, CCallout, CSpinner } from '@coreui/react'
+import { CCallout, CSpinner } from '@coreui/react'
 import { Field } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
@@ -15,10 +15,10 @@ const Error = ({ name }) => (
     subscription={{ touched: true, error: true }}
     render={({ meta: { touched, error } }) =>
       touched && error ? (
-        <CAlert color="danger">
+        <CCallout color="danger">
           <FontAwesomeIcon icon={faExclamationTriangle} color="danger" />
           {error}
-        </CAlert>
+        </CCallout>
       ) : null
     }
   />
@@ -73,7 +73,7 @@ const ApplyStandard = () => {
             <WizardTableField
               reportName="Apply-Standard-Tenant-Selector"
               keyField="defaultDomainName"
-              path="/api/ListTenants"
+              path="/api/ListTenants?AllTenantSelector=true"
               columns={[
                 {
                   name: 'Display Name',
@@ -148,14 +148,14 @@ const ApplyStandard = () => {
         </center>
         <hr className="my-4" />
         {!postResults.isSuccess && (
-          <CAlert color="warning" className="d-flex align-items-center">
+          <CCallout color="warning" className="d-flex align-items-center">
             <FontAwesomeIcon color="warning" icon={faExclamationTriangle} size="2x" />
             <center>
               WARNING! Setting a standard will make changes to your tenants and set these standards
               on every 365 tenant you select. If you want to review only, please use the Best
               Practice Analyser.
             </center>
-          </CAlert>
+          </CCallout>
         )}
         {postResults.isFetching && (
           <CCallout color="info">

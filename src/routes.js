@@ -18,11 +18,15 @@ const Page404 = React.lazy(() => import('src/views/pages/page404/Page404'))
 const Page403 = React.lazy(() => import('src/views/pages/page403/Page403'))
 const MFAReport = React.lazy(() => import('src/views/identity/reports/MFAReport'))
 const Tenants = React.lazy(() => import('src/views/tenant/administration/Tenants'))
+const AlertWizard = React.lazy(() => import('src/views/tenant/administration/AlertWizard'))
+const AlertsQueue = React.lazy(() => import('src/views/tenant/administration/ListAlertsQueue'))
+
 const Domains = React.lazy(() => import('src/views/tenant/administration/Domains'))
 const EditTenant = React.lazy(() => import('src/views/tenant/administration/EditTenant'))
 const ConditionalAccess = React.lazy(() =>
   import('src/views/tenant/administration/ConditionalAccess'),
 )
+
 const BasicAuthReport = React.lazy(() => import('src/views/identity/reports/BasicAuthReport'))
 const BestPracticeAnalyzer = React.lazy(() =>
   import('src/views/tenant/standards/BestPracticeAnalyser'),
@@ -39,6 +43,9 @@ const ApplyStandard = React.lazy(() => import('src/views/tenant/standards/ApplyS
 const ListAlerts = React.lazy(() => import('src/views/security/reports/ListAlerts'))
 const ApplicationsList = React.lazy(() =>
   import('src/views/endpoint/applications/ApplicationsList'),
+)
+const ApplicationsQueue = React.lazy(() =>
+  import('src/views/endpoint/applications/ListApplicationQueue'),
 )
 const ApplicationsAddChocoApp = React.lazy(() =>
   import('src/views/endpoint/applications/ApplicationsAddChocoApp'),
@@ -107,6 +114,7 @@ const PhishingPoliciesList = React.lazy(() =>
   import('src/views/email-exchange/reports/PhishingPoliciesList'),
 )
 const SecurityComplianceAlerts = React.lazy(() => import('src/views/security/reports/ListAlerts'))
+const License = React.lazy(() => import('src/views/pages/license/License'))
 
 const routes = [
   // { path: '/', exact: true, name: 'Home' },
@@ -145,6 +153,9 @@ const routes = [
   { path: '/tenant/administration/tenants', name: 'Tenants', component: Tenants },
   { path: '/tenant/administration/tenants/edit', name: 'Edit Tenant', component: EditTenant },
   { path: '/tenant/administration/domains', name: 'Domains', component: Domains },
+  { path: '/tenant/administration/alertswizard', name: 'Alerts Wizard', component: AlertWizard },
+  { path: '/tenant/administration/alertsqueue', name: 'Alerts Queue', component: AlertsQueue },
+
   {
     path: '/tenant/administration/conditional-access-policies',
     name: 'Conditional Access',
@@ -176,6 +187,8 @@ const routes = [
   { path: '/endpoint', name: 'Endpoint' },
   { path: '/endpoint/applications', name: 'Applications' },
   { path: '/endpoint/applications/list', name: 'List', component: ApplicationsList },
+  { path: '/endpoint/applications/queue', name: 'Queue', component: ApplicationsQueue },
+
   {
     path: '/endpoint/applications/add-choco-app',
     name: 'Add Choco App',
@@ -288,6 +301,11 @@ const routes = [
     name: 'List Alerts',
     path: '/security/reports/list-alerts',
     component: SecurityComplianceAlerts,
+  },
+  {
+    name: 'License',
+    path: '/license',
+    component: License,
   },
 ]
 
