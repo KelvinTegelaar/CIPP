@@ -26,6 +26,7 @@ const ViewUser = (props) => {
   let query = useQuery()
   const userId = query.get('userId')
   const tenantDomain = query.get('tenantDomain')
+  const userEmail = query.get('userEmail')
   const [queryError, setQueryError] = useState(false)
 
   const {
@@ -60,7 +61,7 @@ const ViewUser = (props) => {
             <UserCAPs tenantDomain={tenantDomain} userId={userId} />
           </CippMasonryItem>
           <CippMasonryItem size="single">
-            <UserActions tenantDomain={tenantDomain} userId={userId} />
+            <UserActions tenantDomain={tenantDomain} userId={userId} userEmail={userEmail} />
           </CippMasonryItem>
           <CippMasonryItem size="single">
             <User365Management tenantDomain={tenantDomain} userId={userId} />

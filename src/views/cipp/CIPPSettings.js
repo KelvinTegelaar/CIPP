@@ -19,7 +19,6 @@ import {
   CListGroupItem,
   CBadge,
   CLink,
-  CAlert,
   CSpinner,
 } from '@coreui/react'
 import {
@@ -178,9 +177,9 @@ const GeneralSettings = () => {
                 <div>
                   {permissionsResult.data.Results.MissingPermissions
                     ? 'Your Secure Application Model is missing the following delegated permissions:'
-                    : 'Your Secure Application Model has all required permissions'}
+                    : permissionsResult.data.Results}
                   <CListGroup flush>
-                    {permissionsResult.data.Results.MissingPermissions.map((r, index) => (
+                    {permissionsResult.data.Results?.MissingPermissions?.map((r, index) => (
                       <CListGroupItem key={index}>{r}</CListGroupItem>
                     ))}
                   </CListGroup>
@@ -315,14 +314,14 @@ const ExcludedTenantsSettings = () => {
   return (
     <>
       {removeExcludeTenantResult.isSuccess && (
-        <CAlert color="success" dismissible>
+        <CCallout color="success" dismissible>
           {removeExcludeTenantResult.data?.Results}
-        </CAlert>
+        </CCallout>
       )}
       {addExcludeTenantResult.isSuccess && (
-        <CAlert color="success" dismissible>
+        <CCallout color="success" dismissible>
           {addExcludeTenantResult.data?.Results}
-        </CAlert>
+        </CCallout>
       )}
       <CRow className="mb-3">
         <CCol md={12}>
@@ -637,14 +636,14 @@ const DNSSettings = () => {
               ))}
             </CButtonGroup>
             {(editDnsConfigResult.isSuccess || editDnsConfigResult.isError) && (
-              <CAlert
+              <CCallout
                 color={editDnsConfigResult.isSuccess ? 'success' : 'danger'}
                 visible={alertVisible}
               >
                 {editDnsConfigResult.isSuccess
                   ? editDnsConfigResult.data.Results
                   : 'Error setting resolver'}
-              </CAlert>
+              </CCallout>
             )}
           </CCardBody>
         </CCard>

@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 .sr-only {
   border: 0 !important;
   clip: rect(1px, 1px, 1px, 1px) !important;
@@ -46,6 +48,10 @@
 }
 
 /* cui overrides */
+
+.badge {
+  border-radius: var(--cipp-border-radius);
+}
 
 .btn {
   border-radius: var(--cipp-border-radius);
@@ -114,6 +120,18 @@
       line-height: 2rem;
       margin-bottom: 0;
     }
+
+    .card-header-link {
+      color: var(--cui-headings-color);
+      font-weight: 500;
+      text-decoration: none;
+
+      &:hover {
+        color: var(--cyberdrain-light-striped);
+        cursor: pointer;
+        text-decoration: underline;
+      }
+    }
   }
 }
 
@@ -144,10 +162,20 @@
   flex-grow: 1;
 }
 
+.nav-pills {
+  .nav-link {
+    border-radius: var(--cipp-border-radius);
+  }
+}
+
 .nav-tabs {
   .nav-link {
     border-radius: var(--cipp-border-radius);
   }
+}
+
+.progress {
+  border-radius: var(--cipp-border-radius);
 }
 
 /* Tables */
@@ -302,4 +330,27 @@
 
 .fa-inverse {
   color: var(--cipp-fa-inverse-color);
+}
+
+.rdt_TableRow.no-mfa {
+  background-color: color.adjust($cyberdrain-danger, $alpha: -0.5) !important;
+
+  .text-success {
+    color: var(--cui-body-color) !important;
+  }
+
+  .text-danger {
+    color: var(--cui-body-color) !important;
+  }
+}
+
+/* Footer */
+.footer {
+  p {
+    margin-bottom: 0;
+  }
+
+  img {
+    max-height: 2rem;
+  }
 }

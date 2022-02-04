@@ -6,9 +6,17 @@ import { Outlet } from 'react-router-dom'
 import { CContainer } from '@coreui/react'
 import { toggleSwitcher } from 'src/store/features/switcher'
 import { useHotkeys } from 'react-hotkeys-hook'
+import { useMediaPredicate } from 'react-media-hook'
 
 const DefaultLayout = () => {
-  const theme = useSelector((state) => state.app.currentTheme)
+  const preferredTheme = useMediaPredicate('(prefers-color-scheme: dark)') ? 'impact' : 'cyberdrain'
+  const themePreference = useSelector((state) => state.app.currentTheme)
+  let theme
+  if (themePreference === 'default') {
+    theme = preferredTheme
+  } else {
+    theme = themePreference
+  }
   useEffect(() => {
     document.body.classList = []
     document.body.classList.add(`theme-${theme}`)
