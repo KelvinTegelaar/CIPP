@@ -51,7 +51,7 @@ To update the backend, you must manually fetch from github and update the Azure 
 * Click on Sync.
 
 :::success Success!
-Check the [Dashboard](/docs/user/usingcipp/dashboard/overview) and you should see all green once updated.
+Check the [Dashboard](/docs/user/usingcipp/dashboard) and you should see all green once updated.
 
 You've now updated the application.
 
