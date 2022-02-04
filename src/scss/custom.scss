@@ -415,3 +415,17 @@ html[data-theme='dark'] div[class^='announcementBar_'] {
     align-items: center;
   }
 }
+
+.pre-footer {
+  background-color: var(--cyberdrain-dark);
+  color: var(--cyberdrain-light);
+
+  h2 {
+    text-align: center;
+    text-transform: uppercase;
+
+    .pre-footer--title {
+      text-decoration-line: underline;
+    }
+  }
+}

@@ -13,6 +13,7 @@ import isInternalUrl from '@docusaurus/isInternalUrl';
 import styles from './styles.module.css';
 import ThemedImage from '@theme/ThemedImage';
 import IconExternalLink from '@theme/IconExternalLink';
+import Sponsors from '@site/src/components/Sponsors/Sponsors';
 
 function FooterLink({to, href, label, prependBaseUrlToHref, ...props}) {
   const toUrl = useBaseUrl(to);
@@ -127,53 +128,58 @@ function Footer() {
   }
 
   return (
-    <footer
-      className={clsx('footer', {
-        'footer--dark': footer.style === 'dark',
-      })}>
-      <div className="container container-fluid">
-        {links &&
-          links.length > 0 &&
-          (isMultiColumnFooterLinks(links) ? (
-            <div className="row footer__links">
-              <MultiColumnLinks links={links} />
-            </div>
-          ) : (
-            <div className="footer__links text--center">
-              <SimpleLinks links={links} />
-            </div>
-          ))}
-        {(logo || copyright) && (
-          <div className="footer__bottom text--center">
-            {logo && (logo.src || logo.srcDark) && (
-              <div className="margin-bottom--sm">
-                {logo.href ? (
-                  <Link href={logo.href} className={styles.footerLogoLink}>
-                    <FooterLogo
-                      alt={logo.alt}
-                      sources={sources}
-                      width={logo.width}
-                      height={logo.height}
-                    />
-                  </Link>
-                ) : (
-                  <FooterLogo alt={logo.alt} sources={sources} />
-                )}
-              </div>
-            )}
-            {copyright ? (
-              <div
-                className="footer__copyright" // Developer provided the HTML, so assume it's safe.
-                // eslint-disable-next-line react/no-danger
-                dangerouslySetInnerHTML={{
-                  __html: copyright,
-                }}
-              />
-            ) : null}
-          </div>
-        )}
+    <>
+      <div className={clsx('pre-footer')}>
+        <Sponsors />
       </div>
-    </footer>
+      <footer
+        className={clsx('footer', {
+          'footer--dark': footer.style === 'dark',
+        })}>
+        <div className="container container-fluid">
+          {links &&
+            links.length > 0 &&
+            (isMultiColumnFooterLinks(links) ? (
+              <div className="row footer__links">
+                <MultiColumnLinks links={links} />
+              </div>
+            ) : (
+              <div className="footer__links text--center">
+                <SimpleLinks links={links} />
+              </div>
+            ))}
+          {(logo || copyright) && (
+            <div className="footer__bottom text--center">
+              {logo && (logo.src || logo.srcDark) && (
+                <div className="margin-bottom--sm">
+                  {logo.href ? (
+                    <Link href={logo.href} className={styles.footerLogoLink}>
+                      <FooterLogo
+                        alt={logo.alt}
+                        sources={sources}
+                        width={logo.width}
+                        height={logo.height}
+                      />
+                    </Link>
+                  ) : (
+                    <FooterLogo alt={logo.alt} sources={sources} />
+                  )}
+                </div>
+              )}
+              {copyright ? (
+                <div
+                  className="footer__copyright" // Developer provided the HTML, so assume it's safe.
+                  // eslint-disable-next-line react/no-danger
+                  dangerouslySetInnerHTML={{
+                    __html: copyright,
+                  }}
+                />
+              ) : null}
+            </div>
+          )}
+        </div>
+      </footer>
+    </>
   );
 }
 

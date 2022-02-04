@@ -8,7 +8,6 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
 import { faStar } from '@fortawesome/free-regular-svg-icons';
 import HomePageFeatures from '@site/src/components/HomePage/HomePageFeatures';
-import Sponsors from '@site/src/components/Sponsors/Sponsors';
 import { getGithubStars, getLatestTag } from '@site/src/utilities/githubHelper';
 
 // Content imports
@@ -152,7 +151,6 @@ export default function Home() {
           </div>
         </div>
       </main>
-      <Sponsors />
     </Layout>
   );
 }

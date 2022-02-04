@@ -34,8 +34,8 @@ const items = sponsors.map((sponsor, index) => {
 export default function Sponsors() {
   console.log(items)
   return (
-    <div className={clsx('cipp-home container padding-vert--lg')}>
-      <h2><span className={clsx('cipp-home--title')}>Sponsored By</span></h2>
+    <div className={clsx('container padding-vert--lg')}>
+      <h2><span className={clsx('pre-footer--title')}>Sponsored By</span></h2>
       <AliceCarousel
         autoPlay
         autoPlayInterval={1000}
