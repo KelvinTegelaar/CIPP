@@ -99,7 +99,6 @@ const checkAccessColumns = [
 ]
 
 const GeneralSettings = () => {
-  const { data: tenants = [] } = useListTenantsQuery()
   const [checkPermissions, permissionsResult] = useLazyExecPermissionsAccessCheckQuery()
   const [clearCache, clearCacheResult] = useLazyExecClearCacheQuery()
   const [checkAccess, accessCheckResult] = useLazyExecTenantsAccessCheckQuery()
