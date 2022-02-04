@@ -99,6 +99,7 @@ const checkAccessColumns = [
 ]
 
 const GeneralSettings = () => {
+  const { data: tenants = [] } = useListTenantsQuery({ AllTenantSelector: false })
   const [checkPermissions, permissionsResult] = useLazyExecPermissionsAccessCheckQuery()
   const [clearCache, clearCacheResult] = useLazyExecClearCacheQuery()
   const [checkAccess, accessCheckResult] = useLazyExecTenantsAccessCheckQuery()
@@ -111,7 +112,6 @@ const GeneralSettings = () => {
     if (values.length <= maxSelected) {
       setSelectedTenants(values)
       setShowMaxSelected(false)
-      console.log(values)
     } else {
       setShowMaxSelected(true)
       // close the tenant selector, hacky but no other way to do this
@@ -128,7 +128,17 @@ const GeneralSettings = () => {
   }
 
   const handleCheckAccess = () => {
-    checkAccess({ tenantDomains: selectedTenants })
+    const mapped = tenants.reduce(
+      (current, { customerId, ...rest }) => ({
+        ...current,
+        [customerId]: { ...rest },
+      }),
+      {},
+    )
+    const AllTenantSelector = selectedTenants.map(
+      (customerId) => mapped[customerId].defaultDomainName,
+    )
+    checkAccess({ tenantDomains: AllTenantSelector })
   }
 
   const handleClearCache = useConfirmModal({
