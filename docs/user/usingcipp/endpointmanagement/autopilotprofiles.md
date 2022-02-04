@@ -35,7 +35,7 @@ You can only assign one profile to "All Devices"
 
 **400** - You've entered incorrect data, check the information and try again. You might already have one policy pointed at the "All Devices" group.
 
-There are currently no further known issues with the Roles page.  If you have any issues, [please report this as a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).
+There are currently no further known issues with the Add Profiles page.  If you have any issues, [please report this as a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).
 
 --- 
 
@@ -49,4 +49,4 @@ There is a *View JSON* option which shows all the options and their selected set
 
 #### List Profile - Current known issues / Limitations
 
-There are currently no known issues with the Autopilot Profiles page.  If you have any issues, [please report this as a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).
+There are currently no known issues with the List Autopilot Profiles page.  If you have any issues, [please report this as a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).

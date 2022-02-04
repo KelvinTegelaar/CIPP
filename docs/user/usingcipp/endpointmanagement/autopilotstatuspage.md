@@ -31,6 +31,8 @@ You can only edit the default profile, and not create new ones.
 
 **400** - You've entered incorrect data, check the information and try again.
 
+There are currently no further known issues with the Add Status Page page.  If you have any issues, [please report this as a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).
+
 ---
 
 ### List Status Page - Overview

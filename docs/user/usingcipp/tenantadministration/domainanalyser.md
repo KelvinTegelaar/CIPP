@@ -20,7 +20,7 @@ At the top of the page there is button called **Force Refresh All Data**. You on
 
 ## Interpreting Results
 
-The reporting here generally follows a standard colour theming.
+The reporting here generally follows a standard colour theme.
 Red is bad and generally not something that should be happening on your tenant.
 Orange is either a warning or subjective. It does not necessarily indicate something is wrong.
 Green means there are no issues or the setting is set in a manner that is generally agreed as Best Practice.
