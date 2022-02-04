@@ -203,7 +203,109 @@ const config = {
     }),
   plugins: [
     require.resolve('docusaurus-plugin-sass'),
-    require.resolve('@docusaurus/plugin-client-redirects'),
+    [
+      require.resolve('@docusaurus/plugin-client-redirects'),
+      {
+        redirects: [
+          {
+            to: '/docs/user/updating',
+            from: '/GettingStarted/Updating/',
+          },
+          {
+            to: '/docs/user/gettingstarted/',
+            from: '/GettingStarted/Installation/',
+          },
+          {
+            to: '/docs/user/gettingstarted/roles/',
+            from: '/GettingStarted/Roles/',
+          },
+          {
+            to: '/faq/',
+            from: '/GettingStarted/FAQ/',
+          },
+          {
+            to: '/docs/user/security/',
+            from: '/GettingStarted/Security/',
+          },
+          {
+            to: '/changelog/',
+            from: '/GettingStarted/Changelog/',
+          },
+          {
+            to: '/contributing/',
+            from: '/GettingStarted/Contributions/',
+          },
+          {
+            to: '/docs/user/usingcipp/identitymanagement/users/',
+            from: '/IdentityManagement/Users/',
+          },
+          {
+            to: '/docs/user/usingcipp/identitymanagement/groups/',
+            from: '/IdentityManagement/Groups/',
+          },
+          {
+            to: '/docs/user/usingcipp/tenantadministration/tenants/',
+            from: '/TenantAdministration/Tenants/',
+          },
+          {
+            to: '/docs/user/usingcipp/tenantadministration/standards/',
+            from: '/TenantAdministration/Standards/',
+          },
+          {
+            to: '/docs/user/usingcipp/tenantadministration/bestpracticeanalyser/',
+            from: '/TenantAdministration/BestPracticesAnalyser/',
+          },
+          {
+            to: '/docs/user/usingcipp/tenantadministration/domainanalyser/',
+            from: '/TenantAdministration/DomainAnalyser/',
+          },
+          {
+            to: '/docs/user/usingcipp/endpointmanagement/applications/',
+            from: '/EndpointManagement/Applications/',
+          },
+          {
+            to: '/docs/user/usingcipp/endpointmanagement/addchocoapp/',
+            from: '/EndpointManagement/AddChocoApp/',
+          },
+          {
+            to: '/docs/user/usingcipp/endpointmanagement/autopilotdevices/',
+            from: '/EndpointManagement/AutopilotDevices/',
+          },
+          {
+            to: '/docs/user/usingcipp/endpointmanagement/autopilotprofiles/',
+            from: '/EndpointManagement/AutopilotProfiles/',
+          },
+          {
+            to: '/docs/user/usingcipp/endpointmanagement/autopilotstatuspage/',
+            from: '/EndpointManagement/AutopilotStatusPage/',
+          },
+          {
+            to: '/docs/user/usingcipp/endpointmanagement/mempolicytemplates/',
+            from: '/EndpointManagement/IntunePolicyTemplates/',
+          },
+          {
+            to: '/docs/user/usingcipp/endpointmanagement/defender/',
+            from: '/EndpointManagement/Defender/',
+          },
+          {
+            to: '/docs/user/usingcipp/teamssharepoint/',
+            from: '/OneDriveTeamsSharepoint/OneDrive/',
+          },
+          {
+            to: '/docs/user/usingcipp/settings/configurationsettings/',
+            from: '/CIPPSettings/ConfigurationSettings/',
+          },
+          {
+            to: '/docs/user/usingcipp/settings/backendaccess/',
+            from: '/CIPPSettings/BackendAccess/',
+          },
+          {
+            to: '/faq/',
+            from: '/FAQ/FAQ/',
+          },
+        ]
+      }
+    ],
     [
       '@docusaurus/plugin-content-docs',
       {
