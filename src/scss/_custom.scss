@@ -343,3 +343,13 @@
     color: var(--cui-body-color) !important;
   }
 }
+
+/* Footer */
+.footer {
+  p {
+    margin-bottom: 0;
+  }
+  img {
+    max-height: 2rem;
+  }
+}

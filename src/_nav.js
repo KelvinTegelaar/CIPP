@@ -20,8 +20,8 @@ import {
 const _nav = [
   {
     component: CNavItem,
-    name: 'Home',
-    section: 'Home',
+    name: 'Dashboard',
+    section: 'Dashboard',
     to: '/home',
     icon: <FontAwesomeIcon icon={faHome} className="nav-icon" />,
   },
