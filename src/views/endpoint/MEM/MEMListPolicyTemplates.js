@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
+import { CippCodeBlock, CippOffcanvas } from 'src/components/utilities'
 import { CippDatatable } from 'src/components/tables'
 import { CCardBody, CButton, CCallout, CSpinner } from '@coreui/react'
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faEye, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import { CippPage } from 'src/components/layout'
@@ -10,13 +11,13 @@ import { ModalService } from 'src/components/utilities'
 
 //todo: expandable with RAWJson property.
 /* eslint-disable-next-line react/prop-types */
-const ExpandedComponent = ({ data }) => <pre>{data.RAWJson}</pre>
 
 const AutopilotListTemplates = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
-  const Actions = (row, index, column) => {
+  const Offcanvas = (row, rowIndex, formatExtraData) => {
+    const [ocVisible, setOCVisible] = useState(false)
     const handleDeleteIntuneTemplate = (apiurl, message) => {
       ModalService.confirm({
         title: 'Confirm',
@@ -27,19 +28,33 @@ const AutopilotListTemplates = () => {
       })
     }
     return (
-      <CButton
-        size="sm"
-        variant="ghost"
-        color="danger"
-        onClick={() =>
-          handleDeleteIntuneTemplate(
-            `/api/RemoveIntuneTemplate?ID=${row.GUID}`,
-            'Do you want to delete the template?',
-          )
-        }
-      >
-        <FontAwesomeIcon icon={faTrash} href="" />
-      </CButton>
+      <>
+        <CButton size="sm" color="success" variant="ghost" onClick={() => setOCVisible(true)}>
+          <FontAwesomeIcon icon={faEye} />
+        </CButton>
+        <CButton
+          size="sm"
+          variant="ghost"
+          color="danger"
+          onClick={() =>
+            handleDeleteIntuneTemplate(
+              `/api/RemoveIntuneTemplate?ID=${row.GUID}`,
+              'Do you want to delete the template?',
+            )
+          }
+        >
+          <FontAwesomeIcon icon={faTrash} href="" />
+        </CButton>
+        <CippOffcanvas
+          title="Template JSON"
+          placement="end"
+          visible={ocVisible}
+          id={row.id}
+          hideFunction={() => setOCVisible(false)}
+        >
+          <CippCodeBlock language="json" code={JSON.stringify(row, null, 2)} />
+        </CippOffcanvas>
+      </>
     )
   }
 
@@ -70,7 +85,7 @@ const AutopilotListTemplates = () => {
     },
     {
       name: 'Actions',
-      cell: Actions,
+      cell: Offcanvas,
     },
   ]
 
@@ -87,11 +102,6 @@ const AutopilotListTemplates = () => {
           <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
         )}
         <CippDatatable
-          tableProps={{
-            expandableRows: true,
-            expandableRowsComponent: ExpandedComponent,
-            expandOnRowClicked: true,
-          }}
           keyField="id"
           reportName={`${tenant?.defaultDomainName}-MEMPolicyTemplates-List`}
           path="/api/ListIntuneTemplates"

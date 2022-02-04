@@ -1,5 +1,6 @@
 :root {
   // CyberDrain variables.
+  //// If you want to change these variables please also update the _variables.scss file.
   --cyberdrain-primary: #f77f00; // Orange
   --cyberdrain-primary-rgb: rgb(247 127 0); // Orange
   --cyberdrain-secondary: #003049; // Prussian Blue
@@ -208,7 +209,6 @@
   }
 }
 
-[data-theme='default'],
 [data-theme='cyberdrain'] {
   // Core UI CyberDrain theme variables.
   --cui-body-bg: var(--cyberdrain-light);
@@ -227,6 +227,7 @@
   --cui-dropdown-link-hover-bg: var(--cyberdrain-accent-green);
   --cui-dropdown-link-hover-color: var(--cyberdrain-dark);
   --cui-footer-bg: var(--cyberdrain-light);
+  --cui-footer-color: var(--cyberdrain-dark);
   --cui-footer-border-color: var(--cyberdrain-dark);
   --cui-form-select-bg: var(--cyberdrain-light);
   --cui-form-select-border-color: var(--cyberdrain-dark);
@@ -342,6 +343,7 @@
   --cui-dropdown-link-hover-bg: var(--cyberdrain-accent-green);
   --cui-dropdown-link-hover-color: var(--cyberdrain-light);
   --cui-footer-bg: var(--cyberdrain-dark);
+  --cui-footer-color: var(--cyberdrain-light);
   --cui-footer-border-color: var(--cyberdrain-accent-green);
   --cui-form-select-bg: var(--cyberdrain-dark);
   --cui-form-select-border-color: var(--cyberdrain-light);

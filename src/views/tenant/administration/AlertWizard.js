@@ -10,7 +10,7 @@ import {
 import { CippWizard } from 'src/components/layout'
 import { WizardTableField } from 'src/components/tables'
 import PropTypes from 'prop-types'
-import { RFFCFormInput, RFFCFormSwitch } from 'src/components/forms'
+import { RFFCFormSwitch } from 'src/components/forms'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
 const Error = ({ name }) => (
@@ -34,49 +34,39 @@ Error.propTypes = {
 
 const requiredArray = (value) => (value && value.length !== 0 ? undefined : 'Required')
 
-const ApplyStandard = () => {
+const AlertWizard = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
   const handleSubmit = async (values) => {
     values.selectedTenants.map(
       (tenant) => (values[`Select_${tenant.defaultDomainName}`] = tenant.defaultDomainName),
     )
-    genericPostRequest({ path: '/api/AddAutopilotConfig', values: values })
+    genericPostRequest({ path: '/api/AddAlert', values: values })
   }
 
   const formValues = {
-    Assignto: true,
-    DeploymentMode: true,
-    HideTerms: true,
-    HidePrivacy: true,
-    CollectHash: true,
-    NotLocalAdmin: true,
-    allowWhiteglove: true,
-    Autokeyboard: true,
-    HideChangeAccount: true,
+    InstallAsSystem: true,
+    DisableRestart: true,
   }
 
   return (
     <CippWizard
       initialValues={{ ...formValues }}
       onSubmit={handleSubmit}
-      wizardTitle="Autopilot Profile Wizard"
+      wizardTitle="Tenant Alerting Wizard"
     >
-      <CippWizard.Page
-        title="Tenant Choice"
-        description="Choose the tenants to create the profile for."
-      >
+      <CippWizard.Page title="Tenant Choice" description="Choose the tenants to send alerts for">
         <center>
           <h3 className="text-primary">Step 1</h3>
-          <h5 className="card-title mb-4">Choose tenants</h5>
+          <h5 className="card-title mb-4">Choose a tenant</h5>
         </center>
         <hr className="my-4" />
         <Field name="selectedTenants" validate={requiredArray}>
           {(props) => (
             <WizardTableField
-              reportName="Add-Autopilot-Profile-Tenant-Selector"
+              reportName="Add-Choco-App-Tenant-Selector"
               keyField="defaultDomainName"
-              path="/api/ListTenants"
+              path="/api/ListTenants?AllTenantSelector=true"
               columns={[
                 {
                   name: 'Display Name',
@@ -98,69 +88,38 @@ const ApplyStandard = () => {
         <Error name="selectedTenants" />
         <hr className="my-4" />
       </CippWizard.Page>
-      <CippWizard.Page title="Select Options" description="Select which options you want to apply.">
+      <CippWizard.Page
+        title="Select Standards"
+        description="Select which standards you want to apply."
+      >
         <center>
           <h3 className="text-primary">Step 2</h3>
-          <h5 className="card-title mb-4">Supply the ESP Information</h5>
+          <h5 className="card-title mb-4">Select alerts to receive</h5>
         </center>
         <hr className="my-4" />
         <CForm onSubmit={handleSubmit}>
-          <CRow>
-            <CCol md={12}>
-              <RFFCFormInput
-                type="text"
-                name="DisplayName"
-                label="Display name"
-                placeholder="Enter a profile name"
-              />
-            </CCol>
-          </CRow>
-          <CRow>
-            <CCol md={12}>
-              <RFFCFormInput
-                type="text"
-                name="Description"
-                label="Description"
-                placeholder="leave blank for none"
-              />
-            </CCol>
-          </CRow>
-          <CRow>
-            <CCol md={12}>
-              <RFFCFormInput
-                type="text"
-                name="DeviceNameTemplate"
-                label="Unique name template"
-                placeholder="leave blank for none"
-              />
-              <br></br>
-            </CCol>
-          </CRow>
+          These alerts will be sent to the user or webhook configured in the CIPP notification
+          settings menu.<br></br>
           <RFFCFormSwitch
             value={true}
-            name="CollectHash"
-            label="Convert all targeted devices to Autopilot"
+            name="MFAAlertUsers"
+            label="Alert on users without any form of MFA"
           />
-          <RFFCFormSwitch value={true} name="Assignto" label="Assign to all devices" />
-          <RFFCFormSwitch value={true} name="DeploymentMode" label="Self-deploying mode" />
-          <RFFCFormSwitch value={true} name="HideTerms" label="Hide Terms and conditions" />
-          <RFFCFormSwitch value={true} name="HidePrivacy" label="Hide Privacy Settings" />
+          <RFFCFormSwitch name="MFAAdmins" label="Alert on admins without any form of MFA" />
+          <RFFCFormSwitch name="NewGA" label="Alert on new Global Admins" />
+          <RFFCFormSwitch name="NewRole" label="Alert on new users added to any admin role" />
+          <RFFCFormSwitch name="AdminPassword" label="Alert on changed admin Passwords" />
+          <RFFCFormSwitch name="NewApprovedApp" label="Alert on new app consent" />
           <RFFCFormSwitch
-            value={true}
-            name="HideChangeAccount"
-            label="Hide Change Account Options"
+            name="DefenderStatus"
+            label="Alert if Defender is not running (Tenant must be onboarded in Lighthouse)"
           />
           <RFFCFormSwitch
-            value={true}
-            name="NotLocalAdmin"
-            label="Setup user as standard user (Leave unchecked to setup user as local admin)"
+            name="DefenderMalware"
+            label="Alert on Defender Malware found  (Tenant must be onboarded in Lighthouse)"
           />
-          <RFFCFormSwitch value={true} name="allowWhiteglove" label="Allow White Glove OOBE" />
-          <RFFCFormSwitch
-            value={true}
-            name="Autokeyboard"
-            label="Automatically configure keyboard"
-          />
+          <RFFCFormSwitch name="QuotaUsed" label="Alert on 90% mailbox quota used" />
+          <RFFCFormSwitch name="UnusedLicenses" label="Alert on unused licenses" />
         </CForm>
         <hr className="my-4" />
       </CippWizard.Page>
@@ -181,83 +140,83 @@ const ApplyStandard = () => {
                     <CCol md={6}>
                       <CListGroup flush>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Display Name: {props.values.DisplayName}
+                          Alert on users without any form of MFA
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.DisplayName ? faCheckCircle : faTimesCircle}
+                            icon={props.values.MFAAlertUsers ? faCheckCircle : faTimesCircle}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Naming template: {props.values.DeviceNameTemplate}
+                          Alert on admins without any form of MFA
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.DeviceNameTemplate ? faCheckCircle : faTimesCircle}
+                            icon={props.values.MFAAdmins ? faCheckCircle : faTimesCircle}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Self-Deploying
+                          Alert on new Global Admins
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.DeploymentMode ? faCheckCircle : faTimesCircle}
+                            icon={props.values.NewGA ? faCheckCircle : faTimesCircle}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Hide Terms
+                          Alert on new users added to any admin role
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.HideTerms ? faCheckCircle : faTimesCircle}
+                            icon={props.values.NewRole ? faCheckCircle : faTimesCircle}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Hide Privacy
+                          Alert on changed admin Passwords
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.HidePrivacy ? faCheckCircle : faTimesCircle}
+                            icon={props.values.AdminPassword ? faCheckCircle : faTimesCircle}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Convert to Autopilot device
+                          Alert on new app consent
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.CollectHash ? faCheckCircle : faTimesCircle}
+                            icon={props.values.NewApprovedApp ? faCheckCircle : faTimesCircle}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Standard Account
+                          Alert if Defender is not running
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.NotLocalAdmin ? faCheckCircle : faTimesCircle}
+                            icon={props.values.DefenderStatus ? faCheckCircle : faTimesCircle}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Allow Whiteglove
+                          Alert on Defender Malware
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.allowWhiteglove ? faCheckCircle : faTimesCircle}
+                            icon={props.values.DefenderMalware ? faCheckCircle : faTimesCircle}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Automatically setup keyboard
+                          Alert on 90% mailbox quota used
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.Autokeyboard ? faCheckCircle : faTimesCircle}
+                            icon={props.values.QuotaUsed ? faCheckCircle : faTimesCircle}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Allow Whiteglove
+                          Alert on unused licenses
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.HideChangeAccount ? faCheckCircle : faTimesCircle}
+                            icon={props.values.UnusedLicenses ? faCheckCircle : faTimesCircle}
                           />
                         </CListGroupItem>
                       </CListGroup>
@@ -273,11 +232,17 @@ const ApplyStandard = () => {
             <CSpinner>Loading</CSpinner>
           </CCallout>
         )}
-        {postResults.isSuccess && <CCallout color="success">{postResults.data.Results}</CCallout>}
+        {postResults.isSuccess && (
+          <CCallout color="success">
+            {postResults.data.Results.map((message, idx) => {
+              return <li key={idx}>{message}</li>
+            })}
+          </CCallout>
+        )}
         <hr className="my-4" />
       </CippWizard.Page>
     </CippWizard>
   )
 }
 
-export default ApplyStandard
+export default AlertWizard
