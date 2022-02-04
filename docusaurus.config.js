@@ -203,9 +203,8 @@ const config = {
     }),
   plugins: [
     require.resolve('docusaurus-plugin-sass'),
-    require.resolve('@docusaurus/plugin-client-redirects'),
     [
-      '@docusaurus/plugin-client-redirects',
+      require.resolve('@docusaurus/plugin-client-redirects'),
       {
         redirects: [
           {
