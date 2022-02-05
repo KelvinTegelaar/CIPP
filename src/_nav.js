@@ -80,6 +80,11 @@ const _nav = [
         name: 'Basic Auth Report',
         to: '/identity/reports/basic-auth-report',
       },
+      {
+        component: CNavItem,
+        name: 'AAD Connect Report',
+        to: '/identity/reports/azure-ad-connect-report',
+      },
     ],
   },
   {
