@@ -28,6 +28,9 @@ const ConditionalAccess = React.lazy(() =>
 )
 
 const BasicAuthReport = React.lazy(() => import('src/views/identity/reports/BasicAuthReport'))
+const AzureADConnectReport = React.lazy(() =>
+  import('src/views/identity/reports/AzureADConnectReport'),
+)
 const BestPracticeAnalyzer = React.lazy(() =>
   import('src/views/tenant/standards/BestPracticeAnalyser'),
 )
@@ -147,6 +150,11 @@ const routes = [
     path: '/identity/reports/basic-auth-report',
     name: 'Basic Auth Report',
     component: BasicAuthReport,
+  },
+  {
+    path: '/identity/reports/azure-ad-connect-report',
+    name: 'AAD Connect Report',
+    component: AzureADConnectReport,
   },
   { path: '/tenant', name: 'Tenant' },
   { path: '/tenant/administration', name: 'Administration' },
