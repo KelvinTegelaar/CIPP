@@ -20,8 +20,8 @@ import {
 const _nav = [
   {
     component: CNavItem,
-    name: 'Home',
-    section: 'Home',
+    name: 'Dashboard',
+    section: 'Dashboard',
     to: '/home',
     icon: <FontAwesomeIcon icon={faHome} className="nav-icon" />,
   },
@@ -108,11 +108,18 @@ const _nav = [
         name: 'Conditional Access Policies',
         to: '/tenant/administration/conditional-access-policies',
       },
-      {
-        component: CNavItem,
-        name: 'Alerts Wizard',
-        to: '/tenant/administration/alertswizard',
-      },
+      // Temp removed due to not ready for release
+      //    {
+      //       component: CNavItem,
+      //     name: 'Alerts Wizard',
+      //     to: '/tenant/administration/alertswizard',
+      //    },
+      // Temp removed due to not ready for release
+      //    {
+      //       component: CNavItem,
+      //     name: 'List Scheduled Alerts',
+      //     to: '/tenant/administration/alertsqueue',
+      //    },
     ],
   },
   {

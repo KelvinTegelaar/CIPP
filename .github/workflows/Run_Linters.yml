@@ -3,10 +3,12 @@ name: Lint Code Base
 on:  # yamllint disable-line rule:truthy
   push:
     branches:
+      - master
       - main
       - dev
   pull_request_target:
     branches:
+      - master
       - main
       - dev
 permissions:
