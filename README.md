@@ -19,7 +19,8 @@
 ![Genuine Technology Services](github_assets/img/Genuine-logo-vertical-light.png)&nbsp;&nbsp;&nbsp;&nbsp;
 ![Immybot](github_assets/img/Immybot.png)&nbsp;&nbsp;&nbsp;&nbsp;
 ![NinjaOne](github_assets/img/NinjaOne-Light.png#gh-dark-mode-only)
-![NinjaOne](github_assets/img/NinjaOne-Dark.png#gh-light-mode-only)
+![NinjaOne](github_assets/img/NinjaOne-Dark.png#gh-light-mode-only)&nbsp;&nbsp;&nbsp;&nbsp;
+![Huntress](github_assets/img/Huntress.png)
 
 </p>
 

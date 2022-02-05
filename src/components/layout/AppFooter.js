@@ -5,7 +5,7 @@ import huntressLogo from 'src/assets/images/huntress_teal.png'
 
 const AppFooter = () => {
   return (
-    <CFooter classname="d-flex justify-content-between align-items-center">
+    <CFooter className="d-flex justify-content-between align-items-center">
       <div className="sponsors">
         <p>
           This application is sponsored by
