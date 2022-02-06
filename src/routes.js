@@ -31,6 +31,9 @@ const BasicAuthReport = React.lazy(() => import('src/views/identity/reports/Basi
 const AzureADConnectReport = React.lazy(() =>
   import('src/views/identity/reports/AzureADConnectReport'),
 )
+const DeviceComplianceReport = React.lazy(() =>
+  import('src/views/security/reports/ListDeviceComplianceReport'),
+)
 const BestPracticeAnalyzer = React.lazy(() =>
   import('src/views/tenant/standards/BestPracticeAnalyser'),
 )
@@ -309,6 +312,11 @@ const routes = [
     name: 'List Alerts',
     path: '/security/reports/list-alerts',
     component: SecurityComplianceAlerts,
+  },
+  {
+    name: 'List Device Compliance Report',
+    path: '/security/reports/list-device-compliance',
+    component: DeviceComplianceReport,
   },
   {
     name: 'License',

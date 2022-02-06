@@ -172,6 +172,11 @@ const _nav = [
         name: 'List Alerts',
         to: '/security/reports/list-alerts',
       },
+      {
+        component: CNavItem,
+        name: 'Device Compliance',
+        to: '/security/reports/list-device-compliance',
+      },
     ],
   },
   {
