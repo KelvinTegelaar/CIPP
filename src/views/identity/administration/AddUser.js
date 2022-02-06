@@ -135,7 +135,8 @@ const AddUser = () => {
               adconnectsettings.dirSyncConfigured && (
                 <CCallout color="warning">
                   Warning! {adconnectsettings.dirSyncEnabled} This tenant currently has Active
-                  Directory Sync Enabled and Configured. Users should be created in Active Directory
+                  Directory Sync Enabled and Configured. This usually means users should be created
+                  in Active Directory
                 </CCallout>
               )}
             <CCardHeader>
