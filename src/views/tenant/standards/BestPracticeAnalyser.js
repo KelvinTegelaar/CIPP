@@ -217,7 +217,8 @@ const BestPracticeAnalyser = () => {
         if (cell === 'FAIL') {
           return (
             <CButton className="btn-danger" size="sm" onClick={() => handleUnusedLicense({ row })}>
-              {row.UnusedLicensesCount} SKU{row.UnusedLicensesCount > 1 ? 's' : ''}
+              {row.UnusedLicensesCount} SKU{row.UnusedLicensesCount > 1 ? 's' : ''} / Lic{' '}
+              {row.UnusedLicensesTotal}
             </CButton>
           )
         } else if (cell === 'PASS') {
