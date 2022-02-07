@@ -6,37 +6,37 @@ const columns = [
   {
     name: 'Name',
     selector: (row) => row['displayName'],
-    sort: true,
+    sortable: true,
     exportSelector: 'displayName',
   },
   {
     name: 'UPN',
     selector: (row) => row['UPN'],
-    sort: true,
+    sortable: true,
     exportSelector: 'UPN',
   },
   {
     name: 'Last Active',
     selector: (row) => row['LastActive'],
-    sort: true,
+    sortable: true,
     exportSelector: 'LastActive',
   },
   {
     name: 'File Count (Total)',
     selector: (row) => row['FileCount'],
-    sort: true,
+    sortable: true,
     exportSelector: 'FileCount',
   },
   {
     name: 'Used (GB)',
     selector: (row) => row['UsedGB'],
-    sort: true,
+    sortable: true,
     exportSelector: 'UsedGB',
   },
   {
     name: 'Allocated (GB)',
     selector: (row) => row['Allocated'],
-    sort: true,
+    sortable: true,
     exportSelector: 'Allocated',
   },
 ]

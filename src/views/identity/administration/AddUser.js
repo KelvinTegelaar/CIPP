@@ -10,7 +10,7 @@ import {
   CFormLabel,
   CRow,
   CSpinner,
-  CAlert,
+  CCallout,
 } from '@coreui/react'
 import { Form } from 'react-final-form'
 import {
@@ -111,11 +111,11 @@ const AddUser = () => {
   return (
     <CippPage tenantSelector={true} title="Add User">
       {postResults.isSuccess && (
-        <CAlert color="success" dismissible>
+        <CCallout color="success" dismissible>
           {postResults.data?.Results.map((result, index) => (
             <li key={index}>{result}</li>
           ))}
-        </CAlert>
+        </CCallout>
       )}
       <CRow>
         <CCol md={6}>
@@ -318,7 +318,11 @@ const AddUser = () => {
                         </CCol>
                       </CRow>
                       {postResults.isSuccess && (
-                        <CAlert color="success">{postResults.data?.Results}</CAlert>
+                        <CCallout color="success">
+                          {postResults.data.Results.map((message, idx) => {
+                            return <li key={idx}>{message}</li>
+                          })}
+                        </CCallout>
                       )}
                     </CForm>
                   )

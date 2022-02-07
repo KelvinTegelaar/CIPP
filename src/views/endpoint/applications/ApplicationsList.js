@@ -60,6 +60,13 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modalUrl: `/api/ExecAssignApp?AssignTo=Both&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
             modalMessage: `Are you sure you want to assign ${row.displayName} to all users and devices?`,
           },
+          {
+            label: 'Delete Application',
+            color: 'danger',
+            modal: true,
+            modalUrl: `/api/RemoveApp?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalMessage: 'Are you sure you want to delete this policy?',
+          },
         ]}
         placement="end"
         visible={ocVisible}
