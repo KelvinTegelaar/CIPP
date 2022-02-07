@@ -78,7 +78,7 @@ const sidebars = {
             'usingcipp/tenantadministration/conditionalaccesspolicies',
             'usingcipp/tenantadministration/standards',
             'usingcipp/tenantadministration/bestpracticeanalyser',
-            'usingcipp/tenantadministration/domainanalyser',
+            'usingcipp/tenantadministration/domainsanalyser',
             'usingcipp/tenantadministration/individualdomaincheck',
           ],
         },

@@ -10,6 +10,9 @@ import {findFirstCategoryLink, useDocById} from '@docusaurus/theme-common';
 import clsx from 'clsx';
 import styles from './styles.module.css';
 import isInternalUrl from '@docusaurus/isInternalUrl';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFolder, faFile } from '@fortawesome/free-regular-svg-icons';
+import { faPaperclip } from '@fortawesome/free-solid-svg-icons';
 
 function CardContainer({href, children}) {
   const className = clsx(
@@ -46,7 +49,7 @@ function CardCategory({item}) {
   return (
     <CardLayout
       href={href}
-      icon="🗃️"
+      icon={<FontAwesomeIcon className={clsx(styles.cardIcon)} icon={faFolder} />}
       title={item.label}
       description={`${item.items.length} items`}
     />
@@ -54,7 +57,7 @@ function CardCategory({item}) {
 }
 
 function CardLink({item}) {
-  const icon = isInternalUrl(item.href) ? '📄️' : '🔗';
+  const icon = isInternalUrl(item.href) ? <FontAwesomeIcon className={clsx(styles.cardIcon)} icon={faFile} /> : <FontAwesomeIcon className={clsx(styles.cardIcon)} icon={faPaperclip} />;
   const doc = useDocById(item.docId ?? undefined);
   return (
     <CardLayout

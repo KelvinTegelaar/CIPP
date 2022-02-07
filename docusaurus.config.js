@@ -3,15 +3,16 @@
 
 const lightCodeTheme = require('prism-react-renderer/themes/vsLight');
 const darkCodeTheme = require('prism-react-renderer/themes/vsDark');
+const a11yEmoji = require('@fec/remark-a11y-emoji');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'CyberDrain Improved Partner Portal',
-  tagline: 'Multi-tenant management for Microsoft 365 done right...',
+  tagline: 'Free and open-source multi-tenant management for Microsoft 365...',
   url: 'https://tender-shirley-88a2cf.netlify.app',
   baseUrl: '/',
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
+  onBrokenMarkdownLinks: 'throw',
   favicon: 'img/CyberDrainIconOrangeWhite.png',
   organizationName: 'KelvinTegelaar', // Usually your GitHub org/user name.
   projectName: 'CIPP', // Usually your repo name.
@@ -30,11 +31,22 @@ const config = {
           showLastUpdateTime: true,
           sidebarCollapsible: true,
           sidebarCollapsed: false,
+          remarkPlugins: [a11yEmoji],
         },
-        blog: false,
+        blog: {
+          blogTitle: 'News',
+          blogDescription: 'CIPP release notes and updates...',
+          blogSidebarTitle: 'Announcements',
+          path: 'news',
+          archiveBasePath: null,
+          routeBasePath: 'news',
+          showReadingTime: true,
+          remarkPlugins: [a11yEmoji],
+        },
         theme: {
           customCss: [
             require.resolve('./src/scss/custom.scss'),
+            require.resolve('./src/scss/montserrat.scss'),
           ],
         },
 
@@ -63,6 +75,13 @@ const config = {
             'CIPP, CyberDrain Improved Partner Portal, Microsoft 365, Management, Multi-Tenant, MSP, Azure, Microsoft Partner, Lighthouse',
         },
       ],
+      colorMode: {
+        switchConfig: {
+          darkIcon: '🌘',
+          lightIcon: '☀️',
+        },
+        respectPrefersColorScheme: true,
+      },
       tableOfContents: {
         minHeadingLevel: 2,
         maxHeadingLevel: 5,
@@ -114,6 +133,7 @@ const config = {
           { to: 'contributing', label: 'Contributing', position: 'left' },
           { to: 'troubleshooting', label: 'Troubleshooting', position: 'left' },
           { to: 'https://discord.gg/cyberdrain', label: 'Community', position: 'left', target: '_blank' },
+          { to: 'https://github.com', label: 'GitHub', position: 'left', target: '_blank', className: 'header-github-link' },
           {
             type: 'dropdown',
             position: 'right',
@@ -153,6 +173,18 @@ const config = {
                 label: 'Developer Guide',
                 to: '/docs/dev/',
               },
+              {
+                label: 'API Documentation',
+                to: '/docs/api/',
+              },
+              {
+                label: 'Frequently Asked Questions',
+                to: '/faq/',
+              },
+              {
+                label: 'Known Bugs',
+                to: '/bugs/',
+              },
             ],
           },
           {
@@ -172,20 +204,19 @@ const config = {
             title: 'More',
             items: [
               {
-                label: 'Blog',
+                label: 'CyberDrain Blog',
                 href: 'https://cyberdrain.com',
               },
               {
-                label: 'GitHub',
-                href: 'https://github.com/KelvinTegelaar/CIPP',
+                label: 'CyberDrain CtF',
+                href: 'https://ctf.cyberdrain.com',
               },
-
               {
                 label: 'Submit Feature Request',
                 href: 'https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=feature_request.md&title=FEATURE+REQUEST%3A+',
               },
               {
-                label: 'Submit Bug',
+                label: 'Submit Bug Report',
                 href: 'https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+',
               },
 
@@ -256,7 +287,7 @@ const config = {
             from: '/TenantAdministration/BestPracticesAnalyser/',
           },
           {
-            to: '/docs/user/usingcipp/tenantadministration/domainanalyser/',
+            to: '/docs/user/usingcipp/tenantadministration/domainsanalyser/',
             from: '/TenantAdministration/DomainAnalyser/',
           },
           {

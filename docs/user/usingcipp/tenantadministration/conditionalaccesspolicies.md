@@ -11,7 +11,28 @@ This page lists all the Conditional Access Policies on the selected tenant.  Thi
 
 ## Detail
 
-There are no additional details for Conditional Access.
+|  Fields                | Description                                          |
+| -----------------------| ---------------------------------------------------  |
+| Name                   | The name of the policy.                              |
+| State                  | The current state of the policy e.g. enabled.        | 
+| Last Modified          | The date the policy was last modified.               |
+| Client App Types       | Any client applications targetted.                   |
+| Platform Inc           | Any platforms/operating systems targetted.           |
+| Platform Exc           | Any platforms/operating systems excluded.            |
+| Include Locations      | Any locations targetted.                             |
+| Exclude Locations      | Any locations excluded.                              |
+| Include Users          | Any users targetted.                                 |
+| Exclude Users          | Any users excluded.                                  |
+| Include Groups         | Any groups targetted.                                |
+| Exclude Groups         | Any groups excluded.                                 |
+| Include Applications   | Any Azure AD applications targetted.                 |
+| Exclude Applications   | Any Azure AD applications excluded.                  |
+| Control Operator       | The operator used to combine the above filters.      |
+| Built-in Controls      | Any built-in controls that are applied.              |
+
+## Actions
+
+There are no actions available currently.
 
 ## Current known issues / Limitations
 

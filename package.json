@@ -18,6 +18,7 @@
     "@docusaurus/core": "^2.0.0-beta.15",
     "@docusaurus/plugin-client-redirects": "^2.0.0-beta.15",
     "@docusaurus/preset-classic": "^2.0.0-beta.15",
+    "@fec/remark-a11y-emoji": "^3.1.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-brands-svg-icons": "^5.15.4",
     "@fortawesome/free-regular-svg-icons": "^5.15.4",
@@ -35,6 +36,7 @@
     "react": "^17.0.1",
     "react-alice-carousel": "^2.5.1",
     "react-dom": "^17.0.1",
+    "react-typist": "^2.0.5",
     "redocusaurus": "^0.6.0",
     "sass": "^1.49.0"
   },

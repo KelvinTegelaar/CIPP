@@ -12,7 +12,7 @@ export const getGithubStars = async (
   }
 };
 
-export const getLatestTag = async (
+export const getLatestRelease = async (
   owner,
   repository,
 ) => {

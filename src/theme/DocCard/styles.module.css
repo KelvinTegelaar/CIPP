@@ -14,18 +14,21 @@
 
   /* box-shadow: var(--ifm-global-shadow-lw); */
   box-shadow: 0 1.5px 3px 0 rgb(0 0 0 / 15%);
-  border: 1px solid var(--ifm-color-emphasis-200);
+  border: 1px solid var(--ifm-color-primary);
   transition: box-shadow var(--ifm-transition-fast) ease,
     background-color var(--ifm-transition-fast) ease;
+  --ifm-card-background-color: var(--ifm-background-color);
 }
 
 .cardContainer.cardContainerLink:hover {
   /* box-shadow: var(--ifm-global-shadow-md); */
   box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%);
+  color: var(--cyberdrain-light);
+  --ifm-card-background-color: var(--ifm-color-primary);
 }
 
 html[data-theme='dark'] .cardContainer.cardContainerLink:hover {
-  --ifm-card-background-color: #2d2d2d; /* original, non-hovered color is #242526 */
+  color: var(--cyberdrain-dark);
 }
 
 .cardContainer:not(.cardContainerLink) {
@@ -40,4 +43,16 @@ html[data-theme='dark'] .cardContainer.cardContainerLink:hover {
 .cardDescription {
   font-size: 0.8rem;
   min-height: 0.8rem;
+}
+
+.cardIcon {
+  color: var(--ifm-color-primary);
+}
+
+.cardContainerLink:hover .cardIcon {
+  color: var(--cyberdrain-light);
+}
+
+html[data-theme='dark'] .cardContainerLink:hover .cardIcon {
+  color: var(--cyberdrain-dark);
 }

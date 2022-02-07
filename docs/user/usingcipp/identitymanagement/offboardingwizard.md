@@ -9,7 +9,7 @@ slug: /usingcipp/identitymanagement/offboardingwizard
 
 The Offboarding Wizard allows you to select a user within the specified tenant and select certain options to action on said user - such as removing licences, setting an out of office etc.
 
-## Details
+## Available Tasks
 
 * Remove Licences
 * Convert to Shared Mailbox

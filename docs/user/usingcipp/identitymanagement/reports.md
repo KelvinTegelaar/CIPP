@@ -13,7 +13,7 @@ There are currently multiple reports that can be run against users, see below fo
 
 #### Devices
 
-This report lists all the devices from MEM on the tenant, including whether they are compliant, enabled and various other fields related to the device.  These can all be filtered, exported to PDF or CSV.
+This report lists all the devices from Azure AD on the tenant, including whether they are compliant, enabled and various other fields related to the device. These can all be filtered, exported to PDF or CSV.
 
 #### MFA Report
 
@@ -21,7 +21,7 @@ This report lists all the users in the tenant and the status of the user in rega
 
 #### Basic Auth Report
 
-This report lists all users that have signed in using Basic Auth across all ClientApps in the last 30 days.  These can all be filtered, exported to PDF or CSV.
+This report lists all users that have signed in using Basic Auth across all ClientApps in the last 30 days. These can all be filtered, exported to PDF or CSV.
 
 ## Current known issues / Limitations
 

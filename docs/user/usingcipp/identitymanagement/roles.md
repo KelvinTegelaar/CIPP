@@ -11,6 +11,13 @@ The Roles page shows a list of all M365 roles such as Billing Admin, Global Admi
 
 ## Details
 
+|  Fields                | Description                                          |
+| -----------------------| ---------------------------------------------------  |
+| Role Name              | The name of the role.                                |
+| Description            | A description of the role.                           | 
+
+## Actions
+
 * View Members
 
 ## Current known issues / Limitations

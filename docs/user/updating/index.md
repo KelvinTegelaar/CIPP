@@ -26,7 +26,7 @@ Note that if you receive a workflow error, check the [Troubleshooting page for p
 :::
 
 
-* Go to your own CIPP fork on Github 
+* Go to your own CIPP fork on GitHub 
 
 > e.g <https://github.com/Username/CIPP>
 
@@ -41,7 +41,7 @@ To update the backend, you must manually fetch from github and update the Azure 
 
 :::
 
-* Go to your CIPP-API fork on Github
+* Go to your CIPP-API fork on GitHub
 * Click on Fetch Upstream
 * Click on Fetch and Merge
 * Go to the Azure Portal

@@ -17,7 +17,7 @@ We will publicly release any security report after resolution, including all com
 
 ## Notifications and security advisories
 
-We report any security notification via the Github notification and advisory system. Sponsors that are hosted will also receive a notification in case a major bug has been found.
+We report any security notification via the GitHub notification and advisory system. Sponsors that are hosted will also receive a notification in case a major bug has been found.
 
 ## Bounties and Rewards
 

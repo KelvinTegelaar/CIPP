@@ -20,7 +20,7 @@ This project is **FREE** but we do have a **Sponsor-ware** component. The sponso
 * The project will be hosted for you.
 * The hosted version will always be the latest release and automatically updated.
 * You'll also receive a staging environment with the latest (nightly/beta) build, to see new features before they go live.
-* You will receive priority on support issues reported on Github.
+* You will receive priority on support issues reported on GitHub.
 * You will be able to make 1 prioritized feature request per month.
 
 Sponsorship allows me to put some more time into this project and keep it free, so please consider it. :)

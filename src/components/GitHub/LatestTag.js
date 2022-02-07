@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { getLatestTag } from '@site/src/utilities/githubHelper';
+import { getLatestRelease } from '@site/src/utilities/githubHelper';
 
-export default function LatestTag() {
-  const [latestTag, setLatestTag] = useState(null);
+export default function LatestRelease () {
+  const [latestRelease , setLatestRelease] = useState(null);
 
   useEffect(() => {
     const getGithubData = async () => {
-      setLatestTag(await getLatestTag('someengineering', 'resoto'));
+      setLatestTag(await getLatestRelease('kelvintegelaar', 'CIPP'));
     };
 
     getGithubData();
   }, []);
 
-  return <code>{latestTag ?? 'latest'}</code>;
+  return <code>{latestRelease  ?? 'latest'}</code>;
 }

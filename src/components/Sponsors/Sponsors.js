@@ -12,7 +12,7 @@ const items = sponsors.map((sponsor, index) => {
   return (
     <div className={clsx('item padding-horiz--md ')} key={sponsor.name} style={containerStyle}>
       <a
-        href={sponsor.url}
+        href={sponsor.link}
         title={sponsor.name}
         target="_blank"
         rel="noreferrer noopener"
