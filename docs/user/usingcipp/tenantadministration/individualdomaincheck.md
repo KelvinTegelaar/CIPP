@@ -13,7 +13,7 @@ This can check any external domain enabling you to perform checks on vendors, po
 
 The checks are the same as those found in the [domains analyser](/docs/user/usingcipp/tenantadministration/domainsanalyser#interpreting-results).
 
-## Options
+### Options
 
 The following options can be used to perform additional checks against a domain:
 
@@ -21,15 +21,15 @@ The following options can be used to perform additional checks against a domain:
 - Custom DKIM selectors
 - HTTPS certificate verification
 
-### SPF Pre-validation
+#### SPF Pre-validation
 
 Use this function to simulate a change to your SPF record and ensure that the syntax is valid and it passes all of our standard checks.
 
-### Custom DKIM selectors
+#### Custom DKIM selectors
 
 Use this function to check the validity of a list of DKIM selectors instead of the ones detected from your mail provider. Supply a comma separated list in this field.
 
-### HTTPS certificate validation
+#### HTTPS certificate validation
 
 Use this function to check your domain and optional subdomain list against the following tests:
 
