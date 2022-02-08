@@ -38,7 +38,7 @@ function HomePageHeader() {
       <header className={clsx('hero hero--homepage', styles.hero)}>
         <div className={styles.heroInner}>
           <div className={clsx(styles.heroSubtitle)}>
-            <Typist cursor={{ show: false }}>
+            <Typist cursor={{ show: false }} avgTypingDelay={50}>
               <div className={clsx(styles.heroText)}>
                 <span><strong>Free</strong> and <strong>open-source</strong> multi-tenant management for <strong>Microsoft 365</strong></span><br/>
               </div>

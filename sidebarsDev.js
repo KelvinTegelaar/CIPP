@@ -30,7 +30,21 @@ const sidebars = {
       items: [
         'CIPP/structure'
       ],
-    }
+    },
+    {
+      type: 'category',
+      label: 'CIPP API',
+      link: {
+        type: 'generated-index',
+        title: 'CIPP API',
+        description: "This is documentation for people developing the CIPP API.",
+        slug: '/cipp-api',
+      },
+      collapsed: false,
+      items: [
+        'CIPP-API/structure',
+      ],
+    },
   ],
 
   // But you can create a sidebar manually

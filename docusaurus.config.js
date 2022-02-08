@@ -133,7 +133,6 @@ const config = {
           { to: 'contributing', label: 'Contributing', position: 'left' },
           { to: 'troubleshooting', label: 'Troubleshooting', position: 'left' },
           { to: 'https://discord.gg/cyberdrain', label: 'Community', position: 'left', target: '_blank' },
-          { to: 'https://github.com', label: 'GitHub', position: 'left', target: '_blank', className: 'header-github-link' },
           {
             type: 'dropdown',
             position: 'right',
