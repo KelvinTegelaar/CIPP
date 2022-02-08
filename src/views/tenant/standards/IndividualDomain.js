@@ -4,6 +4,7 @@ import { Form, Field } from 'react-final-form'
 import { useSearchParams } from 'react-router-dom'
 import { useExecDnsHelperQuery } from 'src/store/api/domains'
 import { CippCodeBlock, CippOffcanvas, StatusIcon } from 'src/components/utilities'
+import { OffcanvasListSection } from 'src/components/utilities/CippListOffcanvas'
 import { CippPage, CippMasonry, CippMasonryItem } from '../../../components/layout'
 import ListGroupContentCard from '../../../components/contentcards/ListGroupContentCard'
 import {
@@ -63,6 +64,11 @@ const domainCheckProps = {
   readOnly: PropTypes.bool,
   isOffcanvas: PropTypes.bool,
   initialDomain: PropTypes.string,
+}
+
+function ucFirst(string) {
+  if (typeof string !== 'string') return ''
+  return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
 export default function IndividualDomainPage() {
@@ -487,7 +493,6 @@ ResultsCard.propTypes = {
 }
 
 const SPFResultsCard = ({ domain, spfOverride }) => {
-  console.log(spfOverride)
   const { data, isFetching, error } = useExecDnsHelperQuery({
     Domain: domain,
     Action: 'ReadSpfRecord',
@@ -501,6 +506,23 @@ const SPFResultsCard = ({ domain, spfOverride }) => {
   }
   const jsonContent = JSON.stringify(data, null, 2)
 
+  let ipAddresses = []
+
+  data?.IPAddresses.map((ip, key) =>
+    ipAddresses.push({
+      heading: '',
+      content: ip,
+    }),
+  )
+
+  let includes = []
+  data?.RecordList.map((include, key) =>
+    includes.push({
+      heading: '',
+      content: include.Domain,
+    }),
+  )
+
   return (
     <>
       <ResultsCard
@@ -512,12 +534,14 @@ const SPFResultsCard = ({ domain, spfOverride }) => {
         errorMessage="Unable to load SPF Results"
       >
         {record && (
-          <CippCodeBlock
-            language="text"
-            code={record}
-            showLineNumbers={false}
-            wrapLongLines={true}
-          />
+          <>
+            <CippCodeBlock
+              language="text"
+              code={record}
+              showLineNumbers={false}
+              wrapLongLines={true}
+            />
+          </>
         )}
       </ResultsCard>
       <CippOffcanvas
@@ -529,7 +553,23 @@ const SPFResultsCard = ({ domain, spfOverride }) => {
         title="SPF Details"
       >
         {!isFetching && error && <>Unable to load SPF details</>}
-        {!isFetching && !error && <DomainOffcanvasTabs jsonContent={jsonContent} />}
+        {!isFetching && !error && (
+          <DomainOffcanvasTabs jsonContent={jsonContent}>
+            {record && (
+              <>
+                <h4 className="mt-3">SPF Record</h4>
+                <CippCodeBlock
+                  language="text"
+                  code={record}
+                  showLineNumbers={false}
+                  wrapLongLines={true}
+                />
+              </>
+            )}
+            <OffcanvasListSection title="Includes" items={includes} />
+            <OffcanvasListSection title="IP Addresses" items={ipAddresses} />
+          </DomainOffcanvasTabs>
+        )}
       </CippOffcanvas>
     </>
   )
@@ -546,6 +586,18 @@ function WhoisResultCard({ domain }) {
     error,
   } = useExecDnsHelperQuery({ Domain: domain, Action: 'ReadWhoisRecord' })
   const jsonContent = JSON.stringify(whoisReport, null, 2)
+
+  let whoisContent = []
+  if (whoisReport !== undefined) {
+    for (const [key, value] of Object.entries(whoisReport)) {
+      if (!key.match(/^_/)) {
+        whoisContent.push({
+          heading: key,
+          content: value,
+        })
+      }
+    }
+  }
 
   return (
     <CCard className="content-card h-100">
@@ -580,6 +632,10 @@ function WhoisResultCard({ domain }) {
               hideFunction={() => setVisible(false)}
             >
               <DomainOffcanvasTabs jsonContent={jsonContent}>
+                {whoisContent.length > 0 && (
+                  <OffcanvasListSection title="Properties" items={whoisContent} />
+                )}
+                <h4 className="mt-4">Raw Report</h4>
                 <CippCodeBlock language="text" code={whoisReport?._Raw} showLineNumbers={false} />
               </DomainOffcanvasTabs>
             </CippOffcanvas>
@@ -703,7 +759,22 @@ const MtaStsResultCard = ({ domain }) => {
   const headerClickFunction = () => {
     setVisible(true)
   }
-
+  let stsProperties = []
+  if (data?.StsPolicy.Version !== '') {
+    stsProperties.push({ heading: 'Version', content: data?.StsPolicy.Version })
+  }
+  if (data?.StsPolicy.Mode !== '') {
+    stsProperties.push({ heading: 'Mode', content: data?.StsPolicy.Mode })
+  }
+  data?.StsPolicy.Mx.map((prop, index) =>
+    stsProperties.push({
+      heading: 'MX',
+      content: prop,
+    }),
+  )
+  if (data?.StsPolicy.MaxAge !== '') {
+    stsProperties.push({ heading: 'Max Age', content: data?.StsPolicy.MaxAge })
+  }
   return (
     <ResultsCard
       data={data}
@@ -734,37 +805,8 @@ const MtaStsResultCard = ({ domain }) => {
             )}
             <ValidationListContent data={data.StsRecord} />
 
-            <h4 className="mt-4">MTA-STS Policy</h4>
-            {data?.StsPolicy.Version !== '' && (
-              <CListGroup className="my-3">
-                {data?.StsPolicy.Version !== '' && (
-                  <CListGroupItem className="d-flex justify-content-between align-items-center">
-                    <h6 className="w-50 mb-0">Version</h6>
-                    {data?.StsPolicy.Version}
-                  </CListGroupItem>
-                )}
-                {data?.StsPolicy.Mode !== '' && (
-                  <CListGroupItem className="d-flex justify-content-between align-items-center">
-                    <h6 className="w-50 mb-0">Mode</h6>
-                    {data?.StsPolicy.Mode}
-                  </CListGroupItem>
-                )}
-                {data?.StsPolicy.Mx.map((mx, key) => (
-                  <CListGroupItem
-                    className="d-flex justify-content-between align-items-center"
-                    key={key}
-                  >
-                    <h6 className="w-50 mb-0">MX</h6>
-                    {mx}
-                  </CListGroupItem>
-                ))}
-                {data?.StsPolicy.MaxAge !== '' && (
-                  <CListGroupItem className="d-flex justify-content-between align-items-center">
-                    <h6 className="w-50 mb-0">Max Age</h6>
-                    {data?.StsPolicy.MaxAge}
-                  </CListGroupItem>
-                )}
-              </CListGroup>
+            {stsProperties.length > 0 && (
+              <OffcanvasListSection title="MTA-STS Policy" items={stsProperties} />
             )}
             <ValidationListContent data={data?.StsPolicy} />
 
@@ -885,6 +927,55 @@ function DMARCResultsCard({ domain }) {
   }
   const jsonContent = JSON.stringify(data, null, 2)
 
+  let dkimAlignment = 'Unknown'
+  if (data?.DkimAlignment === 's') {
+    dkimAlignment = 'Strict'
+  } else if (data?.DkimAlignment === 'r') {
+    dkimAlignment = 'Relaxed'
+  }
+
+  let spfAlignment = 'Unknown'
+  if (data?.SpfAlignment === 's') {
+    spfAlignment = 'Strict'
+  } else if (data?.SpfAlignment === 'r') {
+    spfAlignment = 'Relaxed'
+  }
+
+  let reportFormat = 'Unknown'
+  if (data?.ReportFormat === 'afrf') {
+    reportFormat = 'Authentication Failure'
+  }
+
+  let reportIntervalDays = data?.ReportInterval / 86400
+
+  let policyDetails = []
+  let reportingEmails = []
+  let forensicEmails = []
+
+  if (data?.Version !== '') {
+    policyDetails.push({ heading: 'Version', content: data?.Version })
+    policyDetails.push({ heading: 'Policy', content: ucFirst(data?.Policy) })
+    policyDetails.push({ heading: 'Subdomain Policy', content: ucFirst(data?.SubdomainPolicy) })
+    policyDetails.push({ heading: 'Percent', content: `${data?.Percent}%` })
+    policyDetails.push({ heading: 'DKIM Alignment', content: dkimAlignment })
+    policyDetails.push({ heading: 'SPF Alignment', content: spfAlignment })
+    policyDetails.push({ heading: 'Report Interval', content: `${reportIntervalDays} day(s)` })
+    policyDetails.push({ heading: 'Report Format', content: reportFormat })
+
+    data?.ReportingEmails.map((email, key) =>
+      reportingEmails.push({
+        heading: '',
+        content: email,
+      }),
+    )
+
+    data?.ForensicEmails.map((email, key) =>
+      forensicEmails.push({
+        heading: '',
+        content: email,
+      }),
+    )
+  }
   return (
     <>
       <ResultsCard
@@ -913,7 +1004,30 @@ function DMARCResultsCard({ domain }) {
         title="DMARC Details"
       >
         {!isFetching && error && <>Unable to load DMARC details</>}
-        {!isFetching && !error && <DomainOffcanvasTabs jsonContent={jsonContent} />}
+        {!isFetching && !error && (
+          <DomainOffcanvasTabs jsonContent={jsonContent}>
+            {record && (
+              <>
+                <h4>Record</h4>
+                <CippCodeBlock
+                  language="text"
+                  code={record}
+                  showLineNumbers={false}
+                  wrapLongLines={true}
+                />
+                {policyDetails.length > 0 && (
+                  <OffcanvasListSection title="Policy Details" items={policyDetails} />
+                )}
+                {reportingEmails.length > 0 && (
+                  <OffcanvasListSection title="Reporting Emails" items={reportingEmails} />
+                )}
+                {forensicEmails.length > 0 && (
+                  <OffcanvasListSection title="Forensic Emails" items={forensicEmails} />
+                )}
+              </>
+            )}
+          </DomainOffcanvasTabs>
+        )}
       </CippOffcanvas>
     </>
   )
