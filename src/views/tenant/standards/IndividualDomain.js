@@ -20,8 +20,6 @@ import {
   CFormInput,
   CCardTitle,
   CLink,
-  CListGroup,
-  CListGroupItem,
   CNav,
   CNavItem,
   CNavLink,
@@ -37,6 +35,7 @@ import {
   CBadge,
   COffcanvasTitle,
   CInputGroup,
+  CTooltip,
 } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -47,10 +46,10 @@ import {
   faExclamationTriangle,
   faExpandAlt,
   faTimesCircle,
-  faExternalLinkAlt,
   faEllipsisV,
   faSearch,
   faGlobe,
+  faQuestionCircle,
 } from '@fortawesome/free-solid-svg-icons'
 
 const IconGreenCheck = () => <FontAwesomeIcon icon={faCheckCircle} className="text-success mx-2" />
@@ -58,7 +57,6 @@ const IconRedX = () => <FontAwesomeIcon icon={faTimesCircle} className="text-dan
 const IconWarning = () => (
   <FontAwesomeIcon icon={faExclamationTriangle} className="text-warning mx-2" />
 )
-const IconExternalLink = () => <FontAwesomeIcon icon={faExternalLinkAlt} className="me-2" />
 
 const domainCheckProps = {
   readOnly: PropTypes.bool,
@@ -399,6 +397,7 @@ function ResultsCard({
   data,
   type,
   headerClickFunction,
+  providerInfo,
   error,
   errorMessage,
   isFetching,
@@ -441,10 +440,23 @@ function ResultsCard({
             {!isFetching && <StatusIcon type="finalstate" finalState={finalState} />}
             {type} Results
           </CCardTitle>
-          <CLink className="mx-2 card-header-link" onClick={headerClickFunction}>
-            <FontAwesomeIcon icon={faEllipsisV} className="me-2" />
-            More
-          </CLink>
+          <span>
+            {providerInfo && (
+              <CTooltip content={`${providerInfo.Name} ${type} documentation`}>
+                <CLink
+                  className="mx-2 card-header-link"
+                  href={providerInfo._MxComment}
+                  target="_blank"
+                >
+                  <FontAwesomeIcon icon={faQuestionCircle} className="me-2" />
+                </CLink>
+              </CTooltip>
+            )}
+            <CLink className="mx-2 card-header-link" onClick={headerClickFunction}>
+              <FontAwesomeIcon icon={faEllipsisV} className="me-2" />
+              More
+            </CLink>
+          </span>
         </CCardHeader>
         <CCardBody>
           {isFetching && <CSpinner />}
@@ -487,6 +499,7 @@ ResultsCard.propTypes = {
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   type: PropTypes.oneOf(['HTTPS', 'MX', 'SPF', 'DMARC', 'DNSSEC', 'DKIM', 'MTA-STS']),
   headerClickFunction: PropTypes.func,
+  providerInfo: PropTypes.object,
   error: PropTypes.bool,
   errorMessage: PropTypes.string,
   isFetching: PropTypes.bool,
@@ -497,6 +510,11 @@ const SPFResultsCard = ({ domain, spfOverride }) => {
     Domain: domain,
     Action: 'ReadSpfRecord',
     Record: spfOverride,
+  })
+
+  const { data: doc } = useExecDnsHelperQuery({
+    Domain: domain,
+    Action: 'ReadMXRecord',
   })
 
   let record = data?.Record
@@ -531,6 +549,7 @@ const SPFResultsCard = ({ domain, spfOverride }) => {
         isFetching={isFetching}
         headerClickFunction={headerClickFunction}
         error={error}
+        providerInfo={doc?.MailProvider}
         errorMessage="Unable to load SPF Results"
       >
         {record && (
@@ -659,19 +678,14 @@ function NSResultCard({ domain }) {
       body: ns,
     }),
   )
-  const title = (
-    <>
-      <FontAwesomeIcon icon={faServer} className="mx-2" />
-      Nameservers
-    </>
-  )
 
   return (
     <ListGroupContentCard
-      title={title}
+      title="Nameservers"
       content={content}
       isFetching={isFetching}
       error={error}
+      icon={faServer}
       errorMessage="Unable to obtain nameservers"
     />
   )
@@ -805,9 +819,7 @@ const MtaStsResultCard = ({ domain }) => {
             )}
             <ValidationListContent data={data.StsRecord} />
 
-            {stsProperties.length > 0 && (
-              <OffcanvasListSection title="MTA-STS Policy" items={stsProperties} />
-            )}
+            <OffcanvasListSection title="MTA-STS Policy" items={stsProperties} />
             <ValidationListContent data={data?.StsPolicy} />
 
             <h4 className="mt-4">TLSRPT Record</h4>
@@ -853,6 +865,7 @@ const MXResultsCard = ({ domain }) => {
       type="MX"
       headerClickFunction={headerClickFunction}
       isFetching={isFetching}
+      providerInfo={data?.MailProvider}
       error={error}
       errorMessage="Unable to load MX Results"
     >
@@ -870,7 +883,7 @@ const MXResultsCard = ({ domain }) => {
         <DomainOffcanvasTabs jsonContent={jsonContent}>
           {records.length > 0 && (
             <>
-              <COffcanvasTitle>MX Records</COffcanvasTitle>
+              <h4>Records</h4>
               <CTable striped small>
                 <CTableHead>
                   <CTableRow>
@@ -889,24 +902,6 @@ const MXResultsCard = ({ domain }) => {
               </CTable>
             </>
           )}
-          <COffcanvasTitle>Documentation</COffcanvasTitle>
-          <CListGroup>
-            {data?.MailProvider?._MxComment && (
-              <CListGroupItem component="a" target="_blank" href={data?.MailProvider?._MxComment}>
-                <IconExternalLink /> MX Record
-              </CListGroupItem>
-            )}
-            {data?.MailProvider?._SpfComment && (
-              <CListGroupItem component="a" target="_blank" href={data?.MailProvider?._SpfComment}>
-                <IconExternalLink /> SPF Record
-              </CListGroupItem>
-            )}
-            {data?.MailProvider?._DkimComment && (
-              <CListGroupItem component="a" target="_blank" href={data?.MailProvider?._DkimComment}>
-                <IconExternalLink /> DKIM Record
-              </CListGroupItem>
-            )}
-          </CListGroup>
         </DomainOffcanvasTabs>
       </CippOffcanvas>
     </ResultsCard>
@@ -1105,6 +1100,12 @@ function DKIMResultsCard({ domain, dkimOverride }) {
     Action: 'ReadDkimRecord',
     Selector: dkimOverride,
   })
+
+  const { data: doc } = useExecDnsHelperQuery({
+    Domain: domain,
+    Action: 'ReadMXRecord',
+  })
+
   let records = data?.Records
   const jsonContent = JSON.stringify(data, null, 2)
 
@@ -1128,6 +1129,7 @@ function DKIMResultsCard({ domain, dkimOverride }) {
         type="DKIM"
         headerClickFunction={headerClickFunction}
         isFetching={isFetching}
+        providerInfo={doc?.MailProvider}
         error={error}
         errorMessage="Unable to load DKIM Results"
       />
