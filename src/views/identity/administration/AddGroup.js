@@ -1,5 +1,5 @@
 import React from 'react'
-import { CAlert, CButton, CCol, CForm, CRow, CSpinner } from '@coreui/react'
+import { CCallout, CButton, CCol, CForm, CRow, CSpinner } from '@coreui/react'
 import { Form } from 'react-final-form'
 import { RFFCFormCheck, RFFCFormInput, RFFCFormSelect } from 'src/components/forms'
 import { CippPage } from 'src/components/layout/CippPage'
@@ -73,7 +73,9 @@ const AddGroup = () => {
                   </CButton>
                 </CCol>
               </CRow>
-              {postResults.isSuccess && <CAlert color="success">{postResults.data.Results}</CAlert>}
+              {postResults.isSuccess && (
+                <CCallout color="success">{postResults.data.Results}</CCallout>
+              )}
             </CForm>
           )
         }}

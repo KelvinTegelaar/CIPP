@@ -1,30 +1,32 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Form, Field } from 'react-final-form'
 import { useSearchParams } from 'react-router-dom'
-import { useLazyListDomainTestsQuery, useListDomainTestsQuery } from 'src/store/api/domains'
+import { useExecDnsHelperQuery } from 'src/store/api/domains'
 import { CippCodeBlock, CippOffcanvas, StatusIcon } from 'src/components/utilities'
+import { CippPage, CippMasonry, CippMasonryItem } from '../../../components/layout'
+import ListGroupContentCard from '../../../components/contentcards/ListGroupContentCard'
 import {
   CButton,
   CCallout,
   CCard,
   CCardBody,
   CCardHeader,
-  CCol,
   CCollapse,
-  CDropdown,
-  CDropdownMenu,
-  CDropdownToggle,
-  CHeaderNav,
   CForm,
   CFormLabel,
+  CFormSwitch,
   CFormInput,
-  CRow,
   CCardTitle,
   CLink,
   CListGroup,
   CListGroupItem,
+  CNav,
   CNavItem,
+  CNavLink,
+  CSpinner,
+  CTabContent,
+  CTabPane,
   CTableDataCell,
   CTableHead,
   CTableRow,
@@ -37,17 +39,18 @@ import {
 } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
+  faServer,
+  faCog,
   faCheckCircle,
-  faCircleNotch,
   faCompressAlt,
   faExclamationTriangle,
   faExpandAlt,
   faTimesCircle,
   faExternalLinkAlt,
   faEllipsisV,
+  faSearch,
+  faGlobe,
 } from '@fortawesome/free-solid-svg-icons'
-
-// const required = (value) => (value ? undefined : 'Required')
 
 const IconGreenCheck = () => <FontAwesomeIcon icon={faCheckCircle} className="text-success mx-2" />
 const IconRedX = () => <FontAwesomeIcon icon={faTimesCircle} className="text-danger mx-2" />
@@ -62,16 +65,27 @@ const domainCheckProps = {
   initialDomain: PropTypes.string,
 }
 
-export default function IndividualDomainCheck({
+export default function IndividualDomainPage() {
+  return (
+    <CippPage title="Individual Domain Check" tenantSelector={false}>
+      <IndividualDomainCheck />
+    </CippPage>
+  )
+}
+
+export function IndividualDomainCheck({
   initialDomain = '',
   readOnly = false,
   isOffcanvas = false,
 }) {
   const [searchParams, setSearchParams] = useSearchParams()
   const [domain, setDomain] = useState('')
-  const [rowXs, setRowXs] = useState()
-  const [rowXl, setRowXl] = useState()
-  const [trigger, { data, isFetching, isSuccess, ...rest }] = useLazyListDomainTestsQuery()
+  const [spfOverride, setSpfOverride] = useState('')
+  const [dkimOverride, setDkimOverride] = useState('')
+  const [enableHttps, setEnableHttps] = useState(false)
+  const [httpsOverride, setHttpsOverride] = useState('')
+  const [optionsVisible, setOptionsVisible] = useState(false)
+  const [masonrySize, setMasonrySize] = useState()
 
   useEffect(() => {
     if (initialDomain) {
@@ -79,36 +93,56 @@ export default function IndividualDomainCheck({
     }
     // check if domain query is set
     const domainQuery = searchParams.get('domain')
-    if (domainQuery) {
+    if (domainQuery && domainQuery !== undefined) {
       setDomain(domainQuery)
-      trigger({ domain: domainQuery })
     }
 
     if (isOffcanvas) {
-      setRowXs({ cols: 1, gutter: 3 })
-      setRowXl({ cols: 1, gutter: 3 })
+      setMasonrySize('triple')
     } else {
-      setRowXs({ cols: 1, gutter: 4 })
-      setRowXl({ cols: 2, gutter: 4 })
+      setMasonrySize('single')
     }
-  }, [searchParams, trigger, isOffcanvas, initialDomain])
+  }, [searchParams, isOffcanvas, initialDomain])
 
   const onSubmit = (values) => {
-    setDomain(values.domain)
-    setSearchParams({ domain: values.domain }, { replace: true })
-    trigger({ domain: values.domain })
+    if (values.domain !== undefined) {
+      setDomain(values.domain)
+      setSearchParams({ domain: values.domain }, { replace: true })
+    }
+
+    if (values.spfrecord !== spfOverride) {
+      setSpfOverride(values.spfrecord)
+    }
+    if (values.dkimselector !== dkimOverride) {
+      setDkimOverride(values.dkimselector)
+    }
+    if (values.subdomains !== httpsOverride) {
+      setHttpsOverride(values.subdomains)
+    }
+  }
+
+  const handleHttpsSwitch = (e) => {
+    setEnableHttps(e.target.checked)
   }
 
   return (
-    <CRow xs={rowXs} xl={rowXl} className="mb-5">
-      <CCol>
-        <CCard className="page-card h-100">
+    <CippMasonry>
+      <CippMasonryItem size={masonrySize}>
+        <CCard className="content-card h-100">
           <CCardHeader>
-            <CCardTitle>Email Security Domain Checker</CCardTitle>
+            <CCardTitle>
+              <FontAwesomeIcon icon={faSearch} className="mx-2" />
+              Domain
+            </CCardTitle>
           </CCardHeader>
           <CCardBody>
             <Form
-              initialValues={{ domain }}
+              initialValues={{
+                domain,
+                spfrecord: spfOverride,
+                dkimselector: dkimOverride,
+                subdomains: httpsOverride,
+              }}
               onSubmit={onSubmit}
               render={({ handleSubmit, submitting, pristine }) => {
                 return (
@@ -116,154 +150,328 @@ export default function IndividualDomainCheck({
                     <Field name="domain">
                       {({ input, meta }) => {
                         return (
-                          <CInputGroup className="mb-3">
+                          <>
+                            <CInputGroup className="mb-3">
+                              <CFormInput
+                                {...input}
+                                valid={!meta.error && meta.touched}
+                                invalid={meta.error && meta.touched}
+                                type="text"
+                                id="domain"
+                                disabled={readOnly}
+                                placeholder="Domain Name"
+                                area-describedby="domain"
+                              />
+                              <CButton type="submit" color="primary">
+                                Check
+                              </CButton>
+                              <CButton
+                                size="sm"
+                                variant="outline"
+                                color="light"
+                                onClick={() => setOptionsVisible(!optionsVisible)}
+                              >
+                                <FontAwesomeIcon className="mx-1" size="1x" icon={faCog} />
+                              </CButton>
+                            </CInputGroup>
+                          </>
+                        )
+                      }}
+                    </Field>
+
+                    <CCollapse visible={optionsVisible}>
+                      <h5>Options</h5>
+                      <Field name="spfrecord">
+                        {({ input, meta }) => {
+                          return (
                             <CFormInput
                               {...input}
                               valid={!meta.error && meta.touched}
                               invalid={meta.error && meta.touched}
                               type="text"
-                              id="domain"
-                              disabled={readOnly}
-                              placeholder="Domain Name"
-                              area-describedby="domain"
+                              id="spfrecord"
+                              className="mt-1"
+                              placeholder="Pre-validate SPF Record (e.g. v=spf1 ...)"
+                              area-describedby="spfrecord"
                             />
+                          )
+                        }}
+                      </Field>
+                      <Field name="dkimselector">
+                        {({ input, meta }) => {
+                          return (
+                            <CFormInput
+                              {...input}
+                              valid={!meta.error && meta.touched}
+                              invalid={meta.error && meta.touched}
+                              type="text"
+                              id="dkimselector"
+                              className="mt-1"
+                              placeholder="DKIM Selectors (e.g. selector1, selector2)"
+                              area-describedby="dkimselector"
+                            />
+                          )
+                        }}
+                      </Field>
 
-                            <CButton
-                              type="submit"
-                              disabled={submitting || isFetching}
-                              color="primary"
-                            >
-                              {isFetching && (
-                                <FontAwesomeIcon
-                                  icon={faCircleNotch}
-                                  spin
-                                  size="1x"
-                                  className="me-2"
-                                />
-                              )}
-                              Check
-                            </CButton>
-                          </CInputGroup>
-                        )
-                      }}
-                    </Field>
+                      <CFormSwitch
+                        onChange={handleHttpsSwitch}
+                        label="Enable HTTPS check"
+                        id="enableHttpsCheck"
+                        className="mt-1"
+                      />
+
+                      {enableHttps && (
+                        <Field name="subdomains">
+                          {({ input, meta }) => {
+                            return (
+                              <CFormInput
+                                {...input}
+                                valid={!meta.error && meta.touched}
+                                invalid={meta.error && meta.touched}
+                                type="text"
+                                id="subdomains"
+                                className="mt-1"
+                                placeholder="HTTPS Subdomains (Default: www)"
+                                area-describedby="subdomains"
+                              />
+                            )
+                          }}
+                        </Field>
+                      )}
+                    </CCollapse>
                   </CForm>
                 )
               }}
             />
-            <DomainCheckError domain={domain} {...rest} />
           </CCardBody>
         </CCard>
-      </CCol>
-      <CCol>{isSuccess && <MXResultsCard domain={domain} />}</CCol>
-      <CCol>{isSuccess && <SPFResultsCard domain={domain} />}</CCol>
-      <CCol>{isSuccess && <DMARCResultsCard domain={domain} />}</CCol>
-      <CCol>{isSuccess && <DNSSECResultsCard domain={domain} />}</CCol>
-      <CCol>{isSuccess && <DKIMResultsCard domain={domain} />}</CCol>
-    </CRow>
+      </CippMasonryItem>
+      {domain && (
+        <CippMasonryItem size={masonrySize}>
+          <WhoisResultCard domain={domain} />
+        </CippMasonryItem>
+      )}
+      {domain && (
+        <CippMasonryItem size={masonrySize}>
+          <NSResultCard domain={domain} />
+        </CippMasonryItem>
+      )}
+      {domain && enableHttps && (
+        <CippMasonryItem size={masonrySize}>
+          <HttpsResultCard domain={domain} httpsOverride={httpsOverride} />
+        </CippMasonryItem>
+      )}
+      {domain && (
+        <CippMasonryItem size={masonrySize}>
+          <MXResultsCard domain={domain} />
+        </CippMasonryItem>
+      )}
+      {domain && (
+        <CippMasonryItem size={masonrySize}>
+          <SPFResultsCard domain={domain} spfOverride={spfOverride} />
+        </CippMasonryItem>
+      )}
+      {domain && (
+        <CippMasonryItem size={masonrySize}>
+          <DMARCResultsCard domain={domain} />
+        </CippMasonryItem>
+      )}
+      {domain && (
+        <CippMasonryItem size={masonrySize}>
+          <DKIMResultsCard domain={domain} dkimOverride={dkimOverride} />
+        </CippMasonryItem>
+      )}
+      {domain && (
+        <CippMasonryItem size={masonrySize}>
+          <DNSSECResultsCard domain={domain} />
+        </CippMasonryItem>
+      )}
+      {domain && (
+        <CippMasonryItem size={masonrySize}>
+          <MtaStsResultCard domain={domain} />
+        </CippMasonryItem>
+      )}
+    </CippMasonry>
   )
 }
 
 IndividualDomainCheck.propTypes = domainCheckProps
 
-/*export default IndividualDomainCheck*/
-
 const sharedProps = {
   domain: PropTypes.string,
 }
 
-const ResultsCard = ({ children, data, type, menuOptions = [] }) => {
-  const [jsonVisible, setJsonVisible] = useState()
-  if (!data) {
-    return null
+function DomainOffcanvasTabs({ children, jsonContent }) {
+  let initialActive = 1
+  if (!children) {
+    initialActive = 2
+  }
+  const [active, setActive] = useState(initialActive)
+  return (
+    <>
+      <CNav variant="pills" layout="fill">
+        {children && (
+          <CNavItem>
+            <CNavLink active={active === 1} onClick={() => setActive(1)}>
+              Details
+            </CNavLink>
+          </CNavItem>
+        )}
+        <CNavItem>
+          <CNavLink active={active === 2} onClick={() => setActive(2)}>
+            JSON
+          </CNavLink>
+        </CNavItem>
+      </CNav>
+      <CTabContent>
+        {children && (
+          <CTabPane visible={active === 1} className="mt-3">
+            {children}
+          </CTabPane>
+        )}
+        <CTabPane visible={active === 2} className="mt-3">
+          <CippCodeBlock
+            language="json"
+            code={jsonContent}
+            showLineNumbers={true}
+            wrapLongLines={false}
+          />
+        </CTabPane>
+      </CTabContent>
+    </>
+  )
+}
+DomainOffcanvasTabs.propTypes = {
+  children: PropTypes.node,
+  jsonContent: PropTypes.string,
+}
+
+function ValidationListContent({ data }) {
+  let validationPasses = data?.ValidationPasses || []
+  let validationWarns = data?.ValidationWarns || []
+  let validationFails = data?.ValidationFails || []
+
+  if (!Array.isArray(validationPasses)) {
+    validationPasses = [validationPasses]
+  }
+  if (!Array.isArray(validationWarns)) {
+    validationWarns = [validationWarns]
+  }
+  if (!Array.isArray(validationFails)) {
+    validationFails = [validationFails]
+  }
+  return (
+    <div>
+      {validationPasses.map((validation, idx) => (
+        <div key={`${idx}-validation`}>
+          <IconGreenCheck />
+          {validation}
+        </div>
+      ))}
+      {validationWarns.map((validation, idx) => (
+        <div key={`${idx}-validation`}>
+          <IconWarning />
+          {validation}
+        </div>
+      ))}
+      {validationFails.map((validation, idx) => (
+        <div key={`${idx}-validation`}>
+          <IconRedX />
+          {validation}
+        </div>
+      ))}
+    </div>
+  )
+}
+ValidationListContent.propTypes = {
+  data: PropTypes.object,
+}
+
+function ResultsCard({
+  children,
+  data,
+  type,
+  headerClickFunction,
+  error,
+  errorMessage,
+  isFetching,
+}) {
+  let validationPasses = data?.ValidationPasses || []
+  let validationWarns = data?.ValidationWarns || []
+  let validationFails = data?.ValidationFails || []
+
+  if (!Array.isArray(validationPasses)) {
+    validationPasses = [validationPasses]
+  }
+  if (!Array.isArray(validationWarns)) {
+    validationWarns = [validationWarns]
+  }
+  if (!Array.isArray(validationFails)) {
+    validationFails = [validationFails]
   }
 
-  const results = data[`${type}Results`]
-  // const passCount = data[`${type}PassCount`]
-  // const warnCount = data[`${type}WarnCount`]
-  // const failCount = data[`${type}FailCount`]
-  const finalState = data[`${type}FinalState`]
-  const validationPasses = results?.ValidationPasses || []
-  const validationWarns = results?.ValidationWarns || []
-  const validationFails = results?.ValidationFails || []
+  let finalState = ''
 
-  const jsonContent = JSON.stringify(results, null, 2)
+  if (validationFails > 0) {
+    finalState = 'Fail'
+  } else if (validationFails.length === 0 && validationWarns.length > 0) {
+    finalState = 'Warn'
+  } else if (
+    validationFails.length === 0 &&
+    validationWarns.length === 0 &&
+    validationPasses.length > 0
+  ) {
+    finalState = 'Pass'
+  } else {
+    finalState = 'Fail'
+  }
 
   return (
     <>
-      <CCard className="page-card h-100">
-        <CCardHeader>
+      <CCard className="content-card">
+        <CCardHeader className="d-flex justify-content-between align-items-center">
           <CCardTitle>
-            <CHeaderNav className="justify-content-between">
-              <CNavItem>
-                <StatusIcon type="finalstate" finalState={finalState} />
-                {type} Results
-              </CNavItem>
-              <CDropdown variant="nav-item">
-                <CDropdownToggle placement="end" className="py-0" caret={false}>
-                  <FontAwesomeIcon icon={faEllipsisV} className="me-2" />
-                  More
-                </CDropdownToggle>
-                <CDropdownMenu className="py-0" placement="bottom-end">
-                  {menuOptions.map((option, idx) => (
-                    <CLink
-                      className="dropdown-item"
-                      key={`${idx}-menu-option`}
-                      href="#"
-                      onClick={option.clickFunction}
-                    >
-                      {option.title}
-                    </CLink>
-                  ))}
-                  <CLink className="dropdown-item" href="#" onClick={() => setJsonVisible(true)}>
-                    Show JSON
-                  </CLink>
-                </CDropdownMenu>
-              </CDropdown>
-            </CHeaderNav>
+            {!isFetching && <StatusIcon type="finalstate" finalState={finalState} />}
+            {type} Results
           </CCardTitle>
+          <CLink className="mx-2 card-header-link" onClick={headerClickFunction}>
+            <FontAwesomeIcon icon={faEllipsisV} className="me-2" />
+            More
+          </CLink>
         </CCardHeader>
         <CCardBody>
-          {/* records and additional information is specific to each type
-           * child prop passed in adds the additional information
-           * above the generic passes/fails report
-           */}
-          {children}
-          {validationPasses.map((validation, idx) => (
-            <div key={`${idx}-validation-${type}`}>
-              <IconGreenCheck />
-              {String(validation.replace('PASS: ', ''))}
-            </div>
-          ))}
-          {validationWarns.map((validation, idx) => (
-            <div key={`${idx}-validation-${type}`}>
-              <IconWarning />
-              {String(validation.replace('WARN: ', ''))}
-            </div>
-          ))}
-          {validationFails.map((validation, idx) => (
-            <div key={`${idx}-validation-${type}`}>
-              <IconRedX />
-              {String(validation.replace('FAIL: ', ''))}
-            </div>
-          ))}
+          {isFetching && <CSpinner />}
+          {!isFetching && error && <>{errorMessage}</>}
+          {!isFetching && !error && (
+            <>
+              {/* records and additional information is specific to each type
+               * child prop passed in adds the additional information
+               * above the generic passes/fails report
+               */}
+              {children}
+              {validationPasses.map((validation, idx) => (
+                <div key={`${idx}-validation-${type}`}>
+                  <IconGreenCheck />
+                  {validation}
+                </div>
+              ))}
+              {validationWarns.map((validation, idx) => (
+                <div key={`${idx}-validation-${type}`}>
+                  <IconWarning />
+                  {validation}
+                </div>
+              ))}
+              {validationFails.map((validation, idx) => (
+                <div key={`${idx}-validation-${type}`}>
+                  <IconRedX />
+                  {validation}
+                </div>
+              ))}
+            </>
+          )}
         </CCardBody>
       </CCard>
-      <CippOffcanvas
-        id="json-offcanvas"
-        visible={jsonVisible}
-        placement="end"
-        className="cipp-offcanvas"
-        hideFunction={() => setJsonVisible(false)}
-        title="JSON"
-      >
-        <CippCodeBlock
-          language="json"
-          code={jsonContent}
-          showLineNumbers={true}
-          wrapLongLines={false}
-        />
-      </CippOffcanvas>
     </>
   )
 }
@@ -271,54 +479,341 @@ const ResultsCard = ({ children, data, type, menuOptions = [] }) => {
 ResultsCard.propTypes = {
   data: PropTypes.object,
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
-  type: PropTypes.oneOf(['MX', 'SPF', 'DMARC', 'DNSSEC', 'DKIM']),
-  menuOptions: PropTypes.array,
+  type: PropTypes.oneOf(['HTTPS', 'MX', 'SPF', 'DMARC', 'DNSSEC', 'DKIM', 'MTA-STS']),
+  headerClickFunction: PropTypes.func,
+  error: PropTypes.bool,
+  errorMessage: PropTypes.string,
+  isFetching: PropTypes.bool,
 }
 
-const SPFResultsCard = ({ domain }) => {
-  const { data } = useListDomainTestsQuery({ domain })
-  const textareaRef = useRef(null)
-  let record = data?.SPFResults?.Record
+const SPFResultsCard = ({ domain, spfOverride }) => {
+  console.log(spfOverride)
+  const { data, isFetching, error } = useExecDnsHelperQuery({
+    Domain: domain,
+    Action: 'ReadSpfRecord',
+    Record: spfOverride,
+  })
 
-  useEffect(() => {
-    if (textareaRef && textareaRef.current) {
-      textareaRef.current.style.height = '0px'
-      const scrollHeight = textareaRef.current.scrollHeight
-      textareaRef.current.style.height = scrollHeight + 'px'
-    }
-  }, [record])
+  let record = data?.Record
+  const [visible, setVisible] = useState(false)
+  const headerClickFunction = () => {
+    setVisible(true)
+  }
+  const jsonContent = JSON.stringify(data, null, 2)
+
   return (
-    <ResultsCard data={data} type="SPF">
-      {record && (
-        <CippCodeBlock language="text" code={record} showLineNumbers={false} wrapLongLines={true} />
+    <>
+      <ResultsCard
+        data={data}
+        type="SPF"
+        isFetching={isFetching}
+        headerClickFunction={headerClickFunction}
+        error={error}
+        errorMessage="Unable to load SPF Results"
+      >
+        {record && (
+          <CippCodeBlock
+            language="text"
+            code={record}
+            showLineNumbers={false}
+            wrapLongLines={true}
+          />
+        )}
+      </ResultsCard>
+      <CippOffcanvas
+        id="spf-offcanvas"
+        visible={visible}
+        placement="end"
+        className="cipp-offcanvas"
+        hideFunction={() => setVisible(false)}
+        title="SPF Details"
+      >
+        {!isFetching && error && <>Unable to load SPF details</>}
+        {!isFetching && !error && <DomainOffcanvasTabs jsonContent={jsonContent} />}
+      </CippOffcanvas>
+    </>
+  )
+}
+SPFResultsCard.propTypes = {
+  spfOverride: PropTypes.string,
+  ...sharedProps,
+}
+function WhoisResultCard({ domain }) {
+  const [visible, setVisible] = useState(false)
+  const {
+    data: whoisReport,
+    isFetching,
+    error,
+  } = useExecDnsHelperQuery({ Domain: domain, Action: 'ReadWhoisRecord' })
+  const jsonContent = JSON.stringify(whoisReport, null, 2)
+
+  return (
+    <CCard className="content-card h-100">
+      <CCardHeader className="d-flex justify-content-between align-items-center">
+        <CCardTitle>
+          <FontAwesomeIcon icon={faGlobe} className="mx-2" /> WHOIS Results
+        </CCardTitle>
+        <CLink
+          href="#"
+          onClick={() => {
+            setVisible(true)
+          }}
+          className="mx-2 card-header-link"
+        >
+          <FontAwesomeIcon icon={faEllipsisV} className="me-2" />
+          More
+        </CLink>
+      </CCardHeader>
+      <CCardBody>
+        {isFetching && <CSpinner />}
+        {!isFetching && error && <>Unable to obtain WHOIS information</>}
+        {!isFetching && !error && (
+          <>
+            <h5>Registrar</h5>
+            {whoisReport?._Registrar}
+            <CippOffcanvas
+              title="WHOIS Details"
+              id="whois-offcanvas"
+              visible={visible}
+              placement="end"
+              className="cipp-offcanvas"
+              hideFunction={() => setVisible(false)}
+            >
+              <DomainOffcanvasTabs jsonContent={jsonContent}>
+                <CippCodeBlock language="text" code={whoisReport?._Raw} showLineNumbers={false} />
+              </DomainOffcanvasTabs>
+            </CippOffcanvas>
+          </>
+        )}
+      </CCardBody>
+    </CCard>
+  )
+}
+WhoisResultCard.propTypes = sharedProps
+
+function NSResultCard({ domain }) {
+  const {
+    data: nsReport,
+    isFetching,
+    error,
+  } = useExecDnsHelperQuery({ Domain: domain, Action: 'ReadNSRecord' })
+  const content = []
+  nsReport?.Records.map((ns, index) =>
+    content.push({
+      body: ns,
+    }),
+  )
+  const title = (
+    <>
+      <FontAwesomeIcon icon={faServer} className="mx-2" />
+      Nameservers
+    </>
+  )
+
+  return (
+    <ListGroupContentCard
+      title={title}
+      content={content}
+      isFetching={isFetching}
+      error={error}
+      errorMessage="Unable to obtain nameservers"
+    />
+  )
+}
+NSResultCard.propTypes = sharedProps
+
+const HttpsResultCard = ({ domain, httpsOverride }) => {
+  const { data, isFetching, error } = useExecDnsHelperQuery({
+    Domain: domain,
+    Action: 'TestHttpsCertificate',
+    Subdomains: httpsOverride,
+  })
+  let tests = data?.Tests || []
+
+  const jsonContent = JSON.stringify(data, null, 2)
+
+  if (!Array.isArray(tests)) {
+    tests = [tests]
+  }
+  const [visible, setVisible] = useState(false)
+  const headerClickFunction = () => {
+    setVisible(true)
+  }
+
+  return (
+    <ResultsCard
+      data={data}
+      type="HTTPS"
+      headerClickFunction={headerClickFunction}
+      isFetching={isFetching}
+      error={error}
+      errorMessage="Unable to load HTTPS Results"
+    >
+      <CippOffcanvas
+        id="https-offcanvas"
+        visible={visible}
+        placement="end"
+        className="cipp-offcanvas"
+        hideFunction={() => setVisible(false)}
+        title="HTTPS Details"
+      >
+        <DomainOffcanvasTabs jsonContent={jsonContent}>
+          {tests.length > 0 && (
+            <>
+              <COffcanvasTitle>HTTPS Certificates</COffcanvasTitle>
+              <CTable striped small>
+                <CTableHead>
+                  <CTableRow>
+                    <CTableHeaderCell scope="col">Hostname</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Expires</CTableHeaderCell>
+                  </CTableRow>
+                </CTableHead>
+                <CTableBody>
+                  {tests.map((test, key) => (
+                    <CTableRow key={`${key}-hostname`}>
+                      <CTableDataCell>{test?.Hostname}</CTableDataCell>
+                      <CTableDataCell>{test?.Certificate.NotAfter}</CTableDataCell>
+                    </CTableRow>
+                  ))}
+                </CTableBody>
+              </CTable>
+              <h5>Validation Details</h5>
+              {tests.map((test, key) => (
+                <ValidationListContent data={test} key={key} />
+              ))}
+            </>
+          )}
+        </DomainOffcanvasTabs>
+      </CippOffcanvas>
+    </ResultsCard>
+  )
+}
+
+HttpsResultCard.propTypes = { httpsOverride: PropTypes.string, ...sharedProps }
+
+const MtaStsResultCard = ({ domain }) => {
+  const { data, isFetching, error } = useExecDnsHelperQuery({
+    Domain: domain,
+    Action: 'TestMtaSts',
+  })
+
+  const jsonContent = JSON.stringify(data, null, 2)
+
+  const [visible, setVisible] = useState(false)
+  const headerClickFunction = () => {
+    setVisible(true)
+  }
+
+  return (
+    <ResultsCard
+      data={data}
+      type="MTA-STS"
+      headerClickFunction={headerClickFunction}
+      isFetching={isFetching}
+      error={error}
+      errorMessage="Unable to load MTA-STS Results"
+    >
+      {!isFetching && !error && (
+        <CippOffcanvas
+          id="mtasts-offcanvas"
+          visible={visible}
+          placement="end"
+          className="cipp-offcanvas"
+          hideFunction={() => setVisible(false)}
+          title="MTA-STS Details"
+        >
+          <DomainOffcanvasTabs jsonContent={jsonContent}>
+            <h4>MTA-STS Record</h4>
+            {data.StsRecord.Record !== '' && (
+              <CippCodeBlock
+                language="text"
+                code={data.StsRecord.Record}
+                showLineNumbers={false}
+                wrapLongLines={true}
+              />
+            )}
+            <ValidationListContent data={data.StsRecord} />
+
+            <h4 className="mt-4">MTA-STS Policy</h4>
+            {data?.StsPolicy.Version !== '' && (
+              <CListGroup className="my-3">
+                {data?.StsPolicy.Version !== '' && (
+                  <CListGroupItem className="d-flex justify-content-between align-items-center">
+                    <h6 className="w-50 mb-0">Version</h6>
+                    {data?.StsPolicy.Version}
+                  </CListGroupItem>
+                )}
+                {data?.StsPolicy.Mode !== '' && (
+                  <CListGroupItem className="d-flex justify-content-between align-items-center">
+                    <h6 className="w-50 mb-0">Mode</h6>
+                    {data?.StsPolicy.Mode}
+                  </CListGroupItem>
+                )}
+                {data?.StsPolicy.Mx.map((mx, key) => (
+                  <CListGroupItem
+                    className="d-flex justify-content-between align-items-center"
+                    key={key}
+                  >
+                    <h6 className="w-50 mb-0">MX</h6>
+                    {mx}
+                  </CListGroupItem>
+                ))}
+                {data?.StsPolicy.MaxAge !== '' && (
+                  <CListGroupItem className="d-flex justify-content-between align-items-center">
+                    <h6 className="w-50 mb-0">Max Age</h6>
+                    {data?.StsPolicy.MaxAge}
+                  </CListGroupItem>
+                )}
+              </CListGroup>
+            )}
+            <ValidationListContent data={data?.StsPolicy} />
+
+            <h4 className="mt-4">TLSRPT Record</h4>
+            {data.TlsRptRecord.Record !== '' && (
+              <CippCodeBlock
+                language="text"
+                code={data.TlsRptRecord.Record}
+                showLineNumbers={false}
+                wrapLongLines={true}
+              />
+            )}
+            <ValidationListContent data={data.TlsRptRecord} />
+          </DomainOffcanvasTabs>
+        </CippOffcanvas>
       )}
     </ResultsCard>
   )
 }
 
-SPFResultsCard.propTypes = sharedProps
+MtaStsResultCard.propTypes = sharedProps
 
 const MXResultsCard = ({ domain }) => {
-  const { data } = useListDomainTestsQuery({ domain })
-  const mailProviderName = data?.MXResults?.MailProvider?.Name
-  let records = data?.MXResults?.Records || []
+  const { data, isFetching, error } = useExecDnsHelperQuery({
+    Domain: domain,
+    Action: 'ReadMXRecord',
+  })
+  const mailProviderName = data?.MailProvider?.Name
+  let records = data?.Records || []
+
+  const jsonContent = JSON.stringify(data, null, 2)
 
   if (!Array.isArray(records)) {
     records = [records]
   }
   const [visible, setVisible] = useState(false)
-
-  const menuOptions = [
-    {
-      title: 'Show Details',
-      clickFunction: () => {
-        setVisible(true)
-      },
-    },
-  ]
+  const headerClickFunction = () => {
+    setVisible(true)
+  }
 
   return (
-    <ResultsCard data={data} type="MX" menuOptions={menuOptions}>
+    <ResultsCard
+      data={data}
+      type="MX"
+      headerClickFunction={headerClickFunction}
+      isFetching={isFetching}
+      error={error}
+      errorMessage="Unable to load MX Results"
+    >
       <CBadge style={{ fontSize: 14 }} color="info" className="mb-2">
         Mail Provider: {mailProviderName || 'Unknown'}
       </CBadge>
@@ -328,59 +823,49 @@ const MXResultsCard = ({ domain }) => {
         placement="end"
         className="cipp-offcanvas"
         hideFunction={() => setVisible(false)}
-        title="Mail Provider Info"
+        title="MX Details"
       >
-        {records.length > 0 && (
-          <>
-            <COffcanvasTitle>MX Records</COffcanvasTitle>
-            <CTable striped small>
-              <CTableHead>
-                <CTableRow>
-                  <CTableHeaderCell scope="col">Priority</CTableHeaderCell>
-                  <CTableHeaderCell scope="col">Hostname</CTableHeaderCell>
-                </CTableRow>
-              </CTableHead>
-              <CTableBody>
-                {records.map((record, key) => (
-                  <CTableRow key={`${key}-mx-record`}>
-                    <CTableDataCell>{record?.Priority}</CTableDataCell>
-                    <CTableDataCell>{record?.Hostname}</CTableDataCell>
+        <DomainOffcanvasTabs jsonContent={jsonContent}>
+          {records.length > 0 && (
+            <>
+              <COffcanvasTitle>MX Records</COffcanvasTitle>
+              <CTable striped small>
+                <CTableHead>
+                  <CTableRow>
+                    <CTableHeaderCell scope="col">Priority</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Hostname</CTableHeaderCell>
                   </CTableRow>
-                ))}
-              </CTableBody>
-            </CTable>
-          </>
-        )}
-        <COffcanvasTitle>Documentation</COffcanvasTitle>
-        <CListGroup>
-          {data?.MXResults?.MailProvider?._MxComment && (
-            <CListGroupItem
-              component="a"
-              target="_blank"
-              href={data?.MXResults?.MailProvider?._MxComment}
-            >
-              <IconExternalLink /> MX Record
-            </CListGroupItem>
+                </CTableHead>
+                <CTableBody>
+                  {records.map((record, key) => (
+                    <CTableRow key={`${key}-mx-record`}>
+                      <CTableDataCell>{record?.Priority}</CTableDataCell>
+                      <CTableDataCell>{record?.Hostname}</CTableDataCell>
+                    </CTableRow>
+                  ))}
+                </CTableBody>
+              </CTable>
+            </>
           )}
-          {data?.MXResults?.MailProvider?._SpfComment && (
-            <CListGroupItem
-              component="a"
-              target="_blank"
-              href={data?.MXResults?.MailProvider?._SpfComment}
-            >
-              <IconExternalLink /> SPF Record
-            </CListGroupItem>
-          )}
-          {data?.MXResults?.MailProvider?._DkimComment && (
-            <CListGroupItem
-              component="a"
-              target="_blank"
-              href={data?.MXResults?.MailProvider?._DkimComment}
-            >
-              <IconExternalLink /> DKIM Record
-            </CListGroupItem>
-          )}
-        </CListGroup>
+          <COffcanvasTitle>Documentation</COffcanvasTitle>
+          <CListGroup>
+            {data?.MailProvider?._MxComment && (
+              <CListGroupItem component="a" target="_blank" href={data?.MailProvider?._MxComment}>
+                <IconExternalLink /> MX Record
+              </CListGroupItem>
+            )}
+            {data?.MailProvider?._SpfComment && (
+              <CListGroupItem component="a" target="_blank" href={data?.MailProvider?._SpfComment}>
+                <IconExternalLink /> SPF Record
+              </CListGroupItem>
+            )}
+            {data?.MailProvider?._DkimComment && (
+              <CListGroupItem component="a" target="_blank" href={data?.MailProvider?._DkimComment}>
+                <IconExternalLink /> DKIM Record
+              </CListGroupItem>
+            )}
+          </CListGroup>
+        </DomainOffcanvasTabs>
       </CippOffcanvas>
     </ResultsCard>
   )
@@ -388,36 +873,69 @@ const MXResultsCard = ({ domain }) => {
 
 MXResultsCard.propTypes = sharedProps
 
-const DMARCResultsCard = ({ domain }) => {
-  const { data } = useListDomainTestsQuery({ domain })
-  let record = data?.DMARCResults?.Record
+function DMARCResultsCard({ domain }) {
+  const { data, isFetching, error } = useExecDnsHelperQuery({
+    Domain: domain,
+    Action: 'ReadDmarcPolicy',
+  })
+  let record = data?.Record
+  const [visible, setVisible] = useState(false)
+  const headerClickFunction = () => {
+    setVisible(true)
+  }
+  const jsonContent = JSON.stringify(data, null, 2)
 
   return (
-    <ResultsCard data={data} type="DMARC">
-      {record && (
-        <CippCodeBlock language="text" code={record} showLineNumbers={false} wrapLongLines={true} />
-      )}
-    </ResultsCard>
+    <>
+      <ResultsCard
+        data={data}
+        type="DMARC"
+        isFetching={isFetching}
+        headerClickFunction={headerClickFunction}
+        error={error}
+        errorMessage="Unable to load DMARC Results"
+      >
+        {record && (
+          <CippCodeBlock
+            language="text"
+            code={record}
+            showLineNumbers={false}
+            wrapLongLines={true}
+          />
+        )}
+      </ResultsCard>
+      <CippOffcanvas
+        id="dmarc-offcanvas"
+        visible={visible}
+        placement="end"
+        className="cipp-offcanvas"
+        hideFunction={() => setVisible(false)}
+        title="DMARC Details"
+      >
+        {!isFetching && error && <>Unable to load DMARC details</>}
+        {!isFetching && !error && <DomainOffcanvasTabs jsonContent={jsonContent} />}
+      </CippOffcanvas>
+    </>
   )
 }
 
 DMARCResultsCard.propTypes = sharedProps
 
-const DNSSECResultsCard = ({ domain }) => {
-  const { data } = useListDomainTestsQuery({ domain })
-  let keys = data?.DNSSECResults?.Keys
+function DNSSECResultsCard({ domain }) {
+  const { data, isFetching, error } = useExecDnsHelperQuery({
+    Domain: domain,
+    Action: 'TestDNSSEC',
+  })
+  let keys = data?.Keys
+  const jsonContent = JSON.stringify(data, null, 2)
+
+  if (!Array.isArray(keys)) {
+    keys = []
+  }
   const [visible, setVisible] = useState(false)
 
-  let menuOptions = []
-  if (keys.length > 0) {
-    menuOptions = [
-      {
-        title: 'Show Details',
-        clickFunction: () => {
-          setVisible(true)
-        },
-      },
-    ]
+  const headerClickFunction = () => {
+    setVisible(true)
   }
 
   if (!Array.isArray(keys)) {
@@ -426,24 +944,40 @@ const DNSSECResultsCard = ({ domain }) => {
 
   return (
     <>
-      <ResultsCard data={data} type="DNSSEC" menuOptions={menuOptions} />
+      <ResultsCard
+        data={data}
+        type="DNSSEC"
+        headerClickFunction={headerClickFunction}
+        isFetching={isFetching}
+        error={error}
+        errorMessage="Unable to load DNSSEC Results"
+      />
       <CippOffcanvas
         id="dnssec-offcanvas"
         visible={visible}
         placement="end"
         className="cipp-offcanvas"
         hideFunction={() => setVisible(false)}
-        title="DNSSEC Records"
+        title="DNSSEC Details"
       >
-        {keys.map((key, idx) => (
-          <CippCodeBlock
-            language="text"
-            key={`${idx}-dnssec-key`}
-            code={key}
-            showLineNumbers={false}
-            wrapLongLines={true}
-          />
-        ))}
+        {!isFetching && !error && (
+          <DomainOffcanvasTabs jsonContent={jsonContent}>
+            {keys.length >
+            (
+              <>
+                {keys.map((key, idx) => (
+                  <CippCodeBlock
+                    language="text"
+                    key={`${idx}-dnssec-key`}
+                    code={key}
+                    showLineNumbers={false}
+                    wrapLongLines={true}
+                  />
+                ))}
+              </>
+            )}
+          </DomainOffcanvasTabs>
+        )}
       </CippOffcanvas>
     </>
   )
@@ -451,21 +985,22 @@ const DNSSECResultsCard = ({ domain }) => {
 
 DNSSECResultsCard.propTypes = sharedProps
 
-const DKIMResultsCard = ({ domain }) => {
-  const { data } = useListDomainTestsQuery({ domain })
-  let records = data?.DKIMResults?.Records
+function DKIMResultsCard({ domain, dkimOverride }) {
+  const { data, isFetching, error } = useExecDnsHelperQuery({
+    Domain: domain,
+    Action: 'ReadDkimRecord',
+    Selector: dkimOverride,
+  })
+  let records = data?.Records
+  const jsonContent = JSON.stringify(data, null, 2)
+
+  if (!Array.isArray(records)) {
+    records = []
+  }
   const [visible, setVisible] = useState(false)
 
-  let menuOptions = []
-  if (records.length > 0) {
-    menuOptions = [
-      {
-        title: 'Show Details',
-        clickFunction: () => {
-          setVisible(true)
-        },
-      },
-    ]
+  const headerClickFunction = () => {
+    setVisible(true)
   }
 
   if (!Array.isArray(records)) {
@@ -474,39 +1009,51 @@ const DKIMResultsCard = ({ domain }) => {
 
   return (
     <>
-      <ResultsCard data={data} type="DKIM" menuOptions={menuOptions} />
-      {records.length > 0 && (
+      <ResultsCard
+        data={data}
+        type="DKIM"
+        headerClickFunction={headerClickFunction}
+        isFetching={isFetching}
+        error={error}
+        errorMessage="Unable to load DKIM Results"
+      />
+      {!isFetching && !error && (
         <CippOffcanvas
           id="dkim-offcanvas"
           visible={visible}
           placement="end"
           className="cipp-offcanvas"
           hideFunction={() => setVisible(false)}
-          title="DKIM Records"
+          title="DKIM Details"
         >
-          {records.map((record, idx) => (
-            <div key={`${idx}-dkim-record`}>
-              <CFormLabel>{record?.Selector}._domainkey</CFormLabel>
-              {record?.Record && (
-                <CippCodeBlock
-                  language="text"
-                  key={`${idx}-dnssec-key`}
-                  code={record?.Record}
-                  showLineNumbers={false}
-                  wrapLongLines={true}
-                />
-              )}
-            </div>
-          ))}
+          <DomainOffcanvasTabs jsonContent={jsonContent}>
+            {records.length > 0 && (
+              <>
+                {records.map((record, idx) => (
+                  <div key={`${idx}-dkim-record`}>
+                    <CFormLabel>{record?.Selector}._domainkey</CFormLabel>
+                    {record?.Record && (
+                      <CippCodeBlock
+                        language="text"
+                        key={`${idx}-dnssec-key`}
+                        code={record?.Record}
+                        showLineNumbers={false}
+                        wrapLongLines={true}
+                      />
+                    )}
+                  </div>
+                ))}
+              </>
+            )}
+          </DomainOffcanvasTabs>
         </CippOffcanvas>
       )}
     </>
   )
 }
+DKIMResultsCard.propTypes = { dkimOverride: PropTypes.string, ...sharedProps }
 
-DKIMResultsCard.propTypes = sharedProps
-
-const DomainCheckError = (props) => {
+function DomainCheckError(props) {
   const [expanded, setExpanded] = useState(false)
   const { isError, domain, error } = props
   if (!isError) {
