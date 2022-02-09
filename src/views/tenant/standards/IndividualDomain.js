@@ -575,7 +575,7 @@ const SPFResultsCard = ({ domain, spfOverride }) => {
           <DomainOffcanvasTabs jsonContent={jsonContent}>
             {record && (
               <>
-                <h4 className="mt-3">SPF Record</h4>
+                <h4 className="mt-3">Record</h4>
                 <CippCodeBlock
                   language="text"
                   code={record}
