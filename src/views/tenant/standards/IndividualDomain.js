@@ -15,7 +15,6 @@ import {
   CCardHeader,
   CCollapse,
   CForm,
-  CFormLabel,
   CFormSwitch,
   CFormInput,
   CCardTitle,
@@ -1100,7 +1099,7 @@ function DKIMResultsCard({ domain, dkimOverride }) {
     Action: 'ReadDkimRecord',
     Selector: dkimOverride,
   })
-
+  const [visible, setVisible] = useState(false)
   const { data: doc } = useExecDnsHelperQuery({
     Domain: domain,
     Action: 'ReadMXRecord',
@@ -1112,7 +1111,6 @@ function DKIMResultsCard({ domain, dkimOverride }) {
   if (!Array.isArray(records)) {
     records = []
   }
-  const [visible, setVisible] = useState(false)
 
   const headerClickFunction = () => {
     setVisible(true)
@@ -1147,7 +1145,7 @@ function DKIMResultsCard({ domain, dkimOverride }) {
               <>
                 {records.map((record, idx) => (
                   <div key={`${idx}-dkim-record`}>
-                    <CFormLabel>{record?.Selector}._domainkey</CFormLabel>
+                    <h4>Selector - {record?.Selector}</h4>
                     {record?.Record && (
                       <CippCodeBlock
                         language="text"
