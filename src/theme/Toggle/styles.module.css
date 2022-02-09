@@ -30,7 +30,7 @@
 .toggleTrack {
   width: 50px;
   height: 24px;
-  border-radius: 30px;
+  border-radius: 0;
   background-color: #4d4d4d;
   transition: all 0.2s ease;
 }
@@ -77,7 +77,7 @@
   width: 22px;
   height: 22px;
   border: 1px solid #4d4d4d;
-  border-radius: 50%;
+  border-radius: 0;
   background-color: #fafafa;
   transition: all 0.25s ease;
 }

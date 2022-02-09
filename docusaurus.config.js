@@ -318,7 +318,7 @@ const config = {
             from: '/EndpointManagement/Defender/',
           },
           {
-            to: '/docs/user/usingcipp/teamssharepoint/',
+            to: '/docs/user/usingcipp/teamsonedrivesharepoint/',
             from: '/OneDriveTeamsSharepoint/OneDrive/',
           },
           {

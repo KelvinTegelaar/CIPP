@@ -7,13 +7,13 @@ slug: /usingcipp/endpointmanagement/autopilotprofiles
 
 ## Overview
 
-There are two main pages to the Autopilot Profiles within the CIPP App
+There are two main pages related to Autopilot Profiles in CIPP.
 
-### Add Profiles - Overview
+### Add Profile - Overview
 
 This page will allow you to add Autopilot profiles, Autopilot profiles allow you to setup devices exactly how you want them. You can create multiple profiles with this Wizard.
 
-#### Add Profiles - Details
+#### Add Profile - Details
 
 * Display Name
 * Description
@@ -28,25 +28,34 @@ This page will allow you to add Autopilot profiles, Autopilot profiles allow you
 * Allow White Glove OOBE
 * Automatically Configure Keyboard
 
-#### Add Profiles - Current known issues / Limitations
-
+#### Add Profile - Known Issues / Limitations
 
 You can only assign one profile to "All Devices"
 
 **400** - You've entered incorrect data, check the information and try again. You might already have one policy pointed at the "All Devices" group.
 
-There are currently no further known issues with the Add Profiles page.  If you have any issues, [please report this as a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).
+If you have any other issues, [please report a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).
 
 --- 
 
-### List Profile - Overview
+### List Profiles - Overview
 
 This page allows you to list all the profiles that exist on the selected tenant, with a brief overivew of some of the settings.  
 
-#### List Profile - Detail
+#### List Profiles - Detail
 
-There is a *View JSON* option which shows all the options and their selected settings, in JSON format (with really cool syntax highlighting!)
+|  Field                 | Description                                          |
+| -----------------------| ---------------------------------------------------  |
+| Name                   | The name of the policy.                              |
+| Description            | The profile description.                             | 
+| Language               | The language the profile configures on the machine.  |
+| Convert to Autopilot   | Converts targeted devices to use Autopilot.          |
+| Device Name Template   | The device name template for the policy.             |
 
-#### List Profile - Current known issues / Limitations
+#### List Profiles - Actions
 
-There are currently no known issues with the List Autopilot Profiles page.  If you have any issues, [please report this as a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).
+* View JSON - *Show all the options and their selected settings, in JSON format.*
+
+#### List Profiles - Known Issues / Limitations
+
+There are no known issues with the List Profiles page. If you have any issues, [please report a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).

@@ -34,6 +34,6 @@ This page lists all the Conditional Access Policies on the selected tenant.  Thi
 
 There are no actions available currently.
 
-## Current known issues / Limitations
+## Known Issues / Limitations
 
 There are currently no known issues with the Conditional Access Policies page.  If you have any issues, [please report this as a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).

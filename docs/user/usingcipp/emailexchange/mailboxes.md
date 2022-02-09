@@ -11,27 +11,26 @@ You'll find information on mailboxes in the main table view, each row has a view
 
 ## Detail
 
-|  Fields                     | Description                                          |
-| --------------------------- | ---------------------------------------------------  |
-| Display Name                | The display name of the selected user                |
-| User Principal Name         | The UPN of the selected user                         | 
-| Additional E-Mail Addresses | All proxyAddresses assigned to the user              |
-| Mailbox Type                | The Mailbox type, such as "User" or "Shared"         |
+|  Fields                     | Description                                                           |
+| --------------------------- | --------------------------------------------------------------------- |
+| User Principal Name         | The UPN of the selected user                                          |
+| Display Name                | The display name of the selected user                                 |
+| Primary E-Mail Address      | The primary email address of the selected user                        |
+| Recipient Type              | The Mailbox type, generally `UserMailbox`.                            |
+| Recipient Type Details      | The detailed mailbox type typically `UserMailbox` or `SharedMailbox`. |
 
+### Actions
 
 * View Mailbox
 * Edit Mailbox - *This will allow you to edit the permissions assigned to the mailbox.*
 * View Mobile Devices *This will show you a list of all mobile devices which have connected to the mailbox with detailed information on each device.*
-
-### Actions
-
 * Research Compromised Account
 * Send MFA Push
 * Convert to Shared Mailbox
 * Convert to User Mailbox
 
-## Current known issues / Limitations
+## Known Issues / Limitations
 
-There are currently no known issues with the Mailbox page.  If you have any issues, [please report this as a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).
+There are no known issues with the Mailboxes page. If you have any issues, [please report a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).
 
 

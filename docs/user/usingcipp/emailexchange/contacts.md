@@ -11,10 +11,21 @@ On this page you'll find information on contacts in the main table view, with th
 
 ## Detail
 
+|  Fields                     | Description                                                   |
+| --------------------------- | ------------------------------------------------------------- |
+| Display Name                | The display name of the contact.                              |
+| E-Mail Address              | The email address of the contact.                             | 
+| Company                     | The company of the contact.                                   |
+| On Premises Sync            | Whether or not the user is synced to an on-premise directory. |
+
+### Actions
+
 * Edit Contact
 
-## Current known issues / Limitations
+  *This will take you directly to edit the contact in the Exchange administration interface.*
 
-There are currently no known issues with the Contacts page.  If you have any issues, [please report this as a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).
+## Known Issues / Limitations
+
+There are no known issues with the Contacts page. If you have any issues, [please report a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).
 
 

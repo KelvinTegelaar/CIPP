@@ -34,6 +34,6 @@ Note that the Edit Tenant page allows you to change the Display Name or Default 
 
 :::
 
-## Current known issues / Limitations
+## Known Issues / Limitations
 
 There are currently no known issues with the Tenants page. If you have any issues, [please report this as a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).

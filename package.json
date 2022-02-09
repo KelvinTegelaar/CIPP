@@ -38,7 +38,8 @@
     "react-dom": "^17.0.1",
     "react-typist": "^2.0.5",
     "redocusaurus": "^0.6.0",
-    "sass": "^1.49.0"
+    "sass": "^1.49.0",
+    "vale": "^0.1.0"
   },
   "browserslist": {
     "production": [

@@ -22,7 +22,7 @@ Alerts are broken down numerically into
 
 Below the summary you'll find a list of the alerts found for all your tenants.
 
-## Current known issues / Limitations
+## Known Issues / Limitations
 
 * The "More Info" button does not currently return information for all alerts.
 

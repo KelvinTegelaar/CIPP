@@ -20,6 +20,6 @@ The application we upload is [this prepared intunewin file](https://github.com/K
 If you are unsure or don't trust the `intunewin` file, you can always replace this with your own in your fork, you can also download and test, and view the contents of this `intunewin` file.
 
 
-## Current known issues / Limitations
+## Known Issues / Limitations
 
-There are currently no known issues with the Add Choco App page.  If you have any issues, [please report this as a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).
+There are no known issues with the Add Chocolatey App page. If you have any issues, [please report a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).

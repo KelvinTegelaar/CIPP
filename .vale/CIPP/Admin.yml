@@ -1,0 +1,12 @@
+---
+# Warning: CIPP.Admin
+#
+# Checks for "admin" and recommends using the full word instead. "Admin Area" is OK.
+#
+# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+extends: substitution
+message: 'Verify this use of the word "admin". Can it be updated to "administration", "administrator", "administer", or "Admin Area"?'
+level: suggestion
+ignorecase: false
+swap:
+  '[Aa]dmin ?\w*': '(?:Admin( Area| Mode)?|[Aa]dminist(ration|rator|rators|er|rative))'

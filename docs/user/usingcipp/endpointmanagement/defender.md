@@ -1,6 +1,6 @@
 ---
 id: defender
-title: Defender
+title: Defender Status
 description: Deploy applications using the Chocolatey package manager.
 slug: /usingcipp/endpointmanagement/defender
 ---
@@ -11,11 +11,23 @@ This page lists the defender status for all enrolled machines in a tenant, such 
 
 ## Detail
 
-There is no additional detail on this page.
+|  Field                     | Description                                             |
+| -------------------------- | ------------------------------------------------------- |
+| Device Name                | The name of the device.                                 |
+| Malware Protection         | Whether malware protection is enabled on the device.    | 
+| Real Time Protection       | Whether real time protection is enabled on the device.  |
+| Network Inspection         | Whether network inspection is enabled on the device.    |
+| Last Reported Health State | The last reported health state of the device.           |
+| Quick Scan Overdue         | Whether the quick scan is overdue.                      |
+| Full Scan Overdue          | Whether the full scan is overdue.                       |
+| Signature Update Required  | Whether signature updates are required.                 |
+| Reboot Required            | Whether a reboot is required.                           |
+| Attention Required         | Whether attention is required to resolve issues.        |
 
-## Current known issues / Limitations
+
+## Known Issues / Limitations
 
 * You must be a current Microsoft Lighthouse partner, and your tenants must be onboarded before you can use this.
 * The UI is somewhat mixed currently, as for example, it reports a "red cross - danger" warning if a Signature Update is **NOT** required.  This should arguably be a green tick.
 
- If you have any further issues, [please report this as a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).
+If you have any other issues, [please report a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).

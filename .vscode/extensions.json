@@ -1,5 +1,6 @@
 {
     "recommendations": [
-        "davidanson.vscode-markdownlint"
+        "davidanson.vscode-markdownlint",
+        "errata-ai.vale-server"
     ]
 }

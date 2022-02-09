@@ -79,7 +79,7 @@ Note that if you are only seeing partial data after waiting a while for the data
 
 Excellent! [Please add them to the GitHub Issues as a feature request](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=feature_request.md&title=FEATURE+REQUEST%3A+)
 
-## Current known issues / Limitations
+## Known Issues / Limitations
 
 * Currently the BPA runs every day at midnight and has a significant impact on the overall performance of CIPP for approximately 30 minutes.
 

@@ -9,10 +9,9 @@ slug: /usingcipp/identitymanagement/users
 
 Using the users pages you can easily edit users and add users to groups or change their licenses, you can also create new users. 
 
-
 ## Details
 
-|  Fields                | Description                                          |
+|  Field                 | Description                                          |
 | -----------------------| ---------------------------------------------------  |
 | Created Date           | The date the user was created                        |
 | User Principal Name    | The UPN of the selected user                         | 
@@ -39,10 +38,10 @@ Using the users pages you can easily edit users and add users to groups or chang
 
 :::info
 
-Note that clicking these options will bring up a prompt box, asking you to confirm the action
+Note that clicking one of these actions will present a confirmation modal dialog.
 
 :::
 
-## Current known issues / Limitations
+## Known Issues / Limitations
 
 There are currently no known issues with the Users page.  If you have any issues, [please report this as a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).

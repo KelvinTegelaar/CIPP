@@ -23,6 +23,6 @@ This report lists all the users in the tenant and the status of the user in rega
 
 This report lists all users that have signed in using Basic Auth across all ClientApps in the last 30 days. These can all be filtered, exported to PDF or CSV.
 
-## Current known issues / Limitations
+## Known Issues / Limitations
 
 There are currently no known issues with the Reports page.  If you have any issues, [please report this as a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).

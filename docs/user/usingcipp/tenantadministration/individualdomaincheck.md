@@ -17,9 +17,9 @@ The checks are the same as those found in the [domains analyser](/docs/user/usin
 
 The following options can be used to perform additional checks against a domain:
 
-- SPF Pre-validation
-- Custom DKIM selectors
-- HTTPS certificate verification
+* SPF Pre-validation
+* Custom DKIM selectors
+* HTTPS certificate verification
 
 #### SPF Pre-validation
 
@@ -33,10 +33,10 @@ Use this function to check the validity of a list of DKIM selectors instead of t
 
 Use this function to check your domain and optional subdomain list against the following tests:
 
-- Expiration date
-- DNS name mismatch
-- Certificate chain validation
+* Expiration date
+* DNS name mismatch
+* Certificate chain validation
 
-## Current known issues / Limitations
+## Known Issues / Limitations
 
 There are currently no known issues with the Individual Domain Access Check page. If you have any issues, [please report this as a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+)

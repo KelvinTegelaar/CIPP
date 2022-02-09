@@ -7,11 +7,11 @@ slug: /usingcipp/endpointmanagement/autopilotstatuspage
 
 ## Overview
 
-There are two main pages to the Autopilot Status Pages within the CIPP App
+The Autopilot Status Pages functionality in CIPP is split into the following two pages:
 
 ### Add Status Page - Overview
 
-This page will allow you to edit the **DEFAULT** Enrollment Status Page. This page applies to all tenants, all users and devices.
+This page provides the ability for you to edit/override the default Enrollment Status Page. This page applies to all tenants, all users and devices.
 
 ### Add Status Page - Detail
 
@@ -25,24 +25,32 @@ This page will allow you to edit the **DEFAULT** Enrollment Status Page. This pa
 * Allow Reset
 * Allow Users to use Device if Setup Fails
 
-### Add Stauts Page - Current known issues / Limitations
+### Add Status Page - Known Issues / Limitations
 
-You can only edit the default profile, and not create new ones.
+You can only edit the default profile, and not create additional ones.
 
 **400** - You've entered incorrect data, check the information and try again.
 
-There are currently no further known issues with the Add Status Page page.  If you have any issues, [please report this as a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).
+If you have any other issues, [please report a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).
 
 ---
 
-### List Status Page - Overview
+### List Status Pages - Overview
 
-This page allows you to see the status of the **Default** Status Page and the settings configured either by default, or as part of using the "Add Status Page" within CIPP
+This page allows you to see the status of the **Default** Status Page and the settings configured for it.
 
-### List Status Page - Detail
+### List Status Pages - Detail
 
-There are no additional options
+|  Field                     | Description                                                  |
+| -------------------------- | ------------------------------------------------------------ |
+| Name                       | The name of the status page.                                 |
+| Description                | The status page description.                                 | 
+| Installation Timeout       | The time in minutes before the installation times out.       |
+| Show Installation Progress | Whether to display installation progress on the status page. |
+| Block Retries              | Whether to allow retry in the event of autopilot failure.    |
+| Allow reset on failure     | Whether to allow reset on failure.                           |
+| Allow usage on failure     | Whether to allow usage on failure.                           |
 
-### List Status Page - Current known issues / Limitations
+### List Status Pages - Known Issues / Limitations
 
-There are currently no known issues with the Autopilot Stauts Pages page.  If you have any issues, [please report this as a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).
+No known issues exist for the List Status Pages page. If you have any issues, [please report a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).

@@ -30,7 +30,7 @@ The deployment center allows you to sync the API to the latest version
 Custom domains brings you to the location where you can change the custom domains
 Role management allows you to invite users, and set the roles for users.
 
-## Current known issues / Limitations
+## Known Issues / Limitations
 
 There are currently no known issues with the Backend Access page.  If you have any issues, [please report this as a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).
 

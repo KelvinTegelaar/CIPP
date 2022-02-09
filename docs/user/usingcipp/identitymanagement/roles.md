@@ -20,6 +20,6 @@ The Roles page shows a list of all M365 roles such as Billing Admin, Global Admi
 
 * View Members
 
-## Current known issues / Limitations
+## Known Issues / Limitations
 
 There are currently no known issues with the Roles page.  If you have any issues, [please report this as a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).

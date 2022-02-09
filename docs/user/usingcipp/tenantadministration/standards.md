@@ -58,7 +58,7 @@ Changes which should be carefully thought through and ideally managed with custo
 
 :::
 
-## Current known issues / Limitations
+## Known Issues / Limitations
 
 * These jobs run asynchronously every 3 hours per default, you can check the log for the current operation by looking for "Standards API" in the LogBook.
 * The job engine might slow down other APIs temporarily if it has a lot to process.(loads of settings, loads of tenants).

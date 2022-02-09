@@ -86,6 +86,6 @@ The adding of this feature requires a new permission granting in your delegated 
 
 Excellent! [Please add them to the GitHub Issues as a feature request](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=feature_request.md&title=FEATURE+REQUEST%3A+)
 
-## Current known issues / Limitations
+## Known Issues / Limitations
 
 There are currently no known issues with the Domains Analyser page.  If you have any issues, [please report this as a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+).

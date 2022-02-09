@@ -108,6 +108,7 @@ const sidebars = {
           collapsed: true,
           items: [
             'usingcipp/endpointmanagement/applications',
+            'usingcipp/endpointmanagement/applicationqueue',
             'usingcipp/endpointmanagement/addchocoapp',
             'usingcipp/endpointmanagement/autopilotdevices',
             'usingcipp/endpointmanagement/autopilotprofiles',
@@ -118,18 +119,18 @@ const sidebars = {
         },
         {
           type: 'category',
-          label: 'Teams & Sharepoint',
+          label: 'Teams, OneDrive & Sharepoint',
           link: {
             type: 'generated-index',
-            title: 'Teams & Sharepoint',
+            title: 'Teams, OneDrive & Sharepoint',
             description: "This area of CIPP is used to manage Teams, OneDrive and Sharepoint.",
-            slug: '/usingcipp/teamssharepoint',
+            slug: '/usingcipp/teamsonedrivesharepoint',
           },
           collapsed: true,
           items: [
-            'usingcipp/teamssharepoint/onedrive',
-            'usingcipp/teamssharepoint/sharepoint',
-            'usingcipp/teamssharepoint/teams',
+            'usingcipp/teamsonedrivesharepoint/onedrive',
+            'usingcipp/teamsonedrivesharepoint/sharepoint',
+            'usingcipp/teamsonedrivesharepoint/teams',
           ],
         },
         {
