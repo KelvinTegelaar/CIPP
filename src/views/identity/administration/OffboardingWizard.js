@@ -276,7 +276,7 @@ const OffboardingWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.UserNoAutomap ? faCheckCircle : faTimesCircle}
+                            icon={props.values.AccessNoAutomap ? faCheckCircle : faTimesCircle}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -284,7 +284,7 @@ const OffboardingWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.UserAutomap ? faCheckCircle : faTimesCircle}
+                            icon={props.values.AccessAutomap ? faCheckCircle : faTimesCircle}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -292,7 +292,7 @@ const OffboardingWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.OneDrive ? faCheckCircle : faTimesCircle}
+                            icon={props.values.OnedriveAccess ? faCheckCircle : faTimesCircle}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
