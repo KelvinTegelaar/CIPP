@@ -18,3 +18,4 @@ To create a policy and get it's raw JSON information you'll have to go to the [e
 
 - All templates are currently supported, if you do not see your template type in the list, you must select Custom Configuration
 - When using Settings Catalog or Custom Configuration, the Display Name and Description are using from the raw JSON file.
+- Only works when creating new policies.
