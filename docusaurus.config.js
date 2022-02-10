@@ -323,7 +323,7 @@ const config = {
             from: '/OneDriveTeamsSharepoint/OneDrive/',
           },
           {
-            to: '/docs/user/usingcipp/settings/configurationsettings/',
+            to: '/docs/user/usingcipp/settings/settings/',
             from: '/CIPPSettings/ConfigurationSettings/',
           },
           {
