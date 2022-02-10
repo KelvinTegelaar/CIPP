@@ -11,7 +11,7 @@ export const errorMiddleware =
       console.error(action)
       const message = action.payload?.message || 'A generic error has occurred.'
 
-      const toastError = process.env.NODE_ENV === 'production' ? action.payload || {} : action
+      const toastError = action.payload
 
       dispatch(
         showToast({

@@ -1,14 +1,5 @@
 import React from 'react'
-import {
-  CAlert,
-  CCol,
-  CRow,
-  CForm,
-  CListGroup,
-  CListGroupItem,
-  CCallout,
-  CSpinner,
-} from '@coreui/react'
+import { CCol, CRow, CForm, CListGroup, CListGroupItem, CCallout, CSpinner } from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -28,10 +19,10 @@ const Error = ({ name }) => (
     subscription={{ touched: true, error: true }}
     render={({ meta: { touched, error } }) =>
       touched && error ? (
-        <CAlert color="danger">
+        <CCallout color="danger">
           <FontAwesomeIcon icon={faExclamationTriangle} color="danger" />
           {error}
-        </CAlert>
+        </CCallout>
       ) : null
     }
   />

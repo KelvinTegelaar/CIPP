@@ -87,7 +87,6 @@ const MessageTrace = () => {
     // @todo hook this up
     // genericPostRequest({ path: '/api/AddIntuneTemplate', values })
   }
-
   return (
     <>
       <CRow>
@@ -108,7 +107,7 @@ const MessageTrace = () => {
                     tenantFilter: tenant.defaultDomainName,
                     sender: sender,
                     recipient: recipient,
-                    days: days,
+                    days: 1,
                   }}
                   onSubmit={handleSubmit}
                   render={({ handleSubmit, submitting, values }) => {
@@ -147,9 +146,8 @@ const MessageTrace = () => {
                             <RFFCFormSelect
                               name="days"
                               label="How many days back to search"
-                              placeholder="2"
+                              placeholder="1"
                               values={[
-                                { label: '1', value: '1' },
                                 { label: '2', value: '2' },
                                 { label: '3', value: '3' },
                                 { label: '4', value: '4' },
