@@ -7,18 +7,23 @@ slug: /security
 
 ## Supported Versions
 
-The current [release](https://github.com/KelvinTegelaar/CIPP/releases) is the only supported version and it should not have any security bugs. However please feel free to report security issues for any releases in the current major version. Knowing about security issues in older versions helps us to prevent regressions, we would rather know we made a mistake at one point in time and avoid that for the future.
+The current [release](https://github.com/KelvinTegelaar/CIPP/releases) is the only "supported version" and shouldn't have any security bugs. However if you find a security issue in an older release feel free to also report this in case of regression.
+
+It's important that to know about past mistakes to help avoid repetition in the future.
 
 ## Reporting a Vulnerability
 
-Reporting a vulnerability is best done via the instructions in the [Security Policy](https://github.com/KelvinTegelaar/CIPP/security/policy). This way all contributors are alerted and we can discuss the issue in private this will help in making the fix available as soon as possible without endangering other users of the product.
+<!-- markdownlint-disable-next-line MD033 -->
+Reporting a vulnerability is best done by emailing <a href="mailto:security@cyberdrain.com?subject=CIPP Security Issue">security@cyberdrain.com</a>.
+You can also message an administrator directly on the CyberDrain Discord. The administrators involve all relevant contributors in discussing the issue in private and addressing it if appropriate. Your cooperation in reporting security issues in this way assists in making any fix available as soon as possible without endangering other users of the product.
 
-We will publicly release any security report after resolution, including all communications, if you'd rather have just the bug report public, please let us know in the report.
+The project publicly posts security reports after resolution, including all communications. If you would rather have only the bug report public, please include this fact when making the report.
 
-## Notifications and security advisories
+## Notifications and Security Advisories
 
-We report any security notification via the GitHub notification and advisory system. Sponsors that are hosted will also receive a notification in case a major bug has been found.
+Security notification reporting is via the GitHub notification and advisory system. Sponsors with hosted instances receive a notification directly.
 
 ## Bounties and Rewards
 
-This project is an open-source sponsor-ware effort, which makes it hard to create a monetary reward without breaking the bank very quickly. for _critical_ level bugs, that cause RCE/API data leaks/etc I will award a 50 dollar reward. For other bugs, I potentially am able to reward with some swag such as an official CyberDrain T-shirt or hoodie :)
+This project is an open-source sponsor-ware effort, which makes it hard to create a monetary reward without breaking the bank.
+For *critical* security bugs, involving things like remote code execution or API data leaks, The project aims to offer a 50 dollar reward. For other bugs, the project may reward with some swag such as an official CyberDrain t-shirt or hoodie.

@@ -160,7 +160,7 @@ const sidebars = {
           },
           collapsed: true,
           items: [
-            'usingcipp/settings/configurationsettings',
+            'usingcipp/settings/settings',
             'usingcipp/settings/backendaccess',
             'usingcipp/settings/notifications',
           ],

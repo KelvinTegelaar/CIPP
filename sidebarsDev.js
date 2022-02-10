@@ -45,6 +45,22 @@ const sidebars = {
         'CIPP-API/structure',
       ],
     },
+    'contributingcode',
+    {
+      type: 'category',
+      label: 'Licensing',
+      link: {
+        type: 'generated-index',
+        title: 'Licensing',
+        description: "This is documentation on the licenses used by CIPP.",
+        slug: '/licensing',
+      },
+      collapsed: false,
+      items: [
+        'licensing/licensingcode',
+        'licensing/licensingdocumentation',
+      ],
+    },
   ],
 
   // But you can create a sidebar manually

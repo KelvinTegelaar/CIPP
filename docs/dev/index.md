@@ -4,7 +4,7 @@ title: CIPP Dev Guide
 displayed_sidebar: devSidebar
 ---
 
-In this section you'll find the developer-facing documentation for the CyberDrain Improved Partner Portal. This is documentation for people looking to develop the CIPP codebases.
+This section holds the developer-facing documentation for the CyberDrain Improved Partner Portal. Documentation aimed at people looking to develop the CIPP codebases.
 
 Use the links on the left to navigate the documentation.
 

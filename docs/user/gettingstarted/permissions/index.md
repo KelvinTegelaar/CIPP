@@ -5,24 +5,22 @@ description: How to ensure your SAM app for CIPP has the correct permissions.
 slug: /gettingstarted/permissions
 ---
 
-You'll also need the following permissions for your secure application model, to add permissions follow these instructions:
+You should grant the following permissions to the secure application model registration, to add permissions follow these instructions:
 
 * Go to the [Azure Portal](https://portal.azure.com).
-* Click on [**Azure Active Directory**](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Overview), now click on [**App Registrations**](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps).
+* Select [**Azure Active Directory**](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Overview), now select [**App Registrations**](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps).
 * Find your Secure App Model application. You can search based on the Application ID.
-* Go to **API Permissions** and click **Add a permission**.
-* Choose “Microsoft Graph” and “Delegated permission” or "Application Permissions"
+* Go to **API Permissions** and select **Add a permission**.
+* Choose "Microsoft Graph" and "Delegated permission" or "Application Permissions"
 * Add the permission you need
-* Finally, click on “Grant Admin Consent” for Company Name.
+* Finally, select "Grant Admin Consent" for Company Name.
 
 ## Permissions
 
-For full functionality, you'll need the following permissions for your Secure Application Model. You can remove any permissions if you do not want the application to be able to use that functionality.
+For full functionality, CIPP needs the following permissions for the Secure Application Model registration. You can remove any permissions if you don't want the application to be able to use that functionality. This may cause you to see errors in the application.
 
 :::info Duplicate Permissions
-
-Some permissions may appear to be duplicated in the Delegated and Application permissions tables below. This is _by design_ and you do need to add both permissions!
-
+Some permissions may appear duplicated in the Delegated and Application permissions tables below. This is _by design_ and you do need to add both permissions!
 :::
 
 <details><summary>
@@ -32,8 +30,10 @@ Some permissions may appear to be duplicated in the Delegated and Application pe
 </summary>
 <p>
 
+
 :::note List of **delegated permissions** used by CIPP:
 
+<!-- vale off -->
 | API / Permissions name                       | Description                                                       |
 | -------------------------------------------- | ----------------------------------------------------------------- |
 | Application.Read.All                         | Read applications                                                 |
@@ -50,7 +50,7 @@ Some permissions may appear to be duplicated in the Delegated and Application pe
 | ChannelSettings.Read.All                     | Read the names, descriptions, and settings of channels            |
 | ChannelSettings.ReadWrite.All                | Read and write the names, descriptions, and settings of channels  |
 | ConsentRequest.Read.All                      | Read consent requests                                             |
-| Channel.Delete.All                           | Delete Channels                                                    |
+| Channel.Delete.All                           | Delete Channels                                                   |
 | Device.Command                               | Communicate with user devices                                     |
 | Device.Read                                  | Read user devices                                                 |
 | Device.Read.All                              | Read all devices                                                  |
@@ -119,6 +119,7 @@ Some permissions may appear to be duplicated in the Delegated and Application pe
 | UserAuthenticationMethod.Read.All            | Read all users' authentication methods                            |
 | UserAuthenticationMethod.ReadWrite           | Read and write user authentication methods                        |
 | UserAuthenticationMethod.ReadWrite.All       | Read and write all users' authentication methods                  |
+<!-- vale on -->
 
 :::
 
@@ -134,6 +135,7 @@ Some permissions may appear to be duplicated in the Delegated and Application pe
 
 :::note List of **application permissions** used by CIPP:
 
+<!-- vale off -->
 | API / Permissions name                                  | Description                                                       |
 | ------------------------------------------------------- | ----------------------------------------------------------------- |
 | Channel.Create                                          | Create channels                                                   |
@@ -165,13 +167,14 @@ Some permissions may appear to be duplicated in the Delegated and Application pe
 | PrivilegedAccess.ReadWrite.AzureADGroup                 | Read and write privileged access to Azure AD groups               |
 | Reports.Read.All                                        | Read all usage reports                                            |
 | RoleManagement.ReadWrite.Directory                      | Read and write directory RBAC settings                            |
-| SecurityEvents.Read.All                                 | Read your organization’s security events                          |
+| SecurityEvents.Read.All                                 | Read your organization's security events                          |
 | Sites.FullControl.All                                   | Have full control of all site collections                         |
 | Team.ReadBasic.All                                      | Read the names and descriptions of teams                          |
 | TeamMember.ReadWrite.All                                | Add and remove members from teams                                 |
 | TeamMember.ReadWriteNonOwnerRole.All                    | Add and remove members with non-owner role for all teams          |
 | User.ReadWrite.All                                      | Read and write all users' full profiles                           |
 | UserAuthenticationMethod.ReadWrite.All                  | Read and write all users' authentication methods                  |
+<!-- vale on -->
 
 :::
 

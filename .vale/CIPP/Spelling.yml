@@ -13,4 +13,24 @@ extends: spelling
 message: 'Spelling check: "%s"?'
 level: warning
 filters: 
+  - anonymised
   - CIPP
+  - config
+  - Cyber
+  - Docusaurus
+  - Gavsto
+  - Helpdesk
+  - Intellisense
+  - Intune
+  - IntuneWin
+  - LTS
+  - mailto
+  - npm
+  - Offboarding
+  - Padawan
+  - pseudonymised
+  - pseudonymising
+  - readonly
+  - Sharepoint
+  - Stylelint
+  - syncronisation

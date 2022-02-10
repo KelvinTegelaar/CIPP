@@ -5,22 +5,20 @@ description: How to prepare to install an instance of CIPP for your organisation
 slug: /gettingstarted/prerequisites
 ---
 
-You'll need the following to get started:
+To get started make sure you have the following:
 
 * Your Secure Application Model information
 * A [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) of [the CIPP GitHub](https://github.com/KelvinTegelaar/CIPP) repository.
 * A [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) of [the CIPP API GitHub](https://github.com/KelvinTegelaar/CIPP-API) repository.
 * An active Azure Subscription.
-* A GitHub Personal Access Token. You can find instructions on what you need and the minimum permissions to do this [in Microsoft's Azure Static Web Apps documentation](https://docs.microsoft.com/en-us/azure/static-web-apps/publish-azure-resource-manager?tabs=azure-cli#create-a-github-personal-access-token). You only need to follow the "Create a GitHub Personal Access Token" section.
+* A GitHub Personal Access Token. You can find instructions on what you need and the minimum permissions to do this [in Microsoft's Azure Static Web Apps documentation](https://docs.microsoft.com/en-us/azure/static-web-apps/publish-azure-resource-manager?tabs=azure-cli#create-a-github-personal-access-token). You only need the "Create a GitHub Personal Access Token" section.
 
-For the installation and maintenance, we assume you have some knowledge of GitHub (or Git in general).
+For the installation and maintenance, it's assumed you have some knowledge of GitHub (or Git in general).
 
-If you haven't setup the Secure App Model use the instructions below and then move onto the next page to configure the permissions for your SAM application.
+If you haven't setup the Secure Application Model (SAM) use the instructions below and then move onto the next page to configure the permissions for your SAM application.
 
 :::danger Secure Application Model account
-
-We **strongly** recommend that you use a separate global administrator account for each Secure Application Model application you create. This avoids conflicts that occur when using existing accounts which may be in customer tenants as guest users and provides better tracing in audit logs.  Note that this service account should be a Global Admin and given Partner Admin rights.
-
+It is **strongly** recommended that you use a separate global administrator account for each Secure Application Model application you create. This avoids conflicts that occur when using existing accounts which may be in customer tenants as guest users and provides better tracing in audit logs.  Note that this service account should be a Global Admin and given Partner Admin rights.
 :::
 
 :::tip Setting up the Secure Application Model
@@ -150,4 +148,4 @@ Write-Host "    SAVE THESE IN A SECURE LOCATION     "
 </p>
 </details>
 
-Now that you have SAM setup, move onto configuring permissions using the Next button below...
+Now that you have SAM setup, move onto configuring permissions using the Next button below.

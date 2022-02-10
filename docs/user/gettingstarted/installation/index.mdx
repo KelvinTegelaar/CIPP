@@ -10,22 +10,24 @@ import TabItem from '@theme/TabItem'
 import ClickToDeploy from './_clicktodeploy.mdx'
 import Manual from './_manual.mdx'
 
-There are two ways to install CIPP, click-to-deploy and manual.
 
-A click-to-deploy install is a simple way to install CIPP using a GitHub fork of the CIPP UI and API repositories.
-This is the recommended way to install CIPP for most users.
+You can install CIPP two different ways, click-to-deploy and manual.
 
-A manual install is a more advanced way to install CIPP, and requires more knowledge of Git and Azure but it provides you with a much wider choice of Git hosting services and provides you with greater flexibility over code deployments.
+A click-to-deploy install is the preferred way to install CIPP using a GitHub fork of the CIPP UI and API repositories. It utilises Azure deployment templates to automate the deployment of the CIPP UI and API.
 
-You'll find more information about each of these installation methods in the tabs below:
+A manual install is an advanced method of installing CIPP, requiring more knowledge of Git and Azure but providing wider choice of Git hosting services and greater flexibility around deployment.
+
+Detailed information about each of these installation methods is in the tabs below:
 
 :::tip Installation Tips
 
 1. You should use a dedicated account for your Secure Application Model application.
 1. You should use a new resource group in Azure to deploy CIPP.
-1. If you're redeploying CIPP, you need to remove the old resource group - you don't need to do this to [update tokens](/troubleshooting)!
+1. If you're redeploying CIPP, you must remove the old resource group - this isn't required if you just want to [update tokens](/troubleshooting/#refresh-secure-application--model-tokens)!
 
 :::
+
+Unless you know what you're doing manual installation isn't advised, there's a lot of moving parts where one could make a mistake. You must use the manual installation instructions if you wish to host your repository in [Azure DevOps](https://dev.azure.com) or [GitLab](https://www.gitlab.com).
 
 <Tabs>
     <TabItem value="click-to-deploy" label="Click to Deploy" default>
