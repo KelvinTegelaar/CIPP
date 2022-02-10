@@ -1,6 +1,6 @@
 ---
 id: contributingcode
-title: Contributing.
+title: Contributing to the Code
 description: What you'll need to help develop the CIPP React frontend.
 slug: /contributing
 ---

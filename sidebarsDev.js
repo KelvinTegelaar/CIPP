@@ -46,6 +46,7 @@ const sidebars = {
       ],
     },
     'contributingcode',
+    'contributingdocumentation',
     {
       type: 'category',
       label: 'Licensing',
