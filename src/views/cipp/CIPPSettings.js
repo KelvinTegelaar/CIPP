@@ -89,15 +89,17 @@ const checkAccessColumns = [
   {
     name: 'Tenant Domain',
     selector: (row) => row['TenantName'],
+    grow: 0,
   },
   {
     name: 'Result',
     selector: (row) => row['Status'],
+    grow: 1,
   },
 ]
 
 const GeneralSettings = () => {
-  const { data: tenants = [] } = useListTenantsQuery()
+  const { data: tenants = [] } = useListTenantsQuery({ AllTenantSelector: false })
   const [checkPermissions, permissionsResult] = useLazyExecPermissionsAccessCheckQuery()
   const [clearCache, clearCacheResult] = useLazyExecClearCacheQuery()
   const [checkAccess, accessCheckResult] = useLazyExecTenantsAccessCheckQuery()
@@ -126,8 +128,6 @@ const GeneralSettings = () => {
   }
 
   const handleCheckAccess = () => {
-    // convert customerId into tenant domain
-    // domain is not unique or it would be used as value
     const mapped = tenants.reduce(
       (current, { customerId, ...rest }) => ({
         ...current,
@@ -135,9 +135,10 @@ const GeneralSettings = () => {
       }),
       {},
     )
-    const tenantDomains = selectedTenants.map((customerId) => mapped[customerId].defaultDomainName)
-
-    checkAccess({ tenantDomains })
+    const AllTenantSelector = selectedTenants.map(
+      (customerId) => mapped[customerId].defaultDomainName,
+    )
+    checkAccess({ tenantDomains: AllTenantSelector })
   }
 
   const handleClearCache = useConfirmModal({
@@ -245,6 +246,7 @@ const GeneralSettings = () => {
               </CButton>
               {accessCheckResult.isSuccess && (
                 <CippTable
+                  reportName="none"
                   columns={checkAccessColumns}
                   tableProps={tableProps}
                   data={accessCheckResult.data.Results}

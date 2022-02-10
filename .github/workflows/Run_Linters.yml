@@ -5,12 +5,12 @@ on:  # yamllint disable-line rule:truthy
     branches:
       - master
       - main
-      - react
+      - dev
   pull_request_target:
     branches:
       - master
       - main
-      - react
+      - dev
 permissions:
   issues: write
   pull-requests: write
