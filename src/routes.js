@@ -45,7 +45,6 @@ const ListAppliedStandards = React.lazy(() =>
   import('src/views/tenant/standards/ListAppliedStandards'),
 )
 const IndividualDomain = React.lazy(() => import('src/views/tenant/standards/IndividualDomain'))
-const ApplyStandard = React.lazy(() => import('src/views/tenant/standards/ApplyStandard'))
 const ListAlerts = React.lazy(() => import('src/views/security/reports/ListAlerts'))
 const ApplicationsList = React.lazy(() =>
   import('src/views/endpoint/applications/ApplicationsList'),
@@ -178,7 +177,6 @@ const routes = [
     name: 'List Applied Standards',
     component: ListAppliedStandards,
   },
-  { path: '/tenant/standards/apply-standard', name: 'Apply Standard', component: ApplyStandard },
   {
     path: '/tenant/standards/bpa-report',
     name: 'Best Practice Report',
