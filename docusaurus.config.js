@@ -140,8 +140,12 @@ const config = {
                 to: 'releases',
                 label: 'Releases',
               },
-              { 
-                label: 'Contributing',
+              {
+                label: 'Contributors',
+                to: 'contributors',
+              },
+              {
+                label: 'How to Contribute',
                 to: 'contributing',
               },
               {
@@ -230,6 +234,10 @@ const config = {
           {
             title: 'Community',
             items: [
+              {
+                label: 'Contributors',
+                to: 'contributors',
+              },
               {
                 label: 'Discord',
                 href: 'https://discord.gg/cyberdrain',
