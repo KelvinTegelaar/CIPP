@@ -13,7 +13,7 @@ jobs:
           node-version: 16.x
           cache: npm
       - name: Build website
-        working-directory: website
+        working-directory: ./
         run: |
           npm ci
           npm run build
@@ -21,4 +21,4 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: build
+          publish_dir: ./build
