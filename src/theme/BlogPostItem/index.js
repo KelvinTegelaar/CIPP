@@ -144,7 +144,7 @@ function BlogPostItem(props) {
                       <Translate
                         id="theme.blog.post.readMore"
                         description="The label used in blog post item excerpts to link to full blog posts">
-                        Read More
+                        Release Notes
                       </Translate>
                     </b>
                   </Link>
