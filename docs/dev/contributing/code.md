@@ -1,13 +1,12 @@
 ---
-id: contributingcode
+id: code
 title: Contributing to the Code
 description: What you'll need to help develop the CIPP React frontend.
-slug: /contributing
+slug: /contributing/code
 ---
 
 Contributions to CIPP are welcome by everyone. There's a couple of things to keep in mind:
 
-* These repositories are going through rapid changes. Every pull request should update version_latest.txt with versioning that follows [Semantic Versioning](https://semver.org)
 * Speed and Security are two of the fundamental pillars of CIPP, if it isn't fast, it isn't good and, if it isn't secure, it's not getting merged.
 * We try to use native APIs over PowerShell Modules. PowerShell modules tend to slow the entire processing. We currently only have `Az.Keyvault` and `Az.Accounts` loaded and prefer to keep it that way.
 * You should understand the structure and technologies used in the [CIPP](../CIPP/structure/) and [CIPP-API](../CIPP-API/structure/) repositories.

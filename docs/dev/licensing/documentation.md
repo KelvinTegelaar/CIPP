@@ -1,6 +1,6 @@
 ---
-id: licensingdocumentation
-title: CC-BY-SA 4.0
+id: documentation
+title: Documentation - CC-BY-SA 4.0
 description: The CC-BY-SA 4.0 license used for CIPP documentation.
 slug: /licensing/documentation
 ---

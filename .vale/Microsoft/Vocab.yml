@@ -11,7 +11,7 @@ tokens:
   - alarm
   - alert
   - alias
-  - allows?
+  - allows?(?!list.*)
   - and/or
   - as well as
   - assure

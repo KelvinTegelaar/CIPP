@@ -1,13 +1,8 @@
----
-id: security
-title: Security
-description: How to report security issues with CIPP.
-slug: /security
----
+# Security Policy
 
 ## Supported Versions
 
-The current [release](https://github.com/KelvinTegelaar/CIPP/releases) is the only "supported version" and shouldn't have any security bugs. However if you find a security issue in an older release feel free to also report this in case of regression.
+The current [release](/releases) is the only "supported version" and shouldn't have any security bugs. However if you find a security issue in an older release feel free to also report this in case of regression.
 
 It's important that to know about past mistakes to help avoid repetition in the future.
 
@@ -27,3 +22,7 @@ Security notification reporting is via the GitHub notification and advisory syst
 
 This project is an open-source sponsor-ware effort, which makes it hard to create a monetary reward without breaking the bank.
 For *critical* security bugs, involving things like remote code execution or API data leaks, The project aims to offer a 50 dollar reward. For other bugs, the project may reward with some swag such as an official CyberDrain t-shirt or hoodie.
+
+## Investigating Vulnerabilities
+
+Please see the [Vulnerability Disclosure Policy](/vdp) for more information on how to investigate vulnerabilities and associated commitments and expectations.

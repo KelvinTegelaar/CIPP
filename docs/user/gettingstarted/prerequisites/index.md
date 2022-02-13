@@ -18,7 +18,9 @@ For the installation and maintenance, it's assumed you have some knowledge of Gi
 If you haven't setup the Secure Application Model (SAM) use the instructions below and then move onto the next page to configure the permissions for your SAM application.
 
 :::danger Secure Application Model account
-It is **strongly** recommended that you use a separate global administrator account for each Secure Application Model application you create. This avoids conflicts that occur when using existing accounts which may be in customer tenants as guest users and provides better tracing in audit logs.  Note that this service account should be a Global Admin and given Partner Admin rights.
+It is **strongly** recommended that you use a separate global administrator account for each Secure Application Model application you create. This avoids conflicts that occur when using existing accounts which may be in customer tenants as guest users and provides better tracing in audit logs. 
+
+**This service account should be a Global Admin (in your tenant) and given Admin Agent (in partner center)**.
 :::
 
 :::tip Setting up the Secure Application Model
@@ -147,5 +149,15 @@ Write-Host "    SAVE THESE IN A SECURE LOCATION     "
 
 </p>
 </details>
+
+:::caution Consent, Risk and Conditional Access
+
+Setting up SAM tokens for the first time, presents three consent steps. Make sure you consent to all three.
+
+You should make sure that the user account you're using to generate your SAM tokens isn't listed as a [risky user](https://docs.microsoft.com/en-us/azure/active-directory/identity-protection/howto-identity-protection-investigate-risk).
+
+The account you use for your SAM tokens mustn't have an exemption/exclusion from MFA checks resulting from Conditional Access policies.
+
+:::
 
 Now that you have SAM setup, move onto configuring permissions using the Next button below.

@@ -168,7 +168,6 @@ const sidebars = {
       ],
     },
     'updating/updating',
-    'security/security',
   ],
 
   // But you can create a sidebar manually

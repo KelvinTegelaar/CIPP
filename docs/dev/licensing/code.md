@@ -1,6 +1,6 @@
 ---
-id: licensingcode
-title: AGPLv3
+id: code
+title: Code - AGPLv3
 description: The GNU AGPL 3.0 license used for CIPP.
 slug: /licensing/code
 ---

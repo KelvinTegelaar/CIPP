@@ -43,10 +43,24 @@ const sidebars = {
       collapsed: false,
       items: [
         'CIPP-API/structure',
+        'CIPP-API/tips',
       ],
     },
-    'contributingcode',
-    'contributingdocumentation',
+    {
+      type: 'category',
+      label: 'Contributing',
+      link: {
+        type: 'generated-index',
+        title: 'Contributing',
+        description: "This is documentation for people contributing to the CIPP project.",
+        slug: '/contributing',
+      },
+      collapsed: false,
+      items: [
+        'contributing/code',
+        'contributing/documentation',
+      ],
+    },
     {
       type: 'category',
       label: 'Licensing',
@@ -58,8 +72,8 @@ const sidebars = {
       },
       collapsed: false,
       items: [
-        'licensing/licensingcode',
-        'licensing/licensingdocumentation',
+        'licensing/code',
+        'licensing/documentation',
       ],
     },
   ],

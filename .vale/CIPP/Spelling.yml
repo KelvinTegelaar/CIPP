@@ -13,6 +13,7 @@ extends: spelling
 message: 'Spelling check: "%s"?'
 level: warning
 filters: 
+  - allowlist(ing)?(ed)?
   - anonymised
   - CIPP
   - config
@@ -28,9 +29,10 @@ filters:
   - npm
   - Offboarding
   - Padawan
-  - pseudonymised
-  - pseudonymising
+  - pseudonymi(ing)?(ed)?
   - readonly
   - Sharepoint
   - Stylelint
+  - src
   - syncronisation
+  - Tegelaar

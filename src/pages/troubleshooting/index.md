@@ -1,8 +1,8 @@
 # Troubleshooting
 
-Below are some of the common issues that users have had from initial deployment, updating and general usage.
+Below are some common issues that users have had from initial deployment, updating and general usage.
 
-Note that these steps have been added from the community - if you notice any mistakes, please either edit this page or get in touch via the [Discord server](https://discord.gg/Cyberdrain).  Please note the [Contributor Code of Conduct](/docs/dev/#contributor-code-of-conduct).
+Note that these steps come from the community - if you notice any mistakes, please either edit this page or get in touch via the [Discord server](https://discord.gg/Cyberdrain).  Please note the [Contributor Code of Conduct](/docs/dev/#contributor-code-of-conduct).
 
 ## Token Testing Script
 
@@ -20,7 +20,7 @@ $ExchangeRefreshToken    = '<YOUR EXCHANGE REFRESH TOKEN>'
 
 ### Stop editing here ###
 
-function Get-GraphToken($tenantid, $scope, $AsApp, $AppID, $erefreshToken, $ReturnRefresh) {
+function Get-GraphToken($TenantId, $scope, $AsApp, $ApplicationId, $eRefreshToken, $ReturnRefresh) {
     if (!$scope) { $scope = 'https://graph.microsoft.com/.default' }
 
     $AuthBody = @{
@@ -32,17 +32,17 @@ function Get-GraphToken($tenantid, $scope, $AsApp, $AppID, $erefreshToken, $Retu
                     
     }
 
-    if ($null -ne $AppID -and $null -ne $erefreshToken) {
+    if ($null -ne $AppID -and $null -ne $eRefreshToken) {
         $AuthBody = @{
-            client_id     = $appid
+            client_id     = $ApplicationId
             refresh_token = $eRefreshToken
             scope         = $Scope
             grant_type    = "refresh_token"
         }
     }
 
-    if (!$tenantid) { $tenantid = $env:tenantid }
-    $AccessToken = (Invoke-RestMethod -Method post -Uri "https://login.microsoftonline.com/$($tenantid)/oauth2/v2.0/token" -Body $Authbody -ErrorAction Stop)
+    if (!$TenantId) { $TenantId = $env:tenantid }
+    $AccessToken = (Invoke-RestMethod -Method post -Uri "https://login.microsoftonline.com/$($TenantId)/oauth2/v2.0/token" -Body $Authbody -ErrorAction Stop)
     if ($ReturnRefresh) { $header = $AccessToken } else { $header = @{ Authorization = "Bearer $($AccessToken.access_token)" } }
 
     return $header
@@ -224,11 +224,11 @@ Write-Host "All Tests Finished"
 
 </details>
 
-This script is taken from Gavin Stone's [excellent blog post on setting up the Secure Application Model](https://www.gavsto.com/secure-application-model-for-the-layman-and-step-by-step/).
+This script comes from Gavin Stone's [excellent blog post on setting up the Secure Application Model](https://www.gavsto.com/secure-application-model-for-the-layman-and-step-by-step/).
 
-This script does not test the CIPP configuration, only that the tokens you are pasting into this script are correct.  
+This script doesn't test the CIPP configuration, only that the tokens you are pasting into this script are correct.  
 
-It is possible that you may have pasted the tokens incorrectly into the deployment fields.
+It's possible that you may have pasted the tokens incorrectly into the deployment fields.
 
 ## Refresh Secure Application  Model Tokens
 
@@ -251,11 +251,11 @@ $Credential = New-Object System.Management.Automation.PSCredential($ApplicationI
 
 $UpdateRefreshTokenParamaters = @{
     ApplicationID        = $ApplicationId
-    ApplicationSecret    = $ApplicationSecret
     Tenant               = $TenantID
     Scopes               = 'https://api.partnercenter.microsoft.com/user_impersonation'
     Credential           = $Credential
     UseAuthorizationCode = $true
+    ServicePrincipal     = $true
 }
 
 ### Splat Params required for Updating Exchange Refresh Token ###
@@ -284,16 +284,16 @@ Write-Host "`$TenantID              = $($TenantID)"
 Write-Host "`$RefreshToken          = $($Token.refreshtoken)" -ForegroundColor Blue
 Write-Host "`$ExchangeRefreshToken  = $($ExchangeToken.Refreshtoken)" -ForegroundColor Green
 Write-Host "================ Secrets ================"
-Write-Host "    SAVE THESE IN A SECURE LOCATION     "
+Write-Host "     SAVE THESE IN A SECURE LOCATION     "
 ```
 
 </details>
 
 1. Go to Settings
-1. Click on **Backend**
-1. Click on **Go to Key Vault**
-1. Click on **Access Policies**
-1. Click on **Add Access Policy**
+1. Select **Backend**
+1. Select **Go to Key Vault**
+1. Select **Access Policies**
+1. Select **Add Access Policy**
 1. Add your own user with "Secret Management" permissions.
 1. Go back to Secrets.
 1. Update the tokens as required by creating new versions.
@@ -302,21 +302,19 @@ Write-Host "    SAVE THESE IN A SECURE LOCATION     "
 ## Clear Token Cache
 
 1. Go to Settings
-1. Click on **Backend**
-1. Click on **Go to Function App Configuration**
+1. Select **Backend**
+1. Select **Go to Function App Configuration**
 1. At each item that has the source *Key Vault* there should be a green checkbox. If there is no green checkbox, restart the function app and try in 30 minutes
-1. For the items *RefreshToken* and *ExchangeRefreshToken* rename each item
-    > e.g *RefreshToken2*
-1. Click **Save**
-1. Click on **Overview** in the side menu
+1. For the items *RefreshToken* and *ExchangeRefreshToken* rename each item, for example to *RefreshToken2*
+1. Select **Save**
+1. Select **Overview** in the side menu
 1. Stop the app & wait 5 minutes.
 1. Start the app
 1. Go back to **Configuration** in the side menu.
-1. Reset the token names to their original values
-    > e.g *RefreshToken*
+1. Reset the token names to their original values, for example back to *RefreshToken*
 1. Stop the app once more for 5 minutes then start it again.
 
-The token cache should be cleared
+The tokens should no longer be in the cache.
 
 ## Service Principal
 
@@ -325,7 +323,15 @@ Sometimes Azure has intermittent issues with applying service principals to AAD.
 If this is the only error during deployment, follow the below steps:
 
 1. Go to the [Subscription in the Azure Portal](https://portal.azure.com/#blade/Microsoft_Azure_Billing/SubscriptionsBlade)
-1. Click on **Access Control (IAM)**
-1. Click **Add**
-1. Click on **Add Role Assignment**
+1. Select **Access Control (IAM)**
+1. Select **Add**
+1. Select **Add Role Assignment**
 1. Give the Azure function service principal *reader* role
+
+## Multi-Factor Authentication Troubleshooting
+
+Here are a few things it's important to know about MFA and it's effects on the Secure Application Model (SAM) and CIPP:
+
+1. The account you use to generate your SAM tokens for CIPP must have Microsoft (Azure AD) MFA enabled, it can't use third-party MFA.
+1. You can't have the `Allow users to remember multi-factor authentication on devices they trust` option enabled in the [classic MFA admin portal](https://account.activedirectory.windowsazure.com/UserManagement/MfaSettings.aspx). In either customer or the partner tenant.
+1. You can't have trusted locations or other Conditional Access Policy settings applicable to the account you use to generate your SAM tokens for CIPP.
