@@ -9,7 +9,7 @@ Contributions to CIPP are welcome by everyone. There's a couple of things to kee
 
 * Speed and Security are two of the fundamental pillars of CIPP, if it isn't fast, it isn't good and, if it isn't secure, it's not getting merged.
 * We try to use native APIs over PowerShell Modules. PowerShell modules tend to slow the entire processing. We currently only have `Az.Keyvault` and `Az.Accounts` loaded and prefer to keep it that way.
-* You should understand the structure and technologies used in the [CIPP](../CIPP/structure/) and [CIPP-API](../CIPP-API/structure/) repositories.
+* You should understand the structure and technologies used in the [CIPP](../../CIPP/structure/) and [CIPP-API](../../CIPP-API/structure/) repositories.
 * Avoid adding your deploy workflow file to your development branch. They cause annoyance when they appear in PRs. If you want to both deploy and develop it's probably better to create two instances of the repository.
 
 When contributing, or planning to contribute, please create an issue [on GitHub](https://github.com/KelvinTegelaar/CIPP/issues).

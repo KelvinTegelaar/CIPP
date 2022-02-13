@@ -213,10 +213,10 @@ const config = {
                 label: 'Developer Guide',
                 to: '/docs/dev/',
               },
-              {
+              /*{
                 label: 'API Documentation',
                 to: '/docs/api/',
-              },
+              },*/
               {
                 label: 'Frequently Asked Questions',
                 to: '/faq/',
