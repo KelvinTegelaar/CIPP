@@ -12,64 +12,59 @@ Note that these steps come from the community - if you notice any mistakes, plea
 ### User Input Variables ###
 
 ### Enter the details of your Secure Access Model Application below ###
-$ApplicationId           = '<YOUR APPLICATION ID>'
-$ApplicationSecret       = '<YOUR APPLICATION SECRET>' | ConvertTo-SecureString -AsPlainText -Force
-$MyTenant                = '<YOUR TENANT ID / DOMAIN>'
-$RefreshToken            = '<YOUR REFRESH TOKEN>'
-$ExchangeRefreshToken    = '<YOUR EXCHANGE REFRESH TOKEN>'
+$ApplicationId = '<YOUR APPLICATION ID>'
+$ApplicationSecret = '<YOUR APPLICATION SECRET>'
+$RefreshToken = '<YOUR REFRESH TOKEN>'
+$ExchangeRefreshToken = '<YOUR EXCHANGE REFRESH TOKEN>'
+$MyTenant = '<YOUR TENANT ID>'
+### STOP EDITING HERE ###
 
-### Stop editing here ###
-
-function Get-GraphToken($TenantId, $scope, $AsApp, $ApplicationId, $eRefreshToken, $ReturnRefresh) {
+function Get-GraphToken($TenantId, $Scope, $AsApp, $AppId, $eRefreshToken, $ReturnRefresh) {
     if (!$scope) { $scope = 'https://graph.microsoft.com/.default' }
-
     $AuthBody = @{
         client_id     = $ApplicationId
         client_secret = $ApplicationSecret
         scope         = $Scope
         refresh_token = $eRefreshToken
-        grant_type    = "refresh_token"
-                    
+        grant_type    = 'refresh_token'               
     }
-
-    if ($null -ne $AppID -and $null -ne $eRefreshToken) {
+    if ($null -ne $AppId -and $null -ne $eRefreshToken) {
         $AuthBody = @{
-            client_id     = $ApplicationId
+            client_id     = $AppId
             refresh_token = $eRefreshToken
             scope         = $Scope
-            grant_type    = "refresh_token"
+            grant_type    = 'refresh_token'
         }
     }
-
-    if (!$TenantId) { $TenantId = $env:tenantid }
+    if (!$TenantId) { $TenantId = $ENV:TenantId }
     $AccessToken = (Invoke-RestMethod -Method post -Uri "https://login.microsoftonline.com/$($TenantId)/oauth2/v2.0/token" -Body $Authbody -ErrorAction Stop)
-    if ($ReturnRefresh) { $header = $AccessToken } else { $header = @{ Authorization = "Bearer $($AccessToken.access_token)" } }
+    if ($ReturnRefresh) { $Header = $AccessToken } else { $Header = @{ Authorization = "Bearer $($AccessToken.access_token)" } }
 
     return $header
 }
-function Connect-GraphAPI {
+function Connect-graphAPI {
     [CmdletBinding()]
     Param
     (
         [parameter(Position = 0, Mandatory = $false)]
         [ValidateNotNullOrEmpty()][String]$ApplicationId,
-        
+         
         [parameter(Position = 1, Mandatory = $false)]
         [ValidateNotNullOrEmpty()][String]$ApplicationSecret,
-        
+         
         [parameter(Position = 2, Mandatory = $true)]
-        [ValidateNotNullOrEmpty()][String]$TenantID,
-
+        [ValidateNotNullOrEmpty()][String]$TenantId,
+ 
         [parameter(Position = 3, Mandatory = $false)]
         [ValidateNotNullOrEmpty()][String]$RefreshToken
-
+ 
     )
-    Write-Verbose "Removing old token if it exists"
+    Write-Verbose 'Removing old token if it exists'
     $Script:GraphHeader = $null
-    Write-Verbose "Logging into Graph API"
+    Write-Verbose 'Logging into Graph API'
     try {
         if ($ApplicationId) {
-            Write-Verbose "   using the entered credentials"
+            Write-Verbose '   using the entered credentials'
             $script:ApplicationId = $ApplicationId
             $script:ApplicationSecret = $ApplicationSecret
             $script:RefreshToken = $RefreshToken
@@ -78,138 +73,109 @@ function Connect-GraphAPI {
                 client_secret = $ApplicationSecret
                 scope         = 'https://graph.microsoft.com/.default'
                 refresh_token = $RefreshToken
-                grant_type    = "refresh_token"
-                
-            }
-            
-        }
-        else {
-            Write-Verbose "   using the cached credentials"
+                grant_type    = 'refresh_token'  
+            }   
+        } else {
+            Write-Verbose '   using the cached credentials'
             $AuthBody = @{
                 client_id     = $script:ApplicationId
                 client_secret = $Script:ApplicationSecret
                 scope         = 'https://graph.microsoft.com/.default'
                 refresh_token = $script:RefreshToken
-                grant_type    = "refresh_token"
-                
+                grant_type    = 'refresh_token' 
             }
         }
-        $AccessToken = (Invoke-RestMethod -Method post -Uri "https://login.microsoftonline.com/$($tenantid)/oauth2/v2.0/token" -Body $Authbody -ErrorAction Stop).access_token
-
+        $AccessToken = (Invoke-RestMethod -Method post -Uri "https://login.microsoftonline.com/$($TenantId)/oauth2/v2.0/token" -Body $Authbody -ErrorAction Stop).access_token
         $Script:GraphHeader = @{ Authorization = "Bearer $($AccessToken)" }
-    }
-    catch {
+    } catch {
         Write-Host "Could not log into the Graph API for tenant $($TenantID): $($_.Exception.Message)" -ForegroundColor Red
     }
-
 }
-
-Write-Host "Starting test of the standard Refresh Token" -ForegroundColor Green
-
+Write-Host 'Starting test of the standard Refresh Token' -ForegroundColor Green
 try {
-    Write-Host "Attempting to retrieve an Access Token" -ForegroundColor Green
-    Connect-GraphAPI -ApplicationId $ApplicationId -ApplicationSecret $ApplicationSecret -RefreshToken $RefreshToken -TenantID $MyTenant
-}
-catch {
+    Write-Host 'Attempting to retrieve an Access Token' -ForegroundColor Green
+    Connect-graphAPI -ApplicationId $ApplicationId -ApplicationSecret $ApplicationSecret -RefreshToken $RefreshToken -TenantID $MyTenant
+} catch {
     $ErrorDetails = if ($_.ErrorDetails.Message) {
         $ErrorParts = $_.ErrorDetails.Message | ConvertFrom-Json
         "[$($ErrorParts.error)] $($ErrorParts.error_description)"
-    }
-    else {
+    } else {
         $_.Exception.Message
     }
     Write-Host "Unable to generate access token. The detailed error information, if returned was: $($ErrorDetails)" -ForegroundColor Red
 }
-
 try {
-    Write-Host "Attempting to retrieve all tenants you have delegated permission to" -ForegroundColor Green
+    Write-Host 'Attempting to retrieve all tenants you have delegated permission to' -ForegroundColor Green
     $Tenants = (Invoke-RestMethod -Uri "https://graph.microsoft.com/v1.0/contracts?`$top=999" -Method GET -Headers $script:GraphHeader).value
-}
-catch {
+} catch {
     $ErrorDetails = if ($_.ErrorDetails.Message) {
         $ErrorParts = $_.ErrorDetails.Message | ConvertFrom-Json
         "[$($ErrorParts.error)] $($ErrorParts.error_description)"
-    }
-    else {
+    } else {
         $_.Exception.Message
     }
     Write-Host "Unable to retrieve tenants. The detailed error information, if returned was: $($ErrorDetails)" -ForegroundColor Red
 }
-
 # Setup some variables for use in the foreach. Pay no attention to the man behind the curtain....
 $TenantCount = $Tenants.Count
 $IncrementAmount = 100 / $TenantCount
 $i = 0
 $ErrorCount = 0
-
 Write-Host "$TenantCount tenants found, attempting to loop through each to test access to each individual tenant" -ForegroundColor Green
 # Loop through every tenant we have, and attempt to interact with it with Graph
 foreach ($Tenant in $Tenants) {
-    Write-Progress -Activity "Checking Tenant - Refresh Token" -Status "Progress -> Checking $($Tenant.defaultDomainName)" -PercentComplete $i -CurrentOperation TenantLoop
-    If ($i -eq 0) { Write-Host "Starting Refresh Token Loop Tests" }
+    Write-Progress -Activity 'Checking Tenant - Refresh Token' -Status "Progress -> Checking $($Tenant.defaultDomainName)" -PercentComplete $i -CurrentOperation TenantLoop
+    If ($i -eq 0) { Write-Host 'Starting Refresh Token Loop Tests' }
     $i = $i + $IncrementAmount
-
     try {
-        Connect-GraphAPI -ApplicationId $ApplicationId -ApplicationSecret $ApplicationSecret -RefreshToken $RefreshToken -TenantID $Tenant.customerId
-    }
-    catch {
+        Connect-graphAPI -ApplicationId $ApplicationId -ApplicationSecret $ApplicationSecret -RefreshToken $RefreshToken -TenantID $Tenant.customerid
+    } catch {
         $ErrorDetails = if ($_.ErrorDetails.Message) {
             $ErrorParts = $_.ErrorDetails.Message | ConvertFrom-Json
             "[$($ErrorParts.error)] $($ErrorParts.error_description)"
-        }
-        else {
+        } else {
             $_.Exception.Message
         }
         Write-Host "Unable to connect to graph API for $($Tenant.defaultDomainName). The detailed error information, if returned was: $($ErrorDetails)" -ForegroundColor Red
         $ErrorCount++
         continue
     }
-
-
     try {
-        $Result = (Invoke-RestMethod -Uri "https://graph.microsoft.com/v1.0/users" -Method GET -Headers $script:GraphHeader).value
-    }
-    catch {
+        $Result = (Invoke-RestMethod -Uri 'https://graph.microsoft.com/v1.0/users' -Method GET -Headers $script:GraphHeader).value
+    } catch {
         $ErrorDetails = if ($_.ErrorDetails.Message) {
             $ErrorParts = $_.ErrorDetails.Message | ConvertFrom-Json
             "[$($ErrorParts.error)] $($ErrorParts.error_description)"
-        }
-        else {
+        } else {
             $_.Exception.Message
         }
         Write-Host "Unable to get users from $($Tenant.defaultDomainName) in Refresh Token Test. The detailed error information, if returned was: $($ErrorDetails)" -ForegroundColor Red
         $ErrorCount++
-    }
-    
+    } 
 }
-
 Write-Host "Standard Graph Refresh Token Test: $TenantCount total tenants, with $ErrorCount failures"
-Write-Host "Now attempting to test the Exchange Refresh Token"
-
+Write-Host 'Now attempting to test the Exchange Refresh Token'
 # Setup some variables for use in the foreach. Pay no attention to the man behind the curtain....
 $j = 0
 $ExcErrorCount = 0
-
 foreach ($Tenant in $Tenants) {
-    Write-Progress -Activity "Checking Tenant - Exchange Refresh Token" -Status "Progress -> Checking $($Tenant.defaultDomainName)" -PercentComplete $j -CurrentOperation TenantLoop
-    If ($j -eq 0) { Write-Host "Starting Exchange Refresh Token Test" }
+    Write-Progress -Activity 'Checking Tenant - Exchange Refresh Token' -Status "Progress -> Checking $($Tenant.defaultDomainName)" -PercentComplete $j -CurrentOperation TenantLoop
+    If ($j -eq 0) { Write-Host 'Starting Exchange Refresh Token Test' }
     $j = $j + $IncrementAmount
 
     try {
-        $upn = "notRequired@required.com"
-        $tokenvalue = ConvertTo-SecureString (Get-GraphToken -AppID 'a0c73c16-a7e3-4564-9a95-2bdf47383716' -ERefreshToken $ExchangeRefreshToken -Scope 'https://outlook.office365.com/.default' -Tenantid $Tenant.defaultDomainName).Authorization -AsPlainText -Force
-        $credential = New-Object System.Management.Automation.PSCredential($upn, $tokenValue)
-        $session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri "https://ps.outlook.com/powershell-liveid?DelegatedOrg=$($tenant.defaultDomainName)&BasicAuthToOAuthConversion=true" -Credential $credential -Authentication Basic -AllowRedirection -ErrorAction Continue
-        $session = Import-PSSession $session -ea Silentlycontinue -AllowClobber -CommandName "Get-OrganizationConfig"
-        $org = Get-OrganizationConfig
+        $UPN = 'notRequired@required.com'
+        $TokenValue = ConvertTo-SecureString (Get-GraphToken -AppID 'a0c73c16-a7e3-4564-9a95-2bdf47383716' -ERefreshToken $ExchangeRefreshToken -Scope 'https://outlook.office365.com/.default' -Tenantid $Tenant.defaultDomainName).Authorization -AsPlainText -Force
+        $Credential = New-Object System.Management.Automation.PSCredential($UPN, $TokenValue)
+        $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri "https://ps.outlook.com/powershell-liveid?DelegatedOrg=$($Tenant.defaultDomainName)&BasicAuthToOAuthConversion=true" -Credential $credential -Authentication Basic -AllowRedirection -ErrorAction Continue
+        $Session = Import-PSSession $Session -ea Silentlycontinue -AllowClobber -CommandName 'Get-OrganizationConfig'
+        $Org = Get-OrganizationConfig
         $null = Get-PSSession | Remove-PSSession
-    }
-    catch {
+    } catch {
         $ErrorDetails = if ($_.ErrorDetails.Message) {
             $ErrorParts = $_.ErrorDetails.Message | ConvertFrom-Json
             "[$($ErrorParts.error)] $($ErrorParts.error_description)"
-        }
-        else {
+        } else {
             $_.Exception.Message
         }
         Write-Host "Tenant: $($Tenant.defaultDomainName)-----------------------------------------------------------------------------------------------------------" -ForegroundColor Yellow
@@ -217,9 +183,8 @@ foreach ($Tenant in $Tenants) {
         $ExcErrorCount++
     }
 }
-
 Write-Host "Exchange Refresh Token Test: $TenantCount total tenants, with $ExcErrorCount failures"
-Write-Host "All Tests Finished"
+Write-Host 'All Tests Finished'
 ```
 
 </details>
@@ -241,7 +206,9 @@ It's possible that you may have pasted the tokens incorrectly into the deploymen
 
 $ApplicationId           = '<YOUR APPLICATION ID>'
 $ApplicationSecret       = '<YOUR APPLICATION SECRET>' | ConvertTo-SecureString -AsPlainText -Force
-$TenantID                = '<YOUR TENANT ID>'
+$TenantId                = '<YOUR TENANT ID>'
+
+### STOP EDITING HERE ###
 
 ### Create credential object using UserEntered(ApplicationID) and UserEntered(ApplicationSecret) ###
 
@@ -251,7 +218,7 @@ $Credential = New-Object System.Management.Automation.PSCredential($ApplicationI
 
 $UpdateRefreshTokenParamaters = @{
     ApplicationID        = $ApplicationId
-    Tenant               = $TenantID
+    Tenant               = $TenantId
     Scopes               = 'https://api.partnercenter.microsoft.com/user_impersonation'
     Credential           = $Credential
     UseAuthorizationCode = $true
@@ -263,7 +230,7 @@ $UpdateRefreshTokenParamaters = @{
 $UpdateExchangeTokenParamaters = @{
     ApplicationID           = 'a0c73c16-a7e3-4564-9a95-2bdf47383716'
     Scopes                  = 'https://outlook.office365.com/.default'
-    Tenant                  = $TenantID
+    Tenant                  = $TenantId
     UseDeviceAuthentication = $true
 }
 
@@ -280,7 +247,7 @@ $Exchangetoken = New-PartnerAccessToken @UpdateExchangeTokenParamaters
 Write-Host "================ Secrets ================"
 Write-Host "`$ApplicationId         = $($ApplicationId)"
 Write-Host "`$ApplicationSecret     = $($ApplicationSecret)"
-Write-Host "`$TenantID              = $($TenantID)"
+Write-Host "`$TenantID              = $($TenantId)"
 Write-Host "`$RefreshToken          = $($Token.refreshtoken)" -ForegroundColor Blue
 Write-Host "`$ExchangeRefreshToken  = $($ExchangeToken.Refreshtoken)" -ForegroundColor Green
 Write-Host "================ Secrets ================"
