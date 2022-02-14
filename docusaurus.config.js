@@ -26,7 +26,7 @@ const config = {
           path: 'docs/user',
           routeBasePath: 'docs/user',
           sidebarPath: require.resolve('./sidebarsUser.js'),
-          editUrl: 'https://github.com/KelvinTegelaar/CIPP/tree/docs/',
+          editUrl: 'https://github.com/KelvinTegelaar/CIPP/tree/website/',
           showLastUpdateAuthor: true,
           showLastUpdateTime: true,
           sidebarCollapsible: true,
