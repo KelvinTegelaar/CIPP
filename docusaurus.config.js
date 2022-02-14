@@ -393,6 +393,7 @@ const config = {
         path: 'docs/dev',
         routeBasePath: 'docs/dev',
         sidebarPath: require.resolve('./sidebarsDev.js'),
+        editUrl: 'https://github.com/KelvinTegelaar/CIPP/tree/website/',
         showLastUpdateAuthor: true,
         showLastUpdateTime: true,
         sidebarCollapsible: true,
