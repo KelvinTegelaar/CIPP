@@ -401,6 +401,18 @@ const config = {
       },
     ],
     [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'troubleshooting',
+        path: 'docs/troubleshooting',
+        routeBasePath: 'troubleshooting',
+        editUrl: 'https://github.com/KelvinTegelaar/CIPP/tree/website/',
+        sidebarPath: false,
+        showLastUpdateAuthor: true,
+        showLastUpdateTime: true,
+      },
+    ],
+    [
       require.resolve("@cmfcmf/docusaurus-search-local"),
       {
         indexDocs: true,
