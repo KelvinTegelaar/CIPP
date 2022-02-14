@@ -6,7 +6,7 @@ import { useLazyExecAlertsListQuery } from 'src/store/api/security'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPage } from 'src/components/layout'
 import PropTypes from 'prop-types'
-import { faEye, faRedo } from '@fortawesome/free-solid-svg-icons'
+import { faEye, faRedo, faEdit } from '@fortawesome/free-solid-svg-icons'
 import { CippActionsOffcanvas } from 'src/components/utilities'
 import { useSelector } from 'react-redux'
 
@@ -77,7 +77,24 @@ const ListAlerts = () => {
             {
               label: 'View source alert in compliance center',
               link: `${row.RawResult.sourceMaterials[0]}`,
+              icon: <FontAwesomeIcon icon={faEye} className="me-2" />,
               color: 'info',
+            },
+            {
+              label: 'Set status to In Progress',
+              color: 'info',
+              icon: <FontAwesomeIcon icon={faEdit} className="me-2" />,
+              modal: true,
+              modalUrl: `/api/ExecSetAlertStatus?TenantFilter=${row.Tenant}&GUID=${row.GUID}&Status=InProgress`,
+              modalMessage: 'Are you sure you want to set the status to In Progress?',
+            },
+            {
+              label: 'Set Status to Resolved',
+              color: 'info',
+              icon: <FontAwesomeIcon icon={faEdit} className="me-2" />,
+              modal: true,
+              modalUrl: `/api/ExecSetAlertStatus?TenantFilter=${row.Tenant}&UserEmail=${row.GUID}&Status=Resolved`,
+              modalMessage: 'Are you sure you want to set the status to Resolved?',
             },
           ]}
           placement="end"
