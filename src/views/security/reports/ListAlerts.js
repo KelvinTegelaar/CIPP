@@ -85,7 +85,7 @@ const ListAlerts = () => {
               color: 'info',
               icon: <FontAwesomeIcon icon={faEdit} className="me-2" />,
               modal: true,
-              modalUrl: `/api/ExecSetAlertStatus?TenantFilter=${row.Tenant}&GUID=${row.GUID}&Status=InProgress`,
+              modalUrl: `/api/ExecSetSecurityAlert?TenantFilter=${row.Tenant}&GUID=${row.RawResult.id}&Status=inProgress&Vendor=${row.RawResult.vendorInformation.vendor}&provider=${row.RawResult.vendorInformation.provider}`,
               modalMessage: 'Are you sure you want to set the status to In Progress?',
             },
             {
@@ -93,7 +93,7 @@ const ListAlerts = () => {
               color: 'info',
               icon: <FontAwesomeIcon icon={faEdit} className="me-2" />,
               modal: true,
-              modalUrl: `/api/ExecSetAlertStatus?TenantFilter=${row.Tenant}&UserEmail=${row.GUID}&Status=Resolved`,
+              modalUrl: `/api/ExecSetSecurityAlert?TenantFilter=${row.Tenant}&GUID=${row.RawResult.id}&Status=resolved&Vendor=${row.RawResult.vendorInformation.vendor}&provider=${row.RawResult.vendorInformation.provider}`,
               modalMessage: 'Are you sure you want to set the status to Resolved?',
             },
           ]}
