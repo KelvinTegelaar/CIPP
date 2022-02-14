@@ -6,31 +6,31 @@ const columns = [
   {
     name: 'User Prinicipal Name',
     selector: (row) => row['UPN'],
-    sort: true,
+    sortable: true,
     exportSelector: 'UPN',
   },
   {
     name: 'Last Active',
     selector: (row) => row['LastActive'],
-    sort: true,
+    sortable: true,
     exportSelector: 'LastActive',
   },
   {
     name: 'Meeting Count',
     selector: (row) => row['MeetingCount'],
-    sort: true,
+    sortable: true,
     exportSelector: 'MeetingCount',
   },
   {
     name: 'Call Count',
     selector: (row) => row['CallCount'],
-    sort: true,
+    sortable: true,
     exportSelector: 'CallCount',
   },
   {
     name: 'Chat Count',
     selector: (row) => row['TeamsChat'],
-    sort: true,
+    sortable: true,
     exportSelector: 'TeamsChat',
   },
 ]

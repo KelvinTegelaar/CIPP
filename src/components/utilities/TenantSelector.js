@@ -5,10 +5,10 @@ import PropTypes from 'prop-types'
 import { useListTenantsQuery } from 'src/store/api/tenants'
 import { setCurrentTenant } from 'src/store/features/app'
 
-const TenantSelector = ({ action }) => {
+const TenantSelector = ({ action, showAllTenantSelector = false }) => {
   const dispatch = useDispatch()
   const currentTenant = useSelector((state) => state.app.currentTenant)
-  const { data: tenants = [], isLoading, error } = useListTenantsQuery()
+  const { data: tenants = [], isLoading, error } = useListTenantsQuery({ showAllTenantSelector })
 
   const activated = (customerId) => {
     const selectedTenant = tenants.filter((t) => {
@@ -46,6 +46,7 @@ const TenantSelector = ({ action }) => {
 
 TenantSelector.propTypes = {
   action: PropTypes.func,
+  showAllTenantSelector: PropTypes.bool,
 }
 
 export default TenantSelector
