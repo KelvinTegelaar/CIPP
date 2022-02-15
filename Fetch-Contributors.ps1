@@ -25,6 +25,4 @@ if (!(Test-Path $OutputDirectory)) {
 
 $JSONFile = Join-Path -Path $OutputDirectory -ChildPath 'contributors.json'
     
-if (!(Test-Path $JSONFile)) {
-    $Contributors | ConvertTo-Json | Out-File -FilePath $JSONFile
-}
+$Contributors | ConvertTo-Json | Out-File -FilePath $JSONFile
