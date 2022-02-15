@@ -390,11 +390,11 @@ const config = {
             from: '/CIPPSettings/BackendAccess/',
           },
           {
-            to: '/faq/',
+            to: '/docs/general/faq/',
             from: '/FAQ/FAQ/',
           },
           {
-            to: '/docs/general/faq',
+            to: '/docs/general/faq/',
             from: '/faq/',
           },
           {
