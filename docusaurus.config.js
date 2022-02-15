@@ -310,7 +310,7 @@ const config = {
             from: '/GettingStarted/Roles/',
           },
           {
-            to: '/faq/',
+            to: '/docs/general/faq/',
             from: '/GettingStarted/FAQ/',
           },
           {
