@@ -85,7 +85,7 @@ const DefenderState = () => {
         reportName: `${tenant?.defaultDomainName}-DefenderStatus-List`,
         path: '/api/ListDefenderState',
         columns,
-        params: { TenantFilter: tenant?.defaultDomainName },
+        params: { TenantFilter: tenant?.customerId },
       }}
     />
   )

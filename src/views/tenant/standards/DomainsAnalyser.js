@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import { CButton, CSpinner } from '@coreui/react'
 import { CellBadge, cellProgressBarFormatter } from 'src/components/tables'
 import { CippOffcanvas, ModalService } from 'src/components/utilities'
-import IndividualDomainCheck from 'src/views/tenant/standards/IndividualDomain'
+import { IndividualDomainCheck } from 'src/views/tenant/standards/IndividualDomain'
 import { CippPageList } from 'src/components/layout'
 import { useExecDomainsAnalyserMutation } from 'src/store/api/reports'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -48,18 +49,36 @@ checkDomain.propTypes = {
 const DomainsAnalyser = () => {
   const [individualDomainResults, setIndividualDomainResults] = useState()
   const [domainCheckVisible, setDomainCheckVisible] = useState(false)
+  const currentTenant = useSelector((state) => state.app.currentTenant)
 
   const handleMoreInfo = ({ row }) => {
     setIndividualDomainResults(checkDomain(row.Domain))
     setDomainCheckVisible(true)
   }
 
+  const omitTenant = () => {
+    if (currentTenant.defaultDomainName === 'AllTenants') {
+      return false
+    } else {
+      return true
+    }
+  }
+
   const columns = [
     {
       name: 'Domain',
       selector: (row) => row['Domain'],
-      sort: true,
+      sortable: true,
       exportSelector: 'Domain',
+      minWidth: '300px',
+    },
+    {
+      name: 'Tenant',
+      selector: (row) => row['Tenant'],
+      sortable: true,
+      exportSelector: 'Tenant',
+      minWidth: '300px',
+      omit: omitTenant(),
     },
     {
       name: 'Security Score',
@@ -70,7 +89,7 @@ const DomainsAnalyser = () => {
           return row['ScorePercentage']
         }
       },
-      sort: true,
+      sortable: true,
       exportSelector: 'ScorePercentage',
       cell: cellProgressBarFormatter(),
     },
@@ -78,7 +97,7 @@ const DomainsAnalyser = () => {
       name: 'Mail Provider',
       selector: (row) => row['MailProvider'],
       exportSelector: 'MailProvider',
-      sort: true,
+      sortable: true,
       cell: (row, index, column) => {
         const cell = column.selector(row)
         return <CellBadge label={cell} color={cell === 'Unknown' ? 'warning' : 'info'} />
@@ -88,17 +107,17 @@ const DomainsAnalyser = () => {
       name: 'SPF Pass Test',
       selector: (row) => row['SPFPassTest'],
       exportSelector: 'SPFPassTest',
-      sort: true,
+      sortable: true,
       cell: (row, index, column) => {
         const cell = column.selector(row)
         if (cell === true) {
           if (row.SPFPassAll === true) {
             return <CellBadge color="success" label="SPF Pass" />
           } else {
-            return <CellBadge color="danger" label="SPF Soft Fail" />
+            return <CellBadge color="danger" label="SPF Fail" />
           }
         } else if (cell === false) {
-          return <CellBadge color="danger" label="SPF Fail" />
+          return <CellBadge color="danger" label="SPF Missing Expected" />
         }
         return <CellBadge color="info" label="No Data" />
       },
@@ -107,7 +126,7 @@ const DomainsAnalyser = () => {
       name: 'MX Pass Test',
       selector: (row) => row['MXPassTest'],
       exportSelector: 'MXPassTest',
-      sort: true,
+      sortable: true,
       cell: (row, index, column) => {
         const cell = column.selector(row)
         if (cell === true) {
@@ -122,7 +141,7 @@ const DomainsAnalyser = () => {
       name: 'DMARC Present',
       selector: (row) => row['DMARCPresent'],
       exportSelector: 'DMARCPresent',
-      sort: true,
+      sortable: true,
       cell: (row, index, column) => {
         const cell = column.selector(row)
 
@@ -130,7 +149,7 @@ const DomainsAnalyser = () => {
           if (row.DMARCReportingActive === true) {
             return <CellBadge color="success">DMARC Present</CellBadge>
           }
-          return <CellBadge color="warning">DMARC Present No Reporting Data</CellBadge>
+          return <CellBadge color="warning">DMARC No Reporting</CellBadge>
         } else if (cell === false) {
           return <CellBadge color="danger">DMARC Missing</CellBadge>
         }
@@ -141,7 +160,7 @@ const DomainsAnalyser = () => {
       name: 'DMARC Action Policy',
       selector: (row) => row['DMARCActionPolicy'],
       exportSelector: 'DMARCActionPolicy',
-      sort: true,
+      sortable: true,
       cell: (row, index, column) => {
         const cell = column.selector(row)
 
@@ -159,7 +178,7 @@ const DomainsAnalyser = () => {
       name: 'DMARC % Pass',
       selector: (row) => row['DMARCPercentagePass'],
       exportSelector: 'DMARCPercentagePass',
-      sort: true,
+      sortable: true,
       cell: (row, index, column) => {
         const cell = column.selector(row)
 
@@ -176,7 +195,7 @@ const DomainsAnalyser = () => {
       name: 'DNSSec Enabled',
       selector: (row) => row['DNSSECPresent'],
       exportSelector: 'DNSSECPresent',
-      sort: true,
+      sortable: true,
       cell: (row, index, column) => {
         const cell = column.selector(row)
 
@@ -193,7 +212,7 @@ const DomainsAnalyser = () => {
       name: 'DKIM Enabled',
       selector: (row) => row['DKIMEnabled'],
       exportSelector: 'DKIMEnabled',
-      sort: true,
+      sortable: true,
       cell: (row, index, column) => {
         const cell = column.selector(row)
         if (cell === true) {
@@ -209,7 +228,7 @@ const DomainsAnalyser = () => {
       name: 'More Info',
       dataField: 'moreInfo',
       isDummyField: true,
-      sort: true,
+      sortable: true,
       cell: (row) => {
         return (
           <CButton size="sm" color="link" onClick={() => handleMoreInfo({ row })}>
@@ -222,10 +241,12 @@ const DomainsAnalyser = () => {
 
   return (
     <CippPageList
-      title="Domain Analyser"
-      tenantSelector={false}
+      title="Domains Analyser"
+      tenantSelector={true}
+      showAllTenantSelector={true}
       datatable={{
         path: '/api/DomainAnalyser_List',
+        params: { tenantFilter: currentTenant.defaultDomainName },
         columns,
         reportName: 'Domains-Analyzer',
         tableProps: {

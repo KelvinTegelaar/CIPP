@@ -1,4 +1,5 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { ExportCsvButton, ExportPDFButton } from 'src/components/buttons'
 import { CSpinner, CFormInput } from '@coreui/react'
 import DataTable, { createTheme } from 'react-data-table-component'
@@ -28,6 +29,34 @@ FilterComponent.propTypes = {
   onClear: PropTypes.func,
 }
 
+const customSort = (rows, selector, direction) => {
+  return rows.sort((a, b) => {
+    // use the selector to resolve your field names by passing the sort comparitors
+    let aField
+    let bField
+    if (typeof selector(a) === 'string') {
+      aField = selector(a).toLowerCase()
+    } else {
+      aField = selector(a)
+    }
+    if (typeof selector(b) === 'string') {
+      bField = selector(b).toLowerCase()
+    } else {
+      bField = selector(b)
+    }
+
+    let comparison = 0
+
+    if (aField > bField) {
+      comparison = 1
+    } else if (aField < bField) {
+      comparison = -1
+    }
+
+    return direction === 'desc' ? comparison * -1 : comparison
+  })
+}
+
 export default function CippTable({
   data,
   isFetching = false,
@@ -49,6 +78,7 @@ export default function CippTable({
     expandableRowsHideExpander,
     expandOnRowClicked,
     selectableRows,
+    sortFunction = customSort,
     onSelectedRowsChange,
     highlightOnHover = true,
     disableDefaultActions = false,
@@ -151,7 +181,7 @@ export default function CippTable({
     disableCSVExport,
     actions,
   ])
-
+  const tablePageSize = useSelector((state) => state.app.tablePageSize)
   return (
     <div className="ms-n3 me-n3 cipp-tablewrapper">
       {!isFetching && error && <span>Error loading data</span>}
@@ -179,7 +209,8 @@ export default function CippTable({
             expandOnRowClicked={expandOnRowClicked}
             defaultSortAsc
             defaultSortFieldId={1}
-            paginationPerPage={25}
+            sortFunction={customSort}
+            paginationPerPage={tablePageSize}
             progressPending={isFetching}
             progressComponent={<CSpinner color="info" component="div" />}
             paginationRowsPerPageOptions={[25, 50, 100, 200, 500]}

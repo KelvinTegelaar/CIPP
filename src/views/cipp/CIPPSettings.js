@@ -19,7 +19,6 @@ import {
   CListGroupItem,
   CBadge,
   CLink,
-  CAlert,
   CSpinner,
 } from '@coreui/react'
 import {
@@ -89,16 +88,18 @@ export default CIPPSettings
 const checkAccessColumns = [
   {
     name: 'Tenant Domain',
-    selector: (row) => row['tenantDomain'],
+    selector: (row) => row['TenantName'],
+    grow: 0,
   },
   {
     name: 'Result',
-    selector: (row) => row['result'],
+    selector: (row) => row['Status'],
+    grow: 1,
   },
 ]
 
 const GeneralSettings = () => {
-  const { data: tenants = [] } = useListTenantsQuery()
+  const { data: tenants = [] } = useListTenantsQuery({ AllTenantSelector: false })
   const [checkPermissions, permissionsResult] = useLazyExecPermissionsAccessCheckQuery()
   const [clearCache, clearCacheResult] = useLazyExecClearCacheQuery()
   const [checkAccess, accessCheckResult] = useLazyExecTenantsAccessCheckQuery()
@@ -127,8 +128,6 @@ const GeneralSettings = () => {
   }
 
   const handleCheckAccess = () => {
-    // convert customerId into tenant domain
-    // domain is not unique or it would be used as value
     const mapped = tenants.reduce(
       (current, { customerId, ...rest }) => ({
         ...current,
@@ -136,14 +135,18 @@ const GeneralSettings = () => {
       }),
       {},
     )
-    const tenantDomains = selectedTenants.map((customerId) => mapped[customerId].defaultDomainName)
-
-    checkAccess({ tenantDomains })
+    const AllTenantSelector = selectedTenants.map(
+      (customerId) => mapped[customerId].defaultDomainName,
+    )
+    checkAccess({ tenantDomains: AllTenantSelector })
   }
 
   const handleClearCache = useConfirmModal({
     body: <div>Are you sure you want to clear the cache?</div>,
-    onConfirm: () => clearCache(),
+    onConfirm: () => {
+      clearCache()
+      localStorage.clear()
+    },
   })
 
   const tableProps = {
@@ -171,9 +174,17 @@ const GeneralSettings = () => {
                 )}
                 Run Permissions Check
               </CButton>
-              {permissionsResult.status === 'fulfilled' && (
-                // @todo make this pretty after API is fixed
-                <div>{permissionsResult.data.map((result) => result)}</div>
+              {permissionsResult.isSuccess && (
+                <div>
+                  {permissionsResult.data.Results.MissingPermissions
+                    ? 'Your Secure Application Model is missing the following delegated permissions:'
+                    : permissionsResult.data.Results}
+                  <CListGroup flush>
+                    {permissionsResult.data.Results?.MissingPermissions?.map((r, index) => (
+                      <CListGroupItem key={index}>{r}</CListGroupItem>
+                    ))}
+                  </CListGroup>
+                </div>
               )}
             </CCardBody>
           </CCard>
@@ -184,8 +195,9 @@ const GeneralSettings = () => {
               <CCardTitle>Clear Cache</CCardTitle>
             </CCardHeader>
             <CCardBody>
-              Click the button below to clear the tenant cache file, the Best Practice Analyser
-              cache and the Domain Analyser Cache. <br />
+              Click the button below to clear the all caches the application uses. This includes the
+              Best Practice Analyser, Tenant Cache, Domain Analyser, and personal settings such as
+              theme and usage location <br />
               <CButton
                 onClick={() => handleClearCache()}
                 disabled={clearCacheResult.isFetching}
@@ -234,9 +246,10 @@ const GeneralSettings = () => {
               </CButton>
               {accessCheckResult.isSuccess && (
                 <CippTable
+                  reportName="none"
                   columns={checkAccessColumns}
                   tableProps={tableProps}
-                  data={accessCheckResult.data}
+                  data={accessCheckResult.data.Results}
                 />
               )}
             </CCardBody>
@@ -303,14 +316,14 @@ const ExcludedTenantsSettings = () => {
   return (
     <>
       {removeExcludeTenantResult.isSuccess && (
-        <CAlert color="success" dismissible>
+        <CCallout color="success" dismissible>
           {removeExcludeTenantResult.data?.Results}
-        </CAlert>
+        </CCallout>
       )}
       {addExcludeTenantResult.isSuccess && (
-        <CAlert color="success" dismissible>
+        <CCallout color="success" dismissible>
           {addExcludeTenantResult.data?.Results}
-        </CAlert>
+        </CCallout>
       )}
       <CRow className="mb-3">
         <CCol md={12}>
@@ -625,14 +638,14 @@ const DNSSettings = () => {
               ))}
             </CButtonGroup>
             {(editDnsConfigResult.isSuccess || editDnsConfigResult.isError) && (
-              <CAlert
+              <CCallout
                 color={editDnsConfigResult.isSuccess ? 'success' : 'danger'}
                 visible={alertVisible}
               >
                 {editDnsConfigResult.isSuccess
                   ? editDnsConfigResult.data.Results
                   : 'Error setting resolver'}
-              </CAlert>
+              </CCallout>
             )}
           </CCardBody>
         </CCard>

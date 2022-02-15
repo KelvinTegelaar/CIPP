@@ -63,55 +63,68 @@ export default function UserSigninLogs({ userId, tenantDomain, className = null 
     {
       name: 'Date',
       selector: (row) => row['Date'],
+      exportSelector: 'Date',
     },
     {
       name: 'Application',
       selector: (row) => row['Application'],
+      exportSelector: 'Application',
     },
     {
       name: 'Login Status',
       selector: (row) => row['LoginStatus'],
+      exportSelector: 'LoginStatus',
     },
     {
       name: 'Conditional Access Status',
       selector: (row) => row['ConditionalAccessStatus'],
+      exportSelector: 'ConditionalAccessStatus',
     },
     {
       name: 'Overall Login Status',
       selector: (row) => row['OverallLoginStatus'],
+      exportSelector: 'OverallLoginStatus',
     },
     {
       name: 'IP Address',
       selector: (row) => row['IPAddress'],
+      exportSelector: 'IPAddress',
     },
     {
       name: 'Town',
       selector: (row) => row['Town'],
+      exportSelector: 'Town',
     },
     {
       name: 'State',
       selector: (row) => row['State'],
+      exportSelector: 'State',
     },
     {
       name: 'Country',
       selector: (row) => row['Country'],
+      exportSelector: 'Country',
     },
     {
       name: 'Device',
       selector: (row) => row['Device'],
+      exportSelector: 'Device',
     },
     {
       name: 'Device Compliant',
       selector: (row) => row['DeviceCompliant'],
       cell: cellBooleanFormatter,
+      exportSelector: 'DeviceCompliant',
     },
     {
       name: 'OS',
       selector: (row) => row['OS'],
+      exportSelector: 'OS',
     },
     {
       name: 'Browser',
       selector: (row) => row['Browser'],
+      exportSelector: 'Browser',
     },
     {
       name: 'Applied CAPs',

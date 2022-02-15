@@ -21,7 +21,6 @@ const columns = [
     selector: (row) => row['PerUser'],
     name: 'Per user MFA Status',
     sortable: true,
-    cell: cellBooleanFormatter(),
     exportSelector: 'PerUser',
   },
   {
@@ -35,7 +34,6 @@ const columns = [
     selector: (row) => row['CoveredByCA'],
     name: 'Enforced via Conditional Access',
     sortable: true,
-    cell: cellBooleanFormatter(),
     exportSelector: 'CoveredByCA',
   },
   {
@@ -44,6 +42,23 @@ const columns = [
     sortable: true,
     cell: cellBooleanFormatter(),
     exportSelector: 'CoveredBySD',
+  },
+]
+
+const conditionalRowStyles = [
+  {
+    when: (row) =>
+      row.AccountEnabled &&
+      row.PerUser === 'Disabled' &&
+      !row.MFARegistration &&
+      row.CoveredByCA === 'None' &&
+      !row.CoveredBySD,
+    style: {
+      //backgroundColor: 'var(--cui-danger)',
+      //border: '2px solid var(--cui-warning)',
+      //color: 'var(--cui-warning)',
+    },
+    classNames: ['no-mfa'],
   },
 ]
 
@@ -58,6 +73,9 @@ const MFAList = () => {
         path: '/api/ListMFAUsers',
         reportName: `${tenant?.defaultDomainName}-MFAReport-List`,
         params: { TenantFilter: tenant?.defaultDomainName },
+        tableProps: {
+          conditionalRowStyles: conditionalRowStyles,
+        },
       }}
     />
   )

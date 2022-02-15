@@ -8,10 +8,12 @@ export default function TeamMembers({ data, className = null, isFetching, error,
     {
       name: 'Display Name',
       selector: (row) => row['displayName'],
+      sortable: true,
     },
     {
       name: 'Mail',
       selector: (row) => row['mail'],
+      sortable: true,
     },
   ]
 

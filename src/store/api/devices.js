@@ -13,9 +13,9 @@ export const devicesApi = baseApi.injectEndpoints({
       }),
     }),
     listDevicePolicies: builder.query({
-      query: ({ PolicyID, tenantDomain }) => ({
+      query: ({ PolicyID, tenantDomain, urlName }) => ({
         path: '/api/ListIntunePolicy',
-        params: { ID: PolicyID, tenantFilter: tenantDomain },
+        params: { ID: PolicyID, tenantFilter: tenantDomain, URLName: urlName },
       }),
     }),
   }),
