@@ -46,7 +46,7 @@ const config = {
           blogTitle: 'Releases',
           blogDescription: 'CIPP release notes and updates...',
           blogSidebarTitle: 'Releases',
-          blogSidebarCount: 10,
+          blogSidebarCount: 0,
           path: 'releases',
           postsPerPage: 'ALL',
           archiveBasePath: null,

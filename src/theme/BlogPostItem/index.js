@@ -66,55 +66,57 @@ function BlogPostItem(props) {
   const TitleHeading = isBlogPostPage ? 'h1' : 'h2';
   return (
     <article
-      className={clsx(!isBlogPostPage ? 'margin-bottom--md' : undefined, isBlogPostPage ? undefined : 'col col--6 release-item', )}
+      className={clsx(isBlogPostPage ? undefined : 'release-item', )}
       itemProp="blogPost"
       itemScope
       itemType="http://schema.org/BlogPosting">
         <div className={clsx('blogPostContent')}>
-          <header>
-            <TitleHeading className={styles.blogPostTitle} itemProp="headline">
-              {isBlogPostPage ? (
-                title
-              ) : (
-                <Link itemProp="url" to={permalink}>
-                  {title}
-                </Link>
-              )}
-            </TitleHeading>
-            <div className={clsx(styles.blogPostData, 'margin-vert--md')}>
-              <time dateTime={date} itemProp="datePublished">
-                {formattedDate}
-              </time>
+          <div className={clsx(isBlogPostPage ? undefined : 'card__header')}>
+            <header>
+              <TitleHeading className={styles.blogPostTitle} itemProp="headline">
+                {isBlogPostPage ? (
+                  title
+                ) : (
+                  <Link itemProp="url" to={permalink}>
+                    {title}
+                  </Link>
+                )}
+              </TitleHeading>
+              <div className={clsx(styles.blogPostData, 'margin-vert--md')}>
+                <time dateTime={date} itemProp="datePublished">
+                  {formattedDate}
+                </time>
 
-              {typeof readingTime !== 'undefined' && (
-                <>
-                  {' · '}
-                  {readingTimePlural(readingTime)}
-                </>
-              )}
+                {typeof readingTime !== 'undefined' && (
+                  <>
+                    {' · '}
+                    {readingTimePlural(readingTime)}
+                  </>
+                )}
+              </div>
+              <BlogPostAuthors authors={authors} assets={assets} />
+            </header>
+
+            {image && (
+              <meta
+                itemProp="image"
+                content={withBaseUrl(image, {
+                  absolute: true,
+                })}
+              />
+            )}
+
+            <div // This ID is used for the feed generation to locate the main content
+              id={isBlogPostPage ? blogPostContainerID : undefined}
+              className="markdown"
+              itemProp="articleBody">
+              <MDXProvider components={MDXComponents}>{children}</MDXProvider>
             </div>
-            <BlogPostAuthors authors={authors} assets={assets} />
-          </header>
-
-          {image && (
-            <meta
-              itemProp="image"
-              content={withBaseUrl(image, {
-                absolute: true,
-              })}
-            />
-          )}
-
-          <div // This ID is used for the feed generation to locate the main content
-            id={isBlogPostPage ? blogPostContainerID : undefined}
-            className="markdown"
-            itemProp="articleBody">
-            <MDXProvider components={MDXComponents}>{children}</MDXProvider>
           </div>
 
           {(tagsExists || truncated) && (
             <footer
-              className={clsx('row', isBlogPostPage ? 'docusaurus-mt-lg': undefined, {
+              className={clsx('row', isBlogPostPage ? 'ddocusaurus-md-lg': 'card__footer', {
                 [styles.blogPostDetailsFull]: isBlogPostPage,
               })}>
               {tagsExists && (
@@ -144,7 +146,7 @@ function BlogPostItem(props) {
                       <Translate
                         id="theme.blog.post.readMore"
                         description="The label used in blog post item excerpts to link to full blog posts">
-                        Release Notes
+                        Read More
                       </Translate>
                     </b>
                   </Link>
