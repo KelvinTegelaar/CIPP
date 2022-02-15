@@ -62,7 +62,7 @@ const config = {
         },
       }),
     ],
-    /*[
+    [
       'redocusaurus',
       {
         specs: [
@@ -72,7 +72,7 @@ const config = {
           },
         ],
       },
-    ],*/
+    ],
   ],
 
   themeConfig:
@@ -121,10 +121,10 @@ const config = {
                 label: 'Developer',
                 docsPluginId: 'dev',
               },
-              /*{
+              {
                 label: 'API',
                 to: '/docs/api/',
-              },*/
+              },
               {
                 type: 'doc',
                 docId: 'knownbugs',
@@ -227,10 +227,10 @@ const config = {
                 label: 'Developer Guide',
                 to: '/docs/dev/',
               },
-              /*{
+              {
                 label: 'API Documentation',
                 to: '/docs/api/',
-              },*/
+              },
               {
                 label: 'Frequently Asked Questions',
                 to: '/faq/',
