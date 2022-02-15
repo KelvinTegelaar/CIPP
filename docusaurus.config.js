@@ -46,7 +46,7 @@ const config = {
           blogTitle: 'Releases',
           blogDescription: 'CIPP release notes and updates...',
           blogSidebarTitle: 'Releases',
-          blogSidebarCount: 10,
+          blogSidebarCount: 0,
           path: 'releases',
           postsPerPage: 'ALL',
           archiveBasePath: null,
@@ -126,8 +126,10 @@ const config = {
                 to: '/docs/api/',
               },*/
               {
+                type: 'doc',
+                docId: 'knownbugs',
                 label: 'Known Bugs',
-                to: '/bugs/',
+                docsPluginId: 'general',
               }
             ],
           },
@@ -149,12 +151,20 @@ const config = {
                 to: 'contributing',
               },
               {
+                type: 'doc',
+                docId: 'faq',
                 label: 'FAQ',
-                to: '/faq/',
+                docsPluginId: 'general',
               },
             ],
           },
-          { to: 'troubleshooting', label: 'Troubleshooting', position: 'left' },
+          { 
+            type: 'doc',
+            docId: 'troubleshooting',
+            label: 'Troubleshooting',
+            position: 'left',
+            docsPluginId: 'general',
+          },
           { 
             type: 'dropdown',
             position: 'left',
@@ -227,7 +237,7 @@ const config = {
               },
               {
                 label: 'Known Bugs',
-                to: '/bugs/',
+                to: '/docs/general/knownbugs/',
               },
             ],
           },
@@ -300,7 +310,7 @@ const config = {
             from: '/GettingStarted/Roles/',
           },
           {
-            to: '/faq/',
+            to: '/docs/general/faq/',
             from: '/GettingStarted/FAQ/',
           },
           {
@@ -380,9 +390,21 @@ const config = {
             from: '/CIPPSettings/BackendAccess/',
           },
           {
-            to: '/faq/',
+            to: '/docs/general/faq/',
             from: '/FAQ/FAQ/',
           },
+          {
+            to: '/docs/general/faq/',
+            from: '/faq/',
+          },
+          {
+            to: '/docs/general/troubleshooting/',
+            from: '/troubleshooting/',
+          },
+          {
+            to: '/docs/general/knownbugs/',
+            from: '/knownbugs/',
+          }
         ]
       }
     ],
@@ -403,13 +425,15 @@ const config = {
     [
       '@docusaurus/plugin-content-docs',
       {
-        id: 'troubleshooting',
-        path: 'docs/troubleshooting',
-        routeBasePath: 'troubleshooting',
+        id: 'general',
+        path: 'docs/general',
+        routeBasePath: 'docs/general',
         editUrl: 'https://github.com/KelvinTegelaar/CIPP/tree/website/',
-        sidebarPath: false,
+        sidebarPath: require.resolve('./sidebarsGeneral.js'),
         showLastUpdateAuthor: true,
         showLastUpdateTime: true,
+        sidebarCollapsible: true,
+        sidebarCollapsed: false,
       },
     ],
     [

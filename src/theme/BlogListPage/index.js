@@ -32,14 +32,18 @@ function BlogListPage(props) {
       }}
       sidebar={sidebar}>
       {items.map(({content: BlogPostContent}) => (
-        <BlogPostItem
-          key={BlogPostContent.metadata.permalink}
-          frontMatter={BlogPostContent.frontMatter}
-          assets={BlogPostContent.assets}
-          metadata={BlogPostContent.metadata}
-          truncated={BlogPostContent.metadata.truncated}>
-          <BlogPostContent />
-        </BlogPostItem>
+        <div className='col col--4 margin-vert--md'>
+          <div className='card card--full-height'>
+            <BlogPostItem
+              key={BlogPostContent.metadata.permalink}
+              frontMatter={BlogPostContent.frontMatter}
+              assets={BlogPostContent.assets}
+              metadata={BlogPostContent.metadata}
+              truncated={BlogPostContent.metadata.truncated}>
+              <BlogPostContent />
+            </BlogPostItem>
+          </div>
+        </div>
       ))}
       <BlogListPaginator metadata={metadata} />
     </BlogLayout>

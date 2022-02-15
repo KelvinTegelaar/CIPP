@@ -506,6 +506,11 @@ html[data-theme='dark'] div[class^='announcementBar_'] {
 
 /* Releases */
 
+.releases-list {
+  align-items: center;
+  justify-content: center;
+}
+
 .pagination-nav {
   width: 100%;
 }
@@ -517,23 +522,24 @@ html[data-theme='dark'] div[class^='announcementBar_'] {
 
 .release-item {
   display: block;
+  height: 100%;
+  padding: 0.25rem;
   text-align: center;
   
   .blogPostContent {
     background-color: var(--ifm-card-background-color);
-    box-shadow: 1px 1px 15px rgba(0, 0, 0, 0.25);
     height: 100%;
     padding-bottom: 40px !important;
     position: relative;
   }
 
   h2 {
-    font-size: 1.25 rem;
+    font-size: 1.75rem;
     margin-bottom: 0;
   }
 
   .version-subtitle {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
   }
 
   footer {
