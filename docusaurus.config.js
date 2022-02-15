@@ -237,7 +237,7 @@ const config = {
               },
               {
                 label: 'Known Bugs',
-                to: '/bugs/',
+                to: '/docs/general/knownbugs/',
               },
             ],
           },
