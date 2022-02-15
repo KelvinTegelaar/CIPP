@@ -199,6 +199,12 @@ It's possible that you may have pasted the tokens incorrectly into the deploymen
 
 <details><summary>Refresh Token Script</summary>
 
+:::caution PowerShell Version
+
+This script requires the PartnerCenter module to generate the Secure Application Model tokens. At the moment it is only compatible with PowerShell 5.1.
+
+:::
+
 ```powershell title="Update-SecureApplicationModelTokens.ps1"
 ### User Input Variables ###
 
@@ -246,7 +252,7 @@ $Exchangetoken = New-PartnerAccessToken @UpdateExchangeTokenParamaters
 
 Write-Host "================ Secrets ================"
 Write-Host "`$ApplicationId         = $($ApplicationId)"
-Write-Host "`$ApplicationSecret     = $($ApplicationSecret)"
+Write-Host "`$ApplicationSecret     = $($ApplicationSecret | ConvertFrom-SecureString -AsPlainText -Force)"
 Write-Host "`$TenantID              = $($TenantId)"
 Write-Host "`$RefreshToken          = $($Token.refreshtoken)" -ForegroundColor Blue
 Write-Host "`$ExchangeRefreshToken  = $($ExchangeToken.Refreshtoken)" -ForegroundColor Green
