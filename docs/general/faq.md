@@ -1,5 +1,10 @@
+---
+id: faq
+title: Frequently Asked Questions
+description: Frequently asked questions regarding CIPP.
+slug: /faq
+---
 <!-- vale Microsoft.FirstPerson = NO -->
-# Frequently Asked Questions
 
 On this page you can find a list of frequently asked questions about the CyberDrain Improved Partner Portal (CIPP). If you're having specific issues with CIPP please also check the [Troubleshooting](/troubleshooting) page.
 

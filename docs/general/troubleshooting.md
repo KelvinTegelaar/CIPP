@@ -1,4 +1,9 @@
-# Troubleshooting
+---
+id: troubleshooting
+title: Troubleshooting
+description: Troubleshooting information for issues with CIPP.
+slug: /troubleshooting
+---
 
 Below are some common issues that users have had from initial deployment, updating and general usage.
 

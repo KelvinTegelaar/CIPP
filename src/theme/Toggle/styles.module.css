@@ -28,8 +28,8 @@
 }
 
 .toggleTrack {
-  width: 50px;
-  height: 24px;
+  width: 60px;
+  height: 30px;
   border-radius: 0;
   background-color: #4d4d4d;
   transition: all 0.2s ease;
@@ -37,12 +37,12 @@
 
 .toggleTrackCheck {
   position: absolute;
-  width: 14px;
+  width: 20px;
   height: 10px;
   top: 0;
   bottom: 0;
   margin: auto 0;
-  left: 8px;
+  left: 10px;
   opacity: 0;
   transition: opacity 0.25s ease;
 }
@@ -74,8 +74,8 @@
   position: absolute;
   top: 1px;
   left: 1px;
-  width: 22px;
-  height: 22px;
+  width: 29px;
+  height: 29px;
   border: 1px solid #4d4d4d;
   border-radius: 0;
   background-color: #fafafa;
@@ -90,7 +90,7 @@
 /* stylelint-disable-next-line no-descending-specificity */
 .toggleChecked .toggleTrackThumb,
 [data-theme='dark'] .toggle .toggleTrackThumb {
-  left: 27px;
+  left: 30px;
 }
 
 .toggle:active:not(.toggleDisabled) .toggleTrackThumb {
