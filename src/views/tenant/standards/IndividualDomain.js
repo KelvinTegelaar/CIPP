@@ -620,7 +620,20 @@ const SPFResultsCard = ({ domain, spfOverride }) => {
               </>
             )}
             {recommendations.length > 0 && (
-              <OffcanvasListSection title="Recommendations" items={recommendations} />
+              <>
+                <OffcanvasListSection title="Recommendations" items={recommendations} />
+                {data?.RecommendedRecord && (
+                  <>
+                    <h4 className="my-3">Recommended Record</h4>
+                    <CippCodeBlock
+                      language="text"
+                      code={data?.RecommendedRecord}
+                      showLineNumbers={false}
+                      wrapLongLines={true}
+                    />
+                  </>
+                )}
+              </>
             )}
             {includes.length > 0 && <OffcanvasListSection title="Includes" items={includes} />}
             {ipAddresses.length > 0 && (
