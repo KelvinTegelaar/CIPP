@@ -6,7 +6,7 @@ import { useLazyExecAlertsListQuery } from 'src/store/api/security'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPage } from 'src/components/layout'
 import PropTypes from 'prop-types'
-import { faEye, faRedo, faEdit } from '@fortawesome/free-solid-svg-icons'
+import { faEye, faRedo, faEdit, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { CippActionsOffcanvas } from 'src/components/utilities'
 import { useSelector } from 'react-redux'
 
@@ -91,7 +91,7 @@ const ListAlerts = () => {
             {
               label: 'Set Status to Resolved',
               color: 'info',
-              icon: <FontAwesomeIcon icon={faEdit} className="me-2" />,
+              icon: <FontAwesomeIcon icon={faCheck} className="me-2" />,
               modal: true,
               modalUrl: `/api/ExecSetSecurityAlert?TenantFilter=${row.Tenant}&GUID=${row.RawResult.id}&Status=resolved&Vendor=${row.RawResult.vendorInformation.vendor}&provider=${row.RawResult.vendorInformation.provider}`,
               modalMessage: 'Are you sure you want to set the status to Resolved?',
