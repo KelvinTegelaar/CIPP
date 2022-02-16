@@ -42,8 +42,10 @@ import {
   faCog,
   faCheckCircle,
   faCompressAlt,
+  faEraser,
   faExclamationTriangle,
   faExpandAlt,
+  faInfoCircle,
   faTimesCircle,
   faEllipsisV,
   faSearch,
@@ -128,6 +130,13 @@ export function IndividualDomainCheck({
     setEnableHttps(e.target.checked)
   }
 
+  const handleClear = () => {
+    setDomain('')
+    setHttpsOverride('')
+    setDkimOverride('')
+    setSpfOverride('')
+  }
+
   return (
     <CippMasonry>
       <CippMasonryItem size={masonrySize}>
@@ -164,18 +173,22 @@ export function IndividualDomainCheck({
                                 disabled={readOnly}
                                 placeholder="Domain Name"
                                 area-describedby="domain"
+                                autoCapitalize="none"
+                                autoCorrect="off"
                               />
                               <CButton type="submit" color="primary">
                                 Check
                               </CButton>
-                              <CButton
-                                size="sm"
-                                variant="outline"
-                                color="light"
-                                onClick={() => setOptionsVisible(!optionsVisible)}
-                              >
-                                <FontAwesomeIcon className="mx-1" size="1x" icon={faCog} />
-                              </CButton>
+                              <CTooltip content="Options">
+                                <CButton
+                                  size="sm"
+                                  variant="outline"
+                                  color="light"
+                                  onClick={() => setOptionsVisible(!optionsVisible)}
+                                >
+                                  <FontAwesomeIcon className="mx-1" size="1x" icon={faCog} />
+                                </CButton>
+                              </CTooltip>
                             </CInputGroup>
                           </>
                         )
@@ -196,6 +209,8 @@ export function IndividualDomainCheck({
                               className="mt-1"
                               placeholder="Pre-validate SPF Record (e.g. v=spf1 ...)"
                               area-describedby="spfrecord"
+                              autoCapitalize="none"
+                              autoCorrect="off"
                             />
                           )
                         }}
@@ -212,6 +227,8 @@ export function IndividualDomainCheck({
                               className="mt-1"
                               placeholder="DKIM Selectors (e.g. selector1, selector2)"
                               area-describedby="dkimselector"
+                              autoCapitalize="none"
+                              autoCorrect="off"
                             />
                           )
                         }}
@@ -221,7 +238,7 @@ export function IndividualDomainCheck({
                         onChange={handleHttpsSwitch}
                         label="Enable HTTPS check"
                         id="enableHttpsCheck"
-                        className="mt-1"
+                        className="mt-2"
                       />
 
                       {enableHttps && (
@@ -234,13 +251,27 @@ export function IndividualDomainCheck({
                                 invalid={meta.error && meta.touched}
                                 type="text"
                                 id="subdomains"
-                                className="mt-1"
+                                className="my-2"
                                 placeholder="HTTPS Subdomains (Default: www)"
                                 area-describedby="subdomains"
+                                autoCapitalize="none"
+                                autoCorrect="off"
                               />
                             )
                           }}
                         </Field>
+                      )}
+                      {!readOnly && (
+                        <CButton
+                          className="mt-2"
+                          size="sm"
+                          variant="outline"
+                          color="danger"
+                          onClick={() => handleClear()}
+                        >
+                          <FontAwesomeIcon className="me-2" size="1x" icon={faEraser} />
+                          Clear
+                        </CButton>
                       )}
                     </CCollapse>
                   </CForm>
@@ -355,15 +386,6 @@ function ValidationListContent({ data }) {
   let validationWarns = data?.ValidationWarns || []
   let validationFails = data?.ValidationFails || []
 
-  if (!Array.isArray(validationPasses)) {
-    validationPasses = [validationPasses]
-  }
-  if (!Array.isArray(validationWarns)) {
-    validationWarns = [validationWarns]
-  }
-  if (!Array.isArray(validationFails)) {
-    validationFails = [validationFails]
-  }
   return (
     <div>
       {validationPasses.map((validation, idx) => (
@@ -404,16 +426,6 @@ function ResultsCard({
   let validationPasses = data?.ValidationPasses || []
   let validationWarns = data?.ValidationWarns || []
   let validationFails = data?.ValidationFails || []
-
-  if (!Array.isArray(validationPasses)) {
-    validationPasses = [validationPasses]
-  }
-  if (!Array.isArray(validationWarns)) {
-    validationWarns = [validationWarns]
-  }
-  if (!Array.isArray(validationFails)) {
-    validationFails = [validationFails]
-  }
 
   let finalState = ''
 
@@ -524,7 +536,7 @@ const SPFResultsCard = ({ domain, spfOverride }) => {
   const jsonContent = JSON.stringify(data, null, 2)
 
   let ipAddresses = []
-
+  let recommendations = []
   data?.IPAddresses.map((ip, key) =>
     ipAddresses.push({
       heading: '',
@@ -532,13 +544,36 @@ const SPFResultsCard = ({ domain, spfOverride }) => {
     }),
   )
 
+  data?.Recommendations.map((rec, key) =>
+    recommendations.push({
+      heading: '',
+      content: (
+        <>
+          <FontAwesomeIcon icon={faInfoCircle} className="me-2 text-info" /> {rec.Message}
+        </>
+      ),
+    }),
+  )
+
   let includes = []
   data?.RecordList.map((include, key) =>
     includes.push({
-      heading: '',
-      content: include.Domain,
+      heading: include.Domain,
+      content:
+        include.LookupCount < 4 ? (
+          include.LookupCount + 1
+        ) : (
+          <span className="text-warning">{include.LookupCount + 1}</span>
+        ),
     }),
   )
+
+  if (includes.length > 0) {
+    includes.unshift({
+      heading: 'Domain',
+      content: 'Lookups',
+    })
+  }
 
   return (
     <>
@@ -575,7 +610,7 @@ const SPFResultsCard = ({ domain, spfOverride }) => {
           <DomainOffcanvasTabs jsonContent={jsonContent}>
             {record && (
               <>
-                <h4 className="mt-3">SPF Record</h4>
+                <h4 className="my-3">Record</h4>
                 <CippCodeBlock
                   language="text"
                   code={record}
@@ -584,8 +619,26 @@ const SPFResultsCard = ({ domain, spfOverride }) => {
                 />
               </>
             )}
-            <OffcanvasListSection title="Includes" items={includes} />
-            <OffcanvasListSection title="IP Addresses" items={ipAddresses} />
+            {recommendations.length > 0 && (
+              <>
+                <OffcanvasListSection title="Recommendations" items={recommendations} />
+                {data?.RecommendedRecord && data?.RecommendedRecord !== data?.Record && (
+                  <>
+                    <h4 className="my-3">Recommended Record</h4>
+                    <CippCodeBlock
+                      language="text"
+                      code={data?.RecommendedRecord}
+                      showLineNumbers={false}
+                      wrapLongLines={true}
+                    />
+                  </>
+                )}
+              </>
+            )}
+            {includes.length > 0 && <OffcanvasListSection title="Includes" items={includes} />}
+            {ipAddresses.length > 0 && (
+              <OffcanvasListSection title="IP Addresses" items={ipAddresses} />
+            )}
           </DomainOffcanvasTabs>
         )}
       </CippOffcanvas>
@@ -639,8 +692,12 @@ function WhoisResultCard({ domain }) {
         {!isFetching && error && <>Unable to obtain WHOIS information</>}
         {!isFetching && !error && (
           <>
-            <h5>Registrar</h5>
-            {whoisReport?._Registrar}
+            {(whoisReport?._Registrar && (
+              <>
+                <h5>Registrar</h5>
+                {whoisReport?._Registrar}
+              </>
+            )) || <>No WHOIS results available</>}
             <CippOffcanvas
               title="WHOIS Details"
               id="whois-offcanvas"
@@ -671,13 +728,19 @@ function NSResultCard({ domain }) {
     isFetching,
     error,
   } = useExecDnsHelperQuery({ Domain: domain, Action: 'ReadNSRecord' })
-  const content = []
-  nsReport?.Records.map((ns, index) =>
-    content.push({
-      body: ns,
-    }),
-  )
 
+  const content = []
+  if (nsReport?.Records.length > 0) {
+    nsReport?.Records.map((ns, index) =>
+      content.push({
+        body: ns,
+      }),
+    )
+  } else {
+    content.push({
+      body: 'No nameservers listed',
+    })
+  }
   return (
     <ListGroupContentCard
       title="Nameservers"
@@ -701,9 +764,6 @@ const HttpsResultCard = ({ domain, httpsOverride }) => {
 
   const jsonContent = JSON.stringify(data, null, 2)
 
-  if (!Array.isArray(tests)) {
-    tests = [tests]
-  }
   const [visible, setVisible] = useState(false)
   const headerClickFunction = () => {
     setVisible(true)
@@ -850,9 +910,6 @@ const MXResultsCard = ({ domain }) => {
 
   const jsonContent = JSON.stringify(data, null, 2)
 
-  if (!Array.isArray(records)) {
-    records = [records]
-  }
   const [visible, setVisible] = useState(false)
   const headerClickFunction = () => {
     setVisible(true)
