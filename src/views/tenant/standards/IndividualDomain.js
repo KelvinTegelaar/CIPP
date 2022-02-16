@@ -560,10 +560,10 @@ const SPFResultsCard = ({ domain, spfOverride }) => {
     includes.push({
       heading: include.Domain,
       content:
-        include.LookupCount < 5 ? (
-          include.LookupCount
+        include.LookupCount < 4 ? (
+          include.LookupCount + 1
         ) : (
-          <span className="text-warning">{include.LookupCount}</span>
+          <span className="text-warning">{include.LookupCount + 1}</span>
         ),
     }),
   )
