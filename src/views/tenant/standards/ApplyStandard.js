@@ -128,6 +128,10 @@ const ApplyStandard = () => {
             label="Disable Shared Mailbox AAD accounts"
           />
           <RFFCFormSwitch
+            name="standards.DisableSelfServiceLicenses"
+            label="Disable Self Service Licensing"
+          />
+          <RFFCFormSwitch
             name="standards.AutoExpandArchive"
             label="Enable Auto-expanding archives"
           />
