@@ -12,6 +12,7 @@ const columns = [
   {
     name: 'Display Name',
     selector: (row) => row['DisplayName'],
+    sortable: true,
     exportSelector: 'DisplayName',
     formatter: (cell, row) => {
       return (
@@ -26,34 +27,40 @@ const columns = [
   {
     name: 'Mail Enabled',
     selector: (row) => row['MailEnabled'],
+    sortable: true,
     exportSelector: 'MailEnabled',
     formatter,
   },
   {
     name: 'Email Address',
     selector: (row) => row['Mail'],
+    sortable: true,
     exportSelector: 'Mail',
   },
   {
     name: 'Security Group',
     selector: (row) => row['SecurityGroup'],
+    sortable: true,
     exportSelector: 'SecurityGroup',
     formatter,
   },
   {
     name: 'Group Types',
     selector: (row) => row['GroupTypes'],
+    sortable: true,
     exportSelector: 'GroupTypes',
   },
   {
     name: 'On Premises Sync',
     selector: (row) => row['OnPremisesSync'],
+    sortable: true,
     exportSelector: 'OnPremisessSync',
     formatter,
   },
   {
     name: 'Assignable To Role',
     selector: (row) => row['IsAssignableToRole'],
+    sortable: true,
     exportSelector: 'IsAssignableToRole',
     formatter,
   },

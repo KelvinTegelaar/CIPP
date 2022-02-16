@@ -1,14 +1,5 @@
 import React from 'react'
-import {
-  CAlert,
-  CCol,
-  CRow,
-  CForm,
-  CListGroup,
-  CListGroupItem,
-  CCallout,
-  CSpinner,
-} from '@coreui/react'
+import { CCol, CRow, CForm, CListGroup, CListGroupItem, CCallout, CSpinner } from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
@@ -24,10 +15,10 @@ const Error = ({ name }) => (
     subscription={{ touched: true, error: true }}
     render={({ meta: { touched, error } }) =>
       touched && error ? (
-        <CAlert color="danger">
+        <CCallout color="danger">
           <FontAwesomeIcon icon={faExclamationTriangle} color="danger" />
           {error}
-        </CAlert>
+        </CCallout>
       ) : null
     }
   />
@@ -74,7 +65,7 @@ const ApplyStandard = () => {
             <WizardTableField
               reportName="Add-Choco-App-Tenant-Selector"
               keyField="defaultDomainName"
-              path="/api/ListTenants"
+              path="/api/ListTenants?AllTenantSelector=true"
               columns={[
                 {
                   name: 'Display Name',
@@ -128,7 +119,7 @@ const ApplyStandard = () => {
           <RFFCFormSwitch name="DisableRestart" label="Disable Restart" />
 
           <RFFCFormRadio
-            value=""
+            value="On"
             name="AssignTo"
             label="Do not assign"
             validate={false}

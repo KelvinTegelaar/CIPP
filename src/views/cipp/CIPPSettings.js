@@ -19,7 +19,6 @@ import {
   CListGroupItem,
   CBadge,
   CLink,
-  CAlert,
   CSpinner,
 } from '@coreui/react'
 import {
@@ -90,15 +89,17 @@ const checkAccessColumns = [
   {
     name: 'Tenant Domain',
     selector: (row) => row['TenantName'],
+    grow: 0,
   },
   {
     name: 'Result',
     selector: (row) => row['Status'],
+    grow: 1,
   },
 ]
 
 const GeneralSettings = () => {
-  const { data: tenants = [] } = useListTenantsQuery()
+  const { data: tenants = [] } = useListTenantsQuery({ AllTenantSelector: false })
   const [checkPermissions, permissionsResult] = useLazyExecPermissionsAccessCheckQuery()
   const [clearCache, clearCacheResult] = useLazyExecClearCacheQuery()
   const [checkAccess, accessCheckResult] = useLazyExecTenantsAccessCheckQuery()
@@ -127,8 +128,6 @@ const GeneralSettings = () => {
   }
 
   const handleCheckAccess = () => {
-    // convert customerId into tenant domain
-    // domain is not unique or it would be used as value
     const mapped = tenants.reduce(
       (current, { customerId, ...rest }) => ({
         ...current,
@@ -136,9 +135,10 @@ const GeneralSettings = () => {
       }),
       {},
     )
-    const tenantDomains = selectedTenants.map((customerId) => mapped[customerId].defaultDomainName)
-
-    checkAccess({ tenantDomains })
+    const AllTenantSelector = selectedTenants.map(
+      (customerId) => mapped[customerId].defaultDomainName,
+    )
+    checkAccess({ tenantDomains: AllTenantSelector })
   }
 
   const handleClearCache = useConfirmModal({
@@ -178,9 +178,9 @@ const GeneralSettings = () => {
                 <div>
                   {permissionsResult.data.Results.MissingPermissions
                     ? 'Your Secure Application Model is missing the following delegated permissions:'
-                    : 'Your Secure Application Model has all required permissions'}
+                    : permissionsResult.data.Results}
                   <CListGroup flush>
-                    {permissionsResult.data.Results.MissingPermissions.map((r, index) => (
+                    {permissionsResult.data.Results?.MissingPermissions?.map((r, index) => (
                       <CListGroupItem key={index}>{r}</CListGroupItem>
                     ))}
                   </CListGroup>
@@ -246,6 +246,7 @@ const GeneralSettings = () => {
               </CButton>
               {accessCheckResult.isSuccess && (
                 <CippTable
+                  reportName="none"
                   columns={checkAccessColumns}
                   tableProps={tableProps}
                   data={accessCheckResult.data.Results}
@@ -315,14 +316,14 @@ const ExcludedTenantsSettings = () => {
   return (
     <>
       {removeExcludeTenantResult.isSuccess && (
-        <CAlert color="success" dismissible>
+        <CCallout color="success" dismissible>
           {removeExcludeTenantResult.data?.Results}
-        </CAlert>
+        </CCallout>
       )}
       {addExcludeTenantResult.isSuccess && (
-        <CAlert color="success" dismissible>
+        <CCallout color="success" dismissible>
           {addExcludeTenantResult.data?.Results}
-        </CAlert>
+        </CCallout>
       )}
       <CRow className="mb-3">
         <CCol md={12}>
@@ -637,14 +638,14 @@ const DNSSettings = () => {
               ))}
             </CButtonGroup>
             {(editDnsConfigResult.isSuccess || editDnsConfigResult.isError) && (
-              <CAlert
+              <CCallout
                 color={editDnsConfigResult.isSuccess ? 'success' : 'danger'}
                 visible={alertVisible}
               >
                 {editDnsConfigResult.isSuccess
                   ? editDnsConfigResult.data.Results
                   : 'Error setting resolver'}
-              </CAlert>
+              </CCallout>
             )}
           </CCardBody>
         </CCard>

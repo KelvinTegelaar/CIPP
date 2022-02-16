@@ -15,14 +15,23 @@ export const PrivateRoute = ({ children, routeType }) => {
   }
 
   dispatch(updateAccessToken(profile))
-  const roles = profile?.clientPrincipal.userRoles
-  const isAuthenticated =
-    roles.includes('admin') || roles.includes('editor') || (roles.includes('readonly') && !error)
-  const isAdmin = profile?.clientPrincipal.userRoles.includes('admin')
-  if (routeType === 'admin') {
-    return !isAdmin ? <Navigate to="/403" /> : children
+  let roles
+  if (null !== profile.clientPrincipal) {
+    roles = profile?.clientPrincipal.userRoles
+  } else if (null === profile.clientPrincipal) {
+    return <Navigate to="/login" />
+  }
+  if (null === roles) {
+    return <Navigate to="/login" />
   } else {
-    return !isAuthenticated ? <Navigate to="/403" /> : children
+    const isAuthenticated =
+      roles.includes('admin') || roles.includes('editor') || (roles.includes('readonly') && !error)
+    const isAdmin = roles.includes('admin')
+    if (routeType === 'admin') {
+      return !isAdmin ? <Navigate to="/403" /> : children
+    } else {
+      return !isAuthenticated ? <Navigate to="/403" /> : children
+    }
   }
 }
 

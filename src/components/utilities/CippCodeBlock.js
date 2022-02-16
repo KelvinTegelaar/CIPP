@@ -7,7 +7,13 @@ import { faCopy, faClipboard } from '@fortawesome/free-regular-svg-icons'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 import { atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 
-function CippCodeBlock({ code, language, showLineNumbers, startingLineNumber, wrapLongLines }) {
+function CippCodeBlock({
+  code,
+  language,
+  showLineNumbers = true,
+  startingLineNumber,
+  wrapLongLines = true,
+}) {
   const [codeCopied, setCodeCopied] = useState(false)
 
   const onCodeCopied = () => {
