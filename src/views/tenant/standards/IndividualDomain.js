@@ -622,7 +622,7 @@ const SPFResultsCard = ({ domain, spfOverride }) => {
             {recommendations.length > 0 && (
               <>
                 <OffcanvasListSection title="Recommendations" items={recommendations} />
-                {data?.RecommendedRecord && (
+                {data?.RecommendedRecord && data?.RecommendedRecord !== data?.Record && (
                   <>
                     <h4 className="my-3">Recommended Record</h4>
                     <CippCodeBlock
