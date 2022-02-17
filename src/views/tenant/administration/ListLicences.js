@@ -14,7 +14,7 @@ const columns = [
     name: 'license',
     selector: (row) => row['License'],
     sortable: true,
-    exportSelector: 'state',
+    exportSelector: 'License',
   },
   {
     name: 'Used',
@@ -45,7 +45,7 @@ const LicenseList = () => {
       tenantSelector={true}
       showAllTenantSelector={true}
       datatable={{
-        reportName: `${tenant?.defaultDomainName}-ConditionalAccess-List`,
+        reportName: `${tenant?.defaultDomainName}-licenses`,
         path: '/api/ListLicenses',
         params: { TenantFilter: tenant?.defaultDomainName },
         columns,
