@@ -26,6 +26,7 @@ const EditTenant = React.lazy(() => import('src/views/tenant/administration/Edit
 const ConditionalAccess = React.lazy(() =>
   import('src/views/tenant/administration/ConditionalAccess'),
 )
+const ListLicences = React.lazy(() => import('src/views/tenant/administration/ListLicences'))
 
 const BasicAuthReport = React.lazy(() => import('src/views/identity/reports/BasicAuthReport'))
 const AzureADConnectReport = React.lazy(() =>
@@ -170,6 +171,11 @@ const routes = [
     path: '/tenant/administration/conditional-access-policies',
     name: 'Conditional Access',
     component: ConditionalAccess,
+  },
+  {
+    path: '/tenant/administration/list-licenses',
+    name: 'List Licenses',
+    component: ListLicences,
   },
   { path: '/tenant/standards', name: 'Standards' },
   {
