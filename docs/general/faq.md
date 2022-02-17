@@ -5,6 +5,8 @@ description: Frequently asked questions regarding CIPP.
 slug: /faq
 ---
 <!-- vale Microsoft.FirstPerson = NO -->
+<!-- vale Microsoft.HeadingAcronyms = NO -->
+<!-- vale Microsoft.HeadingPunctuation = NO -->
 
 On this page you can find a list of frequently asked questions about the CyberDrain Improved Partner Portal (CIPP). If you're having specific issues with CIPP please also check the [Troubleshooting](/troubleshooting) page.
 
@@ -148,12 +150,16 @@ A 400 error is a generic access error. In CIPP this can hide many different issu
 <details>
 <summary>
 
-## I'm getting an error that "you must use multi-factor authentication to access", what's going on?
+## I'm getting an error that "you must use multi-factor authentication to access" what's going on?
 
 </summary>
 
-This generally means you're using tokens that don't have a "strong auth claim" this could be because you're using non-Azure AD MFA or you didn't complete MFA when creating your tokens for one or more of the authentication steps. Make sure you're using a supported MFA method and that you've completed the MFA steps when creating your tokens.
+Typically this error means you're using tokens that don't have a "strong auth claim" or similar. This could be because you're using non-Azure AD MFA or you didn't complete MFA when creating your tokens for one or more of the authentication steps. Make sure you're using a supported MFA method and that you've completed the MFA steps when creating your tokens.
 
 Check the [MFA Troubleshooting](/docs/general/troubleshooting/#multi-factor-authentication-troubleshooting) section in the Troubleshooting page for more information.
 
+</details>
+
 <!-- vale Microsoft.FirstPerson = YES -->
+<!-- vale Microsoft.HeadingAcronyms = YES -->
+<!-- vale Microsoft.HeadingPunctuation = YES -->
