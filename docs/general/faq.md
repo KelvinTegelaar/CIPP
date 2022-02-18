@@ -13,7 +13,7 @@ On this page you can find a list of frequently asked questions about the CyberDr
 <details>
 <summary>
 
-## Why can't I install CIPP using the "Deploy to Azure" button?
+## Why can't I install CIPP using the "Deploy to Azure" button? {#deploy-to-azure}
 
 </summary>
 
@@ -24,7 +24,7 @@ If you're experiencing issues with installation please report these in `#cipp-is
 <details>
 <summary>
 
-## Why can't I get details for a particular tenant / any tenants?
+## Why can't I get details for a particular tenant / any tenants? {#specific-tenant-issues}
 
 </summary>
 
@@ -39,7 +39,7 @@ If your entire tenant list doesn't load, there is a big chance there is somethin
 <details>
 <summary>
 
-## I'm trying to redeploy or move my CIPP installation and it's not working. Something about a GitHub token
+## I'm trying to redeploy or move my CIPP installation and it's not working. Something about a GitHub token. {#github-token}
 
 </summary>
 
@@ -51,7 +51,7 @@ If you installed CIPP before the release of version 2, you deployed the `master`
 
 <summary>
 
-## Can I lock down my instance of CIPP further?
+## Can I lock down my instance of CIPP further? {#lockdown}
 
 </summary>
 
@@ -74,7 +74,7 @@ CIPP is now no longer available publicly over the internet.
 <details>
 <summary>
 
-## Can I add Conditional Access to my CIPP App?
+## Can I add Conditional Access to my CIPP App? {#conditional-access}
 
 </summary>
 
@@ -95,7 +95,7 @@ Your app is now protected with Conditional Access.
 <details>
 <summary>
 
-## My tenant requires admin approval for user apps, how do I do this for CIPP?
+## My tenant requires admin approval for user apps, how do I do this for CIPP? {#admin-approval}
 
 </summary>
 
@@ -112,7 +112,7 @@ This permits users the ability to grant consent when access CIPP now.
 <details>
 <summary>
 
-## How much does CIPP cost to run?
+## How much does CIPP cost to run? {#cost}
 
 </summary>
 
@@ -123,7 +123,7 @@ Assuming you're running on the click-to-deploy configuration and average usage p
 <details>
 <summary>
 
-## I'm getting a 500 error in CIPP, what's going on?
+## I'm getting a 500 error in CIPP, what's going on? {#500-error}
 
 </summary>
 
@@ -139,7 +139,7 @@ If you're still having issues, after checking licensing and that your function a
 <details>
 <summary>
 
-## I'm getting a 400 error in CIPP, what's going on?
+## I'm getting a 400 error in CIPP, what's going on? {#400-error}
 
 </summary>
 
@@ -154,7 +154,7 @@ A 400 error is a generic access error. In CIPP this can hide many different issu
 <details>
 <summary>
 
-## I'm getting an error that "you must use multi-factor authentication to access" what's going on?
+## I'm getting an error that "you must use multi-factor authentication to access" what's going on? {#mfa-error}
 
 </summary>
 
