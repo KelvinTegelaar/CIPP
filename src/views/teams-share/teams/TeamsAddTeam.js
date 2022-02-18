@@ -1,5 +1,5 @@
 import React from 'react'
-import { CCallout, CButton, CCol, CForm, CRow } from '@coreui/react'
+import { CCallout, CButton, CCol, CForm, CRow, CSpinner } from '@coreui/react'
 import { useSelector } from 'react-redux'
 import { Form } from 'react-final-form'
 import { RFFCFormInput, RFFCFormRadio, RFFSelectSearch } from 'src/components/forms'
@@ -36,6 +36,11 @@ const TeamsAddTeam = () => {
   return (
     <CippPage title="Add Team">
       <CippContentCard title="Team Details">
+        {postResults.isFetching && (
+          <CCallout color="success">
+            <CSpinner />
+          </CCallout>
+        )}
         {postResults.isSuccess && <CCallout color="success">{postResults.data.Results}</CCallout>}
         <Form initialValues={initialValues} onSubmit={handleSubmit}>
           {({ handleSubmit, submitting, values }) => {
