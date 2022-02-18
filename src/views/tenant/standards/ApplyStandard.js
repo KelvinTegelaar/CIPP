@@ -68,8 +68,7 @@ const ApplyStandard = () => {
           <a href="https://cipp.app/docs/user/usingcipp/tenantadministration/standards/#meet-the-standards">
             the documentation fully
           </a>{' '}
-          before proceeding with this wizard, noting that some changes here are not reversible
-          unless done manually by you and not via CIPP.
+          before proceeding with this wizard. Some of the changes cannot be reverted by CIPP.
         </CCallout>
         <center>
           <h3 className="text-primary">Step 1</h3>
