@@ -14,7 +14,7 @@ Update your application to the latest release using the following instructions:
 ## Frontend
 
 :::info CIPP
-Note that if you receive a workflow error, check the [Troubleshooting page for potential fixes](/troubleshooting)
+Note that if you receive a workflow error, check the [Troubleshooting page for potential fixes](/docs/general/troubleshooting)
 :::
 
 * Go to your own CIPP fork on GitHub 
