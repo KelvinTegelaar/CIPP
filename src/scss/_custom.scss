@@ -63,7 +63,7 @@
 
   .card-header {
     &:first-child {
-      border-radius: var(--cipp-border-radius);
+      border-radius: var(--cipp-border-radius) var(--cipp-border-radius) 0 0;
     }
   }
 
@@ -386,4 +386,10 @@
   .btn {
     margin-left: 1rem;
   }
+}
+
+/* Sidebar */
+
+.sidebar-nav .nav-link {
+  margin: 0.25rem 0;
 }
