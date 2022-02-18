@@ -18,7 +18,7 @@
     "received_events_url": "https://api.github.com/users/KelvinTegelaar/received_events",
     "type": "User",
     "site_admin": false,
-    "contributions": 813
+    "contributions": 823
   },
   {
     "login": "homotechsual",
@@ -39,7 +39,7 @@
     "received_events_url": "https://api.github.com/users/homotechsual/received_events",
     "type": "User",
     "site_admin": false,
-    "contributions": 246
+    "contributions": 259
   },
   {
     "login": "gavsto",
@@ -60,7 +60,7 @@
     "received_events_url": "https://api.github.com/users/gavsto/received_events",
     "type": "User",
     "site_admin": false,
-    "contributions": 144
+    "contributions": 152
   },
   {
     "login": "k-grube",
@@ -102,7 +102,7 @@
     "received_events_url": "https://api.github.com/users/johnduprey/received_events",
     "type": "User",
     "site_admin": false,
-    "contributions": 79
+    "contributions": 90
   },
   {
     "login": "AdamWillford",
@@ -123,7 +123,7 @@
     "received_events_url": "https://api.github.com/users/AdamWillford/received_events",
     "type": "User",
     "site_admin": false,
-    "contributions": 70
+    "contributions": 72
   },
   {
     "login": "redanthrax",
