@@ -25,6 +25,7 @@ import {
 import { CippPage } from 'src/components/layout'
 import countryList from 'src/data/countryList'
 import { useListUsersQuery } from 'src/store/api/users'
+import { useListAdConnectSettingsQuery } from 'src/store/api/adconnect'
 import { useListDomainsQuery } from 'src/store/api/domains'
 import { useListLicensesQuery } from 'src/store/api/licenses'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
@@ -49,6 +50,13 @@ const AddUser = () => {
     isFetching: usersIsFetching,
     error: usersError,
   } = useListUsersQuery({ tenantDomain })
+
+  const {
+    data: adconnectsettings = [],
+    isFetching: adcIsFetching,
+    error: adcError,
+  } = useListAdConnectSettingsQuery({ tenantDomain })
+  console.log(adconnectsettings)
 
   const {
     data: domains = [],
@@ -120,6 +128,17 @@ const AddUser = () => {
       <CRow>
         <CCol md={6}>
           <CCard>
+            {adcIsFetching && <CSpinner />}
+            {adcError && <span>Unable to determine Azure AD Connect Settings</span>}
+            {!adcIsFetching &&
+              adconnectsettings.dirSyncEnabled &&
+              adconnectsettings.dirSyncConfigured && (
+                <CCallout color="warning">
+                  Warning! {adconnectsettings.dirSyncEnabled} This tenant currently has Active
+                  Directory Sync Enabled and Configured. This usually means users should be created
+                  in Active Directory
+                </CCallout>
+              )}
             <CCardHeader>
               <CCardTitle>Account Details</CCardTitle>
             </CCardHeader>
