@@ -121,7 +121,11 @@ Assuming you're running on the click-to-deploy configuration and average usage p
 </details>
 
 <details>
-<summary>I'm getting a 500 error in CIPP, what's going on?</summary>
+<summary>
+
+## I'm getting a 500 error in CIPP, what's going on?
+
+</summary>
 
 A 500 error is a generic server error. In CIPP this can hide many different issues. It could mean:
 
