@@ -76,7 +76,7 @@ Some permissions may appear duplicated in the Delegated and Application permissi
 | Policy.ReadWrite.DeviceConfiguration         | Read and write your organization's device configuration policies  |
 | PrivilegedAccess.Read.AzureResources         | Read privileged access to Azure resources                         |
 | PrivilegedAccess.ReadWrite.AzureResources    | Read and write privileged access to Azure resources               |
-| OpenID permissions - profile                 | View users' basic profile                                         |
+| profile                                      | View users' basic profile                                         |
 | Reports.Read.All                             | Read all usage reports                                            |
 | RoleManagement.ReadWrite.Directory           | Read and write directory RBAC settings                            |
 | SecurityActions.ReadWrite.All                | Read and update your organization's security actions              |
