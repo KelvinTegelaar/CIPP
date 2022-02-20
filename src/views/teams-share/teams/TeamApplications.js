@@ -14,19 +14,23 @@ export default function TeamApplications({
     {
       name: 'Display Name',
       selector: (row) => row.teamsAppDefinition['displayName'],
+      sortable: true,
       minWidth: '20rem',
     },
     {
       name: 'Description',
       selector: (row) => row.teamsAppDefinition['description'],
+      sortable: true,
     },
     {
       name: 'Version',
       selector: (row) => row.teamsAppDefinition['version'],
+      sortable: true,
     },
     {
       name: 'Created by',
       selector: (row) => row.teamsAppDefinition['createdBy'],
+      sortable: true,
     },
   ]
 

@@ -1,21 +1,8 @@
 import React from 'react'
-import {
-  CAlert,
-  CCol,
-  CRow,
-  CForm,
-  CListGroup,
-  CListGroupItem,
-  CCallout,
-  CSpinner,
-} from '@coreui/react'
+import { CCol, CRow, CForm, CListGroup, CListGroupItem, CCallout, CSpinner } from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faCheckCircle,
-  faExclamationTriangle,
-  faTimesCircle,
-} from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faExclamationTriangle, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { CippWizard } from 'src/components/layout'
 import { WizardTableField } from 'src/components/tables'
 import PropTypes from 'prop-types'
@@ -28,10 +15,10 @@ const Error = ({ name }) => (
     subscription={{ touched: true, error: true }}
     render={({ meta: { touched, error } }) =>
       touched && error ? (
-        <CAlert color="danger">
+        <CCallout color="danger">
           <FontAwesomeIcon icon={faExclamationTriangle} color="danger" />
           {error}
-        </CAlert>
+        </CCallout>
       ) : null
     }
   />
@@ -166,7 +153,7 @@ const ApplyStandard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.TimeOutInMinutes ? faCheckCircle : faTimesCircle}
+                            icon={props.values.TimeOutInMinutes ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -174,7 +161,7 @@ const ApplyStandard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.ShowProgress ? faCheckCircle : faTimesCircle}
+                            icon={props.values.ShowProgress ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -182,7 +169,7 @@ const ApplyStandard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.EnableLog ? faCheckCircle : faTimesCircle}
+                            icon={props.values.EnableLog ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -190,7 +177,7 @@ const ApplyStandard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.OBEEOnly ? faCheckCircle : faTimesCircle}
+                            icon={props.values.OBEEOnly ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -198,7 +185,7 @@ const ApplyStandard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.blockDevice ? faCheckCircle : faTimesCircle}
+                            icon={props.values.blockDevice ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -206,7 +193,7 @@ const ApplyStandard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.Allowretry ? faCheckCircle : faTimesCircle}
+                            icon={props.values.Allowretry ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -214,7 +201,7 @@ const ApplyStandard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.AllowReset ? faCheckCircle : faTimesCircle}
+                            icon={props.values.AllowReset ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -222,7 +209,7 @@ const ApplyStandard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.AllowFail ? faCheckCircle : faTimesCircle}
+                            icon={props.values.AllowFail ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                       </CListGroup>
