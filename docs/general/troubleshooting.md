@@ -257,7 +257,7 @@ $Exchangetoken = New-PartnerAccessToken @UpdateExchangeTokenParamaters
 
 Write-Host "================ Secrets ================"
 Write-Host "`$ApplicationId         = $($ApplicationId)"
-Write-Host "`$ApplicationSecret     = $($ApplicationSecret | ConvertFrom-SecureString -AsPlainText -Force)"
+Write-Host "`$ApplicationSecret     = $($ApplicationSecret)"
 Write-Host "`$TenantID              = $($TenantId)"
 Write-Host "`$RefreshToken          = $($Token.refreshtoken)" -ForegroundColor Blue
 Write-Host "`$ExchangeRefreshToken  = $($ExchangeToken.Refreshtoken)" -ForegroundColor Green
