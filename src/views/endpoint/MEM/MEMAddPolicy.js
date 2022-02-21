@@ -2,11 +2,7 @@ import React from 'react'
 import { CCol, CRow, CListGroup, CListGroupItem, CCallout, CSpinner } from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faCheckCircle,
-  faExclamationTriangle,
-  faTimesCircle,
-} from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faExclamationTriangle, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { CippWizard } from 'src/components/layout'
 import { WizardTableField } from 'src/components/tables'
 import PropTypes from 'prop-types'
@@ -234,7 +230,7 @@ const AddPolicy = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.Displayname ? faCheckCircle : faTimesCircle}
+                            icon={props.values.Displayname ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -242,7 +238,7 @@ const AddPolicy = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.Description ? faCheckCircle : faTimesCircle}
+                            icon={props.values.Description ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -250,7 +246,7 @@ const AddPolicy = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.Type ? faCheckCircle : faTimesCircle}
+                            icon={props.values.Type ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -258,7 +254,7 @@ const AddPolicy = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.AssignTo ? faCheckCircle : faTimesCircle}
+                            icon={props.values.AssignTo ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                       </CListGroup>

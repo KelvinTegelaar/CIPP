@@ -4,6 +4,7 @@ import { Form, Field } from 'react-final-form'
 import { useSearchParams } from 'react-router-dom'
 import { useExecDnsHelperQuery } from 'src/store/api/domains'
 import { CippCodeBlock, CippOffcanvas, StatusIcon } from 'src/components/utilities'
+import { OffcanvasListSection } from 'src/components/utilities/CippListOffcanvas'
 import { CippPage, CippMasonry, CippMasonryItem } from '../../../components/layout'
 import ListGroupContentCard from '../../../components/contentcards/ListGroupContentCard'
 import {
@@ -14,13 +15,10 @@ import {
   CCardHeader,
   CCollapse,
   CForm,
-  CFormLabel,
   CFormSwitch,
   CFormInput,
   CCardTitle,
   CLink,
-  CListGroup,
-  CListGroupItem,
   CNav,
   CNavItem,
   CNavLink,
@@ -36,6 +34,7 @@ import {
   CBadge,
   COffcanvasTitle,
   CInputGroup,
+  CTooltip,
 } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -43,13 +42,15 @@ import {
   faCog,
   faCheckCircle,
   faCompressAlt,
+  faEraser,
   faExclamationTriangle,
   faExpandAlt,
+  faInfoCircle,
   faTimesCircle,
-  faExternalLinkAlt,
   faEllipsisV,
   faSearch,
   faGlobe,
+  faQuestionCircle,
 } from '@fortawesome/free-solid-svg-icons'
 
 const IconGreenCheck = () => <FontAwesomeIcon icon={faCheckCircle} className="text-success mx-2" />
@@ -57,12 +58,16 @@ const IconRedX = () => <FontAwesomeIcon icon={faTimesCircle} className="text-dan
 const IconWarning = () => (
   <FontAwesomeIcon icon={faExclamationTriangle} className="text-warning mx-2" />
 )
-const IconExternalLink = () => <FontAwesomeIcon icon={faExternalLinkAlt} className="me-2" />
 
 const domainCheckProps = {
   readOnly: PropTypes.bool,
   isOffcanvas: PropTypes.bool,
   initialDomain: PropTypes.string,
+}
+
+function ucFirst(string) {
+  if (typeof string !== 'string') return ''
+  return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
 export default function IndividualDomainPage() {
@@ -125,6 +130,13 @@ export function IndividualDomainCheck({
     setEnableHttps(e.target.checked)
   }
 
+  const handleClear = () => {
+    setDomain('')
+    setHttpsOverride('')
+    setDkimOverride('')
+    setSpfOverride('')
+  }
+
   return (
     <CippMasonry>
       <CippMasonryItem size={masonrySize}>
@@ -161,18 +173,22 @@ export function IndividualDomainCheck({
                                 disabled={readOnly}
                                 placeholder="Domain Name"
                                 area-describedby="domain"
+                                autoCapitalize="none"
+                                autoCorrect="off"
                               />
                               <CButton type="submit" color="primary">
                                 Check
                               </CButton>
-                              <CButton
-                                size="sm"
-                                variant="outline"
-                                color="light"
-                                onClick={() => setOptionsVisible(!optionsVisible)}
-                              >
-                                <FontAwesomeIcon className="mx-1" size="1x" icon={faCog} />
-                              </CButton>
+                              <CTooltip content="Options">
+                                <CButton
+                                  size="sm"
+                                  variant="outline"
+                                  color="light"
+                                  onClick={() => setOptionsVisible(!optionsVisible)}
+                                >
+                                  <FontAwesomeIcon className="mx-1" size="1x" icon={faCog} />
+                                </CButton>
+                              </CTooltip>
                             </CInputGroup>
                           </>
                         )
@@ -193,6 +209,8 @@ export function IndividualDomainCheck({
                               className="mt-1"
                               placeholder="Pre-validate SPF Record (e.g. v=spf1 ...)"
                               area-describedby="spfrecord"
+                              autoCapitalize="none"
+                              autoCorrect="off"
                             />
                           )
                         }}
@@ -209,6 +227,8 @@ export function IndividualDomainCheck({
                               className="mt-1"
                               placeholder="DKIM Selectors (e.g. selector1, selector2)"
                               area-describedby="dkimselector"
+                              autoCapitalize="none"
+                              autoCorrect="off"
                             />
                           )
                         }}
@@ -218,7 +238,7 @@ export function IndividualDomainCheck({
                         onChange={handleHttpsSwitch}
                         label="Enable HTTPS check"
                         id="enableHttpsCheck"
-                        className="mt-1"
+                        className="mt-2"
                       />
 
                       {enableHttps && (
@@ -231,13 +251,27 @@ export function IndividualDomainCheck({
                                 invalid={meta.error && meta.touched}
                                 type="text"
                                 id="subdomains"
-                                className="mt-1"
+                                className="my-2"
                                 placeholder="HTTPS Subdomains (Default: www)"
                                 area-describedby="subdomains"
+                                autoCapitalize="none"
+                                autoCorrect="off"
                               />
                             )
                           }}
                         </Field>
+                      )}
+                      {!readOnly && (
+                        <CButton
+                          className="mt-2"
+                          size="sm"
+                          variant="outline"
+                          color="danger"
+                          onClick={() => handleClear()}
+                        >
+                          <FontAwesomeIcon className="me-2" size="1x" icon={faEraser} />
+                          Clear
+                        </CButton>
                       )}
                     </CCollapse>
                   </CForm>
@@ -352,15 +386,6 @@ function ValidationListContent({ data }) {
   let validationWarns = data?.ValidationWarns || []
   let validationFails = data?.ValidationFails || []
 
-  if (!Array.isArray(validationPasses)) {
-    validationPasses = [validationPasses]
-  }
-  if (!Array.isArray(validationWarns)) {
-    validationWarns = [validationWarns]
-  }
-  if (!Array.isArray(validationFails)) {
-    validationFails = [validationFails]
-  }
   return (
     <div>
       {validationPasses.map((validation, idx) => (
@@ -393,6 +418,7 @@ function ResultsCard({
   data,
   type,
   headerClickFunction,
+  providerInfo,
   error,
   errorMessage,
   isFetching,
@@ -400,16 +426,6 @@ function ResultsCard({
   let validationPasses = data?.ValidationPasses || []
   let validationWarns = data?.ValidationWarns || []
   let validationFails = data?.ValidationFails || []
-
-  if (!Array.isArray(validationPasses)) {
-    validationPasses = [validationPasses]
-  }
-  if (!Array.isArray(validationWarns)) {
-    validationWarns = [validationWarns]
-  }
-  if (!Array.isArray(validationFails)) {
-    validationFails = [validationFails]
-  }
 
   let finalState = ''
 
@@ -435,10 +451,23 @@ function ResultsCard({
             {!isFetching && <StatusIcon type="finalstate" finalState={finalState} />}
             {type} Results
           </CCardTitle>
-          <CLink className="mx-2 card-header-link" onClick={headerClickFunction}>
-            <FontAwesomeIcon icon={faEllipsisV} className="me-2" />
-            More
-          </CLink>
+          <span>
+            {providerInfo && (
+              <CTooltip content={`${providerInfo.Name} ${type} documentation`}>
+                <CLink
+                  className="mx-2 card-header-link"
+                  href={providerInfo._MxComment}
+                  target="_blank"
+                >
+                  <FontAwesomeIcon icon={faQuestionCircle} className="me-2" />
+                </CLink>
+              </CTooltip>
+            )}
+            <CLink className="mx-2 card-header-link" onClick={headerClickFunction}>
+              <FontAwesomeIcon icon={faEllipsisV} className="me-2" />
+              More
+            </CLink>
+          </span>
         </CCardHeader>
         <CCardBody>
           {isFetching && <CSpinner />}
@@ -481,17 +510,22 @@ ResultsCard.propTypes = {
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   type: PropTypes.oneOf(['HTTPS', 'MX', 'SPF', 'DMARC', 'DNSSEC', 'DKIM', 'MTA-STS']),
   headerClickFunction: PropTypes.func,
+  providerInfo: PropTypes.object,
   error: PropTypes.bool,
   errorMessage: PropTypes.string,
   isFetching: PropTypes.bool,
 }
 
 const SPFResultsCard = ({ domain, spfOverride }) => {
-  console.log(spfOverride)
   const { data, isFetching, error } = useExecDnsHelperQuery({
     Domain: domain,
     Action: 'ReadSpfRecord',
     Record: spfOverride,
+  })
+
+  const { data: doc } = useExecDnsHelperQuery({
+    Domain: domain,
+    Action: 'ReadMXRecord',
   })
 
   let record = data?.Record
@@ -501,6 +535,46 @@ const SPFResultsCard = ({ domain, spfOverride }) => {
   }
   const jsonContent = JSON.stringify(data, null, 2)
 
+  let ipAddresses = []
+  let recommendations = []
+  data?.IPAddresses.map((ip, key) =>
+    ipAddresses.push({
+      heading: '',
+      content: ip,
+    }),
+  )
+
+  data?.Recommendations.map((rec, key) =>
+    recommendations.push({
+      heading: '',
+      content: (
+        <>
+          <FontAwesomeIcon icon={faInfoCircle} className="me-2 text-info" /> {rec.Message}
+        </>
+      ),
+    }),
+  )
+
+  let includes = []
+  data?.RecordList.map((include, key) =>
+    includes.push({
+      heading: include.Domain,
+      content:
+        include.LookupCount < 4 ? (
+          include.LookupCount + 1
+        ) : (
+          <span className="text-warning">{include.LookupCount + 1}</span>
+        ),
+    }),
+  )
+
+  if (includes.length > 0) {
+    includes.unshift({
+      heading: 'Domain',
+      content: 'Lookups',
+    })
+  }
+
   return (
     <>
       <ResultsCard
@@ -509,15 +583,18 @@ const SPFResultsCard = ({ domain, spfOverride }) => {
         isFetching={isFetching}
         headerClickFunction={headerClickFunction}
         error={error}
+        providerInfo={doc?.MailProvider}
         errorMessage="Unable to load SPF Results"
       >
         {record && (
-          <CippCodeBlock
-            language="text"
-            code={record}
-            showLineNumbers={false}
-            wrapLongLines={true}
-          />
+          <>
+            <CippCodeBlock
+              language="text"
+              code={record}
+              showLineNumbers={false}
+              wrapLongLines={true}
+            />
+          </>
         )}
       </ResultsCard>
       <CippOffcanvas
@@ -529,7 +606,41 @@ const SPFResultsCard = ({ domain, spfOverride }) => {
         title="SPF Details"
       >
         {!isFetching && error && <>Unable to load SPF details</>}
-        {!isFetching && !error && <DomainOffcanvasTabs jsonContent={jsonContent} />}
+        {!isFetching && !error && (
+          <DomainOffcanvasTabs jsonContent={jsonContent}>
+            {record && (
+              <>
+                <h4 className="my-3">Record</h4>
+                <CippCodeBlock
+                  language="text"
+                  code={record}
+                  showLineNumbers={false}
+                  wrapLongLines={true}
+                />
+              </>
+            )}
+            {recommendations.length > 0 && (
+              <>
+                <OffcanvasListSection title="Recommendations" items={recommendations} />
+                {data?.RecommendedRecord && data?.RecommendedRecord !== data?.Record && (
+                  <>
+                    <h4 className="my-3">Recommended Record</h4>
+                    <CippCodeBlock
+                      language="text"
+                      code={data?.RecommendedRecord}
+                      showLineNumbers={false}
+                      wrapLongLines={true}
+                    />
+                  </>
+                )}
+              </>
+            )}
+            {includes.length > 0 && <OffcanvasListSection title="Includes" items={includes} />}
+            {ipAddresses.length > 0 && (
+              <OffcanvasListSection title="IP Addresses" items={ipAddresses} />
+            )}
+          </DomainOffcanvasTabs>
+        )}
       </CippOffcanvas>
     </>
   )
@@ -546,6 +657,18 @@ function WhoisResultCard({ domain }) {
     error,
   } = useExecDnsHelperQuery({ Domain: domain, Action: 'ReadWhoisRecord' })
   const jsonContent = JSON.stringify(whoisReport, null, 2)
+
+  let whoisContent = []
+  if (whoisReport !== undefined) {
+    for (const [key, value] of Object.entries(whoisReport)) {
+      if (!key.match(/^_/)) {
+        whoisContent.push({
+          heading: key,
+          content: value,
+        })
+      }
+    }
+  }
 
   return (
     <CCard className="content-card h-100">
@@ -569,8 +692,12 @@ function WhoisResultCard({ domain }) {
         {!isFetching && error && <>Unable to obtain WHOIS information</>}
         {!isFetching && !error && (
           <>
-            <h5>Registrar</h5>
-            {whoisReport?._Registrar}
+            {(whoisReport?._Registrar && (
+              <>
+                <h5>Registrar</h5>
+                {whoisReport?._Registrar}
+              </>
+            )) || <>No WHOIS results available</>}
             <CippOffcanvas
               title="WHOIS Details"
               id="whois-offcanvas"
@@ -580,6 +707,10 @@ function WhoisResultCard({ domain }) {
               hideFunction={() => setVisible(false)}
             >
               <DomainOffcanvasTabs jsonContent={jsonContent}>
+                {whoisContent.length > 0 && (
+                  <OffcanvasListSection title="Properties" items={whoisContent} />
+                )}
+                <h4 className="mt-4">Raw Report</h4>
                 <CippCodeBlock language="text" code={whoisReport?._Raw} showLineNumbers={false} />
               </DomainOffcanvasTabs>
             </CippOffcanvas>
@@ -597,25 +728,26 @@ function NSResultCard({ domain }) {
     isFetching,
     error,
   } = useExecDnsHelperQuery({ Domain: domain, Action: 'ReadNSRecord' })
-  const content = []
-  nsReport?.Records.map((ns, index) =>
-    content.push({
-      body: ns,
-    }),
-  )
-  const title = (
-    <>
-      <FontAwesomeIcon icon={faServer} className="mx-2" />
-      Nameservers
-    </>
-  )
 
+  const content = []
+  if (nsReport?.Records.length > 0) {
+    nsReport?.Records.map((ns, index) =>
+      content.push({
+        body: ns,
+      }),
+    )
+  } else {
+    content.push({
+      body: 'No nameservers listed',
+    })
+  }
   return (
     <ListGroupContentCard
-      title={title}
+      title="Nameservers"
       content={content}
       isFetching={isFetching}
       error={error}
+      icon={faServer}
       errorMessage="Unable to obtain nameservers"
     />
   )
@@ -632,9 +764,6 @@ const HttpsResultCard = ({ domain, httpsOverride }) => {
 
   const jsonContent = JSON.stringify(data, null, 2)
 
-  if (!Array.isArray(tests)) {
-    tests = [tests]
-  }
   const [visible, setVisible] = useState(false)
   const headerClickFunction = () => {
     setVisible(true)
@@ -703,7 +832,22 @@ const MtaStsResultCard = ({ domain }) => {
   const headerClickFunction = () => {
     setVisible(true)
   }
-
+  let stsProperties = []
+  if (data?.StsPolicy.Version !== '') {
+    stsProperties.push({ heading: 'Version', content: data?.StsPolicy.Version })
+  }
+  if (data?.StsPolicy.Mode !== '') {
+    stsProperties.push({ heading: 'Mode', content: data?.StsPolicy.Mode })
+  }
+  data?.StsPolicy.Mx.map((prop, index) =>
+    stsProperties.push({
+      heading: 'MX',
+      content: prop,
+    }),
+  )
+  if (data?.StsPolicy.MaxAge !== '') {
+    stsProperties.push({ heading: 'Max Age', content: data?.StsPolicy.MaxAge })
+  }
   return (
     <ResultsCard
       data={data}
@@ -734,38 +878,7 @@ const MtaStsResultCard = ({ domain }) => {
             )}
             <ValidationListContent data={data.StsRecord} />
 
-            <h4 className="mt-4">MTA-STS Policy</h4>
-            {data?.StsPolicy.Version !== '' && (
-              <CListGroup className="my-3">
-                {data?.StsPolicy.Version !== '' && (
-                  <CListGroupItem className="d-flex justify-content-between align-items-center">
-                    <h6 className="w-50 mb-0">Version</h6>
-                    {data?.StsPolicy.Version}
-                  </CListGroupItem>
-                )}
-                {data?.StsPolicy.Mode !== '' && (
-                  <CListGroupItem className="d-flex justify-content-between align-items-center">
-                    <h6 className="w-50 mb-0">Mode</h6>
-                    {data?.StsPolicy.Mode}
-                  </CListGroupItem>
-                )}
-                {data?.StsPolicy.Mx.map((mx, key) => (
-                  <CListGroupItem
-                    className="d-flex justify-content-between align-items-center"
-                    key={key}
-                  >
-                    <h6 className="w-50 mb-0">MX</h6>
-                    {mx}
-                  </CListGroupItem>
-                ))}
-                {data?.StsPolicy.MaxAge !== '' && (
-                  <CListGroupItem className="d-flex justify-content-between align-items-center">
-                    <h6 className="w-50 mb-0">Max Age</h6>
-                    {data?.StsPolicy.MaxAge}
-                  </CListGroupItem>
-                )}
-              </CListGroup>
-            )}
+            <OffcanvasListSection title="MTA-STS Policy" items={stsProperties} />
             <ValidationListContent data={data?.StsPolicy} />
 
             <h4 className="mt-4">TLSRPT Record</h4>
@@ -797,9 +910,6 @@ const MXResultsCard = ({ domain }) => {
 
   const jsonContent = JSON.stringify(data, null, 2)
 
-  if (!Array.isArray(records)) {
-    records = [records]
-  }
   const [visible, setVisible] = useState(false)
   const headerClickFunction = () => {
     setVisible(true)
@@ -811,6 +921,7 @@ const MXResultsCard = ({ domain }) => {
       type="MX"
       headerClickFunction={headerClickFunction}
       isFetching={isFetching}
+      providerInfo={data?.MailProvider}
       error={error}
       errorMessage="Unable to load MX Results"
     >
@@ -828,7 +939,7 @@ const MXResultsCard = ({ domain }) => {
         <DomainOffcanvasTabs jsonContent={jsonContent}>
           {records.length > 0 && (
             <>
-              <COffcanvasTitle>MX Records</COffcanvasTitle>
+              <h4>Records</h4>
               <CTable striped small>
                 <CTableHead>
                   <CTableRow>
@@ -847,24 +958,6 @@ const MXResultsCard = ({ domain }) => {
               </CTable>
             </>
           )}
-          <COffcanvasTitle>Documentation</COffcanvasTitle>
-          <CListGroup>
-            {data?.MailProvider?._MxComment && (
-              <CListGroupItem component="a" target="_blank" href={data?.MailProvider?._MxComment}>
-                <IconExternalLink /> MX Record
-              </CListGroupItem>
-            )}
-            {data?.MailProvider?._SpfComment && (
-              <CListGroupItem component="a" target="_blank" href={data?.MailProvider?._SpfComment}>
-                <IconExternalLink /> SPF Record
-              </CListGroupItem>
-            )}
-            {data?.MailProvider?._DkimComment && (
-              <CListGroupItem component="a" target="_blank" href={data?.MailProvider?._DkimComment}>
-                <IconExternalLink /> DKIM Record
-              </CListGroupItem>
-            )}
-          </CListGroup>
         </DomainOffcanvasTabs>
       </CippOffcanvas>
     </ResultsCard>
@@ -885,6 +978,55 @@ function DMARCResultsCard({ domain }) {
   }
   const jsonContent = JSON.stringify(data, null, 2)
 
+  let dkimAlignment = 'Unknown'
+  if (data?.DkimAlignment === 's') {
+    dkimAlignment = 'Strict'
+  } else if (data?.DkimAlignment === 'r') {
+    dkimAlignment = 'Relaxed'
+  }
+
+  let spfAlignment = 'Unknown'
+  if (data?.SpfAlignment === 's') {
+    spfAlignment = 'Strict'
+  } else if (data?.SpfAlignment === 'r') {
+    spfAlignment = 'Relaxed'
+  }
+
+  let reportFormat = 'Unknown'
+  if (data?.ReportFormat === 'afrf') {
+    reportFormat = 'Authentication Failure'
+  }
+
+  let reportIntervalDays = data?.ReportInterval / 86400
+
+  let policyDetails = []
+  let reportingEmails = []
+  let forensicEmails = []
+
+  if (data?.Version !== '') {
+    policyDetails.push({ heading: 'Version', content: data?.Version })
+    policyDetails.push({ heading: 'Policy', content: ucFirst(data?.Policy) })
+    policyDetails.push({ heading: 'Subdomain Policy', content: ucFirst(data?.SubdomainPolicy) })
+    policyDetails.push({ heading: 'Percent', content: `${data?.Percent}%` })
+    policyDetails.push({ heading: 'DKIM Alignment', content: dkimAlignment })
+    policyDetails.push({ heading: 'SPF Alignment', content: spfAlignment })
+    policyDetails.push({ heading: 'Report Interval', content: `${reportIntervalDays} day(s)` })
+    policyDetails.push({ heading: 'Report Format', content: reportFormat })
+
+    data?.ReportingEmails.map((email, key) =>
+      reportingEmails.push({
+        heading: '',
+        content: email,
+      }),
+    )
+
+    data?.ForensicEmails.map((email, key) =>
+      forensicEmails.push({
+        heading: '',
+        content: email,
+      }),
+    )
+  }
   return (
     <>
       <ResultsCard
@@ -913,7 +1055,30 @@ function DMARCResultsCard({ domain }) {
         title="DMARC Details"
       >
         {!isFetching && error && <>Unable to load DMARC details</>}
-        {!isFetching && !error && <DomainOffcanvasTabs jsonContent={jsonContent} />}
+        {!isFetching && !error && (
+          <DomainOffcanvasTabs jsonContent={jsonContent}>
+            {record && (
+              <>
+                <h4>Record</h4>
+                <CippCodeBlock
+                  language="text"
+                  code={record}
+                  showLineNumbers={false}
+                  wrapLongLines={true}
+                />
+                {policyDetails.length > 0 && (
+                  <OffcanvasListSection title="Policy Details" items={policyDetails} />
+                )}
+                {reportingEmails.length > 0 && (
+                  <OffcanvasListSection title="Reporting Emails" items={reportingEmails} />
+                )}
+                {forensicEmails.length > 0 && (
+                  <OffcanvasListSection title="Forensic Emails" items={forensicEmails} />
+                )}
+              </>
+            )}
+          </DomainOffcanvasTabs>
+        )}
       </CippOffcanvas>
     </>
   )
@@ -991,13 +1156,18 @@ function DKIMResultsCard({ domain, dkimOverride }) {
     Action: 'ReadDkimRecord',
     Selector: dkimOverride,
   })
+  const [visible, setVisible] = useState(false)
+  const { data: doc } = useExecDnsHelperQuery({
+    Domain: domain,
+    Action: 'ReadMXRecord',
+  })
+
   let records = data?.Records
   const jsonContent = JSON.stringify(data, null, 2)
 
   if (!Array.isArray(records)) {
     records = []
   }
-  const [visible, setVisible] = useState(false)
 
   const headerClickFunction = () => {
     setVisible(true)
@@ -1014,6 +1184,7 @@ function DKIMResultsCard({ domain, dkimOverride }) {
         type="DKIM"
         headerClickFunction={headerClickFunction}
         isFetching={isFetching}
+        providerInfo={doc?.MailProvider}
         error={error}
         errorMessage="Unable to load DKIM Results"
       />
@@ -1031,7 +1202,7 @@ function DKIMResultsCard({ domain, dkimOverride }) {
               <>
                 {records.map((record, idx) => (
                   <div key={`${idx}-dkim-record`}>
-                    <CFormLabel>{record?.Selector}._domainkey</CFormLabel>
+                    <h4>Selector - {record?.Selector}</h4>
                     {record?.Record && (
                       <CippCodeBlock
                         language="text"

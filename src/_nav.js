@@ -80,6 +80,11 @@ const _nav = [
         name: 'Basic Auth Report',
         to: '/identity/reports/basic-auth-report',
       },
+      {
+        component: CNavItem,
+        name: 'AAD Connect Report',
+        to: '/identity/reports/azure-ad-connect-report',
+      },
     ],
   },
   {
@@ -95,8 +100,13 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'Tenants',
+        name: 'List Tenants',
         to: '/tenant/administration/tenants',
+      },
+      {
+        component: CNavItem,
+        name: 'List Licences',
+        to: '/tenant/administration/list-licenses',
       },
       {
         component: CNavItem,
@@ -166,6 +176,11 @@ const _nav = [
         component: CNavItem,
         name: 'List Alerts',
         to: '/security/reports/list-alerts',
+      },
+      {
+        component: CNavItem,
+        name: 'Device Compliance',
+        to: '/security/reports/list-device-compliance',
       },
     ],
   },
