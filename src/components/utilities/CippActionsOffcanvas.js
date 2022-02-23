@@ -10,6 +10,9 @@ import { useNavigate } from 'react-router-dom'
 export default function CippActionsOffcanvas(props) {
   const [genericGetRequest, getResults] = useLazyGenericGetRequestQuery()
   const handleLink = useNavigate()
+  const handleExternalLink = (link) => {
+    window.open(link, '_blank')
+  }
   const handleModal = (modalMessage, modalUrl) => {
     ModalService.confirm({
       body: (
@@ -21,9 +24,13 @@ export default function CippActionsOffcanvas(props) {
       onConfirm: () => genericGetRequest({ path: modalUrl }),
     })
   }
-  const handleOnClick = (link, modal, modalMessage, modalUrl) => {
+  const handleOnClick = (link, modal, modalMessage, modalUrl, external) => {
     if (link) {
-      handleLink(link)
+      if (external) {
+        handleExternalLink(link)
+      } else {
+        handleLink(link)
+      }
     } else if (modal) {
       handleModal(modalMessage, modalUrl)
     }
@@ -36,7 +43,13 @@ export default function CippActionsOffcanvas(props) {
         component="button"
         color={action.color}
         onClick={() =>
-          handleOnClick(action.link, action.modal, action.modalMessage, action.modalUrl)
+          handleOnClick(
+            action.link,
+            action.modal,
+            action.modalMessage,
+            action.modalUrl,
+            action.external,
+          )
         }
       >
         {action.icon}
@@ -86,6 +99,7 @@ const CippActionsOffcanvasPropTypes = {
       modal: PropTypes.bool,
       modalUrl: PropTypes.string,
       modalMessage: PropTypes.string,
+      external: PropTypes.bool,
     }),
   ).isRequired,
   rowIndex: PropTypes.number,
