@@ -216,14 +216,14 @@ This script requires the PartnerCenter module to generate the Secure Application
 ### Enter the details of your Secure Access Model Application below ###
 
 $ApplicationId           = '<YOUR APPLICATION ID>'
-$ApplicationSecret       = '<YOUR APPLICATION SECRET>' | ConvertTo-SecureString -AsPlainText -Force
+$ApplicationSecret       = '<YOUR APPLICATION SECRET>'
 $TenantId                = '<YOUR TENANT ID>'
 
 ### STOP EDITING HERE ###
 
 ### Create credential object using UserEntered(ApplicationID) and UserEntered(ApplicationSecret) ###
 
-$Credential = New-Object System.Management.Automation.PSCredential($ApplicationId, $ApplicationSecret)
+$Credential = New-Object System.Management.Automation.PSCredential($ApplicationId, ($ApplicationSecret | ConvertTo-SecureString -AsPlainText -Force))
 
 ### Splat Params required for Updating Refresh Token ###
 
@@ -257,7 +257,7 @@ $Exchangetoken = New-PartnerAccessToken @UpdateExchangeTokenParamaters
 
 Write-Host "================ Secrets ================"
 Write-Host "`$ApplicationId         = $($ApplicationId)"
-Write-Host "`$ApplicationSecret     = $($ApplicationSecret | ConvertFrom-SecureString -AsPlainText -Force)"
+Write-Host "`$ApplicationSecret     = $($ApplicationSecret)"
 Write-Host "`$TenantID              = $($TenantId)"
 Write-Host "`$RefreshToken          = $($Token.refreshtoken)" -ForegroundColor Blue
 Write-Host "`$ExchangeRefreshToken  = $($ExchangeToken.Refreshtoken)" -ForegroundColor Green
