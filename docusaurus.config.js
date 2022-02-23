@@ -53,6 +53,10 @@ const config = {
           routeBasePath: 'releases',
           showReadingTime: false,
           remarkPlugins: [a11yEmoji],
+          feedOptions: {
+            type: 'all',
+            copyright: `Copyright © ${new Date().getFullYear()} CyberDrain`,
+          },
         },
         theme: {
           customCss: [
