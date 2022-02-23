@@ -41,6 +41,7 @@ Some permissions may appear duplicated in the Delegated and Application permissi
 | AuditLog.Read.All                            | Read audit log data                                               |
 | Channel.Create                               | Create channels                                                   |
 | Channel.ReadBasic.All                        | Read the names and descriptions of channels                       |
+| Channel.Delete.All                           | Delete Channels                                                   |
 | ChannelMember.Read.All                       | Read the members of channels                                      |
 | ChannelMember.ReadWrite.All                  | Add and remove members from channels                              |
 | ChannelMessage.Delete                        | Delete users' channel messages                                    |
@@ -50,7 +51,6 @@ Some permissions may appear duplicated in the Delegated and Application permissi
 | ChannelSettings.Read.All                     | Read the names, descriptions, and settings of channels            |
 | ChannelSettings.ReadWrite.All                | Read and write the names, descriptions, and settings of channels  |
 | ConsentRequest.Read.All                      | Read consent requests                                             |
-| Channel.Delete.All                           | Delete Channels                                                   |
 | Device.Command                               | Communicate with user devices                                     |
 | Device.Read                                  | Read user devices                                                 |
 | Device.Read.All                              | Read all devices                                                  |
