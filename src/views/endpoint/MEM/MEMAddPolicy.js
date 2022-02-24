@@ -1,12 +1,8 @@
 import React from 'react'
-import { CAlert, CCol, CRow, CListGroup, CListGroupItem, CCallout, CSpinner } from '@coreui/react'
+import { CCol, CRow, CListGroup, CListGroupItem, CCallout, CSpinner } from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faCheckCircle,
-  faExclamationTriangle,
-  faTimesCircle,
-} from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faExclamationTriangle, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { CippWizard } from 'src/components/layout'
 import { WizardTableField } from 'src/components/tables'
 import PropTypes from 'prop-types'
@@ -25,10 +21,10 @@ const Error = ({ name }) => (
     subscription={{ touched: true, error: true }}
     render={({ meta: { touched, error } }) =>
       touched && error ? (
-        <CAlert color="danger">
+        <CCallout color="danger">
           <FontAwesomeIcon icon={faExclamationTriangle} color="danger" />
           {error}
-        </CAlert>
+        </CCallout>
       ) : null
     }
   />
@@ -47,6 +43,7 @@ const AddPolicy = () => {
     values.selectedTenants.map(
       (tenant) => (values[`Select_${tenant.defaultDomainName}`] = tenant.defaultDomainName),
     )
+    values.TemplateType = values.Type
     genericPostRequest({ path: '/api/AddPolicy', values: values })
   }
   /* eslint-disable react/prop-types */
@@ -97,7 +94,7 @@ const AddPolicy = () => {
             <WizardTableField
               reportName="Add-MEM-Policy-Tenant-Selector"
               keyField="defaultDomainName"
-              path="/api/ListTenants"
+              path="/api/ListTenants?AllTenantSelector=true"
               columns={[
                 {
                   name: 'Display Name',
@@ -233,7 +230,7 @@ const AddPolicy = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.Displayname ? faCheckCircle : faTimesCircle}
+                            icon={props.values.Displayname ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -241,7 +238,7 @@ const AddPolicy = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.Description ? faCheckCircle : faTimesCircle}
+                            icon={props.values.Description ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -249,7 +246,7 @@ const AddPolicy = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.Type ? faCheckCircle : faTimesCircle}
+                            icon={props.values.Type ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -257,7 +254,7 @@ const AddPolicy = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.AssignTo ? faCheckCircle : faTimesCircle}
+                            icon={props.values.AssignTo ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                       </CListGroup>
@@ -273,7 +270,13 @@ const AddPolicy = () => {
             <CSpinner>Loading</CSpinner>
           </CCallout>
         )}
-        {postResults.isSuccess && <CCallout color="success">{postResults.data.Results}</CCallout>}{' '}
+        {postResults.isSuccess && (
+          <CCallout color="success">
+            {postResults.data.Results.map((message, idx) => {
+              return <li key={idx}>{message}</li>
+            })}
+          </CCallout>
+        )}
         <hr className="my-4" />
       </CippWizard.Page>
     </CippWizard>

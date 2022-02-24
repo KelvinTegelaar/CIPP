@@ -119,12 +119,14 @@ const BestPracticeAnalyser = () => {
       name: 'Unified Audit Log Enabled',
       selector: (row) => row['UnifiedAuditLog'],
       cell: cellBooleanFormatter(),
+      sortable: true,
       exportSelector: 'UnifiedAuditLog',
     },
     {
       name: 'Security Defaults Enabled',
       selector: (row) => row['SecureDefaultState'],
       cell: cellBooleanFormatter({ warning: true }),
+      sortable: true,
       exportSelector: 'SecureDefaultState',
     },
     {
@@ -145,23 +147,27 @@ const BestPracticeAnalyser = () => {
         }
         return <CellBadge label="No Data" color="info" />
       },
+      sortable: true,
     },
     {
       name: 'User Cannot Consent to Apps',
       selector: (row) => row['AdminConsentForApplications'],
       cell: cellBooleanFormatter({ reverse: true }),
+      sortable: true,
       exportSelector: 'AdminConsentForApplication',
     },
     {
       name: 'Passwords Do Not Expire',
       selector: (row) => row['DoNotExpirePasswords'],
       cell: cellBooleanFormatter(),
+      sortable: true,
       exportSelector: 'DoNotExpirePasswords',
     },
     {
       name: 'Privacy in Reports Enabled',
       selector: (row) => row['PrivacyEnabled'],
       cell: cellBooleanFormatter({ reverse: true, warning: true }),
+      sortable: true,
       exportSelector: 'PrivacyEnabled',
     },
     {
@@ -179,10 +185,12 @@ const BestPracticeAnalyser = () => {
         }
         return <CellBadge label="No Data" color="info" />
       },
+      sortable: true,
     },
     {
       name: 'Modern Auth Enabled',
       selector: (row) => row['EnableModernAuth'],
+      sortable: true,
       exportSelector: 'EnabledModernAuth',
       cell: cellBooleanFormatter(),
     },
@@ -207,6 +215,7 @@ const BestPracticeAnalyser = () => {
         }
         return <CellBadge label="No Data" color="info" />
       },
+      sortable: true,
     },
     {
       name: 'Unused Licenses',
@@ -217,7 +226,8 @@ const BestPracticeAnalyser = () => {
         if (cell === 'FAIL') {
           return (
             <CButton className="btn-danger" size="sm" onClick={() => handleUnusedLicense({ row })}>
-              {row.UnusedLicensesCount} SKU{row.UnusedLicensesCount > 1 ? 's' : ''}
+              {row.UnusedLicensesCount} SKU{row.UnusedLicensesCount > 1 ? 's' : ''} / Lic{' '}
+              {row.UnusedLicensesTotal}
             </CButton>
           )
         } else if (cell === 'PASS') {
@@ -225,6 +235,7 @@ const BestPracticeAnalyser = () => {
         }
         return <CellBadge label="No Data" color="info" />
       },
+      sortable: true,
     },
     {
       name: 'Secure Score',
@@ -237,6 +248,7 @@ const BestPracticeAnalyser = () => {
         }
         return <CellProgressBar value={row.SecureScorePercentage} />
       },
+      sortable: true,
     },
   ]
 

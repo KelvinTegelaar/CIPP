@@ -1,12 +1,8 @@
 import React from 'react'
-import { CAlert, CCallout, CCol, CListGroup, CListGroupItem, CRow, CSpinner } from '@coreui/react'
+import { CCallout, CCol, CListGroup, CListGroupItem, CRow, CSpinner } from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faExclamationTriangle,
-  faTimesCircle,
-  faCheckCircle,
-} from '@fortawesome/free-solid-svg-icons'
+import { faExclamationTriangle, faTimes, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
 import { CippWizard } from 'src/components/layout'
 import PropTypes from 'prop-types'
@@ -21,10 +17,10 @@ const Error = ({ name }) => (
     subscription={{ touched: true, error: true }}
     render={({ meta: { touched, error } }) =>
       touched && error ? (
-        <CAlert color="danger">
+        <CCallout color="danger">
           <FontAwesomeIcon icon={faExclamationTriangle} color="danger" />
           {error}
-        </CAlert>
+        </CCallout>
       ) : null
     }
   />
@@ -56,6 +52,9 @@ const OffboardingWizard = () => {
     }
     if (!values.OOO) {
       values.OOO = ''
+    }
+    if (!values.forward) {
+      values.forward = ''
     }
     const shippedValues = {
       TenantFilter: tenantDomain,
@@ -156,6 +155,17 @@ const OffboardingWizard = () => {
               name="UserAutomapOneDrive"
             />
           </CCol>
+          <CCol md={6}>
+            <RFFSelectSearch
+              label="Forward email to other user"
+              values={users?.map((user) => ({
+                value: user.mail,
+                name: user.displayName,
+              }))}
+              placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
+              name="forward"
+            />
+          </CCol>
           <RFFCFormSwitch name="DeleteUser" label="Delete user" />
         </div>
         <hr className="my-4" />
@@ -206,7 +216,7 @@ const OffboardingWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.RemoveLicenses ? faCheckCircle : faTimesCircle}
+                            icon={props.values.RemoveLicenses ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -214,7 +224,7 @@ const OffboardingWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.ConvertToShared ? faCheckCircle : faTimesCircle}
+                            icon={props.values.ConvertToShared ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -222,7 +232,7 @@ const OffboardingWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.DisableSignIn ? faCheckCircle : faTimesCircle}
+                            icon={props.values.DisableSignIn ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -230,7 +240,7 @@ const OffboardingWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.ResetPass ? faCheckCircle : faTimesCircle}
+                            icon={props.values.ResetPass ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -238,7 +248,7 @@ const OffboardingWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.RemoveGroups ? faCheckCircle : faTimesCircle}
+                            icon={props.values.RemoveGroups ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -246,7 +256,7 @@ const OffboardingWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.HideFromGAL ? faCheckCircle : faTimesCircle}
+                            icon={props.values.HideFromGAL ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -254,7 +264,7 @@ const OffboardingWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.OOO ? faCheckCircle : faTimesCircle}
+                            icon={props.values.OOO ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -262,7 +272,7 @@ const OffboardingWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.UserNoAutomap ? faCheckCircle : faTimesCircle}
+                            icon={props.values.AccessNoAutomap ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -270,7 +280,7 @@ const OffboardingWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.UserAutomap ? faCheckCircle : faTimesCircle}
+                            icon={props.values.AccessAutomap ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -278,7 +288,15 @@ const OffboardingWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.OneDrive ? faCheckCircle : faTimesCircle}
+                            icon={props.values.OnedriveAccess ? faCheck : faTimes}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Forward all e-mail to another user
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.forward ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                       </CListGroup>
