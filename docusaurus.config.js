@@ -322,7 +322,7 @@ const config = {
             from: '/GettingStarted/Security/',
           },
           {
-            to: '/changelog/',
+            to: '/releases/',
             from: '/GettingStarted/Changelog/',
           },
           {
