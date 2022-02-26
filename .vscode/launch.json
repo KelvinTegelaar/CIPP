@@ -27,7 +27,7 @@
       "port": 9222,
       "request": "attach",
       "type": "pwa-msedge",
-      "urlFilter": "https://localhost:4280/*", // use urlFilter instead of url!
+      "urlFilter": "https://localhost:4280/*",
       "webRoot": "${workspaceFolder}"
     }
   ],
