@@ -46,6 +46,7 @@ import { Form } from 'react-final-form'
 import useConfirmModal from 'src/hooks/useConfirmModal'
 import { setCurrentTenant } from 'src/store/features/app'
 import { ModalService, TenantSelectorMultiple, TenantSelector } from 'src/components/utilities'
+import CippListOffcanvas from 'src/components/utilities/CippListOffcanvas'
 
 const CIPPSettings = () => {
   const [active, setActive] = useState(1)
@@ -105,6 +106,7 @@ const GeneralSettings = () => {
   const [checkAccess, accessCheckResult] = useLazyExecTenantsAccessCheckQuery()
   const [selectedTenants, setSelectedTenants] = useState([])
   const [showMaxSelected, setShowMaxSelected] = useState(false)
+  const [tokenOffcanvasVisible, setTokenOffcanvasVisible] = useState(false)
   const maxSelected = 3
   const tenantSelectorRef = useRef(null)
 
@@ -141,6 +143,49 @@ const GeneralSettings = () => {
     checkAccess({ tenantDomains: AllTenantSelector })
   }
 
+  function getTokenOffcanvasProps({ tokenDetails }) {
+    console.log(tokenDetails)
+    let tokenOffcanvasGroups = []
+    let tokenOffcanvasGroup = {}
+    let tokenItems = []
+
+    tokenItems.push({
+      heading: 'User',
+      content: tokenDetails?.Name,
+    })
+    tokenItems.push({
+      heading: 'UPN',
+      content: tokenDetails?.UserPrincipalName,
+    })
+    tokenItems.push({
+      heading: 'App Registration',
+      content: tokenDetails?.AppName,
+    })
+    tokenItems.push({
+      heading: 'App ID',
+      content: tokenDetails?.AppId,
+    })
+    tokenItems.push({
+      heading: 'IP Address',
+      content: tokenDetails?.IPAddress,
+    })
+    tokenItems.push({
+      heading: 'Auth Claims',
+      content: tokenDetails?.AuthMethods.join(', '),
+    })
+    tokenItems.push({
+      heading: 'Tenant ID',
+      content: tokenDetails?.TenantId,
+    })
+
+    tokenOffcanvasGroup.items = tokenItems
+    tokenOffcanvasGroup.title = ''
+
+    tokenOffcanvasGroups.push(tokenOffcanvasGroup)
+    console.log(tokenOffcanvasGroups)
+    return tokenOffcanvasGroups
+  }
+
   const handleClearCache = useConfirmModal({
     body: <div>Are you sure you want to clear the cache?</div>,
     onConfirm: () => {
@@ -175,16 +220,46 @@ const GeneralSettings = () => {
                 Run Permissions Check
               </CButton>
               {permissionsResult.isSuccess && (
-                <div>
-                  {permissionsResult.data.Results.MissingPermissions
-                    ? 'Your Secure Application Model is missing the following delegated permissions:'
-                    : permissionsResult.data.Results}
-                  <CListGroup flush>
-                    {permissionsResult.data.Results?.MissingPermissions?.map((r, index) => (
-                      <CListGroupItem key={index}>{r}</CListGroupItem>
-                    ))}
-                  </CListGroup>
-                </div>
+                <>
+                  <CCallout
+                    color={permissionsResult.data.Results?.Success === true ? 'success' : 'danger'}
+                  >
+                    {permissionsResult.data.Results?.Messages && (
+                      <>
+                        {permissionsResult.data.Results?.Messages?.map((m, idx) => (
+                          <div key={idx}>{m}</div>
+                        ))}
+                      </>
+                    )}
+                    {permissionsResult.data.Results?.MissingPermissions.length > 0 && (
+                      <>
+                        Your Secure Application Model is missing the following delegated
+                        permissions:
+                        <CListGroup flush>
+                          {permissionsResult.data.Results?.MissingPermissions?.map((r, index) => (
+                            <CListGroupItem key={index}>{r}</CListGroupItem>
+                          ))}
+                        </CListGroup>
+                      </>
+                    )}
+                  </CCallout>
+                  {permissionsResult.data.Results?.AccessTokenDetails?.Name !== '' && (
+                    <>
+                      <CButton onClick={() => setTokenOffcanvasVisible(true)} className="mt-3">
+                        Token Details
+                      </CButton>
+                      <CippListOffcanvas
+                        title="Token Details"
+                        placement="end"
+                        visible={tokenOffcanvasVisible}
+                        groups={getTokenOffcanvasProps({
+                          tokenDetails: permissionsResult.data.Results?.AccessTokenDetails,
+                        })}
+                        hideFunction={() => setTokenOffcanvasVisible(false)}
+                      />
+                    </>
+                  )}
+                </>
               )}
             </CCardBody>
           </CCard>
