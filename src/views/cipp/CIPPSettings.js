@@ -143,45 +143,66 @@ const GeneralSettings = () => {
     checkAccess({ tenantDomains: AllTenantSelector })
   }
 
-  function getTokenOffcanvasProps({ tokenDetails }) {
-    console.log(tokenDetails)
+  function getTokenOffcanvasProps({ tokenResults }) {
+    let tokenDetails = tokenResults.AccessTokenDetails
+    let helpLinks = tokenResults.Links
     let tokenOffcanvasGroups = []
-    let tokenOffcanvasGroup = {}
-    let tokenItems = []
+    if (tokenDetails?.Name !== '') {
+      let tokenItems = []
+      let tokenOffcanvasGroup = {}
+      tokenItems.push({
+        heading: 'User',
+        content: tokenDetails?.Name,
+      })
+      tokenItems.push({
+        heading: 'UPN',
+        content: tokenDetails?.UserPrincipalName,
+      })
+      tokenItems.push({
+        heading: 'App Registration',
+        content: tokenDetails?.AppName,
+      })
+      tokenItems.push({
+        heading: 'App ID',
+        content: tokenDetails?.AppId,
+      })
+      tokenItems.push({
+        heading: 'IP Address',
+        content: tokenDetails?.IPAddress,
+      })
+      tokenItems.push({
+        heading: 'Auth Claims',
+        content: tokenDetails?.AuthMethods.join(', '),
+      })
+      tokenItems.push({
+        heading: 'Tenant ID',
+        content: tokenDetails?.TenantId,
+      })
+      tokenOffcanvasGroup.items = tokenItems
+      tokenOffcanvasGroup.title = 'Claims'
+      tokenOffcanvasGroups.push(tokenOffcanvasGroup)
+    }
 
-    tokenItems.push({
-      heading: 'User',
-      content: tokenDetails?.Name,
-    })
-    tokenItems.push({
-      heading: 'UPN',
-      content: tokenDetails?.UserPrincipalName,
-    })
-    tokenItems.push({
-      heading: 'App Registration',
-      content: tokenDetails?.AppName,
-    })
-    tokenItems.push({
-      heading: 'App ID',
-      content: tokenDetails?.AppId,
-    })
-    tokenItems.push({
-      heading: 'IP Address',
-      content: tokenDetails?.IPAddress,
-    })
-    tokenItems.push({
-      heading: 'Auth Claims',
-      content: tokenDetails?.AuthMethods.join(', '),
-    })
-    tokenItems.push({
-      heading: 'Tenant ID',
-      content: tokenDetails?.TenantId,
-    })
+    if (helpLinks.length > 0) {
+      let linkItems = []
+      let linkItemGroup = {}
+      helpLinks.map((link, idx) =>
+        linkItems.push({
+          heading: '',
+          content: (
+            <CLink href={link.Href} target="_blank" key={idx}>
+              {link.Text}
+            </CLink>
+          ),
+        }),
+      )
+      linkItemGroup.title = 'Help Links'
+      linkItemGroup.items = linkItems
+      if (linkItemGroup.items.length > 0) {
+        tokenOffcanvasGroups.push(linkItemGroup)
+      }
+    }
 
-    tokenOffcanvasGroup.items = tokenItems
-    tokenOffcanvasGroup.title = ''
-
-    tokenOffcanvasGroups.push(tokenOffcanvasGroup)
     console.log(tokenOffcanvasGroups)
     return tokenOffcanvasGroups
   }
@@ -246,14 +267,14 @@ const GeneralSettings = () => {
                   {permissionsResult.data.Results?.AccessTokenDetails?.Name !== '' && (
                     <>
                       <CButton onClick={() => setTokenOffcanvasVisible(true)} className="mt-3">
-                        Token Details
+                        Details
                       </CButton>
                       <CippListOffcanvas
-                        title="Token Details"
+                        title="Details"
                         placement="end"
                         visible={tokenOffcanvasVisible}
                         groups={getTokenOffcanvasProps({
-                          tokenDetails: permissionsResult.data.Results?.AccessTokenDetails,
+                          tokenResults: permissionsResult.data.Results,
                         })}
                         hideFunction={() => setTokenOffcanvasVisible(false)}
                       />
