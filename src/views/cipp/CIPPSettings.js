@@ -266,9 +266,7 @@ const GeneralSettings = () => {
                   </CCallout>
                   {permissionsResult.data.Results?.AccessTokenDetails?.Name !== '' && (
                     <>
-                      <CButton onClick={() => setTokenOffcanvasVisible(true)} className="mt-3">
-                        Details
-                      </CButton>
+                      <CButton onClick={() => setTokenOffcanvasVisible(true)}>Details</CButton>
                       <CippListOffcanvas
                         title="Details"
                         placement="end"
