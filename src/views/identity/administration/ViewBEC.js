@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { CButton, CCallout, CLink } from '@coreui/react'
-import { CCard, CCardBody, CCardHeader, CCardTitle, CSpinner } from '@coreui/react'
+import { CCardBody, CSpinner } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faCheckCircle,
