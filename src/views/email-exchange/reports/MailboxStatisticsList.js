@@ -3,6 +3,17 @@ import { useSelector } from 'react-redux'
 import { cellBooleanFormatter } from 'src/components/tables'
 import { CippPageList } from 'src/components/layout'
 
+const conditionalRowStyles = [
+  {
+    when: (row) => (row.UsedGB / row.QuotaGB) * 100 > 80 && (row.UsedGB / row.QuotaGB) * 100 < 90,
+    classNames: ['mbusage-warning'],
+  },
+  {
+    when: (row) => (row.UsedGB / row.QuotaGB) * 100 > 90 && (row.UsedGB / row.QuotaGB) * 100 < 100,
+    classNames: ['mbusage-danger'],
+  },
+]
+
 const columns = [
   {
     selector: (row) => row['UPN'],
@@ -61,6 +72,9 @@ const MailboxStatsList = () => {
         path: '/api/ListMailboxStatistics',
         columns,
         params: { TenantFilter: tenant?.defaultDomainName },
+        tableProps: {
+          conditionalRowStyles: conditionalRowStyles,
+        },
       }}
     />
   )
