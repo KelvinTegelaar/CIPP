@@ -63,6 +63,13 @@ const ApplyStandard = () => {
         title="Tenant Choice"
         description="Choose the tenants to create the standard for."
       >
+        <CCallout color="danger">
+          Ensure you read{' '}
+          <a href="https://cipp.app/docs/user/usingcipp/tenantadministration/standards/#meet-the-standards">
+            the documentation fully
+          </a>{' '}
+          before proceeding with this wizard. Some of the changes cannot be reverted by CIPP.
+        </CCallout>
         <center>
           <h3 className="text-primary">Step 1</h3>
           <h5 className="card-title mb-4">Choose a tenant</h5>
@@ -126,6 +133,10 @@ const ApplyStandard = () => {
           <RFFCFormSwitch
             name="standards.DisableSharedMailbox"
             label="Disable Shared Mailbox AAD accounts"
+          />
+          <RFFCFormSwitch
+            name="standards.DisableSelfServiceLicenses"
+            label="Disable Self Service Licensing"
           />
           <RFFCFormSwitch
             name="standards.AutoExpandArchive"

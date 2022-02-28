@@ -42,10 +42,16 @@ const ViewBec = () => {
       name: 'Creator IP',
       selector: (row) => row['ClientIP'],
       sortable: true,
+      grow: 0,
     },
     {
       name: 'Rule Name',
-      selector: (row) => row.Parameters[3]?.value,
+      selector: (row) => row['RuleName'],
+      sortable: true,
+    },
+    {
+      name: 'Rule Conditions',
+      selector: (row) => row['RuleCondition'],
       sortable: true,
     },
     {
@@ -169,8 +175,7 @@ const ViewBec = () => {
     },
     {
       name: 'Permissions',
-      selector: (row) =>
-        row.Item ? row.Item.ParentFolder?.MemberRights : row.Parameters[3]?.Value,
+      selector: (row) => row['Permissions'],
       sortable: true,
     },
   ]
