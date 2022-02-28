@@ -63,7 +63,9 @@
 
   .card-header {
     &:first-child {
-      border-radius: var(--cipp-border-radius) var(--cipp-border-radius) 0 0;
+      border-radius: 3px 3px 0 0;
+      background-clip: border-box;
+      overflow: hidden;
     }
   }
 
