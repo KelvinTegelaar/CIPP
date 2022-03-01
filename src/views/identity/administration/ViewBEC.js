@@ -1,12 +1,25 @@
 import React, { useEffect } from 'react'
-import { CButton, CCallout, CCol, CRow, CLink } from '@coreui/react'
-import { CCard, CCardBody, CCardHeader, CCardTitle, CSpinner } from '@coreui/react'
+import { CButton, CCallout, CLink } from '@coreui/react'
+import { CCardBody, CSpinner } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheckCircle, faRedo, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
+import {
+  faCheckCircle,
+  faRedo,
+  faTimesCircle,
+  faLaptop,
+  faKey,
+  faForward,
+  faUsers,
+  faAsterisk,
+  faIdBadge,
+  faWindowRestore,
+  faSignInAlt,
+} from '@fortawesome/free-solid-svg-icons'
 import { useLazyExecBecCheckQuery } from 'src/store/api/users'
 import useQuery from 'src/hooks/useQuery'
 import { CippTable } from 'src/components/tables'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import { CippContentCard, CippMasonry, CippMasonryItem, CippPage } from 'src/components/layout'
 
 const ViewBec = () => {
   let query = useQuery()
@@ -204,13 +217,15 @@ const ViewBec = () => {
   ]
 
   return (
-    <div className="container overflow-hidden">
-      <CRow>
-        <CCol className="col-6">
-          <CCard className="h-100">
-            <CCardHeader>
-              <CCardTitle className="text-primary d-flex justify-content-between">
-                Business Email Compromise Overview
+    <CippPage tenantSelector={false} title="View Business Email Compromise Indicators">
+      {isFetching && <CSpinner />}
+      {!isFetching && error && <span>Error loading BEC indicators.</span>}
+      {!isFetching && isSuccess && (
+        <CippMasonry columns={2}>
+          <CippMasonryItem size="full">
+            <CippContentCard
+              title="Business Email Compromise Overview"
+              button={
                 <CButton
                   size="sm"
                   onClick={() => execBecView({ tenantFilter: tenantDomain, userId: userId })}
@@ -219,9 +234,8 @@ const ViewBec = () => {
                   {!isFetching && <FontAwesomeIcon icon={faRedo} className="me-2" />}
                   Refresh
                 </CButton>
-              </CCardTitle>
-            </CCardHeader>
-            <CCardBody>
+              }
+            >
               <CCallout color="info">
                 Loading Data: {isFetching && <CSpinner />}
                 {!isFetching && error && <FontAwesomeIcon icon={faTimesCircle} />}
@@ -234,7 +248,7 @@ const ViewBec = () => {
               <p>
                 If you need more extensive information, run the{' '}
                 <CLink href="https://cloudforensicator.com/">HAWK</CLink> tool to investigate{' '}
-                further. If you believe this user to be compromised.
+                further if you believe this user to be compromised.
               </p>
               <p>
                 Hit the button below to execute the following tasks:
@@ -264,17 +278,10 @@ const ViewBec = () => {
               {execRemediateResults.isSuccess && (
                 <CCallout color="info">{execRemediateResults.data?.Results}</CCallout>
               )}
-            </CCardBody>
-          </CCard>
-        </CCol>
-        <CCol className="col-6">
-          <CCard className="h-100">
-            <CCardHeader>
-              <CCardTitle className="text-primary d-flex justify-content-between">
-                Devices (User)
-              </CCardTitle>
-            </CCardHeader>
-            <CCardBody>
+            </CippContentCard>
+          </CippMasonryItem>
+          <CippMasonryItem size="half">
+            <CippContentCard title="User Devices" icon={faLaptop}>
               {isSuccess && (
                 <CippTable
                   keyField="ID"
@@ -287,21 +294,10 @@ const ViewBec = () => {
                   reportName="none"
                 />
               )}
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
-      <br></br>
-      <CRow>
-        <CCol className="col-6">
-          <CCard className="h-100">
-            <CCardHeader>
-              <CCardTitle className="text-primary d-flex justify-content-between">
-                Recently added rules (Tenant)
-              </CCardTitle>
-            </CCardHeader>
-            <CCardBody>
-              {' '}
+            </CippContentCard>
+          </CippMasonryItem>
+          <CippMasonryItem size="half">
+            <CippContentCard title="Recently Added Email Forwarding Rules" icon={faForward}>
               {isSuccess && (
                 <CippTable
                   keyField="ID"
@@ -314,43 +310,28 @@ const ViewBec = () => {
                   reportName="none"
                 />
               )}
-            </CCardBody>
-          </CCard>
-        </CCol>
-        <CCol className="col-6">
-          <CCard className="h-100">
-            <CCardHeader>
-              <CCardTitle className="text-primary d-flex justify-content-between">
-                Last Logon Details (User)
-              </CCardTitle>
-            </CCardHeader>
-            <CCardBody>
-              {isSuccess && (
-                <CippTable
-                  keyField="ID"
-                  columns={logonColumns}
-                  data={alerts.LastSuspectUserLogon}
-                  striped
-                  responsive={true}
-                  tableProps={{ subHeaderComponent: false }}
-                  wrapperClasses="table-responsive"
-                  reportName="none"
-                />
-              )}
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
-      <br></br>
-      <CRow xs={{ gutter: 3 }}>
-        <CCol className="col-12">
-          <CCard className="h-100">
-            <CCardHeader>
-              <CCardTitle className="text-primary d-flex justify-content-between">
-                Newly created users (Tenant)
-              </CCardTitle>
-            </CCardHeader>
-            <CCardBody>
+            </CippContentCard>
+          </CippMasonryItem>
+          <CippMasonryItem size="half">
+            <CippContentCard title="User Last Logon Details" icon={faKey}>
+              <CCardBody>
+                {isSuccess && (
+                  <CippTable
+                    keyField="ID"
+                    columns={logonColumns}
+                    data={alerts.LastSuspectUserLogon}
+                    striped
+                    responsive={true}
+                    tableProps={{ subHeaderComponent: false }}
+                    wrapperClasses="table-responsive"
+                    reportName="none"
+                  />
+                )}
+              </CCardBody>
+            </CippContentCard>
+          </CippMasonryItem>
+          <CippMasonryItem size="half">
+            <CippContentCard title="Recently Added Users" icon={faUsers}>
               {isSuccess && (
                 <CippTable
                   keyField="ID"
@@ -363,19 +344,10 @@ const ViewBec = () => {
                   reportName="none"
                 />
               )}
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
-      <CRow xs={{ gutter: 3 }}>
-        <CCol className="col-12">
-          <CCard className="h-100">
-            <CCardHeader>
-              <CCardTitle className="text-primary d-flex justify-content-between">
-                Password Changes (Tenant)
-              </CCardTitle>
-            </CCardHeader>
-            <CCardBody>
+            </CippContentCard>
+          </CippMasonryItem>
+          <CippMasonryItem size="full">
+            <CippContentCard title="Recent Password Changes" icon={faAsterisk}>
               {isSuccess && (
                 <CippTable
                   keyField="ID"
@@ -388,20 +360,10 @@ const ViewBec = () => {
                   reportName="none"
                 />
               )}
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
-      <br></br>
-      <CRow className="g-2">
-        <CCol className="col-12">
-          <CCard className="h-100">
-            <CCardHeader>
-              <CCardTitle className="text-primary d-flex justify-content-between">
-                Mailbox Permissions changes (Tenant)
-              </CCardTitle>
-            </CCardHeader>
-            <CCardBody>
+            </CippContentCard>
+          </CippMasonryItem>
+          <CippMasonryItem size="full">
+            <CippContentCard title="Mailbox Permissions Changes" icon={faIdBadge}>
               {isSuccess && (
                 <CippTable
                   keyField="ID"
@@ -414,20 +376,10 @@ const ViewBec = () => {
                   reportName="none"
                 />
               )}
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
-      <br></br>
-      <CRow className="g-2">
-        <CCol className="col-12">
-          <CCard className="h-100">
-            <CCardHeader>
-              <CCardTitle className="text-primary d-flex justify-content-between">
-                Application Changes (Tenant)
-              </CCardTitle>
-            </CCardHeader>
-            <CCardBody>
+            </CippContentCard>
+          </CippMasonryItem>
+          <CippMasonryItem size="full">
+            <CippContentCard title="Application Changes" icon={faWindowRestore}>
               {isSuccess && (
                 <CippTable
                   keyField="ID"
@@ -440,20 +392,10 @@ const ViewBec = () => {
                   reportName="none"
                 />
               )}
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
-      <br></br>
-      <CRow className="g-2">
-        <CCol className="col-12">
-          <CCard className="h-100">
-            <CCardHeader>
-              <CCardTitle className="text-primary d-flex justify-content-between">
-                Mailbox Logons (Tenant)
-              </CCardTitle>
-            </CCardHeader>
-            <CCardBody>
+            </CippContentCard>
+          </CippMasonryItem>
+          <CippMasonryItem size="full">
+            <CippContentCard title="Mailbox Logons" icon={faSignInAlt}>
               {isSuccess && (
                 <CippTable
                   keyField="ID"
@@ -466,12 +408,11 @@ const ViewBec = () => {
                   reportName="none"
                 />
               )}
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
-      <br></br>
-    </div>
+            </CippContentCard>
+          </CippMasonryItem>
+        </CippMasonry>
+      )}
+    </CippPage>
   )
 }
 

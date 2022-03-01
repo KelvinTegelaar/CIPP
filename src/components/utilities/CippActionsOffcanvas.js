@@ -37,25 +37,24 @@ export default function CippActionsOffcanvas(props) {
   }
   const extendedInfoContent = <CippOffcanvasTable rows={props.extendedInfo} guid={props.id} />
   const actionsContent = props.actions.map((action, index) => (
-    <CListGroup layout="horizontal-md" key={index}>
-      <CListGroupItem
-        className="cipp-action"
-        component="button"
-        color={action.color}
-        onClick={() =>
-          handleOnClick(
-            action.link,
-            action.modal,
-            action.modalMessage,
-            action.modalUrl,
-            action.external,
-          )
-        }
-      >
-        {action.icon}
-        {action.label}
-      </CListGroupItem>
-    </CListGroup>
+    <CListGroupItem
+      className="cipp-action"
+      component="button"
+      color={action.color}
+      onClick={() =>
+        handleOnClick(
+          action.link,
+          action.modal,
+          action.modalMessage,
+          action.modalUrl,
+          action.external,
+        )
+      }
+      key={index}
+    >
+      {action.icon}
+      {action.label}
+    </CListGroupItem>
   ))
   return (
     <CippOffcanvas
@@ -77,7 +76,7 @@ export default function CippActionsOffcanvas(props) {
       <COffcanvasTitle>Extended Information</COffcanvasTitle>
       {extendedInfoContent}
       {<COffcanvasTitle>Actions</COffcanvasTitle>}
-      {actionsContent}
+      <CListGroup layout="verical-md">{actionsContent}</CListGroup>
     </CippOffcanvas>
   )
 }
