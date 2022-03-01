@@ -12,6 +12,7 @@ import StatusIcon from 'src/components/utilities/StatusIcon'
 import TenantSelector from 'src/components/utilities/TenantSelector'
 import TenantSelectorMultiple from 'src/components/utilities/TenantSelectorMultiple'
 import ThemeSwitcher from 'src/components/utilities/ThemeSwitcher'
+import PageSizeSwitcher from 'src/components/utilities/PageSizeSwitcher'
 import Toasts from 'src/components/utilities/Toasts'
 import UsageLocation from 'src/components/utilities/UsageLocation'
 
@@ -33,6 +34,7 @@ export {
   TenantSelector,
   TenantSelectorMultiple,
   ThemeSwitcher,
+  PageSizeSwitcher,
   Toasts,
   UsageLocation,
 }

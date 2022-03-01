@@ -112,7 +112,7 @@ const TenantsList = () => {
           },
           keyField: 'id',
           columns,
-          reportName: `${tenant?.defaultDomainName}-AppliedStandards-List`,
+          reportName: `AppliedStandards-List`,
           path: '/api/ListStandards',
           params: { TenantFilter: tenant?.defaultDomainName },
         }}

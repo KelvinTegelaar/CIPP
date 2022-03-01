@@ -12,8 +12,17 @@ export default function ListGroupContentCard({
   error,
   errorMessage,
 }) {
+  let bodyClass = ''
+  if (!isFetching && !error) {
+    bodyClass = 'p-0'
+  }
   return (
-    <CippContentCard title={title} icon={icon} bodyClass="p-0" className="list-group-content-card">
+    <CippContentCard
+      title={title}
+      icon={icon}
+      bodyClass={bodyClass}
+      className="list-group-content-card"
+    >
       {isFetching && <CSpinner />}
       {!isFetching && error && <>{errorMessage}</>}
       {!isFetching && !error && (
