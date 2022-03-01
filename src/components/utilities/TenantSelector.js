@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import { useListTenantsQuery } from 'src/store/api/tenants'
 import { setCurrentTenant } from 'src/store/features/app'
+import { CippContentCard } from 'src/components/layout'
+import { faCity, faBuilding } from '@fortawesome/free-solid-svg-icons'
 
 const TenantSelector = ({ action, showAllTenantSelector = false }) => {
   const dispatch = useDispatch()
@@ -29,18 +31,24 @@ const TenantSelector = ({ action, showAllTenantSelector = false }) => {
   }
 
   return (
-    <SelectSearch
-      search
-      onChange={activated}
-      filterOptions={fuzzySearch}
-      placeholder={placeholder}
-      disabled={isLoading}
-      value={currentTenant && currentTenant.customerId}
-      options={tenants.map(({ customerId, displayName, defaultDomainName }) => ({
-        value: customerId,
-        name: [displayName] + [` (${defaultDomainName})`],
-      }))}
-    />
+    <CippContentCard
+      title={showAllTenantSelector ? 'Select a Tenant or All Tenants' : 'Select a Tenant'}
+      icon={showAllTenantSelector ? faCity : faBuilding}
+      className="tenant-selector"
+    >
+      <SelectSearch
+        search
+        onChange={activated}
+        filterOptions={fuzzySearch}
+        placeholder={placeholder}
+        disabled={isLoading}
+        value={currentTenant && currentTenant.customerId}
+        options={tenants.map(({ customerId, displayName, defaultDomainName }) => ({
+          value: customerId,
+          name: [displayName] + [` (${defaultDomainName})`],
+        }))}
+      />
+    </CippContentCard>
   )
 }
 
