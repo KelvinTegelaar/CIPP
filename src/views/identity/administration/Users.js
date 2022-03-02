@@ -170,6 +170,7 @@ const columns = [
     selector: (row) => row['LicJoined'],
     exportSelector: 'LicJoined',
     grow: 5,
+    wrap: true,
   },
   {
     name: 'id',
