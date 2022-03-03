@@ -71,8 +71,8 @@ Some permissions may appear duplicated in the Delegated and Application permissi
 | Policy.ReadWrite.AuthenticationFlows         | Read and write authentication flow policies                       |
 | Policy.ReadWrite.AuthenticationMethod        | Read and write authentication method policies                     |
 | Policy.ReadWrite.Authorization               | Read and write your organization's authorization policy           |
-| Policy.ReadWrite.ConsentRequest              | Read and write consent request policy                             |
 | Policy.ReadWrite.ConditionalAccess           | Read and write conditional access policy                          |
+| Policy.ReadWrite.ConsentRequest              | Read and write consent request policy                             |
 | Policy.ReadWrite.DeviceConfiguration         | Read and write your organization's device configuration policies  |
 | PrivilegedAccess.Read.AzureResources         | Read privileged access to Azure resources                         |
 | PrivilegedAccess.ReadWrite.AzureResources    | Read and write privileged access to Azure resources               |
@@ -162,8 +162,8 @@ Some permissions may appear duplicated in the Delegated and Application permissi
 | Policy.Read.All                                         | Read your organization's policies                                 |
 | Policy.ReadWrite.AuthenticationFlows                    | Read and write authentication flow policies                       |
 | Policy.ReadWrite.AuthenticationMethod                   | Read and write authentication method policies                     |
-| Policy.ReadWrite.ConsentRequest                         | Read and write consent request policy                             |
 | Policy.ReadWrite.ConditionalAccess                      | Read and write conditional access policy                          |
+| Policy.ReadWrite.ConsentRequest                         | Read and write consent request policy                             |
 | PrivilegedAccess.ReadWrite.AzureADGroup                 | Read and write privileged access to Azure AD groups               |
 | Reports.Read.All                                        | Read all usage reports                                            |
 | RoleManagement.ReadWrite.Directory                      | Read and write directory RBAC settings                            |
