@@ -127,7 +127,7 @@ const OffboardingWizard = () => {
               label="Give other user full access on mailbox without automapping"
               values={users?.map((user) => ({
                 value: user.mail,
-                name: user.displayName,
+                name: `${user.displayName} <${user.mail}>`,
               }))}
               placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
               name="AccessNoAutomap"
@@ -138,7 +138,7 @@ const OffboardingWizard = () => {
               label="Give other user full access on mailbox with automapping"
               values={users?.map((user) => ({
                 value: user.mail,
-                name: user.displayName,
+                name: `${user.displayName} <${user.mail}>`,
               }))}
               placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
               name="AccessAutomap"
@@ -149,7 +149,7 @@ const OffboardingWizard = () => {
               label="Give other user full access on Onedrive"
               values={users?.map((user) => ({
                 value: user.mail,
-                name: user.displayName,
+                name: `${user.displayName} <${user.mail}>`,
               }))}
               placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
               name="UserAutomapOneDrive"
@@ -160,7 +160,7 @@ const OffboardingWizard = () => {
               label="Forward email to other user"
               values={users?.map((user) => ({
                 value: user.mail,
-                name: user.displayName,
+                name: `${user.displayName} <${user.mail}>`,
               }))}
               placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
               name="forward"
