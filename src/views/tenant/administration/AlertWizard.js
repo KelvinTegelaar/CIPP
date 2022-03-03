@@ -2,11 +2,7 @@ import React from 'react'
 import { CCol, CRow, CForm, CListGroup, CListGroupItem, CCallout, CSpinner } from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faCheckCircle,
-  faExclamationTriangle,
-  faTimesCircle,
-} from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faExclamationTriangle, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { CippWizard } from 'src/components/layout'
 import { WizardTableField } from 'src/components/tables'
 import PropTypes from 'prop-types'
@@ -144,7 +140,7 @@ const AlertWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.MFAAlertUsers ? faCheckCircle : faTimesCircle}
+                            icon={props.values.MFAAlertUsers ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -152,7 +148,7 @@ const AlertWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.MFAAdmins ? faCheckCircle : faTimesCircle}
+                            icon={props.values.MFAAdmins ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -160,7 +156,7 @@ const AlertWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.NewGA ? faCheckCircle : faTimesCircle}
+                            icon={props.values.NewGA ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -168,7 +164,7 @@ const AlertWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.NewRole ? faCheckCircle : faTimesCircle}
+                            icon={props.values.NewRole ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -176,7 +172,7 @@ const AlertWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.AdminPassword ? faCheckCircle : faTimesCircle}
+                            icon={props.values.AdminPassword ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -184,7 +180,7 @@ const AlertWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.NewApprovedApp ? faCheckCircle : faTimesCircle}
+                            icon={props.values.NewApprovedApp ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -192,7 +188,7 @@ const AlertWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.DefenderStatus ? faCheckCircle : faTimesCircle}
+                            icon={props.values.DefenderStatus ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -200,7 +196,7 @@ const AlertWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.DefenderMalware ? faCheckCircle : faTimesCircle}
+                            icon={props.values.DefenderMalware ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -208,7 +204,7 @@ const AlertWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.QuotaUsed ? faCheckCircle : faTimesCircle}
+                            icon={props.values.QuotaUsed ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -216,7 +212,7 @@ const AlertWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.UnusedLicenses ? faCheckCircle : faTimesCircle}
+                            icon={props.values.UnusedLicenses ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                       </CListGroup>

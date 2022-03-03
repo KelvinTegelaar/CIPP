@@ -26,8 +26,15 @@ const EditTenant = React.lazy(() => import('src/views/tenant/administration/Edit
 const ConditionalAccess = React.lazy(() =>
   import('src/views/tenant/administration/ConditionalAccess'),
 )
+const ListLicences = React.lazy(() => import('src/views/tenant/administration/ListLicences'))
 
 const BasicAuthReport = React.lazy(() => import('src/views/identity/reports/BasicAuthReport'))
+const AzureADConnectReport = React.lazy(() =>
+  import('src/views/identity/reports/AzureADConnectReport'),
+)
+const DeviceComplianceReport = React.lazy(() =>
+  import('src/views/security/reports/ListDeviceComplianceReport'),
+)
 const BestPracticeAnalyzer = React.lazy(() =>
   import('src/views/tenant/standards/BestPracticeAnalyser'),
 )
@@ -39,7 +46,6 @@ const ListAppliedStandards = React.lazy(() =>
   import('src/views/tenant/standards/ListAppliedStandards'),
 )
 const IndividualDomain = React.lazy(() => import('src/views/tenant/standards/IndividualDomain'))
-const ApplyStandard = React.lazy(() => import('src/views/tenant/standards/ApplyStandard'))
 const ListAlerts = React.lazy(() => import('src/views/security/reports/ListAlerts'))
 const ApplicationsList = React.lazy(() =>
   import('src/views/endpoint/applications/ApplicationsList'),
@@ -148,6 +154,11 @@ const routes = [
     name: 'Basic Auth Report',
     component: BasicAuthReport,
   },
+  {
+    path: '/identity/reports/azure-ad-connect-report',
+    name: 'AAD Connect Report',
+    component: AzureADConnectReport,
+  },
   { path: '/tenant', name: 'Tenant' },
   { path: '/tenant/administration', name: 'Administration' },
   { path: '/tenant/administration/tenants', name: 'Tenants', component: Tenants },
@@ -161,13 +172,17 @@ const routes = [
     name: 'Conditional Access',
     component: ConditionalAccess,
   },
+  {
+    path: '/tenant/administration/list-licenses',
+    name: 'List Licenses',
+    component: ListLicences,
+  },
   { path: '/tenant/standards', name: 'Standards' },
   {
     path: '/tenant/standards/list-applied-standards',
     name: 'List Applied Standards',
     component: ListAppliedStandards,
   },
-  { path: '/tenant/standards/apply-standard', name: 'Apply Standard', component: ApplyStandard },
   {
     path: '/tenant/standards/bpa-report',
     name: 'Best Practice Report',
@@ -301,6 +316,11 @@ const routes = [
     name: 'List Alerts',
     path: '/security/reports/list-alerts',
     component: SecurityComplianceAlerts,
+  },
+  {
+    name: 'List Device Compliance Report',
+    path: '/security/reports/list-device-compliance',
+    component: DeviceComplianceReport,
   },
   {
     name: 'License',
