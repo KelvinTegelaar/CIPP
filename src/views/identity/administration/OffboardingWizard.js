@@ -92,7 +92,7 @@ const OffboardingWizard = () => {
             label={'Users in ' + tenantDomain}
             values={users?.map((user) => ({
               value: user.mail,
-              name: user.displayName,
+              name: `${user.displayName} <${user.mail}>`,
             }))}
             placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
             name="User"
