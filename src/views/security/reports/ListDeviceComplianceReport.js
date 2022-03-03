@@ -69,7 +69,6 @@ const LighthouseDeviceComplianceReport = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
   return (
     <CippPageList
-      capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
       title="Lighthouse - Device Compliance"
       showAllTenantSelector={true}
       datatable={{

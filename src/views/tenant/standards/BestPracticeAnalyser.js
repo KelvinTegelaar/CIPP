@@ -52,10 +52,10 @@ const BestPracticeAnalyser = () => {
   const handleUnusedLicense = ({ row }) => {
     const columns = [
       {
-        name: 'License',
-        selector: (row) => row['License'],
+        name: 'SKU',
+        selector: (row) => row['SKU'],
         sortable: true,
-        exportSelector: 'License',
+        exportSelector: 'SKU',
       },
       {
         name: 'Purchased',
@@ -71,8 +71,17 @@ const BestPracticeAnalyser = () => {
       },
     ]
 
+    const tabularized = row.UnusedLicenseList.split('<br />')
+      .map((line) =>
+        line
+          .split(', ')
+          .map((sku) => sku.split(': ').reduce((key, val) => ({ [key]: val })))
+          .reduce((pv, cv) => ({ ...pv, ...cv })),
+      )
+      .sort((a, b) => b.SKU.toLocaleLowerCase().localeCompare(a.SKU.toLocaleLowerCase()))
+
     ModalService.open({
-      data: row.UnusedLicenseList,
+      data: tabularized,
       componentType: 'table',
       componentProps: {
         columns,
@@ -145,7 +154,7 @@ const BestPracticeAnalyser = () => {
       selector: (row) => row['AdminConsentForApplications'],
       cell: cellBooleanFormatter({ reverse: true }),
       sortable: true,
-      exportSelector: 'AdminConsentForApplications',
+      exportSelector: 'AdminConsentForApplication',
     },
     {
       name: 'Passwords Do Not Expire',
@@ -182,7 +191,7 @@ const BestPracticeAnalyser = () => {
       name: 'Modern Auth Enabled',
       selector: (row) => row['EnableModernAuth'],
       sortable: true,
-      exportSelector: 'EnableModernAuth',
+      exportSelector: 'EnabledModernAuth',
       cell: cellBooleanFormatter(),
     },
     {
@@ -211,7 +220,7 @@ const BestPracticeAnalyser = () => {
     {
       name: 'Unused Licenses',
       selector: (row) => row['UnusedLicensesResult'],
-      exportSelector: 'UnusedLicensesResult',
+      exportSelector: 'UnusedLicencesResult',
       cell: (row, index, column) => {
         const cell = column.selector(row)
         if (cell === 'FAIL') {
@@ -245,7 +254,6 @@ const BestPracticeAnalyser = () => {
 
   return (
     <CippPageList
-      capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
       title="Best Practice Analyser"
       tenantSelector={false}
       datatable={{

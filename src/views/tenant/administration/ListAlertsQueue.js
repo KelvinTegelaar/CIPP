@@ -6,7 +6,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPageList } from 'src/components/layout'
 import { ModalService } from 'src/components/utilities'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
-import { cellBooleanFormatter } from 'src/components/tables'
 
 const ListAlertsQueue = () => {
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
@@ -27,7 +26,7 @@ const ListAlertsQueue = () => {
         color="danger"
         onClick={() =>
           handleDeleteStandard(
-            `api/RemoveQueuedAlert?ID=${row.tenantName}`,
+            `api/RemoveQueuedAlert?ID=${row.tenant}`,
             'Do you want to delete the queued alert?',
           )
         }
@@ -36,67 +35,25 @@ const ListAlertsQueue = () => {
       </CButton>
     )
   }
-
   const columns = [
     {
       name: 'Tenant',
       selector: (row) => row['tenantName'],
       sortable: true,
       exportSelector: 'tenantName',
+      grow: 0,
     },
     {
-      name: 'Changed Admin Passwords',
-      selector: (row) => row['AdminPassword'],
+      name: 'Alerts',
+      selector: (row) => row['alerts'],
       sortable: true,
-      exportSelector: 'AdminPassword',
-      cell: cellBooleanFormatter(),
+      exportSelector: 'alerts',
+      grow: 1,
     },
-    {
-      name: 'Defender Malware Alerts',
-      selector: (row) => row['DefenderMalware'],
-      sortable: true,
-      exportSelector: 'DefenderMalware',
-      cell: cellBooleanFormatter(),
-    },
-    {
-      name: 'MFA for Admins',
-      selector: (row) => row['MFAAdmins'],
-      sortable: true,
-      exportSelector: 'MFAAdmins',
-      cell: cellBooleanFormatter(),
-    },
-    {
-      name: 'MFA for Users',
-      selector: (row) => row['MFAAlertUsers'],
-      sortable: true,
-      exportSelector: 'MFAAlertUsers',
-      cell: cellBooleanFormatter(),
-    },
-    {
-      name: 'Changes to Admin Roles',
-      selector: (row) => row['NewRole'],
-      sortable: true,
-      exportSelector: 'NewRole',
-      cell: cellBooleanFormatter(),
-    },
-    {
-      name: 'Exchange Mailbox size',
-      selector: (row) => row['QuotaUsed'],
-      sortable: true,
-      exportSelector: 'QuotaUsed',
-      cell: cellBooleanFormatter(),
-    },
-    {
-      name: 'Unused Licenses',
-      selector: (row) => row['UnusedLicenses'],
-      sortable: true,
-      exportSelector: 'UnusedLicenses',
-      cell: cellBooleanFormatter(),
-    },
-
     {
       name: 'Actions',
       cell: Actions,
+      grow: 0,
     },
   ]
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -113,7 +70,6 @@ const ListAlertsQueue = () => {
         <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
       )}
       <CippPageList
-        capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
         title="Scheduled Alerts"
         tenantSelector={false}
         datatable={{
