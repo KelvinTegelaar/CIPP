@@ -169,6 +169,7 @@ const columns = [
     name: 'Licenses',
     selector: (row) => row['LicJoined'],
     exportSelector: 'LicJoined',
+    sortable: true,
     grow: 5,
     wrap: true,
   },
