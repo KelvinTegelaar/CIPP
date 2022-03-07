@@ -152,7 +152,7 @@ const OffboardingWizard = () => {
                 name: `${user.displayName} <${user.mail}>`,
               }))}
               placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
-              name="UserAutomapOneDrive"
+              name="OnedriveAccess"
             />
           </CCol>
           <CCol md={6}>
