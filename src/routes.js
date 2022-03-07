@@ -20,6 +20,7 @@ const MFAReport = React.lazy(() => import('src/views/identity/reports/MFAReport'
 const Tenants = React.lazy(() => import('src/views/tenant/administration/Tenants'))
 const AlertWizard = React.lazy(() => import('src/views/tenant/administration/AlertWizard'))
 const AlertsQueue = React.lazy(() => import('src/views/tenant/administration/ListAlertsQueue'))
+const GraphExplorer = React.lazy(() => import('src/views/tenant/administration/GraphExplorer'))
 
 const Domains = React.lazy(() => import('src/views/tenant/administration/Domains'))
 const EditTenant = React.lazy(() => import('src/views/tenant/administration/EditTenant'))
@@ -166,6 +167,7 @@ const routes = [
   { path: '/tenant/administration/domains', name: 'Domains', component: Domains },
   { path: '/tenant/administration/alertswizard', name: 'Alerts Wizard', component: AlertWizard },
   { path: '/tenant/administration/alertsqueue', name: 'Alerts Queue', component: AlertsQueue },
+  { path: '/tenant/administration/graph-explorer', name: 'Graph Explorer', component: GraphExplorer },
 
   {
     path: '/tenant/administration/conditional-access-policies',
