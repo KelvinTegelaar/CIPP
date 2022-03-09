@@ -11,7 +11,7 @@ import {
   CRow,
 } from '@coreui/react'
 import useQuery from 'src/hooks/useQuery'
-import { Form } from 'react-final-form'
+import { Field, Form, FormSpy } from 'react-final-form'
 import { RFFCFormInput, RFFCFormSelect } from 'src/components/forms'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronRight, faChevronDown, faSearch } from '@fortawesome/free-solid-svg-icons'
@@ -21,6 +21,7 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { CippPage } from 'src/components/layout/CippPage'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
+import { OnChange } from 'react-final-form-listeners'
 
 const GraphExplorer = () => {
   let navigate = useNavigate()
@@ -58,10 +59,8 @@ const GraphExplorer = () => {
 
       if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
         Object.assign(flattened, flattenObject(value))
-        console.log('flattend')
       } else {
         flattened[key] = value
-        console.log('no need to flatten')
       }
     })
 
@@ -69,13 +68,16 @@ const GraphExplorer = () => {
   }
 
   if (graphrequest.isSuccess) {
+    if (graphrequest.data.length === 0) {
+      graphrequest.data = [{ data: 'No Data Found' }]
+    }
     //set data
     const finalData = graphrequest.data.forEach((obj) => {
       flattenObject(obj)
     })
 
-    console.log(finalData)
     //set columns
+
     const flatObj = Object.keys(graphrequest.data[0]).flat(100)
     flatObj.map((value) =>
       QueryColumns.data.push({
@@ -94,6 +96,29 @@ const GraphExplorer = () => {
       params: { tenantFilter: tenant.defaultDomainName, endpoint: endpoint },
     })
   }, [endpoint, execGraphRequest, tenant.defaultDomainName])
+
+  /* eslint-disable react/prop-types */
+  const WhenFieldChanges = ({ field, set }) => (
+    <Field name={set} subscription={{}}>
+      {(
+        // No subscription. We only use Field to get to the change function
+        { input: { onChange } },
+      ) => (
+        <FormSpy subscription={{}}>
+          {({ form }) => (
+            <OnChange name={field}>
+              {(value) => {
+                let template = value
+                console.log(template)
+                onChange(template)
+              }}
+            </OnChange>
+          )}
+        </FormSpy>
+      )}
+    </Field>
+  )
+
   return (
     <>
       <CRow>
@@ -101,7 +126,7 @@ const GraphExplorer = () => {
           <CCard className="options-card">
             <CCardHeader>
               <CCardTitle className="d-flex justify-content-between">
-                Message Trace Settings
+                Report Settings
                 <CButton size="sm" variant="ghost" onClick={() => setVisibleA(!visibleA)}>
                   <FontAwesomeIcon icon={visibleA ? faChevronDown : faChevronRight} />
                 </CButton>
@@ -112,6 +137,7 @@ const GraphExplorer = () => {
                 <Form
                   initialValues={{
                     tenantFilter: tenant.defaultDomainName,
+                    endpoint: endpoint,
                   }}
                   onSubmit={handleSubmit}
                   render={({ handleSubmit, submitting, values }) => {
@@ -126,20 +152,52 @@ const GraphExplorer = () => {
                         <CRow>
                           <CCol>
                             <RFFCFormSelect
-                              /*Clicking here populates the endpoint so users can edit their own desired fields too*/
                               name="reportTemplate"
                               label="Select a report"
                               placeholder="Select a report"
                               values={[
-                                { label: '2', value: '2' },
-                                { label: '3', value: '3' },
-                                { label: '4', value: '4' },
-                                { label: '5', value: '5' },
-                                { label: '6', value: '6' },
-                                { label: '7', value: '7' },
-                                { label: '8', value: '8' },
-                                { label: '9', value: '9' },
-                                { label: '10', value: '10' },
+                                {
+                                  label: 'All users with email addresses',
+                                  value: '/users?$select=userprincipalname,mail',
+                                },
+                                {
+                                  label:
+                                    'All Devices listing ID, Displayname, and registration status',
+                                  value:
+                                    '/devices?$select=deviceId,DisplayName,profileType,registrationDateTime,trustType',
+                                },
+                                {
+                                  label: 'All contacts and their mail addresses',
+                                  value:
+                                    '/contacts?$select=CompanyName,DisplayName,Mail,ProxyAddresses',
+                                },
+                                {
+                                  label: 'Outlook Agents used in last 90 days',
+                                  value: `reports/getEmailAppUsageUserDetail(period='D90')?$format=application/json`,
+                                },
+                                {
+                                  label: 'Activated M365 Subscription installations',
+                                  value:
+                                    '/reports/getOffice365ActivationsUserDetail?$format=application/json',
+                                },
+                                {
+                                  label: 'Applications signed in in last 30 days',
+                                  value: `reports/getAzureADApplicationSignInSummary(period='D30')`,
+                                },
+                                {
+                                  label: 'User Registration Report',
+                                  value: '/reports/authenticationMethods/userRegistrationDetails',
+                                },
+                                {
+                                  label: 'All Global Admins',
+                                  value:
+                                    'directoryRoles/roleTemplateId=62e90394-69f5-4237-9190-012177145e10/members',
+                                },
+                                {
+                                  label: 'Secure Score with Current Score and Max Score',
+                                  value:
+                                    'security/secureScores?$top=1&$select=currentscore,maxscore,activeusercount,enabledservices',
+                                },
                               ]}
                             />
                           </CCol>
@@ -153,6 +211,7 @@ const GraphExplorer = () => {
                               placeholder="Enter the Graph Endpoint you'd like to run the custom report for."
                             />
                           </CCol>
+                          <WhenFieldChanges field="reportTemplate" set="endpoint" />
                         </CRow>
                         <CRow className="mb-3">
                           <CCol>
@@ -179,7 +238,7 @@ const GraphExplorer = () => {
       <hr />
       <CippPage title="Report Results" tenantSelector={false}>
         {!SearchNow && <span>Execute a search to get started.</span>}
-        {graphrequest.isSuccess && QueryColumns.set && (
+        {graphrequest.isSuccess && QueryColumns.set && SearchNow && (
           <CippTable
             reportName="GraphExplorer"
             columns={QueryColumns.data}
