@@ -11,7 +11,7 @@ import {
   CRow,
 } from '@coreui/react'
 import useQuery from 'src/hooks/useQuery'
-import { Form } from 'react-final-form'
+import { Field, Form, FormSpy } from 'react-final-form'
 import { RFFCFormInput, RFFCFormSelect } from 'src/components/forms'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronRight, faChevronDown, faSearch } from '@fortawesome/free-solid-svg-icons'
@@ -21,6 +21,7 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { CippPage } from 'src/components/layout/CippPage'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
+import { OnChange } from 'react-final-form-listeners'
 
 const GraphExplorer = () => {
   let navigate = useNavigate()
@@ -94,6 +95,29 @@ const GraphExplorer = () => {
       params: { tenantFilter: tenant.defaultDomainName, endpoint: endpoint },
     })
   }, [endpoint, execGraphRequest, tenant.defaultDomainName])
+
+  /* eslint-disable react/prop-types */
+  const WhenFieldChanges = ({ field, set }) => (
+    <Field name={set} subscription={{}}>
+      {(
+        // No subscription. We only use Field to get to the change function
+        { input: { onChange } },
+      ) => (
+        <FormSpy subscription={{}}>
+          {({ form }) => (
+            <OnChange name={field}>
+              {(value) => {
+                let template = value
+                console.log(template)
+                onChange(template)
+              }}
+            </OnChange>
+          )}
+        </FormSpy>
+      )}
+    </Field>
+  )
+
   return (
     <>
       <CRow>
@@ -185,6 +209,7 @@ const GraphExplorer = () => {
                               placeholder="Enter the Graph Endpoint you'd like to run the custom report for."
                             />
                           </CCol>
+                          <WhenFieldChanges field="reportTemplate" set="endpoint" />
                         </CRow>
                         <CRow className="mb-3">
                           <CCol>
