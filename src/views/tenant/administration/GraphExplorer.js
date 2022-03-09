@@ -189,9 +189,9 @@ const GraphExplorer = () => {
                                   value: '/reports/authenticationMethods/userRegistrationDetails',
                                 },
                                 {
-                                  label: 'All Company Administrators',
+                                  label: 'All Global Admins',
                                   value:
-                                    'directoryRoles/roleTemplateId=4a5d8f65-41da-4de4-8968-e035b65339cf/members',
+                                    'directoryRoles/roleTemplateId=62e90394-69f5-4237-9190-012177145e10/members',
                                 },
                                 {
                                   label: 'Secure Score with Current Score and Max Score',
