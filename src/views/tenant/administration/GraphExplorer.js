@@ -59,10 +59,8 @@ const GraphExplorer = () => {
 
       if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
         Object.assign(flattened, flattenObject(value))
-        console.log('flattend')
       } else {
         flattened[key] = value
-        console.log('no need to flatten')
       }
     })
 
@@ -70,13 +68,16 @@ const GraphExplorer = () => {
   }
 
   if (graphrequest.isSuccess) {
+    if (graphrequest.data.length === 0) {
+      graphrequest.data = [{ data: 'No Data Found' }]
+    }
     //set data
     const finalData = graphrequest.data.forEach((obj) => {
       flattenObject(obj)
     })
 
-    console.log(finalData)
     //set columns
+
     const flatObj = Object.keys(graphrequest.data[0]).flat(100)
     flatObj.map((value) =>
       QueryColumns.data.push({
@@ -136,6 +137,7 @@ const GraphExplorer = () => {
                 <Form
                   initialValues={{
                     tenantFilter: tenant.defaultDomainName,
+                    endpoint: endpoint,
                   }}
                   onSubmit={handleSubmit}
                   render={({ handleSubmit, submitting, values }) => {
