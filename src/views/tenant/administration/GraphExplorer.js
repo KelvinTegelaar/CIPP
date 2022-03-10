@@ -51,30 +51,11 @@ const GraphExplorer = () => {
   }
   const [execGraphRequest, graphrequest] = useLazyGenericGetRequestQuery()
   const QueryColumns = { set: false, data: [] }
-  const flattenObject = (obj) => {
-    const flattened = {}
-
-    Object.keys(obj).forEach((key) => {
-      const value = obj[key]
-
-      if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-        Object.assign(flattened, flattenObject(value))
-      } else {
-        flattened[key] = value
-      }
-    })
-
-    return flattened
-  }
 
   if (graphrequest.isSuccess) {
     if (graphrequest.data.length === 0) {
       graphrequest.data = [{ data: 'No Data Found' }]
     }
-    //set data
-    const finalData = graphrequest.data.forEach((obj) => {
-      flattenObject(obj)
-    })
 
     //set columns
 
