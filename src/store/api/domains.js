@@ -38,7 +38,7 @@ export const domainsApi = baseApi.injectEndpoints({
         },
       }),
     }),
-    execDnsHelper: builder.query({
+    listDomainHealth: builder.query({
       query: ({ ...rest }) => ({
         path: '/api/ListDomainHealth',
         params: {
@@ -62,6 +62,6 @@ export const {
   useEditDnsConfigQuery,
   useLazyEditDnsConfigQuery,
   useGetDnsConfigQuery,
-  useExecDnsHelperQuery,
+  useListDomainHealthQuery,
   useLazyGetDnsConfigQuery,
 } = domainsApi
