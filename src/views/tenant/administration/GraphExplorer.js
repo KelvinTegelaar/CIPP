@@ -90,7 +90,6 @@ const GraphExplorer = () => {
             <OnChange name={field}>
               {(value) => {
                 let template = value
-                console.log(template)
                 onChange(template)
               }}
             </OnChange>
