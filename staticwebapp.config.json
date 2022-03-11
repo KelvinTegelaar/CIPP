@@ -95,14 +95,3 @@
     ".json": "text/json"
   }
 }
-<<<<<<< HEAD
-{
-  "networking": {
-    "allowedIpRanges": [
-      "47.22.129.206/32",
-      "76.204.89.65/32"
-    ]
-  }
-}
-=======
->>>>>>> parent of 4c745655 (Update staticwebapp.config.json)
