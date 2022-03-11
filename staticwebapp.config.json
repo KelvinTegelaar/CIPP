@@ -95,3 +95,10 @@
     ".json": "text/json"
   }
 }
+
+"networking": {
+  "allowedIpRanges": [
+    "47.22.129.206/32",
+    "76.204.89.65/32"
+  ]
+}
