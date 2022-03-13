@@ -102,10 +102,8 @@ const AlertWizard = () => {
             label="Alert on users without any form of MFA"
           />
           <RFFCFormSwitch name="MFAAdmins" label="Alert on admins without any form of MFA" />
-          <RFFCFormSwitch name="NewGA" label="Alert on new Global Admins" />
           <RFFCFormSwitch name="NewRole" label="Alert on new users added to any admin role" />
           <RFFCFormSwitch name="AdminPassword" label="Alert on changed admin Passwords" />
-          <RFFCFormSwitch name="NewApprovedApp" label="Alert on new app consent" />
           <RFFCFormSwitch
             name="DefenderStatus"
             label="Alert if Defender is not running (Tenant must be onboarded in Lighthouse)"
@@ -152,14 +150,6 @@ const AlertWizard = () => {
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Alert on new Global Admins
-                          <FontAwesomeIcon
-                            color="#f77f00"
-                            size="lg"
-                            icon={props.values.NewGA ? faCheck : faTimes}
-                          />
-                        </CListGroupItem>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Alert on new users added to any admin role
                           <FontAwesomeIcon
                             color="#f77f00"
@@ -173,14 +163,6 @@ const AlertWizard = () => {
                             color="#f77f00"
                             size="lg"
                             icon={props.values.AdminPassword ? faCheck : faTimes}
-                          />
-                        </CListGroupItem>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Alert on new app consent
-                          <FontAwesomeIcon
-                            color="#f77f00"
-                            size="lg"
-                            icon={props.values.NewApprovedApp ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
