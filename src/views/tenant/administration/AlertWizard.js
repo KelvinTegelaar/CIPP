@@ -34,16 +34,19 @@ const AlertWizard = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
   const handleSubmit = async (values) => {
+    Object.keys(values).filter(function (x) {
+      if (values[x] === null) {
+        delete values[x]
+      }
+      return null
+    })
     values.selectedTenants.map(
       (tenant) => (values[`Select_${tenant.defaultDomainName}`] = tenant.defaultDomainName),
     )
     genericPostRequest({ path: '/api/AddAlert', values: values })
   }
 
-  const formValues = {
-    InstallAsSystem: true,
-    DisableRestart: true,
-  }
+  const formValues = {}
 
   return (
     <CippWizard
