@@ -1,6 +1,6 @@
 import React from 'react'
-import { CCallout, CSpinner } from '@coreui/react'
-import { Field } from 'react-final-form'
+import { CCallout, CCol, CListGroup, CListGroupItem, CRow, CSpinner } from '@coreui/react'
+import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { CippWizard } from 'src/components/layout'
@@ -172,6 +172,33 @@ const ApplyStandard = () => {
           <CCallout color="info">
             <CSpinner>Loading</CSpinner>
           </CCallout>
+        )}
+        {!postResults.isSuccess && (
+          <FormSpy>
+            {(props) => (
+              /* eslint-disable react/prop-types */ <>
+                <CRow>
+                  <CCol md={{ span: 6, offset: 3 }}>
+                    <h5 className="mb-0">Selected Tenants</h5>
+                    <CCallout color="info">
+                      {props.values.selectedTenants.map((tenant, idx) => (
+                        <li key={idx}>
+                          {tenant.displayName}- {tenant.defaultDomainName}
+                        </li>
+                      ))}
+                    </CCallout>
+                    <h5 className="mb-0">Selected Standards</h5>
+                    <CCallout color="info">
+                      {Object.keys(props.values.standards).map((standard, idx) => (
+                        <li key={idx}>{standard}</li>
+                      ))}
+                    </CCallout>
+                    <hr />
+                  </CCol>
+                </CRow>
+              </>
+            )}
+          </FormSpy>
         )}
         {postResults.isSuccess && <CCallout color="success">{postResults.data.Results}</CCallout>}
         <hr className="my-4" />
