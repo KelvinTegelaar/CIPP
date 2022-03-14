@@ -86,6 +86,12 @@ const TenantsList = () => {
       exportSelector: 'appliedBy',
     },
     {
+      name: 'Applied at',
+      selector: (row) => row['appliedAt'],
+      sortable: true,
+      exportSelector: 'appliedAt',
+    },
+    {
       name: 'Actions',
       cell: Actions,
     },
