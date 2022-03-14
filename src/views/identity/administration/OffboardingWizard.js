@@ -272,7 +272,7 @@ const OffboardingWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.AccessNoAutomap ? faCheck : faTimes}
+                            icon={props.values.AccessAutomap ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -280,7 +280,7 @@ const OffboardingWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.AccessAutomap ? faCheck : faTimes}
+                            icon={props.values.AccessNoAutomap ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
