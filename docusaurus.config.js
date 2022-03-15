@@ -9,7 +9,7 @@ const a11yEmoji = require('@fec/remark-a11y-emoji');
 const config = {
   title: 'CyberDrain Improved Partner Portal',
   tagline: 'Free and open-source multi-tenant management for Microsoft 365...',
-  url: 'cipp.app',
+  url: 'https://cipp.app',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'throw',
