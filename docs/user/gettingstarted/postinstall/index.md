@@ -34,3 +34,15 @@ If you're still stuck, check out the [FAQ](/faq) or [Troubleshooting](/troublesh
 :::
 
 At the moment of deployment, the application uses a generated domain name. To change this, go to your Resource Group in Azure, select your Static Web App (`cipp-swa-xxxx` if using click-to-deploy) and select Custom Domains. You can add your own domain name here. [Microsoft Docs - Set up a custom domain with free certificate in Azure Static Web Apps](https://docs.microsoft.com/en-us/azure/static-web-apps/custom-domain?tabs=azure-dns)
+
+## I want to manage my own tenant
+If you want to manage your own tenant, or if you are not a Microsoft Partner but still want to use CIPP you can set a flag in the configuration for this. Be warned that anyone with access to CIPP can then manage your internal tenant too. 
+
+To set the flag follow these steps:
+
+1. Go to your CIPP instance
+2. Go the the settings menu
+3. Go to the Backend tab.
+4. Go to Function App (Configuration)
+5. Add a new variable called "PartnerTenantAvailable" and set this to "True"
+6. Clear the tenant cache. Users of CIPP now have access to the CSP Partner tenant.
