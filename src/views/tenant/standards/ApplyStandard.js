@@ -138,6 +138,7 @@ const ApplyStandard = () => {
                 name="standards.DisableBasicAuth"
                 label="Disable Basic Authentication"
               />
+              <RFFCFormSwitch name="standards.TAP" label="Enable Temporary Access Passwords" />
             </CCol>
             <CCol md={6}>
               <RFFCFormSwitch
@@ -164,6 +165,7 @@ const ApplyStandard = () => {
                 name="standards.PWdisplayAppInformationRequiredState"
                 label="Enable Passwordless with Location information and Number Matching"
               />
+
               <RFFCFormSwitch name="standards.LegacyMFA" label="Enable per-user MFA for all user" />
               <RFFCFormSwitch name="standards.UndoSSPR" label="Undo SSPR Standard" />
               <RFFCFormSwitch name="standards.UndoOauth" label="Undo App Consent Standard" />
