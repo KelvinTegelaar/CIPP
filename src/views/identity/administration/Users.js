@@ -66,6 +66,13 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             color: 'info',
           },
           {
+            label: 'Create Temporary Access Password',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecCreateTAP?TenantFilter=${tenant.defaultDomainName}&ID=${row.userPrincipalName}`,
+            modalMessage: 'Are you sure you want to create a Temporary Access Pass?',
+          },
+          {
             label: 'Send MFA Push',
             color: 'info',
             modal: true,
