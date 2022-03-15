@@ -4,7 +4,7 @@ title: CIPP User Guide
 displayed_sidebar: userSidebar
 ---
 
-This section holds the user-facing documentation for the CyberDrain Improved Partner Portal. Documentation aimed at people accessing the web interface of CIPP and using the portal.
+This section holds the user-facing documentation for the CyberDrain Improved Partner Portal. This documentation contains setup information, usage, and known issues and/or bugs.
 
 Use the links on the left to navigate the documentation.
 
