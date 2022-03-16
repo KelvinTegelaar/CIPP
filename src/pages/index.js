@@ -49,11 +49,11 @@ export default function Home() {
         <div className="width--full text--center margin-bottom--lg">
           <Link
             className="button button--outline button--primary button--lg"
-            to="http://localhost:3000/docs/user/gettingstarted/prerequisites/"
+            to="/docs/user/gettingstarted/prerequisites/"
           >
             Install on your own
           </Link>{' '}
-          <b>OR</b>{' '}
+          <div className="me-2">OR</div>{' '}
           <Link
             className="button button--outline button--primary button--lg"
             to="https://github.com/sponsors/KelvinTegelaar/sponsorships?sponsor=KelvinTegelaar&tier_id=101398&preview=false"
