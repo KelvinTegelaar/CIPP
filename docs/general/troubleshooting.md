@@ -7,7 +7,7 @@ slug: /troubleshooting
 
 Below are some common issues that users have had from initial deployment, updating and general usage.
 
-Note that these steps come from the community - if you notice any mistakes, please either edit this page or get in touch via the [Discord server](https://discord.gg/Cyberdrain).  Please note the [Contributor Code of Conduct](/docs/dev/#contributor-code-of-conduct).
+Note that these steps come from the community - if you notice any mistakes, please either edit this page or get in touch via the [Discord server](https://discord.gg/Cyberdrain). Please note the [Contributor Code of Conduct](/docs/dev/#contributor-code-of-conduct).
 
 ## Token Testing Script
 
@@ -31,7 +31,7 @@ function Get-GraphToken($TenantId, $Scope, $AsApp, $AppId, $eRefreshToken, $Retu
         client_secret = $ApplicationSecret
         scope         = $Scope
         refresh_token = $eRefreshToken
-        grant_type    = 'refresh_token'               
+        grant_type    = 'refresh_token'
     }
     if ($null -ne $AppId -and $null -ne $eRefreshToken) {
         $AuthBody = @{
@@ -53,16 +53,16 @@ function Connect-graphAPI {
     (
         [parameter(Position = 0, Mandatory = $false)]
         [ValidateNotNullOrEmpty()][String]$ApplicationId,
-         
+
         [parameter(Position = 1, Mandatory = $false)]
         [ValidateNotNullOrEmpty()][String]$ApplicationSecret,
-         
+
         [parameter(Position = 2, Mandatory = $true)]
         [ValidateNotNullOrEmpty()][String]$TenantId,
- 
+
         [parameter(Position = 3, Mandatory = $false)]
         [ValidateNotNullOrEmpty()][String]$RefreshToken
- 
+
     )
     Write-Verbose 'Removing old token if it exists'
     $Script:GraphHeader = $null
@@ -78,8 +78,8 @@ function Connect-graphAPI {
                 client_secret = $ApplicationSecret
                 scope         = 'https://graph.microsoft.com/.default'
                 refresh_token = $RefreshToken
-                grant_type    = 'refresh_token'  
-            }   
+                grant_type    = 'refresh_token'
+            }
         } else {
             Write-Verbose '   using the cached credentials'
             $AuthBody = @{
@@ -87,7 +87,7 @@ function Connect-graphAPI {
                 client_secret = $Script:ApplicationSecret
                 scope         = 'https://graph.microsoft.com/.default'
                 refresh_token = $script:RefreshToken
-                grant_type    = 'refresh_token' 
+                grant_type    = 'refresh_token'
             }
         }
         $AccessToken = (Invoke-RestMethod -Method post -Uri "https://login.microsoftonline.com/$($TenantId)/oauth2/v2.0/token" -Body $Authbody -ErrorAction Stop).access_token
@@ -156,7 +156,7 @@ foreach ($Tenant in $Tenants) {
         }
         Write-Host "Unable to get users from $($Tenant.defaultDomainName) in Refresh Token Test. The detailed error information, if returned was: $($ErrorDetails)" -ForegroundColor Red
         $ErrorCount++
-    } 
+    }
 }
 Write-Host "Standard Graph Refresh Token Test: $TenantCount total tenants, with $ErrorCount failures"
 Write-Host 'Now attempting to test the Exchange Refresh Token'
@@ -184,7 +184,7 @@ foreach ($Tenant in $Tenants) {
             $_.Exception.Message
         }
         Write-Host "Tenant: $($Tenant.defaultDomainName)-----------------------------------------------------------------------------------------------------------" -ForegroundColor Yellow
-        Write-Host "Failed to Connect to Exchange for $($Tenant.defaultDomainName). The detailed error information, if returned was: $($ErrorDetails)" -ForegroundColor Red        
+        Write-Host "Failed to Connect to Exchange for $($Tenant.defaultDomainName). The detailed error information, if returned was: $($ErrorDetails)" -ForegroundColor Red
         $ExcErrorCount++
     }
 }
@@ -194,13 +194,13 @@ Write-Host 'All Tests Finished'
 
 </details>
 
-This script comes from Gavin Stone's [excellent blog post on setting up the Secure Application Model](https://www.gavsto.com/secure-application-model-for-the-layman-and-step-by-step/).
+This script comes from Gavin Stone's [blog post on setting up the Secure Application Model](https://www.gavsto.com/secure-application-model-for-the-layman-and-step-by-step/).
 
-This script doesn't test the CIPP configuration, only that the tokens you are pasting into this script are correct.  
+This script doesn't test the CIPP configuration, only that the tokens you are pasting into this script are correct.
 
 It's possible that you may have pasted the tokens incorrectly into the deployment fields.
 
-## Refresh Secure Application  Model Tokens
+## Refresh Secure Application Model Tokens
 
 <details><summary>Refresh Token Script</summary>
 
@@ -251,7 +251,7 @@ $Token = New-PartnerAccessToken @UpdateRefreshTokenParamaters
 
 ### Create new Exchange Refresh Token using previously splatted paramaters ###
 
-$Exchangetoken = New-PartnerAccessToken @UpdateExchangeTokenParamaters 
+$Exchangetoken = New-PartnerAccessToken @UpdateExchangeTokenParamaters
 
 ### Output Refresh Tokens and Exchange Refresh Tokens ###
 
@@ -282,14 +282,14 @@ Write-Host "     SAVE THESE IN A SECURE LOCATION     "
 1. Go to Settings
 1. Select **Backend**
 1. Select **Go to Function App Configuration**
-1. At each item that has the source *Key Vault* there should be a green checkbox. If there is no green checkbox, restart the function app and try in 30 minutes
-1. For the items *RefreshToken* and *ExchangeRefreshToken* rename each item, for example to *RefreshToken2*
+1. At each item that has the source _Key Vault_ there should be a green checkbox. If there is no green checkbox, restart the function app and try in 30 minutes
+1. For the items _RefreshToken_ and _ExchangeRefreshToken_ rename each item, for example to _RefreshToken2_
 1. Select **Save**
 1. Select **Overview** in the side menu
 1. Stop the app & wait 5 minutes.
 1. Start the app
 1. Go back to **Configuration** in the side menu.
-1. Reset the token names to their original values, for example back to *RefreshToken*
+1. Reset the token names to their original values, for example back to _RefreshToken_
 1. Stop the app once more for 5 minutes then start it again.
 
 The tokens should no longer be in the cache.
@@ -304,7 +304,7 @@ If this is the only error during deployment, follow the below steps:
 1. Select **Access Control (IAM)**
 1. Select **Add**
 1. Select **Add Role Assignment**
-1. Give the Azure function service principal *reader* role
+1. Give the Azure function service principal _reader_ role
 
 ## Multi-Factor Authentication Troubleshooting
 

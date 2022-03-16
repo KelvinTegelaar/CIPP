@@ -10,7 +10,6 @@ import TabItem from '@theme/TabItem'
 import ClickToDeploy from './_clicktodeploy.mdx'
 import Manual from './_manual.mdx'
 
-
 You can install CIPP two different ways, click-to-deploy and manual.
 
 A click-to-deploy install is the preferred way to install CIPP using a GitHub fork of the CIPP UI and API repositories. It utilises Azure deployment templates to automate the deployment of the CIPP UI and API.
@@ -22,7 +21,7 @@ Detailed information about each of these installation methods is in the tabs bel
 :::tip Installation Tips
 
 1. You should enter the details of your forks of the CIPP repositories when installing.
-1. You should use a dedicated account for your Secure Application Model application.
+1. You should use a **dedicated** account for your Secure Application Model application.
 1. You should use a new resource group in Azure to deploy CIPP.
 1. If you're redeploying CIPP, you must remove the old resource group - this isn't required if you just want to [update tokens](/docs/general/troubleshooting/#refresh-secure-application--model-tokens)!
 
@@ -31,10 +30,10 @@ Detailed information about each of these installation methods is in the tabs bel
 Unless you know what you're doing manual installation isn't advised, there's a lot of moving parts where one could make a mistake. You must use the manual installation instructions if you wish to host your repository in [Azure DevOps](https://dev.azure.com) or [GitLab](https://www.gitlab.com).
 
 <Tabs>
-    <TabItem value="click-to-deploy" label="Click to Deploy" default>
-        <ClickToDeploy />
-    </TabItem>
-    <TabItem value="manual" label="Manual">
-        <Manual />
-    </TabItem>
+  <TabItem value="click-to-deploy" label="Click to Deploy" default>
+    <ClickToDeploy />
+  </TabItem>
+  <TabItem value="manual" label="Manual">
+    <Manual />
+  </TabItem>
 </Tabs>

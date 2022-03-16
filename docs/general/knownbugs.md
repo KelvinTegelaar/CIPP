@@ -7,4 +7,8 @@ slug: /knownbugs
 
 ## Known Bugs the Frontend
 
+Please report any bug on our [github](https://github.com/KelvinTegelaar)
+
 ## Known Bugs with the Backend
+
+Please report any bug on our [github](https://github.com/KelvinTegelaar)

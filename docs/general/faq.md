@@ -4,6 +4,7 @@ title: Frequently Asked Questions
 description: Frequently asked questions regarding CIPP.
 slug: /faq
 ---
+
 <!-- vale Microsoft.FirstPerson = NO -->
 <!-- vale Microsoft.HeadingAcronyms = NO -->
 <!-- vale Microsoft.HeadingPunctuation = NO -->
@@ -32,7 +33,7 @@ If you're experiencing issues with installation please report these in `#cipp-is
 1. Conditional access is blocking the correct functioning of the tokens - check your CA policies and also make sure you're not geo-blocking the function app's location.
 1. You can't use third party MFA on the account used to generate Secure Application Model (SAM) tokens.
 
-If your entire tenant list doesn't load, there is a big chance there is something wrong with your token configuration. Check the [troubleshooting](/troubleshooting) page for more information.
+If your entire tenant list doesn't load, there is a big chance there is something wrong with your token configuration. Check the [troubleshooting](/troubleshooting) page for more information. If you are missing your own tenant, make sure you enable the flag to manage this tenant.
 
 </details>
 
@@ -81,11 +82,11 @@ CIPP is now no longer available publicly over the internet.
 To add Conditional Access to CIPP, follow the below steps:
 
 1. Go to your [Conditional Access Policies](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ConditionalAccessBlade/Policies)
-1. Select which users to apply the policy to, default suggestion is *"All Users"*
+1. Select which users to apply the policy to, default suggestion is _"All Users"_
 1. Select **Azure Static Web Apps** as the included app under "Cloud Apps or actions"
 1. Configure any condition you want. For example Trusted Locations, specific IPs, specific platforms.
 
-1. At Access Controls you must enable *Grant, with MFA access*.
+1. At Access Controls you must enable _Grant, with MFA access_.
 1. Select **Save**
 
 Your app is now protected with Conditional Access.
@@ -102,7 +103,7 @@ Your app is now protected with Conditional Access.
 If your Azure Tenant requires admin approval for user apps, add consent by following the below steps:
 
 1. Go to [Azure Enterprise Applications](https://portal.azure.com/#blade/Microsoft_AAD_IAM/StartboardApplicationsMenuBlade/AllApps)
-1. Find *Azure Static Websites*
+1. Find _Azure Static Websites_
 1. Grant Admin Consent for all
 
 This permits users the ability to grant consent when access CIPP now.
@@ -129,8 +130,8 @@ Assuming you're running on the click-to-deploy configuration and average usage p
 
 A 500 error is a generic server error. In CIPP this can hide many different issues. It could mean:
 
-* You don't have valid licensing for the feature you're trying to use.
-* The CIPP-API function app isn't responding correctly, is starting up or is down.
+- You don't have valid licensing for the feature you're trying to use.
+- The CIPP-API function app isn't responding correctly, is starting up or is down.
 
 If you're still having issues, after checking licensing and that your function app is running correctly, please report them in `#cipp-issues` on the [CIPP Discord](https://discord.gg/cyberdrain).
 
@@ -145,9 +146,9 @@ If you're still having issues, after checking licensing and that your function a
 
 A 400 error is a generic access error. In CIPP this can hide many different issues. It could mean:
 
-* You have issues with your tokens. Check the [troubleshooting](/docs/general/troubleshooting/) page for more information.
-* You're trying to access a page that requires a specific role.
-* You're trying to access a page that doesn't exist.
+- You have issues with your tokens. Check the [troubleshooting](/docs/general/troubleshooting/) page for more information.
+- You're trying to access a page that requires a specific role.
+- You're trying to access a page that doesn't exist.
 
 </details>
 

@@ -1,8 +1,8 @@
-If you don't want to, or can't, install CIPP automatically you can use the following steps to create the required Azure services manually.
+If you don't want to, or can't, install CIPP automatically you can use the following steps to create the required Azure services manually. We do not offer community support for any environment deployed in this manner.
 
 ## Create an Azure Function host
 
-Create an Azure Function App and upload the data from the CIPP-API to the Azure Function, or attach it to your fork. Each time the team pushes updates to the central repository you must also update your fork to keep current. 
+Create an Azure Function App and upload the data from the CIPP-API to the Azure Function, or attach it to your fork. Each time the team pushes updates to the central repository you must also update your fork to keep current.
 
 After creating the Azure function, Enable system managed identity for the Azure Function. [Microsoft Docs - How to use managed identities for App Service and Azure Functions](https://docs.microsoft.com/en-us/azure/app-service/overview-managed-identity?toc=%2Fazure%2Fazure-functions%2Ftoc.json&tabs=powershell)
 
@@ -18,4 +18,4 @@ Create a premium Azure Static Web App in the Azure portal and use the CIPP repos
 
 After creation, perform the following changes:
 
-* Attach the Function App to the Static Web App. [Microsoft Docs - Bring your own functions to Azure Static Web Apps](https://docs.microsoft.com/en-us/azure/static-web-apps/functions-bring-your-own)
+- Attach the Function App to the Static Web App. [Microsoft Docs - Bring your own functions to Azure Static Web Apps](https://docs.microsoft.com/en-us/azure/static-web-apps/functions-bring-your-own)
