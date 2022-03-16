@@ -5,28 +5,28 @@ description: How to prepare to install an instance of CIPP for your organisation
 slug: /gettingstarted/prerequisites
 ---
 
-To get started make sure you have the following:
+To get started make sure you have the following information ready;
 
-* Your Secure Application Model information
-* A [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) of [the CIPP GitHub](https://github.com/KelvinTegelaar/CIPP) repository.
-* A [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) of [the CIPP API GitHub](https://github.com/KelvinTegelaar/CIPP-API) repository.
-* An active Azure Subscription.
-* A GitHub Personal Access Token. You can find instructions on what you need and the minimum permissions to do this [in Microsoft's Azure Static Web Apps documentation](https://docs.microsoft.com/en-us/azure/static-web-apps/publish-azure-resource-manager?tabs=azure-cli#create-a-github-personal-access-token). You only need the "Create a GitHub Personal Access Token" section.
+- Your Secure Application Model information
+- A [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) of [the CIPP GitHub](https://github.com/KelvinTegelaar/CIPP) repository.
+- A [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) of [the CIPP API GitHub](https://github.com/KelvinTegelaar/CIPP-API) repository.
+- An active Azure Subscription.
+- A GitHub Personal Access Token. You can find instructions on what you need and the minimum permissions to do this [in Microsoft's Azure Static Web Apps documentation](https://docs.microsoft.com/en-us/azure/static-web-apps/publish-azure-resource-manager?tabs=azure-cli#create-a-github-personal-access-token). You only need the "Create a GitHub Personal Access Token" section.
 
-For the installation and maintenance, it's assumed you have some knowledge of GitHub (or Git in general).
+For the installation and maintenance, it's assumed you have some knowledge of GitHub.
 
 If you haven't setup the Secure Application Model (SAM) use the instructions below and then move onto the next page to configure the permissions for your SAM application.
 
 :::danger Secure Application Model account
-It is **strongly** recommended that you use a separate global administrator account for each Secure Application Model application you create. This avoids conflicts that occur when using existing accounts which may be in customer tenants as guest users and provides better tracing in audit logs. 
+It is **strongly** recommended that you use a separate global administrator account for each Secure Application Model application you create. This avoids conflicts that occur when using existing accounts which may be in customer tenants as guest users and provides better tracing in audit logs.
 
 **This service account should be a Global Admin (in your tenant) and given Admin Agent (in partner center)**.
 :::
 
 :::tip Setting up the Secure Application Model
 
-* Haven't setup the Secure Application model yet? Check out [this CyberDrain blog post](https://www.cyberdrain.com/connect-to-exchange-online-automated-when-mfa-is-enabled-using-the-secureapp-model/).
-* For a step-by-step guide to setting up the Secure Application Model, see [this Gavsto blog post](https://www.gavsto.com/secure-application-model-for-the-layman-and-step-by-step/).
+- Haven't setup the Secure Application model yet? Check out [this CyberDrain blog post](https://www.cyberdrain.com/connect-to-exchange-online-automated-when-mfa-is-enabled-using-the-secureapp-model/).
+- For a step-by-step guide to setting up the Secure Application Model, see [this Gavsto blog post](https://www.gavsto.com/secure-application-model-for-the-layman-and-step-by-step/).
 
 :::
 

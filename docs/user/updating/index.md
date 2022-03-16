@@ -6,7 +6,7 @@ slug: /updating
 ---
 
 :::caution Manual vs Automatic Updating
-Note that the frontend updates automatically once you have done "Fetch & Merge" from GitHub, however the CIPP-API requires you to press a button on the resource in Azure itself.
+Note that the frontend updates automatically once you have done "Fetch & Merge" from GitHub, however the CIPP-API requires you to press a button on the resource in Azure itself. If you have a hosted version of CIPP, updated are deployed automatically.
 :::
 
 Update your application to the latest release using the following instructions:
@@ -17,9 +17,9 @@ Update your application to the latest release using the following instructions:
 Note that if you receive a workflow error, check the [Troubleshooting page for potential fixes](/docs/general/troubleshooting)
 :::
 
-* Go to your own CIPP fork on GitHub 
-* Select Fetch Upstream
-* Select Fetch and Merge
+- Go to your own CIPP fork on GitHub
+- Select Fetch Upstream
+- Select Fetch and Merge
 
 ## Backend
 
@@ -27,14 +27,14 @@ Note that if you receive a workflow error, check the [Troubleshooting page for p
 To update the backend, you must manually fetch from GitHub and update the Azure resource yourself, following the below instructions
 :::
 
-* Go to your CIPP-API fork on GitHub
-* Select Fetch Upstream
-* Select Fetch and Merge
-* Go to the Azure Portal
-* Go to your CIPP resource group
-* Select the Azure Function
-* Select "Deployment Center"
-* Select Sync.
+- Go to your CIPP-API fork on GitHub
+- Select Fetch Upstream
+- Select Fetch and Merge
+- Go to the Azure Portal
+- Go to your CIPP resource group
+- Select the Azure Function
+- Select "Deployment Center"
+- Select Sync.
 
 :::success Success!
 Check the [Dashboard](/docs/user/usingcipp/dashboard) and you should see all green once updated.
