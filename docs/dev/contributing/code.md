@@ -14,8 +14,8 @@ Contributions to CIPP are welcome by everyone. There's a couple of things to kee
 
 When contributing, or planning to contribute, please create an issue [on GitHub](https://github.com/KelvinTegelaar/CIPP/issues).
 
-* If you are fixing a bug, file a complete bug report and assign it to yourself.
-* If you are adding a feature, please add "Feature Request" to the title and assign it to yourself.
+* If you are fixing a bug, file a complete bug report and assign it to yourself.  You can do this by commenting "I would like to work on this please" on the issue.
+* If you are adding a feature, please add "Feature Request" to the title and assign it to yourself. You can do this by commenting "I would like to work on this please" on the issue.
 
 <!-- vale Microsoft.FirstPerson off -->
 :::tip Assigning Yourself an Issue
