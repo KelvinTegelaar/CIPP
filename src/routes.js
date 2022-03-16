@@ -104,6 +104,9 @@ const EditContact = React.lazy(() => import('src/views/email-exchange/administra
 const EditMailboxPermissions = React.lazy(() =>
   import('src/views/email-exchange/administration/EditMailboxPermissions'),
 )
+const EditCalendarPermissions = React.lazy(() =>
+  import('src/views/email-exchange/administration/EditCalendarPermissions'),
+)
 const ViewMobileDevices = React.lazy(() =>
   import('src/views/email-exchange/administration/ViewMobileDevices'),
 )
@@ -167,7 +170,11 @@ const routes = [
   { path: '/tenant/administration/domains', name: 'Domains', component: Domains },
   { path: '/tenant/administration/alertswizard', name: 'Alerts Wizard', component: AlertWizard },
   { path: '/tenant/administration/alertsqueue', name: 'Alerts Queue', component: AlertsQueue },
-  { path: '/tenant/administration/graph-explorer', name: 'Graph Explorer', component: GraphExplorer },
+  {
+    path: '/tenant/administration/graph-explorer',
+    name: 'Graph Explorer',
+    component: GraphExplorer,
+  },
 
   {
     path: '/tenant/administration/conditional-access-policies',
@@ -286,6 +293,11 @@ const routes = [
     name: 'Edit Mailbox Permissions',
     path: '/email/administration/edit-mailbox-permissions',
     component: EditMailboxPermissions,
+  },
+  {
+    name: 'Edit Calendar Permissions',
+    path: '/email/administration/edit-calendar-permissions',
+    component: EditCalendarPermissions,
   },
   {
     name: 'View Mobile Devices',
