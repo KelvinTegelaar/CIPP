@@ -33,10 +33,7 @@ function HomePageHeader() {
     getGithubData()
   }, [])
 
-  return (
-    <div className="container-fluid">
-    </div>
-  )
+  return <div className="container-fluid"></div>
 }
 
 export default function Home() {
@@ -52,9 +49,16 @@ export default function Home() {
         <div className="width--full text--center margin-bottom--lg">
           <Link
             className="button button--outline button--primary button--lg"
-            to="https://github.com/sponsors/KelvinTegelaar"
+            to="http://localhost:3000/docs/user/gettingstarted/prerequisites/"
           >
-            Sponsor on GitHub
+            Install on your own
+          </Link>{' '}
+          <b>OR</b>{' '}
+          <Link
+            className="button button--outline button--primary button--lg"
+            to="https://github.com/sponsors/KelvinTegelaar/sponsorships?sponsor=KelvinTegelaar&tier_id=101398&preview=false"
+          >
+            Get a hosted version
           </Link>
         </div>
         <div className="width--full what-is-cipp padding-vert--lg">
