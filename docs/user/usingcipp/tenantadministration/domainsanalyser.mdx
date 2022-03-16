@@ -9,10 +9,10 @@ The domain analyser is a series of best practice checks that run on all your e-m
 
 It analyses the DNS records that are available and assesses the following areas:
 
-* Sender Policy Framework (SPF)
-* Domain-based Message Authentication, Reporting & Conformance (DMARC)
-* DomainKeys Identified Mail (DKIM)
-* Domain Name System Security Extensions (DNSSEC)
+- Sender Policy Framework (SPF)
+- Domain-based Message Authentication, Reporting & Conformance (DMARC)
+- DomainKeys Identified Mail (DKIM)
+- Domain Name System Security Extensions (DNSSEC)
 
 Please note - clicking **More** at the end of each row provides detailed information on identified problems.
 
@@ -32,36 +32,35 @@ The reporting here follows a standard colour theme. Red is bad and not something
 
 A measure of the overall security of the domain calculated by taking the following into account:
 
-* SPF
-* MX
-* DMARC
-* DKIM
-* DNSSEC
+- SPF
+- MX
+- DMARC
+- DKIM
+- DNSSEC
 
 There's a detailed breakdown of each check and the score points available for it below:
 
-| Item                      | Description                                                      | Points  |
-|---------------------------|------------------------------------------------------------------|:-------:|
-| SPF Present               | SPF is present                                                   | 10      |
-| SPF MX Recommended        | SPF is present and set as determined from the MX records.        | 10      |
-| SPF Correct All           | SPF is present and set correctly.                                | 10      |
-| MX Provider Recommended   | MX records are present and set as recommended by provider.       | 10      |
-| DMARC Present             | DMARC is present.                                                | 10      |
-| DMARC Set Quarantine      | DMARC set to quarantine.                                         | 20      |
-| DMARC Set Reject          | DMARC set to reject.                                             | 30      |
-| DMARC Reporting Active    | DMARC reporting is active.                                       | 20      |
-| DMARC Percentage Good     | DMARC percentage set to a value of 100.                          | 20      |
-| DNSSEC Present            | DNSSEC is present.                                               | 20      |
-| DKIM Active and Working   | DKIM is active and working.                                      | 20      |
-| **Total Possible Points** |                                                                  | **180** |
-
+| Item                      | Description                                                | Points  |
+| ------------------------- | ---------------------------------------------------------- | :-----: |
+| SPF Present               | SPF is present                                             |   10    |
+| SPF MX Recommended        | SPF is present and set as determined from the MX records.  |   10    |
+| SPF Correct All           | SPF is present and set correctly.                          |   10    |
+| MX Provider Recommended   | MX records are present and set as recommended by provider. |   10    |
+| DMARC Present             | DMARC is present.                                          |   10    |
+| DMARC Set Quarantine      | DMARC set to quarantine.                                   |   20    |
+| DMARC Set Reject          | DMARC set to reject.                                       |   30    |
+| DMARC Reporting Active    | DMARC reporting is active.                                 |   20    |
+| DMARC Percentage Good     | DMARC percentage set to a value of 100.                    |   20    |
+| DNSSEC Present            | DNSSEC is present.                                         |   20    |
+| DKIM Active and Working   | DKIM is active and working.                                |   20    |
+| **Total Possible Points** |                                                            | **180** |
 
 ### Sender Policy Framework Pass Test
 
 A check that your domains meet the following conditions:
 
-* Using the recommended SPF record that your mail provider suggests.
-* SPF set to hard fail as opposed to soft fail.
+- Using the recommended SPF record that your mail provider suggests.
+- SPF set to hard fail as opposed to soft fail.
 
 ### Mail Exchanger Pass Test
 

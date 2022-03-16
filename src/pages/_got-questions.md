@@ -1,14 +1,20 @@
 <!-- markdownlint-disable-next-line MD041 -->
+
 You have questions? That's okay! We're here to help, here are the answers to some common questions about CIPP below and answers to more technical or specific questions in the [FAQ](/faq/).
 
 <details><summary>Who are the developers?</summary>
 
-We mostly work for Managed Service Providers (MSPs) who develop CIPP on a voluntary basis though some contributors may receive payment to work on specific features or projects. CIPP development is lead by:
+CIPP works with open source contributors, but the project is led and owned by [Kelvin Tegelaar](https://www.cyberdrain.com). CIPP can have many contributors that supply small corrections to code or major new features. The CIPP project uses a feature and bug-bounty program to develop features with the community.
 
-* [Kelvin Tegelaar](https://www.cyberdrain.com)
-* [Gavin Stone](https://www.gavsto.com)
+Check the [contributors page](/contributors) for details on all contributors.
 
-Check the [contributors page](/contributors) for details on other contributors.
+</details>
+
+<details><summary>How much does it cost?</summary>
+
+CIPP is free, open-source software and is available under the [AGPLv3 license](/docs/dev/licensing/code). Hosting CIPP requires Azure Static Web Apps and Azure Functions at your own cost, the cost of CIPP should be between 10 and 15 dollars a month in your own Azure environment.
+
+You can, if you wish, donate to support CIPP [on GitHub](https://github.com/sponsors/KelvinTegelaar/), sponsors receive benefits such as hosting, support, or prioritized feature requests.
 
 </details>
 
@@ -26,12 +32,13 @@ We built CIPP from the ground up with security in mind. It's built with [Azure F
 
 CIPP uses several automated code scanning tools to check for vulnerabilities and make sure that the code is as safe and secure as possible. You are free to audit the code (which you can find in the GitHub repositories linked in the NavBar) and report any issues you find.  This is strongly encouraged, as you should never deploy something that you do not understand what it is doing which is why the backend was built on PowerShell.
 
+
 Paid code security audits may be undertaken as allowed by funding. If you think you've found a security issue please see the [security policy](/security) for information on how to report these.
 
 </details>
 
 <details><summary>How's CIPP funded?</summary>
 
-Funding for CIPP comes primarily from the sponsors. CIPP also relies on time and effort from [contributors](/contributors).
+Funding for CIPP comes from the sponsors. CIPP also relies on time and effort from [contributors](/contributors).
 
 </details>

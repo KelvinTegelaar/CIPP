@@ -4,22 +4,22 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import React from 'react';
-import clsx from 'clsx';
-import Link from '@docusaurus/Link';
-import {useThemeConfig} from '@docusaurus/theme-common';
-import useBaseUrl from '@docusaurus/useBaseUrl';
-import isInternalUrl from '@docusaurus/isInternalUrl';
-import styles from './styles.module.css';
-import ThemedImage from '@theme/ThemedImage';
-import IconExternalLink from '@theme/IconExternalLink';
-import Sponsors from '@site/src/components/Sponsors/Sponsors';
+import React from 'react'
+import clsx from 'clsx'
+import Link from '@docusaurus/Link'
+import { useThemeConfig } from '@docusaurus/theme-common'
+import useBaseUrl from '@docusaurus/useBaseUrl'
+import isInternalUrl from '@docusaurus/isInternalUrl'
+import styles from './styles.module.css'
+import ThemedImage from '@theme/ThemedImage'
+import IconExternalLink from '@theme/IconExternalLink'
+import Sponsors from '@site/src/components/Sponsors/Sponsors'
 
-function FooterLink({to, href, label, prependBaseUrlToHref, ...props}) {
-  const toUrl = useBaseUrl(to);
+function FooterLink({ to, href, label, prependBaseUrlToHref, ...props }) {
+  const toUrl = useBaseUrl(to)
   const normalizedHref = useBaseUrl(href, {
     forcePrependBaseUrl: true,
-  });
+  })
   return (
     <Link
       className="footer__link-item"
@@ -30,7 +30,8 @@ function FooterLink({to, href, label, prependBaseUrlToHref, ...props}) {
         : {
             to: toUrl,
           })}
-      {...props}>
+      {...props}
+    >
       {href && !isInternalUrl(href) ? (
         <span>
           {label}
@@ -40,10 +41,10 @@ function FooterLink({to, href, label, prependBaseUrlToHref, ...props}) {
         label
       )}
     </Link>
-  );
+  )
 }
 
-function FooterLogo({sources, alt, width, height}) {
+function FooterLogo({ sources, alt, width, height }) {
   return (
     <ThemedImage
       className="footer__logo"
@@ -52,10 +53,10 @@ function FooterLogo({sources, alt, width, height}) {
       width={width}
       height={height}
     />
-  );
+  )
 }
 
-function MultiColumnLinks({links}) {
+function MultiColumnLinks({ links }) {
   return (
     <>
       {links.map((linkItem, i) => (
@@ -82,10 +83,10 @@ function MultiColumnLinks({links}) {
         </div>
       ))}
     </>
-  );
+  )
 }
 
-function SimpleLinks({links}) {
+function SimpleLinks({ links }) {
   return (
     <div className="footer__links">
       {links.map((item, key) => (
@@ -102,29 +103,27 @@ function SimpleLinks({links}) {
           ) : (
             <FooterLink {...item} />
           )}
-          {links.length !== key + 1 && (
-            <span className="footer__link-separator">·</span>
-          )}
+          {links.length !== key + 1 && <span className="footer__link-separator">·</span>}
         </>
       ))}
     </div>
-  );
+  )
 }
 
 function isMultiColumnFooterLinks(links) {
-  return 'title' in links[0];
+  return 'title' in links[0]
 }
 
 function Footer() {
-  const {footer} = useThemeConfig();
-  const {copyright, links = [], logo = {}} = footer || {};
+  const { footer } = useThemeConfig()
+  const { copyright, links = [], logo = {} } = footer || {}
   const sources = {
     light: useBaseUrl(logo.src),
     dark: useBaseUrl(logo.srcDark || logo.src),
-  };
+  }
 
   if (!footer) {
-    return null;
+    return null
   }
 
   return (
@@ -135,7 +134,8 @@ function Footer() {
       <footer
         className={clsx('footer', {
           'footer--dark': footer.style === 'dark',
-        })}>
+        })}
+      >
         <div className="container container-fluid">
           {links &&
             links.length > 0 &&
@@ -180,7 +180,7 @@ function Footer() {
         </div>
       </footer>
     </>
-  );
+  )
 }
 
-export default React.memo(Footer);
+export default React.memo(Footer)

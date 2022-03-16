@@ -9,11 +9,11 @@ slug: /usingcipp/dashboard
 
 From the quick links section on the dashboard to you can jump straight into commonly used tasks in CIPP:
 
-1. Add a User - *Create a user and assign licences.*
-1. Add a Group - *Create a group and add members.*
-1. Add a Team - *Create a team and add members.*
+1. Add a User - _Create a user and assign licences._
+1. Add a Group - _Create a group and add members._
+1. Add a Team - _Create a team and add members._
 
-You can run these tasks for any of the tenants you have available in CIPP.
+You can run these tasks for any of the tenants you have available in CIPP, or your own tenant if you have enabled the partner tenant to be available.
 
 ## Version Control
 

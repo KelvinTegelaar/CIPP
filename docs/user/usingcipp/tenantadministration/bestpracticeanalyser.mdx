@@ -5,7 +5,7 @@ description: Audit your tenant against best practices.
 slug: /usingcipp/tenantadministration/bestpracticeanalyser
 ---
 
-The Best Practice Analyser is a series of checks that run on all your 365 tenants. The best practice idea of this has been widely discussed with many MSPs. Most of these best practices derive from the standards in CIPP. The Best Practice Analyser is entirely read only. It makes no changes to your tenants.
+The Best Practice Analyser is a series of checks that run on all your 365 tenants. The best practice idea of this has been widely discussed with many MSPs. Most of these best practices derive from the standards in CIPP. The Best Practice Analyser is entirely read only. It makes no changes to your tenants. The best practice Analyser runs once every day.
 
 ## Getting Started
 
@@ -69,11 +69,11 @@ Whether to enable privacy in reports or not is subjective, which is why having p
 
 ### Self-Service Password Reset Enabled
 
-Microsoft 365 has an organisational setting that when enabled, provides the ability for users to reset their own passwords through a forgot your password process with strong authentication requirements. This check has three possible results. 
+Microsoft 365 has an organisational setting that when enabled, provides the ability for users to reset their own passwords through a forgot your password process with strong authentication requirements. This check has three possible results.
 
-* Self-service password reset is off for all users
-* Self-service password reset is on for all users
-* Self-service password reset is on for specific users.
+- Self-service password reset is off for all users
+- Self-service password reset is on for all users
+- Self-service password reset is on for specific users.
 
 Whether to enable self-service password reset or not is subjective, which is why not having self service password resets enabled triggers an orange warning status.
 
@@ -85,9 +85,9 @@ Not having modern authentication enabled triggers a red danger status.
 
 ### Shared Mailboxes Logins Not Enabled
 
-You can select the badge in this column to view shared mailbox accounts with login enabled. 
+You can select the badge in this column to view shared mailbox accounts with login enabled.
 
-This setting is checking to see if you have shared mailboxes attached to a valid account that can still login. Usually shared mailboxes shouldn't have a  account attached to them with an active login. Commonly when a user leaves a business, they're converted from a licensed user account to a shared mailbox, with the license removed to save money. Often this still leaves an active account linked to the shared mailbox, even with the password changed this increases risk. 
+This setting is checking to see if you have shared mailboxes attached to a valid account that can still login. Usually shared mailboxes shouldn't have a account attached to them with an active login. Commonly when a user leaves a business, they're converted from a licensed user account to a shared mailbox, with the license removed to save money. Often this still leaves an active account linked to the shared mailbox, even with the password changed this increases risk.
 
 Having shared mailboxes with enabled accounts triggers a red danger status.
 
@@ -105,7 +105,7 @@ Having unused licenses triggers an orange warning status.
 
 ## Common Problems
 
-You must give adequate time for the best practice Analyser to run. In an environment with 100 tenants this takes on average 15 minutes. 
+You must give adequate time for the best practice Analyser to run. In an environment with 100 tenants this takes on average 15 minutes.
 
 Check that your permissions are correct by navigating to **CIPP Settings > Configuration Settings > Run Permission Check**.
 
@@ -123,6 +123,6 @@ Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issue
 
 ## Known Issues / Limitations
 
-* Currently the best practice analyser runs every day at 3 AM and has a significant impact on the overall performance of CIPP for about 30 minutes.
+- Currently the best practice analyser runs every day at 3 AM and has a significant impact on the overall performance of CIPP for about 30 minutes.
 
 <OtherIssues />
