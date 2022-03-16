@@ -21,7 +21,7 @@ For the first 30 minutes or so, the Function App (CIPP-API) runs slow whilst Pow
 
 If you have waited for at least 30 minutes and things are still not working restart the Function App (**Azure Portal > CIPP Resource Group > Function App > Overview > Restart**). This solves 99.9% of all issues. Turn it off, turn it on again.
 
-If you're still stuck, check out the [FAQ](/faq) or [Troubleshooting](/troubleshooting) pages and if needed - create an issue [on GitHub](https://github.com/KelvinTegelaar/CIPP/issues) or seek help [on the CIPP Discord](https://discord.gg/cyberdrain)
+If you're still stuck, check out the [FAQ](/docs/general/faq/) or [Troubleshooting](/troubleshooting) pages and if needed - create an issue [on GitHub](https://github.com/KelvinTegelaar/CIPP/issues) or seek help [on the CIPP Discord](https://discord.gg/cyberdrain)
 
 ## Adding a Custom Domain Name
 
@@ -36,6 +36,7 @@ If you're still stuck, check out the [FAQ](/faq) or [Troubleshooting](/troublesh
 At the moment of deployment, the application uses a generated domain name. To change this, go to your Resource Group in Azure, select your Static Web App (`cipp-swa-xxxx` if using click-to-deploy) and select Custom Domains. You can add your own domain name here. [Microsoft Docs - Set up a custom domain with free certificate in Azure Static Web Apps](https://docs.microsoft.com/en-us/azure/static-web-apps/custom-domain?tabs=azure-dns)
 
 ## I want to manage my own tenant
+
 If you want to manage your own tenant, or if you are not a Microsoft Partner but still want to use CIPP you can set a flag in the configuration for this. Be warned that anyone with access to CIPP can then manage your internal tenant too. 
 
 To set the flag follow these steps:

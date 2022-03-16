@@ -22,7 +22,9 @@ Security notification reporting is via the GitHub notification and advisory syst
 ## Bounties and Rewards
 
 This project is an open-source sponsor-ware effort, which makes it hard to create a monetary reward without breaking the bank.
-For _critical_ security bugs, involving things like remote code execution or API data leaks, The project aims to offer a 50 dollar reward. For other bugs, the project may reward with some swag such as an official CyberDrain t-shirt or hoodie.
+
+For *critical* security bugs, involving things like remote code execution or API data leaks, the project aims to offer a 50 dollar reward. For other bugs, the project may reward with some swag such as an official CyberDrain t-shirt or hoodie.
+
 
 ## Investigating Vulnerabilities
 

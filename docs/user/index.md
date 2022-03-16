@@ -8,4 +8,4 @@ This section holds the user-facing documentation for the CyberDrain Improved Par
 
 Use the sidebar to get started on your CIPP deployment.
 
-If you're interested in contributing to CIPP development you probably want the [Developer Guide](/docs/dev/).
+If you're interested in contributing to CIPP development you probably want the [Developer Guide](/docs/dev/) or alternatively the [FAQ page](/docs/general/faq).

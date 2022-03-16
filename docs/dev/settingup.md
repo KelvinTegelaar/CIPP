@@ -114,7 +114,7 @@ git checkout dev
 cd ..
 ```
 
-That's it - we've got our repositories set locally and on the dev branch, our local environment is setup and ready to develop the CIPP UI. Read on through this section for further instructions.
+That's it - we've got our repositories setup locally and on the dev branch, our local environment is setup and ready to develop the CIPP UI. Read on through this section for further instructions.
 
 :::info GitHub CLI
 

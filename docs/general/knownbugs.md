@@ -7,8 +7,8 @@ slug: /knownbugs
 
 ## Known Bugs the Frontend
 
-Please report any bug on our [github](https://github.com/KelvinTegelaar)
+Known bugs can be found logged via GitHub [here for the front end](<https://github.com/KelvinTegelaar/CIPP/issues>)
 
 ## Known Bugs with the Backend
 
-Please report any bug on our [github](https://github.com/KelvinTegelaar)
+Known bugs can be found logged via GitHub [here for the backend](<https://github.com/KelvinTegelaar/CIPP-API/issues>)

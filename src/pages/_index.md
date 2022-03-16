@@ -26,6 +26,8 @@ This project is **FREE** but we do have a **Sponsor-ware** component. The sponso
 
 Sponsorship allows me to put some more time into this project and keep it free, so please consider it. :)
 
+In order to become a sponsor, please [visit the GitHub sponsorship page](<https://github.com/sponsors/KelvinTegelaar>)
+
 ### For company sponsors, depending on sponsor level you can get the following benefits
 
 - Your company logo will be featured on the [CIPP website](https://cipp.app).

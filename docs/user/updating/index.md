@@ -41,4 +41,4 @@ Check the [Dashboard](/docs/user/usingcipp/dashboard) and you should see all gre
 You've now updated the application.
 :::
 
-If you don't see the update immediately - give the function app half an hour to finish updating itself.
+If you don't see the update immediately - give the function app half an hour or so to finish updating itself.
