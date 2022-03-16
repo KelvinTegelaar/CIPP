@@ -156,7 +156,7 @@ Setting up SAM tokens for the first time, presents three consent steps. Make sur
 
 You should make sure that the user account you're using to generate your SAM tokens isn't listed as a [risky user](https://docs.microsoft.com/en-us/azure/active-directory/identity-protection/howto-identity-protection-investigate-risk).
 
-The account you use for your SAM tokens mustn't have an exemption/exclusion from MFA checks resulting from Conditional Access policies.
+The account you use for your SAM tokens must **NOT** have an exemption/exclusion from MFA checks resulting from Conditional Access policies.
 
 :::
 
