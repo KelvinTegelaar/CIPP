@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPageList } from 'src/components/layout'
 import { ModalService } from 'src/components/utilities'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
-import { CellBoolean, cellBooleanFormatter } from 'src/components/tables'
+import { cellBooleanFormatter } from 'src/components/tables'
 
 const ListAlertsQueue = () => {
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
