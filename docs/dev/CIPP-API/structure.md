@@ -9,7 +9,7 @@ So you've got two repositories now (assuming you followed the [setting up](../..
 
 ## The Root
 
-In the `CIPP-API` directory itself there're a number of files and folders, this page highlights the unusual ones but first the general structure of most of the folders is:
+In the `CIPP-API` directory itself there are a number of files and folders, this page highlights the unusual ones but first the general structure of most of the folders is:
 
 | Item               | Description                                                                                                         |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------- |

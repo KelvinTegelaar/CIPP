@@ -74,4 +74,6 @@ ForEach ($Key in $EnvironmentVariables) {
 }
 ```
 
+It is also important to note that running locally removes the SWA authentication aspect of the app, meaning that anyone on your LAN could connect to the instance.
+
 :::

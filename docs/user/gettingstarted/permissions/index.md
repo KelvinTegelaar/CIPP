@@ -23,6 +23,9 @@ For full functionality, CIPP needs the following permissions for the Secure Appl
 Some permissions may appear duplicated in the Delegated and Application permissions tables below. This is _by design_ and you do need to add both permissions!
 :::
 
+:::warning Script to set Permissions
+Note that we do not allow these permissions to be set via a script, as you need to understand what permissions you are adding.
+:::
 <details><summary>
 
 ### Delegated Permissions

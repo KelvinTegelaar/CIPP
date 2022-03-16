@@ -4,4 +4,7 @@ CIPP (_pronounced "sip"_) along with being a good thing to do with tea, coffee o
 
 CIPP gives you the ability to administer your customers' Microsoft 365 tenants, manage users, deploy standard policies, and more. CIPP assists you by removing the headaches from current options for Microsoft 365 multi-tenant management and should save you several hours each month at the least!
 
-CIPP has two components - the [CIPP UI](/docs/dev/CIPP/structure/) and the [CIPP API](/docs/dev/CIPP-API/).
+CIPP comes in two parts - the [CIPP UI](/docs/dev/CIPP/structure/) and the [CIPP API](/docs/dev/CIPP-API/).
+
+There are also two aspects to the documentation site - the [CIPP Docs](/docs) and the [Swagger](/docs/api) information.
+

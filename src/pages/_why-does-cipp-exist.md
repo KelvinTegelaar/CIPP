@@ -1,6 +1,6 @@
 <!-- markdownlint-disable-next-line MD041 -->
+In 2021, increasingly frustrated at Microsoft's multi-tenant management offerings and vendor inaction, Kelvin Tegelaar created the CyberDrain Improved Partner Portal showing that it isn't hard to do this well.
 
-In 2021, increasingly frustrated at Microsoft's multi-tenant management offerings and vendor inaction Kelvin Tegelaar created the CyberDrain Improved Partner Portal showing that it isn't hard to do this well.
 
 A quote from our original readme:
 
