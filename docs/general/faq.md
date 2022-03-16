@@ -118,6 +118,8 @@ This permits users the ability to grant consent when access CIPP now.
 
 Assuming you're running on the click-to-deploy configuration and average usage patterns it should cost $15 - $20 or £17 - £22 per month. You can check the costs, and estimated costs, for the resource group on the Azure Portal.
 
+Please note it is your responsibility to ensure you are keeping an eye on costs within your instances.
+
 </details>
 
 <details>
