@@ -308,7 +308,7 @@ If this is the only error during deployment, follow the below steps:
 
 ## Multi-Factor Authentication Troubleshooting
 
-Here are a few things it's important to know about MFA and it's effects on the Secure Application Model (SAM) and CIPP:
+Here are a few things it's important to know about MFA and its effects on the Secure Application Model (SAM) and CIPP:
 
 1. The account you use to generate your SAM tokens for CIPP must have Microsoft (Azure AD) MFA enabled, it can't use third-party MFA.
 1. You can't have the `Allow users to remember multi-factor authentication on devices they trust` option enabled in the [classic MFA admin portal](https://account.activedirectory.windowsazure.com/UserManagement/MfaSettings.aspx). In either customer or the partner tenant.
