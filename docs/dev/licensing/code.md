@@ -6,7 +6,7 @@ slug: /licensing/code
 ---
 
 :::info
-This is the license which is applies to the CIPP code.
+This is the license which is applied to the CIPP code.
 :::
 
 <!-- vale off -->
