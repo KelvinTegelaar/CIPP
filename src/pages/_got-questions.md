@@ -24,7 +24,7 @@ You can, if you wish, donate to support CIPP [on GitHub](https://github.com/spon
 
 We built CIPP from the ground up with security in mind. It's built with [Azure Functions](https://docs.microsoft.com/en-us/azure/azure-functions/functions-overview) and [Azure Static Web Apps](https://docs.microsoft.com/en-us/azure/static-web-apps/overview) and relies on the security provided by Azure Static Web Apps to handle authorization and authentication.
 
-CIPP uses several automated code scanning tools to check for vulnerabilities and make sure that the code is as safe and secure as possible. You are free to audit the code (which you can find in the GitHub repositories linked in the NavBar) and report any issues you find.
+CIPP uses several automated code scanning tools to check for vulnerabilities and make sure that the code is as safe and secure as possible. You are free to audit the code (which you can find in the GitHub repositories linked in the NavBar) and report any issues you find.  This is strongly encouraged, as you should never deploy something that you do not understand what it is doing which is why the backend was built on PowerShell.
 
 Paid code security audits may be undertaken as allowed by funding. If you think you've found a security issue please see the [security policy](/security) for information on how to report these.
 
