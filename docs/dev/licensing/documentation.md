@@ -6,7 +6,7 @@ slug: /licensing/documentation
 ---
 
 :::info
-This is the license which is applies to the CIPP documentation.
+This is the license which is applied to the CIPP documentation.
 :::
 
 <!-- vale off -->
