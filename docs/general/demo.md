@@ -1,7 +1,7 @@
 ---
 id: demo
 title: CIPP Live Demo
-description: Demo version of CIPP
+description: Demo version of CIPP dev
 slug: /demo
 ---
 
