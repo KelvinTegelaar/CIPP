@@ -96,11 +96,6 @@ const config = {
         minHeadingLevel: 2,
         maxHeadingLevel: 5,
       },
-      announcementBar: {
-        id: 'announcementBar-2', // Increment on change
-        content: `<span aria-label="star" role="img">⭐</span> If you like CIPP, please <a href="https://github.com/KelvinTegelaar/CIPP" target="_blank" rel="noopener noreferrer">star the project</a> and <a href="https://github.com/sponsors/KelvinTegelaar" target="_blank" rel="noopener noreferrer">consider Sponsoring the project</a>. Thanks! <span aria-label="heart" role="img">❤️</span>`,
-        //content: `<span aria-label="warning" role="img">⚠️</span> This site is still under development. Please check <a href="https://cipp.app">cipp.app</a> for the latest live documentation and information on CIPP.`,
-      },
       navbar: {
         title: `CyberDrain Improved Partner Portal`,
         logo: {
@@ -166,6 +161,13 @@ const config = {
             type: 'doc',
             docId: 'troubleshooting',
             label: 'Troubleshooting',
+            position: 'left',
+            docsPluginId: 'general',
+          },
+          {
+            type: 'doc',
+            docId: 'demo',
+            label: 'Demo',
             position: 'left',
             docsPluginId: 'general',
           },
