@@ -5,6 +5,11 @@ import { CContainer, CCol } from '@coreui/react'
 
 export function CippMasonryItem({ size, children, className = null }) {
   const columnSizes = {
+    card: {
+      xs: 12,
+      lg: 2,
+      xl: 3,
+    },
     single: {
       xs: 12,
       lg: 6,
@@ -59,8 +64,13 @@ export function CippMasonry({ columns = 3, children, className = null }) {
     },
     3: {
       xs: 12,
-      lg: 6,
+      lg: 4,
       xl: 4,
+    },
+    4: {
+      xs: 12,
+      lg: 3,
+      xl: 3,
     },
   }
 
