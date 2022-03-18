@@ -46,6 +46,7 @@ import { Form } from 'react-final-form'
 import useConfirmModal from 'src/hooks/useConfirmModal'
 import { setCurrentTenant } from 'src/store/features/app'
 import { ModalService, TenantSelectorMultiple, TenantSelector } from 'src/components/utilities'
+import CippListOffcanvas from 'src/components/utilities/CippListOffcanvas'
 
 const CIPPSettings = () => {
   const [active, setActive] = useState(1)
@@ -105,6 +106,7 @@ const GeneralSettings = () => {
   const [checkAccess, accessCheckResult] = useLazyExecTenantsAccessCheckQuery()
   const [selectedTenants, setSelectedTenants] = useState([])
   const [showMaxSelected, setShowMaxSelected] = useState(false)
+  const [tokenOffcanvasVisible, setTokenOffcanvasVisible] = useState(false)
   const maxSelected = 3
   const tenantSelectorRef = useRef(null)
 
@@ -141,6 +143,73 @@ const GeneralSettings = () => {
     checkAccess({ tenantDomains: AllTenantSelector })
   }
 
+  function getTokenOffcanvasProps({ tokenResults }) {
+    let tokenDetails = tokenResults.AccessTokenDetails
+    let helpLinks = tokenResults.Links
+    let tokenOffcanvasGroups = []
+    if (tokenDetails?.Name !== '') {
+      let tokenItems = []
+      let tokenOffcanvasGroup = {}
+      tokenItems.push({
+        heading: 'User',
+        content: tokenDetails?.Name,
+      })
+      tokenItems.push({
+        heading: 'UPN',
+        content: tokenDetails?.UserPrincipalName,
+      })
+      tokenItems.push({
+        heading: 'App Registration',
+        content: (
+          <CLink
+            href={`https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/Overview/appId/${tokenDetails?.AppId}/isMSAApp/`}
+            target="_blank"
+          >
+            {tokenDetails?.AppName}
+          </CLink>
+        ),
+      })
+      tokenItems.push({
+        heading: 'IP Address',
+        content: tokenDetails?.IPAddress,
+      })
+      tokenItems.push({
+        heading: 'Auth Methods',
+        content: tokenDetails?.AuthMethods.join(', '),
+      })
+      tokenItems.push({
+        heading: 'Tenant ID',
+        content: tokenDetails?.TenantId,
+      })
+      tokenOffcanvasGroup.items = tokenItems
+      tokenOffcanvasGroup.title = 'Claims'
+      tokenOffcanvasGroups.push(tokenOffcanvasGroup)
+    }
+
+    if (helpLinks.length > 0) {
+      let linkItems = []
+      let linkItemGroup = {}
+      helpLinks.map((link, idx) =>
+        linkItems.push({
+          heading: '',
+          content: (
+            <CLink href={link.Href} target="_blank" key={idx}>
+              {link.Text}
+            </CLink>
+          ),
+        }),
+      )
+      linkItemGroup.title = 'Help Links'
+      linkItemGroup.items = linkItems
+      if (linkItemGroup.items.length > 0) {
+        tokenOffcanvasGroups.push(linkItemGroup)
+      }
+    }
+
+    console.log(tokenOffcanvasGroups)
+    return tokenOffcanvasGroups
+  }
+
   const handleClearCache = useConfirmModal({
     body: <div>Are you sure you want to clear the cache?</div>,
     onConfirm: () => {
@@ -175,16 +244,44 @@ const GeneralSettings = () => {
                 Run Permissions Check
               </CButton>
               {permissionsResult.isSuccess && (
-                <div>
-                  {permissionsResult.data.Results.MissingPermissions
-                    ? 'Your Secure Application Model is missing the following delegated permissions:'
-                    : permissionsResult.data.Results}
-                  <CListGroup flush>
-                    {permissionsResult.data.Results?.MissingPermissions?.map((r, index) => (
-                      <CListGroupItem key={index}>{r}</CListGroupItem>
-                    ))}
-                  </CListGroup>
-                </div>
+                <>
+                  <CCallout
+                    color={permissionsResult.data.Results?.Success === true ? 'success' : 'danger'}
+                  >
+                    {permissionsResult.data.Results?.Messages && (
+                      <>
+                        {permissionsResult.data.Results?.Messages?.map((m, idx) => (
+                          <div key={idx}>{m}</div>
+                        ))}
+                      </>
+                    )}
+                    {permissionsResult.data.Results?.MissingPermissions.length > 0 && (
+                      <>
+                        Your Secure Application Model is missing the following delegated
+                        permissions:
+                        <CListGroup flush>
+                          {permissionsResult.data.Results?.MissingPermissions?.map((r, index) => (
+                            <CListGroupItem key={index}>{r}</CListGroupItem>
+                          ))}
+                        </CListGroup>
+                      </>
+                    )}
+                  </CCallout>
+                  {permissionsResult.data.Results?.AccessTokenDetails?.Name !== '' && (
+                    <>
+                      <CButton onClick={() => setTokenOffcanvasVisible(true)}>Details</CButton>
+                      <CippListOffcanvas
+                        title="Details"
+                        placement="end"
+                        visible={tokenOffcanvasVisible}
+                        groups={getTokenOffcanvasProps({
+                          tokenResults: permissionsResult.data.Results,
+                        })}
+                        hideFunction={() => setTokenOffcanvasVisible(false)}
+                      />
+                    </>
+                  )}
+                </>
               )}
             </CCardBody>
           </CCard>
