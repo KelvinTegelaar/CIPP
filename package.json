@@ -15,9 +15,9 @@
   },
   "dependencies": {
     "@cmfcmf/docusaurus-search-local": "^0.10.0",
-    "@docusaurus/core": "^2.0.0-beta.16",
-    "@docusaurus/plugin-client-redirects": "^2.0.0-beta.16",
-    "@docusaurus/preset-classic": "^2.0.0-beta.16",
+    "@docusaurus/core": "^2.0.0-beta.17",
+    "@docusaurus/plugin-client-redirects": "^2.0.0-beta.17",
+    "@docusaurus/preset-classic": "^2.0.0-beta.17",
     "@fec/remark-a11y-emoji": "^3.1.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-brands-svg-icons": "^5.15.4",
