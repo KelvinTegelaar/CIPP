@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const Home = () => {
-  const { data: versions, isLoading, isSuccess } = useLoadVersionsQuery()
+  const { data: versions, isLoading } = useLoadVersionsQuery()
   const { data: dashboard, isLoading: isLoadingDash, isSuccess: issuccessDash } = useLoadDashQuery()
   const tableColumns = [
     {
