@@ -1,103 +1,100 @@
 import React from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser, faUserFriends, faUsers } from '@fortawesome/free-solid-svg-icons'
-import {
-  CCard,
-  CCardHeader,
-  CCardBody,
-  CCardText,
-  CRow,
-  CCol,
-  CSpinner,
-  CCardTitle,
-  CButton,
-} from '@coreui/react'
-import { useLoadVersionsQuery } from 'src/store/api/app'
+import { faBook } from '@fortawesome/free-solid-svg-icons'
+import { CButton, CSpinner } from '@coreui/react'
+import { useLoadDashQuery, useLoadVersionsQuery } from 'src/store/api/app'
 import { StatusIcon } from 'src/components/utilities'
+import { CippContentCard, CippMasonry, CippMasonryItem } from 'src/components/layout'
+import { CippTable } from 'src/components/tables'
 import { Link } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const Home = () => {
-  const { data: versions, isLoading, isSuccess } = useLoadVersionsQuery()
+  const { data: versions, isLoading } = useLoadVersionsQuery()
+  const { data: dashboard, isLoading: isLoadingDash, isSuccess: issuccessDash } = useLoadDashQuery()
+  const tableColumns = [
+    {
+      name: 'Tenant',
+      selector: (row) => row['Tenant'],
+      sortable: true,
+    },
+    {
+      name: 'Message',
+      selector: (row) => row['Message'],
+      sortable: true,
+    },
+  ]
   return (
-    <div>
-      <h3>Dashboard</h3>
-      <CRow>
-        <CCol xs={'auto'}>
-          <CCard>
-            <CCardHeader>
-              <CCardTitle>Quick Create</CCardTitle>
-            </CCardHeader>
-            <CCardBody className="text-center">
-              <CCardText>
-                Ready to add a new user, group or team for any managed tenant? Click the buttons
-                below to jump to the relevant wizard.
-              </CCardText>
-              <Link to="/identity/administration/users/add">
-                <CButton className="m-1" color="primary">
-                  <FontAwesomeIcon icon={faUser} className="pe-1" /> Add a User
-                </CButton>
-              </Link>
-              <Link to="/identity/administration/groups/add">
-                <CButton className="m-1" color="primary">
-                  <FontAwesomeIcon icon={faUserFriends} className="pe-1" /> Add a Group
-                </CButton>
-              </Link>
-              <Link to="/teams-share/teams/add-team">
-                <CButton className="m-1" color="primary">
-                  <FontAwesomeIcon icon={faUsers} className="pe-1" /> Add a Team
-                </CButton>
-              </Link>
-            </CCardBody>
-          </CCard>
-        </CCol>
-        <CCol xs={'auto'}>
-          <CCard className="mb-3" style={{ maxWidth: '18rem' }}>
-            <CCardHeader>
-              <CCardTitle>
-                <StatusIcon type="negatedboolean" status={versions?.OutOfDateCIPP} />
-                CIPP Version
-              </CCardTitle>
-            </CCardHeader>
-            <CCardBody>
-              <div>Latest: {!isLoading ? versions.RemoteCIPPVersion : <CSpinner size="sm" />}</div>
-              <div>Current: {!isLoading ? versions.LocalCIPPVersion : <CSpinner size="sm" />}</div>
-              {isSuccess &&
-                (!versions.OutOfDateCIPP ? (
-                  <p className="text-success">
-                    You&apos;re running the latest and greatest version of CIPP!
-                  </p>
-                ) : (
-                  <p className="text-danger">Your CIPP version is out of date!</p>
-                ))}
-            </CCardBody>
-          </CCard>
-          <CCard className="mb-3" style={{ maxWidth: '18rem' }}>
-            <CCardHeader>
-              <CCardTitle>
-                <StatusIcon type="negatedboolean" status={versions?.OutOfDateCIPPAPI} />
-                CIPP API Version
-              </CCardTitle>
-            </CCardHeader>
-            <CCardBody>
-              <div>
-                Latest: {!isLoading ? versions?.RemoteCIPPAPIVersion : <CSpinner size="sm" />}
-              </div>
-              <div>
-                Current: {!isLoading ? versions?.LocalCIPPAPIVersion : <CSpinner size="sm" />}
-              </div>
-              {isSuccess &&
-                (!versions.OutOfDateCIPPAPI ? (
-                  <p className="text-success">
-                    You&apos;re running the latest and greatest version of CIPP API!
-                  </p>
-                ) : (
-                  <p className="text-danger">Your CIPP API version is out of date!</p>
-                ))}
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
-    </div>
+    <CippMasonry columns={4}>
+      <CippMasonryItem size="card">
+        <CippContentCard title="Next Run Standards" icon={faBook}>
+          <div>{!isLoadingDash ? dashboard.NextStandardsRun : <CSpinner size="sm" />}</div>
+        </CippContentCard>
+      </CippMasonryItem>
+      <CippMasonryItem size="card">
+        <CippContentCard title="Next Run BPA" icon={faBook}>
+          <div>{!isLoadingDash ? dashboard.NextBPARun : <CSpinner size="sm" />}</div>
+        </CippContentCard>
+      </CippMasonryItem>
+      <CippMasonryItem size="card">
+        <CippContentCard title="Queued Applications" icon={faBook}>
+          <div>{!isLoadingDash ? dashboard.queuedApps : <CSpinner size="sm" />}</div>
+        </CippContentCard>
+      </CippMasonryItem>
+      <CippMasonryItem size="card">
+        <CippContentCard title="Queued Standards" icon={faBook}>
+          <div> {!isLoadingDash ? dashboard.queuedStandards : <CSpinner size="sm" />}</div>
+        </CippContentCard>
+      </CippMasonryItem>
+      <CippMasonryItem size="card">
+        <CippContentCard title="Managed Tenants" icon={faBook}>
+          <div>{!isLoadingDash ? dashboard.tenantCount : <CSpinner size="sm" />}</div>
+          <br></br> Managed tenants
+        </CippContentCard>
+      </CippMasonryItem>
+      <CippMasonryItem size="card">
+        <CippContentCard title="Token refresh dates" icon={faBook}>
+          <div>
+            Refresh token: {!isLoadingDash ? dashboard.RefreshTokenDate : <CSpinner size="sm" />}
+          </div>
+          <br></br>
+
+          <div>
+            Exchange Token: {!isLoadingDash ? dashboard.ExchangeTokenDate : <CSpinner size="sm" />}
+          </div>
+        </CippContentCard>
+      </CippMasonryItem>
+      <CippMasonryItem size="card">
+        <CippContentCard title="Version Frontend" icon={faBook}>
+          <StatusIcon type="negatedboolean" status={versions?.OutOfDateCIPP} />
+          <div>Latest: {!isLoading ? versions.RemoteCIPPVersion : <CSpinner size="sm" />}</div>
+          <div>Current: {!isLoading ? versions.LocalCIPPVersion : <CSpinner size="sm" />}</div>
+        </CippContentCard>
+      </CippMasonryItem>
+      <CippMasonryItem size="card">
+        <CippContentCard title="Version Backend" icon={faBook}>
+          <StatusIcon type="negatedboolean" status={versions?.OutOfDateCIPP} />
+          <div>Latest: {!isLoading ? versions?.RemoteCIPPAPIVersion : <CSpinner size="sm" />}</div>
+          <div>Current: {!isLoading ? versions?.LocalCIPPAPIVersion : <CSpinner size="sm" />}</div>
+        </CippContentCard>
+      </CippMasonryItem>
+      <CippMasonryItem size="half">
+        <CippContentCard title="Last logged items" icon={faBook}>
+          {!isLoadingDash && issuccessDash && (
+            <CippTable
+              reportName="none"
+              tableProps={{ subheader: false }}
+              data={dashboard.LastLog}
+              columns={tableColumns}
+            />
+          )}
+          <Link to="/cipp/logs">
+            <CButton className="m-1" color="primary">
+              <FontAwesomeIcon icon={faBook} className="pe-1" /> Jump to log
+            </CButton>
+          </Link>
+        </CippContentCard>
+      </CippMasonryItem>
+    </CippMasonry>
   )
 }
 
