@@ -9,7 +9,7 @@ So you've got two repositories now (assuming you followed the [setting up](../..
 
 ## The Root
 
-In the `CIPP` directory itself there're a number of files and folders, the table below highlights the important ones:
+In the `CIPP` directory itself there are a number of files and folders, the table below highlights the important ones:
 
 | Item                 | Description                                                                                                         |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------- |

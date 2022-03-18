@@ -21,7 +21,8 @@ const sidebars = {
       link: {
         type: 'generated-index',
         title: 'Getting Started',
-        description: "Work through the steps below to install and configure CIPP and get it connected to your Microsoft 365 customer tenants.",
+        description:
+          'Work through the steps below to install and configure CIPP and get it connected to your Microsoft 365 customer tenants.',
         slug: '/gettingstarted',
       },
       collapsed: false,
@@ -30,8 +31,8 @@ const sidebars = {
         'gettingstarted/permissions/permissions',
         'gettingstarted/installation/installation',
         'gettingstarted/postinstall/postinstall',
-        'gettingstarted/roles/roles'
-      ]
+        'gettingstarted/roles/roles',
+      ],
     },
     {
       type: 'category',
@@ -39,7 +40,8 @@ const sidebars = {
       link: {
         type: 'generated-index',
         title: 'Using CIPP',
-        description: "Find out about the interface of CIPP and what information you might find on each page. Includes known issues or limitations.",
+        description:
+          'Find out about the interface of CIPP and what information you might find on each page. Includes known issues or limitations.',
         slug: '/usingcipp',
       },
       collapsed: false,
@@ -51,7 +53,8 @@ const sidebars = {
           link: {
             type: 'generated-index',
             title: 'Identity Management',
-            description: "This area of CIPP is used to manage identities, groups and roles. It also contains the offboarding wizard and identity related reporting.",
+            description:
+              'This area of CIPP is used to manage identities, groups and roles. It also contains the offboarding wizard and identity related reporting.',
             slug: '/usingcipp/identitymanagement',
           },
           collapsed: true,
@@ -69,7 +72,8 @@ const sidebars = {
           link: {
             type: 'generated-index',
             title: 'Tenant Administration',
-            description: "This area of CIPP is used to manage your tenants and their settings. It also contains the conditional access policies administration area and the standards and best practices tools.",
+            description:
+              'This area of CIPP is used to manage your tenants and their settings. It also contains the conditional access policies administration area and the standards and best practices tools.',
             slug: '/usingcipp/tenantadministration',
           },
           collapsed: true,
@@ -80,6 +84,7 @@ const sidebars = {
             'usingcipp/tenantadministration/bestpracticeanalyser',
             'usingcipp/tenantadministration/domainsanalyser',
             'usingcipp/tenantadministration/individualdomaincheck',
+            'usingcipp/tenantadministration/graphexplorer',
           ],
         },
         {
@@ -88,13 +93,12 @@ const sidebars = {
           link: {
             type: 'generated-index',
             title: 'Security & Compliance',
-            description: "This area of CIPP is used to stay on top of security and compliance for your tenants.",
+            description:
+              'This area of CIPP is used to stay on top of security and compliance for your tenants.',
             slug: '/usingcipp/securitycompliance',
           },
           collapsed: true,
-          items: [
-            'usingcipp/securitycompliance/alerts',
-          ],
+          items: ['usingcipp/securitycompliance/alerts'],
         },
         {
           type: 'category',
@@ -102,7 +106,8 @@ const sidebars = {
           link: {
             type: 'generated-index',
             title: 'Endpoint Management',
-            description: "This area of CIPP is used to monitor and manage Microsoft Endpoint Manager, Microsoft Defender and Autopilot.",
+            description:
+              'This area of CIPP is used to monitor and manage Microsoft Endpoint Manager, Microsoft Defender and Autopilot.',
             slug: '/usingcipp/endpointmanagement',
           },
           collapsed: true,
@@ -123,7 +128,7 @@ const sidebars = {
           link: {
             type: 'generated-index',
             title: 'Teams, OneDrive & Sharepoint',
-            description: "This area of CIPP is used to manage Teams, OneDrive and Sharepoint.",
+            description: 'This area of CIPP is used to manage Teams, OneDrive and Sharepoint.',
             slug: '/usingcipp/teamsonedrivesharepoint',
           },
           collapsed: true,
@@ -139,7 +144,7 @@ const sidebars = {
           link: {
             type: 'generated-index',
             title: 'Email & Exchange',
-            description: "This area of CIPP is used to view and manage email and Exchange.",
+            description: 'This area of CIPP is used to view and manage email and Exchange.',
             slug: '/usingcipp/emailexchange',
           },
           collapsed: true,
@@ -155,7 +160,8 @@ const sidebars = {
           link: {
             type: 'generated-index',
             title: 'Settings',
-            description: "This area of CIPP is used to view and manage the CIPP application's settings.",
+            description:
+              "This area of CIPP is used to view and manage the CIPP application's settings.",
             slug: '/usingcipp/settings',
           },
           collapsed: true,
@@ -180,6 +186,6 @@ const sidebars = {
     },
   ],
    */
-};
+}
 
-module.exports = sidebars;
+module.exports = sidebars

@@ -6,22 +6,24 @@ import styles from './HomePageFeatures.module.scss'
 
 const FeatureList = [
   {
-    title: 'Simplify User Management',
+    title: 'Central user management',
     icon: faUsers,
     description: (
       <>
         Featuring a simple user management interface, CIPP makes it easy to add, edit, and delete
-        users and includes a revolutionary offboarding wizard.
+        users. Including offboarding users, changing calendar permissions, shared mailboxes and
+        more!
       </>
     ),
   },
   {
-    title: 'Monitor and Control',
+    title: 'Easy standardisation',
     icon: faChartBar,
     description: (
       <>
-        With an ever expanding list of metrics, CIPP makes it easy to monitor and control your
-        customers' tenants. Featuring alerts and reports to help you stay informed.
+        Deploy standards across all of your clientbase, making tenants always be in the state you
+        want them to be in. Thanks to alerting and best practices you are able to give your clients
+        the best experience.
       </>
     ),
   },
@@ -30,8 +32,8 @@ const FeatureList = [
     icon: faUnlockAlt,
     description: (
       <>
-        Packing industry best-practice standards and integrations into Microsoft Defender for
-        Endpoint / Defender for Business, CIPP gives you the tools you need to help secure your
+        Packing industry best-practice standards and integrations allowing you to report on
+        everything in your M365 tenants, CIPP gives you the tools you need to help secure your
         customer environments.
       </>
     ),
@@ -65,8 +67,9 @@ export default function HomePageFeatures() {
     <section className={styles.features}>
       <div className="container">
         <h2 className={clsx('text--center', styles.featureTitle)}>
-          Purpose built <strong>by MSPs for MSPS</strong>...
+          CIPP is a M365 Multi-tenant solution <strong>by MSPs for MSPS</strong>
         </h2>
+        <hr></hr>
         <div className="row">
           {FeatureList.map((props, idx) => (
             <Feature key={idx} {...props} />
