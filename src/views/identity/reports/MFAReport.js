@@ -9,6 +9,7 @@ const columns = [
     name: 'User Principal Name',
     sortable: true,
     exportSelector: 'UPN',
+    grow: 2,
   },
   {
     selector: (row) => row['AccountEnabled'],
