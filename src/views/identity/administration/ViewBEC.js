@@ -1,12 +1,25 @@
 import React, { useEffect } from 'react'
-import { CButton, CCallout, CCol, CRow, CLink } from '@coreui/react'
-import { CCard, CCardBody, CCardHeader, CCardTitle, CSpinner } from '@coreui/react'
+import { CButton, CCallout, CLink } from '@coreui/react'
+import { CCardBody, CSpinner } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheckCircle, faRedo, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
+import {
+  faCheckCircle,
+  faRedo,
+  faTimesCircle,
+  faLaptop,
+  faKey,
+  faForward,
+  faUsers,
+  faAsterisk,
+  faIdBadge,
+  faWindowRestore,
+  faSignInAlt,
+} from '@fortawesome/free-solid-svg-icons'
 import { useLazyExecBecCheckQuery } from 'src/store/api/users'
 import useQuery from 'src/hooks/useQuery'
 import { CippTable } from 'src/components/tables'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import { CippContentCard, CippMasonry, CippMasonryItem, CippPage } from 'src/components/layout'
 
 const ViewBec = () => {
   let query = useQuery()
@@ -42,10 +55,16 @@ const ViewBec = () => {
       name: 'Creator IP',
       selector: (row) => row['ClientIP'],
       sortable: true,
+      grow: 0,
     },
     {
       name: 'Rule Name',
-      selector: (row) => row.Parameters[3]?.value,
+      selector: (row) => row['RuleName'],
+      sortable: true,
+    },
+    {
+      name: 'Rule Conditions',
+      selector: (row) => row['RuleCondition'],
       sortable: true,
     },
     {
@@ -169,8 +188,7 @@ const ViewBec = () => {
     },
     {
       name: 'Permissions',
-      selector: (row) =>
-        row.Item ? row.Item.ParentFolder?.MemberRights : row.Parameters[3]?.Value,
+      selector: (row) => row['Permissions'],
       sortable: true,
     },
   ]
@@ -199,126 +217,100 @@ const ViewBec = () => {
   ]
 
   return (
-    <div className="container overflow-hidden">
-      <CRow>
-        <CCol className="col-6">
-          <CCard className="h-100">
-            <CCardHeader>
-              <CCardTitle className="text-primary d-flex justify-content-between">
-                Business Email Compromise Overview
-                <CButton
-                  size="sm"
-                  onClick={() => execBecView({ tenantFilter: tenantDomain, userId: userId })}
-                  disabled={isFetching}
-                >
-                  {!isFetching && <FontAwesomeIcon icon={faRedo} className="me-2" />}
-                  Refresh
-                </CButton>
-              </CCardTitle>
-            </CCardHeader>
-            <CCardBody>
-              <CCallout color="info">
-                Loading Data: {isFetching && <CSpinner />}
-                {!isFetching && error && <FontAwesomeIcon icon={faTimesCircle} />}
-                {isSuccess && <FontAwesomeIcon icon={faCheckCircle} />}
-              </CCallout>
-              <p>
-                Use this information as a guide to check if a tenant or e-mail address might have
-                been compromised. All data is retrieved from the last 7 days of logs.
-              </p>
-              <p>
-                If you need more extensive information, run the{' '}
-                <CLink href="https://cloudforensicator.com/">HAWK</CLink> tool to investigate{' '}
-                further. If you believe this user to be compromised.
-              </p>
-              <p>
-                Hit the button below to execute the following tasks:
-                <li>Block user signin</li>
-                <li>Reset user password</li>
-                <li>Disconnect all current sessions</li>
-                <li>Disable all inbox rules for the user</li>
-              </p>
+    <CippPage tenantSelector={false} title="View Business Email Compromise Indicators">
+      <CippMasonry columns={2}>
+        <CippMasonryItem size="full">
+          <CippContentCard
+            title="Business Email Compromise Overview"
+            button={
               <CButton
-                onClick={() =>
-                  execBecRemediate({
-                    path: '/api/execBecRemediate',
-                    values: { userId: userId, tenantFilter: tenantDomain },
-                  })
-                }
+                size="sm"
+                onClick={() => execBecView({ tenantFilter: tenantDomain, userId: userId })}
+                disabled={isFetching}
               >
-                Remediate User
+                {!isFetching && <FontAwesomeIcon icon={faRedo} className="me-2" />}
+                Refresh
               </CButton>
-              {!execRemediateResults.isSuccess && execRemediateResults.isError && (
-                <CCallout color="danger">Error. Could not remediate user</CCallout>
-              )}
-              {execRemediateResults.isFetching && (
-                <CCallout color="info">
-                  <CSpinner />
-                </CCallout>
-              )}
-              {execRemediateResults.isSuccess && (
-                <CCallout color="info">{execRemediateResults.data?.Results}</CCallout>
-              )}
-            </CCardBody>
-          </CCard>
-        </CCol>
-        <CCol className="col-6">
-          <CCard className="h-100">
-            <CCardHeader>
-              <CCardTitle className="text-primary d-flex justify-content-between">
-                Devices (User)
-              </CCardTitle>
-            </CCardHeader>
-            <CCardBody>
-              {isSuccess && (
-                <CippTable
-                  keyField="ID"
-                  columns={deviceColumns}
-                  data={alerts.SuspectUserDevices}
-                  striped
-                  responsive={true}
-                  tableProps={{ subHeaderComponent: false, pagination: false }}
-                  wrapperClasses="table-responsive"
-                  reportName="none"
-                />
-              )}
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
-      <br></br>
-      <CRow>
-        <CCol className="col-6">
-          <CCard className="h-100">
-            <CCardHeader>
-              <CCardTitle className="text-primary d-flex justify-content-between">
-                Recently added rules (Tenant)
-              </CCardTitle>
-            </CCardHeader>
-            <CCardBody>
-              {' '}
-              {isSuccess && (
-                <CippTable
-                  keyField="ID"
-                  columns={rulesColumns}
-                  data={alerts.NewRules}
-                  striped
-                  responsive={true}
-                  tableProps={{ subHeaderComponent: false }}
-                  wrapperClasses="table-responsive"
-                  reportName="none"
-                />
-              )}
-            </CCardBody>
-          </CCard>
-        </CCol>
-        <CCol className="col-6">
-          <CCard className="h-100">
-            <CCardHeader>
-              <CCardTitle className="text-primary d-flex justify-content-between">
-                Last Logon Details (User)
-              </CCardTitle>
-            </CCardHeader>
+            }
+          >
+            <CCallout color="info">
+              Loading Data: {isFetching && <CSpinner />}
+              {!isFetching && error && <FontAwesomeIcon icon={faTimesCircle} />}
+              {isSuccess && <FontAwesomeIcon icon={faCheckCircle} />}
+            </CCallout>
+            <p>
+              Use this information as a guide to check if a tenant or e-mail address might have been
+              compromised. All data is retrieved from the last 7 days of logs.
+            </p>
+            <p>
+              If you need more extensive information, run the{' '}
+              <CLink href="https://cloudforensicator.com/">HAWK</CLink> tool to investigate further
+              if you believe this user to be compromised.
+            </p>
+            <p>
+              Hit the button below to execute the following tasks:
+              <li>Block user signin</li>
+              <li>Reset user password</li>
+              <li>Disconnect all current sessions</li>
+              <li>Disable all inbox rules for the user</li>
+            </p>
+            <CButton
+              onClick={() =>
+                execBecRemediate({
+                  path: '/api/execBecRemediate',
+                  values: { userId: userId, tenantFilter: tenantDomain },
+                })
+              }
+            >
+              Remediate User
+            </CButton>
+            {!execRemediateResults.isSuccess && execRemediateResults.isError && (
+              <CCallout color="danger">Error. Could not remediate user</CCallout>
+            )}
+            {execRemediateResults.isFetching && (
+              <CCallout color="info">
+                <CSpinner />
+              </CCallout>
+            )}
+            {execRemediateResults.isSuccess && (
+              <CCallout color="info">{execRemediateResults.data?.Results}</CCallout>
+            )}
+          </CippContentCard>
+        </CippMasonryItem>
+        <CippMasonryItem size="half">
+          <CippContentCard title="User Devices" icon={faLaptop}>
+            {isSuccess && (
+              <CippTable
+                keyField="ID"
+                columns={deviceColumns}
+                data={alerts.SuspectUserDevices}
+                striped
+                responsive={true}
+                tableProps={{ subHeaderComponent: false, pagination: false }}
+                wrapperClasses="table-responsive"
+                reportName="none"
+              />
+            )}
+          </CippContentCard>
+        </CippMasonryItem>
+        <CippMasonryItem size="half">
+          <CippContentCard title="Recently Added Email Forwarding Rules" icon={faForward}>
+            {isSuccess && (
+              <CippTable
+                keyField="ID"
+                columns={rulesColumns}
+                data={alerts.NewRules}
+                striped
+                responsive={true}
+                tableProps={{ subHeaderComponent: false }}
+                wrapperClasses="table-responsive"
+                reportName="none"
+              />
+            )}
+          </CippContentCard>
+        </CippMasonryItem>
+        <CippMasonryItem size="half">
+          <CippContentCard title="User Last Logon Details" icon={faKey}>
             <CCardBody>
               {isSuccess && (
                 <CippTable
@@ -333,140 +325,90 @@ const ViewBec = () => {
                 />
               )}
             </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
-      <br></br>
-      <CRow xs={{ gutter: 3 }}>
-        <CCol className="col-12">
-          <CCard className="h-100">
-            <CCardHeader>
-              <CCardTitle className="text-primary d-flex justify-content-between">
-                Newly created users (Tenant)
-              </CCardTitle>
-            </CCardHeader>
-            <CCardBody>
-              {isSuccess && (
-                <CippTable
-                  keyField="ID"
-                  columns={newUserColumns}
-                  data={alerts.NewUsers}
-                  striped
-                  responsive={true}
-                  tableProps={{ subHeaderComponent: false }}
-                  wrapperClasses="table-responsive"
-                  reportName="none"
-                />
-              )}
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
-      <CRow xs={{ gutter: 3 }}>
-        <CCol className="col-12">
-          <CCard className="h-100">
-            <CCardHeader>
-              <CCardTitle className="text-primary d-flex justify-content-between">
-                Password Changes (Tenant)
-              </CCardTitle>
-            </CCardHeader>
-            <CCardBody>
-              {isSuccess && (
-                <CippTable
-                  keyField="ID"
-                  columns={passwordColumns}
-                  data={alerts.ChangedPasswords}
-                  striped
-                  responsive={true}
-                  tableProps={{ subHeaderComponent: false }}
-                  wrapperClasses="table-responsive"
-                  reportName="none"
-                />
-              )}
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
-      <br></br>
-      <CRow className="g-2">
-        <CCol className="col-12">
-          <CCard className="h-100">
-            <CCardHeader>
-              <CCardTitle className="text-primary d-flex justify-content-between">
-                Mailbox Permissions changes (Tenant)
-              </CCardTitle>
-            </CCardHeader>
-            <CCardBody>
-              {isSuccess && (
-                <CippTable
-                  keyField="ID"
-                  columns={permissionColumns}
-                  data={alerts.MailboxPermissionChanges}
-                  striped
-                  responsive={true}
-                  tableProps={{ subHeaderComponent: false }}
-                  wrapperClasses="table-responsive"
-                  reportName="none"
-                />
-              )}
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
-      <br></br>
-      <CRow className="g-2">
-        <CCol className="col-12">
-          <CCard className="h-100">
-            <CCardHeader>
-              <CCardTitle className="text-primary d-flex justify-content-between">
-                Application Changes (Tenant)
-              </CCardTitle>
-            </CCardHeader>
-            <CCardBody>
-              {isSuccess && (
-                <CippTable
-                  keyField="ID"
-                  columns={appColumns}
-                  data={alerts.AddedApps}
-                  striped
-                  responsive={true}
-                  tableProps={{ subHeaderComponent: false }}
-                  wrapperClasses="table-responsive"
-                  reportName="none"
-                />
-              )}
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
-      <br></br>
-      <CRow className="g-2">
-        <CCol className="col-12">
-          <CCard className="h-100">
-            <CCardHeader>
-              <CCardTitle className="text-primary d-flex justify-content-between">
-                Mailbox Logons (Tenant)
-              </CCardTitle>
-            </CCardHeader>
-            <CCardBody>
-              {isSuccess && (
-                <CippTable
-                  keyField="ID"
-                  columns={mailboxlogonColumns}
-                  data={alerts.SuspectUserMailboxLogons}
-                  striped
-                  responsive={true}
-                  tableProps={{ subHeaderComponent: false }}
-                  wrapperClasses="table-responsive"
-                  reportName="none"
-                />
-              )}
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
-      <br></br>
-    </div>
+          </CippContentCard>
+        </CippMasonryItem>
+        <CippMasonryItem size="half">
+          <CippContentCard title="Recently Added Users" icon={faUsers}>
+            {isSuccess && (
+              <CippTable
+                keyField="ID"
+                columns={newUserColumns}
+                data={alerts.NewUsers}
+                striped
+                responsive={true}
+                tableProps={{ subHeaderComponent: false }}
+                wrapperClasses="table-responsive"
+                reportName="none"
+              />
+            )}
+          </CippContentCard>
+        </CippMasonryItem>
+        <CippMasonryItem size="full">
+          <CippContentCard title="Recent Password Changes" icon={faAsterisk}>
+            {isSuccess && (
+              <CippTable
+                keyField="ID"
+                columns={passwordColumns}
+                data={alerts.ChangedPasswords}
+                striped
+                responsive={true}
+                tableProps={{ subHeaderComponent: false }}
+                wrapperClasses="table-responsive"
+                reportName="none"
+              />
+            )}
+          </CippContentCard>
+        </CippMasonryItem>
+        <CippMasonryItem size="full">
+          <CippContentCard title="Mailbox Permissions Changes" icon={faIdBadge}>
+            {isSuccess && (
+              <CippTable
+                keyField="ID"
+                columns={permissionColumns}
+                data={alerts.MailboxPermissionChanges}
+                striped
+                responsive={true}
+                tableProps={{ subHeaderComponent: false }}
+                wrapperClasses="table-responsive"
+                reportName="none"
+              />
+            )}
+          </CippContentCard>
+        </CippMasonryItem>
+        <CippMasonryItem size="full">
+          <CippContentCard title="Application Changes" icon={faWindowRestore}>
+            {isSuccess && (
+              <CippTable
+                keyField="ID"
+                columns={appColumns}
+                data={alerts.AddedApps}
+                striped
+                responsive={true}
+                tableProps={{ subHeaderComponent: false }}
+                wrapperClasses="table-responsive"
+                reportName="none"
+              />
+            )}
+          </CippContentCard>
+        </CippMasonryItem>
+        <CippMasonryItem size="full">
+          <CippContentCard title="Mailbox Logons" icon={faSignInAlt}>
+            {isSuccess && (
+              <CippTable
+                keyField="ID"
+                columns={mailboxlogonColumns}
+                data={alerts.SuspectUserMailboxLogons}
+                striped
+                responsive={true}
+                tableProps={{ subHeaderComponent: false }}
+                wrapperClasses="table-responsive"
+                reportName="none"
+              />
+            )}
+          </CippContentCard>
+        </CippMasonryItem>
+      </CippMasonry>
+    </CippPage>
   )
 }
 

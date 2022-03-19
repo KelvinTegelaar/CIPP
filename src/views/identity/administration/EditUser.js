@@ -21,6 +21,7 @@ import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faEdit, faEye } from '@fortawesome/free-solid-svg-icons'
 import { CippContentCard, CippPage } from 'src/components/layout'
+import { password } from 'src/validators'
 
 const EditUser = () => {
   const dispatch = useDispatch()
@@ -222,7 +223,12 @@ const EditUser = () => {
                               />
                               <Condition when="Autopassword" is={true}>
                                 <CCol xs={12}>
-                                  <RFFCFormInput type="password" name="password" label="Password" />
+                                  <RFFCFormInput
+                                    validate={password}
+                                    type="password"
+                                    name="password"
+                                    label="Password"
+                                  />
                                 </CCol>
                               </Condition>
                               <RFFCFormCheck

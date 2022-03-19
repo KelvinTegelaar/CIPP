@@ -20,14 +20,22 @@ const MFAReport = React.lazy(() => import('src/views/identity/reports/MFAReport'
 const Tenants = React.lazy(() => import('src/views/tenant/administration/Tenants'))
 const AlertWizard = React.lazy(() => import('src/views/tenant/administration/AlertWizard'))
 const AlertsQueue = React.lazy(() => import('src/views/tenant/administration/ListAlertsQueue'))
+const GraphExplorer = React.lazy(() => import('src/views/tenant/administration/GraphExplorer'))
 
 const Domains = React.lazy(() => import('src/views/tenant/administration/Domains'))
 const EditTenant = React.lazy(() => import('src/views/tenant/administration/EditTenant'))
 const ConditionalAccess = React.lazy(() =>
   import('src/views/tenant/administration/ConditionalAccess'),
 )
+const ListLicences = React.lazy(() => import('src/views/tenant/administration/ListLicences'))
 
 const BasicAuthReport = React.lazy(() => import('src/views/identity/reports/BasicAuthReport'))
+const AzureADConnectReport = React.lazy(() =>
+  import('src/views/identity/reports/AzureADConnectReport'),
+)
+const DeviceComplianceReport = React.lazy(() =>
+  import('src/views/security/reports/ListDeviceComplianceReport'),
+)
 const BestPracticeAnalyzer = React.lazy(() =>
   import('src/views/tenant/standards/BestPracticeAnalyser'),
 )
@@ -39,7 +47,6 @@ const ListAppliedStandards = React.lazy(() =>
   import('src/views/tenant/standards/ListAppliedStandards'),
 )
 const IndividualDomain = React.lazy(() => import('src/views/tenant/standards/IndividualDomain'))
-const ApplyStandard = React.lazy(() => import('src/views/tenant/standards/ApplyStandard'))
 const ListAlerts = React.lazy(() => import('src/views/security/reports/ListAlerts'))
 const ApplicationsList = React.lazy(() =>
   import('src/views/endpoint/applications/ApplicationsList'),
@@ -97,6 +104,9 @@ const EditContact = React.lazy(() => import('src/views/email-exchange/administra
 const EditMailboxPermissions = React.lazy(() =>
   import('src/views/email-exchange/administration/EditMailboxPermissions'),
 )
+const EditCalendarPermissions = React.lazy(() =>
+  import('src/views/email-exchange/administration/EditCalendarPermissions'),
+)
 const ViewMobileDevices = React.lazy(() =>
   import('src/views/email-exchange/administration/ViewMobileDevices'),
 )
@@ -148,6 +158,11 @@ const routes = [
     name: 'Basic Auth Report',
     component: BasicAuthReport,
   },
+  {
+    path: '/identity/reports/azure-ad-connect-report',
+    name: 'AAD Connect Report',
+    component: AzureADConnectReport,
+  },
   { path: '/tenant', name: 'Tenant' },
   { path: '/tenant/administration', name: 'Administration' },
   { path: '/tenant/administration/tenants', name: 'Tenants', component: Tenants },
@@ -155,11 +170,21 @@ const routes = [
   { path: '/tenant/administration/domains', name: 'Domains', component: Domains },
   { path: '/tenant/administration/alertswizard', name: 'Alerts Wizard', component: AlertWizard },
   { path: '/tenant/administration/alertsqueue', name: 'Alerts Queue', component: AlertsQueue },
+  {
+    path: '/tenant/administration/graph-explorer',
+    name: 'Graph Explorer',
+    component: GraphExplorer,
+  },
 
   {
     path: '/tenant/administration/conditional-access-policies',
     name: 'Conditional Access',
     component: ConditionalAccess,
+  },
+  {
+    path: '/tenant/administration/list-licenses',
+    name: 'List Licenses',
+    component: ListLicences,
   },
   { path: '/tenant/standards', name: 'Standards' },
   {
@@ -167,7 +192,6 @@ const routes = [
     name: 'List Applied Standards',
     component: ListAppliedStandards,
   },
-  { path: '/tenant/standards/apply-standard', name: 'Apply Standard', component: ApplyStandard },
   {
     path: '/tenant/standards/bpa-report',
     name: 'Best Practice Report',
@@ -271,6 +295,11 @@ const routes = [
     component: EditMailboxPermissions,
   },
   {
+    name: 'Edit Calendar Permissions',
+    path: '/email/administration/edit-calendar-permissions',
+    component: EditCalendarPermissions,
+  },
+  {
     name: 'View Mobile Devices',
     path: '/email/administration/view-mobile-devices',
     component: ViewMobileDevices,
@@ -301,6 +330,11 @@ const routes = [
     name: 'List Alerts',
     path: '/security/reports/list-alerts',
     component: SecurityComplianceAlerts,
+  },
+  {
+    name: 'List Device Compliance Report',
+    path: '/security/reports/list-device-compliance',
+    component: DeviceComplianceReport,
   },
   {
     name: 'License',

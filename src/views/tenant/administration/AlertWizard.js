@@ -2,11 +2,7 @@ import React from 'react'
 import { CCol, CRow, CForm, CListGroup, CListGroupItem, CCallout, CSpinner } from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faCheckCircle,
-  faExclamationTriangle,
-  faTimesCircle,
-} from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faExclamationTriangle, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { CippWizard } from 'src/components/layout'
 import { WizardTableField } from 'src/components/tables'
 import PropTypes from 'prop-types'
@@ -38,16 +34,19 @@ const AlertWizard = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
   const handleSubmit = async (values) => {
+    Object.keys(values).filter(function (x) {
+      if (values[x] === null) {
+        delete values[x]
+      }
+      return null
+    })
     values.selectedTenants.map(
       (tenant) => (values[`Select_${tenant.defaultDomainName}`] = tenant.defaultDomainName),
     )
     genericPostRequest({ path: '/api/AddAlert', values: values })
   }
 
-  const formValues = {
-    InstallAsSystem: true,
-    DisableRestart: true,
-  }
+  const formValues = {}
 
   return (
     <CippWizard
@@ -106,10 +105,8 @@ const AlertWizard = () => {
             label="Alert on users without any form of MFA"
           />
           <RFFCFormSwitch name="MFAAdmins" label="Alert on admins without any form of MFA" />
-          <RFFCFormSwitch name="NewGA" label="Alert on new Global Admins" />
           <RFFCFormSwitch name="NewRole" label="Alert on new users added to any admin role" />
           <RFFCFormSwitch name="AdminPassword" label="Alert on changed admin Passwords" />
-          <RFFCFormSwitch name="NewApprovedApp" label="Alert on new app consent" />
           <RFFCFormSwitch
             name="DefenderStatus"
             label="Alert if Defender is not running (Tenant must be onboarded in Lighthouse)"
@@ -144,7 +141,7 @@ const AlertWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.MFAAlertUsers ? faCheckCircle : faTimesCircle}
+                            icon={props.values.MFAAlertUsers ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -152,15 +149,7 @@ const AlertWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.MFAAdmins ? faCheckCircle : faTimesCircle}
-                          />
-                        </CListGroupItem>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Alert on new Global Admins
-                          <FontAwesomeIcon
-                            color="#f77f00"
-                            size="lg"
-                            icon={props.values.NewGA ? faCheckCircle : faTimesCircle}
+                            icon={props.values.MFAAdmins ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -168,7 +157,7 @@ const AlertWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.NewRole ? faCheckCircle : faTimesCircle}
+                            icon={props.values.NewRole ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -176,15 +165,7 @@ const AlertWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.AdminPassword ? faCheckCircle : faTimesCircle}
-                          />
-                        </CListGroupItem>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Alert on new app consent
-                          <FontAwesomeIcon
-                            color="#f77f00"
-                            size="lg"
-                            icon={props.values.NewApprovedApp ? faCheckCircle : faTimesCircle}
+                            icon={props.values.AdminPassword ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -192,7 +173,7 @@ const AlertWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.DefenderStatus ? faCheckCircle : faTimesCircle}
+                            icon={props.values.DefenderStatus ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -200,7 +181,7 @@ const AlertWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.DefenderMalware ? faCheckCircle : faTimesCircle}
+                            icon={props.values.DefenderMalware ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -208,7 +189,7 @@ const AlertWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.QuotaUsed ? faCheckCircle : faTimesCircle}
+                            icon={props.values.QuotaUsed ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
@@ -216,7 +197,7 @@ const AlertWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.UnusedLicenses ? faCheckCircle : faTimesCircle}
+                            icon={props.values.UnusedLicenses ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                       </CListGroup>
