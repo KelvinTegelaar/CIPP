@@ -52,10 +52,10 @@ const BestPracticeAnalyser = () => {
   const handleUnusedLicense = ({ row }) => {
     const columns = [
       {
-        name: 'SKU',
-        selector: (row) => row['SKU'],
+        name: 'License',
+        selector: (row) => row['License'],
         sortable: true,
-        exportSelector: 'SKU',
+        exportSelector: 'License',
       },
       {
         name: 'Purchased',
@@ -78,7 +78,7 @@ const BestPracticeAnalyser = () => {
           .map((sku) => sku.split(': ').reduce((key, val) => ({ [key]: val })))
           .reduce((pv, cv) => ({ ...pv, ...cv })),
       )
-      .sort((a, b) => b.SKU.toLocaleLowerCase().localeCompare(a.SKU.toLocaleLowerCase()))
+      .sort((a, b) => b.License.toLocaleLowerCase().localeCompare(a.License.toLocaleLowerCase()))
 
     ModalService.open({
       data: tabularized,

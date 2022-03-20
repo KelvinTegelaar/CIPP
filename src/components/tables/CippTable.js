@@ -34,22 +34,15 @@ const customSort = (rows, selector, direction) => {
     // use the selector to resolve your field names by passing the sort comparitors
     let aField
     let bField
-    if (typeof selector(a) === 'string') {
-      aField = selector(a).toLowerCase()
-    } else {
-      aField = selector(a)
-    }
-    if (typeof selector(b) === 'string') {
-      bField = selector(b).toLowerCase()
-    } else {
-      bField = selector(b)
-    }
+
+    aField = selector(a)
+    bField = selector(b)
 
     let comparison = 0
 
-    if (aField > bField) {
+    if (aField?.toString().localeCompare(bField, 'en', { numeric: true }) > 0) {
       comparison = 1
-    } else if (aField < bField) {
+    } else if (aField?.toString().localeCompare(bField, 'en', { numeric: true }) < 0) {
       comparison = -1
     }
 

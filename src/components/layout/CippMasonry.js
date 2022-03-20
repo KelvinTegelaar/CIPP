@@ -5,6 +5,11 @@ import { CContainer, CCol } from '@coreui/react'
 
 export function CippMasonryItem({ size, children, className = null }) {
   const columnSizes = {
+    card: {
+      xs: 12,
+      lg: 2,
+      xl: 3,
+    },
     single: {
       xs: 12,
       lg: 6,
@@ -20,6 +25,16 @@ export function CippMasonryItem({ size, children, className = null }) {
       lg: 12,
       xl: 12,
     },
+    full: {
+      xs: 12,
+      lg: 12,
+      xl: 12,
+    },
+    half: {
+      xs: 12,
+      lg: 6,
+      xl: 6,
+    },
   }
 
   return (
@@ -30,12 +45,35 @@ export function CippMasonryItem({ size, children, className = null }) {
 }
 
 CippMasonryItem.propTypes = {
-  size: PropTypes.oneOf(['single', 'double', 'triple']),
+  size: PropTypes.oneOf(['single', 'double', 'triple', 'full', 'half']),
   children: PropTypes.object,
   className: PropTypes.string,
 }
 
-export function CippMasonry({ children, className = null }) {
+export function CippMasonry({ columns = 3, children, className = null }) {
+  const numberOfColumns = {
+    1: {
+      xs: 12,
+      lg: 12,
+      xl: 12,
+    },
+    2: {
+      xs: 12,
+      lg: 6,
+      xl: 6,
+    },
+    3: {
+      xs: 12,
+      lg: 4,
+      xl: 4,
+    },
+    4: {
+      xs: 12,
+      lg: 3,
+      xl: 3,
+    },
+  }
+
   const CippMasonryOptions = {
     transitionDuration: 0,
     percentPosition: true,
@@ -50,7 +88,7 @@ export function CippMasonry({ children, className = null }) {
         options={CippMasonryOptions}
         enableResizableChildren={true}
       >
-        <CCol className="cipp-masonry-sizer" xl={4} lg={6} xs={12}></CCol>
+        <CCol className="cipp-masonry-sizer" {...numberOfColumns[columns]}></CCol>
         {children}
       </Masonry>
     </CContainer>
@@ -58,6 +96,7 @@ export function CippMasonry({ children, className = null }) {
 }
 
 CippMasonry.propTypes = {
+  columns: PropTypes.oneOf([1, 2, 3]),
   children: PropTypes.array,
   className: PropTypes.string,
 }
