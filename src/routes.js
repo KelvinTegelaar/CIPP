@@ -177,7 +177,7 @@ const routes = [
   },
 
   {
-    path: '/tenant/administration/conditional-access-policies',
+    path: '/tenant/conditional/list-policies',
     name: 'Conditional Access',
     component: ConditionalAccess,
   },

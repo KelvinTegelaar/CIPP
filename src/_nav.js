@@ -181,22 +181,22 @@ const _nav = [
       {
         component: CNavItem,
         name: 'List Policies',
-        to: '/tenant/administration/conditional-access-policies',
+        to: '/tenant/conditional/list-policies',
       },
       {
         component: CNavItem,
         name: 'Deploy Conditional Access',
-        to: '/tenant/administration/conditional-access-policies',
+        to: '/tenant/conditional/deploy',
       },
       {
         component: CNavItem,
         name: 'Add Template',
-        to: '/tenant/administration/conditional-access-policies',
+        to: '/tenant/conditional/add-template',
       },
       {
         component: CNavItem,
         name: 'List Templates',
-        to: '/tenant/administration/conditional-access-policies',
+        to: '/tenant/conditional/list-template',
       },
     ],
   },
@@ -427,22 +427,22 @@ const _nav = [
       {
         component: CNavItem,
         name: 'List Transport rules',
-        to: '/tenant/administration/conditional-access-policies',
+        to: '/email/transport/list-rules',
       },
       {
         component: CNavItem,
         name: 'Deploy Transport rule',
-        to: '/tenant/administration/conditional-access-policies',
+        to: '/email/transport/deploy-rules',
       },
       {
         component: CNavItem,
         name: 'Add Template',
-        to: '/tenant/administration/conditional-access-policies',
+        to: '/email/transport/add-template',
       },
       {
         component: CNavItem,
         name: 'List Templates',
-        to: '/tenant/administration/conditional-access-policies',
+        to: '/email/transport/list-templates',
       },
     ],
   },
