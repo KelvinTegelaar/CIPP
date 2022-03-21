@@ -24,9 +24,7 @@ const GraphExplorer = React.lazy(() => import('src/views/tenant/administration/G
 
 const Domains = React.lazy(() => import('src/views/tenant/administration/Domains'))
 const EditTenant = React.lazy(() => import('src/views/tenant/administration/EditTenant'))
-const ConditionalAccess = React.lazy(() =>
-  import('src/views/tenant/administration/ConditionalAccess'),
-)
+const ConditionalAccess = React.lazy(() => import('src/views/tenant/conditional/ConditionalAccess'))
 const ListLicences = React.lazy(() => import('src/views/tenant/administration/ListLicences'))
 
 const BasicAuthReport = React.lazy(() => import('src/views/identity/reports/BasicAuthReport'))
