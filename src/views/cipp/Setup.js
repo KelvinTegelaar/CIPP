@@ -135,6 +135,7 @@ const Setup = () => {
             </CRow>
             <CRow>
               <CCol md={12}>
+                {getResults.isFetching && <CSpinner size="sm">Loading</CSpinner>}
                 {getResults.isSuccess && (
                   <>
                     {getResults.data?.step < 7 ? (
@@ -168,7 +169,8 @@ const Setup = () => {
                     ) : (
                       <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
                     )}
-                    Step {getResults.data?.step} - {getResults.data.message}
+                    Step {getResults.data?.step} - {getResults.data.message}{' '}
+                    {getResults.data.url && <a href={getResults.data?.url}>HERE</a>}
                   </>
                 )}
               </CCol>
