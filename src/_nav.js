@@ -493,7 +493,7 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Setup Wizard',
+        name: 'SAM Setup Wizard',
         to: '/cipp/setup',
       },
       {

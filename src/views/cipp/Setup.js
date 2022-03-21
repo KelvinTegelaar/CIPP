@@ -51,7 +51,11 @@ const Setup = () => {
   const [genericGetRequest, getResults] = useLazyGenericGetRequestQuery()
   const onSubmit = (values) => {
     if (!usedWizard) {
-      genericPostRequest({ path: 'api/ExecSAMSetup', values })
+      const shippedValues = {
+        setkeys: true,
+        ...values,
+      }
+      genericPostRequest({ path: 'api/ExecSAMSetup', values: shippedValues })
     }
   }
   const [usedWizard, setNoSubmit] = useState(false)
@@ -262,13 +266,7 @@ const Setup = () => {
             <CSpinner>Loading</CSpinner>
           </CCallout>
         )}
-        {postResults.isSuccess && (
-          <CCallout color="success">
-            {postResults.data.Results.map((message, idx) => {
-              return <li key={idx}>{message}</li>
-            })}
-          </CCallout>
-        )}
+        {postResults.isSuccess && <CCallout color="success">{postResults.data.Results}</CCallout>}
         <hr className="my-4" />
       </CippWizard.Page>
     </CippWizard>
