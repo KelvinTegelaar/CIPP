@@ -121,6 +121,11 @@ const Setup = () => {
           ></RFFCFormRadio>
           <Condition when="Partner" is="True">
             <CRow>
+              <p>
+                When clicking the button below, the setup wizard starts. This is a 7 step process.
+                Please use a Global Administrator to perform these tasks. You can restart the
+                process at any time, by clicking on the start button once more.
+              </p>
               <CCol md={2}>
                 <CButton type="button" onClick={() => startCIPPSetup(true)}>
                   Start Setup Wizard
@@ -137,7 +142,12 @@ const Setup = () => {
                     ) : (
                       <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
                     )}
-                    Step {getResults.data?.step} - {getResults.data.message}
+                    Step {getResults.data?.step} - {getResults.data.message}{' '}
+                    {getResults.data.url && (
+                      <a target="_blank" rel="noreferrer" href={getResults.data?.url}>
+                        HERE
+                      </a>
+                    )}
                   </>
                 )}
               </CCol>
