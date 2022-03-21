@@ -154,6 +154,7 @@ const Setup = () => {
             </CRow>
             <CRow>
               <CCol md={12}>
+                {getResults.isFetching && <CSpinner size="sm">Loading</CSpinner>}
                 {getResults.isSuccess && (
                   <>
                     {getResults.data?.step < 7 ? (
