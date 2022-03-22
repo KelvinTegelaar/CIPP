@@ -25,6 +25,16 @@ const GraphExplorer = React.lazy(() => import('src/views/tenant/administration/G
 const Domains = React.lazy(() => import('src/views/tenant/administration/Domains'))
 const EditTenant = React.lazy(() => import('src/views/tenant/administration/EditTenant'))
 const ConditionalAccess = React.lazy(() => import('src/views/tenant/conditional/ConditionalAccess'))
+const ListConditionalTemplates = React.lazy(() =>
+  import('src/views/tenant/conditional/ListCATemplates'),
+)
+
+const AddConditionalTemplate = React.lazy(() =>
+  import('src/views/tenant/conditional/AddCATemplate'),
+)
+
+const DeployConditional = React.lazy(() => import('src/views/tenant/conditional/DeployCA'))
+
 const ListLicences = React.lazy(() => import('src/views/tenant/administration/ListLicences'))
 
 const BasicAuthReport = React.lazy(() => import('src/views/identity/reports/BasicAuthReport'))
@@ -173,11 +183,25 @@ const routes = [
     name: 'Graph Explorer',
     component: GraphExplorer,
   },
-
   {
     path: '/tenant/conditional/list-policies',
     name: 'Conditional Access',
     component: ConditionalAccess,
+  },
+  {
+    path: '/tenant/conditional/deploy',
+    name: 'Deploy Conditional Access',
+    component: DeployConditional,
+  },
+  {
+    path: '/tenant/conditional/list-template',
+    name: 'Conditional Access Templates',
+    component: ListConditionalTemplates,
+  },
+  {
+    path: '/tenant/conditional/add-template',
+    name: 'Conditional Access add Temmplate',
+    component: AddConditionalTemplate,
   },
   {
     path: '/tenant/administration/list-licenses',
@@ -287,6 +311,26 @@ const routes = [
   { name: 'Email & Exchange', path: '/email' },
   { name: 'Email Administration', path: '/email/administration' },
   { name: 'List Contacts', path: '/email/administration/contacts', component: ContactsList },
+  {
+    path: '/email/transport/list-rules',
+    name: 'List Transport rules',
+    component: ConditionalAccess,
+  },
+  {
+    path: '/email/transport/deploy-rules',
+    name: 'Deploy Transport rule',
+    component: DeployConditional,
+  },
+  {
+    path: '/email/transport/list-templates',
+    name: 'Transport Rule Templates',
+    component: ListConditionalTemplates,
+  },
+  {
+    path: '/email/transport/add-template',
+    name: 'Transport Rule add Temmplate',
+    component: AddConditionalTemplate,
+  },
   {
     name: 'Edit Mailbox Permissions',
     path: '/email/administration/edit-mailbox-permissions',
