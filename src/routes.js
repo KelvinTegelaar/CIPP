@@ -145,6 +145,7 @@ const TransportDeploy = React.lazy(() =>
 )
 const SecurityComplianceAlerts = React.lazy(() => import('src/views/security/reports/ListAlerts'))
 const License = React.lazy(() => import('src/views/pages/license/License'))
+const ServiceHealth = React.lazy(() => import('src/views/tenant/administration/ServiceHealth'))
 
 const routes = [
   // { path: '/', exact: true, name: 'Home' },
@@ -194,6 +195,11 @@ const routes = [
     path: '/tenant/administration/graph-explorer',
     name: 'Graph Explorer',
     component: GraphExplorer,
+  },
+  {
+    path: '/tenant/administration/service-health',
+    name: 'Service Health',
+    component: ServiceHealth,
   },
   {
     path: '/tenant/conditional/list-policies',
