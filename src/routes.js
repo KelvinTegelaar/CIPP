@@ -131,6 +131,18 @@ const MessageTrace = React.lazy(() => import('src/views/email-exchange/reports/M
 const PhishingPoliciesList = React.lazy(() =>
   import('src/views/email-exchange/reports/PhishingPoliciesList'),
 )
+const TransportRulesList = React.lazy(() =>
+  import('src/views/email-exchange/transport/TransportRules'),
+)
+const TransportTemplate = React.lazy(() =>
+  import('src/views/email-exchange/transport/ListTransportTemplates'),
+)
+const AddTransportTemplate = React.lazy(() =>
+  import('src/views/email-exchange/transport/AddTransportTemplate'),
+)
+const TransportDeploy = React.lazy(() =>
+  import('src/views/email-exchange/transport/DeployTransport'),
+)
 const SecurityComplianceAlerts = React.lazy(() => import('src/views/security/reports/ListAlerts'))
 const License = React.lazy(() => import('src/views/pages/license/License'))
 
@@ -314,22 +326,22 @@ const routes = [
   {
     path: '/email/transport/list-rules',
     name: 'List Transport rules',
-    component: ConditionalAccess,
+    component: TransportRulesList,
   },
   {
     path: '/email/transport/deploy-rules',
     name: 'Deploy Transport rule',
-    component: DeployConditional,
+    component: TransportDeploy,
   },
   {
     path: '/email/transport/list-templates',
     name: 'Transport Rule Templates',
-    component: ListConditionalTemplates,
+    component: TransportTemplate,
   },
   {
     path: '/email/transport/add-template',
     name: 'Transport Rule add Temmplate',
-    component: AddConditionalTemplate,
+    component: AddTransportTemplate,
   },
   {
     name: 'Edit Mailbox Permissions',
