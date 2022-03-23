@@ -135,6 +135,11 @@ const _nav = [
         name: 'Licence Report',
         to: '/tenant/administration/list-licenses',
       },
+      {
+        component: CNavItem,
+        name: 'Service Health',
+        to: '/tenant/administration/service-health',
+      },
     ],
   },
   {
