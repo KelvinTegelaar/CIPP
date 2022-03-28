@@ -94,6 +94,8 @@ const Setup = () => {
           <h5 className="card-title mb-4">Choose Options</h5>
         </center>
         <hr className="my-4" />
+        This wizard will guide you through setting up a SAM application and using the correct keys.
+        This setup is still a beta feature, and as such so be treated with care.
         <RFFCFormRadio
           value="CreateSAM"
           name="SetupType"
