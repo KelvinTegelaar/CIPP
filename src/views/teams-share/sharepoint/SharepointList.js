@@ -4,40 +4,52 @@ import { CippPageList } from 'src/components/layout'
 
 const columns = [
   {
-    name: 'Name',
+    name: 'URL',
+    selector: (row) => row['URL'],
+    sortable: true,
+    exportSelector: 'UPN',
+  },
+  {
+    name: 'Owner',
     selector: (row) => row['displayName'],
     sortable: true,
     exportSelector: 'displayName',
-  },
-  {
-    name: 'UPN',
-    selector: (row) => row['UPN'],
-    sortable: true,
-    exportSelector: 'UPN',
+    maxWidth: '300px',
   },
   {
     name: 'Last Active',
     selector: (row) => row['LastActive'],
     sortable: true,
     exportSelector: 'LastActive',
+    maxWidth: '120px',
   },
   {
     name: 'File Count (Total)',
     selector: (row) => row['FileCount'],
     sortable: true,
     exportSelector: 'FileCount',
+    maxWidth: '120px',
   },
   {
     name: 'Used (GB)',
     selector: (row) => row['UsedGB'],
     sortable: true,
     exportSelector: 'UsedGB',
+    maxWidth: '120px',
   },
   {
     name: 'Allocated (GB)',
     selector: (row) => row['Allocated'],
     sortable: true,
     exportSelector: 'Allocated',
+    maxWidth: '70px',
+  },
+  {
+    name: 'Root Template',
+    selector: (row) => row['Template'],
+    sortable: true,
+    exportSelector: 'Template',
+    maxWidth: '200px',
   },
 ]
 

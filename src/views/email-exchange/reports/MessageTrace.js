@@ -115,7 +115,6 @@ const MessageTrace = () => {
                       <CForm onSubmit={handleSubmit}>
                         <CRow>
                           <CCol>
-                            Select a tenant
                             <TenantSelector />
                           </CCol>
                         </CRow>

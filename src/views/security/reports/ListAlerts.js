@@ -78,6 +78,7 @@ const ListAlerts = () => {
               label: 'View source alert in compliance center',
               link: `${row.RawResult.sourceMaterials[0]}`,
               icon: <FontAwesomeIcon icon={faEye} className="me-2" />,
+              external: true,
               color: 'info',
             },
             {
