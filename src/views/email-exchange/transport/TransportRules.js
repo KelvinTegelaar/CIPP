@@ -1,117 +1,104 @@
-import React from 'react'
+import { CButton } from '@coreui/react'
+import { faEdit, faEllipsisV, faEye } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
+import { CippActionsOffcanvas } from 'src/components/utilities'
+
+const Offcanvas = (row, rowIndex, formatExtraData) => {
+  const tenant = useSelector((state) => state.app.currentTenant)
+  const [ocVisible, setOCVisible] = useState(false)
+  //console.log(row)
+  return (
+    <>
+      <CButton size="sm" color="link" onClick={() => setOCVisible(true)}>
+        <FontAwesomeIcon icon={faEllipsisV} />
+      </CButton>
+      <CippActionsOffcanvas
+        title="User Information"
+        extendedInfo={[
+          { label: 'Created by', value: `${row.CreatedBy}` },
+          { label: 'Last edit by', value: `${row.LastModifiedBy}` },
+          { label: 'Description', value: `${row.Description}` },
+        ]}
+        actions={[
+          {
+            label: 'Enable Rule',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecTransportRule?State=Enable&TenantFilter=${tenant.defaultDomainName}&rule=${row.Guid}`,
+            modalMessage: 'Are you sure you want to enable this rule?',
+          },
+          {
+            label: 'Disable Rule',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecTransportRule?State=Disable&TenantFilter=${tenant.defaultDomainName}&rule=${row.Guid}`,
+            modalMessage: 'Are you sure you want to disable this rule?',
+          },
+        ]}
+        placement="end"
+        visible={ocVisible}
+        id={row.id}
+        hideFunction={() => setOCVisible(false)}
+      />
+    </>
+  )
+}
 
 const columns = [
   {
     name: 'Name',
-    selector: (row) => row['displayName'],
+    selector: (row) => row['Name'],
     sortable: true,
     wrap: true,
-    exportSelector: 'displayName',
+    exportSelector: 'Name',
   },
   {
     name: 'State',
-    selector: (row) => row['state'],
+    selector: (row) => row['State'],
     sortable: true,
-    exportSelector: 'state',
+    exportSelector: 'State',
   },
   {
-    name: 'Last Modified',
-    selector: (row) => row['modifiedDateTime'],
+    name: 'Mode',
+    selector: (row) => row['Mode'],
     sortable: true,
-    exportSelector: 'modifiedDateTime',
+    exportSelector: 'Mode',
   },
   {
-    name: 'Client App Types',
-    selector: (row) => row['clientAppTypes'],
+    name: 'Error Action',
+    selector: (row) => row['RuleErrorAction'],
     sortable: true,
-    exportSelector: 'clientAppTypes',
+    exportSelector: 'RuleErrorAction',
   },
   {
-    name: 'Platform Inc',
-    selector: (row) => row['includePlatforms'],
-    sortable: true,
-    exportSelector: 'includePlatforms',
+    name: 'description',
+    selector: (row) => row['Description'],
+    omit: true,
   },
   {
-    name: 'Platform Exc',
-    selector: (row) => row['excludePlatforms'],
-    sortable: true,
-    exportSelector: 'excludePlatforms',
+    name: 'GUID',
+    selector: (row) => row['Guid'],
+    omit: true,
   },
   {
-    name: 'Include Locations',
-    selector: (row) => row['includeLocations'],
-    sortable: true,
-    exportSelector: 'includeLocations',
-  },
-  {
-    name: 'Exclude Locations',
-    selector: (row) => row['excludeLocations'],
-    sortable: true,
-    exportSelector: 'excludeLocations',
-  },
-  {
-    name: 'Include Users',
-    selector: (row) => row['includeUsers'],
-    sortable: true,
-    exportSelector: 'includeUsers',
-  },
-  {
-    name: 'Exclude Users',
-    selector: (row) => row['excludeUsers'],
-    sortable: true,
-    exportSelector: 'excludeUsers',
-  },
-  {
-    name: 'Include Groups',
-    selector: (row) => row['includeGroups'],
-    sortable: true,
-    exportSelector: 'includeGroups',
-  },
-  {
-    name: 'Exclude Groups',
-    selector: (row) => row['excludeGroups'],
-    sortable: true,
-    exportSelector: 'excludeGroups',
-  },
-  {
-    name: 'Include Applications',
-    selector: (row) => row['includeApplications'],
-    sortable: true,
-    exportSelector: 'includeApplications',
-  },
-  {
-    name: 'Exclude Applications',
-    selector: (row) => row['excludeApplications'],
-    sortable: true,
-    exportSelector: 'excludeApplications',
-  },
-  {
-    name: 'Control Operator',
-    selector: (row) => row['grantControlsOperator'],
-    sortable: true,
-    exportSelector: 'grantControlsOperator',
-  },
-  {
-    name: 'Built-in Controls',
-    selector: (row) => row['builtInControls'],
-    sortable: true,
-    exportSelector: 'builtInControls',
+    name: 'Actions',
+    cell: Offcanvas,
   },
 ]
 
-const ConditionalAccessList = () => {
+const TransportRulesList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
     <CippPageList
-      title="Conditional Access"
+      title="Transport Rules"
       tenantSelector={true}
       datatable={{
-        reportName: `${tenant?.defaultDomainName}-ConditionalAccess-List`,
-        path: '/api/ListConditionalAccessPolicies',
+        reportName: `${tenant?.defaultDomainName}-transport-rules-list`,
+        path: '/api/ListTransportRules',
         params: { TenantFilter: tenant?.defaultDomainName },
         columns,
       }}
@@ -119,4 +106,4 @@ const ConditionalAccessList = () => {
   )
 }
 
-export default ConditionalAccessList
+export default TransportRulesList
