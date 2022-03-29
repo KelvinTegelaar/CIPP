@@ -42,18 +42,17 @@ There's a detailed breakdown of each check and the score points available for it
 
 | Item                      | Description                                                | Points  |
 | ------------------------- | ---------------------------------------------------------- | :-----: |
-| SPF Present               | SPF is present                                             |   10    |
-| SPF MX Recommended        | SPF is present and set as determined from the MX records.  |   10    |
-| SPF Correct All           | SPF is present and set correctly.                          |   10    |
-| MX Provider Recommended   | MX records are present and set as recommended by provider. |   10    |
+| SPF Present               | SPF is present.                                            |   10    |
+| SPF Correct All           | SPF is present and set correctly.                          |   20    |
+| MX Present                | MX records are present.                                    |   10    |
 | DMARC Present             | DMARC is present.                                          |   10    |
-| DMARC Set Quarantine      | DMARC set to quarantine.                                   |   20    |
-| DMARC Set Reject          | DMARC set to reject.                                       |   30    |
+| DMARC Action              | DMARC set to quarantine. (-10 pts)                         |   20    |
+| DMARC Action              | DMARC set to reject.                                       |   30    |
 | DMARC Reporting Active    | DMARC reporting is active.                                 |   20    |
 | DMARC Percentage Good     | DMARC percentage set to a value of 100.                    |   20    |
 | DNSSEC Present            | DNSSEC is present.                                         |   20    |
 | DKIM Active and Working   | DKIM is active and working.                                |   20    |
-| **Total Possible Points** |                                                            | **180** |
+| **Total Possible Points** |                                                            | **160** |
 
 ### Sender Policy Framework Pass Test
 
