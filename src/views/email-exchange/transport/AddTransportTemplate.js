@@ -2,21 +2,20 @@ import React from 'react'
 import { CButton, CCallout, CCol, CForm, CRow, CSpinner } from '@coreui/react'
 import { Form } from 'react-final-form'
 import { CippContentCard, CippPage } from 'src/components/layout'
-import { RFFCFormInput, RFFCFormSelect, RFFCFormTextarea } from 'src/components/forms'
+import { RFFCFormTextarea } from 'src/components/forms'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
-import { required, validJson } from 'src/validators'
 
-const MEMAddPolicyTemplate = () => {
+const TransportAddTemplate = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
   const handleSubmit = async (values) => {
     // alert(JSON.stringify(values, null, 2))
     // @todo hook this up
-    genericPostRequest({ path: '/api/AddIntuneTemplate', values })
+    genericPostRequest({ path: '/api/AddTransportTemplate', values })
   }
 
   return (
-    <CippPage tenantSelector={false} title="Add MEM Policy Template">
+    <CippPage tenantSelector={false} title="Add Transport Rule Template">
       <CippContentCard title="Template Details">
         {postResults.isFetching && (
           <CCallout color="info">
@@ -31,48 +30,10 @@ const MEMAddPolicyTemplate = () => {
               <CForm onSubmit={handleSubmit}>
                 <CRow>
                   <CCol>
-                    <RFFCFormInput
-                      type="text"
-                      name="displayName"
-                      label="Display Name"
-                      placeholder="Enter the Display Name"
-                      validate={required}
-                    />
-                  </CCol>
-                </CRow>
-                <CRow>
-                  <CCol>
-                    <RFFCFormInput
-                      type="text"
-                      name="description"
-                      label="Description"
-                      placeholder="Enter the description"
-                      validate={required}
-                    />
-                  </CCol>
-                </CRow>
-                <CRow>
-                  <CCol>
-                    <RFFCFormSelect
-                      name="TemplateType"
-                      label="Select Policy Type"
-                      placeholder="Select a template type"
-                      values={[
-                        { label: 'Administrative Template', value: 'Admin' },
-                        { label: 'Settings Catalog', value: 'Catalog' },
-                        { label: 'Custom Configuration', value: 'Device' },
-                      ]}
-                      validate={required}
-                    />
-                  </CCol>
-                </CRow>
-                <CRow>
-                  <CCol>
                     <RFFCFormTextarea
-                      name="RawJSON"
-                      label="RAW Json"
-                      placeholder="Enter RAW JSON Information"
-                      validate={validJson}
+                      name="PowerShellCommand"
+                      label="PowerShell Command"
+                      placeholder="Enter the PowerShell command you use to create the rule. This command will converted to a template."
                     />
                   </CCol>
                 </CRow>
@@ -97,4 +58,4 @@ const MEMAddPolicyTemplate = () => {
   )
 }
 
-export default MEMAddPolicyTemplate
+export default TransportAddTemplate
