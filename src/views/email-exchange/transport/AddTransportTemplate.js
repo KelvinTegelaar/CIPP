@@ -32,8 +32,10 @@ const TransportAddTemplate = () => {
                   <CCol>
                     <RFFCFormTextarea
                       name="PowerShellCommand"
-                      label="PowerShell Command"
-                      placeholder="Enter the PowerShell command you use to create the rule. This command will converted to a template."
+                      label="New-TransportRule parameters"
+                      placeholder={
+                        'Enter the parameters used to create the rule. One parameter per line. Example:\n-Name "New CIPP Transport Rule" \n-BetweenMemberOf1 "Secret Department""'
+                      }
                     />
                   </CCol>
                 </CRow>
