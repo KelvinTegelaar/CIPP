@@ -39,7 +39,7 @@ const AddPolicy = () => {
       (tenant) => (values[`Select_${tenant.defaultDomainName}`] = tenant.defaultDomainName),
     )
     values.TemplateType = values.Type
-    genericPostRequest({ path: '/api/AddPolicy', values: values })
+    genericPostRequest({ path: '/api/AddTransportRule', values: values })
   }
   /* eslint-disable react/prop-types */
   const WhenFieldChanges = ({ field, set }) => (
