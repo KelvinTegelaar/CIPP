@@ -12,7 +12,7 @@ import { ModalService } from 'src/components/utilities'
 //todo: expandable with RAWJson property.
 /* eslint-disable-next-line react/prop-types */
 
-const AutopilotListTemplates = () => {
+const TransportListTemplates = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
@@ -61,9 +61,9 @@ const AutopilotListTemplates = () => {
   const columns = [
     {
       name: 'Display Name',
-      selector: (row) => row['Displayname'],
+      selector: (row) => row['name'],
       sortable: true,
-      exportSelector: 'Displayname',
+      exportSelector: 'name',
     },
     {
       name: 'Description',
@@ -72,16 +72,10 @@ const AutopilotListTemplates = () => {
       exportSelector: 'Description',
     },
     {
-      name: 'Type',
-      selector: (row) => row['Type'],
+      name: 'Mode',
+      selector: (row) => row['Mode'],
       sortable: true,
-      exportSelector: 'Type',
-    },
-    {
-      name: 'GUID',
-      selector: (row) => row['GUID'],
-      omit: true,
-      exportSelector: 'GUID',
+      exportSelector: 'Mode',
     },
     {
       name: 'Actions',
@@ -90,7 +84,7 @@ const AutopilotListTemplates = () => {
   ]
 
   return (
-    <CippPage title="Available Endpoint Manager Templates" tenantSelector={false}>
+    <CippPage title="Available Transport Rule Templates" tenantSelector={false}>
       <CCardBody>
         {getResults.isFetching && (
           <CCallout color="info">
@@ -103,8 +97,8 @@ const AutopilotListTemplates = () => {
         )}
         <CippDatatable
           keyField="id"
-          reportName={`${tenant?.defaultDomainName}-MEMPolicyTemplates-List`}
-          path="/api/ListIntuneTemplates"
+          reportName={`${tenant?.defaultDomainName}-ListTransportRulesTemplates-List`}
+          path="/api/ListTransportRulesTemplates"
           columns={columns}
           params={{ TenantFilter: tenant?.defaultDomainName }}
         />
@@ -113,4 +107,4 @@ const AutopilotListTemplates = () => {
   )
 }
 
-export default AutopilotListTemplates
+export default TransportListTemplates
