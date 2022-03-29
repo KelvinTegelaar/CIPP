@@ -27,14 +27,14 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             label: 'Enable Rule',
             color: 'info',
             modal: true,
-            modalUrl: `/api/ExecTransportRule?State=Enable&TenantFilter=${tenant.defaultDomainName}&rule=${row.Guid}`,
+            modalUrl: `/api/EditTransportRule?State=Enable&TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}`,
             modalMessage: 'Are you sure you want to enable this rule?',
           },
           {
             label: 'Disable Rule',
             color: 'info',
             modal: true,
-            modalUrl: `/api/ExecTransportRule?State=Disable&TenantFilter=${tenant.defaultDomainName}&rule=${row.Guid}`,
+            modalUrl: `/api/EditTransportRule?State=Disable&TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}`,
             modalMessage: 'Are you sure you want to disable this rule?',
           },
         ]}
