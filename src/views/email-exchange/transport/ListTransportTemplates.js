@@ -38,7 +38,7 @@ const TransportListTemplates = () => {
           color="danger"
           onClick={() =>
             handleDeleteIntuneTemplate(
-              `/api/RemoveIntuneTemplate?ID=${row.GUID}`,
+              `/api/RemoveTransportRuleTemplate?ID=${row.GUID}`,
               'Do you want to delete the template?',
             )
           }
@@ -72,10 +72,10 @@ const TransportListTemplates = () => {
       exportSelector: 'Description',
     },
     {
-      name: 'Mode',
-      selector: (row) => row['Mode'],
+      name: 'GUID',
+      selector: (row) => row['GUID'],
       sortable: true,
-      exportSelector: 'Mode',
+      exportSelector: 'GUID',
     },
     {
       name: 'Actions',
