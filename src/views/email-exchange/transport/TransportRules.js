@@ -50,7 +50,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             label: 'Delete Rule',
             color: 'info',
             modal: true,
-            modalUrl: `/api/RemoveTransportRule&TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}`,
+            modalUrl: `/api/RemoveTransportRule?TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}`,
             modalMessage: 'Are you sure you want to disable this rule?',
           },
         ]}
