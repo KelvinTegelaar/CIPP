@@ -46,6 +46,13 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modalUrl: `/api/EditTransportRule?State=Disable&TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}`,
             modalMessage: 'Are you sure you want to disable this rule?',
           },
+          {
+            label: 'Delete Rule',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/EditTransportRule?State=Delete&TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}`,
+            modalMessage: 'Are you sure you want to disable this rule?',
+          },
         ]}
         placement="end"
         visible={ocVisible}
