@@ -9,9 +9,6 @@ import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import { CippPage } from 'src/components/layout'
 import { ModalService } from 'src/components/utilities'
 
-//todo: expandable with RAWJson property.
-/* eslint-disable-next-line react/prop-types */
-
 const TransportListTemplates = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
@@ -45,6 +42,7 @@ const TransportListTemplates = () => {
         >
           <FontAwesomeIcon icon={faTrash} href="" />
         </CButton>
+
         <CippOffcanvas
           title="Template JSON"
           placement="end"

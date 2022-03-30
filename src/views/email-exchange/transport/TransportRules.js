@@ -1,5 +1,5 @@
 import { CButton } from '@coreui/react'
-import { faEdit, faEllipsisV, faEye } from '@fortawesome/free-solid-svg-icons'
+import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
@@ -23,6 +23,15 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
           { label: 'Description', value: `${row.Description}` },
         ]}
         actions={[
+          {
+            label: 'Create template based on rule',
+            color: 'info',
+            modal: true,
+            modalBody: row,
+            modalType: 'POST',
+            modalUrl: `/api/AddTransportTemplate`,
+            modalMessage: 'Are you sure you want to create a template based on this rule?',
+          },
           {
             label: 'Enable Rule',
             color: 'info',
