@@ -115,9 +115,8 @@ const AddPolicy = () => {
         <center>
           <h3 className="text-primary">Step 2</h3>
           <h5 className="card-title mb-4">
-            Enter the raw JSON for this policy. See{' '}
-            <a href="https://cipp.app/EndpointManagement/IntunePolicyTemplates">this</a>
-            for more information.
+            Enter the raw JSON for this policy, or select from a template. You can create templates
+            from existing policies.
           </h5>
         </center>
         <hr className="my-4" />
