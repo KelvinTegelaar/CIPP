@@ -39,7 +39,7 @@ const AddPolicy = () => {
       (tenant) => (values[`Select_${tenant.defaultDomainName}`] = tenant.defaultDomainName),
     )
     values.TemplateType = values.Type
-    genericPostRequest({ path: '/api/AddCondtionalAccess', values: values })
+    genericPostRequest({ path: '/api/AddCAPolicy', values: values })
   }
   /* eslint-disable react/prop-types */
   const WhenFieldChanges = ({ field, set }) => (
@@ -129,7 +129,7 @@ const AddPolicy = () => {
                 name="TemplateList"
                 values={intuneTemplates.data?.map((template) => ({
                   value: template.GUID,
-                  label: template.displayname,
+                  label: template.displayName,
                 }))}
                 placeholder="Select a template"
                 label="Please choose a template to apply, or enter the information manually."
@@ -140,8 +140,8 @@ const AddPolicy = () => {
         <CRow>
           <CCol>
             <RFFCFormTextarea
-              name="PowerShellCommand"
-              label="New-TransportRule parameters"
+              name="rawjson"
+              label="Conditional Access Parameters"
               placeholder={
                 'Enter the JSON information to use as parameters, or select from a template'
               }
@@ -149,7 +149,7 @@ const AddPolicy = () => {
           </CCol>
         </CRow>
         <hr className="my-4" />
-        <WhenFieldChanges field="TemplateList" set="PowerShellCommand" />
+        <WhenFieldChanges field="TemplateList" set="rawjson" />
       </CippWizard.Page>
       <CippWizard.Page title="Review and Confirm" description="Confirm the settings to apply">
         <center>
@@ -175,7 +175,7 @@ const AddPolicy = () => {
                         ))}
                       </CCallout>
                       <h5 className="mb-0">Rule Settings</h5>
-                      <CCallout color="info">{props.values.PowerShellCommand}</CCallout>
+                      <CCallout color="info">{props.values.rawjson}</CCallout>
                     </CCol>
                   </CRow>
                 </>
