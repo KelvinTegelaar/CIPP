@@ -2,9 +2,9 @@ import React from 'react'
 import { CButton, CCallout, CCol, CForm, CRow, CSpinner } from '@coreui/react'
 import { Form } from 'react-final-form'
 import { CippContentCard, CippPage } from 'src/components/layout'
-import { RFFCFormInput, RFFCFormSelect, RFFCFormTextarea } from 'src/components/forms'
+import { RFFCFormTextarea } from 'src/components/forms'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
-import { required, validJson } from 'src/validators'
+import { validJson } from 'src/validators'
 
 const MEMAddPolicyTemplate = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
@@ -12,7 +12,7 @@ const MEMAddPolicyTemplate = () => {
   const handleSubmit = async (values) => {
     // alert(JSON.stringify(values, null, 2))
     // @todo hook this up
-    genericPostRequest({ path: '/api/AddIntuneTemplate', values })
+    genericPostRequest({ path: '/api/AddCATemplate', values })
   }
 
   return (

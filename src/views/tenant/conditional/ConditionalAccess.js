@@ -43,7 +43,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             color: 'info',
             icon: <FontAwesomeIcon icon={faCheck} className="me-2" />,
             modal: true,
-            modalUrl: `/api/EditCArule?State=Enable&TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}`,
+            modalUrl: `/api/EditCArule?State=Enable&TenantFilter=${tenant.defaultDomainName}&GUID=${row.id}`,
             modalMessage: 'Are you sure you want to enable this rule?',
           },
           {
@@ -51,7 +51,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             color: 'info',
             icon: <FontAwesomeIcon icon={faBan} className="me-2" />,
             modal: true,
-            modalUrl: `/api/EditTransportRule?State=Disable&TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}`,
+            modalUrl: `/api/EditCArule?State=Disable&TenantFilter=${tenant.defaultDomainName}&GUID=${row.id}`,
             modalMessage: 'Are you sure you want to disable this rule?',
           },
           {
@@ -59,7 +59,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             color: 'info',
             icon: <FontAwesomeIcon icon={faBookReader} className="me-2" />,
             modal: true,
-            modalUrl: `/api/EditTransportRule?State=Report&TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}`,
+            modalUrl: `/api/EditCArule?State=Report&TenantFilter=${tenant.defaultDomainName}&GUID=${row.id}`,
             modalMessage: 'Are you sure you want to disable this rule?',
           },
           {
@@ -67,7 +67,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             color: 'danger',
             modal: true,
             icon: <FontAwesomeIcon icon={faTrash} className="me-2" />,
-            modalUrl: `/api/RemoveTransportRule?TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}`,
+            modalUrl: `/api/RemoveCARule?TenantFilter=${tenant.defaultDomainName}&GUID=${row.id}`,
             modalMessage: 'Are you sure you want to disable this rule?',
           },
         ]}

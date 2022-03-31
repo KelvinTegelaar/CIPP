@@ -61,7 +61,7 @@ const AutopilotListTemplates = () => {
   const columns = [
     {
       name: 'Display Name',
-      selector: (row) => row['displayName'],
+      selector: (row) => row['displayname'],
       sortable: true,
       exportSelector: 'displayName',
     },

@@ -39,7 +39,7 @@ const AddPolicy = () => {
       (tenant) => (values[`Select_${tenant.defaultDomainName}`] = tenant.defaultDomainName),
     )
     values.TemplateType = values.Type
-    genericPostRequest({ path: '/api/AddTransportRule', values: values })
+    genericPostRequest({ path: '/api/AddCondtionalAccess', values: values })
   }
   /* eslint-disable react/prop-types */
   const WhenFieldChanges = ({ field, set }) => (
@@ -87,7 +87,7 @@ const AddPolicy = () => {
         <Field name="selectedTenants" validate={requiredArray}>
           {(props) => (
             <WizardTableField
-              reportName="Add-MEM-Policy-Tenant-Selector"
+              reportName="Add-CA-Policy-Tenant-Selector"
               keyField="defaultDomainName"
               path="/api/ListTenants?AllTenantSelector=true"
               columns={[
@@ -123,14 +123,13 @@ const AddPolicy = () => {
         <hr className="my-4" />
         <CRow>
           <CCol md={12}>
-            {intuneTemplates.isUninitialized &&
-              intuneGetRequest({ path: 'api/ListTransportRulesTemplates' })}
+            {intuneTemplates.isUninitialized && intuneGetRequest({ path: 'api/ListCATemplates' })}
             {intuneTemplates.isSuccess && (
               <RFFCFormSelect
                 name="TemplateList"
                 values={intuneTemplates.data?.map((template) => ({
                   value: template.GUID,
-                  label: template.name,
+                  label: template.displayname,
                 }))}
                 placeholder="Select a template"
                 label="Please choose a template to apply, or enter the information manually."
