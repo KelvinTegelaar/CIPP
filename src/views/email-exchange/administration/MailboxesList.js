@@ -60,6 +60,11 @@ const MailboxList = () => {
           ]}
           actions={[
             {
+              label: 'Edit Calendar permissions',
+              link: `/email/administration/edit-calendar-permissions?userId=${row.UPN}&tenantDomain=${tenant.defaultDomainName}`,
+              color: 'info',
+            },
+            {
               label: 'Research Compromised Account',
               link: `/identity/administration/ViewBec?userId=${row.UPN}&tenantDomain=${tenant.defaultDomainName}`,
               color: 'info',
