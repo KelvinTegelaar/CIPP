@@ -1,5 +1,5 @@
 import { CButton } from '@coreui/react'
-import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
+import { faBan, faBook, faCheck, faEllipsisV, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
@@ -27,6 +27,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             label: 'Create template based on rule',
             color: 'info',
             modal: true,
+            icon: <FontAwesomeIcon icon={faBook} className="me-2" />,
             modalBody: row,
             modalType: 'POST',
             modalUrl: `/api/AddTransportTemplate`,
@@ -35,6 +36,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
           {
             label: 'Enable Rule',
             color: 'info',
+            icon: <FontAwesomeIcon icon={faCheck} className="me-2" />,
             modal: true,
             modalUrl: `/api/EditTransportRule?State=Enable&TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}`,
             modalMessage: 'Are you sure you want to enable this rule?',
@@ -42,14 +44,16 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
           {
             label: 'Disable Rule',
             color: 'info',
+            icon: <FontAwesomeIcon icon={faBan} className="me-2" />,
             modal: true,
             modalUrl: `/api/EditTransportRule?State=Disable&TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}`,
             modalMessage: 'Are you sure you want to disable this rule?',
           },
           {
             label: 'Delete Rule',
-            color: 'info',
+            color: 'danger',
             modal: true,
+            icon: <FontAwesomeIcon icon={faTrash} className="me-2" />,
             modalUrl: `/api/RemoveTransportRule?TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}`,
             modalMessage: 'Are you sure you want to disable this rule?',
           },
