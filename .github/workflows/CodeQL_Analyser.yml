@@ -1,8 +1,6 @@
 ---
 name: 'CodeQL'
-on:  # yamllint disable-line rule:truthy
-  push:
-    branches: [master, main, dev, react]
+on: # yamllint disable-line rule:truthy
   pull_request:
     branches: [master, main, dev, react]
   schedule:
