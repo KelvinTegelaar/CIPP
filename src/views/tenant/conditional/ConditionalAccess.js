@@ -67,7 +67,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             color: 'danger',
             modal: true,
             icon: <FontAwesomeIcon icon={faTrash} className="me-2" />,
-            modalUrl: `/api/RemoveCARule?TenantFilter=${tenant.defaultDomainName}&GUID=${row.id}`,
+            modalUrl: `/api/RemoveCAPolicy?TenantFilter=${tenant.defaultDomainName}&GUID=${row.id}`,
             modalMessage: 'Are you sure you want to disable this rule?',
           },
         ]}
