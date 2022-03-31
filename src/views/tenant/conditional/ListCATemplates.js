@@ -104,7 +104,7 @@ const AutopilotListTemplates = () => {
         <CippDatatable
           keyField="id"
           reportName={`${tenant?.defaultDomainName}-MEMPolicyTemplates-List`}
-          path="/api/ListIntuneTemplates"
+          path="/api/ListCATemplates"
           columns={columns}
           params={{ TenantFilter: tenant?.defaultDomainName }}
         />

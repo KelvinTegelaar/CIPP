@@ -1,7 +1,84 @@
-import React from 'react'
+import { CButton } from '@coreui/react'
+import {
+  faBan,
+  faBook,
+  faBookReader,
+  faCheck,
+  faEllipsisV,
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
-
+import { CippActionsOffcanvas } from 'src/components/utilities'
+const Offcanvas = (row, rowIndex, formatExtraData) => {
+  const tenant = useSelector((state) => state.app.currentTenant)
+  const [ocVisible, setOCVisible] = useState(false)
+  //console.log(row)
+  return (
+    <>
+      <CButton size="sm" color="link" onClick={() => setOCVisible(true)}>
+        <FontAwesomeIcon icon={faEllipsisV} />
+      </CButton>
+      <CippActionsOffcanvas
+        title="Rule Info"
+        extendedInfo={[
+          { label: 'Name', value: `${row.displayName}` },
+          { label: 'State', value: `${row.state}` },
+        ]}
+        actions={[
+          {
+            label: 'Create template based on rule',
+            color: 'info',
+            modal: true,
+            icon: <FontAwesomeIcon icon={faBook} className="me-2" />,
+            modalBody: JSON.parse(row.rawjson),
+            modalType: 'POST',
+            modalUrl: `/api/AddCATemplate`,
+            modalMessage: 'Are you sure you want to create a template based on this rule?',
+          },
+          {
+            label: 'Enable Rule',
+            color: 'info',
+            icon: <FontAwesomeIcon icon={faCheck} className="me-2" />,
+            modal: true,
+            modalUrl: `/api/EditCArule?State=Enable&TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}`,
+            modalMessage: 'Are you sure you want to enable this rule?',
+          },
+          {
+            label: 'Disable Rule',
+            color: 'info',
+            icon: <FontAwesomeIcon icon={faBan} className="me-2" />,
+            modal: true,
+            modalUrl: `/api/EditTransportRule?State=Disable&TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}`,
+            modalMessage: 'Are you sure you want to disable this rule?',
+          },
+          {
+            label: 'Set rule to report only',
+            color: 'info',
+            icon: <FontAwesomeIcon icon={faBookReader} className="me-2" />,
+            modal: true,
+            modalUrl: `/api/EditTransportRule?State=Report&TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}`,
+            modalMessage: 'Are you sure you want to disable this rule?',
+          },
+          {
+            label: 'Delete Rule',
+            color: 'danger',
+            modal: true,
+            icon: <FontAwesomeIcon icon={faTrash} className="me-2" />,
+            modalUrl: `/api/RemoveTransportRule?TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}`,
+            modalMessage: 'Are you sure you want to disable this rule?',
+          },
+        ]}
+        placement="end"
+        visible={ocVisible}
+        id={row.id}
+        hideFunction={() => setOCVisible(false)}
+      />
+    </>
+  )
+}
 const columns = [
   {
     name: 'Name',
@@ -99,6 +176,15 @@ const columns = [
     selector: (row) => row['builtInControls'],
     sortable: true,
     exportSelector: 'builtInControls',
+  },
+  {
+    name: 'rawjson',
+    selector: (row) => row['rawjson'],
+    omit: true,
+  },
+  {
+    name: 'Actions',
+    cell: Offcanvas,
   },
 ]
 
