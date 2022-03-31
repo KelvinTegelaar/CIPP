@@ -43,7 +43,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             color: 'info',
             icon: <FontAwesomeIcon icon={faCheck} className="me-2" />,
             modal: true,
-            modalUrl: `/api/EditCArule?State=Enable&TenantFilter=${tenant.defaultDomainName}&GUID=${row.id}`,
+            modalUrl: `/api/EditCAPolicy?State=Enabled&TenantFilter=${tenant.defaultDomainName}&GUID=${row.id}`,
             modalMessage: 'Are you sure you want to enable this rule?',
           },
           {
@@ -51,7 +51,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             color: 'info',
             icon: <FontAwesomeIcon icon={faBan} className="me-2" />,
             modal: true,
-            modalUrl: `/api/EditCArule?State=Disable&TenantFilter=${tenant.defaultDomainName}&GUID=${row.id}`,
+            modalUrl: `/api/EditCAPolicy?State=Disabled&TenantFilter=${tenant.defaultDomainName}&GUID=${row.id}`,
             modalMessage: 'Are you sure you want to disable this rule?',
           },
           {
@@ -59,7 +59,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             color: 'info',
             icon: <FontAwesomeIcon icon={faBookReader} className="me-2" />,
             modal: true,
-            modalUrl: `/api/EditCArule?State=Report&TenantFilter=${tenant.defaultDomainName}&GUID=${row.id}`,
+            modalUrl: `/api/EditCAPolicy?State=enabledForReportingButNotEnforced&TenantFilter=${tenant.defaultDomainName}&GUID=${row.id}`,
             modalMessage: 'Are you sure you want to disable this rule?',
           },
           {
