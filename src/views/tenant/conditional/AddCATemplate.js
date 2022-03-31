@@ -16,7 +16,7 @@ const MEMAddPolicyTemplate = () => {
   }
 
   return (
-    <CippPage tenantSelector={false} title="Add MEM Policy Template">
+    <CippPage tenantSelector={false} title="Add Conditional Access Template">
       <CippContentCard title="Template Details">
         {postResults.isFetching && (
           <CCallout color="info">
@@ -31,47 +31,10 @@ const MEMAddPolicyTemplate = () => {
               <CForm onSubmit={handleSubmit}>
                 <CRow>
                   <CCol>
-                    <RFFCFormInput
-                      type="text"
-                      name="displayName"
-                      label="Display Name"
-                      placeholder="Enter the Display Name"
-                      validate={required}
-                    />
-                  </CCol>
-                </CRow>
-                <CRow>
-                  <CCol>
-                    <RFFCFormInput
-                      type="text"
-                      name="description"
-                      label="Description"
-                      placeholder="Enter the description"
-                      validate={required}
-                    />
-                  </CCol>
-                </CRow>
-                <CRow>
-                  <CCol>
-                    <RFFCFormSelect
-                      name="TemplateType"
-                      label="Select Policy Type"
-                      placeholder="Select a template type"
-                      values={[
-                        { label: 'Administrative Template', value: 'Admin' },
-                        { label: 'Settings Catalog', value: 'Catalog' },
-                        { label: 'Custom Configuration', value: 'Device' },
-                      ]}
-                      validate={required}
-                    />
-                  </CCol>
-                </CRow>
-                <CRow>
-                  <CCol>
                     <RFFCFormTextarea
-                      name="RawJSON"
-                      label="RAW Json"
-                      placeholder="Enter RAW JSON Information"
+                      name="Rawjson"
+                      label="Policy JSON information"
+                      placeholder="Enter RAW JSON Information, you can also convert existing CA policies to templates via the list policies menu"
                       validate={validJson}
                     />
                   </CCol>

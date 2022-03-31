@@ -38,7 +38,7 @@ const AutopilotListTemplates = () => {
           color="danger"
           onClick={() =>
             handleDeleteIntuneTemplate(
-              `/api/RemoveIntuneTemplate?ID=${row.GUID}`,
+              `/api/RemoveCATemplate?ID=${row.GUID}`,
               'Do you want to delete the template?',
             )
           }
@@ -61,21 +61,9 @@ const AutopilotListTemplates = () => {
   const columns = [
     {
       name: 'Display Name',
-      selector: (row) => row['Displayname'],
+      selector: (row) => row['displayName'],
       sortable: true,
-      exportSelector: 'Displayname',
-    },
-    {
-      name: 'Description',
-      selector: (row) => row['Description'],
-      sortable: true,
-      exportSelector: 'Description',
-    },
-    {
-      name: 'Type',
-      selector: (row) => row['Type'],
-      sortable: true,
-      exportSelector: 'Type',
+      exportSelector: 'displayName',
     },
     {
       name: 'GUID',
@@ -90,7 +78,7 @@ const AutopilotListTemplates = () => {
   ]
 
   return (
-    <CippPage title="Available Endpoint Manager Templates" tenantSelector={false}>
+    <CippPage title="Available Conditional Access Templates" tenantSelector={false}>
       <CCardBody>
         {getResults.isFetching && (
           <CCallout color="info">
@@ -103,7 +91,7 @@ const AutopilotListTemplates = () => {
         )}
         <CippDatatable
           keyField="id"
-          reportName={`${tenant?.defaultDomainName}-MEMPolicyTemplates-List`}
+          reportName={`${tenant?.defaultDomainName}-CaTemplates-List`}
           path="/api/ListCATemplates"
           columns={columns}
           params={{ TenantFilter: tenant?.defaultDomainName }}
