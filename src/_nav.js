@@ -15,6 +15,8 @@ import {
   faEnvelope,
   faWindowRestore,
   faUnlock,
+  faKey,
+  faBus,
 } from '@fortawesome/free-solid-svg-icons'
 
 const _nav = [
@@ -133,11 +135,10 @@ const _nav = [
         name: 'Licence Report',
         to: '/tenant/administration/list-licenses',
       },
-
       {
         component: CNavItem,
-        name: 'Conditional Access Policies',
-        to: '/tenant/administration/conditional-access-policies',
+        name: 'Service Health',
+        to: '/tenant/administration/service-health',
       },
     ],
   },
@@ -172,6 +173,35 @@ const _nav = [
         component: CNavItem,
         name: 'Individual Domain Check',
         to: '/tenant/standards/individual-domains',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
+    name: 'Conditional Access',
+    section: 'Conditional Access',
+    to: '/tenant/administration',
+    icon: <FontAwesomeIcon icon={faKey} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'List Policies',
+        to: '/tenant/conditional/list-policies',
+      },
+      {
+        component: CNavItem,
+        name: 'Deploy Conditional Access',
+        to: '/tenant/conditional/deploy',
+      },
+      {
+        component: CNavItem,
+        name: 'Add Template',
+        to: '/tenant/conditional/add-template',
+      },
+      {
+        component: CNavItem,
+        name: 'List Templates',
+        to: '/tenant/conditional/list-template',
       },
     ],
   },
@@ -394,6 +424,35 @@ const _nav = [
   },
   {
     component: CNavGroup,
+    name: 'Transport Rules',
+    section: 'Transport Rules',
+    to: '/tenant/administration',
+    icon: <FontAwesomeIcon icon={faBus} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'List Transport rules',
+        to: '/email/transport/list-rules',
+      },
+      {
+        component: CNavItem,
+        name: 'Deploy Transport rule',
+        to: '/email/transport/deploy-rules',
+      },
+      {
+        component: CNavItem,
+        name: 'Add Template',
+        to: '/email/transport/add-template',
+      },
+      {
+        component: CNavItem,
+        name: 'List Templates',
+        to: '/email/transport/list-templates',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
     name: 'Reports',
     section: 'Email & Exchange',
     to: '/email/reports',
@@ -434,14 +493,19 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'Documentation',
-        href: 'https://cipp.app',
-        target: '_blank',
+        name: 'Settings',
+        to: '/cipp/settings',
       },
       {
         component: CNavItem,
-        name: 'Settings',
-        to: '/cipp/settings',
+        name: 'SAM Setup Wizard (β)',
+        to: '/cipp/setup',
+      },
+      {
+        component: CNavItem,
+        name: 'Documentation',
+        href: 'https://cipp.app',
+        target: '_blank',
       },
     ],
   },
