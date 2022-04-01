@@ -77,6 +77,12 @@ const EditCalendarPermission = () => {
   // this is dumb
   const formDisabled = queryError === true
 
+  const UsersMapped = users?.map((user) => ({
+    value: `${user.primarySmtpAddress}`,
+    name: `${user.displayName} - (${user.primarySmtpAddress})`,
+  }))
+  UsersMapped.unshift({ value: 'Default', name: 'Default' })
+
   return (
     <CCard className="page-card">
       {!queryError && (
@@ -115,10 +121,7 @@ const EditCalendarPermission = () => {
                                 <RFFSelectSearch
                                   label="Remove Access"
                                   disabled={formDisabled}
-                                  values={users?.map((user) => ({
-                                    value: `${user.primarySmtpAddress}`,
-                                    name: `${user.displayName} - (${user.primarySmtpAddress})`,
-                                  }))}
+                                  values={UsersMapped}
                                   placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                                   name="RemoveAccess"
                                 />
@@ -128,10 +131,7 @@ const EditCalendarPermission = () => {
                                 <RFFSelectSearch
                                   label="Add Access"
                                   disabled={formDisabled}
-                                  values={users?.map((user) => ({
-                                    value: `${user.primarySmtpAddress}`,
-                                    name: `${user.displayName} - (${user.primarySmtpAddress})`,
-                                  }))}
+                                  values={UsersMapped}
                                   placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                                   name="UserToGetPermissions"
                                 />

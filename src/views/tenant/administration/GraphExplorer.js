@@ -176,7 +176,7 @@ const GraphExplorer = () => {
                                 {
                                   label: 'Secure Score with Current Score and Max Score',
                                   value:
-                                    'security/secureScores?$top=1&$select=currentscore,maxscore,activeusercount,enabledservices',
+                                    'security/secureScores?$top=90&$select=currentscore,maxscore,activeusercount,enabledservices',
                                 },
                               ]}
                             />
