@@ -154,7 +154,7 @@ const BestPracticeAnalyser = () => {
       selector: (row) => row['AdminConsentForApplications'],
       cell: cellBooleanFormatter({ reverse: true }),
       sortable: true,
-      exportSelector: 'AdminConsentForApplication',
+      exportSelector: 'AdminConsentForApplications',
     },
     {
       name: 'Passwords Do Not Expire',
@@ -191,7 +191,7 @@ const BestPracticeAnalyser = () => {
       name: 'Modern Auth Enabled',
       selector: (row) => row['EnableModernAuth'],
       sortable: true,
-      exportSelector: 'EnabledModernAuth',
+      exportSelector: 'EnableModernAuth',
       cell: cellBooleanFormatter(),
     },
     {
@@ -220,7 +220,7 @@ const BestPracticeAnalyser = () => {
     {
       name: 'Unused Licenses',
       selector: (row) => row['UnusedLicensesResult'],
-      exportSelector: 'UnusedLicencesResult',
+      exportSelector: 'UnusedLicensesResult',
       cell: (row, index, column) => {
         const cell = column.selector(row)
         if (cell === 'FAIL') {
