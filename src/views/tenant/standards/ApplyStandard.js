@@ -1,6 +1,6 @@
 import React from 'react'
-import { CCallout, CSpinner } from '@coreui/react'
-import { Field } from 'react-final-form'
+import { CCallout, CCol, CRow, CSpinner } from '@coreui/react'
+import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { CippWizard } from 'src/components/layout'
@@ -112,43 +112,65 @@ const ApplyStandard = () => {
         </center>
         <hr className="my-4" />
         <div className="mb-2">
-          <RFFCFormSwitch name="standards.AuditLog" label="Enable the Unified Audit Log" />
-          <RFFCFormSwitch name="standards.SecurityDefaults" label="Enable Security Defaults" />
-          <RFFCFormSwitch
-            name="standards.DelegateSentItems"
-            label="Set mailbox Sent Items delegation (Sent items for shared mailboxes)"
-          />
-          <RFFCFormSwitch
-            name="standards.OauthConsent"
-            label="Require admin consent for applications (Prevent OAuth phishing)"
-          />
-          <RFFCFormSwitch name="standards.PasswordExpireDisabled" label="Do not expire passwords" />
-          <RFFCFormSwitch
-            name="standards.AnonReportDisable"
-            label="Enable Usernames instead of pseudo anonymised names in reports"
-          />
-          <RFFCFormSwitch name="standards.SSPR" label="Enable Self Service Password Reset" />
-          <RFFCFormSwitch name="standards.ModernAuth" label="Enable Modern Authentication" />
-          <RFFCFormSwitch name="standards.DisableBasicAuth" label="Disable Basic Authentication" />
-          <RFFCFormSwitch
-            name="standards.DisableSharedMailbox"
-            label="Disable Shared Mailbox AAD accounts"
-          />
-          <RFFCFormSwitch
-            name="standards.DisableSelfServiceLicenses"
-            label="Disable Self Service Licensing"
-          />
-          <RFFCFormSwitch
-            name="standards.AutoExpandArchive"
-            label="Enable Auto-expanding archives"
-          />
-          <RFFCFormSwitch
-            name="standards.SpoofWarn"
-            label="Enable Spoofing warnings for Outlook (This e-mail is external identifiers)"
-          />
-          <RFFCFormSwitch name="standards.LegacyMFA" label="Enable per-user MFA for all user" />
-          <RFFCFormSwitch name="standards.UndoSSPR" label="Undo SSPR Standard" />
-          <RFFCFormSwitch name="standards.UndoOauth" label="Undo App Consent Standard" />
+          <CRow className="mb-3">
+            <CCol md={6}>
+              <RFFCFormSwitch name="standards.AuditLog" label="Enable the Unified Audit Log" />
+              <RFFCFormSwitch name="standards.SecurityDefaults" label="Enable Security Defaults" />
+              <RFFCFormSwitch
+                name="standards.DelegateSentItems"
+                label="Set mailbox Sent Items delegation (Sent items for shared mailboxes)"
+              />
+              <RFFCFormSwitch
+                name="standards.OauthConsent"
+                label="Require admin consent for applications (Prevent OAuth phishing)"
+              />
+              <RFFCFormSwitch
+                name="standards.PasswordExpireDisabled"
+                label="Do not expire passwords"
+              />
+              <RFFCFormSwitch
+                name="standards.AnonReportDisable"
+                label="Enable Usernames instead of pseudo anonymised names in reports"
+              />
+              <RFFCFormSwitch name="standards.SSPR" label="Enable Self Service Password Reset" />
+              <RFFCFormSwitch name="standards.ModernAuth" label="Enable Modern Authentication" />
+              <RFFCFormSwitch
+                name="standards.DisableBasicAuth"
+                label="Disable Basic Authentication"
+              />
+              <RFFCFormSwitch name="standards.TAP" label="Enable Temporary Access Passwords" />
+            </CCol>
+            <CCol md={6}>
+              <RFFCFormSwitch
+                name="standards.DisableSharedMailbox"
+                label="Disable Shared Mailbox AAD accounts"
+              />
+              <RFFCFormSwitch
+                name="standards.DisableSelfServiceLicenses"
+                label="Disable Self Service Licensing"
+              />
+              <RFFCFormSwitch
+                name="standards.AutoExpandArchive"
+                label="Enable Auto-expanding archives"
+              />
+              <RFFCFormSwitch
+                name="standards.SpoofWarn"
+                label="Enable Spoofing warnings for Outlook (This e-mail is external identifiers)"
+              />
+              <RFFCFormSwitch
+                name="standards.PWnumberMatchingRequiredState"
+                label="Enable Passwordless with Number Matching"
+              />
+              <RFFCFormSwitch
+                name="standards.PWdisplayAppInformationRequiredState"
+                label="Enable Passwordless with Location information and Number Matching"
+              />
+
+              <RFFCFormSwitch name="standards.LegacyMFA" label="Enable per-user MFA for all user" />
+              <RFFCFormSwitch name="standards.UndoSSPR" label="Undo SSPR Standard" />
+              <RFFCFormSwitch name="standards.UndoOauth" label="Undo App Consent Standard" />
+            </CCol>
+          </CRow>
         </div>
         <hr className="my-4" />
       </CippWizard.Page>
@@ -172,6 +194,33 @@ const ApplyStandard = () => {
           <CCallout color="info">
             <CSpinner>Loading</CSpinner>
           </CCallout>
+        )}
+        {!postResults.isSuccess && (
+          <FormSpy>
+            {(props) => (
+              /* eslint-disable react/prop-types */ <>
+                <CRow>
+                  <CCol md={{ span: 6, offset: 3 }}>
+                    <h5 className="mb-0">Selected Tenants</h5>
+                    <CCallout color="info">
+                      {props.values.selectedTenants.map((tenant, idx) => (
+                        <li key={idx}>
+                          {tenant.displayName}- {tenant.defaultDomainName}
+                        </li>
+                      ))}
+                    </CCallout>
+                    <h5 className="mb-0">Selected Standards</h5>
+                    <CCallout color="info">
+                      {Object.keys(props.values.standards).map((standard, idx) => (
+                        <li key={idx}>{standard}</li>
+                      ))}
+                    </CCallout>
+                    <hr />
+                  </CCol>
+                </CRow>
+              </>
+            )}
+          </FormSpy>
         )}
         {postResults.isSuccess && <CCallout color="success">{postResults.data.Results}</CCallout>}
         <hr className="my-4" />
