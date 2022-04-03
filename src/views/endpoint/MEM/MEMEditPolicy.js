@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import {
-  CAlert,
+  CCallout,
   CButton,
   CCard,
   CCardBody,
@@ -24,6 +24,7 @@ const MEMEditPolicy = () => {
   let query = useQuery()
   const policyID = query.get('ID')
   const tenantDomain = query.get('tenantDomain')
+  const urlName = query.get('urlName')
 
   const [queryError, setQueryError] = useState(false)
 
@@ -32,7 +33,7 @@ const MEMEditPolicy = () => {
     isFetching,
     error,
     isSuccess,
-  } = useListDevicePoliciesQuery({ tenantDomain, PolicyID: policyID })
+  } = useListDevicePoliciesQuery({ tenantDomain, PolicyID: policyID, urlName: urlName })
 
   useEffect(() => {
     if (!policyID || !tenantDomain) {
@@ -133,7 +134,7 @@ const MEMEditPolicy = () => {
                               </CCol>
                             </CRow>
                             {postResults.isSuccess && (
-                              <CAlert color="success">{postResults.data.Results}</CAlert>
+                              <CCallout color="success">{postResults.data.Results}</CCallout>
                             )}
                           </CForm>
                         )

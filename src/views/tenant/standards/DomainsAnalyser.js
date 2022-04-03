@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import { CButton, CSpinner } from '@coreui/react'
 import { CellBadge, cellProgressBarFormatter } from 'src/components/tables'
 import { CippOffcanvas, ModalService } from 'src/components/utilities'
-import IndividualDomainCheck from 'src/views/tenant/standards/IndividualDomain'
+import { IndividualDomainCheck } from 'src/views/tenant/standards/IndividualDomain'
 import { CippPageList } from 'src/components/layout'
 import { useExecDomainsAnalyserMutation } from 'src/store/api/reports'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -48,10 +49,19 @@ checkDomain.propTypes = {
 const DomainsAnalyser = () => {
   const [individualDomainResults, setIndividualDomainResults] = useState()
   const [domainCheckVisible, setDomainCheckVisible] = useState(false)
+  const currentTenant = useSelector((state) => state.app.currentTenant)
 
   const handleMoreInfo = ({ row }) => {
     setIndividualDomainResults(checkDomain(row.Domain))
     setDomainCheckVisible(true)
+  }
+
+  const omitTenant = () => {
+    if (currentTenant.defaultDomainName === 'AllTenants') {
+      return false
+    } else {
+      return true
+    }
   }
 
   const columns = [
@@ -61,6 +71,14 @@ const DomainsAnalyser = () => {
       sortable: true,
       exportSelector: 'Domain',
       minWidth: '300px',
+    },
+    {
+      name: 'Tenant',
+      selector: (row) => row['Tenant'],
+      sortable: true,
+      exportSelector: 'Tenant',
+      minWidth: '300px',
+      omit: omitTenant(),
     },
     {
       name: 'Security Score',
@@ -87,19 +105,15 @@ const DomainsAnalyser = () => {
     },
     {
       name: 'SPF Pass Test',
-      selector: (row) => row['SPFPassTest'],
-      exportSelector: 'SPFPassTest',
+      selector: (row) => row['SPFPassAll'],
+      exportSelector: 'SPFPassAll',
       sortable: true,
       cell: (row, index, column) => {
         const cell = column.selector(row)
         if (cell === true) {
-          if (row.SPFPassAll === true) {
-            return <CellBadge color="success" label="SPF Pass" />
-          } else {
-            return <CellBadge color="danger" label="SPF Fail" />
-          }
+          return <CellBadge color="success" label="SPF Pass" />
         } else if (cell === false) {
-          return <CellBadge color="danger" label="SPF Missing Expected" />
+          return <CellBadge color="danger" label="SPF Fail" />
         }
         return <CellBadge color="info" label="No Data" />
       },
@@ -224,9 +238,11 @@ const DomainsAnalyser = () => {
   return (
     <CippPageList
       title="Domains Analyser"
-      tenantSelector={false}
+      tenantSelector={true}
+      showAllTenantSelector={true}
       datatable={{
         path: '/api/DomainAnalyser_List',
+        params: { tenantFilter: currentTenant.defaultDomainName },
         columns,
         reportName: 'Domains-Analyzer',
         tableProps: {

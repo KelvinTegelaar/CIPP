@@ -113,7 +113,9 @@ const columns = [
     name: 'Actions',
     center: true,
     cell: (row) => (
-      <Link to={`/tenant/administration/tenants/Edit?TenantFilter=${row.defaultDomainName}`}>
+      <Link
+        to={`/tenant/administration/tenants/Edit?tenantFilter=${row.defaultDomainName}&customerId=${row.customerId}`}
+      >
         <CButton size="sm" variant="ghost" color="warning">
           <FontAwesomeIcon icon={faEdit} />
         </CButton>

@@ -4,7 +4,10 @@ export const securityApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     execAlertsList: builder.query({
       queryFn: async (_args, _baseQueryApi, _options, baseQuery) => {
-        const startRequest = await baseQuery({ path: '/api/ExecAlertsList' })
+        const startRequest = await baseQuery({
+          path: '/api/ExecAlertsList',
+          params: { tenantFilter: _args.tenantFilter },
+        })
         if (startRequest.error) {
           return { error: startRequest.error }
         }

@@ -9,6 +9,7 @@ const columns = [
     name: 'User Principal Name',
     sortable: true,
     exportSelector: 'UPN',
+    grow: 2,
   },
   {
     selector: (row) => row['AccountEnabled'],
@@ -45,6 +46,23 @@ const columns = [
   },
 ]
 
+const conditionalRowStyles = [
+  {
+    when: (row) =>
+      row.AccountEnabled &&
+      row.PerUser === 'Disabled' &&
+      !row.MFARegistration &&
+      row.CoveredByCA === 'None' &&
+      !row.CoveredBySD,
+    style: {
+      //backgroundColor: 'var(--cui-danger)',
+      //border: '2px solid var(--cui-warning)',
+      //color: 'var(--cui-warning)',
+    },
+    classNames: ['no-mfa'],
+  },
+]
+
 const MFAList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
@@ -56,6 +74,9 @@ const MFAList = () => {
         path: '/api/ListMFAUsers',
         reportName: `${tenant?.defaultDomainName}-MFAReport-List`,
         params: { TenantFilter: tenant?.defaultDomainName },
+        tableProps: {
+          conditionalRowStyles: conditionalRowStyles,
+        },
       }}
     />
   )

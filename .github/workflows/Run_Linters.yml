@@ -1,16 +1,11 @@
 ---
 name: Lint Code Base
-on:  # yamllint disable-line rule:truthy
-  push:
-    branches:
-      - master
-      - main
-      - react
+on: # yamllint disable-line rule:truthy
   pull_request_target:
     branches:
       - master
       - main
-      - react
+      - dev
 permissions:
   issues: write
   pull-requests: write

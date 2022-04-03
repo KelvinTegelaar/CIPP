@@ -1,4 +1,5 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { ExportCsvButton, ExportPDFButton } from 'src/components/buttons'
 import { CSpinner, CFormInput } from '@coreui/react'
 import DataTable, { createTheme } from 'react-data-table-component'
@@ -33,22 +34,15 @@ const customSort = (rows, selector, direction) => {
     // use the selector to resolve your field names by passing the sort comparitors
     let aField
     let bField
-    if (typeof selector(a) === 'string') {
-      aField = selector(a).toLowerCase()
-    } else {
-      aField = selector(a)
-    }
-    if (typeof selector(b) === 'string') {
-      bField = selector(b).toLowerCase()
-    } else {
-      bField = selector(b)
-    }
+
+    aField = selector(a)
+    bField = selector(b)
 
     let comparison = 0
 
-    if (aField > bField) {
+    if (aField?.toString().localeCompare(bField, 'en', { numeric: true }) > 0) {
       comparison = 1
-    } else if (aField < bField) {
+    } else if (aField?.toString().localeCompare(bField, 'en', { numeric: true }) < 0) {
       comparison = -1
     }
 
@@ -180,7 +174,7 @@ export default function CippTable({
     disableCSVExport,
     actions,
   ])
-
+  const tablePageSize = useSelector((state) => state.app.tablePageSize)
   return (
     <div className="ms-n3 me-n3 cipp-tablewrapper">
       {!isFetching && error && <span>Error loading data</span>}
@@ -209,7 +203,7 @@ export default function CippTable({
             defaultSortAsc
             defaultSortFieldId={1}
             sortFunction={customSort}
-            paginationPerPage={25}
+            paginationPerPage={tablePageSize}
             progressPending={isFetching}
             progressComponent={<CSpinner color="info" component="div" />}
             paginationRowsPerPageOptions={[25, 50, 100, 200, 500]}

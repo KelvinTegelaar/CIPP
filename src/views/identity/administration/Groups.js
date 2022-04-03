@@ -6,20 +6,18 @@ import { faEdit } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPageList } from 'src/components/layout'
 import { TitleButton } from 'src/components/buttons'
+import { Link } from 'react-router-dom'
 
-const Offcanvas = (row, rowIndex, formatExtraData) => {
+const Actions = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
   return (
-    <>
-      <CButton
-        size="sm"
-        variant="ghost"
-        color="warning"
-        href={`/identity/administration/groups/edit?groupId=${row.id}&tenantDomain=${tenant.defaultDomainName}`}
-      >
+    <Link
+      to={`/identity/administration/groups/edit?groupId=${row.id}&tenantDomain=${tenant.defaultDomainName}`}
+    >
+      <CButton size="sm" variant="ghost" color="warning">
         <FontAwesomeIcon icon={faEdit} />
       </CButton>
-    </>
+    </Link>
   )
 }
 
@@ -29,6 +27,7 @@ const columns = [
     selector: (row) => row['displayName'],
     sortable: true,
     exportSelector: 'displayName',
+    grow: 2,
   },
   {
     name: 'Group Type',
@@ -53,6 +52,7 @@ const columns = [
   {
     name: 'On-Prem Sync',
     selector: (row) => row['onPremisesSyncEnabled'],
+    sortable: true,
     cell: cellBooleanFormatter({ warning: true }),
     exportSelector: 'onPremisessSyncEnabled',
   },
@@ -61,10 +61,12 @@ const columns = [
     selector: (row) => row['mail'],
     sortable: true,
     exportSelector: 'mail',
+    grow: 2,
   },
   {
     name: 'Actions',
-    cell: Offcanvas,
+    cell: Actions,
+    maxWidth: '20px',
   },
 ]
 

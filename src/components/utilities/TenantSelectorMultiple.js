@@ -5,7 +5,11 @@ import PropTypes from 'prop-types'
 
 const TenantSelectorMultiple = React.forwardRef(
   ({ values = [], onChange = () => {}, ...rest }, ref) => {
-    const { data: tenants = [], isLoading, error } = useListTenantsQuery()
+    const {
+      data: tenants = [],
+      isLoading,
+      error,
+    } = useListTenantsQuery({ showAllTenantsSelector: false })
 
     let placeholder = 'Select Tenants'
     if (isLoading) {

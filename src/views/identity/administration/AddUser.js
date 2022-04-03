@@ -10,7 +10,7 @@ import {
   CFormLabel,
   CRow,
   CSpinner,
-  CAlert,
+  CCallout,
 } from '@coreui/react'
 import { Form } from 'react-final-form'
 import {
@@ -25,6 +25,7 @@ import {
 import { CippPage } from 'src/components/layout'
 import countryList from 'src/data/countryList'
 import { useListUsersQuery } from 'src/store/api/users'
+import { useListAdConnectSettingsQuery } from 'src/store/api/adconnect'
 import { useListDomainsQuery } from 'src/store/api/domains'
 import { useListLicensesQuery } from 'src/store/api/licenses'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
@@ -49,6 +50,13 @@ const AddUser = () => {
     isFetching: usersIsFetching,
     error: usersError,
   } = useListUsersQuery({ tenantDomain })
+
+  const {
+    data: adconnectsettings = [],
+    isFetching: adcIsFetching,
+    error: adcError,
+  } = useListAdConnectSettingsQuery({ tenantDomain })
+  console.log(adconnectsettings)
 
   const {
     data: domains = [],
@@ -111,15 +119,26 @@ const AddUser = () => {
   return (
     <CippPage tenantSelector={true} title="Add User">
       {postResults.isSuccess && (
-        <CAlert color="success" dismissible>
+        <CCallout color="success" dismissible>
           {postResults.data?.Results.map((result, index) => (
             <li key={index}>{result}</li>
           ))}
-        </CAlert>
+        </CCallout>
       )}
       <CRow>
         <CCol md={6}>
           <CCard>
+            {adcIsFetching && <CSpinner />}
+            {adcError && <span>Unable to determine Azure AD Connect Settings</span>}
+            {!adcIsFetching &&
+              adconnectsettings.dirSyncEnabled &&
+              adconnectsettings.dirSyncConfigured && (
+                <CCallout color="warning">
+                  Warning! {adconnectsettings.dirSyncEnabled} This tenant currently has Active
+                  Directory Sync Enabled and Configured. This usually means users should be created
+                  in Active Directory
+                </CCallout>
+              )}
             <CCardHeader>
               <CCardTitle>Account Details</CCardTitle>
             </CCardHeader>
@@ -318,7 +337,11 @@ const AddUser = () => {
                         </CCol>
                       </CRow>
                       {postResults.isSuccess && (
-                        <CAlert color="success">{postResults.data?.Results}</CAlert>
+                        <CCallout color="success">
+                          {postResults.data.Results.map((message, idx) => {
+                            return <li key={idx}>{message}</li>
+                          })}
+                        </CCallout>
                       )}
                     </CForm>
                   )
