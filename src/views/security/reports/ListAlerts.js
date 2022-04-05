@@ -74,13 +74,13 @@ const ListAlerts = () => {
           title="Alert Information"
           extendedInfo={extendedInfo}
           actions={[
-            {
-              label: 'View source alert in compliance center',
-              link: `${row.RawResult.sourceMaterials[0]}`,
-              icon: <FontAwesomeIcon icon={faEye} className="me-2" />,
-              external: true,
-              color: 'info',
-            },
+            // {
+            //   label: 'View source alert in compliance center',
+            //   link: `${row.RawResult.sourceMaterials[0]}`,
+            //   icon: <FontAwesomeIcon icon={faEye} className="me-2" />,
+            //   external: true,
+            //   color: 'info',
+            // },
             {
               label: 'Set status to In Progress',
               color: 'info',
