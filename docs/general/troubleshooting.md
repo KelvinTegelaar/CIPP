@@ -9,6 +9,10 @@ Below are some common issues that users have had from initial deployment, updati
 
 Note that these steps come from the community - if you notice any mistakes, please either edit this page or get in touch via the [Discord server](https://discord.gg/Cyberdrain). Please note the [Contributor Code of Conduct](/docs/dev/#contributor-code-of-conduct).
 
+## '_RepositoryToken is invalid_' error during deployment with older forked repo (Pre-2.x)
+
+If your CIPP repository fork (Not CIPP-API at this time) is from before the release of 2.x then you may run into the issue where the deployment is actually trying to reference the **main** branch instead of **master** that your repository may still be. Be sure to check that your repo is fully up-to-date and then rename the branch to **main** if it's still **master**. You can read about renaming GitHub branches via the [GitHub Documentation](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-branches-in-your-repository/renaming-a-branch).
+
 ## Token Testing Script
 
 <details><summary>Token Test Script</summary>
