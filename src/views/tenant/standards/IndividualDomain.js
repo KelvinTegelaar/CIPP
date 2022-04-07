@@ -92,6 +92,13 @@ export function IndividualDomainCheck({
   const [optionsVisible, setOptionsVisible] = useState(false)
   const [masonrySize, setMasonrySize] = useState()
 
+  const isValidDomain = (value) =>
+    /^(((?!-))(xn--|_{1,1})?[a-z0-9-]{0,61}[a-z0-9]{1,1}\.)*(xn--)?([a-z0-9][a-z0-9\-]{0,60}|[a-z0-9-]{1,30}\.[a-z]{2,})$/.test(
+      value,
+    )
+      ? undefined
+      : value
+
   useEffect(() => {
     if (initialDomain) {
       searchParams.set('domain', initialDomain)
@@ -159,7 +166,7 @@ export function IndividualDomainCheck({
               render={({ handleSubmit, submitting, pristine }) => {
                 return (
                   <CForm onSubmit={handleSubmit}>
-                    <Field name="domain">
+                    <Field name="domain" validate={isValidDomain}>
                       {({ input, meta }) => {
                         return (
                           <>
@@ -730,7 +737,7 @@ function NSResultCard({ domain }) {
   } = useListDomainHealthQuery({ Domain: domain, Action: 'ReadNSRecord' })
 
   const content = []
-  if (nsReport?.Records.length > 0) {
+  if (!error && nsReport?.Records.length > 0) {
     nsReport?.Records.map((ns, index) =>
       content.push({
         body: ns,
