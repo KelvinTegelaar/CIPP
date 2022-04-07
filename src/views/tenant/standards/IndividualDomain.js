@@ -190,7 +190,7 @@ export function IndividualDomainCheck({
                                 <CButton
                                   size="sm"
                                   variant="outline"
-                                  color="light"
+                                  color="primary"
                                   onClick={() => setOptionsVisible(!optionsVisible)}
                                 >
                                   <FontAwesomeIcon className="mx-1" size="1x" icon={faCog} />
