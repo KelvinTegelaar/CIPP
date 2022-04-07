@@ -523,7 +523,7 @@ const SecuritySettings = () => {
                 <CCardTitle>Static Web App (Role Management)</CCardTitle>
               </CCardHeader>
               <CCardBody className="equalheight">
-                The Statis Web App role management allows you to invite other users to the
+                The Static Web App role management allows you to invite other users to the
                 application.
                 <br /> <br />
                 <a
