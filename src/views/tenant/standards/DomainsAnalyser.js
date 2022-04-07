@@ -105,19 +105,15 @@ const DomainsAnalyser = () => {
     },
     {
       name: 'SPF Pass Test',
-      selector: (row) => row['SPFPassTest'],
-      exportSelector: 'SPFPassTest',
+      selector: (row) => row['SPFPassAll'],
+      exportSelector: 'SPFPassAll',
       sortable: true,
       cell: (row, index, column) => {
         const cell = column.selector(row)
         if (cell === true) {
-          if (row.SPFPassAll === true) {
-            return <CellBadge color="success" label="SPF Pass" />
-          } else {
-            return <CellBadge color="danger" label="SPF Fail" />
-          }
+          return <CellBadge color="success" label="SPF Pass" />
         } else if (cell === false) {
-          return <CellBadge color="danger" label="SPF Missing Expected" />
+          return <CellBadge color="danger" label="SPF Fail" />
         }
         return <CellBadge color="info" label="No Data" />
       },
