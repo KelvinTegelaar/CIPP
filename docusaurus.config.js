@@ -69,12 +69,10 @@ const config = {
     [
       'redocusaurus',
       {
-        specs: [
-          {
-            spec: 'data/cippapi.yaml',
-            routePath: '/docs/api/',
-          },
-        ],
+        specs: [{
+          spec: 'data/cippapi.yaml',
+          routePath: '/docs/api/',
+        }, ],
       },
     ],
   ],
@@ -82,13 +80,10 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      metadata: [
-        {
-          name: 'keywords',
-          content:
-            'CIPP, CyberDrain Improved Partner Portal, Microsoft 365, Management, Multi-Tenant, MSP, Azure, Microsoft Partner, Lighthouse',
-        },
-      ],
+      metadata: [{
+        name: 'keywords',
+        content: 'CIPP, CyberDrain Improved Partner Portal, Microsoft 365, Management, Multi-Tenant, MSP, Azure, Microsoft Partner, Lighthouse',
+      }, ],
       colorMode: {
         respectPrefersColorScheme: true,
       },
@@ -102,13 +97,11 @@ const config = {
           alt: 'CIPP Logo',
           src: 'img/CyberDrainIconOrangeWhite.png',
         },
-        items: [
-          {
+        items: [{
             type: 'dropdown',
             position: 'left',
             label: 'Documentation',
-            items: [
-              {
+            items: [{
                 type: 'doc',
                 docId: 'index',
                 label: 'User',
@@ -136,8 +129,7 @@ const config = {
             type: 'dropdown',
             position: 'left',
             label: 'Project',
-            items: [
-              {
+            items: [{
                 to: 'releases',
                 label: 'Releases',
               },
@@ -164,6 +156,14 @@ const config = {
             position: 'left',
             docsPluginId: 'general',
           },
+
+          {
+            type: 'doc',
+            docId: 'faq',
+            label: 'Frequently Asked Questions',
+            position: 'left',
+            docsPluginId: 'general',
+          },
           {
             type: 'doc',
             docId: 'demo',
@@ -175,8 +175,7 @@ const config = {
             type: 'dropdown',
             position: 'left',
             label: 'Security',
-            items: [
-              {
+            items: [{
                 to: 'security',
                 label: 'Security Policy',
               },
@@ -198,8 +197,7 @@ const config = {
             position: 'right',
             label: 'GitHub',
             className: 'github-link',
-            items: [
-              {
+            items: [{
                 to: 'https://github.com/KelvinTegelaar/CIPP',
                 'aria-label': 'GitHub',
                 label: 'CIPP',
@@ -221,11 +219,9 @@ const config = {
           height: 50,
           width: 50,
         },
-        links: [
-          {
+        links: [{
             title: 'Docs',
-            items: [
-              {
+            items: [{
                 label: 'User Guide',
                 to: '/docs/user/',
               },
@@ -249,8 +245,7 @@ const config = {
           },
           {
             title: 'Community',
-            items: [
-              {
+            items: [{
                 label: 'Contributors',
                 to: 'contributors',
               },
@@ -266,8 +261,7 @@ const config = {
           },
           {
             title: 'More',
-            items: [
-              {
+            items: [{
                 label: 'CyberDrain Blog',
                 href: 'https://cyberdrain.com',
               },
@@ -300,8 +294,7 @@ const config = {
     [
       require.resolve('@docusaurus/plugin-client-redirects'),
       {
-        redirects: [
-          {
+        redirects: [{
             to: '/docs/user/updating',
             from: '/GettingStarted/Updating/',
           },
