@@ -18,7 +18,7 @@
     "received_events_url": "https://api.github.com/users/KelvinTegelaar/received_events",
     "type": "User",
     "site_admin": false,
-    "contributions": 1152
+    "contributions": 833
   },
   {
     "login": "homotechsual",
@@ -39,7 +39,7 @@
     "received_events_url": "https://api.github.com/users/homotechsual/received_events",
     "type": "User",
     "site_admin": false,
-    "contributions": 268
+    "contributions": 267
   },
   {
     "login": "gavsto",
@@ -60,28 +60,7 @@
     "received_events_url": "https://api.github.com/users/gavsto/received_events",
     "type": "User",
     "site_admin": false,
-    "contributions": 267
-  },
-  {
-    "login": "johnduprey",
-    "id": 15741649,
-    "node_id": "MDQ6VXNlcjE1NzQxNjQ5",
-    "avatar_url": "https://avatars.githubusercontent.com/u/15741649?v=4",
-    "gravatar_id": "",
-    "url": "https://api.github.com/users/johnduprey",
-    "html_url": "https://github.com/johnduprey",
-    "followers_url": "https://api.github.com/users/johnduprey/followers",
-    "following_url": "https://api.github.com/users/johnduprey/following{/other_user}",
-    "gists_url": "https://api.github.com/users/johnduprey/gists{/gist_id}",
-    "starred_url": "https://api.github.com/users/johnduprey/starred{/owner}{/repo}",
-    "subscriptions_url": "https://api.github.com/users/johnduprey/subscriptions",
-    "organizations_url": "https://api.github.com/users/johnduprey/orgs",
-    "repos_url": "https://api.github.com/users/johnduprey/repos",
-    "events_url": "https://api.github.com/users/johnduprey/events{/privacy}",
-    "received_events_url": "https://api.github.com/users/johnduprey/received_events",
-    "type": "User",
-    "site_admin": false,
-    "contributions": 212
+    "contributions": 163
   },
   {
     "login": "k-grube",
@@ -105,6 +84,27 @@
     "contributions": 134
   },
   {
+    "login": "johnduprey",
+    "id": 15741649,
+    "node_id": "MDQ6VXNlcjE1NzQxNjQ5",
+    "avatar_url": "https://avatars.githubusercontent.com/u/15741649?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/johnduprey",
+    "html_url": "https://github.com/johnduprey",
+    "followers_url": "https://api.github.com/users/johnduprey/followers",
+    "following_url": "https://api.github.com/users/johnduprey/following{/other_user}",
+    "gists_url": "https://api.github.com/users/johnduprey/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/johnduprey/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/johnduprey/subscriptions",
+    "organizations_url": "https://api.github.com/users/johnduprey/orgs",
+    "repos_url": "https://api.github.com/users/johnduprey/repos",
+    "events_url": "https://api.github.com/users/johnduprey/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/johnduprey/received_events",
+    "type": "User",
+    "site_admin": false,
+    "contributions": 103
+  },
+  {
     "login": "AdamWillford",
     "id": 30923966,
     "node_id": "MDQ6VXNlcjMwOTIzOTY2",
@@ -123,7 +123,7 @@
     "received_events_url": "https://api.github.com/users/AdamWillford/received_events",
     "type": "User",
     "site_admin": false,
-    "contributions": 82
+    "contributions": 74
   },
   {
     "login": "redanthrax",
@@ -144,28 +144,7 @@
     "received_events_url": "https://api.github.com/users/redanthrax/received_events",
     "type": "User",
     "site_admin": false,
-    "contributions": 74
-  },
-  {
-    "login": "lwhitelock",
-    "id": 79275328,
-    "node_id": "MDQ6VXNlcjc5Mjc1MzI4",
-    "avatar_url": "https://avatars.githubusercontent.com/u/79275328?v=4",
-    "gravatar_id": "",
-    "url": "https://api.github.com/users/lwhitelock",
-    "html_url": "https://github.com/lwhitelock",
-    "followers_url": "https://api.github.com/users/lwhitelock/followers",
-    "following_url": "https://api.github.com/users/lwhitelock/following{/other_user}",
-    "gists_url": "https://api.github.com/users/lwhitelock/gists{/gist_id}",
-    "starred_url": "https://api.github.com/users/lwhitelock/starred{/owner}{/repo}",
-    "subscriptions_url": "https://api.github.com/users/lwhitelock/subscriptions",
-    "organizations_url": "https://api.github.com/users/lwhitelock/orgs",
-    "repos_url": "https://api.github.com/users/lwhitelock/repos",
-    "events_url": "https://api.github.com/users/lwhitelock/events{/privacy}",
-    "received_events_url": "https://api.github.com/users/lwhitelock/received_events",
-    "type": "User",
-    "site_admin": false,
-    "contributions": 65
+    "contributions": 68
   },
   {
     "login": "msp4msps",
@@ -186,7 +165,28 @@
     "received_events_url": "https://api.github.com/users/msp4msps/received_events",
     "type": "User",
     "site_admin": false,
-    "contributions": 61
+    "contributions": 37
+  },
+  {
+    "login": "lwhitelock",
+    "id": 79275328,
+    "node_id": "MDQ6VXNlcjc5Mjc1MzI4",
+    "avatar_url": "https://avatars.githubusercontent.com/u/79275328?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/lwhitelock",
+    "html_url": "https://github.com/lwhitelock",
+    "followers_url": "https://api.github.com/users/lwhitelock/followers",
+    "following_url": "https://api.github.com/users/lwhitelock/following{/other_user}",
+    "gists_url": "https://api.github.com/users/lwhitelock/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/lwhitelock/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/lwhitelock/subscriptions",
+    "organizations_url": "https://api.github.com/users/lwhitelock/orgs",
+    "repos_url": "https://api.github.com/users/lwhitelock/repos",
+    "events_url": "https://api.github.com/users/lwhitelock/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/lwhitelock/received_events",
+    "type": "User",
+    "site_admin": false,
+    "contributions": 33
   },
   {
     "login": "AdamImpelling",
@@ -207,7 +207,7 @@
     "received_events_url": "https://api.github.com/users/AdamImpelling/received_events",
     "type": "User",
     "site_admin": false,
-    "contributions": 35
+    "contributions": 22
   },
   {
     "login": "stephen-iamroot",
@@ -228,7 +228,7 @@
     "received_events_url": "https://api.github.com/users/stephen-iamroot/received_events",
     "type": "User",
     "site_admin": false,
-    "contributions": 22
+    "contributions": 14
   },
   {
     "login": "DarrenChap",
