@@ -50,7 +50,7 @@
     "fuzzysort": "^1.1.4",
     "jspdf": "^2.4.0",
     "jspdf-autotable": "^3.5.23",
-    "moment": "^2.29.1",
+    "moment": "^2.29.2",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-app-polyfill": "^2.0.0",
