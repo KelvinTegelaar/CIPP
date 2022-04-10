@@ -108,6 +108,7 @@ const OffboardingWizard = () => {
         </center>
         <hr className="my-4" />
         <div className="mb-2">
+          <RFFCFormSwitch name="RevokeSessions" label="Revoke all sessions" />
           <RFFCFormSwitch name="RemoveLicenses" label="Remove Licenses" />
           <RFFCFormSwitch name="ConvertToShared" label="Convert to Shared Mailbox" />
           <RFFCFormSwitch name="DisableSignIn" label="Disable Sign in" />
@@ -211,6 +212,14 @@ const OffboardingWizard = () => {
                   <CRow>
                     <CCol md={{ span: 6, offset: 3 }}>
                       <CListGroup flush>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Revoke Sessions
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.RevokeSessions ? faCheck : faTimes}
+                          />
+                        </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Remove Licenses
                           <FontAwesomeIcon
