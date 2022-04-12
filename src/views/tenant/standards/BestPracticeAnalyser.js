@@ -71,17 +71,8 @@ const BestPracticeAnalyser = () => {
       },
     ]
 
-    const tabularized = row.UnusedLicenseList.split('<br />')
-      .map((line) =>
-        line
-          .split(', ')
-          .map((sku) => sku.split(': ').reduce((key, val) => ({ [key]: val })))
-          .reduce((pv, cv) => ({ ...pv, ...cv })),
-      )
-      .sort((a, b) => b.License.toLocaleLowerCase().localeCompare(a.License.toLocaleLowerCase()))
-
     ModalService.open({
-      data: tabularized,
+      data: row.UnusedLicenseList,
       componentType: 'table',
       componentProps: {
         columns,
