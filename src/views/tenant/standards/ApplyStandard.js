@@ -166,7 +166,7 @@ const ApplyStandard = () => {
         <hr className="my-4" />
       </CippWizard.Page>
       <CippWizard.Page
-        title="Convience Standards"
+        title="Convenience Standards"
         description="Select which standards you want to apply."
       >
         <center>
