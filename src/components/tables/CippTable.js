@@ -151,9 +151,12 @@ export default function CippTable({
       const keys = []
       columns.map((col) => {
         if (col.exportSelector) keys.push(col.exportSelector)
+        return null
       })
+
       console.log(keys)
       const filtered = data.map((obj) =>
+        // eslint-disable-next-line no-sequences
         keys.reduce((acc, curr) => ((acc[curr] = obj[curr]), acc), {}),
       )
       console.log(filtered)
