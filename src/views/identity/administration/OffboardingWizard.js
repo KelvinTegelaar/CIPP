@@ -41,25 +41,23 @@ const OffboardingWizard = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
   const handleSubmit = async (values) => {
-    if (!values.AccessAutomap) {
-      values.AccessAutomap = ''
-    }
-    if (!values.AccessNoAutomap) {
-      values.AccessNoAutomap = ''
-    }
-    if (!values.OnedriveAccess) {
-      values.OnedriveAccess = ''
-    }
-    if (!values.OOO) {
-      values.OOO = ''
-    }
-    if (!values.forward) {
-      values.forward = ''
-    }
     const shippedValues = {
       TenantFilter: tenantDomain,
-      ...values,
+      OOO: values.OOO ? values.OOO : '',
+      forward: values.forward ? values.forward.value : '',
+      OnedriveAccess: values.OnedriveAccess ? values.OnedriveAccess.value : '',
+      AccessNoAutomap: values.AccessNoAutomap ? values.AccessNoAutomap.value : '',
+      AccessAutomap: values.AccessAutomap ? values.AccessAutomap.value : '',
+      ConvertToShared: values.ConvertToShared,
+      DisableSignIn: values.DisableSignIn,
+      RemoveGroups: values.RemoveGroups,
+      RemoveLicenses: values.RemoveLicenses,
+      ResetPass: values.ResetPass,
+      RevokeSessions: values.RevokeSessions,
+      user: values.User.value,
+      deleteuser: values.DeleteUser,
     }
+
     //alert(JSON.stringify(values, null, 2))
     genericPostRequest({ path: '/api/ExecOffboardUser', values: shippedValues })
   }
@@ -203,7 +201,7 @@ const OffboardingWizard = () => {
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           <h5 className="mb-0">Selected User:</h5>
-                          {props.values.User}
+                          {props.values.User.value}
                         </CListGroupItem>
                       </CListGroup>
                       <hr />
