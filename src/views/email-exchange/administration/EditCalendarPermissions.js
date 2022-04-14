@@ -54,14 +54,15 @@ const EditCalendarPermission = () => {
   }, [userId, tenantDomain, dispatch])
   const [genericPostRequest, postResults] = useLazyGenericGetRequestQuery()
   const onSubmit = (values) => {
-    if (!values.AddFullAccess) {
-      values.AddFullAccess = ''
+    if (values.RemoveAccess) {
+      values.RemoveAccess = values.RemoveAccess.value
     }
-    if (!values.RemoveFullAccess) {
-      values.RemoveFullAccess = ''
+    if (!values.RemoveAccess) {
+      values.RemoveAccess = ''
     }
-    if (!values.AddFullAccessNoAutoMap) {
-      values.AddFullAccessNoAutoMap = ''
+    if (values.UserToGetPermissions) {
+      values.UserToGetPermissions = values.UserToGetPermissions.value
+      values.Permissions = values.Permissions.value
     }
     const shippedValues = {
       FolderName: user[0].FolderName,
