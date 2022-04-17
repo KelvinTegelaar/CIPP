@@ -57,11 +57,20 @@ const EditMailboxPermission = () => {
   }, [userId, tenantDomain, dispatch])
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const onSubmit = (values) => {
+    if (values.AddFullAccess) {
+      values.AddFullAccess = values.AddFullAccess.value
+    }
     if (!values.AddFullAccess) {
       values.AddFullAccess = ''
     }
+    if (values.RemoveFullAccess) {
+      values.RemoveFullAccess = values.RemoveFullAccess.value
+    }
     if (!values.RemoveFullAccess) {
       values.RemoveFullAccess = ''
+    }
+    if (values.AddFullAccessNoAutoMap) {
+      values.AddFullAccessNoAutoMap = values.AddFullAccessNoAutoMap.value
     }
     if (!values.AddFullAccessNoAutoMap) {
       values.AddFullAccessNoAutoMap = ''
