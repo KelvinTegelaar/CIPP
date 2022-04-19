@@ -71,17 +71,8 @@ const BestPracticeAnalyser = () => {
       },
     ]
 
-    const tabularized = row.UnusedLicenseList.split('<br />')
-      .map((line) =>
-        line
-          .split(', ')
-          .map((sku) => sku.split(': ').reduce((key, val) => ({ [key]: val })))
-          .reduce((pv, cv) => ({ ...pv, ...cv })),
-      )
-      .sort((a, b) => b.License.toLocaleLowerCase().localeCompare(a.License.toLocaleLowerCase()))
-
     ModalService.open({
-      data: tabularized,
+      data: row.UnusedLicenseList,
       componentType: 'table',
       componentProps: {
         columns,
@@ -154,7 +145,7 @@ const BestPracticeAnalyser = () => {
       selector: (row) => row['AdminConsentForApplications'],
       cell: cellBooleanFormatter({ reverse: true }),
       sortable: true,
-      exportSelector: 'AdminConsentForApplication',
+      exportSelector: 'AdminConsentForApplications',
     },
     {
       name: 'Passwords Do Not Expire',
@@ -191,7 +182,7 @@ const BestPracticeAnalyser = () => {
       name: 'Modern Auth Enabled',
       selector: (row) => row['EnableModernAuth'],
       sortable: true,
-      exportSelector: 'EnabledModernAuth',
+      exportSelector: 'EnableModernAuth',
       cell: cellBooleanFormatter(),
     },
     {
@@ -220,7 +211,7 @@ const BestPracticeAnalyser = () => {
     {
       name: 'Unused Licenses',
       selector: (row) => row['UnusedLicensesResult'],
-      exportSelector: 'UnusedLicencesResult',
+      exportSelector: 'UnusedLicensesResult',
       cell: (row, index, column) => {
         const cell = column.selector(row)
         if (cell === 'FAIL') {
