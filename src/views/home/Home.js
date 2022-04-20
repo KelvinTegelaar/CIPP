@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const Home = () => {
-  const { data: versions, isLoading } = useLoadVersionsQuery()
+  const { data: versions, isLoading, isSuccess: isSuccessVersion } = useLoadVersionsQuery()
   const { data: dashboard, isLoading: isLoadingDash, isSuccess: issuccessDash } = useLoadDashQuery()
   const tableColumns = [
     {
@@ -25,58 +25,72 @@ const Home = () => {
   ]
   return (
     <CippMasonry columns={4}>
-      <CippMasonryItem size="card">
-        <CippContentCard title="Next Run Standards" icon={faBook}>
-          <div>{!isLoadingDash ? dashboard.NextStandardsRun : <CSpinner size="sm" />}</div>
-        </CippContentCard>
-      </CippMasonryItem>
-      <CippMasonryItem size="card">
-        <CippContentCard title="Next Run BPA" icon={faBook}>
-          <div>{!isLoadingDash ? dashboard.NextBPARun : <CSpinner size="sm" />}</div>
-        </CippContentCard>
-      </CippMasonryItem>
-      <CippMasonryItem size="card">
-        <CippContentCard title="Queued Applications" icon={faBook}>
-          <div>{!isLoadingDash ? dashboard.queuedApps : <CSpinner size="sm" />}</div>
-        </CippContentCard>
-      </CippMasonryItem>
-      <CippMasonryItem size="card">
-        <CippContentCard title="Queued Standards" icon={faBook}>
-          <div> {!isLoadingDash ? dashboard.queuedStandards : <CSpinner size="sm" />}</div>
-        </CippContentCard>
-      </CippMasonryItem>
-      <CippMasonryItem size="card">
-        <CippContentCard title="Managed Tenants" icon={faBook}>
-          <div>{!isLoadingDash ? dashboard.tenantCount : <CSpinner size="sm" />}</div>
-          <br></br> Managed tenants
-        </CippContentCard>
-      </CippMasonryItem>
-      <CippMasonryItem size="card">
-        <CippContentCard title="Token refresh dates" icon={faBook}>
-          <div>
-            Refresh token: {!isLoadingDash ? dashboard.RefreshTokenDate : <CSpinner size="sm" />}
-          </div>
-          <br></br>
+      {issuccessDash && (
+        <>
+          <CippMasonryItem size="card">
+            <CippContentCard title="Next Run Standards" icon={faBook}>
+              <div>{!isLoadingDash ? dashboard.NextStandardsRun : <CSpinner size="sm" />}</div>
+            </CippContentCard>
+          </CippMasonryItem>
+          <CippMasonryItem size="card">
+            <CippContentCard title="Next Run BPA" icon={faBook}>
+              <div>{!isLoadingDash ? dashboard.NextBPARun : <CSpinner size="sm" />}</div>
+            </CippContentCard>
+          </CippMasonryItem>
+          <CippMasonryItem size="card">
+            <CippContentCard title="Queued Applications" icon={faBook}>
+              <div>{!isLoadingDash ? dashboard.queuedApps : <CSpinner size="sm" />}</div>
+            </CippContentCard>
+          </CippMasonryItem>
+          <CippMasonryItem size="card">
+            <CippContentCard title="Queued Standards" icon={faBook}>
+              <div> {!isLoadingDash ? dashboard.queuedStandards : <CSpinner size="sm" />}</div>
+            </CippContentCard>
+          </CippMasonryItem>
+          <CippMasonryItem size="card">
+            <CippContentCard title="Managed Tenants" icon={faBook}>
+              <div>{!isLoadingDash ? dashboard.tenantCount : <CSpinner size="sm" />}</div>
+              <br></br> Managed tenants
+            </CippContentCard>
+          </CippMasonryItem>
+          <CippMasonryItem size="card">
+            <CippContentCard title="Token refresh dates" icon={faBook}>
+              <div>
+                Refresh token:{' '}
+                {!isLoadingDash ? dashboard.RefreshTokenDate : <CSpinner size="sm" />}
+              </div>
+              <br></br>
 
-          <div>
-            Exchange Token: {!isLoadingDash ? dashboard.ExchangeTokenDate : <CSpinner size="sm" />}
-          </div>
-        </CippContentCard>
-      </CippMasonryItem>
-      <CippMasonryItem size="card">
-        <CippContentCard title="Version Frontend" icon={faBook}>
-          <StatusIcon type="negatedboolean" status={versions?.OutOfDateCIPP} />
-          <div>Latest: {!isLoading ? versions.RemoteCIPPVersion : <CSpinner size="sm" />}</div>
-          <div>Current: {!isLoading ? versions.LocalCIPPVersion : <CSpinner size="sm" />}</div>
-        </CippContentCard>
-      </CippMasonryItem>
-      <CippMasonryItem size="card">
-        <CippContentCard title="Version Backend" icon={faBook}>
-          <StatusIcon type="negatedboolean" status={versions?.OutOfDateCIPP} />
-          <div>Latest: {!isLoading ? versions?.RemoteCIPPAPIVersion : <CSpinner size="sm" />}</div>
-          <div>Current: {!isLoading ? versions?.LocalCIPPAPIVersion : <CSpinner size="sm" />}</div>
-        </CippContentCard>
-      </CippMasonryItem>
+              <div>
+                Exchange Token:{' '}
+                {!isLoadingDash ? dashboard.ExchangeTokenDate : <CSpinner size="sm" />}
+              </div>
+            </CippContentCard>
+          </CippMasonryItem>
+        </>
+      )}{' '}
+      {isSuccessVersion && (
+        <>
+          <CippMasonryItem size="card">
+            <CippContentCard title="Version Frontend" icon={faBook}>
+              <StatusIcon type="negatedboolean" status={versions.OutOfDateCIPP} />
+              <div>Latest: {!isLoading ? versions.RemoteCIPPVersion : <CSpinner size="sm" />}</div>
+              <div>Current: {!isLoading ? versions.LocalCIPPVersion : <CSpinner size="sm" />}</div>
+            </CippContentCard>
+          </CippMasonryItem>
+          <CippMasonryItem size="card">
+            <CippContentCard title="Version Backend" icon={faBook}>
+              <StatusIcon type="negatedboolean" status={versions.OutOfDateCIPPAPI} />
+              <div>
+                Latest: {!isLoading ? versions.RemoteCIPPAPIVersion : <CSpinner size="sm" />}
+              </div>
+              <div>
+                Current: {!isLoading ? versions.LocalCIPPAPIVersion : <CSpinner size="sm" />}
+              </div>
+            </CippContentCard>
+          </CippMasonryItem>
+        </>
+      )}
       <CippMasonryItem size="half">
         <CippContentCard title="Last logged items" icon={faBook}>
           {!isLoadingDash && issuccessDash && (

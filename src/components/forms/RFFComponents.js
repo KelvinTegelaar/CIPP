@@ -7,11 +7,10 @@ import {
   CFormSwitch,
   CFormTextarea,
 } from '@coreui/react'
-import SelectSearch, { fuzzySearch } from 'react-select-search'
+import Select from 'react-select'
 import { Field } from 'react-final-form'
 import React from 'react'
 import PropTypes from 'prop-types'
-import classNames from 'classnames'
 
 /*
   wrapper classes for React Final Form with CoreUI
@@ -273,22 +272,6 @@ Condition.propTypes = {
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 }
 
-const RFFSelectSearchClasses = {
-  container: 'form-select is-valid',
-  value: 'select-search__value',
-  input: 'select-search__input form-select',
-  select: 'select-search__select',
-  row: 'select-search__row',
-  options: 'select-search__options',
-  option: 'select-search__option',
-  group: 'select-search__group',
-  'group-header': 'select-search__group-header',
-  'is-selected': 'select-search.is-selected',
-  'is-highlighted': 'select-search.is-highlighted',
-  'is-loading': 'select-search.is-loading',
-  'has-focus': 'select-search.has-focus',
-}
-
 export const RFFSelectSearch = ({
   name,
   label,
@@ -298,35 +281,26 @@ export const RFFSelectSearch = ({
   onChange,
   disabled = false,
 }) => {
+  const selectSearchvalues = values.map((val) => ({
+    value: val.value,
+    label: val.name,
+  }))
+
   return (
     <Field name={name} validate={validate}>
       {({ meta, input }) => {
         return (
           <div>
             <CFormLabel htmlFor={name}>{label}</CFormLabel>
-            <SelectSearch
+            <Select
+              className="react-select-container"
+              classNamePrefix="react-select"
               {...input}
-              valid={!meta.error && meta.touched}
-              invalid={meta.error && meta.touched}
-              search
+              isClearable={true}
               name={name}
               id={name}
-              // @todo fix this override so the styling is the same as coreui or override render?
-              className={(key) => {
-                if (key === 'container') {
-                  return classNames('form-select', {
-                    'is-valid': !meta.error && meta.touched,
-                    'is-invalid': meta.error && meta.touched,
-                  })
-                }
-                return RFFSelectSearchClasses[key]
-              }}
               disabled={disabled}
-              options={values}
-              filterOptions={fuzzySearch}
-              value={input.value}
-              //commented out this on change, because even when it was not set it was using the value, causing issues with the event.
-              onChange={input.onChange}
+              options={selectSearchvalues}
               placeholder={placeholder}
             />
             <RFFCFormFeedback meta={meta} />
