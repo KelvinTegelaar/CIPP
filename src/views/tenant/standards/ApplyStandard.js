@@ -6,7 +6,7 @@ import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { CippWizard } from 'src/components/layout'
 import { WizardTableField } from 'src/components/tables'
 import PropTypes from 'prop-types'
-import { RFFCFormSwitch } from 'src/components/forms'
+import { RFFCFormSwitch, Condition, RFFCFormInput } from 'src/components/forms'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
 const Error = ({ name }) => (
@@ -103,7 +103,7 @@ const ApplyStandard = () => {
         <hr className="my-4" />
       </CippWizard.Page>
       <CippWizard.Page
-        title="Select Standards"
+        title="Security Standards"
         description="Select which standards you want to apply."
       >
         <center>
@@ -115,22 +115,11 @@ const ApplyStandard = () => {
           <CRow className="mb-3">
             <CCol md={6}>
               <RFFCFormSwitch name="standards.AuditLog" label="Enable the Unified Audit Log" />
+
               <RFFCFormSwitch name="standards.SecurityDefaults" label="Enable Security Defaults" />
-              <RFFCFormSwitch
-                name="standards.DelegateSentItems"
-                label="Set mailbox Sent Items delegation (Sent items for shared mailboxes)"
-              />
-              <RFFCFormSwitch
-                name="standards.OauthConsent"
-                label="Require admin consent for applications (Prevent OAuth phishing)"
-              />
               <RFFCFormSwitch
                 name="standards.PasswordExpireDisabled"
                 label="Do not expire passwords"
-              />
-              <RFFCFormSwitch
-                name="standards.AnonReportDisable"
-                label="Enable Usernames instead of pseudo anonymised names in reports"
               />
               <RFFCFormSwitch name="standards.SSPR" label="Enable Self Service Password Reset" />
               <RFFCFormSwitch name="standards.ModernAuth" label="Enable Modern Authentication" />
@@ -138,13 +127,92 @@ const ApplyStandard = () => {
                 name="standards.DisableBasicAuth"
                 label="Disable Basic Authentication"
               />
-              <RFFCFormSwitch name="standards.TAP" label="Enable Temporary Access Passwords" />
+              <RFFCFormSwitch
+                name="standards.OauthConsent.Enabled"
+                label="Require admin consent for applications (Prevent OAuth phishing.)"
+              />
+              <Condition when="standards.OauthConsent.Enabled" is={true}>
+                <RFFCFormInput
+                  type="text"
+                  name="standards.OauthConsent.AllowedApps"
+                  label="Allowed application IDs, comma separated"
+                />
+              </Condition>
             </CCol>
             <CCol md={6}>
               <RFFCFormSwitch
                 name="standards.DisableSharedMailbox"
                 label="Disable Shared Mailbox AAD accounts"
               />
+              <RFFCFormSwitch
+                name="standards.PWnumberMatchingRequiredState"
+                label="Enable Passwordless with Number Matching"
+              />
+              <RFFCFormSwitch
+                name="standards.PWdisplayAppInformationRequiredState"
+                label="Enable Passwordless with Location information and Number Matching"
+              />
+              <RFFCFormSwitch name="standards.TAP" label="Enable Temporary Access Passwords" />
+              <RFFCFormSwitch
+                name="standards.ActivityBasedTimeout"
+                label="Enable 1 hour Activity based Timeout"
+              />
+              <RFFCFormSwitch name="standards.LegacyMFA" label="Enable per-user MFA for all user" />
+              <RFFCFormSwitch name="standards.UndoSSPR" label="Undo SSPR Standard" />
+              <RFFCFormSwitch name="standards.UndoOauth" label="Undo App Consent Standard" />
+            </CCol>
+          </CRow>
+        </div>
+        <hr className="my-4" />
+      </CippWizard.Page>
+      <CippWizard.Page
+        title="Convenience Standards"
+        description="Select which standards you want to apply."
+      >
+        <center>
+          <h3 className="text-primary">Step 2</h3>
+          <h5 className="card-title mb-4">Select Standards</h5>
+        </center>
+        <hr className="my-4" />
+        <div className="mb-2">
+          <CRow className="mb-3">
+            <CCol md={6}>
+              <RFFCFormSwitch
+                name="standards.DelegateSentItems"
+                label="Set mailbox Sent Items delegation (Sent items for shared mailboxes)"
+              />
+              <RFFCFormSwitch
+                name="standards.AnonReportDisable"
+                label="Enable Usernames instead of pseudo anonymised names in reports"
+              />
+              <RFFCFormSwitch
+                name="standards.DisableSharedMailbox"
+                label="Disable Shared Mailbox AAD accounts"
+              />
+              <RFFCFormSwitch
+                name="standards.MailContacts.TechContact.Enabled"
+                label="Set Technical Contact e-mail"
+              />
+              <Condition when="standards.MailContacts.TechContact.Enabled" is={true}>
+                <RFFCFormInput
+                  type="text"
+                  name="standards.MailContacts.TechContact.Mail"
+                  label="Technical Contact"
+                />
+              </Condition>
+              <RFFCFormSwitch
+                name="standards.MailContacts.GeneralContact.Enabled"
+                label="Set General Contact e-mail"
+              />
+              <Condition when="standards.MailContacts.GeneralContact.Enabled" is={true}>
+                <RFFCFormInput
+                  type="text"
+                  name="standards.MailContacts.GeneralContact.Mail"
+                  label="General Contact"
+                />
+              </Condition>
+            </CCol>
+            <CCol md={6}>
               <RFFCFormSwitch
                 name="standards.DisableSelfServiceLicenses"
                 label="Disable Self Service Licensing"
@@ -158,17 +226,27 @@ const ApplyStandard = () => {
                 label="Enable Spoofing warnings for Outlook (This e-mail is external identifiers)"
               />
               <RFFCFormSwitch
-                name="standards.PWnumberMatchingRequiredState"
-                label="Enable Passwordless with Number Matching"
+                name="standards.MailContacts.SecurityContact.Enabled"
+                label="Set Security Contact e-mail"
               />
+              <Condition when="standards.MailContacts.SecurityContact.Enabled" is={true}>
+                <RFFCFormInput
+                  type="text"
+                  name="standards.MailContacts.SecurityContact.Mail"
+                  label="Security Contact"
+                />
+              </Condition>
               <RFFCFormSwitch
-                name="standards.PWdisplayAppInformationRequiredState"
-                label="Enable Passwordless with Location information and Number Matching"
+                name="standards.MailContacts.MarketingContact.Enabled"
+                label="Set Marketing Contact e-mail"
               />
-
-              <RFFCFormSwitch name="standards.LegacyMFA" label="Enable per-user MFA for all user" />
-              <RFFCFormSwitch name="standards.UndoSSPR" label="Undo SSPR Standard" />
-              <RFFCFormSwitch name="standards.UndoOauth" label="Undo App Consent Standard" />
+              <Condition when="standards.MailContacts.MarketingContact.Enabled" is={true}>
+                <RFFCFormInput
+                  type="text"
+                  name="standards.MailContacts.MarketingContact.Mail"
+                  label="Marketing Contact"
+                />
+              </Condition>
             </CCol>
           </CRow>
         </div>

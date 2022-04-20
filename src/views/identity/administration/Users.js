@@ -115,6 +115,13 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modalMessage: 'Are you sure you want to reset the password for this user?',
           },
           {
+            label: 'Revoke all user sessions',
+            color: 'danger',
+            modal: true,
+            modalUrl: `/api/ExecRevokeSessions?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalMessage: 'Are you sure you want to revoke this users sessions?',
+          },
+          {
             label: 'Delete User',
             color: 'danger',
             modal: true,
