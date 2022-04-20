@@ -70,7 +70,6 @@ const EditUser = () => {
   }, [userId, tenantDomain, dispatch])
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const onSubmit = (values) => {
-    console.log(values)
     const shippedValues = {
       AddedAliases: values.addedAliases,
       BusinessPhone: values.businessPhones,
@@ -89,7 +88,7 @@ const EditUser = () => {
       MobilePhone: values.mobilePhone,
       Password: values.password,
       PostalCode: values.postalCode,
-      Usagelocation: values.UsageLocation ? values.UsageLocation.value : '',
+      usageLocation: values.usageLocation ? values.usageLocation.value : '',
       UserID: userId,
       Username: values.mailNickname,
       streetAddress: values.streetAddress,
@@ -99,11 +98,11 @@ const EditUser = () => {
     //window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/EditUser', values: shippedValues })
   }
-  const usagelocation = useSelector((state) => state.app.usageLocation)
+  const usageLocation = useSelector((state) => state.app.usageLocation)
 
   const initialState = {
     keepLicenses: true,
-    usageLocation: usagelocation,
+    usageLocation: usageLocation,
     ...user,
   }
 
@@ -241,7 +240,7 @@ const EditUser = () => {
                                   name: Name,
                                 }))}
                                 disabled={formDisabled}
-                                name="UsageLocation"
+                                name="usageLocation"
                                 placeholder="Type to search..."
                                 label="Usage Location"
                               />
