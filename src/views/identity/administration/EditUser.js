@@ -70,19 +70,14 @@ const EditUser = () => {
   }, [userId, tenantDomain, dispatch])
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const onSubmit = (values) => {
-    //@todo: need to fix copyfrom in api so this is no longer required
-    if (!values.CopyFrom) {
-      values.CopyFrom = ''
-    }
-    //@todo: need to fix this in api so this hacky shit is no longer needed.
-
+    console.log(values)
     const shippedValues = {
       AddedAliases: values.addedAliases,
       BusinessPhone: values.businessPhones,
       RemoveAllLicenses: values.RemoveAllLicenses,
       City: values.city,
       CompanyName: values.companyName,
-      CopyFrom: values.CopyFrom.value,
+      CopyFrom: values.CopyFrom ? values.CopyFrom.value : '',
       Country: values.country,
       Department: values.department,
       DisplayName: values.displayName,
@@ -94,7 +89,7 @@ const EditUser = () => {
       MobilePhone: values.mobilePhone,
       Password: values.password,
       PostalCode: values.postalCode,
-      Usagelocation: values.usageLocation.value,
+      Usagelocation: values.UsageLocation ? values.UsageLocation.value : '',
       UserID: userId,
       Username: values.mailNickname,
       streetAddress: values.streetAddress,
