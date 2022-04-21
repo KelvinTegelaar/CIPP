@@ -23,7 +23,7 @@ const TeamsAddTeam = () => {
       tenantID: tenantDomain,
       displayName: values.displayName,
       description: values.description,
-      owner: values.owner,
+      owner: values.owner.value,
       visibility: values.visibility,
     }
     //alert(JSON.stringify(shippedValues, null, 2))

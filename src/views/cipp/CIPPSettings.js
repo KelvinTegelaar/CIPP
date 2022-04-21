@@ -107,25 +107,16 @@ const GeneralSettings = () => {
   const [selectedTenants, setSelectedTenants] = useState([])
   const [showMaxSelected, setShowMaxSelected] = useState(false)
   const [tokenOffcanvasVisible, setTokenOffcanvasVisible] = useState(false)
-  const maxSelected = 3
+  const maxSelected = 2
   const tenantSelectorRef = useRef(null)
 
-  const handleSetSelectedTenants = (values) => {
-    if (values.length <= maxSelected) {
-      setSelectedTenants(values)
+  const handleSetSelectedTenants = (value) => {
+    if (value.length <= maxSelected) {
+      setSelectedTenants(value)
       setShowMaxSelected(false)
     } else {
+      setSelectedTenants(value)
       setShowMaxSelected(true)
-      // close the tenant selector, hacky but no other way to do this
-      // without making a fully custom selector
-      // https://github.com/tbleckert/react-select-search#headless-mode-with-hooks
-      tenantSelectorRef.current?.firstChild?.firstChild?.blur()
-
-      // re-set selected tenants to force a re-render? nope doesnt work
-      // https://github.com/tbleckert/react-select-search/issues/221
-      const temp = selectedTenants
-      setSelectedTenants([])
-      setSelectedTenants(temp)
     }
   }
 
@@ -320,22 +311,31 @@ const GeneralSettings = () => {
             </CCardHeader>
             <CCardBody>
               <div className="mb-3">
-                Click the button below to start a tenant access check. You can select multiple
-                tenants up to a maximum of {maxSelected} tenants at one time.
+                Click the button below to start a tenant access check. You can select multiple a
+                maximum of {maxSelected + 1} tenants is recommended.
               </div>
 
               <TenantSelectorMultiple
                 ref={tenantSelectorRef}
                 values={selectedTenants}
-                onChange={handleSetSelectedTenants}
+                onChange={(value) =>
+                  handleSetSelectedTenants(
+                    value.map((val) => {
+                      return val.value
+                    }),
+                  )
+                }
               />
               {showMaxSelected && (
                 <CCallout color="warning">
-                  A maximum of {maxSelected} tenants can be selected at once.
+                  A maximum of {maxSelected + 1} tenants is recommended.
                 </CCallout>
               )}
               <br />
-              <CButton onClick={() => handleCheckAccess()} disabled={accessCheckResult.isFetching}>
+              <CButton
+                onClick={() => handleCheckAccess()}
+                disabled={accessCheckResult.isFetching || selectedTenants.length < 1}
+              >
                 {accessCheckResult.isFetching && (
                   <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
                 )}
@@ -523,7 +523,7 @@ const SecuritySettings = () => {
                 <CCardTitle>Static Web App (Role Management)</CCardTitle>
               </CCardHeader>
               <CCardBody className="equalheight">
-                The Statis Web App role management allows you to invite other users to the
+                The Static Web App role management allows you to invite other users to the
                 application.
                 <br /> <br />
                 <a
