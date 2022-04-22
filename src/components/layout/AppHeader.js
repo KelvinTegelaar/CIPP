@@ -13,7 +13,7 @@ import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 // import AppBreadcrumb from 'src/components/layout/AppBreadcrumb'
 import { AppHeaderDropdown, AppHeaderSearch } from 'src/components/header'
-import cyberdrainlogo from 'src/assets/images/CIPP.png'
+import cyberdrainlogo from 'src/assets/images/AcronymsLogo.png'
 import { toggleSidebarShow } from 'src/store/features/app'
 
 const AppHeader = () => {
