@@ -7,7 +7,7 @@ const columns = [
     name: 'URL',
     selector: (row) => row['URL'],
     sortable: true,
-    exportSelector: 'UPN',
+    exportSelector: 'URL',
   },
   {
     name: 'Owner',

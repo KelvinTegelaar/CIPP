@@ -148,8 +148,20 @@ export default function CippTable({
       ])
     }
     if (!disableCSVExport) {
+      const keys = []
+      columns.map((col) => {
+        if (col.exportSelector) keys.push(col.exportSelector)
+        return null
+      })
+
+      console.log(keys)
+      const filtered = data.map((obj) =>
+        // eslint-disable-next-line no-sequences
+        keys.reduce((acc, curr) => ((acc[curr] = obj[curr]), acc), {}),
+      )
+      console.log(filtered)
       defaultActions.push([
-        <ExportCsvButton key="export-csv-action" csvData={data} reportName={reportName} />,
+        <ExportCsvButton key="export-csv-action" csvData={filtered} reportName={reportName} />,
       ])
     }
     return (
