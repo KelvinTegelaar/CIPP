@@ -63,7 +63,9 @@
 
   .card-header {
     &:first-child {
-      border-radius: var(--cipp-border-radius);
+      background-clip: border-box;
+      border-radius: 3px 3px 0 0;
+      overflow: hidden;
     }
   }
 
@@ -385,5 +387,46 @@
 .toast-body {
   .btn {
     margin-left: 1rem;
+  }
+}
+
+/* Sidebar */
+
+.sidebar-nav .nav-link {
+  margin: 0.25rem 0;
+}
+.react-select-container {
+  .react-select__control {
+    background-color: var(--cipp-search-bg);
+    border-color: var(--cipp-search-border-color);
+    transition: none;
+
+    &:hover {
+      border-color: var(--cipp-search-border-color);
+    }
+  }
+
+  .react-select__menu {
+    background-color: var(--cipp-search-bg);
+    border: 1px solid var(--cipp-search-border-color);
+  }
+
+  .react-select__option {
+    background-color: var(--cipp-search-bg);
+
+    &:hover {
+      background-color: var(--cipp-search-border-color);
+    }
+  }
+  .react-select__indicator {
+    color: var(--cipp-search-border-color);
+  }
+  .react-select__indicator-separator {
+    background-color: var(--cipp-search-border-color);
+  }
+
+  .react-select__placeholder,
+  .react-select__single-value {
+    color: var(--text-primary);
   }
 }

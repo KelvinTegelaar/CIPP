@@ -27,6 +27,7 @@ const columns = [
     selector: (row) => row['displayName'],
     sortable: true,
     exportSelector: 'displayName',
+    grow: 2,
   },
   {
     name: 'Group Type',
@@ -60,10 +61,12 @@ const columns = [
     selector: (row) => row['mail'],
     sortable: true,
     exportSelector: 'mail',
+    grow: 2,
   },
   {
     name: 'Actions',
     cell: Actions,
+    maxWidth: '20px',
   },
 ]
 

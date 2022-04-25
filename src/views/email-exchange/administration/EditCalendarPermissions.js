@@ -15,14 +15,13 @@ import useQuery from 'src/hooks/useQuery'
 import { useDispatch } from 'react-redux'
 import { Form } from 'react-final-form'
 import { RFFSelectSearch } from 'src/components/forms'
-import { useListUsersQuery } from 'src/store/api/users'
 import { ModalService } from 'src/components/utilities'
-import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
-import { useListMailboxPermissionsQuery } from 'src/store/api/mailbox'
+import { useListCalendarPermissionsQuery, useListMailboxesQuery } from 'src/store/api/mailbox'
 
-const EditMailboxPermission = () => {
+const EditCalendarPermission = () => {
   const dispatch = useDispatch()
   let query = useQuery()
   const userId = query.get('userId')
@@ -30,19 +29,17 @@ const EditMailboxPermission = () => {
 
   const [queryError, setQueryError] = useState(false)
 
-  //const [EditMailboxPermission, { error: EditMailboxPermissionError, isFetching: EditMailboxPermissionIsFetching }] = useEditMailboxPermissionMutation()
-
   const {
     data: user = {},
     isFetching: userIsFetching,
     error: userError,
-  } = useListMailboxPermissionsQuery({ tenantDomain, userId })
+  } = useListCalendarPermissionsQuery({ tenantDomain, userId })
 
   const {
     data: users = [],
     isFetching: usersIsFetching,
     error: usersError,
-  } = useListUsersQuery({ tenantDomain })
+  } = useListMailboxesQuery({ tenantDomain })
 
   useEffect(() => {
     if (!userId || !tenantDomain) {
@@ -55,40 +52,37 @@ const EditMailboxPermission = () => {
       setQueryError(false)
     }
   }, [userId, tenantDomain, dispatch])
-  const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
+  const [genericPostRequest, postResults] = useLazyGenericGetRequestQuery()
   const onSubmit = (values) => {
-    if (values.AddFullAccess) {
-      values.AddFullAccess = values.AddFullAccess.value
+    if (values.RemoveAccess) {
+      values.RemoveAccess = values.RemoveAccess.value
     }
-    if (!values.AddFullAccess) {
-      values.AddFullAccess = ''
+    if (!values.RemoveAccess) {
+      values.RemoveAccess = ''
     }
-    if (values.RemoveFullAccess) {
-      values.RemoveFullAccess = values.RemoveFullAccess.value
-    }
-    if (!values.RemoveFullAccess) {
-      values.RemoveFullAccess = ''
-    }
-    if (values.AddFullAccessNoAutoMap) {
-      values.AddFullAccessNoAutoMap = values.AddFullAccessNoAutoMap.value
-    }
-    if (!values.AddFullAccessNoAutoMap) {
-      values.AddFullAccessNoAutoMap = ''
+    if (values.UserToGetPermissions) {
+      values.UserToGetPermissions = values.UserToGetPermissions.value
+      values.Permissions = values.Permissions.value
     }
     const shippedValues = {
+      FolderName: user[0].FolderName,
       userid: userId,
       tenantFilter: tenantDomain,
       ...values,
     }
     //window.alert(JSON.stringify(shippedValues))
-    genericPostRequest({ path: '/api/ExecEditMailboxPermissions', values: shippedValues })
+    genericPostRequest({ path: '/api/ExecEditCalendarPermissions', params: shippedValues })
   }
-  const initialState = {
-    ...user,
-  }
+  const initialState = {}
 
   // this is dumb
   const formDisabled = queryError === true
+
+  const UsersMapped = users?.map((user) => ({
+    value: `${user.primarySmtpAddress}`,
+    name: `${user.displayName} - (${user.primarySmtpAddress})`,
+  }))
+  UsersMapped.unshift({ value: 'Default', name: 'Default' })
 
   return (
     <CCard className="page-card">
@@ -126,40 +120,40 @@ const EditMailboxPermission = () => {
                             <CRow className="mb-3">
                               <CCol md={12}>
                                 <RFFSelectSearch
-                                  label="Remove Full Access"
+                                  label="Remove Access"
                                   disabled={formDisabled}
-                                  values={users?.map((user) => ({
-                                    value: user.mail,
-                                    name: user.displayName,
-                                  }))}
+                                  values={UsersMapped}
                                   placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
-                                  name="RemoveFullAccess"
+                                  name="RemoveAccess"
                                 />
                                 {usersError && <span>Failed to load list of users</span>}
                               </CCol>
                               <CCol md={12}>
                                 <RFFSelectSearch
-                                  label="Add Full Access - Automapping Enabled"
+                                  label="Add Access"
                                   disabled={formDisabled}
-                                  values={users?.map((user) => ({
-                                    value: user.mail,
-                                    name: user.displayName,
-                                  }))}
+                                  values={UsersMapped}
                                   placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
-                                  name="AddFullAccess"
+                                  name="UserToGetPermissions"
                                 />
                                 {usersError && <span>Failed to load list of users</span>}
                               </CCol>
                               <CCol md={12}>
                                 <RFFSelectSearch
-                                  label="Add Full Access - Automapping Disabled"
+                                  label="Permission Level"
                                   disabled={formDisabled}
-                                  values={users?.map((user) => ({
-                                    value: user.mail,
-                                    name: user.displayName,
-                                  }))}
-                                  placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
-                                  name="AddFullAccessNoAutoMap"
+                                  values={[
+                                    { value: 'Author', name: 'Author' },
+                                    { value: 'Contributor', name: 'Contributor' },
+                                    { value: 'Editor', name: 'Editor' },
+                                    { value: 'Owner', name: 'Owner' },
+                                    { value: 'NonEditingAuthor', name: 'Non Editing Author' },
+                                    { value: 'PublishingAuthor', name: 'Publishing Author' },
+                                    { value: 'PublishingEditor', name: 'Publishing Editor' },
+                                    { value: 'Reviewer', name: 'Reviewer' },
+                                  ]}
+                                  placeholder="Select a permission level"
+                                  name="Permissions"
                                 />
                                 {usersError && <span>Failed to load list of users</span>}
                               </CCol>
@@ -167,7 +161,7 @@ const EditMailboxPermission = () => {
                             <CRow className="mb-3">
                               <CCol md={6}>
                                 <CButton type="submit" disabled={submitting || formDisabled}>
-                                  Edit User Permissions
+                                  Edit Permissions
                                   {postResults.isFetching && (
                                     <FontAwesomeIcon
                                       icon={faCircleNotch}
@@ -213,4 +207,4 @@ const EditMailboxPermission = () => {
   )
 }
 
-export default EditMailboxPermission
+export default EditCalendarPermission
