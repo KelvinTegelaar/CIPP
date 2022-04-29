@@ -72,21 +72,12 @@ const AddUser = () => {
 
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const onSubmit = (values) => {
-    //@todo: need to fix copyfrom in api so this is no longer required
-    if (!values.CopyFrom) {
-      values.CopyFrom = ''
-    }
-    //@todo: need to fix this in api so this hacky shit is no longer needed.
-    if (!values.addedAliases) {
-      values.addedAliases = ''
-    }
-
     const shippedValues = {
-      AddedAliases: values.addedAliases,
+      AddedAliases: values.addedAliases ? values.addedAliases : '',
       BusinessPhone: values.businessPhones,
       City: values.city,
       CompanyName: values.companyName,
-      CopyFrom: values.CopyFrom,
+      CopyFrom: values.CopyFrom ? values.CopyFrom.value : '',
       Country: values.country,
       Department: values.department,
       DisplayName: values.displayName,
@@ -98,7 +89,7 @@ const AddUser = () => {
       MobilePhone: values.mobilePhone,
       Password: values.password,
       PostalCode: values.postalCode,
-      Usagelocation: values.usageLocation,
+      Usagelocation: values.usageLocation ? values.usageLocation.value : '',
       Username: values.mailNickname,
       streetAddress: values.streetAddress,
       Autopassword: values.Autopassword,
