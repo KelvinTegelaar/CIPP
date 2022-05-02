@@ -70,19 +70,13 @@ const EditUser = () => {
   }, [userId, tenantDomain, dispatch])
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const onSubmit = (values) => {
-    //@todo: need to fix copyfrom in api so this is no longer required
-    if (!values.CopyFrom) {
-      values.CopyFrom = ''
-    }
-    //@todo: need to fix this in api so this hacky shit is no longer needed.
-
     const shippedValues = {
       AddedAliases: values.addedAliases,
       BusinessPhone: values.businessPhones,
       RemoveAllLicenses: values.RemoveAllLicenses,
       City: values.city,
       CompanyName: values.companyName,
-      CopyFrom: values.CopyFrom.value,
+      CopyFrom: values.CopyFrom ? values.CopyFrom.value : '',
       Country: values.country,
       Department: values.department,
       DisplayName: values.displayName,
@@ -94,7 +88,7 @@ const EditUser = () => {
       MobilePhone: values.mobilePhone,
       Password: values.password,
       PostalCode: values.postalCode,
-      Usagelocation: values.usageLocation.value,
+      usageLocation: values.usageLocation ? values.usageLocation.value : '',
       UserID: userId,
       Username: values.mailNickname,
       streetAddress: values.streetAddress,
@@ -104,11 +98,11 @@ const EditUser = () => {
     //window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/EditUser', values: shippedValues })
   }
-  const usagelocation = useSelector((state) => state.app.usageLocation)
+  const usageLocation = useSelector((state) => state.app.usageLocation)
 
   const initialState = {
     keepLicenses: true,
-    usageLocation: usagelocation,
+    usageLocation: usageLocation,
     ...user,
   }
 
@@ -246,7 +240,7 @@ const EditUser = () => {
                                   name: Name,
                                 }))}
                                 disabled={formDisabled}
-                                name="UsageLocation"
+                                name="usageLocation"
                                 placeholder="Type to search..."
                                 label="Usage Location"
                               />
