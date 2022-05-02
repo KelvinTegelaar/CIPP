@@ -54,21 +54,13 @@ const EditCalendarPermission = () => {
   }, [userId, tenantDomain, dispatch])
   const [genericPostRequest, postResults] = useLazyGenericGetRequestQuery()
   const onSubmit = (values) => {
-    if (values.RemoveAccess) {
-      values.RemoveAccess = values.RemoveAccess.value
-    }
-    if (!values.RemoveAccess) {
-      values.RemoveAccess = ''
-    }
-    if (values.UserToGetPermissions) {
-      values.UserToGetPermissions = values.UserToGetPermissions.value
-      values.Permissions = values.Permissions.value
-    }
     const shippedValues = {
       FolderName: user[0].FolderName,
       userid: userId,
       tenantFilter: tenantDomain,
-      ...values,
+      Permissions: values.Permissions ? values.Permissions.value : '',
+      UserToGetPermissions: values.UserToGetPermissions ? values.UserToGetPermissions.value : '',
+      RemoveAccess: values.RemoveAccess ? values.RemoveAccess.value : '',
     }
     //window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/ExecEditCalendarPermissions', params: shippedValues })
