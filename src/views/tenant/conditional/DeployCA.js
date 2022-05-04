@@ -73,7 +73,7 @@ const AddPolicy = () => {
     <CippWizard
       initialValues={{ ...formValues }}
       onSubmit={handleSubmit}
-      wizardTitle="Add Intune policy"
+      wizardTitle="Add Conditional Access policy"
     >
       <CippWizard.Page
         title="Tenant Choice"
