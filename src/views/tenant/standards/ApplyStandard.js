@@ -183,7 +183,7 @@ const ApplyStandard = () => {
               />
               <RFFCFormSwitch
                 name="standards.DelegateSentItems"
-                label="Disable Azure Portal access for Standard users"
+                label="Set mailbox Sent Items delegation (Sent items for shared mailboxes)"
               />
               <RFFCFormSwitch
                 name="standards.AnonReportDisable"
