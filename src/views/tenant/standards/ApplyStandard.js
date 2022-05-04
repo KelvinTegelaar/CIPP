@@ -178,8 +178,12 @@ const ApplyStandard = () => {
           <CRow className="mb-3">
             <CCol md={6}>
               <RFFCFormSwitch
+                name="standards.AzurePortal"
+                label="Disable Azure Portal access for Standard users"
+              />
+              <RFFCFormSwitch
                 name="standards.DelegateSentItems"
-                label="Set mailbox Sent Items delegation (Sent items for shared mailboxes)"
+                label="Disable Azure Portal access for Standard users"
               />
               <RFFCFormSwitch
                 name="standards.AnonReportDisable"
