@@ -1,0 +1,54 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "RunAllTasks",
+      "dependsOn": ["RunAPI", "RunAzurite"]
+    },
+    {
+      "label": "RunAzurite",
+      "type": "shell",
+      "command": "azurite",
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": [
+          {
+            "regexp": ".",
+            "file": 1,
+            "location": 2,
+            "message": 3
+          }
+        ],
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".",
+          "endsPattern": "."
+        }
+      }
+    },
+    {
+      "label": "RunAPI",
+      "type": "shell",
+      "command": "func start --verbose",
+      "isBackground": true,
+      "options": {
+        "cwd": "${workspaceFolder}/../CIPP-API"
+      },
+      "problemMatcher": {
+        "pattern": [
+          {
+            "regexp": ".",
+            "file": 1,
+            "location": 2,
+            "message": 3
+          }
+        ],
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".",
+          "endsPattern": "."
+        }
+      }
+    }
+  ]
+}
