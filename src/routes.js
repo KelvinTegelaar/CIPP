@@ -4,6 +4,7 @@ import React from 'react'
 const Home = React.lazy(() => import('src/views/home/Home'))
 const Logs = React.lazy(() => import('src/views/cipp/Logs'))
 const Users = React.lazy(() => import('src/views/identity/administration/Users'))
+const DeletedItems = React.lazy(() => import('src/views/identity/administration/Deleted'))
 const ViewBEC = React.lazy(() => import('src/views/identity/administration/ViewBEC'))
 const AddUser = React.lazy(() => import('src/views/identity/administration/AddUser'))
 const EditUser = React.lazy(() => import('src/views/identity/administration/EditUser'))
@@ -165,6 +166,12 @@ const routes = [
   { path: '/identity/administration/groups/view', name: 'View Group', component: ViewGroup },
   { path: '/identity/administration/groups', name: 'Groups', component: Groups },
   { path: '/identity/administration/roles', name: 'Roles', component: Roles },
+  {
+    path: '/identity/administration/deleted-items',
+    name: 'Deleted Items',
+    component: DeletedItems,
+  },
+
   { path: '/teams-share/teams/business-voice', name: 'BusinessVoice', component: BusinessVoice },
   {
     path: '/identity/administration/offboarding-wizard',

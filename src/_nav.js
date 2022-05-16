@@ -58,6 +58,11 @@ const _nav = [
         name: 'Offboarding Wizard',
         to: '/identity/administration/offboarding-wizard',
       },
+      {
+        component: CNavItem,
+        name: 'Deleted Items',
+        to: '/identity/administration/deleted-items',
+      },
     ],
   },
   {
