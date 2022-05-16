@@ -73,6 +73,13 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modalMessage: 'Are you sure you want to create a Temporary Access Pass?',
           },
           {
+            label: 'Rerequire MFA registration',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecResetMFA?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalMessage: 'Are you sure you want to enable MFA for this user?',
+          },
+          {
             label: 'Send MFA Push',
             color: 'info',
             modal: true,
