@@ -9,6 +9,7 @@ import PropTypes from 'prop-types'
 import { faEye, faRedo, faEdit, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { CippActionsOffcanvas } from 'src/components/utilities'
 import { useSelector } from 'react-redux'
+import Skeleton from 'react-loading-skeleton'
 
 const AlertBox = ({ value, title, fetching }) => {
   let displayValue = value
@@ -20,7 +21,7 @@ const AlertBox = ({ value, title, fetching }) => {
     <CCard>
       <CCardBody>
         <CCardTitle>{title}</CCardTitle>
-        <CCardText>{fetching ? <CSpinner /> : displayValue}</CCardText>
+        <CCardText>{fetching ? <Skeleton width={'20%'} /> : displayValue}</CCardText>
       </CCardBody>
     </CCard>
   )
