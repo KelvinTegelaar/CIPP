@@ -1,12 +1,5 @@
 import React from 'react'
-import {
-  CContainer,
-  CHeader,
-  // CHeaderDivider,
-  CHeaderNav,
-  CHeaderToggler,
-} from '@coreui/react'
-// import AppBreadcrumb from 'src/components/layout/AppBreadcrumb'
+import { CContainer, CHeader, CHeaderNav, CHeaderToggler } from '@coreui/react'
 import { AppHeaderDropdown, AppHeaderSearch } from 'src/components/header'
 import { TenantSelector } from '../utilities'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

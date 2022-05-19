@@ -412,6 +412,25 @@
   --cipp-table-striped-bg: var(--cyberdrain-dark-striped);
   --cipp-table-striped-colour: var(--cyberdrain-light-striped);
 
+  .react-loading-skeleton {
+    --base-color: var(--cyberdrain-secondary);
+    --highlight-color: var(--cyberdrain-primary);
+    --animation-duration: 1.5s;
+    --animation-direction: normal;
+    --pseudo-element-display: block; /* Enable animation */
+
+    background-color: var(--base-color);
+
+    width: 100%;
+    border-radius: 0.25rem;
+    display: inline-flex;
+    line-height: 1;
+
+    position: relative;
+    overflow: hidden;
+    z-index: 1; /* Necessary for overflow: hidden to work correctly in Safari */
+  }
+
   .btn-ghost-actioncard {
     --cui-btn-bg: transparent;
     --cui-btn-border-color: transparent;
