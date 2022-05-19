@@ -125,12 +125,6 @@ const GraphExplorer = () => {
                       <CForm onSubmit={handleSubmit}>
                         <CRow>
                           <CCol>
-                            <TenantSelector showAllTenantSelector />
-                          </CCol>
-                        </CRow>
-                        <hr className="my-4" />
-                        <CRow>
-                          <CCol>
                             <RFFCFormSelect
                               name="reportTemplate"
                               label="Select a report"

@@ -146,7 +146,7 @@ const ListAlerts = () => {
   ]
 
   return (
-    <CippPage tenantSelector={true} showAllTenantSelector={true} title="List Alerts">
+    <CippPage tenantSelector={false} showAllTenantSelector={false} title="List Alerts">
       <CCardGroup>
         <AlertBox value={NewAlertsCount} title="New Alerts" fetching={isFetching} />
         <AlertBox value={InProgressAlertsCount} title="In Progress Alerts" fetching={isFetching} />
