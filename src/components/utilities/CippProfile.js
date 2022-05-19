@@ -25,7 +25,6 @@ const CippProfile = () => {
             {(isFetching || isLoading) && <CSpinner />}
             {!isLoading && (
               <>
-                <CCardImage orientation="top" src={avatar0} />
                 <CCardBody>
                   <CCardTitle>{profile.clientPrincipal.userDetails}</CCardTitle>
                 </CCardBody>
