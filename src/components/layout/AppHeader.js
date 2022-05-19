@@ -10,15 +10,9 @@ import {
 import { AppHeaderDropdown, AppHeaderSearch } from 'src/components/header'
 import { TenantSelector } from '../utilities'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faBars,
-  faCaretLeft,
-  faCaretRight,
-  faCaretSquareRight,
-} from '@fortawesome/free-solid-svg-icons'
 import { useDispatch, useSelector } from 'react-redux'
 import { toggleSidebarShow } from 'src/store/features/app'
-import { faCaretSquareLeft } from '@fortawesome/free-regular-svg-icons'
+import { faCaretSquareRight, faCaretSquareLeft } from '@fortawesome/free-regular-svg-icons'
 
 const AppHeader = () => {
   const dispatch = useDispatch()
