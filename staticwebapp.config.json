@@ -23,6 +23,10 @@
       "redirect": "/.auth/logout"
     },
     {
+      "route": "/api/ExecSAMSetup",
+      "allowedRoles": ["admin", "editor", "readonly", "authenticated", "anonymous"]
+    },
+    {
       "route": "/api/AddStandardsDeploy",
       "allowedRoles": ["admin"]
     },
