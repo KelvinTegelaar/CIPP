@@ -10,7 +10,7 @@ import { useListTenantsQuery } from 'src/store/api/tenants'
 import { queryString } from 'src/helpers'
 
 export function CippPage({
-  tenantSelector = true,
+  tenantSelector = false,
   showAllTenantSelector = false,
   title,
   children,
@@ -84,7 +84,7 @@ CippPage.propTypes = {
 }
 
 export function CippPageList({
-  tenantSelector = true,
+  tenantSelector = false,
   showAllTenantSelector = false,
   title,
   titleButton,
@@ -92,7 +92,10 @@ export function CippPageList({
   datatable: { reportName, path, columns, params, ...rest },
   children,
   className = null,
+  capabilities = { allTenants: false },
 }) {
+  const tenant = useSelector((state) => state.app.currentTenant)
+
   return (
     <CippPage
       className={`datatable ${className ?? ''}`}
@@ -101,20 +104,30 @@ export function CippPageList({
       title={title}
       titleButton={titleButton}
     >
-      {children}
-      <CippDatatable
-        reportName={reportName}
-        path={path}
-        columns={columns}
-        params={params}
-        {...rest}
-      />
+      {!capabilities.allTenants && tenant.defaultDomainName === 'AllTenants' ? (
+        'This page does not yet support the All Tenants overview. Please use the tenant selector to select a tenant.'
+      ) : (
+        <>
+          {children}
+          <CippDatatable
+            reportName={reportName}
+            path={path}
+            columns={columns}
+            params={params}
+            {...rest}
+          />
+        </>
+      )}
     </CippPage>
   )
 }
 
 CippPageList.propTypes = {
   ...CippPage.PropTypes,
+  capabilities: PropTypes.shape({
+    allTenants: PropTypes.bool,
+    helpContext: PropTypes.string,
+  }),
   datatable: PropTypes.shape({
     reportName: PropTypes.string,
     path: PropTypes.string.isRequired,

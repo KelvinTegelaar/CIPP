@@ -210,6 +210,7 @@ const Users = () => {
   const titleButton = <TitleButton href="/identity/administration/users/add" title="Add User" />
   return (
     <CippPageList
+      capabilities={{ allTenants: false, helpContext: 'https://google.com' }}
       title="Users"
       titleButton={titleButton}
       datatable={{

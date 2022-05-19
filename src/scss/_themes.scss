@@ -327,6 +327,8 @@
 
 [data-theme='impact'] {
   // Core UI Impact theme variables.
+  --cui-header-hover-color: var(--cyberdrain-light);
+  --cui-header-active-color: var(--cyberdrain-accent-blue);
   --cui-body-bg: var(--cyberdrain-dark);
   --cui-body-color: var(--cyberdrain-light);
   --cui-body-color-rgb: var(--cyberdrain-light-rgb);
