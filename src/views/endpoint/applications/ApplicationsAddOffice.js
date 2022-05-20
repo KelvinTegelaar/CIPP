@@ -6,8 +6,9 @@ import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { CippWizard } from 'src/components/layout'
 import { WizardTableField } from 'src/components/tables'
 import PropTypes from 'prop-types'
-import { RFFCFormInput, RFFCFormRadio, RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms'
+import { RFFCFormRadio, RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import langaugeList from 'src/data/languageList'
 
 const Error = ({ name }) => (
   <Field
@@ -140,13 +141,10 @@ const ApplyStandard = () => {
           <CRow className="mb-2">
             <CCol md={12}>
               <RFFSelectSearch
-                values={[
-                  { value: 'nl-nl', name: 'Dutch' },
-                  { value: 'firstReleaseCurrent', name: 'Current (Preview)' },
-                  { value: 'monthlyEnterprise', name: 'Monthly Enterprise' },
-                  { value: 'deferred', name: 'Semi-Annual Enterprise' },
-                  { value: 'firstReleaseDeferred', name: 'Semi-Annual Enterprise (Preview)' },
-                ]}
+                values={langaugeList.map(({ language, tag }) => ({
+                  value: tag,
+                  name: language,
+                }))}
                 name="languages"
                 multi={true}
                 label="Languages"
