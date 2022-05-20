@@ -205,23 +205,20 @@ const ApplyStandard = () => {
                     <CCol md={6}>
                       <CListGroup flush>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Chocolatey Package: {props.values.packagename}
+                          Channel: {props.values.updateChannel.value}
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Application name: {props.values.applicationName}
+                          64-bit : {props.values.arch ? 'Yes' : ' No'}
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Description: {props.values.description}
+                          Remove old versions: {props.values.RemoveVersions ? 'Yes' : 'No'}
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Custom Repo:
-                          {props.values.customRepo ? props.values.customRepo : ' No'}
+                          Shared Computer Activation:{' '}
+                          {props.values.SharedComputerActivation ? 'Yes' : 'No'}
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Install as System: {props.values.InstallAsSystem ? 'Yes' : 'No'}
-                        </CListGroupItem>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Disable Restart: {props.values.DisableRestart ? 'Yes' : 'No'}
+                          Accept EULA: {props.values.AcceptLicense ? 'Yes' : 'No'}
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Assign to: {props.values.AssignTo}
