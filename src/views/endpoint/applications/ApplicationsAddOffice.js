@@ -31,7 +31,7 @@ Error.propTypes = {
 
 const requiredArray = (value) => (value && value.length !== 0 ? undefined : 'Required')
 
-const ApplyStandard = () => {
+const AddOffice = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
   const handleSubmit = async (values) => {
@@ -96,7 +96,7 @@ const ApplyStandard = () => {
         <hr className="my-4" />
       </CippWizard.Page>
       <CippWizard.Page
-        title="Select Standards"
+        title="Select Office Settings"
         description="Select which options you want to apply to the office installation."
       >
         <center>
@@ -243,4 +243,4 @@ const ApplyStandard = () => {
   )
 }
 
-export default ApplyStandard
+export default AddOffice
