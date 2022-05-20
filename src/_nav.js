@@ -259,6 +259,11 @@ const _nav = [
         name: 'Add Choco App',
         to: '/endpoint/applications/add-choco-app',
       },
+      {
+        component: CNavItem,
+        name: 'Add Office App',
+        to: '/endpoint/applications/add-office-app',
+      },
     ],
   },
   {
