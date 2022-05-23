@@ -1,7 +1,6 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { CSidebar, CSidebarBrand, CSidebarNav } from '@coreui/react'
-import { CImage } from '@coreui/react'
+import { CSidebar, CSidebarNav } from '@coreui/react'
 import { AppSidebarNav } from 'src/components/layout'
 import cyberdrainlogo from 'src/assets/images/CIPP.png'
 import SimpleBar from 'simplebar-react'
