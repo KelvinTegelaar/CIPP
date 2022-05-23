@@ -210,6 +210,15 @@
 }
 
 [data-theme='cyberdrain'] {
+// Custom Ian Color
+   --cui-color-gray: rgb(240,240,240);
+   --cui-color-gray1: rgb(245,245,245);
+   --cui-color-gray2: rgb(250,250,250);
+   --cui-color-gray-hover: rgba(210,210,210,0.8);
+   --cui-color-black: rgb(0,0,0);
+   --cui-color-white: rgb(255,255,255);
+
+
   // Core UI CyberDrain theme variables.
   --cui-body-bg: var(--cyberdrain-light);
   --cui-body-color: var(--cyberdrain-dark);
