@@ -37,6 +37,7 @@ const AddConditionalTemplate = React.lazy(() =>
 const DeployConditional = React.lazy(() => import('src/views/tenant/conditional/DeployCA'))
 
 const ListLicences = React.lazy(() => import('src/views/tenant/administration/ListLicences'))
+const ListAppConsent = React.lazy(() => import('src/views/tenant/administration/ListOauthApps'))
 
 const BasicAuthReport = React.lazy(() => import('src/views/identity/reports/BasicAuthReport'))
 const AzureADConnectReport = React.lazy(() =>
@@ -228,13 +229,18 @@ const routes = [
   },
   {
     path: '/tenant/conditional/add-template',
-    name: 'Conditional Access add Temmplate',
+    name: 'Conditional Access add Template',
     component: AddConditionalTemplate,
   },
   {
     path: '/tenant/administration/list-licenses',
     name: 'List Licenses',
     component: ListLicences,
+  },
+  {
+    path: '/tenant/administration/application-consent',
+    name: 'Consented Applications',
+    component: ListAppConsent,
   },
   { path: '/tenant/standards', name: 'Standards' },
   {
