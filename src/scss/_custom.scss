@@ -395,6 +395,7 @@
 .sidebar-nav .nav-link {
   margin: 0.25rem 0;
 }
+
 .react-select-container {
   .react-select__control {
     background-color: var(--cipp-search-bg);
@@ -418,9 +419,11 @@
       background-color: var(--cipp-search-border-color);
     }
   }
+
   .react-select__indicator {
     color: var(--cipp-search-border-color);
   }
+  
   .react-select__indicator-separator {
     background-color: var(--cipp-search-border-color);
   }
