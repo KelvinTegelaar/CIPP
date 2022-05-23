@@ -154,12 +154,10 @@ export default function CippTable({
         return null
       })
 
-      console.log(keys)
       const filtered = data.map((obj) =>
         // eslint-disable-next-line no-sequences
         keys.reduce((acc, curr) => ((acc[curr] = obj[curr]), acc), {}),
       )
-      console.log(filtered)
       defaultActions.push([
         <ExportCsvButton key="export-csv-action" csvData={filtered} reportName={reportName} />,
       ])
