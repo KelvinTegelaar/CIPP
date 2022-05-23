@@ -4,6 +4,13 @@ import { CippPageList } from 'src/components/layout'
 
 const columns = [
   {
+    name: 'Tenant',
+    selector: (row) => row['Tenant'],
+    sortable: true,
+    wrap: true,
+    exportSelector: 'Tenant',
+  },
+  {
     name: 'Display Name',
     selector: (row) => row['Name'],
     sortable: true,
@@ -37,8 +44,8 @@ const OauthList = () => {
     <CippPageList
       capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
       title="Consented Applications"
-      tenantSelector={true}
-      showAllTenantSelector={true}
+      tenantSelector={false}
+      showAllTenantSelector={false}
       datatable={{
         reportName: `${tenant?.defaultDomainName}-ApprovedApps`,
         path: '/api/ListOAuthApps',
