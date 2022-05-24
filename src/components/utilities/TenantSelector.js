@@ -29,15 +29,18 @@ const TenantSelector = ({ showAllTenantSelector = true, NavSelector = false }) =
   )
 
   useEffect(() => {
-    const customerId = searchParams.get('customerId')
-    if (customerId && isSuccess) {
-      const currentTenant = tenants.filter((tenant) => tenant.customerId === customerId)
-      if (currentTenant.length > 0) {
-        dispatch(setCurrentTenant({ tenant: currentTenant[0] }))
+    const Paramcount = searchParams.length
+    if (Paramcount <= 1) {
+      const customerId = searchParams.get('customerId')
+      if (customerId && isSuccess) {
+        const currentTenant = tenants.filter((tenant) => tenant.customerId === customerId)
+        if (currentTenant.length > 0) {
+          dispatch(setCurrentTenant({ tenant: currentTenant[0] }))
+        }
       }
-    }
-    if (!customerId && Object.keys(currentTenant).length > 0) {
-      updateSearchParams({ customerId: currentTenant?.customerId })
+      if (!customerId && Object.keys(currentTenant).length > 0) {
+        updateSearchParams({ customerId: currentTenant?.customerId })
+      }
     }
   }, [dispatch, isSuccess, searchParams, currentTenant, tenants, updateSearchParams])
 
