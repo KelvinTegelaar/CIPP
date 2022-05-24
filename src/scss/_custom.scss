@@ -424,7 +424,7 @@
   .react-select__indicator {
     color: var(--cipp-search-border-color);
   }
-  
+
   .react-select__indicator-separator {
     background-color: var(--cipp-search-border-color);
   }
@@ -434,7 +434,6 @@
     color: var(--text-primary);
   }
 }
-
 
 .sidebar {
   background-color: var(--cui-color-gray) !important;
@@ -448,10 +447,10 @@
       color: var(--cui-color-black) !important;
     }
   }
-  .simplebar-content>li:hover {
+  .simplebar-content > li:hover {
     background: var(--cui-color-gray-hover) !important;
   }
-.nav-group.show {
+  .nav-group.show {
     background: var(--cui-color-gray-hover) !important;
   }
 }
@@ -462,38 +461,88 @@
   min-height: calc(100vh - 69px);
   z-index: 2;
 
-  .card{
+  // .body.flex-grow-1.px-xl-3>.container-fluid>div>div{
+  //   background: var(--cui-color-white) !important;
+  //   padding: 20px 30px;
+  //   margin-bottom: 20px;
+  //   .nav-item> .nav-link {
+  //     padding: 30px 20px;
+  //   }
+  // }
+
+  .card {
     border: none;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px 0 rgb(0 0 0 / 20%), 0 3px 10px 0 rgb(0 0 0 / 19%);
+    &:hover {
+      box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
+    }
     .card-header {
       background-color: var(--cui-color-white);
       color: var(--cui-color-black);
       border: none;
     }
-    .card-body{
-      background-color: var( --cui-color-white);
+    .card-header.d-flex.justify-content-between {
+      padding: 10px 30px;
+    }
+    .card-body {
+      padding: 10px 40px;
+      padding-top: 0;
+      background-color: var(--cui-color-white);
+      .cipp-tablewrapper {
+        padding: 0 10px 10px 10px;
+      }
       header {
-        background-color: var( --cui-color-white) !important;
+        background-color: var(--cui-color-white) !important;
       }
-      .rdt_TableHeadRow{
-        background-color: var( --cui-color-gray-hover) !important;
+      .sc-dlVxhl.fSQziN {
+        border-radius: 10px;
+        border: 2px solid var(--cui-color-gray-hover);
       }
-      .rdt_TableBody .rdt_TableRow:nth-child(odd){
-        background-color: var( --cui-color-white) !important;
+      .rdt_TableHeadRow {
+        background-color: var(--cui-bgcolor-table-header) !important;
+        font-size: 15px;
+        color: var(--cui-color-white);
+        border-bottom-color: (--cui-color-gray-hover) !important;
+        padding: 8px 0;
+      }
+      .rdt_TableBody .rdt_TableRow:nth-child(odd) {
+        background-color: var(--cui-color-white) !important;
+        border-bottom-color: (--cui-color-gray-hover) !important;
+      }
+      .rdt_TableBody .rdt_TableRow:nth-child(even) {
+        background-color: var(--cui-color-gray) !important;
+      }
+      .rdt_Pagination {
+        select {
+          background-color: var(--cui-bgcolor-table-header) !important;
+          color: var(--cui-color-white) !important;
+          border-radius: 4px;
+        }
       }
     }
     .sc-kfPuZi.iZiYoO {
-      background-color: var( --cui-color-white) !important;
+      background-color: var(--cui-color-white) !important;
     }
   }
 }
+.nav-item > .nav-link.active {
+  background-color: var(--cui-color-orange) !important;
+  color: var(--cui-color-white) !important;
+}
+
+.btn.btn-primary {
+  color: var(--cui-color-white) !important;
+  border-radius: 4px;
+  border: none;
+}
+.dropdown-menu.show.tenantDropdown {
+  padding: 10px;
+}
+
 .header.header-sticky {
   background-color: var(--cui-color-gray) !important;
-  border-bottom: 3px solid var(--cui-color-white);
-}
-.header-toggler {
-  position: absolute;
-  margin-top: -30px;
-  margin-left: 5px;
+  border-bottom: 2px solid var(--cui-color-gray-hover);
 }
 .header-toggler:hover {
   transform: scale(1.1);
@@ -512,4 +561,3 @@
   margin-top: 69px;
   height: calc(100vh - 69px);
 }
-
