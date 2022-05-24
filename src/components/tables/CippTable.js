@@ -1,25 +1,29 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { ExportCsvButton, ExportPDFButton } from 'src/components/buttons'
-import { CSpinner, CFormInput } from '@coreui/react'
+import { CSpinner, CFormInput, CInputGroup, CInputGroupText } from '@coreui/react'
 import DataTable, { createTheme } from 'react-data-table-component'
 import PropTypes from 'prop-types'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faFilter } from '@fortawesome/free-solid-svg-icons'
 
 const FilterComponent = ({ filterText, onFilter, onClear }) => (
   <>
-    <CFormInput
-      style={{
-        height: '32px',
-        width: '200px',
-      }}
-      id="search"
-      type="text"
-      placeholder="Filter"
-      aria-label="Search Input"
-      value={filterText}
-      onChange={onFilter}
-      className="d-flex justify-content-start"
-    />
+    <CInputGroup>
+      <CInputGroupText id="basic-addon1">
+        <FontAwesomeIcon icon={faFilter} />
+      </CInputGroupText>
+      <CFormInput
+        aria-describedby="basic-addon1"
+        id="search"
+        type="text"
+        placeholder="Filter"
+        aria-label="Search Input"
+        value={filterText}
+        onChange={onFilter}
+        className="d-flex justify-content-start"
+      />
+    </CInputGroup>
   </>
 )
 
