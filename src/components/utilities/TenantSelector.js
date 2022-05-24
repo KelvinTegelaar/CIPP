@@ -5,8 +5,6 @@ import PropTypes from 'prop-types'
 import { useListTenantsQuery } from 'src/store/api/tenants'
 import { setCurrentTenant } from 'src/store/features/app'
 import { CDropdown, CDropdownMenu, CDropdownToggle } from '@coreui/react'
-import { CippContentCard } from 'src/components/layout'
-import { faBuilding } from '@fortawesome/free-solid-svg-icons'
 
 const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = false }) => {
   const dispatch = useDispatch()
@@ -36,7 +34,7 @@ const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = fa
       {NavSelector && (
         <CDropdown component="li" variant="nav-item">
           <CDropdownToggle>
-            {currentTenant.defaultDomainName
+            {currentTenant?.defaultDomainName
               ? `Selected Tenant: ${currentTenant.displayName}`
               : placeholder}
           </CDropdownToggle>
@@ -57,24 +55,18 @@ const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = fa
         </CDropdown>
       )}
       {!NavSelector && (
-        <CippContentCard
-          title={showAllTenantSelector ? 'Select a Tenant or All Tenants' : 'Select a Tenant'}
-          icon={faBuilding}
-          className="tenant-selector"
-        >
-          <SelectSearch
-            search
-            onChange={activated}
-            filterOptions={fuzzySearch}
-            placeholder={placeholder}
-            disabled={isLoading}
-            value={currentTenant && currentTenant.customerId}
-            options={tenants.map(({ customerId, displayName, defaultDomainName }) => ({
-              value: customerId,
-              name: [displayName] + [` (${defaultDomainName})`],
-            }))}
-          />
-        </CippContentCard>
+        <SelectSearch
+          search
+          onChange={activated}
+          filterOptions={fuzzySearch}
+          placeholder={placeholder}
+          disabled={isLoading}
+          value={currentTenant && currentTenant.customerId}
+          options={tenants.map(({ customerId, displayName, defaultDomainName }) => ({
+            value: customerId,
+            name: [displayName] + [` (${defaultDomainName})`],
+          }))}
+        />
       )}
     </>
   )
