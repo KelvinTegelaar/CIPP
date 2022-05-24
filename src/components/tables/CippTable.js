@@ -174,14 +174,14 @@ export default function CippTable({
     }
     return (
       <>
-        <div className="w-50 d-flex justify-content-start">
+        <div className="w-100 d-flex justify-content-start">
           <FilterComponent
             onFilter={(e) => setFilterText(e.target.value)}
             onClear={handleClear}
             filterText={filterText}
           />
+          {defaultActions}
         </div>
-        <div className="w-50 d-flex justify-content-end">{defaultActions}</div>
       </>
     )
   }, [
