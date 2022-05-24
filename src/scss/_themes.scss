@@ -563,4 +563,10 @@
     --cui-list-group-action-active-bg: var(--cyberdrain-secondary);
     --cui-list-group-action-active-border-color: var(--cyberdrain-secondary);
   }
+  .react-select__multi-value__label {
+    color: var(--cyberdrain-light);
+  }
+  .react-select__multi-value {
+    background-color: var(--cyberdrain-primary);
+  }
 }
