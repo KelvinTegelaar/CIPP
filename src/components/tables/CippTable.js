@@ -126,7 +126,13 @@ export default function CippTable({
     },
     'default',
   )
-
+  const customStyles = {
+    subHeader: {
+      style: {
+        padding: '0px',
+      },
+    },
+  }
   const subHeaderComponentMemo = React.useMemo(() => {
     const handleClear = () => {
       if (filterText) {
@@ -168,7 +174,7 @@ export default function CippTable({
     }
     return (
       <>
-        <div className="w-50 ms-n2 d-flex justify-content-start">
+        <div className="w-50 d-flex justify-content-start">
           <FilterComponent
             onFilter={(e) => setFilterText(e.target.value)}
             onClear={handleClear}
@@ -195,6 +201,7 @@ export default function CippTable({
       {!error && (
         <div>
           <DataTable
+            customStyles={customStyles}
             className="cipp-table"
             theme={theme}
             subHeader={subheader}
