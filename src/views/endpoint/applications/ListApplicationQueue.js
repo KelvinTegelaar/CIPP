@@ -111,6 +111,7 @@ const ListApplicationQueue = () => {
         <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
       )}
       <CippPageList
+        capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
         title="Queued Applications"
         tenantSelector={false}
         datatable={{

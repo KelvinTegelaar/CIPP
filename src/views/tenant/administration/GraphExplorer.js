@@ -16,7 +16,6 @@ import { RFFCFormInput, RFFCFormSelect } from 'src/components/forms'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronRight, faChevronDown, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { CippTable } from 'src/components/tables'
-import { TenantSelector } from 'src/components/utilities'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { CippPage } from 'src/components/layout/CippPage'
@@ -123,12 +122,6 @@ const GraphExplorer = () => {
                   render={({ handleSubmit, submitting, values }) => {
                     return (
                       <CForm onSubmit={handleSubmit}>
-                        <CRow>
-                          <CCol>
-                            <TenantSelector showAllTenantSelector />
-                          </CCol>
-                        </CRow>
-                        <hr className="my-4" />
                         <CRow>
                           <CCol>
                             <RFFCFormSelect

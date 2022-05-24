@@ -41,6 +41,7 @@ const LicenseList = () => {
 
   return (
     <CippPageList
+      capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
       title="Licenses Report"
       tenantSelector={true}
       showAllTenantSelector={true}

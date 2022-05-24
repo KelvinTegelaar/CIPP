@@ -58,6 +58,11 @@ const _nav = [
         name: 'Offboarding Wizard',
         to: '/identity/administration/offboarding-wizard',
       },
+      {
+        component: CNavItem,
+        name: 'Deleted Items',
+        to: '/identity/administration/deleted-items',
+      },
     ],
   },
   {
@@ -253,6 +258,11 @@ const _nav = [
         component: CNavItem,
         name: 'Add Choco App',
         to: '/endpoint/applications/add-choco-app',
+      },
+      {
+        component: CNavItem,
+        name: 'Add Office App',
+        to: '/endpoint/applications/add-office-app',
       },
     ],
   },

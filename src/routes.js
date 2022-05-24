@@ -4,6 +4,7 @@ import React from 'react'
 const Home = React.lazy(() => import('src/views/home/Home'))
 const Logs = React.lazy(() => import('src/views/cipp/Logs'))
 const Users = React.lazy(() => import('src/views/identity/administration/Users'))
+const DeletedItems = React.lazy(() => import('src/views/identity/administration/Deleted'))
 const ViewBEC = React.lazy(() => import('src/views/identity/administration/ViewBEC'))
 const AddUser = React.lazy(() => import('src/views/identity/administration/AddUser'))
 const EditUser = React.lazy(() => import('src/views/identity/administration/EditUser'))
@@ -64,6 +65,9 @@ const ApplicationsQueue = React.lazy(() =>
 )
 const ApplicationsAddChocoApp = React.lazy(() =>
   import('src/views/endpoint/applications/ApplicationsAddChocoApp'),
+)
+const ApplicationsAddOfficeApp = React.lazy(() =>
+  import('src/views/endpoint/applications/ApplicationsAddOffice'),
 )
 const AutopilotAddDevice = React.lazy(() =>
   import('src/views/endpoint/autopilot/AutopilotAddDevice'),
@@ -165,6 +169,12 @@ const routes = [
   { path: '/identity/administration/groups/view', name: 'View Group', component: ViewGroup },
   { path: '/identity/administration/groups', name: 'Groups', component: Groups },
   { path: '/identity/administration/roles', name: 'Roles', component: Roles },
+  {
+    path: '/identity/administration/deleted-items',
+    name: 'Deleted Items',
+    component: DeletedItems,
+  },
+
   { path: '/teams-share/teams/business-voice', name: 'BusinessVoice', component: BusinessVoice },
   {
     path: '/identity/administration/offboarding-wizard',
@@ -257,6 +267,11 @@ const routes = [
     path: '/endpoint/applications/add-choco-app',
     name: 'Add Choco App',
     component: ApplicationsAddChocoApp,
+  },
+  {
+    path: '/endpoint/applications/add-office-app',
+    name: 'Add Office App',
+    component: ApplicationsAddOfficeApp,
   },
   { path: '/endpoint/autopilot', name: 'Autopilot' },
   { path: '/endpoint/autopilot/add-device', name: 'Add Device', component: AutopilotAddDevice },
