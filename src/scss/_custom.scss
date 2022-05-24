@@ -447,7 +447,7 @@
 .wrapper.d-flex.flex-column.min-vh-100 {
   background-color: var(--cui-color-gray-1) !important;
   padding-top: 30px;
-  min-height: calc(100vh - 69px);
+  min-height: calc(100vh - 84px);
   z-index: 2;
 
   // .body.flex-grow-1.px-xl-3>.container-fluid>div>div{
@@ -464,9 +464,10 @@
   .card {
     border: none;
     margin-bottom: 20px;
-    box-shadow: 0 2px 4px 0 rgb(0 0 0 / 20%), 0 3px 10px 0 rgb(0 0 0 / 19%);
+    box-shadow: 0 6px 10px 0 var(--cui-color-card-shadow), 0 8px 12px 0 var(--cui-color-card-shadow);
     &:hover {
-      box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
+      box-shadow: 0 8px 10px 0 var(--cui-color-card-shadow),
+        0 8px 20px 0 var(--cui-color-card-shadow);
     }
     .card-header {
       background-color: var(--cui-color-white);
