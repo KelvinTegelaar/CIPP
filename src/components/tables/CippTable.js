@@ -5,13 +5,13 @@ import { CSpinner, CFormInput, CInputGroup, CInputGroupText } from '@coreui/reac
 import DataTable, { createTheme } from 'react-data-table-component'
 import PropTypes from 'prop-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFilter } from '@fortawesome/free-solid-svg-icons'
+import { faSearch } from '@fortawesome/free-solid-svg-icons'
 
 const FilterComponent = ({ filterText, onFilter, onClear }) => (
   <>
     <CInputGroup>
       <CInputGroupText id="basic-addon1">
-        <FontAwesomeIcon icon={faFilter} />
+        <FontAwesomeIcon icon={faSearch} />
       </CInputGroupText>
       <CFormInput
         aria-describedby="basic-addon1"
