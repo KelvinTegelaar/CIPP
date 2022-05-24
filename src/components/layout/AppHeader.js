@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import {
   CContainer,
   CHeader,
-  CHeaderBrand,
   // CHeaderDivider,
   CHeaderNav,
   CHeaderToggler,
