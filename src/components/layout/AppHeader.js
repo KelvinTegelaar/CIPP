@@ -8,7 +8,6 @@ import {
   CHeaderNav,
   CHeaderToggler,
   CImage,
-  CSidebarBrand,
 } from '@coreui/react'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -26,18 +25,14 @@ const AppHeader = () => {
   const sidebarShow = useSelector((state) => state.app.sidebarShow)
 
   return (
-    <CHeader position="sticky">
+    <CHeader position="sticky" className="mb-4">
       <CContainer fluid>
-        <CSidebarBrand className="d-none d-md-flex" to="/">
-          <CImage className="sidebar-brand-full" src={cyberdrainlogo} height={80} />
-          <CImage className="sidebar-brand-narrow" src={cyberdrainlogo} height={80} />
-        </CSidebarBrand>
-        {/* <CHeaderToggler
+        <CHeaderToggler
           className="ps-1"
           onClick={() => dispatch(toggleSidebarShow({ sidebarShow }))}
         >
           <FontAwesomeIcon icon={faBars} size="lg" />
-        </CHeaderToggler> */}
+        </CHeaderToggler>
         <CHeaderBrand className="mx-auto d-md-none" to="/">
           <CImage src={cyberdrainlogo} height={48} alt="Logo" />
         </CHeaderBrand>
