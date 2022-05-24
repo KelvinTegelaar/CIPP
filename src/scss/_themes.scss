@@ -216,14 +216,13 @@
 }
 
 [data-theme='cyberdrain'] {
-// Custom Ian Color
-   --cui-color-gray: rgb(240,240,240);
-   --cui-color-gray1: rgb(245,245,245);
-   --cui-color-gray2: rgb(250,250,250);
-   --cui-color-gray-hover: rgba(210,210,210,0.8);
-   --cui-color-black: rgb(0,0,0);
-   --cui-color-white: rgb(255,255,255);
-
+  // Custom Ian Color
+  --cui-color-gray: rgb(240, 240, 240);
+  --cui-color-gray1: rgb(245, 245, 245);
+  --cui-color-gray2: rgb(250, 250, 250);
+  --cui-color-gray-hover: rgba(210, 210, 210, 0.8);
+  --cui-color-black: rgb(0, 0, 0);
+  --cui-color-white: rgb(255, 255, 255);
 
   // Core UI CyberDrain theme variables.
   --cui-body-bg: var(--cyberdrain-light);
@@ -379,6 +378,10 @@
     &:hover {
       color: var(--cui-header-color);
     }
+  }
+
+  .content-card {
+    box-shadow: 0 1rem 3rem rgba(black, 0.175);
   }
   /* stylelint-enable no-descending-specificity */
 }
@@ -553,5 +556,9 @@
     --cui-list-group-action-active-color: var(--cyberdrain-light);
     --cui-list-group-action-active-bg: var(--cyberdrain-secondary);
     --cui-list-group-action-active-border-color: var(--cyberdrain-secondary);
+  }
+
+  .content-card {
+    box-shadow: 0 1rem 3rem rgba(white, 0.175);
   }
 }

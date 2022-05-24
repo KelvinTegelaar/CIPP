@@ -29,24 +29,11 @@ const AppHeader = () => {
   return (
     <CHeader position="sticky">
       <CContainer fluid>
-        <CSidebarBrand className="d-none d-md-flex" to="/">
+        <CSidebarBrand className="me-auto p-2" to="/">
           <CImage className="sidebar-brand-full" src={cyberdrainlogo} height={80} />
-          <CImage className="sidebar-brand-narrow" src={cyberdrainlogo} height={80} />
         </CSidebarBrand>
-        {/* <CHeaderToggler
-          className="ps-1"
-          onClick={() => dispatch(toggleSidebarShow({ sidebarShow }))}
-        >
-          <FontAwesomeIcon icon={faBars} size="lg" />
-        </CHeaderToggler> */}
-        <CHeaderBrand className="mx-auto d-md-none" to="/">
-          <CImage src={cyberdrainlogo} height={48} alt="Logo" />
-        </CHeaderBrand>
-        <CHeaderNav>
-          <CHeaderToggler
-            className="ps-1"
-            onClick={() => dispatch(toggleSidebarShow({ sidebarShow }))}
-          >
+        <CHeaderNav className="me-auto p-2">
+          <CHeaderToggler onClick={() => dispatch(toggleSidebarShow({ sidebarShow }))}>
             <FontAwesomeIcon
               icon={sidebarShow ? faCaretSquareLeft : faCaretSquareRight}
               size="lg"
@@ -54,7 +41,7 @@ const AppHeader = () => {
           </CHeaderToggler>
           <TenantSelector NavSelector={true} />
         </CHeaderNav>
-        <CHeaderNav className="ms-6">
+        <CHeaderNav className="ms-auto p-2">
           <AppHeaderSearch />
           <AppHeaderDropdown />
         </CHeaderNav>

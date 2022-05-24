@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { TenantSelector } from 'src/components/utilities'
-import { CCallout, CCard, CCardBody, CCardHeader } from '@coreui/react'
+import { CCallout, CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
 import { CippDatatable } from 'src/components/tables'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSearchParams, useNavigate } from 'react-router-dom'
@@ -15,7 +14,7 @@ export function CippPage({
   title,
   children,
   titleButton = null,
-  className = null,
+  wizard = false,
 }) {
   const { data: tenants = [], isSuccess } = useListTenantsQuery({ showAllTenantSelector })
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -51,25 +50,32 @@ export function CippPage({
 
   return (
     <div>
-      {tenantSelector && (
-        <TenantSelector action={handleTenantSelect} showAllTenantSelector={showAllTenantSelector} />
-      )}
-      {tenantSelector && <hr />}
-      <CCard className={`page-card ${className ?? ''}`}>
-        <CCardHeader component="h4" className="d-flex justify-content-between">
-          {title}
-          {titleButton}
-        </CCardHeader>
-        <CCardBody>
-          {tenantSelector && Object.keys(tenant).length === 0 ? (
-            <CCallout className="mb-0" color="warning">
-              Select a tenant to get started.
-            </CCallout>
-          ) : (
-            children
-          )}
-        </CCardBody>
-      </CCard>
+      <>
+        {wizard && (
+          <CCard className="content-card">
+            <CCardBody>
+              {tenantSelector && Object.keys(tenant).length === 0 ? (
+                <CCallout className="mb-0" color="warning">
+                  Select a tenant to get started.
+                </CCallout>
+              ) : (
+                children
+              )}
+            </CCardBody>
+          </CCard>
+        )}
+        {!wizard && (
+          <CCardBody>
+            {tenantSelector && Object.keys(tenant).length === 0 ? (
+              <CCallout className="mb-0" color="warning">
+                Select a tenant to get started.
+              </CCallout>
+            ) : (
+              children
+            )}
+          </CCardBody>
+        )}
+      </>
     </div>
   )
 }
@@ -81,44 +87,44 @@ CippPage.propTypes = {
   title: PropTypes.string,
   children: PropTypes.node,
   titleButton: PropTypes.node,
+  wizard: PropTypes.bool,
 }
 
 export function CippPageList({
-  tenantSelector = false,
-  showAllTenantSelector = false,
   title,
   titleButton,
   // see CippDatatable for full list
   datatable: { reportName, path, columns, params, ...rest },
   children,
-  className = null,
   capabilities = { allTenants: false },
 }) {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
-    <CippPage
-      className={`datatable ${className ?? ''}`}
-      tenantSelector={tenantSelector}
-      showAllTenantSelector={showAllTenantSelector}
-      title={title}
-      titleButton={titleButton}
-    >
+    <>
       {!capabilities.allTenants && tenant.defaultDomainName === 'AllTenants' ? (
         'This page does not yet support the All Tenants overview. Please use the tenant selector to select a tenant.'
       ) : (
         <>
           {children}
-          <CippDatatable
-            reportName={reportName}
-            path={path}
-            columns={columns}
-            params={params}
-            {...rest}
-          />
+          <CCard className="content-card">
+            <CCardHeader className="d-flex justify-content-between align-items-center">
+              <CCardTitle>{title}</CCardTitle>
+              {titleButton ? titleButton : null}
+            </CCardHeader>
+            <CCardBody>
+              <CippDatatable
+                reportName={reportName}
+                path={path}
+                columns={columns}
+                params={params}
+                {...rest}
+              />
+            </CCardBody>
+          </CCard>
         </>
       )}
-    </CippPage>
+    </>
   )
 }
 
