@@ -56,6 +56,8 @@ const OffboardingWizard = () => {
       RevokeSessions: values.RevokeSessions,
       user: values.User.value,
       deleteuser: values.DeleteUser,
+      removeRules: values.RemoveRules,
+      removeMobile: values.RemoveMobile,
     }
 
     //alert(JSON.stringify(values, null, 2))
@@ -107,6 +109,8 @@ const OffboardingWizard = () => {
         <hr className="my-4" />
         <div className="mb-2">
           <RFFCFormSwitch name="RevokeSessions" label="Revoke all sessions" />
+          <RFFCFormSwitch name="RemoveMobile" label="Remove all Mobile Devices" />
+          <RFFCFormSwitch name="RemoveRules" label="Remove all Rules" />
           <RFFCFormSwitch name="RemoveLicenses" label="Remove Licenses" />
           <RFFCFormSwitch name="ConvertToShared" label="Convert to Shared Mailbox" />
           <RFFCFormSwitch name="DisableSignIn" label="Disable Sign in" />

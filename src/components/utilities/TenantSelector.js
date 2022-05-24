@@ -4,10 +4,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import { useListTenantsQuery } from 'src/store/api/tenants'
 import { setCurrentTenant } from 'src/store/features/app'
+import { CDropdown, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 import { CippContentCard } from 'src/components/layout'
-import { faCity, faBuilding } from '@fortawesome/free-solid-svg-icons'
+import { faBuilding } from '@fortawesome/free-solid-svg-icons'
 
-const TenantSelector = ({ action, showAllTenantSelector = false }) => {
+const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = false }) => {
   const dispatch = useDispatch()
   const currentTenant = useSelector((state) => state.app.currentTenant)
   const { data: tenants = [], isLoading, error } = useListTenantsQuery({ showAllTenantSelector })
@@ -31,29 +32,57 @@ const TenantSelector = ({ action, showAllTenantSelector = false }) => {
   }
 
   return (
-    <CippContentCard
-      title={showAllTenantSelector ? 'Select a Tenant or All Tenants' : 'Select a Tenant'}
-      icon={showAllTenantSelector ? faCity : faBuilding}
-      className="tenant-selector"
-    >
-      <SelectSearch
-        search
-        onChange={activated}
-        filterOptions={fuzzySearch}
-        placeholder={placeholder}
-        disabled={isLoading}
-        value={currentTenant && currentTenant.customerId}
-        options={tenants.map(({ customerId, displayName, defaultDomainName }) => ({
-          value: customerId,
-          name: [displayName] + [` (${defaultDomainName})`],
-        }))}
-      />
-    </CippContentCard>
+    <>
+      {NavSelector && (
+        <CDropdown component="li" variant="nav-item">
+          <CDropdownToggle>
+            {currentTenant.defaultDomainName
+              ? `Selected Tenant: ${currentTenant.displayName}`
+              : placeholder}
+          </CDropdownToggle>
+          <CDropdownMenu className="tenantDropdown">
+            <SelectSearch
+              search
+              onChange={activated}
+              filterOptions={fuzzySearch}
+              placeholder={placeholder}
+              disabled={isLoading}
+              value={currentTenant && currentTenant.customerId}
+              options={tenants.map(({ customerId, displayName, defaultDomainName }) => ({
+                value: customerId,
+                name: [displayName] + [` (${defaultDomainName})`],
+              }))}
+            />
+          </CDropdownMenu>
+        </CDropdown>
+      )}
+      {!NavSelector && (
+        <CippContentCard
+          title={showAllTenantSelector ? 'Select a Tenant or All Tenants' : 'Select a Tenant'}
+          icon={faBuilding}
+          className="tenant-selector"
+        >
+          <SelectSearch
+            search
+            onChange={activated}
+            filterOptions={fuzzySearch}
+            placeholder={placeholder}
+            disabled={isLoading}
+            value={currentTenant && currentTenant.customerId}
+            options={tenants.map(({ customerId, displayName, defaultDomainName }) => ({
+              value: customerId,
+              name: [displayName] + [` (${defaultDomainName})`],
+            }))}
+          />
+        </CippContentCard>
+      )}
+    </>
   )
 }
 
 TenantSelector.propTypes = {
   action: PropTypes.func,
+  NavSelector: PropTypes.bool,
   showAllTenantSelector: PropTypes.bool,
 }
 

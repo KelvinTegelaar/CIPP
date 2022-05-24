@@ -279,6 +279,7 @@ export const RFFSelectSearch = ({
   placeholder,
   validate,
   onChange,
+  multi,
   disabled = false,
 }) => {
   const selectSearchvalues = values.map((val) => ({
@@ -302,6 +303,7 @@ export const RFFSelectSearch = ({
               disabled={disabled}
               options={selectSearchvalues}
               placeholder={placeholder}
+              isMulti={multi}
             />
             <RFFCFormFeedback meta={meta} />
           </div>
@@ -313,6 +315,7 @@ export const RFFSelectSearch = ({
 
 RFFSelectSearch.propTypes = {
   ...sharedPropTypes,
+  multi: PropTypes.bool,
   placeholder: PropTypes.string,
   values: PropTypes.arrayOf(PropTypes.shape({ value: PropTypes.string, name: PropTypes.string }))
     .isRequired,

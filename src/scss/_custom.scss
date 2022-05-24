@@ -116,6 +116,7 @@
 
     .card-header {
       background: var(--cyberdrain-accent-blue);
+      // background: var(--cyberdrain-accent-blue);
       border-bottom-color: var(--cui-options-card-border-color);
     }
 
@@ -395,6 +396,7 @@
 .sidebar-nav .nav-link {
   margin: 0.25rem 0;
 }
+
 .react-select-container {
   .react-select__control {
     background-color: var(--cipp-search-bg);
@@ -418,9 +420,11 @@
       background-color: var(--cipp-search-border-color);
     }
   }
+
   .react-select__indicator {
     color: var(--cipp-search-border-color);
   }
+  
   .react-select__indicator-separator {
     background-color: var(--cipp-search-border-color);
   }
@@ -430,3 +434,82 @@
     color: var(--text-primary);
   }
 }
+
+
+.sidebar {
+  background-color: var(--cui-color-gray) !important;
+  svg {
+    color: var(--cui-color-black) !important;
+    transform: scale(0.8);
+  }
+  li {
+    color: var(--cui-color-black) !important;
+    a {
+      color: var(--cui-color-black) !important;
+    }
+  }
+  .simplebar-content>li:hover {
+    background: var(--cui-color-gray-hover) !important;
+  }
+.nav-group.show {
+    background: var(--cui-color-gray-hover) !important;
+  }
+}
+
+.wrapper.d-flex.flex-column.min-vh-100 {
+  background-color: var(--cui-color-gray-1) !important;
+  padding-top: 30px;
+  min-height: calc(100vh - 69px);
+  z-index: 2;
+
+  .card{
+    border: none;
+    .card-header {
+      background-color: var(--cui-color-white);
+      color: var(--cui-color-black);
+      border: none;
+    }
+    .card-body{
+      background-color: var( --cui-color-white);
+      header {
+        background-color: var( --cui-color-white) !important;
+      }
+      .rdt_TableHeadRow{
+        background-color: var( --cui-color-gray-hover) !important;
+      }
+      .rdt_TableBody .rdt_TableRow:nth-child(odd){
+        background-color: var( --cui-color-white) !important;
+      }
+    }
+    .sc-kfPuZi.iZiYoO {
+      background-color: var( --cui-color-white) !important;
+    }
+  }
+}
+.header.header-sticky {
+  background-color: var(--cui-color-gray) !important;
+  border-bottom: 3px solid var(--cui-color-white);
+}
+.header-toggler {
+  position: absolute;
+  margin-top: -30px;
+  margin-left: 5px;
+}
+.header-toggler:hover {
+  transform: scale(1.1);
+}
+
+.sidebar-brand {
+  background: none;
+  .sidebar-brand-full {
+    margin-left: 30px;
+    height: 50px;
+    transform: scale(1.5);
+  }
+}
+
+.sidebar.sidebar-fixed {
+  margin-top: 69px;
+  height: calc(100vh - 69px);
+}
+
