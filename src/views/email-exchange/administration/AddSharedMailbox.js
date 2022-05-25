@@ -41,7 +41,7 @@ const AddSharedMailbox = () => {
     <CippPage title="Add Shared Mailbox">
       <CCard className="content-card">
         <CCardHeader className="d-flex justify-content-between align-items-center">
-          <CCardTitle>Endpoint Manager Templates</CCardTitle>
+          <CCardTitle>Add Shared Mailbox</CCardTitle>
         </CCardHeader>
         <CCardBody>
           <Form
