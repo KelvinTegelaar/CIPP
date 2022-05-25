@@ -186,6 +186,10 @@ const ApplyStandard = () => {
                 label="Set mailbox Sent Items delegation (Sent items for shared mailboxes)"
               />
               <RFFCFormSwitch
+                name="standards.SendFromAlias"
+                label="Allow users to send from their alias addresses"
+              />
+              <RFFCFormSwitch
                 name="standards.AnonReportDisable"
                 label="Enable Usernames instead of pseudo anonymised names in reports"
               />
