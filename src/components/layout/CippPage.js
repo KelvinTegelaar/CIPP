@@ -1,12 +1,8 @@
-import React, { useCallback, useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { CCallout, CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
 import { CippDatatable } from 'src/components/tables'
-import { useDispatch, useSelector } from 'react-redux'
-import { useSearchParams, useNavigate } from 'react-router-dom'
-import { setCurrentTenant } from 'src/store/features/app'
-import { useListTenantsQuery } from 'src/store/api/tenants'
-import { queryString } from 'src/helpers'
+import { useSelector } from 'react-redux'
 
 export function CippPage({
   tenantSelector = false,
