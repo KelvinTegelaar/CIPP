@@ -12,7 +12,7 @@ import {
   CCardBody,
 } from '@coreui/react'
 import { Form } from 'react-final-form'
-import { RFFCFormCheck, RFFCFormInput, RFFCFormSelect } from 'src/components/forms'
+import { RFFCFormInput, RFFCFormSelect } from 'src/components/forms'
 import { CippPage } from 'src/components/layout/CippPage'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { useListDomainsQuery } from 'src/store/api/domains'
