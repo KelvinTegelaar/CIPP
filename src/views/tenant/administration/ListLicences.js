@@ -43,8 +43,8 @@ const LicenseList = () => {
     <CippPageList
       capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
       title="Licenses Report"
-      tenantSelector={false}
-      showAllTenantSelector={false}
+      tenantSelector={true}
+      showAllTenantSelector={true}
       datatable={{
         reportName: `${tenant?.defaultDomainName}-licenses`,
         path: '/api/ListLicenses',

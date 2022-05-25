@@ -21,6 +21,10 @@ const AppSidebar = () => {
         dispatch(setSidebarVisible({ visible }))
       }}
     >
+      <CSidebarBrand className="d-none d-md-flex" to="/">
+        <CImage className="sidebar-brand-full" src={cyberdrainlogo} height={80} />
+        <CImage className="sidebar-brand-narrow" src={cyberdrainlogo} height={80} />
+      </CSidebarBrand>
       <CSidebarNav>
         <SimpleBar>
           <AppSidebarNav items={navigation} />

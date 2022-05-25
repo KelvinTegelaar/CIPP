@@ -142,11 +142,6 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Consented Applications',
-        to: '/tenant/administration/application-consent',
-      },
-      {
-        component: CNavItem,
         name: 'Service Health',
         to: '/tenant/administration/service-health',
       },
