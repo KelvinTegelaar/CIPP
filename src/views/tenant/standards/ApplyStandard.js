@@ -190,6 +190,10 @@ const ApplyStandard = () => {
                 label="Allow users to send from their alias addresses"
               />
               <RFFCFormSwitch
+                name="standards.DisableViva"
+                label="Disable daily Insight/Viva reports"
+              />
+              <RFFCFormSwitch
                 name="standards.AnonReportDisable"
                 label="Enable Usernames instead of pseudo anonymised names in reports"
               />
