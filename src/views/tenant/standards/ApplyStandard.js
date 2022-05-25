@@ -186,20 +186,16 @@ const ApplyStandard = () => {
                 label="Set mailbox Sent Items delegation (Sent items for shared mailboxes)"
               />
               <RFFCFormSwitch
-                name="standards.SendFromAlias"
-                label="Allow users to send from their alias addresses"
-              />
-              <RFFCFormSwitch
-                name="standards.DisableViva"
-                label="Disable daily Insight/Viva reports"
-              />
-              <RFFCFormSwitch
                 name="standards.AnonReportDisable"
                 label="Enable Usernames instead of pseudo anonymised names in reports"
               />
               <RFFCFormSwitch
                 name="standards.DisableSharedMailbox"
                 label="Disable Shared Mailbox AAD accounts"
+              />
+              <RFFCFormSwitch
+                name="standards.SendFromAlias"
+                label="Allow users to send from their alias addresses"
               />
               <RFFCFormSwitch
                 name="standards.MailContacts.TechContact.Enabled"
@@ -236,6 +232,11 @@ const ApplyStandard = () => {
               <RFFCFormSwitch
                 name="standards.SpoofWarn"
                 label="Enable Spoofing warnings for Outlook (This e-mail is external identifiers)"
+              />
+
+              <RFFCFormSwitch
+                name="standards.DisableViva"
+                label="Disable daily Insight/Viva reports"
               />
               <RFFCFormSwitch
                 name="standards.MailContacts.SecurityContact.Enabled"
