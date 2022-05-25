@@ -245,6 +245,7 @@ const BestPracticeAnalyser = () => {
 
   return (
     <CippPageList
+      capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
       title="Best Practice Analyser"
       tenantSelector={false}
       datatable={{

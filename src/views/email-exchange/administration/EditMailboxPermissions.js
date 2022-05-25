@@ -65,6 +65,8 @@ const EditMailboxPermission = () => {
         : '',
       AddFullAccess: values.AddFullAccess ? values.AddFullAccess.value : '',
       RemoveFullAccess: values.RemoveFullAccess ? values.RemoveFullAccess.value : '',
+      AddSendAs: values.AddSendAs ? values.AddSendAs.value : '',
+      RemoveSendAs: values.RemoveSendAs ? values.RemoveSendAs.value : '',
     }
     //window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/ExecEditMailboxPermissions', values: shippedValues })
@@ -146,6 +148,32 @@ const EditMailboxPermission = () => {
                                   }))}
                                   placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                                   name="AddFullAccessNoAutoMap"
+                                />
+                                {usersError && <span>Failed to load list of users</span>}
+                              </CCol>
+                              <CCol md={12}>
+                                <RFFSelectSearch
+                                  label="Add Send-as permissions"
+                                  disabled={formDisabled}
+                                  values={users?.map((user) => ({
+                                    value: user.mail,
+                                    name: user.displayName,
+                                  }))}
+                                  placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
+                                  name="AddSendAs"
+                                />
+                                {usersError && <span>Failed to load list of users</span>}
+                              </CCol>
+                              <CCol md={12}>
+                                <RFFSelectSearch
+                                  label="Remove Send-as permissions"
+                                  disabled={formDisabled}
+                                  values={users?.map((user) => ({
+                                    value: user.mail,
+                                    name: user.displayName,
+                                  }))}
+                                  placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
+                                  name="RemoveSendAs"
                                 />
                                 {usersError && <span>Failed to load list of users</span>}
                               </CCol>

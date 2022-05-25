@@ -178,6 +178,10 @@ const ApplyStandard = () => {
           <CRow className="mb-3">
             <CCol md={6}>
               <RFFCFormSwitch
+                name="standards.AzurePortal"
+                label="Disable Azure Portal access for Standard users"
+              />
+              <RFFCFormSwitch
                 name="standards.DelegateSentItems"
                 label="Set mailbox Sent Items delegation (Sent items for shared mailboxes)"
               />
@@ -188,6 +192,10 @@ const ApplyStandard = () => {
               <RFFCFormSwitch
                 name="standards.DisableSharedMailbox"
                 label="Disable Shared Mailbox AAD accounts"
+              />
+              <RFFCFormSwitch
+                name="standards.SendFromAlias"
+                label="Allow users to send from their alias addresses"
               />
               <RFFCFormSwitch
                 name="standards.MailContacts.TechContact.Enabled"
@@ -224,6 +232,11 @@ const ApplyStandard = () => {
               <RFFCFormSwitch
                 name="standards.SpoofWarn"
                 label="Enable Spoofing warnings for Outlook (This e-mail is external identifiers)"
+              />
+
+              <RFFCFormSwitch
+                name="standards.DisableViva"
+                label="Disable daily Insight/Viva reports"
               />
               <RFFCFormSwitch
                 name="standards.MailContacts.SecurityContact.Enabled"
@@ -289,8 +302,10 @@ const ApplyStandard = () => {
                     </CCallout>
                     <h5 className="mb-0">Selected Standards</h5>
                     <CCallout color="info">
-                      {Object.keys(props.values.standards).map((standard, idx) => (
-                        <li key={idx}>{standard}</li>
+                      {Object.entries(props.values.standards).map(([key, value], idx) => (
+                        <li key={idx}>
+                          {key}: {value ? 'Enabled' : 'Disabled'}
+                        </li>
                       ))}
                     </CCallout>
                     <hr />
