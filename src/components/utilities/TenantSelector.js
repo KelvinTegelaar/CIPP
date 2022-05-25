@@ -1,17 +1,52 @@
-import React from 'react'
+import React, { useCallback, useEffect } from 'react'
 import SelectSearch, { fuzzySearch } from 'react-select-search'
 import { useDispatch, useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import { useListTenantsQuery } from 'src/store/api/tenants'
 import { setCurrentTenant } from 'src/store/features/app'
 import { CDropdown, CDropdownMenu, CDropdownToggle } from '@coreui/react'
-import { CippContentCard } from 'src/components/layout'
-import { faBuilding } from '@fortawesome/free-solid-svg-icons'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { queryString } from 'src/helpers'
 
-const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = false }) => {
-  const dispatch = useDispatch()
+const TenantSelector = ({ showAllTenantSelector = true, NavSelector = false }) => {
   const currentTenant = useSelector((state) => state.app.currentTenant)
-  const { data: tenants = [], isLoading, error } = useListTenantsQuery({ showAllTenantSelector })
+  const {
+    data: tenants = [],
+    isLoading,
+    isSuccess,
+    error,
+  } = useListTenantsQuery({ showAllTenantSelector })
+
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const updateSearchParams = useCallback(
+    (params) => {
+      navigate(`${queryString(params)}`, { replace: true })
+    },
+    [navigate],
+  )
+
+  useEffect(() => {
+    const Paramcount = searchParams.length
+    if (Paramcount <= 1) {
+      const customerId = searchParams.get('customerId')
+      if (customerId && isSuccess) {
+        const currentTenant = tenants.filter((tenant) => tenant.customerId === customerId)
+        if (currentTenant.length > 0) {
+          dispatch(setCurrentTenant({ tenant: currentTenant[0] }))
+        }
+      }
+      if (!customerId && Object.keys(currentTenant).length > 0) {
+        updateSearchParams({ customerId: currentTenant?.customerId })
+      }
+    }
+  }, [dispatch, isSuccess, searchParams, currentTenant, tenants, updateSearchParams])
+
+  const action = (tenant) => {
+    setSearchParams({ customerId: tenant.customerId })
+  }
 
   const activated = (customerId) => {
     const selectedTenant = tenants.filter((t) => {
@@ -36,9 +71,13 @@ const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = fa
       {NavSelector && (
         <CDropdown component="li" variant="nav-item">
           <CDropdownToggle>
-            {currentTenant.defaultDomainName
-              ? `Selected Tenant: ${currentTenant.displayName}`
-              : placeholder}
+            {currentTenant?.defaultDomainName ? (
+              <>
+                <b>Selected Tenant:</b> {currentTenant.displayName}
+              </>
+            ) : (
+              placeholder
+            )}
           </CDropdownToggle>
           <CDropdownMenu className="tenantDropdown">
             <SelectSearch
@@ -57,24 +96,18 @@ const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = fa
         </CDropdown>
       )}
       {!NavSelector && (
-        <CippContentCard
-          title={showAllTenantSelector ? 'Select a Tenant or All Tenants' : 'Select a Tenant'}
-          icon={faBuilding}
-          className="tenant-selector"
-        >
-          <SelectSearch
-            search
-            onChange={activated}
-            filterOptions={fuzzySearch}
-            placeholder={placeholder}
-            disabled={isLoading}
-            value={currentTenant && currentTenant.customerId}
-            options={tenants.map(({ customerId, displayName, defaultDomainName }) => ({
-              value: customerId,
-              name: [displayName] + [` (${defaultDomainName})`],
-            }))}
-          />
-        </CippContentCard>
+        <SelectSearch
+          search
+          onChange={activated}
+          filterOptions={fuzzySearch}
+          placeholder={placeholder}
+          disabled={isLoading}
+          value={currentTenant && currentTenant.customerId}
+          options={tenants.map(({ customerId, displayName, defaultDomainName }) => ({
+            value: customerId,
+            name: [displayName] + [` (${defaultDomainName})`],
+          }))}
+        />
       )}
     </>
   )
