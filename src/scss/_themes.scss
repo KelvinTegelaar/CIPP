@@ -289,11 +289,11 @@
   --cui-nav-link-hover-color: var(--cyberdrain-dark);
   --cui-nav-tabs-border-color: var(--cyberdrain-accent-green);
   --cui-nav-tabs-link-hover-border-color: var(--cyberdrain-accent-green);
-  --cui-toast-background-color: var(--cyberdrain-light);
+  --cui-toast-background-color: var(--cui-color-white);
   --cui-toast-border-color: var(--cyberdrain-accent-green);
-  --cui-toast-color: var(--cyberdrain-dark);
-  --cui-toast-header-background-color: var(--cyberdrain-accent-green);
-  --cui-toast-header-color: var(--cyberdrain-light);
+  --cui-toast-color: var(--cui-color-black);
+  --cui-toast-header-background-color: var(--cui-color-white);
+  --cui-toast-header-color: var(--cui-color-black);
 
   // CIPP CyberDrain theme variables.
   --cipp-fa-inverse-color: var(--cyberdrain-dark);
@@ -467,11 +467,11 @@
   --cui-nav-link-hover-color: var(--cyberdrain-light);
   --cui-nav-tabs-border-color: var(--cyberdrain-accent-green);
   --cui-nav-tabs-link-hover-border-color: var(--cyberdrain-accent-green);
-  --cui-toast-background-color: var(--cyberdrain-dark);
+  --cui-toast-background-color: var(--cui-color-header-bar);
   --cui-toast-border-color: var(--cyberdrain-accent-green);
-  --cui-toast-color: var(--cyberdrain-light);
-  --cui-toast-header-background-color: var(--cyberdrain-accent-green);
-  --cui-toast-header-color: var(--cyberdrain-light);
+  --cui-toast-color: var(--cui-color-black);
+  --cui-toast-header-background-color: var(--cui-color-header-bar);
+  --cui-toast-header-color: var(--cui-color-black);
 
   // CIPP Impact theme variables.
   --cipp-fa-inverse-color: var(--cyberdrain-dark);
