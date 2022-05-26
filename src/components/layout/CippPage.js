@@ -17,28 +17,10 @@ export function CippPage({
       <>
         {wizard && (
           <CCard className="content-card">
-            <CCardBody>
-              {tenantSelector ? (
-                <CCallout className="mb-0" color="warning">
-                  Select a tenant to get started.
-                </CCallout>
-              ) : (
-                children
-              )}
-            </CCardBody>
+            <CCardBody>{children}</CCardBody>
           </CCard>
         )}
-        {!wizard && (
-          <CCardBody>
-            {tenantSelector ? (
-              <CCallout className="mb-0" color="warning">
-                Select a tenant to get started.
-              </CCallout>
-            ) : (
-              children
-            )}
-          </CCardBody>
-        )}
+        {!wizard && <CCardBody>{children}</CCardBody>}
       </>
     </div>
   )
