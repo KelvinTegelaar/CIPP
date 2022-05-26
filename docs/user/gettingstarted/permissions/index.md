@@ -47,7 +47,6 @@ Note that we do not allow these permissions to be set via a script, as you need 
 | Channel.Delete.All                           | Delete Channels                                                   |
 | ChannelMember.Read.All                       | Read the members of channels                                      |
 | ChannelMember.ReadWrite.All                  | Add and remove members from channels                              |
-| ChannelMessage.Delete                        | Delete users' channel messages                                    |
 | ChannelMessage.Edit                          | Edit users' channel messages                                      |
 | ChannelMessage.Read.All                      | Read users' channel messages                                      |
 | ChannelMessage.Send                          | Send channel messages                                             |
@@ -91,10 +90,6 @@ Note that we do not allow these permissions to be set via a script, as you need 
 | TeamMember.ReadWriteNonOwnerRole.All         | Add and remove members with non-owner role for all teams          |
 | TeamsActivity.Read                           | Read users' teamwork activity feed                                |
 | TeamsActivity.Send                           | Send a teamwork activity as the user                              |
-| TeamsApp.Read                                | Read users' installed Teams apps                                  |
-| TeamsApp.Read.All                            | Read all installed Teams apps                                     |
-| TeamsApp.ReadWrite                           | Manage users' Teams apps                                          |
-| TeamsApp.ReadWrite.All                       | Manage all Teams apps                                             |
 | TeamsAppInstallation.ReadForChat             | Read installed Teams apps in chats                                |
 | TeamsAppInstallation.ReadForTeam             | Read installed Teams apps in teams                                |
 | TeamsAppInstallation.ReadForUser             | Read users' installed Teams apps                                  |
