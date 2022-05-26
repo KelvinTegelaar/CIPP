@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { CCallout, CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
+import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
 import { CippDatatable } from 'src/components/tables'
 import { useSelector } from 'react-redux'
 
