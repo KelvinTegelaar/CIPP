@@ -8,7 +8,7 @@ import { CDropdown, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { queryString } from 'src/helpers'
 
-const TenantSelector = ({ showAllTenantSelector = true, NavSelector = false }) => {
+const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = false }) => {
   const currentTenant = useSelector((state) => state.app.currentTenant)
   const {
     data: tenants = [],
@@ -44,10 +44,6 @@ const TenantSelector = ({ showAllTenantSelector = true, NavSelector = false }) =
     }
   }, [dispatch, isSuccess, searchParams, currentTenant, tenants, updateSearchParams])
 
-  const action = (tenant) => {
-    setSearchParams({ customerId: tenant.customerId })
-  }
-
   const activated = (customerId) => {
     const selectedTenant = tenants.filter((t) => {
       return t.customerId === customerId
@@ -56,6 +52,8 @@ const TenantSelector = ({ showAllTenantSelector = true, NavSelector = false }) =
 
     if (typeof action === 'function') {
       action(selectedTenant[0])
+    } else {
+      setSearchParams({ customerId: currentTenant?.customerId })
     }
   }
 
