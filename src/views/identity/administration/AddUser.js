@@ -108,7 +108,7 @@ const AddUser = () => {
   }
 
   return (
-    <CippPage tenantSelector={true} title="Add User">
+    <CippPage title="Add User">
       {postResults.isSuccess && (
         <CCallout color="success" dismissible>
           {postResults.data?.Results.map((result, index) => (
