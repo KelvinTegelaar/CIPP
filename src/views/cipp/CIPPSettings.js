@@ -627,78 +627,89 @@ const NotificationsSettings = () => {
         <span>Error loading data</span>
       )}
       {notificationListResult.isSuccess && (
-        <Form
-          initialValues={{ ...notificationListResult.data }}
-          onSubmit={onSubmit}
-          render={({ handleSubmit, submitting, values }) => {
-            return (
-              <CForm onSubmit={handleSubmit}>
-                {notificationConfigResult.isFetching && (
-                  <CCallout color="info">
-                    <CSpinner>Loading</CSpinner>
-                  </CCallout>
-                )}
-                {notificationConfigResult.isSuccess && (
-                  <CCallout color="info">{notificationConfigResult.data?.Results}</CCallout>
-                )}
-                {notificationConfigResult.isError && (
-                  <CCallout color="danger">
-                    Could not connect to API: {notificationConfigResult.error.message}
-                  </CCallout>
-                )}
-                <CCol md={6}>
-                  <CCol md={6}>
-                    <RFFCFormInput type="text" name="email" label="E-mail" />
-                  </CCol>
-                  <CCol md={6}>
-                    <RFFCFormInput type="text" name="webhook" label="Webhook" />
-                  </CCol>
-                  <CFormLabel>
-                    Choose which types of updates you want to receive. This notification will be
-                    sent every 30 minutes.
-                  </CFormLabel>
-                  <br />
-                  <RFFCFormSwitch
-                    name="addUser"
-                    label="New Accounts created via CIPP"
-                    value={false}
-                  />
-                  <RFFCFormSwitch
-                    name="removeUser"
-                    label="Removed Accounts via CIPP"
-                    value={false}
-                  />
-                  <RFFCFormSwitch
-                    name="addChocoApp"
-                    label="New Applications added via CIPP"
-                    value={false}
-                  />
-                  <RFFCFormSwitch
-                    name="addPolicy"
-                    label="New Policies added via CIPP"
-                    value={false}
-                  />
-                  <RFFCFormSwitch
-                    name="addStandardsDeploy"
-                    label="New Standards added via CIPP"
-                    value={false}
-                  />
-                  <RFFCFormSwitch
-                    name="removeStandard"
-                    label="Removed Standards via CIPP"
-                    value={false}
-                  />
-                  <RFFCFormSwitch name="tokenUpdater" label="Token Refresh Events" value={false} />
+        <CCard className="h-100 w-50">
+          <CCardHeader>
+            <CCardTitle>Notifications</CCardTitle>
+          </CCardHeader>
+          <CCardBody>
+            <Form
+              initialValues={{ ...notificationListResult.data }}
+              onSubmit={onSubmit}
+              render={({ handleSubmit, submitting, values }) => {
+                return (
+                  <CForm onSubmit={handleSubmit}>
+                    {notificationConfigResult.isFetching && (
+                      <CCallout color="info">
+                        <CSpinner>Loading</CSpinner>
+                      </CCallout>
+                    )}
+                    {notificationConfigResult.isSuccess && (
+                      <CCallout color="info">{notificationConfigResult.data?.Results}</CCallout>
+                    )}
+                    {notificationConfigResult.isError && (
+                      <CCallout color="danger">
+                        Could not connect to API: {notificationConfigResult.error.message}
+                      </CCallout>
+                    )}
+                    <CCol>
+                      <CCol>
+                        <RFFCFormInput type="text" name="email" label="E-mail" />
+                      </CCol>
+                      <CCol>
+                        <RFFCFormInput type="text" name="webhook" label="Webhook" />
+                      </CCol>
+                      <CFormLabel>
+                        Choose which types of updates you want to receive. This notification will be
+                        sent every 30 minutes.
+                      </CFormLabel>
+                      <br />
+                      <RFFCFormSwitch
+                        name="addUser"
+                        label="New Accounts created via CIPP"
+                        value={false}
+                      />
+                      <RFFCFormSwitch
+                        name="removeUser"
+                        label="Removed Accounts via CIPP"
+                        value={false}
+                      />
+                      <RFFCFormSwitch
+                        name="addChocoApp"
+                        label="New Applications added via CIPP"
+                        value={false}
+                      />
+                      <RFFCFormSwitch
+                        name="addPolicy"
+                        label="New Policies added via CIPP"
+                        value={false}
+                      />
+                      <RFFCFormSwitch
+                        name="addStandardsDeploy"
+                        label="New Standards added via CIPP"
+                        value={false}
+                      />
+                      <RFFCFormSwitch
+                        name="removeStandard"
+                        label="Removed Standards via CIPP"
+                        value={false}
+                      />
+                      <RFFCFormSwitch
+                        name="tokenUpdater"
+                        label="Token Refresh Events"
+                        value={false}
+                      />
 
-                  <br></br>
-                  <CButton disabled={notificationConfigResult.isFetching} type="submit">
-                    Set Notification Settings
-                  </CButton>
-                </CCol>
-              </CForm>
-            )
-          }}
-        />
+                      <br></br>
+                      <CButton disabled={notificationConfigResult.isFetching} type="submit">
+                        Set Notification Settings
+                      </CButton>
+                    </CCol>
+                  </CForm>
+                )
+              }}
+            />
+          </CCardBody>
+        </CCard>
       )}
     </>
   )
