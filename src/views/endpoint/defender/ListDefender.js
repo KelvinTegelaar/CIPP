@@ -80,7 +80,7 @@ const DefenderState = () => {
   return (
     <CippPageList
       title="Defender Status"
-      tenantSelector={true}
+      capabilities={{ allTenants: false, helpContext: 'https://google.com' }}
       datatable={{
         reportName: `${tenant?.defaultDomainName}-DefenderStatus-List`,
         path: '/api/ListDefenderState',
