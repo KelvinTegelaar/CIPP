@@ -304,6 +304,7 @@ export const RFFSelectSearch = ({
               options={selectSearchvalues}
               placeholder={placeholder}
               isMulti={multi}
+              onChange={onChange}
             />
             <RFFCFormFeedback meta={meta} />
           </div>
