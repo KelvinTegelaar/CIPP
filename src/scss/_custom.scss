@@ -229,7 +229,7 @@
   .offcanvas-header {
     background-color: var(--cipp-offcanvas-header-bg);
     color: var(--cipp-offcanvas-header-color);
-
+    padding: 0rem 1rem;
     .btn {
       color: var(--cipp-offcanvas-header-color);
 
@@ -529,7 +529,8 @@
   border: none;
 }
 .dropdown-menu.show.tenantDropdown {
-  padding: 10px;
+  padding: 1px;
+  margin-left: 15px;
 }
 
 .header.header-sticky {
