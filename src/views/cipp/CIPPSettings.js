@@ -27,6 +27,7 @@ import {
   useLazyExecPermissionsAccessCheckQuery,
   useLazyExecTenantsAccessCheckQuery,
   useLazyGenericGetRequestQuery,
+  useLazyGenericPostRequestQuery,
   useLazyListNotificationConfigQuery,
 } from 'src/store/api/app'
 import {
@@ -35,18 +36,19 @@ import {
   useListExcludedTenantsQuery,
 } from 'src/store/api/tenants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleNotch, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+import { faCircleNotch, faTrash, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { useListTenantsQuery } from 'src/store/api/tenants'
 import { useLazyEditDnsConfigQuery, useLazyGetDnsConfigQuery } from 'src/store/api/domains'
 import { useDispatch, useSelector } from 'react-redux'
 import { CippTable } from 'src/components/tables'
-import { CippPage } from 'src/components/layout'
+import { CippPage, CippPageList } from 'src/components/layout'
 import { RFFCFormSwitch, RFFCFormInput } from 'src/components/forms'
 import { Form } from 'react-final-form'
 import useConfirmModal from 'src/hooks/useConfirmModal'
 import { setCurrentTenant } from 'src/store/features/app'
 import { ModalService, TenantSelectorMultiple, TenantSelector } from 'src/components/utilities'
 import CippListOffcanvas from 'src/components/utilities/CippListOffcanvas'
+import { TitleButton } from 'src/components/buttons'
 
 const CIPPSettings = () => {
   const [active, setActive] = useState(1)
@@ -65,6 +67,9 @@ const CIPPSettings = () => {
         <CNavItem active={active === 4} onClick={() => setActive(4)} href="#">
           Notifications
         </CNavItem>
+        <CNavItem active={active === 5} onClick={() => setActive(5)} href="#">
+          Licenses
+        </CNavItem>
       </CNav>
       <CTabContent>
         <CTabPane visible={active === 1} className="mt-3">
@@ -78,6 +83,9 @@ const CIPPSettings = () => {
         </CTabPane>
         <CTabPane visible={active === 4} className="mt-3">
           <NotificationsSettings />
+        </CTabPane>
+        <CTabPane visible={active === 5} className="mt-3">
+          <LicenseSettings />
         </CTabPane>
       </CTabContent>
     </CippPage>
@@ -197,7 +205,6 @@ const GeneralSettings = () => {
       }
     }
 
-    console.log(tokenOffcanvasGroups)
     return tokenOffcanvasGroups
   }
 
@@ -620,79 +627,207 @@ const NotificationsSettings = () => {
         <span>Error loading data</span>
       )}
       {notificationListResult.isSuccess && (
-        <Form
-          initialValues={{ ...notificationListResult.data }}
-          onSubmit={onSubmit}
-          render={({ handleSubmit, submitting, values }) => {
-            return (
-              <CForm onSubmit={handleSubmit}>
-                {notificationConfigResult.isFetching && (
-                  <CCallout color="info">
-                    <CSpinner>Loading</CSpinner>
-                  </CCallout>
-                )}
-                {notificationConfigResult.isSuccess && (
-                  <CCallout color="info">{notificationConfigResult.data?.Results}</CCallout>
-                )}
-                {notificationConfigResult.isError && (
-                  <CCallout color="danger">
-                    Could not connect to API: {notificationConfigResult.error.message}
-                  </CCallout>
-                )}
-                <CCol md={6}>
-                  <CCol md={6}>
-                    <RFFCFormInput type="text" name="email" label="E-mail" />
-                  </CCol>
-                  <CCol md={6}>
-                    <RFFCFormInput type="text" name="webhook" label="Webhook" />
-                  </CCol>
-                  <CFormLabel>
-                    Choose which types of updates you want to receive. This notification will be
-                    sent every 30 minutes.
-                  </CFormLabel>
-                  <br />
-                  <RFFCFormSwitch
-                    name="addUser"
-                    label="New Accounts created via CIPP"
-                    value={false}
-                  />
-                  <RFFCFormSwitch
-                    name="removeUser"
-                    label="Removed Accounts via CIPP"
-                    value={false}
-                  />
-                  <RFFCFormSwitch
-                    name="addChocoApp"
-                    label="New Applications added via CIPP"
-                    value={false}
-                  />
-                  <RFFCFormSwitch
-                    name="addPolicy"
-                    label="New Policies added via CIPP"
-                    value={false}
-                  />
-                  <RFFCFormSwitch
-                    name="addStandardsDeploy"
-                    label="New Standards added via CIPP"
-                    value={false}
-                  />
-                  <RFFCFormSwitch
-                    name="removeStandard"
-                    label="Removed Standards via CIPP"
-                    value={false}
-                  />
-                  <RFFCFormSwitch name="tokenUpdater" label="Token Refresh Events" value={false} />
+        <CCard className="h-100 w-50">
+          <CCardHeader>
+            <CCardTitle>Notifications</CCardTitle>
+          </CCardHeader>
+          <CCardBody>
+            <Form
+              initialValues={{ ...notificationListResult.data }}
+              onSubmit={onSubmit}
+              render={({ handleSubmit, submitting, values }) => {
+                return (
+                  <CForm onSubmit={handleSubmit}>
+                    {notificationConfigResult.isFetching && (
+                      <CCallout color="info">
+                        <CSpinner>Loading</CSpinner>
+                      </CCallout>
+                    )}
+                    {notificationConfigResult.isSuccess && (
+                      <CCallout color="info">{notificationConfigResult.data?.Results}</CCallout>
+                    )}
+                    {notificationConfigResult.isError && (
+                      <CCallout color="danger">
+                        Could not connect to API: {notificationConfigResult.error.message}
+                      </CCallout>
+                    )}
+                    <CCol>
+                      <CCol>
+                        <RFFCFormInput type="text" name="email" label="E-mail" />
+                      </CCol>
+                      <CCol>
+                        <RFFCFormInput type="text" name="webhook" label="Webhook" />
+                      </CCol>
+                      <CFormLabel>
+                        Choose which types of updates you want to receive. This notification will be
+                        sent every 30 minutes.
+                      </CFormLabel>
+                      <br />
+                      <RFFCFormSwitch
+                        name="addUser"
+                        label="New Accounts created via CIPP"
+                        value={false}
+                      />
+                      <RFFCFormSwitch
+                        name="removeUser"
+                        label="Removed Accounts via CIPP"
+                        value={false}
+                      />
+                      <RFFCFormSwitch
+                        name="addChocoApp"
+                        label="New Applications added via CIPP"
+                        value={false}
+                      />
+                      <RFFCFormSwitch
+                        name="addPolicy"
+                        label="New Policies added via CIPP"
+                        value={false}
+                      />
+                      <RFFCFormSwitch
+                        name="addStandardsDeploy"
+                        label="New Standards added via CIPP"
+                        value={false}
+                      />
+                      <RFFCFormSwitch
+                        name="removeStandard"
+                        label="Removed Standards via CIPP"
+                        value={false}
+                      />
+                      <RFFCFormSwitch
+                        name="tokenUpdater"
+                        label="Token Refresh Events"
+                        value={false}
+                      />
 
-                  <br></br>
-                  <CButton disabled={notificationConfigResult.isFetching} type="submit">
-                    Set Notification Settings
-                  </CButton>
-                </CCol>
-              </CForm>
-            )
-          }}
-        />
+                      <br></br>
+                      <CButton disabled={notificationConfigResult.isFetching} type="submit">
+                        Set Notification Settings
+                      </CButton>
+                    </CCol>
+                  </CForm>
+                )
+              }}
+            />
+          </CCardBody>
+        </CCard>
       )}
+    </>
+  )
+}
+
+const LicenseSettings = () => {
+  const [setExclusion, setExclusionResults] = useLazyGenericPostRequestQuery()
+  const formRef = useRef(null)
+
+  const handleAddLicense = (selected) => {
+    ModalService.confirm({
+      body: (
+        <div style={{ overflow: 'visible' }}>
+          <Form
+            onSubmit={setExclusion}
+            render={({ handleSubmit, submitting, form, values }) => {
+              formRef.current = values
+              return (
+                <>
+                  <div>Add a license to exclude</div>
+                  <RFFCFormInput label="GUID" name="GUID" />
+                  <RFFCFormInput label="SKU Name" name="SKUName" />
+                </>
+              )
+            }}
+          />
+        </div>
+      ),
+      title: 'Add Exclusion',
+      onConfirm: () =>
+        setExclusion({
+          path: '/api/ExecExcludeLicenses?AddExclusion=true',
+          values: { ...formRef.current },
+        }),
+    })
+  }
+
+  const titleButton = <TitleButton onClick={handleAddLicense} title="Add Excluded License" />
+  const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
+
+  const Offcanvas = (row, rowIndex, formatExtraData) => {
+    const handleDeleteIntuneTemplate = (apiurl, message) => {
+      ModalService.confirm({
+        title: 'Confirm',
+        body: <div>{message}</div>,
+        onConfirm: () => ExecuteGetRequest({ path: apiurl }),
+        confirmLabel: 'Continue',
+        cancelLabel: 'Cancel',
+      })
+    }
+    return (
+      <>
+        <CButton
+          size="sm"
+          variant="ghost"
+          color="danger"
+          onClick={() =>
+            handleDeleteIntuneTemplate(
+              `/api/ExecExcludeLicenses?RemoveExclusion=true&GUID=${row.GUID}`,
+              'Do you want to delete this exclusion?',
+            )
+          }
+        >
+          <FontAwesomeIcon icon={faTrash} href="" />
+        </CButton>
+      </>
+    )
+  }
+
+  const columns = [
+    {
+      name: 'Display Name',
+      selector: (row) => row['Product_Display_Name'],
+      sortable: true,
+      minWidth: '300px',
+    },
+    {
+      name: 'License ID',
+      selector: (row) => row['GUID'],
+      sortable: true,
+      minWidth: '350px',
+    },
+    {
+      name: 'Actions',
+      cell: Offcanvas,
+    },
+  ]
+  return (
+    <>
+      {setExclusionResults.isFetching ||
+        (getResults.isFetching && (
+          <CCallout color="info">
+            <CSpinner>Loading</CSpinner>
+          </CCallout>
+        ))}
+      {setExclusionResults.isSuccess && (
+        <CCallout color="info">{setExclusionResults.data?.Results}</CCallout>
+      )}
+      {setExclusionResults.isError && (
+        <CCallout color="danger">
+          Could not connect to API: {setExclusionResults.error.message}
+        </CCallout>
+      )}
+      {getResults.isError && (
+        <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
+      )}
+      {getResults.isSuccess && <CCallout color="info">{getResults.data?.Results}</CCallout>}
+      <CippPageList
+        capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
+        title="Excluded Licenses"
+        titleButton={titleButton}
+        datatable={{
+          columns,
+          path: 'api/ExecExcludeLicenses',
+          reportName: `ExcludedLicenses`,
+          params: { List: true },
+        }}
+      />
     </>
   )
 }
