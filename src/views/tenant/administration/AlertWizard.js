@@ -109,11 +109,11 @@ const AlertWizard = () => {
           <RFFCFormSwitch name="AdminPassword" label="Alert on changed admin Passwords" />
           <RFFCFormSwitch
             name="DefenderStatus"
-            label="Alert if Defender is not running (Tenant must be onboarded in Lighthouse)"
+            label="Alert if Defender is not running (Tenant must be on-boarded in Lighthouse)"
           />
           <RFFCFormSwitch
             name="DefenderMalware"
-            label="Alert on Defender Malware found  (Tenant must be onboarded in Lighthouse)"
+            label="Alert on Defender Malware found  (Tenant must be on-boarded in Lighthouse)"
           />
           <RFFCFormSwitch name="QuotaUsed" label="Alert on 90% mailbox quota used" />
           <RFFCFormSwitch name="UnusedLicenses" label="Alert on unused licenses" />

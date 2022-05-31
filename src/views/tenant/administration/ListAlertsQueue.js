@@ -27,7 +27,7 @@ const ListAlertsQueue = () => {
         color="danger"
         onClick={() =>
           handleDeleteStandard(
-            `api/RemoveQueuedAlert?ID=${row.tenantName}`,
+            `api/RemoveQueuedAlert?ID=${row.tenantId}`,
             'Do you want to delete the queued alert?',
           )
         }
