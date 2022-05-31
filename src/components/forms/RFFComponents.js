@@ -293,19 +293,35 @@ export const RFFSelectSearch = ({
         return (
           <div>
             <CFormLabel htmlFor={name}>{label}</CFormLabel>
-            <Select
-              className="react-select-container"
-              classNamePrefix="react-select"
-              {...input}
-              isClearable={true}
-              name={name}
-              id={name}
-              disabled={disabled}
-              options={selectSearchvalues}
-              placeholder={placeholder}
-              isMulti={multi}
-              onChange={onChange}
-            />
+            {onChange && (
+              <Select
+                className="react-select-container"
+                classNamePrefix="react-select"
+                {...input}
+                isClearable={true}
+                name={name}
+                id={name}
+                disabled={disabled}
+                options={selectSearchvalues}
+                placeholder={placeholder}
+                isMulti={multi}
+                onChange={onChange}
+              />
+            )}
+            {!onChange && (
+              <Select
+                className="react-select-container"
+                classNamePrefix="react-select"
+                {...input}
+                isClearable={true}
+                name={name}
+                id={name}
+                disabled={disabled}
+                options={selectSearchvalues}
+                placeholder={placeholder}
+                isMulti={multi}
+              />
+            )}
             <RFFCFormFeedback meta={meta} />
           </div>
         )
