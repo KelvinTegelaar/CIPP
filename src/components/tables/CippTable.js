@@ -1,25 +1,29 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { ExportCsvButton, ExportPDFButton } from 'src/components/buttons'
-import { CSpinner, CFormInput } from '@coreui/react'
+import { CSpinner, CFormInput, CInputGroup, CInputGroupText } from '@coreui/react'
 import DataTable, { createTheme } from 'react-data-table-component'
 import PropTypes from 'prop-types'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSearch } from '@fortawesome/free-solid-svg-icons'
 
 const FilterComponent = ({ filterText, onFilter, onClear }) => (
   <>
-    <CFormInput
-      style={{
-        height: '32px',
-        width: '200px',
-      }}
-      id="search"
-      type="text"
-      placeholder="Filter"
-      aria-label="Search Input"
-      value={filterText}
-      onChange={onFilter}
-      className="d-flex justify-content-start"
-    />
+    <CInputGroup>
+      <CInputGroupText id="basic-addon1">
+        <FontAwesomeIcon icon={faSearch} />
+      </CInputGroupText>
+      <CFormInput
+        aria-describedby="basic-addon1"
+        id="search"
+        type="text"
+        placeholder="Filter"
+        aria-label="Search Input"
+        value={filterText}
+        onChange={onFilter}
+        className="d-flex justify-content-start"
+      />
+    </CInputGroup>
   </>
 )
 
@@ -122,7 +126,13 @@ export default function CippTable({
     },
     'default',
   )
-
+  const customStyles = {
+    subHeader: {
+      style: {
+        padding: '0px',
+      },
+    },
+  }
   const subHeaderComponentMemo = React.useMemo(() => {
     const handleClear = () => {
       if (filterText) {
@@ -154,26 +164,24 @@ export default function CippTable({
         return null
       })
 
-      console.log(keys)
       const filtered = data.map((obj) =>
         // eslint-disable-next-line no-sequences
         keys.reduce((acc, curr) => ((acc[curr] = obj[curr]), acc), {}),
       )
-      console.log(filtered)
       defaultActions.push([
         <ExportCsvButton key="export-csv-action" csvData={filtered} reportName={reportName} />,
       ])
     }
     return (
       <>
-        <div className="w-50 ms-n2 d-flex justify-content-start">
+        <div className="w-100 d-flex justify-content-start">
           <FilterComponent
             onFilter={(e) => setFilterText(e.target.value)}
             onClear={handleClear}
             filterText={filterText}
           />
+          {defaultActions}
         </div>
-        <div className="w-50 d-flex justify-content-end">{defaultActions}</div>
       </>
     )
   }, [
@@ -193,6 +201,7 @@ export default function CippTable({
       {!error && (
         <div>
           <DataTable
+            customStyles={customStyles}
             className="cipp-table"
             theme={theme}
             subHeader={subheader}
