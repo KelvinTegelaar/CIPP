@@ -1,7 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { CListGroup, CListGroupItem, CSpinner } from '@coreui/react'
+import { CListGroup, CListGroupItem } from '@coreui/react'
 import { CippContentCard } from '../layout'
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 export default function ListGroupContentCard({
   title,
@@ -23,7 +25,7 @@ export default function ListGroupContentCard({
       bodyClass={bodyClass}
       className="list-group-content-card"
     >
-      {isFetching && <CSpinner />}
+      {isFetching && <Skeleton count={5} />}
       {!isFetching && error && <>{errorMessage}</>}
       {!isFetching && !error && (
         <CListGroup flush classname={className ?? ''}>

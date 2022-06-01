@@ -19,10 +19,10 @@ export const PrivateRoute = ({ children, routeType }) => {
   if (null !== profile.clientPrincipal) {
     roles = profile?.clientPrincipal.userRoles
   } else if (null === profile.clientPrincipal) {
-    return <Navigate to="/login" />
+    return <Navigate to={`/login?redirect_uri=${window.location.href}`} />
   }
   if (null === roles) {
-    return <Navigate to="/login" />
+    return <Navigate to={`/login?redirect_uri=${window.location.href}`} />
   } else {
     const isAuthenticated =
       roles.includes('admin') || roles.includes('editor') || (roles.includes('readonly') && !error)
