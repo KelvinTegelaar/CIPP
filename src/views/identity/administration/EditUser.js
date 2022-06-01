@@ -93,20 +93,27 @@ const EditUser = () => {
       Username: values.mailNickname,
       streetAddress: values.streetAddress,
       tenantID: tenantDomain,
-      ...values.license,
+      ...(values.licenses ? values.license : ''),
     }
     //window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/EditUser', values: shippedValues })
   }
   const usageLocation = useSelector((state) => state.app.usageLocation)
+  const precheckedLicenses = user.assignedLicenses
+    ? user.assignedLicenses.reduce(
+        (o, key) => Object.assign(o, { [`License_${key.skuId}`]: true }),
+        {},
+      )
+    : ''
 
   const initialState = {
     keepLicenses: true,
     usageLocation: usageLocation,
+    license: precheckedLicenses,
     ...user,
   }
+  console.log(precheckedLicenses)
 
-  // this is dumb
   const formDisabled = queryError === true || !!userError || !user || Object.keys(user).length === 0
   const RawUser = JSON.stringify(user, null, 2)
   return (
