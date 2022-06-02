@@ -11,43 +11,44 @@ const columns = [
     exportSelector: 'Tenant',
   },
   {
-    name: 'license',
-    selector: (row) => row['License'],
+    name: 'Display Name',
+    selector: (row) => row['Name'],
     sortable: true,
-    exportSelector: 'License',
+    wrap: true,
+    exportSelector: 'Name',
   },
   {
-    name: 'Used',
-    selector: (row) => row['CountUsed'],
+    name: 'Application ID',
+    selector: (row) => row['ID'],
     sortable: true,
-    exportSelector: 'CountUsed',
+    exportSelector: 'ID',
   },
   {
-    name: 'Available',
-    selector: (row) => row['CountAvailable'],
+    name: 'Scope (Permissions)',
+    selector: (row) => row['Scope'],
     sortable: true,
-    exportSelector: 'CountAvailable',
+    exportSelector: 'Scope',
   },
   {
-    name: 'Total',
-    selector: (row) => row['TotalLicenses'],
+    name: 'Permissions Granted at',
+    selector: (row) => row['StartTime'],
     sortable: true,
-    exportSelector: 'TotalLicenses',
+    exportSelector: 'StartTime',
   },
 ]
 
-const LicenseList = () => {
+const OauthList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
     <CippPageList
       capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
-      title="Licenses Report"
+      title="Consented Applications"
       tenantSelector={false}
       showAllTenantSelector={false}
       datatable={{
-        reportName: `${tenant?.defaultDomainName}-licenses`,
-        path: '/api/ListLicenses',
+        reportName: `${tenant?.defaultDomainName}-ApprovedApps`,
+        path: '/api/ListOAuthApps',
         params: { TenantFilter: tenant?.defaultDomainName },
         columns,
       }}
@@ -55,4 +56,4 @@ const LicenseList = () => {
   )
 }
 
-export default LicenseList
+export default OauthList
