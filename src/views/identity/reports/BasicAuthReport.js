@@ -4,15 +4,15 @@ import { CippPageList } from 'src/components/layout'
 const columns = [
   {
     name: 'User Principal Name',
-    selector: (row) => row['UPN'],
+    selector: (row) => row['UserPrincipalName'],
     sortable: true,
-    exportSelector: 'UPN',
+    exportSelector: 'UserPrincipalName',
   },
   {
     name: 'Basic Auth',
-    selector: (row) => row['BasicAuth'],
+    selector: (row) => row['clientAppUsed'],
     sortable: true,
-    exportSelector: 'BasicAuth',
+    exportSelector: 'clientAppUsed',
   },
 ]
 
