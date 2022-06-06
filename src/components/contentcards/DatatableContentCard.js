@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { CSpinner } from '@coreui/react'
 import { CippDatatable } from 'src/components/tables'
 import { CippContentCard } from 'src/components/layout'
+import Skeleton from 'react-loading-skeleton'
 
 export default function DatatableContentCard({
   title,
@@ -19,7 +19,7 @@ export default function DatatableContentCard({
       icon={icon}
       className={`datatable-content-card ${className ?? ''}`}
     >
-      {isFetching && <CSpinner />}
+      {isFetching && <Skeleton />}
       {!isFetching && error && <>{errorMessage}</>}
       {!isFetching && !error && (
         <CippDatatable

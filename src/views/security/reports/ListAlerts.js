@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { CButton, CCallout, CCardGroup, CCardText } from '@coreui/react'
 import { CippTable, cellDateFormatter } from 'src/components/tables'
-import { CCard, CCardBody, CCardHeader, CCardTitle, CSpinner } from '@coreui/react'
+import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
 import { useLazyExecAlertsListQuery } from 'src/store/api/security'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPage } from 'src/components/layout'
@@ -9,6 +9,7 @@ import PropTypes from 'prop-types'
 import { faEye, faRedo, faEdit, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { CippActionsOffcanvas } from 'src/components/utilities'
 import { useSelector } from 'react-redux'
+import Skeleton from 'react-loading-skeleton'
 
 const AlertBox = ({ value, title, fetching }) => {
   let displayValue = value
@@ -20,7 +21,7 @@ const AlertBox = ({ value, title, fetching }) => {
     <CCard>
       <CCardBody>
         <CCardTitle>{title}</CCardTitle>
-        <CCardText>{fetching ? <CSpinner /> : displayValue}</CCardText>
+        <CCardText>{fetching ? <Skeleton width={'20%'} /> : displayValue}</CCardText>
       </CCardBody>
     </CCard>
   )
@@ -146,7 +147,7 @@ const ListAlerts = () => {
   ]
 
   return (
-    <CippPage tenantSelector={true} showAllTenantSelector={true} title="List Alerts">
+    <CippPage tenantSelector={false} showAllTenantSelector={false} title="List Alerts">
       <CCardGroup>
         <AlertBox value={NewAlertsCount} title="New Alerts" fetching={isFetching} />
         <AlertBox value={InProgressAlertsCount} title="In Progress Alerts" fetching={isFetching} />

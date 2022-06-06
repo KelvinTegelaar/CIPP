@@ -63,6 +63,7 @@
     "react-final-form-listeners": "^1.0.3",
     "react-helmet": "^6.1.0",
     "react-hotkeys-hook": "^3.4.4",
+    "react-loading-skeleton": "^3.1.0",
     "react-masonry-component": "^6.3.0",
     "react-media-hook": "^0.4.9",
     "react-papaparse": "^3.18.2",
