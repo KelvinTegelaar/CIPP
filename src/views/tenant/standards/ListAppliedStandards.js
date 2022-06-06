@@ -203,6 +203,7 @@ const TenantsList = () => {
         <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
       )}
       <CippPageList
+        capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
         title="Applied Standards"
         tenantSelector={false}
         datatable={{

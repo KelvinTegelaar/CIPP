@@ -194,7 +194,7 @@ const ConditionalAccessList = () => {
   return (
     <CippPageList
       title="Conditional Access"
-      tenantSelector={true}
+      tenantSelector={false}
       datatable={{
         reportName: `${tenant?.defaultDomainName}-ConditionalAccess-List`,
         path: '/api/ListConditionalAccessPolicies',

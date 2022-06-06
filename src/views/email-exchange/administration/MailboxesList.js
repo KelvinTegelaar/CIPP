@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEdit, faEllipsisV, faMobileAlt } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
 import { CippActionsOffcanvas } from 'src/components/utilities'
+import { TitleButton } from 'src/components/buttons'
 
 const MailboxList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -145,9 +146,14 @@ const MailboxList = () => {
       cell: Offcanvas,
     },
   ]
+  const titleButton = (
+    <TitleButton href="/email/administration/add-shared-mailbox" title="Add Shared Mailbox" />
+  )
 
   return (
     <CippPageList
+      capabilities={{ allTenants: false, helpContext: 'https://google.com' }}
+      titleButton={titleButton}
       title="Mailboxes"
       datatable={{
         keyField: 'id',

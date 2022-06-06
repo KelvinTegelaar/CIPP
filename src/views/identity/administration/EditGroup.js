@@ -28,8 +28,9 @@ import {
 import { useDispatch } from 'react-redux'
 import { ModalService } from 'src/components/utilities'
 import { Form } from 'react-final-form'
-import { RFFCFormInput } from 'src/components/forms'
+import { RFFSelectSearch } from 'src/components/forms'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import { useListUsersQuery } from 'src/store/api/users'
 
 const EditGroup = () => {
   const dispatch = useDispatch()
@@ -59,6 +60,12 @@ const EditGroup = () => {
     error: ownersError,
     isSuccess: ownersIsSuccess,
   } = useListGroupOwnersQuery({ tenantDomain, groupId })
+  const {
+    data: users = [],
+    isFetching: usersIsFetching,
+    error: usersError,
+  } = useListUsersQuery({ tenantDomain })
+
   // console.log(members.isSuccess)
   useEffect(() => {
     if (!groupId || !tenantDomain) {
@@ -74,10 +81,10 @@ const EditGroup = () => {
     const shippedValues = {
       tenantID: tenantDomain,
       GroupID: groupId,
-      AddMember: values.AddMembers,
-      AddOwner: values.AddOwners,
-      RemoveMember: values.RemoveMembers,
-      RemoveOwner: values.RemoveOwners,
+      AddMember: values.AddMembers ? values.AddMembers.value : '',
+      AddOwner: values.AddOwners ? values.AddOwners.value : '',
+      RemoveMember: values.RemoveMembers ? values.RemoveMembers.value : '',
+      RemoveOwner: values.RemoveOwners ? values.RemoveOwners.value : '',
     }
     //window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/EditGroup', values: shippedValues })
@@ -102,35 +109,63 @@ const EditGroup = () => {
                         return (
                           <CForm onSubmit={handleSubmit}>
                             <CRow>
-                              <CCol md={6}>
-                                <RFFCFormInput type="text" name="AddMembers" label="Add Member" />
+                              <CCol md={12}>
+                                <RFFSelectSearch
+                                  label="Add User"
+                                  values={users?.map((user) => ({
+                                    value: user.userPrincipalName,
+                                    name: `${user.displayName} - ${user.userPrincipalName}`,
+                                  }))}
+                                  placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
+                                  name="AddMembers"
+                                />
+                                {usersError && <span>Failed to load list of users</span>}
                               </CCol>
                             </CRow>
                             <CRow>
-                              <CCol md={6}>
-                                <RFFCFormInput
-                                  type="text"
+                              <CCol md={12}>
+                                <RFFSelectSearch
+                                  label="Remove User"
+                                  values={users?.map((user) => ({
+                                    value: user.userPrincipalName,
+                                    name: `${user.displayName} - ${user.userPrincipalName}`,
+                                  }))}
+                                  placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                                   name="RemoveMembers"
-                                  label="Remove Member"
                                 />
+                                {usersError && <span>Failed to load list of users</span>}
                               </CCol>
                             </CRow>
                             <CRow>
-                              <CCol md={6}>
-                                <RFFCFormInput type="text" name="AddOwners" label="Add Owner" />
-                              </CCol>
-                            </CRow>
-                            <CRow>
-                              <CCol md={6}>
-                                <RFFCFormInput
-                                  type="text"
-                                  name="RemoveOwners"
-                                  label="Remove Owner"
+                              <CCol md={12}>
+                                <RFFSelectSearch
+                                  label="Add Owner"
+                                  values={users?.map((user) => ({
+                                    value: user.userPrincipalName,
+                                    name: `${user.displayName} - ${user.userPrincipalName}`,
+                                  }))}
+                                  placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
+                                  name="AddOwners"
                                 />
+                                {usersError && <span>Failed to load list of users</span>}
                               </CCol>
                             </CRow>
                             <CRow className="mb-3">
-                              <CCol md={6}>
+                              <CCol md={12}>
+                                <RFFSelectSearch
+                                  label="Remove Owner"
+                                  values={users?.map((user) => ({
+                                    value: user.userPrincipalName,
+                                    name: `${user.displayName} - ${user.userPrincipalName}`,
+                                  }))}
+                                  placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
+                                  name="RemoveOwners"
+                                />
+                                {usersError && <span>Failed to load list of users</span>}
+                              </CCol>
+                            </CRow>
+                            <CRow className="mb-3">
+                              <CCol md={12}>
                                 <CButton type="submit" disabled={submitting}>
                                   Edit Group
                                   {postResults.isFetching && (

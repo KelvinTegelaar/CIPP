@@ -237,6 +237,7 @@ const DomainsAnalyser = () => {
 
   return (
     <CippPageList
+      capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
       title="Domains Analyser"
       tenantSelector={true}
       showAllTenantSelector={true}
