@@ -108,6 +108,7 @@ const AddRMM = () => {
                   { value: 'nablermm', name: 'N-Able RMM' },
                   { value: 'syncro', name: 'Syncro RMM' },
                   { value: 'immy', name: 'ImmyBot' },
+                  { value: 'huntress', name: 'Huntress' },
                 ]}
                 name="rmmname"
                 label="Select RMM"
@@ -189,6 +190,27 @@ const AddRMM = () => {
                             type="text"
                             name={`registrationToken_${item.defaultDomainName}`}
                             label={`Registration Token ${item.defaultDomainName}`}
+                          />
+                        </CCol>
+                      ))}
+                    </CRow>
+                  </Condition>
+                  <Condition when="rmmname.value" is={'huntress'}>
+                    <CRow>
+                      <CCol md={6}>
+                        <RFFCFormInput type="text" name="displayName" label="Display Name" />
+                      </CCol>
+                      <CCol md={6}>
+                        <RFFCFormInput type="text" name="AccountKey" label="AccountKey" />
+                      </CCol>
+                    </CRow>
+                    <CRow>
+                      {props.values.selectedTenants.map((item, index) => (
+                        <CCol md={6} key={index}>
+                          <RFFCFormInput
+                            type="text"
+                            name={`OrgKey_${item.defaultDomainName}`}
+                            label={`Organization Key ${item.defaultDomainName}`}
                           />
                         </CCol>
                       ))}
