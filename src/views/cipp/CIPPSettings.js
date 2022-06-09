@@ -846,7 +846,7 @@ const DNSSettings = () => {
     }, 2000)
   }
 
-  const resolvers = ['Google', 'Cloudflare']
+  const resolvers = ['Google', 'Cloudflare', 'Quad9']
 
   return (
     <>
