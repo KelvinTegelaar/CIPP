@@ -37,6 +37,7 @@ const AddConditionalTemplate = React.lazy(() =>
 const DeployConditional = React.lazy(() => import('src/views/tenant/conditional/DeployCA'))
 
 const ListLicences = React.lazy(() => import('src/views/tenant/administration/ListLicences'))
+const ListAppConsent = React.lazy(() => import('src/views/tenant/administration/ListOauthApps'))
 
 const BasicAuthReport = React.lazy(() => import('src/views/identity/reports/BasicAuthReport'))
 const AzureADConnectReport = React.lazy(() =>
@@ -115,6 +116,9 @@ const ContactsList = React.lazy(() =>
 const EditContact = React.lazy(() => import('src/views/email-exchange/administration/EditContact'))
 const EditMailboxPermissions = React.lazy(() =>
   import('src/views/email-exchange/administration/EditMailboxPermissions'),
+)
+const AddSharedMailbox = React.lazy(() =>
+  import('src/views/email-exchange/administration/AddSharedMailbox'),
 )
 const EditCalendarPermissions = React.lazy(() =>
   import('src/views/email-exchange/administration/EditCalendarPermissions'),
@@ -228,13 +232,18 @@ const routes = [
   },
   {
     path: '/tenant/conditional/add-template',
-    name: 'Conditional Access add Temmplate',
+    name: 'Conditional Access add Template',
     component: AddConditionalTemplate,
   },
   {
     path: '/tenant/administration/list-licenses',
     name: 'List Licenses',
     component: ListLicences,
+  },
+  {
+    path: '/tenant/administration/application-consent',
+    name: 'Consented Applications',
+    component: ListAppConsent,
   },
   { path: '/tenant/standards', name: 'Standards' },
   {
@@ -368,6 +377,11 @@ const routes = [
     name: 'Edit Mailbox Permissions',
     path: '/email/administration/edit-mailbox-permissions',
     component: EditMailboxPermissions,
+  },
+  {
+    name: 'Edit Mailbox Permissions',
+    path: '/email/administration/add-shared-mailbox',
+    component: AddSharedMailbox,
   },
   {
     name: 'Edit Calendar Permissions',

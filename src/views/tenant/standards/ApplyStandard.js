@@ -194,6 +194,10 @@ const ApplyStandard = () => {
                 label="Disable Shared Mailbox AAD accounts"
               />
               <RFFCFormSwitch
+                name="standards.SendFromAlias"
+                label="Allow users to send from their alias addresses"
+              />
+              <RFFCFormSwitch
                 name="standards.MailContacts.TechContact.Enabled"
                 label="Set Technical Contact e-mail"
               />
@@ -228,6 +232,11 @@ const ApplyStandard = () => {
               <RFFCFormSwitch
                 name="standards.SpoofWarn"
                 label="Enable Spoofing warnings for Outlook (This e-mail is external identifiers)"
+              />
+
+              <RFFCFormSwitch
+                name="standards.DisableViva"
+                label="Disable daily Insight/Viva reports"
               />
               <RFFCFormSwitch
                 name="standards.MailContacts.SecurityContact.Enabled"
