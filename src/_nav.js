@@ -271,7 +271,7 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Add RMM App',
+        name: 'Add MSP App',
         to: '/endpoint/applications/add-rmm-app',
       },
     ],
