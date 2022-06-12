@@ -130,7 +130,11 @@ const AddRMM = () => {
                         />
                       </CCol>
                       <CCol md={6}>
-                        <RFFCFormInput type="text" name="params.dattoUrl" label="Server URL" />
+                        <RFFCFormInput
+                          type="text"
+                          name="params.dattoUrl"
+                          label="Server URL (e.g. https://pinotage.centrastage.net)"
+                        />
                       </CCol>
                     </CRow>
                     <CRow>
