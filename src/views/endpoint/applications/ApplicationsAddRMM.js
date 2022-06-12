@@ -168,7 +168,7 @@ const AddRMM = () => {
                       <CCol md={6} key={index}>
                         <RFFCFormInput
                           type="text"
-                          name={`dattoGuid_${item.defaultDomainName}`}
+                          name={`params.ClientURL.${item.customerId}`}
                           label={`Client URL ${item.defaultDomainName}`}
                         />
                       </CCol>
@@ -201,7 +201,7 @@ const AddRMM = () => {
                         <RFFCFormInput type="text" name="displayName" label="Display Name" />
                       </CCol>
                       <CCol md={6}>
-                        <RFFCFormInput type="text" name="AccountKey" label="AccountKey" />
+                        <RFFCFormInput type="text" name="params.AccountKey" label="AccountKey" />
                       </CCol>
                     </CRow>
                     <CRow>
@@ -209,7 +209,7 @@ const AddRMM = () => {
                         <CCol md={6} key={index}>
                           <RFFCFormInput
                             type="text"
-                            name={`OrgKey_${item.defaultDomainName}`}
+                            name={`params.Orgkey.${item.customerId}`}
                             label={`Organization Key ${item.defaultDomainName}`}
                           />
                         </CCol>
