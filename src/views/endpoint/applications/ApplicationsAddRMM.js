@@ -114,6 +114,13 @@ const AddRMM = () => {
                 label="Select RMM"
               />
             </CCol>
+            <CCol md={6}>
+              <RFFCFormInput
+                type="text"
+                name="displayName"
+                label="Intune Application Display Name"
+              />
+            </CCol>
           </CRow>
           <FormSpy>
             {(props) => {
@@ -122,13 +129,6 @@ const AddRMM = () => {
                 <>
                   <Condition when="rmmname.value" is={'datto'}>
                     <CRow>
-                      <CCol md={6}>
-                        <RFFCFormInput
-                          type="text"
-                          name="displayName"
-                          label="Application Display Name"
-                        />
-                      </CCol>
                       <CCol md={6}>
                         <RFFCFormInput
                           type="text"
@@ -181,9 +181,6 @@ const AddRMM = () => {
                   <Condition when="rmmname.value" is={'ncentral'}>
                     <CRow>
                       <CCol md={6}>
-                        <RFFCFormInput type="text" name="displayName" label="Display Name" />
-                      </CCol>
-                      <CCol md={6}>
                         <RFFCFormInput type="text" name="AgentURL" label="Agent URL" />
                       </CCol>
                     </CRow>
@@ -201,9 +198,6 @@ const AddRMM = () => {
                   </Condition>
                   <Condition when="rmmname.value" is={'huntress'}>
                     <CRow>
-                      <CCol md={6}>
-                        <RFFCFormInput type="text" name="displayName" label="Display Name" />
-                      </CCol>
                       <CCol md={6}>
                         <RFFCFormInput type="text" name="params.AccountKey" label="AccountKey" />
                       </CCol>
