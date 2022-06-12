@@ -37,7 +37,7 @@ const AddRMM = () => {
     values.selectedTenants.map(
       (tenant) => (values[`Select_${tenant.defaultDomainName}`] = tenant.defaultDomainName),
     )
-    genericPostRequest({ path: '/api/AddRMMApp', values: values })
+    genericPostRequest({ path: '/api/AddMSPApp', values: values })
   }
 
   const formValues = {
@@ -130,7 +130,7 @@ const AddRMM = () => {
                         />
                       </CCol>
                       <CCol md={6}>
-                        <RFFCFormInput type="text" name="dattoUrl" label="Server URL" />
+                        <RFFCFormInput type="text" name="params.dattoUrl" label="Server URL" />
                       </CCol>
                     </CRow>
                     <CRow>
@@ -138,7 +138,7 @@ const AddRMM = () => {
                         <CCol md={6} key={index}>
                           <RFFCFormInput
                             type="text"
-                            name={`dattoGuid_${item.defaultDomainName}`}
+                            name={`params.dattoGuid.${item.customerId}`}
                             label={`Datto ID ${item.defaultDomainName}`}
                           />
                         </CCol>
