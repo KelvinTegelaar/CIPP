@@ -212,12 +212,19 @@ const GraphExplorer = () => {
       <CippPage title="Report Results" tenantSelector={false}>
         {!SearchNow && <span>Execute a search to get started.</span>}
         {graphrequest.isSuccess && QueryColumns.set && SearchNow && (
-          <CippTable
-            reportName="GraphExplorer"
-            columns={QueryColumns.data}
-            data={graphrequest.data}
-            isFetching={graphrequest.isFetching}
-          />
+          <CCard className="content-card">
+            <CCardHeader className="d-flex justify-content-between align-items-center">
+              <CCardTitle>Results</CCardTitle>
+            </CCardHeader>
+            <CCardBody>
+              <CippTable
+                reportName="GraphExplorer"
+                columns={QueryColumns.data}
+                data={graphrequest.data}
+                isFetching={graphrequest.isFetching}
+              />
+            </CCardBody>
+          </CCard>
         )}
       </CippPage>
     </>

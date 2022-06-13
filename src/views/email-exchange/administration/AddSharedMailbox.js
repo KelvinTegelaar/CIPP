@@ -12,13 +12,13 @@ import {
   CCardBody,
 } from '@coreui/react'
 import { Form } from 'react-final-form'
-import { RFFCFormCheck, RFFCFormInput, RFFCFormSelect } from 'src/components/forms'
+import { RFFCFormInput, RFFCFormSelect } from 'src/components/forms'
 import { CippPage } from 'src/components/layout/CippPage'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { useListDomainsQuery } from 'src/store/api/domains'
 import { useSelector } from 'react-redux'
 
-const AddGroup = () => {
+const AddSharedMailbox = () => {
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
   const {
     data: domains = [],
@@ -33,16 +33,15 @@ const AddGroup = () => {
       domain: values.domain,
       displayName: values.displayName,
       username: values.username,
-      isAssignableToRole: values.isAssignableToRole,
     }
     //window.alert(JSON.stringify(shippedValues))
-    genericPostRequest({ path: '/api/AddGroup', values: shippedValues })
+    genericPostRequest({ path: '/api/AddSharedMailbox', values: shippedValues })
   }
   return (
-    <CippPage title="Add Group">
-      <CCard>
-        <CCardHeader>
-          <CCardTitle>Group Details</CCardTitle>
+    <CippPage title="Add Shared Mailbox">
+      <CCard className="content-card">
+        <CCardHeader className="d-flex justify-content-between align-items-center">
+          <CCardTitle>Add Shared Mailbox</CCardTitle>
         </CCardHeader>
         <CCardBody>
           <Form
@@ -53,11 +52,6 @@ const AddGroup = () => {
                   <CRow>
                     <CCol md={8}>
                       <RFFCFormInput type="text" name="displayName" label="Display Name" />
-                    </CCol>
-                  </CRow>
-                  <CRow>
-                    <CCol md={8}>
-                      <RFFCFormInput type="text" name="description" label="Description" />
                     </CCol>
                   </CRow>
                   <CRow>
@@ -80,12 +74,11 @@ const AddGroup = () => {
                       )}
                       {domainsError && <span>Failed to load list of domains</span>}
                     </CCol>
-                    <RFFCFormCheck name="isAssignableToRole" label="Azure Role Group" />
                   </CRow>
                   <CRow className="mb-3">
                     <CCol md={6}>
                       <CButton type="submit" disabled={submitting}>
-                        Add Group
+                        Add Shared Mailbox
                       </CButton>
                     </CCol>
                   </CRow>
@@ -102,4 +95,4 @@ const AddGroup = () => {
   )
 }
 
-export default AddGroup
+export default AddSharedMailbox
