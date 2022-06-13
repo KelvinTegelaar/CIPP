@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import clsx from 'clsx'
 import Layout from '@theme/Layout'
 import Link from '@docusaurus/Link'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import Typist from 'react-typist'
-import { faGithub } from '@fortawesome/free-brands-svg-icons'
-import { faPlay, faCoffee } from '@fortawesome/free-solid-svg-icons'
-import { faStar } from '@fortawesome/free-regular-svg-icons'
+
 import HomePageFeatures from '@site/src/components/HomePage/HomePageFeatures'
 import { getGithubStars, getLatestRelease } from '@site/src/utilities/githubHelper'
 
