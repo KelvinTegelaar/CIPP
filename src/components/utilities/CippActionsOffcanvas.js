@@ -50,28 +50,61 @@ export default function CippActionsOffcanvas(props) {
     }
   }
   const extendedInfoContent = <CippOffcanvasTable rows={props.extendedInfo} guid={props.id} />
-  const actionsContent = props.actions.map((action, index) => (
-    <CListGroupItem
-      className="cipp-action"
-      component="button"
-      color={action.color}
-      onClick={() =>
-        handleOnClick(
-          action.link,
-          action.modal,
-          action.modalMessage,
-          action.modalUrl,
-          action.external,
-          action.modalType,
-          action.modalBody,
-        )
-      }
-      key={index}
-    >
-      {action.icon}
-      {action.label}
-    </CListGroupItem>
-  ))
+  let actionsContent
+  try {
+    actionsContent = props.actions.map((action, index) => (
+      <CListGroupItem
+        className="cipp-action"
+        component="button"
+        color={action.color}
+        onClick={() =>
+          handleOnClick(
+            action.link,
+            action.modal,
+            action.modalMessage,
+            action.modalUrl,
+            action.external,
+            action.modalType,
+            action.modalBody,
+          )
+        }
+        key={index}
+      >
+        {action.icon}
+        {action.label}
+      </CListGroupItem>
+    ))
+  } catch (error) {
+    console.error('An error occored building OCanvas actions' + error.toString())
+  }
+  let actionsSelectorsContent
+  let options = []
+  let newobj
+  try {
+    let keyIterate = -1
+    actionsSelectorsContent = props.actionsSelect.map((action, index) => (
+      <CListGroupItem className="" component="select" color={action.color} key={index}>
+        {action.selectWords.forEach((element) =>
+          options.push(
+            <CListGroupItem
+              className=""
+              component="option"
+              key={keyIterate++}
+              value={element.toString()}
+            >
+              {element.toString()}
+            </CListGroupItem>,
+          ),
+        )}
+      </CListGroupItem>
+    ))
+    newobj = React.cloneElement(actionsSelectorsContent[0], { children: options })
+  } catch (error) {
+    // When we create an Off Canvas control without selectors we will get this
+    if (!error.toString().includes("Cannot read properties of undefined (reading 'forEach')")) {
+      console.error('An error occored building OCanvas selectors' + error.toString())
+    }
+  }
   return (
     <CippOffcanvas
       placement={props.placement}
@@ -101,7 +134,10 @@ export default function CippActionsOffcanvas(props) {
       <COffcanvasTitle>Extended Information</COffcanvasTitle>
       {extendedInfoContent}
       {<COffcanvasTitle>Actions</COffcanvasTitle>}
-      <CListGroup layout="verical-md">{actionsContent}</CListGroup>
+      <CListGroup layout="vertical-md">
+        {actionsContent}
+        {newobj}
+      </CListGroup>
     </CippOffcanvas>
   )
 }
@@ -127,7 +163,23 @@ const CippActionsOffcanvasPropTypes = {
       modalMessage: PropTypes.string,
       external: PropTypes.bool,
     }),
-  ).isRequired,
+  ),
+  actionsSelect: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string,
+      link: PropTypes.string,
+      icon: PropTypes.element,
+      options: PropTypes.string,
+      color: PropTypes.string,
+      onClick: PropTypes.func,
+      modal: PropTypes.bool,
+      modalUrl: PropTypes.string,
+      modalBody: PropTypes.string,
+      modalType: PropTypes.string,
+      modalMessage: PropTypes.string,
+      external: PropTypes.bool,
+    }),
+  ),
   rowIndex: PropTypes.number,
   ...CippOffcanvasPropTypes,
 }
