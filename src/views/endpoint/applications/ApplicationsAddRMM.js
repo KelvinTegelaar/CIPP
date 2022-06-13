@@ -111,7 +111,7 @@ const AddRMM = () => {
                   { value: 'huntress', name: 'Huntress' },
                 ]}
                 name="rmmname"
-                label="Select RMM"
+                label="Select MSP Tool"
               />
             </CCol>
             <CCol md={6}>
@@ -199,7 +199,7 @@ const AddRMM = () => {
                   <Condition when="rmmname.value" is={'huntress'}>
                     <CRow>
                       <CCol md={6}>
-                        <RFFCFormInput type="text" name="params.AccountKey" label="AccountKey" />
+                        <RFFCFormInput type="text" name="params.AccountKey" label="Account Key" />
                       </CCol>
                     </CRow>
                     <CRow>
