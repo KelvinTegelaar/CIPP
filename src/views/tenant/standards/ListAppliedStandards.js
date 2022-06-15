@@ -34,7 +34,7 @@ const RefreshAction = () => {
           <FontAwesomeIcon icon={faExclamationTriangle} className="pe-1" />
         )}
         {execStandardsResults.isSuccess && <FontAwesomeIcon icon={faCheck} className="pe-1" />}
-        Force Refresh All Data
+        Run Standards Now
       </CButton>
     </>
   )
