@@ -93,7 +93,13 @@ const ListAlertsQueue = () => {
       exportSelector: 'UnusedLicenses',
       cell: cellBooleanFormatter(),
     },
-
+    {
+      name: 'App Secret Expiry',
+      selector: (row) => row['AppSecretExpiry'],
+      sortable: true,
+      exportSelector: 'AppSecretExpiry',
+      cell: cellBooleanFormatter(),
+    },
     {
       name: 'Actions',
       cell: Actions,
