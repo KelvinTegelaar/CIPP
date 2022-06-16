@@ -178,6 +178,17 @@ const AddRMM = () => {
                       </CCol>
                     ))}
                   </Condition>
+                  <Condition when="rmmname.value" is={'immy'}>
+                    {props.values.selectedTenants.map((item, index) => (
+                      <CCol md={6} key={index}>
+                        <RFFCFormInput
+                          type="text"
+                          name={`params.ClientURL.${item.customerId}`}
+                          label={`Client URL ${item.defaultDomainName}`}
+                        />
+                      </CCol>
+                    ))}
+                  </Condition>
                   <Condition when="rmmname.value" is={'ncentral'}>
                     <CRow>
                       <CCol md={6}>
