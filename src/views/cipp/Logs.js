@@ -171,17 +171,24 @@ const Logs = () => {
       </CRow>
       <hr />
       <CippPage title="LogBook Results" tenantSelector={false}>
-        <CippDatatable
-          reportName={`CIPP-Logbook`}
-          path="/api/Listlogs"
-          params={{
-            Severity: severity,
-            user: user,
-            DateFilter: DateFilter,
-            Filter: !!DateFilter,
-          }}
-          columns={columns}
-        />
+        <CCard className="content-card">
+          <CCardHeader className="d-flex justify-content-between align-items-center">
+            <CCardTitle>Results</CCardTitle>
+          </CCardHeader>
+          <CCardBody>
+            <CippDatatable
+              reportName={`CIPP-Logbook`}
+              path="/api/Listlogs"
+              params={{
+                Severity: severity,
+                user: user,
+                DateFilter: DateFilter,
+                Filter: !!DateFilter,
+              }}
+              columns={columns}
+            />
+          </CCardBody>
+        </CCard>
       </CippPage>
     </>
   )
