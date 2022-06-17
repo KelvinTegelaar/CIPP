@@ -101,14 +101,14 @@ const AddUser = () => {
     genericPostRequest({ path: '/api/AddUser', values: shippedValues })
   }
   const usagelocation = useSelector((state) => state.app.usageLocation)
-
+  console.log(usagelocation)
   const initialState = {
     Autopassword: true,
     usageLocation: usagelocation,
   }
 
   return (
-    <CippPage tenantSelector={true} title="Add User">
+    <CippPage title="Add User">
       {postResults.isSuccess && (
         <CCallout color="success" dismissible>
           {postResults.data?.Results.map((result, index) => (
