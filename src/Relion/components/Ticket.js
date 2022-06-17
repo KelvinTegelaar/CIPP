@@ -46,32 +46,44 @@ export default function Ticket() {
   // ----- Tech (hidden) -----
   const { data: profile } = useLoadClientPrincipalQuery()
   const currentUser = profile.clientPrincipal.userDetails
-
-  let techId = 0
-
+  const [techId, setTechId] = useState('')
   useEffect(() => {
-    switch (currentUser) {
-      case 'alex@thinkrelion.com':
-        techId = 51085
-        break
-      case 'brian@thinkrelion.com':
-        techId = 48017
-        break
-      case 'carlos@thinkrelion.com':
-        techId = 48221
-        break
-      case 'jeremy@thinkrelion.com':
-        techId = 51084
-        break
-      case 'zach@thinkrelion.com':
-        techId = 51083
-        break
-      default:
-        techId = 0
-        break
-    }
+    const techList = [
+      { id: 51085, user: 'alex@thinkrelion.com' },
+      { id: 48017, user: 'brian@thinkrelion.com' },
+      { id: 48221, user: 'carlos@thinkrelion.com' },
+      { id: 51084, user: 'jeremy@thinkrelion.com' },
+      { id: 51083, user: 'zach@thinkrelion.com' },
+    ]
+    const bmsUser = techList.find((item) => item.user === currentUser)
+    setTechId(bmsUser.id)
     console.log(`techID: ${techId}`)
-  }, [])
+  }, [techId, currentUser])
+
+  // let techId = 0
+  // useEffect(() => {
+  //   switch (currentUser) {
+  //     case 'alex@thinkrelion.com':
+  //       techId = 51085
+  //       break
+  //     case 'brian@thinkrelion.com':
+  //       techId = 48017
+  //       break
+  //     case 'carlos@thinkrelion.com':
+  //       techId = 48221
+  //       break
+  //     case 'jeremy@thinkrelion.com':
+  //       techId = 51084
+  //       break
+  //     case 'zach@thinkrelion.com':
+  //       techId = 51083
+  //       break
+  //     default:
+  //       techId = 0
+  //       break
+  //   }
+  //   console.log(`techID: ${techId}`)
+  // }, [])
 
   // ----- Client Field -----
 
