@@ -45,7 +45,32 @@ const RefreshAction = () => {
     </>
   )
 }
+const DeleteAction = () => {
+  const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
 
+  const [execStandards, execStandardsResults] = useLazyGenericGetRequestQuery()
+
+  const showModal = () =>
+    ModalService.confirm({
+      body: <div>Are you sure you want to delete this standard?</div>,
+      onConfirm: () => execStandards({ path: `api/RemoveStandard?ID=${tenantDomain}` }),
+    })
+
+  return (
+    <>
+      <CButton onClick={showModal}>
+        {execStandardsResults.isLoading && <CSpinner size="sm" />}
+        {execStandardsResults.error && (
+          <FontAwesomeIcon icon={faExclamationTriangle} className="pe-1" />
+        )}
+        Delete Standard
+      </CButton>
+      {execStandardsResults.isSuccess && (
+        <CCallout color="success">{execStandardsResults.data.Results}</CCallout>
+      )}
+    </>
+  )
+}
 const ListAppliedStandards = () => {
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
 
@@ -82,7 +107,11 @@ const ListAppliedStandards = () => {
         <CRow>
           <CCol lg={6} xs={12}>
             <CippContentCard
-              button={<RefreshAction key="refresh-action-button" />}
+              button={
+                <>
+                  <RefreshAction className="justify-content-end" key="refresh-action-button" />
+                </>
+              }
               title="List and edit standard"
             >
               {isFetching && <Skeleton count={20} />}
@@ -365,6 +394,11 @@ const ListAppliedStandards = () => {
                                 />
                               )}
                             </CButton>
+                          </CCol>
+                          <CCol md={6} className="d-flex flex-row-reverse">
+                            {listStandardResults[0].appliedBy && (
+                              <DeleteAction key="deleteAction" />
+                            )}
                           </CCol>
                         </CRow>
                       </CForm>
