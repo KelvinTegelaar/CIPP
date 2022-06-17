@@ -127,6 +127,7 @@ const ListAppliedStandards = () => {
                           {listStandardResults[0].appliedBy
                             ? `This standard has been applied at ${listStandardResults[0].appliedAt} by ${listStandardResults[0].appliedBy}`
                             : 'This tenant does not yet have a standard applied'}
+                          <hr />
                           <h5>Global Standards</h5>
                           <hr />
                           <CCol md={6}>
