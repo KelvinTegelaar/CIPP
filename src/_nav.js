@@ -17,9 +17,17 @@ import {
   faUnlock,
   faKey,
   faBus,
+  faBolt,
 } from '@fortawesome/free-solid-svg-icons'
 
 const _nav = [
+  {
+    component: CNavItem,
+    name: 'Relion',
+    section: 'Relion',
+    to: '/relion',
+    icon: <FontAwesomeIcon icon={faBolt} className="nav-icon" />,
+  },
   {
     component: CNavItem,
     name: 'Dashboard',
