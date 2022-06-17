@@ -83,7 +83,7 @@ const App = () => {
                   )
                 )
               })}
-              <Route path="/" element={<Navigate to="/relion" replace={true} />} />
+              <Route path="/" element={<Navigate to="/home" replace={true} />} />
             </Route>
             <Route path="*" name="Page 404" element={<Page404 />} />
           </Routes>
