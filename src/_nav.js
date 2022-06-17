@@ -269,6 +269,11 @@ const _nav = [
         name: 'Add Office App',
         to: '/endpoint/applications/add-office-app',
       },
+      {
+        component: CNavItem,
+        name: 'Add MSP App',
+        to: '/endpoint/applications/add-rmm-app',
+      },
     ],
   },
   {

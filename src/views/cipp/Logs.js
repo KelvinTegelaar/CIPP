@@ -62,7 +62,7 @@ const columns = [
 const Logs = () => {
   let navigate = useNavigate()
   let query = useQuery()
-  const severity = query.get('Severity')
+  const severity = query.get('severity')
   const user = query.get('user')
   const DateFilter = query.get('DateFilter')
   //const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()

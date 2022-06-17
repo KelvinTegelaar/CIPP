@@ -70,6 +70,9 @@ const ApplicationsAddChocoApp = React.lazy(() =>
 const ApplicationsAddOfficeApp = React.lazy(() =>
   import('src/views/endpoint/applications/ApplicationsAddOffice'),
 )
+const ApplicationsAddRMMApp = React.lazy(() =>
+  import('src/views/endpoint/applications/ApplicationsAddRMM'),
+)
 const AutopilotAddDevice = React.lazy(() =>
   import('src/views/endpoint/autopilot/AutopilotAddDevice'),
 )
@@ -281,6 +284,11 @@ const routes = [
     path: '/endpoint/applications/add-office-app',
     name: 'Add Office App',
     component: ApplicationsAddOfficeApp,
+  },
+  {
+    path: '/endpoint/applications/add-rmm-app',
+    name: 'Add RMM App',
+    component: ApplicationsAddRMMApp,
   },
   { path: '/endpoint/autopilot', name: 'Autopilot' },
   { path: '/endpoint/autopilot/add-device', name: 'Add Device', component: AutopilotAddDevice },
