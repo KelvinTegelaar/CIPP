@@ -293,7 +293,7 @@ Write-Host "     SAVE THESE IN A SECURE LOCATION     "
 1. Stop the app & wait 5 minutes.
 1. Start the app
 1. Go back to **Configuration** in the side menu.
-1. Reset the token names to their original values, for example back to _RefreshToken_
+1. Reset the token names to their original values, for example back to _RefreshToken_ and then Select **Save**.
 1. Stop the app once more for 5 minutes then start it again.
 
 The tokens should no longer be in the cache.
