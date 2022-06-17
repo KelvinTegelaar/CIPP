@@ -13,5 +13,12 @@
   },
   "extends": ["react-app", "plugin:react/recommended", "plugin:prettier/recommended"],
   "plugins": ["react", "react-hooks"],
-  "rules": {}
+  "rules": {
+      "prettier/prettier": [
+        "error",
+        {
+          "endOfLine": "auto"
+        }
+      ]
+  }
 }
