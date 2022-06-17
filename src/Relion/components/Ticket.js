@@ -26,13 +26,13 @@ import getLocationID from '../functions/getLocationID'
 import postTicket from '../functions/postTicket'
 import postTime from '../functions/postTime'
 import getTenants from '../functions/getTenants'
-import { TicketProvider } from './TicketContext'
+//import { TicketContext } from './TicketContext'
 
 // cipp
 import { useLoadClientPrincipalQuery } from '../../store/api/auth'
 import Users from 'src/views/identity/administration/Users.js'
 
-export default function TicketForm() {
+export default function Ticket() {
   // MUI dark mode
   const darkTheme = createTheme({
     palette: {
@@ -86,8 +86,7 @@ export default function TicketForm() {
   }, [])
   */
 
-  //attempt at using Redux
-  const clientList2 = [
+  const clientList = [
     { id: 101238, label: 'ACW', tenant: '188495f2-336a-4cc3-868b-a4765f71185c' },
     { id: 101239, label: 'AKP', tenant: '56d4ef54-2d64-4729-aca4-10a530f9e137' },
     { id: 101240, label: 'BASE', tenant: '' },
@@ -333,7 +332,7 @@ export default function TicketForm() {
               autoSelect
               id="client"
               value={client}
-              options={clientList2}
+              options={clientList}
               onChange={clientHandler}
               renderInput={(params) => <TextField {...params} label="Client" />}
             />
