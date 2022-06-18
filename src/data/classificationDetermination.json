@@ -1,0 +1,5 @@
+[
+  { "Classification": "True positive", "Determination": ["Multi staged attack", "Malware", "Malicious user activity", "Unwanted software", "Phishing", "Compromised account", "Data breach", "Vulnerability probing/Recon", "Other"] },
+  { "Classification": "Informational, expected activity", "Determination": ["Security test", "Confirmed activity", "Line of business application", "Other"] },
+  { "Classification": "False positive", "Determination": ["Not malicious", "Not enough data to evaluate", "Dwayne (The Rock) Johnson", "Other"] }
+]

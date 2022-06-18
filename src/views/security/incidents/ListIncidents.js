@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import moment from 'moment'
-import { CButton, CCallout, CCardText } from '@coreui/react'
+import { CButton, CCallout, CCardText, CListGroupItem } from '@coreui/react'
 import { CippTable, cellDateFormatter, CellTip } from 'src/components/tables'
 import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
 import { useLazyExecIncidentsListQuery } from 'src/store/api/security'
@@ -18,6 +18,7 @@ import { CippActionsOffcanvas } from 'src/components/utilities'
 import { useSelector } from 'react-redux'
 import Skeleton from 'react-loading-skeleton'
 import { authApi } from 'src/store/api/auth'
+import classificationDetermination from 'src/data/classificationDetermination'
 
 let userId
 let locale = 'en-GB'
@@ -108,6 +109,29 @@ const ListIncidents = () => {
       extendedInfoRaw.push({ label: label, value: element })
       label = ''
     })
+    let keyIterate = 0
+    function determinations(index = 0) {
+      let options = []
+      classificationDetermination.map(({ Classification, Determination }) =>
+        Determination.forEach((element) =>
+          options.push(
+            <CListGroupItem className="" component="option" key={keyIterate++} value={element}>
+              {element}
+            </CListGroupItem>,
+          ),
+        ),
+      )
+      return options
+    }
+
+    function classifications() {
+      return classificationDetermination.map(({ Classification }) => (
+        <CListGroupItem className="" component="optgroup" key={keyIterate++} label={Classification}>
+          {determinations()}
+        </CListGroupItem>
+      ))
+    }
+
     return (
       <>
         <CButton size="sm" color="success" variant="ghost" onClick={() => setOCVisible(true)}>
@@ -152,9 +176,9 @@ const ListIncidents = () => {
           ]}
           actionsSelect={[
             {
-              label: 'Assign to self',
+              label: 'Classification & Determination',
               color: 'info',
-              selectWords: ['select me', 'select me 2'],
+              selectWords: classifications(),
               icon: <FontAwesomeIcon icon={faEdit} className="me-2" />,
               modal: true,
               modalUrl: `/api/ExecSetSecurityIncident?TenantFilter=${row.Tenant}&GUID=${row['Id']}&Assigned=${userId}`,

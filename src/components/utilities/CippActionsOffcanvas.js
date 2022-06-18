@@ -78,30 +78,31 @@ export default function CippActionsOffcanvas(props) {
     console.error('An error occored building OCanvas actions' + error.toString())
   }
   let actionsSelectorsContent
-  let options = []
-  let newobj
   try {
-    let keyIterate = -1
     actionsSelectorsContent = props.actionsSelect.map((action, index) => (
-      <CListGroupItem className="" component="select" color={action.color} key={index}>
-        {action.selectWords.forEach((element) =>
-          options.push(
-            <CListGroupItem
-              className=""
-              component="option"
-              key={keyIterate++}
-              value={element.toString()}
-            >
-              {element.toString()}
-            </CListGroupItem>,
-          ),
-        )}
+      <CListGroupItem className="" component="label" color={action.color} key={index}>
+        {action.label}
+        <CListGroupItem
+          className="select-width"
+          component="select"
+          color={action.color}
+          key={index}
+        >
+          {action.selectWords}
+        </CListGroupItem>
       </CListGroupItem>
     ))
-    newobj = React.cloneElement(actionsSelectorsContent[0], { children: options })
+    //actionsSelectorsContent = React.cloneElement(actionsSelectorsContent[0], {
+    //children: [
+    //actionsSelectorsContent[0].props.children[0],
+    //React.cloneElement(actionsSelectorsContent[0].props.children[1], {
+    //children: optionGroups,
+    //}),
+    //],
+    //})
   } catch (error) {
     // When we create an Off Canvas control without selectors we will get this
-    if (!error.toString().includes("Cannot read properties of undefined (reading 'forEach')")) {
+    if (!error.toString().includes("Cannot read properties of undefined (reading '")) {
       console.error('An error occored building OCanvas selectors' + error.toString())
     }
   }
@@ -136,7 +137,7 @@ export default function CippActionsOffcanvas(props) {
       {<COffcanvasTitle>Actions</COffcanvasTitle>}
       <CListGroup layout="vertical-md">
         {actionsContent}
-        {newobj}
+        {actionsSelectorsContent}
       </CListGroup>
     </CippOffcanvas>
   )
