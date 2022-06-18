@@ -109,14 +109,15 @@ const AlertWizard = () => {
           <RFFCFormSwitch name="AdminPassword" label="Alert on changed admin Passwords" />
           <RFFCFormSwitch
             name="DefenderStatus"
-            label="Alert if Defender is not running (Tenant must be onboarded in Lighthouse)"
+            label="Alert if Defender is not running (Tenant must be on-boarded in Lighthouse)"
           />
           <RFFCFormSwitch
             name="DefenderMalware"
-            label="Alert on Defender Malware found  (Tenant must be onboarded in Lighthouse)"
+            label="Alert on Defender Malware found  (Tenant must be on-boarded in Lighthouse)"
           />
           <RFFCFormSwitch name="QuotaUsed" label="Alert on 90% mailbox quota used" />
           <RFFCFormSwitch name="UnusedLicenses" label="Alert on unused licenses" />
+          <RFFCFormSwitch name="AppSecretExpiry" label="Alert on expiring application secrets" />
         </CForm>
         <hr className="my-4" />
       </CippWizard.Page>
@@ -198,6 +199,14 @@ const AlertWizard = () => {
                             color="#f77f00"
                             size="lg"
                             icon={props.values.UnusedLicenses ? faCheck : faTimes}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Alert on expiring application secrets
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.AppSecretExpiry ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                       </CListGroup>
