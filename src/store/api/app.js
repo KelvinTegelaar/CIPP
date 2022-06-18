@@ -117,4 +117,5 @@ export const {
   useLazyListNotificationConfigQuery,
   useLazyGenericPostRequestQuery,
   useLazyGenericGetRequestQuery,
+  useGenericGetRequestQuery,
 } = appApi
