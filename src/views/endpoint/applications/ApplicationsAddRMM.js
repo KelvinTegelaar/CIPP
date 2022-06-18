@@ -37,7 +37,7 @@ const AddRMM = () => {
     values.selectedTenants.map(
       (tenant) => (values[`Select_${tenant.defaultDomainName}`] = tenant.defaultDomainName),
     )
-    genericPostRequest({ path: '/api/AddRMMApp', values: values })
+    genericPostRequest({ path: '/api/AddMSPApp', values: values })
   }
 
   const formValues = {
@@ -104,14 +104,21 @@ const AddRMM = () => {
                 values={[
                   { value: 'datto', name: 'Datto RMM' },
                   { value: 'ninja', name: 'NinjaOne' },
-                  { value: 'ncentral', name: 'N-Able N-Central' },
-                  { value: 'nablermm', name: 'N-Able RMM' },
+                  //{ value: 'ncentral', name: 'N-Able N-Central' },
+                  //{ value: 'nablermm', name: 'N-Able RMM' },
                   { value: 'syncro', name: 'Syncro RMM' },
                   { value: 'immy', name: 'ImmyBot' },
                   { value: 'huntress', name: 'Huntress' },
                 ]}
                 name="rmmname"
-                label="Select RMM"
+                label="Select MSP Tool"
+              />
+            </CCol>
+            <CCol md={6}>
+              <RFFCFormInput
+                type="text"
+                name="displayName"
+                label="Intune Application Display Name"
               />
             </CCol>
           </CRow>
@@ -125,12 +132,9 @@ const AddRMM = () => {
                       <CCol md={6}>
                         <RFFCFormInput
                           type="text"
-                          name="displayName"
-                          label="Application Display Name"
+                          name="params.dattoUrl"
+                          label="Server URL (e.g. https://pinotage.centrastage.net)"
                         />
-                      </CCol>
-                      <CCol md={6}>
-                        <RFFCFormInput type="text" name="dattoUrl" label="Server URL" />
                       </CCol>
                     </CRow>
                     <CRow>
@@ -138,7 +142,7 @@ const AddRMM = () => {
                         <CCol md={6} key={index}>
                           <RFFCFormInput
                             type="text"
-                            name={`dattoGuid_${item.defaultDomainName}`}
+                            name={`params.dattoGuid.${item.customerId}`}
                             label={`Datto ID ${item.defaultDomainName}`}
                           />
                         </CCol>
@@ -168,7 +172,18 @@ const AddRMM = () => {
                       <CCol md={6} key={index}>
                         <RFFCFormInput
                           type="text"
-                          name={`dattoGuid_${item.defaultDomainName}`}
+                          name={`params.ClientURL.${item.customerId}`}
+                          label={`Client URL ${item.defaultDomainName}`}
+                        />
+                      </CCol>
+                    ))}
+                  </Condition>
+                  <Condition when="rmmname.value" is={'immy'}>
+                    {props.values.selectedTenants.map((item, index) => (
+                      <CCol md={6} key={index}>
+                        <RFFCFormInput
+                          type="text"
+                          name={`params.ClientURL.${item.customerId}`}
                           label={`Client URL ${item.defaultDomainName}`}
                         />
                       </CCol>
@@ -176,9 +191,6 @@ const AddRMM = () => {
                   </Condition>
                   <Condition when="rmmname.value" is={'ncentral'}>
                     <CRow>
-                      <CCol md={6}>
-                        <RFFCFormInput type="text" name="displayName" label="Display Name" />
-                      </CCol>
                       <CCol md={6}>
                         <RFFCFormInput type="text" name="AgentURL" label="Agent URL" />
                       </CCol>
@@ -198,10 +210,7 @@ const AddRMM = () => {
                   <Condition when="rmmname.value" is={'huntress'}>
                     <CRow>
                       <CCol md={6}>
-                        <RFFCFormInput type="text" name="displayName" label="Display Name" />
-                      </CCol>
-                      <CCol md={6}>
-                        <RFFCFormInput type="text" name="AccountKey" label="AccountKey" />
+                        <RFFCFormInput type="text" name="params.AccountKey" label="Account Key" />
                       </CCol>
                     </CRow>
                     <CRow>
@@ -209,7 +218,7 @@ const AddRMM = () => {
                         <CCol md={6} key={index}>
                           <RFFCFormInput
                             type="text"
-                            name={`OrgKey_${item.defaultDomainName}`}
+                            name={`params.Orgkey.${item.customerId}`}
                             label={`Organization Key ${item.defaultDomainName}`}
                           />
                         </CCol>
