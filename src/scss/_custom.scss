@@ -557,3 +557,13 @@
 .wrapper.d-flex.flex-column.min-vh-100 .card {
   margin-bottom: 0px;
 }
+
+.celltip-content-nowrap {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.select-width {
+  min-width: 100%;
+}
