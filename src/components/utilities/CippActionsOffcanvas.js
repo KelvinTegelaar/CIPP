@@ -55,7 +55,12 @@ export default function CippActionsOffcanvas(props) {
     var select = document.getElementById(id)
     var selected = select.options[select.selectedIndex]
     var value1 = selected.value
-    var value2 = stringCamelCase(selected.parentNode.label)
+    try {
+      var value2 = stringCamelCase(selected.parentNode.label)
+    } catch {
+      // This is when we select Not Set as it doesn't have a parent group so will throw null
+      value2 = 'unknown'
+    }
     var actualUrl = url.replaceAll('{value1}', value1).replaceAll('{value2}', value2)
     genericGetRequest({ path: actualUrl })
   }
