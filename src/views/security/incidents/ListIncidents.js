@@ -19,9 +19,12 @@ import { useSelector } from 'react-redux'
 import Skeleton from 'react-loading-skeleton'
 import { authApi } from 'src/store/api/auth'
 import classificationDetermination from 'src/data/classificationDetermination'
+import { stringCamelCase } from 'src/components/utilities/CippCamelCase'
 
 let userId
 let locale = 'en-GB'
+let index = 0
+
 if (navigator?.language) {
   locale = navigator.language
 }
@@ -109,25 +112,59 @@ const ListIncidents = () => {
       extendedInfoRaw.push({ label: label, value: element })
       label = ''
     })
+
     let keyIterate = 0
-    function determinations(index = 0) {
+
+    function determinations(index = 0, current = 'unknown', classification = 'unknown') {
       let options = []
+      let iterator = -1
       classificationDetermination.map(({ Classification, Determination }) =>
-        Determination.forEach((element) =>
-          options.push(
-            <CListGroupItem className="" component="option" key={keyIterate++} value={element}>
-              {element}
-            </CListGroupItem>,
-          ),
-        ),
+        Determination.forEach((element) => {
+          if (
+            iterator === index &&
+            stringCamelCase(current).toLowerCase() === stringCamelCase(element).toLowerCase() &&
+            stringCamelCase(Classification).toLowerCase() ===
+              stringCamelCase(classification).toLowerCase()
+          ) {
+            options.push(
+              <CListGroupItem
+                className=""
+                component="option"
+                key={keyIterate++}
+                selected={true}
+                value={stringCamelCase(element)}
+              >
+                {element}
+              </CListGroupItem>,
+            )
+          } else if (iterator === index) {
+            options.push(
+              <CListGroupItem
+                className=""
+                component="option"
+                key={keyIterate++}
+                value={stringCamelCase(element)}
+              >
+                {element}
+              </CListGroupItem>,
+            )
+          }
+        }, iterator++),
       )
       return options
     }
 
-    function classifications() {
+    function classifications(current = 'unknown', classification = 'unknown') {
+      let citerator = 0
       return classificationDetermination.map(({ Classification }) => (
-        <CListGroupItem className="" component="optgroup" key={keyIterate++} label={Classification}>
-          {determinations()}
+        <CListGroupItem
+          className=""
+          component="optgroup"
+          key={keyIterate++}
+          value={stringCamelCase(Classification)}
+          label={Classification}
+        >
+          {determinations(citerator++, current, classification)}
         </CListGroupItem>
       ))
     }
@@ -146,7 +183,7 @@ const ListIncidents = () => {
               color: 'info',
               icon: <FontAwesomeIcon icon={faEdit} className="me-2" />,
               modal: true,
-              modalUrl: `/api/ExecSetSecurityIncident?TenantFilter=${row.Tenant}&GUID=${row['Id']}&Assigned=${userId}`,
+              modalUrl: `/api/ExecSetSecurityIncident?TenantFilter=${row.Tenant}&GUID=${row['Id']}&Assigned=${userId}&Redirected=${row['RedirectId']}`,
               modalMessage: 'Are you sure you want to assign this incident to yourself?',
             },
             {
@@ -176,13 +213,12 @@ const ListIncidents = () => {
           ]}
           actionsSelect={[
             {
+              index: index++,
               label: 'Classification & Determination',
               color: 'info',
-              selectWords: classifications(),
-              icon: <FontAwesomeIcon icon={faEdit} className="me-2" />,
-              modal: true,
-              modalUrl: `/api/ExecSetSecurityIncident?TenantFilter=${row.Tenant}&GUID=${row['Id']}&Assigned=${userId}`,
-              modalMessage: 'Are you sure you want to assign this incident to yourself?',
+              id: 'classificationSelect',
+              selectWords: classifications(row.Determination, row.Classification),
+              url: `/api/ExecSetSecurityIncident?TenantFilter=${row.Tenant}&GUID=${row['Id']}&Determination={value1}&Classification={value2}&Redirected=${row['RedirectId']}`,
             },
           ]}
           placement="end"

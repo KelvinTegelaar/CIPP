@@ -6,6 +6,7 @@ import { CippOffcanvasPropTypes } from 'src/components/utilities/CippOffcanvas'
 import { CippOffcanvasTable } from 'src/components/tables'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { useNavigate } from 'react-router-dom'
+import { stringCamelCase } from 'src/components/utilities/CippCamelCase'
 
 export default function CippActionsOffcanvas(props) {
   const [genericGetRequest, getResults] = useLazyGenericGetRequestQuery()
@@ -49,6 +50,15 @@ export default function CippActionsOffcanvas(props) {
       handleModal(modalMessage, modalUrl, modalType, modalBody)
     }
   }
+
+  const handleOnSelect = (id, url) => {
+    var select = document.getElementById(id)
+    var selected = select.options[select.selectedIndex]
+    var value1 = selected.value
+    var value2 = stringCamelCase(selected.parentNode.label)
+    var actualUrl = url.replaceAll('{value1}', value1).replaceAll('{value2}', value2)
+    genericGetRequest({ path: actualUrl })
+  }
   const extendedInfoContent = <CippOffcanvasTable rows={props.extendedInfo} guid={props.id} />
   let actionsContent
   try {
@@ -85,21 +95,18 @@ export default function CippActionsOffcanvas(props) {
         <CListGroupItem
           className="select-width"
           component="select"
+          id={action.id + action.index}
           color={action.color}
+          onChange={() => handleOnSelect(action.id + action.index, action.url)}
           key={index}
         >
+          <CListGroupItem component="option" value="unknown" key={index + 999999999999999}>
+            Not Set
+          </CListGroupItem>
           {action.selectWords}
         </CListGroupItem>
       </CListGroupItem>
     ))
-    //actionsSelectorsContent = React.cloneElement(actionsSelectorsContent[0], {
-    //children: [
-    //actionsSelectorsContent[0].props.children[0],
-    //React.cloneElement(actionsSelectorsContent[0].props.children[1], {
-    //children: optionGroups,
-    //}),
-    //],
-    //})
   } catch (error) {
     // When we create an Off Canvas control without selectors we will get this
     if (!error.toString().includes("Cannot read properties of undefined (reading '")) {

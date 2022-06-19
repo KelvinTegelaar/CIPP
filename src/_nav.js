@@ -238,14 +238,15 @@ const _nav = [
       },
     ],
   },
-  {
-    component: CNavGroup,
-    name: 'Vulnerabilities',
-    section: 'Security & Compliance',
-    to: '/security/vulnerabilities',
-    icon: <FontAwesomeIcon icon={faChessRook} className="nav-icon" />,
-    items: [],
-  },
+  // Coming in another branch (heads up)
+  //{
+  //component: CNavGroup,
+  //name: 'Vulnerabilities',
+  //section: 'Security & Compliance',
+  //to: '/security/vulnerabilities',
+  //icon: <FontAwesomeIcon icon={faChessRook} className="nav-icon" />,
+  //items: [],
+  //},
   {
     component: CNavGroup,
     name: 'Defender',
