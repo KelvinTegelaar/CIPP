@@ -16,7 +16,6 @@ import {
   faKey,
   faBus,
   faExclamationTriangle,
-  faChessRook,
 } from '@fortawesome/free-solid-svg-icons'
 
 const _nav = [
