@@ -279,6 +279,7 @@ export const RFFSelectSearch = ({
   placeholder,
   validate,
   onChange,
+  multi,
   disabled = false,
 }) => {
   const selectSearchvalues = values.map((val) => ({
@@ -292,17 +293,35 @@ export const RFFSelectSearch = ({
         return (
           <div>
             <CFormLabel htmlFor={name}>{label}</CFormLabel>
-            <Select
-              className="react-select-container"
-              classNamePrefix="react-select"
-              {...input}
-              isClearable={true}
-              name={name}
-              id={name}
-              disabled={disabled}
-              options={selectSearchvalues}
-              placeholder={placeholder}
-            />
+            {onChange && (
+              <Select
+                className="react-select-container"
+                classNamePrefix="react-select"
+                {...input}
+                isClearable={true}
+                name={name}
+                id={name}
+                disabled={disabled}
+                options={selectSearchvalues}
+                placeholder={placeholder}
+                isMulti={multi}
+                onChange={onChange}
+              />
+            )}
+            {!onChange && (
+              <Select
+                className="react-select-container"
+                classNamePrefix="react-select"
+                {...input}
+                isClearable={true}
+                name={name}
+                id={name}
+                disabled={disabled}
+                options={selectSearchvalues}
+                placeholder={placeholder}
+                isMulti={multi}
+              />
+            )}
             <RFFCFormFeedback meta={meta} />
           </div>
         )
@@ -313,6 +332,7 @@ export const RFFSelectSearch = ({
 
 RFFSelectSearch.propTypes = {
   ...sharedPropTypes,
+  multi: PropTypes.bool,
   placeholder: PropTypes.string,
   values: PropTypes.arrayOf(PropTypes.shape({ value: PropTypes.string, name: PropTypes.string }))
     .isRequired,

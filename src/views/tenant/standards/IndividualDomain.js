@@ -22,7 +22,6 @@ import {
   CNav,
   CNavItem,
   CNavLink,
-  CSpinner,
   CTabContent,
   CTabPane,
   CTableDataCell,
@@ -52,6 +51,7 @@ import {
   faGlobe,
   faQuestionCircle,
 } from '@fortawesome/free-solid-svg-icons'
+import Skeleton from 'react-loading-skeleton'
 
 const IconGreenCheck = () => <FontAwesomeIcon icon={faCheckCircle} className="text-success mx-2" />
 const IconRedX = () => <FontAwesomeIcon icon={faTimesCircle} className="text-danger mx-2" />
@@ -93,7 +93,7 @@ export function IndividualDomainCheck({
   const [masonrySize, setMasonrySize] = useState()
 
   const isValidDomain = (value) =>
-    /^(((?!-))(xn--|_{1,1})?[a-z0-9-]{0,61}[a-z0-9]{1,1}\.)*(xn--)?([a-z0-9][a-z0-9-]{0,60}|[a-z0-9-]{1,30}\.[a-z]{2,})$/.test(
+    /^(((?!-))(xn--|_{1,1})?[a-z0-9-]{0,61}[a-z0-9]{1,1}\.)*(xn--)?([a-z0-9][a-z0-9-]{0,60}|[a-z0-9-]{1,30}\.[a-z]{2,})$/i.test(
       value,
     )
       ? undefined
@@ -477,7 +477,7 @@ function ResultsCard({
           </span>
         </CCardHeader>
         <CCardBody>
-          {isFetching && <CSpinner />}
+          {isFetching && <Skeleton count={5} />}
           {!isFetching && error && <>{errorMessage}</>}
           {!isFetching && !error && (
             <>
@@ -695,7 +695,7 @@ function WhoisResultCard({ domain }) {
         </CLink>
       </CCardHeader>
       <CCardBody>
-        {isFetching && <CSpinner />}
+        {isFetching && <Skeleton count={5} />}
         {!isFetching && error && <>Unable to obtain WHOIS information</>}
         {!isFetching && !error && (
           <>

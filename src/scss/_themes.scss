@@ -78,21 +78,23 @@
   --cui-body-font-size: 1rem;
   --cui-body-font-weight: 400;
   --cui-body-line-height: 1.5;
-  --cui-card-cap-color: var(--cyberdrain-light);
-  --cui-card-cap-bg: var(--cyberdrain-accent-blue);
-  --cui-border-radius: 5px;
+  --cui-border-radius: 2px;
   --cui-badge-color: var(--cyberdrain-light);
 
   // CIPP theme-independent variables.
-  --cipp-border-radius: 5px;
-  --cipp-offcanvas-header-bg: var(--cyberdrain-accent-green);
-  --cipp-offcanvas-header-color: var(--cyberdrain-light);
+  --cipp-border-radius: 2px;
   --cipp-offcanvas-header-hover-color: var(--cyberdrain-lighter);
   --cipp-search-selected-option-color: var(--cyberdrain-light);
   --cipp-search-selected-option-bg: var(--cyberdrain-accent-green);
   --cipp-search-selected-option-highlight: rgb(0 92 99 / 10%);
   --cipp-search-header-bg: var(--cyberdrain-accent-blue);
   --cipp-search-header-color: var(--cyberdrain-light);
+
+  @keyframes react-loading-skeleton {
+    100% {
+      transform: translateX(100%);
+    }
+  }
 
   .btn-ghost-success {
     --cui-btn-color: var(--cyberdrain-success);
@@ -207,9 +209,29 @@
     --cui-list-group-action-active-bg: var(--cyberdrain-danger);
     --cui-list-group-action-active-border-color: var(--cyberdrain-darker);
   }
+  .wrapper.d-flex.flex-column.min-vh-100 .card .card-body .rdt_TableHeadRow {
+    font-size: 13px;
+  }
+  .rdt_Pagination {
+    border-top: none;
+  }
 }
 
 [data-theme='cyberdrain'] {
+  // Custom Ian Color
+  --cui-color-gray: rgb(240, 240, 240);
+  --cui-color-gray1: rgb(245, 245, 245);
+  --cui-color-gray2: rgb(250, 250, 250);
+  --cui-color-gray-hover: rgba(210, 210, 210, 0.8);
+  --cui-color-black: rgb(0, 0, 0);
+  --cui-color-white: rgb(255, 255, 255);
+  --cui-bgcolor-table-header: rgba(105, 105, 105, 0.973);
+  --cui-color-orange: #f77f00;
+  --cui-color-header-bar: rgba(210, 210, 210, 0.8);
+  --cui-color-table-border: rgba(210, 210, 210, 0.8);
+  --cui-color-table-border: rgba(210, 210, 210, 0.8);
+  --cui-color-card-shadow: rgba(22, 22, 22, 0.2);
+
   // Core UI CyberDrain theme variables.
   --cui-body-bg: var(--cyberdrain-light);
   --cui-body-color: var(--cyberdrain-dark);
@@ -244,7 +266,7 @@
   --cui-input-focus-color: var(--cyberdrain-dark);
   --cui-link-color: var(--cyberdrain-dark);
   --cui-link-hover-color: var(--cyberdrain-primary);
-  --cui-list-group-bg: var(--cyberdrain-light);
+  --cui-list-group-bg: var(--cui-color-white);
   --cui-list-group-color: var(--cyberdrain-dark);
   --cui-modal-content-bg: var(--cyberdrain-light);
   --cui-modal-content-border-color: var(--cyberdrain-accent-green);
@@ -263,11 +285,13 @@
   --cui-nav-link-hover-color: var(--cyberdrain-dark);
   --cui-nav-tabs-border-color: var(--cyberdrain-accent-green);
   --cui-nav-tabs-link-hover-border-color: var(--cyberdrain-accent-green);
-  --cui-toast-background-color: var(--cyberdrain-light);
+  --cui-toast-background-color: var(--cui-color-white);
   --cui-toast-border-color: var(--cyberdrain-accent-green);
-  --cui-toast-color: var(--cyberdrain-dark);
-  --cui-toast-header-background-color: var(--cyberdrain-accent-green);
-  --cui-toast-header-color: var(--cyberdrain-light);
+  --cui-toast-color: var(--cui-color-black);
+  --cui-toast-header-background-color: var(--cui-color-white);
+  --cui-toast-header-color: var(--cui-color-black);
+  --cui-card-cap-color: var(--cyberdrain-dark);
+  --cui-card-cap-bg: var(--cui-color-white);
 
   // CIPP CyberDrain theme variables.
   --cipp-fa-inverse-color: var(--cyberdrain-dark);
@@ -275,7 +299,7 @@
   --cipp-search-border-color: var(--cyberdrain-accent-green);
   --cipp-search-color: var(--cyberdrain-dark);
   --cipp-search-option-color: var(--cyberdrain-dark);
-  --cipp-table-bg: var(--cyberdrain-light);
+  --cipp-table-bg: var(--cui-color-white);
   --cipp-table-button-bg: var(--cyberdrain-dark);
   --cipp-table-button-disabled-bg: var(--cyberdrain-lighter);
   --cipp-table-button-focus-bg: var(--cui-btn-active-bg);
@@ -290,6 +314,53 @@
   --cipp-table-highlight-on-hover-color: var(--cyberdrain-dark);
   --cipp-table-striped-bg: var(--cyberdrain-light-striped);
   --cipp-table-striped-colour: var(--cyberdrain-dark-striped);
+  --cipp-offcanvas-header-bg: var(--cui-color-white);
+  --cipp-offcanvas-header-color: var(--cyberdrain-dark);
+
+  .react-loading-skeleton {
+    --base-color: #ebebeb;
+    --highlight-color: #f5f5f5;
+    --animation-duration: 1.5s;
+    --animation-direction: normal;
+    --pseudo-element-display: block; /* Enable animation */
+
+    background-color: var(--base-color);
+
+    width: 100%;
+    border-radius: 0.25rem;
+    display: inline-flex;
+    line-height: 1;
+
+    position: relative;
+    overflow: hidden;
+    z-index: 1; /* Necessary for overflow: hidden to work correctly in Safari */
+  }
+  .card {
+    box-shadow: 0 1rem 3rem rgba(black, 0.175);
+  }
+  .react-loading-skeleton::after {
+    content: ' ';
+    display: var(--pseudo-element-display);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-image: linear-gradient(
+      90deg,
+      var(--base-color),
+      var(--highlight-color),
+      var(--base-color)
+    );
+    transform: translateX(-100%);
+
+    animation-name: react-loading-skeleton;
+    animation-direction: var(--animation-direction);
+    animation-duration: var(--animation-duration);
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+  }
 
   .btn-ghost-actioncard {
     --cui-btn-bg: transparent;
@@ -326,7 +397,21 @@
 }
 
 [data-theme='impact'] {
+  // Custom Ian Color
+  --cui-color-gray: rgb(46, 54, 58);
+  // --cui-color-gray1: rgb(15,15,15);
+  // --cui-color-gray2: rgb(10, 10, 10);
+  --cui-color-header-bar: rgba(40, 40, 40, 0.8);
+  --cui-color-gray-hover: rgba(46, 54, 58, 0.8);
+  --cui-color-black: rgb(255, 255, 255);
+  --cui-bgcolor-table-header: rgba(105, 105, 105, 0.973);
+  --cui-color-orange: #f77f00;
+  --cui-color-table-border: rgba(146, 154, 158, 0.8);
+  --cui-color-card-shadow: rgba(207, 192, 192, 0.2);
+
   // Core UI Impact theme variables.
+  --cui-header-hover-color: var(--cyberdrain-light);
+  --cui-header-active-color: var(--cyberdrain-accent-blue);
   --cui-body-bg: var(--cyberdrain-dark);
   --cui-body-color: var(--cyberdrain-light);
   --cui-body-color-rgb: var(--cyberdrain-light-rgb);
@@ -382,11 +467,13 @@
   --cui-nav-link-hover-color: var(--cyberdrain-light);
   --cui-nav-tabs-border-color: var(--cyberdrain-accent-green);
   --cui-nav-tabs-link-hover-border-color: var(--cyberdrain-accent-green);
-  --cui-toast-background-color: var(--cyberdrain-dark);
+  --cui-toast-background-color: var(--cui-color-header-bar);
   --cui-toast-border-color: var(--cyberdrain-accent-green);
-  --cui-toast-color: var(--cyberdrain-light);
-  --cui-toast-header-background-color: var(--cyberdrain-accent-green);
-  --cui-toast-header-color: var(--cyberdrain-light);
+  --cui-toast-color: var(--cui-color-black);
+  --cui-toast-header-background-color: var(--cui-color-header-bar);
+  --cui-toast-header-color: var(--cui-color-black);
+  --cui-card-cap-color: var(--cyberdrain-white);
+  --cui-card-cap-bg: var(--cui-color-dark);
 
   // CIPP Impact theme variables.
   --cipp-fa-inverse-color: var(--cyberdrain-dark);
@@ -409,7 +496,51 @@
   --cipp-table-highlight-on-hover-color: var(--cyberdrain-light);
   --cipp-table-striped-bg: var(--cyberdrain-dark-striped);
   --cipp-table-striped-colour: var(--cyberdrain-light-striped);
+  --cipp-offcanvas-header-bg: var(--cyberdrain-dark);
+  --cipp-offcanvas-header-color: var(--cyberdrain-light);
 
+  .react-loading-skeleton {
+    --base-color: var(--cyberdrain-secondary);
+    --highlight-color: var(--cyberdrain-primary);
+    --animation-duration: 1.5s;
+    --animation-direction: normal;
+    --pseudo-element-display: block; /* Enable animation */
+
+    background-color: var(--base-color);
+
+    width: 100%;
+    border-radius: 0.25rem;
+    display: inline-flex;
+    line-height: 1;
+
+    position: relative;
+    overflow: hidden;
+    z-index: 1; /* Necessary for overflow: hidden to work correctly in Safari */
+  }
+
+  .react-loading-skeleton::after {
+    content: ' ';
+    display: var(--pseudo-element-display);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-image: linear-gradient(
+      90deg,
+      var(--base-color),
+      var(--highlight-color),
+      var(--base-color)
+    );
+    transform: translateX(-100%);
+
+    animation-name: react-loading-skeleton;
+    animation-direction: var(--animation-direction);
+    animation-duration: var(--animation-duration);
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+  }
   .btn-ghost-actioncard {
     --cui-btn-bg: transparent;
     --cui-btn-border-color: transparent;
@@ -451,5 +582,11 @@
     --cui-list-group-action-active-color: var(--cyberdrain-light);
     --cui-list-group-action-active-bg: var(--cyberdrain-secondary);
     --cui-list-group-action-active-border-color: var(--cyberdrain-secondary);
+  }
+  .react-select__multi-value__label {
+    color: var(--cyberdrain-light);
+  }
+  .react-select__multi-value {
+    background-color: var(--cyberdrain-primary);
   }
 }
