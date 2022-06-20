@@ -108,9 +108,9 @@ const EditUser = () => {
 
   const initialState = {
     keepLicenses: true,
+    ...user,
     usageLocation: usageLocation,
     license: precheckedLicenses,
-    ...user,
   }
   console.log(precheckedLicenses)
 
