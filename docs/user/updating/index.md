@@ -32,7 +32,7 @@ To update the backend, you must manually fetch from GitHub and update the Azure 
 - Select Fetch and Merge
 - Go to the Azure Portal
 - Go to your CIPP resource group
-- Select the Azure Function
+- Select the Azure Function App
 - Select "Deployment Center"
 - Select Sync.
 
