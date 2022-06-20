@@ -20,6 +20,11 @@ export const appApi = baseApi.injectEndpoints({
         params: { localversion: localVersion },
       }),
     }),
+    loadDash: builder.query({
+      query: (localVersion) => ({
+        path: '/api/GetDashboard',
+      }),
+    }),
     execPermissionsAccessCheck: builder.query({
       query: () => ({
         path: '/api/ExecAccessChecks',
@@ -101,6 +106,7 @@ export const {
   useLoadVersionLocalQuery,
   useLoadVersionRemoteQuery,
   useLoadVersionsQuery,
+  useLoadDashQuery,
   useExecPermissionsAccessCheckQuery,
   useLazyExecPermissionsAccessCheckQuery,
   useExecTenantsAccessCheckQuery,
@@ -111,4 +117,5 @@ export const {
   useLazyListNotificationConfigQuery,
   useLazyGenericPostRequestQuery,
   useLazyGenericGetRequestQuery,
+  useGenericGetRequestQuery,
 } = appApi

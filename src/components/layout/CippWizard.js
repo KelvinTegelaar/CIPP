@@ -69,7 +69,7 @@ export default class CippWizard extends React.Component {
     const isLastPage = page === React.Children.count(children) - 1
 
     return (
-      <CippPage title={wizardTitle} tenantSelector={false}>
+      <CippPage title={wizardTitle} tenantSelector={false} wizard={true}>
         <CRow className="row justify-content-center cipp-wizard">
           <CCol xxl={12}>
             <CCardHeader className="bg-transparent mb-4">

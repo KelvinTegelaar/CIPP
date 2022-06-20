@@ -3,9 +3,9 @@ import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
 import { PrivateRoute, FullScreenLoading, ErrorBoundary } from 'src/components/utilities'
 import 'src/scss/style.scss'
 import routes from 'src/routes'
-import { CSpinner } from '@coreui/react'
 import { Helmet } from 'react-helmet'
 import adminRoutes from './adminRoutes'
+import Skeleton from 'react-loading-skeleton'
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
@@ -16,6 +16,7 @@ const Page403 = React.lazy(() => import('./views/pages/page403/Page403'))
 const Page404 = React.lazy(() => import('./views/pages/page404/Page404'))
 const Page500 = React.lazy(() => import('./views/pages/page500/Page500'))
 const Login = React.lazy(() => import('./views/pages/login/Login'))
+const Logout = React.lazy(() => import('./views/pages/login/Logout'))
 
 const App = () => {
   return (
@@ -31,6 +32,7 @@ const App = () => {
             <Route exact path="/404" name="Page 404" element={<Page404 />} />
             <Route exact path="/500" name="Page 500" element={<Page500 />} />
             <Route exact path="/login" name="Login" element={<Login />} />
+            <Route exact path="/logout" name="Logout" element={<Logout />} />
             <Route
               path="/"
               element={
@@ -48,7 +50,7 @@ const App = () => {
                       exact={route.exact}
                       name={route.name}
                       element={
-                        <Suspense fallback={<CSpinner color="primary" />}>
+                        <Suspense fallback={<Skeleton />}>
                           <Helmet>
                             <title>CIPP - {route.name}</title>
                           </Helmet>
@@ -69,7 +71,7 @@ const App = () => {
                       name={route.name}
                       element={
                         <PrivateRoute routeType="admin">
-                          <Suspense fallback={<CSpinner color="primary" />}>
+                          <Suspense fallback={<Skeleton />}>
                             <Helmet>
                               <title>CIPP - {route.name}</title>
                             </Helmet>

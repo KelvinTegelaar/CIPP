@@ -4,45 +4,73 @@ import { CCallout, CListGroup, CListGroupItem, COffcanvasTitle, CSpinner } from 
 import { CippOffcanvas, ModalService } from 'src/components/utilities'
 import { CippOffcanvasPropTypes } from 'src/components/utilities/CippOffcanvas'
 import { CippOffcanvasTable } from 'src/components/tables'
-import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
+import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { useNavigate } from 'react-router-dom'
 
 export default function CippActionsOffcanvas(props) {
   const [genericGetRequest, getResults] = useLazyGenericGetRequestQuery()
+  const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
+
   const handleLink = useNavigate()
-  const handleModal = (modalMessage, modalUrl) => {
-    ModalService.confirm({
-      body: (
-        <div style={{ overflow: 'visible' }}>
-          <div>{modalMessage}</div>
-        </div>
-      ),
-      title: 'Confirm',
-      onConfirm: () => genericGetRequest({ path: modalUrl }),
-    })
+  const handleExternalLink = (link) => {
+    window.open(link, '_blank')
   }
-  const handleOnClick = (link, modal, modalMessage, modalUrl) => {
+  const handleModal = (modalMessage, modalUrl, modalType = 'GET', modalBody) => {
+    if (modalType === 'GET') {
+      ModalService.confirm({
+        body: (
+          <div style={{ overflow: 'visible' }}>
+            <div>{modalMessage}</div>
+          </div>
+        ),
+        title: 'Confirm',
+        onConfirm: () => genericGetRequest({ path: modalUrl }),
+      })
+    } else {
+      ModalService.confirm({
+        body: (
+          <div style={{ overflow: 'visible' }}>
+            <div>{modalMessage}</div>
+          </div>
+        ),
+        title: 'Confirm',
+        onConfirm: () => genericPostRequest({ path: modalUrl, values: modalBody }),
+      })
+    }
+  }
+  const handleOnClick = (link, modal, modalMessage, modalUrl, external, modalType, modalBody) => {
     if (link) {
-      handleLink(link)
+      if (external) {
+        handleExternalLink(link)
+      } else {
+        handleLink(link)
+      }
     } else if (modal) {
-      handleModal(modalMessage, modalUrl)
+      handleModal(modalMessage, modalUrl, modalType, modalBody)
     }
   }
   const extendedInfoContent = <CippOffcanvasTable rows={props.extendedInfo} guid={props.id} />
   const actionsContent = props.actions.map((action, index) => (
-    <CListGroup layout="horizontal-md" key={index}>
-      <CListGroupItem
-        className="cipp-action"
-        component="button"
-        color={action.color}
-        onClick={() =>
-          handleOnClick(action.link, action.modal, action.modalMessage, action.modalUrl)
-        }
-      >
-        {action.icon}
-        {action.label}
-      </CListGroupItem>
-    </CListGroup>
+    <CListGroupItem
+      className="cipp-action"
+      component="button"
+      color={action.color}
+      onClick={() =>
+        handleOnClick(
+          action.link,
+          action.modal,
+          action.modalMessage,
+          action.modalUrl,
+          action.external,
+          action.modalType,
+          action.modalBody,
+        )
+      }
+      key={index}
+    >
+      {action.icon}
+      {action.label}
+    </CListGroupItem>
   ))
   return (
     <CippOffcanvas
@@ -57,6 +85,15 @@ export default function CippActionsOffcanvas(props) {
           <CSpinner>Loading</CSpinner>
         </CCallout>
       )}
+      {postResults.isFetching && (
+        <CCallout color="info">
+          <CSpinner>Loading</CSpinner>
+        </CCallout>
+      )}
+      {postResults.isSuccess && <CCallout color="info">{postResults.data?.Results}</CCallout>}
+      {postResults.isError && (
+        <CCallout color="danger">Could not connect to API: {postResults.error.message}</CCallout>
+      )}
       {getResults.isSuccess && <CCallout color="info">{getResults.data?.Results}</CCallout>}
       {getResults.isError && (
         <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
@@ -64,7 +101,7 @@ export default function CippActionsOffcanvas(props) {
       <COffcanvasTitle>Extended Information</COffcanvasTitle>
       {extendedInfoContent}
       {<COffcanvasTitle>Actions</COffcanvasTitle>}
-      {actionsContent}
+      <CListGroup layout="verical-md">{actionsContent}</CListGroup>
     </CippOffcanvas>
   )
 }
@@ -85,7 +122,10 @@ const CippActionsOffcanvasPropTypes = {
       onClick: PropTypes.func,
       modal: PropTypes.bool,
       modalUrl: PropTypes.string,
+      modalBody: PropTypes.string,
+      modalType: PropTypes.string,
       modalMessage: PropTypes.string,
+      external: PropTypes.bool,
     }),
   ).isRequired,
   rowIndex: PropTypes.number,

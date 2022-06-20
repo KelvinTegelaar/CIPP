@@ -15,6 +15,8 @@ import {
   faEnvelope,
   faWindowRestore,
   faUnlock,
+  faKey,
+  faBus,
 } from '@fortawesome/free-solid-svg-icons'
 
 const _nav = [
@@ -56,6 +58,11 @@ const _nav = [
         name: 'Offboarding Wizard',
         to: '/identity/administration/offboarding-wizard',
       },
+      {
+        component: CNavItem,
+        name: 'Deleted Items',
+        to: '/identity/administration/deleted-items',
+      },
     ],
   },
   {
@@ -80,6 +87,11 @@ const _nav = [
         name: 'Basic Auth Report',
         to: '/identity/reports/basic-auth-report',
       },
+      {
+        component: CNavItem,
+        name: 'AAD Connect Report',
+        to: '/identity/reports/azure-ad-connect-report',
+      },
     ],
   },
   {
@@ -95,26 +107,49 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'Tenants',
+        name: 'List Tenants',
         to: '/tenant/administration/tenants',
       },
       {
         component: CNavItem,
-        name: 'Conditional Access Policies',
-        to: '/tenant/administration/conditional-access-policies',
+        name: 'Alerts Wizard',
+        to: '/tenant/administration/alertswizard',
       },
-      // Temp removed due to not ready for release
-      //    {
-      //       component: CNavItem,
-      //     name: 'Alerts Wizard',
-      //     to: '/tenant/administration/alertswizard',
-      //    },
-      // Temp removed due to not ready for release
-      //    {
-      //       component: CNavItem,
-      //     name: 'List Scheduled Alerts',
-      //     to: '/tenant/administration/alertsqueue',
-      //    },
+
+      {
+        component: CNavItem,
+        name: 'List Scheduled Alerts',
+        to: '/tenant/administration/alertsqueue',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
+    name: 'Reports',
+    section: 'Reports',
+    to: '/tenant/reports',
+    icon: <FontAwesomeIcon icon={faChartBar} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Graph Explorer',
+        to: '/tenant/administration/graph-explorer',
+      },
+      {
+        component: CNavItem,
+        name: 'Licence Report',
+        to: '/tenant/administration/list-licenses',
+      },
+      {
+        component: CNavItem,
+        name: 'Consented Applications',
+        to: '/tenant/administration/application-consent',
+      },
+      {
+        component: CNavItem,
+        name: 'Service Health',
+        to: '/tenant/administration/service-health',
+      },
     ],
   },
   {
@@ -152,6 +187,35 @@ const _nav = [
     ],
   },
   {
+    component: CNavGroup,
+    name: 'Conditional Access',
+    section: 'Conditional Access',
+    to: '/tenant/administration',
+    icon: <FontAwesomeIcon icon={faKey} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'List Policies',
+        to: '/tenant/conditional/list-policies',
+      },
+      {
+        component: CNavItem,
+        name: 'Deploy Conditional Access',
+        to: '/tenant/conditional/deploy',
+      },
+      {
+        component: CNavItem,
+        name: 'Add Template',
+        to: '/tenant/conditional/add-template',
+      },
+      {
+        component: CNavItem,
+        name: 'List Templates',
+        to: '/tenant/conditional/list-template',
+      },
+    ],
+  },
+  {
     component: CNavTitle,
     name: 'Security & Compliance',
   },
@@ -166,6 +230,11 @@ const _nav = [
         component: CNavItem,
         name: 'List Alerts',
         to: '/security/reports/list-alerts',
+      },
+      {
+        component: CNavItem,
+        name: 'Device Compliance',
+        to: '/security/reports/list-device-compliance',
       },
     ],
   },
@@ -194,6 +263,16 @@ const _nav = [
         component: CNavItem,
         name: 'Add Choco App',
         to: '/endpoint/applications/add-choco-app',
+      },
+      {
+        component: CNavItem,
+        name: 'Add Office App',
+        to: '/endpoint/applications/add-office-app',
+      },
+      {
+        component: CNavItem,
+        name: 'Add MSP App',
+        to: '/endpoint/applications/add-rmm-app',
       },
     ],
   },
@@ -365,6 +444,35 @@ const _nav = [
   },
   {
     component: CNavGroup,
+    name: 'Transport Rules',
+    section: 'Transport Rules',
+    to: '/tenant/administration',
+    icon: <FontAwesomeIcon icon={faBus} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'List Transport rules',
+        to: '/email/transport/list-rules',
+      },
+      {
+        component: CNavItem,
+        name: 'Deploy Transport rule',
+        to: '/email/transport/deploy-rules',
+      },
+      {
+        component: CNavItem,
+        name: 'Add Template',
+        to: '/email/transport/add-template',
+      },
+      {
+        component: CNavItem,
+        name: 'List Templates',
+        to: '/email/transport/list-templates',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
     name: 'Reports',
     section: 'Email & Exchange',
     to: '/email/reports',
@@ -405,14 +513,19 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'Documentation',
-        href: 'https://cipp.app',
-        target: '_blank',
+        name: 'Settings',
+        to: '/cipp/settings',
       },
       {
         component: CNavItem,
-        name: 'Settings',
-        to: '/cipp/settings',
+        name: 'SAM Setup Wizard (β)',
+        to: '/cipp/setup',
+      },
+      {
+        component: CNavItem,
+        name: 'Documentation',
+        href: 'https://cipp.app',
+        target: '_blank',
       },
     ],
   },
