@@ -13,8 +13,8 @@ const postTicket = async (ticketJSON) => {
   }
 
   const response = await axios(axiosParam)
+  console.log(response)
   const ticketId = response.data.result.id
-  console.log(ticketId)
 
   return ticketId
 }
