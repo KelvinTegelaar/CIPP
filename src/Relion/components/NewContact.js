@@ -19,7 +19,6 @@ export default function NewContact() {
   const [lastName, setlastName] = useState()
   const [email, setEmail] = useState()
   const clientId = useSelector((state) => state.ticket.clientId)
-  const contactId = useSelector((state) => state.ticket.contactId)
   const locationId = useSelector((state) => state.ticket.locationId)
 
   const firstNameHandler = (event) => {
@@ -64,9 +63,8 @@ export default function NewContact() {
     setFormVisible(false)
   }
 
-  const [formVisible, setFormVisible] = useState(false)
-  const [buttonVisible, setButtonVisible] = useState(false)
   const [buttonDisabled, setButtonDisabled] = useState(true)
+  const [formVisible, setFormVisible] = useState(false)
 
   useEffect(() => {
     if (!clientId) {
