@@ -8,7 +8,7 @@ import Button from '@mui/material/Button'
 import postTicket from '../functions/postTicket'
 import postTime from '../functions/postTime'
 
-// Relion store
+// reducers
 import {
   setClient,
   setContact,

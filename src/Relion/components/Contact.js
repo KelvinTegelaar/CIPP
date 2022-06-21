@@ -13,6 +13,7 @@ export default function Contact() {
 
   const contactHandler = async (event, newValue) => {
     dispatch(setContact(newValue))
+    console.log(newValue)
   }
   return (
     <Autocomplete

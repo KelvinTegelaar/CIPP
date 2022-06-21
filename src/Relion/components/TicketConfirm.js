@@ -10,7 +10,7 @@ import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber'
 import Button from '@mui/material/Button'
 import Fade from '@mui/material/Fade'
 
-export default function TicketCard() {
+export default function TicketConfirm() {
   const ticketId = useSelector((state) => state.ticket.ticketId)
 
   // TicketCard disappears after 20 seconds
