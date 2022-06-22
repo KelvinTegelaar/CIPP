@@ -434,7 +434,7 @@ const ListAppliedStandards = () => {
           <CCol lg={6} xs={12}>
             {listStandardsAllTenants && (
               <CippContentCard title="Currently Applied Standards">
-                <CTable>
+                <CTable responsive={true}>
                   <CTableHead>
                     <CTableRow>
                       <CTableHeaderCell scope="col">Tenant</CTableHeaderCell>
