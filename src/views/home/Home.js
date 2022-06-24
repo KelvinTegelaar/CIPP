@@ -80,16 +80,19 @@ const Home = () => {
       <>
         <CippMasonryItem size="card">
           <CippContentCard title="Version Frontend" icon={faBook}>
-            <StatusIcon type="negatedboolean" status={!isLoading && versions.OutOfDateCIPP} />
-            <div>Latest: {!isLoading ? versions.RemoteCIPPVersion : <Skeleton />}</div>
-            <div>Current: {!isLoading ? versions.LocalCIPPVersion : <Skeleton />}</div>
+            <StatusIcon type="negatedboolean" status={isSuccessVersion && versions.OutOfDateCIPP} />
+            <div>Latest: {isSuccessVersion ? versions.RemoteCIPPVersion : <Skeleton />}</div>
+            <div>Current: {isSuccessVersion ? versions.LocalCIPPVersion : <Skeleton />}</div>
           </CippContentCard>
         </CippMasonryItem>
         <CippMasonryItem size="card">
           <CippContentCard title="Version Backend" icon={faBook}>
-            <StatusIcon type="negatedboolean" status={!isLoading && versions.OutOfDateCIPPAPI} />
-            <div>Latest: {!isLoading ? versions.RemoteCIPPAPIVersion : <Skeleton />}</div>
-            <div>Current: {!isLoading ? versions.LocalCIPPAPIVersion : <Skeleton />}</div>
+            <StatusIcon
+              type="negatedboolean"
+              status={isSuccessVersion && versions.OutOfDateCIPPAPI}
+            />
+            <div>Latest: {isSuccessVersion ? versions.RemoteCIPPAPIVersion : <Skeleton />}</div>
+            <div>Current: {isSuccessVersion ? versions.LocalCIPPAPIVersion : <Skeleton />}</div>
           </CippContentCard>
         </CippMasonryItem>
       </>
