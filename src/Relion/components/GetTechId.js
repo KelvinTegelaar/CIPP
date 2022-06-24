@@ -16,5 +16,5 @@ export default function GetTechId() {
   const bmsUser = techList.find((item) => item.user === currentUser)
   dispatch(setTechId(bmsUser.id))
 
-  return
+  return null
 }

@@ -1,10 +1,8 @@
 // import React
 import React from 'react'
 
-// import functions
-import GetTechId from '../functions/GetTechId'
-
 // import components
+import GetTechId from './GetTechId'
 import Client from './Client'
 import Contact from './Contact'
 import NewContact from './NewContact'
@@ -17,11 +15,9 @@ import Submit from './Submit'
 import TicketConfirm from './TicketConfirm'
 
 export default function TicketForm() {
-  // match logged in user with BMS techId
-  GetTechId()
-
   return (
     <>
+      <GetTechId />
       <Client />
       <Contact />
       <NewContact />

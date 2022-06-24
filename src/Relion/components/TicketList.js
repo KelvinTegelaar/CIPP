@@ -111,7 +111,12 @@ export default function TicketList() {
   }
 
   return (
-    <Accordion expanded={expand}>
+    <Accordion
+      sx={{
+        backgroundColor: '#000009',
+      }}
+      expanded={expand}
+    >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon onClick={toggleAccordion} />}
         id="ticket-list-header"
@@ -119,7 +124,7 @@ export default function TicketList() {
         <NewTicket />
       </AccordionSummary>
       <AccordionDetails>
-        <div style={{ height: 500, width: '100%' }}>
+        <div style={{ height: 600, width: '100%' }}>
           <DataGrid onRowClick={rowHandler} rows={ticketList} columns={columns} pageSize={20} />
         </div>
       </AccordionDetails>

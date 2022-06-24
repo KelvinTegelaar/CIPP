@@ -50,7 +50,7 @@ export default function Submit() {
     const startTime = new Date(now.getTime() - timeEntry * 60000)
     const startTimeUTC = startTime.toLocaleTimeString('en-GB', { timeZone: 'UTC' })
     const endTimeUTC = now.toLocaleTimeString('en-GB', { timeZone: 'UTC' }) // format time in GMT for start/end time
-    const date = ticketId ? nowISO : openDate // determine openDate for new vs. existing ticket
+    const date = ticketId ? openDate : nowISO // determine openDate for new vs. existing ticket
     const ticketJSON = JSON.stringify({
       accountId: clientId,
       assigneeId: techId,
