@@ -125,7 +125,22 @@ export default function TicketList() {
       </AccordionSummary>
       <AccordionDetails>
         <div style={{ height: 600, width: '100%' }}>
-          <DataGrid onRowClick={rowHandler} rows={ticketList} columns={columns} pageSize={20} />
+          <DataGrid
+            onRowClick={rowHandler}
+            rows={ticketList}
+            columns={columns}
+            pageSize={20}
+            initialState={{
+              sorting: {
+                sortModel: [
+                  {
+                    field: 'status',
+                    sort: 'desc',
+                  },
+                ],
+              },
+            }}
+          />
         </div>
       </AccordionDetails>
     </Accordion>
