@@ -7,7 +7,11 @@ export const errorMiddleware =
   ({ dispatch }) =>
   (next) =>
   (action) => {
-    if (isRejectedWithValue(action) && !action.error?.hideToastError) {
+    if (
+      isRejectedWithValue(action) &&
+      !action.error?.hideToastError &&
+      action.payload.message !== 'canceled'
+    ) {
       console.error(action)
       const message = action.payload?.data || 'A generic error has occurred.'
 

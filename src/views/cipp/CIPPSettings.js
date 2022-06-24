@@ -46,7 +46,7 @@ import { RFFCFormSwitch, RFFCFormInput } from 'src/components/forms'
 import { Form } from 'react-final-form'
 import useConfirmModal from 'src/hooks/useConfirmModal'
 import { setCurrentTenant } from 'src/store/features/app'
-import { ModalService, TenantSelectorMultiple, TenantSelector } from 'src/components/utilities'
+import { ModalService, TenantSelectorMultiple } from 'src/components/utilities'
 import CippListOffcanvas from 'src/components/utilities/CippListOffcanvas'
 import { TitleButton } from 'src/components/buttons'
 

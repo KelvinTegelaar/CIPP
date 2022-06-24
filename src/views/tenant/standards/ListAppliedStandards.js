@@ -2,7 +2,6 @@ import React from 'react'
 import {
   CButton,
   CCallout,
-  CCardBody,
   CCol,
   CForm,
   CRow,
@@ -90,11 +89,7 @@ const ListAppliedStandards = () => {
 
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
-  const {
-    data: listStandardsAllTenants = [],
-    AllisFetching,
-    AllisSuccess,
-  } = useGenericGetRequestQuery({
+  const { data: listStandardsAllTenants = [] } = useGenericGetRequestQuery({
     path: 'api/listStandards',
   })
 
