@@ -15,6 +15,10 @@ export default function TimeEntry() {
   // slider fomatting values
   const marks = [
     {
+      value: 0,
+      label: '',
+    },
+    {
       value: 15,
       label: '15 min',
     },
@@ -41,7 +45,7 @@ export default function TimeEntry() {
       label="Time Logged"
       defaultValue={15}
       step={15}
-      min={15}
+      min={0}
       max={180}
       valueLabelDisplay="auto"
       valueLabelFormat={valueLabelFormat}

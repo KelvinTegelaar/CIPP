@@ -1,14 +1,17 @@
+// import React
 import React from 'react'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
+import { useSelector } from 'react-redux'
 
-// mui
+// import MUI
 import Stack from '@mui/material/Stack'
 import Grid from '@mui/material/Grid'
 
-// components
+// import Relion components
 import TicketForm from './components/TicketForm'
+import TicketList from './components/TicketList'
 
-// cipp component
+// import CIPP components
 import Users from 'src/views/identity/administration/Users.js'
 
 const App = () => {
@@ -18,6 +21,9 @@ const App = () => {
       mode: 'dark',
     },
   })
+
+  const issueType = useSelector((state) => state.ticket.issueType)
+  //const ticketId = useSelector((state) => state.ticket.ticketId)
 
   return (
     <ThemeProvider theme={darkTheme}>
@@ -29,7 +35,8 @@ const App = () => {
         </Grid>
         <Grid item xs={8}>
           <Stack spacing={2}>
-            <Users />
+            <TicketList />
+            {issueType === 'User Administration' && <Users />}
           </Stack>
         </Grid>
       </Grid>

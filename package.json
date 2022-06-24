@@ -42,6 +42,7 @@
     "@fortawesome/react-fontawesome": "^0.1.16",
     "@mui/icons-material": "^5.8.2",
     "@mui/material": "^5.8.2",
+    "@mui/x-data-grid": "^5.12.2",
     "@popperjs/core": "^2.10.2",
     "@reduxjs/toolkit": "^1.7.0",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.6.3",

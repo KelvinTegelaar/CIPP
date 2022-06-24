@@ -1,15 +1,16 @@
+// import React
 import React from 'react'
 
-// functions
-import GetTechId from '../functions/getTechId'
+// import functions
+import GetTechId from '../functions/GetTechId'
 
-// components
+// import components
 import Client from './Client'
 import Contact from './Contact'
 import NewContact from './NewContact'
 import IssueType from './IssueType'
 import Title from './Title'
-import Notes from './Notes'
+import TimeEntryNotes from './TimeEntryNotes'
 import Status from './Status'
 import TimeEntry from './TimeEntry'
 import Submit from './Submit'
@@ -26,9 +27,9 @@ export default function TicketForm() {
       <NewContact />
       <IssueType />
       <Title />
-      <Notes />
       <TimeEntry />
       <br />
+      <TimeEntryNotes />
       <Status />
       <Submit />
       <TicketConfirm />

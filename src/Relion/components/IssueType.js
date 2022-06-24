@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { setIssueType } from '../store/features/ticketSlice'
+import { setIssueType, setIssueTypeId } from '../store/features/ticketSlice'
 
 //mui
 import Autocomplete from '@mui/material/Autocomplete'
@@ -11,7 +11,8 @@ export default function IssueType() {
   const issueType = useSelector((state) => state.ticket.issueType)
 
   const issueTypeHandler = (event, newValue) => {
-    dispatch(setIssueType(newValue))
+    dispatch(setIssueType(newValue.label))
+    dispatch(setIssueTypeId(newValue.id))
   }
   const issueTypeList = [
     { id: 10490, label: 'Help Desk' },
@@ -20,9 +21,12 @@ export default function IssueType() {
     { id: 10486, label: 'Reboot / False Alarm' },
     { id: 10542, label: '3CX' },
     { id: 10480, label: 'Application' },
+    { id: 12411, label: 'Data Recovery' },
+    { id: 12410, label: 'Email' },
     { id: 12282, label: 'Internet' },
     { id: 12304, label: 'iPhone/Andriod' },
     { id: 12307, label: 'M365' },
+    { id: 10489, label: 'Maintenance' },
     { id: 10483, label: 'Network' },
     { id: 10481, label: 'Printing' },
     { id: 10484, label: 'Remote Access' },

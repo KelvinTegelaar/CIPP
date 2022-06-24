@@ -1,10 +1,12 @@
 import axios from 'axios'
 import getToken from './getToken'
 
-const postTicket = async (ticketJSON) => {
+const postTicket = async (ticketJSON, ticketId = '') => {
+  const method = ticketId ? 'put' : 'post'
+
   const axiosParam = {
-    method: 'post',
-    url: 'https://api.bms.kaseya.com/v2/servicedesk/tickets',
+    method: method,
+    url: `https://api.bms.kaseya.com/v2/servicedesk/tickets/${ticketId}`,
     headers: {
       Authorization: await getToken(),
       'Content-Type': 'application/json',
@@ -14,11 +16,9 @@ const postTicket = async (ticketJSON) => {
 
   const response = await axios(axiosParam)
   console.log(response)
-  const ticketId = response.data.result.id
+  const tid = response.data.result.id
 
-  return ticketId
+  return tid
 }
 
 export default postTicket
-
-//comment

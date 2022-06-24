@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { setContact } from '../store/features/ticketSlice'
+import { setContact, setContactId } from '../store/features/ticketSlice'
 
 //mui
 import Autocomplete from '@mui/material/Autocomplete'
@@ -12,7 +12,8 @@ export default function Contact() {
   const contactList = useSelector((state) => state.ticket.contactList)
 
   const contactHandler = async (event, newValue) => {
-    dispatch(setContact(newValue))
+    dispatch(setContact(newValue.label))
+    dispatch(setContactId(newValue.id))
     console.log(newValue)
   }
   return (
