@@ -10,9 +10,7 @@ import Grid from '@mui/material/Grid'
 // import Relion components
 import TicketForm from './components/TicketForm'
 import TicketList from './components/TicketList'
-
-// import CIPP components
-import Users from 'src/views/identity/administration/Users.js'
+import UserEdit from './components/UserEdit'
 
 const App = () => {
   // MUI dark mode
@@ -35,8 +33,12 @@ const App = () => {
         </Grid>
         <Grid item xs={8}>
           <Stack spacing={2}>
+            {issueType === 'User Administration' && (
+              <>
+                <UserEdit />
+              </>
+            )}
             <TicketList />
-            {issueType === 'User Administration' && <Users />}
           </Stack>
         </Grid>
       </Grid>

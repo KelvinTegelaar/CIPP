@@ -78,10 +78,12 @@ export default function Client() {
     dispatch(setClient(newValue)) // controls form
 
     const tenantList = await getTenants()
-    const tenantId = newValue.tenant
-    const currentTenant = tenantList.filter((t) => t.customerId === tenantId)
     console.log(tenantList)
-    console.log(tenantId)
+
+    const tenantId = newValue.tenant
+    console.log(`tenantId: ${tenantId}`)
+
+    const currentTenant = tenantList.filter((t) => t.customerId === tenantId)
     console.log(currentTenant[0])
 
     dispatch(

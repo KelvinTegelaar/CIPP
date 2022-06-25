@@ -56,7 +56,7 @@ export default function TicketList() {
 
     fetchData() // initial load
 
-    const interval = setInterval(() => fetchData(), 5000) // fetch every 5 sec
+    const interval = setInterval(() => fetchData(), 50000) // fetch every 5 sec
     return () => {
       clearInterval(interval)
     }
@@ -113,7 +113,7 @@ export default function TicketList() {
   return (
     <Accordion
       sx={{
-        backgroundColor: '#000009',
+        backgroundColor: 'transparent',
       }}
       expanded={expand}
     >

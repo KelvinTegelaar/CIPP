@@ -6,8 +6,10 @@ export const ticketSlice = createSlice({
     client: '',
     clientId: '',
     contact: '',
+    contactEmail: '',
+    contactADId: '',
     contactId: '',
-    contactList: [],
+    contactList: '',
     issueType: '',
     issueTypeId: '',
     locationId: '',
@@ -18,6 +20,7 @@ export const ticketSlice = createSlice({
     dueDate: '',
     queue: 27976,
     priority: 28791,
+    selectedContact: [],
     timeEntry: 15,
     timeEntryId: '',
     ticketId: '',
@@ -34,6 +37,12 @@ export const ticketSlice = createSlice({
     },
     setContact: (state, action) => {
       state.contact = action.payload
+    },
+    setContactEmail: (state, action) => {
+      state.contactEmail = action.payload
+    },
+    setContactADId: (state, action) => {
+      state.contactADId = action.payload
     },
     setContactId: (state, action) => {
       state.contactId = action.payload
@@ -68,6 +77,9 @@ export const ticketSlice = createSlice({
     setQueue: (state, action) => {
       state.queue = action.payload
     },
+    setSelectedContact: (state, action) => {
+      state.selectedContact = action.payload
+    },
     setSourceId: (state, action) => {
       state.sourceId = action.payload
     },
@@ -100,6 +112,8 @@ export const {
   setClientId,
   setConfirmedTicketId,
   setContact,
+  setContactADId,
+  setContactEmail,
   setContactId,
   setContactList,
   setDueDate,
@@ -111,6 +125,7 @@ export const {
   setOpenDate,
   setPriority,
   setQueue,
+  setSelectedContact,
   setSourceId,
   setStatus,
   setStatusId,

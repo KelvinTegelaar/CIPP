@@ -32,7 +32,7 @@ const getContactList = async (clientID) => {
 
   //reformat array for MUI dropdown
   const contactList = arr.map((item) => {
-    return { label: item.name, id: item.id }
+    return { label: item.name, id: item.id, email: item.emailAddress }
   })
   return contactList
 }
