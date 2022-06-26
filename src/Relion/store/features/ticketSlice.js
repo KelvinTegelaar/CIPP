@@ -7,9 +7,9 @@ export const ticketSlice = createSlice({
     clientId: '',
     contact: '',
     contactEmail: '',
-    contactADId: '',
+    contactAZId: '',
     contactId: '',
-    contactList: '',
+    contactList: [],
     issueType: '',
     issueTypeId: '',
     locationId: '',
@@ -41,8 +41,8 @@ export const ticketSlice = createSlice({
     setContactEmail: (state, action) => {
       state.contactEmail = action.payload
     },
-    setContactADId: (state, action) => {
-      state.contactADId = action.payload
+    setContactAZId: (state, action) => {
+      state.contactAZId = action.payload
     },
     setContactId: (state, action) => {
       state.contactId = action.payload
@@ -112,7 +112,7 @@ export const {
   setClientId,
   setConfirmedTicketId,
   setContact,
-  setContactADId,
+  setContactAZId,
   setContactEmail,
   setContactId,
   setContactList,
