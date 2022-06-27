@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Skeleton from 'react-loading-skeleton'
 
 const Home = () => {
-  const { data: versions, isLoading, isSuccess: isSuccessVersion } = useLoadVersionsQuery()
+  const { data: versions, isSuccess: isSuccessVersion } = useLoadVersionsQuery()
   const { data: dashboard, isLoading: isLoadingDash, isSuccess: issuccessDash } = useLoadDashQuery()
   const tableColumns = [
     {

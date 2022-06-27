@@ -99,7 +99,7 @@ const EditMailboxPermission = () => {
             <CCol md={6}>
               <CCard>
                 <CCardHeader>
-                  <CCardTitle>Account Details</CCardTitle>
+                  <CCardTitle>Account Details - {userId}</CCardTitle>
                 </CCardHeader>
                 <CCardBody>
                   {userIsFetching && <CSpinner />}
