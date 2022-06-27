@@ -129,24 +129,11 @@ const config = {
             type: 'dropdown',
             position: 'left',
             label: 'Project',
-            items: [{
-                to: 'releases',
-                label: 'Releases',
-              },
-              {
-                label: 'Contributors',
-                to: 'contributors',
-              },
+            items: [
               {
                 label: 'How to Contribute',
                 to: 'contributing',
-              },
-              {
-                type: 'doc',
-                docId: 'faq',
-                label: 'FAQ',
-                docsPluginId: 'general',
-              },
+              }
             ],
           },
           {
