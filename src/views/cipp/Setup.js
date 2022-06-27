@@ -150,7 +150,11 @@ const Setup = () => {
                       <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
                     )}
                     Step {getResults.data?.step} - {getResults.data.message}{' '}
-                    {getResults.data.url && <a href={getResults.data?.url}>HERE</a>}
+                    {getResults.data.url && (
+                      <a target="_blank" rel="noopener noreferrer" href={getResults.data?.url}>
+                        HERE
+                      </a>
+                    )}
                   </>
                 )}
               </CCol>
