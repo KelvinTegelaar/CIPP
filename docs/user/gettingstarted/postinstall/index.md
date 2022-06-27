@@ -9,7 +9,7 @@ At this point you should have completed all the steps in [manual installation or
 
 ## Adding Users
 
-After deployment, go to your resource group in Azure and select your Static Web Application (`cipp-swa-xxxx` if using click-to-deploy). Select Role Management and invite the users you want. Currently CIPP supports three roles, `reader`, `editor`, and `admin`. Further information on the roles and how to assign these is on the [Roles](../roles/) page.
+After deployment, go to your resource group in Azure and select your Static Web Application (`cipp-swa-xxxx` if using click-to-deploy). Select **Role Management** and invite the users you want. Currently CIPP supports three roles, `reader`, `editor`, and `admin`. Further information on the roles and how to assign these is on the [Roles](../roles/) page.
 
 You should now be able to browse to the custom domain or the default domain, and use the CIPP control panel.
 
