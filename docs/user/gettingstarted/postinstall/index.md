@@ -45,6 +45,8 @@ At the moment of deployment, the application uses a generated domain name. To ch
 
 If you want to manage your own tenant, or if you are not a Microsoft Partner but still want to use CIPP you can set a flag in the configuration for this. Be warned that anyone with access to CIPP can then manage your internal tenant too.
 
+It is not recommended to use this functionality, and this might break at any point in time. 
+
 To set the flag follow these steps:
 
 1. Go to your CIPP instance
