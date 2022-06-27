@@ -7,6 +7,8 @@ slug: /gettingstarted/permissions
 
 When using the CIPP SAM Wizard, the application and set permissions are created for you. If you have a manual SAM installation you'll need to setup these permissions yourself.
 
+**You may skip this step if you are planning to use the Secure Application Model Wizard within CIPP**
+
 ## Manual SAM setup
 
 You should grant the following permissions to the secure application model registration, to add permissions follow these instructions:
