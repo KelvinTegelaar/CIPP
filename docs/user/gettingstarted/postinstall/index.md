@@ -5,7 +5,7 @@ description: How to configure CIPP after you've completed installation.
 slug: /gettingstarted/postinstall
 ---
 
-At this point you should have completed all the steps in [manual installation or click-to-deploy installation](../installation/) and your deployment has succeeded.
+At this point you should have completed all the steps in [manual installation or click-to-deploy installation](../installation/) and your deployment has succeeded. Any Red cross means your deployment has failed and you should retry, following all the steps.
 
 ## Adding Users
 
@@ -13,11 +13,17 @@ After deployment, go to your resource group in Azure and select your Static Web 
 
 You should now be able to browse to the custom domain or the default domain, and use the CIPP control panel.
 
-## It's Not Working
+## Setting up access to tenants
 
-:::caution Patience Young Padawan
-For the first 30 minutes or so, the Function App (CIPP-API) runs slow whilst PowerShell modules are downloaded from Microsoft. At present we can't make this run any faster.
+If you are logged in, you'll be greeted by the Dashboard that will most likely tell you to setup your SAM application. You can do this by going to Settings -> SAM Wizard and following the instructions.
+
+:::danger Secure Application Model account
+It is **strongly** recommended that you use a separate global administrator account for each Secure Application Model application you create. This avoids conflicts that occur when using existing accounts which may be in customer tenants as guest users and provides better tracing in audit logs.
+
+**This service account should be a Global Admin (in your tenant) and given Admin Agent permissions in partner Center. This account must have MFA enforced**.
 :::
+
+## It's Not Working
 
 If you have waited for at least 30 minutes and things are still not working restart the Function App (**Azure Portal > CIPP Resource Group > Function App > Overview > Restart**). This solves 99.9% of all issues. Turn it off, turn it on again.
 
@@ -37,7 +43,7 @@ At the moment of deployment, the application uses a generated domain name. To ch
 
 ## I want to manage my own tenant
 
-If you want to manage your own tenant, or if you are not a Microsoft Partner but still want to use CIPP you can set a flag in the configuration for this. Be warned that anyone with access to CIPP can then manage your internal tenant too. 
+If you want to manage your own tenant, or if you are not a Microsoft Partner but still want to use CIPP you can set a flag in the configuration for this. Be warned that anyone with access to CIPP can then manage your internal tenant too.
 
 To set the flag follow these steps:
 

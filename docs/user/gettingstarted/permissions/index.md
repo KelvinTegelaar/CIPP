@@ -5,6 +5,10 @@ description: How to ensure your SAM app for CIPP has the correct permissions.
 slug: /gettingstarted/permissions
 ---
 
+When using the CIPP SAM Wizard, the application and set permissions are created for you. If you have a manual SAM installation you'll need to setup these permissions yourself.
+
+## Manual SAM setup
+
 You should grant the following permissions to the secure application model registration, to add permissions follow these instructions:
 
 * Go to the [Azure Portal](https://portal.azure.com).
@@ -32,7 +36,6 @@ Note that we do not allow these permissions to be set via a script, as you need 
 
 </summary>
 <p>
-
 
 :::note List of **delegated permissions** used by CIPP:
 
