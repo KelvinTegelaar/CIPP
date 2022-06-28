@@ -15,7 +15,7 @@ export const errorMiddleware =
       console.error(action)
       if (action.payload.data === 'Backend call failure') {
         action.payload.data =
-          'The Azure Function has taken too long to respond. Try selecting a different report or a Single Tenant'
+          'The Azure Function has taken too long to respond. Try selecting a different report or a single tenant instead'
       }
       const message = action.payload?.data || 'A generic error has occurred.'
 
