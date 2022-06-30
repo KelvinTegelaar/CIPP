@@ -27,7 +27,7 @@ const Home = () => {
   return (
     <CippMasonry columns={4}>
       <>
-        {!isLoadingDash && (
+        {dashboard?.Alerts && (
           <CippMasonryItem size="full">
             <CippContentCard title="Alerts" icon={faExclamation}>
               {dashboard.Alerts.map((mappedAlert, idx) => (
