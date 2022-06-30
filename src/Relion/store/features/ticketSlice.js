@@ -21,6 +21,9 @@ export const ticketSlice = createSlice({
     queue: 27976,
     priority: 28791,
     selectedContact: [],
+    ticketMyCount: 0,
+    ticketNewCount: 0,
+    ticketRespondedCount: 0,
     timeEntry: 15,
     timeEntryId: '',
     ticketId: '',
@@ -92,6 +95,15 @@ export const ticketSlice = createSlice({
     setTechId: (state, action) => {
       state.techId = action.payload
     },
+    setTicketMyCount: (state, action) => {
+      state.ticketMyCount = action.payload
+    },
+    setTicketNewCount: (state, action) => {
+      state.ticketNewCount = action.payload
+    },
+    setTicketRespondedCount: (state, action) => {
+      state.ticketRespondedCount = action.payload
+    },
     setTimeEntryId: (state, action) => {
       state.timeEntryId = action.payload
     },
@@ -131,6 +143,9 @@ export const {
   setStatusId,
   setTechId,
   setTicketId,
+  setTicketMyCount,
+  setTicketNewCount,
+  setTicketRespondedCount,
   setTimeEntry,
   setTimeEntryId,
   setTitle,

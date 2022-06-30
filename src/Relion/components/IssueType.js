@@ -43,6 +43,7 @@ export default function IssueType() {
       value={issueType}
       options={issueTypeList}
       onChange={issueTypeHandler}
+      isOptionEqualToValue={(option, value) => option.label === value.label}
       renderInput={(params) => <TextField {...params} label="Issue Type" />}
     />
   )

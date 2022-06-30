@@ -3,15 +3,15 @@ import { createSlice } from '@reduxjs/toolkit'
 export const azSlice = createSlice({
   name: 'az',
   initialState: {
-    contactAZId: '',
+    contactAZ: { id: 0, displayName: '', userPrincipalName: '' },
   },
   reducers: {
-    setContactAZId: (state, action) => {
-      state.contactAZId = action.payload
+    setContactAZ: (state, action) => {
+      state.contactAZ = action.payload
     },
   },
 })
 
-export const { setContactAZId } = azSlice.actions
+export const { setContactAZ } = azSlice.actions
 
 export default azSlice.reducer

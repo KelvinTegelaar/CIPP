@@ -1,13 +1,10 @@
 // import React
 import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 // import MUI
 import { DataGrid } from '@mui/x-data-grid'
-import Link from '@mui/material/Link'
-import Accordion from '@mui/material/Accordion'
-import AccordionSummary from '@mui/material/AccordionSummary'
-import AccordionDetails from '@mui/material/AccordionDetails'
+import { Link, Accordion, AccordionSummary, AccordionDetails } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
 // import components
@@ -27,6 +24,9 @@ import {
   setStatusId,
   setTitle,
   setTicketId,
+  setTicketMyCount,
+  setTicketNewCount,
+  setTicketRespondedCount,
 } from '../store/features/ticketSlice'
 
 // import functions
@@ -45,13 +45,27 @@ export default function TicketList() {
     },
   ]
 
-  // fetch data every 5 seconds
+  // fetch ticket list from BMS
   const [ticketList, setTicketList] = useState(initialState)
+  const techId = useSelector((state) => state.ticket.techId)
   useEffect(() => {
     const fetchData = async () => {
       const response = await getTicketList()
+      console.log('Ticket List:')
       console.log(response)
       setTicketList(response)
+
+      // count of tickets for display in TicketCount
+      const myCount = response.filter((item) => item.assigneeId === techId).length
+      dispatch(setTicketMyCount(myCount))
+
+      const newCount = response.filter((item) => item.statusName === 'New').length
+      dispatch(setTicketNewCount(newCount))
+
+      const respondedCount = response.filter(
+        (item) => item.statusName === 'Client Responded',
+      ).length
+      dispatch(setTicketRespondedCount(respondedCount))
     }
 
     fetchData() // initial load
@@ -60,8 +74,10 @@ export default function TicketList() {
     return () => {
       clearInterval(interval)
     }
-  }, [])
+  }, [techId, dispatch])
 
+  // selecting a row populates the ticket form
+  // and other necessary values for BMS API
   const rowHandler = ({ row }) => {
     console.log(row)
     dispatch(setClientId(row.accountId))
@@ -95,17 +111,17 @@ export default function TicketList() {
         )
       },
     },
-    { field: 'contactName', headerName: 'Contact', width: 150 },
-    { field: 'title', headerName: 'Title', width: 400 },
+    { field: 'assigneeName', headerName: 'Assignee', width: 150 },
     {
       field: 'statusName',
       headerName: 'Status',
       width: 150,
     },
-    { field: 'assigneeName', headerName: 'Assignee', width: 150 },
+    { field: 'contactName', headerName: 'Contact', width: 150 },
+    { field: 'title', headerName: 'Title', width: 500 },
   ]
 
-  const [expand, setExpand] = React.useState(true)
+  const [expand, setExpand] = React.useState(false)
   const toggleAccordion = () => {
     setExpand((prev) => !prev)
   }
@@ -124,7 +140,7 @@ export default function TicketList() {
         <NewTicket />
       </AccordionSummary>
       <AccordionDetails>
-        <div style={{ height: 600, width: '100%' }}>
+        <div style={{ height: 370, width: '100%' }}>
           <DataGrid
             onRowClick={rowHandler}
             rows={ticketList}

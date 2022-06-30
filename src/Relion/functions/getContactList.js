@@ -9,7 +9,7 @@ const getContactList = async (clientID) => {
   do {
     //if the page is full (100 items), go to next page and merge results
 
-    console.log(`page: ${page}`)
+    console.log(`contacts page: ${page}`)
 
     const axiosParam = {
       method: 'get',

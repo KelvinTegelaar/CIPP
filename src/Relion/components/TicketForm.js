@@ -1,6 +1,9 @@
 // import React
 import React from 'react'
 
+// import MUI
+import { Stack } from '@mui/material'
+
 // import components
 import GetTechId from './GetTechId'
 import Client from './Client'
@@ -16,7 +19,7 @@ import TicketConfirm from './TicketConfirm'
 
 export default function TicketForm() {
   return (
-    <>
+    <Stack spacing={2}>
       <GetTechId />
       <Client />
       <Contact />
@@ -29,6 +32,6 @@ export default function TicketForm() {
       <Status />
       <Submit />
       <TicketConfirm />
-    </>
+    </Stack>
   )
 }

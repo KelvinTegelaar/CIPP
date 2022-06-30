@@ -41,6 +41,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.16",
     "@mui/icons-material": "^5.8.2",
+    "@mui/lab": "^5.0.0-alpha.88",
     "@mui/material": "^5.8.2",
     "@mui/x-data-grid": "^5.12.2",
     "@popperjs/core": "^2.10.2",

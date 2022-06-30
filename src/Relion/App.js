@@ -4,13 +4,13 @@ import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { useSelector } from 'react-redux'
 
 // import MUI
-import Stack from '@mui/material/Stack'
 import Grid from '@mui/material/Grid'
 
 // import Relion components
 import TicketForm from './components/TicketForm'
 import TicketList from './components/TicketList'
-import UserEdit from './components/UserEdit'
+import TicketCount from './components/TicketCount'
+import UserAdmin from './components/UserAdmin'
 
 const App = () => {
   // MUI dark mode
@@ -26,20 +26,21 @@ const App = () => {
   return (
     <ThemeProvider theme={darkTheme}>
       <Grid container spacing={4}>
-        <Grid item xs={4}>
-          <Stack spacing={2}>
-            <TicketForm />
-          </Stack>
+        <Grid item xs={12}>
+          <TicketList />
         </Grid>
-        <Grid item xs={8}>
-          <Stack spacing={2}>
-            {issueType === 'User Administration' && (
-              <>
-                <UserEdit />
-              </>
-            )}
-            <TicketList />
-          </Stack>
+        <Grid item xs={6}>
+          <TicketForm />
+        </Grid>
+        <Grid item xs={6}>
+          <TicketCount />
+          <br />
+          <UserAdmin />
+          {issueType === 'User Administration' && (
+            <>
+              <UserAdmin />
+            </>
+          )}
         </Grid>
       </Grid>
     </ThemeProvider>
