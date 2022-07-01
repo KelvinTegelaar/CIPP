@@ -23,6 +23,15 @@ It is **strongly** recommended that you use a separate global administrator acco
 **This service account should be a Global Admin (in your tenant) and given Admin Agent permissions in partner Center. This account must have MFA enforced**.
 :::
 
+## Performance optimisations (v2.8.0 and up)
+
+Please change these settings to see a substantial performance increase:
+
+1. Go to your function app
+2. Select "Configuration"
+3. Select "Function runtime settings" and set "Runtime Version" to "~4"
+4. Select "General settings" and set "PowerShell Core Version" to "PowerShell 7.2"
+
 ## It's Not Working
 
 If you have waited for at least 30 minutes and things are still not working restart the Function App (**Azure Portal > CIPP Resource Group > Function App > Overview > Restart**). This solves 99.9% of all issues. Turn it off, turn it on again.
