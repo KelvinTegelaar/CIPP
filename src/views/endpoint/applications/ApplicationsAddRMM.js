@@ -109,6 +109,7 @@ const AddRMM = () => {
                   { value: 'syncro', name: 'Syncro RMM' },
                   { value: 'immy', name: 'ImmyBot' },
                   { value: 'huntress', name: 'Huntress' },
+                  { value: 'automate', name: 'CW Automate' },
                 ]}
                 name="rmmname"
                 label="Select MSP Tool"
@@ -241,6 +242,35 @@ const AddRMM = () => {
                           label="Application name"
                         />
                       </CCol>
+                    </CRow>
+                  </Condition>
+                  <Condition when="rmmname.value" is={'automate'}>
+                    <CRow>
+                      <CCol md={6}>
+                        <RFFCFormInput
+                          type="text"
+                          name="params.Server"
+                          label="Automate Server (including HTTPS)"
+                        />
+                      </CCol>
+                      {props.values.selectedTenants.map((item, index) => (
+                        <CCol md={6} key={index}>
+                          <RFFCFormInput
+                            type="text"
+                            name={`params.InstallerToken.${item.customerId}`}
+                            label={`Installer Token - ${item.defaultDomainName}`}
+                          />
+                        </CCol>
+                      ))}
+                      {props.values.selectedTenants.map((item, index) => (
+                        <CCol md={6} key={index}>
+                          <RFFCFormInput
+                            type="text"
+                            name={`params.LocationID.${item.customerId}`}
+                            label={`Location ID - ${item.defaultDomainName}`}
+                          />
+                        </CCol>
+                      ))}
                     </CRow>
                   </Condition>
                 </>
