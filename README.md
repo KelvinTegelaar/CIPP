@@ -21,6 +21,7 @@
 ![NinjaOne](github_assets/img/NinjaOne-Light.png#gh-dark-mode-only)
 ![NinjaOne](github_assets/img/NinjaOne-Dark.png#gh-light-mode-only)&nbsp;&nbsp;&nbsp;&nbsp;
 ![Huntress](github_assets/img/Huntress.png)
+![HaloPSA](github_assets/img/halopsa-red-grey.svg)
 
 </p>
 
