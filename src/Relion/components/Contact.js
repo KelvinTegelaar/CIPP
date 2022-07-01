@@ -24,13 +24,14 @@ export default function Contact() {
     const fetchData = async () => {
       const data = await getContactList(clientId)
       setCl(data)
+      console.log('Contact List:')
       console.log(data)
     }
     fetchData().catch(console.error)
   }, [clientId])
 
   const contactHandler = async (event, input) => {
-    dispatch(setContact(input.label))
+    dispatch(setContact(input))
     dispatch(setContactId(input.id))
     dispatch(setContactEmail(input.email))
     dispatch(setContactList(cl))
@@ -43,7 +44,7 @@ export default function Contact() {
       autoSelect
       id="contact"
       value={contact}
-      getOptionLabel={(option) => option.name + '  <' + option.emailAddress + '>'}
+      getOptionLabel={(option) => option.label + '  <' + option.email + '>'}
       options={cl}
       onChange={contactHandler}
       isOptionEqualToValue={(option, value) => option.name === value.label}
