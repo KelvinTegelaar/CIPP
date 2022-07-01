@@ -35,7 +35,6 @@ const App = () => {
         <Grid item xs={6}>
           <TicketCount />
           <br />
-          <UserAdmin />
           {issueType === 'User Administration' && (
             <>
               <UserAdmin />

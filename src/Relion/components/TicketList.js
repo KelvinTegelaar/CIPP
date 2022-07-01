@@ -59,7 +59,9 @@ export default function TicketList() {
       const myCount = response.filter((item) => item.assigneeId === techId).length
       dispatch(setTicketMyCount(myCount))
 
-      const newCount = response.filter((item) => item.statusName === 'New').length
+      const newCount = response.filter(
+        (item) => item.statusName === 'New' || item.assigneeId === null,
+      ).length
       dispatch(setTicketNewCount(newCount))
 
       const respondedCount = response.filter(
@@ -70,7 +72,7 @@ export default function TicketList() {
 
     fetchData() // initial load
 
-    const interval = setInterval(() => fetchData(), 10000) // fetch every 5 sec
+    const interval = setInterval(() => fetchData(), 5000) // fetch every 5 sec
     return () => {
       clearInterval(interval)
     }
