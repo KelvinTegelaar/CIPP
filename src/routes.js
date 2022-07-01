@@ -1,6 +1,7 @@
 import React from 'react'
 
 /* eslint-disable prettier/prettier */
+const Relion = React.lazy(() => import('src/Relion/App'))
 const Home = React.lazy(() => import('src/views/home/Home'))
 const Logs = React.lazy(() => import('src/views/cipp/Logs'))
 const Users = React.lazy(() => import('src/views/identity/administration/Users'))
@@ -155,12 +156,15 @@ const TransportDeploy = React.lazy(() =>
   import('src/views/email-exchange/transport/DeployTransport'),
 )
 const SecurityComplianceAlerts = React.lazy(() => import('src/views/security/incidents/ListAlerts'))
-const SecurityComplianceIncidents = React.lazy(() => import('src/views/security/incidents/ListIncidents'))
+const SecurityComplianceIncidents = React.lazy(() =>
+  import('src/views/security/incidents/ListIncidents'),
+)
 const License = React.lazy(() => import('src/views/pages/license/License'))
 const ServiceHealth = React.lazy(() => import('src/views/tenant/administration/ServiceHealth'))
 
 const routes = [
   // { path: '/', exact: true, name: 'Home' },
+  { path: '/relion', name: 'Relion', component: Relion },
   { path: '/home', name: 'Home', component: Home },
   { path: '/cipp/logs', name: 'Logs', component: Logs },
   { path: '/cipp/404', name: 'Error', component: Page404 },
