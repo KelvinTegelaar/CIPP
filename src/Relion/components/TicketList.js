@@ -72,7 +72,7 @@ export default function TicketList() {
 
     fetchData() // initial load
 
-    const interval = setInterval(() => fetchData(), 5000) // fetch every 5 sec
+    const interval = setInterval(() => fetchData(), 10000) // fetch every 10 sec
     return () => {
       clearInterval(interval)
     }
@@ -142,12 +142,13 @@ export default function TicketList() {
         <NewTicket />
       </AccordionSummary>
       <AccordionDetails>
-        <div style={{ height: 370, width: '100%' }}>
+        <div style={{ height: 500, width: '100%' }}>
           <DataGrid
             onRowClick={rowHandler}
             rows={ticketList}
             columns={columns}
-            pageSize={20}
+            rowHeight={38}
+            pageSize={100}
             initialState={{
               sorting: {
                 sortModel: [

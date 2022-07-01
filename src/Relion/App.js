@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux'
 import Grid from '@mui/material/Grid'
 
 // import Relion components
+import TicketActivities from './components/TicketActivities'
 import TicketForm from './components/TicketForm'
 import TicketList from './components/TicketList'
 import TicketCount from './components/TicketCount'
@@ -40,6 +41,7 @@ const App = () => {
               <UserAdmin />
             </>
           )}
+          <TicketActivities />
         </Grid>
       </Grid>
     </ThemeProvider>
