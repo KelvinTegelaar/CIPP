@@ -31,11 +31,13 @@ const EditMailboxPermission = () => {
   const [queryError, setQueryError] = useState(false)
 
   //const [EditMailboxPermission, { error: EditMailboxPermissionError, isFetching: EditMailboxPermissionIsFetching }] = useEditMailboxPermissionMutation()
+  const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
   const {
     data: user = {},
     isFetching: userIsFetching,
     error: userError,
+    refetch: refetchPermissions,
   } = useListMailboxPermissionsQuery({ tenantDomain, userId })
 
   const {
@@ -45,6 +47,9 @@ const EditMailboxPermission = () => {
   } = useListUsersQuery({ tenantDomain })
 
   useEffect(() => {
+    if (postResults.isSuccess) {
+      refetchPermissions()
+    }
     if (!userId || !tenantDomain) {
       ModalService.open({
         body: 'Error invalid request, could not load requested user.',
@@ -54,8 +59,7 @@ const EditMailboxPermission = () => {
     } else {
       setQueryError(false)
     }
-  }, [userId, tenantDomain, dispatch])
-  const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
+  }, [userId, tenantDomain, dispatch, postResults, refetchPermissions])
   const onSubmit = (values) => {
     const shippedValues = {
       userid: userId,
@@ -75,7 +79,6 @@ const EditMailboxPermission = () => {
     ...user,
   }
 
-  // this is dumb
   const formDisabled = queryError === true
 
   return (
@@ -99,12 +102,12 @@ const EditMailboxPermission = () => {
             <CCol md={6}>
               <CCard>
                 <CCardHeader>
-                  <CCardTitle>Account Details</CCardTitle>
+                  <CCardTitle>Account Details - {userId}</CCardTitle>
                 </CCardHeader>
                 <CCardBody>
-                  {userIsFetching && <CSpinner />}
+                  {usersIsFetching && <CSpinner />}
                   {userError && <span>Error loading user</span>}
-                  {!userIsFetching && (
+                  {!usersIsFetching && (
                     <Form
                       initialValues={{ ...initialState }}
                       onSubmit={onSubmit}
