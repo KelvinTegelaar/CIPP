@@ -23,17 +23,26 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
       <CippActionsOffcanvas
         title="App information"
         extendedInfo={[
-          { label: 'Install as', value: `${row.installExperience.runAsAccount}` },
-          { label: 'Restart behaviour', value: `${row.installExperience.deviceRestartBehavior}` },
+          { label: 'Install as', value: `${row.installExperience?.runAsAccount}` },
+          { label: 'Restart behaviour', value: `${row.installExperience?.deviceRestartBehavior}` },
           { label: 'Assigned to groups', value: `${row.isAssigned}` },
           { label: 'Created at', value: `${row.createdDateTime}` },
           { label: 'Modified at', value: `${row.lastModifiedDateTime}` },
           { label: 'Featured App', value: `${row.isFeatured}` },
           { label: 'Publishing State', value: `${row.publishingState}` },
           { label: '# of Dependent Apps', value: `${row.dependentAppCount}` },
-          { label: 'Detection Type', value: `${row.rules[0].ruleType}` },
-          { label: 'Detection File/Folder Name', value: `${row.rules[0].fileOrFolderName}` },
-          { label: 'Detection File/Folder Path', value: `${row.rules[0].path}` },
+          {
+            label: 'Detection Type',
+            value: row.rules ? row.rules[0].ruleType : 'No detection rule',
+          },
+          {
+            label: 'Detection File/Folder Name',
+            value: row.rules ? row.rules[0].fileOrFolderName : 'No detection rule',
+          },
+          {
+            label: 'Detection File/Folder Path',
+            value: row.rules ? row.rules[0].path : 'No detection rule',
+          },
         ]}
         actions={[
           {
