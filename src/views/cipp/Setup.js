@@ -150,7 +150,11 @@ const Setup = () => {
                       <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
                     )}
                     Step {getResults.data?.step} - {getResults.data.message}{' '}
-                    {getResults.data.url && <a href={getResults.data?.url}>HERE</a>}
+                    {getResults.data.url && (
+                      <a target="_blank" rel="noopener noreferrer" href={getResults.data?.url}>
+                        HERE
+                      </a>
+                    )}
                   </>
                 )}
               </CCol>
@@ -253,7 +257,7 @@ const Setup = () => {
                     <CCol md={3}></CCol>
                     <CCol md={6}>
                       {usedWizard &&
-                        'You have used the setup wizard. You can close this screen. Setup has been completed'}
+                        'You have used the setup wizard. You can close this screen. Setup has been completed. We recommend to execute a clear of the token cache. See the documentation on how to perform this.'}
                       {!usedWizard &&
                         'You are sending your own Secure Application Model setup to the Keyvault. For security reasons we do not show the keys. Please make sure you have entered the keys correctly.'}
                     </CCol>

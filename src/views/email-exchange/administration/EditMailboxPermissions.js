@@ -31,11 +31,13 @@ const EditMailboxPermission = () => {
   const [queryError, setQueryError] = useState(false)
 
   //const [EditMailboxPermission, { error: EditMailboxPermissionError, isFetching: EditMailboxPermissionIsFetching }] = useEditMailboxPermissionMutation()
+  const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
   const {
     data: user = {},
     isFetching: userIsFetching,
     error: userError,
+    refetch: refetchPermissions,
   } = useListMailboxPermissionsQuery({ tenantDomain, userId })
 
   const {
@@ -45,6 +47,9 @@ const EditMailboxPermission = () => {
   } = useListUsersQuery({ tenantDomain })
 
   useEffect(() => {
+    if (postResults.isSuccess) {
+      refetchPermissions()
+    }
     if (!userId || !tenantDomain) {
       ModalService.open({
         body: 'Error invalid request, could not load requested user.',
@@ -54,8 +59,7 @@ const EditMailboxPermission = () => {
     } else {
       setQueryError(false)
     }
-  }, [userId, tenantDomain, dispatch])
-  const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
+  }, [userId, tenantDomain, dispatch, postResults, refetchPermissions])
   const onSubmit = (values) => {
     const shippedValues = {
       userid: userId,
@@ -65,6 +69,8 @@ const EditMailboxPermission = () => {
         : '',
       AddFullAccess: values.AddFullAccess ? values.AddFullAccess.value : '',
       RemoveFullAccess: values.RemoveFullAccess ? values.RemoveFullAccess.value : '',
+      AddSendAs: values.AddSendAs ? values.AddSendAs.value : '',
+      RemoveSendAs: values.RemoveSendAs ? values.RemoveSendAs.value : '',
     }
     //window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/ExecEditMailboxPermissions', values: shippedValues })
@@ -73,7 +79,6 @@ const EditMailboxPermission = () => {
     ...user,
   }
 
-  // this is dumb
   const formDisabled = queryError === true
 
   return (
@@ -97,12 +102,12 @@ const EditMailboxPermission = () => {
             <CCol md={6}>
               <CCard>
                 <CCardHeader>
-                  <CCardTitle>Account Details</CCardTitle>
+                  <CCardTitle>Account Details - {userId}</CCardTitle>
                 </CCardHeader>
                 <CCardBody>
-                  {userIsFetching && <CSpinner />}
+                  {usersIsFetching && <CSpinner />}
                   {userError && <span>Error loading user</span>}
-                  {!userIsFetching && (
+                  {!usersIsFetching && (
                     <Form
                       initialValues={{ ...initialState }}
                       onSubmit={onSubmit}
@@ -146,6 +151,32 @@ const EditMailboxPermission = () => {
                                   }))}
                                   placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                                   name="AddFullAccessNoAutoMap"
+                                />
+                                {usersError && <span>Failed to load list of users</span>}
+                              </CCol>
+                              <CCol md={12}>
+                                <RFFSelectSearch
+                                  label="Add Send-as permissions"
+                                  disabled={formDisabled}
+                                  values={users?.map((user) => ({
+                                    value: user.mail,
+                                    name: user.displayName,
+                                  }))}
+                                  placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
+                                  name="AddSendAs"
+                                />
+                                {usersError && <span>Failed to load list of users</span>}
+                              </CCol>
+                              <CCol md={12}>
+                                <RFFSelectSearch
+                                  label="Remove Send-as permissions"
+                                  disabled={formDisabled}
+                                  values={users?.map((user) => ({
+                                    value: user.mail,
+                                    name: user.displayName,
+                                  }))}
+                                  placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
+                                  name="RemoveSendAs"
                                 />
                                 {usersError && <span>Failed to load list of users</span>}
                               </CCol>
