@@ -9,6 +9,7 @@ import GetTechId from './GetTechId'
 import Client from './Client'
 import Contact from './Contact'
 import NewContact from './NewContact'
+import NewTicket from './NewTicket'
 import IssueType from './IssueType'
 import Title from './Title'
 import TimeEntryNotes from './TimeEntryNotes'
@@ -20,6 +21,7 @@ import TicketConfirm from './TicketConfirm'
 export default function TicketForm() {
   return (
     <Stack spacing={2}>
+      <NewTicket />
       <GetTechId />
       <Client />
       <Contact />

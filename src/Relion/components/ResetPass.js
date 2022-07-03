@@ -144,7 +144,7 @@ export default function ResetPass() {
   return (
     <>
       <Stack direction="row" spacing={0}>
-        <Button onClick={resetHandler}>Reset Password =</Button>
+        <Typography>Generated Password =</Typography>&nbsp;
         <Chip
           label={pass1}
           variant="outlined"
@@ -152,15 +152,23 @@ export default function ResetPass() {
           onClick={() => setIndex1(index1 + 1)}
           onDelete={handleDelete}
         />
-        <Chip label={pass2} variant="outlined" color="success" onClick={pass2Handler} />
+        <Chip label={pass2} variant="outlined" color="primary" onClick={pass2Handler} />
         <Typography>
           <sup>{rhymeCount}</sup>
         </Typography>
-        <Chip label={pass3} variant="outlined" color="info" onClick={() => setIndex3(index3 + 1)} />
+        <Chip
+          label={pass3}
+          variant="outlined"
+          color="primary"
+          onClick={() => setIndex3(index3 + 1)}
+        />
       </Stack>
       <br />
+      <Button onClick={resetHandler} color="warning" variant="outlined">
+        Reset Password
+      </Button>
+      <br />
       {fetchResult()}
-      <Typography></Typography>
     </>
   )
 }

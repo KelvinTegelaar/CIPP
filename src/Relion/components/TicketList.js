@@ -8,7 +8,7 @@ import { Link, Accordion, AccordionSummary, AccordionDetails } from '@mui/materi
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
 // import components
-import NewTicket from './NewTicket'
+import TicketCount from './TicketCount'
 
 // import reducers
 import {
@@ -153,23 +153,14 @@ export default function TicketList() {
     { field: 'title', headerName: 'Title', width: 500 },
   ]
 
-  const [expand, setExpand] = React.useState(false)
-  const toggleAccordion = () => {
-    setExpand((prev) => !prev)
-  }
-
   return (
     <Accordion
       sx={{
         backgroundColor: 'transparent',
       }}
-      expanded={expand}
     >
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon onClick={toggleAccordion} />}
-        id="ticket-list-header"
-      >
-        <NewTicket />
+      <AccordionSummary expandIcon={<ExpandMoreIcon />} id="ticket-list-header">
+        <TicketCount />
       </AccordionSummary>
       <AccordionDetails>
         <div style={{ height: 400, width: '100%' }}>
@@ -183,7 +174,7 @@ export default function TicketList() {
               sorting: {
                 sortModel: [
                   {
-                    field: 'status',
+                    field: 'statusName',
                     sort: 'desc',
                   },
                 ],

@@ -11,7 +11,6 @@ import Details from './components/Details'
 import TicketActivities from './components/TicketActivities'
 import TicketForm from './components/TicketForm'
 import TicketList from './components/TicketList'
-import TicketCount from './components/TicketCount'
 import UserAdmin from './components/UserAdmin'
 
 const App = () => {
@@ -34,8 +33,6 @@ const App = () => {
           <TicketForm />
         </Grid>
         <Grid item xs={6}>
-          <TicketCount />
-          <br />
           {issueType === 'User Administration' && (
             <>
               <UserAdmin />

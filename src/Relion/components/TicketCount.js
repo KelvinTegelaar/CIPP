@@ -9,7 +9,7 @@ export default function TicketCount() {
   console.log(`myCount: ${myCount}`)
 
   return (
-    <Stack spacing={2}>
+    <Stack spacing={2} direction="row">
       {newCount > 0 && <Alert severity="error">New Tickets: {newCount}</Alert>}
       {respondedCount > 0 && <Alert severity="warning">Client Responded: {respondedCount}</Alert>}
       {myCount > 0 && <Alert severity="info">My Tickets: {myCount}</Alert>}
