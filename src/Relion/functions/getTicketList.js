@@ -5,7 +5,7 @@ const getTicketList = async () => {
   const filter = {
     filter: {
       queueNames: 'Help Desk',
-      excludeCompleted: 0,
+      excludeCompleted: 1,
     },
   }
 
