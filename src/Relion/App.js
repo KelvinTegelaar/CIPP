@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux'
 import Grid from '@mui/material/Grid'
 
 // import Relion components
+import Details from './components/Details'
 import TicketActivities from './components/TicketActivities'
 import TicketForm from './components/TicketForm'
 import TicketList from './components/TicketList'
@@ -22,7 +23,6 @@ const App = () => {
   })
 
   const issueType = useSelector((state) => state.ticket.issueType)
-  //const ticketId = useSelector((state) => state.ticket.ticketId)
 
   return (
     <ThemeProvider theme={darkTheme}>
@@ -41,6 +41,7 @@ const App = () => {
               <UserAdmin />
             </>
           )}
+          <Details />
           <TicketActivities />
         </Grid>
       </Grid>

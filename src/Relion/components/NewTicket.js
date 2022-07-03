@@ -3,10 +3,12 @@ import { useDispatch } from 'react-redux'
 import Button from '@mui/material/Button'
 // import reducers
 import {
+  setActivities,
   setClient,
   setClientId,
   setContact,
   setContactId,
+  setDetails,
   setIssueType,
   setIssueTypeId,
   setLocationId,
@@ -20,10 +22,18 @@ import {
 export default function NewTicket() {
   const dispatch = useDispatch()
   const resetForm = () => {
+    dispatch(setActivities([]))
     dispatch(setClient(''))
     dispatch(setClientId(''))
-    dispatch(setContact(''))
+    dispatch(
+      setContact({
+        id: 0,
+        label: '',
+        email: '',
+      }),
+    )
     dispatch(setContactId(''))
+    dispatch(setDetails(''))
     dispatch(setIssueType(''))
     dispatch(setIssueTypeId(''))
     dispatch(setLocationId(''))

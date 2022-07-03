@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+//import React
+import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   setContact,
@@ -7,10 +8,10 @@ import {
   setContactList,
 } from '../store/features/ticketSlice'
 
-//functions
+//import functions
 import getContactList from '../functions/getContactList'
 
-//mui
+//import mui
 import Autocomplete from '@mui/material/Autocomplete'
 import TextField from '@mui/material/TextField'
 
@@ -18,23 +19,23 @@ export default function Contact() {
   const dispatch = useDispatch()
   const clientId = useSelector((state) => state.ticket.clientId)
   const contact = useSelector((state) => state.ticket.contact)
-  const [cl, setCl] = useState([])
+  const contactList = useSelector((state) => state.ticket.contactList)
 
   useEffect(() => {
     const fetchData = async () => {
       const data = await getContactList(clientId)
-      setCl(data)
       console.log('Contact List:')
       console.log(data)
+      dispatch(setContactList(data))
     }
     fetchData().catch(console.error)
-  }, [clientId])
+  }, [clientId, dispatch])
 
   const contactHandler = async (event, input) => {
     dispatch(setContact(input))
     dispatch(setContactId(input.id))
     dispatch(setContactEmail(input.email))
-    dispatch(setContactList(cl))
+    console.log('Selected Contact:')
     console.log(input)
   }
   return (
@@ -45,7 +46,7 @@ export default function Contact() {
       id="contact"
       value={contact}
       getOptionLabel={(option) => option.label + '  <' + option.email + '>'}
-      options={cl}
+      options={contactList}
       onChange={contactHandler}
       isOptionEqualToValue={(option, value) => option.name === value.label}
       renderInput={(params) => <TextField {...params} label="Contact" />}

@@ -16,6 +16,8 @@ import {
   setClientId,
   setContact,
   setContactId,
+  setContactEmail,
+  setDetails,
   setIssueType,
   setIssueTypeId,
   setLocationId,
@@ -31,6 +33,7 @@ import {
 
 // import functions
 import getTicketList from '../functions/getTicketList'
+import getContactList from '../functions/getContactList'
 
 export default function TicketList() {
   const dispatch = useDispatch()
@@ -79,13 +82,37 @@ export default function TicketList() {
   }, [techId, dispatch])
 
   // selecting a row populates the ticket form
-  // and other necessary values for BMS API
-  const rowHandler = ({ row }) => {
-    console.log(row)
+  // and other necessary values for BMS
+  const rowHandler = async ({ row }) => {
+    // BMS ticket doesn't store contactEmail
+    // Must fetch from Contacts API
+    const data = await getContactList(row.accountId)
+    const selectedContact = data.filter((item) => item.id === row.contactId)
+    console.log('Selected Contact:')
+    console.log(selectedContact)
+    if (selectedContact.length > 0) {
+      dispatch(setContactEmail(selectedContact[0].email))
+      dispatch(
+        setContact({
+          id: row.contactId,
+          label: row.contactName,
+          email: selectedContact[0].email,
+        }),
+      )
+    } else {
+      dispatch(
+        setContact({
+          id: 0,
+          label: '',
+          email: '',
+        }),
+      )
+    }
+
     dispatch(setClientId(row.accountId))
     dispatch(setClient(row.accountName))
     dispatch(setContactId(row.contactId))
-    dispatch(setContact(row.contactName))
+    dispatch(setDetails(row.details))
     dispatch(setIssueTypeId(row.issueTypeId))
     dispatch(setIssueType(row.issueTypeName))
     dispatch(setLocationId(row.locationId))
@@ -94,6 +121,9 @@ export default function TicketList() {
     dispatch(setStatusId(row.statusId))
     dispatch(setTicketId(row.id))
     dispatch(setTitle(row.title))
+
+    console.log('Selected Row:')
+    console.log(row)
   }
 
   // format table
@@ -142,7 +172,7 @@ export default function TicketList() {
         <NewTicket />
       </AccordionSummary>
       <AccordionDetails>
-        <div style={{ height: 500, width: '100%' }}>
+        <div style={{ height: 400, width: '100%' }}>
           <DataGrid
             onRowClick={rowHandler}
             rows={ticketList}

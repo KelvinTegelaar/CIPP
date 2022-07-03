@@ -3,13 +3,15 @@ import { createSlice } from '@reduxjs/toolkit'
 export const ticketSlice = createSlice({
   name: 'ticket',
   initialState: {
+    activities: [],
     client: '',
     clientId: '',
-    contact: '',
+    contact: { id: 0, label: '', email: '' },
     contactEmail: '',
     contactAZId: '',
     contactId: '',
     contactList: [],
+    details: '',
     issueType: '',
     issueTypeId: '',
     locationId: '',
@@ -29,6 +31,9 @@ export const ticketSlice = createSlice({
     ticketId: '',
   },
   reducers: {
+    setActivities: (state, action) => {
+      state.activities = action.payload
+    },
     setClient: (state, action) => {
       state.client = action.payload
     },
@@ -95,6 +100,9 @@ export const ticketSlice = createSlice({
     setTechId: (state, action) => {
       state.techId = action.payload
     },
+    setDetails: (state, action) => {
+      state.details = action.payload
+    },
     setTicketMyCount: (state, action) => {
       state.ticketMyCount = action.payload
     },
@@ -104,6 +112,7 @@ export const ticketSlice = createSlice({
     setTicketRespondedCount: (state, action) => {
       state.ticketRespondedCount = action.payload
     },
+
     setTimeEntryId: (state, action) => {
       state.timeEntryId = action.payload
     },
@@ -120,6 +129,7 @@ export const ticketSlice = createSlice({
 })
 
 export const {
+  setActivities,
   setClient,
   setClientId,
   setConfirmedTicketId,
@@ -128,6 +138,7 @@ export const {
   setContactEmail,
   setContactId,
   setContactList,
+  setDetails,
   setDueDate,
   setDueDateISO,
   setIssueType,

@@ -1,27 +1,48 @@
-//import React, { useEffect, useState } from 'react'
 import React, { useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { setActivities } from '../store/features/ticketSlice'
 import getTicketActivities from '../functions/getTicketActivities'
 
 export default function TicketActivities() {
-  //const [ticketActivities, setTicketActivities] = useState()
-  const techId = useSelector((state) => state.ticket.techId)
+  const dispatch = useDispatch()
+  const ticketId = useSelector((state) => state.ticket.ticketId)
+  const activities = useSelector((state) => state.ticket.activities)
   useEffect(() => {
     const fetchData = async () => {
-      const response = await getTicketActivities(techId)
+      const response = await getTicketActivities(ticketId)
       console.log('Ticket Activities:')
       console.log(response)
-      //setTicketActivities(response)
+      dispatch(setActivities(response))
     }
     fetchData()
-  }, [techId])
+  }, [ticketId, dispatch])
 
   return (
-    <>
-      {/*ticketActivities.map((message, idx) => {
-        return <li key={idx}>{message}</li>
-      })*/}
-      Hello
-    </>
+    <p>
+      {activities.map((activity, index) => {
+        return (
+          <div key={index}>
+            {
+              <>
+                <hr />
+                {activity.activityType === 'Status Changed' && (
+                  <div>
+                    {activity.notes} → {activity.internalNotes}
+                  </div>
+                )}
+                {activity.activityType !== 'Status Changed' && (
+                  <>
+                    <div>
+                      <b>{activity.createdByName}</b>
+                    </div>
+                    <div dangerouslySetInnerHTML={{ __html: activity.notes }} />
+                  </>
+                )}
+              </>
+            }
+          </div>
+        )
+      })}
+    </p>
   )
 }
