@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { CButton } from '@coreui/react'
-import { faEdit, faEllipsisV } from '@fortawesome/free-solid-svg-icons'
+import { faBook, faEdit, faEllipsisV, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPageList } from 'src/components/layout'
 import { Link } from 'react-router-dom'
@@ -33,9 +33,18 @@ const Actions = (row, rowIndex, formatExtraData) => {
         ]}
         actions={[
           {
+            label: 'Create template based on policy (beta)',
+            color: 'info',
+            modal: true,
+            icon: <FontAwesomeIcon icon={faBook} className="me-2" />,
+            modalUrl: `/api/AddIntuneTemplate?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}&URLName=${row.URLName}`,
+            modalMessage: 'Are you sure you want to create a template based on this policy?',
+          },
+          {
             label: 'Delete Policy',
             color: 'danger',
             modal: true,
+            icon: <FontAwesomeIcon icon={faTrashAlt} className="me-2" />,
             modalUrl: `/api/RemovePolicy?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}&URLName=${row.URLName}`,
             modalMessage: 'Are you sure you want to delete this policy?',
           },
