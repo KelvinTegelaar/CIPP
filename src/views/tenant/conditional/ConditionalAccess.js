@@ -13,6 +13,12 @@ import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
 import { CippActionsOffcanvas } from 'src/components/utilities'
 import { cellDateFormatter, CellTip } from 'src/components/tables'
+function DateNotNull(date) {
+  if (date === null || date === undefined || date === '' || date === 'undefined') {
+    return ' '
+  }
+  return date.toString().trim() + 'Z'
+}
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
   const [ocVisible, setOCVisible] = useState(false)
@@ -98,7 +104,7 @@ const columns = [
   },
   {
     name: 'Last Modified (Local)',
-    selector: (row) => row['modifiedDateTime'].toString().trim() + 'Z',
+    selector: (row) => DateNotNull(row['modifiedDateTime']),
     sortable: true,
     cell: cellDateFormatter(),
     exportSelector: 'modifiedDateTime',

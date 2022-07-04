@@ -25,6 +25,42 @@ const rowStyle = (row, rowIndex) => {
   return style
 }
 
+function timeConversion(s) {
+  let AMPM = s.slice(-2)
+  let timeArr = s.slice(0, -2).split(':')
+  if (AMPM === 'AM' && timeArr[0] === '12') {
+    // catching edge-case of 12AM
+    timeArr[0] = '00'
+  } else if (AMPM === 'PM') {
+    // everything with PM can just be mod'd and added with 12 - the max will be 23
+    timeArr[0] = (timeArr[0] % 12) + 12
+  }
+  return timeArr.join(':')
+}
+
+//This is so dirty but I need to do this to solve the inconsistent dates
+//between macos and windows
+function FixDate(date) {
+  if (date === null) {
+    return null
+  }
+  try {
+    var noLinesDate = date.toString().replace(/\n/g, '').trim()
+    if (noLinesDate.toString().includes('AM') || noLinesDate.toString().includes('PM')) {
+      var onlyTime = noLinesDate.slice(-11)
+      if (onlyTime[0] === ' ') {
+        onlyTime = '0' + onlyTime.replace(' ', '').replace(' ', '')
+      }
+      onlyTime = timeConversion(onlyTime.replace(' ', '').replace(' ', ''))
+      noLinesDate = noLinesDate.slice(0, -11) + ' ' + onlyTime
+    }
+    return noLinesDate + 'Z'
+  } catch {
+    console.error('error returning date')
+    return 'error'
+  }
+}
+
 function ConvertErrorCode(row) {
   try {
     return row['LoginStatus']
@@ -100,7 +136,7 @@ export default function UserSigninLogs({ userId, tenantDomain, className = null 
   const columns = [
     {
       name: 'Date (Local)',
-      selector: (row) => row['Date'].toString().trim() + 'Z',
+      selector: (row) => FixDate(row['Date']),
       exportSelector: 'Date',
       minWidth: '145px',
       cell: cellDateFormatter(),
