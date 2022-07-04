@@ -14,7 +14,7 @@ import { CippPageList } from 'src/components/layout'
 import { CippActionsOffcanvas } from 'src/components/utilities'
 import { cellDateFormatter, CellTip } from 'src/components/tables'
 function DateNotNull(date) {
-  if (date === null) {
+  if (date === null || date === undefined || date === '' || date === 'undefined') {
     return ' '
   }
   return date.toString().trim() + 'Z'
