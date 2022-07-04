@@ -26,6 +26,7 @@ const rowStyle = (row, rowIndex) => {
 }
 
 function FixDate(date) {
+  console.warn('Date: ' + date.toString())
   if (date === null) {
     return null
   }
