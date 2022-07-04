@@ -1,5 +1,18 @@
 import React from 'react'
-import { CButton, CCallout, CCol, CForm, CRow, CSpinner } from '@coreui/react'
+import {
+  CButton,
+  CCallout,
+  CCol,
+  CForm,
+  CRow,
+  CSpinner,
+  CTable,
+  CTableBody,
+  CTableDataCell,
+  CTableHead,
+  CTableHeaderCell,
+  CTableRow,
+} from '@coreui/react'
 import { Form } from 'react-final-form'
 import { Condition, RFFCFormInput, RFFCFormSelect, RFFCFormSwitch } from 'src/components/forms'
 import {
@@ -75,6 +88,10 @@ const ListAppliedStandards = () => {
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
 
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
+
+  const { data: listStandardsAllTenants = [] } = useGenericGetRequestQuery({
+    path: 'api/listStandards',
+  })
 
   const {
     data: listStandardResults = [],
@@ -409,7 +426,28 @@ const ListAppliedStandards = () => {
               )}
             </CippContentCard>
           </CCol>
-          <CCol lg={6} xs={12}></CCol>
+          <CCol lg={6} xs={12}>
+            {listStandardsAllTenants && (
+              <CippContentCard title="Currently Applied Standards">
+                <CTable responsive={true}>
+                  <CTableHead>
+                    <CTableRow>
+                      <CTableHeaderCell scope="col">Tenant</CTableHeaderCell>
+                      <CTableHeaderCell scope="col">Standards</CTableHeaderCell>
+                    </CTableRow>
+                  </CTableHead>
+                  <CTableBody>
+                    {listStandardsAllTenants.map((owner) => (
+                      <CTableRow key={owner.displayName}>
+                        <CTableDataCell>{owner.displayName}</CTableDataCell>
+                        <CTableDataCell>{Object.keys(owner.standards).join(',')}</CTableDataCell>
+                      </CTableRow>
+                    ))}
+                  </CTableBody>
+                </CTable>
+              </CippContentCard>
+            )}
+          </CCol>
         </CRow>
       </>
     </CippPage>
