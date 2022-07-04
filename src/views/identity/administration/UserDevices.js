@@ -78,13 +78,17 @@ const columns = [
     cell: cellNullTextFormatter(),
     exportSelector: 'createdDateTime',
   },
+  /*
+  * This should not be used, it is not anywhere near accurate, it is out by days even weeks 
+  * in my testing, I don't recommend we display it, we have alternate sources for this
+  * as well which are significantly closer to (if not) accurate - knightian
   {
     name: 'Approx Last SignIn',
     selector: (row) => row['approximateLastSignInDateTime'],
     sortable: true,
     cell: cellNullTextFormatter(),
     exportSelector: 'approximateLastSignInDateTime',
-  },
+  },**/
   {
     name: 'Ownership',
     selector: (row) => row['deviceOwnership'],

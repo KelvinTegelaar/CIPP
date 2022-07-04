@@ -9,7 +9,7 @@ import {
   CTableHeaderCell,
   CTableRow,
 } from '@coreui/react'
-import { CellTip, cellBooleanFormatter } from 'src/components/tables'
+import { CellTip, cellBooleanFormatter, cellDateFormatter } from 'src/components/tables'
 import { DatatableContentCard } from 'src/components/contentcards'
 import { faKey } from '@fortawesome/free-solid-svg-icons'
 import { ModalService } from 'src/components/utilities'
@@ -23,6 +23,44 @@ const rowStyle = (row, rowIndex) => {
   }
 
   return style
+}
+
+function ConvertErrorCode(row) {
+  try {
+    return row['LoginStatus']
+      .toString()
+      .replace('50126', '50126 (Invalid username or password)')
+      .replace(
+        '70044',
+        '70044 (The session has expired or is invalid due to sign-in frequency checks by conditional access)',
+      )
+      .replace('50089', '50089 (Flow token expired)')
+      .replace('53003', '53003 (Access has been blocked by Conditional Access policies)')
+      .replace(
+        '50140',
+        '50140 (This error occurred due to "Keep me signed in" interrupt when the user was signing-in)',
+      )
+      .replace('50097', '50097 (Device authentication required)')
+      .replace(
+        '65001',
+        "65001 (Application X doesn't have permission to access application Y or the permission has been revoked)",
+      )
+      .replace(
+        '50053',
+        '50053 (Account is locked because user tried to sign in too many times with an incorrect user ID or password)',
+      )
+      .replace('50020', '50020 (The user is unauthorized)')
+      .replace(
+        '50125',
+        '50125 (Sign-in was interrupted due to a password reset or password registration entry)',
+      )
+      .replace('50074', '50074 (User did not pass the MFA challenge)')
+      .replace('50133', '50133 (Session is invalid due to expiration or recent password change)')
+      .replace('530002', '530002 (Your device is required to be compliant to access this resource)')
+      .replace('9001011', '9001011 (Device policy contains unsupported required device state)')
+  } catch {
+    return null
+  }
 }
 
 export default function UserSigninLogs({ userId, tenantDomain, className = null }) {
@@ -61,11 +99,11 @@ export default function UserSigninLogs({ userId, tenantDomain, className = null 
 
   const columns = [
     {
-      name: 'Date',
-      selector: (row) => row['Date'],
+      name: 'Date (Local)',
+      selector: (row) => row['Date'].toString().trim() + 'Z',
       exportSelector: 'Date',
-      minWidth: '230px',
-      cell: (row) => CellTip(row['Date']),
+      minWidth: '145px',
+      cell: cellDateFormatter(),
     },
     {
       name: 'Application',
@@ -76,29 +114,9 @@ export default function UserSigninLogs({ userId, tenantDomain, className = null 
     },
     {
       name: 'Login Status',
-      selector: (row) =>
-        row['LoginStatus']
-          .toString()
-          .replace('50126', '50126 (Invalid username or password)')
-          .replace(
-            '70044',
-            '70044 (The session has expired or is invalid due to sign-in frequency checks by conditional access)',
-          )
-          .replace('50089', '50089 (Flow token expired)')
-          .replace('53003', '53003 (Access has been blocked by Conditional Access policies)'),
+      selector: (row) => ConvertErrorCode(row),
       exportSelector: 'LoginStatus',
-      cell: (row) =>
-        CellTip(
-          row['LoginStatus']
-            .toString()
-            .replace('50126', '50126 (Invalid username or password)')
-            .replace(
-              '70044',
-              '70044 (The session has expired or is invalid due to sign-in frequency checks by conditional access)',
-            )
-            .replace('50089', '50089 (Flow token expired)')
-            .replace('53003', '53003 (Access has been blocked by Conditional Access policies)'),
-        ),
+      cell: (row) => CellTip(ConvertErrorCode(row)),
       minWidth: '230px',
     },
     {

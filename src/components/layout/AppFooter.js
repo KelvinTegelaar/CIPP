@@ -8,7 +8,7 @@ const AppFooter = () => {
     <CFooter className="d-flex justify-content-between align-items-center">
       <div className="sponsors">
         <p>
-          This application is sponsored by
+          This application is sponsored by&nbsp;
           <CLink href="https://www.huntress.com/">
             <CImage src={huntressLogo} alt="Huntress" />
           </CLink>

@@ -12,14 +12,22 @@ const IconWarning = () => <FontAwesomeIcon icon={faExclamationCircle} className=
 const IconError = () => <FontAwesomeIcon icon={faTimesCircle} className="text-danger" />
 const IconSuccess = () => <FontAwesomeIcon icon={faCheckCircle} className="text-success" />
 
-function nocolour(colourless, content) {
-  if (colourless) {
+function nocolour(iscolourless, content) {
+  if (iscolourless) {
     return <span className="no-colour">{content}</span>
   }
 
   return content
 }
 
+/**
+ *
+ * @param [cell]
+ * @param [warning]
+ * @param [reverse]
+ * @param [colourless]
+ * @returns {function(*, *, *, *): *}
+ */
 export default function CellBoolean({
   cell,
   warning = false,
@@ -30,9 +38,13 @@ export default function CellBoolean({
   if (typeof cell === 'boolean') {
     normalized = cell
   } else if (typeof cell === 'string') {
-    if (cell.toLowerCase() === 'success' || cell.toLowerCase() === 'pass') {
+    if (
+      cell.toLowerCase() === 'success' ||
+      cell.toLowerCase() === 'pass' ||
+      cell.toLowerCase() === 'true'
+    ) {
       normalized = true
-    } else if (cell.toLowerCase() === 'fail') {
+    } else if (cell.toLowerCase() === 'fail' || cell.toLowerCase() === 'false') {
       normalized = false
     }
   }
@@ -53,7 +65,7 @@ export default function CellBoolean({
 }
 
 CellBoolean.propTypes = {
-  cell: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
+  cell: PropTypes.oneOfType([PropTypes.bool, PropTypes.string, PropTypes.any]),
   warning: PropTypes.bool,
   reverse: PropTypes.bool,
   colourless: PropTypes.bool,
@@ -61,13 +73,13 @@ CellBoolean.propTypes = {
 
 /**
  *
- * @param [reverse]
  * @param [warning]
+ * @param [reverse]
  * @param [colourless]
  * @returns {function(*, *, *, *): *}
  */
 export const cellBooleanFormatter =
-  ({ reverse = false, warning = false, colourless = false } = {}) =>
+  ({ warning = false, reverse = false, colourless = false } = {}) =>
   (row, index, column, id) => {
     const cell = column.selector(row)
     return CellBoolean({ cell, warning, reverse, colourless })

@@ -33,7 +33,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
       <CippActionsOffcanvas
         title="User Information"
         extendedInfo={[
-          { label: 'Created on', value: `${row.createdDateTime ?? ' '}` },
+          { label: 'Created Date (UTC)', value: `${row.createdDateTime ?? ' '}` },
           { label: 'UPN', value: `${row.userPrincipalName ?? ' '}` },
           { label: 'Given Name', value: `${row.givenName ?? ' '}` },
           { label: 'Surname', value: `${row.surname ?? ' '}` },
