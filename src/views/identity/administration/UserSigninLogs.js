@@ -25,13 +25,34 @@ const rowStyle = (row, rowIndex) => {
   return style
 }
 
+function timeConversion(s) {
+  let AMPM = s.slice(-2)
+  let timeArr = s.slice(0, -2).split(':')
+  if (AMPM === 'AM' && timeArr[0] === '12') {
+    // catching edge-case of 12AM
+    timeArr[0] = '00'
+  } else if (AMPM === 'PM') {
+    // everything with PM can just be mod'd and added with 12 - the max will be 23
+    timeArr[0] = (timeArr[0] % 12) + 12
+  }
+  return timeArr.join(':')
+}
+
 function FixDate(date) {
-  console.error('Date: ' + date)
   if (date === null) {
     return null
   }
   try {
-    return date.toString().replace('\n', '').trim()
+    var noLinesDate = date.toString().replace(/\n/g, '').trim()
+    if (noLinesDate.toString().includes('AM') || noLinesDate.toString().includes('PM')) {
+      var onlyTime = noLinesDate.slice(-11)
+      if (onlyTime[0] === ' ') {
+        onlyTime = '0' + onlyTime.replace(' ', '').replace(' ', '')
+        onlyTime = timeConversion(onlyTime)
+        noLinesDate = noLinesDate.slice(0, -11) + ' ' + onlyTime
+      }
+    }
+    return noLinesDate + 'Z'
   } catch {
     console.error('error returning date')
     return 'error'
