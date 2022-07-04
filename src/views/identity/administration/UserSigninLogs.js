@@ -30,10 +30,10 @@ function FixDate(date) {
     return null
   }
   try {
-    if (date.toLower().includes('am') || date.toLower().includes('pm')) {
-      return date.replace('\n', '').trim()
+    if (date.toString().toLower().includes('am') || date.toString().toLower().includes('pm')) {
+      return date.toString().replace('\n', '').replace('am', '').replace('pm', '').trim() + 'Z'
     } else {
-      return date.replace('\n', '').trim() + 'Z'
+      return date.toString().replace('\n', '').trim() + 'Z'
     }
   } catch {
     console.error('Error converting date object')
