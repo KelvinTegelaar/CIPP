@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { CButton, CCallout, CCardGroup, CCardText } from '@coreui/react'
-import { CippTable, cellDateFormatter } from 'src/components/tables'
+import { CippTable, cellDateFormatter, CellTip } from 'src/components/tables'
 import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
 import { useLazyExecAlertsListQuery } from 'src/store/api/security'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -83,20 +83,20 @@ const ListAlerts = () => {
             //   color: 'info',
             // },
             {
-              label: 'Set status to In Progress',
+              label: 'Set status to in progress',
               color: 'info',
               icon: <FontAwesomeIcon icon={faEdit} className="me-2" />,
               modal: true,
               modalUrl: `/api/ExecSetSecurityAlert?TenantFilter=${row.Tenant}&GUID=${row.RawResult.id}&Status=inProgress&Vendor=${row.RawResult.vendorInformation.vendor}&provider=${row.RawResult.vendorInformation.provider}`,
-              modalMessage: 'Are you sure you want to set the status to In Progress?',
+              modalMessage: 'Are you sure you want to set the status to in progress?',
             },
             {
-              label: 'Set Status to Resolved',
+              label: 'Set status to resolved',
               color: 'info',
               icon: <FontAwesomeIcon icon={faCheck} className="me-2" />,
               modal: true,
               modalUrl: `/api/ExecSetSecurityAlert?TenantFilter=${row.Tenant}&GUID=${row.RawResult.id}&Status=resolved&Vendor=${row.RawResult.vendorInformation.vendor}&provider=${row.RawResult.vendorInformation.provider}`,
-              modalMessage: 'Are you sure you want to set the status to Resolved?',
+              modalMessage: 'Are you sure you want to set the status to resolved?',
             },
           ]}
           placement="end"
@@ -110,35 +110,44 @@ const ListAlerts = () => {
 
   const columns = [
     {
-      name: 'Date',
+      name: 'Created Date',
       selector: (row) => row['EventDateTime'],
       sortable: true,
       cell: cellDateFormatter(),
       exportSelector: 'EventDateTime',
+      minWidth: '145px',
     },
     {
       name: 'Tenant',
       selector: (row) => row['Tenant'],
       sortable: true,
       exportSelector: 'Tenant',
+      cell: (row) => CellTip(row['Tenant']),
+      minWidth: '150px',
     },
     {
       name: 'Title',
       selector: (row) => row['Title'],
       sortable: true,
       exportSelector: 'Title',
+      cell: (row) => CellTip(row['Title']),
+      minWidth: '380px',
     },
     {
       name: 'Severity',
       selector: (row) => row['Severity'],
       sortable: true,
+      cell: (row) => CellTip(row['Severity']),
       exportSelector: 'Severity',
+      minWidth: '140px',
     },
     {
       name: 'Status',
       selector: (row) => row['Status'],
       sortable: true,
       exportSelector: 'Status',
+      minWidth: '100px',
+      maxWidth: '100px',
     },
     {
       name: 'More Info',

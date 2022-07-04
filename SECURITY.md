@@ -6,7 +6,7 @@ The current [release](https://github.com/KelvinTegelaar/CIPP/releases) is the on
 
 ## Reporting a Vulnerability
 
-Reporting a vulnerability is best done by emailing [security@cyberdrain.com](mailto:security@cyberdrain.com?subject=CIPP Security Issue) but you can also message an admin directly on the CyberDrain Discord. All relevant contributors will be alerted and can discuss the issue in private and address it if appropriate. It will help in making the fix available as soon as possible without endangering other users of the product.
+Reporting a vulnerability is best done by emailing [security@cyberdrain.com](mailto:security@cyberdrain.com?subject=CIPP%20Security%20Issue) but you can also message an admin directly on the CyberDrain Discord. All relevant contributors will be alerted and can discuss the issue in private and address it if appropriate. It will help in making the fix available as soon as possible without endangering other users of the product.
 
 We will publicly release any security report after the resolution, including all communications. If you would rather have only the bug report public, please let us know in the report.
 
