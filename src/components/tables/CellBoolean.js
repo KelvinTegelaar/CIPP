@@ -26,6 +26,7 @@ function nocolour(iscolourless, content) {
  * @param [warning]
  * @param [reverse]
  * @param [colourless]
+ * @param [noDataIsFalse]
  * @returns {function(*, *, *, *): *}
  */
 export default function CellBoolean({
@@ -33,6 +34,7 @@ export default function CellBoolean({
   warning = false,
   reverse = false,
   colourless = false,
+  noDataIsFalse = false,
 }) {
   let normalized = cell
   if (typeof cell === 'boolean') {
@@ -49,7 +51,7 @@ export default function CellBoolean({
     }
   }
 
-  if (cell === '') {
+  if (cell === '' && !noDataIsFalse) {
     return <CellBadge label="No Data" color="info" />
   } else if (colourless && warning && reverse) {
     return nocolour(colourless, normalized ? <IconWarning /> : <IconError />)
@@ -69,6 +71,7 @@ CellBoolean.propTypes = {
   warning: PropTypes.bool,
   reverse: PropTypes.bool,
   colourless: PropTypes.bool,
+  noDataIsFalse: PropTypes.bool,
 }
 
 /**
@@ -76,11 +79,12 @@ CellBoolean.propTypes = {
  * @param [warning]
  * @param [reverse]
  * @param [colourless]
+ * @param [noDataIsFalse]
  * @returns {function(*, *, *, *): *}
  */
 export const cellBooleanFormatter =
-  ({ warning = false, reverse = false, colourless = false } = {}) =>
+  ({ warning = false, reverse = false, colourless = false, noDataIsFalse } = {}) =>
   (row, index, column, id) => {
     const cell = column.selector(row)
-    return CellBoolean({ cell, warning, reverse, colourless })
+    return CellBoolean({ cell, warning, reverse, colourless, noDataIsFalse })
   }
