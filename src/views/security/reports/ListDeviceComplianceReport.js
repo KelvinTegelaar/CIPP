@@ -62,11 +62,12 @@ const columns = [
     exportSelector: 'model',
   },
   {
-    name: 'Last Sync',
+    name: 'Last Sync (Local)',
     selector: (row) => row['lastSyncDateTime'],
     sortable: true,
     cell: cellDateFormatter(),
     exportSelector: 'lastSyncDateTime',
+    minWidth: '155px',
   },
 ]
 

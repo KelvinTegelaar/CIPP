@@ -232,12 +232,12 @@ const ListIncidents = () => {
 
   const columns = [
     {
-      name: ' Created Date',
+      name: ' Created Date (Local)',
       selector: (row) => row['Created'],
       sortable: true,
       cell: cellDateFormatter(),
       exportSelector: 'Created',
-      minWidth: '145px',
+      minWidth: '155px',
     },
     {
       name: 'Tenant',

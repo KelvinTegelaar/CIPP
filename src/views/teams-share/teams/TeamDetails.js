@@ -22,7 +22,7 @@ export default function TeamDetails({ team, className = null, isFetching, error,
       body: formatter(team['isArchived'], false, false, true),
     },
     {
-      heading: 'Created',
+      heading: 'Created (UTC)',
       body: team.createdDateTime,
     },
     {

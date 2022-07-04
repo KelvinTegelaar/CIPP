@@ -12,7 +12,7 @@ import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
 import { CippActionsOffcanvas } from 'src/components/utilities'
-import { CellTip } from 'src/components/tables'
+import { cellDateFormatter, CellTip } from 'src/components/tables'
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
   const [ocVisible, setOCVisible] = useState(false)
@@ -88,6 +88,7 @@ const columns = [
     wrap: true,
     cell: (row) => CellTip(row['displayName']),
     exportSelector: 'displayName',
+    minWidth: '300px',
   },
   {
     name: 'State',
@@ -96,9 +97,10 @@ const columns = [
     exportSelector: 'state',
   },
   {
-    name: 'Last Modified',
-    selector: (row) => row['modifiedDateTime'],
+    name: 'Last Modified (Local)',
+    selector: (row) => row['modifiedDateTime'].toString().trim() + 'Z',
     sortable: true,
+    cell: cellDateFormatter(),
     exportSelector: 'modifiedDateTime',
   },
   {

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
-import { CellTip } from 'src/components/tables'
+import { CellTip, cellDateFormatter } from 'src/components/tables'
 
 const columns = [
   {
@@ -36,11 +36,11 @@ const columns = [
     cell: (row) => CellTip(row['Scope']),
   },
   {
-    name: 'Permissions Granted at',
+    name: 'Permissions Granted (Local)',
     selector: (row) => row['StartTime'],
     sortable: true,
     exportSelector: 'StartTime',
-    cell: (row) => CellTip(row['StartTime']),
+    cell: cellDateFormatter(),
   },
 ]
 

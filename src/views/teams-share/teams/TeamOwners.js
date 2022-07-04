@@ -12,7 +12,7 @@ export default function TeamOwners({ data, className = null, isFetching, error, 
     },
     {
       name: 'Mail',
-      selector: (row) => row['mail'],
+      selector: (row) => row['email'],
       sortable: true,
     },
   ]

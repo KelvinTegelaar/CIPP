@@ -20,7 +20,7 @@ export default function TeamChannels({ data, className = null, isFetching, error
       cell: (row) => CellTip(row['description']),
     },
     {
-      name: 'Created at',
+      name: 'Created Date (Local)',
       selector: (row) => row['createdDateTime'],
       sortable: true,
       cell: cellDateFormatter(),

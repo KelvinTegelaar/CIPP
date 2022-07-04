@@ -110,12 +110,12 @@ const ListAlerts = () => {
 
   const columns = [
     {
-      name: 'Created Date',
+      name: 'Created Date (Local)',
       selector: (row) => row['EventDateTime'],
       sortable: true,
       cell: cellDateFormatter(),
       exportSelector: 'EventDateTime',
-      minWidth: '145px',
+      minWidth: '155px',
     },
     {
       name: 'Tenant',
