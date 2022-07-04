@@ -25,6 +25,18 @@ const rowStyle = (row, rowIndex) => {
   return style
 }
 
+function FixDate(date) {
+  if (date === null) {
+    return null
+  }
+  try {
+    return date.replace('\n', '').trim() + 'Z'
+  } catch {
+    console.error('Error converting date object')
+    return 'error'
+  }
+}
+
 function ConvertErrorCode(row) {
   try {
     return row['LoginStatus']
@@ -100,7 +112,7 @@ export default function UserSigninLogs({ userId, tenantDomain, className = null 
   const columns = [
     {
       name: 'Date (Local)',
-      selector: (row) => row['Date'].toString().trim() + 'Z',
+      selector: (row) => FixDate(row['Date']),
       exportSelector: 'Date',
       minWidth: '145px',
       cell: cellDateFormatter(),
