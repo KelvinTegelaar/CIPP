@@ -6,6 +6,8 @@ import { DatatableContentCard } from 'src/components/contentcards'
 import { cellBooleanFormatter, cellNullTextFormatter } from 'src/components/tables'
 import { useListUserDevicesQuery } from 'src/store/api/devices'
 
+let tenantDomainFileScope = ''
+
 const columns = [
   {
     name: 'Display Name',
@@ -19,7 +21,7 @@ const columns = [
         return (
           <CLink
             target="_blank"
-            href={`https://endpoint.microsoft.com/${row.tenantDomain}#blade/Microsoft_Intune_Devices/DeviceSettingsMenuBlade/overview/mdmDeviceId/${row.EPMID}`}
+            href={`https://endpoint.microsoft.com/${tenantDomainFileScope}#blade/Microsoft_Intune_Devices/DeviceSettingsMenuBlade/overview/mdmDeviceId/${row.EPMID}`}
           >
             {row.displayName}
           </CLink>
@@ -96,6 +98,7 @@ const columns = [
     sortable: true,
     cell: cellNullTextFormatter(),
     exportSelector: 'enrollmentType',
+    minWidth: '200px',
   },
   {
     name: 'Management Type',
@@ -108,7 +111,7 @@ const columns = [
     name: 'On-Premises Sync Enabled',
     selector: (row) => row['onPremisesSyncEnabled'],
     sortable: true,
-    cell: cellBooleanFormatter(),
+    cell: cellBooleanFormatter({ colourless: true }),
     exportSelector: 'onPremisessSyncEnabled',
   },
   {
@@ -126,7 +129,7 @@ export default function UserDevices({ userId, tenantDomain, className = null }) 
     isFetching,
     error,
   } = useListUserDevicesQuery({ userId, tenantDomain })
-
+  tenantDomainFileScope = tenantDomain
   // inject tenant domain into devices for column render
   const mapped = devices.map((device) => ({ ...device, tenantDomain }))
 

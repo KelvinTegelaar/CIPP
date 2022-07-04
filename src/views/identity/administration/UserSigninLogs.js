@@ -9,7 +9,7 @@ import {
   CTableHeaderCell,
   CTableRow,
 } from '@coreui/react'
-import { cellBooleanFormatter } from 'src/components/tables'
+import { CellTip, cellBooleanFormatter } from 'src/components/tables'
 import { DatatableContentCard } from 'src/components/contentcards'
 import { faKey } from '@fortawesome/free-solid-svg-icons'
 import { ModalService } from 'src/components/utilities'
@@ -64,16 +64,42 @@ export default function UserSigninLogs({ userId, tenantDomain, className = null 
       name: 'Date',
       selector: (row) => row['Date'],
       exportSelector: 'Date',
+      minWidth: '230px',
+      cell: (row) => CellTip(row['Date']),
     },
     {
       name: 'Application',
       selector: (row) => row['Application'],
       exportSelector: 'Application',
+      cell: (row) => CellTip(row['Application']),
+      minWidth: '230px',
     },
     {
       name: 'Login Status',
-      selector: (row) => row['LoginStatus'],
+      selector: (row) =>
+        row['LoginStatus']
+          .toString()
+          .replace('50126', '50126 (Invalid username or password)')
+          .replace(
+            '70044',
+            '70044 (The session has expired or is invalid due to sign-in frequency checks by conditional access)',
+          )
+          .replace('50089', '50089 (Flow token expired)')
+          .replace('53003', '53003 (Access has been blocked by Conditional Access policies)'),
       exportSelector: 'LoginStatus',
+      cell: (row) =>
+        CellTip(
+          row['LoginStatus']
+            .toString()
+            .replace('50126', '50126 (Invalid username or password)')
+            .replace(
+              '70044',
+              '70044 (The session has expired or is invalid due to sign-in frequency checks by conditional access)',
+            )
+            .replace('50089', '50089 (Flow token expired)')
+            .replace('53003', '53003 (Access has been blocked by Conditional Access policies)'),
+        ),
+      minWidth: '230px',
     },
     {
       name: 'Conditional Access Status',
@@ -94,11 +120,13 @@ export default function UserSigninLogs({ userId, tenantDomain, className = null 
       name: 'Town',
       selector: (row) => row['Town'],
       exportSelector: 'Town',
+      cell: (row) => CellTip(row['Town']),
     },
     {
       name: 'State',
       selector: (row) => row['State'],
       exportSelector: 'State',
+      cell: (row) => CellTip(row['State']),
     },
     {
       name: 'Country',
@@ -113,7 +141,7 @@ export default function UserSigninLogs({ userId, tenantDomain, className = null 
     {
       name: 'Device Compliant',
       selector: (row) => row['DeviceCompliant'],
-      cell: cellBooleanFormatter,
+      cell: cellBooleanFormatter(),
       exportSelector: 'DeviceCompliant',
     },
     {
@@ -125,6 +153,7 @@ export default function UserSigninLogs({ userId, tenantDomain, className = null 
       name: 'Browser',
       selector: (row) => row['Browser'],
       exportSelector: 'Browser',
+      cell: (row) => CellTip(row['Browser']),
     },
     {
       name: 'Applied CAPs',
