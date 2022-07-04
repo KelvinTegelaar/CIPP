@@ -38,6 +38,8 @@ function timeConversion(s) {
   return timeArr.join(':')
 }
 
+//This is so dirty but I need to do this to solve the inconsistent dates
+//between macos and windows
 function FixDate(date) {
   if (date === null) {
     return null
@@ -47,10 +49,10 @@ function FixDate(date) {
     if (noLinesDate.toString().includes('AM') || noLinesDate.toString().includes('PM')) {
       var onlyTime = noLinesDate.slice(-11)
       if (onlyTime[0] === ' ') {
-        onlyTime = '0' + onlyTime.replace(' ', '').replace(' ', '')
-        onlyTime = timeConversion(onlyTime)
-        noLinesDate = noLinesDate.slice(0, -11) + ' ' + onlyTime
+        onlyTime = '0' + onlyTime
       }
+      onlyTime = timeConversion(onlyTime.replace(' ', '').replace(' ', ''))
+      noLinesDate = noLinesDate.slice(0, -11) + ' ' + onlyTime
     }
     return noLinesDate + 'Z'
   } catch {
