@@ -31,9 +31,9 @@ function FixDate(date) {
     return null
   }
   try {
-    return date.toString().replace('\n', '').trim() + 'Z'
+    return date.toString().replace('\n', '').trim()
   } catch {
-    console.error('Date: ' + date.toString())
+    console.error('error returning date')
     return 'error'
   }
 }
