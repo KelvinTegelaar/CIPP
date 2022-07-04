@@ -49,7 +49,7 @@ function FixDate(date) {
     if (noLinesDate.toString().includes('AM') || noLinesDate.toString().includes('PM')) {
       var onlyTime = noLinesDate.slice(-11)
       if (onlyTime[0] === ' ') {
-        onlyTime = '0' + onlyTime
+        onlyTime = '0' + onlyTime.replace(' ', '').replace(' ', '')
       }
       onlyTime = timeConversion(onlyTime.replace(' ', '').replace(' ', ''))
       noLinesDate = noLinesDate.slice(0, -11) + ' ' + onlyTime
