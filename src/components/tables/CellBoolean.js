@@ -39,6 +39,8 @@ export default function CellBoolean({
 
   if (cell === '') {
     return <CellBadge label="No Data" color="info" />
+  } else if (colourless && warning && reverse) {
+    return nocolour(colourless, normalized ? <IconWarning /> : <IconError />)
   } else if (!reverse && !warning) {
     return nocolour(colourless, normalized ? <IconSuccess /> : <IconError />)
   } else if (!reverse && warning) {

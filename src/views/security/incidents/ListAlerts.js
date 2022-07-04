@@ -6,7 +6,7 @@ import { useLazyExecAlertsListQuery } from 'src/store/api/security'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPage } from 'src/components/layout'
 import PropTypes from 'prop-types'
-import { faEye, faRedo, faEdit, faCheck } from '@fortawesome/free-solid-svg-icons'
+import { faEllipsisV, faRedo, faEdit, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { CippActionsOffcanvas } from 'src/components/utilities'
 import { useSelector } from 'react-redux'
 import Skeleton from 'react-loading-skeleton'
@@ -68,8 +68,8 @@ const ListAlerts = () => {
     const extendedInfo = extendedInfoRaw.concat(mappedUsers)
     return (
       <>
-        <CButton size="sm" color="success" variant="ghost" onClick={() => setOCVisible(true)}>
-          <FontAwesomeIcon icon={faEye} />
+        <CButton size="sm" color="link" onClick={() => setOCVisible(true)}>
+          <FontAwesomeIcon icon={faEllipsisV} />
         </CButton>
         <CippActionsOffcanvas
           title="Alert Information"
@@ -150,7 +150,7 @@ const ListAlerts = () => {
       maxWidth: '100px',
     },
     {
-      name: 'More Info',
+      name: 'Info & Actions',
       cell: Offcanvas,
     },
   ]

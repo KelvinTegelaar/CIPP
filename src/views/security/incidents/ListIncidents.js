@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPage } from 'src/components/layout'
 import PropTypes from 'prop-types'
 import {
-  faEye,
+  faEllipsisV,
   faEdit,
   faCheck,
   faRedo,
@@ -171,8 +171,8 @@ const ListIncidents = () => {
 
     return (
       <>
-        <CButton size="sm" color="success" variant="ghost" onClick={() => setOCVisible(true)}>
-          <FontAwesomeIcon icon={faEye} />
+        <CButton size="sm" color="link" onClick={() => setOCVisible(true)}>
+          <FontAwesomeIcon icon={faEllipsisV} />
         </CButton>
         <CippActionsOffcanvas
           title="Incident Information"
@@ -285,7 +285,7 @@ const ListIncidents = () => {
       exportSelector: 'Tags',
     },
     {
-      name: 'More Info',
+      name: 'Info & Actions',
       cell: Offcanvas,
     },
   ]
