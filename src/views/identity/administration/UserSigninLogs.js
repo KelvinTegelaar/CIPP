@@ -26,18 +26,14 @@ const rowStyle = (row, rowIndex) => {
 }
 
 function FixDate(date) {
-  console.warn('Date: ' + date.toString())
+  console.error('Date: ' + date)
   if (date === null) {
     return null
   }
   try {
-    if (date.toString().toLower().includes('am') || date.toString().toLower().includes('pm')) {
-      return date.toString().replace('\n', '').replace('am', '').replace('pm', '').trim() + 'Z'
-    } else {
-      return date.toString().replace('\n', '').trim() + 'Z'
-    }
+    return date.toString().replace('\n', '').trim() + 'Z'
   } catch {
-    console.error('Error converting date object')
+    console.error('Date: ' + date.toString())
     return 'error'
   }
 }
