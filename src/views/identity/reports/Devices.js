@@ -1,20 +1,21 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
-import { cellBooleanFormatter, cellDateFormatter } from 'src/components/tables'
+import { cellBooleanFormatter, cellDateFormatter, CellTip } from 'src/components/tables'
 
 const columns = [
   {
     name: 'Name',
     selector: (row) => row['displayName'],
     sortable: true,
+    cell: (row) => CellTip(row['displayName']),
     exportSelector: 'displayName',
   },
   {
     name: 'Enabled',
     selector: (row) => row['accountEnabled'],
     sortable: true,
-    cell: cellBooleanFormatter(),
+    cell: cellBooleanFormatter({ colourless: true }),
     exportSelector: 'accountEnabled',
   },
   {
@@ -28,12 +29,14 @@ const columns = [
     name: 'Manufacturer',
     selector: (row) => row['manufacturer'],
     sortable: true,
+    cell: (row) => CellTip(row['manufacturer']),
     exportSelector: 'manufacturer',
   },
   {
     name: 'Model',
     selector: (row) => row['model'],
     sortable: true,
+    cell: (row) => CellTip(row['model']),
     exportSelector: 'model',
   },
   {
@@ -55,13 +58,17 @@ const columns = [
     cell: cellDateFormatter({ format: 'short', showTime: false }),
     exportSelector: 'createdDateTime',
   },
+  /*
+  * This should not be used, it is not anywhere near accurate, it is out by days even weeks 
+  * in my testing, I don't recommend we display it, we have alternate sources for this
+  * as well which are significantly closer to (if not) accurate - knightian
   {
     name: 'Approx Last SignIn',
     selector: (row) => row['approximateLastSignInDateTime'],
     sortable: true,
     cell: cellDateFormatter(),
     exportSelector: 'approximateLastSignInDateTime',
-  },
+  },**/
   {
     name: 'Ownership',
     selector: (row) => row['deviceOwnership'],
@@ -73,6 +80,7 @@ const columns = [
     selector: (row) => row['enrollmentType'],
     sortable: true,
     exportSelector: 'enrollmentType',
+    cell: (row) => CellTip(row['enrollmentType']),
   },
   {
     name: 'Management Type',
@@ -83,7 +91,7 @@ const columns = [
   {
     name: 'On-Premises Sync Enabled',
     selector: (row) => row['onPremisesSyncEnabled'],
-    cell: cellBooleanFormatter(),
+    cell: cellBooleanFormatter({ colourless: true }),
     sortable: true,
     exportSelector: 'onPremisessSyncEnabled',
   },

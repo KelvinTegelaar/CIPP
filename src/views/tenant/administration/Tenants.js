@@ -5,19 +5,24 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCog, faEdit } from '@fortawesome/free-solid-svg-icons'
 import { CippPageList } from 'src/components/layout'
 import { Link } from 'react-router-dom'
+import { CellTip } from 'src/components/tables'
 
 const columns = [
   {
     name: 'Name',
     selector: (row) => row['displayName'],
     sortable: true,
+    cell: (row) => CellTip(row['displayName']),
     exportSelector: 'displayName',
+    minWidth: '250px',
   },
   {
     name: 'Default Domain',
     selector: (row) => row['defaultDomainName'],
     sortable: true,
+    cell: (row) => CellTip(row['defaultDomainName']),
     exportSelector: 'defaultDomainName',
+    minWidth: '250px',
   },
   {
     name: 'M365 Portal',
