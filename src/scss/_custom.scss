@@ -447,7 +447,7 @@
 .wrapper.d-flex.flex-column.min-vh-100 {
   background-color: var(--cui-color-gray-1) !important;
   padding-top: 30px;
-  min-height: calc(100vh - 84px);
+  min-height: calc(100vh - 84px) !important;
   z-index: 2;
 
   // .body.flex-grow-1.px-xl-3>.container-fluid>div>div{
@@ -556,4 +556,14 @@
 }
 .wrapper.d-flex.flex-column.min-vh-100 .card {
   margin-bottom: 0px;
+}
+
+.celltip-content-nowrap {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.select-width {
+  min-width: 100%;
 }
