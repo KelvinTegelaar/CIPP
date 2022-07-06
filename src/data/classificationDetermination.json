@@ -1,0 +1,5 @@
+[
+  { "Classification": "True positive", "Determination": ["Multi staged attack", "Malware", "Malicious user activity", "Unwanted software", "Phishing", "Compromised account", "Other"] },
+  { "Classification": "Informational, expected activity", "Determination": ["Security testing", "Confirmed activity", "Line of business application", "Other"] },
+  { "Classification": "False positive", "Determination": ["Unknown"] }
+]
