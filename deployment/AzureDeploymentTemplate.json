@@ -9,41 +9,6 @@
         "description": "Name use as base-template to named the resources deployed in Azure."
       }
     },
-    "TenantID": {
-      "defaultValue": "YourTenant.onmicrosoft.com",
-      "type": "string",
-      "metadata": {
-        "description": "Your tenant ID"
-      }
-    },
-    "ApplicationID": {
-      "defaultValue": "LongApplicationID",
-      "type": "string",
-      "metadata": {
-        "description": "The Application ID for your Secure Application Model"
-      }
-    },
-    "ApplicationSecret": {
-      "defaultValue": "LongApplicationSecret",
-      "type": "string",
-      "metadata": {
-        "description": "The Application Secret for your Secure Application Model."
-      }
-    },
-    "Refreshtoken": {
-      "defaultValue": "LongRefreshtoken",
-      "type": "string",
-      "metadata": {
-        "description": "The Refresh token for your Secure Application Model."
-      }
-    },
-    "ExchangeRefreshToken": {
-      "defaultValue": "LongRefreshtoken",
-      "type": "string",
-      "metadata": {
-        "description": "The Exchange Refresh token for your Secure Application Model."
-      }
-    },
     "GithubRepository": {
       "defaultValue": "https://github.com/KelvinTegelaar/CIPP",
       "type": "string",
@@ -109,7 +74,7 @@
           "apiVersion": "2015-06-01",
           "properties": {
             "contentType": "text/plain",
-            "value": "[parameters('ApplicationID')]"
+            "value": "LongApplicationId"
           },
           "dependsOn": [
             "[resourceId('Microsoft.KeyVault/vaults', variables('uniqueResourceNameBase'))]"
@@ -121,7 +86,7 @@
           "apiVersion": "2015-06-01",
           "properties": {
             "contentType": "text/plain",
-            "value": "[parameters('Applicationsecret')]"
+            "value": "AppSecret"
           },
           "dependsOn": [
             "[resourceId('Microsoft.KeyVault/vaults', variables('uniqueResourceNameBase'))]"
@@ -133,7 +98,7 @@
           "apiVersion": "2015-06-01",
           "properties": {
             "contentType": "text/plain",
-            "value": "[parameters('refreshtoken')]"
+            "value": "RefreshToken"
           },
           "dependsOn": [
             "[resourceId('Microsoft.KeyVault/vaults', variables('uniqueResourceNameBase'))]"
@@ -145,7 +110,7 @@
           "apiVersion": "2015-06-01",
           "properties": {
             "contentType": "text/plain",
-            "value": "[parameters('tenantid')]"
+            "value": "tenantId"
           },
           "dependsOn": [
             "[resourceId('Microsoft.KeyVault/vaults', variables('uniqueResourceNameBase'))]"
@@ -157,7 +122,7 @@
           "apiVersion": "2015-06-01",
           "properties": {
             "contentType": "text/plain",
-            "value": "[parameters('exchangerefreshtoken')]"
+            "value": "ExchangeRefreshToken"
           },
           "dependsOn": [
             "[resourceId('Microsoft.KeyVault/vaults', variables('uniqueResourceNameBase'))]"
@@ -183,7 +148,7 @@
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('serverFarmName'))]",
         "siteConfig": {
           "Use32BitWorkerProcess": false,
-          "powerShellVersion": "~7",
+          "powerShellVersion": "7.2",
           "appSettings": [
             {
               "name": "AzureWebJobsStorage",
@@ -199,7 +164,7 @@
             },
             {
               "name": "FUNCTIONS_EXTENSION_VERSION",
-              "value": "~3"
+              "value": "~4"
             },
             {
               "name": "ApplicationID",
@@ -313,19 +278,6 @@
       "properties": {
         "functionAppResourceId": "[resourceId('Microsoft.Web/sites/', variables('funcAppName'))]",
         "functionAppRegion": "[resourceGroup().location]"
-      }
-    },
-    {
-      "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2018-09-01-preview",
-      "name": "[guid(variables('funcAppName'))]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/staticSites', variables('swaName'))]",
-        "[resourceId('Microsoft.Web/sites/', variables('funcAppName'))]"
-      ],
-      "properties": {
-        "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-        "principalId": "[reference(resourceId('Microsoft.Web/sites', variables('funcAppName')),'2019-08-01', 'full').identity.principalId]"
       }
     }
   ],
