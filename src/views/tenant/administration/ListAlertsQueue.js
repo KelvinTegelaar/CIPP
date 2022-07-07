@@ -27,7 +27,7 @@ const ListAlertsQueue = () => {
         color="danger"
         onClick={() =>
           handleDeleteStandard(
-            `api/RemoveQueuedAlert?ID=${row.tenantName}`,
+            `api/RemoveQueuedAlert?ID=${row.tenantId}`,
             'Do you want to delete the queued alert?',
           )
         }
@@ -93,7 +93,13 @@ const ListAlertsQueue = () => {
       exportSelector: 'UnusedLicenses',
       cell: cellBooleanFormatter(),
     },
-
+    {
+      name: 'App Secret Expiry',
+      selector: (row) => row['AppSecretExpiry'],
+      sortable: true,
+      exportSelector: 'AppSecretExpiry',
+      cell: cellBooleanFormatter(),
+    },
     {
       name: 'Actions',
       cell: Actions,
@@ -113,6 +119,7 @@ const ListAlertsQueue = () => {
         <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
       )}
       <CippPageList
+        capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
         title="Scheduled Alerts"
         tenantSelector={false}
         datatable={{

@@ -3,9 +3,9 @@ import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
 import { PrivateRoute, FullScreenLoading, ErrorBoundary } from 'src/components/utilities'
 import 'src/scss/style.scss'
 import routes from 'src/routes'
-import { CSpinner } from '@coreui/react'
 import { Helmet } from 'react-helmet'
 import adminRoutes from './adminRoutes'
+import Skeleton from 'react-loading-skeleton'
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
@@ -50,7 +50,7 @@ const App = () => {
                       exact={route.exact}
                       name={route.name}
                       element={
-                        <Suspense fallback={<CSpinner color="primary" />}>
+                        <Suspense fallback={<Skeleton />}>
                           <Helmet>
                             <title>CIPP - {route.name}</title>
                           </Helmet>
@@ -71,7 +71,7 @@ const App = () => {
                       name={route.name}
                       element={
                         <PrivateRoute routeType="admin">
-                          <Suspense fallback={<CSpinner color="primary" />}>
+                          <Suspense fallback={<Skeleton />}>
                             <Helmet>
                               <title>CIPP - {route.name}</title>
                             </Helmet>
