@@ -254,7 +254,7 @@
       "sku": {
         "name": "Standard_LRS"
       },
-      "kind": "StorageV2"
+      "kind": "Storage"
     },
     {
       "type": "Microsoft.Web/serverfarms",
