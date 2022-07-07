@@ -402,7 +402,7 @@ const ListAppliedStandards = () => {
                         <CRow className="mb-3">
                           <CCol md={6}>
                             <CButton type="submit" disabled={submitting}>
-                              Edit Standard
+                              Save
                               {postResults.isFetching && (
                                 <FontAwesomeIcon
                                   icon={faCircleNotch}
