@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux'
-import { useLoadClientPrincipalQuery } from '../../store/api/auth'
-import { setTechId } from '../store/features/ticketSlice'
+import { useLoadClientPrincipalQuery } from '../../../store/api/auth'
+import { setTechId } from '../../store/features/ticketFormSlice'
 
 export default function GetTechId() {
   const dispatch = useDispatch()

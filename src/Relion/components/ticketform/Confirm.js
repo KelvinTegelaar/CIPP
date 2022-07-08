@@ -10,8 +10,8 @@ import Link from '@mui/material/Link'
 import Fade from '@mui/material/Fade'
 
 export default function TicketConfirm() {
-  const confirmedTicketId = useSelector((state) => state.ticket.confirmedTicketId)
-  const timeEntryId = useSelector((state) => state.ticket.timeEntryId)
+  const confirmedTicketId = useSelector((state) => state.ticketForm.confirmedTicketId)
+  const timeEntryId = useSelector((state) => state.ticketForm.timeEntryId)
 
   // TicketCard disappears after 20 seconds
   const [visible, setVisible] = useState(false)

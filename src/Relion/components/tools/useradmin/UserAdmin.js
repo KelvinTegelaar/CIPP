@@ -1,20 +1,11 @@
-// React
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-
-// MUI
 import { Autocomplete, Box, Button, Stack, Tab, TextField, Typography } from '@mui/material'
 import { TabContext, TabList, TabPanel } from '@mui/lab'
-
-// Components
 import ResetPass from './ResetPass'
-
-// reducers
-import { setContactAZ } from '../store/features/azSlice'
-
-// functions
-import getUsers from '../functions/getUsers'
-import execOffboardUser from '../functions/execOffboardUser'
+import { setContactAZ } from '../../../store/features/azSlice'
+import getUsers from '../../../functions/getUsers'
+import execOffboardUser from '../../../functions/execOffboardUser'
 
 export default function UserAdmin() {
   const dispatch = useDispatch()
@@ -53,8 +44,10 @@ export default function UserAdmin() {
   }
 
   return (
-    <Stack spacing={2}>
-      <Typography variant="h5">User Administration Tools</Typography>
+    <Stack spacing={2} sx={{ p: 2, border: '1px dashed grey', height: '400px' }}>
+      <Typography variant="h5" color="primary">
+        User Administration Tools
+      </Typography>
       <Autocomplete
         autoHighlight
         autoSelect

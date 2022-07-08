@@ -7,11 +7,11 @@ import { useSelector } from 'react-redux'
 import Grid from '@mui/material/Grid'
 
 // import Relion components
-import Details from './components/Details'
-import TicketActivities from './components/TicketActivities'
-import TicketForm from './components/TicketForm'
-import TicketList from './components/TicketList'
-import UserAdmin from './components/UserAdmin'
+import Details from './components/tools/activities/Details'
+import TicketActivities from './components/tools/activities/Activities'
+import TicketForm from './components/ticketform/TicketForm'
+import TicketList from './components/ticketlist/TicketList'
+import UserAdmin from './components/tools/useradmin/UserAdmin'
 
 const App = () => {
   // MUI dark mode
@@ -21,7 +21,7 @@ const App = () => {
     },
   })
 
-  const issueType = useSelector((state) => state.ticket.issueType)
+  const issueType = useSelector((state) => state.ticketForm.issueType)
 
   return (
     <ThemeProvider theme={darkTheme}>

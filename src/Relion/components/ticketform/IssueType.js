@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { setIssueType, setIssueTypeId } from '../store/features/ticketSlice'
+import { setIssueType, setIssueTypeId } from '../../store/features/ticketFormSlice'
 
 //mui
 import Autocomplete from '@mui/material/Autocomplete'
@@ -8,7 +8,7 @@ import TextField from '@mui/material/TextField'
 
 export default function IssueType() {
   const dispatch = useDispatch()
-  const issueType = useSelector((state) => state.ticket.issueType)
+  const issueType = useSelector((state) => state.ticketForm.issueType)
 
   const issueTypeHandler = (event, newValue) => {
     dispatch(setIssueType(newValue.label))

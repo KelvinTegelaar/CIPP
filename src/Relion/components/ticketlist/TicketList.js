@@ -1,23 +1,22 @@
-// import React
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-
-// import MUI
 import { DataGrid } from '@mui/x-data-grid'
 import { Link, Accordion, AccordionSummary, AccordionDetails } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-
-// import components
-import TicketCount from './TicketCount'
-
-// import reducers
+import { setCurrentTenant } from 'src/store/features/app'
 import {
-  setClient,
+  setTicketMyCount,
+  setTicketNewCount,
+  setTicketRespondedCount,
+} from '../../store/features/ticketListSlice'
+import {
+  setClientValue,
   setClientId,
-  setContact,
+  setContactValue,
   setContactId,
   setContactEmail,
   setDetails,
+  setEditMode,
   setIssueType,
   setIssueTypeId,
   setLocationId,
@@ -26,18 +25,14 @@ import {
   setStatusId,
   setTitle,
   setTicketId,
-  setTicketMyCount,
-  setTicketNewCount,
-  setTicketRespondedCount,
-} from '../store/features/ticketSlice'
-
-// import functions
-import getTicketList from '../functions/getTicketList'
-import getContactList from '../functions/getContactList'
+} from '../../store/features/ticketFormSlice'
+import TicketCount from './TicketCount'
+import getTicketList from '../../functions/getTicketList'
+import getContactList from '../../functions/getContactList'
+import { clientList } from '../../data/clientList'
 
 export default function TicketList() {
   const dispatch = useDispatch()
-
   const initialState = [
     {
       id: '',
@@ -50,15 +45,15 @@ export default function TicketList() {
 
   // fetch ticket list from BMS
   const [ticketList, setTicketList] = useState(initialState)
-  const techId = useSelector((state) => state.ticket.techId)
+  const techId = useSelector((state) => state.ticketForm.techId)
   useEffect(() => {
     const fetchData = async () => {
       const response = await getTicketList()
+      setTicketList(response)
       console.log('Ticket List:')
       console.log(response)
-      setTicketList(response)
 
-      // count of tickets for display in TicketCount
+      // generate ticket counts
       const myCount = response.filter((item) => item.assigneeId === techId).length
       dispatch(setTicketMyCount(myCount))
 
@@ -81,44 +76,56 @@ export default function TicketList() {
     }
   }, [techId, dispatch])
 
-  // selecting a row populates the ticket form
-  // and other necessary values for BMS
+  // populate ticket state from row selection
   const rowHandler = async ({ row }) => {
-    // BMS ticket doesn't store contactEmail
-    // Must fetch from Contacts API
+    // find row match from clientList
+    const cv = clientList.filter((item) => item.id === row.accountId)
+    dispatch(setClientValue(cv[0]))
+
+    // set Tenant Switcher
+    dispatch(
+      setCurrentTenant({
+        tenant: {
+          customerId: cv[0].id,
+          defaultDomainName: cv[0].defaultDomainName,
+          displayName: cv[0].label,
+        },
+      }),
+    )
+
+    // fetch contactEmail
     const data = await getContactList(row.accountId)
-    const selectedContact = data.filter((item) => item.id === row.contactId)
-    console.log('Selected Contact:')
-    console.log(selectedContact)
-    if (selectedContact.length > 0) {
-      dispatch(setContactEmail(selectedContact[0].email))
+    const tc = data.filter((item) => item.id === row.contactId)
+    console.log('Ticket Contact:')
+    console.log(tc)
+    if (tc[0]) {
+      dispatch(setContactEmail(tc[0].email))
       dispatch(
-        setContact({
+        setContactValue({
           id: row.contactId,
           label: row.contactName,
-          email: selectedContact[0].email,
+          email: tc[0].email,
         }),
       )
     } else {
       dispatch(
-        setContact({
+        setContactValue({
           id: 0,
           label: '',
           email: '',
         }),
       )
     }
-
     dispatch(setClientId(row.accountId))
-    dispatch(setClient(row.accountName))
     dispatch(setContactId(row.contactId))
     dispatch(setDetails(row.details))
+    dispatch(setEditMode(true))
     dispatch(setIssueTypeId(row.issueTypeId))
     dispatch(setIssueType(row.issueTypeName))
     dispatch(setLocationId(row.locationId))
     dispatch(setOpenDate(row.openDate))
     dispatch(setSourceId(row.id))
-    dispatch(setStatusId(row.statusId))
+    dispatch(setStatusId(36708))
     dispatch(setTicketId(row.id))
     dispatch(setTitle(row.title))
 

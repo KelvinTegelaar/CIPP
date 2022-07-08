@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { wordle } from './wordle'
+import { wordle } from '../data/wordle'
 
 const getPassword = async () => {
   // generate random Wordle from imported array

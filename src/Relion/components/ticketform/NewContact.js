@@ -1,45 +1,41 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-
-//mui
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
-
-// functions
-import postContact from '../functions/postContact'
-
-// reducers
-import { setContact } from '../store/features/ticketSlice'
+import postContact from '../../functions/postContact'
+import { setContactValue } from '../../store/features/ticketFormSlice'
 
 export default function NewContact() {
   const dispatch = useDispatch()
-  const [firstName, setFirstName] = useState()
-  const [lastName, setlastName] = useState()
-  const [email, setEmail] = useState()
-  const clientId = useSelector((state) => state.ticket.clientId)
-  const locationId = useSelector((state) => state.ticket.locationId)
+  const [fn, setFn] = useState()
+  const [ln, setLn] = useState()
+  const [em, setEm] = useState()
+  const clientId = useSelector((state) => state.ticketForm.clientId)
+  const locationId = useSelector((state) => state.ticketForm.locationId)
 
   const firstNameHandler = (event) => {
-    setFirstName(event.target.value)
+    setFn(event.target.value)
   }
+
   const lastNameHandler = (event) => {
-    setlastName(event.target.value)
+    setLn(event.target.value)
   }
+
   const emailHandler = (event) => {
-    setEmail(event.target.value)
+    setEm(event.target.value)
   }
 
   const submitHandler = async () => {
     const contactJSON = {
-      firstName: firstName,
-      lastName: lastName,
+      firstName: fn,
+      lastName: ln,
       accountId: clientId,
       locationId: locationId,
       emails: [
         {
-          emailAddress: email,
+          emailAddress: em,
           emailTypeId: 1,
           isDefault: true,
         },
@@ -52,14 +48,13 @@ export default function NewContact() {
         },
       ],
     }
-    const selectedContact = await postContact(contactJSON)
-    console.log(selectedContact)
-    dispatch(setContact(selectedContact))
+    const cv = await postContact(contactJSON)
+    dispatch(setContactValue(cv))
 
     // reset form
-    setFirstName('')
-    setlastName('')
-    setEmail('')
+    setFn('')
+    setLn('')
+    setEm('')
     setFormVisible(false)
   }
 
@@ -99,21 +94,21 @@ export default function NewContact() {
               id="firstname"
               label="First Name"
               variant="standard"
-              value={firstName}
+              value={fn}
               onChange={firstNameHandler}
             />
             <TextField
               id="lastname"
               label="Last Name"
               variant="standard"
-              value={lastName}
+              value={ln}
               onChange={lastNameHandler}
             />
             <TextField
               id="email"
               label="Email"
               variant="standard"
-              value={email}
+              value={em}
               onChange={emailHandler}
             />
             <Button variant="contained" onClick={submitHandler}>

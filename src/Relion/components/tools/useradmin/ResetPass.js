@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import axios from 'axios'
 import { Button, Chip, Stack, Typography } from '@mui/material'
-import { wordle } from '../functions/wordle'
+import { wordle } from '../../../data/wordle'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
-import { setNotes } from '../store/features/ticketSlice'
+import { setNotes } from '../../../store/features/ticketFormSlice'
 
 export default function ResetPass() {
   const dispatch = useDispatch()

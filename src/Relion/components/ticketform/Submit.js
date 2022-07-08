@@ -1,20 +1,13 @@
-// import React
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-
-// import MUI
 import Button from '@mui/material/Button'
-
-// import Relion functions
-import postTicket from '../functions/postTicket'
-import postTime from '../functions/postTime'
-
-// import reducers
+import postTicket from '../../functions/postTicket'
+import postTime from '../../functions/postTime'
 import {
-  setClient,
+  setClientValue,
   setClientId,
   setConfirmedTicketId,
-  setContact,
+  setContactValue,
   setContactId,
   setIssueType,
   setIssueTypeId,
@@ -24,25 +17,25 @@ import {
   setTimeEntry,
   setTimeEntryId,
   setTitle,
-  setStatus,
-} from '../store/features/ticketSlice'
+  setStatusId,
+} from '../../store/features/ticketFormSlice'
 
 export default function Submit() {
   const dispatch = useDispatch()
-  const clientId = useSelector((state) => state.ticket.clientId)
-  const contactId = useSelector((state) => state.ticket.contactId)
-  const dueDateISO = useSelector((state) => state.ticket.dueDateISO)
-  const issueTypeId = useSelector((state) => state.ticket.issueTypeId)
-  const locationId = useSelector((state) => state.ticket.locationId)
-  const notes = useSelector((state) => state.ticket.notes)
-  const openDate = useSelector((state) => state.ticket.openDate)
-  const priority = useSelector((state) => state.ticket.priority)
-  const queue = useSelector((state) => state.ticket.queue)
-  const status = useSelector((state) => state.ticket.status)
-  const techId = useSelector((state) => state.ticket.techId)
-  const ticketId = useSelector((state) => state.ticket.ticketId)
-  const title = useSelector((state) => state.ticket.title)
-  const timeEntry = useSelector((state) => state.ticket.timeEntry)
+  const clientId = useSelector((state) => state.ticketForm.clientId)
+  const contactId = useSelector((state) => state.ticketForm.contactId)
+  const dueDateISO = useSelector((state) => state.ticketForm.dueDateISO)
+  const issueTypeId = useSelector((state) => state.ticketForm.issueTypeId)
+  const locationId = useSelector((state) => state.ticketForm.locationId)
+  const notes = useSelector((state) => state.ticketForm.notes)
+  const openDate = useSelector((state) => state.ticketForm.openDate)
+  const priority = useSelector((state) => state.ticketForm.priority)
+  const queue = useSelector((state) => state.ticketForm.queue)
+  const statusId = useSelector((state) => state.ticketForm.statusId)
+  const techId = useSelector((state) => state.ticketForm.techId)
+  const ticketId = useSelector((state) => state.ticketForm.ticketId)
+  const title = useSelector((state) => state.ticketForm.title)
+  const timeEntry = useSelector((state) => state.ticketForm.timeEntry)
 
   const submitHandler = async () => {
     const now = new Date()
@@ -62,7 +55,7 @@ export default function Submit() {
       openDate: date,
       priorityId: priority, //2-day SLA
       sourceId: 4, //Email
-      statusId: status,
+      statusId: statusId,
       title: title,
       typeId: 28, //Service Request
       queueID: queue,
@@ -87,15 +80,15 @@ export default function Submit() {
     dispatch(setTimeEntryId(teid))
 
     // reset form
-    dispatch(setClient(''))
+    dispatch(setClientValue(''))
     dispatch(setClientId(''))
-    dispatch(setContact(''))
+    dispatch(setContactValue(''))
     dispatch(setContactId(''))
     dispatch(setIssueType(''))
     dispatch(setIssueTypeId(''))
     dispatch(setLocationId(''))
     dispatch(setNotes(''))
-    dispatch(setStatus('36708'))
+    dispatch(setStatusId('36708'))
     dispatch(setTicketId(''))
     dispatch(setTitle(''))
     dispatch(setTimeEntry(15))

@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux'
 import { Alert, Stack } from '@mui/material'
 
 export default function TicketCount() {
-  const myCount = useSelector((state) => state.ticket.ticketMyCount)
-  const newCount = useSelector((state) => state.ticket.ticketNewCount)
-  const respondedCount = useSelector((state) => state.ticket.ticketRespondedCount)
+  const myCount = useSelector((state) => state.ticketList.ticketMyCount)
+  const newCount = useSelector((state) => state.ticketList.ticketNewCount)
+  const respondedCount = useSelector((state) => state.ticketList.ticketRespondedCount)
   console.log(`myCount: ${myCount}`)
 
   return (

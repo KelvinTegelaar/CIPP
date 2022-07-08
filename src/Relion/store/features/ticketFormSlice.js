@@ -1,41 +1,42 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-export const ticketSlice = createSlice({
-  name: 'ticket',
-  initialState: {
-    activities: [],
-    client: '',
-    clientId: '',
-    contact: { id: 0, label: '', email: '' },
-    contactEmail: '',
-    contactAZId: '',
-    contactId: '',
-    contactList: [],
-    details: '',
-    issueType: '',
-    issueTypeId: '',
-    locationId: '',
-    techId: '',
-    title: '',
-    notes: '',
-    status: 36708,
-    dueDate: '',
-    queue: 27976,
-    priority: 28791,
-    selectedContact: [],
-    ticketMyCount: 0,
-    ticketNewCount: 0,
-    ticketRespondedCount: 0,
-    timeEntry: 15,
-    timeEntryId: '',
-    ticketId: '',
-  },
+const initialState = {
+  activities: [],
+  clientValue: '',
+  clientId: '',
+  contactValue: { id: 0, label: '', email: '' },
+  contactEmail: '',
+  contactAZId: '',
+  contactId: '',
+  contactList: [],
+  details: '',
+  editMode: false,
+  issueType: '',
+  issueTypeId: '',
+  locationId: '',
+  techId: '',
+  title: '',
+  notes: '',
+  statusId: 36708,
+  dueDate: '',
+  queue: 27976,
+  priority: 28791,
+  selectedContact: [],
+  timeEntry: 15,
+  timeEntryId: '',
+  ticketId: '',
+}
+
+export const ticketFormSlice = createSlice({
+  name: 'ticketForm',
+  initialState: initialState,
   reducers: {
+    resetForm: () => initialState,
     setActivities: (state, action) => {
       state.activities = action.payload
     },
-    setClient: (state, action) => {
-      state.client = action.payload
+    setClientValue: (state, action) => {
+      state.clientValue = action.payload
     },
     setClientId: (state, action) => {
       state.clientId = action.payload
@@ -43,8 +44,8 @@ export const ticketSlice = createSlice({
     setConfirmedTicketId: (state, action) => {
       state.confirmedTicketId = action.payload
     },
-    setContact: (state, action) => {
-      state.contact = action.payload
+    setContactValue: (state, action) => {
+      state.contactValue = action.payload
     },
     setContactEmail: (state, action) => {
       state.contactEmail = action.payload
@@ -63,6 +64,9 @@ export const ticketSlice = createSlice({
     },
     setDueDateISO: (state, action) => {
       state.dueDateISO = action.payload
+    },
+    setEditMode: (state, action) => {
+      state.editMode = action.payload
     },
     setIssueType: (state, action) => {
       state.issueType = action.payload
@@ -85,14 +89,11 @@ export const ticketSlice = createSlice({
     setQueue: (state, action) => {
       state.queue = action.payload
     },
-    setSelectedContact: (state, action) => {
-      state.selectedContact = action.payload
-    },
+    // setSelectedContact: (state, action) => {
+    //   state.selectedContact = action.payload
+    // },
     setSourceId: (state, action) => {
       state.sourceId = action.payload
-    },
-    setStatus: (state, action) => {
-      state.status = action.payload
     },
     setStatusId: (state, action) => {
       state.statusId = action.payload
@@ -103,16 +104,6 @@ export const ticketSlice = createSlice({
     setDetails: (state, action) => {
       state.details = action.payload
     },
-    setTicketMyCount: (state, action) => {
-      state.ticketMyCount = action.payload
-    },
-    setTicketNewCount: (state, action) => {
-      state.ticketNewCount = action.payload
-    },
-    setTicketRespondedCount: (state, action) => {
-      state.ticketRespondedCount = action.payload
-    },
-
     setTimeEntryId: (state, action) => {
       state.timeEntryId = action.payload
     },
@@ -129,11 +120,12 @@ export const ticketSlice = createSlice({
 })
 
 export const {
+  resetForm,
   setActivities,
-  setClient,
+  setClientValue,
   setClientId,
   setConfirmedTicketId,
-  setContact,
+  setContactValue,
   setContactAZId,
   setContactEmail,
   setContactId,
@@ -141,6 +133,7 @@ export const {
   setDetails,
   setDueDate,
   setDueDateISO,
+  setEditMode,
   setIssueType,
   setIssueTypeId,
   setLocationId,
@@ -150,16 +143,12 @@ export const {
   setQueue,
   setSelectedContact,
   setSourceId,
-  setStatus,
   setStatusId,
   setTechId,
   setTicketId,
-  setTicketMyCount,
-  setTicketNewCount,
-  setTicketRespondedCount,
   setTimeEntry,
   setTimeEntryId,
   setTitle,
-} = ticketSlice.actions
+} = ticketFormSlice.actions
 
-export default ticketSlice.reducer
+export default ticketFormSlice.reducer

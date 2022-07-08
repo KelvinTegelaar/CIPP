@@ -1,11 +1,10 @@
 import axios from 'axios'
-
-// functions
 import getToken from './getToken'
 
 const PostTicket = async (contactJSON) => {
-  const firstName = contactJSON.firstName
-  const lastName = contactJSON.lastName
+  const fn = contactJSON.firstName
+  const ln = contactJSON.lastName
+  const em = contactJSON.emails[0].emailAddress
 
   const axiosParam = {
     method: 'post',
@@ -18,10 +17,12 @@ const PostTicket = async (contactJSON) => {
   }
 
   const response = await axios(axiosParam)
-  console.log(response)
+  console.log('New ContactId:')
+  console.log(response.data.result.id)
 
-  const selectedContact = { label: `${firstName} ${lastName}`, id: response.data.result.id }
-  return selectedContact
+  // return contactValue to control form
+  const cv = { label: `${fn} ${ln}`, id: response.data.result.id, email: em }
+  return cv
 }
 
 export default PostTicket

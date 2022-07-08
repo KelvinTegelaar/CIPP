@@ -1,14 +1,14 @@
 //import React
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { setNotes } from '../store/features/ticketSlice'
+import { setNotes } from '../../store/features/ticketFormSlice'
 
 //import MUI
 import TextField from '@mui/material/TextField'
 
 export default function TimeEntryNotes() {
   const dispatch = useDispatch()
-  const notes = useSelector((state) => state.ticket.notes)
+  const notes = useSelector((state) => state.ticketForm.notes)
 
   const notesHandler = (event) => {
     dispatch(setNotes(event.target.value))

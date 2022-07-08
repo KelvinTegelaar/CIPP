@@ -777,7 +777,6 @@ export const wordle = [
   'scuba',
   'splat',
   'flyer',
-  'horny',
   'mason',
   'doing',
   'ozone',

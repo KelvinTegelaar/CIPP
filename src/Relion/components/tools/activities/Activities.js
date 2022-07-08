@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { setActivities } from '../store/features/ticketSlice'
-import getTicketActivities from '../functions/getTicketActivities'
+import { setActivities } from '../../../store/features/ticketFormSlice'
+import getTicketActivities from '../../../functions/getTicketActivities'
 
 export default function TicketActivities() {
   const dispatch = useDispatch()
-  const ticketId = useSelector((state) => state.ticket.ticketId)
-  const activities = useSelector((state) => state.ticket.activities)
+  const ticketId = useSelector((state) => state.ticketForm.ticketId)
+  const activities = useSelector((state) => state.ticketForm.activities)
   useEffect(() => {
     const fetchData = async () => {
       const response = await getTicketActivities(ticketId)
