@@ -23,6 +23,8 @@ export default function NewUser() {
   const domain = useSelector((state) => state.ticketForm.domain)
   const tenant = useSelector((state) => state.app.currentTenant)
 
+  const [cmd, setCmd] = useState()
+  const [email, setEmail] = useState()
   const [userFnLi, setUserFnLi] = useState()
   const [userFiLn, setUserFiLn] = useState()
   const [userFn, setUserFn] = useState()
@@ -44,6 +46,12 @@ export default function NewUser() {
   }, [tenant])
 
   useEffect(() => {
+    const fullName = firstName + ' ' + lastName
+    const email = `${username}@${domain}`
+    setCmd(
+      `$secureStringPwd = "${password}" | ConvertTo-SecureString -AsPlainText -Force; New-ADUser -Name "${fullName}" -DisplayName "${fullName}" -GivenName "${firstName}" -Surname "${lastName}" -SamAccountName "${username}" -UserPrincipalName "${email}" -Accountpassword $secureStringPwd -Enabled $true; Start-ADSyncSyncCycle -PolicyType delta`,
+    )
+    setEmail(email)
     setUserFnLi(firstName.toLowerCase() + lastName.toLowerCase().charAt(0))
     setUserFiLn(firstName.toLowerCase().charAt(0) + lastName.toLowerCase())
     setUserFn(firstName.toLowerCase())
@@ -64,10 +72,6 @@ export default function NewUser() {
   }
 
   const adHandler = async () => {
-    const fullName = firstName + ' ' + lastName
-    const email = `${username}@${domain}`
-    const cmd = `$secureStringPwd = "${password}" | ConvertTo-SecureString -AsPlainText -Force; New-ADUser -Name "${fullName}" -DisplayName "${fullName}" -GivenName "${firstName}" -Surname "${lastName}" -SamAccountName "${username}" -UserPrincipalName "${email}" -Accountpassword $secureStringPwd -Enabled $true; Start-ADSyncSyncCycle -PolicyType delta`
-
     // check for another user with same email address
     if (userList.find((item) => item.userPrincipalName === email)) {
       setMsg('Dupicate email found!')
@@ -105,10 +109,28 @@ export default function NewUser() {
         <TextField value={lastName} onChange={lastNameHandler} id="last-name" label="Last Name" />
       </Stack>
       <RadioGroup value={username} name="username-group" onChange={usernameHandler}>
-        <FormControlLabel value={userFnLi} control={<Radio />} label={`${userFnLi}@${domain}`} />
-        <FormControlLabel value={userFiLn} control={<Radio />} label={`${userFiLn}@${domain}`} />
-        <FormControlLabel value={userFn} control={<Radio />} label={`${userFn}@${domain}`} />
-        <FormControlLabel value={userFnLi2} control={<Radio />} label={`${userFnLi2}@${domain}`} />
+        {firstName && (
+          <FormControlLabel value={userFn} control={<Radio />} label={`${userFn}@${domain}`} />
+        )}
+        {firstName && lastName && (
+          <>
+            <FormControlLabel
+              value={userFnLi}
+              control={<Radio />}
+              label={`${userFnLi}@${domain}`}
+            />
+            <FormControlLabel
+              value={userFnLi2}
+              control={<Radio />}
+              label={`${userFnLi2}@${domain}`}
+            />
+            <FormControlLabel
+              value={userFiLn}
+              control={<Radio />}
+              label={`${userFiLn}@${domain}`}
+            />
+          </>
+        )}
       </RadioGroup>
       <br />
       <Password />
