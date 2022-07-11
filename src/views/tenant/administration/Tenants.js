@@ -115,6 +115,36 @@ const columns = [
     ),
   },
   {
+    name: 'Security Portal (GDAP)',
+    selector: (row) => row['defaultDomainName'],
+    center: true,
+    cell: (row) => (
+      <a
+        href={`https://security.microsoft.com/?tid=${row.customerId}`}
+        target="_blank"
+        className="dlink"
+        rel="noreferrer"
+      >
+        <FontAwesomeIcon icon={faCog} className="me-2" />
+      </a>
+    ),
+  },
+  {
+    name: 'Sharepoint Admin',
+    selector: (row) => row['defaultDomainName'],
+    center: true,
+    cell: (row) => (
+      <a
+        href={`https://${row.defaultDomainName.split('.')[0]}-admin.sharepoint.com`}
+        target="_blank"
+        className="dlink"
+        rel="noreferrer"
+      >
+        <FontAwesomeIcon icon={faCog} className="me-2" />
+      </a>
+    ),
+  },
+  {
     name: 'Actions',
     center: true,
     cell: (row) => (
