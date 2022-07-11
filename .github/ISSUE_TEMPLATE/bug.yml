@@ -1,5 +1,5 @@
-name: 🐞 Az module bug report 
-description: Report errors or unexpected behaviors for the Az module.
+name: 🐞 Bug report 
+description: Report errors or unexpected behaviors for CIPP and CIPP-API
 labels: [unconfirmed-by-user , bug]
 
 body:
