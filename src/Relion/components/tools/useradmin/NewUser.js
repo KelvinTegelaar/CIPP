@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import {
+  Box,
   Button,
   FormControlLabel,
   Radio,
@@ -7,6 +8,7 @@ import {
   Snackbar,
   Stack,
   TextField,
+  Typography,
 } from '@mui/material'
 import { setNotes } from '../../../store/features/ticketFormSlice'
 import { setFirstName, setLastName, setUsername } from '../../../store/features/userAdminSlice'
@@ -28,7 +30,7 @@ export default function NewUser() {
   const [userFnLi, setUserFnLi] = useState()
   const [userFiLn, setUserFiLn] = useState()
   const [userFn, setUserFn] = useState()
-  const [userFnLi2, setUserFnLi2] = useState()
+  const [userFnLn, setUserFnLn] = useState()
   const [userList, setUserList] = useState(false)
 
   // control snackbar
@@ -55,7 +57,7 @@ export default function NewUser() {
     setUserFnLi(firstName.toLowerCase() + lastName.toLowerCase().charAt(0))
     setUserFiLn(firstName.toLowerCase().charAt(0) + lastName.toLowerCase())
     setUserFn(firstName.toLowerCase())
-    setUserFnLi2(firstName.toLowerCase() + lastName.toLowerCase().slice(0, 2))
+    setUserFnLn(firstName.toLowerCase() + lastName.toLowerCase())
     dispatch(setNotes(`${firstName}'s new login:\n\n${username}@${domain} / ${password}`))
   }, [firstName, lastName, domain, username, password, dispatch])
 
@@ -79,10 +81,10 @@ export default function NewUser() {
       // copy user creation script to clipboard
       navigator.clipboard.writeText(cmd).then(
         function () {
-          setMsg(`Script copied to clipboard: ${email}`)
+          setMsg(`Copied to clipboard`)
         },
         function (err) {
-          setMsg('Could not copy to clipboard: ', err)
+          setMsg('Copy failed: ', err)
         },
       )
     }
@@ -120,23 +122,30 @@ export default function NewUser() {
               label={`${userFnLi}@${domain}`}
             />
             <FormControlLabel
-              value={userFnLi2}
-              control={<Radio />}
-              label={`${userFnLi2}@${domain}`}
-            />
-            <FormControlLabel
               value={userFiLn}
               control={<Radio />}
               label={`${userFiLn}@${domain}`}
             />
           </>
         )}
+        {firstName && lastName.length > 1 && (
+          <FormControlLabel value={userFnLn} control={<Radio />} label={`${userFnLn}@${domain}`} />
+        )}
       </RadioGroup>
       <br />
       <Password />
       <br />
+      <Box
+        sx={{
+          p: 2,
+          backgroundColor: '#013686',
+        }}
+      >
+        <Typography>{cmd}</Typography>
+      </Box>
+      <br />
       <Button variant="contained" onClick={adHandler}>
-        Generate AD Script
+        Copy
       </Button>
       <Snackbar open={open} autoHideDuration={5000} onClose={handleClose} message={msg} />
     </>
