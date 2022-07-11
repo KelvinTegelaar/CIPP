@@ -8,7 +8,8 @@ import { RESET_STATE_ACTION_TYPE } from 'src/store/actions/resetState'
 import { RESET_AUTH_ACTION_TYPE } from 'src/store/actions/resetAuth'
 import ticketFormReducer from 'src/Relion/store/features/ticketFormSlice'
 import ticketListReducer from 'src/Relion/store/features/ticketListSlice'
-import azReducer from 'src/Relion/store/features/azSlice'
+import ticketConfirmReducer from 'src/Relion/store/features/ticketConfirmSlice'
+import userAdminReducer from 'src/Relion/store/features/userAdminSlice'
 
 export const root = {
   // slices
@@ -23,7 +24,8 @@ export const root = {
   // Relion
   ticketForm: ticketFormReducer,
   ticketList: ticketListReducer,
-  az: azReducer,
+  ticketConfirm: ticketConfirmReducer,
+  userAdmin: userAdminReducer,
 }
 
 export const apiMiddleware = [baseApi.middleware]

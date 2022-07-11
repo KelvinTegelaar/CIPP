@@ -6,10 +6,10 @@ const initialState = {
   clientId: '',
   contactValue: { id: 0, label: '', email: '' },
   contactEmail: '',
-  contactAZId: '',
   contactId: '',
   contactList: [],
   details: '',
+  domain: '',
   editMode: false,
   issueType: '',
   issueTypeId: '',
@@ -21,9 +21,7 @@ const initialState = {
   dueDate: '',
   queue: 27976,
   priority: 28791,
-  selectedContact: [],
   timeEntry: 15,
-  timeEntryId: '',
   ticketId: '',
 }
 
@@ -41,23 +39,20 @@ export const ticketFormSlice = createSlice({
     setClientId: (state, action) => {
       state.clientId = action.payload
     },
-    setConfirmedTicketId: (state, action) => {
-      state.confirmedTicketId = action.payload
-    },
     setContactValue: (state, action) => {
       state.contactValue = action.payload
     },
     setContactEmail: (state, action) => {
       state.contactEmail = action.payload
     },
-    setContactAZId: (state, action) => {
-      state.contactAZId = action.payload
-    },
     setContactId: (state, action) => {
       state.contactId = action.payload
     },
     setContactList: (state, action) => {
       state.contactList = action.payload
+    },
+    setDomain: (state, action) => {
+      state.domain = action.payload
     },
     setDueDate: (state, action) => {
       state.dueDate = action.payload
@@ -89,9 +84,6 @@ export const ticketFormSlice = createSlice({
     setQueue: (state, action) => {
       state.queue = action.payload
     },
-    // setSelectedContact: (state, action) => {
-    //   state.selectedContact = action.payload
-    // },
     setSourceId: (state, action) => {
       state.sourceId = action.payload
     },
@@ -103,9 +95,6 @@ export const ticketFormSlice = createSlice({
     },
     setDetails: (state, action) => {
       state.details = action.payload
-    },
-    setTimeEntryId: (state, action) => {
-      state.timeEntryId = action.payload
     },
     setTimeEntry: (state, action) => {
       state.timeEntry = action.payload
@@ -126,11 +115,11 @@ export const {
   setClientId,
   setConfirmedTicketId,
   setContactValue,
-  setContactAZId,
   setContactEmail,
   setContactId,
   setContactList,
   setDetails,
+  setDomain,
   setDueDate,
   setDueDateISO,
   setEditMode,
@@ -141,13 +130,11 @@ export const {
   setOpenDate,
   setPriority,
   setQueue,
-  setSelectedContact,
   setSourceId,
   setStatusId,
   setTechId,
   setTicketId,
   setTimeEntry,
-  setTimeEntryId,
   setTitle,
 } = ticketFormSlice.actions
 

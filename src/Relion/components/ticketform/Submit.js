@@ -3,22 +3,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import Button from '@mui/material/Button'
 import postTicket from '../../functions/postTicket'
 import postTime from '../../functions/postTime'
-import {
-  setClientValue,
-  setClientId,
-  setConfirmedTicketId,
-  setContactValue,
-  setContactId,
-  setIssueType,
-  setIssueTypeId,
-  setLocationId,
-  setNotes,
-  setTicketId,
-  setTimeEntry,
-  setTimeEntryId,
-  setTitle,
-  setStatusId,
-} from '../../store/features/ticketFormSlice'
+import { resetForm } from '../../store/features/ticketFormSlice'
+import { setTicketConfirmId, setTimeEntryConfirmId } from '../../store/features/ticketConfirmSlice'
 
 export default function Submit() {
   const dispatch = useDispatch()
@@ -60,6 +46,14 @@ export default function Submit() {
       typeId: 28, //Service Request
       queueID: queue,
     })
+
+    // Update if ticketId is supplied
+    // Else create new ticket
+    const tid = await postTicket(ticketJSON, ticketId)
+    console.log('ticketId:')
+    console.log(tid)
+
+    // Post time entry
     const timeHours = timeEntry / 60 // convert to hours in decimal
     const timeJSON = JSON.stringify({
       startDate: nowISO,
@@ -71,27 +65,15 @@ export default function Submit() {
       workTypeId: 19558,
       roleId: 15324,
     })
-
-    // param ticketId is optional for updating existing ticket
-    const tid = await postTicket(ticketJSON, ticketId)
-    // confirmedTicketId is necessary for TicketConfirm component because ticketId will be reset
-    dispatch(setConfirmedTicketId(tid))
     const teid = await postTime(timeJSON, tid)
-    dispatch(setTimeEntryId(teid))
+    console.log('timeEntryId:')
+    console.log(teid)
 
-    // reset form
-    dispatch(setClientValue(''))
-    dispatch(setClientId(''))
-    dispatch(setContactValue(''))
-    dispatch(setContactId(''))
-    dispatch(setIssueType(''))
-    dispatch(setIssueTypeId(''))
-    dispatch(setLocationId(''))
-    dispatch(setNotes(''))
-    dispatch(setStatusId('36708'))
-    dispatch(setTicketId(''))
-    dispatch(setTitle(''))
-    dispatch(setTimeEntry(15))
+    // values to display Confirm component
+    dispatch(setTicketConfirmId(tid))
+    dispatch(setTimeEntryConfirmId(teid))
+
+    dispatch(resetForm())
   }
 
   return (

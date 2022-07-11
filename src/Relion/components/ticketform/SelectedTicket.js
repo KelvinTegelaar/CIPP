@@ -11,5 +11,7 @@ export default function SelectedTicket() {
     dispatch(resetForm())
   }
 
+  // Ticket chip appears when you select a row from the ticket list
+  // The chip also allows you to exit edit mode
   return ticketId && <Chip label={label} onDelete={deleteHandler} color="primary" />
 }

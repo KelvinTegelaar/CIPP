@@ -1,13 +1,12 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { setTimeEntry } from '../../store/features/ticketFormSlice'
-
-// mui
 import Slider from '@mui/material/Slider'
 
 export default function TimeEntry() {
   const dispatch = useDispatch()
   const timeEntry = useSelector((state) => state.ticketForm.timeEntry)
+
   const timeEntryHandler = (event) => {
     dispatch(setTimeEntry(event.target.value))
   }
@@ -39,6 +38,7 @@ export default function TimeEntry() {
   const valueLabelFormat = (value) => {
     return value % 60
   }
+
   return (
     <Slider
       aria-label="Time Logged"

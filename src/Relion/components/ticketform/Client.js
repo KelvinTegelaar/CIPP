@@ -2,7 +2,12 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { setCurrentTenant } from 'src/store/features/app'
 // import { useSearchParams } from 'react-router-dom'
-import { setClientValue, setClientId, setLocationId } from '../../store/features/ticketFormSlice'
+import {
+  setClientValue,
+  setClientId,
+  setDomain,
+  setLocationId,
+} from '../../store/features/ticketFormSlice'
 import Autocomplete from '@mui/material/Autocomplete'
 import TextField from '@mui/material/TextField'
 import getLocationID from '../../functions/getLocationID'
@@ -34,6 +39,7 @@ export default function Client() {
 
   const clientHandler = async (event, input) => {
     dispatch(setClientId(input.id))
+    dispatch(setDomain(input.domain))
     console.log('Selected Client:')
     console.log(input)
 

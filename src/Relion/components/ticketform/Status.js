@@ -1,8 +1,5 @@
-// import React
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-
-// import reducers
 import {
   setStatusId,
   setDueDate,
@@ -10,12 +7,7 @@ import {
   setQueue,
   setPriority,
 } from '../../store/features/ticketFormSlice'
-
-// import mui
-import Radio from '@mui/material/Radio'
-import RadioGroup from '@mui/material/RadioGroup'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import TextField from '@mui/material/TextField'
+import { FormControlLabel, Radio, RadioGroup, TextField } from '@mui/material'
 
 export default function Status() {
   const dispatch = useDispatch()

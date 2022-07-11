@@ -1,10 +1,5 @@
-// import React
 import React from 'react'
-
-// import MUI
 import { Stack } from '@mui/material'
-
-// import Relion components
 import GetTechId from './GetTechId'
 import SelectedTicket from './SelectedTicket'
 import Client from './Client'
@@ -16,7 +11,7 @@ import TimeEntryNotes from './TimeEntryNotes'
 import Status from './Status'
 import TimeEntry from './TimeEntry'
 import Submit from './Submit'
-import TicketConfirm from './Confirm'
+import Confirm from './Confirm'
 
 export default function TicketForm() {
   return (
@@ -33,7 +28,7 @@ export default function TicketForm() {
       <TimeEntryNotes />
       <Status />
       <Submit />
-      <TicketConfirm />
+      <Confirm />
     </Stack>
   )
 }

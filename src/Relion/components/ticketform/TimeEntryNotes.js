@@ -1,9 +1,6 @@
-//import React
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { setNotes } from '../../store/features/ticketFormSlice'
-
-//import MUI
 import TextField from '@mui/material/TextField'
 
 export default function TimeEntryNotes() {
