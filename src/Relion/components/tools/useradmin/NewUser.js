@@ -25,7 +25,9 @@ export default function NewUser() {
   const domain = useSelector((state) => state.ticketForm.domain)
   const tenant = useSelector((state) => state.app.currentTenant)
 
+  const [cmdType, setCmdType] = useState('ad')
   const [cmd, setCmd] = useState()
+
   const [email, setEmail] = useState()
   const [userFnLi, setUserFnLi] = useState()
   const [userFiLn, setUserFiLn] = useState()
@@ -50,16 +52,22 @@ export default function NewUser() {
   useEffect(() => {
     const fullName = firstName + ' ' + lastName
     const email = `${username}@${domain}`
-    setCmd(
-      `$secureStringPwd = "${password}" | ConvertTo-SecureString -AsPlainText -Force; New-ADUser -Name "${fullName}" -DisplayName "${fullName}" -GivenName "${firstName}" -Surname "${lastName}" -SamAccountName "${username}" -UserPrincipalName "${email}" -Accountpassword $secureStringPwd -Enabled $true; Start-ADSyncSyncCycle -PolicyType delta`,
-    )
+    if (cmdType === 'ad') {
+      setCmd(
+        `$secureStringPwd = "${password}" | ConvertTo-SecureString -AsPlainText -Force; New-ADUser -Name "${fullName}" -DisplayName "${fullName}" -GivenName "${firstName}" -Surname "${lastName}" -SamAccountName "${username}" -UserPrincipalName "${email}" -Accountpassword $secureStringPwd -Enabled $true; Start-ADSyncSyncCycle -PolicyType delta`,
+      )
+    } else {
+      setCmd(
+        `Connect-AzureAd; $PasswordProfile = New-Object -TypeName Microsoft.Open.AzureAD.Model.PasswordProfile; $PasswordProfile.Password = "${password}" ; New-AzureADUser -DisplayName "${fullName}" -PasswordProfile $PasswordProfile -UserPrincipalName "${email}" -AccountEnabled $true -MailNickName "${username}"`,
+      )
+    }
     setEmail(email)
     setUserFnLi(firstName.toLowerCase() + lastName.toLowerCase().charAt(0))
     setUserFiLn(firstName.toLowerCase().charAt(0) + lastName.toLowerCase())
     setUserFn(firstName.toLowerCase())
     setUserFnLn(firstName.toLowerCase() + lastName.toLowerCase())
     dispatch(setNotes(`${firstName}'s new login:\n\n${username}@${domain} / ${password}`))
-  }, [firstName, lastName, domain, username, password, dispatch])
+  }, [firstName, lastName, domain, username, password, cmdType, dispatch])
 
   const firstNameHandler = (event) => {
     dispatch(setFirstName(event.target.value))
@@ -73,7 +81,11 @@ export default function NewUser() {
     dispatch(setUsername(event.target.value))
   }
 
-  const adHandler = async () => {
+  const cmdTypeHandler = (event) => {
+    dispatch(setCmdType(event.target.value))
+  }
+
+  const buttonHandler = async () => {
     // check for another user with same email address
     if (userList.find((item) => item.userPrincipalName === email)) {
       setMsg('Dupicate email found!')
@@ -135,6 +147,10 @@ export default function NewUser() {
       <br />
       <Password />
       <br />
+      <RadioGroup row value={cmdType} name="cmd-group" onChange={cmdTypeHandler}>
+        <FormControlLabel value="ad" control={<Radio />} label="AD" />
+        <FormControlLabel value="az" control={<Radio />} label="Azure" />
+      </RadioGroup>
       <Box
         sx={{
           p: 2,
@@ -144,7 +160,7 @@ export default function NewUser() {
         <Typography>{cmd}</Typography>
       </Box>
       <br />
-      <Button variant="contained" onClick={adHandler}>
+      <Button variant="contained" onClick={buttonHandler}>
         Copy
       </Button>
       <Snackbar open={open} autoHideDuration={5000} onClose={handleClose} message={msg} />

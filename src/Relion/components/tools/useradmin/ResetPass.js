@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Button, Typography } from '@mui/material'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
@@ -11,6 +11,12 @@ export default function ResetPass() {
   const tenant = useSelector((state) => state.app.currentTenant)
   const contact = useSelector((state) => state.userAdmin.contact)
   const password = useSelector((state) => state.userAdmin.password)
+
+  useEffect(() => {
+    dispatch(
+      setNotes(`${contact.displayName}'s new login:\n\n${contact.userPrincipalName} / ${password}`),
+    )
+  }, [contact, password, dispatch])
 
   const resetHandler = () => {
     const shippedValues = {
@@ -29,11 +35,6 @@ export default function ResetPass() {
     if (postResults.isFetching) {
       return <Typography color="success">Loading...</Typography>
     } else if (postResults.isSuccess) {
-      dispatch(
-        setNotes(
-          `${contact.displayName}'s new login:\n\n${contact.userPrincipalName} / ${password}`,
-        ),
-      )
       return (
         <Typography color="success">
           {postResults.data.Results.map((message, idx) => {
