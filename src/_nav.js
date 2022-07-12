@@ -545,6 +545,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Maintenance',
+        to: '/cipp/maintenance',
+      },
+      {
+        component: CNavItem,
         name: 'Documentation',
         href: 'https://cipp.app',
         target: '_blank',
