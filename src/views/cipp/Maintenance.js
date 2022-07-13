@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { Buffer } from 'buffer'
-//import { CippCodeBlock } from 'src/components/utilities'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import {
   CButton,
@@ -117,9 +116,11 @@ const Maintenance = () => {
                   <p>
                     {listScriptLinkResult.data.Link !== undefined && (
                       <>
-                        Copy this text into a PowerShell terminal, we recommend Azure Cloud Shell.
-                        The link is valid for 5 minutes.
-                        <br />
+                        <p>
+                          Copy this text into a PowerShell terminal, we recommend Azure Cloud Shell.
+                          Azure modules and the az command line utilties are required for these
+                          scripts to work. The link is valid for 5 minutes.
+                        </p>
                         <CippCodeBlock
                           language="text"
                           showLineNumbers={false}
