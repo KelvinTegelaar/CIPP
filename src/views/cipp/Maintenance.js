@@ -17,6 +17,7 @@ import { RFFCFormSelect } from 'src/components/forms'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLink, faScroll } from '@fortawesome/free-solid-svg-icons'
 import { CippCodeBlock } from 'src/components/utilities'
+import Skeleton from 'react-loading-skeleton'
 
 const Maintenance = () => {
   const [selectedScript, setSelectedScript] = useState()
@@ -52,26 +53,37 @@ const Maintenance = () => {
                 render={({ handleSubmit, submitting, values }) => {
                   return (
                     <CForm onSubmit={handleSubmit}>
-                      <CRow>
-                        {listBackendResult.isSuccess && (
-                          <CCol>
-                            <RFFCFormSelect
-                              name="ScriptFile"
-                              label="Script File"
-                              placeholder="-- Select a script --"
-                              values={listBackendResult.data.ScriptFiles}
-                            />
-                          </CCol>
-                        )}
-                      </CRow>
-                      <CRow className="mb-3">
-                        <CCol>
-                          <CButton type="submit" disabled={submitting}>
-                            <FontAwesomeIcon icon={faScroll} className="me-2" />
-                            Load Script
-                          </CButton>
-                        </CCol>
-                      </CRow>
+                      {listBackendResult.isFetching && (
+                        <>
+                          <CRow>
+                            <CCol>
+                              <Skeleton count={5} />
+                            </CCol>
+                          </CRow>
+                        </>
+                      )}
+                      {!listBackendResult.isFetching && listBackendResult.isSuccess && (
+                        <>
+                          <CRow>
+                            <CCol>
+                              <RFFCFormSelect
+                                name="ScriptFile"
+                                label="Script File"
+                                placeholder="-- Select a script --"
+                                values={listBackendResult.data.ScriptFiles}
+                              />
+                            </CCol>
+                          </CRow>
+                          <CRow className="mb-3">
+                            <CCol>
+                              <CButton type="submit" disabled={submitting}>
+                                <FontAwesomeIcon icon={faScroll} className="me-2" />
+                                Load Script
+                              </CButton>
+                            </CCol>
+                          </CRow>
+                        </>
+                      )}
                     </CForm>
                   )
                 }}
@@ -82,7 +94,14 @@ const Maintenance = () => {
       </CRow>
       <CRow>
         <CCol>
-          {listScriptResult.isSuccess && (
+          {listScriptResult.isFetching && (
+            <CCard>
+              <CCardBody>
+                <Skeleton count={10} />
+              </CCardBody>
+            </CCard>
+          )}
+          {!listScriptResult.isFetching && listScriptResult.isSuccess && (
             <CCard>
               <CCardHeader>
                 <CCardTitle>Script Details</CCardTitle>
@@ -122,7 +141,7 @@ const Maintenance = () => {
                     <CippCodeBlock
                       language="powershell"
                       showLineNumbers={true}
-                      wrapLongLines={true}
+                      wrapLongLines={false}
                       code={Buffer.from(listScriptResult.data.ScriptContent, 'base64').toString()}
                     />
                   </p>
