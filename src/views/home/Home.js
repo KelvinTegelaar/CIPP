@@ -41,38 +41,38 @@ const Home = () => {
 
         <CippMasonryItem size="card">
           <CippContentCard title="Next Run Standards" icon={faBook}>
-            <div>{!isLoadingDash ? dashboard.NextStandardsRun : <Skeleton />}</div>
+            <div>{!isLoadingDash ? dashboard?.NextStandardsRun : <Skeleton />}</div>
           </CippContentCard>
         </CippMasonryItem>
         <CippMasonryItem size="card">
           <CippContentCard title="Next Run BPA" icon={faBook}>
-            <div>{!isLoadingDash ? dashboard.NextBPARun : <Skeleton />}</div>
+            <div>{!isLoadingDash ? dashboard?.NextBPARun : <Skeleton />}</div>
           </CippContentCard>
         </CippMasonryItem>
         <CippMasonryItem size="card">
           <CippContentCard title="Queued Applications" icon={faBook}>
-            <div>{!isLoadingDash ? dashboard.queuedApps : <Skeleton />}</div>
+            <div>{!isLoadingDash ? dashboard?.queuedApps : <Skeleton />}</div>
           </CippContentCard>
         </CippMasonryItem>
         <CippMasonryItem size="card">
           <CippContentCard title="Queued Standards" icon={faBook}>
-            <div> {!isLoadingDash ? dashboard.queuedStandards : <Skeleton />}</div>
+            <div> {!isLoadingDash ? dashboard?.queuedStandards : <Skeleton />}</div>
           </CippContentCard>
         </CippMasonryItem>
         <CippMasonryItem size="card">
           <CippContentCard title="Managed Tenants" icon={faBook}>
-            <div>{!isLoadingDash ? dashboard.tenantCount : <Skeleton />}</div>
+            <div>{!isLoadingDash ? dashboard?.tenantCount : <Skeleton />}</div>
             <br></br> Managed tenants
           </CippContentCard>
         </CippMasonryItem>
         <CippMasonryItem size="card">
           <CippContentCard title="Token refresh dates" icon={faBook}>
             <div className="mb-3">
-              Refresh token: {!isLoadingDash ? dashboard.RefreshTokenDate : ''}
+              Refresh token: {!isLoadingDash ? dashboard?.RefreshTokenDate : ''}
             </div>
 
             <div className="mb-2">
-              Exchange Token: {!isLoadingDash ? dashboard.ExchangeTokenDate : ''}
+              Exchange Token: {!isLoadingDash ? dashboard?.ExchangeTokenDate : ''}
             </div>
           </CippContentCard>
         </CippMasonryItem>
