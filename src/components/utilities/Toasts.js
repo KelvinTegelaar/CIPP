@@ -39,7 +39,7 @@ const Toast = ({ message, title, onClose, error }) => {
       <CToastBody>
         <div className="d-flex justify-content-between align-items-center text-danger">
           <strong>{message}</strong>
-          <CButton size="sm" variant="outline" color="light" onClick={() => setVisible(!visible)}>
+          <CButton size="sm" variant="outline" color="primary" onClick={() => setVisible(!visible)}>
             Details
             <FontAwesomeIcon
               className="ms-1"

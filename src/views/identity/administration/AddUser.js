@@ -25,6 +25,7 @@ import {
 import { CippPage } from 'src/components/layout'
 import countryList from 'src/data/countryList'
 import { useListUsersQuery } from 'src/store/api/users'
+import { useListAdConnectSettingsQuery } from 'src/store/api/adconnect'
 import { useListDomainsQuery } from 'src/store/api/domains'
 import { useListLicensesQuery } from 'src/store/api/licenses'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
@@ -51,6 +52,13 @@ const AddUser = () => {
   } = useListUsersQuery({ tenantDomain })
 
   const {
+    data: adconnectsettings = [],
+    isFetching: adcIsFetching,
+    error: adcError,
+  } = useListAdConnectSettingsQuery({ tenantDomain })
+  console.log(adconnectsettings)
+
+  const {
     data: domains = [],
     isFetching: domainsIsFetching,
     error: domainsError,
@@ -64,21 +72,12 @@ const AddUser = () => {
 
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const onSubmit = (values) => {
-    //@todo: need to fix copyfrom in api so this is no longer required
-    if (!values.CopyFrom) {
-      values.CopyFrom = ''
-    }
-    //@todo: need to fix this in api so this hacky shit is no longer needed.
-    if (!values.addedAliases) {
-      values.addedAliases = ''
-    }
-
     const shippedValues = {
-      AddedAliases: values.addedAliases,
+      AddedAliases: values.addedAliases ? values.addedAliases : '',
       BusinessPhone: values.businessPhones,
       City: values.city,
       CompanyName: values.companyName,
-      CopyFrom: values.CopyFrom,
+      CopyFrom: values.CopyFrom ? values.CopyFrom.value : '',
       Country: values.country,
       Department: values.department,
       DisplayName: values.displayName,
@@ -90,7 +89,7 @@ const AddUser = () => {
       MobilePhone: values.mobilePhone,
       Password: values.password,
       PostalCode: values.postalCode,
-      Usagelocation: values.usageLocation,
+      Usagelocation: values.usageLocation ? values.usageLocation.value : '',
       Username: values.mailNickname,
       streetAddress: values.streetAddress,
       Autopassword: values.Autopassword,
@@ -102,14 +101,14 @@ const AddUser = () => {
     genericPostRequest({ path: '/api/AddUser', values: shippedValues })
   }
   const usagelocation = useSelector((state) => state.app.usageLocation)
-
+  console.log(usagelocation)
   const initialState = {
     Autopassword: true,
     usageLocation: usagelocation,
   }
 
   return (
-    <CippPage tenantSelector={true} title="Add User">
+    <CippPage title="Add User">
       {postResults.isSuccess && (
         <CCallout color="success" dismissible>
           {postResults.data?.Results.map((result, index) => (
@@ -120,6 +119,17 @@ const AddUser = () => {
       <CRow>
         <CCol md={6}>
           <CCard>
+            {adcIsFetching && <CSpinner />}
+            {adcError && <span>Unable to determine Azure AD Connect Settings</span>}
+            {!adcIsFetching &&
+              adconnectsettings.dirSyncEnabled &&
+              adconnectsettings.dirSyncConfigured && (
+                <CCallout color="warning">
+                  Warning! {adconnectsettings.dirSyncEnabled} This tenant currently has Active
+                  Directory Sync Enabled and Configured. This usually means users should be created
+                  in Active Directory
+                </CCallout>
+              )}
             <CCardHeader>
               <CCardTitle>Account Details</CCardTitle>
             </CCardHeader>

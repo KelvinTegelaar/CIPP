@@ -9,8 +9,7 @@ function ExportCsvButton(props) {
   return (
     <CSVDownloader data={props.csvData} filename={`${props.reportName}`}>
       <CButton size="sm" className="m-1">
-        <FontAwesomeIcon icon={faFileCsv} className="pe-1" size="lg" />
-        CSV
+        <FontAwesomeIcon icon={faFileCsv} size="lg" />
       </CButton>
     </CSVDownloader>
   )

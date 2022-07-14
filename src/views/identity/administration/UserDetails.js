@@ -33,6 +33,10 @@ export default function UserDetails({ tenantDomain, userId, className = null }) 
       body: user.primDomain,
     },
     {
+      heading: 'Job Title',
+      body: user.jobTitle,
+    },
+    {
       heading: 'Usage Location',
       body: user.usageLocation,
     },

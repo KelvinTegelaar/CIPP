@@ -129,6 +129,7 @@ const TenantsList = () => {
 
   return (
     <CippPageList
+      capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
       title="Tenants"
       tenantSelector={false}
       datatable={{
