@@ -50,6 +50,10 @@ export default function Client() {
         dispatch(setPax8(match[0].pax8))
         dispatch(setClientValue(match[0])) // control form
 
+        // get location ID from BMS
+        const lid = getLocationID(match[0].id)
+        dispatch(setLocationId(lid))
+
         // set tenant switcher
         dispatch(
           setCurrentTenant({
@@ -75,7 +79,7 @@ export default function Client() {
     dispatch(setClientValue(input)) // control form
 
     // get location ID from BMS
-    const lid = await getLocationID(input.id)
+    const lid = getLocationID(input.id)
     dispatch(setLocationId(lid))
 
     // set tenant switcher
