@@ -4,6 +4,7 @@ import { TabContext, TabList, TabPanel } from '@mui/lab'
 import Contact from './Contact'
 import NewUser from './NewUser'
 import Offboard from './Offboard'
+import License from './License'
 import ResetPass from './ResetPass'
 
 export default function UserAdmin() {
@@ -21,11 +22,12 @@ export default function UserAdmin() {
 
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <TabList onChange={handleChange}>
+          <TabList onChange={handleChange} variant="scrollable">
             <Tab label="Reset Password" value="1" />
             <Tab label="New User" value="2" />
-            <Tab label="Add to Group" value="3" />
-            <Tab label="Offboard" value="4" />
+            <Tab label="License" value="3" />
+            <Tab label="Add to Group" value="4" />
+            <Tab label="Offboard" value="5" />
           </TabList>
         </Box>
         <TabPanel value="1">
@@ -34,8 +36,11 @@ export default function UserAdmin() {
         <TabPanel value="2">
           <NewUser />
         </TabPanel>
-        <TabPanel value="3"></TabPanel>
-        <TabPanel value="4">
+        <TabPanel value="3">
+          <License />
+        </TabPanel>
+        <TabPanel value="4"></TabPanel>
+        <TabPanel value="5">
           <Offboard />
         </TabPanel>
       </TabContext>

@@ -9,16 +9,19 @@ const initialState = {
   contactId: '',
   contactList: [],
   details: '',
+  defaultDomainName: '',
   domain: '',
   editMode: false,
   issueType: '',
   issueTypeId: '',
+  label: '',
   locationId: '',
   techId: '',
   title: '',
   notes: '',
   statusId: 36708,
   dueDate: '',
+  pax8: '',
   queue: 27976,
   priority: 28791,
   timeEntry: 15,
@@ -51,6 +54,9 @@ export const ticketFormSlice = createSlice({
     setContactList: (state, action) => {
       state.contactList = action.payload
     },
+    setDefaultDomainName: (state, action) => {
+      state.defaultDomainName = action.payload
+    },
     setDomain: (state, action) => {
       state.domain = action.payload
     },
@@ -69,6 +75,9 @@ export const ticketFormSlice = createSlice({
     setIssueTypeId: (state, action) => {
       state.issueTypeId = action.payload
     },
+    setLabel: (state, action) => {
+      state.label = action.payload
+    },
     setLocationId: (state, action) => {
       state.locationId = action.payload
     },
@@ -77,6 +86,9 @@ export const ticketFormSlice = createSlice({
     },
     setOpenDate: (state, action) => {
       state.openDate = action.payload
+    },
+    setPax8: (state, action) => {
+      state.pax8 = action.payload
     },
     setPriority: (state, action) => {
       state.priority = action.payload
@@ -118,6 +130,7 @@ export const {
   setContactEmail,
   setContactId,
   setContactList,
+  setDefaultDomainName,
   setDetails,
   setDomain,
   setDueDate,
@@ -125,9 +138,11 @@ export const {
   setEditMode,
   setIssueType,
   setIssueTypeId,
+  setLabel,
   setLocationId,
   setNotes,
   setOpenDate,
+  setPax8,
   setPriority,
   setQueue,
   setSourceId,

@@ -11,11 +11,14 @@ const getLocationID = async (clientID) => {
     },
   }
   const response = await axios(axiosParam)
-  const locationID = response.data.result.filter((locations) => {
+  const locationId = response.data.result.filter((locations) => {
     return (locations.isMain = true)
   })[0].id
 
-  return locationID
+  console.log('LocationId:')
+  console.log(locationId)
+
+  return locationId
 }
 
 export default getLocationID

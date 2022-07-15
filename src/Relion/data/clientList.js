@@ -8,6 +8,7 @@ export const clientList = [
     defaultDomainName: 'acwla.org',
     domain: 'acwla.org',
     tenant: '188495f2-336a-4cc3-868b-a4765f71185c',
+    pax8: 'e4128a4c-e97d-47a1-89b5-7de75dba7b26',
   },
   {
     id: 101239,
@@ -15,6 +16,7 @@ export const clientList = [
     defaultDomainName: 'akp-tech.com',
     domain: 'akp-tech.com',
     tenant: '56d4ef54-2d64-4729-aca4-10a530f9e137',
+    pax8: '058c1631-4a9e-4c89-bece-2b8bd4e2b649',
   },
   { id: 101240, label: 'BASE', domain: 'basetrainingpt.com', tenant: '' },
   { id: 105196, label: 'BASE Sherman Oaks', domain: 'basetrainingpt.com', tenant: '' },
@@ -25,6 +27,7 @@ export const clientList = [
     defaultDomainName: 'ci.rolling-hills-estates.ca.us',
     domain: 'ci.rolling-hills-estates.ca.us',
     tenant: '88879da4-54a3-4a21-aef5-c17e8980d0a1',
+    pax8: 'f812b4fe-bb0b-41af-940c-5e03d60209d1',
   },
   {
     id: 101242,
@@ -32,6 +35,7 @@ export const clientList = [
     defaultDomainName: 'dekra-lite.com',
     domain: 'dekra-lite.com',
     tenant: '6a8e5d53-3e2b-418a-9dd8-5ecc8337962a',
+    pax8: 'fa641349-662f-48a3-91a5-e95537294c51',
   },
   {
     id: 101243,
@@ -39,6 +43,7 @@ export const clientList = [
     defaultDomainName: 'MaterDolorosa.org',
     domain: 'materdolorosa.org',
     tenant: '4a74ab7f-6c1d-487e-bedb-f2244caf8adf',
+    pax8: 'a06903bf-5274-4b3e-9ddb-d15646022553',
   },
   {
     id: 101244,
@@ -46,6 +51,7 @@ export const clientList = [
     defaultDomainName: 'downtownwomenscenter.org',
     domain: 'downtownwomenscenter.org',
     tenant: '92c60ce1-2f5d-44ed-9464-6422ebdff615',
+    pax8: 'eb89ff07-c253-43d4-b4b7-baa2e4579142',
   },
   { id: 101245, label: 'Extant', domain: 'extantlighting.com', tenant: '' },
   {
@@ -54,6 +60,7 @@ export const clientList = [
     defaultDomainName: 'f2suspension.com',
     domain: 'f2suspension.com',
     tenant: '9bca80f2-845d-4262-ba3a-66b2578c9098',
+    pax8: '1669d165-6524-4e6c-bea4-c065ef050524',
   },
   {
     id: 101248,
@@ -61,6 +68,7 @@ export const clientList = [
     defaultDomainName: 'friendsla.org',
     domain: 'friendsla.org',
     tenant: '2cc4db87-c199-41e0-9361-74b7d8bdf6b4',
+    pax8: 'ba7a73f2-ead6-4510-96ec-83371adae75c',
   },
   {
     id: 105939,
@@ -68,6 +76,7 @@ export const clientList = [
     defaultDomainName: 'garfieldcoment.com',
     domain: 'garfieldcoment.com',
     tenant: 'be17f196-dd65-4a88-ba34-96155e758c0e',
+    pax8: '2b7e28a0-579d-4e37-92dc-7680ba4eb16f',
   },
   {
     id: 101249,
@@ -75,6 +84,7 @@ export const clientList = [
     defaultDomainName: 'generalcarboncompany.com',
     domain: 'generalcarboncompany.com',
     tenant: 'b77d26b2-b4b8-4527-b3f9-f2d97e3fb468',
+    pax8: '55f7edb8-2822-4cf5-be5a-6205355767be',
   },
   { id: 101250, label: 'Ho Rehab', tenant: '' },
   {
@@ -83,6 +93,7 @@ export const clientList = [
     defaultDomainName: 'hophysical.onmicrosoft.com',
     domain: 'hophysicaltherapy.com',
     tenant: '3fffdedc-a531-4d72-be1b-894941bc9817',
+    pax8: '96bf660d-590d-4208-9a6b-5989b4e28928',
   },
   {
     id: 101252,
@@ -90,6 +101,7 @@ export const clientList = [
     defaultDomainName: 'imaginela.org',
     domain: 'imaginela.org',
     tenant: '5256f2c6-e353-4350-a6af-df61ae110387',
+    pax8: 'b9d1769e-ccc6-4065-8e40-c60e87bfab71',
   },
   {
     id: 101253,
@@ -97,6 +109,7 @@ export const clientList = [
     defaultDomainName: 'kgcinc.com',
     domain: 'kgcinc.com',
     tenant: 'be6fd3e8-8ffb-46e2-bf59-63fe1569d7a8',
+    pax8: '43b0c83f-0615-4dba-9fdd-735aeef35350',
   },
   {
     id: 101254,
@@ -104,6 +117,7 @@ export const clientList = [
     defaultDomainName: 'NETORGFT932851.onmicrosoft.com',
     domain: 'kimblefire.com',
     tenant: 'e71914b9-82ee-47a3-ba9d-8eac5151d7ab',
+    pax8: '0aaffc3e-9335-4f01-8f29-0842cf8395cf',
   },
   {
     id: 114089,
@@ -111,6 +125,7 @@ export const clientList = [
     defaultDomainName: 'lastagecall.onmicrosoft.com',
     domain: 'lastagecall.com',
     tenant: 'c5e1f34a-934c-45fb-8a4f-2e88395c8a76',
+    pax8: '6b18c599-ecbc-464d-91da-c4835a4eaad1',
   },
   {
     id: 101255,
@@ -118,6 +133,7 @@ export const clientList = [
     defaultDomainName: 'losangeleschristianschool.org',
     domain: 'losangeleschristianschool.org',
     tenant: '13f017e1-e5e0-49cb-b7fa-18233f5dfb12',
+    pax8: '047af8d4-4ff4-41c6-9ad6-f5ce7be14571',
   },
   { id: 101224, label: 'NZXT', domain: 'nzxt.com', tenant: '' },
   {
@@ -133,6 +149,7 @@ export const clientList = [
     defaultDomainName: 'phoenixrope.net',
     domain: 'phoenixrope.net',
     tenant: '4114297e-889f-4a48-afd7-e5c688f70639',
+    pax8: 'ba8ea500-b4b5-4e4b-adad-e9f2550785dd',
   },
   {
     id: 101227,
@@ -140,6 +157,7 @@ export const clientList = [
     defaultDomainName: 'phoenixrope.net',
     domain: 'phoenixrope.net',
     tenant: '4114297e-889f-4a48-afd7-e5c688f70639',
+    pax8: 'ba8ea500-b4b5-4e4b-adad-e9f2550785dd',
   },
   {
     id: 101228,
@@ -147,6 +165,7 @@ export const clientList = [
     defaultDomainName: 'powertecfitness.com',
     domaindomain: 'powertecfitness.com',
     tenant: '04bcc83f-8f40-4656-a18b-4046d1fb30b3',
+    pax8: '0cb0f357-84cd-4eb1-abd0-c348d735dba6',
   },
   { id: 98695, label: 'Relion', domainName: 'teamrelion.com', tenant: '' },
   {
@@ -155,6 +174,7 @@ export const clientList = [
     defaultDomainName: 'ranchofcu.org',
     domain: 'ranchofcu.org',
     tenant: '82f49824-c485-4c63-8c1c-c5b8ef09b526',
+    pax8: '71e11b2b-eb95-4a18-b0b1-56c0daebfbec',
   },
   {
     id: 101231,
@@ -162,6 +182,7 @@ export const clientList = [
     defaultDomainName: 'rolloutsquick.com',
     domain: 'rolloutsquick.com',
     tenant: '0ca2d474-cf2a-4bdf-9b08-92b11a983e87',
+    pax8: '692b0a21-fc17-4899-b533-5c5ed8404aa9',
   },
   {
     id: 102538,
@@ -169,6 +190,7 @@ export const clientList = [
     defaultDomainName: 'Shoes4grades.onmicrosoft.com',
     domain: 'shoes4grades.com',
     tenant: '2a1f6a93-79a4-4a09-93d6-8bc88697986d',
+    pax8: '7bf51687-eb40-49e9-8db6-00e2371a469b',
   },
   {
     id: 113122,
@@ -176,6 +198,7 @@ export const clientList = [
     defaultDomainName: 'NETORGFT3354605.onmicrosoft.com',
     domain: 'shipwithshore.com',
     tenant: '312e6833-d248-490a-acef-be497d7f1b11',
+    pax8: '6bfea972-6367-4182-96d3-52b30ff1dfe0',
   },
   {
     id: 112610,
@@ -183,6 +206,7 @@ export const clientList = [
     defaultDomainName: 'superiorforge.net',
     domain: 'superiorforge.net',
     tenant: '77fa3d9b-21de-4a40-9bc5-74625f6c9382',
+    pax8: '4cccaa8a-bdee-499f-9d58-2e387598f0a5',
   },
   { id: 101232, label: 'Trademark', domain: 'trademark-hoist.com', tenant: '' },
   { id: 101233, label: 'TSE', tenant: '' },
@@ -192,6 +216,7 @@ export const clientList = [
     defaultDomainName: 'walkerbro.com',
     domain: 'walkerbro.com',
     tenant: 'eab27e0a-90e2-414f-ad3a-ff0df0d2a2c9',
+    pax8: 'deff0021-a4cb-44d0-8601-357a4d4080ca',
   },
   { id: 101235, label: 'Warden', domain: 'warden.com', tenant: '' },
   {
@@ -200,6 +225,7 @@ export const clientList = [
     defaultDomainName: 'clubglove.com',
     domain: 'clubglove.com',
     tenant: 'c531b5a1-496e-4b73-b205-e2b0cae113b5',
+    pax8: 'e5eade04-c477-47c4-a44e-e52f6df712f7',
   },
   {
     id: 101237,
@@ -207,5 +233,6 @@ export const clientList = [
     defaultDomainName: 'worldimpact.org',
     domain: 'worldimpact.org',
     tenant: 'f56b4ab8-3ab4-4537-ac2d-e2f1e3eabadc',
+    pax8: '7944d7f3-7003-4b5f-abd5-9401bb48d680',
   },
 ]
