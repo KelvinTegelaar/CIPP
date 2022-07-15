@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react'
+import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { setCurrentTenant } from 'src/store/features/app'
 import { useSearchParams } from 'react-router-dom'
@@ -22,9 +22,9 @@ export default function Client() {
   const client = searchParams.get('client')
   const clientValue = useSelector((state) => state.ticketForm.clientValue)
   const editMode = useSelector((state) => state.ticketForm.editMode)
-  const clientId = useSelector((state) => state.ticketForm.clientId)
-  const defaultDomainName = useSelector((state) => state.ticketForm.defaultDomainName)
-  const label = useSelector((state) => state.ticketForm.label)
+  //const clientId = useSelector((state) => state.ticketForm.clientId)
+  //const defaultDomainName = useSelector((state) => state.ticketForm.defaultDomainName)
+  //const label = useSelector((state) => state.ticketForm.label)
 
   // match client with parameter if supplied
   // skip if client is already selected
