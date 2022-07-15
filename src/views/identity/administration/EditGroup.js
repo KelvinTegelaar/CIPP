@@ -31,6 +31,7 @@ import { Form } from 'react-final-form'
 import { RFFSelectSearch } from 'src/components/forms'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { useListUsersQuery } from 'src/store/api/users'
+import { CippTable } from 'src/components/tables'
 
 const EditGroup = () => {
   const dispatch = useDispatch()
@@ -65,8 +66,27 @@ const EditGroup = () => {
     isFetching: usersIsFetching,
     error: usersError,
   } = useListUsersQuery({ tenantDomain })
+  const [roleInfo, setroleInfo] = React.useState([])
+  useEffect(() => {
+    if (ownersIsSuccess && membersIsSuccess) {
+      const ownerWithRole = owners.map((owner) => {
+        return {
+          displayName: owner.displayName,
+          mail: owner.mail,
+          role: 'owner',
+        }
+      })
+      const memberwithRole = members.map((owner) => {
+        return {
+          displayName: owner.displayName,
+          mail: owner.mail,
+          role: 'member',
+        }
+      })
+      setroleInfo(ownerWithRole.concat(memberwithRole))
+    }
+  }, [owners, members, ownersIsSuccess, membersIsSuccess])
 
-  // console.log(members.isSuccess)
   useEffect(() => {
     if (!groupId || !tenantDomain) {
       ModalService.open({
@@ -89,6 +109,26 @@ const EditGroup = () => {
     //window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/EditGroup', values: shippedValues })
   }
+  const tableColumns = [
+    {
+      name: 'Display Name',
+      selector: (row) => row['displayName'],
+      sortable: true,
+      exportSelector: 'displayName',
+    },
+    {
+      name: 'Mail',
+      selector: (row) => row['mail'],
+      sortable: true,
+      exportSelector: 'mail',
+    },
+    {
+      name: 'Role',
+      selector: (row) => row['role'],
+      sortable: true,
+      exportSelector: 'role',
+    },
+  ]
   return (
     <>
       {!queryError && (
@@ -204,35 +244,14 @@ const EditGroup = () => {
                   {(membersisFetching || ownersisFetching) && <CSpinner />}
                   {membersError && <span>Error loading members</span>}
                   {ownersError && <span>Error loading owners</span>}
-
-                  {membersIsSuccess && ownersIsSuccess && (
+                  {membersIsSuccess && ownersIsSuccess && isSuccess && (
                     <>
                       These are the current members;
-                      <CTable>
-                        <CTableHead>
-                          <CTableRow>
-                            <CTableHeaderCell scope="col">Name</CTableHeaderCell>
-                            <CTableHeaderCell scope="col">Mail</CTableHeaderCell>
-                            <CTableHeaderCell scope="col">Role</CTableHeaderCell>
-                          </CTableRow>
-                        </CTableHead>
-                        <CTableBody>
-                          {owners.map((owner) => (
-                            <CTableRow key={owner.displayName}>
-                              <CTableDataCell>{owner.displayName}</CTableDataCell>
-                              <CTableDataCell>{owner.mail}</CTableDataCell>
-                              <CTableDataCell>Owner</CTableDataCell>
-                            </CTableRow>
-                          ))}
-                          {members.map((member) => (
-                            <CTableRow key={member.displayName}>
-                              <CTableDataCell>{member.displayName}</CTableDataCell>
-                              <CTableDataCell>{member.mail}</CTableDataCell>
-                              <CTableDataCell>Member</CTableDataCell>
-                            </CTableRow>
-                          ))}
-                        </CTableBody>
-                      </CTable>
+                      <CippTable
+                        reportName={`Group Membership - ${group[0].displayName}`}
+                        data={roleInfo}
+                        columns={tableColumns}
+                      />
                     </>
                   )}
                 </CCardBody>
