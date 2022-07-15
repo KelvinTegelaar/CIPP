@@ -50,7 +50,7 @@ export default function Client() {
         // get location ID from BMS
         getLocationID(match[0].id).then((result) => {
           dispatch(setLocationId(result))
-          console.log('locationID:')
+          console.log('locationId:')
           console.log(result)
         })
 
