@@ -70,7 +70,7 @@ export default function TicketList() {
 
     fetchData() // initial load
 
-    const interval = setInterval(() => fetchData(), 10000) // fetch every 10 sec
+    const interval = setInterval(() => fetchData(), 15000) // fetch every 15 sec
     return () => {
       clearInterval(interval)
     }

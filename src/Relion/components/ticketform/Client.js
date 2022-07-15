@@ -18,6 +18,8 @@ import { clientList } from '../../data/clientList'
 
 export default function Client() {
   const dispatch = useDispatch()
+  const [searchParams] = useSearchParams()
+  const client = searchParams.get('client')
   const clientValue = useSelector((state) => state.ticketForm.clientValue)
   const editMode = useSelector((state) => state.ticketForm.editMode)
   const clientId = useSelector((state) => state.ticketForm.clientId)
@@ -42,11 +44,19 @@ export default function Client() {
   }, [clientId, defaultDomainName, label, dispatch])
 
   // match client with parameter if supplied
-  const [searchParams] = useSearchParams()
+  // skip if client is already selected
   useEffect(() => {
-    const client = searchParams.get('client')
-    if (client) {
-      const match = clientList.filter((item) => item.label === client)
+    if (client && !clientValue) {
+      const fn = client.substring(0, client.indexOf(' '))
+      console.log('First Name:')
+      console.log(fn)
+      const ln = client
+        .substring(0, client.indexOf(':'))
+        .substring(client.indexOf(' ') + 1, client.length)
+      console.log('Last Name')
+      console.log(ln)
+
+      const match = clientList.filter((item) => item.label === fn)
       console.log('Client Match:')
       console.log(match[0])
       if (match[0]) {
@@ -56,10 +66,10 @@ export default function Client() {
         dispatch(setLabel(match[0].label))
         dispatch(setPax8(match[0].pax8))
         dispatch(setClientValue(match[0])) // control form
+        getLocation()
       }
-      getLocation()
     }
-  }, [dispatch, searchParams, getLocation])
+  }, [client, clientValue, dispatch, searchParams, getLocation])
 
   const clientHandler = async (event, input) => {
     console.log('Selected Client:')
