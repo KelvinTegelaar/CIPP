@@ -246,7 +246,6 @@ const EditGroup = () => {
                   {ownersError && <span>Error loading owners</span>}
                   {membersIsSuccess && ownersIsSuccess && isSuccess && (
                     <>
-                      These are the current members;
                       <CippTable
                         reportName={`Group Membership - ${group[0].displayName}`}
                         data={roleInfo}
