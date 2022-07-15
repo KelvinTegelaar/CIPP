@@ -26,6 +26,7 @@ import { useSelector } from 'react-redux'
 import { ModalService } from 'src/components/utilities'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Skeleton from 'react-loading-skeleton'
+import { CippTable } from 'src/components/tables'
 
 const RefreshAction = () => {
   const [execStandards, execStandardsResults] = useLazyGenericGetRequestQuery()
@@ -116,6 +117,20 @@ const ListAppliedStandards = () => {
     //filter on only objects that are 'true'
     genericPostRequest({ path: '/api/AddStandardsDeploy', values: values.standards })
   }
+  const tableColumns = [
+    {
+      name: 'Tenant',
+      selector: (row) => row['displayName'],
+      sortable: true,
+      exportSelector: 'displayName',
+    },
+    {
+      name: 'Applied Standards',
+      selector: (row) => Object.keys(row.standards).join(','),
+      sortable: true,
+      exportSelector: 'standards',
+    },
+  ]
 
   return (
     <CippPage title="Standards" tenantSelector={false}>
@@ -429,22 +444,11 @@ const ListAppliedStandards = () => {
           <CCol lg={6} xs={12}>
             {listStandardsAllTenants && (
               <CippContentCard title="Currently Applied Standards">
-                <CTable responsive={true}>
-                  <CTableHead>
-                    <CTableRow>
-                      <CTableHeaderCell scope="col">Tenant</CTableHeaderCell>
-                      <CTableHeaderCell scope="col">Standards</CTableHeaderCell>
-                    </CTableRow>
-                  </CTableHead>
-                  <CTableBody>
-                    {listStandardsAllTenants.map((owner) => (
-                      <CTableRow key={owner.displayName}>
-                        <CTableDataCell>{owner.displayName}</CTableDataCell>
-                        <CTableDataCell>{Object.keys(owner.standards).join(',')}</CTableDataCell>
-                      </CTableRow>
-                    ))}
-                  </CTableBody>
-                </CTable>
+                <CippTable
+                  reportName={`Standards}`}
+                  data={listStandardsAllTenants}
+                  columns={tableColumns}
+                />
               </CippContentCard>
             )}
           </CCol>
