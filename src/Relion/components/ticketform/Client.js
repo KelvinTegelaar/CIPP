@@ -26,23 +26,6 @@ export default function Client() {
   const defaultDomainName = useSelector((state) => state.ticketForm.defaultDomainName)
   const label = useSelector((state) => state.ticketForm.label)
 
-  const getLocation = useCallback(async () => {
-    // get location ID from BMS
-    const lid = await getLocationID(clientId)
-    dispatch(setLocationId(lid))
-
-    // set tenant switcher
-    dispatch(
-      setCurrentTenant({
-        tenant: {
-          customerId: clientId,
-          defaultDomainName: defaultDomainName,
-          displayName: label,
-        },
-      }),
-    )
-  }, [clientId, defaultDomainName, label, dispatch])
-
   // match client with parameter if supplied
   // skip if client is already selected
   useEffect(() => {
@@ -66,10 +49,20 @@ export default function Client() {
         dispatch(setLabel(match[0].label))
         dispatch(setPax8(match[0].pax8))
         dispatch(setClientValue(match[0])) // control form
-        getLocation()
+
+        // set tenant switcher
+        dispatch(
+          setCurrentTenant({
+            tenant: {
+              customerId: match[0].id,
+              defaultDomainName: match[0].defaultDomainName,
+              displayName: match[0].label,
+            },
+          }),
+        )
       }
     }
-  }, [client, clientValue, dispatch, searchParams, getLocation])
+  }, [client, clientValue, dispatch, searchParams])
 
   const clientHandler = async (event, input) => {
     console.log('Selected Client:')
@@ -80,7 +73,21 @@ export default function Client() {
     dispatch(setLabel(input.label))
     dispatch(setPax8(input.pax8))
     dispatch(setClientValue(input)) // control form
-    getLocation()
+
+    // get location ID from BMS
+    const lid = await getLocationID(input.id)
+    dispatch(setLocationId(lid))
+
+    // set tenant switcher
+    dispatch(
+      setCurrentTenant({
+        tenant: {
+          customerId: input.id,
+          defaultDomainName: input.defaultDomainName,
+          displayName: input.label,
+        },
+      }),
+    )
   }
 
   return (
