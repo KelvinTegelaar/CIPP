@@ -22,9 +22,6 @@ export default function Client() {
   const client = searchParams.get('client')
   const clientValue = useSelector((state) => state.ticketForm.clientValue)
   const editMode = useSelector((state) => state.ticketForm.editMode)
-  //const clientId = useSelector((state) => state.ticketForm.clientId)
-  //const defaultDomainName = useSelector((state) => state.ticketForm.defaultDomainName)
-  //const label = useSelector((state) => state.ticketForm.label)
 
   // match client with parameter if supplied
   // skip if client is already selected
@@ -44,15 +41,18 @@ export default function Client() {
       console.log(match[0])
       if (match[0]) {
         dispatch(setClientId(match[0].id))
-        dispatch(setDomain(match[0].domain))
         dispatch(setDefaultDomainName(match[0].defaultDomainName))
+        dispatch(setDomain(match[0].domain))
         dispatch(setLabel(match[0].label))
         dispatch(setPax8(match[0].pax8))
         dispatch(setClientValue(match[0])) // control form
 
         // get location ID from BMS
-        const lid = getLocationID(match[0].id)
-        dispatch(setLocationId(lid))
+        getLocationID(match[0].id).then((result) => {
+          dispatch(setLocationId(result))
+          console.log('locationID:')
+          console.log(result)
+        })
 
         // set tenant switcher
         dispatch(
@@ -68,7 +68,7 @@ export default function Client() {
     }
   }, [client, clientValue, dispatch, searchParams])
 
-  const clientHandler = async (event, input) => {
+  const clientHandler = (event, input) => {
     console.log('Selected Client:')
     console.log(input)
     dispatch(setClientId(input.id))
@@ -79,8 +79,11 @@ export default function Client() {
     dispatch(setClientValue(input)) // control form
 
     // get location ID from BMS
-    const lid = getLocationID(input.id)
-    dispatch(setLocationId(lid))
+    getLocationID(input.id).then((result) => {
+      dispatch(setLocationId(result))
+      console.log('locationID:')
+      console.log(result)
+    })
 
     // set tenant switcher
     dispatch(
