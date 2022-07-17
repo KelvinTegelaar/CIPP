@@ -22,7 +22,7 @@ const QuarantineList = () => {
           extendedInfo={[
             {
               label: 'Internal ID',
-              value: row.Identity,
+              value: row.MessageId,
             },
             {
               label: 'Recipient',
@@ -38,7 +38,7 @@ const QuarantineList = () => {
               label: 'Release',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecSendPush?TenantFilter=${tenant.defaultDomainName}&ID=${row.Identity}&Type=Release`,
+              modalUrl: `/api/ExecQuarantineManagement?TenantFilter=${tenant.defaultDomainName}&ID=${row.Identity}&Type=Release`,
               modalMessage: 'Are you sure you want to release this message?',
               icon: <FontAwesomeIcon icon={faPaperPlane} className="me-2" />,
             },
@@ -46,7 +46,7 @@ const QuarantineList = () => {
               label: 'Deny',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecSendPush?TenantFilter=${tenant.defaultDomainName}&ID=${row.Identity}&Type=Deny`,
+              modalUrl: `/api/ExecQuarantineManagement?TenantFilter=${tenant.defaultDomainName}&ID=${row.Identity}&Type=Deny`,
               modalMessage: 'Are you sure you want to deny this message?',
               icon: <FontAwesomeIcon icon={faMinusCircle} className="me-2" />,
             },
@@ -54,7 +54,7 @@ const QuarantineList = () => {
               label: 'Release & Allow Sender',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecSendPush?TenantFilter=${tenant.defaultDomainName}&ID=${row.Identity}&Type=ReleaseAndAllow`,
+              modalUrl: `/api/ExecQuarantineManagement?TenantFilter=${tenant.defaultDomainName}&ID=${row.Identity}&Type=Release&AllowSender=true`,
               modalMessage:
                 'Are you sure you want to release this email, and add the sender to the whitelist?',
               icon: <FontAwesomeIcon icon={faPaperPlane} className="me-2" />,
@@ -98,6 +98,13 @@ const QuarantineList = () => {
       name: 'Reason',
       sortable: true,
       exportSelector: 'Type',
+      maxWidth: '150px',
+    },
+    {
+      selector: (row) => row['ReleaseStatus'],
+      name: 'Status',
+      sortable: true,
+      exportSelector: 'ReleaseStatus',
       maxWidth: '150px',
     },
     {
