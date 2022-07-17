@@ -264,6 +264,10 @@ const ListAppliedStandards = () => {
                               label="Do not expire passwords"
                             />
                             <RFFCFormSwitch
+                              name="standards.DisableSecurityGroupUsers"
+                              label="Disable Security Group creation by users"
+                            />
+                            <RFFCFormSwitch
                               name="standards.SSPR"
                               label="Enable Self Service Password Reset"
                             />
@@ -293,7 +297,10 @@ const ListAppliedStandards = () => {
                               name="standards.DisableSelfServiceLicenses"
                               label="Disable Self Service Licensing"
                             />
-
+                            <RFFCFormSwitch
+                              name="standards.DisableM365GroupUsers"
+                              label="Disable M365 Group creation by users"
+                            />
                             <RFFCFormSwitch name="standards.UndoSSPR" label="Undo SSPR Standard" />
                             <RFFCFormSwitch
                               name="standards.UndoOauth"
