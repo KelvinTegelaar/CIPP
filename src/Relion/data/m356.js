@@ -12,7 +12,7 @@ export const m365 = [
     name: 'Microsoft 365 Business Basic [New Commerce Experience]',
   },
   {
-    id: 'fbde4e32-6e38-4d26-88fc-3b5cdab42ab6',
+    id: '67b24f9c-51af-4faf-a5c4-cc0599bf329c',
     name: 'Microsoft 365 Business Basic (Nonprofit Staff Pricing)',
   },
   {

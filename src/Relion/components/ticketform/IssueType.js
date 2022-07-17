@@ -9,9 +9,9 @@ export default function IssueType() {
   const dispatch = useDispatch()
   const issueType = useSelector((state) => state.ticketForm.issueType)
 
-  const issueTypeHandler = (event, newValue) => {
-    dispatch(setIssueType(newValue.label))
-    dispatch(setIssueTypeId(newValue.id))
+  const issueTypeHandler = (event, input) => {
+    dispatch(setIssueType(input.label))
+    dispatch(setIssueTypeId(input.id))
   }
 
   return (
