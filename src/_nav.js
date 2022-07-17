@@ -462,6 +462,11 @@ const _nav = [
         name: 'Contacts',
         to: '/email/administration/contacts',
       },
+      {
+        component: CNavItem,
+        name: 'Quarantine',
+        to: '/email/administration/quarantine',
+      },
     ],
   },
   {

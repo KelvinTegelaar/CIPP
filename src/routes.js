@@ -133,6 +133,9 @@ const ViewMobileDevices = React.lazy(() =>
 const MailboxesList = React.lazy(() =>
   import('src/views/email-exchange/administration/MailboxesList'),
 )
+const QuarantineList = React.lazy(() =>
+  import('src/views/email-exchange/administration/QuarantineList'),
+)
 const MailboxClientAccessSettingsList = React.lazy(() =>
   import('src/views/email-exchange/reports/MailboxClientAccessSettingsList'),
 )
@@ -408,6 +411,12 @@ const routes = [
   },
   { name: 'Edit Contact', path: '/email/administration/edit-contact', component: EditContact },
   { name: 'List Mailboxes', path: '/email/administration/mailboxes', component: MailboxesList },
+  {
+    name: 'List Quarantine',
+    path: '/email/administration/Quarantine',
+    component: QuarantineList,
+  },
+
   { name: 'Email Reports', path: '/email/reports' },
   {
     name: 'Mailbox Statistics',
