@@ -10,12 +10,6 @@ import {
   CForm,
   CRow,
   CSpinner,
-  CTable,
-  CTableBody,
-  CTableDataCell,
-  CTableHead,
-  CTableHeaderCell,
-  CTableRow,
 } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
@@ -101,10 +95,10 @@ const EditGroup = () => {
     const shippedValues = {
       tenantID: tenantDomain,
       GroupID: groupId,
-      AddMember: values.AddMembers ? values.AddMembers.value : '',
-      AddOwner: values.AddOwners ? values.AddOwners.value : '',
-      RemoveMember: values.RemoveMembers ? values.RemoveMembers.value : '',
-      RemoveOwner: values.RemoveOwners ? values.RemoveOwners.value : '',
+      AddMember: values.AddMembers ? values.AddMembers : '',
+      AddOwner: values.AddOwners ? values.AddOwners : '',
+      RemoveMember: values.RemoveMembers ? values.RemoveMembers : '',
+      RemoveOwner: values.RemoveOwners ? values.RemoveOwners : '',
     }
     //window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/EditGroup', values: shippedValues })
@@ -151,6 +145,7 @@ const EditGroup = () => {
                             <CRow>
                               <CCol md={12}>
                                 <RFFSelectSearch
+                                  multi={true}
                                   label="Add User"
                                   values={users?.map((user) => ({
                                     value: user.userPrincipalName,
@@ -165,6 +160,7 @@ const EditGroup = () => {
                             <CRow>
                               <CCol md={12}>
                                 <RFFSelectSearch
+                                  multi={true}
                                   label="Remove User"
                                   values={users?.map((user) => ({
                                     value: user.userPrincipalName,
@@ -179,6 +175,7 @@ const EditGroup = () => {
                             <CRow>
                               <CCol md={12}>
                                 <RFFSelectSearch
+                                  multi={true}
                                   label="Add Owner"
                                   values={users?.map((user) => ({
                                     value: user.userPrincipalName,
@@ -193,6 +190,7 @@ const EditGroup = () => {
                             <CRow className="mb-3">
                               <CCol md={12}>
                                 <RFFSelectSearch
+                                  multi={true}
                                   label="Remove Owner"
                                   values={users?.map((user) => ({
                                     value: user.userPrincipalName,
@@ -220,7 +218,11 @@ const EditGroup = () => {
                               </CCol>
                             </CRow>
                             {postResults.isSuccess && (
-                              <CCallout color="success">{postResults.data.Results}</CCallout>
+                              <CCallout color="success">
+                                {postResults.data.Results.map((result, idx) => (
+                                  <li key={idx}>{result}</li>
+                                ))}
+                              </CCallout>
                             )}
                             {/*<CRow>*/}
                             {/* <CCol>*/}
