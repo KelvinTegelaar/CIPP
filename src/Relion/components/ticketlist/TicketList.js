@@ -46,9 +46,17 @@ export default function TicketList() {
   // fetch ticket list from BMS
   const [ticketList, setTicketList] = useState(initialState)
   const techId = useSelector((state) => state.ticketForm.techId)
+  //const clientId = useSelector((state) => state.ticketForm.clientId)
   useEffect(() => {
     const fetchData = async () => {
-      const response = await getTicketList()
+      const filter = {
+        filter: {
+          queueNames: 'Help Desk',
+          excludeCompleted: 1,
+          //accountIds: clientId,
+        },
+      }
+      const response = await getTicketList(filter)
       setTicketList(response)
       console.log('Ticket List:')
       console.log(response)
