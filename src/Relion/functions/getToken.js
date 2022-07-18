@@ -5,7 +5,7 @@ const getToken = async () => {
   const credentials = new FormData()
   credentials.append('grantType', 'password')
   credentials.append('userName', 'apiadmin')
-  credentials.append('password', 'apiadmin7%6$7$')
+  credentials.append('password', 'UnK97rfJ3yscUuzD3u')
   credentials.append('tenant', 'relion')
 
   const axiosParam = {
