@@ -95,7 +95,7 @@ const EditGroup = () => {
     const shippedValues = {
       tenantID: tenantDomain,
       GroupID: groupId,
-      mailEnabled: group[0].calculatedGroupType,
+      groupType: group[0].calculatedGroupType,
       AddMember: values.AddMembers ? values.AddMembers : '',
       AddOwner: values.AddOwners ? values.AddOwners : '',
       RemoveMember: values.RemoveMembers ? values.RemoveMembers : '',
