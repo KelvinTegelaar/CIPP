@@ -51,17 +51,17 @@ const Home = () => {
         </CippMasonryItem>
         <CippMasonryItem size="card">
           <CippContentCard title="Queued Applications" icon={faBook}>
-            <div>{!isLoadingDash ? dashboard?.queuedApps : <Skeleton />}</div>
+            <div>{!isLoadingDash ? dashboard?.QueuedApps : <Skeleton />}</div>
           </CippContentCard>
         </CippMasonryItem>
         <CippMasonryItem size="card">
           <CippContentCard title="Queued Standards" icon={faBook}>
-            <div> {!isLoadingDash ? dashboard?.queuedStandards : <Skeleton />}</div>
+            <div> {!isLoadingDash ? dashboard?.QueuedStandards : <Skeleton />}</div>
           </CippContentCard>
         </CippMasonryItem>
         <CippMasonryItem size="card">
           <CippContentCard title="Managed Tenants" icon={faBook}>
-            <div>{!isLoadingDash ? dashboard?.tenantCount : <Skeleton />}</div>
+            <div>{!isLoadingDash ? dashboard?.TenantCount : <Skeleton />}</div>
             <br></br> Managed tenants
           </CippContentCard>
         </CippMasonryItem>
