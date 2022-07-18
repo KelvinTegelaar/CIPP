@@ -15,12 +15,12 @@ const Home = () => {
   const tableColumns = [
     {
       name: 'Tenant',
-      selector: (row) => row['Tenant'],
+      selector: (row) => row['tenant'],
       sortable: true,
     },
     {
       name: 'Message',
-      selector: (row) => row['Message'],
+      selector: (row) => row['message'],
       sortable: true,
     },
   ]
