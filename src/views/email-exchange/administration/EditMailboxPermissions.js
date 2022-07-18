@@ -119,7 +119,7 @@ const EditMailboxPermission = () => {
                                   disabled={formDisabled}
                                   values={users?.map((user) => ({
                                     value: user.mail,
-                                    name: user.displayName,
+                                    name: `${user.displayName} - ${user.mail} `,
                                   }))}
                                   placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                                   name="RemoveFullAccess"
@@ -133,7 +133,7 @@ const EditMailboxPermission = () => {
                                   disabled={formDisabled}
                                   values={users?.map((user) => ({
                                     value: user.mail,
-                                    name: user.displayName,
+                                    name: `${user.displayName} - ${user.mail} `,
                                   }))}
                                   placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                                   name="AddFullAccess"
@@ -147,7 +147,7 @@ const EditMailboxPermission = () => {
                                   disabled={formDisabled}
                                   values={users?.map((user) => ({
                                     value: user.mail,
-                                    name: user.displayName,
+                                    name: `${user.displayName} - ${user.mail} `,
                                   }))}
                                   placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                                   name="AddFullAccessNoAutoMap"
@@ -161,7 +161,7 @@ const EditMailboxPermission = () => {
                                   disabled={formDisabled}
                                   values={users?.map((user) => ({
                                     value: user.mail,
-                                    name: user.displayName,
+                                    name: `${user.displayName} - ${user.mail} `,
                                   }))}
                                   placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                                   name="AddSendAs"
@@ -175,7 +175,7 @@ const EditMailboxPermission = () => {
                                   disabled={formDisabled}
                                   values={users?.map((user) => ({
                                     value: user.mail,
-                                    name: user.displayName,
+                                    name: `${user.displayName} - ${user.mail} `,
                                   }))}
                                   placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                                   name="RemoveSendAs"
