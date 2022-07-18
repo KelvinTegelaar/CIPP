@@ -27,10 +27,10 @@ const Home = () => {
   return (
     <CippMasonry columns={4}>
       <>
-        {dashboard?.Alerts && (
+        {dashboard?.alerts && (
           <CippMasonryItem size="full">
             <CippContentCard title="Alerts" icon={faExclamation}>
-              {dashboard.Alerts.map((mappedAlert, idx) => (
+              {dashboard.alerts.map((mappedAlert, idx) => (
                 <CCallout key={idx} color="danger">
                   {mappedAlert}
                 </CCallout>
@@ -41,38 +41,38 @@ const Home = () => {
 
         <CippMasonryItem size="card">
           <CippContentCard title="Next Run Standards" icon={faBook}>
-            <div>{!isLoadingDash ? dashboard?.NextStandardsRun : <Skeleton />}</div>
+            <div>{!isLoadingDash ? dashboard?.nextStandardsRun : <Skeleton />}</div>
           </CippContentCard>
         </CippMasonryItem>
         <CippMasonryItem size="card">
           <CippContentCard title="Next Run BPA" icon={faBook}>
-            <div>{!isLoadingDash ? dashboard?.NextBPARun : <Skeleton />}</div>
+            <div>{!isLoadingDash ? dashboard?.nextBPARun : <Skeleton />}</div>
           </CippContentCard>
         </CippMasonryItem>
         <CippMasonryItem size="card">
           <CippContentCard title="Queued Applications" icon={faBook}>
-            <div>{!isLoadingDash ? dashboard?.QueuedApps : <Skeleton />}</div>
+            <div>{!isLoadingDash ? dashboard?.queuedApps : <Skeleton />}</div>
           </CippContentCard>
         </CippMasonryItem>
         <CippMasonryItem size="card">
           <CippContentCard title="Queued Standards" icon={faBook}>
-            <div> {!isLoadingDash ? dashboard?.QueuedStandards : <Skeleton />}</div>
+            <div> {!isLoadingDash ? dashboard?.queuedStandards : <Skeleton />}</div>
           </CippContentCard>
         </CippMasonryItem>
         <CippMasonryItem size="card">
           <CippContentCard title="Managed Tenants" icon={faBook}>
-            <div>{!isLoadingDash ? dashboard?.TenantCount : <Skeleton />}</div>
+            <div>{!isLoadingDash ? dashboard?.tenantCount : <Skeleton />}</div>
             <br></br> Managed tenants
           </CippContentCard>
         </CippMasonryItem>
         <CippMasonryItem size="card">
           <CippContentCard title="Token refresh dates" icon={faBook}>
             <div className="mb-3">
-              Refresh token: {!isLoadingDash ? dashboard?.RefreshTokenDate : ''}
+              Refresh token: {!isLoadingDash ? dashboard?.refreshTokenDate : ''}
             </div>
 
             <div className="mb-2">
-              Exchange Token: {!isLoadingDash ? dashboard?.ExchangeTokenDate : ''}
+              Exchange Token: {!isLoadingDash ? dashboard?.exchangeTokenDate : ''}
             </div>
           </CippContentCard>
         </CippMasonryItem>
@@ -80,19 +80,19 @@ const Home = () => {
       <>
         <CippMasonryItem size="card">
           <CippContentCard title="Version Frontend" icon={faBook}>
-            <StatusIcon type="negatedboolean" status={isSuccessVersion && versions.OutOfDateCIPP} />
-            <div>Latest: {isSuccessVersion ? versions.RemoteCIPPVersion : <Skeleton />}</div>
-            <div>Current: {isSuccessVersion ? versions.LocalCIPPVersion : <Skeleton />}</div>
+            <StatusIcon type="negatedboolean" status={isSuccessVersion && versions.outOfDateCIPP} />
+            <div>Latest: {isSuccessVersion ? versions.remoteCIPPVersion : <Skeleton />}</div>
+            <div>Current: {isSuccessVersion ? versions.localCIPPVersion : <Skeleton />}</div>
           </CippContentCard>
         </CippMasonryItem>
         <CippMasonryItem size="card">
           <CippContentCard title="Version Backend" icon={faBook}>
             <StatusIcon
               type="negatedboolean"
-              status={isSuccessVersion && versions.OutOfDateCIPPAPI}
+              status={isSuccessVersion && versions.outOfDateCIPPAPI}
             />
-            <div>Latest: {isSuccessVersion ? versions.RemoteCIPPAPIVersion : <Skeleton />}</div>
-            <div>Current: {isSuccessVersion ? versions.LocalCIPPAPIVersion : <Skeleton />}</div>
+            <div>Latest: {isSuccessVersion ? versions.remoteCIPPAPIVersion : <Skeleton />}</div>
+            <div>Current: {isSuccessVersion ? versions.localCIPPAPIVersion : <Skeleton />}</div>
           </CippContentCard>
         </CippMasonryItem>
       </>
@@ -102,7 +102,7 @@ const Home = () => {
             <CippTable
               reportName="none"
               tableProps={{ subheader: false }}
-              data={dashboard.LastLog}
+              data={dashboard.lastLog}
               columns={tableColumns}
             />
           )}
