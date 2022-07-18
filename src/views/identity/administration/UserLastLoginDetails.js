@@ -10,23 +10,23 @@ export default function UserLastLoginDetails({ tenantDomain, userId, className =
   const content = [
     {
       heading: 'Last Sign in Date (UTC)',
-      body: user.LastSigninDate,
+      body: user.lastSigninDate,
     },
     {
       heading: 'Last Sign in Application',
-      body: user.LastSigninApplication,
+      body: user.lastSigninApplication,
     },
     {
       heading: 'Last Sign in Status',
-      body: user.LastSigninStatus,
+      body: user.lastSigninStatus,
     },
     {
       heading: 'Last Sign in Result',
-      body: user.LastSigninResult,
+      body: user.lastSigninResult,
     },
     {
       heading: 'Last Sign in Failure Reason',
-      body: user.LastSigninFailureReason,
+      body: user.lastSigninFailureReason,
     },
   ]
 

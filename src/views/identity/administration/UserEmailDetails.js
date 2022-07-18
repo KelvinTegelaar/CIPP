@@ -15,7 +15,7 @@ export default function UserEmailDetails({ user, isFetching, error, className = 
     },
     {
       heading: 'Proxy Addresses',
-      body: user.Aliases,
+      body: user.aliases,
     },
   ]
   return (
