@@ -46,7 +46,7 @@ import { RFFCFormSwitch, RFFCFormInput } from 'src/components/forms'
 import { Form } from 'react-final-form'
 import useConfirmModal from 'src/hooks/useConfirmModal'
 import { setCurrentTenant } from 'src/store/features/app'
-import { ModalService, TenantSelectorMultiple, TenantSelector } from 'src/components/utilities'
+import { ModalService, TenantSelectorMultiple } from 'src/components/utilities'
 import CippListOffcanvas from 'src/components/utilities/CippListOffcanvas'
 import { TitleButton } from 'src/components/buttons'
 
@@ -395,11 +395,9 @@ const ExcludedTenantsSettings = () => {
     })
 
   const handleConfirmExcludeTenant = (tenant) => {
-    addExcludeTenant(tenant.defaultDomainName)
+    addExcludeTenant(tenant)
       .unwrap()
       .then(() => {
-        // since we're re-using tenant selector,
-        // un-select it here after the tenant has been removed
         dispatch(setCurrentTenant({}))
       })
   }
@@ -409,11 +407,11 @@ const ExcludedTenantsSettings = () => {
       body: (
         <div style={{ overflow: 'visible' }}>
           <div>Select a tenant to exclude</div>
-          <TenantSelector action={(tenant) => (selected.current = tenant)} />
+          <TenantSelectorMultiple onChange={(tenant) => (selected = tenant)} />
         </div>
       ),
       title: 'Add Exclusion',
-      onConfirm: () => handleConfirmExcludeTenant(selected.current),
+      onConfirm: () => handleConfirmExcludeTenant(selected),
     })
   }
 
