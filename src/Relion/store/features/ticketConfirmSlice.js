@@ -5,6 +5,7 @@ const initialState = {
   setTimeEntryConfirmId: '',
 }
 
+// controls the 20 second submitted ticket display
 export const ticketConfirmSlice = createSlice({
   name: 'ticketConfirm',
   initialState: initialState,

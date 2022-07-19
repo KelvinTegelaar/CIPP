@@ -46,14 +46,14 @@ export default function TicketList() {
   // fetch ticket list from BMS
   const [ticketList, setTicketList] = useState(initialState)
   const techId = useSelector((state) => state.ticketForm.techId)
-  //const clientId = useSelector((state) => state.ticketForm.clientId)
+  const contactValue = useSelector((state) => state.ticketForm.contactValue)
   useEffect(() => {
     const fetchData = async () => {
       const filter = {
         filter: {
           queueNames: 'Help Desk',
           excludeCompleted: 1,
-          //accountIds: clientId,
+          //contactName: contactValue.label,
         },
       }
       const response = await getTicketList(filter)
@@ -82,7 +82,7 @@ export default function TicketList() {
     return () => {
       clearInterval(interval)
     }
-  }, [techId, dispatch])
+  }, [techId, contactValue, dispatch])
 
   // populate ticket state from row selection
   const rowHandler = async ({ row }) => {

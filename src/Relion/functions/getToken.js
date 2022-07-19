@@ -4,7 +4,7 @@ const getToken = async () => {
   //BMS takes login credentials as a form submission
   const credentials = new FormData()
   credentials.append('grantType', 'password')
-  credentials.append('userName', 'apiadmin')
+  credentials.append('userName', 'api')
   credentials.append('password', 'UnK97rfJ3yscUuzD3u')
   credentials.append('tenant', 'relion')
 
