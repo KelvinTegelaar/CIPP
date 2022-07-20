@@ -12,6 +12,7 @@ import TicketActivities from './components/tools/activities/Activities'
 import TicketForm from './components/ticketform/TicketForm'
 import TicketList from './components/ticketlist/TicketList'
 import UserAdmin from './components/tools/useradmin/UserAdmin'
+import BMSTest from './components/tools/BMSTest'
 
 const App = () => {
   // MUI dark mode
@@ -33,6 +34,7 @@ const App = () => {
           <TicketForm />
         </Grid>
         <Grid item xs={6}>
+          <BMSTest />
           {issueType === 'User Administration' && (
             <>
               <UserAdmin />
