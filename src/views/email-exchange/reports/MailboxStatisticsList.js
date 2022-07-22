@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { cellBooleanFormatter } from 'src/components/tables'
+import { CellTip, cellBooleanFormatter } from 'src/components/tables'
 import { CippPageList } from 'src/components/layout'
 
 const conditionalRowStyles = [
@@ -19,12 +19,15 @@ const columns = [
     selector: (row) => row['UPN'],
     name: 'User Prinicipal Name',
     sortable: true,
+    cell: (row) => CellTip(row['UPN']),
     exportSelector: 'UPN',
+    minWidth: '200px',
   },
   {
     selector: (row) => row['displayName'],
     name: 'Display Name',
     sortable: true,
+    cell: (row) => CellTip(row['displayName']),
     exportSelector: 'displayName',
   },
   {
@@ -55,7 +58,7 @@ const columns = [
     selector: (row) => row['HasArchive'],
     name: 'Archiving Enabled',
     sortable: true,
-    cell: cellBooleanFormatter(),
+    cell: cellBooleanFormatter({ colourless: true }),
     exportSelector: 'HasArchive',
   },
 ]
