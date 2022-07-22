@@ -470,6 +470,11 @@ const _nav = [
         name: 'Contacts',
         to: '/email/administration/contacts',
       },
+      {
+        component: CNavItem,
+        name: 'Quarantine',
+        to: '/email/administration/quarantine',
+      },
     ],
   },
   {
@@ -548,7 +553,7 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'SAM Setup Wizard (β)',
+        name: 'SAM Setup Wizard',
         to: '/cipp/setup',
       },
       {

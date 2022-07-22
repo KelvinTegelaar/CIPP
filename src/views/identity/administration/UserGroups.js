@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { CLink } from '@coreui/react'
 import { DatatableContentCard } from 'src/components/contentcards'
-import { CellBoolean } from 'src/components/tables'
+import { CellBoolean, CellTip, cellBooleanFormatter } from 'src/components/tables'
 import { faUsers } from '@fortawesome/free-solid-svg-icons'
 import { useListUserGroupsQuery } from 'src/store/api/groups'
 
@@ -14,6 +14,8 @@ const columns = [
     selector: (row) => row['DisplayName'],
     sortable: true,
     exportSelector: 'DisplayName',
+    cell: (row) => CellTip(row['DisplayName']),
+    minWidth: '200px',
     formatter: (cell, row) => {
       return (
         <CLink
@@ -36,12 +38,15 @@ const columns = [
     selector: (row) => row['Mail'],
     sortable: true,
     exportSelector: 'Mail',
+    cell: (row) => CellTip(row['Mail']),
+    minWidth: '200px',
   },
   {
     name: 'Security Group',
     selector: (row) => row['SecurityGroup'],
     sortable: true,
     exportSelector: 'SecurityGroup',
+    cell: cellBooleanFormatter({ colourless: true }),
     formatter,
   },
   {
@@ -49,6 +54,7 @@ const columns = [
     selector: (row) => row['GroupTypes'],
     sortable: true,
     exportSelector: 'GroupTypes',
+    cell: (row) => CellTip(row['GroupTypes']),
   },
   {
     name: 'On Premises Sync',
