@@ -12,6 +12,13 @@ import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
 import { CippActionsOffcanvas } from 'src/components/utilities'
+import { cellDateFormatter, CellTip } from 'src/components/tables'
+function DateNotNull(date) {
+  if (date === null || date === undefined || date === '' || date === 'undefined') {
+    return ' '
+  }
+  return date.toString().trim() + 'Z'
+}
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
   const [ocVisible, setOCVisible] = useState(false)
@@ -85,7 +92,9 @@ const columns = [
     selector: (row) => row['displayName'],
     sortable: true,
     wrap: true,
+    cell: (row) => CellTip(row['displayName']),
     exportSelector: 'displayName',
+    minWidth: '300px',
   },
   {
     name: 'State',
@@ -94,87 +103,101 @@ const columns = [
     exportSelector: 'state',
   },
   {
-    name: 'Last Modified',
-    selector: (row) => row['modifiedDateTime'],
+    name: 'Last Modified (Local)',
+    selector: (row) => DateNotNull(row['modifiedDateTime']),
     sortable: true,
+    cell: cellDateFormatter(),
     exportSelector: 'modifiedDateTime',
   },
   {
     name: 'Client App Types',
     selector: (row) => row['clientAppTypes'],
     sortable: true,
+    cell: (row) => CellTip(row['clientAppTypes']),
     exportSelector: 'clientAppTypes',
   },
   {
-    name: 'Platform Inc',
+    name: 'Include Platforms',
     selector: (row) => row['includePlatforms'],
     sortable: true,
+    cell: (row) => CellTip(row['includePlatforms']),
     exportSelector: 'includePlatforms',
   },
   {
-    name: 'Platform Exc',
+    name: 'Exclude Platforms',
     selector: (row) => row['excludePlatforms'],
     sortable: true,
+    cell: (row) => CellTip(row['excludePlatforms']),
     exportSelector: 'excludePlatforms',
   },
   {
     name: 'Include Locations',
     selector: (row) => row['includeLocations'],
     sortable: true,
+    cell: (row) => CellTip(row['includeLocations']),
     exportSelector: 'includeLocations',
   },
   {
     name: 'Exclude Locations',
     selector: (row) => row['excludeLocations'],
     sortable: true,
+    cell: (row) => CellTip(row['excludeLocations']),
     exportSelector: 'excludeLocations',
   },
   {
     name: 'Include Users',
     selector: (row) => row['includeUsers'],
     sortable: true,
+    cell: (row) => CellTip(row['includeUsers']),
     exportSelector: 'includeUsers',
   },
   {
     name: 'Exclude Users',
     selector: (row) => row['excludeUsers'],
     sortable: true,
+    cell: (row) => CellTip(row['excludeUsers']),
     exportSelector: 'excludeUsers',
   },
   {
     name: 'Include Groups',
     selector: (row) => row['includeGroups'],
     sortable: true,
+    cell: (row) => CellTip(row['includeGroups']),
     exportSelector: 'includeGroups',
   },
   {
     name: 'Exclude Groups',
     selector: (row) => row['excludeGroups'],
     sortable: true,
+    cell: (row) => CellTip(row['excludeGroups']),
     exportSelector: 'excludeGroups',
   },
   {
     name: 'Include Applications',
     selector: (row) => row['includeApplications'],
     sortable: true,
+    cell: (row) => CellTip(row['includeApplications']),
     exportSelector: 'includeApplications',
   },
   {
     name: 'Exclude Applications',
     selector: (row) => row['excludeApplications'],
     sortable: true,
+    cell: (row) => CellTip(row['excludeApplications']),
     exportSelector: 'excludeApplications',
   },
   {
     name: 'Control Operator',
     selector: (row) => row['grantControlsOperator'],
     sortable: true,
+    cell: (row) => CellTip(row['grantControlsOperator']),
     exportSelector: 'grantControlsOperator',
   },
   {
     name: 'Built-in Controls',
     selector: (row) => row['builtInControls'],
     sortable: true,
+    cell: (row) => CellTip(row['builtInControls']),
     exportSelector: 'builtInControls',
   },
   {
