@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { cellBooleanFormatter } from 'src/components/tables'
+import { CellTip, cellBooleanFormatter } from 'src/components/tables'
 import { CippPageList } from 'src/components/layout'
 
 const columns = [
@@ -8,12 +8,15 @@ const columns = [
     selector: (row) => row['displayName'],
     name: 'Name',
     sortable: true,
+    cell: (row) => CellTip(row['displayName']),
     exportSelector: 'displayName',
+    minWidth: '250px',
   },
   {
     selector: (row) => row['Description'],
     name: 'Description',
     sortable: true,
+    cell: (row) => CellTip(row['Description']),
     exportSelector: 'Description',
   },
   {
@@ -26,21 +29,21 @@ const columns = [
     selector: (row) => row['showInstallationProgress'],
     name: 'Show Installation Progress',
     sortable: true,
-    cell: cellBooleanFormatter(),
+    cell: cellBooleanFormatter({ colourless: true }),
     exportSelector: 'showInstallationProgress',
   },
   {
     selector: (row) => row['blockDeviceSetupRetryByUser'],
     name: 'Block Retries',
     sortable: true,
-    cell: cellBooleanFormatter(),
+    cell: cellBooleanFormatter({ colourless: true }),
     exportSelector: 'blockDeviceSetupRetryByUser',
   },
   {
     selector: (row) => row['allowDeviceResetOnInstallFailure'],
     name: 'Allow reset on failure',
     sortable: true,
-    cell: cellBooleanFormatter(),
+    cell: cellBooleanFormatter({ colourless: true }),
     exportSelector: 'allowDeviceResetOnInstallFailure',
   },
   {
@@ -48,7 +51,7 @@ const columns = [
     name: 'Allow usage on failure',
     sortable: true,
     exportSelector: 'allowDeviceUseOnInstallFailure',
-    cell: cellBooleanFormatter(),
+    cell: cellBooleanFormatter({ colourless: true }),
   },
 ]
 

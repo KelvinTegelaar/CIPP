@@ -4,6 +4,9 @@ import { faBullhorn } from '@fortawesome/free-solid-svg-icons'
 import { ListGroupContentCard } from 'src/components/contentcards'
 import { CellBoolean } from 'src/components/tables'
 
+const formatter = (cell, warning = false, reverse = false, colourless = false) =>
+  CellBoolean({ cell, warning, reverse, colourless })
+
 export default function TeamMessagingSettings({
   messagingSettings,
   funSettings,
@@ -15,31 +18,31 @@ export default function TeamMessagingSettings({
   const content = [
     {
       heading: 'Allow @channel mentions',
-      body: CellBoolean(messagingSettings.allowChannelMentions),
+      body: formatter(messagingSettings.allowChannelMentions, false, false, true),
     },
     {
       heading: 'Allow @team mentions',
-      body: CellBoolean(messagingSettings.allowTeamMentions),
+      body: formatter(messagingSettings.allowTeamMentions, false, false, true),
     },
     {
       heading: 'Allow owners to delete messages',
-      body: CellBoolean(messagingSettings.allowOwnerDeleteMessages),
+      body: formatter(messagingSettings.allowOwnerDeleteMessages, false, false, true),
     },
     {
       heading: 'Allow users to delete messages',
-      body: CellBoolean(messagingSettings.allowUserDeleteMessages),
+      body: formatter(messagingSettings.allowUserDeleteMessages, false, false, true),
     },
     {
       heading: 'Allow users to edit messages',
-      body: CellBoolean(messagingSettings.allowUserEditMessages),
+      body: formatter(messagingSettings.allowUserEditMessages, false, false, true),
     },
     {
       heading: 'Allow GIFs',
-      body: CellBoolean(funSettings.allowGiphy),
+      body: formatter(funSettings.allowGiphy, false, false, true),
     },
     {
       heading: 'Allow stickers and memes',
-      body: CellBoolean(funSettings.allowStickersAndMemes),
+      body: formatter(funSettings.allowStickersAndMemes, false, false, true),
     },
     {
       heading: 'GIF content rating',
