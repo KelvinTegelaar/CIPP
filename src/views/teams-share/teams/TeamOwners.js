@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { faUser } from '@fortawesome/free-solid-svg-icons'
 import { TableContentCard } from 'src/components/contentcards'
+import { CellTip } from 'src/components/tables'
 
 export default function TeamOwners({ data, className = null, isFetching, error, errorMessage }) {
   const columns = [
@@ -9,11 +10,13 @@ export default function TeamOwners({ data, className = null, isFetching, error, 
       name: 'Display Name',
       selector: (row) => row['displayName'],
       sortable: true,
+      cell: (row) => CellTip(row['displayName']),
     },
     {
       name: 'Mail',
-      selector: (row) => row['mail'],
+      selector: (row) => row['email'],
       sortable: true,
+      cell: (row) => CellTip(row['email']),
     },
   ]
 

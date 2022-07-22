@@ -197,12 +197,16 @@ const ApplyStandard = () => {
                 label="Enable Passwordless with Location information and Number Matching"
               />
               <RFFCFormSwitch name="standards.TAP" label="Enable Temporary Access Passwords" />
-
+              <RFFCFormSwitch
+                name="standards.DisableM365GroupUsers"
+                label="Disable M365 Group creation by users"
+              />
               <RFFCFormSwitch name="standards.SecurityDefaults" label="Enable Security Defaults" />
               <RFFCFormSwitch
                 name="standards.PasswordExpireDisabled"
                 label="Do not expire passwords"
               />
+
               <RFFCFormSwitch name="standards.SSPR" label="Enable Self Service Password Reset" />
             </CCol>
             <CCol md={6}>
@@ -225,7 +229,10 @@ const ApplyStandard = () => {
                 name="standards.LegacyMFA"
                 label="Enable per-user MFA for all user (Legacy)"
               />
-
+              <RFFCFormSwitch
+                name="standards.DisableSecurityGroupUsers"
+                label="Disable Security Group creation by users"
+              />
               <RFFCFormSwitch
                 name="standards.DisableSelfServiceLicenses"
                 label="Disable Self Service Licensing"
