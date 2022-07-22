@@ -12,46 +12,79 @@ const IconWarning = () => <FontAwesomeIcon icon={faExclamationCircle} className=
 const IconError = () => <FontAwesomeIcon icon={faTimesCircle} className="text-danger" />
 const IconSuccess = () => <FontAwesomeIcon icon={faCheckCircle} className="text-success" />
 
-export default function CellBoolean({ cell, warning = false, reverse = false }) {
-  let normalized = cell
-  if (typeof cell === 'boolean') {
-    normalized = cell
-  } else if (typeof cell === 'string') {
-    if (cell.toLowerCase() === 'success' || cell.toLowerCase() === 'pass') {
-      normalized = true
-    } else if (cell.toLowerCase() === 'fail') {
-      normalized = false
-    }
+function nocolour(iscolourless, content) {
+  if (iscolourless) {
+    return <span className="no-colour">{content}</span>
   }
 
-  if (cell === '') {
-    return <CellBadge label="No Data" color="info" />
-  } else if (!reverse && !warning) {
-    return normalized ? <IconSuccess /> : <IconError />
-  } else if (!reverse && warning) {
-    return normalized ? <IconSuccess /> : <IconWarning />
-  } else if (reverse && !warning) {
-    return normalized ? <IconError /> : <IconSuccess />
-  } else if (reverse && warning) {
-    return normalized ? <IconWarning /> : <IconSuccess />
-  }
-}
-
-CellBoolean.propTypes = {
-  cell: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
-  warning: PropTypes.bool,
-  reverse: PropTypes.bool,
+  return content
 }
 
 /**
  *
- * @param [reverse]
+ * @param [cell]
  * @param [warning]
+ * @param [reverse]
+ * @param [colourless]
+ * @param [noDataIsFalse]
+ * @returns {function(*, *, *, *): *}
+ */
+export default function CellBoolean({
+  cell,
+  warning = false,
+  reverse = false,
+  colourless = false,
+  noDataIsFalse = false,
+}) {
+  let normalized = cell
+  if (typeof cell === 'boolean') {
+    normalized = cell
+  } else if (typeof cell === 'string') {
+    if (
+      cell.toLowerCase() === 'success' ||
+      cell.toLowerCase() === 'pass' ||
+      cell.toLowerCase() === 'true'
+    ) {
+      normalized = true
+    } else if (cell.toLowerCase() === 'fail' || cell.toLowerCase() === 'false') {
+      normalized = false
+    }
+  }
+
+  if (cell === '' && !noDataIsFalse) {
+    return <CellBadge label="No Data" color="info" />
+  } else if (colourless && warning && reverse) {
+    return nocolour(colourless, normalized ? <IconWarning /> : <IconError />)
+  } else if (!reverse && !warning) {
+    return nocolour(colourless, normalized ? <IconSuccess /> : <IconError />)
+  } else if (!reverse && warning) {
+    return nocolour(colourless, normalized ? <IconSuccess /> : <IconWarning />)
+  } else if (reverse && !warning) {
+    return nocolour(colourless, normalized ? <IconError /> : <IconSuccess />)
+  } else if (reverse && warning) {
+    return nocolour(colourless, normalized ? <IconWarning /> : <IconSuccess />)
+  }
+}
+
+CellBoolean.propTypes = {
+  cell: PropTypes.oneOfType([PropTypes.bool, PropTypes.string, PropTypes.any]),
+  warning: PropTypes.bool,
+  reverse: PropTypes.bool,
+  colourless: PropTypes.bool,
+  noDataIsFalse: PropTypes.bool,
+}
+
+/**
+ *
+ * @param [warning]
+ * @param [reverse]
+ * @param [colourless]
+ * @param [noDataIsFalse]
  * @returns {function(*, *, *, *): *}
  */
 export const cellBooleanFormatter =
-  ({ reverse = false, warning = false } = {}) =>
+  ({ warning = false, reverse = false, colourless = false, noDataIsFalse } = {}) =>
   (row, index, column, id) => {
     const cell = column.selector(row)
-    return CellBoolean({ cell, reverse, warning })
+    return CellBoolean({ cell, warning, reverse, colourless, noDataIsFalse })
   }
