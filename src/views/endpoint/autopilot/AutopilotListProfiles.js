@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { cellBooleanFormatter } from 'src/components/tables'
+import { CellTip, cellBooleanFormatter } from 'src/components/tables'
 import { CButton } from '@coreui/react'
 import { faEye } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -42,6 +42,7 @@ const columns = [
     selector: (row) => row['displayName'],
     name: 'Name',
     sortable: true,
+    cell: (row) => CellTip(row['displayName']),
     wrap: true,
     exportSelector: 'displayName',
   },
@@ -49,6 +50,7 @@ const columns = [
     selector: (row) => row['Description'],
     name: 'Description',
     sortable: true,
+    cell: (row) => CellTip(row['Description']),
     wrap: true,
     exportSelector: 'Description',
   },
@@ -56,19 +58,21 @@ const columns = [
     selector: (row) => row['language'],
     name: 'Language',
     sortable: true,
+    cell: (row) => CellTip(row['language']),
     exportSelector: 'language',
   },
   {
     selector: (row) => row['extractHardwareHash'],
     name: 'Convert to Autopilot',
     sortable: true,
-    cell: cellBooleanFormatter(),
+    cell: cellBooleanFormatter({ colourless: true }),
     exportSelector: 'extractHardwareHash',
   },
   {
     selector: (row) => row['deviceNameTemplate'],
     name: 'Device Name Template',
     sortable: true,
+    cell: (row) => CellTip(row['deviceNameTemplate']),
     exportSelector: 'deviceNameTemplate',
   },
   {

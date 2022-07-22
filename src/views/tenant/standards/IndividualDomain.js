@@ -450,6 +450,24 @@ function ResultsCard({
     finalState = 'Fail'
   }
 
+  var docLink = ''
+  if (providerInfo) {
+    switch (type) {
+      case 'SPF':
+        docLink = providerInfo._SpfComment
+        break
+      case 'DKIM':
+        docLink = providerInfo._DkimComment
+        break
+      case 'MX':
+        docLink = providerInfo._MxComment
+        break
+      default:
+        docLink = ''
+        break
+    }
+  }
+
   return (
     <>
       <CCard className="content-card">
@@ -461,11 +479,7 @@ function ResultsCard({
           <span>
             {providerInfo && (
               <CTooltip content={`${providerInfo.Name} ${type} documentation`}>
-                <CLink
-                  className="mx-2 card-header-link"
-                  href={providerInfo._MxComment}
-                  target="_blank"
-                >
+                <CLink className="mx-2 card-header-link" href={docLink} target="_blank">
                   <FontAwesomeIcon icon={faQuestionCircle} className="me-2" />
                 </CLink>
               </CTooltip>
