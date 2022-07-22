@@ -25,5 +25,5 @@ export default function Test() {
     fetch()
   }, [])
 
-  return <>See Console Log</>
+  return <></>
 }

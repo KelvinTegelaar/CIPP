@@ -14,7 +14,7 @@ export default function TicketCount() {
       {respondedCount > 0 && <Alert severity="warning">Client Responded: {respondedCount}</Alert>}
       {myCount > 0 && <Alert severity="info">My Tickets: {myCount}</Alert>}
       {newCount + respondedCount + myCount === 0 && (
-        <Alert severity="success">No open tickets. Wowsome!</Alert>
+        <Alert severity="success">You have no pending tickets. &nbsp; Wowsome!</Alert>
       )}
     </Stack>
   )

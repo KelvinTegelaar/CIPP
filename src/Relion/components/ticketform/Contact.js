@@ -69,7 +69,7 @@ export default function Contact() {
       autoSelect
       id="contact"
       value={contactValue}
-      getOptionLabel={(option) => option.label + '  <' + option.email + '>'}
+      getOptionLabel={(option) => (option.label ? option.label + '  <' + option.email + '>' : '')}
       options={contactList}
       onChange={contactHandler}
       isOptionEqualToValue={(option, value) => option.label === value.label}

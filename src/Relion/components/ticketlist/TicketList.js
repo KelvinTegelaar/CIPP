@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { DataGrid } from '@mui/x-data-grid'
-import { Link, Accordion, AccordionSummary, AccordionDetails } from '@mui/material'
+import { Chip, Link, Accordion, AccordionSummary, AccordionDetails } from '@mui/material'
+import { darken } from '@mui/material/styles'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { setCurrentTenant } from 'src/store/features/app'
 import {
+  setIssueTypeCount,
   setTicketMyCount,
   setTicketNewCount,
   setTicketRespondedCount,
@@ -31,6 +33,32 @@ import getTicketList from '../../functions/getTicketList'
 import getContactList from '../../functions/getContactList'
 import { clientList } from '../../data/clientList'
 
+// format status chips
+function getChipProps(params) {
+  switch (params.value) {
+    case 'New':
+      return {
+        label: params.value,
+        color: 'error',
+      }
+    case 'Client Responded':
+      return {
+        label: params.value,
+        color: 'warning',
+      }
+    case 'Closed':
+      return {
+        label: params.value,
+        color: 'default',
+      }
+    default:
+      return {
+        label: params.value,
+        color: 'primary',
+      }
+  }
+}
+
 export default function TicketList() {
   const dispatch = useDispatch()
   const initialState = [
@@ -40,20 +68,28 @@ export default function TicketList() {
       contactName: '',
       title: '',
       statusName: '',
+      issueTypeName: '',
     },
   ]
 
   // fetch ticket list from BMS
   const [ticketList, setTicketList] = useState(initialState)
   const techId = useSelector((state) => state.ticketForm.techId)
+  const clientValue = useSelector((state) => state.ticketForm.clientValue)
   const contactValue = useSelector((state) => state.ticketForm.contactValue)
+  const issueType = useSelector((state) => state.ticketForm.issueType)
+  const editMode = useSelector((state) => state.ticketForm.editMode)
   useEffect(() => {
-    const fetchData = async () => {
+    const fetch = async () => {
+      // show closed tickets as contact and contact are selected
+      const excludeCompleted = clientValue.label || contactValue.label ? 0 : 1
       const filter = {
         filter: {
           queueNames: 'Help Desk',
-          excludeCompleted: 1,
-          //contactName: contactValue.label,
+          excludeCompleted: excludeCompleted,
+          account: clientValue.label,
+          contactName: contactValue.label,
+          issueTypeNames: issueType,
         },
       }
       const response = await getTicketList(filter)
@@ -62,27 +98,55 @@ export default function TicketList() {
       console.log(response)
 
       // generate ticket counts
-      const myCount = response.filter((item) => item.assigneeId === techId).length
-      dispatch(setTicketMyCount(myCount))
+      if (!editMode) {
+        const myCount = response.filter(
+          (item) => item.assigneeId === techId && !item.completedDate,
+        ).length
+        dispatch(setTicketMyCount(myCount))
 
-      const newCount = response.filter(
-        (item) => item.statusName === 'New' || item.assigneeId === null,
-      ).length
-      dispatch(setTicketNewCount(newCount))
+        const newCount = response.filter(
+          (item) => (item.statusName === 'New' || item.assigneeId === null) && !item.completedDate,
+        ).length
+        dispatch(setTicketNewCount(newCount))
 
-      const respondedCount = response.filter(
-        (item) => item.statusName === 'Client Responded',
-      ).length
-      dispatch(setTicketRespondedCount(respondedCount))
+        const respondedCount = response.filter(
+          (item) => item.statusName === 'Client Responded' && !item.completedDate,
+        ).length
+        dispatch(setTicketRespondedCount(respondedCount))
+      }
+
+      // generate issueTypes count
+      // https://stackoverflow.com/questions/44387647/group-and-count-values-in-an-array
+      let counts = response.reduce((p, c) => {
+        let name = c.issueTypeName
+        if (!p.hasOwnProperty(name)) {
+          p[name] = 0
+        }
+        p[name]++
+        return p
+      }, {})
+
+      let countsExtended = Object.keys(counts).map((k) => {
+        return { name: k, count: counts[k] }
+      })
+
+      // sort descending by count
+      // https://stackoverflow.com/questions/1129216/sort-array-of-objects-by-string-property-value
+      countsExtended.sort((a, b) => (a.count < b.count ? 1 : b.count < a.count ? -1 : 0))
+
+      console.log('Issue Type Count:')
+      console.log(countsExtended)
+
+      dispatch(setIssueTypeCount(countsExtended))
     }
 
-    fetchData() // initial load
+    fetch() // initial load
 
-    const interval = setInterval(() => fetchData(), 15000) // fetch every 15 sec
+    const interval = setInterval(() => fetch(), 15000) // fetch every 15 sec
     return () => {
       clearInterval(interval)
     }
-  }, [techId, contactValue, dispatch])
+  }, [techId, clientValue, contactValue, issueType, editMode, dispatch])
 
   // populate ticket state from row selection
   const rowHandler = async ({ row }) => {
@@ -158,18 +222,23 @@ export default function TicketList() {
         )
       },
     },
-    { field: 'assigneeName', headerName: 'Assignee', width: 150 },
+    { field: 'assigneeName', headerName: 'Assignee', width: 120 },
     {
       field: 'statusName',
       headerName: 'Status',
-      width: 150,
+      width: 120,
+      renderCell: (cellValues) => {
+        return <Chip variant="outlined" {...getChipProps(cellValues)} />
+      },
     },
     { field: 'contactName', headerName: 'Contact', width: 150 },
+    { field: 'issueTypeName', headerName: 'Issue Type', width: 160 },
     { field: 'title', headerName: 'Title', width: 500 },
   ]
 
   return (
     <Accordion
+      defaultExpanded={true}
       sx={{
         backgroundColor: 'transparent',
       }}
@@ -177,26 +246,65 @@ export default function TicketList() {
       <AccordionSummary expandIcon={<ExpandMoreIcon />} id="ticket-list-header">
         <TicketCount />
       </AccordionSummary>
-      <AccordionDetails>
-        <div style={{ height: 400, width: '100%' }}>
-          <DataGrid
-            onRowClick={rowHandler}
-            rows={ticketList}
-            columns={columns}
-            rowHeight={38}
-            pageSize={100}
-            initialState={{
-              sorting: {
-                sortModel: [
-                  {
-                    field: 'statusName',
-                    sort: 'desc',
-                  },
-                ],
-              },
-            }}
-          />
-        </div>
+      <AccordionDetails
+        sx={{
+          height: 400,
+          width: '100%',
+          '& .super-app-theme--New': {
+            // no styling
+            '&:hover': {
+              bgcolor: '435252',
+            },
+          },
+          '& .super-app-theme--In-Progress': {
+            // no styling
+            '&:hover': {
+              bgcolor: '435252',
+            },
+          },
+          '& .super-app-theme--Client-Responded': {
+            // no styling
+            '&:hover': {
+              bgcolor: '435252',
+            },
+          },
+          '& .super-app-theme--Merged': {
+            color: '#678296',
+            bgcolor: '#242c2c',
+            '&:hover': {
+              bgcolor: darken('#242c2c', 0.6),
+            },
+          },
+          '& .super-app-theme--Closed': {
+            color: '#678296',
+            bgcolor: '#242c2c',
+            '&:hover': {
+              bgcolor: darken('#242c2c', 0.6),
+            },
+          },
+        }}
+      >
+        <DataGrid
+          onRowClick={rowHandler}
+          rows={ticketList}
+          columns={columns}
+          rowHeight={38}
+          pageSize={100}
+          initialState={{
+            sorting: {
+              sortModel: [
+                {
+                  field: 'openDate',
+                  sort: 'desc',
+                },
+              ],
+            },
+          }}
+          getRowClassName={(params) => {
+            const statusName = params.row.statusName.replace(' ', '-')
+            return `super-app-theme--${statusName}`
+          }}
+        />
       </AccordionDetails>
     </Accordion>
   )

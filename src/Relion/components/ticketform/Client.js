@@ -58,7 +58,7 @@ export default function Client() {
   // skip if client is already selected
   useEffect(() => {
     if (caller) {
-      const fn = caller.substring(0, caller.indexOf(' '))
+      const fn = caller.includes(' ') ? caller.substring(0, caller.indexOf(' ')) : caller
       console.log('Caller First Name:')
       console.log(fn)
 
