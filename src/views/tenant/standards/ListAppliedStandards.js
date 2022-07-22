@@ -1,18 +1,5 @@
 import React from 'react'
-import {
-  CButton,
-  CCallout,
-  CCol,
-  CForm,
-  CRow,
-  CSpinner,
-  CTable,
-  CTableBody,
-  CTableDataCell,
-  CTableHead,
-  CTableHeaderCell,
-  CTableRow,
-} from '@coreui/react'
+import { CButton, CCallout, CCol, CForm, CRow, CSpinner } from '@coreui/react'
 import { Form } from 'react-final-form'
 import { Condition, RFFCFormInput, RFFCFormSelect, RFFCFormSwitch } from 'src/components/forms'
 import {
