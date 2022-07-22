@@ -49,6 +49,7 @@ export default function UserOneDriveUsage({ userUPN, tenantDomain, className = n
       isFetching={isFetching}
       error={error}
       errorMessage={!noUsage ? 'Failed to fetch OneDrive details' : 'No OneDrive usage'}
+      tooltip={true}
     />
   )
 }
