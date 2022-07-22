@@ -13,7 +13,7 @@ const getTicketActivities = async (ticketId) => {
   console.log('Ticket Id: ')
   console.log(ticketId)
   const response = await axios(axiosParam)
-  const array = response.data.result.reverse()
+  const array = response.data.result
   return array
 }
 

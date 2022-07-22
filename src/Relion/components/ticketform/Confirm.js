@@ -5,7 +5,6 @@ import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber'
 import Link from '@mui/material/Link'
-import Fade from '@mui/material/Fade'
 
 export default function Confirm() {
   const ticketConfirmId = useSelector((state) => state.ticketConfirm.ticketConfirmId)
@@ -36,23 +35,25 @@ export default function Confirm() {
   }, [timeEntryConfirmId])
 
   return (
-    <Fade in={visible}>
-      <Card variant="outlined">
-        <CardContent>
-          <ConfirmationNumberIcon />
-          <Typography>Go to BMS ticket</Typography>
-          <Link
-            variant="h5"
-            href={`https://bms.kaseya.com/react/servicedesk/tickets/${ticketConfirmId}`}
-            target="_blank"
-          >
-            #{ticketConfirmId}
-          </Link>
-          <Typography>
-            <i>Dimissed in {timeLeft}</i>
-          </Typography>
-        </CardContent>
-      </Card>
-    </Fade>
+    <>
+      {visible && (
+        <Card variant="outlined">
+          <CardContent>
+            <ConfirmationNumberIcon />
+            <Typography>Go to BMS ticket</Typography>
+            <Link
+              variant="h5"
+              href={`https://bms.kaseya.com/react/servicedesk/tickets/${ticketConfirmId}`}
+              target="_blank"
+            >
+              #{ticketConfirmId}
+            </Link>
+            <Typography>
+              <i>Dimissed in {timeLeft}</i>
+            </Typography>
+          </CardContent>
+        </Card>
+      )}
+    </>
   )
 }

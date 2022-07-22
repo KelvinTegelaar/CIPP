@@ -33,6 +33,8 @@ const App = () => {
         </Grid>
         <Grid item xs={6}>
           <TicketForm />
+          <TicketActivities />
+          <Details />
         </Grid>
         <Grid item xs={6}>
           <BMSTest />
@@ -42,8 +44,6 @@ const App = () => {
               <UserAdmin />
             </>
           )}
-          <Details />
-          <TicketActivities />
         </Grid>
       </Grid>
     </ThemeProvider>
