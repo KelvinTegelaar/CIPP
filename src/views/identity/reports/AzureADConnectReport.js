@@ -1,6 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
+import { cellDateFormatter } from 'src/components/tables'
 const columns = [
   {
     name: 'Display Name',
@@ -15,9 +16,10 @@ const columns = [
     exportSelector: 'ObjectType',
   },
   {
-    name: 'Created Date',
+    name: 'Created Date (Local)',
     selector: (row) => row['createdDateTime'],
     sortable: true,
+    cell: cellDateFormatter(),
     exportSelector: 'createdDateTime',
   },
   {
