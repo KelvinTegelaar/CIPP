@@ -72,6 +72,7 @@ Some permissions may appear duplicated in the Delegated and Application permissi
 | Member.Read.Hidden                           | Read hidden memberships                                           |
 | Organization.ReadWrite.All                   | Read and write organization information                           |
 | Policy.Read.All                              | Read your organization's policies                                 |
+| Policy.ReadWrite.ApplicationConfiguration    | Read and write your organization's application configuration policies |
 | Policy.ReadWrite.AuthenticationFlows         | Read and write authentication flow policies                       |
 | Policy.ReadWrite.AuthenticationMethod        | Read and write authentication method policies                     |
 | Policy.ReadWrite.Authorization               | Read and write your organization's authorization policy           |
@@ -85,8 +86,11 @@ Some permissions may appear duplicated in the Delegated and Application permissi
 | RoleManagement.ReadWrite.Directory           | Read and write directory RBAC settings                            |
 | SecurityActions.ReadWrite.All                | Read and update your organization's security actions              |
 | SecurityEvents.ReadWrite.All                 | Read and update your organization's security events               |
+| SecurityIncident.Read.All                    | Read incidents                                                    |
+| SecurityIncident.ReadWrite.All               | Read and write to incidents                                       |
 | ServiceHealth.Read.All                       | Read service health                                               |
 | ServiceMessage.Read.All                      | Read service announcement messages                                |
+| SharePointTenantSettings.ReadWrite.All       | Read and change SharePoint and OneDrive tenant settings           |
 | Sites.ReadWrite.All                          | Edit or delete items in all site collections                      |
 | TeamMember.ReadWrite.All                     | Add and remove members from teams                                 |
 | TeamMember.ReadWriteNonOwnerRole.All         | Add and remove members with non-owner role for all teams          |
