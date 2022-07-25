@@ -1,6 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
+import { CellTip, cellDateFormatter } from 'src/components/tables'
 
 const columns = [
   {
@@ -8,19 +9,23 @@ const columns = [
     selector: (row) => row['Tenant'],
     sortable: true,
     wrap: true,
+    cell: (row) => CellTip(row['Tenant']),
     exportSelector: 'Tenant',
+    maxWidth: '200px',
   },
   {
     name: 'Display Name',
     selector: (row) => row['Name'],
     sortable: true,
     wrap: true,
+    cell: (row) => CellTip(row['Name']),
     exportSelector: 'Name',
   },
   {
     name: 'Application ID',
     selector: (row) => row['ID'],
     sortable: true,
+    cell: (row) => CellTip(row['ID']),
     exportSelector: 'ID',
   },
   {
@@ -28,12 +33,14 @@ const columns = [
     selector: (row) => row['Scope'],
     sortable: true,
     exportSelector: 'Scope',
+    cell: (row) => CellTip(row['Scope']),
   },
   {
-    name: 'Permissions Granted at',
+    name: 'Permissions Granted (Local)',
     selector: (row) => row['StartTime'],
     sortable: true,
     exportSelector: 'StartTime',
+    cell: cellDateFormatter(),
   },
 ]
 

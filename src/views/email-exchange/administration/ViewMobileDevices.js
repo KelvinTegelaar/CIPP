@@ -2,6 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
 import useQuery from 'src/hooks/useQuery'
+import { CellTip, cellDateFormatter } from 'src/components/tables'
 
 //TODO: Add CellBoolean
 const columns = [
@@ -9,6 +10,7 @@ const columns = [
     selector: (row) => row['clientType'],
     name: 'Client Type',
     sortable: true,
+    cell: (row) => CellTip(row['clientType']),
     exportSelector: 'clientType',
   },
   {
@@ -27,24 +29,28 @@ const columns = [
     selector: (row) => row['deviceFriendlyName'],
     name: 'Friendly Name',
     sortable: true,
+    cell: (row) => CellTip(row['deviceFriendlyName']),
     exportSelector: 'deviceFriendlyName',
   },
   {
     selector: (row) => row['deviceModel'],
     name: 'Model',
     sortable: true,
+    cell: (row) => CellTip(row['deviceModel']),
     exportSelector: 'deviceModel',
   },
   {
     selector: (row) => row['deviceOS'],
     name: 'OS',
     sortable: true,
+    cell: (row) => CellTip(row['deviceOS']),
     exportSelector: 'deviceOS',
   },
   {
     selector: (row) => row['deviceType'],
     name: 'Device Type',
     sortable: true,
+    cell: (row) => CellTip(row['deviceType']),
     exportSelector: 'deviceType',
   },
   {
@@ -52,18 +58,21 @@ const columns = [
     name: 'First Sync',
     sortable: true,
     exportSelector: 'firstSync',
+    cell: cellDateFormatter(),
   },
   {
     selector: (row) => row['lastSyncAttempt'],
     name: 'Last Sync Attempt',
     sortable: true,
     exportSelector: 'lastSyncAttempt',
+    cell: cellDateFormatter(),
   },
   {
     selector: (row) => row['lastSuccessSync'],
     name: 'Last Succesfull Sync',
     sortable: true,
     exportSelector: 'lastSuccessSync',
+    cell: cellDateFormatter(),
   },
   {
     selector: (row) => row['status'],
