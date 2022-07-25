@@ -22,11 +22,11 @@ body:
       - Feature requests that are detrimental to security will also be closed without notice.
 - type: textarea
   attributes:
-    label: Description of the new feature - must be in-depth. Follow a [user story](https://www.techtarget.com/searchsoftwarequality/definition/user-story#:~:text=A%20user%20story%20is%20a,simplified%20description%20of%20a%20requirement.)
+    label: Description of the new feature - must be an in-depth explanation of the feature you want, reasoning why, and the added benefits for MSPs as a whole.
   validations:
     required: true
 - type: textarea
   attributes:
-    label: Proposed implementation details
+    label: PowerShell commands you would normally use to achieve above request
   validations:
     required: false

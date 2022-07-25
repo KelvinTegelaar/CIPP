@@ -66,11 +66,11 @@ const EditMailboxPermission = () => {
       tenantFilter: tenantDomain,
       AddFullAccessNoAutoMap: values.AddFullAccessNoAutoMap
         ? values.AddFullAccessNoAutoMap.value
-        : '',
-      AddFullAccess: values.AddFullAccess ? values.AddFullAccess.value : '',
-      RemoveFullAccess: values.RemoveFullAccess ? values.RemoveFullAccess.value : '',
-      AddSendAs: values.AddSendAs ? values.AddSendAs.value : '',
-      RemoveSendAs: values.RemoveSendAs ? values.RemoveSendAs.value : '',
+        : null,
+      AddFullAccess: values.AddFullAccess ? values.AddFullAccess : null,
+      RemoveFullAccess: values.RemoveFullAccess ? values.RemoveFullAccess : null,
+      AddSendAs: values.AddSendAs ? values.AddSendAs : null,
+      RemoveSendAs: values.RemoveSendAs ? values.RemoveSendAs : null,
     }
     //window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/ExecEditMailboxPermissions', values: shippedValues })
@@ -85,9 +85,6 @@ const EditMailboxPermission = () => {
     <CCard className="page-card">
       {!queryError && (
         <>
-          {postResults.isSuccess && (
-            <CCallout color="success">{postResults.data?.Results}</CCallout>
-          )}
           {queryError && (
             <CRow>
               <CCol md={12}>
@@ -117,11 +114,12 @@ const EditMailboxPermission = () => {
                             <CRow className="mb-3">
                               <CCol md={12}>
                                 <RFFSelectSearch
+                                  multi={true}
                                   label="Remove Full Access"
                                   disabled={formDisabled}
                                   values={users?.map((user) => ({
                                     value: user.mail,
-                                    name: user.displayName,
+                                    name: `${user.displayName} - ${user.mail} `,
                                   }))}
                                   placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                                   name="RemoveFullAccess"
@@ -130,11 +128,12 @@ const EditMailboxPermission = () => {
                               </CCol>
                               <CCol md={12}>
                                 <RFFSelectSearch
+                                  multi={true}
                                   label="Add Full Access - Automapping Enabled"
                                   disabled={formDisabled}
                                   values={users?.map((user) => ({
                                     value: user.mail,
-                                    name: user.displayName,
+                                    name: `${user.displayName} - ${user.mail} `,
                                   }))}
                                   placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                                   name="AddFullAccess"
@@ -143,11 +142,12 @@ const EditMailboxPermission = () => {
                               </CCol>
                               <CCol md={12}>
                                 <RFFSelectSearch
+                                  multi={true}
                                   label="Add Full Access - Automapping Disabled"
                                   disabled={formDisabled}
                                   values={users?.map((user) => ({
                                     value: user.mail,
-                                    name: user.displayName,
+                                    name: `${user.displayName} - ${user.mail} `,
                                   }))}
                                   placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                                   name="AddFullAccessNoAutoMap"
@@ -156,11 +156,12 @@ const EditMailboxPermission = () => {
                               </CCol>
                               <CCol md={12}>
                                 <RFFSelectSearch
+                                  multi={true}
                                   label="Add Send-as permissions"
                                   disabled={formDisabled}
                                   values={users?.map((user) => ({
                                     value: user.mail,
-                                    name: user.displayName,
+                                    name: `${user.displayName} - ${user.mail} `,
                                   }))}
                                   placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                                   name="AddSendAs"
@@ -169,11 +170,12 @@ const EditMailboxPermission = () => {
                               </CCol>
                               <CCol md={12}>
                                 <RFFSelectSearch
+                                  multi={true}
                                   label="Remove Send-as permissions"
                                   disabled={formDisabled}
                                   values={users?.map((user) => ({
                                     value: user.mail,
-                                    name: user.displayName,
+                                    name: `${user.displayName} - ${user.mail} `,
                                   }))}
                                   placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                                   name="RemoveSendAs"
@@ -197,7 +199,11 @@ const EditMailboxPermission = () => {
                               </CCol>
                             </CRow>
                             {postResults.isSuccess && (
-                              <CCallout color="success">{postResults.data?.Results}</CCallout>
+                              <CCallout color="success">
+                                {postResults.data.Results.map((result, idx) => (
+                                  <li key={idx}>{result}</li>
+                                ))}
+                              </CCallout>
                             )}
                           </CForm>
                         )
