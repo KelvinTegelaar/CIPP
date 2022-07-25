@@ -27,6 +27,7 @@ export default function UserEmailDetails({ user, isFetching, error, className = 
       isFetching={isFetching}
       error={error}
       errorMessage="Failed to fetch email details"
+      tooltip={true}
     />
   )
 }
