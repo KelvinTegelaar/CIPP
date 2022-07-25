@@ -12,11 +12,10 @@ import {
   faHdd,
   faLink,
   faUsers,
-  faEnvelope,
   faWindowRestore,
-  faUnlock,
   faKey,
   faBus,
+  faExclamationTriangle,
 } from '@fortawesome/free-solid-svg-icons'
 
 const _nav = [
@@ -57,6 +56,11 @@ const _nav = [
         component: CNavItem,
         name: 'Offboarding Wizard',
         to: '/identity/administration/offboarding-wizard',
+      },
+      {
+        component: CNavItem,
+        name: 'Deleted Items',
+        to: '/identity/administration/deleted-items',
       },
     ],
   },
@@ -137,6 +141,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Consented Applications',
+        to: '/tenant/administration/application-consent',
+      },
+      {
+        component: CNavItem,
         name: 'Service Health',
         to: '/tenant/administration/service-health',
       },
@@ -151,7 +160,7 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'List Applied Standards',
+        name: 'List and Edit Standards',
         to: '/tenant/standards/list-applied-standards',
       },
       {
@@ -211,16 +220,53 @@ const _nav = [
   },
   {
     component: CNavGroup,
-    name: 'Reports',
+    name: 'Incidents & Alerts',
     section: 'Security & Compliance',
-    to: '/security/reports',
-    icon: <FontAwesomeIcon icon={faUnlock} className="nav-icon" />,
+    to: '/security/incidents',
+    icon: <FontAwesomeIcon icon={faExclamationTriangle} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
-        name: 'List Alerts',
-        to: '/security/reports/list-alerts',
+        name: 'List Incidents',
+        to: '/security/incidents/list-incidents',
       },
+      {
+        component: CNavItem,
+        name: 'List Alerts',
+        to: '/security/incidents/list-alerts',
+      },
+    ],
+  },
+  // Coming in another branch (heads up)
+  //{
+  //component: CNavGroup,
+  //name: 'Vulnerabilities',
+  //section: 'Security & Compliance',
+  //to: '/security/vulnerabilities',
+  //icon: <FontAwesomeIcon icon={faChessRook} className="nav-icon" />,
+  //items: [],
+  //},
+  {
+    component: CNavGroup,
+    name: 'Defender',
+    section: 'Security & Compliance',
+    to: '/security/defender',
+    icon: <FontAwesomeIcon icon={faShieldAlt} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Defender Status',
+        to: '/security/defender/list-defender',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
+    name: 'Reports',
+    section: 'Security & Compliance',
+    to: '/security/reports',
+    icon: <FontAwesomeIcon icon={faChartBar} className="nav-icon" />,
+    items: [
       {
         component: CNavItem,
         name: 'Device Compliance',
@@ -253,6 +299,16 @@ const _nav = [
         component: CNavItem,
         name: 'Add Choco App',
         to: '/endpoint/applications/add-choco-app',
+      },
+      {
+        component: CNavItem,
+        name: 'Add Office App',
+        to: '/endpoint/applications/add-office-app',
+      },
+      {
+        component: CNavItem,
+        name: 'Add MSP App',
+        to: '/endpoint/applications/add-rmm-app',
       },
     ],
   },
@@ -321,20 +377,6 @@ const _nav = [
         component: CNavItem,
         name: 'List Templates',
         to: '/endpoint/MEM/list-templates',
-      },
-    ],
-  },
-  {
-    component: CNavGroup,
-    name: 'Defender',
-    section: 'Endpoint Management',
-    to: '/endpoint/defender',
-    icon: <FontAwesomeIcon icon={faShieldAlt} className="nav-icon" />,
-    items: [
-      {
-        component: CNavItem,
-        name: 'Defender Status',
-        to: '/endpoint/defender/list-defender',
       },
     ],
   },
@@ -420,6 +462,11 @@ const _nav = [
         name: 'Contacts',
         to: '/email/administration/contacts',
       },
+      {
+        component: CNavItem,
+        name: 'Quarantine',
+        to: '/email/administration/quarantine',
+      },
     ],
   },
   {
@@ -456,7 +503,7 @@ const _nav = [
     name: 'Reports',
     section: 'Email & Exchange',
     to: '/email/reports',
-    icon: <FontAwesomeIcon icon={faEnvelope} className="nav-icon" />,
+    icon: <FontAwesomeIcon icon={faChartBar} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
@@ -498,7 +545,7 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'SAM Setup Wizard (β)',
+        name: 'SAM Setup Wizard',
         to: '/cipp/setup',
       },
       {

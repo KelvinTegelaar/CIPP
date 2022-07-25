@@ -6,6 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEdit, faEllipsisV, faMobileAlt } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
 import { CippActionsOffcanvas } from 'src/components/utilities'
+import { TitleButton } from 'src/components/buttons'
+import { CellTip } from 'src/components/tables'
 
 const MailboxList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -108,30 +110,38 @@ const MailboxList = () => {
       name: 'User Prinicipal Name',
       sortable: true,
       exportSelector: 'UPN',
+      cell: (row) => CellTip(row['UPN']),
+      maxWidth: '300px',
     },
     {
       selector: (row) => row['displayName'],
       name: 'Display Name',
       sortable: true,
+      cell: (row) => CellTip(row['displayName']),
       exportSelector: 'displayName',
+      maxWidth: '300px',
     },
     {
       selector: (row) => row['primarySmtpAddress'],
       name: 'Primary E-mail Address',
       sortable: true,
+      cell: (row) => CellTip(row['primarySmtpAddress']),
       exportSelector: 'primarySmtpAddress',
+      maxWidth: '300px',
     },
     {
       selector: (row) => row['recipientType'],
       name: 'Recipient Type',
       sortable: true,
       exportSelector: 'recipientType',
+      maxWidth: '150px',
     },
     {
       selector: (row) => row['recipientTypeDetails'],
       name: 'Recipient Type Details',
       sortable: true,
       exportSelector: 'recipientTypeDetails',
+      maxWidth: '170px',
     },
     {
       name: 'Additional Email Addresses',
@@ -143,11 +153,17 @@ const MailboxList = () => {
     {
       name: 'Actions',
       cell: Offcanvas,
+      maxWidth: '150px',
     },
   ]
+  const titleButton = (
+    <TitleButton href="/email/administration/add-shared-mailbox" title="Add Shared Mailbox" />
+  )
 
   return (
     <CippPageList
+      capabilities={{ allTenants: false, helpContext: 'https://google.com' }}
+      titleButton={titleButton}
       title="Mailboxes"
       datatable={{
         keyField: 'id',

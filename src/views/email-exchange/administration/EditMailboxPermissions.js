@@ -31,11 +31,13 @@ const EditMailboxPermission = () => {
   const [queryError, setQueryError] = useState(false)
 
   //const [EditMailboxPermission, { error: EditMailboxPermissionError, isFetching: EditMailboxPermissionIsFetching }] = useEditMailboxPermissionMutation()
+  const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
   const {
     data: user = {},
     isFetching: userIsFetching,
     error: userError,
+    refetch: refetchPermissions,
   } = useListMailboxPermissionsQuery({ tenantDomain, userId })
 
   const {
@@ -45,6 +47,9 @@ const EditMailboxPermission = () => {
   } = useListUsersQuery({ tenantDomain })
 
   useEffect(() => {
+    if (postResults.isSuccess) {
+      refetchPermissions()
+    }
     if (!userId || !tenantDomain) {
       ModalService.open({
         body: 'Error invalid request, could not load requested user.',
@@ -54,22 +59,18 @@ const EditMailboxPermission = () => {
     } else {
       setQueryError(false)
     }
-  }, [userId, tenantDomain, dispatch])
-  const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
+  }, [userId, tenantDomain, dispatch, postResults, refetchPermissions])
   const onSubmit = (values) => {
-    if (!values.AddFullAccess) {
-      values.AddFullAccess = ''
-    }
-    if (!values.RemoveFullAccess) {
-      values.RemoveFullAccess = ''
-    }
-    if (!values.AddFullAccessNoAutoMap) {
-      values.AddFullAccessNoAutoMap = ''
-    }
     const shippedValues = {
       userid: userId,
       tenantFilter: tenantDomain,
-      ...values,
+      AddFullAccessNoAutoMap: values.AddFullAccessNoAutoMap
+        ? values.AddFullAccessNoAutoMap.value
+        : null,
+      AddFullAccess: values.AddFullAccess ? values.AddFullAccess : null,
+      RemoveFullAccess: values.RemoveFullAccess ? values.RemoveFullAccess : null,
+      AddSendAs: values.AddSendAs ? values.AddSendAs : null,
+      RemoveSendAs: values.RemoveSendAs ? values.RemoveSendAs : null,
     }
     //window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/ExecEditMailboxPermissions', values: shippedValues })
@@ -78,16 +79,12 @@ const EditMailboxPermission = () => {
     ...user,
   }
 
-  // this is dumb
   const formDisabled = queryError === true
 
   return (
     <CCard className="page-card">
       {!queryError && (
         <>
-          {postResults.isSuccess && (
-            <CCallout color="success">{postResults.data?.Results}</CCallout>
-          )}
           {queryError && (
             <CRow>
               <CCol md={12}>
@@ -102,12 +99,12 @@ const EditMailboxPermission = () => {
             <CCol md={6}>
               <CCard>
                 <CCardHeader>
-                  <CCardTitle>Account Details</CCardTitle>
+                  <CCardTitle>Account Details - {userId}</CCardTitle>
                 </CCardHeader>
                 <CCardBody>
-                  {userIsFetching && <CSpinner />}
+                  {usersIsFetching && <CSpinner />}
                   {userError && <span>Error loading user</span>}
-                  {!userIsFetching && (
+                  {!usersIsFetching && (
                     <Form
                       initialValues={{ ...initialState }}
                       onSubmit={onSubmit}
@@ -117,11 +114,12 @@ const EditMailboxPermission = () => {
                             <CRow className="mb-3">
                               <CCol md={12}>
                                 <RFFSelectSearch
+                                  multi={true}
                                   label="Remove Full Access"
                                   disabled={formDisabled}
                                   values={users?.map((user) => ({
                                     value: user.mail,
-                                    name: user.displayName,
+                                    name: `${user.displayName} - ${user.mail} `,
                                   }))}
                                   placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                                   name="RemoveFullAccess"
@@ -130,11 +128,12 @@ const EditMailboxPermission = () => {
                               </CCol>
                               <CCol md={12}>
                                 <RFFSelectSearch
+                                  multi={true}
                                   label="Add Full Access - Automapping Enabled"
                                   disabled={formDisabled}
                                   values={users?.map((user) => ({
                                     value: user.mail,
-                                    name: user.displayName,
+                                    name: `${user.displayName} - ${user.mail} `,
                                   }))}
                                   placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                                   name="AddFullAccess"
@@ -143,14 +142,43 @@ const EditMailboxPermission = () => {
                               </CCol>
                               <CCol md={12}>
                                 <RFFSelectSearch
+                                  multi={true}
                                   label="Add Full Access - Automapping Disabled"
                                   disabled={formDisabled}
                                   values={users?.map((user) => ({
                                     value: user.mail,
-                                    name: user.displayName,
+                                    name: `${user.displayName} - ${user.mail} `,
                                   }))}
                                   placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                                   name="AddFullAccessNoAutoMap"
+                                />
+                                {usersError && <span>Failed to load list of users</span>}
+                              </CCol>
+                              <CCol md={12}>
+                                <RFFSelectSearch
+                                  multi={true}
+                                  label="Add Send-as permissions"
+                                  disabled={formDisabled}
+                                  values={users?.map((user) => ({
+                                    value: user.mail,
+                                    name: `${user.displayName} - ${user.mail} `,
+                                  }))}
+                                  placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
+                                  name="AddSendAs"
+                                />
+                                {usersError && <span>Failed to load list of users</span>}
+                              </CCol>
+                              <CCol md={12}>
+                                <RFFSelectSearch
+                                  multi={true}
+                                  label="Remove Send-as permissions"
+                                  disabled={formDisabled}
+                                  values={users?.map((user) => ({
+                                    value: user.mail,
+                                    name: `${user.displayName} - ${user.mail} `,
+                                  }))}
+                                  placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
+                                  name="RemoveSendAs"
                                 />
                                 {usersError && <span>Failed to load list of users</span>}
                               </CCol>
@@ -171,7 +199,11 @@ const EditMailboxPermission = () => {
                               </CCol>
                             </CRow>
                             {postResults.isSuccess && (
-                              <CCallout color="success">{postResults.data?.Results}</CCallout>
+                              <CCallout color="success">
+                                {postResults.data.Results.map((result, idx) => (
+                                  <li key={idx}>{result}</li>
+                                ))}
+                              </CCallout>
                             )}
                           </CForm>
                         )

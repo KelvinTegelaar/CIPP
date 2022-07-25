@@ -186,17 +186,24 @@ const MessageTrace = () => {
       <CippPage title="Message Trace Results" tenantSelector={false}>
         {!SearchNow && <span>Execute a search to get started.</span>}
         {SearchNow && (
-          <CippDatatable
-            reportName={`${tenant?.defaultDomainName}-Messagetrace`}
-            path="/api/listMessagetrace"
-            params={{
-              tenantFilter: tenant.defaultDomainName,
-              sender: sender,
-              recipient: recipient,
-              days: days,
-            }}
-            columns={columns}
-          />
+          <CCard className="content-card">
+            <CCardHeader className="d-flex justify-content-between align-items-center">
+              <CCardTitle>Results</CCardTitle>
+            </CCardHeader>
+            <CCardBody>
+              <CippDatatable
+                reportName={`${tenant?.defaultDomainName}-Messagetrace`}
+                path="/api/listMessagetrace"
+                params={{
+                  tenantFilter: tenant.defaultDomainName,
+                  sender: sender,
+                  recipient: recipient,
+                  days: days,
+                }}
+                columns={columns}
+              />
+            </CCardBody>
+          </CCard>
         )}
       </CippPage>
     </>

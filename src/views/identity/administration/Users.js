@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { faEdit, faEllipsisV, faEye } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { cellBooleanFormatter } from 'src/components/tables'
+import { cellBooleanFormatter, CellTip } from 'src/components/tables'
 import { CippPageList } from 'src/components/layout'
 import { TitleButton } from 'src/components/buttons'
 import { CippActionsOffcanvas } from 'src/components/utilities'
@@ -33,19 +33,19 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
       <CippActionsOffcanvas
         title="User Information"
         extendedInfo={[
-          { label: 'Created on', value: `${row.createdDateTime}` },
-          { label: 'UPN', value: `${row.userPrincipalName}` },
-          { label: 'Given Name', value: `${row.givenName}` },
-          { label: 'Surname', value: `${row.surname}` },
-          { label: 'Job Title', value: `${row.jobTitle}` },
-          { label: 'Licenses', value: `${row.LicJoined}` },
-          { label: 'Business Phone', value: `${row.businessPhones}` },
-          { label: 'Mobile Phone', value: `${row.mobilePhone}` },
-          { label: 'Mail', value: `${row.mail}` },
-          { label: 'City', value: `${row.city}` },
-          { label: 'Department', value: `${row.department}` },
-          { label: 'OnPrem Last Sync', value: `${row.onPremisesLastSyncDateTime}` },
-          { label: 'Unique ID', value: `${row.id}` },
+          { label: 'Created Date (UTC)', value: `${row.createdDateTime ?? ' '}` },
+          { label: 'UPN', value: `${row.userPrincipalName ?? ' '}` },
+          { label: 'Given Name', value: `${row.givenName ?? ' '}` },
+          { label: 'Surname', value: `${row.surname ?? ' '}` },
+          { label: 'Job Title', value: `${row.jobTitle ?? ' '}` },
+          { label: 'Licenses', value: `${row.LicJoined ?? ' '}` },
+          { label: 'Business Phone', value: `${row.businessPhones ?? ' '}` },
+          { label: 'Mobile Phone', value: `${row.mobilePhone ?? ' '}` },
+          { label: 'Mail', value: `${row.mail ?? ' '}` },
+          { label: 'City', value: `${row.city ?? ' '}` },
+          { label: 'Department', value: `${row.department ?? ' '}` },
+          { label: 'OnPrem Last Sync', value: `${row.onPremisesLastSyncDateTime ?? ' '}` },
+          { label: 'Unique ID', value: `${row.id ?? ' '}` },
         ]}
         actions={[
           {
@@ -71,6 +71,13 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modal: true,
             modalUrl: `/api/ExecCreateTAP?TenantFilter=${tenant.defaultDomainName}&ID=${row.userPrincipalName}`,
             modalMessage: 'Are you sure you want to create a Temporary Access Pass?',
+          },
+          {
+            label: 'Rerequire MFA registration',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecResetMFA?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalMessage: 'Are you sure you want to enable MFA for this user?',
           },
           {
             label: 'Send MFA Push',
@@ -115,6 +122,13 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modalMessage: 'Are you sure you want to reset the password for this user?',
           },
           {
+            label: 'Revoke all user sessions',
+            color: 'danger',
+            modal: true,
+            modalUrl: `/api/ExecRevokeSessions?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalMessage: 'Are you sure you want to revoke this users sessions?',
+          },
+          {
             label: 'Delete User',
             color: 'danger',
             modal: true,
@@ -136,6 +150,7 @@ const columns = [
     name: 'Display Name',
     selector: (row) => row['displayName'],
     sortable: true,
+    cell: (row) => CellTip(row['displayName']),
     exportSelector: 'displayName',
     minWidth: '300px',
   },
@@ -143,34 +158,32 @@ const columns = [
     name: 'Email',
     selector: (row) => row['mail'],
     sortable: true,
+    cell: (row) => CellTip(row['mail']),
     exportSelector: 'mail',
-    minWidth: '350px',
+    minWidth: '250px',
   },
   {
     name: 'User Type',
     selector: (row) => row['userType'],
     sortable: true,
     exportSelector: 'userType',
-    minWidth: '50px',
-    maxWidth: '140px',
+    minWidth: '140px',
   },
   {
     name: 'Enabled',
     selector: (row) => row['accountEnabled'],
-    cell: cellBooleanFormatter(),
+    cell: cellBooleanFormatter({ colourless: true }),
     sortable: true,
     exportSelector: 'accountEnabled',
-    minWidth: '50px',
-    maxWidth: '90px',
+    minWidth: '100px',
   },
   {
     name: 'AD Synced',
     selector: (row) => row['onPremisesSyncEnabled'],
-    cell: cellBooleanFormatter(),
+    cell: cellBooleanFormatter({ colourless: true }),
     sortable: true,
     exportSelector: 'onPremisesSyncEnabled',
-    minWidth: '50px',
-    maxWidth: '110px',
+    minWidth: '120px',
   },
   {
     name: 'Licenses',
@@ -179,6 +192,7 @@ const columns = [
     sortable: true,
     grow: 5,
     wrap: true,
+    minWidth: '200px',
   },
   {
     name: 'id',
@@ -196,6 +210,7 @@ const Users = () => {
   const titleButton = <TitleButton href="/identity/administration/users/add" title="Add User" />
   return (
     <CippPageList
+      capabilities={{ allTenants: false, helpContext: 'https://google.com' }}
       title="Users"
       titleButton={titleButton}
       datatable={{

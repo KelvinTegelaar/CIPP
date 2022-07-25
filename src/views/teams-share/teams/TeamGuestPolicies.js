@@ -4,6 +4,9 @@ import { faUserFriends } from '@fortawesome/free-solid-svg-icons'
 import { ListGroupContentCard } from 'src/components/contentcards'
 import { CellBoolean } from 'src/components/tables'
 
+const formatter = (cell, warning = false, reverse = false, colourless = false) =>
+  CellBoolean({ cell, warning, reverse, colourless })
+
 export default function TeamGuestPolicies({
   guestSettings,
   className = null,
@@ -14,11 +17,11 @@ export default function TeamGuestPolicies({
   const content = [
     {
       heading: 'Guests can create channels',
-      body: CellBoolean(guestSettings.allowCreateUpdateChannels),
+      body: formatter(guestSettings.allowCreateUpdateChannels, false, false, true),
     },
     {
       heading: 'Guests can delete channels',
-      body: CellBoolean(guestSettings.allowDeleteChannels),
+      body: formatter(guestSettings.allowDeleteChannels, false, false, true),
     },
   ]
 

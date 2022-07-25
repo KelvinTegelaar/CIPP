@@ -5,6 +5,7 @@ import { CButton } from '@coreui/react'
 import { faEye } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippOffcanvas } from 'src/components/utilities'
+import { CellTip } from 'src/components/tables'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const [ocVisible, setOCVisible] = useState(false)
@@ -33,12 +34,15 @@ const columns = [
     selector: (row) => row['DisplayName'],
     name: 'Role Name',
     sortable: true,
+    cell: (row) => CellTip(row['DisplayName']),
     exportSelector: 'DisplayName',
+    maxWidth: '350px',
   },
   {
     selector: (row) => row['Description'],
     name: 'Description',
     sortable: true,
+    cell: (row) => CellTip(row['Description'], true),
     wrap: true,
     exportSelector: 'Description',
   },
@@ -47,6 +51,7 @@ const columns = [
     name: 'Members',
     cell: Offcanvas,
     exportSelector: 'Members',
+    maxWidth: '80px',
   },
 ]
 

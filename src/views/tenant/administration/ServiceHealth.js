@@ -25,6 +25,7 @@ const columns = [
 const ServiceHealth = () => {
   return (
     <CippPageList
+      capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
       title="Service Health"
       tenantSelector={false}
       datatable={{
