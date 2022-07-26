@@ -16,39 +16,45 @@ import { Form } from 'react-final-form'
 import { RFFCFormInput, RFFCFormSelect } from 'src/components/forms'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch, faChevronRight, faChevronDown } from '@fortawesome/free-solid-svg-icons'
-import { CippDatatable } from 'src/components/tables'
+import { CippDatatable, cellDateFormatter, CellTip } from 'src/components/tables'
 import { useNavigate } from 'react-router-dom'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 
 const columns = [
   {
-    name: 'Date',
+    name: 'Date (UTC)',
     selector: (row) => row['DateTime'],
     sortable: true,
+    cell: cellDateFormatter(),
     exportSelector: 'DateTime',
+    minWidth: '145px',
   },
   {
     name: 'Tenant',
     selector: (row) => row['Tenant'],
     sortable: true,
+    cell: (row) => CellTip(row['Tenant']),
     exportSelector: 'Tenant',
   },
   {
     name: 'API',
     selector: (row) => row['API'],
     sortable: true,
+    cell: (row) => CellTip(row['API']),
     exportSelector: 'API',
   },
   {
     name: 'Message',
     selector: (row) => row['Message'],
     sortable: true,
+    cell: (row) => CellTip(row['Message']),
     exportSelector: 'Message',
   },
   {
     name: 'User',
     selector: (row) => row['User'],
     sortable: true,
+    cell: (row) => CellTip(row['User']),
     exportSelector: 'User',
   },
   {
