@@ -10,12 +10,6 @@ import {
   CForm,
   CRow,
   CSpinner,
-  CTable,
-  CTableBody,
-  CTableDataCell,
-  CTableHead,
-  CTableHeaderCell,
-  CTableRow,
 } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
@@ -31,6 +25,7 @@ import { Form } from 'react-final-form'
 import { RFFSelectSearch } from 'src/components/forms'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { useListUsersQuery } from 'src/store/api/users'
+import { CippTable } from 'src/components/tables'
 
 const EditGroup = () => {
   const dispatch = useDispatch()
@@ -65,8 +60,27 @@ const EditGroup = () => {
     isFetching: usersIsFetching,
     error: usersError,
   } = useListUsersQuery({ tenantDomain })
+  const [roleInfo, setroleInfo] = React.useState([])
+  useEffect(() => {
+    if (ownersIsSuccess && membersIsSuccess) {
+      const ownerWithRole = owners.map((owner) => {
+        return {
+          displayName: owner.displayName,
+          mail: owner.mail,
+          role: 'owner',
+        }
+      })
+      const memberwithRole = members.map((owner) => {
+        return {
+          displayName: owner.displayName,
+          mail: owner.mail,
+          role: 'member',
+        }
+      })
+      setroleInfo(ownerWithRole.concat(memberwithRole))
+    }
+  }, [owners, members, ownersIsSuccess, membersIsSuccess])
 
-  // console.log(members.isSuccess)
   useEffect(() => {
     if (!groupId || !tenantDomain) {
       ModalService.open({
@@ -81,14 +95,35 @@ const EditGroup = () => {
     const shippedValues = {
       tenantID: tenantDomain,
       GroupID: groupId,
-      AddMember: values.AddMembers ? values.AddMembers.value : '',
-      AddOwner: values.AddOwners ? values.AddOwners.value : '',
-      RemoveMember: values.RemoveMembers ? values.RemoveMembers.value : '',
-      RemoveOwner: values.RemoveOwners ? values.RemoveOwners.value : '',
+      groupType: group[0].calculatedGroupType,
+      AddMember: values.AddMembers ? values.AddMembers : '',
+      AddOwner: values.AddOwners ? values.AddOwners : '',
+      RemoveMember: values.RemoveMembers ? values.RemoveMembers : '',
+      RemoveOwner: values.RemoveOwners ? values.RemoveOwners : '',
     }
     //window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/EditGroup', values: shippedValues })
   }
+  const tableColumns = [
+    {
+      name: 'Display Name',
+      selector: (row) => row['displayName'],
+      sortable: true,
+      exportSelector: 'displayName',
+    },
+    {
+      name: 'Mail',
+      selector: (row) => row['mail'],
+      sortable: true,
+      exportSelector: 'mail',
+    },
+    {
+      name: 'Role',
+      selector: (row) => row['role'],
+      sortable: true,
+      exportSelector: 'role',
+    },
+  ]
   return (
     <>
       {!queryError && (
@@ -111,6 +146,7 @@ const EditGroup = () => {
                             <CRow>
                               <CCol md={12}>
                                 <RFFSelectSearch
+                                  multi={true}
                                   label="Add User"
                                   values={users?.map((user) => ({
                                     value: user.userPrincipalName,
@@ -125,6 +161,7 @@ const EditGroup = () => {
                             <CRow>
                               <CCol md={12}>
                                 <RFFSelectSearch
+                                  multi={true}
                                   label="Remove User"
                                   values={users?.map((user) => ({
                                     value: user.userPrincipalName,
@@ -139,6 +176,7 @@ const EditGroup = () => {
                             <CRow>
                               <CCol md={12}>
                                 <RFFSelectSearch
+                                  multi={true}
                                   label="Add Owner"
                                   values={users?.map((user) => ({
                                     value: user.userPrincipalName,
@@ -153,6 +191,7 @@ const EditGroup = () => {
                             <CRow className="mb-3">
                               <CCol md={12}>
                                 <RFFSelectSearch
+                                  multi={true}
                                   label="Remove Owner"
                                   values={users?.map((user) => ({
                                     value: user.userPrincipalName,
@@ -180,7 +219,11 @@ const EditGroup = () => {
                               </CCol>
                             </CRow>
                             {postResults.isSuccess && (
-                              <CCallout color="success">{postResults.data.Results}</CCallout>
+                              <CCallout color="success">
+                                {postResults.data.Results.map((result, idx) => (
+                                  <li key={idx}>{result}</li>
+                                ))}
+                              </CCallout>
                             )}
                             {/*<CRow>*/}
                             {/* <CCol>*/}
@@ -204,35 +247,13 @@ const EditGroup = () => {
                   {(membersisFetching || ownersisFetching) && <CSpinner />}
                   {membersError && <span>Error loading members</span>}
                   {ownersError && <span>Error loading owners</span>}
-
-                  {membersIsSuccess && ownersIsSuccess && (
+                  {membersIsSuccess && ownersIsSuccess && isSuccess && (
                     <>
-                      These are the current members;
-                      <CTable>
-                        <CTableHead>
-                          <CTableRow>
-                            <CTableHeaderCell scope="col">Name</CTableHeaderCell>
-                            <CTableHeaderCell scope="col">Mail</CTableHeaderCell>
-                            <CTableHeaderCell scope="col">Role</CTableHeaderCell>
-                          </CTableRow>
-                        </CTableHead>
-                        <CTableBody>
-                          {owners.map((owner) => (
-                            <CTableRow key={owner.displayName}>
-                              <CTableDataCell>{owner.displayName}</CTableDataCell>
-                              <CTableDataCell>{owner.mail}</CTableDataCell>
-                              <CTableDataCell>Owner</CTableDataCell>
-                            </CTableRow>
-                          ))}
-                          {members.map((member) => (
-                            <CTableRow key={member.displayName}>
-                              <CTableDataCell>{member.displayName}</CTableDataCell>
-                              <CTableDataCell>{member.mail}</CTableDataCell>
-                              <CTableDataCell>Member</CTableDataCell>
-                            </CTableRow>
-                          ))}
-                        </CTableBody>
-                      </CTable>
+                      <CippTable
+                        reportName={`Group Membership - ${group[0].displayName}`}
+                        data={roleInfo}
+                        columns={tableColumns}
+                      />
                     </>
                   )}
                 </CCardBody>

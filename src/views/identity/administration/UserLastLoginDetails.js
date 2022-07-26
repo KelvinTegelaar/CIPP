@@ -9,7 +9,7 @@ export default function UserLastLoginDetails({ tenantDomain, userId, className =
 
   const content = [
     {
-      heading: 'Last Sign in Date',
+      heading: 'Last Sign in Date (UTC)',
       body: user.LastSigninDate,
     },
     {

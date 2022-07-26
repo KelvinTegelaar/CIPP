@@ -1,19 +1,22 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
-import { cellDateFormatter } from 'src/components/tables'
+import { CellTip, cellDateFormatter } from 'src/components/tables'
 import { StatusIcon } from 'src/components/utilities'
 const columns = [
   {
     name: 'Tenant',
     selector: (row) => row['tenantDisplayName'],
     sortable: true,
+    cell: (row) => CellTip(row['tenantDisplayName']),
     exportSelector: 'tenantDisplayName',
+    minWidth: '200px',
   },
   {
     name: 'Device Name',
     selector: (row) => row['managedDeviceName'],
     sortable: true,
+    cell: (row) => CellTip(row['managedDeviceName']),
     exportSelector: 'managedDeviceName',
   },
   {
@@ -48,20 +51,23 @@ const columns = [
     name: 'Manufacturer',
     selector: (row) => row['manufacturer'],
     sortable: true,
+    cell: (row) => CellTip(row['manufacturer']),
     exportSelector: 'manufacturer',
   },
   {
     name: 'Model',
     selector: (row) => row['model'],
     sortable: true,
+    cell: (row) => CellTip(row['model']),
     exportSelector: 'model',
   },
   {
-    name: 'Last Sync',
+    name: 'Last Sync (Local)',
     selector: (row) => row['lastSyncDateTime'],
     sortable: true,
     cell: cellDateFormatter(),
     exportSelector: 'lastSyncDateTime',
+    minWidth: '155px',
   },
 ]
 

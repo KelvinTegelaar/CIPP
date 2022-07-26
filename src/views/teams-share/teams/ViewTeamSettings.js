@@ -71,10 +71,10 @@ const ViewTeamSettings = (props) => {
               funSettings={funSettings}
             />
           </CippMasonryItem>
-          <CippMasonryItem size="single">
+          <CippMasonryItem size="double">
             <TeamOwners data={owners} />
           </CippMasonryItem>
-          <CippMasonryItem size="single">
+          <CippMasonryItem size="triple">
             <TeamMembers data={members} />
           </CippMasonryItem>
           <CippMasonryItem size="triple">
