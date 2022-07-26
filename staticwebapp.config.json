@@ -75,6 +75,10 @@
       "allowedRoles": ["admin", "editor", "readonly", "reader", "authenticated", "anonymous"]
     },
     {
+      "route": "/api/Public*",
+      "allowedRoles": ["admin", "editor", "readonly", "reader", "authenticated", "anonymous"]
+    },
+    {
       "route": "*",
       "allowedRoles": ["admin", "editor", "readonly", "reader"]
     }
