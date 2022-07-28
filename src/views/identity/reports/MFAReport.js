@@ -15,7 +15,7 @@ const columns = [
     selector: (row) => row['AccountEnabled'],
     name: 'Account Enabled',
     sortable: true,
-    cell: cellBooleanFormatter(),
+    cell: cellBooleanFormatter({ colourless: true }),
     exportSelector: 'AccountEnabled',
   },
   {
@@ -41,7 +41,7 @@ const columns = [
     selector: (row) => row['CoveredBySD'],
     name: 'Enforced via Security Defaults',
     sortable: true,
-    cell: cellBooleanFormatter(),
+    cell: cellBooleanFormatter({ colourless: true }),
     exportSelector: 'CoveredBySD',
   },
 ]
@@ -54,12 +54,7 @@ const conditionalRowStyles = [
       !row.MFARegistration &&
       row.CoveredByCA === 'None' &&
       !row.CoveredBySD,
-    style: {
-      //backgroundColor: 'var(--cui-danger)',
-      //border: '2px solid var(--cui-warning)',
-      //color: 'var(--cui-warning)',
-    },
-    classNames: ['no-mfa'],
+    //classNames: ['no-mfa'], <- Currently not working
   },
 ]
 

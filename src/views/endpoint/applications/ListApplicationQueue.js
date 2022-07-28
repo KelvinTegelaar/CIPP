@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPageList } from 'src/components/layout'
 import { ModalService } from 'src/components/utilities'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
+import { CellTip } from 'src/components/tables'
 
 const RefreshAction = () => {
   const [execStandards, execStandardsResults] = useLazyGenericGetRequestQuery()
@@ -72,24 +73,30 @@ const ListApplicationQueue = () => {
       name: 'Tenant',
       selector: (row) => row['tenantName'],
       sortable: true,
+      cell: (row) => CellTip(row['tenantName']),
       exportSelector: 'tenantName',
+      minWidth: '200px',
     },
     {
       name: 'Application Name',
       selector: (row) => row['applicationName'],
       sortable: true,
+      cell: (row) => CellTip(row['applicationName']),
       exportSelector: 'applicationName',
+      minWidth: '200px',
     },
     {
       name: 'Install command',
       selector: (row) => row['cmdLine'],
       sortable: true,
+      cell: (row) => CellTip(row['cmdLine']),
       exportSelector: 'cmdLine',
     },
     {
       name: 'Assign To',
       selector: (row) => row['assignTo'],
       sortable: true,
+      cell: (row) => CellTip(row['assignTo']),
       exportSelector: 'assignTo',
     },
     {

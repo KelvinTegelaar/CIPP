@@ -57,7 +57,7 @@ const ListAppliedStandards = React.lazy(() =>
   import('src/views/tenant/standards/ListAppliedStandards'),
 )
 const IndividualDomain = React.lazy(() => import('src/views/tenant/standards/IndividualDomain'))
-const ListAlerts = React.lazy(() => import('src/views/security/reports/ListAlerts'))
+const ListAlerts = React.lazy(() => import('src/views/security/incidents/ListAlerts'))
 const ApplicationsList = React.lazy(() =>
   import('src/views/endpoint/applications/ApplicationsList'),
 )
@@ -69,6 +69,9 @@ const ApplicationsAddChocoApp = React.lazy(() =>
 )
 const ApplicationsAddOfficeApp = React.lazy(() =>
   import('src/views/endpoint/applications/ApplicationsAddOffice'),
+)
+const ApplicationsAddRMMApp = React.lazy(() =>
+  import('src/views/endpoint/applications/ApplicationsAddRMM'),
 )
 const AutopilotAddDevice = React.lazy(() =>
   import('src/views/endpoint/autopilot/AutopilotAddDevice'),
@@ -102,7 +105,7 @@ const MEMAddPolicyTemplate = React.lazy(() => import('src/views/endpoint/MEM/MEM
 const IntuneListPolicyTemplate = React.lazy(() =>
   import('src/views/endpoint/MEM/MEMListPolicyTemplates'),
 )
-const ListDefender = React.lazy(() => import('src/views/endpoint/defender/ListDefender'))
+const ListDefender = React.lazy(() => import('src/views/security/defender/ListDefender'))
 const OneDriveList = React.lazy(() => import('src/views/teams-share/onedrive/OneDriveList'))
 const SharepointList = React.lazy(() => import('src/views/teams-share/sharepoint/SharepointList'))
 const BusinessVoice = React.lazy(() => import('src/views/teams-share/teams/BusinessVoice'))
@@ -129,6 +132,9 @@ const ViewMobileDevices = React.lazy(() =>
 const MailboxesList = React.lazy(() =>
   import('src/views/email-exchange/administration/MailboxesList'),
 )
+const QuarantineList = React.lazy(() =>
+  import('src/views/email-exchange/administration/QuarantineList'),
+)
 const MailboxClientAccessSettingsList = React.lazy(() =>
   import('src/views/email-exchange/reports/MailboxClientAccessSettingsList'),
 )
@@ -151,7 +157,10 @@ const AddTransportTemplate = React.lazy(() =>
 const TransportDeploy = React.lazy(() =>
   import('src/views/email-exchange/transport/DeployTransport'),
 )
-const SecurityComplianceAlerts = React.lazy(() => import('src/views/security/reports/ListAlerts'))
+const SecurityComplianceAlerts = React.lazy(() => import('src/views/security/incidents/ListAlerts'))
+const SecurityComplianceIncidents = React.lazy(() =>
+  import('src/views/security/incidents/ListIncidents'),
+)
 const License = React.lazy(() => import('src/views/pages/license/License'))
 const ServiceHealth = React.lazy(() => import('src/views/tenant/administration/ServiceHealth'))
 
@@ -282,6 +291,11 @@ const routes = [
     name: 'Add Office App',
     component: ApplicationsAddOfficeApp,
   },
+  {
+    path: '/endpoint/applications/add-rmm-app',
+    name: 'Add RMM App',
+    component: ApplicationsAddRMMApp,
+  },
   { path: '/endpoint/autopilot', name: 'Autopilot' },
   { path: '/endpoint/autopilot/add-device', name: 'Add Device', component: AutopilotAddDevice },
   { path: '/endpoint/autopilot/add-profile', name: 'Add Profile', component: AutopilotAddProfile },
@@ -330,8 +344,8 @@ const routes = [
     name: 'List Intune Policy Template',
     component: IntuneListPolicyTemplate,
   },
-  { path: '/endpoint/defender', name: 'Defender' },
-  { path: '/endpoint/defender/list-defender', name: 'List Defender', component: ListDefender },
+  { path: '/security/defender', name: 'Defender' },
+  { path: '/security/defender/list-defender', name: 'List Defender', component: ListDefender },
   { path: '/teams-share', name: 'Teams & Sharepoint' },
   { path: '/teams-share/onedrive', name: 'OneDrive' },
   { path: '/teams-share/onedrive/list', name: 'List OneDrive', component: OneDriveList },
@@ -395,6 +409,12 @@ const routes = [
   },
   { name: 'Edit Contact', path: '/email/administration/edit-contact', component: EditContact },
   { name: 'List Mailboxes', path: '/email/administration/mailboxes', component: MailboxesList },
+  {
+    name: 'List Quarantine',
+    path: '/email/administration/Quarantine',
+    component: QuarantineList,
+  },
+
   { name: 'Email Reports', path: '/email/reports' },
   {
     name: 'Mailbox Statistics',
@@ -417,8 +437,13 @@ const routes = [
   { name: 'Security Reports', path: '/security/reports' },
   {
     name: 'List Alerts',
-    path: '/security/reports/list-alerts',
+    path: '/security/incidents/list-alerts',
     component: SecurityComplianceAlerts,
+  },
+  {
+    name: 'List Incidents',
+    path: '/security/incidents/list-incidents',
+    component: SecurityComplianceIncidents,
   },
   {
     name: 'List Device Compliance Report',
