@@ -5,6 +5,7 @@ import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
 import { CippActionsOffcanvas } from 'src/components/utilities'
+import { CellTip } from 'src/components/tables'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -73,6 +74,7 @@ const columns = [
     selector: (row) => row['Name'],
     sortable: true,
     wrap: true,
+    cell: (row) => CellTip(row['Name']),
     exportSelector: 'Name',
   },
   {
@@ -106,6 +108,7 @@ const columns = [
   {
     name: 'Actions',
     cell: Offcanvas,
+    maxWidth: '80px',
   },
 ]
 
