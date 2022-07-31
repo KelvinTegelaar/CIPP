@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPageList } from 'src/components/layout'
 import { faEllipsisV, faGlobeEurope, faPager, faUser } from '@fortawesome/free-solid-svg-icons'
 import { CippActionsOffcanvas } from 'src/components/utilities'
+import { CellTip } from 'src/components/tables'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -23,17 +24,26 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
       <CippActionsOffcanvas
         title="App information"
         extendedInfo={[
-          { label: 'Install as', value: `${row.installExperience.runAsAccount}` },
-          { label: 'Restart behaviour', value: `${row.installExperience.deviceRestartBehavior}` },
+          { label: 'Install as', value: `${row.installExperience?.runAsAccount}` },
+          { label: 'Restart behaviour', value: `${row.installExperience?.deviceRestartBehavior}` },
           { label: 'Assigned to groups', value: `${row.isAssigned}` },
           { label: 'Created at', value: `${row.createdDateTime}` },
           { label: 'Modified at', value: `${row.lastModifiedDateTime}` },
           { label: 'Featured App', value: `${row.isFeatured}` },
           { label: 'Publishing State', value: `${row.publishingState}` },
           { label: '# of Dependent Apps', value: `${row.dependentAppCount}` },
-          { label: 'Detection Type', value: `${row.rules[0].ruleType}` },
-          { label: 'Detection File/Folder Name', value: `${row.rules[0].fileOrFolderName}` },
-          { label: 'Detection File/Folder Path', value: `${row.rules[0].path}` },
+          {
+            label: 'Detection Type',
+            value: row.rules ? row.rules[0].ruleType : 'No detection rule',
+          },
+          {
+            label: 'Detection File/Folder Name',
+            value: row.rules ? row.rules[0].fileOrFolderName : 'No detection rule',
+          },
+          {
+            label: 'Detection File/Folder Path',
+            value: row.rules ? row.rules[0].path : 'No detection rule',
+          },
         ]}
         actions={[
           {
@@ -81,7 +91,9 @@ const columns = [
     selector: (row) => row.displayName,
     name: 'Name',
     sortable: true,
+    cell: (row) => CellTip(row.displayName),
     exportSelector: 'displayName',
+    minWidth: '350px',
   },
   {
     selector: (row) => row.publishingState,
@@ -93,12 +105,14 @@ const columns = [
     selector: (row) => row.installCommandLine,
     name: 'Install Command',
     sortable: true,
+    cell: (row) => CellTip(row.installCommandLine),
     exportSelector: 'installCommandLine',
   },
   {
     selector: (row) => row.uninstallCommandLine,
     name: 'Uninstall Command',
     sortable: true,
+    cell: (row) => CellTip(row.uninstallCommandLine),
     exportSelector: 'uninstallCommandLine',
   },
   {

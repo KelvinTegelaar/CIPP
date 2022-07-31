@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { CippCodeBlock, CippOffcanvas } from 'src/components/utilities'
-import { CippDatatable } from 'src/components/tables'
+import { CippDatatable, CellTip } from 'src/components/tables'
 import {
   CCardBody,
   CButton,
@@ -69,23 +69,27 @@ const TransportListTemplates = () => {
       name: 'Display Name',
       selector: (row) => row['name'],
       sortable: true,
+      cell: (row) => CellTip(row['name']),
       exportSelector: 'name',
     },
     {
-      name: 'Description',
-      selector: (row) => row['Description'],
+      name: 'Comments',
+      selector: (row) => row['comments'],
       sortable: true,
-      exportSelector: 'Description',
+      cell: (row) => CellTip(row['comments']),
+      exportSelector: 'Comments',
     },
     {
       name: 'GUID',
       selector: (row) => row['GUID'],
       sortable: true,
+      cell: (row) => CellTip(row['GUID']),
       exportSelector: 'GUID',
     },
     {
       name: 'Actions',
       cell: Offcanvas,
+      maxWidth: '80px',
     },
   ]
 
