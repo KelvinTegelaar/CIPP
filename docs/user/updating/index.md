@@ -18,8 +18,8 @@ Note that if you receive a workflow error, check the [Troubleshooting page for p
 :::
 
 - Go to your own CIPP fork on GitHub
-- Select Fetch Upstream
-- Select Fetch and Merge
+- Select Sync fork
+- Select Update branch
 
 ## Backend
 
@@ -28,8 +28,8 @@ To update the backend, you must manually fetch from GitHub and update the Azure 
 :::
 
 - Go to your CIPP-API fork on GitHub
-- Select Fetch Upstream
-- Select Fetch and Merge
+- Select Sync fork
+- Select Update branch
 - Go to the Azure Portal
 - Go to your CIPP resource group
 - Select the Azure Function App
