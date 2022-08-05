@@ -4,6 +4,9 @@ import { faUsers } from '@fortawesome/free-solid-svg-icons'
 import { ListGroupContentCard } from 'src/components/contentcards'
 import { CellBoolean } from 'src/components/tables'
 
+const formatter = (cell, warning = false, reverse = false, colourless = false) =>
+  CellBoolean({ cell, warning, reverse, colourless })
+
 export default function TeamDetails({ team, className = null, isFetching, error, errorMessage }) {
   const content = [
     {
@@ -16,10 +19,10 @@ export default function TeamDetails({ team, className = null, isFetching, error,
     },
     {
       heading: 'Archived',
-      body: CellBoolean(team.isArchived),
+      body: formatter(team['isArchived'], false, false, true),
     },
     {
-      heading: 'Created',
+      heading: 'Created (UTC)',
       body: team.createdDateTime,
     },
     {

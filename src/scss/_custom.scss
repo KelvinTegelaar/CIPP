@@ -567,3 +567,22 @@
 .select-width {
   min-width: 100%;
 }
+
+.mr-15 {
+  margin-right: 15px;
+}
+
+.no-colour {
+
+  .text-success {
+    color: var(--cui-body-color) !important;
+  }
+
+  .text-danger {
+    color: var(--cui-body-color) !important;
+  }
+}
+
+.teams-wide-card {
+  width: 500px;
+}

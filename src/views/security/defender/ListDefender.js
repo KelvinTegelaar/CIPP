@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { cellBooleanFormatter } from 'src/components/tables'
+import { CellTip, cellBooleanFormatter } from 'src/components/tables'
 import { CippPageList } from 'src/components/layout'
 
 const columns = [
@@ -8,6 +8,7 @@ const columns = [
     selector: (row) => row['managedDeviceName'],
     name: 'Device Name',
     sortable: true,
+    cell: (row) => CellTip(row['managedDeviceName']),
     exportSelector: 'managedDeviceName',
   },
   {
@@ -41,34 +42,34 @@ const columns = [
     selector: (row) => row['quickScanOverdue'],
     name: 'Quick Scan overdue',
     sortable: true,
-    cell: cellBooleanFormatter(),
+    cell: cellBooleanFormatter({ warning: true, reverse: true, colourless: true }),
     exportSelector: 'quickScanOverdue',
   },
   {
     selector: (row) => row['fullScanOverdue'],
     name: 'Full Scan overdue',
     sortable: true,
-    cell: cellBooleanFormatter(),
+    cell: cellBooleanFormatter({ warning: true, reverse: true, colourless: true }),
     exportSelector: 'fullScanOverdue',
   },
   {
     selector: (row) => row['signatureUpdateOverdue'],
     name: 'Signature Update Required',
     sortable: true,
-    cell: cellBooleanFormatter(),
+    cell: cellBooleanFormatter({ warning: true, reverse: true, colourless: true }),
     exportSelector: 'signatureUpdateOverdue',
   },
   {
     selector: (row) => row['rebootRequired'],
     name: 'Reboot Required',
-    cell: cellBooleanFormatter(),
+    cell: cellBooleanFormatter({ warning: true, reverse: true, colourless: true }),
     sortable: true,
     exportSelector: 'rebootRequired',
   },
   {
     selector: (row) => row['attentionRequired'],
     name: 'Attention Required',
-    cell: cellBooleanFormatter(),
+    cell: cellBooleanFormatter({ warning: true, reverse: true, colourless: true }),
     sortable: true,
     exportSelector: 'attentionRequired',
   },
