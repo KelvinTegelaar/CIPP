@@ -169,6 +169,7 @@ const sidebars = {
             'usingcipp/settings/settings',
             'usingcipp/settings/backendaccess',
             'usingcipp/settings/notifications',
+            'usingcipp/settings/maintenance',
           ],
         },
       ],
