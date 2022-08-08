@@ -515,7 +515,8 @@
     line-height: 1;
 
     position: relative;
-    overflow: hidden;
+    /*MAT Testing 2*/
+    overflow: auto;
     z-index: 1; /* Necessary for overflow: hidden to work correctly in Safari */
   }
 
