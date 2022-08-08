@@ -39,7 +39,7 @@ If you want to self-host, check out the installation manual [here](https://cipp.
 
 I'm kind of done waiting for vendors to catch up to what we actually need. All RMM vendors are dramaticaly slow adopting cloud management. Microsoft themselves don't understand the Managed services markets, there are vendors that have tried jumping into the gap but either have unreasonable fees, weird constructions, require Global Admins without MFA, or just don't innovate at a pace that is required of cloud services right now.
 
-I'm also annoyed the untransparant behaviour that many companies in our market are showing. Most are claiming that working with the Microsoft Partner APIs is difficult, and requires a very heavy development team. I'm a guy that had no webdesign knowledge before this and created the first release of this app in 3 weekends. Vendors that claim high difficulty or issues with integration are simply not giving this _any_ priority.
+I'm also annoyed the untransparent behaviour that many companies in our market are showing. Most are claiming that working with the Microsoft Partner APIs is difficult, and requires a very heavy development team. I'm a guy that had no webdesign knowledge before this and created the first release of this app in 3 weekends. Vendors that claim high difficulty or issues with integration are simply not giving this _any_ priority.
 
 I was recently on a call with one of my friends and he said he was changing the world. That insipred me to change the world just a little bit too. :) I'm hoping that this is one of the tools that make you smile.
 
@@ -100,16 +100,16 @@ The current build functionality is described below, also check out our Changelog
   - Remove user from all groups
   - Hide user from address list
   - Set Out of Office
-  - Give other user access to mailbox, and Onedrive
+  - Give other user access to mailbox, and OneDrive
 
 ## Tenants
 
 - Manage M365 tenants
   - List all tenants and quick-links to the most user portals using delegated access.
-  - Edit Parter tenant names and default domain for your CSP partner environment
+  - Edit Partner tenant names and default domain for your CSP partner environment
   - List tenant conditional access policies
   - Apply standard configuration to tenant on a repeat schedule.
-  - Execute a best practice analyses daily and report on best practice settings
+  - Execute a best practice analysis daily and report on best practice settings
   - Analyse current domains, and domains outside of M365 for optimal security settings
   - List alerts for tenants
 
@@ -125,15 +125,15 @@ The current build functionality is described below, also check out our Changelog
 - Autopilot
   - Manage and create autopilot devices, profiles, status pages.
 - Intune
-  - List intune policies
+  - List Intune policies
   - Apply Intune Policies
   - Add Intune Policy Templates to deploy over multiple tenants
 
-## Teams & Sharepoint
+## Teams & SharePoint
 
-- List Onedrive, Teams, and Sharepoint usage
-- View current teams, installed applications, team owners, members, and channels
-- Add and edit teams, members, owners and apps.
+- List OneDrive, Teams, and SharePoint usage
+- View current Teams, installed applications, Team owners, members, and channels
+- Add and edit Teams, members, owners and apps.
 - Tenant Alerting
 
 ## Exchange
@@ -141,15 +141,15 @@ The current build functionality is described below, also check out our Changelog
 - View mailboxes and contacts
 - View user mobile devices
 - Convert mailboxes to shared or user mailboxes
-- Report mailbox statistics, client acces settings
+- Report mailbox statistics, client access settings
 - Perform message traces
-- change and view phishing policies.
+- Change and view phishing policies.
 
 ## Application settings
 
-- Use multiple user levels(readonly, editor, admin) to manage access
-- allow excluding of tenants
-- send automated alert emails to webhook or e-mail
+- Use multiple user levels (readonly, editor, admin) to manage access
+- Allow excluding of tenants
+- Send automated alert emails to webhook or e-mail
 
 # Security
 
