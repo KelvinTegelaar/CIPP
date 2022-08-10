@@ -5,54 +5,55 @@ import { CellBoolean } from 'src/components/tables'
 import { useListMailboxDetailsQuery } from 'src/store/api/mailbox'
 import { ListGroupContentCard } from 'src/components/contentcards'
 
-const formatter = (cell) => CellBoolean({ cell })
+const formatter = (cell, warning = false, reverse = false, colourless = false) =>
+  CellBoolean({ cell, warning, reverse, colourless })
 
 export default function UserEmailSettings({ userId, tenantDomain, className = null }) {
   const { data: details, isFetching, error } = useListMailboxDetailsQuery({ userId, tenantDomain })
   const content = [
     {
       heading: 'User Not Restricted',
-      body: formatter(details?.BlockedForSpam),
+      body: formatter(details?.BlockedForSpam, false, true),
     },
     {
       heading: 'Litigation Hold',
-      body: formatter(details?.LitiationHold),
+      body: formatter(details?.LitiationHold, false, false, true),
     },
     {
       heading: 'Hidden from Address Lists',
-      body: formatter(details?.HiddenFromAddressLists),
+      body: formatter(details?.HiddenFromAddressLists, false, false, true),
     },
     {
       heading: 'EWS Enabled',
-      body: formatter(details?.EWSEnabled),
+      body: formatter(details?.EWSEnabled, false, false, true),
     },
     {
       heading: 'MAPI Enabled',
-      body: formatter(details?.MailboxMAPIEnabled),
+      body: formatter(details?.MailboxMAPIEnabled, false, false, true),
     },
     {
       heading: 'OWA Enabled',
-      body: formatter(details?.MailboxOWAEnabled),
+      body: formatter(details?.MailboxOWAEnabled, false, false, true),
     },
     {
       heading: 'IMAP Enabled',
-      body: formatter(details?.MailboxImapEnabled),
+      body: formatter(details?.MailboxImapEnabled, false, false, true),
     },
     {
       heading: 'POP Enabled',
-      body: formatter(details?.MailboxPopEnabled),
+      body: formatter(details?.MailboxPopEnabled, false, false, true),
     },
     {
       heading: 'Active Sync Enabled',
-      body: formatter(details?.MailboxActiveSyncEnabled),
+      body: formatter(details?.MailboxActiveSyncEnabled, false, false, true),
     },
     {
       heading: 'Forward and Deliver',
-      body: formatter(details?.ForwardAndDeliver),
+      body: formatter(details?.ForwardAndDeliver, false, false, true),
     },
     {
       heading: 'Forwarding Address',
-      body: formatter(details?.ForwardingAddress),
+      body: formatter(details?.ForwardingAddress, false, false, true),
     },
   ]
   return (
