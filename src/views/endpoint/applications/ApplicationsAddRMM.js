@@ -110,6 +110,7 @@ const AddRMM = () => {
                   { value: 'immy', name: 'ImmyBot' },
                   { value: 'huntress', name: 'Huntress' },
                   { value: 'automate', name: 'CW Automate' },
+                  { value: 'cwcommand', name: 'CW Command' },
                 ]}
                 name="rmmname"
                 label="Select MSP Tool"
@@ -272,6 +273,17 @@ const AddRMM = () => {
                         </CCol>
                       ))}
                     </CRow>
+                  </Condition>
+                  <Condition when="rmmname.value" is={'cwcommand'}>
+                    {props.values.selectedTenants.map((item, index) => (
+                      <CCol md={6} key={index}>
+                        <RFFCFormInput
+                          type="text"
+                          name={`params.ClientURL.${item.customerId}`}
+                          label={`Client URL ${item.defaultDomainName}`}
+                        />
+                      </CCol>
+                    ))}
                   </Condition>
                 </>
               )

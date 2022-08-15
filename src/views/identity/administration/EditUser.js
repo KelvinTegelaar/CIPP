@@ -317,7 +317,7 @@ const EditUser = () => {
                             <CCol md={6}>
                               <RFFCFormInput
                                 name="city"
-                                label="city"
+                                label="City"
                                 type="text"
                                 disabled={formDisabled}
                               />
