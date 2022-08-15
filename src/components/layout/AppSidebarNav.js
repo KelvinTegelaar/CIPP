@@ -3,6 +3,7 @@ import { NavLink as BaseNavLink, useLocation } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 import { CBadge } from '@coreui/react'
+import { abortRequestSafe } from 'src/store/api/baseQuery'
 
 const NavLink = React.forwardRef(({ activeClassName, activeStyle, ...props }, ref) => {
   return (
@@ -50,6 +51,7 @@ export const AppSidebarNav = ({ items }) => {
     const navItemKey = `${item.name.toLowerCase().replace(' ', '-')}_${index}`
     return (
       <Component
+        onClick={() => abortRequestSafe('default', 'Route Change')}
         {...(rest.to &&
           !rest.items && {
             component: NavLink,

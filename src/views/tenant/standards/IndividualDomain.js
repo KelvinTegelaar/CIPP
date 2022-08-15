@@ -22,7 +22,6 @@ import {
   CNav,
   CNavItem,
   CNavLink,
-  CSpinner,
   CTabContent,
   CTabPane,
   CTableDataCell,
@@ -52,6 +51,7 @@ import {
   faGlobe,
   faQuestionCircle,
 } from '@fortawesome/free-solid-svg-icons'
+import Skeleton from 'react-loading-skeleton'
 
 const IconGreenCheck = () => <FontAwesomeIcon icon={faCheckCircle} className="text-success mx-2" />
 const IconRedX = () => <FontAwesomeIcon icon={faTimesCircle} className="text-danger mx-2" />
@@ -450,6 +450,24 @@ function ResultsCard({
     finalState = 'Fail'
   }
 
+  var docLink = ''
+  if (providerInfo) {
+    switch (type) {
+      case 'SPF':
+        docLink = providerInfo._SpfComment
+        break
+      case 'DKIM':
+        docLink = providerInfo._DkimComment
+        break
+      case 'MX':
+        docLink = providerInfo._MxComment
+        break
+      default:
+        docLink = ''
+        break
+    }
+  }
+
   return (
     <>
       <CCard className="content-card">
@@ -461,11 +479,7 @@ function ResultsCard({
           <span>
             {providerInfo && (
               <CTooltip content={`${providerInfo.Name} ${type} documentation`}>
-                <CLink
-                  className="mx-2 card-header-link"
-                  href={providerInfo._MxComment}
-                  target="_blank"
-                >
+                <CLink className="mx-2 card-header-link" href={docLink} target="_blank">
                   <FontAwesomeIcon icon={faQuestionCircle} className="me-2" />
                 </CLink>
               </CTooltip>
@@ -477,7 +491,7 @@ function ResultsCard({
           </span>
         </CCardHeader>
         <CCardBody>
-          {isFetching && <CSpinner />}
+          {isFetching && <Skeleton count={5} />}
           {!isFetching && error && <>{errorMessage}</>}
           {!isFetching && !error && (
             <>
@@ -695,7 +709,7 @@ function WhoisResultCard({ domain }) {
         </CLink>
       </CCardHeader>
       <CCardBody>
-        {isFetching && <CSpinner />}
+        {isFetching && <Skeleton count={5} />}
         {!isFetching && error && <>Unable to obtain WHOIS information</>}
         {!isFetching && !error && (
           <>

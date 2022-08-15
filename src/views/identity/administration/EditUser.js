@@ -108,9 +108,9 @@ const EditUser = () => {
 
   const initialState = {
     keepLicenses: true,
+    ...user,
     usageLocation: usageLocation,
     license: precheckedLicenses,
-    ...user,
   }
   console.log(precheckedLicenses)
 
@@ -317,7 +317,7 @@ const EditUser = () => {
                             <CCol md={6}>
                               <RFFCFormInput
                                 name="city"
-                                label="city"
+                                label="City"
                                 type="text"
                                 disabled={formDisabled}
                               />
