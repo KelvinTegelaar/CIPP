@@ -73,18 +73,11 @@ const columns = [
 ]
 
 export default function UserGroups({ userId, tenantDomain, className = null }) {
-  const { data: list = [], isFetching, error } = useListUserGroupsQuery({ userId, tenantDomain })
-
-  // inject tenantDomain into list for formatter
-  const mapped = list.map((val) => ({ ...val, tenantDomain }))
-
   return (
     <DatatableContentCard
       title="User Groups"
       icon={faUsers}
       className={className}
-      isFetching={isFetching}
-      error={error}
       datatable={{
         reportName: 'ListUserGroups',
         path: '/api/ListUserGroups',
@@ -94,7 +87,6 @@ export default function UserGroups({ userId, tenantDomain, className = null }) {
         responsive: true,
         dense: true,
         striped: true,
-        data: mapped,
       }}
     />
   )
