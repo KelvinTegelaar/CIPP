@@ -79,18 +79,6 @@ const ListIncidents = () => {
 
     let attributedComments = []
 
-    row['Comments'].forEach((element) => {
-      attributedComments.push(
-        new Intl.DateTimeFormat(...dateTimeArgs)
-          .format(moment(element['createdDateTime']).toDate())
-          .toString() +
-          ' - ' +
-          element['createdByDisplayName'] +
-          ' - ' +
-          element['comment'] +
-          '                               ',
-      )
-    })
     const [ocVisible, setOCVisible] = useState(false)
     const extendedInfoRaw = [
       { label: 'Created Date', value: `${row['Created']}` },
