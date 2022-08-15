@@ -13,6 +13,7 @@ import { useSelector } from 'react-redux'
 import { ModalService } from 'src/components/utilities'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Skeleton from 'react-loading-skeleton'
+import { CippTable } from 'src/components/tables'
 
 const RefreshAction = () => {
   const [execStandards, execStandardsResults] = useLazyGenericGetRequestQuery()
@@ -76,6 +77,10 @@ const ListAppliedStandards = () => {
 
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
+  const { data: listStandardsAllTenants = [] } = useGenericGetRequestQuery({
+    path: 'api/listStandards',
+  })
+
   const {
     data: listStandardResults = [],
     isFetching,
@@ -99,6 +104,20 @@ const ListAppliedStandards = () => {
     //filter on only objects that are 'true'
     genericPostRequest({ path: '/api/AddStandardsDeploy', values: values.standards })
   }
+  const tableColumns = [
+    {
+      name: 'Tenant',
+      selector: (row) => row['displayName'],
+      sortable: true,
+      exportSelector: 'displayName',
+    },
+    {
+      name: 'Applied Standards',
+      selector: (row) => Object.keys(row.standards).join(','),
+      sortable: true,
+      exportSelector: 'standards',
+    },
+  ]
 
   return (
     <CippPage title="Standards" tenantSelector={false}>
@@ -232,6 +251,10 @@ const ListAppliedStandards = () => {
                               label="Do not expire passwords"
                             />
                             <RFFCFormSwitch
+                              name="standards.DisableSecurityGroupUsers"
+                              label="Disable Security Group creation by users"
+                            />
+                            <RFFCFormSwitch
                               name="standards.SSPR"
                               label="Enable Self Service Password Reset"
                             />
@@ -261,7 +284,10 @@ const ListAppliedStandards = () => {
                               name="standards.DisableSelfServiceLicenses"
                               label="Disable Self Service Licensing"
                             />
-
+                            <RFFCFormSwitch
+                              name="standards.DisableM365GroupUsers"
+                              label="Disable M365 Group creation by users"
+                            />
                             <RFFCFormSwitch name="standards.UndoSSPR" label="Undo SSPR Standard" />
                             <RFFCFormSwitch
                               name="standards.UndoOauth"
@@ -385,7 +411,7 @@ const ListAppliedStandards = () => {
                         <CRow className="mb-3">
                           <CCol md={6}>
                             <CButton type="submit" disabled={submitting}>
-                              Edit Standard
+                              Save
                               {postResults.isFetching && (
                                 <FontAwesomeIcon
                                   icon={faCircleNotch}
@@ -409,7 +435,17 @@ const ListAppliedStandards = () => {
               )}
             </CippContentCard>
           </CCol>
-          <CCol lg={6} xs={12}></CCol>
+          <CCol lg={6} xs={12}>
+            {listStandardsAllTenants && (
+              <CippContentCard title="Currently Applied Standards">
+                <CippTable
+                  reportName={`Standards}`}
+                  data={listStandardsAllTenants}
+                  columns={tableColumns}
+                />
+              </CippContentCard>
+            )}
+          </CCol>
         </CRow>
       </>
     </CippPage>
