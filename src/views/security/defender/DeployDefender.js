@@ -6,7 +6,7 @@ import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { CippWizard } from 'src/components/layout'
 import { WizardTableField } from 'src/components/tables'
 import PropTypes from 'prop-types'
-import { RFFCFormSwitch, Condition, RFFCFormInput, RFFCFormSelect } from 'src/components/forms'
+import { RFFCFormSwitch } from 'src/components/forms'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
 const Error = ({ name }) => (
@@ -95,74 +95,46 @@ const DeployDefender = () => {
         <Error name="selectedTenants" />
         <hr className="my-4" />
       </CippWizard.Page>
-      <CippWizard.Page
-        title="Global Settings"
-        description="Select global settings you want to apply"
-      >
+      <CippWizard.Page title="Defender Setup" description="Defender Compliance and MEM Reporting">
         <center>
           <h3 className="text-primary">Step 2</h3>
-          <h5 className="card-title mb-4">Select Standards</h5>
+          <h5 className="card-title mb-4">Defender Setup</h5>
         </center>
         <hr className="my-4" />
         <div className="mb-2">
           <CRow className="mb-3">
             <CCol md={6}>
               <RFFCFormSwitch
-                name="standards.MailContacts.GeneralContact.Enabled"
-                label="Set General Contact e-mail"
+                name="AllowMEMEnforceComPliance"
+                label="Allow Microsoft Defender for Endpoint to enforce Endpoint Security Configurations (Compliance)"
               />
-              <Condition when="standards.MailContacts.GeneralContact.Enabled" is={true}>
-                <RFFCFormInput
-                  type="text"
-                  name="standards.MailContacts.GeneralContact.Mail"
-                  label="General Contact"
-                />
-              </Condition>
               <RFFCFormSwitch
-                name="standards.MailContacts.SecurityContact.Enabled"
-                label="Set Security Contact e-mail"
+                name="ConnectIosCompliance"
+                label="Connect iOS/iPadOS devices version 13.0 and above to Microsoft Defender for Endpoint (Compliance)"
               />
-              <Condition when="standards.MailContacts.SecurityContact.Enabled" is={true}>
-                <RFFCFormInput
-                  type="text"
-                  name="standards.MailContacts.SecurityContact.Mail"
-                  label="Security Contact"
-                />
-              </Condition>
               <RFFCFormSwitch
-                name="standards.MailContacts.MarketingContact.Enabled"
-                label="Set Marketing Contact e-mail"
+                name="ConnectAndroid"
+                label="Connect Android devices version 6.0.0 and above to Microsoft Defender for Endpoint (Compliance)"
               />
-              <Condition when="standards.MailContacts.MarketingContact.Enabled" is={true}>
-                <RFFCFormInput
-                  type="text"
-                  name="standards.MailContacts.MarketingContact.Mail"
-                  label="Marketing Contact"
-                />
-              </Condition>
               <RFFCFormSwitch
-                name="standards.MailContacts.TechContact.Enabled"
-                label="Set Technical Contact e-mail"
+                name="ConnectWindows"
+                label="Connect Windows devices version 10.0.15063 and above to Microsoft Defender for Endpoint (Compliance)"
               />
-              <Condition when="standards.MailContacts.TechContact.Enabled" is={true}>
-                <RFFCFormInput
-                  type="text"
-                  name="standards.MailContacts.TechContact.Mail"
-                  label="Technical Contact"
-                />
-              </Condition>
             </CCol>
             <CCol md={6}>
-              <RFFCFormSwitch name="standards.AuditLog" label="Enable the Unified Audit Log" />
               <RFFCFormSwitch
-                name="standards.AnonReportDisable"
-                label="Enable Usernames instead of pseudo anonymised names in reports"
+                name="AppSync"
+                label="Enable App Sync (sending application inventory) for iOS/iPadOS devices"
               />
+              <RFFCFormSwitch name="BlockunsupportedOS" label="Block unsupported OS versions" />
 
-              <RFFCFormSwitch name="standards.ModernAuth" label="Enable Modern Authentication" />
               <RFFCFormSwitch
-                name="standards.DisableBasicAuth"
-                label="Disable Basic Authentication"
+                name="ConnectAndroid"
+                label="Connect Android devices to Microsoft Defender for Endpoint"
+              />
+              <RFFCFormSwitch
+                name="ConnectIos"
+                label="Connect iOS/iPadOS devices to Microsoft Defender for Endpoint"
               />
             </CCol>
           </CRow>
@@ -170,81 +142,50 @@ const DeployDefender = () => {
         <hr className="my-4" />
       </CippWizard.Page>
       <CippWizard.Page
-        title="ASR rules"
-        description="Select which Attack Surface Reduction rules to apply."
+        title="Defender Defaults Policy"
+        description="Select Defender policies to deploy"
       >
         <center>
           <h3 className="text-primary">Step 3</h3>
-          <h5 className="card-title mb-4">Select Standards</h5>
+          <h5 className="card-title mb-4">AV policy</h5>
         </center>
         <hr className="my-4" />
         <div className="mb-2">
           <CRow className="mb-3">
             <CCol md={6}>
-              <RFFCFormSwitch
-                name="standards.PWnumberMatchingRequiredState"
-                label="Enable Passwordless with Number Matching"
-              />
-              <RFFCFormSwitch
-                name="standards.PWdisplayAppInformationRequiredState"
-                label="Enable Passwordless with Location information and Number Matching"
-              />
-              <RFFCFormSwitch name="standards.TAP" label="Enable Temporary Access Passwords" />
-              <RFFCFormSwitch
-                name="standards.DisableM365GroupUsers"
-                label="Disable M365 Group creation by users"
-              />
+              <RFFCFormSwitch name="ScanArchives" label="Allow Archive Scanning" />
+              <RFFCFormSwitch name="AllowBehavior" label="Allow behavior monitoring" />
+              <RFFCFormSwitch name="AllowCloudProtection" label="Allow Cloud Protection" />
+              <RFFCFormSwitch name="AllowEmailScanning" label="Allow e-mail scanning" />
               <RFFCFormSwitch name="standards.SecurityDefaults" label="Enable Security Defaults" />
               <RFFCFormSwitch
-                name="standards.PasswordExpireDisabled"
-                label="Do not expire passwords"
+                name="AllowFullScanNetwork"
+                label="Allow Full Scan on Network Drives"
               />
-
-              <RFFCFormSwitch name="standards.SSPR" label="Enable Self Service Password Reset" />
+              <RFFCFormSwitch
+                name="AllowFullScanRemovable"
+                label="Allow Full Scan on Removable Drives"
+              />
+              <RFFCFormSwitch name="AllowIPS" label="Allow Intrusion Prevention System" />
             </CCol>
             <CCol md={6}>
-              <RFFCFormSwitch
-                name="standards.OauthConsent.Enabled"
-                label="Require admin consent for applications (Prevent OAuth phishing.)"
-              />
-              <Condition when="standards.OauthConsent.Enabled" is={true}>
-                <RFFCFormInput
-                  type="text"
-                  name="standards.OauthConsent.AllowedApps"
-                  label="Allowed application IDs, comma separated"
-                />
-              </Condition>
-              <RFFCFormSwitch
-                name="standards.AzurePortal"
-                label="Disable Azure Portal access for Standard users"
-              />
-              <RFFCFormSwitch
-                name="standards.LegacyMFA"
-                label="Enable per-user MFA for all user (Legacy)"
-              />
-              <RFFCFormSwitch
-                name="standards.DisableSecurityGroupUsers"
-                label="Disable Security Group creation by users"
-              />
-              <RFFCFormSwitch
-                name="standards.DisableSelfServiceLicenses"
-                label="Disable Self Service Licensing"
-              />
+              <RFFCFormSwitch name="AllowDownloadable" label="Allow scanning of downloaded files" />
+              <RFFCFormSwitch name="AllowRealTime" label="Allow Realtime monitoring" />
+              <RFFCFormSwitch name="AllowNetwork" label="Allow scanning of mapped drives" />
+              <RFFCFormSwitch name="AllowUI" label="Allow users to access UI" />
+              <RFFCFormSwitch name="CPULoad50" label="Set Maximum CPU load to 50%" />
 
-              <RFFCFormSwitch name="standards.UndoSSPR" label="Undo SSPR Standard" />
-              <RFFCFormSwitch name="standards.UndoOauth" label="Undo App Consent Standard" />
+              <RFFCFormSwitch name="CheckSigs" label="Check Signatures before scan" />
+              <RFFCFormSwitch name="DisableCatchup" label="Disable Catchup Scan" />
             </CCol>
           </CRow>
         </div>
         <hr className="my-4" />
       </CippWizard.Page>
-      <CippWizard.Page
-        title="Isolation"
-        description="Select which App and browser isolation settings you want to apply."
-      >
+      <CippWizard.Page title="ASR" description="Set Attack Surface Reduction Rules.">
         <center>
           <h3 className="text-primary">Step 3</h3>
-          <h5 className="card-title mb-4">Select Standards</h5>
+          <h5 className="card-title mb-4">ASR Rules</h5>
         </center>
         <hr className="my-4" />
         <div className="mb-2">
