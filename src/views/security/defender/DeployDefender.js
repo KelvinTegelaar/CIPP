@@ -105,7 +105,7 @@ const DeployDefender = () => {
           <CRow className="mb-3">
             <CCol md={6}>
               <RFFCFormSwitch
-                name="AllowMEMEnforceComPliance"
+                name="AllowMEMEnforceCompliance"
                 label="Allow Microsoft Defender for Endpoint to enforce Endpoint Security Configurations (Compliance)"
               />
               <RFFCFormSwitch
@@ -167,16 +167,26 @@ const DeployDefender = () => {
                 label="Allow Full Scan on Removable Drives"
               />
               <RFFCFormSwitch name="AllowIPS" label="Allow Intrusion Prevention System" />
+              <RFFCFormSwitch name="LowCPU" label="Enable Low CPU priority" />
+              <RFFCFormSwitch name="CPULoad50" label="Set Maximum CPU load to 50%" />
             </CCol>
             <CCol md={6}>
               <RFFCFormSwitch name="AllowDownloadable" label="Allow scanning of downloaded files" />
               <RFFCFormSwitch name="AllowRealTime" label="Allow Realtime monitoring" />
               <RFFCFormSwitch name="AllowNetwork" label="Allow scanning of mapped drives" />
               <RFFCFormSwitch name="AllowUI" label="Allow users to access UI" />
-              <RFFCFormSwitch name="CPULoad50" label="Set Maximum CPU load to 50%" />
+              <RFFCFormSwitch
+                name="NetworkProtectionBlock"
+                label="Enable Network Protection in Block Mode"
+              />
+              <RFFCFormSwitch
+                name="NetworkProtectionAudit"
+                label="Enable Network Protection in Audit Mode"
+              />
 
               <RFFCFormSwitch name="CheckSigs" label="Check Signatures before scan" />
-              <RFFCFormSwitch name="DisableCatchup" label="Disable Catchup Scan" />
+              <RFFCFormSwitch name="DisableCatchupFullScan" label="Disable Catchup Full Scan" />
+              <RFFCFormSwitch name="DisableCatchup Quick Scan" label="Disable Catchup Full Scan" />
             </CCol>
           </CRow>
         </div>
@@ -192,31 +202,67 @@ const DeployDefender = () => {
           <CRow className="mb-3">
             <CCol md={6}>
               <RFFCFormSwitch
-                name="standards.DisableSharedMailbox"
-                label="Disable Shared Mailbox AAD accounts"
+                name="BlockAdobeChild"
+                label="Block Adobe Reader from creating child processes"
               />
               <RFFCFormSwitch
                 name="standards.DelegateSentItems"
-                label="Set mailbox Sent Items delegation (Sent items for shared mailboxes)"
+                label="Block Win32 API calls from Office macros"
               />
               <RFFCFormSwitch
                 name="standards.SendFromAlias"
-                label="Allow users to send from their alias addresses"
+                label="Block credential stealing from the Windows local security authority subsystem"
+              />
+              <RFFCFormSwitch
+                name="standards.DisableViva"
+                label="Block process creations originating from PSExec and WMI commands"
+              />
+              <RFFCFormSwitch
+                name="standards.DisableViva"
+                label="Block persistence through WMI event subscription"
+              />
+              <RFFCFormSwitch
+                name="standards.DisableViva"
+                label="Block Office applications from creating executable content"
+              />
+              <RFFCFormSwitch
+                name="standards.DisableViva"
+                label="Block Office applications from injecting code into other processes"
               />
             </CCol>
             <CCol md={6}>
               <RFFCFormSwitch
                 name="standards.AutoExpandArchive"
-                label="Enable Auto-expanding archives"
+                label="Block executable files from running unless they meet a prevalence, age, or trusted list criterion"
               />
               <RFFCFormSwitch
                 name="standards.SpoofWarn"
-                label="Enable Spoofing warnings for Outlook (This e-mail is external identifiers)"
+                label="Block JavaScript or VBScript from launching downloaded executable content"
               />
 
               <RFFCFormSwitch
                 name="standards.DisableViva"
-                label="Disable daily Insight/Viva reports"
+                label="Block Office communication application from creating child processes"
+              />
+              <RFFCFormSwitch
+                name="standards.DisableViva"
+                label="Block all Office applications from creating child processes"
+              />
+              <RFFCFormSwitch
+                name="standards.DisableViva"
+                label="Block untrusted and unsigned processes that run from USB"
+              />
+              <RFFCFormSwitch
+                name="standards.DisableViva"
+                label="Use advanced protection against ransomware"
+              />
+              <RFFCFormSwitch
+                name="standards.DisableViva"
+                label="Block executable content from email client and webmail"
+              />
+              <RFFCFormSwitch
+                name="standards.DisableViva"
+                label="Block abuse of exploited vulnerable signed drivers (Device)"
               />
             </CCol>
           </CRow>

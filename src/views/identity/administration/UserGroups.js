@@ -4,7 +4,6 @@ import { CLink } from '@coreui/react'
 import { DatatableContentCard } from 'src/components/contentcards'
 import { CellBoolean, CellTip, cellBooleanFormatter } from 'src/components/tables'
 import { faUsers } from '@fortawesome/free-solid-svg-icons'
-import { useListUserGroupsQuery } from 'src/store/api/groups'
 
 const formatter = (cell) => CellBoolean({ cell })
 

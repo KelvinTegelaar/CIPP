@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import moment from 'moment'
 import { CButton, CCallout, CCardText, CListGroupItem } from '@coreui/react'
 import { CippTable, cellDateFormatter, CellTip } from 'src/components/tables'
 import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'

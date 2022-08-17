@@ -13,7 +13,6 @@ import { CellTip, cellBooleanFormatter, cellDateFormatter } from 'src/components
 import { DatatableContentCard } from 'src/components/contentcards'
 import { faKey } from '@fortawesome/free-solid-svg-icons'
 import { ModalService } from 'src/components/utilities'
-import { useListUserSigninLogsQuery } from 'src/store/api/users'
 
 const rowStyle = (row, rowIndex) => {
   const style = {}

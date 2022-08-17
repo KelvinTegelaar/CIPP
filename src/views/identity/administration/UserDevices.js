@@ -4,7 +4,6 @@ import { CLink } from '@coreui/react'
 import { faLaptop } from '@fortawesome/free-solid-svg-icons'
 import { DatatableContentCard } from 'src/components/contentcards'
 import { cellBooleanFormatter, cellNullTextFormatter } from 'src/components/tables'
-import { useListUserDevicesQuery } from 'src/store/api/devices'
 
 let tenantDomainFileScope = ''
 
