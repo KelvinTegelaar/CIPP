@@ -1,13 +1,11 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
-import { TitleButton } from 'src/components/buttons'
 import { CellTip } from 'src/components/tables'
 
 const MailboxRuleList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
-  //TODO: Add CellBoolean
   const columns = [
     {
       selector: (row) => row['Tenant'],
@@ -48,7 +46,7 @@ const MailboxRuleList = () => {
   return (
     <CippPageList
       capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
-      title="Mailboxes"
+      title="Mailbox Rules"
       datatable={{
         keyField: 'id',
         reportName: `${tenant?.defaultDomainName}-Mailbox-List`,
