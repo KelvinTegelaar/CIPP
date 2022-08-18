@@ -469,6 +469,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Mailbox Rules',
+        to: '/email/administration/mailbox-rules',
+      },
+      {
+        component: CNavItem,
         name: 'Contacts',
         to: '/email/administration/contacts',
       },
