@@ -7,6 +7,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons'
 export default function CippOffcanvas(props) {
   return (
     <COffcanvas
+      scroll
       className="cipp-offcanvas"
       visible={props.visible}
       placement={props.placement}
