@@ -204,6 +204,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Deploy Named Locations',
+        to: '/tenant/conditional/deploy-named-location',
+      },
+      {
+        component: CNavItem,
         name: 'Add Template',
         to: '/tenant/conditional/add-template',
       },
@@ -253,6 +258,11 @@ const _nav = [
     to: '/security/defender',
     icon: <FontAwesomeIcon icon={faShieldAlt} className="nav-icon" />,
     items: [
+      {
+        component: CNavItem,
+        name: 'Defender Deployment',
+        to: '/security/defender/deployment',
+      },
       {
         component: CNavItem,
         name: 'Defender Status',
@@ -456,6 +466,11 @@ const _nav = [
         component: CNavItem,
         name: 'Mailboxes',
         to: '/email/administration/mailboxes',
+      },
+      {
+        component: CNavItem,
+        name: 'Mailbox Rules',
+        to: '/email/administration/mailbox-rules',
       },
       {
         component: CNavItem,
