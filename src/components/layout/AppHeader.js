@@ -16,19 +16,25 @@ import cyberdrainlogodark from 'src/assets/images/CIPP_Dark.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretSquareLeft, faCaretSquareRight } from '@fortawesome/free-solid-svg-icons'
 import { toggleSidebarShow } from 'src/store/features/app'
+import { useMediaPredicate } from 'react-media-hook'
 
 const AppHeader = () => {
   const dispatch = useDispatch()
   const sidebarShow = useSelector((state) => state.app.sidebarShow)
   const currentTheme = useSelector((state) => state.app.currentTheme)
-
+  const preferredTheme = useMediaPredicate('(prefers-color-scheme: dark)') ? 'impact' : 'cyberdrain'
+  console.log(preferredTheme)
   return (
     <CHeader position="sticky">
       <CContainer fluid>
         <CSidebarBrand className="me-auto p-2" to="/">
           <CImage
             className="sidebar-brand-full me-2"
-            src={currentTheme === 'impact' ? cyberdrainlogolight : cyberdrainlogodark}
+            src={
+              currentTheme === 'cyberdrain' || preferredTheme === 'cyberdrain'
+                ? cyberdrainlogodark
+                : cyberdrainlogolight
+            }
             height={80}
           />
           <CHeaderNav className="me-2 p-2">
