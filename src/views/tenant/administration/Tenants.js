@@ -25,6 +25,9 @@ const columns = [
     minWidth: '250px',
   },
   {
+    exportSelector: 'customerId',
+  },
+  {
     name: 'M365 Portal',
     selector: (row) => row['customerId'],
     center: true,
