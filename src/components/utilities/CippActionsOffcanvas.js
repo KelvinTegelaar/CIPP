@@ -1,6 +1,13 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import PropTypes from 'prop-types'
-import { CCallout, CListGroup, CListGroupItem, COffcanvasTitle, CSpinner } from '@coreui/react'
+import {
+  CCallout,
+  CFormInput,
+  CListGroup,
+  CListGroupItem,
+  COffcanvasTitle,
+  CSpinner,
+} from '@coreui/react'
 import { CippOffcanvas, ModalService } from 'src/components/utilities'
 import { CippOffcanvasPropTypes } from 'src/components/utilities/CippOffcanvas'
 import { CippOffcanvasTable } from 'src/components/tables'
@@ -9,6 +16,7 @@ import { useNavigate } from 'react-router-dom'
 import { stringCamelCase } from 'src/components/utilities/CippCamelCase'
 
 export default function CippActionsOffcanvas(props) {
+  const inputRef = useRef(null)
   const [genericGetRequest, getResults] = useLazyGenericGetRequestQuery()
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
@@ -16,7 +24,7 @@ export default function CippActionsOffcanvas(props) {
   const handleExternalLink = (link) => {
     window.open(link, '_blank')
   }
-  const handleModal = (modalMessage, modalUrl, modalType = 'GET', modalBody) => {
+  const handleModal = (modalMessage, modalUrl, modalType = 'GET', modalBody, modalInput) => {
     if (modalType === 'GET') {
       ModalService.confirm({
         body: (
@@ -31,15 +39,33 @@ export default function CippActionsOffcanvas(props) {
       ModalService.confirm({
         body: (
           <div style={{ overflow: 'visible' }}>
+            {modalInput && (
+              <div>
+                <CFormInput ref={inputRef} type="text" />
+              </div>
+            )}
             <div>{modalMessage}</div>
           </div>
         ),
         title: 'Confirm',
-        onConfirm: () => genericPostRequest({ path: modalUrl, values: modalBody }),
+        onConfirm: () =>
+          genericPostRequest({
+            path: modalUrl,
+            values: { input: inputRef.current.value, ...modalBody },
+          }),
       })
     }
   }
-  const handleOnClick = (link, modal, modalMessage, modalUrl, external, modalType, modalBody) => {
+  const handleOnClick = (
+    link,
+    modal,
+    modalMessage,
+    modalUrl,
+    external,
+    modalType,
+    modalBody,
+    modalInput,
+  ) => {
     if (link) {
       if (external) {
         handleExternalLink(link)
@@ -47,7 +73,7 @@ export default function CippActionsOffcanvas(props) {
         handleLink(link)
       }
     } else if (modal) {
-      handleModal(modalMessage, modalUrl, modalType, modalBody)
+      handleModal(modalMessage, modalUrl, modalType, modalBody, modalInput)
     }
   }
 
@@ -81,6 +107,7 @@ export default function CippActionsOffcanvas(props) {
             action.external,
             action.modalType,
             action.modalBody,
+            action.modalInput,
           )
         }
         key={index}
@@ -173,6 +200,7 @@ const CippActionsOffcanvasPropTypes = {
       modalUrl: PropTypes.string,
       modalBody: PropTypes.string,
       modalType: PropTypes.string,
+      modalInput: PropTypes.bool,
       modalMessage: PropTypes.string,
       external: PropTypes.bool,
     }),
@@ -189,6 +217,7 @@ const CippActionsOffcanvasPropTypes = {
       modalUrl: PropTypes.string,
       modalBody: PropTypes.string,
       modalType: PropTypes.string,
+      modalInput: PropTypes.bool,
       modalMessage: PropTypes.string,
       external: PropTypes.bool,
     }),
