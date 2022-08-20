@@ -49,6 +49,7 @@ const OffboardingWizard = () => {
       AccessNoAutomap: values.AccessNoAutomap ? values.AccessNoAutomap.value : '',
       AccessAutomap: values.AccessAutomap ? values.AccessAutomap.value : '',
       ConvertToShared: values.ConvertToShared,
+      HideFromGAL: values.HideFromGAL,
       DisableSignIn: values.DisableSignIn,
       RemoveGroups: values.RemoveGroups,
       RemoveLicenses: values.RemoveLicenses,
