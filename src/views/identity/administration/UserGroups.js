@@ -4,7 +4,6 @@ import { CLink } from '@coreui/react'
 import { DatatableContentCard } from 'src/components/contentcards'
 import { CellBoolean, CellTip, cellBooleanFormatter } from 'src/components/tables'
 import { faUsers } from '@fortawesome/free-solid-svg-icons'
-import { useListUserGroupsQuery } from 'src/store/api/groups'
 
 const formatter = (cell) => CellBoolean({ cell })
 
@@ -73,18 +72,11 @@ const columns = [
 ]
 
 export default function UserGroups({ userId, tenantDomain, className = null }) {
-  const { data: list = [], isFetching, error } = useListUserGroupsQuery({ userId, tenantDomain })
-
-  // inject tenantDomain into list for formatter
-  const mapped = list.map((val) => ({ ...val, tenantDomain }))
-
   return (
     <DatatableContentCard
       title="User Groups"
       icon={faUsers}
       className={className}
-      isFetching={isFetching}
-      error={error}
       datatable={{
         reportName: 'ListUserGroups',
         path: '/api/ListUserGroups',
@@ -94,7 +86,6 @@ export default function UserGroups({ userId, tenantDomain, className = null }) {
         responsive: true,
         dense: true,
         striped: true,
-        data: mapped,
       }}
     />
   )
