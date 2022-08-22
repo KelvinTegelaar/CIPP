@@ -1,18 +1,21 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
+import { CellTip } from 'src/components/tables'
 
 const columns = [
   {
     name: 'URL',
     selector: (row) => row['URL'],
     sortable: true,
+    cell: (row) => CellTip(row['URL']),
     exportSelector: 'URL',
   },
   {
     name: 'Owner',
     selector: (row) => row['displayName'],
     sortable: true,
+    cell: (row) => CellTip(row['displayName']),
     exportSelector: 'displayName',
     maxWidth: '300px',
   },
@@ -48,6 +51,7 @@ const columns = [
     name: 'Root Template',
     selector: (row) => row['Template'],
     sortable: true,
+    cell: (row) => CellTip(row['Template']),
     exportSelector: 'Template',
     maxWidth: '200px',
   },

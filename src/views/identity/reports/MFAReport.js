@@ -15,7 +15,7 @@ const columns = [
     selector: (row) => row['AccountEnabled'],
     name: 'Account Enabled',
     sortable: true,
-    cell: cellBooleanFormatter(),
+    cell: cellBooleanFormatter({ colourless: true }),
     exportSelector: 'AccountEnabled',
   },
   {
@@ -41,7 +41,57 @@ const columns = [
     selector: (row) => row['CoveredBySD'],
     name: 'Enforced via Security Defaults',
     sortable: true,
+    cell: cellBooleanFormatter({ colourless: true }),
+    exportSelector: 'CoveredBySD',
+  },
+]
+
+const Altcolumns = [
+  {
+    selector: (row) => row['Tenant'],
+    name: 'Tenant',
+    sortable: true,
+    exportSelector: 'Tenant',
+    grow: 1,
+  },
+  {
+    selector: (row) => row['UPN'],
+    name: 'User Principal Name',
+    sortable: true,
+    exportSelector: 'UPN',
+    grow: 2,
+  },
+  {
+    selector: (row) => row['AccountEnabled'],
+    name: 'Account Enabled',
+    sortable: true,
+    cell: cellBooleanFormatter({ colourless: true }),
+    exportSelector: 'AccountEnabled',
+  },
+  {
+    selector: (row) => row['PerUser'],
+    name: 'Per user MFA Status',
+    sortable: true,
+    exportSelector: 'PerUser',
+  },
+  {
+    selector: (row) => row['MFARegistration'],
+    name: 'Registered for Conditional MFA',
+    sortable: true,
     cell: cellBooleanFormatter(),
+    exportSelector: 'MFARegistration',
+  },
+  {
+    selector: (row) => row['CoveredByCA'],
+    name: 'Enforced via Conditional Access',
+    sortable: true,
+    exportSelector: 'CoveredByCA',
+  },
+  {
+    selector: (row) => row['CoveredBySD'],
+    name: 'Enforced via Security Defaults',
+    sortable: true,
+    cell: cellBooleanFormatter({ colourless: true }),
     exportSelector: 'CoveredBySD',
   },
 ]
@@ -54,12 +104,7 @@ const conditionalRowStyles = [
       !row.MFARegistration &&
       row.CoveredByCA === 'None' &&
       !row.CoveredBySD,
-    style: {
-      //backgroundColor: 'var(--cui-danger)',
-      //border: '2px solid var(--cui-warning)',
-      //color: 'var(--cui-warning)',
-    },
-    classNames: ['no-mfa'],
+    //classNames: ['no-mfa'], <- Currently not working
   },
 ]
 
@@ -69,8 +114,9 @@ const MFAList = () => {
   return (
     <CippPageList
       title="MFA Report"
+      capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
       datatable={{
-        columns,
+        columns: tenant.defaultDomainName === 'AllTenants' ? Altcolumns : columns,
         path: '/api/ListMFAUsers',
         reportName: `${tenant?.defaultDomainName}-MFAReport-List`,
         params: { TenantFilter: tenant?.defaultDomainName },
