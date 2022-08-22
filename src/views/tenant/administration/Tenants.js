@@ -2,12 +2,45 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { CButton } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCog, faEdit } from '@fortawesome/free-solid-svg-icons'
+import {
+  faCheckCircle,
+  faCog,
+  faEdit,
+  faExclamationTriangle,
+} from '@fortawesome/free-solid-svg-icons'
 import { CippPageList } from 'src/components/layout'
 import { Link } from 'react-router-dom'
-import { CellTip } from 'src/components/tables'
+import { CellTip, CellTipIcon } from 'src/components/tables'
+
+function StatusIcon(graphErrorCount) {
+  if (graphErrorCount > 0) {
+    return <FontAwesomeIcon icon={faExclamationTriangle} className="text-danger" />
+  } else {
+    return <FontAwesomeIcon icon={faCheckCircle} className="text-success" />
+  }
+}
+
+function StatusText(graphErrorCount, lastGraphError) {
+  if (graphErrorCount > 0) {
+    return 'Error Count: ' + graphErrorCount + ' - Last Error: ' + lastGraphError
+  } else {
+    return 'No errors detected with this tenant'
+  }
+}
 
 const columns = [
+  {
+    name: 'Status',
+    selector: (row) => row['GraphErrorCount'],
+    sortable: true,
+    cell: (row) =>
+      CellTipIcon(
+        StatusText(row['GraphErrorCount'], row['LastGraphError']),
+        StatusIcon(row['GraphErrorCount']),
+      ),
+    exportSelector: 'GraphErrorCount',
+    minWidth: '5px',
+  },
   {
     name: 'Name',
     selector: (row) => row['displayName'],
@@ -22,7 +55,7 @@ const columns = [
     sortable: true,
     cell: (row) => CellTip(row['defaultDomainName']),
     exportSelector: 'defaultDomainName',
-    minWidth: '250px',
+    minWidth: '200px',
   },
   {
     exportSelector: 'customerId',
