@@ -94,6 +94,21 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modalMessage: 'Are you sure you want to convert this user to a shared mailbox?',
           },
           {
+            label: 'Set Out of Office',
+            color: 'info',
+            modal: true,
+            modalType: 'POST',
+            modalBody: {
+              user: row.userPrincipalName,
+              TenantFilter: tenant.defaultDomainName,
+              message: row.message,
+            },
+            modalUrl: `/api/ExecSetOoO`,
+            modalInput: true,
+            modalMessage:
+              'Enter a out of office message and press continue to set the out of office.',
+          },
+          {
             label: 'Block Sign In',
             color: 'info',
             modal: true,
