@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom'
 import { stringCamelCase } from 'src/components/utilities/CippCamelCase'
 
 export default function CippActionsOffcanvas(props) {
-  const inputRef = useRef(null)
+  const inputRef = useRef('')
   const [genericGetRequest, getResults] = useLazyGenericGetRequestQuery()
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
@@ -48,11 +48,12 @@ export default function CippActionsOffcanvas(props) {
           </div>
         ),
         title: 'Confirm',
-        onConfirm: () =>
+        onConfirm: () => [
           genericPostRequest({
             path: modalUrl,
-            values: { input: inputRef.current.value, ...modalBody },
+            values: { ...modalBody, ...{ input: inputRef.current.value } },
           }),
+        ],
       })
     }
   }
@@ -174,7 +175,7 @@ export default function CippActionsOffcanvas(props) {
       <COffcanvasTitle>Extended Information</COffcanvasTitle>
       {extendedInfoContent}
       {<COffcanvasTitle>Actions</COffcanvasTitle>}
-      <CListGroup layout="vertical-md">
+      <CListGroup>
         {actionsContent}
         {actionsSelectorsContent}
       </CListGroup>
