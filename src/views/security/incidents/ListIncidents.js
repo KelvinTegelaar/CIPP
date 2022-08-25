@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import moment from 'moment'
 import { CButton, CCallout, CCardText, CListGroupItem } from '@coreui/react'
 import { CippTable, cellDateFormatter, CellTip } from 'src/components/tables'
 import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
@@ -8,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPage } from 'src/components/layout'
 import PropTypes from 'prop-types'
 import {
-  faEye,
+  faEllipsisV,
   faEdit,
   faCheck,
   faRedo,
@@ -79,18 +78,6 @@ const ListIncidents = () => {
 
     let attributedComments = []
 
-    row['Comments'].forEach((element) => {
-      attributedComments.push(
-        new Intl.DateTimeFormat(...dateTimeArgs)
-          .format(moment(element['createdDateTime']).toDate())
-          .toString() +
-          ' - ' +
-          element['createdByDisplayName'] +
-          ' - ' +
-          element['comment'] +
-          '                               ',
-      )
-    })
     const [ocVisible, setOCVisible] = useState(false)
     const extendedInfoRaw = [
       { label: 'Created Date', value: `${row['Created']}` },
@@ -171,8 +158,8 @@ const ListIncidents = () => {
 
     return (
       <>
-        <CButton size="sm" color="success" variant="ghost" onClick={() => setOCVisible(true)}>
-          <FontAwesomeIcon icon={faEye} />
+        <CButton size="sm" color="link" onClick={() => setOCVisible(true)}>
+          <FontAwesomeIcon icon={faEllipsisV} />
         </CButton>
         <CippActionsOffcanvas
           title="Incident Information"
@@ -232,12 +219,12 @@ const ListIncidents = () => {
 
   const columns = [
     {
-      name: ' Created Date',
+      name: ' Created Date (Local)',
       selector: (row) => row['Created'],
       sortable: true,
       cell: cellDateFormatter(),
       exportSelector: 'Created',
-      minWidth: '145px',
+      minWidth: '155px',
     },
     {
       name: 'Tenant',
@@ -285,7 +272,7 @@ const ListIncidents = () => {
       exportSelector: 'Tags',
     },
     {
-      name: 'More Info',
+      name: 'Info & Actions',
       cell: Offcanvas,
     },
   ]

@@ -79,6 +79,7 @@ const columns = [
   {
     name: 'Actions',
     cell: Actions,
+    maxWidth: '80px',
   },
 ]
 

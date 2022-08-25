@@ -204,6 +204,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Deploy Named Locations',
+        to: '/tenant/conditional/deploy-named-location',
+      },
+      {
+        component: CNavItem,
         name: 'Add Template',
         to: '/tenant/conditional/add-template',
       },
@@ -253,6 +258,11 @@ const _nav = [
     to: '/security/defender',
     icon: <FontAwesomeIcon icon={faShieldAlt} className="nav-icon" />,
     items: [
+      {
+        component: CNavItem,
+        name: 'Defender Deployment',
+        to: '/security/defender/deployment',
+      },
       {
         component: CNavItem,
         name: 'Defender Status',
@@ -459,8 +469,18 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Mailbox Rules',
+        to: '/email/administration/mailbox-rules',
+      },
+      {
+        component: CNavItem,
         name: 'Contacts',
         to: '/email/administration/contacts',
+      },
+      {
+        component: CNavItem,
+        name: 'Quarantine',
+        to: '/email/administration/quarantine',
       },
     ],
   },
@@ -540,7 +560,7 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'SAM Setup Wizard (β)',
+        name: 'SAM Setup Wizard',
         to: '/cipp/setup',
       },
       {
