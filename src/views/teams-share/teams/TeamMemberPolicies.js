@@ -4,6 +4,9 @@ import { faUsersCog } from '@fortawesome/free-solid-svg-icons'
 import { ListGroupContentCard } from 'src/components/contentcards'
 import { CellBoolean } from 'src/components/tables'
 
+const formatter = (cell, warning = false, reverse = false, colourless = false) =>
+  CellBoolean({ cell, warning, reverse, colourless })
+
 export default function TeamMemberPolicies({
   memberSettings,
   className = null,
@@ -14,27 +17,27 @@ export default function TeamMemberPolicies({
   const content = [
     {
       heading: 'Can edit and remove apps',
-      body: CellBoolean(memberSettings.allowAddRemoveApps),
+      body: formatter(memberSettings.allowAddRemoveApps, false, false, true),
     },
     {
       heading: 'Can create private channels',
-      body: CellBoolean(memberSettings.allowCreatePrivateChannels),
+      body: formatter(memberSettings.allowCreatePrivateChannels, false, false, true),
     },
     {
       heading: 'Can create and edit channels',
-      body: CellBoolean(memberSettings.allowCreateUpdateChannels),
+      body: formatter(memberSettings.allowCreateUpdateChannels, false, false, true),
     },
     {
       heading: 'Can create and edit connectors',
-      body: CellBoolean(memberSettings.allowCreateUpdateRemoveConnectors),
+      body: formatter(memberSettings.allowCreateUpdateRemoveConnectors, false, false, true),
     },
     {
       heading: 'Can create and edit tabs',
-      body: CellBoolean(memberSettings.allowCreateUpdateRemoveTabs),
+      body: formatter(memberSettings.allowCreateUpdateRemoveTabs, false, false, true),
     },
     {
       heading: 'Can delete channels',
-      body: CellBoolean(memberSettings.allowDeleteChannels),
+      body: formatter(memberSettings.allowDeleteChannels, false, false, true),
     },
   ]
 

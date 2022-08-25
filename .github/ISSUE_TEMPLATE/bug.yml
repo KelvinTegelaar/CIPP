@@ -1,0 +1,37 @@
+name: 🐞 Bug report 
+description: Report errors or unexpected behaviors for CIPP and CIPP-API
+labels: [unconfirmed-by-user , bug]
+
+body:
+- type: markdown
+  attributes:
+    value: >
+      Thanks for reporting.
+
+      - Make sure you are able to reproduce this issue on the latest released version of CIPP & CIPP-API. 
+      
+      - Please search the existing issues to see if there has been a similar issue filed
+      
+      - This is not the location for support. Issues that request support or are not a bug will be closed.
+- type: textarea
+  attributes:
+    label: Description
+    description: >
+      Please describe the issue and expected result. You can include a screenshot by pasting it. Issues with a description that is too short or does not explain each step in detail will be closed.
+      
+      Example:
+      
+      1.) go to Settings
+      2.) Click on a tenant in access check
+      3.) Click on the green pixel in the bottom right corner
+      4.) A bug appears.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Environment data
+    description: >
+      Please let us know your environment information - e.g. hosted version, Azure, local Dev version.
+    render: PowerShell
+  validations:
+    required: true
