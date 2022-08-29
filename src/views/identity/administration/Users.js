@@ -229,6 +229,14 @@ const Users = () => {
       title="Users"
       titleButton={titleButton}
       datatable={{
+        filterlist: [
+          { filterName: 'Enabled users', filter: '"accountEnabled":true' },
+          { filterName: 'AAD users', filter: '"onPremisesSyncEnabled":false' },
+          { filterName: 'Synced users', filter: '"onPremisesSyncEnabled":true' },
+          { filterName: 'Guest users', filter: '"usertype":"guest"' },
+          { filterName: 'Users with a license', filter: '"assignedLicenses":[{' },
+          { filterName: 'Users without a license', filter: '"assignedLicenses":[]' },
+        ],
         columns,
         path: '/api/ListUsers',
         reportName: `${tenant?.defaultDomainName}-Users`,

@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { CSpinner } from '@coreui/react'
+import { withTheme } from 'styled-components'
 
 export default function Loading({ style = {}, size = 'md' }) {
   return <CSpinner size={size} style={style} />
@@ -20,10 +21,12 @@ export function FullScreenLoading() {
         alignItems: 'center',
         width: '100%',
         height: '100vh',
+        backgroundColor: '#2e363a',
       }}
     >
       <CSpinner
         style={{
+          color: 'white',
           border: '3em solid currentColor',
           borderRightColor: 'transparent',
           width: '50vh',
