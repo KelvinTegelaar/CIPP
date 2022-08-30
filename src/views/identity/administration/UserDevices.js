@@ -4,7 +4,6 @@ import { CLink } from '@coreui/react'
 import { faLaptop } from '@fortawesome/free-solid-svg-icons'
 import { DatatableContentCard } from 'src/components/contentcards'
 import { cellBooleanFormatter, cellNullTextFormatter } from 'src/components/tables'
-import { useListUserDevicesQuery } from 'src/store/api/devices'
 
 let tenantDomainFileScope = ''
 
@@ -128,15 +127,6 @@ const columns = [
 ]
 
 export default function UserDevices({ userId, tenantDomain, className = null }) {
-  const {
-    data: devices = [],
-    isFetching,
-    error,
-  } = useListUserDevicesQuery({ userId, tenantDomain })
-  tenantDomainFileScope = tenantDomain
-  // inject tenant domain into devices for column render
-  const mapped = devices.map((device) => ({ ...device, tenantDomain }))
-
   return (
     <DatatableContentCard
       title="User Devices"
@@ -150,11 +140,8 @@ export default function UserDevices({ userId, tenantDomain, className = null }) 
         responsive: true,
         dense: true,
         striped: true,
-        data: mapped,
       }}
       className={className}
-      isFetching={isFetching}
-      error={error}
       errorMessage="Error fetching user devices"
     />
   )
