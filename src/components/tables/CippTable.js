@@ -28,6 +28,7 @@ const FilterComponent = ({ filterText, onFilter, onClear, filterlist, onFilterPr
           <FontAwesomeIcon icon={faSearch} color="#3e5c66" />
         </CDropdownToggle>
         <CDropdownMenu>
+          <CDropdownItem onClick={() => onFilterPreset('')}>Clear Filter</CDropdownItem>
           {filterlist &&
             filterlist.map((item, idx) => {
               return (
@@ -36,7 +37,6 @@ const FilterComponent = ({ filterText, onFilter, onClear, filterlist, onFilterPr
                 </CDropdownItem>
               )
             })}
-          {!filterlist && <CDropdownItem href="#">No filters available</CDropdownItem>}
         </CDropdownMenu>
       </CDropdown>
       <CFormInput
