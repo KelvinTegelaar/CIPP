@@ -341,7 +341,7 @@ const TenantsList = () => {
     <TitleButton
       icon={'faCog'}
       onClick={() => setOmitVisible(!columnOmits)}
-      title="Show Direct Links"
+      title={columnOmits ? 'Show Direct Links' : 'Hide Direct Links'}
     />
   )
   return (
