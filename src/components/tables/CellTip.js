@@ -41,3 +41,14 @@ export const CellTip = (value, overflow = false) => {
     )
   }
 }
+
+export const CellTipIcon = (value, icon) => {
+  if (!value) {
+    return <div>{icon}</div>
+  }
+  return (
+    <CTooltip content={value}>
+      <div>{icon}</div>
+    </CTooltip>
+  )
+}
