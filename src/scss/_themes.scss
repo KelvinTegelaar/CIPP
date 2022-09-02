@@ -500,16 +500,16 @@
   --cipp-offcanvas-header-color: var(--cyberdrain-light);
 
   .react-loading-skeleton {
-    --base-color: var(--cyberdrain-secondary);
-    --highlight-color: var(--cyberdrain-primary);
-    --animation-duration: 1.5s;
+    --base-color: var(--cyberdrain-dark-striped);
+    --highlight-color: var(--cyberdrain-lighter);
+    --animation-duration: 2.5s;
     --animation-direction: normal;
     --pseudo-element-display: block; /* Enable animation */
 
     background-color: var(--base-color);
 
     width: 100%;
-    border-radius: 0.25rem;
+    border-radius: 0.2rem;
     display: inline-flex;
     line-height: 1;
 
