@@ -6,13 +6,7 @@ import { faExclamationTriangle, faTimes, faCheck } from '@fortawesome/free-solid
 import { useSelector } from 'react-redux'
 import { CippWizard } from 'src/components/layout'
 import PropTypes from 'prop-types'
-import {
-  Condition,
-  RFFCFormCheck,
-  RFFCFormInput,
-  RFFCFormSwitch,
-  RFFSelectSearch,
-} from 'src/components/forms'
+import { RFFCFormCheck, RFFCFormInput, RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms'
 import { TenantSelector } from 'src/components/utilities'
 import { useListUsersQuery } from 'src/store/api/users'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
