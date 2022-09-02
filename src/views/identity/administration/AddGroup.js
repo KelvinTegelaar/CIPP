@@ -12,7 +12,13 @@ import {
   CCardBody,
 } from '@coreui/react'
 import { Form } from 'react-final-form'
-import { RFFCFormInput, RFFCFormRadio, RFFCFormSelect } from 'src/components/forms'
+import {
+  Condition,
+  RFFCFormCheck,
+  RFFCFormInput,
+  RFFCFormRadio,
+  RFFCFormSelect,
+} from 'src/components/forms'
 import { CippPage } from 'src/components/layout/CippPage'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { useListDomainsQuery } from 'src/store/api/domains'
@@ -35,6 +41,7 @@ const AddGroup = () => {
       username: values.username,
       isAssignableToRole: values.isAssignableToRole,
       groupType: values.groupType,
+      allowExternal: values.allowExternal,
     }
     //window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/AddGroup', values: shippedValues })
@@ -94,6 +101,12 @@ const AddGroup = () => {
                       value="security"
                     />
                   </CRow>
+                  <Condition when="groupType" is={'distribution'}>
+                    <RFFCFormCheck
+                      name="allowExternal"
+                      label="Let people outside the organization email the group"
+                    />
+                  </Condition>
                   <CRow className="mb-3">
                     <CCol md={6}>
                       <CButton type="submit" disabled={submitting}>
