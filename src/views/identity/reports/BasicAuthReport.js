@@ -17,16 +17,16 @@ const columns = [
   },
   {
     name: 'Failure Reason',
-    selector: (row) => row.status.errorCode,
+    selector: (row) => row.status?.errorCode,
     sortable: true,
     exportSelector: 'status',
     cell: (row) => {
       return (
         <CLink
           target="_blank"
-          href={`https://login.microsoftonline.com/error?code=${row.status.errorCode}`}
+          href={`https://login.microsoftonline.com/error?code=${row.status?.errorCode}`}
         >
-          {row.status.errorCode}
+          {row.status?.errorCode}
         </CLink>
       )
     },
