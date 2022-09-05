@@ -258,6 +258,7 @@ const ListAppliedStandards = () => {
                               name="standards.SSPR"
                               label="Enable Self Service Password Reset"
                             />
+                            <RFFCFormSwitch name="standards.UndoSSPR" label="Undo SSPR Standard" />
                           </CCol>
                           <CCol md={6}>
                             <RFFCFormSwitch
@@ -279,7 +280,10 @@ const ListAppliedStandards = () => {
                               name="standards.LegacyMFA"
                               label="Enable per-user MFA for all user (Legacy)"
                             />
-
+                            <RFFCFormSwitch
+                              name="standards.LegacyMFACleanup"
+                              label="Remove Legacy MFA if SD or CA is active"
+                            />
                             <RFFCFormSwitch
                               name="standards.DisableSelfServiceLicenses"
                               label="Disable Self Service Licensing"
@@ -288,7 +292,7 @@ const ListAppliedStandards = () => {
                               name="standards.DisableM365GroupUsers"
                               label="Disable M365 Group creation by users"
                             />
-                            <RFFCFormSwitch name="standards.UndoSSPR" label="Undo SSPR Standard" />
+
                             <RFFCFormSwitch
                               name="standards.UndoOauth"
                               label="Undo App Consent Standard"
