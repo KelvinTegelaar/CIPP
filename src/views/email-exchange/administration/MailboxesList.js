@@ -171,6 +171,14 @@ const MailboxList = () => {
         path: '/api/ListMailboxes',
         columns,
         params: { TenantFilter: tenant?.defaultDomainName },
+        filterlist: [
+          {
+            filterName: 'User Mailboxes',
+            filter: '"recipientTypeDetails":"UserMailbox"',
+          },
+          { filterName: 'Shared Mailboxes', filter: '"recipientTypeDetails":"SharedMailbox"' },
+          { filterName: 'Has an alias', filter: '"AdditionalEmailAddresses":"' },
+        ],
       }}
     />
   )
