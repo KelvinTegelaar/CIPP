@@ -23,6 +23,7 @@ const AppHeader = () => {
   const sidebarShow = useSelector((state) => state.app.sidebarShow)
   const currentTheme = useSelector((state) => state.app.currentTheme)
   const preferredTheme = useMediaPredicate('(prefers-color-scheme: dark)') ? 'impact' : 'cyberdrain'
+  console.log(preferredTheme)
   return (
     <CHeader position="sticky">
       <CContainer fluid>

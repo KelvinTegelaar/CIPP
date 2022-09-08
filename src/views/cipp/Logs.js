@@ -28,7 +28,6 @@ const columns = [
     cell: cellDateFormatter(),
     exportSelector: 'DateTime',
     minWidth: '145px',
-    maxWidth: '145px',
   },
   {
     name: 'Tenant',
@@ -36,8 +35,6 @@ const columns = [
     sortable: true,
     cell: (row) => CellTip(row['Tenant']),
     exportSelector: 'Tenant',
-    minWidth: '145px',
-    maxWidth: '145px',
   },
   {
     name: 'API',
@@ -45,8 +42,6 @@ const columns = [
     sortable: true,
     cell: (row) => CellTip(row['API']),
     exportSelector: 'API',
-    minWidth: '145px',
-    maxWidth: '145px',
   },
   {
     name: 'Message',
@@ -61,16 +56,12 @@ const columns = [
     sortable: true,
     cell: (row) => CellTip(row['User']),
     exportSelector: 'User',
-    minWidth: '145px',
-    maxWidth: '145px',
   },
   {
     name: 'Severity',
     selector: (row) => row['Severity'],
     sortable: true,
     exportSelector: 'Severity',
-    minWidth: '145px',
-    maxWidth: '145px',
   },
 ]
 

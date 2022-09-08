@@ -13,6 +13,7 @@ export default function UserOneDriveUsage({ userUPN, tenantDomain, className = n
   } = useListOneDriveUsageQuery({ userUPN, tenantDomain })
 
   const noUsage = Object.keys(usage).length === 0 ?? false
+  console.log(usage)
   const content = [
     {
       heading: 'Site URL',

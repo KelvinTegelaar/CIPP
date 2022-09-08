@@ -56,6 +56,7 @@ const AddUser = () => {
     isFetching: adcIsFetching,
     error: adcError,
   } = useListAdConnectSettingsQuery({ tenantDomain })
+  console.log(adconnectsettings)
 
   const {
     data: domains = [],
@@ -100,6 +101,7 @@ const AddUser = () => {
     genericPostRequest({ path: '/api/AddUser', values: shippedValues })
   }
   const usagelocation = useSelector((state) => state.app.usageLocation)
+  console.log(usagelocation)
   const initialState = {
     Autopassword: true,
     usageLocation: usagelocation,

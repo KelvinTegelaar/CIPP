@@ -105,8 +105,6 @@ const BestPracticeAnalyser = () => {
       cell: cellDateFormatter({ format: 'short' }),
       sortable: true,
       exportSelector: 'LastRefresh',
-      minWidth: '145px',
-      maxWidth: '145px',
     },
     {
       name: 'Unified Audit Log Enabled',
@@ -114,8 +112,6 @@ const BestPracticeAnalyser = () => {
       cell: cellBooleanFormatter(),
       sortable: true,
       exportSelector: 'UnifiedAuditLog',
-      minWidth: '150px',
-      maxWidth: '150px',
     },
     {
       name: 'Security Defaults Enabled',
@@ -123,8 +119,6 @@ const BestPracticeAnalyser = () => {
       cell: cellBooleanFormatter({ warning: true }),
       sortable: true,
       exportSelector: 'SecureDefaultState',
-      minWidth: '150px',
-      maxWidth: '150px',
     },
     {
       name: 'Message Copy for Send As',
@@ -145,8 +139,6 @@ const BestPracticeAnalyser = () => {
         return <CellBadge label="No Data" color="info" />
       },
       sortable: true,
-      minWidth: '150px',
-      maxWidth: '150px',
     },
     {
       name: 'User Cannot Consent to Apps',
@@ -154,8 +146,6 @@ const BestPracticeAnalyser = () => {
       cell: cellBooleanFormatter({ reverse: true }),
       sortable: true,
       exportSelector: 'AdminConsentForApplications',
-      minWidth: '150px',
-      maxWidth: '150px',
     },
     {
       name: 'Passwords Do Not Expire',
@@ -163,8 +153,6 @@ const BestPracticeAnalyser = () => {
       cell: cellBooleanFormatter(),
       sortable: true,
       exportSelector: 'DoNotExpirePasswords',
-      minWidth: '150px',
-      maxWidth: '150px',
     },
     {
       name: 'Privacy in Reports Enabled',
@@ -172,8 +160,6 @@ const BestPracticeAnalyser = () => {
       cell: cellBooleanFormatter({ reverse: true, warning: true }),
       sortable: true,
       exportSelector: 'PrivacyEnabled',
-      minWidth: '150px',
-      maxWidth: '150px',
     },
     {
       name: 'Self Service Password Reset Enabled',
@@ -191,8 +177,6 @@ const BestPracticeAnalyser = () => {
         return <CellBadge label="No Data" color="info" />
       },
       sortable: true,
-      minWidth: '150px',
-      maxWidth: '150px',
     },
     {
       name: 'Modern Auth Enabled',
@@ -200,8 +184,6 @@ const BestPracticeAnalyser = () => {
       sortable: true,
       exportSelector: 'EnableModernAuth',
       cell: cellBooleanFormatter(),
-      minWidth: '150px',
-      maxWidth: '150px',
     },
     {
       name: 'Shared Mailboxes Logins Disabled',
@@ -225,8 +207,6 @@ const BestPracticeAnalyser = () => {
         return <CellBadge label="No Data" color="info" />
       },
       sortable: true,
-      minWidth: '150px',
-      maxWidth: '150px',
     },
     {
       name: 'Unused Licenses',
@@ -247,8 +227,6 @@ const BestPracticeAnalyser = () => {
         return <CellBadge label="No Data" color="info" />
       },
       sortable: true,
-      minWidth: '150px',
-      maxWidth: '150px',
     },
     {
       name: 'Secure Score',
@@ -262,8 +240,6 @@ const BestPracticeAnalyser = () => {
         return <CellProgressBar value={row.SecureScorePercentage} />
       },
       sortable: true,
-      minWidth: '150px',
-      maxWidth: '150px',
     },
   ]
 
