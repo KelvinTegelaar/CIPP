@@ -89,6 +89,19 @@ const Groups = () => {
         path: '/api/ListGroups',
         params: { TenantFilter: tenant?.defaultDomainName },
         columns,
+        filterlist: [
+          {
+            filterName: 'Distribution Groups',
+            filter: '"calculatedGroupType":"Distribution List"',
+          },
+          { filterName: 'Security Groups', filter: '"calculatedGroupType":"Security"' },
+          { filterName: 'M365 Groups', filter: '"calculatedGroupType":"Microsoft 365"' },
+          { filterName: 'Mail-Enabled Security Groups', filter: '"Mail-Enabled Security"' },
+          { filterName: 'Dynamic Groups', filter: '"dynamicGroupBool":true' },
+          { filterName: 'Teams Groups', filter: '"teamsEnabled":true' },
+          { filterName: 'AAD Groups', filter: '"onPremisesSyncEnabled":null' },
+          { filterName: 'Synced Groups', filter: '"onPremisesSyncEnabled":true' },
+        ],
       }}
     />
   )

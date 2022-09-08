@@ -6,7 +6,7 @@ import { faExclamationTriangle, faTimes, faCheck } from '@fortawesome/free-solid
 import { useSelector } from 'react-redux'
 import { CippWizard } from 'src/components/layout'
 import PropTypes from 'prop-types'
-import { RFFCFormInput, RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms'
+import { RFFCFormCheck, RFFCFormInput, RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms'
 import { TenantSelector } from 'src/components/utilities'
 import { useListUsersQuery } from 'src/store/api/users'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
@@ -59,6 +59,7 @@ const OffboardingWizard = () => {
       deleteuser: values.DeleteUser,
       removeRules: values.RemoveRules,
       removeMobile: values.RemoveMobile,
+      keepCopy: values.keepCopy,
     }
 
     //alert(JSON.stringify(values, null, 2))
@@ -170,6 +171,10 @@ const OffboardingWizard = () => {
               name="forward"
             />
           </CCol>
+          <RFFCFormCheck
+            name="keepCopy"
+            label="Keep a copy of the forwarded mail in the source mailbox"
+          />
           <RFFCFormSwitch name="DeleteUser" label="Delete user" />
         </div>
         <hr className="my-4" />

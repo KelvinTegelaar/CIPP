@@ -1,18 +1,44 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { ExportCsvButton, ExportPDFButton } from 'src/components/buttons'
-import { CSpinner, CFormInput, CInputGroup, CInputGroupText } from '@coreui/react'
+import {
+  CSpinner,
+  CFormInput,
+  CInputGroup,
+  CDropdown,
+  CDropdownToggle,
+  CDropdownMenu,
+  CDropdownItem,
+} from '@coreui/react'
 import DataTable, { createTheme } from 'react-data-table-component'
 import PropTypes from 'prop-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
 
-const FilterComponent = ({ filterText, onFilter, onClear }) => (
+const FilterComponent = ({ filterText, onFilter, onClear, filterlist, onFilterPreset }) => (
   <>
     <CInputGroup>
-      <CInputGroupText id="basic-addon1">
-        <FontAwesomeIcon icon={faSearch} />
-      </CInputGroupText>
+      <CDropdown variant="input-group">
+        <CDropdownToggle
+          color="#3e5c66"
+          style={{
+            backgroundColor: '#d8dbe0',
+          }}
+        >
+          <FontAwesomeIcon icon={faSearch} color="#3e5c66" />
+        </CDropdownToggle>
+        <CDropdownMenu>
+          <CDropdownItem onClick={() => onFilterPreset('')}>Clear Filter</CDropdownItem>
+          {filterlist &&
+            filterlist.map((item, idx) => {
+              return (
+                <CDropdownItem key={idx} onClick={() => onFilterPreset(item.filter)}>
+                  {item.filterName}
+                </CDropdownItem>
+              )
+            })}
+        </CDropdownMenu>
+      </CDropdown>
       <CFormInput
         aria-describedby="basic-addon1"
         id="search"
@@ -31,6 +57,8 @@ FilterComponent.propTypes = {
   filterText: PropTypes.string,
   onFilter: PropTypes.func,
   onClear: PropTypes.func,
+  filterlist: PropTypes.arrayOf(PropTypes.object),
+  onFilterPreset: PropTypes.func,
 }
 
 const customSort = (rows, selector, direction) => {
@@ -53,7 +81,6 @@ const customSort = (rows, selector, direction) => {
     return direction === 'desc' ? comparison * -1 : comparison
   })
 }
-
 export default function CippTable({
   data,
   isFetching = false,
@@ -62,6 +89,7 @@ export default function CippTable({
   error,
   reportName,
   columns = [],
+  filterlist,
   tableProps: {
     keyField = 'id',
     theme = 'cyberdrain',
@@ -177,22 +205,25 @@ export default function CippTable({
         <div className="w-100 d-flex justify-content-start">
           <FilterComponent
             onFilter={(e) => setFilterText(e.target.value)}
+            onFilterPreset={(e) => setFilterText(e)}
             onClear={handleClear}
             filterText={filterText}
+            filterlist={filterlist}
           />
           {defaultActions}
         </div>
       </>
     )
   }, [
-    filterText,
-    resetPaginationToggle,
-    columns,
-    data,
-    reportName,
+    actions,
     disablePDFExport,
     disableCSVExport,
-    actions,
+    filterText,
+    filterlist,
+    resetPaginationToggle,
+    data,
+    columns,
+    reportName,
   ])
   const tablePageSize = useSelector((state) => state.app.tablePageSize)
   return (
@@ -246,6 +277,7 @@ export const CippTablePropTypes = {
   disablePDFExport: PropTypes.bool,
   disableCSVExport: PropTypes.bool,
   error: PropTypes.object,
+  filterlist: PropTypes.arrayOf(PropTypes.object),
 }
 
 CippTable.propTypes = CippTablePropTypes
