@@ -230,6 +230,10 @@ const ApplyStandard = () => {
                 label="Enable per-user MFA for all user (Legacy)"
               />
               <RFFCFormSwitch
+                name="standards.LegacyMFACleanup"
+                label="Remove Legacy MFA if SD or CA is active"
+              />
+              <RFFCFormSwitch
                 name="standards.DisableSecurityGroupUsers"
                 label="Disable Security Group creation by users"
               />
