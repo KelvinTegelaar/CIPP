@@ -227,18 +227,25 @@ const ViewBec = () => {
             button={
               <CButton
                 size="sm"
-                onClick={() => execBecView({ tenantFilter: tenantDomain, userId: userId })}
+                onClick={() =>
+                  execBecView({ tenantFilter: tenantDomain, userId: userId, overwrite: true })
+                }
                 disabled={isFetching}
               >
                 {!isFetching && <FontAwesomeIcon icon={faRedo} className="me-2" />}
-                Refresh
+                Refresh Data
               </CButton>
             }
           >
             <CCallout color="info">
               Loading Data: {isFetching && <CSpinner />}
               {!isFetching && error && <FontAwesomeIcon icon={faTimesCircle} />}
-              {isSuccess && <FontAwesomeIcon icon={faCheckCircle} />}
+              {isSuccess && (
+                <>
+                  <FontAwesomeIcon icon={faCheckCircle} />
+                  Data has been extracted at {alerts.ExtractedAt}
+                </>
+              )}
             </CCallout>
             <p>
               Use this information as a guide to check if a tenant or e-mail address might have been
