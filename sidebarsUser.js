@@ -79,6 +79,7 @@ const sidebars = {
           collapsed: true,
           items: [
             'usingcipp/tenantadministration/tenants',
+            'usingcipp/tenantadministration/alerts',
             'usingcipp/tenantadministration/conditionalaccesspolicies',
             'usingcipp/tenantadministration/standards',
             'usingcipp/tenantadministration/bestpracticeanalyser',

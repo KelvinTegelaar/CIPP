@@ -2,7 +2,28 @@ openapi: 3.0.9
 
 info:
   title: CIPP-API Documentation
-  description: An overview of the CIPP-API functions
+  description: |
+    CIPP-API is an Azure Function App operating as the logic layer for the CIPP platform. It is composed
+    primarily of standard Azure Functions with a handful of Azure Durable Functions handling more complex
+     actions (mostly applying standards and running tenant analysis).
+
+     API documentation is primarily intended to aid in further development of the CIPP platform.
+
+    ## Authentication
+    CIPP-API is primarily intended to be used by the CIPP Azure function app and as-such does not manage
+    authentication directly. You can authenticate directly to CIPP-API by retrieving the auth cookie 
+    `StaticWebAppsAuthCookie` and passing it with your API request.
+
+    **WARNING**
+
+    To be completely clear, **CIPP-API HAS NO AUTHENTICATION BUILT IN**. Within the context of the CIPP platform
+    the SWA handles authentication (a few calls such as *ExecSAMSetup* do check admin role). 
+    
+    You can in theory stand up your own API directly without the SWA and access the API with zero auth. You'd of
+    course need to ensure the API is not open to all doing this- set a rule in the Azure NSG so only your IP can
+    access it, or apply similar security to ensure exclusive access.
+    
+    *Info thanks to @knightian, via Discord*
   version: 1.0.1
 externalDocs:
   description: "CIPP Documentation"
