@@ -6,7 +6,7 @@ slug: /updating
 ---
 
 :::caution Manual vs Automatic Updating
-Note that the frontend updates automatically once you have done "Fetch & Merge" from GitHub, however the CIPP-API requires you to press a button on the resource in Azure itself. If you have a hosted version of CIPP, updated are deployed automatically.
+Note that the frontend updates automatically once you have done "Fetch & Merge" from GitHub, however the CIPP-API requires you to press a button on the resource in Azure itself. If you have a hosted version of CIPP, updates are deployed automatically.
 :::
 
 Update your application to the latest release using the following instructions:
