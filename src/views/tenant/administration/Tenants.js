@@ -14,6 +14,7 @@ import { CellTip, CellTipIcon } from 'src/components/tables'
 import { CippActionsOffcanvas } from 'src/components/utilities'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import Skeleton from 'react-loading-skeleton'
+import { TitleButton } from 'src/components/buttons'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const [getTenantDetails, tenantDetails] = useLazyGenericGetRequestQuery()
@@ -165,53 +166,190 @@ function StatusText(graphErrorCount, lastGraphError) {
   }
 }
 
-const columns = [
-  {
-    name: 'Status',
-    selector: (row) => row['GraphErrorCount'],
-    sortable: true,
-    cell: (row) =>
-      CellTipIcon(
-        StatusText(row['GraphErrorCount'], row['LastGraphError']),
-        StatusIcon(row['GraphErrorCount']),
-      ),
-    exportSelector: 'GraphErrorCount',
-    minWidth: '5px',
-  },
-  {
-    name: 'Name',
-    selector: (row) => row['displayName'],
-    sortable: true,
-    cell: (row) => CellTip(row['displayName']),
-    exportSelector: 'displayName',
-    minWidth: '250px',
-  },
-  {
-    name: 'Default Domain',
-    selector: (row) => row['defaultDomainName'],
-    sortable: true,
-    cell: (row) => CellTip(row['defaultDomainName']),
-    exportSelector: 'defaultDomainName',
-    minWidth: '200px',
-  },
-  {
-    exportSelector: 'customerId',
-  },
-  {
-    name: 'Actions',
-    center: true,
-    cell: Offcanvas,
-  },
-]
-
 const TenantsList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
+  const [columnOmits, setOmitVisible] = useState(true)
 
+  const columns = [
+    {
+      name: 'Status',
+      selector: (row) => row['GraphErrorCount'],
+      sortable: true,
+      cell: (row) =>
+        CellTipIcon(
+          StatusText(row['GraphErrorCount'], row['LastGraphError']),
+          StatusIcon(row['GraphErrorCount']),
+        ),
+      exportSelector: 'GraphErrorCount',
+      maxWidth: '5px',
+      minWidth: '5px',
+    },
+    {
+      name: 'Name',
+      selector: (row) => row['displayName'],
+      sortable: true,
+      cell: (row) => CellTip(row['displayName']),
+      exportSelector: 'displayName',
+      minWidth: '250px',
+    },
+    {
+      name: 'Default Domain',
+      selector: (row) => row['defaultDomainName'],
+      sortable: true,
+      cell: (row) => CellTip(row['defaultDomainName']),
+      exportSelector: 'defaultDomainName',
+      minWidth: '200px',
+    },
+    {
+      name: 'M365 Portal',
+      omit: columnOmits,
+      selector: (row) => row['customerId'],
+      center: true,
+      cell: (row) => (
+        <a
+          href={`https://portal.office.com/Partner/BeginClientSession.aspx?CTID=${row.customerId}&CSDEST=o365admincenter`}
+          target="_blank"
+          className="dlink"
+          rel="noreferrer"
+        >
+          <FontAwesomeIcon icon={faCog} className="me-2" />
+        </a>
+      ),
+    },
+    {
+      name: 'Exchange Portal',
+      omit: columnOmits,
+      selector: (row) => row['defaultDomainName'],
+      center: true,
+      cell: (row) => (
+        <a
+          href={`https://outlook.office365.com/ecp/?rfr=Admin_o365&exsvurl=1&delegatedOrg=${row.defaultDomainName}`}
+          target="_blank"
+          className="dlink"
+          rel="noreferrer"
+        >
+          <FontAwesomeIcon icon={faCog} className="me-2" />
+        </a>
+      ),
+    },
+    {
+      name: 'AAD Portal',
+      omit: columnOmits,
+      selector: (row) => row['defaultDomainName'],
+      center: true,
+      cell: (row) => (
+        <a
+          href={`https://aad.portal.azure.com/${row.defaultDomainName}`}
+          target="_blank"
+          className="dlink"
+          rel="noreferrer"
+        >
+          <FontAwesomeIcon icon={faCog} className="me-2" />
+        </a>
+      ),
+    },
+    {
+      name: 'Teams Portal',
+      omit: columnOmits,
+      selector: (row) => row['defaultDomainName'],
+      center: true,
+      cell: (row) => (
+        <a
+          href={`https://admin.teams.microsoft.com/?delegatedOrg=${row.defaultDomainName}`}
+          target="_blank"
+          className="dlink"
+          rel="noreferrer"
+        >
+          <FontAwesomeIcon icon={faCog} className="me-2" />
+        </a>
+      ),
+    },
+    {
+      name: 'Azure Portal',
+      omit: columnOmits,
+      selector: (row) => row['defaultDomainName'],
+      center: true,
+      cell: (row) => (
+        <a
+          href={`https://portal.azure.com/${row.defaultDomainName}`}
+          target="_blank"
+          className="dlink"
+          rel="noreferrer"
+        >
+          <FontAwesomeIcon icon={faCog} className="me-2" />
+        </a>
+      ),
+    },
+    {
+      name: 'MEM (Intune) Portal',
+      omit: columnOmits,
+      selector: (row) => row['defaultDomainName'],
+      center: true,
+      cell: (row) => (
+        <a
+          href={`https://endpoint.microsoft.com/${row.defaultDomainName}`}
+          target="_blank"
+          className="dlink"
+          rel="noreferrer"
+        >
+          <FontAwesomeIcon icon={faCog} className="me-2" />
+        </a>
+      ),
+    },
+    {
+      name: 'Security Portal (GDAP)',
+      selector: (row) => row['defaultDomainName'],
+      center: true,
+      omit: columnOmits,
+      cell: (row) => (
+        <a
+          href={`https://security.microsoft.com/?tid=${row.customerId}`}
+          target="_blank"
+          className="dlink"
+          rel="noreferrer"
+        >
+          <FontAwesomeIcon icon={faCog} className="me-2" />
+        </a>
+      ),
+    },
+    {
+      name: 'Sharepoint Admin',
+      selector: (row) => row['defaultDomainName'],
+      center: true,
+      omit: columnOmits,
+      cell: (row) => (
+        <a
+          href={`https://${row.defaultDomainName.split('.')[0]}-admin.sharepoint.com`}
+          target="_blank"
+          className="dlink"
+          rel="noreferrer"
+        >
+          <FontAwesomeIcon icon={faCog} className="me-2" />
+        </a>
+      ),
+    },
+    {
+      exportSelector: 'customerId',
+    },
+    {
+      name: 'Actions',
+      center: true,
+      cell: Offcanvas,
+    },
+  ]
+  const titleButton = (
+    <TitleButton
+      icon={'faCog'}
+      onClick={() => setOmitVisible(!columnOmits)}
+      title={columnOmits ? 'Show Direct Links' : 'Hide Direct Links'}
+    />
+  )
   return (
     <CippPageList
       capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
       title="Tenants"
       tenantSelector={false}
+      titleButton={titleButton}
       datatable={{
         keyField: 'id',
         columns,
