@@ -5,7 +5,7 @@ description: How to prepare to install an instance of CIPP for your organisation
 slug: /gettingstarted/prerequisites
 ---
 
-To get started make sure you have the following information ready;
+To get started you must follow or have the following ready. Click on the links for instructions on how to perform some of these tasks.
 
 - A [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) of [the CIPP GitHub](https://github.com/KelvinTegelaar/CIPP) repository.
 - A [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) of [the CIPP API GitHub](https://github.com/KelvinTegelaar/CIPP-API) repository.
