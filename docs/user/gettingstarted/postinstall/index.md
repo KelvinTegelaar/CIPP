@@ -7,10 +7,6 @@ slug: /gettingstarted/postinstall
 
 At this point you should have completed all the steps in [manual installation or click-to-deploy installation](../installation/) and your deployment has succeeded. Any Red cross means your deployment has failed and you should retry, following all the steps.
 
-## Adding Users
-
-After deployment, go to your resource group in Azure and select your Static Web Application (`cipp-swa-xxxx` if using click-to-deploy). Select **Role Management** and invite the users you want. Currently CIPP supports three roles, `reader`, `editor`, and `admin`. Further information on the roles and how to assign these is on the [Roles](../roles/) page.
-
 You should now be able to browse to the custom domain or the default domain, and use the CIPP control panel.
 
 ## Setting up access to tenants
@@ -20,8 +16,13 @@ If you are logged in, you'll be greeted by the Dashboard that will most likely t
 :::danger Secure Application Model account
 It is **strongly** recommended that you use a separate global administrator account for each Secure Application Model application you create. This avoids conflicts that occur when using existing accounts which may be in customer tenants as guest users and provides better tracing in audit logs.
 
-**This service account should be a Global Admin (in your tenant) and given Admin Agent permissions in partner Center. This account must have MFA enforced**.
+**This service account should be a Global Admin (in your tenant) and given Admin Agent permissions in partner Center. This account must have MFA enforced and cannot be excluded from Conditional Access in any way. Each logon must require a MFA Request.**.
 :::
+
+After setup you must clear the token cache. To clear the token cache follow these [instructions](https://cipp.app/docs/general/troubleshooting/#clear-token-cache)
+## Adding Users
+
+After deployment, go to your resource group in Azure and select your Static Web Application (`cipp-swa-xxxx` if using click-to-deploy). Select **Role Management** and invite the users you want. Currently CIPP supports three roles, `reader`, `editor`, and `admin`. Further information on the roles and how to assign these is on the [Roles](../roles/) page.
 
 ## It's Not Working
 
