@@ -159,7 +159,10 @@ const DeployDefender = () => {
                 name="Compliance.ConnectWindows"
                 label="Connect Windows devices version 10.0.15063 and above to Microsoft Defender for Endpoint (Compliance)"
               />
-              <RFFCFormSwitch name="EDR.Telemetry" label="Expedite Telemetry Reporting Frequency" />
+              <RFFCFormSwitch
+                name="EDR.Telemetry"
+                label="EDR: Expedite Telemetry Reporting Frequency"
+              />
             </CCol>
             <CCol md={6}>
               <RFFCFormSwitch
@@ -181,9 +184,9 @@ const DeployDefender = () => {
               />
               <RFFCFormSwitch
                 name="EDR.Config"
-                label="Connect Defender Configuration Package automatically from Connector"
+                label="EDR: Connect Defender Configuration Package automatically from Connector"
               />
-              <RFFCFormSwitch name="EDR.SampleSharing" label="Enable Sample Sharing" />
+              <RFFCFormSwitch name="EDR.SampleSharing" label="EDR: Enable Sample Sharing" />
             </CCol>
           </CRow>
         </div>
