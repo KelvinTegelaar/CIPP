@@ -1,6 +1,5 @@
 import React from 'react'
 
-/* eslint-disable prettier/prettier */
 const Home = React.lazy(() => import('src/views/home/Home'))
 const Logs = React.lazy(() => import('src/views/cipp/Logs'))
 const Users = React.lazy(() => import('src/views/identity/administration/Users'))
@@ -43,6 +42,8 @@ const ListLicences = React.lazy(() => import('src/views/tenant/administration/Li
 const ListAppConsent = React.lazy(() => import('src/views/tenant/administration/ListOauthApps'))
 
 const BasicAuthReport = React.lazy(() => import('src/views/identity/reports/BasicAuthReport'))
+const SignInReport = React.lazy(() => import('src/views/identity/reports/SignIns'))
+
 const AzureADConnectReport = React.lazy(() =>
   import('src/views/identity/reports/AzureADConnectReport'),
 )
@@ -209,6 +210,11 @@ const routes = [
     path: '/identity/reports/basic-auth-report',
     name: 'Basic Auth Report',
     component: BasicAuthReport,
+  },
+  {
+    path: '/identity/reports/Signin-report',
+    name: 'Sign-In Report',
+    component: SignInReport,
   },
   {
     path: '/identity/reports/azure-ad-connect-report',

@@ -88,6 +88,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Sign-in Report',
+        to: '/identity/reports/signin-report',
+      },
+      {
+        component: CNavItem,
         name: 'AAD Connect Report',
         to: '/identity/reports/azure-ad-connect-report',
       },
