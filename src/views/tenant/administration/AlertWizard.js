@@ -105,6 +105,10 @@ const AlertWizard = () => {
             label="Alert on users without any form of MFA"
           />
           <RFFCFormSwitch name="MFAAdmins" label="Alert on admins without any form of MFA" />
+          <RFFCFormSwitch
+            name="NoCAConfig"
+            label="Alert on tenants without a Conditional Access policy, while having Conditional Access licensing available."
+          />
           <RFFCFormSwitch name="NewRole" label="Alert on new users added to any admin role" />
           <RFFCFormSwitch name="AdminPassword" label="Alert on changed admin Passwords" />
           <RFFCFormSwitch
