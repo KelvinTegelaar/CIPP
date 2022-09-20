@@ -237,6 +237,14 @@ const AlertWizard = () => {
                             icon={props.values.DepTokenExpiry ? faCheck : faTimes}
                           />
                         </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Alert on no CA policies
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.NoCAConfig ? faCheck : faTimes}
+                          />
+                        </CListGroupItem>
                       </CListGroup>
                     </CCol>
                   </CRow>
