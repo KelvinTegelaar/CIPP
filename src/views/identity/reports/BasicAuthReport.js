@@ -52,22 +52,6 @@ const Altcolumns = [
     sortable: true,
     exportSelector: 'clientAppUsed',
   },
-  {
-    name: 'Failure Reason',
-    selector: (row) => row.status.errorCode,
-    sortable: true,
-    exportSelector: 'status',
-    cell: (row) => {
-      return (
-        <CLink
-          target="_blank"
-          href={`https://login.microsoftonline.com/error?code=${row.status.errorCode}`}
-        >
-          {row.status.errorCode}
-        </CLink>
-      )
-    },
-  },
 ]
 const BasicAuthReport = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
