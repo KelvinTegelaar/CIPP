@@ -25,7 +25,7 @@ export default function UserOneDriveUsage({ userUPN, tenantDomain, className = n
     {
       heading: 'Percent',
       body: CellProgressBar({
-        value: Math.round((usage[0]?.UsedGB / usage[0]?.Allocated) * 100),
+        value: ((usage[0]?.UsedGB / usage[0]?.Allocated) * 100).toFixed(2),
         reverse: true,
       }),
     },
