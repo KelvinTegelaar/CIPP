@@ -13,7 +13,7 @@ const AddGroup = React.lazy(() => import('src/views/identity/administration/AddG
 const EditGroup = React.lazy(() => import('src/views/identity/administration/EditGroup'))
 const ViewGroup = React.lazy(() => import('src/views/identity/administration/ViewGroup'))
 const Roles = React.lazy(() => import('src/views/identity/administration/Roles'))
-const Devices = React.lazy(() => import('src/views/identity/reports/Devices'))
+const Devices = React.lazy(() => import('src/views/endpoint/MEM/Devices'))
 const Page404 = React.lazy(() => import('src/views/pages/page404/Page404'))
 const Page403 = React.lazy(() => import('src/views/pages/page403/Page403'))
 const MFAReport = React.lazy(() => import('src/views/identity/reports/MFAReport'))
@@ -204,7 +204,7 @@ const routes = [
     component: OffboardingWizard,
   },
   { path: '/identity/reports', name: 'Reports' },
-  { path: '/identity/reports/devices', name: 'Devices', component: Devices },
+  { path: '/endpoint/reports/devices', name: 'Devices', component: Devices },
   { path: '/identity/reports/mfa-report', name: 'MFA Report', component: MFAReport },
   {
     path: '/identity/reports/basic-auth-report',
