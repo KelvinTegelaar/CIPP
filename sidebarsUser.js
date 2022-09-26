@@ -176,6 +176,7 @@ const sidebars = {
       ],
     },
     'updating/updating',
+   '/usingcipp/GDAP/migration',
   ],
 
   // But you can create a sidebar manually
