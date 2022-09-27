@@ -11,7 +11,13 @@ import { queryString } from 'src/helpers'
 const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = false }) => {
   const currentTenant = useSelector((state) => state.app.currentTenant)
   const {
-    data: tenants = [],
+    data: tenants = [
+      {
+        defaultDomainName: '',
+        customerId: '',
+        displayName: 'Did not retrieve tenants. Perform a permissions check',
+      },
+    ],
     isLoading,
     isSuccess,
     error,

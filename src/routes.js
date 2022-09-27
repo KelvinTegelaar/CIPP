@@ -1,6 +1,5 @@
 import React from 'react'
 
-/* eslint-disable prettier/prettier */
 const Home = React.lazy(() => import('src/views/home/Home'))
 const Logs = React.lazy(() => import('src/views/cipp/Logs'))
 const Users = React.lazy(() => import('src/views/identity/administration/Users'))
@@ -14,7 +13,7 @@ const AddGroup = React.lazy(() => import('src/views/identity/administration/AddG
 const EditGroup = React.lazy(() => import('src/views/identity/administration/EditGroup'))
 const ViewGroup = React.lazy(() => import('src/views/identity/administration/ViewGroup'))
 const Roles = React.lazy(() => import('src/views/identity/administration/Roles'))
-const Devices = React.lazy(() => import('src/views/identity/reports/Devices'))
+const Devices = React.lazy(() => import('src/views/endpoint/MEM/Devices'))
 const Page404 = React.lazy(() => import('src/views/pages/page404/Page404'))
 const Page403 = React.lazy(() => import('src/views/pages/page403/Page403'))
 const MFAReport = React.lazy(() => import('src/views/identity/reports/MFAReport'))
@@ -30,6 +29,9 @@ const ListConditionalTemplates = React.lazy(() =>
   import('src/views/tenant/conditional/ListCATemplates'),
 )
 
+const DeployNamedLocation = React.lazy(() =>
+  import('src/views/tenant/conditional/DeployNamedLocation'),
+)
 const AddConditionalTemplate = React.lazy(() =>
   import('src/views/tenant/conditional/AddCATemplate'),
 )
@@ -40,6 +42,8 @@ const ListLicences = React.lazy(() => import('src/views/tenant/administration/Li
 const ListAppConsent = React.lazy(() => import('src/views/tenant/administration/ListOauthApps'))
 
 const BasicAuthReport = React.lazy(() => import('src/views/identity/reports/BasicAuthReport'))
+const SignInReport = React.lazy(() => import('src/views/identity/reports/SignIns'))
+
 const AzureADConnectReport = React.lazy(() =>
   import('src/views/identity/reports/AzureADConnectReport'),
 )
@@ -106,6 +110,8 @@ const IntuneListPolicyTemplate = React.lazy(() =>
   import('src/views/endpoint/MEM/MEMListPolicyTemplates'),
 )
 const ListDefender = React.lazy(() => import('src/views/security/defender/ListDefender'))
+const DeployDefender = React.lazy(() => import('src/views/security/defender/DeployDefender'))
+
 const OneDriveList = React.lazy(() => import('src/views/teams-share/onedrive/OneDriveList'))
 const SharepointList = React.lazy(() => import('src/views/teams-share/sharepoint/SharepointList'))
 const BusinessVoice = React.lazy(() => import('src/views/teams-share/teams/BusinessVoice'))
@@ -131,6 +137,9 @@ const ViewMobileDevices = React.lazy(() =>
 )
 const MailboxesList = React.lazy(() =>
   import('src/views/email-exchange/administration/MailboxesList'),
+)
+const MailboxRulesList = React.lazy(() =>
+  import('src/views/email-exchange/administration/MailboxRuleList'),
 )
 const QuarantineList = React.lazy(() =>
   import('src/views/email-exchange/administration/QuarantineList'),
@@ -195,12 +204,17 @@ const routes = [
     component: OffboardingWizard,
   },
   { path: '/identity/reports', name: 'Reports' },
-  { path: '/identity/reports/devices', name: 'Devices', component: Devices },
+  { path: '/endpoint/reports/devices', name: 'Devices', component: Devices },
   { path: '/identity/reports/mfa-report', name: 'MFA Report', component: MFAReport },
   {
     path: '/identity/reports/basic-auth-report',
     name: 'Basic Auth Report',
     component: BasicAuthReport,
+  },
+  {
+    path: '/identity/reports/Signin-report',
+    name: 'Sign-In Report',
+    component: SignInReport,
   },
   {
     path: '/identity/reports/azure-ad-connect-report',
@@ -233,6 +247,11 @@ const routes = [
     path: '/tenant/conditional/deploy',
     name: 'Deploy Conditional Access',
     component: DeployConditional,
+  },
+  {
+    path: '/tenant/conditional/deploy-named-location',
+    name: 'Deploy Named Locations',
+    component: DeployNamedLocation,
   },
   {
     path: '/tenant/conditional/list-template',
@@ -345,6 +364,7 @@ const routes = [
     component: IntuneListPolicyTemplate,
   },
   { path: '/security/defender', name: 'Defender' },
+  { path: '/security/defender/deployment', name: 'Deploy Defender', component: DeployDefender },
   { path: '/security/defender/list-defender', name: 'List Defender', component: ListDefender },
   { path: '/teams-share', name: 'Teams & Sharepoint' },
   { path: '/teams-share/onedrive', name: 'OneDrive' },
@@ -409,6 +429,12 @@ const routes = [
   },
   { name: 'Edit Contact', path: '/email/administration/edit-contact', component: EditContact },
   { name: 'List Mailboxes', path: '/email/administration/mailboxes', component: MailboxesList },
+  {
+    name: 'List Mailbox Rules',
+    path: '/email/administration/mailbox-rules',
+    component: MailboxRulesList,
+  },
+
   {
     name: 'List Quarantine',
     path: '/email/administration/Quarantine',
