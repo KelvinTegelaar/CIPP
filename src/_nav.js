@@ -73,11 +73,6 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'Devices',
-        to: '/identity/reports/devices',
-      },
-      {
-        component: CNavItem,
         name: 'MFA Report',
         to: '/identity/reports/mfa-report',
       },
@@ -85,6 +80,11 @@ const _nav = [
         component: CNavItem,
         name: 'Basic Auth Report',
         to: '/identity/reports/basic-auth-report',
+      },
+      {
+        component: CNavItem,
+        name: 'Sign-in Report',
+        to: '/identity/reports/signin-report',
       },
       {
         component: CNavItem,
@@ -204,6 +204,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Deploy Named Locations',
+        to: '/tenant/conditional/deploy-named-location',
+      },
+      {
+        component: CNavItem,
         name: 'Add Template',
         to: '/tenant/conditional/add-template',
       },
@@ -253,6 +258,11 @@ const _nav = [
     to: '/security/defender',
     icon: <FontAwesomeIcon icon={faShieldAlt} className="nav-icon" />,
     items: [
+      {
+        component: CNavItem,
+        name: 'Defender Deployment',
+        to: '/security/defender/deployment',
+      },
       {
         component: CNavItem,
         name: 'Defender Status',
@@ -336,7 +346,7 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'List Devices',
+        name: 'List Autopilot Devices',
         to: '/endpoint/autopilot/list-devices',
       },
       {
@@ -358,6 +368,11 @@ const _nav = [
     to: '/endpoint/MEM',
     icon: <FontAwesomeIcon icon={faExchangeAlt} className="nav-icon" />,
     items: [
+      {
+        component: CNavItem,
+        name: 'List Devices',
+        to: '/endpoint/reports/devices',
+      },
       {
         component: CNavItem,
         name: 'List MEM Policies',
@@ -456,6 +471,11 @@ const _nav = [
         component: CNavItem,
         name: 'Mailboxes',
         to: '/email/administration/mailboxes',
+      },
+      {
+        component: CNavItem,
+        name: 'Mailbox Rules',
+        to: '/email/administration/mailbox-rules',
       },
       {
         component: CNavItem,
