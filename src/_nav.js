@@ -597,7 +597,7 @@ const _nav = [
       {
         component: CNavItem,
         name: 'Documentation',
-        href: 'https://cipp.app/docs/gdapmigration',
+        href: 'https://cipp.app/docs/user/usingcipp/GDAP/migration',
         target: '_blank',
       },
     ],
