@@ -33,17 +33,17 @@ CIPP assumes that you will want a relationship of 730 days.
 
 Follow the list below before starting the GDAP Wizard. You must execute each of these steps to successfully migrate to GDAP.
 
-- Click [here](https://login.microsoftonline.com/common/adminconsent?client_id=faa49500-c38b-4b63-9a77-33fe5492bb26) to activate the GDAP migration API in your tenant. It might forward you to "localhost" when the permission is approved. That means it's done.
-- Go to CIPP and click on Settings. Execute a permissions check, click on the "Details" button and follow the link to your SAM application.
+- You must be a global Admin and in the 'AdminAgents' group to perform this.
+- Go to your CIPP instance and click on GDAP -> Migration Wizard. Click the button to enable the migration API.
+- Follow the link returned by the application to go to your Secure Application Model app in Azure.
 - Click on API Permissions
 - Click on Add and choose "APIs My organization uses"
 - Find "Partner Customer Delegated Administration"
 - Add all permissions under "Delegated" and "Application" and click Add Permissions
 - Click on "Grant Admin Consent for {Organization}".
-- Go to CIPP and click on the GDAP -> Migration Wizard
-- Perform all steps in the wizard.
+- Go back to CIPP and perform all steps in the wizard.
 
-you can view the status of the GDAP migration in the GDAP Migration Status tab. When the migration has been completed for all your tenants you can move users into the new groups to use GDAP.
+You can view the status of the GDAP migration in the GDAP Migration Status tab. When the migration has been completed for all your tenants you can move users into the new groups to use GDAP.
 
 Please remember to put the CIPP-SAM user in these groups as well. It is not recommended to add all groups to a user.
 
