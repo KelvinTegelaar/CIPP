@@ -6,7 +6,7 @@ import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { CippWizard } from 'src/components/layout'
 import { WizardTableField } from 'src/components/tables'
 import PropTypes from 'prop-types'
-import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
 const Error = ({ name }) => (
   <Field
@@ -31,6 +31,7 @@ const requiredArray = (value) => (value && value.length !== 0 ? undefined : 'Req
 
 const GDAPWizard = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
+  const [genericGetRequest, getResults] = useLazyGenericGetRequestQuery()
 
   const handleSubmit = async (values) => {
     genericPostRequest({ path: '/api/ExecGDAPMigration', values: values })
@@ -51,9 +52,13 @@ const GDAPWizard = () => {
         </center>
         <hr className="my-4" />
         <CCallout color="info">
-          The GDAP migration tool requires setup. Please check the documentation at{' '}
-          <a href="https://cipp.app/docs/user/usingcipp/GDAP/migration/" target="_blank">
-            cipp.app
+          The GDAP migration tool requires setup. Please check the documentation{' '}
+          <a
+            className="mb-2"
+            href="https://cipp.app/docs/user/usingcipp/GDAP/migration/"
+            target="_blank"
+          >
+            here.
           </a>
           <br /> <br />
           This tool is offered as-is, without support, warranties, or guarantees. If you are having
@@ -61,7 +66,20 @@ const GDAPWizard = () => {
           <br />
           Please remember to add the CIPP-SAM service principal to the GDAP groups you would like
           CIPP to manage.
+          <br /> <br />
+          Use the button below to enable the GDAP migration API, you only need to enable this API
+          once.
         </CCallout>
+        <CButton onClick={() => genericGetRequest({ path: '/api/ExecAddSPN' })}>
+          Enable GDAP API
+        </CButton>
+        {(getResults.isSuccess || getResults.isError) && (
+          <CCallout color={getResults.isSuccess ? 'success' : 'danger'}>
+            {getResults.isSuccess
+              ? getResults.data.Results
+              : 'Failed to add SPN. Please manually execute "New-AzureADServicePrincipal -AppId 2832473f-ec63-45fb-976f-5d45a7d4bb91"'}
+          </CCallout>
+        )}
         <hr className="my-4" />
       </CippWizard.Page>
       <CippWizard.Page
