@@ -4,16 +4,28 @@ import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
 const columns = [
   {
+    name: 'Date',
+    selector: (row) => row['createdDateTime'],
+    sortable: true,
+    exportSelector: 'createdDateTime',
+  },
+  {
     name: 'User Principal Name',
     selector: (row) => row['userPrincipalName'],
     sortable: true,
     exportSelector: 'userPrincipalName',
   },
   {
-    name: 'Basic Auth',
+    name: 'Application Name',
     selector: (row) => row['clientAppUsed'],
     sortable: true,
     exportSelector: 'clientAppUsed',
+  },
+  {
+    name: 'Authentication Requirements',
+    selector: (row) => row['authenticationRequirement'],
+    sortable: true,
+    exportSelector: 'authenticationRequirement',
   },
   {
     name: 'Failure Reason',
@@ -31,43 +43,35 @@ const columns = [
       )
     },
   },
+  {
+    name: 'Additional Details',
+    selector: (row) => row.status?.additionalDetails,
+    sortable: true,
+    exportSelector: 'status',
+  },
+  {
+    name: 'Location',
+    selector: (row) => `${row.location?.city} - ${row.location?.countryOrRegion}`,
+    sortable: true,
+    exportSelector: 'status',
+  },
 ]
 
-const Altcolumns = [
-  {
-    name: 'Tenant',
-    selector: (row) => row['Tenant'],
-    sortable: true,
-    exportSelector: 'Tenant',
-  },
-  {
-    name: 'User Principal Name',
-    selector: (row) => row['userPrincipalName'],
-    sortable: true,
-    exportSelector: 'userPrincipalName',
-  },
-  {
-    name: 'Basic Auth',
-    selector: (row) => row['clientAppUsed'],
-    sortable: true,
-    exportSelector: 'clientAppUsed',
-  },
-]
-const BasicAuthReport = () => {
+const SignInsReport = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
     <CippPageList
-      title="Basic Auth Report"
-      capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
+      title="Sign Ins Report (last 30 days)"
+      capabilities={{ allTenants: false, helpContext: 'https://google.com' }}
       datatable={{
-        columns: tenant.defaultDomainName === 'AllTenants' ? Altcolumns : columns,
-        path: '/api/ListBasicAuth',
-        reportName: `${tenant?.defaultDomainName}-Basic-Auth-Report`,
+        columns: columns,
+        path: '/api/ListSignIns',
+        reportName: `${tenant?.defaultDomainName}-SignIns-Report`,
         params: { TenantFilter: tenant?.defaultDomainName },
       }}
     />
   )
 }
 
-export default BasicAuthReport
+export default SignInsReport
