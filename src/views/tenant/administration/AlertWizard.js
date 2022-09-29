@@ -245,7 +245,7 @@ const AlertWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.DepTokenExpiry ? faCheck : faTimes}
+                            icon={props.values.NoCAConfig ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                       </CListGroup>
