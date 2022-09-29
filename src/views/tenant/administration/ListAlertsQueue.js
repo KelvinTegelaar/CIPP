@@ -101,6 +101,13 @@ const ListAlertsQueue = () => {
       cell: cellBooleanFormatter(),
     },
     {
+      name: 'No CA Config',
+      selector: (row) => row['NoCAConfig'],
+      sortable: true,
+      exportSelector: 'NoCAConfig',
+      cell: cellBooleanFormatter(),
+    },
+    {
       name: 'Actions',
       cell: Actions,
     },
