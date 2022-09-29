@@ -101,6 +101,27 @@ const ListAlertsQueue = () => {
       cell: cellBooleanFormatter(),
     },
     {
+      name: 'APN Cert Expiry',
+      selector: (row) => row['ApnCertExpiry'],
+      sortable: true,
+      exportSelector: 'ApnCertExpiry',
+      cell: cellBooleanFormatter(),
+    },
+    {
+      name: 'VPP Token Expiry',
+      selector: (row) => row['VppTokenExpiry'],
+      sortable: true,
+      exportSelector: 'VppTokenExpiry',
+      cell: cellBooleanFormatter(),
+    },
+    {
+      name: 'DEP Token Expiry',
+      selector: (row) => row['DepTokenExpiry'],
+      sortable: true,
+      exportSelector: 'DepTokenExpiry',
+      cell: cellBooleanFormatter(),
+    },
+    {
       name: 'No CA Config',
       selector: (row) => row['NoCAConfig'],
       sortable: true,
