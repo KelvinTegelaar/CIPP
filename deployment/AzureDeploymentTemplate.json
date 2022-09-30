@@ -189,10 +189,6 @@
             {
               "name": "FUNCTIONS_WORKER_RUNTIME",
               "value": "powershell"
-            },
-            {
-              "name": "WEBSITE_RUN_FROM_PACKAGE",
-              "value": "1"
             }
           ]
         }
@@ -205,30 +201,9 @@
           "dependsOn": ["[resourceId('Microsoft.Web/sites/', variables('funcAppName'))]"],
           "properties": {
             "RepoUrl": "[parameters('GithubAPIRepository')]",
-            "repositoryToken": "[parameters('GithubToken')]",
             "branch": "master",
             "publishRunbook": true,
-            "gitHubActionConfiguration": {
-              "codeConfiguration": null,
-              "containerConfiguration": null,
-              "isLinux": false,
-              "generateWorkflowFile": true,
-              "workflowSettings": {
-                "appType": "functionapp",
-                "publishType": "code",
-                "os": "windows",
-                "variables": {
-                  "runtimeVersion": "7.2",
-                  "sitename": "[variables('funcAppName')]",
-                  "slotname": "Production",
-                  "publishingprofilesecretname": "[variables('funcAppName')]",
-                  "branch": "master"
-                },
-                "runtimeStack": "powershell",
-                "workflowApiVersion": "2020-12-01",
-                "useCanaryFusionServer": false
-              }
-            }
+            "IsManualIntegration": true
           }
         }
       ]
@@ -275,7 +250,7 @@
       "type": "Microsoft.Web/staticSites",
       "apiVersion": "2021-01-15",
       "name": "[variables('swaName')]",
-      "location": "[resourceGroup().location]",
+      "location": "centralus",
       "properties": {
         "repositoryUrl": "[parameters('GithubRepository')]",
         "branch": "main",
@@ -295,7 +270,7 @@
       "type": "Microsoft.Web/staticSites/userProvidedFunctionApps",
       "apiVersion": "2020-12-01",
       "name": "[concat(variables('swaName'), '/', variables('swaName'))]",
-      "location": "[resourceGroup().location]",
+      "location": "centralus",
       "dependsOn": [
         "[resourceId('Microsoft.Web/staticSites', variables('swaName'))]",
         "[resourceId('Microsoft.Web/sites/', variables('funcAppName'))]"
