@@ -14,16 +14,6 @@ info:
     authentication directly. You can authenticate directly to CIPP-API by retrieving the auth cookie 
     `StaticWebAppsAuthCookie` and passing it with your API request.
 
-    **WARNING**
-
-    To be completely clear, **CIPP-API HAS NO AUTHENTICATION BUILT IN**. Within the context of the CIPP platform
-    the SWA handles authentication (a few calls such as *ExecSAMSetup* do check admin role). 
-    
-    You can in theory stand up your own API directly without the SWA and access the API with zero auth. You'd of
-    course need to ensure the API is not open to all doing this- set a rule in the Azure NSG so only your IP can
-    access it, or apply similar security to ensure exclusive access.
-    
-    *Info thanks to @knightian, via Discord*
   version: 1.0.1
 externalDocs:
   description: "CIPP Documentation"
