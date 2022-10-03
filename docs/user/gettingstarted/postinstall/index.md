@@ -27,12 +27,6 @@ After setup you must clear the token cache. To clear the token cache follow thes
 
 After deployment, go to your resource group in Azure and select your Static Web Application (`cipp-swa-xxxx` if using click-to-deploy). Select **Role Management** and invite the users you want. Currently CIPP supports three roles, `reader`, `editor`, and `admin`. Further information on the roles and how to assign these is on the [Roles](../roles/) page.
 
-## It's Not Working
-
-If you have waited for at least 30 minutes and things are still not working restart the Function App (**Azure Portal > CIPP Resource Group > Function App > Overview > Restart**). This solves 99.9% of all issues. Turn it off, turn it on again.
-
-If you're still stuck, check out the [FAQ](/docs/general/faq/) or [Troubleshooting](/troubleshooting) pages and if needed - create an issue [on GitHub](https://github.com/KelvinTegelaar/CIPP/issues) or seek help [on the CIPP Discord](https://discord.gg/cyberdrain)
-
 ## Adding a Custom Domain Name
 
 :::tip Why setup a custom domain?
