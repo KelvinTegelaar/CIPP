@@ -7,7 +7,10 @@ slug: /gettingstarted/postinstall
 
 At this point you should have completed all the steps in [manual installation or click-to-deploy installation](../installation/) and your deployment has succeeded. Any Red cross means your deployment has failed and you should retry, following all the steps.
 
-You should now be able to browse to the custom domain or the default domain, and use the CIPP control panel.
+## Add yourself as a user
+
+After deployment, go to your resource group in Azure and select your Static Web Application (`cipp-swa-xxxx` if using click-to-deploy). Select **Role Management** and invite the users you want. Currently CIPP supports three roles, `reader`, `editor`, and `admin`. Further information on the roles and how to assign these is on the [Roles](../roles/) page. For setup you must give yourself the `admin` role. 
+
 
 ## Setting up access to tenants
 
