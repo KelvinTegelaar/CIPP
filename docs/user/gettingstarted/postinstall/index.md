@@ -41,7 +41,12 @@ At the moment of deployment, the application uses a generated domain name. To ch
 
 ## I want to manage my own tenant
 
-If you want to manage your own tenant, or if you are not a Microsoft Partner but still want to use CIPP you can set a flag in the configuration for this. Be warned that anyone with access to CIPP can then manage your internal tenant too.
+If you want to manage your own tenant, or if you are not a Microsoft Partner but still want to use CIPP you can set a flag in the configuration for this.
+
+:::danger Unsupported configuration
+This configuration option is not officially supported. Configuring this means you are on your own for any bugs that occur on your instance. It is advised to not add the Partner Tenant inside a CSP environment and to really use this as a 'Single Tenant' mode.
+:::
+
 
 It is not recommended to use this functionality, and this might break at any point in time. 
 
