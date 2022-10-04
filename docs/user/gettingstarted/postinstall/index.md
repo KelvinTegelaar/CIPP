@@ -46,7 +46,7 @@ If you want to manage your own tenant, or if you are not a Microsoft Partner but
 :::danger Unsupported configuration
 This configuration option is not officially supported. Configuring this means you are on your own for any bugs that occur on your instance. It is advised to not add the Partner Tenant inside a CSP environment and to really use this as a 'Single Tenant' mode. 
 
-If you enable this setting, any user with access to CIPP will be able to make any change to your internal tenant, including changing permissions to mailboxes, security groups, and all the aspects that CIPP manages.
+If you enable this setting, any user with access to CIPP will be able to make any change to your internal tenant, including changing permissions to mailboxes, security groups, and all the aspects that CIPP manages. When running on the hosted environment we ask you to confirm you've read this statement before enabling the feature.
 :::
 
 
