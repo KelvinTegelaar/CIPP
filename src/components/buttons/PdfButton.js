@@ -24,7 +24,6 @@ function ExportPDFButton(props) {
       }
     })
 
-    console.log(headerObj)
     const title = reportName
     let content = {
       startY: 50,
@@ -45,8 +44,7 @@ function ExportPDFButton(props) {
       className="m-1"
       onClick={() => exportPDF(props.pdfData, props.pdfHeaders, props.pdfSize, props.reportName)}
     >
-      <FontAwesomeIcon icon={faFilePdf} className="pe-1" size="lg" />
-      PDF
+      <FontAwesomeIcon icon={faFilePdf} size="lg" />
     </CButton>
   )
 }

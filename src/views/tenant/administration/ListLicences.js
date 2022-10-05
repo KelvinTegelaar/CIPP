@@ -1,12 +1,14 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
+import { CellTip } from 'src/components/tables'
 
 const columns = [
   {
     name: 'Tenant',
     selector: (row) => row['Tenant'],
     sortable: true,
+    cell: (row) => CellTip(row['Tenant']),
     wrap: true,
     exportSelector: 'Tenant',
   },
@@ -14,7 +16,9 @@ const columns = [
     name: 'license',
     selector: (row) => row['License'],
     sortable: true,
+    cell: (row) => CellTip(row['License']),
     exportSelector: 'License',
+    minWidth: '300px',
   },
   {
     name: 'Used',
@@ -41,9 +45,10 @@ const LicenseList = () => {
 
   return (
     <CippPageList
+      capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
       title="Licenses Report"
-      tenantSelector={true}
-      showAllTenantSelector={true}
+      tenantSelector={false}
+      showAllTenantSelector={false}
       datatable={{
         reportName: `${tenant?.defaultDomainName}-licenses`,
         path: '/api/ListLicenses',

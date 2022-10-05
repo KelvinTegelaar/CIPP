@@ -1,9 +1,9 @@
 import React from 'react'
 
-/* eslint-disable prettier/prettier */
 const Home = React.lazy(() => import('src/views/home/Home'))
 const Logs = React.lazy(() => import('src/views/cipp/Logs'))
 const Users = React.lazy(() => import('src/views/identity/administration/Users'))
+const DeletedItems = React.lazy(() => import('src/views/identity/administration/Deleted'))
 const ViewBEC = React.lazy(() => import('src/views/identity/administration/ViewBEC'))
 const AddUser = React.lazy(() => import('src/views/identity/administration/AddUser'))
 const EditUser = React.lazy(() => import('src/views/identity/administration/EditUser'))
@@ -13,7 +13,7 @@ const AddGroup = React.lazy(() => import('src/views/identity/administration/AddG
 const EditGroup = React.lazy(() => import('src/views/identity/administration/EditGroup'))
 const ViewGroup = React.lazy(() => import('src/views/identity/administration/ViewGroup'))
 const Roles = React.lazy(() => import('src/views/identity/administration/Roles'))
-const Devices = React.lazy(() => import('src/views/identity/reports/Devices'))
+const Devices = React.lazy(() => import('src/views/endpoint/MEM/Devices'))
 const Page404 = React.lazy(() => import('src/views/pages/page404/Page404'))
 const Page403 = React.lazy(() => import('src/views/pages/page403/Page403'))
 const MFAReport = React.lazy(() => import('src/views/identity/reports/MFAReport'))
@@ -29,6 +29,9 @@ const ListConditionalTemplates = React.lazy(() =>
   import('src/views/tenant/conditional/ListCATemplates'),
 )
 
+const DeployNamedLocation = React.lazy(() =>
+  import('src/views/tenant/conditional/DeployNamedLocation'),
+)
 const AddConditionalTemplate = React.lazy(() =>
   import('src/views/tenant/conditional/AddCATemplate'),
 )
@@ -36,8 +39,11 @@ const AddConditionalTemplate = React.lazy(() =>
 const DeployConditional = React.lazy(() => import('src/views/tenant/conditional/DeployCA'))
 
 const ListLicences = React.lazy(() => import('src/views/tenant/administration/ListLicences'))
+const ListAppConsent = React.lazy(() => import('src/views/tenant/administration/ListOauthApps'))
 
 const BasicAuthReport = React.lazy(() => import('src/views/identity/reports/BasicAuthReport'))
+const SignInReport = React.lazy(() => import('src/views/identity/reports/SignIns'))
+
 const AzureADConnectReport = React.lazy(() =>
   import('src/views/identity/reports/AzureADConnectReport'),
 )
@@ -55,7 +61,7 @@ const ListAppliedStandards = React.lazy(() =>
   import('src/views/tenant/standards/ListAppliedStandards'),
 )
 const IndividualDomain = React.lazy(() => import('src/views/tenant/standards/IndividualDomain'))
-const ListAlerts = React.lazy(() => import('src/views/security/reports/ListAlerts'))
+const ListAlerts = React.lazy(() => import('src/views/security/incidents/ListAlerts'))
 const ApplicationsList = React.lazy(() =>
   import('src/views/endpoint/applications/ApplicationsList'),
 )
@@ -64,6 +70,12 @@ const ApplicationsQueue = React.lazy(() =>
 )
 const ApplicationsAddChocoApp = React.lazy(() =>
   import('src/views/endpoint/applications/ApplicationsAddChocoApp'),
+)
+const ApplicationsAddOfficeApp = React.lazy(() =>
+  import('src/views/endpoint/applications/ApplicationsAddOffice'),
+)
+const ApplicationsAddRMMApp = React.lazy(() =>
+  import('src/views/endpoint/applications/ApplicationsAddRMM'),
 )
 const AutopilotAddDevice = React.lazy(() =>
   import('src/views/endpoint/autopilot/AutopilotAddDevice'),
@@ -97,7 +109,9 @@ const MEMAddPolicyTemplate = React.lazy(() => import('src/views/endpoint/MEM/MEM
 const IntuneListPolicyTemplate = React.lazy(() =>
   import('src/views/endpoint/MEM/MEMListPolicyTemplates'),
 )
-const ListDefender = React.lazy(() => import('src/views/endpoint/defender/ListDefender'))
+const ListDefender = React.lazy(() => import('src/views/security/defender/ListDefender'))
+const DeployDefender = React.lazy(() => import('src/views/security/defender/DeployDefender'))
+
 const OneDriveList = React.lazy(() => import('src/views/teams-share/onedrive/OneDriveList'))
 const SharepointList = React.lazy(() => import('src/views/teams-share/sharepoint/SharepointList'))
 const BusinessVoice = React.lazy(() => import('src/views/teams-share/teams/BusinessVoice'))
@@ -112,6 +126,9 @@ const EditContact = React.lazy(() => import('src/views/email-exchange/administra
 const EditMailboxPermissions = React.lazy(() =>
   import('src/views/email-exchange/administration/EditMailboxPermissions'),
 )
+const AddSharedMailbox = React.lazy(() =>
+  import('src/views/email-exchange/administration/AddSharedMailbox'),
+)
 const EditCalendarPermissions = React.lazy(() =>
   import('src/views/email-exchange/administration/EditCalendarPermissions'),
 )
@@ -120,6 +137,12 @@ const ViewMobileDevices = React.lazy(() =>
 )
 const MailboxesList = React.lazy(() =>
   import('src/views/email-exchange/administration/MailboxesList'),
+)
+const MailboxRulesList = React.lazy(() =>
+  import('src/views/email-exchange/administration/MailboxRuleList'),
+)
+const QuarantineList = React.lazy(() =>
+  import('src/views/email-exchange/administration/QuarantineList'),
 )
 const MailboxClientAccessSettingsList = React.lazy(() =>
   import('src/views/email-exchange/reports/MailboxClientAccessSettingsList'),
@@ -143,7 +166,10 @@ const AddTransportTemplate = React.lazy(() =>
 const TransportDeploy = React.lazy(() =>
   import('src/views/email-exchange/transport/DeployTransport'),
 )
-const SecurityComplianceAlerts = React.lazy(() => import('src/views/security/reports/ListAlerts'))
+const SecurityComplianceAlerts = React.lazy(() => import('src/views/security/incidents/ListAlerts'))
+const SecurityComplianceIncidents = React.lazy(() =>
+  import('src/views/security/incidents/ListIncidents'),
+)
 const License = React.lazy(() => import('src/views/pages/license/License'))
 const ServiceHealth = React.lazy(() => import('src/views/tenant/administration/ServiceHealth'))
 
@@ -165,6 +191,12 @@ const routes = [
   { path: '/identity/administration/groups/view', name: 'View Group', component: ViewGroup },
   { path: '/identity/administration/groups', name: 'Groups', component: Groups },
   { path: '/identity/administration/roles', name: 'Roles', component: Roles },
+  {
+    path: '/identity/administration/deleted-items',
+    name: 'Deleted Items',
+    component: DeletedItems,
+  },
+
   { path: '/teams-share/teams/business-voice', name: 'BusinessVoice', component: BusinessVoice },
   {
     path: '/identity/administration/offboarding-wizard',
@@ -172,12 +204,17 @@ const routes = [
     component: OffboardingWizard,
   },
   { path: '/identity/reports', name: 'Reports' },
-  { path: '/identity/reports/devices', name: 'Devices', component: Devices },
+  { path: '/endpoint/reports/devices', name: 'Devices', component: Devices },
   { path: '/identity/reports/mfa-report', name: 'MFA Report', component: MFAReport },
   {
     path: '/identity/reports/basic-auth-report',
     name: 'Basic Auth Report',
     component: BasicAuthReport,
+  },
+  {
+    path: '/identity/reports/Signin-report',
+    name: 'Sign-In Report',
+    component: SignInReport,
   },
   {
     path: '/identity/reports/azure-ad-connect-report',
@@ -212,19 +249,29 @@ const routes = [
     component: DeployConditional,
   },
   {
+    path: '/tenant/conditional/deploy-named-location',
+    name: 'Deploy Named Locations',
+    component: DeployNamedLocation,
+  },
+  {
     path: '/tenant/conditional/list-template',
     name: 'Conditional Access Templates',
     component: ListConditionalTemplates,
   },
   {
     path: '/tenant/conditional/add-template',
-    name: 'Conditional Access add Temmplate',
+    name: 'Conditional Access add Template',
     component: AddConditionalTemplate,
   },
   {
     path: '/tenant/administration/list-licenses',
     name: 'List Licenses',
     component: ListLicences,
+  },
+  {
+    path: '/tenant/administration/application-consent',
+    name: 'Consented Applications',
+    component: ListAppConsent,
   },
   { path: '/tenant/standards', name: 'Standards' },
   {
@@ -257,6 +304,16 @@ const routes = [
     path: '/endpoint/applications/add-choco-app',
     name: 'Add Choco App',
     component: ApplicationsAddChocoApp,
+  },
+  {
+    path: '/endpoint/applications/add-office-app',
+    name: 'Add Office App',
+    component: ApplicationsAddOfficeApp,
+  },
+  {
+    path: '/endpoint/applications/add-rmm-app',
+    name: 'Add RMM App',
+    component: ApplicationsAddRMMApp,
   },
   { path: '/endpoint/autopilot', name: 'Autopilot' },
   { path: '/endpoint/autopilot/add-device', name: 'Add Device', component: AutopilotAddDevice },
@@ -306,8 +363,9 @@ const routes = [
     name: 'List Intune Policy Template',
     component: IntuneListPolicyTemplate,
   },
-  { path: '/endpoint/defender', name: 'Defender' },
-  { path: '/endpoint/defender/list-defender', name: 'List Defender', component: ListDefender },
+  { path: '/security/defender', name: 'Defender' },
+  { path: '/security/defender/deployment', name: 'Deploy Defender', component: DeployDefender },
+  { path: '/security/defender/list-defender', name: 'List Defender', component: ListDefender },
   { path: '/teams-share', name: 'Teams & Sharepoint' },
   { path: '/teams-share/onedrive', name: 'OneDrive' },
   { path: '/teams-share/onedrive/list', name: 'List OneDrive', component: OneDriveList },
@@ -355,6 +413,11 @@ const routes = [
     component: EditMailboxPermissions,
   },
   {
+    name: 'Edit Mailbox Permissions',
+    path: '/email/administration/add-shared-mailbox',
+    component: AddSharedMailbox,
+  },
+  {
     name: 'Edit Calendar Permissions',
     path: '/email/administration/edit-calendar-permissions',
     component: EditCalendarPermissions,
@@ -366,6 +429,18 @@ const routes = [
   },
   { name: 'Edit Contact', path: '/email/administration/edit-contact', component: EditContact },
   { name: 'List Mailboxes', path: '/email/administration/mailboxes', component: MailboxesList },
+  {
+    name: 'List Mailbox Rules',
+    path: '/email/administration/mailbox-rules',
+    component: MailboxRulesList,
+  },
+
+  {
+    name: 'List Quarantine',
+    path: '/email/administration/Quarantine',
+    component: QuarantineList,
+  },
+
   { name: 'Email Reports', path: '/email/reports' },
   {
     name: 'Mailbox Statistics',
@@ -388,8 +463,13 @@ const routes = [
   { name: 'Security Reports', path: '/security/reports' },
   {
     name: 'List Alerts',
-    path: '/security/reports/list-alerts',
+    path: '/security/incidents/list-alerts',
     component: SecurityComplianceAlerts,
+  },
+  {
+    name: 'List Incidents',
+    path: '/security/incidents/list-incidents',
+    component: SecurityComplianceIncidents,
   },
   {
     name: 'List Device Compliance Report',

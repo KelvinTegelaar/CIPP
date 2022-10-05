@@ -20,6 +20,8 @@ import useQuery from 'src/hooks/useQuery'
 import { CippTable } from 'src/components/tables'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { CippContentCard, CippMasonry, CippMasonryItem, CippPage } from 'src/components/layout'
+import 'react-loading-skeleton/dist/skeleton.css'
+import Skeleton from 'react-loading-skeleton'
 
 const ViewBec = () => {
   let query = useQuery()
@@ -225,18 +227,25 @@ const ViewBec = () => {
             button={
               <CButton
                 size="sm"
-                onClick={() => execBecView({ tenantFilter: tenantDomain, userId: userId })}
+                onClick={() =>
+                  execBecView({ tenantFilter: tenantDomain, userId: userId, overwrite: true })
+                }
                 disabled={isFetching}
               >
                 {!isFetching && <FontAwesomeIcon icon={faRedo} className="me-2" />}
-                Refresh
+                Refresh Data
               </CButton>
             }
           >
             <CCallout color="info">
               Loading Data: {isFetching && <CSpinner />}
               {!isFetching && error && <FontAwesomeIcon icon={faTimesCircle} />}
-              {isSuccess && <FontAwesomeIcon icon={faCheckCircle} />}
+              {isSuccess && (
+                <>
+                  <FontAwesomeIcon icon={faCheckCircle} />
+                  Data has been extracted at {alerts.ExtractedAt}
+                </>
+              )}
             </CCallout>
             <p>
               Use this information as a guide to check if a tenant or e-mail address might have been
@@ -279,6 +288,7 @@ const ViewBec = () => {
         </CippMasonryItem>
         <CippMasonryItem size="half">
           <CippContentCard title="User Devices" icon={faLaptop}>
+            {isFetching && <Skeleton count={5} />}
             {isSuccess && (
               <CippTable
                 keyField="ID"
@@ -295,6 +305,8 @@ const ViewBec = () => {
         </CippMasonryItem>
         <CippMasonryItem size="half">
           <CippContentCard title="Recently Added Email Forwarding Rules" icon={faForward}>
+            {isFetching && <Skeleton count={5} />}
+
             {isSuccess && (
               <CippTable
                 keyField="ID"
@@ -311,6 +323,8 @@ const ViewBec = () => {
         </CippMasonryItem>
         <CippMasonryItem size="half">
           <CippContentCard title="User Last Logon Details" icon={faKey}>
+            {isFetching && <Skeleton count={5} />}
+
             <CCardBody>
               {isSuccess && (
                 <CippTable
@@ -329,6 +343,8 @@ const ViewBec = () => {
         </CippMasonryItem>
         <CippMasonryItem size="half">
           <CippContentCard title="Recently Added Users" icon={faUsers}>
+            {isFetching && <Skeleton count={5} />}
+
             {isSuccess && (
               <CippTable
                 keyField="ID"
@@ -345,6 +361,8 @@ const ViewBec = () => {
         </CippMasonryItem>
         <CippMasonryItem size="full">
           <CippContentCard title="Recent Password Changes" icon={faAsterisk}>
+            {isFetching && <Skeleton count={5} />}
+
             {isSuccess && (
               <CippTable
                 keyField="ID"
@@ -361,6 +379,8 @@ const ViewBec = () => {
         </CippMasonryItem>
         <CippMasonryItem size="full">
           <CippContentCard title="Mailbox Permissions Changes" icon={faIdBadge}>
+            {isFetching && <Skeleton count={5} />}
+
             {isSuccess && (
               <CippTable
                 keyField="ID"
@@ -377,6 +397,8 @@ const ViewBec = () => {
         </CippMasonryItem>
         <CippMasonryItem size="full">
           <CippContentCard title="Application Changes" icon={faWindowRestore}>
+            {isFetching && <Skeleton count={5} />}
+
             {isSuccess && (
               <CippTable
                 keyField="ID"
@@ -393,6 +415,8 @@ const ViewBec = () => {
         </CippMasonryItem>
         <CippMasonryItem size="full">
           <CippContentCard title="Mailbox Logons" icon={faSignInAlt}>
+            {isFetching && <Skeleton count={5} />}
+
             {isSuccess && (
               <CippTable
                 keyField="ID"

@@ -2,12 +2,21 @@ import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { CippCodeBlock, CippOffcanvas } from 'src/components/utilities'
 import { CippDatatable } from 'src/components/tables'
-import { CCardBody, CButton, CCallout, CSpinner } from '@coreui/react'
+import {
+  CCardBody,
+  CButton,
+  CCallout,
+  CSpinner,
+  CCard,
+  CCardHeader,
+  CCardTitle,
+} from '@coreui/react'
 import { faEye, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import { CippPage } from 'src/components/layout'
 import { ModalService } from 'src/components/utilities'
+import { CellTip } from 'src/components/tables'
 
 //todo: expandable with RAWJson property.
 /* eslint-disable-next-line react/prop-types */
@@ -63,6 +72,7 @@ const AutopilotListTemplates = () => {
       name: 'Display Name',
       selector: (row) => row['displayName'],
       sortable: true,
+      cell: (row) => CellTip(row['displayName']),
       exportSelector: 'displayName',
     },
     {
@@ -74,29 +84,35 @@ const AutopilotListTemplates = () => {
     {
       name: 'Actions',
       cell: Offcanvas,
+      maxWidth: '80px',
     },
   ]
 
   return (
     <CippPage title="Available Conditional Access Templates" tenantSelector={false}>
-      <CCardBody>
-        {getResults.isFetching && (
-          <CCallout color="info">
-            <CSpinner>Loading</CSpinner>
-          </CCallout>
-        )}
-        {getResults.isSuccess && <CCallout color="info">{getResults.data?.Results}</CCallout>}
-        {getResults.isError && (
-          <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
-        )}
-        <CippDatatable
-          keyField="id"
-          reportName={`${tenant?.defaultDomainName}-CaTemplates-List`}
-          path="/api/ListCATemplates"
-          columns={columns}
-          params={{ TenantFilter: tenant?.defaultDomainName }}
-        />
-      </CCardBody>
+      <CCard className="content-card">
+        <CCardHeader className="d-flex justify-content-between align-items-center">
+          <CCardTitle>Results</CCardTitle>
+        </CCardHeader>
+        <CCardBody>
+          {getResults.isFetching && (
+            <CCallout color="info">
+              <CSpinner>Loading</CSpinner>
+            </CCallout>
+          )}
+          {getResults.isSuccess && <CCallout color="info">{getResults.data?.Results}</CCallout>}
+          {getResults.isError && (
+            <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
+          )}
+          <CippDatatable
+            keyField="id"
+            reportName={`${tenant?.defaultDomainName}-CaTemplates-List`}
+            path="/api/ListCATemplates"
+            columns={columns}
+            params={{ TenantFilter: tenant?.defaultDomainName }}
+          />
+        </CCardBody>
+      </CCard>
     </CippPage>
   )
 }
