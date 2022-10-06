@@ -85,6 +85,11 @@ const DeployDefender = () => {
       NetworkProtectionBlock: true,
       ScanArchives: true,
     },
+    EDR: {
+      Telemetry: true,
+      SampleSharing: true,
+      Config: true,
+    },
   }
 
   return (
@@ -129,7 +134,7 @@ const DeployDefender = () => {
         <Error name="selectedTenants" />
         <hr className="my-4" />
       </CippWizard.Page>
-      <CippWizard.Page title="Defender Setup" description="Defender Compliance and MEM Reporting">
+      <CippWizard.Page title="Defender Setup" description="Defender and MEM Reporting">
         <center>
           <h3 className="text-primary">Step 2</h3>
           <h5 className="card-title mb-4">Defender Setup</h5>
@@ -154,6 +159,10 @@ const DeployDefender = () => {
                 name="Compliance.ConnectWindows"
                 label="Connect Windows devices version 10.0.15063 and above to Microsoft Defender for Endpoint (Compliance)"
               />
+              <RFFCFormSwitch
+                name="EDR.Telemetry"
+                label="EDR: Expedite Telemetry Reporting Frequency"
+              />
             </CCol>
             <CCol md={6}>
               <RFFCFormSwitch
@@ -173,6 +182,11 @@ const DeployDefender = () => {
                 name="Compliance.ConnectIos"
                 label="Connect iOS/iPadOS devices to Microsoft Defender for Endpoint"
               />
+              <RFFCFormSwitch
+                name="EDR.Config"
+                label="EDR: Connect Defender Configuration Package automatically from Connector"
+              />
+              <RFFCFormSwitch name="EDR.SampleSharing" label="EDR: Enable Sample Sharing" />
             </CCol>
           </CRow>
         </div>

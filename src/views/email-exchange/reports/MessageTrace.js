@@ -32,13 +32,13 @@ const columns = [
     name: 'Recipient',
     selector: (row) => row['RecipientAddress'],
     sortable: true,
-    exportSelector: 'Recipient',
+    exportSelector: 'RecipientAddress',
   },
   {
     name: 'Sender',
     selector: (row) => row['SenderAddress'],
     sortable: true,
-    exportSelector: 'Sender',
+    exportSelector: 'SenderAddress',
   },
   {
     name: 'Subject',
