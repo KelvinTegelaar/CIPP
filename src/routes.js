@@ -1,6 +1,5 @@
 import React from 'react'
 
-/* eslint-disable prettier/prettier */
 const Home = React.lazy(() => import('src/views/home/Home'))
 const Logs = React.lazy(() => import('src/views/cipp/Logs'))
 const Users = React.lazy(() => import('src/views/identity/administration/Users'))
@@ -14,7 +13,7 @@ const AddGroup = React.lazy(() => import('src/views/identity/administration/AddG
 const EditGroup = React.lazy(() => import('src/views/identity/administration/EditGroup'))
 const ViewGroup = React.lazy(() => import('src/views/identity/administration/ViewGroup'))
 const Roles = React.lazy(() => import('src/views/identity/administration/Roles'))
-const Devices = React.lazy(() => import('src/views/identity/reports/Devices'))
+const Devices = React.lazy(() => import('src/views/endpoint/MEM/Devices'))
 const Page404 = React.lazy(() => import('src/views/pages/page404/Page404'))
 const Page403 = React.lazy(() => import('src/views/pages/page403/Page403'))
 const MFAReport = React.lazy(() => import('src/views/identity/reports/MFAReport'))
@@ -43,6 +42,8 @@ const ListLicences = React.lazy(() => import('src/views/tenant/administration/Li
 const ListAppConsent = React.lazy(() => import('src/views/tenant/administration/ListOauthApps'))
 
 const BasicAuthReport = React.lazy(() => import('src/views/identity/reports/BasicAuthReport'))
+const SignInReport = React.lazy(() => import('src/views/identity/reports/SignIns'))
+
 const AzureADConnectReport = React.lazy(() =>
   import('src/views/identity/reports/AzureADConnectReport'),
 )
@@ -203,12 +204,17 @@ const routes = [
     component: OffboardingWizard,
   },
   { path: '/identity/reports', name: 'Reports' },
-  { path: '/identity/reports/devices', name: 'Devices', component: Devices },
+  { path: '/endpoint/reports/devices', name: 'Devices', component: Devices },
   { path: '/identity/reports/mfa-report', name: 'MFA Report', component: MFAReport },
   {
     path: '/identity/reports/basic-auth-report',
     name: 'Basic Auth Report',
     component: BasicAuthReport,
+  },
+  {
+    path: '/identity/reports/Signin-report',
+    name: 'Sign-In Report',
+    component: SignInReport,
   },
   {
     path: '/identity/reports/azure-ad-connect-report',
