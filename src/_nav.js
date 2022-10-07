@@ -16,6 +16,7 @@ import {
   faKey,
   faBus,
   faExclamationTriangle,
+  faUserShield,
 } from '@fortawesome/free-solid-svg-icons'
 
 const _nav = [
@@ -73,11 +74,6 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'Devices',
-        to: '/identity/reports/devices',
-      },
-      {
-        component: CNavItem,
         name: 'MFA Report',
         to: '/identity/reports/mfa-report',
       },
@@ -85,6 +81,11 @@ const _nav = [
         component: CNavItem,
         name: 'Basic Auth Report',
         to: '/identity/reports/basic-auth-report',
+      },
+      {
+        component: CNavItem,
+        name: 'Sign-in Report',
+        to: '/identity/reports/signin-report',
       },
       {
         component: CNavItem,
@@ -346,7 +347,7 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'List Devices',
+        name: 'List Autopilot Devices',
         to: '/endpoint/autopilot/list-devices',
       },
       {
@@ -368,6 +369,11 @@ const _nav = [
     to: '/endpoint/MEM',
     icon: <FontAwesomeIcon icon={faExchangeAlt} className="nav-icon" />,
     items: [
+      {
+        component: CNavItem,
+        name: 'List Devices',
+        to: '/endpoint/reports/devices',
+      },
       {
         component: CNavItem,
         name: 'List MEM Policies',
@@ -567,6 +573,31 @@ const _nav = [
         component: CNavItem,
         name: 'Documentation',
         href: 'https://cipp.app',
+        target: '_blank',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
+    name: 'GDAP Migration',
+    section: 'Settings',
+    to: '/cipp/gdap',
+    icon: <FontAwesomeIcon icon={faUserShield} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Migration Wizard',
+        to: '/tenant/administration/gdap',
+      },
+      {
+        component: CNavItem,
+        name: 'GDAP Migration Status',
+        to: '/tenant/administration/gdap-status',
+      },
+      {
+        component: CNavItem,
+        name: 'Documentation',
+        href: 'https://cipp.app/docs/user/usingcipp/GDAP/migration',
         target: '_blank',
       },
     ],
