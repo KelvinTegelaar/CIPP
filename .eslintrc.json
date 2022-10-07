@@ -11,7 +11,7 @@
       "version": "detect"
     }
   },
-  "extends": ["react-app", "plugin:react/recommended", "plugin:prettier/recommended"],
-  "plugins": ["react", "react-hooks"],
+  "extends": ["plugin:prettier/recommended"],
+  "plugins": ["react-hooks"],
   "rules": {}
 }
