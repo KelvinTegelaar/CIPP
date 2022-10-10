@@ -200,6 +200,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'List Named Locations',
+        to: '/tenant/conditional/list-named-locations',
+      },
+      {
+        component: CNavItem,
         name: 'Deploy Conditional Access',
         to: '/tenant/conditional/deploy',
       },
