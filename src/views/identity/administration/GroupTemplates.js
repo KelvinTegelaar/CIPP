@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { CippCodeBlock, CippOffcanvas } from 'src/components/utilities'
 import { CellTip } from 'src/components/tables'
-import { CButton } from '@coreui/react'
+import { CButton, CCallout } from '@coreui/react'
 import { faEye, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
@@ -36,7 +36,7 @@ const GroupTemplates = () => {
           color="danger"
           onClick={() =>
             handleDeleteIntuneTemplate(
-              `/api/RemoveIntuneTemplate?ID=${row.GUID}`,
+              `/api/RemoveGroupTemplate?ID=${row.GUID}`,
               'Do you want to delete the template?',
             )
           }
@@ -77,7 +77,7 @@ const GroupTemplates = () => {
     },
     {
       name: 'Type',
-      selector: (row) => row['Type'],
+      selector: (row) => row['groupType'],
       sortable: true,
       exportSelector: 'Type',
       maxWidth: '100px',
@@ -96,21 +96,32 @@ const GroupTemplates = () => {
   ]
 
   return (
-    <CippPageList
-      title="Group Templates"
-      titleButton={
-        <TitleButton
-          href="/identity/administration/group-add-template"
-          title="Add Group Template"
-        />
-      }
-      datatable={{
-        reportName: `${tenant?.defaultDomainName}-Groups`,
-        path: '/api/ListGroupTemplates',
-        params: { TenantFilter: tenant?.defaultDomainName },
-        columns,
-      }}
-    />
+    <>
+      {getResults.isFetching && (
+        <CCallout color="info">
+          <CSpinner>Loading</CSpinner>
+        </CCallout>
+      )}
+      {getResults.isSuccess && <CCallout color="info">{getResults.data?.Results}</CCallout>}
+      {getResults.isError && (
+        <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
+      )}
+      <CippPageList
+        title="Group Templates"
+        titleButton={
+          <TitleButton
+            href="/identity/administration/group-add-template"
+            title="Add Group Template"
+          />
+        }
+        datatable={{
+          reportName: `${tenant?.defaultDomainName}-Groups`,
+          path: '/api/ListGroupTemplates',
+          params: { TenantFilter: tenant?.defaultDomainName },
+          columns,
+        }}
+      />
+    </>
   )
 }
 
