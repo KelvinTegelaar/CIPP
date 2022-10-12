@@ -35,7 +35,7 @@ const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = fa
   )
 
   useEffect(() => {
-    const Paramcount = searchParams.length
+    const Paramcount = Array.from(searchParams).length
     if (Paramcount <= 1) {
       const customerId = searchParams.get('customerId')
       if (customerId && isSuccess) {
