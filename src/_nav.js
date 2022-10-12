@@ -50,6 +50,16 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Group Templates',
+        to: '/identity/administration/group-templates',
+      },
+      {
+        component: CNavItem,
+        name: 'Deploy Group Template',
+        to: '/identity/administration/deploy-group-template',
+      },
+      {
+        component: CNavItem,
         name: 'Roles',
         to: '/identity/administration/roles',
       },
