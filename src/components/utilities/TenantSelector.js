@@ -59,7 +59,7 @@ const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = fa
     if (typeof action === 'function') {
       action(selectedTenant[0])
     } else {
-      setSearchParams({ customerId: currentTenant?.customerId })
+      setSearchParams({ customerId: selectedTenant[0] })
     }
   }
 
