@@ -302,7 +302,7 @@ const _nav = [
   },
   {
     component: CNavTitle,
-    name: 'Endpoint Management',
+    name: 'Intune',
   },
   {
     component: CNavGroup,
@@ -379,7 +379,7 @@ const _nav = [
   },
   {
     component: CNavGroup,
-    name: 'MEM (Intune)',
+    name: 'Device Management',
     section: 'Endpoint Management',
     to: '/endpoint/MEM',
     icon: <FontAwesomeIcon icon={faExchangeAlt} className="nav-icon" />,
