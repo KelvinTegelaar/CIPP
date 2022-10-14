@@ -611,6 +611,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Application Approval',
+        to: '/tenant/administration/appapproval',
+      },
+      {
+        component: CNavItem,
         name: 'Documentation',
         href: 'https://cipp.app/docs/user/usingcipp/GDAP/migration',
         target: '_blank',
