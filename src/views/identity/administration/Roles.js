@@ -47,6 +47,13 @@ const columns = [
     exportSelector: 'Description',
   },
   {
+    selector: (row) => row['Members'],
+    name: 'Members',
+    cell: Offcanvas,
+    exportSelector: 'Members',
+    omit: true,
+  },
+  {
     selector: (row) => 'View Members',
     name: 'Members',
     cell: Offcanvas,
@@ -62,6 +69,10 @@ const RolesList = () => {
     <CippPageList
       title="Roles"
       datatable={{
+        filterlist: [
+          { filterName: 'Roles with members', filter: '"Members":" ' },
+          { filterName: 'Roles without members', filter: '"Members":"none"' },
+        ],
         reportName: `${tenant?.defaultDomainName}-Roles`,
         path: '/api/ListRoles',
         columns,
