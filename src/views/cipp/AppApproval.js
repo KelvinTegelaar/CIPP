@@ -133,10 +133,15 @@ const GraphExplorer = () => {
                             This tool helps you to retrieve the approval links required for each
                             tenant. This is required to use 'Application Permissions' within these
                             tenants when GDAP is deployed.
+                            <b>
+                              This is a temporary measure as Microsoft is adding this as a feature
+                              to GDAP.
+                            </b>
                             <br />
                             <br />
-                            The approval URL might lead to an error page or not load any page at all
-                            after clicking confirm - This is expected behaviour.
+                            The approval URL might lead to an error page with the error "Admin Role
+                            not found" or not load any page at all after clicking confirm - This is
+                            expected behaviour.
                             <br />
                             <br />
                           </CCol>
