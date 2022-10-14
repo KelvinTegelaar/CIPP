@@ -22,7 +22,7 @@ import {
 import { useDispatch } from 'react-redux'
 import { ModalService } from 'src/components/utilities'
 import { Form } from 'react-final-form'
-import { RFFSelectSearch } from 'src/components/forms'
+import { RFFCFormCheck, RFFSelectSearch } from 'src/components/forms'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { useListUsersQuery } from 'src/store/api/users'
 import { CippTable } from 'src/components/tables'
@@ -100,6 +100,7 @@ const EditGroup = () => {
       AddOwner: values.AddOwners ? values.AddOwners : '',
       RemoveMember: values.RemoveMembers ? values.RemoveMembers : '',
       RemoveOwner: values.RemoveOwners ? values.RemoveOwners : '',
+      allowExternal: values.allowExternal,
     }
     //window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/EditGroup', values: shippedValues })
@@ -203,6 +204,13 @@ const EditGroup = () => {
                                 {usersError && <span>Failed to load list of users</span>}
                               </CCol>
                             </CRow>
+                            {(group[0].calculatedGroupType === 'Microsoft 365' ||
+                              group[0].calculatedGroupType === 'Distribution List') && (
+                              <RFFCFormCheck
+                                name="allowExternal"
+                                label="Let people outside the organization email the group"
+                              />
+                            )}
                             <CRow className="mb-3">
                               <CCol md={12}>
                                 <CButton type="submit" disabled={submitting}>
