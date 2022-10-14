@@ -8,6 +8,7 @@ import { WizardTableField } from 'src/components/tables'
 import PropTypes from 'prop-types'
 import {
   Condition,
+  RFFCFormCheck,
   RFFCFormInput,
   RFFCFormRadio,
   RFFCFormSelect,
@@ -36,7 +37,7 @@ Error.propTypes = {
 }
 
 const requiredArray = (value) => (value && value.length !== 0 ? undefined : 'Required')
-const AddPolicy = () => {
+const ApplyGroupTemplate = () => {
   const [intuneGetRequest, intuneTemplates] = useLazyGenericGetRequestQuery()
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
@@ -45,7 +46,7 @@ const AddPolicy = () => {
       (tenant) => (values[`Select_${tenant.defaultDomainName}`] = tenant.defaultDomainName),
     )
     values.TemplateType = values.Type
-    genericPostRequest({ path: '/api/AddPolicy', values: values })
+    genericPostRequest({ path: '/api/AddGroup', values: values })
   }
   const WhenFieldChanges = ({ field, set }) => (
     <Field name={set} subscription={{}}>
@@ -78,11 +79,11 @@ const AddPolicy = () => {
     <CippWizard
       initialValues={{ ...formValues }}
       onSubmit={handleSubmit}
-      wizardTitle="Add Intune policy"
+      wizardTitle="Add Group Template"
     >
       <CippWizard.Page
         title="Tenant Choice"
-        description="Choose the tenants to create the policy for."
+        description="Choose the tenants to create the group for."
       >
         <center>
           <h3 className="text-primary">Step 1</h3>
@@ -119,17 +120,13 @@ const AddPolicy = () => {
       <CippWizard.Page title="Select Options" description="Select which options you want to apply.">
         <center>
           <h3 className="text-primary">Step 2</h3>
-          <h5 className="card-title mb-4">
-            Enter the raw JSON for this policy. See{' '}
-            <a href="https://cipp.app/EndpointManagement/IntunePolicyTemplates">this</a>
-            for more information.
-          </h5>
+          <h5 className="card-title mb-4">Enter the group information or use a template.</h5>
         </center>
         <hr className="my-4" />
         <CRow>
           <CCol md={12}>
             {intuneTemplates.isUninitialized &&
-              intuneGetRequest({ path: 'api/ListIntuneTemplates' })}
+              intuneGetRequest({ path: 'api/ListGroupTemplates' })}
             {intuneTemplates.isSuccess && (
               <RFFCFormSelect
                 name="TemplateList"
@@ -146,13 +143,14 @@ const AddPolicy = () => {
         <CRow>
           <CCol>
             <RFFCFormSelect
-              name="Type"
+              name="groupType"
               label="Select Policy Type"
-              placeholder="Select a template type"
+              placeholder="Select a group type"
               values={[
-                { label: 'Administrative Template', value: 'Admin' },
-                { label: 'Settings Catalog', value: 'Catalog' },
-                { label: 'Custom Configuration', value: 'Device' },
+                { label: 'Dynamic Group', value: 'dynamic' },
+                { label: 'Security Group', value: 'security' },
+                { label: 'Distribution group', value: 'distribution' },
+                { label: 'Azure Role Group', value: 'azurerole' },
               ]}
             />
           </CCol>
@@ -162,7 +160,7 @@ const AddPolicy = () => {
             <RFFCFormInput
               type="text"
               name="Displayname"
-              label="Policy Display Name"
+              label="Group Display Name"
               placeholder="Enter a name"
             />
           </CCol>
@@ -172,47 +170,45 @@ const AddPolicy = () => {
             <RFFCFormInput
               type="text"
               name="Description"
-              label="Description"
+              label="Group Description"
               placeholder="leave blank for none"
             />
           </CCol>
         </CRow>
         <CRow>
           <CCol md={12}>
-            <RFFCFormTextarea
+            <RFFCFormInput
               type="text"
-              name="RAWJson"
-              label="Raw JSON"
-              placeholder="Enter RAW JSON information"
+              name="username"
+              label="Group Username"
+              placeholder="Enter a name"
             />
           </CCol>
         </CRow>
-        <Condition when="RAWJson" like="%%">
-          <CRow>
-            <CCol md={12}>#create list of tenants here, with variable name</CCol>
-          </CRow>
-        </Condition>
-        <RFFCFormRadio value="" name="AssignTo" label="Do not assign"></RFFCFormRadio>
-        <RFFCFormRadio
-          value="allLicensedUsers"
-          name="AssignTo"
-          label="Assign to all users"
-        ></RFFCFormRadio>
-        <RFFCFormRadio
-          value="AllDevices"
-          name="AssignTo"
-          label="Assign to all devices"
-        ></RFFCFormRadio>
-        <RFFCFormRadio
-          value="AllDevicesAndUsers"
-          name="AssignTo"
-          label="Assign to all users and devices"
-        ></RFFCFormRadio>
+        <CRow>
+          <CCol md={12}>
+            <Condition when="groupType" is="distribution">
+              <RFFCFormCheck
+                name="allowExternal"
+                label="Let people outside the organization email the group"
+              />
+            </Condition>
+            <Condition when="groupType" is="dynamic">
+              <RFFCFormTextarea
+                type="text"
+                name="MembershipRules"
+                label="Membership Rule"
+                placeholder="Enter membership rule syntax"
+              />
+            </Condition>
+          </CCol>
+        </CRow>
         <hr className="my-4" />
         <WhenFieldChanges field="TemplateList" set="Description" />
         <WhenFieldChanges field="TemplateList" set="Displayname" />
-        <WhenFieldChanges field="TemplateList" set="RAWJson" />
-        <WhenFieldChanges field="TemplateList" set="Type" />
+        <WhenFieldChanges field="TemplateList" set="MembershipRules" />
+        <WhenFieldChanges field="TemplateList" set="groupType" />
+        <WhenFieldChanges field="TemplateList" set="username" />
       </CippWizard.Page>
       <CippWizard.Page title="Review and Confirm" description="Confirm the settings to apply">
         <center>
@@ -253,14 +249,6 @@ const AddPolicy = () => {
                             icon={props.values.Type ? faCheck : faTimes}
                           />
                         </CListGroupItem>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Assign to: {props.values.AssignTo}
-                          <FontAwesomeIcon
-                            color="#f77f00"
-                            size="lg"
-                            icon={props.values.AssignTo ? faCheck : faTimes}
-                          />
-                        </CListGroupItem>
                       </CListGroup>
                     </CCol>
                   </CRow>
@@ -287,4 +275,4 @@ const AddPolicy = () => {
   )
 }
 
-export default AddPolicy
+export default ApplyGroupTemplate
