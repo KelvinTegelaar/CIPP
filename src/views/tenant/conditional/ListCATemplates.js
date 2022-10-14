@@ -19,7 +19,6 @@ import { ModalService } from 'src/components/utilities'
 import { CellTip } from 'src/components/tables'
 
 //todo: expandable with RAWJson property.
-/* eslint-disable-next-line react/prop-types */
 
 const AutopilotListTemplates = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
