@@ -141,7 +141,7 @@ const GraphExplorer = () => {
                             <br />
                             The approval URL might lead to an error page with the error "Admin Role
                             not found" or not load any page at all after clicking confirm - This is
-                            expected behaviour.
+                            expected behavior.
                             <br />
                             <br />
                           </CCol>
