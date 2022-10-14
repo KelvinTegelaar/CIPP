@@ -138,7 +138,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             label: 'Sharepoint Admin',
             color: 'info',
             external: true,
-            link: `https://${row.defaultDomainName.split('.')[0]}-admin.sharepoint.com`,
+            link: `https://admin.microsoft.com/Partner/beginclientsession.aspx?CTID=${row.customerId}&CSDEST=SharePoint`,
           },
         ]}
         placement="end"
@@ -319,7 +319,7 @@ const TenantsList = () => {
       omit: columnOmits,
       cell: (row) => (
         <a
-          href={`https://${row.defaultDomainName.split('.')[0]}-admin.sharepoint.com`}
+          href={`https://admin.microsoft.com/Partner/beginclientsession.aspx?CTID=${row.customerId}&CSDEST=SharePoint`}
           target="_blank"
           className="dlink"
           rel="noreferrer"
