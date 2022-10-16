@@ -201,9 +201,6 @@
           "dependsOn": ["[resourceId('Microsoft.Web/sites/', variables('funcAppName'))]"],
           "properties": {
             "RepoUrl": "[parameters('GithubAPIRepository')]",
-            "repositoryToken": "[parameters('GithubToken')]",
-            "token": "[parameters('GithubToken')]",
-
             "branch": "master",
             "publishRunbook": true,
             "IsManualIntegration": true
@@ -253,7 +250,7 @@
       "type": "Microsoft.Web/staticSites",
       "apiVersion": "2021-01-15",
       "name": "[variables('swaName')]",
-      "location": "[resourceGroup().location]",
+      "location": "centralus",
       "properties": {
         "repositoryUrl": "[parameters('GithubRepository')]",
         "branch": "main",
@@ -273,7 +270,7 @@
       "type": "Microsoft.Web/staticSites/userProvidedFunctionApps",
       "apiVersion": "2020-12-01",
       "name": "[concat(variables('swaName'), '/', variables('swaName'))]",
-      "location": "[resourceGroup().location]",
+      "location": "centralus",
       "dependsOn": [
         "[resourceId('Microsoft.Web/staticSites', variables('swaName'))]",
         "[resourceId('Microsoft.Web/sites/', variables('funcAppName'))]"
