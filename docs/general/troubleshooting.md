@@ -282,6 +282,9 @@ Write-Host "     SAVE THESE IN A SECURE LOCATION     "
 1. Clear the [token cache](#clear-token-cache).
 
 ## Clear Token Cache
+:::tip
+Hosted clients can contact the helpdesk directly to clear their token cache, and do not need to do this themselves.
+:::
 
 1. Go to Settings
 1. Select **Backend**
