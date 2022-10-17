@@ -27,6 +27,10 @@ For more information on GDAP, check out Microsoft's own documentation [here](htt
 
 ## Using the GDAP Wizard
 
+:::Warning
+The GDAP migration wizard is offered as-is. Bug reports, feature requests, or issues will not be accepted for the GDAP migration wizard.
+:::
+
 The GDAP wizard will use the temporary APIs to create a relationship for you, and create the security groups and assign the roles to these groups. You may change the name of the groups after the migration has been performed.
 
 CIPP assumes that you will want a relationship of 730 days.
@@ -35,7 +39,8 @@ Follow the list below before starting the GDAP Wizard. You must execute each of 
 
 - You must be a global Admin and in the 'AdminAgents' group to perform this.
 - Go to your CIPP instance and click on GDAP -> Migration Wizard. Click the button to enable the migration API.
-- Follow the link returned by the application to go to your Secure Application Model app in Azure.
+   - if the enable API wizard fails, execute the manual instructions given by the application and continue with the steps belo.
+- Follow the link returned by the application, or go to your Secure Application Model app in Azure.
 - Click on API Permissions
 - Click on Add and choose "APIs My organization uses"
 - Find "Partner Customer Delegated Administration"
