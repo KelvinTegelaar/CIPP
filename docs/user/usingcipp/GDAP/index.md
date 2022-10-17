@@ -17,7 +17,7 @@ The set migration dates have been changed by Microsoft. Find the latest informat
 
 Accessing tenants as a Microsoft Partner is currently done through "DAP". DAP stands for delegated access permissions. DAP gives you Global Administrator access to all your tenants, but has limitations. Microsoft has decided to make DAP more secure, and also more functional. GDAP allows you to access the tenants according to the role you've set. This mean you are able to give one employee "helpdesk" access, and another employee "security" access.
 
-GDAP requires a mapping between roles and security groups in your partner tenant. CIPP creates these groups and mappings for you.
+GDAP requires a mapping between roles and security groups in your partner tenant. CIPP creates these groups and mappings for you. Do not select all roles - This is not supported by Microsoft and CIPP. Selecting all roles(or most roles) will guarantee unexpected results. Carefully consider which roles are required for your deployment.
 
 GDAP relationships have a maximum age. Every 2 years(730 days) the relationships will need to be renewed. This currently is a manual action that needs to be performed by the tenant administrator.
 
