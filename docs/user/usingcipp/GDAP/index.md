@@ -31,7 +31,7 @@ For more information on GDAP, check out Microsoft's own documentation [here](htt
 
 ## Using the GDAP Wizard
 
-:::Warning
+:::tip
 The GDAP migration wizard is offered as-is. Bug reports, feature requests, or issues will not be accepted for the GDAP migration wizard.
 :::
 
