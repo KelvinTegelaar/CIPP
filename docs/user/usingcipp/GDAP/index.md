@@ -11,7 +11,7 @@ The GDAP migration tool will function until March 2023. Migrations after this da
 
 ## What is GDAP
 
-:::Warning
+:::caution
 The set migration dates have been changed by Microsoft. Find the latest information [here](https://learn.microsoft.com/en-gb/partner-center/announcements/2022-october#17)
 :::
 
