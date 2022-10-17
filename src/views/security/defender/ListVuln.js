@@ -65,6 +65,16 @@ const columns = [
     name: 'CVE ID',
     sortable: true,
     exportSelector: 'cveId',
+    cell: (row) => (
+      <a
+        href={`https://nvd.nist.gov/vuln/detail/${row.cveId}`}
+        target="_blank"
+        className="dlink"
+        rel="noreferrer"
+      >
+        {row['cveId']}
+      </a>
+    ),
   },
 ]
 
