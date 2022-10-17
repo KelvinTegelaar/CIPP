@@ -52,7 +52,17 @@ If you installed CIPP before the release of version 2, you deployed the `master`
 
 <summary>
 
-## Can I lock down my instance of CIPP further? {#lockdown}
+## Can I use IP whitelisting? {#lockdown}
+
+</summary>
+
+Yes. CIPP can use IP whitelisting. This feature is in preview at Azure and might break at any moment. Deploying this is down at your own risk. For the latest documentation on how to perform this check [here](https://learn.microsoft.com/en-us/azure/static-web-apps/configuration#networking)
+
+</details>
+
+<summary>
+
+## Can I lock down my instance of CIPP further by using Private Networks? {#lockdown}
 
 </summary>
 
