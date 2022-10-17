@@ -113,9 +113,9 @@ const ListAppliedStandards = () => {
     },
     {
       name: 'Applied Standards',
-      selector: (row) => Object.keys(row.standards).join(','),
+      selector: (row) => row['StandardsExport'],
       sortable: true,
-      exportSelector: 'standards',
+      exportSelector: 'StandardsExport',
     },
   ]
 
@@ -443,7 +443,7 @@ const ListAppliedStandards = () => {
             {listStandardsAllTenants && (
               <CippContentCard title="Currently Applied Standards">
                 <CippTable
-                  reportName={`Standards}`}
+                  reportName={`Standards`}
                   data={listStandardsAllTenants}
                   columns={tableColumns}
                 />
