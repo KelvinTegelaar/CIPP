@@ -67,7 +67,7 @@ const columns = [
     exportSelector: 'cveId',
     cell: (row) => (
       <a
-        href={`https://nvd.nist.gov/vuln/detail/${row.cveId}`}
+        href={`https://security.microsoft.com/vulnerabilities/vulnerability/${row.cveId}/recommendation?tid=${row.customerId}`}
         target="_blank"
         className="dlink"
         rel="noreferrer"
@@ -89,6 +89,16 @@ const ListVuln = () => {
         reportName: `${tenant?.defaultDomainName}-DefenderStatus-List`,
         path: '/api/ListDefenderTVM',
         columns,
+        filterlist: [
+          {
+            filterName: '# Affected Devices',
+            filter: '"affectedDevicesCount":1',
+          },
+          { filterName: 'Windows 10 devices', filter: '"osPlatform":"Windows10"' },
+          { filterName: 'Windows 11 devices', filter: '"osPlatform":"Windows11"' },
+          { filterName: 'Vendor is Microsoft', filter: '"softwareVendor":"Microsoft"' },
+          { filterName: 'High Severity', filter: '"vulnerabilitySeverityLevel":"High"' },
+        ],
         params: { TenantFilter: tenant?.customerId },
       }}
     />
