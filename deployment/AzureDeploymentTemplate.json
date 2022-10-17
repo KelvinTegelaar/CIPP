@@ -201,6 +201,9 @@
           "dependsOn": ["[resourceId('Microsoft.Web/sites/', variables('funcAppName'))]"],
           "properties": {
             "RepoUrl": "[parameters('GithubAPIRepository')]",
+            "repositoryToken": "[parameters('GithubToken')]",
+            "token": "[parameters('GithubToken')]",
+
             "branch": "master",
             "publishRunbook": true,
             "IsManualIntegration": true
