@@ -120,6 +120,8 @@ const IntuneListPolicyTemplate = React.lazy(() =>
   import('src/views/endpoint/MEM/MEMListPolicyTemplates'),
 )
 const ListDefender = React.lazy(() => import('src/views/security/defender/ListDefender'))
+const ListVulnerabilities = React.lazy(() => import('src/views/security/defender/ListVuln'))
+
 const DeployDefender = React.lazy(() => import('src/views/security/defender/DeployDefender'))
 
 const OneDriveList = React.lazy(() => import('src/views/teams-share/onedrive/OneDriveList'))
@@ -396,6 +398,12 @@ const routes = [
   { path: '/security/defender', name: 'Defender' },
   { path: '/security/defender/deployment', name: 'Deploy Defender', component: DeployDefender },
   { path: '/security/defender/list-defender', name: 'List Defender', component: ListDefender },
+  {
+    path: '/security/defender/list-defender-tvm',
+    name: 'List Vulnerabilities',
+    component: ListVulnerabilities,
+  },
+
   { path: '/teams-share', name: 'Teams & Sharepoint' },
   { path: '/teams-share/onedrive', name: 'OneDrive' },
   { path: '/teams-share/onedrive/list', name: 'List OneDrive', component: OneDriveList },

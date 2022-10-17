@@ -281,8 +281,13 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Defender Status',
+        name: 'List Defender Status',
         to: '/security/defender/list-defender',
+      },
+      {
+        component: CNavItem,
+        name: 'List Vulnerabilities',
+        to: '/security/defender/list-defender-tvm',
       },
     ],
   },
