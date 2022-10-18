@@ -93,6 +93,7 @@ const EditUser = () => {
       Username: values.mailNickname,
       streetAddress: values.streetAddress,
       tenantID: tenantDomain,
+      mustchangepass: values.RequirePasswordChange,
       ...(values.licenses ? values.license : ''),
     }
     //window.alert(JSON.stringify(shippedValues))
