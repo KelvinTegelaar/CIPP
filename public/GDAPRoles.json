@@ -153,7 +153,7 @@
   },
   {
     "ExtensionData": {},
-    "Description": "Can manage all aspects of Azure AD and Microsoft services that use Azure AD identities.",
+    "Description": "Can manage all aspects of Azure AD and Microsoft services that use Azure AD identities. This role was formerly known as Global Administrator.",
     "IsEnabled": true,
     "IsSystem": true,
     "Name": "Company Administrator",
