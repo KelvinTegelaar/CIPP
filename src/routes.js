@@ -10,6 +10,14 @@ const EditUser = React.lazy(() => import('src/views/identity/administration/Edit
 const ViewUser = React.lazy(() => import('src/views/identity/administration/ViewUser'))
 const Groups = React.lazy(() => import('src/views/identity/administration/Groups'))
 const AddGroup = React.lazy(() => import('src/views/identity/administration/AddGroup'))
+const AddGroupTemplates = React.lazy(() =>
+  import('src/views/identity/administration/AddGroupTemplate'),
+)
+const DeployGroupTemplates = React.lazy(() =>
+  import('src/views/identity/administration/DeployGroupTemplate'),
+)
+const GroupTemplates = React.lazy(() => import('src/views/identity/administration/GroupTemplates'))
+
 const EditGroup = React.lazy(() => import('src/views/identity/administration/EditGroup'))
 const ViewGroup = React.lazy(() => import('src/views/identity/administration/ViewGroup'))
 const Roles = React.lazy(() => import('src/views/identity/administration/Roles'))
@@ -25,6 +33,8 @@ const GraphExplorer = React.lazy(() => import('src/views/tenant/administration/G
 const Domains = React.lazy(() => import('src/views/tenant/administration/Domains'))
 const EditTenant = React.lazy(() => import('src/views/tenant/administration/EditTenant'))
 const ConditionalAccess = React.lazy(() => import('src/views/tenant/conditional/ConditionalAccess'))
+const NamedLocations = React.lazy(() => import('src/views/tenant/conditional/NamedLocations'))
+
 const ListConditionalTemplates = React.lazy(() =>
   import('src/views/tenant/conditional/ListCATemplates'),
 )
@@ -187,6 +197,21 @@ const routes = [
   { path: '/identity/administration', name: 'Administration' },
   { path: '/identity/administration/users', name: 'Users', component: Users },
   { path: '/identity/administration/groups/add', name: 'Add Group', component: AddGroup },
+  {
+    path: '/identity/administration/group-templates',
+    name: 'Group Templates',
+    component: GroupTemplates,
+  },
+  {
+    path: '/identity/administration/group-add-template',
+    name: 'Add Group Template',
+    component: AddGroupTemplates,
+  },
+  {
+    path: '/identity/administration/deploy-group-template',
+    name: 'Deploy Group Template',
+    component: DeployGroupTemplates,
+  },
   { path: '/identity/administration/groups/edit', name: 'Edit Group', component: EditGroup },
   { path: '/identity/administration/groups/view', name: 'View Group', component: ViewGroup },
   { path: '/identity/administration/groups', name: 'Groups', component: Groups },
@@ -242,6 +267,11 @@ const routes = [
     path: '/tenant/conditional/list-policies',
     name: 'Conditional Access',
     component: ConditionalAccess,
+  },
+  {
+    path: '/tenant/conditional/list-named-locations',
+    name: 'Named Locations',
+    component: NamedLocations,
   },
   {
     path: '/tenant/conditional/deploy',
