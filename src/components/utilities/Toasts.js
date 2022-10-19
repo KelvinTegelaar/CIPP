@@ -44,7 +44,7 @@ const Toast = ({ message, title, onClose, error }) => {
       </CToastHeader>
       <CToastBody>
         <div className="d-flex justify-content-between align-items-center text-danger">
-          <strong>{message}</strong>
+          <strong>{message.toString()}</strong>
           <CButton size="sm" variant="outline" color="primary" onClick={() => setVisible(!visible)}>
             Details
             <FontAwesomeIcon
@@ -55,7 +55,10 @@ const Toast = ({ message, title, onClose, error }) => {
           </CButton>
         </div>
         <CCollapse visible={visible}>
-          <pre>{JSON.stringify(error, null, 2)}</pre>
+          {console.log(error)}
+          <pre>
+            {error?.status} - {error?.message}
+          </pre>
         </CCollapse>
       </CToastBody>
     </CToast>
@@ -64,7 +67,7 @@ const Toast = ({ message, title, onClose, error }) => {
 
 Toast.propTypes = {
   title: PropTypes.string,
-  message: PropTypes.string,
+  message: PropTypes.any,
   onClose: PropTypes.func.isRequired,
   error: PropTypes.any,
 }
