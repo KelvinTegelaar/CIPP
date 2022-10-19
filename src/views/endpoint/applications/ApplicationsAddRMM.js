@@ -126,7 +126,6 @@ const AddRMM = () => {
           </CRow>
           <FormSpy>
             {(props) => {
-              /* eslint-disable react/prop-types */
               return (
                 <>
                   <Condition when="rmmname.value" is={'datto'}>
@@ -324,7 +323,6 @@ const AddRMM = () => {
         {!postResults.isSuccess && (
           <FormSpy>
             {(props) => {
-              /* eslint-disable react/prop-types */
               return (
                 <>
                   <CRow>

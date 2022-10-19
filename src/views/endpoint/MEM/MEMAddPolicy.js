@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { CCol, CRow, CListGroup, CListGroupItem, CCallout, CSpinner } from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -46,6 +46,12 @@ const AddPolicy = () => {
     )
     values.TemplateType = values.Type
     genericPostRequest({ path: '/api/AddPolicy', values: values })
+  }
+  const [matchMap, setMatchMap] = useState([])
+  const handleMap = (values) => {
+    if (JSON.stringify(values) != JSON.stringify(matchMap)) {
+      setMatchMap(values)
+    }
   }
   const WhenFieldChanges = ({ field, set }) => (
     <Field name={set} subscription={{}}>
@@ -187,11 +193,31 @@ const AddPolicy = () => {
             />
           </CCol>
         </CRow>
-        <Condition when="RAWJson" like="%%">
-          <CRow>
-            <CCol md={12}>#create list of tenants here, with variable name</CCol>
-          </CRow>
-        </Condition>
+        <FormSpy>
+          {(props) => {
+            return (
+              <>
+                <Condition when="RAWJson" regex="%.*%">
+                  <CRow>
+                    {props.values.RAWJson?.match('%.*%') &&
+                      handleMap([...props.values.RAWJson.matchAll('%.*%')])}
+                    {matchMap.map((varname) =>
+                      props.values.selectedTenants.map((item, index) => (
+                        <CCol md={6} key={index}>
+                          <RFFCFormInput
+                            type="text"
+                            name={`replacemap.[${item.defaultDomainName}].${varname}`}
+                            label={`Replace ${varname} for tenant ${item.defaultDomainName}`}
+                          />
+                        </CCol>
+                      )),
+                    )}
+                  </CRow>
+                </Condition>
+              </>
+            )
+          }}
+        </FormSpy>
         <RFFCFormRadio value="" name="AssignTo" label="Do not assign"></RFFCFormRadio>
         <RFFCFormRadio
           value="allLicensedUsers"
