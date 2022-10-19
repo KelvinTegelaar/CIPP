@@ -24,6 +24,8 @@ const Roles = React.lazy(() => import('src/views/identity/administration/Roles')
 const Devices = React.lazy(() => import('src/views/endpoint/MEM/Devices'))
 const Page404 = React.lazy(() => import('src/views/pages/page404/Page404'))
 const Page403 = React.lazy(() => import('src/views/pages/page403/Page403'))
+const Page500 = React.lazy(() => import('src/views/pages/page500/Page500'))
+
 const MFAReport = React.lazy(() => import('src/views/identity/reports/MFAReport'))
 const Tenants = React.lazy(() => import('src/views/tenant/administration/Tenants'))
 const AlertWizard = React.lazy(() => import('src/views/tenant/administration/AlertWizard'))
@@ -191,6 +193,7 @@ const routes = [
   { path: '/cipp/logs', name: 'Logs', component: Logs },
   { path: '/cipp/404', name: 'Error', component: Page404 },
   { path: '/cipp/403', name: 'Error', component: Page403 },
+  { path: '/cipp/500', name: 'Error', component: Page500 },
   { path: '/identity', name: 'Identity' },
   { path: '/identity/administration/users/add', name: 'Add User', component: AddUser },
   { path: '/identity/administration/users/edit', name: 'Edit User', component: EditUser },
