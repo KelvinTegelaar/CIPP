@@ -21,7 +21,7 @@ const GroupTemplates = React.lazy(() => import('src/views/identity/administratio
 const EditGroup = React.lazy(() => import('src/views/identity/administration/EditGroup'))
 const ViewGroup = React.lazy(() => import('src/views/identity/administration/ViewGroup'))
 const Roles = React.lazy(() => import('src/views/identity/administration/Roles'))
-const Devices = React.lazy(() => import('src/views/endpoint/MEM/Devices'))
+const Devices = React.lazy(() => import('src/views/endpoint/intune/Devices'))
 const Page404 = React.lazy(() => import('src/views/pages/page404/Page404'))
 const Page403 = React.lazy(() => import('src/views/pages/page403/Page403'))
 const Page500 = React.lazy(() => import('src/views/pages/page500/Page500'))
@@ -107,19 +107,21 @@ const AutopilotListProfiles = React.lazy(() =>
 const AutopilotListStatusPages = React.lazy(() =>
   import('src/views/endpoint/autopilot/AutopilotListStatusPages'),
 )
-const IntuneListPolicies = React.lazy(() => import('src/views/endpoint/MEM/MEMListPolicies'))
-const MEMEditPolicy = React.lazy(() => import('src/views/endpoint/MEM/MEMEditPolicy'))
+const IntuneListPolicies = React.lazy(() => import('src/views/endpoint/intune/MEMListPolicies'))
+const MEMEditPolicy = React.lazy(() => import('src/views/endpoint/intune/MEMEditPolicy'))
 const EditAutopilotProfile = React.lazy(() =>
   import('src/views/endpoint/autopilot/AutopilotEditProfile'),
 )
 const EditAutopilotStatusPage = React.lazy(() =>
   import('src/views/endpoint/autopilot/AutopilotEditStatusPage'),
 )
-const IntuneCAPolicies = React.lazy(() => import('src/views/endpoint/MEM/MEMCAPolicies'))
-const IntuneAddPolicy = React.lazy(() => import('src/views/endpoint/MEM/MEMAddPolicy'))
-const MEMAddPolicyTemplate = React.lazy(() => import('src/views/endpoint/MEM/MEMAddPolicyTemplate'))
+const IntuneCAPolicies = React.lazy(() => import('src/views/endpoint/intune/MEMCAPolicies'))
+const IntuneAddPolicy = React.lazy(() => import('src/views/endpoint/intune/MEMAddPolicy'))
+const MEMAddPolicyTemplate = React.lazy(() =>
+  import('src/views/endpoint/intune/MEMAddPolicyTemplate'),
+)
 const IntuneListPolicyTemplate = React.lazy(() =>
-  import('src/views/endpoint/MEM/MEMListPolicyTemplates'),
+  import('src/views/endpoint/intune/MEMListPolicyTemplates'),
 )
 const ListDefender = React.lazy(() => import('src/views/security/defender/ListDefender'))
 const ListVulnerabilities = React.lazy(() => import('src/views/security/defender/ListVuln'))
