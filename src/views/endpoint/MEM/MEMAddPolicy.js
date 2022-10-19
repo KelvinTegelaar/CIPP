@@ -200,7 +200,7 @@ const AddPolicy = () => {
                 <Condition when="RAWJson" regex="%.*%">
                   <CRow>
                     {props.values.RAWJson?.match('%.*%') &&
-                      handleMap([...props.values.RAWJson.matchAll('%.*%')])}
+                      handleMap([...props.values.RAWJson.matchAll('%\\w+%')])}
                     {matchMap.map((varname) =>
                       props.values.selectedTenants.map((item, index) => (
                         <CCol md={6} key={index}>
