@@ -234,7 +234,6 @@ const GeneralSettings = () => {
     body: <div>Are you sure you want to clear the cache?</div>,
     onConfirm: () => {
       clearCache({ tenantsOnly: true })
-      localStorage.clear()
     },
   })
 
