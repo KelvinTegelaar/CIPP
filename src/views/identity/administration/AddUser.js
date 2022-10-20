@@ -34,13 +34,6 @@ import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
 import { required } from 'src/validators'
 
-const passwordRequired = (value, values) => {
-  if (!values.Autopassword && !values.password) {
-    return 'Password or automatically set password required'
-  }
-  return undefined
-}
-
 const AddUser = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
   const { defaultDomainName: tenantDomain } = tenant
@@ -91,7 +84,7 @@ const AddUser = () => {
       Usagelocation: values.usageLocation ? values.usageLocation.value : '',
       Username: values.mailNickname,
       streetAddress: values.streetAddress,
-      Autopassword: values.Autopassword,
+      Autopassword: !!values.Autopassword,
       MustChangePass: values.MustChangePass,
       tenantID: tenantDomain,
       ...values.license,
@@ -196,19 +189,10 @@ const AddUser = () => {
                       <CRow>
                         <CCol md={12}>
                           <CFormLabel>Settings</CFormLabel>
-                          <RFFCFormCheck
-                            name="Autopassword"
-                            label="Automatically Set Password"
-                            validate={passwordRequired}
-                          />
-                          <Condition when="Autopassword" is={false}>
+                          <RFFCFormCheck name="Autopassword" label="Create password manually" />
+                          <Condition when="Autopassword" is={true}>
                             <CCol md={12}>
-                              <RFFCFormInput
-                                type="password"
-                                name="password"
-                                label="Password"
-                                validate={passwordRequired}
-                              />
+                              <RFFCFormInput type="password" name="password" label="Password" />
                             </CCol>
                           </Condition>
                           <RFFCFormCheck
