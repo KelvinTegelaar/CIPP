@@ -297,6 +297,10 @@ const ListAppliedStandards = () => {
                               name="standards.UndoOauth"
                               label="Undo App Consent Standard"
                             />
+                            <RFFCFormSwitch
+                              name="standards.DisableGuests"
+                              label="Disable Guest accounts that have not logged on for 90 days"
+                            />
                           </CCol>
                         </CRow>
                         <hr />
