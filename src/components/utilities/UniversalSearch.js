@@ -1,27 +1,15 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { CFormInput, CSpinner } from '@coreui/react'
-import { hideSwitcher, mapNav } from 'src/store/features/switcher'
+import { hideSwitcher } from 'src/store/features/switcher'
 import { useNavigate } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import fuzzysort from 'fuzzysort'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 
 export const UniversalSearch = React.forwardRef(
   ({ onConfirm = () => {}, onChange = () => {}, maxResults = 7, value = '' }, ref) => {
     const [searchValue, setSearchValue] = useState(value)
     const [getSearchItems, searchItems] = useLazyGenericGetRequestQuery()
-
-    const results = fuzzysort.go(searchValue, searchItems, {
-      limit: maxResults,
-      scoreFn: (a) =>
-        // rank scores name>section>url (to)
-        Math.max(
-          a[0] ? a[0].score : -1000,
-          a[1] ? a[1].score - 100 : -1000,
-          a[2] ? a[2].score - 200 : -1000,
-        ),
-    })
 
     const handleChange = (event) => {
       setSearchValue(event.target?.value)
@@ -40,7 +28,7 @@ export const UniversalSearch = React.forwardRef(
           <CFormInput
             ref={ref}
             type="text"
-            placeholder="Search users across all tenants"
+            placeholder="Search users in selected tenant"
             onKeyDown={handleKeyDown}
             onChange={handleChange}
             value={searchValue}
