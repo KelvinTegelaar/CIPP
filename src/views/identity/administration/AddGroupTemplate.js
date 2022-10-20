@@ -5,7 +5,6 @@ import {
   CCol,
   CForm,
   CRow,
-  CSpinner,
   CCard,
   CCardHeader,
   CCardTitle,
@@ -17,42 +16,24 @@ import {
   RFFCFormCheck,
   RFFCFormInput,
   RFFCFormRadio,
-  RFFCFormSelect,
   RFFCFormTextarea,
 } from 'src/components/forms'
 import { CippPage } from 'src/components/layout/CippPage'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
-import { useListDomainsQuery } from 'src/store/api/domains'
 import { useSelector } from 'react-redux'
 
-const AddGroup = () => {
+const AddGroupTemplate = () => {
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
-  const {
-    data: domains = [],
-    isFetching: domainsIsFetching,
-    error: domainsError,
-  } = useListDomainsQuery({ tenantDomain })
 
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const onSubmit = (values) => {
-    const shippedValues = {
-      tenantID: tenantDomain,
-      domain: values.domain,
-      displayName: values.displayName,
-      username: values.username,
-      isAssignableToRole: values.isAssignableToRole,
-      groupType: values.groupType,
-      allowExternal: values.allowExternal,
-      membershipRules: values.membershipRules,
-    }
-    //window.alert(JSON.stringify(shippedValues))
-    genericPostRequest({ path: '/api/AddGroup', values: shippedValues })
+    genericPostRequest({ path: '/api/AddGroupTemplate', values: values })
   }
   return (
     <CippPage title="Add Group">
       <CCard>
         <CCardHeader>
-          <CCardTitle>Group Details</CCardTitle>
+          <CCardTitle>Add Group Template</CCardTitle>
         </CCardHeader>
         <CCardBody>
           <Form
@@ -71,28 +52,13 @@ const AddGroup = () => {
                     </CCol>
                   </CRow>
                   <CRow>
-                    <CCol md={4}>
-                      <RFFCFormInput type="text" name="username" label="Username" />
+                    <CCol md={8}>
+                      <RFFCFormInput type="text" name="username" label="username" />
                     </CCol>
-                    <CCol md={4}>
-                      {domainsIsFetching && <CSpinner />}
-                      {!domainsIsFetching && (
-                        <RFFCFormSelect
-                          // label="Domain"
-                          name="domain"
-                          label="Primary Domain name"
-                          placeholder={!domainsIsFetching ? 'Select domain' : 'Loading...'}
-                          values={domains?.map((domain) => ({
-                            value: domain.id,
-                            label: domain.id,
-                          }))}
-                        />
-                      )}
-                      {domainsError && <span>Failed to load list of domains</span>}
-                    </CCol>
+                  </CRow>
+                  <CRow>
                     <RFFCFormRadio name="groupType" label="Azure Role Group" value="azurerole" />
                     <RFFCFormRadio name="groupType" label="Security Group" value="generic" />
-                    <RFFCFormRadio name="groupType" label="Dynamic Group" value="dynamic" />
                     <RFFCFormRadio
                       name="groupType"
                       label="Distribution List"
@@ -102,7 +68,8 @@ const AddGroup = () => {
                       name="groupType"
                       label="Mail Enabled Security Group"
                       value="security"
-                    />
+                    />{' '}
+                    <RFFCFormRadio name="groupType" label="Dynamic Group" value="dynamic" />
                   </CRow>
                   <Condition when="groupType" is={'distribution'}>
                     <RFFCFormCheck
@@ -110,9 +77,10 @@ const AddGroup = () => {
                       label="Let people outside the organization email the group"
                     />
                   </Condition>
-                  <Condition when="groupType" is="dynamic">
+
+                  <Condition when="groupType" is={'dynamic'}>
                     <RFFCFormTextarea
-                      name="membershipRules"
+                      name="membershipRule"
                       label="Dynamic Group Parameters"
                       placeholder={
                         'Enter the dynamic group parameters syntax. e.g: (user.userPrincipalName -notContains `"#EXT#@`") -and (user.userType -ne `"Guest`")'
@@ -122,13 +90,12 @@ const AddGroup = () => {
                   <CRow className="mb-3">
                     <CCol md={6}>
                       <CButton type="submit" disabled={submitting}>
-                        Add Group
+                        Add Group Template
                       </CButton>
                     </CCol>
                   </CRow>
-                  {postResults.isFetching && <CSpinner />}
                   {postResults.isSuccess && (
-                    <CCallout color="success">{postResults.data.Results[0]}</CCallout>
+                    <CCallout color="success">{postResults.data.Results}</CCallout>
                   )}
                 </CForm>
               )
@@ -140,4 +107,4 @@ const AddGroup = () => {
   )
 }
 
-export default AddGroup
+export default AddGroupTemplate
