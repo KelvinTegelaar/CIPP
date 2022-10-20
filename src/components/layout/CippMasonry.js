@@ -38,8 +38,8 @@ export function CippMasonryItem({ size, children, className = null }) {
   }
 
   return (
-    <CCol {...columnSizes[size]} className={`cipp-masonry-item ${className ?? ''}`}>
-      <div className="cipp-masonry-item-content">{children}</div>
+    <CCol {...columnSizes[size]} className={`mb-3 ${className ?? ''}`}>
+      <div>{children}</div>
     </CCol>
   )
 }
@@ -84,7 +84,7 @@ export function CippMasonry({ columns = 3, children, className = null }) {
   return (
     <CContainer fluid={true} className="px-0">
       <Masonry
-        className={`cipp-masonry row g-4 ${className ?? ''}`}
+        className={`g-4 ${className ?? ''}`}
         options={CippMasonryOptions}
         enableResizableChildren={true}
       >
