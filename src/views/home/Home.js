@@ -1,14 +1,13 @@
 import React from 'react'
-import { faBook, faExclamation } from '@fortawesome/free-solid-svg-icons'
-import { CButton, CCallout, CCardGroup, CCol, CRow } from '@coreui/react'
+import { faBook, faExclamation, faSearch } from '@fortawesome/free-solid-svg-icons'
+import { CButton, CCallout, CCol, CRow } from '@coreui/react'
 import { useLoadDashQuery, useLoadVersionsQuery } from 'src/store/api/app'
 import { FastSwitcher, StatusIcon } from 'src/components/utilities'
-import { CippContentCard, CippMasonry, CippMasonryItem } from 'src/components/layout'
+import { CippContentCard } from 'src/components/layout'
 import { CippTable } from 'src/components/tables'
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Skeleton from 'react-loading-skeleton'
-import { UniversalSearch } from 'src/components/utilities/UniversalSearch'
 
 const Home = () => {
   const { data: versions, isSuccess: isSuccessVersion } = useLoadVersionsQuery()
@@ -29,14 +28,12 @@ const Home = () => {
     <>
       <CRow>
         <CCol className="mb-3">
-          <CippContentCard className="h-100" title="Jump or Search" icon={faBook}>
+          <CippContentCard className="h-100" title="Search features" icon={faSearch}>
+            <CRow className="mb-3"></CRow>
             <CRow className="mb-3">
               <CCol>
                 <FastSwitcher />
               </CCol>
-            </CRow>
-            <CRow className="mb-3">
-              <UniversalSearch />
             </CRow>
           </CippContentCard>
         </CCol>
