@@ -26,8 +26,9 @@ const Page500 = ({ errorcode, issue }) => {
           <CCol md={6}>
             An error has appeared while trying to load your data. For troubleshooting, the error
             information can be found in the table below.
-            <br /> <br /> This type of error is an issue or bug in the application and not directly
-            something you've done.
+            <br /> <br /> This type of error is usually indicative an application issue. To
+            troubleshoot this issue check if your API is running and reachable, or use below error
+            to troubleshoot
           </CCol>
           <br /> <br />
           <CRow>

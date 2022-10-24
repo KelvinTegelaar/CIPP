@@ -94,7 +94,7 @@ const AddUser = () => {
   }
   const usagelocation = useSelector((state) => state.app.usageLocation)
   const initialState = {
-    Autopassword: true,
+    Autopassword: false,
     usageLocation: usagelocation,
   }
 
@@ -235,51 +235,43 @@ const AddUser = () => {
                           </Condition>
                         </CCol>
                       </CRow>
-                      {/* <CRow> Temporarily disabled, API does not support this yet.
-                              <CCol md={12}>
-                                <RFFCFormInput name="jobTitle" label="Job Title" type="text" />
-                              </CCol>
-                            </CRow>
-                            <CRow>
-                              <CCol md={6}>
-                                <RFFCFormInput name="streetAddress" label="Street" type="text" />
-                              </CCol>
-                              <CCol md={6}>
-                                <RFFCFormInput name="postalCode" label="Postal Code" type="text" />
-                              </CCol>
-                            </CRow>
-                            <CRow>
-                              <CCol md={6}>
-                                <RFFCFormInput name="city" label="city" type="text" />
-                              </CCol>
-                              <CCol md={6}>
-                                <RFFCFormInput name="country" label="Country" type="text" />
-                              </CCol>
-                            </CRow>
-                            <CRow>
-                              <CCol md={6}>
-                                <RFFCFormInput
-                                  name="companyName"
-                                  label="Company Name"
-                                  type="text"
-                                />
-                              </CCol>
-                              <CCol md={6}>
-                                <RFFCFormInput name="department" label="Department" type="text" />
-                              </CCol>
-                            </CRow>
-                            <CRow>
-                              <CCol md={6}>
-                                <RFFCFormInput name="mobilePhone" label="Mobile #" type="text" />
-                              </CCol>
-                              <CCol md={6}>
-                                <RFFCFormInput
-                                  name="businessPhones"
-                                  label="Business #"
-                                  type="text"
-                                />
-                              </CCol>
-                            </CRow> */}
+                      <CRow>
+                        <CCol md={12}>
+                          <RFFCFormInput name="jobTitle" label="Job Title" type="text" />
+                        </CCol>
+                      </CRow>
+                      <CRow>
+                        <CCol md={6}>
+                          <RFFCFormInput name="streetAddress" label="Street" type="text" />
+                        </CCol>
+                        <CCol md={6}>
+                          <RFFCFormInput name="postalCode" label="Postal Code" type="text" />
+                        </CCol>
+                      </CRow>
+                      <CRow>
+                        <CCol md={6}>
+                          <RFFCFormInput name="city" label="city" type="text" />
+                        </CCol>
+                        <CCol md={6}>
+                          <RFFCFormInput name="country" label="Country" type="text" />
+                        </CCol>
+                      </CRow>
+                      <CRow>
+                        <CCol md={6}>
+                          <RFFCFormInput name="companyName" label="Company Name" type="text" />
+                        </CCol>
+                        <CCol md={6}>
+                          <RFFCFormInput name="department" label="Department" type="text" />
+                        </CCol>
+                      </CRow>
+                      <CRow>
+                        <CCol md={6}>
+                          <RFFCFormInput name="mobilePhone" label="Mobile #" type="text" />
+                        </CCol>
+                        <CCol md={6}>
+                          <RFFCFormInput name="businessPhones" label="Business #" type="text" />
+                        </CCol>
+                      </CRow>
                       <CRow className="mb-3">
                         <CCol md={12}>
                           <RFFSelectSearch
