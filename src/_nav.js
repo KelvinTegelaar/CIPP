@@ -529,11 +529,6 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Add Template',
-        to: '/email/transport/add-template',
-      },
-      {
-        component: CNavItem,
         name: 'List Templates',
         to: '/email/transport/list-templates',
       },
