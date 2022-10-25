@@ -33,11 +33,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
 import { required } from 'src/validators'
+import useQuery from 'src/hooks/useQuery'
 
 const AddUser = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
   const { defaultDomainName: tenantDomain } = tenant
-
+  let query = useQuery()
+  const allQueryObj = {}
+  for (const [key, value] of query.entries()) {
+    allQueryObj[key] = value
+  }
+  console.log(allQueryObj)
   const {
     data: users = [],
     isFetching: usersIsFetching,
@@ -96,6 +102,7 @@ const AddUser = () => {
   const initialState = {
     Autopassword: false,
     usageLocation: usagelocation,
+    ...allQueryObj,
   }
 
   return (
