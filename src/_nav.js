@@ -50,6 +50,16 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Group Templates',
+        to: '/identity/administration/group-templates',
+      },
+      {
+        component: CNavItem,
+        name: 'Deploy Group Template',
+        to: '/identity/administration/deploy-group-template',
+      },
+      {
+        component: CNavItem,
         name: 'Roles',
         to: '/identity/administration/roles',
       },
@@ -200,6 +210,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'List Named Locations',
+        to: '/tenant/conditional/list-named-locations',
+      },
+      {
+        component: CNavItem,
         name: 'Deploy Conditional Access',
         to: '/tenant/conditional/deploy',
       },
@@ -287,7 +302,7 @@ const _nav = [
   },
   {
     component: CNavTitle,
-    name: 'Endpoint Management',
+    name: 'Intune',
   },
   {
     component: CNavGroup,
@@ -364,7 +379,7 @@ const _nav = [
   },
   {
     component: CNavGroup,
-    name: 'MEM (Intune)',
+    name: 'Device Management',
     section: 'Endpoint Management',
     to: '/endpoint/MEM',
     icon: <FontAwesomeIcon icon={faExchangeAlt} className="nav-icon" />,
@@ -593,6 +608,11 @@ const _nav = [
         component: CNavItem,
         name: 'GDAP Migration Status',
         to: '/tenant/administration/gdap-status',
+      },
+      {
+        component: CNavItem,
+        name: 'Application Approval',
+        to: '/tenant/administration/appapproval',
       },
       {
         component: CNavItem,
