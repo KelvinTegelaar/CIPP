@@ -109,6 +109,7 @@ const AddUser = () => {
   }
   const copyUserVariables = (t) => {
     for (const [key, value] of Object.entries(t.value)) {
+      query.delete(key)
       if (value != null) {
         query.append(key, value)
       }
@@ -294,7 +295,7 @@ const AddUser = () => {
                             label="Copy group membership from other user"
                             values={users?.map((user) => ({
                               value: user.mail,
-                              name: user.displayName,
+                              name: `${user.displayName} <${user.userPrincipalName}>`,
                             }))}
                             placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                             name="CopyFrom"
@@ -344,7 +345,7 @@ const AddUser = () => {
                 classNamePrefix="react-select"
                 options={users?.map((user) => ({
                   value: user,
-                  label: user.displayName,
+                  label: `${user.displayName} <${user.userPrincipalName}>`,
                 }))}
                 isClearable={true}
                 name="usageLocation"
