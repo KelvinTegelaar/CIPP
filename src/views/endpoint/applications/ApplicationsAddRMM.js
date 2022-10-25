@@ -103,7 +103,7 @@ const AddRMM = () => {
               <RFFSelectSearch
                 values={[
                   { value: 'datto', name: 'Datto RMM' },
-                  { value: 'ninja', name: 'NinjaOne' },
+                  //{ value: 'ninja', name: 'NinjaOne' },
                   //{ value: 'ncentral', name: 'N-Able N-Central' },
                   //{ value: 'nablermm', name: 'N-Able RMM' },
                   { value: 'syncro', name: 'Syncro RMM' },

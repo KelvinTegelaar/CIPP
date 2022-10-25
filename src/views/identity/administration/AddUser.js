@@ -34,8 +34,12 @@ import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
 import { required } from 'src/validators'
 import useQuery from 'src/hooks/useQuery'
+import Select from 'react-select'
+import { useNavigate } from 'react-router-dom'
 
 const AddUser = () => {
+  let navigate = useNavigate()
+
   const tenant = useSelector((state) => state.app.currentTenant)
   const { defaultDomainName: tenantDomain } = tenant
   let query = useQuery()
@@ -43,7 +47,6 @@ const AddUser = () => {
   for (const [key, value] of query.entries()) {
     allQueryObj[key] = value
   }
-  console.log(allQueryObj)
   const {
     data: users = [],
     isFetching: usersIsFetching,
@@ -104,7 +107,14 @@ const AddUser = () => {
     usageLocation: usagelocation,
     ...allQueryObj,
   }
-
+  const copyUserVariables = (t) => {
+    for (const [key, value] of Object.entries(t.value)) {
+      if (value != null) {
+        query.append(key, value)
+      }
+      navigate(`?${query.toString()}`)
+    }
+  }
   return (
     <CippPage title="Add User">
       {postResults.isSuccess && (
@@ -256,7 +266,7 @@ const AddUser = () => {
                       </CRow>
                       <CRow>
                         <CCol md={6}>
-                          <RFFCFormInput name="city" label="city" type="text" />
+                          <RFFCFormInput name="city" label="City" type="text" />
                         </CCol>
                         <CCol md={6}>
                           <RFFCFormInput name="country" label="Country" type="text" />
@@ -318,6 +328,31 @@ const AddUser = () => {
                   )
                 }}
               />
+            </CCardBody>
+          </CCard>
+        </CCol>
+        <CCol md={6}>
+          <CCard>
+            <CCardHeader>
+              <CCardTitle>Copy properties</CCardTitle>
+            </CCardHeader>
+            <CCardBody>
+              Use this option to copy the properties from another user, this will only copy the
+              visible fields as a template.
+              <Select
+                className="react-select-container me-3"
+                classNamePrefix="react-select"
+                options={users?.map((user) => ({
+                  value: user,
+                  label: user.displayName,
+                }))}
+                isClearable={true}
+                name="usageLocation"
+                placeholder="Type to search..."
+                label="Copy properties from other user"
+                onChange={(value) => copyUserVariables(value)}
+              />
+              {usersError && <span>Failed to load list of users</span>}
             </CCardBody>
           </CCard>
         </CCol>
