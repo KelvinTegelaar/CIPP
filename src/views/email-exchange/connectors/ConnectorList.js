@@ -40,7 +40,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             color: 'info',
             icon: <FontAwesomeIcon icon={faCheck} className="me-2" />,
             modal: true,
-            modalUrl: `/api/EditTransportRule?State=Enable&TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}`,
+            modalUrl: `/api/EditExConnector?State=Enable&TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}&Type=${row.cippconnectortype}`,
             modalMessage: 'Are you sure you want to enable this rule?',
           },
           {
@@ -48,7 +48,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             color: 'info',
             icon: <FontAwesomeIcon icon={faBan} className="me-2" />,
             modal: true,
-            modalUrl: `/api/EditTransportRule?State=Disable&TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}`,
+            modalUrl: `/api/EditExConnector?State=Disable&TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}&Type=${row.cippconnectortype}`,
             modalMessage: 'Are you sure you want to disable this rule?',
           },
           {
@@ -106,12 +106,6 @@ const columns = [
     name: 'Sender IP Addresses',
     selector: (row) => row.SenderIPAddresses?.join(','),
     exportSelector: 'SenderIPAddresses',
-  },
-  {
-    name: 'Only apply via transport rules',
-    selector: (row) => row.IsTransportRuleScoped,
-    exportSelector: 'IsTransportRuleScoped',
-    cell: cellBooleanFormatter(),
   },
   {
     name: 'Only apply via transport rules',
