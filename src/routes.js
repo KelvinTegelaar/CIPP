@@ -182,6 +182,18 @@ const AddTransportTemplate = React.lazy(() =>
 const TransportDeploy = React.lazy(() =>
   import('src/views/email-exchange/transport/DeployTransport'),
 )
+
+const ConnectorList = React.lazy(() => import('src/views/email-exchange/connectors/ConnectorList'))
+const ConnectorListTemplates = React.lazy(() =>
+  import('src/views/email-exchange/connectors/ListConnectorTemplates'),
+)
+const DeployConnector = React.lazy(() =>
+  import('src/views/email-exchange/connectors/DeployConnector'),
+)
+const AddConnectorTemplate = React.lazy(() =>
+  import('src/views/email-exchange/connectors/AddConnectorTemplate'),
+)
+
 const SecurityComplianceAlerts = React.lazy(() => import('src/views/security/incidents/ListAlerts'))
 const SecurityComplianceIncidents = React.lazy(() =>
   import('src/views/security/incidents/ListIncidents'),
@@ -430,6 +442,26 @@ const routes = [
   { name: 'Email & Exchange', path: '/email' },
   { name: 'Email Administration', path: '/email/administration' },
   { name: 'List Contacts', path: '/email/administration/contacts', component: ContactsList },
+  {
+    path: '/email/connectors/list-connectors',
+    name: 'List connectors',
+    component: ConnectorList,
+  },
+  {
+    path: '/email/connectors/deploy-connector',
+    name: 'Deploy connectors',
+    component: DeployConnector,
+  },
+  {
+    path: '/email/connectors/add-connector-templates',
+    name: 'Add connectors Templates',
+    component: AddConnectorTemplate,
+  },
+  {
+    path: '/email/connectors/list-connector-templates',
+    name: 'List connectors Templates',
+    component: ConnectorListTemplates,
+  },
   {
     path: '/email/transport/list-rules',
     name: 'List Transport rules',

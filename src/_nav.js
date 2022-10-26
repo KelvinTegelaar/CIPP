@@ -524,13 +524,28 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'List Transport Templates',
+        to: '/email/transport/list-templates',
+      },
+      {
+        component: CNavItem,
         name: 'Deploy Transport rule',
         to: '/email/transport/deploy-rules',
       },
       {
         component: CNavItem,
-        name: 'List Templates',
-        to: '/email/transport/list-templates',
+        name: 'List Connectors',
+        to: '/email/connectors/list-connectors',
+      },
+      {
+        component: CNavItem,
+        name: 'List Connector Templates',
+        to: '/email/connectors/list-connector-templates',
+      },
+      {
+        component: CNavItem,
+        name: 'Deploy Connector Templates',
+        to: '/email/connectors/deploy-connector',
       },
     ],
   },
