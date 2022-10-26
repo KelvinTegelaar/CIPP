@@ -56,7 +56,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             color: 'danger',
             modal: true,
             icon: <FontAwesomeIcon icon={faTrash} className="me-2" />,
-            modalUrl: `/api/RemoveTransportRule?TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}`,
+            modalUrl: `/api/RemoveExConnector?TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}&Type=${row.cippconnectortype}`,
             modalMessage: 'Are you sure you want to disable this rule?',
           },
         ]}
