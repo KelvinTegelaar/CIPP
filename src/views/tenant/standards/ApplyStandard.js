@@ -196,7 +196,26 @@ const ApplyStandard = () => {
                 name="standards.PWdisplayAppInformationRequiredState"
                 label="Enable Passwordless with Location information and Number Matching"
               />
-              <RFFCFormSwitch name="standards.TAP" label="Enable Temporary Access Passwords" />
+              <RFFCFormSwitch
+                name="standards.TAP.Enabled"
+                label="Enable Temporary Access Passwords"
+              />
+              <Condition when="standards.TAP.Enabled" is={true}>
+                <RFFCFormSelect
+                  label="Select TAP Lifetime"
+                  name="standards.TAP.config"
+                  values={[
+                    {
+                      label: 'Only Once',
+                      value: 'true',
+                    },
+                    {
+                      label: 'Multiple Logons',
+                      value: 'false',
+                    },
+                  ]}
+                />
+              </Condition>
               <RFFCFormSwitch
                 name="standards.DisableM365GroupUsers"
                 label="Disable M365 Group creation by users"

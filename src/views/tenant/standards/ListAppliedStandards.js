@@ -238,10 +238,25 @@ const ListAppliedStandards = () => {
                               label="Enable Passwordless with Location information and Number Matching"
                             />
                             <RFFCFormSwitch
-                              name="standards.TAP"
+                              name="standards.TAP.Enabled"
                               label="Enable Temporary Access Passwords"
                             />
-
+                            <Condition when="standards.TAP.Enabled" is={true}>
+                              <RFFCFormSelect
+                                label="Select TAP Lifetime"
+                                name="standards.TAP.config"
+                                values={[
+                                  {
+                                    label: 'Only Once',
+                                    value: 'true',
+                                  },
+                                  {
+                                    label: 'Multiple Logons',
+                                    value: 'false',
+                                  },
+                                ]}
+                              />
+                            </Condition>
                             <RFFCFormSwitch
                               name="standards.SecurityDefaults"
                               label="Enable Security Defaults"
