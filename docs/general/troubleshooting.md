@@ -283,7 +283,7 @@ Write-Host "     SAVE THESE IN A SECURE LOCATION     "
 
 ## Clear Token Cache
 :::tip
-Hosted clients can contact the helpdesk directly to clear their token cache, and do not need to do this themselves.
+Hosted clients can contact the helpdesk directly to clear their token cache, and do not need to do this themselves. It's important that you send an email noting you've entered your keys, or ran the wizard, and are ready for a token cache clear.
 :::
 
 1. Go to Settings
