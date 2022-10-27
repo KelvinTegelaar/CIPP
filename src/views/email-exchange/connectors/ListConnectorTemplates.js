@@ -35,7 +35,7 @@ const ConnectorListTemplates = () => {
           color="danger"
           onClick={() =>
             handleDeleteIntuneTemplate(
-              `/api/RemoveTransportRuleTemplate?ID=${row.GUID}`,
+              `/api/RemoveExConnectorTemplate?ID=${row.GUID}`,
               'Do you want to delete the template?',
             )
           }
@@ -97,10 +97,10 @@ const ConnectorListTemplates = () => {
         <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
       )}
       <CippPageList
-        title="Transport Rule Templates"
+        title="Exchange Connector Templates"
         datatable={{
           reportName: `${tenant?.defaultDomainName}-Groups`,
-          path: '/api/ListTransportRulesTemplates',
+          path: '/api/ListExconnectorTemplates',
           params: { TenantFilter: tenant?.defaultDomainName },
           columns,
         }}
