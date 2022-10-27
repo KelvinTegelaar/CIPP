@@ -39,7 +39,7 @@ const DeployConnectorTemplate = () => {
       (tenant) => (values[`Select_${tenant.defaultDomainName}`] = tenant.defaultDomainName),
     )
     values.TemplateType = values.Type
-    genericPostRequest({ path: '/api/AddTransportRule', values: values })
+    genericPostRequest({ path: '/api/AddExConnector', values: values })
   }
   const WhenFieldChanges = ({ field, set }) => (
     <Field name={set} subscription={{}}>
@@ -72,11 +72,11 @@ const DeployConnectorTemplate = () => {
     <CippWizard
       initialValues={{ ...formValues }}
       onSubmit={handleSubmit}
-      wizardTitle="Add Intune policy"
+      wizardTitle="Add Connector"
     >
       <CippWizard.Page
         title="Tenant Choice"
-        description="Choose the tenants to create the policy for."
+        description="Choose the tenants to create the Connector for."
       >
         <center>
           <h3 className="text-primary">Step 1</h3>
@@ -122,7 +122,7 @@ const DeployConnectorTemplate = () => {
         <CRow>
           <CCol md={12}>
             {intuneTemplates.isUninitialized &&
-              intuneGetRequest({ path: 'api/ListTransportRulesTemplates' })}
+              intuneGetRequest({ path: 'api/ListExConnectorTemplates' })}
             {intuneTemplates.isSuccess && (
               <RFFCFormSelect
                 name="TemplateList"
@@ -140,7 +140,7 @@ const DeployConnectorTemplate = () => {
           <CCol>
             <RFFCFormTextarea
               name="PowerShellCommand"
-              label="New-TransportRule parameters"
+              label="New-InboundConnector / New-Outbound Connector parameters"
               placeholder={
                 'Enter the JSON information to use as parameters, or select from a template'
               }

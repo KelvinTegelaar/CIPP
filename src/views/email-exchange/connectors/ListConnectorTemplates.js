@@ -65,11 +65,11 @@ const ConnectorListTemplates = () => {
       exportSelector: 'name',
     },
     {
-      name: 'Comments',
-      selector: (row) => row['comments'],
+      name: 'Type',
+      selector: (row) => row['cippconnectortype'],
       sortable: true,
-      cell: (row) => CellTip(row['comments']),
-      exportSelector: 'Comments',
+      cell: (row) => CellTip(row['cippconnectortype']),
+      exportSelector: 'cippconnectortype',
     },
     {
       name: 'GUID',
