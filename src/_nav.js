@@ -16,6 +16,7 @@ import {
   faKey,
   faBus,
   faExclamationTriangle,
+  faUserShield,
 } from '@fortawesome/free-solid-svg-icons'
 
 const _nav = [
@@ -49,6 +50,16 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Group Templates',
+        to: '/identity/administration/group-templates',
+      },
+      {
+        component: CNavItem,
+        name: 'Deploy Group Template',
+        to: '/identity/administration/deploy-group-template',
+      },
+      {
+        component: CNavItem,
         name: 'Roles',
         to: '/identity/administration/roles',
       },
@@ -73,11 +84,6 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'Devices',
-        to: '/identity/reports/devices',
-      },
-      {
-        component: CNavItem,
         name: 'MFA Report',
         to: '/identity/reports/mfa-report',
       },
@@ -85,6 +91,11 @@ const _nav = [
         component: CNavItem,
         name: 'Basic Auth Report',
         to: '/identity/reports/basic-auth-report',
+      },
+      {
+        component: CNavItem,
+        name: 'Sign-in Report',
+        to: '/identity/reports/signin-report',
       },
       {
         component: CNavItem,
@@ -199,8 +210,18 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'List Named Locations',
+        to: '/tenant/conditional/list-named-locations',
+      },
+      {
+        component: CNavItem,
         name: 'Deploy Conditional Access',
         to: '/tenant/conditional/deploy',
+      },
+      {
+        component: CNavItem,
+        name: 'Deploy Named Locations',
+        to: '/tenant/conditional/deploy-named-location',
       },
       {
         component: CNavItem,
@@ -255,6 +276,11 @@ const _nav = [
     items: [
       {
         component: CNavItem,
+        name: 'Defender Deployment',
+        to: '/security/defender/deployment',
+      },
+      {
+        component: CNavItem,
         name: 'Defender Status',
         to: '/security/defender/list-defender',
       },
@@ -276,7 +302,7 @@ const _nav = [
   },
   {
     component: CNavTitle,
-    name: 'Endpoint Management',
+    name: 'Intune',
   },
   {
     component: CNavGroup,
@@ -336,7 +362,7 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'List Devices',
+        name: 'List Autopilot Devices',
         to: '/endpoint/autopilot/list-devices',
       },
       {
@@ -353,11 +379,16 @@ const _nav = [
   },
   {
     component: CNavGroup,
-    name: 'MEM (Intune)',
+    name: 'Device Management',
     section: 'Endpoint Management',
     to: '/endpoint/MEM',
     icon: <FontAwesomeIcon icon={faExchangeAlt} className="nav-icon" />,
     items: [
+      {
+        component: CNavItem,
+        name: 'List Devices',
+        to: '/endpoint/reports/devices',
+      },
       {
         component: CNavItem,
         name: 'List MEM Policies',
@@ -459,6 +490,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Mailbox Rules',
+        to: '/email/administration/mailbox-rules',
+      },
+      {
+        component: CNavItem,
         name: 'Contacts',
         to: '/email/administration/contacts',
       },
@@ -552,6 +588,36 @@ const _nav = [
         component: CNavItem,
         name: 'Documentation',
         href: 'https://cipp.app',
+        target: '_blank',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
+    name: 'GDAP Migration',
+    section: 'Settings',
+    to: '/cipp/gdap',
+    icon: <FontAwesomeIcon icon={faUserShield} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Migration Wizard',
+        to: '/tenant/administration/gdap',
+      },
+      {
+        component: CNavItem,
+        name: 'GDAP Migration Status',
+        to: '/tenant/administration/gdap-status',
+      },
+      {
+        component: CNavItem,
+        name: 'Application Approval',
+        to: '/tenant/administration/appapproval',
+      },
+      {
+        component: CNavItem,
+        name: 'Documentation',
+        href: 'https://cipp.app/docs/user/usingcipp/GDAP/migration',
         target: '_blank',
       },
     ],

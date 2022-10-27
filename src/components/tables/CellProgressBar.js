@@ -24,7 +24,7 @@ export const CellProgressBar = ({ value, reverse = false }) => {
       color = 'success'
     }
   }
-  if (value) {
+  if (value > 0) {
     return (
       <div style={{ width: '100%' }}>
         <CProgress>
