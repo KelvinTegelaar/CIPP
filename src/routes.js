@@ -21,9 +21,11 @@ const GroupTemplates = React.lazy(() => import('src/views/identity/administratio
 const EditGroup = React.lazy(() => import('src/views/identity/administration/EditGroup'))
 const ViewGroup = React.lazy(() => import('src/views/identity/administration/ViewGroup'))
 const Roles = React.lazy(() => import('src/views/identity/administration/Roles'))
-const Devices = React.lazy(() => import('src/views/endpoint/MEM/Devices'))
+const Devices = React.lazy(() => import('src/views/endpoint/intune/Devices'))
 const Page404 = React.lazy(() => import('src/views/pages/page404/Page404'))
 const Page403 = React.lazy(() => import('src/views/pages/page403/Page403'))
+const Page500 = React.lazy(() => import('src/views/pages/page500/Page500'))
+
 const MFAReport = React.lazy(() => import('src/views/identity/reports/MFAReport'))
 const Tenants = React.lazy(() => import('src/views/tenant/administration/Tenants'))
 const AlertWizard = React.lazy(() => import('src/views/tenant/administration/AlertWizard'))
@@ -105,21 +107,25 @@ const AutopilotListProfiles = React.lazy(() =>
 const AutopilotListStatusPages = React.lazy(() =>
   import('src/views/endpoint/autopilot/AutopilotListStatusPages'),
 )
-const IntuneListPolicies = React.lazy(() => import('src/views/endpoint/MEM/MEMListPolicies'))
-const MEMEditPolicy = React.lazy(() => import('src/views/endpoint/MEM/MEMEditPolicy'))
+const IntuneListPolicies = React.lazy(() => import('src/views/endpoint/intune/MEMListPolicies'))
+const MEMEditPolicy = React.lazy(() => import('src/views/endpoint/intune/MEMEditPolicy'))
 const EditAutopilotProfile = React.lazy(() =>
   import('src/views/endpoint/autopilot/AutopilotEditProfile'),
 )
 const EditAutopilotStatusPage = React.lazy(() =>
   import('src/views/endpoint/autopilot/AutopilotEditStatusPage'),
 )
-const IntuneCAPolicies = React.lazy(() => import('src/views/endpoint/MEM/MEMCAPolicies'))
-const IntuneAddPolicy = React.lazy(() => import('src/views/endpoint/MEM/MEMAddPolicy'))
-const MEMAddPolicyTemplate = React.lazy(() => import('src/views/endpoint/MEM/MEMAddPolicyTemplate'))
+const IntuneCAPolicies = React.lazy(() => import('src/views/endpoint/intune/MEMCAPolicies'))
+const IntuneAddPolicy = React.lazy(() => import('src/views/endpoint/intune/MEMAddPolicy'))
+const MEMAddPolicyTemplate = React.lazy(() =>
+  import('src/views/endpoint/intune/MEMAddPolicyTemplate'),
+)
 const IntuneListPolicyTemplate = React.lazy(() =>
-  import('src/views/endpoint/MEM/MEMListPolicyTemplates'),
+  import('src/views/endpoint/intune/MEMListPolicyTemplates'),
 )
 const ListDefender = React.lazy(() => import('src/views/security/defender/ListDefender'))
+const ListVulnerabilities = React.lazy(() => import('src/views/security/defender/ListVuln'))
+
 const DeployDefender = React.lazy(() => import('src/views/security/defender/DeployDefender'))
 
 const OneDriveList = React.lazy(() => import('src/views/teams-share/onedrive/OneDriveList'))
@@ -176,6 +182,18 @@ const AddTransportTemplate = React.lazy(() =>
 const TransportDeploy = React.lazy(() =>
   import('src/views/email-exchange/transport/DeployTransport'),
 )
+
+const ConnectorList = React.lazy(() => import('src/views/email-exchange/connectors/ConnectorList'))
+const ConnectorListTemplates = React.lazy(() =>
+  import('src/views/email-exchange/connectors/ListConnectorTemplates'),
+)
+const DeployConnector = React.lazy(() =>
+  import('src/views/email-exchange/connectors/DeployConnector'),
+)
+const AddConnectorTemplate = React.lazy(() =>
+  import('src/views/email-exchange/connectors/AddConnectorTemplate'),
+)
+
 const SecurityComplianceAlerts = React.lazy(() => import('src/views/security/incidents/ListAlerts'))
 const SecurityComplianceIncidents = React.lazy(() =>
   import('src/views/security/incidents/ListIncidents'),
@@ -189,6 +207,7 @@ const routes = [
   { path: '/cipp/logs', name: 'Logs', component: Logs },
   { path: '/cipp/404', name: 'Error', component: Page404 },
   { path: '/cipp/403', name: 'Error', component: Page403 },
+  { path: '/cipp/500', name: 'Error', component: Page500 },
   { path: '/identity', name: 'Identity' },
   { path: '/identity/administration/users/add', name: 'Add User', component: AddUser },
   { path: '/identity/administration/users/edit', name: 'Edit User', component: EditUser },
@@ -396,6 +415,12 @@ const routes = [
   { path: '/security/defender', name: 'Defender' },
   { path: '/security/defender/deployment', name: 'Deploy Defender', component: DeployDefender },
   { path: '/security/defender/list-defender', name: 'List Defender', component: ListDefender },
+  {
+    path: '/security/defender/list-defender-tvm',
+    name: 'List Vulnerabilities',
+    component: ListVulnerabilities,
+  },
+
   { path: '/teams-share', name: 'Teams & Sharepoint' },
   { path: '/teams-share/onedrive', name: 'OneDrive' },
   { path: '/teams-share/onedrive/list', name: 'List OneDrive', component: OneDriveList },
@@ -417,6 +442,26 @@ const routes = [
   { name: 'Email & Exchange', path: '/email' },
   { name: 'Email Administration', path: '/email/administration' },
   { name: 'List Contacts', path: '/email/administration/contacts', component: ContactsList },
+  {
+    path: '/email/connectors/list-connectors',
+    name: 'List connectors',
+    component: ConnectorList,
+  },
+  {
+    path: '/email/connectors/deploy-connector',
+    name: 'Deploy connectors',
+    component: DeployConnector,
+  },
+  {
+    path: '/email/connectors/add-connector-templates',
+    name: 'Add connectors Templates',
+    component: AddConnectorTemplate,
+  },
+  {
+    path: '/email/connectors/list-connector-templates',
+    name: 'List connectors Templates',
+    component: ConnectorListTemplates,
+  },
   {
     path: '/email/transport/list-rules',
     name: 'List Transport rules',
