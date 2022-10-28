@@ -71,7 +71,7 @@ const MEMAddPolicyTemplate = () => {
                     <RFFCFormTextarea
                       name="RawJSON"
                       label="RAW Json"
-                      placeholder="Enter RAW JSON Information"
+                      placeholder="Enter RAW JSON Information. Variables can be used. Example: %variablename%"
                       validate={validJson}
                     />
                   </CCol>
