@@ -29,6 +29,10 @@ For full functionality, CIPP needs the following permissions for the Secure Appl
 Some permissions may appear duplicated in the Delegated and Application permissions tables below. This is _by design_ and you do need to add both permissions!
 :::
 
+:::caution Special Permissions
+Some permissions may come from other APIs than just Graph. you will see this both in the application, and the permission list below by having a name between brackets, e.g. (WindowsDefenderATP). This means you will need to click on "APIs my Organisation uses" instead of "Microsoft Graph" when adding these permissions.
+:::
+
 <details><summary>
 
 ### Delegated Permissions
