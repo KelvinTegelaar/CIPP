@@ -113,9 +113,9 @@ const ListAppliedStandards = () => {
     },
     {
       name: 'Applied Standards',
-      selector: (row) => Object.keys(row.standards).join(','),
+      selector: (row) => row['StandardsExport'],
       sortable: true,
-      exportSelector: 'standards',
+      exportSelector: 'StandardsExport',
     },
   ]
 
@@ -238,10 +238,25 @@ const ListAppliedStandards = () => {
                               label="Enable Passwordless with Location information and Number Matching"
                             />
                             <RFFCFormSwitch
-                              name="standards.TAP"
+                              name="standards.TAP.Enabled"
                               label="Enable Temporary Access Passwords"
                             />
-
+                            <Condition when="standards.TAP.Enabled" is={true}>
+                              <RFFCFormSelect
+                                label="Select TAP Lifetime"
+                                name="standards.TAP.config"
+                                values={[
+                                  {
+                                    label: 'Only Once',
+                                    value: 'true',
+                                  },
+                                  {
+                                    label: 'Multiple Logons',
+                                    value: 'false',
+                                  },
+                                ]}
+                              />
+                            </Condition>
                             <RFFCFormSwitch
                               name="standards.SecurityDefaults"
                               label="Enable Security Defaults"
@@ -258,6 +273,7 @@ const ListAppliedStandards = () => {
                               name="standards.SSPR"
                               label="Enable Self Service Password Reset"
                             />
+                            <RFFCFormSwitch name="standards.UndoSSPR" label="Undo SSPR Standard" />
                           </CCol>
                           <CCol md={6}>
                             <RFFCFormSwitch
@@ -279,7 +295,10 @@ const ListAppliedStandards = () => {
                               name="standards.LegacyMFA"
                               label="Enable per-user MFA for all user (Legacy)"
                             />
-
+                            <RFFCFormSwitch
+                              name="standards.LegacyMFACleanup"
+                              label="Remove Legacy MFA if SD or CA is active"
+                            />
                             <RFFCFormSwitch
                               name="standards.DisableSelfServiceLicenses"
                               label="Disable Self Service Licensing"
@@ -288,10 +307,14 @@ const ListAppliedStandards = () => {
                               name="standards.DisableM365GroupUsers"
                               label="Disable M365 Group creation by users"
                             />
-                            <RFFCFormSwitch name="standards.UndoSSPR" label="Undo SSPR Standard" />
+
                             <RFFCFormSwitch
                               name="standards.UndoOauth"
                               label="Undo App Consent Standard"
+                            />
+                            <RFFCFormSwitch
+                              name="standards.DisableGuests"
+                              label="Disable Guest accounts that have not logged on for 90 days"
                             />
                           </CCol>
                         </CRow>
@@ -439,7 +462,7 @@ const ListAppliedStandards = () => {
             {listStandardsAllTenants && (
               <CippContentCard title="Currently Applied Standards">
                 <CippTable
-                  reportName={`Standards}`}
+                  reportName={`Standards`}
                   data={listStandardsAllTenants}
                   columns={tableColumns}
                 />

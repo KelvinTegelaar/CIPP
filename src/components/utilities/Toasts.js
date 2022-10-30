@@ -55,7 +55,9 @@ const Toast = ({ message, title, onClose, error }) => {
           </CButton>
         </div>
         <CCollapse visible={visible}>
-          <pre>{JSON.stringify(error, null, 2)}</pre>
+          <pre>
+            {error?.status} - {error?.message}
+          </pre>
         </CCollapse>
       </CToastBody>
     </CToast>
@@ -64,7 +66,7 @@ const Toast = ({ message, title, onClose, error }) => {
 
 Toast.propTypes = {
   title: PropTypes.string,
-  message: PropTypes.string,
+  message: PropTypes.any,
   onClose: PropTypes.func.isRequired,
   error: PropTypes.any,
 }

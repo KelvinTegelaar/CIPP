@@ -47,6 +47,8 @@ Error.propTypes = {
 }
 
 const Setup = () => {
+  const [setupDone, setSetupdone] = useState(false)
+  const valbutton = (value) => (setupDone ? undefined : 'You must finish the wizard.')
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const [genericGetRequest, getResults] = useLazyGenericGetRequestQuery()
   const onSubmit = (values) => {
@@ -75,12 +77,13 @@ const Setup = () => {
           path: 'api/ExecSAMSetup',
           params: { CheckSetupProcess: true, step: getResults.data?.step },
         })
+      } else {
+        setSetupdone(true)
       }
     },
     10000,
     getResults.data,
   )
-
   const formValues = {}
   return (
     <CippWizard
@@ -133,9 +136,17 @@ const Setup = () => {
                 process at any time, by clicking on the start button once more.
               </p>
               <CCol md={2}>
-                <CButton type="button" onClick={() => startCIPPSetup(true)}>
+                <Field
+                  name="start"
+                  component="button"
+                  className="btn btn-primary"
+                  type="button"
+                  onClick={() => startCIPPSetup(true)}
+                  validate={valbutton}
+                >
                   Start Setup Wizard
-                </CButton>
+                </Field>
+                <Error name="start" />
               </CCol>
               <hr className="my-4" />
             </CRow>
@@ -163,9 +174,16 @@ const Setup = () => {
           <Condition when="Partner" is="False">
             <CRow>
               <CCol md={2}>
-                <CButton type="button" onClick={() => startCIPPSetup(false)}>
+                <Field
+                  name="start"
+                  component="button"
+                  className="btn btn-primary"
+                  type="button"
+                  onClick={() => startCIPPSetup(false)}
+                >
                   Start Setup Wizard
-                </CButton>
+                </Field>
+                <Error name="start" />
               </CCol>
               <hr className="my-4" />
             </CRow>
@@ -257,7 +275,7 @@ const Setup = () => {
                     <CCol md={3}></CCol>
                     <CCol md={6}>
                       {usedWizard &&
-                        'You have used the setup wizard. You can close this screen. Setup has been completed. We recommend to execute a clear of the token cache. See the documentation on how to perform this.'}
+                        'You have used the setup wizard. You can close this screen. Setup has been completed. You must execute a clear of the token cache. See the documentation on how to perform this.'}
                       {!usedWizard &&
                         'You are sending your own Secure Application Model setup to the Keyvault. For security reasons we do not show the keys. Please make sure you have entered the keys correctly.'}
                     </CCol>
