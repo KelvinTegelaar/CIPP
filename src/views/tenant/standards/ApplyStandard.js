@@ -196,7 +196,26 @@ const ApplyStandard = () => {
                 name="standards.PWdisplayAppInformationRequiredState"
                 label="Enable Passwordless with Location information and Number Matching"
               />
-              <RFFCFormSwitch name="standards.TAP" label="Enable Temporary Access Passwords" />
+              <RFFCFormSwitch
+                name="standards.TAP.Enabled"
+                label="Enable Temporary Access Passwords"
+              />
+              <Condition when="standards.TAP.Enabled" is={true}>
+                <RFFCFormSelect
+                  label="Select TAP Lifetime"
+                  name="standards.TAP.config"
+                  values={[
+                    {
+                      label: 'Only Once',
+                      value: 'true',
+                    },
+                    {
+                      label: 'Multiple Logons',
+                      value: 'false',
+                    },
+                  ]}
+                />
+              </Condition>
               <RFFCFormSwitch
                 name="standards.DisableM365GroupUsers"
                 label="Disable M365 Group creation by users"
@@ -206,8 +225,8 @@ const ApplyStandard = () => {
                 name="standards.PasswordExpireDisabled"
                 label="Do not expire passwords"
               />
-
-              <RFFCFormSwitch name="standards.SSPR" label="Enable Self Service Password Reset" />
+              <RFFCFormSwitch name="standards.UndoOauth" label="Undo App Consent Standard" />
+              <RFFCFormSwitch name="standards.UndoSSPR" label="Undo SSPR Standard" />
             </CCol>
             <CCol md={6}>
               <RFFCFormSwitch
@@ -241,9 +260,11 @@ const ApplyStandard = () => {
                 name="standards.DisableSelfServiceLicenses"
                 label="Disable Self Service Licensing"
               />
-
-              <RFFCFormSwitch name="standards.UndoSSPR" label="Undo SSPR Standard" />
-              <RFFCFormSwitch name="standards.UndoOauth" label="Undo App Consent Standard" />
+              <RFFCFormSwitch
+                name="standards.DisableGuests"
+                label="Disable Guest accounts that have not logged on for 90 days"
+              />
+              <RFFCFormSwitch name="standards.SSPR" label="Enable Self Service Password Reset" />
             </CCol>
           </CRow>
         </div>
@@ -403,7 +424,7 @@ const ApplyStandard = () => {
         {!postResults.isSuccess && (
           <FormSpy>
             {(props) => (
-              /* eslint-disable react/prop-types */ <>
+              <>
                 <CRow>
                   <CCol md={{ span: 6, offset: 3 }}>
                     <h5 className="mb-0">Selected Tenants</h5>
