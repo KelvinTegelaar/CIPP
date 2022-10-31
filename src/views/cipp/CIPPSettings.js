@@ -276,8 +276,12 @@ const GeneralSettings = () => {
                     )}
                     {permissionsResult.data.Results?.MissingPermissions.length > 0 && (
                       <>
-                        Your Secure Application Model is missing the following delegated
-                        permissions:
+                        Your Secure Application Model is missing the following permissions. See the
+                        documentation on how to add permissions
+                        <a href="https://cipp.app/docs/user/gettingstarted/permissions/#manual-sam-setup">
+                          here
+                        </a>
+                        .
                         <CListGroup flush>
                           {permissionsResult.data.Results?.MissingPermissions?.map((r, index) => (
                             <CListGroupItem key={index}>{r}</CListGroupItem>
