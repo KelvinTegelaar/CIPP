@@ -86,6 +86,31 @@ Create a temporary access password for a user to enroll in [passwordless for Azu
 Both passwordless authentication and the temporary access password function must be enabled on the tenant. See [AzureAD: Configure Temporary Access Pass in Azure AD to register Passwordless authentication methods](https://docs.microsoft.com/en-us/azure/active-directory/authentication/howto-authentication-temporary-access-pass)
 :::
 
+## Query String Support
+
+The Add User has the ability to be form filled via URL query strings. This table shows all supported query strings.  for Example https://yourcipp.app/identity/administration/users/add?customerId=Mydomain.onmicrosoft.com&city=Rotterdam would automatically fill in the city for a user.
+
+| QueryString       | Field                                                     |
+|-------------------|-----------------------------------------------------------|
+| 'customerId':     | Client Tenant ID(Only required field)                     |
+| 'businessPhones': | Business Phone Number                                     |
+| 'city':           | User City Location                                        |
+| 'companyName':    | Company Name                                              |
+| 'country':        | Country                                                   |
+| 'department':     | Department                                                |
+| 'displayName':    | Display Name                                              |
+| 'givenName':      | First Name                                                |
+| 'jobTitle':       | Job Title                                                 |
+| 'mailNickname':   | Username before the email address part(User<@domain.com>) |
+| 'mobilePhone':    | Mobile Phone Number                                       |
+| addedAliasses':   | Added Aliasses, Multiple allowed via linebreak(%0A)       |
+| 'postalCode':     | Zip or post code                                          |
+| 'streetAddress':  | Address information                                       |
+| 'surname':        | Last Name                                                 |
+| 'usageLocation':  | User location for license, can be left blank for default. |
+| 'primDomain':     | User Primary Domain (User<@domain.com>)                   |
+| MustChangePass    | Boolean, default is false.                                |
+
 ## Known Issues / Limitations
 
 * As with the Microsoft 365 admin center users view, this view doesn't differentiate between a standard user and a shared mailbox user.
