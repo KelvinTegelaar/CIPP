@@ -258,7 +258,7 @@ RFFCFormSelect.propTypes = {
   values: PropTypes.arrayOf(PropTypes.shape({ label: PropTypes.string, value: PropTypes.any })),
 }
 
-export function Condition({ when, is, children, like }) {
+export function Condition({ when, is, children, like, regex }) {
   return (
     <>
       {is && (
@@ -269,6 +269,11 @@ export function Condition({ when, is, children, like }) {
       {like && (
         <Field name={when} subscription={{ value: true }}>
           {({ input: { value } }) => (value.includes(like) ? children : null)}
+        </Field>
+      )}
+      {regex && (
+        <Field name={when} subscription={{ value: true }}>
+          {({ input: { value } }) => (value.match(regex) ? children : null)}
         </Field>
       )}
     </>
