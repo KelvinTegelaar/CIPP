@@ -8,9 +8,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import { CippPageList } from 'src/components/layout'
 import { ModalService } from 'src/components/utilities'
-import { TitleButton } from 'src/components/buttons'
 
-const TransportListTemplates = () => {
+const ConnectorListTemplates = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
@@ -36,7 +35,7 @@ const TransportListTemplates = () => {
           color="danger"
           onClick={() =>
             handleDeleteIntuneTemplate(
-              `/api/RemoveTransportRuleTemplate?ID=${row.GUID}`,
+              `/api/RemoveExConnectorTemplate?ID=${row.GUID}`,
               'Do you want to delete the template?',
             )
           }
@@ -66,11 +65,11 @@ const TransportListTemplates = () => {
       exportSelector: 'name',
     },
     {
-      name: 'Comments',
-      selector: (row) => row['comments'],
+      name: 'Type',
+      selector: (row) => row['cippconnectortype'],
       sortable: true,
-      cell: (row) => CellTip(row['comments']),
-      exportSelector: 'Comments',
+      cell: (row) => CellTip(row['cippconnectortype']),
+      exportSelector: 'cippconnectortype',
     },
     {
       name: 'GUID',
@@ -98,11 +97,10 @@ const TransportListTemplates = () => {
         <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
       )}
       <CippPageList
-        title="Transport Rule Templates"
-        titleButton={<TitleButton href="/email/transport/add-template" title="Add Template" />}
+        title="Exchange Connector Templates"
         datatable={{
           reportName: `${tenant?.defaultDomainName}-Groups`,
-          path: '/api/ListTransportRulesTemplates',
+          path: '/api/ListExconnectorTemplates',
           params: { TenantFilter: tenant?.defaultDomainName },
           columns,
         }}
@@ -111,4 +109,4 @@ const TransportListTemplates = () => {
   )
 }
 
-export default TransportListTemplates
+export default ConnectorListTemplates
