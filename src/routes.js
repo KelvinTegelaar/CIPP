@@ -83,6 +83,9 @@ const ApplicationsQueue = React.lazy(() =>
 const ApplicationsAddChocoApp = React.lazy(() =>
   import('src/views/endpoint/applications/ApplicationsAddChocoApp'),
 )
+const ApplicationsAddWingetApp = React.lazy(() =>
+  import('src/views/endpoint/applications/ApplicationsAddWinGet'),
+)
 const ApplicationsAddOfficeApp = React.lazy(() =>
   import('src/views/endpoint/applications/ApplicationsAddOffice'),
 )
@@ -353,6 +356,11 @@ const routes = [
     path: '/endpoint/applications/add-choco-app',
     name: 'Add Choco App',
     component: ApplicationsAddChocoApp,
+  },
+  {
+    path: '/endpoint/applications/add-winget-app',
+    name: 'Add Choco App',
+    component: ApplicationsAddWingetApp,
   },
   {
     path: '/endpoint/applications/add-office-app',
