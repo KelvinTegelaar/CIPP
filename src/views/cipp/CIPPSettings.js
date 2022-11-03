@@ -48,7 +48,7 @@ import { useLazyEditDnsConfigQuery, useLazyGetDnsConfigQuery } from 'src/store/a
 import { useDispatch, useSelector } from 'react-redux'
 import { CippTable } from 'src/components/tables'
 import { CippPage, CippPageList } from 'src/components/layout'
-import { RFFCFormSwitch, RFFCFormInput, RFFCFormSelect } from 'src/components/forms'
+import { RFFCFormSwitch, RFFCFormInput, RFFCFormSelect, RFFCFormCheck } from 'src/components/forms'
 import { Form } from 'react-final-form'
 import useConfirmModal from 'src/hooks/useConfirmModal'
 import { setCurrentTenant } from 'src/store/features/app'
@@ -225,8 +225,15 @@ const GeneralSettings = () => {
   const handleClearCache = useConfirmModal({
     body: <div>Are you sure you want to clear the cache?</div>,
     onConfirm: () => {
-      clearCache()
+      clearCache({ tenantsOnly: false })
       localStorage.clear()
+    },
+  })
+
+  const handleClearCacheTenant = useConfirmModal({
+    body: <div>Are you sure you want to clear the cache?</div>,
+    onConfirm: () => {
+      clearCache({ tenantsOnly: true })
     },
   })
 
@@ -304,18 +311,27 @@ const GeneralSettings = () => {
               <CCardTitle>Clear Cache</CCardTitle>
             </CCardHeader>
             <CCardBody>
-              Click the button below to clear the all caches the application uses. This includes the
-              Best Practice Analyser, Tenant Cache, Domain Analyser, and personal settings such as
-              theme and usage location <br />
+              Click the button below to clear the application cache. You can clear only the tenant
+              cache, or all caches. <br /> <br />
               <CButton
                 onClick={() => handleClearCache()}
                 disabled={clearCacheResult.isFetching}
-                className="mt-3"
+                className="me-3"
               >
                 {clearCacheResult.isFetching && (
                   <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
                 )}
-                Clear Cache
+                Clear All Caches
+              </CButton>
+              <CButton
+                onClick={() => handleClearCacheTenant()}
+                disabled={clearCacheResult.isFetching}
+                className="me-3"
+              >
+                {clearCacheResult.isFetching && (
+                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                )}
+                Clear Tenant Cache
               </CButton>
               {clearCacheResult.isSuccess && (
                 <div className="mt-3">{clearCacheResult.data?.Results}</div>
