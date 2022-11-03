@@ -10,6 +10,7 @@ const Actions = (row, rowIndex, formatExtraData) => {
 
   return (
     <a
+      target={'_blank'}
       href={`https://outlook.office365.com/ecp/@${tenant.defaultDomainName}/UsersGroups/EditContact.aspx?exsvurl=1&realm=${tenant.customerId}&mkt=en-US&id=${row.id}`}
     >
       <CButton size="sm" variant="ghost" color="warning">
