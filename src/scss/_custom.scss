@@ -545,11 +545,12 @@
   background: none;
   .sidebar-brand-full {
     margin-left: 30px;
+    margin-left: 0px;
     height: 50px;
     transform: scale(1.5);
+    transform: scale(1);
   }
 }
-
 .sidebar.sidebar-fixed {
   margin-top: 69px;
   height: calc(100vh - 69px);
