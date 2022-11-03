@@ -21,6 +21,7 @@ import { useNavigate } from 'react-router-dom'
 import { CippPage } from 'src/components/layout/CippPage'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import { OnChange } from 'react-final-form-listeners'
+import { queryString } from 'src/helpers'
 
 const GraphExplorer = () => {
   let navigate = useNavigate()
@@ -37,6 +38,7 @@ const GraphExplorer = () => {
       tenantFilter: tenant.defaultDomainName,
       SearchNow: true,
       endpoint: encodeURIComponent(values.endpoint),
+      random: (Math.random() + 1).toString(36).substring(7),
     }
     var queryString = Object.keys(shippedValues)
       .map((key) => key + '=' + shippedValues[key])
@@ -75,7 +77,7 @@ const GraphExplorer = () => {
         disablePagination: disablePagination,
       },
     })
-  }, [endpoint, execGraphRequest, tenant.defaultDomainName])
+  }, [endpoint, execGraphRequest, tenant.defaultDomainName, query])
 
   const WhenFieldChanges = ({ field, set }) => (
     <Field name={set} subscription={{}}>
