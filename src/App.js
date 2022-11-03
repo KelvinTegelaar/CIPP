@@ -51,7 +51,7 @@ const App = () => {
                     element={
                       <Suspense fallback={<Skeleton />}>
                         <Helmet>
-                          <title>CIPP - {route.name}</title>
+                          <title>Impact - {route.name}</title>
                         </Helmet>
                         <ErrorBoundary key={route.name}>
                           <route.component />
@@ -74,7 +74,7 @@ const App = () => {
                       <PrivateRoute routeType="admin">
                         <Suspense fallback={<Skeleton />}>
                           <Helmet>
-                            <title>CIPP - {route.name}</title>
+                            <title>Impact - {route.name}</title>
                           </Helmet>
                           <ErrorBoundary key={route.name}>
                             <route.component />
