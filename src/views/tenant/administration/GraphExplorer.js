@@ -12,7 +12,7 @@ import {
 } from '@coreui/react'
 import useQuery from 'src/hooks/useQuery'
 import { Field, Form, FormSpy } from 'react-final-form'
-import { RFFCFormInput, RFFCFormSelect } from 'src/components/forms'
+import { RFFCFormCheck, RFFCFormInput, RFFCFormSelect } from 'src/components/forms'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronRight, faChevronDown, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { CippTable } from 'src/components/tables'
@@ -27,20 +27,16 @@ const GraphExplorer = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
   let query = useQuery()
   const endpoint = query.get('endpoint')
+  const disablePagination = query.get('disablePagination')
   const SearchNow = query.get('SearchNow')
   const [visibleA, setVisibleA] = useState(true)
   const handleSubmit = async (values) => {
     setVisibleA(false)
-    Object.keys(values).filter(function (x) {
-      if (values[x] === null) {
-        delete values[x]
-      }
-      return null
-    })
+
     const shippedValues = {
       tenantFilter: tenant.defaultDomainName,
       SearchNow: true,
-      ...values,
+      endpoint: encodeURIComponent(values.endpoint),
     }
     var queryString = Object.keys(shippedValues)
       .map((key) => key + '=' + shippedValues[key])
@@ -73,11 +69,14 @@ const GraphExplorer = () => {
   useEffect(() => {
     execGraphRequest({
       path: 'api/execGraphRequest',
-      params: { tenantFilter: tenant.defaultDomainName, endpoint: endpoint },
+      params: {
+        tenantFilter: tenant.defaultDomainName,
+        endpoint: endpoint,
+        disablePagination: disablePagination,
+      },
     })
   }, [endpoint, execGraphRequest, tenant.defaultDomainName])
 
-  /* eslint-disable react/prop-types */
   const WhenFieldChanges = ({ field, set }) => (
     <Field name={set} subscription={{}}>
       {(
@@ -186,6 +185,9 @@ const GraphExplorer = () => {
                           </CCol>
                           <WhenFieldChanges field="reportTemplate" set="endpoint" />
                         </CRow>
+                        <CRow>
+                          <RFFCFormCheck name="disablePagination" label="Disable Pagination" />
+                        </CRow>
                         <CRow className="mb-3">
                           <CCol>
                             <CButton type="submit" disabled={submitting}>
@@ -194,11 +196,6 @@ const GraphExplorer = () => {
                             </CButton>
                           </CCol>
                         </CRow>
-                        {/*<CRow>*/}
-                        {/* <CCol>*/}
-                        {/*   <pre>{JSON.stringify(values, null, 2)}</pre>*/}
-                        {/* </CCol>*/}
-                        {/*</CRow>*/}
                       </CForm>
                     )
                   }}
