@@ -88,7 +88,7 @@ Both passwordless authentication and the temporary access password function must
 
 ## Query String Support
 
-The Add User has the ability to be form filled via URL query strings. This table shows all supported query strings.  for Example https://yourcipp.app/identity/administration/users/add?customerId=Mydomain.onmicrosoft.com&city=Rotterdam would automatically fill in the city for a user.
+The Add User has the ability to be form filled via URL query strings. This table shows all supported query strings. For example https://yourcipp.app/identity/administration/users/add?customerId=Mydomain.onmicrosoft.com&city=Rotterdam would automatically fill in the city for a user. 
 
 | QueryString       | Field                                                     |
 |-------------------|-----------------------------------------------------------|
@@ -110,6 +110,15 @@ The Add User has the ability to be form filled via URL query strings. This table
 | usageLocation  | User location for license, can be left blank for default. |
 | primDomain     | User Primary Domain (User<@domain.com>)                   |
 | MustChangePass    | Boolean, default is false.                                |
+
+### AutoTask LiveLink
+
+The LiveLink for Autotask can be found in the AXN store. If you want to create your own LiveLink you can use the QueryString below.
+
+```
+?city=<CITY>&country=<COUNTRY>&customerId=<UDF-TenantId(tblCustomers)>&primDomain=<ACCOUNTWEBSITEADDRESS>&usageLocation=NL&streetAddress=<ACCOUNTADDRESS1>&companyName=<ACCOUNTNAME>&businessPhones=<ACCOUNTPHONE>&postalCode=<ACCOUNTPOSTALCODE>&givenName=<CONTACTFIRSTNAME>&surname=<CONTACTLASTNAME>
+```
+
 
 ## Known Issues / Limitations
 
