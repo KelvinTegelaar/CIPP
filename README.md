@@ -96,7 +96,7 @@ The current build functionality is described below, also check out our Changelog
   - Remove user licenses
   - Convert user to shared mailbox
   - Disable user sign-in
-  - Reset user passord
+  - Reset user password
   - Remove user from all groups
   - Hide user from address list
   - Set Out of Office
