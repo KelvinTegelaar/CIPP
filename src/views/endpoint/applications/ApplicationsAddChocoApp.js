@@ -43,6 +43,7 @@ const ApplyStandard = () => {
   const formValues = {
     InstallAsSystem: true,
     DisableRestart: true,
+    AssignTo: 'On',
   }
 
   return (

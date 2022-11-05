@@ -43,6 +43,7 @@ const AddWinGet = () => {
   const formValues = {
     InstallAsSystem: true,
     DisableRestart: true,
+    AssignTo: 'On',
   }
 
   return (
@@ -108,11 +109,6 @@ const AddWinGet = () => {
           <CRow>
             <CCol md={12}>
               <RFFCFormInput type="text" name="description" label="Description" />
-            </CCol>
-          </CRow>
-          <CRow>
-            <CCol md={12}>
-              <RFFCFormInput type="text" name="customRepo" label="Custom repository URL" />
             </CCol>
           </CRow>
           <RFFCFormSwitch value={true} name="InstallAsSystem" label="Install as system" />
