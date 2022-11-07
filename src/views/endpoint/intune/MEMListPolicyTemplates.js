@@ -1,16 +1,25 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { CippCodeBlock, CippOffcanvas } from 'src/components/utilities'
-import { CellTip } from 'src/components/tables'
-import { CButton, CCallout, CSpinner } from '@coreui/react'
+import { CellTip, CippDatatable } from 'src/components/tables'
+import {
+  CCardBody,
+  CButton,
+  CCallout,
+  CSpinner,
+  CCardHeader,
+  CCardTitle,
+  CCard,
+} from '@coreui/react'
 import { faEye, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
-import { CippPageList } from 'src/components/layout'
+import { CippPage } from 'src/components/layout'
 import { ModalService } from 'src/components/utilities'
-import { TitleButton } from 'src/components/buttons'
 
-const TransportListTemplates = () => {
+//todo: expandable with RAWJson property.
+
+const AutopilotListTemplates = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
@@ -36,14 +45,13 @@ const TransportListTemplates = () => {
           color="danger"
           onClick={() =>
             handleDeleteIntuneTemplate(
-              `/api/RemoveTransportRuleTemplate?ID=${row.GUID}`,
+              `/api/RemoveIntuneTemplate?ID=${row.GUID}`,
               'Do you want to delete the template?',
             )
           }
         >
           <FontAwesomeIcon icon={faTrash} href="" />
         </CButton>
-
         <CippOffcanvas
           title="Template JSON"
           placement="end"
@@ -60,55 +68,70 @@ const TransportListTemplates = () => {
   const columns = [
     {
       name: 'Display Name',
-      selector: (row) => row['name'],
+      selector: (row) => row['Displayname'],
       sortable: true,
-      cell: (row) => CellTip(row['name']),
-      exportSelector: 'name',
+      cell: (row) => CellTip(row['Displayname']),
+      exportSelector: 'Displayname',
+      minWidth: '400px',
+      maxWidth: '400px',
     },
     {
-      name: 'Comments',
-      selector: (row) => row['comments'],
+      name: 'Description',
+      selector: (row) => row['Description'],
       sortable: true,
-      cell: (row) => CellTip(row['comments']),
-      exportSelector: 'Comments',
+      cell: (row) => CellTip(row['Description']),
+      exportSelector: 'Description',
+      minWidth: '400px',
+      maxWidth: '400px',
+    },
+    {
+      name: 'Type',
+      selector: (row) => row['Type'],
+      sortable: true,
+      exportSelector: 'Type',
+      maxWidth: '100px',
     },
     {
       name: 'GUID',
       selector: (row) => row['GUID'],
-      sortable: true,
-      cell: (row) => CellTip(row['GUID']),
+      omit: true,
       exportSelector: 'GUID',
     },
     {
       name: 'Actions',
       cell: Offcanvas,
-      maxWidth: '80px',
+      maxWidth: '100px',
     },
   ]
 
   return (
-    <>
-      {getResults.isFetching && (
-        <CCallout color="info">
-          <CSpinner>Loading</CSpinner>
-        </CCallout>
-      )}
-      {getResults.isSuccess && <CCallout color="info">{getResults.data?.Results}</CCallout>}
-      {getResults.isError && (
-        <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
-      )}
-      <CippPageList
-        title="Transport Rule Templates"
-        titleButton={<TitleButton href="/email/transport/add-template" title="Add Template" />}
-        datatable={{
-          reportName: `${tenant?.defaultDomainName}-Groups`,
-          path: '/api/ListTransportRulesTemplates',
-          params: { TenantFilter: tenant?.defaultDomainName },
-          columns,
-        }}
-      />
-    </>
+    <CippPage title="Available Endpoint Manager Templates" tenantSelector={false}>
+      <CCard className="content-card">
+        <CCardHeader className="d-flex justify-content-between align-items-center">
+          <CCardTitle>Endpoint Manager Templates</CCardTitle>
+        </CCardHeader>
+        <CCardBody>
+          {getResults.isFetching && (
+            <CCallout color="info">
+              <CSpinner>Loading</CSpinner>
+            </CCallout>
+          )}
+          {getResults.isSuccess && <CCallout color="info">{getResults.data?.Results}</CCallout>}
+          {getResults.isError && (
+            <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
+          )}
+
+          <CippDatatable
+            keyField="id"
+            reportName={`${tenant?.defaultDomainName}-MEMPolicyTemplates-List`}
+            path="/api/ListIntuneTemplates"
+            columns={columns}
+            params={{ TenantFilter: tenant?.defaultDomainName }}
+          />
+        </CCardBody>
+      </CCard>
+    </CippPage>
   )
 }
 
-export default TransportListTemplates
+export default AutopilotListTemplates

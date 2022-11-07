@@ -64,9 +64,7 @@ const EditMailboxPermission = () => {
     const shippedValues = {
       userid: userId,
       tenantFilter: tenantDomain,
-      AddFullAccessNoAutoMap: values.AddFullAccessNoAutoMap
-        ? values.AddFullAccessNoAutoMap.value
-        : null,
+      AddFullAccessNoAutoMap: values.AddFullAccessNoAutoMap ? values.AddFullAccessNoAutoMap : null,
       AddFullAccess: values.AddFullAccess ? values.AddFullAccess : null,
       RemoveFullAccess: values.RemoveFullAccess ? values.RemoveFullAccess : null,
       AddSendAs: values.AddSendAs ? values.AddSendAs : null,
