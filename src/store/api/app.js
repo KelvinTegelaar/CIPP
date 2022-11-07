@@ -73,10 +73,11 @@ export const appApi = baseApi.injectEndpoints({
       }),
     }),
     execClearCache: builder.query({
-      query: () => ({
+      query: ({ tenantsOnly }) => ({
         path: '/api/ListTenants',
         params: {
           ClearCache: true,
+          TenantsOnly: tenantsOnly,
         },
       }),
     }),
