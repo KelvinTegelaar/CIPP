@@ -50,7 +50,7 @@ const MailboxList = () => {
               value: row.UPN,
             },
             {
-              label: 'Additional Email Addresses',
+              label: 'Aditional Email Addresses',
               value: row.AdditionalEmailAddresses
                 ? `${row.AdditionalEmailAddresses}`
                 : 'No additional email addresses',
