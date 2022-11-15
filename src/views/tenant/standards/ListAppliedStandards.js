@@ -1,18 +1,5 @@
 import React from 'react'
-import {
-  CButton,
-  CCallout,
-  CCol,
-  CForm,
-  CRow,
-  CSpinner,
-  CTable,
-  CTableBody,
-  CTableDataCell,
-  CTableHead,
-  CTableHeaderCell,
-  CTableRow,
-} from '@coreui/react'
+import { CButton, CCallout, CCol, CForm, CRow, CSpinner } from '@coreui/react'
 import { Form } from 'react-final-form'
 import { Condition, RFFCFormInput, RFFCFormSelect, RFFCFormSwitch } from 'src/components/forms'
 import {
@@ -26,6 +13,7 @@ import { useSelector } from 'react-redux'
 import { ModalService } from 'src/components/utilities'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Skeleton from 'react-loading-skeleton'
+import { CippTable } from 'src/components/tables'
 
 const RefreshAction = () => {
   const [execStandards, execStandardsResults] = useLazyGenericGetRequestQuery()
@@ -116,6 +104,20 @@ const ListAppliedStandards = () => {
     //filter on only objects that are 'true'
     genericPostRequest({ path: '/api/AddStandardsDeploy', values: values.standards })
   }
+  const tableColumns = [
+    {
+      name: 'Tenant',
+      selector: (row) => row['displayName'],
+      sortable: true,
+      exportSelector: 'displayName',
+    },
+    {
+      name: 'Applied Standards',
+      selector: (row) => row['StandardsExport'],
+      sortable: true,
+      exportSelector: 'StandardsExport',
+    },
+  ]
 
   return (
     <CippPage title="Standards" tenantSelector={false}>
@@ -236,10 +238,25 @@ const ListAppliedStandards = () => {
                               label="Enable Passwordless with Location information and Number Matching"
                             />
                             <RFFCFormSwitch
-                              name="standards.TAP"
+                              name="standards.TAP.Enabled"
                               label="Enable Temporary Access Passwords"
                             />
-
+                            <Condition when="standards.TAP.Enabled" is={true}>
+                              <RFFCFormSelect
+                                label="Select TAP Lifetime"
+                                name="standards.TAP.config"
+                                values={[
+                                  {
+                                    label: 'Only Once',
+                                    value: 'true',
+                                  },
+                                  {
+                                    label: 'Multiple Logons',
+                                    value: 'false',
+                                  },
+                                ]}
+                              />
+                            </Condition>
                             <RFFCFormSwitch
                               name="standards.SecurityDefaults"
                               label="Enable Security Defaults"
@@ -249,9 +266,14 @@ const ListAppliedStandards = () => {
                               label="Do not expire passwords"
                             />
                             <RFFCFormSwitch
+                              name="standards.DisableSecurityGroupUsers"
+                              label="Disable Security Group creation by users"
+                            />
+                            <RFFCFormSwitch
                               name="standards.SSPR"
                               label="Enable Self Service Password Reset"
                             />
+                            <RFFCFormSwitch name="standards.UndoSSPR" label="Undo SSPR Standard" />
                           </CCol>
                           <CCol md={6}>
                             <RFFCFormSwitch
@@ -273,16 +295,26 @@ const ListAppliedStandards = () => {
                               name="standards.LegacyMFA"
                               label="Enable per-user MFA for all user (Legacy)"
                             />
-
+                            <RFFCFormSwitch
+                              name="standards.LegacyMFACleanup"
+                              label="Remove Legacy MFA if SD or CA is active"
+                            />
                             <RFFCFormSwitch
                               name="standards.DisableSelfServiceLicenses"
                               label="Disable Self Service Licensing"
                             />
+                            <RFFCFormSwitch
+                              name="standards.DisableM365GroupUsers"
+                              label="Disable M365 Group creation by users"
+                            />
 
-                            <RFFCFormSwitch name="standards.UndoSSPR" label="Undo SSPR Standard" />
                             <RFFCFormSwitch
                               name="standards.UndoOauth"
                               label="Undo App Consent Standard"
+                            />
+                            <RFFCFormSwitch
+                              name="standards.DisableGuests"
+                              label="Disable Guest accounts that have not logged on for 90 days"
                             />
                           </CCol>
                         </CRow>
@@ -402,7 +434,7 @@ const ListAppliedStandards = () => {
                         <CRow className="mb-3">
                           <CCol md={6}>
                             <CButton type="submit" disabled={submitting}>
-                              Edit Standard
+                              Save
                               {postResults.isFetching && (
                                 <FontAwesomeIcon
                                   icon={faCircleNotch}
@@ -429,22 +461,11 @@ const ListAppliedStandards = () => {
           <CCol lg={6} xs={12}>
             {listStandardsAllTenants && (
               <CippContentCard title="Currently Applied Standards">
-                <CTable responsive={true}>
-                  <CTableHead>
-                    <CTableRow>
-                      <CTableHeaderCell scope="col">Tenant</CTableHeaderCell>
-                      <CTableHeaderCell scope="col">Standards</CTableHeaderCell>
-                    </CTableRow>
-                  </CTableHead>
-                  <CTableBody>
-                    {listStandardsAllTenants.map((owner) => (
-                      <CTableRow key={owner.displayName}>
-                        <CTableDataCell>{owner.displayName}</CTableDataCell>
-                        <CTableDataCell>{Object.keys(owner.standards).join(',')}</CTableDataCell>
-                      </CTableRow>
-                    ))}
-                  </CTableBody>
-                </CTable>
+                <CippTable
+                  reportName={`Standards`}
+                  data={listStandardsAllTenants}
+                  columns={tableColumns}
+                />
               </CippContentCard>
             )}
           </CCol>

@@ -16,9 +16,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import { CippPage } from 'src/components/layout'
 import { ModalService } from 'src/components/utilities'
+import { CellTip } from 'src/components/tables'
 
 //todo: expandable with RAWJson property.
-/* eslint-disable-next-line react/prop-types */
 
 const AutopilotListTemplates = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -71,6 +71,7 @@ const AutopilotListTemplates = () => {
       name: 'Display Name',
       selector: (row) => row['displayName'],
       sortable: true,
+      cell: (row) => CellTip(row['displayName']),
       exportSelector: 'displayName',
     },
     {
@@ -82,6 +83,7 @@ const AutopilotListTemplates = () => {
     {
       name: 'Actions',
       cell: Offcanvas,
+      maxWidth: '80px',
     },
   ]
 

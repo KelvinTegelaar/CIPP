@@ -4,7 +4,8 @@ import { CLink } from '@coreui/react'
 import { faLaptop } from '@fortawesome/free-solid-svg-icons'
 import { DatatableContentCard } from 'src/components/contentcards'
 import { cellBooleanFormatter, cellNullTextFormatter } from 'src/components/tables'
-import { useListUserDevicesQuery } from 'src/store/api/devices'
+
+let tenantDomainFileScope = ''
 
 const columns = [
   {
@@ -19,7 +20,7 @@ const columns = [
         return (
           <CLink
             target="_blank"
-            href={`https://endpoint.microsoft.com/${row.tenantDomain}#blade/Microsoft_Intune_Devices/DeviceSettingsMenuBlade/overview/mdmDeviceId/${row.EPMID}`}
+            href={`https://endpoint.microsoft.com/${tenantDomainFileScope}#blade/Microsoft_Intune_Devices/DeviceSettingsMenuBlade/overview/mdmDeviceId/${row.EPMID}`}
           >
             {row.displayName}
           </CLink>
@@ -76,13 +77,17 @@ const columns = [
     cell: cellNullTextFormatter(),
     exportSelector: 'createdDateTime',
   },
+  /*
+  * This should not be used, it is not anywhere near accurate, it is out by days even weeks 
+  * in my testing, I don't recommend we display it, we have alternate sources for this
+  * as well which are significantly closer to (if not) accurate - knightian
   {
     name: 'Approx Last SignIn',
     selector: (row) => row['approximateLastSignInDateTime'],
     sortable: true,
     cell: cellNullTextFormatter(),
     exportSelector: 'approximateLastSignInDateTime',
-  },
+  },**/
   {
     name: 'Ownership',
     selector: (row) => row['deviceOwnership'],
@@ -96,6 +101,7 @@ const columns = [
     sortable: true,
     cell: cellNullTextFormatter(),
     exportSelector: 'enrollmentType',
+    minWidth: '200px',
   },
   {
     name: 'Management Type',
@@ -108,7 +114,7 @@ const columns = [
     name: 'On-Premises Sync Enabled',
     selector: (row) => row['onPremisesSyncEnabled'],
     sortable: true,
-    cell: cellBooleanFormatter(),
+    cell: cellBooleanFormatter({ colourless: true }),
     exportSelector: 'onPremisessSyncEnabled',
   },
   {
@@ -121,15 +127,6 @@ const columns = [
 ]
 
 export default function UserDevices({ userId, tenantDomain, className = null }) {
-  const {
-    data: devices = [],
-    isFetching,
-    error,
-  } = useListUserDevicesQuery({ userId, tenantDomain })
-
-  // inject tenant domain into devices for column render
-  const mapped = devices.map((device) => ({ ...device, tenantDomain }))
-
   return (
     <DatatableContentCard
       title="User Devices"
@@ -143,11 +140,8 @@ export default function UserDevices({ userId, tenantDomain, className = null }) 
         responsive: true,
         dense: true,
         striped: true,
-        data: mapped,
       }}
       className={className}
-      isFetching={isFetching}
-      error={error}
       errorMessage="Error fetching user devices"
     />
   )

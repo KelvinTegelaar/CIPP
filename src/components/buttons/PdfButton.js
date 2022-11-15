@@ -24,7 +24,6 @@ function ExportPDFButton(props) {
       }
     })
 
-    console.log(headerObj)
     const title = reportName
     let content = {
       startY: 50,

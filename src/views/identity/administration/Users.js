@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { faEdit, faEllipsisV, faEye } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { cellBooleanFormatter } from 'src/components/tables'
+import { cellBooleanFormatter, CellTip } from 'src/components/tables'
 import { CippPageList } from 'src/components/layout'
 import { TitleButton } from 'src/components/buttons'
 import { CippActionsOffcanvas } from 'src/components/utilities'
@@ -33,19 +33,19 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
       <CippActionsOffcanvas
         title="User Information"
         extendedInfo={[
-          { label: 'Created on', value: `${row.createdDateTime}` },
-          { label: 'UPN', value: `${row.userPrincipalName}` },
-          { label: 'Given Name', value: `${row.givenName}` },
-          { label: 'Surname', value: `${row.surname}` },
-          { label: 'Job Title', value: `${row.jobTitle}` },
-          { label: 'Licenses', value: `${row.LicJoined}` },
-          { label: 'Business Phone', value: `${row.businessPhones}` },
-          { label: 'Mobile Phone', value: `${row.mobilePhone}` },
-          { label: 'Mail', value: `${row.mail}` },
-          { label: 'City', value: `${row.city}` },
-          { label: 'Department', value: `${row.department}` },
-          { label: 'OnPrem Last Sync', value: `${row.onPremisesLastSyncDateTime}` },
-          { label: 'Unique ID', value: `${row.id}` },
+          { label: 'Created Date (UTC)', value: `${row.createdDateTime ?? ' '}` },
+          { label: 'UPN', value: `${row.userPrincipalName ?? ' '}` },
+          { label: 'Given Name', value: `${row.givenName ?? ' '}` },
+          { label: 'Surname', value: `${row.surname ?? ' '}` },
+          { label: 'Job Title', value: `${row.jobTitle ?? ' '}` },
+          { label: 'Licenses', value: `${row.LicJoined ?? ' '}` },
+          { label: 'Business Phone', value: `${row.businessPhones ?? ' '}` },
+          { label: 'Mobile Phone', value: `${row.mobilePhone ?? ' '}` },
+          { label: 'Mail', value: `${row.mail ?? ' '}` },
+          { label: 'City', value: `${row.city ?? ' '}` },
+          { label: 'Department', value: `${row.department ?? ' '}` },
+          { label: 'OnPrem Last Sync', value: `${row.onPremisesLastSyncDateTime ?? ' '}` },
+          { label: 'Unique ID', value: `${row.id ?? ' '}` },
         ]}
         actions={[
           {
@@ -92,6 +92,21 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modal: true,
             modalUrl: `/api/ExecConvertToSharedMailbox?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
             modalMessage: 'Are you sure you want to convert this user to a shared mailbox?',
+          },
+          {
+            label: 'Set Out of Office',
+            color: 'info',
+            modal: true,
+            modalType: 'POST',
+            modalBody: {
+              user: row.userPrincipalName,
+              TenantFilter: tenant.defaultDomainName,
+              message: row.message,
+            },
+            modalUrl: `/api/ExecSetOoO`,
+            modalInput: true,
+            modalMessage:
+              'Enter a out of office message and press continue to set the out of office.',
           },
           {
             label: 'Block Sign In',
@@ -150,6 +165,7 @@ const columns = [
     name: 'Display Name',
     selector: (row) => row['displayName'],
     sortable: true,
+    cell: (row) => CellTip(row['displayName']),
     exportSelector: 'displayName',
     minWidth: '300px',
   },
@@ -157,34 +173,32 @@ const columns = [
     name: 'Email',
     selector: (row) => row['mail'],
     sortable: true,
+    cell: (row) => CellTip(row['mail']),
     exportSelector: 'mail',
-    minWidth: '350px',
+    minWidth: '250px',
   },
   {
     name: 'User Type',
     selector: (row) => row['userType'],
     sortable: true,
     exportSelector: 'userType',
-    minWidth: '50px',
-    maxWidth: '140px',
+    minWidth: '140px',
   },
   {
     name: 'Enabled',
     selector: (row) => row['accountEnabled'],
-    cell: cellBooleanFormatter(),
+    cell: cellBooleanFormatter({ colourless: true }),
     sortable: true,
     exportSelector: 'accountEnabled',
-    minWidth: '50px',
-    maxWidth: '90px',
+    minWidth: '100px',
   },
   {
     name: 'AD Synced',
     selector: (row) => row['onPremisesSyncEnabled'],
-    cell: cellBooleanFormatter(),
+    cell: cellBooleanFormatter({ colourless: true }),
     sortable: true,
     exportSelector: 'onPremisesSyncEnabled',
-    minWidth: '50px',
-    maxWidth: '110px',
+    minWidth: '120px',
   },
   {
     name: 'Licenses',
@@ -193,6 +207,7 @@ const columns = [
     sortable: true,
     grow: 5,
     wrap: true,
+    minWidth: '200px',
   },
   {
     name: 'id',
@@ -214,6 +229,14 @@ const Users = () => {
       title="Users"
       titleButton={titleButton}
       datatable={{
+        filterlist: [
+          { filterName: 'Enabled users', filter: '"accountEnabled":true' },
+          { filterName: 'AAD users', filter: '"onPremisesSyncEnabled":false' },
+          { filterName: 'Synced users', filter: '"onPremisesSyncEnabled":true' },
+          { filterName: 'Guest users', filter: '"usertype":"guest"' },
+          { filterName: 'Users with a license', filter: '"assignedLicenses":[{' },
+          { filterName: 'Users without a license', filter: '"assignedLicenses":[]' },
+        ],
         columns,
         path: '/api/ListUsers',
         reportName: `${tenant?.defaultDomainName}-Users`,
