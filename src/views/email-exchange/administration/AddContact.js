@@ -74,6 +74,11 @@ const AddContact = () => {
                       </CButton>
                     </CCol>
                   </CRow>
+                  {postResults.isFetching && (
+                    <CCallout color="success">
+                      <CSpinner />
+                    </CCallout>
+                  )}
                   {postResults.isSuccess && (
                     <CCallout color="success">{postResults.data.Results}</CCallout>
                   )}
