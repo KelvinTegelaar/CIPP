@@ -12,7 +12,7 @@ export default function CippContentCard({
   className = null,
 }) {
   return (
-    <CCard className={`content-card ${className ?? ''}`}>
+    <CCard className={`content-card h-100 ${className ?? ''}`}>
       <CCardHeader className="d-flex justify-content-between align-items-center">
         <CCardTitle>{title}</CCardTitle>
         {icon ? <FontAwesomeIcon icon={icon} /> : null}
