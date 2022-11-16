@@ -5,6 +5,7 @@ import { CippPageList } from 'src/components/layout'
 import { CellTip, cellBooleanFormatter } from 'src/components/tables'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
+import { TitleButton } from 'src/components/buttons'
 const Actions = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
@@ -66,6 +67,8 @@ const ContactList = () => {
 
   return (
     <CippPageList
+      capabilities={{ allTenants: false, helpContext: 'https://google.com' }}
+      titleButton={<TitleButton href="/email/administration/add-contact" title="Add Contact" />}
       title="Contacts"
       datatable={{
         keyField: 'id',

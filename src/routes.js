@@ -148,6 +148,7 @@ const EditMailboxPermissions = React.lazy(() =>
 const AddSharedMailbox = React.lazy(() =>
   import('src/views/email-exchange/administration/AddSharedMailbox'),
 )
+const AddContact = React.lazy(() => import('src/views/email-exchange/administration/AddContact'))
 const EditCalendarPermissions = React.lazy(() =>
   import('src/views/email-exchange/administration/EditCalendarPermissions'),
 )
@@ -496,9 +497,14 @@ const routes = [
     component: EditMailboxPermissions,
   },
   {
-    name: 'Edit Mailbox Permissions',
+    name: 'Add Shared Mailbox',
     path: '/email/administration/add-shared-mailbox',
     component: AddSharedMailbox,
+  },
+  {
+    name: 'Edit Contact',
+    path: '/email/administration/add-contact',
+    component: AddContact,
   },
   {
     name: 'Edit Calendar Permissions',
