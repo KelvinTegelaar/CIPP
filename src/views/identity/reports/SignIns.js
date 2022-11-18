@@ -2,12 +2,29 @@ import { CLink } from '@coreui/react'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
+import { CellTip } from 'src/components/tables'
+const reverseSort = (rowA, rowB) => {
+  const a = rowA.createdDateTime.toLowerCase()
+  const b = rowB.createdDateTime.toLowerCase()
+
+  if (a > b) {
+    return -1
+  }
+
+  if (b > a) {
+    return 1
+  }
+
+  return 0
+}
+
 const columns = [
   {
     name: 'Date',
     selector: (row) => row['createdDateTime'],
     sortable: true,
     exportSelector: 'createdDateTime',
+    sortFunction: reverseSort,
   },
   {
     name: 'User Principal Name',
@@ -29,14 +46,14 @@ const columns = [
   },
   {
     name: 'Failure Reason',
-    selector: (row) => row.status?.errorCode,
+    selector: (row) => row.errorCode,
     sortable: true,
-    exportSelector: 'status',
+    exportSelector: 'errorCode',
     cell: (row) => {
       return (
         <CLink
           target="_blank"
-          href={`https://login.microsoftonline.com/error?code=${row.status?.errorCode}`}
+          href={`https://login.microsoftonline.com/error?code=${row.errorCode}`}
         >
           {row.status?.errorCode}
         </CLink>
@@ -45,15 +62,17 @@ const columns = [
   },
   {
     name: 'Additional Details',
-    selector: (row) => row.status?.additionalDetails,
+    selector: (row) => row.additionalDetails,
     sortable: true,
-    exportSelector: 'status',
+    exportSelector: 'additionalDetails',
+    cell: (row) => CellTip(row['additionalDetails']),
   },
   {
     name: 'Location',
-    selector: (row) => `${row.location?.city} - ${row.location?.countryOrRegion}`,
+    selector: (row) => row.locationcipp,
     sortable: true,
-    exportSelector: 'status',
+    exportSelector: 'locationcipp',
+    cell: (row) => CellTip(row['locationcipp']),
   },
 ]
 
