@@ -83,6 +83,9 @@ const ApplicationsQueue = React.lazy(() =>
 const ApplicationsAddChocoApp = React.lazy(() =>
   import('src/views/endpoint/applications/ApplicationsAddChocoApp'),
 )
+const ApplicationsAddWingetApp = React.lazy(() =>
+  import('src/views/endpoint/applications/ApplicationsAddWinGet'),
+)
 const ApplicationsAddOfficeApp = React.lazy(() =>
   import('src/views/endpoint/applications/ApplicationsAddOffice'),
 )
@@ -145,6 +148,7 @@ const EditMailboxPermissions = React.lazy(() =>
 const AddSharedMailbox = React.lazy(() =>
   import('src/views/email-exchange/administration/AddSharedMailbox'),
 )
+const AddContact = React.lazy(() => import('src/views/email-exchange/administration/AddContact'))
 const EditCalendarPermissions = React.lazy(() =>
   import('src/views/email-exchange/administration/EditCalendarPermissions'),
 )
@@ -355,6 +359,11 @@ const routes = [
     component: ApplicationsAddChocoApp,
   },
   {
+    path: '/endpoint/applications/add-winget-app',
+    name: 'Add Choco App',
+    component: ApplicationsAddWingetApp,
+  },
+  {
     path: '/endpoint/applications/add-office-app',
     name: 'Add Office App',
     component: ApplicationsAddOfficeApp,
@@ -488,9 +497,14 @@ const routes = [
     component: EditMailboxPermissions,
   },
   {
-    name: 'Edit Mailbox Permissions',
+    name: 'Add Shared Mailbox',
     path: '/email/administration/add-shared-mailbox',
     component: AddSharedMailbox,
+  },
+  {
+    name: 'Edit Contact',
+    path: '/email/administration/add-contact',
+    component: AddContact,
   },
   {
     name: 'Edit Calendar Permissions',
