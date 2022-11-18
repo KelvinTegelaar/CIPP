@@ -30,14 +30,14 @@ Error.propTypes = {
 
 const requiredArray = (value) => (value && value.length !== 0 ? undefined : 'Required')
 
-const ApplyStandard = () => {
+const AddWinGet = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
   const handleSubmit = async (values) => {
     values.selectedTenants.map(
       (tenant) => (values[`Select_${tenant.defaultDomainName}`] = tenant.defaultDomainName),
     )
-    genericPostRequest({ path: '/api/AddChocoApp', values: values })
+    genericPostRequest({ path: '/api/AddWinGetApp', values: values })
   }
 
   const formValues = {
@@ -50,11 +50,11 @@ const ApplyStandard = () => {
     <CippWizard
       initialValues={{ ...formValues }}
       onSubmit={handleSubmit}
-      wizardTitle="Chocolatey App Wizard"
+      wizardTitle="Add WinGet App"
     >
       <CippWizard.Page
         title="Tenant Choice"
-        description="Choose the tenants to create the standard for."
+        description="Choose the tenants to create the application for."
       >
         <center>
           <h3 className="text-primary">Step 1</h3>
@@ -89,8 +89,8 @@ const ApplyStandard = () => {
         <hr className="my-4" />
       </CippWizard.Page>
       <CippWizard.Page
-        title="Select Standards"
-        description="Select which standards you want to apply."
+        title="Select Application Settings"
+        description="Select which application to deploy"
       >
         <center>
           <h3 className="text-primary">Step 2</h3>
@@ -100,7 +100,7 @@ const ApplyStandard = () => {
         <CForm onSubmit={handleSubmit}>
           <CRow>
             <CCol md={6}>
-              <RFFCFormInput type="text" name="packagename" label="Chocolatey package name" />
+              <RFFCFormInput type="text" name="packagename" label="WinGet package identifier" />
             </CCol>
             <CCol md={6}>
               <RFFCFormInput type="text" name="applicationName" label="Application name" />
@@ -109,11 +109,6 @@ const ApplyStandard = () => {
           <CRow>
             <CCol md={12}>
               <RFFCFormInput type="text" name="description" label="Description" />
-            </CCol>
-          </CRow>
-          <CRow>
-            <CCol md={12}>
-              <RFFCFormInput type="text" name="customRepo" label="Custom repository URL" />
             </CCol>
           </CRow>
           <RFFCFormSwitch value={true} name="InstallAsSystem" label="Install as system" />
@@ -202,4 +197,4 @@ const ApplyStandard = () => {
   )
 }
 
-export default ApplyStandard
+export default AddWinGet
