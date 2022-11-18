@@ -288,7 +288,7 @@ export default function CippTable({
       {!isFetching && error && <span>Error loading data</span>}
       {!error && (
         <div>
-          {JSON.stringify(columns) === JSON.stringify(updatedColumns) && (
+          {columns.length === updatedColumns.length && (
             <DataTable
               customStyles={customStyles}
               className="cipp-table"
