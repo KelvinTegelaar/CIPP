@@ -27,7 +27,7 @@ const Home = () => {
   return (
     <>
       <CRow>
-        <CCol className="mb-3">
+        <CCol className="mb-3" xs={12} lg={6} xl={6}>
           <CippContentCard className="h-100" title="Search features" icon={faSearch}>
             <CRow className="mb-3"></CRow>
             <CRow className="mb-3">
@@ -38,7 +38,7 @@ const Home = () => {
           </CippContentCard>
         </CCol>
 
-        <CCol className="mb-3">
+        <CCol className="mb-3" xs={12} lg={6} xl={6}>
           <CippContentCard className="h-100" title="Alerts" icon={faExclamation}>
             {!isLoadingDash && dashboard.Alerts ? (
               dashboard.Alerts.map((mappedAlert, idx) => (
