@@ -5,11 +5,13 @@ import { CippPageList } from 'src/components/layout'
 import { CellTip, cellBooleanFormatter } from 'src/components/tables'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
+import { TitleButton } from 'src/components/buttons'
 const Actions = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
     <a
+      target={'_blank'}
       href={`https://outlook.office365.com/ecp/@${tenant.defaultDomainName}/UsersGroups/EditContact.aspx?exsvurl=1&realm=${tenant.customerId}&mkt=en-US&id=${row.id}`}
     >
       <CButton size="sm" variant="ghost" color="warning">
@@ -65,6 +67,8 @@ const ContactList = () => {
 
   return (
     <CippPageList
+      capabilities={{ allTenants: false, helpContext: 'https://google.com' }}
+      titleButton={<TitleButton href="/email/administration/add-contact" title="Add Contact" />}
       title="Contacts"
       datatable={{
         keyField: 'id',
