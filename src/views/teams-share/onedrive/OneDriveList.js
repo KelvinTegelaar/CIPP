@@ -1,3 +1,4 @@
+import { CLink } from '@coreui/react'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
@@ -43,6 +44,19 @@ const OneDriveList = () => {
       selector: (row) => row['Allocated'],
       sortable: true,
       exportSelector: 'Allocated',
+    },
+    {
+      name: 'URL',
+      selector: (row) => row['url'],
+      sortable: true,
+      exportSelector: 'URL',
+      cell: (row) => {
+        return (
+          <CLink target="_blank" href={`${row.URL}`}>
+            URL
+          </CLink>
+        )
+      },
     },
   ]
   return (
