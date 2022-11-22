@@ -43,6 +43,7 @@ const ApplyStandard = () => {
   const formValues = {
     InstallAsSystem: true,
     DisableRestart: true,
+    AssignTo: 'On',
   }
 
   return (
@@ -153,7 +154,6 @@ const ApplyStandard = () => {
         {!postResults.isSuccess && (
           <FormSpy>
             {(props) => {
-              /* eslint-disable react/prop-types */
               return (
                 <>
                   <CRow>

@@ -19,6 +19,13 @@ const columns = [
     exportSelector: 'AccountEnabled',
   },
   {
+    selector: (row) => row['isLicensed'],
+    name: 'Account Licensed',
+    sortable: true,
+    cell: cellBooleanFormatter({ colourless: true }),
+    exportSelector: 'AccountEnabled',
+  },
+  {
     selector: (row) => row['PerUser'],
     name: 'Per user MFA Status',
     sortable: true,
@@ -116,6 +123,7 @@ const MFAList = () => {
       title="MFA Report"
       capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
       datatable={{
+        filterlist: [{ filterName: 'Enabled users', filter: '"accountEnabled":true' }],
         columns: tenant.defaultDomainName === 'AllTenants' ? Altcolumns : columns,
         path: '/api/ListMFAUsers',
         reportName: `${tenant?.defaultDomainName}-MFAReport-List`,
