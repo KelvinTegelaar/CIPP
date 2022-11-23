@@ -5,6 +5,8 @@ description: How to grant users access to the CIPP App
 slug: /gettingstarted/roles
 ---
 
+CIPP utilizes the Secure Application model, which means that each action will be done under the user permissions of the CIPP-SAM user. To limit the access users have you can use the role management system. 
+
 CIPP features a role management system which utilises the [Roles feature of Azure Static Web Apps](https://docs.microsoft.com/en-us/azure/static-web-apps/authentication-authorization?tabs=invitations#roles). The roles available in CIPP are as follows:
 
 | Role Name | Description                                                                   |
