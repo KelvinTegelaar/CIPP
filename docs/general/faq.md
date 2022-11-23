@@ -163,6 +163,16 @@ A 400 error is a generic access error. In CIPP this can hide many different issu
 - You're trying to access a page that doesn't exist.
 
 </details>
+<details>
+<summary>
+
+## My usernames or sites are GUIDs? {#GUIDS}
+
+</summary>
+
+Please see the standard "Enable Usernames instead of pseudo anonymised names in reports" [here](https://cipp.app/docs/user/usingcipp/tenantadministration/standards/#meet-the-standards)
+
+</details>
 
 <details>
 <summary>
