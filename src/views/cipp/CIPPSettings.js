@@ -56,9 +56,10 @@ import useConfirmModal from 'src/hooks/useConfirmModal'
 import { setCurrentTenant } from 'src/store/features/app'
 import { CippCodeBlock, ModalService, TenantSelectorMultiple } from 'src/components/utilities'
 import CippListOffcanvas from 'src/components/utilities/CippListOffcanvas'
-import { TitleButton } from 'src/components/buttons'
+import { ExportCsvButton, TitleButton } from 'src/components/buttons'
 import Skeleton from 'react-loading-skeleton'
 import { Buffer } from 'buffer'
+import { CSVDownloader } from 'react-papaparse'
 
 const CIPPSettings = () => {
   const [active, setActive] = useState(1)
@@ -131,6 +132,9 @@ const GeneralSettings = () => {
   const [selectedTenants, setSelectedTenants] = useState([])
   const [showMaxSelected, setShowMaxSelected] = useState(false)
   const [tokenOffcanvasVisible, setTokenOffcanvasVisible] = useState(false)
+  const [runBackup, RunBackupResult] = useLazyGenericGetRequestQuery()
+  const [restoreBackup, restoreBackupResult] = useLazyGenericPostRequestQuery()
+
   const maxSelected = 2
   const tenantSelectorRef = useRef(null)
 
@@ -243,7 +247,23 @@ const GeneralSettings = () => {
     pagination: false,
     subheader: false,
   }
-
+  const downloadTxtFile = (data) => {
+    const txtdata = [JSON.stringify(RunBackupResult.data.backup)]
+    const file = new Blob(txtdata, { type: 'text/plain' })
+    const element = document.createElement('a')
+    element.href = URL.createObjectURL(file)
+    element.download = 'CIPP-Backup' + Date.now() + '.json'
+    document.body.appendChild(element)
+    element.click()
+  }
+  const inputRef = useRef(null)
+  const handleChange = (e) => {
+    const fileReader = new FileReader()
+    fileReader.readAsText(e.target.files[0], 'UTF-8')
+    fileReader.onload = (e) => {
+      restoreBackup({ path: '/api/ExecRestoreBackup', values: e.target.result })
+    }
+  }
   return (
     <div>
       <CRow className="mb-3">
@@ -400,6 +420,65 @@ const GeneralSettings = () => {
         </CCol>
         <CCol>
           <DNSSettings />
+        </CCol>
+      </CRow>
+      <CRow>
+        <CCol>
+          <CCard className="h-100">
+            <CCardHeader>
+              <CCardTitle>Run Backup</CCardTitle>
+            </CCardHeader>
+            <CCardBody>
+              Click the button below to start a backup of all settings <br />
+              <CButton
+                onClick={() => runBackup({ path: '/api/ExecRunBackup' })}
+                disabled={RunBackupResult.isFetching}
+                className="me-3 mt-3"
+              >
+                {RunBackupResult.isFetching && (
+                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                )}
+                Run backup
+              </CButton>
+              <input
+                ref={inputRef}
+                type="file"
+                accept="json/*"
+                style={{ display: 'none' }}
+                id="contained-button-file"
+                onChange={(e) => handleChange(e)}
+              />
+              <CButton
+                type="file"
+                name="file"
+                onClick={() => inputRef.current.click()}
+                disabled={restoreBackupResult.isFetching}
+                className="me-3 mt-3"
+              >
+                {restoreBackupResult.isFetching && (
+                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                )}
+                Restore backup
+              </CButton>
+              {restoreBackupResult.isSuccess && (
+                <>
+                  <CCallout color="success">{restoreBackupResult.data.Results}</CCallout>
+                </>
+              )}
+              {RunBackupResult.isSuccess && (
+                <>
+                  <CCallout color="success">
+                    <CButton
+                      onClick={() => downloadTxtFile(RunBackupResult.data.backup)}
+                      className="m-1"
+                    >
+                      Download Backup
+                    </CButton>
+                  </CCallout>
+                </>
+              )}
+            </CCardBody>
+          </CCard>
         </CCol>
       </CRow>
     </div>
