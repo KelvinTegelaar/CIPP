@@ -438,7 +438,12 @@ const ExcludedTenantsSettings = () => {
         refreshPermissions({ path: `/api/ExecCPVPermissions?TenantFilter=${domain.customerId}` }),
     })
   const handleConfirmExcludeTenant = (tenant) => {
-    addExcludeTenant(tenant)
+    ModalService.confirm({
+      title: 'Exclude Tenant',
+      body: <div>Are you sure you want to exclude this tenant?</div>,
+      onConfirm: () => addExcludeTenant(tenant),
+    })
+
       .unwrap()
       .then(() => {
         dispatch(setCurrentTenant({}))
@@ -501,7 +506,7 @@ const ExcludedTenantsSettings = () => {
             size="sm"
             variant="ghost"
             color="danger"
-            onClick={() => handleExcludeTenant(row)}
+            onClick={() => handleConfirmExcludeTenant({ value: row.customerId })}
           >
             <FontAwesomeIcon icon={faEyeSlash} href="" />
           </CButton>
