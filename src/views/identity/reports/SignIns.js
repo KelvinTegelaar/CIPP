@@ -139,7 +139,6 @@ const SignInsReport = () => {
                 <Form
                   initialValues={{
                     filter: filter,
-                    startDate: startDate,
                     DateFilter: DateFilter,
                   }}
                   onSubmit={handleSubmit}
