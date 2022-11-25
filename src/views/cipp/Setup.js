@@ -206,6 +206,8 @@ const Setup = () => {
           </Condition>
         </Condition>
         <Condition when="SetupType" is="ExistingSAM">
+          you may enter your secrets below, if you only want to update a single value, leave the
+          other fields blank.
           <CRow>
             <CCol md={12}>
               <RFFCFormInput
