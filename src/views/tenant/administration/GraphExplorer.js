@@ -168,6 +168,11 @@ const GraphExplorer = () => {
                                     'directoryRoles/roleTemplateId=62e90394-69f5-4237-9190-012177145e10/members',
                                 },
                                 {
+                                  label: 'Multifactor Authentication Report for Admins',
+                                  value:
+                                    '/reports/authenticationMethods/userRegistrationDetails?$filter=IsAdmin eq true',
+                                },
+                                {
                                   label: 'Secure Score with Current Score and Max Score',
                                   value:
                                     'security/secureScores?$top=90&$select=currentscore,maxscore,activeusercount,enabledservices',
@@ -218,6 +223,7 @@ const GraphExplorer = () => {
             <CCardBody>
               <CippTable
                 reportName="GraphExplorer"
+                dynamicColumns={true}
                 columns={QueryColumns.data}
                 data={graphrequest.data}
                 isFetching={graphrequest.isFetching}
