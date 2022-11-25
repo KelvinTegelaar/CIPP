@@ -187,7 +187,7 @@ export default function CippTable({
     }
 
     if (!disablePDFExport) {
-      if (dynamicColumns === false) {
+      if (dynamicColumns === true) {
         const addColumn = (columnname) => {
           var index = columns.length - 1
           let alreadyInArray = columns.find((o) => o.exportSelector === columnname)
