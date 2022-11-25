@@ -90,7 +90,7 @@ export default function CippTable({
   error,
   reportName,
   columns = [],
-  dynamicColumns = false,
+  dynamicColumns = true,
   filterlist,
   tableProps: {
     keyField = 'id',
@@ -292,7 +292,7 @@ export default function CippTable({
       {!isFetching && error && <span>Error loading data</span>}
       {!error && (
         <div>
-          {(columns.length === updatedColumns.length || dynamicColumns) && (
+          {(columns.length === updatedColumns.length || !dynamicColumns) && (
             <DataTable
               customStyles={customStyles}
               className="cipp-table"

@@ -223,7 +223,7 @@ const GraphExplorer = () => {
             <CCardBody>
               <CippTable
                 reportName="GraphExplorer"
-                dynamicColumns={true}
+                dynamicColumns={false}
                 columns={QueryColumns.data}
                 data={graphrequest.data}
                 isFetching={graphrequest.isFetching}
