@@ -39,7 +39,7 @@ const SpamFilterAdd = () => {
       (tenant) => (values[`Select_${tenant.defaultDomainName}`] = tenant.defaultDomainName),
     )
     values.TemplateType = values.Type
-    genericPostRequest({ path: '/api/AddTransportRule', values: values })
+    genericPostRequest({ path: '/api/AddSpamfilter', values: values })
   }
   const WhenFieldChanges = ({ field, set }) => (
     <Field name={set} subscription={{}}>
@@ -72,11 +72,11 @@ const SpamFilterAdd = () => {
     <CippWizard
       initialValues={{ ...formValues }}
       onSubmit={handleSubmit}
-      wizardTitle="Add Intune policy"
+      wizardTitle="Add Spamfilter policy"
     >
       <CippWizard.Page
         title="Tenant Choice"
-        description="Choose the tenants to create the policy for."
+        description="Choose the tenants to create the Spamfilter policy for."
       >
         <center>
           <h3 className="text-primary">Step 1</h3>
@@ -122,7 +122,7 @@ const SpamFilterAdd = () => {
         <CRow>
           <CCol md={12}>
             {intuneTemplates.isUninitialized &&
-              intuneGetRequest({ path: 'api/ListTransportRulesTemplates' })}
+              intuneGetRequest({ path: 'api/ListSpamFilterTemplates' })}
             {intuneTemplates.isSuccess && (
               <RFFCFormSelect
                 name="TemplateList"

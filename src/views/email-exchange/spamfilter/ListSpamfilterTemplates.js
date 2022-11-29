@@ -36,7 +36,7 @@ const SpamFilterListTemplates = () => {
           color="danger"
           onClick={() =>
             handleDeleteIntuneTemplate(
-              `/api/RemoveTransportRuleTemplate?ID=${row.GUID}`,
+              `/api/RemoveSpamfilterTemplate?ID=${row.GUID}`,
               'Do you want to delete the template?',
             )
           }
@@ -66,11 +66,22 @@ const SpamFilterListTemplates = () => {
       exportSelector: 'name',
     },
     {
-      name: 'Comments',
-      selector: (row) => row['comments'],
+      name: 'High Confidence Spam Action',
+      selector: (row) => row['HighConfidenceSpamAction'],
       sortable: true,
-      cell: (row) => CellTip(row['comments']),
-      exportSelector: 'Comments',
+      exportSelector: 'HighConfidenceSpamAction',
+    },
+    {
+      name: 'Bulk Spam Action',
+      selector: (row) => row['BulkSpamAction'],
+      sortable: true,
+      exportSelector: 'BulkSpamAction',
+    },
+    {
+      name: 'Phish Spam Action',
+      selector: (row) => row['PhishSpamAction'],
+      sortable: true,
+      exportSelector: 'PhishSpamAction',
     },
     {
       name: 'GUID',
@@ -98,7 +109,7 @@ const SpamFilterListTemplates = () => {
         <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
       )}
       <CippPageList
-        title="Transport Rule Templates"
+        title="Spamfilter Templates"
         datatable={{
           reportName: `${tenant?.defaultDomainName}-Groups`,
           path: '/api/ListSpamfilterTemplates',
