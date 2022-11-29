@@ -62,7 +62,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             icon: <FontAwesomeIcon icon={faBook} className="me-2" />,
             modalBody: row,
             modalType: 'POST',
-            modalUrl: `/api/AddTransportTemplate`,
+            modalUrl: `/api/AddSpamfilterTemplate`,
             modalMessage: 'Are you sure you want to create a template based on this rule?',
           },
           {
