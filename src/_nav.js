@@ -136,35 +136,6 @@ const _nav = [
   },
   {
     component: CNavGroup,
-    name: 'Reports',
-    section: 'Reports',
-    to: '/tenant/reports',
-    icon: <FontAwesomeIcon icon={faChartBar} className="nav-icon" />,
-    items: [
-      {
-        component: CNavItem,
-        name: 'Graph Explorer',
-        to: '/tenant/administration/graph-explorer',
-      },
-      {
-        component: CNavItem,
-        name: 'Licence Report',
-        to: '/tenant/administration/list-licenses',
-      },
-      {
-        component: CNavItem,
-        name: 'Consented Applications',
-        to: '/tenant/administration/application-consent',
-      },
-      {
-        component: CNavItem,
-        name: 'Service Health',
-        to: '/tenant/administration/service-health',
-      },
-    ],
-  },
-  {
-    component: CNavGroup,
     name: 'Standards',
     section: 'Tenant Administration',
     to: '/tenant/standards',
@@ -233,6 +204,35 @@ const _nav = [
         component: CNavItem,
         name: 'Templates',
         to: '/tenant/conditional/list-template',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
+    name: 'Reports',
+    section: 'Reports',
+    to: '/tenant/reports',
+    icon: <FontAwesomeIcon icon={faChartBar} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Graph Explorer',
+        to: '/tenant/administration/graph-explorer',
+      },
+      {
+        component: CNavItem,
+        name: 'Licence Report',
+        to: '/tenant/administration/list-licenses',
+      },
+      {
+        component: CNavItem,
+        name: 'Consented Applications',
+        to: '/tenant/administration/application-consent',
+      },
+      {
+        component: CNavItem,
+        name: 'Service Health',
+        to: '/tenant/administration/service-health',
       },
     ],
   },
