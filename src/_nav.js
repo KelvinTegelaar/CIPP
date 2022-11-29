@@ -334,7 +334,7 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Add WinGet or Store App',
+        name: 'Add Store App',
         to: '/endpoint/applications/add-winget-app',
       },
       {
