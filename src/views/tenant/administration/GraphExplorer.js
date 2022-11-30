@@ -22,6 +22,7 @@ import { CippPage } from 'src/components/layout/CippPage'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import { OnChange } from 'react-final-form-listeners'
 import { queryString } from 'src/helpers'
+import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 
 const GraphExplorer = () => {
   let navigate = useNavigate()
@@ -63,6 +64,7 @@ const GraphExplorer = () => {
         selector: (row) => row[`${value.toString()}`],
         sortable: true,
         exportSelector: value,
+        cell: cellGenericFormatter(),
       }),
     )
     QueryColumns.set = true
