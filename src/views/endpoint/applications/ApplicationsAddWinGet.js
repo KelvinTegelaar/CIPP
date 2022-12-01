@@ -17,7 +17,13 @@ import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { CippWizard } from 'src/components/layout'
 import { WizardTableField } from 'src/components/tables'
 import PropTypes from 'prop-types'
-import { RFFCFormInput, RFFCFormRadio, RFFCFormSelect, RFFCFormSwitch } from 'src/components/forms'
+import {
+  RFFCFormCheck,
+  RFFCFormInput,
+  RFFCFormRadio,
+  RFFCFormSelect,
+  RFFCFormSwitch,
+} from 'src/components/forms'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { useRef } from 'react'
 import { OnChange } from 'react-final-form-listeners'
@@ -165,6 +171,7 @@ const AddWinGet = () => {
           </CRow>
           <CRow>
             <CCol md={6}>
+              {foundPackages.isFetching && <CSpinner className="me-3" />}
               {foundPackages.isSuccess && (
                 <RFFCFormSelect
                   label="Package"
@@ -206,30 +213,35 @@ const AddWinGet = () => {
               <RFFCFormInput type="text" name="description" label="Description" />
             </CCol>
           </CRow>
-
-          <RFFCFormRadio
-            value="On"
-            name="AssignTo"
-            label="Do not assign"
-            validate={false}
-          ></RFFCFormRadio>
-          <RFFCFormRadio
-            value="allLicensedUsers"
-            name="AssignTo"
-            label="Assign to all users"
-            validate={false}
-          ></RFFCFormRadio>
-          <RFFCFormRadio
-            value="AllDevices"
-            name="AssignTo"
-            label="Assign to all devices"
-            validate={false}
-          ></RFFCFormRadio>
-          <RFFCFormRadio
-            value="AllDevicesAndUsers"
-            name="AssignTo"
-            label="Assign to all users and devices"
-          ></RFFCFormRadio>
+          <CRow>
+            <CCol>
+              Install options:
+              <RFFCFormCheck name="InstallationIntent" label="Mark for Uninstallation" />
+              <RFFCFormRadio
+                value="On"
+                name="AssignTo"
+                label="Do not assign"
+                validate={false}
+              ></RFFCFormRadio>
+              <RFFCFormRadio
+                value="allLicensedUsers"
+                name="AssignTo"
+                label="Assign to all users"
+                validate={false}
+              ></RFFCFormRadio>
+              <RFFCFormRadio
+                value="AllDevices"
+                name="AssignTo"
+                label="Assign to all devices"
+                validate={false}
+              ></RFFCFormRadio>
+              <RFFCFormRadio
+                value="AllDevicesAndUsers"
+                name="AssignTo"
+                label="Assign to all users and devices"
+              ></RFFCFormRadio>
+            </CCol>
+          </CRow>
         </CForm>
         <hr className="my-4" />
       </CippWizard.Page>
@@ -256,16 +268,6 @@ const AddWinGet = () => {
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Description: {props.values.description}
-                        </CListGroupItem>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Custom Repo:
-                          {props.values.customRepo ? props.values.customRepo : ' No'}
-                        </CListGroupItem>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Install as System: {props.values.InstallAsSystem ? 'Yes' : 'No'}
-                        </CListGroupItem>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Disable Restart: {props.values.DisableRestart ? 'Yes' : 'No'}
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Assign to: {props.values.AssignTo}
