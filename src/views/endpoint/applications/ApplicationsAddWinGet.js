@@ -6,8 +6,9 @@ import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { CippWizard } from 'src/components/layout'
 import { WizardTableField } from 'src/components/tables'
 import PropTypes from 'prop-types'
-import { RFFCFormInput, RFFCFormRadio, RFFCFormSwitch } from 'src/components/forms'
+import { RFFCFormInput, RFFCFormRadio, RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import { RFFSelectSearchAsync } from 'src/components/forms/RFFComponents'
 
 const Error = ({ name }) => (
   <Field
@@ -32,6 +33,7 @@ const requiredArray = (value) => (value && value.length !== 0 ? undefined : 'Req
 
 const AddWinGet = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
+  const [searchPostRequest, foundPackages] = useLazyGenericPostRequestQuery()
 
   const handleSubmit = async (values) => {
     values.selectedTenants.map(
@@ -39,7 +41,14 @@ const AddWinGet = () => {
     )
     genericPostRequest({ path: '/api/AddWinGetApp', values: values })
   }
-
+  const handleSearch = async (values) => {
+    if (values.length >= 3)
+      searchPostRequest({
+        path: '/api/ListPotentialApps',
+        values: { type: 'WinGet', searchString: values },
+      })
+    return foundPackages.data
+  }
   const formValues = {
     InstallAsSystem: true,
     DisableRestart: true,
@@ -98,6 +107,17 @@ const AddWinGet = () => {
         </center>
         <hr className="my-4" />
         <CForm onSubmit={handleSubmit}>
+          <CRow>
+            <CCol md={12}>
+              <RFFSelectSearchAsync
+                label="Search Package"
+                placeholder="Type to search..."
+                name="Package"
+                loadOptions={(e) => handleSearch(e)}
+                isLoading={foundPackages.isFetching}
+              />
+            </CCol>
+          </CRow>
           <CRow>
             <CCol md={6}>
               <RFFCFormInput type="text" name="packagename" label="WinGet package identifier" />

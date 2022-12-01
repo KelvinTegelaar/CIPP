@@ -498,7 +498,9 @@
   --cipp-table-striped-colour: var(--cyberdrain-light-striped);
   --cipp-offcanvas-header-bg: var(--cyberdrain-dark);
   --cipp-offcanvas-header-color: var(--cyberdrain-light);
-
+  .react-select__input-container {
+    color: var(--cyberdrain-light) !important;
+  }
   .react-loading-skeleton {
     --base-color: var(--cyberdrain-dark-striped);
     --highlight-color: var(--cyberdrain-lighter);

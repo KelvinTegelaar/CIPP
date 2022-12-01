@@ -6,8 +6,10 @@ import {
   CFormSelect,
   CFormSwitch,
   CFormTextarea,
+  CSpinner,
 } from '@coreui/react'
 import Select from 'react-select'
+import AsyncSelect from 'react-select/async'
 import { Field } from 'react-final-form'
 import React from 'react'
 import PropTypes from 'prop-types'
@@ -345,6 +347,54 @@ export const RFFSelectSearch = ({
 }
 
 RFFSelectSearch.propTypes = {
+  ...sharedPropTypes,
+  multi: PropTypes.bool,
+  placeholder: PropTypes.string,
+  values: PropTypes.arrayOf(PropTypes.shape({ value: PropTypes.string, name: PropTypes.string }))
+    .isRequired,
+}
+
+export const RFFSelectSearchAsync = ({
+  name,
+  label,
+  placeholder,
+  isLoading = false,
+  validate,
+  onChange,
+  multi,
+  loadOptions,
+  disabled = false,
+}) => {
+  return (
+    <Field name={name} validate={validate}>
+      {({ meta, input }) => {
+        return (
+          <div>
+            <CFormLabel htmlFor={name}>{label}</CFormLabel>
+            <AsyncSelect
+              className="react-select-container"
+              classNamePrefix="react-select"
+              defaultOptions
+              loadOptions={loadOptions}
+              {...input}
+              isClearable={true}
+              name={name}
+              id={name}
+              disabled={disabled}
+              placeholder={placeholder}
+              isLoading={isLoading}
+              isMulti={multi}
+              onChange={onChange}
+            />
+            <RFFCFormFeedback meta={meta} />
+          </div>
+        )
+      }}
+    </Field>
+  )
+}
+
+RFFSelectSearchAsync.propTypes = {
   ...sharedPropTypes,
   multi: PropTypes.bool,
   placeholder: PropTypes.string,
