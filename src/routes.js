@@ -369,7 +369,7 @@ const routes = [
   },
   {
     path: '/endpoint/applications/add-winget-app',
-    name: 'Add Choco App',
+    name: 'Add Store App',
     component: ApplicationsAddWingetApp,
   },
   {
