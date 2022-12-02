@@ -17,6 +17,7 @@ import {
   faBus,
   faExclamationTriangle,
   faUserShield,
+  faEnvelope,
 } from '@fortawesome/free-solid-svg-icons'
 
 const _nav = [
@@ -135,35 +136,6 @@ const _nav = [
   },
   {
     component: CNavGroup,
-    name: 'Reports',
-    section: 'Reports',
-    to: '/tenant/reports',
-    icon: <FontAwesomeIcon icon={faChartBar} className="nav-icon" />,
-    items: [
-      {
-        component: CNavItem,
-        name: 'Graph Explorer',
-        to: '/tenant/administration/graph-explorer',
-      },
-      {
-        component: CNavItem,
-        name: 'Licence Report',
-        to: '/tenant/administration/list-licenses',
-      },
-      {
-        component: CNavItem,
-        name: 'Consented Applications',
-        to: '/tenant/administration/application-consent',
-      },
-      {
-        component: CNavItem,
-        name: 'Service Health',
-        to: '/tenant/administration/service-health',
-      },
-    ],
-  },
-  {
-    component: CNavGroup,
     name: 'Standards',
     section: 'Tenant Administration',
     to: '/tenant/standards',
@@ -232,6 +204,35 @@ const _nav = [
         component: CNavItem,
         name: 'Templates',
         to: '/tenant/conditional/list-template',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
+    name: 'Reports',
+    section: 'Reports',
+    to: '/tenant/reports',
+    icon: <FontAwesomeIcon icon={faChartBar} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Graph Explorer',
+        to: '/tenant/administration/graph-explorer',
+      },
+      {
+        component: CNavItem,
+        name: 'Licence Report',
+        to: '/tenant/administration/list-licenses',
+      },
+      {
+        component: CNavItem,
+        name: 'Consented Applications',
+        to: '/tenant/administration/application-consent',
+      },
+      {
+        component: CNavItem,
+        name: 'Service Health',
+        to: '/tenant/administration/service-health',
       },
     ],
   },
@@ -333,7 +334,7 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Add WinGet or Store App',
+        name: 'Add Store App',
         to: '/endpoint/applications/add-winget-app',
       },
       {
@@ -517,7 +518,7 @@ const _nav = [
   },
   {
     component: CNavGroup,
-    name: 'Transport Rules',
+    name: 'Transport',
     section: 'Transport Rules',
     to: '/tenant/administration',
     icon: <FontAwesomeIcon icon={faBus} className="nav-icon" />,
@@ -551,6 +552,30 @@ const _nav = [
         component: CNavItem,
         name: 'Deploy Connector Templates',
         to: '/email/connectors/deploy-connector',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
+    name: 'Spamfilter',
+    section: 'Spamfilter',
+    to: '/tenant/administration',
+    icon: <FontAwesomeIcon icon={faEnvelope} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Spamfilter',
+        to: '/email/spamfilter/list-spamfilter',
+      },
+      {
+        component: CNavItem,
+        name: 'Apply Spamfilter Template',
+        to: '/email/spamfilter/deploy',
+      },
+      {
+        component: CNavItem,
+        name: 'Templates',
+        to: '/email/spamfilter/list-templates',
       },
     ],
   },
