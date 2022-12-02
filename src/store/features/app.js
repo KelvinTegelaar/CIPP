@@ -37,6 +37,9 @@ export const appSlice = createSlice({
     setDefaultusageLocation: (state, action) => {
       state.usageLocation = action.payload?.usageLocation
     },
+    setReportImage: (state, action) => {
+      state.reportImage = action.payload?.reportImage
+    },
   },
 })
 
@@ -48,6 +51,7 @@ export const {
   setCurrentTheme,
   setSidebarVisible,
   setDefaultusageLocation,
+  setReportImage,
 } = appSlice.actions
 
 export default persistReducer(
