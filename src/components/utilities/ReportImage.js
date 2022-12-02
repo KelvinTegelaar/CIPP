@@ -42,7 +42,8 @@ const ReportImage = () => {
           >
             Upload File
           </CButton>
-          <CImage className="card" src={ReportImage} thumbnail width={100} height={100} />
+          <br></br>
+          <CImage className="card" src={ReportImage} thumbnail width={120} height={100} />
         </center>
       </CCardBody>
     </CCard>
