@@ -27,6 +27,24 @@ After setup you must clear the token cache. To clear the token cache follow thes
 
 After deployment, go to your resource group in Azure and select your Static Web Application (`cipp-swa-xxxx` if using click-to-deploy). Select **Role Management** and invite the users you want. Currently CIPP supports three roles, `reader`, `editor`, and `admin`. Further information on the roles and how to assign these is on the [Roles](../roles/) page.
 
+## Enable Run From Package mode for better performance and lower costs
+
+1. Go to CIPP
+1. Visit each page you want to save the contents of, e.g. Standards, Intune Templates, Applications, Alerts, Visiting the page automatically migrates the data to Azure Tables.
+1. Go to Settings -> Backend
+1. Click on "Function app Configuration"
+1. Click on "New Application Setting"
+1. Add an application setting with the name "WEBSITE_RUN_FROM_PACKAGE" and the value "1"
+1. Click Save at the top
+1. Click on Deployment Center
+1. Click on "Disconnect"
+1. Select the source "Github"
+1. Login if required
+1. Select the Organisation, Repository, and Branch you want for your CIPP-API. Click on "Add a worklow". Do not change any other settings.
+1. Click save at the top.
+1. Restart the Function App
+
+
 ## Adding a Custom Domain Name
 
 :::tip Why setup a custom domain?
