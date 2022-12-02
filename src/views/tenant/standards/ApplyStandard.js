@@ -220,6 +220,10 @@ const ApplyStandard = () => {
                 name="standards.DisableM365GroupUsers"
                 label="Disable M365 Group creation by users"
               />
+              <RFFCFormSwitch
+                name="standards.DisableTenantCreation"
+                label="Disable M365 Tenant creation by users"
+              />
               <RFFCFormSwitch name="standards.SecurityDefaults" label="Enable Security Defaults" />
               <RFFCFormSwitch
                 name="standards.PasswordExpireDisabled"

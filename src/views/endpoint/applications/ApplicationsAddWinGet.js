@@ -7,9 +7,9 @@ import {
   CListGroupItem,
   CCallout,
   CSpinner,
+  CButton,
   CInputGroup,
   CFormInput,
-  CButton,
 } from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -25,8 +25,8 @@ import {
   RFFCFormSwitch,
 } from 'src/components/forms'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
-import { OnChange } from 'react-final-form-listeners'
 import { useRef } from 'react'
+import { OnChange } from 'react-final-form-listeners'
 
 const Error = ({ name }) => (
   <Field
@@ -49,7 +49,7 @@ Error.propTypes = {
 
 const requiredArray = (value) => (value && value.length !== 0 ? undefined : 'Required')
 
-const ApplyStandard = () => {
+const AddWinGet = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const [searchPostRequest, foundPackages] = useLazyGenericPostRequestQuery()
 
@@ -57,21 +57,24 @@ const ApplyStandard = () => {
     values.selectedTenants.map(
       (tenant) => (values[`Select_${tenant.defaultDomainName}`] = tenant.defaultDomainName),
     )
-    genericPostRequest({ path: '/api/AddChocoApp', values: values })
+    genericPostRequest({ path: '/api/AddWinGetApp', values: values })
   }
   const handleSearch = async (values) => {
     searchPostRequest({
       path: '/api/ListPotentialApps',
-      values: { type: 'Choco', searchString: values },
+      values: { type: 'WinGet', searchString: values },
     })
   }
+  const searchRef = useRef(null)
+
+  const packageIdRef = useRef(null)
+  const packageNameRef = useRef(null)
+
   const formValues = {
     InstallAsSystem: true,
     DisableRestart: true,
     AssignTo: 'On',
   }
-  const searchRef = useRef(null)
-
   const WhenFieldChanges = ({ field, set }) => (
     <Field name={set} subscription={{}}>
       {(
@@ -95,15 +98,16 @@ const ApplyStandard = () => {
       )}
     </Field>
   )
+
   return (
     <CippWizard
       initialValues={{ ...formValues }}
       onSubmit={handleSubmit}
-      wizardTitle="Chocolatey App Wizard"
+      wizardTitle="Add WinGet App"
     >
       <CippWizard.Page
         title="Tenant Choice"
-        description="Choose the tenants to create the standard for."
+        description="Choose the tenants to create the application for."
       >
         <center>
           <h3 className="text-primary">Step 1</h3>
@@ -138,8 +142,8 @@ const ApplyStandard = () => {
         <hr className="my-4" />
       </CippWizard.Page>
       <CippWizard.Page
-        title="Select Standards"
-        description="Select which standards you want to apply."
+        title="Select Application Settings"
+        description="Select which application to deploy"
       >
         <center>
           <h3 className="text-primary">Step 2</h3>
@@ -186,10 +190,22 @@ const ApplyStandard = () => {
           <hr></hr>
           <CRow>
             <CCol md={6}>
-              <RFFCFormInput type="text" name="packagename" label="Chocolatey package name" />
+              <RFFCFormInput
+                innerRef={packageIdRef}
+                type="text"
+                name="packagename"
+                label="WinGet package identifier"
+                value="test"
+              />
             </CCol>
             <CCol md={6}>
-              <RFFCFormInput type="text" name="applicationName" label="Application name" />
+              <RFFCFormInput
+                innerRef={packageNameRef}
+                type="text"
+                name="applicationName"
+                label="Application name"
+                value="test"
+              />
             </CCol>
           </CRow>
           <CRow>
@@ -198,37 +214,34 @@ const ApplyStandard = () => {
             </CCol>
           </CRow>
           <CRow>
-            <CCol md={12}>
-              <RFFCFormInput type="text" name="customRepo" label="Custom repository URL" />
+            <CCol>
+              Install options:
+              <RFFCFormCheck name="InstallationIntent" label="Mark for Uninstallation" />
+              <RFFCFormRadio
+                value="On"
+                name="AssignTo"
+                label="Do not assign"
+                validate={false}
+              ></RFFCFormRadio>
+              <RFFCFormRadio
+                value="allLicensedUsers"
+                name="AssignTo"
+                label="Assign to all users"
+                validate={false}
+              ></RFFCFormRadio>
+              <RFFCFormRadio
+                value="AllDevices"
+                name="AssignTo"
+                label="Assign to all devices"
+                validate={false}
+              ></RFFCFormRadio>
+              <RFFCFormRadio
+                value="AllDevicesAndUsers"
+                name="AssignTo"
+                label="Assign to all users and devices"
+              ></RFFCFormRadio>
             </CCol>
           </CRow>
-          Install options:
-          <RFFCFormSwitch value={true} name="InstallAsSystem" label="Install as system" />
-          <RFFCFormSwitch name="DisableRestart" label="Disable Restart" />
-          <RFFCFormCheck name="InstallationIntent" label="Mark for Uninstallation" />
-          <RFFCFormRadio
-            value="On"
-            name="AssignTo"
-            label="Do not assign"
-            validate={false}
-          ></RFFCFormRadio>
-          <RFFCFormRadio
-            value="allLicensedUsers"
-            name="AssignTo"
-            label="Assign to all users"
-            validate={false}
-          ></RFFCFormRadio>
-          <RFFCFormRadio
-            value="AllDevices"
-            name="AssignTo"
-            label="Assign to all devices"
-            validate={false}
-          ></RFFCFormRadio>
-          <RFFCFormRadio
-            value="AllDevicesAndUsers"
-            name="AssignTo"
-            label="Assign to all users and devices"
-          ></RFFCFormRadio>
         </CForm>
         <hr className="my-4" />
       </CippWizard.Page>
@@ -257,16 +270,6 @@ const ApplyStandard = () => {
                           Description: {props.values.description}
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Custom Repo:
-                          {props.values.customRepo ? props.values.customRepo : ' No'}
-                        </CListGroupItem>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Install as System: {props.values.InstallAsSystem ? 'Yes' : 'No'}
-                        </CListGroupItem>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Disable Restart: {props.values.DisableRestart ? 'Yes' : 'No'}
-                        </CListGroupItem>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Assign to: {props.values.AssignTo}
                         </CListGroupItem>
                       </CListGroup>
@@ -289,4 +292,4 @@ const ApplyStandard = () => {
   )
 }
 
-export default ApplyStandard
+export default AddWinGet
