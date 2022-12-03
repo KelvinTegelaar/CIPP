@@ -96,7 +96,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             label: 'Exchange Portal',
             color: 'info',
             external: true,
-            link: `https://outlook.office365.com/ecp/?rfr=Admin_o365&exsvurl=1&delegatedOrg=${row.defaultDomainName}`,
+            link: `https://admin.exchange.microsoft.com/?landingpage=homepage&form=mac_sidebar&delegatedOrg=${row.defaultDomainName}#`,
           },
           {
             icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
@@ -223,7 +223,7 @@ const TenantsList = () => {
       center: true,
       cell: (row) => (
         <a
-          href={`https://outlook.office365.com/ecp/?rfr=Admin_o365&exsvurl=1&delegatedOrg=${row.defaultDomainName}`}
+          href={`https://admin.exchange.microsoft.com/?landingpage=homepage&form=mac_sidebar&delegatedOrg=${row.defaultDomainName}#`}
           target="_blank"
           className="dlink"
           rel="noreferrer"
