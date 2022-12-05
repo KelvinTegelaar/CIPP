@@ -107,7 +107,7 @@ const Setup = () => {
         <RFFCFormRadio
           value="ExistingSAM"
           name="SetupType"
-          label="I have an existing SAM application and would like to enter my tokens"
+          label="I have an existing SAM application and would like to enter my tokens, or update them."
         ></RFFCFormRadio>
         <hr className="my-4" />
       </CippWizard.Page>
@@ -206,13 +206,15 @@ const Setup = () => {
           </Condition>
         </Condition>
         <Condition when="SetupType" is="ExistingSAM">
+          you may enter your secrets below, if you only want to update a single value, leave the
+          other fields blank.
           <CRow>
             <CCol md={12}>
               <RFFCFormInput
                 type="text"
                 name="TenantID"
                 label="Tenant ID"
-                placeholder="Enter the Tenant ID. e.g. mymsp.onmicrosoft.com"
+                placeholder="Enter the Tenant ID. e.g. mymsp.onmicrosoft.com. Leave blank to retain a previous key if this exists."
               />
             </CCol>
           </CRow>
@@ -222,7 +224,7 @@ const Setup = () => {
                 type="text"
                 name="ApplicationID"
                 label="Application ID"
-                placeholder="Enter the application ID. e.g 1111-1111-1111-1111-11111"
+                placeholder="Enter the application ID. e.g 1111-1111-1111-1111-11111. Leave blank to retain a previous key if this exists."
               />
             </CCol>
           </CRow>
@@ -232,7 +234,7 @@ const Setup = () => {
                 type="password"
                 name="ApplicationSecret"
                 label="Application Secret"
-                placeholder="Enter the application secret"
+                placeholder="Enter the application secret. Leave blank to retain a previous key if this exists."
               />
             </CCol>
           </CRow>
@@ -242,7 +244,7 @@ const Setup = () => {
                 type="password"
                 name="RefreshToken"
                 label="Refresh Token"
-                placeholder="Enter the refresh token"
+                placeholder="Enter the refresh token. Leave blank to retain a previous key if this exists."
               />
             </CCol>
           </CRow>
@@ -252,7 +254,7 @@ const Setup = () => {
                 type="password"
                 name="ExchangeRefreshToken"
                 label="Exchange Refresh Token"
-                placeholder="Enter the Exchange refresh tokens"
+                placeholder="Enter the Exchange refresh tokens. Leave blank to retain a previous key if this exists."
               />
             </CCol>
           </CRow>
@@ -268,7 +270,6 @@ const Setup = () => {
         {!postResults.isSuccess && (
           <FormSpy>
             {(props) => {
-              /* eslint-disable react/prop-types */
               return (
                 <>
                   <CRow>
