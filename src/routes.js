@@ -186,7 +186,16 @@ const AddTransportTemplate = React.lazy(() =>
 const TransportDeploy = React.lazy(() =>
   import('src/views/email-exchange/transport/DeployTransport'),
 )
-
+const SpamfilterList = React.lazy(() => import('src/views/email-exchange/spamfilter/Spamfilter'))
+const SpamFilterTemplate = React.lazy(() =>
+  import('src/views/email-exchange/spamfilter/ListSpamfilterTemplates'),
+)
+const AddSpamFilterTemplate = React.lazy(() =>
+  import('src/views/email-exchange/spamfilter/AddSpamfilterTemplate'),
+)
+const SpamFilterDeploy = React.lazy(() =>
+  import('src/views/email-exchange/spamfilter/DeploySpamfilter'),
+)
 const ConnectorList = React.lazy(() => import('src/views/email-exchange/connectors/ConnectorList'))
 const ConnectorListTemplates = React.lazy(() =>
   import('src/views/email-exchange/connectors/ListConnectorTemplates'),
@@ -360,7 +369,7 @@ const routes = [
   },
   {
     path: '/endpoint/applications/add-winget-app',
-    name: 'Add Choco App',
+    name: 'Add Store App',
     component: ApplicationsAddWingetApp,
   },
   {
@@ -490,6 +499,26 @@ const routes = [
     path: '/email/transport/add-template',
     name: 'Transport Rule add Temmplate',
     component: AddTransportTemplate,
+  },
+  {
+    path: '/email/spamfilter/list-spamfilter',
+    name: 'List Spamfilter',
+    component: SpamfilterList,
+  },
+  {
+    path: '/email/spamfilter/deploy',
+    name: 'Deploy Spamfilter',
+    component: SpamFilterDeploy,
+  },
+  {
+    path: '/email/spamfilter/list-templates',
+    name: 'Spamfilter Templates',
+    component: SpamFilterTemplate,
+  },
+  {
+    path: '/email/spamfilter/add-template',
+    name: 'Spamfilter Template',
+    component: AddSpamFilterTemplate,
   },
   {
     name: 'Edit Mailbox Permissions',
