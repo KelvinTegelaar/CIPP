@@ -58,7 +58,7 @@ const AddGroupTemplate = () => {
                   </CRow>
                   <CRow>
                     <RFFCFormRadio name="groupType" label="Azure Role Group" value="azurerole" />
-                    <RFFCFormRadio name="groupType" label="Security Group" value="generic" />
+                    <RFFCFormRadio name="groupType" label="Security Group" value="security" />
                     <RFFCFormRadio
                       name="groupType"
                       label="Distribution List"
