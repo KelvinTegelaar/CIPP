@@ -38,6 +38,12 @@ const columns = [
     sortable: true,
     exportSelector: 'TotalLicenses',
   },
+  {
+    name: 'GUID',
+    selector: (row) => row['skuId'],
+    sortable: true,
+    exportSelector: 'skuId',
+  },
 ]
 
 const LicenseList = () => {
