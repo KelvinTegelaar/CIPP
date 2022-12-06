@@ -76,7 +76,6 @@ const Home = () => {
         <CCol className="mb-3" xs={12} lg={2} xl={3}>
           <CippContentCard title="Managed Tenants" icon={faBook}>
             <div>{!isLoadingDash ? dashboard?.tenantCount : <Skeleton />}</div>
-            <br></br> Managed tenants
           </CippContentCard>
         </CCol>
         <CCol className="mb-3" xs={12} lg={2} xl={3}>
