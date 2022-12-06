@@ -367,7 +367,7 @@ const ListAppliedStandards = () => {
                             />
                             <RFFCFormSwitch
                               name="standards.sharingCapability.Enabled"
-                              label="Set Sharing Level for OneDrive and Sharepoint"
+                              label="Set Sharing Level for OneDrive and SharePoint"
                             />
                             <Condition when="standards.sharingCapability.Enabled" is={true}>
                               <RFFCFormSelect

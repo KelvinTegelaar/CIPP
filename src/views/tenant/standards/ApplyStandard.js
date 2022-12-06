@@ -319,7 +319,7 @@ const ApplyStandard = () => {
         <hr className="my-4" />
       </CippWizard.Page>
       <CippWizard.Page
-        title="Sharepoint Standards"
+        title="SharePoint Standards"
         description="Select which standards you want to apply."
       >
         <center>
