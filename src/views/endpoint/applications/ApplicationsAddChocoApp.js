@@ -103,7 +103,7 @@ const ApplyStandard = () => {
     >
       <CippWizard.Page
         title="Tenant Choice"
-        description="Choose the tenants to create the standard for."
+        description="Choose the tenants to create the application for."
       >
         <center>
           <h3 className="text-primary">Step 1</h3>
@@ -138,8 +138,8 @@ const ApplyStandard = () => {
         <hr className="my-4" />
       </CippWizard.Page>
       <CippWizard.Page
-        title="Select Standards"
-        description="Select which standards you want to apply."
+        title="Select Application Settings"
+        description="Select which application to deploy."
       >
         <center>
           <h3 className="text-primary">Step 2</h3>

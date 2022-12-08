@@ -88,8 +88,8 @@ const AlertWizard = () => {
         <hr className="my-4" />
       </CippWizard.Page>
       <CippWizard.Page
-        title="Select Standards"
-        description="Select which standards you want to apply."
+        title="Select Alerts"
+        description="Select which alerts you want to receive."
       >
         <center>
           <h3 className="text-primary">Step 2</h3>
