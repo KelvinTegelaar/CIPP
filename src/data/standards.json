@@ -182,6 +182,13 @@
   },
   {
     "cat": "AAD",
+    "name": "standards.EnableNudgeMFA",
+    "helpText": "This is the default helptext",
+    "addedComponent": null,
+    "label": "Request to setup Authenticator if not setup yet."
+  },
+  {
+    "cat": "AAD",
     "name": "standards.DisableSelfServiceLicenses",
     "helpText": "This is the default helptext",
     "addedComponent": null,
@@ -207,6 +214,13 @@
     "helpText": "This is the default helptext",
     "addedComponent": null,
     "label": "Disable Guest accounts that have not logged on for 90 days"
+  },
+  {
+    "cat": "AAD",
+    "name": "standards.EnableFIDO2",
+    "helpText": "This is the default helptext",
+    "addedComponent": null,
+    "label": "Enable FIDO2 capabilities"
   },
   {
     "name": "standards.DisableSharedMailbox",
