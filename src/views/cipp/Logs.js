@@ -28,6 +28,7 @@ const columns = [
     cell: cellDateFormatter(),
     exportSelector: 'DateTime',
     minWidth: '145px',
+    maxWidth: '145px',
   },
   {
     name: 'Tenant',
@@ -35,6 +36,8 @@ const columns = [
     sortable: true,
     cell: (row) => CellTip(row['Tenant']),
     exportSelector: 'Tenant',
+    minWidth: '145px',
+    maxWidth: '145px',
   },
   {
     name: 'API',
@@ -42,6 +45,8 @@ const columns = [
     sortable: true,
     cell: (row) => CellTip(row['API']),
     exportSelector: 'API',
+    minWidth: '145px',
+    maxWidth: '145px',
   },
   {
     name: 'Message',
@@ -56,12 +61,16 @@ const columns = [
     sortable: true,
     cell: (row) => CellTip(row['User']),
     exportSelector: 'User',
+    minWidth: '145px',
+    maxWidth: '145px',
   },
   {
     name: 'Severity',
     selector: (row) => row['Severity'],
     sortable: true,
     exportSelector: 'Severity',
+    minWidth: '145px',
+    maxWidth: '145px',
   },
 ]
 
@@ -90,10 +99,7 @@ const Logs = () => {
       .map((key) => key + '=' + shippedValues[key])
       .join('&')
 
-    //alert(JSON.stringify(values, null, 2))
     navigate(`?${queryString}`)
-    // @todo hook this up
-    // genericPostRequest({ url: 'api/AddIntuneTemplate', values })
   }
 
   return (
@@ -161,11 +167,6 @@ const Logs = () => {
                             </CButton>
                           </CCol>
                         </CRow>
-                        {/*<CRow>*/}
-                        {/* <CCol>*/}
-                        {/*   <pre>{JSON.stringify(values, null, 2)}</pre>*/}
-                        {/* </CCol>*/}
-                        {/*</CRow>*/}
                       </CForm>
                     )
                   }}
