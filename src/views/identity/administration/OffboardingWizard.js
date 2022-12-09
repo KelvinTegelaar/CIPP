@@ -201,7 +201,7 @@ const OffboardingWizard = () => {
           {!postResults.isSuccess && (
             <FormSpy>
               {(props) => (
-                /* eslint-disable react/prop-types */ <>
+                <>
                   <CRow>
                     <CCol md={{ span: 6, offset: 3 }}>
                       <CListGroup flush>
