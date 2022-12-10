@@ -270,6 +270,10 @@ const ListAppliedStandards = () => {
                               label="Disable Security Group creation by users"
                             />
                             <RFFCFormSwitch
+                              name="standards.DisableTenantCreation"
+                              label="Disable M365 Tenant creation by users"
+                            />
+                            <RFFCFormSwitch
                               name="standards.SSPR"
                               label="Enable Self Service Password Reset"
                             />
