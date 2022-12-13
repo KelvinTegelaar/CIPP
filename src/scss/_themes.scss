@@ -310,8 +310,8 @@
   --cipp-table-primary-colour: var(--cyberdrain-dark);
   --cipp-table-secondary-colour: var(--cyberdrain-secondary);
   --cipp-table-sort-focus-bg: var(--cyberdrain-secondary);
-  --cipp-table-highlight-on-hover-bg: #fff;
-  --cipp-table-highlight-on-hover-color: var(--cyberdrain-dark);
+  --cipp-table-highlight-on-hover-bg: rgb(150, 150, 150);
+  --cipp-table-highlight-on-hover-color: rgb(150, 150, 150);
   --cipp-table-striped-bg: var(--cyberdrain-light-striped);
   --cipp-table-striped-colour: var(--cyberdrain-dark-striped);
   --cipp-offcanvas-header-bg: var(--cui-color-white);
@@ -492,13 +492,15 @@
   --cipp-table-primary-colour: var(--cyberdrain-light);
   --cipp-table-secondary-colour: var(--cui-gray-100);
   --cipp-table-sort-focus-bg: var(--cyberdrain-secondary);
-  --cipp-table-highlight-on-hover-bg: var(--cyberdrain-darker);
-  --cipp-table-highlight-on-hover-color: var(--cyberdrain-light);
+  --cipp-table-highlight-on-hover-bg: rgb(138, 136, 136);
+  --cipp-table-highlight-on-hover-color: rgb(138, 136, 136);
   --cipp-table-striped-bg: var(--cyberdrain-dark-striped);
   --cipp-table-striped-colour: var(--cyberdrain-light-striped);
   --cipp-offcanvas-header-bg: var(--cyberdrain-dark);
   --cipp-offcanvas-header-color: var(--cyberdrain-light);
-
+  .react-select__input-container {
+    color: var(--cyberdrain-light) !important;
+  }
   .react-loading-skeleton {
     --base-color: var(--cyberdrain-dark-striped);
     --highlight-color: var(--cyberdrain-lighter);

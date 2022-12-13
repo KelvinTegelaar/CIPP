@@ -17,7 +17,6 @@ import {
   CForm,
   CListGroup,
   CListGroupItem,
-  CBadge,
   CLink,
   CSpinner,
 } from '@coreui/react'
@@ -33,22 +32,25 @@ import {
 import {
   useExecAddExcludeTenantMutation,
   useExecRemoveExcludeTenantMutation,
-  useListExcludedTenantsQuery,
 } from 'src/store/api/tenants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
+  faCheckCircle,
   faCircleNotch,
+  faExclamationTriangle,
+  faEye,
+  faEyeSlash,
   faLink,
+  faRecycle,
   faScroll,
   faTrash,
-  faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons'
 import { useListTenantsQuery } from 'src/store/api/tenants'
 import { useLazyEditDnsConfigQuery, useLazyGetDnsConfigQuery } from 'src/store/api/domains'
 import { useDispatch, useSelector } from 'react-redux'
-import { CippTable } from 'src/components/tables'
+import { cellBooleanFormatter, CellTip, CellTipIcon, CippTable } from 'src/components/tables'
 import { CippPage, CippPageList } from 'src/components/layout'
-import { RFFCFormSwitch, RFFCFormInput, RFFCFormSelect, RFFCFormCheck } from 'src/components/forms'
+import { RFFCFormSwitch, RFFCFormInput, RFFCFormSelect } from 'src/components/forms'
 import { Form } from 'react-final-form'
 import useConfirmModal from 'src/hooks/useConfirmModal'
 import { setCurrentTenant } from 'src/store/features/app'
@@ -67,7 +69,7 @@ const CIPPSettings = () => {
           General
         </CNavItem>
         <CNavItem active={active === 2} onClick={() => setActive(2)} href="#">
-          Excluded Tenants
+          Tenants
         </CNavItem>
         <CNavItem active={active === 3} onClick={() => setActive(3)} href="#">
           Backend
@@ -129,6 +131,9 @@ const GeneralSettings = () => {
   const [selectedTenants, setSelectedTenants] = useState([])
   const [showMaxSelected, setShowMaxSelected] = useState(false)
   const [tokenOffcanvasVisible, setTokenOffcanvasVisible] = useState(false)
+  const [runBackup, RunBackupResult] = useLazyGenericGetRequestQuery()
+  const [restoreBackup, restoreBackupResult] = useLazyGenericPostRequestQuery()
+
   const maxSelected = 2
   const tenantSelectorRef = useRef(null)
 
@@ -241,7 +246,23 @@ const GeneralSettings = () => {
     pagination: false,
     subheader: false,
   }
-
+  const downloadTxtFile = (data) => {
+    const txtdata = [JSON.stringify(RunBackupResult.data.backup)]
+    const file = new Blob(txtdata, { type: 'text/plain' })
+    const element = document.createElement('a')
+    element.href = URL.createObjectURL(file)
+    element.download = 'CIPP-Backup' + Date.now() + '.json'
+    document.body.appendChild(element)
+    element.click()
+  }
+  const inputRef = useRef(null)
+  const handleChange = (e) => {
+    const fileReader = new FileReader()
+    fileReader.readAsText(e.target.files[0], 'UTF-8')
+    fileReader.onload = (e) => {
+      restoreBackup({ path: '/api/ExecRestoreBackup', values: e.target.result })
+    }
+  }
   return (
     <div>
       <CRow className="mb-3">
@@ -276,8 +297,15 @@ const GeneralSettings = () => {
                     )}
                     {permissionsResult.data.Results?.MissingPermissions.length > 0 && (
                       <>
-                        Your Secure Application Model is missing the following delegated
-                        permissions:
+                        Your Secure Application Model is missing the following permissions. See the
+                        documentation on how to add permissions{' '}
+                        <a
+                          target="_blank"
+                          href="https://cipp.app/docs/user/gettingstarted/permissions/#manual-sam-setup"
+                        >
+                          here
+                        </a>
+                        .
                         <CListGroup flush>
                           {permissionsResult.data.Results?.MissingPermissions?.map((r, index) => (
                             <CListGroupItem key={index}>{r}</CListGroupItem>
@@ -393,6 +421,65 @@ const GeneralSettings = () => {
           <DNSSettings />
         </CCol>
       </CRow>
+      <CRow>
+        <CCol>
+          <CCard className="h-100">
+            <CCardHeader>
+              <CCardTitle>Run Backup</CCardTitle>
+            </CCardHeader>
+            <CCardBody>
+              Click the button below to start a backup of all settings <br />
+              <CButton
+                onClick={() => runBackup({ path: '/api/ExecRunBackup' })}
+                disabled={RunBackupResult.isFetching}
+                className="me-3 mt-3"
+              >
+                {RunBackupResult.isFetching && (
+                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                )}
+                Run backup
+              </CButton>
+              <input
+                ref={inputRef}
+                type="file"
+                accept="json/*"
+                style={{ display: 'none' }}
+                id="contained-button-file"
+                onChange={(e) => handleChange(e)}
+              />
+              <CButton
+                type="file"
+                name="file"
+                onClick={() => inputRef.current.click()}
+                disabled={restoreBackupResult.isFetching}
+                className="me-3 mt-3"
+              >
+                {restoreBackupResult.isFetching && (
+                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                )}
+                Restore backup
+              </CButton>
+              {restoreBackupResult.isSuccess && (
+                <>
+                  <CCallout color="success">{restoreBackupResult.data.Results}</CCallout>
+                </>
+              )}
+              {RunBackupResult.isSuccess && (
+                <>
+                  <CCallout color="success">
+                    <CButton
+                      onClick={() => downloadTxtFile(RunBackupResult.data.backup)}
+                      className="m-1"
+                    >
+                      Download Backup
+                    </CButton>
+                  </CCallout>
+                </>
+              )}
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </CRow>
     </div>
   )
 }
@@ -400,13 +487,10 @@ const GeneralSettings = () => {
 const ExcludedTenantsSettings = () => {
   const dispatch = useDispatch()
   const currentTenant = useSelector((state) => state.app.currentTenant)
-  const {
-    data: excludedTenants = [],
-    isFetching: excludedTenantsFetching,
-    isSuccess: excludedTenantsSuccess,
-  } = useListExcludedTenantsQuery()
   const [removeExcludeTenant, removeExcludeTenantResult] = useExecRemoveExcludeTenantMutation()
   const [addExcludeTenant, addExcludeTenantResult] = useExecAddExcludeTenantMutation()
+  const [refreshPermissions, refreshPermissionsResults] = useLazyGenericGetRequestQuery()
+
   // const [selectedTenant, setSelectedTenant] = useState()
   const selectedTenant = useRef()
 
@@ -424,8 +508,20 @@ const ExcludedTenantsSettings = () => {
       onConfirm: () => removeExcludeTenant(domain),
     })
 
+  const handleCPVPermissions = (domain) =>
+    ModalService.confirm({
+      title: 'Refresh Permissions',
+      body: <div>Are you sure you want to refresh permissions for {domain.defaultDomainName}?</div>,
+      onConfirm: () =>
+        refreshPermissions({ path: `/api/ExecCPVPermissions?TenantFilter=${domain.customerId}` }),
+    })
   const handleConfirmExcludeTenant = (tenant) => {
-    addExcludeTenant(tenant)
+    ModalService.confirm({
+      title: 'Exclude Tenant',
+      body: <div>Are you sure you want to exclude this tenant?</div>,
+      onConfirm: () => addExcludeTenant(tenant),
+    })
+
       .unwrap()
       .then(() => {
         dispatch(setCurrentTenant({}))
@@ -444,12 +540,137 @@ const ExcludedTenantsSettings = () => {
       onConfirm: () => handleConfirmExcludeTenant(selected),
     })
   }
+  const titleButton = (
+    <CButton
+      style={{ position: 'absolute', right: '5px' }}
+      size="sm"
+      href="#"
+      onClick={() => handleExcludeTenant(selectedTenant)}
+    >
+      Add Excluded Tenant
+    </CButton>
+  )
+  function StatusIcon(graphErrorCount) {
+    if (graphErrorCount > 0) {
+      return <FontAwesomeIcon icon={faExclamationTriangle} className="text-danger" />
+    } else {
+      return <FontAwesomeIcon icon={faCheckCircle} className="text-success" />
+    }
+  }
 
+  function StatusText(graphErrorCount, lastGraphError) {
+    if (graphErrorCount > 0) {
+      return 'Error Count: ' + graphErrorCount + ' - Last Error: ' + lastGraphError
+    } else {
+      return 'No errors detected with this tenant'
+    }
+  }
+
+  const Offcanvas = (row, rowIndex, formatExtraData) => {
+    return (
+      <>
+        {row.Excluded && (
+          <CButton
+            size="sm"
+            variant="ghost"
+            color="info"
+            onClick={() => handleRemoveExclusion(row.defaultDomainName)}
+          >
+            <FontAwesomeIcon icon={faEye} href="" />
+          </CButton>
+        )}
+        {!row.Excluded && (
+          <CButton
+            size="sm"
+            variant="ghost"
+            color="danger"
+            onClick={() => handleConfirmExcludeTenant({ value: row.customerId })}
+          >
+            <FontAwesomeIcon icon={faEyeSlash} href="" />
+          </CButton>
+        )}
+        <CButton size="sm" variant="ghost" color="info" onClick={() => handleCPVPermissions(row)}>
+          <FontAwesomeIcon icon={faRecycle} href="" />
+        </CButton>
+      </>
+    )
+  }
+  const columns = [
+    {
+      name: 'Latest Status',
+      selector: (row) => row['GraphErrorCount'],
+      sortable: true,
+      cell: (row) =>
+        CellTipIcon(
+          StatusText(row['GraphErrorCount'], row['LastGraphError']),
+          StatusIcon(row['GraphErrorCount']),
+        ),
+      exportSelector: 'GraphErrorCount',
+      maxWidth: '130px',
+      minWidth: '130px',
+    },
+    {
+      name: 'Name',
+      selector: (row) => row['displayName'],
+      sortable: true,
+      cell: (row) => CellTip(row['displayName']),
+      exportSelector: 'displayName',
+    },
+    {
+      name: 'Default Domain',
+      selector: (row) => row['defaultDomainName'],
+      sortable: true,
+      cell: (row) => CellTip(row['defaultDomainName']),
+      exportSelector: 'defaultDomainName',
+    },
+    {
+      name: 'Excluded',
+      selector: (row) => row['Excluded'],
+      sortable: true,
+      cell: cellBooleanFormatter({ colourless: true }),
+      exportSelector: 'Excluded',
+      maxWidth: '100px',
+      minWidth: '100px',
+    },
+    {
+      name: 'Exclude Date',
+      selector: (row) => row['ExcludeDate'],
+      sortable: true,
+      exportSelector: 'ExcludeDate',
+      maxWidth: '150px',
+      minWidth: '150px',
+    },
+    {
+      name: 'Exclude User',
+      selector: (row) => row['ExcludeUser'],
+      sortable: true,
+      exportSelector: 'ExcludeUser',
+      maxWidth: '130px',
+      minWidth: '130px',
+    },
+    {
+      name: 'Actions',
+      cell: Offcanvas,
+      maxWidth: '80px',
+    },
+  ]
   return (
     <>
+      {(refreshPermissionsResults.isFetching || removeExcludeTenantResult.isFetching) && (
+        <CCallout color="success" dismissible>
+          <CSpinner />
+        </CCallout>
+      )}
       {removeExcludeTenantResult.isSuccess && (
         <CCallout color="success" dismissible>
           {removeExcludeTenantResult.data?.Results}
+        </CCallout>
+      )}
+      {refreshPermissionsResults.isSuccess && (
+        <CCallout color="success" dismissible>
+          {refreshPermissionsResults.data.map((result, idx) => (
+            <li key={idx}>{result}</li>
+          ))}
         </CCallout>
       )}
       {addExcludeTenantResult.isSuccess && (
@@ -457,53 +678,22 @@ const ExcludedTenantsSettings = () => {
           {addExcludeTenantResult.data?.Results}
         </CCallout>
       )}
-      <CRow className="mb-3">
-        <CCol md={12}>
-          <CCard>
-            <CCardHeader>
-              <CCardTitle>
-                Excluded Tenant List
-                <CButton
-                  style={{ position: 'absolute', right: '5px' }}
-                  size="sm"
-                  href="#"
-                  onClick={() => handleExcludeTenant(selectedTenant)}
-                >
-                  Add Excluded Tenant
-                </CButton>
-              </CCardTitle>
-            </CCardHeader>
-            <CCardBody>
-              {excludedTenantsFetching && <CSpinner />}
-              {excludedTenantsSuccess && (
-                <CListGroup>
-                  {excludedTenants.map((excludedTenant, idx) => (
-                    <CListGroupItem key={idx}>
-                      {excludedTenant.Name}
-                      <CBadge
-                        color="secondary"
-                        shape="rounded-pill"
-                        style={{ position: 'absolute', right: '40px' }}
-                      >
-                        Added by {excludedTenant.User} on {excludedTenant.Date}
-                      </CBadge>
-                      <CLink href="#">
-                        <FontAwesomeIcon
-                          style={{ position: 'absolute', right: '15px' }}
-                          color="primary"
-                          icon={faTrashAlt}
-                          size="sm"
-                          onClick={() => handleRemoveExclusion(excludedTenant.Name)}
-                        />
-                      </CLink>
-                    </CListGroupItem>
-                  ))}
-                </CListGroup>
-              )}
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
+      <CippPageList
+        capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
+        title="Tenants - Backend"
+        tenantSelector={false}
+        titleButton={titleButton}
+        datatable={{
+          filterlist: [
+            { filterName: 'Excluded Tenants', filter: '"Excluded":true' },
+            { filterName: 'Included Tenants', filter: '"Excluded":false' },
+          ],
+          keyField: 'id',
+          columns,
+          reportName: `Tenants-List`,
+          path: '/api/ExecExcludeTenant?ListAll=True',
+        }}
+      />
     </>
   )
 }

@@ -83,6 +83,9 @@ const ApplicationsQueue = React.lazy(() =>
 const ApplicationsAddChocoApp = React.lazy(() =>
   import('src/views/endpoint/applications/ApplicationsAddChocoApp'),
 )
+const ApplicationsAddWingetApp = React.lazy(() =>
+  import('src/views/endpoint/applications/ApplicationsAddWinGet'),
+)
 const ApplicationsAddOfficeApp = React.lazy(() =>
   import('src/views/endpoint/applications/ApplicationsAddOffice'),
 )
@@ -145,6 +148,7 @@ const EditMailboxPermissions = React.lazy(() =>
 const AddSharedMailbox = React.lazy(() =>
   import('src/views/email-exchange/administration/AddSharedMailbox'),
 )
+const AddContact = React.lazy(() => import('src/views/email-exchange/administration/AddContact'))
 const EditCalendarPermissions = React.lazy(() =>
   import('src/views/email-exchange/administration/EditCalendarPermissions'),
 )
@@ -182,7 +186,16 @@ const AddTransportTemplate = React.lazy(() =>
 const TransportDeploy = React.lazy(() =>
   import('src/views/email-exchange/transport/DeployTransport'),
 )
-
+const SpamfilterList = React.lazy(() => import('src/views/email-exchange/spamfilter/Spamfilter'))
+const SpamFilterTemplate = React.lazy(() =>
+  import('src/views/email-exchange/spamfilter/ListSpamfilterTemplates'),
+)
+const AddSpamFilterTemplate = React.lazy(() =>
+  import('src/views/email-exchange/spamfilter/AddSpamfilterTemplate'),
+)
+const SpamFilterDeploy = React.lazy(() =>
+  import('src/views/email-exchange/spamfilter/DeploySpamfilter'),
+)
 const ConnectorList = React.lazy(() => import('src/views/email-exchange/connectors/ConnectorList'))
 const ConnectorListTemplates = React.lazy(() =>
   import('src/views/email-exchange/connectors/ListConnectorTemplates'),
@@ -355,6 +368,11 @@ const routes = [
     component: ApplicationsAddChocoApp,
   },
   {
+    path: '/endpoint/applications/add-winget-app',
+    name: 'Add Store App',
+    component: ApplicationsAddWingetApp,
+  },
+  {
     path: '/endpoint/applications/add-office-app',
     name: 'Add Office App',
     component: ApplicationsAddOfficeApp,
@@ -483,14 +501,39 @@ const routes = [
     component: AddTransportTemplate,
   },
   {
+    path: '/email/spamfilter/list-spamfilter',
+    name: 'List Spamfilter',
+    component: SpamfilterList,
+  },
+  {
+    path: '/email/spamfilter/deploy',
+    name: 'Deploy Spamfilter',
+    component: SpamFilterDeploy,
+  },
+  {
+    path: '/email/spamfilter/list-templates',
+    name: 'Spamfilter Templates',
+    component: SpamFilterTemplate,
+  },
+  {
+    path: '/email/spamfilter/add-template',
+    name: 'Spamfilter Template',
+    component: AddSpamFilterTemplate,
+  },
+  {
     name: 'Edit Mailbox Permissions',
     path: '/email/administration/edit-mailbox-permissions',
     component: EditMailboxPermissions,
   },
   {
-    name: 'Edit Mailbox Permissions',
+    name: 'Add Shared Mailbox',
     path: '/email/administration/add-shared-mailbox',
     component: AddSharedMailbox,
+  },
+  {
+    name: 'Edit Contact',
+    path: '/email/administration/add-contact',
+    component: AddContact,
   },
   {
     name: 'Edit Calendar Permissions',
