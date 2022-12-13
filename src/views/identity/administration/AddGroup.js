@@ -18,6 +18,7 @@ import {
   RFFCFormInput,
   RFFCFormRadio,
   RFFCFormSelect,
+  RFFCFormTextarea,
 } from 'src/components/forms'
 import { CippPage } from 'src/components/layout/CippPage'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
@@ -42,6 +43,7 @@ const AddGroup = () => {
       isAssignableToRole: values.isAssignableToRole,
       groupType: values.groupType,
       allowExternal: values.allowExternal,
+      membershipRules: values.membershipRules,
     }
     //window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/AddGroup', values: shippedValues })
@@ -90,6 +92,7 @@ const AddGroup = () => {
                     </CCol>
                     <RFFCFormRadio name="groupType" label="Azure Role Group" value="azurerole" />
                     <RFFCFormRadio name="groupType" label="Security Group" value="generic" />
+                    <RFFCFormRadio name="groupType" label="Dynamic Group" value="dynamic" />
                     <RFFCFormRadio
                       name="groupType"
                       label="Distribution List"
@@ -107,6 +110,15 @@ const AddGroup = () => {
                       label="Let people outside the organization email the group"
                     />
                   </Condition>
+                  <Condition when="groupType" is="dynamic">
+                    <RFFCFormTextarea
+                      name="membershipRules"
+                      label="Dynamic Group Parameters"
+                      placeholder={
+                        'Enter the dynamic group parameters syntax. e.g: (user.userPrincipalName -notContains `"#EXT#@`") -and (user.userType -ne `"Guest`")'
+                      }
+                    />
+                  </Condition>
                   <CRow className="mb-3">
                     <CCol md={6}>
                       <CButton type="submit" disabled={submitting}>
@@ -114,8 +126,9 @@ const AddGroup = () => {
                       </CButton>
                     </CCol>
                   </CRow>
+                  {postResults.isFetching && <CSpinner />}
                   {postResults.isSuccess && (
-                    <CCallout color="success">{postResults.data.Results}</CCallout>
+                    <CCallout color="success">{postResults.data.Results[0]}</CCallout>
                   )}
                 </CForm>
               )

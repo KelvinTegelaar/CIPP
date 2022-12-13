@@ -96,7 +96,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             label: 'Exchange Portal',
             color: 'info',
             external: true,
-            link: `https://outlook.office365.com/ecp/?rfr=Admin_o365&exsvurl=1&delegatedOrg=${row.defaultDomainName}`,
+            link: `https://admin.exchange.microsoft.com/?landingpage=homepage&form=mac_sidebar&delegatedOrg=${row.defaultDomainName}#`,
           },
           {
             icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
@@ -138,7 +138,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             label: 'Sharepoint Admin',
             color: 'info',
             external: true,
-            link: `https://${row.defaultDomainName.split('.')[0]}-admin.sharepoint.com`,
+            link: `https://admin.microsoft.com/Partner/beginclientsession.aspx?CTID=${row.customerId}&CSDEST=SharePoint`,
           },
         ]}
         placement="end"
@@ -223,7 +223,7 @@ const TenantsList = () => {
       center: true,
       cell: (row) => (
         <a
-          href={`https://outlook.office365.com/ecp/?rfr=Admin_o365&exsvurl=1&delegatedOrg=${row.defaultDomainName}`}
+          href={`https://admin.exchange.microsoft.com/?landingpage=homepage&form=mac_sidebar&delegatedOrg=${row.defaultDomainName}#`}
           target="_blank"
           className="dlink"
           rel="noreferrer"
@@ -319,7 +319,7 @@ const TenantsList = () => {
       omit: columnOmits,
       cell: (row) => (
         <a
-          href={`https://${row.defaultDomainName.split('.')[0]}-admin.sharepoint.com`}
+          href={`https://admin.microsoft.com/Partner/beginclientsession.aspx?CTID=${row.customerId}&CSDEST=SharePoint`}
           target="_blank"
           className="dlink"
           rel="noreferrer"

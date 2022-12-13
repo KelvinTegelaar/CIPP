@@ -1,3 +1,4 @@
+import { CLink } from '@coreui/react'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
@@ -13,6 +14,22 @@ const columns = [
     selector: (row) => row['clientAppUsed'],
     sortable: true,
     exportSelector: 'clientAppUsed',
+  },
+  {
+    name: 'Failure Reason',
+    selector: (row) => row.status?.errorCode,
+    sortable: true,
+    exportSelector: 'status',
+    cell: (row) => {
+      return (
+        <CLink
+          target="_blank"
+          href={`https://login.microsoftonline.com/error?code=${row.status?.errorCode}`}
+        >
+          {row.status?.errorCode}
+        </CLink>
+      )
+    },
   },
 ]
 
