@@ -1,13 +1,32 @@
 import React from 'react'
-import { CCol, CRow, CForm, CListGroup, CListGroupItem, CCallout, CSpinner } from '@coreui/react'
+import {
+  CCol,
+  CRow,
+  CForm,
+  CListGroup,
+  CListGroupItem,
+  CCallout,
+  CSpinner,
+  CInputGroup,
+  CFormInput,
+  CButton,
+} from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { CippWizard } from 'src/components/layout'
 import { WizardTableField } from 'src/components/tables'
 import PropTypes from 'prop-types'
-import { RFFCFormInput, RFFCFormRadio, RFFCFormSwitch } from 'src/components/forms'
+import {
+  RFFCFormCheck,
+  RFFCFormInput,
+  RFFCFormRadio,
+  RFFCFormSelect,
+  RFFCFormSwitch,
+} from 'src/components/forms'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import { OnChange } from 'react-final-form-listeners'
+import { useRef } from 'react'
 
 const Error = ({ name }) => (
   <Field
@@ -32,6 +51,7 @@ const requiredArray = (value) => (value && value.length !== 0 ? undefined : 'Req
 
 const ApplyStandard = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
+  const [searchPostRequest, foundPackages] = useLazyGenericPostRequestQuery()
 
   const handleSubmit = async (values) => {
     values.selectedTenants.map(
@@ -39,13 +59,42 @@ const ApplyStandard = () => {
     )
     genericPostRequest({ path: '/api/AddChocoApp', values: values })
   }
-
+  const handleSearch = async (values) => {
+    searchPostRequest({
+      path: '/api/ListPotentialApps',
+      values: { type: 'Choco', searchString: values },
+    })
+  }
   const formValues = {
     InstallAsSystem: true,
     DisableRestart: true,
     AssignTo: 'On',
   }
+  const searchRef = useRef(null)
 
+  const WhenFieldChanges = ({ field, set }) => (
+    <Field name={set} subscription={{}}>
+      {(
+        // No subscription. We only use Field to get to the change function
+        { input: { onChange } },
+      ) => (
+        <FormSpy subscription={{}}>
+          {({ form }) => (
+            <OnChange name={field}>
+              {(value) => {
+                let template = foundPackages.data.filter(function (obj) {
+                  console.log(value)
+                  return obj.packagename === value
+                })
+                console.log(template[0])
+                onChange(template[0][set])
+              }}
+            </OnChange>
+          )}
+        </FormSpy>
+      )}
+    </Field>
+  )
   return (
     <CippWizard
       initialValues={{ ...formValues }}
@@ -100,6 +149,43 @@ const ApplyStandard = () => {
         <CForm onSubmit={handleSubmit}>
           <CRow>
             <CCol md={6}>
+              <CInputGroup className="me-2">
+                <CFormInput
+                  placeholder="Search Packages"
+                  aria-label="Search Packages"
+                  ref={searchRef}
+                />
+                <CButton
+                  size="sm"
+                  name="SearchNow"
+                  onClick={() => handleSearch(searchRef.current.value)}
+                >
+                  Search
+                </CButton>
+              </CInputGroup>
+            </CCol>
+          </CRow>
+          <CRow>
+            <CCol md={6}>
+              {foundPackages.isFetching && <CSpinner className="me-3" />}
+              {foundPackages.isSuccess && (
+                <RFFCFormSelect
+                  label="Package"
+                  values={foundPackages?.data.map((packagename) => ({
+                    value: packagename.packagename,
+                    label: `${packagename.applicationName} - ${packagename.packagename}`,
+                  }))}
+                  placeholder={!foundPackages.isFetching ? 'Select package' : 'Loading...'}
+                  name="PackageSelector"
+                />
+              )}
+            </CCol>
+            <WhenFieldChanges field="PackageSelector" set="packagename" />
+            <WhenFieldChanges field="PackageSelector" set="applicationName" />
+          </CRow>
+          <hr></hr>
+          <CRow>
+            <CCol md={6}>
               <RFFCFormInput type="text" name="packagename" label="Chocolatey package name" />
             </CCol>
             <CCol md={6}>
@@ -116,9 +202,10 @@ const ApplyStandard = () => {
               <RFFCFormInput type="text" name="customRepo" label="Custom repository URL" />
             </CCol>
           </CRow>
+          Install options:
           <RFFCFormSwitch value={true} name="InstallAsSystem" label="Install as system" />
           <RFFCFormSwitch name="DisableRestart" label="Disable Restart" />
-
+          <RFFCFormCheck name="InstallationIntent" label="Mark for Uninstallation" />
           <RFFCFormRadio
             value="On"
             name="AssignTo"

@@ -11,6 +11,7 @@ import {
 } from '@coreui/react'
 import { useLoadClientPrincipalQuery } from 'src/store/api/auth'
 import { ThemeSwitcher, UsageLocation, PageSizeSwitcher } from 'src/components/utilities'
+import ReportImage from './ReportImage'
 
 const CippProfile = () => {
   const { data: profile, isFetching, isLoading } = useLoadClientPrincipalQuery()
@@ -55,6 +56,12 @@ const CippProfile = () => {
       <CRow>
         <CCol>
           <UsageLocation />
+        </CCol>
+      </CRow>
+      <br></br>
+      <CRow>
+        <CCol>
+          <ReportImage />
         </CCol>
       </CRow>
     </>
