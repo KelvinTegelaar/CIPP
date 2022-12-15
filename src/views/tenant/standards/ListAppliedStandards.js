@@ -238,10 +238,25 @@ const ListAppliedStandards = () => {
                               label="Enable Passwordless with Location information and Number Matching"
                             />
                             <RFFCFormSwitch
-                              name="standards.TAP"
+                              name="standards.TAP.Enabled"
                               label="Enable Temporary Access Passwords"
                             />
-
+                            <Condition when="standards.TAP.Enabled" is={true}>
+                              <RFFCFormSelect
+                                label="Select TAP Lifetime"
+                                name="standards.TAP.config"
+                                values={[
+                                  {
+                                    label: 'Only Once',
+                                    value: 'true',
+                                  },
+                                  {
+                                    label: 'Multiple Logons',
+                                    value: 'false',
+                                  },
+                                ]}
+                              />
+                            </Condition>
                             <RFFCFormSwitch
                               name="standards.SecurityDefaults"
                               label="Enable Security Defaults"
@@ -253,6 +268,10 @@ const ListAppliedStandards = () => {
                             <RFFCFormSwitch
                               name="standards.DisableSecurityGroupUsers"
                               label="Disable Security Group creation by users"
+                            />
+                            <RFFCFormSwitch
+                              name="standards.DisableTenantCreation"
+                              label="Disable M365 Tenant creation by users"
                             />
                             <RFFCFormSwitch
                               name="standards.SSPR"
@@ -296,6 +315,10 @@ const ListAppliedStandards = () => {
                             <RFFCFormSwitch
                               name="standards.UndoOauth"
                               label="Undo App Consent Standard"
+                            />
+                            <RFFCFormSwitch
+                              name="standards.DisableGuests"
+                              label="Disable Guest accounts that have not logged on for 90 days"
                             />
                           </CCol>
                         </CRow>

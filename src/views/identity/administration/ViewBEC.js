@@ -22,6 +22,7 @@ import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { CippContentCard, CippMasonry, CippMasonryItem, CippPage } from 'src/components/layout'
 import 'react-loading-skeleton/dist/skeleton.css'
 import Skeleton from 'react-loading-skeleton'
+import useConfirmModal from 'src/hooks/useConfirmModal'
 
 const ViewBec = () => {
   let query = useQuery()
@@ -217,7 +218,15 @@ const ViewBec = () => {
       sortable: true,
     },
   ]
-
+  const handleReMediate = useConfirmModal({
+    body: <div>Are you sure you want to remediate this user?</div>,
+    onConfirm: () => {
+      execBecRemediate({
+        path: '/api/execBecRemediate',
+        values: { userId: userId, tenantFilter: tenantDomain },
+      })
+    },
+  })
   return (
     <CippPage tenantSelector={false} title="View Business Email Compromise Indicators">
       <CippMasonry columns={2}>
@@ -263,16 +272,7 @@ const ViewBec = () => {
               <li>Disconnect all current sessions</li>
               <li>Disable all inbox rules for the user</li>
             </p>
-            <CButton
-              onClick={() =>
-                execBecRemediate({
-                  path: '/api/execBecRemediate',
-                  values: { userId: userId, tenantFilter: tenantDomain },
-                })
-              }
-            >
-              Remediate User
-            </CButton>
+            <CButton onClick={() => handleReMediate()}>Remediate User</CButton>
             {!execRemediateResults.isSuccess && execRemediateResults.isError && (
               <CCallout color="danger">Error. Could not remediate user</CCallout>
             )}
