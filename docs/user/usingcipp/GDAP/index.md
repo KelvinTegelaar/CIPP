@@ -50,7 +50,7 @@ Follow the list below before starting the GDAP Wizard. You must execute each of 
 - Find "Partner Customer Delegated Administration"
 - Add all permissions under "Delegated" and "Application" and click Add Permissions
 - Click on "Grant Admin Consent for {Organization}".
-- Go back to CIPP and perform all steps in the wizard. It is highly recommended to run the migration for a single tenant first, to prevent duplicate groups.
+- Go back to CIPP and perform all steps in the wizard. **It is highly recommended to run the migration for a single tenant first, to prevent duplicate groups. Selecting multiple tenants on your first run, will fail, and will create duplicated groups in your own tenant.** 
 
 You can view the status of the GDAP migration in the GDAP Migration Status tab. When the migration has been completed for all your tenants you can move users into the new groups to use GDAP.
 
