@@ -28,7 +28,7 @@ const Home = () => {
     <>
       <CRow>
         <CCol className="mb-3" xs={12} lg={6} xl={6}>
-          <CippContentCard className="h-100" title="Search features" icon={faSearch}>
+          <CippContentCard className="h-100" title="Search Features" icon={faSearch}>
             <CRow className="mb-3"></CRow>
             <CRow className="mb-3">
               <CCol>
@@ -47,7 +47,7 @@ const Home = () => {
                 </CCallout>
               ))
             ) : (
-              <CCallout color="info">No active Alerts</CCallout>
+              <CCallout color="info">No Active Alerts</CCallout>
             )}
           </CippContentCard>
         </CCol>
@@ -76,13 +76,12 @@ const Home = () => {
         <CCol className="mb-3" xs={12} lg={2} xl={3}>
           <CippContentCard title="Managed Tenants" icon={faBook}>
             <div>{!isLoadingDash ? dashboard?.tenantCount : <Skeleton />}</div>
-            <br></br> Managed tenants
           </CippContentCard>
         </CCol>
         <CCol className="mb-3" xs={12} lg={2} xl={3}>
-          <CippContentCard title="Token refresh dates" icon={faBook}>
+          <CippContentCard title="Token Refresh Dates" icon={faBook}>
             <div className="mb-3">
-              Refresh token: {!isLoadingDash ? dashboard?.RefreshTokenDate : ''}
+              Refresh Token: {!isLoadingDash ? dashboard?.RefreshTokenDate : ''}
             </div>
 
             <div className="mb-2">
@@ -108,7 +107,7 @@ const Home = () => {
           </CippContentCard>
         </CCol>
         <CCol>
-          <CippContentCard title="Last logged items" icon={faBook}>
+          <CippContentCard title="Last Logged Items" icon={faBook}>
             {!isLoadingDash && issuccessDash && (
               <CippTable
                 reportName="none"
