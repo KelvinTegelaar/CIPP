@@ -94,6 +94,13 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modalMessage: 'Are you sure you want to convert this user to a shared mailbox?',
           },
           {
+            label: 'Enable Online Archive',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecEnableArchive?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalMessage: 'Are you sure you want to enable the online archive for this user?',
+          },
+          {
             label: 'Set Out of Office',
             color: 'info',
             modal: true,
