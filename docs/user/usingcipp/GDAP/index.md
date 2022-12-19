@@ -35,11 +35,19 @@ For more information on GDAP, check out Microsoft's own documentation [here](htt
 The GDAP migration wizard is offered as-is. Bug reports, feature requests, or issues will not be accepted for the GDAP migration wizard.
 :::
 
+:::caution if your customers have conditional access policies enabled it is likely that further configuration will be required on each of those tenants. For more info see Microsoft's own documentation [here](https://learn.microsoft.com/en-us/partner-center/gdap-faq#what-is-the-recommended-next-step-if-the-conditional-access-policy-set-by-the-customer-blocks-all-external-access-including-csps-access-aobo-to-the-customers-tenant)
+:::
+
+
 The GDAP wizard will use the temporary APIs to create a relationship for you, and create the security groups and assign the roles to these groups. You may change the name of the groups after the migration has been performed.
 
 CIPP assumes that you will want a relationship of 730 days.
 
 Follow the list below before starting the GDAP Wizard. You must execute each of these steps to successfully migrate to GDAP.
+
+:::caution It is highly recommended to run the migration for a single tenant first, to prevent the creation of duplicate groups in your own tenant. Selecting multiple tenants on your first run, will fail, and will create duplicate groups in your own tenant 
+:::
+
 
 - You must be a global Admin and in the 'AdminAgents' group to perform this.
 - Go to your CIPP instance and click on GDAP -> Migration Wizard. Click the button to enable the migration API.
@@ -50,7 +58,8 @@ Follow the list below before starting the GDAP Wizard. You must execute each of 
 - Find "Partner Customer Delegated Administration"
 - Add all permissions under "Delegated" and "Application" and click Add Permissions
 - Click on "Grant Admin Consent for {Organization}".
-- Go back to CIPP and perform all steps in the wizard. **It is highly recommended to run the migration for a single tenant first, to prevent duplicate groups. Selecting multiple tenants on your first run, will fail, and will create duplicated groups in your own tenant.** 
+- Go back to CIPP and perform all steps in the wizard for ***a single tenant***
+- Once you have tested and are satisfied all is working as expected, you can now carry out the wizard again for multiple tenants at once.  
 
 You can view the status of the GDAP migration in the GDAP Migration Status tab. When the migration has been completed for all your tenants you can move users into the new groups to use GDAP.
 
