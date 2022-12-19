@@ -22,7 +22,7 @@ Note that if you receive a workflow error, check the [Troubleshooting page for p
 - Go to your own CIPP fork on GitHub
 - Select Sync fork
 - Select Update branch
-- If prompted with a question asking "Do you want to Discard (X) Commits" or "Update Branch", ensure you click on "Update Brand"
+- If prompted with a question asking "Do you want to Discard (X) Commits" or "Update Branch", ensure you click on "Update Branch"
 
 ## Backend
 
@@ -34,7 +34,7 @@ To update the backend, you must manually fetch from GitHub and update the Azure 
 - Go to your CIPP-API fork on GitHub
 - Select Sync fork
 - Select Update branch
-- If prompted with a question asking "Do you want to Discard (X) Commits" or "Update Branch", ensure you click on "Update Brand"
+- If prompted with a question asking "Do you want to Discard (X) Commits" or "Update Branch", ensure you click on "Update Branch"
 - Go to the Azure Portal
 - Go to your CIPP resource group
 - Select the Azure Function App
