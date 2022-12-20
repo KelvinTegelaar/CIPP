@@ -132,7 +132,7 @@ Some permissions may come from other APIs than just Graph. you will see this bot
 | UserAuthenticationMethod.Read.All                       | Read all users' authentication methods                                      |
 | UserAuthenticationMethod.ReadWrite                      | Read and write user authentication methods                                  |
 | UserAuthenticationMethod.ReadWrite.All                  | Read and write all users' authentication methods                            |
-| Vulnerability.Read                                      | ?????                                                            |
+| Vulnerability.Read                                      | Read Threat and Vulnerability Management vulnerability information          |
 <!-- vale on -->
 
 :::
@@ -193,7 +193,7 @@ Some permissions may come from other APIs than just Graph. you will see this bot
 | TeamMember.ReadWriteNonOwnerRole.All                    | Add and remove members with non-owner role for all teams              |
 | User.ReadWrite.All                                      | Read and write all users' full profiles                               |
 | UserAuthenticationMethod.ReadWrite.All                  | Read and write all users' authentication methods                      |
-| Vulnerability.Read.All                                  | ?????                                                                 |
+| Vulnerability.Read.All                                  | Read Threat and Vulnerability Management vulnerability information    |
   
 <!-- vale on -->
 
