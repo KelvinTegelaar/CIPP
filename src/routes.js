@@ -322,7 +322,7 @@ const routes = [
   },
   {
     path: '/tenant/conditional/add-template',
-    name: 'Conditional Access add Template',
+    name: 'Conditional Access Add Template',
     component: AddConditionalTemplate,
   },
   {
@@ -359,8 +359,8 @@ const routes = [
   { path: '/tenant/standards/alert-list', name: 'Alert List (Alpha)', component: ListAlerts },
   { path: '/endpoint', name: 'Endpoint' },
   { path: '/endpoint/applications', name: 'Applications' },
-  { path: '/endpoint/applications/list', name: 'List', component: ApplicationsList },
-  { path: '/endpoint/applications/queue', name: 'Queue', component: ApplicationsQueue },
+  { path: '/endpoint/applications/list', name: 'List Applications', component: ApplicationsList },
+  { path: '/endpoint/applications/queue', name: 'Application Queue', component: ApplicationsQueue },
 
   {
     path: '/endpoint/applications/add-choco-app',
@@ -439,13 +439,13 @@ const routes = [
     component: ListVulnerabilities,
   },
 
-  { path: '/teams-share', name: 'Teams & Sharepoint' },
+  { path: '/teams-share', name: 'Teams & SharePoint' },
   { path: '/teams-share/onedrive', name: 'OneDrive' },
   { path: '/teams-share/onedrive/list', name: 'List OneDrive', component: OneDriveList },
-  { path: '/teams-share/sharepoint', name: 'Sharepoint' },
+  { path: '/teams-share/sharepoint', name: 'SharePoint' },
   {
     path: '/teams-share/sharepoint/list-sharepoint',
-    name: 'List Sharepoint',
+    name: 'List SharePoint',
     component: SharepointList,
   },
   { path: '/teams-share/teams', name: 'Teams' },
@@ -455,39 +455,39 @@ const routes = [
     name: 'View Team Settings',
     component: ViewTeamsSettings,
   },
-  { path: '/teams-share/teams/add-team', name: 'List Teams', component: TeamsAddTeam },
-  { path: '/teams-share/teams/teams-activity', name: 'List Teams', component: TeamsActivity },
+  { path: '/teams-share/teams/add-team', name: 'Add Team', component: TeamsAddTeam },
+  { path: '/teams-share/teams/teams-activity', name: 'Teams Activity', component: TeamsActivity },
   { name: 'Email & Exchange', path: '/email' },
   { name: 'Email Administration', path: '/email/administration' },
   { name: 'List Contacts', path: '/email/administration/contacts', component: ContactsList },
   {
     path: '/email/connectors/list-connectors',
-    name: 'List connectors',
+    name: 'List Connectors',
     component: ConnectorList,
   },
   {
     path: '/email/connectors/deploy-connector',
-    name: 'Deploy connectors',
+    name: 'Deploy Connectors',
     component: DeployConnector,
   },
   {
     path: '/email/connectors/add-connector-templates',
-    name: 'Add connectors Templates',
+    name: 'Add Connectors Templates',
     component: AddConnectorTemplate,
   },
   {
     path: '/email/connectors/list-connector-templates',
-    name: 'List connectors Templates',
+    name: 'List Connectors Templates',
     component: ConnectorListTemplates,
   },
   {
     path: '/email/transport/list-rules',
-    name: 'List Transport rules',
+    name: 'List Transport Rules',
     component: TransportRulesList,
   },
   {
     path: '/email/transport/deploy-rules',
-    name: 'Deploy Transport rule',
+    name: 'Deploy Transport Rule',
     component: TransportDeploy,
   },
   {
@@ -497,7 +497,7 @@ const routes = [
   },
   {
     path: '/email/transport/add-template',
-    name: 'Transport Rule add Temmplate',
+    name: 'Transport Rule Add Temmplate',
     component: AddTransportTemplate,
   },
   {
@@ -512,12 +512,12 @@ const routes = [
   },
   {
     path: '/email/spamfilter/list-templates',
-    name: 'Spamfilter Templates',
+    name: 'List Spamfilter Templates',
     component: SpamFilterTemplate,
   },
   {
     path: '/email/spamfilter/add-template',
-    name: 'Spamfilter Template',
+    name: 'Add Spamfilter Template',
     component: AddSpamFilterTemplate,
   },
   {
