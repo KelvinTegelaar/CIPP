@@ -62,7 +62,7 @@ const SharepointList = () => {
 
   return (
     <CippPageList
-      title="Sharepoint List"
+      title="SharePoint List"
       datatable={{
         columns,
         path: '/api/ListSites?type=SharePointSiteUsage',
