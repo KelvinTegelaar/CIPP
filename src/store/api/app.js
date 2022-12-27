@@ -44,6 +44,7 @@ export const appApi = baseApi.injectEndpoints({
         addUser,
         addStandardsDeploy,
         addChocoApp,
+        onePerTenant,
       }) => ({
         path: '/api/ExecNotificationConfig',
         data: {
@@ -56,6 +57,7 @@ export const appApi = baseApi.injectEndpoints({
           addUser: addUser,
           addStandardsDeploy: addStandardsDeploy,
           addChocoApp: addChocoApp,
+          onePerTenant: onePerTenant,
         },
         method: 'post',
       }),

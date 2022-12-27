@@ -59,10 +59,10 @@ const ApplyStandard = () => {
     )
     genericPostRequest({ path: '/api/AddChocoApp', values: values })
   }
-  const handleSearch = async (values) => {
+  const handleSearch = async ({ searchString, customRepo }) => {
     searchPostRequest({
-      path: '/api/ListPotentialApps',
-      values: { type: 'Choco', searchString: values },
+      path: '/api/ListAppsRepository',
+      values: { Search: searchString, Repository: customRepo },
     })
   }
   const formValues = {
@@ -71,6 +71,7 @@ const ApplyStandard = () => {
     AssignTo: 'On',
   }
   const searchRef = useRef(null)
+  const customRepoRef = useRef(null)
 
   const WhenFieldChanges = ({ field, set }) => (
     <Field name={set} subscription={{}}>
@@ -82,7 +83,7 @@ const ApplyStandard = () => {
           {({ form }) => (
             <OnChange name={field}>
               {(value) => {
-                let template = foundPackages.data.filter(function (obj) {
+                let template = foundPackages.data.Results.filter(function (obj) {
                   console.log(value)
                   return obj.packagename === value
                 })
@@ -103,7 +104,7 @@ const ApplyStandard = () => {
     >
       <CippWizard.Page
         title="Tenant Choice"
-        description="Choose the tenants to create the standard for."
+        description="Choose the tenants to create the application for."
       >
         <center>
           <h3 className="text-primary">Step 1</h3>
@@ -138,8 +139,8 @@ const ApplyStandard = () => {
         <hr className="my-4" />
       </CippWizard.Page>
       <CippWizard.Page
-        title="Select Standards"
-        description="Select which standards you want to apply."
+        title="Select Application Settings"
+        description="Select which application to deploy."
       >
         <center>
           <h3 className="text-primary">Step 2</h3>
@@ -158,11 +159,25 @@ const ApplyStandard = () => {
                 <CButton
                   size="sm"
                   name="SearchNow"
-                  onClick={() => handleSearch(searchRef.current.value)}
+                  onClick={() =>
+                    handleSearch({
+                      searchString: searchRef.current.value,
+                      customRepo: customRepoRef.current.value,
+                    })
+                  }
                 >
                   Search
                 </CButton>
               </CInputGroup>
+            </CCol>
+            <CCol md={6}>
+              <CFormInput
+                className="me-2"
+                name="customRepo"
+                placeholder="Custom repository URL"
+                aria-label="Custom repository URL"
+                ref={customRepoRef}
+              />
             </CCol>
           </CRow>
           <CRow>
@@ -171,9 +186,9 @@ const ApplyStandard = () => {
               {foundPackages.isSuccess && (
                 <RFFCFormSelect
                   label="Package"
-                  values={foundPackages?.data.map((packagename) => ({
-                    value: packagename.packagename,
-                    label: `${packagename.applicationName} - ${packagename.packagename}`,
+                  values={foundPackages?.data.Results.map((chocoPackage) => ({
+                    value: chocoPackage.packagename,
+                    label: `${chocoPackage.applicationName} - ${chocoPackage.packagename}`,
                   }))}
                   placeholder={!foundPackages.isFetching ? 'Select package' : 'Loading...'}
                   name="PackageSelector"
@@ -182,6 +197,8 @@ const ApplyStandard = () => {
             </CCol>
             <WhenFieldChanges field="PackageSelector" set="packagename" />
             <WhenFieldChanges field="PackageSelector" set="applicationName" />
+            <WhenFieldChanges field="PackageSelector" set="description" />
+            <WhenFieldChanges field="PackageSelector" set="customRepo" />
           </CRow>
           <hr></hr>
           <CRow>
