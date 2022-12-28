@@ -33,18 +33,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
 import { required } from 'src/validators'
-
-const passwordRequired = (value, values) => {
-  if (!values.Autopassword && !values.password) {
-    return 'Password or automatically set password required'
-  }
-  return undefined
-}
+import useQuery from 'src/hooks/useQuery'
+import Select from 'react-select'
+import { useNavigate } from 'react-router-dom'
 
 const AddUser = () => {
+  let navigate = useNavigate()
+
   const tenant = useSelector((state) => state.app.currentTenant)
   const { defaultDomainName: tenantDomain } = tenant
-
+  let query = useQuery()
+  const allQueryObj = {}
+  for (const [key, value] of query.entries()) {
+    allQueryObj[key] = value
+  }
   const {
     data: users = [],
     isFetching: usersIsFetching,
@@ -91,7 +93,7 @@ const AddUser = () => {
       Usagelocation: values.usageLocation ? values.usageLocation.value : '',
       Username: values.mailNickname,
       streetAddress: values.streetAddress,
-      Autopassword: values.Autopassword,
+      Autopassword: !!values.Autopassword,
       MustChangePass: values.MustChangePass,
       tenantID: tenantDomain,
       ...values.license,
@@ -101,10 +103,19 @@ const AddUser = () => {
   }
   const usagelocation = useSelector((state) => state.app.usageLocation)
   const initialState = {
-    Autopassword: true,
+    Autopassword: false,
     usageLocation: usagelocation,
+    ...allQueryObj,
   }
-
+  const copyUserVariables = (t) => {
+    for (const [key, value] of Object.entries(t.value)) {
+      query.delete(key)
+      if (value != null) {
+        query.append(key, value)
+      }
+      navigate(`?${query.toString()}`)
+    }
+  }
   return (
     <CippPage title="Add User">
       {postResults.isSuccess && (
@@ -117,21 +128,20 @@ const AddUser = () => {
       <CRow>
         <CCol md={6}>
           <CCard>
-            {adcIsFetching && <CSpinner />}
-            {adcError && <span>Unable to determine Azure AD Connect Settings</span>}
-            {!adcIsFetching &&
-              adconnectsettings.dirSyncEnabled &&
-              adconnectsettings.dirSyncConfigured && (
-                <CCallout color="warning">
-                  Warning! {adconnectsettings.dirSyncEnabled} This tenant currently has Active
-                  Directory Sync Enabled and Configured. This usually means users should be created
-                  in Active Directory
-                </CCallout>
-              )}
             <CCardHeader>
               <CCardTitle>Account Details</CCardTitle>
             </CCardHeader>
             <CCardBody>
+              {adcError && <span>Unable to determine Azure AD Connect Settings</span>}
+              {!adcIsFetching &&
+                adconnectsettings.dirSyncEnabled &&
+                adconnectsettings.dirSyncConfigured && (
+                  <CCallout color="warning">
+                    Warning! {adconnectsettings.dirSyncEnabled} This tenant currently has Active
+                    Directory Sync Enabled and Configured. This usually means users should be
+                    created in Active Directory
+                  </CCallout>
+                )}
               <Form
                 initialValues={{ ...initialState }}
                 onSubmit={onSubmit}
@@ -196,19 +206,10 @@ const AddUser = () => {
                       <CRow>
                         <CCol md={12}>
                           <CFormLabel>Settings</CFormLabel>
-                          <RFFCFormCheck
-                            name="Autopassword"
-                            label="Automatically Set Password"
-                            validate={passwordRequired}
-                          />
-                          <Condition when="Autopassword" is={false}>
+                          <RFFCFormCheck name="Autopassword" label="Create password manually" />
+                          <Condition when="Autopassword" is={true}>
                             <CCol md={12}>
-                              <RFFCFormInput
-                                type="password"
-                                name="password"
-                                label="Password"
-                                validate={passwordRequired}
-                              />
+                              <RFFCFormInput type="password" name="password" label="Password" />
                             </CCol>
                           </Condition>
                           <RFFCFormCheck
@@ -251,58 +252,50 @@ const AddUser = () => {
                           </Condition>
                         </CCol>
                       </CRow>
-                      {/* <CRow> Temporarily disabled, API does not support this yet.
-                              <CCol md={12}>
-                                <RFFCFormInput name="jobTitle" label="Job Title" type="text" />
-                              </CCol>
-                            </CRow>
-                            <CRow>
-                              <CCol md={6}>
-                                <RFFCFormInput name="streetAddress" label="Street" type="text" />
-                              </CCol>
-                              <CCol md={6}>
-                                <RFFCFormInput name="postalCode" label="Postal Code" type="text" />
-                              </CCol>
-                            </CRow>
-                            <CRow>
-                              <CCol md={6}>
-                                <RFFCFormInput name="city" label="city" type="text" />
-                              </CCol>
-                              <CCol md={6}>
-                                <RFFCFormInput name="country" label="Country" type="text" />
-                              </CCol>
-                            </CRow>
-                            <CRow>
-                              <CCol md={6}>
-                                <RFFCFormInput
-                                  name="companyName"
-                                  label="Company Name"
-                                  type="text"
-                                />
-                              </CCol>
-                              <CCol md={6}>
-                                <RFFCFormInput name="department" label="Department" type="text" />
-                              </CCol>
-                            </CRow>
-                            <CRow>
-                              <CCol md={6}>
-                                <RFFCFormInput name="mobilePhone" label="Mobile #" type="text" />
-                              </CCol>
-                              <CCol md={6}>
-                                <RFFCFormInput
-                                  name="businessPhones"
-                                  label="Business #"
-                                  type="text"
-                                />
-                              </CCol>
-                            </CRow> */}
+                      <CRow>
+                        <CCol md={12}>
+                          <RFFCFormInput name="jobTitle" label="Job Title" type="text" />
+                        </CCol>
+                      </CRow>
+                      <CRow>
+                        <CCol md={6}>
+                          <RFFCFormInput name="streetAddress" label="Street" type="text" />
+                        </CCol>
+                        <CCol md={6}>
+                          <RFFCFormInput name="postalCode" label="Postal Code" type="text" />
+                        </CCol>
+                      </CRow>
+                      <CRow>
+                        <CCol md={6}>
+                          <RFFCFormInput name="city" label="City" type="text" />
+                        </CCol>
+                        <CCol md={6}>
+                          <RFFCFormInput name="country" label="Country" type="text" />
+                        </CCol>
+                      </CRow>
+                      <CRow>
+                        <CCol md={6}>
+                          <RFFCFormInput name="companyName" label="Company Name" type="text" />
+                        </CCol>
+                        <CCol md={6}>
+                          <RFFCFormInput name="department" label="Department" type="text" />
+                        </CCol>
+                      </CRow>
+                      <CRow>
+                        <CCol md={6}>
+                          <RFFCFormInput name="mobilePhone" label="Mobile #" type="text" />
+                        </CCol>
+                        <CCol md={6}>
+                          <RFFCFormInput name="businessPhones" label="Business #" type="text" />
+                        </CCol>
+                      </CRow>
                       <CRow className="mb-3">
                         <CCol md={12}>
                           <RFFSelectSearch
                             label="Copy group membership from other user"
                             values={users?.map((user) => ({
                               value: user.mail,
-                              name: user.displayName,
+                              name: `${user.displayName} <${user.userPrincipalName}>`,
                             }))}
                             placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                             name="CopyFrom"
@@ -336,6 +329,31 @@ const AddUser = () => {
                   )
                 }}
               />
+            </CCardBody>
+          </CCard>
+        </CCol>
+        <CCol md={6}>
+          <CCard>
+            <CCardHeader>
+              <CCardTitle>Copy properties</CCardTitle>
+            </CCardHeader>
+            <CCardBody>
+              Use this option to copy the properties from another user, this will only copy the
+              visible fields as a template.
+              <Select
+                className="react-select-container me-3"
+                classNamePrefix="react-select"
+                options={users?.map((user) => ({
+                  value: user,
+                  label: `${user.displayName} <${user.userPrincipalName}>`,
+                }))}
+                isClearable={true}
+                name="usageLocation"
+                placeholder="Type to search..."
+                label="Copy properties from other user"
+                onChange={(value) => copyUserVariables(value)}
+              />
+              {usersError && <span>Failed to load list of users</span>}
             </CCardBody>
           </CCard>
         </CCol>

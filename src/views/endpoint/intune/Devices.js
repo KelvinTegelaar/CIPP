@@ -21,19 +21,6 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
         extendedInfo={[
           { label: 'Device Name', value: `${row.deviceName ?? ' '}` },
           { label: 'UPN', value: `${row.userPrincipalName ?? ' '}` },
-          row?.deviceActionResults.map((devicelog, idx) => {
-            if ($devicelog.actionName === 'locateDevice') {
-              return {
-                label: `${devicelog.startDateTime} - ${$devicelog.actionName}`,
-                value: devicelog.deviceLocation,
-              }
-            } else {
-              return {
-                label: `${devicelog.startDateTime} - ${$devicelog.actionName}`,
-                value: devicelog.actionState,
-              }
-            }
-          }),
         ]}
         actions={[
           {
