@@ -21,9 +21,11 @@ const GroupTemplates = React.lazy(() => import('src/views/identity/administratio
 const EditGroup = React.lazy(() => import('src/views/identity/administration/EditGroup'))
 const ViewGroup = React.lazy(() => import('src/views/identity/administration/ViewGroup'))
 const Roles = React.lazy(() => import('src/views/identity/administration/Roles'))
-const Devices = React.lazy(() => import('src/views/endpoint/MEM/Devices'))
+const Devices = React.lazy(() => import('src/views/endpoint/intune/Devices'))
 const Page404 = React.lazy(() => import('src/views/pages/page404/Page404'))
 const Page403 = React.lazy(() => import('src/views/pages/page403/Page403'))
+const Page500 = React.lazy(() => import('src/views/pages/page500/Page500'))
+
 const MFAReport = React.lazy(() => import('src/views/identity/reports/MFAReport'))
 const Tenants = React.lazy(() => import('src/views/tenant/administration/Tenants'))
 const AlertWizard = React.lazy(() => import('src/views/tenant/administration/AlertWizard'))
@@ -81,6 +83,9 @@ const ApplicationsQueue = React.lazy(() =>
 const ApplicationsAddChocoApp = React.lazy(() =>
   import('src/views/endpoint/applications/ApplicationsAddChocoApp'),
 )
+const ApplicationsAddWingetApp = React.lazy(() =>
+  import('src/views/endpoint/applications/ApplicationsAddWinGet'),
+)
 const ApplicationsAddOfficeApp = React.lazy(() =>
   import('src/views/endpoint/applications/ApplicationsAddOffice'),
 )
@@ -105,21 +110,25 @@ const AutopilotListProfiles = React.lazy(() =>
 const AutopilotListStatusPages = React.lazy(() =>
   import('src/views/endpoint/autopilot/AutopilotListStatusPages'),
 )
-const IntuneListPolicies = React.lazy(() => import('src/views/endpoint/MEM/MEMListPolicies'))
-const MEMEditPolicy = React.lazy(() => import('src/views/endpoint/MEM/MEMEditPolicy'))
+const IntuneListPolicies = React.lazy(() => import('src/views/endpoint/intune/MEMListPolicies'))
+const MEMEditPolicy = React.lazy(() => import('src/views/endpoint/intune/MEMEditPolicy'))
 const EditAutopilotProfile = React.lazy(() =>
   import('src/views/endpoint/autopilot/AutopilotEditProfile'),
 )
 const EditAutopilotStatusPage = React.lazy(() =>
   import('src/views/endpoint/autopilot/AutopilotEditStatusPage'),
 )
-const IntuneCAPolicies = React.lazy(() => import('src/views/endpoint/MEM/MEMCAPolicies'))
-const IntuneAddPolicy = React.lazy(() => import('src/views/endpoint/MEM/MEMAddPolicy'))
-const MEMAddPolicyTemplate = React.lazy(() => import('src/views/endpoint/MEM/MEMAddPolicyTemplate'))
+const IntuneCAPolicies = React.lazy(() => import('src/views/endpoint/intune/MEMCAPolicies'))
+const IntuneAddPolicy = React.lazy(() => import('src/views/endpoint/intune/MEMAddPolicy'))
+const MEMAddPolicyTemplate = React.lazy(() =>
+  import('src/views/endpoint/intune/MEMAddPolicyTemplate'),
+)
 const IntuneListPolicyTemplate = React.lazy(() =>
-  import('src/views/endpoint/MEM/MEMListPolicyTemplates'),
+  import('src/views/endpoint/intune/MEMListPolicyTemplates'),
 )
 const ListDefender = React.lazy(() => import('src/views/security/defender/ListDefender'))
+const ListVulnerabilities = React.lazy(() => import('src/views/security/defender/ListVuln'))
+
 const DeployDefender = React.lazy(() => import('src/views/security/defender/DeployDefender'))
 
 const OneDriveList = React.lazy(() => import('src/views/teams-share/onedrive/OneDriveList'))
@@ -139,6 +148,7 @@ const EditMailboxPermissions = React.lazy(() =>
 const AddSharedMailbox = React.lazy(() =>
   import('src/views/email-exchange/administration/AddSharedMailbox'),
 )
+const AddContact = React.lazy(() => import('src/views/email-exchange/administration/AddContact'))
 const EditCalendarPermissions = React.lazy(() =>
   import('src/views/email-exchange/administration/EditCalendarPermissions'),
 )
@@ -176,6 +186,27 @@ const AddTransportTemplate = React.lazy(() =>
 const TransportDeploy = React.lazy(() =>
   import('src/views/email-exchange/transport/DeployTransport'),
 )
+const SpamfilterList = React.lazy(() => import('src/views/email-exchange/spamfilter/Spamfilter'))
+const SpamFilterTemplate = React.lazy(() =>
+  import('src/views/email-exchange/spamfilter/ListSpamfilterTemplates'),
+)
+const AddSpamFilterTemplate = React.lazy(() =>
+  import('src/views/email-exchange/spamfilter/AddSpamfilterTemplate'),
+)
+const SpamFilterDeploy = React.lazy(() =>
+  import('src/views/email-exchange/spamfilter/DeploySpamfilter'),
+)
+const ConnectorList = React.lazy(() => import('src/views/email-exchange/connectors/ConnectorList'))
+const ConnectorListTemplates = React.lazy(() =>
+  import('src/views/email-exchange/connectors/ListConnectorTemplates'),
+)
+const DeployConnector = React.lazy(() =>
+  import('src/views/email-exchange/connectors/DeployConnector'),
+)
+const AddConnectorTemplate = React.lazy(() =>
+  import('src/views/email-exchange/connectors/AddConnectorTemplate'),
+)
+
 const SecurityComplianceAlerts = React.lazy(() => import('src/views/security/incidents/ListAlerts'))
 const SecurityComplianceIncidents = React.lazy(() =>
   import('src/views/security/incidents/ListIncidents'),
@@ -189,6 +220,7 @@ const routes = [
   { path: '/cipp/logs', name: 'Logs', component: Logs },
   { path: '/cipp/404', name: 'Error', component: Page404 },
   { path: '/cipp/403', name: 'Error', component: Page403 },
+  { path: '/cipp/500', name: 'Error', component: Page500 },
   { path: '/identity', name: 'Identity' },
   { path: '/identity/administration/users/add', name: 'Add User', component: AddUser },
   { path: '/identity/administration/users/edit', name: 'Edit User', component: EditUser },
@@ -290,7 +322,7 @@ const routes = [
   },
   {
     path: '/tenant/conditional/add-template',
-    name: 'Conditional Access add Template',
+    name: 'Conditional Access Add Template',
     component: AddConditionalTemplate,
   },
   {
@@ -327,13 +359,18 @@ const routes = [
   { path: '/tenant/standards/alert-list', name: 'Alert List (Alpha)', component: ListAlerts },
   { path: '/endpoint', name: 'Endpoint' },
   { path: '/endpoint/applications', name: 'Applications' },
-  { path: '/endpoint/applications/list', name: 'List', component: ApplicationsList },
-  { path: '/endpoint/applications/queue', name: 'Queue', component: ApplicationsQueue },
+  { path: '/endpoint/applications/list', name: 'List Applications', component: ApplicationsList },
+  { path: '/endpoint/applications/queue', name: 'Application Queue', component: ApplicationsQueue },
 
   {
     path: '/endpoint/applications/add-choco-app',
     name: 'Add Choco App',
     component: ApplicationsAddChocoApp,
+  },
+  {
+    path: '/endpoint/applications/add-winget-app',
+    name: 'Add Store App',
+    component: ApplicationsAddWingetApp,
   },
   {
     path: '/endpoint/applications/add-office-app',
@@ -396,13 +433,19 @@ const routes = [
   { path: '/security/defender', name: 'Defender' },
   { path: '/security/defender/deployment', name: 'Deploy Defender', component: DeployDefender },
   { path: '/security/defender/list-defender', name: 'List Defender', component: ListDefender },
-  { path: '/teams-share', name: 'Teams & Sharepoint' },
+  {
+    path: '/security/defender/list-defender-tvm',
+    name: 'List Vulnerabilities',
+    component: ListVulnerabilities,
+  },
+
+  { path: '/teams-share', name: 'Teams & SharePoint' },
   { path: '/teams-share/onedrive', name: 'OneDrive' },
   { path: '/teams-share/onedrive/list', name: 'List OneDrive', component: OneDriveList },
-  { path: '/teams-share/sharepoint', name: 'Sharepoint' },
+  { path: '/teams-share/sharepoint', name: 'SharePoint' },
   {
     path: '/teams-share/sharepoint/list-sharepoint',
-    name: 'List Sharepoint',
+    name: 'List SharePoint',
     component: SharepointList,
   },
   { path: '/teams-share/teams', name: 'Teams' },
@@ -412,19 +455,39 @@ const routes = [
     name: 'View Team Settings',
     component: ViewTeamsSettings,
   },
-  { path: '/teams-share/teams/add-team', name: 'List Teams', component: TeamsAddTeam },
-  { path: '/teams-share/teams/teams-activity', name: 'List Teams', component: TeamsActivity },
+  { path: '/teams-share/teams/add-team', name: 'Add Team', component: TeamsAddTeam },
+  { path: '/teams-share/teams/teams-activity', name: 'Teams Activity', component: TeamsActivity },
   { name: 'Email & Exchange', path: '/email' },
   { name: 'Email Administration', path: '/email/administration' },
   { name: 'List Contacts', path: '/email/administration/contacts', component: ContactsList },
   {
+    path: '/email/connectors/list-connectors',
+    name: 'List Connectors',
+    component: ConnectorList,
+  },
+  {
+    path: '/email/connectors/deploy-connector',
+    name: 'Deploy Connectors',
+    component: DeployConnector,
+  },
+  {
+    path: '/email/connectors/add-connector-templates',
+    name: 'Add Connectors Templates',
+    component: AddConnectorTemplate,
+  },
+  {
+    path: '/email/connectors/list-connector-templates',
+    name: 'List Connectors Templates',
+    component: ConnectorListTemplates,
+  },
+  {
     path: '/email/transport/list-rules',
-    name: 'List Transport rules',
+    name: 'List Transport Rules',
     component: TransportRulesList,
   },
   {
     path: '/email/transport/deploy-rules',
-    name: 'Deploy Transport rule',
+    name: 'Deploy Transport Rule',
     component: TransportDeploy,
   },
   {
@@ -434,8 +497,28 @@ const routes = [
   },
   {
     path: '/email/transport/add-template',
-    name: 'Transport Rule add Temmplate',
+    name: 'Transport Rule Add Temmplate',
     component: AddTransportTemplate,
+  },
+  {
+    path: '/email/spamfilter/list-spamfilter',
+    name: 'List Spamfilter',
+    component: SpamfilterList,
+  },
+  {
+    path: '/email/spamfilter/deploy',
+    name: 'Deploy Spamfilter',
+    component: SpamFilterDeploy,
+  },
+  {
+    path: '/email/spamfilter/list-templates',
+    name: 'List Spamfilter Templates',
+    component: SpamFilterTemplate,
+  },
+  {
+    path: '/email/spamfilter/add-template',
+    name: 'Add Spamfilter Template',
+    component: AddSpamFilterTemplate,
   },
   {
     name: 'Edit Mailbox Permissions',
@@ -443,9 +526,14 @@ const routes = [
     component: EditMailboxPermissions,
   },
   {
-    name: 'Edit Mailbox Permissions',
+    name: 'Add Shared Mailbox',
     path: '/email/administration/add-shared-mailbox',
     component: AddSharedMailbox,
+  },
+  {
+    name: 'Edit Contact',
+    path: '/email/administration/add-contact',
+    component: AddContact,
   },
   {
     name: 'Edit Calendar Permissions',
