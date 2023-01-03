@@ -878,7 +878,7 @@ const NotificationsSettings = () => {
                       </CCol>
                       <CFormLabel>
                         Choose which types of updates you want to receive. This notification will be
-                        sent every 30 minutes.
+                        sent every 15 minutes.
                       </CFormLabel>
                       <br />
                       <RFFCFormSwitch
@@ -916,7 +916,11 @@ const NotificationsSettings = () => {
                         label="Token Refresh Events"
                         value={false}
                       />
-
+                      <RFFCFormSwitch
+                        name="onePerTenant"
+                        label="Receive one email per tenant"
+                        value={false}
+                      />
                       <br></br>
                       <CButton disabled={notificationConfigResult.isFetching} type="submit">
                         Set Notification Settings
