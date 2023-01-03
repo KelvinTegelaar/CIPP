@@ -442,14 +442,14 @@ const _nav = [
   },
   {
     component: CNavGroup,
-    name: 'Sharepoint',
+    name: 'SharePoint',
     section: 'Teams & Sharepoint',
     to: '/teams-share/sharepoint',
     icon: <FontAwesomeIcon icon={faLink} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
-        name: 'Sharepoint',
+        name: 'SharePoint',
         to: '/teams-share/sharepoint/list-sharepoint',
       },
     ],
