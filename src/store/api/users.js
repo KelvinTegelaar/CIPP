@@ -17,6 +17,14 @@ export const usersApi = baseApi.injectEndpoints({
         },
       }),
     }),
+    listUsers: builder.query({
+      query: ({ tenantDomain }) => ({
+        path: '/api/ListContacts',
+        params: {
+          TenantFilter: tenantDomain,
+        },
+      }),
+    }),
     listUser: builder.query({
       query: ({ tenantDomain, userId }) => ({
         path: '/api/ListUsers',

@@ -60,6 +60,13 @@ const EditGroup = () => {
     isFetching: usersIsFetching,
     error: usersError,
   } = useListUsersQuery({ tenantDomain })
+
+  const {
+    data: contacts = [],
+    isFetching: contactsIsFetching,
+    error: contactsError,
+  } = useListUsersQuery({ tenantDomain })
+
   const [roleInfo, setroleInfo] = React.useState([])
   useEffect(() => {
     if (ownersIsSuccess && membersIsSuccess) {
@@ -100,6 +107,7 @@ const EditGroup = () => {
       AddOwner: values.AddOwners ? values.AddOwners : '',
       RemoveMember: values.RemoveMembers ? values.RemoveMembers : '',
       RemoveOwner: values.RemoveOwners ? values.RemoveOwners : '',
+      AddContacts: values.AddContacts ? values.AddContacts : '',
       allowExternal: values.allowExternal,
     }
     //window.alert(JSON.stringify(shippedValues))
@@ -155,6 +163,21 @@ const EditGroup = () => {
                                   }))}
                                   placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                                   name="AddMembers"
+                                />
+                                {usersError && <span>Failed to load list of users</span>}
+                              </CCol>
+                            </CRow>
+                            <CRow>
+                              <CCol md={12}>
+                                <RFFSelectSearch
+                                  multi={true}
+                                  label="Add Contact"
+                                  values={contacts?.map((user) => ({
+                                    value: user.id,
+                                    name: `${user.displayName} - ${user.mail}`,
+                                  }))}
+                                  placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
+                                  name="AddContacts"
                                 />
                                 {usersError && <span>Failed to load list of users</span>}
                               </CCol>
