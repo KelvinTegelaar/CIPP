@@ -20,7 +20,7 @@
     },
     {
       "route": "/logout",
-      "redirect": "/.auth/logout"
+      "redirect": "/.auth/logout?post_logout_redirect_uri=/LogoutRedirect"
     },
     {
       "route": "/api/ExecSAMSetup",
