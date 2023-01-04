@@ -178,6 +178,10 @@ const MailboxList = () => {
             filterName: 'User Mailboxes',
             filter: '"recipientTypeDetails":"UserMailbox"',
           },
+          {
+            filterName: 'Shared Mailboxes with license',
+            filter: '"SharedMailboxWithLicense":true',
+          },
           { filterName: 'Shared Mailboxes', filter: '"recipientTypeDetails":"SharedMailbox"' },
           { filterName: 'Has an alias', filter: '"AdditionalEmailAddresses":"' },
         ],
