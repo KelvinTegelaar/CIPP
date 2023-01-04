@@ -31,8 +31,9 @@ jobs:
         with:
           issue-number: ${{ github.event.issue.number }}
           body: |
-            Thank you for creating a feature request! feature requests are prioritized by our direct contributors. Your current priority is set to "No Priority". If you are a sponsor you can request an upgrade of priority, If you want this feature to be integrated you can always do this yourself by checking out our contributions guide at https://kelvintegelaar.github.io/CIPP/GettingStarted/Contributions.html. Contributors to the CIPP project reserve the right to close feature requests at will.
-
-            If your feature request is not picked up in 2 week by a contributor it will be closed.
-
+            Thank you for creating a feature request!
+            Your current priority is set to "No Priority". No Priority Feature requests automatically get closed in two days if a contributor does not accept the FR.
+            
+            If you are a sponsor you can request an upgrade of priority. To upgrade the priority type "I would like to upgrade the priority". 
+            If you want this feature to be integrated you can always do this yourself by checking out our contributions guide at https://cipp.app/docs/dev/. Contributors to the CIPP project reserve the right to close feature requests at will.
             If you'd like this feature request to be assigned to you, please comment "I would like to work on this please!".
