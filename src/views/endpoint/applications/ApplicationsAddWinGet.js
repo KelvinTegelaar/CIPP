@@ -1,13 +1,32 @@
 import React from 'react'
-import { CCol, CRow, CForm, CListGroup, CListGroupItem, CCallout, CSpinner } from '@coreui/react'
+import {
+  CCol,
+  CRow,
+  CForm,
+  CListGroup,
+  CListGroupItem,
+  CCallout,
+  CSpinner,
+  CButton,
+  CInputGroup,
+  CFormInput,
+} from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { CippWizard } from 'src/components/layout'
 import { WizardTableField } from 'src/components/tables'
 import PropTypes from 'prop-types'
-import { RFFCFormInput, RFFCFormRadio, RFFCFormSwitch } from 'src/components/forms'
+import {
+  RFFCFormCheck,
+  RFFCFormInput,
+  RFFCFormRadio,
+  RFFCFormSelect,
+  RFFCFormSwitch,
+} from 'src/components/forms'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import { useRef } from 'react'
+import { OnChange } from 'react-final-form-listeners'
 
 const Error = ({ name }) => (
   <Field
@@ -32,6 +51,7 @@ const requiredArray = (value) => (value && value.length !== 0 ? undefined : 'Req
 
 const AddWinGet = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
+  const [searchPostRequest, foundPackages] = useLazyGenericPostRequestQuery()
 
   const handleSubmit = async (values) => {
     values.selectedTenants.map(
@@ -39,12 +59,45 @@ const AddWinGet = () => {
     )
     genericPostRequest({ path: '/api/AddWinGetApp', values: values })
   }
+  const handleSearch = async (values) => {
+    searchPostRequest({
+      path: '/api/ListPotentialApps',
+      values: { type: 'WinGet', searchString: values },
+    })
+  }
+  const searchRef = useRef(null)
+
+  const packageIdRef = useRef(null)
+  const packageNameRef = useRef(null)
 
   const formValues = {
     InstallAsSystem: true,
     DisableRestart: true,
     AssignTo: 'On',
   }
+  const WhenFieldChanges = ({ field, set }) => (
+    <Field name={set} subscription={{}}>
+      {(
+        // No subscription. We only use Field to get to the change function
+        { input: { onChange } },
+      ) => (
+        <FormSpy subscription={{}}>
+          {({ form }) => (
+            <OnChange name={field}>
+              {(value) => {
+                let template = foundPackages.data.filter(function (obj) {
+                  console.log(value)
+                  return obj.packagename === value
+                })
+                console.log(template[0])
+                onChange(template[0][set])
+              }}
+            </OnChange>
+          )}
+        </FormSpy>
+      )}
+    </Field>
+  )
 
   return (
     <CippWizard
@@ -100,10 +153,59 @@ const AddWinGet = () => {
         <CForm onSubmit={handleSubmit}>
           <CRow>
             <CCol md={6}>
-              <RFFCFormInput type="text" name="packagename" label="WinGet package identifier" />
+              <CInputGroup className="me-2">
+                <CFormInput
+                  placeholder="Search Packages"
+                  aria-label="Search Packages"
+                  ref={searchRef}
+                />
+                <CButton
+                  size="sm"
+                  name="SearchNow"
+                  onClick={() => handleSearch(searchRef.current.value)}
+                >
+                  Search
+                </CButton>
+              </CInputGroup>
+            </CCol>
+          </CRow>
+          <CRow>
+            <CCol md={6}>
+              {foundPackages.isFetching && <CSpinner className="me-3" />}
+              {foundPackages.isSuccess && (
+                <RFFCFormSelect
+                  label="Package"
+                  values={foundPackages?.data.map((packagename) => ({
+                    value: packagename.packagename,
+                    label: `${packagename.applicationName} - ${packagename.packagename}`,
+                  }))}
+                  placeholder={!foundPackages.isFetching ? 'Select package' : 'Loading...'}
+                  name="PackageSelector"
+                />
+              )}
+            </CCol>
+            <WhenFieldChanges field="PackageSelector" set="packagename" />
+            <WhenFieldChanges field="PackageSelector" set="applicationName" />
+          </CRow>
+          <hr></hr>
+          <CRow>
+            <CCol md={6}>
+              <RFFCFormInput
+                innerRef={packageIdRef}
+                type="text"
+                name="packagename"
+                label="WinGet package identifier"
+                value="test"
+              />
             </CCol>
             <CCol md={6}>
-              <RFFCFormInput type="text" name="applicationName" label="Application name" />
+              <RFFCFormInput
+                innerRef={packageNameRef}
+                type="text"
+                name="applicationName"
+                label="Application name"
+                value="test"
+              />
             </CCol>
           </CRow>
           <CRow>
@@ -111,32 +213,35 @@ const AddWinGet = () => {
               <RFFCFormInput type="text" name="description" label="Description" />
             </CCol>
           </CRow>
-          <RFFCFormSwitch value={true} name="InstallAsSystem" label="Install as system" />
-          <RFFCFormSwitch name="DisableRestart" label="Disable Restart" />
-
-          <RFFCFormRadio
-            value="On"
-            name="AssignTo"
-            label="Do not assign"
-            validate={false}
-          ></RFFCFormRadio>
-          <RFFCFormRadio
-            value="allLicensedUsers"
-            name="AssignTo"
-            label="Assign to all users"
-            validate={false}
-          ></RFFCFormRadio>
-          <RFFCFormRadio
-            value="AllDevices"
-            name="AssignTo"
-            label="Assign to all devices"
-            validate={false}
-          ></RFFCFormRadio>
-          <RFFCFormRadio
-            value="AllDevicesAndUsers"
-            name="AssignTo"
-            label="Assign to all users and devices"
-          ></RFFCFormRadio>
+          <CRow>
+            <CCol>
+              Install options:
+              <RFFCFormCheck name="InstallationIntent" label="Mark for Uninstallation" />
+              <RFFCFormRadio
+                value="On"
+                name="AssignTo"
+                label="Do not assign"
+                validate={false}
+              ></RFFCFormRadio>
+              <RFFCFormRadio
+                value="allLicensedUsers"
+                name="AssignTo"
+                label="Assign to all users"
+                validate={false}
+              ></RFFCFormRadio>
+              <RFFCFormRadio
+                value="AllDevices"
+                name="AssignTo"
+                label="Assign to all devices"
+                validate={false}
+              ></RFFCFormRadio>
+              <RFFCFormRadio
+                value="AllDevicesAndUsers"
+                name="AssignTo"
+                label="Assign to all users and devices"
+              ></RFFCFormRadio>
+            </CCol>
+          </CRow>
         </CForm>
         <hr className="my-4" />
       </CippWizard.Page>
@@ -163,16 +268,6 @@ const AddWinGet = () => {
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Description: {props.values.description}
-                        </CListGroupItem>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Custom Repo:
-                          {props.values.customRepo ? props.values.customRepo : ' No'}
-                        </CListGroupItem>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Install as System: {props.values.InstallAsSystem ? 'Yes' : 'No'}
-                        </CListGroupItem>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Disable Restart: {props.values.DisableRestart ? 'Yes' : 'No'}
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Assign to: {props.values.AssignTo}
