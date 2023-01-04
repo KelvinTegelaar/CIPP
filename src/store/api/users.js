@@ -17,7 +17,7 @@ export const usersApi = baseApi.injectEndpoints({
         },
       }),
     }),
-    listUsers: builder.query({
+    listContacts: builder.query({
       query: ({ tenantDomain }) => ({
         path: '/api/ListContacts',
         params: {
@@ -117,6 +117,7 @@ export const {
   useEditUserMutation,
   useListUsersQuery,
   useListUserQuery,
+  useListContactsQuery,
   useListUserConditionalAccessPoliciesQuery,
   useListUserSigninLogsQuery,
   useAddUserMutation,
