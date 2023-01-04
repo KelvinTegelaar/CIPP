@@ -31,6 +31,10 @@
       "allowedRoles": ["admin"]
     },
     {
+      "route": "/LogoutRedirect",
+      "allowedRoles": ["admin", "editor", "readonly", "authenticated", "anonymous"]
+    },
+    {
       "route": "/404",
       "allowedRoles": ["admin", "editor", "readonly", "authenticated", "anonymous"]
     },
