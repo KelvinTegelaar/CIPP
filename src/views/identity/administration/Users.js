@@ -116,6 +116,21 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
               'Enter a out of office message and press continue to set the out of office.',
           },
           {
+            label: 'Disable Out of Office',
+            color: 'info',
+            modal: true,
+            modalType: 'POST',
+            modalBody: {
+              user: row.userPrincipalName,
+              TenantFilter: tenant.defaultDomainName,
+              message: row.message,
+            },
+            modalUrl: `/api/ExecDisableOoO`,
+            modalInput: true,
+            modalMessage:
+              'Are you sure you want to disable the Out of Office for this user?.',
+          },
+          {
             label: 'Block Sign In',
             color: 'info',
             modal: true,
