@@ -129,6 +129,19 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modalMessage: 'Are you sure you want to disable the out of office?',
           },
           {
+            label: 'Disable Email Forwarding',
+            color: 'info',
+            modal: true,
+            modalType: 'POST',
+            modalBody: {
+              user: row.userPrincipalName,
+              TenantFilter: tenant.defaultDomainName,
+              message: row.message,
+            },
+            modalUrl: `/api/ExecDisableEmailForward`,
+            modalMessage: 'Are you sure you want to disable forwarding of this users emails?',
+          },
+          {
             label: 'Block Sign In',
             color: 'info',
             modal: true,
