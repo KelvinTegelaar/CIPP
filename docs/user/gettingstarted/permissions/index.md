@@ -48,6 +48,7 @@ Some permissions may come from other APIs than just Graph. you will see this bot
 | Application.Read.All                                    | Read applications                                                           |
 | Application.ReadWrite.All                               | Read and write all applications                                             |
 | AuditLog.Read.All                                       | Read audit log data                                                         |
+| BitlockerKey.Read.All                                   | Read BitLocker keys
 | Channel.Create                                          | Create channels                                                             |
 | Channel.ReadBasic.All                                   | Read the names and descriptions of channels                                 |
 | Channel.Delete.All                                      | Delete Channels                                                             |
