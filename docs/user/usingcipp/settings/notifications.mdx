@@ -27,7 +27,11 @@ page for more information on managing those alerts.
 
 ### E-mail
 Enter a single email address (example: `psmith@example.com`).  Email sends from the partner tenant Office 365 account
-used to generate CIPP application keys. The account must have at least an *Exchange Online Plan 1* license assigned.
+used to generate CIPP application keys. The account must have a mailbox available. If you do not have a mailbox available on the account you can use the following command to enable this account as a shared mailbox:
+
+```powershell
+Enable-mailbox <Cippuser@domain.com> -Shared
+```
 
 :::info Sent Items
 Notification emails **do not save** to the CIPP account's *Sent Items* folder.
