@@ -313,7 +313,7 @@ const TenantsList = () => {
       ),
     },
     {
-      name: 'Sharepoint Admin',
+      name: 'SharePoint Admin',
       selector: (row) => row['defaultDomainName'],
       center: true,
       omit: columnOmits,
