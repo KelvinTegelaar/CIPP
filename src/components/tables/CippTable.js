@@ -9,11 +9,12 @@ import {
   CDropdownToggle,
   CDropdownMenu,
   CDropdownItem,
+  CButton,
 } from '@coreui/react'
 import DataTable, { createTheme } from 'react-data-table-component'
 import PropTypes from 'prop-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faColumns, faSearch } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faColumns, faSearch, faSync } from '@fortawesome/free-solid-svg-icons'
 import { useEffect } from 'react'
 
 const FilterComponent = ({ filterText, onFilter, onClear, filterlist, onFilterPreset }) => (
@@ -89,7 +90,9 @@ export default function CippTable({
   disableCSVExport = false,
   error,
   reportName,
+  refreshFunction = null,
   columns = [],
+  dynamicColumns = true,
   filterlist,
   tableProps: {
     keyField = 'id',
@@ -184,50 +187,65 @@ export default function CippTable({
         return ['No additional columns available']
       }
     }
-
-    if (!disablePDFExport) {
-      const addColumn = (columnname) => {
-        var index = columns.length - 1
-        let alreadyInArray = columns.find((o) => o.exportSelector === columnname)
-        if (!alreadyInArray) {
-          columns.splice(index, 0, {
-            name: columnname,
-            selector: (row) => row[columnname],
-            sortable: true,
-            exportSelector: columnname,
-          })
-        } else {
-          let indexOfExisting = columns.findIndex((o) => o.exportSelector === columnname)
-          columns = columns.splice(indexOfExisting, 1)
-        }
-        setUpdatedColumns(Date())
-      }
+    if (refreshFunction) {
       defaultActions.push([
-        <CDropdown className="me-2" variant="input-group">
-          <CDropdownToggle
-            className="btn btn-primary btn-sm m-1"
-            size="sm"
-            style={{
-              backgroundColor: '#f88c1a',
-            }}
-          >
-            <FontAwesomeIcon icon={faColumns} />
-          </CDropdownToggle>
-          <CDropdownMenu>
-            {dataKeys() &&
-              dataKeys().map((item, idx) => {
-                return (
-                  <CDropdownItem key={idx} onClick={() => addColumn(item)}>
-                    {columns.find((o) => o.exportSelector === item) && (
-                      <FontAwesomeIcon icon={faCheck} />
-                    )}{' '}
-                    {item}
-                  </CDropdownItem>
-                )
-              })}
-          </CDropdownMenu>
-        </CDropdown>,
+        <CButton
+          onClick={() => {
+            refreshFunction((Math.random() + 1).toString(36).substring(7))
+          }}
+          className="m-1"
+          size="sm"
+        >
+          <FontAwesomeIcon icon={faSync} />
+        </CButton>,
       ])
+    }
+    if (!disablePDFExport) {
+      if (dynamicColumns === true) {
+        const addColumn = (columnname) => {
+          var index = columns.length - 1
+          let alreadyInArray = columns.find((o) => o.exportSelector === columnname)
+          if (!alreadyInArray) {
+            columns.splice(index, 0, {
+              name: columnname,
+              selector: (row) => row[columnname],
+              sortable: true,
+              exportSelector: columnname,
+            })
+          } else {
+            let indexOfExisting = columns.findIndex((o) => o.exportSelector === columnname)
+            columns = columns.splice(indexOfExisting, 1)
+          }
+          setUpdatedColumns(Date())
+        }
+
+        defaultActions.push([
+          <CDropdown className="me-2" variant="input-group">
+            <CDropdownToggle
+              className="btn btn-primary btn-sm m-1"
+              size="sm"
+              style={{
+                backgroundColor: '#f88c1a',
+              }}
+            >
+              <FontAwesomeIcon icon={faColumns} />
+            </CDropdownToggle>
+            <CDropdownMenu>
+              {dataKeys() &&
+                dataKeys().map((item, idx) => {
+                  return (
+                    <CDropdownItem key={idx} onClick={() => addColumn(item)}>
+                      {columns.find((o) => o.exportSelector === item) && (
+                        <FontAwesomeIcon icon={faCheck} />
+                      )}{' '}
+                      {item}
+                    </CDropdownItem>
+                  )
+                })}
+            </CDropdownMenu>
+          </CDropdown>,
+        ])
+      }
       actions.forEach((action) => {
         defaultActions.push(action)
       })
@@ -288,7 +306,7 @@ export default function CippTable({
       {!isFetching && error && <span>Error loading data</span>}
       {!error && (
         <div>
-          {columns.length === updatedColumns.length && (
+          {(columns.length === updatedColumns.length || !dynamicColumns) && (
             <DataTable
               customStyles={customStyles}
               className="cipp-table"
