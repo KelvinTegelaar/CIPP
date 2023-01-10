@@ -6,11 +6,14 @@ import {
   CFormSelect,
   CFormSwitch,
   CFormTextarea,
+  CSpinner,
 } from '@coreui/react'
 import Select from 'react-select'
+import AsyncSelect from 'react-select/async'
 import { Field } from 'react-final-form'
 import React from 'react'
 import PropTypes from 'prop-types'
+import { useRef } from 'react'
 
 /*
   wrapper classes for React Final Form with CoreUI
@@ -258,11 +261,25 @@ RFFCFormSelect.propTypes = {
   values: PropTypes.arrayOf(PropTypes.shape({ label: PropTypes.string, value: PropTypes.any })),
 }
 
-export function Condition({ when, is, children }) {
+export function Condition({ when, is, children, like, regex }) {
   return (
-    <Field name={when} subscription={{ value: true }}>
-      {({ input: { value } }) => (value === is ? children : null)}
-    </Field>
+    <>
+      {is && (
+        <Field name={when} subscription={{ value: true }}>
+          {({ input: { value } }) => (value === is ? children : null)}
+        </Field>
+      )}
+      {like && (
+        <Field name={when} subscription={{ value: true }}>
+          {({ input: { value } }) => (value.includes(like) ? children : null)}
+        </Field>
+      )}
+      {regex && (
+        <Field name={when} subscription={{ value: true }}>
+          {({ input: { value } }) => (value.match(regex) ? children : null)}
+        </Field>
+      )}
+    </>
   )
 }
 
@@ -298,7 +315,7 @@ export const RFFSelectSearch = ({
                 className="react-select-container"
                 classNamePrefix="react-select"
                 {...input}
-                isClearable={true}
+                isClearable={false}
                 name={name}
                 id={name}
                 disabled={disabled}

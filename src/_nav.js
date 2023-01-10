@@ -17,6 +17,7 @@ import {
   faBus,
   faExclamationTriangle,
   faUserShield,
+  faEnvelope,
 } from '@fortawesome/free-solid-svg-icons'
 
 const _nav = [
@@ -47,6 +48,16 @@ const _nav = [
         component: CNavItem,
         name: 'Groups',
         to: '/identity/administration/groups',
+      },
+      {
+        component: CNavItem,
+        name: 'Group Templates',
+        to: '/identity/administration/group-templates',
+      },
+      {
+        component: CNavItem,
+        name: 'Deploy Group Template',
+        to: '/identity/administration/deploy-group-template',
       },
       {
         component: CNavItem,
@@ -107,7 +118,7 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'List Tenants',
+        name: 'Tenants',
         to: '/tenant/administration/tenants',
       },
       {
@@ -118,8 +129,81 @@ const _nav = [
 
       {
         component: CNavItem,
-        name: 'List Scheduled Alerts',
+        name: 'Scheduled Alerts',
         to: '/tenant/administration/alertsqueue',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
+    name: 'Standards',
+    section: 'Tenant Administration',
+    to: '/tenant/standards',
+    icon: <FontAwesomeIcon icon={faBook} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Edit Individual Standards',
+        to: '/tenant/standards/list-applied-standards',
+      },
+      {
+        component: CNavItem,
+        name: 'Apply Standards',
+        to: '/tenant/standards/apply-standard',
+      },
+      {
+        component: CNavItem,
+        name: 'Best Practice Analyser',
+        to: '/tenant/standards/bpa-report',
+      },
+      {
+        component: CNavItem,
+        name: 'Domains Analyser',
+        to: '/tenant/standards/domains-analyser',
+      },
+      {
+        component: CNavItem,
+        name: 'Individual Domain Check',
+        to: '/tenant/standards/individual-domains',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
+    name: 'Conditional Access',
+    section: 'Conditional Access',
+    to: '/tenant/administration',
+    icon: <FontAwesomeIcon icon={faKey} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Policies',
+        to: '/tenant/conditional/list-policies',
+      },
+      {
+        component: CNavItem,
+        name: 'Named Locations',
+        to: '/tenant/conditional/list-named-locations',
+      },
+      {
+        component: CNavItem,
+        name: 'Deploy Conditional Access',
+        to: '/tenant/conditional/deploy',
+      },
+      {
+        component: CNavItem,
+        name: 'Deploy Named Locations',
+        to: '/tenant/conditional/deploy-named-location',
+      },
+      {
+        component: CNavItem,
+        name: 'Add Template',
+        to: '/tenant/conditional/add-template',
+      },
+      {
+        component: CNavItem,
+        name: 'Templates',
+        to: '/tenant/conditional/list-template',
       },
     ],
   },
@@ -153,74 +237,6 @@ const _nav = [
     ],
   },
   {
-    component: CNavGroup,
-    name: 'Standards',
-    section: 'Tenant Administration',
-    to: '/tenant/standards',
-    icon: <FontAwesomeIcon icon={faBook} className="nav-icon" />,
-    items: [
-      {
-        component: CNavItem,
-        name: 'List and Edit Standards',
-        to: '/tenant/standards/list-applied-standards',
-      },
-      {
-        component: CNavItem,
-        name: 'Apply Standard',
-        to: '/tenant/standards/apply-standard',
-      },
-      {
-        component: CNavItem,
-        name: 'Best Practice Analyser',
-        to: '/tenant/standards/bpa-report',
-      },
-      {
-        component: CNavItem,
-        name: 'Domains Analyser',
-        to: '/tenant/standards/domains-analyser',
-      },
-      {
-        component: CNavItem,
-        name: 'Individual Domain Check',
-        to: '/tenant/standards/individual-domains',
-      },
-    ],
-  },
-  {
-    component: CNavGroup,
-    name: 'Conditional Access',
-    section: 'Conditional Access',
-    to: '/tenant/administration',
-    icon: <FontAwesomeIcon icon={faKey} className="nav-icon" />,
-    items: [
-      {
-        component: CNavItem,
-        name: 'List Policies',
-        to: '/tenant/conditional/list-policies',
-      },
-      {
-        component: CNavItem,
-        name: 'Deploy Conditional Access',
-        to: '/tenant/conditional/deploy',
-      },
-      {
-        component: CNavItem,
-        name: 'Deploy Named Locations',
-        to: '/tenant/conditional/deploy-named-location',
-      },
-      {
-        component: CNavItem,
-        name: 'Add Template',
-        to: '/tenant/conditional/add-template',
-      },
-      {
-        component: CNavItem,
-        name: 'List Templates',
-        to: '/tenant/conditional/list-template',
-      },
-    ],
-  },
-  {
     component: CNavTitle,
     name: 'Security & Compliance',
   },
@@ -233,12 +249,12 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'List Incidents',
+        name: 'Incidents',
         to: '/security/incidents/list-incidents',
       },
       {
         component: CNavItem,
-        name: 'List Alerts',
+        name: 'Alerts',
         to: '/security/incidents/list-alerts',
       },
     ],
@@ -269,6 +285,11 @@ const _nav = [
         name: 'Defender Status',
         to: '/security/defender/list-defender',
       },
+      {
+        component: CNavItem,
+        name: 'Vulnerabilities',
+        to: '/security/defender/list-defender-tvm',
+      },
     ],
   },
   {
@@ -287,7 +308,7 @@ const _nav = [
   },
   {
     component: CNavTitle,
-    name: 'Endpoint Management',
+    name: 'Intune',
   },
   {
     component: CNavGroup,
@@ -298,18 +319,23 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'List Applications',
+        name: 'Applications',
         to: '/endpoint/applications/list',
       },
       {
         component: CNavItem,
-        name: 'List Application Queue',
+        name: 'Application Queue',
         to: '/endpoint/applications/queue',
       },
       {
         component: CNavItem,
         name: 'Add Choco App',
         to: '/endpoint/applications/add-choco-app',
+      },
+      {
+        component: CNavItem,
+        name: 'Add Store App',
+        to: '/endpoint/applications/add-winget-app',
       },
       {
         component: CNavItem,
@@ -347,36 +373,36 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'List Autopilot Devices',
+        name: 'Autopilot Devices',
         to: '/endpoint/autopilot/list-devices',
       },
       {
         component: CNavItem,
-        name: 'List Profiles',
+        name: 'Profiles',
         to: '/endpoint/autopilot/list-profiles',
       },
       {
         component: CNavItem,
-        name: 'List Status Pages',
+        name: 'Status Pages',
         to: '/endpoint/autopilot/list-status-pages',
       },
     ],
   },
   {
     component: CNavGroup,
-    name: 'MEM (Intune)',
+    name: 'Device Management',
     section: 'Endpoint Management',
     to: '/endpoint/MEM',
     icon: <FontAwesomeIcon icon={faExchangeAlt} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
-        name: 'List Devices',
+        name: 'Devices',
         to: '/endpoint/reports/devices',
       },
       {
         component: CNavItem,
-        name: 'List MEM Policies',
+        name: 'MEM Policies',
         to: '/endpoint/MEM/list-policies',
       },
       {
@@ -391,7 +417,7 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'List Templates',
+        name: 'Templates',
         to: '/endpoint/MEM/list-templates',
       },
     ],
@@ -409,21 +435,21 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'List OneDrive',
+        name: 'OneDrive',
         to: '/teams-share/onedrive/list',
       },
     ],
   },
   {
     component: CNavGroup,
-    name: 'Sharepoint',
+    name: 'SharePoint',
     section: 'Teams & Sharepoint',
     to: '/teams-share/sharepoint',
     icon: <FontAwesomeIcon icon={faLink} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
-        name: 'List Sharepoint',
+        name: 'SharePoint',
         to: '/teams-share/sharepoint/list-sharepoint',
       },
     ],
@@ -442,7 +468,7 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'List Teams',
+        name: 'Teams',
         to: '/teams-share/teams/list-team',
       },
       {
@@ -492,15 +518,20 @@ const _nav = [
   },
   {
     component: CNavGroup,
-    name: 'Transport Rules',
+    name: 'Transport',
     section: 'Transport Rules',
     to: '/tenant/administration',
     icon: <FontAwesomeIcon icon={faBus} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
-        name: 'List Transport rules',
+        name: 'Transport rules',
         to: '/email/transport/list-rules',
+      },
+      {
+        component: CNavItem,
+        name: 'Transport Templates',
+        to: '/email/transport/list-templates',
       },
       {
         component: CNavItem,
@@ -509,13 +540,42 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Add Template',
-        to: '/email/transport/add-template',
+        name: 'Connectors',
+        to: '/email/connectors/list-connectors',
       },
       {
         component: CNavItem,
-        name: 'List Templates',
-        to: '/email/transport/list-templates',
+        name: 'Connector Templates',
+        to: '/email/connectors/list-connector-templates',
+      },
+      {
+        component: CNavItem,
+        name: 'Deploy Connector Templates',
+        to: '/email/connectors/deploy-connector',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
+    name: 'Spamfilter',
+    section: 'Spamfilter',
+    to: '/tenant/administration',
+    icon: <FontAwesomeIcon icon={faEnvelope} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Spamfilter',
+        to: '/email/spamfilter/list-spamfilter',
+      },
+      {
+        component: CNavItem,
+        name: 'Apply Spamfilter Template',
+        to: '/email/spamfilter/deploy',
+      },
+      {
+        component: CNavItem,
+        name: 'Templates',
+        to: '/email/spamfilter/list-templates',
       },
     ],
   },
@@ -593,6 +653,11 @@ const _nav = [
         component: CNavItem,
         name: 'GDAP Migration Status',
         to: '/tenant/administration/gdap-status',
+      },
+      {
+        component: CNavItem,
+        name: 'Application Approval',
+        to: '/tenant/administration/appapproval',
       },
       {
         component: CNavItem,
