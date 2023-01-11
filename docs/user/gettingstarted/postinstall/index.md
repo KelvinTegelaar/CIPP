@@ -29,6 +29,11 @@ After deployment, go to your resource group in Azure and select your Static Web 
 
 ## Enable Run From Package mode for better performance and lower costs
 
+:::caution Not required
+
+The below action is not required if we are hosting your cipp instance for you. In that case after 7 days we enable "Run from Package mode" for you
+:::
+
 1. Go to CIPP
 1. Visit each page you want to save the contents of, e.g. Standards, Intune Templates, Applications, Alerts, Visiting the page automatically migrates the data to Azure Tables.
 1. Go to Settings -> Backend
