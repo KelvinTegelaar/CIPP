@@ -19,9 +19,9 @@ It's recommended that you have the following installed on the computer you're us
   * [Stylelint](https://marketplace.visualstudio.com/items?itemName=stylelint.vscode-stylelint)
 * [PowerShell 7](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.2) `winget install --exact PowerShell`
 * [git](https://git-scm.com/download/win) `winget install --exact git`
-* [node.js LTS](https://nodejs.org/en/download/) `winget install --exact "Node.js LTS"`
+* [node.js V16.X](https://nodejs.org/en/download/releases)
 * [.NET SDK 5](https://dotnet.microsoft.com/en-us/download/dotnet/5.0)
-* [.NET SDK 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) `winget install --exact Microsoft.dotnet`
+* [.NET SDK 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) `winget install --exact Microsoft.DotNet.SDK.6`
 
 :::info About these instructions
 This page guides you through getting setup to develop for CIPP using the command line to perform operations with `git` and `npm`. There are graphical user interfaces for these tools but they won't be covered in this documentation. The commands below are broadly OS agnostic.
