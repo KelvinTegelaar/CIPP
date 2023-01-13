@@ -99,10 +99,7 @@ const Logs = () => {
       .map((key) => key + '=' + shippedValues[key])
       .join('&')
 
-    //alert(JSON.stringify(values, null, 2))
     navigate(`?${queryString}`)
-    // @todo hook this up
-    // genericPostRequest({ url: 'api/AddIntuneTemplate', values })
   }
 
   return (
@@ -170,11 +167,6 @@ const Logs = () => {
                             </CButton>
                           </CCol>
                         </CRow>
-                        {/*<CRow>*/}
-                        {/* <CCol>*/}
-                        {/*   <pre>{JSON.stringify(values, null, 2)}</pre>*/}
-                        {/* </CCol>*/}
-                        {/*</CRow>*/}
                       </CForm>
                     )
                   }}
