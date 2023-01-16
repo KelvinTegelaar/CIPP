@@ -64,7 +64,6 @@ import CippListOffcanvas from 'src/components/utilities/CippListOffcanvas'
 import { TitleButton } from 'src/components/buttons'
 import Skeleton from 'react-loading-skeleton'
 import { Buffer } from 'buffer'
-import ListAppliedStandards from '../tenant/standards/ListAppliedStandards'
 
 const CIPPSettings = () => {
   const [active, setActive] = useState(1)
@@ -829,18 +828,13 @@ const SecuritySettings = () => {
 }
 
 const NotificationsSettings = () => {
-  //to post settings
   const [configNotifications, notificationConfigResult] = useLazyExecNotificationConfigQuery()
 
+  const [listNotification, notificationListResult] = useLazyListNotificationConfigQuery()
   const onSubmit = (values) => {
-    // @todo bind this
-    // window.alert(JSON.stringify(values))
-    // console.log(values)
+    console.log(values)
     configNotifications(values)
   }
-  //to get current settings
-  const [listNotification, notificationListResult] = useLazyListNotificationConfigQuery()
-  //todo: Replace with prettier sliders etc
   return (
     <>
       {notificationListResult.isUninitialized && listNotification()}
@@ -857,7 +851,10 @@ const NotificationsSettings = () => {
           </CCardHeader>
           <CCardBody>
             <Form
-              initialValues={{ ...notificationListResult.data }}
+              initialValues={{
+                logsToInclude: notificationListResult.data.logsToInclude,
+                ...notificationListResult.data,
+              }}
               onSubmit={onSubmit}
               render={({ handleSubmit, submitting, values }) => {
                 return (
@@ -882,35 +879,36 @@ const NotificationsSettings = () => {
                       <CCol>
                         <RFFCFormInput type="text" name="webhook" label="Webhook" />
                       </CCol>
-                      <CFormLabel></CFormLabel>
-                      <br />
-                      <RFFSelectSearch
-                        multi={true}
-                        label="Choose which logs you'd like to receive alerts from. This notification will be sent every 15 minutes."
-                        name="notificationConfig"
-                        values={[
-                          { value: 'standards', name: 'All Standards' },
-                          { value: 'TokensUpdater', name: 'Token Events' },
-                          { value: 'ExecDnsConfig', name: 'Changing DNS Settings' },
-                          { value: 'ExecExcludeLicenses', name: 'Adding excluded licenses' },
-                          { value: 'ExecExcludeTenant', name: 'Adding excluded tenants' },
-                          { value: 'EditUser', name: 'Editing a user' },
-                          { value: 'ChocoApp', name: 'Adding or deploying applications' },
-                          { value: 'AddAPDevice', name: 'Adding autopilot devices' },
-                          { value: 'EditTenant', name: 'Editing a tenant' },
-                          { value: 'AddUser', name: 'Adding a user' },
-                          { value: 'AddMSPApp', name: 'Adding an MSP app' },
-                          { value: 'AddUser', name: 'Adding a user' },
-                          { value: 'AddGrouo', name: 'Adding a Group' },
-                          { value: 'ExecOffboardUser', name: 'Executing the offboard wizard' },
-                        ]}
-                      />
-                      <RFFCFormSwitch
-                        name="onePerTenant"
-                        label="Receive one email per tenant"
-                        value={false}
-                      />
-                      <br></br>
+                      <CCol>
+                        <RFFSelectSearch
+                          multi={true}
+                          label="Choose which logs you'd like to receive alerts from. This notification will be sent every 15 minutes."
+                          name="logsToInclude"
+                          values={[
+                            { value: 'standards', name: 'All Standards' },
+                            { value: 'TokensUpdater', name: 'Token Events' },
+                            { value: 'ExecDnsConfig', name: 'Changing DNS Settings' },
+                            { value: 'ExecExcludeLicenses', name: 'Adding excluded licenses' },
+                            { value: 'ExecExcludeTenant', name: 'Adding excluded tenants' },
+                            { value: 'EditUser', name: 'Editing a user' },
+                            { value: 'ChocoApp', name: 'Adding or deploying applications' },
+                            { value: 'AddAPDevice', name: 'Adding autopilot devices' },
+                            { value: 'EditTenant', name: 'Editing a tenant' },
+                            { value: 'AddUser', name: 'Adding a user' },
+                            { value: 'AddMSPApp', name: 'Adding an MSP app' },
+                            { value: 'AddUser', name: 'Adding a user' },
+                            { value: 'AddGrouo', name: 'Adding a Group' },
+                            { value: 'ExecOffboardUser', name: 'Executing the offboard wizard' },
+                          ]}
+                        />
+                      </CCol>
+                      <CCol>
+                        <RFFCFormSwitch
+                          name="onePerTenant"
+                          label="Receive one email per tenant"
+                          value={false}
+                        />
+                      </CCol>
                       <CButton disabled={notificationConfigResult.isFetching} type="submit">
                         Set Notification Settings
                       </CButton>
