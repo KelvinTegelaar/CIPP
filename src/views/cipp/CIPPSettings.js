@@ -50,7 +50,12 @@ import { useLazyEditDnsConfigQuery, useLazyGetDnsConfigQuery } from 'src/store/a
 import { useDispatch, useSelector } from 'react-redux'
 import { cellBooleanFormatter, CellTip, CellTipIcon, CippTable } from 'src/components/tables'
 import { CippPage, CippPageList } from 'src/components/layout'
-import { RFFCFormSwitch, RFFCFormInput, RFFCFormSelect } from 'src/components/forms'
+import {
+  RFFCFormSwitch,
+  RFFCFormInput,
+  RFFCFormSelect,
+  RFFSelectSearch,
+} from 'src/components/forms'
 import { Form } from 'react-final-form'
 import useConfirmModal from 'src/hooks/useConfirmModal'
 import { setCurrentTenant } from 'src/store/features/app'
@@ -59,6 +64,7 @@ import CippListOffcanvas from 'src/components/utilities/CippListOffcanvas'
 import { TitleButton } from 'src/components/buttons'
 import Skeleton from 'react-loading-skeleton'
 import { Buffer } from 'buffer'
+import ListAppliedStandards from '../tenant/standards/ListAppliedStandards'
 
 const CIPPSettings = () => {
   const [active, setActive] = useState(1)
@@ -876,45 +882,28 @@ const NotificationsSettings = () => {
                       <CCol>
                         <RFFCFormInput type="text" name="webhook" label="Webhook" />
                       </CCol>
-                      <CFormLabel>
-                        Choose which types of updates you want to receive. This notification will be
-                        sent every 15 minutes.
-                      </CFormLabel>
+                      <CFormLabel></CFormLabel>
                       <br />
-                      <RFFCFormSwitch
-                        name="addUser"
-                        label="New Accounts created via CIPP"
-                        value={false}
-                      />
-                      <RFFCFormSwitch
-                        name="removeUser"
-                        label="Removed Accounts via CIPP"
-                        value={false}
-                      />
-                      <RFFCFormSwitch
-                        name="addChocoApp"
-                        label="New Applications added via CIPP"
-                        value={false}
-                      />
-                      <RFFCFormSwitch
-                        name="addPolicy"
-                        label="New Policies added via CIPP"
-                        value={false}
-                      />
-                      <RFFCFormSwitch
-                        name="addStandardsDeploy"
-                        label="New Standards added via CIPP"
-                        value={false}
-                      />
-                      <RFFCFormSwitch
-                        name="removeStandard"
-                        label="Removed Standards via CIPP"
-                        value={false}
-                      />
-                      <RFFCFormSwitch
-                        name="tokenUpdater"
-                        label="Token Refresh Events"
-                        value={false}
+                      <RFFSelectSearch
+                        multi={true}
+                        label="Choose which logs you'd like to receive alerts from. This notification will be sent every 15 minutes."
+                        name="notificationConfig"
+                        values={[
+                          { value: 'standards', name: 'All Standards' },
+                          { value: 'TokensUpdater', name: 'Token Events' },
+                          { value: 'ExecDnsConfig', name: 'Changing DNS Settings' },
+                          { value: 'ExecExcludeLicenses', name: 'Adding excluded licenses' },
+                          { value: 'ExecExcludeTenant', name: 'Adding excluded tenants' },
+                          { value: 'EditUser', name: 'Editing a user' },
+                          { value: 'ChocoApp', name: 'Adding or deploying applications' },
+                          { value: 'AddAPDevice', name: 'Adding autopilot devices' },
+                          { value: 'EditTenant', name: 'Editing a tenant' },
+                          { value: 'AddUser', name: 'Adding a user' },
+                          { value: 'AddMSPApp', name: 'Adding an MSP app' },
+                          { value: 'AddUser', name: 'Adding a user' },
+                          { value: 'AddGrouo', name: 'Adding a Group' },
+                          { value: 'ExecOffboardUser', name: 'Executing the offboard wizard' },
+                        ]}
                       />
                       <RFFCFormSwitch
                         name="onePerTenant"
