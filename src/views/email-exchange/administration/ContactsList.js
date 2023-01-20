@@ -1,23 +1,54 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { CButton } from '@coreui/react'
 import { CippPageList } from 'src/components/layout'
 import { CellTip, cellBooleanFormatter } from 'src/components/tables'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEdit } from '@fortawesome/free-solid-svg-icons'
+import { faEdit, faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 import { TitleButton } from 'src/components/buttons'
+import { CippActionsOffcanvas } from 'src/components/utilities'
 const Actions = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
-
+  const [ocVisible, setOCVisible] = useState(false)
   return (
-    <a
-      target={'_blank'}
-      href={`https://outlook.office365.com/ecp/@${tenant.defaultDomainName}/UsersGroups/EditContact.aspx?exsvurl=1&realm=${tenant.customerId}&mkt=en-US&id=${row.id}`}
-    >
+    <>
       <CButton size="sm" variant="ghost" color="warning">
+        <a
+          target={'_blank'}
+          href={`https://outlook.office365.com/ecp/@${tenant.defaultDomainName}/UsersGroups/EditContact.aspx?exsvurl=1&realm=${tenant.customerId}&mkt=en-US&id=${row.id}`}
+        ></a>
         <FontAwesomeIcon icon={faEdit} />
       </CButton>
-    </a>
+      <CButton size="sm" color="link" onClick={() => setOCVisible(true)}>
+        <FontAwesomeIcon icon={faEllipsisV} />
+      </CButton>
+      <CippActionsOffcanvas
+        title="Contact Information"
+        extendedInfo={[
+          {
+            label: 'Display Name',
+            value: row.displayName,
+          },
+          {
+            label: 'e-mail address',
+            value: row.mail,
+          },
+        ]}
+        actions={[
+          {
+            label: 'Remove Contact',
+            color: 'danger',
+            modal: true,
+            modalUrl: `/api/RemoveContact?TenantFilter=${tenant.defaultDomainName}&GUID=${row.id}`,
+            modalMessage: 'Are you sure you want to delete this contact?',
+          },
+        ]}
+        placement="end"
+        visible={ocVisible}
+        id={row.id}
+        hideFunction={() => setOCVisible(false)}
+      />
+    </>
   )
 }
 //TODO: Add CellBoolean
