@@ -863,8 +863,11 @@ const NotificationsSettings = () => {
           <CCardBody>
             <Form
               initialValues={{
-                logsToInclude: notificationListResult.data.logsToInclude,
                 ...notificationListResult.data,
+                logsToInclude: notificationListResult.data?.logsToInclude?.map((m) => ({
+                  label: m,
+                  value: m,
+                })),
               }}
               onSubmit={onSubmit}
               render={({ handleSubmit, submitting, values }) => {
