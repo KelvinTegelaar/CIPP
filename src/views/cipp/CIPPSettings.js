@@ -380,45 +380,56 @@ const GeneralSettings = () => {
               <CCardTitle>Tenant Access Check</CCardTitle>
             </CCardHeader>
             <CCardBody>
-              <div className="mb-3">
-                Click the button below to start a tenant access check. You can select multiple a
-                maximum of {maxSelected + 1} tenants is recommended.
-              </div>
+              <CRow className="mb-3">
+                <CCol>
+                  <div className="mb-3">
+                    Click the button below to start a tenant access check. You can select multiple a
+                    maximum of {maxSelected + 1} tenants is recommended.
+                  </div>
 
-              <TenantSelectorMultiple
-                ref={tenantSelectorRef}
-                values={selectedTenants}
-                onChange={(value) =>
-                  handleSetSelectedTenants(
-                    value.map((val) => {
-                      return val.value
-                    }),
-                  )
-                }
-              />
-              {showMaxSelected && (
-                <CCallout color="warning">
-                  A maximum of {maxSelected + 1} tenants is recommended.
-                </CCallout>
-              )}
-              <br />
-              <CButton
-                onClick={() => handleCheckAccess()}
-                disabled={accessCheckResult.isFetching || selectedTenants.length < 1}
-              >
-                {accessCheckResult.isFetching && (
-                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-                )}
-                Run access check
-              </CButton>
-              {accessCheckResult.isSuccess && (
-                <CippTable
-                  reportName="none"
-                  columns={checkAccessColumns}
-                  tableProps={tableProps}
-                  data={accessCheckResult.data.Results}
-                />
-              )}
+                  <TenantSelectorMultiple
+                    ref={tenantSelectorRef}
+                    values={selectedTenants}
+                    onChange={(value) =>
+                      handleSetSelectedTenants(
+                        value.map((val) => {
+                          return val.value
+                        }),
+                      )
+                    }
+                  />
+                  {showMaxSelected && (
+                    <CCallout color="warning">
+                      A maximum of {maxSelected + 1} tenants is recommended.
+                    </CCallout>
+                  )}
+                </CCol>
+              </CRow>
+              <CRow className="mb-3">
+                <CCol>
+                  <CButton
+                    onClick={() => handleCheckAccess()}
+                    disabled={accessCheckResult.isFetching || selectedTenants.length < 1}
+                  >
+                    {accessCheckResult.isFetching && (
+                      <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                    )}
+                    Run access check
+                  </CButton>
+                </CCol>
+              </CRow>
+              <CRow>
+                <CCol>
+                  {accessCheckResult.isSuccess && (
+                    <CippTable
+                      reportName="none"
+                      columns={checkAccessColumns}
+                      tableProps={tableProps}
+                      data={accessCheckResult.data.Results}
+                    />
+                  )}
+                </CCol>
+              </CRow>
             </CCardBody>
           </CCard>
         </CCol>
@@ -894,10 +905,9 @@ const NotificationsSettings = () => {
                             { value: 'ChocoApp', name: 'Adding or deploying applications' },
                             { value: 'AddAPDevice', name: 'Adding autopilot devices' },
                             { value: 'EditTenant', name: 'Editing a tenant' },
-                            { value: 'AddUser', name: 'Adding a user' },
                             { value: 'AddMSPApp', name: 'Adding an MSP app' },
                             { value: 'AddUser', name: 'Adding a user' },
-                            { value: 'AddGrouo', name: 'Adding a Group' },
+                            { value: 'AddGroup', name: 'Adding a group' },
                             { value: 'ExecOffboardUser', name: 'Executing the offboard wizard' },
                           ]}
                         />
