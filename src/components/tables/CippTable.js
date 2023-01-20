@@ -16,6 +16,7 @@ import PropTypes from 'prop-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faColumns, faSearch, faSync } from '@fortawesome/free-solid-svg-icons'
 import { useEffect } from 'react'
+import { cellGenericFormatter } from './CellGenericFormat'
 
 const FilterComponent = ({ filterText, onFilter, onClear, filterlist, onFilterPreset }) => (
   <>
@@ -211,6 +212,7 @@ export default function CippTable({
               selector: (row) => row[columnname],
               sortable: true,
               exportSelector: columnname,
+              cell: cellGenericFormatter(),
             })
           } else {
             let indexOfExisting = columns.findIndex((o) => o.exportSelector === columnname)
