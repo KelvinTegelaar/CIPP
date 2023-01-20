@@ -116,6 +116,32 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
               'Enter a out of office message and press continue to set the out of office.',
           },
           {
+            label: 'Disable Out of Office',
+            color: 'info',
+            modal: true,
+            modalType: 'POST',
+            modalBody: {
+              user: row.userPrincipalName,
+              TenantFilter: tenant.defaultDomainName,
+              Disable: true,
+            },
+            modalUrl: `/api/ExecSetOoO`,
+            modalMessage: 'Are you sure you want to disable the out of office?',
+          },
+          {
+            label: 'Disable Email Forwarding',
+            color: 'info',
+            modal: true,
+            modalType: 'POST',
+            modalBody: {
+              user: row.userPrincipalName,
+              TenantFilter: tenant.defaultDomainName,
+              message: row.message,
+            },
+            modalUrl: `/api/ExecDisableEmailForward`,
+            modalMessage: 'Are you sure you want to disable forwarding of this users emails?',
+          },
+          {
             label: 'Block Sign In',
             color: 'info',
             modal: true,
@@ -142,6 +168,13 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modal: true,
             modalUrl: `/api/ExecResetPass?MustChange=false&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
             modalMessage: 'Are you sure you want to reset the password for this user?',
+          },
+          {
+            label: 'Clear ImmutableId',
+            color: 'warning',
+            modal: true,
+            modalUrl: `/api/ExecClrImmId?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalMessage: 'Are you sure you want to clear the ImmutableId for this user?',
           },
           {
             label: 'Revoke all user sessions',

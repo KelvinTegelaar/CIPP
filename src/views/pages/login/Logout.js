@@ -13,7 +13,7 @@ const Logout = () => {
     return <FullScreenLoading />
   } else if (isAuthenticated) {
     const root = window.location.protocol + '//' + window.location.host
-    window.location.href = root + '/.auth/logout'
+    window.location.href = root + '/.auth/logout?post_logout_redirect_uri=/LogoutRedirect'
     return <CSpinner />
   } else {
     return <Navigate to="/home" />
