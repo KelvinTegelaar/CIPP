@@ -1,23 +1,62 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
+import React, { useState } from 'react'
 import { CButton } from '@coreui/react'
-import { cellBooleanFormatter, CellTip } from 'src/components/tables'
-import { faEdit } from '@fortawesome/free-solid-svg-icons'
+import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { faEdit, faEllipsisV, faEye } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { cellBooleanFormatter, CellTip } from 'src/components/tables'
 import { CippPageList } from 'src/components/layout'
 import { TitleButton } from 'src/components/buttons'
-import { Link } from 'react-router-dom'
+import { CippActionsOffcanvas } from 'src/components/utilities'
 
-const Actions = (row, rowIndex, formatExtraData) => {
+const Offcanvas = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
+  const [ocVisible, setOCVisible] = useState(false)
+  const editLink = `/identity/administration/groups/edit?groupId=${row.id}&tenantDomain=${tenant.defaultDomainName}`
   return (
-    <Link
-      to={`/identity/administration/groups/edit?groupId=${row.id}&tenantDomain=${tenant.defaultDomainName}`}
-    >
-      <CButton size="sm" variant="ghost" color="warning">
-        <FontAwesomeIcon icon={faEdit} />
+    <>
+      <Link to={editLink}>
+        <CButton size="sm" variant="ghost" color="warning">
+          <FontAwesomeIcon icon={faEdit} />
+        </CButton>
+      </Link>
+      <CButton size="sm" color="link" onClick={() => setOCVisible(true)}>
+        <FontAwesomeIcon icon={faEllipsisV} />
       </CButton>
-    </Link>
+      <CippActionsOffcanvas
+        title="Group Information"
+        extendedInfo={[
+          { label: 'Created Date (UTC)', value: `${row.createdDateTime ?? ' '}` },
+          { label: 'Group Type', value: `${row.calculatedGroupType ?? ' '}` },
+          { label: 'OnPrem Last Sync', value: `${row.onPremisesLastSyncDateTime ?? ' '}` },
+          { label: 'Unique ID', value: `${row.id ?? ' '}` },
+        ]}
+        actions={[
+          {
+            icon: <FontAwesomeIcon icon={faEdit} className="me-2" />,
+            label: 'Edit Group',
+            link: editLink,
+            color: 'info',
+          },
+          {
+            label: 'Test Menu Item 1',
+            link: `/identity/administration/ViewBec?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
+            color: 'info',
+          },
+          {
+            label: 'Test Menu Item 2',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecCreateTAP?TenantFilter=${tenant.defaultDomainName}&ID=${row.userPrincipalName}`,
+            modalMessage: 'Are you sure you want to create a Temporary Access Pass?',
+          },
+        ]}
+        placement="end"
+        visible={ocVisible}
+        id={row.id}
+        hideFunction={() => setOCVisible(false)}
+      />
+    </>
   )
 }
 
@@ -72,7 +111,7 @@ const columns = [
   },
   {
     name: 'Actions',
-    cell: Actions,
+    cell: Offcanvas,
     maxWidth: '20px',
   },
 ]
