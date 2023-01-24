@@ -39,16 +39,36 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             color: 'info',
           },
           {
-            label: 'Test Menu Item 1',
-            link: `/identity/administration/ViewBec?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
-            color: 'info',
-          },
-          {
-            label: 'Test Menu Item 2',
+            label: 'Hide from Global Address List',
             color: 'info',
             modal: true,
-            modalUrl: `/api/ExecCreateTAP?TenantFilter=${tenant.defaultDomainName}&ID=${row.userPrincipalName}`,
-            modalMessage: 'Are you sure you want to create a Temporary Access Pass?',
+            modalUrl: `/api/ExecGroupsHideFromGAL?TenantFilter=${tenant.defaultDomainName}&ID=${row.mail}&GroupType=${row.calculatedGroupType}&HidefromGAL=true`,
+            modalMessage:
+              'Are you sure you want to hide this mailbox from the global address list? Remember this will not work if the group is AD Synched.',
+          },
+          {
+            label: 'Unhide from Global Address List',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecGroupsHideFromGAL?TenantFilter=${tenant.defaultDomainName}&ID=${row.mail}&GroupType=${row.calculatedGroupType}`,
+            modalMessage:
+              'Are you sure you want to unhide this mailbox from the global address list? Remember this will not work if the group is AD Synched.',
+          },
+          {
+            label: 'Only allow messages from people inside the organisation',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecGroupsDeliveryManagement?TenantFilter=${tenant.defaultDomainName}&ID=${row.mail}&GroupType=${row.calculatedGroupType}&OnlyAllowInternal=true`,
+            modalMessage:
+              'Are you sure you want to only allow messages from people inside the organisation? Remember this will not work if the group is AD Synched.',
+          },
+          {
+            label: 'Allow messages from people inside and outside the organisation',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecGroupsDeliveryManagement?TenantFilter=${tenant.defaultDomainName}&ID=${row.mail}&GroupType=${row.calculatedGroupType}`,
+            modalMessage:
+              'Are you sure you want to allow messages from people inside and outside the organisation? Remember this will not work if the group is AD Synched.',
           },
         ]}
         placement="end"
