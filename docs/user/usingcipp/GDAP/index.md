@@ -74,6 +74,7 @@ As CIPP is an application that touches many parts of M365 selecting the roles mi
 * Exchange Administrator
 * Security Administrator
 * Cloud App Security Administrator
+* Teams Administrator
 
 
 
