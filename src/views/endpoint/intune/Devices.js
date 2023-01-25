@@ -45,6 +45,13 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modalMessage: 'Are you sure you want to locate this device?',
           },
           {
+            label: 'Retrieve Bitlocker Keys',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecGetRecoveryKey?TenantFilter=${tenant.defaultDomainName}&GUID=${row.azureADDeviceId}`,
+            modalMessage: 'Are you sure you want to retrieve the Bitlocker keys?',
+          },
+          {
             label: 'Windows Defender Full Scan',
             color: 'info',
             modal: true,
