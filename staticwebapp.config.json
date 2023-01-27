@@ -20,7 +20,7 @@
     },
     {
       "route": "/logout",
-      "redirect": "/.auth/logout"
+      "redirect": "/.auth/logout?post_logout_redirect_uri=/LogoutRedirect"
     },
     {
       "route": "/api/ExecSAMSetup",
@@ -29,6 +29,10 @@
     {
       "route": "/api/AddStandardsDeploy",
       "allowedRoles": ["admin"]
+    },
+    {
+      "route": "/LogoutRedirect",
+      "allowedRoles": ["admin", "editor", "readonly", "authenticated", "anonymous"]
     },
     {
       "route": "/404",
