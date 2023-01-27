@@ -53,7 +53,7 @@ export default function UserEmailSettings({ userId, tenantDomain, className = nu
     },
     {
       heading: 'Forwarding Address',
-      body: formatter(details?.ForwardingAddress, false, false, true),
+      body: details?.ForwardingAddress ? details?.ForwardingAddress : 'N/A',
     },
   ]
   return (
