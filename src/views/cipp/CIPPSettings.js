@@ -863,8 +863,11 @@ const NotificationsSettings = () => {
           <CCardBody>
             <Form
               initialValues={{
-                logsToInclude: notificationListResult.data.logsToInclude,
                 ...notificationListResult.data,
+                logsToInclude: notificationListResult.data?.logsToInclude?.map((m) => ({
+                  label: m,
+                  value: m,
+                })),
               }}
               onSubmit={onSubmit}
               render={({ handleSubmit, submitting, values }) => {
@@ -896,7 +899,7 @@ const NotificationsSettings = () => {
                           label="Choose which logs you'd like to receive alerts from. This notification will be sent every 15 minutes."
                           name="logsToInclude"
                           values={[
-                            { value: 'standards', name: 'All Standards' },
+                            { value: 'Standards', name: 'All Standards' },
                             { value: 'TokensUpdater', name: 'Token Events' },
                             { value: 'ExecDnsConfig', name: 'Changing DNS Settings' },
                             { value: 'ExecExcludeLicenses', name: 'Adding excluded licenses' },
