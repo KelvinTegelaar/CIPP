@@ -95,6 +95,22 @@ const MailboxList = () => {
               modalMessage:
                 'Are you sure you want to convert this shared mailbox to a user mailbox?',
             },
+            {
+              label: 'Hide from Global Address List',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecHideFromGAL?TenantFilter=${tenant.defaultDomainName}&ID=${row.UPN}&HidefromGAL=true`,
+              modalMessage:
+                'Are you sure you want to hide this mailbox from the global address list? Remember this will not work if the user is AD Synched.',
+            },
+            {
+              label: 'Unhide from Global Address List',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecHideFromGAL?TenantFilter=${tenant.defaultDomainName}&ID=${row.UPN}`,
+              modalMessage:
+                'Are you sure you want to unhide this mailbox from the global address list? Remember this will not work if the user is AD Synched.',
+            },
           ]}
           placement="end"
           visible={ocVisible}
@@ -177,6 +193,10 @@ const MailboxList = () => {
           {
             filterName: 'User Mailboxes',
             filter: '"recipientTypeDetails":"UserMailbox"',
+          },
+          {
+            filterName: 'Shared Mailboxes with license',
+            filter: '"SharedMailboxWithLicense":true',
           },
           { filterName: 'Shared Mailboxes', filter: '"recipientTypeDetails":"SharedMailbox"' },
           { filterName: 'Has an alias', filter: '"AdditionalEmailAddresses":"' },
