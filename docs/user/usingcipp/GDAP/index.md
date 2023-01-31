@@ -48,6 +48,9 @@ Follow the list below before starting the GDAP Wizard. You must execute each of 
 :::caution It is highly recommended to run the migration for a single tenant first, to prevent the creation of duplicate groups in your own tenant. Selecting multiple tenants on your first run, will fail, and will create duplicate groups in your own tenant 
 :::
 
+:::caution If you are running the GDAP migration Wizard after your first run, and are adding more roles than you added on your first run (where you only did it against one tenant), then again its important to ONLY chose a single tenant, otherwise duplicated GDAP groups will be created. 
+:::
+
 
 - You must be a global Admin and in the 'AdminAgents' group to perform this.
 - Go to your CIPP instance and click on GDAP -> Migration Wizard. Click the button to enable the migration API.
