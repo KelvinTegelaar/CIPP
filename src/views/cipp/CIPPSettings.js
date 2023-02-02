@@ -898,7 +898,11 @@ const NotificationsSettings = () => {
                     )}
                     <CCol>
                       <CCol>
-                        <RFFCFormInput type="text" name="email" label="E-mail" />
+                        <RFFCFormInput
+                          type="text"
+                          name="email"
+                          label="E-mail (Separate multiple E-mails with commas e.g.: matt@example.com, joe@sample.com)"
+                        />
                       </CCol>
                       <CCol>
                         <RFFCFormInput type="text" name="webhook" label="Webhook" />
