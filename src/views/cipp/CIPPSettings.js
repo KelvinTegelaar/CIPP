@@ -385,8 +385,8 @@ const GeneralSettings = () => {
               <CRow className="mb-3">
                 <CCol>
                   <div className="mb-3">
-                    Click the button below to start a tenant access check. You can select multiple a
-                    maximum of {maxSelected + 1} tenants is recommended.
+                    Click the button below to start a tenant access check. You can select multiple,
+                    but a maximum of {maxSelected + 1} tenants is recommended.
                   </div>
 
                   <TenantSelectorMultiple
