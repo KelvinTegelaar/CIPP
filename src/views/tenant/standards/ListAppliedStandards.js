@@ -238,7 +238,7 @@ const ListAppliedStandards = () => {
                         <hr />
                         <CRow className="mb-3" xs={{ cols: 2 }}>
                           {allStandardsList
-                            .filter((obj) => obj.cat === 'Exchange')
+                            .filter((obj) => obj.cat === 'SharePoint')
                             .map((item, key) => (
                               <>
                                 <RFFCFormSwitch key={key} name={item.name} label={item.label} />
