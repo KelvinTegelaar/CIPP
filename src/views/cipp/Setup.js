@@ -98,7 +98,6 @@ const Setup = () => {
         </center>
         <hr className="my-4" />
         This wizard will guide you through setting up a SAM application and using the correct keys.
-        This setup is still a beta feature, and as such so be treated with care.
         <RFFCFormRadio
           value="CreateSAM"
           name="SetupType"
@@ -107,7 +106,12 @@ const Setup = () => {
         <RFFCFormRadio
           value="ExistingSAM"
           name="SetupType"
-          label="I have an existing SAM application and would like to enter my tokens, or update them."
+          label="I have an existing SAM application and would like to manually enter my tokens, or update them."
+        ></RFFCFormRadio>
+        <RFFCFormRadio
+          value="RefreshTokensOnly"
+          name="SetupType"
+          label="I would like to refresh my tokens or replace the user I've used for my previous tokens."
         ></RFFCFormRadio>
         <hr className="my-4" />
       </CippWizard.Page>
@@ -117,6 +121,31 @@ const Setup = () => {
           <h5 className="card-title mb-4">Enter the secure application model credentials.</h5>
         </center>
         <hr className="my-4" />
+        <Condition when="SetupType" is="RefreshTokensOnly">
+          <CRow className="mb-3">
+            <CCol md={6} className="mb-3">
+              Click the buttons below to refresh your tokens.
+              <br /> Remember to login under a account that has been added to the correct GDAP
+              groups or the group 'AdminAgents'. After confirmation that the refresh is successful,
+              the token cache must be cleared.
+              <br />
+              {getResults.isUninitialized && genericGetRequest({ path: 'api/ExecListAppId' })}
+              {getResults.isSuccess && (
+                <>
+                  <CRow className="mb-3">
+                    <CCol md={2} className="mb-3">
+                      <a target="_blank" href={`${getResults.data.refreshUrl}`}>
+                        <CButton color="primary">Refresh Graph Token</CButton>
+                      </a>
+                    </CCol>
+                  </CRow>
+                  <CRow></CRow>
+                </>
+              )}
+            </CCol>
+            <CCol md={2}></CCol>
+          </CRow>
+        </Condition>
         <Condition when="SetupType" is="CreateSAM">
           <RFFCFormRadio
             value="True"
