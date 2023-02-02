@@ -160,7 +160,7 @@ const Setup = () => {
           <Condition when="Partner" is="True">
             <CRow>
               <p>
-                When clicking the button below, the setup wizard starts. This is a 7 step process.
+                When clicking the button below, the setup wizard starts. This is a 5 step process.
                 Please use a Global Administrator to perform these tasks. You can restart the
                 process at any time, by clicking on the start button once more.
               </p>
