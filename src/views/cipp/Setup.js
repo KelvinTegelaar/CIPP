@@ -184,7 +184,7 @@ const Setup = () => {
                 {getResults.isFetching && <CSpinner size="sm">Loading</CSpinner>}
                 {getResults.isSuccess && (
                   <>
-                    {getResults.data?.step < 7 ? (
+                    {getResults.data?.step < 5 ? (
                       <CSpinner size="sm"></CSpinner>
                     ) : (
                       <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
@@ -221,7 +221,7 @@ const Setup = () => {
                 {getResults.isFetching && <CSpinner size="sm">Loading</CSpinner>}
                 {getResults.isSuccess && (
                   <>
-                    {getResults.data?.step < 7 ? (
+                    {getResults.data?.step < 5 ? (
                       <CSpinner size="sm"></CSpinner>
                     ) : (
                       <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
