@@ -45,6 +45,7 @@ Some permissions may come from other APIs than just Graph. you will see this bot
 <!-- vale off -->
 | API / Permissions name                                  | Description                                                                 |
 | ------------------------------------------------------- | --------------------------------------------------------------------------- |
+| (Office 365 SharePoint Online)AllSites.FullControl      | Have full control of all site collections
 | Application.Read.All                                    | Read applications                                                           |
 | Application.ReadWrite.All                               | Read and write all applications                                             |
 | AuditLog.Read.All                                       | Read audit log data                                                         |
@@ -72,6 +73,7 @@ Some permissions may come from other APIs than just Graph. you will see this bot
 | DeviceManagementServiceConfig.ReadWrite.All             | Read and write Microsoft Intune configuration                               |
 | Directory.AccessAsUser.All                              | Access directory as the signed in user                                      |
 | Domain.Read.All                                         | Read domain data                                                            |
+| (Office 365 Exchange Online) Exchange.Manage            | Manage Exchange configuration            |
 | Group.ReadWrite.All                                     | Read and write all groups                                                   |
 | GroupMember.ReadWrite.All                               | Read and write group memberships                                            |
 | Mail.Send                                               | Send mail as a user                                                         |
