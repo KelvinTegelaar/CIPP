@@ -94,6 +94,13 @@ const ListAlertsQueue = () => {
       cell: cellBooleanFormatter(),
     },
     {
+      name: 'Overused Licenses',
+      selector: (row) => row['OverusedLicenses'],
+      sortable: true,
+      exportSelector: 'OverusedLicenses',
+      cell: cellBooleanFormatter(),
+    },
+    {
       name: 'App Secret Expiry',
       selector: (row) => row['AppSecretExpiry'],
       sortable: true,
