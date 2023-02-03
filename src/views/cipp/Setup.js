@@ -98,7 +98,6 @@ const Setup = () => {
         </center>
         <hr className="my-4" />
         This wizard will guide you through setting up a SAM application and using the correct keys.
-        This setup is still a beta feature, and as such so be treated with care.
         <RFFCFormRadio
           value="CreateSAM"
           name="SetupType"
@@ -107,7 +106,12 @@ const Setup = () => {
         <RFFCFormRadio
           value="ExistingSAM"
           name="SetupType"
-          label="I have an existing SAM application and would like to enter my tokens"
+          label="I have an existing SAM application and would like to manually enter my tokens, or update them."
+        ></RFFCFormRadio>
+        <RFFCFormRadio
+          value="RefreshTokensOnly"
+          name="SetupType"
+          label="I would like to refresh my tokens or replace the user I've used for my previous tokens."
         ></RFFCFormRadio>
         <hr className="my-4" />
       </CippWizard.Page>
@@ -117,6 +121,31 @@ const Setup = () => {
           <h5 className="card-title mb-4">Enter the secure application model credentials.</h5>
         </center>
         <hr className="my-4" />
+        <Condition when="SetupType" is="RefreshTokensOnly">
+          <CRow className="mb-3">
+            <CCol md={6} className="mb-3">
+              Click the buttons below to refresh your tokens.
+              <br /> Remember to login under a account that has been added to the correct GDAP
+              groups or the group 'AdminAgents'. After confirmation that the refresh is successful,
+              the token cache must be cleared.
+              <br />
+              {getResults.isUninitialized && genericGetRequest({ path: 'api/ExecListAppId' })}
+              {getResults.isSuccess && (
+                <>
+                  <CRow className="mb-3">
+                    <CCol md={2} className="mb-3">
+                      <a target="_blank" href={`${getResults.data.refreshUrl}`}>
+                        <CButton color="primary">Refresh Graph Token</CButton>
+                      </a>
+                    </CCol>
+                  </CRow>
+                  <CRow></CRow>
+                </>
+              )}
+            </CCol>
+            <CCol md={2}></CCol>
+          </CRow>
+        </Condition>
         <Condition when="SetupType" is="CreateSAM">
           <RFFCFormRadio
             value="True"
@@ -131,7 +160,7 @@ const Setup = () => {
           <Condition when="Partner" is="True">
             <CRow>
               <p>
-                When clicking the button below, the setup wizard starts. This is a 7 step process.
+                When clicking the button below, the setup wizard starts. This is a 5 step process.
                 Please use a Global Administrator to perform these tasks. You can restart the
                 process at any time, by clicking on the start button once more.
               </p>
@@ -155,7 +184,7 @@ const Setup = () => {
                 {getResults.isFetching && <CSpinner size="sm">Loading</CSpinner>}
                 {getResults.isSuccess && (
                   <>
-                    {getResults.data?.step < 7 ? (
+                    {getResults.data?.step < 5 ? (
                       <CSpinner size="sm"></CSpinner>
                     ) : (
                       <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
@@ -192,7 +221,7 @@ const Setup = () => {
                 {getResults.isFetching && <CSpinner size="sm">Loading</CSpinner>}
                 {getResults.isSuccess && (
                   <>
-                    {getResults.data?.step < 7 ? (
+                    {getResults.data?.step < 5 ? (
                       <CSpinner size="sm"></CSpinner>
                     ) : (
                       <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
@@ -206,13 +235,15 @@ const Setup = () => {
           </Condition>
         </Condition>
         <Condition when="SetupType" is="ExistingSAM">
+          you may enter your secrets below, if you only want to update a single value, leave the
+          other fields blank.
           <CRow>
             <CCol md={12}>
               <RFFCFormInput
                 type="text"
                 name="TenantID"
                 label="Tenant ID"
-                placeholder="Enter the Tenant ID. e.g. mymsp.onmicrosoft.com"
+                placeholder="Enter the Tenant ID. e.g. mymsp.onmicrosoft.com. Leave blank to retain a previous key if this exists."
               />
             </CCol>
           </CRow>
@@ -222,7 +253,7 @@ const Setup = () => {
                 type="text"
                 name="ApplicationID"
                 label="Application ID"
-                placeholder="Enter the application ID. e.g 1111-1111-1111-1111-11111"
+                placeholder="Enter the application ID. e.g 1111-1111-1111-1111-11111. Leave blank to retain a previous key if this exists."
               />
             </CCol>
           </CRow>
@@ -232,7 +263,7 @@ const Setup = () => {
                 type="password"
                 name="ApplicationSecret"
                 label="Application Secret"
-                placeholder="Enter the application secret"
+                placeholder="Enter the application secret. Leave blank to retain a previous key if this exists."
               />
             </CCol>
           </CRow>
@@ -242,7 +273,7 @@ const Setup = () => {
                 type="password"
                 name="RefreshToken"
                 label="Refresh Token"
-                placeholder="Enter the refresh token"
+                placeholder="Enter the refresh token. Leave blank to retain a previous key if this exists."
               />
             </CCol>
           </CRow>
@@ -252,7 +283,7 @@ const Setup = () => {
                 type="password"
                 name="ExchangeRefreshToken"
                 label="Exchange Refresh Token"
-                placeholder="Enter the Exchange refresh tokens"
+                placeholder="Enter the Exchange refresh tokens. Leave blank to retain a previous key if this exists."
               />
             </CCol>
           </CRow>
@@ -268,7 +299,6 @@ const Setup = () => {
         {!postResults.isSuccess && (
           <FormSpy>
             {(props) => {
-              /* eslint-disable react/prop-types */
               return (
                 <>
                   <CRow>
