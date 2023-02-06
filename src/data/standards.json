@@ -136,20 +136,6 @@
   },
   {
     "cat": "AAD",
-    "name": "standards.SSPR",
-    "helpText": "This is the default helptext",
-    "addedComponent": null,
-    "label": "Enable Self Service Password Reset"
-  },
-  {
-    "cat": "AAD",
-    "name": "standards.UndoSSPR",
-    "helpText": "This is the default helptext",
-    "addedComponent": null,
-    "label": "Undo SSPR Standard"
-  },
-  {
-    "cat": "AAD",
     "name": "standards.OauthConsent.Enabled",
     "helpText": "This is the default helptext",
     "addedComponent": {
@@ -158,13 +144,6 @@
       "label": "Allowed application IDs, comma separated"
     },
     "label": "Require admin consent for applications (Prevent OAuth phishing.)"
-  },
-  {
-    "cat": "AAD",
-    "name": "standards.AzurePortal",
-    "helpText": "This is the default helptext",
-    "addedComponent": null,
-    "label": "Disable Azure Portal access for Standard users"
   },
   {
     "cat": "AAD",
@@ -251,11 +230,18 @@
     "label": "Enable Auto-expanding archives"
   },
   {
-    "name": "standards.SpoofWarn",
+    "name": "standards.SpoofWarn.Enable",
     "cat": "Exchange",
     "helpText": "This is the default helptext",
     "addedComponent": null,
     "label": "Enable Spoofing warnings for Outlook (This e-mail is external identifiers)"
+  },
+  {
+    "name": "standards.SpoofWarn.Disable",
+    "cat": "Exchange",
+    "helpText": "This is the default helptext",
+    "addedComponent": null,
+    "label": "Disable Spoofing warnings for Outlook (This e-mail is external identifiers)"
   },
   {
     "name": "standards.DisableViva",
