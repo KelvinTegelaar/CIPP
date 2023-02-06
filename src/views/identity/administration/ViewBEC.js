@@ -95,12 +95,12 @@ const ViewBec = () => {
     },
     {
       name: 'Error code',
-      selector: (row) => row.Status?.ErrorCode,
+      selector: (row) => row.id,
       sortable: true,
     },
     {
       name: 'Details',
-      selector: (row) => row.Status?.AdditionalDetails,
+      selector: (row) => row.Status,
       sortable: true,
     },
   ]
