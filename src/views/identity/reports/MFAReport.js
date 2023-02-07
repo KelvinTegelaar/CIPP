@@ -80,7 +80,7 @@ const Altcolumns = [
     name: 'Account Licensed',
     sortable: true,
     cell: cellBooleanFormatter({ colourless: true }),
-    exportSelector: 'AccountEnabled',
+    exportSelector: 'isLicensed',
   },
   {
     selector: (row) => row['PerUser'],
