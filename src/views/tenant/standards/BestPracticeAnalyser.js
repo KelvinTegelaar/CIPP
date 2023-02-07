@@ -23,7 +23,7 @@ const RefreshAction = () => {
         <div>
           Are you sure you want to force the Best Practice Analysis to run? This will slow down
           normal usage considerably. <br />
-          <i>Please note: this runs at midnight automatically every day.</i>
+          <i>Please note: this runs at 3:00 AM UTC automatically every day.</i>
         </div>
       ),
       onConfirm: () => execBestPracticeAnalyser(),

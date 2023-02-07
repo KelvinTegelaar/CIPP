@@ -110,8 +110,8 @@ const EditUser = () => {
     keepLicenses: true,
     ...user,
     usageLocation: {
-      value: user.usageLocation ? user.usageLocation : usageLocation,
-      label: user.usageLocation ? user.usageLocation : usageLocation,
+      value: user.usageLocation ? user.usageLocation : usageLocation?.value,
+      label: user.usageLocation ? user.usageLocation : usageLocation?.label,
     },
     license: precheckedLicenses,
   }
