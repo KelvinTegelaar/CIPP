@@ -90,14 +90,14 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             label: 'Convert to Shared Mailbox',
             color: 'info',
             modal: true,
-            modalUrl: `/api/ExecConvertToSharedMailbox?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalUrl: `/api/ExecConvertToSharedMailbox?TenantFilter=${tenant.defaultDomainName}&ID=${row.userPrincipalName}`,
             modalMessage: 'Are you sure you want to convert this user to a shared mailbox?',
           },
           {
             label: 'Enable Online Archive',
             color: 'info',
             modal: true,
-            modalUrl: `/api/ExecEnableArchive?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalUrl: `/api/ExecEnableArchive?TenantFilter=${tenant.defaultDomainName}&ID=${row.userPrincipalName}`,
             modalMessage: 'Are you sure you want to enable the online archive for this user?',
           },
           {

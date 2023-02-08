@@ -118,6 +118,7 @@ const AlertWizard = () => {
           />
           <RFFCFormSwitch name="QuotaUsed" label="Alert on 90% mailbox quota used" />
           <RFFCFormSwitch name="UnusedLicenses" label="Alert on unused licenses" />
+          <RFFCFormSwitch name="OverusedLicenses" label="Alert on overused licenses" />
           <RFFCFormSwitch name="AppSecretExpiry" label="Alert on expiring application secrets" />
           <RFFCFormSwitch name="ApnCertExpiry" label="Alert on expiring APN certificates" />
           <RFFCFormSwitch name="VppTokenExpiry" label="Alert on expiring VPP tokens" />
@@ -202,6 +203,14 @@ const AlertWizard = () => {
                             color="#f77f00"
                             size="lg"
                             icon={props.values.UnusedLicenses ? faCheck : faTimes}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Alert on overused licenses
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.OverusedLicenses ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
