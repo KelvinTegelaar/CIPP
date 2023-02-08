@@ -78,6 +78,7 @@ As CIPP is an application that touches many parts of M365 selecting the roles mi
 * Security Administrator
 * Cloud App Security Administrator
 * Teams Administrator
+* Privileged Authentication Administrator (Only required if you want to be able to delete global admins within tenants from CIPP)
 
 
 
