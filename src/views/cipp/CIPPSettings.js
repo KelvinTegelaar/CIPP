@@ -50,7 +50,12 @@ import { useLazyEditDnsConfigQuery, useLazyGetDnsConfigQuery } from 'src/store/a
 import { useDispatch, useSelector } from 'react-redux'
 import { cellBooleanFormatter, CellTip, CellTipIcon, CippTable } from 'src/components/tables'
 import { CippPage, CippPageList } from 'src/components/layout'
-import { RFFCFormSwitch, RFFCFormInput, RFFCFormSelect } from 'src/components/forms'
+import {
+  RFFCFormSwitch,
+  RFFCFormInput,
+  RFFCFormSelect,
+  RFFSelectSearch,
+} from 'src/components/forms'
 import { Form } from 'react-final-form'
 import useConfirmModal from 'src/hooks/useConfirmModal'
 import { setCurrentTenant } from 'src/store/features/app'
@@ -272,7 +277,7 @@ const GeneralSettings = () => {
               <CCardTitle>Permissions Check</CCardTitle>
             </CCardHeader>
             <CCardBody>
-              Click the button below to start a permissions check. <br />
+              <CRow>Click the button below to start a permissions check.</CRow>
               <CButton
                 onClick={() => checkPermissions()}
                 disabled={permissionsResult.isFetching}
@@ -339,12 +344,14 @@ const GeneralSettings = () => {
               <CCardTitle>Clear Cache</CCardTitle>
             </CCardHeader>
             <CCardBody>
-              Click the button below to clear the application cache. You can clear only the tenant
-              cache, or all caches. <br /> <br />
+              <CRow>
+                Click the button below to clear the application cache. You can clear only the tenant
+                cache, or all caches.
+              </CRow>
               <CButton
                 onClick={() => handleClearCache()}
                 disabled={clearCacheResult.isFetching}
-                className="me-3"
+                className="me-3 mt-3"
               >
                 {clearCacheResult.isFetching && (
                   <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
@@ -354,7 +361,7 @@ const GeneralSettings = () => {
               <CButton
                 onClick={() => handleClearCacheTenant()}
                 disabled={clearCacheResult.isFetching}
-                className="me-3"
+                className="me-3 mt-3"
               >
                 {clearCacheResult.isFetching && (
                   <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
@@ -375,45 +382,56 @@ const GeneralSettings = () => {
               <CCardTitle>Tenant Access Check</CCardTitle>
             </CCardHeader>
             <CCardBody>
-              <div className="mb-3">
-                Click the button below to start a tenant access check. You can select multiple a
-                maximum of {maxSelected + 1} tenants is recommended.
-              </div>
+              <CRow className="mb-3">
+                <CCol>
+                  <div className="mb-3">
+                    Click the button below to start a tenant access check. You can select multiple,
+                    but a maximum of {maxSelected + 1} tenants is recommended.
+                  </div>
 
-              <TenantSelectorMultiple
-                ref={tenantSelectorRef}
-                values={selectedTenants}
-                onChange={(value) =>
-                  handleSetSelectedTenants(
-                    value.map((val) => {
-                      return val.value
-                    }),
-                  )
-                }
-              />
-              {showMaxSelected && (
-                <CCallout color="warning">
-                  A maximum of {maxSelected + 1} tenants is recommended.
-                </CCallout>
-              )}
-              <br />
-              <CButton
-                onClick={() => handleCheckAccess()}
-                disabled={accessCheckResult.isFetching || selectedTenants.length < 1}
-              >
-                {accessCheckResult.isFetching && (
-                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-                )}
-                Run access check
-              </CButton>
-              {accessCheckResult.isSuccess && (
-                <CippTable
-                  reportName="none"
-                  columns={checkAccessColumns}
-                  tableProps={tableProps}
-                  data={accessCheckResult.data.Results}
-                />
-              )}
+                  <TenantSelectorMultiple
+                    ref={tenantSelectorRef}
+                    values={selectedTenants}
+                    onChange={(value) =>
+                      handleSetSelectedTenants(
+                        value.map((val) => {
+                          return val.value
+                        }),
+                      )
+                    }
+                  />
+                  {showMaxSelected && (
+                    <CCallout color="warning">
+                      A maximum of {maxSelected + 1} tenants is recommended.
+                    </CCallout>
+                  )}
+                </CCol>
+              </CRow>
+              <CRow className="mb-3">
+                <CCol>
+                  <CButton
+                    onClick={() => handleCheckAccess()}
+                    disabled={accessCheckResult.isFetching || selectedTenants.length < 1}
+                  >
+                    {accessCheckResult.isFetching && (
+                      <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                    )}
+                    Run access check
+                  </CButton>
+                </CCol>
+              </CRow>
+              <CRow>
+                <CCol>
+                  {accessCheckResult.isSuccess && (
+                    <CippTable
+                      reportName="none"
+                      columns={checkAccessColumns}
+                      tableProps={tableProps}
+                      data={accessCheckResult.data.Results}
+                    />
+                  )}
+                </CCol>
+              </CRow>
             </CCardBody>
           </CCard>
         </CCol>
@@ -428,7 +446,7 @@ const GeneralSettings = () => {
               <CCardTitle>Run Backup</CCardTitle>
             </CCardHeader>
             <CCardBody>
-              Click the button below to start a backup of all settings <br />
+              <CRow>Click the button below to start a backup of all Settings</CRow>
               <CButton
                 onClick={() => runBackup({ path: '/api/ExecRunBackup' })}
                 disabled={RunBackupResult.isFetching}
@@ -711,8 +729,10 @@ const SecuritySettings = () => {
                 <CCardTitle>Resource Group</CCardTitle>
               </CCardHeader>
               <CCardBody className="equalheight">
-                The Resource group contains all the CIPP resources in your tenant, except the SAM
-                Application <br /> <br />
+                <CRow className="mb-3">
+                  The Resource group contains all the CIPP resources in your tenant, except the SAM
+                  Application
+                </CRow>
                 <a
                   target={'_blank'}
                   href={listBackendResult.data?.Results?.ResourceGroup}
@@ -729,9 +749,10 @@ const SecuritySettings = () => {
                 <CCardTitle>Key Vault</CCardTitle>
               </CCardHeader>
               <CCardBody className="equalheight">
-                The keyvault allows you to check token information. By default you do not have
-                access.
-                <br /> <br />
+                <CRow className="mb-3">
+                  The keyvault allows you to check token information. By default you do not have
+                  access.
+                </CRow>
                 <a
                   target={'_blank'}
                   href={listBackendResult.data?.Results?.KeyVault}
@@ -748,9 +769,10 @@ const SecuritySettings = () => {
                 <CCardTitle>Static Web App (Role Management)</CCardTitle>
               </CCardHeader>
               <CCardBody className="equalheight">
-                The Static Web App role management allows you to invite other users to the
-                application.
-                <br /> <br />
+                <CRow className="mb-3">
+                  The Static Web App role management allows you to invite other users to the
+                  application.
+                </CRow>
                 <a
                   target={'_blank'}
                   href={listBackendResult.data?.Results?.SWARoles}
@@ -769,8 +791,9 @@ const SecuritySettings = () => {
                 <CCardTitle>Function App (Deployment Center)</CCardTitle>
               </CCardHeader>
               <CCardBody className="equalheight">
-                The Function App Deployment Center allows you to run updates on the API
-                <br /> <br />
+                <CRow className="mb-3">
+                  The Function App Deployment Center allows you to run updates on the API
+                </CRow>
                 <a
                   target={'_blank'}
                   href={listBackendResult.data?.Results?.FunctionDeployment}
@@ -787,8 +810,10 @@ const SecuritySettings = () => {
                 <CCardTitle>Function App (Configuration)</CCardTitle>
               </CCardHeader>
               <CCardBody className="equalheight">
-                At the Function App Configuration you can check the status of the API access to your
-                keyvault <br /> <br />
+                <CRow className="mb-3">
+                  At the Function App Configuration you can check the status of the API access to
+                  your keyvault
+                </CRow>
                 <a
                   target={'_blank'}
                   href={listBackendResult.data?.Results?.FunctionConfig}
@@ -805,7 +830,9 @@ const SecuritySettings = () => {
                 <CCardTitle>Function App (Overview)</CCardTitle>
               </CCardHeader>
               <CCardBody className="equalheight">
-                At the function App Overview, you can stop and start the backend API <br /> <br />
+                <CRow className="mb-3">
+                  At the function App Overview, you can stop and start the backend API
+                </CRow>
                 <a
                   target={'_blank'}
                   href={listBackendResult.data?.Results?.FunctionApp}
@@ -823,18 +850,12 @@ const SecuritySettings = () => {
 }
 
 const NotificationsSettings = () => {
-  //to post settings
   const [configNotifications, notificationConfigResult] = useLazyExecNotificationConfigQuery()
-
+  const [listNotification, notificationListResult] = useLazyListNotificationConfigQuery()
   const onSubmit = (values) => {
-    // @todo bind this
-    // window.alert(JSON.stringify(values))
-    // console.log(values)
+    console.log(values)
     configNotifications(values)
   }
-  //to get current settings
-  const [listNotification, notificationListResult] = useLazyListNotificationConfigQuery()
-  //todo: Replace with prettier sliders etc
   return (
     <>
       {notificationListResult.isUninitialized && listNotification()}
@@ -851,7 +872,13 @@ const NotificationsSettings = () => {
           </CCardHeader>
           <CCardBody>
             <Form
-              initialValues={{ ...notificationListResult.data }}
+              initialValues={{
+                ...notificationListResult.data,
+                logsToInclude: notificationListResult.data?.logsToInclude?.map((m) => ({
+                  label: m,
+                  value: m,
+                })),
+              }}
               onSubmit={onSubmit}
               render={({ handleSubmit, submitting, values }) => {
                 return (
@@ -871,57 +898,44 @@ const NotificationsSettings = () => {
                     )}
                     <CCol>
                       <CCol>
-                        <RFFCFormInput type="text" name="email" label="E-mail" />
+                        <RFFCFormInput
+                          type="text"
+                          name="email"
+                          label="E-mail (Separate multiple E-mails with commas e.g.: matt@example.com, joe@sample.com)"
+                        />
                       </CCol>
                       <CCol>
                         <RFFCFormInput type="text" name="webhook" label="Webhook" />
                       </CCol>
-                      <CFormLabel>
-                        Choose which types of updates you want to receive. This notification will be
-                        sent every 15 minutes.
-                      </CFormLabel>
-                      <br />
-                      <RFFCFormSwitch
-                        name="addUser"
-                        label="New Accounts created via CIPP"
-                        value={false}
-                      />
-                      <RFFCFormSwitch
-                        name="removeUser"
-                        label="Removed Accounts via CIPP"
-                        value={false}
-                      />
-                      <RFFCFormSwitch
-                        name="addChocoApp"
-                        label="New Applications added via CIPP"
-                        value={false}
-                      />
-                      <RFFCFormSwitch
-                        name="addPolicy"
-                        label="New Policies added via CIPP"
-                        value={false}
-                      />
-                      <RFFCFormSwitch
-                        name="addStandardsDeploy"
-                        label="New Standards added via CIPP"
-                        value={false}
-                      />
-                      <RFFCFormSwitch
-                        name="removeStandard"
-                        label="Removed Standards via CIPP"
-                        value={false}
-                      />
-                      <RFFCFormSwitch
-                        name="tokenUpdater"
-                        label="Token Refresh Events"
-                        value={false}
-                      />
-                      <RFFCFormSwitch
-                        name="onePerTenant"
-                        label="Receive one email per tenant"
-                        value={false}
-                      />
-                      <br></br>
+                      <CCol>
+                        <RFFSelectSearch
+                          multi={true}
+                          label="Choose which logs you'd like to receive alerts from. This notification will be sent every 15 minutes."
+                          name="logsToInclude"
+                          values={[
+                            { value: 'Standards', name: 'All Standards' },
+                            { value: 'TokensUpdater', name: 'Token Events' },
+                            { value: 'ExecDnsConfig', name: 'Changing DNS Settings' },
+                            { value: 'ExecExcludeLicenses', name: 'Adding excluded licenses' },
+                            { value: 'ExecExcludeTenant', name: 'Adding excluded tenants' },
+                            { value: 'EditUser', name: 'Editing a user' },
+                            { value: 'ChocoApp', name: 'Adding or deploying applications' },
+                            { value: 'AddAPDevice', name: 'Adding autopilot devices' },
+                            { value: 'EditTenant', name: 'Editing a tenant' },
+                            { value: 'AddMSPApp', name: 'Adding an MSP app' },
+                            { value: 'AddUser', name: 'Adding a user' },
+                            { value: 'AddGroup', name: 'Adding a group' },
+                            { value: 'ExecOffboardUser', name: 'Executing the offboard wizard' },
+                          ]}
+                        />
+                      </CCol>
+                      <CCol>
+                        <RFFCFormSwitch
+                          name="onePerTenant"
+                          label="Receive one email per tenant"
+                          value={false}
+                        />
+                      </CCol>
                       <CButton disabled={notificationConfigResult.isFetching} type="submit">
                         Set Notification Settings
                       </CButton>
@@ -1079,7 +1093,7 @@ const DNSSettings = () => {
             <CCardTitle>DNS Resolver</CCardTitle>
           </CCardHeader>
           <CCardBody>
-            Select a DNS resolver to use for Domain Analysis. <br />
+            <CRow>Select a DNS resolver to use for Domain Analysis.</CRow>
             <CButtonGroup role="group" aria-label="Resolver" className="my-3">
               {resolvers.map((r, index) => (
                 <CButton
