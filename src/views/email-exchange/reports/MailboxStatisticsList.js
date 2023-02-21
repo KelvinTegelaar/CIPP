@@ -31,6 +31,12 @@ const columns = [
     exportSelector: 'displayName',
   },
   {
+    selector: (row) => row['MailboxType'],
+    name: 'Mailbox Type',
+    sortable: true,
+    exportSelector: 'MailboxType',
+  },
+  {
     selector: (row) => row['LastActive'],
     name: 'Last Active',
     sortable: true,
