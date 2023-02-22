@@ -17,10 +17,18 @@ export const usersApi = baseApi.injectEndpoints({
         },
       }),
     }),
+    listContacts: builder.query({
+      query: ({ tenantDomain }) => ({
+        path: '/api/ListContacts',
+        params: {
+          TenantFilter: tenantDomain,
+        },
+      }),
+    }),
     listUser: builder.query({
-      query: ({ tenantDomain, userId }) => ({
+      query: ({ tenantDomain, userId, IncludeLogonDetails }) => ({
         path: '/api/ListUsers',
-        params: { userId, TenantFilter: tenantDomain },
+        params: { userId, TenantFilter: tenantDomain, IncludeLogonDetails },
       }),
       transformResponse: (response) => {
         if (response?.length > 0) {
@@ -109,6 +117,7 @@ export const {
   useEditUserMutation,
   useListUsersQuery,
   useListUserQuery,
+  useListContactsQuery,
   useListUserConditionalAccessPoliciesQuery,
   useListUserSigninLogsQuery,
   useAddUserMutation,

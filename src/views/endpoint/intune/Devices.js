@@ -21,19 +21,6 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
         extendedInfo={[
           { label: 'Device Name', value: `${row.deviceName ?? ' '}` },
           { label: 'UPN', value: `${row.userPrincipalName ?? ' '}` },
-          row?.deviceActionResults.map((devicelog, idx) => {
-            if ($devicelog.actionName === 'locateDevice') {
-              return {
-                label: `${devicelog.startDateTime} - ${$devicelog.actionName}`,
-                value: devicelog.deviceLocation,
-              }
-            } else {
-              return {
-                label: `${devicelog.startDateTime} - ${$devicelog.actionName}`,
-                value: devicelog.actionState,
-              }
-            }
-          }),
         ]}
         actions={[
           {
@@ -56,6 +43,13 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modal: true,
             modalUrl: `/api/ExecDeviceAction?TenantFilter=${tenant.defaultDomainName}&GUID=${row.id}&Action=locateDevice`,
             modalMessage: 'Are you sure you want to locate this device?',
+          },
+          {
+            label: 'Retrieve Bitlocker Keys',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecGetRecoveryKey?TenantFilter=${tenant.defaultDomainName}&GUID=${row.azureADDeviceId}`,
+            modalMessage: 'Are you sure you want to retrieve the Bitlocker keys?',
           },
           {
             label: 'Windows Defender Full Scan',

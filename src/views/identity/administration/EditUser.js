@@ -93,6 +93,7 @@ const EditUser = () => {
       Username: values.mailNickname,
       streetAddress: values.streetAddress,
       tenantID: tenantDomain,
+      mustchangepass: values.RequirePasswordChange,
       ...(values.licenses ? values.license : ''),
     }
     //window.alert(JSON.stringify(shippedValues))
@@ -105,14 +106,15 @@ const EditUser = () => {
         {},
       )
     : ''
-
   const initialState = {
     keepLicenses: true,
     ...user,
-    usageLocation: usageLocation,
+    usageLocation: {
+      value: user.usageLocation ? user.usageLocation : usageLocation?.value,
+      label: user.usageLocation ? user.usageLocation : usageLocation?.label,
+    },
     license: precheckedLicenses,
   }
-  console.log(precheckedLicenses)
 
   const formDisabled = queryError === true || !!userError || !user || Object.keys(user).length === 0
   const RawUser = JSON.stringify(user, null, 2)
