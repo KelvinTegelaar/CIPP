@@ -277,7 +277,7 @@ const GeneralSettings = () => {
               <CCardTitle>Permissions Check</CCardTitle>
             </CCardHeader>
             <CCardBody>
-              Click the button below to start a permissions check. <br />
+              <CRow>Click the button below to start a permissions check.</CRow>
               <CButton
                 onClick={() => checkPermissions()}
                 disabled={permissionsResult.isFetching}
@@ -344,12 +344,14 @@ const GeneralSettings = () => {
               <CCardTitle>Clear Cache</CCardTitle>
             </CCardHeader>
             <CCardBody>
-              Click the button below to clear the application cache. You can clear only the tenant
-              cache, or all caches. <br /> <br />
+              <CRow>
+                Click the button below to clear the application cache. You can clear only the tenant
+                cache, or all caches.
+              </CRow>
               <CButton
                 onClick={() => handleClearCache()}
                 disabled={clearCacheResult.isFetching}
-                className="me-3"
+                className="me-3 mt-3"
               >
                 {clearCacheResult.isFetching && (
                   <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
@@ -359,7 +361,7 @@ const GeneralSettings = () => {
               <CButton
                 onClick={() => handleClearCacheTenant()}
                 disabled={clearCacheResult.isFetching}
-                className="me-3"
+                className="me-3 mt-3"
               >
                 {clearCacheResult.isFetching && (
                   <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
@@ -383,8 +385,8 @@ const GeneralSettings = () => {
               <CRow className="mb-3">
                 <CCol>
                   <div className="mb-3">
-                    Click the button below to start a tenant access check. You can select multiple a
-                    maximum of {maxSelected + 1} tenants is recommended.
+                    Click the button below to start a tenant access check. You can select multiple,
+                    but a maximum of {maxSelected + 1} tenants is recommended.
                   </div>
 
                   <TenantSelectorMultiple
@@ -444,7 +446,7 @@ const GeneralSettings = () => {
               <CCardTitle>Run Backup</CCardTitle>
             </CCardHeader>
             <CCardBody>
-              Click the button below to start a backup of all settings <br />
+              <CRow>Click the button below to start a backup of all Settings</CRow>
               <CButton
                 onClick={() => runBackup({ path: '/api/ExecRunBackup' })}
                 disabled={RunBackupResult.isFetching}
@@ -727,8 +729,10 @@ const SecuritySettings = () => {
                 <CCardTitle>Resource Group</CCardTitle>
               </CCardHeader>
               <CCardBody className="equalheight">
-                The Resource group contains all the CIPP resources in your tenant, except the SAM
-                Application <br /> <br />
+                <CRow className="mb-3">
+                  The Resource group contains all the CIPP resources in your tenant, except the SAM
+                  Application
+                </CRow>
                 <a
                   target={'_blank'}
                   href={listBackendResult.data?.Results?.ResourceGroup}
@@ -745,9 +749,10 @@ const SecuritySettings = () => {
                 <CCardTitle>Key Vault</CCardTitle>
               </CCardHeader>
               <CCardBody className="equalheight">
-                The keyvault allows you to check token information. By default you do not have
-                access.
-                <br /> <br />
+                <CRow className="mb-3">
+                  The keyvault allows you to check token information. By default you do not have
+                  access.
+                </CRow>
                 <a
                   target={'_blank'}
                   href={listBackendResult.data?.Results?.KeyVault}
@@ -764,9 +769,10 @@ const SecuritySettings = () => {
                 <CCardTitle>Static Web App (Role Management)</CCardTitle>
               </CCardHeader>
               <CCardBody className="equalheight">
-                The Static Web App role management allows you to invite other users to the
-                application.
-                <br /> <br />
+                <CRow className="mb-3">
+                  The Static Web App role management allows you to invite other users to the
+                  application.
+                </CRow>
                 <a
                   target={'_blank'}
                   href={listBackendResult.data?.Results?.SWARoles}
@@ -785,8 +791,9 @@ const SecuritySettings = () => {
                 <CCardTitle>Function App (Deployment Center)</CCardTitle>
               </CCardHeader>
               <CCardBody className="equalheight">
-                The Function App Deployment Center allows you to run updates on the API
-                <br /> <br />
+                <CRow className="mb-3">
+                  The Function App Deployment Center allows you to run updates on the API
+                </CRow>
                 <a
                   target={'_blank'}
                   href={listBackendResult.data?.Results?.FunctionDeployment}
@@ -803,8 +810,10 @@ const SecuritySettings = () => {
                 <CCardTitle>Function App (Configuration)</CCardTitle>
               </CCardHeader>
               <CCardBody className="equalheight">
-                At the Function App Configuration you can check the status of the API access to your
-                keyvault <br /> <br />
+                <CRow className="mb-3">
+                  At the Function App Configuration you can check the status of the API access to
+                  your keyvault
+                </CRow>
                 <a
                   target={'_blank'}
                   href={listBackendResult.data?.Results?.FunctionConfig}
@@ -821,7 +830,9 @@ const SecuritySettings = () => {
                 <CCardTitle>Function App (Overview)</CCardTitle>
               </CCardHeader>
               <CCardBody className="equalheight">
-                At the function App Overview, you can stop and start the backend API <br /> <br />
+                <CRow className="mb-3">
+                  At the function App Overview, you can stop and start the backend API
+                </CRow>
                 <a
                   target={'_blank'}
                   href={listBackendResult.data?.Results?.FunctionApp}
@@ -840,7 +851,6 @@ const SecuritySettings = () => {
 
 const NotificationsSettings = () => {
   const [configNotifications, notificationConfigResult] = useLazyExecNotificationConfigQuery()
-
   const [listNotification, notificationListResult] = useLazyListNotificationConfigQuery()
   const onSubmit = (values) => {
     console.log(values)
@@ -888,7 +898,11 @@ const NotificationsSettings = () => {
                     )}
                     <CCol>
                       <CCol>
-                        <RFFCFormInput type="text" name="email" label="E-mail" />
+                        <RFFCFormInput
+                          type="text"
+                          name="email"
+                          label="E-mail (Separate multiple E-mails with commas e.g.: matt@example.com, joe@sample.com)"
+                        />
                       </CCol>
                       <CCol>
                         <RFFCFormInput type="text" name="webhook" label="Webhook" />
@@ -1079,7 +1093,7 @@ const DNSSettings = () => {
             <CCardTitle>DNS Resolver</CCardTitle>
           </CCardHeader>
           <CCardBody>
-            Select a DNS resolver to use for Domain Analysis. <br />
+            <CRow>Select a DNS resolver to use for Domain Analysis.</CRow>
             <CButtonGroup role="group" aria-label="Resolver" className="my-3">
               {resolvers.map((r, index) => (
                 <CButton

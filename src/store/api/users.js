@@ -26,9 +26,9 @@ export const usersApi = baseApi.injectEndpoints({
       }),
     }),
     listUser: builder.query({
-      query: ({ tenantDomain, userId }) => ({
+      query: ({ tenantDomain, userId, IncludeLogonDetails }) => ({
         path: '/api/ListUsers',
-        params: { userId, TenantFilter: tenantDomain },
+        params: { userId, TenantFilter: tenantDomain, IncludeLogonDetails },
       }),
       transformResponse: (response) => {
         if (response?.length > 0) {
