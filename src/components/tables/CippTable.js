@@ -9,12 +9,14 @@ import {
   CDropdownToggle,
   CDropdownMenu,
   CDropdownItem,
+  CButton,
 } from '@coreui/react'
 import DataTable, { createTheme } from 'react-data-table-component'
 import PropTypes from 'prop-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faColumns, faSearch } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faColumns, faSearch, faSync } from '@fortawesome/free-solid-svg-icons'
 import { useEffect } from 'react'
+import { cellGenericFormatter } from './CellGenericFormat'
 
 const FilterComponent = ({ filterText, onFilter, onClear, filterlist, onFilterPreset }) => (
   <>
@@ -89,6 +91,7 @@ export default function CippTable({
   disableCSVExport = false,
   error,
   reportName,
+  refreshFunction = null,
   columns = [],
   dynamicColumns = true,
   filterlist,
@@ -185,7 +188,19 @@ export default function CippTable({
         return ['No additional columns available']
       }
     }
-
+    if (refreshFunction) {
+      defaultActions.push([
+        <CButton
+          onClick={() => {
+            refreshFunction((Math.random() + 1).toString(36).substring(7))
+          }}
+          className="m-1"
+          size="sm"
+        >
+          <FontAwesomeIcon icon={faSync} />
+        </CButton>,
+      ])
+    }
     if (!disablePDFExport) {
       if (dynamicColumns === true) {
         const addColumn = (columnname) => {
@@ -197,6 +212,7 @@ export default function CippTable({
               selector: (row) => row[columnname],
               sortable: true,
               exportSelector: columnname,
+              cell: cellGenericFormatter(),
             })
           } else {
             let indexOfExisting = columns.findIndex((o) => o.exportSelector === columnname)
