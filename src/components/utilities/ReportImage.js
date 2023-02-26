@@ -35,7 +35,7 @@ const ReportImage = () => {
         <center>
           Suggested image size: 120x100. This is a per user setting.<br></br>
           <CButton
-            type="file"
+            type="button"
             name="file"
             onClick={() => inputRef.current.click()}
             className="me-2"
