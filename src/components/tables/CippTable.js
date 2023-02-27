@@ -399,7 +399,7 @@ export default function CippTable({
                 theme={theme}
                 subHeader={subheader}
                 selectableRows={selectableRows}
-                onSelectedRowsChange={handleSelectedChange}
+                onSelectedRowsChange={onSelectedRowsChange}
                 subHeaderComponent={subHeaderComponentMemo}
                 subHeaderAlign="left"
                 paginationResetDefaultPage={resetPaginationToggle}
