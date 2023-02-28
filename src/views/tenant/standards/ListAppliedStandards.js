@@ -118,7 +118,6 @@ const ListAppliedStandards = () => {
       selector: (row) => row['StandardsExport'],
       sortable: true,
       exportSelector: 'StandardsExport',
-      cell: CellTip(row['StandardsExport']),
     },
   ]
 

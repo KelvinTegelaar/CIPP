@@ -179,27 +179,8 @@ const BestPracticeAnalyser = () => {
       name: 'Self Service Password Reset Enabled',
       selector: (row) => row['SelfServicePasswordReset'],
       exportSelector: 'SelfServicePasswordReset',
-      cell: (row, index, column) => {
-        const cell = column.selector(row)
-        if (cell === 'Off') {
-          return <CellBadge label="Off All Users" color="warning" />
-        } else if (cell === 'On') {
-          return <CellBadge label="On All Users" color="success" />
-        } else if (cell === 'Specific Users') {
-          return <CellBadge label="Specific Users" color="info" />
-        }
-        return <CellBadge label="No Data" color="info" />
-      },
-      sortable: true,
-      minWidth: '150px',
-      maxWidth: '150px',
-    },
-    {
-      name: 'Modern Auth Enabled',
-      selector: (row) => row['EnableModernAuth'],
-      sortable: true,
-      exportSelector: 'EnableModernAuth',
       cell: cellBooleanFormatter(),
+      sortable: true,
       minWidth: '150px',
       maxWidth: '150px',
     },
