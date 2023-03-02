@@ -240,22 +240,9 @@ $UpdateRefreshTokenParamaters = @{
     ServicePrincipal     = $true
 }
 
-### Splat Params required for Updating Exchange Refresh Token ###
-
-$UpdateExchangeTokenParamaters = @{
-    ApplicationID           = 'a0c73c16-a7e3-4564-9a95-2bdf47383716'
-    Scopes                  = 'https://outlook.office365.com/.default'
-    Tenant                  = $TenantId
-    UseDeviceAuthentication = $true
-}
-
 ### Create new Refresh Token using previously splatted paramaters ###
 
 $Token = New-PartnerAccessToken @UpdateRefreshTokenParamaters
-
-### Create new Exchange Refresh Token using previously splatted paramaters ###
-
-$Exchangetoken = New-PartnerAccessToken @UpdateExchangeTokenParamaters
 
 ### Output Refresh Tokens and Exchange Refresh Tokens ###
 
@@ -264,7 +251,6 @@ Write-Host "`$ApplicationId         = $($ApplicationId)"
 Write-Host "`$ApplicationSecret     = $($ApplicationSecret)"
 Write-Host "`$TenantID              = $($TenantId)"
 Write-Host "`$RefreshToken          = $($Token.refreshtoken)" -ForegroundColor Blue
-Write-Host "`$ExchangeRefreshToken  = $($ExchangeToken.Refreshtoken)" -ForegroundColor Green
 Write-Host "================ Secrets ================"
 Write-Host "     SAVE THESE IN A SECURE LOCATION     "
 ```
