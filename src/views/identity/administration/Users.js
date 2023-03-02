@@ -282,7 +282,7 @@ const Users = () => {
         reportName: `${tenant?.defaultDomainName}-Users`,
         params: { TenantFilter: tenant?.defaultDomainName },
         tableProps: {
-          selectableRows: true,
+          selectableRows: false,
           actionsList: [
             {
               label: 'Convert to Shared Mailbox',
