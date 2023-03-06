@@ -90,14 +90,14 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             label: 'Convert to Shared Mailbox',
             color: 'info',
             modal: true,
-            modalUrl: `/api/ExecConvertToSharedMailbox?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalUrl: `/api/ExecConvertToSharedMailbox?TenantFilter=${tenant.defaultDomainName}&ID=${row.userPrincipalName}`,
             modalMessage: 'Are you sure you want to convert this user to a shared mailbox?',
           },
           {
             label: 'Enable Online Archive',
             color: 'info',
             modal: true,
-            modalUrl: `/api/ExecEnableArchive?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalUrl: `/api/ExecEnableArchive?TenantFilter=${tenant.defaultDomainName}&ID=${row.userPrincipalName}`,
             modalMessage: 'Are you sure you want to enable the online archive for this user?',
           },
           {
@@ -281,6 +281,58 @@ const Users = () => {
         path: '/api/ListUsers',
         reportName: `${tenant?.defaultDomainName}-Users`,
         params: { TenantFilter: tenant?.defaultDomainName },
+        tableProps: {
+          selectableRows: false,
+          actionsList: [
+            {
+              label: 'Convert to Shared Mailbox',
+              modal: true,
+              modalUrl: `/api/ExecConvertToSharedMailbox?TenantFilter=${tenant.defaultDomainName}&ID=`,
+              modalMessage: 'Are you sure you want to convert this user to a shared mailbox?',
+            },
+            {
+              label: 'Rerequire MFA registration',
+              modal: true,
+              modalUrl: `/api/ExecResetMFA?TenantFilter=${tenant.defaultDomainName}&ID=`,
+              modalMessage: 'Are you sure you want to enable MFA for this user?',
+            },
+            {
+              label: 'Enable Online Archive',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecEnableArchive?TenantFilter=${tenant.defaultDomainName}&ID=`,
+              modalMessage: 'Are you sure you want to enable the online archive for this user?',
+            },
+            {
+              label: 'Add to group',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecEnableArchive?TenantFilter=${tenant.defaultDomainName}&ID=`,
+              modalMessage: 'Are you sure you want to enable the online archive for this user?',
+            },
+            {
+              label: 'Remove from group',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecEnableArchive?TenantFilter=${tenant.defaultDomainName}&ID=`,
+              modalMessage: 'Are you sure you want to enable the online archive for this user?',
+            },
+            {
+              label: 'Add to Shared Mailbox',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecEnableArchive?TenantFilter=${tenant.defaultDomainName}&ID=`,
+              modalMessage: 'Are you sure you want to enable the online archive for this user?',
+            },
+            {
+              label: 'Remove from shared mailbox',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecEnableArchive?TenantFilter=${tenant.defaultDomainName}&ID=`,
+              modalMessage: 'Are you sure you want to enable the online archive for this user?',
+            },
+          ],
+        },
       }}
     />
   )
