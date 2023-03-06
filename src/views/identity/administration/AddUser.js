@@ -133,15 +133,13 @@ const AddUser = () => {
             </CCardHeader>
             <CCardBody>
               {adcError && <span>Unable to determine Azure AD Connect Settings</span>}
-              {!adcIsFetching &&
-                adconnectsettings.dirSyncEnabled &&
-                adconnectsettings.dirSyncConfigured && (
-                  <CCallout color="warning">
-                    Warning! {adconnectsettings.dirSyncEnabled} This tenant currently has Active
-                    Directory Sync Enabled and Configured. This usually means users should be
-                    created in Active Directory
-                  </CCallout>
-                )}
+              {!adcIsFetching && adconnectsettings.dirSyncEnabled && (
+                <CCallout color="warning">
+                  Warning! {adconnectsettings.dirSyncEnabled} This tenant currently has Active
+                  Directory Sync Enabled. This usually means users should be created in Active
+                  Directory
+                </CCallout>
+              )}
               <Form
                 initialValues={{ ...initialState }}
                 onSubmit={onSubmit}
