@@ -10,13 +10,20 @@ import {
   CDropdownMenu,
   CDropdownItem,
   CButton,
+  CModal,
+  CModalBody,
+  CModalTitle,
+  CCallout,
 } from '@coreui/react'
 import DataTable, { createTheme } from 'react-data-table-component'
 import PropTypes from 'prop-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faColumns, faSearch, faSync } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faColumns, faSearch, faSync, faTasks } from '@fortawesome/free-solid-svg-icons'
 import { useEffect } from 'react'
 import { cellGenericFormatter } from './CellGenericFormat'
+import { ModalService } from '../utilities'
+import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import { ConfirmModal } from '../utilities/SharedModal'
 
 const FilterComponent = ({ filterText, onFilter, onClear, filterlist, onFilterPreset }) => (
   <>
@@ -104,6 +111,7 @@ export default function CippTable({
     striped = true,
     subheader = true,
     expandableRows,
+    actionsList,
     expandableRowsComponent,
     expandableRowsHideExpander,
     expandOnRowClicked,
@@ -118,6 +126,15 @@ export default function CippTable({
 }) {
   const [filterText, setFilterText] = React.useState('')
   const [updatedColumns, setUpdatedColumns] = React.useState(columns)
+  const [selectedRows, setSelectedRows] = React.useState(false)
+  const [genericGetRequest, getResults] = useLazyGenericGetRequestQuery()
+  const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
+  const handleSelectedChange = ({ selectedRows }) => {
+    setSelectedRows(selectedRows)
+    if (selectedRows.length < 1) {
+      setSelectedRows(false)
+    }
+  }
   const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false)
   const filteredItems = data.filter(
     (item) => JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !== -1,
@@ -179,7 +196,47 @@ export default function CippTable({
         setFilterText('')
       }
     }
-
+    const handleModal = (modalMessage, modalUrl, modalType = 'GET', modalBody, modalInput) => {
+      if (modalType === 'GET') {
+        ModalService.confirm({
+          body: (
+            <div style={{ overflow: 'visible' }}>
+              <div>{modalMessage}</div>
+            </div>
+          ),
+          title: 'Confirm',
+          onConfirm: () =>
+            selectedRows.forEach(function (number) {
+              console.log(number)
+              genericGetRequest({ path: modalUrl, refreshParam: number })
+            }),
+        })
+      } else {
+        ModalService.confirm({
+          body: (
+            <div style={{ overflow: 'visible' }}>
+              {modalInput && (
+                <div>
+                  <CFormInput ref={inputRef} type="text" />
+                </div>
+              )}
+              <div>{modalMessage}</div>
+            </div>
+          ),
+          title: 'Confirm',
+          onConfirm: () => [
+            genericPostRequest({
+              path: modalUrl,
+              values: { ...modalBody, ...{ input: inputRef.current.value } },
+            }),
+          ],
+        })
+      }
+    }
+    const executeselectedAction = (item) => {
+      console.log(item)
+      handleModal(item.modalMessage, item.modalUrl, item.modalType, item.modalBody, item.modalInput)
+    }
     const defaultActions = []
     const dataKeys = () => {
       if (filteredItems.length >= 1) {
@@ -277,6 +334,32 @@ export default function CippTable({
         <ExportCsvButton key="export-csv-action" csvData={filtered} reportName={reportName} />,
       ])
     }
+    if (selectedRows && actionsList) {
+      defaultActions.push([
+        <>
+          <CDropdown className="me-2" variant="input-group">
+            <CDropdownToggle
+              className="btn btn-primary btn-sm m-1"
+              size="sm"
+              style={{
+                backgroundColor: '#f88c1a',
+              }}
+            >
+              Actions
+            </CDropdownToggle>
+            <CDropdownMenu>
+              {actionsList.map((item, idx) => {
+                return (
+                  <CDropdownItem key={idx} onClick={() => executeselectedAction(item)}>
+                    {item.label}
+                  </CDropdownItem>
+                )
+              })}
+            </CDropdownMenu>
+          </CDropdown>
+        </>,
+      ])
+    }
     return (
       <>
         <div className="w-100 d-flex justify-content-start">
@@ -309,36 +392,43 @@ export default function CippTable({
       {!error && (
         <div>
           {(columns.length === updatedColumns.length || !dynamicColumns) && (
-            <DataTable
-              customStyles={customStyles}
-              className="cipp-table"
-              theme={theme}
-              subHeader={subheader}
-              selectableRows={selectableRows}
-              onSelectedRowsChange={onSelectedRowsChange}
-              subHeaderComponent={subHeaderComponentMemo}
-              subHeaderAlign="left"
-              paginationResetDefaultPage={resetPaginationToggle}
-              //actions={actionsMemo}
-              pagination={pagination}
-              responsive={responsive}
-              dense={dense}
-              striped={striped}
-              columns={columns}
-              data={filteredItems}
-              expandableRows={expandableRows}
-              expandableRowsComponent={expandableRowsComponent}
-              highlightOnHover={highlightOnHover}
-              expandOnRowClicked={expandOnRowClicked}
-              defaultSortAsc
-              defaultSortFieldId={1}
-              sortFunction={customSort}
-              paginationPerPage={tablePageSize}
-              progressPending={isFetching}
-              progressComponent={<CSpinner color="info" component="div" />}
-              paginationRowsPerPageOptions={[25, 50, 100, 200, 500]}
-              {...rest}
-            />
+            <>
+              <DataTable
+                customStyles={customStyles}
+                className="cipp-table"
+                theme={theme}
+                subHeader={subheader}
+                selectableRows={selectableRows}
+                onSelectedRowsChange={
+                  onSelectedRowsChange ? onSelectedRowsChange : handleSelectedChange
+                }
+                subHeaderComponent={subHeaderComponentMemo}
+                subHeaderAlign="left"
+                paginationResetDefaultPage={resetPaginationToggle}
+                //actions={actionsMemo}
+                pagination={pagination}
+                responsive={responsive}
+                dense={dense}
+                striped={striped}
+                columns={columns}
+                data={filteredItems}
+                expandableRows={expandableRows}
+                expandableRowsComponent={expandableRowsComponent}
+                highlightOnHover={highlightOnHover}
+                expandOnRowClicked={expandOnRowClicked}
+                defaultSortAsc
+                defaultSortFieldId={1}
+                sortFunction={customSort}
+                paginationPerPage={tablePageSize}
+                progressPending={isFetching}
+                progressComponent={<CSpinner color="info" component="div" />}
+                paginationRowsPerPageOptions={[25, 50, 100, 200, 500]}
+                {...rest}
+              />
+              {selectedRows.length >= 1 && (
+                <CCallout>Selected {selectedRows.length} items </CCallout>
+              )}
+            </>
           )}
         </div>
       )}
