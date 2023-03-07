@@ -230,14 +230,14 @@
     "label": "Enable Auto-expanding archives"
   },
   {
-    "name": "standards.SpoofWarn.Enable",
+    "name": "standards.SpoofWarn.enable",
     "cat": "Exchange",
     "helpText": "This is the default helptext",
     "addedComponent": null,
     "label": "Enable Spoofing warnings for Outlook (This e-mail is external identifiers)"
   },
   {
-    "name": "standards.SpoofWarn.Disable",
+    "name": "standards.SpoofWarn.disable",
     "cat": "Exchange",
     "helpText": "This is the default helptext",
     "addedComponent": null,
