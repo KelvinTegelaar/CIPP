@@ -12,6 +12,7 @@ import {
 import { useLoadClientPrincipalQuery } from 'src/store/api/auth'
 import { ThemeSwitcher, UsageLocation, PageSizeSwitcher } from 'src/components/utilities'
 import ReportImage from './ReportImage'
+import TenantListSelector from './TenantListSelector'
 
 const CippProfile = () => {
   const { data: profile, isFetching, isLoading } = useLoadClientPrincipalQuery()
@@ -50,6 +51,11 @@ const CippProfile = () => {
         </CCol>
         <CCol>
           <PageSizeSwitcher />
+        </CCol>
+      </CRow>
+      <CRow>
+        <CCol>
+          <TenantListSelector />
         </CCol>
       </CRow>
       <br></br>
