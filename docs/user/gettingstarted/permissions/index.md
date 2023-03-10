@@ -104,6 +104,7 @@ Some permissions may come from other APIs than just Graph. you will see this bot
 | ServiceMessage.Read.All                                 | Read service announcement messages                                          |
 | SharePointTenantSettings.ReadWrite.All                  | Read and change SharePoint and OneDrive tenant settings                     |
 | Sites.ReadWrite.All                                     | Edit or delete items in all site collections                                |
+| (Skype and Teams Tenant Admin AP)user_impersonation     | Access Microsoft Teams and Skype for Business data as the signed in user    |
 | TeamMember.ReadWrite.All                                | Add and remove members from teams                                           |
 | TeamMember.ReadWriteNonOwnerRole.All                    | Add and remove members with non-owner role for all teams                    |
 | TeamsActivity.Read                                      | Read users' teamwork activity feed                                          |
