@@ -653,9 +653,6 @@ const ExcludedTenantsSettings = () => {
       sortable: true,
       cell: (row, index, column) => {
         const cell = column.selector(row)
-        console.log('here')
-        console.log(cell)
-
         if (!cell) {
           return <CellBadge color="info" label="DAP" />
         }
