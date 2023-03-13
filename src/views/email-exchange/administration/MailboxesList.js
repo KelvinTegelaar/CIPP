@@ -111,6 +111,48 @@ const MailboxList = () => {
               modalMessage:
                 'Are you sure you want to unhide this mailbox from the global address list? Remember this will not work if the user is AD Synched.',
             },
+            {
+              label: 'Set Send Quota',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                user: row.UPN,
+                TenantFilter: tenant.defaultDomainName,
+                ProhibitSendQuota: true,
+              },
+              modalUrl: `/api/ExecSetMailboxQuota`,
+              modalInput: true,
+              modalMessage: 'Enter a quota. e.g. 1000MB, 10GB,1TB',
+            },
+            {
+              label: 'Set Send and Receive Quota',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                user: row.UPN,
+                TenantFilter: tenant.defaultDomainName,
+                ProhibitSendReceiveQuota: true,
+              },
+              modalUrl: `/api/ExecSetMailboxQuota`,
+              modalInput: true,
+              modalMessage: 'Enter a quota. e.g. 1000MB, 10GB,1TB',
+            },
+            {
+              label: 'Set Quota Warning Level',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                user: row.UPN,
+                TenantFilter: tenant.defaultDomainName,
+                IssueWarningQuota: true,
+              },
+              modalUrl: `/api/ExecSetMailboxQuota`,
+              modalInput: true,
+              modalMessage: 'Enter a quota. e.g. 1000MB, 10GB,1TB',
+            },
           ]}
           placement="end"
           visible={ocVisible}
