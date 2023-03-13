@@ -48,7 +48,13 @@ import {
 import { useListTenantsQuery } from 'src/store/api/tenants'
 import { useLazyEditDnsConfigQuery, useLazyGetDnsConfigQuery } from 'src/store/api/domains'
 import { useDispatch, useSelector } from 'react-redux'
-import { cellBooleanFormatter, CellTip, CellTipIcon, CippTable } from 'src/components/tables'
+import {
+  CellBadge,
+  cellBooleanFormatter,
+  CellTip,
+  CellTipIcon,
+  CippTable,
+} from 'src/components/tables'
 import { CippPage, CippPageList } from 'src/components/layout'
 import {
   RFFCFormSwitch,
@@ -640,6 +646,34 @@ const ExcludedTenantsSettings = () => {
       sortable: true,
       cell: (row) => CellTip(row['defaultDomainName']),
       exportSelector: 'defaultDomainName',
+    },
+    {
+      name: 'Relationship Type',
+      selector: (row) => row['delegatedPrivilegeStatus'],
+      sortable: true,
+      cell: (row, index, column) => {
+        const cell = column.selector(row)
+        console.log('here')
+        console.log(cell)
+
+        if (!cell) {
+          return <CellBadge color="info" label="DAP" />
+        }
+        if (cell.toLowerCase() == 'none') {
+          return <CellBadge color="info" label="No Access" />
+        }
+        if (cell === 'delegatedAdminPrivileges') {
+          return <CellBadge color="info" label="DAP Only" />
+        }
+        if (cell === 'delegatedAndGranularDelegetedAdminPrivileges') {
+          return <CellBadge color="info" label="GDAP & DAP" />
+        }
+        if (cell === 'GranularDelegetedAdminPrivileges') {
+          return <CellBadge color="info" label="GDAP" />
+        }
+        return <CellBadge color="info" label="Unknown" />
+      },
+      exportSelector: 'delegatedPrivilegeStatus',
     },
     {
       name: 'Excluded',
