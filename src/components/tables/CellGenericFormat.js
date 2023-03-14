@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faTimesCircle,
@@ -7,6 +6,7 @@ import {
   faExclamationCircle,
 } from '@fortawesome/free-solid-svg-icons'
 import { CellBadge } from 'src/components/tables'
+import { CBadge, CTooltip } from '@coreui/react'
 
 const IconWarning = () => <FontAwesomeIcon icon={faExclamationCircle} className="text-warning" />
 const IconError = () => <FontAwesomeIcon icon={faTimesCircle} className="text-danger" />
@@ -20,15 +20,6 @@ function nocolour(iscolourless, content) {
   return content
 }
 
-/**
- *
- * @param [cell]
- * @param [warning]
- * @param [reverse]
- * @param [colourless]
- * @param [noDataIsFalse]
- * @returns {function(*, *, *, *): *}
- */
 export default function CellBoolean({
   cell,
   warning = false,
@@ -42,16 +33,11 @@ export default function CellBoolean({
   } else if (typeof cell === 'string') {
     if (
       cell.toLowerCase() === 'success' ||
-      cell.toLowerCase() === 'enabled' ||
       cell.toLowerCase() === 'pass' ||
       cell.toLowerCase() === 'true'
     ) {
       normalized = true
-    } else if (
-      cell.toLowerCase() === 'fail' ||
-      cell.toLowerCase() === 'default' ||
-      cell.toLowerCase() === 'false'
-    ) {
+    } else if (cell.toLowerCase() === 'fail' || cell.toLowerCase() === 'false') {
       normalized = false
     }
   }
@@ -71,25 +57,29 @@ export default function CellBoolean({
   }
 }
 
-CellBoolean.propTypes = {
-  cell: PropTypes.oneOfType([PropTypes.bool, PropTypes.string, PropTypes.any]),
-  warning: PropTypes.bool,
-  reverse: PropTypes.bool,
-  colourless: PropTypes.bool,
-  noDataIsFalse: PropTypes.bool,
+export function CellTip(cell, overflow = false) {
+  return (
+    <CTooltip content={String(cell)}>
+      <div className="celltip-content-nowrap">{String(cell)}</div>
+    </CTooltip>
+  )
 }
 
-/**
- *
- * @param [warning]
- * @param [reverse]
- * @param [colourless]
- * @param [noDataIsFalse]
- * @returns {function(*, *, *, *): *}
- */
-export const cellBooleanFormatter =
-  ({ warning = false, reverse = false, colourless = false, noDataIsFalse } = {}) =>
+export const cellGenericFormatter =
+  ({ warning = false, reverse = false, colourless = true, noDataIsFalse } = {}) =>
   (row, index, column, id) => {
     const cell = column.selector(row)
-    return CellBoolean({ cell, warning, reverse, colourless, noDataIsFalse })
+    if (cell === null || cell === undefined || cell.length === 0) {
+      return <CBadge color="info">No Data</CBadge>
+    }
+    if (typeof cell === 'boolean') {
+      return CellBoolean({ cell, warning, reverse, colourless, noDataIsFalse })
+    }
+    if (typeof cell === 'string') {
+      return CellTip(cell)
+    }
+    if (Array.isArray(cell) || typeof cell === 'object') {
+      console.log(cell)
+      return CellTip(JSON.stringify(cell))
+    }
   }

@@ -1,19 +1,12 @@
 import React from 'react'
-import { CCol, CRow, CListGroup, CListGroupItem, CCallout, CSpinner } from '@coreui/react'
+import { CCol, CRow, CCallout, CSpinner } from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faExclamationTriangle, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { CippWizard } from 'src/components/layout'
 import { WizardTableField } from 'src/components/tables'
 import PropTypes from 'prop-types'
-import {
-  Condition,
-  RFFCFormCheck,
-  RFFCFormInput,
-  RFFCFormRadio,
-  RFFCFormSelect,
-  RFFCFormTextarea,
-} from 'src/components/forms'
+import { RFFCFormSelect, RFFCFormTextarea } from 'src/components/forms'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { OnChange } from 'react-final-form-listeners'
 
@@ -37,7 +30,7 @@ Error.propTypes = {
 }
 
 const requiredArray = (value) => (value && value.length !== 0 ? undefined : 'Required')
-const ApplyGroupTemplate = () => {
+const SpamFilterAdd = () => {
   const [intuneGetRequest, intuneTemplates] = useLazyGenericGetRequestQuery()
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
@@ -46,7 +39,7 @@ const ApplyGroupTemplate = () => {
       (tenant) => (values[`Select_${tenant.defaultDomainName}`] = tenant.defaultDomainName),
     )
     values.TemplateType = values.Type
-    genericPostRequest({ path: '/api/AddGroup', values: values })
+    genericPostRequest({ path: '/api/AddSpamfilter', values: values })
   }
   const WhenFieldChanges = ({ field, set }) => (
     <Field name={set} subscription={{}}>
@@ -62,7 +55,7 @@ const ApplyGroupTemplate = () => {
                   return obj.GUID === value
                 })
                 // console.log(template[0][set])
-                onChange(template[0][set])
+                onChange(JSON.stringify(template[0]))
               }}
             </OnChange>
           )}
@@ -79,11 +72,11 @@ const ApplyGroupTemplate = () => {
     <CippWizard
       initialValues={{ ...formValues }}
       onSubmit={handleSubmit}
-      wizardTitle="Add Group Template"
+      wizardTitle="Add Spamfilter policy"
     >
       <CippWizard.Page
         title="Tenant Choice"
-        description="Choose the tenants to create the group for."
+        description="Choose the tenants to create the Spamfilter policy for."
       >
         <center>
           <h3 className="text-primary">Step 1</h3>
@@ -120,19 +113,22 @@ const ApplyGroupTemplate = () => {
       <CippWizard.Page title="Select Options" description="Select which options you want to apply.">
         <center>
           <h3 className="text-primary">Step 2</h3>
-          <h5 className="card-title mb-4">Enter the group information or use a template.</h5>
+          <h5 className="card-title mb-4">
+            Enter the raw JSON for this policy, or select from a template. You can create templates
+            from existing policies.
+          </h5>
         </center>
         <hr className="my-4" />
         <CRow>
           <CCol md={12}>
             {intuneTemplates.isUninitialized &&
-              intuneGetRequest({ path: 'api/ListGroupTemplates' })}
+              intuneGetRequest({ path: 'api/ListSpamFilterTemplates' })}
             {intuneTemplates.isSuccess && (
               <RFFCFormSelect
                 name="TemplateList"
                 values={intuneTemplates.data?.map((template) => ({
                   value: template.GUID,
-                  label: template.Displayname,
+                  label: template.name,
                 }))}
                 placeholder="Select a template"
                 label="Please choose a template to apply, or enter the information manually."
@@ -142,74 +138,17 @@ const ApplyGroupTemplate = () => {
         </CRow>
         <CRow>
           <CCol>
-            <RFFCFormSelect
-              name="groupType"
-              label="Select Policy Type"
-              placeholder="Select a group type"
-              values={[
-                { label: 'Dynamic Group', value: 'dynamic' },
-                { label: 'Security Group', value: 'generic' },
-                { label: 'Distribution group', value: 'distribution' },
-                { label: 'Azure Role Group', value: 'azurerole' },
-                { label: 'Mail Enabled Security Group', value: 'security' },
-              ]}
+            <RFFCFormTextarea
+              name="PowerShellCommand"
+              label="New-TransportRule parameters"
+              placeholder={
+                'Enter the JSON information to use as parameters, or select from a template'
+              }
             />
-          </CCol>
-        </CRow>
-        <CRow>
-          <CCol md={12}>
-            <RFFCFormInput
-              type="text"
-              name="Displayname"
-              label="Group Display Name"
-              placeholder="Enter a name"
-            />
-          </CCol>
-        </CRow>
-        <CRow>
-          <CCol md={12}>
-            <RFFCFormInput
-              type="text"
-              name="Description"
-              label="Group Description"
-              placeholder="leave blank for none"
-            />
-          </CCol>
-        </CRow>
-        <CRow>
-          <CCol md={12}>
-            <RFFCFormInput
-              type="text"
-              name="username"
-              label="Group Username"
-              placeholder="Enter a name"
-            />
-          </CCol>
-        </CRow>
-        <CRow>
-          <CCol md={12}>
-            <Condition when="groupType" is="distribution">
-              <RFFCFormCheck
-                name="allowExternal"
-                label="Let people outside the organization email the group"
-              />
-            </Condition>
-            <Condition when="groupType" is="dynamic">
-              <RFFCFormTextarea
-                type="text"
-                name="MembershipRules"
-                label="Membership Rule"
-                placeholder="Enter membership rule syntax"
-              />
-            </Condition>
           </CCol>
         </CRow>
         <hr className="my-4" />
-        <WhenFieldChanges field="TemplateList" set="Description" />
-        <WhenFieldChanges field="TemplateList" set="Displayname" />
-        <WhenFieldChanges field="TemplateList" set="MembershipRules" />
-        <WhenFieldChanges field="TemplateList" set="groupType" />
-        <WhenFieldChanges field="TemplateList" set="username" />
+        <WhenFieldChanges field="TemplateList" set="PowerShellCommand" />
       </CippWizard.Page>
       <CippWizard.Page title="Review and Confirm" description="Confirm the settings to apply">
         <center>
@@ -225,32 +164,16 @@ const ApplyGroupTemplate = () => {
                   <CRow>
                     <CCol md={3}></CCol>
                     <CCol md={6}>
-                      <CListGroup flush>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Display Name: {props.values.Displayname}
-                          <FontAwesomeIcon
-                            color="#f77f00"
-                            size="lg"
-                            icon={props.values.Displayname ? faCheck : faTimes}
-                          />
-                        </CListGroupItem>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Description: {props.values.Description}
-                          <FontAwesomeIcon
-                            color="#f77f00"
-                            size="lg"
-                            icon={props.values.Description ? faCheck : faTimes}
-                          />
-                        </CListGroupItem>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Type: {props.values.Type}
-                          <FontAwesomeIcon
-                            color="#f77f00"
-                            size="lg"
-                            icon={props.values.Type ? faCheck : faTimes}
-                          />
-                        </CListGroupItem>
-                      </CListGroup>
+                      <h5 className="mb-0">Selected Tenants</h5>
+                      <CCallout color="info">
+                        {props.values.selectedTenants.map((tenant, idx) => (
+                          <li key={idx}>
+                            {tenant.displayName}- {tenant.defaultDomainName}
+                          </li>
+                        ))}
+                      </CCallout>
+                      <h5 className="mb-0">Rule Settings</h5>
+                      <CCallout color="info">{props.values.PowerShellCommand}</CCallout>
                     </CCol>
                   </CRow>
                 </>
@@ -276,4 +199,4 @@ const ApplyGroupTemplate = () => {
   )
 }
 
-export default ApplyGroupTemplate
+export default SpamFilterAdd
