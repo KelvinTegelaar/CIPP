@@ -70,6 +70,13 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modalMessage:
               'Are you sure you want to allow messages from people inside and outside the organisation? Remember this will not work if the group is AD Synched.',
           },
+          {
+            label: 'Delete Group',
+            color: 'warning',
+            modal: true,
+            modalUrl: `/api/ExecGroupsDelete?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}&GroupType=${row.calculatedGroupType}&DisplayName=${row.displayName}`,
+            modalMessage: 'Are you sure you want to delete this group.',
+          },
         ]}
         placement="end"
         visible={ocVisible}
