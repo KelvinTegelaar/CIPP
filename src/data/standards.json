@@ -251,6 +251,20 @@
     "label": "Disable daily Insight/Viva reports"
   },
   {
+    "name": "standards.RotateDKIM",
+    "cat": "Exchange",
+    "helpText": "Rotate DKIM keys that are 1024 to 2048",
+    "addedComponent": null,
+    "label": "Rotate DKIM keys that are 1024 to 2048"
+  },
+  {
+    "name": "standards.AddDKIM",
+    "cat": "Exchange",
+    "helpText": "Enables DKIM for all domains that currently support it",
+    "addedComponent": null,
+    "label": "Enables DKIM for all domains that currently support it"
+  },
+  {
     "name": "standards.ActivityBasedTimeout",
     "cat": "SharePoint",
     "helpText": "This is the default helptext",
