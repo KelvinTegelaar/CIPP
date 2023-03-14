@@ -253,9 +253,9 @@
   {
     "name": "standards.RotateDKIM",
     "cat": "Exchange",
-    "helpText": "Rotate DKIM keys that are 1024 to 2048",
+    "helpText": "Rotate DKIM keys that are 1024 bit to 2048 bit",
     "addedComponent": null,
-    "label": "Rotate DKIM keys that are 1024 to 2048"
+    "label": "Rotate DKIM keys that are 1024 bit to 2048 bit"
   },
   {
     "name": "standards.AddDKIM",
