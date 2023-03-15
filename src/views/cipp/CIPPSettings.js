@@ -21,6 +21,7 @@ import {
   CSpinner,
 } from '@coreui/react'
 import {
+  useGenericGetRequestQuery,
   useLazyExecClearCacheQuery,
   useLazyExecNotificationConfigQuery,
   useLazyExecPermissionsAccessCheckQuery,
@@ -502,6 +503,9 @@ const GeneralSettings = () => {
               )}
             </CCardBody>
           </CCard>
+        </CCol>
+        <CCol>
+          <PasswordSettings />
         </CCol>
       </CRow>
     </div>
@@ -1098,6 +1102,61 @@ const LicenseSettings = () => {
     </>
   )
 }
+const PasswordSettings = () => {
+  const [getPasswordConfig, getPasswordConfigResult] = useLazyGenericGetRequestQuery()
+  const [editPasswordConfig, editPasswordConfigResult] = useLazyGenericPostRequestQuery()
+
+  const [passAlertVisible, setPassAlertVisible] = useState(false)
+
+  const switchResolver = (resolver) => {
+    editPasswordConfig({ path: '/api/ExecPasswordconfig', values: { passwordType: resolver } })
+    getPasswordConfig()
+    setPassAlertVisible(true)
+  }
+
+  const resolvers = ['Classic', 'Correct-Battery-Horse']
+
+  return (
+    <>
+      {getPasswordConfigResult.isUninitialized &&
+        getPasswordConfig({ path: '/api/ExecPasswordConfig?list=true' })}
+      <CCard className="h-100">
+        <CCardHeader>
+          <CCardTitle>Password Generation</CCardTitle>
+        </CCardHeader>
+        <CCardBody>
+          <CRow>Select a password style for generated passwords.</CRow>
+          <CButtonGroup role="group" aria-label="Resolver" className="my-3">
+            {resolvers.map((r, index) => (
+              <CButton
+                onClick={() => switchResolver(r)}
+                color={
+                  r === getPasswordConfigResult.data?.Results?.passwordType
+                    ? 'primary'
+                    : 'secondary'
+                }
+                key={index}
+              >
+                {r}
+              </CButton>
+            ))}
+          </CButtonGroup>
+          {(editPasswordConfigResult.isSuccess || editPasswordConfigResult.isError) && (
+            <CCallout
+              color={editPasswordConfigResult.isSuccess ? 'success' : 'danger'}
+              visible={passAlertVisible}
+            >
+              {editPasswordConfigResult.isSuccess
+                ? editPasswordConfigResult.data.Results
+                : 'Error setting password style'}
+            </CCallout>
+          )}
+        </CCardBody>
+      </CCard>
+    </>
+  )
+}
+
 const DNSSettings = () => {
   const [getDnsConfig, getDnsConfigResult] = useLazyGetDnsConfigQuery()
   const [editDnsConfig, editDnsConfigResult] = useLazyEditDnsConfigQuery()
