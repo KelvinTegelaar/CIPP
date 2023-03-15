@@ -214,7 +214,7 @@ export default function CippTable({
               setLoopRunning(true)
               const urlParams = new URLSearchParams(modalUrl.split('?')[1])
               for (let [paramName, paramValue] of urlParams.entries()) {
-                if (paramValue.includes('!')) {
+                if (paramValue.startsWith('!')) {
                   urlParams.set(paramName, row[paramValue.replace('!', '')])
                 }
               }
@@ -245,12 +245,13 @@ export default function CippTable({
               setLoopRunning(true)
               const urlParams = new URLSearchParams(modalUrl.split('?')[1])
               for (let [paramName, paramValue] of urlParams.entries()) {
-                if (paramValue.includes('!')) {
+                if (paramValue.toString().startsWith('!')) {
                   urlParams.set(paramName, row[paramValue.replace('!', '')])
                 }
               }
               for (let [objName, objValue] of Object.entries(modalBody)) {
-                if (objValue.includes('!')) {
+                console.log(objValue)
+                if (objValue.toString().startsWith('!')) {
                   modalBody[objName] = row[objValue.replace('!', '')]
                 }
               }

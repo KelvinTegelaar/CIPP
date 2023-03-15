@@ -354,6 +354,38 @@ const Users = (row) => {
               modalMessage:
                 'Enter a out of office message and press continue to set the out of office.',
             },
+            {
+              label: 'Disable Out of Office',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                user: '!userPrincipalName',
+                TenantFilter: tenant.defaultDomainName,
+                Disable: true,
+              },
+              modalUrl: `/api/ExecSetOoO`,
+              modalMessage: 'Are you sure you want to disable the out of office?',
+            },
+            {
+              label: 'Disable Email Forwarding',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                user: '!userPrincipalName',
+                TenantFilter: tenant.defaultDomainName,
+              },
+              modalUrl: `/api/ExecDisableEmailForward`,
+              modalMessage: 'Are you sure you want to disable forwarding of these users emails?',
+            },
+            {
+              label: 'Delete User',
+              color: 'danger',
+              modal: true,
+              modalUrl: `/api/RemoveUser?TenantFilter=${tenant.defaultDomainName}&ID=!id`,
+              modalMessage: 'Are you sure you want to delete these users?',
+            },
           ],
         },
       }}
