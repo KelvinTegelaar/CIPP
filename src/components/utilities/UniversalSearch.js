@@ -49,6 +49,7 @@ export const UniversalSearch = React.forwardRef(
           </>
         )}
         {searchItems.isSuccess && <Results items={searchItems.data} searchValue={searchValue} />}
+        {searchItems.data <= 1 && 'No results found.'}
       </div>
     )
   },

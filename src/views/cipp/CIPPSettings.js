@@ -625,19 +625,6 @@ const ExcludedTenantsSettings = () => {
   }
   const columns = [
     {
-      name: 'Latest Status',
-      selector: (row) => row['GraphErrorCount'],
-      sortable: true,
-      cell: (row) =>
-        CellTipIcon(
-          StatusText(row['GraphErrorCount'], row['LastGraphError']),
-          StatusIcon(row['GraphErrorCount']),
-        ),
-      exportSelector: 'GraphErrorCount',
-      maxWidth: '130px',
-      minWidth: '130px',
-    },
-    {
       name: 'Name',
       selector: (row) => row['displayName'],
       sortable: true,
