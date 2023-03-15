@@ -737,6 +737,34 @@ const ExcludedTenantsSettings = () => {
         tenantSelector={false}
         titleButton={titleButton}
         datatable={{
+          tableProps: {
+            selectableRows: true,
+            actionsList: [
+              {
+                label: 'Exclude Tenants',
+                modal: true,
+                modalType: 'POST',
+                modalBody: {
+                  value: '!customerId',
+                },
+                modalUrl: `/api/ExecExcludeTenant?AddExclusion=true`,
+                modalMessage: 'Are you sure you want to exclude these tenants?',
+              },
+              {
+                label: 'Include Tenants',
+                modal: true,
+                modalUrl: `/api/ExecExcludeTenant?RemoveExclusion=true&TenantFilter=!defaultDomainName`,
+                modalMessage: 'Are you sure you want to include these tenants?',
+              },
+              {
+                label: 'Refresh CPV Permissions',
+                modal: true,
+                modalUrl: `/api/ExecCPVPermissions?TenantFilter=!customerId`,
+                modalMessage:
+                  'Are you sure you want to refresh the CPV permissions for these tenants?',
+              },
+            ],
+          },
           filterlist: [
             { filterName: 'Excluded Tenants', filter: '"Excluded":true' },
             { filterName: 'Included Tenants', filter: '"Excluded":false' },
