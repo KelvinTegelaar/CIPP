@@ -249,16 +249,17 @@ export default function CippTable({
                   urlParams.set(paramName, row[paramValue.replace('!', '')])
                 }
               }
+              const newModalBody = {}
               for (let [objName, objValue] of Object.entries(modalBody)) {
                 console.log(objValue)
                 if (objValue.toString().startsWith('!')) {
-                  modalBody[objName] = row[objValue.replace('!', '')]
+                  newModalBody[objName] = row[objValue.replace('!', '')]
                 }
               }
               const NewModalUrl = `${modalUrl.split('?')[0]}?${urlParams.toString()}`
               const results = await genericPostRequest({
                 path: NewModalUrl,
-                values: { ...modalBody, ...{ input: inputRef.current.value } },
+                values: { ...modalBody, ...newModalBody, ...{ input: inputRef.current.value } },
               })
               resultsarr.push(results)
               setMassResults(resultsarr)
