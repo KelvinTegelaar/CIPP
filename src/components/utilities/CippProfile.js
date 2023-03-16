@@ -60,15 +60,11 @@ const CippProfile = () => {
       </CRow>
       <br></br>
       <CRow>
-        <CCol>
-          <UsageLocation />
-        </CCol>
+        <CCol>{!isLoading && <UsageLocation />}</CCol>
       </CRow>
       <br></br>
       <CRow>
-        <CCol>
-          <ReportImage />
-        </CCol>
+        <CCol>{!isLoading && <ReportImage />}</CCol>
       </CRow>
     </>
   )
