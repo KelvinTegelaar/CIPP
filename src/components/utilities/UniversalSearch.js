@@ -28,7 +28,7 @@ export const UniversalSearch = React.forwardRef(
           <CFormInput
             ref={ref}
             type="text"
-            placeholder="Search users in any tenant by UPN or Display Name"
+            placeholder="Search users in any tenant by UPN or Display Name. Requires Lighthouse onboarding"
             onKeyDown={handleKeyDown}
             onChange={handleChange}
             value={searchValue}
