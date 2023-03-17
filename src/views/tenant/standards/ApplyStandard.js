@@ -186,7 +186,7 @@ const ApplyStandard = () => {
         description="Select which standards you want to apply."
       >
         <center>
-          <h3 className="text-primary">Step 3</h3>
+          <h3 className="text-primary">Step 4</h3>
           <h5 className="card-title mb-4">Select Standards</h5>
         </center>
         <hr className="my-4" />
@@ -225,7 +225,7 @@ const ApplyStandard = () => {
         description="Select which standards you want to apply."
       >
         <center>
-          <h3 className="text-primary">Step 3</h3>
+          <h3 className="text-primary">Step 5</h3>
           <h5 className="card-title mb-4">Select Standards</h5>
         </center>
         <hr className="my-4" />
@@ -261,7 +261,7 @@ const ApplyStandard = () => {
       </CippWizard.Page>
       <CippWizard.Page title="Review and Confirm" description="Confirm the settings to apply">
         <center>
-          <h3 className="text-primary">Step 4</h3>
+          <h3 className="text-primary">Step 6</h3>
           <h5 className="card-title mb-4">Confirm and apply</h5>
         </center>
         <hr className="my-4" />
