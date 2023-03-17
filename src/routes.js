@@ -55,7 +55,7 @@ const DeployConditional = React.lazy(() => import('src/views/tenant/conditional/
 const ListLicences = React.lazy(() => import('src/views/tenant/administration/ListLicences'))
 const ListAppConsent = React.lazy(() => import('src/views/tenant/administration/ListOauthApps'))
 
-const BasicAuthReport = React.lazy(() => import('src/views/identity/reports/BasicAuthReport'))
+const BasicAuthReport = React.lazy(() => import('src/views/identity/reports/InactiveUsers'))
 const SignInReport = React.lazy(() => import('src/views/identity/reports/SignIns'))
 
 const AzureADConnectReport = React.lazy(() =>
@@ -267,7 +267,7 @@ const routes = [
   { path: '/endpoint/reports/devices', name: 'Devices', component: Devices },
   { path: '/identity/reports/mfa-report', name: 'MFA Report', component: MFAReport },
   {
-    path: '/identity/reports/basic-auth-report',
+    path: '/identity/reports/inactive-users-report',
     name: 'Basic Auth Report',
     component: BasicAuthReport,
   },
