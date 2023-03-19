@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { ExportCsvButton, ExportPDFButton } from 'src/components/buttons'
 import {
@@ -124,6 +124,9 @@ export default function CippTable({
     ...rest
   } = {},
 }) {
+  const inputRef = useRef('')
+  const [loopRunning, setLoopRunning] = React.useState(false)
+  const [massResults, setMassResults] = React.useState([])
   const [filterText, setFilterText] = React.useState('')
   const [updatedColumns, setUpdatedColumns] = React.useState(columns)
   const [selectedRows, setSelectedRows] = React.useState(false)
@@ -205,11 +208,23 @@ export default function CippTable({
             </div>
           ),
           title: 'Confirm',
-          onConfirm: () =>
-            selectedRows.forEach(function (number) {
-              console.log(number)
-              genericGetRequest({ path: modalUrl, refreshParam: number })
-            }),
+          onConfirm: async () => {
+            const resultsarr = []
+            for (const row of selectedRows) {
+              setLoopRunning(true)
+              const urlParams = new URLSearchParams(modalUrl.split('?')[1])
+              for (let [paramName, paramValue] of urlParams.entries()) {
+                if (paramValue.startsWith('!')) {
+                  urlParams.set(paramName, row[paramValue.replace('!', '')])
+                }
+              }
+              const NewModalUrl = `${modalUrl.split('?')[0]}?${urlParams.toString()}`
+              const results = await genericGetRequest({ path: NewModalUrl, refreshParam: row.id })
+              resultsarr.push(results)
+              setMassResults(resultsarr)
+            }
+            setLoopRunning(false)
+          },
         })
       } else {
         ModalService.confirm({
@@ -224,17 +239,37 @@ export default function CippTable({
             </div>
           ),
           title: 'Confirm',
-          onConfirm: () => [
-            genericPostRequest({
-              path: modalUrl,
-              values: { ...modalBody, ...{ input: inputRef.current.value } },
-            }),
-          ],
+          onConfirm: async () => {
+            const resultsarr = []
+            for (const row of selectedRows) {
+              setLoopRunning(true)
+              const urlParams = new URLSearchParams(modalUrl.split('?')[1])
+              for (let [paramName, paramValue] of urlParams.entries()) {
+                if (paramValue.toString().startsWith('!')) {
+                  urlParams.set(paramName, row[paramValue.replace('!', '')])
+                }
+              }
+              const newModalBody = {}
+              for (let [objName, objValue] of Object.entries(modalBody)) {
+                console.log(objValue)
+                if (objValue.toString().startsWith('!')) {
+                  newModalBody[objName] = row[objValue.replace('!', '')]
+                }
+              }
+              const NewModalUrl = `${modalUrl.split('?')[0]}?${urlParams.toString()}`
+              const results = await genericPostRequest({
+                path: NewModalUrl,
+                values: { ...modalBody, ...newModalBody, ...{ input: inputRef.current.value } },
+              })
+              resultsarr.push(results)
+              setMassResults(resultsarr)
+            }
+            setLoopRunning(false)
+          },
         })
       }
     }
     const executeselectedAction = (item) => {
-      console.log(item)
       handleModal(item.modalMessage, item.modalUrl, item.modalType, item.modalBody, item.modalInput)
     }
     const defaultActions = []
@@ -393,6 +428,18 @@ export default function CippTable({
         <div>
           {(columns.length === updatedColumns.length || !dynamicColumns) && (
             <>
+              {(massResults.length >= 1 || loopRunning) && (
+                <CCallout color="info">
+                  {massResults.map((message, idx) => {
+                    return <li key={idx}>{message.data.Results}</li>
+                  })}
+                  {loopRunning && (
+                    <li>
+                      <CSpinner size="sm" />
+                    </li>
+                  )}
+                </CCallout>
+              )}
               <DataTable
                 customStyles={customStyles}
                 className="cipp-table"
@@ -426,7 +473,7 @@ export default function CippTable({
                 {...rest}
               />
               {selectedRows.length >= 1 && (
-                <CCallout>Selected {selectedRows.length} items </CCallout>
+                <CCallout>Selected {selectedRows.length} items</CCallout>
               )}
             </>
           )}
