@@ -21,6 +21,7 @@ import {
   CSpinner,
 } from '@coreui/react'
 import {
+  useGenericGetRequestQuery,
   useLazyExecClearCacheQuery,
   useLazyExecNotificationConfigQuery,
   useLazyExecPermissionsAccessCheckQuery,
@@ -48,7 +49,13 @@ import {
 import { useListTenantsQuery } from 'src/store/api/tenants'
 import { useLazyEditDnsConfigQuery, useLazyGetDnsConfigQuery } from 'src/store/api/domains'
 import { useDispatch, useSelector } from 'react-redux'
-import { cellBooleanFormatter, CellTip, CellTipIcon, CippTable } from 'src/components/tables'
+import {
+  CellBadge,
+  cellBooleanFormatter,
+  CellTip,
+  CellTipIcon,
+  CippTable,
+} from 'src/components/tables'
 import { CippPage, CippPageList } from 'src/components/layout'
 import {
   RFFCFormSwitch,
@@ -497,6 +504,9 @@ const GeneralSettings = () => {
             </CCardBody>
           </CCard>
         </CCol>
+        <CCol>
+          <PasswordSettings />
+        </CCol>
       </CRow>
     </div>
   )
@@ -615,19 +625,6 @@ const ExcludedTenantsSettings = () => {
   }
   const columns = [
     {
-      name: 'Latest Status',
-      selector: (row) => row['GraphErrorCount'],
-      sortable: true,
-      cell: (row) =>
-        CellTipIcon(
-          StatusText(row['GraphErrorCount'], row['LastGraphError']),
-          StatusIcon(row['GraphErrorCount']),
-        ),
-      exportSelector: 'GraphErrorCount',
-      maxWidth: '130px',
-      minWidth: '130px',
-    },
-    {
       name: 'Name',
       selector: (row) => row['displayName'],
       sortable: true,
@@ -640,6 +637,31 @@ const ExcludedTenantsSettings = () => {
       sortable: true,
       cell: (row) => CellTip(row['defaultDomainName']),
       exportSelector: 'defaultDomainName',
+    },
+    {
+      name: 'Relationship Type',
+      selector: (row) => row['delegatedPrivilegeStatus'],
+      sortable: true,
+      cell: (row, index, column) => {
+        const cell = column.selector(row)
+        if (!cell) {
+          return <CellBadge color="info" label="DAP" />
+        }
+        if (cell.toLowerCase() == 'none') {
+          return <CellBadge color="info" label="No Access" />
+        }
+        if (cell === 'delegatedAdminPrivileges') {
+          return <CellBadge color="info" label="DAP Only" />
+        }
+        if (cell === 'delegatedAndGranularDelegetedAdminPrivileges') {
+          return <CellBadge color="info" label="GDAP & DAP" />
+        }
+        if (cell === 'GranularDelegetedAdminPrivileges') {
+          return <CellBadge color="info" label="GDAP" />
+        }
+        return <CellBadge color="info" label="Unknown" />
+      },
+      exportSelector: 'delegatedPrivilegeStatus',
     },
     {
       name: 'Excluded',
@@ -702,6 +724,34 @@ const ExcludedTenantsSettings = () => {
         tenantSelector={false}
         titleButton={titleButton}
         datatable={{
+          tableProps: {
+            selectableRows: true,
+            actionsList: [
+              {
+                label: 'Exclude Tenants',
+                modal: true,
+                modalType: 'POST',
+                modalBody: {
+                  value: '!customerId',
+                },
+                modalUrl: `/api/ExecExcludeTenant?AddExclusion=true`,
+                modalMessage: 'Are you sure you want to exclude these tenants?',
+              },
+              {
+                label: 'Include Tenants',
+                modal: true,
+                modalUrl: `/api/ExecExcludeTenant?RemoveExclusion=true&TenantFilter=!defaultDomainName`,
+                modalMessage: 'Are you sure you want to include these tenants?',
+              },
+              {
+                label: 'Refresh CPV Permissions',
+                modal: true,
+                modalUrl: `/api/ExecCPVPermissions?TenantFilter=!customerId`,
+                modalMessage:
+                  'Are you sure you want to refresh the CPV permissions for these tenants?',
+              },
+            ],
+          },
           filterlist: [
             { filterName: 'Excluded Tenants', filter: '"Excluded":true' },
             { filterName: 'Included Tenants', filter: '"Excluded":false' },
@@ -1067,6 +1117,61 @@ const LicenseSettings = () => {
     </>
   )
 }
+const PasswordSettings = () => {
+  const [getPasswordConfig, getPasswordConfigResult] = useLazyGenericGetRequestQuery()
+  const [editPasswordConfig, editPasswordConfigResult] = useLazyGenericPostRequestQuery()
+
+  const [passAlertVisible, setPassAlertVisible] = useState(false)
+
+  const switchResolver = (resolver) => {
+    editPasswordConfig({ path: '/api/ExecPasswordconfig', values: { passwordType: resolver } })
+    getPasswordConfig()
+    setPassAlertVisible(true)
+  }
+
+  const resolvers = ['Classic', 'Correct-Battery-Horse']
+
+  return (
+    <>
+      {getPasswordConfigResult.isUninitialized &&
+        getPasswordConfig({ path: '/api/ExecPasswordConfig?list=true' })}
+      <CCard className="h-100">
+        <CCardHeader>
+          <CCardTitle>Password Generation</CCardTitle>
+        </CCardHeader>
+        <CCardBody>
+          <CRow>Select a password style for generated passwords.</CRow>
+          <CButtonGroup role="group" aria-label="Resolver" className="my-3">
+            {resolvers.map((r, index) => (
+              <CButton
+                onClick={() => switchResolver(r)}
+                color={
+                  r === getPasswordConfigResult.data?.Results?.passwordType
+                    ? 'primary'
+                    : 'secondary'
+                }
+                key={index}
+              >
+                {r}
+              </CButton>
+            ))}
+          </CButtonGroup>
+          {(editPasswordConfigResult.isSuccess || editPasswordConfigResult.isError) && (
+            <CCallout
+              color={editPasswordConfigResult.isSuccess ? 'success' : 'danger'}
+              visible={passAlertVisible}
+            >
+              {editPasswordConfigResult.isSuccess
+                ? editPasswordConfigResult.data.Results
+                : 'Error setting password style'}
+            </CCallout>
+          )}
+        </CCardBody>
+      </CCard>
+    </>
+  )
+}
+
 const DNSSettings = () => {
   const [getDnsConfig, getDnsConfigResult] = useLazyGetDnsConfigQuery()
   const [editDnsConfig, editDnsConfigResult] = useLazyEditDnsConfigQuery()

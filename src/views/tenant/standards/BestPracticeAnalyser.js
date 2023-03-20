@@ -179,27 +179,26 @@ const BestPracticeAnalyser = () => {
       name: 'Self Service Password Reset Enabled',
       selector: (row) => row['SelfServicePasswordReset'],
       exportSelector: 'SelfServicePasswordReset',
-      cell: (row, index, column) => {
-        const cell = column.selector(row)
-        if (cell === 'Off') {
-          return <CellBadge label="Off All Users" color="warning" />
-        } else if (cell === 'On') {
-          return <CellBadge label="On All Users" color="success" />
-        } else if (cell === 'Specific Users') {
-          return <CellBadge label="Specific Users" color="info" />
-        }
-        return <CellBadge label="No Data" color="info" />
-      },
+      cell: cellBooleanFormatter(),
       sortable: true,
       minWidth: '150px',
       maxWidth: '150px',
     },
     {
-      name: 'Modern Auth Enabled',
-      selector: (row) => row['EnableModernAuth'],
+      name: 'TAP Enabled',
+      selector: (row) => row['TAPEnabled'],
+      exportSelector: 'TAPEnabled',
+      cell: cellBooleanFormatter({ reverse: false, warning: true }),
       sortable: true,
-      exportSelector: 'EnableModernAuth',
-      cell: cellBooleanFormatter(),
+      minWidth: '150px',
+      maxWidth: '150px',
+    },
+    {
+      name: 'MFA Registration Nudge Enabled',
+      selector: (row) => row['MFANudge'],
+      exportSelector: 'MFANudge',
+      cell: cellBooleanFormatter({ reverse: false, warning: true }),
+      sortable: true,
       minWidth: '150px',
       maxWidth: '150px',
     },
