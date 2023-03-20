@@ -76,13 +76,17 @@ const AddAPDevice = () => {
 
   const handleOnDrop = (data) => {
     const importdata = data.map((item) => {
+      const normalizedData = {}
+      Object.keys(item.data).forEach((key) => {
+        normalizedData[key.toLowerCase()] = item.data[key]
+      })
       return {
         //Device serial number,Windows product ID,Hardware hash,Manufacturer name,Device Model
-        SerialNumber: item.data['Device serial number'],
-        productKey: item.data['Windows product ID'],
-        hardwareHash: item.data['Hardware hash'],
-        oemManufacturerName: item.data['Manufacturer name'],
-        modelName: item.data['Device Model'],
+        SerialNumber: normalizedData['device serial number'],
+        productKey: normalizedData['windows product id'],
+        hardwareHash: normalizedData['hardware hash'],
+        oemManufacturerName: normalizedData['manufacturer name'],
+        modelName: normalizedData['device model'],
       }
     })
     setAutopilotdata(importdata)
@@ -148,10 +152,18 @@ const AddAPDevice = () => {
         <div className="mb-2">
           <p>
             As a partner, you can register devices to Windows Autopilot using any one of these
-            methods: Hardware Hash (available from OEM or on-device script) Combination of
-            Manufacturer, Device Model, Device Serial Number Windows Product Key ID.
+            methods:
+            <li>Hardware Hash (available from OEM or on-device script)</li>
+            <li>Combination of Manufacturer, Device Model, Device Serial Number</li>
+            <li> Windows Product Key ID.</li>
           </p>
-          <p>You can also upload a CSV file if your vendor has supplied you with one.</p>
+          <p>
+            You can also upload a CSV file if your vendor has supplied you with one.
+            <br />
+            <a href="data:text/csv;charset=utf-8,%EF%BB%BFDevice serial number,Windows product ID,Hardware hash,Manufacturer name,Device Model%0AR9-ZNP67,,,,,%0A,123451234567,,,,%0A,,T0FzAQEAHAAAAAoA6AOCOgEABgBgW7EdzorHH3g,,,%0A,,,,,%0A,,,,,%0A,,,,,%0ASAMPLE EXPLAINED (remove the following section before uploading),,,,,%0ALine 2 illustrates the tuple - Providing the Serial Number and Manufacturer Name and Device Model together,,,,,%0ALine 3 illustrates only providing the Windows PKID,,,,,%0ALine 4 illustrates only providing the Hardware Hash,,,,,%0A">
+              Example CSV
+            </a>
+          </p>
         </div>
         <CCol xs={'auto'}>
           <CSVReader

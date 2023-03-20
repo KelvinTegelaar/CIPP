@@ -94,6 +94,13 @@ const ListAlertsQueue = () => {
       cell: cellBooleanFormatter(),
     },
     {
+      name: 'Overused Licenses',
+      selector: (row) => row['OverusedLicenses'],
+      sortable: true,
+      exportSelector: 'OverusedLicenses',
+      cell: cellBooleanFormatter(),
+    },
+    {
       name: 'App Secret Expiry',
       selector: (row) => row['AppSecretExpiry'],
       sortable: true,
@@ -156,6 +163,18 @@ const ListAlertsQueue = () => {
           reportName: `AlertsQueue-List`,
           path: '/api/ListAlertsQueue',
           params: { TenantFilter: tenant?.defaultDomainName },
+          tableProps: {
+            selectableRows: true,
+            actionsList: [
+              {
+                label: 'Delete Template',
+                color: 'info',
+                modal: true,
+                modalUrl: `/api/RemoveQueuedAlert?ID=!tenantId`,
+                modalMessage: 'Are you sure you want to delete these templates?',
+              },
+            ],
+          },
         }}
       />
     </div>

@@ -85,6 +85,15 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modalMessage: 'Are you sure you want to generate logs and ship these to MEM?',
           },
           {
+            label: 'Rename device',
+            color: 'info',
+            modal: true,
+            modalType: 'POST',
+            modalInput: true,
+            modalUrl: `/api/ExecDeviceAction?TenantFilter=${tenant.defaultDomainName}&GUID=${row.id}&Action=setDeviceName`,
+            modalMessage: 'Enter the new name for the device',
+          },
+          {
             label: 'Fresh Start (Remove user data)',
             color: 'danger',
             modal: true,
