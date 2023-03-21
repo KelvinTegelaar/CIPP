@@ -271,6 +271,7 @@ const Users = (row) => {
       datatable={{
         filterlist: [
           { filterName: 'Enabled users', filter: '"accountEnabled":true' },
+          { filterName: 'Disabled users', filter: '"accountEnabled":false' },
           { filterName: 'AAD users', filter: '"onPremisesSyncEnabled":false' },
           { filterName: 'Synced users', filter: '"onPremisesSyncEnabled":true' },
           { filterName: 'Guest users', filter: '"usertype":"guest"' },
