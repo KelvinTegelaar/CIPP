@@ -136,20 +136,6 @@
   },
   {
     "cat": "AAD",
-    "name": "standards.SSPR",
-    "helpText": "This is the default helptext",
-    "addedComponent": null,
-    "label": "Enable Self Service Password Reset"
-  },
-  {
-    "cat": "AAD",
-    "name": "standards.UndoSSPR",
-    "helpText": "This is the default helptext",
-    "addedComponent": null,
-    "label": "Undo SSPR Standard"
-  },
-  {
-    "cat": "AAD",
     "name": "standards.OauthConsent.Enabled",
     "helpText": "This is the default helptext",
     "addedComponent": {
@@ -158,13 +144,6 @@
       "label": "Allowed application IDs, comma separated"
     },
     "label": "Require admin consent for applications (Prevent OAuth phishing.)"
-  },
-  {
-    "cat": "AAD",
-    "name": "standards.AzurePortal",
-    "helpText": "This is the default helptext",
-    "addedComponent": null,
-    "label": "Disable Azure Portal access for Standard users"
   },
   {
     "cat": "AAD",
@@ -251,14 +230,14 @@
     "label": "Enable Auto-expanding archives"
   },
   {
-    "name": "standards.SpoofWarn.Enable",
+    "name": "standards.SpoofWarn.enable",
     "cat": "Exchange",
     "helpText": "This is the default helptext",
     "addedComponent": null,
     "label": "Enable Spoofing warnings for Outlook (This e-mail is external identifiers)"
   },
   {
-    "name": "standards.SpoofWarn.Disable",
+    "name": "standards.SpoofWarn.disable",
     "cat": "Exchange",
     "helpText": "This is the default helptext",
     "addedComponent": null,
@@ -270,6 +249,20 @@
     "helpText": "This is the default helptext",
     "addedComponent": null,
     "label": "Disable daily Insight/Viva reports"
+  },
+  {
+    "name": "standards.RotateDKIM",
+    "cat": "Exchange",
+    "helpText": "Rotate DKIM keys that are 1024 bit to 2048 bit",
+    "addedComponent": null,
+    "label": "Rotate DKIM keys that are 1024 bit to 2048 bit"
+  },
+  {
+    "name": "standards.AddDKIM",
+    "cat": "Exchange",
+    "helpText": "Enables DKIM for all domains that currently support it",
+    "addedComponent": null,
+    "label": "Enables DKIM for all domains that currently support it"
   },
   {
     "name": "standards.ActivityBasedTimeout",
