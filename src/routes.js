@@ -22,6 +22,8 @@ const EditGroup = React.lazy(() => import('src/views/identity/administration/Edi
 const ViewGroup = React.lazy(() => import('src/views/identity/administration/ViewGroup'))
 const Roles = React.lazy(() => import('src/views/identity/administration/Roles'))
 const Devices = React.lazy(() => import('src/views/endpoint/intune/Devices'))
+const PageLogOut = React.lazy(() => import('src/views/pages/LogoutRedirect/PageLogOut'))
+
 const Page404 = React.lazy(() => import('src/views/pages/page404/Page404'))
 const Page403 = React.lazy(() => import('src/views/pages/page403/Page403'))
 const Page500 = React.lazy(() => import('src/views/pages/page500/Page500'))
@@ -53,7 +55,7 @@ const DeployConditional = React.lazy(() => import('src/views/tenant/conditional/
 const ListLicences = React.lazy(() => import('src/views/tenant/administration/ListLicences'))
 const ListAppConsent = React.lazy(() => import('src/views/tenant/administration/ListOauthApps'))
 
-const BasicAuthReport = React.lazy(() => import('src/views/identity/reports/BasicAuthReport'))
+const BasicAuthReport = React.lazy(() => import('src/views/identity/reports/InactiveUsers'))
 const SignInReport = React.lazy(() => import('src/views/identity/reports/SignIns'))
 
 const AzureADConnectReport = React.lazy(() =>
@@ -218,6 +220,7 @@ const routes = [
   // { path: '/', exact: true, name: 'Home' },
   { path: '/home', name: 'Home', component: Home },
   { path: '/cipp/logs', name: 'Logs', component: Logs },
+
   { path: '/cipp/404', name: 'Error', component: Page404 },
   { path: '/cipp/403', name: 'Error', component: Page403 },
   { path: '/cipp/500', name: 'Error', component: Page500 },
@@ -264,7 +267,7 @@ const routes = [
   { path: '/endpoint/reports/devices', name: 'Devices', component: Devices },
   { path: '/identity/reports/mfa-report', name: 'MFA Report', component: MFAReport },
   {
-    path: '/identity/reports/basic-auth-report',
+    path: '/identity/reports/inactive-users-report',
     name: 'Basic Auth Report',
     component: BasicAuthReport,
   },
