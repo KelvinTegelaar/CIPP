@@ -268,7 +268,7 @@ const routes = [
   { path: '/identity/reports/mfa-report', name: 'MFA Report', component: MFAReport },
   {
     path: '/identity/reports/inactive-users-report',
-    name: 'Basic Auth Report',
+    name: 'Inactive Users Report',
     component: BasicAuthReport,
   },
   {
