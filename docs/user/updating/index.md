@@ -6,7 +6,7 @@ slug: /updating
 ---
 
 :::caution Manual vs Automatic Updating
-Note that the frontend updates automatically once you have done "Fetch & Merge" from GitHub, however the CIPP-API requires you to press a button on the resource in Azure itself. If you have a hosted version of CIPP, updates are deployed automatically.
+Note that the frontend updates automatically once you have done "Sync" from GitHub, however the CIPP-API requires you to press a button on the resource in Azure itself. If you have a hosted version of CIPP, updates are deployed automatically.
 
 :::
 
@@ -22,7 +22,7 @@ Note that if you receive a workflow error, check the [Troubleshooting page for p
 - Go to your own CIPP fork on GitHub
 - Select Sync fork
 - Select Update branch
-- If prompted with a question asking "Do you want to Discard (X) Commits" or "Update Branch", ensure you click on "Update Branch"
+- If prompted with a question asking "Do you want to Discard (X) Commits" or "Update Branch", ensure you click on "Update Branch" AND DO NOT PRESS DISCARD
 
 ## Backend
 
