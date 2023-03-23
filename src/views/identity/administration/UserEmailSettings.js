@@ -16,6 +16,14 @@ export default function UserEmailSettings({ userId, tenantDomain, className = nu
       body: formatter(details?.BlockedForSpam, false, true),
     },
     {
+      heading: 'Archive Mailbox Enabled',
+      body: formatter(details?.ArchiveMailBox, false, false, true),
+    },
+    {
+      heading: 'Auto Expanding Archive',
+      body: formatter(details?.AutoExpandingArchive, false, false, true),
+    },
+    {
       heading: 'Litigation Hold',
       body: formatter(details?.LitiationHold, false, false, true),
     },

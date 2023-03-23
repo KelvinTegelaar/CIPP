@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { ExportCsvButton, ExportPDFButton } from 'src/components/buttons'
 import {
@@ -10,13 +10,20 @@ import {
   CDropdownMenu,
   CDropdownItem,
   CButton,
+  CModal,
+  CModalBody,
+  CModalTitle,
+  CCallout,
 } from '@coreui/react'
 import DataTable, { createTheme } from 'react-data-table-component'
 import PropTypes from 'prop-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faColumns, faSearch, faSync } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faColumns, faSearch, faSync, faTasks } from '@fortawesome/free-solid-svg-icons'
 import { useEffect } from 'react'
 import { cellGenericFormatter } from './CellGenericFormat'
+import { ModalService } from '../utilities'
+import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import { ConfirmModal } from '../utilities/SharedModal'
 
 const FilterComponent = ({ filterText, onFilter, onClear, filterlist, onFilterPreset }) => (
   <>
@@ -104,6 +111,7 @@ export default function CippTable({
     striped = true,
     subheader = true,
     expandableRows,
+    actionsList,
     expandableRowsComponent,
     expandableRowsHideExpander,
     expandOnRowClicked,
@@ -116,8 +124,20 @@ export default function CippTable({
     ...rest
   } = {},
 }) {
+  const inputRef = useRef('')
+  const [loopRunning, setLoopRunning] = React.useState(false)
+  const [massResults, setMassResults] = React.useState([])
   const [filterText, setFilterText] = React.useState('')
   const [updatedColumns, setUpdatedColumns] = React.useState(columns)
+  const [selectedRows, setSelectedRows] = React.useState(false)
+  const [genericGetRequest, getResults] = useLazyGenericGetRequestQuery()
+  const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
+  const handleSelectedChange = ({ selectedRows }) => {
+    setSelectedRows(selectedRows)
+    if (selectedRows.length < 1) {
+      setSelectedRows(false)
+    }
+  }
   const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false)
   const filteredItems = data.filter(
     (item) => JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !== -1,
@@ -179,7 +199,79 @@ export default function CippTable({
         setFilterText('')
       }
     }
-
+    const handleModal = (modalMessage, modalUrl, modalType = 'GET', modalBody, modalInput) => {
+      if (modalType === 'GET') {
+        ModalService.confirm({
+          body: (
+            <div style={{ overflow: 'visible' }}>
+              <div>{modalMessage}</div>
+            </div>
+          ),
+          title: 'Confirm',
+          onConfirm: async () => {
+            const resultsarr = []
+            for (const row of selectedRows) {
+              setLoopRunning(true)
+              const urlParams = new URLSearchParams(modalUrl.split('?')[1])
+              for (let [paramName, paramValue] of urlParams.entries()) {
+                if (paramValue.startsWith('!')) {
+                  urlParams.set(paramName, row[paramValue.replace('!', '')])
+                }
+              }
+              const NewModalUrl = `${modalUrl.split('?')[0]}?${urlParams.toString()}`
+              const results = await genericGetRequest({ path: NewModalUrl, refreshParam: row.id })
+              resultsarr.push(results)
+              setMassResults(resultsarr)
+            }
+            setLoopRunning(false)
+          },
+        })
+      } else {
+        ModalService.confirm({
+          body: (
+            <div style={{ overflow: 'visible' }}>
+              {modalInput && (
+                <div>
+                  <CFormInput ref={inputRef} type="text" />
+                </div>
+              )}
+              <div>{modalMessage}</div>
+            </div>
+          ),
+          title: 'Confirm',
+          onConfirm: async () => {
+            const resultsarr = []
+            for (const row of selectedRows) {
+              setLoopRunning(true)
+              const urlParams = new URLSearchParams(modalUrl.split('?')[1])
+              for (let [paramName, paramValue] of urlParams.entries()) {
+                if (paramValue.toString().startsWith('!')) {
+                  urlParams.set(paramName, row[paramValue.replace('!', '')])
+                }
+              }
+              const newModalBody = {}
+              for (let [objName, objValue] of Object.entries(modalBody)) {
+                console.log(objValue)
+                if (objValue.toString().startsWith('!')) {
+                  newModalBody[objName] = row[objValue.replace('!', '')]
+                }
+              }
+              const NewModalUrl = `${modalUrl.split('?')[0]}?${urlParams.toString()}`
+              const results = await genericPostRequest({
+                path: NewModalUrl,
+                values: { ...modalBody, ...newModalBody, ...{ input: inputRef.current.value } },
+              })
+              resultsarr.push(results)
+              setMassResults(resultsarr)
+            }
+            setLoopRunning(false)
+          },
+        })
+      }
+    }
+    const executeselectedAction = (item) => {
+      handleModal(item.modalMessage, item.modalUrl, item.modalType, item.modalBody, item.modalInput)
+    }
     const defaultActions = []
     const dataKeys = () => {
       if (filteredItems.length >= 1) {
@@ -277,6 +369,32 @@ export default function CippTable({
         <ExportCsvButton key="export-csv-action" csvData={filtered} reportName={reportName} />,
       ])
     }
+    if (selectedRows && actionsList) {
+      defaultActions.push([
+        <>
+          <CDropdown className="me-2" variant="input-group">
+            <CDropdownToggle
+              className="btn btn-primary btn-sm m-1"
+              size="sm"
+              style={{
+                backgroundColor: '#f88c1a',
+              }}
+            >
+              Actions
+            </CDropdownToggle>
+            <CDropdownMenu>
+              {actionsList.map((item, idx) => {
+                return (
+                  <CDropdownItem key={idx} onClick={() => executeselectedAction(item)}>
+                    {item.label}
+                  </CDropdownItem>
+                )
+              })}
+            </CDropdownMenu>
+          </CDropdown>
+        </>,
+      ])
+    }
     return (
       <>
         <div className="w-100 d-flex justify-content-start">
@@ -309,36 +427,55 @@ export default function CippTable({
       {!error && (
         <div>
           {(columns.length === updatedColumns.length || !dynamicColumns) && (
-            <DataTable
-              customStyles={customStyles}
-              className="cipp-table"
-              theme={theme}
-              subHeader={subheader}
-              selectableRows={selectableRows}
-              onSelectedRowsChange={onSelectedRowsChange}
-              subHeaderComponent={subHeaderComponentMemo}
-              subHeaderAlign="left"
-              paginationResetDefaultPage={resetPaginationToggle}
-              //actions={actionsMemo}
-              pagination={pagination}
-              responsive={responsive}
-              dense={dense}
-              striped={striped}
-              columns={columns}
-              data={filteredItems}
-              expandableRows={expandableRows}
-              expandableRowsComponent={expandableRowsComponent}
-              highlightOnHover={highlightOnHover}
-              expandOnRowClicked={expandOnRowClicked}
-              defaultSortAsc
-              defaultSortFieldId={1}
-              sortFunction={customSort}
-              paginationPerPage={tablePageSize}
-              progressPending={isFetching}
-              progressComponent={<CSpinner color="info" component="div" />}
-              paginationRowsPerPageOptions={[25, 50, 100, 200, 500]}
-              {...rest}
-            />
+            <>
+              {(massResults.length >= 1 || loopRunning) && (
+                <CCallout color="info">
+                  {massResults.map((message, idx) => {
+                    return <li key={idx}>{message.data.Results}</li>
+                  })}
+                  {loopRunning && (
+                    <li>
+                      <CSpinner size="sm" />
+                    </li>
+                  )}
+                </CCallout>
+              )}
+              <DataTable
+                customStyles={customStyles}
+                className="cipp-table"
+                theme={theme}
+                subHeader={subheader}
+                selectableRows={selectableRows}
+                onSelectedRowsChange={
+                  onSelectedRowsChange ? onSelectedRowsChange : handleSelectedChange
+                }
+                subHeaderComponent={subHeaderComponentMemo}
+                subHeaderAlign="left"
+                paginationResetDefaultPage={resetPaginationToggle}
+                //actions={actionsMemo}
+                pagination={pagination}
+                responsive={responsive}
+                dense={dense}
+                striped={striped}
+                columns={columns}
+                data={filteredItems}
+                expandableRows={expandableRows}
+                expandableRowsComponent={expandableRowsComponent}
+                highlightOnHover={highlightOnHover}
+                expandOnRowClicked={expandOnRowClicked}
+                defaultSortAsc
+                defaultSortFieldId={1}
+                sortFunction={customSort}
+                paginationPerPage={tablePageSize}
+                progressPending={isFetching}
+                progressComponent={<CSpinner color="info" component="div" />}
+                paginationRowsPerPageOptions={[25, 50, 100, 200, 500]}
+                {...rest}
+              />
+              {selectedRows.length >= 1 && (
+                <CCallout>Selected {selectedRows.length} items</CCallout>
+              )}
+            </>
           )}
         </div>
       )}
