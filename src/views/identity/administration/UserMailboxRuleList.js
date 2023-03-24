@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { CellTip } from 'src/components/tables'
+import { cellBooleanFormatter, CellTip } from 'src/components/tables'
 import { DatatableContentCard } from 'src/components/contentcards'
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons'
 
@@ -11,6 +11,7 @@ const rowStyle = (row, rowIndex) => {
 }
 
 export default function UserMailboxRuleList({ userId, tenantDomain, className = null }) {
+  const formatter = (cell) => CellBoolean({ cell })
   const columns = [
     {
       selector: (row) => row['Name'],
@@ -18,7 +19,7 @@ export default function UserMailboxRuleList({ userId, tenantDomain, className = 
       sortable: true,
       cell: (row) => CellTip(row['Name']),
       exportSelector: 'Name',
-      maxwidth: '350px',
+      width: '200px',
     },
     {
       selector: (row) => row['Description'],
@@ -26,7 +27,7 @@ export default function UserMailboxRuleList({ userId, tenantDomain, className = 
       sortable: true,
       cell: (row) => CellTip(row['Description']),
       exportSelector: 'Description',
-      width: '600px',
+      width: '350px',
     },
     {
       selector: (row) => row['ForwardTo'],
@@ -34,10 +35,42 @@ export default function UserMailboxRuleList({ userId, tenantDomain, className = 
       sortable: true,
       cell: (row) => CellTip(row['ForwardTo']),
       exportSelector: 'ForwardTo',
-      width: '600px',
+      width: '250px',
+    },
+    {
+      selector: (row) => row['RedirectTo'],
+      name: 'Redirect To',
+      sortable: true,
+      cell: (row) => CellTip(row['RedirectTo']),
+      exportSelector: 'RedirectTo',
+      maxwidth: '250px',
+    },
+    {
+      selector: (row) => row['CopyToFolder'],
+      name: 'Copy To Folder',
+      sortable: true,
+      cell: (row) => CellTip(row['CopyToFolder']),
+      exportSelector: 'CopyToFolder',
+      maxwidth: '200px',
+    },
+    {
+      selector: (row) => row['MoveToFolder'],
+      name: 'Move To Folder',
+      sortable: true,
+      cell: (row) => CellTip(row['MoveToFolder']),
+      exportSelector: 'MoveToFolder',
+      maxwidth: '200px',
+    },
+    {
+      selector: (row) => row['DeleteMessage'],
+      name: 'Delete Message',
+      sortable: true,
+      cell: cellBooleanFormatter({ colourless: true }),
+      formatter,
+      exportSelector: 'DeleteMessage',
+      width: '200px',
     },
   ]
-
   return (
     <DatatableContentCard
       title="User Mailbox Rules"
