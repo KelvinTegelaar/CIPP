@@ -1,32 +1,32 @@
 // @no-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require('prism-react-renderer/themes/vsLight')
-const darkCodeTheme = require('prism-react-renderer/themes/vsDark')
-const a11yEmoji = require('@fec/remark-a11y-emoji')
+const lightCodeTheme = require("prism-react-renderer/themes/vsLight");
+const darkCodeTheme = require("prism-react-renderer/themes/vsDark");
+const a11yEmoji = require("@fec/remark-a11y-emoji");
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'CyberDrain Improved Partner Portal',
-  tagline: 'Free and open-source multi-tenant management for Microsoft 365...',
-  url: 'https://cipp.app',
-  baseUrl: '/',
-  onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'throw',
-  favicon: 'img/CyberDrainIconOrangeWhite.png',
-  organizationName: 'KelvinTegelaar', // Usually your GitHub org/user name.
-  projectName: 'CIPP', // Usually your repo name.
+  title: "CyberDrain Improved Partner Portal",
+  tagline: "Free and open-source multi-tenant management for Microsoft 365...",
+  url: "https://cipp.app",
+  baseUrl: "/",
+  onBrokenLinks: "throw",
+  onBrokenMarkdownLinks: "throw",
+  favicon: "img/CyberDrainIconOrangeWhite.png",
+  organizationName: "KelvinTegelaar", // Usually your GitHub org/user name.
+  projectName: "CIPP", // Usually your repo name.
   trailingSlash: true,
   presets: [
     [
-      'classic',
+      "classic",
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          path: 'docs/user',
-          routeBasePath: 'docs/user',
-          sidebarPath: require.resolve('./sidebarsUser.js'),
-          editUrl: 'https://github.com/KelvinTegelaar/CIPP/tree/website/',
+          path: "docs/user",
+          routeBasePath: "docs/user",
+          sidebarPath: require.resolve("./sidebarsUser.js"),
+          editUrl: "https://github.com/KelvinTegelaar/CIPP/tree/website/",
           showLastUpdateAuthor: true,
           showLastUpdateTime: true,
           sidebarCollapsible: true,
@@ -43,36 +43,38 @@ const config = {
           },
         },
         blog: {
-          blogTitle: 'Releases',
-          blogDescription: 'CIPP release notes and updates...',
-          blogSidebarTitle: 'Releases',
+          blogTitle: "Releases",
+          blogDescription: "CIPP release notes and updates...",
+          blogSidebarTitle: "Releases",
           blogSidebarCount: 0,
-          path: 'releases',
-          postsPerPage: 'ALL',
+          path: "releases",
+          postsPerPage: "ALL",
           archiveBasePath: null,
-          routeBasePath: 'releases',
+          routeBasePath: "releases",
           showReadingTime: false,
           remarkPlugins: [a11yEmoji],
           feedOptions: {
-            type: 'all',
+            type: "all",
             copyright: `Copyright © ${new Date().getFullYear()} CyberDrain`,
           },
         },
         theme: {
           customCss: [
-            require.resolve('./src/scss/custom.scss'),
-            require.resolve('./src/scss/montserrat.scss'),
+            require.resolve("./src/scss/custom.scss"),
+            require.resolve("./src/scss/montserrat.scss"),
           ],
         },
       }),
     ],
     [
-      'redocusaurus',
+      "redocusaurus",
       {
-        specs: [{
-          spec: 'data/cippapi.yaml',
-          routePath: '/docs/api/',
-        }, ],
+        specs: [
+          {
+            spec: "data/cippapi.yaml",
+            routePath: "/docs/api/",
+          },
+        ],
       },
     ],
   ],
@@ -80,10 +82,13 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      metadata: [{
-        name: 'keywords',
-        content: 'CIPP, CyberDrain Improved Partner Portal, Microsoft 365, Management, Multi-Tenant, MSP, Azure, Microsoft Partner, Lighthouse',
-      }, ],
+      metadata: [
+        {
+          name: "keywords",
+          content:
+            "CIPP, CyberDrain Improved Partner Portal, Microsoft 365, Management, Multi-Tenant, MSP, Azure, Microsoft Partner, Lighthouse",
+        },
+      ],
       colorMode: {
         respectPrefersColorScheme: true,
       },
@@ -94,105 +99,109 @@ const config = {
       navbar: {
         title: `CyberDrain Improved Partner Portal`,
         logo: {
-          alt: 'CIPP Logo',
-          src: 'img/CyberDrainIconOrangeWhite.png',
+          alt: "CIPP Logo",
+          src: "img/CyberDrainIconOrangeWhite.png",
         },
-        items: [{
-            type: 'dropdown',
-            position: 'left',
-            label: 'Documentation',
-            items: [{
-                type: 'doc',
-                docId: 'index',
-                label: 'User',
-                docsPluginId: 'default',
-              },
-              {
-                type: 'doc',
-                docId: 'index',
-                label: 'Developer',
-                docsPluginId: 'dev',
-              },
-              {
-                label: 'API',
-                to: '/docs/api/',
-              },
-              {
-                type: 'doc',
-                docId: 'knownbugs',
-                label: 'Known Bugs',
-                docsPluginId: 'general',
-              },
-            ],
-          },
+        items: [
           {
-            type: 'dropdown',
-            position: 'left',
-            label: 'Project',
+            type: "dropdown",
+            position: "left",
+            label: "Documentation",
             items: [
               {
-                label: 'How to Contribute',
-                to: 'contributing',
-              }
+                type: "doc",
+                docId: "index",
+                label: "User",
+                docsPluginId: "default",
+              },
+              {
+                type: "doc",
+                docId: "index",
+                label: "Developer",
+                docsPluginId: "dev",
+              },
+              {
+                label: "API",
+                to: "/docs/api/",
+              },
+              {
+                type: "doc",
+                docId: "knownbugs",
+                label: "Known Bugs",
+                docsPluginId: "general",
+              },
             ],
           },
           {
-            type: 'doc',
-            docId: 'troubleshooting',
-            label: 'Troubleshooting',
-            position: 'left',
-            docsPluginId: 'general',
+            type: "dropdown",
+            position: "left",
+            label: "Project",
+            items: [
+              {
+                label: "How to Contribute",
+                to: "contributing",
+              },
+            ],
+          },
+          {
+            type: "doc",
+            docId: "troubleshooting",
+            label: "Troubleshooting",
+            position: "left",
+            docsPluginId: "general",
           },
 
           {
-            type: 'doc',
-            docId: 'faq',
-            label: 'Frequently Asked Questions',
-            position: 'left',
-            docsPluginId: 'general',
+            type: "doc",
+            docId: "faq",
+            label: "Frequently Asked Questions",
+            position: "left",
+            docsPluginId: "general",
           },
           {
-            type: 'doc',
-            docId: 'demo',
-            label: 'Demo',
-            position: 'left',
-            docsPluginId: 'general',
+            type: "doc",
+            docId: "demo",
+            label: "Demo",
+            position: "left",
+            docsPluginId: "general",
           },
           {
-            type: 'dropdown',
-            position: 'left',
-            label: 'Security',
-            items: [{
-                to: 'security',
-                label: 'Security Policy',
+            type: "dropdown",
+            position: "left",
+            label: "Security",
+            items: [
+              {
+                to: "security",
+                label: "Security Policy",
               },
               {
-                to: 'vdp',
-                label: 'Vulnerability Disclosure',
+                to: "vdp",
+                label: "Vulnerability Disclosure",
               },
             ],
           },
           {
-            to: 'https://discord.gg/cyberdrain',
-            'aria-label': 'Discord',
-            position: 'right',
-            target: '_blank',
-            className: 'discord-link',
+            to: "https://discord.gg/cyberdrain",
+            "aria-label": "Discord",
+            position: "right",
+            target: "_blank",
+            className: "discord-link",
           },
           {
-            type: 'dropdown',
-            position: 'right',
-            label: 'GitHub',
-            className: 'github-link',
-            items: [{
-                to: 'https://github.com/KelvinTegelaar/CIPP',
-                'aria-label': 'GitHub',
-                label: 'CIPP',
+            type: "dropdown",
+            position: "right",
+            label: "GitHub",
+            className: "github-link",
+            items: [
+              {
+                to: "https://github.com/KelvinTegelaar/CIPP",
+                "aria-label": "GitHub",
+                label: "CIPP",
               },
               {
-                to: 'https://github.com/KelvinTegelaar/CIPP-API',
-                'aria-label': 'GitHub',
-                label: 'CIPP-API',
+                to: "https://github.com/KelvinTegelaar/CIPP-API",
+                "aria-label": "GitHub",
+                label: "CIPP-API",
               },
             ],
           },
@@ -200,69 +209,73 @@ const config = {
       },
       footer: {
         logo: {
-          alt: 'Docusaurus Logo',
-          src: 'img/Docusaurus.svg',
-          href: 'https://docusaurus.io',
+          alt: "Docusaurus Logo",
+          src: "img/Docusaurus.svg",
+          href: "https://docusaurus.io",
           height: 50,
           width: 50,
         },
-        links: [{
-            title: 'Docs',
-            items: [{
-                label: 'User Guide',
-                to: '/docs/user/',
+        links: [
+          {
+            title: "Docs",
+            items: [
+              {
+                label: "User Guide",
+                to: "/docs/user/",
               },
               {
-                label: 'Developer Guide',
-                to: '/docs/dev/',
+                label: "Developer Guide",
+                to: "/docs/dev/",
               },
               {
-                label: 'API Documentation',
-                to: '/docs/api/',
+                label: "API Documentation",
+                to: "/docs/api/",
               },
               {
-                label: 'Frequently Asked Questions',
-                to: '/faq/',
+                label: "Frequently Asked Questions",
+                to: "/faq/",
               },
               {
-                label: 'Known Bugs',
-                to: '/docs/general/knownbugs/',
+                label: "Known Bugs",
+                to: "/docs/general/knownbugs/",
               },
             ],
           },
           {
-            title: 'Community',
-            items: [{
-                label: 'Contributors',
-                to: 'contributors',
+            title: "Community",
+            items: [
+              {
+                label: "Contributors",
+                to: "contributors",
               },
               {
-                label: 'Discord',
-                href: 'https://discord.gg/cyberdrain',
+                label: "Discord",
+                href: "https://discord.gg/cyberdrain",
               },
               {
-                label: 'Reddit',
-                href: 'https://reddit.com/r/msp',
+                label: "Reddit",
+                href: "https://reddit.com/r/msp",
               },
             ],
           },
           {
-            title: 'More',
-            items: [{
-                label: 'CyberDrain Blog',
-                href: 'https://cyberdrain.com',
+            title: "More",
+            items: [
+              {
+                label: "CyberDrain Blog",
+                href: "https://cyberdrain.com",
               },
               {
-                label: 'CyberDrain CtF',
-                href: 'https://ctf.cyberdrain.com',
+                label: "CyberDrain CtF",
+                href: "https://ctf.cyberdrain.com",
               },
               {
-                label: 'Submit Feature Request',
-                href: 'https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=feature_request.md&title=FEATURE+REQUEST%3A+',
+                label: "Submit Feature Request",
+                href: "https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=feature_request.md&title=FEATURE+REQUEST%3A+",
               },
               {
-                label: 'Submit Bug Report',
-                href: 'https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+',
+                label: "Submit Bug Report",
+                href: "https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=&template=bug_report.md&title=BUG%3A+",
               },
             ],
           },
@@ -272,134 +285,139 @@ const config = {
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
-        additionalLanguages: ['powershell'],
+        additionalLanguages: ["powershell"],
       },
       hideableSidebar: true,
     }),
   plugins: [
-    require.resolve('docusaurus-plugin-sass'),
+    require.resolve("docusaurus-plugin-sass"),
     [
-      require.resolve('@docusaurus/plugin-client-redirects'),
+      require.resolve("@docusaurus/plugin-client-redirects"),
       {
-        redirects: [{
-            to: '/docs/user/updating',
-            from: '/GettingStarted/Updating/',
+        redirects: [
+          {
+            to: "/docs/user/updating",
+            from: "/GettingStarted/Updating/",
           },
           {
-            to: '/docs/user/gettingstarted/',
-            from: '/GettingStarted/Installation/',
+            to: "docs/gettingstarted/postinstall/permissions/",
+            from: "docs/gettingstarted/permissions",
           },
           {
-            to: '/docs/user/gettingstarted/roles/',
-            from: '/GettingStarted/Roles/',
+            to: "/docs/user/gettingstarted/",
+            from: "/GettingStarted/Installation/",
           },
           {
-            to: '/docs/general/faq/',
-            from: '/GettingStarted/FAQ/',
+            to: "/docs/user/gettingstarted/roles/",
+            from: "/GettingStarted/Roles/",
           },
           {
-            to: '/security/',
-            from: '/GettingStarted/Security/',
+            to: "/docs/general/faq/",
+            from: "/GettingStarted/FAQ/",
           },
           {
-            to: '/releases/',
-            from: '/GettingStarted/Changelog/',
+            to: "/security/",
+            from: "/GettingStarted/Security/",
           },
           {
-            to: '/contributing/',
-            from: '/GettingStarted/Contributions/',
+            to: "/releases/",
+            from: "/GettingStarted/Changelog/",
           },
           {
-            to: '/docs/user/usingcipp/identitymanagement/users/',
-            from: '/IdentityManagement/Users/',
+            to: "/contributing/",
+            from: "/GettingStarted/Contributions/",
           },
           {
-            to: '/docs/user/usingcipp/identitymanagement/groups/',
-            from: '/IdentityManagement/Groups/',
+            to: "/docs/user/usingcipp/identitymanagement/users/",
+            from: "/IdentityManagement/Users/",
           },
           {
-            to: '/docs/user/usingcipp/tenantadministration/tenants/',
-            from: '/TenantAdministration/Tenants/',
+            to: "/docs/user/usingcipp/identitymanagement/groups/",
+            from: "/IdentityManagement/Groups/",
           },
           {
-            to: '/docs/user/usingcipp/tenantadministration/standards/',
-            from: '/TenantAdministration/Standards/',
+            to: "/docs/user/usingcipp/tenantadministration/tenants/",
+            from: "/TenantAdministration/Tenants/",
           },
           {
-            to: '/docs/user/usingcipp/tenantadministration/bestpracticeanalyser/',
-            from: '/TenantAdministration/BestPracticesAnalyser/',
+            to: "/docs/user/usingcipp/tenantadministration/standards/",
+            from: "/TenantAdministration/Standards/",
           },
           {
-            to: '/docs/user/usingcipp/tenantadministration/domainsanalyser/',
-            from: '/TenantAdministration/DomainAnalyser/',
+            to: "/docs/user/usingcipp/tenantadministration/bestpracticeanalyser/",
+            from: "/TenantAdministration/BestPracticesAnalyser/",
           },
           {
-            to: '/docs/user/usingcipp/endpointmanagement/applications/',
-            from: '/EndpointManagement/Applications/',
+            to: "/docs/user/usingcipp/tenantadministration/domainsanalyser/",
+            from: "/TenantAdministration/DomainAnalyser/",
           },
           {
-            to: '/docs/user/usingcipp/endpointmanagement/addchocoapp/',
-            from: '/EndpointManagement/AddChocoApp/',
+            to: "/docs/user/usingcipp/endpointmanagement/applications/",
+            from: "/EndpointManagement/Applications/",
           },
           {
-            to: '/docs/user/usingcipp/endpointmanagement/autopilotdevices/',
-            from: '/EndpointManagement/AutopilotDevices/',
+            to: "/docs/user/usingcipp/endpointmanagement/addchocoapp/",
+            from: "/EndpointManagement/AddChocoApp/",
           },
           {
-            to: '/docs/user/usingcipp/endpointmanagement/autopilotprofiles/',
-            from: '/EndpointManagement/AutopilotProfiles/',
+            to: "/docs/user/usingcipp/endpointmanagement/autopilotdevices/",
+            from: "/EndpointManagement/AutopilotDevices/",
           },
           {
-            to: '/docs/user/usingcipp/endpointmanagement/autopilotstatuspage/',
-            from: '/EndpointManagement/AutopilotStatusPage/',
+            to: "/docs/user/usingcipp/endpointmanagement/autopilotprofiles/",
+            from: "/EndpointManagement/AutopilotProfiles/",
           },
           {
-            to: '/docs/user/usingcipp/endpointmanagement/mempolicytemplates/',
-            from: '/EndpointManagement/IntunePolicyTemplates/',
+            to: "/docs/user/usingcipp/endpointmanagement/autopilotstatuspage/",
+            from: "/EndpointManagement/AutopilotStatusPage/",
           },
           {
-            to: '/docs/user/usingcipp/endpointmanagement/defender/',
-            from: '/EndpointManagement/Defender/',
+            to: "/docs/user/usingcipp/endpointmanagement/mempolicytemplates/",
+            from: "/EndpointManagement/IntunePolicyTemplates/",
           },
           {
-            to: '/docs/user/usingcipp/teamsonedrivesharepoint/',
-            from: '/OneDriveTeamsSharepoint/OneDrive/',
+            to: "/docs/user/usingcipp/endpointmanagement/defender/",
+            from: "/EndpointManagement/Defender/",
           },
           {
-            to: '/docs/user/usingcipp/settings/settings/',
-            from: '/CIPPSettings/ConfigurationSettings/',
+            to: "/docs/user/usingcipp/teamsonedrivesharepoint/",
+            from: "/OneDriveTeamsSharepoint/OneDrive/",
           },
           {
-            to: '/docs/user/usingcipp/settings/backendaccess/',
-            from: '/CIPPSettings/BackendAccess/',
+            to: "/docs/user/usingcipp/settings/settings/",
+            from: "/CIPPSettings/ConfigurationSettings/",
           },
           {
-            to: '/docs/general/faq/',
-            from: '/FAQ/FAQ/',
+            to: "/docs/user/usingcipp/settings/backendaccess/",
+            from: "/CIPPSettings/BackendAccess/",
           },
           {
-            to: '/docs/general/faq/',
-            from: '/faq/',
+            to: "/docs/general/faq/",
+            from: "/FAQ/FAQ/",
           },
           {
-            to: '/docs/general/troubleshooting/',
-            from: '/troubleshooting/',
+            to: "/docs/general/faq/",
+            from: "/faq/",
           },
           {
-            to: '/docs/general/knownbugs/',
-            from: '/knownbugs/',
+            to: "/docs/general/troubleshooting/",
+            from: "/troubleshooting/",
+          },
+          {
+            to: "/docs/general/knownbugs/",
+            from: "/knownbugs/",
           },
         ],
       },
     ],
     [
-      '@docusaurus/plugin-content-docs',
+      "@docusaurus/plugin-content-docs",
       {
-        id: 'dev',
-        path: 'docs/dev',
-        routeBasePath: 'docs/dev',
-        sidebarPath: require.resolve('./sidebarsDev.js'),
-        editUrl: 'https://github.com/KelvinTegelaar/CIPP/tree/website/',
+        id: "dev",
+        path: "docs/dev",
+        routeBasePath: "docs/dev",
+        sidebarPath: require.resolve("./sidebarsDev.js"),
+        editUrl: "https://github.com/KelvinTegelaar/CIPP/tree/website/",
         showLastUpdateAuthor: true,
         showLastUpdateTime: true,
         sidebarCollapsible: true,
@@ -407,13 +425,13 @@ const config = {
       },
     ],
     [
-      '@docusaurus/plugin-content-docs',
+      "@docusaurus/plugin-content-docs",
       {
-        id: 'general',
-        path: 'docs/general',
-        routeBasePath: 'docs/general',
-        editUrl: 'https://github.com/KelvinTegelaar/CIPP/tree/website/',
-        sidebarPath: require.resolve('./sidebarsGeneral.js'),
+        id: "general",
+        path: "docs/general",
+        routeBasePath: "docs/general",
+        editUrl: "https://github.com/KelvinTegelaar/CIPP/tree/website/",
+        sidebarPath: require.resolve("./sidebarsGeneral.js"),
         showLastUpdateAuthor: true,
         showLastUpdateTime: true,
         sidebarCollapsible: true,
@@ -421,26 +439,26 @@ const config = {
       },
     ],
     [
-      require.resolve('@cmfcmf/docusaurus-search-local'),
+      require.resolve("@cmfcmf/docusaurus-search-local"),
       {
         indexDocs: true,
         indexDocSidebarParentCategories: 3,
         indexBlog: false,
         indexPages: true,
-        language: 'en',
+        language: "en",
       },
     ],
     [
-      'docusaurus-plugin-plausible',
+      "docusaurus-plugin-plausible",
       {
-        domain: 'cipp.app',
+        domain: "cipp.app",
       },
     ],
   ],
   i18n: {
-    defaultLocale: 'en-GB',
-    locales: ['en-GB'],
+    defaultLocale: "en-GB",
+    locales: ["en-GB"],
   },
-}
+};
 
-module.exports = config
+module.exports = config;
