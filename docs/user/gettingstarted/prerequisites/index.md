@@ -8,6 +8,7 @@ slug: /gettingstarted/prerequisites
 To get started you must follow or have the following ready. Click on the links for instructions on how to perform some of these tasks.
 
 - A Microsoft Partner account with your clients tenant added to this account.
+- A [Microsoft 365 Lighthouse license](https://learn.microsoft.com/en-us/microsoft-365/lighthouse/m365-lighthouse-sign-up?view=o365-worldwide#steps-to-sign-up-for-microsoft-365-lighthouse). This is needed to access various API endpoints used in CIPP.
 - A [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) of [the CIPP GitHub](https://github.com/KelvinTegelaar/CIPP) repository.
 - A [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) of [the CIPP API GitHub](https://github.com/KelvinTegelaar/CIPP-API) repository.
 - An active Azure Subscription.
