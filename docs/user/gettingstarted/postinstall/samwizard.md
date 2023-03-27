@@ -32,3 +32,17 @@ to setup the Graph API, CSP, and Exchange integration CIPP requires a minimum le
 3. This account must have **Microsoft** multi-factor authentication enforced for each logon, either via Conditional Access when available or via [Per User MFA](https://account.activedirectory.windowsazure.com/UserManagement/MultifactorVerification.aspx) when Conditional Access is not available. 
 - You may not use any other authentication provider than Microsoft for this account. Duo or other providers will not work. For more information on this see [this](https://learn.microsoft.com/en-us/partner-center/partner-security-requirements-mandating-mfa#supported-mfa-options)
 - The CIPP service account requires MFA for each logon. That means no excluded locations may be applied nor authentication length policies. See the chapter about conditional access to make sure your policies are configured correctly.
+
+## Executing the wizard
+
+:::danger Requirements
+Make sure you are logged into CIPP under your own account (user@domain.com). The CIPP Wizard will prompt you to logon with the account for the integration used above. The wizard will not use SSO or automatically logon.
+
+Your browser **MUST** allow cookies and have any ad-blocker disabled for the duration of the wizard. Do not use in-private mode.
+:::
+
+To setup the connection to your tenants you'll need to run the Sam Wizard. The Sam Wizard can be found under Settings -> SAM Setup Wizard. The Wizard will present you with multiple options. If this is your first setup it is recommended to choose "I'd like CIPP to create a SAM Application for me".
+
+When executing the Sam Wizard with "I'd like CIPP to create a SAM Application for me" you'll be presented with a button to start the Wizard. Do not navigate away from this page and execute all **5 steps** that this page will prompt you for.
+
+After completing the wizard 5 steps, you must [clear the token cache](https://cipp.app/docs/general/troubleshooting/#clear-token-cache).
