@@ -5,13 +5,9 @@ description: How to ensure your SAM app for CIPP has the correct permissions.
 slug: /gettingstarted/permissions
 ---
 
-When using the CIPP SAM Wizard, the application and set permissions are created for you. If you have a manual SAM installation you'll need to setup these permissions yourself.
+## Manual Permissions
 
-**You may skip this step if you are planning to use the Secure Application Model Wizard within CIPP, which is the default behaviour.**
-
-## Manual SAM setup
-
-You should grant the following permissions to the secure application model registration, to add permissions follow these instructions:
+At times you will need to change permissions for the CIPP-SAM application that is used by CIPP to access your tenants. Use the following instructions to update these permissions.
 
 * Go to the [Azure Portal](https://portal.azure.com).
 * Select [**Azure Active Directory**](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Overview), now select [**App Registrations**](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps).
