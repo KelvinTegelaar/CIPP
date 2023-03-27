@@ -1,6 +1,6 @@
 ---
 id: addingusers
-title: Post-Install Configuration
+title: Adding users to CIPP
 description: Adding users
 slug: /gettingstarted/postinstall/addingusers
 ---
