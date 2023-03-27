@@ -2,7 +2,7 @@
 id: conditionalaccess
 title: Conditional Access Best Practices
 description: Setup your Conditional Access policies for CIPP.
-slug: /gettingstarted/postinstall
+slug: /gettingstarted/postinstall/conditionalaccess
 ---
 
 ## Conditional Access best practices
