@@ -300,8 +300,8 @@ const config = {
             from: "/GettingStarted/Updating/",
           },
           {
-            to: "docs/gettingstarted/postinstall/permissions/",
-            from: "docs/gettingstarted/permissions",
+            to: "/docs/user/gettingstarted/postinstall/permissions/",
+            from: "docs/user/gettingstarted/permissions/",
           },
           {
             to: "/docs/user/gettingstarted/",
