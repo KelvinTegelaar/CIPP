@@ -13,259 +13,6 @@ Note that these steps come from the community - if you notice any mistakes, plea
 
 If your CIPP repository fork (Not CIPP-API at this time) is from before the release of 2.x then you may run into the issue where the deployment is actually trying to reference the **main** branch instead of **master** that your repository may still be. Be sure to check that your repo is fully up-to-date and then rename the branch to **main** if it's still **master**. You can read about renaming GitHub branches via the [GitHub Documentation](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-branches-in-your-repository/renaming-a-branch).
 
-## Token Testing Script
-
-<details><summary>Token Test Script</summary>
-
-```powershell title="Test-SecureApplicationModelTokens.ps1"
-### User Input Variables ###
-
-### Enter the details of your Secure Access Model Application below ###
-$ApplicationId = '<YOUR APPLICATION ID>'
-$ApplicationSecret = '<YOUR APPLICATION SECRET>'
-$RefreshToken = '<YOUR REFRESH TOKEN>'
-$ExchangeRefreshToken = '<YOUR EXCHANGE REFRESH TOKEN>'
-$MyTenant = '<YOUR TENANT ID>'
-### STOP EDITING HERE ###
-
-function Get-GraphToken($TenantId, $Scope, $AsApp, $AppId, $eRefreshToken, $ReturnRefresh) {
-    if (!$scope) { $scope = 'https://graph.microsoft.com/.default' }
-    $AuthBody = @{
-        client_id     = $ApplicationId
-        client_secret = $ApplicationSecret
-        scope         = $Scope
-        refresh_token = $eRefreshToken
-        grant_type    = 'refresh_token'
-    }
-    if ($null -ne $AppId -and $null -ne $eRefreshToken) {
-        $AuthBody = @{
-            client_id     = $AppId
-            refresh_token = $eRefreshToken
-            scope         = $Scope
-            grant_type    = 'refresh_token'
-        }
-    }
-    if (!$TenantId) { $TenantId = $ENV:TenantId }
-    $AccessToken = (Invoke-RestMethod -Method post -Uri "https://login.microsoftonline.com/$($TenantId)/oauth2/v2.0/token" -Body $Authbody -ErrorAction Stop)
-    if ($ReturnRefresh) { $Header = $AccessToken } else { $Header = @{ Authorization = "Bearer $($AccessToken.access_token)" } }
-
-    return $header
-}
-function Connect-graphAPI {
-    [CmdletBinding()]
-    Param
-    (
-        [parameter(Position = 0, Mandatory = $false)]
-        [ValidateNotNullOrEmpty()][String]$ApplicationId,
-
-        [parameter(Position = 1, Mandatory = $false)]
-        [ValidateNotNullOrEmpty()][String]$ApplicationSecret,
-
-        [parameter(Position = 2, Mandatory = $true)]
-        [ValidateNotNullOrEmpty()][String]$TenantId,
-
-        [parameter(Position = 3, Mandatory = $false)]
-        [ValidateNotNullOrEmpty()][String]$RefreshToken
-
-    )
-    Write-Verbose 'Removing old token if it exists'
-    $Script:GraphHeader = $null
-    Write-Verbose 'Logging into Graph API'
-    try {
-        if ($ApplicationId) {
-            Write-Verbose '   using the entered credentials'
-            $script:ApplicationId = $ApplicationId
-            $script:ApplicationSecret = $ApplicationSecret
-            $script:RefreshToken = $RefreshToken
-            $AuthBody = @{
-                client_id     = $ApplicationId
-                client_secret = $ApplicationSecret
-                scope         = 'https://graph.microsoft.com/.default'
-                refresh_token = $RefreshToken
-                grant_type    = 'refresh_token'
-            }
-        } else {
-            Write-Verbose '   using the cached credentials'
-            $AuthBody = @{
-                client_id     = $script:ApplicationId
-                client_secret = $Script:ApplicationSecret
-                scope         = 'https://graph.microsoft.com/.default'
-                refresh_token = $script:RefreshToken
-                grant_type    = 'refresh_token'
-            }
-        }
-        $AccessToken = (Invoke-RestMethod -Method post -Uri "https://login.microsoftonline.com/$($TenantId)/oauth2/v2.0/token" -Body $Authbody -ErrorAction Stop).access_token
-        $Script:GraphHeader = @{ Authorization = "Bearer $($AccessToken)" }
-    } catch {
-        Write-Host "Could not log into the Graph API for tenant $($TenantID): $($_.Exception.Message)" -ForegroundColor Red
-    }
-}
-Write-Host 'Starting test of the standard Refresh Token' -ForegroundColor Green
-try {
-    Write-Host 'Attempting to retrieve an Access Token' -ForegroundColor Green
-    Connect-graphAPI -ApplicationId $ApplicationId -ApplicationSecret $ApplicationSecret -RefreshToken $RefreshToken -TenantID $MyTenant
-} catch {
-    $ErrorDetails = if ($_.ErrorDetails.Message) {
-        $ErrorParts = $_.ErrorDetails.Message | ConvertFrom-Json
-        "[$($ErrorParts.error)] $($ErrorParts.error_description)"
-    } else {
-        $_.Exception.Message
-    }
-    Write-Host "Unable to generate access token. The detailed error information, if returned was: $($ErrorDetails)" -ForegroundColor Red
-}
-try {
-    Write-Host 'Attempting to retrieve all tenants you have delegated permission to' -ForegroundColor Green
-    $Tenants = (Invoke-RestMethod -Uri "https://graph.microsoft.com/v1.0/contracts?`$top=999" -Method GET -Headers $script:GraphHeader).value
-} catch {
-    $ErrorDetails = if ($_.ErrorDetails.Message) {
-        $ErrorParts = $_.ErrorDetails.Message | ConvertFrom-Json
-        "[$($ErrorParts.error)] $($ErrorParts.error_description)"
-    } else {
-        $_.Exception.Message
-    }
-    Write-Host "Unable to retrieve tenants. The detailed error information, if returned was: $($ErrorDetails)" -ForegroundColor Red
-}
-# Setup some variables for use in the foreach. Pay no attention to the man behind the curtain....
-$TenantCount = $Tenants.Count
-$IncrementAmount = 100 / $TenantCount
-$i = 0
-$ErrorCount = 0
-Write-Host "$TenantCount tenants found, attempting to loop through each to test access to each individual tenant" -ForegroundColor Green
-# Loop through every tenant we have, and attempt to interact with it with Graph
-foreach ($Tenant in $Tenants) {
-    Write-Progress -Activity 'Checking Tenant - Refresh Token' -Status "Progress -> Checking $($Tenant.defaultDomainName)" -PercentComplete $i -CurrentOperation TenantLoop
-    If ($i -eq 0) { Write-Host 'Starting Refresh Token Loop Tests' }
-    $i = $i + $IncrementAmount
-    try {
-        Connect-graphAPI -ApplicationId $ApplicationId -ApplicationSecret $ApplicationSecret -RefreshToken $RefreshToken -TenantID $Tenant.customerid
-    } catch {
-        $ErrorDetails = if ($_.ErrorDetails.Message) {
-            $ErrorParts = $_.ErrorDetails.Message | ConvertFrom-Json
-            "[$($ErrorParts.error)] $($ErrorParts.error_description)"
-        } else {
-            $_.Exception.Message
-        }
-        Write-Host "Unable to connect to graph API for $($Tenant.defaultDomainName). The detailed error information, if returned was: $($ErrorDetails)" -ForegroundColor Red
-        $ErrorCount++
-        continue
-    }
-    try {
-        $Result = (Invoke-RestMethod -Uri 'https://graph.microsoft.com/v1.0/users' -Method GET -Headers $script:GraphHeader).value
-    } catch {
-        $ErrorDetails = if ($_.ErrorDetails.Message) {
-            $ErrorParts = $_.ErrorDetails.Message | ConvertFrom-Json
-            "[$($ErrorParts.error)] $($ErrorParts.error_description)"
-        } else {
-            $_.Exception.Message
-        }
-        Write-Host "Unable to get users from $($Tenant.defaultDomainName) in Refresh Token Test. The detailed error information, if returned was: $($ErrorDetails)" -ForegroundColor Red
-        $ErrorCount++
-    }
-}
-Write-Host "Standard Graph Refresh Token Test: $TenantCount total tenants, with $ErrorCount failures"
-Write-Host 'Now attempting to test the Exchange Refresh Token'
-# Setup some variables for use in the foreach. Pay no attention to the man behind the curtain....
-$j = 0
-$ExcErrorCount = 0
-foreach ($Tenant in $Tenants) {
-    Write-Progress -Activity 'Checking Tenant - Exchange Refresh Token' -Status "Progress -> Checking $($Tenant.defaultDomainName)" -PercentComplete $j -CurrentOperation TenantLoop
-    If ($j -eq 0) { Write-Host 'Starting Exchange Refresh Token Test' }
-    $j = $j + $IncrementAmount
-
-    try {
-        $UPN = 'notRequired@required.com'
-        $TokenValue = ConvertTo-SecureString (Get-GraphToken -AppID 'a0c73c16-a7e3-4564-9a95-2bdf47383716' -ERefreshToken $ExchangeRefreshToken -Scope 'https://outlook.office365.com/.default' -Tenantid $Tenant.defaultDomainName).Authorization -AsPlainText -Force
-        $Credential = New-Object System.Management.Automation.PSCredential($UPN, $TokenValue)
-        $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri "https://ps.outlook.com/powershell-liveid?DelegatedOrg=$($Tenant.defaultDomainName)&BasicAuthToOAuthConversion=true" -Credential $credential -Authentication Basic -AllowRedirection -ErrorAction Continue
-        $Session = Import-PSSession $Session -ea Silentlycontinue -AllowClobber -CommandName 'Get-OrganizationConfig'
-        $Org = Get-OrganizationConfig
-        $null = Get-PSSession | Remove-PSSession
-    } catch {
-        $ErrorDetails = if ($_.ErrorDetails.Message) {
-            $ErrorParts = $_.ErrorDetails.Message | ConvertFrom-Json
-            "[$($ErrorParts.error)] $($ErrorParts.error_description)"
-        } else {
-            $_.Exception.Message
-        }
-        Write-Host "Tenant: $($Tenant.defaultDomainName)-----------------------------------------------------------------------------------------------------------" -ForegroundColor Yellow
-        Write-Host "Failed to Connect to Exchange for $($Tenant.defaultDomainName). The detailed error information, if returned was: $($ErrorDetails)" -ForegroundColor Red
-        $ExcErrorCount++
-    }
-}
-Write-Host "Exchange Refresh Token Test: $TenantCount total tenants, with $ExcErrorCount failures"
-Write-Host 'All Tests Finished'
-```
-
-</details>
-
-This script comes from Gavin Stone's [blog post on setting up the Secure Application Model](https://www.gavsto.com/secure-application-model-for-the-layman-and-step-by-step/).
-
-This script doesn't test the CIPP configuration, only that the tokens you are pasting into this script are correct.
-
-It's possible that you may have pasted the tokens incorrectly into the deployment fields.
-
-## Refresh Secure Application Model Tokens
-
-<details><summary>Refresh Token Script</summary>
-
-:::caution PowerShell Version
-
-This script requires the PartnerCenter module to generate the Secure Application Model tokens. At the moment it is only compatible with PowerShell 5.1.
-
-:::
-
-```powershell title="Update-SecureApplicationModelTokens.ps1"
-### User Input Variables ###
-
-### Enter the details of your Secure Access Model Application below ###
-
-$ApplicationId           = '<YOUR APPLICATION ID>'
-$ApplicationSecret       = '<YOUR APPLICATION SECRET>'
-$TenantId                = '<YOUR TENANT ID>'
-
-### STOP EDITING HERE ###
-
-### Create credential object using UserEntered(ApplicationID) and UserEntered(ApplicationSecret) ###
-
-$Credential = New-Object System.Management.Automation.PSCredential($ApplicationId, ($ApplicationSecret | ConvertTo-SecureString -AsPlainText -Force))
-
-### Splat Params required for Updating Refresh Token ###
-
-$UpdateRefreshTokenParamaters = @{
-    ApplicationID        = $ApplicationId
-    Tenant               = $TenantId
-    Scopes               = 'https://api.partnercenter.microsoft.com/user_impersonation'
-    Credential           = $Credential
-    UseAuthorizationCode = $true
-    ServicePrincipal     = $true
-}
-
-### Create new Refresh Token using previously splatted paramaters ###
-
-$Token = New-PartnerAccessToken @UpdateRefreshTokenParamaters
-
-### Output Refresh Tokens and Exchange Refresh Tokens ###
-
-Write-Host "================ Secrets ================"
-Write-Host "`$ApplicationId         = $($ApplicationId)"
-Write-Host "`$ApplicationSecret     = $($ApplicationSecret)"
-Write-Host "`$TenantID              = $($TenantId)"
-Write-Host "`$RefreshToken          = $($Token.refreshtoken)" -ForegroundColor Blue
-Write-Host "================ Secrets ================"
-Write-Host "     SAVE THESE IN A SECURE LOCATION     "
-```
-
-</details>
-
-1. Go to Settings
-1. Select **Backend**
-1. Select **Go to Key Vault**
-1. Select **Access Policies**
-1. Select **Add Access Policy**
-1. Add your own user with "Secret Management" permissions.
-1. Go back to Secrets.
-1. Update the tokens as required by creating new versions.
-1. Clear the [token cache](#clear-token-cache).
 
 ## Clear Token Cache
 :::tip
@@ -287,22 +34,99 @@ Hosted clients can contact the helpdesk directly to clear their token cache, and
 
 The tokens should no longer be in the cache.
 
-## Service Principal
-
-Sometimes Azure has intermittent issues with applying service principals to AAD.
-
-If this is the only error during deployment, follow the below steps:
-
-1. Go to the [Subscription in the Azure Portal](https://portal.azure.com/#blade/Microsoft_Azure_Billing/SubscriptionsBlade)
-1. Select **Access Control (IAM)**
-1. Select **Add**
-1. Select **Add Role Assignment**
-1. Give the Azure function service principal _reader_ role
 
 ## Multi-Factor Authentication Troubleshooting
 
-Here are a few things it's important to know about MFA and its effects on the Secure Application Model (SAM) and CIPP:
-
 1. The account you use to generate your SAM tokens for CIPP must have Microsoft (Azure AD) MFA enabled, it can't use third-party MFA.
 1. You can't have the `Allow users to remember multi-factor authentication on devices they trust` option enabled in the [classic MFA admin portal](https://account.activedirectory.windowsazure.com/UserManagement/MfaSettings.aspx). In either customer or the partner tenant.
-1. You can't have trusted locations or other Conditional Access Policy settings applicable to the account you use to generate your SAM tokens for CIPP.
+1. Check our section on [Conditional Access](https://cipp.app/docs/user/gettingstarted/postinstall/conditionalaccess/) on how to handle Conditional Access issues.
+
+## Request not applicable to target tenant.
+
+The required license for this feature is not available for this tenant. Check the tenant's license information to ensure that it has the necessary license for the requested operation. Most seen around security tasks that require M365 BP or Azure AD P1.
+
+## Neither tenant is B2C or tenant doesn't have premium license
+
+This feature requires a P1 license or higher. Check the license information of your clients tenant to ensure that they have the necessary licenses.
+
+## Response status code does not indicate success: 400 (Bad Request).
+
+Error 400 occurred. There is an issue with the request. Most likely an incorrect value is being sent. If you receive this error with a permissions check, please redo your SAM setup.
+
+## _Microsoft.Skype.Sync.Pstn.Tnm.Common.Http.HttpResponseException_
+
+Could not connect to Teams Admin center. The tenant might be missing a Teams license. Check the license information to ensure that the necessary licenses are available.
+
+## _Provide valid credential._
+
+This occurs when GDAP has been deployed, but the user is not in any of the GDAP groups.
+
+##  subscription within the tenant has lapsed
+
+There is no Exchange subscription available, so exchange connections are no longer possible.
+
+## _User was not found._
+
+The relationship between this tenant and the partner has been dissolved from the **client** side. Check the partner relationship information and ensure that it is still active. This error also occurs when a GDAP relationship has expired.
+
+## _The user or administrator has not consented to use the application_
+
+Multiple Potential Causes:
+
+1. The user has not authorized the CIPP-SAM Application. Use the Settings -> Tenants -> Refresh button to refresh the permissions.
+2. The user that was used for the CIPP Authorisation is a guest in this tenant
+3. DAP: If the client is using DAP. The user might not be in the AdminAgents group.
+4. GDAP: if you are using GDAP and have not added the user to the correct group(s) for CIPP to function. 
+
+## _AADSTS50020_
+
+1. The user has not authorized the CIPP-SAM Application. Use the Settings -> Tenants -> Refresh button to refresh the permissions.
+2. The user that was used for the CIPP Authorisation is a guest in this tenant
+3. DAP: If the client is using DAP. The user might not be in the AdminAgents group.
+4. GDAP: if you are using GDAP and have not added the user to the correct group(s) for CIPP to function. 
+
+## _invalid or malformed_
+
+The request is malformed. the body does not contain JSON or variables have not expanded. Look for typos such as incorrect bracket usage
+
+## _Windows Store repository apps feature is not supported for this tenant_
+
+This tenant does not have Intune WinGet support available. Check the licensing information to ensure that the necessary licenses are available.
+
+## AADSTS650051
+
+The application was approved by the user, but does not exist yet. Wait 5 minutes and try to reauthorize.
+
+## _AppLifecycle_2210_
+
+Failed to call Intune APIs. Does the tenant have a license available? Check the license information to ensure that the necessary licenses are available.
+
+## Insufficient access rights to perform the operation.
+
+The user does not have sufficient access rights to perform the operation or is missing the necessary Exchange role. Check the user's access rights and Exchange role information, when using GDAP the user must be in the "Exchange Administrators" group.
+
+## Device object was not found in the tenant 'xxxxxxxxxx'
+
+When executing the first authorization for CIPP, a trusted device was used. This device has been deleted from the Intune portal. Reauthorization is required by using the SAM Wizard "I'd like to refresh my tokens" option.
+
+## The provided grant has expired due to it being revoked, a fresh auth token is needed. The user might have changed or reset their password
+
+The user that authorized the CSP or Graph API connection has had their password changed, sessions revoked, or account disabled. Reauthorization is required by using the SAM Wizard "I'd like to refresh my tokens" option.
+
+## Due to a configuration change made by your administrator, or because you moved to a new location, you must use multi-factor authentication to access
+
+This error can have two causes.
+1. The user has not had MFA set up when performing authorization.
+2. The client has Conditional Access policies blocking CIPP's access. See the chapter about Conditional Access to resolve.
+
+## presented multi-factor authentication has expired to the policies configured by your administrator, you must refresh your multi-factor authentication to access
+
+This error occurs when a Conditional Access Policy has set the maximum lifetime. Suggested is to change the Conditional Access Policy to exclude "Service Provider users". See the chapter about how to resolve this under Conditional Access.
+
+## The token has expired
+
+The refresh token could not be retrieved and stored. The user must reauthorize. 
+
+
+### Credits
+This troubleshooting document was created with the help of [Ashley Cooper](https://www.linkedin.com/in/adelnet/)
