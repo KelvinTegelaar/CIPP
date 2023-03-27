@@ -9,7 +9,7 @@ slug: /gettingstarted/postinstall/samwizard
 
 This section describes the best practices and recommended setup for CIPP, including account usage, multi factor authentication, and DAP/GDAP groups. This section also describes the recommended setup for Conditional Access Policies. When this document has not been implemented you could encounter issues with the CSP, Graph, or Exchange sections of CIPP.
 
-##  Authorization best practices for CIPP.
+##  Authorization best practices for CIPP
 
 to setup the Graph API, CSP, and Exchange integration CIPP requires a minimum level of permissions. We recommend to setup the account as follows
 
