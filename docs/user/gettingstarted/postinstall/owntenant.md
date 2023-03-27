@@ -2,7 +2,7 @@
 id: owntenant
 title: Manage my own tenant
 description: I want to manage my own tenant
-slug: /gettingstarted/postinstall
+slug: /gettingstarted/postinstall/owntenant
 ---
 
 ## I want to manage my own tenant

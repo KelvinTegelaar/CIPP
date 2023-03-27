@@ -2,7 +2,7 @@
 id: permissions
 title: Permissions
 description: How to ensure your SAM app for CIPP has the correct permissions.
-slug: /gettingstarted/postinstall
+slug: /gettingstarted/postinstall/permissions
 ---
 
 ## Manual Permissions
