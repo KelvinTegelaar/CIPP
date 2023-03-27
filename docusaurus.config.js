@@ -301,7 +301,7 @@ const config = {
           },
           {
             to: "/docs/user/gettingstarted/postinstall/permissions/",
-            from: "docs/user/gettingstarted/permissions/",
+            from: "/docs/user/gettingstarted/permissions/",
           },
           {
             to: "/docs/user/gettingstarted/",
