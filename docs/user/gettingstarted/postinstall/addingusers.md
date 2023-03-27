@@ -22,5 +22,5 @@ After deployment you'll need to give each user access. To generate an invite for
 - Add the roles for the user.
 
 
- Currently CIPP supports three roles, `readonly`, `editor`, and `admin`. Further information on the roles and how to assign these is on the [Roles](../../roles/) page.
+ Currently CIPP supports three roles, `readonly`, `editor`, and `admin`. Further information on the roles and how to assign these is on the [Roles](/docs/user/gettingstarted/roles/) page.
 

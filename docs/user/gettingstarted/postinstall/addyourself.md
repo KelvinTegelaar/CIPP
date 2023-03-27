@@ -5,7 +5,7 @@ description: How to configure CIPP after you've completed installation.
 slug: /gettingstarted/postinstall/addyourself
 ---
 
-At this point you should have completed all the steps in [manual installation or click-to-deploy installation](../installation/) and your deployment has succeeded. Any Red cross means your deployment has failed and you will need to delete the resource group and try deployment again.
+At this point you should have completed all the steps in [manual installation or click-to-deploy installation](/docs/user/gettingstarted/installation/) and your deployment has succeeded. Any Red cross means your deployment has failed and you will need to delete the resource group and try deployment again.
 
 ## Add yourself as a user
 
