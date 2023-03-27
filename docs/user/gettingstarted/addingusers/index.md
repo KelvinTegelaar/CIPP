@@ -2,7 +2,7 @@
 id: addingusers
 title: Post-Install Configuration
 description: Adding users
-slug: /gettingstarted/addingusers
+slug: /gettingstarted/postinstall
 ---
 
 ## Adding Users

@@ -2,7 +2,7 @@
 id: samwizard
 title: SAM Wizard
 description: Setup access to my clients
-slug: /gettingstarted/ownttenant
+slug: /gettingstarted/postinstall
 ---
 
 # Setup

@@ -2,7 +2,7 @@
 id: runfrompackage
 title: Run from Package mode
 description: Enable Run From Package for lower costs
-slug: /gettingstarted/ownttenant
+slug: /gettingstarted/postinstall
 ---
 
 ## Enable Run From Package mode for better performance and lower costs

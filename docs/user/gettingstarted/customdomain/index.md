@@ -2,7 +2,7 @@
 id: customdomain
 title: Post-Install Configuration
 description: Custom domain
-slug: /gettingstarted/customdomain
+slug: /gettingstarted/postinstall
 ---
 
 ## Adding a Custom Domain Name
