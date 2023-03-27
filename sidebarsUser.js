@@ -28,10 +28,15 @@ const sidebars = {
       collapsed: false,
       items: [
         'gettingstarted/prerequisites/prerequisites',
-        'gettingstarted/permissions/permissions',
         'gettingstarted/installation/installation',
-        'gettingstarted/postinstall/postinstall',
+        'gettingstarted/postinstall/addyourself',
+       'gettingstarted/postinstall/samwizard',
+       'gettingstarted/postinstall/addingusers',
+       'gettingstarted/postinstall/runfrompackage',
+       'gettingstarted/postinstall/customdomain',
+       'gettingstarted/postinstall/owntenant',
         'gettingstarted/roles/roles',
+        'gettingstarted/permissions/permissions',
       ],
     },
     {
