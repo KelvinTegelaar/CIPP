@@ -32,6 +32,7 @@ const sidebars = {
         "gettingstarted/postinstall/addyourself",
         "gettingstarted/postinstall/runfrompackage",
         "gettingstarted/postinstall/samwizard",
+        "gettingstarted/postinstall/cleartokencache",
         "gettingstarted/postinstall/conditionalaccess",
         "gettingstarted/postinstall/addingusers",
         "gettingstarted/postinstall/customdomain",
