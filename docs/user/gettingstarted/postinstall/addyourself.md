@@ -1,5 +1,5 @@
 ---
-id: postinstall
+id: addyourself
 title: Post-Install Configuration
 description: How to configure CIPP after you've completed installation.
 slug: /gettingstarted/postinstall
