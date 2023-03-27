@@ -7,6 +7,7 @@ slug: /gettingstarted/prerequisites
 
 To get started you must follow or have the following ready. Click on the links for instructions on how to perform some of these tasks.
 
+- A Microsoft Partner account with your clients tenant added to this account.
 - A [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) of [the CIPP GitHub](https://github.com/KelvinTegelaar/CIPP) repository.
 - A [fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) of [the CIPP API GitHub](https://github.com/KelvinTegelaar/CIPP-API) repository.
 - An active Azure Subscription.
