@@ -14,7 +14,7 @@ To make sure CIPP is able to access your tenants securely we recommend the usage
 1. Browse to the [Conditional Access Policies](https://portal.azure.com/#view/Microsoft_AAD_ConditionalAccess/ConditionalAccessBlade/~/Policies) blade in Azure.
 2. Exclude the CIPP service account from **each** existing policy.
 3. Create a new policy and include the CIPP user. Enforce Azure Multi-factor Authentication for each logon, each application.
-4. Save this policy under the name "CIPP Conditional Access Policy"
+4. Save this policy under the name "CIPP Service Account Conditional Access Policy"
 
 ### Setup of clients conditional access policies
 
