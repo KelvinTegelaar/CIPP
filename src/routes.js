@@ -3,11 +3,15 @@ import React from 'react'
 const Home = React.lazy(() => import('src/views/home/Home'))
 const Logs = React.lazy(() => import('src/views/cipp/Logs'))
 const Users = React.lazy(() => import('src/views/identity/administration/Users'))
+const Guests = React.lazy(() => import('src/views/identity/administration/Guests'))
 const DeletedItems = React.lazy(() => import('src/views/identity/administration/Deleted'))
 const ViewBEC = React.lazy(() => import('src/views/identity/administration/ViewBEC'))
 const AddUser = React.lazy(() => import('src/views/identity/administration/AddUser'))
+const AddGuest = React.lazy(() => import('src/views/identity/administration/AddGuest'))
 const EditUser = React.lazy(() => import('src/views/identity/administration/EditUser'))
+const EditGuest = React.lazy(() => import('src/views/identity/administration/EditGuest'))
 const ViewUser = React.lazy(() => import('src/views/identity/administration/ViewUser'))
+const ViewGuest = React.lazy(() => import('src/views/identity/administration/ViewGuest'))
 const Groups = React.lazy(() => import('src/views/identity/administration/Groups'))
 const AddGroup = React.lazy(() => import('src/views/identity/administration/AddGroup'))
 const AddGroupTemplates = React.lazy(() =>
@@ -232,6 +236,10 @@ const routes = [
   { path: '/identity/administration', name: 'Administration' },
   { path: '/identity/administration/users', name: 'Users', component: Users },
   { path: '/identity/administration/groups/add', name: 'Add Group', component: AddGroup },
+  { path: '/identity/administration/guests', name: 'Guests', component: Guests },
+  { path: '/identity/administration/guests/view', name: 'View Guest', component: ViewGuest },
+  { path: '/identity/administration/guests/edit', name: 'Edit Guest', component: EditGuest },
+  { path: '/identity/administration/guests/add', name: 'Add Guest', component: AddGuest },
   {
     path: '/identity/administration/group-templates',
     name: 'Group Templates',
