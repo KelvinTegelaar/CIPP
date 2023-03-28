@@ -262,12 +262,23 @@ const columns = [
 
 const Users = (row) => {
   const tenant = useSelector((state) => state.app.currentTenant)
-  const titleButton = <TitleButton href="/identity/administration/users/add" title="Add User" />
+  const titleButtons = (
+    <div style={{ display: 'flex', alignItems: 'right' }}>
+      <TitleButton key="add-user" href="/identity/administration/users/add" title="Add User" />
+      <div style={{ marginLeft: '10px' }}>
+        <TitleButton
+          key="Invite-Guest"
+          href="/identity/administration/users/InviteGuest"
+          title="Invite Guest"
+        />
+      </div>
+    </div>
+  )
   return (
     <CippPageList
       capabilities={{ allTenants: false, helpContext: 'https://google.com' }}
       title="Users"
-      titleButton={titleButton}
+      titleButton={titleButtons}
       datatable={{
         filterlist: [
           { filterName: 'Enabled users', filter: '"accountEnabled":true' },
