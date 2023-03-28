@@ -46,11 +46,6 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Guests',
-        to: '/identity/administration/guests',
-      },
-      {
-        component: CNavItem,
         name: 'Groups',
         to: '/identity/administration/groups',
       },

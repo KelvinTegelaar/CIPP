@@ -17,14 +17,6 @@ export const usersApi = baseApi.injectEndpoints({
         },
       }),
     }),
-    listGuests: builder.query({
-      query: ({ tenantDomain }) => ({
-        path: '/api/ListGuests',
-        params: {
-          TenantFilter: tenantDomain,
-        },
-      }),
-    }),
     listContacts: builder.query({
       query: ({ tenantDomain }) => ({
         path: '/api/ListContacts',
@@ -36,18 +28,6 @@ export const usersApi = baseApi.injectEndpoints({
     listUser: builder.query({
       query: ({ tenantDomain, userId, IncludeLogonDetails }) => ({
         path: '/api/ListUsers',
-        params: { userId, TenantFilter: tenantDomain, IncludeLogonDetails },
-      }),
-      transformResponse: (response) => {
-        if (response?.length > 0) {
-          return response[0]
-        }
-        return {}
-      },
-    }),
-    listGuest: builder.query({
-      query: ({ tenantDomain, userId, IncludeLogonDetails }) => ({
-        path: '/api/ListGuests',
         params: { userId, TenantFilter: tenantDomain, IncludeLogonDetails },
       }),
       transformResponse: (response) => {
@@ -137,8 +117,6 @@ export const {
   useEditUserMutation,
   useListUsersQuery,
   useListUserQuery,
-  useListGuestsQuery,
-  useListGuestQuery,
   useListContactsQuery,
   useListUserConditionalAccessPoliciesQuery,
   useListUserSigninLogsQuery,
