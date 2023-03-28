@@ -17,7 +17,7 @@ const MailboxList = () => {
     return (
       <>
         <Link
-          to={`/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}&email=${row.UPN}`}
+          to={`/identity/administration/users/view?userId=${row.UPN}&tenantDomain=${tenant.defaultDomainName}&email=${row.UPN}`}
         >
           <CButton size="sm" variant="ghost" color="success">
             <FontAwesomeIcon icon={faEye} />
