@@ -90,8 +90,8 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Basic Auth Report',
-        to: '/identity/reports/basic-auth-report',
+        name: 'Inactive Users',
+        to: '/identity/reports/inactive-users-report',
       },
       {
         component: CNavItem,
@@ -442,14 +442,14 @@ const _nav = [
   },
   {
     component: CNavGroup,
-    name: 'Sharepoint',
+    name: 'SharePoint',
     section: 'Teams & Sharepoint',
     to: '/teams-share/sharepoint',
     icon: <FontAwesomeIcon icon={faLink} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
-        name: 'Sharepoint',
+        name: 'SharePoint',
         to: '/teams-share/sharepoint/list-sharepoint',
       },
     ],
