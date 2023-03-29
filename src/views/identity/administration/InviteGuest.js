@@ -100,8 +100,11 @@ const InviteGuest = () => {
                           <RFFCFormInput
                             type="text"
                             name="RedirectURL"
-                            label="Redirect URL"
-                            validate={required}
+                            label="Redirect URL (optional)"
+                            placeholder={
+                              'Optional Redirect URL defaults to https://myapps.microsoft.com if blank '
+                            }
+                            //validate={required}
                           />
                         </CCol>
                       </CRow>

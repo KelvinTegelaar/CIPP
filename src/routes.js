@@ -173,6 +173,9 @@ const MailboxClientAccessSettingsList = React.lazy(() =>
 const MailboxStatisticsList = React.lazy(() =>
   import('src/views/email-exchange/reports/MailboxStatisticsList'),
 )
+const SharedMailboxEnabledAccount = React.lazy(() =>
+  import('src/views/email-exchange/reports/SharedMailboxEnabledAccount'),
+)
 const MessageTrace = React.lazy(() => import('src/views/email-exchange/reports/MessageTrace'))
 const PhishingPoliciesList = React.lazy(() =>
   import('src/views/email-exchange/reports/PhishingPoliciesList'),
@@ -573,6 +576,11 @@ const routes = [
     name: 'Mailbox Statistics',
     path: '/email/reports/mailbox-statistics',
     component: MailboxStatisticsList,
+  },
+  {
+    name: 'Shared Mailbox Enabled Account',
+    path: '/email/reports/SharedMailboxEnabledAccount',
+    component: SharedMailboxEnabledAccount,
   },
   {
     name: 'Mailbox Client Access Settings',
