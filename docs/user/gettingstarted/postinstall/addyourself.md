@@ -19,4 +19,4 @@ you must now follow the rest of these steps to allow yourself to access CIPP, an
 - Enter the UPN for your user. This must match your M365 UPN.
 - Add the `admin` role for your user.
 
-After logging in succesfully, you may move on to setting up access to your tenants by using the button below.
+After logging in succesfully, you may move on to the next part of setup by clicking the button below.
