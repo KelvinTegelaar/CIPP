@@ -656,7 +656,7 @@ const ExcludedTenantsSettings = () => {
         if (cell === 'delegatedAndGranularDelegetedAdminPrivileges') {
           return <CellBadge color="info" label="GDAP & DAP" />
         }
-        if (cell === 'GranularDelegetedAdminPrivileges') {
+        if (cell === 'granularDelegatedAdminPrivileges') {
           return <CellBadge color="info" label="GDAP" />
         }
         return <CellBadge color="info" label="Unknown" />
