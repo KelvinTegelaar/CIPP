@@ -281,16 +281,6 @@ const Setup = () => {
               />
             </CCol>
           </CRow>
-          <CRow>
-            <CCol md={12}>
-              <RFFCFormInput
-                type="password"
-                name="ExchangeRefreshToken"
-                label="Exchange Refresh Token"
-                placeholder="Enter the Exchange refresh tokens. Leave blank to retain a previous key if this exists."
-              />
-            </CCol>
-          </CRow>
         </Condition>
         <hr className="my-4" />
       </CippWizard.Page>
