@@ -37,13 +37,6 @@
         "description": "The Refresh token for your Secure Application Model."
       }
     },
-    "ExchangeRefreshToken": {
-      "defaultValue": "LongRefreshtoken",
-      "type": "string",
-      "metadata": {
-        "description": "The Exchange Refresh token for your Secure Application Model."
-      }
-    },
     "GithubRepository": {
       "defaultValue": "https://github.com/KelvinTegelaar/CIPP",
       "type": "string",
@@ -150,18 +143,6 @@
           "dependsOn": [
             "[resourceId('Microsoft.KeyVault/vaults', variables('uniqueResourceNameBase'))]"
           ]
-        },
-        {
-          "type": "secrets",
-          "name": "exchangerefreshtoken",
-          "apiVersion": "2015-06-01",
-          "properties": {
-            "contentType": "text/plain",
-            "value": "[parameters('exchangerefreshtoken')]"
-          },
-          "dependsOn": [
-            "[resourceId('Microsoft.KeyVault/vaults', variables('uniqueResourceNameBase'))]"
-          ]
         }
       ],
       "dependsOn": ["[resourceId('Microsoft.Web/sites', variables('funcAppName'))]"]
@@ -212,10 +193,6 @@
             {
               "name": "RefreshToken",
               "value": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('uniqueResourceNameBase'), '.vault.azure.net/secrets/RefreshToken)')]"
-            },
-            {
-              "name": "ExchangeRefreshtoken",
-              "value": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('uniqueResourceNameBase'), '.vault.azure.net/secrets/ExchangeRefreshToken)')]"
             },
             {
               "name": "TenantID",
