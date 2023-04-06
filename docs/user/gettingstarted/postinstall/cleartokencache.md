@@ -17,7 +17,7 @@ Hosted clients can use the backend management system at management.cipp.app to e
 1. Select **Backend**
 1. Select **Go to Function App Configuration**
 1. At each item that has the source _Key Vault_ there should be a green checkbox. If there is no green checkbox, restart the function app and try in 30 minutes
-1. For the items _RefreshToken_ and _ExchangeRefreshToken_ rename each item, for example to _RefreshToken2_
+1. Rename the _RefreshToken_ item, for example to _RefreshToken2_
 1. Select **Save**
 1. Select **Overview** in the side menu
 1. Stop the app & wait 5 minutes.
