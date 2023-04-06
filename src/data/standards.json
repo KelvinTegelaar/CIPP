@@ -161,10 +161,17 @@
   },
   {
     "cat": "AAD",
-    "name": "standards.NudgeMFA",
+    "name": "standards.NudgeMFA.enable",
     "helpText": "This is the default helptext",
     "addedComponent": null,
     "label": "Request to setup Authenticator if not setup yet."
+  },
+  {
+    "cat": "AAD",
+    "name": "standards.NudgeMFA.disable",
+    "helpText": "This is the default helptext",
+    "addedComponent": null,
+    "label": "Disables the request to setup Authenticator if setup."
   },
   {
     "cat": "AAD",
