@@ -5,6 +5,12 @@ description: Custom domain
 slug: /gettingstarted/postinstall/customdomain
 ---
 
+##Hosted Clients
+
+:::tip Hosted clients can use the backend management system at management.cipp.app to add a domain:::
+
+
+
 ## Adding a Custom Domain Name
 
 :::tip Why setup a custom domain?
