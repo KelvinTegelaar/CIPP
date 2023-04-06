@@ -5,13 +5,17 @@ description: Setup access to my clients
 slug: /gettingstarted/postinstall/cleartokencache
 ---
 
-## Clear Token Cache
-
-After first setup, or when renewing tokens you must clear the cache so the application can use the latest version of these tokens.
+## Hosted Clients
 
 :::tip
 Hosted clients can use the backend management system at management.cipp.app to execute a token cache clear.
 :::
+
+## Clear Token Cache
+
+After first setup, or when renewing tokens you must clear the cache so the application can use the latest version of these tokens.
+
+
 
 1. Go to Settings
 1. Select **Backend**
