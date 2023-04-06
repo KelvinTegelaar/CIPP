@@ -227,7 +227,11 @@ const Setup = () => {
                       <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
                     )}
                     Step {getResults.data?.step} - {getResults.data.message}{' '}
-                    {getResults.data.url && <a href={getResults.data?.url}>HERE</a>}
+                    {getResults.data.url && (
+                      <a target="_blank" rel="noopener noreferrer" href={getResults.data?.url}>
+                        HERE
+                      </a>
+                    )}
                   </>
                 )}
               </CCol>
@@ -274,16 +278,6 @@ const Setup = () => {
                 name="RefreshToken"
                 label="Refresh Token"
                 placeholder="Enter the refresh token. Leave blank to retain a previous key if this exists."
-              />
-            </CCol>
-          </CRow>
-          <CRow>
-            <CCol md={12}>
-              <RFFCFormInput
-                type="password"
-                name="ExchangeRefreshToken"
-                label="Exchange Refresh Token"
-                placeholder="Enter the Exchange refresh tokens. Leave blank to retain a previous key if this exists."
               />
             </CCol>
           </CRow>
