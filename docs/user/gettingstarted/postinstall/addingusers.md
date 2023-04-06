@@ -5,12 +5,14 @@ description: Adding users
 slug: /gettingstarted/postinstall/addingusers
 ---
 
+## Hosted Clients
+
+:::tip
+Hosted clients can use the backend management system at management.cipp.app to add and remove users.
+:::
+
 ## Adding Users
 
-:::caution Hosted requests
-
-By default you do not have backend access to the hosted environment. You can request new user invites via email, or request backend access by contacting the helpdesk.
-:::
 After deployment you'll need to give each user access. To generate an invite for a user follow these steps:
 
 - Go to the Azure Portal.
