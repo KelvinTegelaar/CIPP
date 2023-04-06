@@ -10,7 +10,7 @@ slug: /gettingstarted/postinstall/cleartokencache
 After first setup, or when renewing tokens you must clear the cache so the application can use the latest version of these tokens.
 
 :::tip
-Hosted clients can contact the helpdesk directly to clear their token cache, and do not need to do this themselves. It's important that you send an email noting you've entered your keys, or ran the wizard, and are ready for a token cache clear.
+Hosted clients can use the backend management system at management.cipp.app to execute a token cache clear.
 :::
 
 1. Go to Settings
