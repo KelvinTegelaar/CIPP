@@ -80,13 +80,9 @@ const Home = () => {
           </CippContentCard>
         </CCol>
         <CCol className="mb-3" xs={12} lg={2} xl={3}>
-          <CippContentCard title="Token Refresh Dates" icon={faBook}>
+          <CippContentCard title="Token Refresh Date" icon={faBook}>
             <div className="mb-3">
               Refresh Token: {!isLoadingDash ? dashboard?.RefreshTokenDate : ''}
-            </div>
-
-            <div className="mb-2">
-              Exchange Token: {!isLoadingDash ? dashboard?.ExchangeTokenDate : ''}
             </div>
           </CippContentCard>
         </CCol>
