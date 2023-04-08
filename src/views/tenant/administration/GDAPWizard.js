@@ -120,7 +120,7 @@ const GDAPWizard = () => {
       </CippWizard.Page>
       <CippWizard.Page
         title="Select which roles you want to add to GDAP relationship"
-        description="Select which standards you want to apply."
+        description="Choose from the mapped GDAP Roles"
       >
         <center>
           <h3 className="text-primary">Step 3</h3>
@@ -131,10 +131,6 @@ const GDAPWizard = () => {
         <hr className="my-4" />
         <CForm onSubmit={handleSubmit}>
           <CCallout color="info">
-            For each role you select a new group will be created inside of your partner tenant
-            called "M365 GDAP RoleName". Add your users to these new groups to set their GDAP
-            permissions.
-            <br /> <br />
             CIPP will create a single relationship with all roles you've selected for the maximum
             duration of 730 days using a GUID as a random name for the relationship.
             <br /> It is recommend to put CIPP user in the correct GDAP Role Groups to manage your
@@ -145,17 +141,17 @@ const GDAPWizard = () => {
               <WizardTableField
                 reportName="gdaproles"
                 keyField="defaultDomainName"
-                path="/GDAPRoles.json"
+                path="/api/ListGDAPRoles"
                 columns={[
                   {
                     name: 'Name',
-                    selector: (row) => row['Name'],
+                    selector: (row) => row['RoleName'],
                     sortable: true,
                     exportselector: 'Name',
                   },
                   {
-                    name: 'Description',
-                    selector: (row) => row['Description'],
+                    name: 'Group',
+                    selector: (row) => row['GroupName'],
                     sortable: true,
                   },
                 ]}
@@ -193,7 +189,7 @@ const GDAPWizard = () => {
                       <CCallout color="info">
                         {props.values.gdapRoles.map((role, idx) => (
                           <li key={idx}>
-                            {role.Name} - M365 GDAP {role.Name}
+                            {role.RoleName} - {role.GroupName}
                           </li>
                         ))}
                       </CCallout>
