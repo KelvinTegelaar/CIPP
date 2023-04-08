@@ -45,7 +45,7 @@ const GDAPWizard = () => {
       onSubmit={handleSubmit}
       wizardTitle="GDAP Migration Wizard"
     >
-      <CippWizard.Page title="Tenant Choice" description="Setup">
+      <CippWizard.Page title="GDAP Wizard" description="API Setup">
         <center>
           <h3 className="text-primary">Step 1</h3>
           <h5 className="card-title mb-4">Setup GDAP Migration tool</h5>
@@ -82,48 +82,13 @@ const GDAPWizard = () => {
         )}
         <hr className="my-4" />
       </CippWizard.Page>
-      <CippWizard.Page
-        title="Tenant Choice"
-        description="Choose the tenants you wish to create a GDAP relationship for"
-      >
-        <center>
-          <h3 className="text-primary">Step 2</h3>
-          <h5 className="card-title mb-4">Choose a tenant</h5>
-        </center>
-        <hr className="my-4" />
-        <Field name="selectedTenants" validate={requiredArray}>
-          {(props) => (
-            <WizardTableField
-              reportName="Add-Choco-App-Tenant-Selector"
-              keyField="defaultDomainName"
-              path="/api/ListTenants?AllTenantSelector=false"
-              columns={[
-                {
-                  name: 'Display Name',
-                  selector: (row) => row['displayName'],
-                  sortable: true,
-                  exportselector: 'displayName',
-                },
-                {
-                  name: 'Default Domain Name',
-                  selector: (row) => row['defaultDomainName'],
-                  sortable: true,
-                  exportselector: 'mail',
-                },
-              ]}
-              fieldProps={props}
-            />
-          )}
-        </Field>
-        <Error name="selectedTenants" />
-        <hr className="my-4" />
-      </CippWizard.Page>
+
       <CippWizard.Page
         title="Select which roles you want to add to GDAP relationship"
         description="Choose from the mapped GDAP Roles"
       >
         <center>
-          <h3 className="text-primary">Step 3</h3>
+          <h3 className="text-primary">Step 2</h3>
           <h5 className="card-title mb-4">
             Select which roles you want to add to GDAP relationship.
           </h5>
@@ -161,6 +126,42 @@ const GDAPWizard = () => {
           </Field>
           <Error name="gdapRoles" />
         </CForm>
+        <hr className="my-4" />
+      </CippWizard.Page>
+      <CippWizard.Page
+        title="Tenant Choice"
+        description="Choose the tenants you wish to create a GDAP relationship for"
+      >
+        <center>
+          <h3 className="text-primary">Step 3</h3>
+          <h5 className="card-title mb-4">Choose a tenant</h5>
+        </center>
+        <hr className="my-4" />
+        <Field name="selectedTenants" validate={requiredArray}>
+          {(props) => (
+            <WizardTableField
+              reportName="Add-Choco-App-Tenant-Selector"
+              keyField="defaultDomainName"
+              path="/api/ListTenants?AllTenantSelector=false"
+              columns={[
+                {
+                  name: 'Display Name',
+                  selector: (row) => row['displayName'],
+                  sortable: true,
+                  exportselector: 'displayName',
+                },
+                {
+                  name: 'Default Domain Name',
+                  selector: (row) => row['defaultDomainName'],
+                  sortable: true,
+                  exportselector: 'mail',
+                },
+              ]}
+              fieldProps={props}
+            />
+          )}
+        </Field>
+        <Error name="selectedTenants" />
         <hr className="my-4" />
       </CippWizard.Page>
       <CippWizard.Page title="Review and Confirm" description="Confirm the settings to apply">
