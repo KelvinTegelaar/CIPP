@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { CippWizard } from 'src/components/layout'
 import { WizardTableField } from 'src/components/tables'
+import { TitleButton } from 'src/components/buttons'
 import PropTypes from 'prop-types'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
@@ -101,6 +102,9 @@ const GDAPWizard = () => {
             <br /> It is recommend to put CIPP user in the correct GDAP Role Groups to manage your
             environment secure after deployment of GDAP.
           </CCallout>
+          <div className="mb-2">
+            <TitleButton href="/tenant/administration/gdap-role-wizard" title="Map GDAP Roles" />
+          </div>
           <Field name="gdapRoles" validate={requiredArray}>
             {(props) => (
               <WizardTableField
