@@ -2,6 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { CSpinner, CCallout } from '@coreui/react'
 import { CippPageList } from 'src/components/layout'
+import { TitleButton } from 'src/components/buttons'
 
 const ListGDAPRoles = () => {
   const columns = [
@@ -23,6 +24,9 @@ const ListGDAPRoles = () => {
       <CippPageList
         capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
         title="GDAP Role List"
+        titleButton={
+          <TitleButton href="/tenant/administration/gdap-role-wizard" title="Map GDAP Roles" />
+        }
         tenantSelector={false}
         datatable={{
           keyField: 'id',
