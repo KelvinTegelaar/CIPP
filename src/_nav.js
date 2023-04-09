@@ -90,8 +90,8 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Basic Auth Report',
-        to: '/identity/reports/basic-auth-report',
+        name: 'Inactive Users',
+        to: '/identity/reports/inactive-users-report',
       },
       {
         component: CNavItem,
@@ -605,6 +605,11 @@ const _nav = [
         component: CNavItem,
         name: 'Phishing Policies',
         to: '/email/reports/phishing-policies',
+      },
+      {
+        component: CNavItem,
+        name: 'Shared Mailbox with Enabled Account',
+        to: '/email/reports/SharedMailboxEnabledAccount',
       },
     ],
   },

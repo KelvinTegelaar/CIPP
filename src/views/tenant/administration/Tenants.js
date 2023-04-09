@@ -167,23 +167,11 @@ function StatusText(graphErrorCount, lastGraphError) {
 }
 
 const TenantsList = () => {
+  const TenantListSelector = useSelector((state) => state.app.TenantListSelector)
   const tenant = useSelector((state) => state.app.currentTenant)
-  const [columnOmits, setOmitVisible] = useState(true)
+  const [columnOmits, setOmitVisible] = useState(TenantListSelector)
 
   const columns = [
-    {
-      name: 'Status',
-      selector: (row) => row['GraphErrorCount'],
-      sortable: true,
-      cell: (row) =>
-        CellTipIcon(
-          StatusText(row['GraphErrorCount'], row['LastGraphError']),
-          StatusIcon(row['GraphErrorCount']),
-        ),
-      exportSelector: 'GraphErrorCount',
-      maxWidth: '5px',
-      minWidth: '5px',
-    },
     {
       name: 'Name',
       selector: (row) => row['displayName'],
