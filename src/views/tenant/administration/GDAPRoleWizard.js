@@ -1,5 +1,5 @@
 import React from 'react'
-import { CCol, CRow, CForm, CCallout, CSpinner, CButton } from '@coreui/react'
+import { CCol, CRow, CForm, CCallout, CSpinner } from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
@@ -7,6 +7,7 @@ import { CippWizard } from 'src/components/layout'
 import { WizardTableField } from 'src/components/tables'
 import PropTypes from 'prop-types'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import { RFFCFormInput } from 'src/components/forms'
 
 const Error = ({ name }) => (
   <Field
@@ -60,31 +61,46 @@ const GDAPRoleWizard = () => {
           <CCallout color="info">
             For each role you select a new group will be created inside of your partner tenant
             called "M365 GDAP RoleName". Add your users to these new groups to set their GDAP
-            permissions.
+            permissions. If you need to segment your groups for different teams or to define custom
+            permissions, use the Custom Suffix to create additional group mappings per role.
           </CCallout>
-          <Field name="gdapRoles" validate={requiredArray}>
-            {(props) => (
-              <WizardTableField
-                reportName="gdaproles"
-                keyField="defaultDomainName"
-                path="/GDAPRoles.json"
-                columns={[
-                  {
-                    name: 'Name',
-                    selector: (row) => row['Name'],
-                    sortable: true,
-                    exportselector: 'Name',
-                  },
-                  {
-                    name: 'Description',
-                    selector: (row) => row['Description'],
-                    sortable: true,
-                  },
-                ]}
-                fieldProps={props}
+          <CRow>
+            <CCol md={4}>
+              <RFFCFormInput
+                type="text"
+                name="customSuffix"
+                label="Custom Group Suffix (optional)"
+                isRequired={false}
               />
-            )}
-          </Field>
+            </CCol>
+          </CRow>
+          <CRow>
+            <CCol md={12}>
+              <Field name="gdapRoles" validate={requiredArray}>
+                {(props) => (
+                  <WizardTableField
+                    reportName="gdaproles"
+                    keyField="defaultDomainName"
+                    path="/GDAPRoles.json"
+                    columns={[
+                      {
+                        name: 'Name',
+                        selector: (row) => row['Name'],
+                        sortable: true,
+                        exportselector: 'Name',
+                      },
+                      {
+                        name: 'Description',
+                        selector: (row) => row['Description'],
+                        sortable: true,
+                      },
+                    ]}
+                    fieldProps={props}
+                  />
+                )}
+              </Field>
+            </CCol>
+          </CRow>
           <Error name="gdapRoles" />
         </CForm>
         <hr className="my-4" />
@@ -111,6 +127,14 @@ const GDAPRoleWizard = () => {
                           </li>
                         ))}
                       </CCallout>
+                      {props.values.customSuffix != null && (
+                        <>
+                          <h5 className="mb-0">Custom Group Suffix</h5>
+                          <CCallout color="info">
+                            <li>{props.values.customSuffix}</li>
+                          </CCallout>
+                        </>
+                      )}
                     </CCol>
                   </CRow>
                 </>
