@@ -1,5 +1,5 @@
 import React from 'react'
-import { CCol, CRow, CForm, CCallout, CSpinner } from '@coreui/react'
+import { CCol, CRow, CForm, CCallout, CSpinner, CButton } from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
@@ -8,6 +8,7 @@ import { WizardTableField } from 'src/components/tables'
 import PropTypes from 'prop-types'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { RFFCFormInput } from 'src/components/forms'
+import { Link } from 'react-router-dom'
 
 const Error = ({ name }) => (
   <Field
@@ -148,11 +149,16 @@ const GDAPRoleWizard = () => {
           </CCallout>
         )}
         {postResults.isSuccess && (
-          <CCallout color="success">
-            {postResults.data.Results.map((message, idx) => {
-              return <li key={idx}>{message}</li>
-            })}
-          </CCallout>
+          <>
+            <CCallout color="success">
+              {postResults.data.Results.map((message, idx) => {
+                return <li key={idx}>{message}</li>
+              })}
+            </CCallout>
+            <Link to="/tenant/administration/gdap">
+              <CButton>Start GDAP Migration</CButton>
+            </Link>
+          </>
         )}
         <hr className="my-4" />
       </CippWizard.Page>
