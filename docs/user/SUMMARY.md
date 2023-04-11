@@ -74,10 +74,10 @@
 * [Security Policy](security/security-policy.md)
 * [CIPP Community Vulnerability Disclosure Policy](security/cipp-community-vulnerability-disclosure-policy.md)
 
-## 👩💻 Developer Documentation
+## 👩💻 👩💻 Dev Documentation
 
-* [CIPP Dev Guide](developer-documentation/cipp-dev-guide/README.md)
-  * [Setting Up for Local Development](developer-documentation/cipp-dev-guide/setting-up-for-local-development.md)
-  * [Project Structure](developer-documentation/cipp-dev-guide/project-structure.md)
-* [Contributing to the Code](developer-documentation/contributing-to-the-code.md)
-* [Contributing to the Documentation](developer-documentation/contributing-to-the-documentation.md)
+* [CIPP Dev Guide](dev-documentation/cipp-dev-guide/README.md)
+  * [Setting Up for Local Development](dev-documentation/cipp-dev-guide/setting-up-for-local-development.md)
+  * [Project Structure](dev-documentation/cipp-dev-guide/project-structure.md)
+* [Contributing to the Code](dev-documentation/contributing-to-the-code.md)
+* [Contributing to the Documentation](dev-documentation/contributing-to-the-documentation.md)
