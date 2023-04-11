@@ -606,6 +606,11 @@ const _nav = [
         name: 'Phishing Policies',
         to: '/email/reports/phishing-policies',
       },
+      {
+        component: CNavItem,
+        name: 'Shared Mailbox with Enabled Account',
+        to: '/email/reports/SharedMailboxEnabledAccount',
+      },
     ],
   },
   {
