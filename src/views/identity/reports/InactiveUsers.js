@@ -41,7 +41,7 @@ const Altcolumns = [
     exportSelector: 'lastRefreshedDateTime',
   },
 ]
-const BasicAuthReport = () => {
+const InActiveUserReport = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
@@ -58,4 +58,4 @@ const BasicAuthReport = () => {
   )
 }
 
-export default BasicAuthReport
+export default InActiveUserReport
