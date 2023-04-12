@@ -11,6 +11,12 @@ You can gain access to the Azure backend by browsing to your Azure Portal.
 
 CIPP also includes a quicker way to jump to the correct locations via the Settings -> Backend.
 
+{% hint style="info" %}
+Hosted clients can use the backend management system at [management.cipp.app](https://management.cipp.app)
+{% endhint %}
+
+
+
 ### Details
 
 #### Resource group
