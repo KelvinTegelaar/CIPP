@@ -7,7 +7,7 @@ description: Custom domain
 
 # Adding a custom domain name
 
-\##Hosted Clients
+### Hosted Clients
 
 {% hint style="info" %}
 Hosted clients can use the backend management system at [management.cipp.app](https://management.cipp.app) to add a domain
