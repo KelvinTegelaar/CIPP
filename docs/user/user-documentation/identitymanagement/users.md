@@ -59,7 +59,9 @@ Displays details about the user account.
 
 The _Business Email Compromise Overview_ retrieves common data used when reviewing a possibly-compromised account.
 
-:::info For more in-depth analysis, [Hawk](https://cloudforensicator.com/) is well-regarded. :::
+{% hint style="info" %}
+For more in-depth analysis, [Hawk](https://cloudforensicator.com/) is well-regarded.
+{% endhint %}
 
 Data Retrieved
 
