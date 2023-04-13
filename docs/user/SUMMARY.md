@@ -15,9 +15,9 @@
   * [Adding users to CIPP](setup/installation/addingusers.md)
   * [Adding a custom domain name](setup/installation/customdomain.md)
   * [I want to manage my own tenant](setup/installation/owntenant.md)
-  * [Updating](setup/installation/index-2.md)
-  * [Roles](setup/installation/index-3.md)
-  * [Permissions](setup/installation/index-4.md)
+  * [Updating](setup/installation/updating.md)
+  * [Roles](setup/installation/roles.md)
+  * [Permissions](setup/installation/permissions.md)
 
 ## 🙋 User Documentation
 
