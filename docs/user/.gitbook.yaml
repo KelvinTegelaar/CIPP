@@ -1,4 +1,4 @@
-root: ./docs/user
+root: ./
 
 redirects:  
     docs/user/gettingstarted/prerequisites: setup/installation/install.md
