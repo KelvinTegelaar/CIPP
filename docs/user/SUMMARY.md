@@ -6,7 +6,7 @@
 
 * [CIPP Setup Guide](setup/installation/README.md)
   * [Prerequisites](setup/installation/index.md)
-  * [Installation](setup/installation/index-1.md)
+  * [Installation](setup/installation/install.md)
   * [Post-Install Configuration](setup/installation/addyourself.md)
   * [Run From Package Mode](setup/installation/runfrompackage.md)
   * [SAM Setup](setup/installation/samwizard.md)
