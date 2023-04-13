@@ -9,7 +9,7 @@ redirects:
     docs/general/faq: troubleshooting/frequently-asked-questions.md
     security: security/security-policy.md
     vdp: security/cipp-community-vulnerability-disclosure-policy.md
-    docs/user/gettingstarted: setup/installation/index.md\
+    docs/user/gettingstarted: setup/installation/index.md
     docs/user/gettingstarted/installation: setup/installation/install.md
     docs/user/gettingstarted/postinstall/addyourself: setup/installation/addyourself.md
     docs/user/gettingstarted/postinstall/runfrompackage: setup/installation/runfrompackage.md
