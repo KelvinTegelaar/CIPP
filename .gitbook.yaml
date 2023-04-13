@@ -2,3 +2,4 @@ root: ./docs/user
 
 redirects:  
     docs/user/gettingstarted/prerequisites: setup/installation/install.md
+    installnow: setup/installation/install.md
