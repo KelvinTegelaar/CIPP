@@ -150,7 +150,7 @@
     "name": "standards.LegacyMFA",
     "helpText": "This is the default helptext",
     "addedComponent": null,
-    "label": "Enable per-user MFA for all user (Legacy)"
+    "label": "Enable per-user MFA for all user (Legacy, Requires DAP.)"
   },
   {
     "cat": "AAD",
