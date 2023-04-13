@@ -9,7 +9,7 @@ slug: /faq
 <!-- vale Microsoft.HeadingAcronyms = NO -->
 <!-- vale Microsoft.HeadingPunctuation = NO -->
 
-On this page you can find a list of frequently asked questions about the CyberDrain Improved Partner Portal (CIPP). If you're having specific issues with CIPP please also check the [Troubleshooting](/troubleshooting) page.
+On this page you can find a list of frequently asked questions about the CyberDrain Improved Partner Portal (CIPP). If you're having specific issues with CIPP please also check the [Troubleshooting](/docs/general/troubleshooting) page.
 
 <details>
 <summary>
@@ -33,7 +33,7 @@ If you're experiencing issues with installation please report these in `#cipp-is
 1. Conditional access is blocking the correct functioning of the tokens - check your CA policies and also make sure you're not geo-blocking the function app's location.
 1. You can't use third party MFA on the account used to generate Secure Application Model (SAM) tokens.
 
-If your entire tenant list doesn't load, there is a big chance there is something wrong with your token configuration. Check the [troubleshooting](/troubleshooting) page for more information. If you are missing your own tenant, make sure you enable the flag to manage this tenant.
+If your entire tenant list doesn't load, there is a big chance there is something wrong with your token configuration. Check the [troubleshooting](/docs/general/troubleshooting) page for more information. If you are missing your own tenant, make sure you enable the flag to manage this tenant.
 
 </details>
 
@@ -55,7 +55,7 @@ If you installed CIPP before the release of version 2, you deployed the `master`
 
 </summary>
 
-Yes. CIPP can use IP whitelisting. This feature is in preview at Azure and might break at any moment. Deploying this is down at your own risk. For the latest documentation on how to perform this check [here](https://learn.microsoft.com/en-us/azure/static-web-apps/configuration#networking)
+Yes. CIPP can use IP whitelisting. This feature is in preview at Azure and might break at any moment. Deploying this is down at your own risk. For the latest documentation on how to perform this check [here](https://learn.microsoft.com/en-us/azure/static-web-apps/configuration#networking).
 </details>
 
 <details>
@@ -170,7 +170,7 @@ A 400 error is a generic access error. In CIPP this can hide many different issu
 
 </summary>
 
-Please see the standard "Enable Usernames instead of pseudo anonymised names in reports" [here](https://cipp.app/docs/user/usingcipp/tenantadministration/standards/#meet-the-standards)
+Please see the standard "Enable Usernames instead of pseudo anonymised names in reports" [here](https://cipp.app/docs/user/usingcipp/tenantadministration/standards/#meet-the-standards).
 
 </details>
 
