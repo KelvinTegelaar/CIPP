@@ -15,6 +15,7 @@ redirects:
     docs/user/gettingstarted/postinstall/addyourself: setup/installation/addyourself.md
     docs/user/gettingstarted/postinstall/runfrompackage: setup/installation/runfrompackage.md
     docs/user/gettingstarted/postinstall/samwizard: setup/installation/samwizard.md
+    tokencache: setup/installation/cleartokencache.md
     docs/user/gettingstarted/postinstall/cleartokencache: setup/installation/cleartokencache.md
     docs/user/gettingstarted/postinstall/conditionalaccess: setup/installation/conditionalaccess.md
     docs/user/gettingstarted/postinstall/addingusers: setup/installation/addingusers.md
