@@ -79,5 +79,6 @@
 * [CIPP Dev Guide](developer-documentation/cipp-dev-guide/README.md)
   * [Setting Up for Local Development](developer-documentation/cipp-dev-guide/setting-up-for-local-development.md)
   * [Project Structure](developer-documentation/cipp-dev-guide/project-structure.md)
+  * [Development Tips](dev-documentation/cipp-dev-guide/development-tips.md)
 * [Contributing to the Code](developer-documentation/contributing-to-the-code.md)
 * [Contributing to the Documentation](developer-documentation/contributing-to-the-documentation.md)
