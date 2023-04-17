@@ -34,3 +34,4 @@ redirects:
     docs/user/updating: setup/installation/updating.md
     docs/user/usingcipp/GDAP/migration: user-documentation/index.md
     TenantAdministration/Standards: tenantadministration/standards.md
+    faq: troubleshooting/frequently-asked-questions.md
