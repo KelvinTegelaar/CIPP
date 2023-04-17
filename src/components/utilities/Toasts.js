@@ -31,7 +31,13 @@ const Toast = ({ message, title, onClose, error }) => {
   const [visible, setVisible] = useState(false)
 
   return (
-    <CToast autohide={false} visible={true} className="align-items-center" onClose={onClose}>
+    <CToast
+      autohide={true}
+      delay={3000}
+      visible={true}
+      className="align-items-center"
+      onClose={onClose}
+    >
       <CToastHeader className="d-flex justify-content-between">
         <div>{title}</div>
         <FontAwesomeIcon size="2x" icon={faTimes} onClick={onClose} />
@@ -49,7 +55,9 @@ const Toast = ({ message, title, onClose, error }) => {
           </CButton>
         </div>
         <CCollapse visible={visible}>
-          <pre>{JSON.stringify(error, null, 2)}</pre>
+          <pre>
+            {error?.status} - {error?.message}
+          </pre>
         </CCollapse>
       </CToastBody>
     </CToast>
@@ -58,7 +66,7 @@ const Toast = ({ message, title, onClose, error }) => {
 
 Toast.propTypes = {
   title: PropTypes.string,
-  message: PropTypes.string,
+  message: PropTypes.any,
   onClose: PropTypes.func.isRequired,
   error: PropTypes.any,
 }

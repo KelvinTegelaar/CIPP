@@ -12,11 +12,12 @@ import {
   faHdd,
   faLink,
   faUsers,
-  faEnvelope,
   faWindowRestore,
-  faUnlock,
   faKey,
   faBus,
+  faExclamationTriangle,
+  faUserShield,
+  faEnvelope,
 } from '@fortawesome/free-solid-svg-icons'
 
 const _nav = [
@@ -50,6 +51,16 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Group Templates',
+        to: '/identity/administration/group-templates',
+      },
+      {
+        component: CNavItem,
+        name: 'Deploy Group Template',
+        to: '/identity/administration/deploy-group-template',
+      },
+      {
+        component: CNavItem,
         name: 'Roles',
         to: '/identity/administration/roles',
       },
@@ -57,6 +68,11 @@ const _nav = [
         component: CNavItem,
         name: 'Offboarding Wizard',
         to: '/identity/administration/offboarding-wizard',
+      },
+      {
+        component: CNavItem,
+        name: 'Deleted Items',
+        to: '/identity/administration/deleted-items',
       },
     ],
   },
@@ -69,18 +85,18 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'Devices',
-        to: '/identity/reports/devices',
-      },
-      {
-        component: CNavItem,
         name: 'MFA Report',
         to: '/identity/reports/mfa-report',
       },
       {
         component: CNavItem,
-        name: 'Basic Auth Report',
-        to: '/identity/reports/basic-auth-report',
+        name: 'Inactive Users',
+        to: '/identity/reports/inactive-users-report',
+      },
+      {
+        component: CNavItem,
+        name: 'Sign-in Report',
+        to: '/identity/reports/signin-report',
       },
       {
         component: CNavItem,
@@ -102,7 +118,7 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'List Tenants',
+        name: 'Tenants',
         to: '/tenant/administration/tenants',
       },
       {
@@ -113,32 +129,8 @@ const _nav = [
 
       {
         component: CNavItem,
-        name: 'List Scheduled Alerts',
+        name: 'Scheduled Alerts',
         to: '/tenant/administration/alertsqueue',
-      },
-    ],
-  },
-  {
-    component: CNavGroup,
-    name: 'Reports',
-    section: 'Reports',
-    to: '/tenant/reports',
-    icon: <FontAwesomeIcon icon={faChartBar} className="nav-icon" />,
-    items: [
-      {
-        component: CNavItem,
-        name: 'Graph Explorer',
-        to: '/tenant/administration/graph-explorer',
-      },
-      {
-        component: CNavItem,
-        name: 'Licence Report',
-        to: '/tenant/administration/list-licenses',
-      },
-      {
-        component: CNavItem,
-        name: 'Service Health',
-        to: '/tenant/administration/service-health',
       },
     ],
   },
@@ -151,12 +143,12 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'List Applied Standards',
+        name: 'Edit Individual Standards',
         to: '/tenant/standards/list-applied-standards',
       },
       {
         component: CNavItem,
-        name: 'Apply Standard',
+        name: 'Apply Standards',
         to: '/tenant/standards/apply-standard',
       },
       {
@@ -185,8 +177,13 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'List Policies',
+        name: 'Policies',
         to: '/tenant/conditional/list-policies',
+      },
+      {
+        component: CNavItem,
+        name: 'Named Locations',
+        to: '/tenant/conditional/list-named-locations',
       },
       {
         component: CNavItem,
@@ -195,13 +192,47 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Deploy Named Locations',
+        to: '/tenant/conditional/deploy-named-location',
+      },
+      {
+        component: CNavItem,
         name: 'Add Template',
         to: '/tenant/conditional/add-template',
       },
       {
         component: CNavItem,
-        name: 'List Templates',
+        name: 'Templates',
         to: '/tenant/conditional/list-template',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
+    name: 'Reports',
+    section: 'Reports',
+    to: '/tenant/reports',
+    icon: <FontAwesomeIcon icon={faChartBar} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Graph Explorer',
+        to: '/tenant/administration/graph-explorer',
+      },
+      {
+        component: CNavItem,
+        name: 'Licence Report',
+        to: '/tenant/administration/list-licenses',
+      },
+      {
+        component: CNavItem,
+        name: 'Consented Applications',
+        to: '/tenant/administration/application-consent',
+      },
+      {
+        component: CNavItem,
+        name: 'Service Health',
+        to: '/tenant/administration/service-health',
       },
     ],
   },
@@ -211,16 +242,63 @@ const _nav = [
   },
   {
     component: CNavGroup,
-    name: 'Reports',
+    name: 'Incidents & Alerts',
     section: 'Security & Compliance',
-    to: '/security/reports',
-    icon: <FontAwesomeIcon icon={faUnlock} className="nav-icon" />,
+    to: '/security/incidents',
+    icon: <FontAwesomeIcon icon={faExclamationTriangle} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
-        name: 'List Alerts',
-        to: '/security/reports/list-alerts',
+        name: 'Incidents',
+        to: '/security/incidents/list-incidents',
       },
+      {
+        component: CNavItem,
+        name: 'Alerts',
+        to: '/security/incidents/list-alerts',
+      },
+    ],
+  },
+  // Coming in another branch (heads up)
+  //{
+  //component: CNavGroup,
+  //name: 'Vulnerabilities',
+  //section: 'Security & Compliance',
+  //to: '/security/vulnerabilities',
+  //icon: <FontAwesomeIcon icon={faChessRook} className="nav-icon" />,
+  //items: [],
+  //},
+  {
+    component: CNavGroup,
+    name: 'Defender',
+    section: 'Security & Compliance',
+    to: '/security/defender',
+    icon: <FontAwesomeIcon icon={faShieldAlt} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Defender Deployment',
+        to: '/security/defender/deployment',
+      },
+      {
+        component: CNavItem,
+        name: 'Defender Status',
+        to: '/security/defender/list-defender',
+      },
+      {
+        component: CNavItem,
+        name: 'Vulnerabilities',
+        to: '/security/defender/list-defender-tvm',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
+    name: 'Reports',
+    section: 'Security & Compliance',
+    to: '/security/reports',
+    icon: <FontAwesomeIcon icon={faChartBar} className="nav-icon" />,
+    items: [
       {
         component: CNavItem,
         name: 'Device Compliance',
@@ -230,7 +308,7 @@ const _nav = [
   },
   {
     component: CNavTitle,
-    name: 'Endpoint Management',
+    name: 'Intune',
   },
   {
     component: CNavGroup,
@@ -241,18 +319,33 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'List Applications',
+        name: 'Applications',
         to: '/endpoint/applications/list',
       },
       {
         component: CNavItem,
-        name: 'List Application Queue',
+        name: 'Application Queue',
         to: '/endpoint/applications/queue',
       },
       {
         component: CNavItem,
         name: 'Add Choco App',
         to: '/endpoint/applications/add-choco-app',
+      },
+      {
+        component: CNavItem,
+        name: 'Add Store App',
+        to: '/endpoint/applications/add-winget-app',
+      },
+      {
+        component: CNavItem,
+        name: 'Add Office App',
+        to: '/endpoint/applications/add-office-app',
+      },
+      {
+        component: CNavItem,
+        name: 'Add MSP App',
+        to: '/endpoint/applications/add-rmm-app',
       },
     ],
   },
@@ -280,31 +373,36 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'List Devices',
+        name: 'Autopilot Devices',
         to: '/endpoint/autopilot/list-devices',
       },
       {
         component: CNavItem,
-        name: 'List Profiles',
+        name: 'Profiles',
         to: '/endpoint/autopilot/list-profiles',
       },
       {
         component: CNavItem,
-        name: 'List Status Pages',
+        name: 'Status Pages',
         to: '/endpoint/autopilot/list-status-pages',
       },
     ],
   },
   {
     component: CNavGroup,
-    name: 'MEM (Intune)',
+    name: 'Device Management',
     section: 'Endpoint Management',
     to: '/endpoint/MEM',
     icon: <FontAwesomeIcon icon={faExchangeAlt} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
-        name: 'List MEM Policies',
+        name: 'Devices',
+        to: '/endpoint/reports/devices',
+      },
+      {
+        component: CNavItem,
+        name: 'MEM Policies',
         to: '/endpoint/MEM/list-policies',
       },
       {
@@ -319,22 +417,8 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'List Templates',
+        name: 'Templates',
         to: '/endpoint/MEM/list-templates',
-      },
-    ],
-  },
-  {
-    component: CNavGroup,
-    name: 'Defender',
-    section: 'Endpoint Management',
-    to: '/endpoint/defender',
-    icon: <FontAwesomeIcon icon={faShieldAlt} className="nav-icon" />,
-    items: [
-      {
-        component: CNavItem,
-        name: 'Defender Status',
-        to: '/endpoint/defender/list-defender',
       },
     ],
   },
@@ -351,21 +435,21 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'List OneDrive',
+        name: 'OneDrive',
         to: '/teams-share/onedrive/list',
       },
     ],
   },
   {
     component: CNavGroup,
-    name: 'Sharepoint',
+    name: 'SharePoint',
     section: 'Teams & Sharepoint',
     to: '/teams-share/sharepoint',
     icon: <FontAwesomeIcon icon={faLink} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
-        name: 'List Sharepoint',
+        name: 'SharePoint',
         to: '/teams-share/sharepoint/list-sharepoint',
       },
     ],
@@ -384,7 +468,7 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'List Teams',
+        name: 'Teams',
         to: '/teams-share/teams/list-team',
       },
       {
@@ -417,22 +501,37 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Mailbox Rules',
+        to: '/email/administration/mailbox-rules',
+      },
+      {
+        component: CNavItem,
         name: 'Contacts',
         to: '/email/administration/contacts',
+      },
+      {
+        component: CNavItem,
+        name: 'Quarantine',
+        to: '/email/administration/quarantine',
       },
     ],
   },
   {
     component: CNavGroup,
-    name: 'Transport Rules',
+    name: 'Transport',
     section: 'Transport Rules',
     to: '/tenant/administration',
     icon: <FontAwesomeIcon icon={faBus} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
-        name: 'List Transport rules',
+        name: 'Transport rules',
         to: '/email/transport/list-rules',
+      },
+      {
+        component: CNavItem,
+        name: 'Transport Templates',
+        to: '/email/transport/list-templates',
       },
       {
         component: CNavItem,
@@ -441,13 +540,42 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Add Template',
-        to: '/email/transport/add-template',
+        name: 'Connectors',
+        to: '/email/connectors/list-connectors',
       },
       {
         component: CNavItem,
-        name: 'List Templates',
-        to: '/email/transport/list-templates',
+        name: 'Connector Templates',
+        to: '/email/connectors/list-connector-templates',
+      },
+      {
+        component: CNavItem,
+        name: 'Deploy Connector Templates',
+        to: '/email/connectors/deploy-connector',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
+    name: 'Spamfilter',
+    section: 'Spamfilter',
+    to: '/tenant/administration',
+    icon: <FontAwesomeIcon icon={faEnvelope} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Spamfilter',
+        to: '/email/spamfilter/list-spamfilter',
+      },
+      {
+        component: CNavItem,
+        name: 'Apply Spamfilter Template',
+        to: '/email/spamfilter/deploy',
+      },
+      {
+        component: CNavItem,
+        name: 'Templates',
+        to: '/email/spamfilter/list-templates',
       },
     ],
   },
@@ -456,7 +584,7 @@ const _nav = [
     name: 'Reports',
     section: 'Email & Exchange',
     to: '/email/reports',
-    icon: <FontAwesomeIcon icon={faEnvelope} className="nav-icon" />,
+    icon: <FontAwesomeIcon icon={faChartBar} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
@@ -478,6 +606,11 @@ const _nav = [
         name: 'Phishing Policies',
         to: '/email/reports/phishing-policies',
       },
+      {
+        component: CNavItem,
+        name: 'Shared Mailbox with Enabled Account',
+        to: '/email/reports/SharedMailboxEnabledAccount',
+      },
     ],
   },
   {
@@ -498,13 +631,43 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'SAM Setup Wizard (β)',
+        name: 'SAM Setup Wizard',
         to: '/cipp/setup',
       },
       {
         component: CNavItem,
         name: 'Documentation',
         href: 'https://cipp.app',
+        target: '_blank',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
+    name: 'GDAP Migration',
+    section: 'Settings',
+    to: '/cipp/gdap',
+    icon: <FontAwesomeIcon icon={faUserShield} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Migration Wizard',
+        to: '/tenant/administration/gdap',
+      },
+      {
+        component: CNavItem,
+        name: 'GDAP Migration Status',
+        to: '/tenant/administration/gdap-status',
+      },
+      {
+        component: CNavItem,
+        name: 'Application Approval',
+        to: '/tenant/administration/appapproval',
+      },
+      {
+        component: CNavItem,
+        name: 'Documentation',
+        href: 'https://cipp.app/docs/user/usingcipp/GDAP/migration',
         target: '_blank',
       },
     ],

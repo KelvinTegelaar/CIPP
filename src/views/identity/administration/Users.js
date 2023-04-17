@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { faEdit, faEllipsisV, faEye } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { cellBooleanFormatter } from 'src/components/tables'
+import { cellBooleanFormatter, CellTip } from 'src/components/tables'
 import { CippPageList } from 'src/components/layout'
 import { TitleButton } from 'src/components/buttons'
 import { CippActionsOffcanvas } from 'src/components/utilities'
@@ -33,19 +33,19 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
       <CippActionsOffcanvas
         title="User Information"
         extendedInfo={[
-          { label: 'Created on', value: `${row.createdDateTime}` },
-          { label: 'UPN', value: `${row.userPrincipalName}` },
-          { label: 'Given Name', value: `${row.givenName}` },
-          { label: 'Surname', value: `${row.surname}` },
-          { label: 'Job Title', value: `${row.jobTitle}` },
-          { label: 'Licenses', value: `${row.LicJoined}` },
-          { label: 'Business Phone', value: `${row.businessPhones}` },
-          { label: 'Mobile Phone', value: `${row.mobilePhone}` },
-          { label: 'Mail', value: `${row.mail}` },
-          { label: 'City', value: `${row.city}` },
-          { label: 'Department', value: `${row.department}` },
-          { label: 'OnPrem Last Sync', value: `${row.onPremisesLastSyncDateTime}` },
-          { label: 'Unique ID', value: `${row.id}` },
+          { label: 'Created Date (UTC)', value: `${row.createdDateTime ?? ' '}` },
+          { label: 'UPN', value: `${row.userPrincipalName ?? ' '}` },
+          { label: 'Given Name', value: `${row.givenName ?? ' '}` },
+          { label: 'Surname', value: `${row.surname ?? ' '}` },
+          { label: 'Job Title', value: `${row.jobTitle ?? ' '}` },
+          { label: 'Licenses', value: `${row.LicJoined ?? ' '}` },
+          { label: 'Business Phone', value: `${row.businessPhones ?? ' '}` },
+          { label: 'Mobile Phone', value: `${row.mobilePhone ?? ' '}` },
+          { label: 'Mail', value: `${row.mail ?? ' '}` },
+          { label: 'City', value: `${row.city ?? ' '}` },
+          { label: 'Department', value: `${row.department ?? ' '}` },
+          { label: 'OnPrem Last Sync', value: `${row.onPremisesLastSyncDateTime ?? ' '}` },
+          { label: 'Unique ID', value: `${row.id ?? ' '}` },
         ]}
         actions={[
           {
@@ -73,6 +73,13 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modalMessage: 'Are you sure you want to create a Temporary Access Pass?',
           },
           {
+            label: 'Rerequire MFA registration',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecResetMFA?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalMessage: 'Are you sure you want to enable MFA for this user?',
+          },
+          {
             label: 'Send MFA Push',
             color: 'info',
             modal: true,
@@ -83,8 +90,56 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             label: 'Convert to Shared Mailbox',
             color: 'info',
             modal: true,
-            modalUrl: `/api/ExecConvertToSharedMailbox?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalUrl: `/api/ExecConvertToSharedMailbox?TenantFilter=${tenant.defaultDomainName}&ID=${row.userPrincipalName}`,
             modalMessage: 'Are you sure you want to convert this user to a shared mailbox?',
+          },
+          {
+            label: 'Enable Online Archive',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecEnableArchive?TenantFilter=${tenant.defaultDomainName}&ID=${row.userPrincipalName}`,
+            modalMessage: 'Are you sure you want to enable the online archive for this user?',
+          },
+          {
+            label: 'Set Out of Office',
+            color: 'info',
+            modal: true,
+            modalType: 'POST',
+            modalBody: {
+              user: row.userPrincipalName,
+              TenantFilter: tenant.defaultDomainName,
+              message: row.message,
+            },
+            modalUrl: `/api/ExecSetOoO`,
+            modalInput: true,
+            modalMessage:
+              'Enter a out of office message and press continue to set the out of office.',
+          },
+          {
+            label: 'Disable Out of Office',
+            color: 'info',
+            modal: true,
+            modalType: 'POST',
+            modalBody: {
+              user: row.userPrincipalName,
+              TenantFilter: tenant.defaultDomainName,
+              Disable: true,
+            },
+            modalUrl: `/api/ExecSetOoO`,
+            modalMessage: 'Are you sure you want to disable the out of office?',
+          },
+          {
+            label: 'Disable Email Forwarding',
+            color: 'info',
+            modal: true,
+            modalType: 'POST',
+            modalBody: {
+              user: row.userPrincipalName,
+              TenantFilter: tenant.defaultDomainName,
+              message: row.message,
+            },
+            modalUrl: `/api/ExecDisableEmailForward`,
+            modalMessage: 'Are you sure you want to disable forwarding of this users emails?',
           },
           {
             label: 'Block Sign In',
@@ -104,15 +159,29 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             label: 'Reset Password (Must Change)',
             color: 'info',
             modal: true,
-            modalUrl: `/api/ExecResetPass?MustChange=true&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalUrl: `/api/ExecResetPass?MustChange=true&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}&displayName=${row.displayName}`,
             modalMessage: 'Are you sure you want to reset the password for this user?',
           },
           {
             label: 'Reset Password',
             color: 'info',
             modal: true,
-            modalUrl: `/api/ExecResetPass?MustChange=false&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalUrl: `/api/ExecResetPass?MustChange=false&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}&displayName=${row.displayName}`,
             modalMessage: 'Are you sure you want to reset the password for this user?',
+          },
+          {
+            label: 'Clear ImmutableId',
+            color: 'warning',
+            modal: true,
+            modalUrl: `/api/ExecClrImmId?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalMessage: 'Are you sure you want to clear the ImmutableId for this user?',
+          },
+          {
+            label: 'Revoke all user sessions',
+            color: 'danger',
+            modal: true,
+            modalUrl: `/api/ExecRevokeSessions?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalMessage: 'Are you sure you want to revoke this users sessions?',
           },
           {
             label: 'Delete User',
@@ -136,6 +205,7 @@ const columns = [
     name: 'Display Name',
     selector: (row) => row['displayName'],
     sortable: true,
+    cell: (row) => CellTip(row['displayName']),
     exportSelector: 'displayName',
     minWidth: '300px',
   },
@@ -143,34 +213,32 @@ const columns = [
     name: 'Email',
     selector: (row) => row['mail'],
     sortable: true,
+    cell: (row) => CellTip(row['mail']),
     exportSelector: 'mail',
-    minWidth: '350px',
+    minWidth: '250px',
   },
   {
     name: 'User Type',
     selector: (row) => row['userType'],
     sortable: true,
     exportSelector: 'userType',
-    minWidth: '50px',
-    maxWidth: '140px',
+    minWidth: '140px',
   },
   {
     name: 'Enabled',
     selector: (row) => row['accountEnabled'],
-    cell: cellBooleanFormatter(),
+    cell: cellBooleanFormatter({ colourless: true }),
     sortable: true,
     exportSelector: 'accountEnabled',
-    minWidth: '50px',
-    maxWidth: '90px',
+    minWidth: '100px',
   },
   {
     name: 'AD Synced',
     selector: (row) => row['onPremisesSyncEnabled'],
-    cell: cellBooleanFormatter(),
+    cell: cellBooleanFormatter({ colourless: true }),
     sortable: true,
     exportSelector: 'onPremisesSyncEnabled',
-    minWidth: '50px',
-    maxWidth: '110px',
+    minWidth: '120px',
   },
   {
     name: 'Licenses',
@@ -179,6 +247,7 @@ const columns = [
     sortable: true,
     grow: 5,
     wrap: true,
+    minWidth: '200px',
   },
   {
     name: 'id',
@@ -191,18 +260,146 @@ const columns = [
   },
 ]
 
-const Users = () => {
+const Users = (row) => {
   const tenant = useSelector((state) => state.app.currentTenant)
-  const titleButton = <TitleButton href="/identity/administration/users/add" title="Add User" />
+  const titleButtons = (
+    <div style={{ display: 'flex', alignItems: 'right' }}>
+      <TitleButton key="add-user" href="/identity/administration/users/add" title="Add User" />
+      <div style={{ marginLeft: '10px' }}>
+        <TitleButton
+          key="Invite-Guest"
+          href="/identity/administration/users/InviteGuest"
+          title="Invite Guest"
+        />
+      </div>
+    </div>
+  )
   return (
     <CippPageList
+      capabilities={{ allTenants: false, helpContext: 'https://google.com' }}
       title="Users"
-      titleButton={titleButton}
+      titleButton={titleButtons}
       datatable={{
+        filterlist: [
+          { filterName: 'Enabled users', filter: '"accountEnabled":true' },
+          { filterName: 'Disabled users', filter: '"accountEnabled":false' },
+          { filterName: 'AAD users', filter: '"onPremisesSyncEnabled":false' },
+          { filterName: 'Synced users', filter: '"onPremisesSyncEnabled":true' },
+          { filterName: 'Guest users', filter: '"usertype":"guest"' },
+          { filterName: 'Users with a license', filter: '"assignedLicenses":[{' },
+          { filterName: 'Users without a license', filter: '"assignedLicenses":[]' },
+        ],
         columns,
         path: '/api/ListUsers',
         reportName: `${tenant?.defaultDomainName}-Users`,
         params: { TenantFilter: tenant?.defaultDomainName },
+        tableProps: {
+          selectableRows: true,
+          actionsList: [
+            {
+              label: 'Convert to Shared Mailbox',
+              modal: true,
+              modalUrl: `/api/ExecConvertToSharedMailbox?TenantFilter=${tenant.defaultDomainName}&ID=!userPrincipalName`,
+              modalMessage: 'Are you sure you want to convert these users to a shared mailbox?',
+            },
+            {
+              label: 'Rerequire MFA registration',
+              modal: true,
+              modalUrl: `/api/ExecResetMFA?TenantFilter=${tenant.defaultDomainName}&ID=!id`,
+              modalMessage: 'Are you sure you want to enable MFA for these users?',
+            },
+            {
+              label: 'Enable Online Archive',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecEnableArchive?TenantFilter=${tenant.defaultDomainName}&ID=!id`,
+              modalMessage: 'Are you sure you want to enable the online archive for these users?',
+            },
+            {
+              label: 'Reset Password (Must Change)',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecResetPass?MustChange=true&TenantFilter=${tenant.defaultDomainName}&ID=!userPrincipalName`,
+              modalMessage:
+                'Are you sure you want to reset the password for these users? The users must change their password at next logon.',
+            },
+            {
+              label: 'Reset Password',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecResetPass?MustChange=false&TenantFilter=${tenant.defaultDomainName}&ID=!userPrincipalName`,
+              modalMessage:
+                'Are you sure you want to reset the password for these users? The users must change their password at next logon.',
+            },
+            {
+              label: 'Block signin',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecDisableUser?TenantFilter=${tenant.defaultDomainName}&ID=!userPrincipalName`,
+              modalMessage: 'Are you sure you want to disable these users?',
+            },
+            {
+              label: 'Unblock signin',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecDisableUser?Enable=true&TenantFilter=${tenant.defaultDomainName}&ID=!userPrincipalName`,
+              modalMessage: 'Are you sure you want to enable these users?',
+            },
+            {
+              label: 'Revoke sessions',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecRevokeSessions?Enable=true&TenantFilter=${tenant.defaultDomainName}&ID=!userPrincipalName`,
+              modalMessage: 'Are you sure you want to revoke all sessions for these users?',
+            },
+            {
+              label: 'Set Out of Office',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                user: '!userPrincipalName',
+                TenantFilter: tenant.defaultDomainName,
+              },
+              modalUrl: `/api/ExecSetOoO`,
+              modalInput: true,
+              modalMessage:
+                'Enter a out of office message and press continue to set the out of office.',
+            },
+            {
+              label: 'Disable Out of Office',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                user: '!userPrincipalName',
+                TenantFilter: tenant.defaultDomainName,
+                Disable: true,
+              },
+              modalUrl: `/api/ExecSetOoO`,
+              modalMessage: 'Are you sure you want to disable the out of office?',
+            },
+            {
+              label: 'Disable Email Forwarding',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                user: '!userPrincipalName',
+                TenantFilter: tenant.defaultDomainName,
+              },
+              modalUrl: `/api/ExecDisableEmailForward`,
+              modalMessage: 'Are you sure you want to disable forwarding of these users emails?',
+            },
+            {
+              label: 'Delete User',
+              color: 'danger',
+              modal: true,
+              modalUrl: `/api/RemoveUser?TenantFilter=${tenant.defaultDomainName}&ID=!id`,
+              modalMessage: 'Are you sure you want to delete these users?',
+            },
+          ],
+        },
       }}
     />
   )

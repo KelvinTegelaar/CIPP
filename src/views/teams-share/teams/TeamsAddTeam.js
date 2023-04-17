@@ -23,7 +23,7 @@ const TeamsAddTeam = () => {
       tenantID: tenantDomain,
       displayName: values.displayName,
       description: values.description,
-      owner: values.owner,
+      owner: values.owner.value,
       visibility: values.visibility,
     }
     //alert(JSON.stringify(shippedValues, null, 2))
@@ -35,79 +35,83 @@ const TeamsAddTeam = () => {
   }
   return (
     <CippPage title="Add Team">
-      <CippContentCard title="Team Details">
-        {postResults.isFetching && (
-          <CCallout color="success">
-            <CSpinner />
-          </CCallout>
-        )}
-        {postResults.isSuccess && <CCallout color="success">{postResults.data.Results}</CCallout>}
-        <Form initialValues={initialValues} onSubmit={handleSubmit}>
-          {({ handleSubmit, submitting, values }) => {
-            return (
-              <CForm onSubmit={handleSubmit}>
-                <CRow>
-                  <CCol>
-                    <RFFCFormInput
-                      type="text"
-                      name="displayName"
-                      label="Display Name"
-                      placeholder="Enter the Display Name"
-                    />
-                  </CCol>
-                </CRow>
-                <CRow>
-                  <CCol>
-                    <RFFCFormInput
-                      type="text"
-                      name="description"
-                      label="Description"
-                      placeholder="Enter the description"
-                    />
-                  </CCol>
-                </CRow>
-                <CRow>
-                  <CCol>
-                    <RFFSelectSearch
-                      label="Select owner.  This user must have a teams license."
-                      values={users?.map((user) => ({
-                        //temporary using formselect over formsearch as formsearch got bugged somehow
-                        value: `${user.mail}`,
-                        name: `${user.displayName} - (${user.mail})`,
-                      }))}
-                      placeholder={!usersIsFetching ? 'Select owner' : 'Loading...'}
-                      name="owner"
-                    />
-                    {usersError && <span>Failed to load list of users</span>}
-                  </CCol>
-                </CRow>
-                <CRow>
-                  <CCol>
-                    <RFFCFormRadio
-                      value="public"
-                      name="visibility"
-                      label="Public Team"
-                    ></RFFCFormRadio>
-                    <RFFCFormRadio
-                      value="private"
-                      name="visibility"
-                      label="Private Team"
-                    ></RFFCFormRadio>
-                  </CCol>
-                </CRow>
-                <CRow className="mb-3">
-                  <CCol>
-                    <hr></hr>
-                    <CButton type="submit" disabled={submitting}>
-                      Add Team
-                    </CButton>
-                  </CCol>
-                </CRow>
-              </CForm>
-            )
-          }}
-        </Form>
-      </CippContentCard>
+      {tenantDomain === 'AllTenants' ? (
+        'This page does not yet support the All Tenants overview. Please use the tenant selector to select a tenant.'
+      ) : (
+        <CippContentCard title="Team Details">
+          {postResults.isFetching && (
+            <CCallout color="success">
+              <CSpinner />
+            </CCallout>
+          )}
+          {postResults.isSuccess && <CCallout color="success">{postResults.data.Results}</CCallout>}
+          <Form initialValues={initialValues} onSubmit={handleSubmit}>
+            {({ handleSubmit, submitting, values }) => {
+              return (
+                <CForm onSubmit={handleSubmit}>
+                  <CRow>
+                    <CCol>
+                      <RFFCFormInput
+                        type="text"
+                        name="displayName"
+                        label="Display Name"
+                        placeholder="Enter the Display Name"
+                      />
+                    </CCol>
+                  </CRow>
+                  <CRow>
+                    <CCol>
+                      <RFFCFormInput
+                        type="text"
+                        name="description"
+                        label="Description"
+                        placeholder="Enter the description"
+                      />
+                    </CCol>
+                  </CRow>
+                  <CRow>
+                    <CCol>
+                      <RFFSelectSearch
+                        label="Select owner.  This user must have a teams license."
+                        values={users?.map((user) => ({
+                          //temporary using formselect over formsearch as formsearch got bugged somehow
+                          value: `${user.mail}`,
+                          name: `${user.displayName} - (${user.mail})`,
+                        }))}
+                        placeholder={!usersIsFetching ? 'Select owner' : 'Loading...'}
+                        name="owner"
+                      />
+                      {usersError && <span>Failed to load list of users</span>}
+                    </CCol>
+                  </CRow>
+                  <CRow>
+                    <CCol>
+                      <RFFCFormRadio
+                        value="public"
+                        name="visibility"
+                        label="Public Team"
+                      ></RFFCFormRadio>
+                      <RFFCFormRadio
+                        value="private"
+                        name="visibility"
+                        label="Private Team"
+                      ></RFFCFormRadio>
+                    </CCol>
+                  </CRow>
+                  <CRow className="mb-3">
+                    <CCol>
+                      <hr></hr>
+                      <CButton type="submit" disabled={submitting}>
+                        Add Team
+                      </CButton>
+                    </CCol>
+                  </CRow>
+                </CForm>
+              )
+            }}
+          </Form>
+        </CippContentCard>
+      )}
     </CippPage>
   )
 }

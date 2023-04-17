@@ -22,7 +22,6 @@ import {
   CNav,
   CNavItem,
   CNavLink,
-  CSpinner,
   CTabContent,
   CTabPane,
   CTableDataCell,
@@ -52,6 +51,7 @@ import {
   faGlobe,
   faQuestionCircle,
 } from '@fortawesome/free-solid-svg-icons'
+import Skeleton from 'react-loading-skeleton'
 
 const IconGreenCheck = () => <FontAwesomeIcon icon={faCheckCircle} className="text-success mx-2" />
 const IconRedX = () => <FontAwesomeIcon icon={faTimesCircle} className="text-danger mx-2" />
@@ -91,6 +91,13 @@ export function IndividualDomainCheck({
   const [httpsOverride, setHttpsOverride] = useState('')
   const [optionsVisible, setOptionsVisible] = useState(false)
   const [masonrySize, setMasonrySize] = useState()
+
+  const isValidDomain = (value) =>
+    /^(((?!-))(xn--|_{1,1})?[a-z0-9-]{0,61}[a-z0-9]{1,1}\.)*(xn--)?([a-z0-9][a-z0-9-]{0,60}|[a-z0-9-]{1,30}\.[a-z]{2,})$/i.test(
+      value,
+    )
+      ? undefined
+      : value
 
   useEffect(() => {
     if (initialDomain) {
@@ -159,7 +166,7 @@ export function IndividualDomainCheck({
               render={({ handleSubmit, submitting, pristine }) => {
                 return (
                   <CForm onSubmit={handleSubmit}>
-                    <Field name="domain">
+                    <Field name="domain" validate={isValidDomain}>
                       {({ input, meta }) => {
                         return (
                           <>
@@ -183,7 +190,7 @@ export function IndividualDomainCheck({
                                 <CButton
                                   size="sm"
                                   variant="outline"
-                                  color="light"
+                                  color="primary"
                                   onClick={() => setOptionsVisible(!optionsVisible)}
                                 >
                                   <FontAwesomeIcon className="mx-1" size="1x" icon={faCog} />
@@ -443,6 +450,24 @@ function ResultsCard({
     finalState = 'Fail'
   }
 
+  var docLink = ''
+  if (providerInfo) {
+    switch (type) {
+      case 'SPF':
+        docLink = providerInfo._SpfComment
+        break
+      case 'DKIM':
+        docLink = providerInfo._DkimComment
+        break
+      case 'MX':
+        docLink = providerInfo._MxComment
+        break
+      default:
+        docLink = ''
+        break
+    }
+  }
+
   return (
     <>
       <CCard className="content-card">
@@ -454,11 +479,7 @@ function ResultsCard({
           <span>
             {providerInfo && (
               <CTooltip content={`${providerInfo.Name} ${type} documentation`}>
-                <CLink
-                  className="mx-2 card-header-link"
-                  href={providerInfo._MxComment}
-                  target="_blank"
-                >
+                <CLink className="mx-2 card-header-link" href={docLink} target="_blank">
                   <FontAwesomeIcon icon={faQuestionCircle} className="me-2" />
                 </CLink>
               </CTooltip>
@@ -470,7 +491,7 @@ function ResultsCard({
           </span>
         </CCardHeader>
         <CCardBody>
-          {isFetching && <CSpinner />}
+          {isFetching && <Skeleton count={5} />}
           {!isFetching && error && <>{errorMessage}</>}
           {!isFetching && !error && (
             <>
@@ -688,7 +709,7 @@ function WhoisResultCard({ domain }) {
         </CLink>
       </CCardHeader>
       <CCardBody>
-        {isFetching && <CSpinner />}
+        {isFetching && <Skeleton count={5} />}
         {!isFetching && error && <>Unable to obtain WHOIS information</>}
         {!isFetching && !error && (
           <>
@@ -730,7 +751,7 @@ function NSResultCard({ domain }) {
   } = useListDomainHealthQuery({ Domain: domain, Action: 'ReadNSRecord' })
 
   const content = []
-  if (nsReport?.Records.length > 0) {
+  if (!error && nsReport?.Records.length > 0) {
     nsReport?.Records.map((ns, index) =>
       content.push({
         body: ns,

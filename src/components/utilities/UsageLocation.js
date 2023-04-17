@@ -3,31 +3,31 @@ import { CCard, CCardHeader } from '@coreui/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setDefaultusageLocation } from 'src/store/features/app'
 import countryList from 'src/data/countryList'
-import SelectSearch, { fuzzySearch } from 'react-select-search'
+import Select from 'react-select'
 
 const UsageLocation = () => {
   const dispatch = useDispatch()
   const usagelocation = useSelector((state) => state.app.usageLocation)
-  const Switchusage = (t) => {
-    // console.log(t)
+  const Switchusage = (t, n) => {
     dispatch(setDefaultusageLocation({ usageLocation: t }))
   }
 
   return (
     <CCard>
       <CCardHeader>Select default usage location</CCardHeader>
-      <SelectSearch
+      <Select
+        className="react-select-container"
+        classNamePrefix="react-select"
         options={countryList.map(({ Code, Name }) => ({
           value: Code,
-          name: Name,
+          label: Name,
         }))}
+        isClearable={true}
         name="usageLocation"
         value={usagelocation}
         placeholder="Type to search..."
         label="Usage Location"
         onChange={(value) => Switchusage(value)}
-        search
-        filterOptions={fuzzySearch}
       />
     </CCard>
   )

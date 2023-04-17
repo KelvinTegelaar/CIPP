@@ -20,11 +20,19 @@
     },
     {
       "route": "/logout",
-      "redirect": "/.auth/logout"
+      "redirect": "/.auth/logout?post_logout_redirect_uri=/LogoutRedirect"
+    },
+    {
+      "route": "/api/ExecSAMSetup",
+      "allowedRoles": ["admin", "editor", "readonly", "authenticated", "anonymous"]
     },
     {
       "route": "/api/AddStandardsDeploy",
       "allowedRoles": ["admin"]
+    },
+    {
+      "route": "/LogoutRedirect",
+      "allowedRoles": ["admin", "editor", "readonly", "authenticated", "anonymous"]
     },
     {
       "route": "/404",
@@ -67,6 +75,14 @@
       "allowedRoles": ["admin"]
     },
     {
+      "route": "/",
+      "allowedRoles": ["admin", "editor", "readonly", "reader", "authenticated", "anonymous"]
+    },
+    {
+      "route": "/api/Public*",
+      "allowedRoles": ["admin", "editor", "readonly", "reader", "authenticated", "anonymous"]
+    },
+    {
       "route": "*",
       "allowedRoles": ["admin", "editor", "readonly", "reader"]
     }
@@ -77,15 +93,13 @@
   },
   "responseOverrides": {
     "401": {
-      "redirect": "/.auth/login/aad?post_login_redirect_uri=.referrer",
-      "statusCode": 302,
-      "exclude": ["/assets/illustrations/*.{png,jpg,gif}", "/css/*"]
+      "rewrite": "/401"
     },
     "403": {
-      "rewrite": "/cipp/403"
+      "rewrite": "/403"
     },
     "404": {
-      "rewrite": "/cipp/404"
+      "rewrite": "/404"
     }
   },
   "globalHeaders": {
