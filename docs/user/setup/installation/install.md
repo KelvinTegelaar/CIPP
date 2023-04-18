@@ -29,6 +29,6 @@ Azure Static Web Apps (SWA) is global by default (it picks the data center close
 
 To work around this use the alternative installation button below. This deploys the Static Web App in the _Central US_ region however the SWA gets served from your nearest data center anyway. The other parts of CIPP get installed in the region you choose so you shouldn't experience any latency.
 
-<a target="_blank" href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FKelvinTegelaar%2FCIPP%2Fdev%2Fdeployment%2FAzureDeploymentTemplate\_regionoptions.json"><img src="https://aka.ms/deploytoazurebutton" alt=""><figcaption></figcaption></a>
+<a target="_blank" href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FKelvinTegelaar%2FCIPP%2Fdev%2Fdeployment%2FAzureDeploymentTemplate_regionoptions.json"><img src="https://aka.ms/deploytoazurebutton" alt=""><figcaption></figcaption></a>
 
 
