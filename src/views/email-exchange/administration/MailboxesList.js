@@ -17,7 +17,7 @@ const MailboxList = () => {
     return (
       <>
         <Link
-          to={`/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}&email=${row.UPN}`}
+          to={`/identity/administration/users/view?userId=${row.UPN}&tenantDomain=${tenant.defaultDomainName}&email=${row.UPN}`}
         >
           <CButton size="sm" variant="ghost" color="success">
             <FontAwesomeIcon icon={faEye} />
@@ -94,6 +94,20 @@ const MailboxList = () => {
               modalUrl: `/api/ExecConvertToSharedMailbox?TenantFilter=${tenant.defaultDomainName}&ID=${row.UPN}&ConvertToUser=true`,
               modalMessage:
                 'Are you sure you want to convert this shared mailbox to a user mailbox?',
+            },
+            {
+              label: 'Copy Sent Items to Shared Mailbox',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecCopyForSent?TenantFilter=${tenant.defaultDomainName}&ID=${row.UPN}`,
+              modalMessage: 'Are you sure you want to enable Copy Sent Items to Shared Mailbox?',
+            },
+            {
+              label: 'Disable Copy Sent Items to Shared Mailbox',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecCopyForSent?TenantFilter=${tenant.defaultDomainName}&ID=${row.UPN}&MessageCopyForSentAsEnabled=false`,
+              modalMessage: 'Are you sure you want to disable Copy Sent Items to Shared Mailbox?',
             },
             {
               label: 'Hide from Global Address List',
