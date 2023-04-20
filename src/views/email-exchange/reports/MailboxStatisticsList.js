@@ -75,6 +75,7 @@ const MailboxStatsList = () => {
   return (
     <CippPageList
       title="Mailbox Statistics"
+      capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
       datatable={{
         keyField: 'id',
         reportName: `${tenant?.defaultDomainName}-MailboxStatistics-List`,
