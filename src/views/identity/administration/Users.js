@@ -276,7 +276,7 @@ const Users = (row) => {
   )
   return (
     <CippPageList
-      capabilities={{ allTenants: false, helpContext: 'https://google.com' }}
+      capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
       title="Users"
       titleButton={titleButtons}
       datatable={{
