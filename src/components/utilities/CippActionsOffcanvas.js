@@ -1,7 +1,12 @@
 import React, { useRef } from 'react'
 import PropTypes from 'prop-types'
 import {
+  CButton,
   CCallout,
+  CCard,
+  CCardBody,
+  CCardText,
+  CCardTitle,
   CFormInput,
   CListGroup,
   CListGroupItem,
@@ -12,7 +17,7 @@ import { CippOffcanvas, ModalService } from 'src/components/utilities'
 import { CippOffcanvasPropTypes } from 'src/components/utilities/CippOffcanvas'
 import { CippOffcanvasTable } from 'src/components/tables'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { stringCamelCase } from 'src/components/utilities/CippCamelCase'
 
 export default function CippActionsOffcanvas(props) {
@@ -91,6 +96,27 @@ export default function CippActionsOffcanvas(props) {
     var actualUrl = url.replaceAll('{value1}', value1).replaceAll('{value2}', value2)
     genericGetRequest({ path: actualUrl })
   }
+  let cardContent
+  try {
+    cardContent = props.cards.map((action, index) => (
+      <>
+        <CCard className="border-top-dark border-top-3 mb-3">
+          <CCardBody>
+            <CCardTitle>Report Name: {action.label}</CCardTitle>
+            <CCardText>
+              <Link to={action.link}>Status: {action.value}</Link>
+            </CCardText>
+            <small>
+              Generated on {action.timestamp.split('T')[0]} at {action.timestamp.split('T')[1]}
+            </small>
+          </CCardBody>
+        </CCard>
+      </>
+    ))
+  } catch (error) {
+    console.error('An error occored building OCanvas actions' + error.toString())
+  }
+
   const extendedInfoContent = <CippOffcanvasTable rows={props.extendedInfo} guid={props.id} />
   let actionsContent
   try {
@@ -176,7 +202,9 @@ export default function CippActionsOffcanvas(props) {
       {getResults.isError && (
         <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
       )}
+
       <COffcanvasTitle>Extended Information</COffcanvasTitle>
+      {cardContent && cardContent}
       {extendedInfoContent}
       {<COffcanvasTitle>Actions</COffcanvasTitle>}
       <CListGroup>
@@ -193,7 +221,7 @@ const CippActionsOffcanvasPropTypes = {
       label: PropTypes.string,
       value: PropTypes.any,
     }),
-  ).isRequired,
+  ),
   actions: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string,

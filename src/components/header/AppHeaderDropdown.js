@@ -42,6 +42,8 @@ const AppHeaderDropdown = () => {
         cippQueueList.data?.map((job) => ({
           label: `${job.Name}`,
           value: job.Status,
+          link: job.Link,
+          timestamp: job.Timestamp,
         })),
       )
     } else {
@@ -89,7 +91,8 @@ const AppHeaderDropdown = () => {
       </CippOffcanvas>
       <CippActionsOffcanvas
         title="Recent Jobs"
-        extendedInfo={cippQueueExtendedInfo}
+        extendedInfo={[]}
+        cards={cippQueueExtendedInfo}
         actions={[
           {
             label: 'Clear History',
