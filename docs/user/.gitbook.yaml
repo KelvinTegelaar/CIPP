@@ -35,3 +35,5 @@ redirects:
     docs/user/usingcipp/GDAP/migration: user-documentation/index.md
     TenantAdministration/Standards: tenantadministration/standards.md
     faq: troubleshooting/frequently-asked-questions.md
+    docs/user/gettingstarted/permissions: setup/installation/permissions.md
+    docs/user/usingcipp/tenantadministration/standards: user-documentation/tenantadministration/standards.md
