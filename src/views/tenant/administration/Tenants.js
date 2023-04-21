@@ -100,10 +100,10 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
           },
           {
             icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
-            label: 'AAD Portal',
+            label: 'Entra Portal',
             color: 'info',
             external: true,
-            link: `https://aad.portal.azure.com/${row.defaultDomainName}`,
+            link: `https://entra.microsoft.com/${row.defaultDomainName}`,
           },
           {
             icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
