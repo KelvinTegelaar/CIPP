@@ -19,6 +19,11 @@ import { CippOffcanvasTable } from 'src/components/tables'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { Link, useNavigate } from 'react-router-dom'
 import { stringCamelCase } from 'src/components/utilities/CippCamelCase'
+import TimeAgo from 'javascript-time-ago'
+
+import en from 'javascript-time-ago/locale/en.json'
+TimeAgo.addDefaultLocale(en)
+import ReactTimeAgo from 'react-time-ago'
 
 export default function CippActionsOffcanvas(props) {
   const inputRef = useRef('')
@@ -107,14 +112,14 @@ export default function CippActionsOffcanvas(props) {
               <Link to={action.link}>Status: {action.value}</Link>
             </CCardText>
             <small>
-              Generated on {action.timestamp.split('T')[0]} at {action.timestamp.split('T')[1]}
+              <ReactTimeAgo date={action.timestamp} />
             </small>
           </CCardBody>
         </CCard>
       </>
     ))
   } catch (error) {
-    console.error('An error occored building OCanvas actions' + error.toString())
+    console.error('An error occurred building OCanvas actions' + error.toString())
   }
 
   const extendedInfoContent = <CippOffcanvasTable rows={props.extendedInfo} guid={props.id} />
@@ -144,7 +149,7 @@ export default function CippActionsOffcanvas(props) {
       </CListGroupItem>
     ))
   } catch (error) {
-    console.error('An error occored building OCanvas actions' + error.toString())
+    console.error('An error occurred building OCanvas actions' + error.toString())
   }
   let actionsSelectorsContent
   try {
@@ -169,7 +174,7 @@ export default function CippActionsOffcanvas(props) {
   } catch (error) {
     // When we create an Off Canvas control without selectors we will get this
     if (!error.toString().includes("Cannot read properties of undefined (reading '")) {
-      console.error('An error occored building OCanvas selectors' + error.toString())
+      console.error('An error occurred building OCanvas selectors' + error.toString())
     }
   }
   return (
