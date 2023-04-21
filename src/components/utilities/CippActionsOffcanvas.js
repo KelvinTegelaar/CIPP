@@ -109,11 +109,9 @@ export default function CippActionsOffcanvas(props) {
           <CCardBody>
             <CCardTitle>Report Name: {action.label}</CCardTitle>
             <CCardText>
-              <Link to={action.link}>Status: {action.value}</Link>
+              {action.value && <Link to={action.link}>Status: {action.value}</Link>}
             </CCardText>
-            <small>
-              <ReactTimeAgo date={action.timestamp} />
-            </small>
+            <small>{action.timestamp && <ReactTimeAgo date={action.timestamp} />}</small>
           </CCardBody>
         </CCard>
       </>

@@ -31,7 +31,14 @@ const AppHeaderDropdown = () => {
 
   useEffect(() => {
     if (cippQueueList.isFetching) {
-      setCippQueueExtendedInfo([{ label: 'Fetching recent jobs', value: 'Please wait' }])
+      setCippQueueExtendedInfo([
+        {
+          label: 'Fetching recent jobs',
+          value: 'Please wait',
+          timpestamp: Date(),
+          link: '#',
+        },
+      ])
     }
     if (
       cippQueueList.isSuccess &&
@@ -47,9 +54,10 @@ const AppHeaderDropdown = () => {
         })),
       )
     } else {
-      setCippQueueExtendedInfo([{ label: 'No jobs to display', value: '' }])
+      setCippQueueExtendedInfo([
+        { label: 'No jobs to display', value: '', timpestamp: Date(), link: '#' },
+      ])
     }
-    console.log(cippQueueList)
   }, [cippQueueList])
 
   return (
