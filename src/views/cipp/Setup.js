@@ -106,12 +106,12 @@ const Setup = () => {
         <RFFCFormRadio
           value="ExistingSAM"
           name="SetupType"
-          label="I have an existing SAM application and would like to manually enter my tokens, or update them."
+          label="I have an existing SAM application and would like to manually enter my token, or update them."
         ></RFFCFormRadio>
         <RFFCFormRadio
           value="RefreshTokensOnly"
           name="SetupType"
-          label="I would like to refresh my tokens or replace the user I've used for my previous tokens."
+          label="I would like to refresh my token or replace the user I've used for my previous token."
         ></RFFCFormRadio>
         <hr className="my-4" />
       </CippWizard.Page>
@@ -124,7 +124,7 @@ const Setup = () => {
         <Condition when="SetupType" is="RefreshTokensOnly">
           <CRow className="mb-3">
             <CCol md={6} className="mb-3">
-              Click the buttons below to refresh your tokens.
+              Click the buttons below to refresh your token.
               <br /> Remember to login under a account that has been added to the correct GDAP
               groups or the group 'AdminAgents'. After confirmation that the refresh is successful,
               the token cache must be cleared.
