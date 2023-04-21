@@ -44,13 +44,15 @@ export default function CellBoolean({
       cell.toLowerCase() === 'success' ||
       cell.toLowerCase() === 'enabled' ||
       cell.toLowerCase() === 'pass' ||
-      cell.toLowerCase() === 'true'
+      cell.toLowerCase() === 'true' ||
+      cell.toLowerCase() === 'compliant'
     ) {
       normalized = true
     } else if (
       cell.toLowerCase() === 'fail' ||
       cell.toLowerCase() === 'default' ||
-      cell.toLowerCase() === 'false'
+      cell.toLowerCase() === 'false' ||
+      cell.toLowerCase() === 'noncompliant'
     ) {
       normalized = false
     }
