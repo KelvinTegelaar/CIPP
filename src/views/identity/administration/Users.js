@@ -313,6 +313,11 @@ const Users = (row) => {
           { filterName: 'Guest users', filter: '"usertype":"guest"' },
           { filterName: 'Users with a license', filter: '"assignedLicenses":[{' },
           { filterName: 'Users without a license', filter: '"assignedLicenses":[]' },
+          {
+            filterName: 'Users with a license (Graph)',
+            filter: 'assignedLicenses/$count ne 0',
+            graphFilter: true,
+          },
         ],
         columns,
         path: '/api/ListUsers',
