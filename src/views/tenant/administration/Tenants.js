@@ -124,7 +124,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             label: 'MEM (Intune) Portal',
             color: 'info',
             external: true,
-            link: `https://endpoint.microsoft.com/${row.defaultDomainName}`,
+            link: `https://intune.microsoft.com/${row.defaultDomainName}`,
           },
           {
             icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
