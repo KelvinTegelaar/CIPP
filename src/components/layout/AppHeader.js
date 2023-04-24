@@ -68,7 +68,7 @@ const AppHeader = () => {
         </CContainer>
       </CHeader>
 
-      {issuccessDash &&
+      {dashboard &&
         dashboard.map((item, index) => (
           <div
             className="mb-3"
