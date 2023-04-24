@@ -97,21 +97,23 @@ const Setup = () => {
           <h5 className="card-title mb-4">Choose Options</h5>
         </center>
         <hr className="my-4" />
-        This wizard will guide you through setting up a SAM application and using the correct keys.
+        This wizard will guide you through setting up CIPPs access to your client tenants. If this
+        is your first time setting up CIPP you will want to choose the option "I'd like CIPP to
+        create an application for me".
         <RFFCFormRadio
           value="CreateSAM"
           name="SetupType"
-          label="I'd like CIPP to create a SAM Application for me"
-        ></RFFCFormRadio>
-        <RFFCFormRadio
-          value="ExistingSAM"
-          name="SetupType"
-          label="I have an existing SAM application and would like to manually enter my token, or update them."
+          label="I'd like CIPP to create an application for me"
         ></RFFCFormRadio>
         <RFFCFormRadio
           value="RefreshTokensOnly"
           name="SetupType"
           label="I would like to refresh my token or replace the user I've used for my previous token."
+        ></RFFCFormRadio>
+        <RFFCFormRadio
+          value="ExistingSAM"
+          name="SetupType"
+          label="I have an existing application and would like to manually enter my token, or update them."
         ></RFFCFormRadio>
         <hr className="my-4" />
       </CippWizard.Page>
