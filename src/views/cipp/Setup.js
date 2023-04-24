@@ -67,12 +67,12 @@ const Setup = () => {
       path: 'api/ExecSAMSetup',
       params: { CreateSAM: true, partnersetup: partner },
     })
-    setNoSubmit(true)
+    setSetupdone(false)
   }
 
   useInterval(
     async () => {
-      if (getResults.data?.step < 7 && getResults.data?.step > 0) {
+      if (getResults.data?.step < 5 && getResults.data?.step > 0) {
         genericGetRequest({
           path: 'api/ExecSAMSetup',
           params: { CheckSetupProcess: true, step: getResults.data?.step },
@@ -175,6 +175,12 @@ const Setup = () => {
                 >
                   Start Setup Wizard
                 </Field>
+                <Field
+                  name="BlockNext"
+                  component="hidden"
+                  type="hidden"
+                  validate={valbutton}
+                ></Field>
                 <Error name="start" />
               </CCol>
               <hr className="my-4" />
