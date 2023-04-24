@@ -65,7 +65,7 @@ const Setup = () => {
   const startCIPPSetup = (partner) => {
     genericGetRequest({
       path: 'api/ExecSAMSetup',
-      params: { CreateSAM: true, partnersetup: partner },
+      params: { CreateSAM: true, partnersetup: true },
     })
     setSetupdone(false)
   }
@@ -147,102 +147,48 @@ const Setup = () => {
           </CRow>
         </Condition>
         <Condition when="SetupType" is="CreateSAM">
-          <RFFCFormRadio
-            value="True"
-            name="Partner"
-            label="I am a Microsoft Partner, and would like to access all tenants using CIPP"
-          ></RFFCFormRadio>
-          <RFFCFormRadio
-            value="False"
-            name="Partner"
-            label="I am not a Microsoft Partner, and am using CIPP for only my own tenant"
-          ></RFFCFormRadio>
-          <Condition when="Partner" is="True">
-            <CRow>
-              <p>
-                When clicking the button below, the setup wizard starts. This is a 5 step process.
-                Please use a Global Administrator to perform these tasks. You can restart the
-                process at any time, by clicking on the start button once more.
-              </p>
-              <CCol md={2}>
-                <Field
-                  name="start"
-                  component="button"
-                  className="btn btn-primary"
-                  type="button"
-                  onClick={() => startCIPPSetup(true)}
-                  validate={valbutton}
-                >
-                  Start Setup Wizard
-                </Field>
-                <Field
-                  name="BlockNext"
-                  component="hidden"
-                  type="hidden"
-                  validate={valbutton}
-                ></Field>
-                <Error name="start" />
-              </CCol>
-              <hr className="my-4" />
-            </CRow>
-            <CRow>
-              <CCol md={12}>
-                {getResults.isFetching && <CSpinner size="sm">Loading</CSpinner>}
-                {getResults.isSuccess && (
-                  <>
-                    {getResults.data?.step < 5 ? (
-                      <CSpinner size="sm"></CSpinner>
-                    ) : (
-                      <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
-                    )}
-                    Step {getResults.data?.step} - {getResults.data.message}{' '}
-                    {getResults.data.url && (
-                      <a target="_blank" rel="noopener noreferrer" href={getResults.data?.url}>
-                        HERE
-                      </a>
-                    )}
-                  </>
-                )}
-              </CCol>
-            </CRow>
-          </Condition>
-          <Condition when="Partner" is="False">
-            <CRow>
-              <CCol md={2}>
-                <Field
-                  name="start"
-                  component="button"
-                  className="btn btn-primary"
-                  type="button"
-                  onClick={() => startCIPPSetup(false)}
-                >
-                  Start Setup Wizard
-                </Field>
-                <Error name="start" />
-              </CCol>
-              <hr className="my-4" />
-            </CRow>
-            <CRow>
-              <CCol md={12}>
-                {getResults.isFetching && <CSpinner size="sm">Loading</CSpinner>}
-                {getResults.isSuccess && (
-                  <>
-                    {getResults.data?.step < 5 ? (
-                      <CSpinner size="sm"></CSpinner>
-                    ) : (
-                      <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
-                    )}
-                    Step {getResults.data?.step} - {getResults.data.message}{' '}
-                    {getResults.data.url && (
-                      <a target="_blank" rel="noopener noreferrer" href={getResults.data?.url}>
-                        HERE
-                      </a>
-                    )}
-                  </>
-                )}
-              </CCol>
-            </CRow>
-          </Condition>
+          <CRow>
+            <p>
+              When clicking the button below, the setup wizard starts. This is a 5 step process.
+              Please use a Global Administrator to perform these tasks. You can restart the process
+              at any time, by clicking on the start button once more.
+            </p>
+            <CCol md={2}>
+              <Field
+                name="start"
+                component="button"
+                className="btn btn-primary"
+                type="button"
+                onClick={() => startCIPPSetup(true)}
+                validate={valbutton}
+              >
+                Start Setup Wizard
+              </Field>
+              <Field name="BlockNext" component="hidden" type="hidden" validate={valbutton}></Field>
+              <Error name="start" />
+            </CCol>
+            <hr className="my-4" />
+          </CRow>
+          <CRow>
+            <CCol md={12}>
+              {getResults.isFetching && <CSpinner size="sm">Loading</CSpinner>}
+              {getResults.isSuccess && (
+                <>
+                  {getResults.data?.step < 5 ? (
+                    <CSpinner size="sm"></CSpinner>
+                  ) : (
+                    <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
+                  )}
+                  Step {getResults.data?.step} - {getResults.data.message}{' '}
+                  {getResults.data.url && (
+                    <a target="_blank" rel="noopener noreferrer" href={getResults.data?.url}>
+                      HERE
+                    </a>
+                  )}
+                </>
+              )}
+            </CCol>
+          </CRow>
         </Condition>
         <Condition when="SetupType" is="ExistingSAM">
           you may enter your secrets below, if you only want to update a single value, leave the
