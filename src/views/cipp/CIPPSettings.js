@@ -29,6 +29,7 @@ import {
   useLazyGenericGetRequestQuery,
   useLazyGenericPostRequestQuery,
   useLazyListNotificationConfigQuery,
+  useLoadVersionsQuery,
 } from 'src/store/api/app'
 import {
   useExecAddExcludeTenantMutation,
@@ -66,7 +67,12 @@ import {
 import { Form } from 'react-final-form'
 import useConfirmModal from 'src/hooks/useConfirmModal'
 import { setCurrentTenant } from 'src/store/features/app'
-import { CippCodeBlock, ModalService, TenantSelectorMultiple } from 'src/components/utilities'
+import {
+  CippCodeBlock,
+  ModalService,
+  StatusIcon,
+  TenantSelectorMultiple,
+} from 'src/components/utilities'
 import CippListOffcanvas from 'src/components/utilities/CippListOffcanvas'
 import { TitleButton } from 'src/components/buttons'
 import Skeleton from 'react-loading-skeleton'
@@ -136,6 +142,8 @@ const checkAccessColumns = [
 ]
 
 const GeneralSettings = () => {
+  const { data: versions, isSuccess: isSuccessVersion } = useLoadVersionsQuery()
+
   const { data: tenants = [] } = useListTenantsQuery({ AllTenantSelector: false })
   const [checkPermissions, permissionsResult] = useLazyExecPermissionsAccessCheckQuery()
   const [clearCache, clearCacheResult] = useLazyExecClearCacheQuery()
@@ -278,7 +286,39 @@ const GeneralSettings = () => {
   return (
     <div>
       <CRow className="mb-3">
-        <CCol md={6}>
+        <CCol>
+          <CCard className="h-100">
+            <CCardHeader>
+              <CCardTitle>Frontend Version</CCardTitle>
+            </CCardHeader>
+            <CCardBody>
+              <StatusIcon
+                type="negatedboolean"
+                status={isSuccessVersion && versions.OutOfDateCIPP}
+              />
+              <div>Latest: {isSuccessVersion ? versions.RemoteCIPPVersion : <Skeleton />}</div>
+              <div>Current: {isSuccessVersion ? versions.LocalCIPPVersion : <Skeleton />}</div>
+            </CCardBody>
+          </CCard>
+        </CCol>
+        <CCol>
+          <CCard className="h-100">
+            <CCardHeader>
+              <CCardTitle>API Version</CCardTitle>
+            </CCardHeader>
+            <CCardBody>
+              <StatusIcon
+                type="negatedboolean"
+                status={isSuccessVersion && versions.OutOfDateCIPPAPI}
+              />
+              <div>Latest: {isSuccessVersion ? versions.RemoteCIPPAPIVersion : <Skeleton />}</div>
+              <div>Current: {isSuccessVersion ? versions.LocalCIPPAPIVersion : <Skeleton />}</div>
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </CRow>
+      <CRow className="mb-3">
+        <CCol>
           <CCard className="h-100">
             <CCardHeader>
               <CCardTitle>Permissions Check</CCardTitle>
