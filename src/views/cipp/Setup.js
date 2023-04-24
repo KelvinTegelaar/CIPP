@@ -98,23 +98,25 @@ const Setup = () => {
         </center>
         <hr className="my-4" />
         This wizard will guide you through setting up CIPPs access to your client tenants. If this
-        is your first time setting up CIPP you will want to choose the option "I'd like CIPP to
+        is your first time setting up CIPP you will want to choose the option "I would like CIPP to
         create an application for me".
-        <RFFCFormRadio
-          value="CreateSAM"
-          name="SetupType"
-          label="I'd like CIPP to create an application for me"
-        ></RFFCFormRadio>
-        <RFFCFormRadio
-          value="RefreshTokensOnly"
-          name="SetupType"
-          label="I would like to refresh my token or replace the user I've used for my previous token."
-        ></RFFCFormRadio>
-        <RFFCFormRadio
-          value="ExistingSAM"
-          name="SetupType"
-          label="I have an existing application and would like to manually enter my token, or update them."
-        ></RFFCFormRadio>
+        <CRow className="mt-3">
+          <RFFCFormRadio
+            value="CreateSAM"
+            name="SetupType"
+            label="I would like CIPP to create an application for me"
+          ></RFFCFormRadio>
+          <RFFCFormRadio
+            value="RefreshTokensOnly"
+            name="SetupType"
+            label="I would like to refresh my token or replace the user I've used for my previous token."
+          ></RFFCFormRadio>
+          <RFFCFormRadio
+            value="ExistingSAM"
+            name="SetupType"
+            label="I have an existing application and would like to manually enter my token, or update them."
+          ></RFFCFormRadio>
+        </CRow>
         <hr className="my-4" />
       </CippWizard.Page>
       <CippWizard.Page title="Select Options" description="Select which options you want to apply.">
