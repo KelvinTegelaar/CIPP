@@ -1,40 +1,22 @@
 import React from 'react'
 import {
-  faBan,
   faBook,
   faCog,
   faEllipsisH,
   faEnvelope,
-  faExclamation,
   faHotel,
-  faLaptop,
   faLaptopCode,
   faSearch,
-  faShareAlt,
   faSync,
   faUsers,
-  faWrench,
 } from '@fortawesome/free-solid-svg-icons'
-import {
-  CButton,
-  CCallout,
-  CCol,
-  CDropdown,
-  CDropdownToggle,
-  CListGroup,
-  CListGroupItem,
-  CRow,
-} from '@coreui/react'
+import { CCol, CRow } from '@coreui/react'
 import {
   useGenericGetRequestQuery,
   useLoadDashQuery,
   useLoadVersionsQuery,
 } from 'src/store/api/app'
-import { FastSwitcher, StatusIcon } from 'src/components/utilities'
 import { CippContentCard } from 'src/components/layout'
-import { CippTable } from 'src/components/tables'
-import { Link } from 'react-router-dom'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Skeleton from 'react-loading-skeleton'
 import { UniversalSearch } from 'src/components/utilities/UniversalSearch'
 import { ActionContentCard, ListGroupContentCard } from 'src/components/contentcards'
