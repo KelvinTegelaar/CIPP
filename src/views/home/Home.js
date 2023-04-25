@@ -1,11 +1,17 @@
 import React from 'react'
 import {
+  faBan,
   faBook,
+  faCog,
+  faEllipsisH,
+  faEnvelope,
   faExclamation,
   faHotel,
   faLaptop,
   faLaptopCode,
   faSearch,
+  faShareAlt,
+  faSync,
   faUsers,
   faWrench,
 } from '@fortawesome/free-solid-svg-icons'
@@ -31,7 +37,7 @@ import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Skeleton from 'react-loading-skeleton'
 import { UniversalSearch } from 'src/components/utilities/UniversalSearch'
-import { ListGroupContentCard } from 'src/components/contentcards'
+import { ActionContentCard, ListGroupContentCard } from 'src/components/contentcards'
 import { useSelector } from 'react-redux'
 
 const Home = () => {
@@ -53,35 +59,64 @@ const Home = () => {
     path: '/api/ListuserCounts',
     params: { tenantFilter: currentTenant.defaultDomainName },
   })
-  const { data: versions, isSuccess: isSuccessVersion } = useLoadVersionsQuery()
-  const tableColumns = [
+
+  const actions1 = [
     {
-      name: 'Tenant',
-      selector: (row) => row['Tenant'],
-      sortable: true,
+      label: 'M365 Admin',
+      link: '#',
+      icon: faCog,
     },
     {
-      name: 'Message',
-      selector: (row) => row['Message'],
-      sortable: true,
+      label: 'Exchange',
+      link: '#',
+      icon: faSync,
+    },
+    {
+      label: 'Intune',
+      link: '#',
+      icon: faEnvelope,
+    },
+    {
+      label: 'Entra',
+      link: '#',
+      icon: faEnvelope,
+    },
+    {
+      label: 'Security',
+      link: '#',
+      icon: faEnvelope,
+    },
+  ]
+
+  const actions2 = [
+    {
+      label: 'Edit Tenant',
+      link: `/tenant/administration/tenants/Edit?customerId=${currentTenant.customerId}&tenantFilter=${currentTenant.defaultDomainName}`,
+      icon: faCog,
+    },
+    {
+      label: 'List Users',
+      link: '#',
+      icon: faSync,
+    },
+    {
+      label: 'List Groups',
+      link: '#',
+      icon: faSync,
+    },
+    {
+      label: 'Create User',
+      link: '#',
+      icon: faSync,
+    },
+    {
+      label: 'Create Group',
+      link: '#',
+      icon: faEnvelope,
     },
   ]
   return (
     <>
-      <CRow className="justify-content-end">
-        <CCol xs={1}>
-          <CDropdown variant="input-group">
-            <CDropdownToggle
-              className="btn btn-primary mb-3"
-              style={{
-                backgroundColor: '#f88c1a',
-              }}
-            >
-              Actions
-            </CDropdownToggle>
-          </CDropdown>
-        </CCol>
-      </CRow>
       <CRow className="mb-3">
         <CCol>
           <CippContentCard className="h-100" title="Lighthouse Search" icon={faSearch}>
@@ -117,77 +152,87 @@ const Home = () => {
         </CCol>
       </CRow>
       <CRow className="mb-3">
-        <CippContentCard title="Current Tenant" icon={faBook}>
-          <CRow className="mb-3">
-            <CCol>
-              <p className="fw-lighter">Tenant Name</p>
-              {currentTenant?.displayName}
-            </CCol>
-            <CCol>
-              <p className="fw-lighter">Tenant ID</p>
-              {currentTenant?.customerId}
-            </CCol>
-            <CCol>
-              <p className="fw-lighter">Default Domain Name</p>
-              {currentTenant?.defaultDomainName}
-            </CCol>
-          </CRow>
-          <CRow className="mb-3">
-            <CCol>
-              <p className="fw-lighter">Tenant Status</p>
-              {currentTenant?.delegatedPrivilegeStatus}
-            </CCol>
-            <CCol>
-              <p className="fw-lighter">Creation Date</p>
-              {isLoadingOrg && <Skeleton />}
-              {organization && organization?.createdDateTime}
-            </CCol>
-            <CCol>
-              <p className="fw-lighter">Current Secure Score</p>
-              {isLoadingOrg && <Skeleton />}
-            </CCol>
-          </CRow>
-          <CRow className="mb-3">
-            <CCol>
-              <p className="fw-lighter">AD Connect Status</p>
-              {isLoadingOrg && <Skeleton />}
-              {JSON.stringify(organization?.onPremisesSyncStatus)}
-            </CCol>
-            <CCol>
-              <p className="fw-lighter">Domain(s)</p>
-              {isLoadingOrg && <Skeleton />}
-              {organization?.verifiedDomains.map((item) => (
-                <li>{item.name}</li>
-              ))}
-            </CCol>
-            <CCol>
-              <p className="fw-lighter">Capabilities</p>
-              {isLoadingOrg && <Skeleton />}
-              {organization &&
-                JSON.stringify(organization.assignedPlans).includes('AADPremiumService') && (
-                  <li>AAD Premium</li>
-                )}
-              {organization &&
-                JSON.stringify(organization.assignedPlans).includes('WindowsDefenderATP') && (
-                  <li>Windows Defender</li>
-                )}
-            </CCol>
-          </CRow>
-          <CRow className="mb-3">
-            <CCol>
-              <p className="fw-lighter">Applied Standards</p>
-              {isLoadingOrg && <Skeleton />}
-            </CCol>
-            <CCol>
-              <p className="fw-lighter">Last Results</p>
-              {isLoadingOrg && <Skeleton />}
-            </CCol>
-            <CCol>
-              <p className="fw-lighter">Access Type</p>
-              {isLoadingOrg && <Skeleton />}
-            </CCol>
-          </CRow>
-        </CippContentCard>
+        <CCol>
+          <CippContentCard title="Current Tenant" icon={faBook}>
+            <CRow className="mb-3">
+              <CCol>
+                <p className="fw-lighter">Tenant Name</p>
+                {currentTenant?.displayName}
+              </CCol>
+              <CCol>
+                <p className="fw-lighter">Tenant ID</p>
+                {currentTenant?.customerId}
+              </CCol>
+              <CCol>
+                <p className="fw-lighter">Default Domain Name</p>
+                {currentTenant?.defaultDomainName}
+              </CCol>
+            </CRow>
+            <CRow className="mb-3">
+              <CCol>
+                <p className="fw-lighter">Tenant Status</p>
+                {currentTenant?.delegatedPrivilegeStatus}
+              </CCol>
+              <CCol>
+                <p className="fw-lighter">Creation Date</p>
+                {isLoadingOrg && <Skeleton />}
+                {organization && organization?.createdDateTime}
+              </CCol>
+              <CCol>
+                <p className="fw-lighter">Current Secure Score</p>
+                {isLoadingOrg && <Skeleton />}
+              </CCol>
+            </CRow>
+            <CRow className="mb-3">
+              <CCol>
+                <p className="fw-lighter">AD Connect Status</p>
+                {isLoadingOrg && <Skeleton />}
+                {JSON.stringify(organization?.onPremisesSyncStatus)}
+              </CCol>
+              <CCol>
+                <p className="fw-lighter">Domain(s)</p>
+                {isLoadingOrg && <Skeleton />}
+                {organization?.verifiedDomains.map((item) => (
+                  <li>{item.name}</li>
+                ))}
+              </CCol>
+              <CCol>
+                <p className="fw-lighter">Capabilities</p>
+                {isLoadingOrg && <Skeleton />}
+                {organization &&
+                  JSON.stringify(organization.assignedPlans).includes('AADPremiumService') && (
+                    <li>AAD Premium</li>
+                  )}
+                {organization &&
+                  JSON.stringify(organization.assignedPlans).includes('WindowsDefenderATP') && (
+                    <li>Windows Defender</li>
+                  )}
+              </CCol>
+            </CRow>
+            <CRow className="mb-3">
+              <CCol>
+                <p className="fw-lighter">Applied Standards</p>
+                {isLoadingOrg && <Skeleton />}
+              </CCol>
+              <CCol>
+                <p className="fw-lighter">Last Results</p>
+                {isLoadingOrg && <Skeleton />}
+              </CCol>
+              <CCol>
+                <p className="fw-lighter">Access Type</p>
+                {isLoadingOrg && <Skeleton />}
+              </CCol>
+            </CRow>
+          </CippContentCard>
+        </CCol>
+      </CRow>
+      <CRow className="mb-3">
+        <CCol>
+          <ActionContentCard title="Portals" icon={faEllipsisH} content={actions1} />
+        </CCol>
+        <CCol>
+          <ActionContentCard title="CIPP Actions" icon={faEllipsisH} content={actions2} />
+        </CCol>
       </CRow>
     </>
   )

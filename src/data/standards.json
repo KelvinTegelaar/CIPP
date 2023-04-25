@@ -72,6 +72,13 @@
     "label": "Disable Basic Authentication"
   },
   {
+    "name": "standards.laps",
+    "cat": "AAD",
+    "helpText": "Enables the tenant to use LAPS",
+    "addedComponent": null,
+    "label": "Enable LAPs on the tenant"
+  },
+  {
     "name": "standards.PWnumberMatchingRequiredState",
     "cat": "AAD",
     "helpText": "This is the default helptext",
