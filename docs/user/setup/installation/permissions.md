@@ -54,6 +54,7 @@ Some permissions may come from other APIs than just Graph. you will see this bot
 | Device.Command                                          | Communicate with user devices                                            |
 | Device.Read                                             | Read user devices                                                        |
 | Device.Read.All                                         | Read all devices                                                         |
+| DeviceLocalCredential.Read.All                          | Read device local credential passwords                                   | 
 | DeviceManagementApps.ReadWrite.All                      | Read and write Microsoft Intune apps                                     |
 | DeviceManagementConfiguration.ReadWrite.All             | Read and write Microsoft Intune Device Configuration and Policies        |
 | DeviceManagementManagedDevices.PrivilegedOperations.All | Perform user-impacting remote actions on Microsoft Intune devices        |
