@@ -285,7 +285,6 @@ export default function CippTable({
               }
               const newModalBody = {}
               for (let [objName, objValue] of Object.entries(modalBody)) {
-                console.log(objValue)
                 if (objValue.toString().startsWith('!')) {
                   newModalBody[objName] = row[objValue.replace('!', '')]
                 }

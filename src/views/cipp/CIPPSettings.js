@@ -943,7 +943,6 @@ const NotificationsSettings = () => {
   const [configNotifications, notificationConfigResult] = useLazyExecNotificationConfigQuery()
   const [listNotification, notificationListResult] = useLazyListNotificationConfigQuery()
   const onSubmit = (values) => {
-    console.log(values)
     configNotifications(values)
   }
   return (
@@ -1278,7 +1277,6 @@ const Maintenance = () => {
   }
 
   const handleGetLink = () => {
-    console.log('Making link')
     listScriptLink({
       path: 'api/ExecMaintenanceScripts',
       params: { ScriptFile: selectedScript, MakeLink: 'True' },
