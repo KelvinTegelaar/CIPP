@@ -21,6 +21,11 @@ import Skeleton from 'react-loading-skeleton'
 import { UniversalSearch } from 'src/components/utilities/UniversalSearch'
 import { ActionContentCard, ListGroupContentCard } from 'src/components/contentcards'
 import { useSelector } from 'react-redux'
+import TimeAgo from 'javascript-time-ago'
+
+import en from 'javascript-time-ago/locale/en.json'
+TimeAgo.addDefaultLocale(en)
+import ReactTimeAgo from 'react-time-ago'
 
 const Home = () => {
   const currentTenant = useSelector((state) => state.app.currentTenant)
@@ -169,7 +174,28 @@ const Home = () => {
               <CCol>
                 <p className="fw-lighter">AD Connect Status</p>
                 {isLoadingOrg && <Skeleton />}
-                {JSON.stringify(organization?.onPremisesSyncStatus)}
+                {!isLoadingOrg && organization?.onPremisesSyncEnabled ? (
+                  <>
+                    <li>
+                      <span class="me-1">Directory Sync:</span>
+                      {organization?.onPremisesLastSyncDateTime ? (
+                        <ReactTimeAgo date={organization?.onPremisesLastSyncDateTime} />
+                      ) : (
+                        'Never'
+                      )}
+                    </li>
+                    <li>
+                      <span class="me-1">Password Sync:</span>
+                      {organization?.onPremisesLastPasswordSyncDateTime ? (
+                        <ReactTimeAgo date={organization?.onPremisesLastPasswordSyncDateTime} />
+                      ) : (
+                        'Never'
+                      )}
+                    </li>
+                  </>
+                ) : (
+                  'Disabled'
+                )}
               </CCol>
               <CCol>
                 <p className="fw-lighter">Domain(s)</p>
@@ -181,14 +207,21 @@ const Home = () => {
               <CCol>
                 <p className="fw-lighter">Capabilities</p>
                 {isLoadingOrg && <Skeleton />}
-                {organization &&
-                  JSON.stringify(organization.assignedPlans).includes('AADPremiumService') && (
-                    <li>AAD Premium</li>
-                  )}
-                {organization &&
-                  JSON.stringify(organization.assignedPlans).includes('WindowsDefenderATP') && (
-                    <li>Windows Defender</li>
-                  )}
+                {organization?.assignedPlans
+                  .filter((p) => p.capabilityStatus == 'Enabled')
+                  .reduce((plan, curr) => {
+                    if (!plan.includes(curr.service)) {
+                      plan.push(curr.service)
+                    }
+                    return plan
+                  }, [])
+                  .map((plan) => (
+                    <>
+                      {plan == 'exchange' && <li>Exchange</li>}
+                      {plan == 'AADPremiumService' && <li>AAD Premium</li>}
+                      {plan == 'WindowsDefenderATP' && <li>Windows Defender</li>}
+                    </>
+                  ))}
               </CCol>
             </CRow>
             <CRow className="mb-3">
