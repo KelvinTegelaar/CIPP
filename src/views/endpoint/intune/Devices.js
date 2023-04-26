@@ -49,7 +49,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             color: 'info',
             modal: true,
             modalUrl: `/api/ExecGetLocalAdminPassword?TenantFilter=${tenant.defaultDomainName}&GUID=${row.azureADDeviceId}`,
-            modalMessage: 'Are you sure you want to retrieve the Bitlocker keys?',
+            modalMessage: 'Are you sure you want to retrieve the local admin password?',
           },
           {
             label: 'Rotate Local Admin Password',
