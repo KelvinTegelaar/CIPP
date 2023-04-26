@@ -11,7 +11,7 @@ Configure notifications from CIPP.
 
 CIPP provides alert notifications for Tenants and CIPP actions, sent as one combined table in an email or webhook body.
 
-* [Tenant Alerts](../../tenantadministration/alerts/) create notifications regarding changes within a tenant. See that help page for more information on managing those alerts.
+* [Tenant Alerts](../../tenantadministration/alerts/) (link no longer works) create notifications regarding changes within a tenant. See that help page for more information on managing those alerts.
 * CIPP Alerts relate to changes initiated via the CIPP platform.
 
 ### Available CIPP Alerts
@@ -33,7 +33,7 @@ Enter a single email address (example: `psmith@example.com`). Email sends from t
 ```powershell
 Enable-mailbox <Cippuser@domain.com> -Shared
 ```
-
+(the above command is only avialble for On-Premises mailboxes - what is the solution for Cloud Only mailboxes?)
 :::info Sent Items Notification emails **do not save** to the CIPP account's _Sent Items_ folder. :::
 
 #### Webhook
