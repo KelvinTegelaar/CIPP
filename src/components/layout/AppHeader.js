@@ -4,8 +4,10 @@ import {
   CAlert,
   CAlertLink,
   CContainer,
+  CCollapse,
   CHeader,
   CHeaderNav,
+  CNavItem,
   CHeaderToggler,
   CImage,
   CSidebarBrand,
@@ -35,37 +37,38 @@ const AppHeader = () => {
   return (
     <>
       <CHeader position="sticky">
-        <CContainer fluid>
-          <CSidebarBrand className="me-auto p-2" to="/">
-            <CImage
-              className="sidebar-brand-full me-2"
-              src={
-                currentTheme === 'cyberdrain' || preferredTheme === 'cyberdrain'
-                  ? cyberdrainlogodark
-                  : cyberdrainlogolight
-              }
-              height={80}
-            />
-            <CHeaderNav className="me-2 p-2">
-              <CHeaderToggler
+        <CSidebarBrand className="me-auto pt-xs-2 p-md-2" to="/">
+          <CImage
+            className="sidebar-brand-full me-2"
+            src={
+              currentTheme === 'cyberdrain' || preferredTheme === 'cyberdrain'
+                ? cyberdrainlogodark
+                : cyberdrainlogolight
+            }
+            height={80}
+          />
+          <CHeaderNav className="me-2 p-2">
+            <CHeaderToggler
+              className="me-2"
+              onClick={() => dispatch(toggleSidebarShow({ sidebarShow }))}
+            >
+              <FontAwesomeIcon
+                icon={sidebarShow ? faCaretSquareLeft : faCaretSquareRight}
+                size="lg"
                 className="me-2"
-                onClick={() => dispatch(toggleSidebarShow({ sidebarShow }))}
-              >
-                <FontAwesomeIcon
-                  icon={sidebarShow ? faCaretSquareLeft : faCaretSquareRight}
-                  size="lg"
-                  className="me-2"
-                />
-              </CHeaderToggler>
-
-              <TenantSelector className="me-2" NavSelector={true} />
-            </CHeaderNav>
-          </CSidebarBrand>
-          <CHeaderNav className="ms-auto p-2">
-            <AppHeaderSearch />
-            <AppHeaderDropdown />
+              />
+            </CHeaderToggler>
           </CHeaderNav>
-        </CContainer>
+        </CSidebarBrand>
+        <CHeaderNav className="p-md-2 flex-grow-1">
+          <TenantSelector NavSelector={true} />
+          <CNavItem>
+            <AppHeaderSearch />
+          </CNavItem>
+          <CNavItem>
+            <AppHeaderDropdown />
+          </CNavItem>
+        </CHeaderNav>
       </CHeader>
 
       {dashboard &&

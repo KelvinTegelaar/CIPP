@@ -116,23 +116,23 @@ const Home = () => {
           </CippContentCard>
         </CCol>
       </CRow>
-      <CRow className="mb-3">
-        <CCol className="mb-3">
+      <CRow>
+        <CCol sm={12} md={3} className="mb-3">
           <CippContentCard title="Total Users" icon={faUsers}>
             <div>{!isLoadingUserCounts ? dashboard?.Users : <Skeleton />}</div>
           </CippContentCard>
         </CCol>
-        <CCol className="mb-3">
+        <CCol sm={12} md={3} className="mb-3">
           <CippContentCard title="Total Licensed users" icon={faUsers}>
             <div>{!isLoadingUserCounts ? dashboard?.LicUsers : <Skeleton />}</div>{' '}
           </CippContentCard>
         </CCol>
-        <CCol className="mb-3">
+        <CCol sm={12} md={3} className="mb-3">
           <CippContentCard title="Global Admin Users" icon={faLaptopCode}>
             <div>{!isLoadingUserCounts ? dashboard?.Gas : <Skeleton />}</div>{' '}
           </CippContentCard>
         </CCol>
-        <CCol className="mb-3">
+        <CCol sm={12} md={3} className="mb-3">
           <CippContentCard title="Total Guests" icon={faHotel}>
             <div>{!isLoadingUserCounts ? dashboard?.Guests : <Skeleton />}</div>{' '}
           </CippContentCard>
@@ -141,37 +141,37 @@ const Home = () => {
       <CRow className="mb-3">
         <CCol>
           <CippContentCard title="Current Tenant" icon={faBook}>
-            <CRow className="mb-3">
-              <CCol>
+            <CRow>
+              <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Tenant Name</p>
                 {currentTenant?.displayName}
               </CCol>
-              <CCol>
+              <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Tenant ID</p>
                 {currentTenant?.customerId}
               </CCol>
-              <CCol>
+              <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Default Domain Name</p>
                 {currentTenant?.defaultDomainName}
               </CCol>
             </CRow>
-            <CRow className="mb-3">
-              <CCol>
+            <CRow>
+              <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Tenant Status</p>
                 {currentTenant?.delegatedPrivilegeStatus}
               </CCol>
-              <CCol>
+              <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Creation Date</p>
                 {isLoadingOrg && <Skeleton />}
                 {organization && organization?.createdDateTime}
               </CCol>
-              <CCol>
+              <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Current Secure Score</p>
                 {isLoadingOrg && <Skeleton />}
               </CCol>
             </CRow>
-            <CRow className="mb-3">
-              <CCol>
+            <CRow>
+              <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">AD Connect Status</p>
                 {isLoadingOrg && <Skeleton />}
                 {!isLoadingOrg && organization?.onPremisesSyncEnabled ? (
@@ -197,14 +197,14 @@ const Home = () => {
                   'Disabled'
                 )}
               </CCol>
-              <CCol>
+              <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Domain(s)</p>
                 {isLoadingOrg && <Skeleton />}
                 {organization?.verifiedDomains.map((item) => (
                   <li>{item.name}</li>
                 ))}
               </CCol>
-              <CCol>
+              <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Capabilities</p>
                 {isLoadingOrg && <Skeleton />}
                 {organization?.assignedPlans
@@ -224,16 +224,16 @@ const Home = () => {
                   ))}
               </CCol>
             </CRow>
-            <CRow className="mb-3">
-              <CCol>
+            <CRow>
+              <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Applied Standards</p>
                 {isLoadingOrg && <Skeleton />}
               </CCol>
-              <CCol>
+              <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Last Results</p>
                 {isLoadingOrg && <Skeleton />}
               </CCol>
-              <CCol>
+              <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Access Type</p>
                 {isLoadingOrg && <Skeleton />}
               </CCol>
@@ -242,10 +242,10 @@ const Home = () => {
         </CCol>
       </CRow>
       <CRow className="mb-3">
-        <CCol>
+        <CCol className="mb-3">
           <ActionContentCard title="Portals" icon={faEllipsisH} content={actions1} />
         </CCol>
-        <CCol>
+        <CCol className="mb-3">
           <ActionContentCard title="CIPP Actions" icon={faEllipsisH} content={actions2} />
         </CCol>
       </CRow>
