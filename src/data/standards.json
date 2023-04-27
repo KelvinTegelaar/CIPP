@@ -79,6 +79,17 @@
     "label": "Enable LAPs on the tenant"
   },
   {
+    "name": "standards.intuneDeviceReg.Enabled",
+    "cat": "AAD",
+    "helpText": "This is the default helptext",
+    "addedComponent": {
+      "type": "input",
+      "name": "standards.intuneDeviceReg.max",
+      "label": "Maximum devices (Enter 2147483647 for unlimited.)"
+    },
+    "label": "Set Maximum Number of Devices per user"
+  },
+  {
     "name": "standards.PWnumberMatchingRequiredState",
     "cat": "AAD",
     "helpText": "This is the default helptext",
@@ -284,6 +295,76 @@
     "helpText": "This is the default helptext",
     "addedComponent": null,
     "label": "Enable 1 hour Activity based Timeout"
+  },
+  {
+    "name": "standards.sharingCapability.Enabled",
+    "cat": "SharePoint",
+    "helpText": "This is the default helptext",
+    "addedComponent": {
+      "type": "Select",
+      "label": "Select Sharing Level",
+      "name": "standards.sharingCapability.Level",
+      "values": [
+        {
+          "label": "Users can share only with people in the organization. No external sharing is allowed.",
+          "value": "disabled"
+        },
+        {
+          "label": "Users can share with new and existing guests. Guests must sign in or provide a verification code.",
+          "value": "externalUserSharingOnly"
+        },
+        {
+          "label": "Users can share with anyone by using links that do not require sign-in.",
+          "value": "externalUserAndGuestSharing"
+        },
+        {
+          "label": "Users can share with existing guests (those already in the directory of the organization).",
+          "value": "existingExternalUserSharingOnly"
+        }
+      ]
+    },
+    "label": "Set Sharing Level for OneDrive and Sharepoint"
+  },
+  {
+    "name": "standards.calDefault.Enabled",
+    "cat": "Exchange",
+    "helpText": "This is the default helptext",
+    "addedComponent": {
+      "type": "Select",
+      "label": "Select Sharing Level",
+      "name": "standards.calDefault.permissionlevel",
+      "values": [
+        {
+          "label": "Owner - The user can create, read, edit, and delete all items in the folder, and create subfolders. The user is both folder owner and folder contact.",
+          "value": "Owner"
+        },
+        {
+          "label": "Publishing Editor - The user can create, read, edit, and delete all items in the folder, and create subfolders.",
+          "value": "PublishingEditor"
+        },
+        {
+          "label": "Reviewer - The user can read all items in the folder.",
+          "value": "Reviewer"
+        },
+        {
+          "label": "Editor - The user can create items in the folder. The contents of the folder do not appear.",
+          "value": "Contributor"
+        },
+        {
+          "label": "Free Busy Time And Subject And Location - The user can view free/busy time within the calendar and the subject and location of appointments.",
+          "value": "FreeBusyTimeAndSubjectAndLocation"
+        },
+        {
+          "label": "Indicates that the user can view only free/busy time within the calendar.",
+          "value": "FreeBusyTimeOnly"
+        },
+        {
+          "label": "None - The user has no permissions on the folder.",
+          "value": "none"
+        }
+      ]
+    },
+    "label": "Set Sharing Level for Default calendar"
   },
   {
     "name": "standards.sharingCapability.Enabled",
