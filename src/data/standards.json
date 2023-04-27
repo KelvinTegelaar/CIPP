@@ -79,6 +79,17 @@
     "label": "Enable LAPs on the tenant"
   },
   {
+    "name": "standards.intuneDeviceReg.Enabled",
+    "cat": "AAD",
+    "helpText": "This is the default helptext",
+    "addedComponent": {
+      "type": "input",
+      "name": "standards.intuneDeviceReg.max",
+      "label": "Maximum devices (Enter 2147483647 for unlimited.)"
+    },
+    "label": "Set Maximum Number of Devices per user"
+  },
+  {
     "name": "standards.PWnumberMatchingRequiredState",
     "cat": "AAD",
     "helpText": "This is the default helptext",
