@@ -353,7 +353,7 @@
         }
       ]
     },
-    "label": "Set Sharing Level for OneDrive and Sharepoint"
+    "label": "Set Sharing Level for Default calendar"
   },
   {
     "name": "standards.sharingCapability.Enabled",
