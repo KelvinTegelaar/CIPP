@@ -651,6 +651,16 @@ const _nav = [
     items: [
       {
         component: CNavItem,
+        name: 'Role Wizard',
+        to: '/tenant/administration/gdap-role-wizard',
+      },
+      {
+        component: CNavItem,
+        name: 'GDAP Roles',
+        to: '/tenant/administration/gdap-roles',
+      },
+      {
+        component: CNavItem,
         name: 'Migration Wizard',
         to: '/tenant/administration/gdap',
       },
