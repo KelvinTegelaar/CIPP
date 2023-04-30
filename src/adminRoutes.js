@@ -1,5 +1,5 @@
 import React from 'react'
-const CIPPSettings = import('src/views/cipp/CIPPSettings')
+const CIPPSettings = React.lazy(() => import('src/views/cipp/CIPPSettings'))
 const Setup = React.lazy(() => import('src/views/cipp/Setup'))
 const ApplyStandard = React.lazy(() => import('src/views/tenant/standards/ApplyStandard'))
 const GDAPStatus = React.lazy(() => import('src/views/tenant/administration/ListGDAPQueue'))
