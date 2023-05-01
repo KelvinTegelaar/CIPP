@@ -17,7 +17,7 @@ const AddGroupTemplates = React.lazy(() =>
 const DeployGroupTemplates = React.lazy(() =>
   import('src/views/identity/administration/DeployGroupTemplate'),
 )
-const TenantLookup = React.lazy(() => import('src/views/tenant/administration/TentantLookup'))
+const TenantLookup = React.lazy(() => import('src/views/tenant/administration/TenantLookup'))
 const GroupTemplates = React.lazy(() => import('src/views/identity/administration/GroupTemplates'))
 
 const EditGroup = React.lazy(() => import('src/views/identity/administration/EditGroup'))
