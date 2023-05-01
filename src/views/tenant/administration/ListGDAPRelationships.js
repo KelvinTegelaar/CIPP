@@ -25,7 +25,7 @@ const Actions = (row, rowIndex, formatExtraData) => {
             color: 'danger',
             modal: true,
             icon: <FontAwesomeIcon icon={faTrashAlt} className="me-2" />,
-            modalUrl: `/api/ExecDeleteGDAPRelationship?&GDAPID=${row.id}`,
+            modalUrl: `/api/ExecDeleteGDAPRelationship?GDAPID=${row.id}`,
             modalMessage: 'Are you sure you want to delete this relationship?',
           },
         ]}
@@ -93,6 +93,22 @@ const GDAPRelationships = () => {
         title="GDAP Relationship List"
         tenantSelector={false}
         datatable={{
+          filterlist: [
+            { filterName: 'Active Relationships', filter: '"status":"active"' },
+            { filterName: 'Terminated Relationships', filter: '"status":"Terminated"' },
+            { filterName: 'Pending Relationships', filter: 'Pending' },
+          ],
+          tableProps: {
+            selectableRows: true,
+            actionsList: [
+              {
+                label: 'Terminate Relationship',
+                modal: true,
+                modalUrl: `/api/ExecDeleteGDAPRelationship?&GDAPID=!id`,
+                modalMessage: 'Are you sure you want to terminate these relationships?',
+              },
+            ],
+          },
           keyField: 'id',
           columns,
           reportName: `GDAP-Relationships`,
