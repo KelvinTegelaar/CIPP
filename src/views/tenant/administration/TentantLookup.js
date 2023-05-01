@@ -111,40 +111,44 @@ const GraphExplorer = () => {
           </CCardBody>
         </CCard>
       </CCol>
-      <CCol>
-        <CippContentCard title="Current Tenant" icon={faBook}>
-          <CRow>
-            <CCol sm={12} md={4} className="mb-3">
-              <p className="fw-lighter">Tenant Name</p>
-              {graphrequest.isFetching && <Skeleton />}
-              {graphrequest.data?.GraphRequest.displayName}
-            </CCol>
-            <CCol sm={12} md={4} className="mb-3">
-              <p className="fw-lighter">Tenant ID</p>
-              {graphrequest.isFetching && <Skeleton />}
-              {graphrequest.data?.GraphRequest.tenantId}
-            </CCol>
-            <CCol sm={12} md={4} className="mb-3">
-              <p className="fw-lighter">Default Domain Name</p>
-              {graphrequest.isFetching && <Skeleton />}
-              {graphrequest.data?.GraphRequest.defaultDomainName}
-            </CCol>
-          </CRow>
-          <CRow>
-            <CCol sm={12} md={4} className="mb-3">
-              <p className="fw-lighter">Tenant Brand Name</p>
-              {graphrequest.isFetching && <Skeleton />}
-              {graphrequest.data?.GraphRequest.federationBrandName}
-            </CCol>
-            <CCol sm={12} md={4} className="mb-3">
-              <p className="fw-lighter">Domains</p>
-              {graphrequest.isFetching && <Skeleton />}
-              {graphrequest.data?.Domains &&
-                graphrequest.data?.Domains.map((domainname) => <li>{domainname}</li>)}
-            </CCol>
-          </CRow>
-        </CippContentCard>
-      </CCol>
+      {tenantdomain && (
+        <CCol>
+          <CippContentCard title="Current Tenant" icon={faBook}>
+            <CRow>
+              <CCol sm={12} md={4} className="mb-3">
+                <p className="fw-lighter">Tenant Name</p>
+                {graphrequest.isFetching && <Skeleton />}
+                {graphrequest.data?.GraphRequest.displayName}
+              </CCol>
+              <CCol sm={12} md={4} className="mb-3">
+                <p className="fw-lighter">Tenant ID</p>
+                {graphrequest.isFetching && <Skeleton />}
+                {graphrequest.data?.GraphRequest.tenantId}
+              </CCol>
+              <CCol sm={12} md={4} className="mb-3">
+                <p className="fw-lighter">Default Domain Name</p>
+                {graphrequest.isFetching && <Skeleton />}
+                {graphrequest.data?.GraphRequest.defaultDomainName}
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol sm={12} md={4} className="mb-3">
+                <p className="fw-lighter">Tenant Brand Name</p>
+                {graphrequest.isFetching && <Skeleton />}
+                {graphrequest.data?.GraphRequest.federationBrandName}
+                {graphrequest.data?.GraphRequest.federationBrandName === null &&
+                  'No brand name set'}
+              </CCol>
+              <CCol sm={8} md={8} className="mb-3">
+                <p className="fw-lighter">Domains</p>
+                {graphrequest.isFetching && <Skeleton />}
+                {graphrequest.data?.Domains &&
+                  graphrequest.data?.Domains.map((domainname) => <li>{domainname}</li>)}
+              </CCol>
+            </CRow>
+          </CippContentCard>
+        </CCol>
+      )}
     </CRow>
   )
 }
