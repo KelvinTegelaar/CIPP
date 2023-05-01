@@ -1,8 +1,42 @@
-import React from 'react'
+import { CButton } from '@coreui/react'
+import { faEllipsisV, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { CSpinner, CCallout } from '@coreui/react'
 import { CippPageList } from 'src/components/layout'
 import { cellDateFormatter, cellNullTextFormatter } from 'src/components/tables'
+import { CippActionsOffcanvas } from 'src/components/utilities'
+
+const Actions = (row, rowIndex, formatExtraData) => {
+  const [ocVisible, setOCVisible] = useState(false)
+
+  const tenant = useSelector((state) => state.app.currentTenant)
+  return (
+    <>
+      <CButton size="sm" color="link" onClick={() => setOCVisible(true)}>
+        <FontAwesomeIcon icon={faEllipsisV} />
+      </CButton>
+      <CippActionsOffcanvas
+        title="Policy Information"
+        extendedInfo={[]}
+        actions={[
+          {
+            label: 'Terminate Relationship',
+            color: 'danger',
+            modal: true,
+            icon: <FontAwesomeIcon icon={faTrashAlt} className="me-2" />,
+            modalUrl: `/api/ExecDeleteGDAPRelationship?&GDAPID=${row.id}`,
+            modalMessage: 'Are you sure you want to delete this relationship?',
+          },
+        ]}
+        placement="end"
+        visible={ocVisible}
+        id={row.id}
+        hideFunction={() => setOCVisible(false)}
+      />
+    </>
+  )
+}
 
 const GDAPRelationships = () => {
   const columns = [
@@ -45,6 +79,11 @@ const GDAPRelationships = () => {
       sortable: true,
       exportSelector: 'endDateTime',
       cell: cellDateFormatter({ format: 'short' }),
+    },
+    {
+      name: 'Actions',
+      cell: Actions,
+      maxWidth: '80px',
     },
   ]
   return (
