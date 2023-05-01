@@ -110,6 +110,8 @@ const EditGroup = () => {
       AddContacts: values.AddContacts ? values.AddContacts : '',
       RemoveContacts: values.RemoveContacts ? values.RemoveContacts : '',
       allowExternal: values.allowExternal,
+      sendCopies: values.sendCopies,
+      mail: group[0].mail,
     }
     //window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/EditGroup', values: shippedValues })
@@ -233,6 +235,12 @@ const EditGroup = () => {
                               <RFFCFormCheck
                                 name="allowExternal"
                                 label="Let people outside the organization email the group"
+                              />
+                            )}
+                            {group[0].calculatedGroupType === 'Microsoft 365' && (
+                              <RFFCFormCheck
+                                name="sendCopies"
+                                label="Send Copies of team emails and events to team members inboxes"
                               />
                             )}
                             <CRow className="mb-3">
