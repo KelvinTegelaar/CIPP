@@ -6,8 +6,14 @@ import {
   faEnvelope,
   faHotel,
   faLaptopCode,
+  faMailBulk,
   faSearch,
+  faShieldAlt,
   faSync,
+  faUser,
+  faUserAlt,
+  faUserFriends,
+  faUserPlus,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons'
 import { CCol, CRow } from '@coreui/react'
@@ -56,28 +62,28 @@ const Home = () => {
   const actions1 = [
     {
       label: 'M365 Admin',
-      link: '#',
+      link: `https://portal.office.com/Partner/BeginClientSession.aspx?CTID=${currentTenant.customerId}&CSDEST=o365admincenter`,
       icon: faCog,
     },
     {
       label: 'Exchange',
-      link: '#',
-      icon: faSync,
+      link: `https://admin.exchange.microsoft.com/?landingpage=homepage&form=mac_sidebar&delegatedOrg=${currentTenant.defaultDomainName}#`,
+      icon: faMailBulk,
     },
     {
       label: 'Intune',
-      link: '#',
-      icon: faEnvelope,
+      link: `https://intune.microsoft.com/${currentTenant.defaultDomainName}`,
+      icon: faLaptopCode,
     },
     {
       label: 'Entra',
-      link: '#',
-      icon: faEnvelope,
+      link: `https://entra.microsoft.com/${currentTenant.defaultDomainName}`,
+      icon: faUsers,
     },
     {
       label: 'Security',
-      link: '#',
-      icon: faEnvelope,
+      link: `https://security.microsoft.com/?tid=${currentTenant.customerId}`,
+      icon: faShieldAlt,
     },
   ]
 
@@ -89,23 +95,23 @@ const Home = () => {
     },
     {
       label: 'List Users',
-      link: '#',
-      icon: faSync,
+      link: `/identity/administration/users?customerId=${currentTenant.customerId}`,
+      icon: faUser,
     },
     {
       label: 'List Groups',
-      link: '#',
-      icon: faSync,
+      link: `/identity/administration/groups?customerId=${currentTenant.customerId}`,
+      icon: faUsers,
     },
     {
       label: 'Create User',
-      link: '#',
-      icon: faSync,
+      link: `/identity/administration/users/add?customerId=${currentTenant.customerId}`,
+      icon: faUserPlus,
     },
     {
       label: 'Create Group',
-      link: '#',
-      icon: faEnvelope,
+      link: `/identity/administration/groups/add?customerId=${currentTenant.customerId}`,
+      icon: faUserFriends,
     },
   ]
   return (
