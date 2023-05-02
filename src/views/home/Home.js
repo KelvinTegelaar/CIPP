@@ -11,17 +11,14 @@ import {
   faUsers,
 } from '@fortawesome/free-solid-svg-icons'
 import { CCol, CRow } from '@coreui/react'
-import {
-  useGenericGetRequestQuery,
-  useLoadDashQuery,
-  useLoadVersionsQuery,
-} from 'src/store/api/app'
+import { useGenericGetRequestQuery } from 'src/store/api/app'
 import { CippContentCard } from 'src/components/layout'
 import Skeleton from 'react-loading-skeleton'
 import { UniversalSearch } from 'src/components/utilities/UniversalSearch'
-import { ActionContentCard, ListGroupContentCard } from 'src/components/contentcards'
+import { ActionContentCard } from 'src/components/contentcards'
 import { useSelector } from 'react-redux'
 import TimeAgo from 'javascript-time-ago'
+import allStandardsList from 'src/data/standards'
 
 import en from 'javascript-time-ago/locale/en.json'
 TimeAgo.addDefaultLocale(en)
@@ -45,6 +42,15 @@ const Home = () => {
   } = useGenericGetRequestQuery({
     path: '/api/ListuserCounts',
     params: { tenantFilter: currentTenant.defaultDomainName },
+  })
+
+  const {
+    data: standards,
+    isLoading: isLoadingStandards,
+    isSuccess: issuccessStandards,
+  } = useGenericGetRequestQuery({
+    path: '/api/ListStandards',
+    params: {},
   })
 
   const actions1 = [
@@ -166,12 +172,6 @@ const Home = () => {
                 {organization && organization?.createdDateTime}
               </CCol>
               <CCol sm={12} md={4} className="mb-3">
-                <p className="fw-lighter">Current Secure Score</p>
-                {isLoadingOrg && <Skeleton />}
-              </CCol>
-            </CRow>
-            <CRow>
-              <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">AD Connect Status</p>
                 {isLoadingOrg && <Skeleton />}
                 {!isLoadingOrg && organization?.onPremisesSyncEnabled ? (
@@ -197,6 +197,8 @@ const Home = () => {
                   'Disabled'
                 )}
               </CCol>
+            </CRow>
+            <CRow>
               <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Domain(s)</p>
                 {isLoadingOrg && <Skeleton />}
@@ -223,19 +225,28 @@ const Home = () => {
                     </>
                   ))}
               </CCol>
-            </CRow>
-            <CRow>
               <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Applied Standards</p>
-                {isLoadingOrg && <Skeleton />}
-              </CCol>
-              <CCol sm={12} md={4} className="mb-3">
-                <p className="fw-lighter">Last Results</p>
-                {isLoadingOrg && <Skeleton />}
-              </CCol>
-              <CCol sm={12} md={4} className="mb-3">
-                <p className="fw-lighter">Access Type</p>
-                {isLoadingOrg && <Skeleton />}
+                {isLoadingStandards && <Skeleton />}
+                {issuccessStandards &&
+                  standards
+                    .filter(
+                      (p) =>
+                        p.displayName == 'AllTenants' ||
+                        p.displayName == currentTenant.defaultDomainName,
+                    )
+                    .flatMap((tenant) => {
+                      return Object.keys(tenant.standards).map((standard) => {
+                        const standardDisplayname = allStandardsList.filter((p) =>
+                          p.name.includes(standard),
+                        )
+                        return (
+                          <li key={`${standard}-${tenant.displayName}`}>
+                            {standardDisplayname[0].label} ({tenant.displayName})
+                          </li>
+                        )
+                      })
+                    })}
               </CCol>
             </CRow>
           </CippContentCard>
