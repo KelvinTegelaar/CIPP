@@ -227,6 +227,17 @@
     "label": "Enable FIDO2 capabilities"
   },
   {
+    "name": "standards.OutBoundSpamAlert.Enabled",
+    "cat": "Exchange",
+    "helpText": "This is the default helptext",
+    "addedComponent": {
+      "type": "input",
+      "name": "standards.OutBoundSpamAlert.OutboundSpamContact",
+      "label": "Outbound spam contact"
+    },
+    "label": "Set Outbound Spam Alert e-mail"
+  },
+  {
     "name": "standards.DisableSharedMailbox",
     "cat": "Exchange",
     "helpText": "This is the default helptext",
