@@ -11,7 +11,7 @@ export default function CippDatatable({ path, params, ...rest }) {
     data = [],
     isFetching,
     error,
-  } = useListDatatableQuery({ path, params: { refreshGuid, graphFilter, ...params } })
+  } = useListDatatableQuery({ path, params: { refreshGuid, $filter: graphFilter, ...params } })
   return (
     <CippTable
       {...rest}
