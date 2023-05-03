@@ -136,8 +136,8 @@ const MobileDeviceList = () => {
       selector: (row) => row['deviceID'],
       name: 'Device ID',
       sortable: true,
+      cell: (row) => CellTip(row['deviceID']),
       exportSelector: 'deviceID',
-      cell: cellDateFormatter(),
     },
     {
       selector: (row) => row['firstSync'],
