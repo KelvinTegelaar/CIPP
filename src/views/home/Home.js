@@ -184,12 +184,12 @@ const Home = () => {
               <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Creation Date</p>
                 {(isLoadingOrg || isFetchingOrg) && <Skeleton />}
-                {organization && organization?.createdDateTime}
+                {organization && !isFetchingOrg && organization?.createdDateTime}
               </CCol>
               <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">AD Connect Status</p>
                 {(isLoadingOrg || isFetchingOrg) && <Skeleton />}
-                {!isLoadingOrg && organization?.onPremisesSyncEnabled ? (
+                {!isLoadingOrg && !isFetchingOrg && organization?.onPremisesSyncEnabled ? (
                   <>
                     <li>
                       <span class="me-1">Directory Sync:</span>
@@ -217,28 +217,28 @@ const Home = () => {
               <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Domain(s)</p>
                 {(isLoadingOrg || isFetchingOrg) && <Skeleton />}
-                {organization?.verifiedDomains.map((item) => (
-                  <li>{item.name}</li>
-                ))}
+                {!isFetchingOrg &&
+                  organization?.verifiedDomains.map((item) => <li>{item.name}</li>)}
               </CCol>
               <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Capabilities</p>
                 {(isLoadingOrg || isFetchingOrg) && <Skeleton />}
-                {organization?.assignedPlans
-                  .filter((p) => p.capabilityStatus == 'Enabled')
-                  .reduce((plan, curr) => {
-                    if (!plan.includes(curr.service)) {
-                      plan.push(curr.service)
-                    }
-                    return plan
-                  }, [])
-                  .map((plan) => (
-                    <>
-                      {plan == 'exchange' && <li>Exchange</li>}
-                      {plan == 'AADPremiumService' && <li>AAD Premium</li>}
-                      {plan == 'WindowsDefenderATP' && <li>Windows Defender</li>}
-                    </>
-                  ))}
+                {!isFetchingOrg &&
+                  organization?.assignedPlans
+                    .filter((p) => p.capabilityStatus == 'Enabled')
+                    .reduce((plan, curr) => {
+                      if (!plan.includes(curr.service)) {
+                        plan.push(curr.service)
+                      }
+                      return plan
+                    }, [])
+                    .map((plan) => (
+                      <>
+                        {plan == 'exchange' && <li>Exchange</li>}
+                        {plan == 'AADPremiumService' && <li>AAD Premium</li>}
+                        {plan == 'WindowsDefenderATP' && <li>Windows Defender</li>}
+                      </>
+                    ))}
               </CCol>
               <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Applied Standards</p>
