@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { CButton } from '@coreui/react'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -159,14 +159,14 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             label: 'Reset Password (Must Change)',
             color: 'info',
             modal: true,
-            modalUrl: `/api/ExecResetPass?MustChange=true&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalUrl: `/api/ExecResetPass?MustChange=true&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}&displayName=${row.displayName}`,
             modalMessage: 'Are you sure you want to reset the password for this user?',
           },
           {
             label: 'Reset Password',
             color: 'info',
             modal: true,
-            modalUrl: `/api/ExecResetPass?MustChange=false&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalUrl: `/api/ExecResetPass?MustChange=false&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}&displayName=${row.displayName}`,
             modalMessage: 'Are you sure you want to reset the password for this user?',
           },
           {
@@ -200,77 +200,114 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
   )
 }
 
-const columns = [
-  {
-    name: 'Display Name',
-    selector: (row) => row['displayName'],
-    sortable: true,
-    cell: (row) => CellTip(row['displayName']),
-    exportSelector: 'displayName',
-    minWidth: '300px',
-  },
-  {
-    name: 'Email',
-    selector: (row) => row['mail'],
-    sortable: true,
-    cell: (row) => CellTip(row['mail']),
-    exportSelector: 'mail',
-    minWidth: '250px',
-  },
-  {
-    name: 'User Type',
-    selector: (row) => row['userType'],
-    sortable: true,
-    exportSelector: 'userType',
-    minWidth: '140px',
-  },
-  {
-    name: 'Enabled',
-    selector: (row) => row['accountEnabled'],
-    cell: cellBooleanFormatter({ colourless: true }),
-    sortable: true,
-    exportSelector: 'accountEnabled',
-    minWidth: '100px',
-  },
-  {
-    name: 'AD Synced',
-    selector: (row) => row['onPremisesSyncEnabled'],
-    cell: cellBooleanFormatter({ colourless: true }),
-    sortable: true,
-    exportSelector: 'onPremisesSyncEnabled',
-    minWidth: '120px',
-  },
-  {
-    name: 'Licenses',
-    selector: (row) => row['LicJoined'],
-    exportSelector: 'LicJoined',
-    sortable: true,
-    grow: 5,
-    wrap: true,
-    minWidth: '200px',
-  },
-  {
-    name: 'id',
-    selector: (row) => row['id'],
-    omit: true,
-  },
-  {
-    name: 'Actions',
-    cell: Offcanvas,
-  },
-]
-
-const Users = () => {
+const Users = (row) => {
+  const [tenantColumnSet, setTenantColumn] = useState(true)
+  const columns = [
+    {
+      name: 'Tenant',
+      selector: (row) => row['Tenant'],
+      sortable: true,
+      cell: (row) => CellTip(row['Tenant']),
+      exportSelector: 'Tenant',
+      omit: tenantColumnSet,
+    },
+    {
+      name: 'Retrieval Status',
+      selector: (row) => row['CippStatus'],
+      sortable: true,
+      cell: (row) => CellTip(row['CippStatus']),
+      exportSelector: 'CippStatus',
+      omit: tenantColumnSet,
+    },
+    {
+      name: 'Display Name',
+      selector: (row) => row['displayName'],
+      sortable: true,
+      cell: (row) => CellTip(row['displayName']),
+      exportSelector: 'displayName',
+      minWidth: '300px',
+    },
+    {
+      name: 'Email',
+      selector: (row) => row['mail'],
+      sortable: true,
+      cell: (row) => CellTip(row['mail']),
+      exportSelector: 'mail',
+      minWidth: '250px',
+    },
+    {
+      name: 'User Type',
+      selector: (row) => row['userType'],
+      sortable: true,
+      exportSelector: 'userType',
+      minWidth: '140px',
+    },
+    {
+      name: 'Enabled',
+      selector: (row) => row['accountEnabled'],
+      cell: cellBooleanFormatter({ colourless: true }),
+      sortable: true,
+      exportSelector: 'accountEnabled',
+      minWidth: '100px',
+    },
+    {
+      name: 'AD Synced',
+      selector: (row) => row['onPremisesSyncEnabled'],
+      cell: cellBooleanFormatter({ colourless: true }),
+      sortable: true,
+      exportSelector: 'onPremisesSyncEnabled',
+      minWidth: '120px',
+    },
+    {
+      name: 'Licenses',
+      selector: (row) => row['LicJoined'],
+      exportSelector: 'LicJoined',
+      sortable: true,
+      grow: 5,
+      wrap: true,
+      minWidth: '200px',
+    },
+    {
+      name: 'id',
+      selector: (row) => row['id'],
+      omit: true,
+    },
+    {
+      name: 'Actions',
+      cell: Offcanvas,
+    },
+  ]
   const tenant = useSelector((state) => state.app.currentTenant)
-  const titleButton = <TitleButton href="/identity/administration/users/add" title="Add User" />
+  useEffect(() => {
+    if (tenant.defaultDomainName === 'AllTenants') {
+      setTenantColumn(false)
+    }
+    if (tenant.defaultDomainName !== 'AllTenants') {
+      setTenantColumn(true)
+    }
+  }, [tenantColumnSet])
+
+  const titleButtons = (
+    <div style={{ display: 'flex', alignItems: 'right' }}>
+      <TitleButton key="add-user" href="/identity/administration/users/add" title="Add User" />
+      <div style={{ marginLeft: '10px' }}>
+        <TitleButton
+          key="Invite-Guest"
+          href="/identity/administration/users/InviteGuest"
+          title="Invite Guest"
+        />
+      </div>
+    </div>
+  )
   return (
     <CippPageList
-      capabilities={{ allTenants: false, helpContext: 'https://google.com' }}
+      capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
       title="Users"
-      titleButton={titleButton}
+      titleButton={titleButtons}
       datatable={{
         filterlist: [
           { filterName: 'Enabled users', filter: '"accountEnabled":true' },
+          { filterName: 'Disabled users', filter: '"accountEnabled":false' },
           { filterName: 'AAD users', filter: '"onPremisesSyncEnabled":false' },
           { filterName: 'Synced users', filter: '"onPremisesSyncEnabled":true' },
           { filterName: 'Guest users', filter: '"usertype":"guest"' },
@@ -282,54 +319,109 @@ const Users = () => {
         reportName: `${tenant?.defaultDomainName}-Users`,
         params: { TenantFilter: tenant?.defaultDomainName },
         tableProps: {
-          selectableRows: false,
+          selectableRows: true,
           actionsList: [
             {
               label: 'Convert to Shared Mailbox',
               modal: true,
-              modalUrl: `/api/ExecConvertToSharedMailbox?TenantFilter=${tenant.defaultDomainName}&ID=`,
-              modalMessage: 'Are you sure you want to convert this user to a shared mailbox?',
+              modalUrl: `/api/ExecConvertToSharedMailbox?TenantFilter=${tenant.defaultDomainName}&ID=!userPrincipalName`,
+              modalMessage: 'Are you sure you want to convert these users to a shared mailbox?',
             },
             {
               label: 'Rerequire MFA registration',
               modal: true,
-              modalUrl: `/api/ExecResetMFA?TenantFilter=${tenant.defaultDomainName}&ID=`,
-              modalMessage: 'Are you sure you want to enable MFA for this user?',
+              modalUrl: `/api/ExecResetMFA?TenantFilter=${tenant.defaultDomainName}&ID=!id`,
+              modalMessage: 'Are you sure you want to enable MFA for these users?',
             },
             {
               label: 'Enable Online Archive',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecEnableArchive?TenantFilter=${tenant.defaultDomainName}&ID=`,
-              modalMessage: 'Are you sure you want to enable the online archive for this user?',
+              modalUrl: `/api/ExecEnableArchive?TenantFilter=${tenant.defaultDomainName}&ID=!id`,
+              modalMessage: 'Are you sure you want to enable the online archive for these users?',
             },
             {
-              label: 'Add to group',
+              label: 'Reset Password (Must Change)',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecEnableArchive?TenantFilter=${tenant.defaultDomainName}&ID=`,
-              modalMessage: 'Are you sure you want to enable the online archive for this user?',
+              modalUrl: `/api/ExecResetPass?MustChange=true&TenantFilter=${tenant.defaultDomainName}&ID=!userPrincipalName`,
+              modalMessage:
+                'Are you sure you want to reset the password for these users? The users must change their password at next logon.',
             },
             {
-              label: 'Remove from group',
+              label: 'Reset Password',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecEnableArchive?TenantFilter=${tenant.defaultDomainName}&ID=`,
-              modalMessage: 'Are you sure you want to enable the online archive for this user?',
+              modalUrl: `/api/ExecResetPass?MustChange=false&TenantFilter=${tenant.defaultDomainName}&ID=!userPrincipalName`,
+              modalMessage:
+                'Are you sure you want to reset the password for these users? The users must change their password at next logon.',
             },
             {
-              label: 'Add to Shared Mailbox',
+              label: 'Block signin',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecEnableArchive?TenantFilter=${tenant.defaultDomainName}&ID=`,
-              modalMessage: 'Are you sure you want to enable the online archive for this user?',
+              modalUrl: `/api/ExecDisableUser?TenantFilter=${tenant.defaultDomainName}&ID=!userPrincipalName`,
+              modalMessage: 'Are you sure you want to disable these users?',
             },
             {
-              label: 'Remove from shared mailbox',
+              label: 'Unblock signin',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecEnableArchive?TenantFilter=${tenant.defaultDomainName}&ID=`,
-              modalMessage: 'Are you sure you want to enable the online archive for this user?',
+              modalUrl: `/api/ExecDisableUser?Enable=true&TenantFilter=${tenant.defaultDomainName}&ID=!userPrincipalName`,
+              modalMessage: 'Are you sure you want to enable these users?',
+            },
+            {
+              label: 'Revoke sessions',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecRevokeSessions?Enable=true&TenantFilter=${tenant.defaultDomainName}&ID=!userPrincipalName`,
+              modalMessage: 'Are you sure you want to revoke all sessions for these users?',
+            },
+            {
+              label: 'Set Out of Office',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                user: '!userPrincipalName',
+                TenantFilter: tenant.defaultDomainName,
+              },
+              modalUrl: `/api/ExecSetOoO`,
+              modalInput: true,
+              modalMessage:
+                'Enter a out of office message and press continue to set the out of office.',
+            },
+            {
+              label: 'Disable Out of Office',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                user: '!userPrincipalName',
+                TenantFilter: tenant.defaultDomainName,
+                Disable: true,
+              },
+              modalUrl: `/api/ExecSetOoO`,
+              modalMessage: 'Are you sure you want to disable the out of office?',
+            },
+            {
+              label: 'Disable Email Forwarding',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                user: '!userPrincipalName',
+                TenantFilter: tenant.defaultDomainName,
+              },
+              modalUrl: `/api/ExecDisableEmailForward`,
+              modalMessage: 'Are you sure you want to disable forwarding of these users emails?',
+            },
+            {
+              label: 'Delete User',
+              color: 'danger',
+              modal: true,
+              modalUrl: `/api/RemoveUser?TenantFilter=${tenant.defaultDomainName}&ID=!id`,
+              modalMessage: 'Are you sure you want to delete these users?',
             },
           ],
         },
