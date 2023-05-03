@@ -349,7 +349,7 @@ const Users = (row) => {
               label: 'Reset Password (Must Change)',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecResetPass?MustChange=true&TenantFilter=${tenant.defaultDomainName}&ID=!userPrincipalName&displayName=${tenant.displayName}`,
+              modalUrl: `/api/ExecResetPass?MustChange=true&TenantFilter=${tenant.defaultDomainName}&ID=!userPrincipalName&displayName=!displayName`,
               modalMessage:
                 'Are you sure you want to reset the password for these users? The users must change their password at next logon.',
             },
@@ -357,7 +357,7 @@ const Users = (row) => {
               label: 'Reset Password',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecResetPass?MustChange=false&TenantFilter=${tenant.defaultDomainName}&ID=!userPrincipalName&displayName=${tenant.displayName}`,
+              modalUrl: `/api/ExecResetPass?MustChange=false&TenantFilter=${tenant.defaultDomainName}&ID=!userPrincipalName&displayName=!displayName`,
               modalMessage:
                 'Are you sure you want to reset the password for these users? The users must change their password at next logon.',
             },
