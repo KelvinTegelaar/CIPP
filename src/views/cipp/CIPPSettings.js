@@ -814,11 +814,11 @@ const SecuritySettings = () => {
       <>
         <CRow className="mb-3">
           <CCol md={4}>
-            <CCard>
+            <CCard className="h-100">
               <CCardHeader>
                 <CCardTitle>Resource Group</CCardTitle>
               </CCardHeader>
-              <CCardBody className="equalheight">
+              <CCardBody>
                 <CRow className="mb-3">
                   The Resource group contains all the CIPP resources in your tenant, except the SAM
                   Application
@@ -834,11 +834,11 @@ const SecuritySettings = () => {
             </CCard>
           </CCol>
           <CCol md={4}>
-            <CCard>
+            <CCard className="h-100">
               <CCardHeader>
                 <CCardTitle>Key Vault</CCardTitle>
               </CCardHeader>
-              <CCardBody className="equalheight">
+              <CCardBody>
                 <CRow className="mb-3">
                   The keyvault allows you to check token information. By default you do not have
                   access.
@@ -854,11 +854,11 @@ const SecuritySettings = () => {
             </CCard>
           </CCol>
           <CCol md={4}>
-            <CCard>
+            <CCard className="h-100">
               <CCardHeader>
                 <CCardTitle>Static Web App (Role Management)</CCardTitle>
               </CCardHeader>
-              <CCardBody className="equalheight">
+              <CCardBody>
                 <CRow className="mb-3">
                   The Static Web App role management allows you to invite other users to the
                   application.
@@ -876,11 +876,11 @@ const SecuritySettings = () => {
         </CRow>
         <CRow className="mb-3">
           <CCol md={4}>
-            <CCard>
+            <CCard className="h-100">
               <CCardHeader>
                 <CCardTitle>Function App (Deployment Center)</CCardTitle>
               </CCardHeader>
-              <CCardBody className="equalheight">
+              <CCardBody>
                 <CRow className="mb-3">
                   The Function App Deployment Center allows you to run updates on the API
                 </CRow>
@@ -895,31 +895,31 @@ const SecuritySettings = () => {
             </CCard>
           </CCol>
           <CCol md={4}>
-            <CCard>
+            <CCard className="h-100">
               <CCardHeader>
                 <CCardTitle>Function App (Configuration)</CCardTitle>
               </CCardHeader>
-              <CCardBody className="equalheight">
+              <CCardBody>
                 <CRow className="mb-3">
                   At the Function App Configuration you can check the status of the API access to
                   your keyvault
+                  <a
+                    target={'_blank'}
+                    href={listBackendResult.data?.Results?.FunctionConfig}
+                    rel="noreferrer"
+                  >
+                    <CButton>Go to Function App Configuration</CButton>
+                  </a>
                 </CRow>
-                <a
-                  target={'_blank'}
-                  href={listBackendResult.data?.Results?.FunctionConfig}
-                  rel="noreferrer"
-                >
-                  <CButton>Go to Function App Configuration</CButton>
-                </a>
               </CCardBody>
             </CCard>
           </CCol>
           <CCol md={4}>
-            <CCard>
+            <CCard className="h-100">
               <CCardHeader>
                 <CCardTitle>Function App (Overview)</CCardTitle>
               </CCardHeader>
-              <CCardBody className="equalheight">
+              <CCardBody>
                 <CRow className="mb-3">
                   At the function App Overview, you can stop and start the backend API
                 </CRow>
@@ -1340,14 +1340,14 @@ const Maintenance = () => {
       <CRow>
         <CCol>
           {listScriptResult.isFetching && (
-            <CCard>
+            <CCard className="h-100">
               <CCardBody>
                 <Skeleton count={10} />
               </CCardBody>
             </CCard>
           )}
           {!listScriptResult.isFetching && listScriptResult.isSuccess && (
-            <CCard>
+            <CCard className="h-100">
               <CCardHeader>
                 <CCardTitle>Script Details</CCardTitle>
               </CCardHeader>
