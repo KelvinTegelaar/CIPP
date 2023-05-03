@@ -8,6 +8,7 @@ import { CippTable } from 'src/components/tables'
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Skeleton from 'react-loading-skeleton'
+import { UniversalSearch } from 'src/components/utilities/UniversalSearch'
 
 const Home = () => {
   const { data: versions, isSuccess: isSuccessVersion } = useLoadVersionsQuery()
@@ -28,11 +29,11 @@ const Home = () => {
     <>
       <CRow>
         <CCol className="mb-3" xs={12} lg={6} xl={6}>
-          <CippContentCard className="h-100" title="Search Features" icon={faSearch}>
+          <CippContentCard className="h-100" title="Lighthouse Search" icon={faSearch}>
             <CRow className="mb-3"></CRow>
             <CRow className="mb-3">
               <CCol>
-                <FastSwitcher />
+                <UniversalSearch />
               </CCol>
             </CRow>
           </CippContentCard>
@@ -79,13 +80,9 @@ const Home = () => {
           </CippContentCard>
         </CCol>
         <CCol className="mb-3" xs={12} lg={2} xl={3}>
-          <CippContentCard title="Token Refresh Dates" icon={faBook}>
+          <CippContentCard title="Token Refresh Date" icon={faBook}>
             <div className="mb-3">
               Refresh Token: {!isLoadingDash ? dashboard?.RefreshTokenDate : ''}
-            </div>
-
-            <div className="mb-2">
-              Exchange Token: {!isLoadingDash ? dashboard?.ExchangeTokenDate : ''}
             </div>
           </CippContentCard>
         </CCol>

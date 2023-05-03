@@ -108,7 +108,10 @@ const EditGroup = () => {
       RemoveMember: values.RemoveMembers ? values.RemoveMembers : '',
       RemoveOwner: values.RemoveOwners ? values.RemoveOwners : '',
       AddContacts: values.AddContacts ? values.AddContacts : '',
+      RemoveContacts: values.RemoveContacts ? values.RemoveContacts : '',
       allowExternal: values.allowExternal,
+      sendCopies: values.sendCopies,
+      mail: group[0].mail,
     }
     //window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/EditGroup', values: shippedValues })
@@ -167,14 +170,13 @@ const EditGroup = () => {
                                 {usersError && <span>Failed to load list of users</span>}
                               </CCol>
                             </CRow>
-
                             <CRow>
                               <CCol md={12}>
                                 <RFFSelectSearch
                                   multi={true}
                                   label="Add Contact"
                                   values={contacts?.map((user) => ({
-                                    value: user.id,
+                                    value: user.mail,
                                     name: `${user.displayName} - ${user.mail}`,
                                   }))}
                                   placeholder={!contactsIsFetching ? 'Select user' : 'Loading...'}
@@ -187,12 +189,12 @@ const EditGroup = () => {
                               <CCol md={12}>
                                 <RFFSelectSearch
                                   multi={true}
-                                  label="Remove User"
+                                  label="Remove Member"
                                   values={members?.map((user) => ({
-                                    value: user.userPrincipalName,
-                                    name: `${user.displayName} - ${user.userPrincipalName}`,
+                                    value: user.mail,
+                                    name: `${user.displayName} - ${user.mail}`,
                                   }))}
-                                  placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
+                                  placeholder={!usersIsFetching ? 'Select Member' : 'Loading...'}
                                   name="RemoveMembers"
                                 />
                                 {usersError && <span>Failed to load list of users</span>}
@@ -233,6 +235,12 @@ const EditGroup = () => {
                               <RFFCFormCheck
                                 name="allowExternal"
                                 label="Let people outside the organization email the group"
+                              />
+                            )}
+                            {group[0].calculatedGroupType === 'Microsoft 365' && (
+                              <RFFCFormCheck
+                                name="sendCopies"
+                                label="Send Copies of team emails and events to team members inboxes"
                               />
                             )}
                             <CRow className="mb-3">
