@@ -36,6 +36,7 @@ const Home = () => {
     data: organization,
     isLoading: isLoadingOrg,
     isSuccess: issuccessOrg,
+    isFetching: isFetchingOrg,
   } = useGenericGetRequestQuery({
     path: '/api/ListOrg',
     params: { tenantFilter: currentTenant.defaultDomainName },
@@ -45,6 +46,7 @@ const Home = () => {
     data: dashboard,
     isLoading: isLoadingUserCounts,
     isSuccess: issuccessUserCounts,
+    isFetching: isFetchingUserCount,
   } = useGenericGetRequestQuery({
     path: '/api/ListuserCounts',
     params: { tenantFilter: currentTenant.defaultDomainName },
@@ -54,6 +56,7 @@ const Home = () => {
     data: standards,
     isLoading: isLoadingStandards,
     isSuccess: issuccessStandards,
+    isFetching: isFetchingStandards,
   } = useGenericGetRequestQuery({
     path: '/api/ListStandards',
     params: {},
@@ -131,22 +134,28 @@ const Home = () => {
       <CRow>
         <CCol sm={12} md={3} className="mb-3">
           <CippContentCard title="Total Users" icon={faUsers}>
-            <div>{!isLoadingUserCounts ? dashboard?.Users : <Skeleton />}</div>
+            <div>
+              {issuccessUserCounts && !isFetchingUserCount ? dashboard?.Users : <Skeleton />}
+            </div>
           </CippContentCard>
         </CCol>
         <CCol sm={12} md={3} className="mb-3">
           <CippContentCard title="Total Licensed users" icon={faUsers}>
-            <div>{!isLoadingUserCounts ? dashboard?.LicUsers : <Skeleton />}</div>{' '}
+            <div>
+              {issuccessUserCounts && !isFetchingUserCount ? dashboard?.LicUsers : <Skeleton />}
+            </div>
           </CippContentCard>
         </CCol>
         <CCol sm={12} md={3} className="mb-3">
           <CippContentCard title="Global Admin Users" icon={faLaptopCode}>
-            <div>{!isLoadingUserCounts ? dashboard?.Gas : <Skeleton />}</div>{' '}
+            <div>{issuccessUserCounts && !isFetchingUserCount ? dashboard?.Gas : <Skeleton />}</div>
           </CippContentCard>
         </CCol>
         <CCol sm={12} md={3} className="mb-3">
           <CippContentCard title="Total Guests" icon={faHotel}>
-            <div>{!isLoadingUserCounts ? dashboard?.Guests : <Skeleton />}</div>{' '}
+            <div>
+              {issuccessUserCounts && !isFetchingUserCount ? dashboard?.Guests : <Skeleton />}
+            </div>
           </CippContentCard>
         </CCol>
       </CRow>
@@ -174,12 +183,12 @@ const Home = () => {
               </CCol>
               <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Creation Date</p>
-                {isLoadingOrg && <Skeleton />}
+                {(isLoadingOrg || isFetchingOrg) && <Skeleton />}
                 {organization && organization?.createdDateTime}
               </CCol>
               <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">AD Connect Status</p>
-                {isLoadingOrg && <Skeleton />}
+                {(isLoadingOrg || isFetchingOrg) && <Skeleton />}
                 {!isLoadingOrg && organization?.onPremisesSyncEnabled ? (
                   <>
                     <li>
@@ -207,14 +216,14 @@ const Home = () => {
             <CRow>
               <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Domain(s)</p>
-                {isLoadingOrg && <Skeleton />}
+                {(isLoadingOrg || isFetchingOrg) && <Skeleton />}
                 {organization?.verifiedDomains.map((item) => (
                   <li>{item.name}</li>
                 ))}
               </CCol>
               <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Capabilities</p>
-                {isLoadingOrg && <Skeleton />}
+                {(isLoadingOrg || isFetchingOrg) && <Skeleton />}
                 {organization?.assignedPlans
                   .filter((p) => p.capabilityStatus == 'Enabled')
                   .reduce((plan, curr) => {
@@ -233,8 +242,9 @@ const Home = () => {
               </CCol>
               <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Applied Standards</p>
-                {isLoadingStandards && <Skeleton />}
+                {(isLoadingStandards || isFetchingStandards) && <Skeleton />}
                 {issuccessStandards &&
+                  !isFetchingStandards &&
                   standards
                     .filter(
                       (p) =>
