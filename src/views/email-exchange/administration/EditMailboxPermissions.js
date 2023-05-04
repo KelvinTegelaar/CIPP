@@ -35,7 +35,11 @@ import {
   useListCalendarPermissionsQuery,
 } from 'src/store/api/mailbox'
 import { CippTable } from 'src/components/tables'
-import UserEmailSettings from 'src/views/identity/administration/UserEmailSettings'
+import { useListMailboxDetailsQuery } from 'src/store/api/mailbox'
+import { CellBoolean } from 'src/components/tables'
+
+const formatter = (cell, warning = false, reverse = false, colourless = false) =>
+  CellBoolean({ cell, warning, reverse, colourless })
 
 const MailboxSettings = () => {
   const [active, setActive] = useState(1)
@@ -548,11 +552,9 @@ const MailboxForwarding = () => {
     const shippedValues = {
       userid: userId,
       tenantFilter: tenantDomain,
-      AddFullAccessNoAutoMap: values.AddFullAccessNoAutoMap ? values.AddFullAccessNoAutoMap : null,
-      AddFullAccess: values.AddFullAccess ? values.AddFullAccess : null,
-      RemoveFullAccess: values.RemoveFullAccess ? values.RemoveFullAccess : null,
-      AddSendAs: values.AddSendAs ? values.AddSendAs : null,
-      RemoveSendAs: values.RemoveSendAs ? values.RemoveSendAs : null,
+      ForwardInternal: values.ForwardInternal ? values.ForwardInternal : null,
+      ForwardExternal: values.ForwardExternal ? values.ForwardExternal : null,
+      keepCopy: values.keepCopy,
     }
     //window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/ExecEditMailboxPermissions', values: shippedValues })
@@ -632,7 +634,7 @@ const MailboxForwarding = () => {
                                       name: `${user.displayName} - ${user.mail} `,
                                     }))}
                                     placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
-                                    name="Forward"
+                                    name="ForwardInternal"
                                   />
                                 )}
                                 {usersError && <span>Failed to load list of users</span>}
@@ -654,7 +656,7 @@ const MailboxForwarding = () => {
                                 {values.forwardOption === 'ExternalAddress' && (
                                   <RFFCFormInput
                                     type="text"
-                                    name="External Email Address"
+                                    name="ForwardExternal"
                                     label="External Email Address"
                                     disabled={formDisabled}
                                   />
@@ -711,13 +713,23 @@ const MailboxForwarding = () => {
                 </CCardBody>
               </CCard>
             </CCol>
+            <CCol md={6}>
+              <CCard>
+                <CCardHeader>
+                  <CCardTitle>Account Details - {userId}</CCardTitle>
+                </CCardHeader>
+                <CCardBody>
+                  <ForwardingSettings userId={userId} tenantDomain={tenantDomain} />
+                </CCardBody>
+              </CCard>
+            </CCol>
           </CRow>
         </>
       )}
     </CCard>
   )
 }
-const ForwardingSettings = () => {
+const ForwardingSettings = (userId, tenantDomain) => {
   const { data: details, isFetching, error } = useListMailboxDetailsQuery({ userId, tenantDomain })
   const content = [
     {
@@ -733,19 +745,12 @@ const ForwardingSettings = () => {
   return (
     <CRow>
       <CCol md={6}>
-        <CCard>
-          <CCardHeader>
-            <CCardTitle>Current Settings</CCardTitle>
-          </CCardHeader>
-          <CCardBody>
-            {content.map((item, index) => (
-              <div key={index}>
-                <h5>{item.heading}</h5>
-                <p>{item.body}</p>
-              </div>
-            ))}
-          </CCardBody>
-        </CCard>
+        {content.map((item, index) => (
+          <div key={index}>
+            <h5>{item.heading}</h5>
+            <p>{item.body}</p>
+          </div>
+        ))}
       </CCol>
     </CRow>
   )
