@@ -711,26 +711,42 @@ const MailboxForwarding = () => {
                 </CCardBody>
               </CCard>
             </CCol>
-            <CCol md={6}>
-              <CCard>
-                <CCardHeader>
-                  <CCardTitle>Account Information</CCardTitle>
-                </CCardHeader>
-                <CCardBody>
-                  {userIsFetching && <CSpinner />}
-                  {!userIsFetching && (
-                    <>
-                      <CippMasonryItem size="single">
-                        <UserEmailSettings userId={userId} tenantDomain={tenantDomain} />
-                      </CippMasonryItem>
-                    </>
-                  )}
-                </CCardBody>
-              </CCard>
-            </CCol>
           </CRow>
         </>
       )}
     </CCard>
+  )
+}
+const ForwardingSettings = () => {
+  const { data: details, isFetching, error } = useListMailboxDetailsQuery({ userId, tenantDomain })
+  const content = [
+    {
+      heading: 'Forward and Deliver',
+      body: formatter(details?.ForwardAndDeliver, false, false, true),
+    },
+    {
+      heading: 'Forwarding Address',
+      body: details?.ForwardingAddress ? details?.ForwardingAddress : 'N/A',
+    },
+  ]
+
+  return (
+    <CRow>
+      <CCol md={6}>
+        <CCard>
+          <CCardHeader>
+            <CCardTitle>Current Settings</CCardTitle>
+          </CCardHeader>
+          <CCardBody>
+            {content.map((item, index) => (
+              <div key={index}>
+                <h5>{item.heading}</h5>
+                <p>{item.body}</p>
+              </div>
+            ))}
+          </CCardBody>
+        </CCard>
+      </CCol>
+    </CRow>
   )
 }
