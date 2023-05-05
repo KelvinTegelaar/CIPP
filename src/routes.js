@@ -17,6 +17,7 @@ const AddGroupTemplates = React.lazy(() =>
 const DeployGroupTemplates = React.lazy(() =>
   import('src/views/identity/administration/DeployGroupTemplate'),
 )
+const TenantLookup = React.lazy(() => import('src/views/tenant/administration/TenantLookup'))
 const GroupTemplates = React.lazy(() => import('src/views/identity/administration/GroupTemplates'))
 
 const EditGroup = React.lazy(() => import('src/views/identity/administration/EditGroup'))
@@ -367,6 +368,11 @@ const routes = [
     path: '/tenant/standards/individual-domains',
     name: 'Individual Domain Check',
     component: IndividualDomain,
+  },
+  {
+    path: '/tenant/administration/tenantlookup',
+    name: 'Tenant Lookup',
+    component: TenantLookup,
   },
   { path: '/tenant/standards/alert-list', name: 'Alert List (Alpha)', component: ListAlerts },
   { path: '/endpoint', name: 'Endpoint' },
