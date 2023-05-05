@@ -18,7 +18,7 @@ const columns = [
     formatter: (cell, row) => {
       return (
         <CLink
-          href={`https://aad.portal.azure.com/${row.tenantDomain}/#blade/Microsoft_AAD_IAM/GroupDetailsMenuBlade/Overview/groupId/${row.id}`}
+          href={`https://entra.microsoft.com/${row.tenantDomain}/#view/Microsoft_AAD_IAM/GroupDetailsMenuBlade/~/Overview/groupId/${row.id}`}
         >
           {row.DisplayName}
         </CLink>
