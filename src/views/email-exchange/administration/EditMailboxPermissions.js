@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import {
   CButton,
-  CButtonGroup,
   CCallout,
   CCard,
   CCardBody,
@@ -13,9 +12,6 @@ import {
   CTabContent,
   CTabPane,
   CForm,
-  CListGroup,
-  CListGroupItem,
-  CLink,
   CRow,
   CSpinner,
 } from '@coreui/react'
@@ -552,12 +548,13 @@ const MailboxForwarding = () => {
     const shippedValues = {
       userid: userId,
       tenantFilter: tenantDomain,
-      ForwardInternal: values.ForwardInternal ? values.ForwardInternal : null,
-      ForwardExternal: values.ForwardExternal ? values.ForwardExternal : null,
-      keepCopy: values.keepCopy,
+      ForwardInternal: values.ForwardInternal ? values.ForwardInternal : '',
+      ForwardExternal: values.ForwardExternal ? values.ForwardExternal : '',
+      KeepCopy: values.KeepCopy ? true : false,
+      disableForwarding: values.forwardOption === 'disabled',
     }
     //window.alert(JSON.stringify(shippedValues))
-    genericPostRequest({ path: '/api/ExecEditMailboxPermissions', values: shippedValues })
+    genericPostRequest({ path: '/api/ExecEmailForward', values: shippedValues })
   }
   const initialState = {
     ...user,
@@ -650,7 +647,7 @@ const MailboxForwarding = () => {
                                       type="radio"
                                       value="ExternalAddress"
                                     />{' '}
-                                    Forward to External address
+                                    Forward to External address (Tenant must allow this)
                                   </label>
                                 </div>
                                 {values.forwardOption === 'ExternalAddress' && (
@@ -661,7 +658,21 @@ const MailboxForwarding = () => {
                                     disabled={formDisabled}
                                   />
                                 )}
-                                {usersError && <span>Failed to load list of users</span>}
+                              </CCol>
+                            </CRow>
+                            <CRow className="mb-3">
+                              <CCol md={12}>
+                                <div>
+                                  <label>
+                                    <Field
+                                      name="forwardOption"
+                                      component="input"
+                                      type="radio"
+                                      value="disabled"
+                                    />{' '}
+                                    Disable Email Forwarding
+                                  </label>
+                                </div>
                               </CCol>
                             </CRow>
                             <RFFCFormCheck
@@ -676,17 +687,6 @@ const MailboxForwarding = () => {
                                   style={{ marginRight: '10px' }}
                                 >
                                   Edit Forwarding
-                                  {postResults.isFetching && (
-                                    <FontAwesomeIcon
-                                      icon={faCircleNotch}
-                                      spin
-                                      className="me-2"
-                                      size="1x"
-                                    />
-                                  )}
-                                </CButton>
-                                <CButton type="submit" disabled={submitting || formDisabled}>
-                                  Disable Forwarding
                                   {postResults.isFetching && (
                                     <FontAwesomeIcon
                                       icon={faCircleNotch}
@@ -729,7 +729,11 @@ const MailboxForwarding = () => {
     </CCard>
   )
 }
-const ForwardingSettings = (userId, tenantDomain) => {
+
+const ForwardingSettings = () => {
+  const query = useQuery()
+  const userId = query.get('userId')
+  const tenantDomain = query.get('tenantDomain')
   const { data: details, isFetching, error } = useListMailboxDetailsQuery({ userId, tenantDomain })
   const content = [
     {
