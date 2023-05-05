@@ -218,14 +218,16 @@ const Home = () => {
                 <p className="fw-lighter">Domain(s)</p>
                 {(isLoadingOrg || isFetchingOrg) && <Skeleton />}
                 {!isFetchingOrg &&
-                  organization?.verifiedDomains.map((item) => <li>{item.name}</li>)}
+                  issuccessOrg &&
+                  organization?.verifiedDomains?.map((item) => <li>{item.name}</li>)}
               </CCol>
               <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Capabilities</p>
                 {(isLoadingOrg || isFetchingOrg) && <Skeleton />}
                 {!isFetchingOrg &&
+                  issuccessOrg &&
                   organization?.assignedPlans
-                    .filter((p) => p.capabilityStatus == 'Enabled')
+                    ?.filter((p) => p.capabilityStatus == 'Enabled')
                     .reduce((plan, curr) => {
                       if (!plan.includes(curr.service)) {
                         plan.push(curr.service)
