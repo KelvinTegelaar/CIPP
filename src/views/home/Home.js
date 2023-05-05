@@ -3,7 +3,6 @@ import {
   faBook,
   faCog,
   faEllipsisH,
-  faEnvelope,
   faHotel,
   faLaptopCode,
   faMailBulk,
