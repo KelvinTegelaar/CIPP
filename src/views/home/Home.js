@@ -260,7 +260,7 @@ const Home = () => {
                         )
                         return (
                           <li key={`${standard}-${tenant.displayName}`}>
-                            {standardDisplayname[0].label} ({tenant.displayName})
+                            {standardDisplayname[0]?.label} ({tenant.displayName})
                           </li>
                         )
                       })
