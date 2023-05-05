@@ -51,6 +51,7 @@ Some permissions may come from other APIs than just Graph. you will see this bot
 | ChannelSettings.Read.All                                | Read the names, descriptions, and settings of channels                   |
 | ChannelSettings.ReadWrite.All                           | Read and write the names, descriptions, and settings of channels         |
 | ConsentRequest.Read.All                                 | Read consent requests                                                    |
+| DelegatedAdminRelationship.ReadWrite.All                | Manage Delegated Admin relationships with customers                      |
 | Device.Command                                          | Communicate with user devices                                            |
 | Device.Read                                             | Read user devices                                                        |
 | Device.Read.All                                         | Read all devices                                                         |
