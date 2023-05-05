@@ -6,6 +6,9 @@ const GDAPStatus = React.lazy(() => import('src/views/tenant/administration/List
 const GDAP = React.lazy(() => import('src/views/tenant/administration/GDAPWizard'))
 const GDAPRoleWizard = React.lazy(() => import('src/views/tenant/administration/GDAPRoleWizard'))
 const GDAPRoles = React.lazy(() => import('src/views/tenant/administration/ListGDAPRoles'))
+const GDAPRelationships = React.lazy(() =>
+  import('./views/tenant/administration/ListGDAPRelationships'),
+)
 const appapproval = React.lazy(() => import('src/views/cipp/AppApproval'))
 
 const adminRoutes = [
@@ -23,6 +26,11 @@ const adminRoutes = [
     path: '/tenant/administration/gdap-roles',
     name: 'GDAP Roles',
     component: GDAPRoles,
+  },
+  {
+    path: '/tenant/administration/gdap-relationships',
+    name: 'GDAP Relationships',
+    component: GDAPRelationships,
   },
   { path: '/tenant/administration/appapproval', name: 'App Approval', component: appapproval },
   { path: '/tenant/administration/gdap-status', name: 'GDAP Status', component: GDAPStatus },
