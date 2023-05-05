@@ -1,7 +1,12 @@
 import React, { useRef } from 'react'
 import PropTypes from 'prop-types'
 import {
+  CButton,
   CCallout,
+  CCard,
+  CCardBody,
+  CCardText,
+  CCardTitle,
   CFormInput,
   CListGroup,
   CListGroupItem,
@@ -12,8 +17,13 @@ import { CippOffcanvas, ModalService } from 'src/components/utilities'
 import { CippOffcanvasPropTypes } from 'src/components/utilities/CippOffcanvas'
 import { CippOffcanvasTable } from 'src/components/tables'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { stringCamelCase } from 'src/components/utilities/CippCamelCase'
+import TimeAgo from 'javascript-time-ago'
+
+import en from 'javascript-time-ago/locale/en.json'
+TimeAgo.addDefaultLocale(en)
+import ReactTimeAgo from 'react-time-ago'
 
 export default function CippActionsOffcanvas(props) {
   const inputRef = useRef('')
@@ -91,6 +101,25 @@ export default function CippActionsOffcanvas(props) {
     var actualUrl = url.replaceAll('{value1}', value1).replaceAll('{value2}', value2)
     genericGetRequest({ path: actualUrl })
   }
+  let cardContent
+  try {
+    cardContent = props.cards.map((action, index) => (
+      <>
+        <CCard className="border-top-dark border-top-3 mb-3">
+          <CCardBody>
+            <CCardTitle>Report Name: {action.label}</CCardTitle>
+            <CCardText>
+              {action.value && <Link to={action.link}>Status: {action.value}</Link>}
+            </CCardText>
+            <small>{action.timestamp && <ReactTimeAgo date={action.timestamp} />}</small>
+          </CCardBody>
+        </CCard>
+      </>
+    ))
+  } catch (error) {
+    console.error('An error occurred building OCanvas actions' + error.toString())
+  }
+
   const extendedInfoContent = <CippOffcanvasTable rows={props.extendedInfo} guid={props.id} />
   let actionsContent
   try {
@@ -118,7 +147,7 @@ export default function CippActionsOffcanvas(props) {
       </CListGroupItem>
     ))
   } catch (error) {
-    console.error('An error occored building OCanvas actions' + error.toString())
+    console.error('An error occurred building OCanvas actions' + error.toString())
   }
   let actionsSelectorsContent
   try {
@@ -143,7 +172,7 @@ export default function CippActionsOffcanvas(props) {
   } catch (error) {
     // When we create an Off Canvas control without selectors we will get this
     if (!error.toString().includes("Cannot read properties of undefined (reading '")) {
-      console.error('An error occored building OCanvas selectors' + error.toString())
+      console.error('An error occurred building OCanvas selectors' + error.toString())
     }
   }
   return (
@@ -176,7 +205,9 @@ export default function CippActionsOffcanvas(props) {
       {getResults.isError && (
         <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
       )}
+
       <COffcanvasTitle>Extended Information</COffcanvasTitle>
+      {cardContent && cardContent}
       {extendedInfoContent}
       {<COffcanvasTitle>Actions</COffcanvasTitle>}
       <CListGroup>
@@ -193,7 +224,7 @@ const CippActionsOffcanvasPropTypes = {
       label: PropTypes.string,
       value: PropTypes.any,
     }),
-  ).isRequired,
+  ),
   actions: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string,
