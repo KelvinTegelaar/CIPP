@@ -6,11 +6,12 @@ import { CippTablePropTypes } from 'src/components/tables/CippTable'
 
 export default function CippDatatable({ path, params, ...rest }) {
   const [refreshGuid, setRefreshGuid] = React.useState('')
+  const [graphFilter, setGraphFilter] = React.useState('')
   const {
     data = [],
     isFetching,
     error,
-  } = useListDatatableQuery({ path, params: { refreshGuid, ...params } })
+  } = useListDatatableQuery({ path, params: { refreshGuid, graphFilter, ...params } })
   return (
     <CippTable
       {...rest}
@@ -18,6 +19,7 @@ export default function CippDatatable({ path, params, ...rest }) {
       isFetching={isFetching}
       error={error}
       refreshFunction={setRefreshGuid}
+      graphFilterFunction={setGraphFilter}
     />
   )
 }
