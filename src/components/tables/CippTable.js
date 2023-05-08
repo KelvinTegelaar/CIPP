@@ -25,7 +25,14 @@ import { ModalService } from '../utilities'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { ConfirmModal } from '../utilities/SharedModal'
 
-const FilterComponent = ({ filterText, onFilter, onClear, filterlist, onFilterPreset }) => (
+const FilterComponent = ({
+  filterText,
+  onFilter,
+  onClear,
+  filterlist,
+  onFilterPreset,
+  onFilterGraph,
+}) => (
   <>
     <CInputGroup>
       <CDropdown variant="input-group">
@@ -38,14 +45,29 @@ const FilterComponent = ({ filterText, onFilter, onClear, filterlist, onFilterPr
           <FontAwesomeIcon icon={faSearch} color="#3e5c66" />
         </CDropdownToggle>
         <CDropdownMenu>
-          <CDropdownItem onClick={() => onFilterPreset('')}>Clear Filter</CDropdownItem>
+          <CDropdownItem
+            onClick={() => {
+              onFilterPreset('')
+              onFilterGraph('')
+            }}
+          >
+            Clear Filter
+          </CDropdownItem>
           {filterlist &&
             filterlist.map((item, idx) => {
-              return (
-                <CDropdownItem key={idx} onClick={() => onFilterPreset(item.filter)}>
-                  {item.filterName}
-                </CDropdownItem>
-              )
+              if (item.hasOwnProperty('graphFilter') && item.graphFilter == true) {
+                return (
+                  <CDropdownItem key={idx} onClick={() => onFilterGraph(item.filter)}>
+                    {item.filterName}
+                  </CDropdownItem>
+                )
+              } else {
+                return (
+                  <CDropdownItem key={idx} onClick={() => onFilterPreset(item.filter)}>
+                    {item.filterName}
+                  </CDropdownItem>
+                )
+              }
             })}
         </CDropdownMenu>
       </CDropdown>
@@ -69,6 +91,7 @@ FilterComponent.propTypes = {
   onClear: PropTypes.func,
   filterlist: PropTypes.arrayOf(PropTypes.object),
   onFilterPreset: PropTypes.func,
+  onFilterGraph: PropTypes.func,
 }
 
 const customSort = (rows, selector, direction) => {
@@ -99,6 +122,7 @@ export default function CippTable({
   error,
   reportName,
   refreshFunction = null,
+  graphFilterFunction = null,
   columns = [],
   dynamicColumns = true,
   filterlist,
@@ -142,6 +166,16 @@ export default function CippTable({
   const filteredItems = data.filter(
     (item) => JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !== -1,
   )
+  const applyFilter = (e) => {
+    setFilterText(e.target.value)
+  }
+
+  const setGraphFilter = (e) => {
+    if (graphFilterFunction) {
+      graphFilterFunction(e)
+    }
+  }
+
   useEffect(() => {
     if (columns !== updatedColumns) {
       setUpdatedColumns(columns)
@@ -251,7 +285,6 @@ export default function CippTable({
               }
               const newModalBody = {}
               for (let [objName, objValue] of Object.entries(modalBody)) {
-                console.log(objValue)
                 if (objValue.toString().startsWith('!')) {
                   newModalBody[objName] = row[objValue.replace('!', '')]
                 }
@@ -400,7 +433,14 @@ export default function CippTable({
         <div className="w-100 d-flex justify-content-start">
           <FilterComponent
             onFilter={(e) => setFilterText(e.target.value)}
-            onFilterPreset={(e) => setFilterText(e)}
+            onFilterPreset={(e) => {
+              setFilterText(e)
+              setGraphFilter('')
+            }}
+            onFilterGraph={(e) => {
+              setFilterText('')
+              setGraphFilter(e)
+            }}
             onClear={handleClear}
             filterText={filterText}
             filterlist={filterlist}
