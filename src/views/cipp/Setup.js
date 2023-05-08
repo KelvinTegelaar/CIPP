@@ -65,14 +65,14 @@ const Setup = () => {
   const startCIPPSetup = (partner) => {
     genericGetRequest({
       path: 'api/ExecSAMSetup',
-      params: { CreateSAM: true, partnersetup: partner },
+      params: { CreateSAM: true, partnersetup: true },
     })
-    setNoSubmit(true)
+    setSetupdone(false)
   }
 
   useInterval(
     async () => {
-      if (getResults.data?.step < 7 && getResults.data?.step > 0) {
+      if (getResults.data?.step < 5 && getResults.data?.step > 0) {
         genericGetRequest({
           path: 'api/ExecSAMSetup',
           params: { CheckSetupProcess: true, step: getResults.data?.step },
@@ -97,22 +97,26 @@ const Setup = () => {
           <h5 className="card-title mb-4">Choose Options</h5>
         </center>
         <hr className="my-4" />
-        This wizard will guide you through setting up a SAM application and using the correct keys.
-        <RFFCFormRadio
-          value="CreateSAM"
-          name="SetupType"
-          label="I'd like CIPP to create a SAM Application for me"
-        ></RFFCFormRadio>
-        <RFFCFormRadio
-          value="ExistingSAM"
-          name="SetupType"
-          label="I have an existing SAM application and would like to manually enter my tokens, or update them."
-        ></RFFCFormRadio>
-        <RFFCFormRadio
-          value="RefreshTokensOnly"
-          name="SetupType"
-          label="I would like to refresh my tokens or replace the user I've used for my previous tokens."
-        ></RFFCFormRadio>
+        This wizard will guide you through setting up CIPPs access to your client tenants. If this
+        is your first time setting up CIPP you will want to choose the option "I would like CIPP to
+        create an application for me".
+        <CRow className="mt-3">
+          <RFFCFormRadio
+            value="CreateSAM"
+            name="SetupType"
+            label="I would like CIPP to create an application for me"
+          ></RFFCFormRadio>
+          <RFFCFormRadio
+            value="RefreshTokensOnly"
+            name="SetupType"
+            label="I would like to refresh my token or replace the user I've used for my previous token."
+          ></RFFCFormRadio>
+          <RFFCFormRadio
+            value="ExistingSAM"
+            name="SetupType"
+            label="I have an existing application and would like to manually enter my token, or update them."
+          ></RFFCFormRadio>
+        </CRow>
         <hr className="my-4" />
       </CippWizard.Page>
       <CippWizard.Page title="Select Options" description="Select which options you want to apply.">
@@ -124,7 +128,7 @@ const Setup = () => {
         <Condition when="SetupType" is="RefreshTokensOnly">
           <CRow className="mb-3">
             <CCol md={6} className="mb-3">
-              Click the buttons below to refresh your tokens.
+              Click the buttons below to refresh your token.
               <br /> Remember to login under a account that has been added to the correct GDAP
               groups or the group 'AdminAgents'. After confirmation that the refresh is successful,
               the token cache must be cleared.
@@ -147,96 +151,48 @@ const Setup = () => {
           </CRow>
         </Condition>
         <Condition when="SetupType" is="CreateSAM">
-          <RFFCFormRadio
-            value="True"
-            name="Partner"
-            label="I am a Microsoft Partner, and would like to access all tenants using CIPP"
-          ></RFFCFormRadio>
-          <RFFCFormRadio
-            value="False"
-            name="Partner"
-            label="I am not a Microsoft Partner, and am using CIPP for only my own tenant"
-          ></RFFCFormRadio>
-          <Condition when="Partner" is="True">
-            <CRow>
-              <p>
-                When clicking the button below, the setup wizard starts. This is a 5 step process.
-                Please use a Global Administrator to perform these tasks. You can restart the
-                process at any time, by clicking on the start button once more.
-              </p>
-              <CCol md={2}>
-                <Field
-                  name="start"
-                  component="button"
-                  className="btn btn-primary"
-                  type="button"
-                  onClick={() => startCIPPSetup(true)}
-                  validate={valbutton}
-                >
-                  Start Setup Wizard
-                </Field>
-                <Error name="start" />
-              </CCol>
-              <hr className="my-4" />
-            </CRow>
-            <CRow>
-              <CCol md={12}>
-                {getResults.isFetching && <CSpinner size="sm">Loading</CSpinner>}
-                {getResults.isSuccess && (
-                  <>
-                    {getResults.data?.step < 5 ? (
-                      <CSpinner size="sm"></CSpinner>
-                    ) : (
-                      <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
-                    )}
-                    Step {getResults.data?.step} - {getResults.data.message}{' '}
-                    {getResults.data.url && (
-                      <a target="_blank" rel="noopener noreferrer" href={getResults.data?.url}>
-                        HERE
-                      </a>
-                    )}
-                  </>
-                )}
-              </CCol>
-            </CRow>
-          </Condition>
-          <Condition when="Partner" is="False">
-            <CRow>
-              <CCol md={2}>
-                <Field
-                  name="start"
-                  component="button"
-                  className="btn btn-primary"
-                  type="button"
-                  onClick={() => startCIPPSetup(false)}
-                >
-                  Start Setup Wizard
-                </Field>
-                <Error name="start" />
-              </CCol>
-              <hr className="my-4" />
-            </CRow>
-            <CRow>
-              <CCol md={12}>
-                {getResults.isFetching && <CSpinner size="sm">Loading</CSpinner>}
-                {getResults.isSuccess && (
-                  <>
-                    {getResults.data?.step < 5 ? (
-                      <CSpinner size="sm"></CSpinner>
-                    ) : (
-                      <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
-                    )}
-                    Step {getResults.data?.step} - {getResults.data.message}{' '}
-                    {getResults.data.url && (
-                      <a target="_blank" rel="noopener noreferrer" href={getResults.data?.url}>
-                        HERE
-                      </a>
-                    )}
-                  </>
-                )}
-              </CCol>
-            </CRow>
-          </Condition>
+          <CRow>
+            <p>
+              When clicking the button below, the setup wizard starts. This is a 5 step process.
+              Please use a Global Administrator to perform these tasks. You can restart the process
+              at any time, by clicking on the start button once more.
+            </p>
+            <CCol md={2}>
+              <Field
+                name="start"
+                component="button"
+                className="btn btn-primary"
+                type="button"
+                onClick={() => startCIPPSetup(true)}
+                validate={valbutton}
+              >
+                Start Setup Wizard
+              </Field>
+              <Field name="BlockNext" component="hidden" type="hidden" validate={valbutton}></Field>
+              <Error name="start" />
+            </CCol>
+            <hr className="my-4" />
+          </CRow>
+          <CRow>
+            <CCol md={12}>
+              {getResults.isFetching && <CSpinner size="sm">Loading</CSpinner>}
+              {getResults.isSuccess && (
+                <>
+                  {getResults.data?.step < 5 ? (
+                    <CSpinner size="sm"></CSpinner>
+                  ) : (
+                    <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
+                  )}
+                  Step {getResults.data?.step} - {getResults.data.message}{' '}
+                  {getResults.data.url && (
+                    <a target="_blank" rel="noopener noreferrer" href={getResults.data?.url}>
+                      HERE
+                    </a>
+                  )}
+                </>
+              )}
+            </CCol>
+          </CRow>
         </Condition>
         <Condition when="SetupType" is="ExistingSAM">
           you may enter your secrets below, if you only want to update a single value, leave the
