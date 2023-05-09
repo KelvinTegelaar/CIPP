@@ -9,7 +9,7 @@ import { CippPageList } from 'src/components/layout'
 import { TitleButton } from 'src/components/buttons'
 import { CippActionsOffcanvas } from 'src/components/utilities'
 import { cellLicenseFormatter } from 'src/components/tables/CellLicense'
-import { useGenericGetRequestQuery } from 'src/store/api/app'
+import M365Licenses from 'src/data/M365Licenses'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -17,19 +17,12 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
   const viewLink = `/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}&userEmail=${row.userPrincipalName}`
   const editLink = `/identity/administration/users/edit?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`
 
-  const { data: licenseMap, isSuccess: isLicenseMapSuccess } = useGenericGetRequestQuery({
-    path: '/M365Licenses.json',
-  })
-
   let licenses = []
   row.assignedLicenses?.map((licenseAssignment, idx) => {
-    if (isLicenseMapSuccess) {
-      for (var x = 0; x < licenseMap.length; x++) {
-        if (licenseAssignment.skuId == licenseMap[x].GUID) {
-          /*console.log(license.Product_Display_Name)*/
-          licenses.push(licenseMap[x].Product_Display_Name)
-          break
-        }
+    for (var x = 0; x < M365Licenses.length; x++) {
+      if (licenseAssignment.skuId == M365Licenses[x].GUID) {
+        licenses.push(M365Licenses[x].Product_Display_Name)
+        break
       }
     }
   })
