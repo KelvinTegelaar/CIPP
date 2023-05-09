@@ -119,6 +119,18 @@ const GroupTemplates = () => {
           path: '/api/ListGroupTemplates',
           params: { TenantFilter: tenant?.defaultDomainName },
           columns,
+          tableProps: {
+            selectableRows: true,
+            actionsList: [
+              {
+                label: 'Delete Template',
+                color: 'info',
+                modal: true,
+                modalUrl: `/api/RemoveGroupTemplate?ID=!GUID`,
+                modalMessage: 'Are you sure you want to delete these templates?',
+              },
+            ],
+          },
         }}
       />
     </>

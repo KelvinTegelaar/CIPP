@@ -23,7 +23,7 @@ const columns = [
     name: 'Account Licensed',
     sortable: true,
     cell: cellBooleanFormatter({ colourless: true }),
-    exportSelector: 'AccountEnabled',
+    exportSelector: 'isLicensed',
   },
   {
     selector: (row) => row['PerUser'],
@@ -74,6 +74,13 @@ const Altcolumns = [
     sortable: true,
     cell: cellBooleanFormatter({ colourless: true }),
     exportSelector: 'AccountEnabled',
+  },
+  {
+    selector: (row) => row['isLicensed'],
+    name: 'Account Licensed',
+    sortable: true,
+    cell: cellBooleanFormatter({ colourless: true }),
+    exportSelector: 'isLicensed',
   },
   {
     selector: (row) => row['PerUser'],
