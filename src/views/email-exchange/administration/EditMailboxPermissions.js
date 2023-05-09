@@ -41,28 +41,34 @@ const MailboxSettings = () => {
   const [active, setActive] = useState(1)
   return (
     <CippPage title="Settings" tenantSelector={false}>
-      <CNav variant="tabs" role="tablist">
-        <CNavItem active={active === 1} onClick={() => setActive(1)} href="#">
-          Mailbox Permissions
-        </CNavItem>
-        <CNavItem active={active === 2} onClick={() => setActive(2)} href="#">
-          Calendar Permissions
-        </CNavItem>
-        <CNavItem active={active === 3} onClick={() => setActive(3)} href="#">
-          Mailbox Forwarding
-        </CNavItem>
-      </CNav>
-      <CTabContent>
-        <CTabPane visible={active === 1} className="mt-3">
-          <MailboxPermissions />
-        </CTabPane>
-        <CTabPane visible={active === 2} className="mt-3">
-          <CalendarPermissions />
-        </CTabPane>
-        <CTabPane visible={active === 3} className="mt-3">
-          <MailboxForwarding />
-        </CTabPane>
-      </CTabContent>
+      <CCard>
+        <CCardHeader>
+          <CNav variant="tabs" role="tablist">
+            <CNavItem active={active === 1} onClick={() => setActive(1)} href="#">
+              Mailbox Permissions
+            </CNavItem>
+            <CNavItem active={active === 2} onClick={() => setActive(2)} href="#">
+              Calendar Permissions
+            </CNavItem>
+            <CNavItem active={active === 3} onClick={() => setActive(3)} href="#">
+              Mailbox Forwarding
+            </CNavItem>
+          </CNav>
+        </CCardHeader>
+        <CCardBody>
+          <CTabContent>
+            <CTabPane visible={active === 1} className="mt-3">
+              <MailboxPermissions />
+            </CTabPane>
+            <CTabPane visible={active === 2} className="mt-3">
+              <CalendarPermissions />
+            </CTabPane>
+            <CTabPane visible={active === 3} className="mt-3">
+              <MailboxForwarding />
+            </CTabPane>
+          </CTabContent>
+        </CCardBody>
+      </CCard>
     </CippPage>
   )
 }
