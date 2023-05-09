@@ -3,7 +3,6 @@ import {
   faBook,
   faCog,
   faEllipsisH,
-  faEnvelope,
   faHotel,
   faLaptopCode,
   faMailBulk,
@@ -15,6 +14,7 @@ import {
   faUserFriends,
   faUserPlus,
   faUsers,
+  faServer,
 } from '@fortawesome/free-solid-svg-icons'
 import { CCol, CRow } from '@coreui/react'
 import { useGenericGetRequestQuery } from 'src/store/api/app'
@@ -66,27 +66,42 @@ const Home = () => {
     {
       label: 'M365 Admin',
       link: `https://portal.office.com/Partner/BeginClientSession.aspx?CTID=${currentTenant.customerId}&CSDEST=o365admincenter`,
+      target: '_blank',
       icon: faCog,
     },
     {
       label: 'Exchange',
       link: `https://admin.exchange.microsoft.com/?landingpage=homepage&form=mac_sidebar&delegatedOrg=${currentTenant.defaultDomainName}#`,
+      target: '_blank',
       icon: faMailBulk,
     },
     {
       label: 'Intune',
       link: `https://intune.microsoft.com/${currentTenant.defaultDomainName}`,
+      target: '_blank',
       icon: faLaptopCode,
     },
     {
       label: 'Entra',
       link: `https://entra.microsoft.com/${currentTenant.defaultDomainName}`,
+      target: '_blank',
       icon: faUsers,
     },
     {
       label: 'Security',
       link: `https://security.microsoft.com/?tid=${currentTenant.customerId}`,
+      target: '_blank',
       icon: faShieldAlt,
+    },
+    {
+      label: 'Azure',
+      link: `https://portal.azure.com/?tid=${currentTenant.defaultDomainName}`,
+      icon: faServer,
+    },
+    {
+      label: 'Sharepoint',
+      link: `https://admin.microsoft.com/Partner/beginclientsession.aspx?CTID=${currentTenant.customerId}&CSDEST=SharePoint`,
+      icon: faBook,
     },
   ]
 
