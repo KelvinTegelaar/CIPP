@@ -167,11 +167,11 @@ const ListAlertsQueue = () => {
             selectableRows: true,
             actionsList: [
               {
-                label: 'Delete Template',
+                label: 'Delete alerts',
                 color: 'info',
                 modal: true,
                 modalUrl: `/api/RemoveQueuedAlert?ID=!tenantId`,
-                modalMessage: 'Are you sure you want to delete these templates?',
+                modalMessage: 'Are you sure you want to delete these alerts?',
               },
             ],
           },
