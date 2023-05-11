@@ -313,6 +313,11 @@ const Users = (row) => {
           { filterName: 'Guest users', filter: '"usertype":"guest"' },
           { filterName: 'Users with a license', filter: '"assignedLicenses":[{' },
           { filterName: 'Users without a license', filter: '"assignedLicenses":[]' },
+          {
+            filterName: 'Users with a license (Graph)',
+            filter: 'assignedLicenses/$count ne 0',
+            graphFilter: true,
+          },
         ],
         columns,
         path: '/api/ListUsers',
@@ -344,7 +349,7 @@ const Users = (row) => {
               label: 'Reset Password (Must Change)',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecResetPass?MustChange=true&TenantFilter=${tenant.defaultDomainName}&ID=!userPrincipalName`,
+              modalUrl: `/api/ExecResetPass?MustChange=true&TenantFilter=${tenant.defaultDomainName}&ID=!userPrincipalName&displayName=!displayName`,
               modalMessage:
                 'Are you sure you want to reset the password for these users? The users must change their password at next logon.',
             },
@@ -352,7 +357,7 @@ const Users = (row) => {
               label: 'Reset Password',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecResetPass?MustChange=false&TenantFilter=${tenant.defaultDomainName}&ID=!userPrincipalName`,
+              modalUrl: `/api/ExecResetPass?MustChange=false&TenantFilter=${tenant.defaultDomainName}&ID=!userPrincipalName&displayName=!displayName`,
               modalMessage:
                 'Are you sure you want to reset the password for these users? The users must change their password at next logon.',
             },

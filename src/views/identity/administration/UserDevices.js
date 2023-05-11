@@ -20,7 +20,7 @@ const columns = [
         return (
           <CLink
             target="_blank"
-            href={`https://endpoint.microsoft.com/${tenantDomainFileScope}#blade/Microsoft_Intune_Devices/DeviceSettingsMenuBlade/overview/mdmDeviceId/${row.EPMID}`}
+            href={`https://intune.microsoft.com/${tenantDomainFileScope}/#view/Microsoft_Intune_Devices/DeviceSettingsMenuBlade/~/overview/mdmDeviceId/${row.EPMID}`}
           >
             {row.displayName}
           </CLink>
