@@ -17,7 +17,7 @@ to setup the Graph API, CSP, and Exchange integration CIPP requires a minimum le
 2. Add the account to the correct groups
 
 * If you are using DAP The CIPP user must be added to the "AdminAgents" group.
-* If you are using GDAP, the CIPP user must be added to the groups you've assigned for GDAP has made. The minimum permissions CIPP needs to function are:
+* If you are using GDAP, the CIPP user must be added to the "AdminAgents" group and the groups you've assigned for GDAP has made. The minimum permissions CIPP needs to function are:
   * Application Administrator
   * User Administrator
   * Intune Administrator
