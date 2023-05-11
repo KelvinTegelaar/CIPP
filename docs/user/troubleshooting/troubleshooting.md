@@ -72,7 +72,7 @@ Multiple Potential Causes:
 
 1. The user has not authorized the CIPP-SAM Application. Use the Settings -> Tenants -> Refresh button to refresh the permissions.
 2. The user that was used for the CIPP Authorisation is a guest in this tenant
-3. DAP: If the client is using DAP. The user might not be in the AdminAgents group.
+3. The user might not be in the AdminAgents group.
 4. GDAP: if you are using GDAP and have not added the user to the correct group(s) for CIPP to function.
 
 ### _invalid or malformed_
