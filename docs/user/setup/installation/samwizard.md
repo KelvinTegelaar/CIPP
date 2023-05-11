@@ -24,8 +24,10 @@ to setup the Graph API, CSP, and Exchange integration CIPP requires a minimum le
   * Exchange Administrator
   * Security Administrator
   * Cloud App Security Administrator
+  * Cloud Device Administrator
   * Teams Administrator
   * Sharepoint Administrator
+  * Authentication Policy Administrator
   * Privileged Authentication Administrator (Required to revoke sessions, reset admin passwords, and set up application policies)
 
 3. This account must have **Microsoft** multi-factor authentication enforced for each logon, either via Conditional Access when available or via [Per User MFA](https://account.activedirectory.windowsazure.com/UserManagement/MultifactorVerification.aspx) when Conditional Access is not available.
