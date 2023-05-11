@@ -51,7 +51,7 @@ const MobileDeviceList = () => {
               color: 'info',
               modal: true,
               modalUrl: `/api/ExecMailboxMobileDevices?TenantFilter=${tenant.defaultDomainName}&DeviceID=${row.deviceID}&UserID=${userId}&quarantine=false`,
-              modalMessage: 'Are you sure you want to remove device from quarantine?',
+              modalMessage: 'Are you sure you want to allow the device?',
             },
             {
               label: 'Block Device',
@@ -136,8 +136,8 @@ const MobileDeviceList = () => {
       selector: (row) => row['deviceID'],
       name: 'Device ID',
       sortable: true,
+      cell: (row) => CellTip(row['deviceID']),
       exportSelector: 'deviceID',
-      cell: cellDateFormatter(),
     },
     {
       selector: (row) => row['firstSync'],
