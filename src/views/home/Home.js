@@ -15,6 +15,7 @@ import {
   faUserFriends,
   faUserPlus,
   faUsers,
+  faServer,
 } from '@fortawesome/free-solid-svg-icons'
 import { CCol, CRow } from '@coreui/react'
 import { useGenericGetRequestQuery } from 'src/store/api/app'
@@ -87,6 +88,16 @@ const Home = () => {
       label: 'Security',
       link: `https://security.microsoft.com/?tid=${currentTenant.customerId}`,
       icon: faShieldAlt,
+    },
+    {
+      label: 'Azure',
+      link: `https://portal.azure.com/?tid=${currentTenant.defaultDomainName}`,
+      icon: faServer,
+    },
+    {
+      label: 'Sharepoint',
+      link: `https://admin.microsoft.com/Partner/beginclientsession.aspx?CTID=${currentTenant.customerId}&CSDEST=SharePoint`,
+      icon: faBook,
     },
   ]
 
@@ -260,7 +271,7 @@ const Home = () => {
                         )
                         return (
                           <li key={`${standard}-${tenant.displayName}`}>
-                            {standardDisplayname[0].label} ({tenant.displayName})
+                            {standardDisplayname[0]?.label} ({tenant.displayName})
                           </li>
                         )
                       })
