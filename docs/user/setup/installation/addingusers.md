@@ -25,4 +25,4 @@ After deployment you'll need to give each user access. To generate an invite for
 * Enter the UPN for the user. It is important to make sure that this matches the M365 UPN.
 * Add the roles for the user.
 
-Currently CIPP supports three roles, `readonly`, `editor`, and `admin`. Further information on the roles and how to assign these is on the [Roles](../../gettingstarted/roles/) page.
+Currently CIPP supports three roles, `readonly`, `editor`, and `admin`. Further information on the roles and how to assign these is on the [Roles](https://docs.cipp.app/setup/installation/roles) page.
