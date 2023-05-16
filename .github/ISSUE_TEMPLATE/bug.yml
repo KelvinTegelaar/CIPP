@@ -31,7 +31,12 @@ body:
   attributes:
     label: Environment data
     description: >
-      Please let us know your environment information - e.g. hosted version, Azure, local Dev version.
+      Please let us know your environment information. This must follow this format or the ticket will be closed:
+      Sponsored / Non-sponsored instance
+      Front end version number:
+      Back end version number: 
+      Tried Tenant Cache Clear: true/false
+      Tried Token Cache Clear: true/false
     render: PowerShell
   validations:
     required: true
