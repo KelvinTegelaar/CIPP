@@ -62,6 +62,20 @@ const Home = () => {
     params: {},
   })
 
+  const {
+    data: partners,
+    isLoading: isLoadingPartners,
+    isSuccess: issuccessPartners,
+    isFetching: isFetchingPartners,
+  } = useGenericGetRequestQuery({
+    path: '/api/ListGraphRequest',
+    params: {
+      Endpoint: 'policies/crossTenantAccessPolicy/partners',
+      tenantFilter: currentTenant.defaultDomainName,
+      ReverseTenantLookup: true,
+    },
+  })
+
   const actions1 = [
     {
       label: 'M365 Admin',
@@ -280,6 +294,19 @@ const Home = () => {
                         )
                       })
                     })}
+              </CCol>
+              <CCol sm={12} md={4} className="mb-3">
+                <p className="fw-lighter">Partner Relationships</p>
+                {(isLoadingPartners || isFetchingPartners) && <Skeleton />}
+                {issuccessPartners &&
+                  !isFetchingPartners &&
+                  partners.map((partner) => {
+                    return (
+                      <li key={`${partner.tenantId}`}>
+                        {partner.TenantInfo.displayName} ({partner.TenantInfo.defaultDomainName})
+                      </li>
+                    )
+                  })}
               </CCol>
             </CRow>
           </CippContentCard>
