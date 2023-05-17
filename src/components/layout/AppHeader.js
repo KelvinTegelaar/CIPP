@@ -1,9 +1,13 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {
+  CAlert,
+  CAlertLink,
   CContainer,
+  CCollapse,
   CHeader,
   CHeaderNav,
+  CNavItem,
   CHeaderToggler,
   CImage,
   CSidebarBrand,
@@ -17,16 +21,23 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretSquareLeft, faCaretSquareRight } from '@fortawesome/free-solid-svg-icons'
 import { toggleSidebarShow } from 'src/store/features/app'
 import { useMediaPredicate } from 'react-media-hook'
+import { useGenericGetRequestQuery } from 'src/store/api/app'
 
 const AppHeader = () => {
   const dispatch = useDispatch()
   const sidebarShow = useSelector((state) => state.app.sidebarShow)
   const currentTheme = useSelector((state) => state.app.currentTheme)
   const preferredTheme = useMediaPredicate('(prefers-color-scheme: dark)') ? 'impact' : 'cyberdrain'
+  const {
+    data: dashboard,
+    isLoading: isLoadingDash,
+    isSuccess: issuccessDash,
+  } = useGenericGetRequestQuery({ path: '/api/GetCippAlerts' })
+
   return (
-    <CHeader position="sticky">
-      <CContainer fluid>
-        <CSidebarBrand className="me-auto p-2" to="/">
+    <>
+      <CHeader position="sticky">
+        <CSidebarBrand className="me-auto pt-xs-2 p-md-2" to="/">
           <CImage
             className="sidebar-brand-full me-2"
             src={
@@ -47,16 +58,31 @@ const AppHeader = () => {
                 className="me-2"
               />
             </CHeaderToggler>
-            <TenantSelector className="me-2" NavSelector={true} />
           </CHeaderNav>
         </CSidebarBrand>
-
-        <CHeaderNav className="ms-auto p-2">
-          <AppHeaderSearch />
-          <AppHeaderDropdown />
+        <CHeaderNav className="p-md-2 flex-grow-1">
+          <TenantSelector NavSelector={true} />
+          <CNavItem>
+            <AppHeaderSearch />
+          </CNavItem>
+          <CNavItem>
+            <AppHeaderDropdown />
+          </CNavItem>
         </CHeaderNav>
-      </CContainer>
-    </CHeader>
+      </CHeader>
+
+      {dashboard &&
+        dashboard.map((item, index) => (
+          <div
+            className="mb-3"
+            style={{ zIndex: 10000, 'padding-left': '20rem', 'padding-right': '3rem' }}
+          >
+            <CAlert key={index} color={item.type} variant dismissible>
+              {item.Alert} <CAlertLink href={item.link}>Link</CAlertLink>
+            </CAlert>
+          </div>
+        ))}
+    </>
   )
 }
 
