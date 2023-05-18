@@ -7,6 +7,7 @@ import { CippPageList } from 'src/components/layout'
 import { cellDateFormatter, cellNullTextFormatter } from 'src/components/tables'
 import { CippActionsOffcanvas } from 'src/components/utilities'
 import { cellLogoFormatter } from 'src/components/tables/CellLogo'
+import { CellTip } from 'src/components/tables/CellGenericFormat'
 
 const EnterpriseApplications = () => {
   const [tenantColumnSet, setTenantColumn] = useState(true)
@@ -40,7 +41,6 @@ const EnterpriseApplications = () => {
     {
       name: '',
       selector: (row) => row.info,
-      exportSelector: 'info',
       cell: cellLogoFormatter(),
       maxWidth: '1px',
     },
@@ -74,7 +74,7 @@ const EnterpriseApplications = () => {
       name: 'Homepage',
       selector: (row) => row.homepage,
       sortable: true,
-      exportSelector: 'activatedDateTime',
+      exportSelector: 'homepage',
       cell: cellDateFormatter({ format: 'short' }),
     },
   ]
