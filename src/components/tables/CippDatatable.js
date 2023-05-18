@@ -7,7 +7,7 @@ import { CCallout } from '@coreui/react'
 
 export default function CippDatatable({ path, params, ...rest }) {
   const [refreshGuid, setRefreshGuid] = React.useState('')
-  const [graphFilter, setGraphFilter] = React.useState('')
+  const [graphFilter, setGraphFilter] = React.useState(params?.Parameters?.$filter)
   const {
     data = [],
     isFetching,
