@@ -112,7 +112,7 @@
   },
   {
     "cat": "AAD",
-    "name": "standards.PWcompanionAppAllowedState",
+    "name": "standards.PWcompanionAppAllowedState.Enabled",
     "helpText": "This is the default helptext",
     "addedComponent": {
       "type": "Select",
