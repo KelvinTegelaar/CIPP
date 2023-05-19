@@ -226,6 +226,45 @@ const ApplyStandard = () => {
         <hr className="my-4" />
       </CippWizard.Page>
       <CippWizard.Page
+        title="Intune Standards"
+        description="Select which standards you want to apply."
+      >
+        <center>
+          <h3 className="text-primary">Step 5</h3>
+          <h5 className="card-title mb-4">Select Standards</h5>
+        </center>
+        <hr className="my-4" />
+        <div className="mb-2">
+          <CRow className="mb-3" xs={{ cols: 2 }}>
+            {allStandardsList
+              .filter((obj) => obj.cat === 'Intune')
+              .map((item, key) => (
+                <>
+                  <RFFCFormSwitch key={key} name={item.name} label={item.label} />
+                  {item.addedComponent && (
+                    <Condition when={item.name} is={true}>
+                      {item.addedComponent.type === 'Select' ? (
+                        <RFFCFormSelect
+                          name={item.addedComponent.name}
+                          label={item.addedComponent.label}
+                          values={item.addedComponent.values}
+                        />
+                      ) : (
+                        <RFFCFormInput
+                          type="text"
+                          name={item.addedComponent.name}
+                          label={item.addedComponent.label}
+                        />
+                      )}
+                    </Condition>
+                  )}
+                </>
+              ))}
+          </CRow>
+        </div>
+        <hr className="my-4" />
+      </CippWizard.Page>
+      <CippWizard.Page
         title="SharePoint Standards"
         description="Select which standards you want to apply."
       >
