@@ -235,6 +235,35 @@ const ListAppliedStandards = () => {
                             ))}
                         </CRow>
                         <hr />
+                        <h5>Intune Standards</h5>
+                        <hr />
+                        <CRow className="mb-3" xs={{ cols: 2 }}>
+                          {allStandardsList
+                            .filter((obj) => obj.cat === 'Intune')
+                            .map((item, key) => (
+                              <>
+                                <RFFCFormSwitch key={key} name={item.name} label={item.label} />
+                                {item.addedComponent && (
+                                  <Condition when={item.name} is={true}>
+                                    {item.addedComponent.type === 'Select' ? (
+                                      <RFFCFormSelect
+                                        name={item.addedComponent.name}
+                                        label={item.addedComponent.label}
+                                        values={item.addedComponent.values}
+                                      />
+                                    ) : (
+                                      <RFFCFormInput
+                                        type="text"
+                                        name={item.addedComponent.name}
+                                        label={item.addedComponent.label}
+                                      />
+                                    )}
+                                  </Condition>
+                                )}
+                              </>
+                            ))}
+                        </CRow>
+                        <hr />
                         <h5>SharePoint Standards</h5>
                         <hr />
                         <CRow className="mb-3" xs={{ cols: 2 }}>
