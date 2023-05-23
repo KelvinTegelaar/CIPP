@@ -5,14 +5,14 @@ import 'jspdf-autotable'
 import PropTypes from 'prop-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons'
+import { useSelector } from 'react-redux'
 
 function ExportPDFButton(props) {
+  const base64 = useSelector((state) => state.app.reportImage)
   const exportPDF = (pdfData, pdfHeaders, pdfSize = 'A4', reportName = 'report') => {
     const unit = 'pt'
     const size = pdfSize // Use A1, A2, A3 or A4
     const orientation = 'landscape' // portrait or landscape
-
-    const marginLeft = 40
     const doc = new jsPDF(orientation, unit, size)
 
     doc.setFontSize(10)
@@ -24,16 +24,16 @@ function ExportPDFButton(props) {
       }
     })
 
-    const title = reportName
     let content = {
-      startY: 50,
+      startY: 100,
       columns: headerObj,
       body: pdfData,
-      theme: 'grid',
+      theme: 'striped',
       headStyles: { fillColor: [247, 127, 0] },
     }
-
-    doc.text(title, marginLeft, 40)
+    if (base64) {
+      doc.addImage(base64, 'png', 20, 20, 120, 100)
+    }
     doc.autoTable(content)
     doc.save(reportName + '.pdf')
   }

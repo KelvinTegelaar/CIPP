@@ -96,14 +96,14 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             label: 'Exchange Portal',
             color: 'info',
             external: true,
-            link: `https://outlook.office365.com/ecp/?rfr=Admin_o365&exsvurl=1&delegatedOrg=${row.defaultDomainName}`,
+            link: `https://admin.exchange.microsoft.com/?landingpage=homepage&form=mac_sidebar&delegatedOrg=${row.defaultDomainName}#`,
           },
           {
             icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
-            label: 'AAD Portal',
+            label: 'Entra Portal',
             color: 'info',
             external: true,
-            link: `https://aad.portal.azure.com/${row.defaultDomainName}`,
+            link: `https://entra.microsoft.com/${row.defaultDomainName}`,
           },
           {
             icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
@@ -124,7 +124,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             label: 'MEM (Intune) Portal',
             color: 'info',
             external: true,
-            link: `https://endpoint.microsoft.com/${row.defaultDomainName}`,
+            link: `https://intune.microsoft.com/${row.defaultDomainName}`,
           },
           {
             icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
@@ -167,23 +167,11 @@ function StatusText(graphErrorCount, lastGraphError) {
 }
 
 const TenantsList = () => {
+  const TenantListSelector = useSelector((state) => state.app.TenantListSelector)
   const tenant = useSelector((state) => state.app.currentTenant)
-  const [columnOmits, setOmitVisible] = useState(true)
+  const [columnOmits, setOmitVisible] = useState(TenantListSelector)
 
   const columns = [
-    {
-      name: 'Status',
-      selector: (row) => row['GraphErrorCount'],
-      sortable: true,
-      cell: (row) =>
-        CellTipIcon(
-          StatusText(row['GraphErrorCount'], row['LastGraphError']),
-          StatusIcon(row['GraphErrorCount']),
-        ),
-      exportSelector: 'GraphErrorCount',
-      maxWidth: '5px',
-      minWidth: '5px',
-    },
     {
       name: 'Name',
       selector: (row) => row['displayName'],
@@ -223,7 +211,7 @@ const TenantsList = () => {
       center: true,
       cell: (row) => (
         <a
-          href={`https://outlook.office365.com/ecp/?rfr=Admin_o365&exsvurl=1&delegatedOrg=${row.defaultDomainName}`}
+          href={`https://admin.exchange.microsoft.com/?landingpage=homepage&form=mac_sidebar&delegatedOrg=${row.defaultDomainName}#`}
           target="_blank"
           className="dlink"
           rel="noreferrer"
@@ -313,7 +301,7 @@ const TenantsList = () => {
       ),
     },
     {
-      name: 'Sharepoint Admin',
+      name: 'SharePoint Admin',
       selector: (row) => row['defaultDomainName'],
       center: true,
       omit: columnOmits,

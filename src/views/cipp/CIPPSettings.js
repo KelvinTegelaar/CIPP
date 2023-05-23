@@ -17,11 +17,11 @@ import {
   CForm,
   CListGroup,
   CListGroupItem,
-  CBadge,
   CLink,
   CSpinner,
 } from '@coreui/react'
 import {
+  useGenericGetRequestQuery,
   useLazyExecClearCacheQuery,
   useLazyExecNotificationConfigQuery,
   useLazyExecPermissionsAccessCheckQuery,
@@ -29,30 +29,50 @@ import {
   useLazyGenericGetRequestQuery,
   useLazyGenericPostRequestQuery,
   useLazyListNotificationConfigQuery,
+  useLoadVersionsQuery,
 } from 'src/store/api/app'
 import {
   useExecAddExcludeTenantMutation,
   useExecRemoveExcludeTenantMutation,
-  useListExcludedTenantsQuery,
 } from 'src/store/api/tenants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
+  faCheckCircle,
   faCircleNotch,
+  faExclamationTriangle,
+  faEye,
+  faEyeSlash,
   faLink,
+  faRecycle,
   faScroll,
   faTrash,
-  faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons'
 import { useListTenantsQuery } from 'src/store/api/tenants'
 import { useLazyEditDnsConfigQuery, useLazyGetDnsConfigQuery } from 'src/store/api/domains'
 import { useDispatch, useSelector } from 'react-redux'
-import { CippTable } from 'src/components/tables'
+import {
+  CellBadge,
+  cellBooleanFormatter,
+  CellTip,
+  CellTipIcon,
+  CippTable,
+} from 'src/components/tables'
 import { CippPage, CippPageList } from 'src/components/layout'
-import { RFFCFormSwitch, RFFCFormInput, RFFCFormSelect, RFFCFormCheck } from 'src/components/forms'
+import {
+  RFFCFormSwitch,
+  RFFCFormInput,
+  RFFCFormSelect,
+  RFFSelectSearch,
+} from 'src/components/forms'
 import { Form } from 'react-final-form'
 import useConfirmModal from 'src/hooks/useConfirmModal'
 import { setCurrentTenant } from 'src/store/features/app'
-import { CippCodeBlock, ModalService, TenantSelectorMultiple } from 'src/components/utilities'
+import {
+  CippCodeBlock,
+  ModalService,
+  StatusIcon,
+  TenantSelectorMultiple,
+} from 'src/components/utilities'
 import CippListOffcanvas from 'src/components/utilities/CippListOffcanvas'
 import { TitleButton } from 'src/components/buttons'
 import Skeleton from 'react-loading-skeleton'
@@ -67,7 +87,7 @@ const CIPPSettings = () => {
           General
         </CNavItem>
         <CNavItem active={active === 2} onClick={() => setActive(2)} href="#">
-          Excluded Tenants
+          Tenants
         </CNavItem>
         <CNavItem active={active === 3} onClick={() => setActive(3)} href="#">
           Backend
@@ -122,6 +142,8 @@ const checkAccessColumns = [
 ]
 
 const GeneralSettings = () => {
+  const { data: versions, isSuccess: isSuccessVersion } = useLoadVersionsQuery()
+
   const { data: tenants = [] } = useListTenantsQuery({ AllTenantSelector: false })
   const [checkPermissions, permissionsResult] = useLazyExecPermissionsAccessCheckQuery()
   const [clearCache, clearCacheResult] = useLazyExecClearCacheQuery()
@@ -129,6 +151,9 @@ const GeneralSettings = () => {
   const [selectedTenants, setSelectedTenants] = useState([])
   const [showMaxSelected, setShowMaxSelected] = useState(false)
   const [tokenOffcanvasVisible, setTokenOffcanvasVisible] = useState(false)
+  const [runBackup, RunBackupResult] = useLazyGenericGetRequestQuery()
+  const [restoreBackup, restoreBackupResult] = useLazyGenericPostRequestQuery()
+
   const maxSelected = 2
   const tenantSelectorRef = useRef(null)
 
@@ -241,17 +266,65 @@ const GeneralSettings = () => {
     pagination: false,
     subheader: false,
   }
-
+  const downloadTxtFile = (data) => {
+    const txtdata = [JSON.stringify(RunBackupResult.data.backup)]
+    const file = new Blob(txtdata, { type: 'text/plain' })
+    const element = document.createElement('a')
+    element.href = URL.createObjectURL(file)
+    element.download = 'CIPP-Backup' + Date.now() + '.json'
+    document.body.appendChild(element)
+    element.click()
+  }
+  const inputRef = useRef(null)
+  const handleChange = (e) => {
+    const fileReader = new FileReader()
+    fileReader.readAsText(e.target.files[0], 'UTF-8')
+    fileReader.onload = (e) => {
+      restoreBackup({ path: '/api/ExecRestoreBackup', values: e.target.result })
+    }
+  }
   return (
     <div>
       <CRow className="mb-3">
-        <CCol md={6}>
+        <CCol>
+          <CCard className="h-100">
+            <CCardHeader>
+              <CCardTitle>Frontend Version</CCardTitle>
+            </CCardHeader>
+            <CCardBody>
+              <StatusIcon
+                type="negatedboolean"
+                status={isSuccessVersion && versions.OutOfDateCIPP}
+              />
+              <div>Latest: {isSuccessVersion ? versions.RemoteCIPPVersion : <Skeleton />}</div>
+              <div>Current: {isSuccessVersion ? versions.LocalCIPPVersion : <Skeleton />}</div>
+            </CCardBody>
+          </CCard>
+        </CCol>
+        <CCol>
+          <CCard className="h-100">
+            <CCardHeader>
+              <CCardTitle>API Version</CCardTitle>
+            </CCardHeader>
+            <CCardBody>
+              <StatusIcon
+                type="negatedboolean"
+                status={isSuccessVersion && versions.OutOfDateCIPPAPI}
+              />
+              <div>Latest: {isSuccessVersion ? versions.RemoteCIPPAPIVersion : <Skeleton />}</div>
+              <div>Current: {isSuccessVersion ? versions.LocalCIPPAPIVersion : <Skeleton />}</div>
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </CRow>
+      <CRow className="mb-3">
+        <CCol>
           <CCard className="h-100">
             <CCardHeader>
               <CCardTitle>Permissions Check</CCardTitle>
             </CCardHeader>
             <CCardBody>
-              Click the button below to start a permissions check. <br />
+              <CRow>Click the button below to start a permissions check.</CRow>
               <CButton
                 onClick={() => checkPermissions()}
                 disabled={permissionsResult.isFetching}
@@ -276,8 +349,15 @@ const GeneralSettings = () => {
                     )}
                     {permissionsResult.data.Results?.MissingPermissions.length > 0 && (
                       <>
-                        Your Secure Application Model is missing the following delegated
-                        permissions:
+                        Your Secure Application Model is missing the following permissions. See the
+                        documentation on how to add permissions{' '}
+                        <a
+                          target="_blank"
+                          href="https://cipp.app/docs/user/gettingstarted/permissions/#manual-sam-setup"
+                        >
+                          here
+                        </a>
+                        .
                         <CListGroup flush>
                           {permissionsResult.data.Results?.MissingPermissions?.map((r, index) => (
                             <CListGroupItem key={index}>{r}</CListGroupItem>
@@ -311,12 +391,14 @@ const GeneralSettings = () => {
               <CCardTitle>Clear Cache</CCardTitle>
             </CCardHeader>
             <CCardBody>
-              Click the button below to clear the application cache. You can clear only the tenant
-              cache, or all caches. <br /> <br />
+              <CRow>
+                Click the button below to clear the application cache. You can clear only the tenant
+                cache, or all caches.
+              </CRow>
               <CButton
                 onClick={() => handleClearCache()}
                 disabled={clearCacheResult.isFetching}
-                className="me-3"
+                className="me-3 mt-3"
               >
                 {clearCacheResult.isFetching && (
                   <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
@@ -326,7 +408,7 @@ const GeneralSettings = () => {
               <CButton
                 onClick={() => handleClearCacheTenant()}
                 disabled={clearCacheResult.isFetching}
-                className="me-3"
+                className="me-3 mt-3"
               >
                 {clearCacheResult.isFetching && (
                   <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
@@ -347,50 +429,123 @@ const GeneralSettings = () => {
               <CCardTitle>Tenant Access Check</CCardTitle>
             </CCardHeader>
             <CCardBody>
-              <div className="mb-3">
-                Click the button below to start a tenant access check. You can select multiple a
-                maximum of {maxSelected + 1} tenants is recommended.
-              </div>
+              <CRow className="mb-3">
+                <CCol>
+                  <div className="mb-3">
+                    Click the button below to start a tenant access check. You can select multiple,
+                    but a maximum of {maxSelected + 1} tenants is recommended.
+                  </div>
 
-              <TenantSelectorMultiple
-                ref={tenantSelectorRef}
-                values={selectedTenants}
-                onChange={(value) =>
-                  handleSetSelectedTenants(
-                    value.map((val) => {
-                      return val.value
-                    }),
-                  )
-                }
-              />
-              {showMaxSelected && (
-                <CCallout color="warning">
-                  A maximum of {maxSelected + 1} tenants is recommended.
-                </CCallout>
-              )}
-              <br />
-              <CButton
-                onClick={() => handleCheckAccess()}
-                disabled={accessCheckResult.isFetching || selectedTenants.length < 1}
-              >
-                {accessCheckResult.isFetching && (
-                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-                )}
-                Run access check
-              </CButton>
-              {accessCheckResult.isSuccess && (
-                <CippTable
-                  reportName="none"
-                  columns={checkAccessColumns}
-                  tableProps={tableProps}
-                  data={accessCheckResult.data.Results}
-                />
-              )}
+                  <TenantSelectorMultiple
+                    ref={tenantSelectorRef}
+                    values={selectedTenants}
+                    onChange={(value) =>
+                      handleSetSelectedTenants(
+                        value.map((val) => {
+                          return val.value
+                        }),
+                      )
+                    }
+                  />
+                  {showMaxSelected && (
+                    <CCallout color="warning">
+                      A maximum of {maxSelected + 1} tenants is recommended.
+                    </CCallout>
+                  )}
+                </CCol>
+              </CRow>
+              <CRow className="mb-3">
+                <CCol>
+                  <CButton
+                    onClick={() => handleCheckAccess()}
+                    disabled={accessCheckResult.isFetching || selectedTenants.length < 1}
+                  >
+                    {accessCheckResult.isFetching && (
+                      <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                    )}
+                    Run access check
+                  </CButton>
+                </CCol>
+              </CRow>
+              <CRow>
+                <CCol>
+                  {accessCheckResult.isSuccess && (
+                    <CippTable
+                      reportName="none"
+                      columns={checkAccessColumns}
+                      tableProps={tableProps}
+                      data={accessCheckResult.data.Results}
+                    />
+                  )}
+                </CCol>
+              </CRow>
             </CCardBody>
           </CCard>
         </CCol>
         <CCol>
           <DNSSettings />
+        </CCol>
+      </CRow>
+      <CRow>
+        <CCol>
+          <CCard className="h-100">
+            <CCardHeader>
+              <CCardTitle>Run Backup</CCardTitle>
+            </CCardHeader>
+            <CCardBody>
+              <CRow>Click the button below to start a backup of all Settings</CRow>
+              <CButton
+                onClick={() => runBackup({ path: '/api/ExecRunBackup' })}
+                disabled={RunBackupResult.isFetching}
+                className="me-3 mt-3"
+              >
+                {RunBackupResult.isFetching && (
+                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                )}
+                Run backup
+              </CButton>
+              <input
+                ref={inputRef}
+                type="file"
+                accept="json/*"
+                style={{ display: 'none' }}
+                id="contained-button-file"
+                onChange={(e) => handleChange(e)}
+              />
+              <CButton
+                type="file"
+                name="file"
+                onClick={() => inputRef.current.click()}
+                disabled={restoreBackupResult.isFetching}
+                className="me-3 mt-3"
+              >
+                {restoreBackupResult.isFetching && (
+                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                )}
+                Restore backup
+              </CButton>
+              {restoreBackupResult.isSuccess && (
+                <>
+                  <CCallout color="success">{restoreBackupResult.data.Results}</CCallout>
+                </>
+              )}
+              {RunBackupResult.isSuccess && (
+                <>
+                  <CCallout color="success">
+                    <CButton
+                      onClick={() => downloadTxtFile(RunBackupResult.data.backup)}
+                      className="m-1"
+                    >
+                      Download Backup
+                    </CButton>
+                  </CCallout>
+                </>
+              )}
+            </CCardBody>
+          </CCard>
+        </CCol>
+        <CCol>
+          <PasswordSettings />
         </CCol>
       </CRow>
     </div>
@@ -400,13 +555,10 @@ const GeneralSettings = () => {
 const ExcludedTenantsSettings = () => {
   const dispatch = useDispatch()
   const currentTenant = useSelector((state) => state.app.currentTenant)
-  const {
-    data: excludedTenants = [],
-    isFetching: excludedTenantsFetching,
-    isSuccess: excludedTenantsSuccess,
-  } = useListExcludedTenantsQuery()
   const [removeExcludeTenant, removeExcludeTenantResult] = useExecRemoveExcludeTenantMutation()
   const [addExcludeTenant, addExcludeTenantResult] = useExecAddExcludeTenantMutation()
+  const [refreshPermissions, refreshPermissionsResults] = useLazyGenericGetRequestQuery()
+
   // const [selectedTenant, setSelectedTenant] = useState()
   const selectedTenant = useRef()
 
@@ -424,8 +576,20 @@ const ExcludedTenantsSettings = () => {
       onConfirm: () => removeExcludeTenant(domain),
     })
 
+  const handleCPVPermissions = (domain) =>
+    ModalService.confirm({
+      title: 'Refresh Permissions',
+      body: <div>Are you sure you want to refresh permissions for {domain.defaultDomainName}?</div>,
+      onConfirm: () =>
+        refreshPermissions({ path: `/api/ExecCPVPermissions?TenantFilter=${domain.customerId}` }),
+    })
   const handleConfirmExcludeTenant = (tenant) => {
-    addExcludeTenant(tenant)
+    ModalService.confirm({
+      title: 'Exclude Tenant',
+      body: <div>Are you sure you want to exclude this tenant?</div>,
+      onConfirm: () => addExcludeTenant(tenant),
+    })
+
       .unwrap()
       .then(() => {
         dispatch(setCurrentTenant({}))
@@ -444,12 +608,149 @@ const ExcludedTenantsSettings = () => {
       onConfirm: () => handleConfirmExcludeTenant(selected),
     })
   }
+  const titleButton = (
+    <CButton
+      style={{ position: 'absolute', right: '5px' }}
+      size="sm"
+      href="#"
+      onClick={() => handleExcludeTenant(selectedTenant)}
+    >
+      Add Excluded Tenant
+    </CButton>
+  )
+  function StatusIcon(graphErrorCount) {
+    if (graphErrorCount > 0) {
+      return <FontAwesomeIcon icon={faExclamationTriangle} className="text-danger" />
+    } else {
+      return <FontAwesomeIcon icon={faCheckCircle} className="text-success" />
+    }
+  }
 
+  function StatusText(graphErrorCount, lastGraphError) {
+    if (graphErrorCount > 0) {
+      return 'Error Count: ' + graphErrorCount + ' - Last Error: ' + lastGraphError
+    } else {
+      return 'No errors detected with this tenant'
+    }
+  }
+
+  const Offcanvas = (row, rowIndex, formatExtraData) => {
+    return (
+      <>
+        {row.Excluded && (
+          <CButton
+            size="sm"
+            variant="ghost"
+            color="info"
+            onClick={() => handleRemoveExclusion(row.defaultDomainName)}
+          >
+            <FontAwesomeIcon icon={faEye} href="" />
+          </CButton>
+        )}
+        {!row.Excluded && (
+          <CButton
+            size="sm"
+            variant="ghost"
+            color="danger"
+            onClick={() => handleConfirmExcludeTenant({ value: row.customerId })}
+          >
+            <FontAwesomeIcon icon={faEyeSlash} href="" />
+          </CButton>
+        )}
+        <CButton size="sm" variant="ghost" color="info" onClick={() => handleCPVPermissions(row)}>
+          <FontAwesomeIcon icon={faRecycle} href="" />
+        </CButton>
+      </>
+    )
+  }
+  const columns = [
+    {
+      name: 'Name',
+      selector: (row) => row['displayName'],
+      sortable: true,
+      cell: (row) => CellTip(row['displayName']),
+      exportSelector: 'displayName',
+    },
+    {
+      name: 'Default Domain',
+      selector: (row) => row['defaultDomainName'],
+      sortable: true,
+      cell: (row) => CellTip(row['defaultDomainName']),
+      exportSelector: 'defaultDomainName',
+    },
+    {
+      name: 'Relationship Type',
+      selector: (row) => row['delegatedPrivilegeStatus'],
+      sortable: true,
+      cell: (row, index, column) => {
+        const cell = column.selector(row)
+        if (!cell) {
+          return <CellBadge color="info" label="DAP" />
+        }
+        if (cell.toLowerCase() == 'none') {
+          return <CellBadge color="info" label="No Access" />
+        }
+        if (cell === 'delegatedAdminPrivileges') {
+          return <CellBadge color="info" label="DAP Only" />
+        }
+        if (cell === 'delegatedAndGranularDelegetedAdminPrivileges') {
+          return <CellBadge color="info" label="GDAP & DAP" />
+        }
+        if (cell === 'granularDelegatedAdminPrivileges') {
+          return <CellBadge color="info" label="GDAP" />
+        }
+        return <CellBadge color="info" label="Unknown" />
+      },
+      exportSelector: 'delegatedPrivilegeStatus',
+    },
+    {
+      name: 'Excluded',
+      selector: (row) => row['Excluded'],
+      sortable: true,
+      cell: cellBooleanFormatter({ colourless: true }),
+      exportSelector: 'Excluded',
+      maxWidth: '100px',
+      minWidth: '100px',
+    },
+    {
+      name: 'Exclude Date',
+      selector: (row) => row['ExcludeDate'],
+      sortable: true,
+      exportSelector: 'ExcludeDate',
+      maxWidth: '150px',
+      minWidth: '150px',
+    },
+    {
+      name: 'Exclude User',
+      selector: (row) => row['ExcludeUser'],
+      sortable: true,
+      exportSelector: 'ExcludeUser',
+      maxWidth: '130px',
+      minWidth: '130px',
+    },
+    {
+      name: 'Actions',
+      cell: Offcanvas,
+      maxWidth: '80px',
+    },
+  ]
   return (
     <>
+      {(refreshPermissionsResults.isFetching || removeExcludeTenantResult.isFetching) && (
+        <CCallout color="success" dismissible>
+          <CSpinner />
+        </CCallout>
+      )}
       {removeExcludeTenantResult.isSuccess && (
         <CCallout color="success" dismissible>
           {removeExcludeTenantResult.data?.Results}
+        </CCallout>
+      )}
+      {refreshPermissionsResults.isSuccess && (
+        <CCallout color="success" dismissible>
+          {refreshPermissionsResults.data.map((result, idx) => (
+            <li key={idx}>{result}</li>
+          ))}
         </CCallout>
       )}
       {addExcludeTenantResult.isSuccess && (
@@ -457,53 +758,50 @@ const ExcludedTenantsSettings = () => {
           {addExcludeTenantResult.data?.Results}
         </CCallout>
       )}
-      <CRow className="mb-3">
-        <CCol md={12}>
-          <CCard>
-            <CCardHeader>
-              <CCardTitle>
-                Excluded Tenant List
-                <CButton
-                  style={{ position: 'absolute', right: '5px' }}
-                  size="sm"
-                  href="#"
-                  onClick={() => handleExcludeTenant(selectedTenant)}
-                >
-                  Add Excluded Tenant
-                </CButton>
-              </CCardTitle>
-            </CCardHeader>
-            <CCardBody>
-              {excludedTenantsFetching && <CSpinner />}
-              {excludedTenantsSuccess && (
-                <CListGroup>
-                  {excludedTenants.map((excludedTenant, idx) => (
-                    <CListGroupItem key={idx}>
-                      {excludedTenant.Name}
-                      <CBadge
-                        color="secondary"
-                        shape="rounded-pill"
-                        style={{ position: 'absolute', right: '40px' }}
-                      >
-                        Added by {excludedTenant.User} on {excludedTenant.Date}
-                      </CBadge>
-                      <CLink href="#">
-                        <FontAwesomeIcon
-                          style={{ position: 'absolute', right: '15px' }}
-                          color="primary"
-                          icon={faTrashAlt}
-                          size="sm"
-                          onClick={() => handleRemoveExclusion(excludedTenant.Name)}
-                        />
-                      </CLink>
-                    </CListGroupItem>
-                  ))}
-                </CListGroup>
-              )}
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
+      <CippPageList
+        capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
+        title="Tenants - Backend"
+        tenantSelector={false}
+        titleButton={titleButton}
+        datatable={{
+          tableProps: {
+            selectableRows: true,
+            actionsList: [
+              {
+                label: 'Exclude Tenants',
+                modal: true,
+                modalType: 'POST',
+                modalBody: {
+                  value: '!customerId',
+                },
+                modalUrl: `/api/ExecExcludeTenant?AddExclusion=true`,
+                modalMessage: 'Are you sure you want to exclude these tenants?',
+              },
+              {
+                label: 'Include Tenants',
+                modal: true,
+                modalUrl: `/api/ExecExcludeTenant?RemoveExclusion=true&TenantFilter=!defaultDomainName`,
+                modalMessage: 'Are you sure you want to include these tenants?',
+              },
+              {
+                label: 'Refresh CPV Permissions',
+                modal: true,
+                modalUrl: `/api/ExecCPVPermissions?TenantFilter=!customerId`,
+                modalMessage:
+                  'Are you sure you want to refresh the CPV permissions for these tenants?',
+              },
+            ],
+          },
+          filterlist: [
+            { filterName: 'Excluded Tenants', filter: '"Excluded":true' },
+            { filterName: 'Included Tenants', filter: '"Excluded":false' },
+          ],
+          keyField: 'id',
+          columns,
+          reportName: `Tenants-List`,
+          path: '/api/ExecExcludeTenant?ListAll=True',
+        }}
+      />
     </>
   )
 }
@@ -516,13 +814,15 @@ const SecuritySettings = () => {
       <>
         <CRow className="mb-3">
           <CCol md={4}>
-            <CCard>
+            <CCard className="h-100">
               <CCardHeader>
                 <CCardTitle>Resource Group</CCardTitle>
               </CCardHeader>
-              <CCardBody className="equalheight">
-                The Resource group contains all the CIPP resources in your tenant, except the SAM
-                Application <br /> <br />
+              <CCardBody>
+                <CRow className="mb-3">
+                  The Resource group contains all the CIPP resources in your tenant, except the SAM
+                  Application
+                </CRow>
                 <a
                   target={'_blank'}
                   href={listBackendResult.data?.Results?.ResourceGroup}
@@ -534,14 +834,15 @@ const SecuritySettings = () => {
             </CCard>
           </CCol>
           <CCol md={4}>
-            <CCard>
+            <CCard className="h-100">
               <CCardHeader>
                 <CCardTitle>Key Vault</CCardTitle>
               </CCardHeader>
-              <CCardBody className="equalheight">
-                The keyvault allows you to check token information. By default you do not have
-                access.
-                <br /> <br />
+              <CCardBody>
+                <CRow className="mb-3">
+                  The keyvault allows you to check token information. By default you do not have
+                  access.
+                </CRow>
                 <a
                   target={'_blank'}
                   href={listBackendResult.data?.Results?.KeyVault}
@@ -553,14 +854,15 @@ const SecuritySettings = () => {
             </CCard>
           </CCol>
           <CCol md={4}>
-            <CCard>
+            <CCard className="h-100">
               <CCardHeader>
                 <CCardTitle>Static Web App (Role Management)</CCardTitle>
               </CCardHeader>
-              <CCardBody className="equalheight">
-                The Static Web App role management allows you to invite other users to the
-                application.
-                <br /> <br />
+              <CCardBody>
+                <CRow className="mb-3">
+                  The Static Web App role management allows you to invite other users to the
+                  application.
+                </CRow>
                 <a
                   target={'_blank'}
                   href={listBackendResult.data?.Results?.SWARoles}
@@ -574,13 +876,14 @@ const SecuritySettings = () => {
         </CRow>
         <CRow className="mb-3">
           <CCol md={4}>
-            <CCard>
+            <CCard className="h-100">
               <CCardHeader>
                 <CCardTitle>Function App (Deployment Center)</CCardTitle>
               </CCardHeader>
-              <CCardBody className="equalheight">
-                The Function App Deployment Center allows you to run updates on the API
-                <br /> <br />
+              <CCardBody>
+                <CRow className="mb-3">
+                  The Function App Deployment Center allows you to run updates on the API
+                </CRow>
                 <a
                   target={'_blank'}
                   href={listBackendResult.data?.Results?.FunctionDeployment}
@@ -592,30 +895,34 @@ const SecuritySettings = () => {
             </CCard>
           </CCol>
           <CCol md={4}>
-            <CCard>
+            <CCard className="h-100">
               <CCardHeader>
                 <CCardTitle>Function App (Configuration)</CCardTitle>
               </CCardHeader>
-              <CCardBody className="equalheight">
-                At the Function App Configuration you can check the status of the API access to your
-                keyvault <br /> <br />
-                <a
-                  target={'_blank'}
-                  href={listBackendResult.data?.Results?.FunctionConfig}
-                  rel="noreferrer"
-                >
-                  <CButton>Go to Function App Configuration</CButton>
-                </a>
+              <CCardBody>
+                <CRow className="mb-3">
+                  At the Function App Configuration you can check the status of the API access to
+                  your keyvault
+                  <a
+                    target={'_blank'}
+                    href={listBackendResult.data?.Results?.FunctionConfig}
+                    rel="noreferrer"
+                  >
+                    <CButton>Go to Function App Configuration</CButton>
+                  </a>
+                </CRow>
               </CCardBody>
             </CCard>
           </CCol>
           <CCol md={4}>
-            <CCard>
+            <CCard className="h-100">
               <CCardHeader>
                 <CCardTitle>Function App (Overview)</CCardTitle>
               </CCardHeader>
-              <CCardBody className="equalheight">
-                At the function App Overview, you can stop and start the backend API <br /> <br />
+              <CCardBody>
+                <CRow className="mb-3">
+                  At the function App Overview, you can stop and start the backend API
+                </CRow>
                 <a
                   target={'_blank'}
                   href={listBackendResult.data?.Results?.FunctionApp}
@@ -633,18 +940,11 @@ const SecuritySettings = () => {
 }
 
 const NotificationsSettings = () => {
-  //to post settings
   const [configNotifications, notificationConfigResult] = useLazyExecNotificationConfigQuery()
-
+  const [listNotification, notificationListResult] = useLazyListNotificationConfigQuery()
   const onSubmit = (values) => {
-    // @todo bind this
-    // window.alert(JSON.stringify(values))
-    // console.log(values)
     configNotifications(values)
   }
-  //to get current settings
-  const [listNotification, notificationListResult] = useLazyListNotificationConfigQuery()
-  //todo: Replace with prettier sliders etc
   return (
     <>
       {notificationListResult.isUninitialized && listNotification()}
@@ -661,7 +961,13 @@ const NotificationsSettings = () => {
           </CCardHeader>
           <CCardBody>
             <Form
-              initialValues={{ ...notificationListResult.data }}
+              initialValues={{
+                ...notificationListResult.data,
+                logsToInclude: notificationListResult.data?.logsToInclude?.map((m) => ({
+                  label: m,
+                  value: m,
+                })),
+              }}
               onSubmit={onSubmit}
               render={({ handleSubmit, submitting, values }) => {
                 return (
@@ -681,53 +987,44 @@ const NotificationsSettings = () => {
                     )}
                     <CCol>
                       <CCol>
-                        <RFFCFormInput type="text" name="email" label="E-mail" />
+                        <RFFCFormInput
+                          type="text"
+                          name="email"
+                          label="E-mail (Separate multiple E-mails with commas e.g.: matt@example.com, joe@sample.com)"
+                        />
                       </CCol>
                       <CCol>
                         <RFFCFormInput type="text" name="webhook" label="Webhook" />
                       </CCol>
-                      <CFormLabel>
-                        Choose which types of updates you want to receive. This notification will be
-                        sent every 30 minutes.
-                      </CFormLabel>
-                      <br />
-                      <RFFCFormSwitch
-                        name="addUser"
-                        label="New Accounts created via CIPP"
-                        value={false}
-                      />
-                      <RFFCFormSwitch
-                        name="removeUser"
-                        label="Removed Accounts via CIPP"
-                        value={false}
-                      />
-                      <RFFCFormSwitch
-                        name="addChocoApp"
-                        label="New Applications added via CIPP"
-                        value={false}
-                      />
-                      <RFFCFormSwitch
-                        name="addPolicy"
-                        label="New Policies added via CIPP"
-                        value={false}
-                      />
-                      <RFFCFormSwitch
-                        name="addStandardsDeploy"
-                        label="New Standards added via CIPP"
-                        value={false}
-                      />
-                      <RFFCFormSwitch
-                        name="removeStandard"
-                        label="Removed Standards via CIPP"
-                        value={false}
-                      />
-                      <RFFCFormSwitch
-                        name="tokenUpdater"
-                        label="Token Refresh Events"
-                        value={false}
-                      />
-
-                      <br></br>
+                      <CCol>
+                        <RFFSelectSearch
+                          multi={true}
+                          label="Choose which logs you'd like to receive alerts from. This notification will be sent every 15 minutes."
+                          name="logsToInclude"
+                          values={[
+                            { value: 'Standards', name: 'All Standards' },
+                            { value: 'TokensUpdater', name: 'Token Events' },
+                            { value: 'ExecDnsConfig', name: 'Changing DNS Settings' },
+                            { value: 'ExecExcludeLicenses', name: 'Adding excluded licenses' },
+                            { value: 'ExecExcludeTenant', name: 'Adding excluded tenants' },
+                            { value: 'EditUser', name: 'Editing a user' },
+                            { value: 'ChocoApp', name: 'Adding or deploying applications' },
+                            { value: 'AddAPDevice', name: 'Adding autopilot devices' },
+                            { value: 'EditTenant', name: 'Editing a tenant' },
+                            { value: 'AddMSPApp', name: 'Adding an MSP app' },
+                            { value: 'AddUser', name: 'Adding a user' },
+                            { value: 'AddGroup', name: 'Adding a group' },
+                            { value: 'ExecOffboardUser', name: 'Executing the offboard wizard' },
+                          ]}
+                        />
+                      </CCol>
+                      <CCol>
+                        <RFFCFormSwitch
+                          name="onePerTenant"
+                          label="Receive one email per tenant"
+                          value={false}
+                        />
+                      </CCol>
                       <CButton disabled={notificationConfigResult.isFetching} type="submit">
                         Set Notification Settings
                       </CButton>
@@ -859,6 +1156,61 @@ const LicenseSettings = () => {
     </>
   )
 }
+const PasswordSettings = () => {
+  const [getPasswordConfig, getPasswordConfigResult] = useLazyGenericGetRequestQuery()
+  const [editPasswordConfig, editPasswordConfigResult] = useLazyGenericPostRequestQuery()
+
+  const [passAlertVisible, setPassAlertVisible] = useState(false)
+
+  const switchResolver = (resolver) => {
+    editPasswordConfig({ path: '/api/ExecPasswordconfig', values: { passwordType: resolver } })
+    getPasswordConfig()
+    setPassAlertVisible(true)
+  }
+
+  const resolvers = ['Classic', 'Correct-Battery-Horse']
+
+  return (
+    <>
+      {getPasswordConfigResult.isUninitialized &&
+        getPasswordConfig({ path: '/api/ExecPasswordConfig?list=true' })}
+      <CCard className="h-100">
+        <CCardHeader>
+          <CCardTitle>Password Generation</CCardTitle>
+        </CCardHeader>
+        <CCardBody>
+          <CRow>Select a password style for generated passwords.</CRow>
+          <CButtonGroup role="group" aria-label="Resolver" className="my-3">
+            {resolvers.map((r, index) => (
+              <CButton
+                onClick={() => switchResolver(r)}
+                color={
+                  r === getPasswordConfigResult.data?.Results?.passwordType
+                    ? 'primary'
+                    : 'secondary'
+                }
+                key={index}
+              >
+                {r}
+              </CButton>
+            ))}
+          </CButtonGroup>
+          {(editPasswordConfigResult.isSuccess || editPasswordConfigResult.isError) && (
+            <CCallout
+              color={editPasswordConfigResult.isSuccess ? 'success' : 'danger'}
+              visible={passAlertVisible}
+            >
+              {editPasswordConfigResult.isSuccess
+                ? editPasswordConfigResult.data.Results
+                : 'Error setting password style'}
+            </CCallout>
+          )}
+        </CCardBody>
+      </CCard>
+    </>
+  )
+}
+
 const DNSSettings = () => {
   const [getDnsConfig, getDnsConfigResult] = useLazyGetDnsConfigQuery()
   const [editDnsConfig, editDnsConfigResult] = useLazyEditDnsConfigQuery()
@@ -885,7 +1237,7 @@ const DNSSettings = () => {
             <CCardTitle>DNS Resolver</CCardTitle>
           </CCardHeader>
           <CCardBody>
-            Select a DNS resolver to use for Domain Analysis. <br />
+            <CRow>Select a DNS resolver to use for Domain Analysis.</CRow>
             <CButtonGroup role="group" aria-label="Resolver" className="my-3">
               {resolvers.map((r, index) => (
                 <CButton
@@ -925,7 +1277,6 @@ const Maintenance = () => {
   }
 
   const handleGetLink = () => {
-    console.log('Making link')
     listScriptLink({
       path: 'api/ExecMaintenanceScripts',
       params: { ScriptFile: selectedScript, MakeLink: 'True' },
@@ -989,14 +1340,14 @@ const Maintenance = () => {
       <CRow>
         <CCol>
           {listScriptResult.isFetching && (
-            <CCard>
+            <CCard className="h-100">
               <CCardBody>
                 <Skeleton count={10} />
               </CCardBody>
             </CCard>
           )}
           {!listScriptResult.isFetching && listScriptResult.isSuccess && (
-            <CCard>
+            <CCard className="h-100">
               <CCardHeader>
                 <CCardTitle>Script Details</CCardTitle>
               </CCardHeader>
