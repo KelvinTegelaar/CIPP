@@ -1,18 +1,16 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { CippCodeBlock, CippOffcanvas } from 'src/components/utilities'
-import { CippDatatable } from 'src/components/tables'
-import { CCardBody, CButton, CCallout, CSpinner } from '@coreui/react'
+import { CellTip } from 'src/components/tables'
+import { CButton, CCallout, CSpinner } from '@coreui/react'
 import { faEye, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
-import { CippPage } from 'src/components/layout'
+import { CippPageList } from 'src/components/layout'
 import { ModalService } from 'src/components/utilities'
+import { TitleButton } from 'src/components/buttons'
 
-//todo: expandable with RAWJson property.
-/* eslint-disable-next-line react/prop-types */
-
-const AutopilotListTemplates = () => {
+const SpamFilterListTemplates = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
@@ -38,13 +36,14 @@ const AutopilotListTemplates = () => {
           color="danger"
           onClick={() =>
             handleDeleteIntuneTemplate(
-              `/api/RemoveIntuneTemplate?ID=${row.GUID}`,
+              `/api/RemoveSpamfilterTemplate?ID=${row.GUID}`,
               'Do you want to delete the template?',
             )
           }
         >
           <FontAwesomeIcon icon={faTrash} href="" />
         </CButton>
+
         <CippOffcanvas
           title="Template JSON"
           placement="end"
@@ -61,56 +60,65 @@ const AutopilotListTemplates = () => {
   const columns = [
     {
       name: 'Display Name',
-      selector: (row) => row['Displayname'],
+      selector: (row) => row['name'],
       sortable: true,
-      exportSelector: 'Displayname',
+      cell: (row) => CellTip(row['name']),
+      exportSelector: 'name',
     },
     {
-      name: 'Description',
-      selector: (row) => row['Description'],
+      name: 'High Confidence Spam Action',
+      selector: (row) => row['HighConfidenceSpamAction'],
       sortable: true,
-      exportSelector: 'Description',
+      exportSelector: 'HighConfidenceSpamAction',
     },
     {
-      name: 'Type',
-      selector: (row) => row['Type'],
+      name: 'Bulk Spam Action',
+      selector: (row) => row['BulkSpamAction'],
       sortable: true,
-      exportSelector: 'Type',
+      exportSelector: 'BulkSpamAction',
+    },
+    {
+      name: 'Phish Spam Action',
+      selector: (row) => row['PhishSpamAction'],
+      sortable: true,
+      exportSelector: 'PhishSpamAction',
     },
     {
       name: 'GUID',
       selector: (row) => row['GUID'],
-      omit: true,
+      sortable: true,
+      cell: (row) => CellTip(row['GUID']),
       exportSelector: 'GUID',
     },
     {
       name: 'Actions',
       cell: Offcanvas,
+      maxWidth: '80px',
     },
   ]
 
   return (
-    <CippPage title="Available Endpoint Manager Templates" tenantSelector={false}>
-      <CCardBody>
-        {getResults.isFetching && (
-          <CCallout color="info">
-            <CSpinner>Loading</CSpinner>
-          </CCallout>
-        )}
-        {getResults.isSuccess && <CCallout color="info">{getResults.data?.Results}</CCallout>}
-        {getResults.isError && (
-          <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
-        )}
-        <CippDatatable
-          keyField="id"
-          reportName={`${tenant?.defaultDomainName}-MEMPolicyTemplates-List`}
-          path="/api/ListIntuneTemplates"
-          columns={columns}
-          params={{ TenantFilter: tenant?.defaultDomainName }}
-        />
-      </CCardBody>
-    </CippPage>
+    <>
+      {getResults.isFetching && (
+        <CCallout color="info">
+          <CSpinner>Loading</CSpinner>
+        </CCallout>
+      )}
+      {getResults.isSuccess && <CCallout color="info">{getResults.data?.Results}</CCallout>}
+      {getResults.isError && (
+        <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
+      )}
+      <CippPageList
+        title="Spamfilter Templates"
+        datatable={{
+          reportName: `${tenant?.defaultDomainName}-Groups`,
+          path: '/api/ListSpamfilterTemplates',
+          params: { TenantFilter: tenant?.defaultDomainName },
+          columns,
+        }}
+      />
+    </>
   )
 }
 
-export default AutopilotListTemplates
+export default SpamFilterListTemplates

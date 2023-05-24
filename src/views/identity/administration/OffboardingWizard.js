@@ -6,7 +6,7 @@ import { faExclamationTriangle, faTimes, faCheck } from '@fortawesome/free-solid
 import { useSelector } from 'react-redux'
 import { CippWizard } from 'src/components/layout'
 import PropTypes from 'prop-types'
-import { RFFCFormInput, RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms'
+import { RFFCFormCheck, RFFCFormInput, RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms'
 import { TenantSelector } from 'src/components/utilities'
 import { useListUsersQuery } from 'src/store/api/users'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
@@ -49,6 +49,7 @@ const OffboardingWizard = () => {
       AccessNoAutomap: values.AccessNoAutomap ? values.AccessNoAutomap.value : '',
       AccessAutomap: values.AccessAutomap ? values.AccessAutomap.value : '',
       ConvertToShared: values.ConvertToShared,
+      HideFromGAL: values.HideFromGAL,
       DisableSignIn: values.DisableSignIn,
       RemoveGroups: values.RemoveGroups,
       RemoveLicenses: values.RemoveLicenses,
@@ -56,6 +57,9 @@ const OffboardingWizard = () => {
       RevokeSessions: values.RevokeSessions,
       user: values.User.value,
       deleteuser: values.DeleteUser,
+      removeRules: values.RemoveRules,
+      removeMobile: values.RemoveMobile,
+      keepCopy: values.keepCopy,
     }
 
     //alert(JSON.stringify(values, null, 2))
@@ -89,8 +93,8 @@ const OffboardingWizard = () => {
           <RFFSelectSearch
             label={'Users in ' + tenantDomain}
             values={users?.map((user) => ({
-              value: user.mail,
-              name: `${user.displayName} <${user.mail}>`,
+              value: user.userPrincipalName,
+              name: `${user.displayName} <${user.userPrincipalName}>`,
             }))}
             placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
             name="User"
@@ -107,6 +111,8 @@ const OffboardingWizard = () => {
         <hr className="my-4" />
         <div className="mb-2">
           <RFFCFormSwitch name="RevokeSessions" label="Revoke all sessions" />
+          <RFFCFormSwitch name="RemoveMobile" label="Remove all Mobile Devices" />
+          <RFFCFormSwitch name="RemoveRules" label="Remove all Rules" />
           <RFFCFormSwitch name="RemoveLicenses" label="Remove Licenses" />
           <RFFCFormSwitch name="ConvertToShared" label="Convert to Shared Mailbox" />
           <RFFCFormSwitch name="DisableSignIn" label="Disable Sign in" />
@@ -124,10 +130,12 @@ const OffboardingWizard = () => {
           <CCol md={6}>
             <RFFSelectSearch
               label="Give other user full access on mailbox without automapping"
-              values={users?.map((user) => ({
-                value: user.mail,
-                name: `${user.displayName} <${user.mail}>`,
-              }))}
+              values={users
+                ?.filter((x) => x.mail)
+                .map((user) => ({
+                  value: user.mail,
+                  name: `${user.displayName} <${user.mail}>`,
+                }))}
               placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
               name="AccessNoAutomap"
             />
@@ -135,10 +143,12 @@ const OffboardingWizard = () => {
           <CCol md={6}>
             <RFFSelectSearch
               label="Give other user full access on mailbox with automapping"
-              values={users?.map((user) => ({
-                value: user.mail,
-                name: `${user.displayName} <${user.mail}>`,
-              }))}
+              values={users
+                ?.filter((x) => x.mail)
+                .map((user) => ({
+                  value: user.mail,
+                  name: `${user.displayName} <${user.mail}>`,
+                }))}
               placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
               name="AccessAutomap"
             />
@@ -146,10 +156,12 @@ const OffboardingWizard = () => {
           <CCol md={6}>
             <RFFSelectSearch
               label="Give other user full access on Onedrive"
-              values={users?.map((user) => ({
-                value: user.mail,
-                name: `${user.displayName} <${user.mail}>`,
-              }))}
+              values={users
+                ?.filter((x) => x.mail)
+                .map((user) => ({
+                  value: user.mail,
+                  name: `${user.displayName} <${user.mail}>`,
+                }))}
               placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
               name="OnedriveAccess"
             />
@@ -157,14 +169,20 @@ const OffboardingWizard = () => {
           <CCol md={6}>
             <RFFSelectSearch
               label="Forward email to other user"
-              values={users?.map((user) => ({
-                value: user.mail,
-                name: `${user.displayName} <${user.mail}>`,
-              }))}
+              values={users
+                ?.filter((x) => x.mail)
+                .map((user) => ({
+                  value: user.mail,
+                  name: `${user.displayName} <${user.mail}>`,
+                }))}
               placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
               name="forward"
             />
           </CCol>
+          <RFFCFormCheck
+            name="keepCopy"
+            label="Keep a copy of the forwarded mail in the source mailbox"
+          />
           <RFFCFormSwitch name="DeleteUser" label="Delete user" />
         </div>
         <hr className="my-4" />
@@ -191,7 +209,7 @@ const OffboardingWizard = () => {
           {!postResults.isSuccess && (
             <FormSpy>
               {(props) => (
-                /* eslint-disable react/prop-types */ <>
+                <>
                   <CRow>
                     <CCol md={{ span: 6, offset: 3 }}>
                       <CListGroup flush>
@@ -216,6 +234,22 @@ const OffboardingWizard = () => {
                             color="#f77f00"
                             size="lg"
                             icon={props.values.RevokeSessions ? faCheck : faTimes}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Remove all mobile devices
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.RemoveMobile ? faCheck : faTimes}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Remove all mailbox rules
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.RemoveRules ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">

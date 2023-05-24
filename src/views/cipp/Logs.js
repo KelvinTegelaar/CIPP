@@ -16,59 +16,89 @@ import { Form } from 'react-final-form'
 import { RFFCFormInput, RFFCFormSelect } from 'src/components/forms'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch, faChevronRight, faChevronDown } from '@fortawesome/free-solid-svg-icons'
-import { CippDatatable } from 'src/components/tables'
+import { CippDatatable, cellDateFormatter, CellTip } from 'src/components/tables'
 import { useNavigate } from 'react-router-dom'
-import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
+const reverseSort = (rowA, rowB) => {
+  const a = rowA.DateTime.toLowerCase()
+  const b = rowB.DateTime.toLowerCase()
+
+  if (a > b) {
+    return -1
+  }
+
+  if (b > a) {
+    return 1
+  }
+
+  return 0
+}
 
 const columns = [
   {
-    name: 'Date',
+    name: 'Date (UTC)',
     selector: (row) => row['DateTime'],
     sortable: true,
+    cell: cellDateFormatter(),
     exportSelector: 'DateTime',
+    minWidth: '145px',
+    maxWidth: '145px',
+    sortFunction: reverseSort,
   },
   {
     name: 'Tenant',
     selector: (row) => row['Tenant'],
     sortable: true,
+    cell: (row) => CellTip(row['Tenant']),
     exportSelector: 'Tenant',
-  },
-  {
-    name: 'API',
-    selector: (row) => row['API'],
-    sortable: true,
-    exportSelector: 'API',
-  },
-  {
-    name: 'Message',
-    selector: (row) => row['Message'],
-    sortable: true,
-    exportSelector: 'Message',
+    minWidth: '145px',
+    maxWidth: '145px',
   },
   {
     name: 'User',
     selector: (row) => row['User'],
     sortable: true,
+    cell: (row) => CellTip(row['User']),
     exportSelector: 'User',
+    minWidth: '145px',
+    maxWidth: '145px',
+  },
+  {
+    name: 'Message',
+    selector: (row) => row['Message'],
+    sortable: true,
+    cell: (row) => CellTip(row['Message']),
+    exportSelector: 'Message',
+  },
+  {
+    name: 'API',
+    selector: (row) => row['API'],
+    sortable: true,
+    cell: (row) => CellTip(row['API']),
+    exportSelector: 'API',
+    minWidth: '145px',
+    maxWidth: '145px',
   },
   {
     name: 'Severity',
     selector: (row) => row['Severity'],
     sortable: true,
     exportSelector: 'Severity',
+    minWidth: '145px',
+    maxWidth: '145px',
   },
 ]
 
 const Logs = () => {
   let navigate = useNavigate()
   let query = useQuery()
-  const severity = query.get('Severity')
+  const severity = query.get('severity')
   const user = query.get('user')
   const DateFilter = query.get('DateFilter')
   //const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const [visibleA, setVisibleA] = useState(false)
-  const [listBackend, listBackendResult] = useLazyGenericGetRequestQuery()
-
+  const [startDate, setStartDate] = useState(new Date())
   const handleSubmit = async (values) => {
     Object.keys(values).filter(function (x) {
       if (values[x] === null) {
@@ -78,21 +108,18 @@ const Logs = () => {
     })
     const shippedValues = {
       SearchNow: true,
+      DateFilter: startDate.toLocaleDateString('en-GB').split('/').reverse().join(''),
       ...values,
     }
     var queryString = Object.keys(shippedValues)
       .map((key) => key + '=' + shippedValues[key])
       .join('&')
 
-    //alert(JSON.stringify(values, null, 2))
     navigate(`?${queryString}`)
-    // @todo hook this up
-    // genericPostRequest({ url: 'api/AddIntuneTemplate', values })
   }
 
   return (
     <>
-      {listBackendResult.isUninitialized && listBackend({ path: 'api/ListLogs?ListLogs=true' })}
       <CRow>
         <CCol>
           <CCard className="options-card">
@@ -116,7 +143,7 @@ const Logs = () => {
                   render={({ handleSubmit, submitting, values }) => {
                     return (
                       <CForm onSubmit={handleSubmit}>
-                        <CRow>
+                        <CRow className="mb-3">
                           <CCol>
                             <RFFCFormInput
                               type="text"
@@ -126,7 +153,7 @@ const Logs = () => {
                             />
                           </CCol>
                         </CRow>
-                        <CRow>
+                        <CRow className="mb-3">
                           <CCol>
                             <RFFCFormInput
                               type="text"
@@ -136,16 +163,15 @@ const Logs = () => {
                             />
                           </CCol>
                         </CRow>
-                        <CRow>
-                          {listBackendResult.isSuccess && (
-                            <CCol>
-                              <RFFCFormSelect
-                                name="DateFilter"
-                                label="Log File"
-                                values={listBackendResult.data}
-                              />
-                            </CCol>
-                          )}
+                        <CRow className="mb-3">
+                          <CCol>
+                            <DatePicker
+                              dateFormat="yyyyMMdd"
+                              className="form-control"
+                              selected={startDate}
+                              onChange={(date) => setStartDate(date)}
+                            />
+                          </CCol>
                         </CRow>
                         <CRow className="mb-3">
                           <CCol>
@@ -155,11 +181,6 @@ const Logs = () => {
                             </CButton>
                           </CCol>
                         </CRow>
-                        {/*<CRow>*/}
-                        {/* <CCol>*/}
-                        {/*   <pre>{JSON.stringify(values, null, 2)}</pre>*/}
-                        {/* </CCol>*/}
-                        {/*</CRow>*/}
                       </CForm>
                     )
                   }}
@@ -171,17 +192,24 @@ const Logs = () => {
       </CRow>
       <hr />
       <CippPage title="LogBook Results" tenantSelector={false}>
-        <CippDatatable
-          reportName={`CIPP-Logbook`}
-          path="/api/Listlogs"
-          params={{
-            Severity: severity,
-            user: user,
-            DateFilter: DateFilter,
-            Filter: !!DateFilter,
-          }}
-          columns={columns}
-        />
+        <CCard className="content-card">
+          <CCardHeader className="d-flex justify-content-between align-items-center">
+            <CCardTitle>Results</CCardTitle>
+          </CCardHeader>
+          <CCardBody>
+            <CippDatatable
+              reportName={`CIPP-Logbook`}
+              path="/api/Listlogs"
+              params={{
+                Severity: severity,
+                user: user,
+                DateFilter: DateFilter,
+                Filter: !!DateFilter,
+              }}
+              columns={columns}
+            />
+          </CCardBody>
+        </CCard>
       </CippPage>
     </>
   )

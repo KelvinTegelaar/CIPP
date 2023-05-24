@@ -5,11 +5,15 @@ import { ListGroupContentCard } from 'src/components/contentcards'
 import { useListUserQuery } from 'src/store/api/users'
 
 export default function UserLastLoginDetails({ tenantDomain, userId, className = null }) {
-  const { data: user = {}, isFetching, error } = useListUserQuery({ tenantDomain, userId })
+  const {
+    data: user = {},
+    isFetching,
+    error,
+  } = useListUserQuery({ tenantDomain, userId, IncludeLogonDetails: true })
 
   const content = [
     {
-      heading: 'Last Sign in Date',
+      heading: 'Last Sign in Date (UTC)',
       body: user.LastSigninDate,
     },
     {
