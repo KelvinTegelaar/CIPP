@@ -8,6 +8,7 @@ import {
   faLockOpen,
   faUserTimes,
   faEllipsisH,
+  faEnvelope,
 } from '@fortawesome/free-solid-svg-icons'
 import { ActionContentCard } from 'src/components/contentcards'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
@@ -44,6 +45,16 @@ export default function UserActions({ tenantDomain, userId, userEmail, className
         handleModal(
           'Are you sure you want to send an MFA push?',
           `/api/ExecSendPush?TenantFilter=${tenantDomain}&UserEmail=${userEmail}`,
+        ),
+    },
+    {
+      label: 'Enable Online Archive ',
+      link: '#',
+      icon: faEnvelope,
+      onClick: () =>
+        handleModal(
+          'Are you sure you want to enable the online archive for this user?',
+          `/api/ExecEnableArchive?TenantFilter=${tenantDomain}&ID=${userEmail}`,
         ),
     },
     {

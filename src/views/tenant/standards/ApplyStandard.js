@@ -28,7 +28,12 @@ const Error = ({ name }) => (
 Error.propTypes = {
   name: PropTypes.string.isRequired,
 }
-
+function getDeepKeys(obj) {
+  return Object.keys(obj)
+    .filter((key) => obj[key] instanceof Object)
+    .map((key) => getDeepKeys(obj[key]).map((k) => `${key}.${k}`))
+    .reduce((x, y) => x.concat(y), Object.keys(obj))
+}
 const ApplyStandard = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
@@ -296,11 +301,22 @@ const ApplyStandard = () => {
                     </CCallout>
                     <h5 className="mb-0">Selected Standards</h5>
                     <CCallout color="info">
-                      {Object.entries(props.values.standards).map(([key, value]) =>
-                        allStandardsList
-                          .filter((obj) => obj.name.includes(key))
-                          .map((item, idx) => <li key={idx}>{item.label}</li>),
-                      )}
+                      {getDeepKeys(props.values.standards)
+                        .reduce((acc, key) => {
+                          const existingItem = allStandardsList.find((obj) =>
+                            obj.name.includes(key),
+                          )
+                          if (
+                            existingItem &&
+                            !acc.find((item) => item.name === existingItem.name)
+                          ) {
+                            acc.push(existingItem)
+                          }
+                          return acc
+                        }, [])
+                        .map((item, idx) => (
+                          <li key={idx}>{item.label}</li>
+                        ))}
                     </CCallout>
                     <hr />
                   </CCol>
