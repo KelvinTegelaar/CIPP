@@ -17,10 +17,13 @@ The Standards page provides the ability for you to apply or reapply specific sta
 
 Plans exist to implement more standardised options and settings, along with an alerting system supporting Remote Monitoring and Management (RMM) systems, webhooks or, e-mail.
 
-Below the are standards explained:
+Some of the standards are explained below:
 
 {% hint style="danger" %}
 Disabling an option within standards does NOT turn the setting off
+
+{% hint style="warning" %}
+Note that some standards may require one or more companion (Intune) polies to be set to be effective. 
 
 Deselecting an option on the standard simply means it will no longer try to apply that standard. However, it DOES NOT turn the setting off.
 
