@@ -1,0 +1,90 @@
+[
+  {
+    "name": "Gradient Billing Integration",
+    "type": "GradientBill",
+    "cat": "Billing & Invoicing",
+    "helpText": "This integration allows you to send your license counts to Gradient for billing purposes.",
+    "SettingOptions": [
+      {
+        "type": "input",
+        "fieldtype": "password",
+        "name": "GradientBill.APIKey",
+        "label": "Gradient API Key",
+        "placeholder": "Enter your API key. Leave blank to keep your current key."
+      },
+      {
+        "type": "checkbox",
+        "name": "GradientBill.Enabled",
+        "label": "Enable Integration"
+      }
+    ]
+  },
+  {
+    "name": "Gradient Ticketing Integration",
+    "type": "GradientTicketing",
+    "cat": "Ticketing",
+    "helpText": "This integration allows you to use Gradient to send tickets to your ticketing system.",
+    "SettingOptions": [
+      {
+        "type": "input",
+        "fieldtype": "password",
+        "name": "GradientTicketing.APIKey",
+        "label": "Gradient API Key",
+        "placeholder": "Enter your API key. Leave blank to keep your current key."
+      },
+      {
+        "type": "checkbox",
+        "name": "GradientTicketing.Enabled",
+        "label": "Enable Integration"
+      }
+    ]
+  },
+  {
+    "name": "Halo PSA Ticketing Integration",
+    "type": "HaloPSA",
+    "cat": "Ticketing",
+    "helpText": "This integration allows you to use to send alerts to your ticketing system.",
+    "SettingOptions": [
+      {
+        "type": "input",
+        "fieldtype": "input",
+        "name": "HaloPSA.ResourceURL",
+        "label": "HaloPSA Resource Server URL",
+        "placeholder": "Enter your HaloPSA Resource Server URL."
+      },
+      {
+        "type": "input",
+        "fieldtype": "input",
+        "name": "HaloPSA.AuthURL",
+        "label": "HaloPSA Authorisation Endpoint URL",
+        "placeholder": "Enter your HaloPSA Authorisation Endpoint URL."
+      },
+      {
+        "type": "input",
+        "fieldtype": "input",
+        "name": "HaloPSA.Tenant",
+        "label": "HaloPSA Tenant",
+        "placeholder": "Enter your HaloPSA Tenant"
+      },
+      {
+        "type": "input",
+        "fieldtype": "input",
+        "name": "HaloPSA.ClientID",
+        "label": "HaloPSA Client ID",
+        "placeholder": "Enter your HaloPSA Client ID"
+      },
+      {
+        "type": "input",
+        "fieldtype": "password",
+        "name": "HaloPSA.APIKey",
+        "label": "HaloPSA Client Secret",
+        "placeholder": "Enter your client Secret. Leave blank to keep your current key."
+      },
+      {
+        "type": "checkbox",
+        "name": "HaloPSA.Enabled",
+        "label": "Enable Integration"
+      }
+    ]
+  }
+]

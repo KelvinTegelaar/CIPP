@@ -77,6 +77,8 @@ import CippListOffcanvas from 'src/components/utilities/CippListOffcanvas'
 import { TitleButton } from 'src/components/buttons'
 import Skeleton from 'react-loading-skeleton'
 import { Buffer } from 'buffer'
+import Extensions from 'src/data/Extensions.json'
+import { RFFCFormHidden } from 'src/components/forms/RFFComponents'
 
 const CIPPSettings = () => {
   const [active, setActive] = useState(1)
@@ -101,6 +103,9 @@ const CIPPSettings = () => {
         <CNavItem active={active === 6} onClick={() => setActive(6)} href="#">
           Maintenance
         </CNavItem>
+        <CNavItem active={active === 7} onClick={() => setActive(7)} href="#">
+          Extensions
+        </CNavItem>
       </CNav>
       <CTabContent>
         <CTabPane visible={active === 1} className="mt-3">
@@ -120,6 +125,9 @@ const CIPPSettings = () => {
         </CTabPane>
         <CTabPane visible={active === 6} className="mt-3">
           <Maintenance />
+        </CTabPane>
+        <CTabPane visible={active === 7} className="mt-3">
+          <ExtensionsTab />
         </CTabPane>
       </CTabContent>
     </CippPage>
@@ -1025,6 +1033,13 @@ const NotificationsSettings = () => {
                           value={false}
                         />
                       </CCol>
+                      <CCol>
+                        <RFFCFormSwitch
+                          name="sendtoIntegration"
+                          label="Send notifications to configured integration(s)"
+                          value={false}
+                        />
+                      </CCol>
                       <CButton disabled={notificationConfigResult.isFetching} type="submit">
                         Set Notification Settings
                       </CButton>
@@ -1265,6 +1280,108 @@ const DNSSettings = () => {
     </>
   )
 }
+
+const ExtensionsTab = () => {
+  const [listBackend, listBackendResult] = useLazyGenericGetRequestQuery()
+  const inputRef = useRef(null)
+  const [setExtensionconfig, extensionConfigResult] = useLazyGenericPostRequestQuery()
+
+  const onSubmit = (values) => {
+    setExtensionconfig({
+      path: 'api/ExecExtensionsConfig',
+      values: values,
+    })
+  }
+  return (
+    <div>
+      {listBackendResult.isUninitialized && listBackend({ path: 'api/ListExtensionsConfig' })}
+      <>
+        {extensionConfigResult.isSuccess && (
+          <CCard className="mb-3">
+            <CCardHeader>
+              <CCardTitle>Results</CCardTitle>
+            </CCardHeader>
+            <CCardBody>
+              <>
+                <CCallout color="success">{extensionConfigResult.data.Results}</CCallout>
+              </>
+            </CCardBody>
+          </CCard>
+        )}
+        <CRow>
+          {Extensions.map((integration) => (
+            <CCol xs={12} lg={6} xl={6} className="mb-3">
+              <CCard className="h-100">
+                <CCardHeader>
+                  <CCardTitle>{integration.name}</CCardTitle>
+                </CCardHeader>
+                <CCardBody>
+                  <p>{integration.helpText}</p>
+                  <Form
+                    onSubmit={onSubmit}
+                    initialValues={listBackendResult.data}
+                    render={({ handleSubmit, submitting, values }) => {
+                      return (
+                        <CForm onSubmit={handleSubmit}>
+                          <CCol className="mb-3">
+                            {integration.SettingOptions.map(
+                              (integrationOptions) =>
+                                integrationOptions.type === 'input' && (
+                                  <CCol>
+                                    <RFFCFormInput
+                                      type={integrationOptions.fieldtype}
+                                      name={integrationOptions.name}
+                                      label={integrationOptions.label}
+                                      placeholder={integrationOptions.placeholder}
+                                    />
+                                  </CCol>
+                                ),
+                            )}
+                            {integration.SettingOptions.map(
+                              (integrationOptions) =>
+                                integrationOptions.type === 'checkbox' && (
+                                  <CCol>
+                                    <RFFCFormSwitch
+                                      name={integrationOptions.name}
+                                      label={integrationOptions.label}
+                                      value={false}
+                                    />
+                                  </CCol>
+                                ),
+                            )}
+                            <input
+                              ref={inputRef}
+                              type="hidden"
+                              name="type"
+                              value={integration.type}
+                            />
+
+                            <CButton type="submit">
+                              {setExtensionconfig.isFetching && (
+                                <FontAwesomeIcon
+                                  icon={faCircleNotch}
+                                  spin
+                                  className="me-2"
+                                  size="1x"
+                                />
+                              )}
+                              Set Integration Settings
+                            </CButton>
+                          </CCol>
+                        </CForm>
+                      )
+                    }}
+                  />
+                </CCardBody>
+              </CCard>
+            </CCol>
+          ))}
+        </CRow>
+      </>
+    </div>
+  )
+}
+
 const Maintenance = () => {
   const [selectedScript, setSelectedScript] = useState()
   const [listBackend, listBackendResult] = useLazyGenericGetRequestQuery()
