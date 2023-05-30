@@ -1,44 +1,32 @@
 [
   {
-    "name": "Gradient Billing Integration",
+    "name": "Gradient Integration",
     "type": "GradientBill",
     "cat": "Billing & Invoicing",
-    "helpText": "This integration allows you to send your license counts to Gradient for billing purposes.",
+    "helpText": "This integration allows you to send your license counts to Gradient for billing purposes, and create tickets if your PSA supports ticket creation by Gradient.",
     "SettingOptions": [
       {
         "type": "input",
         "fieldtype": "password",
-        "name": "GradientBill.APIKey",
-        "label": "Gradient API Key",
-        "placeholder": "Enter your API key. Leave blank to keep your current key."
+        "name": "Gradient.VendorKey",
+        "label": "Gradient Vendor API Key",
+        "placeholder": "Enter your Gradient Vendor Key."
       },
-      {
-        "type": "checkbox",
-        "name": "GradientBill.Enabled",
-        "label": "Enable Integration"
-      }
-    ]
-  },
-  {
-    "name": "Gradient Ticketing Integration",
-    "type": "GradientTicketing",
-    "cat": "Ticketing",
-    "helpText": "This integration allows you to use Gradient to send tickets to your ticketing system.",
-    "SettingOptions": [
       {
         "type": "input",
         "fieldtype": "password",
-        "name": "GradientTicketing.APIKey",
-        "label": "Gradient API Key",
-        "placeholder": "Enter your API key. Leave blank to keep your current key."
+        "name": "Gradient.APIKey",
+        "label": "Gradient Partner API Key",
+        "placeholder": "Enter your Gradient Partner Key. Leave blank to keep your current key."
       },
       {
         "type": "checkbox",
-        "name": "GradientTicketing.Enabled",
+        "name": "Gradient.Enabled",
         "label": "Enable Integration"
       }
     ]
   },
+
   {
     "name": "Halo PSA Ticketing Integration",
     "type": "HaloPSA",
