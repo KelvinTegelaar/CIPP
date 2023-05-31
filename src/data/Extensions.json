@@ -1,7 +1,7 @@
 [
   {
     "name": "Gradient Integration",
-    "type": "GradientBill",
+    "type": "Gradient",
     "cat": "Billing & Invoicing",
     "helpText": "This integration allows you to send your license counts to Gradient for billing purposes, and create tickets if your PSA supports ticket creation by Gradient.",
     "SettingOptions": [
@@ -18,6 +18,11 @@
         "name": "Gradient.APIKey",
         "label": "Gradient Partner API Key",
         "placeholder": "Enter your Gradient Partner Key. Leave blank to keep your current key."
+      },
+      {
+        "type": "checkbox",
+        "name": "Gradient.BillingEnabled",
+        "label": "Enable sending all license information to Gradient"
       },
       {
         "type": "checkbox",

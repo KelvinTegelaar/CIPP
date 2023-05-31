@@ -19,6 +19,7 @@ import {
   CListGroupItem,
   CLink,
   CSpinner,
+  CCardText,
 } from '@coreui/react'
 import {
   useGenericGetRequestQuery,
@@ -1285,7 +1286,13 @@ const ExtensionsTab = () => {
   const [listBackend, listBackendResult] = useLazyGenericGetRequestQuery()
   const inputRef = useRef(null)
   const [setExtensionconfig, extensionConfigResult] = useLazyGenericPostRequestQuery()
+  const [execTestExtension, listExtensionTestResult] = useLazyGenericGetRequestQuery()
 
+  const onSubmitTest = (integrationName) => {
+    setExtensionconfig({
+      path: 'api/ExecExtensionTest?extensionName=' + integrationName,
+    })
+  }
   const onSubmit = (values) => {
     setExtensionconfig({
       path: 'api/ExecExtensionsConfig',
@@ -1296,6 +1303,22 @@ const ExtensionsTab = () => {
     <div>
       {listBackendResult.isUninitialized && listBackend({ path: 'api/ListExtensionsConfig' })}
       <>
+        {(listBackendResult.isFetching ||
+          extensionConfigResult.isFetching ||
+          listExtensionTestResult.isFetching) && <CSpinner color="primary" />}
+
+        {listExtensionTestResult.isSuccess && (
+          <CCard className="mb-3">
+            <CCardHeader>
+              <CCardTitle>Results</CCardTitle>
+            </CCardHeader>
+            <CCardBody>
+              <>
+                <CCallout color="success">{listExtensionTestResult.data.Results}</CCallout>
+              </>
+            </CCardBody>
+          </CCard>
+        )}
         {extensionConfigResult.isSuccess && (
           <CCard className="mb-3">
             <CCardHeader>
@@ -1311,7 +1334,7 @@ const ExtensionsTab = () => {
         <CRow>
           {Extensions.map((integration) => (
             <CCol xs={12} lg={6} xl={6} className="mb-3">
-              <CCard className="h-100">
+              <CCard>
                 <CCardHeader>
                   <CCardTitle>{integration.name}</CCardTitle>
                 </CCardHeader>
@@ -1323,40 +1346,43 @@ const ExtensionsTab = () => {
                     render={({ handleSubmit, submitting, values }) => {
                       return (
                         <CForm onSubmit={handleSubmit}>
-                          <CCol className="mb-3">
-                            {integration.SettingOptions.map(
-                              (integrationOptions) =>
-                                integrationOptions.type === 'input' && (
-                                  <CCol>
-                                    <RFFCFormInput
-                                      type={integrationOptions.fieldtype}
-                                      name={integrationOptions.name}
-                                      label={integrationOptions.label}
-                                      placeholder={integrationOptions.placeholder}
-                                    />
-                                  </CCol>
-                                ),
-                            )}
-                            {integration.SettingOptions.map(
-                              (integrationOptions) =>
-                                integrationOptions.type === 'checkbox' && (
-                                  <CCol>
-                                    <RFFCFormSwitch
-                                      name={integrationOptions.name}
-                                      label={integrationOptions.label}
-                                      value={false}
-                                    />
-                                  </CCol>
-                                ),
-                            )}
-                            <input
-                              ref={inputRef}
-                              type="hidden"
-                              name="type"
-                              value={integration.type}
-                            />
-
-                            <CButton type="submit">
+                          <CCardText>
+                            <CCol className="mb-3">
+                              {integration.SettingOptions.map(
+                                (integrationOptions) =>
+                                  integrationOptions.type === 'input' && (
+                                    <CCol>
+                                      <RFFCFormInput
+                                        type={integrationOptions.fieldtype}
+                                        name={integrationOptions.name}
+                                        label={integrationOptions.label}
+                                        placeholder={integrationOptions.placeholder}
+                                      />
+                                    </CCol>
+                                  ),
+                              )}
+                              {integration.SettingOptions.map(
+                                (integrationOptions) =>
+                                  integrationOptions.type === 'checkbox' && (
+                                    <CCol>
+                                      <RFFCFormSwitch
+                                        name={integrationOptions.name}
+                                        label={integrationOptions.label}
+                                        value={false}
+                                      />
+                                    </CCol>
+                                  ),
+                              )}
+                              <input
+                                ref={inputRef}
+                                type="hidden"
+                                name="type"
+                                value={integration.type}
+                              />
+                            </CCol>
+                          </CCardText>
+                          <CCol className="me-2">
+                            <CButton className="me-2" type="submit">
                               {setExtensionconfig.isFetching && (
                                 <FontAwesomeIcon
                                   icon={faCircleNotch}
@@ -1365,7 +1391,21 @@ const ExtensionsTab = () => {
                                   size="1x"
                                 />
                               )}
-                              Set Integration Settings
+                              Set Extension Settings
+                            </CButton>
+                            <CButton
+                              onClick={() => onSubmitTest(integration.type)}
+                              className="me-2"
+                            >
+                              {setExtensionconfig.isFetching && (
+                                <FontAwesomeIcon
+                                  icon={faCircleNotch}
+                                  spin
+                                  className="me-2"
+                                  size="1x"
+                                />
+                              )}
+                              Connect to Extension
                             </CButton>
                           </CCol>
                         </CForm>
