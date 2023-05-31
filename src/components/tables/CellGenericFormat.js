@@ -76,7 +76,9 @@ export const cellGenericFormatter =
       return CellBoolean({ cell, warning, reverse, colourless, noDataIsFalse })
     }
     if (typeof cell === 'string') {
-      console.log(cell)
       return CellTip(cell)
+    }
+    if (Array.isArray(cell) || typeof cell === 'object') {
+      return CellTip(JSON.stringify(cell))
     }
   }
