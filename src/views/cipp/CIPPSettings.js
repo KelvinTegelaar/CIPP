@@ -1387,7 +1387,7 @@ const ExtensionsTab = () => {
                           </CCardText>
                           <CCol className="me-2">
                             <CButton className="me-2" type="submit">
-                              {setExtensionconfig.isFetching && (
+                              {extensionConfigResult.isFetching && (
                                 <FontAwesomeIcon
                                   icon={faCircleNotch}
                                   spin
@@ -1401,7 +1401,7 @@ const ExtensionsTab = () => {
                               onClick={() => onSubmitTest(integration.type)}
                               className="me-2"
                             >
-                              {setExtensionconfig.isFetching && (
+                              {listExtensionTestResult.isFetching && (
                                 <FontAwesomeIcon
                                   icon={faCircleNotch}
                                   spin
@@ -1463,7 +1463,6 @@ const MappingsTab = () => {
                               key={tenant.customerId}
                               name={tenant.customerId}
                               label={tenant.displayName}
-                              value="TestME"
                               values={listBackendResult.data.HaloClients}
                               placeholder="Select a client"
                             />
@@ -1471,11 +1470,18 @@ const MappingsTab = () => {
                       </CCardText>
                       <CCol className="me-2">
                         <CButton className="me-2" type="submit">
-                          {setExtensionconfig.isFetching && (
+                          {extensionConfigResult.isFetching && (
                             <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
                           )}
                           Set Mappings
                         </CButton>
+                        {(extensionConfigResult.isSuccess || extensionConfigResult.isError) && (
+                          <CCallout color={extensionConfigResult.isSuccess ? 'success' : 'danger'}>
+                            {extensionConfigResult.isSuccess
+                              ? extensionConfigResult.data.Results
+                              : 'Error'}
+                          </CCallout>
+                        )}
                       </CCol>
                     </CForm>
                   )
