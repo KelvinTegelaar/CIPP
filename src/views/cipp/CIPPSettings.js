@@ -1463,6 +1463,7 @@ const MappingsTab = () => {
                               key={tenant.customerId}
                               name={tenant.customerId}
                               label={tenant.displayName}
+                              value="TestME"
                               values={listBackendResult.data.HaloClients}
                               placeholder="Select a client"
                             />
