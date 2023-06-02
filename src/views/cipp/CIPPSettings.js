@@ -1432,8 +1432,8 @@ const MappingsTab = () => {
 
   const onSubmit = (values) => {
     setExtensionconfig({
-      path: 'api/ExecExtensionsConfig',
-      values: values,
+      path: 'api/ExecExtensionMapping?AddMapping=true',
+      values: { mappings: values },
     })
   }
   return (
@@ -1443,33 +1443,44 @@ const MappingsTab = () => {
       <>
         <CCard>
           <CCardHeader>
-            <CCardTitle>Extension Mapping Table</CCardTitle>
+            <CCardTitle>HaloPSA Mapping Table</CCardTitle>
           </CCardHeader>
           <CCardBody>
-            <Form
-              onSubmit={onSubmit}
-              initialValues={listBackendResult.data}
-              render={({ handleSubmit, submitting, values }) => {
-                return (
-                  <CForm onSubmit={handleSubmit}>
-                    <CCardText>
-                      {listBackendResult.isFetching && <CSpinner color="primary" />}
-                      {listBackendResult.isSuccess && (
-                      {listBackendResult.data.Tenants.map((integration) => (}
-                      )}
-                    </CCardText>
-                    <CCol className="me-2">
-                      <CButton className="me-2" type="submit">
-                        {setExtensionconfig.isFetching && (
-                          <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-                        )}
-                        Set Mappings
-                      </CButton>
-                    </CCol>
-                  </CForm>
-                )
-              }}
-            />
+            {listBackendResult.isFetching ? (
+              <CSpinner color="primary" />
+            ) : (
+              <Form
+                onSubmit={onSubmit}
+                initialValues={listBackendResult.data?.Mappings}
+                render={({ handleSubmit, submitting, values }) => {
+                  return (
+                    <CForm onSubmit={handleSubmit}>
+                      <CCardText>
+                        Use the table below to map your client to the correct PSA client
+                        {listBackendResult.isSuccess &&
+                          listBackendResult.data.Tenants.map((tenant) => (
+                            <RFFSelectSearch
+                              key={tenant.customerId}
+                              name={tenant.customerId}
+                              label={tenant.displayName}
+                              values={listBackendResult.data.HaloClients}
+                              placeholder="Select a client"
+                            />
+                          ))}
+                      </CCardText>
+                      <CCol className="me-2">
+                        <CButton className="me-2" type="submit">
+                          {setExtensionconfig.isFetching && (
+                            <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                          )}
+                          Set Mappings
+                        </CButton>
+                      </CCol>
+                    </CForm>
+                  )
+                }}
+              />
+            )}
           </CCardBody>
         </CCard>
       </>
