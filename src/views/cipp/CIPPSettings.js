@@ -1291,6 +1291,7 @@ const ExtensionsTab = () => {
   const inputRef = useRef(null)
   const [setExtensionconfig, extensionConfigResult] = useLazyGenericPostRequestQuery()
   const [execTestExtension, listExtensionTestResult] = useLazyGenericGetRequestQuery()
+  const [execSyncExtension, listSyncExtensionResult] = useLazyGenericGetRequestQuery()
 
   const onSubmitTest = (integrationName) => {
     setExtensionconfig({
@@ -1309,7 +1310,20 @@ const ExtensionsTab = () => {
       <>
         {(listBackendResult.isFetching ||
           extensionConfigResult.isFetching ||
-          listExtensionTestResult.isFetching) && <CSpinner color="primary" />}
+          listExtensionTestResult.isFetching ||
+          listSyncExtensionResult.isFetching) && <CSpinner color="primary" />}
+        {listSyncExtensionResult.isSuccess && (
+          <CCard className="mb-3">
+            <CCardHeader>
+              <CCardTitle>Results</CCardTitle>
+            </CCardHeader>
+            <CCardBody>
+              <>
+                <CCallout color="success">{listSyncExtensionResult.data.Results}</CCallout>
+              </>
+            </CCardBody>
+          </CCard>
+        )}
 
         {listExtensionTestResult.isSuccess && (
           <CCard className="mb-3">
@@ -1409,8 +1423,28 @@ const ExtensionsTab = () => {
                                   size="1x"
                                 />
                               )}
-                              Connect to Extension
+                              Test Extension
                             </CButton>
+                            {integration.forceSyncButton && (
+                              <CButton
+                                onClick={() =>
+                                  execSyncExtension({
+                                    path: 'api/ExecExtensionSync?Extension=' + integration.type,
+                                  })
+                                }
+                                className="me-2"
+                              >
+                                {listExtensionTestResult.isFetching && (
+                                  <FontAwesomeIcon
+                                    icon={faCircleNotch}
+                                    spin
+                                    className="me-2"
+                                    size="1x"
+                                  />
+                                )}
+                                Force Sync
+                              </CButton>
+                            )}
                           </CCol>
                         </CForm>
                       )

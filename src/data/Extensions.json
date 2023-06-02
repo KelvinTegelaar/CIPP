@@ -3,6 +3,7 @@
     "name": "Gradient Integration",
     "type": "Gradient",
     "cat": "Billing & Invoicing",
+    "forceSyncButton": true,
     "helpText": "This integration allows you to send your license counts to Gradient for billing purposes, and create tickets if your PSA supports ticket creation by Gradient.",
     "SettingOptions": [
       {
@@ -36,6 +37,7 @@
     "name": "Halo PSA Ticketing Integration",
     "type": "HaloPSA",
     "cat": "Ticketing",
+    "forceSyncButton": false,
     "helpText": "This integration allows you to use to send alerts to your ticketing system.",
     "SettingOptions": [
       {
