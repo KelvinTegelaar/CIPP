@@ -1294,7 +1294,7 @@ const ExtensionsTab = () => {
   const [execSyncExtension, listSyncExtensionResult] = useLazyGenericGetRequestQuery()
 
   const onSubmitTest = (integrationName) => {
-    setExtensionconfig({
+    execTestExtension({
       path: 'api/ExecExtensionTest?extensionName=' + integrationName,
     })
   }
@@ -1434,7 +1434,7 @@ const ExtensionsTab = () => {
                                 }
                                 className="me-2"
                               >
-                                {listExtensionTestResult.isFetching && (
+                                {listSyncExtensionResult.isFetching && (
                                   <FontAwesomeIcon
                                     icon={faCircleNotch}
                                     spin
