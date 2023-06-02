@@ -79,7 +79,6 @@ import { TitleButton } from 'src/components/buttons'
 import Skeleton from 'react-loading-skeleton'
 import { Buffer } from 'buffer'
 import Extensions from 'src/data/Extensions.json'
-import { RFFCFormHidden } from 'src/components/forms/RFFComponents'
 
 const CIPPSettings = () => {
   const [active, setActive] = useState(1)
@@ -107,6 +106,9 @@ const CIPPSettings = () => {
         <CNavItem active={active === 7} onClick={() => setActive(7)} href="#">
           Extensions
         </CNavItem>
+        <CNavItem active={active === 8} onClick={() => setActive(8)} href="#">
+          Extension Mappings
+        </CNavItem>
       </CNav>
       <CTabContent>
         <CTabPane visible={active === 1} className="mt-3">
@@ -129,6 +131,9 @@ const CIPPSettings = () => {
         </CTabPane>
         <CTabPane visible={active === 7} className="mt-3">
           <ExtensionsTab />
+        </CTabPane>
+        <CTabPane visible={active === 8} className="mt-3">
+          <MappingsTab />
         </CTabPane>
       </CTabContent>
     </CippPage>
@@ -1281,7 +1286,6 @@ const DNSSettings = () => {
     </>
   )
 }
-
 const ExtensionsTab = () => {
   const [listBackend, listBackendResult] = useLazyGenericGetRequestQuery()
   const inputRef = useRef(null)
@@ -1417,6 +1421,57 @@ const ExtensionsTab = () => {
             </CCol>
           ))}
         </CRow>
+      </>
+    </div>
+  )
+}
+
+const MappingsTab = () => {
+  const [listBackend, listBackendResult] = useLazyGenericGetRequestQuery()
+  const [setExtensionconfig, extensionConfigResult] = useLazyGenericPostRequestQuery()
+
+  const onSubmit = (values) => {
+    setExtensionconfig({
+      path: 'api/ExecExtensionsConfig',
+      values: values,
+    })
+  }
+  return (
+    <div>
+      {listBackendResult.isUninitialized &&
+        listBackend({ path: 'api/ExecExtensionMapping?List=true' })}
+      <>
+        <CCard>
+          <CCardHeader>
+            <CCardTitle>Extension Mapping Table</CCardTitle>
+          </CCardHeader>
+          <CCardBody>
+            <Form
+              onSubmit={onSubmit}
+              initialValues={listBackendResult.data}
+              render={({ handleSubmit, submitting, values }) => {
+                return (
+                  <CForm onSubmit={handleSubmit}>
+                    <CCardText>
+                      {listBackendResult.isFetching && <CSpinner color="primary" />}
+                      {listBackendResult.isSuccess && (
+                      {listBackendResult.data.Tenants.map((integration) => (}
+                      )}
+                    </CCardText>
+                    <CCol className="me-2">
+                      <CButton className="me-2" type="submit">
+                        {setExtensionconfig.isFetching && (
+                          <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                        )}
+                        Set Mappings
+                      </CButton>
+                    </CCol>
+                  </CForm>
+                )
+              }}
+            />
+          </CCardBody>
+        </CCard>
       </>
     </div>
   )
