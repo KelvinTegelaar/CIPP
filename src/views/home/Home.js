@@ -301,11 +301,13 @@ const Home = () => {
                 {issuccessPartners &&
                   !isFetchingPartners &&
                   partners.map((partner) => {
-                    return (
-                      <li key={`${partner.tenantId}`}>
-                        {partner.TenantInfo.displayName} ({partner.TenantInfo.defaultDomainName})
-                      </li>
-                    )
+                    if (partner.TenantInfo) {
+                      return (
+                        <li key={`${partner.tenantId}`}>
+                          {partner.TenantInfo.displayName} ({partner.TenantInfo.defaultDomainName})
+                        </li>
+                      )
+                    }
                   })}
               </CCol>
             </CRow>
