@@ -303,6 +303,46 @@ const ApplyStandard = () => {
         </div>
         <hr className="my-4" />
       </CippWizard.Page>
+      <CippWizard.Page
+        title="Apply Templates"
+        description="Select which templates you want to apply."
+      >
+        <center>
+          <h3 className="text-primary">Step 7</h3>
+          <h5 className="card-title mb-4">Select Default Templates to apply</h5>
+        </center>
+        <hr className="my-4" />
+        <CCallout color="warning">
+          Attention: Selected options below will run every 3 hours and overwrite any previously set
+          policy by the same name. This will keep the policy exactly in the state as defined by the
+          template.
+        </CCallout>
+        <div className="mb-2">
+          <CRow className="mb-3" xs={{ cols: 2 }}>
+            <RFFCFormSwitch name="IntuneTemplate" label="Deploy Intune Template" />
+            <Condition when="IntuneTemplate" is={true}>
+              HI MOM OVER HERE
+            </Condition>
+            <RFFCFormSwitch name="TransportRuleTemplate" label="Deploy Transport Rule Template" />
+            <Condition when="TransportRuleTemplate" is={true}>
+              HI MOM OVER HERE
+            </Condition>
+            <RFFCFormSwitch name="ConditionalAccess" label="Deploy Conditional Access Template" />
+            <Condition when="ConditionalAccess" is={true}>
+              HI MOM OVER HERE
+            </Condition>
+            <RFFCFormSwitch name="ExConnector" label="Deploy Exchange Connector Template" />
+            <Condition when="ExConnector" is={true}>
+              HI MOM OVER HERE
+            </Condition>
+            <RFFCFormSwitch name="GroupTemplate" label="Deploy Group Template" />
+            <Condition when="GroupTemplate" is={true}>
+              HI MOM OVER HERE
+            </Condition>
+          </CRow>
+        </div>
+        <hr className="my-4" />
+      </CippWizard.Page>
       <CippWizard.Page title="Review and Confirm" description="Confirm the settings to apply">
         <center>
           <h3 className="text-primary">Step 6</h3>
