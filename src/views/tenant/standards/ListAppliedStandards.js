@@ -21,7 +21,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Skeleton from 'react-loading-skeleton'
 import { CippTable } from 'src/components/tables'
 import allStandardsList from 'src/data/standards'
-import { CellTip } from 'src/components/tables/CellGenericFormat'
 
 const RefreshAction = () => {
   const [execStandards, execStandardsResults] = useLazyGenericGetRequestQuery()
@@ -131,6 +130,8 @@ const ListAppliedStandards = () => {
   const [exConnectorGetRequest, exConnectorTemplates] = useLazyGenericGetRequestQuery()
   const [caGetRequest, caTemplates] = useLazyGenericGetRequestQuery()
   const [groupGetRequest, groupTemplates] = useLazyGenericGetRequestQuery()
+  const initialValues = listStandardResults[0]
+  console.log(initialValues)
   return (
     <CippPage title="Standards" tenantSelector={false}>
       <>
@@ -148,7 +149,7 @@ const ListAppliedStandards = () => {
               {isFetching && <Skeleton count={20} />}
               {isSuccess && !isFetching && (
                 <Form
-                  initialValues={listStandardResults[0]}
+                  initialValues={initialValues}
                   onSubmit={handleSubmit}
                   render={({ handleSubmit, submitting, values }) => {
                     return (
@@ -314,9 +315,9 @@ const ListAppliedStandards = () => {
                             name="standards.IntuneTemplate.enabled"
                             label="Deploy Intune Template"
                           />
+                          {intuneTemplates.isUninitialized &&
+                            intuneGetRequest({ path: 'api/ListIntuneTemplates' })}
                           <Condition when="standards.IntuneTemplate.enabled" is={true}>
-                            {intuneTemplates.isUninitialized &&
-                              intuneGetRequest({ path: 'api/ListIntuneTemplates' })}
                             {intuneTemplates.isSuccess && (
                               <RFFSelectSearch
                                 name="standards.IntuneTemplate.TemplateList"
@@ -334,9 +335,9 @@ const ListAppliedStandards = () => {
                             name="standards.TransportRuleTemplate.enabled"
                             label="Deploy Transport Rule Template"
                           />
+                          {transportTemplates.isUninitialized &&
+                            transportGetRequest({ path: 'api/ListTransportRulesTemplates' })}
                           <Condition when="standards.TransportRuleTemplate.enabled" is={true}>
-                            {transportTemplates.isUninitialized &&
-                              transportGetRequest({ path: 'api/ListTransportRulesTemplates' })}
                             {transportTemplates.isSuccess && (
                               <RFFSelectSearch
                                 name="standards.TransportRuleTemplate.TemplateList"
@@ -354,9 +355,9 @@ const ListAppliedStandards = () => {
                             name="standards.ConditionalAccess.enabled"
                             label="Deploy Conditional Access Template"
                           />
+                          {caTemplates.isUninitialized &&
+                            caGetRequest({ path: 'api/ListCAtemplates' })}
                           <Condition when="standards.ConditionalAccess.enabled" is={true}>
-                            {caTemplates.isUninitialized &&
-                              caGetRequest({ path: 'api/ListCAtemplates' })}
                             {caTemplates.isSuccess && (
                               <RFFSelectSearch
                                 name="standards.ConditionalAccess.TemplateList"
@@ -374,9 +375,9 @@ const ListAppliedStandards = () => {
                             name="standards.ExConnector.enabled"
                             label="Deploy Exchange Connector Template"
                           />
+                          {exConnectorTemplates.isUninitialized &&
+                            exConnectorGetRequest({ path: 'api/ListExConnectorTemplates' })}
                           <Condition when="standards.ExConnector.enabled" is={true}>
-                            {exConnectorTemplates.isUninitialized &&
-                              exConnectorGetRequest({ path: 'api/ListExConnectorTemplates' })}
                             {exConnectorTemplates.isSuccess && (
                               <RFFSelectSearch
                                 name="standards.ExConnector.TemplateList"
@@ -394,9 +395,9 @@ const ListAppliedStandards = () => {
                             name="standards.GroupTemplate.enabled"
                             label="Deploy Group Template"
                           />
+                          {groupTemplates.isUninitialized &&
+                            groupGetRequest({ path: 'api/ListGroupTemplates' })}
                           <Condition when="standards.GroupTemplate.enabled" is={true}>
-                            {groupTemplates.isUninitialized &&
-                              groupGetRequest({ path: 'api/ListGroupTemplates' })}
                             {groupTemplates.isSuccess && (
                               <RFFSelectSearch
                                 name="standards.GroupTemplate.TemplateList"
