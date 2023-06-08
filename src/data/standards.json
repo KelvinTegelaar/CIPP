@@ -462,5 +462,40 @@
     "helpText": "This is the default helptext",
     "addedComponent": null,
     "label": "Only allow users to sync OneDrive from AAD joined devices"
+  },
+  {
+    "name": "standards.IntuneTemplate.enabled",
+    "cat": "templates",
+    "helpText": "This is the default helptext",
+    "addedComponent": null,
+    "label": "Intune Templates"
+  },
+  {
+    "name": "standards.GroupTemplate.enabled",
+    "cat": "templates",
+    "helpText": "This is the default helptext",
+    "addedComponent": null,
+    "label": "Group Templates"
+  },
+  {
+    "name": "standards.ExConnector.enabled",
+    "cat": "templates",
+    "helpText": "This is the default helptext",
+    "addedComponent": null,
+    "label": "Exchange Connector Templates"
+  },
+  {
+    "name": "standards.ConditionalAccess.enabled",
+    "cat": "templates",
+    "helpText": "This is the default helptext",
+    "addedComponent": null,
+    "label": "Conditional Access Templates"
+  },
+  {
+    "name": "standards.TransportRuleTemplate.enabled",
+    "cat": "templates",
+    "helpText": "This is the default helptext",
+    "addedComponent": null,
+    "label": "Transport Rule Templates"
   }
 ]
