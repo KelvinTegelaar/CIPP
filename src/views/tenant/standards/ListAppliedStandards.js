@@ -1,7 +1,13 @@
 import React from 'react'
 import { CButton, CCallout, CCol, CForm, CRow, CSpinner } from '@coreui/react'
 import { Form } from 'react-final-form'
-import { Condition, RFFCFormInput, RFFCFormSelect, RFFCFormSwitch } from 'src/components/forms'
+import {
+  Condition,
+  RFFCFormInput,
+  RFFCFormSelect,
+  RFFCFormSwitch,
+  RFFSelectSearch,
+} from 'src/components/forms'
 import {
   useGenericGetRequestQuery,
   useLazyGenericGetRequestQuery,
@@ -120,7 +126,11 @@ const ListAppliedStandards = () => {
       exportSelector: 'StandardsExport',
     },
   ]
-
+  const [intuneGetRequest, intuneTemplates] = useLazyGenericGetRequestQuery()
+  const [transportGetRequest, transportTemplates] = useLazyGenericGetRequestQuery()
+  const [exConnectorGetRequest, exConnectorTemplates] = useLazyGenericGetRequestQuery()
+  const [caGetRequest, caTemplates] = useLazyGenericGetRequestQuery()
+  const [groupGetRequest, groupTemplates] = useLazyGenericGetRequestQuery()
   return (
     <CippPage title="Standards" tenantSelector={false}>
       <>
@@ -295,6 +305,112 @@ const ListAppliedStandards = () => {
                         {postResults.isSuccess && (
                           <CCallout color="success">{postResults.data.Results}</CCallout>
                         )}
+
+                        <hr />
+                        <h5>Templates</h5>
+                        <hr />
+                        <CRow className="mb-3" xs={{ cols: 2 }}>
+                          <RFFCFormSwitch
+                            name="standards.IntuneTemplate.enabled"
+                            label="Deploy Intune Template"
+                          />
+                          <Condition when="standards.IntuneTemplate.enabled" is={true}>
+                            {intuneTemplates.isUninitialized &&
+                              intuneGetRequest({ path: 'api/ListIntuneTemplates' })}
+                            {intuneTemplates.isSuccess && (
+                              <RFFSelectSearch
+                                name="standards.IntuneTemplate.TemplateList"
+                                multi={true}
+                                values={intuneTemplates.data?.map((template) => ({
+                                  value: template.GUID,
+                                  name: template.Displayname,
+                                }))}
+                                placeholder="Select a template"
+                                label="Choose your intune templates to apply"
+                              />
+                            )}
+                          </Condition>
+                          <RFFCFormSwitch
+                            name="standards.TransportRuleTemplate.enabled"
+                            label="Deploy Transport Rule Template"
+                          />
+                          <Condition when="standards.TransportRuleTemplate.enabled" is={true}>
+                            {transportTemplates.isUninitialized &&
+                              transportGetRequest({ path: 'api/ListTransportRulesTemplates' })}
+                            {transportTemplates.isSuccess && (
+                              <RFFSelectSearch
+                                name="standards.TransportRuleTemplate.TemplateList"
+                                multi={true}
+                                values={transportTemplates.data?.map((template) => ({
+                                  value: template.GUID,
+                                  name: template.name,
+                                }))}
+                                placeholder="Select a template"
+                                label="Choose your Transport Rule templates to apply"
+                              />
+                            )}
+                          </Condition>
+                          <RFFCFormSwitch
+                            name="standards.ConditionalAccess.enabled"
+                            label="Deploy Conditional Access Template"
+                          />
+                          <Condition when="standards.ConditionalAccess.enabled" is={true}>
+                            {caTemplates.isUninitialized &&
+                              caGetRequest({ path: 'api/ListCAtemplates' })}
+                            {caTemplates.isSuccess && (
+                              <RFFSelectSearch
+                                name="standards.ConditionalAccess.TemplateList"
+                                multi={true}
+                                values={caTemplates.data?.map((template) => ({
+                                  value: template.GUID,
+                                  name: template.displayName,
+                                }))}
+                                placeholder="Select a template"
+                                label="Choose your intune templates to apply"
+                              />
+                            )}
+                          </Condition>
+                          <RFFCFormSwitch
+                            name="standards.ExConnector.enabled"
+                            label="Deploy Exchange Connector Template"
+                          />
+                          <Condition when="standards.ExConnector.enabled" is={true}>
+                            {exConnectorTemplates.isUninitialized &&
+                              exConnectorGetRequest({ path: 'api/ListExConnectorTemplates' })}
+                            {exConnectorTemplates.isSuccess && (
+                              <RFFSelectSearch
+                                name="standards.ExConnector.TemplateList"
+                                multi={true}
+                                values={exConnectorTemplates.data?.map((template) => ({
+                                  value: template.GUID,
+                                  name: template.name,
+                                }))}
+                                placeholder="Select a template"
+                                label="Choose your intune templates to apply"
+                              />
+                            )}
+                          </Condition>
+                          <RFFCFormSwitch
+                            name="standards.GroupTemplate.enabled"
+                            label="Deploy Group Template"
+                          />
+                          <Condition when="standards.GroupTemplate.enabled" is={true}>
+                            {groupTemplates.isUninitialized &&
+                              groupGetRequest({ path: 'api/ListGroupTemplates' })}
+                            {groupTemplates.isSuccess && (
+                              <RFFSelectSearch
+                                name="standards.GroupTemplate.TemplateList"
+                                multi={true}
+                                values={groupTemplates.data?.map((template) => ({
+                                  value: template.GUID,
+                                  name: template.Displayname,
+                                }))}
+                                placeholder="Select a template"
+                                label="Choose your intune templates to apply"
+                              />
+                            )}
+                          </Condition>
+                        </CRow>
                         <CRow className="mb-3">
                           <CCol md={6}>
                             <CButton type="submit" disabled={submitting}>
