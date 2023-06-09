@@ -44,7 +44,7 @@ const GDAPRelationships = () => {
       name: 'Tenant',
       selector: (row) => row.customer?.displayName,
       sortable: true,
-      exportSelector: 'customer',
+      exportSelector: 'customer/displayName',
       cell: cellNullTextFormatter(),
     },
     {
