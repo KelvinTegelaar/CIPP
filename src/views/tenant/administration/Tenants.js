@@ -100,10 +100,10 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
           },
           {
             icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
-            label: 'AAD Portal',
+            label: 'Entra Portal',
             color: 'info',
             external: true,
-            link: `https://aad.portal.azure.com/${row.defaultDomainName}`,
+            link: `https://entra.microsoft.com/${row.defaultDomainName}`,
           },
           {
             icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
@@ -124,7 +124,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             label: 'MEM (Intune) Portal',
             color: 'info',
             external: true,
-            link: `https://endpoint.microsoft.com/${row.defaultDomainName}`,
+            link: `https://intune.microsoft.com/${row.defaultDomainName}`,
           },
           {
             icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
@@ -221,13 +221,13 @@ const TenantsList = () => {
       ),
     },
     {
-      name: 'AAD Portal',
+      name: 'Entra Portal',
       omit: columnOmits,
       selector: (row) => row['defaultDomainName'],
       center: true,
       cell: (row) => (
         <a
-          href={`https://aad.portal.azure.com/${row.defaultDomainName}`}
+          href={`https://entra.microsoft.com/${row.defaultDomainName}`}
           target="_blank"
           className="dlink"
           rel="noreferrer"
