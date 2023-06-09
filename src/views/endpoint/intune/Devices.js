@@ -45,6 +45,22 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modalMessage: 'Are you sure you want to locate this device?',
           },
           {
+            label: 'Retrieve LAPs password',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecGetLocalAdminPassword?TenantFilter=${tenant.defaultDomainName}&GUID=${row.azureADDeviceId}`,
+            modalMessage: 'Are you sure you want to retrieve the local admin password?',
+          },
+          {
+            label: 'Rotate Local Admin Password',
+            color: 'info',
+            modal: true,
+            modalType: 'POST',
+            modalBody: {},
+            modalUrl: `/api/ExecDeviceAction?TenantFilter=${tenant.defaultDomainName}&GUID=${row.id}&Action=RotateLocalAdminPassword`,
+            modalMessage: 'Are you sure you want to rotate the password for this device?',
+          },
+          {
             label: 'Retrieve Bitlocker Keys',
             color: 'info',
             modal: true,
@@ -83,6 +99,15 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modal: true,
             modalUrl: `/api/ExecDeviceAction?TenantFilter=${tenant.defaultDomainName}&GUID=${row.id}&Action=CreateDeviceLogCollectionRequest`,
             modalMessage: 'Are you sure you want to generate logs and ship these to MEM?',
+          },
+          {
+            label: 'Rename device',
+            color: 'info',
+            modal: true,
+            modalType: 'POST',
+            modalInput: true,
+            modalUrl: `/api/ExecDeviceAction?TenantFilter=${tenant.defaultDomainName}&GUID=${row.id}&Action=setDeviceName`,
+            modalMessage: 'Enter the new name for the device',
           },
           {
             label: 'Fresh Start (Remove user data)',
