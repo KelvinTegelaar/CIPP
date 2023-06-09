@@ -329,8 +329,10 @@ export default function CippTable({
 
     if (!disablePDFExport || !disableCSVExport) {
       const keys = []
+      const exportFormatted = {}
       columns.map((col) => {
         if (col.exportSelector) keys.push(col.exportSelector)
+        if (col.exportFormatted) exportFormatted[col.exportSelector] = col.exportFormatted
         return null
       })
 
@@ -348,7 +350,11 @@ export default function CippTable({
               acc[curr] = 'n/a'
             }
           } else {
-            acc[curr] = obj[curr]
+            if (typeof exportFormatted[curr] === 'function') {
+              acc[curr] = exportFormatted[curr]({ cell: obj[curr] })
+            } else {
+              acc[curr] = obj[curr]
+            }
           }
           return acc
         }, {}),

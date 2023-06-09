@@ -23,11 +23,7 @@ import Skeleton from 'react-loading-skeleton'
 import { UniversalSearch } from 'src/components/utilities/UniversalSearch'
 import { ActionContentCard } from 'src/components/contentcards'
 import { useSelector } from 'react-redux'
-import TimeAgo from 'javascript-time-ago'
 import allStandardsList from 'src/data/standards'
-
-import en from 'javascript-time-ago/locale/en.json'
-TimeAgo.addDefaultLocale(en)
 import ReactTimeAgo from 'react-time-ago'
 
 const Home = () => {
