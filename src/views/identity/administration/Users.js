@@ -276,7 +276,7 @@ const Users = (row) => {
       name: 'Licenses',
       selector: (row) => row['assignedLicenses'],
       exportSelector: 'assignedLicenses',
-      exportFormatted: CellLicense,
+      exportFormatter: CellLicense,
       cell: cellLicenseFormatter(),
       sortable: true,
       grow: 5,
