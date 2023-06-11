@@ -8,12 +8,26 @@ import { cellBooleanFormatter, CellTip } from 'src/components/tables'
 import { CippPageList } from 'src/components/layout'
 import { TitleButton } from 'src/components/buttons'
 import { CippActionsOffcanvas } from 'src/components/utilities'
+import { cellLicenseFormatter } from 'src/components/tables/CellLicense'
+import M365Licenses from 'src/data/M365Licenses'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
   const [ocVisible, setOCVisible] = useState(false)
   const viewLink = `/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}&userEmail=${row.userPrincipalName}`
   const editLink = `/identity/administration/users/edit?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`
+
+  let licenses = []
+  row.assignedLicenses?.map((licenseAssignment, idx) => {
+    for (var x = 0; x < M365Licenses.length; x++) {
+      if (licenseAssignment.skuId == M365Licenses[x].GUID) {
+        licenses.push(M365Licenses[x].Product_Display_Name)
+        break
+      }
+    }
+  })
+  var licJoined = licenses.join(', ')
+
   //console.log(row)
   return (
     <>
@@ -38,7 +52,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
           { label: 'Given Name', value: `${row.givenName ?? ' '}` },
           { label: 'Surname', value: `${row.surname ?? ' '}` },
           { label: 'Job Title', value: `${row.jobTitle ?? ' '}` },
-          { label: 'Licenses', value: `${row.LicJoined ?? ' '}` },
+          { label: 'Licenses', value: `${licJoined ?? ' '}` },
           { label: 'Business Phone', value: `${row.businessPhones ?? ' '}` },
           { label: 'Mobile Phone', value: `${row.mobilePhone ?? ' '}` },
           { label: 'Mail', value: `${row.mail ?? ' '}` },
@@ -260,8 +274,9 @@ const Users = (row) => {
     },
     {
       name: 'Licenses',
-      selector: (row) => row['LicJoined'],
-      exportSelector: 'LicJoined',
+      selector: (row) => row['assignedLicenses'],
+      exportSelector: 'assignedLicenses',
+      cell: cellLicenseFormatter(),
       sortable: true,
       grow: 5,
       wrap: true,
@@ -313,11 +328,28 @@ const Users = (row) => {
           { filterName: 'Guest users', filter: '"usertype":"guest"' },
           { filterName: 'Users with a license', filter: '"assignedLicenses":[{' },
           { filterName: 'Users without a license', filter: '"assignedLicenses":[]' },
+          {
+            filterName: 'Users with a license (Graph)',
+            filter: 'assignedLicenses/$count ne 0',
+            graphFilter: true,
+          },
+          {
+            filterName: 'Users with a license & Enabled (Graph)',
+            filter: 'assignedLicenses/$count ne 0 and accountEnabled eq true',
+            graphFilter: true,
+          },
         ],
         columns,
-        path: '/api/ListUsers',
+        path: '/api/ListGraphRequest',
         reportName: `${tenant?.defaultDomainName}-Users`,
-        params: { TenantFilter: tenant?.defaultDomainName },
+        params: {
+          TenantFilter: tenant?.defaultDomainName,
+          Endpoint: 'users',
+          $select:
+            'id,accountEnabled,businessPhones,city,createdDateTime,companyName,country,department,displayName,faxNumber,givenName,isResourceAccount,jobTitle,mail,mailNickname,mobilePhone,onPremisesDistinguishedName,officeLocation,onPremisesLastSyncDateTime,otherMails,postalCode,preferredDataLocation,preferredLanguage,proxyAddresses,showInAddressList,state,streetAddress,surname,usageLocation,userPrincipalName,userType,assignedLicenses,onPremisesSyncEnabled',
+          $count: true,
+          $orderby: 'displayName',
+        },
         tableProps: {
           selectableRows: true,
           actionsList: [
@@ -344,7 +376,7 @@ const Users = (row) => {
               label: 'Reset Password (Must Change)',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecResetPass?MustChange=true&TenantFilter=${tenant.defaultDomainName}&ID=!userPrincipalName`,
+              modalUrl: `/api/ExecResetPass?MustChange=true&TenantFilter=${tenant.defaultDomainName}&ID=!userPrincipalName&displayName=!displayName`,
               modalMessage:
                 'Are you sure you want to reset the password for these users? The users must change their password at next logon.',
             },
@@ -352,7 +384,7 @@ const Users = (row) => {
               label: 'Reset Password',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecResetPass?MustChange=false&TenantFilter=${tenant.defaultDomainName}&ID=!userPrincipalName`,
+              modalUrl: `/api/ExecResetPass?MustChange=false&TenantFilter=${tenant.defaultDomainName}&ID=!userPrincipalName&displayName=!displayName`,
               modalMessage:
                 'Are you sure you want to reset the password for these users? The users must change their password at next logon.',
             },

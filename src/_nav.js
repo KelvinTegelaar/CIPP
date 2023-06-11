@@ -18,6 +18,7 @@ import {
   faExclamationTriangle,
   faUserShield,
   faEnvelope,
+  faToolbox,
 } from '@fortawesome/free-solid-svg-icons'
 
 const _nav = [
@@ -126,11 +127,44 @@ const _nav = [
         name: 'Alerts Wizard',
         to: '/tenant/administration/alertswizard',
       },
-
       {
         component: CNavItem,
         name: 'Scheduled Alerts',
         to: '/tenant/administration/alertsqueue',
+      },
+      {
+        component: CNavItem,
+        name: 'Enterprise Applications',
+        to: '/tenant/administration/enterprise-apps',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
+    name: 'Tools',
+    section: 'Tools',
+    to: '/tenant/administration',
+    icon: <FontAwesomeIcon icon={faToolbox} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Graph Explorer',
+        to: '/tenant/administration/graph-explorer',
+      },
+      {
+        component: CNavItem,
+        name: 'Application Approval',
+        to: '/tenant/administration/appapproval',
+      },
+      {
+        component: CNavItem,
+        name: 'Tenant Lookup',
+        to: '/tenant/administration/tenantlookup',
+      },
+      {
+        component: CNavItem,
+        name: 'Individual Domain Check',
+        to: '/tenant/standards/individual-domains',
       },
     ],
   },
@@ -148,7 +182,7 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Apply Standards',
+        name: 'Standards Wizard',
         to: '/tenant/standards/apply-standard',
       },
       {
@@ -160,11 +194,6 @@ const _nav = [
         component: CNavItem,
         name: 'Domains Analyser',
         to: '/tenant/standards/domains-analyser',
-      },
-      {
-        component: CNavItem,
-        name: 'Individual Domain Check',
-        to: '/tenant/standards/individual-domains',
       },
     ],
   },
@@ -214,11 +243,6 @@ const _nav = [
     to: '/tenant/reports',
     icon: <FontAwesomeIcon icon={faChartBar} className="nav-icon" />,
     items: [
-      {
-        component: CNavItem,
-        name: 'Graph Explorer',
-        to: '/tenant/administration/graph-explorer',
-      },
       {
         component: CNavItem,
         name: 'Licence Report',
@@ -671,8 +695,8 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Application Approval',
-        to: '/tenant/administration/appapproval',
+        name: 'GDAP Relationships',
+        to: '/tenant/administration/gdap-relationships',
       },
       {
         component: CNavItem,
