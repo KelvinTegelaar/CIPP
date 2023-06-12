@@ -63,6 +63,9 @@
   * [Contacts](user-documentation/emailexchange/contacts.md)
   * [Mailboxes](user-documentation/emailexchange/mailboxes.md)
   * [Reports](user-documentation/emailexchange/reports.md)
+* [Extensions](user-documentation/extensions/README.md)
+  * [Gradient](user-documentation/extensions/gradient.md)
+  * [HaloPSA](user-documentation/extensions/halopsa.md)
 
 ## 📂 Troubleshooting
 
@@ -74,7 +77,7 @@
 * [Security Policy](security/security-policy.md)
 * [CIPP Community Vulnerability Disclosure Policy](security/cipp-community-vulnerability-disclosure-policy.md)
 
-## 👩💻 Dev Documentation
+## 👩💻 👩💻 Dev Documentation
 
 * [CIPP Dev Guide](developer-documentation/cipp-dev-guide/README.md)
   * [Setting Up for Local Development](developer-documentation/cipp-dev-guide/setting-up-for-local-development.md)
