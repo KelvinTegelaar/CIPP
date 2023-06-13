@@ -86,17 +86,6 @@
     "label": "Enable LAPs on the tenant"
   },
   {
-    "name": "standards.intuneDeviceReg.Enabled",
-    "cat": "AAD",
-    "helpText": "This is the default helptext",
-    "addedComponent": {
-      "type": "input",
-      "name": "standards.intuneDeviceReg.max",
-      "label": "Maximum devices (Enter 2147483647 for unlimited.)"
-    },
-    "label": "Set Maximum Number of Devices per user"
-  },
-  {
     "name": "standards.PWnumberMatchingRequiredState",
     "cat": "AAD",
     "helpText": "This is the default helptext",
@@ -109,6 +98,27 @@
     "helpText": "This is the default helptext",
     "addedComponent": null,
     "label": "Enable Passwordless with Location information and Number Matching"
+  },
+  {
+    "cat": "AAD",
+    "name": "standards.PWcompanionAppAllowedState.Enabled",
+    "helpText": "This is the default helptext",
+    "addedComponent": {
+      "type": "Select",
+      "label": "Select value",
+      "name": "standards.PWcompanionAppAllowedState.state",
+      "values": [
+        {
+          "label": "Enabled",
+          "value": "enabled"
+        },
+        {
+          "label": "Disabled",
+          "value": "disabled"
+        }
+      ]
+    },
+    "label": "Set Authenticator Lite state"
   },
   {
     "cat": "AAD",
@@ -357,6 +367,28 @@
     "label": "Set Sharing Level for Default calendar"
   },
   {
+    "name": "standards.intuneDeviceReg.Enabled",
+    "cat": "Intune",
+    "helpText": "This is the default helptext",
+    "addedComponent": {
+      "type": "input",
+      "name": "standards.intuneDeviceReg.max",
+      "label": "Maximum devices (Enter 2147483647 for unlimited.)"
+    },
+    "label": "Set Maximum Number of Devices per user"
+  },
+  {
+    "name": "standards.intuneDeviceRetirementDays.Enabled",
+    "cat": "Intune",
+    "helpText": "This is the default helptext",
+    "addedComponent": {
+      "type": "input",
+      "name": "standards.intuneDeviceRetirementDays.days",
+      "label": "Maximum days (0 equals disabled)"
+    },
+    "label": "Set inactive device retirement days"
+  },
+  {
     "name": "standards.sharingCapability.Enabled",
     "cat": "SharePoint",
     "helpText": "This is the default helptext",
@@ -430,5 +462,40 @@
     "helpText": "This is the default helptext",
     "addedComponent": null,
     "label": "Only allow users to sync OneDrive from AAD joined devices"
+  },
+  {
+    "name": "standards.IntuneTemplate.enabled",
+    "cat": "templates",
+    "helpText": "This is the default helptext",
+    "addedComponent": null,
+    "label": "Intune Templates"
+  },
+  {
+    "name": "standards.GroupTemplate.enabled",
+    "cat": "templates",
+    "helpText": "This is the default helptext",
+    "addedComponent": null,
+    "label": "Group Templates"
+  },
+  {
+    "name": "standards.ExConnector.enabled",
+    "cat": "templates",
+    "helpText": "This is the default helptext",
+    "addedComponent": null,
+    "label": "Exchange Connector Templates"
+  },
+  {
+    "name": "standards.ConditionalAccess.enabled",
+    "cat": "templates",
+    "helpText": "This is the default helptext",
+    "addedComponent": null,
+    "label": "Conditional Access Templates"
+  },
+  {
+    "name": "standards.TransportRuleTemplate.enabled",
+    "cat": "templates",
+    "helpText": "This is the default helptext",
+    "addedComponent": null,
+    "label": "Transport Rule Templates"
   }
 ]
