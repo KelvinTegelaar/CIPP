@@ -275,7 +275,7 @@ const TenantsList = () => {
       center: true,
       cell: (row) => (
         <a
-          href={`https://endpoint.microsoft.com/${row.defaultDomainName}`}
+          href={`https://intune.microsoft.com/${row.defaultDomainName}`}
           target="_blank"
           className="dlink"
           rel="noreferrer"
