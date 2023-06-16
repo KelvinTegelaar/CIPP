@@ -7,11 +7,13 @@ description: View and manage your Microsoft 365 CSP tenants.
 
 # Tenants
 
-:::info Effective Permissions When you select one of the portal links the permissions of the currently logged in user are the ones that matter, they need permission to access the portal in question either by virtue of direct administrative roles or the Admin Agent/Helpdesk Agent role in Partner Center. :::
+{% hint style="warning" %}
+When you select one of the portal links the permissions of the currently logged in user are the ones that matter, they need permission to access the portal in question either by virtue of direct administrative roles or the Admin Agent/Helpdesk Agent role in Partner Center.
+{% endhint %}
 
-The tenants page is a shortcut and might replace the initial page for CIPP in a future release.
+The Tenant page provides the ability for you to jump to the specific tenant administration centers for that client using your individual partner credentials. Allowing you to administer that specific tenant.&#x20;
 
-It provides the ability for you to jump to the specific tenant administration centers for that client using your individual partner credentials. Allowing you to administer that specific tenant. Tenants are cached for 24 hours. By using the Clear Cache button in settings you are able to reload the tenants from the partner center immediately. Remember to also clear your browser cache.
+Tenants are cached for 24 hours. By using the Clear Tenant Cache button in settings you are able to reload the tenants from the partner center immediately. Remember to also clear your browser cache.
 
 ### Details
 
@@ -34,8 +36,3 @@ This _only_ affects what's shown in the Partner Center (and tenant list in CIPP)
 By default Microsoft only picks up this information when you create a new relationship, and never updates this after.
 {% endhint %}
 
-
-
-
-
-### Known Issues / Limitations
