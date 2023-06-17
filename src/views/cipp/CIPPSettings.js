@@ -19,8 +19,10 @@ import {
   CListGroupItem,
   CLink,
   CSpinner,
+  CCardText,
 } from '@coreui/react'
 import {
+  useGenericGetRequestQuery,
   useLazyExecClearCacheQuery,
   useLazyExecNotificationConfigQuery,
   useLazyExecPermissionsAccessCheckQuery,
@@ -28,6 +30,7 @@ import {
   useLazyGenericGetRequestQuery,
   useLazyGenericPostRequestQuery,
   useLazyListNotificationConfigQuery,
+  useLoadVersionsQuery,
 } from 'src/store/api/app'
 import {
   useExecAddExcludeTenantMutation,
@@ -48,7 +51,13 @@ import {
 import { useListTenantsQuery } from 'src/store/api/tenants'
 import { useLazyEditDnsConfigQuery, useLazyGetDnsConfigQuery } from 'src/store/api/domains'
 import { useDispatch, useSelector } from 'react-redux'
-import { cellBooleanFormatter, CellTip, CellTipIcon, CippTable } from 'src/components/tables'
+import {
+  CellBadge,
+  cellBooleanFormatter,
+  CellTip,
+  CellTipIcon,
+  CippTable,
+} from 'src/components/tables'
 import { CippPage, CippPageList } from 'src/components/layout'
 import {
   RFFCFormSwitch,
@@ -59,11 +68,17 @@ import {
 import { Form } from 'react-final-form'
 import useConfirmModal from 'src/hooks/useConfirmModal'
 import { setCurrentTenant } from 'src/store/features/app'
-import { CippCodeBlock, ModalService, TenantSelectorMultiple } from 'src/components/utilities'
+import {
+  CippCodeBlock,
+  ModalService,
+  StatusIcon,
+  TenantSelectorMultiple,
+} from 'src/components/utilities'
 import CippListOffcanvas from 'src/components/utilities/CippListOffcanvas'
 import { TitleButton } from 'src/components/buttons'
 import Skeleton from 'react-loading-skeleton'
 import { Buffer } from 'buffer'
+import Extensions from 'src/data/Extensions.json'
 
 const CIPPSettings = () => {
   const [active, setActive] = useState(1)
@@ -88,6 +103,12 @@ const CIPPSettings = () => {
         <CNavItem active={active === 6} onClick={() => setActive(6)} href="#">
           Maintenance
         </CNavItem>
+        <CNavItem active={active === 7} onClick={() => setActive(7)} href="#">
+          Extensions
+        </CNavItem>
+        <CNavItem active={active === 8} onClick={() => setActive(8)} href="#">
+          Extension Mappings
+        </CNavItem>
       </CNav>
       <CTabContent>
         <CTabPane visible={active === 1} className="mt-3">
@@ -107,6 +128,12 @@ const CIPPSettings = () => {
         </CTabPane>
         <CTabPane visible={active === 6} className="mt-3">
           <Maintenance />
+        </CTabPane>
+        <CTabPane visible={active === 7} className="mt-3">
+          <ExtensionsTab />
+        </CTabPane>
+        <CTabPane visible={active === 8} className="mt-3">
+          <MappingsTab />
         </CTabPane>
       </CTabContent>
     </CippPage>
@@ -129,6 +156,8 @@ const checkAccessColumns = [
 ]
 
 const GeneralSettings = () => {
+  const { data: versions, isSuccess: isSuccessVersion } = useLoadVersionsQuery()
+
   const { data: tenants = [] } = useListTenantsQuery({ AllTenantSelector: false })
   const [checkPermissions, permissionsResult] = useLazyExecPermissionsAccessCheckQuery()
   const [clearCache, clearCacheResult] = useLazyExecClearCacheQuery()
@@ -271,7 +300,39 @@ const GeneralSettings = () => {
   return (
     <div>
       <CRow className="mb-3">
-        <CCol md={6}>
+        <CCol>
+          <CCard className="h-100">
+            <CCardHeader>
+              <CCardTitle>Frontend Version</CCardTitle>
+            </CCardHeader>
+            <CCardBody>
+              <StatusIcon
+                type="negatedboolean"
+                status={isSuccessVersion && versions.OutOfDateCIPP}
+              />
+              <div>Latest: {isSuccessVersion ? versions.RemoteCIPPVersion : <Skeleton />}</div>
+              <div>Current: {isSuccessVersion ? versions.LocalCIPPVersion : <Skeleton />}</div>
+            </CCardBody>
+          </CCard>
+        </CCol>
+        <CCol>
+          <CCard className="h-100">
+            <CCardHeader>
+              <CCardTitle>API Version</CCardTitle>
+            </CCardHeader>
+            <CCardBody>
+              <StatusIcon
+                type="negatedboolean"
+                status={isSuccessVersion && versions.OutOfDateCIPPAPI}
+              />
+              <div>Latest: {isSuccessVersion ? versions.RemoteCIPPAPIVersion : <Skeleton />}</div>
+              <div>Current: {isSuccessVersion ? versions.LocalCIPPAPIVersion : <Skeleton />}</div>
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </CRow>
+      <CRow className="mb-3">
+        <CCol>
           <CCard className="h-100">
             <CCardHeader>
               <CCardTitle>Permissions Check</CCardTitle>
@@ -497,6 +558,9 @@ const GeneralSettings = () => {
             </CCardBody>
           </CCard>
         </CCol>
+        <CCol>
+          <PasswordSettings />
+        </CCol>
       </CRow>
     </div>
   )
@@ -615,19 +679,6 @@ const ExcludedTenantsSettings = () => {
   }
   const columns = [
     {
-      name: 'Latest Status',
-      selector: (row) => row['GraphErrorCount'],
-      sortable: true,
-      cell: (row) =>
-        CellTipIcon(
-          StatusText(row['GraphErrorCount'], row['LastGraphError']),
-          StatusIcon(row['GraphErrorCount']),
-        ),
-      exportSelector: 'GraphErrorCount',
-      maxWidth: '130px',
-      minWidth: '130px',
-    },
-    {
       name: 'Name',
       selector: (row) => row['displayName'],
       sortable: true,
@@ -640,6 +691,31 @@ const ExcludedTenantsSettings = () => {
       sortable: true,
       cell: (row) => CellTip(row['defaultDomainName']),
       exportSelector: 'defaultDomainName',
+    },
+    {
+      name: 'Relationship Type',
+      selector: (row) => row['delegatedPrivilegeStatus'],
+      sortable: true,
+      cell: (row, index, column) => {
+        const cell = column.selector(row)
+        if (!cell) {
+          return <CellBadge color="info" label="DAP" />
+        }
+        if (cell.toLowerCase() == 'none') {
+          return <CellBadge color="info" label="No Access" />
+        }
+        if (cell === 'delegatedAdminPrivileges') {
+          return <CellBadge color="info" label="DAP Only" />
+        }
+        if (cell === 'delegatedAndGranularDelegetedAdminPrivileges') {
+          return <CellBadge color="info" label="GDAP & DAP" />
+        }
+        if (cell === 'granularDelegatedAdminPrivileges') {
+          return <CellBadge color="info" label="GDAP" />
+        }
+        return <CellBadge color="info" label="Unknown" />
+      },
+      exportSelector: 'delegatedPrivilegeStatus',
     },
     {
       name: 'Excluded',
@@ -702,6 +778,34 @@ const ExcludedTenantsSettings = () => {
         tenantSelector={false}
         titleButton={titleButton}
         datatable={{
+          tableProps: {
+            selectableRows: true,
+            actionsList: [
+              {
+                label: 'Exclude Tenants',
+                modal: true,
+                modalType: 'POST',
+                modalBody: {
+                  value: '!customerId',
+                },
+                modalUrl: `/api/ExecExcludeTenant?AddExclusion=true`,
+                modalMessage: 'Are you sure you want to exclude these tenants?',
+              },
+              {
+                label: 'Include Tenants',
+                modal: true,
+                modalUrl: `/api/ExecExcludeTenant?RemoveExclusion=true&TenantFilter=!defaultDomainName`,
+                modalMessage: 'Are you sure you want to include these tenants?',
+              },
+              {
+                label: 'Refresh CPV Permissions',
+                modal: true,
+                modalUrl: `/api/ExecCPVPermissions?TenantFilter=!customerId`,
+                modalMessage:
+                  'Are you sure you want to refresh the CPV permissions for these tenants?',
+              },
+            ],
+          },
           filterlist: [
             { filterName: 'Excluded Tenants', filter: '"Excluded":true' },
             { filterName: 'Included Tenants', filter: '"Excluded":false' },
@@ -724,11 +828,11 @@ const SecuritySettings = () => {
       <>
         <CRow className="mb-3">
           <CCol md={4}>
-            <CCard>
+            <CCard className="h-100">
               <CCardHeader>
                 <CCardTitle>Resource Group</CCardTitle>
               </CCardHeader>
-              <CCardBody className="equalheight">
+              <CCardBody>
                 <CRow className="mb-3">
                   The Resource group contains all the CIPP resources in your tenant, except the SAM
                   Application
@@ -744,11 +848,11 @@ const SecuritySettings = () => {
             </CCard>
           </CCol>
           <CCol md={4}>
-            <CCard>
+            <CCard className="h-100">
               <CCardHeader>
                 <CCardTitle>Key Vault</CCardTitle>
               </CCardHeader>
-              <CCardBody className="equalheight">
+              <CCardBody>
                 <CRow className="mb-3">
                   The keyvault allows you to check token information. By default you do not have
                   access.
@@ -764,11 +868,11 @@ const SecuritySettings = () => {
             </CCard>
           </CCol>
           <CCol md={4}>
-            <CCard>
+            <CCard className="h-100">
               <CCardHeader>
                 <CCardTitle>Static Web App (Role Management)</CCardTitle>
               </CCardHeader>
-              <CCardBody className="equalheight">
+              <CCardBody>
                 <CRow className="mb-3">
                   The Static Web App role management allows you to invite other users to the
                   application.
@@ -786,11 +890,11 @@ const SecuritySettings = () => {
         </CRow>
         <CRow className="mb-3">
           <CCol md={4}>
-            <CCard>
+            <CCard className="h-100">
               <CCardHeader>
                 <CCardTitle>Function App (Deployment Center)</CCardTitle>
               </CCardHeader>
-              <CCardBody className="equalheight">
+              <CCardBody>
                 <CRow className="mb-3">
                   The Function App Deployment Center allows you to run updates on the API
                 </CRow>
@@ -805,31 +909,31 @@ const SecuritySettings = () => {
             </CCard>
           </CCol>
           <CCol md={4}>
-            <CCard>
+            <CCard className="h-100">
               <CCardHeader>
                 <CCardTitle>Function App (Configuration)</CCardTitle>
               </CCardHeader>
-              <CCardBody className="equalheight">
+              <CCardBody>
                 <CRow className="mb-3">
                   At the Function App Configuration you can check the status of the API access to
                   your keyvault
+                  <a
+                    target={'_blank'}
+                    href={listBackendResult.data?.Results?.FunctionConfig}
+                    rel="noreferrer"
+                  >
+                    <CButton>Go to Function App Configuration</CButton>
+                  </a>
                 </CRow>
-                <a
-                  target={'_blank'}
-                  href={listBackendResult.data?.Results?.FunctionConfig}
-                  rel="noreferrer"
-                >
-                  <CButton>Go to Function App Configuration</CButton>
-                </a>
               </CCardBody>
             </CCard>
           </CCol>
           <CCol md={4}>
-            <CCard>
+            <CCard className="h-100">
               <CCardHeader>
                 <CCardTitle>Function App (Overview)</CCardTitle>
               </CCardHeader>
-              <CCardBody className="equalheight">
+              <CCardBody>
                 <CRow className="mb-3">
                   At the function App Overview, you can stop and start the backend API
                 </CRow>
@@ -853,7 +957,6 @@ const NotificationsSettings = () => {
   const [configNotifications, notificationConfigResult] = useLazyExecNotificationConfigQuery()
   const [listNotification, notificationListResult] = useLazyListNotificationConfigQuery()
   const onSubmit = (values) => {
-    console.log(values)
     configNotifications(values)
   }
   return (
@@ -933,6 +1036,13 @@ const NotificationsSettings = () => {
                         <RFFCFormSwitch
                           name="onePerTenant"
                           label="Receive one email per tenant"
+                          value={false}
+                        />
+                      </CCol>
+                      <CCol>
+                        <RFFCFormSwitch
+                          name="sendtoIntegration"
+                          label="Send notifications to configured integration(s)"
                           value={false}
                         />
                       </CCol>
@@ -1067,6 +1177,61 @@ const LicenseSettings = () => {
     </>
   )
 }
+const PasswordSettings = () => {
+  const [getPasswordConfig, getPasswordConfigResult] = useLazyGenericGetRequestQuery()
+  const [editPasswordConfig, editPasswordConfigResult] = useLazyGenericPostRequestQuery()
+
+  const [passAlertVisible, setPassAlertVisible] = useState(false)
+
+  const switchResolver = (resolver) => {
+    editPasswordConfig({ path: '/api/ExecPasswordconfig', values: { passwordType: resolver } })
+    getPasswordConfig()
+    setPassAlertVisible(true)
+  }
+
+  const resolvers = ['Classic', 'Correct-Battery-Horse']
+
+  return (
+    <>
+      {getPasswordConfigResult.isUninitialized &&
+        getPasswordConfig({ path: '/api/ExecPasswordConfig?list=true' })}
+      <CCard className="h-100">
+        <CCardHeader>
+          <CCardTitle>Password Generation</CCardTitle>
+        </CCardHeader>
+        <CCardBody>
+          <CRow>Select a password style for generated passwords.</CRow>
+          <CButtonGroup role="group" aria-label="Resolver" className="my-3">
+            {resolvers.map((r, index) => (
+              <CButton
+                onClick={() => switchResolver(r)}
+                color={
+                  r === getPasswordConfigResult.data?.Results?.passwordType
+                    ? 'primary'
+                    : 'secondary'
+                }
+                key={index}
+              >
+                {r}
+              </CButton>
+            ))}
+          </CButtonGroup>
+          {(editPasswordConfigResult.isSuccess || editPasswordConfigResult.isError) && (
+            <CCallout
+              color={editPasswordConfigResult.isSuccess ? 'success' : 'danger'}
+              visible={passAlertVisible}
+            >
+              {editPasswordConfigResult.isSuccess
+                ? editPasswordConfigResult.data.Results
+                : 'Error setting password style'}
+            </CCallout>
+          )}
+        </CCardBody>
+      </CCard>
+    </>
+  )
+}
+
 const DNSSettings = () => {
   const [getDnsConfig, getDnsConfigResult] = useLazyGetDnsConfigQuery()
   const [editDnsConfig, editDnsConfigResult] = useLazyEditDnsConfigQuery()
@@ -1121,6 +1286,249 @@ const DNSSettings = () => {
     </>
   )
 }
+const ExtensionsTab = () => {
+  const [listBackend, listBackendResult] = useLazyGenericGetRequestQuery()
+  const inputRef = useRef(null)
+  const [setExtensionconfig, extensionConfigResult] = useLazyGenericPostRequestQuery()
+  const [execTestExtension, listExtensionTestResult] = useLazyGenericGetRequestQuery()
+  const [execSyncExtension, listSyncExtensionResult] = useLazyGenericGetRequestQuery()
+
+  const onSubmitTest = (integrationName) => {
+    execTestExtension({
+      path: 'api/ExecExtensionTest?extensionName=' + integrationName,
+    })
+  }
+  const onSubmit = (values) => {
+    setExtensionconfig({
+      path: 'api/ExecExtensionsConfig',
+      values: values,
+    })
+  }
+  return (
+    <div>
+      {listBackendResult.isUninitialized && listBackend({ path: 'api/ListExtensionsConfig' })}
+      <>
+        {(listBackendResult.isFetching ||
+          extensionConfigResult.isFetching ||
+          listExtensionTestResult.isFetching ||
+          listSyncExtensionResult.isFetching) && <CSpinner color="primary" />}
+        {listSyncExtensionResult.isSuccess && (
+          <CCard className="mb-3">
+            <CCardHeader>
+              <CCardTitle>Results</CCardTitle>
+            </CCardHeader>
+            <CCardBody>
+              <>
+                <CCallout color="success">{listSyncExtensionResult.data.Results}</CCallout>
+              </>
+            </CCardBody>
+          </CCard>
+        )}
+
+        {listExtensionTestResult.isSuccess && (
+          <CCard className="mb-3">
+            <CCardHeader>
+              <CCardTitle>Results</CCardTitle>
+            </CCardHeader>
+            <CCardBody>
+              <>
+                <CCallout color="success">{listExtensionTestResult.data.Results}</CCallout>
+              </>
+            </CCardBody>
+          </CCard>
+        )}
+        {extensionConfigResult.isSuccess && (
+          <CCard className="mb-3">
+            <CCardHeader>
+              <CCardTitle>Results</CCardTitle>
+            </CCardHeader>
+            <CCardBody>
+              <>
+                <CCallout color="success">{extensionConfigResult.data.Results}</CCallout>
+              </>
+            </CCardBody>
+          </CCard>
+        )}
+        <CRow>
+          {Extensions.map((integration) => (
+            <CCol xs={12} lg={6} xl={6} className="mb-3">
+              <CCard>
+                <CCardHeader>
+                  <CCardTitle>{integration.name}</CCardTitle>
+                </CCardHeader>
+                <CCardBody>
+                  <p>{integration.helpText}</p>
+                  <Form
+                    onSubmit={onSubmit}
+                    initialValues={listBackendResult.data}
+                    render={({ handleSubmit, submitting, values }) => {
+                      return (
+                        <CForm onSubmit={handleSubmit}>
+                          <CCardText>
+                            <CCol className="mb-3">
+                              {integration.SettingOptions.map(
+                                (integrationOptions) =>
+                                  integrationOptions.type === 'input' && (
+                                    <CCol>
+                                      <RFFCFormInput
+                                        type={integrationOptions.fieldtype}
+                                        name={integrationOptions.name}
+                                        label={integrationOptions.label}
+                                        placeholder={integrationOptions.placeholder}
+                                      />
+                                    </CCol>
+                                  ),
+                              )}
+                              {integration.SettingOptions.map(
+                                (integrationOptions) =>
+                                  integrationOptions.type === 'checkbox' && (
+                                    <CCol>
+                                      <RFFCFormSwitch
+                                        name={integrationOptions.name}
+                                        label={integrationOptions.label}
+                                        value={false}
+                                      />
+                                    </CCol>
+                                  ),
+                              )}
+                              <input
+                                ref={inputRef}
+                                type="hidden"
+                                name="type"
+                                value={integration.type}
+                              />
+                            </CCol>
+                          </CCardText>
+                          <CCol className="me-2">
+                            <CButton className="me-2" type="submit">
+                              {extensionConfigResult.isFetching && (
+                                <FontAwesomeIcon
+                                  icon={faCircleNotch}
+                                  spin
+                                  className="me-2"
+                                  size="1x"
+                                />
+                              )}
+                              Set Extension Settings
+                            </CButton>
+                            <CButton
+                              onClick={() => onSubmitTest(integration.type)}
+                              className="me-2"
+                            >
+                              {listExtensionTestResult.isFetching && (
+                                <FontAwesomeIcon
+                                  icon={faCircleNotch}
+                                  spin
+                                  className="me-2"
+                                  size="1x"
+                                />
+                              )}
+                              Test Extension
+                            </CButton>
+                            {integration.forceSyncButton && (
+                              <CButton
+                                onClick={() =>
+                                  execSyncExtension({
+                                    path: 'api/ExecExtensionSync?Extension=' + integration.type,
+                                  })
+                                }
+                                className="me-2"
+                              >
+                                {listSyncExtensionResult.isFetching && (
+                                  <FontAwesomeIcon
+                                    icon={faCircleNotch}
+                                    spin
+                                    className="me-2"
+                                    size="1x"
+                                  />
+                                )}
+                                Force Sync
+                              </CButton>
+                            )}
+                          </CCol>
+                        </CForm>
+                      )
+                    }}
+                  />
+                </CCardBody>
+              </CCard>
+            </CCol>
+          ))}
+        </CRow>
+      </>
+    </div>
+  )
+}
+
+const MappingsTab = () => {
+  const [listBackend, listBackendResult] = useLazyGenericGetRequestQuery()
+  const [setExtensionconfig, extensionConfigResult] = useLazyGenericPostRequestQuery()
+
+  const onSubmit = (values) => {
+    setExtensionconfig({
+      path: 'api/ExecExtensionMapping?AddMapping=true',
+      values: { mappings: values },
+    })
+  }
+  return (
+    <div>
+      {listBackendResult.isUninitialized &&
+        listBackend({ path: 'api/ExecExtensionMapping?List=true' })}
+      <>
+        <CCard>
+          <CCardHeader>
+            <CCardTitle>HaloPSA Mapping Table</CCardTitle>
+          </CCardHeader>
+          <CCardBody>
+            {listBackendResult.isFetching ? (
+              <CSpinner color="primary" />
+            ) : (
+              <Form
+                onSubmit={onSubmit}
+                initialValues={listBackendResult.data?.Mappings}
+                render={({ handleSubmit, submitting, values }) => {
+                  return (
+                    <CForm onSubmit={handleSubmit}>
+                      <CCardText>
+                        Use the table below to map your client to the correct PSA client
+                        {listBackendResult.isSuccess &&
+                          listBackendResult.data.Tenants.map((tenant) => (
+                            <RFFSelectSearch
+                              key={tenant.customerId}
+                              name={tenant.customerId}
+                              label={tenant.displayName}
+                              values={listBackendResult.data.HaloClients}
+                              placeholder="Select a client"
+                            />
+                          ))}
+                      </CCardText>
+                      <CCol className="me-2">
+                        <CButton className="me-2" type="submit">
+                          {extensionConfigResult.isFetching && (
+                            <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                          )}
+                          Set Mappings
+                        </CButton>
+                        {(extensionConfigResult.isSuccess || extensionConfigResult.isError) && (
+                          <CCallout color={extensionConfigResult.isSuccess ? 'success' : 'danger'}>
+                            {extensionConfigResult.isSuccess
+                              ? extensionConfigResult.data.Results
+                              : 'Error'}
+                          </CCallout>
+                        )}
+                      </CCol>
+                    </CForm>
+                  )
+                }}
+              />
+            )}
+          </CCardBody>
+        </CCard>
+      </>
+    </div>
+  )
+}
+
 const Maintenance = () => {
   const [selectedScript, setSelectedScript] = useState()
   const [listBackend, listBackendResult] = useLazyGenericGetRequestQuery()
@@ -1133,7 +1541,6 @@ const Maintenance = () => {
   }
 
   const handleGetLink = () => {
-    console.log('Making link')
     listScriptLink({
       path: 'api/ExecMaintenanceScripts',
       params: { ScriptFile: selectedScript, MakeLink: 'True' },
@@ -1197,14 +1604,14 @@ const Maintenance = () => {
       <CRow>
         <CCol>
           {listScriptResult.isFetching && (
-            <CCard>
+            <CCard className="h-100">
               <CCardBody>
                 <Skeleton count={10} />
               </CCardBody>
             </CCard>
           )}
           {!listScriptResult.isFetching && listScriptResult.isSuccess && (
-            <CCard>
+            <CCard className="h-100">
               <CCardHeader>
                 <CCardTitle>Script Details</CCardTitle>
               </CCardHeader>
