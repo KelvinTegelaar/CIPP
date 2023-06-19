@@ -53,6 +53,16 @@ const Home = () => {
   })
 
   const {
+    data: sharepoint,
+    isLoading: isLoadingSPQuota,
+    isSuccess: issuccessSPQuota,
+    isFetching: isFetchingSPQuota,
+  } = useGenericGetRequestQuery({
+    path: '/api/ListSharepointQuota',
+    params: { tenantFilter: currentTenant.defaultDomainName },
+  })
+
+  const {
     data: standards,
     isLoading: isLoadingStandards,
     isSuccess: issuccessStandards,
@@ -270,6 +280,11 @@ const Home = () => {
                         {plan == 'WindowsDefenderATP' && <li>Windows Defender</li>}
                       </>
                     ))}
+              </CCol>
+              <CCol sm={12} md={4} className="mb-3">
+                <p className="fw-lighter">Sharepoint Quota</p>
+                {(isLoadingSPQuota || isFetchingSPQuota) && <Skeleton />}
+                {sharepoint && !isFetchingSPQuota && sharepoint?.Dashboard}
               </CCol>
               <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Applied Standards</p>
