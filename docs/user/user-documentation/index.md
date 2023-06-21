@@ -27,14 +27,12 @@ GDAP will be a requirement from February 1st for Microsoft Partners, and you wil
 
 After the migration date of March 31st, new GDAP relationships will not be created in an automated fashion, and you must log onto the target tenant itself to accept GDAP invites. This is very time consuming so it's recommended to migrate to GDAP now.
 
-
-
 ### Using the GDAP Wizard
 
 {% hint style="warning" %}
 The GDAP migration wizard is offered as-is. Bug reports, feature requests, or issues will not be accepted for the GDAP migration wizard.
 
-if your customers have conditional access policies enabled it is likely that further configuration will be required on each of those tenants. For more info see Microsoft's own documentation [here](https://learn.microsoft.com/en-us/partner-center/gdap-faq#what-is-the-recommended-next-step-if-the-conditional-access-policy-set-by-the-customer-blocks-all-external-access-including-csps-access-aobo-to-the-customers-tenant)&#x20;
+if your customers have conditional access policies enabled it is likely that further configuration will be required on each of those tenants. For more info see Microsoft's own documentation [here](https://learn.microsoft.com/en-us/partner-center/gdap-faq#what-is-the-recommended-next-step-if-the-conditional-access-policy-set-by-the-customer-blocks-all-external-access-including-csps-access-aobo-to-the-customers-tenant)
 {% endhint %}
 
 The GDAP wizard will use the temporary APIs to create a relationship for you, and create the security groups and assign the roles to these groups. You may change the name of the groups after the migration has been performed.
@@ -45,8 +43,8 @@ Follow the list below before starting the GDAP Wizard. You must execute each of 
 
 * You must be a global Admin and in the 'AdminAgents' group to perform this.
 * Go to your CIPP instance and click on GDAP -> Migration Wizard. Click the button to enable the migration API.
-  * if the enable API wizard fails, execute the manual instructions given by the application and continue with the steps below to add the permissions to the application.
-* Follow the link returned by the application, or go to your Secure Application Model app in Azure.
+  * The Enable API button can fail if the migration has been previously performed or the tool has been activated. You can continue at this stage to add the permissions to your secure application model app.
+* Follow the link returned by the application, or go to your Secure Application Model app in Azure by going to Settings -> Permissions Check -> Details -> CIPP-SAM.
 * Click on API Permissions
 * Click on Add and choose "APIs My organization uses"
 * Find "Partner Customer Delegated Administration"
