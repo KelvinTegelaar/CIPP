@@ -19,6 +19,7 @@ import {
   CListGroupItem,
   CLink,
   CSpinner,
+  CCardText,
 } from '@coreui/react'
 import {
   useGenericGetRequestQuery,
@@ -77,6 +78,7 @@ import CippListOffcanvas from 'src/components/utilities/CippListOffcanvas'
 import { TitleButton } from 'src/components/buttons'
 import Skeleton from 'react-loading-skeleton'
 import { Buffer } from 'buffer'
+import Extensions from 'src/data/Extensions.json'
 
 const CIPPSettings = () => {
   const [active, setActive] = useState(1)
@@ -101,6 +103,12 @@ const CIPPSettings = () => {
         <CNavItem active={active === 6} onClick={() => setActive(6)} href="#">
           Maintenance
         </CNavItem>
+        <CNavItem active={active === 7} onClick={() => setActive(7)} href="#">
+          Extensions
+        </CNavItem>
+        <CNavItem active={active === 8} onClick={() => setActive(8)} href="#">
+          Extension Mappings
+        </CNavItem>
       </CNav>
       <CTabContent>
         <CTabPane visible={active === 1} className="mt-3">
@@ -120,6 +128,12 @@ const CIPPSettings = () => {
         </CTabPane>
         <CTabPane visible={active === 6} className="mt-3">
           <Maintenance />
+        </CTabPane>
+        <CTabPane visible={active === 7} className="mt-3">
+          <ExtensionsTab />
+        </CTabPane>
+        <CTabPane visible={active === 8} className="mt-3">
+          <MappingsTab />
         </CTabPane>
       </CTabContent>
     </CippPage>
@@ -1025,6 +1039,13 @@ const NotificationsSettings = () => {
                           value={false}
                         />
                       </CCol>
+                      <CCol>
+                        <RFFCFormSwitch
+                          name="sendtoIntegration"
+                          label="Send notifications to configured integration(s)"
+                          value={false}
+                        />
+                      </CCol>
                       <CButton disabled={notificationConfigResult.isFetching} type="submit">
                         Set Notification Settings
                       </CButton>
@@ -1265,6 +1286,249 @@ const DNSSettings = () => {
     </>
   )
 }
+const ExtensionsTab = () => {
+  const [listBackend, listBackendResult] = useLazyGenericGetRequestQuery()
+  const inputRef = useRef(null)
+  const [setExtensionconfig, extensionConfigResult] = useLazyGenericPostRequestQuery()
+  const [execTestExtension, listExtensionTestResult] = useLazyGenericGetRequestQuery()
+  const [execSyncExtension, listSyncExtensionResult] = useLazyGenericGetRequestQuery()
+
+  const onSubmitTest = (integrationName) => {
+    execTestExtension({
+      path: 'api/ExecExtensionTest?extensionName=' + integrationName,
+    })
+  }
+  const onSubmit = (values) => {
+    setExtensionconfig({
+      path: 'api/ExecExtensionsConfig',
+      values: values,
+    })
+  }
+  return (
+    <div>
+      {listBackendResult.isUninitialized && listBackend({ path: 'api/ListExtensionsConfig' })}
+      <>
+        {(listBackendResult.isFetching ||
+          extensionConfigResult.isFetching ||
+          listExtensionTestResult.isFetching ||
+          listSyncExtensionResult.isFetching) && <CSpinner color="primary" />}
+        {listSyncExtensionResult.isSuccess && (
+          <CCard className="mb-3">
+            <CCardHeader>
+              <CCardTitle>Results</CCardTitle>
+            </CCardHeader>
+            <CCardBody>
+              <>
+                <CCallout color="success">{listSyncExtensionResult.data.Results}</CCallout>
+              </>
+            </CCardBody>
+          </CCard>
+        )}
+
+        {listExtensionTestResult.isSuccess && (
+          <CCard className="mb-3">
+            <CCardHeader>
+              <CCardTitle>Results</CCardTitle>
+            </CCardHeader>
+            <CCardBody>
+              <>
+                <CCallout color="success">{listExtensionTestResult.data.Results}</CCallout>
+              </>
+            </CCardBody>
+          </CCard>
+        )}
+        {extensionConfigResult.isSuccess && (
+          <CCard className="mb-3">
+            <CCardHeader>
+              <CCardTitle>Results</CCardTitle>
+            </CCardHeader>
+            <CCardBody>
+              <>
+                <CCallout color="success">{extensionConfigResult.data.Results}</CCallout>
+              </>
+            </CCardBody>
+          </CCard>
+        )}
+        <CRow>
+          {Extensions.map((integration) => (
+            <CCol xs={12} lg={6} xl={6} className="mb-3">
+              <CCard>
+                <CCardHeader>
+                  <CCardTitle>{integration.name}</CCardTitle>
+                </CCardHeader>
+                <CCardBody>
+                  <p>{integration.helpText}</p>
+                  <Form
+                    onSubmit={onSubmit}
+                    initialValues={listBackendResult.data}
+                    render={({ handleSubmit, submitting, values }) => {
+                      return (
+                        <CForm onSubmit={handleSubmit}>
+                          <CCardText>
+                            <CCol className="mb-3">
+                              {integration.SettingOptions.map(
+                                (integrationOptions) =>
+                                  integrationOptions.type === 'input' && (
+                                    <CCol>
+                                      <RFFCFormInput
+                                        type={integrationOptions.fieldtype}
+                                        name={integrationOptions.name}
+                                        label={integrationOptions.label}
+                                        placeholder={integrationOptions.placeholder}
+                                      />
+                                    </CCol>
+                                  ),
+                              )}
+                              {integration.SettingOptions.map(
+                                (integrationOptions) =>
+                                  integrationOptions.type === 'checkbox' && (
+                                    <CCol>
+                                      <RFFCFormSwitch
+                                        name={integrationOptions.name}
+                                        label={integrationOptions.label}
+                                        value={false}
+                                      />
+                                    </CCol>
+                                  ),
+                              )}
+                              <input
+                                ref={inputRef}
+                                type="hidden"
+                                name="type"
+                                value={integration.type}
+                              />
+                            </CCol>
+                          </CCardText>
+                          <CCol className="me-2">
+                            <CButton className="me-2" type="submit">
+                              {extensionConfigResult.isFetching && (
+                                <FontAwesomeIcon
+                                  icon={faCircleNotch}
+                                  spin
+                                  className="me-2"
+                                  size="1x"
+                                />
+                              )}
+                              Set Extension Settings
+                            </CButton>
+                            <CButton
+                              onClick={() => onSubmitTest(integration.type)}
+                              className="me-2"
+                            >
+                              {listExtensionTestResult.isFetching && (
+                                <FontAwesomeIcon
+                                  icon={faCircleNotch}
+                                  spin
+                                  className="me-2"
+                                  size="1x"
+                                />
+                              )}
+                              Test Extension
+                            </CButton>
+                            {integration.forceSyncButton && (
+                              <CButton
+                                onClick={() =>
+                                  execSyncExtension({
+                                    path: 'api/ExecExtensionSync?Extension=' + integration.type,
+                                  })
+                                }
+                                className="me-2"
+                              >
+                                {listSyncExtensionResult.isFetching && (
+                                  <FontAwesomeIcon
+                                    icon={faCircleNotch}
+                                    spin
+                                    className="me-2"
+                                    size="1x"
+                                  />
+                                )}
+                                Force Sync
+                              </CButton>
+                            )}
+                          </CCol>
+                        </CForm>
+                      )
+                    }}
+                  />
+                </CCardBody>
+              </CCard>
+            </CCol>
+          ))}
+        </CRow>
+      </>
+    </div>
+  )
+}
+
+const MappingsTab = () => {
+  const [listBackend, listBackendResult] = useLazyGenericGetRequestQuery()
+  const [setExtensionconfig, extensionConfigResult] = useLazyGenericPostRequestQuery()
+
+  const onSubmit = (values) => {
+    setExtensionconfig({
+      path: 'api/ExecExtensionMapping?AddMapping=true',
+      values: { mappings: values },
+    })
+  }
+  return (
+    <div>
+      {listBackendResult.isUninitialized &&
+        listBackend({ path: 'api/ExecExtensionMapping?List=true' })}
+      <>
+        <CCard>
+          <CCardHeader>
+            <CCardTitle>HaloPSA Mapping Table</CCardTitle>
+          </CCardHeader>
+          <CCardBody>
+            {listBackendResult.isFetching ? (
+              <CSpinner color="primary" />
+            ) : (
+              <Form
+                onSubmit={onSubmit}
+                initialValues={listBackendResult.data?.Mappings}
+                render={({ handleSubmit, submitting, values }) => {
+                  return (
+                    <CForm onSubmit={handleSubmit}>
+                      <CCardText>
+                        Use the table below to map your client to the correct PSA client
+                        {listBackendResult.isSuccess &&
+                          listBackendResult.data.Tenants.map((tenant) => (
+                            <RFFSelectSearch
+                              key={tenant.customerId}
+                              name={tenant.customerId}
+                              label={tenant.displayName}
+                              values={listBackendResult.data.HaloClients}
+                              placeholder="Select a client"
+                            />
+                          ))}
+                      </CCardText>
+                      <CCol className="me-2">
+                        <CButton className="me-2" type="submit">
+                          {extensionConfigResult.isFetching && (
+                            <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                          )}
+                          Set Mappings
+                        </CButton>
+                        {(extensionConfigResult.isSuccess || extensionConfigResult.isError) && (
+                          <CCallout color={extensionConfigResult.isSuccess ? 'success' : 'danger'}>
+                            {extensionConfigResult.isSuccess
+                              ? extensionConfigResult.data.Results
+                              : 'Error'}
+                          </CCallout>
+                        )}
+                      </CCol>
+                    </CForm>
+                  )
+                }}
+              />
+            )}
+          </CCardBody>
+        </CCard>
+      </>
+    </div>
+  )
+}
+
 const Maintenance = () => {
   const [selectedScript, setSelectedScript] = useState()
   const [listBackend, listBackendResult] = useLazyGenericGetRequestQuery()
