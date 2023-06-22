@@ -132,6 +132,11 @@ const Home = () => {
       icon: faUsers,
     },
     {
+      label: 'List Devices',
+      link: `/endpoint/reports/devices?customerId=${currentTenant.customerId}`,
+      icon: faLaptopCode,
+    },
+    {
       label: 'Create User',
       link: `/identity/administration/users/add?customerId=${currentTenant.customerId}`,
       icon: faUserPlus,
