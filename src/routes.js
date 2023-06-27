@@ -17,6 +17,7 @@ const AddGroupTemplates = React.lazy(() =>
 const DeployGroupTemplates = React.lazy(() =>
   import('src/views/identity/administration/DeployGroupTemplate'),
 )
+const TenantLookup = React.lazy(() => import('src/views/tenant/administration/TenantLookup'))
 const GroupTemplates = React.lazy(() => import('src/views/identity/administration/GroupTemplates'))
 
 const EditGroup = React.lazy(() => import('src/views/identity/administration/EditGroup'))
@@ -220,6 +221,10 @@ const SecurityComplianceIncidents = React.lazy(() =>
 const License = React.lazy(() => import('src/views/pages/license/License'))
 const ServiceHealth = React.lazy(() => import('src/views/tenant/administration/ServiceHealth'))
 
+const EnterpriseApplications = React.lazy(() =>
+  import('src/views/tenant/administration/ListEnterpriseApps'),
+)
+
 const routes = [
   // { path: '/', exact: true, name: 'Home' },
   { path: '/home', name: 'Home', component: Home },
@@ -308,6 +313,11 @@ const routes = [
     component: ServiceHealth,
   },
   {
+    path: '/tenant/administration/enterprise-apps',
+    name: 'Enterprise Applications',
+    component: EnterpriseApplications,
+  },
+  {
     path: '/tenant/conditional/list-policies',
     name: 'Conditional Access',
     component: ConditionalAccess,
@@ -367,6 +377,11 @@ const routes = [
     path: '/tenant/standards/individual-domains',
     name: 'Individual Domain Check',
     component: IndividualDomain,
+  },
+  {
+    path: '/tenant/administration/tenantlookup',
+    name: 'Tenant Lookup',
+    component: TenantLookup,
   },
   { path: '/tenant/standards/alert-list', name: 'Alert List (Alpha)', component: ListAlerts },
   { path: '/endpoint', name: 'Endpoint' },

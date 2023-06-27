@@ -45,6 +45,22 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modalMessage: 'Are you sure you want to locate this device?',
           },
           {
+            label: 'Retrieve LAPs password',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecGetLocalAdminPassword?TenantFilter=${tenant.defaultDomainName}&GUID=${row.azureADDeviceId}`,
+            modalMessage: 'Are you sure you want to retrieve the local admin password?',
+          },
+          {
+            label: 'Rotate Local Admin Password',
+            color: 'info',
+            modal: true,
+            modalType: 'POST',
+            modalBody: {},
+            modalUrl: `/api/ExecDeviceAction?TenantFilter=${tenant.defaultDomainName}&GUID=${row.id}&Action=RotateLocalAdminPassword`,
+            modalMessage: 'Are you sure you want to rotate the password for this device?',
+          },
+          {
             label: 'Retrieve Bitlocker Keys',
             color: 'info',
             modal: true,

@@ -58,6 +58,13 @@
     "label": "Enable Usernames instead of pseudo anonymised names in reports"
   },
   {
+    "name": "standards.DisableGuestDirectory",
+    "cat": "Global",
+    "helpText": "This is the default helptext",
+    "addedComponent": null,
+    "label": "Restrict guest user access to directory objects"
+  },
+  {
     "name": "standards.ModernAuth",
     "cat": "Global",
     "helpText": "This is the default helptext",
@@ -72,6 +79,13 @@
     "label": "Disable Basic Authentication"
   },
   {
+    "name": "standards.laps",
+    "cat": "AAD",
+    "helpText": "Enables the tenant to use LAPS",
+    "addedComponent": null,
+    "label": "Enable LAPs on the tenant"
+  },
+  {
     "name": "standards.PWnumberMatchingRequiredState",
     "cat": "AAD",
     "helpText": "This is the default helptext",
@@ -84,6 +98,27 @@
     "helpText": "This is the default helptext",
     "addedComponent": null,
     "label": "Enable Passwordless with Location information and Number Matching"
+  },
+  {
+    "cat": "AAD",
+    "name": "standards.PWcompanionAppAllowedState.Enabled",
+    "helpText": "This is the default helptext",
+    "addedComponent": {
+      "type": "Select",
+      "label": "Select value",
+      "name": "standards.PWcompanionAppAllowedState.state",
+      "values": [
+        {
+          "label": "Enabled",
+          "value": "enabled"
+        },
+        {
+          "label": "Disabled",
+          "value": "disabled"
+        }
+      ]
+    },
+    "label": "Set Authenticator Lite state"
   },
   {
     "cat": "AAD",
@@ -209,6 +244,17 @@
     "label": "Enable FIDO2 capabilities"
   },
   {
+    "name": "standards.OutBoundSpamAlert.Enabled",
+    "cat": "Exchange",
+    "helpText": "This is the default helptext",
+    "addedComponent": {
+      "type": "input",
+      "name": "standards.OutBoundSpamAlert.OutboundSpamContact",
+      "label": "Outbound spam contact"
+    },
+    "label": "Set Outbound Spam Alert e-mail"
+  },
+  {
     "name": "standards.DisableSharedMailbox",
     "cat": "Exchange",
     "helpText": "This is the default helptext",
@@ -277,6 +323,70 @@
     "helpText": "This is the default helptext",
     "addedComponent": null,
     "label": "Enable 1 hour Activity based Timeout"
+  },
+
+  {
+    "name": "standards.calDefault.Enabled",
+    "cat": "Exchange",
+    "helpText": "This is the default helptext",
+    "addedComponent": {
+      "type": "Select",
+      "label": "Select Sharing Level",
+      "name": "standards.calDefault.permissionlevel",
+      "values": [
+        {
+          "label": "Owner - The user can create, read, edit, and delete all items in the folder, and create subfolders. The user is both folder owner and folder contact.",
+          "value": "Owner"
+        },
+        {
+          "label": "Publishing Editor - The user can create, read, edit, and delete all items in the folder, and create subfolders.",
+          "value": "PublishingEditor"
+        },
+        {
+          "label": "Reviewer - The user can read all items in the folder.",
+          "value": "Reviewer"
+        },
+        {
+          "label": "Editor - The user can create items in the folder. The contents of the folder do not appear.",
+          "value": "Contributor"
+        },
+        {
+          "label": "Free Busy Time And Subject And Location - The user can view free/busy time within the calendar and the subject and location of appointments.",
+          "value": "FreeBusyTimeAndSubjectAndLocation"
+        },
+        {
+          "label": "Indicates that the user can view only free/busy time within the calendar.",
+          "value": "FreeBusyTimeOnly"
+        },
+        {
+          "label": "None - The user has no permissions on the folder.",
+          "value": "none"
+        }
+      ]
+    },
+    "label": "Set Sharing Level for Default calendar"
+  },
+  {
+    "name": "standards.intuneDeviceReg.Enabled",
+    "cat": "Intune",
+    "helpText": "This is the default helptext",
+    "addedComponent": {
+      "type": "input",
+      "name": "standards.intuneDeviceReg.max",
+      "label": "Maximum devices (Enter 2147483647 for unlimited.)"
+    },
+    "label": "Set Maximum Number of Devices per user"
+  },
+  {
+    "name": "standards.intuneDeviceRetirementDays.Enabled",
+    "cat": "Intune",
+    "helpText": "This is the default helptext",
+    "addedComponent": {
+      "type": "input",
+      "name": "standards.intuneDeviceRetirementDays.days",
+      "label": "Maximum days (0 equals disabled)"
+    },
+    "label": "Set inactive device retirement days"
   },
   {
     "name": "standards.sharingCapability.Enabled",
@@ -352,5 +462,40 @@
     "helpText": "This is the default helptext",
     "addedComponent": null,
     "label": "Only allow users to sync OneDrive from AAD joined devices"
+  },
+  {
+    "name": "standards.IntuneTemplate.enabled",
+    "cat": "templates",
+    "helpText": "This is the default helptext",
+    "addedComponent": null,
+    "label": "Intune Templates"
+  },
+  {
+    "name": "standards.GroupTemplate.enabled",
+    "cat": "templates",
+    "helpText": "This is the default helptext",
+    "addedComponent": null,
+    "label": "Group Templates"
+  },
+  {
+    "name": "standards.ExConnector.enabled",
+    "cat": "templates",
+    "helpText": "This is the default helptext",
+    "addedComponent": null,
+    "label": "Exchange Connector Templates"
+  },
+  {
+    "name": "standards.ConditionalAccess.enabled",
+    "cat": "templates",
+    "helpText": "This is the default helptext",
+    "addedComponent": null,
+    "label": "Conditional Access Templates"
+  },
+  {
+    "name": "standards.TransportRuleTemplate.enabled",
+    "cat": "templates",
+    "helpText": "This is the default helptext",
+    "addedComponent": null,
+    "label": "Transport Rule Templates"
   }
 ]
