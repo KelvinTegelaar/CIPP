@@ -7,6 +7,8 @@ import { setCurrentTenant } from 'src/store/features/app'
 import { CDropdown, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { queryString } from 'src/helpers'
+import { faBuilding } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = false }) => {
   const currentTenant = useSelector((state) => state.app.currentTenant)
@@ -73,11 +75,12 @@ const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = fa
   return (
     <>
       {NavSelector && (
-        <CDropdown component="li" variant="nav-item">
+        <CDropdown component="li" variant="nav-item" className="flex-grow-1 my-auto">
           <CDropdownToggle>
+            <FontAwesomeIcon icon={faBuilding} className="me-2" />
             {currentTenant?.defaultDomainName ? (
               <>
-                <b>Selected Tenant:</b> {currentTenant.displayName}
+                <span className="text-wrap">{currentTenant.displayName}</span>
               </>
             ) : (
               placeholder
