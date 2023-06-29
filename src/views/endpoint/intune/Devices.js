@@ -134,8 +134,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modalType: 'POST',
             modalBody: { keepUserData: false, keepEnrollmentData: true },
             modalUrl: `/api/ExecDeviceAction?TenantFilter=${tenant.defaultDomainName}&GUID=${row.id}&Action=cleanWindowsDevice`,
-            modalCheckbox: 'Remove enrollment data',
-            modalMessage: 'Are you sure you want to wipe this device?',
+            modalMessage: 'Are you sure you want to wipe this device, and retain enrollment data?',
           },
           {
             label: 'Wipe Device, remove enrollment data',
@@ -144,7 +143,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modalType: 'POST',
             modalBody: { keepUserData: false, keepEnrollmentData: false },
             modalUrl: `/api/ExecDeviceAction?TenantFilter=${tenant.defaultDomainName}&GUID=${row.id}&Action=cleanWindowsDevice`,
-            modalMessage: 'Are you sure you want to wipe device, AND remove enrollment data?',
+            modalMessage: 'Are you sure you want to wipe this device, and remove enrollment data?',
           },
           {
             label: 'Wipe Device, keep enrollment data, and continue at powerloss',
@@ -154,7 +153,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modalBody: { keepEnrollmentData: true, keepUserData: false, useProtectedWipe: true },
             modalUrl: `/api/ExecDeviceAction?TenantFilter=${tenant.defaultDomainName}&GUID=${row.id}&Action=cleanWindowsDevice`,
             modalMessage:
-              'Are you sure you want to wipe this device? This will keep enrollment data. Continuing at powerloss may cause boot issues if wipe is interrupted.',
+              'Are you sure you want to wipe this device? This will retain enrollment data. Continuing at powerloss may cause boot issues if wipe is interrupted.',
           },
           {
             label: 'Wipe Device, remove enrollment data, and continue at powerloss',
