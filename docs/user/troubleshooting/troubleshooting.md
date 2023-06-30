@@ -95,7 +95,7 @@ Failed to call Intune APIs. Does the tenant have a license available? Check the 
 
 The user does not have sufficient access rights to perform the operation or is missing the necessary Exchange role. Check the user's access rights and Exchange role information, when using GDAP the user must be in the "Exchange Administrators" group.
 
-### Device object was not found in the tenant 'xxxxxxxxxx'
+### Device object was not found in the tenant 'xxxxxxxxxx' or 'UserPrincipal doesn't have the key ID configured'
 
 When executing the first authorization for CIPP, a trusted device was used. This device has been deleted from the Intune portal. Reauthorization is required by using the SAM Wizard "I'd like to refresh my tokens" option.
 
