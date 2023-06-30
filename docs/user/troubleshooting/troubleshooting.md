@@ -122,20 +122,20 @@ The refresh token could not be retrieved and stored. The user must reauthorize.
 
 This error occurs when CIPP cannot write to the errors table - Clear your tenant cache from the settings menu and try again.
 
-### AADSTS7000222: The provided client secret keys for app {appid} are expired. 
+### AADSTS7000222: The provided client secret keys for app {appid} are expired.
 
 This occurs when the app has exists for more than 2 years and requires a new certificate or secret, or when a secret has been expired manually.
 
-1. [Go to Azure Portal](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/RegisteredApps)
+1. [Go to Azure Portal](https://portal.azure.com/#view/Microsoft\_AAD\_IAM/ActiveDirectoryMenuBlade/\~/RegisteredApps)
 2. Find and click on your app
 3. Navigate to "Certificates & secrets"
 4. Click "+ New client secret"
 5. Enter a description, choose an expiration, and click "Add"
 6. Copy the new client **secret value**
 7. Go to CIPP -> Settings -> SAM Wizard
-8. Use the option "I already have my keys"
-9. Enter only the new secret and click save.
-10. Execute a Token Cache Clear
+8. Use the option "I have an existing application and would like to enter my keys"
+9. Enter only the new secret and click Next.
+10. Execute a Token Cache Clear. Hosted clients can clear their own token cache via [management.cipp.app](https://management.cipp.app)
 
 {% hint style="info" %}
 Hosted clients can clear their own token cache via [management.cipp.app](https://management.cipp.app)
