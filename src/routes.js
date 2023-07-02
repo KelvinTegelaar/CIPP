@@ -221,6 +221,10 @@ const SecurityComplianceIncidents = React.lazy(() =>
 const License = React.lazy(() => import('src/views/pages/license/License'))
 const ServiceHealth = React.lazy(() => import('src/views/tenant/administration/ServiceHealth'))
 
+const EnterpriseApplications = React.lazy(() =>
+  import('src/views/tenant/administration/ListEnterpriseApps'),
+)
+
 const routes = [
   // { path: '/', exact: true, name: 'Home' },
   { path: '/home', name: 'Home', component: Home },
@@ -307,6 +311,11 @@ const routes = [
     path: '/tenant/administration/service-health',
     name: 'Service Health',
     component: ServiceHealth,
+  },
+  {
+    path: '/tenant/administration/enterprise-apps',
+    name: 'Enterprise Applications',
+    component: EnterpriseApplications,
   },
   {
     path: '/tenant/conditional/list-policies',
