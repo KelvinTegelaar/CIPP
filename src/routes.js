@@ -116,12 +116,7 @@ const AutopilotListStatusPages = React.lazy(() =>
 )
 const IntuneListPolicies = React.lazy(() => import('src/views/endpoint/intune/MEMListPolicies'))
 const MEMEditPolicy = React.lazy(() => import('src/views/endpoint/intune/MEMEditPolicy'))
-const EditAutopilotProfile = React.lazy(() =>
-  import('src/views/endpoint/autopilot/AutopilotEditProfile'),
-)
-const EditAutopilotStatusPage = React.lazy(() =>
-  import('src/views/endpoint/autopilot/AutopilotEditStatusPage'),
-)
+
 const IntuneCAPolicies = React.lazy(() => import('src/views/endpoint/intune/MEMCAPolicies'))
 const IntuneAddPolicy = React.lazy(() => import('src/views/endpoint/intune/MEMAddPolicy'))
 const MEMAddPolicyTemplate = React.lazy(() =>
