@@ -2,9 +2,6 @@ import React from 'react'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import { CTooltip } from '@coreui/react'
-import TimeAgo from 'javascript-time-ago'
-import en from 'javascript-time-ago/locale/en.json'
-TimeAgo.addDefaultLocale(en)
 import ReactTimeAgo from 'react-time-ago'
 
 /**

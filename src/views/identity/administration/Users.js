@@ -8,7 +8,7 @@ import { cellBooleanFormatter, CellTip } from 'src/components/tables'
 import { CippPageList } from 'src/components/layout'
 import { TitleButton } from 'src/components/buttons'
 import { CippActionsOffcanvas } from 'src/components/utilities'
-import { cellLicenseFormatter } from 'src/components/tables/CellLicense'
+import { cellLicenseFormatter, CellLicense } from 'src/components/tables/CellLicense'
 import M365Licenses from 'src/data/M365Licenses'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
@@ -276,6 +276,7 @@ const Users = (row) => {
       name: 'Licenses',
       selector: (row) => row['assignedLicenses'],
       exportSelector: 'assignedLicenses',
+      exportFormatter: CellLicense,
       cell: cellLicenseFormatter(),
       sortable: true,
       grow: 5,

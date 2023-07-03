@@ -169,7 +169,7 @@ const BestPracticeAnalyser = () => {
     {
       name: 'Privacy in Reports Enabled',
       selector: (row) => row['PrivacyEnabled'],
-      cell: cellBooleanFormatter({ reverse: true, warning: true }),
+      cell: cellBooleanFormatter({ reverse: false, warning: false }),
       sortable: true,
       exportSelector: 'PrivacyEnabled',
       minWidth: '150px',
