@@ -427,16 +427,6 @@ const routes = [
     name: 'List Status Pages',
     component: AutopilotListStatusPages,
   },
-  {
-    path: '/endpoint/autopilot/edit-autopilot-profiles',
-    name: 'Edit Autopilot Profiles',
-    component: EditAutopilotProfile,
-  },
-  {
-    path: '/endpoint/autopilot/edit-autopilot-status-page',
-    name: 'Edit Autopilot Status Page',
-    component: EditAutopilotStatusPage,
-  },
   { path: '/endpoint/MEM', name: 'MEM' },
   { path: '/endpoint/MEM/list-policies', name: 'List MEM Policies', component: IntuneListPolicies },
   { path: '/endpoint/MEM/edit-policy', name: 'Edit MEM Policy', component: MEMEditPolicy },
