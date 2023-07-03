@@ -221,13 +221,13 @@ const TenantsList = () => {
       ),
     },
     {
-      name: 'AAD Portal',
+      name: 'Entra Portal',
       omit: columnOmits,
       selector: (row) => row['defaultDomainName'],
       center: true,
       cell: (row) => (
         <a
-          href={`https://aad.portal.azure.com/${row.defaultDomainName}`}
+          href={`https://entra.microsoft.com/${row.defaultDomainName}`}
           target="_blank"
           className="dlink"
           rel="noreferrer"
