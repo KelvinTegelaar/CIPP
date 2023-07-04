@@ -16,7 +16,7 @@ const AppFooter = () => {
           </CLink>{' '}
           <CLink href="https://datto.com/">
             <CImage src={dattoLogo} alt="Datto" />
-          </CLink>
+          </CLink>{' '}
           <CLink href="https://rewst.io/">
             <CImage src={rewstLogo} alt="Datto" />
           </CLink>
