@@ -45,6 +45,7 @@ export const appApi = baseApi.injectEndpoints({
         addStandardsDeploy,
         addChocoApp,
         onePerTenant,
+        sendtoIntegration,
         logsToInclude,
       }) => ({
         path: '/api/ExecNotificationConfig',
@@ -60,6 +61,7 @@ export const appApi = baseApi.injectEndpoints({
           addChocoApp: addChocoApp,
           onePerTenant: onePerTenant,
           logsToInclude: logsToInclude,
+          sendtoIntegration: sendtoIntegration,
         },
         method: 'post',
       }),
