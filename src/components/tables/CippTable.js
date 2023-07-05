@@ -329,8 +329,10 @@ export default function CippTable({
 
     if (!disablePDFExport || !disableCSVExport) {
       const keys = []
+      const exportFormatter = {}
       columns.map((col) => {
         if (col.exportSelector) keys.push(col.exportSelector)
+        if (col.exportFormatter) exportFormatter[col.exportSelector] = col.exportFormatter
         return null
       })
 
@@ -340,15 +342,22 @@ export default function CippTable({
         keys.reduce((acc, curr) => {
           const key = curr.split('/')
           if (key.length > 1) {
-            const parent = key[0]
-            const subkey = key[1]
-            if (obj[parent] !== null && obj[parent][subkey] !== null) {
-              acc[curr] = obj[parent][subkey]
-            } else {
-              acc[curr] = 'n/a'
+            var property = obj
+            for (var x = 0; x < key.length; x++) {
+              if (property[key[x]] !== null) {
+                property = property[key[x]]
+              } else {
+                property = 'n/a'
+                break
+              }
             }
+            acc[curr] = property
           } else {
-            acc[curr] = obj[curr]
+            if (typeof exportFormatter[curr] === 'function') {
+              acc[curr] = exportFormatter[curr]({ cell: obj[curr] })
+            } else {
+              acc[curr] = obj[curr]
+            }
           }
           return acc
         }, {}),
