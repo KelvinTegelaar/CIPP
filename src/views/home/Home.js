@@ -23,11 +23,7 @@ import Skeleton from 'react-loading-skeleton'
 import { UniversalSearch } from 'src/components/utilities/UniversalSearch'
 import { ActionContentCard } from 'src/components/contentcards'
 import { useSelector } from 'react-redux'
-import TimeAgo from 'javascript-time-ago'
 import allStandardsList from 'src/data/standards'
-
-import en from 'javascript-time-ago/locale/en.json'
-TimeAgo.addDefaultLocale(en)
 import ReactTimeAgo from 'react-time-ago'
 
 const Home = () => {
@@ -49,6 +45,16 @@ const Home = () => {
     isFetching: isFetchingUserCount,
   } = useGenericGetRequestQuery({
     path: '/api/ListuserCounts',
+    params: { tenantFilter: currentTenant.defaultDomainName },
+  })
+
+  const {
+    data: sharepoint,
+    isLoading: isLoadingSPQuota,
+    isSuccess: issuccessSPQuota,
+    isFetching: isFetchingSPQuota,
+  } = useGenericGetRequestQuery({
+    path: '/api/ListSharepointQuota',
     params: { tenantFilter: currentTenant.defaultDomainName },
   })
 
@@ -134,6 +140,11 @@ const Home = () => {
       label: 'List Groups',
       link: `/identity/administration/groups?customerId=${currentTenant.customerId}`,
       icon: faUsers,
+    },
+    {
+      label: 'List Devices',
+      link: `/endpoint/reports/devices?customerId=${currentTenant.customerId}`,
+      icon: faLaptopCode,
     },
     {
       label: 'Create User',
@@ -270,6 +281,11 @@ const Home = () => {
                         {plan == 'WindowsDefenderATP' && <li>Windows Defender</li>}
                       </>
                     ))}
+              </CCol>
+              <CCol sm={12} md={4} className="mb-3">
+                <p className="fw-lighter">Sharepoint Quota</p>
+                {(isLoadingSPQuota || isFetchingSPQuota) && <Skeleton />}
+                {sharepoint && !isFetchingSPQuota && sharepoint?.Dashboard}
               </CCol>
               <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Applied Standards</p>
