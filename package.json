@@ -93,7 +93,7 @@
     "react-scripts": "^5.0.0",
     "redux-immutable-state-invariant": "^2.1.0",
     "sass": "^1.44",
-    "stylelint": "^14.3.0",
+    "stylelint": "^15.10.1",
     "stylelint-config-sass-guidelines": "^9.0.1",
     "stylelint-order": "^5.0.0"
   },
