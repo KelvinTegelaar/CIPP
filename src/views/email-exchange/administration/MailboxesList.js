@@ -181,7 +181,7 @@ const MailboxList = () => {
   const columns = [
     {
       selector: (row) => row['UPN'],
-      name: 'User Prinicipal Name',
+      name: 'User Principal Name',
       sortable: true,
       exportSelector: 'UPN',
       cell: (row) => CellTip(row['UPN']),

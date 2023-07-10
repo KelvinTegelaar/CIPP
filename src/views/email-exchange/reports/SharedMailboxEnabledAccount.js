@@ -6,7 +6,7 @@ import { CippPageList } from 'src/components/layout'
 const columns = [
   {
     selector: (row) => row['UserPrincipalName'],
-    name: 'User Prinicipal Name',
+    name: 'User Principal Name',
     sortable: true,
     cell: (row) => CellTip(row['UserPrincipalName']),
     exportSelector: 'UserPrincipalName',

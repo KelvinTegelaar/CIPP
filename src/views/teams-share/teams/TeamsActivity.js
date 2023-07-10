@@ -4,7 +4,7 @@ import { CippPageList } from 'src/components/layout'
 
 const columns = [
   {
-    name: 'User Prinicipal Name',
+    name: 'User Principal Name',
     selector: (row) => row['UPN'],
     sortable: true,
     exportSelector: 'UPN',

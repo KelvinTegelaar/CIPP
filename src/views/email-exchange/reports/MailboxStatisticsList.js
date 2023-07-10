@@ -37,7 +37,7 @@ const MailboxStatsList = () => {
     },
     {
       selector: (row) => row['UPN'],
-      name: 'User Prinicipal Name',
+      name: 'User Principal Name',
       sortable: true,
       cell: (row) => CellTip(row['UPN']),
       exportSelector: 'UPN',
