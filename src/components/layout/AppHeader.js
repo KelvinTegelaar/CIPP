@@ -72,6 +72,7 @@ const AppHeader = () => {
       </CHeader>
 
       {dashboard &&
+        dashboard.length >= 1 &&
         dashboard.map((item, index) => (
           <div
             className="mb-3"
