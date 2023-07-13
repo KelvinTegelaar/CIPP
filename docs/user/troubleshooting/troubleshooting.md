@@ -120,7 +120,7 @@ The refresh token could not be retrieved and stored. The user must reauthorize.
 
 ### The property 'LastGraphError' cannot be found on this object
 
-This error occurs when CIPP cannot write to the errors table - Clear your tenant cache from the settings menu and try again.
+This error occurs when CIPP cannot write to the errors table - Clear your tenant cache from the settings menu and try again. You might also receive the error when a tenant access check has failed, the only way to clear the Last Graph Error is by removing the tenant cache.
 
 ### AADSTS7000222: The provided client secret keys for app {appid} are expired.
 
