@@ -20,7 +20,10 @@ This page provides information on Exchange mailboxes, with the ability to view d
 ## Actions
 
 - View Mailbox
-- Edit Mailbox - _Edit the permissions assigned to the mailbox._
+- Edit Mailbox:  
+    - _Edit and view the permissions assigned to the mailbox._
+    - _Edit and view the calendar permissions assigned to the calendar._
+    - _Edit and view mailbox forwarding settings._
 - Edit Calendar permissions _Check Calendar permissions._
 - View Mobile Devices _View a list of all mobile devices which have connected to the mailbox with detailed information on each device._
 - Research Compromised Account
