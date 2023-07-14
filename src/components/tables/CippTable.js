@@ -326,81 +326,109 @@ export default function CippTable({
         </CButton>,
       ])
     }
-    if (!disablePDFExport) {
-      if (dynamicColumns === true) {
-        const addColumn = (columnname) => {
-          var index = columns.length - 1
-          let alreadyInArray = columns.find((o) => o.exportSelector === columnname)
-          if (!alreadyInArray) {
-            columns.splice(index, 0, {
-              name: columnname,
-              selector: (row) => row[columnname],
-              sortable: true,
-              exportSelector: columnname,
-              cell: cellGenericFormatter(),
-            })
-          } else {
-            let indexOfExisting = columns.findIndex((o) => o.exportSelector === columnname)
-            columns = columns.splice(indexOfExisting, 1)
-          }
-          setUpdatedColumns(Date())
-        }
 
-        defaultActions.push([
-          <CDropdown className="me-2" variant="input-group">
-            <CDropdownToggle
-              className="btn btn-primary btn-sm m-1"
-              size="sm"
-              style={{
-                backgroundColor: '#f88c1a',
-              }}
-            >
-              <FontAwesomeIcon icon={faColumns} />
-            </CDropdownToggle>
-            <CDropdownMenu>
-              {dataKeys() &&
-                dataKeys().map((item, idx) => {
-                  return (
-                    <CDropdownItem key={idx} onClick={() => addColumn(item)}>
-                      {columns.find((o) => o.exportSelector === item) && (
-                        <FontAwesomeIcon icon={faCheck} />
-                      )}{' '}
-                      {item}
-                    </CDropdownItem>
-                  )
-                })}
-            </CDropdownMenu>
-          </CDropdown>,
-        ])
-      }
-      actions.forEach((action) => {
-        defaultActions.push(action)
-      })
-      defaultActions.push([
-        <ExportPDFButton
-          key="export-pdf-action"
-          pdfData={data}
-          pdfHeaders={columns}
-          pdfSize="A4"
-          reportName={reportName}
-        />,
-      ])
-    }
-
-    if (!disableCSVExport) {
+    if (!disablePDFExport || !disableCSVExport) {
       const keys = []
+      const exportFormatter = {}
       columns.map((col) => {
         if (col.exportSelector) keys.push(col.exportSelector)
+        if (col.exportFormatter) exportFormatter[col.exportSelector] = col.exportFormatter
         return null
       })
 
       const filtered = data.map((obj) =>
         // eslint-disable-next-line no-sequences
-        keys.reduce((acc, curr) => ((acc[curr] = obj[curr]), acc), {}),
+        /* keys.reduce((acc, curr) => ((acc[curr] = obj[curr]), acc), {}),*/
+        keys.reduce((acc, curr) => {
+          const key = curr.split('/')
+          if (key.length > 1) {
+            var property = obj
+            for (var x = 0; x < key.length; x++) {
+              if (property[key[x]] !== null) {
+                property = property[key[x]]
+              } else {
+                property = 'n/a'
+                break
+              }
+            }
+            acc[curr] = property
+          } else {
+            if (typeof exportFormatter[curr] === 'function') {
+              acc[curr] = exportFormatter[curr]({ cell: obj[curr] })
+            } else {
+              acc[curr] = obj[curr]
+            }
+          }
+          return acc
+        }, {}),
       )
-      defaultActions.push([
-        <ExportCsvButton key="export-csv-action" csvData={filtered} reportName={reportName} />,
-      ])
+
+      if (!disablePDFExport) {
+        if (dynamicColumns === true) {
+          const addColumn = (columnname) => {
+            var index = columns.length - 1
+            let alreadyInArray = columns.find((o) => o.exportSelector === columnname)
+            if (!alreadyInArray) {
+              columns.splice(index, 0, {
+                name: columnname,
+                selector: (row) => row[columnname],
+                sortable: true,
+                exportSelector: columnname,
+                cell: cellGenericFormatter(),
+              })
+            } else {
+              let indexOfExisting = columns.findIndex((o) => o.exportSelector === columnname)
+              columns = columns.splice(indexOfExisting, 1)
+            }
+            setUpdatedColumns(Date())
+          }
+
+          defaultActions.push([
+            <CDropdown className="me-2" variant="input-group">
+              <CDropdownToggle
+                className="btn btn-primary btn-sm m-1"
+                size="sm"
+                style={{
+                  backgroundColor: '#f88c1a',
+                }}
+              >
+                <FontAwesomeIcon icon={faColumns} />
+              </CDropdownToggle>
+              <CDropdownMenu>
+                {dataKeys() &&
+                  dataKeys().map((item, idx) => {
+                    return (
+                      <CDropdownItem key={idx} onClick={() => addColumn(item)}>
+                        {columns.find((o) => o.exportSelector === item) && (
+                          <FontAwesomeIcon icon={faCheck} />
+                        )}{' '}
+                        {item}
+                      </CDropdownItem>
+                    )
+                  })}
+              </CDropdownMenu>
+            </CDropdown>,
+          ])
+        }
+        actions.forEach((action) => {
+          defaultActions.push(action)
+        })
+        defaultActions.push([
+          <ExportPDFButton
+            key="export-pdf-action"
+            pdfData={filtered}
+            pdfHeaders={columns}
+            pdfSize="A4"
+            reportName={reportName}
+          />,
+        ])
+      }
+
+      if (!disableCSVExport) {
+        defaultActions.push([
+          <ExportCsvButton key="export-csv-action" csvData={filtered} reportName={reportName} />,
+        ])
+      }
     }
     if (selectedRows && actionsList) {
       defaultActions.push([
