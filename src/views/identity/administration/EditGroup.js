@@ -144,7 +144,7 @@ const EditGroup = () => {
             <CCol md={6}>
               <CCard>
                 <CCardHeader>
-                  <CCardTitle>Group Details</CCardTitle>
+                  <CCardTitle>Group Details {group[0] && `- ${group[0].displayName}`}</CCardTitle>
                 </CCardHeader>
                 <CCardBody>
                   {isFetching && <CSpinner />}
