@@ -59,6 +59,7 @@
   * [Autopilot Status Page](user-documentation/endpointmanagement/autopilotstatuspage.md)
   * [Defender Status](user-documentation/endpointmanagement/defender.md)
   * [MEM (Intune) Policy Templates](user-documentation/endpointmanagement/mempolicytemplates.md)
+  * [Intune Devices](user-documentation/endpointmanagement/intunedevices.md)
 * [Exchange Management](user-documentation/emailexchange/README.md)
   * [Contacts](user-documentation/emailexchange/contacts.md)
   * [Mailboxes](user-documentation/emailexchange/mailboxes.md)
