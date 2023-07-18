@@ -148,9 +148,10 @@ const ApplyGroupTemplate = () => {
               placeholder="Select a group type"
               values={[
                 { label: 'Dynamic Group', value: 'dynamic' },
-                { label: 'Security Group', value: 'security' },
+                { label: 'Security Group', value: 'generic' },
                 { label: 'Distribution group', value: 'distribution' },
                 { label: 'Azure Role Group', value: 'azurerole' },
+                { label: 'Mail Enabled Security Group', value: 'security' },
               ]}
             />
           </CCol>

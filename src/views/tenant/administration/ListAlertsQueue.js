@@ -136,6 +136,13 @@ const ListAlertsQueue = () => {
       cell: cellBooleanFormatter(),
     },
     {
+      name: 'Sec Defaults Auto-Enable',
+      selector: (row) => row['SecDefaultsUpsell'],
+      sortable: true,
+      exportSelector: 'SecDefaultsUpsell',
+      cell: cellBooleanFormatter(),
+    },
+    {
       name: 'Actions',
       cell: Actions,
     },
@@ -163,6 +170,18 @@ const ListAlertsQueue = () => {
           reportName: `AlertsQueue-List`,
           path: '/api/ListAlertsQueue',
           params: { TenantFilter: tenant?.defaultDomainName },
+          tableProps: {
+            selectableRows: true,
+            actionsList: [
+              {
+                label: 'Delete alerts',
+                color: 'info',
+                modal: true,
+                modalUrl: `/api/RemoveQueuedAlert?ID=!tenantId`,
+                modalMessage: 'Are you sure you want to delete these alerts?',
+              },
+            ],
+          },
         }}
       />
     </div>
