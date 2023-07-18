@@ -73,7 +73,8 @@ const AddAPDevice = () => {
       },
     },
   ]
-
+  const valbutton = (value) =>
+    autopilotData ? undefined : 'You must add at least one device. Did you forget to click add?'
   const handleOnDrop = (data) => {
     const importdata = data.map((item) => {
       const normalizedData = {}
@@ -209,6 +210,14 @@ const AddAPDevice = () => {
               }}
             </FormSpy>
           </CCol>
+          <Field
+            key={autopilotData}
+            name="BlockNext"
+            component="hidden"
+            type="hidden"
+            validate={valbutton}
+          ></Field>
+          <Error name="BlockNext" />
         </CRow>
         <CRow>
           <CCol>
