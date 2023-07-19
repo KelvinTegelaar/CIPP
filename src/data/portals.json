@@ -1,0 +1,66 @@
+[
+    {
+        "label"     : "M365 Portal",
+        "name"      : "M365_Portal",
+        "url"       : "https://portal.office.com/Partner/BeginClientSession.aspx?CTID=${row.customerId}&CSDEST=o365admincenter",
+        "variable"  : "${row.customerId}",
+        "target"    : "_blank",
+        "external"  : true
+    },
+    {
+        "label"     : "Exchange Portal",
+        "name"      : "Exchange_Portal",
+        "url"       : "https://admin.exchange.microsoft.com/?landingpage=homepage&form=mac_sidebar&delegatedOrg=${row.defaultDomainName}#",
+        "variable"  : "${row.defaultDomainName}",
+        "target"    : "_blank",
+        "external"  : true
+    },
+    {
+        "label"     : "Entra Portal",
+        "name"      : "Entra_Portal",
+        "url"       : "https://entra.microsoft.com/${row.defaultDomainName}",
+        "variable"  : "${row.defaultDomainName}",
+        "target"    : "_blank",
+        "external"  : true
+    },
+    {
+        "label"     : "Teams Portal",
+        "name"      : "Teams_Portal",
+        "url"       : "https://admin.teams.microsoft.com/?delegatedOrg=${row.defaultDomainName}",
+        "variable"  : "${row.defaultDomainName}",
+        "target"    : "_blank",
+        "external"  : true
+    },
+    {
+        "label"     : "Azure Portal",
+        "name"      : "Azure_Portal",
+        "url"       : "https://portal.azure.com/${row.defaultDomainName}",
+        "variable"  : "${row.defaultDomainName}",
+        "target"    : "_blank",
+        "external"  : true
+    },
+    {
+        "label"     : "Intune Portal",
+        "name"      : "Intune_Portal",
+        "url"       : "https://intune.microsoft.com/${row.defaultDomainName}",
+        "variable"  : "${row.defaultDomainName}",
+        "target"    : "_blank",
+        "external"  : true
+    },
+    {
+        "label"     : "Security Portal",
+        "name"      : "Security_Portal",
+        "url"       : "https://security.microsoft.com/?tid=${row.customerId}",
+        "variable"  : "${row.customerId}",
+        "target"    : "_blank",
+        "external"  : true
+    },
+    {
+        "label"     : "Sharepoint Admin",
+        "name"      : "Sharepoint_Admin",
+        "url"       : "https://admin.microsoft.com/Partner/beginclientsession.aspx?CTID=${row.customerId}&CSDEST=SharePoint",
+        "variable"  : "${row.customerId}",
+        "target"    : "_blank",
+        "external"  : true
+    }
+]
