@@ -15,6 +15,7 @@ import { CippActionsOffcanvas } from 'src/components/utilities'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import Skeleton from 'react-loading-skeleton'
 import { TitleButton } from 'src/components/buttons'
+import Portals from 'src/data/portals'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const [getTenantDetails, tenantDetails] = useLazyGenericGetRequestQuery()
@@ -86,59 +87,83 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
           },
           {
             icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
-            label: 'M365 Portal',
-            link: `https://portal.office.com/Partner/BeginClientSession.aspx?CTID=${row.customerId}&CSDEST=o365admincenter`,
+            label: Portals.find((obj) => obj.name === 'M365_Portal').label,
             external: true,
             color: 'info',
+            link: Portals.find((obj) => obj.name === 'M365_Portal').url.replace(
+              '${row.customerId}',
+              row.customerId,
+            ),
           },
           {
             icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
-            label: 'Exchange Portal',
-            color: 'info',
+            label: Portals.find((obj) => obj.name === 'Exchange_Portal').label,
             external: true,
-            link: `https://admin.exchange.microsoft.com/?landingpage=homepage&form=mac_sidebar&delegatedOrg=${row.defaultDomainName}#`,
+            color: 'info',
+            link: Portals.find((obj) => obj.name === 'Exchange_Portal').url.replace(
+              '${row.customerId}',
+              row.customerId,
+            ),
           },
           {
             icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
-            label: 'Entra Portal',
-            color: 'info',
+            label: Portals.find((obj) => obj.name === 'Entra_Portal').label,
             external: true,
-            link: `https://entra.microsoft.com/${row.defaultDomainName}`,
+            color: 'info',
+            link: Portals.find((obj) => obj.name === 'Entra_Portal').url.replace(
+              '${row.customerId}',
+              row.customerId,
+            ),
           },
           {
             icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
-            label: 'Teams Portal',
-            color: 'info',
+            label: Portals.find((obj) => obj.name === 'Teams_Portal').label,
             external: true,
-            link: `https://admin.teams.microsoft.com/?delegatedOrg=${row.defaultDomainName}`,
+            color: 'info',
+            link: Portals.find((obj) => obj.name === 'Teams_Portal').url.replace(
+              '${row.customerId}',
+              row.customerId,
+            ),
           },
           {
             icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
-            label: 'Azure Portal',
-            color: 'info',
+            label: Portals.find((obj) => obj.name === 'Azure_Portal').label,
             external: true,
-            link: `https://portal.azure.com/${row.defaultDomainName}`,
+            color: 'info',
+            link: Portals.find((obj) => obj.name === 'Azure_Portal').url.replace(
+              '${row.customerId}',
+              row.customerId,
+            ),
           },
           {
             icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
-            label: 'MEM (Intune) Portal',
-            color: 'info',
+            label: Portals.find((obj) => obj.name === 'Intune_Portal').label,
             external: true,
-            link: `https://intune.microsoft.com/${row.defaultDomainName}`,
+            color: 'info',
+            link: Portals.find((obj) => obj.name === 'Intune_Portal').url.replace(
+              '${row.customerId}',
+              row.customerId,
+            ),
           },
           {
             icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
-            label: 'Security Portal (GDAP)',
-            color: 'info',
+            label: Portals.find((obj) => obj.name === 'Security_Portal').label,
             external: true,
-            link: `https://security.microsoft.com/?tid=${row.customerId}`,
+            color: 'info',
+            link: Portals.find((obj) => obj.name === 'Security_Portal').url.replace(
+              '${row.customerId}',
+              row.customerId,
+            ),
           },
           {
             icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
-            label: 'Sharepoint Admin',
-            color: 'info',
+            label: Portals.find((obj) => obj.name === 'Sharepoint_Admin').label,
             external: true,
-            link: `https://admin.microsoft.com/Partner/beginclientsession.aspx?CTID=${row.customerId}&CSDEST=SharePoint`,
+            color: 'info',
+            link: Portals.find((obj) => obj.name === 'Sharepoint_Admin').url.replace(
+              '${row.customerId}',
+              row.customerId,
+            ),
           },
         ]}
         placement="end"
@@ -189,13 +214,16 @@ const TenantsList = () => {
       minWidth: '200px',
     },
     {
-      name: 'M365 Portal',
+      name: Portals.find((obj) => obj.name === 'M365_Portal').label,
       omit: columnOmits,
       selector: (row) => row['customerId'],
       center: true,
       cell: (row) => (
         <a
-          href={`https://portal.office.com/Partner/BeginClientSession.aspx?CTID=${row.customerId}&CSDEST=o365admincenter`}
+          href={Portals.find((obj) => obj.name === 'M365_Portal').url.replace(
+            '${row.customerId}',
+            row.customerId,
+          )}
           target="_blank"
           className="dlink"
           rel="noreferrer"
@@ -205,13 +233,16 @@ const TenantsList = () => {
       ),
     },
     {
-      name: 'Exchange Portal',
+      name: Portals.find((obj) => obj.name === 'Exchange_Portal').label,
       omit: columnOmits,
       selector: (row) => row['defaultDomainName'],
       center: true,
       cell: (row) => (
         <a
-          href={`https://admin.exchange.microsoft.com/?landingpage=homepage&form=mac_sidebar&delegatedOrg=${row.defaultDomainName}#`}
+          href={Portals.find((obj) => obj.name === 'Exchange_Portal').url.replace(
+            '${row.defaultDomainName}',
+            row.defaultDomainName,
+          )}
           target="_blank"
           className="dlink"
           rel="noreferrer"
@@ -221,13 +252,16 @@ const TenantsList = () => {
       ),
     },
     {
-      name: 'Entra Portal',
+      name: Portals.find((obj) => obj.name === 'Entra_Portal').label,
       omit: columnOmits,
       selector: (row) => row['defaultDomainName'],
       center: true,
       cell: (row) => (
         <a
-          href={`https://entra.microsoft.com/${row.defaultDomainName}`}
+          href={Portals.find((obj) => obj.name === 'Entra_Portal').url.replace(
+            '${row.defaultDomainName}',
+            row.defaultDomainName,
+          )}
           target="_blank"
           className="dlink"
           rel="noreferrer"
@@ -237,13 +271,16 @@ const TenantsList = () => {
       ),
     },
     {
-      name: 'Teams Portal',
+      name: Portals.find((obj) => obj.name === 'Teams_Portal').label,
       omit: columnOmits,
       selector: (row) => row['defaultDomainName'],
       center: true,
       cell: (row) => (
         <a
-          href={`https://admin.teams.microsoft.com/?delegatedOrg=${row.defaultDomainName}`}
+          href={Portals.find((obj) => obj.name === 'Teams_Portal').url.replace(
+            '${row.defaultDomainName}',
+            row.defaultDomainName,
+          )}
           target="_blank"
           className="dlink"
           rel="noreferrer"
@@ -253,13 +290,16 @@ const TenantsList = () => {
       ),
     },
     {
-      name: 'Azure Portal',
+      name: Portals.find((obj) => obj.name === 'Azure_Portal').label,
       omit: columnOmits,
       selector: (row) => row['defaultDomainName'],
       center: true,
       cell: (row) => (
         <a
-          href={`https://portal.azure.com/${row.defaultDomainName}`}
+          href={Portals.find((obj) => obj.name === 'Azure_Portal').url.replace(
+            '${row.defaultDomainName}',
+            row.defaultDomainName,
+          )}
           target="_blank"
           className="dlink"
           rel="noreferrer"
@@ -269,13 +309,16 @@ const TenantsList = () => {
       ),
     },
     {
-      name: 'MEM (Intune) Portal',
+      name: Portals.find((obj) => obj.name === 'Intune_Portal').label,
       omit: columnOmits,
       selector: (row) => row['defaultDomainName'],
       center: true,
       cell: (row) => (
         <a
-          href={`https://intune.microsoft.com/${row.defaultDomainName}`}
+          href={Portals.find((obj) => obj.name === 'Intune_Portal').url.replace(
+            '${row.defaultDomainName}',
+            row.defaultDomainName,
+          )}
           target="_blank"
           className="dlink"
           rel="noreferrer"
@@ -285,13 +328,16 @@ const TenantsList = () => {
       ),
     },
     {
-      name: 'Security Portal (GDAP)',
+      name: Portals.find((obj) => obj.name === 'Security_Portal').label,
       selector: (row) => row['defaultDomainName'],
       center: true,
       omit: columnOmits,
       cell: (row) => (
         <a
-          href={`https://security.microsoft.com/?tid=${row.customerId}`}
+          href={Portals.find((obj) => obj.name === 'Security_Portal').url.replace(
+            '${row.customerId}',
+            row.customerId,
+          )}
           target="_blank"
           className="dlink"
           rel="noreferrer"
@@ -301,13 +347,16 @@ const TenantsList = () => {
       ),
     },
     {
-      name: 'SharePoint Admin',
+      name: Portals.find((obj) => obj.name === 'Sharepoint_Admin').label,
       selector: (row) => row['defaultDomainName'],
       center: true,
       omit: columnOmits,
       cell: (row) => (
         <a
-          href={`https://admin.microsoft.com/Partner/beginclientsession.aspx?CTID=${row.customerId}&CSDEST=SharePoint`}
+          href={Portals.find((obj) => obj.name === 'Sharepoint_Admin').url.replace(
+            '${row.customerId}',
+            row.customerId,
+          )}
           target="_blank"
           className="dlink"
           rel="noreferrer"
