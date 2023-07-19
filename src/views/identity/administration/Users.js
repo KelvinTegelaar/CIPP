@@ -16,6 +16,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
   const [ocVisible, setOCVisible] = useState(false)
   const viewLink = `/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}&userEmail=${row.userPrincipalName}`
   const editLink = `/identity/administration/users/edit?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`
+  const OffboardLink = `/identity/administration/offboarding-wizard?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`
 
   let licenses = []
   row.assignedLicenses?.map((licenseAssignment, idx) => {
@@ -77,6 +78,11 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
           {
             label: 'Research Compromised Account',
             link: `/identity/administration/ViewBec?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
+            color: 'info',
+          },
+          {
+            label: 'Offboard User',
+            link: OffboardLink,
             color: 'info',
           },
           {
