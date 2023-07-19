@@ -136,6 +136,13 @@ const ListAlertsQueue = () => {
       cell: cellBooleanFormatter(),
     },
     {
+      name: 'Sec Defaults Auto-Enable',
+      selector: (row) => row['SecDefaultsUpsell'],
+      sortable: true,
+      exportSelector: 'SecDefaultsUpsell',
+      cell: cellBooleanFormatter(),
+    },
+    {
       name: 'Actions',
       cell: Actions,
     },

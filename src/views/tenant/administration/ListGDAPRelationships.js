@@ -6,19 +6,33 @@ import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
 import { cellDateFormatter, cellNullTextFormatter } from 'src/components/tables'
 import { CippActionsOffcanvas } from 'src/components/utilities'
+import GDAPRoles from 'src/data/GDAPRoles'
 
 const Actions = (row, rowIndex, formatExtraData) => {
   const [ocVisible, setOCVisible] = useState(false)
 
   const tenant = useSelector((state) => state.app.currentTenant)
+
+  var extendedInfo = []
+  row?.accessDetails.unifiedRoles.map((role) => {
+    for (var x = 0; x < GDAPRoles.length; x++) {
+      if (GDAPRoles[x].ObjectId == role.roleDefinitionId) {
+        extendedInfo.push({
+          label: GDAPRoles[x].Name,
+          value: GDAPRoles[x].Description,
+        })
+        break
+      }
+    }
+  })
   return (
     <>
       <CButton size="sm" color="link" onClick={() => setOCVisible(true)}>
         <FontAwesomeIcon icon={faEllipsisV} />
       </CButton>
       <CippActionsOffcanvas
-        title="Policy Information"
-        extendedInfo={[]}
+        title={'GDAP - ' + row?.customer.displayName}
+        extendedInfo={extendedInfo}
         actions={[
           {
             label: 'Terminate Relationship',
@@ -44,7 +58,7 @@ const GDAPRelationships = () => {
       name: 'Tenant',
       selector: (row) => row.customer?.displayName,
       sortable: true,
-      exportSelector: 'customer',
+      exportSelector: 'customer/displayName',
       cell: cellNullTextFormatter(),
     },
     {

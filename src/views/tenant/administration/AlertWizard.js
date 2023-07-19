@@ -123,6 +123,10 @@ const AlertWizard = () => {
           <RFFCFormSwitch name="ApnCertExpiry" label="Alert on expiring APN certificates" />
           <RFFCFormSwitch name="VppTokenExpiry" label="Alert on expiring VPP tokens" />
           <RFFCFormSwitch name="DepTokenExpiry" label="Alert on expiring DEP tokens" />
+          <RFFCFormSwitch
+            name="SecDefaultsUpsell"
+            label="Alert on Security Defaults automatic enablement"
+          />
         </CForm>
         <hr className="my-4" />
       </CippWizard.Page>
@@ -251,6 +255,14 @@ const AlertWizard = () => {
                             color="#f77f00"
                             size="lg"
                             icon={props.values.NoCAConfig ? faCheck : faTimes}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Alert on Security Defaults automatic enablement
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.SecDefaultsUpsell ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                       </CListGroup>
