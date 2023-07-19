@@ -143,6 +143,13 @@ const ListAlertsQueue = () => {
       cell: cellBooleanFormatter(),
     },
     {
+      name: 'Sharepoint Quota',
+      selector: (row) => row['SharePointQuota'],
+      sortable: true,
+      exportSelector: 'SharePointQuota',
+      cell: cellBooleanFormatter(),
+    },
+    {
       name: 'Actions',
       cell: Actions,
     },
