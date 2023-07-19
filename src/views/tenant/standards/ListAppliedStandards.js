@@ -131,7 +131,15 @@ const ListAppliedStandards = () => {
   const [caGetRequest, caTemplates] = useLazyGenericGetRequestQuery()
   const [groupGetRequest, groupTemplates] = useLazyGenericGetRequestQuery()
   const initialValues = listStandardResults[0]
-  console.log(initialValues)
+  const allTenantsStandard = listStandardsAllTenants.find(
+    (tenant) => tenant.displayName === 'AllTenants',
+  )
+  function getLabel(item) {
+    const keys = item.name.split('.')
+    let value = keys.reduce((prev, curr) => prev && prev[curr], allTenantsStandard)
+    return value ? `* Enabled via All Tenants` : ''
+  }
+
   return (
     <CippPage title="Standards" tenantSelector={false}>
       <>
@@ -175,7 +183,13 @@ const ListAppliedStandards = () => {
                             .filter((obj) => obj.cat === 'Global')
                             .map((item, key) => (
                               <>
-                                <RFFCFormSwitch key={key} name={item.name} label={item.label} />
+                                {console.log(item.name)}
+                                <RFFCFormSwitch
+                                  key={key}
+                                  name={item.name}
+                                  label={item.label}
+                                  sublabel={getLabel(item)}
+                                />
                                 {item.addedComponent && (
                                   <Condition when={item.name} is={true}>
                                     {item.addedComponent.type === 'Select' ? (
@@ -204,7 +218,12 @@ const ListAppliedStandards = () => {
                             .filter((obj) => obj.cat === 'AAD')
                             .map((item, key) => (
                               <>
-                                <RFFCFormSwitch key={key} name={item.name} label={item.label} />
+                                <RFFCFormSwitch
+                                  key={key}
+                                  name={item.name}
+                                  label={item.label}
+                                  sublabel={getLabel(item)}
+                                />
                                 {item.addedComponent && (
                                   <Condition when={item.name} is={true}>
                                     {item.addedComponent.type === 'Select' ? (
@@ -233,7 +252,12 @@ const ListAppliedStandards = () => {
                             .filter((obj) => obj.cat === 'Exchange')
                             .map((item, key) => (
                               <>
-                                <RFFCFormSwitch key={key} name={item.name} label={item.label} />
+                                <RFFCFormSwitch
+                                  key={key}
+                                  name={item.name}
+                                  label={item.label}
+                                  sublabel={getLabel(item)}
+                                />
                                 {item.addedComponent && (
                                   <Condition when={item.name} is={true}>
                                     {item.addedComponent.type === 'Select' ? (
@@ -262,7 +286,12 @@ const ListAppliedStandards = () => {
                             .filter((obj) => obj.cat === 'Intune')
                             .map((item, key) => (
                               <>
-                                <RFFCFormSwitch key={key} name={item.name} label={item.label} />
+                                <RFFCFormSwitch
+                                  key={key}
+                                  name={item.name}
+                                  label={item.label}
+                                  sublabel={getLabel(item)}
+                                />
                                 {item.addedComponent && (
                                   <Condition when={item.name} is={true}>
                                     {item.addedComponent.type === 'Select' ? (
@@ -291,7 +320,12 @@ const ListAppliedStandards = () => {
                             .filter((obj) => obj.cat === 'SharePoint')
                             .map((item, key) => (
                               <>
-                                <RFFCFormSwitch key={key} name={item.name} label={item.label} />
+                                <RFFCFormSwitch
+                                  key={key}
+                                  name={item.name}
+                                  label={item.label}
+                                  sublabel={getLabel(item)}
+                                />
                                 {item.addedComponent && (
                                   <Condition when={item.name} is={true}>
                                     {item.addedComponent.type === 'Select' ? (
