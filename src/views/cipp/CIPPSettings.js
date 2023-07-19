@@ -1016,6 +1016,7 @@ const NotificationsSettings = () => {
                           label="Choose which logs you'd like to receive alerts from. This notification will be sent every 15 minutes."
                           name="logsToInclude"
                           values={[
+                            { value: 'Updates', name: 'Updates Status' },
                             { value: 'Standards', name: 'All Standards' },
                             { value: 'TokensUpdater', name: 'Token Events' },
                             { value: 'ExecDnsConfig', name: 'Changing DNS Settings' },
