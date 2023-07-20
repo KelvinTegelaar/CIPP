@@ -36,7 +36,13 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
       </>
     )
   }
-
+  const actions = Portals.map((portal) => ({
+    icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
+    label: portal.label,
+    external: true,
+    color: 'info',
+    link: portal.url.replace(portal.variable, row[portal.variable]),
+  }))
   return (
     <>
       <CButton size="sm" color="link" onClick={() => loadOffCanvasDetails(row.defaultDomainName)}>
@@ -85,86 +91,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             link: `/tenant/administration/tenants/Edit?tenantFilter=${row.defaultDomainName}&customerId=${row.customerId}`,
             color: 'warning',
           },
-          {
-            icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
-            label: Portals.find((obj) => obj.name === 'M365_Portal').label,
-            external: true,
-            color: 'info',
-            link: Portals.find((obj) => obj.name === 'M365_Portal').url.replace(
-              '${row.customerId}',
-              row.customerId,
-            ),
-          },
-          {
-            icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
-            label: Portals.find((obj) => obj.name === 'Exchange_Portal').label,
-            external: true,
-            color: 'info',
-            link: Portals.find((obj) => obj.name === 'Exchange_Portal').url.replace(
-              '${row.customerId}',
-              row.customerId,
-            ),
-          },
-          {
-            icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
-            label: Portals.find((obj) => obj.name === 'Entra_Portal').label,
-            external: true,
-            color: 'info',
-            link: Portals.find((obj) => obj.name === 'Entra_Portal').url.replace(
-              '${row.customerId}',
-              row.customerId,
-            ),
-          },
-          {
-            icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
-            label: Portals.find((obj) => obj.name === 'Teams_Portal').label,
-            external: true,
-            color: 'info',
-            link: Portals.find((obj) => obj.name === 'Teams_Portal').url.replace(
-              '${row.customerId}',
-              row.customerId,
-            ),
-          },
-          {
-            icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
-            label: Portals.find((obj) => obj.name === 'Azure_Portal').label,
-            external: true,
-            color: 'info',
-            link: Portals.find((obj) => obj.name === 'Azure_Portal').url.replace(
-              '${row.customerId}',
-              row.customerId,
-            ),
-          },
-          {
-            icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
-            label: Portals.find((obj) => obj.name === 'Intune_Portal').label,
-            external: true,
-            color: 'info',
-            link: Portals.find((obj) => obj.name === 'Intune_Portal').url.replace(
-              '${row.customerId}',
-              row.customerId,
-            ),
-          },
-          {
-            icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
-            label: Portals.find((obj) => obj.name === 'Security_Portal').label,
-            external: true,
-            color: 'info',
-            link: Portals.find((obj) => obj.name === 'Security_Portal').url.replace(
-              '${row.customerId}',
-              row.customerId,
-            ),
-          },
-          {
-            icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
-            label: Portals.find((obj) => obj.name === 'Sharepoint_Admin').label,
-            external: true,
-            color: 'info',
-            link: Portals.find((obj) => obj.name === 'Sharepoint_Admin').url.replace(
-              '${row.customerId}',
-              row.customerId,
-            ),
-          },
+          ...actions,
         ]}
         placement="end"
         visible={ocVisible}
@@ -175,26 +102,27 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
   )
 }
 
-function StatusIcon(graphErrorCount) {
-  if (graphErrorCount > 0) {
-    return <FontAwesomeIcon icon={faExclamationTriangle} className="text-danger" />
-  } else {
-    return <FontAwesomeIcon icon={faCheckCircle} className="text-success" />
-  }
-}
-
-function StatusText(graphErrorCount, lastGraphError) {
-  if (graphErrorCount > 0) {
-    return 'Error Count: ' + graphErrorCount + ' - Last Error: ' + lastGraphError
-  } else {
-    return 'No errors detected with this tenant'
-  }
-}
-
 const TenantsList = () => {
   const TenantListSelector = useSelector((state) => state.app.TenantListSelector)
   const tenant = useSelector((state) => state.app.currentTenant)
   const [columnOmits, setOmitVisible] = useState(TenantListSelector)
+
+  const generatePortalColumn = (portal) => ({
+    name: portal.label,
+    omit: columnOmits,
+    selector: (row) => row['defaultDomainName'],
+    center: true,
+    cell: (row) => (
+      <a
+        href={portal.url.replace(portal.variable, row[portal.variable])}
+        target="_blank"
+        className="dlink"
+        rel="noreferrer"
+      >
+        <FontAwesomeIcon icon={faCog} className="me-2" />
+      </a>
+    ),
+  })
 
   const columns = [
     {
@@ -213,158 +141,7 @@ const TenantsList = () => {
       exportSelector: 'defaultDomainName',
       minWidth: '200px',
     },
-    {
-      name: Portals.find((obj) => obj.name === 'M365_Portal').label,
-      omit: columnOmits,
-      selector: (row) => row['customerId'],
-      center: true,
-      cell: (row) => (
-        <a
-          href={Portals.find((obj) => obj.name === 'M365_Portal').url.replace(
-            '${row.customerId}',
-            row.customerId,
-          )}
-          target="_blank"
-          className="dlink"
-          rel="noreferrer"
-        >
-          <FontAwesomeIcon icon={faCog} className="me-2" />
-        </a>
-      ),
-    },
-    {
-      name: Portals.find((obj) => obj.name === 'Exchange_Portal').label,
-      omit: columnOmits,
-      selector: (row) => row['defaultDomainName'],
-      center: true,
-      cell: (row) => (
-        <a
-          href={Portals.find((obj) => obj.name === 'Exchange_Portal').url.replace(
-            '${row.defaultDomainName}',
-            row.defaultDomainName,
-          )}
-          target="_blank"
-          className="dlink"
-          rel="noreferrer"
-        >
-          <FontAwesomeIcon icon={faCog} className="me-2" />
-        </a>
-      ),
-    },
-    {
-      name: Portals.find((obj) => obj.name === 'Entra_Portal').label,
-      omit: columnOmits,
-      selector: (row) => row['defaultDomainName'],
-      center: true,
-      cell: (row) => (
-        <a
-          href={Portals.find((obj) => obj.name === 'Entra_Portal').url.replace(
-            '${row.defaultDomainName}',
-            row.defaultDomainName,
-          )}
-          target="_blank"
-          className="dlink"
-          rel="noreferrer"
-        >
-          <FontAwesomeIcon icon={faCog} className="me-2" />
-        </a>
-      ),
-    },
-    {
-      name: Portals.find((obj) => obj.name === 'Teams_Portal').label,
-      omit: columnOmits,
-      selector: (row) => row['defaultDomainName'],
-      center: true,
-      cell: (row) => (
-        <a
-          href={Portals.find((obj) => obj.name === 'Teams_Portal').url.replace(
-            '${row.defaultDomainName}',
-            row.defaultDomainName,
-          )}
-          target="_blank"
-          className="dlink"
-          rel="noreferrer"
-        >
-          <FontAwesomeIcon icon={faCog} className="me-2" />
-        </a>
-      ),
-    },
-    {
-      name: Portals.find((obj) => obj.name === 'Azure_Portal').label,
-      omit: columnOmits,
-      selector: (row) => row['defaultDomainName'],
-      center: true,
-      cell: (row) => (
-        <a
-          href={Portals.find((obj) => obj.name === 'Azure_Portal').url.replace(
-            '${row.defaultDomainName}',
-            row.defaultDomainName,
-          )}
-          target="_blank"
-          className="dlink"
-          rel="noreferrer"
-        >
-          <FontAwesomeIcon icon={faCog} className="me-2" />
-        </a>
-      ),
-    },
-    {
-      name: Portals.find((obj) => obj.name === 'Intune_Portal').label,
-      omit: columnOmits,
-      selector: (row) => row['defaultDomainName'],
-      center: true,
-      cell: (row) => (
-        <a
-          href={Portals.find((obj) => obj.name === 'Intune_Portal').url.replace(
-            '${row.defaultDomainName}',
-            row.defaultDomainName,
-          )}
-          target="_blank"
-          className="dlink"
-          rel="noreferrer"
-        >
-          <FontAwesomeIcon icon={faCog} className="me-2" />
-        </a>
-      ),
-    },
-    {
-      name: Portals.find((obj) => obj.name === 'Security_Portal').label,
-      selector: (row) => row['defaultDomainName'],
-      center: true,
-      omit: columnOmits,
-      cell: (row) => (
-        <a
-          href={Portals.find((obj) => obj.name === 'Security_Portal').url.replace(
-            '${row.customerId}',
-            row.customerId,
-          )}
-          target="_blank"
-          className="dlink"
-          rel="noreferrer"
-        >
-          <FontAwesomeIcon icon={faCog} className="me-2" />
-        </a>
-      ),
-    },
-    {
-      name: Portals.find((obj) => obj.name === 'Sharepoint_Admin').label,
-      selector: (row) => row['defaultDomainName'],
-      center: true,
-      omit: columnOmits,
-      cell: (row) => (
-        <a
-          href={Portals.find((obj) => obj.name === 'Sharepoint_Admin').url.replace(
-            '${row.customerId}',
-            row.customerId,
-          )}
-          target="_blank"
-          className="dlink"
-          rel="noreferrer"
-        >
-          <FontAwesomeIcon icon={faCog} className="me-2" />
-        </a>
-      ),
-    },
+    ...Portals.map(generatePortalColumn),
     {
       exportSelector: 'customerId',
     },
