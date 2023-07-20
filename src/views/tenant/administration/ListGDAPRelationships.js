@@ -1,5 +1,10 @@
-import { CButton } from '@coreui/react'
-import { faEllipsisV, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+import { CSpinner, CButton } from '@coreui/react'
+import {
+  faEllipsisV,
+  faTrashAlt,
+  faExclamationTriangle,
+  faCheck,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
@@ -7,6 +12,30 @@ import { CippPageList } from 'src/components/layout'
 import { cellDateFormatter, cellNullTextFormatter } from 'src/components/tables'
 import { CippActionsOffcanvas } from 'src/components/utilities'
 import GDAPRoles from 'src/data/GDAPRoles'
+import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
+import { ModalService } from 'src/components/utilities'
+
+const RefreshAction = () => {
+  const [execGdapInviteQueue, { isLoading, isSuccess, error }] = useLazyGenericGetRequestQuery()
+
+  const showModal = () =>
+    ModalService.confirm({
+      body: <div>Process recently approved GDAP relationships?</div>,
+      onConfirm: () =>
+        execGdapInviteQueue({
+          path: 'api/ExecGDAPInviteApproved',
+        }),
+    })
+
+  return (
+    <CButton onClick={showModal} size="sm" className="m-1">
+      {isLoading && <CSpinner size="sm" />}
+      {error && <FontAwesomeIcon icon={faExclamationTriangle} className="pe-1" />}
+      {isSuccess && <FontAwesomeIcon icon={faCheck} className="pe-1" />}
+      Map GDAP Groups
+    </CButton>
+  )
+}
 
 const Actions = (row, rowIndex, formatExtraData) => {
   const [ocVisible, setOCVisible] = useState(false)
@@ -31,7 +60,7 @@ const Actions = (row, rowIndex, formatExtraData) => {
         <FontAwesomeIcon icon={faEllipsisV} />
       </CButton>
       <CippActionsOffcanvas
-        title={'GDAP - ' + row?.customer.displayName}
+        title={'GDAP - ' + row?.customer?.displayName}
         extendedInfo={extendedInfo}
         actions={[
           {
@@ -122,6 +151,7 @@ const GDAPRelationships = () => {
                 modalMessage: 'Are you sure you want to terminate these relationships?',
               },
             ],
+            actions: [<RefreshAction key="refresh-action-button" />],
           },
           keyField: 'id',
           columns,
