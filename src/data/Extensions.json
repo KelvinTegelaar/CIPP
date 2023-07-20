@@ -8,6 +8,11 @@
     "SettingOptions": [
       {
         "type": "checkbox",
+        "name": "cippapi.ResetPassword",
+        "label": "Reset application secret - this will invalidate all existing API tokens"
+      },
+      {
+        "type": "checkbox",
         "name": "cippapi.Enabled",
         "label": "Enable Integration"
       }
