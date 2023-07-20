@@ -14,6 +14,8 @@ import { CippActionsOffcanvas } from 'src/components/utilities'
 import GDAPRoles from 'src/data/GDAPRoles'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import { ModalService } from 'src/components/utilities'
+import { constants } from 'buffer'
+import Skeleton from 'react-loading-skeleton'
 
 const RefreshAction = () => {
   const [execGdapInviteQueue, { isLoading, isSuccess, error }] = useLazyGenericGetRequestQuery()
@@ -39,10 +41,33 @@ const RefreshAction = () => {
 
 const Actions = (row, rowIndex, formatExtraData) => {
   const [ocVisible, setOCVisible] = useState(false)
+  const [getGdapInvite, gdapInvite] = useLazyGenericGetRequestQuery()
 
+  function inviteProperty(gdapInvite, propertyName) {
+    return (
+      <>
+        {gdapInvite.isFetching && <Skeleton count={1} width={150} />}
+        {!gdapInvite.isFetching &&
+          gdapInvite.isSuccess &&
+          (gdapInvite.data[propertyName]?.toString() ?? ' ')}
+      </>
+    )
+  }
+
+  function loadOffCanvasDetails(id) {
+    setOCVisible(true)
+    getGdapInvite({
+      path: 'api/ListGDAPInvite',
+      params: { RelationshipId: id },
+    })
+  }
+  var extendedInfo = []
+  extendedInfo.push({
+    label: 'Invite URL',
+    value: inviteProperty(gdapInvite, 'InviteUrl'),
+  })
   const tenant = useSelector((state) => state.app.currentTenant)
 
-  var extendedInfo = []
   row?.accessDetails.unifiedRoles.map((role) => {
     for (var x = 0; x < GDAPRoles.length; x++) {
       if (GDAPRoles[x].ObjectId == role.roleDefinitionId) {
@@ -54,9 +79,10 @@ const Actions = (row, rowIndex, formatExtraData) => {
       }
     }
   })
+
   return (
     <>
-      <CButton size="sm" color="link" onClick={() => setOCVisible(true)}>
+      <CButton size="sm" color="link" onClick={() => loadOffCanvasDetails(row.id)}>
         <FontAwesomeIcon icon={faEllipsisV} />
       </CButton>
       <CippActionsOffcanvas
