@@ -31,7 +31,7 @@ You can only edit the default profile, and not create new ones. This profile is 
 
 **400** - You've entered wrong data, check the information and try again.
 
-***
+
 
 ### List Status Pages
 

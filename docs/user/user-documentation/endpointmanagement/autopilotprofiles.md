@@ -32,7 +32,7 @@ This page provides the ability for you to add Autopilot profiles, Autopilot depl
 
 You can only assign one profile to "All Devices"
 
-***
+
 
 ### List Profiles
 

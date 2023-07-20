@@ -17,7 +17,7 @@ For the latest version of this documentation you can check out Gradient's docume
 5. Generate API Keys
 6. Note the details for use within Cyberdrain. &#x20;
 
-***
+
 
 &#x20;
 
@@ -30,7 +30,7 @@ For the latest version of this documentation you can check out Gradient's docume
 5. Navigate back to Synthesize and click the Status Refresh button for the CIPP integration.
 6. Press Next to complete the service and account mapping.&#x20;
 
-***
+
 
 &#x20;
 

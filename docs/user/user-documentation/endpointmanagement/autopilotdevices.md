@@ -25,7 +25,7 @@ As a partner, you can register devices to Windows Autopilot using any one of the
 
 This API does not directly return data to CIPP, and thus can incorrectly report the upload has failed.
 
-***
+
 
 ### List Devices
 

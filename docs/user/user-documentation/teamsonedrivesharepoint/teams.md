@@ -28,7 +28,7 @@ The Business Voice page gives an overview of all the numbers on the selected ten
 
 #### Known Issues / Limitations <a href="#businessvoice-knownissues" id="businessvoice-knownissues"></a>
 
-***
+
 
 ### List Teams
 
@@ -45,7 +45,7 @@ The List Teams page lists all the teams along with name, description and an over
 
 #### Known Issues / Limitations <a href="#listteams-knownissues" id="listteams-knownissues"></a>
 
-***
+
 
 ### Add Team
 
@@ -61,7 +61,7 @@ Attributes like the mail nickname will be automatically generated.
 
 * It's not current possible to set the visibility when creating a Team using this interface.
 
-***
+
 
 ### Teams Activity
 

@@ -32,7 +32,7 @@ This page lists all the MEM policies on the selected account and provides the ab
 
 If you have any other issues, [please report a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=\&template=bug\_report.md\&title=BUG%3A+).
 
-***
+
 
 ### Apply Policy
 
@@ -51,7 +51,7 @@ Currently you can only apply new policies, applying policies doesn't update exis
 
 You can then decide whether to assign the policy to all users, all devices or both. You can also just create the policy without applying it.
 
-***
+
 
 ### Add Policy Template
 
@@ -78,7 +78,7 @@ To create a policy and get it's raw JSON information you must visit [Microsoft E
 
 If you have any other issues, [please report a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=\&template=bug\_report.md\&title=BUG%3A+).
 
-***
+
 
 ### List Policy Templates
 

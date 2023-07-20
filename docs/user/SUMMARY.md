@@ -87,3 +87,8 @@
   * [Development Tips](dev-documentation/cipp-dev-guide/development-tips.md)
 * [Contributing to the Code](developer-documentation/contributing-to-the-code.md)
 * [Contributing to the Documentation](developer-documentation/contributing-to-the-documentation.md)
+
+## ⚙ API Documentation
+
+* [Setup & Authentication](api-documentation/setup-and-authentication.md)
+* [API Endpoints](api-documentation/api-endpoints.md)
