@@ -1,5 +1,38 @@
 [
   {
+    "name": "CIPP-API Integration",
+    "type": "CIPP-API",
+    "cat": "API",
+    "forceSyncButton": false,
+    "helpText": "This integration allows you to use to enable API access outside of CIPP usage. Requires Global Administrator permissions inside your tenant for activation of the API. These credentials will only be shown once.",
+    "SettingOptions": [
+      {
+        "type": "input",
+        "fieldtype": "input",
+        "name": "cippapi.ApplicationID",
+        "label": "Application ID",
+        "placeholder": "None."
+      },
+      {
+        "type": "input",
+        "fieldtype": "input",
+        "name": "cippapi.ApplicationSecret",
+        "label": "Application Secret",
+        "placeholder": "None."
+      },
+      {
+        "type": "checkbox",
+        "name": "cippapi.resetcreds",
+        "label": "Reset Credentials"
+      },
+      {
+        "type": "checkbox",
+        "name": "cippapi.Enabled",
+        "label": "Enable Integration"
+      }
+    ]
+  },
+  {
     "name": "Gradient Integration",
     "type": "Gradient",
     "cat": "Billing & Invoicing",
@@ -32,7 +65,6 @@
       }
     ]
   },
-
   {
     "name": "Halo PSA Ticketing Integration",
     "type": "HaloPSA",

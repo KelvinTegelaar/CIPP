@@ -1353,7 +1353,7 @@ const ExtensionsTab = () => {
         <CRow>
           {Extensions.map((integration) => (
             <CCol xs={12} lg={6} xl={6} className="mb-3">
-              <CCard>
+              <CCard className="h-100">
                 <CCardHeader>
                   <CCardTitle>{integration.name}</CCardTitle>
                 </CCardHeader>
