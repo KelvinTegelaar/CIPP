@@ -32,8 +32,6 @@ Enabling the CIPP API requires the following:
 
 CIPP uses OAuth authentication to be able to connect to the API using your Application ID and secret. You can use the PowerShell example below to connect to the API
 
-
-
 ```powershell
 $CIPPAPIUrl = "https://yourcippurl.com"
 $ApplicationId = "your application ID"
@@ -52,4 +50,9 @@ $token = Invoke-RestMethod -Uri "https://login.microsoftonline.com/$TenantId/oau
 
 $AuthHeader = @{ Authorization = "Bearer $($token.access_token)" }
 Invoke-RestMethod -Uri "$CIPPAPIUrl/api/ListLogs" -Method GET -Headers $AuthHeader -ContentType "application/json"
+
 ```
+
+### Time and rate limits
+
+The API actions have a maximum timeout of 10 minutes. There are no active ratelimits, but heavy usage of the API can cause frontend operations to slow down.
