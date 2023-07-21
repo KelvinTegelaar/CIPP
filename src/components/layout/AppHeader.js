@@ -21,18 +21,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretSquareLeft, faCaretSquareRight } from '@fortawesome/free-solid-svg-icons'
 import { toggleSidebarShow } from 'src/store/features/app'
 import { useMediaPredicate } from 'react-media-hook'
-import { useGenericGetRequestQuery } from 'src/store/api/app'
-
+import { useLoadAlertsDashQuery } from 'src/store/api/app'
 const AppHeader = () => {
   const dispatch = useDispatch()
   const sidebarShow = useSelector((state) => state.app.sidebarShow)
   const currentTheme = useSelector((state) => state.app.currentTheme)
   const preferredTheme = useMediaPredicate('(prefers-color-scheme: dark)') ? 'impact' : 'cyberdrain'
-  const {
-    data: dashboard,
-    isLoading: isLoadingDash,
-    isSuccess: issuccessDash,
-  } = useGenericGetRequestQuery({ path: '/api/GetCippAlerts' })
+  const { data: dashboard } = useLoadAlertsDashQuery()
 
   return (
     <>
