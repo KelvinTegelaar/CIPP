@@ -94,39 +94,56 @@ const AlertWizard = () => {
         </center>
         <hr className="my-4" />
         <CForm onSubmit={handleSubmit}>
-          These alerts will be sent to the user or webhook configured in the CIPP notification
-          settings menu.<br></br>
-          <RFFCFormSwitch
-            value={true}
-            name="MFAAlertUsers"
-            label="Alert on users without any form of MFA"
-          />
-          <RFFCFormSwitch name="MFAAdmins" label="Alert on admins without any form of MFA" />
-          <RFFCFormSwitch
-            name="NoCAConfig"
-            label="Alert on tenants without a Conditional Access policy, while having Conditional Access licensing available."
-          />
-          <RFFCFormSwitch name="NewRole" label="Alert on new users added to any admin role" />
-          <RFFCFormSwitch name="AdminPassword" label="Alert on changed admin Passwords" />
-          <RFFCFormSwitch
-            name="DefenderStatus"
-            label="Alert if Defender is not running (Tenant must be on-boarded in Lighthouse)"
-          />
-          <RFFCFormSwitch
-            name="DefenderMalware"
-            label="Alert on Defender Malware found  (Tenant must be on-boarded in Lighthouse)"
-          />
-          <RFFCFormSwitch name="QuotaUsed" label="Alert on 90% mailbox quota used" />
-          <RFFCFormSwitch name="UnusedLicenses" label="Alert on unused licenses" />
-          <RFFCFormSwitch name="OverusedLicenses" label="Alert on overused licenses" />
-          <RFFCFormSwitch name="AppSecretExpiry" label="Alert on expiring application secrets" />
-          <RFFCFormSwitch name="ApnCertExpiry" label="Alert on expiring APN certificates" />
-          <RFFCFormSwitch name="VppTokenExpiry" label="Alert on expiring VPP tokens" />
-          <RFFCFormSwitch name="DepTokenExpiry" label="Alert on expiring DEP tokens" />
-          <RFFCFormSwitch
-            name="SecDefaultsUpsell"
-            label="Alert on Security Defaults automatic enablement"
-          />
+          <p>
+            These alerts will be sent to the user or webhook configured in the CIPP notification
+            settings menu.
+          </p>
+          <CRow>
+            <CCol>
+              <RFFCFormSwitch
+                value={true}
+                name="MFAAlertUsers"
+                label="Alert on users without any form of MFA"
+              />
+              <RFFCFormSwitch name="MFAAdmins" label="Alert on admins without any form of MFA" />
+              <RFFCFormSwitch
+                name="NoCAConfig"
+                label="Alert on tenants without a Conditional Access policy, while having Conditional Access licensing available."
+              />
+              <RFFCFormSwitch name="NewRole" label="Alert on new users added to any admin role" />
+              <RFFCFormSwitch name="AdminPassword" label="Alert on changed admin Passwords" />
+              <RFFCFormSwitch
+                name="DefenderStatus"
+                label="Alert if Defender is not running (Tenant must be on-boarded in Lighthouse)"
+              />
+              <RFFCFormSwitch
+                name="DefenderMalware"
+                label="Alert on Defender Malware found  (Tenant must be on-boarded in Lighthouse)"
+              />
+              <RFFCFormSwitch name="QuotaUsed" label="Alert on 90% mailbox quota used" />
+            </CCol>
+            <CCol>
+              <RFFCFormSwitch name="SharePointQuota" label="Alert on 90% SharePoint quota used" />
+              <RFFCFormSwitch name="UnusedLicenses" label="Alert on unused licenses" />
+              <RFFCFormSwitch name="OverusedLicenses" label="Alert on overused licenses" />
+              <RFFCFormSwitch
+                name="ExpiringLicenses"
+                label="Alert on licenses expiring in 30 days"
+              />
+
+              <RFFCFormSwitch
+                name="AppSecretExpiry"
+                label="Alert on expiring application secrets"
+              />
+              <RFFCFormSwitch name="ApnCertExpiry" label="Alert on expiring APN certificates" />
+              <RFFCFormSwitch name="VppTokenExpiry" label="Alert on expiring VPP tokens" />
+              <RFFCFormSwitch name="DepTokenExpiry" label="Alert on expiring DEP tokens" />
+              <RFFCFormSwitch
+                name="SecDefaultsUpsell"
+                label="Alert on Security Defaults automatic enablement"
+              />
+            </CCol>
+          </CRow>
         </CForm>
         <hr className="my-4" />
       </CippWizard.Page>

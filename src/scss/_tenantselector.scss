@@ -182,10 +182,16 @@
 }
 
 .select-search__options {
+  background-color: var(--cipp-search-bg);
+  white-space: nowrap;
+  text-overflow: ellipsis !important;
+  overflow: hidden;
+  &:hover {
+    background-color: var(--cipp-search-border-color);
+  }
   list-style: none;
   padding-inline-start: 0;
 }
-
 .select-search__row:not(:first-child) {
   border-top: 1px solid var(--cipp-search-border-color);
 }
@@ -201,4 +207,3 @@
 .tenantDropdown {
   min-width: 25rem;
 }
-
