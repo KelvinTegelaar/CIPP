@@ -48,7 +48,7 @@
   * [Tools](user-documentation/tenantadministration/tools/README.md)
     * [Tenant Lookup](user-documentation/tenantadministration/tools/tenant-lookup.md)
     * [Graph Explorer](user-documentation/tenantadministration/graphexplorer.md)
-    * [Application Approval](user-documentation/tenantadministration/tools/tenant-lookup-1.md)
+    * [Application Approval](user-documentation/tenantadministration/tools/application-approval.md)
     * [Individual Domain Check](user-documentation/tenantadministration/individualdomaincheck.md)
   * [Standards](user-documentation/tenantadministration/standards/README.md)
     * [Edit Individual Standards](user-documentation/tenantadministration/standards/edit-individual-standards.md)

@@ -123,3 +123,8 @@ The LiveLink for Autotask can be found in the AXN store. If you want to create y
 
 The following APIs are called on this page:
 
+
+
+{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ListGraphRequest" method="get" %}
+[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% endswagger %}
