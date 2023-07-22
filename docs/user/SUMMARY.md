@@ -18,10 +18,10 @@
   * [Updating](setup/installation/updating.md)
   * [Roles](setup/installation/roles.md)
   * [Permissions](setup/installation/permissions.md)
-* [GDAP](setup/gdap/README.md)
-  * [What is GDAP](setup/gdap/what-is-gdap.md)
-  * [GDAP Setup](setup/gdap/index.md)
-  * [Recommended Roles](setup/gdap/recommended-roles.md)
+* [GDAP Migration guide](setup/gdap-migration-guide/README.md)
+  * [What is GDAP](setup/gdap-migration-guide/what-is-gdap.md)
+  * [GDAP Setup](setup/gdap-migration-guide/index.md)
+  * [Recommended Roles](setup/gdap-migration-guide/recommended-roles.md)
 
 ## 🙋 User Documentation
 
