@@ -37,7 +37,13 @@ By default Microsoft only picks up this information when you create a new relati
 
 The following APIs are called on this page:
 
+{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ListTenantDetails" method="get" %}
+[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% endswagger %}
 
+{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ListTenants" method="get" %}
+[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% endswagger %}
 
 ### Feature Requests / Ideas
 

@@ -39,7 +39,9 @@ Alert scans run every 15 minutes.
 
 The following APIs are called on this page:
 
-
+{% swagger src="../../.gitbook/assets/openapicipp.json" path="/AddAlert" method="post" %}
+[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% endswagger %}
 
 ### Feature Requests / Ideas
 
