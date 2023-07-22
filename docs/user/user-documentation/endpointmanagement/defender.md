@@ -29,10 +29,10 @@ The following APIs are called on this page:
 [openapicipp.json](../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
-### Known Issues / Limitations
-
-* You must be a current Microsoft Lighthouse partner, and your tenants must be on-boarded to Lighthouse to use this functionality
-
 ### Feature Requests / Ideas
 
 Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=\&template=feature\_request.md\&title=FEATURE+REQUEST%3A+) on GitHub.
+
+### Known Issues / Limitations
+
+* You must be a current Microsoft Lighthouse partner, and your tenants must be on-boarded to Lighthouse to use this functionality
