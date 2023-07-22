@@ -13,7 +13,7 @@ You can use the scripts listed on this tab to streamline administrative tasks us
 
 #### Clear-TokenCache.ps1
 
-This script automates the [Clear Token Cache](../../../general/troubleshooting/#clear-token-cache) troubleshooting task.
+This script automates the [Clear Token Cache](../../../../general/troubleshooting/#clear-token-cache) troubleshooting task.
 
 #### Grant-CippConditionalAccess.ps1
 
@@ -22,4 +22,3 @@ This script assists with excluding CIPP from customer conditional access policie
 #### Migrate-CippStorage.ps1
 
 This script will automate the process of converting the function app storage from v2 to v1 in accordance with [Microsoft's official recommendation](https://docs.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-storage-providers#azure-storage). This script may need to be run multiple times to fully complete the migration, make sure to save the contents to a file before reloading the web page.
-

@@ -11,7 +11,7 @@ Configure notifications from CIPP.
 
 CIPP provides alert notifications for Tenants and CIPP actions, sent as one combined table in an email or webhook body.
 
-* [Tenant Alerts](../../tenantadministration/alerts/) create notifications regarding changes within a tenant. See that help page for more information on managing those alerts.
+* [Tenant Alerts](../../../tenantadministration/alerts/) create notifications regarding changes within a tenant. See that help page for more information on managing those alerts.
 * CIPP Alerts relate to changes initiated via the CIPP platform.
 
 ### Available CIPP Alerts
@@ -49,7 +49,4 @@ Enter a webhook url. Data is formatted based on the receiving server:
 
 {% hint style="info" %}
 Custom Webhook Formatting Need something different for your webhook? Can you write PowerShell? Submit a PR on this repo: [CIPP-API\Scheduler\_CIPPNotifications](https://github.com/KelvinTegelaar/CIPP-API/tree/dev/Scheduler\_CIPPNotifications).
-
-
 {% endhint %}
-
