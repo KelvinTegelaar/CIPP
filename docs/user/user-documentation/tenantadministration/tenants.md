@@ -36,3 +36,9 @@ By default Microsoft only picks up this information when you create a new relati
 ### API Calls
 
 The following APIs are called on this page:
+
+
+
+### Feature Requests / Ideas
+
+Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=\&template=feature\_request.md\&title=FEATURE+REQUEST%3A+) on GitHub.
