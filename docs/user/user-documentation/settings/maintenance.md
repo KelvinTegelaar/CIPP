@@ -24,8 +24,6 @@ This script will automate the process of converting the function app storage fro
 
 The following APIs are called on this page:
 
-
-
 {% swagger src="../../.gitbook/assets/openapicipp.json" path="/PublicScripts" method="get" %}
 [openapicipp.json](../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
@@ -33,3 +31,7 @@ The following APIs are called on this page:
 {% swagger src="../../.gitbook/assets/openapicipp.json" path="/ExecMaintenanceScripts" method="get" %}
 [openapicipp.json](../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
+
+### Feature Requests / Ideas
+
+Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=\&template=feature\_request.md\&title=FEATURE+REQUEST%3A+) on GitHub.

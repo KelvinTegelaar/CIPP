@@ -17,7 +17,7 @@ For the latest version of this documentation you can check out Gradient's docume
 5. Generate API Keys
 6. Note the details for use within Cyberdrain. &#x20;
 
-
+***
 
 &#x20;
 
@@ -30,7 +30,7 @@ For the latest version of this documentation you can check out Gradient's docume
 5. Navigate back to Synthesize and click the Status Refresh button for the CIPP integration.
 6. Press Next to complete the service and account mapping.&#x20;
 
-
+***
 
 &#x20;
 
@@ -42,3 +42,7 @@ For the latest version of this documentation you can check out Gradient's docume
    1. Services can be searched by pressing the filter button or typing in the Synthesize search bar. &#x20;
 3. Review and Press Finish&#x20;
 4. Navigate back to CIPP and click Force Sync to import usage
+
+### Feature Requests / Ideas
+
+Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=\&template=feature\_request.md\&title=FEATURE+REQUEST%3A+) on GitHub.

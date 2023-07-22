@@ -25,3 +25,7 @@ description: Configuring the HaloPSA integration
 Enter the information found in **Configuration** > **Integrations** > **Halo PSA API** in CIPP. If you are self-hosting, you can leave the HaloPSA Tenant blank.
 
 After entering the credentials, click **Test Extension.** If the test is successful Alerts will automatically become a HaloPSA ticket.
+
+### Feature Requests / Ideas
+
+Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=\&template=feature\_request.md\&title=FEATURE+REQUEST%3A+) on GitHub.
