@@ -2,9 +2,7 @@
 description: Using the GDAP migration tool
 ---
 
-# GDAP Setup
-
-
+# GDAP Migration Setup
 
 ### Using the GDAP Wizard
 

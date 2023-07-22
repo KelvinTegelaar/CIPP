@@ -56,3 +56,7 @@ Invoke-RestMethod -Uri "$CIPPAPIUrl/api/ListLogs" -Method GET -Headers $AuthHead
 ### Time and rate limits
 
 The API actions have a maximum timeout of 10 minutes. There are no active ratelimits, but heavy usage of the API can cause frontend operations to slow down.
+
+## Endpoint documentation
+
+Each page in the user documentation has a list of the endpoints used to load or create data on that specific page
