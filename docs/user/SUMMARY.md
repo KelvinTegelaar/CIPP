@@ -21,6 +21,7 @@
 
 ## 🙋 User Documentation
 
+* [CIPP Dashboard](user-documentation/dashboard.md)
 * [Tenant Administration](user-documentation/tenantadministration/README.md)
   * [Alerts](user-documentation/tenantadministration/alerts.md)
   * [Best Practice Analyser](user-documentation/tenantadministration/bestpracticeanalyser.md)
@@ -30,7 +31,6 @@
   * [Individual Domain Check](user-documentation/tenantadministration/individualdomaincheck.md)
   * [Standards](user-documentation/tenantadministration/standards.md)
   * [Tenants](user-documentation/tenantadministration/tenants.md)
-* [CIPP Dashboard](user-documentation/dashboard.md)
 * [Teams / OneDrive / Sharepoint](user-documentation/teamsonedrivesharepoint/README.md)
   * [OneDrive](user-documentation/teamsonedrivesharepoint/onedrive.md)
   * [Sharepoint](user-documentation/teamsonedrivesharepoint/sharepoint.md)
@@ -40,7 +40,6 @@
   * [Maintenance](user-documentation/settings/maintenance.md)
   * [Notifications](user-documentation/settings/notifications.md)
   * [Settings](user-documentation/settings/settings.md)
-* [GDAP](user-documentation/index.md)
 * [Security & Compliance](user-documentation/securitycompliance/README.md)
   * [Security Alerts](user-documentation/securitycompliance/alerts.md)
 * [Identity Management](user-documentation/identitymanagement/README.md)
@@ -67,6 +66,7 @@
 * [Extensions](user-documentation/extensions/README.md)
   * [Gradient](user-documentation/extensions/gradient.md)
   * [HaloPSA](user-documentation/extensions/halopsa.md)
+* [GDAP](user-documentation/index.md)
 
 ## 📂 Troubleshooting
 
@@ -91,4 +91,3 @@
 ## ⚙ API Documentation
 
 * [Setup & Authentication](api-documentation/setup-and-authentication.md)
-* [API Endpoints](api-documentation/api-endpoints.md)
