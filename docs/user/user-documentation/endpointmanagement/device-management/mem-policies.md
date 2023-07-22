@@ -13,11 +13,7 @@ This page lists all the MEM policies on the selected account and provides the ab
 | Created On    | The creation date of the policy.       |
 | Last Modified | The date the policy was last modified. |
 
-### Feature Requests / Ideas
-
-Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=\&template=feature\_request.md\&title=FEATURE+REQUEST%3A+) on GitHub.
-
-#### Actions <a href="#listmempolicies-actions" id="listmempolicies-actions"></a>
+### Actions
 
 * Edit Policy
 * View Policy
@@ -26,8 +22,6 @@ Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issue
 ### API Calls
 
 The following APIs are called on this page:
-
-
 
 {% swagger src="../../../.gitbook/assets/openapicipp.json" path="/EditPolicy" method="post" %}
 [openapicipp.json](../../../.gitbook/assets/openapicipp.json)
@@ -44,3 +38,7 @@ The following APIs are called on this page:
 {% swagger src="../../../.gitbook/assets/openapicipp.json" path="/RemoveIntuneTemplate" method="get" %}
 [openapicipp.json](../../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
+
+### Feature Requests / Ideas
+
+Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=\&template=feature\_request.md\&title=FEATURE+REQUEST%3A+) on GitHub.

@@ -49,17 +49,9 @@ This page lists all devices registered in Intune.
 * Autopilot reset
 * Retire device
 
-### Feature Requests / Ideas
-
-Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=\&template=feature\_request.md\&title=FEATURE+REQUEST%3A+) on GitHub.
-
-#### Known Issues / Limitations <a href="#intunedevice-knownissues" id="intunedevice-knownissues"></a>
-
 ### API Calls
 
 The following APIs are called on this page:
-
-
 
 {% swagger src="../../.gitbook/assets/openapicipp.json" path="/ExecGetLocalAdminPassword" method="get" %}
 [openapicipp.json](../../.gitbook/assets/openapicipp.json)
@@ -80,3 +72,7 @@ The following APIs are called on this page:
 {% swagger src="../../.gitbook/assets/openapicipp.json" path="/ListDevices" method="get" %}
 [openapicipp.json](../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
+
+### Feature Requests / Ideas
+
+Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=\&template=feature\_request.md\&title=FEATURE+REQUEST%3A+) on GitHub.

@@ -20,20 +20,10 @@ This page provides the ability for you to edit/override the default Enrollment S
 
 The following APIs are called on this page:
 
-
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/AddEnrollment" method="post" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
+{% endswagger %}
 
 ### Feature Requests / Ideas
 
 Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=\&template=feature\_request.md\&title=FEATURE+REQUEST%3A+) on GitHub.
-
-#### Known Issues / Limitations <a href="#addstatuspage-knownissues" id="addstatuspage-knownissues"></a>
-
-### API Calls
-
-The following APIs are called on this page:
-
-
-
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/AddEnrollment" method="post" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
