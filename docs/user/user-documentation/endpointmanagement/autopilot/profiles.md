@@ -14,6 +14,26 @@ This page lists all the profiles that exist on the selected tenant, with a brief
 | Convert to Autopilot | Converts targeted devices to use Autopilot.         |
 | Device Name Template | The device name template for the policy.            |
 
+### API Calls
+
+The following APIs are called on this page:
+
+
+
+### Feature Requests / Ideas
+
+Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=\&template=feature\_request.md\&title=FEATURE+REQUEST%3A+) on GitHub.
+
 #### Actions <a href="#listprofiles-actions" id="listprofiles-actions"></a>
 
 * View JSON - _Show all the options and their selected settings, in JSON format._
+
+### API Calls
+
+The following APIs are called on this page:
+
+
+
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ListAutopilotconfig" method="get" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
+{% endswagger %}

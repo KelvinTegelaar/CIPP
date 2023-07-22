@@ -21,6 +21,18 @@ This page lists the defender status for all enrolled devices in a tenant. This i
 | Reboot Required            | Whether the device requires a restart.                  |
 | Attention Required         | Whether the device requires attention.                  |
 
+### API Calls
+
+The following APIs are called on this page:
+
+{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ListDefenderState" method="get" %}
+[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% endswagger %}
+
 ### Known Issues / Limitations
 
 * You must be a current Microsoft Lighthouse partner, and your tenants must be on-boarded to Lighthouse to use this functionality
+
+### Feature Requests / Ideas
+
+Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=\&template=feature\_request.md\&title=FEATURE+REQUEST%3A+) on GitHub.

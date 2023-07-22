@@ -31,4 +31,10 @@ Edit basic group details. Supported actions:
 * Hide from Global Address List (Distribution and Microsoft 365 groups)
 * Unhide from Global Address List (Distribution and Microsoft 365 groups)
 
-###
+### API Calls
+
+The following APIs are called on this page:
+
+{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ListGroups" method="get" %}
+[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% endswagger %}

@@ -10,6 +10,16 @@ The Add Team page gives you the ability to create a brand new team and set a Dis
 
 Attributes like the mail nickname will be automatically generated.
 
-#### Known Issues / Limitations
+### API Calls
 
-* It's not current possible to set the visibility when creating a Team using this interface.
+The following APIs are called on this page:
+
+
+
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ListUsers" method="get" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
+{% endswagger %}
+
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/AddTeam" method="post" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
+{% endswagger %}

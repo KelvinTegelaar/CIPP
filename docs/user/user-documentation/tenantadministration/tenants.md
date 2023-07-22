@@ -33,3 +33,6 @@ This _only_ affects what's shown in the Partner Center (and tenant list in CIPP)
 By default Microsoft only picks up this information when you create a new relationship, and never updates this after.
 {% endhint %}
 
+### API Calls
+
+The following APIs are called on this page:

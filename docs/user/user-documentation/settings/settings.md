@@ -43,4 +43,20 @@ You can add tenants to the excluded tenant list to prevent CIPP from taking any 
 
 You can get the URLs to access backend features directly in the Azure AD portal from the Security tab.
 
-### Known Issues / Limitations
+### API Calls
+
+The following APIs are called on this page:
+
+
+
+{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ExecDnsConfig" method="get" %}
+[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% endswagger %}
+
+{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ExecPasswordConfig" method="get" %}
+[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% endswagger %}
+
+{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ExecPasswordConfig" method="post" %}
+[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% endswagger %}

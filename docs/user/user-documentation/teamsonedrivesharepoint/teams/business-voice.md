@@ -15,7 +15,15 @@ The Business Voice page gives an overview of all the numbers on the selected ten
 | Operator Connect | Whether the phone number is an operator connect number.       |
 | Purchased On     | The purchased date and time of the number.                    |
 
-#### Known Issues / Limitations <a href="#businessvoice-knownissues" id="businessvoice-knownissues"></a>
+### API Calls
+
+The following APIs are called on this page:
+
+
+
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ListTeamsVoice" method="get" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
+{% endswagger %}
 
 ***
 

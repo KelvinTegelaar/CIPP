@@ -32,4 +32,12 @@ This page provides information on Exchange mailboxes, with the ability to view d
 * Hide from Global Address List
 * Unhide from Global Address List
 
-### Known Issues / Limitations <a href="#knownissues" id="knownissues"></a>
+### API Calls
+
+The following APIs are called on this page:
+
+
+
+{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ListMailboxes" method="get" %}
+[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% endswagger %}

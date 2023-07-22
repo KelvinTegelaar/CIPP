@@ -20,4 +20,10 @@ Only roles with assigned members are displayed. :::
 
 * View Members
 
-###
+### API Calls
+
+The following APIs are called on this page:
+
+{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ListRoles" method="get" %}
+[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% endswagger %}

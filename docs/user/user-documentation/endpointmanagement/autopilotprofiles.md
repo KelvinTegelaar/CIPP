@@ -25,4 +25,16 @@ This page provides the ability for you to add Autopilot profiles, Autopilot depl
 * White Glove OOBE
 * Automatically Configure Keyboard
 
-#### &#x20;<a href="#listprofiles--knownissues" id="listprofiles--knownissues"></a>
+### API Calls
+
+The following APIs are called on this page:
+
+
+
+### Feature Requests / Ideas
+
+Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=\&template=feature\_request.md\&title=FEATURE+REQUEST%3A+) on GitHub.
+
+{% swagger src="../../.gitbook/assets/openapicipp.json" path="/AddPolicy" method="post" %}
+[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% endswagger %}

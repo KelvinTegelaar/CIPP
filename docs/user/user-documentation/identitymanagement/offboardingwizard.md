@@ -22,4 +22,10 @@ With the Offboarding Wizard you can select a user in a tenant to off-board whils
 * Give access to OneDrive
 * Delete User
 
-###
+### API Calls
+
+The following APIs are called on this page:
+
+{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ListUsers" method="get" %}
+[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% endswagger %}

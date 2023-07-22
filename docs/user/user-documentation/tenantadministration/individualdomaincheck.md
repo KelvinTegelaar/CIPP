@@ -34,4 +34,8 @@ Use this to run the following tests on your domain and an optional list of subdo
 * DNS name mismatch
 * Certificate chain validation
 
+### API Calls
+
+The following APIs are called on this page:
+
 ### Known Issues / Limitations

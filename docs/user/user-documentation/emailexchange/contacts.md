@@ -19,4 +19,10 @@ This page provides information on Exchange contacts.
 
 * Edit Contact
 
-### &#x20;<a href="#knownissues" id="knownissues"></a>
+### API Calls
+
+The following APIs are called on this page:
+
+{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ListContacts" method="get" %}
+[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% endswagger %}

@@ -79,3 +79,31 @@ High Impact Changes which should require thought and planning. Should ideally co
 | Undo App Consent Standard                                        | Update-MgPolicyAuthorizationPolicy                                                                                                                                                                   | Undoes the Oauth phising standard                                                                                                                                                                                                                                                                             |
 | Enable Security Defaults                                         | [https://www.cyberdrain.com/automating-with-powershell-enabling-secure-defaults-and-sd-explained/](https://www.cyberdrain.com/automating-with-powershell-enabling-secure-defaults-and-sd-explained/) | Enables SD for the tenant, which disables all forms of basic authentication and enforces users to configure MFA. Users are only prompted for MFA when a logon is considered 'suspect' by Microsoft.                                                                                                           |
 | Enable per-user MFA for all user (Legacy)                        | Get-msoluser                                                                                                                                                                                         | set-msoluser -StrongAuthenticationRequirements                                                                                                                                                                                                                                                                |
+
+### API Calls
+
+The following APIs are called on this page:
+
+{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ListGroupTemplates" method="get" %}
+[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% endswagger %}
+
+{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ListIntuneTemplates" method="get" %}
+[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% endswagger %}
+
+{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ListCAtemplates" method="get" %}
+[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% endswagger %}
+
+{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ListTransportRulesTemplates" method="get" %}
+[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% endswagger %}
+
+{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ListExConnectorTemplates" method="get" %}
+[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% endswagger %}
+
+### Feature Requests / Ideas
+
+Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=\&template=feature\_request.md\&title=FEATURE+REQUEST%3A+) on GitHub.

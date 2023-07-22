@@ -19,4 +19,12 @@ This page lists OneDrive and SharePoint usage from the Microsoft usage API. The 
 | Used (GB)                 | The total size in GB in the users' OneDrive.            |
 | Allocated (GB)            | The total space in GB available in the users' OneDrive. |
 
-###
+### API Calls
+
+The following APIs are called on this page:
+
+
+
+{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ListSites" method="get" %}
+[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% endswagger %}

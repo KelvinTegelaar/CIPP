@@ -16,9 +16,20 @@ To create a policy and get it's raw JSON information you must visit [Microsoft E
 * Select "Payload" tab and scroll down to "request payload" this is the raw JSON payload. To copy it, select on "view source" and copy the entire text string.
 * You can now use CIPP to deploy this policy to all tenants.
 
-#### Known Issues / Limitations <a href="#addmempolicytemplate-knownissues" id="addmempolicytemplate-knownissues"></a>
+### Feature Requests / Ideas
 
-* All templates are currently supported, if you don't see your template type in the list, you must select Custom Configuration
-* When using Settings Catalog or Custom Configuration, the Display Name and Description come from the raw JSON file.
+Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=\&template=feature\_request.md\&title=FEATURE+REQUEST%3A+) on GitHub.
 
-If you have any other issues, [please report a bug](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=\&template=bug\_report.md\&title=BUG%3A+).
+### API Calls
+
+The following APIs are called on this page:
+
+
+
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ListGraphRequest" method="get" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
+{% endswagger %}
+
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/AddPolicy" method="post" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
+{% endswagger %}

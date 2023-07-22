@@ -14,9 +14,25 @@ This page gives you the ability to view all configured templates, in addition to
 | Description  | The description for the template.                 |
 | Type         | The template type, for example Catalog or Device. |
 
+### Feature Requests / Ideas
+
+Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=\&template=feature\_request.md\&title=FEATURE+REQUEST%3A+) on GitHub.
+
 #### Actions <a href="#listmempolicytemplates-actions" id="listmempolicytemplates-actions"></a>
 
 * View Template
 * Delete Template
 
-####
+### API Calls
+
+The following APIs are called on this page:
+
+
+
+{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ListGraphRequest" method="get" %}
+[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% endswagger %}
+
+{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ListIntuneTemplates" method="get" %}
+[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% endswagger %}
