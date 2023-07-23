@@ -22,7 +22,7 @@ This page presents each group in a structured table, including the following det
 
 The 'Groups' page offers various actions and features:
 
-<table><thead><tr><th width="232">Action</th><th>Description</th></tr></thead><tbody><tr><td><strong>Add Group</strong></td><td>This button navigates the user to the 'Add Group' page where a new group can be created.</td></tr><tr><td><strong>Edit Group</strong></td><td>Allows the user to navigate to the 'Edit Group' page where they can modify group details and memberships.</td></tr><tr><td><strong>Group Information</strong></td><td>Clicking the ellipsis button next to 'Edit Group' opens a fly-out menu with additional actions and group information.</td></tr><tr><td><strong>Export</strong></td><td>Supports exporting of role information to CSV and PDF formats.</td></tr></tbody></table>
+<table><thead><tr><th width="232">Action</th><th>Description</th></tr></thead><tbody><tr><td><strong>Add Group</strong></td><td>This button navigates the user to the 'Add Group' page where a new group can be created.</td></tr><tr><td><strong>Edit Group</strong></td><td>Allows the user to navigate to the 'Edit Group' page where they can modify group details and memberships.</td></tr><tr><td><strong>Group Information</strong></td><td>Clicking the ellipsis button next to 'Edit Group' opens a fly-out menu with additional actions and group information.</td></tr><tr><td><strong>Export</strong></td><td>Supports exporting of group information to CSV and PDF formats.</td></tr></tbody></table>
 
 ### 'Add Group' Page Actions
 
