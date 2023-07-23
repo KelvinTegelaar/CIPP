@@ -22,7 +22,7 @@ This page presents each group in a structured table, including the following det
 
 The 'Groups' page offers various actions and features:
 
-<table><thead><tr><th width="232">Action</th><th>Description</th></tr></thead><tbody><tr><td><strong>Add Group</strong></td><td>This button navigates the user to the 'Add Group' page where a new group can be created.</td></tr><tr><td><strong>Edit Group</strong></td><td>Allows the user to navigate to the 'Edit Group' page where they can modify group details and memberships.</td></tr><tr><td><strong>Ellipsis (More Options)</strong></td><td>Clicking this button next to 'Edit Group' opens a fly-out menu with additional actions and group information.</td></tr><tr><td><strong>Export</strong></td><td>Supports exporting of role information to CSV and PDF formats.</td></tr></tbody></table>
+<table><thead><tr><th width="232">Action</th><th>Description</th></tr></thead><tbody><tr><td><strong>Add Group</strong></td><td>This button navigates the user to the 'Add Group' page where a new group can be created.</td></tr><tr><td><strong>Edit Group</strong></td><td>Allows the user to navigate to the 'Edit Group' page where they can modify group details and memberships.</td></tr><tr><td><strong>Group Information</strong></td><td>Clicking the ellipsis button next to 'Edit Group' opens a fly-out menu with additional actions and group information.</td></tr><tr><td><strong>Export</strong></td><td>Supports exporting of role information to CSV and PDF formats.</td></tr></tbody></table>
 
 ### 'Add Group' Page Actions
 
@@ -41,11 +41,6 @@ These actions are available on the 'Edit Group' page, and are passed as paramete
 These actions and information are available in the fly-out menu when you click the ellipsis button on the main 'Groups' page:
 
 <table><thead><tr><th width="294">Action/Information</th><th>Description</th></tr></thead><tbody><tr><td>Group Information</td><td>Displays extended information about the group, such as the creation date and unique ID.</td></tr><tr><td>Edit Group</td><td>Allows navigation to the 'Edit Group' page.</td></tr><tr><td>Hide from Global Address List</td><td>Hides the group from the Global Address List.</td></tr><tr><td>Unhide from Global Address List</td><td>Makes the group visible in the Global Address List.</td></tr><tr><td>Only allow messages from people inside the organization</td><td>Restricts the group to only receive messages from people inside the organization.</td></tr><tr><td>Allow messages from people inside and outside the organization</td><td>Allows the group to receive messages from both inside and outside the organization.</td></tr><tr><td>Delete Group</td><td>Deletes the group using the <code>ExecGroupsDelete</code> endpoint listed below.</td></tr></tbody></table>
-
-### Permissions
-
-* **View**: All users can view the 'Groups' page but can only see the information based on their role and permissions.
-* **Edit**: Only users with the 'Group Admin' role can edit group details and perform actions like adding/removing users, contacts, and owners, allowing external emails, and enabling/disabling sending copies of emails and events to members' inboxes.
 
 ### API Calls
 
