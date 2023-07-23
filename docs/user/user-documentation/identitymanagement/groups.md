@@ -4,32 +4,47 @@ description: Interact with Microsoft 365 groups.
 
 # Groups
 
-Group management. Equivalent to [Microsoft 365 admin center > Active teams and groups](https://admin.microsoft.com/#/groups).
+### Overview
+
+The Groups page is equivalent to [Microsoft 365 admin center > Active teams and groups](https://admin.microsoft.com/#/groups). It offers an overview of all groups within the organization and allows users to manage group details and memberships.
 
 ### Details
 
-| Fields        | Description                                       |
-| ------------- | ------------------------------------------------- |
-| Name          | The name of the group.                            |
-| Group Type    | The type of the group, for example Microsoft 365. |
-| Dynamic Group | Does the group use dynamic membership rules?      |
-| Teams Enabled | Is the group enabled for Microsoft Teams?         |
-| On-Prem Sync  | Is the group enabled for on-prem syncronisation?  |
-| E-Mail        | The primary e-mail attached to the group.         |
+This page presents each group in a structured table, including the following details:
 
-### Actions
+* Group Name
+* Group Type (Distribution list, Mail-Enabled Security, etc.)
+* Group Members
+* Group Owners
+* External Email Allowed: Indicates if people outside the organization can email the group.
 
-#### Edit Group
+### Actions and Features
 
-Edit basic group details. Supported actions:
+The 'Groups' page offers various actions and features:
 
-* Add user to group
-* Remove user from group
-* Add owner to group
-* Remove owner from group
-* Allow external senders (Distribution and Microsoft 365 groups)
-* Hide from Global Address List (Distribution and Microsoft 365 groups)
-* Unhide from Global Address List (Distribution and Microsoft 365 groups)
+#### Group Actions
+
+These actions are available from the main 'Groups' list:
+
+* **Edit Group**: Allows the user to navigate to the 'Edit Group' page where they can modify group details and memberships.
+* **View Group Details (Ellipsis)**: Clicking this button next to 'Edit Group' opens a fly-out menu with additional actions and group information.
+
+#### 'Edit Group' Page Actions
+
+These actions are available on the 'Edit Group' page, and are passed as parameters to the `EditGroup` endpoint listed below.
+
+<table><thead><tr><th width="230">Action</th><th>Description</th></tr></thead><tbody><tr><td>Add User</td><td>Allows the addition of a selected user to the group.</td></tr><tr><td>Add Contact</td><td>Allows the addition of a selected contact to the group.</td></tr><tr><td>Remove Member</td><td>Allows the removal of a selected member from the group.</td></tr><tr><td>Add Owner</td><td>Allows the addition of a selected user as an owner of the group.</td></tr><tr><td>Remove Owner</td><td>Allows the removal of a selected owner from the group.</td></tr><tr><td>Let people outside the organization email the group</td><td>If selected, it allows external senders to send emails to the group.</td></tr><tr><td>Send Copies of team emails and events to team members inboxes</td><td>If selected, it enables sending copies of team emails and events to the inboxes of team members.</td></tr></tbody></table>
+
+### **Group Information Flyout Actions**
+
+These actions and information are available in the fly-out menu when you click the ellipsis button on the main 'Groups' page:
+
+<table><thead><tr><th width="294">Action/Information</th><th>Description</th></tr></thead><tbody><tr><td>Group Information</td><td>Displays extended information about the group, such as the creation date and unique ID.</td></tr><tr><td>Edit Group</td><td>Allows navigation to the 'Edit Group' page.</td></tr><tr><td>Hide from Global Address List</td><td>Hides the group from the Global Address List.</td></tr><tr><td>Unhide from Global Address List</td><td>Makes the group visible in the Global Address List.</td></tr><tr><td>Only allow messages from people inside the organization</td><td>Restricts the group to only receive messages from people inside the organization.</td></tr><tr><td>Allow messages from people inside and outside the organization</td><td>Allows the group to receive messages from both inside and outside the organization.</td></tr><tr><td>Delete Group</td><td>Deletes the group using the <code>ExecGroupsDelete</code> endpoint listed below.</td></tr></tbody></table>
+
+### Permissions
+
+* **View**: All users can view the 'Groups' page but can only see the information based on their role and permissions.
+* **Edit**: Only users with the 'Group Admin' role can edit group details and perform actions like adding/removing users, contacts, and owners, allowing external emails, and enabling/disabling sending copies of emails and events to members' inboxes.
 
 ### API Calls
 
@@ -39,6 +54,18 @@ The following APIs are called on this page:
 [openapicipp.json](../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
+{% swagger src="../../.gitbook/assets/openapicipp.json" path="/EditGroup" method="post" %}
+[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% endswagger %}
+
+{% swagger src="../../.gitbook/assets/openapicipp.json" path="/AddGroup" method="post" %}
+[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% endswagger %}
+
+{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ExecGroupsDelete" method="get" %}
+[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% endswagger %}
+
 ### Feature Requests / Ideas
 
-Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=\&template=feature\_request.md\&title=FEATURE+REQUEST%3A+) on GitHub.
+We value your feedback and ideas. If you have any feature requests or ideas to improve the Groups page, please raise them on our [GitHub issues page](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=\&template=feature\_request.md\&title=FEATURE+REQUEST%3A+).
