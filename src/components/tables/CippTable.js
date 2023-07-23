@@ -344,7 +344,7 @@ export default function CippTable({
           if (key.length > 1) {
             var property = obj
             for (var x = 0; x < key.length; x++) {
-              if (property[key[x]] !== null) {
+              if (property.hasOwnProperty(key[x]) && property[key[x]] !== null) {
                 property = property[key[x]]
               } else {
                 property = 'n/a'
