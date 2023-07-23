@@ -3,7 +3,6 @@ import {
   faBook,
   faCog,
   faEllipsisH,
-  faEnvelope,
   faHotel,
   faLaptopCode,
   faMailBulk,
@@ -24,11 +23,7 @@ import Skeleton from 'react-loading-skeleton'
 import { UniversalSearch } from 'src/components/utilities/UniversalSearch'
 import { ActionContentCard } from 'src/components/contentcards'
 import { useSelector } from 'react-redux'
-import TimeAgo from 'javascript-time-ago'
 import allStandardsList from 'src/data/standards'
-
-import en from 'javascript-time-ago/locale/en.json'
-TimeAgo.addDefaultLocale(en)
 import ReactTimeAgo from 'react-time-ago'
 
 const Home = () => {
@@ -54,6 +49,16 @@ const Home = () => {
   })
 
   const {
+    data: sharepoint,
+    isLoading: isLoadingSPQuota,
+    isSuccess: issuccessSPQuota,
+    isFetching: isFetchingSPQuota,
+  } = useGenericGetRequestQuery({
+    path: '/api/ListSharepointQuota',
+    params: { tenantFilter: currentTenant.defaultDomainName },
+  })
+
+  const {
     data: standards,
     isLoading: isLoadingStandards,
     isSuccess: issuccessStandards,
@@ -63,30 +68,49 @@ const Home = () => {
     params: {},
   })
 
+  const {
+    data: partners,
+    isLoading: isLoadingPartners,
+    isSuccess: issuccessPartners,
+    isFetching: isFetchingPartners,
+  } = useGenericGetRequestQuery({
+    path: '/api/ListGraphRequest',
+    params: {
+      Endpoint: 'policies/crossTenantAccessPolicy/partners',
+      tenantFilter: currentTenant.defaultDomainName,
+      ReverseTenantLookup: true,
+    },
+  })
+
   const actions1 = [
     {
       label: 'M365 Admin',
       link: `https://portal.office.com/Partner/BeginClientSession.aspx?CTID=${currentTenant.customerId}&CSDEST=o365admincenter`,
+      target: '_blank',
       icon: faCog,
     },
     {
       label: 'Exchange',
       link: `https://admin.exchange.microsoft.com/?landingpage=homepage&form=mac_sidebar&delegatedOrg=${currentTenant.defaultDomainName}#`,
+      target: '_blank',
       icon: faMailBulk,
     },
     {
       label: 'Intune',
       link: `https://intune.microsoft.com/${currentTenant.defaultDomainName}`,
+      target: '_blank',
       icon: faLaptopCode,
     },
     {
       label: 'Entra',
       link: `https://entra.microsoft.com/${currentTenant.defaultDomainName}`,
+      target: '_blank',
       icon: faUsers,
     },
     {
       label: 'Security',
       link: `https://security.microsoft.com/?tid=${currentTenant.customerId}`,
+      target: '_blank',
       icon: faShieldAlt,
     },
     {
@@ -116,6 +140,11 @@ const Home = () => {
       label: 'List Groups',
       link: `/identity/administration/groups?customerId=${currentTenant.customerId}`,
       icon: faUsers,
+    },
+    {
+      label: 'List Devices',
+      link: `/endpoint/reports/devices?customerId=${currentTenant.customerId}`,
+      icon: faLaptopCode,
     },
     {
       label: 'Create User',
@@ -254,6 +283,11 @@ const Home = () => {
                     ))}
               </CCol>
               <CCol sm={12} md={4} className="mb-3">
+                <p className="fw-lighter">Sharepoint Quota</p>
+                {(isLoadingSPQuota || isFetchingSPQuota) && <Skeleton />}
+                {sharepoint && !isFetchingSPQuota && sharepoint?.Dashboard}
+              </CCol>
+              <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Applied Standards</p>
                 {(isLoadingStandards || isFetchingStandards) && <Skeleton />}
                 {issuccessStandards &&
@@ -276,6 +310,21 @@ const Home = () => {
                         )
                       })
                     })}
+              </CCol>
+              <CCol sm={12} md={4} className="mb-3">
+                <p className="fw-lighter">Partner Relationships</p>
+                {(isLoadingPartners || isFetchingPartners) && <Skeleton />}
+                {issuccessPartners &&
+                  !isFetchingPartners &&
+                  partners.map((partner) => {
+                    if (partner.TenantInfo) {
+                      return (
+                        <li key={`${partner.tenantId}`}>
+                          {partner.TenantInfo.displayName} ({partner.TenantInfo.defaultDomainName})
+                        </li>
+                      )
+                    }
+                  })}
               </CCol>
             </CRow>
           </CippContentCard>
