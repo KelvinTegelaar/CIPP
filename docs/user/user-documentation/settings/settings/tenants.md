@@ -64,5 +64,10 @@ The page interacts with the following API endpoints:
 [openapicipp.json](../../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
-* `ExecAddExcludeTenant`
-* `ExecRemoveExcludeTenant`
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ExecExcludeTenant" method="get" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
+{% endswagger %}
+
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ExecExcludeTenant" method="post" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
+{% endswagger %}
