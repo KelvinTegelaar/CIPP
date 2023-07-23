@@ -31,11 +31,11 @@ To exclude a tenant, locate the corresponding row in the tenant table and click 
 
 #### Removing a Tenant's Exclusion Status
 
-You can remove a tenant's exclusion status by clicking on the eye icon in the "Actions" column of the relevant row. This action calls the `removeExcludeTenant` mutation, which sends a DELETE request to the `ExecRemoveExcludeTenant` endpoint with the tenant's `customerId`. A confirmation dialog box will appear before this action is performed.
+You can remove a tenant's exclusion status by clicking on the eye icon in the "Actions" column of the relevant row. This action sends a DELETE request to the `ExecRemoveExcludeTenant` endpoint listed below.
 
 #### Refreshing a Tenant's Permissions
 
-You can refresh a tenant's permissions by clicking on the recycle icon in the "Actions" column of the relevant row. This action calls the `refreshPermissions` function, which sends a GET request to the `ExecCPVPermissions` endpoint with the tenant's `customerId` as a query parameter. A confirmation dialog box will appear before this action is performed. This function updates the tenant's permissions, removing old permissions and applying the necessary ones based on the current configuration.
+You can refresh a tenant's permissions by clicking on the recycle icon in the "Actions" column of the relevant row. This action sends a GET request to the `ExecCPVPermissions` endpoint listed below. This function updates the tenant's permissions, removing old permissions and applying the necessary ones based on the current configuration.
 
 ### API Endpoints
 
