@@ -22,14 +22,15 @@ This page presents each group in a structured table, including the following det
 
 The 'Groups' page offers various actions and features:
 
-#### Group Actions
+<table><thead><tr><th width="232">Action</th><th>Description</th></tr></thead><tbody><tr><td><strong>Add Group</strong></td><td>This button navigates the user to the 'Add Group' page where a new group can be created.</td></tr><tr><td><strong>Edit Group</strong></td><td>Allows the user to navigate to the 'Edit Group' page where they can modify group details and memberships.</td></tr><tr><td><strong>Ellipsis (More Options)</strong></td><td>Clicking this button next to 'Edit Group' opens a fly-out menu with additional actions and group information.</td></tr><tr><td><strong>Export</strong></td><td>Supports exporting of role information to CSV and PDF formats.</td></tr></tbody></table>
 
-These actions are available from the main 'Groups' list:
+### 'Add Group' Page Actions
 
-* **Edit Group**: Allows the user to navigate to the 'Edit Group' page where they can modify group details and memberships.
-* **View Group Details (Ellipsis)**: Clicking this button next to 'Edit Group' opens a fly-out menu with additional actions and group information.
+These actions are available on the 'Add Group' page, and are passed as parameters to the `AddGroup` endpoint listed below.
 
-#### 'Edit Group' Page Actions
+<table><thead><tr><th width="253">Action</th><th>Description</th></tr></thead><tbody><tr><td><strong>Display Name</strong></td><td>Field to input the display name of the new group.</td></tr><tr><td><strong>Description</strong></td><td>Field to input the description of the new group.</td></tr><tr><td><strong>Username</strong></td><td>Field to input the username associated with the new group.</td></tr><tr><td><strong>Primary Domain Name</strong></td><td>Dropdown selection for the primary domain of the new group.</td></tr><tr><td><strong>Group Type</strong></td><td>Radio buttons to select the type of the new group (Azure Role Group, Security Group, Dynamic Group, Distribution List, Mail Enabled Security Group).</td></tr></tbody></table>
+
+### 'Edit Group' Page Actions
 
 These actions are available on the 'Edit Group' page, and are passed as parameters to the `EditGroup` endpoint listed below.
 
