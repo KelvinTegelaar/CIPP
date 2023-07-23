@@ -6,7 +6,9 @@ description: Centralized Tenant Management and Oversight
 
 ### Overview
 
-The Tenants page is a centralized platform for administrators to oversee and manage all tenants within the system. This page provides detailed information about each tenant and facilitates actions related to their exclusion status and permissions.
+The Tenants page is a centralized platform for administrators to oversee and manage all tenants within CIPP. This page provides detailed information about each tenant and facilitates actions related to their exclusion status and permissions.
+
+This page also shows tenants that have been excluded, or removed due to the amount of errors received.
 
 ### Table Fields
 
@@ -26,7 +28,7 @@ To exclude a tenant:
 
 1. Find the tenant's row in the table.
 2. Click on the eye slash icon in the "Actions" column to trigger a confirmation dialog.
-3. Confirm the action to send a POST request to the `ExecAddExcludeTenant` endpoint. The selected tenant is then excluded.
+3. Confirm the action, this excludes the tenant from showing up in the tenant selector and any actions applied to it.
 
 #### Removing a Tenant's Exclusion Status
 
@@ -34,15 +36,21 @@ Administrators can remove a tenant's exclusion status by:
 
 1. Locating the tenant's row in the table.
 2. Clicking on the eye icon in the "Actions" column.
-3. This action sends a DELETE request to the `ExecRemoveExcludeTenant` endpoint, effectively including the tenant back in.
+3. confirm the action, this includes the tenant and makes it show up in the tenant selector and have actions applied to it again.
 
 #### Refreshing a Tenant's Permissions
+
+CIPP works using the Control Panel Vendor API - Also known as the CPV API. The CPV API is used to add the CIPP application to your managed tenants and allows CIPP to execute actions within these tenants. Each night at 00:00 UTC the permissions are refreshed for all tenants. This makes sure that the application always has the latest set of required access.
+
+Pressing the CPV Refresh button might be required when a new tenant is added, or a new GDAP permission is applied to the CIPP-SAM service account.
 
 Administrators can refresh a tenant's permissions by:
 
 1. Finding the tenant's row in the table.
 2. Clicking on the recycle icon in the "Actions" column.
-3. This action sends a GET request to the `ExecCPVPermissions` endpoint. This function updates the tenant's permissions by removing old permissions and applying the necessary ones based on the current configuration.
+3. This action sends a request to the tenant to add the CIPP application and its permissions to it. The CIPP application tries to apply all permissions even if a tenant does not have a specific license available. The user executing this task will see which permissions have been applied.
+
+
 
 ### Additional Functionality
 
