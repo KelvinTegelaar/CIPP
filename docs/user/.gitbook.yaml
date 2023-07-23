@@ -1,0 +1,39 @@
+root: ./
+
+redirects:  
+    docs/user/gettingstarted/prerequisites: setup/installation/install.md
+    docs/user: README.md
+    docs/dev: developer-documentation/cipp-dev-guide/setting-up-for-local-development.md
+    contributing: developer-documentation/contributing-to-the-code.md
+    docs/general/troubleshooting: troubleshooting/troubleshooting.md
+    docs/general/faq: troubleshooting/frequently-asked-questions.md
+    security: security/security-policy.md
+    vdp: security/cipp-community-vulnerability-disclosure-policy.md
+    docs/user/gettingstarted: setup/installation/index.md
+    docs/user/gettingstarted/installation: setup/installation/install.md
+    docs/user/gettingstarted/postinstall/addyourself: setup/installation/addyourself.md
+    docs/user/gettingstarted/postinstall/runfrompackage: setup/installation/runfrompackage.md
+    docs/user/gettingstarted/postinstall/samwizard: setup/installation/samwizard.md
+    tokencache: setup/installation/cleartokencache.md
+    docs/user/gettingstarted/postinstall/cleartokencache: setup/installation/cleartokencache.md
+    docs/user/gettingstarted/postinstall/conditionalaccess: setup/installation/conditionalaccess.md
+    docs/user/gettingstarted/postinstall/addingusers: setup/installation/addingusers.md
+    docs/user/gettingstarted/postinstall/customdomain: setup/installation/customdomain.md
+    docs/user/gettingstarted/postinstall/owntenant: setup/installation/owntenant.md
+    docs/user/gettingstarted/roles: setup/installation/roles.md
+    docs/user/gettingstarted/postinstall/permissions: setup/installation/permissions.md
+    docs/user/usingcipp: setup/usingcipp/usingci.md 
+    docs/user/usingcipp/dashboard: user-documentation/dashboard.md
+    docs/user/usingcipp/identitymanagement: setup/identitymanagement/identit.md
+    docs/user/usingcipp/tenantadministration: setup/tenantadministration/tenanta.md
+    docs/user/usingcipp/securitycompliance: setup/securitycompliance/securit.md
+    docs/user/usingcipp/endpointmanagement: setup/endpointmanagement/endpoin.md
+    docs/user/usingcipp/teamsonedrivesharepoint: setup/teamsonedrivesharepoint/teamson.md
+    docs/user/usingcipp/emailexchange: user-documentation/emailexchange/mailboxes.md
+    docs/user/usingcipp/settings: user-documentation/settings/settings.md
+    docs/user/updating: setup/installation/updating.md
+    docs/user/usingcipp/GDAP/migration: user-documentation/index.md
+    TenantAdministration/Standards: tenantadministration/standards.md
+    faq: troubleshooting/frequently-asked-questions.md
+    docs/user/gettingstarted/permissions: setup/installation/permissions.md
+    docs/user/usingcipp/tenantadministration/standards: user-documentation/tenantadministration/standards.md
