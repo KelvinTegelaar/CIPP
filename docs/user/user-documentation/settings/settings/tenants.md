@@ -4,50 +4,57 @@ description: Centralized Tenant Management and Oversight
 
 # Tenants
 
-## Overview
+### Overview
 
-The Tenants page serves as a centralized platform for administrators to manage and overview all tenants within the system, providing detailed information about each tenant and facilitating actions related to their exclusion status and permissions.
+The Tenants page is a centralized platform for administrators to oversee and manage all tenants within the system. This page provides detailed information about each tenant and facilitates actions related to their exclusion status and permissions.
 
 ### Table Fields
 
-The main table on this page contains the following columns:
+The main table on this page displays the following columns:
 
-1. **Name**: The display name of the tenant.
-2. **Default Domain**: The default domain name for the tenant.
-3. **Relationship Type**: The status of delegated privileges for the tenant. It can show values such as "DAP Only", "GDAP & DAP", "GDAP", "No Access", and "Unknown".
-4. **Excluded**: A boolean indicating whether the tenant is excluded.
-5. **Exclude Date**: The date the tenant was excluded, if applicable.
-6. **Exclude User**: The user who excluded the tenant, if applicable.
+<table><thead><tr><th width="203">Field Name</th><th>Description</th></tr></thead><tbody><tr><td>Name</td><td>The display name of the tenant.</td></tr><tr><td>Default Domain</td><td>The default domain name for the tenant.</td></tr><tr><td>Relationship Type</td><td>The status of delegated privileges for the tenant. Possible values include "DAP Only", "GDAP &#x26; DAP", "GDAP", "No Access", and "Unknown".</td></tr><tr><td>Excluded</td><td>A boolean field indicating whether the tenant is excluded.</td></tr><tr><td>Exclude Date</td><td>The date when the tenant was excluded, if applicable.</td></tr><tr><td>Exclude User</td><td>The user who excluded the tenant, if applicable.</td></tr></tbody></table>
 
 ### Features and Actions
 
 #### Tenant Exclusion Control
 
 {% hint style="info" %}
-CIPP provides the functionality to exclude specific tenants. This means that any action to be taken on these tenants is prevented, and they are hidden from display.
+CIPP allows administrators to exclude specific tenants. Excluded tenants are hidden from display and are unaffected by actions within CIPP.
 {% endhint %}
 
-To exclude a tenant, locate the corresponding row in the tenant table and click on the eye slash icon in the 'Actions' column. This triggers a confirmation dialog box to verify the action. Once confirmed, a POST request is sent to the `ExecAddExcludeTenant` endpoint listed below, excluding the selected tenant.
+To exclude a tenant:
+
+1. Find the tenant's row in the table.
+2. Click on the eye slash icon in the "Actions" column to trigger a confirmation dialog.
+3. Confirm the action to send a POST request to the `ExecAddExcludeTenant` endpoint. The selected tenant is then excluded.
 
 #### Removing a Tenant's Exclusion Status
 
-You can remove a tenant's exclusion status by clicking on the eye icon in the "Actions" column of the relevant row. This action sends a DELETE request to the `ExecRemoveExcludeTenant` endpoint listed below.
+Administrators can remove a tenant's exclusion status by:
+
+1. Locating the tenant's row in the table.
+2. Clicking on the eye icon in the "Actions" column.
+3. This action sends a DELETE request to the `ExecRemoveExcludeTenant` endpoint, effectively including the tenant back in.
 
 #### Refreshing a Tenant's Permissions
 
-You can refresh a tenant's permissions by clicking on the recycle icon in the "Actions" column of the relevant row. This action sends a GET request to the `ExecCPVPermissions` endpoint listed below. This function updates the tenant's permissions, removing old permissions and applying the necessary ones based on the current configuration.
+Administrators can refresh a tenant's permissions by:
+
+1. Finding the tenant's row in the table.
+2. Clicking on the recycle icon in the "Actions" column.
+3. This action sends a GET request to the `ExecCPVPermissions` endpoint. This function updates the tenant's permissions by removing old permissions and applying the necessary ones based on the current configuration.
+
+### Additional Functionality
+
+The Tenants page also provides export and filter functionalities. The 'Export' button allows you to download a CSV file of the tenant table for offline use or analysis. The 'Filter' dropdown lets you filter the tenants displayed in the table based on whether they are excluded or included.
 
 ### API Endpoints
 
-The page primarily interacts with the following API endpoints:
+The page interacts with the following API endpoints:
 
-`ExecRemoveExcludeTenant`: Handles requests to remove a tenant's exclusion status.
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ExecCPVPermissions" method="get" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
+{% endswagger %}
 
-`ExecAddExcludeTenant`: Handles requests to exclude a tenant.
-
-`ExecCPVPermissions`: Handles requests to refresh a tenant's permissions.
-
-`ExecExcludeTenant`: Retrieves a list of all tenants for the table.
-
-
-
+* `ExecAddExcludeTenant`
+* `ExecRemoveExcludeTenant`
