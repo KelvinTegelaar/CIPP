@@ -68,7 +68,7 @@ Multiple Potential Causes:
 3. DAP: If the client is using DAP. The user might not be in the AdminAgents group.
 4. GDAP: if you are using GDAP and have not added the user to the correct group(s) for CIPP to function.
 
-### _AADSTS50020_ or The user you have used for your Secure Application Model is a guest in this tenant, or your are using GDAP and have not added the user to the correct group. Please delete the guest user to gain access to this tenant.
+### _AADSTS50020_ or AADSTS50177 or The user you have used for your Secure Application Model is a guest in this tenant, or your are using GDAP and have not added the user to the correct group. Please delete the guest user to gain access to this tenant.
 
 1. The user has not authorized the CIPP-SAM Application. Use the Settings -> Tenants -> Refresh button to refresh the permissions.
 2. The user that was used for the CIPP Authorisation is a guest in this tenant
