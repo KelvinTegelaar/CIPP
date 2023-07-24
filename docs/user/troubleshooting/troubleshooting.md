@@ -70,16 +70,19 @@ Multiple Potential Causes:
 
 ### AADSTS50020 or AADSTS50177
 
-{% hint style="info" %}
-**You may also see:** The user you have used for your Secure Application Model is a guest in this tenant, or your are using GDAP and have not added the user to the correct group. Please delete the guest user to gain access to this tenant.
-{% endhint %}
-
 Multiple Potential Causes:
 
 * The user has not authorized the CIPP-SAM Application. Use the Settings -> Tenants -> Refresh button to refresh the permissions.
 * The user that was used for the CIPP Authorization is a guest in this tenant
 * The user might not be in the AdminAgents group.
 * GDAP: if you are using GDAP and have not added the user to the correct group(s) for CIPP to function.
+
+{% hint style="info" %}
+**These errors may also present themselves something like the below. The steps above are still accurate in these cases:**&#x20;
+
+* The user you have used for your Secure Application Model is a guest in this tenant, or your are using GDAP and have not added the user to the correct group. Please delete the guest user to gain access to this tenant.
+* User account from identity provider does not exist in tenant and cannot access the application in that tenant. The account needs to be added as an external user in the tenant first. Sign out and sign in again with a different Azure Active Directory user account.
+{% endhint %}
 
 ### _invalid or malformed_
 
