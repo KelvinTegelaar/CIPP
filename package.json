@@ -17,11 +17,11 @@
     "changelog": "auto-changelog --starting-version 3.0.0 --commit-limit false --hide-credit",
     "eject": "react-scripts eject",
     "lint": "eslint \"src/**/*.js\"",
-    "start": "react-scripts start",
+    "start": "set HTTPS=true&&set SSL_CRT_FILE=./.vscode/cert.crt&&set SSL_KEY_FILE=./.vscode/key.key&&react-scripts start",
     "test": "react-scripts test",
     "test:cov": "npm test -- --coverage --watchAll=false",
     "test:debug": "react-scripts --inspect-brk test --runInBand",
-    "start-api": "swa start --ssl --ssl-cert ./.vscode/cert.crt --ssl-key ./.vscode/key.key --swa-config-location .vscode http://localhost:3000 --api-location http://localhost:7071",
+    "start-swa": "swa start --ssl --ssl-cert ./.vscode/cert.crt --ssl-key ./.vscode/key.key --swa-config-location .vscode https://localhost:3000 --api-location http://localhost:7071",
     "prepare": "husky install"
   },
   "config": {
@@ -98,7 +98,7 @@
     "stylelint-order": "^5.0.0"
   },
   "engines": {
-    "node": "16",
+    "node": "18",
     "npm": ">=7"
   }
 }
