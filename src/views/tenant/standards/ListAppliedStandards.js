@@ -183,9 +183,13 @@ const ListAppliedStandards = () => {
                             .filter((obj) => obj.cat === 'Global')
                             .map((item, key) => (
                               <>
-                                {console.log(item.name)}
                                 <CCol>
-                                  <RFFCFormSwitch key={key} name={item.name} label={item.label} />
+                                  <RFFCFormSwitch
+                                    key={key}
+                                    name={item.name}
+                                    label={item.label}
+                                    sublabel={getLabel(item)}
+                                  />
                                   {item.addedComponent && (
                                     <Condition when={item.name} is={true}>
                                       {item.addedComponent.type === 'Select' ? (
@@ -218,7 +222,12 @@ const ListAppliedStandards = () => {
                             .map((item, key) => (
                               <>
                                 <CCol>
-                                  <RFFCFormSwitch key={key} name={item.name} label={item.label} />
+                                  <RFFCFormSwitch
+                                    key={key}
+                                    name={item.name}
+                                    label={item.label}
+                                    sublabel={getLabel(item)}
+                                  />
                                   {item.addedComponent && (
                                     <Condition when={item.name} is={true}>
                                       {item.addedComponent.type === 'Select' ? (
@@ -251,7 +260,12 @@ const ListAppliedStandards = () => {
                             .map((item, key) => (
                               <>
                                 <CCol>
-                                  <RFFCFormSwitch key={key} name={item.name} label={item.label} />
+                                  <RFFCFormSwitch
+                                    key={key}
+                                    name={item.name}
+                                    label={item.label}
+                                    sublabel={getLabel(item)}
+                                  />
                                   {item.addedComponent && (
                                     <Condition when={item.name} is={true}>
                                       {item.addedComponent.type === 'Select' ? (
@@ -284,7 +298,12 @@ const ListAppliedStandards = () => {
                             .map((item, key) => (
                               <>
                                 <CCol>
-                                  <RFFCFormSwitch key={key} name={item.name} label={item.label} />
+                                  <RFFCFormSwitch
+                                    key={key}
+                                    name={item.name}
+                                    label={item.label}
+                                    sublabel={getLabel(item)}
+                                  />
                                   {item.addedComponent && (
                                     <Condition when={item.name} is={true}>
                                       {item.addedComponent.type === 'Select' ? (
@@ -317,7 +336,12 @@ const ListAppliedStandards = () => {
                             .map((item, key) => (
                               <>
                                 <CCol>
-                                  <RFFCFormSwitch key={key} name={item.name} label={item.label} />
+                                  <RFFCFormSwitch
+                                    key={key}
+                                    name={item.name}
+                                    label={item.label}
+                                    sublabel={getLabel(item)}
+                                  />
                                   {item.addedComponent && (
                                     <Condition when={item.name} is={true}>
                                       {item.addedComponent.type === 'Select' ? (
