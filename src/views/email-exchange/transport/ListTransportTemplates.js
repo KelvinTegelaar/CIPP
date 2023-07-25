@@ -16,7 +16,7 @@ const TransportListTemplates = () => {
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
   const Offcanvas = (row, rowIndex, formatExtraData) => {
     const [ocVisible, setOCVisible] = useState(false)
-    const handleDeleteIntuneTemplate = (apiurl, message) => {
+    const handleDeleteTransportTemplate = (apiurl, message) => {
       ModalService.confirm({
         title: 'Confirm',
         body: <div>{message}</div>,
@@ -35,7 +35,7 @@ const TransportListTemplates = () => {
           variant="ghost"
           color="danger"
           onClick={() =>
-            handleDeleteIntuneTemplate(
+            handleDeleteTransportTemplate(
               `/api/RemoveTransportRuleTemplate?ID=${row.GUID}`,
               'Do you want to delete the template?',
             )
