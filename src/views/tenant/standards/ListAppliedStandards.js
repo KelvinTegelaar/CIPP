@@ -189,6 +189,7 @@ const ListAppliedStandards = () => {
                                     name={item.name}
                                     label={item.label}
                                     sublabel={getLabel(item)}
+                                    helpText={item.helpText}
                                   />
                                   {item.addedComponent && (
                                     <Condition when={item.name} is={true}>
@@ -227,6 +228,7 @@ const ListAppliedStandards = () => {
                                     name={item.name}
                                     label={item.label}
                                     sublabel={getLabel(item)}
+                                    helpText={item.helpText}
                                   />
                                   {item.addedComponent && (
                                     <Condition when={item.name} is={true}>
@@ -265,6 +267,7 @@ const ListAppliedStandards = () => {
                                     name={item.name}
                                     label={item.label}
                                     sublabel={getLabel(item)}
+                                    helpText={item.helpText}
                                   />
                                   {item.addedComponent && (
                                     <Condition when={item.name} is={true}>
@@ -303,6 +306,7 @@ const ListAppliedStandards = () => {
                                     name={item.name}
                                     label={item.label}
                                     sublabel={getLabel(item)}
+                                    helpText={item.helpText}
                                   />
                                   {item.addedComponent && (
                                     <Condition when={item.name} is={true}>
@@ -341,6 +345,7 @@ const ListAppliedStandards = () => {
                                     name={item.name}
                                     label={item.label}
                                     sublabel={getLabel(item)}
+                                    helpText={item.helpText}
                                   />
                                   {item.addedComponent && (
                                     <Condition when={item.name} is={true}>
