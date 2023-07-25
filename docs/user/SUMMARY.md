@@ -131,6 +131,7 @@
 * [CIPP](user-documentation/settings/README.md)
   * [Settings](user-documentation/settings/settings/README.md)
     * [General](user-documentation/settings/settings.md)
+    * [Tenants](user-documentation/settings/settings/tenants.md)
     * [Backend Access](user-documentation/settings/backendaccess.md)
     * [Maintenance](user-documentation/settings/maintenance.md)
     * [Notifications](user-documentation/settings/notifications.md)

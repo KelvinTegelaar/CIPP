@@ -35,10 +35,6 @@ If your tenant access checks are failing please see the [Troubleshooting](../../
 
 You can switch providers to either Google, Cloudflare or Quad9 for your domain analyser results.
 
-#### Excluded Tenants
-
-You can add tenants to the excluded tenant list to prevent CIPP from taking any action on these tenants in addition to removing them from display.
-
 #### Access backend
 
 You can get the URLs to access backend features directly in the Azure AD portal from the Security tab.

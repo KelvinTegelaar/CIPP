@@ -17,7 +17,7 @@ to setup the Graph API, CSP, and Exchange integration CIPP requires a minimum le
 2. Add the account to the correct groups
 
 * If you are using DAP The CIPP user must be added to the "AdminAgents" group.
-* If you are using GDAP, the CIPP user must be added to the "AdminAgents" group and the groups you've assigned for GDAP has made. The minimum permissions CIPP needs to function are:
+* If you are using GDAP, the CIPP user must be added to the "AdminAgents" group and the groups you've assigned for GDAP. The minimum permissions CIPP needs to function are:
   * Application Administrator
   * User Administrator
   * Intune Administrator
@@ -28,7 +28,8 @@ to setup the Graph API, CSP, and Exchange integration CIPP requires a minimum le
   * Teams Administrator
   * Sharepoint Administrator
   * Authentication Policy Administrator
-  * Privileged Authentication Administrator (Required to revoke sessions, reset admin passwords, and set up application policies)
+  * Privileged Role Administrator
+  * Privileged Authentication Administrator (Only required if you want to be able to delete global admins within tenants from CIPP)
 
 3. This account must have **Microsoft** multi-factor authentication enforced for each logon, either via Conditional Access when available or via [Per User MFA](https://account.activedirectory.windowsazure.com/UserManagement/MultifactorVerification.aspx) when Conditional Access is not available.
 
@@ -45,10 +46,8 @@ Make sure you are logged into CIPP under your own account (user@domain.com). The
 Your browser **MUST** allow cookies and have any ad-blocker disabled for the duration of the wizard. Do not use in-private mode.
 {% endhint %}
 
-
-
 To setup the connection to your tenants you'll need to run the Sam Wizard. The Sam Wizard can be found under Settings -> SAM Setup Wizard. The Wizard will present you with multiple options. If this is your first setup it is recommended to choose "I'd like CIPP to create a SAM Application for me".
 
-When executing the Sam Wizard with "I'd like CIPP to create a SAM Application for me" you'll be presented with a button to start the Wizard. Do not navigate away from this page and execute all **5 steps** that this page will prompt you for. 
+When executing the Sam Wizard with "I'd like CIPP to create a SAM Application for me" you'll be presented with a button to start the Wizard. Do not navigate away from this page and execute all **5 steps** that this page will prompt you for.
 
 After completing the wizard 5 steps, you must [clear the token cache](https://cipp.app/docs/general/troubleshooting/#clear-token-cache).
