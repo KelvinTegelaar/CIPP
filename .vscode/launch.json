@@ -9,7 +9,7 @@
       "cwd": "${file}"
     },
     {
-      "command": "npm run start-api",
+      "command": "npm run start-swa",
       "name": "Run emulator",
       "request": "launch",
       "type": "node-terminal"

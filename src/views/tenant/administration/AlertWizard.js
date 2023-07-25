@@ -127,6 +127,11 @@ const AlertWizard = () => {
               <RFFCFormSwitch name="UnusedLicenses" label="Alert on unused licenses" />
               <RFFCFormSwitch name="OverusedLicenses" label="Alert on overused licenses" />
               <RFFCFormSwitch
+                name="ExpiringLicenses"
+                label="Alert on licenses expiring in 30 days"
+              />
+
+              <RFFCFormSwitch
                 name="AppSecretExpiry"
                 label="Alert on expiring application secrets"
               />
