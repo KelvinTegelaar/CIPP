@@ -159,14 +159,14 @@ Front End (CIPP)
 1. Find your repository secret by going to your CIPP Repository, go to "settings" (cog icon along the top), click on "Secrets and variables" in the left menu, then "actions"
 2. Note down the name of your repository secret (Should be similar to "AZURE_STATIC_WEB_APPS_API_TOKEN_RANDOM_WORD_047D97703"
 3. Create a new file (name doesn’t matter as long as it ends in .yaml) in your .GitHub/workflows folder
-4. Copy the contents of this file here into the new file you created: https://docs.cipp.app/troubleshooting/troubleshooting/cipp-workflow.yml
+4. Copy the contents of this file here into the new file you created: [CIPP Workflow File](https://docs.cipp.app/troubleshooting/troubleshooting/cipp-workflow.yml)
 5. Edit lines 25 and 44 to your repository secret name noted down in step 2 above 
 
 Back End (CIPP-API)
 1. Find your repository secret by going to your CIPP-API Repository, go to "settings" (cog icon along the top), click on "Secrets and variables" in the left menu, then "actions"
 2. Note down the name of your repository secret (Should be similar to "AZUREAPPSERVICE_PUBLISHPROFILE_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 3. Create a new file (name doesn’t matter as long as it ends in .yaml) in your .GitHub/workflows folder
-4. Copy the contents of this file here into the new file you created: https://docs.cipp.app/troubleshooting/troubleshooting/cipp-api-workflow.yml
+4. Copy the contents of this file here into the new file you created: [CIPP-API Workflow File](https://docs.cipp.app/troubleshooting/troubleshooting/cipp-api-workflow.yml)
 5. Edit lines 4 so it has your function name at the end of it
 6. Edit Line 29 to your repository secret name noted down in step 2 above
 
