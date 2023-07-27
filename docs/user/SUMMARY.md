@@ -157,7 +157,7 @@
 * [Security Policy](security/security-policy.md)
 * [CIPP Community Vulnerability Disclosure Policy](security/cipp-community-vulnerability-disclosure-policy.md)
 
-## 👩💻 👩💻 Dev Documentation
+## 👩💻 👩💻 👩💻 Dev Documentation
 
 * [CIPP Dev Guide](developer-documentation/cipp-dev-guide/README.md)
   * [Setting Up for Local Development](developer-documentation/cipp-dev-guide/setting-up-for-local-development.md)
