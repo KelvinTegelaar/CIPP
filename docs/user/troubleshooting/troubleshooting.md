@@ -171,7 +171,7 @@ Hosted clients can clear their own token cache via [management.cipp.app](https:/
 
 <!---->
 
-* Copy the contents of [this file](https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FhV8luribpATiHNQ8bdts%2Fuploads%2Flm19bd0FqKW9IntaFJtN%2Fcipp-workflow.yml?alt=media\&token=e617df6b-2b95-4c1a-83d6-4c31e732e33f) here into the new file you created
+* Copy the contents of [this file](https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FhV8luribpATiHNQ8bdts%2Fuploads%2Flm19bd0FqKW9IntaFJtN%2Fcipp-workflow.yml?alt=media\&token=e617df6b-2b95-4c1a-83d6-4c31e732e33f) into the new file you created
 
 <!---->
 
@@ -195,7 +195,7 @@ Hosted clients can clear their own token cache via [management.cipp.app](https:/
 
 <!---->
 
-* Copy the contents of this [file here](https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FhV8luribpATiHNQ8bdts%2Fuploads%2F8BlraL9QHmZYlFWB1DOT%2Fcipp-api-workflow\[1].yml?alt=media\&token=4f5febb8-9fdc-4fb2-ac39-3b363529d167) into the new file you created
+* Copy the contents of this [file](https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FhV8luribpATiHNQ8bdts%2Fuploads%2F8BlraL9QHmZYlFWB1DOT%2Fcipp-api-workflow\[1].yml?alt=media\&token=4f5febb8-9fdc-4fb2-ac39-3b363529d167)[ into](https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FhV8luribpATiHNQ8bdts%2Fuploads%2F8BlraL9QHmZYlFWB1DOT%2Fcipp-api-workflow\[1].yml?alt=media\&token=4f5febb8-9fdc-4fb2-ac39-3b363529d167) the new file you created
 
 <!---->
 
