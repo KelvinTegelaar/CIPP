@@ -78,7 +78,7 @@ Multiple Potential Causes:
 * GDAP: if you are using GDAP and have not added the user to the correct group(s) for CIPP to function.
 
 {% hint style="info" %}
-**These errors may also present themselves something like the below. The steps above are still accurate in these cases:**&#x20;
+**These errors may also present themselves something like the below. The steps above are still accurate in these cases:**
 
 * The user you have used for your Secure Application Model is a guest in this tenant, or your are using GDAP and have not added the user to the correct group. Please delete the guest user to gain access to this tenant.
 * User account from identity provider does not exist in tenant and cannot access the application in that tenant. The account needs to be added as an external user in the tenant first. Sign out and sign in again with a different Azure Active Directory user account.
@@ -152,6 +152,60 @@ This occurs when the app has exists for more than 2 years and requires a new cer
 {% hint style="info" %}
 Hosted clients can clear their own token cache via [management.cipp.app](https://management.cipp.app)
 {% endhint %}
+
+### You discarded changes when syncing Github Repositories
+
+<details>
+
+<summary>Frontend</summary>
+
+* Find your repository secret by going to your CIPP Repository, go to "settings" (cog icon along the top), click on "Secrets and variables" in the left menu, then "actions"
+
+<!---->
+
+* Note down the name of your repository secret (Should be similar to "AZURE\_STATIC\_WEB\_APPS\_API\_TOKEN\_RANDOM\_WORD\_047D97703"
+
+<!---->
+
+* Create a new file (name doesn’t matter as long as it ends in .yaml) in your .GitHub/workflows folder
+
+<!---->
+
+* Copy the contents of [this file](https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FhV8luribpATiHNQ8bdts%2Fuploads%2Flm19bd0FqKW9IntaFJtN%2Fcipp-workflow.yml?alt=media\&token=e617df6b-2b95-4c1a-83d6-4c31e732e33f) into the new file you created
+
+<!---->
+
+* Edit lines 25 and 44 to your repository secret name noted down in step 2 above
+
+</details>
+
+<details>
+
+<summary>Backend</summary>
+
+* Find your repository secret by going to your CIPP-API Repository, go to "settings" (cog icon along the top), click on "Secrets and variables" in the left menu, then "actions"
+
+<!---->
+
+* Note down the name of your repository secret (Should be similar to "AZUREAPPSERVICE\_PUBLISHPROFILE\_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+
+<!---->
+
+* Create a new file (name doesn’t matter as long as it ends in .yaml) in your .GitHub/workflows folder
+
+<!---->
+
+* Copy the contents of this [file](https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FhV8luribpATiHNQ8bdts%2Fuploads%2F8BlraL9QHmZYlFWB1DOT%2Fcipp-api-workflow\[1].yml?alt=media\&token=4f5febb8-9fdc-4fb2-ac39-3b363529d167)[ into](https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FhV8luribpATiHNQ8bdts%2Fuploads%2F8BlraL9QHmZYlFWB1DOT%2Fcipp-api-workflow\[1].yml?alt=media\&token=4f5febb8-9fdc-4fb2-ac39-3b363529d167) the new file you created
+
+<!---->
+
+* Edit lines 4 so it has your function name at the end of it
+
+<!---->
+
+* Edit Line 29 to your repository secret name noted down in step 2 above
+
+</details>
 
 #### Credits
 
