@@ -31,7 +31,7 @@ Error.propTypes = {
 
 const requiredArray = (value) => (value && value.length !== 0 ? undefined : 'Required')
 const DeployConnectorTemplate = () => {
-  const [intuneGetRequest, intuneTemplates] = useLazyGenericGetRequestQuery()
+  const [EXConnectorGetRequest, EXConnectorTemplates] = useLazyGenericGetRequestQuery()
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
   const handleSubmit = async (values) => {
@@ -51,7 +51,7 @@ const DeployConnectorTemplate = () => {
           {({ form }) => (
             <OnChange name={field}>
               {(value) => {
-                let template = intuneTemplates.data.filter(function (obj) {
+                let template = EXConnectorTemplates.data.filter(function (obj) {
                   return obj.GUID === value
                 })
                 // console.log(template[0][set])
@@ -86,7 +86,7 @@ const DeployConnectorTemplate = () => {
         <Field name="selectedTenants" validate={requiredArray}>
           {(props) => (
             <WizardTableField
-              reportName="Add-MEM-Policy-Tenant-Selector"
+              reportName="Add-EX-Connector-Tenant-Selector"
               keyField="defaultDomainName"
               path="/api/ListTenants?AllTenantSelector=true"
               columns={[
@@ -121,12 +121,12 @@ const DeployConnectorTemplate = () => {
         <hr className="my-4" />
         <CRow>
           <CCol md={12}>
-            {intuneTemplates.isUninitialized &&
-              intuneGetRequest({ path: 'api/ListExConnectorTemplates' })}
-            {intuneTemplates.isSuccess && (
+            {EXConnectorTemplates.isUninitialized &&
+              EXConnectorGetRequest({ path: 'api/ListExConnectorTemplates' })}
+            {EXConnectorTemplates.isSuccess && (
               <RFFCFormSelect
                 name="TemplateList"
-                values={intuneTemplates.data?.map((template) => ({
+                values={EXConnectorTemplates.data?.map((template) => ({
                   value: template.GUID,
                   label: template.name,
                 }))}
