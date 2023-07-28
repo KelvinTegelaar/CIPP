@@ -54,7 +54,7 @@ export default function UserActions({ tenantDomain, userId, userEmail, className
       onClick: () =>
         handleModal(
           'Are you sure you want to enable the online archive for this user?',
-          `/api/ExecEnableArchive?TenantFilter=${tenantDomain}&ID=${userEmail}`,
+          `/api/ExecEnableArchive?TenantFilter=${tenantDomain}&ID=${userId}`,
         ),
     },
     {
