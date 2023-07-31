@@ -367,6 +367,20 @@
     "label": "Set Sharing Level for Default calendar"
   },
   {
+    "name": "standards.UserSubmissions.enable",
+    "cat": "Exchange",
+    "helpText": "This is the default helptext",
+    "addedComponent": null,
+    "label": "Enable the built-in Report button in Outlook"
+  },
+  {
+    "name": "standards.UserSubmissions.disable",
+    "cat": "Exchange",
+    "helpText": "This is the default helptext",
+    "addedComponent": null,
+    "label": "Disable the built-in Report button in Outlook"
+  },
+  {
     "name": "standards.intuneDeviceReg.Enabled",
     "cat": "Intune",
     "helpText": "This is the default helptext",

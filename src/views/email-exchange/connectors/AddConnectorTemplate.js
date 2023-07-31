@@ -5,17 +5,17 @@ import { CippContentCard, CippPage } from 'src/components/layout'
 import { RFFCFormTextarea } from 'src/components/forms'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
-const TransportAddTemplate = () => {
+const ConnectorAddTemplate = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
   const handleSubmit = async (values) => {
     // alert(JSON.stringify(values, null, 2))
     // @todo hook this up
-    genericPostRequest({ path: '/api/AddTransportTemplate', values })
+    genericPostRequest({ path: '/api/AddEXConnectorTemplate', values })
   }
 
   return (
-    <CippPage tenantSelector={false} title="Add Transport Rule Template">
+    <CippPage tenantSelector={false} title="Add Exchange Connector Template">
       <CippContentCard title="Template Details">
         {postResults.isFetching && (
           <CCallout color="info">
@@ -32,7 +32,7 @@ const TransportAddTemplate = () => {
                   <CCol>
                     <RFFCFormTextarea
                       name="PowerShellCommand"
-                      label="New-TransportRule parameters"
+                      label="New-InboundConnector / New-Outbound Connector parameters"
                       placeholder={'Enter the JSON parameters for your rule.'}
                     />
                   </CCol>
@@ -58,4 +58,4 @@ const TransportAddTemplate = () => {
   )
 }
 
-export default TransportAddTemplate
+export default ConnectorAddTemplate
