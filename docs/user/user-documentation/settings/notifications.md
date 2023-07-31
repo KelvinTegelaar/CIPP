@@ -27,7 +27,7 @@ CIPP provides alert notifications for Tenants and CIPP actions, sent as one comb
 
 Enter a many email addresses as you need, separated by a comma.
 
-Email sends from the partner tenant Office 365 account used to generate CIPP application keys. The account must have a mailbox available. If you do not have a mailbox available on the account the log will state we could not send out the notifications.
+Email sends from the partner tenant Office 365 account used to generate CIPP application keys. The account must have a (shared) mailbox available. If you do not have a mailbox available on the account the log will state we could not send out the notifications.&#x20;
 
 {% hint style="info" %}
 Sent Items Notification emails **do not save** to the CIPP account's _Sent Items_ folder.
