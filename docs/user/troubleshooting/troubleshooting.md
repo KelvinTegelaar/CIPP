@@ -86,10 +86,9 @@ Multiple Potential Causes:
 
 ### _invalid or malformed_
 
+* You have not finished all steps of the SAM Wizard
 * The user might not be in the AdminAgents group.
 * GDAP: if you are using GDAP and have not added the user to the correct group(s) for CIPP to function.
-
-The request is malformed. the body does not contain JSON or variables have not expanded. Look for typos such as incorrect bracket usage
 
 ### _Windows Store repository apps feature is not supported for this tenant_
 
