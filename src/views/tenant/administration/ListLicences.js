@@ -52,7 +52,7 @@ const columns = [
     cell: cellBooleanFormatter(),
   },
   {
-    name: 'Time until renewal (days)',
+    name: 'Days until renewal',
     selector: (row) => row['TimeUntilRenew'],
     sortable: true,
     exportSelector: 'TimeUntilRenew',
@@ -65,7 +65,7 @@ const columns = [
     cell: cellDateFormatter(),
   },
   {
-    name: 'Time until renewal (days)',
+    name: 'Renewal Date',
     selector: (row) => row['dateExpires'],
     sortable: true,
     exportSelector: 'dateExpires',
