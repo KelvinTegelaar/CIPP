@@ -136,6 +136,27 @@ const ListAlertsQueue = () => {
       cell: cellBooleanFormatter(),
     },
     {
+      name: 'Sec Defaults Auto-Enable',
+      selector: (row) => row['SecDefaultsUpsell'],
+      sortable: true,
+      exportSelector: 'SecDefaultsUpsell',
+      cell: cellBooleanFormatter(),
+    },
+    {
+      name: 'Sharepoint Quota',
+      selector: (row) => row['SharepointQuota'],
+      sortable: true,
+      exportSelector: 'SharepointQuota',
+      cell: cellBooleanFormatter(),
+    },
+    {
+      name: 'Expiring Licenses',
+      selector: (row) => row['ExpiringLicenses'],
+      sortable: true,
+      exportSelector: 'ExpiringLicenses',
+      cell: cellBooleanFormatter(),
+    },
+    {
       name: 'Actions',
       cell: Actions,
     },
@@ -167,11 +188,11 @@ const ListAlertsQueue = () => {
             selectableRows: true,
             actionsList: [
               {
-                label: 'Delete Template',
+                label: 'Delete alerts',
                 color: 'info',
                 modal: true,
                 modalUrl: `/api/RemoveQueuedAlert?ID=!tenantId`,
-                modalMessage: 'Are you sure you want to delete these templates?',
+                modalMessage: 'Are you sure you want to delete these alerts?',
               },
             ],
           },
