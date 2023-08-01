@@ -8,7 +8,7 @@
     {
       "label": "RunAzurite",
       "type": "shell",
-      "command": "azurite",
+      "command": "azurite --location ../",
       "isBackground": true,
       "problemMatcher": {
         "pattern": [
