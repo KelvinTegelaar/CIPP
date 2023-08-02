@@ -21,7 +21,13 @@
       "type": "node-terminal",
       "preLaunchTask": "RunAllTasks",
       "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"]
-    }
+    },
+    {
+       "type": "chrome",
+       "request": "launch",
+       "name": "Launch chrome",
+       "url": "http://localhost:4280",
+     }
   ],
   "compounds": [
     {
