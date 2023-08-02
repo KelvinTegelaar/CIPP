@@ -10,23 +10,29 @@
     },
     {
       "command": "npm run start-swa",
-      "name": "Run emulator",
+      "name": "Run Emulator",
       "request": "launch",
       "type": "node-terminal"
     },
     {
       "command": "npm start",
-      "name": "Run frontend",
+      "name": "Run Frontend",
       "request": "launch",
       "type": "node-terminal",
-      "preLaunchTask": "RunAllTasks",
+      "preLaunchTask": "Run All Tasks",
       "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"]
+    },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Launch Chrome Debugger",
+      "url": "http://localhost:4280"
     }
   ],
   "compounds": [
     {
       "name": "Launch it all 🚀",
-      "configurations": ["Run frontend", "Run emulator"]
+      "configurations": ["Run Frontend", "Run Emulator"]
     }
   ]
 }
