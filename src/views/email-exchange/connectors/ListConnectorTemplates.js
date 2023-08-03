@@ -99,7 +99,9 @@ const ConnectorListTemplates = () => {
       )}
       <CippPageList
         title="Exchange Connector Templates"
-        titleButton={<TitleButton href="/email/connectors/add-template" title="Add Template" />}
+        titleButton={
+          <TitleButton href="/email/connectors/add-connector-templates" title="Add Template" />
+        }
         datatable={{
           reportName: `${tenant?.defaultDomainName}-Groups`,
           path: '/api/ListExconnectorTemplates',
