@@ -26,6 +26,8 @@ CIPP is an open-source project, and we encourage users to review the code and co
 
 We hope this documentation serves as a valuable resource as you explore and utilize the CyberDrain Improved Partner Portal. If you have any questions or need further assistance, please don't hesitate to reach via our [discord](https://discord.gg/cyberdrain)
 
+{% @TablewithFilter/cyberdrain %}
+
 ## Our Sponsors
 
 <div>
