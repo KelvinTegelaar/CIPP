@@ -17,11 +17,11 @@
     "changelog": "auto-changelog --starting-version 3.0.0 --commit-limit false --hide-credit",
     "eject": "react-scripts eject",
     "lint": "eslint \"src/**/*.js\"",
-    "start": "set HTTPS=true&&set SSL_CRT_FILE=./.vscode/cert.crt&&set SSL_KEY_FILE=./.vscode/key.key&&react-scripts start",
+    "start": "react-scripts start",
     "test": "react-scripts test",
     "test:cov": "npm test -- --coverage --watchAll=false",
     "test:debug": "react-scripts --inspect-brk test --runInBand",
-    "start-swa": "swa start --ssl --ssl-cert ./.vscode/cert.crt --ssl-key ./.vscode/key.key --swa-config-location .vscode https://localhost:3000 --api-location http://localhost:7071",
+    "start-swa": "swa start --swa-config-location .vscode http://127.0.0.1:3000 --api-location http://localhost:7071",
     "prepare": "husky install"
   },
   "config": {
@@ -92,7 +92,7 @@
     "prettier": "2.4.1",
     "react-scripts": "^5.0.0",
     "redux-immutable-state-invariant": "^2.1.0",
-    "sass": "^1.44",
+    "sass": "^1.64.2",
     "stylelint": "^14.3.0",
     "stylelint-config-sass-guidelines": "^9.0.1",
     "stylelint-order": "^5.0.0"
