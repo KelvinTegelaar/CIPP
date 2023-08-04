@@ -79,7 +79,6 @@ export const cellGenericFormatter =
       return CellTip(cell)
     }
     if (Array.isArray(cell) || typeof cell === 'object') {
-      console.log(cell)
       return CellTip(JSON.stringify(cell))
     }
   }

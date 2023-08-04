@@ -22,6 +22,6 @@ CippOffcanvasTable.propTypes = {
       label: PropTypes.string,
       value: PropTypes.any,
     }),
-  ).isRequired,
+  ),
   guid: PropTypes.string,
 }
