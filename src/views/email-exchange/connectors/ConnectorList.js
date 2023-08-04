@@ -143,7 +143,7 @@ const ConnectorList = () => {
       title="Connector List"
       titleButton={
         <>
-          <TitleButton href="/email/transport/add-connector" title="Deploy Connector" />
+          <TitleButton href="/email/connectors/deploy-connector" title="Deploy Connector" />
         </>
       }
       tenantSelector={true}
