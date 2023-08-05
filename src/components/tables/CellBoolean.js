@@ -52,7 +52,8 @@ export default function CellBoolean({
       cell.toLowerCase() === 'fail' ||
       cell.toLowerCase() === 'default' ||
       cell.toLowerCase() === 'false' ||
-      cell.toLowerCase() === 'noncompliant'
+      cell.toLowerCase() === 'noncompliant' ||
+      cell.toLowerCase() === 'disabled'
     ) {
       normalized = false
     }
