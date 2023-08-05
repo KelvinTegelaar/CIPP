@@ -25,17 +25,17 @@ CIPP provides alert notifications for Tenants and CIPP actions, sent as one comb
 
 #### E-mail
 
-Enter a single email address (example: `psmith@example.com`). Email sends from the partner tenant Office 365 account used to generate CIPP application keys. The account must have a mailbox available. If you do not have a mailbox available on the account you can use the following command to enable this account as a shared mailbox:
+Enter a many email addresses as you need, separated by a comma.
 
-```powershell
-Enable-mailbox <Cippuser@domain.com> -Shared
-```
+Email sends from the partner tenant Office 365 account used to generate CIPP application keys. The account must have a (shared) mailbox available. If you do not have a mailbox available on the account the log will state we could not send out the notifications.&#x20;
 
-:::info Sent Items Notification emails **do not save** to the CIPP account's _Sent Items_ folder. :::
+{% hint style="info" %}
+Sent Items Notification emails **do not save** to the CIPP account's _Sent Items_ folder.
+{% endhint %}
 
 #### Webhook
 
-Enter a webhook url. Data is formatted based on the receiving server:
+Enter a webhook URL. Data is formatted based on the receiving server:
 
 | Service              | Format                                                |
 | -------------------- | ----------------------------------------------------- |

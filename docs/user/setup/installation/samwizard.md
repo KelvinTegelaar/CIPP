@@ -15,6 +15,7 @@ to setup the Graph API, CSP, and Exchange integration CIPP requires a minimum le
 
 1. Create a new account. Recommended to name this "CIPP Integration" and give it the username "CIPP@domain.tld" a. This account must be a Global Administrator while setting up the integration. These permissions may be removed after the integration has been setup.
 2. Add the account to the correct groups
+3. When using GDAP, Make sure your tenant has a [Microsoft 365 Lighthouse license](https://learn.microsoft.com/en-us/microsoft-365/lighthouse/m365-lighthouse-sign-up?view=o365-worldwide#steps-to-sign-up-for-microsoft-365-lighthouse).&#x20;
 
 * If you are using DAP The CIPP user must be added to the "AdminAgents" group.
 * If you are using GDAP, the CIPP user must be added to the "AdminAgents" group and the groups you've assigned for GDAP. The minimum permissions CIPP needs to function are:
