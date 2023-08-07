@@ -84,9 +84,9 @@ const ListAlertsQueue = () => {
     },
     {
       name: 'Monitored Actions',
-      selector: (row) => row['operations'],
+      selector: (row) => row['Operations'],
       sortable: true,
-      exportSelector: 'operations',
+      exportSelector: 'Operations',
     },
     {
       name: 'Webhook URL',
