@@ -201,7 +201,7 @@ const AlertWizard = () => {
                   { value: 'Reset user password.', name: 'Reset user password' },
                   { value: 'AdminLoggedIn', name: 'Admin has logged in' },
                   {
-                    value: 'UserLoggedInFromUnknownLocation',
+                    value: 'UserLoggedIn',
                     name: 'A user has logged in  from an unknown location, or non-allowed location',
                   },
                 ]}
