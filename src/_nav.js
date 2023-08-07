@@ -129,7 +129,7 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Scheduled Alerts',
+        name: 'Alerts Configuration',
         to: '/tenant/administration/alertsqueue',
       },
       {

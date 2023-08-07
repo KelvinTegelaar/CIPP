@@ -6,9 +6,9 @@ import { faCheck, faExclamationTriangle, faTimes } from '@fortawesome/free-solid
 import { CippWizard } from 'src/components/layout'
 import { WizardTableField } from 'src/components/tables'
 import PropTypes from 'prop-types'
-import { RFFCFormSwitch } from 'src/components/forms'
+import { RFFCFormSelect, RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
-
+import countryList from 'src/data/countryList.json'
 const Error = ({ name }) => (
   <Field
     name={name}
@@ -141,6 +141,81 @@ const AlertWizard = () => {
               <RFFCFormSwitch
                 name="SecDefaultsUpsell"
                 label="Alert on Security Defaults automatic enablement"
+              />
+            </CCol>
+          </CRow>
+        </CForm>
+        <hr className="my-4" />
+      </CippWizard.Page>
+      <CippWizard.Page
+        title="Select Webhook Alerts"
+        description="Select which alerts you want to receive."
+      >
+        <center>
+          <h3 className="text-primary">Step 3</h3>
+          <h5 className="card-title mb-4">Select webhook alerts</h5>
+        </center>
+        <hr className="my-4" />
+        <CForm onSubmit={handleSubmit}>
+          <p>
+            These alerts are received directly from the audit log, and will be processed as soon as
+            Microsoft sends them to CIPP. These alerts generate a ticket, email or webhook message
+            per alert, with more information about the alert.
+          </p>
+          <CRow>
+            <CCol>
+              <RFFSelectSearch
+                name="EventTypes"
+                label="Select the environments you want to receive alerts for"
+                multi
+                values={[
+                  { name: 'Exchange', value: 'Audit.Exchange' },
+                  { name: 'Azure AD', value: 'Audit.AzureActiveDirectory' },
+                ]}
+              />
+            </CCol>
+            <CCol>
+              <RFFSelectSearch
+                name="Operations"
+                label="Select the operations you want to receive alerts for"
+                multi
+                values={[
+                  { value: 'New-InboxRule', name: 'New Inbox Rules' },
+                  { value: 'Set-inboxrule', name: 'Set Inbox Rules' },
+                  { value: 'Add member to role.', name: 'Adding a member to any admin role' },
+                  {
+                    value: 'Remove Member from a role.',
+                    name: 'Removing a member from any admin role',
+                  },
+
+                  { value: 'Disable account.', name: 'Disabling any account' },
+                  { value: 'Enable account.', name: 'Enabling any account' },
+                  {
+                    value: 'Update StsRefreshTokenValidFrom Timestamp.',
+                    name: 'Revoking a users sessions.',
+                  },
+                  {
+                    value: 'Disable Strong Authentication.',
+                    name: 'MFA has been disabled.',
+                  },
+                  { value: 'Reset user password.', name: 'Reset user password' },
+                  { value: 'AdminLoggedIn', name: 'Admin has logged in' },
+                  {
+                    value: 'UserLoggedInFromUnknownLocation',
+                    name: 'A user has logged in  from an unknown location, or non-allowed location',
+                  },
+                ]}
+              />
+            </CCol>
+            <CCol>
+              <RFFSelectSearch
+                name="AllowedLocations"
+                label="Select the countries to not alert on logon from"
+                multi
+                values={countryList.map(({ Code, Name }) => ({
+                  value: Code,
+                  name: Name,
+                }))}
               />
             </CCol>
           </CRow>
