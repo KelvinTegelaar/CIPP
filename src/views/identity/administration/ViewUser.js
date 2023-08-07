@@ -19,6 +19,7 @@ import UserEmailSettings from 'src/views/identity/administration/UserEmailSettin
 import UserEmailPermissions from 'src/views/identity/administration/UserEmailPermissions'
 import UserGroups from 'src/views/identity/administration/UserGroups'
 import UserSigninLogs from 'src/views/identity/administration/UserSigninLogs'
+import UserMailboxRuleList from 'src/views/identity/administration/UserMailboxRuleList'
 import { useListUserQuery } from 'src/store/api/users'
 
 const ViewUser = (props) => {
@@ -89,6 +90,9 @@ const ViewUser = (props) => {
           </CippMasonryItem>
           <CippMasonryItem size="triple">
             <UserSigninLogs userId={userId} tenantDomain={tenantDomain} />
+          </CippMasonryItem>
+          <CippMasonryItem size="triple">
+            <UserMailboxRuleList userId={userId} tenantDomain={tenantDomain} />
           </CippMasonryItem>
         </CippMasonry>
       )}

@@ -5,18 +5,18 @@ import PropTypes from 'prop-types'
 import { ActionContentCard } from 'src/components/contentcards'
 
 export default function User365Management({ tenantDomain, userId, className }) {
-  const azureADLink = `https://portal.azure.com/${tenantDomain}/#blade/Microsoft_AAD_IAM/UserDetailsMenuBlade/Profile/userId/${userId}`
-  const endpointManagerLink = `https://endpoint.microsoft.com/${tenantDomain}/#blade/Microsoft_AAD_IAM/UserDetailsMenuBlade/Profile/userId/${userId}`
+  const entraLink = `https://entra.microsoft.com/${tenantDomain}/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/${userId}`
+  const intuneLink = `https://intune.microsoft.com/${tenantDomain}/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/${userId}`
   const actions = [
     {
-      label: 'View in Azure AD',
-      link: azureADLink,
+      label: 'View in Entra',
+      link: entraLink,
       icon: faUsers,
       target: '_blank',
     },
     {
-      label: 'View in Endpoint Manager',
-      link: endpointManagerLink,
+      label: 'View in Intune',
+      link: intuneLink,
       icon: faLaptop,
       target: '_blank',
     },
