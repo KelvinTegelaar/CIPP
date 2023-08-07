@@ -181,7 +181,7 @@ const AlertWizard = () => {
                 multi
                 values={[
                   { value: 'New-InboxRule', name: 'New Inbox Rules' },
-                  { value: 'Set-inboxrule', name: 'Set Inbox Rules' },
+                  { value: 'Set-Inboxrule', name: 'Set Inbox Rules' },
                   { value: 'Add member to role.', name: 'Adding a member to any admin role' },
                   {
                     value: 'Remove Member from a role.',
