@@ -15,6 +15,7 @@ import { CippActionsOffcanvas } from 'src/components/utilities'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import Skeleton from 'react-loading-skeleton'
 import { TitleButton } from 'src/components/buttons'
+import Portals from 'src/data/portals'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const [getTenantDetails, tenantDetails] = useLazyGenericGetRequestQuery()
@@ -35,7 +36,13 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
       </>
     )
   }
-
+  const actions = Portals.map((portal) => ({
+    icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
+    label: portal.label,
+    external: true,
+    color: 'info',
+    link: portal.url.replace(portal.variable, row[portal.variable]),
+  }))
   return (
     <>
       <CButton size="sm" color="link" onClick={() => loadOffCanvasDetails(row.defaultDomainName)}>
@@ -84,62 +91,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             link: `/tenant/administration/tenants/Edit?tenantFilter=${row.defaultDomainName}&customerId=${row.customerId}`,
             color: 'warning',
           },
-          {
-            icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
-            label: 'M365 Portal',
-            link: `https://portal.office.com/Partner/BeginClientSession.aspx?CTID=${row.customerId}&CSDEST=o365admincenter`,
-            external: true,
-            color: 'info',
-          },
-          {
-            icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
-            label: 'Exchange Portal',
-            color: 'info',
-            external: true,
-            link: `https://admin.exchange.microsoft.com/?landingpage=homepage&form=mac_sidebar&delegatedOrg=${row.defaultDomainName}#`,
-          },
-          {
-            icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
-            label: 'Entra Portal',
-            color: 'info',
-            external: true,
-            link: `https://entra.microsoft.com/${row.defaultDomainName}`,
-          },
-          {
-            icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
-            label: 'Teams Portal',
-            color: 'info',
-            external: true,
-            link: `https://admin.teams.microsoft.com/?delegatedOrg=${row.defaultDomainName}`,
-          },
-          {
-            icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
-            label: 'Azure Portal',
-            color: 'info',
-            external: true,
-            link: `https://portal.azure.com/${row.defaultDomainName}`,
-          },
-          {
-            icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
-            label: 'MEM (Intune) Portal',
-            color: 'info',
-            external: true,
-            link: `https://intune.microsoft.com/${row.defaultDomainName}`,
-          },
-          {
-            icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
-            label: 'Security Portal (GDAP)',
-            color: 'info',
-            external: true,
-            link: `https://security.microsoft.com/?tid=${row.customerId}`,
-          },
-          {
-            icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
-            label: 'Sharepoint Admin',
-            color: 'info',
-            external: true,
-            link: `https://admin.microsoft.com/Partner/beginclientsession.aspx?CTID=${row.customerId}&CSDEST=SharePoint`,
-          },
+          ...actions,
         ]}
         placement="end"
         visible={ocVisible}
@@ -150,26 +102,27 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
   )
 }
 
-function StatusIcon(graphErrorCount) {
-  if (graphErrorCount > 0) {
-    return <FontAwesomeIcon icon={faExclamationTriangle} className="text-danger" />
-  } else {
-    return <FontAwesomeIcon icon={faCheckCircle} className="text-success" />
-  }
-}
-
-function StatusText(graphErrorCount, lastGraphError) {
-  if (graphErrorCount > 0) {
-    return 'Error Count: ' + graphErrorCount + ' - Last Error: ' + lastGraphError
-  } else {
-    return 'No errors detected with this tenant'
-  }
-}
-
 const TenantsList = () => {
   const TenantListSelector = useSelector((state) => state.app.TenantListSelector)
   const tenant = useSelector((state) => state.app.currentTenant)
   const [columnOmits, setOmitVisible] = useState(TenantListSelector)
+
+  const generatePortalColumn = (portal) => ({
+    name: portal.label,
+    omit: columnOmits,
+    selector: (row) => row['defaultDomainName'],
+    center: true,
+    cell: (row) => (
+      <a
+        href={portal.url.replace(portal.variable, row[portal.variable])}
+        target="_blank"
+        className="dlink"
+        rel="noreferrer"
+      >
+        <FontAwesomeIcon icon={faCog} className="me-2" />
+      </a>
+    ),
+  })
 
   const columns = [
     {
@@ -188,134 +141,7 @@ const TenantsList = () => {
       exportSelector: 'defaultDomainName',
       minWidth: '200px',
     },
-    {
-      name: 'M365 Portal',
-      omit: columnOmits,
-      selector: (row) => row['customerId'],
-      center: true,
-      cell: (row) => (
-        <a
-          href={`https://portal.office.com/Partner/BeginClientSession.aspx?CTID=${row.customerId}&CSDEST=o365admincenter`}
-          target="_blank"
-          className="dlink"
-          rel="noreferrer"
-        >
-          <FontAwesomeIcon icon={faCog} className="me-2" />
-        </a>
-      ),
-    },
-    {
-      name: 'Exchange Portal',
-      omit: columnOmits,
-      selector: (row) => row['defaultDomainName'],
-      center: true,
-      cell: (row) => (
-        <a
-          href={`https://admin.exchange.microsoft.com/?landingpage=homepage&form=mac_sidebar&delegatedOrg=${row.defaultDomainName}#`}
-          target="_blank"
-          className="dlink"
-          rel="noreferrer"
-        >
-          <FontAwesomeIcon icon={faCog} className="me-2" />
-        </a>
-      ),
-    },
-    {
-      name: 'Entra Portal',
-      omit: columnOmits,
-      selector: (row) => row['defaultDomainName'],
-      center: true,
-      cell: (row) => (
-        <a
-          href={`https://entra.microsoft.com/${row.defaultDomainName}`}
-          target="_blank"
-          className="dlink"
-          rel="noreferrer"
-        >
-          <FontAwesomeIcon icon={faCog} className="me-2" />
-        </a>
-      ),
-    },
-    {
-      name: 'Teams Portal',
-      omit: columnOmits,
-      selector: (row) => row['defaultDomainName'],
-      center: true,
-      cell: (row) => (
-        <a
-          href={`https://admin.teams.microsoft.com/?delegatedOrg=${row.defaultDomainName}`}
-          target="_blank"
-          className="dlink"
-          rel="noreferrer"
-        >
-          <FontAwesomeIcon icon={faCog} className="me-2" />
-        </a>
-      ),
-    },
-    {
-      name: 'Azure Portal',
-      omit: columnOmits,
-      selector: (row) => row['defaultDomainName'],
-      center: true,
-      cell: (row) => (
-        <a
-          href={`https://portal.azure.com/${row.defaultDomainName}`}
-          target="_blank"
-          className="dlink"
-          rel="noreferrer"
-        >
-          <FontAwesomeIcon icon={faCog} className="me-2" />
-        </a>
-      ),
-    },
-    {
-      name: 'MEM (Intune) Portal',
-      omit: columnOmits,
-      selector: (row) => row['defaultDomainName'],
-      center: true,
-      cell: (row) => (
-        <a
-          href={`https://intune.microsoft.com/${row.defaultDomainName}`}
-          target="_blank"
-          className="dlink"
-          rel="noreferrer"
-        >
-          <FontAwesomeIcon icon={faCog} className="me-2" />
-        </a>
-      ),
-    },
-    {
-      name: 'Security Portal (GDAP)',
-      selector: (row) => row['defaultDomainName'],
-      center: true,
-      omit: columnOmits,
-      cell: (row) => (
-        <a
-          href={`https://security.microsoft.com/?tid=${row.customerId}`}
-          target="_blank"
-          className="dlink"
-          rel="noreferrer"
-        >
-          <FontAwesomeIcon icon={faCog} className="me-2" />
-        </a>
-      ),
-    },
-    {
-      name: 'SharePoint Admin',
-      selector: (row) => row['defaultDomainName'],
-      center: true,
-      omit: columnOmits,
-      cell: (row) => (
-        <a
-          href={`https://admin.microsoft.com/Partner/beginclientsession.aspx?CTID=${row.customerId}&CSDEST=SharePoint`}
-          target="_blank"
-          className="dlink"
-          rel="noreferrer"
-        >
-          <FontAwesomeIcon icon={faCog} className="me-2" />
-        </a>
-      ),
-    },
+    ...Portals.map(generatePortalColumn),
     {
       exportSelector: 'customerId',
     },
