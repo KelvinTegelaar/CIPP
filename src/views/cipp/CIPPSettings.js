@@ -1134,7 +1134,7 @@ const NotificationsSettings = () => {
                           ]}
                         />
                       </CCol>
-                      <CCol>
+                      <CCol className="mb-3">
                         <RFFSelectSearch
                           multi={true}
                           label="Choose which severity of alert you want to be notified for."
@@ -1143,6 +1143,7 @@ const NotificationsSettings = () => {
                             { value: 'Alert', name: 'Alert' },
                             { value: 'Error', name: 'Error' },
                             { value: 'Info', name: 'Info' },
+                            { value: 'Warn', name: 'Warn' },
                           ]}
                         />
                       </CCol>
