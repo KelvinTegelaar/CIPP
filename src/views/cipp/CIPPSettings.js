@@ -1078,6 +1078,10 @@ const NotificationsSettings = () => {
                   label: m,
                   value: m,
                 })),
+                Severity: notificationListResult.data?.Severity?.map((s) => ({
+                  label: s,
+                  value: s,
+                })),
               }}
               onSubmit={onSubmit}
               render={({ handleSubmit, submitting, values }) => {
@@ -1127,6 +1131,18 @@ const NotificationsSettings = () => {
                             { value: 'AddUser', name: 'Adding a user' },
                             { value: 'AddGroup', name: 'Adding a group' },
                             { value: 'ExecOffboardUser', name: 'Executing the offboard wizard' },
+                          ]}
+                        />
+                      </CCol>
+                      <CCol>
+                        <RFFSelectSearch
+                          multi={true}
+                          label="Choose which severity of alert you want to be notified for."
+                          name="Severity"
+                          values={[
+                            { value: 'Alert', name: 'Alert' },
+                            { value: 'Error', name: 'Error' },
+                            { value: 'Info', name: 'Info' },
                           ]}
                         />
                       </CCol>

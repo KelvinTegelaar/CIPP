@@ -42,6 +42,7 @@ const columns = [
     name: 'Estimated Term',
     selector: (row) => row['EstTerm'],
     sortable: true,
+    cell: (row) => CellTip(row['EstTerm']),
     exportSelector: 'EstTerm',
   },
   {
