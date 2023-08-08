@@ -24,7 +24,7 @@ import { ModalService } from 'src/components/utilities'
 import { Form } from 'react-final-form'
 import { RFFCFormCheck, RFFSelectSearch } from 'src/components/forms'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
-import { useListUsersQuery } from 'src/store/api/users'
+import { useListContactsQuery, useListUsersQuery } from 'src/store/api/users'
 import { CippTable } from 'src/components/tables'
 
 const EditGroup = () => {
@@ -43,14 +43,14 @@ const EditGroup = () => {
   } = useListGroupQuery({ tenantDomain, groupId })
 
   const {
-    data: members = {},
+    data: members = [],
     isFetching: membersisFetching,
     error: membersError,
     isSuccess: membersIsSuccess,
   } = useListGroupMembersQuery({ tenantDomain, groupId })
 
   const {
-    data: owners = {},
+    data: owners = [],
     isFetching: ownersisFetching,
     error: ownersError,
     isSuccess: ownersIsSuccess,
@@ -60,6 +60,13 @@ const EditGroup = () => {
     isFetching: usersIsFetching,
     error: usersError,
   } = useListUsersQuery({ tenantDomain })
+
+  const {
+    data: contacts = [],
+    isFetching: contactsIsFetching,
+    error: contactsError,
+  } = useListContactsQuery({ tenantDomain })
+
   const [roleInfo, setroleInfo] = React.useState([])
   useEffect(() => {
     if (ownersIsSuccess && membersIsSuccess) {
@@ -100,7 +107,11 @@ const EditGroup = () => {
       AddOwner: values.AddOwners ? values.AddOwners : '',
       RemoveMember: values.RemoveMembers ? values.RemoveMembers : '',
       RemoveOwner: values.RemoveOwners ? values.RemoveOwners : '',
+      AddContacts: values.AddContacts ? values.AddContacts : '',
+      RemoveContacts: values.RemoveContacts ? values.RemoveContacts : '',
       allowExternal: values.allowExternal,
+      sendCopies: values.sendCopies,
+      mail: group[0].mail,
     }
     //window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/EditGroup', values: shippedValues })
@@ -133,7 +144,7 @@ const EditGroup = () => {
             <CCol md={6}>
               <CCard>
                 <CCardHeader>
-                  <CCardTitle>Group Details</CCardTitle>
+                  <CCardTitle>Group Details {group[0] && `- ${group[0].displayName}`}</CCardTitle>
                 </CCardHeader>
                 <CCardBody>
                   {isFetching && <CSpinner />}
@@ -163,12 +174,27 @@ const EditGroup = () => {
                               <CCol md={12}>
                                 <RFFSelectSearch
                                   multi={true}
-                                  label="Remove User"
-                                  values={users?.map((user) => ({
-                                    value: user.userPrincipalName,
-                                    name: `${user.displayName} - ${user.userPrincipalName}`,
+                                  label="Add Contact"
+                                  values={contacts?.map((user) => ({
+                                    value: user.mail,
+                                    name: `${user.displayName} - ${user.mail}`,
                                   }))}
-                                  placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
+                                  placeholder={!contactsIsFetching ? 'Select user' : 'Loading...'}
+                                  name="AddContacts"
+                                />
+                                {contactsError && <span>Failed to load list of contacts</span>}
+                              </CCol>
+                            </CRow>
+                            <CRow>
+                              <CCol md={12}>
+                                <RFFSelectSearch
+                                  multi={true}
+                                  label="Remove Member"
+                                  values={members?.map((user) => ({
+                                    value: user.mail,
+                                    name: `${user.displayName} - ${user.mail}`,
+                                  }))}
+                                  placeholder={!usersIsFetching ? 'Select Member' : 'Loading...'}
                                   name="RemoveMembers"
                                 />
                                 {usersError && <span>Failed to load list of users</span>}
@@ -194,7 +220,7 @@ const EditGroup = () => {
                                 <RFFSelectSearch
                                   multi={true}
                                   label="Remove Owner"
-                                  values={users?.map((user) => ({
+                                  values={owners?.map((user) => ({
                                     value: user.userPrincipalName,
                                     name: `${user.displayName} - ${user.userPrincipalName}`,
                                   }))}
@@ -209,6 +235,12 @@ const EditGroup = () => {
                               <RFFCFormCheck
                                 name="allowExternal"
                                 label="Let people outside the organization email the group"
+                              />
+                            )}
+                            {group[0].calculatedGroupType === 'Microsoft 365' && (
+                              <RFFCFormCheck
+                                name="sendCopies"
+                                label="Send Copies of team emails and events to team members inboxes"
                               />
                             )}
                             <CRow className="mb-3">
@@ -233,11 +265,6 @@ const EditGroup = () => {
                                 ))}
                               </CCallout>
                             )}
-                            {/*<CRow>*/}
-                            {/* <CCol>*/}
-                            {/*   <pre>{JSON.stringify(values, null, 2)}</pre>*/}
-                            {/* </CCol>*/}
-                            {/*</CRow>*/}
                           </CForm>
                         )
                       }}

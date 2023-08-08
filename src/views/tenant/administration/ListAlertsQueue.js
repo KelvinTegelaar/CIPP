@@ -94,6 +94,13 @@ const ListAlertsQueue = () => {
       cell: cellBooleanFormatter(),
     },
     {
+      name: 'Overused Licenses',
+      selector: (row) => row['OverusedLicenses'],
+      sortable: true,
+      exportSelector: 'OverusedLicenses',
+      cell: cellBooleanFormatter(),
+    },
+    {
       name: 'App Secret Expiry',
       selector: (row) => row['AppSecretExpiry'],
       sortable: true,
@@ -129,6 +136,27 @@ const ListAlertsQueue = () => {
       cell: cellBooleanFormatter(),
     },
     {
+      name: 'Sec Defaults Auto-Enable',
+      selector: (row) => row['SecDefaultsUpsell'],
+      sortable: true,
+      exportSelector: 'SecDefaultsUpsell',
+      cell: cellBooleanFormatter(),
+    },
+    {
+      name: 'Sharepoint Quota',
+      selector: (row) => row['SharepointQuota'],
+      sortable: true,
+      exportSelector: 'SharepointQuota',
+      cell: cellBooleanFormatter(),
+    },
+    {
+      name: 'Expiring Licenses',
+      selector: (row) => row['ExpiringLicenses'],
+      sortable: true,
+      exportSelector: 'ExpiringLicenses',
+      cell: cellBooleanFormatter(),
+    },
+    {
       name: 'Actions',
       cell: Actions,
     },
@@ -156,6 +184,18 @@ const ListAlertsQueue = () => {
           reportName: `AlertsQueue-List`,
           path: '/api/ListAlertsQueue',
           params: { TenantFilter: tenant?.defaultDomainName },
+          tableProps: {
+            selectableRows: true,
+            actionsList: [
+              {
+                label: 'Delete alerts',
+                color: 'info',
+                modal: true,
+                modalUrl: `/api/RemoveQueuedAlert?ID=!tenantId`,
+                modalMessage: 'Are you sure you want to delete these alerts?',
+              },
+            ],
+          },
         }}
       />
     </div>

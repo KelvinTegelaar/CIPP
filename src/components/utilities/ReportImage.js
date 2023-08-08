@@ -14,9 +14,7 @@ const ReportImage = () => {
     const reader = new FileReader()
     reader.readAsDataURL(e.target.files[0])
     reader.onloadend = () => {
-      console.log(reader.result)
       dispatch(setReportImage({ reportImage: reader.result }))
-      console.log(ReportImage)
     }
   }
 
@@ -35,7 +33,7 @@ const ReportImage = () => {
         <center>
           Suggested image size: 120x100. This is a per user setting.<br></br>
           <CButton
-            type="file"
+            type="button"
             name="file"
             onClick={() => inputRef.current.click()}
             className="me-2"

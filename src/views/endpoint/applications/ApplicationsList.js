@@ -134,6 +134,42 @@ const ApplicationsList = () => {
         reportName: `${tenant?.defaultDomainName}-Applications-List`,
         path: '/api/ListApps',
         params: { TenantFilter: tenant?.defaultDomainName },
+        tableProps: {
+          selectableRows: true,
+          actionsList: [
+            {
+              icon: <FontAwesomeIcon icon={faUser} />,
+              label: ' Assign to All Users',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecAssignApp?AssignTo=AllUsers&TenantFilter=${tenant.defaultDomainName}&ID=!id`,
+              modalMessage: `Are you sure you want to assign these apps to all users?`,
+            },
+            {
+              icon: <FontAwesomeIcon icon={faPager} />,
+              label: ' Assign to All Devices',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecAssignApp?AssignTo=AllDevices&TenantFilter=${tenant.defaultDomainName}&ID=!id`,
+              modalMessage: `Are you sure you want to assign these apps to all devices?`,
+            },
+            {
+              icon: <FontAwesomeIcon icon={faGlobeEurope} />,
+              label: ' Assign Globally (All Users / All Devices)',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecAssignApp?AssignTo=Both&TenantFilter=${tenant.defaultDomainName}&ID=!id`,
+              modalMessage: `Are you sure you want to assign these apps to all users and devices?`,
+            },
+            {
+              label: 'Delete Application',
+              color: 'danger',
+              modal: true,
+              modalUrl: `/api/RemoveApp?TenantFilter=${tenant.defaultDomainName}&ID=!id`,
+              modalMessage: 'Are you sure you want to delete this policy?',
+            },
+          ],
+        },
       }}
     />
   )

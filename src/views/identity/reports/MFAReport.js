@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { cellBooleanFormatter } from 'src/components/tables'
+import { cellBooleanFormatter, CellTip } from 'src/components/tables'
 import { CippPageList } from 'src/components/layout'
 
 const columns = [
@@ -23,7 +23,7 @@ const columns = [
     name: 'Account Licensed',
     sortable: true,
     cell: cellBooleanFormatter({ colourless: true }),
-    exportSelector: 'AccountEnabled',
+    exportSelector: 'isLicensed',
   },
   {
     selector: (row) => row['PerUser'],
@@ -42,6 +42,7 @@ const columns = [
     selector: (row) => row['CoveredByCA'],
     name: 'Enforced via Conditional Access',
     sortable: true,
+    cell: (row) => CellTip(row['CoveredByCA']),
     exportSelector: 'CoveredByCA',
   },
   {
@@ -76,6 +77,13 @@ const Altcolumns = [
     exportSelector: 'AccountEnabled',
   },
   {
+    selector: (row) => row['isLicensed'],
+    name: 'Account Licensed',
+    sortable: true,
+    cell: cellBooleanFormatter({ colourless: true }),
+    exportSelector: 'isLicensed',
+  },
+  {
     selector: (row) => row['PerUser'],
     name: 'Per user MFA Status',
     sortable: true,
@@ -92,6 +100,7 @@ const Altcolumns = [
     selector: (row) => row['CoveredByCA'],
     name: 'Enforced via Conditional Access',
     sortable: true,
+    cell: (row) => CellTip(row['CoveredByCA']),
     exportSelector: 'CoveredByCA',
   },
   {
@@ -123,7 +132,10 @@ const MFAList = () => {
       title="MFA Report"
       capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
       datatable={{
-        filterlist: [{ filterName: 'Enabled users', filter: '"accountEnabled":true' }],
+        filterlist: [
+          { filterName: 'Enabled users', filter: '"accountEnabled":true' },
+          { filterName: 'Licensed users', filter: '"isLicensed":"true"' },
+        ],
         columns: tenant.defaultDomainName === 'AllTenants' ? Altcolumns : columns,
         path: '/api/ListMFAUsers',
         reportName: `${tenant?.defaultDomainName}-MFAReport-List`,

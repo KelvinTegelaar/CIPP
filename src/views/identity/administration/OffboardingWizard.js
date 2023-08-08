@@ -93,8 +93,8 @@ const OffboardingWizard = () => {
           <RFFSelectSearch
             label={'Users in ' + tenantDomain}
             values={users?.map((user) => ({
-              value: user.mail,
-              name: `${user.displayName} <${user.mail}>`,
+              value: user.userPrincipalName,
+              name: `${user.displayName} <${user.userPrincipalName}>`,
             }))}
             placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
             name="User"
@@ -130,10 +130,12 @@ const OffboardingWizard = () => {
           <CCol md={6}>
             <RFFSelectSearch
               label="Give other user full access on mailbox without automapping"
-              values={users?.map((user) => ({
-                value: user.mail,
-                name: `${user.displayName} <${user.mail}>`,
-              }))}
+              values={users
+                ?.filter((x) => x.mail)
+                .map((user) => ({
+                  value: user.mail,
+                  name: `${user.displayName} <${user.mail}>`,
+                }))}
               placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
               name="AccessNoAutomap"
             />
@@ -141,10 +143,12 @@ const OffboardingWizard = () => {
           <CCol md={6}>
             <RFFSelectSearch
               label="Give other user full access on mailbox with automapping"
-              values={users?.map((user) => ({
-                value: user.mail,
-                name: `${user.displayName} <${user.mail}>`,
-              }))}
+              values={users
+                ?.filter((x) => x.mail)
+                .map((user) => ({
+                  value: user.mail,
+                  name: `${user.displayName} <${user.mail}>`,
+                }))}
               placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
               name="AccessAutomap"
             />
@@ -152,10 +156,12 @@ const OffboardingWizard = () => {
           <CCol md={6}>
             <RFFSelectSearch
               label="Give other user full access on Onedrive"
-              values={users?.map((user) => ({
-                value: user.mail,
-                name: `${user.displayName} <${user.mail}>`,
-              }))}
+              values={users
+                ?.filter((x) => x.mail)
+                .map((user) => ({
+                  value: user.mail,
+                  name: `${user.displayName} <${user.mail}>`,
+                }))}
               placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
               name="OnedriveAccess"
             />
@@ -163,10 +169,12 @@ const OffboardingWizard = () => {
           <CCol md={6}>
             <RFFSelectSearch
               label="Forward email to other user"
-              values={users?.map((user) => ({
-                value: user.mail,
-                name: `${user.displayName} <${user.mail}>`,
-              }))}
+              values={users
+                ?.filter((x) => x.mail)
+                .map((user) => ({
+                  value: user.mail,
+                  name: `${user.displayName} <${user.mail}>`,
+                }))}
               placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
               name="forward"
             />
@@ -226,6 +234,22 @@ const OffboardingWizard = () => {
                             color="#f77f00"
                             size="lg"
                             icon={props.values.RevokeSessions ? faCheck : faTimes}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Remove all mobile devices
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.RemoveMobile ? faCheck : faTimes}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Remove all mailbox rules
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.RemoveRules ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
