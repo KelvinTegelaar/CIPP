@@ -16,6 +16,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
   const [ocVisible, setOCVisible] = useState(false)
   const viewLink = `/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}&userEmail=${row.userPrincipalName}`
   const editLink = `/identity/administration/users/edit?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`
+  const OffboardLink = `/identity/administration/offboarding-wizard?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`
 
   let licenses = []
   row.assignedLicenses?.map((licenseAssignment, idx) => {
@@ -77,6 +78,11 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
           {
             label: 'Research Compromised Account',
             link: `/identity/administration/ViewBec?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
+            color: 'info',
+          },
+          {
+            label: 'Offboard User',
+            link: OffboardLink,
             color: 'info',
           },
           {
@@ -357,27 +363,27 @@ const Users = (row) => {
             {
               label: 'Convert to Shared Mailbox',
               modal: true,
-              modalUrl: `/api/ExecConvertToSharedMailbox?TenantFilter=${tenant.defaultDomainName}&ID=!userPrincipalName`,
+              modalUrl: `/api/ExecConvertToSharedMailbox?TenantFilter=!Tenant&ID=!userPrincipalName`,
               modalMessage: 'Are you sure you want to convert these users to a shared mailbox?',
             },
             {
               label: 'Rerequire MFA registration',
               modal: true,
-              modalUrl: `/api/ExecResetMFA?TenantFilter=${tenant.defaultDomainName}&ID=!id`,
+              modalUrl: `/api/ExecResetMFA?TenantFilter=!Tenant&ID=!id`,
               modalMessage: 'Are you sure you want to enable MFA for these users?',
             },
             {
               label: 'Enable Online Archive',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecEnableArchive?TenantFilter=${tenant.defaultDomainName}&ID=!id`,
+              modalUrl: `/api/ExecEnableArchive?TenantFilter=!Tenant&ID=!id`,
               modalMessage: 'Are you sure you want to enable the online archive for these users?',
             },
             {
               label: 'Reset Password (Must Change)',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecResetPass?MustChange=true&TenantFilter=${tenant.defaultDomainName}&ID=!userPrincipalName&displayName=!displayName`,
+              modalUrl: `/api/ExecResetPass?MustChange=true&TenantFilter=!Tenant&ID=!userPrincipalName&displayName=!displayName`,
               modalMessage:
                 'Are you sure you want to reset the password for these users? The users must change their password at next logon.',
             },
@@ -385,7 +391,7 @@ const Users = (row) => {
               label: 'Reset Password',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecResetPass?MustChange=false&TenantFilter=${tenant.defaultDomainName}&ID=!userPrincipalName&displayName=!displayName`,
+              modalUrl: `/api/ExecResetPass?MustChange=false&TenantFilter=!Tenant&ID=!userPrincipalName&displayName=!displayName`,
               modalMessage:
                 'Are you sure you want to reset the password for these users? The users must change their password at next logon.',
             },
@@ -393,21 +399,21 @@ const Users = (row) => {
               label: 'Block signin',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecDisableUser?TenantFilter=${tenant.defaultDomainName}&ID=!userPrincipalName`,
+              modalUrl: `/api/ExecDisableUser?TenantFilter=!Tenant&ID=!userPrincipalName`,
               modalMessage: 'Are you sure you want to disable these users?',
             },
             {
               label: 'Unblock signin',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecDisableUser?Enable=true&TenantFilter=${tenant.defaultDomainName}&ID=!userPrincipalName`,
+              modalUrl: `/api/ExecDisableUser?Enable=true&TenantFilter=!Tenant&ID=!userPrincipalName`,
               modalMessage: 'Are you sure you want to enable these users?',
             },
             {
               label: 'Revoke sessions',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecRevokeSessions?Enable=true&TenantFilter=${tenant.defaultDomainName}&ID=!userPrincipalName`,
+              modalUrl: `/api/ExecRevokeSessions?Enable=true&TenantFilter=!Tenant&ID=!userPrincipalName`,
               modalMessage: 'Are you sure you want to revoke all sessions for these users?',
             },
             {
@@ -453,7 +459,7 @@ const Users = (row) => {
               label: 'Delete User',
               color: 'danger',
               modal: true,
-              modalUrl: `/api/RemoveUser?TenantFilter=${tenant.defaultDomainName}&ID=!id`,
+              modalUrl: `/api/RemoveUser?TenantFilter=!Tenant&ID=!id`,
               modalMessage: 'Are you sure you want to delete these users?',
             },
           ],
