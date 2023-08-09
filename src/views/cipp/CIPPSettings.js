@@ -1243,12 +1243,14 @@ const LicenseSettings = () => {
     {
       name: 'Display Name',
       selector: (row) => row['Product_Display_Name'],
+      exportSelector: 'Product_Display_Name',
       sortable: true,
       minWidth: '300px',
     },
     {
       name: 'License ID',
       selector: (row) => row['GUID'],
+      exportSelector: 'GUID',
       sortable: true,
       minWidth: '350px',
     },
