@@ -158,6 +158,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Geo IP Lookup',
+        to: '/tenant/tools/geoiplookup',
+      },
+      {
+        component: CNavItem,
         name: 'Tenant Lookup',
         to: '/tenant/administration/tenantlookup',
       },
