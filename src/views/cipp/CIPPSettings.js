@@ -1143,7 +1143,8 @@ const NotificationsSettings = () => {
                             { value: 'Alert', name: 'Alert' },
                             { value: 'Error', name: 'Error' },
                             { value: 'Info', name: 'Info' },
-                            { value: 'Warn', name: 'Warn' },
+                            { value: 'Warning', name: 'Warning' },
+                            { value: 'Critical', name: 'Critical' },
                           ]}
                         />
                       </CCol>
