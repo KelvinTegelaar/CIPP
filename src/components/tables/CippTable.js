@@ -499,7 +499,16 @@ export default function CippTable({
               {(massResults.length >= 1 || loopRunning) && (
                 <CCallout color="info">
                   {massResults.map((message, idx) => {
-                    return <li key={idx}>{message.data?.Results}</li>
+                    return (
+                      <li key={idx}>
+                        {
+                          //if message.data.results is an array, join, else just show the message
+                          message.data?.Results?.length > 1
+                            ? message.data?.Results?.join(', ')
+                            : message.data?.Results
+                        }
+                      </li>
+                    )
                   })}
                   {loopRunning && (
                     <li>
