@@ -75,7 +75,14 @@ RFFCFormCheck.propTypes = {
   ...sharedPropTypes,
 }
 
-export const RFFCFormSwitch = ({ name, label, className = 'mb-3', validate, disabled = false }) => {
+export const RFFCFormSwitch = ({
+  name,
+  label,
+  sublabel,
+  className = 'mb-3',
+  validate,
+  disabled = false,
+}) => {
   return (
     <Field name={name} type="checkbox" validate={validate}>
       {({ meta, input }) => (
@@ -90,6 +97,7 @@ export const RFFCFormSwitch = ({ name, label, className = 'mb-3', validate, disa
             label={label}
           />
           {input.value && <RFFCFormFeedback meta={meta} />}
+          <sub>{sublabel}</sub>
         </div>
       )}
     </Field>

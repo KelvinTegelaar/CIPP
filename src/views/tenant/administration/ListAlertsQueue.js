@@ -136,6 +136,27 @@ const ListAlertsQueue = () => {
       cell: cellBooleanFormatter(),
     },
     {
+      name: 'Sec Defaults Auto-Enable',
+      selector: (row) => row['SecDefaultsUpsell'],
+      sortable: true,
+      exportSelector: 'SecDefaultsUpsell',
+      cell: cellBooleanFormatter(),
+    },
+    {
+      name: 'Sharepoint Quota',
+      selector: (row) => row['SharepointQuota'],
+      sortable: true,
+      exportSelector: 'SharepointQuota',
+      cell: cellBooleanFormatter(),
+    },
+    {
+      name: 'Expiring Licenses',
+      selector: (row) => row['ExpiringLicenses'],
+      sortable: true,
+      exportSelector: 'ExpiringLicenses',
+      cell: cellBooleanFormatter(),
+    },
+    {
       name: 'Actions',
       cell: Actions,
     },
