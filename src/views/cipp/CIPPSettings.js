@@ -763,7 +763,7 @@ const ExcludedTenantsSettings = () => {
       )}
       {refreshPermissionsResults.isSuccess && (
         <CCallout color="success" dismissible>
-          {refreshPermissionsResults.data.map((result, idx) => (
+          {refreshPermissionsResults.data?.Results.map((result, idx) => (
             <li key={idx}>{result}</li>
           ))}
         </CCallout>
