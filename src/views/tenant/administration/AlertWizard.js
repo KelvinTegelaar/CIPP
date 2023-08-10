@@ -206,7 +206,7 @@ const AlertWizard = () => {
                   },
                   {
                     value: 'UserLoggedIn',
-                    name: 'A user has logged in from non-allowed location',
+                    name: 'A user has logged in from any location',
                   },
                 ]}
               />
