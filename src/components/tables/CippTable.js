@@ -163,9 +163,12 @@ export default function CippTable({
     }
   }
   const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false)
-  const filteredItems = data.filter(
-    (item) => JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !== -1,
-  )
+  const filteredItems = Array.isArray(data)
+    ? data.filter(
+        (item) => JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !== -1,
+      )
+    : []
+
   const applyFilter = (e) => {
     setFilterText(e.target.value)
   }
