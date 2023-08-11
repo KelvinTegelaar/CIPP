@@ -40,7 +40,7 @@ const EditTenant = () => {
   useEffect(() => {
     if (!tenantDomain || !customerId) {
       ModalService.open({
-        body: 'Error: INvalid request. Could not load requested tenant.',
+        body: 'Error: Invalid request. Could not load requested tenant.',
         title: 'Invalid Request',
       })
       setQueryError(true)
