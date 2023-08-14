@@ -78,6 +78,9 @@ export const cellGenericFormatter =
     if (typeof cell === 'string') {
       return CellTip(cell)
     }
+    if (typeof cell === 'number') {
+      return <CBadge color="info">{CellTip(cell)}</CBadge>
+    }
     if (Array.isArray(cell) || typeof cell === 'object') {
       return CellTip(JSON.stringify(cell))
     }
