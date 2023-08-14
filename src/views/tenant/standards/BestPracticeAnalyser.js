@@ -22,7 +22,7 @@ import {
   faExclamationTriangle,
   faCheck,
 } from '@fortawesome/free-solid-svg-icons'
-import { CippTable } from 'src/components/tables'
+import { CippTable, cellBooleanFormatter } from 'src/components/tables'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { CippPage } from 'src/components/layout/CippPage'
@@ -32,6 +32,7 @@ import { queryString } from 'src/helpers'
 import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 import { useExecBestPracticeAnalyserMutation } from 'src/store/api/reports'
 import { ModalService } from 'src/components/utilities'
+import { cellTableFormatter } from 'src/components/tables/CellTable'
 const RefreshAction = () => {
   const [execBestPracticeAnalyser, { isLoading, isSuccess, error }] =
     useExecBestPracticeAnalyserMutation()
@@ -58,7 +59,7 @@ const RefreshAction = () => {
   )
 }
 const BestPracticeAnalyser = () => {
-  const { data: templates = [] } = useGenericGetRequestQuery({
+  const { data: templates = [], isLoading: templatesfetch } = useGenericGetRequestQuery({
     path: 'api/listBPATemplates',
   })
   let navigate = useNavigate()
@@ -102,18 +103,36 @@ const BestPracticeAnalyser = () => {
         return acc ? acc[part] : undefined
       }, obj)
     }
-
-    // Set columns
     const flatObj = graphrequest.data.Columns
-    flatObj.map((col) =>
+
+    flatObj.map((col) => {
+      // Determine the cell selector based on the 'formatter' property
+      let cellSelector
+      if (col.formatter) {
+        switch (col.formatter) {
+          case 'bool':
+            cellSelector = cellBooleanFormatter()
+            break
+          case 'table':
+            cellSelector = cellTableFormatter(col.value)
+            break
+          default:
+            cellSelector = cellGenericFormatter()
+            break
+        }
+      } else {
+        cellSelector = cellGenericFormatter()
+      }
+
       QueryColumns.data.push({
         name: col.name,
         selector: (row) => getNestedValue(row, col.value),
         sortable: true,
         exportSelector: col.value,
-        cell: cellGenericFormatter(),
-      }),
-    )
+        cell: cellSelector, // Use the determined cell selector
+      })
+    })
+
     QueryColumns.set = true
   }
 
@@ -157,13 +176,14 @@ const BestPracticeAnalyser = () => {
                             <RFFCFormSelect
                               name="reportTemplate"
                               label="Select a report"
-                              placeholder={'Select a report'}
+                              placeholder={templatesfetch ? 'Loading...' : 'Select a report'}
                               values={templates.map((template) => ({
                                 label: template.Name,
                                 value: template.Name,
                               }))}
                             />
                           </CCol>
+                          {templatesfetch && <CSpinner />}
                         </CRow>
                         <CRow></CRow>
                         <CRow className="mb-3">
@@ -187,11 +207,12 @@ const BestPracticeAnalyser = () => {
       <CRow>
         <CCol>
           <CippPage title="Report Results" tenantSelector={false}>
-            {!SearchNow && <span>Choose a BPA Report to get started.</span>}
-            {graphrequest.isSuccess && QueryColumns.set && SearchNow && (
+            {graphrequest.isUninitialized && <span>Choose a BPA Report to get started.</span>}
+            {graphrequest.isFetching && <CSpinner />}
+            {graphrequest.isSuccess && QueryColumns.set && (
               <CCard className="content-card">
                 <CCardHeader className="d-flex justify-content-between align-items-center">
-                  <CCardTitle>Results</CCardTitle>
+                  <CCardTitle>Best Practice Report</CCardTitle>
                 </CCardHeader>
                 <CCardBody>
                   <CippTable
