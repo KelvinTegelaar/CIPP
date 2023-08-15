@@ -233,6 +233,7 @@ const BestPracticeAnalyser = () => {
                 </CCardHeader>
                 <CCardBody>
                   <CippTable
+                    key={QueryColumns.data}
                     reportName="BestPracticeAnalyser"
                     dynamicColumns={false}
                     columns={QueryColumns.data}
