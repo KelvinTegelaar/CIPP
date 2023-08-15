@@ -127,6 +127,9 @@ const BestPracticeAnalyser = () => {
           case 'reverseBool':
             cellSelector = cellBooleanFormatter({ reverse: true })
             break
+          case 'warnBool':
+            cellSelector = cellBooleanFormatter({ warning: true })
+            break
           case 'table':
             cellSelector = cellTableFormatter(col.value)
             break
