@@ -25,6 +25,7 @@ import {
   faCheck,
   faCross,
   faTimes,
+  faExclamation,
 } from '@fortawesome/free-solid-svg-icons'
 import { CippTable, cellBooleanFormatter } from 'src/components/tables'
 import { useSelector } from 'react-redux'
@@ -307,7 +308,9 @@ const BestPracticeAnalyser = () => {
                                 color={graphrequest.data.Data[info.value] ? 'info' : 'warning'}
                               >
                                 <FontAwesomeIcon
-                                  icon={graphrequest.data.Data[info.value] ? faCheck : faTimes}
+                                  icon={
+                                    graphrequest.data.Data[info.value] ? faCheck : faExclamation
+                                  }
                                   size="lg"
                                   className="me-1"
                                 />
