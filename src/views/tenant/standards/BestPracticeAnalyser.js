@@ -29,7 +29,7 @@ import { CippPage } from 'src/components/layout/CippPage'
 import { useGenericGetRequestQuery, useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import { OnChange } from 'react-final-form-listeners'
 import { queryString } from 'src/helpers'
-import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
+import { CellTip, cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 import { useExecBestPracticeAnalyserMutation } from 'src/store/api/reports'
 import { ModalService } from 'src/components/utilities'
 import { cellTableFormatter } from 'src/components/tables/CellTable'
@@ -82,7 +82,18 @@ const BestPracticeAnalyser = () => {
     navigate(`?${queryString}`)
   }
   const [execGraphRequest, graphrequest] = useLazyGenericGetRequestQuery()
-  const QueryColumns = { set: false, data: [] }
+  const QueryColumns = {
+    set: false,
+    data: [
+      {
+        name: 'Tenant',
+        selector: (row) => row['Tenant'],
+        sortable: true,
+        exportSelector: 'Tenant',
+        cell: (row) => CellTip(row['Tenant']),
+      },
+    ],
+  }
 
   if (graphrequest.isSuccess) {
     if (graphrequest.data.length === 0) {
@@ -103,7 +114,7 @@ const BestPracticeAnalyser = () => {
         return acc ? acc[part] : undefined
       }, obj)
     }
-    const flatObj = graphrequest.data.Columns
+    const flatObj = graphrequest.data.Columns ? graphrequest.data.Columns : []
 
     flatObj.map((col) => {
       // Determine the cell selector based on the 'formatter' property
@@ -112,6 +123,9 @@ const BestPracticeAnalyser = () => {
         switch (col.formatter) {
           case 'bool':
             cellSelector = cellBooleanFormatter()
+            break
+          case 'reverseBool':
+            cellSelector = cellBooleanFormatter({ reverse: true })
             break
           case 'table':
             cellSelector = cellTableFormatter(col.value)

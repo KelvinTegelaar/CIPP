@@ -339,32 +339,35 @@ export default function CippTable({
         return null
       })
 
-      const filtered = data.map((obj) =>
-        // eslint-disable-next-line no-sequences
-        /* keys.reduce((acc, curr) => ((acc[curr] = obj[curr]), acc), {}),*/
-        keys.reduce((acc, curr) => {
-          const key = curr.split('/')
-          if (key.length > 1) {
-            var property = obj
-            for (var x = 0; x < key.length; x++) {
-              if (property.hasOwnProperty(key[x]) && property[key[x]] !== null) {
-                property = property[key[x]]
-              } else {
-                property = 'n/a'
-                break
-              }
-            }
-            acc[curr] = property
-          } else {
-            if (typeof exportFormatter[curr] === 'function') {
-              acc[curr] = exportFormatter[curr]({ cell: obj[curr] })
-            } else {
-              acc[curr] = obj[curr]
-            }
-          }
-          return acc
-        }, {}),
-      )
+      const filtered =
+        Array.isArray(data) && data.length > 0
+          ? data.map((obj) =>
+              // eslint-disable-next-line no-sequences
+              /* keys.reduce((acc, curr) => ((acc[curr] = obj[curr]), acc), {}),*/
+              keys.reduce((acc, curr) => {
+                const key = curr.split('/')
+                if (key.length > 1) {
+                  var property = obj
+                  for (var x = 0; x < key.length; x++) {
+                    if (property.hasOwnProperty(key[x]) && property[key[x]] !== null) {
+                      property = property[key[x]]
+                    } else {
+                      property = 'n/a'
+                      break
+                    }
+                  }
+                  acc[curr] = property
+                } else {
+                  if (typeof exportFormatter[curr] === 'function') {
+                    acc[curr] = exportFormatter[curr]({ cell: obj[curr] })
+                  } else {
+                    acc[curr] = obj[curr]
+                  }
+                }
+                return acc
+              }, {}),
+            )
+          : []
 
       if (!disablePDFExport) {
         if (dynamicColumns === true) {
