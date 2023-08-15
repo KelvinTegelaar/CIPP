@@ -152,7 +152,10 @@ const checkAccessColumns = [
   {
     name: 'Result',
     selector: (row) => row['Status'],
-    grow: 1,
+  },
+  {
+    name: 'Missing GDAP Roles',
+    selector: (row) => row['GDAP'],
   },
 ]
 
