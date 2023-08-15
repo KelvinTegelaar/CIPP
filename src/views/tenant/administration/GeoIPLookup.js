@@ -24,12 +24,6 @@ import { CippContentCard } from 'src/components/layout'
 import Skeleton from 'react-loading-skeleton'
 import { domainsApi } from 'src/store/api/domains'
 
-const isValidTenantInput = (value) => {
-  // Check if the input is a valid IPAddress
-  const ipRegex = new RegExp('^([0-9]{1,3}\\.){3}[0-9]{1,3}$')
-  return !ipRegex.test(value)
-}
-
 const GeoIPLookup = () => {
   let navigate = useNavigate()
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -80,7 +74,7 @@ const GeoIPLookup = () => {
               render={({ handleSubmit, submitting, pristine }) => {
                 return (
                   <CForm onSubmit={handleSubmit}>
-                    <Field name="domain" validate={isValidTenantInput}>
+                    <Field name="domain">
                       {({ input, meta }) => {
                         return (
                           <>

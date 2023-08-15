@@ -152,7 +152,12 @@ const checkAccessColumns = [
   {
     name: 'Result',
     selector: (row) => row['Status'],
-    grow: 1,
+    minWidth: '380px',
+    maxWidth: '380px',
+  },
+  {
+    name: 'Missing GDAP Roles',
+    selector: (row) => row['GDAP'],
   },
 ]
 
@@ -763,7 +768,7 @@ const ExcludedTenantsSettings = () => {
       )}
       {refreshPermissionsResults.isSuccess && (
         <CCallout color="success" dismissible>
-          {refreshPermissionsResults.data.map((result, idx) => (
+          {refreshPermissionsResults.data?.Results.map((result, idx) => (
             <li key={idx}>{result}</li>
           ))}
         </CCallout>
@@ -1143,7 +1148,8 @@ const NotificationsSettings = () => {
                             { value: 'Alert', name: 'Alert' },
                             { value: 'Error', name: 'Error' },
                             { value: 'Info', name: 'Info' },
-                            { value: 'Warn', name: 'Warn' },
+                            { value: 'Warning', name: 'Warning' },
+                            { value: 'Critical', name: 'Critical' },
                           ]}
                         />
                       </CCol>
