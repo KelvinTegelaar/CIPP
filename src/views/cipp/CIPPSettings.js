@@ -152,6 +152,8 @@ const checkAccessColumns = [
   {
     name: 'Result',
     selector: (row) => row['Status'],
+    minWidth: '380px',
+    maxWidth: '380px',
   },
   {
     name: 'Missing GDAP Roles',
