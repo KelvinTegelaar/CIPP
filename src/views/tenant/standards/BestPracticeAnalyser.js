@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import {
+  CBadge,
   CButton,
   CCard,
   CCardBody,
   CCardHeader,
+  CCardText,
   CCardTitle,
   CCol,
   CCollapse,
@@ -21,6 +23,8 @@ import {
   faSearch,
   faExclamationTriangle,
   faCheck,
+  faCross,
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons'
 import { CippTable, cellBooleanFormatter } from 'src/components/tables'
 import { useSelector } from 'react-redux'
@@ -58,6 +62,37 @@ const RefreshAction = () => {
     </CButton>
   )
 }
+
+const getsubcolumns = (data) => {
+  const flatObj = data && data.length > 0 ? data : [{ data: 'No Data Found' }]
+  const QueryColumns = []
+  if (flatObj[0]) {
+    Object.keys(flatObj[0]).map((key) => {
+      QueryColumns.push({
+        name: key,
+        selector: (row) => row[key], // Accessing the property using the key
+        sortable: true,
+        exportSelector: key,
+        cell: cellGenericFormatter(),
+      })
+    })
+  }
+  return QueryColumns
+}
+const getNestedValue = (obj, path) => {
+  if (!path) return undefined
+  return path.split('.').reduce((acc, part) => {
+    // Check for an array marker
+    const match = part.match(/(.*?)\[(\d+)\]/)
+    if (match) {
+      const propName = match[1]
+      const index = parseInt(match[2], 10)
+      return acc[propName] ? acc[propName][index] : undefined
+    }
+    // If no array marker, simply return the property value
+    return acc ? acc[part] : undefined
+  }, obj)
+}
 const BestPracticeAnalyser = () => {
   const { data: templates = [], isLoading: templatesfetch } = useGenericGetRequestQuery({
     path: 'api/listBPATemplates',
@@ -73,6 +108,7 @@ const BestPracticeAnalyser = () => {
     const shippedValues = {
       SearchNow: true,
       Report: values.reportTemplate,
+      tenantFilter: tenant.customerId,
       random: (Math.random() + 1).toString(36).substring(7),
     }
     var queryString = Object.keys(shippedValues)
@@ -98,21 +134,6 @@ const BestPracticeAnalyser = () => {
   if (graphrequest.isSuccess) {
     if (graphrequest.data.length === 0) {
       graphrequest.data = [{ data: 'No Data Found' }]
-    }
-
-    const getNestedValue = (obj, path) => {
-      if (!path) return undefined
-      return path.split('.').reduce((acc, part) => {
-        // Check for an array marker
-        const match = part.match(/(.*?)\[(\d+)\]/)
-        if (match) {
-          const propName = match[1]
-          const index = parseInt(match[2], 10)
-          return acc[propName] ? acc[propName][index] : undefined
-        }
-        // If no array marker, simply return the property value
-        return acc ? acc[part] : undefined
-      }, obj)
     }
     const flatObj = graphrequest.data.Columns ? graphrequest.data.Columns : []
 
@@ -157,7 +178,7 @@ const BestPracticeAnalyser = () => {
     execGraphRequest({
       path: 'api/listBPA',
       params: {
-        tenantFilter: tenant.defaultDomainName,
+        tenantFilter: tenant.customerId,
         Report: Report,
         SearchNow: SearchNow,
       },
@@ -226,7 +247,7 @@ const BestPracticeAnalyser = () => {
           <CippPage title="Report Results" tenantSelector={false}>
             {graphrequest.isUninitialized && <span>Choose a BPA Report to get started.</span>}
             {graphrequest.isFetching && <CSpinner />}
-            {graphrequest.isSuccess && QueryColumns.set && (
+            {graphrequest.isSuccess && QueryColumns.set && graphrequest.data.Style == 'Table' && (
               <CCard className="content-card">
                 <CCardHeader className="d-flex justify-content-between align-items-center">
                   <CCardTitle>Best Practice Report</CCardTitle>
@@ -245,6 +266,81 @@ const BestPracticeAnalyser = () => {
                   />
                 </CCardBody>
               </CCard>
+            )}
+            {graphrequest.isSuccess && QueryColumns.set && graphrequest.data.Style == 'Tenant' && (
+              <>
+                <CRow>
+                  {graphrequest.data.Columns.map((info, idx) => (
+                    <CCol sm={10} md={4} className="mb-3">
+                      <CCard className="h-100">
+                        <CCardHeader>
+                          <CCardTitle>{info.name}</CCardTitle>
+                        </CCardHeader>
+                        <CCardBody>
+                          <CCardText>
+                            {info.formatter === 'bool' && (
+                              <CBadge
+                                color={graphrequest.data.Data[info.value] ? 'info' : 'danger'}
+                              >
+                                <FontAwesomeIcon
+                                  icon={graphrequest.data.Data[info.value] ? faCheck : faTimes}
+                                  size="lg"
+                                  className="me-1"
+                                />
+                                {graphrequest.data.Data[info.value] ? 'Yes' : 'No'}
+                              </CBadge>
+                            )}
+                            {info.formatter === 'reverseBool' && (
+                              <CBadge
+                                color={graphrequest.data.Data[info.value] ? 'danger' : 'info'}
+                              >
+                                <FontAwesomeIcon
+                                  icon={graphrequest.data.Data[info.value] ? faTimes : faCheck}
+                                  size="lg"
+                                  className="me-1"
+                                />
+                                {graphrequest.data.Data[info.value] ? 'No' : 'Yes'}
+                              </CBadge>
+                            )}
+                            {info.formatter === 'warnBool' && (
+                              <CBadge
+                                color={graphrequest.data.Data[info.value] ? 'info' : 'warning'}
+                              >
+                                <FontAwesomeIcon
+                                  icon={graphrequest.data.Data[info.value] ? faCheck : faTimes}
+                                  size="lg"
+                                  className="me-1"
+                                />
+                                {graphrequest.data.Data[info.value] ? 'Yes' : 'No'}
+                              </CBadge>
+                            )}
+
+                            {info.formatter === 'table' && (
+                              <CippTable
+                                key={QueryColumns.data}
+                                reportName="BestPracticeAnalyser"
+                                dynamicColumns={false}
+                                columns={getsubcolumns(graphrequest.data.Data[info.value])}
+                                data={graphrequest.data.Data[info.value]}
+                                isFetching={graphrequest.isFetching}
+                              />
+                            )}
+
+                            {info.formatter === 'number' && (
+                              <p class="fs-1 text-center">
+                                {getNestedValue(graphrequest.data.Data, info.value)}
+                              </p>
+                            )}
+                          </CCardText>
+                          <CCardText>
+                            <small className="text-medium-emphasis">{info.desc}</small>
+                          </CCardText>
+                        </CCardBody>
+                      </CCard>
+                    </CCol>
+                  ))}
+                </CRow>
+              </>
             )}
           </CippPage>
         </CCol>
