@@ -83,4 +83,8 @@
 * **Description**: A conditional filter to determine which data gets displayed or processed. Use PowerShell's Where-Object Filterscript format.
 * **Example**: `"where": "$_.definition -like '*WebSessionIdleTimeout*'"`
 
-\
+I. `desc`` `**`(Tenant overview only)`**\
+
+
+* **Description**: A description field shown on the end of the card on the tenant overview page
+* **Example**: `"This shows you how many users are in your tenant."`
