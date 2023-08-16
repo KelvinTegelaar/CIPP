@@ -2,13 +2,13 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "RunAllTasks",
-      "dependsOn": ["RunAPI", "RunAzurite"]
+      "label": "Run All Tasks",
+      "dependsOn": ["Run API", "Run Azurite"]
     },
     {
-      "label": "RunAzurite",
+      "label": "Run Azurite",
       "type": "shell",
-      "command": "azurite",
+      "command": "azurite --location ../",
       "isBackground": true,
       "problemMatcher": {
         "pattern": [
@@ -27,7 +27,7 @@
       }
     },
     {
-      "label": "RunAPI",
+      "label": "Run API",
       "type": "shell",
       "command": "func start --verbose",
       "isBackground": true,
