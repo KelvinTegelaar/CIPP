@@ -214,7 +214,7 @@ const EditCalendarPermission = () => {
                 </CCardHeader>
                 <CCardBody>
                   {userIsFetching && <CSpinner />}
-                  {!userIsFetching && (
+                  {!userIsFetching && !userError && (
                     <>
                       {user.length > 0 && (
                         <CippTable reportName="UserPermissions" columns={columns} data={user} />
