@@ -274,7 +274,7 @@ const BestPracticeAnalyser = () => {
               <>
                 <CRow>
                   {graphrequest.data.Columns.map((info, idx) => (
-                    <CCol sm={10} md={4} className="mb-3">
+                    <CCol md={12} xl={4} className="mb-3">
                       <CCard className="h-100">
                         <CCardHeader>
                           <CCardTitle>{info.name}</CCardTitle>
