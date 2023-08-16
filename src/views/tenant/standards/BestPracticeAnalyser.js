@@ -95,6 +95,7 @@ const getNestedValue = (obj, path) => {
   }, obj)
 }
 const BestPracticeAnalyser = () => {
+  const [reportTemplate, setReportTemplate] = useState('CIPP Best Practices v1.0 - Table view')
   const { data: templates = [], isLoading: templatesfetch } = useGenericGetRequestQuery({
     path: 'api/listBPATemplates',
   })
@@ -106,9 +107,10 @@ const BestPracticeAnalyser = () => {
   const [visibleA, setVisibleA] = useState(true)
   const handleSubmit = async (values) => {
     setVisibleA(false)
+    setReportTemplate(values.reportTemplate)
     const shippedValues = {
       SearchNow: true,
-      Report: values.reportTemplate,
+      Report: reportTemplate,
       tenantFilter: tenant.customerId,
       random: (Math.random() + 1).toString(36).substring(7),
     }
@@ -180,7 +182,7 @@ const BestPracticeAnalyser = () => {
       path: 'api/listBPA',
       params: {
         tenantFilter: tenant.customerId,
-        Report: Report,
+        Report: reportTemplate,
         SearchNow: SearchNow,
       },
     })
