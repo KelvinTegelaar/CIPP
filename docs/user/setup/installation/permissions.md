@@ -66,7 +66,6 @@ Some permissions may come from other APIs than just Graph. you will see this bot
 | DeviceManagementServiceConfig.ReadWrite.All             | Read and write Microsoft Intune configuration                            |
 | Directory.AccessAsUser.All                              | Access directory as the signed in user                                   |
 | Domain.Read.All                                         | Read domain data                                                         |
-| Exchange.Manage (Office 365 Exchange Online)            | Manage Exchange configuration                                            |
 | Group.ReadWrite.All                                     | Read and write all groups                                                |
 | GroupMember.ReadWrite.All                               | Read and write group memberships                                         |
 | Mail.Send                                               | Send mail as a user                                                      |
@@ -151,6 +150,7 @@ Some permissions may come from other APIs than just Graph. you will see this bot
 | DeviceManagementServiceConfig.ReadWrite.All             | Read and write Microsoft Intune configuration                         |
 | Directory.Read.All                                      | Read directory data                                                   |
 | Domain.Read.All                                         | Read Domains                                                          |
+| Exchange.Manage (Office 365 Exchange Online)            | Manage Exchange configuration                                            |
 | Group.Create                                            | Create groups                                                         |
 | Group.Read.All                                          | Read all groups                                                       |
 | Group.ReadWrite.All                                     | Read and write all groups                                             |
