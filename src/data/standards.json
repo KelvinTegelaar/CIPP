@@ -182,6 +182,12 @@
   },
   {
     "cat": "AAD",
+    "name": "standards.OauthConsentLowSec",
+    "helpText": "",
+    "label": "Allow users to consent to applications with low security risk (Prevent OAuth phishing. Lower impact, less secure.)"
+  },
+  {
+    "cat": "AAD",
     "name": "standards.LegacyMFA",
     "helpText": "",
     "addedComponent": null,
