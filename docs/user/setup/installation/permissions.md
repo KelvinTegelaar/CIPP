@@ -35,6 +35,7 @@ Some permissions may come from other APIs than just Graph. you will see this bot
 
 | API / Permissions name                                  | Description                                                              |
 | ------------------------------------------------------- | ------------------------------------------------------------------------ |
+| ActivityFeed.Read (Office 365 Management API)           | Read activity data for your organization                                 |
 | AllSites.FullControl (Office 365 SharePoint Online)     | Have full control of all site collections                                |
 | Application.Read.All                                    | Read applications                                                        |
 | Application.ReadWrite.All                               | Read and write all applications                                          |
