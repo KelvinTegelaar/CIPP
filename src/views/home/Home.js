@@ -115,7 +115,7 @@ const Home = () => {
     },
     {
       label: 'Azure',
-      link: `https://portal.azure.com/?tid=${currentTenant.defaultDomainName}`,
+      link: `https://portal.azure.com/#@${currentTenant.customerId}`,
       icon: faServer,
     },
     {

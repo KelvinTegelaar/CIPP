@@ -163,9 +163,12 @@ export default function CippTable({
     }
   }
   const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false)
-  const filteredItems = data.filter(
-    (item) => JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !== -1,
-  )
+  const filteredItems = Array.isArray(data)
+    ? data.filter(
+        (item) => JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !== -1,
+      )
+    : []
+
   const applyFilter = (e) => {
     setFilterText(e.target.value)
   }
@@ -336,32 +339,35 @@ export default function CippTable({
         return null
       })
 
-      const filtered = data.map((obj) =>
-        // eslint-disable-next-line no-sequences
-        /* keys.reduce((acc, curr) => ((acc[curr] = obj[curr]), acc), {}),*/
-        keys.reduce((acc, curr) => {
-          const key = curr.split('/')
-          if (key.length > 1) {
-            var property = obj
-            for (var x = 0; x < key.length; x++) {
-              if (property.hasOwnProperty(key[x]) && property[key[x]] !== null) {
-                property = property[key[x]]
-              } else {
-                property = 'n/a'
-                break
-              }
-            }
-            acc[curr] = property
-          } else {
-            if (typeof exportFormatter[curr] === 'function') {
-              acc[curr] = exportFormatter[curr]({ cell: obj[curr] })
-            } else {
-              acc[curr] = obj[curr]
-            }
-          }
-          return acc
-        }, {}),
-      )
+      const filtered =
+        Array.isArray(data) && data.length > 0
+          ? data.map((obj) =>
+              // eslint-disable-next-line no-sequences
+              /* keys.reduce((acc, curr) => ((acc[curr] = obj[curr]), acc), {}),*/
+              keys.reduce((acc, curr) => {
+                const key = curr.split('/')
+                if (key.length > 1) {
+                  var property = obj
+                  for (var x = 0; x < key.length; x++) {
+                    if (property.hasOwnProperty(key[x]) && property[key[x]] !== null) {
+                      property = property[key[x]]
+                    } else {
+                      property = 'n/a'
+                      break
+                    }
+                  }
+                  acc[curr] = property
+                } else {
+                  if (typeof exportFormatter[curr] === 'function') {
+                    acc[curr] = exportFormatter[curr]({ cell: obj[curr] })
+                  } else {
+                    acc[curr] = obj[curr]
+                  }
+                }
+                return acc
+              }, {}),
+            )
+          : []
 
       if (!disablePDFExport) {
         if (dynamicColumns === true) {
@@ -499,7 +505,16 @@ export default function CippTable({
               {(massResults.length >= 1 || loopRunning) && (
                 <CCallout color="info">
                   {massResults.map((message, idx) => {
-                    return <li key={idx}>{message.data.Results}</li>
+                    return (
+                      <li key={idx}>
+                        {
+                          //if message.data.results is an array, join, else just show the message
+                          message.data?.Results?.length > 1
+                            ? message.data?.Results?.join(', ')
+                            : message.data?.Results
+                        }
+                      </li>
+                    )
                   })}
                   {loopRunning && (
                     <li>
