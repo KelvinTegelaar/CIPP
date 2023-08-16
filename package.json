@@ -21,7 +21,7 @@
     "test": "react-scripts test",
     "test:cov": "npm test -- --coverage --watchAll=false",
     "test:debug": "react-scripts --inspect-brk test --runInBand",
-    "start-api": "swa start --ssl --ssl-cert ./.vscode/cert.crt --ssl-key ./.vscode/key.key --swa-config-location .vscode http://localhost:3000 --api-location http://localhost:7071",
+    "start-swa": "swa start --swa-config-location .vscode http://127.0.0.1:3000 --api-location http://localhost:7071",
     "prepare": "husky install"
   },
   "config": {
@@ -92,13 +92,13 @@
     "prettier": "2.4.1",
     "react-scripts": "^5.0.0",
     "redux-immutable-state-invariant": "^2.1.0",
-    "sass": "^1.44",
+    "sass": "^1.64.2",
     "stylelint": "^14.3.0",
     "stylelint-config-sass-guidelines": "^9.0.1",
     "stylelint-order": "^5.0.0"
   },
   "engines": {
-    "node": "16",
+    "node": "18",
     "npm": ">=7"
   }
 }
