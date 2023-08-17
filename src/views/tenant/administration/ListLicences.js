@@ -42,6 +42,7 @@ const columns = [
     name: 'Estimated Term',
     selector: (row) => row['EstTerm'],
     sortable: true,
+    cell: (row) => CellTip(row['EstTerm']),
     exportSelector: 'EstTerm',
   },
   {
@@ -52,7 +53,7 @@ const columns = [
     cell: cellBooleanFormatter(),
   },
   {
-    name: 'Time until renewal (days)',
+    name: 'Days until renewal',
     selector: (row) => row['TimeUntilRenew'],
     sortable: true,
     exportSelector: 'TimeUntilRenew',
@@ -65,7 +66,7 @@ const columns = [
     cell: cellDateFormatter(),
   },
   {
-    name: 'Time until renewal (days)',
+    name: 'Renewal Date',
     selector: (row) => row['dateExpires'],
     sortable: true,
     exportSelector: 'dateExpires',
