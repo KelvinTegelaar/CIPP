@@ -129,7 +129,7 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Scheduled Alerts',
+        name: 'Alerts Configuration',
         to: '/tenant/administration/alertsqueue',
       },
       {
@@ -155,6 +155,11 @@ const _nav = [
         component: CNavItem,
         name: 'Application Approval',
         to: '/tenant/administration/appapproval',
+      },
+      {
+        component: CNavItem,
+        name: 'Geo IP Lookup',
+        to: '/tenant/tools/geoiplookup',
       },
       {
         component: CNavItem,
