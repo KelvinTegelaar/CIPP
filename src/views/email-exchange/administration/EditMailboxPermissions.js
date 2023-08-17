@@ -122,6 +122,8 @@ const MailboxPermissions = () => {
       RemoveFullAccess: values.RemoveFullAccess ? values.RemoveFullAccess : null,
       AddSendAs: values.AddSendAs ? values.AddSendAs : null,
       RemoveSendAs: values.RemoveSendAs ? values.RemoveSendAs : null,
+      AddSendOnBehalf: values.AddSendOnBehalf ? values.AddSendOnBehalf : null,
+      RemoveSendOnBehalf: values.RemoveSendOnBehalf ? values.RemoveSendOnBehalf : null,
     }
     //window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/ExecEditMailboxPermissions', values: shippedValues })
@@ -247,6 +249,34 @@ const MailboxPermissions = () => {
                                   }))}
                                   placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                                   name="RemoveSendAs"
+                                />
+                                {usersError && <span>Failed to load list of users</span>}
+                              </CCol>
+                              <CCol md={12}>
+                                <RFFSelectSearch
+                                  multi={true}
+                                  label="Add Send On Behalf permissions"
+                                  disabled={formDisabled}
+                                  values={users?.map((user) => ({
+                                    value: user.mail,
+                                    name: `${user.displayName} - ${user.mail} `,
+                                  }))}
+                                  placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
+                                  name="AddSendOnBehalf"
+                                />
+                                {usersError && <span>Failed to load list of users</span>}
+                              </CCol>
+                              <CCol md={12}>
+                                <RFFSelectSearch
+                                  multi={true}
+                                  label="Remove Send On Behalf permissions"
+                                  disabled={formDisabled}
+                                  values={users?.map((user) => ({
+                                    value: user.mail,
+                                    name: `${user.displayName} - ${user.mail} `,
+                                  }))}
+                                  placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
+                                  name="RemoveSendOnBehalf"
                                 />
                                 {usersError && <span>Failed to load list of users</span>}
                               </CCol>
