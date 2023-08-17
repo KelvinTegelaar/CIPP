@@ -408,7 +408,7 @@
   --cui-color-orange: #f77f00;
   --cui-color-table-border: rgba(146, 154, 158, 0.8);
   --cui-color-card-shadow: rgba(207, 192, 192, 0.2);
-
+  --text-medium-emphasis: rgba(255, 255, 255, 0.6);
   // Core UI Impact theme variables.
   --cui-header-hover-color: var(--cyberdrain-light);
   --cui-header-active-color: var(--cyberdrain-accent-blue);
@@ -519,7 +519,9 @@
     overflow: hidden;
     z-index: 1; /* Necessary for overflow: hidden to work correctly in Safari */
   }
-
+  .text-medium-emphasis {
+    color: var(--text-medium-emphasis) !important;
+  }
   .react-loading-skeleton::after {
     content: ' ';
     display: var(--pseudo-element-display);

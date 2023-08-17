@@ -129,7 +129,7 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Scheduled Alerts',
+        name: 'Alerts Configuration',
         to: '/tenant/administration/alertsqueue',
       },
       {
@@ -155,6 +155,11 @@ const _nav = [
         component: CNavItem,
         name: 'Application Approval',
         to: '/tenant/administration/appapproval',
+      },
+      {
+        component: CNavItem,
+        name: 'Geo IP Lookup',
+        to: '/tenant/tools/geoiplookup',
       },
       {
         component: CNavItem,
@@ -692,6 +697,11 @@ const _nav = [
         component: CNavItem,
         name: 'GDAP Migration Status',
         to: '/tenant/administration/gdap-status',
+      },
+      {
+        component: CNavItem,
+        name: 'Invite Wizard',
+        to: '/tenant/administration/gdap-invite',
       },
       {
         component: CNavItem,
