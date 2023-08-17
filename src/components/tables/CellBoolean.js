@@ -7,6 +7,7 @@ import {
   faExclamationCircle,
 } from '@fortawesome/free-solid-svg-icons'
 import { CellBadge } from 'src/components/tables'
+import { CBadge } from '@coreui/react'
 
 const IconWarning = () => <FontAwesomeIcon icon={faExclamationCircle} className="text-warning" />
 const IconError = () => <FontAwesomeIcon icon={faTimesCircle} className="text-danger" />
@@ -37,6 +38,9 @@ export default function CellBoolean({
   noDataIsFalse = false,
 }) {
   let normalized = cell
+  if (cell === 'FAILED') {
+    return <CBadge color="danger">Failed. Check Logs</CBadge>
+  }
   if (typeof cell === 'boolean') {
     normalized = cell
   } else if (typeof cell === 'string') {
@@ -52,7 +56,8 @@ export default function CellBoolean({
       cell.toLowerCase() === 'fail' ||
       cell.toLowerCase() === 'default' ||
       cell.toLowerCase() === 'false' ||
-      cell.toLowerCase() === 'noncompliant'
+      cell.toLowerCase() === 'noncompliant' ||
+      cell.toLowerCase() === 'disabled'
     ) {
       normalized = false
     }

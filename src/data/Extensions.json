@@ -56,7 +56,7 @@
     "type": "HaloPSA",
     "cat": "Ticketing",
     "forceSyncButton": false,
-    "helpText": "This integration allows you to use to send alerts to your ticketing system.",
+    "helpText": "This integration allows you to send alerts to your ticketing system.",
     "SettingOptions": [
       {
         "type": "input",
