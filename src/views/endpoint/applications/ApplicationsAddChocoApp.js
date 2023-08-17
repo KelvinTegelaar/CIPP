@@ -284,7 +284,8 @@ const ApplyStandard = () => {
                           Disable Restart: {props.values.DisableRestart ? 'Yes' : 'No'}
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Assign to: {props.values.AssignTo}
+                          Assign to:
+                          {props.values.AssignTo == 'on' ? ' None' : ` ${props.values.AssignTo}`}
                         </CListGroupItem>
                       </CListGroup>
                     </CCol>
