@@ -166,7 +166,7 @@ Hosted clients can clear their own token cache via [management.cipp.app](https:/
 
 <!---->
 
-* Create a new file (name doesn’t matter as long as it ends in .yaml) in your .GitHub/workflows folder
+* Create a new file (name doesn’t matter as long as it ends in .yml) in your .github/workflows folder
 
 <!---->
 
@@ -190,7 +190,7 @@ Hosted clients can clear their own token cache via [management.cipp.app](https:/
 
 <!---->
 
-* Create a new file (name doesn’t matter as long as it ends in .yaml) in your .GitHub/workflows folder
+* Create a new file (name doesn’t matter as long as it ends in .yml) in your .github/workflows folder
 
 <!---->
 
