@@ -120,8 +120,8 @@ You can test this with the Access Check by navigating to **CIPP Settings > Confi
 
 The following APIs are called on this page:
 
-{% swagger src="../../.gitbook/assets/openapicipp.json" path="/BestPracticeAnalyser_List" method="get" %}
-[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% swagger src="../../../../.gitbook/assets/openapicipp.json" path="/BestPracticeAnalyser_List" method="get" %}
+[openapicipp.json](../../../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
 ### Feature Requests / Ideas
