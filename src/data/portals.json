@@ -2,7 +2,7 @@
   {
     "label": "M365 Portal",
     "name": "M365_Portal",
-    "url": "https://portal.office.com/Partner/BeginClientSession.aspx?CTID=customerId&CSDEST=o365admincenter",
+    "url": "https://admin.microsoft.com/Partner/BeginClientSession.aspx?CTID=customerId&CSDEST=o365admincenter",
     "variable": "customerId",
     "target": "_blank",
     "external": true
