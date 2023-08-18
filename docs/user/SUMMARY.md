@@ -173,3 +173,7 @@
 
 * [Setup & Authentication](api-documentation/setup-and-authentication.md)
 * [Endpoints](api-documentation/endpoints.md)
+
+***
+
+* [MSP Adoption Toolkit: Building a CIPP Business Case](msp-adoption-toolkit-building-a-cipp-business-case.md)
