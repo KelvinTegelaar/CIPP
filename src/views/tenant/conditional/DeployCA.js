@@ -6,7 +6,7 @@ import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { CippWizard } from 'src/components/layout'
 import { WizardTableField } from 'src/components/tables'
 import PropTypes from 'prop-types'
-import { RFFCFormSelect, RFFCFormTextarea } from 'src/components/forms'
+import { RFFCFormRadio, RFFCFormSelect, RFFCFormTextarea } from 'src/components/forms'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { OnChange } from 'react-final-form-listeners'
 
@@ -41,7 +41,6 @@ const AddPolicy = () => {
     values.TemplateType = values.Type
     genericPostRequest({ path: '/api/AddCAPolicy', values: values })
   }
-  /* eslint-disable react/prop-types */
   const WhenFieldChanges = ({ field, set }) => (
     <Field name={set} subscription={{}}>
       {(
@@ -147,6 +146,29 @@ const AddPolicy = () => {
             />
           </CCol>
         </CRow>
+        <RFFCFormRadio
+          value="donotchange"
+          name="newstate"
+          label="Do not change state - Template contains the state information"
+          validate={false}
+        ></RFFCFormRadio>
+        <RFFCFormRadio
+          value="Enabled"
+          name="newstate"
+          label="Enabled"
+          validate={false}
+        ></RFFCFormRadio>
+        <RFFCFormRadio
+          value="Disabled"
+          name="newstate"
+          label="Disabled"
+          validate={false}
+        ></RFFCFormRadio>
+        <RFFCFormRadio
+          value="enabledForReportingButNotEnforced"
+          name="newstate"
+          label="Report only"
+        ></RFFCFormRadio>
         <hr className="my-4" />
         <WhenFieldChanges field="TemplateList" set="rawjson" />
       </CippWizard.Page>
@@ -159,7 +181,6 @@ const AddPolicy = () => {
         {!postResults.isSuccess && (
           <FormSpy>
             {(props) => {
-              /* eslint-disable react/prop-types */
               return (
                 <>
                   <CRow>
