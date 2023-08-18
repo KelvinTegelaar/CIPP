@@ -21,7 +21,7 @@
     "test": "react-scripts test",
     "test:cov": "npm test -- --coverage --watchAll=false",
     "test:debug": "react-scripts --inspect-brk test --runInBand",
-    "start-api": "swa start --ssl --ssl-cert ./.vscode/cert.crt --ssl-key ./.vscode/key.key --swa-config-location .vscode http://localhost:3000 --api-location http://localhost:7071",
+    "start-swa": "swa start --swa-config-location .vscode http://127.0.0.1:3000 --api-location http://localhost:7071",
     "prepare": "husky install"
   },
   "config": {
@@ -49,6 +49,7 @@
     "enzyme": "^3.11.0",
     "final-form": "^4.20.4",
     "fuzzysort": "^1.1.4",
+    "javascript-time-ago": "^2.5.9",
     "jspdf": "^2.4.0",
     "jspdf-autotable": "^3.5.23",
     "moment": "^2.29.1",
@@ -72,6 +73,7 @@
     "react-select": "^5.3.0",
     "react-select-search": "^3.0.8",
     "react-syntax-highlighter": "^15.4.5",
+    "react-time-ago": "^7.2.1",
     "redux": "4.1.1",
     "redux-persist": "^6.0.0",
     "simplebar-react": "^2.3.6",
@@ -90,13 +92,13 @@
     "prettier": "2.4.1",
     "react-scripts": "^5.0.0",
     "redux-immutable-state-invariant": "^2.1.0",
-    "sass": "^1.44",
+    "sass": "^1.64.2",
     "stylelint": "^14.3.0",
     "stylelint-config-sass-guidelines": "^9.0.1",
     "stylelint-order": "^5.0.0"
   },
   "engines": {
-    "node": "16",
+    "node": "18",
     "npm": ">=7"
   }
 }
