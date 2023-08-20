@@ -24,28 +24,18 @@ import { CippContentCard } from 'src/components/layout'
 import Skeleton from 'react-loading-skeleton'
 import { domainsApi } from 'src/store/api/domains'
 
-const isValidTenantInput = (value) => {
-  // Regular expression for validating GUID
-  const guidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/
-  // Regular expression for validating domain
-  const domainRegex = /^([a-zA-Z0-9](-?[a-zA-Z0-9])*\.)+[a-zA-Z]{2,}$/
-
-  // Check if the input is a valid GUID or domain
-  return !(guidRegex.test(value) || domainRegex.test(value))
-}
-
-const GraphExplorer = () => {
+const GeoIPLookup = () => {
   let navigate = useNavigate()
   const tenant = useSelector((state) => state.app.currentTenant)
   let query = useQuery()
-  const tenantdomain = query.get('tenant')
+  const ip = query.get('ip')
   const SearchNow = query.get('SearchNow')
   const [visibleA, setVisibleA] = useState(true)
   const handleSubmit = async (values) => {
     setVisibleA(false)
 
     const shippedValues = {
-      tenant: values.domain,
+      ip: values.domain,
       SearchNow: true,
       random: (Math.random() + 1).toString(36).substring(7),
     }
@@ -58,15 +48,15 @@ const GraphExplorer = () => {
   const [execGraphRequest, graphrequest] = useLazyGenericGetRequestQuery()
 
   useEffect(() => {
-    if (tenantdomain) {
+    if (ip) {
       execGraphRequest({
-        path: 'api/ListExternalTenantInfo',
+        path: 'api/ExecGeoIPLookup',
         params: {
-          tenant: tenantdomain,
+          IP: ip,
         },
       })
     }
-  }, [execGraphRequest, tenant.defaultDomainName, query, tenantdomain])
+  }, [execGraphRequest, tenant.defaultDomainName, query, ip])
 
   return (
     <CRow>
@@ -75,7 +65,7 @@ const GraphExplorer = () => {
           <CCardHeader>
             <CCardTitle>
               <FontAwesomeIcon icon={faSearch} className="mx-2" />
-              Domain
+              Geo IP Lookup
             </CCardTitle>
           </CCardHeader>
           <CCardBody>
@@ -84,7 +74,7 @@ const GraphExplorer = () => {
               render={({ handleSubmit, submitting, pristine }) => {
                 return (
                   <CForm onSubmit={handleSubmit}>
-                    <Field name="domain" validate={isValidTenantInput}>
+                    <Field name="domain">
                       {({ input, meta }) => {
                         return (
                           <>
@@ -95,8 +85,8 @@ const GraphExplorer = () => {
                                 invalid={meta.error && meta.touched}
                                 type="text"
                                 id="domain"
-                                placeholder="Domain Name"
-                                area-describedby="domain"
+                                placeholder="IP Address"
+                                area-describedby="IP Address"
                                 autoCapitalize="none"
                                 autoCorrect="off"
                               />
@@ -115,39 +105,36 @@ const GraphExplorer = () => {
           </CCardBody>
         </CCard>
       </CCol>
-      {tenantdomain && (
+      {ip && (
         <CCol>
-          <CippContentCard title="Current Tenant" icon={faBook}>
+          <CippContentCard title="Current IP information" icon={faBook}>
             <CRow>
               <CCol sm={12} md={4} className="mb-3">
-                <p className="fw-lighter">Tenant Name</p>
+                <p className="fw-lighter">IP Address</p>
                 {graphrequest.isFetching && <Skeleton />}
-                {graphrequest.data?.GraphRequest.displayName}
+                {ip}
               </CCol>
               <CCol sm={12} md={4} className="mb-3">
-                <p className="fw-lighter">Tenant ID</p>
+                <p className="fw-lighter">Range</p>
                 {graphrequest.isFetching && <Skeleton />}
-                {graphrequest.data?.GraphRequest.tenantId}
+                {graphrequest.data?.startaddress} - {graphrequest.data?.endAddress}
               </CCol>
               <CCol sm={12} md={4} className="mb-3">
-                <p className="fw-lighter">Default Domain Name</p>
+                <p className="fw-lighter">Owner</p>
                 {graphrequest.isFetching && <Skeleton />}
-                {graphrequest.data?.GraphRequest.defaultDomainName}
+                {graphrequest.data?.OrgRef}
               </CCol>
             </CRow>
             <CRow>
               <CCol sm={12} md={4} className="mb-3">
-                <p className="fw-lighter">Tenant Brand Name</p>
+                <p className="fw-lighter">Subnet Name</p>
                 {graphrequest.isFetching && <Skeleton />}
-                {graphrequest.data?.GraphRequest.federationBrandName}
-                {graphrequest.data?.GraphRequest.federationBrandName === null &&
-                  'No brand name set'}
+                {graphrequest.data?.SubnetName}
               </CCol>
               <CCol sm={8} md={8} className="mb-3">
-                <p className="fw-lighter">Domains</p>
+                <p className="fw-lighter">Geo IP Location</p>
                 {graphrequest.isFetching && <Skeleton />}
-                {graphrequest.data?.Domains &&
-                  graphrequest.data?.Domains.map((domainname) => <li>{domainname}</li>)}
+                {graphrequest.data?.location?.countryCode} - {graphrequest.data?.location?.cityName}
               </CCol>
             </CRow>
           </CippContentCard>
@@ -157,4 +144,4 @@ const GraphExplorer = () => {
   )
 }
 
-export default GraphExplorer
+export default GeoIPLookup
