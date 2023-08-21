@@ -12,8 +12,8 @@ const AppHeaderSearch = () => {
   }, [dispatch])
   return (
     <>
-      <CButton size="sm" variant="ghost" onClick={handleFastSwitcher}>
-        <FontAwesomeIcon icon={faSearch} />
+      <CButton variant="ghost" onClick={handleFastSwitcher}>
+        <FontAwesomeIcon icon={faSearch} size="lg" />
       </CButton>
     </>
   )

@@ -68,18 +68,18 @@ const AutopilotListTemplates = () => {
   const columns = [
     {
       name: 'Display Name',
-      selector: (row) => row['Displayname'],
+      selector: (row) => row['displayName'],
       sortable: true,
-      cell: (row) => CellTip(row['Displayname']),
+      cell: (row) => CellTip(row['displayName']),
       exportSelector: 'Displayname',
       minWidth: '400px',
       maxWidth: '400px',
     },
     {
       name: 'Description',
-      selector: (row) => row['Description'],
+      selector: (row) => row['description'],
       sortable: true,
-      cell: (row) => CellTip(row['Description']),
+      cell: (row) => CellTip(row['description']),
       exportSelector: 'Description',
       minWidth: '400px',
       maxWidth: '400px',
@@ -124,7 +124,7 @@ const AutopilotListTemplates = () => {
           <CippDatatable
             keyField="id"
             reportName={`${tenant?.defaultDomainName}-MEMPolicyTemplates-List`}
-            path="/api/ListIntuneTemplates"
+            path="/api/ListIntuneTemplates?View=true"
             columns={columns}
             params={{ TenantFilter: tenant?.defaultDomainName }}
           />
