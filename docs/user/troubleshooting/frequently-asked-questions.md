@@ -118,8 +118,6 @@ A 500 error is a generic server error. In CIPP this can hide many different issu
 * You don't have valid licensing for the feature you're trying to use.
 * The CIPP-API function app isn't responding correctly, is starting up or is down.
 
-If you're still having issues, after checking licensing and that your function app is running correctly, please report them in `#cipp-issues` on the [CIPP Discord](https://discord.gg/cyberdrain).
-
 </details>
 
 <details>
