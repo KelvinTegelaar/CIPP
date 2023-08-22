@@ -4,27 +4,6 @@ Below are some common issues that users have had from initial deployment, updati
 
 Note that these steps come from the community - if you notice any mistakes, please either edit this page or get in touch via the [Discord server](https://discord.gg/Cyberdrain). Please note the Contributor Code of Conduct.
 
-### Clear Token Cache
-
-{% hint style="info" %}
-Hosted clients can clear their own token cache via [management.cipp.app](https://management.cipp.app)
-{% endhint %}
-
-1. Go to Settings
-2. Select **Backend**
-3. Select **Go to Function App Configuration**
-4. At each item that has the source _Key Vault_ there should be a green checkbox. If there is no green checkbox, restart the function app and try in 30 minutes
-5. Rename the _RefreshToken_, for example to _RefreshToken2_
-6. Select **Save**
-7. Select **Overview** in the side menu
-8. Stop the app & wait 5 minutes.
-9. Start the app
-10. Go back to **Configuration** in the side menu.
-11. Reset the token names to their original values, for example back to _RefreshToken_ and then Select **Save**.
-12. Stop the app once more for 5 minutes then start it again.
-
-The tokens should no longer be in the cache.
-
 ### Multi-Factor Authentication Troubleshooting
 
 1. The account you use to generate your SAM tokens for CIPP must have Microsoft (Azure AD) MFA enabled, it can't use third-party MFA.
@@ -146,11 +125,6 @@ This occurs when the app has exists for more than 2 years and requires a new cer
 7. Go to CIPP -> Settings -> SAM Wizard
 8. Use the option "I have an existing application and would like to enter my keys"
 9. Enter only the new secret and click Next.
-10. Execute a Token Cache Clear. Hosted clients can clear their own token cache via [management.cipp.app](https://management.cipp.app)
-
-{% hint style="info" %}
-Hosted clients can clear their own token cache via [management.cipp.app](https://management.cipp.app)
-{% endhint %}
 
 ### You discarded changes when syncing Github Repositories
 
