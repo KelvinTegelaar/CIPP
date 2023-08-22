@@ -17,6 +17,8 @@ const AddGroupTemplates = React.lazy(() =>
 const DeployGroupTemplates = React.lazy(() =>
   import('src/views/identity/administration/DeployGroupTemplate'),
 )
+const GeoIPLookup = React.lazy(() => import('src/views/tenant/administration/GeoIPLookup'))
+
 const TenantLookup = React.lazy(() => import('src/views/tenant/administration/TenantLookup'))
 const GroupTemplates = React.lazy(() => import('src/views/identity/administration/GroupTemplates'))
 
@@ -116,12 +118,7 @@ const AutopilotListStatusPages = React.lazy(() =>
 )
 const IntuneListPolicies = React.lazy(() => import('src/views/endpoint/intune/MEMListPolicies'))
 const MEMEditPolicy = React.lazy(() => import('src/views/endpoint/intune/MEMEditPolicy'))
-const EditAutopilotProfile = React.lazy(() =>
-  import('src/views/endpoint/autopilot/AutopilotEditProfile'),
-)
-const EditAutopilotStatusPage = React.lazy(() =>
-  import('src/views/endpoint/autopilot/AutopilotEditStatusPage'),
-)
+
 const IntuneCAPolicies = React.lazy(() => import('src/views/endpoint/intune/MEMCAPolicies'))
 const IntuneAddPolicy = React.lazy(() => import('src/views/endpoint/intune/MEMAddPolicy'))
 const MEMAddPolicyTemplate = React.lazy(() =>
@@ -221,6 +218,10 @@ const SecurityComplianceIncidents = React.lazy(() =>
 const License = React.lazy(() => import('src/views/pages/license/License'))
 const ServiceHealth = React.lazy(() => import('src/views/tenant/administration/ServiceHealth'))
 
+const EnterpriseApplications = React.lazy(() =>
+  import('src/views/tenant/administration/ListEnterpriseApps'),
+)
+
 const routes = [
   // { path: '/', exact: true, name: 'Home' },
   { path: '/home', name: 'Home', component: Home },
@@ -309,6 +310,11 @@ const routes = [
     component: ServiceHealth,
   },
   {
+    path: '/tenant/administration/enterprise-apps',
+    name: 'Enterprise Applications',
+    component: EnterpriseApplications,
+  },
+  {
     path: '/tenant/conditional/list-policies',
     name: 'Conditional Access',
     component: ConditionalAccess,
@@ -374,6 +380,11 @@ const routes = [
     name: 'Tenant Lookup',
     component: TenantLookup,
   },
+  {
+    path: '/tenant/tools/geoiplookup',
+    name: 'Geo IP Lookup',
+    component: GeoIPLookup,
+  },
   { path: '/tenant/standards/alert-list', name: 'Alert List (Alpha)', component: ListAlerts },
   { path: '/endpoint', name: 'Endpoint' },
   { path: '/endpoint/applications', name: 'Applications' },
@@ -422,16 +433,6 @@ const routes = [
     path: '/endpoint/autopilot/list-status-pages',
     name: 'List Status Pages',
     component: AutopilotListStatusPages,
-  },
-  {
-    path: '/endpoint/autopilot/edit-autopilot-profiles',
-    name: 'Edit Autopilot Profiles',
-    component: EditAutopilotProfile,
-  },
-  {
-    path: '/endpoint/autopilot/edit-autopilot-status-page',
-    name: 'Edit Autopilot Status Page',
-    component: EditAutopilotStatusPage,
   },
   { path: '/endpoint/MEM', name: 'MEM' },
   { path: '/endpoint/MEM/list-policies', name: 'List MEM Policies', component: IntuneListPolicies },

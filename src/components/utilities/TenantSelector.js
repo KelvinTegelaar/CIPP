@@ -75,17 +75,12 @@ const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = fa
   return (
     <>
       {NavSelector && (
-        <CDropdown
-          component="li"
-          variant="nav-item"
-          direction="center"
-          className="flex-grow-1 my-auto"
-        >
+        <CDropdown component="li" variant="nav-item" className="flex-grow-1 my-auto">
           <CDropdownToggle>
             <FontAwesomeIcon icon={faBuilding} className="me-2" />
             {currentTenant?.defaultDomainName ? (
               <>
-                <span class="text-wrap">{currentTenant.displayName}</span>
+                <span className="text-wrap">{currentTenant.displayName}</span>
               </>
             ) : (
               placeholder
