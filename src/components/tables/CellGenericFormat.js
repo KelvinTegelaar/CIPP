@@ -76,10 +76,15 @@ export const cellGenericFormatter =
       return CellBoolean({ cell, warning, reverse, colourless, noDataIsFalse })
     }
     if (typeof cell === 'string') {
+      if (cell.toLowerCase() === 'failed') {
+        return <CBadge color="danger">{CellTip('Failed to retrieve from API')}</CBadge>
+      }
       return CellTip(cell)
     }
+    if (typeof cell === 'number') {
+      return <CBadge color="info">{CellTip(cell)}</CBadge>
+    }
     if (Array.isArray(cell) || typeof cell === 'object') {
-      console.log(cell)
       return CellTip(JSON.stringify(cell))
     }
   }

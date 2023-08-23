@@ -6,8 +6,14 @@ import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { CippWizard } from 'src/components/layout'
 import { WizardTableField } from 'src/components/tables'
 import PropTypes from 'prop-types'
-import { RFFCFormSwitch, Condition, RFFCFormInput, RFFCFormSelect } from 'src/components/forms'
-import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import {
+  RFFCFormSwitch,
+  Condition,
+  RFFCFormInput,
+  RFFCFormSelect,
+  RFFSelectSearch,
+} from 'src/components/forms'
+import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import allStandardsList from 'src/data/standards'
 
 const Error = ({ name }) => (
@@ -28,9 +34,20 @@ const Error = ({ name }) => (
 Error.propTypes = {
   name: PropTypes.string.isRequired,
 }
-
+function getDeepKeys(obj) {
+  return Object.keys(obj)
+    .filter((key) => obj[key] instanceof Object)
+    .map((key) => getDeepKeys(obj[key]).map((k) => `${key}.${k}`))
+    .reduce((x, y) => x.concat(y), Object.keys(obj))
+}
 const ApplyStandard = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
+
+  const [intuneGetRequest, intuneTemplates] = useLazyGenericGetRequestQuery()
+  const [transportGetRequest, transportTemplates] = useLazyGenericGetRequestQuery()
+  const [exConnectorGetRequest, exConnectorTemplates] = useLazyGenericGetRequestQuery()
+  const [caGetRequest, caTemplates] = useLazyGenericGetRequestQuery()
+  const [groupGetRequest, groupTemplates] = useLazyGenericGetRequestQuery()
 
   const handleSubmit = async (values) => {
     // @todo: clean this up api sided so we don't need to perform weird tricks.
@@ -118,24 +135,33 @@ const ApplyStandard = () => {
               .filter((obj) => obj.cat === 'Global')
               .map((item, key) => (
                 <>
-                  <RFFCFormSwitch key={key} name={item.name} label={item.label} />
-                  {item.addedComponent && (
-                    <Condition when={item.name} is={true}>
-                      {item.addedComponent.type === 'Select' ? (
-                        <RFFCFormSelect
-                          name={item.addedComponent.name}
-                          label={item.addedComponent.label}
-                          values={item.addedComponent.values}
-                        />
-                      ) : (
-                        <RFFCFormInput
-                          type="text"
-                          name={item.addedComponent.name}
-                          label={item.addedComponent.label}
-                        />
-                      )}
-                    </Condition>
-                  )}
+                  <CCol>
+                    <RFFCFormSwitch
+                      key={key}
+                      name={item.name}
+                      label={item.label}
+                      helpText={item.helpText}
+                    />
+                    {item.addedComponent && (
+                      <Condition when={item.name} is={true}>
+                        {item.addedComponent.type === 'Select' ? (
+                          <RFFCFormSelect
+                            name={item.addedComponent.name}
+                            className="mb-3"
+                            label={item.addedComponent.label}
+                            values={item.addedComponent.values}
+                          />
+                        ) : (
+                          <RFFCFormInput
+                            type="text"
+                            className="mb-3"
+                            name={item.addedComponent.name}
+                            label={item.addedComponent.label}
+                          />
+                        )}
+                      </Condition>
+                    )}
+                  </CCol>
                 </>
               ))}
           </CRow>
@@ -157,24 +183,33 @@ const ApplyStandard = () => {
               .filter((obj) => obj.cat === 'AAD')
               .map((item, key) => (
                 <>
-                  <RFFCFormSwitch key={key} name={item.name} label={item.label} />
-                  {item.addedComponent && (
-                    <Condition when={item.name} is={true}>
-                      {item.addedComponent.type === 'Select' ? (
-                        <RFFCFormSelect
-                          name={item.addedComponent.name}
-                          label={item.addedComponent.label}
-                          values={item.addedComponent.values}
-                        />
-                      ) : (
-                        <RFFCFormInput
-                          type="text"
-                          name={item.addedComponent.name}
-                          label={item.addedComponent.label}
-                        />
-                      )}
-                    </Condition>
-                  )}
+                  <CCol>
+                    <RFFCFormSwitch
+                      key={key}
+                      name={item.name}
+                      label={item.label}
+                      helpText={item.helpText}
+                    />
+                    {item.addedComponent && (
+                      <Condition when={item.name} is={true}>
+                        {item.addedComponent.type === 'Select' ? (
+                          <RFFCFormSelect
+                            name={item.addedComponent.name}
+                            className="mb-3"
+                            label={item.addedComponent.label}
+                            values={item.addedComponent.values}
+                          />
+                        ) : (
+                          <RFFCFormInput
+                            type="text"
+                            className="mb-3"
+                            name={item.addedComponent.name}
+                            label={item.addedComponent.label}
+                          />
+                        )}
+                      </Condition>
+                    )}
+                  </CCol>
                 </>
               ))}
           </CRow>
@@ -196,24 +231,81 @@ const ApplyStandard = () => {
               .filter((obj) => obj.cat === 'Exchange')
               .map((item, key) => (
                 <>
-                  <RFFCFormSwitch key={key} name={item.name} label={item.label} />
-                  {item.addedComponent && (
-                    <Condition when={item.name} is={true}>
-                      {item.addedComponent.type === 'Select' ? (
-                        <RFFCFormSelect
-                          name={item.addedComponent.name}
-                          label={item.addedComponent.label}
-                          values={item.addedComponent.values}
-                        />
-                      ) : (
-                        <RFFCFormInput
-                          type="text"
-                          name={item.addedComponent.name}
-                          label={item.addedComponent.label}
-                        />
-                      )}
-                    </Condition>
-                  )}
+                  <CCol>
+                    <RFFCFormSwitch
+                      key={key}
+                      name={item.name}
+                      label={item.label}
+                      helpText={item.helpText}
+                    />
+                    {item.addedComponent && (
+                      <Condition when={item.name} is={true}>
+                        {item.addedComponent.type === 'Select' ? (
+                          <RFFCFormSelect
+                            name={item.addedComponent.name}
+                            className="mb-3"
+                            label={item.addedComponent.label}
+                            values={item.addedComponent.values}
+                          />
+                        ) : (
+                          <RFFCFormInput
+                            type="text"
+                            className="mb-3"
+                            name={item.addedComponent.name}
+                            label={item.addedComponent.label}
+                          />
+                        )}
+                      </Condition>
+                    )}
+                  </CCol>
+                </>
+              ))}
+          </CRow>
+        </div>
+        <hr className="my-4" />
+      </CippWizard.Page>
+      <CippWizard.Page
+        title="Intune Standards"
+        description="Select which standards you want to apply."
+      >
+        <center>
+          <h3 className="text-primary">Step 5</h3>
+          <h5 className="card-title mb-4">Select Standards</h5>
+        </center>
+        <hr className="my-4" />
+        <div className="mb-2">
+          <CRow className="mb-3" xs={{ cols: 2 }}>
+            {allStandardsList
+              .filter((obj) => obj.cat === 'Intune')
+              .map((item, key) => (
+                <>
+                  <CCol>
+                    <RFFCFormSwitch
+                      key={key}
+                      name={item.name}
+                      label={item.label}
+                      helpText={item.helpText}
+                    />
+                    {item.addedComponent && (
+                      <Condition when={item.name} is={true}>
+                        {item.addedComponent.type === 'Select' ? (
+                          <RFFCFormSelect
+                            name={item.addedComponent.name}
+                            className="mb-3"
+                            label={item.addedComponent.label}
+                            values={item.addedComponent.values}
+                          />
+                        ) : (
+                          <RFFCFormInput
+                            type="text"
+                            className="mb-3"
+                            name={item.addedComponent.name}
+                            label={item.addedComponent.label}
+                          />
+                        )}
+                      </Condition>
+                    )}
+                  </CCol>
                 </>
               ))}
           </CRow>
@@ -235,26 +327,169 @@ const ApplyStandard = () => {
               .filter((obj) => obj.cat === 'SharePoint')
               .map((item, key) => (
                 <>
-                  <RFFCFormSwitch key={key} name={item.name} label={item.label} />
-                  {item.addedComponent && (
-                    <Condition when={item.name} is={true}>
-                      {item.addedComponent.type === 'Select' ? (
-                        <RFFCFormSelect
-                          name={item.addedComponent.name}
-                          label={item.addedComponent.label}
-                          values={item.addedComponent.values}
-                        />
-                      ) : (
-                        <RFFCFormInput
-                          type="text"
-                          name={item.addedComponent.name}
-                          label={item.addedComponent.label}
-                        />
-                      )}
-                    </Condition>
-                  )}
+                  <CCol>
+                    <RFFCFormSwitch
+                      key={key}
+                      name={item.name}
+                      label={item.label}
+                      helpText={item.helpText}
+                    />
+                    {item.addedComponent && (
+                      <Condition when={item.name} is={true}>
+                        {item.addedComponent.type === 'Select' ? (
+                          <RFFCFormSelect
+                            name={item.addedComponent.name}
+                            className="mb-3"
+                            label={item.addedComponent.label}
+                            values={item.addedComponent.values}
+                          />
+                        ) : (
+                          <RFFCFormInput
+                            type="text"
+                            className="mb-3"
+                            name={item.addedComponent.name}
+                            label={item.addedComponent.label}
+                          />
+                        )}
+                      </Condition>
+                    )}
+                  </CCol>
                 </>
               ))}
+          </CRow>
+        </div>
+        <hr className="my-4" />
+      </CippWizard.Page>
+      <CippWizard.Page
+        title="Apply Templates"
+        description="Select which templates you want to apply."
+      >
+        <center>
+          <h3 className="text-primary">Step 7</h3>
+          <h5 className="card-title mb-4">Select Default Templates to apply</h5>
+        </center>
+        <hr className="my-4" />
+        <CCallout color="warning">
+          Attention: Selected options below will run every 3 hours and overwrite any previously set
+          policy by the same name. This will keep the policy exactly in the state as defined by the
+          template.
+        </CCallout>
+        <div className="mb-2">
+          <CRow className="mb-3" xs={{ cols: 2 }}>
+            <CCol>
+              <RFFCFormSwitch
+                name="standards.IntuneTemplate.enabled"
+                label="Deploy Intune Template"
+              />
+              <Condition when="standards.IntuneTemplate.enabled" is={true}>
+                {intuneTemplates.isUninitialized &&
+                  intuneGetRequest({ path: 'api/ListIntuneTemplates' })}
+                {intuneTemplates.isSuccess && (
+                  <RFFSelectSearch
+                    name="standards.IntuneTemplate.TemplateList"
+                    className="mb-3"
+                    multi={true}
+                    values={intuneTemplates.data?.map((template) => ({
+                      value: template.GUID,
+                      name: template.Displayname,
+                    }))}
+                    placeholder="Select a template"
+                    label="Choose your Intune templates to apply"
+                  />
+                )}
+              </Condition>
+            </CCol>
+            <CCol>
+              <RFFCFormSwitch
+                name="standards.TransportRuleTemplate.enabled"
+                label="Deploy Transport Rule Template"
+              />
+              <Condition when="standards.TransportRuleTemplate.enabled" is={true}>
+                {transportTemplates.isUninitialized &&
+                  transportGetRequest({ path: 'api/ListTransportRulesTemplates' })}
+                {transportTemplates.isSuccess && (
+                  <RFFSelectSearch
+                    name="standards.TransportRuleTemplate.TemplateList"
+                    className="mb-3"
+                    multi={true}
+                    values={transportTemplates.data?.map((template) => ({
+                      value: template.GUID,
+                      name: template.name,
+                    }))}
+                    placeholder="Select a template"
+                    label="Choose your Transport Rule templates to apply"
+                  />
+                )}
+              </Condition>
+            </CCol>
+            <CCol>
+              <RFFCFormSwitch
+                name="standards.ConditionalAccess.enabled"
+                label="Deploy Conditional Access Template"
+              />
+              <Condition when="standards.ConditionalAccess.enabled" is={true}>
+                {caTemplates.isUninitialized && caGetRequest({ path: 'api/ListCAtemplates' })}
+                {caTemplates.isSuccess && (
+                  <RFFSelectSearch
+                    name="standards.ConditionalAccess.TemplateList"
+                    className="mb-3"
+                    multi={true}
+                    values={caTemplates.data?.map((template) => ({
+                      value: template.GUID,
+                      name: template.displayName,
+                    }))}
+                    placeholder="Select a template"
+                    label="Choose your Conditional Access templates to apply"
+                  />
+                )}
+              </Condition>
+            </CCol>
+            <CCol>
+              <RFFCFormSwitch
+                name="standards.ExConnector.enabled"
+                label="Deploy Exchange Connector Template"
+              />
+              <Condition when="standards.ExConnector.enabled" is={true}>
+                {exConnectorTemplates.isUninitialized &&
+                  exConnectorGetRequest({ path: 'api/ListExConnectorTemplates' })}
+                {exConnectorTemplates.isSuccess && (
+                  <RFFSelectSearch
+                    name="standards.ExConnector.TemplateList"
+                    className="mb-3"
+                    multi={true}
+                    values={exConnectorTemplates.data?.map((template) => ({
+                      value: template.GUID,
+                      name: template.name,
+                    }))}
+                    placeholder="Select a template"
+                    label="Choose your Exchange Connector templates to apply"
+                  />
+                )}
+              </Condition>
+            </CCol>
+            <CCol>
+              <RFFCFormSwitch
+                name="standards.GroupTemplate.enabled"
+                label="Deploy Group Template"
+              />
+              <Condition when="standards.GroupTemplate.enabled" is={true}>
+                {groupTemplates.isUninitialized &&
+                  groupGetRequest({ path: 'api/ListGroupTemplates' })}
+                {groupTemplates.isSuccess && (
+                  <RFFSelectSearch
+                    name="standards.GroupTemplate.TemplateList"
+                    className="mb-3"
+                    multi={true}
+                    values={groupTemplates.data?.map((template) => ({
+                      value: template.GUID,
+                      name: template.Displayname,
+                    }))}
+                    placeholder="Select a template"
+                    label="Choose your Group templates to apply"
+                  />
+                )}
+              </Condition>
+            </CCol>
           </CRow>
         </div>
         <hr className="my-4" />
@@ -296,11 +531,22 @@ const ApplyStandard = () => {
                     </CCallout>
                     <h5 className="mb-0">Selected Standards</h5>
                     <CCallout color="info">
-                      {Object.entries(props.values.standards).map(([key, value]) =>
-                        allStandardsList
-                          .filter((obj) => obj.name.includes(key))
-                          .map((item, idx) => <li key={idx}>{item.label}</li>),
-                      )}
+                      {getDeepKeys(props.values.standards)
+                        .reduce((acc, key) => {
+                          const existingItem = allStandardsList.find((obj) =>
+                            obj.name.includes(key),
+                          )
+                          if (
+                            existingItem &&
+                            !acc.find((item) => item.name === existingItem.name)
+                          ) {
+                            acc.push(existingItem)
+                          }
+                          return acc
+                        }, [])
+                        .map((item, idx) => (
+                          <li key={idx}>{item.label}</li>
+                        ))}
                     </CCallout>
                     <hr />
                   </CCol>
