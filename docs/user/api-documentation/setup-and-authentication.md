@@ -15,6 +15,9 @@ To enable the CIPP-API you'll need to activate the CIPP API Extension via the Se
 Enabling the CIPP API requires the following:
 
 * Your CIPP-SAM user must be a global administrator in your tenant when activating the API
+* Your CIPP-SAM Application requires an extra permission
+  * Go to your CIPP-SAM application via Settings -> Execute a permissions check -> Click Details -> Click on the CIPP SAM Link
+  * Click on Add permission and add Azure Service Management - User Impersonation as a Delegate permission.
 * Your CIPP-SAM user must have access to the Azure Subscription with the minimum level of "contributor" during activation of the API:
   1. Sign in to the Azure portal: [https://portal.azure.com/](https://portal.azure.com/)
   2. In the left-hand menu, navigate to "Subscriptions".
@@ -26,7 +29,7 @@ Enabling the CIPP API requires the following:
   8. In the "Assign access to" drop-down menu, select "User, group, or service principal".
   9. In the "Select" field, type "CIPP-SAM". As you begin typing, the list of options will narrow. If the user CIPP-SAM exists in your Azure AD, you should be able to select it.
   10. After you've selected the user, click "Save" to assign the role.
-* After enablement of the API a new application will be created in your tenant.\\
+* After enablement of the API a new application will be created in your tenant.
 
 ### Authentication
 
