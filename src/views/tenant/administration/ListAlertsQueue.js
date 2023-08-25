@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { CSpinner, CButton, CCallout } from '@coreui/react'
+import { CSpinner, CButton, CCallout, CRow } from '@coreui/react'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPageList } from 'src/components/layout'
@@ -36,6 +36,69 @@ const ListAlertsQueue = () => {
       </CButton>
     )
   }
+
+  const ActionsWebhook = (row, index, column) => {
+    const handleDeleteStandard = (apiurl, message) => {
+      ModalService.confirm({
+        title: 'Confirm',
+        body: <div>{message}</div>,
+        onConfirm: () => ExecuteGetRequest({ path: apiurl }),
+        confirmLabel: 'Continue',
+        cancelLabel: 'Cancel',
+      })
+    }
+    return (
+      <CButton
+        size="sm"
+        variant="ghost"
+        color="danger"
+        onClick={() =>
+          handleDeleteStandard(
+            `api/RemoveWebhookAlert?CIPPID=${row.RowKey}&TenantFilter=${row.PartitionKey}`,
+            'Do you want to delete the queued alert?',
+          )
+        }
+      >
+        <FontAwesomeIcon icon={faTrash} href="" />
+      </CButton>
+    )
+  }
+  const webhookcolumns = [
+    {
+      name: 'Tenant',
+      selector: (row) => row['PartitionKey'],
+      sortable: true,
+      exportSelector: 'PartitionKey',
+    },
+    {
+      name: 'Expiration',
+      selector: (row) => row['Expiration'],
+      sortable: true,
+      exportSelector: 'Expiration',
+    },
+    {
+      name: 'Monitored Resource',
+      selector: (row) => row['Resource'],
+      sortable: true,
+      exportSelector: 'Resource',
+    },
+    {
+      name: 'Monitored Actions',
+      selector: (row) => row['Operations'],
+      sortable: true,
+      exportSelector: 'Operations',
+    },
+    {
+      name: 'Webhook URL',
+      selector: (row) => row['WebhookNotificationUrl'],
+      sortable: true,
+      exportSelector: 'WebhookNotificationUrl',
+    },
+    {
+      name: 'Actions',
+      cell: ActionsWebhook,
+    },
+  ]
 
   const columns = [
     {
@@ -143,6 +206,20 @@ const ListAlertsQueue = () => {
       cell: cellBooleanFormatter(),
     },
     {
+      name: 'Sharepoint Quota',
+      selector: (row) => row['SharepointQuota'],
+      sortable: true,
+      exportSelector: 'SharepointQuota',
+      cell: cellBooleanFormatter(),
+    },
+    {
+      name: 'Expiring Licenses',
+      selector: (row) => row['ExpiringLicenses'],
+      sortable: true,
+      exportSelector: 'ExpiringLicenses',
+      cell: cellBooleanFormatter(),
+    },
+    {
       name: 'Actions',
       cell: Actions,
     },
@@ -160,30 +237,58 @@ const ListAlertsQueue = () => {
       {getResults.isError && (
         <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
       )}
-      <CippPageList
-        capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
-        title="Scheduled Alerts"
-        tenantSelector={false}
-        datatable={{
-          keyField: 'id',
-          columns,
-          reportName: `AlertsQueue-List`,
-          path: '/api/ListAlertsQueue',
-          params: { TenantFilter: tenant?.defaultDomainName },
-          tableProps: {
-            selectableRows: true,
-            actionsList: [
-              {
-                label: 'Delete alerts',
-                color: 'info',
-                modal: true,
-                modalUrl: `/api/RemoveQueuedAlert?ID=!tenantId`,
-                modalMessage: 'Are you sure you want to delete these alerts?',
-              },
-            ],
-          },
-        }}
-      />
+      <CRow className="mb-3">
+        <CippPageList
+          capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
+          title="Scheduled Classic Alerts"
+          tenantSelector={false}
+          datatable={{
+            keyField: 'id',
+            columns,
+            reportName: `AlertsQueue-List`,
+            path: '/api/ListAlertsQueue',
+            params: { TenantFilter: tenant?.defaultDomainName },
+            tableProps: {
+              selectableRows: true,
+              actionsList: [
+                {
+                  label: 'Delete alerts',
+                  color: 'info',
+                  modal: true,
+                  modalUrl: `/api/RemoveQueuedAlert?ID=!tenantId`,
+                  modalMessage: 'Are you sure you want to delete these alerts?',
+                },
+              ],
+            },
+          }}
+        />
+      </CRow>
+      <CRow className="mb-3">
+        <CippPageList
+          capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
+          title="Webhook Alerts"
+          tenantSelector={false}
+          datatable={{
+            keyField: 'id',
+            columns: webhookcolumns,
+            reportName: `AlertsQueue-List`,
+            path: '/api/ListWebhookAlert',
+            params: { TenantFilter: tenant?.defaultDomainName },
+            tableProps: {
+              selectableRows: true,
+              actionsList: [
+                {
+                  label: 'Delete webhook',
+                  color: 'info',
+                  modal: true,
+                  modalUrl: `/api/RemoveWebhookAlert?CIPPID=!CIPPID&tenantfilter=!tenantid`,
+                  modalMessage: 'Are you sure you want to delete this webhook alert?',
+                },
+              ],
+            },
+          }}
+        />
+      </CRow>
     </div>
   )
 }
