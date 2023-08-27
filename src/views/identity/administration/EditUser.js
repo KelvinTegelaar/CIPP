@@ -79,6 +79,7 @@ const EditUser = () => {
       CopyFrom: values.CopyFrom ? values.CopyFrom.value : '',
       Country: values.country,
       Department: values.department,
+      OfficeLocation: values.officeLocation,
       DisplayName: values.displayName,
       Domain: values.primDomain,
       firstName: values.givenName,
@@ -346,6 +347,16 @@ const EditUser = () => {
                               <RFFCFormInput
                                 name="department"
                                 label="Department"
+                                type="text"
+                                disabled={formDisabled}
+                              />
+                            </CCol>
+                          </CRow>
+                          <CRow>
+                            <CCol md={6}>
+                              <RFFCFormInput
+                                name="officeLocation"
+                                label="Office Location"
                                 type="text"
                                 disabled={formDisabled}
                               />
