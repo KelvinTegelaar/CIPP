@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
-import { CellTip } from 'src/components/tables'
+import { CellTip, cellBooleanFormatter, cellDateFormatter } from 'src/components/tables'
 
 const columns = [
   {
@@ -37,6 +37,40 @@ const columns = [
     selector: (row) => row['TotalLicenses'],
     sortable: true,
     exportSelector: 'TotalLicenses',
+  },
+  {
+    name: 'Estimated Term',
+    selector: (row) => row['EstTerm'],
+    sortable: true,
+    cell: (row) => CellTip(row['EstTerm']),
+    exportSelector: 'EstTerm',
+  },
+  {
+    name: 'Trial',
+    selector: (row) => row['Trial'],
+    sortable: true,
+    exportSelector: 'Trial',
+    cell: cellBooleanFormatter(),
+  },
+  {
+    name: 'Days until renewal',
+    selector: (row) => row['TimeUntilRenew'],
+    sortable: true,
+    exportSelector: 'TimeUntilRenew',
+  },
+  {
+    name: 'Date Created',
+    selector: (row) => row['dateCreated'],
+    sortable: true,
+    exportSelector: 'dateCreated',
+    cell: cellDateFormatter(),
+  },
+  {
+    name: 'Renewal Date',
+    selector: (row) => row['dateExpires'],
+    sortable: true,
+    exportSelector: 'dateExpires',
+    cell: cellDateFormatter(),
   },
 ]
 

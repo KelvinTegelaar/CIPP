@@ -4,6 +4,7 @@ const Setup = React.lazy(() => import('src/views/cipp/Setup'))
 const ApplyStandard = React.lazy(() => import('src/views/tenant/standards/ApplyStandard'))
 const GDAPStatus = React.lazy(() => import('src/views/tenant/administration/ListGDAPQueue'))
 const GDAP = React.lazy(() => import('src/views/tenant/administration/GDAPWizard'))
+const GDAPInvite = React.lazy(() => import('src/views/tenant/administration/GDAPInviteWizard'))
 const GDAPRoleWizard = React.lazy(() => import('src/views/tenant/administration/GDAPRoleWizard'))
 const GDAPRoles = React.lazy(() => import('src/views/tenant/administration/ListGDAPRoles'))
 const GDAPRelationships = React.lazy(() =>
@@ -17,6 +18,7 @@ const adminRoutes = [
   { path: '/cipp/settings', name: 'Settings', component: CIPPSettings },
   { path: '/cipp/setup', name: 'Setup', component: Setup },
   { path: '/tenant/administration/gdap', name: 'GDAP Wizard', component: GDAP },
+  { path: '/tenant/administration/gdap-invite', name: 'GDAP Invite Wizard', component: GDAPInvite },
   {
     path: '/tenant/administration/gdap-role-wizard',
     name: 'GDAP Role Wizard',
