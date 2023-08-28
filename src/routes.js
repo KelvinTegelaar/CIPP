@@ -17,6 +17,8 @@ const AddGroupTemplates = React.lazy(() =>
 const DeployGroupTemplates = React.lazy(() =>
   import('src/views/identity/administration/DeployGroupTemplate'),
 )
+const GeoIPLookup = React.lazy(() => import('src/views/tenant/administration/GeoIPLookup'))
+
 const TenantLookup = React.lazy(() => import('src/views/tenant/administration/TenantLookup'))
 const GroupTemplates = React.lazy(() => import('src/views/identity/administration/GroupTemplates'))
 
@@ -377,6 +379,11 @@ const routes = [
     path: '/tenant/administration/tenantlookup',
     name: 'Tenant Lookup',
     component: TenantLookup,
+  },
+  {
+    path: '/tenant/tools/geoiplookup',
+    name: 'Geo IP Lookup',
+    component: GeoIPLookup,
   },
   { path: '/tenant/standards/alert-list', name: 'Alert List (Alpha)', component: ListAlerts },
   { path: '/endpoint', name: 'Endpoint' },
