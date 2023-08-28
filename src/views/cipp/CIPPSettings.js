@@ -766,13 +766,15 @@ const ExcludedTenantsSettings = () => {
           {removeExcludeTenantResult.data?.Results}
         </CCallout>
       )}
-      {refreshPermissionsResults.isSuccess && (
+      {refreshPermissionsResults.isSuccess &&
+      refreshPermissionsResults.data?.Results &&
+      Array.isArray(refreshPermissionsResults.data.Results) ? (
         <CCallout color="success" dismissible>
-          {refreshPermissionsResults.data?.Results.map((result, idx) => (
+          {refreshPermissionsResults.data.Results.map((result, idx) => (
             <li key={idx}>{result}</li>
           ))}
         </CCallout>
-      )}
+      ) : null}
       {addExcludeTenantResult.isSuccess && (
         <CCallout color="success" dismissible>
           {addExcludeTenantResult.data?.Results}
