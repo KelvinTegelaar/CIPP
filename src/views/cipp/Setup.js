@@ -130,8 +130,7 @@ const Setup = () => {
             <CCol md={6} className="mb-3">
               Click the buttons below to refresh your token.
               <br /> Remember to login under a account that has been added to the correct GDAP
-              groups or the group 'AdminAgents'. After confirmation that the refresh is successful,
-              the token cache must be cleared.
+              groups and the group 'AdminAgents'.
               <br />
               {getResults.isUninitialized && genericGetRequest({ path: 'api/ExecListAppId' })}
               {getResults.isSuccess && (
@@ -255,7 +254,7 @@ const Setup = () => {
                     <CCol md={3}></CCol>
                     <CCol md={6}>
                       {usedWizard &&
-                        'You have used the setup wizard. You can close this screen. Setup has been completed. You must execute a clear of the token cache. See the documentation on how to perform this.'}
+                        'You have used the setup wizard. You can close this screen. Setup has been completed.'}
                       {!usedWizard &&
                         'You are sending your own Secure Application Model setup to the Keyvault. For security reasons we do not show the keys. Please make sure you have entered the keys correctly.'}
                     </CCol>
