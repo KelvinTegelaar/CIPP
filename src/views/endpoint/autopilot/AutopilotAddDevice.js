@@ -33,7 +33,7 @@ Error.propTypes = {
 
 const AddAPDevice = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
-  const [autopilotData, setAutopilotdata] = useState(false)
+  const [autopilotData, setAutopilotdata] = useState([])
   const tableColumns = [
     {
       name: 'serialNumber',
@@ -74,7 +74,9 @@ const AddAPDevice = () => {
     },
   ]
   const valbutton = (value) =>
-    autopilotData ? undefined : 'You must add at least one device. Did you forget to click add?'
+    autopilotData.length
+      ? undefined
+      : 'You must add at least one device. Did you forget to click add?'
   const handleOnDrop = (data) => {
     const importdata = data.map((item) => {
       const normalizedData = {}
@@ -90,7 +92,7 @@ const AddAPDevice = () => {
         modelName: normalizedData['device model'],
       }
     })
-    setAutopilotdata(importdata)
+    setAutopilotdata([...autopilotData, ...importdata])
     // console.log(importdata)
   }
 
