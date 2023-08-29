@@ -20,7 +20,7 @@ const AppFooter = () => {
           </CLink>{' '}
           <CLink href="https://rewst.io/">
             <CImage src={rewstLogo} alt="Rewst" />
-          </CLink>
+          </CLink>{' '}
           <CLink href="https://netfriends.com">
             <CImage src={netfriends} alt="Netfriends" />
           </CLink>
