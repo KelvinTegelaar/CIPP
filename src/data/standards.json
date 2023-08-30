@@ -79,6 +79,13 @@
     "label": "Disable Basic Authentication"
   },
   {
+    "name": "standards.DisableBasicAuthSMTP",
+    "cat": "Global",
+    "helpText": "",
+    "addedComponent": null,
+    "label": "Disable SMTP Basic Authentication"
+  },
+  {
     "name": "standards.laps",
     "cat": "AAD",
     "helpText": "Enables the tenant to use LAPS",
