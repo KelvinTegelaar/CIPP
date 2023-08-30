@@ -14,6 +14,7 @@
   * [Conditional Access best practices](setup/installation/conditionalaccess.md)
   * [Adding users to CIPP](setup/installation/addingusers.md)
   * [Adding a custom domain name](setup/installation/customdomain.md)
+  * [Adding Tenants & Consenting the CIPP-SAM Application](setup/installation/adding-tenants-and-consenting-the-cipp-sam-application.md)
   * [I want to manage my own tenant](setup/installation/owntenant.md)
   * [Updating](setup/installation/updating.md)
   * [Roles](setup/installation/roles.md)
