@@ -2,7 +2,7 @@
   {
     "name": "standards.MailContacts.GeneralContact.Enabled",
     "cat": "Global",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": {
       "type": "input",
       "name": "standards.MailContacts.GeneralContact.Mail",
@@ -13,7 +13,7 @@
   {
     "name": "standards.MailContacts.SecurityContact.Enabled",
     "cat": "Global",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": {
       "type": "input",
       "name": "standards.MailContacts.SecurityContact.Mail",
@@ -24,7 +24,7 @@
   {
     "name": "standards.MailContacts.MarketingContact.Enabled",
     "cat": "Global",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": {
       "type": "input",
       "name": "standards.MailContacts.MarketingContact.Mail",
@@ -35,7 +35,7 @@
   {
     "name": "standards.MailContacts.TechContact.Enabled",
     "cat": "Global",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": {
       "type": "input",
       "name": "standards.MailContacts.TechContact.Mail",
@@ -46,37 +46,44 @@
   {
     "name": "standards.AuditLog",
     "cat": "Global",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Enable the Unified Audit Log"
   },
   {
     "name": "standards.AnonReportDisable",
     "cat": "Global",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Enable Usernames instead of pseudo anonymised names in reports"
   },
   {
     "name": "standards.DisableGuestDirectory",
     "cat": "Global",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Restrict guest user access to directory objects"
   },
   {
     "name": "standards.ModernAuth",
     "cat": "Global",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Enable Modern Authentication"
   },
   {
     "name": "standards.DisableBasicAuth",
     "cat": "Global",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Disable Basic Authentication"
+  },
+  {
+    "name": "standards.DisableBasicAuthSMTP",
+    "cat": "Global",
+    "helpText": "",
+    "addedComponent": null,
+    "label": "Disable SMTP Basic Authentication"
   },
   {
     "name": "standards.laps",
@@ -88,21 +95,21 @@
   {
     "name": "standards.PWnumberMatchingRequiredState",
     "cat": "AAD",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Enable Passwordless with Number Matching"
   },
   {
     "cat": "AAD",
     "name": "standards.PWdisplayAppInformationRequiredState",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Enable Passwordless with Location information and Number Matching"
   },
   {
     "cat": "AAD",
     "name": "standards.PWcompanionAppAllowedState.Enabled",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": {
       "type": "Select",
       "label": "Select value",
@@ -123,7 +130,7 @@
   {
     "cat": "AAD",
     "name": "standards.TAP.Enabled",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": {
       "type": "Select",
       "label": "Select TAP Lifetime",
@@ -144,35 +151,35 @@
   {
     "cat": "AAD",
     "name": "standards.SecurityDefaults",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Enable Security Defaults"
   },
   {
     "cat": "AAD",
     "name": "standards.PasswordExpireDisabled",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Do not expire passwords"
   },
   {
     "cat": "AAD",
     "name": "standards.DisableSecurityGroupUsers",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Disable Security Group creation by users"
   },
   {
     "cat": "AAD",
     "name": "standards.DisableTenantCreation",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Disable M365 Tenant creation by users"
   },
   {
     "cat": "AAD",
     "name": "standards.OauthConsent.Enabled",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": {
       "type": "input",
       "name": "standards.OauthConsent.AllowedApps",
@@ -182,71 +189,77 @@
   },
   {
     "cat": "AAD",
+    "name": "standards.OauthConsentLowSec",
+    "helpText": "",
+    "label": "Allow users to consent to applications with low security risk (Prevent OAuth phishing. Lower impact, less secure.)"
+  },
+  {
+    "cat": "AAD",
     "name": "standards.LegacyMFA",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Enable per-user MFA for all user (Legacy, Requires DAP.)"
   },
   {
     "cat": "AAD",
     "name": "standards.LegacyMFACleanup",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Remove Legacy MFA if SD or CA is active"
   },
   {
     "cat": "AAD",
     "name": "standards.NudgeMFA.enable",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Request to setup Authenticator if not setup yet."
   },
   {
     "cat": "AAD",
     "name": "standards.NudgeMFA.disable",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Disables the request to setup Authenticator if setup."
   },
   {
     "cat": "AAD",
     "name": "standards.DisableSelfServiceLicenses",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Disable Self Service Licensing"
   },
   {
     "cat": "AAD",
     "name": "standards.DisableM365GroupUsers",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Disable M365 Group creation by users"
   },
   {
     "cat": "AAD",
     "name": "standards.UndoOauth",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Undo App Consent Standard"
   },
   {
     "cat": "AAD",
     "name": "standards.DisableGuests",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Disable Guest accounts that have not logged on for 90 days"
   },
   {
     "cat": "AAD",
     "name": "standards.EnableFIDO2",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Enable FIDO2 capabilities"
   },
   {
     "name": "standards.OutBoundSpamAlert.Enabled",
     "cat": "Exchange",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": {
       "type": "input",
       "name": "standards.OutBoundSpamAlert.OutboundSpamContact",
@@ -257,49 +270,49 @@
   {
     "name": "standards.DisableSharedMailbox",
     "cat": "Exchange",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Disable Shared Mailbox AAD accounts"
   },
   {
     "name": "standards.DelegateSentItems",
     "cat": "Exchange",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Set mailbox Sent Items delegation (Sent items for shared mailboxes)"
   },
   {
     "name": "standards.SendFromAlias",
     "cat": "Exchange",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Allow users to send from their alias addresses"
   },
   {
     "name": "standards.AutoExpandArchive",
     "cat": "Exchange",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Enable Auto-expanding archives"
   },
   {
     "name": "standards.SpoofWarn.enable",
     "cat": "Exchange",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Enable Spoofing warnings for Outlook (This e-mail is external identifiers)"
   },
   {
     "name": "standards.SpoofWarn.disable",
     "cat": "Exchange",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Disable Spoofing warnings for Outlook (This e-mail is external identifiers)"
   },
   {
     "name": "standards.DisableViva",
     "cat": "Exchange",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Disable daily Insight/Viva reports"
   },
@@ -320,7 +333,7 @@
   {
     "name": "standards.ActivityBasedTimeout",
     "cat": "SharePoint",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Enable 1 hour Activity based Timeout"
   },
@@ -328,7 +341,7 @@
   {
     "name": "standards.calDefault.Enabled",
     "cat": "Exchange",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": {
       "type": "Select",
       "label": "Select Sharing Level",
@@ -367,9 +380,23 @@
     "label": "Set Sharing Level for Default calendar"
   },
   {
+    "name": "standards.UserSubmissions.enable",
+    "cat": "Exchange",
+    "helpText": "",
+    "addedComponent": null,
+    "label": "Enable the built-in Report button in Outlook"
+  },
+  {
+    "name": "standards.UserSubmissions.disable",
+    "cat": "Exchange",
+    "helpText": "",
+    "addedComponent": null,
+    "label": "Disable the built-in Report button in Outlook"
+  },
+  {
     "name": "standards.intuneDeviceReg.Enabled",
     "cat": "Intune",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": {
       "type": "input",
       "name": "standards.intuneDeviceReg.max",
@@ -380,7 +407,7 @@
   {
     "name": "standards.intuneDeviceRetirementDays.Enabled",
     "cat": "Intune",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": {
       "type": "input",
       "name": "standards.intuneDeviceRetirementDays.days",
@@ -391,7 +418,7 @@
   {
     "name": "standards.sharingCapability.Enabled",
     "cat": "SharePoint",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": {
       "type": "Select",
       "label": "Select Sharing Level",
@@ -420,7 +447,7 @@
   {
     "name": "standards.ExcludedfileExt.Enabled",
     "cat": "SharePoint",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": {
       "type": "input",
       "name": "standards.ExcludedfileExt.ext",
@@ -431,70 +458,77 @@
   {
     "name": "standards.disableMacSync",
     "cat": "SharePoint",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Do not allow Mac devices to sync using OneDrive"
   },
   {
     "name": "standards.DisableReshare",
     "cat": "SharePoint",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Disable Resharing by External Users"
   },
   {
     "name": "standards.DeletedUserRentention",
     "cat": "SharePoint",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Retain a deleted user OneDrive for 1 year"
   },
   {
     "name": "standards.DisableUserSiteCreate",
     "cat": "SharePoint",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Disable site creation by standard users"
   },
   {
     "name": "standards.unmanagedSync",
     "cat": "SharePoint",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Only allow users to sync OneDrive from AAD joined devices"
   },
   {
+    "name": "standards.DisableAddShortcutsToOneDrive",
+    "cat": "SharePoint",
+    "helpText": "When the feature is disabled the option Add shortcut to My files will be removed; any folders that have already been added will remain on the user's computer.",
+    "addedComponent": null,
+    "label": "Disable Add Shortcuts To OneDrive"
+  },
+  {
     "name": "standards.IntuneTemplate.enabled",
     "cat": "templates",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Intune Templates"
   },
   {
     "name": "standards.GroupTemplate.enabled",
     "cat": "templates",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Group Templates"
   },
   {
     "name": "standards.ExConnector.enabled",
     "cat": "templates",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Exchange Connector Templates"
   },
   {
     "name": "standards.ConditionalAccess.enabled",
     "cat": "templates",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Conditional Access Templates"
   },
   {
     "name": "standards.TransportRuleTemplate.enabled",
     "cat": "templates",
-    "helpText": "This is the default helptext",
+    "helpText": "",
     "addedComponent": null,
     "label": "Transport Rule Templates"
   }
