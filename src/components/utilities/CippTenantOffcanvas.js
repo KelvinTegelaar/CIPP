@@ -9,14 +9,12 @@ import Portals from 'src/data/portals'
 
 export const CippTenantOffcanvasRow = (row, rowIndex, formatExtraData) => {
   const tenant = row
-  console.log('tenant offcanvas row')
   return CippTenantOffcanvas({ tenant: row })
 }
 
 function CippTenantOffcanvas({ tenant, buildingIcon = false }) {
   const [getTenantDetails, tenantDetails] = useLazyGenericGetRequestQuery()
   const [ocVisible, setOCVisible] = useState(false)
-  console.log(tenant)
   function loadOffCanvasDetails(domainName) {
     setOCVisible(true)
     getTenantDetails({ path: `api/ListTenantDetails?tenantfilter=${domainName}` })
