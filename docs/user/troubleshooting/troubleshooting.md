@@ -53,6 +53,7 @@ Multiple Potential Causes:
 
 * The user has not authorized the CIPP-SAM Application. Use the Settings -> Tenants -> Refresh button to refresh the permissions.
 * The user that was used for the CIPP Authorization is a guest in this tenant
+* A Conditional Access policy may be blocking your access. Add your CSP tenant as a serviceProvider exception.
 * The user might not be in the AdminAgents group.
 * GDAP: if you are using GDAP and have not added the user to the correct group(s) for CIPP to function.
 
