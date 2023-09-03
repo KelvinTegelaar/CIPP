@@ -6,9 +6,9 @@ import { faCheck, faExclamationTriangle, faTimes } from '@fortawesome/free-solid
 import { CippWizard } from 'src/components/layout'
 import { WizardTableField } from 'src/components/tables'
 import PropTypes from 'prop-types'
-import { RFFCFormSwitch } from 'src/components/forms'
+import { Condition, RFFCFormSelect, RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
-
+import countryList from 'src/data/countryList.json'
 const Error = ({ name }) => (
   <Field
     name={name}
@@ -94,39 +94,143 @@ const AlertWizard = () => {
         </center>
         <hr className="my-4" />
         <CForm onSubmit={handleSubmit}>
-          These alerts will be sent to the user or webhook configured in the CIPP notification
-          settings menu.<br></br>
+          <p>
+            These alerts will be sent to the user or webhook configured in the CIPP notification
+            settings menu.
+          </p>
           <RFFCFormSwitch
             value={true}
-            name="MFAAlertUsers"
-            label="Alert on users without any form of MFA"
+            name="SetAlerts"
+            label="Setup alerts for the selected tenants"
           />
-          <RFFCFormSwitch name="MFAAdmins" label="Alert on admins without any form of MFA" />
-          <RFFCFormSwitch
-            name="NoCAConfig"
-            label="Alert on tenants without a Conditional Access policy, while having Conditional Access licensing available."
-          />
-          <RFFCFormSwitch name="NewRole" label="Alert on new users added to any admin role" />
-          <RFFCFormSwitch name="AdminPassword" label="Alert on changed admin Passwords" />
-          <RFFCFormSwitch
-            name="DefenderStatus"
-            label="Alert if Defender is not running (Tenant must be on-boarded in Lighthouse)"
-          />
-          <RFFCFormSwitch
-            name="DefenderMalware"
-            label="Alert on Defender Malware found  (Tenant must be on-boarded in Lighthouse)"
-          />
-          <RFFCFormSwitch name="QuotaUsed" label="Alert on 90% mailbox quota used" />
-          <RFFCFormSwitch name="UnusedLicenses" label="Alert on unused licenses" />
-          <RFFCFormSwitch name="OverusedLicenses" label="Alert on overused licenses" />
-          <RFFCFormSwitch name="AppSecretExpiry" label="Alert on expiring application secrets" />
-          <RFFCFormSwitch name="ApnCertExpiry" label="Alert on expiring APN certificates" />
-          <RFFCFormSwitch name="VppTokenExpiry" label="Alert on expiring VPP tokens" />
-          <RFFCFormSwitch name="DepTokenExpiry" label="Alert on expiring DEP tokens" />
-          <RFFCFormSwitch
-            name="SecDefaultsUpsell"
-            label="Alert on Security Defaults automatic enablement"
-          />
+          <CRow>
+            <Condition when="SetAlerts" is={true}>
+              <CCol>
+                <RFFCFormSwitch
+                  value={true}
+                  name="MFAAlertUsers"
+                  label="Alert on users without any form of MFA"
+                />
+                <RFFCFormSwitch name="MFAAdmins" label="Alert on admins without any form of MFA" />
+                <RFFCFormSwitch
+                  name="NoCAConfig"
+                  label="Alert on tenants without a Conditional Access policy, while having Conditional Access licensing available."
+                />
+                <RFFCFormSwitch name="NewRole" label="Alert on new users added to any admin role" />
+                <RFFCFormSwitch name="AdminPassword" label="Alert on changed admin Passwords" />
+                <RFFCFormSwitch
+                  name="DefenderStatus"
+                  label="Alert if Defender is not running (Tenant must be on-boarded in Lighthouse)"
+                />
+                <RFFCFormSwitch
+                  name="DefenderMalware"
+                  label="Alert on Defender Malware found  (Tenant must be on-boarded in Lighthouse)"
+                />
+                <RFFCFormSwitch name="QuotaUsed" label="Alert on 90% mailbox quota used" />
+              </CCol>
+              <CCol>
+                <RFFCFormSwitch name="SharePointQuota" label="Alert on 90% SharePoint quota used" />
+                <RFFCFormSwitch name="UnusedLicenses" label="Alert on unused licenses" />
+                <RFFCFormSwitch name="OverusedLicenses" label="Alert on overused licenses" />
+                <RFFCFormSwitch
+                  name="ExpiringLicenses"
+                  label="Alert on licenses expiring in 30 days"
+                />
+
+                <RFFCFormSwitch
+                  name="AppSecretExpiry"
+                  label="Alert on expiring application secrets"
+                />
+                <RFFCFormSwitch name="ApnCertExpiry" label="Alert on expiring APN certificates" />
+                <RFFCFormSwitch name="VppTokenExpiry" label="Alert on expiring VPP tokens" />
+                <RFFCFormSwitch name="DepTokenExpiry" label="Alert on expiring DEP tokens" />
+                <RFFCFormSwitch
+                  name="SecDefaultsUpsell"
+                  label="Alert on Security Defaults automatic enablement"
+                />
+              </CCol>
+            </Condition>
+          </CRow>
+        </CForm>
+
+        <hr className="my-4" />
+      </CippWizard.Page>
+      <CippWizard.Page
+        title="Select Webhook Alerts"
+        description="Select which alerts you want to receive."
+      >
+        <center>
+          <h3 className="text-primary">Step 3</h3>
+          <h5 className="card-title mb-4">Select webhook alerts</h5>
+        </center>
+        <hr className="my-4" />
+        <CForm onSubmit={handleSubmit}>
+          <p>
+            These alerts are received directly from the audit log, and will be processed as soon as
+            Microsoft sends them to CIPP. These alerts generate a ticket, email or webhook message
+            per alert, with more information about the alert.
+          </p>
+          <CRow>
+            <CCol>
+              <RFFSelectSearch
+                name="EventTypes"
+                label="Select the environments you want to receive alerts for"
+                multi
+                values={[
+                  { name: 'Exchange', value: 'Audit.Exchange' },
+                  { name: 'Azure AD', value: 'Audit.AzureActiveDirectory' },
+                ]}
+              />
+            </CCol>
+            <CCol>
+              <RFFSelectSearch
+                name="Operations"
+                label="Select the operations you want to receive alerts for"
+                multi
+                values={[
+                  { value: 'New-InboxRule', name: 'New Inbox Rules' },
+                  { value: 'Set-Inboxrule', name: 'Set Inbox Rules' },
+                  { value: 'Add member to role.', name: 'Adding a member to any admin role' },
+                  {
+                    value: 'Remove Member from a role.',
+                    name: 'Removing a member from any admin role',
+                  },
+
+                  { value: 'Disable account.', name: 'Disabling any account' },
+                  { value: 'Enable account.', name: 'Enabling any account' },
+                  {
+                    value: 'Update StsRefreshTokenValidFrom Timestamp.',
+                    name: 'Revoking a users sessions.',
+                  },
+                  {
+                    value: 'Disable Strong Authentication.',
+                    name: 'MFA has been disabled.',
+                  },
+                  { value: 'Reset user password.', name: 'Reset user password' },
+                  { value: 'AdminLoggedIn', name: 'Admin has logged in' },
+                  {
+                    value: 'UserLoggedInFromUnknownLocation',
+                    name: 'A user has logged in from non-allowed location',
+                  },
+                  {
+                    value: 'UserLoggedIn',
+                    name: 'A user has logged in from any location',
+                  },
+                ]}
+              />
+            </CCol>
+            <CCol>
+              <RFFSelectSearch
+                name="AllowedLocations"
+                label="Select the countries to not alert on logon from"
+                multi
+                values={countryList.map(({ Code, Name }) => ({
+                  value: Code,
+                  name: Name,
+                }))}
+              />
+            </CCol>
+          </CRow>
         </CForm>
         <hr className="my-4" />
       </CippWizard.Page>
