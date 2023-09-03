@@ -26,6 +26,8 @@ import { useSelector } from 'react-redux'
 import allStandardsList from 'src/data/standards'
 import ReactTimeAgo from 'react-time-ago'
 import { CellDelegatedPrivilege } from 'src/components/tables/CellDelegatedPrivilege'
+import Portals from 'src/data/portals'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const Home = () => {
   const currentTenant = useSelector((state) => state.app.currentTenant)
@@ -83,48 +85,12 @@ const Home = () => {
     },
   })
 
-  const actions1 = [
-    {
-      label: 'M365 Admin',
-      link: `https://portal.office.com/Partner/BeginClientSession.aspx?CTID=${currentTenant.customerId}&CSDEST=o365admincenter`,
-      target: '_blank',
-      icon: faCog,
-    },
-    {
-      label: 'Exchange',
-      link: `https://admin.exchange.microsoft.com/?landingpage=homepage&form=mac_sidebar&delegatedOrg=${currentTenant.defaultDomainName}#`,
-      target: '_blank',
-      icon: faMailBulk,
-    },
-    {
-      label: 'Intune',
-      link: `https://intune.microsoft.com/${currentTenant.defaultDomainName}`,
-      target: '_blank',
-      icon: faLaptopCode,
-    },
-    {
-      label: 'Entra',
-      link: `https://entra.microsoft.com/${currentTenant.defaultDomainName}`,
-      target: '_blank',
-      icon: faUsers,
-    },
-    {
-      label: 'Security',
-      link: `https://security.microsoft.com/?tid=${currentTenant.customerId}`,
-      target: '_blank',
-      icon: faShieldAlt,
-    },
-    {
-      label: 'Azure',
-      link: `https://portal.azure.com/#@${currentTenant.customerId}`,
-      icon: faServer,
-    },
-    {
-      label: 'Sharepoint',
-      link: `https://admin.microsoft.com/Partner/beginclientsession.aspx?CTID=${currentTenant.customerId}&CSDEST=SharePoint`,
-      icon: faBook,
-    },
-  ]
+  const actions1 = Portals.map((portal) => ({
+    icon: portal.icon,
+    label: portal.label,
+    target: '_blank',
+    link: portal.url.replace(portal.variable, currentTenant[portal.variable]),
+  }))
 
   const actions2 = [
     {

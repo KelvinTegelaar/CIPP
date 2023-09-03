@@ -25,7 +25,7 @@ const TenantsList = () => {
         className="dlink"
         rel="noreferrer"
       >
-        <FontAwesomeIcon icon={faCog} className="me-2" />
+        <FontAwesomeIcon icon={portal.icon} className="me-2" />
       </a>
     ),
   })

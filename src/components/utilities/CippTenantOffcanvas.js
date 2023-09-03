@@ -31,7 +31,7 @@ function CippTenantOffcanvas({ tenant, buildingIcon = false }) {
     )
   }
   const actions = Portals.map((portal) => ({
-    icon: <FontAwesomeIcon icon={faCog} className="me-2" />,
+    icon: <FontAwesomeIcon icon={portal.icon} className="me-2" />,
     label: portal.label,
     external: true,
     color: 'info',
@@ -84,6 +84,7 @@ function CippTenantOffcanvas({ tenant, buildingIcon = false }) {
         ]}
         actions={[
           {
+            id: 'edittenant',
             icon: <FontAwesomeIcon icon={faEdit} className="me-2" />,
             label: 'Edit Tenant',
             link: `/tenant/administration/tenants/Edit?tenantFilter=${tenant.defaultDomainName}&customerId=${tenant.customerId}`,
