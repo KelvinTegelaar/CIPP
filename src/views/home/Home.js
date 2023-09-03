@@ -25,6 +25,7 @@ import { ActionContentCard } from 'src/components/contentcards'
 import { useSelector } from 'react-redux'
 import allStandardsList from 'src/data/standards'
 import ReactTimeAgo from 'react-time-ago'
+import { CellDelegatedPrivilege } from 'src/components/tables/CellDelegatedPrivilege'
 
 const Home = () => {
   const currentTenant = useSelector((state) => state.app.currentTenant)
@@ -171,173 +172,188 @@ const Home = () => {
           </CippContentCard>
         </CCol>
       </CRow>
-      <CRow>
-        <CCol sm={12} md={3} className="mb-3">
-          <CippContentCard title="Total Users" icon={faUsers}>
-            <div>
-              {issuccessUserCounts && !isFetchingUserCount ? dashboard?.Users : <Skeleton />}
-            </div>
-          </CippContentCard>
-        </CCol>
-        <CCol sm={12} md={3} className="mb-3">
-          <CippContentCard title="Total Licensed users" icon={faUsers}>
-            <div>
-              {issuccessUserCounts && !isFetchingUserCount ? dashboard?.LicUsers : <Skeleton />}
-            </div>
-          </CippContentCard>
-        </CCol>
-        <CCol sm={12} md={3} className="mb-3">
-          <CippContentCard title="Global Admin Users" icon={faLaptopCode}>
-            <div>{issuccessUserCounts && !isFetchingUserCount ? dashboard?.Gas : <Skeleton />}</div>
-          </CippContentCard>
-        </CCol>
-        <CCol sm={12} md={3} className="mb-3">
-          <CippContentCard title="Total Guests" icon={faHotel}>
-            <div>
-              {issuccessUserCounts && !isFetchingUserCount ? dashboard?.Guests : <Skeleton />}
-            </div>
-          </CippContentCard>
-        </CCol>
-      </CRow>
-      <CRow className="mb-3">
-        <CCol>
-          <CippContentCard title="Current Tenant" icon={faBook}>
-            <CRow>
-              <CCol sm={12} md={4} className="mb-3">
-                <p className="fw-lighter">Tenant Name</p>
-                {currentTenant?.displayName}
-              </CCol>
-              <CCol sm={12} md={4} className="mb-3">
-                <p className="fw-lighter">Tenant ID</p>
-                {currentTenant?.customerId}
-              </CCol>
-              <CCol sm={12} md={4} className="mb-3">
-                <p className="fw-lighter">Default Domain Name</p>
-                {currentTenant?.defaultDomainName}
-              </CCol>
-            </CRow>
-            <CRow>
-              <CCol sm={12} md={4} className="mb-3">
-                <p className="fw-lighter">Tenant Status</p>
-                {currentTenant?.delegatedPrivilegeStatus}
-              </CCol>
-              <CCol sm={12} md={4} className="mb-3">
-                <p className="fw-lighter">Creation Date</p>
-                {(isLoadingOrg || isFetchingOrg) && <Skeleton />}
-                {organization && !isFetchingOrg && organization?.createdDateTime}
-              </CCol>
-              <CCol sm={12} md={4} className="mb-3">
-                <p className="fw-lighter">AD Connect Status</p>
-                {(isLoadingOrg || isFetchingOrg) && <Skeleton />}
-                {!isLoadingOrg && !isFetchingOrg && organization?.onPremisesSyncEnabled ? (
-                  <>
-                    <li>
-                      <span class="me-1">Directory Sync:</span>
-                      {organization?.onPremisesLastSyncDateTime ? (
-                        <ReactTimeAgo date={organization?.onPremisesLastSyncDateTime} />
-                      ) : (
-                        'Never'
-                      )}
-                    </li>
-                    <li>
-                      <span class="me-1">Password Sync:</span>
-                      {organization?.onPremisesLastPasswordSyncDateTime ? (
-                        <ReactTimeAgo date={organization?.onPremisesLastPasswordSyncDateTime} />
-                      ) : (
-                        'Never'
-                      )}
-                    </li>
-                  </>
-                ) : (
-                  'Disabled'
-                )}
-              </CCol>
-            </CRow>
-            <CRow>
-              <CCol sm={12} md={4} className="mb-3">
-                <p className="fw-lighter">Domain(s)</p>
-                {(isLoadingOrg || isFetchingOrg) && <Skeleton />}
-                {!isFetchingOrg &&
-                  issuccessOrg &&
-                  organization?.verifiedDomains?.map((item) => <li>{item.name}</li>)}
-              </CCol>
-              <CCol sm={12} md={4} className="mb-3">
-                <p className="fw-lighter">Capabilities</p>
-                {(isLoadingOrg || isFetchingOrg) && <Skeleton />}
-                {!isFetchingOrg &&
-                  issuccessOrg &&
-                  organization?.assignedPlans
-                    ?.filter((p) => p.capabilityStatus == 'Enabled')
-                    .reduce((plan, curr) => {
-                      if (!plan.includes(curr.service)) {
-                        plan.push(curr.service)
-                      }
-                      return plan
-                    }, [])
-                    .map((plan) => (
+      {currentTenant?.customerId !== 'AllTenants' ? (
+        <>
+          <CRow>
+            <CCol sm={12} md={6} xl={3} className="mb-3">
+              <CippContentCard title="Total Users" icon={faUsers}>
+                <div>
+                  {issuccessUserCounts && !isFetchingUserCount ? dashboard?.Users : <Skeleton />}
+                </div>
+              </CippContentCard>
+            </CCol>
+            <CCol sm={12} md={6} xl={3} className="mb-3">
+              <CippContentCard title="Total Licensed users" icon={faUsers}>
+                <div>
+                  {issuccessUserCounts && !isFetchingUserCount ? dashboard?.LicUsers : <Skeleton />}
+                </div>
+              </CippContentCard>
+            </CCol>
+            <CCol sm={12} md={6} xl={3} className="mb-3">
+              <CippContentCard title="Global Admin Users" icon={faLaptopCode}>
+                <div>
+                  {issuccessUserCounts && !isFetchingUserCount ? dashboard?.Gas : <Skeleton />}
+                </div>
+              </CippContentCard>
+            </CCol>
+            <CCol sm={12} md={6} xl={3} className="mb-3">
+              <CippContentCard title="Total Guests" icon={faHotel}>
+                <div>
+                  {issuccessUserCounts && !isFetchingUserCount ? dashboard?.Guests : <Skeleton />}
+                </div>
+              </CippContentCard>
+            </CCol>
+          </CRow>
+          <CRow className="mb-3">
+            <CCol>
+              <CippContentCard title="Current Tenant" icon={faBook}>
+                <CRow>
+                  <CCol sm={12} md={4} className="mb-3">
+                    <p className="fw-lighter">Tenant Name</p>
+                    {currentTenant?.displayName}
+                  </CCol>
+                  <CCol sm={12} md={4} className="mb-3">
+                    <p className="fw-lighter">Tenant ID</p>
+                    {currentTenant?.customerId}
+                  </CCol>
+                  <CCol sm={12} md={4} className="mb-3">
+                    <p className="fw-lighter">Default Domain Name</p>
+                    {currentTenant?.defaultDomainName}
+                  </CCol>
+                </CRow>
+                <CRow>
+                  <CCol sm={12} md={4} className="mb-3">
+                    <p className="fw-lighter">Tenant Status</p>
+                    <CellDelegatedPrivilege cell={currentTenant?.delegatedPrivilegeStatus} />
+                  </CCol>
+                  <CCol sm={12} md={4} className="mb-3">
+                    <p className="fw-lighter">Creation Date</p>
+                    {(isLoadingOrg || isFetchingOrg) && <Skeleton />}
+                    {organization && !isFetchingOrg && organization?.createdDateTime}
+                  </CCol>
+                  <CCol sm={12} md={4} className="mb-3">
+                    <p className="fw-lighter">AD Connect Status</p>
+                    {(isLoadingOrg || isFetchingOrg) && <Skeleton />}
+                    {!isLoadingOrg && !isFetchingOrg && organization?.onPremisesSyncEnabled ? (
                       <>
-                        {plan == 'exchange' && <li>Exchange</li>}
-                        {plan == 'AADPremiumService' && <li>AAD Premium</li>}
-                        {plan == 'WindowsDefenderATP' && <li>Windows Defender</li>}
-                      </>
-                    ))}
-              </CCol>
-              <CCol sm={12} md={4} className="mb-3">
-                <p className="fw-lighter">Sharepoint Quota</p>
-                {(isLoadingSPQuota || isFetchingSPQuota) && <Skeleton />}
-                {sharepoint && !isFetchingSPQuota && sharepoint?.Dashboard}
-              </CCol>
-              <CCol sm={12} md={4} className="mb-3">
-                <p className="fw-lighter">Applied Standards</p>
-                {(isLoadingStandards || isFetchingStandards) && <Skeleton />}
-                {issuccessStandards &&
-                  !isFetchingStandards &&
-                  standards
-                    .filter(
-                      (p) =>
-                        p.displayName == 'AllTenants' ||
-                        p.displayName == currentTenant.defaultDomainName,
-                    )
-                    .flatMap((tenant) => {
-                      return Object.keys(tenant.standards).map((standard) => {
-                        const standardDisplayname = allStandardsList.filter((p) =>
-                          p.name.includes(standard),
-                        )
-                        return (
-                          <li key={`${standard}-${tenant.displayName}`}>
-                            {standardDisplayname[0]?.label} ({tenant.displayName})
-                          </li>
-                        )
-                      })
-                    })}
-              </CCol>
-              <CCol sm={12} md={4} className="mb-3">
-                <p className="fw-lighter">Partner Relationships</p>
-                {(isLoadingPartners || isFetchingPartners) && <Skeleton />}
-                {issuccessPartners &&
-                  !isFetchingPartners &&
-                  partners.map((partner) => {
-                    if (partner.TenantInfo) {
-                      return (
-                        <li key={`${partner.tenantId}`}>
-                          {partner.TenantInfo.displayName} ({partner.TenantInfo.defaultDomainName})
+                        <li>
+                          <span class="me-1">Directory Sync:</span>
+                          {organization?.onPremisesLastSyncDateTime ? (
+                            <ReactTimeAgo date={organization?.onPremisesLastSyncDateTime} />
+                          ) : (
+                            'Never'
+                          )}
                         </li>
-                      )
-                    }
-                  })}
-              </CCol>
-            </CRow>
-          </CippContentCard>
-        </CCol>
-      </CRow>
-      <CRow className="mb-3">
-        <CCol className="mb-3">
-          <ActionContentCard title="Portals" icon={faEllipsisH} content={actions1} />
-        </CCol>
-        <CCol className="mb-3">
-          <ActionContentCard title="CIPP Actions" icon={faEllipsisH} content={actions2} />
-        </CCol>
-      </CRow>
+                        <li>
+                          <span class="me-1">Password Sync:</span>
+                          {organization?.onPremisesLastPasswordSyncDateTime ? (
+                            <ReactTimeAgo date={organization?.onPremisesLastPasswordSyncDateTime} />
+                          ) : (
+                            'Never'
+                          )}
+                        </li>
+                      </>
+                    ) : (
+                      'Disabled'
+                    )}
+                  </CCol>
+                </CRow>
+                <CRow>
+                  <CCol sm={12} md={4} className="mb-3">
+                    <p className="fw-lighter">Domain(s)</p>
+                    {(isLoadingOrg || isFetchingOrg) && <Skeleton />}
+                    {!isFetchingOrg &&
+                      issuccessOrg &&
+                      organization?.verifiedDomains?.map((item) => <li>{item.name}</li>)}
+                  </CCol>
+                  <CCol sm={12} md={4} className="mb-3">
+                    <p className="fw-lighter">Capabilities</p>
+                    {(isLoadingOrg || isFetchingOrg) && <Skeleton />}
+                    {!isFetchingOrg &&
+                      issuccessOrg &&
+                      organization?.assignedPlans
+                        ?.filter((p) => p.capabilityStatus == 'Enabled')
+                        .reduce((plan, curr) => {
+                          if (!plan.includes(curr.service)) {
+                            plan.push(curr.service)
+                          }
+                          return plan
+                        }, [])
+                        .map((plan) => (
+                          <>
+                            {plan == 'exchange' && <li>Exchange</li>}
+                            {plan == 'AADPremiumService' && <li>AAD Premium</li>}
+                            {plan == 'WindowsDefenderATP' && <li>Windows Defender</li>}
+                          </>
+                        ))}
+                  </CCol>
+                  <CCol sm={12} md={4} className="mb-3">
+                    <p className="fw-lighter">Sharepoint Quota</p>
+                    {(isLoadingSPQuota || isFetchingSPQuota) && <Skeleton />}
+                    {sharepoint && !isFetchingSPQuota && sharepoint?.Dashboard}
+                  </CCol>
+                  <CCol sm={12} md={4} className="mb-3">
+                    <p className="fw-lighter">Applied Standards</p>
+                    {(isLoadingStandards || isFetchingStandards) && <Skeleton />}
+                    {issuccessStandards &&
+                      !isFetchingStandards &&
+                      standards
+                        .filter(
+                          (p) =>
+                            p.displayName == 'AllTenants' ||
+                            p.displayName == currentTenant.defaultDomainName,
+                        )
+                        .flatMap((tenant) => {
+                          return Object.keys(tenant.standards).map((standard) => {
+                            const standardDisplayname = allStandardsList.filter((p) =>
+                              p.name.includes(standard),
+                            )
+                            return (
+                              <li key={`${standard}-${tenant.displayName}`}>
+                                {standardDisplayname[0]?.label} ({tenant.displayName})
+                              </li>
+                            )
+                          })
+                        })}
+                  </CCol>
+                  <CCol sm={12} md={4} className="mb-3">
+                    <p className="fw-lighter">Partner Relationships</p>
+                    {(isLoadingPartners || isFetchingPartners) && <Skeleton />}
+                    {issuccessPartners &&
+                      !isFetchingPartners &&
+                      partners.map((partner) => {
+                        if (partner.TenantInfo) {
+                          return (
+                            <li key={`${partner.tenantId}`}>
+                              {partner.TenantInfo.displayName} (
+                              {partner.TenantInfo.defaultDomainName})
+                            </li>
+                          )
+                        }
+                      })}
+                  </CCol>
+                </CRow>
+              </CippContentCard>
+            </CCol>
+          </CRow>
+          <CRow className="mb-3">
+            <CCol className="mb-3">
+              <ActionContentCard title="Portals" icon={faEllipsisH} content={actions1} />
+            </CCol>
+            <CCol className="mb-3">
+              <ActionContentCard title="CIPP Actions" icon={faEllipsisH} content={actions2} />
+            </CCol>
+          </CRow>
+        </>
+      ) : (
+        <CRow className="mb-3">
+          <CCol sm={12}>
+            <CippContentCard title="All Tenants" icon={faBook}>
+              Select a Tenant to show the dashboard
+            </CippContentCard>
+          </CCol>
+        </CRow>
+      )}
     </>
   )
 }

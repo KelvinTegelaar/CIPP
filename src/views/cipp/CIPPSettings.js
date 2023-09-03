@@ -80,6 +80,7 @@ import { TitleButton } from 'src/components/buttons'
 import Skeleton from 'react-loading-skeleton'
 import { Buffer } from 'buffer'
 import Extensions from 'src/data/Extensions.json'
+import { CellDelegatedPrivilege } from 'src/components/tables/CellDelegatedPrivilege'
 
 const CIPPSettings = () => {
   const [active, setActive] = useState(1)
@@ -702,25 +703,7 @@ const ExcludedTenantsSettings = () => {
       name: 'Relationship Type',
       selector: (row) => row['delegatedPrivilegeStatus'],
       sortable: true,
-      cell: (row, index, column) => {
-        const cell = column.selector(row)
-        if (!cell) {
-          return <CellBadge color="info" label="DAP" />
-        }
-        if (cell.toLowerCase() == 'none') {
-          return <CellBadge color="info" label="No Access" />
-        }
-        if (cell === 'delegatedAdminPrivileges') {
-          return <CellBadge color="info" label="DAP Only" />
-        }
-        if (cell === 'delegatedAndGranularDelegetedAdminPrivileges') {
-          return <CellBadge color="info" label="GDAP & DAP" />
-        }
-        if (cell === 'granularDelegatedAdminPrivileges') {
-          return <CellBadge color="info" label="GDAP" />
-        }
-        return <CellBadge color="info" label="Unknown" />
-      },
+      cell: (row) => CellDelegatedPrivilege({ cell: row['delegatedPrivilegeStatus'] }),
       exportSelector: 'delegatedPrivilegeStatus',
     },
     {
