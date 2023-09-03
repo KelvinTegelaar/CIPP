@@ -20,6 +20,7 @@ import {
   CLink,
   CSpinner,
   CCardText,
+  CTooltip,
 } from '@coreui/react'
 import {
   useGenericGetRequestQuery,
@@ -659,28 +660,34 @@ const ExcludedTenantsSettings = () => {
     return (
       <>
         {row.Excluded && (
-          <CButton
-            size="sm"
-            variant="ghost"
-            color="info"
-            onClick={() => handleRemoveExclusion(row.defaultDomainName)}
-          >
-            <FontAwesomeIcon icon={faEye} href="" />
-          </CButton>
+          <CTooltip content="Remove Exclusion">
+            <CButton
+              size="sm"
+              variant="ghost"
+              color="info"
+              onClick={() => handleRemoveExclusion(row.defaultDomainName)}
+            >
+              <FontAwesomeIcon icon={faEye} href="" />
+            </CButton>
+          </CTooltip>
         )}
         {!row.Excluded && (
-          <CButton
-            size="sm"
-            variant="ghost"
-            color="danger"
-            onClick={() => handleConfirmExcludeTenant({ value: row.customerId })}
-          >
-            <FontAwesomeIcon icon={faEyeSlash} href="" />
-          </CButton>
+          <CTooltip content="Exclude Tenant">
+            <CButton
+              size="sm"
+              variant="ghost"
+              color="danger"
+              onClick={() => handleConfirmExcludeTenant({ value: row.customerId })}
+            >
+              <FontAwesomeIcon icon={faEyeSlash} href="" />
+            </CButton>
+          </CTooltip>
         )}
-        <CButton size="sm" variant="ghost" color="info" onClick={() => handleCPVPermissions(row)}>
-          <FontAwesomeIcon icon={faRecycle} href="" />
-        </CButton>
+        <CTooltip content="CPV Refresh">
+          <CButton size="sm" variant="ghost" color="info" onClick={() => handleCPVPermissions(row)}>
+            <FontAwesomeIcon icon={faRecycle} href="" />
+          </CButton>
+        </CTooltip>
       </>
     )
   }

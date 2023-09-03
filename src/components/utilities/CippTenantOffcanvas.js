@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { CButton } from '@coreui/react'
+import { CButton, CTooltip } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCog, faEdit, faEllipsisV, faBuilding } from '@fortawesome/free-solid-svg-icons'
+import { faEdit, faEllipsisV, faBuilding } from '@fortawesome/free-solid-svg-icons'
 import { CippActionsOffcanvas } from 'src/components/utilities'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import Skeleton from 'react-loading-skeleton'
@@ -39,13 +39,15 @@ function CippTenantOffcanvas({ tenant, buildingIcon = false }) {
   }))
   return (
     <>
-      <CButton
-        size="sm"
-        variant="ghost"
-        onClick={() => loadOffCanvasDetails(tenant.defaultDomainName)}
-      >
-        <FontAwesomeIcon icon={buildingIcon ? faBuilding : faEllipsisV} />
-      </CButton>
+      <CTooltip placement="bottom" content="Tenant Information">
+        <CButton
+          size="sm"
+          variant="ghost"
+          onClick={() => loadOffCanvasDetails(tenant.defaultDomainName)}
+        >
+          <FontAwesomeIcon icon={buildingIcon ? faBuilding : faEllipsisV} />
+        </CButton>
+      </CTooltip>
       <CippActionsOffcanvas
         title="Tenant Information"
         extendedInfo={[
