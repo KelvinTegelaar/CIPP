@@ -20,16 +20,16 @@ to setup the Graph API, CSP, and Exchange integration CIPP requires a minimum le
 * If you are using DAP The CIPP user must be added to the "AdminAgents" group.
 * If you are using GDAP, the CIPP user must be added to the "AdminAgents" group and the groups you've assigned for GDAP. The minimum permissions CIPP needs to function are:
   * Application Administrator
-  * User Administrator
-  * Intune Administrator
-  * Exchange Administrator
-  * Security Administrator
+  * Authentication Policy Administrator
   * Cloud App Security Administrator
   * Cloud Device Administrator
-  * Teams Administrator
-  * Sharepoint Administrator
-  * Authentication Policy Administrator
+  * Exchange Administrator
+  * Intune Administrator
   * Privileged Role Administrator
+  * Security Administrator
+  * Sharepoint Administrator
+  * Teams Administrator
+  * User Administrator
   * Privileged Authentication Administrator (Only required if you want to be able to delete global admins within tenants from CIPP)
 
 3. This account must have **Microsoft** multi-factor authentication enforced for each logon, either via Conditional Access when available or via [Per User MFA](https://account.activedirectory.windowsazure.com/UserManagement/MultifactorVerification.aspx) when Conditional Access is not available.
