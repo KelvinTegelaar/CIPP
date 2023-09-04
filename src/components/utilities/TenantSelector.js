@@ -9,6 +9,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { queryString } from 'src/helpers'
 import { faBuilding } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import CippTenantOffcanvas from './CippTenantOffcanvas'
 
 const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = false }) => {
   const currentTenant = useSelector((state) => state.app.currentTenant)
@@ -57,7 +58,6 @@ const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = fa
       return t.customerId === customerId
     })
     dispatch(setCurrentTenant({ tenant: selectedTenant[0] }))
-
     if (typeof action === 'function') {
       action(selectedTenant[0])
     } else {
@@ -75,32 +75,38 @@ const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = fa
   return (
     <>
       {NavSelector && (
-        <CDropdown component="li" variant="nav-item" className="flex-grow-1 my-auto">
-          <CDropdownToggle>
-            <FontAwesomeIcon icon={faBuilding} className="me-2" />
-            {currentTenant?.defaultDomainName ? (
-              <>
-                <span className="text-wrap">{currentTenant.displayName}</span>
-              </>
-            ) : (
-              placeholder
-            )}
-          </CDropdownToggle>
-          <CDropdownMenu className="tenantDropdown">
-            <SelectSearch
-              search
-              onChange={activated}
-              filterOptions={fuzzySearch}
-              placeholder={placeholder}
-              disabled={isLoading}
-              value={currentTenant && currentTenant.customerId}
-              options={tenants.map(({ customerId, displayName, defaultDomainName }) => ({
-                value: customerId,
-                name: [displayName] + [` (${defaultDomainName})`],
-              }))}
-            />
-          </CDropdownMenu>
-        </CDropdown>
+        <>
+          <CDropdown component="li" variant="nav-item" className="flex-grow-1 my-auto">
+            <CDropdownToggle>
+              {currentTenant?.customerId !== 'AllTenants' ? (
+                <CippTenantOffcanvas tenant={currentTenant} buildingIcon={true} />
+              ) : (
+                <FontAwesomeIcon icon={faBuilding} className="mx-2" />
+              )}
+              {currentTenant?.defaultDomainName ? (
+                <>
+                  <span className="text-wrap ms-2">{currentTenant.displayName}</span>
+                </>
+              ) : (
+                placeholder
+              )}
+            </CDropdownToggle>
+            <CDropdownMenu className="tenantDropdown">
+              <SelectSearch
+                search
+                onChange={activated}
+                filterOptions={fuzzySearch}
+                placeholder={placeholder}
+                disabled={isLoading}
+                value={currentTenant && currentTenant.customerId}
+                options={tenants.map(({ customerId, displayName, defaultDomainName }) => ({
+                  value: customerId,
+                  name: [displayName] + [` (${defaultDomainName})`],
+                }))}
+              />
+            </CDropdownMenu>
+          </CDropdown>
+        </>
       )}
       {!NavSelector && (
         <SelectSearch

@@ -101,7 +101,7 @@ export default function CippActionsOffcanvas(props) {
   try {
     cardContent = props.cards.map((action, index) => (
       <>
-        <CCard className="border-top-dark border-top-3 mb-3">
+        <CCard key={index} className="border-top-dark border-top-3 mb-3">
           <CCardBody>
             <CCardTitle>Report Name: {action.label}</CCardTitle>
             <CCardText>
@@ -178,6 +178,7 @@ export default function CippActionsOffcanvas(props) {
       visible={props.visible}
       id={props.id}
       hideFunction={props.hideFunction}
+      refreshFunction={props.refreshFunction}
     >
       {getResults.isFetching && (
         <CCallout color="info">
