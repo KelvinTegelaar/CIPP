@@ -42,7 +42,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             icon: <FontAwesomeIcon icon={faBook} className="me-2" />,
             modalBody: JSON.parse(row.rawjson),
             modalType: 'POST',
-            modalUrl: `/api/AddCATemplate`,
+            modalUrl: `/api/AddCATemplate?TenantFilter=${tenant.defaultDomainName}`,
             modalMessage: 'Are you sure you want to create a template based on this rule?',
           },
           {
