@@ -171,6 +171,11 @@ const _nav = [
         name: 'Individual Domain Check',
         to: '/tenant/standards/individual-domains',
       },
+      {
+        component: CNavItem,
+        name: 'BPA Field Builder',
+        to: '/tenant/tools/bpa-field-builder',
+      },
     ],
   },
   {
