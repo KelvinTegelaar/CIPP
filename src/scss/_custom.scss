@@ -585,3 +585,27 @@
 .teams-wide-card {
   width: 500px;
 }
+
+i.glyphicon {
+  display: none;
+}
+
+.btn-add::after {
+  content: 'Add';
+}
+
+.array-item-copy::after {
+  content: 'Copy';
+}
+
+.array-item-move-up::after {
+  content: 'Move Up';
+}
+
+.array-item-move-down::after {
+  content: 'Move Down';
+}
+
+.array-item-remove::after {
+  content: 'Remove';
+}
