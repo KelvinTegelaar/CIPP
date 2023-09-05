@@ -16,6 +16,9 @@ const BPAReportBuilder = () => {
   function handleEditorChange(value, event) {
     setFormData(JSON.parse(value))
   }
+  const options = {
+    wordWrap: true,
+  }
 
   return (
     <CippPage title="BPA Report Builder" tenantSelector={true}>
@@ -42,10 +45,9 @@ const BPAReportBuilder = () => {
               defaultLanguage="json"
               value={JSON.stringify(formData, null, 2)}
               onChange={handleEditorChange}
-              schema={BPAReportSchema}
-              validator={validator}
               theme={currentTheme == 'cyberdrain' ? 'vs-light' : 'vs-dark'}
               height="700px"
+              options={options}
             />
           </CippContentCard>
         </CCol>
