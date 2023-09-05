@@ -173,8 +173,8 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'BPA Field Builder',
-        to: '/tenant/tools/bpa-field-builder',
+        name: 'BPA Report Builder',
+        to: '/tenant/tools/bpa-report-builder',
       },
     ],
   },

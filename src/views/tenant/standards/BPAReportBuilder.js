@@ -1,15 +1,15 @@
 import React, { useState, useRef } from 'react'
 import { CippPage } from 'src/components/layout'
-import BPAFieldSchema from 'src/data/BPAField.schema.v1'
-import BPAFieldUISchema from 'src/data/BPAField.uischema.v1'
+import BPAReportSchema from 'src/data/BPAReport.schema.v1'
+import BPAReportUISchema from 'src/data/BPAReport.uischema.v1'
 import validator from '@rjsf/validator-ajv8'
 import Form from '@rjsf/core'
 import { CippContentCard } from 'src/components/layout'
-import { CRow, CCol, CButton } from '@coreui/react'
+import { CRow, CCol } from '@coreui/react'
 import Editor from '@monaco-editor/react'
 import { useSelector } from 'react-redux'
 
-const BPAFieldBuilder = () => {
+const BPAReportBuilder = () => {
   const [formData, setFormData] = useState(null)
   const editorRef = useRef(null)
   const currentTheme = useSelector((state) => state.app.currentTheme)
@@ -18,19 +18,19 @@ const BPAFieldBuilder = () => {
   }
 
   return (
-    <CippPage title="BPA Builder" tenantSelector={true}>
+    <CippPage title="BPA Report Builder" tenantSelector={true}>
       <CRow>
         <CCol md={12} lg={6}>
           <CippContentCard>
             <Form
-              schema={BPAFieldSchema}
-              uiSchema={BPAFieldUISchema}
+              schema={BPAReportSchema}
+              uiSchema={BPAReportUISchema}
               validator={validator}
               liveValidate={true}
               formData={formData}
               onChange={(e) => setFormData(e.formData)}
               enable={true}
-              showErrorList="bottom"
+              showErrorList="none"
               omitExtraData={true}
               liveOmit={true}
             />
@@ -42,9 +42,10 @@ const BPAFieldBuilder = () => {
               defaultLanguage="json"
               value={JSON.stringify(formData, null, 2)}
               onChange={handleEditorChange}
-              schema={BPAFieldSchema}
+              schema={BPAReportSchema}
               validator={validator}
               theme={currentTheme == 'cyberdrain' ? 'vs-light' : 'vs-dark'}
+              height="700px"
             />
           </CippContentCard>
         </CCol>
@@ -53,4 +54,4 @@ const BPAFieldBuilder = () => {
   )
 }
 
-export default BPAFieldBuilder
+export default BPAReportBuilder

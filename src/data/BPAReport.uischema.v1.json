@@ -1,0 +1,36 @@
+{
+  "ui:disabled": false,
+  "ui:readonly": false,
+  "ui:order": ["name", "style", "*"],
+  "Fields": {
+    "items": {
+      "ui:order": [
+        "name",
+        "desc",
+        "UseExistingInfo",
+        "StoreAs",
+        "API",
+        "URL",
+        "Command",
+        "parameters",
+        "where",
+        "ExtractFields",
+        "FrontendFields",
+        "*"
+      ]
+    }
+  },
+  "ui:submitButtonOptions": {
+    "submitText": "Validate",
+    "norender": false,
+    "props": {
+      "disabled": false,
+      "className": "btn btn-info"
+    }
+  },
+  "Fields": {
+    "items": {
+      "ui:classNames": "card card-title p-4 my-4"
+    }
+  }
+}
