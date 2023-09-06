@@ -3,7 +3,7 @@ import { CippPage } from 'src/components/layout'
 import BPAReportSchema from 'src/data/BPAReport.schema.v1'
 import BPAReportUISchema from 'src/data/BPAReport.uischema.v1'
 import validator from '@rjsf/validator-ajv8'
-import Form from '@rjsf/core'
+import Form from '@rjsf/bootstrap-4'
 import { CippContentCard } from 'src/components/layout'
 import { CRow, CCol } from '@coreui/react'
 import Editor from '@monaco-editor/react'
@@ -14,7 +14,6 @@ const CippTextWidget = (props) => {
   return (
     <CFormInput
       type="text"
-      className="mb-3"
       value={props.value}
       required={props.required}
       onChange={(event) => props.onChange(event.target.value)}
@@ -27,7 +26,6 @@ const CippSelectWidget = (props) => {
     <CFormSelect
       value={props.value}
       required={props.required}
-      className="mb-3"
       onChange={(event) => props.onChange(event.target.value)}
     >
       {options.map(({ label, value }, idx) => (
@@ -48,7 +46,6 @@ const CippCheckboxWidget = (props) => {
       id={props.name}
       label={props.label}
       checked={props.value}
-      className="mb-3"
       onChange={(event) => {
         props.onChange(event.target.checked)
       }}

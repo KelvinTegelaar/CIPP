@@ -41,6 +41,7 @@
     "@monaco-editor/react": "^4.5.2",
     "@popperjs/core": "^2.10.2",
     "@reduxjs/toolkit": "^1.7.0",
+    "@rjsf/bootstrap-4": "^5.12.1",
     "@rjsf/core": "^5.12.1",
     "@rjsf/utils": "^5.12.1",
     "@rjsf/validator-ajv8": "^5.12.1",

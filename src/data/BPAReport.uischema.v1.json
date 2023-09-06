@@ -20,8 +20,7 @@
       ],
       "FrontendFields": {
         "ui:classNames": "card card-title p-4 my-4"
-      },
-      "ui:classNames": "card card-title p-4 my-4"
+      }
     }
   },
   "ui:submitButtonOptions": {
