@@ -10,8 +10,15 @@ function CippCodeOffCanvas({ row, state, hideFunction, type }) {
   const [SaveTemplate, templateDetails] = useLazyGenericPostRequestQuery()
   const currentTheme = useSelector((state) => state.app.currentTheme)
   const [templateData, setFormData] = useState(row)
+  const [invalidJSON, setInvalid] = useState(false)
+
   function handleEditorChange(value, event) {
-    setFormData(JSON.parse(value))
+    try {
+      setFormData(JSON.parse(value))
+      setInvalid(false)
+    } catch {
+      setInvalid(true)
+    }
   }
   return (
     <>
@@ -37,6 +44,7 @@ function CippCodeOffCanvas({ row, state, hideFunction, type }) {
         <CRow className="mb-3">
           <CCol>
             <CButton
+              disabled={invalidJSON}
               onClick={() =>
                 SaveTemplate({
                   path: `/api/ExecEditTemplate?type=${type}`,
