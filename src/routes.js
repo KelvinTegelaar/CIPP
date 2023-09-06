@@ -71,7 +71,7 @@ const DeviceComplianceReport = React.lazy(() =>
 const BestPracticeAnalyzer = React.lazy(() =>
   import('src/views/tenant/standards/BestPracticeAnalyser'),
 )
-const BPAFieldBuilder = React.lazy(() => import('src/views/tenant/standards/BPAFieldBuilder'))
+const BPAReportBuilder = React.lazy(() => import('src/views/tenant/standards/BPAReportBuilder'))
 const DomainsAnalyser = React.lazy(() => import('src/views/tenant/standards/DomainsAnalyser'))
 const OffboardingWizard = React.lazy(() =>
   import('src/views/identity/administration/OffboardingWizard'),
@@ -387,9 +387,9 @@ const routes = [
     component: GeoIPLookup,
   },
   {
-    path: '/tenant/tools/bpa-field-builder',
-    name: 'BPA Field Builder',
-    component: BPAFieldBuilder,
+    path: '/tenant/tools/bpa-report-builder',
+    name: 'BPA Report Builder',
+    component: BPAReportBuilder,
   },
   { path: '/tenant/standards/alert-list', name: 'Alert List (Alpha)', component: ListAlerts },
   { path: '/endpoint', name: 'Endpoint' },
