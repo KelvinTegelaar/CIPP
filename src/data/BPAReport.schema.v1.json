@@ -20,7 +20,7 @@
       "type": "array",
       "minItems": 1,
       "items": {
-        "required": ["name", "API", "StoreAs"],
+        "required": ["name", "API"],
         "properties": {
           "name": {
             "type": "string",
@@ -32,21 +32,6 @@
             "title": "Use Existing Info?",
             "default": false
           },
-          "StoreAs": {
-            "type": "string",
-            "title": "Store As",
-            "description": "The format in which to store the fetched data.",
-            "anyOf": [
-              {
-                "const": "JSON",
-                "title": "JSON - For structured data"
-              },
-              {
-                "const": "bool",
-                "title": "Boolean - True/False values"
-              }
-            ]
-          },
           "ExtractFields": {
             "title": "Extract Fields",
             "description": "Lists the attributes or fields to extract from the returned data.",
@@ -56,11 +41,7 @@
             },
             "minItems": 1
           },
-          "where": {
-            "title": "Where",
-            "description": "A conditional filter to determine which data gets displayed or processed. Use PowerShell's Where-Object Filterscript format.",
-            "type": "string"
-          },
+
           "FrontendFields": {
             "type": "array",
             "title": "Frontend Fields",
@@ -89,15 +70,15 @@
                     },
                     {
                       "const": "bool",
-                      "title": "Presents as True or False"
+                      "title": "True/False"
                     },
                     {
                       "const": "warnBool",
-                      "title": "Shows boolean values with potential visual warnings"
+                      "title": "True/False values with potential visual warnings"
                     },
                     {
                       "const": "reverseBool",
-                      "title": "Inverts the boolean value for display"
+                      "title": "Inverts the True/False value for display"
                     },
                     {
                       "const": "table",
@@ -131,6 +112,31 @@
             },
             "then": {
               "properties": {
+                "required": "StoreAs",
+                "where": {
+                  "title": "Where",
+                  "description": "A conditional filter to determine which data gets displayed or processed. Use PowerShell's Where-Object Filterscript format.",
+                  "type": "string"
+                },
+                "StoreAs": {
+                  "type": "string",
+                  "title": "Store As",
+                  "description": "The format in which to store the fetched data.",
+                  "anyOf": [
+                    {
+                      "const": "string",
+                      "title": "String - For plain text"
+                    },
+                    {
+                      "const": "JSON",
+                      "title": "JSON - For structured data"
+                    },
+                    {
+                      "const": "bool",
+                      "title": "Boolean - True/False values"
+                    }
+                  ]
+                },
                 "API": {
                   "type": "string",
                   "title": "API",
@@ -163,12 +169,13 @@
                   },
                   "then": {
                     "properties": {
-                      "URL": {
+                      "Command": {
                         "type": "string",
-                        "description": "The endpoint for CIPP Function"
+                        "pattern": "^Get-CIPP",
+                        "description": "Command for CIPP Function (Get-CIPP)"
                       }
                     },
-                    "required": ["URL"]
+                    "required": ["Command"]
                   }
                 },
                 {

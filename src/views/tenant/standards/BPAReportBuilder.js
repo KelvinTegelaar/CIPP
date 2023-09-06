@@ -8,10 +8,9 @@ import { CippContentCard } from 'src/components/layout'
 import { CRow, CCol } from '@coreui/react'
 import Editor from '@monaco-editor/react'
 import { useSelector } from 'react-redux'
-import { WidgetProps, RegistryWidgetsType } from '@rjsf/utils'
 import { CFormInput, CFormSelect, CFormSwitch } from '@coreui/react'
 
-const CippTextWidget = (props: WidgetProps) => {
+const CippTextWidget = (props) => {
   return (
     <CFormInput
       type="text"
@@ -21,9 +20,8 @@ const CippTextWidget = (props: WidgetProps) => {
     />
   )
 }
-const CippSelectWidget = (props: WidgetProps) => {
+const CippSelectWidget = (props) => {
   const options = props?.options.length > 0 ? props.options : props.options.enumOptions
-  console.log(options)
   return (
     <CFormSelect
       value={props.value}
@@ -39,22 +37,26 @@ const CippSelectWidget = (props: WidgetProps) => {
   )
 }
 
-const CippCheckboxWidget = (props: WidgetProps) => {
+const CippCheckboxWidget = (props) => {
   // not working yet
+  console.log(props)
   return (
     <CFormSwitch
       disabled={props.disabled}
       id={props.name}
       label={props.label}
+      checked={props.value}
       className="my-2"
-      value={props.value}
-      onChange={() => props.onChange(!props.value)}
+      onChange={(event) => {
+        props.onChange(event.target.checked)
+      }}
     />
   )
 }
-const CippWidgets: RegistryWidgetsType = {
+const CippWidgets = {
   TextWidget: CippTextWidget,
   SelectWidget: CippSelectWidget,
+  CheckboxWidget: CippCheckboxWidget,
 }
 
 const BPAReportBuilder = () => {
@@ -62,7 +64,11 @@ const BPAReportBuilder = () => {
   const editorRef = useRef(null)
   const currentTheme = useSelector((state) => state.app.currentTheme)
   function handleEditorChange(value, event) {
-    setFormData(JSON.parse(value))
+    try {
+      setFormData(JSON.parse(value))
+    } catch {
+      setFormData({})
+    }
   }
   const options = {
     wordWrap: true,
