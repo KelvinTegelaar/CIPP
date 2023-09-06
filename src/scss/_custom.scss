@@ -217,6 +217,9 @@
     }
   }
 }
+.offcanvas-large {
+  width: 800px !important;
+}
 
 .cipp-offcanvas {
   background-color: var(--cui-body-bg);
@@ -243,7 +246,7 @@
     background-color: var(--cipp-offcanvas-title-bg);
     color: var(--cipp-offcanvas-title-color);
     padding-bottom: 1rem;
-    padding-top: 0.5rem;
+    padding-top: 1rem;
   }
 
   .cipp-extendedinfo-label {
@@ -572,7 +575,6 @@
 }
 
 .no-colour {
-
   .text-success {
     color: var(--cui-body-color) !important;
   }

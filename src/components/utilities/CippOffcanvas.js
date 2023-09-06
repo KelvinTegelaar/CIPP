@@ -8,7 +8,7 @@ export default function CippOffcanvas(props) {
   return (
     <COffcanvas
       scroll
-      className="cipp-offcanvas"
+      className={`cipp-offcanvas ${props.addedClass ? props.addedClass : ''}`}
       visible={props.visible}
       placement={props.placement}
       id={props.id}
