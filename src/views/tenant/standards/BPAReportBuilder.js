@@ -8,6 +8,54 @@ import { CippContentCard } from 'src/components/layout'
 import { CRow, CCol } from '@coreui/react'
 import Editor from '@monaco-editor/react'
 import { useSelector } from 'react-redux'
+import { WidgetProps, RegistryWidgetsType } from '@rjsf/utils'
+import { CFormInput, CFormSelect, CFormSwitch } from '@coreui/react'
+
+const CippTextWidget = (props: WidgetProps) => {
+  return (
+    <CFormInput
+      type="text"
+      value={props.value}
+      required={props.required}
+      onChange={(event) => props.onChange(event.target.value)}
+    />
+  )
+}
+const CippSelectWidget = (props: WidgetProps) => {
+  const options = props?.options.length > 0 ? props.options : props.options.enumOptions
+  console.log(options)
+  return (
+    <CFormSelect
+      value={props.value}
+      required={props.required}
+      onChange={(event) => props.onChange(event.target.value)}
+    >
+      {options.map(({ label, value }, idx) => (
+        <option key={`${idx}-${value}`} value={value}>
+          {label}
+        </option>
+      ))}
+    </CFormSelect>
+  )
+}
+
+const CippCheckboxWidget = (props: WidgetProps) => {
+  // not working yet
+  return (
+    <CFormSwitch
+      disabled={props.disabled}
+      id={props.name}
+      label={props.label}
+      className="my-2"
+      value={props.value}
+      onChange={() => props.onChange(!props.value)}
+    />
+  )
+}
+const CippWidgets: RegistryWidgetsType = {
+  TextWidget: CippTextWidget,
+  SelectWidget: CippSelectWidget,
+}
 
 const BPAReportBuilder = () => {
   const [formData, setFormData] = useState(null)
@@ -36,6 +84,7 @@ const BPAReportBuilder = () => {
               showErrorList="none"
               omitExtraData={true}
               liveOmit={true}
+              widgets={CippWidgets}
             />
           </CippContentCard>
         </CCol>
