@@ -2,7 +2,7 @@ version: "1"
 rules:
   - base: main
     upstream: KelvinTegelaar:main
-    mergeMethod: merge
+    mergeMethod: hardreset
   - base: dev
     upstream: KelvinTegelaar:dev
     mergeMethod: none
