@@ -20,7 +20,7 @@
       "type": "array",
       "minItems": 1,
       "items": {
-        "required": ["name", "API"],
+        "required": ["name"],
         "properties": {
           "name": {
             "type": "string",
@@ -32,16 +32,6 @@
             "title": "Use Existing Info?",
             "default": false
           },
-          "ExtractFields": {
-            "title": "Extract Fields",
-            "description": "Lists the attributes or fields to extract from the returned data.",
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "minItems": 1
-          },
-
           "FrontendFields": {
             "type": "array",
             "title": "Frontend Fields",
@@ -111,8 +101,8 @@
               }
             },
             "then": {
+              "required": ["API", "StoreAs", "ExtractFields"],
               "properties": {
-                "required": "StoreAs",
                 "where": {
                   "title": "Where",
                   "description": "A conditional filter to determine which data gets displayed or processed. Use PowerShell's Where-Object Filterscript format.",
@@ -156,6 +146,15 @@
                   ],
                   "default": "Graph",
                   "description": "Defines the source or type of API to fetch the data."
+                },
+                "ExtractFields": {
+                  "title": "Extract Fields",
+                  "description": "Lists the attributes or fields to extract from the returned data.",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1
                 }
               },
               "allOf": [
