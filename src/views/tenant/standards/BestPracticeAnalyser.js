@@ -198,7 +198,7 @@ const BestPracticeAnalyser = () => {
         name: col.name,
         selector: (row) => getNestedValue(row, col.value),
         sortable: true,
-        exportSelector: col.value,
+        exportSelector: col.value.split('.').join('/'),
         cell: cellSelector, // Use the determined cell selector
       })
     })
