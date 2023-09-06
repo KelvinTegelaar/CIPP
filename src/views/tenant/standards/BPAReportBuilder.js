@@ -14,6 +14,7 @@ const CippTextWidget = (props) => {
   return (
     <CFormInput
       type="text"
+      className="mb-3"
       value={props.value}
       required={props.required}
       onChange={(event) => props.onChange(event.target.value)}
@@ -26,6 +27,7 @@ const CippSelectWidget = (props) => {
     <CFormSelect
       value={props.value}
       required={props.required}
+      className="mb-3"
       onChange={(event) => props.onChange(event.target.value)}
     >
       {options.map(({ label, value }, idx) => (
@@ -46,7 +48,7 @@ const CippCheckboxWidget = (props) => {
       id={props.name}
       label={props.label}
       checked={props.value}
-      className="my-2"
+      className="mb-3"
       onChange={(event) => {
         props.onChange(event.target.checked)
       }}
