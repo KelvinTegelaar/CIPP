@@ -10,6 +10,7 @@ import { queryString } from 'src/helpers'
 import { faBuilding } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import CippTenantOffcanvas from './CippTenantOffcanvas'
+import CippfuzzySearch from './CippFuzzySearch'
 
 const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = false }) => {
   const currentTenant = useSelector((state) => state.app.currentTenant)
@@ -95,13 +96,13 @@ const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = fa
               <SelectSearch
                 search
                 onChange={activated}
-                filterOptions={fuzzySearch}
+                filterOptions={CippfuzzySearch}
                 placeholder={placeholder}
                 disabled={isLoading}
                 value={currentTenant && currentTenant.customerId}
                 options={tenants.map(({ customerId, displayName, defaultDomainName }) => ({
                   value: customerId,
-                  name: [displayName] + [` (${defaultDomainName})`],
+                  name: `${displayName} (${defaultDomainName})`,
                 }))}
               />
             </CDropdownMenu>
@@ -112,7 +113,7 @@ const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = fa
         <SelectSearch
           search
           onChange={activated}
-          filterOptions={fuzzySearch}
+          filterOptions={CippfuzzySearch}
           placeholder={placeholder}
           disabled={isLoading}
           value={currentTenant && currentTenant.customerId}
