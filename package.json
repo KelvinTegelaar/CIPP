@@ -61,6 +61,7 @@
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-app-polyfill": "^2.0.0",
+    "react-bootstrap": "^2.8.0",
     "react-copy-to-clipboard": "^5.0.4",
     "react-data-table-component": "^7.4.5",
     "react-datepicker": "^4.10.0",
