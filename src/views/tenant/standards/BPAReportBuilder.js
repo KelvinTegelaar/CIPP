@@ -141,7 +141,12 @@ const BPAReportBuilder = () => {
             <CCardHeader>
               <CCardTitle className="d-flex justify-content-between">
                 Report Settings
-                <CButton size="sm" variant="ghost" onClick={() => setVisibleA(!visibleA)}>
+                <CButton
+                  size="sm"
+                  variant="ghost"
+                  className="stretched-link"
+                  onClick={() => setVisibleA(!visibleA)}
+                >
                   <FontAwesomeIcon icon={visibleA ? 'chevron-down' : 'chevron-right'} />
                 </CButton>
               </CCardTitle>
@@ -174,7 +179,7 @@ const BPAReportBuilder = () => {
                       <CRow className="my-3">
                         <CCol>
                           <CButton type="submit" onClick={handleSubmit}>
-                            <FontAwesomeIcon className="me-2" icon="download" />
+                            <FontAwesomeIcon className="me-2" icon="book" />
                             Load Report
                           </CButton>
                           <CButton type="button" className="ms-2" onClick={handleRefresh}>

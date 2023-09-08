@@ -226,7 +226,12 @@ const BestPracticeAnalyser = () => {
             <CCardHeader>
               <CCardTitle className="d-flex justify-content-between">
                 Report Settings
-                <CButton size="sm" variant="ghost" onClick={() => setVisibleA(!visibleA)}>
+                <CButton
+                  size="sm"
+                  variant="ghost"
+                  className="stretched-link"
+                  onClick={() => setVisibleA(!visibleA)}
+                >
                   <FontAwesomeIcon icon={visibleA ? faChevronDown : faChevronRight} />
                 </CButton>
               </CCardTitle>
