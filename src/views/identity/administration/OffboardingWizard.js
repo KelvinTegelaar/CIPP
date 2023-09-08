@@ -45,9 +45,9 @@ const OffboardingWizard = () => {
       TenantFilter: tenantDomain,
       OOO: values.OOO ? values.OOO : '',
       forward: values.forward ? values.forward.value : '',
-      OnedriveAccess: values.OnedriveAccess ? values.OnedriveAccess.value : '',
-      AccessNoAutomap: values.AccessNoAutomap ? values.AccessNoAutomap.value : '',
-      AccessAutomap: values.AccessAutomap ? values.AccessAutomap.value : '',
+      OnedriveAccess: values.OnedriveAccess ? values.OnedriveAccess : '',
+      AccessNoAutomap: values.AccessNoAutomap ? values.AccessNoAutomap : '',
+      AccessAutomap: values.AccessAutomap ? values.AccessAutomap : '',
       ConvertToShared: values.ConvertToShared,
       HideFromGAL: values.HideFromGAL,
       DisableSignIn: values.DisableSignIn,
@@ -130,6 +130,7 @@ const OffboardingWizard = () => {
           <CCol md={6}>
             <RFFSelectSearch
               label="Give other user full access on mailbox without automapping"
+              multi
               values={users
                 ?.filter((x) => x.mail)
                 .map((user) => ({
@@ -143,6 +144,7 @@ const OffboardingWizard = () => {
           <CCol md={6}>
             <RFFSelectSearch
               label="Give other user full access on mailbox with automapping"
+              multi
               values={users
                 ?.filter((x) => x.mail)
                 .map((user) => ({
@@ -156,6 +158,7 @@ const OffboardingWizard = () => {
           <CCol md={6}>
             <RFFSelectSearch
               label="Give other user full access on Onedrive"
+              multi
               values={users
                 ?.filter((x) => x.mail)
                 .map((user) => ({
