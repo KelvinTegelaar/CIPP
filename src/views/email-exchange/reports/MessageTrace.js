@@ -105,7 +105,10 @@ const MessageTrace = () => {
                 </CButton>
               </CCardTitle>
             </CCardHeader>
-            <CCollapse visible={visibleA}>
+          </CCard>
+          <CCollapse visible={visibleA}>
+            <CCard className="options-card">
+              <CCardHeader></CCardHeader>
               <CCardBody>
                 <Form
                   initialValues={{
@@ -183,8 +186,8 @@ const MessageTrace = () => {
                   }}
                 />
               </CCardBody>
-            </CCollapse>
-          </CCard>
+            </CCard>
+          </CCollapse>
         </CCol>
       </CRow>
       <hr />

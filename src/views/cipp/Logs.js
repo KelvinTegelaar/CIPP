@@ -136,7 +136,10 @@ const Logs = () => {
                 </CButton>
               </CCardTitle>
             </CCardHeader>
-            <CCollapse visible={visibleA}>
+          </CCard>
+          <CCollapse visible={visibleA}>
+            <CCard className="options-card">
+              <CCardHeader></CCardHeader>
               <CCardBody>
                 <Form
                   initialValues={{
@@ -191,8 +194,8 @@ const Logs = () => {
                   }}
                 />
               </CCardBody>
-            </CCollapse>
-          </CCard>
+            </CCard>
+          </CCollapse>
         </CCol>
       </CRow>
       <hr />

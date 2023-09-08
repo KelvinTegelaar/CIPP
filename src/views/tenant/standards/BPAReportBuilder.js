@@ -151,7 +151,10 @@ const BPAReportBuilder = () => {
                 </CButton>
               </CCardTitle>
             </CCardHeader>
-            <CCollapse visible={visibleA}>
+          </CCard>
+          <CCollapse visible={visibleA}>
+            <CCard className="options-card">
+              <CCardHeader></CCardHeader>
               <CCardBody>
                 <CRow>
                   <CCol xs={12} lg={6}>
@@ -218,8 +221,8 @@ const BPAReportBuilder = () => {
                   </CCol>
                 </CRow>
               </CCardBody>
-            </CCollapse>
-          </CCard>
+            </CCard>
+          </CCollapse>
         </CCol>
       </CRow>
       <hr />
