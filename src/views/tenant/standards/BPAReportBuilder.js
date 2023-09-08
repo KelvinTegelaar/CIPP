@@ -141,12 +141,20 @@ const BPAReportBuilder = () => {
             <CCardHeader>
               <CCardTitle className="d-flex justify-content-between">
                 Report Settings
-                <CButton size="sm" variant="ghost" onClick={() => setVisibleA(!visibleA)}>
+                <CButton
+                  size="sm"
+                  variant="ghost"
+                  className="stretched-link"
+                  onClick={() => setVisibleA(!visibleA)}
+                >
                   <FontAwesomeIcon icon={visibleA ? 'chevron-down' : 'chevron-right'} />
                 </CButton>
               </CCardTitle>
             </CCardHeader>
-            <CCollapse visible={visibleA}>
+          </CCard>
+          <CCollapse visible={visibleA}>
+            <CCard className="options-card">
+              <CCardHeader></CCardHeader>
               <CCardBody>
                 <CRow>
                   <CCol xs={12} lg={6}>
@@ -213,8 +221,8 @@ const BPAReportBuilder = () => {
                   </CCol>
                 </CRow>
               </CCardBody>
-            </CCollapse>
-          </CCard>
+            </CCard>
+          </CCollapse>
         </CCol>
       </CRow>
       <hr />
