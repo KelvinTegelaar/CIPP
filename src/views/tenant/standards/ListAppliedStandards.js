@@ -482,7 +482,7 @@ const ListAppliedStandards = () => {
                                     name: template.Displayname,
                                   }))}
                                   placeholder="Select a template"
-                                  label="Choose your intune templates to apply"
+                                  label="Choose your group templates to apply"
                                 />
                               )}
                             </Condition>
