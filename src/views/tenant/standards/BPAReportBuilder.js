@@ -179,7 +179,7 @@ const BPAReportBuilder = () => {
                       <CRow className="my-3">
                         <CCol>
                           <CButton type="submit" onClick={handleSubmit}>
-                            <FontAwesomeIcon className="me-2" icon="book" />
+                            <FontAwesomeIcon className="me-2" icon="download" />
                             Load Report
                           </CButton>
                           <CButton type="button" className="ms-2" onClick={handleRefresh}>
