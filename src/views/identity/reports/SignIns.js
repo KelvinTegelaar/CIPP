@@ -125,16 +125,24 @@ const SignInsReport = () => {
     <>
       <CRow>
         <CCol>
-          <CCard className="me-2 options-card">
+          <CCard className="options-card">
             <CCardHeader>
               <CCardTitle className="d-flex justify-content-between">
                 Sign In log Settings
-                <CButton size="sm" variant="ghost" onClick={() => setVisibleA(!visibleA)}>
+                <CButton
+                  size="sm"
+                  variant="ghost"
+                  className="stretched-link"
+                  onClick={() => setVisibleA(!visibleA)}
+                >
                   <FontAwesomeIcon icon={visibleA ? faChevronDown : faChevronRight} />
                 </CButton>
               </CCardTitle>
             </CCardHeader>
-            <CCollapse visible={visibleA}>
+          </CCard>
+          <CCollapse visible={visibleA}>
+            <CCard className="options-card">
+              <CCardHeader></CCardHeader>
               <CCardBody>
                 <Form
                   initialValues={{
@@ -173,8 +181,8 @@ const SignInsReport = () => {
                   }}
                 />
               </CCardBody>
-            </CCollapse>
-          </CCard>
+            </CCard>
+          </CCollapse>
         </CCol>
       </CRow>
       <hr />
