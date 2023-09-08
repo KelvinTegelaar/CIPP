@@ -125,8 +125,12 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
               message: row.message,
             },
             modalUrl: `/api/ExecOneDriveShortCut`,
-            modalInput: true,
-            modalMessage: 'Enter a SharePoint URL to create a OneDrive shortcut for',
+            modalDropdown: {
+              url: `/api/listSites?TenantFilter=${tenant.defaultDomainName}&type=SharePointSiteUsage`,
+              labelField: 'URL',
+              valueField: 'URL',
+            },
+            modalMessage: 'Select the sharepoint site to create a shortcut for',
           },
           {
             label: 'Enable Online Archive',
