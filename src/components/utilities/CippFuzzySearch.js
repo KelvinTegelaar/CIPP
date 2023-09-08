@@ -7,9 +7,12 @@ function _interopRequireDefault(obj) {
 function CippfuzzySearch(options) {
   var fuse = new _fuse['default'](options, {
     keys: ['name', 'groupName', 'items.name'],
-    threshold: 0.2,
+    threshold: 0.5,
     location: 0,
     ignoreLocation: true,
+    useExtendedSearch: true,
+    includeMatches: true,
+    includeScore: true,
     useExtendedSearch: true,
   })
   return function (value) {
