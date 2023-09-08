@@ -446,9 +446,13 @@ const Users = (row) => {
                 TenantFilter: tenant.defaultDomainName,
               },
               modalUrl: `/api/ExecOneDriveShortCut`,
-              modalInput: true,
               modalMessage:
-                'Enter a SharePoint URL to create a OneDrive shortcut for and press continue.',
+                'Select a SharePoint URL to create a OneDrive shortcut for and press continue.',
+              modalDropdown: {
+                url: `/api/listSites?TenantFilter=${tenant.defaultDomainName}&type=SharePointSiteUsage`,
+                labelField: 'URL',
+                valueField: 'URL',
+              },
             },
             {
               label: 'Set Out of Office',
