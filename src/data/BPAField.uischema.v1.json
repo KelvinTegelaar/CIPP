@@ -1,0 +1,26 @@
+{
+  "ui:disabled": false,
+  "ui:readonly": false,
+  "ui:order": [
+    "name",
+    "desc",
+    "UseExistingInfo",
+    "API",
+    "StoreAs",
+    "URL",
+    "command",
+    "parameters",
+    "where",
+    "ExtractFields",
+    "FrontendFields",
+    "*"
+  ],
+  "ui:submitButtonOptions": {
+    "submitText": "Validate",
+    "norender": false,
+    "props": {
+      "disabled": false,
+      "className": "btn btn-primary"
+    }
+  }
+}
