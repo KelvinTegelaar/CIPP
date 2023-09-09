@@ -8,6 +8,7 @@ import {
   CCardText,
   CCardTitle,
   CFormInput,
+  CFormSelect,
   CListGroup,
   CListGroupItem,
   COffcanvasTitle,
@@ -20,17 +21,60 @@ import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 's
 import { Link, useNavigate } from 'react-router-dom'
 import { stringCamelCase } from 'src/components/utilities/CippCamelCase'
 import ReactTimeAgo from 'react-time-ago'
+import { useEffect } from 'react'
+import { useState } from 'react'
 
 export default function CippActionsOffcanvas(props) {
   const inputRef = useRef('')
   const [genericGetRequest, getResults] = useLazyGenericGetRequestQuery()
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
+  const [getDrowndownInfo, dropDownInfo] = useLazyGenericGetRequestQuery()
+  const [modalContent, setModalContent] = useState(null)
+
+  useEffect(() => {
+    if (dropDownInfo.isFetching) {
+      handleModal(
+        <CSpinner />,
+        modalContent.modalUrl,
+        modalContent.modalType,
+        modalContent.modalBody,
+        modalContent.modalInput,
+        modalContent.modalDropdown,
+      )
+    }
+    if (dropDownInfo.isSuccess) {
+      handleModal(
+        modalContent.modalMessage,
+        modalContent.modalUrl,
+        modalContent.modalType,
+        modalContent.modalBody,
+        modalContent.modalInput,
+        modalContent.modalDropdown,
+      )
+    } else if (dropDownInfo.isError) {
+      handleModal(
+        'Error connecting to the API.',
+        modalContent.modalUrl,
+        modalContent.modalType,
+        modalContent.modalBody,
+        modalContent.modalInput,
+        modalContent.modalDropdown,
+      )
+    }
+  }, [dropDownInfo])
 
   const handleLink = useNavigate()
   const handleExternalLink = (link) => {
     window.open(link, '_blank')
   }
-  const handleModal = (modalMessage, modalUrl, modalType = 'GET', modalBody, modalInput) => {
+  const handleModal = (
+    modalMessage,
+    modalUrl,
+    modalType = 'GET',
+    modalBody,
+    modalInput,
+    modalDropdown,
+  ) => {
     if (modalType === 'GET') {
       ModalService.confirm({
         body: (
@@ -43,11 +87,25 @@ export default function CippActionsOffcanvas(props) {
       })
     } else {
       ModalService.confirm({
+        key: modalContent,
         body: (
           <div style={{ overflow: 'visible' }}>
             {modalInput && (
               <div>
                 <CFormInput ref={inputRef} type="text" />
+              </div>
+            )}
+            {modalDropdown && (
+              <div>
+                {dropDownInfo.isSuccess && (
+                  <CFormSelect
+                    ref={inputRef}
+                    options={dropDownInfo.data.map((data) => ({
+                      value: data[modalDropdown.valueField],
+                      label: data[modalDropdown.labelField],
+                    }))}
+                  />
+                )}
               </div>
             )}
             <div>{modalMessage}</div>
@@ -72,6 +130,7 @@ export default function CippActionsOffcanvas(props) {
     modalType,
     modalBody,
     modalInput,
+    modalDropdown,
   ) => {
     if (link) {
       if (external) {
@@ -80,7 +139,12 @@ export default function CippActionsOffcanvas(props) {
         handleLink(link)
       }
     } else if (modal) {
-      handleModal(modalMessage, modalUrl, modalType, modalBody, modalInput)
+      if (modalDropdown) {
+        getDrowndownInfo({ path: modalDropdown.url })
+      }
+      setModalContent({ modalMessage, modalUrl, modalType, modalBody, modalInput, modalDropdown })
+
+      handleModal(modalMessage, modalUrl, modalType, modalBody, modalInput, modalDropdown)
     }
   }
 
@@ -101,7 +165,7 @@ export default function CippActionsOffcanvas(props) {
   try {
     cardContent = props.cards.map((action, index) => (
       <>
-        <CCard className="border-top-dark border-top-3 mb-3">
+        <CCard key={index} className="border-top-dark border-top-3 mb-3">
           <CCardBody>
             <CCardTitle>Report Name: {action.label}</CCardTitle>
             <CCardText>
@@ -112,9 +176,7 @@ export default function CippActionsOffcanvas(props) {
         </CCard>
       </>
     ))
-  } catch (error) {
-    console.error('An error occurred building OCanvas actions' + error.toString())
-  }
+  } catch (error) {}
 
   const extendedInfoContent = <CippOffcanvasTable rows={props.extendedInfo} guid={props.id} />
   let actionsContent
@@ -134,6 +196,7 @@ export default function CippActionsOffcanvas(props) {
             action.modalType,
             action.modalBody,
             action.modalInput,
+            action.modalDropdown,
           )
         }
         key={index}
@@ -178,6 +241,7 @@ export default function CippActionsOffcanvas(props) {
       visible={props.visible}
       id={props.id}
       hideFunction={props.hideFunction}
+      refreshFunction={props.refreshFunction}
     >
       {getResults.isFetching && (
         <CCallout color="info">
@@ -231,6 +295,7 @@ const CippActionsOffcanvasPropTypes = {
       modal: PropTypes.bool,
       modalUrl: PropTypes.string,
       modalBody: PropTypes.object,
+      modalDropdown: PropTypes.object,
       modalType: PropTypes.string,
       modalInput: PropTypes.bool,
       modalMessage: PropTypes.string,
@@ -251,6 +316,7 @@ const CippActionsOffcanvasPropTypes = {
       modalType: PropTypes.string,
       modalInput: PropTypes.bool,
       modalMessage: PropTypes.string,
+      modalDropdown: PropTypes.object,
       external: PropTypes.bool,
     }),
   ),
