@@ -21,7 +21,7 @@
     "test": "react-scripts test",
     "test:cov": "npm test -- --coverage --watchAll=false",
     "test:debug": "react-scripts --inspect-brk test --runInBand",
-    "start-api": "swa start --ssl --ssl-cert ./.vscode/cert.crt --ssl-key ./.vscode/key.key --swa-config-location .vscode http://localhost:3000 --api-location http://localhost:7071",
+    "start-swa": "swa start --swa-config-location .vscode http://127.0.0.1:3000 --api-location http://localhost:7071",
     "prepare": "husky install"
   },
   "config": {
@@ -38,8 +38,13 @@
     "@fortawesome/free-regular-svg-icons": "^5.15.4",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.16",
+    "@monaco-editor/react": "^4.5.2",
     "@popperjs/core": "^2.10.2",
     "@reduxjs/toolkit": "^1.7.0",
+    "@rjsf/bootstrap-4": "^5.12.1",
+    "@rjsf/core": "^5.12.1",
+    "@rjsf/utils": "^5.12.1",
+    "@rjsf/validator-ajv8": "^5.12.1",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.6.3",
     "axios": "^0.24.0",
     "buffer": "^6.0.3",
@@ -56,6 +61,7 @@
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-app-polyfill": "^2.0.0",
+    "react-bootstrap": "^1.6.5",
     "react-copy-to-clipboard": "^5.0.4",
     "react-data-table-component": "^7.4.5",
     "react-datepicker": "^4.10.0",
@@ -92,13 +98,13 @@
     "prettier": "2.4.1",
     "react-scripts": "^5.0.0",
     "redux-immutable-state-invariant": "^2.1.0",
-    "sass": "^1.44",
+    "sass": "^1.64.2",
     "stylelint": "^14.3.0",
     "stylelint-config-sass-guidelines": "^9.0.1",
     "stylelint-order": "^5.0.0"
   },
   "engines": {
-    "node": "16",
+    "node": "18",
     "npm": ">=7"
   }
 }
