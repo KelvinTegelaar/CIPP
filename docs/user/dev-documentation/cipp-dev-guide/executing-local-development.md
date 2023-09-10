@@ -47,7 +47,6 @@ The contents of your `local.settings.json` file differs depending on whether you
     "ApplicationId": "<APPLICATION ID>",
     "ApplicationSecret": "<APPLICATION SECRET>",
     "RefreshToken": "<REFRESH TOKEN>",
-    "ExchangeRefreshToken": "<EXCHANGE REFRESH TOKEN>",
     "tenantid":"<TENANT ID>"
   }
 }
@@ -63,7 +62,6 @@ The contents of your `local.settings.json` file differs depending on whether you
     "ApplicationId": "<APPLICATION ID>",
     "ApplicationSecret": "<APPLICATION SECRET>",
     "RefreshToken": "<REFRESH TOKEN>",
-    "ExchangeRefreshToken": "<EXCHANGE REFRESH TOKEN>",
     "tenantid":"<TENANT ID>"
   }
 }
