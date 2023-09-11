@@ -16,6 +16,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import { CippPage } from 'src/components/layout'
 import { ModalService } from 'src/components/utilities'
+import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
 
 //todo: expandable with RAWJson property.
 
@@ -52,15 +53,12 @@ const AutopilotListTemplates = () => {
         >
           <FontAwesomeIcon icon={faTrash} href="" />
         </CButton>
-        <CippOffcanvas
-          title="Template JSON"
-          placement="end"
-          visible={ocVisible}
-          id={row.id}
+        <CippCodeOffCanvas
+          row={row}
+          state={ocVisible}
+          type="IntuneTemplate"
           hideFunction={() => setOCVisible(false)}
-        >
-          <CippCodeBlock language="json" code={JSON.stringify(row, null, 2)} />
-        </CippOffcanvas>
+        />
       </>
     )
   }
@@ -68,18 +66,18 @@ const AutopilotListTemplates = () => {
   const columns = [
     {
       name: 'Display Name',
-      selector: (row) => row['Displayname'],
+      selector: (row) => row['displayName'],
       sortable: true,
-      cell: (row) => CellTip(row['Displayname']),
+      cell: (row) => CellTip(row['displayName']),
       exportSelector: 'Displayname',
       minWidth: '400px',
       maxWidth: '400px',
     },
     {
       name: 'Description',
-      selector: (row) => row['Description'],
+      selector: (row) => row['description'],
       sortable: true,
-      cell: (row) => CellTip(row['Description']),
+      cell: (row) => CellTip(row['description']),
       exportSelector: 'Description',
       minWidth: '400px',
       maxWidth: '400px',
@@ -124,7 +122,7 @@ const AutopilotListTemplates = () => {
           <CippDatatable
             keyField="id"
             reportName={`${tenant?.defaultDomainName}-MEMPolicyTemplates-List`}
-            path="/api/ListIntuneTemplates"
+            path="/api/ListIntuneTemplates?View=true"
             columns={columns}
             params={{ TenantFilter: tenant?.defaultDomainName }}
           />

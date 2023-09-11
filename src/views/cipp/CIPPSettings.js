@@ -20,6 +20,7 @@ import {
   CLink,
   CSpinner,
   CCardText,
+  CTooltip,
 } from '@coreui/react'
 import {
   useGenericGetRequestQuery,
@@ -69,6 +70,7 @@ import { Form } from 'react-final-form'
 import useConfirmModal from 'src/hooks/useConfirmModal'
 import { setCurrentTenant } from 'src/store/features/app'
 import {
+  CippOffcanvas,
   CippCodeBlock,
   ModalService,
   StatusIcon,
@@ -79,6 +81,7 @@ import { TitleButton } from 'src/components/buttons'
 import Skeleton from 'react-loading-skeleton'
 import { Buffer } from 'buffer'
 import Extensions from 'src/data/Extensions.json'
+import { CellDelegatedPrivilege } from 'src/components/tables/CellDelegatedPrivilege'
 
 const CIPPSettings = () => {
   const [active, setActive] = useState(1)
@@ -151,7 +154,12 @@ const checkAccessColumns = [
   {
     name: 'Result',
     selector: (row) => row['Status'],
-    grow: 1,
+    minWidth: '380px',
+    maxWidth: '380px',
+  },
+  {
+    name: 'Missing GDAP Roles',
+    selector: (row) => row['GDAP'],
   },
 ]
 
@@ -652,28 +660,34 @@ const ExcludedTenantsSettings = () => {
     return (
       <>
         {row.Excluded && (
-          <CButton
-            size="sm"
-            variant="ghost"
-            color="info"
-            onClick={() => handleRemoveExclusion(row.defaultDomainName)}
-          >
-            <FontAwesomeIcon icon={faEye} href="" />
-          </CButton>
+          <CTooltip content="Remove Exclusion">
+            <CButton
+              size="sm"
+              variant="ghost"
+              color="info"
+              onClick={() => handleRemoveExclusion(row.defaultDomainName)}
+            >
+              <FontAwesomeIcon icon={faEye} href="" />
+            </CButton>
+          </CTooltip>
         )}
         {!row.Excluded && (
-          <CButton
-            size="sm"
-            variant="ghost"
-            color="danger"
-            onClick={() => handleConfirmExcludeTenant({ value: row.customerId })}
-          >
-            <FontAwesomeIcon icon={faEyeSlash} href="" />
-          </CButton>
+          <CTooltip content="Exclude Tenant">
+            <CButton
+              size="sm"
+              variant="ghost"
+              color="danger"
+              onClick={() => handleConfirmExcludeTenant({ value: row.customerId })}
+            >
+              <FontAwesomeIcon icon={faEyeSlash} href="" />
+            </CButton>
+          </CTooltip>
         )}
-        <CButton size="sm" variant="ghost" color="info" onClick={() => handleCPVPermissions(row)}>
-          <FontAwesomeIcon icon={faRecycle} href="" />
-        </CButton>
+        <CTooltip content="CPV Refresh">
+          <CButton size="sm" variant="ghost" color="info" onClick={() => handleCPVPermissions(row)}>
+            <FontAwesomeIcon icon={faRecycle} href="" />
+          </CButton>
+        </CTooltip>
       </>
     )
   }
@@ -696,25 +710,7 @@ const ExcludedTenantsSettings = () => {
       name: 'Relationship Type',
       selector: (row) => row['delegatedPrivilegeStatus'],
       sortable: true,
-      cell: (row, index, column) => {
-        const cell = column.selector(row)
-        if (!cell) {
-          return <CellBadge color="info" label="DAP" />
-        }
-        if (cell.toLowerCase() == 'none') {
-          return <CellBadge color="info" label="No Access" />
-        }
-        if (cell === 'delegatedAdminPrivileges') {
-          return <CellBadge color="info" label="DAP Only" />
-        }
-        if (cell === 'delegatedAndGranularDelegetedAdminPrivileges') {
-          return <CellBadge color="info" label="GDAP & DAP" />
-        }
-        if (cell === 'granularDelegatedAdminPrivileges') {
-          return <CellBadge color="info" label="GDAP" />
-        }
-        return <CellBadge color="info" label="Unknown" />
-      },
+      cell: (row) => CellDelegatedPrivilege({ cell: row['delegatedPrivilegeStatus'] }),
       exportSelector: 'delegatedPrivilegeStatus',
     },
     {
@@ -760,13 +756,15 @@ const ExcludedTenantsSettings = () => {
           {removeExcludeTenantResult.data?.Results}
         </CCallout>
       )}
-      {refreshPermissionsResults.isSuccess && (
+      {refreshPermissionsResults.isSuccess &&
+      refreshPermissionsResults.data?.Results &&
+      Array.isArray(refreshPermissionsResults.data.Results) ? (
         <CCallout color="success" dismissible>
-          {refreshPermissionsResults.data.map((result, idx) => (
+          {refreshPermissionsResults.data.Results.map((result, idx) => (
             <li key={idx}>{result}</li>
           ))}
         </CCallout>
-      )}
+      ) : null}
       {addExcludeTenantResult.isSuccess && (
         <CCallout color="success" dismissible>
           {addExcludeTenantResult.data?.Results}
@@ -821,7 +819,7 @@ const ExcludedTenantsSettings = () => {
 }
 const SecuritySettings = () => {
   const [listBackend, listBackendResult] = useLazyGenericGetRequestQuery()
-
+  const [visible, setVisible] = useState(false)
   return (
     <div>
       {listBackendResult.isUninitialized && listBackend({ path: 'api/ExecBackendURLs' })}
@@ -833,16 +831,16 @@ const SecuritySettings = () => {
                 <CCardTitle>Resource Group</CCardTitle>
               </CCardHeader>
               <CCardBody>
-                <CRow className="mb-3">
+                <p>
                   The Resource group contains all the CIPP resources in your tenant, except the SAM
                   Application
-                </CRow>
+                </p>
                 <a
                   target={'_blank'}
                   href={listBackendResult.data?.Results?.ResourceGroup}
                   rel="noreferrer"
                 >
-                  <CButton>Go to Resource Group</CButton>
+                  <CButton className="mb-3">Go to Resource Group</CButton>
                 </a>
               </CCardBody>
             </CCard>
@@ -853,16 +851,16 @@ const SecuritySettings = () => {
                 <CCardTitle>Key Vault</CCardTitle>
               </CCardHeader>
               <CCardBody>
-                <CRow className="mb-3">
+                <p>
                   The keyvault allows you to check token information. By default you do not have
                   access.
-                </CRow>
+                </p>
                 <a
                   target={'_blank'}
                   href={listBackendResult.data?.Results?.KeyVault}
                   rel="noreferrer"
                 >
-                  <CButton>Go to Keyvault</CButton>
+                  <CButton className="mb-3">Go to Keyvault</CButton>
                 </a>
               </CCardBody>
             </CCard>
@@ -873,16 +871,16 @@ const SecuritySettings = () => {
                 <CCardTitle>Static Web App (Role Management)</CCardTitle>
               </CCardHeader>
               <CCardBody>
-                <CRow className="mb-3">
+                <p>
                   The Static Web App role management allows you to invite other users to the
                   application.
-                </CRow>
+                </p>
                 <a
                   target={'_blank'}
                   href={listBackendResult.data?.Results?.SWARoles}
                   rel="noreferrer"
                 >
-                  <CButton>Go to Role Management</CButton>
+                  <CButton className="mb-3">Go to Role Management</CButton>
                 </a>
               </CCardBody>
             </CCard>
@@ -895,15 +893,13 @@ const SecuritySettings = () => {
                 <CCardTitle>Function App (Deployment Center)</CCardTitle>
               </CCardHeader>
               <CCardBody>
-                <CRow className="mb-3">
-                  The Function App Deployment Center allows you to run updates on the API
-                </CRow>
+                <p>The Function App Deployment Center allows you to run updates on the API</p>
                 <a
                   target={'_blank'}
                   href={listBackendResult.data?.Results?.FunctionDeployment}
                   rel="noreferrer"
                 >
-                  <CButton>Go to Function App Deployment Center</CButton>
+                  <CButton className="mb-3">Go to Function App Deployment Center</CButton>
                 </a>
               </CCardBody>
             </CCard>
@@ -914,17 +910,17 @@ const SecuritySettings = () => {
                 <CCardTitle>Function App (Configuration)</CCardTitle>
               </CCardHeader>
               <CCardBody>
-                <CRow className="mb-3">
+                <p>
                   At the Function App Configuration you can check the status of the API access to
                   your keyvault
-                  <a
-                    target={'_blank'}
-                    href={listBackendResult.data?.Results?.FunctionConfig}
-                    rel="noreferrer"
-                  >
-                    <CButton>Go to Function App Configuration</CButton>
-                  </a>
-                </CRow>
+                </p>
+                <a
+                  target={'_blank'}
+                  href={listBackendResult.data?.Results?.FunctionConfig}
+                  rel="noreferrer"
+                >
+                  <CButton className="mb-3">Go to Function App Configuration</CButton>
+                </a>
               </CCardBody>
             </CCard>
           </CCol>
@@ -934,20 +930,118 @@ const SecuritySettings = () => {
                 <CCardTitle>Function App (Overview)</CCardTitle>
               </CCardHeader>
               <CCardBody>
-                <CRow className="mb-3">
-                  At the function App Overview, you can stop and start the backend API
-                </CRow>
+                <p>At the function App Overview, you can stop and start the backend API</p>
                 <a
                   target={'_blank'}
                   href={listBackendResult.data?.Results?.FunctionApp}
                   rel="noreferrer"
                 >
-                  <CButton>Go to Function App Overview</CButton>
+                  <CButton className="mb-3">Go to Function App Overview</CButton>
                 </a>
               </CCardBody>
             </CCard>
           </CCol>
         </CRow>
+        <CRow className="mb-3">
+          <CCol md={4}>
+            <CCard className="h-100">
+              <CCardHeader>
+                <CCardTitle>Cloud Shell</CCardTitle>
+              </CCardHeader>
+              <CCardBody>
+                <p>Launch an Azure Cloud Shell Window</p>
+                <CLink
+                  onClick={() =>
+                    window.open(
+                      'https://shell.azure.com/powershell',
+                      '_blank',
+                      'toolbar=no,scrollbars=yes,resizable=yes,menubar=no,location=no,status=no',
+                    )
+                  }
+                  rel="noreferrer"
+                >
+                  <CButton className="mb-3 me-3">Cloud Shell</CButton>
+                </CLink>
+                <CButton onClick={() => setVisible(true)} className="mb-3">
+                  Command Reference
+                </CButton>
+              </CCardBody>
+            </CCard>
+          </CCol>
+        </CRow>
+        <CippOffcanvas
+          id="command-offcanvas"
+          visible={visible}
+          placement="end"
+          className="cipp-offcanvas"
+          hideFunction={() => setVisible(false)}
+          title="Command Reference"
+        >
+          <h5 className="my-3">Function App Config</h5>
+          <CippCodeBlock
+            language="powershell"
+            code={
+              '$Function = Get-AzFunctionApp -ResourceGroupName ' +
+              listBackendResult.data?.Results?.RGName +
+              ' -Name ' +
+              listBackendResult.data?.Results?.FunctionName +
+              '; $Function | select Name, Status, Location, Runtime, ApplicationSettings'
+            }
+            showLineNumbers={false}
+            wrapLongLines={true}
+          />
+          <h5 className="my-3">Function App Deployment</h5>
+          <CippCodeBlock
+            language="powershell"
+            code={
+              '$FunctionDeployment = az webapp deployment source show --resource-group ' +
+              listBackendResult.data?.Results?.RGName +
+              ' --name ' +
+              listBackendResult.data?.Results?.FunctionName +
+              ' | ConvertFrom-Json; $FunctionDeployment | Select-Object repoUrl, branch, isGitHubAction, isManualIntegration, githubActionConfiguration'
+            }
+            showLineNumbers={false}
+            wrapLongLines={true}
+          />
+          <h5 className="my-3">Watch Function Logs</h5>
+          <CippCodeBlock
+            language="powershell"
+            code={
+              'az webapp log tail --resource-group ' +
+              listBackendResult.data?.Results?.RGName +
+              ' --name ' +
+              listBackendResult.data?.Results?.FunctionName
+            }
+            showLineNumbers={false}
+            wrapLongLines={true}
+          />
+          <h5 className="my-3">Static Web App Config</h5>
+          <CippCodeBlock
+            language="powershell"
+            code={
+              '$StaticWebApp = Get-AzStaticWebApp -ResourceGroupName ' +
+              listBackendResult.data?.Results?.RGName +
+              ' -Name ' +
+              listBackendResult.data?.Results?.SWAName +
+              '; $StaticWebApp | Select-Object Name, CustomDomain, DefaultHostname, RepositoryUrl'
+            }
+            showLineNumbers={false}
+            wrapLongLines={true}
+          />
+          <h5 className="my-3">List CIPP Users</h5>
+          <CippCodeBlock
+            language="powershell"
+            code={
+              'Get-AzStaticWebAppUser -ResourceGroupName ' +
+              listBackendResult.data?.Results?.RGName +
+              ' -Name ' +
+              listBackendResult.data?.Results?.SWAName +
+              ' -AuthProvider all | Select-Object DisplayName, Role'
+            }
+            showLineNumbers={false}
+            wrapLongLines={true}
+          />
+        </CippOffcanvas>
       </>
     </div>
   )
@@ -980,6 +1074,10 @@ const NotificationsSettings = () => {
                 logsToInclude: notificationListResult.data?.logsToInclude?.map((m) => ({
                   label: m,
                   value: m,
+                })),
+                Severity: notificationListResult.data?.Severity?.map((s) => ({
+                  label: s,
+                  value: s,
                 })),
               }}
               onSubmit={onSubmit}
@@ -1016,6 +1114,7 @@ const NotificationsSettings = () => {
                           label="Choose which logs you'd like to receive alerts from. This notification will be sent every 15 minutes."
                           name="logsToInclude"
                           values={[
+                            { value: 'Updates', name: 'Updates Status' },
                             { value: 'Standards', name: 'All Standards' },
                             { value: 'TokensUpdater', name: 'Token Events' },
                             { value: 'ExecDnsConfig', name: 'Changing DNS Settings' },
@@ -1029,6 +1128,20 @@ const NotificationsSettings = () => {
                             { value: 'AddUser', name: 'Adding a user' },
                             { value: 'AddGroup', name: 'Adding a group' },
                             { value: 'ExecOffboardUser', name: 'Executing the offboard wizard' },
+                          ]}
+                        />
+                      </CCol>
+                      <CCol className="mb-3">
+                        <RFFSelectSearch
+                          multi={true}
+                          label="Choose which severity of alert you want to be notified for."
+                          name="Severity"
+                          values={[
+                            { value: 'Alert', name: 'Alert' },
+                            { value: 'Error', name: 'Error' },
+                            { value: 'Info', name: 'Info' },
+                            { value: 'Warning', name: 'Warning' },
+                            { value: 'Critical', name: 'Critical' },
                           ]}
                         />
                       </CCol>
@@ -1129,12 +1242,14 @@ const LicenseSettings = () => {
     {
       name: 'Display Name',
       selector: (row) => row['Product_Display_Name'],
+      exportSelector: 'Product_Display_Name',
       sortable: true,
       minWidth: '300px',
     },
     {
       name: 'License ID',
       selector: (row) => row['GUID'],
+      exportSelector: 'GUID',
       sortable: true,
       minWidth: '350px',
     },
@@ -1352,7 +1467,7 @@ const ExtensionsTab = () => {
         <CRow>
           {Extensions.map((integration) => (
             <CCol xs={12} lg={6} xl={6} className="mb-3">
-              <CCard>
+              <CCard className="d-flex flex-column h-100">
                 <CCardHeader>
                   <CCardTitle>{integration.name}</CCardTitle>
                 </CCardHeader>

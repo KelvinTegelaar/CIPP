@@ -14,6 +14,7 @@ import {
   CModalBody,
   CModalTitle,
   CCallout,
+  CFormSelect,
 } from '@coreui/react'
 import DataTable, { createTheme } from 'react-data-table-component'
 import PropTypes from 'prop-types'
@@ -24,6 +25,7 @@ import { cellGenericFormatter } from './CellGenericFormat'
 import { ModalService } from '../utilities'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { ConfirmModal } from '../utilities/SharedModal'
+import { useState } from 'react'
 
 const FilterComponent = ({
   filterText,
@@ -156,6 +158,40 @@ export default function CippTable({
   const [selectedRows, setSelectedRows] = React.useState(false)
   const [genericGetRequest, getResults] = useLazyGenericGetRequestQuery()
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
+  const [getDrowndownInfo, dropDownInfo] = useLazyGenericGetRequestQuery()
+  const [modalContent, setModalContent] = useState(null)
+  useEffect(() => {
+    if (dropDownInfo.isFetching) {
+      handleModal(
+        <CSpinner />,
+        modalContent.item.modalUrl,
+        modalContent.item.modalType,
+        modalContent.item.modalBody,
+        modalContent.item.modalInput,
+        modalContent.item.modalDropdown,
+      )
+    }
+    if (dropDownInfo.isSuccess) {
+      console.log(modalContent)
+      handleModal(
+        modalContent.item.modalMessage,
+        modalContent.item.modalUrl,
+        modalContent.item.modalType,
+        modalContent.item.modalBody,
+        modalContent.item.modalInput,
+        modalContent.item.modalDropdown,
+      )
+    } else if (dropDownInfo.isError) {
+      handleModal(
+        'Error connecting to the API.',
+        modalContent.item.modalUrl,
+        modalContent.item.modalType,
+        modalContent.item.modalBody,
+        modalContent.item.modalInput,
+        modalContent.item.modalDropdown,
+      )
+    }
+  }, [dropDownInfo])
   const handleSelectedChange = ({ selectedRows }) => {
     setSelectedRows(selectedRows)
     if (selectedRows.length < 1) {
@@ -163,9 +199,12 @@ export default function CippTable({
     }
   }
   const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false)
-  const filteredItems = data.filter(
-    (item) => JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !== -1,
-  )
+  const filteredItems = Array.isArray(data)
+    ? data.filter(
+        (item) => JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !== -1,
+      )
+    : []
+
   const applyFilter = (e) => {
     setFilterText(e.target.value)
   }
@@ -226,6 +265,95 @@ export default function CippTable({
       },
     },
   }
+  const handleModal = (
+    modalMessage,
+    modalUrl,
+    modalType = 'GET',
+    modalBody,
+    modalInput,
+    modalDropdown,
+  ) => {
+    if (modalType === 'GET') {
+      ModalService.confirm({
+        body: (
+          <div style={{ overflow: 'visible' }}>
+            <div>{modalMessage}</div>
+          </div>
+        ),
+        title: 'Confirm',
+        onConfirm: async () => {
+          const resultsarr = []
+          for (const row of selectedRows) {
+            setLoopRunning(true)
+            const urlParams = new URLSearchParams(modalUrl.split('?')[1])
+            for (let [paramName, paramValue] of urlParams.entries()) {
+              if (paramValue.startsWith('!')) {
+                urlParams.set(paramName, row[paramValue.replace('!', '')])
+              }
+            }
+            const NewModalUrl = `${modalUrl.split('?')[0]}?${urlParams.toString()}`
+            const results = await genericGetRequest({ path: NewModalUrl, refreshParam: row.id })
+            resultsarr.push(results)
+            setMassResults(resultsarr)
+          }
+          setLoopRunning(false)
+        },
+      })
+    } else {
+      ModalService.confirm({
+        body: (
+          <div style={{ overflow: 'visible' }}>
+            {modalInput && (
+              <div>
+                <CFormInput ref={inputRef} type="text" />
+              </div>
+            )}
+            {modalDropdown && (
+              <div>
+                {dropDownInfo.isSuccess && (
+                  <CFormSelect
+                    ref={inputRef}
+                    options={dropDownInfo.data.map((data) => ({
+                      value: data[modalDropdown.valueField],
+                      label: data[modalDropdown.labelField],
+                    }))}
+                  />
+                )}
+              </div>
+            )}
+            <div>{modalMessage}</div>
+          </div>
+        ),
+        title: 'Confirm',
+        onConfirm: async () => {
+          const resultsarr = []
+          for (const row of selectedRows) {
+            setLoopRunning(true)
+            const urlParams = new URLSearchParams(modalUrl.split('?')[1])
+            for (let [paramName, paramValue] of urlParams.entries()) {
+              if (paramValue.toString().startsWith('!')) {
+                urlParams.set(paramName, row[paramValue.replace('!', '')])
+              }
+            }
+            const newModalBody = {}
+            for (let [objName, objValue] of Object.entries(modalBody)) {
+              if (objValue.toString().startsWith('!')) {
+                newModalBody[objName] = row[objValue.replace('!', '')]
+              }
+            }
+            const NewModalUrl = `${modalUrl.split('?')[0]}?${urlParams.toString()}`
+            const results = await genericPostRequest({
+              path: NewModalUrl,
+              values: { ...modalBody, ...newModalBody, ...{ input: inputRef.current.value } },
+            })
+            resultsarr.push(results)
+            setMassResults(resultsarr)
+          }
+          setLoopRunning(false)
+        },
+      })
+    }
+  }
   const subHeaderComponentMemo = React.useMemo(() => {
     const handleClear = () => {
       if (filterText) {
@@ -233,77 +361,22 @@ export default function CippTable({
         setFilterText('')
       }
     }
-    const handleModal = (modalMessage, modalUrl, modalType = 'GET', modalBody, modalInput) => {
-      if (modalType === 'GET') {
-        ModalService.confirm({
-          body: (
-            <div style={{ overflow: 'visible' }}>
-              <div>{modalMessage}</div>
-            </div>
-          ),
-          title: 'Confirm',
-          onConfirm: async () => {
-            const resultsarr = []
-            for (const row of selectedRows) {
-              setLoopRunning(true)
-              const urlParams = new URLSearchParams(modalUrl.split('?')[1])
-              for (let [paramName, paramValue] of urlParams.entries()) {
-                if (paramValue.startsWith('!')) {
-                  urlParams.set(paramName, row[paramValue.replace('!', '')])
-                }
-              }
-              const NewModalUrl = `${modalUrl.split('?')[0]}?${urlParams.toString()}`
-              const results = await genericGetRequest({ path: NewModalUrl, refreshParam: row.id })
-              resultsarr.push(results)
-              setMassResults(resultsarr)
-            }
-            setLoopRunning(false)
-          },
-        })
-      } else {
-        ModalService.confirm({
-          body: (
-            <div style={{ overflow: 'visible' }}>
-              {modalInput && (
-                <div>
-                  <CFormInput ref={inputRef} type="text" />
-                </div>
-              )}
-              <div>{modalMessage}</div>
-            </div>
-          ),
-          title: 'Confirm',
-          onConfirm: async () => {
-            const resultsarr = []
-            for (const row of selectedRows) {
-              setLoopRunning(true)
-              const urlParams = new URLSearchParams(modalUrl.split('?')[1])
-              for (let [paramName, paramValue] of urlParams.entries()) {
-                if (paramValue.toString().startsWith('!')) {
-                  urlParams.set(paramName, row[paramValue.replace('!', '')])
-                }
-              }
-              const newModalBody = {}
-              for (let [objName, objValue] of Object.entries(modalBody)) {
-                if (objValue.toString().startsWith('!')) {
-                  newModalBody[objName] = row[objValue.replace('!', '')]
-                }
-              }
-              const NewModalUrl = `${modalUrl.split('?')[0]}?${urlParams.toString()}`
-              const results = await genericPostRequest({
-                path: NewModalUrl,
-                values: { ...modalBody, ...newModalBody, ...{ input: inputRef.current.value } },
-              })
-              resultsarr.push(results)
-              setMassResults(resultsarr)
-            }
-            setLoopRunning(false)
-          },
-        })
-      }
-    }
+
     const executeselectedAction = (item) => {
-      handleModal(item.modalMessage, item.modalUrl, item.modalType, item.modalBody, item.modalInput)
+      setModalContent({
+        item,
+      })
+      if (item.modalDropdown) {
+        getDrowndownInfo({ path: item.modalDropdown.url })
+      }
+      handleModal(
+        item.modalMessage,
+        item.modalUrl,
+        item.modalType,
+        item.modalBody,
+        item.modalInput,
+        item.modalDropdown,
+      )
     }
     const defaultActions = []
     const dataKeys = () => {
@@ -336,32 +409,35 @@ export default function CippTable({
         return null
       })
 
-      const filtered = data.map((obj) =>
-        // eslint-disable-next-line no-sequences
-        /* keys.reduce((acc, curr) => ((acc[curr] = obj[curr]), acc), {}),*/
-        keys.reduce((acc, curr) => {
-          const key = curr.split('/')
-          if (key.length > 1) {
-            var property = obj
-            for (var x = 0; x < key.length; x++) {
-              if (property[key[x]] !== null) {
-                property = property[key[x]]
-              } else {
-                property = 'n/a'
-                break
-              }
-            }
-            acc[curr] = property
-          } else {
-            if (typeof exportFormatter[curr] === 'function') {
-              acc[curr] = exportFormatter[curr]({ cell: obj[curr] })
-            } else {
-              acc[curr] = obj[curr]
-            }
-          }
-          return acc
-        }, {}),
-      )
+      const filtered =
+        Array.isArray(data) && data.length > 0
+          ? data.map((obj) =>
+              // eslint-disable-next-line no-sequences
+              /* keys.reduce((acc, curr) => ((acc[curr] = obj[curr]), acc), {}),*/
+              keys.reduce((acc, curr) => {
+                const key = curr.split('/')
+                if (key.length > 1) {
+                  var property = obj
+                  for (var x = 0; x < key.length; x++) {
+                    if (property.hasOwnProperty(key[x]) && property[key[x]] !== null) {
+                      property = property[key[x]]
+                    } else {
+                      property = 'n/a'
+                      break
+                    }
+                  }
+                  acc[curr] = property
+                } else {
+                  if (typeof exportFormatter[curr] === 'function') {
+                    acc[curr] = exportFormatter[curr]({ cell: obj[curr] })
+                  } else {
+                    acc[curr] = obj[curr]
+                  }
+                }
+                return acc
+              }, {}),
+            )
+          : []
 
       if (!disablePDFExport) {
         if (dynamicColumns === true) {
@@ -499,7 +575,10 @@ export default function CippTable({
               {(massResults.length >= 1 || loopRunning) && (
                 <CCallout color="info">
                   {massResults.map((message, idx) => {
-                    return <li key={idx}>{message.data.Results}</li>
+                    const results = message.data?.Results
+                    const displayResults = Array.isArray(results) ? results.join(', ') : results
+
+                    return <li key={`message-${idx}`}>{displayResults}</li>
                   })}
                   {loopRunning && (
                     <li>

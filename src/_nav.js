@@ -129,7 +129,7 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Scheduled Alerts',
+        name: 'Alerts Configuration',
         to: '/tenant/administration/alertsqueue',
       },
       {
@@ -158,6 +158,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Geo IP Lookup',
+        to: '/tenant/tools/geoiplookup',
+      },
+      {
+        component: CNavItem,
         name: 'Tenant Lookup',
         to: '/tenant/administration/tenantlookup',
       },
@@ -165,6 +170,11 @@ const _nav = [
         component: CNavItem,
         name: 'Individual Domain Check',
         to: '/tenant/standards/individual-domains',
+      },
+      {
+        component: CNavItem,
+        name: 'BPA Report Builder',
+        to: '/tenant/tools/bpa-report-builder',
       },
     ],
   },
@@ -692,6 +702,11 @@ const _nav = [
         component: CNavItem,
         name: 'GDAP Migration Status',
         to: '/tenant/administration/gdap-status',
+      },
+      {
+        component: CNavItem,
+        name: 'Invite Wizard',
+        to: '/tenant/administration/gdap-invite',
       },
       {
         component: CNavItem,
