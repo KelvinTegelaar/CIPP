@@ -18,24 +18,30 @@ const AppHeaderDropdown = () => {
   const [profileVisible, setProfileVisible] = useState(false)
   const [cippQueueExtendedInfo, setCippQueueExtendedInfo] = useState([])
   const [cippQueueVisible, setCippQueueVisible] = useState(false)
-  const [cippQueueRefresh, setCippQueueRefresh] = useState('')
+  const [cippQueueRefresh, setCippQueueRefresh] = useState(
+    (Math.random() + 1).toString(36).substring(7),
+  )
   const { data: profile } = authApi.endpoints.loadClientPrincipal.useQueryState()
 
   const [getCippQueueList, cippQueueList] = useLazyGenericGetRequestQuery()
 
   function loadCippQueue() {
     setCippQueueVisible(true)
+    getCippQueueList({ path: 'api/ListCippQueue', params: { refresh: cippQueueRefresh } })
+  }
+
+  function refreshCippQueue() {
     setCippQueueRefresh((Math.random() + 1).toString(36).substring(7))
-    getCippQueueList({ path: `api/ListCippQueue?refresh=${cippQueueRefresh}` })
+    loadCippQueue()
   }
 
   useEffect(() => {
-    if (cippQueueList.isFetching) {
+    if (cippQueueList.isFetching || cippQueueList.isLoading) {
       setCippQueueExtendedInfo([
         {
           label: 'Fetching recent jobs',
           value: 'Please wait',
-          timpestamp: Date(),
+          timestamp: Date(),
           link: '#',
         },
       ])
@@ -101,6 +107,7 @@ const AppHeaderDropdown = () => {
         title="Recent Jobs"
         extendedInfo={[]}
         cards={cippQueueExtendedInfo}
+        refreshFunction={refreshCippQueue}
         actions={[
           {
             label: 'Clear History',
