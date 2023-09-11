@@ -150,7 +150,8 @@ Some permissions may come from other APIs than just Graph. you will see this bot
 | DeviceManagementServiceConfig.ReadWrite.All             | Read and write Microsoft Intune configuration                         |
 | Directory.Read.All                                      | Read directory data                                                   |
 | Domain.Read.All                                         | Read Domains                                                          |
-| Exchange.Manage (Office 365 Exchange Online)            | Manage Exchange configuration                                            |
+| Exchange.Manage (Office 365 Exchange Online)            | Manage Exchange configuration                                         |
+| Files.ReadWrite.All                                     | Read and write files in all site collections                          |
 | Group.Create                                            | Create groups                                                         |
 | Group.Read.All                                          | Read all groups                                                       |
 | Group.ReadWrite.All                                     | Read and write all groups                                             |
