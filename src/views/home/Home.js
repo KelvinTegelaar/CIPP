@@ -143,6 +143,10 @@ const Home = () => {
           <CRow>
             <CCol sm={12} md={6} xl={3} className="mb-3">
               <CippContentCard title="Total Users" icon={faUsers}>
+                <a
+                  href={'/identity/administration/users?customerId=' + currentTenant.customerId}
+                  class="stretched-link"
+                ></a>
                 <div>
                   {issuccessUserCounts && !isFetchingUserCount ? dashboard?.Users : <Skeleton />}
                 </div>
@@ -150,6 +154,14 @@ const Home = () => {
             </CCol>
             <CCol sm={12} md={6} xl={3} className="mb-3">
               <CippContentCard title="Total Licensed users" icon={faUsers}>
+                <a
+                  href={
+                    '/identity/administration/users?customerId=' +
+                    currentTenant.customerId +
+                    '&filterName=Users with a license'
+                  }
+                  class="stretched-link"
+                ></a>
                 <div>
                   {issuccessUserCounts && !isFetchingUserCount ? dashboard?.LicUsers : <Skeleton />}
                 </div>
@@ -157,6 +169,15 @@ const Home = () => {
             </CCol>
             <CCol sm={12} md={6} xl={3} className="mb-3">
               <CippContentCard title="Global Admin Users" icon={faLaptopCode}>
+                <a
+                  href={
+                    'https://entra.microsoft.com/' +
+                    currentTenant.customerId +
+                    '/#view/Microsoft_AAD_IAM/RoleMenuBlade/~/RoleMembers/objectId/62e90394-69f5-4237-9190-012177145e10/roleName/Global%20Administrator/roleTemplateId/62e90394-69f5-4237-9190-012177145e10/adminUnitObjectId//customRole~/false/resourceScope/%2F?culture=en-us&country=us'
+                  }
+                  class="stretched-link"
+                  target="_blank"
+                ></a>
                 <div>
                   {issuccessUserCounts && !isFetchingUserCount ? dashboard?.Gas : <Skeleton />}
                 </div>
@@ -164,6 +185,14 @@ const Home = () => {
             </CCol>
             <CCol sm={12} md={6} xl={3} className="mb-3">
               <CippContentCard title="Total Guests" icon={faHotel}>
+                <a
+                  href={
+                    '/identity/administration/users?customerId=' +
+                    currentTenant.customerId +
+                    '&filterName=Guest users'
+                  }
+                  class="stretched-link"
+                ></a>
                 <div>
                   {issuccessUserCounts && !isFetchingUserCount ? dashboard?.Guests : <Skeleton />}
                 </div>
