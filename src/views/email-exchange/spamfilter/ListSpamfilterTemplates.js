@@ -9,6 +9,7 @@ import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import { CippPageList } from 'src/components/layout'
 import { ModalService } from 'src/components/utilities'
 import { TitleButton } from 'src/components/buttons'
+import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
 
 const SpamFilterListTemplates = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -44,15 +45,12 @@ const SpamFilterListTemplates = () => {
           <FontAwesomeIcon icon={faTrash} href="" />
         </CButton>
 
-        <CippOffcanvas
-          title="Template JSON"
-          placement="end"
-          visible={ocVisible}
-          id={row.id}
+        <CippCodeOffCanvas
+          row={row}
+          state={ocVisible}
+          type="SpamfilterTemplate"
           hideFunction={() => setOCVisible(false)}
-        >
-          <CippCodeBlock language="json" code={JSON.stringify(row, null, 2)} />
-        </CippOffcanvas>
+        />
       </>
     )
   }
