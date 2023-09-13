@@ -114,6 +114,25 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modalMessage: 'Are you sure you want to convert this user to a shared mailbox?',
           },
           {
+            label: 'Add OneDrive Shortcut',
+            color: 'info',
+            modal: true,
+            modalType: 'POST',
+            modalBody: {
+              username: row.userPrincipalName,
+              userid: row.id,
+              TenantFilter: tenant.defaultDomainName,
+              message: row.message,
+            },
+            modalUrl: `/api/ExecOneDriveShortCut`,
+            modalDropdown: {
+              url: `/api/listSites?TenantFilter=${tenant.defaultDomainName}&type=SharePointSiteUsage`,
+              labelField: 'URL',
+              valueField: 'URL',
+            },
+            modalMessage: 'Select the sharepoint site to create a shortcut for',
+          },
+          {
             label: 'Enable Online Archive',
             color: 'info',
             modal: true,
@@ -415,6 +434,25 @@ const Users = (row) => {
               modal: true,
               modalUrl: `/api/ExecRevokeSessions?Enable=true&TenantFilter=!Tenant&ID=!userPrincipalName`,
               modalMessage: 'Are you sure you want to revoke all sessions for these users?',
+            },
+            {
+              label: 'Create OneDrive Shortcut',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                username: '!userPrincipalName',
+                userid: '!id',
+                TenantFilter: tenant.defaultDomainName,
+              },
+              modalUrl: `/api/ExecOneDriveShortCut`,
+              modalMessage:
+                'Select a SharePoint URL to create a OneDrive shortcut for and press continue.',
+              modalDropdown: {
+                url: `/api/listSites?TenantFilter=${tenant.defaultDomainName}&type=SharePointSiteUsage`,
+                labelField: 'URL',
+                valueField: 'URL',
+              },
             },
             {
               label: 'Set Out of Office',
