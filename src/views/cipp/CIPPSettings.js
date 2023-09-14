@@ -1587,8 +1587,8 @@ const MappingsTab = () => {
   }
   return (
     <div>
-      {listBackendResult.isUninitialized &&
-        listBackend({ path: 'api/ExecExtensionMapping?List=true' })}
+      {listBackendHaloResult.isUninitialized &&
+        listHaloBackend({ path: 'api/ExecExtensionMapping?List=Halo' })}
       <>
         <CCard className="mb-3">
           <CCardHeader>
