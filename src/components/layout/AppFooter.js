@@ -8,7 +8,7 @@ import netfriends from 'src/assets/images/netfriends.png'
 //todo: Add darkmode detection and change logos accordingly.
 const AppFooter = () => {
   return (
-    <CFooter className="d-flex justify-content-between align-items-center">
+    <CFooter className="d-flex justify-content-between align-items-center" position="sticky">
       <div className="sponsors">
         <p>
           This application is sponsored by{' '}
