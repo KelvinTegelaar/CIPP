@@ -7,6 +7,7 @@ import { CippPageList } from 'src/components/layout'
 import { ModalService } from 'src/components/utilities'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import { cellBooleanFormatter } from 'src/components/tables'
+import { CellTip } from 'src/components/tables/CellGenericFormat'
 
 const ListAlertsQueue = () => {
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
@@ -75,24 +76,28 @@ const ListAlertsQueue = () => {
       selector: (row) => row['Expiration'],
       sortable: true,
       exportSelector: 'Expiration',
+      cell: (row) => CellTip(row['Expiration']),
     },
     {
       name: 'Monitored Resource',
       selector: (row) => row['Resource'],
       sortable: true,
       exportSelector: 'Resource',
+      cell: (row) => CellTip(row['Resource']),
     },
     {
       name: 'Monitored Actions',
       selector: (row) => row['Operations'],
       sortable: true,
       exportSelector: 'Operations',
+      cell: (row) => CellTip(row['Operations']),
     },
     {
       name: 'Webhook URL',
       selector: (row) => row['WebhookNotificationUrl'],
       sortable: true,
       exportSelector: 'WebhookNotificationUrl',
+      cell: (row) => CellTip(row['WebhookNotificationUrl']),
     },
     {
       name: 'Actions',
@@ -255,7 +260,7 @@ const ListAlertsQueue = () => {
                   label: 'Delete alerts',
                   color: 'info',
                   modal: true,
-                  modalUrl: `/api/RemoveQueuedAlert?ID=!tenantId`,
+                  modalUrl: `/api/RemoveQueuedAlert?ID=!tenantid`,
                   modalMessage: 'Are you sure you want to delete these alerts?',
                 },
               ],
@@ -281,7 +286,7 @@ const ListAlertsQueue = () => {
                   label: 'Delete webhook',
                   color: 'info',
                   modal: true,
-                  modalUrl: `/api/RemoveWebhookAlert?CIPPID=!CIPPID&tenantfilter=!tenantid`,
+                  modalUrl: `/api/RemoveWebhookAlert?CIPPID=!CIPPID&tenantfilter=!tenantName`,
                   modalMessage: 'Are you sure you want to delete this webhook alert?',
                 },
               ],
