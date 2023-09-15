@@ -2,39 +2,37 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "command": "npm run start-api",
-      "name": "Run emulator",
+      "name": "PowerShell: Execute current file",
+      "type": "PowerShell",
+      "request": "launch",
+      "script": "${file}",
+      "cwd": "${file}"
+    },
+    {
+      "command": "npm run start-swa",
+      "name": "Run Emulator",
       "request": "launch",
       "type": "node-terminal"
     },
     {
       "command": "npm start",
-      "name": "Run frontend",
+      "name": "Run Frontend",
       "request": "launch",
       "type": "node-terminal",
-      "preLaunchTask": "RunAllTasks",
+      "preLaunchTask": "Run All Tasks",
       "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"]
     },
     {
-      "name": "Launch Edge",
+      "type": "chrome",
       "request": "launch",
-      "type": "pwa-msedge",
-      "url": "https://localhost:4280",
-      "webRoot": "${workspaceFolder}"
-    },
-    {
-      "name": "Attach to Edge",
-      "port": 9222,
-      "request": "attach",
-      "type": "pwa-msedge",
-      "urlFilter": "https://localhost:4280/*",
-      "webRoot": "${workspaceFolder}"
+      "name": "Launch Chrome Debugger",
+      "url": "http://localhost:4280"
     }
   ],
   "compounds": [
     {
       "name": "Launch it all 🚀",
-      "configurations": ["Run frontend", "Run emulator"]
+      "configurations": ["Run Frontend", "Run Emulator"]
     }
   ]
 }

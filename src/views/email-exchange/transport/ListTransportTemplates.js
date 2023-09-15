@@ -9,6 +9,7 @@ import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import { CippPageList } from 'src/components/layout'
 import { ModalService } from 'src/components/utilities'
 import { TitleButton } from 'src/components/buttons'
+import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
 
 const TransportListTemplates = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -16,7 +17,7 @@ const TransportListTemplates = () => {
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
   const Offcanvas = (row, rowIndex, formatExtraData) => {
     const [ocVisible, setOCVisible] = useState(false)
-    const handleDeleteIntuneTemplate = (apiurl, message) => {
+    const handleDeleteTransportTemplate = (apiurl, message) => {
       ModalService.confirm({
         title: 'Confirm',
         body: <div>{message}</div>,
@@ -35,7 +36,7 @@ const TransportListTemplates = () => {
           variant="ghost"
           color="danger"
           onClick={() =>
-            handleDeleteIntuneTemplate(
+            handleDeleteTransportTemplate(
               `/api/RemoveTransportRuleTemplate?ID=${row.GUID}`,
               'Do you want to delete the template?',
             )
@@ -44,15 +45,12 @@ const TransportListTemplates = () => {
           <FontAwesomeIcon icon={faTrash} href="" />
         </CButton>
 
-        <CippOffcanvas
-          title="Template JSON"
-          placement="end"
-          visible={ocVisible}
-          id={row.id}
+        <CippCodeOffCanvas
+          row={row}
+          state={ocVisible}
+          type="TransportTemplate"
           hideFunction={() => setOCVisible(false)}
-        >
-          <CippCodeBlock language="json" code={JSON.stringify(row, null, 2)} />
-        </CippOffcanvas>
+        />
       </>
     )
   }

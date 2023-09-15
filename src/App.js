@@ -6,6 +6,13 @@ import routes from 'src/routes'
 import { Helmet } from 'react-helmet'
 import adminRoutes from './adminRoutes'
 import Skeleton from 'react-loading-skeleton'
+import TimeAgo from 'javascript-time-ago'
+import en from 'javascript-time-ago/locale/en.json'
+TimeAgo.addDefaultLocale(en)
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { fas } from '@fortawesome/free-solid-svg-icons'
+
+library.add(fas)
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))

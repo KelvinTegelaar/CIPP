@@ -112,12 +112,20 @@ const GraphExplorer = () => {
             <CCardHeader>
               <CCardTitle className="d-flex justify-content-between">
                 Approval Settings
-                <CButton size="sm" variant="ghost" onClick={() => setVisibleA(!visibleA)}>
+                <CButton
+                  size="sm"
+                  variant="ghost"
+                  className="stretched-link"
+                  onClick={() => setVisibleA(!visibleA)}
+                >
                   <FontAwesomeIcon icon={visibleA ? faChevronDown : faChevronRight} />
                 </CButton>
               </CCardTitle>
             </CCardHeader>
-            <CCollapse visible={visibleA}>
+          </CCard>
+          <CCollapse visible={visibleA}>
+            <CCard className="options-card">
+              <CCardHeader></CCardHeader>
               <CCardBody>
                 <Form
                   initialValues={{
@@ -130,20 +138,16 @@ const GraphExplorer = () => {
                       <CForm onSubmit={handleSubmit}>
                         <CRow>
                           <CCol>
-                            This tool helps you to retrieve the approval links required for each
-                            tenant. This is required to use 'Application Permissions' within these
-                            tenants when GDAP is deployed.
-                            <b>
-                              This is a temporary measure as Microsoft is adding this as a feature
-                              to GDAP.
-                            </b>
-                            <br />
-                            <br />
-                            The approval URL might lead to an error page with the error "Admin Role
-                            not found" or not load any page at all after clicking confirm - This is
-                            expected behavior.
-                            <br />
-                            <br />
+                            <p>
+                              This tool helps you to retrieve the approval links required for each
+                              tenant. This is required to use 'Application Permissions' within these
+                              tenants when GDAP is deployed.
+                            </p>
+                            <p>
+                              The approval URL might lead to an error page with the error "Admin
+                              Role not found" or not load any page at all after clicking confirm -
+                              This is expected behavior.
+                            </p>
                           </CCol>
                         </CRow>
                         <CRow>
@@ -152,7 +156,7 @@ const GraphExplorer = () => {
                               type="text"
                               name="applicationid"
                               label="Application ID:"
-                              placeholder="Enter the application ID to generate the approval URLs for. This can be any application. Leave blank to generate this for CIPP."
+                              placeholder="Enter the application ID to generate the approval URLs for. This can be any application."
                             />
                           </CCol>
                           <WhenFieldChanges field="reportTemplate" set="endpoint" />
@@ -170,8 +174,8 @@ const GraphExplorer = () => {
                   }}
                 />
               </CCardBody>
-            </CCollapse>
-          </CCard>
+            </CCard>
+          </CCollapse>
         </CCol>
       </CRow>
       <hr />
