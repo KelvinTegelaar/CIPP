@@ -42,12 +42,18 @@ The contents of your `local.settings.json` file differs depending on whether you
   "IsEncrypted": false,
   "Values": {
     "FUNCTIONS_WORKER_RUNTIME": "powershell",
-    "FUNCTIONS_WORKER_RUNTIME_VERSION": "~7",
+    "FUNCTIONS_WORKER_RUNTIME_VERSION": "7.2",
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "ApplicationId": "<APPLICATION ID>",
     "ApplicationSecret": "<APPLICATION SECRET>",
     "RefreshToken": "<REFRESH TOKEN>",
-    "tenantid":"<TENANT ID>"
+    "tenantid":"<TENANT ID>",
+    "DEV_SKIP_BPA_TIMER": true,
+    "DEV_SKIP_DOMAIN_TIMER": true,
+    "SetFromProfile": true,
+    "FUNCTIONS_EXTENSION_VERSION": "4",
+    "AzureWebJobs.BestPracticeAnalyser_OrchestrationStarterTimer.Disabled": true,
+    "AzureWebJobs.Domain_OrchestrationStarterTimer.Disabled": true
   }
 }
 ```
@@ -57,12 +63,18 @@ The contents of your `local.settings.json` file differs depending on whether you
   "IsEncrypted": false,
   "Values": {
     "FUNCTIONS_WORKER_RUNTIME": "powershell",
-    "FUNCTIONS_WORKER_RUNTIME_VERSION": "~7",
+    "FUNCTIONS_WORKER_RUNTIME_VERSION": "7.2",
     "AzureWebJobsStorage": "DefaultEndpointsProtocol=<AZURESTORAGECONNECTIONSTRING>",
     "ApplicationId": "<APPLICATION ID>",
     "ApplicationSecret": "<APPLICATION SECRET>",
     "RefreshToken": "<REFRESH TOKEN>",
-    "tenantid":"<TENANT ID>"
+    "tenantid":"<TENANT ID>",
+    "DEV_SKIP_BPA_TIMER": true,
+    "DEV_SKIP_DOMAIN_TIMER": true,
+    "SetFromProfile": true,
+    "FUNCTIONS_EXTENSION_VERSION": "4",
+    "AzureWebJobs.BestPracticeAnalyser_OrchestrationStarterTimer.Disabled": true,
+    "AzureWebJobs.Domain_OrchestrationStarterTimer.Disabled": true
   }
 }
 ```
