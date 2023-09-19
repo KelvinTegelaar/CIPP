@@ -70,6 +70,13 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modalMessage:
               'Are you sure you want to allow messages from people inside and outside the organisation? Remember this will not work if the group is AD Synched.',
           },
+          {
+            label: 'Delete Group',
+            color: 'warning',
+            modal: true,
+            modalUrl: `/api/ExecGroupsDelete?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}&GroupType=${row.calculatedGroupType}&DisplayName=${row.displayName}`,
+            modalMessage: 'Are you sure you want to delete this group.',
+          },
         ]}
         placement="end"
         visible={ocVisible}
@@ -147,6 +154,50 @@ const Groups = () => {
         reportName: `${tenant?.defaultDomainName}-Groups`,
         path: '/api/ListGroups',
         params: { TenantFilter: tenant?.defaultDomainName },
+        tableProps: {
+          selectableRows: true,
+          actionsList: [
+            {
+              label: 'Hide from Global Address List',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecGroupsHideFromGAL?TenantFilter=${tenant.defaultDomainName}&ID=!mail&GroupType=!calculatedGroupType&HidefromGAL=true`,
+              modalMessage:
+                'Are you sure you want to hide this mailbox from the global address list? Remember this will not work if the group is AD Synched.',
+            },
+            {
+              label: 'Unhide from Global Address List',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecGroupsHideFromGAL?TenantFilter=${tenant.defaultDomainName}&ID=!mail&GroupType=!calculatedGroupType`,
+              modalMessage:
+                'Are you sure you want to unhide this mailbox from the global address list? Remember this will not work if the group is AD Synched.',
+            },
+            {
+              label: 'Only allow messages from people inside the organisation',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecGroupsDeliveryManagement?TenantFilter=${tenant.defaultDomainName}&ID=!mail&GroupType=!calculatedGroupType&OnlyAllowInternal=true`,
+              modalMessage:
+                'Are you sure you want to only allow messages from people inside the organisation? Remember this will not work if the group is AD Synched.',
+            },
+            {
+              label: 'Allow messages from people inside and outside the organisation',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecGroupsDeliveryManagement?TenantFilter=${tenant.defaultDomainName}&ID=!mail&GroupType=!calculatedGroupType`,
+              modalMessage:
+                'Are you sure you want to allow messages from people inside and outside the organisation? Remember this will not work if the group is AD Synched.',
+            },
+            {
+              label: 'Delete Group',
+              color: 'warning',
+              modal: true,
+              modalUrl: `/api/ExecGroupsDelete?TenantFilter=${tenant.defaultDomainName}&ID=!mail&GroupType=!calculatedGroupType&DisplayName=!displayName`,
+              modalMessage: 'Are you sure you want to delete this group.',
+            },
+          ],
+        },
         columns,
         filterlist: [
           {

@@ -217,6 +217,9 @@
     }
   }
 }
+.offcanvas-large {
+  width: 800px !important;
+}
 
 .cipp-offcanvas {
   background-color: var(--cui-body-bg);
@@ -243,7 +246,7 @@
     background-color: var(--cipp-offcanvas-title-bg);
     color: var(--cipp-offcanvas-title-color);
     padding-bottom: 1rem;
-    padding-top: 0.5rem;
+    padding-top: 1rem;
   }
 
   .cipp-extendedinfo-label {
@@ -530,7 +533,6 @@
 }
 .dropdown-menu.show.tenantDropdown {
   padding: 1px;
-  margin-left: 15px;
 }
 
 .header.header-sticky {
@@ -573,7 +575,6 @@
 }
 
 .no-colour {
-
   .text-success {
     color: var(--cui-body-color) !important;
   }
@@ -585,4 +586,28 @@
 
 .teams-wide-card {
   width: 500px;
+}
+
+i.glyphicon {
+  display: none;
+}
+
+.btn-add::after {
+  content: 'Add';
+}
+
+.array-item-copy::after {
+  content: 'Copy';
+}
+
+.array-item-move-up::after {
+  content: 'Move Up';
+}
+
+.array-item-move-down::after {
+  content: 'Move Down';
+}
+
+.array-item-remove::after {
+  content: 'Remove';
 }
