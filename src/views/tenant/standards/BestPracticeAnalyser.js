@@ -1,22 +1,54 @@
-import React from 'react'
-import { CButton, CSpinner } from '@coreui/react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
-import { CippPageList } from 'src/components/layout'
-import { ModalService } from 'src/components/utilities'
+import React, { useEffect, useState } from 'react'
 import {
-  CellBadge,
-  CellBoolean,
-  cellBooleanFormatter,
-  CellProgressBar,
-  cellDateFormatter,
-} from 'src/components/tables'
+  CBadge,
+  CButton,
+  CCard,
+  CCardBody,
+  CCardHeader,
+  CCardText,
+  CCardTitle,
+  CCol,
+  CCollapse,
+  CForm,
+  CRow,
+  CSpinner,
+} from '@coreui/react'
+import useQuery from 'src/hooks/useQuery'
+import PropTypes from 'prop-types'
+import { Field, Form, FormSpy } from 'react-final-form'
+import { RFFCFormInput, RFFCFormSelect } from 'src/components/forms'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faChevronRight,
+  faChevronDown,
+  faSearch,
+  faExclamationTriangle,
+  faCheck,
+  faCross,
+  faTimes,
+  faSync,
+  faExclamation,
+} from '@fortawesome/free-solid-svg-icons'
+import { CippTable, cellBooleanFormatter } from 'src/components/tables'
+import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { CippPage } from 'src/components/layout/CippPage'
+import { useGenericGetRequestQuery, useLazyGenericGetRequestQuery } from 'src/store/api/app'
+import { OnChange } from 'react-final-form-listeners'
+import { queryString } from 'src/helpers'
+import { CellTip, cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 import { useExecBestPracticeAnalyserMutation } from 'src/store/api/reports'
+import { ModalService } from 'src/components/utilities'
+import { cellTableFormatter } from 'src/components/tables/CellTable'
 
-const RefreshAction = () => {
+const RefreshAction = ({ singleTenant = false, refreshFunction = null }) => {
+  const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
   const [execBestPracticeAnalyser, { isLoading, isSuccess, error }] =
-    useExecBestPracticeAnalyserMutation()
-
+    useLazyGenericGetRequestQuery()
+  var params = {}
+  if (singleTenant) {
+    params['TenantFilter'] = tenantDomain
+  }
   const showModal = () =>
     ModalService.confirm({
       body: (
@@ -26,260 +58,349 @@ const RefreshAction = () => {
           <i>Please note: this runs at 3:00 AM UTC automatically every day.</i>
         </div>
       ),
-      onConfirm: () => execBestPracticeAnalyser(),
+      onConfirm: () =>
+        execBestPracticeAnalyser({
+          path: 'api/BestPracticeAnalyser_OrchestrationStarter',
+          params: params,
+        }),
     })
 
   return (
-    <CButton onClick={showModal} size="sm" className="m-1">
-      {isLoading && <CSpinner size="sm" />}
-      {error && <FontAwesomeIcon icon={faExclamationTriangle} className="pe-1" />}
-      {isSuccess && <FontAwesomeIcon icon={faCheck} className="pe-1" />}
-      Force Refresh All Data
-    </CButton>
+    <>
+      <CButton onClick={showModal} size="sm" className="m-1">
+        {isLoading && <CSpinner size="sm" />}
+        {error && <FontAwesomeIcon icon={faExclamationTriangle} className="pe-1" />}
+        {isSuccess && <FontAwesomeIcon icon={faCheck} className="pe-1" />}
+        {(singleTenant && 'Refresh Tenant Data') || 'Force Refresh All Data'}
+      </CButton>
+      {refreshFunction !== null && (
+        <CButton
+          onClick={() => {
+            refreshFunction((Math.random() + 1).toString(36).substring(7))
+          }}
+          className="m-1"
+          size="sm"
+        >
+          <FontAwesomeIcon icon={faSync} />
+        </CButton>
+      )}
+    </>
   )
 }
+RefreshAction.propTypes = {
+  singleTenant: PropTypes.bool,
+  refreshFunction: PropTypes.func,
+}
 
+const getsubcolumns = (data) => {
+  const flatObj = data && data.length > 0 ? data : [{ data: 'No Data Found' }]
+  const QueryColumns = []
+  if (flatObj[0]) {
+    Object.keys(flatObj[0]).map((key) => {
+      QueryColumns.push({
+        name: key,
+        selector: (row) => row[key], // Accessing the property using the key
+        sortable: true,
+        exportSelector: key,
+        cell: cellGenericFormatter(),
+      })
+    })
+  }
+  return QueryColumns
+}
+const getNestedValue = (obj, path) => {
+  if (!path) return undefined
+  return path.split('.').reduce((acc, part) => {
+    // Check for an array marker
+    const match = part.match(/(.*?)\[(\d+)\]/)
+    if (match) {
+      const propName = match[1]
+      const index = parseInt(match[2], 10)
+      return acc[propName] ? acc[propName][index] : undefined
+    }
+    // If no array marker, simply return the property value
+    return acc ? acc[part] : undefined
+  }, obj)
+}
 const BestPracticeAnalyser = () => {
-  const handleSharedMailboxes = ({ row }) => {
-    ModalService.open({
-      visible: true,
-      componentType: 'list',
-      data: row.DisabledSharedMailboxLogins.split('<br />'),
-      title: `Shared Mailboxes with Enabled User Accounts`,
-    })
+  const [reportTemplate, setReportTemplate] = useState('CIPP Best Practices v1.0 - Table view')
+  const [refreshValue, setRefreshValue] = useState('')
+  const { data: templates = [], isLoading: templatesfetch } = useGenericGetRequestQuery({
+    path: 'api/listBPATemplates',
+  })
+  let navigate = useNavigate()
+  const tenant = useSelector((state) => state.app.currentTenant)
+  let query = useQuery()
+  const Report = query.get('Report')
+  const SearchNow = query.get('SearchNow')
+  const [visibleA, setVisibleA] = useState(true)
+  const handleSubmit = async (values) => {
+    setVisibleA(false)
+    setReportTemplate(values.reportTemplate)
+    const shippedValues = {
+      SearchNow: true,
+      Report: reportTemplate,
+      tenantFilter: tenant.customerId,
+      random: (Math.random() + 1).toString(36).substring(7),
+    }
+    var queryString = Object.keys(shippedValues)
+      .map((key) => key + '=' + shippedValues[key])
+      .join('&')
+
+    navigate(`?${queryString}`)
+  }
+  const [execGraphRequest, graphrequest] = useLazyGenericGetRequestQuery()
+  const QueryColumns = {
+    set: false,
+    data: [
+      {
+        name: 'Tenant',
+        selector: (row) => row['Tenant'],
+        sortable: true,
+        exportSelector: 'Tenant',
+        cell: (row) => CellTip(row['Tenant']),
+      },
+    ],
   }
 
-  const handleUnusedLicense = ({ row }) => {
-    const columns = [
-      {
-        name: 'License',
-        selector: (row) => row['License'],
-        sortable: true,
-        exportSelector: 'License',
-      },
-      {
-        name: 'Purchased',
-        selector: (row) => row['Purchased'],
-        sortable: true,
-        exportSelector: 'Purchased',
-      },
-      {
-        name: 'Consumed',
-        selector: (row) => row['Consumed'],
-        sortable: true,
-        exportSelector: 'Consumed',
-      },
-    ]
+  if (graphrequest.isSuccess) {
+    if (graphrequest.data.length === 0) {
+      graphrequest.data = [{ data: 'No Data Found' }]
+    }
+    const flatObj = graphrequest.data.Columns ? graphrequest.data.Columns : []
 
-    ModalService.open({
-      data: row.UnusedLicenseList,
-      componentType: 'table',
-      componentProps: {
-        columns,
-        keyField: 'SKU',
-      },
-      title: `SKUs with Unassigned Licenses`,
-      size: 'lg',
+    flatObj.map((col) => {
+      // Determine the cell selector based on the 'formatter' property
+      let cellSelector
+      if (col.formatter) {
+        switch (col.formatter) {
+          case 'bool':
+            cellSelector = cellBooleanFormatter()
+            break
+          case 'reverseBool':
+            cellSelector = cellBooleanFormatter({ reverse: true })
+            break
+          case 'warnBool':
+            cellSelector = cellBooleanFormatter({ warning: true })
+            break
+          case 'table':
+            cellSelector = cellTableFormatter(col.value)
+            break
+          default:
+            cellSelector = cellGenericFormatter()
+            break
+        }
+      } else {
+        cellSelector = cellGenericFormatter()
+      }
+
+      QueryColumns.data.push({
+        name: col.name,
+        selector: (row) => getNestedValue(row, col.value),
+        sortable: true,
+        exportSelector: col.value.split('.').join('/'),
+        cell: cellSelector, // Use the determined cell selector
+      })
     })
+
+    QueryColumns.set = true
   }
 
-  const handleMessageCopy = ({ row }) => {
-    ModalService.open({
-      data: row.MessageCopyForSendList.split('<br />'),
-      componentType: 'list',
-      title: 'Message Copy for Send As',
+  useEffect(() => {
+    execGraphRequest({
+      path: 'api/listBPA',
+      params: {
+        tenantFilter: tenant.customerId,
+        Report: reportTemplate,
+        SearchNow: SearchNow,
+        refresh: refreshValue,
+      },
     })
-  }
-
-  const columns = [
-    {
-      name: 'Tenant',
-      selector: (row) => row['Tenant'],
-      sortable: true,
-      exportSelector: 'Tenant',
-    },
-    {
-      name: 'Last Refresh',
-      selector: (row) => row['LastRefresh'],
-      // format: (cell) => <div>{moment.utc(cell).format('MMM D YYYY')}</div>,
-      cell: cellDateFormatter({ format: 'short' }),
-      sortable: true,
-      exportSelector: 'LastRefresh',
-      minWidth: '145px',
-      maxWidth: '145px',
-    },
-    {
-      name: 'Unified Audit Log Enabled',
-      selector: (row) => row['UnifiedAuditLog'],
-      cell: cellBooleanFormatter(),
-      sortable: true,
-      exportSelector: 'UnifiedAuditLog',
-      minWidth: '150px',
-      maxWidth: '150px',
-    },
-    {
-      name: 'Security Defaults Enabled',
-      selector: (row) => row['SecureDefaultState'],
-      cell: cellBooleanFormatter({ warning: true }),
-      sortable: true,
-      exportSelector: 'SecureDefaultState',
-      minWidth: '150px',
-      maxWidth: '150px',
-    },
-    {
-      name: 'Message Copy for Send As',
-      selector: (row) => row['MessageCopyForSend'],
-      exportSelector: 'MessageCopyForSend',
-      cell: (row, index, column) => {
-        const cell = column.selector(row)
-        if (cell === 'PASS') {
-          return <CellBoolean cell={true} />
-        } else if (cell === 'FAIL') {
-          return (
-            <CButton
-              size="sm"
-              onClick={() => handleMessageCopy({ row })}
-            >{`${row.MessageCopyForSendAsCount} Users`}</CButton>
-          )
-        }
-        return <CellBadge label="No Data" color="info" />
-      },
-      sortable: true,
-      minWidth: '150px',
-      maxWidth: '150px',
-    },
-    {
-      name: 'User Cannot Consent to Apps',
-      selector: (row) => row['AdminConsentForApplications'],
-      cell: cellBooleanFormatter({ reverse: true }),
-      sortable: true,
-      exportSelector: 'AdminConsentForApplications',
-      minWidth: '150px',
-      maxWidth: '150px',
-    },
-    {
-      name: 'Passwords Do Not Expire',
-      selector: (row) => row['DoNotExpirePasswords'],
-      cell: cellBooleanFormatter(),
-      sortable: true,
-      exportSelector: 'DoNotExpirePasswords',
-      minWidth: '150px',
-      maxWidth: '150px',
-    },
-    {
-      name: 'Privacy in Reports Enabled',
-      selector: (row) => row['PrivacyEnabled'],
-      cell: cellBooleanFormatter({ reverse: true, warning: true }),
-      sortable: true,
-      exportSelector: 'PrivacyEnabled',
-      minWidth: '150px',
-      maxWidth: '150px',
-    },
-    {
-      name: 'Self Service Password Reset Enabled',
-      selector: (row) => row['SelfServicePasswordReset'],
-      exportSelector: 'SelfServicePasswordReset',
-      cell: cellBooleanFormatter(),
-      sortable: true,
-      minWidth: '150px',
-      maxWidth: '150px',
-    },
-    {
-      name: 'TAP Enabled',
-      selector: (row) => row['TAPEnabled'],
-      exportSelector: 'TAPEnabled',
-      cell: cellBooleanFormatter({ reverse: false, warning: true }),
-      sortable: true,
-      minWidth: '150px',
-      maxWidth: '150px',
-    },
-    {
-      name: 'MFA Registration Nudge Enabled',
-      selector: (row) => row['MFANudge'],
-      exportSelector: 'MFANudge',
-      cell: cellBooleanFormatter({ reverse: false, warning: true }),
-      sortable: true,
-      minWidth: '150px',
-      maxWidth: '150px',
-    },
-    {
-      name: 'Shared Mailboxes Logins Disabled',
-      selector: (row) => row['DisabledSharedMailboxLoginsCount'],
-      exportSelector: 'DisabledSharedMailboxLoginsCount',
-      cell: (row, index, column) => {
-        const cell = column.selector(row)
-        if (cell > 0) {
-          return (
-            <CButton
-              className="btn-danger"
-              size="sm"
-              onClick={() => handleSharedMailboxes({ row })}
-            >
-              {cell} User{cell > 1 ? 's' : ''}
-            </CButton>
-          )
-        } else if (cell === 0) {
-          return <CellBoolean cell={true} />
-        }
-        return <CellBadge label="No Data" color="info" />
-      },
-      sortable: true,
-      minWidth: '150px',
-      maxWidth: '150px',
-    },
-    {
-      name: 'Unused Licenses',
-      selector: (row) => row['UnusedLicensesResult'],
-      exportSelector: 'UnusedLicensesResult',
-      cell: (row, index, column) => {
-        const cell = column.selector(row)
-        if (cell === 'FAIL') {
-          return (
-            <CButton className="btn-danger" size="sm" onClick={() => handleUnusedLicense({ row })}>
-              {row.UnusedLicensesCount} SKU{row.UnusedLicensesCount > 1 ? 's' : ''} / Lic{' '}
-              {row.UnusedLicensesTotal}
-            </CButton>
-          )
-        } else if (cell === 'PASS') {
-          return <CellBoolean cell={true} />
-        }
-        return <CellBadge label="No Data" color="info" />
-      },
-      sortable: true,
-      minWidth: '150px',
-      maxWidth: '150px',
-    },
-    {
-      name: 'Secure Score',
-      selector: (row) => row['SecureScorePercentage'],
-      exportSelector: 'SecureScorePercentage',
-      cell: (row, index, column) => {
-        const cell = column.selector(row)
-        if (!cell) {
-          return <CellBadge color="info" label="No Data" />
-        }
-        return <CellProgressBar value={row.SecureScorePercentage} />
-      },
-      sortable: true,
-      minWidth: '150px',
-      maxWidth: '150px',
-    },
-  ]
+  }, [Report, execGraphRequest, tenant.defaultDomainName, query, refreshValue, reportTemplate])
 
   return (
-    <CippPageList
-      capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
-      title="Best Practice Analyser"
-      tenantSelector={false}
-      datatable={{
-        columns,
-        path: '/api/BestPracticeAnalyser_List',
-        reportName: 'Best-Practices-Report',
-        tableProps: {
-          actions: [<RefreshAction key="refresh-action-button" />],
-        },
-      }}
-    />
+    <>
+      <CRow>
+        <CCol>
+          <CCard className="options-card">
+            <CCardHeader>
+              <CCardTitle className="d-flex justify-content-between">
+                Report Settings
+                <CButton
+                  size="sm"
+                  variant="ghost"
+                  className="stretched-link"
+                  onClick={() => setVisibleA(!visibleA)}
+                >
+                  <FontAwesomeIcon icon={visibleA ? faChevronDown : faChevronRight} />
+                </CButton>
+              </CCardTitle>
+            </CCardHeader>
+          </CCard>
+          <CCollapse visible={visibleA}>
+            <CCard className="options-card">
+              <CCardHeader></CCardHeader>
+              <CCardBody>
+                <Form
+                  initialValues={{
+                    tenantFilter: tenant.defaultDomainName,
+                    Report: Report,
+                  }}
+                  onSubmit={handleSubmit}
+                  render={({ handleSubmit, submitting, values }) => {
+                    return (
+                      <CForm onSubmit={handleSubmit}>
+                        <CRow>
+                          <CCol>
+                            <RFFCFormSelect
+                              name="reportTemplate"
+                              label="Select a report"
+                              placeholder={templatesfetch ? 'Loading...' : 'Select a report'}
+                              values={templates.map((template) => ({
+                                label: template.Name,
+                                value: template.Name,
+                              }))}
+                            />
+                          </CCol>
+                          {templatesfetch && <CSpinner />}
+                        </CRow>
+                        <CRow></CRow>
+                        <CRow className="mb-3">
+                          <CCol>
+                            <CButton type="submit" disabled={submitting}>
+                              <FontAwesomeIcon className="me-2" icon={faSearch} />
+                              Retrieve Report
+                            </CButton>
+                          </CCol>
+                        </CRow>
+                      </CForm>
+                    )
+                  }}
+                />
+              </CCardBody>
+            </CCard>
+          </CCollapse>
+        </CCol>
+      </CRow>
+      <hr />
+      <CRow>
+        <CCol>
+          <CippPage title="Report Results" tenantSelector={false}>
+            {graphrequest.isUninitialized && <span>Choose a BPA Report to get started.</span>}
+            {graphrequest.isFetching && <CSpinner />}
+            {graphrequest.isSuccess && QueryColumns.set && graphrequest.data.Style == 'Table' && (
+              <CCard className="content-card">
+                <CCardHeader className="d-flex justify-content-between align-items-center">
+                  <CCardTitle>Best Practice Report</CCardTitle>
+                </CCardHeader>
+                <CCardBody>
+                  <CippTable
+                    key={QueryColumns.data}
+                    reportName="BestPracticeAnalyser"
+                    dynamicColumns={false}
+                    columns={QueryColumns.data}
+                    data={graphrequest.data.Data}
+                    isFetching={graphrequest.isFetching}
+                    tableProps={{
+                      actions: [
+                        <RefreshAction
+                          key="refresh-action-button"
+                          refreshFunction={setRefreshValue}
+                        />,
+                      ],
+                    }}
+                  />
+                </CCardBody>
+              </CCard>
+            )}
+            {graphrequest.isSuccess && QueryColumns.set && graphrequest.data.Style == 'Tenant' && (
+              <>
+                <CRow>
+                  <div width="30px" className="mb-3">
+                    <RefreshAction
+                      key="refresh-action-button"
+                      singleTenant={true}
+                      refreshFunction={setRefreshValue}
+                    />
+                  </div>
+                  {graphrequest.data.Columns.map((info, idx) => (
+                    <CCol md={12} xl={4} className="mb-3">
+                      <CCard className="h-100">
+                        <CCardHeader>
+                          <CCardTitle>{info.name}</CCardTitle>
+                        </CCardHeader>
+                        <CCardBody>
+                          <CCardText>
+                            {info.formatter === 'bool' && (
+                              <CBadge
+                                color={graphrequest.data.Data[info.value] ? 'info' : 'danger'}
+                              >
+                                <FontAwesomeIcon
+                                  icon={graphrequest.data.Data[info.value] ? faCheck : faTimes}
+                                  size="lg"
+                                  className="me-1"
+                                />
+                                {graphrequest.data.Data[info.value] ? 'Yes' : 'No'}
+                              </CBadge>
+                            )}
+                            {info.formatter === 'reverseBool' && (
+                              <CBadge
+                                color={graphrequest.data.Data[info.value] ? 'danger' : 'info'}
+                              >
+                                <FontAwesomeIcon
+                                  icon={graphrequest.data.Data[info.value] ? faTimes : faCheck}
+                                  size="lg"
+                                  className="me-1"
+                                />
+                                {graphrequest.data.Data[info.value] ? 'No' : 'Yes'}
+                              </CBadge>
+                            )}
+                            {info.formatter === 'warnBool' && (
+                              <CBadge
+                                color={graphrequest.data.Data[info.value] ? 'info' : 'warning'}
+                              >
+                                <FontAwesomeIcon
+                                  icon={
+                                    graphrequest.data.Data[info.value] ? faCheck : faExclamation
+                                  }
+                                  size="lg"
+                                  className="me-1"
+                                />
+                                {graphrequest.data.Data[info.value] ? 'Yes' : 'No'}
+                              </CBadge>
+                            )}
+
+                            {info.formatter === 'table' && (
+                              <CippTable
+                                key={QueryColumns.data}
+                                reportName="BestPracticeAnalyser"
+                                dynamicColumns={false}
+                                columns={getsubcolumns(graphrequest.data.Data[info.value])}
+                                data={graphrequest.data.Data[info.value]}
+                                isFetching={graphrequest.isFetching}
+                              />
+                            )}
+
+                            {info.formatter === 'number' && (
+                              <p class="fs-1 text-center">
+                                {getNestedValue(graphrequest.data.Data, info.value)}
+                              </p>
+                            )}
+                          </CCardText>
+                          <CCardText>
+                            <small className="text-medium-emphasis">{info.desc}</small>
+                          </CCardText>
+                        </CCardBody>
+                      </CCard>
+                    </CCol>
+                  ))}
+                </CRow>
+              </>
+            )}
+          </CippPage>
+        </CCol>
+      </CRow>
+    </>
   )
 }
 

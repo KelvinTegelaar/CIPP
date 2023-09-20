@@ -2,20 +2,22 @@ import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { CippCodeBlock, CippOffcanvas } from 'src/components/utilities'
 import { CellTip } from 'src/components/tables'
-import { CButton, CCallout, CSpinner } from '@coreui/react'
+import { CButton, CCallout, CCol, CRow, CSpinner } from '@coreui/react'
 import { faEye, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import { CippPageList } from 'src/components/layout'
 import { ModalService } from 'src/components/utilities'
+import { TitleButton } from 'src/components/buttons'
+import { Editor } from '@monaco-editor/react'
+import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
 
 const ConnectorListTemplates = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
-
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
   const Offcanvas = (row, rowIndex, formatExtraData) => {
     const [ocVisible, setOCVisible] = useState(false)
-    const handleDeleteIntuneTemplate = (apiurl, message) => {
+    const handleDeleteEXConnectorTemplate = (apiurl, message) => {
       ModalService.confirm({
         title: 'Confirm',
         body: <div>{message}</div>,
@@ -34,7 +36,7 @@ const ConnectorListTemplates = () => {
           variant="ghost"
           color="danger"
           onClick={() =>
-            handleDeleteIntuneTemplate(
+            handleDeleteEXConnectorTemplate(
               `/api/RemoveExConnectorTemplate?ID=${row.GUID}`,
               'Do you want to delete the template?',
             )
@@ -43,15 +45,12 @@ const ConnectorListTemplates = () => {
           <FontAwesomeIcon icon={faTrash} href="" />
         </CButton>
 
-        <CippOffcanvas
-          title="Template JSON"
-          placement="end"
-          visible={ocVisible}
-          id={row.id}
+        <CippCodeOffCanvas
+          row={row}
+          state={ocVisible}
+          type="ExConnectorTemplate"
           hideFunction={() => setOCVisible(false)}
-        >
-          <CippCodeBlock language="json" code={JSON.stringify(row, null, 2)} />
-        </CippOffcanvas>
+        />
       </>
     )
   }
@@ -98,6 +97,9 @@ const ConnectorListTemplates = () => {
       )}
       <CippPageList
         title="Exchange Connector Templates"
+        titleButton={
+          <TitleButton href="/email/connectors/add-connector-templates" title="Add Template" />
+        }
         datatable={{
           reportName: `${tenant?.defaultDomainName}-Groups`,
           path: '/api/ListExconnectorTemplates',
