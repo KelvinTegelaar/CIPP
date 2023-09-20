@@ -23,6 +23,7 @@ Per-User actions:
 | Research Compromised Account     | Single pane of glass review of common indicators of compromise (IoC) \[[More information](users.md#research-compromised-account)]                                      |
 | Create Temporary Access Password | Create a temporary password to allow full passwordless enrollment. \[[More information](users.md#create-temporary-access-password)]                                    |
 | Rerequire MFA registration       | Sets user legacy MFA status to **Enabled**                                                                                                                             |
+| Create OneDrive ShortCut         | Creates a OneDrive shortcut in the root of the users OneDrive to a SharePoint site.                                                                                    |
 | Send MFA push                    | Sends an MFA approval prompt to a users registered devices. A simple way to verify functionality.                                                                      |
 | Convert to Shared Mailbox        | Convert a mailbox to shared.                                                                                                                                           |
 | Set Out of Office                | Set an out of office message for the user or shared mailbox. **Note:** _Setting a different internal and external autoreply is currently not supported_                |
@@ -122,8 +123,6 @@ The LiveLink for Autotask can be found in the AXN store. If you want to create y
 ### API Calls
 
 The following APIs are called on this page:
-
-
 
 {% swagger src="../../.gitbook/assets/openapicipp.json" path="/ExecEmailForward" method="post" %}
 [openapicipp.json](../../.gitbook/assets/openapicipp.json)

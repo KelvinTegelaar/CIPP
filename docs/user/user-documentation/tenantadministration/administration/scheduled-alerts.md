@@ -1,5 +1,15 @@
 # Scheduled Alerts
 
+### Scheduled Classic Alerts
+
+This table shows the CIPP alerts that are processed every 15 minutes. You can delete these alerts if they are no longer required.
+
+## Webhook Alerts
+
+This table shows the possible Webhook Alerts configured inside of CIPP. You can delete these alerts if they are no longer required.
+
+
+
 ### API Calls
 
 The following APIs are called on this page:

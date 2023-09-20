@@ -16,8 +16,6 @@ Plans exist to implement more standardised options and settings, along with an a
 
 Some of the standards are explained below:
 
-Disabling an option within standards does NOT turn the setting off
-
 {% hint style="warning" %}
 Note that some standards may require one or more companion (Intune) polies to be set to be effective.
 
@@ -50,6 +48,7 @@ Low Impact Changes which have no user-facing impact or minimal impact.
 | Disable daily Insight/Viva reports                                          | Set-UserBriefingConfig                                    | Disables Daily Insight reports for all users in the tenant                                                                                                                                                                                                                                                                                                                                                      |
 | Retain a deleted user OneDrive for 1 year                                   | Portal Only                                               | When a OneDrive user gets deleted, the sharepoint site is saved for 1 year and data can be retrieved from it.                                                                                                                                                                                                                                                                                                   |
 | Enable Auto-expanding archives                                              | Set-OrganizationConfig -AutoExpandingArchive              | Enables auto-expanding archives for the tenant. Does not enable archives for users.                                                                                                                                                                                                                                                                                                                             |
+| Disable SMTP Basic authentication                                           |                                                           | Disables basic authentication for the entire tenant for SMTP.                                                                                                                                                                                                                                                                                                                                                   |
 
 Medium Impact Changes which have a user impact mitigated with a little communication.
 

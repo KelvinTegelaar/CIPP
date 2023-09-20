@@ -35,6 +35,16 @@ Alert scans run every 15 minutes.
 * Alert on expiring VPP tokens
 * Alert on expiring DEP tokens
 
+## Webhook Alerts
+
+Webhook Alerts are alerts that are pushed into CIPP by external resouirces, such as the Microsoft Audit log, or Microsoft Graph Subscriptions. CIPP receives these alerts and processes them by adding information or executing remediation tasks.
+
+Webhook Alerts can be shipped to a PSA, Email, or sent to another webhook system to allow processing.
+
+{% hint style="warning" %}
+Webhook Alerts cannot be shipped to Slack, Discord, or Teams via CIPP, as these products do not support receiving raw json information webhooks.
+{% endhint %}
+
 ### API Calls
 
 The following APIs are called on this page:
