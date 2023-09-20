@@ -77,7 +77,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
           },
           {
             label: 'Research Compromised Account',
-            link: `/identity/administration/ViewBec?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
+            link: `/identity/administration/ViewBec?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}&ID=${row.userPrincipalName}`,
             color: 'info',
           },
           {
