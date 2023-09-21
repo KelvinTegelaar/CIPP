@@ -34,8 +34,8 @@ While navigating the Roles page, please consider the following:
 
 The `ListRoles` API is responsible for fetching the list of M365 roles along with their associated members for the current tenant.
 
-{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ListRoles" method="get" %}
-[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ListRoles" method="get" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
 ### Feature Requests / Ideas

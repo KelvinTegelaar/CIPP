@@ -27,12 +27,12 @@ The Offboarding Wizard offers a range of tasks that can be performed during the 
 
 The Offboarding Wizard makes a POST request to the `/api/ExecOffboardUser` endpoint. The body of the request contains the tenant information, the user to be offboarded, and the chosen offboarding options.
 
-{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ExecOffboardUser" method="post" %}
-[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ExecOffboardUser" method="post" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
-{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ListUsers" method="get" %}
-[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ListUsers" method="get" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
 ### Feature Requests / Ideas

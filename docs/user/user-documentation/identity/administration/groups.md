@@ -46,20 +46,20 @@ These actions and information are available in the fly-out menu when you click t
 
 The following APIs are called on this page:
 
-{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ListGroups" method="get" %}
-[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ListGroups" method="get" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
-{% swagger src="../../.gitbook/assets/openapicipp.json" path="/EditGroup" method="post" %}
-[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/EditGroup" method="post" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
-{% swagger src="../../.gitbook/assets/openapicipp.json" path="/AddGroup" method="post" %}
-[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/AddGroup" method="post" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
-{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ExecGroupsDelete" method="get" %}
-[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ExecGroupsDelete" method="get" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
 ### Feature Requests / Ideas

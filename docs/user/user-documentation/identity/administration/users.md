@@ -124,44 +124,44 @@ The LiveLink for Autotask can be found in the AXN store. If you want to create y
 
 The following APIs are called on this page:
 
-{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ExecEmailForward" method="post" %}
-[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ExecEmailForward" method="post" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
-{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ExecSetOoO" method="post" %}
-[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ExecSetOoO" method="post" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
-{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ExecOffboardUser" method="post" %}
-[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ExecOffboardUser" method="post" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
-{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ExecConverttoSharedMailbox" method="get" %}
-[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ExecConverttoSharedMailbox" method="get" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
-{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ExecEnableArchive" method="get" %}
-[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ExecEnableArchive" method="get" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
-{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ExecDisableUser" method="get" %}
-[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ExecDisableUser" method="get" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
-{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ExecSendPush" method="get" %}
-[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ExecSendPush" method="get" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
-{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ExecBECCheck" method="get" %}
-[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ExecBECCheck" method="get" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
-{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ExecBECRemediate" method="post" %}
-[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ExecBECRemediate" method="post" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
-{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ListGraphRequest" method="get" %}
-[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ListGraphRequest" method="get" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
 ### Feature Requests / Ideas
