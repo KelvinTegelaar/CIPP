@@ -1,5 +1,9 @@
 # Invite Wizard
 
+### Generating Invites
+
+The invite wizard allows you to create an invite that has the roles you need defined, after accepting this invite under the global administrator of the tenant the Wizard automatically attaches the roles to the GDAP relationship every three hours.
+
 ### API Calls
 
 The following APIs are called on this page:

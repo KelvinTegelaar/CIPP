@@ -32,5 +32,5 @@ Follow the list below before starting the GDAP Wizard. You must execute each of 
 
 You can view the status of the GDAP migration in the GDAP Migration Status tab. When the migration has been completed for all your tenants you can move users into the new groups to use GDAP.
 
-Please remember to put the CIPP-SAM user in these groups as well. It is not recommended to add all groups to a user.
+Please remember to put the "CIPP Integration" user in these groups as well. It is not recommended to add all groups to a user.
 

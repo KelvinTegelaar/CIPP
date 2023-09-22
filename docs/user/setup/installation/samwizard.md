@@ -15,10 +15,8 @@ to setup the Graph API, CSP, and Exchange integration CIPP requires a minimum le
 
 1. Create a new account. Recommended to name this "CIPP Integration" and give it the username "CIPP@domain.tld" a. This account must be a Global Administrator while setting up the integration. These permissions may be removed after the integration has been setup.
 2. Add the account to the correct groups
-3. When using GDAP, Make sure your tenant has a [Microsoft 365 Lighthouse license](https://learn.microsoft.com/en-us/microsoft-365/lighthouse/m365-lighthouse-sign-up?view=o365-worldwide#steps-to-sign-up-for-microsoft-365-lighthouse).&#x20;
 
-* If you are using DAP The CIPP user must be added to the "AdminAgents" group.
-* If you are using GDAP, the CIPP user must be added to the "AdminAgents" group and the groups you've assigned for GDAP. The minimum permissions CIPP needs to function are:
+* The CIPP user must be added to the "AdminAgents" group and the groups you've assigned for GDAP. The minimum permissions CIPP needs to function are:
   * Application Administrator
   * Authentication Policy Administrator
   * Cloud App Security Administrator
@@ -27,10 +25,10 @@ to setup the Graph API, CSP, and Exchange integration CIPP requires a minimum le
   * Intune Administrator
   * Privileged Role Administrator
   * Security Administrator
-  * Sharepoint Administrator
+  * SharePoint Administrator
   * Teams Administrator
   * User Administrator
-  * Privileged Authentication Administrator (Only required if you want to be able to delete global admins within tenants from CIPP)
+  * Privileged Authentication Administrator
 
 3. This account must have **Microsoft** multi-factor authentication enforced for each logon, either via Conditional Access when available or via [Per User MFA](https://account.activedirectory.windowsazure.com/UserManagement/MultifactorVerification.aspx) when Conditional Access is not available.
 
