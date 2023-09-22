@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   faBook,
   faCog,
@@ -16,7 +16,7 @@ import {
   faUsers,
   faServer,
 } from '@fortawesome/free-solid-svg-icons'
-import { CCol, CRow } from '@coreui/react'
+import { CButton, CCol, CCollapse, CRow } from '@coreui/react'
 import { useGenericGetRequestQuery } from 'src/store/api/app'
 import { CippContentCard } from 'src/components/layout'
 import Skeleton from 'react-loading-skeleton'
@@ -30,6 +30,8 @@ import Portals from 'src/data/portals'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const Home = () => {
+  const [visible, setVisible] = useState(false)
+
   const currentTenant = useSelector((state) => state.app.currentTenant)
   const {
     data: organization,
@@ -62,7 +64,7 @@ const Home = () => {
   })
 
   const {
-    data: standards,
+    data: standards = [],
     isLoading: isLoadingStandards,
     isSuccess: issuccessStandards,
     isFetching: isFetchingStandards,
@@ -124,6 +126,21 @@ const Home = () => {
       icon: faUserFriends,
     },
   ]
+
+  const filteredStandards = standards
+    .filter(
+      (p) => p.displayName === 'AllTenants' || p.displayName === currentTenant.defaultDomainName,
+    )
+    .flatMap((tenant) => {
+      return Object.keys(tenant.standards).map((standard) => {
+        const standardDisplayname = allStandardsList.filter((p) => p.name.includes(standard))
+        return (
+          <li key={`${standard}-${tenant.displayName}`}>
+            {standardDisplayname[0]?.label} ({tenant.displayName})
+          </li>
+        )
+      })
+    })
   return (
     <>
       <CRow className="mb-3">
@@ -261,26 +278,25 @@ const Home = () => {
                   <CCol sm={12} md={4} className="mb-3">
                     <p className="fw-lighter">Applied Standards</p>
                     {(isLoadingStandards || isFetchingStandards) && <Skeleton />}
-                    {issuccessStandards &&
-                      !isFetchingStandards &&
-                      standards
-                        .filter(
-                          (p) =>
-                            p.displayName == 'AllTenants' ||
-                            p.displayName == currentTenant.defaultDomainName,
-                        )
-                        .flatMap((tenant) => {
-                          return Object.keys(tenant.standards).map((standard) => {
-                            const standardDisplayname = allStandardsList.filter((p) =>
-                              p.name.includes(standard),
-                            )
-                            return (
-                              <li key={`${standard}-${tenant.displayName}`}>
-                                {standardDisplayname[0]?.label} ({tenant.displayName})
-                              </li>
-                            )
-                          })
-                        })}
+
+                    {issuccessStandards && !isFetchingStandards && (
+                      <>
+                        {filteredStandards.slice(0, 5)}
+
+                        {filteredStandards.length > 5 && (
+                          <>
+                            <CCollapse visible={visible}>{filteredStandards.slice(5)}</CCollapse>
+                            <CButton
+                              size="sm"
+                              className="mb-3"
+                              onClick={() => setVisible(!visible)}
+                            >
+                              {visible ? 'See less' : 'See more...'}
+                            </CButton>
+                          </>
+                        )}
+                      </>
+                    )}
                   </CCol>
                   <CCol sm={12} md={4} className="mb-3">
                     <p className="fw-lighter">Partner Relationships</p>
