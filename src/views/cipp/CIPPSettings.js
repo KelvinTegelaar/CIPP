@@ -1069,6 +1069,7 @@ const NotificationsSettings = () => {
           </CCardHeader>
           <CCardBody>
             <Form
+              initialValuesEqual={() => true}
               initialValues={{
                 ...notificationListResult.data,
                 logsToInclude: notificationListResult.data?.logsToInclude?.map((m) => ({
