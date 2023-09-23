@@ -14,10 +14,10 @@ export const CellBadge = ({ label = '', color = '', children, ...rest }) => {
     case 'completed':
       color = 'success'
       break
-    case 'Banned':
+    case 'banned':
       color = 'danger'
       break
-    default:
+    case 'running':
       color = 'primary'
   }
 
