@@ -22,9 +22,9 @@ Scheduled tasks run every 15 minutes on their planned time. A recurring task wil
    * Click on the "Command" dropdown.
    * Select the command you want the task to execute.
 4. **Setting Parameters**:
-   * Depending on the chosen command, various parameter fields will appear.
+   * Depending on the chosen command, various parameter fields will appear if they are required for the command.
    * Fill in the necessary details or make your selections.
 5. **Configuring Post-Execution Actions**:
-   * Use the "Webhook", "E-mail", and "PSA" switches to decide the actions you want to take place after the task execution.
+   * Use the "Webhook", "E-mail", and "PSA" switches to decide where you would like the results to be sent after execution. By not selecting any field the data is only stored in the CIPP scheduler database.
 6. **Saving the Task**:
    * After filling in all the necessary details, click on the "Save" or "Submit" button to schedule the task.
