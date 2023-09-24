@@ -8,7 +8,7 @@ Configure notifications from CIPP.
 
 CIPP provides alert notifications for Tenants and CIPP actions, sent as one combined table in an email or webhook body.
 
-* [Tenant Alerts](../../tenantadministration/alerts/) create notifications regarding changes within a tenant. See that help page for more information on managing those alerts.
+* [Tenant Alerts](../../../tenantadministration/alerts/) create notifications regarding changes within a tenant. See that help page for more information on managing those alerts.
 * CIPP Alerts relate to changes initiated via the CIPP platform.
 
 ### Available CIPP Alerts
@@ -52,12 +52,12 @@ Custom Webhook Formatting Need something different for your webhook? Can you wri
 
 The following APIs are called on this page:
 
-{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ListNotificationConfig" method="get" %}
-[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ListNotificationConfig" method="get" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
-{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ExecNotificationConfig" method="post" %}
-[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ExecNotificationConfig" method="post" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
 ### Feature Requests / Ideas
