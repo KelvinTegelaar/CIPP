@@ -199,11 +199,64 @@ export default function CippTable({
     }
   }
   const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false)
-  const filteredItems = Array.isArray(data)
-    ? data.filter(
+  // Helper function to escape special characters in a string for regex
+  function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  }
+
+  const filterData = (data, filterText) => {
+    if (filterText.startsWith('Complex:')) {
+      const conditions = filterText.slice(9).split(';')
+
+      return conditions.reduce((filteredData, condition) => {
+        const match = condition.trim().match(/(\w+)\s*(eq|ne|like|notlike|gt|lt)\s*(.+)/)
+
+        if (!match) {
+          return filteredData // Keep the current filtered data as is
+        }
+
+        let [property, operator, value] = match.slice(1)
+        value = escapeRegExp(value) // Escape special characters
+
+        return filteredData.filter((item) => {
+          // Find the actual key in the item that matches the property (case insensitive)
+          const actualKey = Object.keys(item).find(
+            (key) => key.toLowerCase() === property.toLowerCase(),
+          )
+
+          if (!actualKey) {
+            //set the error message so the user understands the key is not found.
+            console.error(`FilterError: Property "${property}" not found.`)
+            return false // Keep the item if the property is not found
+          } else {
+          }
+
+          switch (operator) {
+            case 'eq':
+              return String(item[actualKey]).toLowerCase() === value.toLowerCase()
+            case 'ne':
+              return String(item[actualKey]).toLowerCase() !== value.toLowerCase()
+            case 'like':
+              return String(item[actualKey]).toLowerCase().includes(value.toLowerCase())
+            case 'notlike':
+              return !String(item[actualKey]).toLowerCase().includes(value.toLowerCase())
+            case 'gt':
+              return parseFloat(item[actualKey]) > parseFloat(value)
+            case 'lt':
+              return parseFloat(item[actualKey]) < parseFloat(value)
+            default:
+              return true
+          }
+        })
+      }, data)
+    } else {
+      return data.filter(
         (item) => JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !== -1,
       )
-    : []
+    }
+  }
+
+  const filteredItems = Array.isArray(data) ? filterData(data, filterText) : []
 
   const applyFilter = (e) => {
     setFilterText(e.target.value)
