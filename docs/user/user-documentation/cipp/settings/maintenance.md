@@ -10,7 +10,7 @@ You can use the scripts listed on this tab to streamline administrative tasks us
 
 #### Clear-TokenCache.ps1
 
-This script automates the [Clear Token Cache](../../../general/troubleshooting/#clear-token-cache) troubleshooting task.
+This script automates the [Clear Token Cache](../../../../general/troubleshooting/#clear-token-cache) troubleshooting task.
 
 #### Grant-CippConditionalAccess.ps1
 
@@ -24,12 +24,12 @@ This script will automate the process of converting the function app storage fro
 
 The following APIs are called on this page:
 
-{% swagger src="../../.gitbook/assets/openapicipp.json" path="/PublicScripts" method="get" %}
-[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/PublicScripts" method="get" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
-{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ExecMaintenanceScripts" method="get" %}
-[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ExecMaintenanceScripts" method="get" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
 ### Feature Requests / Ideas

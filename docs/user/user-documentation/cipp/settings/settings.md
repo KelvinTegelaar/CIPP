@@ -20,7 +20,7 @@ You can use the "Run permissions check" button to check that your CIPP Azure AD 
 #### Tenant, Best Practice and Domain Analyser Cache
 
 {% hint style="warning" %}
-Performance & Data Clearing this cache can severely impact performance of your CIPP instance and will also remove any personal settings such as the selected theme.
+Clearing this cache can severely impact performance of your CIPP instance and will also remove any personal settings such as the selected theme.
 {% endhint %}
 
 You can clear the cached information used by the tenant selector, best practices analyser and domain analyser features.
@@ -29,7 +29,7 @@ You can clear the cached information used by the tenant selector, best practices
 
 You can check that the required access and configuration is in place for specific tenants using the tenant selector and "Run access check" button.
 
-If your tenant access checks are failing please see the [Troubleshooting](../../../../troubleshooting/) page for help.
+If your tenant access checks are failing please see the [Troubleshooting](../../../../../troubleshooting/) page for help.
 
 #### Domain Name System Resolver
 
@@ -43,16 +43,16 @@ You can get the URLs to access backend features directly in the Azure AD portal 
 
 The following APIs are called on this page:
 
-{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ExecDnsConfig" method="get" %}
-[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ExecDnsConfig" method="get" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
-{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ExecPasswordConfig" method="get" %}
-[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ExecPasswordConfig" method="get" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
-{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ExecPasswordConfig" method="post" %}
-[openapicipp.json](../../.gitbook/assets/openapicipp.json)
+{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ExecPasswordConfig" method="post" %}
+[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
 ### Feature Requests / Ideas
