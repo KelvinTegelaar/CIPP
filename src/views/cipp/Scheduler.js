@@ -2,18 +2,23 @@ import React, { useEffect, useState } from 'react'
 import { CButton, CCallout, CCol, CForm, CFormLabel, CRow, CSpinner, CTooltip } from '@coreui/react'
 import useQuery from 'src/hooks/useQuery'
 import { useDispatch, useSelector } from 'react-redux'
-import { Field, Form } from 'react-final-form'
+import { Field, Form, FormSpy } from 'react-final-form'
 import {
   Condition,
   RFFCFormCheck,
   RFFCFormInput,
+  RFFCFormRadio,
   RFFCFormSwitch,
   RFFCFormTextarea,
   RFFSelectSearch,
 } from 'src/components/forms'
 import countryList from 'src/data/countryList'
 
-import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import {
+  useGenericGetRequestQuery,
+  useLazyGenericGetRequestQuery,
+  useLazyGenericPostRequestQuery,
+} from 'src/store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faEdit, faEye } from '@fortawesome/free-solid-svg-icons'
 import { CippContentCard, CippPage, CippPageList } from 'src/components/layout'
@@ -92,7 +97,9 @@ const Scheduler = () => {
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
   const [refreshState, setRefreshState] = useState(false)
   const taskName = `Scheduled Task ${currentDate.toLocaleString()}`
-
+  const { data: availableCommands = [], isLoading: isLoadingcmd } = useGenericGetRequestQuery({
+    path: 'api/ListFunctionParameters?Module=CIPPCore',
+  })
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const onSubmit = (values) => {
     const unixTime = Math.floor(startDate.getTime() / 1000)
@@ -111,7 +118,6 @@ const Scheduler = () => {
     }
     genericPostRequest({ path: '/api/AddScheduledItem', values: shippedValues }).then((res) => {
       setRefreshState(res.requestId)
-      console.log(res.requestId)
     })
   }
 
@@ -247,22 +253,61 @@ const Scheduler = () => {
                       <CRow className="mb-3">
                         <CCol>
                           <RFFSelectSearch
-                            values={[
-                              {
-                                value: 'Get-CIPPLicenseOverview',
-                                name: 'Get-CIPPLicenseOverview',
-                              },
-                            ]}
+                            values={availableCommands.map((cmd) => ({
+                              value: cmd.Function,
+                              name: cmd.Function,
+                            }))}
                             name="command"
-                            placeholder="Select a command or report to execute."
+                            placeholder={
+                              isLoadingcmd ? (
+                                <CSpinner size="sm" />
+                              ) : (
+                                'Select a command or report to execute.'
+                              )
+                            }
                             label="Command to execute"
                           />
                         </CCol>
                       </CRow>
                       <CRow>
-                        <CCol>
-                          <RFFCFormInput type="text" name="parameters" label="Parameters" />
-                        </CCol>
+                        <FormSpy>
+                          {(props) => {
+                            const selectedCommand = availableCommands.find(
+                              (cmd) => cmd.Function === props.values.command?.value,
+                            )
+                            let paramblock = null
+                            if (selectedCommand) {
+                              //if the command parameter type is boolean we use <RFFCFormCheck /> else <RFFCFormInput />.
+                              const parameters = selectedCommand.Parameters
+                              if (parameters.length > 0) {
+                                paramblock = parameters.map((param, idx) => (
+                                  <CRow key={idx} className="mb-3">
+                                    <CCol>
+                                      {param.Type === 'System.Boolean' ? (
+                                        <>
+                                          <label>{param.Name}</label>
+                                          <RFFCFormSwitch
+                                            initialValue={true}
+                                            name={`parameters.${param.Name}`}
+                                            label={`True`}
+                                          />
+                                        </>
+                                      ) : (
+                                        <RFFCFormInput
+                                          type="text"
+                                          key={idx}
+                                          name={`parameters.${param.Name}`}
+                                          label={`${param.Name}`}
+                                        />
+                                      )}
+                                    </CCol>
+                                  </CRow>
+                                ))
+                              }
+                            }
+                            return paramblock
+                          }}
+                        </FormSpy>
                       </CRow>
 
                       <CRow className="mb-3">
