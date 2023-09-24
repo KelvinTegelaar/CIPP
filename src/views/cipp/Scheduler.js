@@ -358,17 +358,19 @@ const Scheduler = () => {
                       label: 'Delete task',
                       modal: true,
                       modalUrl: `/api/RemoveScheduledItem?&ID=!RowKey`,
-                      modalMessage: 'Are you sure you want to exclude these tenants?',
+                      modalMessage: 'Do you want to delete this job?',
                     },
                   ],
                 },
                 filterlist: [
-                  { filterName: 'Excluded Tenants', filter: '"Excluded":true' },
-                  { filterName: 'Included Tenants', filter: '"Excluded":false' },
+                  { filterName: 'Planned Jobs', filter: 'Complex: TaskState eq Planned' },
+                  { filterName: 'Completed Jobs', filter: 'Complex: TaskState eq Completed' },
+                  { filterName: 'Recurring Jobs', filter: 'Complex: Recurrence gt 0' },
+                  { filterName: 'One-time Jobs', filter: 'Complex: Recurrence eq 0' },
                 ],
                 keyField: 'id',
                 columns,
-                reportName: `Tenants-List`,
+                reportName: `Scheduled-Jobs`,
                 path: `/api/ListScheduledItems?RefreshGuid=${refreshState}`,
               }}
             />
