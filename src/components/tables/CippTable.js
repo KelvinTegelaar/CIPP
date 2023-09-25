@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useMemo, useState, useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { ExportCsvButton, ExportPDFButton } from 'src/components/buttons'
 import {
@@ -25,16 +25,10 @@ import { cellGenericFormatter } from './CellGenericFormat'
 import { ModalService } from '../utilities'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { ConfirmModal } from '../utilities/SharedModal'
-import { useState } from 'react'
+import { debounce } from 'lodash'
+import { useSearchParams } from 'react-router-dom'
 
-const FilterComponent = ({
-  filterText,
-  onFilter,
-  onClear,
-  filterlist,
-  onFilterPreset,
-  onFilterGraph,
-}) => (
+const FilterComponent = ({ filterText, onFilter, onClear, filterlist, onFilterPreset }) => (
   <>
     <CInputGroup>
       <CDropdown variant="input-group">
@@ -50,26 +44,17 @@ const FilterComponent = ({
           <CDropdownItem
             onClick={() => {
               onFilterPreset('')
-              onFilterGraph('')
             }}
           >
             Clear Filter
           </CDropdownItem>
           {filterlist &&
             filterlist.map((item, idx) => {
-              if (item.hasOwnProperty('graphFilter') && item.graphFilter == true) {
-                return (
-                  <CDropdownItem key={idx} onClick={() => onFilterGraph(item.filter)}>
-                    {item.filterName}
-                  </CDropdownItem>
-                )
-              } else {
-                return (
-                  <CDropdownItem key={idx} onClick={() => onFilterPreset(item.filter)}>
-                    {item.filterName}
-                  </CDropdownItem>
-                )
-              }
+              return (
+                <CDropdownItem key={idx} onClick={() => onFilterPreset(item.filter)}>
+                  {item.filterName}
+                </CDropdownItem>
+              )
             })}
         </CDropdownMenu>
       </CDropdown>
@@ -93,7 +78,6 @@ FilterComponent.propTypes = {
   onClear: PropTypes.func,
   filterlist: PropTypes.arrayOf(PropTypes.object),
   onFilterPreset: PropTypes.func,
-  onFilterGraph: PropTypes.func,
 }
 
 const customSort = (rows, selector, direction) => {
@@ -154,12 +138,20 @@ export default function CippTable({
   const [loopRunning, setLoopRunning] = React.useState(false)
   const [massResults, setMassResults] = React.useState([])
   const [filterText, setFilterText] = React.useState('')
+  const [filterviaURL, setFilterviaURL] = React.useState(false)
   const [updatedColumns, setUpdatedColumns] = React.useState(columns)
   const [selectedRows, setSelectedRows] = React.useState(false)
   const [genericGetRequest, getResults] = useLazyGenericGetRequestQuery()
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const [getDrowndownInfo, dropDownInfo] = useLazyGenericGetRequestQuery()
   const [modalContent, setModalContent] = useState(null)
+  //get the search params called "tableFilter" and set the filter to that.
+  const [searchParams, setSearchParams] = useSearchParams()
+  if (searchParams.get('tableFilter') && !filterviaURL) {
+    setFilterText(searchParams.get('tableFilter'))
+    setFilterviaURL(true)
+  }
+
   useEffect(() => {
     if (dropDownInfo.isFetching) {
       handleModal(
@@ -199,20 +191,95 @@ export default function CippTable({
     }
   }
   const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false)
-  const filteredItems = Array.isArray(data)
-    ? data.filter(
-        (item) => JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !== -1,
-      )
-    : []
-
-  const applyFilter = (e) => {
-    setFilterText(e.target.value)
+  // Helper function to escape special characters in a string for regex
+  function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
   }
 
   const setGraphFilter = (e) => {
     if (graphFilterFunction) {
       graphFilterFunction(e)
+      console.log(e)
     }
+  }
+
+  const debounceSetGraphFilter = useMemo(() => {
+    return debounce(setGraphFilter, 1000)
+  }, [])
+
+  const debounceSetSearchParams = useCallback(() => {
+    const currentUrl = new URL(window.location.href)
+    if (filterText !== '') {
+      currentUrl.searchParams.set('tableFilter', filterText)
+      window.history.replaceState({}, '', currentUrl.toString())
+    } else {
+      currentUrl.searchParams.delete('tableFilter')
+      window.history.replaceState({}, '', currentUrl.toString())
+    }
+  }, [filterText])
+
+  const filterData = (data, filterText) => {
+    const debouncedSetSearchParams = debounce(debounceSetSearchParams, 1000)
+    debouncedSetSearchParams()
+    if (filterText.startsWith('Graph:')) {
+      var query = filterText.slice(6).trim()
+      debounceSetGraphFilter(query)
+      return data
+    } else if (filterText.startsWith('Complex:')) {
+      const conditions = filterText.slice(9).split(';')
+
+      return conditions.reduce((filteredData, condition) => {
+        const match = condition.trim().match(/(\w+)\s*(eq|ne|like|notlike|gt|lt)\s*(.+)/)
+
+        if (!match) {
+          return filteredData // Keep the current filtered data as is
+        }
+
+        let [property, operator, value] = match.slice(1)
+        value = escapeRegExp(value) // Escape special characters
+
+        return filteredData.filter((item) => {
+          // Find the actual key in the item that matches the property (case insensitive)
+          const actualKey = Object.keys(item).find(
+            (key) => key.toLowerCase() === property.toLowerCase(),
+          )
+
+          if (!actualKey) {
+            //set the error message so the user understands the key is not found.
+            console.error(`FilterError: Property "${property}" not found.`)
+            return false // Keep the item if the property is not found
+          } else {
+          }
+
+          switch (operator) {
+            case 'eq':
+              return String(item[actualKey]).toLowerCase() === value.toLowerCase()
+            case 'ne':
+              return String(item[actualKey]).toLowerCase() !== value.toLowerCase()
+            case 'like':
+              return String(item[actualKey]).toLowerCase().includes(value.toLowerCase())
+            case 'notlike':
+              return !String(item[actualKey]).toLowerCase().includes(value.toLowerCase())
+            case 'gt':
+              return parseFloat(item[actualKey]) > parseFloat(value)
+            case 'lt':
+              return parseFloat(item[actualKey]) < parseFloat(value)
+            default:
+              return true
+          }
+        })
+      }, data)
+    } else {
+      return data.filter(
+        (item) => JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !== -1,
+      )
+    }
+  }
+
+  const filteredItems = Array.isArray(data) ? filterData(data, filterText) : []
+
+  const applyFilter = (e) => {
+    setFilterText(e.target.value)
   }
 
   useEffect(() => {
@@ -539,11 +606,6 @@ export default function CippTable({
             onFilter={(e) => setFilterText(e.target.value)}
             onFilterPreset={(e) => {
               setFilterText(e)
-              setGraphFilter('')
-            }}
-            onFilterGraph={(e) => {
-              setFilterText('')
-              setGraphFilter(e)
             }}
             onClear={handleClear}
             filterText={filterText}
@@ -567,65 +629,61 @@ export default function CippTable({
   const tablePageSize = useSelector((state) => state.app.tablePageSize)
   return (
     <div className="ms-n3 me-n3 cipp-tablewrapper">
-      {!isFetching && error && <span>Error loading data</span>}
-      {!error && (
-        <div>
-          {(columns.length === updatedColumns.length || !dynamicColumns) && (
-            <>
-              {(massResults.length >= 1 || loopRunning) && (
-                <CCallout color="info">
-                  {massResults.map((message, idx) => {
-                    const results = message.data?.Results
-                    const displayResults = Array.isArray(results) ? results.join(', ') : results
+      {!isFetching && error && <CCallout color="info">Error loading data</CCallout>}
+      <div>
+        {(columns.length === updatedColumns.length || !dynamicColumns) && (
+          <>
+            {(massResults.length >= 1 || loopRunning) && (
+              <CCallout color="info">
+                {massResults.map((message, idx) => {
+                  const results = message.data?.Results
+                  const displayResults = Array.isArray(results) ? results.join(', ') : results
 
-                    return <li key={`message-${idx}`}>{displayResults}</li>
-                  })}
-                  {loopRunning && (
-                    <li>
-                      <CSpinner size="sm" />
-                    </li>
-                  )}
-                </CCallout>
-              )}
-              <DataTable
-                customStyles={customStyles}
-                className="cipp-table"
-                theme={theme}
-                subHeader={subheader}
-                selectableRows={selectableRows}
-                onSelectedRowsChange={
-                  onSelectedRowsChange ? onSelectedRowsChange : handleSelectedChange
-                }
-                subHeaderComponent={subHeaderComponentMemo}
-                subHeaderAlign="left"
-                paginationResetDefaultPage={resetPaginationToggle}
-                //actions={actionsMemo}
-                pagination={pagination}
-                responsive={responsive}
-                dense={dense}
-                striped={striped}
-                columns={columns}
-                data={filteredItems}
-                expandableRows={expandableRows}
-                expandableRowsComponent={expandableRowsComponent}
-                highlightOnHover={highlightOnHover}
-                expandOnRowClicked={expandOnRowClicked}
-                defaultSortAsc
-                defaultSortFieldId={1}
-                sortFunction={customSort}
-                paginationPerPage={tablePageSize}
-                progressPending={isFetching}
-                progressComponent={<CSpinner color="info" component="div" />}
-                paginationRowsPerPageOptions={[25, 50, 100, 200, 500]}
-                {...rest}
-              />
-              {selectedRows.length >= 1 && (
-                <CCallout>Selected {selectedRows.length} items</CCallout>
-              )}
-            </>
-          )}
-        </div>
-      )}
+                  return <li key={`message-${idx}`}>{displayResults}</li>
+                })}
+                {loopRunning && (
+                  <li>
+                    <CSpinner size="sm" />
+                  </li>
+                )}
+              </CCallout>
+            )}
+            <DataTable
+              customStyles={customStyles}
+              className="cipp-table"
+              theme={theme}
+              subHeader={subheader}
+              selectableRows={selectableRows}
+              onSelectedRowsChange={
+                onSelectedRowsChange ? onSelectedRowsChange : handleSelectedChange
+              }
+              subHeaderComponent={subHeaderComponentMemo}
+              subHeaderAlign="left"
+              paginationResetDefaultPage={resetPaginationToggle}
+              //actions={actionsMemo}
+              pagination={pagination}
+              responsive={responsive}
+              dense={dense}
+              striped={striped}
+              columns={columns}
+              data={filteredItems}
+              expandableRows={expandableRows}
+              expandableRowsComponent={expandableRowsComponent}
+              highlightOnHover={highlightOnHover}
+              expandOnRowClicked={expandOnRowClicked}
+              defaultSortAsc
+              defaultSortFieldId={1}
+              sortFunction={customSort}
+              paginationPerPage={tablePageSize}
+              progressPending={isFetching}
+              progressComponent={<CSpinner color="info" component="div" />}
+              paginationRowsPerPageOptions={[25, 50, 100, 200, 500]}
+              {...rest}
+            />
+            {selectedRows.length >= 1 && <CCallout>Selected {selectedRows.length} items</CCallout>}
+          </>
+        )}
+      </div>
     </div>
   )
 }
