@@ -75,7 +75,6 @@ const EnterpriseApplications = () => {
       selector: (row) => row.homepage,
       sortable: true,
       exportSelector: 'homepage',
-      cell: cellDateFormatter({ format: 'short' }),
     },
   ]
   return (
@@ -88,13 +87,12 @@ const EnterpriseApplications = () => {
           filterlist: [
             {
               filterName: 'All Enterprise Apps',
-              filter: "tags/any(t:t eq 'WindowsAzureActiveDirectoryIntegratedApp')",
-              graphFilter: true,
+              filter: "Graph: tags/any(t:t eq 'WindowsAzureActiveDirectoryIntegratedApp')",
             },
             {
               filterName: 'Enterprise Apps (SAML)',
-              filter: "tags/any(t:t eq 'WindowsAzureActiveDirectoryGalleryApplicationPrimaryV1')",
-              graphFilter: true,
+              filter:
+                "Graph: tags/any(t:t eq 'WindowsAzureActiveDirectoryGalleryApplicationPrimaryV1')",
             },
           ],
           tableProps: {
