@@ -28,6 +28,7 @@ import ReactTimeAgo from 'react-time-ago'
 import { CellDelegatedPrivilege } from 'src/components/tables/CellDelegatedPrivilege'
 import Portals from 'src/data/portals'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Link } from 'react-router-dom'
 
 const Home = () => {
   const [visible, setVisible] = useState(false)
@@ -160,10 +161,10 @@ const Home = () => {
           <CRow>
             <CCol sm={12} md={6} xl={3} className="mb-3">
               <CippContentCard title="Total Users" icon={faUsers}>
-                <a
-                  href={'/identity/administration/users?customerId=' + currentTenant.customerId}
-                  class="stretched-link"
-                ></a>
+                <Link
+                  to={'/identity/administration/users?customerId=' + currentTenant.customerId}
+                  className="stretched-link"
+                />
                 <div>
                   {issuccessUserCounts && !isFetchingUserCount ? dashboard?.Users : <Skeleton />}
                 </div>
@@ -171,14 +172,14 @@ const Home = () => {
             </CCol>
             <CCol sm={12} md={6} xl={3} className="mb-3">
               <CippContentCard title="Total Licensed users" icon={faUsers}>
-                <a
-                  href={
+                <Link
+                  to={
                     '/identity/administration/users?customerId=' +
                     currentTenant.customerId +
                     '&tableFilter=Graph%3A+assignedLicenses%2F%24count+ne+0'
                   }
-                  class="stretched-link"
-                ></a>
+                  className="stretched-link"
+                />
                 <div>
                   {issuccessUserCounts && !isFetchingUserCount ? dashboard?.LicUsers : <Skeleton />}
                 </div>
@@ -186,15 +187,15 @@ const Home = () => {
             </CCol>
             <CCol sm={12} md={6} xl={3} className="mb-3">
               <CippContentCard title="Global Admin Users" icon={faLaptopCode}>
-                <a
-                  href={
+                <Link
+                  to={
                     'https://entra.microsoft.com/' +
                     currentTenant.customerId +
                     '/#view/Microsoft_AAD_IAM/RoleMenuBlade/~/RoleMembers/objectId/62e90394-69f5-4237-9190-012177145e10/roleName/Global%20Administrator/roleTemplateId/62e90394-69f5-4237-9190-012177145e10/adminUnitObjectId//customRole~/false/resourceScope/%2F?culture=en-us&country=us'
                   }
-                  class="stretched-link"
+                  className="stretched-link"
                   target="_blank"
-                ></a>
+                />
                 <div>
                   {issuccessUserCounts && !isFetchingUserCount ? dashboard?.Gas : <Skeleton />}
                 </div>
@@ -202,14 +203,14 @@ const Home = () => {
             </CCol>
             <CCol sm={12} md={6} xl={3} className="mb-3">
               <CippContentCard title="Total Guests" icon={faHotel}>
-                <a
-                  href={
+                <Link
+                  to={
                     '/identity/administration/users?customerId=' +
                     currentTenant.customerId +
                     '&tableFilter=Graph%3A+usertype+eq+%27guest%27'
                   }
-                  class="stretched-link"
-                ></a>
+                  className="stretched-link"
+                />
                 <div>
                   {issuccessUserCounts && !isFetchingUserCount ? dashboard?.Guests : <Skeleton />}
                 </div>
