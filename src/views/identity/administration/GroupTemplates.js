@@ -9,6 +9,7 @@ import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import { CippPageList } from 'src/components/layout'
 import { ModalService } from 'src/components/utilities'
 import { TitleButton } from 'src/components/buttons'
+import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
 
 const GroupTemplates = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -43,15 +44,12 @@ const GroupTemplates = () => {
         >
           <FontAwesomeIcon icon={faTrash} href="" />
         </CButton>
-        <CippOffcanvas
-          title="Template JSON"
-          placement="end"
-          visible={ocVisible}
-          id={row.id}
+        <CippCodeOffCanvas
+          row={row}
+          state={ocVisible}
+          type="GroupTemplate"
           hideFunction={() => setOCVisible(false)}
-        >
-          <CippCodeBlock language="json" code={JSON.stringify(row, null, 2)} />
-        </CippOffcanvas>
+        />
       </>
     )
   }
