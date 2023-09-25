@@ -222,6 +222,14 @@ const AlertWizard = () => {
                     value: 'UserLoggedIn',
                     name: 'A user has logged in from any location',
                   },
+                  {
+                    value: 'Add service principal.',
+                    name: 'Enterprise App Added',
+                  },
+                  {
+                    value: 'Remove service principal.',
+                    name: 'Enterprise App Removed',
+                  },
                 ]}
               />
             </CCol>
