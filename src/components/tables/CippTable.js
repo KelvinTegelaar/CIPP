@@ -1,4 +1,4 @@
-import React, { useRef, useMemo, useState } from 'react'
+import React, { useRef, useMemo, useState, useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { ExportCsvButton, ExportPDFButton } from 'src/components/buttons'
 import {
@@ -26,6 +26,7 @@ import { ModalService } from '../utilities'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { ConfirmModal } from '../utilities/SharedModal'
 import { debounce } from 'lodash'
+import { useSearchParams } from 'react-router-dom'
 
 const FilterComponent = ({ filterText, onFilter, onClear, filterlist, onFilterPreset }) => (
   <>
@@ -137,12 +138,20 @@ export default function CippTable({
   const [loopRunning, setLoopRunning] = React.useState(false)
   const [massResults, setMassResults] = React.useState([])
   const [filterText, setFilterText] = React.useState('')
+  const [filterviaURL, setFilterviaURL] = React.useState(false)
   const [updatedColumns, setUpdatedColumns] = React.useState(columns)
   const [selectedRows, setSelectedRows] = React.useState(false)
   const [genericGetRequest, getResults] = useLazyGenericGetRequestQuery()
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const [getDrowndownInfo, dropDownInfo] = useLazyGenericGetRequestQuery()
   const [modalContent, setModalContent] = useState(null)
+  //get the search params called "tableFilter" and set the filter to that.
+  const [searchParams, setSearchParams] = useSearchParams()
+  if (searchParams.get('tableFilter') && !filterviaURL) {
+    setFilterText(searchParams.get('tableFilter'))
+    setFilterviaURL(true)
+  }
+
   useEffect(() => {
     if (dropDownInfo.isFetching) {
       handleModal(
@@ -198,7 +207,20 @@ export default function CippTable({
     return debounce(setGraphFilter, 1000)
   }, [])
 
+  const debounceSetSearchParams = useCallback(() => {
+    const currentUrl = new URL(window.location.href)
+    if (filterText !== '') {
+      currentUrl.searchParams.set('tableFilter', filterText)
+      window.history.replaceState({}, '', currentUrl.toString())
+    } else {
+      currentUrl.searchParams.delete('tableFilter')
+      window.history.replaceState({}, '', currentUrl.toString())
+    }
+  }, [filterText])
+
   const filterData = (data, filterText) => {
+    const debouncedSetSearchParams = debounce(debounceSetSearchParams, 1000)
+    debouncedSetSearchParams()
     if (filterText.startsWith('Graph:')) {
       var query = filterText.slice(6).trim()
       debounceSetGraphFilter(query)
