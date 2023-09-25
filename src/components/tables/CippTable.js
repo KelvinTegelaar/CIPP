@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { ExportCsvButton, ExportPDFButton } from 'src/components/buttons'
 import {
@@ -25,16 +25,9 @@ import { cellGenericFormatter } from './CellGenericFormat'
 import { ModalService } from '../utilities'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { ConfirmModal } from '../utilities/SharedModal'
-import { useState } from 'react'
+import { debounce } from 'lodash'
 
-const FilterComponent = ({
-  filterText,
-  onFilter,
-  onClear,
-  filterlist,
-  onFilterPreset,
-  onFilterGraph,
-}) => (
+const FilterComponent = ({ filterText, onFilter, onClear, filterlist, onFilterPreset }) => (
   <>
     <CInputGroup>
       <CDropdown variant="input-group">
@@ -50,26 +43,17 @@ const FilterComponent = ({
           <CDropdownItem
             onClick={() => {
               onFilterPreset('')
-              onFilterGraph('')
             }}
           >
             Clear Filter
           </CDropdownItem>
           {filterlist &&
             filterlist.map((item, idx) => {
-              if (item.hasOwnProperty('graphFilter') && item.graphFilter == true) {
-                return (
-                  <CDropdownItem key={idx} onClick={() => onFilterGraph(item.filter)}>
-                    {item.filterName}
-                  </CDropdownItem>
-                )
-              } else {
-                return (
-                  <CDropdownItem key={idx} onClick={() => onFilterPreset(item.filter)}>
-                    {item.filterName}
-                  </CDropdownItem>
-                )
-              }
+              return (
+                <CDropdownItem key={idx} onClick={() => onFilterPreset(item.filter)}>
+                  {item.filterName}
+                </CDropdownItem>
+              )
             })}
         </CDropdownMenu>
       </CDropdown>
@@ -93,7 +77,6 @@ FilterComponent.propTypes = {
   onClear: PropTypes.func,
   filterlist: PropTypes.arrayOf(PropTypes.object),
   onFilterPreset: PropTypes.func,
-  onFilterGraph: PropTypes.func,
 }
 
 const customSort = (rows, selector, direction) => {
@@ -204,8 +187,23 @@ export default function CippTable({
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
   }
 
+  const setGraphFilter = (e) => {
+    if (graphFilterFunction) {
+      graphFilterFunction(e)
+      console.log(e)
+    }
+  }
+
+  const debounceSetGraphFilter = useMemo(() => {
+    return debounce(setGraphFilter, 1000)
+  }, [])
+
   const filterData = (data, filterText) => {
-    if (filterText.startsWith('Complex:')) {
+    if (filterText.startsWith('Graph:')) {
+      var query = filterText.slice(6).trim()
+      debounceSetGraphFilter(query)
+      return data
+    } else if (filterText.startsWith('Complex:')) {
       const conditions = filterText.slice(9).split(';')
 
       return conditions.reduce((filteredData, condition) => {
@@ -260,12 +258,6 @@ export default function CippTable({
 
   const applyFilter = (e) => {
     setFilterText(e.target.value)
-  }
-
-  const setGraphFilter = (e) => {
-    if (graphFilterFunction) {
-      graphFilterFunction(e)
-    }
   }
 
   useEffect(() => {
@@ -592,11 +584,6 @@ export default function CippTable({
             onFilter={(e) => setFilterText(e.target.value)}
             onFilterPreset={(e) => {
               setFilterText(e)
-              setGraphFilter('')
-            }}
-            onFilterGraph={(e) => {
-              setFilterText('')
-              setGraphFilter(e)
             }}
             onClear={handleClear}
             filterText={filterText}
@@ -620,65 +607,61 @@ export default function CippTable({
   const tablePageSize = useSelector((state) => state.app.tablePageSize)
   return (
     <div className="ms-n3 me-n3 cipp-tablewrapper">
-      {!isFetching && error && <span>Error loading data</span>}
-      {!error && (
-        <div>
-          {(columns.length === updatedColumns.length || !dynamicColumns) && (
-            <>
-              {(massResults.length >= 1 || loopRunning) && (
-                <CCallout color="info">
-                  {massResults.map((message, idx) => {
-                    const results = message.data?.Results
-                    const displayResults = Array.isArray(results) ? results.join(', ') : results
+      {!isFetching && error && <CCallout color="info">Error loading data</CCallout>}
+      <div>
+        {(columns.length === updatedColumns.length || !dynamicColumns) && (
+          <>
+            {(massResults.length >= 1 || loopRunning) && (
+              <CCallout color="info">
+                {massResults.map((message, idx) => {
+                  const results = message.data?.Results
+                  const displayResults = Array.isArray(results) ? results.join(', ') : results
 
-                    return <li key={`message-${idx}`}>{displayResults}</li>
-                  })}
-                  {loopRunning && (
-                    <li>
-                      <CSpinner size="sm" />
-                    </li>
-                  )}
-                </CCallout>
-              )}
-              <DataTable
-                customStyles={customStyles}
-                className="cipp-table"
-                theme={theme}
-                subHeader={subheader}
-                selectableRows={selectableRows}
-                onSelectedRowsChange={
-                  onSelectedRowsChange ? onSelectedRowsChange : handleSelectedChange
-                }
-                subHeaderComponent={subHeaderComponentMemo}
-                subHeaderAlign="left"
-                paginationResetDefaultPage={resetPaginationToggle}
-                //actions={actionsMemo}
-                pagination={pagination}
-                responsive={responsive}
-                dense={dense}
-                striped={striped}
-                columns={columns}
-                data={filteredItems}
-                expandableRows={expandableRows}
-                expandableRowsComponent={expandableRowsComponent}
-                highlightOnHover={highlightOnHover}
-                expandOnRowClicked={expandOnRowClicked}
-                defaultSortAsc
-                defaultSortFieldId={1}
-                sortFunction={customSort}
-                paginationPerPage={tablePageSize}
-                progressPending={isFetching}
-                progressComponent={<CSpinner color="info" component="div" />}
-                paginationRowsPerPageOptions={[25, 50, 100, 200, 500]}
-                {...rest}
-              />
-              {selectedRows.length >= 1 && (
-                <CCallout>Selected {selectedRows.length} items</CCallout>
-              )}
-            </>
-          )}
-        </div>
-      )}
+                  return <li key={`message-${idx}`}>{displayResults}</li>
+                })}
+                {loopRunning && (
+                  <li>
+                    <CSpinner size="sm" />
+                  </li>
+                )}
+              </CCallout>
+            )}
+            <DataTable
+              customStyles={customStyles}
+              className="cipp-table"
+              theme={theme}
+              subHeader={subheader}
+              selectableRows={selectableRows}
+              onSelectedRowsChange={
+                onSelectedRowsChange ? onSelectedRowsChange : handleSelectedChange
+              }
+              subHeaderComponent={subHeaderComponentMemo}
+              subHeaderAlign="left"
+              paginationResetDefaultPage={resetPaginationToggle}
+              //actions={actionsMemo}
+              pagination={pagination}
+              responsive={responsive}
+              dense={dense}
+              striped={striped}
+              columns={columns}
+              data={filteredItems}
+              expandableRows={expandableRows}
+              expandableRowsComponent={expandableRowsComponent}
+              highlightOnHover={highlightOnHover}
+              expandOnRowClicked={expandOnRowClicked}
+              defaultSortAsc
+              defaultSortFieldId={1}
+              sortFunction={customSort}
+              paginationPerPage={tablePageSize}
+              progressPending={isFetching}
+              progressComponent={<CSpinner color="info" component="div" />}
+              paginationRowsPerPageOptions={[25, 50, 100, 200, 500]}
+              {...rest}
+            />
+            {selectedRows.length >= 1 && <CCallout>Selected {selectedRows.length} items</CCallout>}
+          </>
+        )}
+      </div>
     </div>
   )
 }
