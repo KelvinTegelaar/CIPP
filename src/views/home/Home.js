@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   faBook,
   faCog,
@@ -16,7 +16,7 @@ import {
   faUsers,
   faServer,
 } from '@fortawesome/free-solid-svg-icons'
-import { CCol, CRow } from '@coreui/react'
+import { CButton, CCol, CCollapse, CRow } from '@coreui/react'
 import { useGenericGetRequestQuery } from 'src/store/api/app'
 import { CippContentCard } from 'src/components/layout'
 import Skeleton from 'react-loading-skeleton'
@@ -28,8 +28,11 @@ import ReactTimeAgo from 'react-time-ago'
 import { CellDelegatedPrivilege } from 'src/components/tables/CellDelegatedPrivilege'
 import Portals from 'src/data/portals'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Link } from 'react-router-dom'
 
 const Home = () => {
+  const [visible, setVisible] = useState(false)
+
   const currentTenant = useSelector((state) => state.app.currentTenant)
   const {
     data: organization,
@@ -62,7 +65,7 @@ const Home = () => {
   })
 
   const {
-    data: standards,
+    data: standards = [],
     isLoading: isLoadingStandards,
     isSuccess: issuccessStandards,
     isFetching: isFetchingStandards,
@@ -124,6 +127,21 @@ const Home = () => {
       icon: faUserFriends,
     },
   ]
+
+  const filteredStandards = standards
+    .filter(
+      (p) => p.displayName === 'AllTenants' || p.displayName === currentTenant.defaultDomainName,
+    )
+    .flatMap((tenant) => {
+      return Object.keys(tenant.standards).map((standard) => {
+        const standardDisplayname = allStandardsList.filter((p) => p.name.includes(standard))
+        return (
+          <li key={`${standard}-${tenant.displayName}`}>
+            {standardDisplayname[0]?.label} ({tenant.displayName})
+          </li>
+        )
+      })
+    })
   return (
     <>
       <CRow className="mb-3">
@@ -143,6 +161,10 @@ const Home = () => {
           <CRow>
             <CCol sm={12} md={6} xl={3} className="mb-3">
               <CippContentCard title="Total Users" icon={faUsers}>
+                <Link
+                  to={'/identity/administration/users?customerId=' + currentTenant.customerId}
+                  className="stretched-link"
+                />
                 <div>
                   {issuccessUserCounts && !isFetchingUserCount ? dashboard?.Users : <Skeleton />}
                 </div>
@@ -150,6 +172,14 @@ const Home = () => {
             </CCol>
             <CCol sm={12} md={6} xl={3} className="mb-3">
               <CippContentCard title="Total Licensed users" icon={faUsers}>
+                <Link
+                  to={
+                    '/identity/administration/users?customerId=' +
+                    currentTenant.customerId +
+                    '&tableFilter=Graph%3A+assignedLicenses%2F%24count+ne+0'
+                  }
+                  className="stretched-link"
+                />
                 <div>
                   {issuccessUserCounts && !isFetchingUserCount ? dashboard?.LicUsers : <Skeleton />}
                 </div>
@@ -157,6 +187,15 @@ const Home = () => {
             </CCol>
             <CCol sm={12} md={6} xl={3} className="mb-3">
               <CippContentCard title="Global Admin Users" icon={faLaptopCode}>
+                <Link
+                  to={
+                    'https://entra.microsoft.com/' +
+                    currentTenant.customerId +
+                    '/#view/Microsoft_AAD_IAM/RoleMenuBlade/~/RoleMembers/objectId/62e90394-69f5-4237-9190-012177145e10/roleName/Global%20Administrator/roleTemplateId/62e90394-69f5-4237-9190-012177145e10/adminUnitObjectId//customRole~/false/resourceScope/%2F?culture=en-us&country=us'
+                  }
+                  className="stretched-link"
+                  target="_blank"
+                />
                 <div>
                   {issuccessUserCounts && !isFetchingUserCount ? dashboard?.Gas : <Skeleton />}
                 </div>
@@ -164,6 +203,14 @@ const Home = () => {
             </CCol>
             <CCol sm={12} md={6} xl={3} className="mb-3">
               <CippContentCard title="Total Guests" icon={faHotel}>
+                <Link
+                  to={
+                    '/identity/administration/users?customerId=' +
+                    currentTenant.customerId +
+                    '&tableFilter=Graph%3A+usertype+eq+%27guest%27'
+                  }
+                  className="stretched-link"
+                />
                 <div>
                   {issuccessUserCounts && !isFetchingUserCount ? dashboard?.Guests : <Skeleton />}
                 </div>
@@ -261,26 +308,25 @@ const Home = () => {
                   <CCol sm={12} md={4} className="mb-3">
                     <p className="fw-lighter">Applied Standards</p>
                     {(isLoadingStandards || isFetchingStandards) && <Skeleton />}
-                    {issuccessStandards &&
-                      !isFetchingStandards &&
-                      standards
-                        .filter(
-                          (p) =>
-                            p.displayName == 'AllTenants' ||
-                            p.displayName == currentTenant.defaultDomainName,
-                        )
-                        .flatMap((tenant) => {
-                          return Object.keys(tenant.standards).map((standard) => {
-                            const standardDisplayname = allStandardsList.filter((p) =>
-                              p.name.includes(standard),
-                            )
-                            return (
-                              <li key={`${standard}-${tenant.displayName}`}>
-                                {standardDisplayname[0]?.label} ({tenant.displayName})
-                              </li>
-                            )
-                          })
-                        })}
+
+                    {issuccessStandards && !isFetchingStandards && (
+                      <>
+                        {filteredStandards.slice(0, 5)}
+
+                        {filteredStandards.length > 5 && (
+                          <>
+                            <CCollapse visible={visible}>{filteredStandards.slice(5)}</CCollapse>
+                            <CButton
+                              size="sm"
+                              className="mb-3"
+                              onClick={() => setVisible(!visible)}
+                            >
+                              {visible ? 'See less' : 'See more...'}
+                            </CButton>
+                          </>
+                        )}
+                      </>
+                    )}
                   </CCol>
                   <CCol sm={12} md={4} className="mb-3">
                     <p className="fw-lighter">Partner Relationships</p>
