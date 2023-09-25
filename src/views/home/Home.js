@@ -175,7 +175,7 @@ const Home = () => {
                   href={
                     '/identity/administration/users?customerId=' +
                     currentTenant.customerId +
-                    '&filterName=Users with a license'
+                    '&tableFilter=Graph%3A+assignedLicenses%2F%24count+ne+0'
                   }
                   class="stretched-link"
                 ></a>
@@ -206,7 +206,7 @@ const Home = () => {
                   href={
                     '/identity/administration/users?customerId=' +
                     currentTenant.customerId +
-                    '&filterName=Guest users'
+                    '&tableFilter=Graph%3A+usertype+eq+%27guest%27'
                   }
                   class="stretched-link"
                 ></a>
