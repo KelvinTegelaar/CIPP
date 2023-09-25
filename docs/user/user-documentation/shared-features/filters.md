@@ -63,3 +63,22 @@ To identify users who are not enabled, are members, and have a `userPrincipalNam
 Complex: accountEnabled eq false; userType eq Member; userPrincipalName like diego
 ```
 
+### 4. Graph Filtering
+
+Select pages support Graph Filtering, which allow you to directly use a Graph filter Query.&#x20;
+
+#### Syntax:
+
+To utilize Graph filtering, start with the Graph`:` prefix. The general structure is:
+
+```vbnet
+Graph: [GRAPH QUERY STATEMENT]
+```
+
+A Graph query can not be combined with other filters, and requires the query to be exactly as you would use it in the `$filter` parameter in a graph request. For example to filter on users with an assigned license, you enter:
+
+```
+Graph: assignedLicenses/$count ne 0
+```
+
+For more information refer to the Microsoft documentation about Filtering [here](https://learn.microsoft.com/en-us/graph/filter-query-parameter?tabs=http)
