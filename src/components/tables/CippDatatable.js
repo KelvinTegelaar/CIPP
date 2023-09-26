@@ -17,7 +17,6 @@ export default function CippDatatable({ path, params, ...rest }) {
   var defaultFilterText = ''
   if (params?.Parameters?.$filter) {
     defaultFilterText = 'Graph: ' + params?.Parameters?.$filter
-    console.log(defaultFilterText)
   }
   return (
     <>
