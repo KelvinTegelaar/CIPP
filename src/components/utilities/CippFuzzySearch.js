@@ -13,7 +13,6 @@ function CippfuzzySearch(options) {
     useExtendedSearch: true,
     includeMatches: true,
     includeScore: true,
-    useExtendedSearch: true,
   })
   return function (value) {
     if (!value.length) {
