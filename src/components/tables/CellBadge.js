@@ -3,6 +3,24 @@ import React from 'react'
 import { CBadge } from '@coreui/react'
 
 export const CellBadge = ({ label = '', color = '', children, ...rest }) => {
+  //Create a case select, and return the color based on the label
+  switch (label.toLowerCase()) {
+    case 'planned':
+      color = 'info'
+      break
+    case 'failed':
+      color = 'danger'
+      break
+    case 'completed':
+      color = 'success'
+      break
+    case 'banned':
+      color = 'danger'
+      break
+    case 'running':
+      color = 'primary'
+  }
+
   return (
     <CBadge color={color} {...rest}>
       {label}
