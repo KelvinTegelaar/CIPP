@@ -161,7 +161,7 @@ const EditGroup = () => {
                                   multi={true}
                                   label="Add User"
                                   values={users?.map((user) => ({
-                                    value: user.userPrincipalName,
+                                    value: user.id,
                                     name: `${user.displayName} - ${user.userPrincipalName}`,
                                   }))}
                                   placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
@@ -191,7 +191,7 @@ const EditGroup = () => {
                                   multi={true}
                                   label="Remove Member"
                                   values={members?.map((user) => ({
-                                    value: user.mail,
+                                    value: user.id,
                                     name: `${user.displayName} - ${user.mail}`,
                                   }))}
                                   placeholder={!usersIsFetching ? 'Select Member' : 'Loading...'}
