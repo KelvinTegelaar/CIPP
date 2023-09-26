@@ -15,28 +15,15 @@ export default function CippDatatable({ path, params, ...rest }) {
   } = useListDatatableQuery({ path, params: { refreshGuid, $filter: graphFilter, ...params } })
   return (
     <>
-      {data[0]?.Queued ? (
-        <>
-          <CCallout color="info">{data[0]?.QueueMessage}</CCallout>
-          <CippTable
-            {...rest}
-            data={[]}
-            isFetching={isFetching}
-            error={error}
-            refreshFunction={setRefreshGuid}
-            graphFilterFunction={setGraphFilter}
-          />
-        </>
-      ) : (
-        <CippTable
-          {...rest}
-          data={data}
-          isFetching={isFetching}
-          error={error}
-          refreshFunction={setRefreshGuid}
-          graphFilterFunction={setGraphFilter}
-        />
-      )}
+      {data[0]?.Queued && <CCallout color="info">{data[0]?.QueueMessage}</CCallout>}
+      <CippTable
+        {...rest}
+        data={data[0]?.Queued ? [] : data}
+        isFetching={isFetching}
+        error={error}
+        refreshFunction={setRefreshGuid}
+        graphFilterFunction={setGraphFilter}
+      />
     </>
   )
 }
