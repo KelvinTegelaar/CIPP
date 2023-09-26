@@ -77,7 +77,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
           },
           {
             label: 'Research Compromised Account',
-            link: `/identity/administration/ViewBec?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
+            link: `/identity/administration/ViewBec?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}&ID=${row.userPrincipalName}`,
             color: 'info',
           },
           {
@@ -356,13 +356,11 @@ const Users = (row) => {
           { filterName: 'Users without a license', filter: '"assignedLicenses":[]' },
           {
             filterName: 'Users with a license (Graph)',
-            filter: 'assignedLicenses/$count ne 0',
-            graphFilter: true,
+            filter: 'Graph: assignedLicenses/$count ne 0',
           },
           {
             filterName: 'Users with a license & Enabled (Graph)',
-            filter: 'assignedLicenses/$count ne 0 and accountEnabled eq true',
-            graphFilter: true,
+            filter: 'Graph: assignedLicenses/$count ne 0 and accountEnabled eq true',
           },
         ],
         columns,
