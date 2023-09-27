@@ -111,6 +111,8 @@ export default function CippTable({
   graphFilterFunction = null,
   columns = [],
   dynamicColumns = true,
+  defaultFilterText = '',
+  isModal = false,
   filterlist,
   tableProps: {
     keyField = 'id',
@@ -137,7 +139,7 @@ export default function CippTable({
   const inputRef = useRef('')
   const [loopRunning, setLoopRunning] = React.useState(false)
   const [massResults, setMassResults] = React.useState([])
-  const [filterText, setFilterText] = React.useState('')
+  const [filterText, setFilterText] = React.useState(defaultFilterText)
   const [filterviaURL, setFilterviaURL] = React.useState(false)
   const [updatedColumns, setUpdatedColumns] = React.useState(columns)
   const [selectedRows, setSelectedRows] = React.useState(false)
@@ -147,7 +149,7 @@ export default function CippTable({
   const [modalContent, setModalContent] = useState(null)
   //get the search params called "tableFilter" and set the filter to that.
   const [searchParams, setSearchParams] = useSearchParams()
-  if (searchParams.get('tableFilter') && !filterviaURL) {
+  if (searchParams.get('tableFilter') && !filterviaURL && !isModal) {
     setFilterText(searchParams.get('tableFilter'))
     setFilterviaURL(true)
   }
@@ -219,8 +221,10 @@ export default function CippTable({
   }, [filterText])
 
   const filterData = (data, filterText) => {
-    const debouncedSetSearchParams = debounce(debounceSetSearchParams, 1000)
-    debouncedSetSearchParams()
+    if (!isModal) {
+      const debouncedSetSearchParams = debounce(debounceSetSearchParams, 1000)
+      debouncedSetSearchParams()
+    }
     if (filterText.startsWith('Graph:')) {
       var query = filterText.slice(6).trim()
       debounceSetGraphFilter(query)
