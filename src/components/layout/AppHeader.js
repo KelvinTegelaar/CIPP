@@ -78,7 +78,6 @@ const AppHeader = () => {
           </CNavItem>
         </CHeaderNav>
       </CHeader>
-
     </>
   )
 }
