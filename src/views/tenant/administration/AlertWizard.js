@@ -95,8 +95,8 @@ const AlertWizard = () => {
         <hr className="my-4" />
         <CForm onSubmit={handleSubmit}>
           <p>
-            These alerts will be sent to the user or webhook configured in the CIPP notification
-            settings menu.
+            Alerts setup on this page will be sent to webhook configured in CIPPs settings, and be
+            delivered as messages
           </p>
           <RFFCFormSwitch
             value={true}
@@ -170,6 +170,12 @@ const AlertWizard = () => {
             Microsoft sends them to CIPP. These alerts generate a ticket, email or webhook message
             per alert, with more information about the alert.
           </p>
+
+          <p>
+            "Alerts setup on this page will be sent to the webhook configured in CIPPs settings, and
+            be delivered as raw json information. Warning: Teams, Slack, and Discord do not support
+            receiving raw json messages"
+          </p>
           <CRow>
             <CCol>
               <RFFSelectSearch
@@ -215,6 +221,14 @@ const AlertWizard = () => {
                   {
                     value: 'UserLoggedIn',
                     name: 'A user has logged in from any location',
+                  },
+                  {
+                    value: 'Add service principal.',
+                    name: 'Enterprise App Added',
+                  },
+                  {
+                    value: 'Remove service principal.',
+                    name: 'Enterprise App Removed',
                   },
                 ]}
               />
