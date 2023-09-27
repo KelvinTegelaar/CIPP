@@ -161,7 +161,7 @@ const Groups = () => {
               label: 'Hide from Global Address List',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecGroupsHideFromGAL?TenantFilter=${tenant.defaultDomainName}&ID=!mail&GroupType=!calculatedGroupType&HidefromGAL=true`,
+              modalUrl: `/api/ExecGroupsHideFromGAL?TenantFilter=${tenant.defaultDomainName}&ID=!id&GroupType=!calculatedGroupType&HidefromGAL=true`,
               modalMessage:
                 'Are you sure you want to hide this mailbox from the global address list? Remember this will not work if the group is AD Synched.',
             },
@@ -169,7 +169,7 @@ const Groups = () => {
               label: 'Unhide from Global Address List',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecGroupsHideFromGAL?TenantFilter=${tenant.defaultDomainName}&ID=!mail&GroupType=!calculatedGroupType`,
+              modalUrl: `/api/ExecGroupsHideFromGAL?TenantFilter=${tenant.defaultDomainName}&ID=!id&GroupType=!calculatedGroupType`,
               modalMessage:
                 'Are you sure you want to unhide this mailbox from the global address list? Remember this will not work if the group is AD Synched.',
             },
@@ -177,7 +177,7 @@ const Groups = () => {
               label: 'Only allow messages from people inside the organisation',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecGroupsDeliveryManagement?TenantFilter=${tenant.defaultDomainName}&ID=!mail&GroupType=!calculatedGroupType&OnlyAllowInternal=true`,
+              modalUrl: `/api/ExecGroupsDeliveryManagement?TenantFilter=${tenant.defaultDomainName}&ID=!id&GroupType=!calculatedGroupType&OnlyAllowInternal=true`,
               modalMessage:
                 'Are you sure you want to only allow messages from people inside the organisation? Remember this will not work if the group is AD Synched.',
             },
@@ -185,7 +185,7 @@ const Groups = () => {
               label: 'Allow messages from people inside and outside the organisation',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecGroupsDeliveryManagement?TenantFilter=${tenant.defaultDomainName}&ID=!mail&GroupType=!calculatedGroupType`,
+              modalUrl: `/api/ExecGroupsDeliveryManagement?TenantFilter=${tenant.defaultDomainName}&ID=!id&GroupType=!calculatedGroupType`,
               modalMessage:
                 'Are you sure you want to allow messages from people inside and outside the organisation? Remember this will not work if the group is AD Synched.',
             },
@@ -193,7 +193,7 @@ const Groups = () => {
               label: 'Delete Group',
               color: 'warning',
               modal: true,
-              modalUrl: `/api/ExecGroupsDelete?TenantFilter=${tenant.defaultDomainName}&ID=!mail&GroupType=!calculatedGroupType&DisplayName=!displayName`,
+              modalUrl: `/api/ExecGroupsDelete?TenantFilter=${tenant.defaultDomainName}&ID=!id&GroupType=!calculatedGroupType&DisplayName=!displayName`,
               modalMessage: 'Are you sure you want to delete this group.',
             },
           ],
