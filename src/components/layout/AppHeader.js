@@ -22,7 +22,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretSquareLeft, faCaretSquareRight } from '@fortawesome/free-solid-svg-icons'
 import { toggleSidebarShow } from 'src/store/features/app'
 import { useMediaPredicate } from 'react-media-hook'
-import { useLoadAlertsDashQuery } from 'src/store/api/app'
 import { Link } from 'react-router-dom'
 import { useLocation } from 'react-router-dom'
 
@@ -32,7 +31,6 @@ const AppHeader = () => {
   const sidebarShow = useSelector((state) => state.app.sidebarShow)
   const currentTheme = useSelector((state) => state.app.currentTheme)
   const preferredTheme = useMediaPredicate('(prefers-color-scheme: dark)') ? 'impact' : 'cyberdrain'
-  const { data: dashboard } = useLoadAlertsDashQuery()
 
   return (
     <>
@@ -81,18 +79,6 @@ const AppHeader = () => {
         </CHeaderNav>
       </CHeader>
 
-      {dashboard &&
-        dashboard.length >= 1 &&
-        dashboard.map((item, index) => (
-          <div
-            className="mb-3"
-            style={{ zIndex: 10000, 'padding-left': '20rem', 'padding-right': '3rem' }}
-          >
-            <CAlert key={index} color={item.type} variant dismissible>
-              {item.Alert} <CAlertLink href={item.link}>Link</CAlertLink>
-            </CAlert>
-          </div>
-        ))}
     </>
   )
 }
