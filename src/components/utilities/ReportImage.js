@@ -19,9 +19,8 @@ const ReportImage = () => {
   }
 
   return (
-    <CCard>
-      <CCardHeader>Upload a default report image</CCardHeader>
-      <CCardBody>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div>
         <input
           ref={inputRef}
           type="file"
@@ -30,21 +29,20 @@ const ReportImage = () => {
           id="contained-button-file"
           onChange={(e) => Switchusage(e)}
         />
-        <center>
-          Suggested image size: 120x100. This is a per user setting.<br></br>
-          <CButton
-            type="button"
-            name="file"
-            onClick={() => inputRef.current.click()}
-            className="me-2"
-          >
-            Upload File
-          </CButton>
-          <br></br>
-          <CImage className="card" src={ReportImage} thumbnail width={120} height={100} />
-        </center>
-      </CCardBody>
-    </CCard>
+        <p>Select a report image. This image has a size of 120x100 and can be up to 64KB.</p>
+        <CButton
+          type="button"
+          name="file"
+          onClick={() => inputRef.current.click()}
+          className="me-2"
+        >
+          Upload new image
+        </CButton>
+      </div>
+      <div style={{ marginLeft: '20px' }}>
+        <CImage rounded={true} src={ReportImage} width={120} height={100} />
+      </div>
+    </div>
   )
 }
 
