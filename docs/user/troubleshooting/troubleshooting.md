@@ -21,6 +21,7 @@ This feature requires a P1 license or higher. Check the license information of y
 ### Response status code does not indicate success: 400 (Bad Request).
 
 Error 400 occurred. There is an issue with the request. Most likely an incorrect value is being sent. If you receive this error with a permissions check, please redo your SAM setup.
+In the case of a CPV refresh you may get this code if you are using Duo as an MFA solution.
 
 ### _Microsoft.Skype.Sync.Pstn.Tnm.Common.Http.HttpResponseException_
 
