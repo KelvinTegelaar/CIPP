@@ -11,12 +11,15 @@ const GDAPRelationships = React.lazy(() =>
   import('./views/tenant/administration/ListGDAPRelationships'),
 )
 const appapproval = React.lazy(() => import('src/views/cipp/AppApproval'))
+const Scheduler = React.lazy(() => import('src/views/cipp/Scheduler'))
 
 const adminRoutes = [
   { path: '/cipp', name: 'CIPP' },
   { path: '/cipp/cipp', name: 'CIPP' },
   { path: '/cipp/settings', name: 'Settings', component: CIPPSettings },
   { path: '/cipp/setup', name: 'Setup', component: Setup },
+  { path: '/cipp/scheduler', name: 'Scheduler', component: Scheduler },
+
   { path: '/tenant/administration/gdap', name: 'GDAP Wizard', component: GDAP },
   { path: '/tenant/administration/gdap-invite', name: 'GDAP Invite Wizard', component: GDAPInvite },
   {
