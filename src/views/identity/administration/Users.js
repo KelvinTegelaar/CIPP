@@ -95,7 +95,6 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
           },
           {
             label: 'Rerequire MFA registration',
-            color: 'info',
             link: entraLink,
             color: 'info',
             target: '_blank',
