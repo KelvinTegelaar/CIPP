@@ -1577,8 +1577,8 @@ const ExtensionsTab = () => {
 }
 
 const MappingsTab = () => {
-  const [listHaloBackend, listBackendHaloResult] = useLazyGenericGetRequestQuery()
-  const [setHaloExtensionconfig, extensionHaloConfigResult] = useLazyGenericPostRequestQuery()
+  const [listHaloBackend, listBackendHaloResult = []] = useLazyGenericGetRequestQuery()
+  const [setHaloExtensionconfig, extensionHaloConfigResult = []] = useLazyGenericPostRequestQuery()
 
   const onHaloSubmit = (values) => {
     setHaloExtensionconfig({
@@ -1608,7 +1608,7 @@ const MappingsTab = () => {
                       <CCardText>
                         Use the table below to map your client to the correct PSA client
                         {listBackendHaloResult.isSuccess &&
-                          listBackendHaloResult.data.Tenants.map((tenant) => (
+                          listBackendHaloResult.data.Tenants?.map((tenant) => (
                             <RFFSelectSearch
                               key={tenant.customerId}
                               name={tenant.customerId}
