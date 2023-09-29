@@ -286,7 +286,7 @@ const ListAlertsQueue = () => {
                   label: 'Delete webhook',
                   color: 'info',
                   modal: true,
-                  modalUrl: `/api/RemoveWebhookAlert?CIPPID=!CIPPID&tenantfilter=!tenantName`,
+                  modalUrl: `/api/RemoveWebhookAlert?CIPPID=!RowKey&tenantfilter=!PartitionKey`,
                   modalMessage: 'Are you sure you want to delete this webhook alert?',
                 },
               ],
