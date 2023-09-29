@@ -6,7 +6,14 @@ import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 's
 import { Editor } from '@monaco-editor/react'
 import { useSelector } from 'react-redux'
 
-function CippCodeOffCanvas({ row, state, hideFunction, type }) {
+function CippCodeOffCanvas({
+  row,
+  state,
+  hideFunction,
+  type,
+  title = 'Template JSON',
+  hideButton = false,
+}) {
   const [SaveTemplate, templateDetails] = useLazyGenericPostRequestQuery()
   const currentTheme = useSelector((state) => state.app.currentTheme)
   const [templateData, setFormData] = useState(row)
@@ -23,7 +30,7 @@ function CippCodeOffCanvas({ row, state, hideFunction, type }) {
   return (
     <>
       <CippOffcanvas
-        title="Template JSON"
+        title={title}
         addedClass="offcanvas-large"
         placement="end"
         visible={state}
@@ -43,18 +50,20 @@ function CippCodeOffCanvas({ row, state, hideFunction, type }) {
         />
         <CRow className="mb-3">
           <CCol>
-            <CButton
-              disabled={invalidJSON}
-              onClick={() =>
-                SaveTemplate({
-                  path: `/api/ExecEditTemplate?type=${type}`,
-                  method: 'POST',
-                  values: templateData,
-                })
-              }
-            >
-              Save changes {templateDetails.isFetching && <CSpinner size="sm" />}
-            </CButton>
+            {!hideButton && (
+              <CButton
+                disabled={invalidJSON}
+                onClick={() =>
+                  SaveTemplate({
+                    path: `/api/ExecEditTemplate?type=${type}`,
+                    method: 'POST',
+                    values: templateData,
+                  })
+                }
+              >
+                Save changes {templateDetails.isFetching && <CSpinner size="sm" />}
+              </CButton>
+            )}
           </CCol>
         </CRow>
         {templateDetails.isSuccess && !templateDetails.isFetching && (
