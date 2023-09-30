@@ -1,0 +1,1830 @@
+openapi: 3.1.0
+
+info:
+  title: CIPP-API Documentation
+  description: |
+    CIPP-API is an Azure Function App operating as the logic layer for the CIPP platform. It is composed
+    primarily of standard Azure Functions with a handful of Azure Durable Functions handling more complex
+     actions (mostly applying standards and running tenant analysis).
+
+     API documentation is primarily intended to aid in further development of the CIPP platform. This API will most likely be out-dated and we request users to help us keep this up to date.
+
+  version: 1.0.1
+externalDocs:
+  description: "CIPP Documentation"
+  url: https://cipp.app
+servers:
+  - url: http://{CIPPURL}/api/
+    description: CIPP-API
+
+paths:
+  /ListConditionalAccessPolicies:
+    get:
+      summary: "List Conditional Access Policies"
+      parameters:
+        - in: path
+          name: TenantFilter
+          required: true
+          schema:
+            type: string
+      tags: ["Conditional Access Policies"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Conditional_Access_Policies"
+  /ListAPDevices?TenantFilter={tenantId}:
+    get:
+      summary: "List Autopilot Devices"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+      tags: ["Autopilot Devices"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Autopilot_Devices"
+
+  /ListApps?TenantFilter={tenantId}:
+    get:
+      summary: "List Applications"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+      tags: ["Endpoint Applications"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Endpoint_Application_List"
+
+  /ListAppStatus?TenantFilter={tenantId}:
+    get:
+      summary: "List Application Status"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+      tags: ["Endpoint Application Status"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Endpoint_Aplication_Status"
+
+  /ListAutopilotConfig?TenantFilter={tenantId}:
+    get:
+      summary: "List Autopilot Config"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+      tags: ["Autopilot Configuration"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Endpoint_Autopilot_Config"
+
+  /ListBasicAuth?TenantFilter={tenantId}:
+    get:
+      summary: "List Basic Auth Status"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+      tags: ["Basic Authentication Status"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Basic_Authentication"
+
+  /ListContacts?TenantFilter={tenantId}:
+    get:
+      summary: "List Contacts"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+      tags: ["Contacts"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Contacts_List"
+
+  /ListDefenderstate?TenantFilter={tenantId}:
+    get:
+      summary: "List Defender State"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+      tags: ["Defender State"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Defender_State"
+
+  /ListDevices?TenantFilter={tenantId}:
+    get:
+      summary: "List Endpoint Devices"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+      tags: ["Endpoint Devices"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Endpoint_Devices"
+
+  /ListDomains?TenantFilter={tenantId}:
+    get:
+      summary: "List Domains"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+      tags: ["Domain Information"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Domain_Information"
+
+  /ListDomainTests:
+    get:
+      summary: "List Domains"
+      tags: ["Domain Tests"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Domain_Information"
+
+  /ListGroups?TenantFilter={tenantId}:
+    get:
+      summary: "List Groups"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+      tags: ["Group Information"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Group_Information"
+
+  /ListIntunePolicy?TenantFilter={tenantId}:
+    get:
+      summary: "List Endpoint Policies"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+      tags: ["Endpoint Policies"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Endpoint_Policies"
+
+  /ListLicenses?TenantFilter={tenantId}:
+    get:
+      summary: "List Licence SKU Information"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+      tags: ["Licences Information"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Licence_SKU_Information"
+
+  /ListLogs:
+    get:
+      summary: "List Log Information"
+      tags: ["Log Information"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Log_Information"
+
+  /ListMailboxCas?TenantFilter={tenantId}:
+    get:
+      summary: "List Exchange Mailbox CAS Information"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+      tags: ["Exchange Mailbox CAS"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exchange_Mailbox_CAS_Status"
+
+  /ListMailboxes?TenantFilter={tenantId}:
+    get:
+      summary: "List Exchange Mailboxes"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+      tags: ["Exchange Mailboxes"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exchange_Mailbox_List"
+
+  /ListMailboxMobileDevices?TenantFilter={tenantId}:
+    get:
+      summary: "List Exchange Mailbox Devices"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+      tags: ["Exchange Mailbox Mobile Devices"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exchange_Mailbox_Mobile_Devices_List"
+
+  /ListMailboxPermissions?TenantFilter={tenantId}&userId={userId}:
+    get:
+      summary: "List Exchange Mailbox Permissions"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      tags: ["Exchange Mailbox Permissions"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exchange_Mailbox_Permissions_List"
+
+  /ListMailboxStatistics?TenantFilter={tenantId}:
+    get:
+      summary: "List Exchange Mailbox Statistics"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+      tags: ["Exchange Mailbox Statistics"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exchange_Mailbox_Statistics"
+
+  /ListMessageTrace?TenantFilter={tenantId}&days={days}:
+    get:
+      summary: "Exchange Message Trace"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: days
+          required: true
+          schema:
+            type: string
+      tags: ["Exchange Message Trace"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exchange_Message_Trace"
+
+  /ListMFAStatus?TenantFilter={tenantId}:
+    get:
+      summary: "List MFA Status"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+      tags: ["MFA Status"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MFA_Status"
+
+  /ListPhishPolicies?TenantFilter={tenantId}:
+    get:
+      summary: "List Exchange Phish Policies"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+      tags: ["Exchange Phish Policies"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exchange_Phish_Policies"
+
+  /ListRoles?TenantFilter={tenantId}:
+    get:
+      summary: "List Roles"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+      tags: ["Roles"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Roles"
+
+  /ListSites?type=SharePointSiteUsage&TenantFilter={tenantId}:
+    get:
+      summary: "List Sharepoint Sites"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+      tags: ["Sharepoint Sites"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Sharepoint_Sites_List"
+
+  /ListStandards:
+    get:
+      summary: "List Applied Standards"
+      tags: ["Applied Standards"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Standards_List"
+
+  /ListTeams?type=list&TenantFilter={tenantId}:
+    get:
+      summary: "List Teams Sites"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+      tags: ["Teams Sites Inforamtion"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Teams_Sites_List"
+
+  /ListTeamsActivity?type=TeamsUserActivityUser&TenantFilter={tenantId}:
+    get:
+      summary: "List Teams Activity"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+      tags: ["Teams Sites Activity"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Teams_Sites_Activity"
+
+  /ListTeamsVoice&TenantFilter={tenantId}:
+    get:
+      summary: "List Teams Voice Information"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+      tags: ["Teams Voice Information"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Teams_Voice_List"
+
+  /ListTenants:
+    get:
+      summary: "List Tenants"
+      tags: ["Tenants Information"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tenants_List"
+
+  /ListUserConditionalAccessPolicies?userId={userId}&TenantFilter={tenantId}:
+    get:
+      summary: "List User Conditional Access Policies"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      tags: ["User Conditional Access Policies"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User_Conditional_Access_Policies_List"
+
+  /ListUserDevices?userId={userId}&TenantFilter={tenantId}:
+    get:
+      summary: "List User Endpoint Devices"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      tags: ["User Endpoint Devices"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User_Devices_List"
+
+  /ListUserGroups?userId={userId}&TenantFilter={tenantId}:
+    get:
+      summary: "List User Groups"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      tags: ["User Group Inforamtion"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User_Groups_List"
+
+  /ListUserMailboxDetails?userId={userId}&TenantFilter={tenantId}:
+    get:
+      summary: "List User Mailbox Details"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      tags: ["User Mailbox Information"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exchange_User_Mailbox_Details"
+
+  /ListUsers?userId={userId}&TenantFilter={tenantId}:
+    get:
+      summary: "List User Information"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      tags: ["User Information"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User_Information"
+
+  /ListUserSigninLogs?userId={userId}&TenantFilter={tenantId}:
+    get:
+      summary: "List User Sign In Logs"
+      parameters:
+        - in: path
+          name: tenantId
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+      tags: ["User Sign In Logs"]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User_Sign_In_Logs"
+
+components:
+  schemas:
+    Conditional_Access_Policies:
+      type: object
+      properties:
+        id:
+          type: number
+        displayName:
+          type: string
+        customer:
+          type: string
+        tenantID:
+          type: number
+        createdDateTime:
+          type: string
+        modifiedDateTime:
+          type: string
+        state:
+          type: string
+        clientAppTypes:
+          type: string
+        includePlatforms:
+          type: string
+        excludePlatforms:
+          type: string
+        includeLocations:
+          type: string
+        excludeLocations:
+          type: string
+        includeApplications:
+          type: string
+        excludeApplications:
+          type: string
+        includeUserActions:
+          type: string
+        includeAuthenticationContextClassReferences:
+          type: string
+        includeUsers:
+          type: string
+        excludeUsers:
+          type: string
+        includeGroups:
+          type: string
+        excludeGroups:
+          type: string
+        includeRoles:
+          type: string
+        excludeRoles:
+          type: string
+        grantControlsOperator:
+          type: string
+        builtInControls:
+          type: string
+        customAuthenticationFactors:
+          type: string
+        termsOfUse:
+          type: string
+    Autopilot_Devices:
+      type: object
+      properties:
+        id:
+          type: string
+        deploymentProfileAssignmentStatus:
+          type: string
+        deploymentProfileAssignmentDetailedStatus:
+          type: string
+        deploymentProfileAssignedDateTime:
+          type: string
+        groupTag:
+          type: string
+        purchaseOrderIdentifier:
+          type: string
+        serialNumber:
+          type: string
+        productKey:
+          type: string
+        manufacturer:
+          type: string
+        model:
+          type: string
+        enrollmentState:
+          type: string
+        lastContactedDateTime:
+          type: string
+        addressableUserName:
+          type: string
+        userPrincipalName:
+          type: string
+        resourceName:
+          type: string
+        skuNumber:
+          type: string
+        systemFamily:
+          type: string
+        azureActiveDirectoryDeviceId:
+          type: string
+        azureAdDeviceId:
+          type: string
+        managedDeviceId:
+          type: string
+        displayName:
+          type: string
+    Endpoint_Application_List:
+      type: object
+      properties:
+        id:
+          type: string
+        displayName:
+          type: string
+        description:
+          type: string
+        publisher:
+          type: string
+        largeIcon:
+          type: string
+        createdDateTime:
+          type: string
+        lastModifiedDateTime:
+          type: string
+        isFeatured:
+          type: boolean
+        privacyInformationUrl:
+          type: string
+        informationUrl:
+          type: string
+        owner:
+          type: string
+        developer:
+          type: string
+        notes:
+          type: string
+        uploadState:
+          type: integer
+        publushingState:
+          type: string
+        isAssigned:
+          type: boolean
+        roleScopeTagIds:
+          type: array
+        dependentAppCount:
+          type: integer
+        supersedingAppCount:
+          type: integer
+        supersededAppCount:
+          type: integer
+        committedContentVersion:
+          type: string
+        fileName:
+          type: string
+        size:
+          type: integer
+        installCommandLine:
+          type: string
+        uninstallCommandLine:
+          type: string
+        applicableArchitectures:
+          type: string
+        minimumFreeDiskSpaceInMB:
+          type: string
+        minimumMemoryInMB:
+          type: string
+        minimumNUmberOfProcessors:
+          type: string
+        minimumCpuSpeedInMhz:
+          type: string
+        msiInformation:
+          type: string
+        setupFilePath:
+          type: string
+        minimumSupportedWindowsRelease:
+          type: string
+        displayVersion:
+          type: string
+        minimumSupportedOperatingSystem:
+          type: object
+          properties:
+            v8.0:
+              type: boolean
+            v8_1:
+              type: boolean
+            v10_0:
+              type: boolean
+            v10_1607:
+              type: boolean
+            v10_1703:
+              type: boolean
+            v10_1709:
+              type: boolean
+            v10_1803:
+              type: boolean
+            v10_1809:
+              type: boolean
+            v10_1903:
+              type: boolean
+            v10:1909:
+              type: boolean
+            v10_2004:
+              type: boolean
+            v10_2H20:
+              type: boolean
+            v10_21H2:
+              type: boolean
+        detectionRules:
+          type: object
+          properties:
+            path:
+              type: string
+            fileOrFolderName:
+              type: string
+            check32BitOn64System:
+              type: boolean
+            detectionType:
+              type: string
+            operator:
+              type: string
+            detectionValue:
+              type: string
+        requirementRules:
+          type: array
+        rules:
+          type: object
+          properties:
+            ruleType:
+              type: string
+            path:
+              type: string
+            fileOrFolderName:
+              type: string
+            check32BitOn64System::
+              type: boolean
+            operationType:
+              type: string
+            operator:
+              type: string
+            comparisonValue:
+              type: string
+        installExperience:
+          type: object
+          properties:
+            runAsAccount:
+              type: string
+            deviceRestartBehaviour:
+              type: string
+        returnCodes:
+          type: object
+          properties:
+            returnCode:
+              type: integer
+            type:
+              type: string
+    Endpoint_Aplication_Status:
+      type: object
+      properties:
+        id:
+          type: string
+        DeviceName:
+          type: string
+        UserPrincipalName:
+          type: string
+        Platform:
+          type: string
+        AppVersion:
+          type: string
+        InstallState:
+          type: string
+        InstallStateDetail:
+          type: string
+        lastModifiedDateTime:
+          type: string
+        DeviceId:
+          type: string
+        ErrorCode:
+          type: string
+        UserName:
+          type: string
+        UserId:
+          type: string
+        ApplicationId:
+          type: string
+        AssignmentFilterIdsList:
+          type: string
+        AppInstallState:
+          type: string
+        AppInstallStateDetails:
+          type: string
+        HexErrorCode:
+          type: string
+    Endpoint_Autopilot_Config:
+      type: object
+      properties:
+        id:
+          type: string
+        displayName:
+          type: string
+        description:
+          type: string
+        language:
+          type: string
+        createdDateTime:
+          type: string
+        lastModifiedDateTime:
+          type: string
+        enrollmentStatusScreenSettings:
+          type: string
+        extractHardwareHash:
+          type: boolean
+        deviceNameTemplate:
+          type: string
+        deviceType:
+          type: string
+        enableWhiteGlove:
+          type: boolean
+        roleScopeTagIds:
+          type: array
+        managementServiceAppId:
+          type: string
+        outOfBoxExperienceSettings:
+          type: object
+          properties:
+            hidePrivacySettings:
+              type: boolean
+            hideEULA:
+              type: boolean
+            userType:
+              type: string
+            deviceUsageType:
+              type: string
+            skipKeyboardSelectionPage:
+              type: boolean
+            hideEscapeLink:
+              type: boolean
+    Basic_Authentication:
+      type: object
+      properties:
+        UPN:
+          type: string
+        BasicAuth:
+          type: string
+    Contacts_List:
+      type: object
+      properties:
+        id:
+          type: string
+        companyName:
+          type: string
+        displayName:
+          type: string
+        mail:
+          type: string
+        onPremisessSyncEnabled:
+          type: boolean
+    Defender_State:
+      type: object
+      properties:
+        id:
+          type: string
+        organizationId:
+          type: string
+        organizationDisplayName:
+          type: string
+        managedDeviceId:
+          type: string
+        managedDeviceName:
+          type: string
+        malwareProtectionEnabled:
+          type: boolean
+        managedDeviceHealthState:
+          type: string
+        realTimeProtectionEnabled:
+          type: boolean
+        networkInspectionSystemEnabled:
+          type: boolean
+        quickScanOverdue:
+          type: boolean
+        fullScanOverdue:
+          type: boolean
+        signatureUpdateOverdue:
+          type: boolean
+        rebootRequired:
+          type: boolean
+        attentionRequired:
+          type: boolean
+        fullScanRequired:
+          type: boolean
+        engineVersion:
+          type: string
+        signatureVersion:
+          type: string
+        antiMalwareVersion:
+          type: string
+        lastQuickScanDateTime:
+          type: string
+        lastFullScanDateTime:
+          type: string
+        lastQuickScanSignatureVersion:
+          type: string
+        lastFullScanSignatureVersion:
+          type: string
+        lastReportedDateTime:
+          type: string
+        devicePropertiesRefreshTime:
+          type: string
+        deviceDeleted:
+          type: boolean
+        lastRefreshDateTime:
+          type: string
+        tenantID:
+          type: string
+        tenantDisplayName:
+          type: string
+        devicePropertiesRefreshDateTime:
+          type: string
+    Endpoint_Devices:
+      type: object
+      properties:
+        id:
+          type: string
+        accountEnabled:
+          type: boolean
+        approximateLastSignInDateTime:
+          type: string
+        createdDateTime:
+          type: string
+        deviceOwnership:
+          type: string
+        displayName:
+          type: string
+        enrollmentType:
+          type: string
+        isCompliant:
+          type: boolean
+        managementType:
+          type: string
+        manufacturer:
+          type: string
+        model:
+          type: string
+        operatingSystem:
+          type: string
+        onPremisessSyncEnabled:
+          type: boolean
+        operatingSystemVersion:
+          type: string
+        trustType:
+          type: string
+    Domain_Information:
+      type: object
+      properties:
+        id:
+          type: string
+        authenticationType:
+          type: string
+        availabilityStatus:
+          type: string
+        isAdminManaged:
+          type: boolean
+        isDefault:
+          type: boolean
+        isInitial:
+          type: boolean
+        isRoot:
+          type: boolean
+        isVerified:
+          type: boolean
+        supportedServices:
+          type: array
+        passwordValidityPeriodInDays:
+          type: integer
+        passwordNotificationWindowInDays:
+          type: integer
+        state:
+          type: string
+    Domain_Tests:
+      type: object
+      properties:
+        DomainChecked:
+          type: string
+        SPFResults:
+          type: string
+        SPFPassCount:
+          type: integer
+        SPFWarnCount:
+          type: integer
+        SPFFailCount:
+          type: integer
+        SPFFinalState:
+          type: string
+        DMARCResults:
+          type: string
+        DMARCPassCount:
+          type: integer
+        DMARCWarnCount:
+          type: integer
+        DMARCFailCount:
+          type: integer
+        DMARCFinalState:
+          type: string
+        MXResults:
+          type: string
+        MXPassCount:
+          type: integer
+        MXWarnCount:
+          type: integer
+        MXFailCount:
+          type: integer
+        MXFinalState:
+          type: string
+        DNSSECResults:
+          type: string
+        DNSSECPassCount:
+          type: integer
+        DNSSECWarnCount:
+          type: integer
+        DNSSECFailCount:
+          type: integer
+        DNSSECFinalState:
+          type: string
+        DKIMResults:
+          type: string
+        DKIMPassCount:
+          type: integer
+        DKIMWarnCount:
+          type: integer
+        DKIMFailCount:
+          type: integer
+        DKIMFinalState:
+          type: string
+    Group_Information:
+      type: object
+      properties:
+        id:
+          type: string
+        createdDateTime:
+          type: string
+        displayName:
+          type: string
+        description:
+          type: string
+        mail:
+          type: string
+        mailEnabled:
+          type: boolean
+        mailNickname:
+          type: string
+        resourceProvisioningOptions:
+          type: string
+        securityEnabled:
+          type: boolean
+        visibility:
+          type: string
+        organizationId:
+          type: string
+        onPremisessSamAccountName:
+          type: string
+        membershipRule:
+          type: string
+        groupTypes:
+          type: string
+        onPremisessSyncEnabled:
+          type: boolean
+        GroupID:
+          type: object
+          properties:
+            id:
+              type: string
+            createdDateTime:
+              type: string
+            displayName:
+              type: string
+            description:
+              type: string
+            mail:
+              type: string
+            mailEnabled:
+              type: boolean
+            mailNickname:
+              type: string
+            resourceProvisioningOptions:
+              type: string
+            securityEnabled:
+              type: boolean
+            visibility:
+              type: string
+            organizationId:
+              type: string
+            onPremisessSamAccountName:
+              type: string
+            membershipRule:
+              type: string
+        members:
+          type: object
+          properties:
+            id:
+              type: string
+            createdDateTime:
+              type: string
+            displayName:
+              type: string
+            description:
+              type: string
+            mail:
+              type: string
+            mailEnabled:
+              type: boolean
+            mailNickname:
+              type: string
+            resourceProvisioningOptions:
+              type: string
+            securityEnabled:
+              type: boolean
+            visibility:
+              type: string
+            organizationId:
+              type: string
+            onPremisessSamAccountName:
+              type: string
+            membershipRule:
+              type: string
+            hideFromOutlookClients:
+              type: boolean
+            hideFromAddressLists:
+              type: boolean
+        owners:
+          type: object
+          properties:
+            id:
+              type: string
+            createdDateTime:
+              type: string
+            displayName:
+              type: string
+            description:
+              type: string
+            mail:
+              type: string
+            mailEnabled:
+              type: boolean
+            mailNickname:
+              type: string
+            resourceProvisioningOptions:
+              type: string
+            securityEnabled:
+              type: boolean
+            visibility:
+              type: string
+            organizationId:
+              type: string
+            onPremisessSamAccountName:
+              type: string
+            membershipRule:
+              type: string
+            hideFromOutlookClients:
+              type: boolean
+            hideFromAddressLists:
+              type: boolean
+    Endpoint_Policies:
+      type: object
+      properties:
+        id:
+          type: string
+    Licence_SKU_Information:
+      type: object
+      properties:
+        id:
+          type: string
+        capabilityStatus:
+          type: string
+        consumedUnits:
+          type: integer
+        skuID:
+          type: string
+        skuPartNumber:
+          type: string
+        appliesTo:
+          type: string
+        prepaidUnits:
+          type: object
+          properties:
+            enabled:
+              type: integer
+            suspended:
+              type: integer
+            warning:
+              type: integer
+        servicePlans:
+          type: object
+          properties:
+            servicePlanId:
+              type: string
+            servicePlanName:
+              type: string
+            provisioningStatus:
+              type: string
+            appliesTo:
+              type: string
+    Log_Information:
+      type: object
+      properties:
+        DateTime:
+          type: string
+        Tenant:
+          type: string
+        API:
+          type: string
+        Message:
+          type: string
+        User:
+          type: string
+        Severity:
+          type: string
+    Exchange_Mailbox_CAS_Status:
+      type: object
+      properties:
+        displayName:
+          type: string
+        primarySmtpAddress:
+          type: string
+        ecpenabled:
+          type: boolean
+        owaenabled:
+          type: boolean
+        imapenabled:
+          type: boolean
+        popenabled:
+          type: boolean
+        mapienabled:
+          type: boolean
+        ewsenabled:
+          type: boolean
+        activesyncenabled:
+          type: boolean
+    Exchange_Mailbox_List:
+      type: object
+      properties:
+        UPN:
+          type: string
+        displayName:
+          type: string
+        primarySmtpAddress:
+          type: string
+        recipientType:
+          type: string
+        recipientTypeDetails:
+          type: string
+        AdditionalEmailAddresses:
+          type: string
+    Exchange_Mailbox_Mobile_Devices_List:
+      type: object
+      properties:
+        clientType:
+          type: string
+        clientVersion:
+          type: integer
+        deviceAccessState:
+          type: string
+        deviceFriendlyName:
+          type: string
+        deviceModel:
+          type: string
+        deviceOS:
+          type: string
+        deviceType:
+          type: string
+        firstSync:
+          type: string
+        lastSyncAttempt:
+          type: string
+        lastSuccessSync:
+          type: string
+        status:
+          type: string
+    Exchange_Mailbox_Permissions_List:
+      type: object
+      properties:
+        User:
+          type: string
+        AccessRights:
+          type: string
+    Exchange_Mailbox_Statistics:
+      type: object
+      properties:
+        UPN:
+          type: string
+        displayName:
+          type: string
+        LastActive:
+          type: string
+        UsedGB:
+          type: string
+        ItemCount:
+          type: integer
+        HasArchive:
+          type: boolean
+    Exchange_Message_Trace:
+      type: object
+      properties:
+        Date:
+          type: string
+        Recipient:
+          type: string
+        Sender:
+          type: string
+        Subject:
+          type: string
+        Status:
+          type: integer
+    MFA_Status:
+      type: object
+      properties:
+        UserPrincipalName:
+          type: string
+        AccountState:
+          type: string
+        PerUser:
+          type: string
+        MFARegUser:
+          type: string
+        SecureDefaultState:
+          type: string
+    Exchange_Phish_Policies:
+      type: object
+      properties:
+        Name:
+          type: string
+        PhishThresholdLevel:
+          type: string
+        Enabled:
+          type: boolean
+        ExcludedSenders:
+          type: string
+        ExcludedDomains:
+          type: string
+        WhenChangedUTC:
+          type: string
+        Priority:
+          type: string
+    Roles:
+      type: object
+      properties:
+        displayName:
+          type: string
+        description:
+          type: string
+        Members:
+          type: boolean
+    Sharepoint_Sites_List:
+      type: object
+      properties:
+        UPN:
+          type: string
+        displayName:
+          type: string
+        LastActive:
+          type: string
+        FileCount:
+          type: integer
+        UsedGB:
+          type: integer
+        URL:
+          type: string
+        Allocated:
+          type: integer
+    Standards_List:
+      type: object
+      properties:
+        displayName:
+          type: string
+        standardName:
+          type: string
+        appliedBy:
+          type: string
+    Teams_Sites_List:
+      type: object
+      properties:
+        displayName:
+          type: string
+        team:
+          type: string
+        channels:
+          type: string
+        Members:
+          type: string
+        ownerse:
+          type: string
+        AppsList:
+          type: string
+    Teams_Sites_Activity:
+      type: object
+      properties:
+        UPN:
+          type: string
+        LastActive:
+          type: string
+        TeamsChat:
+          type: integer
+        CallCount:
+          type: integer
+        MeetingCount:
+          type: integer
+    Teams_Voice_List:
+      type: object
+      properties:
+        AssignedTo:
+          type: string
+        TelephoneNumber:
+          type: string
+        NumberType:
+          type: string
+        IsoCountryCode:
+          type: string
+        PlaceName:
+          type: string
+        ActivationState:
+          type: string
+        IsOperatorConnect:
+          type: string
+        AcquisitionDate:
+          type: string
+    Tenants_List:
+      type: object
+      properties:
+        id:
+          type: string
+        deletedDateTime:
+          type: string
+        contractType:
+          type: integer
+        customerId:
+          type: string
+        defaultDomainName:
+          type: string
+        displayName:
+          type: string
+    User_Conditional_Access_Policies_List:
+      type: object
+      properties:
+        id:
+          type: string
+        displayName:
+          type: string
+    User_Devices_List:
+      type: object
+      properties:
+        id:
+          type: string
+        accountEnabled:
+          type: boolean
+        approximateLastSignInDateTime:
+          type: string
+        createdDateTime:
+          type: string
+        deviceOwnership:
+          type: string
+        displayName:
+          type: string
+        enrollmentType:
+          type: string
+        isCompliant:
+          type: boolean
+        managementType:
+          type: string
+        manufacturer:
+          type: string
+        model:
+          type: string
+        operatingSystem:
+          type: string
+        onPremisessSyncEnabled:
+          type: boolean
+        operatingSystemVersion:
+          type: string
+        trustType:
+          type: string
+        EPMID:
+          type: string
+    User_Groups_List:
+      type: object
+      properties:
+        displayName:
+          type: string
+        mailEnabled:
+          type: boolean
+        mail:
+          type: string
+        securityEnabled:
+          type: boolean
+        groupTypes:
+          type: string
+        onPremisesSyncEnabled:
+          type: boolean
+        isAssignableToRole:
+          type: boolean
+    Exchange_User_Mailbox_Details:
+      type: object
+      properties:
+        DeliverToMailboxAndForward:
+          type: boolean
+        ForwardingAddress:
+          type: string
+        LitigationHoldEnabled:
+          type: boolean
+        HiddenFromAddressListsEnabled:
+          type: boolean
+        EwsEnabled:
+          type: string
+        MAPIEnabled:
+          type: boolean
+        OWAEnabled:
+          type: boolean
+        ImapEnabled:
+          type: string
+        PopEnabled:
+          type: boolean
+        ActiveSyncEnabled:
+          type: boolean
+        Permissions:
+          type: string
+        ProhibitSendQuota:
+          type: integer
+        ProhibitSendReceiveQuota:
+          type: integer
+        ItemCount:
+          type: integer
+        TotalItemSize:
+          type: integer
+        BlockedForSpam:
+          type: boolean
+    User_Information:
+      type: object
+      properties:
+        id:
+          type: string
+        accountEnabled:
+          type: boolean
+        businessPhones:
+          type: array
+        city:
+          type: string
+        createdDateTime:
+          type: string
+        companyName:
+          type: string
+        country:
+          type: string
+        department:
+          type: string
+        faxNumber:
+          type: string
+        givenName:
+          type: string
+        isResourceAccount:
+          type: string
+        jobTitle:
+          type: string
+        mail:
+          type: string
+        mailNickname:
+          type: string
+        mobilePhone:
+          type: string
+        onPremisesDistinguishedName:
+          type: string
+        officeLocation:
+          type: string
+        onPremisesLastSyncDateTime:
+          type: string
+        otherMails:
+          type: array
+        postalCode:
+          type: string
+        preferredDataLocation:
+          type: string
+        preferredLanguage:
+          type: string
+        proxyAddresses:
+          type: array
+        showInAddressList:
+          type: string
+        state:
+          type: string
+        streetAddress:
+          type: string
+        surname:
+          type: string
+        usageLocation:
+          type: string
+        userPrincipalName:
+          type: string
+        userType:
+          type: string
+        assignedLicenses:
+          type: array
+        onPremisessSyncEnabled:
+          type: boolean
+        LicJoined:
+          type: string
+        Aliases:
+          type: string
+        primDomain:
+          type: string
+        LastSignInApplication:
+          type: string
+        LastSignInDate:
+          type: string
+        LastSignInStatus:
+          type: string
+        LastSignInResult:
+          type: string
+        LastSigninFailureReason:
+          type: string
+    User_Sign_In_Logs:
+      type: object
+      properties:
+        Date:
+          type: string
+        Application:
+          type: string
+        LoginStatus:
+          type: string
+        ConditionalAccessStatus:
+          type: string
+        OverallLoginStatus:
+          type: string
+        IPAddress:
+          type: string
+        Town:
+          type: string
+        State:
+          type: string
+        Country:
+          type: string
+        Device:
+          type: string
+        DeviceCompliant:
+          type: string
+        OS:
+          type: string
+        Browser:
+          type: string
+        AppliedCAPs:
+          type: string
+        AdditionalDetails:
+          type: string
+        FailureReason:
+          type: string
+        FullDetails:
+          type: string
