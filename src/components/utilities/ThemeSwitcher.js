@@ -43,14 +43,15 @@ const ThemeSwitcher = () => {
   }
 
   return (
-    <CCard>
-      <CCardHeader>Select Theme</CCardHeader>
+    <>
+      <p>
+        <b>Theme</b>
+      </p>
       <CButtonGroup role="group" aria-label="Theme Switcher" color="secondary">
         {themes.map((theme, index) => (
           <CButton
             onClick={() => SwitchTheme(theme)}
-            active={theme === currentTheme ? true : false}
-            color="secondary"
+            color={theme === currentTheme ? 'primary' : 'secondary'}
             key={index}
             title={themeInfo(theme).description}
           >
@@ -58,7 +59,7 @@ const ThemeSwitcher = () => {
           </CButton>
         ))}
       </CButtonGroup>
-    </CCard>
+    </>
   )
 }
 
