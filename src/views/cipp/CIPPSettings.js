@@ -1069,6 +1069,7 @@ const NotificationsSettings = () => {
           </CCardHeader>
           <CCardBody>
             <Form
+              initialValuesEqual={() => true}
               initialValues={{
                 ...notificationListResult.data,
                 logsToInclude: notificationListResult.data?.logsToInclude?.map((m) => ({
@@ -1576,58 +1577,61 @@ const ExtensionsTab = () => {
 }
 
 const MappingsTab = () => {
-  const [listBackend, listBackendResult] = useLazyGenericGetRequestQuery()
-  const [setExtensionconfig, extensionConfigResult] = useLazyGenericPostRequestQuery()
+  const [listHaloBackend, listBackendHaloResult = []] = useLazyGenericGetRequestQuery()
+  const [setHaloExtensionconfig, extensionHaloConfigResult = []] = useLazyGenericPostRequestQuery()
 
-  const onSubmit = (values) => {
-    setExtensionconfig({
-      path: 'api/ExecExtensionMapping?AddMapping=true',
+  const onHaloSubmit = (values) => {
+    setHaloExtensionconfig({
+      path: 'api/ExecExtensionMapping?AddMapping=Halo',
       values: { mappings: values },
     })
   }
   return (
     <div>
-      {listBackendResult.isUninitialized &&
-        listBackend({ path: 'api/ExecExtensionMapping?List=true' })}
+      {listBackendHaloResult.isUninitialized &&
+        listHaloBackend({ path: 'api/ExecExtensionMapping?List=Halo' })}
       <>
-        <CCard>
+        <CCard className="mb-3">
           <CCardHeader>
             <CCardTitle>HaloPSA Mapping Table</CCardTitle>
           </CCardHeader>
           <CCardBody>
-            {listBackendResult.isFetching ? (
+            {listBackendHaloResult.isFetching ? (
               <CSpinner color="primary" />
             ) : (
               <Form
-                onSubmit={onSubmit}
-                initialValues={listBackendResult.data?.Mappings}
+                onSubmit={onHaloSubmit}
+                initialValues={listBackendHaloResult.data?.Mappings}
                 render={({ handleSubmit, submitting, values }) => {
                   return (
                     <CForm onSubmit={handleSubmit}>
                       <CCardText>
                         Use the table below to map your client to the correct PSA client
-                        {listBackendResult.isSuccess &&
-                          listBackendResult.data.Tenants.map((tenant) => (
+                        {listBackendHaloResult.isSuccess &&
+                          listBackendHaloResult.data.Tenants?.map((tenant) => (
                             <RFFSelectSearch
                               key={tenant.customerId}
                               name={tenant.customerId}
                               label={tenant.displayName}
-                              values={listBackendResult.data.HaloClients}
+                              values={listBackendHaloResult.data.HaloClients}
                               placeholder="Select a client"
                             />
                           ))}
                       </CCardText>
                       <CCol className="me-2">
                         <CButton className="me-2" type="submit">
-                          {extensionConfigResult.isFetching && (
+                          {extensionHaloConfigResult.isFetching && (
                             <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
                           )}
                           Set Mappings
                         </CButton>
-                        {(extensionConfigResult.isSuccess || extensionConfigResult.isError) && (
-                          <CCallout color={extensionConfigResult.isSuccess ? 'success' : 'danger'}>
-                            {extensionConfigResult.isSuccess
-                              ? extensionConfigResult.data.Results
+                        {(extensionHaloConfigResult.isSuccess ||
+                          extensionHaloConfigResult.isError) && (
+                          <CCallout
+                            color={extensionHaloConfigResult.isSuccess ? 'success' : 'danger'}
+                          >
+                            {extensionHaloConfigResult.isSuccess
+                              ? extensionHaloConfigResult.data.Results
                               : 'Error'}
                           </CCallout>
                         )}
