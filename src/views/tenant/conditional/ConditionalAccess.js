@@ -42,7 +42,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             icon: <FontAwesomeIcon icon={faBook} className="me-2" />,
             modalBody: JSON.parse(row.rawjson),
             modalType: 'POST',
-            modalUrl: `/api/AddCATemplate`,
+            modalUrl: `/api/AddCATemplate?TenantFilter=${tenant.defaultDomainName}`,
             modalMessage: 'Are you sure you want to create a template based on this rule?',
           },
           {
@@ -75,7 +75,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modal: true,
             icon: <FontAwesomeIcon icon={faTrash} className="me-2" />,
             modalUrl: `/api/RemoveCAPolicy?TenantFilter=${tenant.defaultDomainName}&GUID=${row.id}`,
-            modalMessage: 'Are you sure you want to disable this rule?',
+            modalMessage: 'Are you sure you want to delete this rule?',
           },
         ]}
         placement="end"
@@ -223,6 +223,43 @@ const ConditionalAccessList = () => {
         path: '/api/ListConditionalAccessPolicies',
         params: { TenantFilter: tenant?.defaultDomainName },
         columns,
+        tableProps: {
+          selectableRows: true,
+          actionsList: [
+            {
+              label: 'Enable Rule',
+              color: 'info',
+              icon: <FontAwesomeIcon icon={faCheck} className="me-2" />,
+              modal: true,
+              modalUrl: `/api/EditCAPolicy?State=Enabled&TenantFilter=${tenant.defaultDomainName}&GUID=!id`,
+              modalMessage: 'Are you sure you want to enable this rule?',
+            },
+            {
+              label: 'Disable Rule',
+              color: 'info',
+              icon: <FontAwesomeIcon icon={faBan} className="me-2" />,
+              modal: true,
+              modalUrl: `/api/EditCAPolicy?State=Disabled&TenantFilter=${tenant.defaultDomainName}&GUID=!id`,
+              modalMessage: 'Are you sure you want to disable this rule?',
+            },
+            {
+              label: 'Set rule to report only',
+              color: 'info',
+              icon: <FontAwesomeIcon icon={faBookReader} className="me-2" />,
+              modal: true,
+              modalUrl: `/api/EditCAPolicy?State=enabledForReportingButNotEnforced&TenantFilter=${tenant.defaultDomainName}&GUID=!id`,
+              modalMessage: 'Are you sure you want to disable this rule?',
+            },
+            {
+              label: 'Delete Rule',
+              color: 'danger',
+              modal: true,
+              icon: <FontAwesomeIcon icon={faTrash} className="me-2" />,
+              modalUrl: `/api/RemoveCAPolicy?TenantFilter=${tenant.defaultDomainName}&GUID=!id`,
+              modalMessage: 'Are you sure you want to delete this rule?',
+            },
+          ],
+        },
       }}
     />
   )

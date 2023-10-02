@@ -310,8 +310,8 @@
   --cipp-table-primary-colour: var(--cyberdrain-dark);
   --cipp-table-secondary-colour: var(--cyberdrain-secondary);
   --cipp-table-sort-focus-bg: var(--cyberdrain-secondary);
-  --cipp-table-highlight-on-hover-bg: #fff;
-  --cipp-table-highlight-on-hover-color: var(--cyberdrain-dark);
+  --cipp-table-highlight-on-hover-bg: rgb(150, 150, 150);
+  --cipp-table-highlight-on-hover-color: rgb(150, 150, 150);
   --cipp-table-striped-bg: var(--cyberdrain-light-striped);
   --cipp-table-striped-colour: var(--cyberdrain-dark-striped);
   --cipp-offcanvas-header-bg: var(--cui-color-white);
@@ -408,7 +408,7 @@
   --cui-color-orange: #f77f00;
   --cui-color-table-border: rgba(146, 154, 158, 0.8);
   --cui-color-card-shadow: rgba(207, 192, 192, 0.2);
-
+  --text-medium-emphasis: rgba(255, 255, 255, 0.6);
   // Core UI Impact theme variables.
   --cui-header-hover-color: var(--cyberdrain-light);
   --cui-header-active-color: var(--cyberdrain-accent-blue);
@@ -492,24 +492,26 @@
   --cipp-table-primary-colour: var(--cyberdrain-light);
   --cipp-table-secondary-colour: var(--cui-gray-100);
   --cipp-table-sort-focus-bg: var(--cyberdrain-secondary);
-  --cipp-table-highlight-on-hover-bg: var(--cyberdrain-darker);
-  --cipp-table-highlight-on-hover-color: var(--cyberdrain-light);
+  --cipp-table-highlight-on-hover-bg: rgb(138, 136, 136);
+  --cipp-table-highlight-on-hover-color: rgb(138, 136, 136);
   --cipp-table-striped-bg: var(--cyberdrain-dark-striped);
   --cipp-table-striped-colour: var(--cyberdrain-light-striped);
   --cipp-offcanvas-header-bg: var(--cyberdrain-dark);
   --cipp-offcanvas-header-color: var(--cyberdrain-light);
-
+  .react-select__input-container {
+    color: var(--cyberdrain-light) !important;
+  }
   .react-loading-skeleton {
-    --base-color: var(--cyberdrain-secondary);
-    --highlight-color: var(--cyberdrain-primary);
-    --animation-duration: 1.5s;
+    --base-color: var(--cyberdrain-dark-striped);
+    --highlight-color: var(--cyberdrain-lighter);
+    --animation-duration: 2.5s;
     --animation-direction: normal;
     --pseudo-element-display: block; /* Enable animation */
 
     background-color: var(--base-color);
 
     width: 100%;
-    border-radius: 0.25rem;
+    border-radius: 0.2rem;
     display: inline-flex;
     line-height: 1;
 
@@ -517,7 +519,9 @@
     overflow: hidden;
     z-index: 1; /* Necessary for overflow: hidden to work correctly in Safari */
   }
-
+  .text-medium-emphasis {
+    color: var(--text-medium-emphasis) !important;
+  }
   .react-loading-skeleton::after {
     content: ' ';
     display: var(--pseudo-element-display);

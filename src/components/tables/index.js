@@ -1,9 +1,10 @@
 import { CellBadge, cellBadgeFormatter } from 'src/components/tables/CellBadge'
 import CellBoolean, { cellBooleanFormatter } from 'src/components/tables/CellBoolean'
 import { CellDate, cellDateFormatter } from 'src/components/tables/CellDate'
-import { CellTip, CellTipButton } from 'src/components/tables/CellTip'
+import { CellTip, CellTipButton, CellTipIcon } from 'src/components/tables/CellTip'
 import { CellNullText, cellNullTextFormatter } from 'src/components/tables/CellNullText'
 import { CellProgressBar, cellProgressBarFormatter } from 'src/components/tables/CellProgressBar'
+import { CellDelegatedPrivilege } from './CellDelegatedPrivilege'
 import CippDatatable from 'src/components/tables/CippDatatable'
 import CippOffcanvasTable from 'src/components/tables/CippOffcanvasTable'
 import CippTable from 'src/components/tables/CippTable'
@@ -16,6 +17,7 @@ export {
   cellBooleanFormatter,
   CellDate,
   CellTip,
+  CellTipIcon,
   CellTipButton,
   cellDateFormatter,
   CellNullText,
@@ -26,4 +28,5 @@ export {
   CippOffcanvasTable,
   CippTable,
   WizardTableField,
+  CellDelegatedPrivilege,
 }

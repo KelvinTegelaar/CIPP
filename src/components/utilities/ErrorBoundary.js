@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import PropTypes from 'prop-types'
+import Page500 from 'src/views/pages/page500/Page500'
 
 export default class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -18,17 +19,8 @@ export default class ErrorBoundary extends React.Component {
 
   render() {
     if (this.state.errorInfo) {
-      // Error path
-      return (
-        <div>
-          <h2>Something went wrong.</h2>
-          <details style={{ whiteSpace: 'pre-wrap' }}>
-            {this.state.error && this.state.error.toString()}
-            <br />
-            {this.state.errorInfo.componentStack}
-          </details>
-        </div>
-      )
+      //React.lazy(() => import('src/views/pages/page500/Page500'))
+      return <Page500 errorcode={this.state.error.message} issue={this.state.error.stack} />
     }
     // Normally, just render children
     return this.props.children

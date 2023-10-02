@@ -8,7 +8,13 @@ import { IndividualDomainCheck } from 'src/views/tenant/standards/IndividualDoma
 import { CippPageList } from 'src/components/layout'
 import { useExecDomainsAnalyserMutation } from 'src/store/api/reports'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faEllipsisV, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
+import {
+  faCheck,
+  faEllipsisV,
+  faExclamationTriangle,
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons'
+import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 
 const RefreshAction = () => {
   const [execDomainsAnalyser, { isLoading, isSuccess, error }] = useExecDomainsAnalyserMutation()
@@ -19,7 +25,7 @@ const RefreshAction = () => {
         <div>
           Are you sure you want to force the Domain Analysis to run? This will slow down normal
           usage considerably. <br />
-          <i>Please note: this runs at midnight automatically every day.</i>
+          <i>Please note: this runs at 4:30 AM UTC automatically every day.</i>
         </div>
       ),
       onConfirm: () => execDomainsAnalyser(),
@@ -35,9 +41,34 @@ const RefreshAction = () => {
   )
 }
 
+function DeleteAction({ domain }) {
+  const [execDomainsDelete, { isUninitialized, isLoading, isSuccess, error }] =
+    useLazyGenericGetRequestQuery()
+
+  const showModal = () =>
+    ModalService.confirm({
+      body: <div>Are you sure you want to delete '{domain}'?</div>,
+      onConfirm: () =>
+        execDomainsDelete({
+          path: `/api/ExecDnsConfig?Action=RemoveDomain&Domain=${domain}`,
+        }),
+    })
+
+  return (
+    <CButton onClick={showModal} className="mb-2">
+      {isUninitialized && <FontAwesomeIcon icon={faTrash} className="me-2" />}
+      {isLoading && <CSpinner size="sm" className="me-2" />}
+      {error && <FontAwesomeIcon icon={faExclamationTriangle} className="me-2" />}
+      {isSuccess && <FontAwesomeIcon icon={faCheck} className="me-2" />}
+      Delete Domain
+    </CButton>
+  )
+}
+
 function checkDomain(tenantDomain) {
   return (
     <div key={tenantDomain}>
+      <DeleteAction domain={tenantDomain} />
       <IndividualDomainCheck initialDomain={tenantDomain} readOnly={true} isOffcanvas={true} />
     </div>
   )
@@ -50,6 +81,7 @@ const DomainsAnalyser = () => {
   const [individualDomainResults, setIndividualDomainResults] = useState()
   const [domainCheckVisible, setDomainCheckVisible] = useState(false)
   const currentTenant = useSelector((state) => state.app.currentTenant)
+  const [tableRequestGuid, setRequestGuid] = useState('')
 
   const handleMoreInfo = ({ row }) => {
     setIndividualDomainResults(checkDomain(row.Domain))
@@ -242,7 +274,13 @@ const DomainsAnalyser = () => {
       tenantSelector={true}
       showAllTenantSelector={true}
       datatable={{
-        path: '/api/DomainAnalyser_List',
+        filterlist: [
+          {
+            filterName: 'Exclude onmicrosoft domains',
+            filter: 'Complex: domain notlike onmicrosoft',
+          },
+        ],
+        path: `/api/DomainAnalyser_List`,
         params: { tenantFilter: currentTenant.defaultDomainName },
         columns,
         reportName: 'Domains-Analyzer',

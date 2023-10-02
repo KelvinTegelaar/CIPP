@@ -1,0 +1,103 @@
+[
+  {
+    "name": "CIPP-API Integration",
+    "type": "CIPP-API",
+    "cat": "API",
+    "forceSyncButton": false,
+    "helpText": "This integration allows you to enable CIPP-API access outside of CIPP. Requires Global Administrator permissions inside your tenant for activation of the API. The API credentials will only be shown once.",
+    "SettingOptions": [
+      {
+        "type": "checkbox",
+        "name": "cippapi.ResetPassword",
+        "label": "Reset application secret - this will invalidate all existing API tokens"
+      },
+      {
+        "type": "checkbox",
+        "name": "cippapi.Enabled",
+        "label": "Enable Integration"
+      }
+    ]
+  },
+  {
+    "name": "Gradient Integration",
+    "type": "Gradient",
+    "cat": "Billing & Invoicing",
+    "forceSyncButton": true,
+    "helpText": "This integration allows you to send your license counts to Gradient for billing purposes, and create tickets if your PSA supports ticket creation by Gradient.",
+    "SettingOptions": [
+      {
+        "type": "input",
+        "fieldtype": "password",
+        "name": "Gradient.VendorKey",
+        "label": "Gradient Vendor API Key",
+        "placeholder": "Enter your Gradient Vendor Key."
+      },
+      {
+        "type": "input",
+        "fieldtype": "password",
+        "name": "Gradient.APIKey",
+        "label": "Gradient Partner API Key",
+        "placeholder": "Enter your Gradient Partner Key. Leave blank to keep your current key."
+      },
+      {
+        "type": "checkbox",
+        "name": "Gradient.BillingEnabled",
+        "label": "Enable sending all license information to Gradient"
+      },
+      {
+        "type": "checkbox",
+        "name": "Gradient.Enabled",
+        "label": "Enable Integration"
+      }
+    ]
+  },
+  {
+    "name": "Halo PSA Ticketing Integration",
+    "type": "HaloPSA",
+    "cat": "Ticketing",
+    "forceSyncButton": false,
+    "helpText": "This integration allows you to send alerts to your ticketing system.",
+    "SettingOptions": [
+      {
+        "type": "input",
+        "fieldtype": "input",
+        "name": "HaloPSA.ResourceURL",
+        "label": "HaloPSA Resource Server URL",
+        "placeholder": "Enter your HaloPSA Resource Server URL."
+      },
+      {
+        "type": "input",
+        "fieldtype": "input",
+        "name": "HaloPSA.AuthURL",
+        "label": "HaloPSA Authorisation Endpoint URL",
+        "placeholder": "Enter your HaloPSA Authorisation Endpoint URL."
+      },
+      {
+        "type": "input",
+        "fieldtype": "input",
+        "name": "HaloPSA.Tenant",
+        "label": "HaloPSA Tenant",
+        "placeholder": "Enter your HaloPSA Tenant"
+      },
+      {
+        "type": "input",
+        "fieldtype": "input",
+        "name": "HaloPSA.ClientID",
+        "label": "HaloPSA Client ID",
+        "placeholder": "Enter your HaloPSA Client ID"
+      },
+      {
+        "type": "input",
+        "fieldtype": "password",
+        "name": "HaloPSA.APIKey",
+        "label": "HaloPSA Client Secret",
+        "placeholder": "Enter your client Secret. Leave blank to keep your current key."
+      },
+      {
+        "type": "checkbox",
+        "name": "HaloPSA.Enabled",
+        "label": "Enable Integration"
+      }
+    ]
+  }
+]

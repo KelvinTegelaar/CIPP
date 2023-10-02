@@ -20,6 +20,37 @@ import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import { useListCalendarPermissionsQuery, useListMailboxesQuery } from 'src/store/api/mailbox'
+import { CippTable } from 'src/components/tables'
+
+const columns = [
+  {
+    name: 'User',
+    selector: (row) => row['User'],
+    sortable: true,
+    wrap: true,
+    cell: (row) => row['User'],
+    exportSelector: 'User',
+    maxWidth: '150px',
+  },
+  {
+    name: 'AccessRights',
+    selector: (row) => row['AccessRights'],
+    sortable: true,
+    wrap: true,
+    cell: (row) => row['AccessRights'],
+    exportSelector: 'AccessRights',
+    maxWidth: '150px',
+  },
+  {
+    name: 'Identity',
+    selector: (row) => row['Identity'],
+    sortable: true,
+    wrap: true,
+    cell: (row) => row['Identity'],
+    exportSelector: 'Identity',
+    maxWidth: '150px',
+  },
+]
 
 const EditCalendarPermission = () => {
   const dispatch = useDispatch()
@@ -179,14 +210,15 @@ const EditCalendarPermission = () => {
             <CCol md={6}>
               <CCard>
                 <CCardHeader>
-                  <CCardTitle>Account Information</CCardTitle>
+                  <CCardTitle>Current Permissions</CCardTitle>
                 </CCardHeader>
                 <CCardBody>
                   {userIsFetching && <CSpinner />}
-                  {!userIsFetching && (
+                  {!userIsFetching && !userError && (
                     <>
-                      These are the current set permissions for this account:
-                      <pre>{JSON.stringify(user, null, 2)}</pre>
+                      {user.length > 0 && (
+                        <CippTable reportName="UserPermissions" columns={columns} data={user} />
+                      )}
                     </>
                   )}
                 </CCardBody>

@@ -1,21 +1,15 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { CippCodeBlock, CippOffcanvas } from 'src/components/utilities'
-import { CippDatatable, CellTip } from 'src/components/tables'
-import {
-  CCardBody,
-  CButton,
-  CCallout,
-  CSpinner,
-  CCard,
-  CCardHeader,
-  CCardTitle,
-} from '@coreui/react'
+import { CellTip } from 'src/components/tables'
+import { CButton, CCallout, CSpinner } from '@coreui/react'
 import { faEye, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
-import { CippPage } from 'src/components/layout'
+import { CippPageList } from 'src/components/layout'
 import { ModalService } from 'src/components/utilities'
+import { TitleButton } from 'src/components/buttons'
+import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
 
 const TransportListTemplates = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -23,7 +17,7 @@ const TransportListTemplates = () => {
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
   const Offcanvas = (row, rowIndex, formatExtraData) => {
     const [ocVisible, setOCVisible] = useState(false)
-    const handleDeleteIntuneTemplate = (apiurl, message) => {
+    const handleDeleteTransportTemplate = (apiurl, message) => {
       ModalService.confirm({
         title: 'Confirm',
         body: <div>{message}</div>,
@@ -42,7 +36,7 @@ const TransportListTemplates = () => {
           variant="ghost"
           color="danger"
           onClick={() =>
-            handleDeleteIntuneTemplate(
+            handleDeleteTransportTemplate(
               `/api/RemoveTransportRuleTemplate?ID=${row.GUID}`,
               'Do you want to delete the template?',
             )
@@ -51,15 +45,12 @@ const TransportListTemplates = () => {
           <FontAwesomeIcon icon={faTrash} href="" />
         </CButton>
 
-        <CippOffcanvas
-          title="Template JSON"
-          placement="end"
-          visible={ocVisible}
-          id={row.id}
+        <CippCodeOffCanvas
+          row={row}
+          state={ocVisible}
+          type="TransportTemplate"
           hideFunction={() => setOCVisible(false)}
-        >
-          <CippCodeBlock language="json" code={JSON.stringify(row, null, 2)} />
-        </CippOffcanvas>
+        />
       </>
     )
   }
@@ -94,31 +85,27 @@ const TransportListTemplates = () => {
   ]
 
   return (
-    <CippPage title="Available Transport Rule Templates" tenantSelector={false}>
-      <CCard className="content-card">
-        <CCardHeader className="d-flex justify-content-between align-items-center">
-          <CCardTitle>Results</CCardTitle>
-        </CCardHeader>
-        <CCardBody>
-          {getResults.isFetching && (
-            <CCallout color="info">
-              <CSpinner>Loading</CSpinner>
-            </CCallout>
-          )}
-          {getResults.isSuccess && <CCallout color="info">{getResults.data?.Results}</CCallout>}
-          {getResults.isError && (
-            <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
-          )}
-          <CippDatatable
-            keyField="id"
-            reportName={`${tenant?.defaultDomainName}-ListTransportRulesTemplates-List`}
-            path="/api/ListTransportRulesTemplates"
-            columns={columns}
-            params={{ TenantFilter: tenant?.defaultDomainName }}
-          />
-        </CCardBody>
-      </CCard>
-    </CippPage>
+    <>
+      {getResults.isFetching && (
+        <CCallout color="info">
+          <CSpinner>Loading</CSpinner>
+        </CCallout>
+      )}
+      {getResults.isSuccess && <CCallout color="info">{getResults.data?.Results}</CCallout>}
+      {getResults.isError && (
+        <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
+      )}
+      <CippPageList
+        title="Transport Rule Templates"
+        titleButton={<TitleButton href="/email/transport/add-template" title="Add Template" />}
+        datatable={{
+          reportName: `${tenant?.defaultDomainName}-Groups`,
+          path: '/api/ListTransportRulesTemplates',
+          params: { TenantFilter: tenant?.defaultDomainName },
+          columns,
+        }}
+      />
+    </>
   )
 }
 

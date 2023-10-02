@@ -1,34 +1,57 @@
 import React from 'react'
-import { CButton, CCol, CContainer, CRow } from '@coreui/react'
-import { Helmet } from 'react-helmet'
-import { Link } from 'react-router-dom'
+import {
+  CCard,
+  CCardBody,
+  CCardHeader,
+  CCardTitle,
+  CCol,
+  CRow,
+  CTable,
+  CTableBody,
+  CTableDataCell,
+  CTableHead,
+  CTableHeaderCell,
+  CTableRow,
+} from '@coreui/react'
 import { FastSwitcher } from 'src/components/utilities'
 
-const Page500 = () => {
+const Page500 = ({ errorcode, issue }) => {
   return (
-    <div className="min-vh-100 d-flex flex-row align-items-center">
-      <Helmet>
-        <title>CIPP - 500</title>
-      </Helmet>
-      <CContainer>
-        <CRow className="justify-content-center">
+    <CCard className="page-card">
+      <CCardHeader className="d-flex justify-content-between align-items-center">
+        <CCardTitle>An error has occurred!</CCardTitle>
+      </CCardHeader>
+      <CCardBody>
+        <CRow>
           <CCol md={6}>
-            <span className="clearfix">
-              <h1 className="float-start display-3 me-4">500</h1>
-              <h4 className="pt-3">Houston, we have a problem!</h4>
-              <p className="float-start">
-                The page you are looking for is temporarily unavailable.
-                <br /> <br />
-                <Link to="/">
-                  <CButton>Back to home</CButton>
-                </Link>
-              </p>
-            </span>
-            <FastSwitcher />
+            An error has appeared while trying to load your data. For troubleshooting, the error
+            information can be found in the table below.
+            <br /> <br /> This type of error is usually indicative an application issue. To
+            troubleshoot this issue check if your API is running and reachable, or use below error
+            to troubleshoot
           </CCol>
+          <br /> <br />
+          <CRow>
+            <CCol>
+              <CTable striped small>
+                <CTableHead>
+                  <CTableRow>
+                    <CTableHeaderCell scope="col">Error</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Error Location</CTableHeaderCell>
+                  </CTableRow>
+                </CTableHead>
+                <CTableBody>
+                  <CTableRow>
+                    <CTableDataCell>{errorcode}</CTableDataCell>
+                    <CTableDataCell>{issue}</CTableDataCell>
+                  </CTableRow>
+                </CTableBody>
+              </CTable>
+            </CCol>
+          </CRow>
         </CRow>
-      </CContainer>
-    </div>
+      </CCardBody>
+    </CCard>
   )
 }
 

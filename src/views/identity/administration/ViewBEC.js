@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { CButton, CCallout, CLink } from '@coreui/react'
+import { CButton, CCallout, CLink, CCardTitle } from '@coreui/react'
 import { CCardBody, CSpinner } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -22,10 +22,12 @@ import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { CippContentCard, CippMasonry, CippMasonryItem, CippPage } from 'src/components/layout'
 import 'react-loading-skeleton/dist/skeleton.css'
 import Skeleton from 'react-loading-skeleton'
+import useConfirmModal from 'src/hooks/useConfirmModal'
 
 const ViewBec = () => {
   let query = useQuery()
   const userId = query.get('userId')
+  const userName = query.get('ID')
   const tenantDomain = query.get('tenantDomain')
   const [execBecRemediate, execRemediateResults] = useLazyGenericPostRequestQuery()
   const [execBecView, results] = useLazyExecBecCheckQuery()
@@ -94,12 +96,12 @@ const ViewBec = () => {
     },
     {
       name: 'Error code',
-      selector: (row) => row.Status?.ErrorCode,
+      selector: (row) => row.id,
       sortable: true,
     },
     {
       name: 'Details',
-      selector: (row) => row.Status?.AdditionalDetails,
+      selector: (row) => row.Status,
       sortable: true,
     },
   ]
@@ -217,28 +219,43 @@ const ViewBec = () => {
       sortable: true,
     },
   ]
-
+  const handleReMediate = useConfirmModal({
+    body: <div>Are you sure you want to remediate this user?</div>,
+    onConfirm: () => {
+      execBecRemediate({
+        path: '/api/execBecRemediate',
+        values: { userId: userId, tenantFilter: tenantDomain },
+      })
+    },
+  })
   return (
     <CippPage tenantSelector={false} title="View Business Email Compromise Indicators">
       <CippMasonry columns={2}>
         <CippMasonryItem size="full">
           <CippContentCard
-            title="Business Email Compromise Overview"
+            title={<CCardTitle>Business Email Compromise Overview - {userName}</CCardTitle>}
             button={
               <CButton
                 size="sm"
-                onClick={() => execBecView({ tenantFilter: tenantDomain, userId: userId })}
+                onClick={() =>
+                  execBecView({ tenantFilter: tenantDomain, userId: userId, overwrite: true })
+                }
                 disabled={isFetching}
               >
                 {!isFetching && <FontAwesomeIcon icon={faRedo} className="me-2" />}
-                Refresh
+                Refresh Data
               </CButton>
             }
           >
             <CCallout color="info">
               Loading Data: {isFetching && <CSpinner />}
               {!isFetching && error && <FontAwesomeIcon icon={faTimesCircle} />}
-              {isSuccess && <FontAwesomeIcon icon={faCheckCircle} />}
+              {isSuccess && (
+                <>
+                  <FontAwesomeIcon icon={faCheckCircle} />
+                  Data has been extracted at {alerts.ExtractedAt}
+                </>
+              )}
             </CCallout>
             <p>
               Use this information as a guide to check if a tenant or e-mail address might have been
@@ -256,16 +273,7 @@ const ViewBec = () => {
               <li>Disconnect all current sessions</li>
               <li>Disable all inbox rules for the user</li>
             </p>
-            <CButton
-              onClick={() =>
-                execBecRemediate({
-                  path: '/api/execBecRemediate',
-                  values: { userId: userId, tenantFilter: tenantDomain },
-                })
-              }
-            >
-              Remediate User
-            </CButton>
+            <CButton onClick={() => handleReMediate()}>Remediate User</CButton>
             {!execRemediateResults.isSuccess && execRemediateResults.isError && (
               <CCallout color="danger">Error. Could not remediate user</CCallout>
             )}

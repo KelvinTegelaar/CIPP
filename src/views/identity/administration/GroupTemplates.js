@@ -1,26 +1,17 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { CippCodeBlock, CippOffcanvas } from 'src/components/utilities'
-import { CellTip, CippDatatable } from 'src/components/tables'
-import {
-  CCardBody,
-  CButton,
-  CCallout,
-  CSpinner,
-  CCardHeader,
-  CCardTitle,
-  CCard,
-} from '@coreui/react'
+import { CellTip } from 'src/components/tables'
+import { CButton, CCallout, CSpinner } from '@coreui/react'
 import { faEye, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
-import { CippPage } from 'src/components/layout'
+import { CippPageList } from 'src/components/layout'
 import { ModalService } from 'src/components/utilities'
+import { TitleButton } from 'src/components/buttons'
+import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
 
-//todo: expandable with RAWJson property.
-/* eslint-disable-next-line react/prop-types */
-
-const AutopilotListTemplates = () => {
+const GroupTemplates = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
@@ -46,22 +37,19 @@ const AutopilotListTemplates = () => {
           color="danger"
           onClick={() =>
             handleDeleteIntuneTemplate(
-              `/api/RemoveIntuneTemplate?ID=${row.GUID}`,
+              `/api/RemoveGroupTemplate?ID=${row.GUID}`,
               'Do you want to delete the template?',
             )
           }
         >
           <FontAwesomeIcon icon={faTrash} href="" />
         </CButton>
-        <CippOffcanvas
-          title="Template JSON"
-          placement="end"
-          visible={ocVisible}
-          id={row.id}
+        <CippCodeOffCanvas
+          row={row}
+          state={ocVisible}
+          type="GroupTemplate"
           hideFunction={() => setOCVisible(false)}
-        >
-          <CippCodeBlock language="json" code={JSON.stringify(row, null, 2)} />
-        </CippOffcanvas>
+        />
       </>
     )
   }
@@ -87,7 +75,7 @@ const AutopilotListTemplates = () => {
     },
     {
       name: 'Type',
-      selector: (row) => row['Type'],
+      selector: (row) => row['groupType'],
       sortable: true,
       exportSelector: 'Type',
       maxWidth: '100px',
@@ -106,33 +94,45 @@ const AutopilotListTemplates = () => {
   ]
 
   return (
-    <CippPage title="Available Endpoint Manager Templates" tenantSelector={false}>
-      <CCard className="content-card">
-        <CCardHeader className="d-flex justify-content-between align-items-center">
-          <CCardTitle>Endpoint Manager Templates</CCardTitle>
-        </CCardHeader>
-        <CCardBody>
-          {getResults.isFetching && (
-            <CCallout color="info">
-              <CSpinner>Loading</CSpinner>
-            </CCallout>
-          )}
-          {getResults.isSuccess && <CCallout color="info">{getResults.data?.Results}</CCallout>}
-          {getResults.isError && (
-            <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
-          )}
-
-          <CippDatatable
-            keyField="id"
-            reportName={`${tenant?.defaultDomainName}-MEMPolicyTemplates-List`}
-            path="/api/ListIntuneTemplates"
-            columns={columns}
-            params={{ TenantFilter: tenant?.defaultDomainName }}
+    <>
+      {getResults.isFetching && (
+        <CCallout color="info">
+          <CSpinner>Loading</CSpinner>
+        </CCallout>
+      )}
+      {getResults.isSuccess && <CCallout color="info">{getResults.data?.Results}</CCallout>}
+      {getResults.isError && (
+        <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
+      )}
+      <CippPageList
+        title="Group Templates"
+        titleButton={
+          <TitleButton
+            href="/identity/administration/group-add-template"
+            title="Add Group Template"
           />
-        </CCardBody>
-      </CCard>
-    </CippPage>
+        }
+        datatable={{
+          reportName: `${tenant?.defaultDomainName}-Groups`,
+          path: '/api/ListGroupTemplates',
+          params: { TenantFilter: tenant?.defaultDomainName },
+          columns,
+          tableProps: {
+            selectableRows: true,
+            actionsList: [
+              {
+                label: 'Delete Template',
+                color: 'info',
+                modal: true,
+                modalUrl: `/api/RemoveGroupTemplate?ID=!GUID`,
+                modalMessage: 'Are you sure you want to delete these templates?',
+              },
+            ],
+          },
+        }}
+      />
+    </>
   )
 }
 
-export default AutopilotListTemplates
+export default GroupTemplates

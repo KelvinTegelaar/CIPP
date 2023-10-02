@@ -17,9 +17,9 @@ import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import { CippPage } from 'src/components/layout'
 import { ModalService } from 'src/components/utilities'
 import { CellTip } from 'src/components/tables'
+import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
 
 //todo: expandable with RAWJson property.
-/* eslint-disable-next-line react/prop-types */
 
 const AutopilotListTemplates = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -54,15 +54,12 @@ const AutopilotListTemplates = () => {
         >
           <FontAwesomeIcon icon={faTrash} href="" />
         </CButton>
-        <CippOffcanvas
-          title="Template JSON"
-          placement="end"
-          visible={ocVisible}
-          id={row.id}
+        <CippCodeOffCanvas
+          row={row}
+          state={ocVisible}
+          type="CATemplate"
           hideFunction={() => setOCVisible(false)}
-        >
-          <CippCodeBlock language="json" code={JSON.stringify(row, null, 2)} />
-        </CippOffcanvas>
+        />
       </>
     )
   }

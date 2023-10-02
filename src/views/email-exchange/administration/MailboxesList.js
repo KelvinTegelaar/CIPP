@@ -17,7 +17,7 @@ const MailboxList = () => {
     return (
       <>
         <Link
-          to={`/identity/administration/users/view?userId=${row.UPN}&tenantDomain=${tenant.defaultDomainName}`}
+          to={`/identity/administration/users/view?userId=${row.UPN}&tenantDomain=${tenant.defaultDomainName}&email=${row.UPN}`}
         >
           <CButton size="sm" variant="ghost" color="success">
             <FontAwesomeIcon icon={faEye} />
@@ -30,7 +30,9 @@ const MailboxList = () => {
             <FontAwesomeIcon icon={faEdit} />
           </CButton>
         </Link>
-        <Link to={`/email/administration/view-mobile-devices?userId=${row.primarySmtpAddress}`}>
+        <Link
+          to={`/email/administration/view-mobile-devices?customerId=${tenant.defaultDomainName}&userId=${row.primarySmtpAddress}`}
+        >
           <CButton size="sm" variant="ghost" color="warning">
             <FontAwesomeIcon icon={faMobileAlt} />
           </CButton>
@@ -50,7 +52,7 @@ const MailboxList = () => {
               value: row.UPN,
             },
             {
-              label: 'Aditional Email Addresses',
+              label: 'Additional Email Addresses',
               value: row.AdditionalEmailAddresses
                 ? `${row.AdditionalEmailAddresses}`
                 : 'No additional email addresses',
@@ -92,6 +94,78 @@ const MailboxList = () => {
               modalUrl: `/api/ExecConvertToSharedMailbox?TenantFilter=${tenant.defaultDomainName}&ID=${row.UPN}&ConvertToUser=true`,
               modalMessage:
                 'Are you sure you want to convert this shared mailbox to a user mailbox?',
+            },
+            {
+              label: 'Copy Sent Items to Shared Mailbox',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecCopyForSent?TenantFilter=${tenant.defaultDomainName}&ID=${row.UPN}`,
+              modalMessage: 'Are you sure you want to enable Copy Sent Items to Shared Mailbox?',
+            },
+            {
+              label: 'Disable Copy Sent Items to Shared Mailbox',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecCopyForSent?TenantFilter=${tenant.defaultDomainName}&ID=${row.UPN}&MessageCopyForSentAsEnabled=false`,
+              modalMessage: 'Are you sure you want to disable Copy Sent Items to Shared Mailbox?',
+            },
+            {
+              label: 'Hide from Global Address List',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecHideFromGAL?TenantFilter=${tenant.defaultDomainName}&ID=${row.UPN}&HidefromGAL=true`,
+              modalMessage:
+                'Are you sure you want to hide this mailbox from the global address list? Remember this will not work if the user is AD Synched.',
+            },
+            {
+              label: 'Unhide from Global Address List',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecHideFromGAL?TenantFilter=${tenant.defaultDomainName}&ID=${row.UPN}`,
+              modalMessage:
+                'Are you sure you want to unhide this mailbox from the global address list? Remember this will not work if the user is AD Synched.',
+            },
+            {
+              label: 'Set Send Quota',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                user: row.UPN,
+                TenantFilter: tenant.defaultDomainName,
+                ProhibitSendQuota: true,
+              },
+              modalUrl: `/api/ExecSetMailboxQuota`,
+              modalInput: true,
+              modalMessage: 'Enter a quota. e.g. 1000MB, 10GB,1TB',
+            },
+            {
+              label: 'Set Send and Receive Quota',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                user: row.UPN,
+                TenantFilter: tenant.defaultDomainName,
+                ProhibitSendReceiveQuota: true,
+              },
+              modalUrl: `/api/ExecSetMailboxQuota`,
+              modalInput: true,
+              modalMessage: 'Enter a quota. e.g. 1000MB, 10GB,1TB',
+            },
+            {
+              label: 'Set Quota Warning Level',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                user: row.UPN,
+                TenantFilter: tenant.defaultDomainName,
+                IssueWarningQuota: true,
+              },
+              modalUrl: `/api/ExecSetMailboxQuota`,
+              modalInput: true,
+              modalMessage: 'Enter a quota. e.g. 1000MB, 10GB,1TB',
             },
           ]}
           placement="end"
@@ -170,7 +244,97 @@ const MailboxList = () => {
         reportName: `${tenant?.defaultDomainName}-Mailbox-List`,
         path: '/api/ListMailboxes',
         columns,
+        tableProps: {
+          selectableRows: true,
+          actionsList: [
+            {
+              label: 'Convert to Shared Mailbox',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecConvertToSharedMailbox?TenantFilter=${tenant.defaultDomainName}&ID=!UPN`,
+              modalMessage: 'Are you sure you want to convert this user to a shared mailbox?',
+            },
+            {
+              label: 'Convert to User Mailbox',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecConvertToSharedMailbox?TenantFilter=${tenant.defaultDomainName}&ID=!UPN&ConvertToUser=true`,
+              modalMessage:
+                'Are you sure you want to convert this shared mailbox to a user mailbox?',
+            },
+            {
+              label: 'Hide from Global Address List',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecHideFromGAL?TenantFilter=${tenant.defaultDomainName}&ID=!UPN&HidefromGAL=true`,
+              modalMessage:
+                'Are you sure you want to hide this mailbox from the global address list? Remember this will not work if the user is AD Synched.',
+            },
+            {
+              label: 'Unhide from Global Address List',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecHideFromGAL?TenantFilter=${tenant.defaultDomainName}&ID=!UPN`,
+              modalMessage:
+                'Are you sure you want to unhide this mailbox from the global address list? Remember this will not work if the user is AD Synched.',
+            },
+            {
+              label: 'Set Send Quota',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                user: '!UPN',
+                TenantFilter: tenant.defaultDomainName,
+                ProhibitSendQuota: true,
+              },
+              modalUrl: `/api/ExecSetMailboxQuota`,
+              modalInput: true,
+              modalMessage: 'Enter a quota. e.g. 1000MB, 10GB,1TB',
+            },
+            {
+              label: 'Set Send and Receive Quota',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                user: '!UPN',
+                TenantFilter: tenant.defaultDomainName,
+                ProhibitSendReceiveQuota: true,
+              },
+              modalUrl: `/api/ExecSetMailboxQuota`,
+              modalInput: true,
+              modalMessage: 'Enter a quota. e.g. 1000MB, 10GB,1TB',
+            },
+            {
+              label: 'Set Quota Warning Level',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                user: '!UPN',
+                TenantFilter: tenant.defaultDomainName,
+                IssueWarningQuota: true,
+              },
+              modalUrl: `/api/ExecSetMailboxQuota`,
+              modalInput: true,
+              modalMessage: 'Enter a quota. e.g. 1000MB, 10GB,1TB',
+            },
+          ],
+        },
         params: { TenantFilter: tenant?.defaultDomainName },
+        filterlist: [
+          {
+            filterName: 'User Mailboxes',
+            filter: '"recipientTypeDetails":"UserMailbox"',
+          },
+          {
+            filterName: 'Shared Mailboxes with license',
+            filter: '"SharedMailboxWithLicense":true',
+          },
+          { filterName: 'Shared Mailboxes', filter: '"recipientTypeDetails":"SharedMailbox"' },
+          { filterName: 'Has an alias', filter: '"AdditionalEmailAddresses":"' },
+        ],
       }}
     />
   )

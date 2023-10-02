@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { CCol, CRow, CListGroup, CListGroupItem, CCallout, CSpinner } from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -7,6 +7,7 @@ import { CippWizard } from 'src/components/layout'
 import { WizardTableField } from 'src/components/tables'
 import PropTypes from 'prop-types'
 import {
+  Condition,
   RFFCFormInput,
   RFFCFormRadio,
   RFFCFormSelect,
@@ -46,7 +47,12 @@ const AddPolicy = () => {
     values.TemplateType = values.Type
     genericPostRequest({ path: '/api/AddPolicy', values: values })
   }
-  /* eslint-disable react/prop-types */
+  const [matchMap, setMatchMap] = useState([])
+  const handleMap = (values) => {
+    if (JSON.stringify(values) != JSON.stringify(matchMap)) {
+      setMatchMap(values)
+    }
+  }
   const WhenFieldChanges = ({ field, set }) => (
     <Field name={set} subscription={{}}>
       {(
@@ -121,8 +127,8 @@ const AddPolicy = () => {
           <h3 className="text-primary">Step 2</h3>
           <h5 className="card-title mb-4">
             Enter the raw JSON for this policy. See{' '}
-            <a href="https://cipp.app/EndpointManagement/IntunePolicyTemplates">this</a>
-            for more information.
+            <a href="https://cipp.app/EndpointManagement/IntunePolicyTemplates">this</a> for more
+            information.
           </h5>
         </center>
         <hr className="my-4" />
@@ -187,6 +193,31 @@ const AddPolicy = () => {
             />
           </CCol>
         </CRow>
+        <FormSpy>
+          {(props) => {
+            return (
+              <>
+                <Condition when="RAWJson" regex="%.*%">
+                  <CRow>
+                    {props.values.RAWJson?.match('%.*%') &&
+                      handleMap([...props.values.RAWJson.matchAll('%\\w+%')])}
+                    {matchMap.map((varname) =>
+                      props.values.selectedTenants.map((item, index) => (
+                        <CCol md={6} key={index}>
+                          <RFFCFormInput
+                            type="text"
+                            name={`replacemap.[${item.defaultDomainName}].${varname}`}
+                            label={`Replace ${varname} for tenant ${item.defaultDomainName}`}
+                          />
+                        </CCol>
+                      )),
+                    )}
+                  </CRow>
+                </Condition>
+              </>
+            )
+          }}
+        </FormSpy>
         <RFFCFormRadio value="" name="AssignTo" label="Do not assign"></RFFCFormRadio>
         <RFFCFormRadio
           value="allLicensedUsers"
@@ -218,7 +249,6 @@ const AddPolicy = () => {
         {!postResults.isSuccess && (
           <FormSpy>
             {(props) => {
-              /* eslint-disable react/prop-types */
               return (
                 <>
                   <CRow>

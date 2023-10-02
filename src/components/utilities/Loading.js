@@ -20,10 +20,12 @@ export function FullScreenLoading() {
         alignItems: 'center',
         width: '100%',
         height: '100vh',
+        backgroundColor: '#2e363a',
       }}
     >
       <CSpinner
         style={{
+          color: 'white',
           border: '3em solid currentColor',
           borderRightColor: 'transparent',
           width: '50vh',

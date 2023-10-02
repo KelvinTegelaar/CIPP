@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import moment from 'moment'
 import { CButton, CCallout, CCardText, CListGroupItem } from '@coreui/react'
 import { CippTable, cellDateFormatter, CellTip } from 'src/components/tables'
 import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
@@ -79,18 +78,6 @@ const ListIncidents = () => {
 
     let attributedComments = []
 
-    row['Comments'].forEach((element) => {
-      attributedComments.push(
-        new Intl.DateTimeFormat(...dateTimeArgs)
-          .format(moment(element['createdDateTime']).toDate())
-          .toString() +
-          ' - ' +
-          element['createdByDisplayName'] +
-          ' - ' +
-          element['comment'] +
-          '                               ',
-      )
-    })
     const [ocVisible, setOCVisible] = useState(false)
     const extendedInfoRaw = [
       { label: 'Created Date', value: `${row['Created']}` },

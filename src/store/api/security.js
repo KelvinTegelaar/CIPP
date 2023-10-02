@@ -12,14 +12,12 @@ export const securityApi = baseApi.injectEndpoints({
           return { error: startRequest.error }
         }
 
-        const GUID = startRequest.data?.GUID
-
         return new Promise((resolve) => {
           let retries = 0
           const interval = setInterval(async () => {
             const { data, error } = await baseQuery({
               path: '/api/ExecAlertsList',
-              params: { GUID },
+              params: { tenantFilter: _args.tenantFilter },
             })
             if (error) {
               clearInterval(interval)
@@ -57,14 +55,12 @@ export const securityApi = baseApi.injectEndpoints({
           return { error: startRequest.error }
         }
 
-        const GUID = startRequest.data?.GUID
-
         return new Promise((resolve) => {
           let retries = 0
           const interval = setInterval(async () => {
             const { data, error } = await baseQuery({
               path: '/api/ExecIncidentsList',
-              params: { GUID },
+              params: { tenantFilter: _args.tenantFilter },
             })
             if (error) {
               clearInterval(interval)

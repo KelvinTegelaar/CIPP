@@ -5,7 +5,7 @@ import { CButton } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEllipsisV, faMinusCircle, faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import { CippActionsOffcanvas } from 'src/components/utilities'
-import { CellTip } from 'src/components/tables'
+import { cellDateFormatter, CellTip } from 'src/components/tables'
 
 const QuarantineList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -99,6 +99,14 @@ const QuarantineList = () => {
       sortable: true,
       exportSelector: 'Type',
       maxWidth: '150px',
+    },
+    {
+      selector: (row) => row['ReceivedTime'],
+      name: 'Received on',
+      sortable: true,
+      exportSelector: 'ReceivedTime',
+      maxWidth: '150px',
+      cell: cellDateFormatter(),
     },
     {
       selector: (row) => row['ReleaseStatus'],

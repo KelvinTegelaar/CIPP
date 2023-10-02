@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   CAvatar,
   CDropdown,
@@ -7,15 +7,65 @@ import {
   CDropdownToggle,
   CLink,
 } from '@coreui/react'
-import { faUser, faBook, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faBook, faSignOutAlt, faHistory, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom'
 import { authApi } from 'src/store/api/auth'
-import { CippProfile, CippOffcanvas } from 'src/components/utilities'
+import { CippProfile, CippOffcanvas, CippActionsOffcanvas } from 'src/components/utilities'
+import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 
 const AppHeaderDropdown = () => {
   const [profileVisible, setProfileVisible] = useState(false)
+  const [cippQueueExtendedInfo, setCippQueueExtendedInfo] = useState([])
+  const [cippQueueVisible, setCippQueueVisible] = useState(false)
+  const [cippQueueRefresh, setCippQueueRefresh] = useState(
+    (Math.random() + 1).toString(36).substring(7),
+  )
   const { data: profile } = authApi.endpoints.loadClientPrincipal.useQueryState()
+
+  const [getCippQueueList, cippQueueList] = useLazyGenericGetRequestQuery()
+
+  function loadCippQueue() {
+    setCippQueueVisible(true)
+    getCippQueueList({ path: 'api/ListCippQueue', params: { refresh: cippQueueRefresh } })
+  }
+
+  function refreshCippQueue() {
+    setCippQueueRefresh((Math.random() + 1).toString(36).substring(7))
+    loadCippQueue()
+  }
+
+  useEffect(() => {
+    if (cippQueueList.isFetching || cippQueueList.isLoading) {
+      setCippQueueExtendedInfo([
+        {
+          label: 'Fetching recent jobs',
+          value: 'Please wait',
+          timestamp: Date(),
+          link: '#',
+        },
+      ])
+    }
+    if (
+      cippQueueList.isSuccess &&
+      Array.isArray(cippQueueList.data) &&
+      cippQueueList.data.length > 0
+    ) {
+      setCippQueueExtendedInfo(
+        cippQueueList.data?.map((job) => ({
+          label: `${job.Name}`,
+          value: job.Status,
+          link: job.Link,
+          timestamp: job.Timestamp,
+        })),
+      )
+    } else {
+      setCippQueueExtendedInfo([
+        { label: 'No jobs to display', value: '', timpestamp: Date(), link: '#' },
+      ])
+    }
+  }, [cippQueueList])
+
   return (
     <>
       <CDropdown variant="nav-item">
@@ -29,6 +79,10 @@ const AppHeaderDropdown = () => {
           <CLink className="dropdown-item" href="#" onClick={() => setProfileVisible(true)}>
             <FontAwesomeIcon icon={faUser} className="me-2" />
             Profile
+          </CLink>
+          <CLink className="dropdown-item" href="#" onClick={() => loadCippQueue()}>
+            <FontAwesomeIcon icon={faHistory} className="me-2" />
+            Recent Jobs
           </CLink>
           <Link className="dropdown-item" to="/cipp/logs">
             <FontAwesomeIcon icon={faBook} className="me-2" />
@@ -49,6 +103,26 @@ const AppHeaderDropdown = () => {
       >
         <CippProfile />
       </CippOffcanvas>
+      <CippActionsOffcanvas
+        title="Recent Jobs"
+        extendedInfo={[]}
+        cards={cippQueueExtendedInfo}
+        refreshFunction={refreshCippQueue}
+        actions={[
+          {
+            label: 'Clear History',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/RemoveCippQueue`,
+            modalMessage: 'Are you sure you want clear the history?',
+            icon: <FontAwesomeIcon icon={faTrash} className="me-2" />,
+          },
+        ]}
+        placement="end"
+        visible={cippQueueVisible}
+        id="cipp-queue"
+        hideFunction={() => setCippQueueVisible(false)}
+      />
     </>
   )
 }

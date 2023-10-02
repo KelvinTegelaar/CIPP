@@ -13,7 +13,6 @@ export default function UserOneDriveUsage({ userUPN, tenantDomain, className = n
   } = useListOneDriveUsageQuery({ userUPN, tenantDomain })
 
   const noUsage = Object.keys(usage).length === 0 ?? false
-  console.log(usage)
   const content = [
     {
       heading: 'Site URL',
@@ -26,7 +25,7 @@ export default function UserOneDriveUsage({ userUPN, tenantDomain, className = n
     {
       heading: 'Percent',
       body: CellProgressBar({
-        value: Math.round((usage[0]?.UsedGB / usage[0]?.Allocated) * 100),
+        value: ((usage[0]?.UsedGB / usage[0]?.Allocated) * 100).toFixed(2),
         reverse: true,
       }),
     },

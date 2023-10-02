@@ -13,7 +13,6 @@ import { CellTip, cellBooleanFormatter, cellDateFormatter } from 'src/components
 import { DatatableContentCard } from 'src/components/contentcards'
 import { faKey } from '@fortawesome/free-solid-svg-icons'
 import { ModalService } from 'src/components/utilities'
-import { useListUserSigninLogsQuery } from 'src/store/api/users'
 
 const rowStyle = (row, rowIndex) => {
   const style = {}
@@ -100,14 +99,6 @@ function ConvertErrorCode(row) {
 }
 
 export default function UserSigninLogs({ userId, tenantDomain, className = null }) {
-  const {
-    data: list = [],
-    isFetching,
-    error,
-  } = useListUserSigninLogsQuery({ userId, tenantDomain })
-
-  const mapped = list.map((val) => ({ ...val, tenantDomain }))
-
   const handleClickAppliedCAPs = ({ row }) => {
     ModalService.open({
       body: (
@@ -231,8 +222,6 @@ export default function UserSigninLogs({ userId, tenantDomain, className = null 
       title="User Sign In Logs"
       icon={faKey}
       className={className}
-      isFetching={isFetching}
-      error={error}
       datatable={{
         reportName: 'ListUserSigninLogs',
         path: '/api/ListUserSigninLogs',
@@ -243,7 +232,6 @@ export default function UserSigninLogs({ userId, tenantDomain, className = null 
         dense: true,
         rowStyle: rowStyle,
         striped: true,
-        data: mapped,
       }}
     />
   )
