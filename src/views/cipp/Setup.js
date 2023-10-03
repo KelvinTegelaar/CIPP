@@ -65,14 +65,14 @@ const Setup = () => {
   const startCIPPSetup = (partner) => {
     genericGetRequest({
       path: 'api/ExecSAMSetup',
-      params: { CreateSAM: true, partnersetup: partner },
+      params: { CreateSAM: true, partnersetup: true },
     })
-    setNoSubmit(true)
+    setSetupdone(false)
   }
 
   useInterval(
     async () => {
-      if (getResults.data?.step < 7 && getResults.data?.step > 0) {
+      if (getResults.data?.step < 5 && getResults.data?.step > 0) {
         genericGetRequest({
           path: 'api/ExecSAMSetup',
           params: { CheckSetupProcess: true, step: getResults.data?.step },
@@ -97,18 +97,26 @@ const Setup = () => {
           <h5 className="card-title mb-4">Choose Options</h5>
         </center>
         <hr className="my-4" />
-        This wizard will guide you through setting up a SAM application and using the correct keys.
-        This setup is still a beta feature, and as such so be treated with care.
-        <RFFCFormRadio
-          value="CreateSAM"
-          name="SetupType"
-          label="I'd like CIPP to create a SAM Application for me"
-        ></RFFCFormRadio>
-        <RFFCFormRadio
-          value="ExistingSAM"
-          name="SetupType"
-          label="I have an existing SAM application and would like to enter my tokens"
-        ></RFFCFormRadio>
+        This wizard will guide you through setting up CIPPs access to your client tenants. If this
+        is your first time setting up CIPP you will want to choose the option "I would like CIPP to
+        create an application for me".
+        <CRow className="mt-3">
+          <RFFCFormRadio
+            value="CreateSAM"
+            name="SetupType"
+            label="I would like CIPP to create an application for me"
+          ></RFFCFormRadio>
+          <RFFCFormRadio
+            value="RefreshTokensOnly"
+            name="SetupType"
+            label="I would like to refresh my token or replace the user I've used for my previous token."
+          ></RFFCFormRadio>
+          <RFFCFormRadio
+            value="ExistingSAM"
+            name="SetupType"
+            label="I have an existing application and would like to manually enter my token, or update them."
+          ></RFFCFormRadio>
+        </CRow>
         <hr className="my-4" />
       </CippWizard.Page>
       <CippWizard.Page title="Select Options" description="Select which options you want to apply.">
@@ -117,102 +125,84 @@ const Setup = () => {
           <h5 className="card-title mb-4">Enter the secure application model credentials.</h5>
         </center>
         <hr className="my-4" />
-        <Condition when="SetupType" is="CreateSAM">
-          <RFFCFormRadio
-            value="True"
-            name="Partner"
-            label="I am a Microsoft Partner, and would like to access all tenants using CIPP"
-          ></RFFCFormRadio>
-          <RFFCFormRadio
-            value="False"
-            name="Partner"
-            label="I am not a Microsoft Partner, and am using CIPP for only my own tenant"
-          ></RFFCFormRadio>
-          <Condition when="Partner" is="True">
-            <CRow>
-              <p>
-                When clicking the button below, the setup wizard starts. This is a 7 step process.
-                Please use a Global Administrator to perform these tasks. You can restart the
-                process at any time, by clicking on the start button once more.
-              </p>
-              <CCol md={2}>
-                <Field
-                  name="start"
-                  component="button"
-                  className="btn btn-primary"
-                  type="button"
-                  onClick={() => startCIPPSetup(true)}
-                  validate={valbutton}
-                >
-                  Start Setup Wizard
-                </Field>
-                <Error name="start" />
-              </CCol>
-              <hr className="my-4" />
-            </CRow>
-            <CRow>
-              <CCol md={12}>
-                {getResults.isFetching && <CSpinner size="sm">Loading</CSpinner>}
-                {getResults.isSuccess && (
-                  <>
-                    {getResults.data?.step < 7 ? (
-                      <CSpinner size="sm"></CSpinner>
-                    ) : (
-                      <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
-                    )}
-                    Step {getResults.data?.step} - {getResults.data.message}{' '}
-                    {getResults.data.url && (
-                      <a target="_blank" rel="noopener noreferrer" href={getResults.data?.url}>
-                        HERE
+        <Condition when="SetupType" is="RefreshTokensOnly">
+          <CRow className="mb-3">
+            <CCol md={6} className="mb-3">
+              Click the buttons below to refresh your token.
+              <br /> Remember to login under a account that has been added to the correct GDAP
+              groups and the group 'AdminAgents'.
+              <br />
+              {getResults.isUninitialized && genericGetRequest({ path: 'api/ExecListAppId' })}
+              {getResults.isSuccess && (
+                <>
+                  <CRow className="mb-3">
+                    <CCol md={2} className="mb-3">
+                      <a target="_blank" href={`${getResults.data.refreshUrl}`}>
+                        <CButton color="primary">Refresh Graph Token</CButton>
                       </a>
-                    )}
-                  </>
-                )}
-              </CCol>
-            </CRow>
-          </Condition>
-          <Condition when="Partner" is="False">
-            <CRow>
-              <CCol md={2}>
-                <Field
-                  name="start"
-                  component="button"
-                  className="btn btn-primary"
-                  type="button"
-                  onClick={() => startCIPPSetup(false)}
-                >
-                  Start Setup Wizard
-                </Field>
-                <Error name="start" />
-              </CCol>
-              <hr className="my-4" />
-            </CRow>
-            <CRow>
-              <CCol md={12}>
-                {getResults.isFetching && <CSpinner size="sm">Loading</CSpinner>}
-                {getResults.isSuccess && (
-                  <>
-                    {getResults.data?.step < 7 ? (
-                      <CSpinner size="sm"></CSpinner>
-                    ) : (
-                      <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
-                    )}
-                    Step {getResults.data?.step} - {getResults.data.message}{' '}
-                    {getResults.data.url && <a href={getResults.data?.url}>HERE</a>}
-                  </>
-                )}
-              </CCol>
-            </CRow>
-          </Condition>
+                    </CCol>
+                  </CRow>
+                  <CRow></CRow>
+                </>
+              )}
+            </CCol>
+            <CCol md={2}></CCol>
+          </CRow>
+        </Condition>
+        <Condition when="SetupType" is="CreateSAM">
+          <CRow>
+            <p>
+              When clicking the button below, the setup wizard starts. This is a 5 step process.
+              Please use a Global Administrator to perform these tasks. You can restart the process
+              at any time, by clicking on the start button once more.
+            </p>
+            <CCol md={2}>
+              <Field
+                name="start"
+                component="button"
+                className="btn btn-primary"
+                type="button"
+                onClick={() => startCIPPSetup(true)}
+                validate={valbutton}
+              >
+                Start Setup Wizard
+              </Field>
+              <Field name="BlockNext" component="hidden" type="hidden" validate={valbutton}></Field>
+              <Error name="start" />
+            </CCol>
+            <hr className="my-4" />
+          </CRow>
+          <CRow>
+            <CCol md={12}>
+              {getResults.isFetching && <CSpinner size="sm">Loading</CSpinner>}
+              {getResults.isSuccess && (
+                <>
+                  {getResults.data?.step < 5 ? (
+                    <CSpinner size="sm"></CSpinner>
+                  ) : (
+                    <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
+                  )}
+                  Step {getResults.data?.step} - {getResults.data.message}{' '}
+                  {getResults.data.url && (
+                    <a target="_blank" rel="noopener noreferrer" href={getResults.data?.url}>
+                      HERE
+                    </a>
+                  )}
+                </>
+              )}
+            </CCol>
+          </CRow>
         </Condition>
         <Condition when="SetupType" is="ExistingSAM">
+          you may enter your secrets below, if you only want to update a single value, leave the
+          other fields blank.
           <CRow>
             <CCol md={12}>
               <RFFCFormInput
                 type="text"
                 name="TenantID"
                 label="Tenant ID"
-                placeholder="Enter the Tenant ID. e.g. mymsp.onmicrosoft.com"
+                placeholder="Enter the Tenant ID. e.g. mymsp.onmicrosoft.com. Leave blank to retain a previous key if this exists."
               />
             </CCol>
           </CRow>
@@ -222,7 +212,7 @@ const Setup = () => {
                 type="text"
                 name="ApplicationID"
                 label="Application ID"
-                placeholder="Enter the application ID. e.g 1111-1111-1111-1111-11111"
+                placeholder="Enter the application ID. e.g 1111-1111-1111-1111-11111. Leave blank to retain a previous key if this exists."
               />
             </CCol>
           </CRow>
@@ -232,7 +222,7 @@ const Setup = () => {
                 type="password"
                 name="ApplicationSecret"
                 label="Application Secret"
-                placeholder="Enter the application secret"
+                placeholder="Enter the application secret. Leave blank to retain a previous key if this exists."
               />
             </CCol>
           </CRow>
@@ -242,17 +232,7 @@ const Setup = () => {
                 type="password"
                 name="RefreshToken"
                 label="Refresh Token"
-                placeholder="Enter the refresh token"
-              />
-            </CCol>
-          </CRow>
-          <CRow>
-            <CCol md={12}>
-              <RFFCFormInput
-                type="password"
-                name="ExchangeRefreshToken"
-                label="Exchange Refresh Token"
-                placeholder="Enter the Exchange refresh tokens"
+                placeholder="Enter the refresh token. Leave blank to retain a previous key if this exists."
               />
             </CCol>
           </CRow>
@@ -268,14 +248,13 @@ const Setup = () => {
         {!postResults.isSuccess && (
           <FormSpy>
             {(props) => {
-              /* eslint-disable react/prop-types */
               return (
                 <>
                   <CRow>
                     <CCol md={3}></CCol>
                     <CCol md={6}>
                       {usedWizard &&
-                        'You have used the setup wizard. You can close this screen. Setup has been completed. You must execute a clear of the token cache. See the documentation on how to perform this.'}
+                        'You have used the setup wizard. You can close this screen. Setup has been completed.'}
                       {!usedWizard &&
                         'You are sending your own Secure Application Model setup to the Keyvault. For security reasons we do not show the keys. Please make sure you have entered the keys correctly.'}
                     </CCol>

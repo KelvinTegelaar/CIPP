@@ -8,7 +8,7 @@ export default function CippOffcanvas(props) {
   return (
     <COffcanvas
       scroll
-      className="cipp-offcanvas"
+      className={`cipp-offcanvas ${props.addedClass ? props.addedClass : ''}`}
       visible={props.visible}
       placement={props.placement}
       id={props.id}
@@ -17,9 +17,23 @@ export default function CippOffcanvas(props) {
     >
       <COffcanvasHeader>
         <h2>{props.title}</h2>
-        <CButton className="cipp-offcanvas-close" color="link" onClick={props.hideFunction}>
-          <FontAwesomeIcon size="lg" icon={faTimes} color="link" />
-        </CButton>
+        <span>
+          {props.refreshFunction && (
+            <CButton
+              color="link"
+              size="lg"
+              onClick={() => {
+                console.log('refresh')
+                props.refreshFunction()
+              }}
+            >
+              <FontAwesomeIcon icon="sync" />
+            </CButton>
+          )}
+          <CButton className="cipp-offcanvas-close" color="link" onClick={props.hideFunction}>
+            <FontAwesomeIcon size="lg" icon={faTimes} color="link" />
+          </CButton>
+        </span>
       </COffcanvasHeader>
       <COffcanvasBody>{props.children}</COffcanvasBody>
     </COffcanvas>
@@ -33,6 +47,7 @@ export const CippOffcanvasPropTypes = {
   visible: PropTypes.bool,
   id: PropTypes.string.isRequired,
   hideFunction: PropTypes.func.isRequired,
+  refreshFunction: PropTypes.func,
 }
 
 CippOffcanvas.propTypes = CippOffcanvasPropTypes

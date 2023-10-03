@@ -25,7 +25,6 @@ export default function CippContentCard({
 
 CippContentCard.propTypes = {
   title: PropTypes.string.isRequired,
-  children: PropTypes.arrayOf(PropTypes.element).isRequired,
   icon: PropTypes.object,
   button: PropTypes.element,
   bodyClass: PropTypes.string,

@@ -44,6 +44,7 @@ const AddRMM = () => {
     arch: true,
     RemoveVersions: true,
     AcceptLicense: true,
+    AssignTo: 'On',
   }
 
   return (

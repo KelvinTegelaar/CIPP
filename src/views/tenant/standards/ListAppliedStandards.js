@@ -1,7 +1,13 @@
 import React from 'react'
 import { CButton, CCallout, CCol, CForm, CRow, CSpinner } from '@coreui/react'
 import { Form } from 'react-final-form'
-import { Condition, RFFCFormInput, RFFCFormSelect, RFFCFormSwitch } from 'src/components/forms'
+import {
+  Condition,
+  RFFCFormInput,
+  RFFCFormSelect,
+  RFFCFormSwitch,
+  RFFSelectSearch,
+} from 'src/components/forms'
 import {
   useGenericGetRequestQuery,
   useLazyGenericGetRequestQuery,
@@ -14,6 +20,7 @@ import { ModalService } from 'src/components/utilities'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Skeleton from 'react-loading-skeleton'
 import { CippTable } from 'src/components/tables'
+import allStandardsList from 'src/data/standards'
 
 const RefreshAction = () => {
   const [execStandards, execStandardsResults] = useLazyGenericGetRequestQuery()
@@ -118,6 +125,20 @@ const ListAppliedStandards = () => {
       exportSelector: 'StandardsExport',
     },
   ]
+  const [intuneGetRequest, intuneTemplates] = useLazyGenericGetRequestQuery()
+  const [transportGetRequest, transportTemplates] = useLazyGenericGetRequestQuery()
+  const [exConnectorGetRequest, exConnectorTemplates] = useLazyGenericGetRequestQuery()
+  const [caGetRequest, caTemplates] = useLazyGenericGetRequestQuery()
+  const [groupGetRequest, groupTemplates] = useLazyGenericGetRequestQuery()
+  const initialValues = listStandardResults[0]
+  const allTenantsStandard = listStandardsAllTenants.find(
+    (tenant) => tenant.displayName === 'AllTenants',
+  )
+  function getLabel(item) {
+    const keys = item.name.split('.')
+    let value = keys.reduce((prev, curr) => prev && prev[curr], allTenantsStandard)
+    return value ? `* Enabled via All Tenants` : ''
+  }
 
   return (
     <CippPage title="Standards" tenantSelector={false}>
@@ -134,305 +155,344 @@ const ListAppliedStandards = () => {
               title="List and edit standard"
             >
               {isFetching && <Skeleton count={20} />}
+              {intuneTemplates.isUninitialized &&
+                intuneGetRequest({ path: 'api/ListIntuneTemplates' })}
+              {transportTemplates.isUninitialized &&
+                transportGetRequest({ path: 'api/ListTransportRulesTemplates' })}
+              {caTemplates.isUninitialized && caGetRequest({ path: 'api/ListCAtemplates' })}
+              {exConnectorTemplates.isUninitialized &&
+                exConnectorGetRequest({ path: 'api/ListExConnectorTemplates' })}
+              {groupTemplates.isUninitialized &&
+                groupGetRequest({ path: 'api/ListGroupTemplates' })}
               {isSuccess && !isFetching && (
                 <Form
-                  initialValues={listStandardResults[0]}
+                  initialValues={initialValues}
                   onSubmit={handleSubmit}
                   render={({ handleSubmit, submitting, values }) => {
                     return (
                       <CForm onSubmit={handleSubmit}>
-                        <CRow className="mb-3">
-                          <hr />
-                          {listStandardResults[0].appliedBy
-                            ? `This standard has been applied at ${listStandardResults[0].appliedAt} by ${listStandardResults[0].appliedBy}`
-                            : 'This tenant does not yet have a standard applied'}
-                          <hr />
-                          <h5>Global Standards</h5>
-                          <hr />
-                          <CCol md={6}>
-                            <RFFCFormSwitch
-                              name="standards.MailContacts.GeneralContact.Enabled"
-                              label="Set General Contact e-mail"
-                            />
-                            <Condition
-                              when="standards.MailContacts.GeneralContact.Enabled"
-                              is={true}
-                            >
-                              <RFFCFormInput
-                                type="text"
-                                name="standards.MailContacts.GeneralContact.Mail"
-                                label="General Contact"
-                              />
-                            </Condition>
-                            <RFFCFormSwitch
-                              name="standards.MailContacts.SecurityContact.Enabled"
-                              label="Set Security Contact e-mail"
-                            />
-                            <Condition
-                              when="standards.MailContacts.SecurityContact.Enabled"
-                              is={true}
-                            >
-                              <RFFCFormInput
-                                type="text"
-                                name="standards.MailContacts.SecurityContact.Mail"
-                                label="Security Contact"
-                              />
-                            </Condition>
-                            <RFFCFormSwitch
-                              name="standards.MailContacts.MarketingContact.Enabled"
-                              label="Set Marketing Contact e-mail"
-                            />
-                            <Condition
-                              when="standards.MailContacts.MarketingContact.Enabled"
-                              is={true}
-                            >
-                              <RFFCFormInput
-                                type="text"
-                                name="standards.MailContacts.MarketingContact.Mail"
-                                label="Marketing Contact"
-                              />
-                            </Condition>
-                            <RFFCFormSwitch
-                              name="standards.MailContacts.TechContact.Enabled"
-                              label="Set Technical Contact e-mail"
-                            />
-                            <Condition when="standards.MailContacts.TechContact.Enabled" is={true}>
-                              <RFFCFormInput
-                                type="text"
-                                name="standards.MailContacts.TechContact.Mail"
-                                label="Technical Contact"
-                              />
-                            </Condition>
-                          </CCol>
-                          <CCol md={6}>
-                            <RFFCFormSwitch
-                              name="standards.AuditLog"
-                              label="Enable the Unified Audit Log"
-                            />
-                            <RFFCFormSwitch
-                              name="standards.AnonReportDisable"
-                              label="Enable Usernames instead of pseudo anonymised names in reports"
-                            />
-
-                            <RFFCFormSwitch
-                              name="standards.ModernAuth"
-                              label="Enable Modern Authentication"
-                            />
-                            <RFFCFormSwitch
-                              name="standards.DisableBasicAuth"
-                              label="Disable Basic Authentication"
-                            />
-                          </CCol>
+                        <hr />
+                        {listStandardResults[0].appliedBy
+                          ? `This standard has been applied at ${listStandardResults[0].appliedAt} by ${listStandardResults[0].appliedBy}`
+                          : 'This tenant does not yet have a standard applied'}
+                        <hr />
+                        <h5>Global Standards</h5>
+                        <hr />
+                        <CRow className="mb-3" xs={{ cols: 2 }}>
+                          {allStandardsList
+                            .filter((obj) => obj.cat === 'Global')
+                            .map((item, key) => (
+                              <>
+                                <CCol>
+                                  <RFFCFormSwitch
+                                    key={key}
+                                    name={item.name}
+                                    label={item.label}
+                                    sublabel={getLabel(item)}
+                                    helpText={item.helpText}
+                                  />
+                                  {item.addedComponent && (
+                                    <Condition when={item.name} is={true}>
+                                      {item.addedComponent.type === 'Select' ? (
+                                        <RFFCFormSelect
+                                          name={item.addedComponent.name}
+                                          className="mb-3"
+                                          label={item.addedComponent.label}
+                                          values={item.addedComponent.values}
+                                        />
+                                      ) : (
+                                        <RFFCFormInput
+                                          type="text"
+                                          className="mb-3"
+                                          name={item.addedComponent.name}
+                                          label={item.addedComponent.label}
+                                        />
+                                      )}
+                                    </Condition>
+                                  )}
+                                </CCol>
+                              </>
+                            ))}
                         </CRow>
                         <hr />
                         <h5>Azure AD Standards</h5>
                         <hr />
-                        <CRow className="mb-3">
-                          <CCol md={6}>
-                            <RFFCFormSwitch
-                              name="standards.PWnumberMatchingRequiredState"
-                              label="Enable Passwordless with Number Matching"
-                            />
-                            <RFFCFormSwitch
-                              name="standards.PWdisplayAppInformationRequiredState"
-                              label="Enable Passwordless with Location information and Number Matching"
-                            />
-                            <RFFCFormSwitch
-                              name="standards.TAP.Enabled"
-                              label="Enable Temporary Access Passwords"
-                            />
-                            <Condition when="standards.TAP.Enabled" is={true}>
-                              <RFFCFormSelect
-                                label="Select TAP Lifetime"
-                                name="standards.TAP.config"
-                                values={[
-                                  {
-                                    label: 'Only Once',
-                                    value: 'true',
-                                  },
-                                  {
-                                    label: 'Multiple Logons',
-                                    value: 'false',
-                                  },
-                                ]}
-                              />
-                            </Condition>
-                            <RFFCFormSwitch
-                              name="standards.SecurityDefaults"
-                              label="Enable Security Defaults"
-                            />
-                            <RFFCFormSwitch
-                              name="standards.PasswordExpireDisabled"
-                              label="Do not expire passwords"
-                            />
-                            <RFFCFormSwitch
-                              name="standards.DisableSecurityGroupUsers"
-                              label="Disable Security Group creation by users"
-                            />
-                            <RFFCFormSwitch
-                              name="standards.SSPR"
-                              label="Enable Self Service Password Reset"
-                            />
-                            <RFFCFormSwitch name="standards.UndoSSPR" label="Undo SSPR Standard" />
-                          </CCol>
-                          <CCol md={6}>
-                            <RFFCFormSwitch
-                              name="standards.OauthConsent.Enabled"
-                              label="Require admin consent for applications (Prevent OAuth phishing.)"
-                            />
-                            <Condition when="standards.OauthConsent.Enabled" is={true}>
-                              <RFFCFormInput
-                                type="text"
-                                name="standards.OauthConsent.AllowedApps"
-                                label="Allowed application IDs, comma separated"
-                              />
-                            </Condition>
-                            <RFFCFormSwitch
-                              name="standards.AzurePortal"
-                              label="Disable Azure Portal access for Standard users"
-                            />
-                            <RFFCFormSwitch
-                              name="standards.LegacyMFA"
-                              label="Enable per-user MFA for all user (Legacy)"
-                            />
-                            <RFFCFormSwitch
-                              name="standards.LegacyMFACleanup"
-                              label="Remove Legacy MFA if SD or CA is active"
-                            />
-                            <RFFCFormSwitch
-                              name="standards.DisableSelfServiceLicenses"
-                              label="Disable Self Service Licensing"
-                            />
-                            <RFFCFormSwitch
-                              name="standards.DisableM365GroupUsers"
-                              label="Disable M365 Group creation by users"
-                            />
-
-                            <RFFCFormSwitch
-                              name="standards.UndoOauth"
-                              label="Undo App Consent Standard"
-                            />
-                            <RFFCFormSwitch
-                              name="standards.DisableGuests"
-                              label="Disable Guest accounts that have not logged on for 90 days"
-                            />
-                          </CCol>
+                        <CRow className="mb-3" xs={{ cols: 2 }}>
+                          {allStandardsList
+                            .filter((obj) => obj.cat === 'AAD')
+                            .map((item, key) => (
+                              <>
+                                <CCol>
+                                  <RFFCFormSwitch
+                                    key={key}
+                                    name={item.name}
+                                    label={item.label}
+                                    sublabel={getLabel(item)}
+                                    helpText={item.helpText}
+                                  />
+                                  {item.addedComponent && (
+                                    <Condition when={item.name} is={true}>
+                                      {item.addedComponent.type === 'Select' ? (
+                                        <RFFCFormSelect
+                                          name={item.addedComponent.name}
+                                          className="mb-3"
+                                          label={item.addedComponent.label}
+                                          values={item.addedComponent.values}
+                                        />
+                                      ) : (
+                                        <RFFCFormInput
+                                          type="text"
+                                          className="mb-3"
+                                          name={item.addedComponent.name}
+                                          label={item.addedComponent.label}
+                                        />
+                                      )}
+                                    </Condition>
+                                  )}
+                                </CCol>
+                              </>
+                            ))}
                         </CRow>
                         <hr />
                         <h5>Exchange Standards</h5>
                         <hr />
-                        <CRow className="mb-3">
-                          <CCol md={6}>
-                            <RFFCFormSwitch
-                              name="standards.DisableSharedMailbox"
-                              label="Disable Shared Mailbox AAD accounts"
-                            />
-                            <RFFCFormSwitch
-                              name="standards.DelegateSentItems"
-                              label="Set mailbox Sent Items delegation (Sent items for shared mailboxes)"
-                            />
-                            <RFFCFormSwitch
-                              name="standards.SendFromAlias"
-                              label="Allow users to send from their alias addresses"
-                            />
-                          </CCol>
-                          <CCol md={6}>
-                            <RFFCFormSwitch
-                              name="standards.AutoExpandArchive"
-                              label="Enable Auto-expanding archives"
-                            />
-                            <RFFCFormSwitch
-                              name="standards.SpoofWarn"
-                              label="Enable Spoofing warnings for Outlook (This e-mail is external identifiers)"
-                            />
-
-                            <RFFCFormSwitch
-                              name="standards.DisableViva"
-                              label="Disable daily Insight/Viva reports"
-                            />
-                          </CCol>
+                        <CRow className="mb-3" xs={{ cols: 2 }}>
+                          {allStandardsList
+                            .filter((obj) => obj.cat === 'Exchange')
+                            .map((item, key) => (
+                              <>
+                                <CCol>
+                                  <RFFCFormSwitch
+                                    key={key}
+                                    name={item.name}
+                                    label={item.label}
+                                    sublabel={getLabel(item)}
+                                    helpText={item.helpText}
+                                  />
+                                  {item.addedComponent && (
+                                    <Condition when={item.name} is={true}>
+                                      {item.addedComponent.type === 'Select' ? (
+                                        <RFFCFormSelect
+                                          name={item.addedComponent.name}
+                                          className="mb-3"
+                                          label={item.addedComponent.label}
+                                          values={item.addedComponent.values}
+                                        />
+                                      ) : (
+                                        <RFFCFormInput
+                                          type="text"
+                                          className="mb-3"
+                                          name={item.addedComponent.name}
+                                          label={item.addedComponent.label}
+                                        />
+                                      )}
+                                    </Condition>
+                                  )}
+                                </CCol>
+                              </>
+                            ))}
+                        </CRow>
+                        <hr />
+                        <h5>Intune Standards</h5>
+                        <hr />
+                        <CRow className="mb-3" xs={{ cols: 2 }}>
+                          {allStandardsList
+                            .filter((obj) => obj.cat === 'Intune')
+                            .map((item, key) => (
+                              <>
+                                <CCol>
+                                  <RFFCFormSwitch
+                                    key={key}
+                                    name={item.name}
+                                    label={item.label}
+                                    sublabel={getLabel(item)}
+                                    helpText={item.helpText}
+                                  />
+                                  {item.addedComponent && (
+                                    <Condition when={item.name} is={true}>
+                                      {item.addedComponent.type === 'Select' ? (
+                                        <RFFCFormSelect
+                                          name={item.addedComponent.name}
+                                          className="mb-3"
+                                          label={item.addedComponent.label}
+                                          values={item.addedComponent.values}
+                                        />
+                                      ) : (
+                                        <RFFCFormInput
+                                          type="text"
+                                          className="mb-3"
+                                          name={item.addedComponent.name}
+                                          label={item.addedComponent.label}
+                                        />
+                                      )}
+                                    </Condition>
+                                  )}
+                                </CCol>
+                              </>
+                            ))}
                         </CRow>
                         <hr />
                         <h5>SharePoint Standards</h5>
                         <hr />
-                        <CRow className="mb-3">
-                          <CCol md={6}>
+                        <CRow className="mb-3" xs={{ cols: 2 }}>
+                          {allStandardsList
+                            .filter((obj) => obj.cat === 'SharePoint')
+                            .map((item, key) => (
+                              <>
+                                <CCol>
+                                  <RFFCFormSwitch
+                                    key={key}
+                                    name={item.name}
+                                    label={item.label}
+                                    sublabel={getLabel(item)}
+                                    helpText={item.helpText}
+                                  />
+                                  {item.addedComponent && (
+                                    <Condition when={item.name} is={true}>
+                                      {item.addedComponent.type === 'Select' ? (
+                                        <RFFCFormSelect
+                                          name={item.addedComponent.name}
+                                          className="mb-3"
+                                          label={item.addedComponent.label}
+                                          values={item.addedComponent.values}
+                                        />
+                                      ) : (
+                                        <RFFCFormInput
+                                          type="text"
+                                          className="mb-3"
+                                          name={item.addedComponent.name}
+                                          label={item.addedComponent.label}
+                                        />
+                                      )}
+                                    </Condition>
+                                  )}
+                                </CCol>
+                              </>
+                            ))}
+                        </CRow>
+                        {postResults.isSuccess && (
+                          <CCallout color="success">{postResults.data.Results}</CCallout>
+                        )}
+
+                        <hr />
+                        <h5>Templates</h5>
+                        <hr />
+                        <CRow className="mb-3" xs={{ cols: 2 }}>
+                          <CCol>
                             <RFFCFormSwitch
-                              name="standards.ActivityBasedTimeout"
-                              label="Enable 1 hour Activity based Timeout"
+                              name="standards.IntuneTemplate.enabled"
+                              label="Deploy Intune Template"
                             />
-                            <RFFCFormSwitch
-                              name="standards.sharingCapability.Enabled"
-                              label="Set Sharing Level for OneDrive and Sharepoint"
-                            />
-                            <Condition when="standards.sharingCapability.Enabled" is={true}>
-                              <RFFCFormSelect
-                                label="Select Sharing Level"
-                                name="standards.sharingCapability.Level"
-                                values={[
-                                  {
-                                    label:
-                                      'Users can share only with people in the organization. No external sharing is allowed.',
-                                    value: 'disabled',
-                                  },
-                                  {
-                                    label:
-                                      'Users can share with new and existing guests. Guests must sign in or provide a verification code.',
-                                    value: 'externalUserSharingOnly',
-                                  },
-                                  {
-                                    label:
-                                      'Users can share with anyone by using links that do not require sign-in.',
-                                    value: 'externalUserAndGuestSharing',
-                                  },
-                                  {
-                                    label:
-                                      'Users can share with existing guests (those already in the directory of the organization).',
-                                    value: 'existingExternalUserSharingOnly',
-                                  },
-                                ]}
-                              />
+
+                            <Condition when="standards.IntuneTemplate.enabled" is={true}>
+                              {intuneTemplates.isSuccess && (
+                                <RFFSelectSearch
+                                  name="standards.IntuneTemplate.TemplateList"
+                                  className="mb-3"
+                                  multi={true}
+                                  values={intuneTemplates.data?.map((template) => ({
+                                    value: template.GUID,
+                                    name: template.Displayname,
+                                  }))}
+                                  placeholder="Select a template"
+                                  label="Choose your intune templates to apply"
+                                />
+                              )}
                             </Condition>
-                            <RFFCFormSwitch
-                              name="standards.ExcludedfileExt.Enabled"
-                              label="Exclude File Extensions from Syncing"
-                            />
-                            <Condition when="standards.ExcludedfileExt.Enabled" is={true}>
-                              <RFFCFormInput
-                                type="text"
-                                name="standards.ExcludedfileExt.ext"
-                                label="Extensions, Comma separated"
-                              />
-                            </Condition>
-                            <RFFCFormSwitch
-                              name="standards.disableMacSync"
-                              label="Do not allow Mac devices to sync using OneDrive"
-                            />
                           </CCol>
-                          <CCol md={6}>
+                          <CCol>
                             <RFFCFormSwitch
-                              name="standards.DisableReshare"
-                              label="Disable Resharing by External Users"
+                              name="standards.TransportRuleTemplate.enabled"
+                              label="Deploy Transport Rule Template"
                             />
+
+                            <Condition when="standards.TransportRuleTemplate.enabled" is={true}>
+                              {transportTemplates.isSuccess && (
+                                <RFFSelectSearch
+                                  name="standards.TransportRuleTemplate.TemplateList"
+                                  className="mb-3"
+                                  multi={true}
+                                  values={transportTemplates.data?.map((template) => ({
+                                    value: template.GUID,
+                                    name: template.name,
+                                  }))}
+                                  placeholder="Select a template"
+                                  label="Choose your Transport Rule templates to apply"
+                                />
+                              )}
+                            </Condition>
+                          </CCol>
+                          <CCol>
                             <RFFCFormSwitch
-                              name="standards.DeletedUserRentention"
-                              label="Retain a deleted user OneDrive for 1 year"
+                              name="standards.ConditionalAccess.enabled"
+                              label="Deploy Conditional Access Template"
                             />
+
+                            <Condition when="standards.ConditionalAccess.enabled" is={true}>
+                              {caTemplates.isSuccess && (
+                                <RFFSelectSearch
+                                  name="standards.ConditionalAccess.TemplateList"
+                                  className="mb-3"
+                                  multi={true}
+                                  values={caTemplates.data?.map((template) => ({
+                                    value: template.GUID,
+                                    name: template.displayName,
+                                  }))}
+                                  placeholder="Select a template"
+                                  label="Choose your intune templates to apply"
+                                />
+                              )}
+                            </Condition>
+                          </CCol>
+                          <CCol>
                             <RFFCFormSwitch
-                              name="standards.DisableUserSiteCreate"
-                              label="Disable site creation by standard users"
+                              name="standards.ExConnector.enabled"
+                              label="Deploy Exchange Connector Template"
                             />
+
+                            <Condition when="standards.ExConnector.enabled" is={true}>
+                              {exConnectorTemplates.isSuccess && (
+                                <RFFSelectSearch
+                                  name="standards.ExConnector.TemplateList"
+                                  className="mb-3"
+                                  multi={true}
+                                  values={exConnectorTemplates.data?.map((template) => ({
+                                    value: template.GUID,
+                                    name: template.name,
+                                  }))}
+                                  placeholder="Select a template"
+                                  label="Choose your intune templates to apply"
+                                />
+                              )}
+                            </Condition>
+                          </CCol>
+                          <CCol>
                             <RFFCFormSwitch
-                              name="standards.unmanagedSync"
-                              label="Only allow users to sync OneDrive from AAD joined devices"
+                              name="standards.GroupTemplate.enabled"
+                              label="Deploy Group Template"
                             />
+                            <Condition when="standards.GroupTemplate.enabled" is={true}>
+                              {groupTemplates.isSuccess && (
+                                <RFFSelectSearch
+                                  name="standards.GroupTemplate.TemplateList"
+                                  className="mb-3"
+                                  multi={true}
+                                  values={groupTemplates.data?.map((template) => ({
+                                    value: template.GUID,
+                                    name: template.Displayname,
+                                  }))}
+                                  placeholder="Select a template"
+                                  label="Choose your group templates to apply"
+                                />
+                              )}
+                            </Condition>
                           </CCol>
                         </CRow>
                         {postResults.isSuccess && (
                           <CCallout color="success">{postResults.data.Results}</CCallout>
                         )}
                         <CRow className="mb-3">
-                          <CCol md={6}>
+                          <CCol md={3}>
                             <CButton type="submit" disabled={submitting}>
                               Save
                               {postResults.isFetching && (
@@ -445,7 +505,7 @@ const ListAppliedStandards = () => {
                               )}
                             </CButton>
                           </CCol>
-                          <CCol md={6} className="d-flex flex-row-reverse">
+                          <CCol className="d-flex flex-row-reverse">
                             {listStandardResults[0].appliedBy && (
                               <DeleteAction key="deleteAction" />
                             )}

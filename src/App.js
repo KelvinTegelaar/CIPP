@@ -6,6 +6,13 @@ import routes from 'src/routes'
 import { Helmet } from 'react-helmet'
 import adminRoutes from './adminRoutes'
 import Skeleton from 'react-loading-skeleton'
+import TimeAgo from 'javascript-time-ago'
+import en from 'javascript-time-ago/locale/en.json'
+TimeAgo.addDefaultLocale(en)
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { fas } from '@fortawesome/free-solid-svg-icons'
+
+library.add(fas)
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
@@ -15,6 +22,7 @@ const Page401 = React.lazy(() => import('./views/pages/page401/Page401'))
 const Page403 = React.lazy(() => import('./views/pages/page403/Page403'))
 const Page404 = React.lazy(() => import('./views/pages/page404/Page404'))
 const Page500 = React.lazy(() => import('./views/pages/page500/Page500'))
+const PageLogOut = React.lazy(() => import('src/views/pages/LogoutRedirect/PageLogOut'))
 const Login = React.lazy(() => import('./views/pages/login/Login'))
 const Logout = React.lazy(() => import('./views/pages/login/Logout'))
 
@@ -26,6 +34,7 @@ const App = () => {
           <title>CIPP</title>
         </Helmet>
         <Routes>
+          <Route exact path="/LogoutRedirect" name="LogoutRedirect" element={<PageLogOut />} />
           <Route exact path="/401" name="Page 401" element={<Page401 />} />
           <Route exact path="/403" name="Page 403" element={<Page403 />} />
           <Route exact path="/404" name="Page 404" element={<Page404 />} />

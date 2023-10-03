@@ -63,5 +63,6 @@ export const {
   useLazyEditDnsConfigQuery,
   useGetDnsConfigQuery,
   useListDomainHealthQuery,
+  useLazyListDomainHealthQuery,
   useLazyGetDnsConfigQuery,
 } = domainsApi

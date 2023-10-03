@@ -99,7 +99,7 @@ const ListVuln = () => {
           { filterName: 'Vendor is Microsoft', filter: '"softwareVendor":"Microsoft"' },
           { filterName: 'High Severity', filter: '"vulnerabilitySeverityLevel":"High"' },
         ],
-        params: { TenantFilter: tenant?.customerId },
+        params: { TenantFilter: tenant?.defaultDomainName },
       }}
     />
   )

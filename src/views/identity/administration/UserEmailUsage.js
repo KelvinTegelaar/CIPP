@@ -33,6 +33,14 @@ export default function UserEmailUsage({ userId, tenantDomain, className = null 
         reverse: true,
       }),
     },
+    {
+      heading: 'Total Archive Size',
+      body: String(`${usage?.TotalArchiveItemSize}`),
+    },
+    {
+      heading: 'Total Archive Items',
+      body: usage?.TotalArchiveItemCount,
+    },
   ]
   return (
     <ListGroupContentCard

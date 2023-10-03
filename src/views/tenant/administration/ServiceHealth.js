@@ -1,5 +1,6 @@
 import React from 'react'
 import { CippPageList } from 'src/components/layout'
+import { CellTip } from 'src/components/tables'
 
 const columns = [
   {
@@ -9,16 +10,29 @@ const columns = [
     exportSelector: 'TenantName',
   },
   {
-    name: 'Incidents Open',
-    selector: (row) => row['IncidentCount'],
+    name: 'ID',
+    selector: (row) => row['issueId'],
     sortable: true,
-    exportSelector: 'IncidentCount',
+    exportSelector: 'issueId',
   },
   {
-    name: 'Advisories Open',
-    selector: (row) => row['AdvisoryCount'],
+    name: 'Service',
+    selector: (row) => row['service'],
     sortable: true,
-    exportSelector: 'AdvisoryCount',
+    exportSelector: 'service',
+  },
+  {
+    name: 'Type',
+    selector: (row) => row['type'],
+    sortable: true,
+    exportSelector: 'type',
+  },
+  {
+    name: 'Description',
+    selector: (row) => row['desc'],
+    sortable: true,
+    cell: (row) => CellTip(row['desc']),
+    exportSelector: 'desc',
   },
 ]
 

@@ -51,6 +51,7 @@ const AddOffice = () => {
     arch: true,
     RemoveVersions: true,
     AcceptLicense: true,
+    AssignTo: 'On',
   }
 
   return (
@@ -197,7 +198,6 @@ const AddOffice = () => {
         {!postResults.isSuccess && (
           <FormSpy>
             {(props) => {
-              /* eslint-disable react/prop-types */
               return (
                 <>
                   <CRow>
