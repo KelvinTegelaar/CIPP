@@ -274,6 +274,12 @@ const DomainsAnalyser = () => {
       tenantSelector={true}
       showAllTenantSelector={true}
       datatable={{
+        filterlist: [
+          {
+            filterName: 'Exclude onmicrosoft domains',
+            filter: 'Complex: domain notlike onmicrosoft',
+          },
+        ],
         path: `/api/DomainAnalyser_List`,
         params: { tenantFilter: currentTenant.defaultDomainName },
         columns,
