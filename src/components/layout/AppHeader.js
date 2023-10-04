@@ -11,6 +11,7 @@ import {
   CHeaderToggler,
   CImage,
   CSidebarBrand,
+  CButton,
 } from '@coreui/react'
 import { AppHeaderDropdown, AppHeaderSearch } from 'src/components/header'
 import { TenantSelector } from '../utilities'
@@ -21,18 +22,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretSquareLeft, faCaretSquareRight } from '@fortawesome/free-solid-svg-icons'
 import { toggleSidebarShow } from 'src/store/features/app'
 import { useMediaPredicate } from 'react-media-hook'
-import { useGenericGetRequestQuery } from 'src/store/api/app'
+import { useLoadAlertsDashQuery } from 'src/store/api/app'
+import { Link } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 const AppHeader = () => {
   const dispatch = useDispatch()
+  const location = useLocation()
   const sidebarShow = useSelector((state) => state.app.sidebarShow)
   const currentTheme = useSelector((state) => state.app.currentTheme)
   const preferredTheme = useMediaPredicate('(prefers-color-scheme: dark)') ? 'impact' : 'cyberdrain'
-  const {
-    data: dashboard,
-    isLoading: isLoadingDash,
-    isSuccess: issuccessDash,
-  } = useGenericGetRequestQuery({ path: '/api/GetCippAlerts' })
+  const { data: dashboard } = useLoadAlertsDashQuery()
 
   return (
     <>
@@ -63,6 +63,16 @@ const AppHeader = () => {
         <CHeaderNav className="p-md-2 flex-grow-1">
           <TenantSelector NavSelector={true} />
           <CNavItem>
+            <a
+              target="_blank"
+              href={`https://docs.cipp.app/user-documentation${location.pathname}`}
+            >
+              <CButton variant="ghost">
+                <FontAwesomeIcon icon={'question'} size="lg" />
+              </CButton>
+            </a>
+          </CNavItem>
+          <CNavItem>
             <AppHeaderSearch />
           </CNavItem>
           <CNavItem>
@@ -72,6 +82,7 @@ const AppHeader = () => {
       </CHeader>
 
       {dashboard &&
+        dashboard.length >= 1 &&
         dashboard.map((item, index) => (
           <div
             className="mb-3"
