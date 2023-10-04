@@ -17,11 +17,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
   const viewLink = `/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}&userEmail=${row.userPrincipalName}`
   const editLink = `/identity/administration/users/edit?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`
   const OffboardLink = `/identity/administration/offboarding-wizard?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`
-<<<<<<< HEAD
-  const userEntraLink = `https://entra.microsoft.com/${tenant.defaultDomainName}/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/${row.id}//hidePreviewBanner~/true`
-=======
   const entraLink = `https://entra.microsoft.com/${tenant.defaultDomainName}/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/overview/userId/${row.id}/hidePreviewBanner~/true`
->>>>>>> 4f25cf9b65cd5731cd7249e327c65342a5e0852f
 
   let licenses = []
   row.assignedLicenses?.map((licenseAssignment, idx) => {
@@ -99,14 +95,9 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
           },
           {
             label: 'Rerequire MFA registration',
-<<<<<<< HEAD
-            link: userEntraLink,
-            color: `info`,
-=======
             link: entraLink,
             color: 'info',
             target: '_blank',
->>>>>>> 4f25cf9b65cd5731cd7249e327c65342a5e0852f
           },
           {
             label: 'Send MFA Push',
