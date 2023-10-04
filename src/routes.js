@@ -11,6 +11,8 @@ const EditUser = React.lazy(() => import('src/views/identity/administration/Edit
 const ViewUser = React.lazy(() => import('src/views/identity/administration/ViewUser'))
 const Groups = React.lazy(() => import('src/views/identity/administration/Groups'))
 const AddGroup = React.lazy(() => import('src/views/identity/administration/AddGroup'))
+const UserSettings = React.lazy(() => import('src/views/cipp/UserSettings'))
+
 const AddGroupTemplates = React.lazy(() =>
   import('src/views/identity/administration/AddGroupTemplate'),
 )
@@ -601,6 +603,8 @@ const routes = [
     component: MailboxClientAccessSettingsList,
   },
   { name: 'Message Trace', path: '/email/reports/message-trace', component: MessageTrace },
+  { path: '/cipp/user-settings', name: 'User Settings', component: UserSettings },
+
   {
     name: 'Phishing Policies',
     path: '/email/reports/phishing-policies',

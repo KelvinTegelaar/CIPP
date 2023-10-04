@@ -13,8 +13,10 @@ const UsageLocation = () => {
   }
 
   return (
-    <CCard>
-      <CCardHeader>Select default usage location</CCardHeader>
+    <>
+      <p>
+        <b>Default Usage Location</b>
+      </p>
       <Select
         className="react-select-container"
         classNamePrefix="react-select"
@@ -29,7 +31,7 @@ const UsageLocation = () => {
         label="Usage Location"
         onChange={(value) => Switchusage(value)}
       />
-    </CCard>
+    </>
   )
 }
 

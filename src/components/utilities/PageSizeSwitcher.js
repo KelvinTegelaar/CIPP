@@ -13,21 +13,22 @@ const PageSizeSwitcher = () => {
   }
 
   return (
-    <CCard>
-      <CCardHeader>Select Default Page Size</CCardHeader>
+    <>
+      <p>
+        <b>Default page size</b>
+      </p>
       <CButtonGroup role="group" aria-label="Page Size Switcher">
         {pageSizes.map((tablePageSize, index) => (
           <CButton
             onClick={() => SwitchPageSize(tablePageSize)}
-            active={tablePageSize === currentTablePageSize ? true : false}
-            color="secondary"
+            color={tablePageSize === currentTablePageSize ? 'primary' : 'secondary'}
             key={index}
           >
             {tablePageSize}
           </CButton>
         ))}
       </CButtonGroup>
-    </CCard>
+    </>
   )
 }
 

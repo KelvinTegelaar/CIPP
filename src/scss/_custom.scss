@@ -1,5 +1,17 @@
 @use 'sass:color';
+.custom-switch-wrapper {
+  position: relative;
+  display: inline-block;
+}
 
+.switch-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none; /* Ensures the icon doesn't interfere with the switch toggle */
+  z-index: 1; /* Place the icon above the switch */
+}
 .sr-only {
   border: 0 !important;
   clip: rect(1px, 1px, 1px, 1px) !important;
