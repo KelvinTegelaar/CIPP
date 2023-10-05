@@ -12,6 +12,7 @@ import {
   CImage,
   CSidebarBrand,
   CButton,
+  CFormSwitch,
 } from '@coreui/react'
 import { AppHeaderDropdown, AppHeaderSearch } from 'src/components/header'
 import { TenantSelector } from '../utilities'
@@ -20,11 +21,12 @@ import cyberdrainlogodark from 'src/assets/images/CIPP_Dark.png'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretSquareLeft, faCaretSquareRight } from '@fortawesome/free-solid-svg-icons'
-import { toggleSidebarShow } from 'src/store/features/app'
+import { setCurrentTheme, toggleSidebarShow } from 'src/store/features/app'
 import { useMediaPredicate } from 'react-media-hook'
 import { useLoadAlertsDashQuery } from 'src/store/api/app'
 import { Link } from 'react-router-dom'
 import { useLocation } from 'react-router-dom'
+import { RFFCFormCheck } from '../forms'
 
 const AppHeader = () => {
   const dispatch = useDispatch()
@@ -33,6 +35,19 @@ const AppHeader = () => {
   const currentTheme = useSelector((state) => state.app.currentTheme)
   const preferredTheme = useMediaPredicate('(prefers-color-scheme: dark)') ? 'impact' : 'cyberdrain'
   const { data: dashboard } = useLoadAlertsDashQuery()
+  const SwitchTheme = () => {
+    let targetTheme = preferredTheme
+    if (currentTheme === 'impact') {
+      targetTheme = 'cyberdrain'
+    } else {
+      targetTheme = 'impact'
+    }
+    document.body.classList = []
+    document.body.classList.add(`theme-${targetTheme}`)
+    document.body.dataset.theme = targetTheme
+
+    dispatch(setCurrentTheme({ theme: targetTheme }))
+  }
 
   return (
     <>
@@ -76,7 +91,28 @@ const AppHeader = () => {
             <AppHeaderSearch />
           </CNavItem>
           <CNavItem>
-            <AppHeaderDropdown />
+            <div className="custom-switch-wrapper primary">
+              <CFormSwitch
+                onChange={SwitchTheme}
+                checked={currentTheme === 'impact'}
+                size="xl"
+                style={{ width: '3.5rem', marginTop: '0.5em' }}
+              ></CFormSwitch>
+              {currentTheme === 'impact' ? (
+                <FontAwesomeIcon
+                  style={{ marginLeft: '-0.3em', marginTop: '0.3em' }}
+                  className="switch-icon"
+                  icon={'moon'}
+                />
+              ) : (
+                <FontAwesomeIcon
+                  style={{ marginLeft: '0.3em', marginTop: '0.3em' }}
+                  className="switch-icon"
+                  icon={'sun'}
+                  color="#f77f00"
+                />
+              )}
+            </div>
           </CNavItem>
         </CHeaderNav>
       </CHeader>

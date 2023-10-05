@@ -12,25 +12,25 @@ const TenantListSelector = () => {
   }
 
   return (
-    <CCard>
-      <CCardHeader>Select default Tenant List</CCardHeader>
+    <>
+      <p>
+        <b>Tenant overview page</b>
+      </p>
       <CButtonGroup role="group" aria-label="Page Size Switcher">
         <CButton
           onClick={() => SwitchPageSize(true)}
-          active={TenantListSelector ? true : false}
-          color="secondary"
+          color={TenantListSelector ? 'primary' : 'secondary'}
         >
           Compressed
         </CButton>
         <CButton
           onClick={() => SwitchPageSize(false)}
-          active={TenantListSelector ? false : true}
-          color="secondary"
+          color={TenantListSelector ? 'secondary' : 'primary'}
         >
           Full list
         </CButton>
       </CButtonGroup>
-    </CCard>
+    </>
   )
 }
 
