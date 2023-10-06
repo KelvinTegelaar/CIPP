@@ -24,18 +24,19 @@ At times you will need to change permissions for the CIPP-SAM application that i
 For full functionality, CIPP needs the following permissions for the Secure Application Model registration. You can remove any permissions if you don't want the application to be able to use that functionality. This may cause you to see errors in the application.
 
 {% hint style="info" %}
-Duplicate Permissions Some permissions may appear duplicated in the Delegated and Application permissions tables below. This is _by design_ and you do need to add both permissions!&#x20;
+Duplicate Permissions Some permissions may appear duplicated in the Delegated and Application permissions tables below. This is _by design_ and you do need to add both permissions!
 {% endhint %}
 
 {% hint style="warning" %}
-Some permissions may come from other APIs than just Graph. you will see this both in the application, and the permission list below by having a name between brackets, e.g. (WindowsDefenderATP). This means you will need to click on "APIs my Organisation uses" instead of "Microsoft Graph" when adding these permissions.
+Some permissions may come from other APIs than just Graph. you will see this both in the application, and the permission list below by having a name between brackets, e.g. (WindowsDefenderATP). This means you will need to click on "APIs my Organisation uses" instead of "Microsoft Graph" when adding these permissions. Look for the exact name between the brackets to find the correct resource to add.
 {% endhint %}
 
 **LIST OF DELEGATED PERMISSIONS USED BY CIPP:**
 
 | API / Permissions name                                  | Description                                                              |
 | ------------------------------------------------------- | ------------------------------------------------------------------------ |
-| (Office 365 SharePoint Online)AllSites.FullControl      | Have full control of all site collections                                |
+| ActivityFeed.Read (Office 365 Management API)           | Read activity data for your organization                                 |
+| AllSites.FullControl (Office 365 SharePoint Online)     | Have full control of all site collections                                |
 | Application.Read.All                                    | Read applications                                                        |
 | Application.ReadWrite.All                               | Read and write all applications                                          |
 | AuditLog.Read.All                                       | Read audit log data                                                      |
@@ -55,7 +56,7 @@ Some permissions may come from other APIs than just Graph. you will see this bot
 | Device.Command                                          | Communicate with user devices                                            |
 | Device.Read                                             | Read user devices                                                        |
 | Device.Read.All                                         | Read all devices                                                         |
-| DeviceLocalCredential.Read.All                          | Read device local credential passwords                                   | 
+| DeviceLocalCredential.Read.All                          | Read device local credential passwords                                   |
 | DeviceManagementApps.ReadWrite.All                      | Read and write Microsoft Intune apps                                     |
 | DeviceManagementConfiguration.ReadWrite.All             | Read and write Microsoft Intune Device Configuration and Policies        |
 | DeviceManagementManagedDevices.PrivilegedOperations.All | Perform user-impacting remote actions on Microsoft Intune devices        |
@@ -65,7 +66,6 @@ Some permissions may come from other APIs than just Graph. you will see this bot
 | DeviceManagementServiceConfig.ReadWrite.All             | Read and write Microsoft Intune configuration                            |
 | Directory.AccessAsUser.All                              | Access directory as the signed in user                                   |
 | Domain.Read.All                                         | Read domain data                                                         |
-| (Office 365 Exchange Online) Exchange.Manage            | Manage Exchange configuration                                            |
 | Group.ReadWrite.All                                     | Read and write all groups                                                |
 | GroupMember.ReadWrite.All                               | Read and write group memberships                                         |
 | Mail.Send                                               | Send mail as a user                                                      |
@@ -128,7 +128,7 @@ Some permissions may come from other APIs than just Graph. you will see this bot
 | UserAuthenticationMethod.Read.All                       | Read all users' authentication methods                                   |
 | UserAuthenticationMethod.ReadWrite                      | Read and write user authentication methods                               |
 | UserAuthenticationMethod.ReadWrite.All                  | Read and write all users' authentication methods                         |
-| (WindowsDefenderATP) Vulnerability.Read                 | Read Threat and Vulnerability Management vulnerability information       |
+|  Vulnerability.Read (WindowsDefenderATP)                | Read Threat and Vulnerability Management vulnerability information       |
 
 **LIST OF APPLICATION PERMISSIONS USED BY CIPP:**
 
@@ -150,6 +150,8 @@ Some permissions may come from other APIs than just Graph. you will see this bot
 | DeviceManagementServiceConfig.ReadWrite.All             | Read and write Microsoft Intune configuration                         |
 | Directory.Read.All                                      | Read directory data                                                   |
 | Domain.Read.All                                         | Read Domains                                                          |
+| Exchange.Manage (Office 365 Exchange Online)            | Manage Exchange configuration                                         |
+| Files.ReadWrite.All                                     | Read and write files in all site collections                          |
 | Group.Create                                            | Create groups                                                         |
 | Group.Read.All                                          | Read all groups                                                       |
 | Group.ReadWrite.All                                     | Read and write all groups                                             |
@@ -175,4 +177,4 @@ Some permissions may come from other APIs than just Graph. you will see this bot
 | TeamMember.ReadWriteNonOwnerRole.All                    | Add and remove members with non-owner role for all teams              |
 | User.ReadWrite.All                                      | Read and write all users' full profiles                               |
 | UserAuthenticationMethod.ReadWrite.All                  | Read and write all users' authentication methods                      |
-| (WindowsDefenderATP) Vulnerability.Read.All             | Read Threat and Vulnerability Management vulnerability information    |
+| Vulnerability.Read.All (WindowsDefenderATP)             | Read Threat and Vulnerability Management vulnerability information    |

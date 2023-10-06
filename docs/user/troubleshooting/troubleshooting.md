@@ -4,27 +4,6 @@ Below are some common issues that users have had from initial deployment, updati
 
 Note that these steps come from the community - if you notice any mistakes, please either edit this page or get in touch via the [Discord server](https://discord.gg/Cyberdrain). Please note the Contributor Code of Conduct.
 
-### Clear Token Cache
-
-{% hint style="info" %}
-Hosted clients can clear their own token cache via [management.cipp.app](https://management.cipp.app)
-{% endhint %}
-
-1. Go to Settings
-2. Select **Backend**
-3. Select **Go to Function App Configuration**
-4. At each item that has the source _Key Vault_ there should be a green checkbox. If there is no green checkbox, restart the function app and try in 30 minutes
-5. Rename the _RefreshToken_, for example to _RefreshToken2_
-6. Select **Save**
-7. Select **Overview** in the side menu
-8. Stop the app & wait 5 minutes.
-9. Start the app
-10. Go back to **Configuration** in the side menu.
-11. Reset the token names to their original values, for example back to _RefreshToken_ and then Select **Save**.
-12. Stop the app once more for 5 minutes then start it again.
-
-The tokens should no longer be in the cache.
-
 ### Multi-Factor Authentication Troubleshooting
 
 1. The account you use to generate your SAM tokens for CIPP must have Microsoft (Azure AD) MFA enabled, it can't use third-party MFA.
@@ -42,6 +21,7 @@ This feature requires a P1 license or higher. Check the license information of y
 ### Response status code does not indicate success: 400 (Bad Request).
 
 Error 400 occurred. There is an issue with the request. Most likely an incorrect value is being sent. If you receive this error with a permissions check, please redo your SAM setup.
+In the case of a CPV refresh you may get this code if you are using Duo as an MFA solution.
 
 ### _Microsoft.Skype.Sync.Pstn.Tnm.Common.Http.HttpResponseException_
 
@@ -68,16 +48,28 @@ Multiple Potential Causes:
 3. DAP: If the client is using DAP. The user might not be in the AdminAgents group.
 4. GDAP: if you are using GDAP and have not added the user to the correct group(s) for CIPP to function.
 
-### _AADSTS50020_ or The user you have used for your Secure Application Model is a guest in this tenant, or your are using GDAP and have not added the user to the correct group. Please delete the guest user to gain access to this tenant.
+### AADSTS50020 or AADSTS50177
 
-1. The user has not authorized the CIPP-SAM Application. Use the Settings -> Tenants -> Refresh button to refresh the permissions.
-2. The user that was used for the CIPP Authorisation is a guest in this tenant
-3. The user might not be in the AdminAgents group.
-4. GDAP: if you are using GDAP and have not added the user to the correct group(s) for CIPP to function.
+Multiple Potential Causes:
+
+* The user has not authorized the CIPP-SAM Application. Use the Settings -> Tenants -> Refresh button to refresh the permissions.
+* The user that was used for the CIPP Authorization is a guest in this tenant
+* A Conditional Access policy may be blocking your access. Add your CSP tenant as a serviceProvider exception.
+* The user might not be in the AdminAgents group.
+* GDAP: if you are using GDAP and have not added the user to the correct group(s) for CIPP to function.
+
+{% hint style="info" %}
+**These errors may also present themselves something like the below. The steps above are still accurate in these cases:**
+
+* The user you have used for your Secure Application Model is a guest in this tenant, or your are using GDAP and have not added the user to the correct group. Please delete the guest user to gain access to this tenant.
+* User account from identity provider does not exist in tenant and cannot access the application in that tenant. The account needs to be added as an external user in the tenant first. Sign out and sign in again with a different Azure Active Directory user account.
+{% endhint %}
 
 ### _invalid or malformed_
 
-The request is malformed. the body does not contain JSON or variables have not expanded. Look for typos such as incorrect bracket usage
+* You have not finished all steps of the SAM Wizard
+* The user might not be in the AdminAgents group.
+* GDAP: if you are using GDAP and have not added the user to the correct group(s) for CIPP to function.
 
 ### _Windows Store repository apps feature is not supported for this tenant_
 
@@ -95,7 +87,7 @@ Failed to call Intune APIs. Does the tenant have a license available? Check the 
 
 The user does not have sufficient access rights to perform the operation or is missing the necessary Exchange role. Check the user's access rights and Exchange role information, when using GDAP the user must be in the "Exchange Administrators" group.
 
-### Device object was not found in the tenant 'xxxxxxxxxx'
+### Device object was not found in the tenant 'xxxxxxxxxx' or 'UserPrincipal doesn't have the key ID configured'
 
 When executing the first authorization for CIPP, a trusted device was used. This device has been deleted from the Intune portal. Reauthorization is required by using the SAM Wizard "I'd like to refresh my tokens" option.
 
@@ -120,26 +112,75 @@ The refresh token could not be retrieved and stored. The user must reauthorize.
 
 ### The property 'LastGraphError' cannot be found on this object
 
-This error occurs when CIPP cannot write to the errors table - Clear your tenant cache from the settings menu and try again.
+This error occurs when CIPP cannot write to the errors table - Clear your tenant cache from the settings menu and try again. You might also receive the error when a tenant access check has failed, the only way to clear the Last Graph Error is by removing the tenant cache.
 
-### AADSTS7000222: The provided client secret keys for app {appid} are expired. 
+### AADSTS7000222: The provided client secret keys for app {appid} are expired.
 
 This occurs when the app has exists for more than 2 years and requires a new certificate or secret, or when a secret has been expired manually.
 
-1. [Go to Azure Portal](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/RegisteredApps)
+1. [Go to Azure Portal](https://portal.azure.com/#view/Microsoft\_AAD\_IAM/ActiveDirectoryMenuBlade/\~/RegisteredApps)
 2. Find and click on your app
 3. Navigate to "Certificates & secrets"
 4. Click "+ New client secret"
 5. Enter a description, choose an expiration, and click "Add"
 6. Copy the new client **secret value**
 7. Go to CIPP -> Settings -> SAM Wizard
-8. Use the option "I already have my keys"
-9. Enter only the new secret and click save.
-10. Execute a Token Cache Clear
+8. Use the option "I have an existing application and would like to enter my keys"
+9. Enter only the new secret and click Next.
 
-{% hint style="info" %}
-Hosted clients can clear their own token cache via [management.cipp.app](https://management.cipp.app)
-{% endhint %}
+### You discarded changes when syncing Github Repositories
+
+<details>
+
+<summary>Frontend</summary>
+
+* Find your repository secret by going to your CIPP Repository, go to "settings" (cog icon along the top), click on "Secrets and variables" in the left menu, then "actions"
+
+<!---->
+
+* Note down the name of your repository secret (Should be similar to "AZURE\_STATIC\_WEB\_APPS\_API\_TOKEN\_RANDOM\_WORD\_047D97703"
+
+<!---->
+
+* Create a new file (name doesn’t matter as long as it ends in .yml) in your .github/workflows folder
+
+<!---->
+
+* Copy the contents of [this file](https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FhV8luribpATiHNQ8bdts%2Fuploads%2Flm19bd0FqKW9IntaFJtN%2Fcipp-workflow.yml?alt=media\&token=e617df6b-2b95-4c1a-83d6-4c31e732e33f) into the new file you created
+
+<!---->
+
+* Edit lines 25 and 44 to your repository secret name noted down in step 2 above
+
+</details>
+
+<details>
+
+<summary>Backend</summary>
+
+* Find your repository secret by going to your CIPP-API Repository, go to "settings" (cog icon along the top), click on "Secrets and variables" in the left menu, then "actions"
+
+<!---->
+
+* Note down the name of your repository secret (Should be similar to "AZUREAPPSERVICE\_PUBLISHPROFILE\_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+
+<!---->
+
+* Create a new file (name doesn’t matter as long as it ends in .yml) in your .github/workflows folder
+
+<!---->
+
+* Copy the contents of this [file](https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FhV8luribpATiHNQ8bdts%2Fuploads%2F8BlraL9QHmZYlFWB1DOT%2Fcipp-api-workflow\[1].yml?alt=media\&token=4f5febb8-9fdc-4fb2-ac39-3b363529d167)[ into](https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FhV8luribpATiHNQ8bdts%2Fuploads%2F8BlraL9QHmZYlFWB1DOT%2Fcipp-api-workflow\[1].yml?alt=media\&token=4f5febb8-9fdc-4fb2-ac39-3b363529d167) the new file you created
+
+<!---->
+
+* Edit lines 4 so it has your function name at the end of it
+
+<!---->
+
+* Edit Line 29 to your repository secret name noted down in step 2 above
+
+</details>
 
 #### Credits
 
