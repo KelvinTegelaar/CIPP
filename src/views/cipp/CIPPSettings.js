@@ -143,6 +143,14 @@ const CIPPSettings = () => {
   )
 }
 
+function modifyPermissionName(permissionName) {
+  if (permissionName === 'ActivityFeed.Read - Delegated') {
+    return 'ActivityFeed.Read - Delegated (Office 365 Management)'
+  }
+  // If no modification needed, return the original permission name
+  return permissionName
+}
+
 export default CIPPSettings
 
 const checkAccessColumns = [
@@ -382,7 +390,7 @@ const GeneralSettings = () => {
                         .
                         <CListGroup flush>
                           {permissionsResult.data.Results?.MissingPermissions?.map((r, index) => (
-                            <CListGroupItem key={index}>{r}</CListGroupItem>
+                            <CListGroupItem key={index}>{modifyPermissionName(r)}</CListGroupItem>
                           ))}
                         </CListGroup>
                       </>
