@@ -14,7 +14,7 @@ const TenantListSelector = () => {
   return (
     <>
       <p>
-        <b>Tenant overview page</b>
+        <h6>Tenant overview page</h6>
       </p>
       <CButtonGroup role="group" aria-label="Page Size Switcher">
         <CButton

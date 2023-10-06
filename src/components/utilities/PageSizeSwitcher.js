@@ -15,7 +15,7 @@ const PageSizeSwitcher = () => {
   return (
     <>
       <p>
-        <b>Default page size</b>
+        <h6>Default page size</h6>
       </p>
       <CButtonGroup role="group" aria-label="Page Size Switcher">
         {pageSizes.map((tablePageSize, index) => (

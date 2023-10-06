@@ -15,7 +15,7 @@ const UsageLocation = () => {
   return (
     <>
       <p>
-        <b>Default Usage Location</b>
+        <h6>Default Usage Location</h6>
       </p>
       <Select
         className="react-select-container"

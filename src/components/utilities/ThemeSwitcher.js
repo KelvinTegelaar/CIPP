@@ -45,7 +45,7 @@ const ThemeSwitcher = () => {
   return (
     <>
       <p>
-        <b>Theme</b>
+        <h6>Theme</h6>
       </p>
       <CButtonGroup role="group" aria-label="Theme Switcher" color="secondary">
         {themes.map((theme, index) => (

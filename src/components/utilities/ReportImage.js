@@ -19,8 +19,14 @@ const ReportImage = () => {
   }
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
-      <div>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <h6>Default Report Image</h6>
+
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <CImage className="mb-2" rounded={true} src={ReportImage} width={120} height={100} />
+        <CButton type="button" name="file" onClick={() => inputRef.current.click()}>
+          Upload new image
+        </CButton>
         <input
           ref={inputRef}
           type="file"
@@ -29,18 +35,6 @@ const ReportImage = () => {
           id="contained-button-file"
           onChange={(e) => Switchusage(e)}
         />
-        <p>Select a report image. This image has a size of 120x100 and can be up to 64KB.</p>
-        <CButton
-          type="button"
-          name="file"
-          onClick={() => inputRef.current.click()}
-          className="me-2"
-        >
-          Upload new image
-        </CButton>
-      </div>
-      <div style={{ marginLeft: '20px' }}>
-        <CImage rounded={true} src={ReportImage} width={120} height={100} />
       </div>
     </div>
   )

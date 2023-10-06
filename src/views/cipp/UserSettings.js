@@ -126,7 +126,7 @@ const UserSettings = () => {
   return (
     <>
       <CRow className="mb-3">
-        <CCol md={8}>
+        <CCol md={6}>
           <CCard className="h-100">
             <CCardHeader>
               <CCardTitle>User Settings</CCardTitle>
@@ -134,13 +134,17 @@ const UserSettings = () => {
             <CCardBody>
               <CListGroup flush>
                 <CListGroupItem className="d-flex justify-content-between align-items-center">
-                  <div>Username</div>
+                  <div>
+                    <h6>Username</h6>
+                  </div>
                   <CBadge className="me-3" color="primary">
                     {profile.clientPrincipal.userDetails}
                   </CBadge>
                 </CListGroupItem>
                 <CListGroupItem className="d-flex justify-content-between align-items-center">
-                  <div>Roles</div>
+                  <div>
+                    <h6>Roles</h6>
+                  </div>
                   {profile.clientPrincipal.userRoles
                     .filter((role) => role !== 'anonymous' && role !== 'authenticated')
                     .map((r, index) => (
@@ -150,7 +154,7 @@ const UserSettings = () => {
                     ))}
                 </CListGroupItem>
                 <CListGroupItem className="d-flex justify-content-between align-items-center">
-                  <ReportImage />
+                  <TenantListSelector />
                 </CListGroupItem>
                 <CListGroupItem className="d-flex justify-content-between align-items-center">
                   <ThemeSwitcher />
@@ -159,11 +163,11 @@ const UserSettings = () => {
                   <PageSizeSwitcher />
                 </CListGroupItem>
                 <CListGroupItem className="d-flex justify-content-between align-items-center">
-                  <TenantListSelector />
+                  <UsageLocation />
                 </CListGroupItem>
 
-                <CListGroupItem className="d-flex justify-content-between align-items-center">
-                  <UsageLocation />
+                <CListGroupItem>
+                  <ReportImage />
                 </CListGroupItem>
               </CListGroup>
             </CCardBody>
