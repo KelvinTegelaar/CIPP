@@ -1161,6 +1161,13 @@ const NotificationsSettings = () => {
                           value={false}
                         />
                       </CCol>
+                      <CCol>
+                        <RFFCFormSwitch
+                          name="includeTenantId"
+                          label="Include Tenant ID in alerts"
+                          value={false}
+                        />
+                      </CCol>
                       <CButton disabled={notificationConfigResult.isFetching} type="submit">
                         Set Notification Settings
                       </CButton>
