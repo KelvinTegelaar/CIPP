@@ -148,6 +148,7 @@ const AlertWizard = () => {
                   name="SecDefaultsUpsell"
                   label="Alert on Security Defaults automatic enablement"
                 />
+                <RFFCFormSwitch name="NewTenant" label="Alert on New Tenants being added." />
               </CCol>
             </Condition>
           </CRow>
