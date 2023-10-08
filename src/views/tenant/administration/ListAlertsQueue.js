@@ -218,13 +218,6 @@ const ListAlertsQueue = () => {
       cell: cellBooleanFormatter(),
     },
     {
-      name: 'New Tenant',
-      selector: (row) => row['NewTenant'],
-      sortable: true,
-      exportSelector: 'NewTenant',
-      cell: cellBooleanFormatter(),
-    },
-    {
       name: 'Expiring Licenses',
       selector: (row) => row['ExpiringLicenses'],
       sortable: true,

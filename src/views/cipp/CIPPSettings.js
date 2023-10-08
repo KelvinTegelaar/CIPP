@@ -1128,6 +1128,7 @@ const NotificationsSettings = () => {
                             { value: 'AddMSPApp', name: 'Adding an MSP app' },
                             { value: 'AddUser', name: 'Adding a user' },
                             { value: 'AddGroup', name: 'Adding a group' },
+                            { value: 'NewTenant', name: 'Adding a tenant' },
                             { value: 'ExecOffboardUser', name: 'Executing the offboard wizard' },
                           ]}
                         />
