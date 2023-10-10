@@ -33,7 +33,6 @@ Error.propTypes = {
   name: PropTypes.string.isRequired,
 }
 
-const requiredArray = (value) => (value && value.length !== 0 ? undefined : 'Required')
 const AppApproval = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
@@ -60,7 +59,7 @@ const AppApproval = () => {
           <h5 className="card-title mb-4">Choose tenants</h5>
         </center>
         <hr className="my-4" />
-        <Field name="selectedTenants" validate={requiredArray}>
+        <Field name="selectedTenants">
           {(props) => (
             <WizardTableField
               reportName="Add-CA-Policy-Tenant-Selector"
@@ -109,7 +108,7 @@ const AppApproval = () => {
         <CRow>
           <CCol className="mb-3" md={12}>
             <label>Add permissions</label>
-            <Field name="permissions" validate={requiredArray}>
+            <Field name="permissions">
               {(props) => (
                 <WizardTableField
                   reportName="Add-CA-Policy-Tenant-Selector"
@@ -177,7 +176,7 @@ const AppApproval = () => {
                       </CCallout>
                       <h5 className="mb-0">Selected Permissions</h5>
                       <CCallout color="info">
-                        {props.values.permissions.map((tenant, idx) => (
+                        {props.values.permissions?.map((tenant, idx) => (
                           <li key={idx}>
                             {tenant.displayName} - {tenant.origin}
                           </li>
