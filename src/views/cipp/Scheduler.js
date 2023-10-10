@@ -283,7 +283,9 @@ const Scheduler = () => {
                                 paramblock = parameters.map((param, idx) => (
                                   <CRow key={idx} className="mb-3">
                                     <CCol>
-                                      {param.Type === 'System.Boolean' ? (
+                                      {param.Type === 'System.Boolean' ||
+                                      param.Type ===
+                                        'System.Management.Automation.SwitchParameter' ? (
                                         <>
                                           <label>{param.Name}</label>
                                           <RFFCFormSwitch
