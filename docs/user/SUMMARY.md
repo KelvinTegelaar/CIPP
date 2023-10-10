@@ -152,6 +152,7 @@
       * [HaloPSA](user-documentation/cipp/settings/extensions/halopsa.md)
   * [Scheduler](user-documentation/cipp/scheduler.md)
   * [SAM Setup Wizard](user-documentation/cipp/sam-setup-wizard.md)
+  * [User Settings](user-documentation/cipp/user-settings.md)
 * [GDAP Migration](user-documentation/gdap-migration/README.md)
   * [Role Wizard](user-documentation/gdap-migration/role-wizard.md)
   * [GDAP Roles](user-documentation/gdap-migration/gdap-roles.md)
