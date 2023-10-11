@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { CButton, CCallout, CLink } from '@coreui/react'
+import { CButton, CCallout, CLink, CCardTitle } from '@coreui/react'
 import { CCardBody, CSpinner } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -27,6 +27,7 @@ import useConfirmModal from 'src/hooks/useConfirmModal'
 const ViewBec = () => {
   let query = useQuery()
   const userId = query.get('userId')
+  const userName = query.get('ID')
   const tenantDomain = query.get('tenantDomain')
   const [execBecRemediate, execRemediateResults] = useLazyGenericPostRequestQuery()
   const [execBecView, results] = useLazyExecBecCheckQuery()
@@ -232,7 +233,7 @@ const ViewBec = () => {
       <CippMasonry columns={2}>
         <CippMasonryItem size="full">
           <CippContentCard
-            title="Business Email Compromise Overview"
+            title={<CCardTitle>Business Email Compromise Overview - {userName}</CCardTitle>}
             button={
               <CButton
                 size="sm"
