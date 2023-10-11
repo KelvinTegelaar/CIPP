@@ -269,6 +269,18 @@ const Scheduler = () => {
                           />
                         </CCol>
                       </CRow>
+                      <FormSpy>
+                        {(props) => {
+                          const selectedCommand = availableCommands.find(
+                            (cmd) => cmd.Function === props.values.command?.value,
+                          )
+                          return (
+                            <CRow className="mb-3">
+                              <CCol>{selectedCommand?.Synopsis}</CCol>
+                            </CRow>
+                          )
+                        }}
+                      </FormSpy>
                       <CRow>
                         <FormSpy>
                           {(props) => {
@@ -282,27 +294,36 @@ const Scheduler = () => {
                               if (parameters.length > 0) {
                                 paramblock = parameters.map((param, idx) => (
                                   <CRow key={idx} className="mb-3">
-                                    <CCol>
-                                      {param.Type === 'System.Boolean' ||
-                                      param.Type ===
-                                        'System.Management.Automation.SwitchParameter' ? (
-                                        <>
-                                          <label>{param.Name}</label>
-                                          <RFFCFormSwitch
-                                            initialValue={true}
+                                    <CTooltip
+                                      content={
+                                        param?.Description !== null
+                                          ? param.Description
+                                          : 'No Description'
+                                      }
+                                      placement="left"
+                                    >
+                                      <CCol>
+                                        {param.Type === 'System.Boolean' ||
+                                        param.Type ===
+                                          'System.Management.Automation.SwitchParameter' ? (
+                                          <>
+                                            <label>{param.Name}</label>
+                                            <RFFCFormSwitch
+                                              initialValue={false}
+                                              name={`parameters.${param.Name}`}
+                                              label={`True`}
+                                            />
+                                          </>
+                                        ) : (
+                                          <RFFCFormInput
+                                            type="text"
+                                            key={idx}
                                             name={`parameters.${param.Name}`}
-                                            label={`True`}
+                                            label={`${param.Name}`}
                                           />
-                                        </>
-                                      ) : (
-                                        <RFFCFormInput
-                                          type="text"
-                                          key={idx}
-                                          name={`parameters.${param.Name}`}
-                                          label={`${param.Name}`}
-                                        />
-                                      )}
-                                    </CCol>
+                                        )}
+                                      </CCol>
+                                    </CTooltip>
                                   </CRow>
                                 ))
                               }
