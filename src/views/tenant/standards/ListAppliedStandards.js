@@ -228,7 +228,7 @@ const ListAppliedStandards = () => {
                             ))}
                         </CRow>
                         <hr />
-                        <h5>Azure AD Standards</h5>
+                        <h5>Entra ID Standards</h5>
                         <hr />
                         <CRow className="mb-3" xs={{ cols: 2 }}>
                           {allStandardsList
