@@ -202,12 +202,12 @@ const UserSettings = () => {
                         </CCol>
                       </CRow>
                       <CRow className="mb-3">
-                        <CCol md={6}>
+                        <CCol className="mb-3" md={6}>
                           <CButton
                             onClick={() => {
                               form.change('user', profile.clientPrincipal.userDetails)
                             }}
-                            className="me-3"
+                            className="me-3 mb-3"
                             name="singleuser"
                             type="submit"
                           >
@@ -220,7 +220,7 @@ const UserSettings = () => {
                                 onClick={() => {
                                   form.change('user', 'allUsers')
                                 }}
-                                className="me-3"
+                                className="mb-3"
                                 name="allUsers"
                                 type="submit"
                               >

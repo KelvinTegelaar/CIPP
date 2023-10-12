@@ -481,10 +481,7 @@ export default function CippTable({
         return null
       })
 
-      var exportData = data
-      if (exportFiltered) {
-        exportData = filteredItems
-      }
+      var exportData = filteredItems
 
       var filtered =
         Array.isArray(exportData) && exportData.length > 0
