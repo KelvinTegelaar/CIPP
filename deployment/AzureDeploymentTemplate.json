@@ -10,7 +10,7 @@
       }
     },
     "GithubRepository": {
-      "defaultValue": "https://github.com/ets553/CIPP/tree/main",
+      "defaultValue": "https://github.com/ets553/CIPP.git",
       "type": "string",
       "metadata": {
         "description": "URL to your Github Frontend fork."
@@ -24,7 +24,7 @@
       }
     },
     "GithubAPIRepository": {
-      "defaultValue": "https://github.com/ets553/CIPP-API",
+      "defaultValue": "https://github.com/ets553/CIPP-API.git",
       "type": "string",
       "metadata": {
         "description": "URL to your Github backend fork."
