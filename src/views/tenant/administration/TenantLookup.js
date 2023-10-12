@@ -24,6 +24,16 @@ import { CippContentCard } from 'src/components/layout'
 import Skeleton from 'react-loading-skeleton'
 import { domainsApi } from 'src/store/api/domains'
 
+const isValidTenantInput = (value) => {
+  // Regular expression for validating GUID
+  const guidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/
+  // Regular expression for validating domain
+  const domainRegex = /^([a-zA-Z0-9](-?[a-zA-Z0-9])*\.)+[a-zA-Z]{2,}$/
+
+  // Check if the input is a valid GUID or domain
+  return !(guidRegex.test(value) || domainRegex.test(value))
+}
+
 const GraphExplorer = () => {
   let navigate = useNavigate()
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -57,12 +67,6 @@ const GraphExplorer = () => {
       })
     }
   }, [execGraphRequest, tenant.defaultDomainName, query, tenantdomain])
-  const isValidDomain = (value) =>
-    /^(((?!-))(xn--|_{1,1})?[a-z0-9-]{0,61}[a-z0-9]{1,1}\.)*(xn--)?([a-z0-9][a-z0-9-]{0,60}|[a-z0-9-]{1,30}\.[a-z]{2,})$/i.test(
-      value,
-    )
-      ? undefined
-      : value
 
   return (
     <CRow>
@@ -80,7 +84,7 @@ const GraphExplorer = () => {
               render={({ handleSubmit, submitting, pristine }) => {
                 return (
                   <CForm onSubmit={handleSubmit}>
-                    <Field name="domain" validate={isValidDomain}>
+                    <Field name="domain" validate={isValidTenantInput}>
                       {({ input, meta }) => {
                         return (
                           <>

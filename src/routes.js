@@ -17,6 +17,8 @@ const AddGroupTemplates = React.lazy(() =>
 const DeployGroupTemplates = React.lazy(() =>
   import('src/views/identity/administration/DeployGroupTemplate'),
 )
+const GeoIPLookup = React.lazy(() => import('src/views/tenant/administration/GeoIPLookup'))
+
 const TenantLookup = React.lazy(() => import('src/views/tenant/administration/TenantLookup'))
 const GroupTemplates = React.lazy(() => import('src/views/identity/administration/GroupTemplates'))
 
@@ -69,6 +71,7 @@ const DeviceComplianceReport = React.lazy(() =>
 const BestPracticeAnalyzer = React.lazy(() =>
   import('src/views/tenant/standards/BestPracticeAnalyser'),
 )
+const BPAReportBuilder = React.lazy(() => import('src/views/tenant/standards/BPAReportBuilder'))
 const DomainsAnalyser = React.lazy(() => import('src/views/tenant/standards/DomainsAnalyser'))
 const OffboardingWizard = React.lazy(() =>
   import('src/views/identity/administration/OffboardingWizard'),
@@ -377,6 +380,16 @@ const routes = [
     path: '/tenant/administration/tenantlookup',
     name: 'Tenant Lookup',
     component: TenantLookup,
+  },
+  {
+    path: '/tenant/tools/geoiplookup',
+    name: 'Geo IP Lookup',
+    component: GeoIPLookup,
+  },
+  {
+    path: '/tenant/tools/bpa-report-builder',
+    name: 'BPA Report Builder',
+    component: BPAReportBuilder,
   },
   { path: '/tenant/standards/alert-list', name: 'Alert List (Alpha)', component: ListAlerts },
   { path: '/endpoint', name: 'Endpoint' },
