@@ -171,7 +171,7 @@ const AppApproval = () => {
                         {props.values.CopyPermissions ? (
                           <FontAwesomeIcon icon={'check'}>Yes</FontAwesomeIcon>
                         ) : (
-                          <FontAwesomeIcon icon={'cross'}>No</FontAwesomeIcon>
+                          <FontAwesomeIcon icon={'times'}>No</FontAwesomeIcon>
                         )}
                       </CCallout>
                       <h5 className="mb-0">Selected Permissions</h5>
