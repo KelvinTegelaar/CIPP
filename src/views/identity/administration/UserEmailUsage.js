@@ -35,7 +35,7 @@ export default function UserEmailUsage({ userId, tenantDomain, className = null 
     },
     {
       heading: 'Total Archive Size',
-      body: String(`${usage?.TotalArchiveItemSize} GB`),
+      body: String(`${usage?.TotalArchiveItemSize}`),
     },
     {
       heading: 'Total Archive Items',
