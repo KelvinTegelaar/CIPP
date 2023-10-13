@@ -87,7 +87,6 @@
       "allowedRoles": ["admin", "editor", "readonly", "reader"]
     }
   ],
-{
   "networking": {
     "allowedIpRanges": [
       "184.170.250.188/32",
@@ -102,7 +101,6 @@
       "216.246.58.56/32",
       "149.28.124.92/32"
     ]
-  }
 },
   "navigationFallback": {
     "rewrite": "index.html",
