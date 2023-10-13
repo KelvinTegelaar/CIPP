@@ -1128,6 +1128,7 @@ const NotificationsSettings = () => {
                             { value: 'AddMSPApp', name: 'Adding an MSP app' },
                             { value: 'AddUser', name: 'Adding a user' },
                             { value: 'AddGroup', name: 'Adding a group' },
+                            { value: 'NewTenant', name: 'Adding a tenant' },
                             { value: 'ExecOffboardUser', name: 'Executing the offboard wizard' },
                           ]}
                         />
@@ -1157,6 +1158,13 @@ const NotificationsSettings = () => {
                         <RFFCFormSwitch
                           name="sendtoIntegration"
                           label="Send notifications to configured integration(s)"
+                          value={false}
+                        />
+                      </CCol>
+                      <CCol>
+                        <RFFCFormSwitch
+                          name="includeTenantId"
+                          label="Include Tenant ID in alerts"
                           value={false}
                         />
                       </CCol>
@@ -1577,8 +1585,8 @@ const ExtensionsTab = () => {
 }
 
 const MappingsTab = () => {
-  const [listHaloBackend, listBackendHaloResult] = useLazyGenericGetRequestQuery()
-  const [setHaloExtensionconfig, extensionHaloConfigResult] = useLazyGenericPostRequestQuery()
+  const [listHaloBackend, listBackendHaloResult = []] = useLazyGenericGetRequestQuery()
+  const [setHaloExtensionconfig, extensionHaloConfigResult = []] = useLazyGenericPostRequestQuery()
 
   const onHaloSubmit = (values) => {
     setHaloExtensionconfig({
@@ -1608,7 +1616,7 @@ const MappingsTab = () => {
                       <CCardText>
                         Use the table below to map your client to the correct PSA client
                         {listBackendHaloResult.isSuccess &&
-                          listBackendHaloResult.data.Tenants.map((tenant) => (
+                          listBackendHaloResult.data.Tenants?.map((tenant) => (
                             <RFFSelectSearch
                               key={tenant.customerId}
                               name={tenant.customerId}
