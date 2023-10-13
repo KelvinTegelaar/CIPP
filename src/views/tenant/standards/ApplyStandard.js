@@ -169,7 +169,7 @@ const ApplyStandard = () => {
         <hr className="my-4" />
       </CippWizard.Page>
       <CippWizard.Page
-        title="Azure AD Standards"
+        title="Entra ID Standards"
         description="Select which standards you want to apply."
       >
         <center>
