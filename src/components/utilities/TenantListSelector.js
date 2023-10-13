@@ -1,5 +1,5 @@
 import React from 'react'
-import { CButtonGroup, CButton, CCard, CCardHeader } from '@coreui/react'
+import { CFormSwitch, CRow, CCol } from '@coreui/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setTenantList } from 'src/store/features/app'
 
@@ -12,25 +12,16 @@ const TenantListSelector = () => {
   }
 
   return (
-    <CCard>
-      <CCardHeader>Select default Tenant List</CCardHeader>
-      <CButtonGroup role="group" aria-label="Page Size Switcher">
-        <CButton
-          onClick={() => SwitchPageSize(true)}
-          active={TenantListSelector ? true : false}
-          color="secondary"
-        >
-          Compressed
-        </CButton>
-        <CButton
-          onClick={() => SwitchPageSize(false)}
-          active={TenantListSelector ? false : true}
-          color="secondary"
-        >
-          Full list
-        </CButton>
-      </CButtonGroup>
-    </CCard>
+    <CRow>
+      <CCol className="mb-3">
+        <CFormSwitch
+          onChange={(e) => SwitchPageSize(e.target.checked)}
+          initialValue={TenantListSelector}
+          name="TenantListSelector"
+          label="Show compressed tenant list"
+        />
+      </CCol>
+    </CRow>
   )
 }
 
