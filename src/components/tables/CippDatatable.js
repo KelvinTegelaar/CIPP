@@ -20,10 +20,10 @@ export default function CippDatatable({ path, params, ...rest }) {
   }
   return (
     <>
-      {data[0]?.Queued && <CCallout color="info">{data[0]?.QueueMessage}</CCallout>}
+      {data?.Metadata?.Queued && <CCallout color="info">{data?.Metadata?.QueueMessage}</CCallout>}
       <CippTable
         {...rest}
-        data={data[0]?.Queued ? [] : data}
+        data={Array.isArray(data?.Results) ? data?.Results : data}
         isFetching={isFetching}
         error={error}
         defaultFilterText={defaultFilterText}
