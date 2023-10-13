@@ -20,8 +20,7 @@ This feature requires a P1 license or higher. Check the license information of y
 
 ### Response status code does not indicate success: 400 (Bad Request).
 
-Error 400 occurred. There is an issue with the request. Most likely an incorrect value is being sent. If you receive this error with a permissions check, please redo your SAM setup.
-In the case of a CPV refresh you may get this code if you are using Duo as an MFA solution.
+Error 400 occurred. There is an issue with the request. Most likely an incorrect value is being sent. If you receive this error with a permissions check, please redo your SAM setup. In the case of a CPV refresh you may get this code if you are using Duo as an MFA solution.
 
 ### _Microsoft.Skype.Sync.Pstn.Tnm.Common.Http.HttpResponseException_
 
@@ -70,6 +69,10 @@ Multiple Potential Causes:
 * You have not finished all steps of the SAM Wizard
 * The user might not be in the AdminAgents group.
 * GDAP: if you are using GDAP and have not added the user to the correct group(s) for CIPP to function.
+
+### I've not followed the setup instructions, and am receiving errors or having issues with my user
+
+Reauthorization is required by using the SAM Wizard "I'd like to refresh my tokens" option. Please follow our best practices [here](../setup/installation/samwizard.md).
 
 ### _Windows Store repository apps feature is not supported for this tenant_
 
