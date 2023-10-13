@@ -220,10 +220,6 @@ const AlertWizard = () => {
                     name: 'A user has logged in from non-allowed location',
                   },
                   {
-                    value: 'UserLoggedIn',
-                    name: 'A user has logged in from any location',
-                  },
-                  {
                     value: 'Add service principal.',
                     name: 'Enterprise App Added',
                   },
