@@ -12,28 +12,68 @@ import {
   CImage,
   CSidebarBrand,
   CButton,
+  CFormSwitch,
 } from '@coreui/react'
-import { AppHeaderDropdown, AppHeaderSearch } from 'src/components/header'
+import { AppHeaderSearch } from 'src/components/header'
 import { TenantSelector } from '../utilities'
 import cyberdrainlogolight from 'src/assets/images/CIPP.png'
 import cyberdrainlogodark from 'src/assets/images/CIPP_Dark.png'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretSquareLeft, faCaretSquareRight } from '@fortawesome/free-solid-svg-icons'
-import { toggleSidebarShow } from 'src/store/features/app'
+import { setCurrentTheme, setUserSettings, toggleSidebarShow } from 'src/store/features/app'
 import { useMediaPredicate } from 'react-media-hook'
-import { useLoadAlertsDashQuery } from 'src/store/api/app'
-import { Link } from 'react-router-dom'
+import { useGenericGetRequestQuery, useLoadAlertsDashQuery } from 'src/store/api/app'
 import { useLocation } from 'react-router-dom'
+import { useState } from 'react'
+import { useEffect } from 'react'
 
 const AppHeader = () => {
   const dispatch = useDispatch()
   const location = useLocation()
+  const [performedUserSettings, setUserSettingsComplete] = useState(false)
+  const currentSettings = useSelector((state) => state.app)
   const sidebarShow = useSelector((state) => state.app.sidebarShow)
   const currentTheme = useSelector((state) => state.app.currentTheme)
   const preferredTheme = useMediaPredicate('(prefers-color-scheme: dark)') ? 'impact' : 'cyberdrain'
   const { data: dashboard } = useLoadAlertsDashQuery()
+  const {
+    data: userSettings,
+    isLoading: isLoadingSettings,
+    isSuccess: isSuccessSettings,
+    isFetching: isFetchingSettings,
+  } = useGenericGetRequestQuery({
+    path: '/api/ListUserSettings',
+  })
+  useEffect(() => {
+    if (isSuccessSettings && !isLoadingSettings && !isFetchingSettings && !performedUserSettings) {
+      dispatch(setUserSettings({ userSettings }))
+      setUserSettingsComplete(true)
+    }
+  }, [
+    isSuccessSettings,
+    isLoadingSettings,
+    isFetchingSettings,
+    performedUserSettings,
+    dispatch,
+    userSettings,
+  ])
 
+  const SwitchTheme = () => {
+    let targetTheme = preferredTheme
+    if (isDark) {
+      targetTheme = 'cyberdrain'
+    } else {
+      targetTheme = 'impact'
+    }
+    document.body.classList = []
+    document.body.classList.add(`theme-${targetTheme}`)
+    document.body.dataset.theme = targetTheme
+
+    dispatch(setCurrentTheme({ theme: targetTheme }))
+  }
+  const isDark =
+    currentTheme === 'impact' || (currentTheme === 'default' && preferredTheme === 'impact')
   return (
     <>
       <CHeader position="sticky">
@@ -76,7 +116,28 @@ const AppHeader = () => {
             <AppHeaderSearch />
           </CNavItem>
           <CNavItem>
-            <AppHeaderDropdown />
+            <div className="custom-switch-wrapper primary">
+              <CFormSwitch
+                onChange={SwitchTheme}
+                checked={isDark}
+                size="xl"
+                style={{ width: '3.5rem', marginTop: '0.5em' }}
+              ></CFormSwitch>
+              {isDark ? (
+                <FontAwesomeIcon
+                  style={{ marginLeft: '-0.3em', marginTop: '0.3em' }}
+                  className="switch-icon"
+                  icon={'moon'}
+                />
+              ) : (
+                <FontAwesomeIcon
+                  style={{ marginLeft: '0.3em', marginTop: '0.3em' }}
+                  className="switch-icon"
+                  icon={'sun'}
+                  color="#f77f00"
+                />
+              )}
+            </div>
           </CNavItem>
         </CHeaderNav>
       </CHeader>
