@@ -7,6 +7,7 @@ import {
   Condition,
   RFFCFormCheck,
   RFFCFormInput,
+  RFFCFormInputArray,
   RFFCFormRadio,
   RFFCFormSwitch,
   RFFCFormTextarea,
@@ -36,6 +37,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import TenantListSelector from 'src/components/utilities/TenantListSelector'
 import { ModalService, TenantSelector } from 'src/components/utilities'
 import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
+import arrayMutators from 'final-form-arrays'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
@@ -110,6 +112,7 @@ const Scheduler = () => {
       Parameters: values.parameters,
       ScheduledTime: unixTime,
       Recurrence: values.Recurrence,
+      AdditionalProperties: values.additional,
       PostExecution: {
         Webhook: values.webhook,
         Email: values.email,
@@ -199,6 +202,9 @@ const Scheduler = () => {
             <CippContentCard title="Add Task" icon={faEdit}>
               <Form
                 onSubmit={onSubmit}
+                mutators={{
+                  ...arrayMutators,
+                }}
                 initialValues={{ taskName }}
                 initialValuesEqual={() => true}
                 render={({ handleSubmit, submitting, values }) => {
@@ -315,12 +321,22 @@ const Scheduler = () => {
                                             />
                                           </>
                                         ) : (
-                                          <RFFCFormInput
-                                            type="text"
-                                            key={idx}
-                                            name={`parameters.${param.Name}`}
-                                            label={`${param.Name}`}
-                                          />
+                                          <>
+                                            {param.Type === 'System.Collections.Hashtable' ? (
+                                              <RFFCFormInputArray
+                                                name={`parameters.${param.Name}`}
+                                                label={`${param.Name}`}
+                                                key={idx}
+                                              />
+                                            ) : (
+                                              <RFFCFormInput
+                                                type="text"
+                                                key={idx}
+                                                name={`parameters.${param.Name}`}
+                                                label={`${param.Name}`}
+                                              />
+                                            )}
+                                          </>
                                         )}
                                       </CCol>
                                     </CTooltip>
@@ -332,7 +348,11 @@ const Scheduler = () => {
                           }}
                         </FormSpy>
                       </CRow>
-
+                      <CRow className="mb-3">
+                        <CCol>
+                          <RFFCFormInputArray name={`additional`} label="Additional Properties" />
+                        </CCol>
+                      </CRow>
                       <CRow className="mb-3">
                         <CCol>
                           <label>Send results to</label>
