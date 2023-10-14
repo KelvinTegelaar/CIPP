@@ -4,7 +4,7 @@
     "type": "CIPP-API",
     "cat": "API",
     "forceSyncButton": false,
-    "helpText": "This integration allows you to use to enable API access outside of CIPP usage. Requires Global Administrator permissions inside your tenant for activation of the API. These credentials will only be shown once.",
+    "helpText": "This integration allows you to enable CIPP-API access outside of CIPP. Requires Global Administrator permissions inside your tenant for activation of the API. The API credentials will only be shown once.",
     "SettingOptions": [
       {
         "type": "checkbox",
@@ -77,7 +77,14 @@
         "fieldtype": "input",
         "name": "HaloPSA.Tenant",
         "label": "HaloPSA Tenant",
-        "placeholder": "Enter your HaloPSA Tenant"
+        "placeholder": "Enter your HaloPSA Tenant (Leave blank if self-hosted"
+      },
+      {
+        "type": "input",
+        "fieldtype": "input",
+        "name": "HaloPSA.TicketType",
+        "label": "HaloPSA Ticket Type ID",
+        "placeholder": "Enter your HaloPSA ticket type to use for CIPP Tickets. Leave blank for default."
       },
       {
         "type": "input",
