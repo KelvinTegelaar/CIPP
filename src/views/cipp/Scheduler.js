@@ -7,6 +7,7 @@ import {
   Condition,
   RFFCFormCheck,
   RFFCFormInput,
+  RFFCFormInputArray,
   RFFCFormRadio,
   RFFCFormSwitch,
   RFFCFormTextarea,
@@ -36,6 +37,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import TenantListSelector from 'src/components/utilities/TenantListSelector'
 import { ModalService, TenantSelector } from 'src/components/utilities'
 import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
+import arrayMutators from 'final-form-arrays'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
@@ -110,6 +112,7 @@ const Scheduler = () => {
       Parameters: values.parameters,
       ScheduledTime: unixTime,
       Recurrence: values.Recurrence,
+      AdditionalProperties: values.additional,
       PostExecution: {
         Webhook: values.webhook,
         Email: values.email,
@@ -199,6 +202,9 @@ const Scheduler = () => {
             <CippContentCard title="Add Task" icon={faEdit}>
               <Form
                 onSubmit={onSubmit}
+                mutators={{
+                  ...arrayMutators,
+                }}
                 initialValues={{ taskName }}
                 initialValuesEqual={() => true}
                 render={({ handleSubmit, submitting, values }) => {
@@ -269,6 +275,18 @@ const Scheduler = () => {
                           />
                         </CCol>
                       </CRow>
+                      <FormSpy>
+                        {(props) => {
+                          const selectedCommand = availableCommands.find(
+                            (cmd) => cmd.Function === props.values.command?.value,
+                          )
+                          return (
+                            <CRow className="mb-3">
+                              <CCol>{selectedCommand?.Synopsis}</CCol>
+                            </CRow>
+                          )
+                        }}
+                      </FormSpy>
                       <CRow>
                         <FormSpy>
                           {(props) => {
@@ -282,25 +300,46 @@ const Scheduler = () => {
                               if (parameters.length > 0) {
                                 paramblock = parameters.map((param, idx) => (
                                   <CRow key={idx} className="mb-3">
-                                    <CCol>
-                                      {param.Type === 'System.Boolean' ? (
-                                        <>
-                                          <label>{param.Name}</label>
-                                          <RFFCFormSwitch
-                                            initialValue={true}
-                                            name={`parameters.${param.Name}`}
-                                            label={`True`}
-                                          />
-                                        </>
-                                      ) : (
-                                        <RFFCFormInput
-                                          type="text"
-                                          key={idx}
-                                          name={`parameters.${param.Name}`}
-                                          label={`${param.Name}`}
-                                        />
-                                      )}
-                                    </CCol>
+                                    <CTooltip
+                                      content={
+                                        param?.Description !== null
+                                          ? param.Description
+                                          : 'No Description'
+                                      }
+                                      placement="left"
+                                    >
+                                      <CCol>
+                                        {param.Type === 'System.Boolean' ||
+                                        param.Type ===
+                                          'System.Management.Automation.SwitchParameter' ? (
+                                          <>
+                                            <label>{param.Name}</label>
+                                            <RFFCFormSwitch
+                                              initialValue={false}
+                                              name={`parameters.${param.Name}`}
+                                              label={`True`}
+                                            />
+                                          </>
+                                        ) : (
+                                          <>
+                                            {param.Type === 'System.Collections.Hashtable' ? (
+                                              <RFFCFormInputArray
+                                                name={`parameters.${param.Name}`}
+                                                label={`${param.Name}`}
+                                                key={idx}
+                                              />
+                                            ) : (
+                                              <RFFCFormInput
+                                                type="text"
+                                                key={idx}
+                                                name={`parameters.${param.Name}`}
+                                                label={`${param.Name}`}
+                                              />
+                                            )}
+                                          </>
+                                        )}
+                                      </CCol>
+                                    </CTooltip>
                                   </CRow>
                                 ))
                               }
@@ -309,7 +348,11 @@ const Scheduler = () => {
                           }}
                         </FormSpy>
                       </CRow>
-
+                      <CRow className="mb-3">
+                        <CCol>
+                          <RFFCFormInputArray name={`additional`} label="Additional Properties" />
+                        </CCol>
+                      </CRow>
                       <CRow className="mb-3">
                         <CCol>
                           <label>Send results to</label>
