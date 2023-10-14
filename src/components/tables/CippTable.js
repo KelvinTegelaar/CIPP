@@ -113,6 +113,7 @@ export default function CippTable({
   dynamicColumns = true,
   defaultFilterText = '',
   isModal = false,
+  exportFiltered = false,
   filterlist,
   tableProps: {
     keyField = 'id',
@@ -480,9 +481,11 @@ export default function CippTable({
         return null
       })
 
-      const filtered =
-        Array.isArray(data) && data.length > 0
-          ? data.map((obj) =>
+      var exportData = filteredItems
+
+      var filtered =
+        Array.isArray(exportData) && exportData.length > 0
+          ? exportData.map((obj) =>
               // eslint-disable-next-line no-sequences
               /* keys.reduce((acc, curr) => ((acc[curr] = obj[curr]), acc), {}),*/
               keys.reduce((acc, curr) => {
@@ -509,6 +512,28 @@ export default function CippTable({
               }, {}),
             )
           : []
+
+      const flatten = (obj, prefix) => {
+        let output = {}
+        for (let k in obj) {
+          let val = obj[k]
+          const newKey = prefix ? prefix + '.' + k : k
+          if (typeof val === 'object') {
+            if (Array.isArray(val)) {
+              const { ...arrToObj } = val
+              const newObj = flatten(arrToObj, newKey)
+              output = { ...output, ...newObj }
+            } else {
+              const newObj = flatten(val, newKey)
+              output = { ...output, ...newObj }
+            }
+          } else {
+            output = { ...output, [newKey]: val }
+          }
+        }
+        return output
+      }
+      filtered = filtered.map((item) => flatten(item))
 
       if (!disablePDFExport) {
         if (dynamicColumns === true) {
