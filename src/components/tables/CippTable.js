@@ -111,6 +111,9 @@ export default function CippTable({
   graphFilterFunction = null,
   columns = [],
   dynamicColumns = true,
+  defaultFilterText = '',
+  isModal = false,
+  exportFiltered = false,
   filterlist,
   tableProps: {
     keyField = 'id',
@@ -137,7 +140,7 @@ export default function CippTable({
   const inputRef = useRef('')
   const [loopRunning, setLoopRunning] = React.useState(false)
   const [massResults, setMassResults] = React.useState([])
-  const [filterText, setFilterText] = React.useState('')
+  const [filterText, setFilterText] = React.useState(defaultFilterText)
   const [filterviaURL, setFilterviaURL] = React.useState(false)
   const [updatedColumns, setUpdatedColumns] = React.useState(columns)
   const [selectedRows, setSelectedRows] = React.useState(false)
@@ -147,7 +150,7 @@ export default function CippTable({
   const [modalContent, setModalContent] = useState(null)
   //get the search params called "tableFilter" and set the filter to that.
   const [searchParams, setSearchParams] = useSearchParams()
-  if (searchParams.get('tableFilter') && !filterviaURL) {
+  if (searchParams.get('tableFilter') && !filterviaURL && !isModal) {
     setFilterText(searchParams.get('tableFilter'))
     setFilterviaURL(true)
   }
@@ -219,8 +222,10 @@ export default function CippTable({
   }, [filterText])
 
   const filterData = (data, filterText) => {
-    const debouncedSetSearchParams = debounce(debounceSetSearchParams, 1000)
-    debouncedSetSearchParams()
+    if (!isModal) {
+      const debouncedSetSearchParams = debounce(debounceSetSearchParams, 1000)
+      debouncedSetSearchParams()
+    }
     if (filterText.startsWith('Graph:')) {
       var query = filterText.slice(6).trim()
       debounceSetGraphFilter(query)
@@ -476,9 +481,11 @@ export default function CippTable({
         return null
       })
 
-      const filtered =
-        Array.isArray(data) && data.length > 0
-          ? data.map((obj) =>
+      var exportData = filteredItems
+
+      var filtered =
+        Array.isArray(exportData) && exportData.length > 0
+          ? exportData.map((obj) =>
               // eslint-disable-next-line no-sequences
               /* keys.reduce((acc, curr) => ((acc[curr] = obj[curr]), acc), {}),*/
               keys.reduce((acc, curr) => {
@@ -505,6 +512,28 @@ export default function CippTable({
               }, {}),
             )
           : []
+
+      const flatten = (obj, prefix) => {
+        let output = {}
+        for (let k in obj) {
+          let val = obj[k]
+          const newKey = prefix ? prefix + '.' + k : k
+          if (typeof val === 'object') {
+            if (Array.isArray(val)) {
+              const { ...arrToObj } = val
+              const newObj = flatten(arrToObj, newKey)
+              output = { ...output, ...newObj }
+            } else {
+              const newObj = flatten(val, newKey)
+              output = { ...output, ...newObj }
+            }
+          } else {
+            output = { ...output, [newKey]: val }
+          }
+        }
+        return output
+      }
+      filtered = filtered.map((item) => flatten(item))
 
       if (!disablePDFExport) {
         if (dynamicColumns === true) {
