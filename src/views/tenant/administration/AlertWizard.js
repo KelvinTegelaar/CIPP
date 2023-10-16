@@ -148,6 +148,7 @@ const AlertWizard = () => {
                   name="SecDefaultsUpsell"
                   label="Alert on Security Defaults automatic enablement"
                 />
+                <RFFCFormSwitch name="NewTenant" label="Alert on New Tenants being added." />
               </CCol>
             </Condition>
           </CRow>
@@ -217,10 +218,6 @@ const AlertWizard = () => {
                   {
                     value: 'UserLoggedInFromUnknownLocation',
                     name: 'A user has logged in from non-allowed location',
-                  },
-                  {
-                    value: 'UserLoggedIn',
-                    name: 'A user has logged in from any location',
                   },
                   {
                     value: 'Add service principal.',

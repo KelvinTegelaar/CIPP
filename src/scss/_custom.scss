@@ -1,5 +1,103 @@
 @use 'sass:color';
+.custom-switch-wrapper {
+  position: relative;
+  display: inline-block;
+}
+.image-upload-container {
+  position: relative;
+  width: 100px; /* Adjusted to match the image */
+  height: 120px; /* Adjusted to match the image */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
+.upload-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  object-fit: cover; /* Ensures the image covers the area without stretching */
+}
+
+.image-upload-overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  transition: 0.5s ease;
+  background-color: var(--cyberdrain-secondary);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.image-upload-container:hover .image-upload-overlay {
+  opacity: 0.8;
+}
+
+.overlay-text {
+  color: white;
+  font-size: 20px;
+}
+
+.circular-button {
+  border-radius: 50% !important;
+  width: 35px;
+  height: 35px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-right: 1rem;
+}
+
+.round-focus {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(0, 0, 21, 0.075),
+    0 0 0 0.25rem var(--cui-btn-shadow);
+}
+
+.circular-button.active {
+  background-color: #4caf50;
+  color: #ffffff;
+}
+.circular-button.default {
+  background-color: var(--cui-primary);
+  color: var(--text-primary);
+}
+
+.circular-button.cyberdrain {
+  background-color: var(--cyberdrain-accent-beige);
+  color: var(--text-primary);
+}
+
+.circular-button.impact {
+  background-color: var(--cyberdrain-secondary);
+  color: var(--text-primary);
+}
+
+h3.underline:after {
+  background: none repeat scroll 0 0 var(--cipp-table-context-bg);
+  bottom: -13px;
+  content: '';
+  display: block;
+  height: 5px;
+  position: relative;
+  width: 2.5rem;
+}
+
+.switch-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none; /* Ensures the icon doesn't interfere with the switch toggle */
+  z-index: 1; /* Place the icon above the switch */
+}
 .sr-only {
   border: 0 !important;
   clip: rect(1px, 1px, 1px, 1px) !important;
