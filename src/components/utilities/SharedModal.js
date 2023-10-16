@@ -13,7 +13,7 @@ import { CippTable } from 'src/components/tables'
 function mapBodyComponent({ componentType, data, componentProps }) {
   switch (componentType) {
     case 'table':
-      return <CippTable data={data || []} {...componentProps} />
+      return <CippTable data={data || []} isModal={true} {...componentProps} />
     case 'list':
       return <div>{Array.isArray(data) && data.map((el, idx) => <div key={idx}>{el}</div>)}</div>
     case 'text':
