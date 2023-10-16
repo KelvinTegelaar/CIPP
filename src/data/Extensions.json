@@ -77,7 +77,14 @@
         "fieldtype": "input",
         "name": "HaloPSA.Tenant",
         "label": "HaloPSA Tenant",
-        "placeholder": "Enter your HaloPSA Tenant"
+        "placeholder": "Enter your HaloPSA Tenant (Leave blank if self-hosted"
+      },
+      {
+        "type": "input",
+        "fieldtype": "input",
+        "name": "HaloPSA.TicketType",
+        "label": "HaloPSA Ticket Type ID",
+        "placeholder": "Enter your HaloPSA ticket type to use for CIPP Tickets. Leave blank for default."
       },
       {
         "type": "input",
