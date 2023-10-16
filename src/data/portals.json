@@ -63,6 +63,15 @@
     "icon": "shield-alt"
   },
   {
+    "label": "Compliance Portal",
+    "name": "Compliance_Portal",
+    "url": "https://compliance.microsoft.com/?tid=customerId",
+    "variable": "customerId",
+    "target": "_blank",
+    "external": true,
+    "icon": "shield-alt"
+  },
+  {
     "label": "Sharepoint Admin",
     "name": "Sharepoint_Admin",
     "url": "https://admin.microsoft.com/Partner/beginclientsession.aspx?CTID=customerId&CSDEST=SharePoint",
