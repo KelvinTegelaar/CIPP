@@ -660,19 +660,29 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'Settings',
+        name: 'Application Settings',
         to: '/cipp/settings',
       },
       {
         component: CNavItem,
-        name: 'SAM Setup Wizard',
-        to: '/cipp/setup',
+        name: 'User Settings',
+        to: '/cipp/user-settings',
       },
       {
         component: CNavItem,
-        name: 'Documentation',
-        href: 'https://cipp.app',
-        target: '_blank',
+        name: 'Scheduler',
+        to: '/cipp/scheduler',
+      },
+      {
+        component: CNavItem,
+        name: 'Logbook',
+        to: '/cipp/logs',
+      },
+
+      {
+        component: CNavItem,
+        name: 'SAM Setup Wizard',
+        to: '/cipp/setup',
       },
     ],
   },
