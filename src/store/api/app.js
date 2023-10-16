@@ -55,6 +55,7 @@ export const appApi = baseApi.injectEndpoints({
         addChocoApp,
         onePerTenant,
         sendtoIntegration,
+        includeTenantId,
         logsToInclude,
         Severity,
       }) => ({
@@ -73,6 +74,7 @@ export const appApi = baseApi.injectEndpoints({
           logsToInclude: logsToInclude,
           Severity: Severity,
           sendtoIntegration: sendtoIntegration,
+          includeTenantId: includeTenantId,
         },
         method: 'post',
       }),
