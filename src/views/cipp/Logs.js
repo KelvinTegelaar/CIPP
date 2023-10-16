@@ -56,6 +56,15 @@ const columns = [
     maxWidth: '145px',
   },
   {
+    name: 'Tenant ID',
+    selector: (row) => row['TenantID'],
+    sortable: true,
+    cell: (row) => CellTip(row['TenantID'] ?? 'None'),
+    exportSelector: 'TenantID',
+    minWidth: '145px',
+    maxWidth: '145px',
+  },
+  {
     name: 'User',
     selector: (row) => row['User'],
     sortable: true,
