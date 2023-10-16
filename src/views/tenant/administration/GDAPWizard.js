@@ -191,6 +191,17 @@ const GDAPWizard = () => {
                         ))}
                       </CCallout>
                       <h5 className="mb-0">Roles and group names</h5>
+                      {props.values.gdapRoles.map((role, idx) => (
+                        <>
+                          {role.RoleName == 'Company Administrator' && (
+                            <CCallout color="warning">
+                              WARNING: The Company Administrator role will prevent GDAP
+                              relationships from automatically extending. We recommend against using
+                              this in any GDAP relationship.
+                            </CCallout>
+                          )}
+                        </>
+                      ))}
                       <CCallout color="info">
                         {props.values.gdapRoles.map((role, idx) => (
                           <li key={idx}>
