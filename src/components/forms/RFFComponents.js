@@ -1,4 +1,5 @@
 import {
+  CButton,
   CFormCheck,
   CFormFeedback,
   CFormInput,
@@ -12,9 +13,11 @@ import {
 import Select from 'react-select'
 import AsyncSelect from 'react-select/async'
 import { Field } from 'react-final-form'
+import { FieldArray } from 'react-final-form-arrays'
 import React from 'react'
 import PropTypes from 'prop-types'
 import { useRef } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 /*
   wrapper classes for React Final Form with CoreUI
@@ -165,6 +168,59 @@ RFFCFormInput.propTypes = {
   ...sharedPropTypes,
   type: PropTypes.oneOf(['color', 'file', 'text', 'password']),
   placeholder: PropTypes.string,
+}
+
+export const RFFCFormInputArray = ({ name, label, className = 'mb-3' }) => {
+  return (
+    <>
+      <FieldArray name={name}>
+        {({ fields }) => (
+          <div>
+            <div className="mb-2">
+              {label && (
+                <CFormLabel className="me-2" htmlFor={name}>
+                  {label}
+                </CFormLabel>
+              )}
+              <CButton
+                onClick={() => fields.push({ Key: '', Value: '' })}
+                className="circular-button"
+                title={'+'}
+              >
+                <FontAwesomeIcon icon={'plus'} />
+              </CButton>
+            </div>
+            {fields.map((name, index) => (
+              <div key={name} className={className}>
+                <div>
+                  <Field name={`${name}.Key`} component="input">
+                    {({ input, meta }) => {
+                      return <CFormInput placeholder="Key" {...input} className="mb-2" />
+                    }}
+                  </Field>
+                  <Field name={`${name}.Value`} component="input">
+                    {({ input, meta }) => {
+                      return <CFormInput placeholder="Value" {...input} className="mb-2" />
+                    }}
+                  </Field>
+                </div>
+                <CButton
+                  onClick={() => fields.remove(index)}
+                  className={`circular-button`}
+                  title={'-'}
+                >
+                  <FontAwesomeIcon icon={'minus'} />
+                </CButton>
+              </div>
+            ))}
+          </div>
+        )}
+      </FieldArray>
+    </>
+  )
+}
+RFFCFormInputArray.propTypes = {
+  ...sharedPropTypes,
 }
 
 export const RFFCFormRadio = ({
