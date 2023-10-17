@@ -859,7 +859,7 @@ const OutOfOffice = () => {
                     return (
                       <CForm onSubmit={handleSubmit}>
                         <CRow>
-                          <CCol className="mb-3">
+                          <CCol>
                             <RFFCFormSwitch name="AutoReplyState" label="Auto Reply State" />
                           </CCol>
                         </CRow>
@@ -888,7 +888,7 @@ const OutOfOffice = () => {
                           </CCol>
                         </CRow>
                         <CRow>
-                          <CCol className="mb-3">
+                          <CCol>
                             <RFFCFormInput
                               type="text"
                               name="InternalMessage"
@@ -898,7 +898,7 @@ const OutOfOffice = () => {
                           </CCol>
                         </CRow>
                         <CRow>
-                          <CCol className="mb-3">
+                          <CCol>
                             <RFFCFormInput
                               type="text"
                               name="ExternalMessage"
