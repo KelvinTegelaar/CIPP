@@ -333,7 +333,7 @@ const Home = () => {
                     {(isLoadingPartners || isFetchingPartners) && <Skeleton />}
                     {issuccessPartners &&
                       !isFetchingPartners &&
-                      partners.map((partner) => {
+                      partners?.Results.map((partner) => {
                         if (partner.TenantInfo) {
                           return (
                             <li key={`${partner.tenantId}`}>
