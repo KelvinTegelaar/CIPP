@@ -68,7 +68,7 @@ const Actions = (row, rowIndex, formatExtraData) => {
   })
   const tenant = useSelector((state) => state.app.currentTenant)
 
-  row?.accessDetails.unifiedRoles.map((role) => {
+  row?.accessDetails?.unifiedRoles?.map((role) => {
     for (var x = 0; x < GDAPRoles.length; x++) {
       if (GDAPRoles[x].ObjectId == role.roleDefinitionId) {
         extendedInfo.push({
