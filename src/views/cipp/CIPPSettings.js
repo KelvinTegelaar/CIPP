@@ -82,6 +82,7 @@ import Skeleton from 'react-loading-skeleton'
 import { Buffer } from 'buffer'
 import Extensions from 'src/data/Extensions.json'
 import { CellDelegatedPrivilege } from 'src/components/tables/CellDelegatedPrivilege'
+import { TableModalButton } from 'src/components/buttons'
 
 const CIPPSettings = () => {
   const [active, setActive] = useState(1)
@@ -387,10 +388,28 @@ const GeneralSettings = () => {
                         </CListGroup>
                       </>
                     )}
+                    {permissionsResult.data.Results?.MissingGroups.length > 0 && (
+                      <>
+                        Your SAM User is missing the following group memberships.
+                        <CListGroup flush>
+                          {permissionsResult.data.Results?.MissingGroups?.map((r, index) => (
+                            <CListGroupItem key={index}>{r}</CListGroupItem>
+                          ))}
+                        </CListGroup>
+                      </>
+                    )}
+                    {permissionsResult.data.Results?.CIPPGroupCount == 0 && (
+                      <>
+                        NOTE: M365 GDAP groups were not set up by CIPP, review the SAM user groups
+                        below.
+                      </>
+                    )}
                   </CCallout>
                   {permissionsResult.data.Results?.AccessTokenDetails?.Name !== '' && (
                     <>
-                      <CButton onClick={() => setTokenOffcanvasVisible(true)}>Details</CButton>
+                      <CButton className="me-2" onClick={() => setTokenOffcanvasVisible(true)}>
+                        Details
+                      </CButton>
                       <CippListOffcanvas
                         title="Details"
                         placement="end"
@@ -399,6 +418,23 @@ const GeneralSettings = () => {
                           tokenResults: permissionsResult.data.Results,
                         })}
                         hideFunction={() => setTokenOffcanvasVisible(false)}
+                      />
+                    </>
+                  )}
+                  {permissionsResult.data.Results?.Memberships !== '' && (
+                    <>
+                      <TableModalButton
+                        className="me-2"
+                        data={permissionsResult.data.Results?.Memberships.filter(
+                          (p) => p['@odata.type'] == '#microsoft.graph.group',
+                        )}
+                        title="Groups"
+                      />
+                      <TableModalButton
+                        data={permissionsResult.data.Results?.Memberships.filter(
+                          (p) => p['@odata.type'] == '#microsoft.graph.directoryRole',
+                        )}
+                        title="Roles"
                       />
                     </>
                   )}
