@@ -1,204 +1,210 @@
-import React, { useEffect, useState } from 'react'
-import {
-  CButton,
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCardTitle,
-  CCol,
-  CCollapse,
-  CForm,
-  CRow,
-} from '@coreui/react'
-import useQuery from 'src/hooks/useQuery'
-import { Field, Form, FormSpy } from 'react-final-form'
-import { RFFCFormInput, RFFCFormSelect } from 'src/components/forms'
+import React from 'react'
+import { CCol, CRow, CCallout, CSpinner } from '@coreui/react'
+import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronRight, faChevronDown, faSearch, faCog } from '@fortawesome/free-solid-svg-icons'
-import { CellTip, CippTable } from 'src/components/tables'
-import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import { CippPage } from 'src/components/layout/CippPage'
-import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
-import { OnChange } from 'react-final-form-listeners'
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
+import { CippWizard } from 'src/components/layout'
+import { CippTable, WizardTableField } from 'src/components/tables'
+import PropTypes from 'prop-types'
+import {
+  Condition,
+  RFFCFormCheck,
+  RFFCFormInput,
+  RFFCFormSwitch,
+  RFFSelectSearch,
+} from 'src/components/forms'
+import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
+const Error = ({ name }) => (
+  <Field
+    name={name}
+    subscription={{ touched: true, error: true }}
+    render={({ meta: { touched, error } }) =>
+      touched && error ? (
+        <CCallout color="danger">
+          <FontAwesomeIcon icon={faExclamationTriangle} color="danger" />
+          {error}
+        </CCallout>
+      ) : null
+    }
+  />
+)
 
-const GraphExplorer = () => {
-  let navigate = useNavigate()
-  const tenant = useSelector((state) => state.app.currentTenant)
-  let query = useQuery()
-  const applicationid = query.get('applicationid')
-  const SearchNow = query.get('SearchNow')
-  const [visibleA, setVisibleA] = useState(true)
+Error.propTypes = {
+  name: PropTypes.string.isRequired,
+}
+
+const AppApproval = () => {
+  const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
+
   const handleSubmit = async (values) => {
-    setVisibleA(false)
-    Object.keys(values).filter(function (x) {
-      if (values[x] === null) {
-        delete values[x]
-      }
-      return null
-    })
-    const shippedValues = {
-      tenantFilter: tenant.defaultDomainName,
-      SearchNow: true,
-      ...values,
-    }
-    var queryString = Object.keys(shippedValues)
-      .map((key) => key + '=' + shippedValues[key])
-      .join('&')
-
-    navigate(`?${queryString}`)
-  }
-  const [execGraphRequest, graphrequest] = useLazyGenericGetRequestQuery()
-
-  const columns = [
-    {
-      name: 'Default Domain',
-      selector: (row) => row['defaultDomainName'],
-      sortable: true,
-      cell: (row) => CellTip(row['defaultDomainName']),
-      exportSelector: 'defaultDomainName',
-      minWidth: '200px',
-    },
-    {
-      name: 'Approval link',
-      selector: (row) => row['link'],
-      center: true,
-      cell: (row) => (
-        <a href={`${row.link}`} target="_blank" className="dlink" rel="noreferrer">
-          <FontAwesomeIcon icon={faCog} className="me-2" />
-        </a>
-      ),
-    },
-  ]
-
-  if (graphrequest.isSuccess) {
-    if (graphrequest.data.length === 0) {
-      graphrequest.data = [{ data: 'No Data Found' }]
-    }
+    genericPostRequest({ path: '/api/ExecAddMultiTenantApp', values: values })
   }
 
-  useEffect(() => {
-    execGraphRequest({
-      path: 'api/execAppApproval',
-      params: { applicationid },
-    })
-  }, [applicationid, execGraphRequest, tenant.defaultDomainName])
-
-  const WhenFieldChanges = ({ field, set }) => (
-    <Field name={set} subscription={{}}>
-      {(
-        // No subscription. We only use Field to get to the change function
-        { input: { onChange } },
-      ) => (
-        <FormSpy subscription={{}}>
-          {({ form }) => (
-            <OnChange name={field}>
-              {(value) => {
-                let template = value
-                onChange(template)
-              }}
-            </OnChange>
-          )}
-        </FormSpy>
-      )}
-    </Field>
-  )
+  const formValues = {
+    TemplateType: 'Admin',
+  }
 
   return (
-    <>
-      <CRow>
-        <CCol>
-          <CCard className="options-card">
-            <CCardHeader>
-              <CCardTitle className="d-flex justify-content-between">
-                Approval Settings
-                <CButton
-                  size="sm"
-                  variant="ghost"
-                  className="stretched-link"
-                  onClick={() => setVisibleA(!visibleA)}
-                >
-                  <FontAwesomeIcon icon={visibleA ? faChevronDown : faChevronRight} />
-                </CButton>
-              </CCardTitle>
-            </CCardHeader>
-          </CCard>
-          <CCollapse visible={visibleA}>
-            <CCard className="options-card">
-              <CCardHeader></CCardHeader>
-              <CCardBody>
-                <Form
-                  initialValues={{
-                    tenantFilter: tenant.defaultDomainName,
-                    applicationid: applicationid,
-                  }}
-                  onSubmit={handleSubmit}
-                  render={({ handleSubmit, submitting, values }) => {
-                    return (
-                      <CForm onSubmit={handleSubmit}>
-                        <CRow>
-                          <CCol>
-                            <p>
-                              This tool helps you to retrieve the approval links required for each
-                              tenant. This is required to use 'Application Permissions' within these
-                              tenants when GDAP is deployed.
-                            </p>
-                            <p>
-                              The approval URL might lead to an error page with the error "Admin
-                              Role not found" or not load any page at all after clicking confirm -
-                              This is expected behavior.
-                            </p>
-                          </CCol>
-                        </CRow>
-                        <CRow>
-                          <CCol>
-                            <RFFCFormInput
-                              type="text"
-                              name="applicationid"
-                              label="Application ID:"
-                              placeholder="Enter the application ID to generate the approval URLs for. This can be any application."
-                            />
-                          </CCol>
-                          <WhenFieldChanges field="reportTemplate" set="endpoint" />
-                        </CRow>
-                        <CRow className="mb-3">
-                          <CCol>
-                            <CButton type="submit" disabled={submitting}>
-                              <FontAwesomeIcon className="me-2" icon={faSearch} />
-                              Query
-                            </CButton>
-                          </CCol>
-                        </CRow>
-                      </CForm>
-                    )
-                  }}
+    <CippWizard
+      initialValues={{ ...formValues }}
+      onSubmit={handleSubmit}
+      wizardTitle="Add Enterprise Application to tenant(s)"
+    >
+      <CippWizard.Page
+        title="Tenant Choice"
+        description="Choose the tenants to create the application for."
+      >
+        <center>
+          <h3 className="text-primary">Step 1</h3>
+          <h5 className="card-title mb-4">Choose tenants</h5>
+        </center>
+        <hr className="my-4" />
+        <Field name="selectedTenants">
+          {(props) => (
+            <WizardTableField
+              reportName="Add-CA-Policy-Tenant-Selector"
+              keyField="defaultDomainName"
+              path="/api/ListTenants?AllTenantSelector=true"
+              columns={[
+                {
+                  name: 'Display Name',
+                  selector: (row) => row['displayName'],
+                  sortable: true,
+                  exportselector: 'displayName',
+                },
+                {
+                  name: 'Default Domain Name',
+                  selector: (row) => row['defaultDomainName'],
+                  sortable: true,
+                  exportselector: 'mail',
+                },
+              ]}
+              fieldProps={props}
+            />
+          )}
+        </Field>
+        <Error name="selectedTenants" />
+        <hr className="my-4" />
+      </CippWizard.Page>
+      <CippWizard.Page title="Select Options" description="Select which options you want to apply.">
+        <center>
+          <h3 className="text-primary">Step 2</h3>
+          <h5 className="card-title mb-4">Enter the information for this application</h5>
+        </center>
+        <hr className="my-4" />
+        <CRow>
+          <CCol className="mb-3" md={12}>
+            <RFFCFormInput name="AppId" label="Enter Application ID" />
+          </CCol>
+        </CRow>
+        <CRow>
+          <CCol className="mb-3" md={12}>
+            <RFFCFormSwitch
+              name="CopyPermissions"
+              label="Copy permissions from original app (Only possible if app exists in partner tenant)"
+            />
+          </CCol>
+        </CRow>
+        <CRow>
+          <CCol className="mb-3" md={12}>
+            <label>Add permissions</label>
+            <Field name="permissions">
+              {(props) => (
+                <WizardTableField
+                  reportName="Add-CA-Policy-Tenant-Selector"
+                  keyField="defaultDomainName"
+                  path="/PermissionsList.json"
+                  columns={[
+                    {
+                      name: 'Display Name',
+                      selector: (row) => row['displayName'],
+                      sortable: true,
+                      exportselector: 'displayName',
+                    },
+                    {
+                      name: 'Value',
+                      selector: (row) => row['value'],
+                      sortable: true,
+                      exportselector: 'value',
+                    },
+                    {
+                      name: 'Type',
+                      selector: (row) => row['origin'],
+                      sortable: true,
+                      exportselector: 'origin',
+                    },
+                  ]}
+                  fieldProps={props}
                 />
-              </CCardBody>
-            </CCard>
-          </CCollapse>
-        </CCol>
-      </CRow>
-      <hr />
-      <CippPage title="Report Results" tenantSelector={false}>
-        {!SearchNow && <span>Execute a search to get started.</span>}
-        {graphrequest.isSuccess && SearchNow && (
-          <CCard className="content-card">
-            <CCardHeader className="d-flex justify-content-between align-items-center">
-              <CCardTitle>Results</CCardTitle>
-            </CCardHeader>
-            <CCardBody>
-              <CippTable
-                reportName="GraphExplorer"
-                columns={columns}
-                data={graphrequest.data}
-                isFetching={graphrequest.isFetching}
-              />
-            </CCardBody>
-          </CCard>
+              )}
+            </Field>
+          </CCol>
+        </CRow>
+        <hr className="my-4" />
+      </CippWizard.Page>
+      <CippWizard.Page title="Review and Confirm" description="Confirm the settings to apply">
+        <center>
+          <h3 className="text-primary">Step 3</h3>
+          <h5 className="card-title mb-4">Confirm and apply</h5>
+        </center>
+        <hr className="my-4" />
+        {!postResults.isSuccess && (
+          <FormSpy>
+            {(props) => {
+              return (
+                <>
+                  <CRow>
+                    <CCol md={3}></CCol>
+                    <CCol md={6}>
+                      <h5 className="mb-0">Selected Tenants</h5>
+                      <CCallout color="info">
+                        {props.values.selectedTenants.map((tenant, idx) => (
+                          <li key={idx}>
+                            {tenant.displayName}- {tenant.defaultDomainName}
+                          </li>
+                        ))}
+                      </CCallout>
+                      <h5 className="mb-0">Application ID</h5>
+                      <CCallout color="info">{props.values.AppId}</CCallout>
+                      <h5 className="mb-0">Copy Permissions</h5>
+                      <CCallout color="info">
+                        {props.values.CopyPermissions ? (
+                          <FontAwesomeIcon icon={'check'}>Yes</FontAwesomeIcon>
+                        ) : (
+                          <FontAwesomeIcon icon={'times'}>No</FontAwesomeIcon>
+                        )}
+                      </CCallout>
+                      <h5 className="mb-0">Selected Permissions</h5>
+                      <CCallout color="info">
+                        {props.values.permissions?.map((tenant, idx) => (
+                          <li key={idx}>
+                            {tenant.displayName} - {tenant.origin}
+                          </li>
+                        ))}
+                      </CCallout>
+                    </CCol>
+                  </CRow>
+                </>
+              )
+            }}
+          </FormSpy>
         )}
-      </CippPage>
-    </>
+        {postResults.isFetching && (
+          <CCallout color="info">
+            <CSpinner>Loading</CSpinner>
+          </CCallout>
+        )}
+        {postResults.isSuccess && (
+          <CCallout color="success">
+            {postResults.data.Results.map((message, idx) => {
+              return <li key={idx}>{message}</li>
+            })}
+          </CCallout>
+        )}
+        <hr className="my-4" />
+      </CippWizard.Page>
+    </CippWizard>
   )
 }
 
-export default GraphExplorer
+export default AppApproval
