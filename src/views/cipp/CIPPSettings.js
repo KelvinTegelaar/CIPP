@@ -407,7 +407,7 @@ const GeneralSettings = () => {
                   </CCallout>
                   {permissionsResult.data.Results?.AccessTokenDetails?.Name !== '' && (
                     <>
-                      <CButton className="me-2" onClick={() => setTokenOffcanvasVisible(true)}>
+                      <CButton className="me-3" onClick={() => setTokenOffcanvasVisible(true)}>
                         Details
                       </CButton>
                       <CippListOffcanvas
@@ -424,7 +424,7 @@ const GeneralSettings = () => {
                   {permissionsResult.data.Results?.Memberships !== '' && (
                     <>
                       <TableModalButton
-                        className="me-2"
+                        className="me-3"
                         data={permissionsResult.data.Results?.Memberships.filter(
                           (p) => p['@odata.type'] == '#microsoft.graph.group',
                         )}
