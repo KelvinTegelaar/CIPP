@@ -248,6 +248,51 @@ const _nav = [
   },
   {
     component: CNavGroup,
+    name: 'GDAP Management',
+    section: 'Settings',
+    to: '/cipp/gdap',
+    icon: <FontAwesomeIcon icon={faUserShield} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Role Wizard',
+        to: '/tenant/administration/gdap-role-wizard',
+      },
+      {
+        component: CNavItem,
+        name: 'GDAP Roles',
+        to: '/tenant/administration/gdap-roles',
+      },
+      /*{
+        component: CNavItem,
+        name: 'Migration Wizard',
+        to: '/tenant/administration/gdap',
+      },
+      {
+        component: CNavItem,
+        name: 'GDAP Migration Status',
+        to: '/tenant/administration/gdap-status',
+      },*/
+      {
+        component: CNavItem,
+        name: 'Invite Wizard',
+        to: '/tenant/administration/gdap-invite',
+      },
+      {
+        component: CNavItem,
+        name: 'GDAP Relationships',
+        to: '/tenant/administration/gdap-relationships',
+      },
+      {
+        component: CNavItem,
+        name: 'Documentation',
+        href: 'https://cipp.app/docs/user/usingcipp/GDAP/migration',
+        target: '_blank',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
     name: 'Reports',
     section: 'Reports',
     to: '/tenant/reports',
@@ -678,56 +723,15 @@ const _nav = [
         name: 'Logbook',
         to: '/cipp/logs',
       },
-
       {
         component: CNavItem,
         name: 'SAM Setup Wizard',
         to: '/cipp/setup',
       },
-    ],
-  },
-  {
-    component: CNavGroup,
-    name: 'GDAP Migration',
-    section: 'Settings',
-    to: '/cipp/gdap',
-    icon: <FontAwesomeIcon icon={faUserShield} className="nav-icon" />,
-    items: [
       {
         component: CNavItem,
-        name: 'Role Wizard',
-        to: '/tenant/administration/gdap-role-wizard',
-      },
-      {
-        component: CNavItem,
-        name: 'GDAP Roles',
-        to: '/tenant/administration/gdap-roles',
-      },
-      {
-        component: CNavItem,
-        name: 'Migration Wizard',
-        to: '/tenant/administration/gdap',
-      },
-      {
-        component: CNavItem,
-        name: 'GDAP Migration Status',
-        to: '/tenant/administration/gdap-status',
-      },
-      {
-        component: CNavItem,
-        name: 'Invite Wizard',
-        to: '/tenant/administration/gdap-invite',
-      },
-      {
-        component: CNavItem,
-        name: 'GDAP Relationships',
-        to: '/tenant/administration/gdap-relationships',
-      },
-      {
-        component: CNavItem,
-        name: 'Documentation',
-        href: 'https://cipp.app/docs/user/usingcipp/GDAP/migration',
-        target: '_blank',
+        name: 'Log Out',
+        to: '/logout',
       },
     ],
   },
