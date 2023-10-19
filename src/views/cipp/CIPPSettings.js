@@ -400,8 +400,9 @@ const GeneralSettings = () => {
                     )}
                     {permissionsResult.data.Results?.CIPPGroupCount == 0 && (
                       <>
-                        NOTE: M365 GDAP groups were not set up by CIPP, review the SAM user groups
-                        below.
+                        NOTE: Your M365 GDAP groups were not set up by CIPP. Please check the groups
+                        below to see if you have the correct GDAP permissions, or execute an access
+                        check.
                       </>
                     )}
                   </CCallout>
