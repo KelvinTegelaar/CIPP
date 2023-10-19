@@ -79,27 +79,23 @@ FilterComponent.propTypes = {
   filterlist: PropTypes.arrayOf(PropTypes.object),
   onFilterPreset: PropTypes.func,
 }
+const compareValues = (a, b) => {
+  if (a === null) return 1
+  if (b === null) return -1
+  if (typeof a === 'number' && typeof b === 'number') return a - b
+  if (typeof a === 'boolean' && typeof b === 'boolean') return a === b ? 0 : a ? -1 : 1
+  return String(a).localeCompare(String(b), 'en', { numeric: true })
+}
 
 const customSort = (rows, selector, direction) => {
   return rows.sort((a, b) => {
-    // use the selector to resolve your field names by passing the sort comparitors
-    let aField
-    let bField
-
-    aField = selector(a)
-    bField = selector(b)
-
-    let comparison = 0
-
-    if (aField?.toString().localeCompare(bField, 'en', { numeric: true }) > 0) {
-      comparison = 1
-    } else if (aField?.toString().localeCompare(bField, 'en', { numeric: true }) < 0) {
-      comparison = -1
-    }
-
+    let aField = selector(a)
+    let bField = selector(b)
+    let comparison = compareValues(aField, bField)
     return direction === 'desc' ? comparison * -1 : comparison
   })
 }
+
 export default function CippTable({
   data,
   isFetching = false,
