@@ -83,6 +83,8 @@ import { Buffer } from 'buffer'
 import Extensions from 'src/data/Extensions.json'
 import { CellDelegatedPrivilege } from 'src/components/tables/CellDelegatedPrivilege'
 import { TableModalButton } from 'src/components/buttons'
+import { cellTableFormatter } from 'src/components/tables/CellTable'
+import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 
 const CIPPSettings = () => {
   const [active, setActive] = useState(1)
@@ -151,16 +153,29 @@ const checkAccessColumns = [
     name: 'Tenant Domain',
     selector: (row) => row['TenantName'],
     grow: 0,
+    cell: cellGenericFormatter(),
   },
   {
     name: 'Result',
     selector: (row) => row['Status'],
     minWidth: '380px',
     maxWidth: '380px',
+    cell: cellGenericFormatter(),
   },
   {
     name: 'Missing GDAP Roles',
-    selector: (row) => row['GDAP'],
+    selector: (row) => row?.MissingRoles,
+    cell: cellTableFormatter('MissingRoles'),
+  },
+  {
+    name: 'Tenant Roles',
+    selector: (row) => row?.GDAPRoles,
+    cell: cellTableFormatter('GDAPRoles'),
+  },
+  {
+    name: 'SAM User Roles',
+    selector: (row) => row?.SAMUserRoles,
+    cell: cellTableFormatter('SAMUserRoles'),
   },
 ]
 
@@ -482,7 +497,7 @@ const GeneralSettings = () => {
         </CCol>
       </CRow>
       <CRow className="mb-3">
-        <CCol md={6}>
+        <CCol md={9}>
           <CCard className="h-100">
             <CCardHeader>
               <CCardTitle>Tenant Access Check</CCardTitle>
