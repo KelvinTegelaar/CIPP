@@ -111,6 +111,7 @@ const EditGroup = () => {
       allowExternal: values.allowExternal,
       sendCopies: values.sendCopies,
       mail: group[0].mail,
+      groupName: group[0].DisplayName,
     }
     //window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/EditGroup', values: shippedValues }).then((res) => {
