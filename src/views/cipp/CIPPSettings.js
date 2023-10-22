@@ -85,6 +85,7 @@ import { CellDelegatedPrivilege } from 'src/components/tables/CellDelegatedPrivi
 import { TableModalButton } from 'src/components/buttons'
 import { cellTableFormatter } from 'src/components/tables/CellTable'
 import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
+import { check } from 'prettier'
 
 const CIPPSettings = () => {
   const [active, setActive] = useState(1)
@@ -165,17 +166,17 @@ const checkAccessColumns = [
   {
     name: 'Missing GDAP Roles',
     selector: (row) => row?.MissingRoles,
-    cell: cellTableFormatter('MissingRoles'),
+    cell: cellTableFormatter('MissingRoles', true, false),
   },
   {
-    name: 'Tenant Roles',
+    name: 'Roles available',
     selector: (row) => row?.GDAPRoles,
-    cell: cellTableFormatter('GDAPRoles'),
+    cell: cellTableFormatter('GDAPRoles', false, true),
   },
   {
     name: 'SAM User Roles',
     selector: (row) => row?.SAMUserRoles,
-    cell: cellTableFormatter('SAMUserRoles'),
+    cell: cellTableFormatter('SAMUserRoles', false, true),
   },
 ]
 
@@ -189,8 +190,6 @@ const GeneralSettings = () => {
   const [selectedTenants, setSelectedTenants] = useState([])
   const [showMaxSelected, setShowMaxSelected] = useState(false)
   const [tokenOffcanvasVisible, setTokenOffcanvasVisible] = useState(false)
-  const [runBackup, RunBackupResult] = useLazyGenericGetRequestQuery()
-  const [restoreBackup, restoreBackupResult] = useLazyGenericPostRequestQuery()
 
   const maxSelected = 2
   const tenantSelectorRef = useRef(null)
@@ -558,68 +557,6 @@ const GeneralSettings = () => {
         </CCol>
         <CCol>
           <DNSSettings />
-        </CCol>
-      </CRow>
-      <CRow>
-        <CCol>
-          <CCard className="h-100">
-            <CCardHeader>
-              <CCardTitle>Run Backup</CCardTitle>
-            </CCardHeader>
-            <CCardBody>
-              <CRow>Click the button below to start a backup of all Settings</CRow>
-              <CButton
-                onClick={() => runBackup({ path: '/api/ExecRunBackup' })}
-                disabled={RunBackupResult.isFetching}
-                className="me-3 mt-3"
-              >
-                {RunBackupResult.isFetching && (
-                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-                )}
-                Run backup
-              </CButton>
-              <input
-                ref={inputRef}
-                type="file"
-                accept="json/*"
-                style={{ display: 'none' }}
-                id="contained-button-file"
-                onChange={(e) => handleChange(e)}
-              />
-              <CButton
-                type="file"
-                name="file"
-                onClick={() => inputRef.current.click()}
-                disabled={restoreBackupResult.isFetching}
-                className="me-3 mt-3"
-              >
-                {restoreBackupResult.isFetching && (
-                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-                )}
-                Restore backup
-              </CButton>
-              {restoreBackupResult.isSuccess && (
-                <>
-                  <CCallout color="success">{restoreBackupResult.data.Results}</CCallout>
-                </>
-              )}
-              {RunBackupResult.isSuccess && (
-                <>
-                  <CCallout color="success">
-                    <CButton
-                      onClick={() => downloadTxtFile(RunBackupResult.data.backup)}
-                      className="m-1"
-                    >
-                      Download Backup
-                    </CButton>
-                  </CCallout>
-                </>
-              )}
-            </CCardBody>
-          </CCard>
-        </CCol>
-        <CCol>
-          <PasswordSettings />
         </CCol>
       </CRow>
     </div>
@@ -1371,46 +1308,40 @@ const PasswordSettings = () => {
     <>
       {getPasswordConfigResult.isUninitialized &&
         getPasswordConfig({ path: '/api/ExecPasswordConfig?list=true' })}
-      <CCard className="h-100">
-        <CCardHeader>
-          <CCardTitle>Password Generation</CCardTitle>
-        </CCardHeader>
-        <CCardBody>
-          <CRow>Select a password style for generated passwords.</CRow>
-          <CButtonGroup role="group" aria-label="Resolver" className="my-3">
-            {resolvers.map((r, index) => (
-              <CButton
-                onClick={() => switchResolver(r)}
-                color={
-                  r === getPasswordConfigResult.data?.Results?.passwordType
-                    ? 'primary'
-                    : 'secondary'
-                }
-                key={index}
-              >
-                {r}
-              </CButton>
-            ))}
-          </CButtonGroup>
-          {(editPasswordConfigResult.isSuccess || editPasswordConfigResult.isError) && (
-            <CCallout
-              color={editPasswordConfigResult.isSuccess ? 'success' : 'danger'}
-              visible={passAlertVisible}
-            >
-              {editPasswordConfigResult.isSuccess
-                ? editPasswordConfigResult.data.Results
-                : 'Error setting password style'}
-            </CCallout>
-          )}
-        </CCardBody>
-      </CCard>
+      <h3 className="underline mb-5">Password Style</h3>
+      <CButtonGroup role="group" aria-label="Resolver" className="my-3">
+        {resolvers.map((r, index) => (
+          <CButton
+            onClick={() => switchResolver(r)}
+            color={
+              r === getPasswordConfigResult.data?.Results?.passwordType ? 'primary' : 'secondary'
+            }
+            key={index}
+          >
+            {r}
+          </CButton>
+        ))}
+      </CButtonGroup>
+      {(editPasswordConfigResult.isSuccess || editPasswordConfigResult.isError) && (
+        <CCallout
+          color={editPasswordConfigResult.isSuccess ? 'success' : 'danger'}
+          visible={passAlertVisible}
+        >
+          {editPasswordConfigResult.isSuccess
+            ? editPasswordConfigResult.data.Results
+            : 'Error setting password style'}
+        </CCallout>
+      )}
     </>
   )
 }
 
 const DNSSettings = () => {
+  const [runBackup, RunBackupResult] = useLazyGenericGetRequestQuery()
+  const [restoreBackup, restoreBackupResult] = useLazyGenericPostRequestQuery()
   const [getDnsConfig, getDnsConfigResult] = useLazyGetDnsConfigQuery()
   const [editDnsConfig, editDnsConfigResult] = useLazyEditDnsConfigQuery()
+  const inputRef = useRef(null)
 
   const [alertVisible, setAlertVisible] = useState(false)
 
@@ -1431,10 +1362,10 @@ const DNSSettings = () => {
       {getDnsConfigResult.isSuccess && (
         <CCard className="h-100">
           <CCardHeader>
-            <CCardTitle>DNS Resolver</CCardTitle>
+            <CCardTitle>Application Settings</CCardTitle>
           </CCardHeader>
           <CCardBody>
-            <CRow>Select a DNS resolver to use for Domain Analysis.</CRow>
+            <h3 className="underline mb-5">DNS resolver</h3>
             <CButtonGroup role="group" aria-label="Resolver" className="my-3">
               {resolvers.map((r, index) => (
                 <CButton
@@ -1456,6 +1387,59 @@ const DNSSettings = () => {
                   : 'Error setting resolver'}
               </CCallout>
             )}
+            <CCol>
+              <PasswordSettings />
+            </CCol>
+            <CCol>
+              <h3 className="underline mb-5">Settings Backup</h3>
+              <CButton
+                onClick={() => runBackup({ path: '/api/ExecRunBackup' })}
+                disabled={RunBackupResult.isFetching}
+                className="me-3 mt-3"
+              >
+                {RunBackupResult.isFetching && (
+                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                )}
+                Run backup
+              </CButton>
+              <input
+                ref={inputRef}
+                type="file"
+                accept="json/*"
+                style={{ display: 'none' }}
+                id="contained-button-file"
+                onChange={(e) => handleChange(e)}
+              />
+              <CButton
+                type="file"
+                name="file"
+                onClick={() => inputRef.current.click()}
+                disabled={restoreBackupResult.isFetching}
+                className="me-3 mt-3"
+              >
+                {restoreBackupResult.isFetching && (
+                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                )}
+                Restore backup
+              </CButton>
+              {restoreBackupResult.isSuccess && (
+                <>
+                  <CCallout color="success">{restoreBackupResult.data.Results}</CCallout>
+                </>
+              )}
+              {RunBackupResult.isSuccess && (
+                <>
+                  <CCallout color="success">
+                    <CButton
+                      onClick={() => downloadTxtFile(RunBackupResult.data.backup)}
+                      className="m-1"
+                    >
+                      Download Backup
+                    </CButton>
+                  </CCallout>
+                </>
+              )}
+            </CCol>
           </CCardBody>
         </CCard>
       )}
