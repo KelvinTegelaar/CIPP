@@ -140,7 +140,7 @@ const SpamFilterAdd = () => {
           <CCol>
             <RFFCFormTextarea
               name="PowerShellCommand"
-              label="New-TransportRule parameters"
+              label="Spamfilter parameters"
               placeholder={
                 'Enter the JSON information to use as parameters, or select from a template'
               }

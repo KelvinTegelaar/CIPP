@@ -4,13 +4,6 @@ import PropTypes from 'prop-types'
 import { CTooltip } from '@coreui/react'
 import ReactTimeAgo from 'react-time-ago'
 
-/**
- *
- * @param format ['short', 'long', 'relative']
- * @param value
- * @returns {JSX.Element}
- * @constructor
- */
 export const CellDate = ({ format = 'short', showTime = true, showDate = true, cell }) => {
   if (!cell || (!showTime && !showDate)) {
     return <div />
@@ -21,25 +14,29 @@ export const CellDate = ({ format = 'short', showTime = true, showDate = true, c
     locale = navigator.language
   }
 
-  // cheatsheet
-  // https://devhints.io/wip/intl-datetime
-  const dateTimeArgs = [
-    [locale, 'default'], // add fallback option if locale doesn't load properly
-  ]
+  // Convert cell value to a number and check if it's a Unix timestamp
+  const possibleUnixTimestamp = Number(cell)
+  const isUnixTimestamp = !isNaN(possibleUnixTimestamp) && possibleUnixTimestamp > 1000000000
+  let dateObject
+
+  if (isUnixTimestamp) {
+    dateObject = moment.unix(possibleUnixTimestamp).toDate()
+  } else {
+    dateObject = moment(cell).toDate()
+  }
+
+  const dateTimeArgs = [[locale, 'default']]
 
   const dateTimeFormatOptions = {}
-  if (format == 'relative') {
+
+  if (format === 'relative') {
     try {
-      return (
-        <CTooltip content={cell}>
-          <ReactTimeAgo date={cell} />
-        </CTooltip>
-      )
+      return <ReactTimeAgo date={dateObject} />
     } catch (error) {
-      console.error('Error formatting date, fallback to string value', { date: cell, error })
+      console.error('Error formatting date, fallback to string value', { date: dateObject, error })
       return (
-        <CTooltip content={cell}>
-          <div>{String(cell)}</div>
+        <CTooltip content={dateObject.toString()}>
+          <div>{String(dateObject)}</div>
         </CTooltip>
       )
     }
@@ -56,16 +53,14 @@ export const CellDate = ({ format = 'short', showTime = true, showDate = true, c
     let formatted
 
     try {
-      // lots of dates returned are unreliably parsable (e.g. non ISO8601 format)
-      // fallback using moment to parse into date object
-      formatted = new Intl.DateTimeFormat(...dateTimeArgs).format(moment(cell).toDate())
+      formatted = new Intl.DateTimeFormat(...dateTimeArgs).format(dateObject)
     } catch (error) {
-      console.error('Error formatting date, fallback to string value', { date: cell, error })
-      formatted = cell
+      console.error('Error formatting date, fallback to string value', { date: dateObject, error })
+      formatted = dateObject.toString()
     }
 
     return (
-      <CTooltip content={cell}>
+      <CTooltip content={dateObject.toString()}>
         <div>{String(formatted)}</div>
       </CTooltip>
     )
@@ -74,7 +69,7 @@ export const CellDate = ({ format = 'short', showTime = true, showDate = true, c
 
 CellDate.propTypes = {
   format: PropTypes.oneOf(['short', 'medium', 'long', 'full', 'relative']),
-  cell: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]),
+  cell: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.instanceOf(Date)]),
   showTime: PropTypes.bool,
   showDate: PropTypes.bool,
 }
