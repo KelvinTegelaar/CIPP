@@ -1365,7 +1365,7 @@ const DNSSettings = () => {
             <CCardTitle>Application Settings</CCardTitle>
           </CCardHeader>
           <CCardBody>
-            <h3 className="underline mb-5">DNS resolver</h3>
+            <h3 className="underline mb-5">DNS Resolver</h3>
             <CButtonGroup role="group" aria-label="Resolver" className="my-3">
               {resolvers.map((r, index) => (
                 <CButton
