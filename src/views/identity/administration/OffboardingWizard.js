@@ -263,6 +263,14 @@ const OffboardingWizard = () => {
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Remove all mailbox permissions
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.removePermissions ? faCheck : faTimes}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Remove Licenses
                           <FontAwesomeIcon
                             color="#f77f00"
