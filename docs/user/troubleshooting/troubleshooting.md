@@ -7,7 +7,7 @@ Note that these steps come from the community - if you notice any mistakes, plea
 ### Multi-Factor Authentication Troubleshooting
 
 1. The account you use to generate your SAM tokens for CIPP must have Microsoft (Azure AD) MFA enabled, it can't use third-party MFA.
-2. You can't have the `Allow users to remember multi-factor authentication on devices they trust` option enabled in the [classic MFA admin portal](https://account.activedirectory.windowsazure.com/UserManagement/MfaSettings.aspx). In either customer or the partner tenant.
+2. You can't have the `Allow users to remember multi-factor authentication on devices they trust` option enabled in the [classic MFA admin portal](https://account.activedirectory.windowsazure.com/UserManagement/MfaSettings.aspx) in the partner tenant.
 3. Check our section on [Conditional Access](https://cipp.app/docs/user/gettingstarted/postinstall/conditionalaccess/) on how to handle Conditional Access issues.
 
 ### Request not applicable to target tenant.
