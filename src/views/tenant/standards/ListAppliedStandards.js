@@ -407,7 +407,7 @@ const ListAppliedStandards = () => {
                                     name: template.Displayname,
                                   }))}
                                   placeholder="Select a template"
-                                  label="Choose your intune templates to apply"
+                                  label="Choose your Intune templates to apply"
                                 />
                               )}
                             </Condition>
