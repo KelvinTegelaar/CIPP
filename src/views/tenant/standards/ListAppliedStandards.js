@@ -451,7 +451,7 @@ const ListAppliedStandards = () => {
                                     name: template.displayName,
                                   }))}
                                   placeholder="Select a template"
-                                  label="Choose your intune templates to apply"
+                                  label="Choose your Conditional Access templates to apply"
                                 />
                               )}
                             </Condition>
@@ -473,7 +473,7 @@ const ListAppliedStandards = () => {
                                     name: template.name,
                                   }))}
                                   placeholder="Select a template"
-                                  label="Choose your intune templates to apply"
+                                  label="Choose your Transport Rule templates to apply"
                                 />
                               )}
                             </Condition>
@@ -494,7 +494,7 @@ const ListAppliedStandards = () => {
                                     name: template.Displayname,
                                   }))}
                                   placeholder="Select a template"
-                                  label="Choose your group templates to apply"
+                                  label="Choose your Group templates to apply"
                                 />
                               )}
                             </Condition>
