@@ -1,5 +1,5 @@
 import React from 'react'
-import { CButtonGroup, CButton, CCard, CCardHeader } from '@coreui/react'
+import { CButton, CCol, CRow } from '@coreui/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setCurrentPageSize } from 'src/store/features/app'
 
@@ -13,21 +13,28 @@ const PageSizeSwitcher = () => {
   }
 
   return (
-    <CCard>
-      <CCardHeader>Select Default Page Size</CCardHeader>
-      <CButtonGroup role="group" aria-label="Page Size Switcher">
-        {pageSizes.map((tablePageSize, index) => (
-          <CButton
-            onClick={() => SwitchPageSize(tablePageSize)}
-            active={tablePageSize === currentTablePageSize ? true : false}
-            color="secondary"
-            key={index}
-          >
-            {tablePageSize}
-          </CButton>
-        ))}
-      </CButtonGroup>
-    </CCard>
+    <>
+      <CRow>
+        <CCol>
+          <label className="mb-3">Default Page Size</label>
+        </CCol>
+      </CRow>
+      <CRow>
+        <CCol className="mb-3">
+          {pageSizes.map((tablePageSize, index) => (
+            <CButton
+              onClick={() => SwitchPageSize(tablePageSize)}
+              className={`circular-button default ${
+                tablePageSize === currentTablePageSize ? 'round-focus' : ''
+              }`}
+              key={index}
+            >
+              {tablePageSize}
+            </CButton>
+          ))}
+        </CCol>
+      </CRow>
+    </>
   )
 }
 

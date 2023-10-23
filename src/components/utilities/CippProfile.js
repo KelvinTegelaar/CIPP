@@ -16,7 +16,6 @@ import TenantListSelector from './TenantListSelector'
 
 const CippProfile = () => {
   const { data: profile, isFetching, isLoading } = useLoadClientPrincipalQuery()
-
   return (
     <>
       <CRow xs={{ gutter: 3 }}>
