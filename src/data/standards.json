@@ -416,6 +416,12 @@
     "label": "Set inactive device retirement days"
   },
   {
+    "name": "standards.intuneRequireMFA",
+    "cat": "Intune",
+    "helpText": "",
+    "label": "Require Multifactor Authentication to register or join devices with Microsoft Entra"
+  },
+  {
     "name": "standards.sharingCapability.Enabled",
     "cat": "SharePoint",
     "helpText": "",
