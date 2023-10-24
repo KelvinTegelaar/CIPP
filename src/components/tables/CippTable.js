@@ -111,6 +111,7 @@ export default function CippTable({
   isModal = false,
   exportFiltered = false,
   filterlist,
+  showFilter = true,
   tableProps: {
     keyField = 'id',
     theme = 'cyberdrain',
@@ -468,6 +469,10 @@ export default function CippTable({
       ])
     }
 
+    actions.forEach((action) => {
+      defaultActions.push(action)
+    })
+
     if (!disablePDFExport || !disableCSVExport) {
       const keys = []
       const exportFormatter = {}
@@ -578,9 +583,7 @@ export default function CippTable({
             </CDropdown>,
           ])
         }
-        actions.forEach((action) => {
-          defaultActions.push(action)
-        })
+
         defaultActions.push([
           <ExportPDFButton
             key="export-pdf-action"
@@ -627,15 +630,17 @@ export default function CippTable({
     return (
       <>
         <div className="w-100 d-flex justify-content-start">
-          <FilterComponent
-            onFilter={(e) => setFilterText(e.target.value)}
-            onFilterPreset={(e) => {
-              setFilterText(e)
-            }}
-            onClear={handleClear}
-            filterText={filterText}
-            filterlist={filterlist}
-          />
+          {showFilter && (
+            <FilterComponent
+              onFilter={(e) => setFilterText(e.target.value)}
+              onFilterPreset={(e) => {
+                setFilterText(e)
+              }}
+              onClear={handleClear}
+              filterText={filterText}
+              filterlist={filterlist}
+            />
+          )}
           {defaultActions}
         </div>
       </>

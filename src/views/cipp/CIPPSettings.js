@@ -21,6 +21,7 @@ import {
   CSpinner,
   CCardText,
   CTooltip,
+  CFormSwitch,
 } from '@coreui/react'
 import {
   useGenericGetRequestQuery,
@@ -149,40 +150,8 @@ const CIPPSettings = () => {
 
 export default CIPPSettings
 
-const checkAccessColumns = [
-  {
-    name: 'Tenant Domain',
-    selector: (row) => row['TenantName'],
-    grow: 0,
-    cell: cellGenericFormatter(),
-  },
-  {
-    name: 'Result',
-    selector: (row) => row['Status'],
-    minWidth: '380px',
-    maxWidth: '380px',
-    cell: cellGenericFormatter(),
-  },
-  {
-    name: 'Missing GDAP Roles',
-    selector: (row) => row?.MissingRoles,
-    cell: cellTableFormatter('MissingRoles', true, false),
-  },
-  {
-    name: 'Roles available',
-    selector: (row) => row?.GDAPRoles,
-    cell: cellTableFormatter('GDAPRoles', false, true),
-  },
-  {
-    name: 'SAM User Roles',
-    selector: (row) => row?.SAMUserRoles,
-    cell: cellTableFormatter('SAMUserRoles', false, true),
-  },
-]
-
 const GeneralSettings = () => {
   const { data: versions, isSuccess: isSuccessVersion } = useLoadVersionsQuery()
-
   const { data: tenants = [] } = useListTenantsQuery({ AllTenantSelector: false })
   const [checkPermissions, permissionsResult] = useLazyExecPermissionsAccessCheckQuery()
   const [clearCache, clearCacheResult] = useLazyExecClearCacheQuery()
@@ -190,6 +159,7 @@ const GeneralSettings = () => {
   const [selectedTenants, setSelectedTenants] = useState([])
   const [showMaxSelected, setShowMaxSelected] = useState(false)
   const [tokenOffcanvasVisible, setTokenOffcanvasVisible] = useState(false)
+  const [showExtendedInfo, setShowExtendedInfo] = useState(true)
 
   const maxSelected = 2
   const tenantSelectorRef = useRef(null)
@@ -203,6 +173,39 @@ const GeneralSettings = () => {
       setShowMaxSelected(true)
     }
   }
+
+  const checkAccessColumns = [
+    {
+      name: 'Tenant Domain',
+      selector: (row) => row['TenantName'],
+      grow: 0,
+      cell: cellGenericFormatter(),
+    },
+    {
+      name: 'Result',
+      selector: (row) => row['Status'],
+      minWidth: '380px',
+      maxWidth: '380px',
+      cell: cellGenericFormatter(),
+    },
+    {
+      name: 'Missing GDAP Roles',
+      selector: (row) => row?.MissingRoles,
+      cell: cellTableFormatter('MissingRoles', true, false),
+    },
+    {
+      name: 'Roles available',
+      selector: (row) => row?.GDAPRoles,
+      cell: cellTableFormatter('GDAPRoles', false, true),
+      omit: showExtendedInfo,
+    },
+    {
+      name: 'SAM User Roles',
+      selector: (row) => row?.SAMUserRoles,
+      cell: cellTableFormatter('SAMUserRoles', false, true),
+      omit: showExtendedInfo,
+    },
+  ]
 
   const handleCheckAccess = () => {
     const mapped = tenants.reduce(
@@ -301,7 +304,16 @@ const GeneralSettings = () => {
 
   const tableProps = {
     pagination: false,
-    subheader: false,
+    actions: [
+      <CFormSwitch
+        size="sm"
+        label="Show Extended Info"
+        onChange={(e) => {
+          console.log(e)
+          setShowExtendedInfo(!e.target.checked)
+        }}
+      />,
+    ],
   }
   const downloadTxtFile = (data) => {
     const txtdata = [JSON.stringify(RunBackupResult.data.backup)]
@@ -544,6 +556,9 @@ const GeneralSettings = () => {
                 <CCol>
                   {accessCheckResult.isSuccess && (
                     <CippTable
+                      showFilter={false}
+                      disablePDFExport={true}
+                      disableCSVExport={true}
                       reportName="none"
                       columns={checkAccessColumns}
                       tableProps={tableProps}
