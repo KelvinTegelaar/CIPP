@@ -332,7 +332,7 @@
   },
   {
     "name": "standards.ActivityBasedTimeout",
-    "cat": "SharePoint",
+    "cat": "Global",
     "helpText": "",
     "addedComponent": null,
     "label": "Enable 1 hour Activity based Timeout"
