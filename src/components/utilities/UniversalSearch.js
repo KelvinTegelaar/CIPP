@@ -80,7 +80,7 @@ const ResultsRow = ({ match }) => {
 
   const handleClick = () => {
     dispatch(hideSwitcher())
-    navigate(`/identity/administration/users?customerId=${match._tenantId}`)
+    navigate(`/identity/administration/users?customerId=${match._tenantId}&tableFilter=${match.userPrincipalName}`)
   }
 
   return (
