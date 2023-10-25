@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { cellBooleanFormatter } from 'src/components/tables'
+import { cellBooleanFormatter, CellTip } from 'src/components/tables'
 import { CippPageList } from 'src/components/layout'
 
 const columns = [
@@ -42,6 +42,7 @@ const columns = [
     selector: (row) => row['CoveredByCA'],
     name: 'Enforced via Conditional Access',
     sortable: true,
+    cell: (row) => CellTip(row['CoveredByCA']),
     exportSelector: 'CoveredByCA',
   },
   {
@@ -99,6 +100,7 @@ const Altcolumns = [
     selector: (row) => row['CoveredByCA'],
     name: 'Enforced via Conditional Access',
     sortable: true,
+    cell: (row) => CellTip(row['CoveredByCA']),
     exportSelector: 'CoveredByCA',
   },
   {
@@ -130,7 +132,10 @@ const MFAList = () => {
       title="MFA Report"
       capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
       datatable={{
-        filterlist: [{ filterName: 'Enabled users', filter: '"accountEnabled":true' }],
+        filterlist: [
+          { filterName: 'Enabled users', filter: '"accountEnabled":true' },
+          { filterName: 'Licensed users', filter: '"isLicensed":"true"' },
+        ],
         columns: tenant.defaultDomainName === 'AllTenants' ? Altcolumns : columns,
         path: '/api/ListMFAUsers',
         reportName: `${tenant?.defaultDomainName}-MFAReport-List`,

@@ -1,0 +1,29 @@
+{
+  "ui:disabled": false,
+  "ui:readonly": false,
+  "ui:order": ["name", "style", "*"],
+  "Fields": {
+    "items": {
+      "ui:order": [
+        "name",
+        "desc",
+        "UseExistingInfo",
+        "StoreAs",
+        "API",
+        "URL",
+        "Command",
+        "parameters",
+        "where",
+        "ExtractFields",
+        "FrontendFields",
+        "*"
+      ],
+      "FrontendFields": {
+        "ui:classNames": "card card-title p-4 my-4"
+      }
+    }
+  },
+  "ui:submitButtonOptions": {
+    "norender": true
+  }
+}

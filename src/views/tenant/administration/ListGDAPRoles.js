@@ -33,6 +33,19 @@ const ListGDAPRoles = () => {
           columns,
           reportName: `GDAPRole-List`,
           path: '/api/ListGDAPRoles',
+          tableProps: {
+            selectableRows: true,
+            actionsList: [
+              {
+                label: 'Delete Mapping',
+                modal: true,
+                modalUrl: `/api/ExecDeleteGDAPRoleMapping?&GroupId=!GroupId`,
+                modalMessage:
+                  'Are you sure you want to delete this role mapping? (Note: This does not delete the associated security groups or modify any GDAP relationships.)',
+              },
+            ],
+            keyField: 'GroupId',
+          },
         }}
       />
     </div>
