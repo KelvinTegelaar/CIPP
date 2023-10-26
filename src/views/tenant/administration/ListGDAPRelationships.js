@@ -194,7 +194,7 @@ const GDAPRelationships = () => {
               {
                 label: 'Auto Extend Relationship',
                 modal: true,
-                modalUrl: `/api/ExecAutoExtendGDAP&ID=!id`,
+                modalUrl: `/api/ExecAutoExtendGDAP?ID=!id`,
                 modalMessage: 'Are you sure you want to enable automatic extension?',
               },
             ],
