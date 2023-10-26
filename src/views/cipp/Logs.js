@@ -115,13 +115,11 @@ const Logs = () => {
       }
       return null
     })
-    console.log(startDate)
     const shippedValues = {
       SearchNow: true,
       DateFilter: startDate.toISOString().split('T')[0].replace(/-/g, ''),
       ...values,
     }
-    console.log(shippedValues)
     var queryString = Object.keys(shippedValues)
       .map((key) => key + '=' + shippedValues[key])
       .join('&')
