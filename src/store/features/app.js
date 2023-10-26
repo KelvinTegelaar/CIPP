@@ -44,6 +44,15 @@ export const appSlice = createSlice({
     setTenantList: (state, action) => {
       state.TenantListSelector = action.payload?.TenantListSelector
     },
+    setOffboardingDefaults: (state, action) => {
+      state.offboardingDefaults = action.payload?.offboardingDefaults
+    },
+    setUserSettings: (state, action) => {
+      //foreach key in the userSettings, set the state key to the value of that setting
+      Object.keys(action.payload?.userSettings).forEach((key) => {
+        state[key] = action.payload?.userSettings[key]
+      })
+    },
   },
 })
 
@@ -57,6 +66,8 @@ export const {
   setSidebarVisible,
   setDefaultusageLocation,
   setReportImage,
+  setOffboardingDefaults,
+  setUserSettings,
 } = appSlice.actions
 
 export default persistReducer(
