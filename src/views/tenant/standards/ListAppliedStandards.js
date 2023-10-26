@@ -171,9 +171,22 @@ const ListAppliedStandards = () => {
                   render={({ handleSubmit, submitting, values }) => {
                     return (
                       <CForm onSubmit={handleSubmit}>
-                        <hr />
-                        {listStandardResults[0].appliedBy
-                          ? `This standard has been applied at ${listStandardResults[0].appliedAt} by ${listStandardResults[0].appliedBy}`
+                        <hr />{' '}
+                        {listStandardResults[0]?.appliedBy
+                          ? `This standard has been applied at ${new Date(
+                              listStandardResults[0].appliedAt + 'Z',
+                            ).toLocaleDateString(undefined, {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                            })} ${new Date(
+                              listStandardResults[0].appliedAt + 'Z',
+                            ).toLocaleTimeString(undefined, {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              second: '2-digit',
+                              hour12: false,
+                            })} by ${listStandardResults[0].appliedBy}`
                           : 'This tenant does not yet have a standard applied'}
                         <hr />
                         <h5>Global Standards</h5>
@@ -215,7 +228,7 @@ const ListAppliedStandards = () => {
                             ))}
                         </CRow>
                         <hr />
-                        <h5>Azure AD Standards</h5>
+                        <h5>Entra ID Standards</h5>
                         <hr />
                         <CRow className="mb-3" xs={{ cols: 2 }}>
                           {allStandardsList
@@ -373,7 +386,6 @@ const ListAppliedStandards = () => {
                         {postResults.isSuccess && (
                           <CCallout color="success">{postResults.data.Results}</CCallout>
                         )}
-
                         <hr />
                         <h5>Templates</h5>
                         <hr />
