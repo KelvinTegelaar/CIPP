@@ -18,6 +18,7 @@ import { CippWizard } from 'src/components/layout'
 import { WizardTableField } from 'src/components/tables'
 import PropTypes from 'prop-types'
 import {
+  Condition,
   RFFCFormCheck,
   RFFCFormInput,
   RFFCFormRadio,
@@ -57,6 +58,9 @@ const ApplyStandard = () => {
     values.selectedTenants.map(
       (tenant) => (values[`Select_${tenant.defaultDomainName}`] = tenant.defaultDomainName),
     )
+    if (values.AssignTo === 'customGroup') {
+      values.AssignTo = values.customGroup
+    }
     genericPostRequest({ path: '/api/AddChocoApp', values: values })
   }
   const handleSearch = async ({ searchString, customRepo }) => {
@@ -87,7 +91,6 @@ const ApplyStandard = () => {
                   console.log(value)
                   return obj.packagename === value
                 })
-                console.log(template[0])
                 onChange(template[0][set])
               }}
             </OnChange>
@@ -246,6 +249,18 @@ const ApplyStandard = () => {
             name="AssignTo"
             label="Assign to all users and devices"
           ></RFFCFormRadio>
+          <RFFCFormRadio
+            value="customGroup"
+            name="AssignTo"
+            label="Assign to Custom Group"
+          ></RFFCFormRadio>
+          <Condition when="AssignTo" is="customGroup">
+            <RFFCFormInput
+              type="text"
+              name="customGroup"
+              label="Custom Group Names separated by comma. Wildcards (*) are allowed"
+            />
+          </Condition>
         </CForm>
         <hr className="my-4" />
       </CippWizard.Page>
