@@ -17,6 +17,7 @@ const adminRoutes = [
   { path: '/cipp/cipp', name: 'CIPP' },
   { path: '/cipp/settings', name: 'Settings', component: CIPPSettings },
   { path: '/cipp/setup', name: 'Setup', component: Setup },
+
   { path: '/tenant/administration/gdap', name: 'GDAP Wizard', component: GDAP },
   { path: '/tenant/administration/gdap-invite', name: 'GDAP Invite Wizard', component: GDAPInvite },
   {
