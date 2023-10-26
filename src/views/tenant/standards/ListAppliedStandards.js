@@ -383,9 +383,6 @@ const ListAppliedStandards = () => {
                               </>
                             ))}
                         </CRow>
-                        {postResults.isSuccess && (
-                          <CCallout color="success">{postResults.data.Results}</CCallout>
-                        )}
                         <hr />
                         <h5>Templates</h5>
                         <hr />
