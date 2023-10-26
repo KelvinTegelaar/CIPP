@@ -107,7 +107,7 @@ const Logs = () => {
   const DateFilter = query.get('DateFilter')
   //const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const [visibleA, setVisibleA] = useState(false)
-  const [startDate, setStartDate] = useState(new Date())
+  const [startDate, setStartDate] = useState(DateFilter ? new Date(DateFilter) : new Date())
   const handleSubmit = async (values) => {
     Object.keys(values).filter(function (x) {
       if (values[x] === null) {
@@ -115,11 +115,13 @@ const Logs = () => {
       }
       return null
     })
+    console.log(startDate)
     const shippedValues = {
       SearchNow: true,
-      DateFilter: startDate.toLocaleDateString('en-GB').split('/').reverse().join(''),
+      DateFilter: startDate.toISOString().split('T')[0].replace(/-/g, ''),
       ...values,
     }
+    console.log(shippedValues)
     var queryString = Object.keys(shippedValues)
       .map((key) => key + '=' + shippedValues[key])
       .join('&')
@@ -154,7 +156,7 @@ const Logs = () => {
                   initialValues={{
                     Severity: severity,
                     user: user,
-                    DateFilter: DateFilter,
+                    DateFilter: startDate.toISOString().split('T')[0].replace(/-/g, ''),
                   }}
                   onSubmit={handleSubmit}
                   render={({ handleSubmit, submitting, values }) => {
