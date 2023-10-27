@@ -79,27 +79,23 @@ FilterComponent.propTypes = {
   filterlist: PropTypes.arrayOf(PropTypes.object),
   onFilterPreset: PropTypes.func,
 }
+const compareValues = (a, b) => {
+  if (a === null) return 1
+  if (b === null) return -1
+  if (typeof a === 'number' && typeof b === 'number') return a - b
+  if (typeof a === 'boolean' && typeof b === 'boolean') return a === b ? 0 : a ? -1 : 1
+  return String(a).localeCompare(String(b), 'en', { numeric: true })
+}
 
 const customSort = (rows, selector, direction) => {
   return rows.sort((a, b) => {
-    // use the selector to resolve your field names by passing the sort comparitors
-    let aField
-    let bField
-
-    aField = selector(a)
-    bField = selector(b)
-
-    let comparison = 0
-
-    if (aField?.toString().localeCompare(bField, 'en', { numeric: true }) > 0) {
-      comparison = 1
-    } else if (aField?.toString().localeCompare(bField, 'en', { numeric: true }) < 0) {
-      comparison = -1
-    }
-
+    let aField = selector(a)
+    let bField = selector(b)
+    let comparison = compareValues(aField, bField)
     return direction === 'desc' ? comparison * -1 : comparison
   })
 }
+
 export default function CippTable({
   data,
   isFetching = false,
@@ -111,7 +107,11 @@ export default function CippTable({
   graphFilterFunction = null,
   columns = [],
   dynamicColumns = true,
+  defaultFilterText = '',
+  isModal = false,
+  exportFiltered = false,
   filterlist,
+  showFilter = true,
   tableProps: {
     keyField = 'id',
     theme = 'cyberdrain',
@@ -137,7 +137,7 @@ export default function CippTable({
   const inputRef = useRef('')
   const [loopRunning, setLoopRunning] = React.useState(false)
   const [massResults, setMassResults] = React.useState([])
-  const [filterText, setFilterText] = React.useState('')
+  const [filterText, setFilterText] = React.useState(defaultFilterText)
   const [filterviaURL, setFilterviaURL] = React.useState(false)
   const [updatedColumns, setUpdatedColumns] = React.useState(columns)
   const [selectedRows, setSelectedRows] = React.useState(false)
@@ -147,7 +147,7 @@ export default function CippTable({
   const [modalContent, setModalContent] = useState(null)
   //get the search params called "tableFilter" and set the filter to that.
   const [searchParams, setSearchParams] = useSearchParams()
-  if (searchParams.get('tableFilter') && !filterviaURL) {
+  if (searchParams.get('tableFilter') && !filterviaURL && !isModal) {
     setFilterText(searchParams.get('tableFilter'))
     setFilterviaURL(true)
   }
@@ -219,8 +219,10 @@ export default function CippTable({
   }, [filterText])
 
   const filterData = (data, filterText) => {
-    const debouncedSetSearchParams = debounce(debounceSetSearchParams, 1000)
-    debouncedSetSearchParams()
+    if (!isModal) {
+      const debouncedSetSearchParams = debounce(debounceSetSearchParams, 1000)
+      debouncedSetSearchParams()
+    }
     if (filterText.startsWith('Graph:')) {
       var query = filterText.slice(6).trim()
       debounceSetGraphFilter(query)
@@ -467,6 +469,10 @@ export default function CippTable({
       ])
     }
 
+    actions.forEach((action) => {
+      defaultActions.push(action)
+    })
+
     if (!disablePDFExport || !disableCSVExport) {
       const keys = []
       const exportFormatter = {}
@@ -476,9 +482,11 @@ export default function CippTable({
         return null
       })
 
-      const filtered =
-        Array.isArray(data) && data.length > 0
-          ? data.map((obj) =>
+      var exportData = filteredItems
+
+      var filtered =
+        Array.isArray(exportData) && exportData.length > 0
+          ? exportData.map((obj) =>
               // eslint-disable-next-line no-sequences
               /* keys.reduce((acc, curr) => ((acc[curr] = obj[curr]), acc), {}),*/
               keys.reduce((acc, curr) => {
@@ -505,6 +513,28 @@ export default function CippTable({
               }, {}),
             )
           : []
+
+      const flatten = (obj, prefix) => {
+        let output = {}
+        for (let k in obj) {
+          let val = obj[k]
+          const newKey = prefix ? prefix + '.' + k : k
+          if (typeof val === 'object') {
+            if (Array.isArray(val)) {
+              const { ...arrToObj } = val
+              const newObj = flatten(arrToObj, newKey)
+              output = { ...output, ...newObj }
+            } else {
+              const newObj = flatten(val, newKey)
+              output = { ...output, ...newObj }
+            }
+          } else {
+            output = { ...output, [newKey]: val }
+          }
+        }
+        return output
+      }
+      filtered = filtered.map((item) => flatten(item))
 
       if (!disablePDFExport) {
         if (dynamicColumns === true) {
@@ -553,9 +583,7 @@ export default function CippTable({
             </CDropdown>,
           ])
         }
-        actions.forEach((action) => {
-          defaultActions.push(action)
-        })
+
         defaultActions.push([
           <ExportPDFButton
             key="export-pdf-action"
@@ -602,15 +630,17 @@ export default function CippTable({
     return (
       <>
         <div className="w-100 d-flex justify-content-start">
-          <FilterComponent
-            onFilter={(e) => setFilterText(e.target.value)}
-            onFilterPreset={(e) => {
-              setFilterText(e)
-            }}
-            onClear={handleClear}
-            filterText={filterText}
-            filterlist={filterlist}
-          />
+          {showFilter && (
+            <FilterComponent
+              onFilter={(e) => setFilterText(e.target.value)}
+              onFilterPreset={(e) => {
+                setFilterText(e)
+              }}
+              onClear={handleClear}
+              filterText={filterText}
+              filterlist={filterlist}
+            />
+          )}
           {defaultActions}
         </div>
       </>

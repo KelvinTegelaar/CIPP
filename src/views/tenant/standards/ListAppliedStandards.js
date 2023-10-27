@@ -21,6 +21,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Skeleton from 'react-loading-skeleton'
 import { CippTable } from 'src/components/tables'
 import allStandardsList from 'src/data/standards'
+import { useState } from 'react'
+import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
 
 const RefreshAction = () => {
   const [execStandards, execStandardsResults] = useLazyGenericGetRequestQuery()
@@ -80,6 +82,43 @@ const DeleteAction = () => {
   )
 }
 const ListAppliedStandards = () => {
+  const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
+
+  const Offcanvas = (row, rowIndex, formatExtraData) => {
+    const [ocVisible, setOCVisible] = useState(false)
+    const handleDeleteIntuneTemplate = (apiurl, message) => {
+      ModalService.confirm({
+        title: 'Confirm',
+        body: <div>{message}</div>,
+        onConfirm: () => ExecuteGetRequest({ path: apiurl }),
+        confirmLabel: 'Continue',
+        cancelLabel: 'Cancel',
+      })
+    }
+    return (
+      <>
+        <CButton
+          size="sm"
+          variant="ghost"
+          color="danger"
+          onClick={() =>
+            handleDeleteIntuneTemplate(
+              `api/RemoveStandard?ID=${row.displayName}`,
+              'Do you want to delete this standard?',
+            )
+          }
+        >
+          <FontAwesomeIcon icon={'trash'} href="" />
+        </CButton>
+        <CippCodeOffCanvas
+          row={row}
+          state={ocVisible}
+          type="CATemplate"
+          hideFunction={() => setOCVisible(false)}
+        />
+      </>
+    )
+  }
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
 
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
@@ -123,6 +162,11 @@ const ListAppliedStandards = () => {
       selector: (row) => row['StandardsExport'],
       sortable: true,
       exportSelector: 'StandardsExport',
+    },
+    {
+      name: 'Actions',
+      cell: Offcanvas,
+      maxWidth: '80px',
     },
   ]
   const [intuneGetRequest, intuneTemplates] = useLazyGenericGetRequestQuery()
@@ -171,9 +215,22 @@ const ListAppliedStandards = () => {
                   render={({ handleSubmit, submitting, values }) => {
                     return (
                       <CForm onSubmit={handleSubmit}>
-                        <hr />
-                        {listStandardResults[0].appliedBy
-                          ? `This standard has been applied at ${listStandardResults[0].appliedAt} by ${listStandardResults[0].appliedBy}`
+                        <hr />{' '}
+                        {listStandardResults[0]?.appliedBy
+                          ? `This standard has been applied at ${new Date(
+                              listStandardResults[0].appliedAt + 'Z',
+                            ).toLocaleDateString(undefined, {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                            })} ${new Date(
+                              listStandardResults[0].appliedAt + 'Z',
+                            ).toLocaleTimeString(undefined, {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              second: '2-digit',
+                              hour12: false,
+                            })} by ${listStandardResults[0].appliedBy}`
                           : 'This tenant does not yet have a standard applied'}
                         <hr />
                         <h5>Global Standards</h5>
@@ -215,7 +272,7 @@ const ListAppliedStandards = () => {
                             ))}
                         </CRow>
                         <hr />
-                        <h5>Azure AD Standards</h5>
+                        <h5>Entra ID Standards</h5>
                         <hr />
                         <CRow className="mb-3" xs={{ cols: 2 }}>
                           {allStandardsList
@@ -370,10 +427,6 @@ const ListAppliedStandards = () => {
                               </>
                             ))}
                         </CRow>
-                        {postResults.isSuccess && (
-                          <CCallout color="success">{postResults.data.Results}</CCallout>
-                        )}
-
                         <hr />
                         <h5>Templates</h5>
                         <hr />
@@ -395,7 +448,7 @@ const ListAppliedStandards = () => {
                                     name: template.Displayname,
                                   }))}
                                   placeholder="Select a template"
-                                  label="Choose your intune templates to apply"
+                                  label="Choose your Intune templates to apply"
                                 />
                               )}
                             </Condition>
@@ -439,7 +492,7 @@ const ListAppliedStandards = () => {
                                     name: template.displayName,
                                   }))}
                                   placeholder="Select a template"
-                                  label="Choose your intune templates to apply"
+                                  label="Choose your Conditional Access templates to apply"
                                 />
                               )}
                             </Condition>
@@ -461,7 +514,7 @@ const ListAppliedStandards = () => {
                                     name: template.name,
                                   }))}
                                   placeholder="Select a template"
-                                  label="Choose your intune templates to apply"
+                                  label="Choose your Transport Rule templates to apply"
                                 />
                               )}
                             </Condition>
@@ -482,7 +535,7 @@ const ListAppliedStandards = () => {
                                     name: template.Displayname,
                                   }))}
                                   placeholder="Select a template"
-                                  label="Choose your group templates to apply"
+                                  label="Choose your Group templates to apply"
                                 />
                               )}
                             </Condition>
@@ -521,6 +574,10 @@ const ListAppliedStandards = () => {
           <CCol lg={6} xs={12}>
             {listStandardsAllTenants && (
               <CippContentCard title="Currently Applied Standards">
+                {getResults.isLoading && <CSpinner size="sm" />}
+                {getResults.isSuccess && (
+                  <CCallout color="info">{getResults.data?.Results}</CCallout>
+                )}
                 <CippTable
                   reportName={`Standards`}
                   data={listStandardsAllTenants}
