@@ -34,7 +34,7 @@ const RefreshAction = () => {
       {isLoading && <CSpinner size="sm" />}
       {error && <FontAwesomeIcon icon={faExclamationTriangle} className="pe-1" />}
       {isSuccess && <FontAwesomeIcon icon={faCheck} className="pe-1" />}
-      Map GDAP Groups
+      Map recently approved relationships
     </CButton>
   )
 }
@@ -89,6 +89,13 @@ const Actions = (row, rowIndex, formatExtraData) => {
         title={'GDAP - ' + row?.customer?.displayName}
         extendedInfo={extendedInfo}
         actions={[
+          {
+            label: 'Enable automatic extension',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecAutoExtendGDAP?ID=${row.id}`,
+            modalMessage: 'Are you sure you want to enable auto-extend for this relationship',
+          },
           {
             label: 'Terminate Relationship',
             color: 'danger',
@@ -150,6 +157,13 @@ const GDAPRelationships = () => {
       cell: cellDateFormatter({ format: 'short' }),
     },
     {
+      name: 'Auto Extend',
+      selector: (row) => row['autoExtendDuration'],
+      sortable: true,
+      exportSelector: 'endDateTime',
+      cell: (row) => (row['autoExtendDuration'] === 'PT0S' ? 'No' : 'Yes'),
+    },
+    {
       name: 'Actions',
       cell: Actions,
       maxWidth: '80px',
@@ -158,6 +172,7 @@ const GDAPRelationships = () => {
   return (
     <div>
       <CippPageList
+        titleButton={<RefreshAction />}
         capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
         title="GDAP Relationship List"
         tenantSelector={false}
@@ -176,8 +191,13 @@ const GDAPRelationships = () => {
                 modalUrl: `/api/ExecDeleteGDAPRelationship?&GDAPID=!id`,
                 modalMessage: 'Are you sure you want to terminate these relationships?',
               },
+              {
+                label: 'Auto Extend Relationship',
+                modal: true,
+                modalUrl: `/api/ExecAutoExtendGDAP?ID=!id`,
+                modalMessage: 'Are you sure you want to enable automatic extension?',
+              },
             ],
-            actions: [<RefreshAction key="refresh-action-button" />],
           },
           keyField: 'id',
           columns,
