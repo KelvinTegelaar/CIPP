@@ -21,7 +21,7 @@ Follow the list below before starting the GDAP Wizard. You must execute each of 
 * You must be a global Admin and in the 'AdminAgents' group to perform this.
 * Go to your CIPP instance and click on GDAP -> Migration Wizard. Click the button to enable the migration API.
   * The Enable API button can fail if the migration has been previously performed or the tool has been activated. You can continue at this stage to add the permissions to your secure application model app.
-* Follow the link returned by the application, or go to your Secure Application Model app in Azure by going to Settings -> Permissions Check -> Details -> CIPP-SAM.
+* Follow the link returned by the application, or go to your Secure Application Model app in Azure by going to Settings -> CIPP -> Application Settings -> Permissions Check -> Details -> CIPP-SAM.
 * Click on API Permissions
 * Click on Add and choose "APIs My organization uses"
 * Find "Partner Customer Delegated Administration"
