@@ -79,27 +79,23 @@ FilterComponent.propTypes = {
   filterlist: PropTypes.arrayOf(PropTypes.object),
   onFilterPreset: PropTypes.func,
 }
+const compareValues = (a, b) => {
+  if (a === null) return 1
+  if (b === null) return -1
+  if (typeof a === 'number' && typeof b === 'number') return a - b
+  if (typeof a === 'boolean' && typeof b === 'boolean') return a === b ? 0 : a ? -1 : 1
+  return String(a).localeCompare(String(b), 'en', { numeric: true })
+}
 
 const customSort = (rows, selector, direction) => {
   return rows.sort((a, b) => {
-    // use the selector to resolve your field names by passing the sort comparitors
-    let aField
-    let bField
-
-    aField = selector(a)
-    bField = selector(b)
-
-    let comparison = 0
-
-    if (aField?.toString().localeCompare(bField, 'en', { numeric: true }) > 0) {
-      comparison = 1
-    } else if (aField?.toString().localeCompare(bField, 'en', { numeric: true }) < 0) {
-      comparison = -1
-    }
-
+    let aField = selector(a)
+    let bField = selector(b)
+    let comparison = compareValues(aField, bField)
     return direction === 'desc' ? comparison * -1 : comparison
   })
 }
+
 export default function CippTable({
   data,
   isFetching = false,
@@ -115,6 +111,7 @@ export default function CippTable({
   isModal = false,
   exportFiltered = false,
   filterlist,
+  showFilter = true,
   tableProps: {
     keyField = 'id',
     theme = 'cyberdrain',
@@ -472,6 +469,10 @@ export default function CippTable({
       ])
     }
 
+    actions.forEach((action) => {
+      defaultActions.push(action)
+    })
+
     if (!disablePDFExport || !disableCSVExport) {
       const keys = []
       const exportFormatter = {}
@@ -582,9 +583,7 @@ export default function CippTable({
             </CDropdown>,
           ])
         }
-        actions.forEach((action) => {
-          defaultActions.push(action)
-        })
+
         defaultActions.push([
           <ExportPDFButton
             key="export-pdf-action"
@@ -631,15 +630,17 @@ export default function CippTable({
     return (
       <>
         <div className="w-100 d-flex justify-content-start">
-          <FilterComponent
-            onFilter={(e) => setFilterText(e.target.value)}
-            onFilterPreset={(e) => {
-              setFilterText(e)
-            }}
-            onClear={handleClear}
-            filterText={filterText}
-            filterlist={filterlist}
-          />
+          {showFilter && (
+            <FilterComponent
+              onFilter={(e) => setFilterText(e.target.value)}
+              onFilterPreset={(e) => {
+                setFilterText(e)
+              }}
+              onClear={handleClear}
+              filterText={filterText}
+              filterlist={filterlist}
+            />
+          )}
           {defaultActions}
         </div>
       </>

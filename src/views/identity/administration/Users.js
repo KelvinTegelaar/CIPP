@@ -149,6 +149,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
               user: row.userPrincipalName,
               TenantFilter: tenant.defaultDomainName,
               message: row.message,
+              AutoReplyState: 'Enabled',
             },
             modalUrl: `/api/ExecSetOoO`,
             modalInput: true,
@@ -163,7 +164,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modalBody: {
               user: row.userPrincipalName,
               TenantFilter: tenant.defaultDomainName,
-              Disable: true,
+              AutoReplyState: 'Disabled',
             },
             modalUrl: `/api/ExecSetOoO`,
             modalMessage: 'Are you sure you want to disable the out of office?',
