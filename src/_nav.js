@@ -263,7 +263,7 @@ const _nav = [
         name: 'GDAP Roles',
         to: '/tenant/administration/gdap-roles',
       },
-      /*{
+      {
         component: CNavItem,
         name: 'Migration Wizard',
         to: '/tenant/administration/gdap',
@@ -272,7 +272,7 @@ const _nav = [
         component: CNavItem,
         name: 'GDAP Migration Status',
         to: '/tenant/administration/gdap-status',
-      },*/
+      },
       {
         component: CNavItem,
         name: 'Invite Wizard',
@@ -282,12 +282,6 @@ const _nav = [
         component: CNavItem,
         name: 'GDAP Relationships',
         to: '/tenant/administration/gdap-relationships',
-      },
-      {
-        component: CNavItem,
-        name: 'Documentation',
-        href: 'https://cipp.app/docs/user/usingcipp/GDAP/migration',
-        target: '_blank',
       },
     ],
   },
