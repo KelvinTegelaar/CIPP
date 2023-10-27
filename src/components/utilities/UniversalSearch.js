@@ -17,7 +17,7 @@ export const UniversalSearch = React.forwardRef(
 
     const handleKeyDown = (event) => {
       if (event.key === 'Enter') {
-        // on enter key, start the search
+        // on enter key, start the searchs
         getSearchItems({ path: `/api/ExecUniversalSearch?name=${searchValue}` })
       }
     }
@@ -80,7 +80,9 @@ const ResultsRow = ({ match }) => {
 
   const handleClick = () => {
     dispatch(hideSwitcher())
-    navigate(`/identity/administration/users?customerId=${match._tenantId}`)
+    navigate(
+      `/identity/administration/users?customerId=${match._tenantId}&tableFilter=${match.userPrincipalName}`,
+    )
   }
 
   return (
