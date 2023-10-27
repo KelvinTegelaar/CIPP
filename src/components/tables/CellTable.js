@@ -3,16 +3,22 @@ import { CButton } from '@coreui/react'
 import { ModalService } from '../utilities'
 import { CBadge } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'
+import { faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons' // 1. Import the required FontAwesome icon
 import { cellGenericFormatter } from './CellGenericFormat'
 
-export default function cellTable(row, column, propertyName) {
+export default function cellTable(
+  row,
+  column,
+  propertyName,
+  checkWhenZero = false,
+  crossWhenZero = false,
+) {
   const handleTable = ({ row }) => {
     const QueryColumns = []
     const columns = Object.keys(row[propertyName][0]).map((key) => {
       QueryColumns.push({
         name: key,
-        selector: (row) => row[key], // Accessing the property using the key
+        selector: (row) => row[key],
         sortable: true,
         exportSelector: key,
         cell: cellGenericFormatter(),
@@ -29,8 +35,24 @@ export default function cellTable(row, column, propertyName) {
       size: 'lg',
     })
   }
+  //if the row propertyName is a bool, then return a check or cross
+  if (typeof row[propertyName] === 'boolean') {
+    if (row[propertyName]) {
+      return <FontAwesomeIcon icon={faCheckCircle} className="text-success" />
+    }
+    return <FontAwesomeIcon icon={faTimesCircle} className="text-danger" />
+  }
 
-  if (!row[propertyName] || !Array.isArray(row[propertyName]) || row.length === 0) {
+  if (!row[propertyName] || !Array.isArray(row[propertyName]) || row[propertyName].length === 0) {
+    if (row[propertyName] === undefined) {
+      return <FontAwesomeIcon icon={faCheckCircle} className="text-success" />
+    }
+    if (checkWhenZero) {
+      return <FontAwesomeIcon icon={faCheckCircle} className="text-success" />
+    }
+    if (crossWhenZero) {
+      return <FontAwesomeIcon icon={faTimesCircle} className="text-danger" />
+    }
     return <FontAwesomeIcon icon={faCheckCircle} className="text-success" />
   }
 
@@ -41,6 +63,8 @@ export default function cellTable(row, column, propertyName) {
   )
 }
 
-export const cellTableFormatter = (propertyName) => (row, index, column, id) => {
-  return cellTable(row, column, propertyName)
-}
+export const cellTableFormatter =
+  (propertyName, checkWhenZero = false, crossWhenZero = false) =>
+  (row, index, column, id) => {
+    return cellTable(row, column, propertyName, checkWhenZero, crossWhenZero)
+  }
