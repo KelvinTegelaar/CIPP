@@ -56,7 +56,7 @@ const GDAPWizard = () => {
           The GDAP migration tool requires setup. Please check the documentation{' '}
           <a
             className="mb-2"
-            href="https://cipp.app/docs/user/usingcipp/GDAP/migration/"
+            href="https://docs.cipp.app/setup/gdap/index"
             target="_blank"
           >
             here.

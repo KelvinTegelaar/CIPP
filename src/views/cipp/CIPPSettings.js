@@ -402,7 +402,7 @@ const GeneralSettings = () => {
                         documentation on how to add permissions{' '}
                         <a
                           target="_blank"
-                          href="https://cipp.app/docs/user/gettingstarted/permissions/#manual-sam-setup"
+                          href="https://docs.cipp.app/setup/installation/permissions#manual-permissions"
                         >
                           here
                         </a>
