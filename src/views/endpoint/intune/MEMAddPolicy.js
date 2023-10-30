@@ -130,8 +130,10 @@ const AddPolicy = () => {
           <h3 className="text-primary">Step 2</h3>
           <h5 className="card-title mb-4">
             Enter the raw JSON for this policy. See{' '}
-            <a href="https://docs.cipp.app/user-documentation/endpoint/mem/add-policy-template">this</a> for more
-            information.
+            <a href="https://docs.cipp.app/user-documentation/endpoint/mem/add-policy-template">
+              this
+            </a>{' '}
+            for more information.
           </h5>
         </center>
         <hr className="my-4" />
