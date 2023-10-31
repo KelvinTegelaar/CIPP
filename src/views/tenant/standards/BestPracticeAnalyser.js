@@ -14,6 +14,7 @@ import {
   CSpinner,
 } from '@coreui/react'
 import useQuery from 'src/hooks/useQuery'
+import PropTypes from 'prop-types'
 import { Field, Form, FormSpy } from 'react-final-form'
 import { RFFCFormInput, RFFCFormSelect } from 'src/components/forms'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -25,6 +26,7 @@ import {
   faCheck,
   faCross,
   faTimes,
+  faSync,
   faExclamation,
 } from '@fortawesome/free-solid-svg-icons'
 import { CippTable, cellBooleanFormatter } from 'src/components/tables'
@@ -38,10 +40,15 @@ import { CellTip, cellGenericFormatter } from 'src/components/tables/CellGeneric
 import { useExecBestPracticeAnalyserMutation } from 'src/store/api/reports'
 import { ModalService } from 'src/components/utilities'
 import { cellTableFormatter } from 'src/components/tables/CellTable'
-const RefreshAction = () => {
-  const [execBestPracticeAnalyser, { isLoading, isSuccess, error }] =
-    useExecBestPracticeAnalyserMutation()
 
+const RefreshAction = ({ singleTenant = false, refreshFunction = null }) => {
+  const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
+  const [execBestPracticeAnalyser, { isLoading, isSuccess, error }] =
+    useLazyGenericGetRequestQuery()
+  var params = {}
+  if (singleTenant) {
+    params['TenantFilter'] = tenantDomain
+  }
   const showModal = () =>
     ModalService.confirm({
       body: (
@@ -51,17 +58,38 @@ const RefreshAction = () => {
           <i>Please note: this runs at 3:00 AM UTC automatically every day.</i>
         </div>
       ),
-      onConfirm: () => execBestPracticeAnalyser(),
+      onConfirm: () =>
+        execBestPracticeAnalyser({
+          path: 'api/BestPracticeAnalyser_OrchestrationStarter',
+          params: params,
+        }),
     })
 
   return (
-    <CButton onClick={showModal} size="sm" className="m-1">
-      {isLoading && <CSpinner size="sm" />}
-      {error && <FontAwesomeIcon icon={faExclamationTriangle} className="pe-1" />}
-      {isSuccess && <FontAwesomeIcon icon={faCheck} className="pe-1" />}
-      Force Refresh All Data
-    </CButton>
+    <>
+      <CButton onClick={showModal} size="sm" className="m-1">
+        {isLoading && <CSpinner size="sm" />}
+        {error && <FontAwesomeIcon icon={faExclamationTriangle} className="pe-1" />}
+        {isSuccess && <FontAwesomeIcon icon={faCheck} className="pe-1" />}
+        {(singleTenant && 'Refresh Tenant Data') || 'Force Refresh All Data'}
+      </CButton>
+      {refreshFunction !== null && (
+        <CButton
+          onClick={() => {
+            refreshFunction((Math.random() + 1).toString(36).substring(7))
+          }}
+          className="m-1"
+          size="sm"
+        >
+          <FontAwesomeIcon icon={faSync} />
+        </CButton>
+      )}
+    </>
   )
+}
+RefreshAction.propTypes = {
+  singleTenant: PropTypes.bool,
+  refreshFunction: PropTypes.func,
 }
 
 const getsubcolumns = (data) => {
@@ -96,6 +124,7 @@ const getNestedValue = (obj, path) => {
 }
 const BestPracticeAnalyser = () => {
   const [reportTemplate, setReportTemplate] = useState('CIPP Best Practices v1.0 - Table view')
+  const [refreshValue, setRefreshValue] = useState('')
   const { data: templates = [], isLoading: templatesfetch } = useGenericGetRequestQuery({
     path: 'api/listBPATemplates',
   })
@@ -169,7 +198,7 @@ const BestPracticeAnalyser = () => {
         name: col.name,
         selector: (row) => getNestedValue(row, col.value),
         sortable: true,
-        exportSelector: col.value,
+        exportSelector: col.value.split('.').join('/'),
         cell: cellSelector, // Use the determined cell selector
       })
     })
@@ -184,9 +213,10 @@ const BestPracticeAnalyser = () => {
         tenantFilter: tenant.customerId,
         Report: reportTemplate,
         SearchNow: SearchNow,
+        refresh: refreshValue,
       },
     })
-  }, [Report, execGraphRequest, tenant.defaultDomainName, query])
+  }, [Report, execGraphRequest, tenant.defaultDomainName, query, refreshValue, reportTemplate])
 
   return (
     <>
@@ -196,12 +226,20 @@ const BestPracticeAnalyser = () => {
             <CCardHeader>
               <CCardTitle className="d-flex justify-content-between">
                 Report Settings
-                <CButton size="sm" variant="ghost" onClick={() => setVisibleA(!visibleA)}>
+                <CButton
+                  size="sm"
+                  variant="ghost"
+                  className="stretched-link"
+                  onClick={() => setVisibleA(!visibleA)}
+                >
                   <FontAwesomeIcon icon={visibleA ? faChevronDown : faChevronRight} />
                 </CButton>
               </CCardTitle>
             </CCardHeader>
-            <CCollapse visible={visibleA}>
+          </CCard>
+          <CCollapse visible={visibleA}>
+            <CCard className="options-card">
+              <CCardHeader></CCardHeader>
               <CCardBody>
                 <Form
                   initialValues={{
@@ -240,8 +278,8 @@ const BestPracticeAnalyser = () => {
                   }}
                 />
               </CCardBody>
-            </CCollapse>
-          </CCard>
+            </CCard>
+          </CCollapse>
         </CCol>
       </CRow>
       <hr />
@@ -264,7 +302,12 @@ const BestPracticeAnalyser = () => {
                     data={graphrequest.data.Data}
                     isFetching={graphrequest.isFetching}
                     tableProps={{
-                      actions: [<RefreshAction key="refresh-action-button" />],
+                      actions: [
+                        <RefreshAction
+                          key="refresh-action-button"
+                          refreshFunction={setRefreshValue}
+                        />,
+                      ],
                     }}
                   />
                 </CCardBody>
@@ -273,6 +316,13 @@ const BestPracticeAnalyser = () => {
             {graphrequest.isSuccess && QueryColumns.set && graphrequest.data.Style == 'Tenant' && (
               <>
                 <CRow>
+                  <div width="30px" className="mb-3">
+                    <RefreshAction
+                      key="refresh-action-button"
+                      singleTenant={true}
+                      refreshFunction={setRefreshValue}
+                    />
+                  </div>
                   {graphrequest.data.Columns.map((info, idx) => (
                     <CCol md={12} xl={4} className="mb-3">
                       <CCard className="h-100">

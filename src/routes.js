@@ -2,6 +2,7 @@ import React from 'react'
 
 const Home = React.lazy(() => import('src/views/home/Home'))
 const Logs = React.lazy(() => import('src/views/cipp/Logs'))
+const Scheduler = React.lazy(() => import('src/views/cipp/Scheduler'))
 const Users = React.lazy(() => import('src/views/identity/administration/Users'))
 const DeletedItems = React.lazy(() => import('src/views/identity/administration/Deleted'))
 const ViewBEC = React.lazy(() => import('src/views/identity/administration/ViewBEC'))
@@ -11,6 +12,8 @@ const EditUser = React.lazy(() => import('src/views/identity/administration/Edit
 const ViewUser = React.lazy(() => import('src/views/identity/administration/ViewUser'))
 const Groups = React.lazy(() => import('src/views/identity/administration/Groups'))
 const AddGroup = React.lazy(() => import('src/views/identity/administration/AddGroup'))
+const UserSettings = React.lazy(() => import('src/views/cipp/UserSettings'))
+
 const AddGroupTemplates = React.lazy(() =>
   import('src/views/identity/administration/AddGroupTemplate'),
 )
@@ -71,6 +74,7 @@ const DeviceComplianceReport = React.lazy(() =>
 const BestPracticeAnalyzer = React.lazy(() =>
   import('src/views/tenant/standards/BestPracticeAnalyser'),
 )
+const BPAReportBuilder = React.lazy(() => import('src/views/tenant/standards/BPAReportBuilder'))
 const DomainsAnalyser = React.lazy(() => import('src/views/tenant/standards/DomainsAnalyser'))
 const OffboardingWizard = React.lazy(() =>
   import('src/views/identity/administration/OffboardingWizard'),
@@ -226,6 +230,7 @@ const routes = [
   // { path: '/', exact: true, name: 'Home' },
   { path: '/home', name: 'Home', component: Home },
   { path: '/cipp/logs', name: 'Logs', component: Logs },
+  { path: '/cipp/scheduler', name: 'Scheduler', component: Scheduler },
 
   { path: '/cipp/404', name: 'Error', component: Page404 },
   { path: '/cipp/403', name: 'Error', component: Page403 },
@@ -384,6 +389,11 @@ const routes = [
     path: '/tenant/tools/geoiplookup',
     name: 'Geo IP Lookup',
     component: GeoIPLookup,
+  },
+  {
+    path: '/tenant/tools/bpa-report-builder',
+    name: 'BPA Report Builder',
+    component: BPAReportBuilder,
   },
   { path: '/tenant/standards/alert-list', name: 'Alert List (Alpha)', component: ListAlerts },
   { path: '/endpoint', name: 'Endpoint' },
@@ -595,6 +605,8 @@ const routes = [
     component: MailboxClientAccessSettingsList,
   },
   { name: 'Message Trace', path: '/email/reports/message-trace', component: MessageTrace },
+  { path: '/cipp/user-settings', name: 'User Settings', component: UserSettings },
+
   {
     name: 'Phishing Policies',
     path: '/email/reports/phishing-policies',
