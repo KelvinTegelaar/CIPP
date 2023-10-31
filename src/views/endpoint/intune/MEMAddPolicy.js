@@ -45,6 +45,9 @@ const AddPolicy = () => {
       (tenant) => (values[`Select_${tenant.defaultDomainName}`] = tenant.defaultDomainName),
     )
     values.TemplateType = values.Type
+    if (values.AssignTo === 'customGroup') {
+      values.AssignTo = values.customGroup
+    }
     genericPostRequest({ path: '/api/AddPolicy', values: values })
   }
   const [matchMap, setMatchMap] = useState([])
@@ -234,6 +237,18 @@ const AddPolicy = () => {
           name="AssignTo"
           label="Assign to all users and devices"
         ></RFFCFormRadio>
+        <RFFCFormRadio
+          value="customGroup"
+          name="AssignTo"
+          label="Assign to Custom Group"
+        ></RFFCFormRadio>
+        <Condition when="AssignTo" is="customGroup">
+          <RFFCFormInput
+            type="text"
+            name="customGroup"
+            label="Custom Group Names separated by comma. Wildcards (*) are allowed"
+          />
+        </Condition>
         <hr className="my-4" />
         <WhenFieldChanges field="TemplateList" set="Description" />
         <WhenFieldChanges field="TemplateList" set="Displayname" />

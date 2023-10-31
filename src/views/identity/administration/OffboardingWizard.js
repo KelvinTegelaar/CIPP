@@ -60,6 +60,7 @@ const OffboardingWizard = () => {
       removeRules: values.RemoveRules,
       removeMobile: values.RemoveMobile,
       keepCopy: values.keepCopy,
+      removePermissions: values.removePermissions,
     }
 
     //alert(JSON.stringify(values, null, 2))
@@ -125,6 +126,7 @@ const OffboardingWizard = () => {
               <RFFCFormSwitch name="RemoveMobile" label="Remove all Mobile Devices" />
               <RFFCFormSwitch name="RemoveRules" label="Remove all Rules" />
               <RFFCFormSwitch name="RemoveLicenses" label="Remove Licenses" />
+              <RFFCFormSwitch name="removePermissions" label="Remove users mailbox permissions" />
               <RFFCFormSwitch name="ConvertToShared" label="Convert to Shared Mailbox" />
               <RFFCFormSwitch name="DisableSignIn" label="Disable Sign in" />
               <RFFCFormSwitch name="ResetPass" label="Reset Password" />
@@ -258,6 +260,14 @@ const OffboardingWizard = () => {
                             color="#f77f00"
                             size="lg"
                             icon={props.values.RemoveRules ? faCheck : faTimes}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Remove all mailbox permissions
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.removePermissions ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
