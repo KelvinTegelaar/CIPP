@@ -48,7 +48,10 @@ Error.propTypes = {
 
 const Setup = () => {
   const [setupDone, setSetupdone] = useState(false)
-  const valbutton = (value) => (setupDone ? undefined : 'You must finish the wizard.')
+  const valbutton = (value) =>
+    getResults.data?.step < 5
+      ? undefined
+      : `You must finish the setup process. you are currently at step ${getResults.data?.step} of 5.`
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const [genericGetRequest, getResults] = useLazyGenericGetRequestQuery()
   const onSubmit = (values) => {
