@@ -134,7 +134,7 @@ const MFAList = () => {
       datatable={{
         filterlist: [
           { filterName: 'Enabled users', filter: '"accountEnabled":true' },
-          { filterName: 'Licensed users', filter: '"isLicensed":"true"' },
+          { filterName: 'Licensed users', filter: 'Complex: IsLicensed eq true' },
         ],
         columns: tenant.defaultDomainName === 'AllTenants' ? Altcolumns : columns,
         path: '/api/ListMFAUsers',
