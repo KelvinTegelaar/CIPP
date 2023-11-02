@@ -416,7 +416,9 @@ const GeneralSettings = () => {
                     )}
                     {permissionsResult.data.Results?.MissingGroups.length > 0 && (
                       <>
-                        Your SAM User is missing the following group memberships.
+                        Your SAM User is missing the following group memberships. If you have setup
+                        GDAP outside of CIPP, execute an access check to confirm access and role
+                        availability to your tenants
                         <CListGroup flush>
                           {permissionsResult.data.Results?.MissingGroups?.map((r, index) => (
                             <CListGroupItem key={index}>{r}</CListGroupItem>
@@ -426,7 +428,7 @@ const GeneralSettings = () => {
                     )}
                     {permissionsResult.data.Results?.CIPPGroupCount == 0 && (
                       <>
-                        NOTE: Your M365 GDAP groups were not set up by CIPP. Please check the groups
+                        NOTE: Your GDAP groups were not set up by CIPP. Please check the groups
                         below to see if you have the correct GDAP permissions, or execute an access
                         check.
                       </>
