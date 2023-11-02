@@ -452,13 +452,13 @@ const GeneralSettings = () => {
                     <>
                       <TableModalButton
                         className="me-3"
-                        data={permissionsResult.data.Results?.Memberships.filter(
+                        data={permissionsResult.data.Results?.Memberships?.filter(
                           (p) => p['@odata.type'] == '#microsoft.graph.group',
                         )}
                         title="Groups"
                       />
                       <TableModalButton
-                        data={permissionsResult.data.Results?.Memberships.filter(
+                        data={permissionsResult.data.Results?.Memberships?.filter(
                           (p) => p['@odata.type'] == '#microsoft.graph.directoryRole',
                         )}
                         title="Roles"
