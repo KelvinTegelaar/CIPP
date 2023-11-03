@@ -212,13 +212,16 @@ const GeneralSettings = () => {
     {
       name: 'Tenant',
       selector: (row) => row['Tenant'],
-      grow: 0,
       cell: cellGenericFormatter(),
+      minWidth: '200px',
+      maxWidth: '200px',
     },
     {
       name: 'Error Type',
       selector: (row) => row['Type'],
       cell: cellGenericFormatter(),
+      minWidth: '150px',
+      maxWidth: '150px',
     },
     {
       name: 'Issue',
