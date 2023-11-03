@@ -20,7 +20,9 @@ function mapBodyComponent({ componentType, data, componentProps }) {
     case 'text':
       return String(data)
     case 'codeblock':
-      return <CippCodeBlock language="text" code={data} {...componentProps} />
+      return (
+        <CippCodeBlock language="text" code={data} showLineNumbers={false} {...componentProps} />
+      )
     default:
       return String(data)
   }
