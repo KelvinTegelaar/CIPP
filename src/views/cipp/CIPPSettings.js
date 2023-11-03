@@ -223,14 +223,17 @@ const GeneralSettings = () => {
     {
       name: 'Issue',
       selector: (row) => row?.Issue,
+      cell: cellGenericFormatter(),
     },
     {
       name: 'Resolution Link',
       selector: (row) => row?.Link,
+      cell: cellGenericFormatter(),
     },
     {
       name: 'Relationship ID',
       selector: (row) => row?.Relationship,
+      cell: cellGenericFormatter(),
     },
   ]
 

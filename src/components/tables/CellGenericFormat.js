@@ -7,6 +7,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { CellBadge } from 'src/components/tables'
 import { CBadge, CTooltip } from '@coreui/react'
+import { startsWith } from 'core-js/core/string'
 
 const IconWarning = () => <FontAwesomeIcon icon={faExclamationCircle} className="text-warning" />
 const IconError = () => <FontAwesomeIcon icon={faTimesCircle} className="text-danger" />
@@ -78,6 +79,9 @@ export const cellGenericFormatter =
     if (typeof cell === 'string') {
       if (cell.toLowerCase() === 'failed') {
         return <CBadge color="danger">{CellTip('Failed to retrieve from API')}</CBadge>
+      }
+      if (cell.toLowerCase().startsWith('http')) {
+        return `<a href="${cell}">URL</a>`
       }
       return CellTip(cell)
     }
