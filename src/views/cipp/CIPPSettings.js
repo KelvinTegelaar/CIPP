@@ -226,7 +226,7 @@ const GeneralSettings = () => {
     },
     {
       name: 'Resolution Link',
-      selector: (row) => row?.link,
+      selector: (row) => row?.Link,
     },
     {
       name: 'Relationship ID',
