@@ -164,6 +164,17 @@ const GDAPRelationships = () => {
       cell: (row) => (row['autoExtendDuration'] === 'PT0S' ? 'No' : 'Yes'),
     },
     {
+      name: 'Includes CA Role',
+      selector: (row) => row?.accessDetails,
+      sortable: true,
+      cell: (row) =>
+        row?.accessDetails?.unifiedRoles?.filter(
+          (e) => e.roleDefinitionId === '62e90394-69f5-4237-9190-012177145e10',
+        ).length > 0
+          ? 'Yes'
+          : 'No',
+    },
+    {
       name: 'Actions',
       cell: Actions,
       maxWidth: '80px',
@@ -178,9 +189,17 @@ const GDAPRelationships = () => {
         tenantSelector={false}
         datatable={{
           filterlist: [
-            { filterName: 'Active Relationships', filter: '"status":"active"' },
-            { filterName: 'Terminated Relationships', filter: '"status":"Terminated"' },
+            { filterName: 'Active Relationships', filter: 'Complex: status eq active' },
+            { filterName: 'Terminated Relationships', filter: 'Complex: status eq terminated' },
             { filterName: 'Pending Relationships', filter: 'Pending' },
+            {
+              filterName: 'Active with Auto Extend',
+              filter: 'Complex: status eq active; autoExtendDuration ne PT0S',
+            },
+            {
+              filterName: 'Active without Auto Extend',
+              filter: 'Complex: status eq active; autoExtendDuration eq PT0S',
+            },
           ],
           tableProps: {
             selectableRows: true,
