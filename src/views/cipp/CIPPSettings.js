@@ -337,23 +337,7 @@ const GeneralSettings = () => {
       />,
     ],
   }
-  const downloadTxtFile = (data) => {
-    const txtdata = [JSON.stringify(RunBackupResult.data.backup)]
-    const file = new Blob(txtdata, { type: 'text/plain' })
-    const element = document.createElement('a')
-    element.href = URL.createObjectURL(file)
-    element.download = 'CIPP-Backup' + Date.now() + '.json'
-    document.body.appendChild(element)
-    element.click()
-  }
-  const inputRef = useRef(null)
-  const handleChange = (e) => {
-    const fileReader = new FileReader()
-    fileReader.readAsText(e.target.files[0], 'UTF-8')
-    fileReader.onload = (e) => {
-      restoreBackup({ path: '/api/ExecRestoreBackup', values: e.target.result })
-    }
-  }
+
   return (
     <div>
       <CRow className="mb-3">
@@ -1339,7 +1323,22 @@ const DNSSettings = () => {
   const { data: versions, isSuccess: isSuccessVersion } = useLoadVersionsQuery()
 
   const [alertVisible, setAlertVisible] = useState(false)
-
+  const downloadTxtFile = (data) => {
+    const txtdata = [JSON.stringify(RunBackupResult.data.backup)]
+    const file = new Blob(txtdata, { type: 'text/plain' })
+    const element = document.createElement('a')
+    element.href = URL.createObjectURL(file)
+    element.download = 'CIPP-Backup' + Date.now() + '.json'
+    document.body.appendChild(element)
+    element.click()
+  }
+  const handleChange = (e) => {
+    const fileReader = new FileReader()
+    fileReader.readAsText(e.target.files[0], 'UTF-8')
+    fileReader.onload = (e) => {
+      restoreBackup({ path: '/api/ExecRestoreBackup', values: e.target.result })
+    }
+  }
   const switchResolver = (resolver) => {
     editDnsConfig({ resolver })
     getDnsConfig()
