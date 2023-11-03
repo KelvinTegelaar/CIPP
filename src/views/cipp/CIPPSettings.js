@@ -354,7 +354,7 @@ const GeneralSettings = () => {
         </CCol>
       </CRow>
       <CRow className="mb-3">
-        <CCol>
+        <CCol className="mb-3">
           <CCard>
             <CCardHeader>
               <CCardTitle>Permissions Check</CCardTitle>
