@@ -220,8 +220,8 @@ const GeneralSettings = () => {
       name: 'Error Type',
       selector: (row) => row['Type'],
       cell: cellGenericFormatter(),
-      minWidth: '150px',
-      maxWidth: '150px',
+      minWidth: '100px',
+      maxWidth: '100px',
     },
     {
       name: 'Issue',
@@ -427,7 +427,7 @@ const GeneralSettings = () => {
             </CCardBody>
           </CCard>
         </CCol>
-        <CCol className="mb-3">
+        <CCol md={6} className="mb-3">
           <CCard>
             <CCardHeader>
               <CCardTitle>GDAP Check</CCardTitle>
