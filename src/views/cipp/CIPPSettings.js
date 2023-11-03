@@ -212,6 +212,7 @@ const GeneralSettings = () => {
     {
       name: 'Tenant',
       selector: (row) => row['Tenant'],
+      sortable: true,
       cell: cellGenericFormatter(),
       minWidth: '200px',
       maxWidth: '200px',
@@ -219,6 +220,7 @@ const GeneralSettings = () => {
     {
       name: 'Error Type',
       selector: (row) => row['Type'],
+      sortable: true,
       cell: cellGenericFormatter(),
       minWidth: '100px',
       maxWidth: '100px',
@@ -226,15 +228,18 @@ const GeneralSettings = () => {
     {
       name: 'Issue',
       selector: (row) => row?.Issue,
+      sortable: true,
       cell: cellGenericFormatter(),
     },
     {
       name: 'Resolution Link',
+      sortable: true,
       selector: (row) => row?.Link,
       cell: cellGenericFormatter(),
     },
     {
       name: 'Relationship ID',
+      sortable: true,
       selector: (row) => row?.Relationship,
       cell: cellGenericFormatter(),
     },
