@@ -7,7 +7,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { CellBadge } from 'src/components/tables'
 import { CBadge, CTooltip } from '@coreui/react'
-import { startsWith } from 'core-js/core/string'
 
 const IconWarning = () => <FontAwesomeIcon icon={faExclamationCircle} className="text-warning" />
 const IconError = () => <FontAwesomeIcon icon={faTimesCircle} className="text-danger" />
