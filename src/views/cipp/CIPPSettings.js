@@ -86,7 +86,6 @@ import { CellDelegatedPrivilege } from 'src/components/tables/CellDelegatedPrivi
 import { TableModalButton } from 'src/components/buttons'
 import { cellTableFormatter } from 'src/components/tables/CellTable'
 import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
-import { check } from 'prettier'
 
 const CIPPSettings = () => {
   const [active, setActive] = useState(1)
