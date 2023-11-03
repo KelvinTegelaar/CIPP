@@ -54,11 +54,7 @@ const GDAPWizard = () => {
         <hr className="my-4" />
         <CCallout color="info">
           The GDAP migration tool requires setup. Please check the documentation{' '}
-          <a
-            className="mb-2"
-            href="https://cipp.app/docs/user/usingcipp/GDAP/migration/"
-            target="_blank"
-          >
+          <a className="mb-2" href="https://docs.cipp.app/setup/gdap/index" target="_blank">
             here.
           </a>
           <br /> <br />
