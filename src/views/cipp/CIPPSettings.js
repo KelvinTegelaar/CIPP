@@ -218,8 +218,6 @@ const GeneralSettings = () => {
     {
       name: 'Error Type',
       selector: (row) => row['Type'],
-      minWidth: '380px',
-      maxWidth: '380px',
       cell: cellGenericFormatter(),
     },
     {
