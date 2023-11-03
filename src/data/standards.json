@@ -371,12 +371,12 @@
           "value": "Contributor"
         },
         {
-          "label": "Free Busy Time And Subject And Location - The user can view free/busy time within the calendar and the subject and location of appointments.",
-          "value": "FreeBusyTimeAndSubjectAndLocation"
+          "label": "Limited Details - The user can view free/busy time within the calendar and the subject and location of appointments.",
+          "value": "LimitedDetails"
         },
         {
-          "label": "Indicates that the user can view only free/busy time within the calendar.",
-          "value": "FreeBusyTimeOnly"
+          "label": "Availability Only - Indicates that the user can view only free/busy time within the calendar.",
+          "value": "AvailabilityOnly"
         },
         {
           "label": "None - The user has no permissions on the folder.",
