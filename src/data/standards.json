@@ -268,6 +268,13 @@
     "label": "Set Outbound Spam Alert e-mail"
   },
   {
+    "name": "standards.SafeSendersDisable",
+    "cat": "Exchange",
+    "helpText": "",
+    "addedComponent": null,
+    "label": "Remove Safe Senders to prevent SPF bypass"
+  },
+  {
     "name": "standards.DisableSharedMailbox",
     "cat": "Exchange",
     "helpText": "",
@@ -332,7 +339,7 @@
   },
   {
     "name": "standards.ActivityBasedTimeout",
-    "cat": "SharePoint",
+    "cat": "Global",
     "helpText": "",
     "addedComponent": null,
     "label": "Enable 1 hour Activity based Timeout"
@@ -414,6 +421,12 @@
       "label": "Maximum days (0 equals disabled)"
     },
     "label": "Set inactive device retirement days"
+  },
+  {
+    "name": "standards.intuneRequireMFA",
+    "cat": "Intune",
+    "helpText": "",
+    "label": "Require Multifactor Authentication to register or join devices with Microsoft Entra"
   },
   {
     "name": "standards.sharingCapability.Enabled",
