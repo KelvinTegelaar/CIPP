@@ -19,9 +19,11 @@
   * [Updating](setup/installation/updating.md)
   * [Roles](setup/installation/roles.md)
   * [Permissions](setup/installation/permissions.md)
-* [GDAP Migration guide](setup/gdap/README.md)
+* [GDAP Setup Guide](setup/gdap/README.md)
   * [What is GDAP](setup/gdap/what-is-gdap.md)
+  * [GDAP Invite Wizard](setup/gdap/gdap-invite-wizard.md)
   * [GDAP Migration Setup](setup/gdap/index.md)
+  * [GDAP Troubleshooting](setup/gdap/troubleshooting.md)
   * [Recommended Roles](setup/gdap/recommended-roles.md)
 
 ## 🙋 User Documentation
