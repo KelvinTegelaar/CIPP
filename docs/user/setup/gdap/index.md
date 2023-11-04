@@ -4,6 +4,18 @@ description: Using the GDAP migration tool
 
 # GDAP Migration Setup
 
+## Options
+
+Currently there are two ways to migrate to GDAP. The automated migration tool which is available until December 1, 2023, or the GDAP invite wizard.&#x20;
+
+Both tools have slightly different setups; The automated GDAP migration tool requires you to add special permissions for the migration, but requires no further interaction. The invite tool requires you, or another global admin to logon to the clients tenant and accept the uniquely generated URL for this client.
+
+
+
+### User the Invite Wizard
+
+See the instructions for using the invite Wizard [here](../../user-documentation/gdap-migration/invite-wizard.md). This tooling requires that you, or a global administrator accepts the invite under the tenant.&#x20;
+
 ### Using the GDAP Wizard
 
 {% hint style="warning" %}
@@ -33,4 +45,3 @@ Follow the list below before starting the GDAP Wizard. You must execute each of 
 You can view the status of the GDAP migration in the GDAP Migration Status tab. When the migration has been completed for all your tenants you can move users into the new groups to use GDAP.
 
 Please remember to put the "CIPP Integration" user in these groups as well. It is not recommended to add all groups to a user.
-
