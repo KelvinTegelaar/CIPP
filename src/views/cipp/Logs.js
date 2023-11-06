@@ -56,6 +56,15 @@ const columns = [
     maxWidth: '145px',
   },
   {
+    name: 'Tenant ID',
+    selector: (row) => row['TenantID'],
+    sortable: true,
+    cell: (row) => CellTip(row['TenantID'] ?? 'None'),
+    exportSelector: 'TenantID',
+    minWidth: '145px',
+    maxWidth: '145px',
+  },
+  {
     name: 'User',
     selector: (row) => row['User'],
     sortable: true,
@@ -98,7 +107,7 @@ const Logs = () => {
   const DateFilter = query.get('DateFilter')
   //const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const [visibleA, setVisibleA] = useState(false)
-  const [startDate, setStartDate] = useState(new Date())
+  const [startDate, setStartDate] = useState(DateFilter ? new Date(DateFilter) : new Date())
   const handleSubmit = async (values) => {
     Object.keys(values).filter(function (x) {
       if (values[x] === null) {
@@ -108,7 +117,7 @@ const Logs = () => {
     })
     const shippedValues = {
       SearchNow: true,
-      DateFilter: startDate.toLocaleDateString('en-GB').split('/').reverse().join(''),
+      DateFilter: startDate.toISOString().split('T')[0].replace(/-/g, ''),
       ...values,
     }
     var queryString = Object.keys(shippedValues)
@@ -145,7 +154,7 @@ const Logs = () => {
                   initialValues={{
                     Severity: severity,
                     user: user,
-                    DateFilter: DateFilter,
+                    DateFilter: startDate.toISOString().split('T')[0].replace(/-/g, ''),
                   }}
                   onSubmit={handleSubmit}
                   render={({ handleSubmit, submitting, values }) => {

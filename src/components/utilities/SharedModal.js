@@ -2,6 +2,7 @@ import React from 'react'
 import { CButton, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle } from '@coreui/react'
 import PropTypes from 'prop-types'
 import { CippTable } from 'src/components/tables'
+import CippCodeBlock from 'src/components/utilities/CippCodeBlock'
 
 /**
  *
@@ -13,11 +14,15 @@ import { CippTable } from 'src/components/tables'
 function mapBodyComponent({ componentType, data, componentProps }) {
   switch (componentType) {
     case 'table':
-      return <CippTable data={data || []} {...componentProps} />
+      return <CippTable data={data || []} isModal={true} {...componentProps} />
     case 'list':
       return <div>{Array.isArray(data) && data.map((el, idx) => <div key={idx}>{el}</div>)}</div>
     case 'text':
       return String(data)
+    case 'codeblock':
+      return (
+        <CippCodeBlock language="text" code={data} showLineNumbers={false} {...componentProps} />
+      )
     default:
       return String(data)
   }
