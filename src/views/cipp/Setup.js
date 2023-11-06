@@ -51,7 +51,7 @@ const Setup = () => {
   const valbutton = (value) =>
     getResults.data?.step < 5
       ? undefined
-      : `You must finish the setup process. you are currently at step ${getResults.data?.step} of 5.`
+      : `You do not have to click next. Finish the wizard via the setup button below. After it says "Setup Completed" you may browse away from this page.`
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const [genericGetRequest, getResults] = useLazyGenericGetRequestQuery()
   const onSubmit = (values) => {
@@ -159,14 +159,14 @@ const Setup = () => {
               Please use a Global Administrator to perform these tasks. You can restart the process
               at any time, by clicking on the start button once more.
             </p>
-            <CCol md={2}>
+            <CCol md={12}>
               <Field
                 name="start"
                 component="button"
                 className="btn btn-primary"
                 type="button"
                 onClick={() => startCIPPSetup(true)}
-                validate={valbutton}
+                validate={() => valbutton()}
               >
                 Start Setup Wizard
               </Field>
