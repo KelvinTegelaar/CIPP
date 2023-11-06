@@ -80,7 +80,7 @@ This tenant does not have Intune WinGet support available. Check the licensing i
 
 ### AADSTS650051
 
-The application was approved by the user, but does not exist yet. Wait 5 minutes and try to reauthorize.
+This error can appear when performing a tenant access check. Try a GDAP check to see if you have the correct permissions in place, when you do try a CPV refresh, if the CPV refresh fails with an error it means we most likely do not have write access to the tenant.
 
 ### _AppLifecycle\_2210_
 
