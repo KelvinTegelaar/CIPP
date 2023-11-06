@@ -678,6 +678,25 @@ const _nav = [
     ],
   },
   {
+    component: CNavGroup,
+    name: 'Tools',
+    section: 'Tools',
+    to: '/email/tools',
+    icon: <FontAwesomeIcon icon={faToolbox} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Mailbox Restore Wizard',
+        to: '/email/tools/mailbox-restore-wizard',
+      },
+      {
+        component: CNavItem,
+        name: 'Mailbox Restores',
+        to: '/email/tools/mailbox-restores',
+      },
+    ],
+  },
+  {
     component: CNavTitle,
     name: 'Settings',
   },
