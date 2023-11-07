@@ -514,7 +514,7 @@ const ListAppliedStandards = () => {
                                     name: template.name,
                                   }))}
                                   placeholder="Select a template"
-                                  label="Choose your Transport Rule templates to apply"
+                                  label="Choose your Exchange Connector templates to apply"
                                 />
                               )}
                             </Condition>
