@@ -420,7 +420,7 @@ export const RFFSelectSearch = ({
                 isMulti={multi}
               />
             )}
-            {meta.error && meta.touched && <span className="text-danger">{meta.error}</span>}
+            <RFFCFormFeedback meta={meta} />
           </div>
         )
       }}

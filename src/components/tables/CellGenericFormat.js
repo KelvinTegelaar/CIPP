@@ -79,9 +79,6 @@ export const cellGenericFormatter =
       if (cell.toLowerCase() === 'failed') {
         return <CBadge color="danger">{CellTip('Failed to retrieve from API')}</CBadge>
       }
-      if (cell.toLowerCase().startsWith('http')) {
-        return <a href={`${cell}`}>URL</a>
-      }
       return CellTip(cell)
     }
     if (typeof cell === 'number') {

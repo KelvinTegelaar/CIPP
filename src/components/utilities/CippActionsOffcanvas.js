@@ -85,13 +85,6 @@ export default function CippActionsOffcanvas(props) {
         title: 'Confirm',
         onConfirm: () => genericGetRequest({ path: modalUrl }),
       })
-    } else if (modalType === 'codeblock') {
-      ModalService.open({
-        data: modalBody,
-        componentType: 'codeblock',
-        title: 'Info',
-        size: 'lg',
-      })
     } else {
       ModalService.confirm({
         key: modalContent,
