@@ -54,11 +54,7 @@ const GDAPWizard = () => {
         <hr className="my-4" />
         <CCallout color="info">
           The GDAP migration tool requires setup. Please check the documentation{' '}
-          <a
-            className="mb-2"
-            href="https://cipp.app/docs/user/usingcipp/GDAP/migration/"
-            target="_blank"
-          >
+          <a className="mb-2" href="https://docs.cipp.app/setup/gdap/index" target="_blank">
             here.
           </a>
           <br /> <br />
@@ -191,6 +187,17 @@ const GDAPWizard = () => {
                         ))}
                       </CCallout>
                       <h5 className="mb-0">Roles and group names</h5>
+                      {props.values.gdapRoles.map((role, idx) => (
+                        <>
+                          {role.RoleName == 'Company Administrator' && (
+                            <CCallout color="warning">
+                              WARNING: The Company Administrator role will prevent GDAP
+                              relationships from automatically extending. We recommend against using
+                              this in any GDAP relationship.
+                            </CCallout>
+                          )}
+                        </>
+                      ))}
                       <CCallout color="info">
                         {props.values.gdapRoles.map((role, idx) => (
                           <li key={idx}>
