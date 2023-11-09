@@ -37,7 +37,7 @@ const OffboardingWizard = () => {
     isFetching: usersIsFetching,
     error: usersError,
   } = useListUsersQuery({ tenantDomain })
-
+  const currentSettings = useSelector((state) => state.app)
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
   const handleSubmit = async (values) => {
@@ -60,6 +60,7 @@ const OffboardingWizard = () => {
       removeRules: values.RemoveRules,
       removeMobile: values.RemoveMobile,
       keepCopy: values.keepCopy,
+      removePermissions: values.removePermissions,
     }
 
     //alert(JSON.stringify(values, null, 2))
@@ -67,11 +68,16 @@ const OffboardingWizard = () => {
   }
 
   return (
-    <CippWizard onSubmit={handleSubmit} wizardTitle="Offboarding Wizard">
+    <CippWizard
+      initialValues={currentSettings.offboardingDefaults}
+      onSubmit={handleSubmit}
+      wizardTitle="Offboarding Wizard"
+    >
       <CippWizard.Page
         title="Tenant Choice"
         description="Choose the tenant in which to offboard a user"
       >
+        {console.log(currentSettings.offboardingDefaults)}
         <center>
           <h3 className="text-primary">Step 1</h3>
           <h5 className="card-title mb-4">Choose a tenant</h5>
@@ -103,90 +109,91 @@ const OffboardingWizard = () => {
         </div>
         <hr className="my-4" />
       </CippWizard.Page>
-      <CippWizard.Page title="Offboarding Settings" description="Select the offboarding options.">
+      <CippWizard.Page
+        initialvalues={currentSettings.offboardingDefaults}
+        title="Offboarding Settings"
+        description="Select the offboarding options."
+      >
         <center>
           <h3 className="text-primary">Step 3</h3>
           <h5>Choose offboarding options</h5>
         </center>
         <hr className="my-4" />
         <div className="mb-2">
-          <RFFCFormSwitch name="RevokeSessions" label="Revoke all sessions" />
-          <RFFCFormSwitch name="RemoveMobile" label="Remove all Mobile Devices" />
-          <RFFCFormSwitch name="RemoveRules" label="Remove all Rules" />
-          <RFFCFormSwitch name="RemoveLicenses" label="Remove Licenses" />
-          <RFFCFormSwitch name="ConvertToShared" label="Convert to Shared Mailbox" />
-          <RFFCFormSwitch name="DisableSignIn" label="Disable Sign in" />
-          <RFFCFormSwitch name="ResetPass" label="Reset Password" />
-          <RFFCFormSwitch name="RemoveGroups" label="Remove from all groups" />
-          <RFFCFormSwitch name="HideFromGAL" label="Hide from Global Address List" />
-          <CCol md={6}>
-            <RFFCFormInput
-              name="OOO"
-              label="Out of Office"
-              type="text"
-              placeholder="leave blank to not set"
-            />
-          </CCol>
-          <CCol md={6}>
-            <RFFSelectSearch
-              label="Give other user full access on mailbox without automapping"
-              multi
-              values={users
-                ?.filter((x) => x.mail)
-                .map((user) => ({
-                  value: user.mail,
-                  name: `${user.displayName} <${user.mail}>`,
-                }))}
-              placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
-              name="AccessNoAutomap"
-            />
-          </CCol>
-          <CCol md={6}>
-            <RFFSelectSearch
-              label="Give other user full access on mailbox with automapping"
-              multi
-              values={users
-                ?.filter((x) => x.mail)
-                .map((user) => ({
-                  value: user.mail,
-                  name: `${user.displayName} <${user.mail}>`,
-                }))}
-              placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
-              name="AccessAutomap"
-            />
-          </CCol>
-          <CCol md={6}>
-            <RFFSelectSearch
-              label="Give other user full access on Onedrive"
-              multi
-              values={users
-                ?.filter((x) => x.mail)
-                .map((user) => ({
-                  value: user.mail,
-                  name: `${user.displayName} <${user.mail}>`,
-                }))}
-              placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
-              name="OnedriveAccess"
-            />
-          </CCol>
-          <CCol md={6}>
-            <RFFSelectSearch
-              label="Forward email to other user"
-              values={users
-                ?.filter((x) => x.mail)
-                .map((user) => ({
-                  value: user.mail,
-                  name: `${user.displayName} <${user.mail}>`,
-                }))}
-              placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
-              name="forward"
-            />
-          </CCol>
-          <RFFCFormCheck
-            name="keepCopy"
-            label="Keep a copy of the forwarded mail in the source mailbox"
-          />
-          <RFFCFormSwitch name="DeleteUser" label="Delete user" />
+          <CRow>
+            <CCol className="mb-3" md={6}>
+              <RFFCFormSwitch name="RevokeSessions" label="Revoke all sessions" />
+              <RFFCFormSwitch name="RemoveMobile" label="Remove all Mobile Devices" />
+              <RFFCFormSwitch name="RemoveRules" label="Remove all Rules" />
+              <RFFCFormSwitch name="RemoveLicenses" label="Remove Licenses" />
+              <RFFCFormSwitch name="removePermissions" label="Remove users mailbox permissions" />
+              <RFFCFormSwitch name="ConvertToShared" label="Convert to Shared Mailbox" />
+              <RFFCFormSwitch name="DisableSignIn" label="Disable Sign in" />
+              <RFFCFormSwitch name="ResetPass" label="Reset Password" />
+              <RFFCFormSwitch name="RemoveGroups" label="Remove from all groups" />
+              <RFFCFormSwitch name="HideFromGAL" label="Hide from Global Address List" />
+              <RFFCFormSwitch name="DeleteUser" label="Delete user" />
+            </CCol>
+            <CCol className="mb-3" md={6}>
+              <RFFCFormInput
+                name="OOO"
+                label="Out of Office"
+                type="text"
+                placeholder="leave blank to not set"
+              />
+              <RFFSelectSearch
+                label="Give other user full access on mailbox without automapping"
+                multi
+                values={users
+                  ?.filter((x) => x.mail)
+                  .map((user) => ({
+                    value: user.mail,
+                    name: `${user.displayName} <${user.mail}>`,
+                  }))}
+                placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
+                name="AccessNoAutomap"
+              />
+              <RFFSelectSearch
+                label="Give other user full access on mailbox with automapping"
+                multi
+                values={users
+                  ?.filter((x) => x.mail)
+                  .map((user) => ({
+                    value: user.mail,
+                    name: `${user.displayName} <${user.mail}>`,
+                  }))}
+                placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
+                name="AccessAutomap"
+              />
+              <RFFSelectSearch
+                label="Give other user full access on Onedrive"
+                multi
+                values={users
+                  ?.filter((x) => x.mail)
+                  .map((user) => ({
+                    value: user.mail,
+                    name: `${user.displayName} <${user.mail}>`,
+                  }))}
+                placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
+                name="OnedriveAccess"
+              />
+              <RFFSelectSearch
+                label="Forward email to other user"
+                values={users
+                  ?.filter((x) => x.mail)
+                  .map((user) => ({
+                    value: user.mail,
+                    name: `${user.displayName} <${user.mail}>`,
+                  }))}
+                placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
+                name="forward"
+              />
+              <RFFCFormCheck
+                name="keepCopy"
+                label="Keep a copy of the forwarded mail in the source mailbox"
+              />
+            </CCol>
+          </CRow>
         </div>
         <hr className="my-4" />
       </CippWizard.Page>
@@ -253,6 +260,14 @@ const OffboardingWizard = () => {
                             color="#f77f00"
                             size="lg"
                             icon={props.values.RemoveRules ? faCheck : faTimes}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Remove all mailbox permissions
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.removePermissions ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
