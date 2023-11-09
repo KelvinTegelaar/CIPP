@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom'
 import { CippActionsOffcanvas } from 'src/components/utilities'
 import { TitleButton } from 'src/components/buttons'
 import { CellTip } from 'src/components/tables'
+import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 
 const MailboxList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -219,10 +220,10 @@ const MailboxList = () => {
     },
     {
       name: 'Additional Email Addresses',
-      selector: (row) => 'Click to Expand',
+      selector: (row) => row.AdditionalEmailAddresses,
       exportSelector: 'AdditionalEmailAddresses',
       sortable: true,
-      omit: true,
+      cell: cellGenericFormatter(),
     },
     {
       name: 'Actions',
