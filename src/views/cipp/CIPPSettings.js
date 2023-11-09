@@ -356,7 +356,7 @@ const GeneralSettings = () => {
               <CButton
                 onClick={() => checkPermissions()}
                 disabled={permissionsResult.isFetching}
-                className="mt-3"
+                className="my-3 me-2"
               >
                 {permissionsResult.isFetching && (
                   <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
@@ -365,6 +365,22 @@ const GeneralSettings = () => {
               </CButton>
               {permissionsResult.isSuccess && (
                 <>
+                  {permissionsResult.data.Results?.AccessTokenDetails?.Name !== '' && (
+                    <>
+                      <CButton className="my-3" onClick={() => setTokenOffcanvasVisible(true)}>
+                        Details
+                      </CButton>
+                      <CippListOffcanvas
+                        title="Details"
+                        placement="end"
+                        visible={tokenOffcanvasVisible}
+                        groups={getTokenOffcanvasProps({
+                          tokenResults: permissionsResult.data.Results,
+                        })}
+                        hideFunction={() => setTokenOffcanvasVisible(false)}
+                      />
+                    </>
+                  )}
                   <CCallout
                     color={permissionsResult.data.Results?.Success === true ? 'success' : 'danger'}
                   >
@@ -394,22 +410,6 @@ const GeneralSettings = () => {
                       </>
                     )}
                   </CCallout>
-                  {permissionsResult.data.Results?.AccessTokenDetails?.Name !== '' && (
-                    <>
-                      <CButton className="me-3" onClick={() => setTokenOffcanvasVisible(true)}>
-                        Details
-                      </CButton>
-                      <CippListOffcanvas
-                        title="Details"
-                        placement="end"
-                        visible={tokenOffcanvasVisible}
-                        groups={getTokenOffcanvasProps({
-                          tokenResults: permissionsResult.data.Results,
-                        })}
-                        hideFunction={() => setTokenOffcanvasVisible(false)}
-                      />
-                    </>
-                  )}
                 </>
               )}
             </CCardBody>
@@ -425,13 +425,31 @@ const GeneralSettings = () => {
               <CButton
                 onClick={() => checkGDAP({ path: '/api/ExecAccessChecks?GDAP=true' })}
                 disabled={GDAPResult.isFetching}
-                className="mt-3"
+                className="my-3 me-2"
               >
                 {GDAPResult.isFetching && (
                   <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
                 )}
                 Run GDAP Check
               </CButton>
+              {GDAPResult.isSuccess && (
+                <>
+                  <TableModalButton
+                    className="my-3 me-2"
+                    data={GDAPResult.data.Results?.Memberships?.filter(
+                      (p) => p['@odata.type'] == '#microsoft.graph.group',
+                    )}
+                    title="Groups"
+                  />
+                  <TableModalButton
+                    className="my-3"
+                    data={GDAPResult.data.Results?.Memberships?.filter(
+                      (p) => p['@odata.type'] == '#microsoft.graph.directoryRole',
+                    )}
+                    title="Roles"
+                  />
+                </>
+              )}
               <CRow>
                 <CCol>
                   {GDAPResult.isSuccess && GDAPResult.data.Results.GDAPIssues?.length > 0 && (
@@ -440,6 +458,11 @@ const GeneralSettings = () => {
                       reportName="none"
                       columns={checkGDAPColumns}
                       data={GDAPResult.data.Results.GDAPIssues}
+                      filterlist={[
+                        { filterName: 'Errors', filter: 'Complex: Type eq Error' },
+                        { filterName: 'Warnings', filter: 'Complex: Type eq Warning' },
+                      ]}
+                      defaultFilterText="Complex: Type eq Error"
                     />
                   )}
                   {GDAPResult.isSuccess && GDAPResult.data.Results.GDAPIssues?.length === 0 && (
@@ -447,23 +470,6 @@ const GeneralSettings = () => {
                       No relationships with issues found. Please perform a Permissions Check or
                       Tenant Access Check if you are experiencing issues.
                     </CCallout>
-                  )}
-                  {GDAPResult.isSuccess && (
-                    <>
-                      <TableModalButton
-                        className="me-3"
-                        data={GDAPResult.data.Results?.Memberships?.filter(
-                          (p) => p['@odata.type'] == '#microsoft.graph.group',
-                        )}
-                        title="Groups"
-                      />
-                      <TableModalButton
-                        data={GDAPResult.data.Results?.Memberships?.filter(
-                          (p) => p['@odata.type'] == '#microsoft.graph.directoryRole',
-                        )}
-                        title="Roles"
-                      />
-                    </>
                   )}
                 </CCol>
               </CRow>
