@@ -116,20 +116,27 @@ const MailboxRestoreWizard = () => {
         </center>
         <hr className="my-4" />
         <div className="mb-2">
-          <RFFSelectSearch
-            label={'Mailboxes in ' + tenantDomain}
-            values={targetMailboxes?.map((mbx) => ({
-              value: mbx.ExchangeGuid,
-              name: `${mbx.displayName} <${mbx.UPN}>`,
-            }))}
-            placeholder={!tMailboxesIsFetching ? 'Select mailbox' : 'Loading...'}
-            name="TargetMailbox"
-          />
-          {sMailboxError && <span>Failed to load source mailboxes</span>}
+          <FormSpy>
+            {(props) => (
+              <>
+                {console.log(props)}
+                <RFFSelectSearch
+                  label={'Mailboxes in ' + tenantDomain}
+                  values={targetMailboxes?.map((mbx) => ({
+                    value: mbx.ExchangeGuid,
+                    name: `${mbx.displayName} <${mbx.UPN}>`,
+                  }))}
+                  placeholder={!tMailboxesIsFetching ? 'Select mailbox' : 'Loading...'}
+                  name="TargetMailbox"
+                />
+                {sMailboxError && <span>Failed to load source mailboxes</span>}
+              </>
+            )}
+          </FormSpy>
         </div>
         <hr className="my-4" />
       </CippWizard.Page>
-      <CippWizard.Page title="Restore Request Options" description="">
+      <CippWizard.Page title="Restore Request Options" description="Select Mailbox Restore Options">
         <center>
           <h3 className="text-primary">Step 3</h3>
           <h5>Enter Restore Request Options</h5>
