@@ -116,23 +116,16 @@ const MailboxRestoreWizard = () => {
         </center>
         <hr className="my-4" />
         <div className="mb-2">
-          <FormSpy>
-            {(props) => (
-              <>
-                {console.log(props)}
-                <RFFSelectSearch
-                  label={'Mailboxes in ' + tenantDomain}
-                  values={targetMailboxes?.map((mbx) => ({
-                    value: mbx.ExchangeGuid,
-                    name: `${mbx.displayName} <${mbx.UPN}>`,
-                  }))}
-                  placeholder={!tMailboxesIsFetching ? 'Select mailbox' : 'Loading...'}
-                  name="TargetMailbox"
-                />
-                {sMailboxError && <span>Failed to load source mailboxes</span>}
-              </>
-            )}
-          </FormSpy>
+          <RFFSelectSearch
+            label={'Mailboxes in ' + tenantDomain}
+            values={targetMailboxes?.map((mbx) => ({
+              value: mbx.ExchangeGuid,
+              name: `${mbx.displayName} <${mbx.UPN}>`,
+            }))}
+            placeholder={!tMailboxesIsFetching ? 'Select mailbox' : 'Loading...'}
+            name="TargetMailbox"
+          />
+          {sMailboxError && <span>Failed to load source mailboxes</span>}
         </div>
         <hr className="my-4" />
       </CippWizard.Page>
