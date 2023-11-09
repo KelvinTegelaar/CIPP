@@ -187,12 +187,8 @@ const Home = () => {
             </CCol>
             <CCol sm={12} md={6} xl={3} className="mb-3">
               <CippContentCard title="Global Admin Users" icon={faLaptopCode}>
-                <Link
-                  to={
-                    'https://entra.microsoft.com/' +
-                    currentTenant.customerId +
-                    '/#view/Microsoft_AAD_IAM/RoleMenuBlade/~/RoleMembers/objectId/62e90394-69f5-4237-9190-012177145e10/roleName/Global%20Administrator/roleTemplateId/62e90394-69f5-4237-9190-012177145e10/adminUnitObjectId//customRole~/false/resourceScope/%2F?culture=en-us&country=us'
-                  }
+                <a
+                  href={`https://entra.microsoft.com/${currentTenant.customerId}/#view/Microsoft_AAD_IAM/RoleMenuBlade/~/RoleMembers/objectId/62e90394-69f5-4237-9190-012177145e10/roleName/Global%20Administrator/roleTemplateId/62e90394-69f5-4237-9190-012177145e10/adminUnitObjectId//customRole~/false/resourceScope/%2F?culture=en-us&country=us`}
                   className="stretched-link"
                   target="_blank"
                 />
@@ -333,7 +329,7 @@ const Home = () => {
                     {(isLoadingPartners || isFetchingPartners) && <Skeleton />}
                     {issuccessPartners &&
                       !isFetchingPartners &&
-                      partners.map((partner) => {
+                      partners?.Results.map((partner) => {
                         if (partner.TenantInfo) {
                           return (
                             <li key={`${partner.tenantId}`}>

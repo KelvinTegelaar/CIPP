@@ -39,7 +39,7 @@ import { useNavigate } from 'react-router-dom'
 
 const AddUser = () => {
   let navigate = useNavigate()
-
+  const [addedAttributes, setAddedAttribute] = React.useState(0)
   const tenant = useSelector((state) => state.app.currentTenant)
   const { defaultDomainName: tenantDomain } = tenant
   let query = useQuery()
@@ -96,6 +96,7 @@ const AddUser = () => {
       Autopassword: !!values.Autopassword,
       MustChangePass: values.MustChangePass,
       tenantID: tenantDomain,
+      addedAttributes: values.addedAttributes,
       ...values.license,
     }
     //window.alert(JSON.stringify(shippedValues))
@@ -285,6 +286,47 @@ const AddUser = () => {
                         </CCol>
                         <CCol md={6}>
                           <RFFCFormInput name="businessPhones" label="Business #" type="text" />
+                        </CCol>
+                      </CRow>
+                      <>
+                        {addedAttributes > 0 &&
+                          [...Array(addedAttributes)].map((e, i) => (
+                            <CRow key={i}>
+                              <CCol md={6}>
+                                <RFFCFormInput
+                                  name={`addedAttributes.${i}.Key`}
+                                  label="Attribute Name"
+                                  type="text"
+                                />
+                              </CCol>
+                              <CCol md={6}>
+                                <RFFCFormInput
+                                  name={`addedAttributes.${i}.Value`}
+                                  label="Attribute Value"
+                                  type="text"
+                                />
+                              </CCol>
+                            </CRow>
+                          ))}
+                      </>
+                      <CRow>
+                        <CCol className="mb-3" md={12}>
+                          {addedAttributes > 0 && (
+                            <CButton
+                              onClick={() => setAddedAttribute(addedAttributes - 1)}
+                              className={`circular-button`}
+                              title={'-'}
+                            >
+                              <FontAwesomeIcon icon={'minus'} />
+                            </CButton>
+                          )}
+                          <CButton
+                            onClick={() => setAddedAttribute(addedAttributes + 1)}
+                            className={`circular-button`}
+                            title={'+'}
+                          >
+                            <FontAwesomeIcon icon={'plus'} />
+                          </CButton>
                         </CCol>
                       </CRow>
                       <CRow className="mb-3">
