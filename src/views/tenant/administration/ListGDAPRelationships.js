@@ -34,7 +34,7 @@ const RefreshAction = () => {
       {isLoading && <CSpinner size="sm" />}
       {error && <FontAwesomeIcon icon={faExclamationTriangle} className="pe-1" />}
       {isSuccess && <FontAwesomeIcon icon={faCheck} className="pe-1" />}
-      Map GDAP Groups
+      Map recently approved relationships
     </CButton>
   )
 }
@@ -89,6 +89,13 @@ const Actions = (row, rowIndex, formatExtraData) => {
         title={'GDAP - ' + row?.customer?.displayName}
         extendedInfo={extendedInfo}
         actions={[
+          {
+            label: 'Enable automatic extension',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecAutoExtendGDAP?ID=${row.id}`,
+            modalMessage: 'Are you sure you want to enable auto-extend for this relationship',
+          },
           {
             label: 'Terminate Relationship',
             color: 'danger',
@@ -150,6 +157,24 @@ const GDAPRelationships = () => {
       cell: cellDateFormatter({ format: 'short' }),
     },
     {
+      name: 'Auto Extend',
+      selector: (row) => row['autoExtendDuration'],
+      sortable: true,
+      exportSelector: 'endDateTime',
+      cell: (row) => (row['autoExtendDuration'] === 'PT0S' ? 'No' : 'Yes'),
+    },
+    {
+      name: 'Includes CA Role',
+      selector: (row) => row?.accessDetails,
+      sortable: true,
+      cell: (row) =>
+        row?.accessDetails?.unifiedRoles?.filter(
+          (e) => e.roleDefinitionId === '62e90394-69f5-4237-9190-012177145e10',
+        ).length > 0
+          ? 'Yes'
+          : 'No',
+    },
+    {
       name: 'Actions',
       cell: Actions,
       maxWidth: '80px',
@@ -158,14 +183,23 @@ const GDAPRelationships = () => {
   return (
     <div>
       <CippPageList
+        titleButton={<RefreshAction />}
         capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
         title="GDAP Relationship List"
         tenantSelector={false}
         datatable={{
           filterlist: [
-            { filterName: 'Active Relationships', filter: '"status":"active"' },
-            { filterName: 'Terminated Relationships', filter: '"status":"Terminated"' },
+            { filterName: 'Active Relationships', filter: 'Complex: status eq active' },
+            { filterName: 'Terminated Relationships', filter: 'Complex: status eq terminated' },
             { filterName: 'Pending Relationships', filter: 'Pending' },
+            {
+              filterName: 'Active with Auto Extend',
+              filter: 'Complex: status eq active; autoExtendDuration ne PT0S',
+            },
+            {
+              filterName: 'Active without Auto Extend',
+              filter: 'Complex: status eq active; autoExtendDuration eq PT0S',
+            },
           ],
           tableProps: {
             selectableRows: true,
@@ -176,8 +210,13 @@ const GDAPRelationships = () => {
                 modalUrl: `/api/ExecDeleteGDAPRelationship?&GDAPID=!id`,
                 modalMessage: 'Are you sure you want to terminate these relationships?',
               },
+              {
+                label: 'Auto Extend Relationship',
+                modal: true,
+                modalUrl: `/api/ExecAutoExtendGDAP?ID=!id`,
+                modalMessage: 'Are you sure you want to enable automatic extension?',
+              },
             ],
-            actions: [<RefreshAction key="refresh-action-button" />],
           },
           keyField: 'id',
           columns,
