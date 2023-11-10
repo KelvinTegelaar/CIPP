@@ -46,7 +46,7 @@
     "@rjsf/utils": "^5.12.1",
     "@rjsf/validator-ajv8": "^5.12.1",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.6.3",
-    "axios": "^0.24.0",
+    "axios": "^1.6.0",
     "buffer": "^6.0.3",
     "chart.js": "^3.5.1",
     "classnames": "^2.3.1",
