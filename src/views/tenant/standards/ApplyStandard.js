@@ -83,7 +83,7 @@ const ApplyStandard = () => {
       >
         <CCallout color="danger">
           Ensure you read{' '}
-          <a href="https://cipp.app/docs/user/usingcipp/tenantadministration/standards/#meet-the-standards">
+          <a href="https://docs.cipp.app/user-documentation/tenant/standards/apply-standard">
             the documentation fully
           </a>{' '}
           before proceeding with this wizard. Some of the changes cannot be reverted by CIPP.
