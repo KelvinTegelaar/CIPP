@@ -21,7 +21,11 @@ import { Form, Field } from 'react-final-form'
 import { RFFSelectSearch, RFFCFormSelect, RFFCFormCheck, RFFCFormInput } from 'src/components/forms'
 import { useListUsersQuery } from 'src/store/api/users'
 import { ModalService } from 'src/components/utilities'
-import { useLazyGenericPostRequestQuery, useLazyGenericGetRequestQuery } from 'src/store/api/app'
+import {
+  useLazyGenericPostRequestQuery,
+  useLazyGenericGetRequestQuery,
+  useGenericGetRequestQuery,
+} from 'src/store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import {
@@ -32,6 +36,9 @@ import {
 import { CippTable } from 'src/components/tables'
 import { useListMailboxDetailsQuery } from 'src/store/api/mailbox'
 import { CellBoolean } from 'src/components/tables'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
+import { RFFCFormSwitch } from 'src/components/forms'
 
 const formatter = (cell, warning = false, reverse = false, colourless = false) =>
   CellBoolean({ cell, warning, reverse, colourless })
@@ -114,6 +121,9 @@ const MailboxSettings = () => {
               <CNavItem active={active === 3} onClick={() => setActive(3)} href="#">
                 Mailbox Forwarding
               </CNavItem>
+              <CNavItem active={active === 4} onClick={() => setActive(4)} href="#">
+                Out Of Office
+              </CNavItem>
             </CNav>
           </CCardHeader>
           <CCardBody>
@@ -126,6 +136,9 @@ const MailboxSettings = () => {
               </CTabPane>
               <CTabPane visible={active === 3} className="mt-3">
                 <MailboxForwarding />
+              </CTabPane>
+              <CTabPane visible={active === 4} className="mt-3">
+                <OutOfOffice />
               </CTabPane>
             </CTabContent>
           </CCardBody>
@@ -156,6 +169,11 @@ const MailboxSettings = () => {
             {active === 3 && (
               <>
                 <ForwardingSettings userId={userId} tenantDomain={tenantDomain} />
+              </>
+            )}
+            {active === 4 && (
+              <>
+                <OutOfOfficeSettings userId={userId} tenantDomain={tenantDomain} />
               </>
             )}
           </CCardBody>
@@ -758,6 +776,230 @@ const ForwardingSettings = () => {
           ))}
         </CCol>
       )}
+    </CRow>
+  )
+}
+
+const OutOfOffice = () => {
+  const dispatch = useDispatch()
+  let query = useQuery()
+  const userId = query.get('userId')
+  const tenantDomain = query.get('tenantDomain')
+  const [queryError, setQueryError] = useState(false)
+  const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
+  const [startDate, setStartDate] = useState(new Date())
+  const [endDate, setEndDate] = useState(new Date())
+  const {
+    data: user = {},
+    isFetching: userIsFetching,
+    error: userError,
+  } = useListMailboxPermissionsQuery({ tenantDomain, userId })
+
+  const {
+    data: users = [],
+    isFetching: usersIsFetching,
+    error: usersError,
+  } = useListUsersQuery({ tenantDomain })
+
+  useEffect(() => {
+    if (postResults.isSuccess) {
+    }
+    if (!userId || !tenantDomain) {
+      ModalService.open({
+        body: 'Error invalid request, could not load requested user.',
+        title: 'Invalid Request',
+      })
+      setQueryError(true)
+    } else {
+      setQueryError(false)
+    }
+  }, [userId, tenantDomain, dispatch, postResults])
+  const onSubmit = (values) => {
+    const shippedValues = {
+      user: userId,
+      tenantFilter: tenantDomain,
+      AutoReplyState: values.AutoReplyState ? 'Scheduled' : 'Disabled',
+      StartTime: startDate.toLocaleString(),
+      EndTime: endDate.toLocaleString(),
+      InternalMessage: values.InternalMessage ? values.InternalMessage : '',
+      ExternalMessage: values.ExternalMessage ? values.ExternalMessage : '',
+    }
+    //window.alert(JSON.stringify(shippedValues))
+    genericPostRequest({ path: '/api/ExecSetOoO', values: shippedValues })
+  }
+  const initialState = {
+    ...user,
+  }
+
+  const formDisabled = queryError === true
+
+  return (
+    <>
+      {!queryError && (
+        <>
+          {queryError && (
+            <CRow>
+              <CCol className="mb-3">
+                <CCallout color="danger">
+                  {/* @todo add more descriptive help message here */}
+                  Failed to load user
+                </CCallout>
+              </CCol>
+            </CRow>
+          )}
+          <CRow>
+            <CCol className="mb-3">
+              {usersIsFetching && <CSpinner />}
+              {userError && <span>Error loading user</span>}
+              {!usersIsFetching && (
+                <Form
+                  initialValues={{ ...initialState }}
+                  onSubmit={onSubmit}
+                  render={({ handleSubmit, submitting, values }) => {
+                    return (
+                      <CForm onSubmit={handleSubmit}>
+                        <CRow>
+                          <CCol>
+                            <RFFCFormSwitch name="AutoReplyState" label="Auto Reply State" />
+                          </CCol>
+                        </CRow>
+                        <CRow>
+                          <CCol className="mb-3">
+                            <label>Start Date/Time</label>
+                            <DatePicker
+                              dateFormat="dd/MM/yyyy HH:mm"
+                              className="form-control"
+                              selected={startDate}
+                              onChange={(date) => setStartDate(date)}
+                              showTimeSelect
+                            />
+                          </CCol>
+                        </CRow>
+                        <CRow>
+                          <CCol className="mb-3">
+                            <label>End Date/Time</label>
+                            <DatePicker
+                              dateFormat="dd/MM/yyyy HH:mm"
+                              className="form-control"
+                              selected={endDate}
+                              onChange={(date) => setEndDate(date)}
+                              showTimeSelect
+                            />
+                          </CCol>
+                        </CRow>
+                        <CRow>
+                          <CCol>
+                            <RFFCFormInput
+                              type="text"
+                              name="InternalMessage"
+                              label="Internal Message"
+                              disabled={formDisabled}
+                            />
+                          </CCol>
+                        </CRow>
+                        <CRow>
+                          <CCol>
+                            <RFFCFormInput
+                              type="text"
+                              name="ExternalMessage"
+                              label="External Message"
+                              disabled={formDisabled}
+                            />
+                          </CCol>
+                        </CRow>
+                        <CRow>
+                          <CCol className="mb-3">
+                            <CButton
+                              type="submit"
+                              disabled={submitting || formDisabled}
+                              style={{ marginRight: '10px' }}
+                            >
+                              Edit Out of Office
+                              {postResults.isFetching && (
+                                <FontAwesomeIcon
+                                  icon={faCircleNotch}
+                                  spin
+                                  className="me-2"
+                                  size="1x"
+                                />
+                              )}
+                            </CButton>
+                          </CCol>
+                        </CRow>
+                        {postResults.isSuccess && (
+                          <CCallout color="success">
+                            {postResults.data.Results.map((result, idx) => (
+                              <li key={idx}>{result}</li>
+                            ))}
+                          </CCallout>
+                        )}
+                      </CForm>
+                    )
+                  }}
+                />
+              )}
+            </CCol>
+          </CRow>
+        </>
+      )}
+    </>
+  )
+}
+
+const OutOfOfficeSettings = () => {
+  const query = useQuery()
+  const userId = query.get('userId')
+  const tenantDomain = query.get('tenantDomain')
+  const tenantFilter = tenantDomain
+  const {
+    data: details,
+    isFetching,
+    error,
+  } = useGenericGetRequestQuery({
+    path: '/api/ListOoO',
+    params: { userId, tenantFilter },
+  })
+  const combinedRegex = /(<([^>]+)>)|&#65279;|&nbsp;/gi
+  const content = [
+    {
+      heading: 'Auto Reply State',
+      body: formatter(details?.AutoReplyState, false, false, true),
+    },
+    {
+      heading: 'Start Date/Time',
+      body: details?.StartTime ? details?.StartTime : 'N/A',
+    },
+    {
+      heading: 'End Date/Time',
+      body: details?.EndTime ? details?.EndTime : 'N/A',
+    },
+    {
+      heading: 'Internal Message',
+      body: details?.InternalMessage ? details?.InternalMessage.replace(combinedRegex, '') : 'N/A',
+    },
+    {
+      heading: 'External Message',
+      body: details?.ExternalMessage ? details?.ExternalMessage.replace(combinedRegex, '') : 'N/A',
+    },
+  ]
+  return (
+    <CRow>
+      {isFetching && (
+        <CCallout color="info">
+          <CSpinner>Loading</CSpinner>
+        </CCallout>
+      )}
+      {!isFetching && (
+        <CCol className="mb-3">
+          {content.map((item, index) => (
+            <div key={index}>
+              <h5>{item.heading}</h5>
+              <p>{item.body}</p>
+            </div>
+          ))}
+        </CCol>
+      )}
+      {error && <CCallout color="danger">Could not connect to API: {error.message}</CCallout>}
     </CRow>
   )
 }
