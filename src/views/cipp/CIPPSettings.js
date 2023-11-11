@@ -87,6 +87,18 @@ import { TableModalButton } from 'src/components/buttons'
 import { cellTableFormatter } from 'src/components/tables/CellTable'
 import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 
+function Lazy({ visible, children }) {
+  const rendered = useRef(visible)
+
+  if (visible && !rendered.current) {
+    rendered.current = true
+  }
+
+  if (!rendered.current) return null
+
+  return <div style={{ display: visible ? 'block' : 'none' }}>{children}</div>
+}
+
 const CIPPSettings = () => {
   const [active, setActive] = useState(1)
   return (
@@ -119,28 +131,43 @@ const CIPPSettings = () => {
       </CNav>
       <CTabContent>
         <CTabPane visible={active === 1} className="mt-3">
-          <GeneralSettings />
+          <Lazy visible={active === 1}>
+            <GeneralSettings />
+          </Lazy>
         </CTabPane>
         <CTabPane visible={active === 2} className="mt-3">
-          <ExcludedTenantsSettings />
+          <Lazy visible={active === 2}>
+            <ExcludedTenantsSettings />
+          </Lazy>
         </CTabPane>
         <CTabPane visible={active === 3} className="mt-3">
-          <SecuritySettings />
+          <Lazy visible={active === 3}>
+            <SecuritySettings />
+          </Lazy>
         </CTabPane>
         <CTabPane visible={active === 4} className="mt-3">
+          <Lazy visible={active === 4}></Lazy>
           <NotificationsSettings />
         </CTabPane>
         <CTabPane visible={active === 5} className="mt-3">
-          <LicenseSettings />
+          <Lazy visible={active === 5}>
+            <LicenseSettings />
+          </Lazy>
         </CTabPane>
         <CTabPane visible={active === 6} className="mt-3">
-          <Maintenance />
+          <Lazy visible={active === 6}>
+            <Maintenance />
+          </Lazy>
         </CTabPane>
         <CTabPane visible={active === 7} className="mt-3">
-          <ExtensionsTab />
+          <Lazy visible={active === 7}>
+            <ExtensionsTab />
+          </Lazy>
         </CTabPane>
         <CTabPane visible={active === 8} className="mt-3">
-          <MappingsTab />
+          <Lazy visible={active === 8}>
+            <MappingsTab />
+          </Lazy>
         </CTabPane>
       </CTabContent>
     </CippPage>
@@ -346,17 +373,16 @@ const GeneralSettings = () => {
         </CCol>
       </CRow>
       <CRow className="mb-3">
-        <CCol className="mb-3">
+        <CCol className="mb-3" xl={6} md={12}>
           <CCard>
-            <CCardHeader>
-              <CCardTitle>Permissions Check</CCardTitle>
-            </CCardHeader>
+            <CCardHeader></CCardHeader>
             <CCardBody>
-              <CRow>Click the button below to start a permissions check.</CRow>
+              <h3 className="underline mb-5">Permissions Check</h3>
+              <p>Click the button below to start a permissions check.</p>
               <CButton
                 onClick={() => checkPermissions()}
                 disabled={permissionsResult.isFetching}
-                className="my-3 me-2"
+                className="mb-3 me-2"
               >
                 {permissionsResult.isFetching && (
                   <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
@@ -367,7 +393,7 @@ const GeneralSettings = () => {
                 <>
                   {permissionsResult.data.Results?.AccessTokenDetails?.Name !== '' && (
                     <>
-                      <CButton className="my-3" onClick={() => setTokenOffcanvasVisible(true)}>
+                      <CButton className="mb-3" onClick={() => setTokenOffcanvasVisible(true)}>
                         Details
                       </CButton>
                       <CippListOffcanvas
@@ -415,17 +441,16 @@ const GeneralSettings = () => {
             </CCardBody>
           </CCard>
         </CCol>
-        <CCol md={6} className="mb-3">
+        <CCol xl={6} md={12} className="mb-3">
           <CCard>
-            <CCardHeader>
-              <CCardTitle>GDAP Check</CCardTitle>
-            </CCardHeader>
+            <CCardHeader></CCardHeader>
             <CCardBody>
-              <CRow>Click the button below to start a check for general GDAP settings.</CRow>
+              <h3 className="underline mb-5">GDAP Check</h3>
+              <p>Click the button below to start a check for general GDAP settings.</p>
               <CButton
                 onClick={() => checkGDAP({ path: '/api/ExecAccessChecks?GDAP=true' })}
                 disabled={GDAPResult.isFetching}
-                className="my-3 me-2"
+                className="mb-3 me-2"
               >
                 {GDAPResult.isFetching && (
                   <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
@@ -435,14 +460,14 @@ const GeneralSettings = () => {
               {GDAPResult.isSuccess && (
                 <>
                   <TableModalButton
-                    className="my-3 me-2"
+                    className="mb-3 me-2"
                     data={GDAPResult.data.Results?.Memberships?.filter(
                       (p) => p['@odata.type'] == '#microsoft.graph.group',
                     )}
                     title="Groups"
                   />
                   <TableModalButton
-                    className="my-3"
+                    className="mb-3"
                     data={GDAPResult.data.Results?.Memberships?.filter(
                       (p) => p['@odata.type'] == '#microsoft.graph.directoryRole',
                     )}
@@ -480,10 +505,9 @@ const GeneralSettings = () => {
       <CRow className="mb-3">
         <CCol>
           <CCard>
-            <CCardHeader>
-              <CCardTitle>Tenant Access Check</CCardTitle>
-            </CCardHeader>
+            <CCardHeader></CCardHeader>
             <CCardBody>
+              <h3 className="underline mb-5">Tenant Access Check</h3>
               <CRow className="mb-3">
                 <CCol>
                   <div className="mb-3">
@@ -1374,15 +1398,13 @@ const DNSSettings = () => {
       {getDnsConfigResult.isUninitialized && getDnsConfig()}
       {getDnsConfigResult.isSuccess && (
         <CCard className="h-100">
-          <CCardHeader>
-            <CCardTitle>Application Settings</CCardTitle>
-          </CCardHeader>
+          <CCardHeader></CCardHeader>
           <CCardBody>
             <CRow>
-              <CCol>
+              <CCol xl={4} md={12}>
                 <PasswordSettings />
               </CCol>
-              <CCol>
+              <CCol xl={4} md={12}>
                 <h3 className="underline mb-5">DNS Resolver</h3>
                 <CButtonGroup role="group" aria-label="Resolver" className="my-3">
                   {resolvers.map((r, index) => (
@@ -1406,18 +1428,18 @@ const DNSSettings = () => {
                   </CCallout>
                 )}
               </CCol>
-              <CCol>
+              <CCol xl={4} md={12}>
                 <h3 className="underline mb-5">Frontend Version</h3>
                 <StatusIcon
                   type="negatedboolean"
                   status={isSuccessVersion && versions.OutOfDateCIPP}
                 />
                 <div>Latest: {isSuccessVersion ? versions.RemoteCIPPVersion : <Skeleton />}</div>
-                <div>Current: {isSuccessVersion ? versions.LocalCIPPVersion : <Skeleton />}</div>
+                <div className="mb-3">
+                  Current: {isSuccessVersion ? versions.LocalCIPPVersion : <Skeleton />}
+                </div>
               </CCol>
-            </CRow>
-            <CRow>
-              <CCol>
+              <CCol xl={4} md={12} className="mb-3">
                 <h3 className="underline mb-5">Clear Caches</h3>
                 <CButton
                   className="me-2 mb-2"
@@ -1443,8 +1465,7 @@ const DNSSettings = () => {
                   <div className="me-3">{clearCacheResult.data?.Results}</div>
                 )}
               </CCol>
-
-              <CCol>
+              <CCol xl={4} md={12} className="mb-3">
                 <h3 className="underline mb-5">Settings Backup</h3>
                 <CButton
                   className="me-2 mb-2"
@@ -1491,14 +1512,16 @@ const DNSSettings = () => {
                   </>
                 )}
               </CCol>
-              <CCol>
+              <CCol xl={4} md={12}>
                 <h3 className="underline mb-5">Backend API Version</h3>
                 <StatusIcon
                   type="negatedboolean"
                   status={isSuccessVersion && versions.OutOfDateCIPPAPI}
                 />
                 <div>Latest: {isSuccessVersion ? versions.RemoteCIPPAPIVersion : <Skeleton />}</div>
-                <div>Current: {isSuccessVersion ? versions.LocalCIPPAPIVersion : <Skeleton />}</div>
+                <div className="mb-3">
+                  Current: {isSuccessVersion ? versions.LocalCIPPAPIVersion : <Skeleton />}
+                </div>
               </CCol>
             </CRow>
           </CCardBody>
