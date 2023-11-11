@@ -488,6 +488,7 @@ const GeneralSettings = () => {
                         { filterName: 'Warnings', filter: 'Complex: Type eq Warning' },
                       ]}
                       defaultFilterText="Complex: Type eq Error"
+                      isModal={true}
                     />
                   )}
                   {GDAPResult.isSuccess && GDAPResult.data.Results.GDAPIssues?.length === 0 && (
@@ -800,9 +801,19 @@ const ExcludedTenantsSettings = () => {
               },
             ],
           },
+          isModal: true,
           filterlist: [
-            { filterName: 'Excluded Tenants', filter: '"Excluded":true' },
-            { filterName: 'Included Tenants', filter: '"Excluded":false' },
+            { filterName: 'Excluded Tenants', filter: 'Complex: Excluded eq true' },
+            { filterName: 'Included Tenants', filter: 'Complex: Excluded eq false' },
+            {
+              filterName: 'GDAP & DAP',
+              filter:
+                'Complex: delegatedPrivilegeStatus eq delegatedAndGranularDelegetedAdminPrivileges',
+            },
+            {
+              filterName: 'GDAP Only',
+              filter: 'Complex: delegatedPrivilegeStatus eq granularDelegatedAdminPrivileges',
+            },
           ],
           keyField: 'id',
           columns,
