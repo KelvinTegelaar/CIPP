@@ -129,7 +129,7 @@ const MailboxRestoreWizard = () => {
         </div>
         <hr className="my-4" />
       </CippWizard.Page>
-      <CippWizard.Page title="Restore Request Options" description="">
+      <CippWizard.Page title="Restore Request Options" description="Select Mailbox Restore Options">
         <center>
           <h3 className="text-primary">Step 3</h3>
           <h5>Enter Restore Request Options</h5>
