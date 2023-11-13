@@ -12,6 +12,10 @@ export default function UserEmailSettings({ userId, tenantDomain, className = nu
   const { data: details, isFetching, error } = useListMailboxDetailsQuery({ userId, tenantDomain })
   const content = [
     {
+      heading: 'Mailbox Type',
+      body: details?.RecipientTypeDetails,
+    },
+    {
       heading: 'User Not Restricted',
       body: formatter(details?.BlockedForSpam, false, true),
     },
