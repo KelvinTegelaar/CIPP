@@ -9,6 +9,10 @@ export default function UserDetails({ tenantDomain, userId, className = null }) 
 
   const content = [
     {
+      heading: 'Sign-In Status',
+      body: user.accountEnabled ? 'Enabled' : 'Blocked',
+    },
+    {
       heading: 'First Name',
       body: user.givenName,
     },

@@ -75,7 +75,7 @@ export default function UserActions({ tenantDomain, userId, userEmail, className
         ),
     },
     {
-      label: 'Block Sign In',
+      label: 'Block Sign-In',
       link: '#',
       icon: faBan,
       onClick: () =>
