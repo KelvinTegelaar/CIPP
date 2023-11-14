@@ -108,6 +108,20 @@
   },
   {
     "cat": "AAD",
+    "name": "standards.allowOTPTokens",
+    "helpText": "Allows you to use any OTP token generator",
+    "addedComponent": null,
+    "label": "Enable OTP via Authenticator."
+  },
+  {
+    "cat": "AAD",
+    "name": "standards.allowOAuthTokens",
+    "helpText": "Allows you to use any OTP token generator",
+    "addedComponent": null,
+    "label": "Enable OTP Software oAuth tokens."
+  },
+  {
+    "cat": "AAD",
     "name": "standards.PWcompanionAppAllowedState.Enabled",
     "helpText": "",
     "addedComponent": {

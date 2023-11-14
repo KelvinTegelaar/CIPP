@@ -260,7 +260,7 @@ const ListAlertsQueue = () => {
                   label: 'Delete alerts',
                   color: 'info',
                   modal: true,
-                  modalUrl: `/api/RemoveQueuedAlert?ID=!tenantid`,
+                  modalUrl: `/api/RemoveQueuedAlert?ID=!tenantId`,
                   modalMessage: 'Are you sure you want to delete these alerts?',
                 },
               ],
