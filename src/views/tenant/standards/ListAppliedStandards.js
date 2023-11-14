@@ -541,6 +541,45 @@ const ListAppliedStandards = () => {
                             </Condition>
                           </CCol>
                         </CRow>
+                        <hr />
+                        <h5>Legacy Standards</h5>
+                        <hr />
+                        <CRow className="mb-3" xs={{ cols: 2 }}>
+                          {allStandardsList
+                            .filter((obj) => obj.cat === 'legacy')
+                            .map((item, key) => (
+                              <>
+                                <CCol>
+                                  <RFFCFormSwitch
+                                    key={key}
+                                    name={item.name}
+                                    label={item.label}
+                                    sublabel={getLabel(item)}
+                                    helpText={item.helpText}
+                                  />
+                                  {item.addedComponent && (
+                                    <Condition when={item.name} is={true}>
+                                      {item.addedComponent.type === 'Select' ? (
+                                        <RFFCFormSelect
+                                          name={item.addedComponent.name}
+                                          className="mb-3"
+                                          label={item.addedComponent.label}
+                                          values={item.addedComponent.values}
+                                        />
+                                      ) : (
+                                        <RFFCFormInput
+                                          type="text"
+                                          className="mb-3"
+                                          name={item.addedComponent.name}
+                                          label={item.addedComponent.label}
+                                        />
+                                      )}
+                                    </Condition>
+                                  )}
+                                </CCol>
+                              </>
+                            ))}
+                        </CRow>
                         {postResults.isSuccess && (
                           <CCallout color="success">{postResults.data.Results}</CCallout>
                         )}
