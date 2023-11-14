@@ -17,6 +17,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
   const viewLink = `/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}&userEmail=${row.userPrincipalName}`
   const editLink = `/identity/administration/users/edit?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`
   const OffboardLink = `/identity/administration/offboarding-wizard?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`
+  const entraLink = `https://entra.microsoft.com/${tenant.defaultDomainName}/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/UserAuthMethods/userId/${row.id}/hidePreviewBanner~/true`
 
   let licenses = []
   row.assignedLicenses?.map((licenseAssignment, idx) => {
@@ -77,7 +78,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
           },
           {
             label: 'Research Compromised Account',
-            link: `/identity/administration/ViewBec?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`,
+            link: `/identity/administration/ViewBec?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}&ID=${row.userPrincipalName}`,
             color: 'info',
           },
           {
@@ -94,10 +95,10 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
           },
           {
             label: 'Rerequire MFA registration',
+            link: entraLink,
             color: 'info',
-            modal: true,
-            modalUrl: `/api/ExecResetMFA?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
-            modalMessage: 'Are you sure you want to enable MFA for this user?',
+            target: '_blank',
+            external: true,
           },
           {
             label: 'Send MFA Push',
@@ -148,6 +149,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
               user: row.userPrincipalName,
               TenantFilter: tenant.defaultDomainName,
               message: row.message,
+              AutoReplyState: 'Enabled',
             },
             modalUrl: `/api/ExecSetOoO`,
             modalInput: true,
@@ -162,7 +164,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modalBody: {
               user: row.userPrincipalName,
               TenantFilter: tenant.defaultDomainName,
-              Disable: true,
+              AutoReplyState: 'Disabled',
             },
             modalUrl: `/api/ExecSetOoO`,
             modalMessage: 'Are you sure you want to disable the out of office?',
@@ -356,13 +358,11 @@ const Users = (row) => {
           { filterName: 'Users without a license', filter: '"assignedLicenses":[]' },
           {
             filterName: 'Users with a license (Graph)',
-            filter: 'assignedLicenses/$count ne 0',
-            graphFilter: true,
+            filter: 'Graph: assignedLicenses/$count ne 0',
           },
           {
             filterName: 'Users with a license & Enabled (Graph)',
-            filter: 'assignedLicenses/$count ne 0 and accountEnabled eq true',
-            graphFilter: true,
+            filter: 'Graph: assignedLicenses/$count ne 0 and accountEnabled eq true',
           },
         ],
         columns,
