@@ -93,6 +93,27 @@ const Actions = (row, rowIndex, formatExtraData) => {
             label: 'Show Report',
             color: 'info',
           },
+          {
+            label: 'Resume Restore Request',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecMailboxRestore?TenantFilter=${tenant.defaultDomainName}&Identity=${row.Identity}&Action=Resume`,
+            modalMessage: 'Are you sure you want to resume this restore request?',
+          },
+          {
+            label: 'Suspend Restore Request',
+            color: 'warning',
+            modal: true,
+            modalUrl: `/api/ExecMailboxRestore?TenantFilter=${tenant.defaultDomainName}&Identity=${row.Identity}&Action=Suspend`,
+            modalMessage: 'Are you sure you want to suspend this restore request?',
+          },
+          {
+            label: 'Remove Restore Request',
+            color: 'danger',
+            modal: true,
+            modalUrl: `/api/ExecMailboxRestore?TenantFilter=${tenant.defaultDomainName}&Identity=${row.Identity}&Action=Remove`,
+            modalMessage: 'Are you sure you want to remove this restore request?',
+          },
         ]}
         placement="end"
         visible={ocVisible}
