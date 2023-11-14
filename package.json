@@ -21,7 +21,7 @@
     "test": "react-scripts test",
     "test:cov": "npm test -- --coverage --watchAll=false",
     "test:debug": "react-scripts --inspect-brk test --runInBand",
-    "start-swa": "swa start --swa-config-location .vscode http://127.0.0.1:3000 --api-location http://localhost:7071",
+    "start-swa": "swa start --swa-config-location .vscode http://127.0.0.1:3000 --api-location http://127.0.0.1:7071",
     "prepare": "husky install"
   },
   "config": {

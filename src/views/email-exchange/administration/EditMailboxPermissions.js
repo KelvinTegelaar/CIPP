@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   CButton,
   CCallout,
@@ -42,6 +42,18 @@ import { RFFCFormSwitch } from 'src/components/forms'
 
 const formatter = (cell, warning = false, reverse = false, colourless = false) =>
   CellBoolean({ cell, warning, reverse, colourless })
+
+function Lazy({ visible, children }) {
+  const rendered = useRef(visible)
+
+  if (visible && !rendered.current) {
+    rendered.current = true
+  }
+
+  if (!rendered.current) return null
+
+  return <div style={{ display: visible ? 'block' : 'none' }}>{children}</div>
+}
 
 const MailboxSettings = () => {
   const dispatch = useDispatch()
@@ -129,16 +141,24 @@ const MailboxSettings = () => {
           <CCardBody>
             <CTabContent>
               <CTabPane visible={active === 1} className="mt-3">
-                <MailboxPermissions />
+                <Lazy visible={active === 1}>
+                  <MailboxPermissions />
+                </Lazy>
               </CTabPane>
               <CTabPane visible={active === 2} className="mt-3">
-                <CalendarPermissions />
+                <Lazy visible={active === 2}>
+                  <CalendarPermissions />
+                </Lazy>
               </CTabPane>
               <CTabPane visible={active === 3} className="mt-3">
-                <MailboxForwarding />
+                <Lazy visible={active === 3}>
+                  <MailboxForwarding />
+                </Lazy>
               </CTabPane>
               <CTabPane visible={active === 4} className="mt-3">
-                <OutOfOffice />
+                <Lazy visible={active === 4}>
+                  <OutOfOffice />
+                </Lazy>
               </CTabPane>
             </CTabContent>
           </CCardBody>

@@ -86,7 +86,18 @@ import { CellDelegatedPrivilege } from 'src/components/tables/CellDelegatedPrivi
 import { TableModalButton } from 'src/components/buttons'
 import { cellTableFormatter } from 'src/components/tables/CellTable'
 import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
-import { check } from 'prettier'
+
+function Lazy({ visible, children }) {
+  const rendered = useRef(visible)
+
+  if (visible && !rendered.current) {
+    rendered.current = true
+  }
+
+  if (!rendered.current) return null
+
+  return <div style={{ display: visible ? 'block' : 'none' }}>{children}</div>
+}
 
 const CIPPSettings = () => {
   const [active, setActive] = useState(1)
@@ -120,28 +131,43 @@ const CIPPSettings = () => {
       </CNav>
       <CTabContent>
         <CTabPane visible={active === 1} className="mt-3">
-          <GeneralSettings />
+          <Lazy visible={active === 1}>
+            <GeneralSettings />
+          </Lazy>
         </CTabPane>
         <CTabPane visible={active === 2} className="mt-3">
-          <ExcludedTenantsSettings />
+          <Lazy visible={active === 2}>
+            <ExcludedTenantsSettings />
+          </Lazy>
         </CTabPane>
         <CTabPane visible={active === 3} className="mt-3">
-          <SecuritySettings />
+          <Lazy visible={active === 3}>
+            <SecuritySettings />
+          </Lazy>
         </CTabPane>
         <CTabPane visible={active === 4} className="mt-3">
+          <Lazy visible={active === 4}></Lazy>
           <NotificationsSettings />
         </CTabPane>
         <CTabPane visible={active === 5} className="mt-3">
-          <LicenseSettings />
+          <Lazy visible={active === 5}>
+            <LicenseSettings />
+          </Lazy>
         </CTabPane>
         <CTabPane visible={active === 6} className="mt-3">
-          <Maintenance />
+          <Lazy visible={active === 6}>
+            <Maintenance />
+          </Lazy>
         </CTabPane>
         <CTabPane visible={active === 7} className="mt-3">
-          <ExtensionsTab />
+          <Lazy visible={active === 7}>
+            <ExtensionsTab />
+          </Lazy>
         </CTabPane>
         <CTabPane visible={active === 8} className="mt-3">
-          <MappingsTab />
+          <Lazy visible={active === 8}>
+            <MappingsTab />
+          </Lazy>
         </CTabPane>
       </CTabContent>
     </CippPage>
@@ -151,9 +177,10 @@ const CIPPSettings = () => {
 export default CIPPSettings
 
 const GeneralSettings = () => {
-  const { data: versions, isSuccess: isSuccessVersion } = useLoadVersionsQuery()
   const { data: tenants = [] } = useListTenantsQuery({ AllTenantSelector: false })
   const [checkPermissions, permissionsResult] = useLazyExecPermissionsAccessCheckQuery()
+  const [checkGDAP, GDAPResult] = useLazyGenericGetRequestQuery()
+
   const [clearCache, clearCacheResult] = useLazyExecClearCacheQuery()
   const [checkAccess, accessCheckResult] = useLazyExecTenantsAccessCheckQuery()
   const [selectedTenants, setSelectedTenants] = useState([])
@@ -204,6 +231,43 @@ const GeneralSettings = () => {
       selector: (row) => row?.SAMUserRoles,
       cell: cellTableFormatter('SAMUserRoles', false, true),
       omit: showExtendedInfo,
+    },
+  ]
+
+  const checkGDAPColumns = [
+    {
+      name: 'Tenant',
+      selector: (row) => row['Tenant'],
+      sortable: true,
+      cell: cellGenericFormatter(),
+      minWidth: '200px',
+      maxWidth: '200px',
+    },
+    {
+      name: 'Error Type',
+      selector: (row) => row['Type'],
+      sortable: true,
+      cell: cellGenericFormatter(),
+      minWidth: '100px',
+      maxWidth: '100px',
+    },
+    {
+      name: 'Issue',
+      selector: (row) => row?.Issue,
+      sortable: true,
+      cell: cellGenericFormatter(),
+    },
+    {
+      name: 'Resolution Link',
+      sortable: true,
+      selector: (row) => row?.Link,
+      cell: cellGenericFormatter(),
+    },
+    {
+      name: 'Relationship ID',
+      sortable: true,
+      selector: (row) => row?.Relationship,
+      cell: cellGenericFormatter(),
     },
   ]
 
@@ -287,21 +351,6 @@ const GeneralSettings = () => {
     return tokenOffcanvasGroups
   }
 
-  const handleClearCache = useConfirmModal({
-    body: <div>Are you sure you want to clear the cache?</div>,
-    onConfirm: () => {
-      clearCache({ tenantsOnly: false })
-      localStorage.clear()
-    },
-  })
-
-  const handleClearCacheTenant = useConfirmModal({
-    body: <div>Are you sure you want to clear the cache?</div>,
-    onConfirm: () => {
-      clearCache({ tenantsOnly: true })
-    },
-  })
-
   const tableProps = {
     pagination: false,
     actions: [
@@ -315,69 +364,25 @@ const GeneralSettings = () => {
       />,
     ],
   }
-  const downloadTxtFile = (data) => {
-    const txtdata = [JSON.stringify(RunBackupResult.data.backup)]
-    const file = new Blob(txtdata, { type: 'text/plain' })
-    const element = document.createElement('a')
-    element.href = URL.createObjectURL(file)
-    element.download = 'CIPP-Backup' + Date.now() + '.json'
-    document.body.appendChild(element)
-    element.click()
-  }
-  const inputRef = useRef(null)
-  const handleChange = (e) => {
-    const fileReader = new FileReader()
-    fileReader.readAsText(e.target.files[0], 'UTF-8')
-    fileReader.onload = (e) => {
-      restoreBackup({ path: '/api/ExecRestoreBackup', values: e.target.result })
-    }
-  }
+
   return (
     <div>
       <CRow className="mb-3">
         <CCol>
-          <CCard className="h-100">
-            <CCardHeader>
-              <CCardTitle>Frontend Version</CCardTitle>
-            </CCardHeader>
-            <CCardBody>
-              <StatusIcon
-                type="negatedboolean"
-                status={isSuccessVersion && versions.OutOfDateCIPP}
-              />
-              <div>Latest: {isSuccessVersion ? versions.RemoteCIPPVersion : <Skeleton />}</div>
-              <div>Current: {isSuccessVersion ? versions.LocalCIPPVersion : <Skeleton />}</div>
-            </CCardBody>
-          </CCard>
-        </CCol>
-        <CCol>
-          <CCard className="h-100">
-            <CCardHeader>
-              <CCardTitle>API Version</CCardTitle>
-            </CCardHeader>
-            <CCardBody>
-              <StatusIcon
-                type="negatedboolean"
-                status={isSuccessVersion && versions.OutOfDateCIPPAPI}
-              />
-              <div>Latest: {isSuccessVersion ? versions.RemoteCIPPAPIVersion : <Skeleton />}</div>
-              <div>Current: {isSuccessVersion ? versions.LocalCIPPAPIVersion : <Skeleton />}</div>
-            </CCardBody>
-          </CCard>
+          <DNSSettings />
         </CCol>
       </CRow>
       <CRow className="mb-3">
-        <CCol>
-          <CCard className="h-100">
-            <CCardHeader>
-              <CCardTitle>Permissions Check</CCardTitle>
-            </CCardHeader>
+        <CCol className="mb-3" xl={6} md={12}>
+          <CCard>
+            <CCardHeader></CCardHeader>
             <CCardBody>
-              <CRow>Click the button below to start a permissions check.</CRow>
+              <h3 className="underline mb-5">Permissions Check</h3>
+              <p>Click the button below to start a permissions check.</p>
               <CButton
                 onClick={() => checkPermissions()}
                 disabled={permissionsResult.isFetching}
-                className="mt-3"
+                className="mb-3 me-2"
               >
                 {permissionsResult.isFetching && (
                   <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
@@ -386,6 +391,22 @@ const GeneralSettings = () => {
               </CButton>
               {permissionsResult.isSuccess && (
                 <>
+                  {permissionsResult.data.Results?.AccessTokenDetails?.Name !== '' && (
+                    <>
+                      <CButton className="mb-3" onClick={() => setTokenOffcanvasVisible(true)}>
+                        Details
+                      </CButton>
+                      <CippListOffcanvas
+                        title="Details"
+                        placement="end"
+                        visible={tokenOffcanvasVisible}
+                        groups={getTokenOffcanvasProps({
+                          tokenResults: permissionsResult.data.Results,
+                        })}
+                        hideFunction={() => setTokenOffcanvasVisible(false)}
+                      />
+                    </>
+                  )}
                   <CCallout
                     color={permissionsResult.data.Results?.Success === true ? 'success' : 'danger'}
                   >
@@ -402,7 +423,7 @@ const GeneralSettings = () => {
                         documentation on how to add permissions{' '}
                         <a
                           target="_blank"
-                          href="https://cipp.app/docs/user/gettingstarted/permissions/#manual-sam-setup"
+                          href="https://docs.cipp.app/setup/installation/permissions#manual-permissions"
                         >
                           here
                         </a>
@@ -414,106 +435,80 @@ const GeneralSettings = () => {
                         </CListGroup>
                       </>
                     )}
-                    {permissionsResult.data.Results?.MissingGroups.length > 0 && (
-                      <>
-                        Your SAM User is missing the following group memberships.
-                        <CListGroup flush>
-                          {permissionsResult.data.Results?.MissingGroups?.map((r, index) => (
-                            <CListGroupItem key={index}>{r}</CListGroupItem>
-                          ))}
-                        </CListGroup>
-                      </>
-                    )}
-                    {permissionsResult.data.Results?.CIPPGroupCount == 0 && (
-                      <>
-                        NOTE: Your M365 GDAP groups were not set up by CIPP. Please check the groups
-                        below to see if you have the correct GDAP permissions, or execute an access
-                        check.
-                      </>
-                    )}
                   </CCallout>
-                  {permissionsResult.data.Results?.AccessTokenDetails?.Name !== '' && (
-                    <>
-                      <CButton className="me-3" onClick={() => setTokenOffcanvasVisible(true)}>
-                        Details
-                      </CButton>
-                      <CippListOffcanvas
-                        title="Details"
-                        placement="end"
-                        visible={tokenOffcanvasVisible}
-                        groups={getTokenOffcanvasProps({
-                          tokenResults: permissionsResult.data.Results,
-                        })}
-                        hideFunction={() => setTokenOffcanvasVisible(false)}
-                      />
-                    </>
-                  )}
-                  {permissionsResult.data.Results?.Memberships !== '' && (
-                    <>
-                      <TableModalButton
-                        className="me-3"
-                        data={permissionsResult.data.Results?.Memberships.filter(
-                          (p) => p['@odata.type'] == '#microsoft.graph.group',
-                        )}
-                        title="Groups"
-                      />
-                      <TableModalButton
-                        data={permissionsResult.data.Results?.Memberships.filter(
-                          (p) => p['@odata.type'] == '#microsoft.graph.directoryRole',
-                        )}
-                        title="Roles"
-                      />
-                    </>
-                  )}
                 </>
               )}
             </CCardBody>
           </CCard>
         </CCol>
-        <CCol md={6}>
-          <CCard className="h-100">
-            <CCardHeader>
-              <CCardTitle>Clear Cache</CCardTitle>
-            </CCardHeader>
+        <CCol xl={6} md={12} className="mb-3">
+          <CCard>
+            <CCardHeader></CCardHeader>
             <CCardBody>
-              <CRow>
-                Click the button below to clear the application cache. You can clear only the tenant
-                cache, or all caches.
-              </CRow>
+              <h3 className="underline mb-5">GDAP Check</h3>
+              <p>Click the button below to start a check for general GDAP settings.</p>
               <CButton
-                onClick={() => handleClearCache()}
-                disabled={clearCacheResult.isFetching}
-                className="me-3 mt-3"
+                onClick={() => checkGDAP({ path: '/api/ExecAccessChecks?GDAP=true' })}
+                disabled={GDAPResult.isFetching}
+                className="mb-3 me-2"
               >
-                {clearCacheResult.isFetching && (
+                {GDAPResult.isFetching && (
                   <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
                 )}
-                Clear All Caches
+                Run GDAP Check
               </CButton>
-              <CButton
-                onClick={() => handleClearCacheTenant()}
-                disabled={clearCacheResult.isFetching}
-                className="me-3 mt-3"
-              >
-                {clearCacheResult.isFetching && (
-                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-                )}
-                Clear Tenant Cache
-              </CButton>
-              {clearCacheResult.isSuccess && (
-                <div className="mt-3">{clearCacheResult.data?.Results}</div>
+              {GDAPResult.isSuccess && (
+                <>
+                  <TableModalButton
+                    className="mb-3 me-2"
+                    data={GDAPResult.data.Results?.Memberships?.filter(
+                      (p) => p['@odata.type'] == '#microsoft.graph.group',
+                    )}
+                    title="Groups"
+                  />
+                  <TableModalButton
+                    className="mb-3"
+                    data={GDAPResult.data.Results?.Memberships?.filter(
+                      (p) => p['@odata.type'] == '#microsoft.graph.directoryRole',
+                    )}
+                    title="Roles"
+                  />
+                </>
               )}
+              <CRow>
+                <CCol>
+                  {GDAPResult.isSuccess && GDAPResult.data.Results.GDAPIssues?.length > 0 && (
+                    <CippTable
+                      showFilter={true}
+                      reportName="none"
+                      columns={checkGDAPColumns}
+                      data={GDAPResult.data.Results.GDAPIssues}
+                      filterlist={[
+                        { filterName: 'Errors', filter: 'Complex: Type eq Error' },
+                        { filterName: 'Warnings', filter: 'Complex: Type eq Warning' },
+                      ]}
+                      defaultFilterText="Complex: Type eq Error"
+                      isModal={true}
+                    />
+                  )}
+                  {GDAPResult.isSuccess && GDAPResult.data.Results.GDAPIssues?.length === 0 && (
+                    <CCallout color="success">
+                      No relationships with issues found. Please perform a Permissions Check or
+                      Tenant Access Check if you are experiencing issues.
+                    </CCallout>
+                  )}
+                </CCol>
+              </CRow>
             </CCardBody>
           </CCard>
         </CCol>
       </CRow>
       <CRow className="mb-3">
-        <CCol md={9}>
-          <CCard className="h-100">
-            <CCardHeader>
-              <CCardTitle>Tenant Access Check</CCardTitle>
-            </CCardHeader>
+        <CCol>
+          <CCard>
+            <CCardHeader></CCardHeader>
             <CCardBody>
+              <h3 className="underline mb-5">Tenant Access Check</h3>
               <CRow className="mb-3">
                 <CCol>
                   <div className="mb-3">
@@ -539,6 +534,7 @@ const GeneralSettings = () => {
                   )}
                 </CCol>
               </CRow>
+
               <CRow className="mb-3">
                 <CCol>
                   <CButton
@@ -569,9 +565,6 @@ const GeneralSettings = () => {
               </CRow>
             </CCardBody>
           </CCard>
-        </CCol>
-        <CCol>
-          <DNSSettings />
         </CCol>
       </CRow>
     </div>
@@ -808,9 +801,19 @@ const ExcludedTenantsSettings = () => {
               },
             ],
           },
+          isModal: true,
           filterlist: [
-            { filterName: 'Excluded Tenants', filter: '"Excluded":true' },
-            { filterName: 'Included Tenants', filter: '"Excluded":false' },
+            { filterName: 'Excluded Tenants', filter: 'Complex: Excluded eq true' },
+            { filterName: 'Included Tenants', filter: 'Complex: Excluded eq false' },
+            {
+              filterName: 'GDAP & DAP',
+              filter:
+                'Complex: delegatedPrivilegeStatus eq delegatedAndGranularDelegetedAdminPrivileges',
+            },
+            {
+              filterName: 'GDAP Only',
+              filter: 'Complex: delegatedPrivilegeStatus eq granularDelegatedAdminPrivileges',
+            },
           ],
           keyField: 'id',
           columns,
@@ -1357,9 +1360,26 @@ const DNSSettings = () => {
   const [getDnsConfig, getDnsConfigResult] = useLazyGetDnsConfigQuery()
   const [editDnsConfig, editDnsConfigResult] = useLazyEditDnsConfigQuery()
   const inputRef = useRef(null)
+  const [clearCache, clearCacheResult] = useLazyExecClearCacheQuery()
+  const { data: versions, isSuccess: isSuccessVersion } = useLoadVersionsQuery()
 
   const [alertVisible, setAlertVisible] = useState(false)
-
+  const downloadTxtFile = (data) => {
+    const txtdata = [JSON.stringify(RunBackupResult.data.backup)]
+    const file = new Blob(txtdata, { type: 'text/plain' })
+    const element = document.createElement('a')
+    element.href = URL.createObjectURL(file)
+    element.download = 'CIPP-Backup' + Date.now() + '.json'
+    document.body.appendChild(element)
+    element.click()
+  }
+  const handleChange = (e) => {
+    const fileReader = new FileReader()
+    fileReader.readAsText(e.target.files[0], 'UTF-8')
+    fileReader.onload = (e) => {
+      restoreBackup({ path: '/api/ExecRestoreBackup', values: e.target.result })
+    }
+  }
   const switchResolver = (resolver) => {
     editDnsConfig({ resolver })
     getDnsConfig()
@@ -1368,7 +1388,20 @@ const DNSSettings = () => {
       setAlertVisible(false)
     }, 2000)
   }
+  const handleClearCache = useConfirmModal({
+    body: <div>Are you sure you want to clear the cache?</div>,
+    onConfirm: () => {
+      clearCache({ tenantsOnly: false })
+      localStorage.clear()
+    },
+  })
 
+  const handleClearCacheTenant = useConfirmModal({
+    body: <div>Are you sure you want to clear the cache?</div>,
+    onConfirm: () => {
+      clearCache({ tenantsOnly: true })
+    },
+  })
   const resolvers = ['Google', 'Cloudflare', 'Quad9']
 
   return (
@@ -1376,85 +1409,132 @@ const DNSSettings = () => {
       {getDnsConfigResult.isUninitialized && getDnsConfig()}
       {getDnsConfigResult.isSuccess && (
         <CCard className="h-100">
-          <CCardHeader>
-            <CCardTitle>Application Settings</CCardTitle>
-          </CCardHeader>
+          <CCardHeader></CCardHeader>
           <CCardBody>
-            <h3 className="underline mb-5">DNS Resolver</h3>
-            <CButtonGroup role="group" aria-label="Resolver" className="my-3">
-              {resolvers.map((r, index) => (
-                <CButton
-                  onClick={() => switchResolver(r)}
-                  color={r === getDnsConfigResult.data.Resolver ? 'primary' : 'secondary'}
-                  key={index}
-                >
-                  {r}
-                </CButton>
-              ))}
-            </CButtonGroup>
-            {(editDnsConfigResult.isSuccess || editDnsConfigResult.isError) && (
-              <CCallout
-                color={editDnsConfigResult.isSuccess ? 'success' : 'danger'}
-                visible={alertVisible}
-              >
-                {editDnsConfigResult.isSuccess
-                  ? editDnsConfigResult.data.Results
-                  : 'Error setting resolver'}
-              </CCallout>
-            )}
-            <CCol>
-              <PasswordSettings />
-            </CCol>
-            <CCol>
-              <h3 className="underline mb-5">Settings Backup</h3>
-              <CButton
-                onClick={() => runBackup({ path: '/api/ExecRunBackup' })}
-                disabled={RunBackupResult.isFetching}
-                className="me-3 mt-3"
-              >
-                {RunBackupResult.isFetching && (
-                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-                )}
-                Run backup
-              </CButton>
-              <input
-                ref={inputRef}
-                type="file"
-                accept="json/*"
-                style={{ display: 'none' }}
-                id="contained-button-file"
-                onChange={(e) => handleChange(e)}
-              />
-              <CButton
-                type="file"
-                name="file"
-                onClick={() => inputRef.current.click()}
-                disabled={restoreBackupResult.isFetching}
-                className="me-3 mt-3"
-              >
-                {restoreBackupResult.isFetching && (
-                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-                )}
-                Restore backup
-              </CButton>
-              {restoreBackupResult.isSuccess && (
-                <>
-                  <CCallout color="success">{restoreBackupResult.data.Results}</CCallout>
-                </>
-              )}
-              {RunBackupResult.isSuccess && (
-                <>
-                  <CCallout color="success">
+            <CRow>
+              <CCol xl={4} md={12}>
+                <PasswordSettings />
+              </CCol>
+              <CCol xl={4} md={12}>
+                <h3 className="underline mb-5">DNS Resolver</h3>
+                <CButtonGroup role="group" aria-label="Resolver" className="my-3">
+                  {resolvers.map((r, index) => (
                     <CButton
-                      onClick={() => downloadTxtFile(RunBackupResult.data.backup)}
-                      className="m-1"
+                      onClick={() => switchResolver(r)}
+                      color={r === getDnsConfigResult.data.Resolver ? 'primary' : 'secondary'}
+                      key={index}
                     >
-                      Download Backup
+                      {r}
                     </CButton>
+                  ))}
+                </CButtonGroup>
+                {(editDnsConfigResult.isSuccess || editDnsConfigResult.isError) && (
+                  <CCallout
+                    color={editDnsConfigResult.isSuccess ? 'success' : 'danger'}
+                    visible={alertVisible}
+                  >
+                    {editDnsConfigResult.isSuccess
+                      ? editDnsConfigResult.data.Results
+                      : 'Error setting resolver'}
                   </CCallout>
-                </>
-              )}
-            </CCol>
+                )}
+              </CCol>
+              <CCol xl={4} md={12}>
+                <h3 className="underline mb-5">Frontend Version</h3>
+                <StatusIcon
+                  type="negatedboolean"
+                  status={isSuccessVersion && versions.OutOfDateCIPP}
+                />
+                <div>Latest: {isSuccessVersion ? versions.RemoteCIPPVersion : <Skeleton />}</div>
+                <div className="mb-3">
+                  Current: {isSuccessVersion ? versions.LocalCIPPVersion : <Skeleton />}
+                </div>
+              </CCol>
+              <CCol xl={4} md={12} className="mb-3">
+                <h3 className="underline mb-5">Clear Caches</h3>
+                <CButton
+                  className="me-2 mb-2"
+                  onClick={() => handleClearCache()}
+                  disabled={clearCacheResult.isFetching}
+                >
+                  {clearCacheResult.isFetching && (
+                    <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                  )}
+                  Clear All Cache
+                </CButton>
+                <CButton
+                  className="me-2 mb-2"
+                  onClick={() => handleClearCacheTenant()}
+                  disabled={clearCacheResult.isFetching}
+                >
+                  {clearCacheResult.isFetching && (
+                    <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                  )}
+                  Clear Tenant Cache
+                </CButton>
+                {clearCacheResult.isSuccess && (
+                  <div className="me-3">{clearCacheResult.data?.Results}</div>
+                )}
+              </CCol>
+              <CCol xl={4} md={12} className="mb-3">
+                <h3 className="underline mb-5">Settings Backup</h3>
+                <CButton
+                  className="me-2 mb-2"
+                  onClick={() => runBackup({ path: '/api/ExecRunBackup' })}
+                  disabled={RunBackupResult.isFetching}
+                >
+                  {RunBackupResult.isFetching && (
+                    <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                  )}
+                  Run backup
+                </CButton>
+                <input
+                  ref={inputRef}
+                  type="file"
+                  accept="json/*"
+                  style={{ display: 'none' }}
+                  id="contained-button-file"
+                  onChange={(e) => handleChange(e)}
+                />
+                <CButton
+                  className="me-2 mb-2"
+                  type="file"
+                  name="file"
+                  onClick={() => inputRef.current.click()}
+                  disabled={restoreBackupResult.isFetching}
+                >
+                  {restoreBackupResult.isFetching && (
+                    <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                  )}
+                  Restore backup
+                </CButton>
+                {restoreBackupResult.isSuccess && (
+                  <>
+                    <CCallout color="success">{restoreBackupResult.data.Results}</CCallout>
+                  </>
+                )}
+                {RunBackupResult.isSuccess && (
+                  <>
+                    <CCallout color="success">
+                      <CButton onClick={() => downloadTxtFile(RunBackupResult.data.backup)}>
+                        Download Backup
+                      </CButton>
+                    </CCallout>
+                  </>
+                )}
+              </CCol>
+              <CCol xl={4} md={12}>
+                <h3 className="underline mb-5">Backend API Version</h3>
+                <StatusIcon
+                  type="negatedboolean"
+                  status={isSuccessVersion && versions.OutOfDateCIPPAPI}
+                />
+                <div>Latest: {isSuccessVersion ? versions.RemoteCIPPAPIVersion : <Skeleton />}</div>
+                <div className="mb-3">
+                  Current: {isSuccessVersion ? versions.LocalCIPPAPIVersion : <Skeleton />}
+                </div>
+              </CCol>
+            </CRow>
           </CCardBody>
         </CCard>
       )}
