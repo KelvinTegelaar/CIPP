@@ -57,7 +57,7 @@ const TenantOffboardingWizard = () => {
     >
       <CippWizard.Page
         title="Tenant Choice"
-        description="Choose the tenant in which to offboard a user"
+        description="Choose the tenant to offboard"
       >
         {console.log(currentSettings.offboardingDefaults)}
         <center>
