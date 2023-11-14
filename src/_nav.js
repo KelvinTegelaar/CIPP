@@ -137,6 +137,11 @@ const _nav = [
         name: 'Enterprise Applications',
         to: '/tenant/administration/enterprise-apps',
       },
+      {
+        component: CNavItem,
+        name: 'Tenant Offboarding',
+        to: '/tenant/administration/tenant-offboarding-wizard',
+      },
     ],
   },
   {
