@@ -107,6 +107,11 @@ const Home = () => {
       icon: faUser,
     },
     {
+      label: 'List Mailboxes',
+      link: `/email/administration/mailboxes?customerId=${currentTenant.customerId}`,
+      icon: faMailBulk,
+    },
+    {
       label: 'List Groups',
       link: `/identity/administration/groups?customerId=${currentTenant.customerId}`,
       icon: faUsers,
