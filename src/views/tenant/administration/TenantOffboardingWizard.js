@@ -55,10 +55,7 @@ const TenantOffboardingWizard = () => {
       onSubmit={handleSubmit}
       wizardTitle="Tenant Offboarding Wizard"
     >
-      <CippWizard.Page
-        title="Tenant Choice"
-        description="Choose the tenant to offboard"
-      >
+      <CippWizard.Page title="Tenant Choice" description="Choose the tenant to offboard">
         {console.log(currentSettings.offboardingDefaults)}
         <center>
           <h3 className="text-primary">Step 1</h3>

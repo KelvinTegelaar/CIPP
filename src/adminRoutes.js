@@ -12,7 +12,7 @@ const GDAPRelationships = React.lazy(() =>
 )
 const appapproval = React.lazy(() => import('src/views/cipp/AppApproval'))
 const TenantOffboardingWizard = React.lazy(() =>
-  import('src/views/tenant/administration/tenant-offboarding-wizard'),
+  import('src/views/tenant/administration/TenantOffboardingWizard'),
 )
 
 const adminRoutes = [
