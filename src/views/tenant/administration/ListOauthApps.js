@@ -23,10 +23,17 @@ const columns = [
   },
   {
     name: 'Application ID',
-    selector: (row) => row['ID'],
+    selector: (row) => row['ApplicationID'],
     sortable: true,
-    cell: (row) => CellTip(row['ID']),
-    exportSelector: 'ID',
+    cell: (row) => CellTip(row['ApplicationID']),
+    exportSelector: 'ApplicationID',
+  },
+  {
+    name: 'Object ID',
+    selector: (row) => row['ObjectID'],
+    sortable: true,
+    cell: (row) => CellTip(row['ObjectID']),
+    exportSelector: 'ObjectID',
   },
   {
     name: 'Scope (Permissions)',
