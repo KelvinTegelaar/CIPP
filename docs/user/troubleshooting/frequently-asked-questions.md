@@ -108,26 +108,3 @@ If your Azure Tenant requires admin approval for user apps, add consent by follo
 This permits users the ability to grant consent when access CIPP now.
 
 </details>
-
-<details>
-
-<summary>I'm getting a 500 error in CIPP, what's going on?</summary>
-
-A 500 error is a generic server error. In CIPP this can hide many different issues. It could mean:
-
-* You don't have valid licensing for the feature you're trying to use.
-* The CIPP-API function app isn't responding correctly, is starting up or is down.
-
-</details>
-
-<details>
-
-<summary>I'm getting a 400 error in CIPP, what's going on?</summary>
-
-A 400 error is a generic access error. In CIPP this can hide many different issues. It could mean:
-
-* You have issues with your tokens. Check the troubleshooting page for more information.
-* You're trying to access a page that requires a specific role.
-* You're trying to access a page that doesn't exist.
-
-</details>

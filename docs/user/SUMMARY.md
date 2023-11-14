@@ -165,7 +165,8 @@
 
 ## 📂 Troubleshooting
 
-* [Troubleshooting](troubleshooting/troubleshooting.md)
+* [Troubleshooting instructions](troubleshooting/troubleshooting-instructions.md)
+* [Error codes](troubleshooting/troubleshooting.md)
 * [Frequently Asked Questions](troubleshooting/frequently-asked-questions.md)
 
 ## 🔐 Security
