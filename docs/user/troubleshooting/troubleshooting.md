@@ -1,8 +1,6 @@
-# Troubleshooting
+# Error codes
 
-Below are some common issues that users have had from initial deployment, updating and general usage.
-
-Note that these steps come from the community - if you notice any mistakes, please either edit this page or get in touch via the [Discord server](https://discord.gg/Cyberdrain). Please note the Contributor Code of Conduct.
+Below are error codes that can occur in CIPP. Use this page to troubleshoot your received error code.
 
 ### Multi-Factor Authentication Troubleshooting
 
@@ -22,10 +20,6 @@ This feature requires a P1 license or higher. Check the license information of y
 
 Error 400 occurred. There is an issue with the request. Most likely an incorrect value is being sent. If you receive this error with a permissions check, please redo your SAM setup. In the case of a CPV refresh you may get this code if you are using Duo as an MFA solution.
 
-### _Microsoft.Skype.Sync.Pstn.Tnm.Common.Http.HttpResponseException_
-
-Could not connect to Teams Admin center. The tenant might be missing a Teams license. Check the license information to ensure that the necessary licenses are available.
-
 ### _Provide valid credential._
 
 This occurs when GDAP has been deployed, but the user is not in any of the GDAP groups.
@@ -36,7 +30,7 @@ There is no Exchange subscription available, so exchange connections are no long
 
 ### _User was not found._
 
-The relationship between this tenant and the partner has been dissolved from the **client** side. Check the partner relationship information and ensure that it is still active. This error also occurs when a GDAP relationship has expired.
+The relationship between this tenant and the partner has been dissolved from the **client** side. Check the partner relationship information and ensure that it is still active. This error also occurs when a GDAP relationship has expired or is not configured correctly.
 
 ### _The user or administrator has not consented to use the application_
 
@@ -44,8 +38,7 @@ Multiple Potential Causes:
 
 1. The user has not authorized the CIPP-SAM Application. Use the Settings -> Tenants -> Refresh button to refresh the permissions.
 2. The user that was used for the CIPP Authorisation is a guest in this tenant
-3. DAP: If the client is using DAP. The user might not be in the AdminAgents group.
-4. GDAP: if you are using GDAP and have not added the user to the correct group(s) for CIPP to function.
+3. You have  not added the user to the correct group(s) for CIPP to function. See [samwizard.md](../setup/installation/samwizard.md "mention") for more information.
 
 ### AADSTS50020 or AADSTS50177
 
@@ -54,8 +47,7 @@ Multiple Potential Causes:
 * The user has not authorized the CIPP-SAM Application. Use the Settings -> Tenants -> Refresh button to refresh the permissions.
 * The user that was used for the CIPP Authorization is a guest in this tenant
 * A Conditional Access policy may be blocking your access. Add your CSP tenant as a serviceProvider exception.
-* The user might not be in the AdminAgents group.
-* GDAP: if you are using GDAP and have not added the user to the correct group(s) for CIPP to function.
+* You have  not added the user to the correct group(s) for CIPP to function. See [samwizard.md](../setup/installation/samwizard.md "mention") for more information.
 
 {% hint style="info" %}
 **These errors may also present themselves something like the below. The steps above are still accurate in these cases:**
@@ -64,27 +56,13 @@ Multiple Potential Causes:
 * User account from identity provider does not exist in tenant and cannot access the application in that tenant. The account needs to be added as an external user in the tenant first. Sign out and sign in again with a different Azure Active Directory user account.
 {% endhint %}
 
-### _invalid or malformed_
+### _Request invalid or malformed_
 
-* You have not finished all steps of the SAM Wizard
-* The user might not be in the AdminAgents group.
-* GDAP: if you are using GDAP and have not added the user to the correct group(s) for CIPP to function.
-
-### I've not followed the setup instructions, and am receiving errors or having issues with my user
-
-Reauthorization is required by using the SAM Wizard "I'd like to refresh my tokens" option. Please follow our best practices [here](../setup/installation/samwizard.md).
-
-### _Windows Store repository apps feature is not supported for this tenant_
-
-This tenant does not have Intune WinGet support available. Check the licensing information to ensure that the necessary licenses are available.
+You have not finished the SAM Setup wizard - CIPP cannot connect to the API with the current credentials.
 
 ### AADSTS650051
 
 This error can appear when performing a tenant access check. Try a GDAP check to see if you have the correct permissions in place, when you do try a CPV refresh, if the CPV refresh fails with an error it means we most likely do not have write access to the tenant.
-
-### _AppLifecycle\_2210_
-
-Failed to call Intune APIs. Does the tenant have a license available? Check the license information to ensure that the necessary licenses are available.
 
 ### Insufficient access rights to perform the operation.
 
