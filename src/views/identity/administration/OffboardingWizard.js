@@ -6,10 +6,19 @@ import { faExclamationTriangle, faTimes, faCheck } from '@fortawesome/free-solid
 import { useSelector } from 'react-redux'
 import { CippWizard } from 'src/components/layout'
 import PropTypes from 'prop-types'
-import { RFFCFormCheck, RFFCFormInput, RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms'
+import {
+  Condition,
+  RFFCFormCheck,
+  RFFCFormInput,
+  RFFCFormSwitch,
+  RFFSelectSearch,
+} from 'src/components/forms'
 import { TenantSelector } from 'src/components/utilities'
 import { useListUsersQuery } from 'src/store/api/users'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import { useState } from 'react'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
 
 const Error = ({ name }) => (
   <Field
@@ -31,6 +40,9 @@ Error.propTypes = {
 }
 
 const OffboardingWizard = () => {
+  const currentDate = new Date()
+  const [startDate, setStartDate] = useState(currentDate)
+
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
   const {
     data: users = [],
@@ -41,6 +53,7 @@ const OffboardingWizard = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
   const handleSubmit = async (values) => {
+    const unixTime = Math.floor(startDate.getTime() / 1000)
     const shippedValues = {
       TenantFilter: tenantDomain,
       OOO: values.OOO ? values.OOO : '',
@@ -61,6 +74,10 @@ const OffboardingWizard = () => {
       removeMobile: values.RemoveMobile,
       keepCopy: values.keepCopy,
       removePermissions: values.removePermissions,
+      Scheduled: values.Scheduled.enabled ? { enabled: true, date: unixTime } : { enabled: false },
+      PostExecution: values.Scheduled.enabled
+        ? { webhook: values.webhook, psa: values.psa, email: values.email }
+        : '',
     }
 
     //alert(JSON.stringify(values, null, 2))
@@ -193,6 +210,34 @@ const OffboardingWizard = () => {
                 label="Keep a copy of the forwarded mail in the source mailbox"
               />
             </CCol>
+          </CRow>
+          <hr className="my-4" />
+          <CRow>
+            <CCol>
+              <RFFCFormSwitch name="Scheduled.enabled" label="Schedule this offboarding" />
+            </CCol>
+          </CRow>
+          <CRow>
+            <Condition when="Scheduled.enabled" is={true}>
+              <CCol xs={2}>
+                <label>Scheduled Offboarding Date</label>
+                <DatePicker
+                  className="form-control mb-3"
+                  selected={startDate}
+                  showTimeSelect
+                  timeFormat="HH:mm"
+                  timeIntervals={15}
+                  dateFormat="Pp"
+                  onChange={(date) => setStartDate(date)}
+                />
+              </CCol>
+              <CCol>
+                <label>Send results to</label>
+                <RFFCFormSwitch name="webhook" label="Webhook" />
+                <RFFCFormSwitch name="email" label="E-mail" />
+                <RFFCFormSwitch name="psa" label="PSA" />
+              </CCol>
+            </Condition>
           </CRow>
         </div>
         <hr className="my-4" />
