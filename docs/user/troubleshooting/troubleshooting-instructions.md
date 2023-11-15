@@ -16,7 +16,7 @@ To ensure we can assist you with any CIPP issue, complete details are essential.
 
 **3. Run Tenant Access Check**
 
-* **Post a successful GDAP Check**, choose the relevant tenant and perform a Tenant Access check.
+* **After a GDAP Check**, choose the relevant tenant and perform a Tenant Access check.
 * **What to Share**: A screenshot of the results.
 
 **If Errors Persist After Checks:**
