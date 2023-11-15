@@ -216,22 +216,40 @@ const ListAppliedStandards = () => {
                     return (
                       <CForm onSubmit={handleSubmit}>
                         <hr />{' '}
-                        {listStandardResults[0]?.appliedBy
-                          ? `This standard has been applied at ${new Date(
-                              listStandardResults[0].appliedAt + 'Z',
-                            ).toLocaleDateString(undefined, {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric',
-                            })} ${new Date(
-                              listStandardResults[0].appliedAt + 'Z',
-                            ).toLocaleTimeString(undefined, {
-                              hour: '2-digit',
-                              minute: '2-digit',
-                              second: '2-digit',
-                              hour12: false,
-                            })} by ${listStandardResults[0].appliedBy}`
-                          : 'This tenant does not yet have a standard applied'}
+                        <CCol>
+                          {listStandardResults[0]?.appliedBy
+                            ? `This standard has been applied at ${new Date(
+                                listStandardResults[0].appliedAt + 'Z',
+                              ).toLocaleDateString(undefined, {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                              })} ${new Date(
+                                listStandardResults[0].appliedAt + 'Z',
+                              ).toLocaleTimeString(undefined, {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                second: '2-digit',
+                                hour12: false,
+                              })} by ${listStandardResults[0].appliedBy}`
+                            : 'This tenant does not yet have a standard applied'}
+                        </CCol>
+                        {tenantDomain !== 'AllTenants' && (
+                          <>
+                            <hr />
+                            <h5>Standard Settings</h5>
+                            <hr />
+                            <CRow className="mb-3" xs={{ cols: 1 }}>
+                              <RFFCFormSwitch
+                                name="standards.OverrideAllTenants"
+                                label="Do not apply All Tenants standards to this tenant"
+                                helpText={
+                                  'Exclude this standard from the All Tenants standard. This will only apply explicitly set standards to this tenant.'
+                                }
+                              />
+                            </CRow>
+                          </>
+                        )}
                         <hr />
                         <h5>Global Standards</h5>
                         <hr />
