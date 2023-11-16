@@ -339,7 +339,7 @@
       "name": "standards.SendReceiveLimitTenant.SendReceiveLimit",
       "label": "Send limit and Receive limit, comma separated"
     },
-    "label": "Set tenant mailbox plan to standard values"
+    "label": "Set send/receive size limits"
   },
 
   {
