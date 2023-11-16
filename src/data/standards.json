@@ -55,7 +55,7 @@
     "cat": "Global",
     "helpText": "",
     "addedComponent": null,
-    "label": "Enable Usernames instead of pseudo anonymized names in reports"
+    "label": "Enable Usernames instead of pseudo anonymised names in reports"
   },
   {
     "name": "standards.DisableGuestDirectory",
