@@ -33,7 +33,7 @@ const ViewBec = () => {
   const [execBecView, results] = useLazyExecBecCheckQuery()
   const { data: alerts = {}, isFetching, error, isSuccess } = results
   useEffect(() => {
-    execBecView({ tenantFilter: tenantDomain, userId: userId })
+    execBecView({ tenantFilter: tenantDomain, userId: userId, userName: userName })
   }, [execBecView, tenantDomain, userId])
 
   const deviceColumns = [
@@ -104,72 +104,67 @@ const ViewBec = () => {
       selector: (row) => row.Status,
       sortable: true,
     },
+    {
+      name: 'IP',
+      selector: (row) => row.IPAddress,
+      sortable: true,
+    },
   ]
 
   const mailboxlogonColumns = [
     {
       name: 'IP',
-      selector: (row) => row['ClientIP'],
+      selector: (row) => row['IPAddress'],
       sortable: true,
     },
     {
       name: 'User',
-      selector: (row) => row['CreatedDateTime'],
+      selector: (row) => row['userPrincipalName'],
       sortable: true,
     },
     {
-      name: 'User Agent',
-      selector: (row) => row['ClientInfoString'],
+      name: 'Application',
+      selector: (row) => row['AppDisplayName'],
       sortable: true,
     },
     {
       name: 'Result',
-      selector: (row) => row['ResultStatus'],
-      sortable: true,
-    },
-    {
-      name: 'Data',
-      selector: (row) => row['CreationTime'],
+      selector: (row) => row['Status'],
       sortable: true,
     },
   ]
   const newUserColumns = [
     {
+      name: 'DisplayName',
+      selector: (row) => row['displayName'],
+      sortable: true,
+    },
+    {
       name: 'Username',
-      selector: (row) => row['ObjectId'],
+      selector: (row) => row['userPrincipalName'],
       sortable: true,
     },
     {
       name: 'Date',
-      selector: (row) => row['CreationTime'],
-      sortable: true,
-    },
-    {
-      name: 'By',
-      selector: (row) => row['UserId'],
+      selector: (row) => row['CreatedDateTime'],
       sortable: true,
     },
   ]
 
   const passwordColumns = [
     {
+      name: 'displayName',
+      selector: (row) => row['displayName'],
+      sortable: true,
+    },
+    {
       name: 'Username',
-      selector: (row) => row['ObjectId'],
+      selector: (row) => row['userPrincipalName'],
       sortable: true,
     },
     {
       name: 'Date',
-      selector: (row) => row['CreationTime'],
-      sortable: true,
-    },
-    {
-      name: 'Operation',
-      selector: (row) => row['Operation'],
-      sortable: true,
-    },
-    {
-      name: 'By',
-      selector: (row) => row['UserId'],
+      selector: (row) => row['lastPasswordChangeDateTime'],
       sortable: true,
     },
   ]
@@ -224,7 +219,7 @@ const ViewBec = () => {
     onConfirm: () => {
       execBecRemediate({
         path: '/api/execBecRemediate',
-        values: { userId: userId, tenantFilter: tenantDomain },
+        values: { userId: userId, tenantFilter: tenantDomain, userName: userName },
       })
     },
   })
@@ -283,7 +278,11 @@ const ViewBec = () => {
               </CCallout>
             )}
             {execRemediateResults.isSuccess && (
-              <CCallout color="info">{execRemediateResults.data?.Results}</CCallout>
+              <CCallout color="info">
+                {execRemediateResults.data?.Results.map((item) => {
+                  return <li>{item}</li>
+                })}
+              </CCallout>
             )}
           </CippContentCard>
         </CippMasonryItem>
@@ -305,7 +304,7 @@ const ViewBec = () => {
           </CippContentCard>
         </CippMasonryItem>
         <CippMasonryItem size="half">
-          <CippContentCard title="Recently Added Email Forwarding Rules" icon={faForward}>
+          <CippContentCard title="Recently Added Rules (Tenant)" icon={faForward}>
             {isFetching && <Skeleton count={5} />}
 
             {isSuccess && (
@@ -316,7 +315,6 @@ const ViewBec = () => {
                 striped
                 responsive={true}
                 tableProps={{ subHeaderComponent: false }}
-                wrapperClasses="table-responsive"
                 reportName="none"
               />
             )}
@@ -325,25 +323,21 @@ const ViewBec = () => {
         <CippMasonryItem size="half">
           <CippContentCard title="User Last Logon Details" icon={faKey}>
             {isFetching && <Skeleton count={5} />}
-
-            <CCardBody>
-              {isSuccess && (
-                <CippTable
-                  keyField="ID"
-                  columns={logonColumns}
-                  data={alerts.LastSuspectUserLogon}
-                  striped
-                  responsive={true}
-                  tableProps={{ subHeaderComponent: false }}
-                  wrapperClasses="table-responsive"
-                  reportName="none"
-                />
-              )}
-            </CCardBody>
+            {isSuccess && (
+              <CippTable
+                keyField="ID"
+                columns={logonColumns}
+                data={alerts.LastSuspectUserLogon}
+                striped
+                responsive={true}
+                tableProps={{ subHeaderComponent: false }}
+                reportName="none"
+              />
+            )}
           </CippContentCard>
         </CippMasonryItem>
         <CippMasonryItem size="half">
-          <CippContentCard title="Recently Added Users" icon={faUsers}>
+          <CippContentCard title="Recently Added Users (Tenant)" icon={faUsers}>
             {isFetching && <Skeleton count={5} />}
 
             {isSuccess && (
@@ -361,7 +355,7 @@ const ViewBec = () => {
           </CippContentCard>
         </CippMasonryItem>
         <CippMasonryItem size="full">
-          <CippContentCard title="Recent Password Changes" icon={faAsterisk}>
+          <CippContentCard title="Recent Password Changes (Tenant)" icon={faAsterisk}>
             {isFetching && <Skeleton count={5} />}
 
             {isSuccess && (
@@ -379,7 +373,7 @@ const ViewBec = () => {
           </CippContentCard>
         </CippMasonryItem>
         <CippMasonryItem size="full">
-          <CippContentCard title="Mailbox Permissions Changes" icon={faIdBadge}>
+          <CippContentCard title="Mailbox Permissions Changes (Tenant)" icon={faIdBadge}>
             {isFetching && <Skeleton count={5} />}
 
             {isSuccess && (
@@ -397,7 +391,7 @@ const ViewBec = () => {
           </CippContentCard>
         </CippMasonryItem>
         <CippMasonryItem size="full">
-          <CippContentCard title="Application Changes" icon={faWindowRestore}>
+          <CippContentCard title="New Applications (Tenant)" icon={faWindowRestore}>
             {isFetching && <Skeleton count={5} />}
 
             {isSuccess && (
@@ -415,7 +409,7 @@ const ViewBec = () => {
           </CippContentCard>
         </CippMasonryItem>
         <CippMasonryItem size="full">
-          <CippContentCard title="Mailbox Logons" icon={faSignInAlt}>
+          <CippContentCard title="Last 50 Logons (Tenant)" icon={faSignInAlt}>
             {isFetching && <Skeleton count={5} />}
 
             {isSuccess && (
