@@ -15,10 +15,10 @@ export const PrivateRoute = ({ children, routeType }) => {
   }
 
   dispatch(updateAccessToken(profile))
-  let roles
-  if (null !== profile.clientPrincipal) {
+  let roles = null
+  if (null !== profile?.clientPrincipal) {
     roles = profile?.clientPrincipal.userRoles
-  } else if (null === profile.clientPrincipal) {
+  } else if (null === profile?.clientPrincipal) {
     return <Navigate to={`/login?redirect_uri=${window.location.href}`} />
   }
   if (null === roles) {
