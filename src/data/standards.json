@@ -263,7 +263,7 @@
   {
     "name": "standards.DisableSharedMailbox",
     "cat": "Exchange",
-    "helpText": "Blocks login for all accounts that are marked as a shared mailboxe",
+    "helpText": "Blocks login for all accounts that are marked as a shared mailbox",
     "addedComponent": null,
     "label": "Disable Shared Mailbox AAD accounts"
   },
@@ -329,6 +329,17 @@
     "helpText": "Enables and sets Idle session timeout for Microsoft 365 to 1 hour. This policy affects most M365 web apps",
     "addedComponent": null,
     "label": "Enable 1 hour Activity based Timeout"
+  },
+  {
+    "name": "standards.SendReceiveLimitTenant.Enabled",
+    "cat": "Exchange",
+    "helpText": "Sets the Send and Receive limits for new users. Valid values are 1KB to 150MB. Invalid values will be set to EXO standard of 35MB,36MB",
+    "addedComponent": {
+      "type": "input",
+      "name": "standards.SendReceiveLimitTenant.SendReceiveLimit",
+      "label": "Send limit and Receive limit, comma separated"
+    },
+    "label": "Set send/receive size limits"
   },
 
   {
@@ -464,7 +475,7 @@
   {
     "name": "standards.DisableReshare",
     "cat": "SharePoint",
-    "helpText": "Disables the ability for external users to share files they dont own. Sharing links can only be made for People with existing access",
+    "helpText": "Disables the ability for external users to share files they don't own. Sharing links can only be made for People with existing access",
     "addedComponent": null,
     "label": "Disable Resharing by External Users"
   },
