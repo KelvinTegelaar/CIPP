@@ -330,6 +330,17 @@
     "addedComponent": null,
     "label": "Enable 1 hour Activity based Timeout"
   },
+  {
+    "name": "standards.MailboxPlanTenant.Enabled",
+    "cat": "Exchange",
+    "helpText": "Sets the default mailbox plan for new users. Valid values are 1KB to 150MB. Invalid values will be set to EXO standard of 35MB,36MB",
+    "addedComponent": {
+      "type": "input",
+      "name": "standards.MailboxPlanTenant.SendReceiveLimit",
+      "label": "Send limit and Receive limit, comma separated"
+    },
+    "label": "Set tenant mailbox plan to standard values"
+  },
 
   {
     "name": "standards.calDefault.Enabled",
