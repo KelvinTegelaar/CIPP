@@ -315,7 +315,6 @@ const ViewBec = () => {
                 striped
                 responsive={true}
                 tableProps={{ subHeaderComponent: false }}
-                wrapperClasses="table-responsive"
                 reportName="none"
               />
             )}
@@ -324,21 +323,17 @@ const ViewBec = () => {
         <CippMasonryItem size="half">
           <CippContentCard title="User Last Logon Details" icon={faKey}>
             {isFetching && <Skeleton count={5} />}
-
-            <CCardBody>
-              {isSuccess && (
-                <CippTable
-                  keyField="ID"
-                  columns={logonColumns}
-                  data={alerts.LastSuspectUserLogon}
-                  striped
-                  responsive={true}
-                  tableProps={{ subHeaderComponent: false }}
-                  wrapperClasses="table-responsive"
-                  reportName="none"
-                />
-              )}
-            </CCardBody>
+            {isSuccess && (
+              <CippTable
+                keyField="ID"
+                columns={logonColumns}
+                data={alerts.LastSuspectUserLogon}
+                striped
+                responsive={true}
+                tableProps={{ subHeaderComponent: false }}
+                reportName="none"
+              />
+            )}
           </CippContentCard>
         </CippMasonryItem>
         <CippMasonryItem size="half">
