@@ -295,9 +295,9 @@ const Home = () => {
                         }, [])
                         .map((plan) => (
                           <>
-                            {plan == 'exchange' && <li>Exchange</li>}
-                            {plan == 'AADPremiumService' && <li>AAD Premium</li>}
-                            {plan == 'WindowsDefenderATP' && <li>Windows Defender</li>}
+                            {plan === 'exchange' && <li>Exchange</li>}
+                            {plan === 'AADPremiumService' && <li>AAD Premium</li>}
+                            {plan === 'WindowsDefenderATP' && <li>Windows Defender</li>}
                           </>
                         ))}
                   </CCol>

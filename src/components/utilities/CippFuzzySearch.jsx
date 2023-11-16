@@ -1,11 +1,8 @@
-var _fuse = _interopRequireDefault(require('fuse.js'))
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj }
-}
+// var _fuse = _interopRequireDefault(require('fuse.js'))
+import Fuse from 'fuse.js'
 
 function CippfuzzySearch(options) {
-  var fuse = new _fuse['default'](options, {
+  const fuse = new Fuse(options, {
     keys: ['name', 'groupName', 'items.name'],
     threshold: 0.5,
     location: 0,

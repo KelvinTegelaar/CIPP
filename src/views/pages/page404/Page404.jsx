@@ -1,7 +1,7 @@
 import React from 'react'
 import { CButton, CCol, CContainer, CRow } from '@coreui/react'
 import { FastSwitcher } from 'src/components/utilities'
-import { Helmet } from 'react-helmet'
+import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
 
 const Page404 = () => {
