@@ -6,25 +6,14 @@ import { resolve } from 'path'
 export default defineConfig({
   plugins: [react()],
   build: {
-    // default is dist
     outDir: 'build',
   },
   server: {
     port: 3000,
     host: true,
   },
-  css: {
-    preprocessorOptions: {
-      sass: {
-        additionalData: '',
-        sassOptions: {
-          quietDeps: true,
-        },
-      },
-    },
-  },
   resolve: {
-    // needed for absolute paths
+    // needed for importing using absolute paths
     alias: {
       src: resolve('src/'),
     },
