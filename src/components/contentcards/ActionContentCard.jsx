@@ -50,7 +50,7 @@ ActionContentCard.propTypes = {
     PropTypes.shape({
       label: PropTypes.string.isRequired,
       link: PropTypes.string.isRequired,
-      icon: PropTypes.element,
+      icon: PropTypes.oneOfType([PropTypes.element, PropTypes.object, PropTypes.string]),
       color: PropTypes.string,
       target: PropTypes.string,
       onClick: PropTypes.func,
