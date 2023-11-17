@@ -595,12 +595,14 @@ const ExcludedTenantsSettings = () => {
       onConfirm: () => removeExcludeTenant(domain),
     })
 
-  const handleCPVPermissions = (domain) =>
+  const handleCPVPermissions = (domain, resetsp = false) =>
     ModalService.confirm({
       title: 'Refresh Permissions',
       body: <div>Are you sure you want to refresh permissions for {domain.defaultDomainName}?</div>,
       onConfirm: () =>
-        refreshPermissions({ path: `/api/ExecCPVPermissions?TenantFilter=${domain.customerId}` }),
+        refreshPermissions({
+          path: `/api/ExecCPVPermissions?TenantFilter=${domain.customerId}&ResetSP=${resetsp}`,
+        }),
     })
   const handleConfirmExcludeTenant = (tenant) => {
     ModalService.confirm({
@@ -681,7 +683,12 @@ const ExcludedTenantsSettings = () => {
           </CTooltip>
         )}
         <CTooltip content="CPV Refresh">
-          <CButton size="sm" variant="ghost" color="info" onClick={() => handleCPVPermissions(row)}>
+          <CButton
+            size="sm"
+            variant="ghost"
+            color="info"
+            onClick={() => handleCPVPermissions(row, false)}
+          >
             <FontAwesomeIcon icon={faRecycle} href="" />
           </CButton>
         </CTooltip>
@@ -798,6 +805,13 @@ const ExcludedTenantsSettings = () => {
                 modalUrl: `/api/ExecCPVPermissions?TenantFilter=!customerId`,
                 modalMessage:
                   'Are you sure you want to refresh the CPV permissions for these tenants?',
+              },
+              {
+                label: 'Reset CPV Permissions',
+                modal: true,
+                modalUrl: `/api/ExecCPVPermissions?TenantFilter=!customerId&ResetSP=true`,
+                modalMessage:
+                  'Are you sure you want to reset the CPV permissions for these tenants? (This will delete the Service Principal and re-add it.)',
               },
             ],
           },
