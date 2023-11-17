@@ -266,7 +266,7 @@
   --cui-input-focus-color: var(--cyberdrain-dark);
   --cui-link-color: var(--cyberdrain-dark);
   --cui-link-hover-color: var(--cyberdrain-primary);
-  --cui-list-group-bg: var(--cui-color-white);
+  --cui-list-group-bg: var(--cui-color-white) !important;
   --cui-list-group-color: var(--cyberdrain-dark);
   --cui-modal-content-bg: var(--cyberdrain-light);
   --cui-modal-content-border-color: var(--cyberdrain-accent-green);
@@ -411,6 +411,7 @@
   --text-medium-emphasis: rgba(255, 255, 255, 0.6);
   --cui-emphasis-color-rgb: rgba(255, 255, 255, 0.6);
   --cui-input-placeholder-color: rgba(255, 255, 255, 0.6);
+  --cui-tertiary-bg: var(--cyberdrain-dark);
   // Core UI Impact theme variables.
   --cui-header-hover-color: var(--cyberdrain-light);
   --cui-header-active-color: var(--cyberdrain-accent-blue);
@@ -435,6 +436,7 @@
   --cui-form-select-bg: var(--cyberdrain-dark);
   --cui-form-select-border-color: var(--cyberdrain-light);
   --cui-form-select-color: var(--cyberdrain-light);
+  --cui-form-check-bg: var(--cyberdrain-light);
   --cui-header-bg: var(--cyberdrain-dark);
   --cui-header-border-color: var(--cyberdrain-accent-green);
   --cui-header-color: var(--cyberdrain-light);

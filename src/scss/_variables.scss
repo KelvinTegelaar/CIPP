@@ -870,7 +870,7 @@ $btn-box-shadow: none !default;
 
 // $form-check-input-active-filter:          brightness(90%) !default;
 
-// $form-check-input-bg:                     $input-bg !default;
+$form-check-input-bg: var(--cyberdrain-light) !default;
 // $form-check-input-border:                 1px solid rgba($black, .25) !default;
 // $form-check-input-border-radius:          .25em !default;
 // $form-check-radio-border-radius:          50% !default;
@@ -1275,7 +1275,7 @@ $btn-box-shadow: none !default;
 // scss-docs-start tooltip-variables
 // $tooltip-font-size:                 $font-size-sm !default;
 // $tooltip-max-width:                 200px !default;
-// $tooltip-color:                     $high-emphasis-inverse !default;
+$tooltip-color: var(--cyberdrain-light) !default;
 // $tooltip-bg:                        $black !default;
 // $tooltip-border-radius:             $border-radius !default;
 // $tooltip-opacity:                   .9 !default;
@@ -1484,7 +1484,7 @@ $btn-box-shadow: none !default;
 // List group
 // scss-docs-start list-group-variables
 // $list-group-color:                  unset !default;
-// $list-group-bg:                     $white !default;
+$list-group-bg: var(--cui-color-white) !default;
 // $list-group-border-color:           rgba($black, .125) !default;
 // $list-group-border-width:           $border-width !default;
 // $list-group-border-radius:          $border-radius !default;
