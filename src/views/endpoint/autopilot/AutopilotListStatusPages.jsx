@@ -2,6 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { CellTip, cellBooleanFormatter } from 'src/components/tables'
 import { CippPageList } from 'src/components/layout'
+import { TitleButton } from 'src/components/buttons'
 
 const columns = [
   {
@@ -61,6 +62,14 @@ const AutopilotListESP = () => {
   return (
     <CippPageList
       title="Autopilot Status Pages"
+      titleButton={
+        <>
+          <TitleButton
+            href={`/endpoint/autopilot/add-status-page?customerId=${tenant?.customerId}&tableFilter=${tenant?.defaultDomainName}`}
+            title="Deploy Autopilot Status Page"
+          />
+        </>
+      }
       tenantSelector={true}
       datatable={{
         reportName: `${tenant?.defaultDomainName}-AutopilotStatusPages-List`,
