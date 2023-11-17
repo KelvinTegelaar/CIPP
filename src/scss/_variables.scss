@@ -89,7 +89,7 @@ $secondary-25: rgba(0, 47, 73, 0.205) !default;
 $link-color: rgb(226, 92, 9) !default;
 $link-decoration: underline !default;
 $link-shade-percentage: 20% !default;
-$link-hover-color: shift-color($link-color, $link-shade-percentage) !default;
+$link-hover-color: rgba($link-color, $link-shade-percentage) !default;
 $link-hover-decoration: null !default;
 
 $search-bg-color: #ffffff;
@@ -1659,7 +1659,7 @@ $sidebar-width: 17rem !default;
 // $sidebar-padding-y:                        0 !default;
 // $sidebar-padding-x:                        0 !default;
 // $sidebar-color:                            $high-emphasis-inverse !default;
-$sidebar-bg: rgb(240,240,240) !default;
+$sidebar-bg: rgb(240, 240, 240) !default;
 // $sidebar-border-width:                     0 !default;
 // $sidebar-border-color:                     transparent !default;
 // $sidebar-transition:                       margin-left .15s, margin-right .15s, box-shadow .075s, transform .15s, width .15s, z-index 0s ease .15s !default;
