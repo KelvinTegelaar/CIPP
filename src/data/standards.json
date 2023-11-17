@@ -263,7 +263,7 @@
   {
     "name": "standards.DisableSharedMailbox",
     "cat": "Exchange",
-    "helpText": "Blocks login for all accounts that are marked as a shared mailboxe",
+    "helpText": "Blocks login for all accounts that are marked as a shared mailbox",
     "addedComponent": null,
     "label": "Disable Shared Mailbox AAD accounts"
   },
@@ -475,7 +475,7 @@
   {
     "name": "standards.DisableReshare",
     "cat": "SharePoint",
-    "helpText": "Disables the ability for external users to share files they dont own. Sharing links can only be made for People with existing access",
+    "helpText": "Disables the ability for external users to share files they don't own. Sharing links can only be made for People with existing access",
     "addedComponent": null,
     "label": "Disable Resharing by External Users"
   },

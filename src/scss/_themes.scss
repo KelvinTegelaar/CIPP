@@ -409,6 +409,8 @@
   --cui-color-table-border: rgba(146, 154, 158, 0.8);
   --cui-color-card-shadow: rgba(207, 192, 192, 0.2);
   --text-medium-emphasis: rgba(255, 255, 255, 0.6);
+  --cui-emphasis-color-rgb: rgba(255, 255, 255, 0.6);
+  --cui-input-placeholder-color: rgba(255, 255, 255, 0.6);
   // Core UI Impact theme variables.
   --cui-header-hover-color: var(--cyberdrain-light);
   --cui-header-active-color: var(--cyberdrain-accent-blue);
@@ -425,7 +427,7 @@
   --cui-dropdown-color: var(--cyberdrain-light);
   --cui-dropdown-border-color: var(--cyberdrain-accent-green);
   --cui-dropdown-link-color: var(--cyberdrain-light);
-  --cui-dropdown-link-hover-bg: var(--cyberdrain-accent-green);
+  --cui-dropdown-link-hover-bg: var(--cyberdrain-accent-blue);
   --cui-dropdown-link-hover-color: var(--cyberdrain-light);
   --cui-footer-bg: var(--cyberdrain-dark);
   --cui-footer-color: var(--cyberdrain-light);

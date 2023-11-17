@@ -146,10 +146,11 @@ const AppHeader = () => {
         dashboard.length >= 1 &&
         dashboard.map((item, index) => (
           <div
+            key={index}
             className="mb-3"
-            style={{ zIndex: 10000, 'padding-left': '20rem', 'padding-right': '3rem' }}
+            style={{ zIndex: 10000, paddingLeft: '20rem', paddingRight: '3rem' }}
           >
-            <CAlert key={index} color={item.type} variant dismissible>
+            <CAlert key={index} color={item.type} dismissible>
               {item.Alert} <CAlertLink href={item.link}>Link</CAlertLink>
             </CAlert>
           </div>
