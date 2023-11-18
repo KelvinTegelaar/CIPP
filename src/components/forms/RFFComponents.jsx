@@ -395,13 +395,10 @@ export const RFFSelectSearch = ({
   }, [])
 
   const setOnInputChange = (e, action) => {
-    if (retainInput && !e && action.action === 'menu-close') return
-    if (retainInput && action.action === 'input-blur') return
-
-    if (retainInput && action.action === 'input-change') {
+    if (retainInput && action.action !== 'set-value') {
       setInputText(e)
     }
-    if (onInputChange) {
+    if (onInputChange && action.action === 'input-change') {
       debounceOnInputChange(e)
     }
   }

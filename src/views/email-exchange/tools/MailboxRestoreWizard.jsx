@@ -45,7 +45,7 @@ const MailboxRestoreWizard = () => {
     error: sMailboxError,
   } = useGenericGetRequestQuery({
     path: '/api/ListMailboxes',
-    params: { TenantFilter: tenantDomain, SoftDeletedMailbox: true },
+    params: { TenantFilter: tenantDomain, SoftDeletedMailbox: true, SkipLicense: true },
   })
   const {
     data: targetMailboxes = [],
@@ -53,14 +53,10 @@ const MailboxRestoreWizard = () => {
     error: tMailboxError,
   } = useGenericGetRequestQuery({
     path: '/api/ListMailboxes',
-    params: { TenantFilter: tenantDomain, Anr: anrFilter },
+    params: { TenantFilter: tenantDomain, Anr: anrFilter, SkipLicense: true },
   })
   const currentSettings = useSelector((state) => state.app)
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
-
-  const handleAnrFilter = (value) => {
-    setAnrFilter(value)
-  }
 
   const handleSubmit = async (values) => {
     const shippedValues = {
@@ -130,7 +126,7 @@ const MailboxRestoreWizard = () => {
               name: `${mbx.displayName} <${mbx.UPN}>`,
             }))}
             retainInput={true}
-            onInputChange={handleAnrFilter}
+            onInputChange={setAnrFilter}
             isLoading={tMailboxesIsFetching}
           />
           {sMailboxError && <span>Failed to load source mailboxes</span>}
