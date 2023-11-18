@@ -29,6 +29,7 @@ import { CellDelegatedPrivilege } from 'src/components/tables/CellDelegatedPrivi
 import Portals from 'src/data/portals'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom'
+import { TableModalButton } from 'src/components/buttons'
 
 const Home = () => {
   const [visible, setVisible] = useState(false)
@@ -52,6 +53,15 @@ const Home = () => {
   } = useGenericGetRequestQuery({
     path: '/api/ListuserCounts',
     params: { tenantFilter: currentTenant.defaultDomainName },
+  })
+
+  const GlobalAdminList = useGenericGetRequestQuery({
+    path: '/api/ListGraphRequest',
+    params: {
+      tenantFilter: currentTenant.defaultDomainName,
+      Endpoint: "/directoryRoles(roleTemplateId='62e90394-69f5-4237-9190-012177145e10')/members",
+      $select: 'displayName,userPrincipalName,accountEnabled',
+    },
   })
 
   const {
@@ -192,14 +202,20 @@ const Home = () => {
             </CCol>
             <CCol sm={12} md={6} xl={3} className="mb-3">
               <CippContentCard title="Global Admin Users" icon={faLaptopCode}>
-                <a
-                  href={`https://entra.microsoft.com/${currentTenant.customerId}/#view/Microsoft_AAD_IAM/RoleMenuBlade/~/RoleMembers/objectId/62e90394-69f5-4237-9190-012177145e10/roleName/Global%20Administrator/roleTemplateId/62e90394-69f5-4237-9190-012177145e10/adminUnitObjectId//customRole~/false/resourceScope/%2F?culture=en-us&country=us`}
-                  className="stretched-link"
-                  target="_blank"
-                />
-                <div>
-                  {issuccessUserCounts && !isFetchingUserCount ? dashboard?.Gas : <Skeleton />}
-                </div>
+                {GlobalAdminList.isSuccess ? (
+                  <>
+                    <TableModalButton
+                      className="stretched-link text-decoration-none"
+                      data={GlobalAdminList.data?.Results}
+                      countOnly={true}
+                      component="a"
+                      color="link"
+                      title="Global Admins"
+                    />
+                  </>
+                ) : (
+                  <Skeleton />
+                )}
               </CippContentCard>
             </CCol>
             <CCol sm={12} md={6} xl={3} className="mb-3">
