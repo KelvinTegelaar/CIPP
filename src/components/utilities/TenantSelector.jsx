@@ -82,31 +82,21 @@ const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = fa
           ) : (
             <FontAwesomeIcon icon={faBuilding} className="mx-2" />
           )}
-          <CDropdown component="li" variant="nav-item" className="flex-grow-1 my-auto">
-            <CDropdownToggle>
-              {currentTenant?.defaultDomainName ? (
-                <>
-                  <span className="text-wrap ms-2">{currentTenant.displayName}</span>
-                </>
-              ) : (
-                placeholder
-              )}
-            </CDropdownToggle>
-            <CDropdownMenu className="tenantDropdown">
-              <SelectSearch
-                search
-                onChange={activated}
-                filterOptions={CippfuzzySearch}
-                placeholder={placeholder}
-                disabled={isLoading}
-                value={currentTenant && currentTenant.customerId}
-                options={tenants.map(({ customerId, displayName, defaultDomainName }) => ({
-                  value: customerId,
-                  name: `${displayName} (${defaultDomainName})`,
-                }))}
-              />
-            </CDropdownMenu>
-          </CDropdown>
+          <div className="flex-grow-1 my-auto">
+            <SelectSearch
+              search
+              style={{ maxWidth: '40%' }}
+              onChange={activated}
+              filterOptions={CippfuzzySearch}
+              placeholder={placeholder}
+              disabled={isLoading}
+              value={currentTenant && currentTenant.customerId}
+              options={tenants.map(({ customerId, displayName, defaultDomainName }) => ({
+                value: customerId,
+                name: `${displayName} (${defaultDomainName})`,
+              }))}
+            />
+          </div>
         </>
       )}
       {!NavSelector && (
