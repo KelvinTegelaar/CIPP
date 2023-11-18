@@ -109,6 +109,7 @@ const MailboxRestoreWizard = () => {
             }))}
             placeholder={!sMailboxesIsFetching ? 'Select mailbox' : 'Loading...'}
             name="SourceMailbox"
+            isLoading={sMailboxesIsFetching}
           />
           {sMailboxError && <span>Failed to load source mailboxes</span>}
         </div>
@@ -130,6 +131,7 @@ const MailboxRestoreWizard = () => {
             }))}
             retainInput={true}
             onInputChange={handleAnrFilter}
+            isLoading={tMailboxesIsFetching}
           />
           {sMailboxError && <span>Failed to load source mailboxes</span>}
         </div>

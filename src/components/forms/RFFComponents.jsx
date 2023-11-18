@@ -380,12 +380,19 @@ export const RFFSelectSearch = ({
   multi,
   disabled = false,
   retainInput = false,
+  isLoading = false,
 }) => {
   const [inputText, setInputText] = useState('')
   const selectSearchvalues = values.map((val) => ({
     value: val.value,
     label: val.name,
   }))
+
+  const debounceOnInputChange = useMemo(() => {
+    if (onInputChange) {
+      return debounce(onInputChange, 1000)
+    }
+  }, [])
 
   const setOnInputChange = (e, action) => {
     if (retainInput && !e && action.action === 'menu-close') return
@@ -394,15 +401,10 @@ export const RFFSelectSearch = ({
     if (retainInput && action.action === 'input-change') {
       setInputText(e)
     }
-
     if (onInputChange) {
       debounceOnInputChange(e)
     }
   }
-
-  const debounceOnInputChange = useMemo(() => {
-    return debounce(onInputChange, 1000)
-  }, [])
 
   return (
     <Field name={name} validate={validate}>
@@ -425,6 +427,7 @@ export const RFFSelectSearch = ({
                 onChange={onChange}
                 onInputChange={debounceOnInputChange}
                 inputValue={inputText}
+                isLoading={isLoading}
               />
             )}
             {!onChange && (
@@ -441,6 +444,7 @@ export const RFFSelectSearch = ({
                 onInputChange={setOnInputChange}
                 isMulti={multi}
                 inputValue={inputText}
+                isLoading={isLoading}
               />
             )}
             {meta.error && meta.touched && <span className="text-danger">{meta.error}</span>}
@@ -456,6 +460,7 @@ RFFSelectSearch.propTypes = {
   multi: PropTypes.bool,
   placeholder: PropTypes.string,
   onInputChange: PropTypes.func,
+  isLoading: PropTypes.bool,
   values: PropTypes.arrayOf(PropTypes.shape({ value: PropTypes.string, name: PropTypes.string }))
     .isRequired,
 }
