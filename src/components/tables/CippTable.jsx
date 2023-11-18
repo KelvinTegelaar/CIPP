@@ -151,9 +151,14 @@ export default function CippTable({
   const [modalContent, setModalContent] = useState(null)
   //get the search params called "tableFilter" and set the filter to that.
   const [searchParams, setSearchParams] = useSearchParams()
-  if (searchParams.get('tableFilter') && !filterviaURL && !isModal) {
+  if (
+    searchParams.get('tableFilter') &&
+    (!filterviaURL || searchParams.get('updateTableFilter')) &&
+    !isModal
+  ) {
     setFilterText(searchParams.get('tableFilter'))
     setFilterviaURL(true)
+    searchParams.delete('updateTableFilter')
   }
 
   useEffect(() => {

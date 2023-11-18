@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import { CButton } from '@coreui/react'
-import { Link } from 'react-router-dom'
+import { CButton, CFormInput } from '@coreui/react'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { faEdit, faEllipsisV, faEye } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { cellBooleanFormatter, CellTip } from 'src/components/tables'
 import { CippPageList } from 'src/components/layout'
 import { TitleButton } from 'src/components/buttons'
-import { CippActionsOffcanvas } from 'src/components/utilities'
+import { CippActionsOffcanvas, CippCodeBlock } from 'src/components/utilities'
 import { cellLicenseFormatter, CellLicense } from 'src/components/tables/CellLicense'
 import M365Licenses from 'src/data/M365Licenses'
+import CippGraphUserFilter from 'src/components/utilities/CippGraphUserFilter'
+import { ModalService } from 'src/components/utilities'
+import { useRef } from 'react'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -241,8 +244,40 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
   )
 }
 
+const UserSearch = () => {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const inputRef = useRef()
+
+  function handleModal() {
+    ModalService.confirm({
+      body: (
+        <>
+          <CFormInput ref={inputRef} />
+        </>
+      ),
+      title: 'User Search',
+      onConfirm: () => {
+        if (inputRef.current.value !== '') {
+          setSearchParams({
+            tableFilter: 'Graph: ' + CippGraphUserFilter(inputRef?.current?.value),
+            updateTableFilter: true,
+          })
+        }
+      },
+      confirmLabel: 'Search',
+    })
+  }
+
+  return (
+    <CButton className="m-1" size="sm" onClick={() => handleModal()}>
+      <FontAwesomeIcon icon="search" />
+    </CButton>
+  )
+}
+
 const Users = (row) => {
   const [tenantColumnSet, setTenantColumn] = useState(true)
+
   const columns = [
     {
       name: 'Tenant',
@@ -342,6 +377,7 @@ const Users = (row) => {
       </div>
     </div>
   )
+
   return (
     <CippPageList
       capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
@@ -378,6 +414,7 @@ const Users = (row) => {
         },
         tableProps: {
           selectableRows: true,
+          actions: [<UserSearch />],
           actionsList: [
             {
               label: 'Convert to Shared Mailbox',
