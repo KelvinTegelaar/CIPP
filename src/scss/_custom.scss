@@ -459,11 +459,12 @@ h3.underline:after {
 }
 
 /* Footer */
+
 .footer {
   p {
     margin-bottom: 0;
   }
-
+  background: var(--cui-body-bg);
   img {
     max-height: 2rem;
   }
