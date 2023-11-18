@@ -74,8 +74,8 @@ const OffboardingWizard = () => {
       removeMobile: values.RemoveMobile,
       keepCopy: values.keepCopy,
       removePermissions: values.removePermissions,
-      Scheduled: values.Scheduled.enabled ? { enabled: true, date: unixTime } : { enabled: false },
-      PostExecution: values.Scheduled.enabled
+      Scheduled: values.Scheduled?.enabled ? { enabled: true, date: unixTime } : { enabled: false },
+      PostExecution: values.Scheduled?.enabled
         ? { webhook: values.webhook, psa: values.psa, email: values.email }
         : '',
     }
@@ -94,7 +94,6 @@ const OffboardingWizard = () => {
         title="Tenant Choice"
         description="Choose the tenant in which to offboard a user"
       >
-        {console.log(currentSettings.offboardingDefaults)}
         <center>
           <h3 className="text-primary">Step 1</h3>
           <h5 className="card-title mb-4">Choose a tenant</h5>
