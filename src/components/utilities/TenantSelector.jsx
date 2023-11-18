@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import { useListTenantsQuery } from 'src/store/api/tenants'
 import { setCurrentTenant } from 'src/store/features/app'
-import { CDropdown, CDropdownMenu, CDropdownToggle } from '@coreui/react'
+import { CButton, CDropdown, CDropdownMenu, CDropdownToggle } from '@coreui/react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { queryString } from 'src/helpers'
 import { faBuilding } from '@fortawesome/free-solid-svg-icons'
@@ -80,12 +80,14 @@ const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = fa
           {currentTenant?.customerId !== 'AllTenants' ? (
             <CippTenantOffcanvas tenant={currentTenant} buildingIcon={true} />
           ) : (
-            <FontAwesomeIcon icon={faBuilding} className="mx-2" />
+            <CButton disabled size="sm" variant="ghost" className="mx-2">
+              <FontAwesomeIcon icon={faBuilding} />
+            </CButton>
           )}
-          <div className="flex-grow-1 my-auto">
+          <div className="flex-grow-1 my-auto mx-2">
             <SelectSearch
               search
-              style={{ maxWidth: '40%' }}
+              className={'select-search tenantDropdown'}
               onChange={activated}
               filterOptions={CippfuzzySearch}
               placeholder={placeholder}
