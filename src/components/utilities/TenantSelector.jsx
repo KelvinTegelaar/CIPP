@@ -77,13 +77,13 @@ const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = fa
     <>
       {NavSelector && (
         <>
+          {currentTenant?.customerId !== 'AllTenants' ? (
+            <CippTenantOffcanvas tenant={currentTenant} buildingIcon={true} />
+          ) : (
+            <FontAwesomeIcon icon={faBuilding} className="mx-2" />
+          )}
           <CDropdown component="li" variant="nav-item" className="flex-grow-1 my-auto">
             <CDropdownToggle>
-              {currentTenant?.customerId !== 'AllTenants' ? (
-                <CippTenantOffcanvas tenant={currentTenant} buildingIcon={true} />
-              ) : (
-                <FontAwesomeIcon icon={faBuilding} className="mx-2" />
-              )}
               {currentTenant?.defaultDomainName ? (
                 <>
                   <span className="text-wrap ms-2">{currentTenant.displayName}</span>
