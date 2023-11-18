@@ -13,6 +13,8 @@ import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
 import { CippActionsOffcanvas } from 'src/components/utilities'
 import { cellBooleanFormatter, cellDateFormatter, CellTip } from 'src/components/tables'
+import { TitleButton } from 'src/components/buttons'
+
 function DateNotNull(date) {
   if (date === null || date === undefined || date === '' || date === 'undefined') {
     return ' '
@@ -67,7 +69,15 @@ const NamedLocationsList = () => {
 
   return (
     <CippPageList
-      title="Conditional Access"
+      title="Named Locations"
+      titleButton={
+        <>
+          <TitleButton
+            href={`/tenant/conditional/deploy-named-location?customerId=${tenant?.customerId}&tableFilter=${tenant?.defaultDomainName}`}
+            title="Deploy Named Location"
+          />
+        </>
+      }
       tenantSelector={false}
       datatable={{
         reportName: `${tenant?.defaultDomainName}-ConditionalAccess-List`,

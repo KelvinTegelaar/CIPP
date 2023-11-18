@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
 import { CippActionsOffcanvas } from 'src/components/utilities'
 import { cellBooleanFormatter, cellDateFormatter, CellTip } from 'src/components/tables'
+import { TitleButton } from 'src/components/buttons'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -172,6 +173,14 @@ const SpamFilterList = () => {
   return (
     <CippPageList
       title="Spam Filters"
+      titleButton={
+        <>
+          <TitleButton
+            href={`/email/spamfilter/deploy?customerId=${tenant?.customerId}&tableFilter=${tenant?.defaultDomainName}`}
+            title="Deploy Spam Filter"
+          />
+        </>
+      }
       tenantSelector={true}
       datatable={{
         reportName: `${tenant?.defaultDomainName}-Spamfilter-list`,

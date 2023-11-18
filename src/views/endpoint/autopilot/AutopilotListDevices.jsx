@@ -7,6 +7,7 @@ import { CippPageList } from 'src/components/layout'
 import { ModalService } from 'src/components/utilities'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import { CellTip } from 'src/components/tables'
+import { TitleButton } from 'src/components/buttons'
 
 const AutopilotListDevices = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -100,6 +101,11 @@ const AutopilotListDevices = () => {
       )}
       <CippPageList
         title="Autopilot Devices"
+        titleButton={
+          <>
+            <TitleButton href={`/endpoint/autopilot/add-device`} title="Deploy Autopilot Device" />
+          </>
+        }
         datatable={{
           keyField: 'id',
           reportName: `${tenant?.defaultDomainName}-AutopilotDevices-List`,

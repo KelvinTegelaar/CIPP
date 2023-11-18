@@ -173,7 +173,7 @@ export default function CippTable({
       )
     }
     if (dropDownInfo.isSuccess) {
-      console.log(modalContent)
+      //console.log(modalContent)
       handleModal(
         modalContent.item.modalMessage,
         modalContent.item.modalUrl,

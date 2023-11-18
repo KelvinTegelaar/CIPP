@@ -10,6 +10,7 @@ import {
   faEllipsisH,
   faEnvelope,
   faEdit,
+  faKey,
 } from '@fortawesome/free-solid-svg-icons'
 import { ActionContentCard } from 'src/components/contentcards'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
@@ -82,6 +83,16 @@ export default function UserActions({ tenantDomain, userId, userEmail, className
         handleModal(
           'Are you sure you want to block this user from signing in?',
           `/api/ExecDisableUser?TenantFilter=${tenantDomain}&ID=${userId}`,
+        ),
+    },
+    {
+      label: 'Generate TAP',
+      link: '#',
+      icon: faKey,
+      onClick: () =>
+        handleModal(
+          'Are you sure you want to generate a Temporary Access Pass for this user?',
+          `/api/ExecCreateTAP?TenantFilter=${tenantDomain}&ID=${userId}`,
         ),
     },
     {

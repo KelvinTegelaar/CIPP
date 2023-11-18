@@ -379,7 +379,7 @@ export const RFFSelectSearch = ({
   onInputChange,
   multi,
   disabled = false,
-  retainInput = false,
+  retainInput = true,
   isLoading = false,
 }) => {
   const [inputText, setInputText] = useState('')
