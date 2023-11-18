@@ -11,13 +11,12 @@ import {
   CTooltip,
 } from '@coreui/react'
 import Select from 'react-select'
-import AsyncSelect from 'react-select/async'
 import { Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
-import React from 'react'
+import React, { useState, useMemo, useRef } from 'react'
 import PropTypes from 'prop-types'
-import { useRef } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { debounce } from 'lodash'
 
 /*
   wrapper classes for React Final Form with CoreUI
@@ -377,13 +376,33 @@ export const RFFSelectSearch = ({
   placeholder,
   validate,
   onChange,
+  onInputChange,
   multi,
   disabled = false,
+  retainInput = false,
 }) => {
+  const [inputText, setInputText] = useState('')
   const selectSearchvalues = values.map((val) => ({
     value: val.value,
     label: val.name,
   }))
+
+  const setOnInputChange = (e, action) => {
+    if (retainInput && !e && action.action === 'menu-close') return
+    if (retainInput && action.action === 'input-blur') return
+
+    if (retainInput && action.action === 'input-change') {
+      setInputText(e)
+    }
+
+    if (onInputChange) {
+      debounceOnInputChange(e)
+    }
+  }
+
+  const debounceOnInputChange = useMemo(() => {
+    return debounce(onInputChange, 1000)
+  }, [])
 
   return (
     <Field name={name} validate={validate}>
@@ -404,6 +423,8 @@ export const RFFSelectSearch = ({
                 placeholder={placeholder}
                 isMulti={multi}
                 onChange={onChange}
+                onInputChange={debounceOnInputChange}
+                inputValue={inputText}
               />
             )}
             {!onChange && (
@@ -417,7 +438,9 @@ export const RFFSelectSearch = ({
                 disabled={disabled}
                 options={selectSearchvalues}
                 placeholder={placeholder}
+                onInputChange={setOnInputChange}
                 isMulti={multi}
+                inputValue={inputText}
               />
             )}
             {meta.error && meta.touched && <span className="text-danger">{meta.error}</span>}
@@ -432,6 +455,7 @@ RFFSelectSearch.propTypes = {
   ...sharedPropTypes,
   multi: PropTypes.bool,
   placeholder: PropTypes.string,
+  onInputChange: PropTypes.func,
   values: PropTypes.arrayOf(PropTypes.shape({ value: PropTypes.string, name: PropTypes.string }))
     .isRequired,
 }

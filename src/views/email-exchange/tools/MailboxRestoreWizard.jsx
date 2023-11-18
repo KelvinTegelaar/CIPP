@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { CCallout, CCol, CListGroup, CListGroupItem, CRow, CSpinner } from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -38,6 +38,7 @@ Error.propTypes = {
 
 const MailboxRestoreWizard = () => {
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
+  const [anrFilter, setAnrFilter] = useState('')
   const {
     data: sourceMailboxes = [],
     isFetching: sMailboxesIsFetching,
@@ -52,10 +53,14 @@ const MailboxRestoreWizard = () => {
     error: tMailboxError,
   } = useGenericGetRequestQuery({
     path: '/api/ListMailboxes',
-    params: { TenantFilter: tenantDomain },
+    params: { TenantFilter: tenantDomain, Anr: anrFilter },
   })
   const currentSettings = useSelector((state) => state.app)
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
+
+  const handleAnrFilter = (value) => {
+    setAnrFilter(value)
+  }
 
   const handleSubmit = async (values) => {
     const shippedValues = {
@@ -118,12 +123,13 @@ const MailboxRestoreWizard = () => {
         <div className="mb-2">
           <RFFSelectSearch
             label={'Mailboxes in ' + tenantDomain}
+            name="TargetMailbox"
             values={targetMailboxes?.map((mbx) => ({
               value: mbx.ExchangeGuid,
               name: `${mbx.displayName} <${mbx.UPN}>`,
             }))}
-            placeholder={!tMailboxesIsFetching ? 'Select mailbox' : 'Loading...'}
-            name="TargetMailbox"
+            retainInput={true}
+            onInputChange={handleAnrFilter}
           />
           {sMailboxError && <span>Failed to load source mailboxes</span>}
         </div>
