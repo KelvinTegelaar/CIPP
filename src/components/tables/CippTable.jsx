@@ -15,6 +15,10 @@ import {
   CModalTitle,
   CCallout,
   CFormSelect,
+  CAccordion,
+  CAccordionHeader,
+  CAccordionBody,
+  CAccordionItem,
 } from '@coreui/react'
 import DataTable, { createTheme } from 'react-data-table-component'
 import PropTypes from 'prop-types'
@@ -665,12 +669,41 @@ export default function CippTable({
           <>
             {(massResults.length >= 1 || loopRunning) && (
               <CCallout color="info">
-                {massResults.map((message, idx) => {
-                  const results = message.data?.Results
-                  const displayResults = Array.isArray(results) ? results.join(', ') : results
-
-                  return <li key={`message-${idx}`}>{displayResults}</li>
-                })}
+                {massResults[0]?.data?.Metadata?.Heading && (
+                  <CAccordion flush>
+                    {massResults.map((message, idx) => {
+                      const results = message.data?.Results
+                      const displayResults = Array.isArray(results)
+                        ? results.join('</li><li>')
+                        : results
+                      var iconName = 'info-circle'
+                      if (message.data?.Metadata?.Success === true) {
+                        iconName = 'check-circle'
+                      } else if (message.data?.Metadata?.Success === false) {
+                        iconName = 'times-circle'
+                      }
+                      return (
+                        <CAccordionItem>
+                          <CAccordionHeader>
+                            <FontAwesomeIcon icon={iconName} className="me-2" />
+                            {message.data?.Metadata?.Heading}
+                          </CAccordionHeader>
+                          <CAccordionBody>
+                            {results.map((line, i) => {
+                              return <li key={i}>{line}</li>
+                            })}
+                          </CAccordionBody>
+                        </CAccordionItem>
+                      )
+                    })}
+                  </CAccordion>
+                )}
+                {!massResults[0]?.data?.Metadata?.Heading &&
+                  massResults.map((message, idx) => {
+                    const results = message.data?.Results
+                    const displayResults = Array.isArray(results) ? results.join(', ') : results
+                    return <li key={`message-${idx}`}>{displayResults}</li>
+                  })}
                 {loopRunning && (
                   <li>
                     <CSpinner size="sm" />
