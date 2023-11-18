@@ -643,6 +643,7 @@ export default function CippTable({
             <FilterComponent
               onFilter={(e) => setFilterText(e.target.value)}
               onFilterPreset={(e) => {
+                if (e === '') setGraphFilter('')
                 setFilterText(e)
               }}
               onClear={handleClear}
