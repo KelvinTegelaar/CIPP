@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   CAlert,
@@ -25,8 +25,6 @@ import { setCurrentTheme, setUserSettings, toggleSidebarShow } from 'src/store/f
 import { useMediaPredicate } from 'react-media-hook'
 import { useGenericGetRequestQuery, useLoadAlertsDashQuery } from 'src/store/api/app'
 import { useLocation } from 'react-router-dom'
-import { useState } from 'react'
-import { useEffect } from 'react'
 
 const AppHeader = () => {
   const dispatch = useDispatch()
@@ -104,6 +102,7 @@ const AppHeader = () => {
           <TenantSelector NavSelector={true} />
           <CNavItem>
             <a
+              rel={'noreferrer'}
               target="_blank"
               href={`https://docs.cipp.app/user-documentation${location.pathname}`}
             >
@@ -148,7 +147,11 @@ const AppHeader = () => {
           <div
             key={index}
             className="mb-3"
-            style={{ zIndex: 10000, paddingLeft: '20rem', paddingRight: '3rem' }}
+            style={{
+              zIndex: 10000,
+              paddingLeft: '20rem',
+              paddingRight: '3rem',
+            }}
           >
             <CAlert key={index} color={item.type} dismissible>
               {item.Alert} <CAlertLink href={item.link}>Link</CAlertLink>

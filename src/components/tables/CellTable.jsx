@@ -1,7 +1,6 @@
 import React from 'react'
 import { CButton } from '@coreui/react'
 import { ModalService } from '../utilities'
-import { CBadge } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons' // 1. Import the required FontAwesome icon
 import { cellGenericFormatter } from './CellGenericFormat'

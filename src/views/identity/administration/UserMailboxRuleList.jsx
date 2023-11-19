@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { cellBooleanFormatter, CellTip } from 'src/components/tables'
+import { CellBoolean, cellBooleanFormatter, CellTip } from 'src/components/tables'
 import { DatatableContentCard } from 'src/components/contentcards'
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons'
 

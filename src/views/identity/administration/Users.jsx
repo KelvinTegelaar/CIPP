@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { CButton, CFormInput } from '@coreui/react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -7,12 +7,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { cellBooleanFormatter, CellTip } from 'src/components/tables'
 import { CippPageList } from 'src/components/layout'
 import { TitleButton } from 'src/components/buttons'
-import { CippActionsOffcanvas, CippCodeBlock } from 'src/components/utilities'
+import { CippActionsOffcanvas, ModalService } from 'src/components/utilities'
 import { cellLicenseFormatter, CellLicense } from 'src/components/tables/CellLicense'
 import M365Licenses from 'src/data/M365Licenses'
 import CippGraphUserFilter from 'src/components/utilities/CippGraphUserFilter'
-import { ModalService } from 'src/components/utilities'
-import { useRef } from 'react'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -52,7 +50,10 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
       <CippActionsOffcanvas
         title="User Information"
         extendedInfo={[
-          { label: 'Created Date (UTC)', value: `${row.createdDateTime ?? ' '}` },
+          {
+            label: 'Created Date (UTC)',
+            value: `${row.createdDateTime ?? ' '}`,
+          },
           { label: 'UPN', value: `${row.userPrincipalName ?? ' '}` },
           { label: 'Given Name', value: `${row.givenName ?? ' '}` },
           { label: 'Surname', value: `${row.surname ?? ' '}` },
@@ -63,7 +64,10 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
           { label: 'Mail', value: `${row.mail ?? ' '}` },
           { label: 'City', value: `${row.city ?? ' '}` },
           { label: 'Department', value: `${row.department ?? ' '}` },
-          { label: 'OnPrem Last Sync', value: `${row.onPremisesLastSyncDateTime ?? ' '}` },
+          {
+            label: 'OnPrem Last Sync',
+            value: `${row.onPremisesLastSyncDateTime ?? ' '}`,
+          },
           { label: 'Unique ID', value: `${row.id ?? ' '}` },
         ]}
         actions={[
@@ -363,7 +367,7 @@ const Users = (row) => {
     if (tenant.defaultDomainName !== 'AllTenants') {
       setTenantColumn(true)
     }
-  }, [tenantColumnSet])
+  }, [tenant.defaultDomainName, tenantColumnSet])
 
   const titleButtons = (
     <div style={{ display: 'flex', alignItems: 'right' }}>
@@ -388,10 +392,19 @@ const Users = (row) => {
           { filterName: 'Enabled users', filter: '"accountEnabled":true' },
           { filterName: 'Disabled users', filter: '"accountEnabled":false' },
           { filterName: 'AAD users', filter: '"onPremisesSyncEnabled":false' },
-          { filterName: 'Synced users', filter: '"onPremisesSyncEnabled":true' },
+          {
+            filterName: 'Synced users',
+            filter: '"onPremisesSyncEnabled":true',
+          },
           { filterName: 'Guest users', filter: '"usertype":"guest"' },
-          { filterName: 'Users with a license', filter: '"assignedLicenses":[{' },
-          { filterName: 'Users without a license', filter: '"assignedLicenses":[]' },
+          {
+            filterName: 'Users with a license',
+            filter: '"assignedLicenses":[{',
+          },
+          {
+            filterName: 'Users without a license',
+            filter: '"assignedLicenses":[]',
+          },
           {
             filterName: 'Users with a license (Graph)',
             filter: 'Graph: assignedLicenses/$count ne 0',
@@ -413,8 +426,9 @@ const Users = (row) => {
           $orderby: 'displayName',
         },
         tableProps: {
+          keyField: 'id',
           selectableRows: true,
-          actions: [<UserSearch />],
+          actions: [<UserSearch key={'user-search'} />],
           actionsList: [
             {
               label: 'Convert to Shared Mailbox',

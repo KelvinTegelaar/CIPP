@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { CButton, CCallout, CCol, CForm, CRow, CSpinner } from '@coreui/react'
 import { Form } from 'react-final-form'
 import {
@@ -21,7 +21,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Skeleton from 'react-loading-skeleton'
 import { CippTable } from 'src/components/tables'
 import allStandardsList from 'src/data/standards'
-import { useState } from 'react'
 import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
 
 const RefreshAction = () => {

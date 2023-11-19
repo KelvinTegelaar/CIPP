@@ -147,7 +147,9 @@ const GraphExplorer = () => {
                 <p className="fw-lighter">Domains</p>
                 {graphrequest.isFetching && <Skeleton />}
                 {graphrequest.data?.Domains &&
-                  graphrequest.data?.Domains.map((domainname) => <li>{domainname}</li>)}
+                  graphrequest.data?.Domains.map((domainName, idx) => (
+                    <li key={`${idx}-${domainName}`}>{domainName}</li>
+                  ))}
               </CCol>
             </CRow>
           </CippContentCard>

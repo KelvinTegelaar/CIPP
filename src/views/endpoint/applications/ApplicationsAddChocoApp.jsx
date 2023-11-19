@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import {
   CCol,
   CRow,
@@ -27,7 +27,6 @@ import {
 } from 'src/components/forms'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { OnChange } from 'react-final-form-listeners'
-import { useRef } from 'react'
 
 const Error = ({ name }) => (
   <Field
@@ -99,6 +98,12 @@ const ApplyStandard = () => {
       )}
     </Field>
   )
+
+  WhenFieldChanges.propTypes = {
+    field: PropTypes.node,
+    set: PropTypes.string,
+  }
+
   return (
     <CippWizard
       initialValues={{ ...formValues }}
@@ -272,6 +277,7 @@ const ApplyStandard = () => {
         <hr className="my-4" />
         {!postResults.isSuccess && (
           <FormSpy>
+            {/* eslint-disable react/prop-types */}
             {(props) => {
               return (
                 <>

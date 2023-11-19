@@ -1,11 +1,7 @@
-import { CButton } from '@coreui/react'
-import { faEllipsisV, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
 import { cellDateFormatter, cellNullTextFormatter } from 'src/components/tables'
-import { CippActionsOffcanvas } from 'src/components/utilities'
 import { cellLogoFormatter } from 'src/components/tables/CellLogo'
 import { CellTip } from 'src/components/tables/CellGenericFormat'
 
@@ -19,7 +15,7 @@ const EnterpriseApplications = () => {
     if (tenant.defaultDomainName !== 'AllTenants') {
       setTenantColumn(true)
     }
-  }, [tenantColumnSet])
+  }, [tenant.defaultDomainName, tenantColumnSet])
 
   const columns = [
     {

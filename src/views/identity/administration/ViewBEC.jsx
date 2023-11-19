@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
-import { CButton, CCallout, CLink, CCardTitle } from '@coreui/react'
-import { CCardBody, CSpinner } from '@coreui/react'
+import { CButton, CCallout, CLink, CCardTitle, CSpinner } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faCheckCircle,
@@ -34,7 +33,7 @@ const ViewBec = () => {
   const { data: alerts = {}, isFetching, error, isSuccess } = results
   useEffect(() => {
     execBecView({ tenantFilter: tenantDomain, userId: userId, userName: userName })
-  }, [execBecView, tenantDomain, userId])
+  }, [execBecView, tenantDomain, userId, userName])
 
   const deviceColumns = [
     {
@@ -219,7 +218,11 @@ const ViewBec = () => {
     onConfirm: () => {
       execBecRemediate({
         path: '/api/execBecRemediate',
-        values: { userId: userId, tenantFilter: tenantDomain, userName: userName },
+        values: {
+          userId: userId,
+          tenantFilter: tenantDomain,
+          userName: userName,
+        },
       })
     },
   })
@@ -233,7 +236,11 @@ const ViewBec = () => {
               <CButton
                 size="sm"
                 onClick={() =>
-                  execBecView({ tenantFilter: tenantDomain, userId: userId, overwrite: true })
+                  execBecView({
+                    tenantFilter: tenantDomain,
+                    userId: userId,
+                    overwrite: true,
+                  })
                 }
                 disabled={isFetching}
               >
@@ -279,8 +286,8 @@ const ViewBec = () => {
             )}
             {execRemediateResults.isSuccess && (
               <CCallout color="info">
-                {execRemediateResults.data?.Results.map((item) => {
-                  return <li>{item}</li>
+                {execRemediateResults.data?.Results.map((item, idx) => {
+                  return <li key={`result-${idx}`}>{item}</li>
                 })}
               </CCallout>
             )}

@@ -34,12 +34,14 @@ const Error = ({ name }) => (
 Error.propTypes = {
   name: PropTypes.string.isRequired,
 }
+
 function getDeepKeys(obj) {
   return Object.keys(obj)
     .filter((key) => obj[key] instanceof Object)
     .map((key) => getDeepKeys(obj[key]).map((k) => `${key}.${k}`))
     .reduce((x, y) => x.concat(y), Object.keys(obj))
 }
+
 const ApplyStandard = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
@@ -517,6 +519,7 @@ const ApplyStandard = () => {
         )}
         {!postResults.isSuccess && (
           <FormSpy>
+            {/* eslint-disable react/prop-types */}
             {(props) => (
               <>
                 <CRow>

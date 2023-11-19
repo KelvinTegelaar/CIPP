@@ -366,6 +366,8 @@ export function Condition({ when, is, children, like, regex }) {
 Condition.propTypes = {
   when: PropTypes.string.isRequired,
   is: PropTypes.any,
+  like: PropTypes.string,
+  regex: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 }
 
@@ -392,7 +394,7 @@ export const RFFSelectSearch = ({
     if (onInputChange) {
       return debounce(onInputChange, 1000)
     }
-  }, [])
+  }, [onInputChange])
 
   const setOnInputChange = (e, action) => {
     if (retainInput && action.action !== 'set-value') {

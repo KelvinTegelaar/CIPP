@@ -216,7 +216,16 @@ const BestPracticeAnalyser = () => {
         refresh: refreshValue,
       },
     })
-  }, [Report, execGraphRequest, tenant.defaultDomainName, query, refreshValue, reportTemplate])
+  }, [
+    Report,
+    execGraphRequest,
+    tenant.defaultDomainName,
+    query,
+    refreshValue,
+    reportTemplate,
+    tenant.customerId,
+    SearchNow,
+  ])
 
   return (
     <>
@@ -324,7 +333,7 @@ const BestPracticeAnalyser = () => {
                     />
                   </div>
                   {graphrequest.data.Columns.map((info, idx) => (
-                    <CCol md={12} xl={4} className="mb-3">
+                    <CCol md={12} xl={4} className="mb-3" key={`${info.name}-${idx}`}>
                       <CCard className="h-100">
                         <CCardHeader>
                           <CCardTitle>{info.name}</CCardTitle>
@@ -382,7 +391,7 @@ const BestPracticeAnalyser = () => {
                             )}
 
                             {info.formatter === 'number' && (
-                              <p class="fs-1 text-center">
+                              <p className="fs-1 text-center">
                                 {getNestedValue(graphrequest.data.Data, info.value)}
                               </p>
                             )}

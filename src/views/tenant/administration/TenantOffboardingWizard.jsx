@@ -126,6 +126,7 @@ const TenantOffboardingWizard = () => {
           )}
           {!postResults.isSuccess && (
             <FormSpy>
+              {/* eslint-disable react/prop-types */}
               {(props) => (
                 <>
                   <CRow>

@@ -383,8 +383,9 @@ function DomainOffcanvasTabs({ children, jsonContent }) {
     </>
   )
 }
+
 DomainOffcanvasTabs.propTypes = {
-  children: PropTypes.node,
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   jsonContent: PropTypes.string,
 }
 
@@ -416,6 +417,7 @@ function ValidationListContent({ data }) {
     </div>
   )
 }
+
 ValidationListContent.propTypes = {
   data: PropTypes.object,
 }
@@ -670,6 +672,7 @@ SPFResultsCard.propTypes = {
   spfOverride: PropTypes.string,
   ...sharedProps,
 }
+
 function WhoisResultCard({ domain }) {
   const [visible, setVisible] = useState(false)
   const {
@@ -741,6 +744,7 @@ function WhoisResultCard({ domain }) {
     </CCard>
   )
 }
+
 WhoisResultCard.propTypes = sharedProps
 
 function NSResultCard({ domain }) {
@@ -773,6 +777,7 @@ function NSResultCard({ domain }) {
     />
   )
 }
+
 NSResultCard.propTypes = sharedProps
 
 const HttpsResultCard = ({ domain, httpsOverride }) => {
@@ -1243,6 +1248,7 @@ function DKIMResultsCard({ domain, dkimOverride }) {
     </>
   )
 }
+
 DKIMResultsCard.propTypes = { dkimOverride: PropTypes.string, ...sharedProps }
 
 function DomainCheckError(props) {

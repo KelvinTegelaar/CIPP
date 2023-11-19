@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 import { TitleButton } from 'src/components/buttons'
 import { CippActionsOffcanvas } from 'src/components/utilities'
+
 const Actions = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
   const [ocVisible, setOCVisible] = useState(false)
@@ -14,6 +15,7 @@ const Actions = (row, rowIndex, formatExtraData) => {
     <>
       <CButton size="sm" variant="ghost" color="warning">
         <a
+          rel={'noreferrer'}
           target={'_blank'}
           href={`https://outlook.office365.com/ecp/@${tenant.defaultDomainName}/UsersGroups/EditContact.aspx?exsvurl=1&realm=${tenant.customerId}&mkt=en-US&id=${row.id}`}
         ></a>

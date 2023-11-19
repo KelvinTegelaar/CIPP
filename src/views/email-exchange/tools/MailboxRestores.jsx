@@ -1,24 +1,12 @@
-import { CSpinner, CButton } from '@coreui/react'
-import {
-  faEllipsisV,
-  faTrashAlt,
-  faExclamationTriangle,
-  faCheck,
-} from '@fortawesome/free-solid-svg-icons'
+import { CButton } from '@coreui/react'
+import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
-import {
-  CellDelegatedPrivilege,
-  cellDateFormatter,
-  cellNullTextFormatter,
-} from 'src/components/tables'
+import { cellDateFormatter } from 'src/components/tables'
 import { CippActionsOffcanvas } from 'src/components/utilities'
-import GDAPRoles from 'src/data/GDAPRoles'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
-import { ModalService } from 'src/components/utilities'
-import { constants } from 'buffer'
 import Skeleton from 'react-loading-skeleton'
 import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 

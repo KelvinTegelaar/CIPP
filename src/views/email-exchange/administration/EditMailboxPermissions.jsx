@@ -18,7 +18,13 @@ import {
 import useQuery from 'src/hooks/useQuery'
 import { useDispatch } from 'react-redux'
 import { Form, Field } from 'react-final-form'
-import { RFFSelectSearch, RFFCFormSelect, RFFCFormCheck, RFFCFormInput } from 'src/components/forms'
+import {
+  RFFSelectSearch,
+  RFFCFormSelect,
+  RFFCFormCheck,
+  RFFCFormInput,
+  RFFCFormSwitch,
+} from 'src/components/forms'
 import { useListUsersQuery } from 'src/store/api/users'
 import { ModalService } from 'src/components/utilities'
 import {
@@ -32,13 +38,12 @@ import {
   useListMailboxPermissionsQuery,
   useListMailboxesQuery,
   useListCalendarPermissionsQuery,
+  useListMailboxDetailsQuery,
 } from 'src/store/api/mailbox'
-import { CippTable } from 'src/components/tables'
-import { useListMailboxDetailsQuery } from 'src/store/api/mailbox'
-import { CellBoolean } from 'src/components/tables'
+import { CippTable, CellBoolean } from 'src/components/tables'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-import { RFFCFormSwitch } from 'src/components/forms'
+import PropTypes from 'prop-types'
 
 const formatter = (cell, warning = false, reverse = false, colourless = false) =>
   CellBoolean({ cell, warning, reverse, colourless })
@@ -53,6 +58,11 @@ function Lazy({ visible, children }) {
   if (!rendered.current) return null
 
   return <div style={{ display: visible ? 'block' : 'none' }}>{children}</div>
+}
+
+Lazy.propTypes = {
+  visible: PropTypes.bool,
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 }
 
 const MailboxSettings = () => {
@@ -520,9 +530,18 @@ const CalendarPermissions = () => {
                                 { value: 'Contributor', name: 'Contributor' },
                                 { value: 'Editor', name: 'Editor' },
                                 { value: 'Owner', name: 'Owner' },
-                                { value: 'NonEditingAuthor', name: 'Non Editing Author' },
-                                { value: 'PublishingAuthor', name: 'Publishing Author' },
-                                { value: 'PublishingEditor', name: 'Publishing Editor' },
+                                {
+                                  value: 'NonEditingAuthor',
+                                  name: 'Non Editing Author',
+                                },
+                                {
+                                  value: 'PublishingAuthor',
+                                  name: 'Publishing Author',
+                                },
+                                {
+                                  value: 'PublishingEditor',
+                                  name: 'Publishing Editor',
+                                },
                                 { value: 'Reviewer', name: 'Reviewer' },
                               ]}
                               placeholder="Select a permission level"
@@ -587,6 +606,7 @@ const MailboxForwarding = () => {
 
   useEffect(() => {
     if (postResults.isSuccess) {
+      // @TODO do something here?
     }
     if (!userId || !tenantDomain) {
       ModalService.open({
@@ -823,6 +843,7 @@ const OutOfOffice = () => {
 
   useEffect(() => {
     if (postResults.isSuccess) {
+      // @TODO do something here?
     }
     if (!userId || !tenantDomain) {
       ModalService.open({

@@ -13,7 +13,7 @@ import {
   CTableHeaderCell,
   CTableRow,
 } from '@coreui/react'
-import { FastSwitcher } from 'src/components/utilities'
+import PropTypes from 'prop-types'
 
 const Page500 = ({ errorcode, issue }) => {
   return (
@@ -53,6 +53,11 @@ const Page500 = ({ errorcode, issue }) => {
       </CCardBody>
     </CCard>
   )
+}
+
+Page500.propTypes = {
+  errorcode: PropTypes.string,
+  issue: PropTypes.string,
 }
 
 export default Page500

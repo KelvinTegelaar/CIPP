@@ -65,6 +65,10 @@ function DeleteAction({ domain }) {
   )
 }
 
+DeleteAction.propTypes = {
+  domain: PropTypes.string,
+}
+
 function checkDomain(tenantDomain) {
   return (
     <div key={tenantDomain}>
@@ -73,6 +77,7 @@ function checkDomain(tenantDomain) {
     </div>
   )
 }
+
 checkDomain.propTypes = {
   tenantDomain: PropTypes.string,
 }

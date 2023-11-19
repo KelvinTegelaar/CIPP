@@ -37,6 +37,7 @@ import {
 import {
   useExecAddExcludeTenantMutation,
   useExecRemoveExcludeTenantMutation,
+  useListTenantsQuery,
 } from 'src/store/api/tenants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -50,7 +51,6 @@ import {
   faScroll,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons'
-import { useListTenantsQuery } from 'src/store/api/tenants'
 import { useLazyEditDnsConfigQuery, useLazyGetDnsConfigQuery } from 'src/store/api/domains'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -78,14 +78,14 @@ import {
   TenantSelectorMultiple,
 } from 'src/components/utilities'
 import CippListOffcanvas from 'src/components/utilities/CippListOffcanvas'
-import { TitleButton } from 'src/components/buttons'
+import { TitleButton, TableModalButton } from 'src/components/buttons'
 import Skeleton from 'react-loading-skeleton'
 import { Buffer } from 'buffer'
 import Extensions from 'src/data/Extensions.json'
 import { CellDelegatedPrivilege } from 'src/components/tables/CellDelegatedPrivilege'
-import { TableModalButton } from 'src/components/buttons'
 import { cellTableFormatter } from 'src/components/tables/CellTable'
 import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
+import PropTypes from 'prop-types'
 
 function Lazy({ visible, children }) {
   const rendered = useRef(visible)
@@ -97,6 +97,11 @@ function Lazy({ visible, children }) {
   if (!rendered.current) return null
 
   return <div style={{ display: visible ? 'block' : 'none' }}>{children}</div>
+}
+
+Lazy.propTypes = {
+  visible: PropTypes.bool,
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 }
 
 const CIPPSettings = () => {
@@ -361,6 +366,7 @@ const GeneralSettings = () => {
           console.log(e)
           setShowExtendedInfo(!e.target.checked)
         }}
+        key={'Show Extended Info'}
       />,
     ],
   }
@@ -423,6 +429,7 @@ const GeneralSettings = () => {
                         documentation on how to add permissions{' '}
                         <a
                           target="_blank"
+                          rel="noreferrer"
                           href="https://docs.cipp.app/setup/installation/permissions#manual-permissions"
                         >
                           here
@@ -484,8 +491,14 @@ const GeneralSettings = () => {
                       columns={checkGDAPColumns}
                       data={GDAPResult.data.Results.GDAPIssues}
                       filterlist={[
-                        { filterName: 'Errors', filter: 'Complex: Type eq Error' },
-                        { filterName: 'Warnings', filter: 'Complex: Type eq Warning' },
+                        {
+                          filterName: 'Errors',
+                          filter: 'Complex: Type eq Error',
+                        },
+                        {
+                          filterName: 'Warnings',
+                          filter: 'Complex: Type eq Warning',
+                        },
                       ]}
                       defaultFilterText="Complex: Type eq Error"
                       isModal={true}
@@ -610,7 +623,6 @@ const ExcludedTenantsSettings = () => {
       body: <div>Are you sure you want to exclude this tenant?</div>,
       onConfirm: () => addExcludeTenant(tenant),
     })
-
       .unwrap()
       .then(() => {
         dispatch(setCurrentTenant({}))
@@ -639,6 +651,7 @@ const ExcludedTenantsSettings = () => {
       Add Excluded Tenant
     </CButton>
   )
+
   function StatusIcon(graphErrorCount) {
     if (graphErrorCount > 0) {
       return <FontAwesomeIcon icon={faExclamationTriangle} className="text-danger" />
@@ -817,8 +830,14 @@ const ExcludedTenantsSettings = () => {
           },
           isModal: true,
           filterlist: [
-            { filterName: 'Excluded Tenants', filter: 'Complex: Excluded eq true' },
-            { filterName: 'Included Tenants', filter: 'Complex: Excluded eq false' },
+            {
+              filterName: 'Excluded Tenants',
+              filter: 'Complex: Excluded eq true',
+            },
+            {
+              filterName: 'Included Tenants',
+              filter: 'Complex: Excluded eq false',
+            },
             {
               filterName: 'GDAP & DAP',
               filter:
@@ -1139,18 +1158,36 @@ const NotificationsSettings = () => {
                             { value: 'Updates', name: 'Updates Status' },
                             { value: 'Standards', name: 'All Standards' },
                             { value: 'TokensUpdater', name: 'Token Events' },
-                            { value: 'ExecDnsConfig', name: 'Changing DNS Settings' },
-                            { value: 'ExecExcludeLicenses', name: 'Adding excluded licenses' },
-                            { value: 'ExecExcludeTenant', name: 'Adding excluded tenants' },
+                            {
+                              value: 'ExecDnsConfig',
+                              name: 'Changing DNS Settings',
+                            },
+                            {
+                              value: 'ExecExcludeLicenses',
+                              name: 'Adding excluded licenses',
+                            },
+                            {
+                              value: 'ExecExcludeTenant',
+                              name: 'Adding excluded tenants',
+                            },
                             { value: 'EditUser', name: 'Editing a user' },
-                            { value: 'ChocoApp', name: 'Adding or deploying applications' },
-                            { value: 'AddAPDevice', name: 'Adding autopilot devices' },
+                            {
+                              value: 'ChocoApp',
+                              name: 'Adding or deploying applications',
+                            },
+                            {
+                              value: 'AddAPDevice',
+                              name: 'Adding autopilot devices',
+                            },
                             { value: 'EditTenant', name: 'Editing a tenant' },
                             { value: 'AddMSPApp', name: 'Adding an MSP app' },
                             { value: 'AddUser', name: 'Adding a user' },
                             { value: 'AddGroup', name: 'Adding a group' },
                             { value: 'NewTenant', name: 'Adding a tenant' },
-                            { value: 'ExecOffboardUser', name: 'Executing the offboard wizard' },
+                            {
+                              value: 'ExecOffboardUser',
+                              name: 'Executing the offboard wizard',
+                            },
                           ]}
                         />
                       </CCol>
@@ -1587,9 +1624,7 @@ const ExtensionsTab = () => {
               <CCardTitle>Results</CCardTitle>
             </CCardHeader>
             <CCardBody>
-              <>
-                <CCallout color="success">{listSyncExtensionResult.data.Results}</CCallout>
-              </>
+              <CCallout color="success">{listSyncExtensionResult.data.Results}</CCallout>
             </CCardBody>
           </CCard>
         )}
@@ -1619,8 +1654,8 @@ const ExtensionsTab = () => {
           </CCard>
         )}
         <CRow>
-          {Extensions.map((integration) => (
-            <CCol xs={12} lg={6} xl={6} className="mb-3">
+          {Extensions.map((integration, idx) => (
+            <CCol xs={12} lg={6} xl={6} className="mb-3" key={`${idx}-${integration.name}`}>
               <CCard className="d-flex flex-column h-100">
                 <CCardHeader>
                   <CCardTitle>{integration.name}</CCardTitle>
@@ -1636,9 +1671,9 @@ const ExtensionsTab = () => {
                           <CCardText>
                             <CCol className="mb-3">
                               {integration.SettingOptions.map(
-                                (integrationOptions) =>
+                                (integrationOptions, idx) =>
                                   integrationOptions.type === 'input' && (
-                                    <CCol>
+                                    <CCol key={`${idx}-${integrationOptions.name}`}>
                                       <RFFCFormInput
                                         type={integrationOptions.fieldtype}
                                         name={integrationOptions.name}
@@ -1649,9 +1684,9 @@ const ExtensionsTab = () => {
                                   ),
                               )}
                               {integration.SettingOptions.map(
-                                (integrationOptions) =>
+                                (integrationOptions, idx) =>
                                   integrationOptions.type === 'checkbox' && (
-                                    <CCol>
+                                    <CCol key={`${integrationOptions.name}-${idx}`}>
                                       <RFFCFormSwitch
                                         name={integrationOptions.name}
                                         label={integrationOptions.label}

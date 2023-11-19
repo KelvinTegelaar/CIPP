@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { CButton, CCallout, CCardText, CListGroupItem } from '@coreui/react'
+import {
+  CButton,
+  CCallout,
+  CCardText,
+  CListGroupItem,
+  CCard,
+  CCardBody,
+  CCardHeader,
+  CCardTitle,
+} from '@coreui/react'
 import { CippTable, cellDateFormatter, CellTip } from 'src/components/tables'
-import { CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
 import { useLazyExecIncidentsListQuery } from 'src/store/api/security'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPage } from 'src/components/layout'

@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { CippCodeBlock, CippOffcanvas } from 'src/components/utilities'
 import { CellTip } from 'src/components/tables'
 import { CButton, CCallout, CSpinner } from '@coreui/react'
 import { faEye, faTrash } from '@fortawesome/free-solid-svg-icons'
@@ -8,7 +7,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import { CippPageList } from 'src/components/layout'
 import { ModalService } from 'src/components/utilities'
-import { TitleButton } from 'src/components/buttons'
 import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
 
 const SpamFilterListTemplates = () => {
