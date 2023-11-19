@@ -31,6 +31,8 @@ export default defineConfig({
     outDir: 'build',
     assetsDir: 'static',
     target: browserslistToEsbuild(),
+    // enable source map for debugging
+    sourcemap: true,
   },
   server: {
     port: 3000,
