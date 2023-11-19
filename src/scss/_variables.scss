@@ -1331,16 +1331,15 @@ $tooltip-color: var(--cyberdrain-light) !default;
 // $toast-padding-x:                   .75rem !default;
 // $toast-padding-y:                   .5rem !default;
 // $toast-font-size:                   .875rem !default;
-// $toast-color:                       unset !default;
-// $toast-background-color:            rgba($white, .85) !default;
+$toast-color: var(--cipp-toast-color) !default;
 // $toast-border-width:                1px !default;
 // $toast-border-color:                rgba(0, 0, 0, .1) !default;
 // $toast-border-radius:               $border-radius !default;
 // $toast-box-shadow:                  $box-shadow !default;
 // $toast-spacing:                     $container-padding-x !default;
-
-// $toast-header-color:                $gray-600 !default;
-// $toast-header-background-color:     rgba($white, .85) !default;
+$toast-background-color: var(--cipp-toast-bg);
+$toast-header-background-color: var(--cipp-toast-header-bg);
+$toast-header-color: var(--cipp-toast-color) !default;
 // $toast-header-border-color:         rgba(0, 0, 0, .05) !default;
 // scss-docs-end toast-variables
 

@@ -285,15 +285,17 @@
   --cui-nav-link-hover-color: var(--cyberdrain-dark);
   --cui-nav-tabs-border-color: var(--cyberdrain-accent-green);
   --cui-nav-tabs-link-hover-border-color: var(--cyberdrain-accent-green);
-  --cui-toast-background-color: var(--cui-color-white);
   --cui-toast-border-color: var(--cyberdrain-accent-green);
   --cui-toast-color: var(--cui-color-black);
-  --cui-toast-header-background-color: var(--cui-color-white);
   --cui-toast-header-color: var(--cui-color-black);
   --cui-card-cap-color: var(--cyberdrain-dark);
   --cui-card-cap-bg: var(--cui-color-white);
 
   // CIPP CyberDrain theme variables.
+  --cipp-toast-header-bg: var(--cui-color-white);
+  --cipp-toast-bg: var(--cui-color-white);
+  --cipp-toast-color: var(--cui-color-black);
+
   --cipp-fa-inverse-color: var(--cyberdrain-dark);
   --cipp-search-bg: var(--cyberdrain-light);
   --cipp-search-border-color: var(--cyberdrain-accent-green);
@@ -471,15 +473,17 @@
   --cui-nav-link-hover-color: var(--cyberdrain-light);
   --cui-nav-tabs-border-color: var(--cyberdrain-accent-green);
   --cui-nav-tabs-link-hover-border-color: var(--cyberdrain-accent-green);
-  --cui-toast-background-color: var(--cui-color-header-bar);
   --cui-toast-border-color: var(--cyberdrain-accent-green);
   --cui-toast-color: var(--cui-color-black);
-  --cui-toast-header-background-color: var(--cui-color-header-bar);
   --cui-toast-header-color: var(--cui-color-black);
   --cui-card-cap-color: var(--cyberdrain-white);
   --cui-card-cap-bg: var(--cui-color-dark);
   --cui-tertiary-bg: var(--cui-bgcolor-table-header);
   // CIPP Impact theme variables.
+  --cipp-toast-bg: var(--cui-color-header-bar);
+  --cipp-toast-header-bg: var(--cui-color-header-bar);
+  --cipp-toast-color: var(--cui-color-black);
+
   --cipp-fa-inverse-color: var(--cyberdrain-dark);
   --cipp-search-bg: var(--cyberdrain-dark);
   --cipp-search-border-color: var(--cyberdrain-accent-green);
