@@ -41,7 +41,6 @@ const AddPolicy = () => {
     values.TemplateType = values.Type
     genericPostRequest({ path: '/api/AddTransportRule', values: values })
   }
-  //* eslint-disable react/prop-types */
   const WhenFieldChanges = ({ field, set }) => (
     <Field name={set} subscription={{}}>
       {(
@@ -65,6 +64,11 @@ const AddPolicy = () => {
     </Field>
   )
 
+  WhenFieldChanges.propTypes = {
+    field: PropTypes.node,
+    set: PropTypes.string,
+  }
+
   const formValues = {
     TemplateType: 'Admin',
   }
@@ -85,6 +89,7 @@ const AddPolicy = () => {
         </center>
         <hr className="my-4" />
         <Field name="selectedTenants" validate={requiredArray}>
+          {/* eslint-disable react/prop-types */}
           {(props) => (
             <WizardTableField
               reportName="Add-Transport-Rule-Tenant-Selector"

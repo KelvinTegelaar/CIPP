@@ -8,7 +8,7 @@ export default class CippWizard extends React.Component {
   static propTypes = {
     wizardTitle: PropTypes.string,
     onSubmit: PropTypes.func.isRequired,
-    children: PropTypes.arrayOf(PropTypes.element),
+    children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
     initialValues: PropTypes.any,
     onPageChange: PropTypes.func,
     nextPage: PropTypes.func,

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { CCallout, CCol, CListGroup, CListGroupItem, CRow, CSpinner } from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -16,7 +16,6 @@ import {
 import { TenantSelector } from 'src/components/utilities'
 import { useListUsersQuery } from 'src/store/api/users'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
-import { useState } from 'react'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
@@ -262,6 +261,7 @@ const OffboardingWizard = () => {
           )}
           {!postResults.isSuccess && (
             <FormSpy>
+              {/* eslint-disable react/prop-types */}
               {(props) => (
                 <>
                   <CRow>

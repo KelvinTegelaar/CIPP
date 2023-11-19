@@ -45,7 +45,11 @@ const MailboxRestoreWizard = () => {
     error: sMailboxError,
   } = useGenericGetRequestQuery({
     path: '/api/ListMailboxes',
-    params: { TenantFilter: tenantDomain, SoftDeletedMailbox: true, SkipLicense: true },
+    params: {
+      TenantFilter: tenantDomain,
+      SoftDeletedMailbox: true,
+      SkipLicense: true,
+    },
   })
   const {
     data: targetMailboxes = [],
@@ -184,6 +188,7 @@ const MailboxRestoreWizard = () => {
           )}
           {!postResults.isSuccess && (
             <FormSpy>
+              {/* eslint-disable react/prop-types */}
               {(props) => (
                 <>
                   <CRow>

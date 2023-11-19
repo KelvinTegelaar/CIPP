@@ -95,7 +95,7 @@ const MailboxStatsList = () => {
     if (tenant.defaultDomainName !== 'AllTenants') {
       setTenantColumn(true)
     }
-  }, [tenantColumnSet])
+  }, [tenant.defaultDomainName, tenantColumnSet])
   return (
     <CippPageList
       title="Mailbox Statistics"

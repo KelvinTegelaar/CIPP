@@ -1,9 +1,8 @@
 import React from 'react'
 import { CButton } from '@coreui/react'
 import { ModalService } from '../utilities'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 import { cellGenericFormatter } from '../tables/CellGenericFormat'
+import PropTypes from 'prop-types'
 
 export default function TableModalButton({ data, title, className, countOnly = false, ...input }) {
   const handleTable = (data) => {
@@ -32,7 +31,14 @@ export default function TableModalButton({ data, title, className, countOnly = f
 
   return (
     <CButton {...input} className={buttonClass} onClick={() => handleTable(data)}>
-      <>{countOnly == true ? data.length : `${title} (${data.length})`}</>
+      <>{countOnly === true ? data.length : `${title} (${data.length})`}</>
     </CButton>
   )
+}
+
+TableModalButton.propTypes = {
+  data: PropTypes.array,
+  title: PropTypes.string,
+  className: PropTypes.string,
+  countOnly: PropTypes.bool,
 }

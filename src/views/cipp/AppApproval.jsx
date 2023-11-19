@@ -14,6 +14,7 @@ import {
   RFFSelectSearch,
 } from 'src/components/forms'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
+
 const Error = ({ name }) => (
   <Field
     name={name}
@@ -150,6 +151,7 @@ const AppApproval = () => {
         <hr className="my-4" />
         {!postResults.isSuccess && (
           <FormSpy>
+            {/* eslint-disable react/prop-types */}
             {(props) => {
               return (
                 <>

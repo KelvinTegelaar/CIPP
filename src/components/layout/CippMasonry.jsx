@@ -46,7 +46,7 @@ export function CippMasonryItem({ size, children, className = null }) {
 
 CippMasonryItem.propTypes = {
   size: PropTypes.oneOf(['single', 'double', 'triple', 'full', 'half']),
-  children: PropTypes.object,
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   className: PropTypes.string,
 }
 

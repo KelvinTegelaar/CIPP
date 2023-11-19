@@ -5,8 +5,8 @@ import {
   faCheckCircle,
   faExclamationCircle,
 } from '@fortawesome/free-solid-svg-icons'
-import { CellBadge } from 'src/components/tables'
 import { CBadge, CTooltip } from '@coreui/react'
+import CellBoolean from 'src/components/tables/CellBoolean.jsx'
 
 const IconWarning = () => <FontAwesomeIcon icon={faExclamationCircle} className="text-warning" />
 const IconError = () => <FontAwesomeIcon icon={faTimesCircle} className="text-danger" />
@@ -20,43 +20,6 @@ function nocolour(iscolourless, content) {
   return content
 }
 
-export default function CellBoolean({
-  cell,
-  warning = false,
-  reverse = false,
-  colourless = false,
-  noDataIsFalse = false,
-}) {
-  let normalized = cell
-  if (typeof cell === 'boolean') {
-    normalized = cell
-  } else if (typeof cell === 'string') {
-    if (
-      cell.toLowerCase() === 'success' ||
-      cell.toLowerCase() === 'pass' ||
-      cell.toLowerCase() === 'true'
-    ) {
-      normalized = true
-    } else if (cell.toLowerCase() === 'fail' || cell.toLowerCase() === 'false') {
-      normalized = false
-    }
-  }
-
-  if (cell === '' && !noDataIsFalse) {
-    return <CellBadge label="No Data" color="info" />
-  } else if (colourless && warning && reverse) {
-    return nocolour(colourless, normalized ? <IconWarning /> : <IconError />)
-  } else if (!reverse && !warning) {
-    return nocolour(colourless, normalized ? <IconSuccess /> : <IconError />)
-  } else if (!reverse && warning) {
-    return nocolour(colourless, normalized ? <IconSuccess /> : <IconWarning />)
-  } else if (reverse && !warning) {
-    return nocolour(colourless, normalized ? <IconError /> : <IconSuccess />)
-  } else if (reverse && warning) {
-    return nocolour(colourless, normalized ? <IconWarning /> : <IconSuccess />)
-  }
-}
-
 export function CellTip(cell, overflow = false) {
   return (
     <CTooltip content={String(cell)}>
@@ -67,6 +30,7 @@ export function CellTip(cell, overflow = false) {
 
 export const cellGenericFormatter =
   ({ warning = false, reverse = false, colourless = true, noDataIsFalse } = {}) =>
+  // eslint-disable-next-line react/display-name
   (row, index, column, id) => {
     const cell = column.selector(row)
     if (cell === null || cell === undefined || cell.length === 0) {

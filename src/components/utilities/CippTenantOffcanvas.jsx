@@ -6,6 +6,7 @@ import { CippActionsOffcanvas } from 'src/components/utilities'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import Skeleton from 'react-loading-skeleton'
 import Portals from 'src/data/portals'
+import PropTypes from 'prop-types'
 
 export const CippTenantOffcanvasRow = (row, rowIndex, formatExtraData) => {
   const tenant = row
@@ -15,6 +16,7 @@ export const CippTenantOffcanvasRow = (row, rowIndex, formatExtraData) => {
 function CippTenantOffcanvas({ tenant, buildingIcon = false }) {
   const [getTenantDetails, tenantDetails] = useLazyGenericGetRequestQuery()
   const [ocVisible, setOCVisible] = useState(false)
+
   function loadOffCanvasDetails(domainName) {
     setOCVisible(true)
     getTenantDetails({ path: `api/ListTenantDetails?tenantfilter=${domainName}` })
@@ -30,6 +32,7 @@ function CippTenantOffcanvas({ tenant, buildingIcon = false }) {
       </>
     )
   }
+
   const actions = Portals.map((portal) => ({
     icon: <FontAwesomeIcon icon={portal.icon} className="me-2" />,
     label: portal.label,
@@ -101,6 +104,11 @@ function CippTenantOffcanvas({ tenant, buildingIcon = false }) {
       />
     </>
   )
+}
+
+CippTenantOffcanvas.propTypes = {
+  tenant: PropTypes.object,
+  buildingIcon: PropTypes.bool,
 }
 
 export default CippTenantOffcanvas

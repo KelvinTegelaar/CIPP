@@ -64,6 +64,11 @@ const SpamFilterAdd = () => {
     </Field>
   )
 
+  WhenFieldChanges.propTypes = {
+    field: PropTypes.node,
+    set: PropTypes.string,
+  }
+
   const formValues = {
     TemplateType: 'Admin',
   }
@@ -158,6 +163,7 @@ const SpamFilterAdd = () => {
         <hr className="my-4" />
         {!postResults.isSuccess && (
           <FormSpy>
+            {/* eslint-disable react/prop-types */}
             {(props) => {
               return (
                 <>

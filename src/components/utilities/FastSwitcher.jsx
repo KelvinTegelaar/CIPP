@@ -114,6 +114,7 @@ const ResultsRow = ({ match = [] }) => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
+  // eslint-disable-next-line no-unsafe-optional-chaining
   const { name, section, icon, to } = match?.obj
   const [nameMatch, sectionMatch, toMatch] = match
 

@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { CippPage } from 'src/components/layout'
+import { CippPage, CippContentCard } from 'src/components/layout'
 import BPAReportSchema from 'src/data/BPAReport.schema.v1'
 import BPAReportUISchema from 'src/data/BPAReport.uischema.v1'
 import validator from '@rjsf/validator-ajv8'
 import Form from '@rjsf/bootstrap-4'
-import { CippContentCard } from 'src/components/layout'
 import Editor from '@monaco-editor/react'
 import { useSelector } from 'react-redux'
 import useQuery from 'src/hooks/useQuery'
@@ -28,6 +27,7 @@ import {
 import { useGenericGetRequestQuery } from 'src/store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import CopyToClipboard from 'react-copy-to-clipboard'
+import PropTypes from 'prop-types'
 
 const CippTextWidget = (props) => {
   return (
@@ -39,6 +39,16 @@ const CippTextWidget = (props) => {
     />
   )
 }
+CippTextWidget.propTypes = {
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.arrayOf(PropTypes.string),
+    PropTypes.number,
+  ]),
+  required: PropTypes.bool,
+  onChange: PropTypes.func,
+}
+
 const CippSelectWidget = (props) => {
   const options = props?.options.length > 0 ? props.options : props.options.enumOptions
   return (
@@ -56,6 +66,17 @@ const CippSelectWidget = (props) => {
   )
 }
 
+CippSelectWidget.propTypes = {
+  options: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  onChange: PropTypes.func,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.arrayOf(PropTypes.string),
+    PropTypes.number,
+  ]),
+  required: PropTypes.bool,
+}
+
 const CippCheckboxWidget = (props) => {
   return (
     <CFormSwitch
@@ -69,6 +90,15 @@ const CippCheckboxWidget = (props) => {
     />
   )
 }
+
+CippCheckboxWidget.propTypes = {
+  disabled: PropTypes.bool,
+  name: PropTypes.string,
+  label: PropTypes.string,
+  value: PropTypes.bool,
+  onChange: PropTypes.func,
+}
+
 const CippWidgets = {
   TextWidget: CippTextWidget,
   SelectWidget: CippSelectWidget,
@@ -99,6 +129,7 @@ const BPAReportBuilder = () => {
       setFormData({})
     }
   }
+
   const handleSubmit = async (event) => {
     event.preventDefault()
     var reportTemplate = event.target.form[0].value
@@ -250,7 +281,7 @@ const BPAReportBuilder = () => {
               defaultLanguage="json"
               value={JSON.stringify(formData, null, 2)}
               onChange={handleEditorChange}
-              theme={currentTheme == 'cyberdrain' ? 'vs-light' : 'vs-dark'}
+              theme={currentTheme === 'cyberdrain' ? 'vs-light' : 'vs-dark'}
               height="700px"
               options={options}
             />

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useEffect, useState, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import {
   CButton,
@@ -21,15 +21,81 @@ import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 's
 import { Link, useNavigate } from 'react-router-dom'
 import { stringCamelCase } from 'src/components/utilities/CippCamelCase'
 import ReactTimeAgo from 'react-time-ago'
-import { useEffect } from 'react'
-import { useState } from 'react'
 
 export default function CippActionsOffcanvas(props) {
   const inputRef = useRef('')
   const [genericGetRequest, getResults] = useLazyGenericGetRequestQuery()
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const [getDrowndownInfo, dropDownInfo] = useLazyGenericGetRequestQuery()
-  const [modalContent, setModalContent] = useState(null)
+  const [modalContent, setModalContent] = useState({})
+
+  const handleLink = useNavigate()
+  const handleExternalLink = (link) => {
+    window.open(link, '_blank')
+  }
+  const handleModal = useCallback(
+    (modalMessage, modalUrl, modalType = 'GET', modalBody, modalInput, modalDropdown) => {
+      if (modalType === 'GET') {
+        ModalService.confirm({
+          body: (
+            <div style={{ overflow: 'visible' }}>
+              <div>{modalMessage}</div>
+            </div>
+          ),
+          title: 'Confirm',
+          onConfirm: () => genericGetRequest({ path: modalUrl }),
+        })
+      } else if (modalType === 'codeblock') {
+        ModalService.open({
+          data: modalBody,
+          componentType: 'codeblock',
+          title: 'Info',
+          size: 'lg',
+        })
+      } else {
+        ModalService.confirm({
+          key: modalContent,
+          body: (
+            <div style={{ overflow: 'visible' }}>
+              {modalInput && (
+                <div>
+                  <CFormInput ref={inputRef} type="text" />
+                </div>
+              )}
+              {modalDropdown && (
+                <div>
+                  {dropDownInfo.isSuccess && (
+                    <CFormSelect
+                      ref={inputRef}
+                      options={dropDownInfo.data.map((data) => ({
+                        value: data[modalDropdown.valueField],
+                        label: data[modalDropdown.labelField],
+                      }))}
+                    />
+                  )}
+                </div>
+              )}
+              <div>{modalMessage}</div>
+            </div>
+          ),
+          title: 'Confirm',
+          onConfirm: () => [
+            genericPostRequest({
+              path: modalUrl,
+              values: { ...modalBody, ...{ input: inputRef.current.value } },
+            }),
+          ],
+        })
+      }
+    },
+    [
+      dropDownInfo?.data,
+      dropDownInfo?.isSuccess,
+      genericGetRequest,
+      genericPostRequest,
+      modalContent,
+    ],
+  )
 
   useEffect(() => {
     if (dropDownInfo.isFetching) {
@@ -61,73 +127,17 @@ export default function CippActionsOffcanvas(props) {
         modalContent.modalDropdown,
       )
     }
-  }, [dropDownInfo])
+  }, [
+    dropDownInfo,
+    handleModal,
+    modalContent.modalBody,
+    modalContent.modalDropdown,
+    modalContent.modalInput,
+    modalContent.modalMessage,
+    modalContent.modalType,
+    modalContent.modalUrl,
+  ])
 
-  const handleLink = useNavigate()
-  const handleExternalLink = (link) => {
-    window.open(link, '_blank')
-  }
-  const handleModal = (
-    modalMessage,
-    modalUrl,
-    modalType = 'GET',
-    modalBody,
-    modalInput,
-    modalDropdown,
-  ) => {
-    if (modalType === 'GET') {
-      ModalService.confirm({
-        body: (
-          <div style={{ overflow: 'visible' }}>
-            <div>{modalMessage}</div>
-          </div>
-        ),
-        title: 'Confirm',
-        onConfirm: () => genericGetRequest({ path: modalUrl }),
-      })
-    } else if (modalType === 'codeblock') {
-      ModalService.open({
-        data: modalBody,
-        componentType: 'codeblock',
-        title: 'Info',
-        size: 'lg',
-      })
-    } else {
-      ModalService.confirm({
-        key: modalContent,
-        body: (
-          <div style={{ overflow: 'visible' }}>
-            {modalInput && (
-              <div>
-                <CFormInput ref={inputRef} type="text" />
-              </div>
-            )}
-            {modalDropdown && (
-              <div>
-                {dropDownInfo.isSuccess && (
-                  <CFormSelect
-                    ref={inputRef}
-                    options={dropDownInfo.data.map((data) => ({
-                      value: data[modalDropdown.valueField],
-                      label: data[modalDropdown.labelField],
-                    }))}
-                  />
-                )}
-              </div>
-            )}
-            <div>{modalMessage}</div>
-          </div>
-        ),
-        title: 'Confirm',
-        onConfirm: () => [
-          genericPostRequest({
-            path: modalUrl,
-            values: { ...modalBody, ...{ input: inputRef.current.value } },
-          }),
-        ],
-      })
-    }
-  }
   const handleOnClick = (
     link,
     modal,
@@ -149,7 +159,14 @@ export default function CippActionsOffcanvas(props) {
       if (modalDropdown) {
         getDrowndownInfo({ path: modalDropdown.url })
       }
-      setModalContent({ modalMessage, modalUrl, modalType, modalBody, modalInput, modalDropdown })
+      setModalContent({
+        modalMessage,
+        modalUrl,
+        modalType,
+        modalBody,
+        modalInput,
+        modalDropdown,
+      })
 
       handleModal(modalMessage, modalUrl, modalType, modalBody, modalInput, modalDropdown)
     }
@@ -183,7 +200,9 @@ export default function CippActionsOffcanvas(props) {
         </CCard>
       </>
     ))
-  } catch (error) {}
+  } catch (error) {
+    // swallow error
+  }
 
   const extendedInfoContent = <CippOffcanvasTable rows={props.extendedInfo} guid={props.id} />
   let actionsContent
