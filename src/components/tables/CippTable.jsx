@@ -665,6 +665,7 @@ export default function CippTable({
     data,
     columns,
     reportName,
+    selectedRows,
   ])
   const tablePageSize = useSelector((state) => state.app.tablePageSize)
   return (
