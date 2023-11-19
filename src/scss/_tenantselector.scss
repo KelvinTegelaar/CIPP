@@ -43,6 +43,7 @@
     background: var(--cipp-search-bg);
     border-radius: var(--cipp-border-radius);
     box-shadow: 0 0.0625rem 0.125rem rgb(0 0 0 / 15%);
+    border: 1px solid var(--cipp-search-border-color);
     color: var(--cipp-search-color);
     display: block;
     font-family: 'Noto Sans', sans-serif;
@@ -63,7 +64,7 @@
     }
 
     &:hover {
-      border: none;
+      border: 1px solid var(--cipp-search-border-color);
     }
 
     &:not([readonly]):focus {
