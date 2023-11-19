@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { CButton, CFormInput } from '@coreui/react'
+import { CButton, CFormInput, CFormLabel } from '@coreui/react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { faEdit, faEllipsisV, faEye } from '@fortawesome/free-solid-svg-icons'
@@ -256,6 +256,9 @@ const UserSearch = () => {
     ModalService.confirm({
       body: (
         <>
+          <CFormLabel>
+            Search for a user by name or email address. (Email domain is also supported).
+          </CFormLabel>
           <CFormInput ref={inputRef} />
         </>
       ),
