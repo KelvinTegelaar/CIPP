@@ -8,6 +8,8 @@ import {
   faLockOpen,
   faUserTimes,
   faEllipsisH,
+  faEnvelope,
+  faEdit,
 } from '@fortawesome/free-solid-svg-icons'
 import { ActionContentCard } from 'src/components/contentcards'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
@@ -29,12 +31,18 @@ export default function UserActions({ tenantDomain, userId, userEmail, className
   }
 
   const editLink = `/identity/administration/users/edit?tenantDomain=${tenantDomain}&userId=${userId}`
+  const editMailboxLink = `/email/administration/edit-mailbox-permissions?tenantDomain=${tenantDomain}&userId=${userEmail}`
 
   const actions = [
     {
       label: 'Edit User',
       link: editLink,
       icon: faCog,
+    },
+    {
+      label: 'Edit Mailbox Permissions',
+      link: editMailboxLink,
+      icon: faEdit,
     },
     {
       label: 'Send MFA Push',
@@ -44,6 +52,16 @@ export default function UserActions({ tenantDomain, userId, userEmail, className
         handleModal(
           'Are you sure you want to send an MFA push?',
           `/api/ExecSendPush?TenantFilter=${tenantDomain}&UserEmail=${userEmail}`,
+        ),
+    },
+    {
+      label: 'Enable Online Archive ',
+      link: '#',
+      icon: faEnvelope,
+      onClick: () =>
+        handleModal(
+          'Are you sure you want to enable the online archive for this user?',
+          `/api/ExecEnableArchive?TenantFilter=${tenantDomain}&ID=${userEmail}`,
         ),
     },
     {

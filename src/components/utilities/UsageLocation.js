@@ -9,13 +9,14 @@ const UsageLocation = () => {
   const dispatch = useDispatch()
   const usagelocation = useSelector((state) => state.app.usageLocation)
   const Switchusage = (t, n) => {
-    // console.log(t)
     dispatch(setDefaultusageLocation({ usageLocation: t }))
   }
 
   return (
-    <CCard>
-      <CCardHeader>Select default usage location</CCardHeader>
+    <>
+      <p>
+        <h6>Default Usage Location</h6>
+      </p>
       <Select
         className="react-select-container"
         classNamePrefix="react-select"
@@ -30,7 +31,7 @@ const UsageLocation = () => {
         label="Usage Location"
         onChange={(value) => Switchusage(value)}
       />
-    </CCard>
+    </>
   )
 }
 

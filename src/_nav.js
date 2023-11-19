@@ -18,6 +18,7 @@ import {
   faExclamationTriangle,
   faUserShield,
   faEnvelope,
+  faToolbox,
 } from '@fortawesome/free-solid-svg-icons'
 
 const _nav = [
@@ -90,8 +91,8 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Basic Auth Report',
-        to: '/identity/reports/basic-auth-report',
+        name: 'Inactive Users',
+        to: '/identity/reports/inactive-users-report',
       },
       {
         component: CNavItem,
@@ -126,11 +127,54 @@ const _nav = [
         name: 'Alerts Wizard',
         to: '/tenant/administration/alertswizard',
       },
-
       {
         component: CNavItem,
-        name: 'Scheduled Alerts',
+        name: 'Alerts Configuration',
         to: '/tenant/administration/alertsqueue',
+      },
+      {
+        component: CNavItem,
+        name: 'Enterprise Applications',
+        to: '/tenant/administration/enterprise-apps',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
+    name: 'Tools',
+    section: 'Tools',
+    to: '/tenant/administration',
+    icon: <FontAwesomeIcon icon={faToolbox} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Graph Explorer',
+        to: '/tenant/administration/graph-explorer',
+      },
+      {
+        component: CNavItem,
+        name: 'Application Approval',
+        to: '/tenant/administration/appapproval',
+      },
+      {
+        component: CNavItem,
+        name: 'Geo IP Lookup',
+        to: '/tenant/tools/geoiplookup',
+      },
+      {
+        component: CNavItem,
+        name: 'Tenant Lookup',
+        to: '/tenant/administration/tenantlookup',
+      },
+      {
+        component: CNavItem,
+        name: 'Individual Domain Check',
+        to: '/tenant/standards/individual-domains',
+      },
+      {
+        component: CNavItem,
+        name: 'BPA Report Builder',
+        to: '/tenant/tools/bpa-report-builder',
       },
     ],
   },
@@ -148,7 +192,7 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Apply Standards',
+        name: 'Standards Wizard',
         to: '/tenant/standards/apply-standard',
       },
       {
@@ -160,11 +204,6 @@ const _nav = [
         component: CNavItem,
         name: 'Domains Analyser',
         to: '/tenant/standards/domains-analyser',
-      },
-      {
-        component: CNavItem,
-        name: 'Individual Domain Check',
-        to: '/tenant/standards/individual-domains',
       },
     ],
   },
@@ -209,16 +248,50 @@ const _nav = [
   },
   {
     component: CNavGroup,
+    name: 'GDAP Management',
+    section: 'Settings',
+    to: '/cipp/gdap',
+    icon: <FontAwesomeIcon icon={faUserShield} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Role Wizard',
+        to: '/tenant/administration/gdap-role-wizard',
+      },
+      {
+        component: CNavItem,
+        name: 'GDAP Roles',
+        to: '/tenant/administration/gdap-roles',
+      },
+      {
+        component: CNavItem,
+        name: 'Migration Wizard',
+        to: '/tenant/administration/gdap',
+      },
+      {
+        component: CNavItem,
+        name: 'GDAP Migration Status',
+        to: '/tenant/administration/gdap-status',
+      },
+      {
+        component: CNavItem,
+        name: 'Invite Wizard',
+        to: '/tenant/administration/gdap-invite',
+      },
+      {
+        component: CNavItem,
+        name: 'GDAP Relationships',
+        to: '/tenant/administration/gdap-relationships',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
     name: 'Reports',
     section: 'Reports',
     to: '/tenant/reports',
     icon: <FontAwesomeIcon icon={faChartBar} className="nav-icon" />,
     items: [
-      {
-        component: CNavItem,
-        name: 'Graph Explorer',
-        to: '/tenant/administration/graph-explorer',
-      },
       {
         component: CNavItem,
         name: 'Licence Report',
@@ -259,15 +332,6 @@ const _nav = [
       },
     ],
   },
-  // Coming in another branch (heads up)
-  //{
-  //component: CNavGroup,
-  //name: 'Vulnerabilities',
-  //section: 'Security & Compliance',
-  //to: '/security/vulnerabilities',
-  //icon: <FontAwesomeIcon icon={faChessRook} className="nav-icon" />,
-  //items: [],
-  //},
   {
     component: CNavGroup,
     name: 'Defender',
@@ -606,6 +670,30 @@ const _nav = [
         name: 'Phishing Policies',
         to: '/email/reports/phishing-policies',
       },
+      {
+        component: CNavItem,
+        name: 'Shared Mailbox with Enabled Account',
+        to: '/email/reports/SharedMailboxEnabledAccount',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
+    name: 'Tools',
+    section: 'Tools',
+    to: '/email/tools',
+    icon: <FontAwesomeIcon icon={faToolbox} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Mailbox Restore Wizard',
+        to: '/email/tools/mailbox-restore-wizard',
+      },
+      {
+        component: CNavItem,
+        name: 'Mailbox Restores',
+        to: '/email/tools/mailbox-restores',
+      },
     ],
   },
   {
@@ -621,8 +709,23 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'Settings',
+        name: 'Application Settings',
         to: '/cipp/settings',
+      },
+      {
+        component: CNavItem,
+        name: 'User Settings',
+        to: '/cipp/user-settings',
+      },
+      {
+        component: CNavItem,
+        name: 'Scheduler',
+        to: '/cipp/scheduler',
+      },
+      {
+        component: CNavItem,
+        name: 'Logbook',
+        to: '/cipp/logs',
       },
       {
         component: CNavItem,
@@ -631,39 +734,8 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Documentation',
-        href: 'https://cipp.app',
-        target: '_blank',
-      },
-    ],
-  },
-  {
-    component: CNavGroup,
-    name: 'GDAP Migration',
-    section: 'Settings',
-    to: '/cipp/gdap',
-    icon: <FontAwesomeIcon icon={faUserShield} className="nav-icon" />,
-    items: [
-      {
-        component: CNavItem,
-        name: 'Migration Wizard',
-        to: '/tenant/administration/gdap',
-      },
-      {
-        component: CNavItem,
-        name: 'GDAP Migration Status',
-        to: '/tenant/administration/gdap-status',
-      },
-      {
-        component: CNavItem,
-        name: 'Application Approval',
-        to: '/tenant/administration/appapproval',
-      },
-      {
-        component: CNavItem,
-        name: 'Documentation',
-        href: 'https://cipp.app/docs/user/usingcipp/GDAP/migration',
-        target: '_blank',
+        name: 'Log Out',
+        to: '/logout',
       },
     ],
   },

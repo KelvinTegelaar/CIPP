@@ -32,9 +32,8 @@ const EditGroup = () => {
   let query = useQuery()
   const groupId = query.get('groupId')
   const tenantDomain = query.get('tenantDomain')
-
   const [queryError, setQueryError] = useState(false)
-
+  const [refreshToken, setRefresh] = useState('')
   const {
     data: group = {},
     isFetching,
@@ -47,14 +46,14 @@ const EditGroup = () => {
     isFetching: membersisFetching,
     error: membersError,
     isSuccess: membersIsSuccess,
-  } = useListGroupMembersQuery({ tenantDomain, groupId })
+  } = useListGroupMembersQuery({ tenantDomain, groupId, refreshToken })
 
   const {
     data: owners = [],
     isFetching: ownersisFetching,
     error: ownersError,
     isSuccess: ownersIsSuccess,
-  } = useListGroupOwnersQuery({ tenantDomain, groupId })
+  } = useListGroupOwnersQuery({ tenantDomain, groupId, refreshToken })
   const {
     data: users = [],
     isFetching: usersIsFetching,
@@ -66,6 +65,7 @@ const EditGroup = () => {
     isFetching: contactsIsFetching,
     error: contactsError,
   } = useListContactsQuery({ tenantDomain })
+  const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
   const [roleInfo, setroleInfo] = React.useState([])
   useEffect(() => {
@@ -86,7 +86,7 @@ const EditGroup = () => {
       })
       setroleInfo(ownerWithRole.concat(memberwithRole))
     }
-  }, [owners, members, ownersIsSuccess, membersIsSuccess])
+  }, [owners, members, ownersIsSuccess, membersIsSuccess, postResults])
 
   useEffect(() => {
     if (!groupId || !tenantDomain) {
@@ -97,7 +97,6 @@ const EditGroup = () => {
       setQueryError(true)
     }
   }, [groupId, tenantDomain, dispatch])
-  const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const onSubmit = (values) => {
     const shippedValues = {
       tenantID: tenantDomain,
@@ -110,9 +109,14 @@ const EditGroup = () => {
       AddContacts: values.AddContacts ? values.AddContacts : '',
       RemoveContacts: values.RemoveContacts ? values.RemoveContacts : '',
       allowExternal: values.allowExternal,
+      sendCopies: values.sendCopies,
+      mail: group[0].mail,
+      groupName: group[0].DisplayName,
     }
     //window.alert(JSON.stringify(shippedValues))
-    genericPostRequest({ path: '/api/EditGroup', values: shippedValues })
+    genericPostRequest({ path: '/api/EditGroup', values: shippedValues }).then((res) => {
+      setRefresh(postResults.requestId)
+    })
   }
   const tableColumns = [
     {
@@ -142,7 +146,7 @@ const EditGroup = () => {
             <CCol md={6}>
               <CCard>
                 <CCardHeader>
-                  <CCardTitle>Group Details</CCardTitle>
+                  <CCardTitle>Group Details {group[0] && `- ${group[0].displayName}`}</CCardTitle>
                 </CCardHeader>
                 <CCardBody>
                   {isFetching && <CSpinner />}
@@ -233,6 +237,12 @@ const EditGroup = () => {
                               <RFFCFormCheck
                                 name="allowExternal"
                                 label="Let people outside the organization email the group"
+                              />
+                            )}
+                            {group[0].calculatedGroupType === 'Microsoft 365' && (
+                              <RFFCFormCheck
+                                name="sendCopies"
+                                label="Send Copies of team emails and events to team members inboxes"
                               />
                             )}
                             <CRow className="mb-3">

@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { CippWizard } from 'src/components/layout'
 import { WizardTableField } from 'src/components/tables'
+import { TitleButton } from 'src/components/buttons'
 import PropTypes from 'prop-types'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
@@ -45,7 +46,7 @@ const GDAPWizard = () => {
       onSubmit={handleSubmit}
       wizardTitle="GDAP Migration Wizard"
     >
-      <CippWizard.Page title="Tenant Choice" description="Setup">
+      <CippWizard.Page title="GDAP Wizard" description="API Setup">
         <center>
           <h3 className="text-primary">Step 1</h3>
           <h5 className="card-title mb-4">Setup GDAP Migration tool</h5>
@@ -53,11 +54,7 @@ const GDAPWizard = () => {
         <hr className="my-4" />
         <CCallout color="info">
           The GDAP migration tool requires setup. Please check the documentation{' '}
-          <a
-            className="mb-2"
-            href="https://cipp.app/docs/user/usingcipp/GDAP/migration/"
-            target="_blank"
-          >
+          <a className="mb-2" href="https://docs.cipp.app/setup/gdap/index" target="_blank">
             here.
           </a>
           <br /> <br />
@@ -82,12 +79,61 @@ const GDAPWizard = () => {
         )}
         <hr className="my-4" />
       </CippWizard.Page>
+
+      <CippWizard.Page
+        title="Select which roles you want to add to GDAP relationship"
+        description="Choose from the mapped GDAP Roles"
+      >
+        <center>
+          <h3 className="text-primary">Step 2</h3>
+          <h5 className="card-title mb-4">
+            Select which roles you want to add to GDAP relationship.
+          </h5>
+        </center>
+        <hr className="my-4" />
+        <CForm onSubmit={handleSubmit}>
+          <CCallout color="info">
+            CIPP will create a single relationship with all roles you've selected for the maximum
+            duration of 730 days using a GUID as a random name for the relationship.
+            <br /> It is recommend to put CIPP user in the correct GDAP Role Groups to manage your
+            environment secure after deployment of GDAP.
+          </CCallout>
+          <div className="mb-2">
+            <TitleButton href="/tenant/administration/gdap-role-wizard" title="Map GDAP Roles" />
+          </div>
+          <Field name="gdapRoles" validate={requiredArray}>
+            {(props) => (
+              <WizardTableField
+                reportName="gdaproles"
+                keyField="defaultDomainName"
+                path="/api/ListGDAPRoles"
+                columns={[
+                  {
+                    name: 'Name',
+                    selector: (row) => row['RoleName'],
+                    sortable: true,
+                    exportselector: 'Name',
+                  },
+                  {
+                    name: 'Group',
+                    selector: (row) => row['GroupName'],
+                    sortable: true,
+                  },
+                ]}
+                fieldProps={props}
+              />
+            )}
+          </Field>
+          <Error name="gdapRoles" />
+        </CForm>
+        <hr className="my-4" />
+      </CippWizard.Page>
       <CippWizard.Page
         title="Tenant Choice"
         description="Choose the tenants you wish to create a GDAP relationship for"
       >
         <center>
-          <h3 className="text-primary">Step 2</h3>
+          <h3 className="text-primary">Step 3</h3>
           <h5 className="card-title mb-4">Choose a tenant</h5>
         </center>
         <hr className="my-4" />
@@ -118,55 +164,6 @@ const GDAPWizard = () => {
         <Error name="selectedTenants" />
         <hr className="my-4" />
       </CippWizard.Page>
-      <CippWizard.Page
-        title="Select which roles you want to add to GDAP relationship"
-        description="Select which standards you want to apply."
-      >
-        <center>
-          <h3 className="text-primary">Step 3</h3>
-          <h5 className="card-title mb-4">
-            Select which roles you want to add to GDAP relationship.
-          </h5>
-        </center>
-        <hr className="my-4" />
-        <CForm onSubmit={handleSubmit}>
-          <CCallout color="info">
-            For each role you select a new group will be created inside of your partner tenant
-            called "M365 GDAP RoleName". Add your users to these new groups to set their GDAP
-            permissions.
-            <br /> <br />
-            CIPP will create a single relationship with all roles you've selected for the maximum
-            duration of 730 days using a GUID as a random name for the relationship.
-            <br /> It is recommend to put CIPP user in the correct GDAP Role Groups to manage your
-            environment secure after deployment of GDAP.
-          </CCallout>
-          <Field name="gdapRoles" validate={requiredArray}>
-            {(props) => (
-              <WizardTableField
-                reportName="gdaproles"
-                keyField="defaultDomainName"
-                path="/GDAPRoles.json"
-                columns={[
-                  {
-                    name: 'Name',
-                    selector: (row) => row['Name'],
-                    sortable: true,
-                    exportselector: 'Name',
-                  },
-                  {
-                    name: 'Description',
-                    selector: (row) => row['Description'],
-                    sortable: true,
-                  },
-                ]}
-                fieldProps={props}
-              />
-            )}
-          </Field>
-          <Error name="gdapRoles" />
-        </CForm>
-        <hr className="my-4" />
-      </CippWizard.Page>
       <CippWizard.Page title="Review and Confirm" description="Confirm the settings to apply">
         <center>
           <h3 className="text-primary">Step 4</h3>
@@ -190,10 +187,21 @@ const GDAPWizard = () => {
                         ))}
                       </CCallout>
                       <h5 className="mb-0">Roles and group names</h5>
+                      {props.values.gdapRoles.map((role, idx) => (
+                        <>
+                          {role.RoleName == 'Company Administrator' && (
+                            <CCallout color="warning">
+                              WARNING: The Company Administrator role will prevent GDAP
+                              relationships from automatically extending. We recommend against using
+                              this in any GDAP relationship.
+                            </CCallout>
+                          )}
+                        </>
+                      ))}
                       <CCallout color="info">
                         {props.values.gdapRoles.map((role, idx) => (
                           <li key={idx}>
-                            {role.Name} - M365 GDAP {role.Name}
+                            {role.RoleName} - {role.GroupName}
                           </li>
                         ))}
                       </CCallout>
