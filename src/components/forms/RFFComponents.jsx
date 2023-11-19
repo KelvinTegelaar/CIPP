@@ -16,7 +16,7 @@ import { FieldArray } from 'react-final-form-arrays'
 import React, { useState, useMemo, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { debounce } from 'lodash'
+import { debounce } from 'lodash-es'
 
 /*
   wrapper classes for React Final Form with CoreUI
