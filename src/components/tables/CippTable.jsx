@@ -29,7 +29,7 @@ import { cellGenericFormatter } from './CellGenericFormat'
 import { ModalService } from '../utilities'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { ConfirmModal } from '../utilities/SharedModal'
-import { debounce } from 'lodash'
+import { debounce } from 'lodash-es'
 import { useSearchParams } from 'react-router-dom'
 
 const FilterComponent = ({ filterText, onFilter, onClear, filterlist, onFilterPreset }) => (
