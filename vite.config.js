@@ -28,7 +28,7 @@ export default defineConfig({
     },
   ],
   build: {
-    outDir: 'build',
+    outDir: './',
     assetsDir: 'static',
     target: browserslistToEsbuild(),
     // enable source map for debugging
