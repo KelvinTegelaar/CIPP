@@ -1,12 +1,12 @@
 ---
 name: Label Issues
-on:  # yamllint disable-line rule:truthy
+on:
   issues:
     types:
       - opened
 jobs:
   label_issues_bugs:
-    if: contains(github.event.issue.title,'Bug')
+    if: github.repository_owner == 'KelvinTegelaar' && contains(github.event.issue.title, 'Bug')
     runs-on: ubuntu-latest
     permissions:
       issues: write
@@ -14,4 +14,4 @@ jobs:
       - name: Sponsor Labels
         uses: JasonEtco/is-sponsor-label-action@v1.2.0
         with:
-         label: 'Sponsor Request'
+          label: 'Sponsor Request'
