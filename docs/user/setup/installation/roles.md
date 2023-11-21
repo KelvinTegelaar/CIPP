@@ -41,7 +41,7 @@ While CIPP only supplies these roles by default, you can create your own roles a
 * Get your copy of the [configuration file](https://github.com/KelvinTegelaar/CIPP/blob/main/staticwebapp.config.json)
 * List the CIPP-API respository([https://github.com/KelvinTegelaar/CIPP-API](https://github.com/KelvinTegelaar/CIPP-API))
 * Each folder in this list is the name of the API that's called.&#x20;
-* For each API you want to secure, create a route entry. For example if you only want shared mailboxes to be created by the custom role SharedMailboxAdmins you add the following section in the route property:
+* For each API you want to secure, create a route entry. For example if you only want shared mailboxes to be created by the custom role SharedMailboxAdmins, admins, and editors you add the following section in the route property:
   * ```json
     {
       "route": "/api/AddSharedMailbox",
