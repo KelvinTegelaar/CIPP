@@ -298,10 +298,6 @@ h3.underline:after {
   }
 }
 
-.cipp-offcanvastable {
-  font-size: smaller;
-}
-
 .dropdown-item {
   a {
     color: var(--cui-dropdown-link-color);
@@ -463,11 +459,12 @@ h3.underline:after {
 }
 
 /* Footer */
+
 .footer {
   p {
     margin-bottom: 0;
   }
-
+  background: var(--cui-body-bg);
   img {
     max-height: 2rem;
   }
