@@ -155,7 +155,7 @@ This occurs when the app has exists for more than 2 years and requires a new cer
 
 <!---->
 
-* Edit lines 4 so it has your function name at the end of it
+* Edit lines 4 and 26 so they have your function name in
 
 <!---->
 
