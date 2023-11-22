@@ -1,12 +1,13 @@
 ---
 name: 'CodeQL'
-on: # yamllint disable-line rule:truthy
+on:
   pull_request:
     branches: [master, main, dev, react]
   schedule:
     - cron: '26 17 * * 0'
 jobs:
   analyze:
+    if: github.repository_owner == 'KelvinTegelaar'
     name: Analyze
     runs-on: ubuntu-latest
     permissions:
