@@ -23,6 +23,7 @@ const DeployGroupTemplates = React.lazy(() =>
 const GeoIPLookup = React.lazy(() => import('src/views/tenant/administration/GeoIPLookup'))
 
 const TenantLookup = React.lazy(() => import('src/views/tenant/administration/TenantLookup'))
+
 const GroupTemplates = React.lazy(() => import('src/views/identity/administration/GroupTemplates'))
 
 const EditGroup = React.lazy(() => import('src/views/identity/administration/EditGroup'))
@@ -225,6 +226,10 @@ const ServiceHealth = React.lazy(() => import('src/views/tenant/administration/S
 const EnterpriseApplications = React.lazy(() =>
   import('src/views/tenant/administration/ListEnterpriseApps'),
 )
+const MailboxRestoreWizard = React.lazy(() =>
+  import('src/views/email-exchange/tools/MailboxRestoreWizard'),
+)
+const MailboxRestores = React.lazy(() => import('src/views/email-exchange/tools/MailboxRestores'))
 
 const routes = [
   // { path: '/', exact: true, name: 'Home' },
@@ -543,6 +548,16 @@ const routes = [
     path: '/email/spamfilter/list-templates',
     name: 'List Spamfilter Templates',
     component: SpamFilterTemplate,
+  },
+  {
+    path: '/email/tools/mailbox-restore-wizard',
+    name: 'Mailbox Restore Wizard',
+    component: MailboxRestoreWizard,
+  },
+  {
+    path: '/email/tools/mailbox-restores',
+    name: 'Mailbox Restores',
+    component: MailboxRestores,
   },
   {
     path: '/email/spamfilter/add-template',
