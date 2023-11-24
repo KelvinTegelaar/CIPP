@@ -1,2 +1,0 @@
-# msp-adoption-toolkit
-
