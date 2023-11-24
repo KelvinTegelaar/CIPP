@@ -1869,74 +1869,6 @@ const MappingsTab = () => {
         </CCard>
         <CCard className="mb-3">
           <CCardHeader>
-            <CCardTitle>NinjaOne Organization Mapping Table</CCardTitle>
-          </CCardHeader>
-          <CCardBody>
-            {listBackendNinjaOrgsResult.isFetching ? (
-              <CSpinner color="primary" />
-            ) : (
-              <Form
-                onSubmit={onNinjaOrgsSubmit}
-                initialValues={listBackendNinjaOrgsResult.data?.Mappings}
-                render={({ handleSubmit, submitting, values }) => {
-                  return (
-                    <CForm onSubmit={handleSubmit}>
-                      <CCardText>
-                        Use the table below to map your client to the correct NinjaOne Organization
-                        {listBackendNinjaOrgsResult.isSuccess &&
-                          listBackendNinjaOrgsResult.data.Tenants.map((tenant) => (
-                            <RFFSelectSearch
-                              key={tenant.customerId}
-                              name={tenant.customerId}
-                              label={tenant.displayName}
-                              values={listBackendNinjaOrgsResult.data.NinjaOrgs}
-                              placeholder="Select an Organization"
-                            />
-                          ))}
-                      </CCardText>
-                      <CCol className="me-2">
-                        <CButton className="me-2" type="submit">
-                          {extensionNinjaOrgsConfigResult.isFetching && (
-                            <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-                          )}
-                          Set Mappings
-                        </CButton>
-                        <CButton onClick={() => onNinjaOrgsAutomap()} className="me-2">
-                          {extensionNinjaOrgsAutomapResult.isFetching && (
-                            <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-                          )}
-                          Automap NinjaOne Organizations
-                        </CButton>
-                        {(extensionNinjaOrgsConfigResult.isSuccess ||
-                          extensionNinjaOrgsConfigResult.isError) && (
-                          <CCallout
-                            color={extensionNinjaOrgsConfigResult.isSuccess ? 'success' : 'danger'}
-                          >
-                            {extensionNinjaOrgsConfigResult.isSuccess
-                              ? extensionNinjaOrgsConfigResult.data.Results
-                              : 'Error'}
-                          </CCallout>
-                        )}
-                        {(extensionNinjaOrgsAutomapResult.isSuccess ||
-                          extensionNinjaOrgsAutomapResult.isError) && (
-                          <CCallout
-                            color={extensionNinjaOrgsAutomapResult.isSuccess ? 'success' : 'danger'}
-                          >
-                            {extensionNinjaOrgsAutomapResult.isSuccess
-                              ? extensionNinjaOrgsAutomapResult.data.Results
-                              : 'Error'}
-                          </CCallout>
-                        )}
-                      </CCol>
-                    </CForm>
-                  )
-                }}
-              />
-            )}
-          </CCardBody>
-        </CCard>
-        <CCard className="mb-3">
-          <CCardHeader>
             <CCardTitle>NinjaOne Field Mapping Table</CCardTitle>
           </CCardHeader>
           <CCardBody>
@@ -2004,6 +1936,74 @@ const MappingsTab = () => {
                           >
                             {extensionNinjaFieldsConfigResult.isSuccess
                               ? extensionNinjaFieldsConfigResult.data.Results
+                              : 'Error'}
+                          </CCallout>
+                        )}
+                      </CCol>
+                    </CForm>
+                  )
+                }}
+              />
+            )}
+          </CCardBody>
+        </CCard>
+        <CCard className="mb-3">
+          <CCardHeader>
+            <CCardTitle>NinjaOne Organization Mapping Table</CCardTitle>
+          </CCardHeader>
+          <CCardBody>
+            {listBackendNinjaOrgsResult.isFetching ? (
+              <CSpinner color="primary" />
+            ) : (
+              <Form
+                onSubmit={onNinjaOrgsSubmit}
+                initialValues={listBackendNinjaOrgsResult.data?.Mappings}
+                render={({ handleSubmit, submitting, values }) => {
+                  return (
+                    <CForm onSubmit={handleSubmit}>
+                      <CCardText>
+                        Use the table below to map your client to the correct NinjaOne Organization
+                        {listBackendNinjaOrgsResult.isSuccess &&
+                          listBackendNinjaOrgsResult.data.Tenants.map((tenant) => (
+                            <RFFSelectSearch
+                              key={tenant.customerId}
+                              name={tenant.customerId}
+                              label={tenant.displayName}
+                              values={listBackendNinjaOrgsResult.data.NinjaOrgs}
+                              placeholder="Select an Organization"
+                            />
+                          ))}
+                      </CCardText>
+                      <CCol className="me-2">
+                        <CButton className="me-2" type="submit">
+                          {extensionNinjaOrgsConfigResult.isFetching && (
+                            <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                          )}
+                          Set Mappings
+                        </CButton>
+                        <CButton onClick={() => onNinjaOrgsAutomap()} className="me-2">
+                          {extensionNinjaOrgsAutomapResult.isFetching && (
+                            <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                          )}
+                          Automap NinjaOne Organizations
+                        </CButton>
+                        {(extensionNinjaOrgsConfigResult.isSuccess ||
+                          extensionNinjaOrgsConfigResult.isError) && (
+                          <CCallout
+                            color={extensionNinjaOrgsConfigResult.isSuccess ? 'success' : 'danger'}
+                          >
+                            {extensionNinjaOrgsConfigResult.isSuccess
+                              ? extensionNinjaOrgsConfigResult.data.Results
+                              : 'Error'}
+                          </CCallout>
+                        )}
+                        {(extensionNinjaOrgsAutomapResult.isSuccess ||
+                          extensionNinjaOrgsAutomapResult.isError) && (
+                          <CCallout
+                            color={extensionNinjaOrgsAutomapResult.isSuccess ? 'success' : 'danger'}
+                          >
+                            {extensionNinjaOrgsAutomapResult.isSuccess
+                              ? extensionNinjaOrgsAutomapResult.data.Results
                               : 'Error'}
                           </CCallout>
                         )}

@@ -131,7 +131,7 @@
       {
         "type": "input",
         "fieldtype": "password",
-        "name": "NinjaOne.TEMPSECRETCHANGEME",
+        "name": "NinjaOne.APIKey",
         "label": "NinjaOne API Client Secret",
         "placeholder": "Enter your NinjaOne API Client Secret"
       },
