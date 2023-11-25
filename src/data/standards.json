@@ -345,7 +345,7 @@
   {
     "name": "standards.calDefault.Enabled",
     "cat": "Exchange",
-    "helpText": "Sets the default calendar sharing level for all calendars, for all users",
+    "helpText": "Sets the default sharing level for the default calendar, for all users",
     "addedComponent": {
       "type": "Select",
       "label": "Select Sharing Level",
