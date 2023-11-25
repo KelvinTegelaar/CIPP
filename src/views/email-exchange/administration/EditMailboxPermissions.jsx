@@ -953,11 +953,7 @@ const OutOfOffice = () => {
                           </CCol>
                         </CRow>
                         {postResults.isSuccess && (
-                          <CCallout color="success">
-                            {postResults.data.Results.map((result, idx) => (
-                              <li key={idx}>{result}</li>
-                            ))}
-                          </CCallout>
+                          <CCallout color="success">{postResults.data?.Results}</CCallout>
                         )}
                       </CForm>
                     )
