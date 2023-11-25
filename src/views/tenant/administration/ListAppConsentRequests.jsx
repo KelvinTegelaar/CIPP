@@ -1,16 +1,13 @@
 /* eslint-disable import/no-unresolved */
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { CButton, CFormInput, CFormLabel } from '@coreui/react'
-import { faEdit, faEllipsisV, faEye } from '@fortawesome/free-solid-svg-icons'
+import { CButton } from '@coreui/react'
+import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPageList } from 'src/components/layout'
 import { cellDateFormatter, cellNullTextFormatter } from 'src/components/tables'
-import { cellLogoFormatter } from 'src/components/tables/CellLogo'
-import { CippActionsOffcanvas, ModalService } from 'src/components/utilities'
-import { Link, useSearchParams } from 'react-router-dom'
+import { CippActionsOffcanvas } from 'src/components/utilities'
 import { CellTip } from 'src/components/tables/CellGenericFormat'
-import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 
 const AppConsentRequests = () => {
   const [tenantColumnSet, setTenantColumn] = useState(true)
