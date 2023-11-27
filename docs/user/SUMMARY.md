@@ -192,3 +192,8 @@
 ## 🧰 MSP Adoption Toolkit
 
 * [Building a CIPP Business Case](msp-adoption-toolkit/msp-adoption-toolkit-building-a-cipp-business-case.md)
+
+## ☕ Sip & CIPP
+
+* [Conditional Access](sip-and-cipp/conditional-access.md)
+* [Autopilot & Intune](sip-and-cipp/autopilot-and-intune.md)
