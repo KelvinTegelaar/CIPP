@@ -6,7 +6,7 @@ description: >-
 
 # Conditional Access
 
-{% embed url="[https://www.youtube.com/watch?v=PG6fN4J7VVY](https://www.youtube.com/watch?v=PG6fN4J7VVY)" %}
+{% embed url="https://youtu.be/PG6fN4J7VVY" %}
 
 ### Session Abstract
 
