@@ -2,7 +2,7 @@
   {
     "name": "standards.MailContacts.GeneralContact.Enabled",
     "cat": "Global",
-    "helpText": "",
+    "helpText": "Receives emails about updates about subscriptions etc",
     "addedComponent": {
       "type": "input",
       "name": "standards.MailContacts.GeneralContact.Mail",
@@ -13,7 +13,7 @@
   {
     "name": "standards.MailContacts.SecurityContact.Enabled",
     "cat": "Global",
-    "helpText": "",
+    "helpText": "Receives emails about security alerts or advisories by Microsoft",
     "addedComponent": {
       "type": "input",
       "name": "standards.MailContacts.SecurityContact.Mail",
@@ -24,7 +24,7 @@
   {
     "name": "standards.MailContacts.MarketingContact.Enabled",
     "cat": "Global",
-    "helpText": "",
+    "helpText": "Receives the emails related to marketing; new features etc",
     "addedComponent": {
       "type": "input",
       "name": "standards.MailContacts.MarketingContact.Mail",
@@ -35,7 +35,7 @@
   {
     "name": "standards.MailContacts.TechContact.Enabled",
     "cat": "Global",
-    "helpText": "",
+    "helpText": "Receives emails related to possible technical issues, service disruptions, etc",
     "addedComponent": {
       "type": "input",
       "name": "standards.MailContacts.TechContact.Mail",
@@ -46,7 +46,7 @@
   {
     "name": "standards.AuditLog",
     "cat": "Global",
-    "helpText": "",
+    "helpText": "Also runs Enable-OrganizationCustomization if needed",
     "addedComponent": null,
     "label": "Enable the Unified Audit Log"
   },
@@ -60,28 +60,14 @@
   {
     "name": "standards.DisableGuestDirectory",
     "cat": "Global",
-    "helpText": "",
+    "helpText": "See the standards documentation for more information about the implications of this standard",
     "addedComponent": null,
     "label": "Restrict guest user access to directory objects"
   },
   {
-    "name": "standards.ModernAuth",
-    "cat": "Global",
-    "helpText": "",
-    "addedComponent": null,
-    "label": "Enable Modern Authentication"
-  },
-  {
-    "name": "standards.DisableBasicAuth",
-    "cat": "Global",
-    "helpText": "",
-    "addedComponent": null,
-    "label": "Disable Basic Authentication"
-  },
-  {
     "name": "standards.DisableBasicAuthSMTP",
     "cat": "Global",
-    "helpText": "",
+    "helpText": "Disables SMTP AUTH for the organization. This is the default for new tenants. Can be overridden by enabling SMTP AUTH on specific users",
     "addedComponent": null,
     "label": "Disable SMTP Basic Authentication"
   },
@@ -93,23 +79,30 @@
     "label": "Enable LAPs on the tenant"
   },
   {
-    "name": "standards.PWnumberMatchingRequiredState",
-    "cat": "AAD",
-    "helpText": "",
-    "addedComponent": null,
-    "label": "Enable Passwordless with Number Matching"
-  },
-  {
     "cat": "AAD",
     "name": "standards.PWdisplayAppInformationRequiredState",
-    "helpText": "",
+    "helpText": "Enables the MS authenticator app to display information about the app that is requesting authentication",
     "addedComponent": null,
     "label": "Enable Passwordless with Location information and Number Matching"
   },
   {
     "cat": "AAD",
+    "name": "standards.allowOTPTokens",
+    "helpText": "Allows you to use MS authenticator OTP tokens",
+    "addedComponent": null,
+    "label": "Enable OTP via Authenticator."
+  },
+  {
+    "cat": "AAD",
+    "name": "standards.allowOAuthTokens",
+    "helpText": "Allows you to use any OTP token generator",
+    "addedComponent": null,
+    "label": "Enable OTP Software oAuth tokens."
+  },
+  {
+    "cat": "AAD",
     "name": "standards.PWcompanionAppAllowedState.Enabled",
-    "helpText": "",
+    "helpText": "Sets the state of Authenticator Lite, in Outlook for mobile",
     "addedComponent": {
       "type": "Select",
       "label": "Select value",
@@ -130,7 +123,7 @@
   {
     "cat": "AAD",
     "name": "standards.TAP.Enabled",
-    "helpText": "",
+    "helpText": "Enables TAP and sets the default TAP lifetime to 1 hour and maximum lifetime to 8 hours.",
     "addedComponent": {
       "type": "Select",
       "label": "Select TAP Lifetime",
@@ -151,35 +144,35 @@
   {
     "cat": "AAD",
     "name": "standards.SecurityDefaults",
-    "helpText": "",
+    "helpText": "Enables security defaults for the tenant. This has a lot of implications and should be carefully considered before enabling",
     "addedComponent": null,
     "label": "Enable Security Defaults"
   },
   {
     "cat": "AAD",
     "name": "standards.PasswordExpireDisabled",
-    "helpText": "",
+    "helpText": "Disables the expiration of passwords for the tenant",
     "addedComponent": null,
     "label": "Do not expire passwords"
   },
   {
     "cat": "AAD",
     "name": "standards.DisableSecurityGroupUsers",
-    "helpText": "",
+    "helpText": "Completely disables the creation of security groups by users. This also breaks the ability to manage groups themselves, or create Teams",
     "addedComponent": null,
     "label": "Disable Security Group creation by users"
   },
   {
     "cat": "AAD",
     "name": "standards.DisableTenantCreation",
-    "helpText": "",
+    "helpText": "Restricts creation of M365 tenants to the Global Administrator or Tenant Creator roles",
     "addedComponent": null,
     "label": "Disable M365 Tenant creation by users"
   },
   {
     "cat": "AAD",
     "name": "standards.OauthConsent.Enabled",
-    "helpText": "",
+    "helpText": "Disables users from being able to consent to applications, except for those specified in the field below",
     "addedComponent": {
       "type": "input",
       "name": "standards.OauthConsent.AllowedApps",
@@ -195,71 +188,64 @@
   },
   {
     "cat": "AAD",
-    "name": "standards.LegacyMFA",
-    "helpText": "",
-    "addedComponent": null,
-    "label": "Enable per-user MFA for all user (Legacy, Requires DAP.)"
-  },
-  {
-    "cat": "AAD",
     "name": "standards.LegacyMFACleanup",
-    "helpText": "",
+    "helpText": "Removes legacy Per-User MFA if the tenant has Security Defaults or an All Users Conditional Access rule enabled.",
     "addedComponent": null,
     "label": "Remove Legacy MFA if SD or CA is active"
   },
   {
     "cat": "AAD",
     "name": "standards.NudgeMFA.enable",
-    "helpText": "",
+    "helpText": "Enables registration campaign for the tenant",
     "addedComponent": null,
     "label": "Request to setup Authenticator if not setup yet."
   },
   {
     "cat": "AAD",
     "name": "standards.NudgeMFA.disable",
-    "helpText": "",
+    "helpText": "Disables registration campaign for the tenant",
     "addedComponent": null,
     "label": "Disables the request to setup Authenticator if setup."
   },
   {
     "cat": "AAD",
     "name": "standards.DisableSelfServiceLicenses",
-    "helpText": "",
+    "helpText": "This standard currently does not function and can be safely disabled",
     "addedComponent": null,
     "label": "Disable Self Service Licensing"
   },
   {
     "cat": "AAD",
     "name": "standards.DisableM365GroupUsers",
-    "helpText": "",
+    "helpText": "Restricts M365 group creation to certain admin roles. This disables the ability to create Teams, Sharepoint sites, Planner, etc",
     "addedComponent": null,
     "label": "Disable M365 Group creation by users"
   },
   {
     "cat": "AAD",
     "name": "standards.UndoOauth",
-    "helpText": "",
+    "helpText": "Disables App consent and set to Allow user consent for apps",
     "addedComponent": null,
     "label": "Undo App Consent Standard"
   },
   {
     "cat": "AAD",
     "name": "standards.DisableGuests",
-    "helpText": "",
+    "helpText": "Blocks login for guest users that have not logged in for 90 days",
     "addedComponent": null,
     "label": "Disable Guest accounts that have not logged on for 90 days"
   },
   {
     "cat": "AAD",
     "name": "standards.EnableFIDO2",
-    "helpText": "",
+    "helpText": "Enables the FIDO2 authenticationMethod for the tenant",
     "addedComponent": null,
     "label": "Enable FIDO2 capabilities"
   },
   {
     "name": "standards.OutBoundSpamAlert.Enabled",
     "cat": "Exchange",
-    "helpText": "",
+    "helpText": "Set the Outbound Spam Alert e-mail address.",
     "addedComponent": {
       "type": "input",
       "name": "standards.OutBoundSpamAlert.OutboundSpamContact",
@@ -277,14 +263,14 @@
   {
     "name": "standards.DisableSharedMailbox",
     "cat": "Exchange",
-    "helpText": "",
+    "helpText": "Blocks login for all accounts that are marked as a shared mailbox",
     "addedComponent": null,
     "label": "Disable Shared Mailbox AAD accounts"
   },
   {
     "name": "standards.DelegateSentItems",
     "cat": "Exchange",
-    "helpText": "",
+    "helpText": "Sets emails sent as and on behalf of shared mailboxes to also be stored in the shared mailbox sent items folder",
     "addedComponent": null,
     "label": "Set mailbox Sent Items delegation (Sent items for shared mailboxes)"
   },
@@ -298,21 +284,21 @@
   {
     "name": "standards.AutoExpandArchive",
     "cat": "Exchange",
-    "helpText": "",
+    "helpText": "Enables auto-expanding archives for the tenant",
     "addedComponent": null,
     "label": "Enable Auto-expanding archives"
   },
   {
     "name": "standards.SpoofWarn.enable",
     "cat": "Exchange",
-    "helpText": "",
+    "helpText": "Adds indicators to e-mail messages received from external senders in Outlook. Works on all Outlook clients/OWA",
     "addedComponent": null,
     "label": "Enable Spoofing warnings for Outlook (This e-mail is external identifiers)"
   },
   {
     "name": "standards.SpoofWarn.disable",
     "cat": "Exchange",
-    "helpText": "",
+    "helpText": "Disables spoof warnings from external senders in Outlook.",
     "addedComponent": null,
     "label": "Disable Spoofing warnings for Outlook (This e-mail is external identifiers)"
   },
@@ -340,15 +326,26 @@
   {
     "name": "standards.ActivityBasedTimeout",
     "cat": "Global",
-    "helpText": "",
+    "helpText": "Enables and sets Idle session timeout for Microsoft 365 to 1 hour. This policy affects most M365 web apps",
     "addedComponent": null,
     "label": "Enable 1 hour Activity based Timeout"
+  },
+  {
+    "name": "standards.SendReceiveLimitTenant.Enabled",
+    "cat": "Exchange",
+    "helpText": "Sets the Send and Receive limits for new users. Valid values are 1KB to 150MB. Invalid values will be set to EXO standard of 35MB,36MB",
+    "addedComponent": {
+      "type": "input",
+      "name": "standards.SendReceiveLimitTenant.SendReceiveLimit",
+      "label": "Send limit and Receive limit, comma separated"
+    },
+    "label": "Set send/receive size limits"
   },
 
   {
     "name": "standards.calDefault.Enabled",
     "cat": "Exchange",
-    "helpText": "",
+    "helpText": "Sets the default calendar sharing level for all calendars, for all users",
     "addedComponent": {
       "type": "Select",
       "label": "Select Sharing Level",
@@ -371,12 +368,12 @@
           "value": "Contributor"
         },
         {
-          "label": "Free Busy Time And Subject And Location - The user can view free/busy time within the calendar and the subject and location of appointments.",
-          "value": "FreeBusyTimeAndSubjectAndLocation"
+          "label": "Limited Details - The user can view free/busy time within the calendar and the subject and location of appointments.",
+          "value": "LimitedDetails"
         },
         {
-          "label": "Indicates that the user can view only free/busy time within the calendar.",
-          "value": "FreeBusyTimeOnly"
+          "label": "Availability Only - Indicates that the user can view only free/busy time within the calendar.",
+          "value": "AvailabilityOnly"
         },
         {
           "label": "None - The user has no permissions on the folder.",
@@ -414,7 +411,7 @@
   {
     "name": "standards.intuneDeviceRetirementDays.Enabled",
     "cat": "Intune",
-    "helpText": "",
+    "helpText": "A value between 0 and 270 is supported. A value of 0 disables retirement.",
     "addedComponent": {
       "type": "input",
       "name": "standards.intuneDeviceRetirementDays.days",
@@ -431,7 +428,7 @@
   {
     "name": "standards.sharingCapability.Enabled",
     "cat": "SharePoint",
-    "helpText": "",
+    "helpText": "Sets the default sharing level for OneDrive and Sharepoint. This is a tenant wide setting and overrules any settings set on the site level",
     "addedComponent": {
       "type": "Select",
       "label": "Select Sharing Level",
@@ -478,21 +475,21 @@
   {
     "name": "standards.DisableReshare",
     "cat": "SharePoint",
-    "helpText": "",
+    "helpText": "Disables the ability for external users to share files they don't own. Sharing links can only be made for People with existing access",
     "addedComponent": null,
     "label": "Disable Resharing by External Users"
   },
   {
     "name": "standards.DeletedUserRentention",
     "cat": "SharePoint",
-    "helpText": "",
+    "helpText": "Sets the retention period for deleted users OneDrive to 1 year/365 days",
     "addedComponent": null,
     "label": "Retain a deleted user OneDrive for 1 year"
   },
   {
     "name": "standards.DisableUserSiteCreate",
     "cat": "SharePoint",
-    "helpText": "",
+    "helpText": "Disables users from creating new SharePoint sites",
     "addedComponent": null,
     "label": "Disable site creation by standard users"
   },
@@ -544,5 +541,33 @@
     "helpText": "",
     "addedComponent": null,
     "label": "Transport Rule Templates"
+  },
+  {
+    "name": "standards.ModernAuth",
+    "cat": "legacy",
+    "helpText": "Modern Authentication is enabled by default. This standard is no longer required and can be safely disabled",
+    "addedComponent": null,
+    "label": "Enable Modern Authentication"
+  },
+  {
+    "name": "standards.DisableBasicAuth",
+    "cat": "legacy",
+    "helpText": "Basic Authentication is disabled by default. This standard is no longer required and can be safely disabled",
+    "addedComponent": null,
+    "label": "Disable Basic Authentication"
+  },
+  {
+    "name": "standards.PWnumberMatchingRequiredState",
+    "cat": "legacy",
+    "helpText": "Passwordless with number matching is now enabled by default. This standard is no longer required and can be safely disabled",
+    "addedComponent": null,
+    "label": "Enable Passwordless with Number Matching"
+  },
+  {
+    "cat": "legacy",
+    "name": "standards.LegacyMFA",
+    "helpText": "This standard is no longer works and can be safely disabled",
+    "addedComponent": null,
+    "label": "Enable per-user MFA for all user (Legacy, Requires DAP.)"
   }
 ]
