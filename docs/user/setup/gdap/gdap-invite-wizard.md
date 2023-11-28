@@ -1,11 +1,5 @@
 # GDAP Invite Wizard
 
-Microsoft has removed DAP relationships for everyone and force migrated people that have not yet migrated themselves to GDAP. If you have not performed any migration yourself please check this via the partner portal:
-
-* Please go to [https://partner.microsoft.com/en-us/dashboard/commerce2/granularadminaccess/list](https://partner.microsoft.com/en-us/dashboard/commerce2/granularadminaccess/list) and login with your account.
-* Click on the client you are trying to validate access for. You should see a relationship name.
-* If you see a relationship starting with "MLT\_" you have been force migrated by Microsoft to GDAP and must perform a GDAP migration.
-
 The invite wizard allows you to create an invite that has the roles you need defined, after accepting this invite under the global administrator of the tenant the Wizard automatically attaches the roles to the GDAP relationship every three hours. To use the invite wizard instead of the migration tool you can execute the following steps:
 
 * Go to CIPP
@@ -19,5 +13,5 @@ The invite wizard allows you to create an invite that has the roles you need def
 * Do this for each tenant you want to have added under your GDAP relationship.
 
 {% hint style="danger" %}
-You must add your CIPP service account user to the groups created after executing the invite wizard for the first time.
+You must add your CIPP service account user to the groups created after executing the invite wizard for the first time. These groups will be in your Azure Active Directory with the name "M365 GDAP {Role Name}"
 {% endhint %}
