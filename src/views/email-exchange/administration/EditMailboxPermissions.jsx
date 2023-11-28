@@ -531,6 +531,8 @@ const CalendarPermissions = () => {
                                   name: 'Publishing Editor',
                                 },
                                 { value: 'Reviewer', name: 'Reviewer' },
+                                { value: 'LimitedDetails', name: 'Limited Details' },
+                                { value: 'AvailabilityOnly', name: 'Availability Only' },
                               ]}
                               placeholder="Select a permission level"
                               name="Permissions"
@@ -953,11 +955,7 @@ const OutOfOffice = () => {
                           </CCol>
                         </CRow>
                         {postResults.isSuccess && (
-                          <CCallout color="success">
-                            {postResults.data.Results.map((result, idx) => (
-                              <li key={idx}>{result}</li>
-                            ))}
-                          </CCallout>
+                          <CCallout color="success">{postResults.data?.Results}</CCallout>
                         )}
                       </CForm>
                     )
