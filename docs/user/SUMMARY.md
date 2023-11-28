@@ -152,7 +152,7 @@
     * [Extensions](user-documentation/cipp/settings/extensions/README.md)
       * [Gradient](user-documentation/cipp/settings/extensions/gradient.md)
       * [HaloPSA](user-documentation/cipp/settings/extensions/halopsa.md)
-      * [NinjaOne](user-documentation/cipp/settings/extensions/ninjaone.md)
+      * [Ninja One](user-documentation/cipp/settings/extensions/ninjaone.md)
   * [Scheduler](user-documentation/cipp/scheduler.md)
   * [SAM Setup Wizard](user-documentation/cipp/sam-setup-wizard.md)
   * [User Settings](user-documentation/cipp/user-settings.md)
