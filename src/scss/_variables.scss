@@ -86,10 +86,10 @@ $secondary-base: rgba(0, 48, 73) !default;
 $secondary-50: rgba(0, 47, 73, 0.479) !default;
 $secondary-25: rgba(0, 47, 73, 0.205) !default;
 
-$link-color: rgb(247, 247, 247) !default;
+//$link-color: var(--cui-link-color) !default;
 $link-decoration: underline !default;
 $link-shade-percentage: 20% !default;
-$link-hover-color: rgba($link-color, $link-shade-percentage) !default;
+//$link-hover-color: rgba($link-color, $link-shade-percentage) !default;
 $link-hover-decoration: null !default;
 
 $search-bg-color: #ffffff;
