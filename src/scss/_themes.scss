@@ -264,7 +264,7 @@
   --cui-input-focus-bg: var(--cyberdrain-light-striped);
   --cui-input-focus-border-colour: var(--cyberdrain-primary);
   --cui-input-focus-color: var(--cyberdrain-dark);
-  --cui-link-color: var(--cyberdrain-dark);
+  --cui-link-color-rgb: var(--cyberdrain-dark);
   --cui-link-hover-color: var(--cyberdrain-primary);
   --cui-list-group-bg: var(--cui-color-white) !important;
   --cui-list-group-color: var(--cyberdrain-dark);
@@ -312,7 +312,7 @@
   --cipp-table-primary-colour: var(--cyberdrain-dark);
   --cipp-table-secondary-colour: var(--cyberdrain-secondary);
   --cipp-table-sort-focus-bg: var(--cyberdrain-secondary);
-  --cipp-table-highlight-on-hover-bg: rgb(150, 150, 150);
+  //--cipp-table-highlight-on-hover-bg: rgb(150, 150, 150);
   --cipp-table-highlight-on-hover-color: rgb(150, 150, 150);
   --cipp-table-striped-bg: var(--cyberdrain-light-striped);
   --cipp-table-striped-colour: var(--cyberdrain-dark-striped);
@@ -452,7 +452,7 @@
   --cui-input-focus-bg: var(--cyberdrain-dark-striped);
   --cui-input-focus-border-color: var(--cyberdrain-primary);
   --cui-input-focus-color: var(--cyberdrain-primary);
-  --cui-link-color: var(--cyberdrain-light);
+  --cui-link-color-rgb: var(--cyberdrain-light);
   --cui-link-hover-color: var(--cyberdrain-primary);
   --cui-list-group-bg: var(--cyberdrain-dark);
   --cui-list-group-color: var(--cyberdrain-light);
@@ -500,7 +500,7 @@
   --cipp-table-primary-colour: var(--cyberdrain-light);
   --cipp-table-secondary-colour: var(--cui-gray-100);
   --cipp-table-sort-focus-bg: var(--cyberdrain-secondary);
-  --cipp-table-highlight-on-hover-bg: rgb(138, 136, 136);
+  // --cipp-table-highlight-on-hover-bg: rgb(138, 136, 136);
   --cipp-table-highlight-on-hover-color: rgb(138, 136, 136);
   --cipp-table-striped-bg: var(--cyberdrain-dark-striped);
   --cipp-table-striped-colour: var(--cyberdrain-light-striped);
