@@ -264,9 +264,9 @@
   --cui-input-focus-bg: var(--cyberdrain-light-striped);
   --cui-input-focus-border-colour: var(--cyberdrain-primary);
   --cui-input-focus-color: var(--cyberdrain-dark);
-  --cui-link-color: var(--cyberdrain-dark);
+  --cui-link-color-rgb: var(--cyberdrain-dark);
   --cui-link-hover-color: var(--cyberdrain-primary);
-  --cui-list-group-bg: var(--cui-color-white);
+  --cui-list-group-bg: var(--cui-color-white) !important;
   --cui-list-group-color: var(--cyberdrain-dark);
   --cui-modal-content-bg: var(--cyberdrain-light);
   --cui-modal-content-border-color: var(--cyberdrain-accent-green);
@@ -285,15 +285,17 @@
   --cui-nav-link-hover-color: var(--cyberdrain-dark);
   --cui-nav-tabs-border-color: var(--cyberdrain-accent-green);
   --cui-nav-tabs-link-hover-border-color: var(--cyberdrain-accent-green);
-  --cui-toast-background-color: var(--cui-color-white);
   --cui-toast-border-color: var(--cyberdrain-accent-green);
   --cui-toast-color: var(--cui-color-black);
-  --cui-toast-header-background-color: var(--cui-color-white);
   --cui-toast-header-color: var(--cui-color-black);
   --cui-card-cap-color: var(--cyberdrain-dark);
   --cui-card-cap-bg: var(--cui-color-white);
 
   // CIPP CyberDrain theme variables.
+  --cipp-toast-header-bg: var(--cui-color-white);
+  --cipp-toast-bg: var(--cui-color-white);
+  --cipp-toast-color: var(--cui-color-black);
+
   --cipp-fa-inverse-color: var(--cyberdrain-dark);
   --cipp-search-bg: var(--cyberdrain-light);
   --cipp-search-border-color: var(--cyberdrain-accent-green);
@@ -310,7 +312,7 @@
   --cipp-table-primary-colour: var(--cyberdrain-dark);
   --cipp-table-secondary-colour: var(--cyberdrain-secondary);
   --cipp-table-sort-focus-bg: var(--cyberdrain-secondary);
-  --cipp-table-highlight-on-hover-bg: rgb(150, 150, 150);
+  //--cipp-table-highlight-on-hover-bg: rgb(150, 150, 150);
   --cipp-table-highlight-on-hover-color: rgb(150, 150, 150);
   --cipp-table-striped-bg: var(--cyberdrain-light-striped);
   --cipp-table-striped-colour: var(--cyberdrain-dark-striped);
@@ -409,6 +411,9 @@
   --cui-color-table-border: rgba(146, 154, 158, 0.8);
   --cui-color-card-shadow: rgba(207, 192, 192, 0.2);
   --text-medium-emphasis: rgba(255, 255, 255, 0.6);
+  --cui-emphasis-color-rgb: rgba(255, 255, 255, 0.6);
+  --cui-input-placeholder-color: rgba(255, 255, 255, 0.6);
+  //--cui-tertiary-bg: var(--cyberdrain-dark);
   // Core UI Impact theme variables.
   --cui-header-hover-color: var(--cyberdrain-light);
   --cui-header-active-color: var(--cyberdrain-accent-blue);
@@ -425,7 +430,7 @@
   --cui-dropdown-color: var(--cyberdrain-light);
   --cui-dropdown-border-color: var(--cyberdrain-accent-green);
   --cui-dropdown-link-color: var(--cyberdrain-light);
-  --cui-dropdown-link-hover-bg: var(--cyberdrain-accent-green);
+  --cui-dropdown-link-hover-bg: var(--cyberdrain-accent-blue);
   --cui-dropdown-link-hover-color: var(--cyberdrain-light);
   --cui-footer-bg: var(--cyberdrain-dark);
   --cui-footer-color: var(--cyberdrain-light);
@@ -433,6 +438,7 @@
   --cui-form-select-bg: var(--cyberdrain-dark);
   --cui-form-select-border-color: var(--cyberdrain-light);
   --cui-form-select-color: var(--cyberdrain-light);
+  --cui-form-check-bg: var(--cyberdrain-light);
   --cui-header-bg: var(--cyberdrain-dark);
   --cui-header-border-color: var(--cyberdrain-accent-green);
   --cui-header-color: var(--cyberdrain-light);
@@ -446,7 +452,7 @@
   --cui-input-focus-bg: var(--cyberdrain-dark-striped);
   --cui-input-focus-border-color: var(--cyberdrain-primary);
   --cui-input-focus-color: var(--cyberdrain-primary);
-  --cui-link-color: var(--cyberdrain-light);
+  --cui-link-color-rgb: var(--cyberdrain-light);
   --cui-link-hover-color: var(--cyberdrain-primary);
   --cui-list-group-bg: var(--cyberdrain-dark);
   --cui-list-group-color: var(--cyberdrain-light);
@@ -467,15 +473,17 @@
   --cui-nav-link-hover-color: var(--cyberdrain-light);
   --cui-nav-tabs-border-color: var(--cyberdrain-accent-green);
   --cui-nav-tabs-link-hover-border-color: var(--cyberdrain-accent-green);
-  --cui-toast-background-color: var(--cui-color-header-bar);
   --cui-toast-border-color: var(--cyberdrain-accent-green);
   --cui-toast-color: var(--cui-color-black);
-  --cui-toast-header-background-color: var(--cui-color-header-bar);
   --cui-toast-header-color: var(--cui-color-black);
   --cui-card-cap-color: var(--cyberdrain-white);
   --cui-card-cap-bg: var(--cui-color-dark);
-
+  --cui-tertiary-bg: var(--cui-bgcolor-table-header);
   // CIPP Impact theme variables.
+  --cipp-toast-bg: var(--cui-color-header-bar);
+  --cipp-toast-header-bg: var(--cui-color-header-bar);
+  --cipp-toast-color: var(--cui-color-black);
+
   --cipp-fa-inverse-color: var(--cyberdrain-dark);
   --cipp-search-bg: var(--cyberdrain-dark);
   --cipp-search-border-color: var(--cyberdrain-accent-green);
@@ -492,7 +500,7 @@
   --cipp-table-primary-colour: var(--cyberdrain-light);
   --cipp-table-secondary-colour: var(--cui-gray-100);
   --cipp-table-sort-focus-bg: var(--cyberdrain-secondary);
-  --cipp-table-highlight-on-hover-bg: rgb(138, 136, 136);
+  // --cipp-table-highlight-on-hover-bg: rgb(138, 136, 136);
   --cipp-table-highlight-on-hover-color: rgb(138, 136, 136);
   --cipp-table-striped-bg: var(--cyberdrain-dark-striped);
   --cipp-table-striped-colour: var(--cyberdrain-light-striped);
