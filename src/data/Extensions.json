@@ -106,5 +106,55 @@
         "label": "Enable Integration"
       }
     ]
+  },
+  {
+    "name": "NinjaOne Integration",
+    "type": "NinjaOne",
+    "cat": "Documentation & Monitoring",
+    "forceSyncButton": true,
+    "helpText": "NOTE: This integration requires version 5.6 of NinjaOne, which rolls out regionally between the end of November and mid-December. This integration allows you to populate custom fields with Tenant information, monitor device compliance state, document other items and generate relationships inside NinjaOne.",
+    "SettingOptions": [
+      {
+        "type": "input",
+        "fieldtype": "input",
+        "name": "NinjaOne.Instance",
+        "label": "Please enter your NinjaOne Instance",
+        "placeholder": "app.ninjarmm.com, eu.ninjarmm.com, oc.ninjarmm.com, ca.ninjarmm.com, us2.ninjarmm.com"
+      },
+      {
+        "type": "input",
+        "fieldtype": "password",
+        "name": "NinjaOne.ClientID",
+        "label": "NinjaOne API Client ID",
+        "placeholder": "Enter your NinjaOne API Client ID"
+      },
+      {
+        "type": "input",
+        "fieldtype": "password",
+        "name": "NinjaOne.APIKey",
+        "label": "NinjaOne API Client Secret",
+        "placeholder": "Enter your NinjaOne API Client Secret"
+      },
+      {
+        "type": "checkbox",
+        "name": "NinjaOne.UserDocumentsEnabled",
+        "label": "Synchronize Detailed User Information (Requires NinjaOne Documentation)"
+      },
+      {
+        "type": "checkbox",
+        "name": "NinjaOne.LicenseDocumentsEnabled",
+        "label": "Synchronize Detailed License Information (Requires NinjaOne Documentation)"
+      },
+      {
+        "type": "checkbox",
+        "name": "NinjaOne.LicensedOnly",
+        "label": "Only Synchronize Licensed Users"
+      },
+      {
+        "type": "checkbox",
+        "name": "NinjaOne.Enabled",
+        "label": "Enable Integration"
+      }
+    ]
   }
 ]
