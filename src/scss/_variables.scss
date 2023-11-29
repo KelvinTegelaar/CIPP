@@ -86,10 +86,10 @@ $secondary-base: rgba(0, 48, 73) !default;
 $secondary-50: rgba(0, 47, 73, 0.479) !default;
 $secondary-25: rgba(0, 47, 73, 0.205) !default;
 
-$link-color: rgb(226, 92, 9) !default;
+//$link-color: var(--cui-link-color) !default;
 $link-decoration: underline !default;
 $link-shade-percentage: 20% !default;
-$link-hover-color: shift-color($link-color, $link-shade-percentage) !default;
+//$link-hover-color: rgba($link-color, $link-shade-percentage) !default;
 $link-hover-decoration: null !default;
 
 $search-bg-color: #ffffff;
@@ -318,7 +318,7 @@ $enable-shadows: true;
 // $enable-rfs:                        true !default;
 // $enable-validation-icons:           true !default;
 $enable-negative-margins: true;
-// $enable-deprecation-messages:       true !default;
+$enable-deprecation-messages: false !default;
 // $enable-important-utilities:        true !default;
 // $enable-contrast-ratio-correction:  true !default;
 // $enable-contrast-ratio-warnings:    false !default;
@@ -741,7 +741,7 @@ $h5-font-size: $font-size-base;
 // $btn-border-width:            $input-btn-border-width !default;
 
 // $btn-font-weight:             $font-weight-normal !default;
-// $btn-box-shadow:              inset 0 1px 0 rgba($white, .15), 0 1px 1px rgba($black, .075) !default;
+$btn-box-shadow: none !default;
 // $btn-focus-width:             $input-btn-focus-width !default;
 // $btn-focus-box-shadow:        $input-btn-focus-box-shadow !default;
 // $btn-disabled-opacity:        .65 !default;
@@ -870,7 +870,7 @@ $h5-font-size: $font-size-base;
 
 // $form-check-input-active-filter:          brightness(90%) !default;
 
-// $form-check-input-bg:                     $input-bg !default;
+$form-check-input-bg: var(--cyberdrain-light) !default;
 // $form-check-input-border:                 1px solid rgba($black, .25) !default;
 // $form-check-input-border-radius:          .25em !default;
 // $form-check-radio-border-radius:          50% !default;
@@ -1275,7 +1275,7 @@ $h5-font-size: $font-size-base;
 // scss-docs-start tooltip-variables
 // $tooltip-font-size:                 $font-size-sm !default;
 // $tooltip-max-width:                 200px !default;
-// $tooltip-color:                     $high-emphasis-inverse !default;
+$tooltip-color: var(--cyberdrain-light) !default;
 // $tooltip-bg:                        $black !default;
 // $tooltip-border-radius:             $border-radius !default;
 // $tooltip-opacity:                   .9 !default;
@@ -1331,16 +1331,15 @@ $h5-font-size: $font-size-base;
 // $toast-padding-x:                   .75rem !default;
 // $toast-padding-y:                   .5rem !default;
 // $toast-font-size:                   .875rem !default;
-// $toast-color:                       unset !default;
-// $toast-background-color:            rgba($white, .85) !default;
+$toast-color: var(--cipp-toast-color) !default;
 // $toast-border-width:                1px !default;
 // $toast-border-color:                rgba(0, 0, 0, .1) !default;
 // $toast-border-radius:               $border-radius !default;
 // $toast-box-shadow:                  $box-shadow !default;
 // $toast-spacing:                     $container-padding-x !default;
-
-// $toast-header-color:                $gray-600 !default;
-// $toast-header-background-color:     rgba($white, .85) !default;
+$toast-background-color: var(--cipp-toast-bg);
+$toast-header-background-color: var(--cipp-toast-header-bg);
+$toast-header-color: var(--cipp-toast-color) !default;
 // $toast-header-border-color:         rgba(0, 0, 0, .05) !default;
 // scss-docs-end toast-variables
 
@@ -1484,7 +1483,7 @@ $h5-font-size: $font-size-base;
 // List group
 // scss-docs-start list-group-variables
 // $list-group-color:                  unset !default;
-// $list-group-bg:                     $white !default;
+$list-group-bg: var(--cui-color-white) !default;
 // $list-group-border-color:           rgba($black, .125) !default;
 // $list-group-border-width:           $border-width !default;
 // $list-group-border-radius:          $border-radius !default;
@@ -1659,7 +1658,7 @@ $sidebar-width: 17rem !default;
 // $sidebar-padding-y:                        0 !default;
 // $sidebar-padding-x:                        0 !default;
 // $sidebar-color:                            $high-emphasis-inverse !default;
-$sidebar-bg: rgb(240,240,240) !default;
+$sidebar-bg: rgb(240, 240, 240) !default;
 // $sidebar-border-width:                     0 !default;
 // $sidebar-border-color:                     transparent !default;
 // $sidebar-transition:                       margin-left .15s, margin-right .15s, box-shadow .075s, transform .15s, width .15s, z-index 0s ease .15s !default;
