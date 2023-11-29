@@ -32,7 +32,7 @@ export default function UserActions({ tenantDomain, userId, userEmail, className
   }
 
   const editLink = `/identity/administration/users/edit?tenantDomain=${tenantDomain}&userId=${userId}`
-  const editMailboxLink = `/email/administration/edit-mailbox-permissions?tenantDomain=${tenantDomain}&userId=${userId}`
+  const editMailboxLink = `/email/administration/edit-mailbox-permissions?tenantDomain=${tenantDomain}&userId=${userEmail}`
 
   const actions = [
     {
