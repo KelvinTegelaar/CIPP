@@ -188,6 +188,17 @@
   },
   {
     "cat": "AAD",
+    "name": "standards.EnableAppConsentRequests.Enabled",
+    "helpText": "Enables App consent admin requests for the tenant via the GA role. Does not overwrite existing reviewer settings",
+    "addedComponent": {
+      "type": "AdminRolesMultiSelect",
+      "label": "App Consent Reviewer Roles",
+      "name": "standards.EnableAppConsentRequests.ReviewerRoles"
+    },
+    "label": "Enable App consent admin requests"
+  },
+  {
+    "cat": "AAD",
     "name": "standards.LegacyMFACleanup",
     "helpText": "Removes legacy Per-User MFA if the tenant has Security Defaults or an All Users Conditional Access rule enabled.",
     "addedComponent": null,
@@ -242,6 +253,7 @@
     "addedComponent": null,
     "label": "Enable FIDO2 capabilities"
   },
+
   {
     "name": "standards.OutBoundSpamAlert.Enabled",
     "cat": "Exchange",
@@ -345,7 +357,7 @@
   {
     "name": "standards.calDefault.Enabled",
     "cat": "Exchange",
-    "helpText": "Sets the default calendar sharing level for all calendars, for all users",
+    "helpText": "Sets the default sharing level for the default calendar, for all users",
     "addedComponent": {
       "type": "Select",
       "label": "Select Sharing Level",
