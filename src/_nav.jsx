@@ -139,6 +139,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'App Consent Requests',
+        to: '/tenant/administration/app-consent-requests',
+      },
+      {
+        component: CNavItem,
         name: 'Tenant Offboarding',
         to: '/tenant/administration/tenant-offboarding-wizard',
       },
@@ -268,16 +273,16 @@ const _nav = [
         name: 'GDAP Roles',
         to: '/tenant/administration/gdap-roles',
       },
-      {
-        component: CNavItem,
-        name: 'Migration Wizard',
-        to: '/tenant/administration/gdap',
-      },
-      {
-        component: CNavItem,
-        name: 'GDAP Migration Status',
-        to: '/tenant/administration/gdap-status',
-      },
+      // {
+      //   component: CNavItem,
+      //   name: 'Migration Wizard',
+      //   to: '/tenant/administration/gdap',
+      // },
+      // {
+      //   component: CNavItem,
+      //   name: 'GDAP Migration Status',
+      //   to: '/tenant/administration/gdap-status',
+      // },
       {
         component: CNavItem,
         name: 'Invite Wizard',
