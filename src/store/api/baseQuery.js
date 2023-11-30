@@ -23,7 +23,6 @@ export const axiosQuery = async ({ path, method = 'get', params, data, hideToast
   }
 }
 export function abortRequestSafe() {
-  console.log(newController)
   newController.abort()
   newController = new AbortController()
 }
