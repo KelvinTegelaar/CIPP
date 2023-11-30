@@ -188,9 +188,13 @@
   },
   {
     "cat": "AAD",
-    "name": "standards.EnableAppConsentRequests",
+    "name": "standards.EnableAppConsentRequests.Enabled",
     "helpText": "Enables App consent admin requests for the tenant via the GA role. Does not overwrite existing reviewer settings",
-    "addedComponent": null,
+    "addedComponent": {
+      "type": "AdminRolesMultiSelect",
+      "label": "App Consent Reviewer Roles",
+      "name": "standards.EnableAppConsentRequests.ReviewerRoles"
+    },
     "label": "Enable App consent admin requests"
   },
   {
