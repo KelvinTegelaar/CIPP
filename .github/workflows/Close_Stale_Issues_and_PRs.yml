@@ -1,15 +1,16 @@
 ---
 name: 'Close stale issues and PRs'
-on:  # yamllint disable-line rule:truthy
+on:
   schedule:
     - cron: '30 1 * * *'
 jobs:
   stale:
+    if: github.repository_owner == 'KelvinTegelaar'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/stale@v4
         with:
-          stale-issue-message: 'This issue is stale because it has been open 10 days with no activity. We will close this issue soon. If you want this feature implemented you can contribute it. See: https://cipp.app/GettingStarted/Contributions/ . Please notify the team if you are working on this yourself.'
+          stale-issue-message: 'This issue is stale because it has been open 10 days with no activity. We will close this issue soon. If you want this feature implemented you can contribute it. See: https://docs.cipp.app/dev-documentation/contributing-to-the-code . Please notify the team if you are working on this yourself.'
           close-issue-message: 'This issue was closed because it has been stalled for 14 days with no activity.'
           stale-issue-label: 'no-activity'
           exempt-issue-labels: 'planned'
