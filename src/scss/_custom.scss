@@ -706,3 +706,10 @@ i.glyphicon {
 .array-item-remove::after {
   content: 'Remove';
 }
+
+.stickyfooter {
+  position: sticky;
+  bottom: 0;
+  z-index: 0; /* Adjust this value as needed, should be lower than dropdowns */
+  /* Other styling as needed */
+}
