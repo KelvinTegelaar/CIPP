@@ -22,6 +22,7 @@ import Skeleton from 'react-loading-skeleton'
 import { CippTable } from 'src/components/tables'
 import allStandardsList from 'src/data/standards'
 import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
+import GDAPRoles from 'src/data/GDAPRoles'
 
 const RefreshAction = () => {
   const [execStandards, execStandardsResults] = useLazyGenericGetRequestQuery()
@@ -306,21 +307,33 @@ const ListAppliedStandards = () => {
                                   />
                                   {item.addedComponent && (
                                     <Condition when={item.name} is={true}>
-                                      {item.addedComponent.type === 'Select' ? (
+                                      {(item.addedComponent.type === 'Select' && (
                                         <RFFCFormSelect
                                           name={item.addedComponent.name}
                                           className="mb-3"
                                           label={item.addedComponent.label}
                                           values={item.addedComponent.values}
                                         />
-                                      ) : (
-                                        <RFFCFormInput
-                                          type="text"
-                                          className="mb-3"
-                                          name={item.addedComponent.name}
-                                          label={item.addedComponent.label}
-                                        />
-                                      )}
+                                      )) ||
+                                        (item.addedComponent.type === 'AdminRolesMultiSelect' && (
+                                          <RFFSelectSearch
+                                            multi={true}
+                                            name={item.addedComponent.name}
+                                            className="mb-3"
+                                            label={item.addedComponent.label}
+                                            values={GDAPRoles.map((role) => ({
+                                              value: role.ObjectId,
+                                              name: role.Name,
+                                            }))}
+                                          />
+                                        )) || (
+                                          <RFFCFormInput
+                                            type="text"
+                                            className="mb-3"
+                                            name={item.addedComponent.name}
+                                            label={item.addedComponent.label}
+                                          />
+                                        )}
                                     </Condition>
                                   )}
                                 </CCol>
