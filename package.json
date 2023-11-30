@@ -88,6 +88,7 @@
     "styled-components": "^5.3.3"
   },
   "devDependencies": {
+    "@types/react": "^18.2.39",
     "@types/react-helmet": "^6.1.5",
     "@vitejs/plugin-react": "^4.1.1",
     "auto-changelog": "~2.3.0",
