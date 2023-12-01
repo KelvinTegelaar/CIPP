@@ -202,6 +202,21 @@ const ListAppliedStandards = () => {
     acc[obj.cat].push(obj)
     return acc
   }, {})
+  // Function to count enabled standards
+  const countEnabledStandards = (standards) => {
+    return Object.values(standards).reduce((count, standard) => {
+      if (standard.Enabled) {
+        count += 1
+      }
+      return count
+    }, 0)
+  }
+
+  // Extracting and counting enabled standards from API response
+  const enabledStandards = listStandardResults[0] ? listStandardResults[0].standards : {}
+  const enabledWarningsCount = countEnabledStandards(enabledStandards.WarnEnabled || {})
+  const enabledAlertsCount = countEnabledStandards(enabledStandards.AlertEnabled || {})
+  const enabledRemediationsCount = countEnabledStandards(enabledStandards.Enabled || {})
 
   return (
     <CippPage title="Standards" tenantSelector={false}>
@@ -238,39 +253,27 @@ const ListAppliedStandards = () => {
                           <CCol md={4}>
                             <CWidgetStatsB
                               className="mb-3"
-                              progress={{ color: 'info', value: 75 }}
-                              text={
-                                listStandardResults[0].appliedBy
-                                  ? `Setup by ${listStandardResults[0].appliedBy} at ${listStandardResults[0].appliedAt}`
-                                  : 'No warning standards applied to this tenant'
-                              }
-                              title="4 out of 64"
+                              progress={{ color: 'info', value: enabledWarningsCount }}
+                              text={`Created by ${listStandardResults[0].appliedBy}`}
+                              title={`${enabledWarningsCount} out of 64`}
                               value="Enabled Warnings"
                             />
                           </CCol>
                           <CCol md={4}>
                             <CWidgetStatsB
                               className="mb-3"
-                              progress={{ color: 'info', value: 75 }}
-                              text={
-                                listStandardResults[0].appliedBy
-                                  ? `Setup by ${listStandardResults[0].appliedBy} at ${listStandardResults[0].appliedAt}`
-                                  : 'No alerting standards applied to this tenant'
-                              }
-                              title="4 out of 64"
+                              progress={{ color: 'info', value: enabledAlertsCount }}
+                              text={`Created by ${listStandardResults[0].appliedBy}`}
+                              title={`${enabledAlertsCount} out of 64`}
                               value="Enabled Alerts"
                             />
                           </CCol>
                           <CCol md={4}>
                             <CWidgetStatsB
                               className="mb-3"
-                              progress={{ color: 'info', value: 75 }}
-                              text={
-                                listStandardResults[0].appliedBy
-                                  ? `Setup by ${listStandardResults[0].appliedBy} at ${listStandardResults[0].appliedAt}`
-                                  : 'No remediation standards applied to this tenant'
-                              }
-                              title="4 out of 64"
+                              progress={{ color: 'info', value: enabledRemediationsCount }}
+                              text={`Created by ${listStandardResults[0].appliedBy}`}
+                              title={`${enabledRemediationsCount} out of 64`}
                               value="Enabled Remediations"
                             />
                           </CCol>
@@ -323,7 +326,7 @@ const ListAppliedStandards = () => {
                                         }
                                       />
                                     </CCol>
-                                    <CCol>
+                                    <CCol md={3}>
                                       <h5>Optional Input</h5>
                                     </CCol>
                                   </CRow>
