@@ -43,7 +43,7 @@ const AddContact = () => {
             onSubmit={onSubmit}
             render={({ handleSubmit, submitting, values }) => {
               return (
-                <CForm onSubmit={handleSubmit}>
+                <CForm onSubmit={handleSubmit} autoComplete="off">
                   <CRow>
                     <CCol md={8}>
                       <RFFCFormInput type="text" name="displayName" label="Display Name" />
