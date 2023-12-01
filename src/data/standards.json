@@ -2,7 +2,7 @@
   {
     "name": "standards.MailContacts.GeneralContact.Enabled",
     "cat": "Global Standards",
-    "helpText": "Defines the email address to receive general updates and information related to subscriptions.",
+    "helpText": "Defines the email address to receive general updates and information related to M365 subscriptions.",
     "addedComponent": {
       "type": "input",
       "name": "standards.MailContacts.GeneralContact.Mail",
@@ -13,7 +13,7 @@
   {
     "name": "standards.MailContacts.SecurityContact.Enabled",
     "cat": "Global Standards",
-    "helpText": "Specifies the email address for receiving security alerts and advisories from Microsoft.",
+    "helpText": "Specifies the email address for receiving security alerts and advisories from Microsoft, these are not security alerts directly related to the tenant.",
     "addedComponent": {
       "type": "input",
       "name": "standards.MailContacts.SecurityContact.Mail",
@@ -53,56 +53,56 @@
   {
     "name": "standards.AnonReportDisable",
     "cat": "Global Standards",
-    "helpText": "MUST UPDATE THIS",
+    "helpText": "Shows usernames instead of pseudo anonymised names in reports. This standard is required for reporting to work correctly.",
     "addedComponent": null,
     "label": "Enable Usernames instead of pseudo anonymised names in reports"
   },
   {
     "name": "standards.DisableGuestDirectory",
     "cat": "Global Standards",
-    "helpText": "See the standards documentation for more information about the implications of this standard",
+    "helpText": "Disables Guest access to enumerate directory objects. This prevents guest users from see other users or guests in the directory.",
     "addedComponent": null,
     "label": "Restrict guest user access to directory objects"
   },
   {
     "name": "standards.DisableBasicAuthSMTP",
     "cat": "Global Standards",
-    "helpText": "Disables SMTP AUTH for the organization. This is the default for new tenants. Can be overridden by enabling SMTP AUTH on specific users",
+    "helpText": "Disables SMTP AUTH for the organization. This is the default for new tenants. Sets the entire tenant to no longer allow SMTP AUTH, and as such has no exclusions.",
     "addedComponent": null,
     "label": "Disable SMTP Basic Authentication"
   },
   {
     "name": "standards.laps",
     "cat": "Entra (AAD) Standards",
-    "helpText": "Enables the tenant to use LAPS",
+    "helpText": "Enables the tenant to use LAPS. You must still create a policy for LAPS to be active on all devices. Use the template standards to deploy this by default.",
     "addedComponent": null,
     "label": "Enable LAPs on the tenant"
   },
   {
     "cat": "Entra (AAD) Standards",
     "name": "standards.PWdisplayAppInformationRequiredState",
-    "helpText": "Enables the MS authenticator app to display information about the app that is requesting authentication",
+    "helpText": "Enables the MS authenticator app to display information about the app that is requesting authentication. This displays the application name.",
     "addedComponent": null,
     "label": "Enable Passwordless with Location information and Number Matching"
   },
   {
     "cat": "Entra (AAD) Standards",
     "name": "standards.allowOTPTokens",
-    "helpText": "Allows you to use MS authenticator OTP tokens",
+    "helpText": "Allows you to use any OTP token generator",
     "addedComponent": null,
     "label": "Enable OTP via Authenticator."
   },
   {
     "cat": "Entra (AAD) Standards",
     "name": "standards.allowOAuthTokens",
-    "helpText": "Allows you to use any OTP token generator",
+    "helpText": "Allows you to use any software OAuth token generator",
     "addedComponent": null,
     "label": "Enable OTP Software oAuth tokens."
   },
   {
     "cat": "Entra (AAD) Standards",
     "name": "standards.PWcompanionAppAllowedState.Enabled",
-    "helpText": "Sets the state of Authenticator Lite, in Outlook for mobile",
+    "helpText": "Sets the state of Authenticator Lite, Authenticator lite is a companion app for passwordless authentication.",
     "addedComponent": {
       "type": "Select",
       "label": "Select value",
@@ -123,7 +123,7 @@
   {
     "cat": "Entra (AAD) Standards",
     "name": "standards.TAP.Enabled",
-    "helpText": "Enables TAP and sets the default TAP lifetime to 1 hour and maximum lifetime to 8 hours.",
+    "helpText": "Enables TAP and sets the default TAP lifetime to 1 hour. This configuration also allows you to select is a TAP is single use or multi-logon.",
     "addedComponent": {
       "type": "Select",
       "label": "Select TAP Lifetime",
@@ -144,14 +144,14 @@
   {
     "cat": "Entra (AAD) Standards",
     "name": "standards.SecurityDefaults",
-    "helpText": "Enables security defaults for the tenant. This has a lot of implications and should be carefully considered before enabling",
+    "helpText": "Enables security defaults for the tenant, for newer tenants this is enabled by default. Do not enable this feature if you use Conditional Access.",
     "addedComponent": null,
     "label": "Enable Security Defaults"
   },
   {
     "cat": "Entra (AAD) Standards",
     "name": "standards.PasswordExpireDisabled",
-    "helpText": "Disables the expiration of passwords for the tenant",
+    "helpText": "Disables the expiration of passwords for the tenant by setting the password expiration policy to never expire for any user.",
     "addedComponent": null,
     "label": "Do not expire passwords"
   },
@@ -165,7 +165,7 @@
   {
     "cat": "Entra (AAD) Standards",
     "name": "standards.DisableTenantCreation",
-    "helpText": "Restricts creation of M365 tenants to the Global Administrator or Tenant Creator roles",
+    "helpText": "Restricts creation of M365 tenants to the Global Administrator or Tenant Creator roles. ",
     "addedComponent": null,
     "label": "Disable M365 Tenant creation by users"
   },
@@ -183,7 +183,7 @@
   {
     "cat": "Entra (AAD) Standards",
     "name": "standards.OauthConsentLowSec",
-    "helpText": "MUST UPDATE THIS",
+    "helpText": "Sets the default oauth consent level so users can consent to applications that have low risks.",
     "label": "Allow users to consent to applications with low security risk (Prevent OAuth phishing. Lower impact, less secure.)"
   },
   {
@@ -267,14 +267,14 @@
   {
     "name": "standards.SafeSendersDisable",
     "cat": "Exchange Standards",
-    "helpText": "MUST UPDATE THIS",
+    "helpText": "Loops through all users and removes the Safe Senders list. This is to prevent SPF bypass attacks, as the Safe Senders list is not checked by SPF.",
     "addedComponent": null,
     "label": "Remove Safe Senders to prevent SPF bypass"
   },
   {
     "name": "standards.DisableSharedMailbox",
     "cat": "Exchange Standards",
-    "helpText": "Blocks login for all accounts that are marked as a shared mailbox",
+    "helpText": "Blocks login for all accounts that are marked as a shared mailbox. This is Microsoft best practice to prevent direct logons to shared mailboxes.",
     "addedComponent": null,
     "label": "Disable Shared Mailbox AAD accounts"
   },
@@ -288,7 +288,7 @@
   {
     "name": "standards.SendFromAlias",
     "cat": "Exchange Standards",
-    "helpText": "MUST UPDATE THIS",
+    "helpText": "Enables the ability for users to send from their alias addresses.",
     "addedComponent": null,
     "label": "Allow users to send from their alias addresses"
   },
@@ -316,7 +316,7 @@
   {
     "name": "standards.DisableViva",
     "cat": "Exchange Standards",
-    "helpText": "MUST UPDATE THIS",
+    "helpText": "Disables the daily viva reports for all users.",
     "addedComponent": null,
     "label": "Disable daily Insight/Viva reports"
   },
@@ -410,7 +410,7 @@
   {
     "name": "standards.intuneDeviceReg.Enabled",
     "cat": "Intune Standards",
-    "helpText": "MUST UPDATE THIS",
+    "helpText": "sets the maximum number of devices that can be registered by a user. A value of 0 disables device registration by users",
     "addedComponent": {
       "type": "input",
       "name": "standards.intuneDeviceReg.max",
@@ -421,7 +421,7 @@
   {
     "name": "standards.intuneDeviceRetirementDays.Enabled",
     "cat": "Intune Standards",
-    "helpText": "A value between 0 and 270 is supported. A value of 0 disables retirement.",
+    "helpText": "A value between 0 and 270 is supported. A value of 0 disables retirement, retired devices are removed from Intune after the specified number of days.",
     "addedComponent": {
       "type": "input",
       "name": "standards.intuneDeviceRetirementDays.days",
@@ -432,7 +432,7 @@
   {
     "name": "standards.intuneRequireMFA",
     "cat": "Intune Standards",
-    "helpText": "MUST UPDATE THIS",
+    "helpText": "Requires MFA for all users to register devices with Intune. This is useful when not using Conditional Access.",
     "label": "Require Multifactor Authentication to register or join devices with Microsoft Entra"
   },
   {
@@ -467,7 +467,7 @@
   {
     "name": "standards.ExcludedfileExt.Enabled",
     "cat": "SharePoint Standards",
-    "helpText": "MUST UPDATE THIS",
+    "helpText": "Sets the file extensions that are excluded from syncing with OneDrive. These files will be blocked from upload.",
     "addedComponent": {
       "type": "input",
       "name": "standards.ExcludedfileExt.ext",
@@ -478,7 +478,7 @@
   {
     "name": "standards.disableMacSync",
     "cat": "SharePoint Standards",
-    "helpText": "MUST UPDATE THIS",
+    "helpText": "Disables the ability for Mac devices to sync with OneDrive.",
     "addedComponent": null,
     "label": "Do not allow Mac devices to sync using OneDrive"
   },
