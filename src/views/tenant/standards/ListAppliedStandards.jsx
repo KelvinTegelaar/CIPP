@@ -10,6 +10,7 @@ import {
   CAccordionHeader,
   CAccordionBody,
   CAccordionItem,
+  CWidgetStatsB,
 } from '@coreui/react'
 import { Form } from 'react-final-form'
 import {
@@ -234,6 +235,45 @@ const ListAppliedStandards = () => {
                     return (
                       <CForm onSubmit={handleSubmit}>
                         <CRow className="mb-3">
+                          <CCol md={4}>
+                            <CWidgetStatsB
+                              className="mb-3"
+                              progress={{ color: 'info', value: 75 }}
+                              text={
+                                listStandardResults[0].appliedBy
+                                  ? `Setup by ${listStandardResults[0].appliedBy} at ${listStandardResults[0].appliedAt}`
+                                  : 'No warning standards applied to this tenant'
+                              }
+                              title="4 out of 64"
+                              value="Enabled Warnings"
+                            />
+                          </CCol>
+                          <CCol md={4}>
+                            <CWidgetStatsB
+                              className="mb-3"
+                              progress={{ color: 'info', value: 75 }}
+                              text={
+                                listStandardResults[0].appliedBy
+                                  ? `Setup by ${listStandardResults[0].appliedBy} at ${listStandardResults[0].appliedAt}`
+                                  : 'No alerting standards applied to this tenant'
+                              }
+                              title="4 out of 64"
+                              value="Enabled Alerts"
+                            />
+                          </CCol>
+                          <CCol md={4}>
+                            <CWidgetStatsB
+                              className="mb-3"
+                              progress={{ color: 'info', value: 75 }}
+                              text={
+                                listStandardResults[0].appliedBy
+                                  ? `Setup by ${listStandardResults[0].appliedBy} at ${listStandardResults[0].appliedAt}`
+                                  : 'No remediation standards applied to this tenant'
+                              }
+                              title="4 out of 64"
+                              value="Enabled Remediations"
+                            />
+                          </CCol>
                           <CAccordion
                             alwaysOpen
                             activeItemKey={
@@ -325,7 +365,11 @@ const ListAppliedStandards = () => {
                                       </CCol>
                                       <CCol>
                                         <h5>Remediate</h5>
-                                        <RFFCFormSwitch name={obj.name} helpText={obj.helpText} />
+                                        <RFFCFormSwitch
+                                          name={obj.name}
+                                          helpText={obj.helpText}
+                                          sublabel={getLabel(obj)}
+                                        />
                                       </CCol>
                                       <CCol md={3}>
                                         <h5>Optional Input</h5>
