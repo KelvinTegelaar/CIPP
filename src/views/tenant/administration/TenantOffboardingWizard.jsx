@@ -8,7 +8,7 @@ import { CippWizard } from 'src/components/layout'
 import PropTypes from 'prop-types'
 import { RFFCFormCheck, RFFCFormInput, RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms'
 import { TenantSelector } from 'src/components/utilities'
-import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
 const Error = ({ name }) => (
   <Field
@@ -38,6 +38,9 @@ const TenantOffboardingWizard = () => {
     const shippedValues = {
       TenantFilter: tenantDomain,
       RemoveCSPGuestUsers: values.RemoveCSPGuestUsers ? values.RemoveCSPGuestUsers : '',
+      RemoveCSPnotificationContacts: values.RemoveCSPnotificationContacts
+        ? values.RemoveCSPnotificationContacts
+        : '',
       RemoveMultitenantCSPApps: values.RemoveMultitenantCSPApps
         ? values.RemoveMultitenantCSPApps
         : '',
@@ -82,17 +85,27 @@ const TenantOffboardingWizard = () => {
                 label="Remove all guest users originating from the CSP tenant."
               />
               <RFFCFormSwitch
-                name="RemoveMultitenantCSPApps"
-                label="Remove all multitenant applications originating from CSP tenant (including CIPP-SAM)."
+                name="RemoveCSPnotificationContacts"
+                label="Remove all notification contacts originating from the CSP tenant (technical,security,marketing notifications)."
               />
-              <RFFCFormSwitch
-                name="TerminateGDAP"
-                label="Terminate all active GDAP relationships (will send email to tenant admins and contacts)."
-              />
-              <RFFCFormSwitch
-                name="TerminateContract"
-                label="Terminate contract relationship (reseller, etc)."
-              />
+              <center>
+                <CCallout color="danger">
+                  These actions will terminate all delegated access to the customer tenant!
+                  <hr className="my-4" />
+                  <RFFCFormSwitch
+                    name="RemoveMultitenantCSPApps"
+                    label="Remove all multitenant applications originating from CSP tenant (including CIPP-SAM)."
+                  />
+                  <RFFCFormSwitch
+                    name="TerminateGDAP"
+                    label="Terminate all active GDAP relationships (will send email to tenant admins and contacts)."
+                  />
+                  <RFFCFormSwitch
+                    name="TerminateContract"
+                    label="Terminate contract relationship (reseller, etc)."
+                  />
+                </CCallout>
+              </center>
             </CCol>
           </CRow>
         </div>
@@ -131,10 +144,6 @@ const TenantOffboardingWizard = () => {
                 <>
                   <CRow>
                     <CCol md={{ span: 6, offset: 3 }}>
-                      <CCallout color="danger">
-                        <FontAwesomeIcon icon={faExclamationTriangle} color="danger" />
-                        These actions are irreversible!
-                      </CCallout>
                       <CListGroup flush>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           <h5 className="mb-0">Selected Tenant:</h5>
@@ -147,6 +156,15 @@ const TenantOffboardingWizard = () => {
                   <CRow>
                     <CCol md={{ span: 6, offset: 3 }}>
                       <CListGroup flush>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Remove all notification contacts originating from the CSP tenant
+                          (technical,security,marketing notifications)
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.RemoveCSPnotificationContacts ? faCheck : faTimes}
+                          />
+                        </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Remove all guest users originating from the CSP tenant
                           <FontAwesomeIcon
