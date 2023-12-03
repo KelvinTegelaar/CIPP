@@ -203,20 +203,26 @@ const ListAppliedStandards = () => {
     return acc
   }, {})
   // Function to count enabled standards
-  const countEnabledStandards = (standards) => {
-    return Object.values(standards).reduce((count, standard) => {
-      if (standard.Enabled) {
-        count += 1
+  function countEnabledStandards(standards, type) {
+    let count = 0
+    Object.keys(standards).forEach((key) => {
+      const standard = standards[key]
+      // Check if 'Enabled' exists and the specific type is true
+      if (standard.Enabled && standard.Enabled[type]) {
+        count++
+      } else if (standard[type]) {
+        // Check if the type exists directly under the standard
+        count++
       }
-      return count
-    }, 0)
+    })
+    return count
   }
 
-  // Extracting and counting enabled standards from API response
+  // Assuming listStandardResults[0] contains your JSON object
   const enabledStandards = listStandardResults[0] ? listStandardResults[0].standards : {}
-  const enabledWarningsCount = countEnabledStandards(enabledStandards.WarnEnabled || {})
-  const enabledAlertsCount = countEnabledStandards(enabledStandards.AlertEnabled || {})
-  const enabledRemediationsCount = countEnabledStandards(enabledStandards.Enabled || {})
+  const enabledAlertsCount = countEnabledStandards(enabledStandards, 'alert')
+  const enabledRemediationsCount = countEnabledStandards(enabledStandards, 'remediate')
+  const enabledWarningsCount = countEnabledStandards(enabledStandards, 'report')
 
   return (
     <CippPage title="Standards" tenantSelector={false}>
@@ -338,7 +344,7 @@ const ListAppliedStandards = () => {
                                 itemKey={'standard-' + catIndex}
                                 key={`accordion-item-${catIndex}`}
                               >
-                                <CAccordionHeader>{cat} Standard Settings</CAccordionHeader>
+                                <CAccordionHeader>{cat}</CAccordionHeader>
                                 <CAccordionBody>
                                   {groupedStandards[cat].map((obj, index) => (
                                     <CRow key={`row-${catIndex}-${index}`} className="mb-3">
@@ -349,27 +355,23 @@ const ListAppliedStandards = () => {
                                       <CCol>
                                         <h5>Warn</h5>
                                         <RFFCFormSwitch
-                                          name="ignore.ignore1"
-                                          disabled={true}
-                                          helpText={
-                                            'Exclude this standard from the All Tenants standard. This will only apply explicitly set standards to this tenant.'
-                                          }
+                                          name={`${obj.name}.report`}
+                                          helpText={obj.helpText}
+                                          sublabel={getLabel(obj)}
                                         />
                                       </CCol>
                                       <CCol>
                                         <h5>Alert</h5>
                                         <RFFCFormSwitch
-                                          name="ignore.ignore2"
-                                          disabled={true}
-                                          helpText={
-                                            'Exclude this standard from the All Tenants standard. This will only apply explicitly set standards to this tenant.'
-                                          }
+                                          name={`${obj.name}.alert`}
+                                          helpText={obj.helpText}
+                                          sublabel={getLabel(obj)}
                                         />
                                       </CCol>
                                       <CCol>
                                         <h5>Remediate</h5>
                                         <RFFCFormSwitch
-                                          name={obj.name}
+                                          name={`${obj.name}.remediate`}
                                           helpText={obj.helpText}
                                           sublabel={getLabel(obj)}
                                         />
