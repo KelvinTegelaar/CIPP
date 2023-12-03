@@ -6,7 +6,7 @@ description: >-
 
 # Conditional Access
 
-(Video coming soon)
+View the video here: [https://youtu.be/PG6fN4J7VVY](https://youtu.be/PG6fN4J7VVY)
 
 ### Session Abstract
 
