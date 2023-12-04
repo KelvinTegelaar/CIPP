@@ -6,7 +6,7 @@ description: >-
 
 # Autopilot & Intune
 
-### \[\[ YouTube Video Link ]]
+### Video TBD
 
 ### Session Abstract
 
