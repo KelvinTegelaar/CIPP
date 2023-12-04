@@ -8,7 +8,9 @@
       "name": "standards.MailContacts.GeneralContact.Mail",
       "label": "General Contact"
     },
-    "label": "Set General Contact e-mail"
+    "label": "Set General Contact e-mail",
+    "impact": "Low Impact",
+    "impactColour": "info"
   },
   {
     "name": "standards.MailContacts.SecurityContact.Enabled",
@@ -19,7 +21,9 @@
       "name": "standards.MailContacts.SecurityContact.Mail",
       "label": "Security Contact"
     },
-    "label": "Set Security Contact e-mail"
+    "label": "Set Security Contact e-mail",
+    "impact": "Low Impact",
+    "impactColour": "info"
   },
   {
     "name": "standards.MailContacts.MarketingContact.Enabled",
@@ -30,7 +34,9 @@
       "name": "standards.MailContacts.MarketingContact.Mail",
       "label": "Marketing Contact"
     },
-    "label": "Set Marketing Contact e-mail"
+    "label": "Set Marketing Contact e-mail",
+    "impact": "Low Impact",
+    "impactColour": "info"
   },
   {
     "name": "standards.MailContacts.TechContact.Enabled",
@@ -41,63 +47,81 @@
       "name": "standards.MailContacts.TechContact.Mail",
       "label": "Technical Contact"
     },
-    "label": "Set Technical Contact e-mail"
+    "label": "Set Technical Contact e-mail",
+    "impact": "Low Impact",
+    "impactColour": "info"
   },
   {
     "name": "standards.AuditLog",
     "cat": "Global Standards",
     "helpText": "Enables the Unified Audit Log for tracking and auditing activities; also runs Enable-OrganizationCustomization if necessary.",
     "addedComponent": null,
-    "label": "Enable the Unified Audit Log"
+    "label": "Enable the Unified Audit Log",
+    "impact": "Low Impact",
+    "impactColour": "info"
   },
   {
     "name": "standards.AnonReportDisable",
     "cat": "Global Standards",
     "helpText": "Shows usernames instead of pseudo anonymised names in reports. This standard is required for reporting to work correctly.",
     "addedComponent": null,
-    "label": "Enable Usernames instead of pseudo anonymised names in reports"
+    "label": "Enable Usernames instead of pseudo anonymised names in reports",
+    "impact": "Low Impact",
+    "impactColour": "info"
   },
   {
     "name": "standards.DisableGuestDirectory",
     "cat": "Global Standards",
     "helpText": "Disables Guest access to enumerate directory objects. This prevents guest users from see other users or guests in the directory.",
     "addedComponent": null,
-    "label": "Restrict guest user access to directory objects"
+    "label": "Restrict guest user access to directory objects",
+    "impact": "Low Impact",
+    "impactColour": "info"
   },
   {
     "name": "standards.DisableBasicAuthSMTP",
     "cat": "Global Standards",
     "helpText": "Disables SMTP AUTH for the organization. This is the default for new tenants. Sets the entire tenant to no longer allow SMTP AUTH, and as such has no exclusions.",
     "addedComponent": null,
-    "label": "Disable SMTP Basic Authentication"
+    "label": "Disable SMTP Basic Authentication",
+    "impact": "UNKNOWN",
+    "impactColour": "info"
   },
   {
     "name": "standards.laps",
     "cat": "Entra (AAD) Standards",
     "helpText": "Enables the tenant to use LAPS. You must still create a policy for LAPS to be active on all devices. Use the template standards to deploy this by default.",
     "addedComponent": null,
-    "label": "Enable LAPs on the tenant"
+    "label": "Enable LAPs on the tenant",
+    "impact": "UNKNOWN",
+    "impactColour": "info"
   },
   {
     "cat": "Entra (AAD) Standards",
     "name": "standards.PWdisplayAppInformationRequiredState",
     "helpText": "Enables the MS authenticator app to display information about the app that is requesting authentication. This displays the application name.",
     "addedComponent": null,
-    "label": "Enable Passwordless with Location information and Number Matching"
+    "label": "Enable Passwordless with Location information and Number Matching",
+    "impact": "Low Impact",
+    "impactColour": "info"
   },
   {
     "cat": "Entra (AAD) Standards",
     "name": "standards.allowOTPTokens",
     "helpText": "Allows you to use any OTP token generator",
     "addedComponent": null,
-    "label": "Enable OTP via Authenticator."
+    "label": "Enable OTP via Authenticator.",
+    "impact": "UNKNOWN",
+    "impactColour": "info"
   },
   {
     "cat": "Entra (AAD) Standards",
     "name": "standards.allowOAuthTokens",
     "helpText": "Allows you to use any software OAuth token generator",
     "addedComponent": null,
-    "label": "Enable OTP Software oAuth tokens."
+    "label": "Enable OTP Software oAuth tokens.",
+    "impact": "UNKNOWN",
+    "impactColour": "info"
   },
   {
     "cat": "Entra (AAD) Standards",
@@ -118,7 +142,9 @@
         }
       ]
     },
-    "label": "Set Authenticator Lite state"
+    "label": "Set Authenticator Lite state",
+    "impact": "UNKNOWN",
+    "impactColour": "info"
   },
   {
     "cat": "Entra (AAD) Standards",
@@ -139,35 +165,45 @@
         }
       ]
     },
-    "label": "Enable Temporary Access Passwords"
+    "label": "Enable Temporary Access Passwords",
+    "impact": "Low Impact",
+    "impactColour": "info"
   },
   {
     "cat": "Entra (AAD) Standards",
     "name": "standards.SecurityDefaults",
     "helpText": "Enables security defaults for the tenant, for newer tenants this is enabled by default. Do not enable this feature if you use Conditional Access.",
     "addedComponent": null,
-    "label": "Enable Security Defaults"
+    "label": "Enable Security Defaults",
+    "impact": "UNKNOWN",
+    "impactColour": "info"
   },
   {
     "cat": "Entra (AAD) Standards",
     "name": "standards.PasswordExpireDisabled",
     "helpText": "Disables the expiration of passwords for the tenant by setting the password expiration policy to never expire for any user.",
     "addedComponent": null,
-    "label": "Do not expire passwords"
+    "label": "Do not expire passwords",
+    "impact": "UNKNOWN",
+    "impactColour": "info"
   },
   {
     "cat": "Entra (AAD) Standards",
     "name": "standards.DisableSecurityGroupUsers",
     "helpText": "Completely disables the creation of security groups by users. This also breaks the ability to manage groups themselves, or create Teams",
     "addedComponent": null,
-    "label": "Disable Security Group creation by users"
+    "label": "Disable Security Group creation by users",
+    "impact": "Medium Impact",
+    "impactColour": "warning"
   },
   {
     "cat": "Entra (AAD) Standards",
     "name": "standards.DisableTenantCreation",
     "helpText": "Restricts creation of M365 tenants to the Global Administrator or Tenant Creator roles. ",
     "addedComponent": null,
-    "label": "Disable M365 Tenant creation by users"
+    "label": "Disable M365 Tenant creation by users",
+    "impact": "UNKNOWN",
+    "impactColour": "info"
   },
   {
     "cat": "Entra (AAD) Standards",
@@ -178,13 +214,17 @@
       "name": "standards.OauthConsent.AllowedApps",
       "label": "Allowed application IDs, comma separated"
     },
-    "label": "Require admin consent for applications (Prevent OAuth phishing.)"
+    "label": "Require admin consent for applications (Prevent OAuth phishing.)",
+    "impact": "High Impact",
+    "impactColour": "danger"
   },
   {
     "cat": "Entra (AAD) Standards",
     "name": "standards.OauthConsentLowSec",
     "helpText": "Sets the default oauth consent level so users can consent to applications that have low risks.",
-    "label": "Allow users to consent to applications with low security risk (Prevent OAuth phishing. Lower impact, less secure.)"
+    "label": "Allow users to consent to applications with low security risk (Prevent OAuth phishing. Lower impact, less secure.)",
+    "impact": "UNKNOWN",
+    "impactColour": "info"
   },
   {
     "cat": "Entra (AAD) Standards",
@@ -195,63 +235,81 @@
       "label": "App Consent Reviewer Roles",
       "name": "standards.EnableAppConsentRequests.ReviewerRoles"
     },
-    "label": "Enable App consent admin requests"
+    "label": "Enable App consent admin requests",
+    "impact": "UNKNOWN",
+    "impactColour": "info"
   },
   {
     "cat": "Entra (AAD) Standards",
     "name": "standards.LegacyMFACleanup",
     "helpText": "Removes legacy Per-User MFA if the tenant has Security Defaults or an All Users Conditional Access rule enabled.",
     "addedComponent": null,
-    "label": "Remove Legacy MFA if SD or CA is active"
+    "label": "Remove Legacy MFA if SD or CA is active",
+    "impact": "Medium Impact",
+    "impactColour": "warning"
   },
   {
     "cat": "Entra (AAD) Standards",
     "name": "standards.NudgeMFA.enable",
     "helpText": "Enables registration campaign for the tenant",
     "addedComponent": null,
-    "label": "Request to setup Authenticator if not setup yet."
+    "label": "Request to setup Authenticator if not setup yet.",
+    "impact": "UNKNOWN",
+    "impactColour": "info"
   },
   {
     "cat": "Entra (AAD) Standards",
     "name": "standards.NudgeMFA.disable",
     "helpText": "Disables registration campaign for the tenant",
     "addedComponent": null,
-    "label": "Disables the request to setup Authenticator if setup."
+    "label": "Disables the request to setup Authenticator if setup.",
+    "impact": "UNKNOWN",
+    "impactColour": "info"
   },
   {
     "cat": "Entra (AAD) Standards",
     "name": "standards.DisableSelfServiceLicenses",
     "helpText": "This standard currently does not function and can be safely disabled",
     "addedComponent": null,
-    "label": "Disable Self Service Licensing"
+    "label": "Disable Self Service Licensing",
+    "impact": "Medium Impact",
+    "impactColour": "warning"
   },
   {
     "cat": "Entra (AAD) Standards",
     "name": "standards.DisableM365GroupUsers",
     "helpText": "Restricts M365 group creation to certain admin roles. This disables the ability to create Teams, Sharepoint sites, Planner, etc",
     "addedComponent": null,
-    "label": "Disable M365 Group creation by users"
+    "label": "Disable M365 Group creation by users",
+    "impact": "Low Impact",
+    "impactColour": "info"
   },
   {
     "cat": "Entra (AAD) Standards",
     "name": "standards.UndoOauth",
     "helpText": "Disables App consent and set to Allow user consent for apps",
     "addedComponent": null,
-    "label": "Undo App Consent Standard"
+    "label": "Undo App Consent Standard",
+    "impact": "UNKNOWN",
+    "impactColour": "info"
   },
   {
     "cat": "Entra (AAD) Standards",
     "name": "standards.DisableGuests",
     "helpText": "Blocks login for guest users that have not logged in for 90 days",
     "addedComponent": null,
-    "label": "Disable Guest accounts that have not logged on for 90 days"
+    "label": "Disable Guest accounts that have not logged on for 90 days",
+    "impact": "UNKNOWN",
+    "impactColour": "info"
   },
   {
     "cat": "Entra (AAD) Standards",
     "name": "standards.EnableFIDO2",
     "helpText": "Enables the FIDO2 authenticationMethod for the tenant",
     "addedComponent": null,
-    "label": "Enable FIDO2 capabilities"
+    "label": "Enable FIDO2 capabilities",
+    "impact": "UNKNOWN",
+    "impactColour": "info"
   },
   {
     "name": "standards.OutBoundSpamAlert.Enabled",
@@ -262,84 +320,108 @@
       "name": "standards.OutBoundSpamAlert.OutboundSpamContact",
       "label": "Outbound spam contact"
     },
-    "label": "Set Outbound Spam Alert e-mail"
+    "label": "Set Outbound Spam Alert e-mail",
+    "impact": "UNKNOWN",
+    "impactColour": "info"
   },
   {
     "name": "standards.SafeSendersDisable",
     "cat": "Exchange Standards",
     "helpText": "Loops through all users and removes the Safe Senders list. This is to prevent SPF bypass attacks, as the Safe Senders list is not checked by SPF.",
     "addedComponent": null,
-    "label": "Remove Safe Senders to prevent SPF bypass"
+    "label": "Remove Safe Senders to prevent SPF bypass",
+    "impact": "UNKNOWN",
+    "impactColour": "info"
   },
   {
     "name": "standards.DisableSharedMailbox",
     "cat": "Exchange Standards",
     "helpText": "Blocks login for all accounts that are marked as a shared mailbox. This is Microsoft best practice to prevent direct logons to shared mailboxes.",
     "addedComponent": null,
-    "label": "Disable Shared Mailbox AAD accounts"
+    "label": "Disable Shared Mailbox AAD accounts",
+    "impact": "High Impact",
+    "impactColour": "danger"
   },
   {
     "name": "standards.DelegateSentItems",
     "cat": "Exchange Standards",
     "helpText": "Sets emails sent as and on behalf of shared mailboxes to also be stored in the shared mailbox sent items folder",
     "addedComponent": null,
-    "label": "Set mailbox Sent Items delegation (Sent items for shared mailboxes)"
+    "label": "Set mailbox Sent Items delegation (Sent items for shared mailboxes)",
+    "impact": "Medium Impact",
+    "impactColour": "warning"
   },
   {
     "name": "standards.SendFromAlias",
     "cat": "Exchange Standards",
     "helpText": "Enables the ability for users to send from their alias addresses.",
     "addedComponent": null,
-    "label": "Allow users to send from their alias addresses"
+    "label": "Allow users to send from their alias addresses",
+    "impact": "Medium Impact",
+    "impactColour": "warning"
   },
   {
     "name": "standards.AutoExpandArchive",
     "cat": "Exchange Standards",
     "helpText": "Enables auto-expanding archives for the tenant",
     "addedComponent": null,
-    "label": "Enable Auto-expanding archives"
+    "label": "Enable Auto-expanding archives",
+    "impact": "Low Impact",
+    "impactColour": "info"
   },
   {
     "name": "standards.SpoofWarn.enable",
     "cat": "Exchange Standards",
     "helpText": "Adds indicators to e-mail messages received from external senders in Outlook. Works on all Outlook clients/OWA",
     "addedComponent": null,
-    "label": "Enable Spoofing warnings for Outlook (This e-mail is external identifiers)"
+    "label": "Enable Spoofing warnings for Outlook (This e-mail is external identifiers)",
+    "impact": "Low Impact",
+    "impactColour": "info"
   },
   {
     "name": "standards.SpoofWarn.disable",
     "cat": "Exchange Standards",
     "helpText": "Disables spoof warnings from external senders in Outlook.",
     "addedComponent": null,
-    "label": "Disable Spoofing warnings for Outlook (This e-mail is external identifiers)"
+    "label": "Disable Spoofing warnings for Outlook (This e-mail is external identifiers)",
+    "impact": "Low Impact",
+    "impactColour": "info"
   },
   {
     "name": "standards.DisableViva",
     "cat": "Exchange Standards",
     "helpText": "Disables the daily viva reports for all users.",
     "addedComponent": null,
-    "label": "Disable daily Insight/Viva reports"
+    "label": "Disable daily Insight/Viva reports",
+    "impact": "Low Impact",
+    "impactColour": "info"
   },
   {
     "name": "standards.RotateDKIM",
     "cat": "Exchange Standards",
     "helpText": "Rotate DKIM keys that are 1024 bit to 2048 bit",
     "addedComponent": null,
-    "label": "Rotate DKIM keys that are 1024 bit to 2048 bit"
+    "label": "Rotate DKIM keys that are 1024 bit to 2048 bit",
+    "impact": "UNKNOWN",
+    "impactColour": "info"
   },
   {
     "name": "standards.AddDKIM",
     "cat": "Exchange Standards",
     "helpText": "Enables DKIM for all domains that currently support it",
     "addedComponent": null,
-    "label": "Enables DKIM for all domains that currently support it"
+    "label": "Enables DKIM for all domains that currently support it",
+    "impact": "UNKNOWN",
+    "impactColour": "info"
   },
   {
     "name": "standards.ActivityBasedTimeout",
     "cat": "Global Standards",
     "helpText": "Enables and sets Idle session timeout for Microsoft 365 to 1 hour. This policy affects most M365 web apps",
     "addedComponent": null,
-    "label": "Enable 1 hour Activity based Timeout"
+    "label": "Enable 1 hour Activity based Timeout",
+    "impact": "Medium Impact",
+    "impactColour": "warning"
   },
   {
     "name": "standards.SendReceiveLimitTenant.Enabled",
@@ -350,7 +432,9 @@
       "name": "standards.SendReceiveLimitTenant.SendReceiveLimit",
       "label": "Send limit and Receive limit, comma separated"
     },
-    "label": "Set send/receive size limits"
+    "label": "Set send/receive size limits",
+    "impact": "UNKNOWN",
+    "impactColour": "info"
   },
   {
     "name": "standards.calDefault.Enabled",
@@ -391,21 +475,27 @@
         }
       ]
     },
-    "label": "Set Sharing Level for Default calendar"
+    "label": "Set Sharing Level for Default calendar",
+    "impact": "UNKNOWN",
+    "impactColour": "info"
   },
   {
     "name": "standards.UserSubmissions.enable",
     "cat": "Exchange Standards",
     "helpText": "Enables the spam submission button in Outlook",
     "addedComponent": null,
-    "label": "Enable the built-in Report button in Outlook"
+    "label": "Enable the built-in Report button in Outlook",
+    "impact": "UNKNOWN",
+    "impactColour": "info"
   },
   {
     "name": "standards.UserSubmissions.disable",
     "cat": "Exchange Standards",
     "helpText": "Disables the spam submission button in Outlook",
     "addedComponent": null,
-    "label": "Disable the built-in Report button in Outlook"
+    "label": "Disable the built-in Report button in Outlook",
+    "impact": "UNKNOWN",
+    "impactColour": "info"
   },
   {
     "name": "standards.intuneDeviceReg.Enabled",
@@ -416,7 +506,9 @@
       "name": "standards.intuneDeviceReg.max",
       "label": "Maximum devices (Enter 2147483647 for unlimited.)"
     },
-    "label": "Set Maximum Number of Devices per user"
+    "label": "Set Maximum Number of Devices per user",
+    "impact": "UNKNOWN",
+    "impactColour": "info"
   },
   {
     "name": "standards.intuneDeviceRetirementDays.Enabled",
@@ -427,13 +519,17 @@
       "name": "standards.intuneDeviceRetirementDays.days",
       "label": "Maximum days (0 equals disabled)"
     },
-    "label": "Set inactive device retirement days"
+    "label": "Set inactive device retirement days",
+    "impact": "UNKNOWN",
+    "impactColour": "info"
   },
   {
     "name": "standards.intuneRequireMFA",
     "cat": "Intune Standards",
     "helpText": "Requires MFA for all users to register devices with Intune. This is useful when not using Conditional Access.",
-    "label": "Require Multifactor Authentication to register or join devices with Microsoft Entra"
+    "label": "Require Multifactor Authentication to register or join devices with Microsoft Entra",
+    "impact": "UNKNOWN",
+    "impactColour": "info"
   },
   {
     "name": "standards.sharingCapability.Enabled",
@@ -462,7 +558,9 @@
         }
       ]
     },
-    "label": "Set Sharing Level for OneDrive and Sharepoint"
+    "label": "Set Sharing Level for OneDrive and Sharepoint",
+    "impact": "High Impact",
+    "impactColour": "danger"
   },
   {
     "name": "standards.ExcludedfileExt.Enabled",
@@ -473,48 +571,62 @@
       "name": "standards.ExcludedfileExt.ext",
       "label": "Extensions, Comma separated"
     },
-    "label": "Exclude File Extensions from Syncing"
+    "label": "Exclude File Extensions from Syncing",
+    "impact": "High Impact",
+    "impactColour": "danger"
   },
   {
     "name": "standards.disableMacSync",
     "cat": "SharePoint Standards",
     "helpText": "Disables the ability for Mac devices to sync with OneDrive.",
     "addedComponent": null,
-    "label": "Do not allow Mac devices to sync using OneDrive"
+    "label": "Do not allow Mac devices to sync using OneDrive",
+    "impact": "High Impact",
+    "impactColour": "danger"
   },
   {
     "name": "standards.DisableReshare",
     "cat": "SharePoint Standards",
     "helpText": "Disables the ability for external users to share files they don't own. Sharing links can only be made for People with existing access",
     "addedComponent": null,
-    "label": "Disable Resharing by External Users"
+    "label": "Disable Resharing by External Users",
+    "impact": "High Impact",
+    "impactColour": "danger"
   },
   {
     "name": "standards.DeletedUserRentention",
     "cat": "SharePoint Standards",
     "helpText": "Sets the retention period for deleted users OneDrive to 1 year/365 days",
     "addedComponent": null,
-    "label": "Retain a deleted user OneDrive for 1 year"
+    "label": "Retain a deleted user OneDrive for 1 year",
+    "impact": "Low Impact",
+    "impactColour": "info"
   },
   {
     "name": "standards.DisableUserSiteCreate",
     "cat": "SharePoint Standards",
     "helpText": "Disables users from creating new SharePoint sites",
     "addedComponent": null,
-    "label": "Disable site creation by standard users"
+    "label": "Disable site creation by standard users",
+    "impact": "High Impact",
+    "impactColour": "danger"
   },
   {
     "name": "standards.unmanagedSync",
     "cat": "SharePoint Standards",
     "helpText": "This standard will only allow devices that are AD joined, or AAD joined to sync with OneDrive",
     "addedComponent": null,
-    "label": "Only allow users to sync OneDrive from AAD joined devices"
+    "label": "Only allow users to sync OneDrive from AAD joined devices",
+    "impact": "High Impact",
+    "impactColour": "danger"
   },
   {
     "name": "standards.DisableAddShortcutsToOneDrive",
     "cat": "SharePoint Standards",
     "helpText": "When the feature is disabled the option Add shortcut to My files will be removed; any folders that have already been added will remain on the user's computer.",
     "addedComponent": null,
-    "label": "Disable Add Shortcuts To OneDrive"
+    "label": "Disable Add Shortcuts To OneDrive",
+    "impact": "UNKNOWN",
+    "impactColour": "info"
   }
 ]

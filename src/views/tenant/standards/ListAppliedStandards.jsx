@@ -11,6 +11,7 @@ import {
   CAccordionBody,
   CAccordionItem,
   CWidgetStatsB,
+  CBadge,
 } from '@coreui/react'
 import { Form } from 'react-final-form'
 import {
@@ -296,12 +297,16 @@ const ListAppliedStandards = () => {
                                   <CRow className="mb-3">
                                     <CCol md={4}>
                                       <h5>Do not apply All Tenants Standard to this tenant</h5>
-                                      <small>
-                                        Here some text that explains exactly what happens when
-                                        enabling this setting. It should be allowed to be a little
-                                        bit longer as some things require more explanation. Maybe an
-                                        "Impact" indicator of some sort. A badge?
-                                      </small>
+                                      <p>
+                                        <small>
+                                          Enabling this feature excludes this tenant from any
+                                          top-level "All Tenants" standard. This means that only the
+                                          standards you explicitly set for this tenant will be
+                                          applied. Standards previously applied by the "All Tenants"
+                                          standard will not be reverted.
+                                        </small>
+                                      </p>
+                                      <CBadge color="info">Minimal Impact</CBadge>
                                     </CCol>
                                     <CCol>
                                       <h5>Warn</h5>
@@ -350,7 +355,10 @@ const ListAppliedStandards = () => {
                                     <CRow key={`row-${catIndex}-${index}`} className="mb-3">
                                       <CCol md={4}>
                                         <h5>{obj.label}</h5>
-                                        <small>{obj.helpText}</small>
+                                        <p>
+                                          <small>{obj.helpText}</small>
+                                        </p>
+                                        <CBadge color={obj.impactColour}>{obj.impact}</CBadge>
                                       </CCol>
                                       <CCol>
                                         <h5>Warn</h5>
