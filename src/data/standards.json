@@ -84,8 +84,8 @@
     "helpText": "Disables SMTP AUTH for the organization. This is the default for new tenants. Sets the entire tenant to no longer allow SMTP AUTH, and as such has no exclusions.",
     "addedComponent": null,
     "label": "Disable SMTP Basic Authentication",
-    "impact": "UNKNOWN",
-    "impactColour": "info"
+    "impact": "High Impact - AI Guessed",
+    "impactColour": "danger"
   },
   {
     "name": "standards.laps",
@@ -93,7 +93,7 @@
     "helpText": "Enables the tenant to use LAPS. You must still create a policy for LAPS to be active on all devices. Use the template standards to deploy this by default.",
     "addedComponent": null,
     "label": "Enable LAPs on the tenant",
-    "impact": "UNKNOWN",
+    "impact": "Low Impact - AI Guessed",
     "impactColour": "info"
   },
   {
@@ -111,7 +111,7 @@
     "helpText": "Allows you to use any OTP token generator",
     "addedComponent": null,
     "label": "Enable OTP via Authenticator.",
-    "impact": "UNKNOWN",
+    "impact": "Low Impact - AI Guessed",
     "impactColour": "info"
   },
   {
@@ -120,7 +120,7 @@
     "helpText": "Allows you to use any software OAuth token generator",
     "addedComponent": null,
     "label": "Enable OTP Software oAuth tokens.",
-    "impact": "UNKNOWN",
+    "impact": "Low Impact - AI Guessed",
     "impactColour": "info"
   },
   {
@@ -143,8 +143,8 @@
       ]
     },
     "label": "Set Authenticator Lite state",
-    "impact": "UNKNOWN",
-    "impactColour": "info"
+    "impact": "High Impact - AI Guessed",
+    "impactColour": "danger"
   },
   {
     "cat": "Entra (AAD) Standards",
@@ -175,8 +175,8 @@
     "helpText": "Enables security defaults for the tenant, for newer tenants this is enabled by default. Do not enable this feature if you use Conditional Access.",
     "addedComponent": null,
     "label": "Enable Security Defaults",
-    "impact": "UNKNOWN",
-    "impactColour": "info"
+    "impact": "High Impact - AI Guessed",
+    "impactColour": "danger"
   },
   {
     "cat": "Entra (AAD) Standards",
@@ -184,8 +184,8 @@
     "helpText": "Disables the expiration of passwords for the tenant by setting the password expiration policy to never expire for any user.",
     "addedComponent": null,
     "label": "Do not expire passwords",
-    "impact": "UNKNOWN",
-    "impactColour": "info"
+    "impact": "Medium Impact - AI Guessed",
+    "impactColour": "warning"
   },
   {
     "cat": "Entra (AAD) Standards",
@@ -202,8 +202,8 @@
     "helpText": "Restricts creation of M365 tenants to the Global Administrator or Tenant Creator roles. ",
     "addedComponent": null,
     "label": "Disable M365 Tenant creation by users",
-    "impact": "UNKNOWN",
-    "impactColour": "info"
+    "impact": "Medium Impact - AI Guessed",
+    "impactColour": "warning"
   },
   {
     "cat": "Entra (AAD) Standards",
@@ -223,8 +223,8 @@
     "name": "standards.OauthConsentLowSec",
     "helpText": "Sets the default oauth consent level so users can consent to applications that have low risks.",
     "label": "Allow users to consent to applications with low security risk (Prevent OAuth phishing. Lower impact, less secure.)",
-    "impact": "UNKNOWN",
-    "impactColour": "info"
+    "impact": "High Impact - AI Guessed",
+    "impactColour": "danger"
   },
   {
     "cat": "Entra (AAD) Standards",
@@ -236,8 +236,8 @@
       "name": "standards.EnableAppConsentRequests.ReviewerRoles"
     },
     "label": "Enable App consent admin requests",
-    "impact": "UNKNOWN",
-    "impactColour": "info"
+    "impact": "High Impact - AI Guessed",
+    "impactColour": "danger"
   },
   {
     "cat": "Entra (AAD) Standards",
@@ -254,7 +254,7 @@
     "helpText": "Enables registration campaign for the tenant",
     "addedComponent": null,
     "label": "Request to setup Authenticator if not setup yet.",
-    "impact": "UNKNOWN",
+    "impact": "Low Impact - AI Guessed",
     "impactColour": "info"
   },
   {
@@ -263,7 +263,7 @@
     "helpText": "Disables registration campaign for the tenant",
     "addedComponent": null,
     "label": "Disables the request to setup Authenticator if setup.",
-    "impact": "UNKNOWN",
+    "impact": "Low Impact - AI Guessed",
     "impactColour": "info"
   },
   {
@@ -290,8 +290,8 @@
     "helpText": "Disables App consent and set to Allow user consent for apps",
     "addedComponent": null,
     "label": "Undo App Consent Standard",
-    "impact": "UNKNOWN",
-    "impactColour": "info"
+    "impact": "High Impact - AI Guessed",
+    "impactColour": "danger"
   },
   {
     "cat": "Entra (AAD) Standards",
@@ -299,8 +299,8 @@
     "helpText": "Blocks login for guest users that have not logged in for 90 days",
     "addedComponent": null,
     "label": "Disable Guest accounts that have not logged on for 90 days",
-    "impact": "UNKNOWN",
-    "impactColour": "info"
+    "impact": "Medium Impact - AI Guessed",
+    "impactColour": "warning"
   },
   {
     "cat": "Entra (AAD) Standards",
@@ -308,8 +308,8 @@
     "helpText": "Enables the FIDO2 authenticationMethod for the tenant",
     "addedComponent": null,
     "label": "Enable FIDO2 capabilities",
-    "impact": "UNKNOWN",
-    "impactColour": "info"
+    "impact": "High Impact - AI Guessed",
+    "impactColour": "danger"
   },
   {
     "name": "standards.OutBoundSpamAlert.Enabled",
@@ -321,7 +321,7 @@
       "label": "Outbound spam contact"
     },
     "label": "Set Outbound Spam Alert e-mail",
-    "impact": "UNKNOWN",
+    "impact": "Low Impact - AI Guessed",
     "impactColour": "info"
   },
   {
@@ -330,8 +330,8 @@
     "helpText": "Loops through all users and removes the Safe Senders list. This is to prevent SPF bypass attacks, as the Safe Senders list is not checked by SPF.",
     "addedComponent": null,
     "label": "Remove Safe Senders to prevent SPF bypass",
-    "impact": "UNKNOWN",
-    "impactColour": "info"
+    "impact": "Medium Impact - AI Guessed",
+    "impactColour": "warning"
   },
   {
     "name": "standards.DisableSharedMailbox",
@@ -402,7 +402,7 @@
     "helpText": "Rotate DKIM keys that are 1024 bit to 2048 bit",
     "addedComponent": null,
     "label": "Rotate DKIM keys that are 1024 bit to 2048 bit",
-    "impact": "UNKNOWN",
+    "impact": "UNKNOWN - AI Guessed",
     "impactColour": "info"
   },
   {
@@ -411,7 +411,7 @@
     "helpText": "Enables DKIM for all domains that currently support it",
     "addedComponent": null,
     "label": "Enables DKIM for all domains that currently support it",
-    "impact": "UNKNOWN",
+    "impact": "Low Impact - AI Guessed",
     "impactColour": "info"
   },
   {
@@ -433,8 +433,8 @@
       "label": "Send limit and Receive limit, comma separated"
     },
     "label": "Set send/receive size limits",
-    "impact": "UNKNOWN",
-    "impactColour": "info"
+    "impact": "Medium Impact - AI Guessed",
+    "impactColour": "warning"
   },
   {
     "name": "standards.calDefault.Enabled",
@@ -476,8 +476,8 @@
       ]
     },
     "label": "Set Sharing Level for Default calendar",
-    "impact": "UNKNOWN",
-    "impactColour": "info"
+    "impact": "High Impact - AI Guessed",
+    "impactColour": "danger"
   },
   {
     "name": "standards.UserSubmissions.enable",
@@ -485,8 +485,8 @@
     "helpText": "Enables the spam submission button in Outlook",
     "addedComponent": null,
     "label": "Enable the built-in Report button in Outlook",
-    "impact": "UNKNOWN",
-    "impactColour": "info"
+    "impact": "Medium Impact - AI Guessed",
+    "impactColour": "warning"
   },
   {
     "name": "standards.UserSubmissions.disable",
@@ -494,8 +494,8 @@
     "helpText": "Disables the spam submission button in Outlook",
     "addedComponent": null,
     "label": "Disable the built-in Report button in Outlook",
-    "impact": "UNKNOWN",
-    "impactColour": "info"
+    "impact": "Medium Impact - AI Guessed",
+    "impactColour": "warning"
   },
   {
     "name": "standards.intuneDeviceReg.Enabled",
@@ -507,8 +507,8 @@
       "label": "Maximum devices (Enter 2147483647 for unlimited.)"
     },
     "label": "Set Maximum Number of Devices per user",
-    "impact": "UNKNOWN",
-    "impactColour": "info"
+    "impact": "Medium Impact - AI Guessed",
+    "impactColour": "warning"
   },
   {
     "name": "standards.intuneDeviceRetirementDays.Enabled",
@@ -520,7 +520,7 @@
       "label": "Maximum days (0 equals disabled)"
     },
     "label": "Set inactive device retirement days",
-    "impact": "UNKNOWN",
+    "impact": "Low Impact - AI Guessed",
     "impactColour": "info"
   },
   {
@@ -528,8 +528,8 @@
     "cat": "Intune Standards",
     "helpText": "Requires MFA for all users to register devices with Intune. This is useful when not using Conditional Access.",
     "label": "Require Multifactor Authentication to register or join devices with Microsoft Entra",
-    "impact": "UNKNOWN",
-    "impactColour": "info"
+    "impact": "High Impact - AI Guessed",
+    "impactColour": "danger"
   },
   {
     "name": "standards.sharingCapability.Enabled",
@@ -626,7 +626,7 @@
     "helpText": "When the feature is disabled the option Add shortcut to My files will be removed; any folders that have already been added will remain on the user's computer.",
     "addedComponent": null,
     "label": "Disable Add Shortcuts To OneDrive",
-    "impact": "UNKNOWN",
-    "impactColour": "info"
+    "impact": "Medium Impact - AI Guessed",
+    "impactColour": "warning"
   }
 ]
