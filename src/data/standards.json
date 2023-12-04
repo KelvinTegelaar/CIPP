@@ -1,5 +1,102 @@
 [
   {
+    "name": "standards.MailContacts.GeneralContact.Enabled",
+    "cat": "Global Standards",
+    "helpText": "Defines the email address to receive general updates and information related to M365 subscriptions.",
+    "addedComponent": {
+      "type": "input",
+      "name": "standards.MailContacts.GeneralContact.Mail",
+      "label": "General Contact"
+    },
+    "label": "Set General Contact e-mail",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
+    "name": "standards.MailContacts.SecurityContact.Enabled",
+    "cat": "Global Standards",
+    "helpText": "Specifies the email address for receiving security alerts and advisories from Microsoft, these are not security alerts directly related to the tenant.",
+    "addedComponent": {
+      "type": "input",
+      "name": "standards.MailContacts.SecurityContact.Mail",
+      "label": "Security Contact"
+    },
+    "label": "Set Security Contact e-mail",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
+    "name": "standards.MailContacts.MarketingContact.Enabled",
+    "cat": "Global Standards",
+    "helpText": "Assigns the email address for receiving marketing communications, including information about new features.",
+    "addedComponent": {
+      "type": "input",
+      "name": "standards.MailContacts.MarketingContact.Mail",
+      "label": "Marketing Contact"
+    },
+    "label": "Set Marketing Contact e-mail",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
+    "name": "standards.MailContacts.TechContact.Enabled",
+    "cat": "Global Standards",
+    "helpText": "Sets the email address for technical notifications, including service disruptions and issue alerts.",
+    "addedComponent": {
+      "type": "input",
+      "name": "standards.MailContacts.TechContact.Mail",
+      "label": "Technical Contact"
+    },
+    "label": "Set Technical Contact e-mail",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
+    "name": "standards.AuditLog",
+    "cat": "Global Standards",
+    "helpText": "Enables the Unified Audit Log for tracking and auditing activities; also runs Enable-OrganizationCustomization if necessary.",
+    "addedComponent": null,
+    "label": "Enable the Unified Audit Log",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
+    "name": "standards.AnonReportDisable",
+    "cat": "Global Standards",
+    "helpText": "Shows usernames instead of pseudo anonymised names in reports. This standard is required for reporting to work correctly.",
+    "addedComponent": null,
+    "label": "Enable Usernames instead of pseudo anonymised names in reports",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
+    "name": "standards.DisableGuestDirectory",
+    "cat": "Global Standards",
+    "helpText": "Disables Guest access to enumerate directory objects. This prevents guest users from see other users or guests in the directory.",
+    "addedComponent": null,
+    "label": "Restrict guest user access to directory objects",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
+    "name": "standards.DisableBasicAuthSMTP",
+    "cat": "Global Standards",
+    "helpText": "Disables SMTP AUTH for the organization. This is the default for new tenants. Sets the entire tenant to no longer allow SMTP AUTH, and as such has no exclusions.",
+    "addedComponent": null,
+    "label": "Disable SMTP Basic Authentication",
+    "impact": "Medium Impact",
+    "impactColour": "warning"
+  },
+  {
+    "name": "standards.ActivityBasedTimeout",
+    "cat": "Global Standards",
+    "helpText": "Enables and sets Idle session timeout for Microsoft 365 to 1 hour. This policy affects most M365 web apps",
+    "addedComponent": null,
+    "label": "Enable 1 hour Activity based Timeout",
+    "impact": "Medium Impact",
+    "impactColour": "warning"
+  },
+  {
     "name": "standards.laps",
     "cat": "Entra (AAD) Standards",
     "helpText": "Enables the tenant to use LAPS. You must still create a policy for LAPS to be active on all devices. Use the template standards to deploy this by default.",
@@ -399,103 +496,6 @@
     "label": "Disable Shared Mailbox AAD accounts",
     "impact": "High Impact",
     "impactColour": "danger"
-  },
-  {
-    "name": "standards.MailContacts.GeneralContact.Enabled",
-    "cat": "Global Standards",
-    "helpText": "Defines the email address to receive general updates and information related to M365 subscriptions.",
-    "addedComponent": {
-      "type": "input",
-      "name": "standards.MailContacts.GeneralContact.Mail",
-      "label": "General Contact"
-    },
-    "label": "Set General Contact e-mail",
-    "impact": "Low Impact",
-    "impactColour": "info"
-  },
-  {
-    "name": "standards.MailContacts.SecurityContact.Enabled",
-    "cat": "Global Standards",
-    "helpText": "Specifies the email address for receiving security alerts and advisories from Microsoft, these are not security alerts directly related to the tenant.",
-    "addedComponent": {
-      "type": "input",
-      "name": "standards.MailContacts.SecurityContact.Mail",
-      "label": "Security Contact"
-    },
-    "label": "Set Security Contact e-mail",
-    "impact": "Low Impact",
-    "impactColour": "info"
-  },
-  {
-    "name": "standards.MailContacts.MarketingContact.Enabled",
-    "cat": "Global Standards",
-    "helpText": "Assigns the email address for receiving marketing communications, including information about new features.",
-    "addedComponent": {
-      "type": "input",
-      "name": "standards.MailContacts.MarketingContact.Mail",
-      "label": "Marketing Contact"
-    },
-    "label": "Set Marketing Contact e-mail",
-    "impact": "Low Impact",
-    "impactColour": "info"
-  },
-  {
-    "name": "standards.MailContacts.TechContact.Enabled",
-    "cat": "Global Standards",
-    "helpText": "Sets the email address for technical notifications, including service disruptions and issue alerts.",
-    "addedComponent": {
-      "type": "input",
-      "name": "standards.MailContacts.TechContact.Mail",
-      "label": "Technical Contact"
-    },
-    "label": "Set Technical Contact e-mail",
-    "impact": "Low Impact",
-    "impactColour": "info"
-  },
-  {
-    "name": "standards.AuditLog",
-    "cat": "Global Standards",
-    "helpText": "Enables the Unified Audit Log for tracking and auditing activities; also runs Enable-OrganizationCustomization if necessary.",
-    "addedComponent": null,
-    "label": "Enable the Unified Audit Log",
-    "impact": "Low Impact",
-    "impactColour": "info"
-  },
-  {
-    "name": "standards.AnonReportDisable",
-    "cat": "Global Standards",
-    "helpText": "Shows usernames instead of pseudo anonymised names in reports. This standard is required for reporting to work correctly.",
-    "addedComponent": null,
-    "label": "Enable Usernames instead of pseudo anonymised names in reports",
-    "impact": "Low Impact",
-    "impactColour": "info"
-  },
-  {
-    "name": "standards.DisableGuestDirectory",
-    "cat": "Global Standards",
-    "helpText": "Disables Guest access to enumerate directory objects. This prevents guest users from see other users or guests in the directory.",
-    "addedComponent": null,
-    "label": "Restrict guest user access to directory objects",
-    "impact": "Low Impact",
-    "impactColour": "info"
-  },
-  {
-    "name": "standards.DisableBasicAuthSMTP",
-    "cat": "Global Standards",
-    "helpText": "Disables SMTP AUTH for the organization. This is the default for new tenants. Sets the entire tenant to no longer allow SMTP AUTH, and as such has no exclusions.",
-    "addedComponent": null,
-    "label": "Disable SMTP Basic Authentication",
-    "impact": "Medium Impact",
-    "impactColour": "warning"
-  },
-  {
-    "name": "standards.ActivityBasedTimeout",
-    "cat": "Global Standards",
-    "helpText": "Enables and sets Idle session timeout for Microsoft 365 to 1 hour. This policy affects most M365 web apps",
-    "addedComponent": null,
-    "label": "Enable 1 hour Activity based Timeout",
-    "impact": "Medium Impact",
-    "impactColour": "warning"
   },
   {
     "name": "standards.intuneDeviceRetirementDays.Enabled",
