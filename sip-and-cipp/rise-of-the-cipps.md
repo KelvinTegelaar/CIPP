@@ -50,153 +50,147 @@ This session provided an overview of key functionality within CIPP. Topics inclu
 
 
 
-**Q:** Does deleting the user remove the user from the recycling bin as well?
+**Q: Does deleting the user remove the user from the recycling bin as well?**
 
 **A:** No, deleting the user moves them to the recycling bin, and you can restore them from there if needed.
 
 ***
 
-**Q:** Do we need to create templates from within CIPP, or can we use an existing Intune policy as a template for everyone?
+**Q: Do we need to create templates from within CIPP, or can we use an existing Intune policy as a template for everyone?**
 
 **A:** You can create templates in any tenant, and you don't have to create them in CIPP. The benefit lies in creating templates in a baseline tenant or a tenant where you already have specific policies.
 
 ***
 
-**Q:** Is there a way to disable individual standards set in the wizard?
+**Q: Is there a way to disable individual standards set in the wizard?**
 
 **A:** Disabling a standard only prevents it from applying in the future; it doesn't revert the settings. You'll need to manually re-enable it in the tenant if needed.
 
 ***
 
-**Q:** Can you rely on the IDs seen in group templates for mapping?
+**Q: Can you rely on the IDs seen in group templates for mapping?**
 
 **A:** Those IDs are internal and not usable within the Microsoft 365 environment. It's not something you can rely on, but the possibility for improvement is being explored.
 
 ***
 
-**Q:** Can CIPP notify you when your Apple certificate is about to expire?
+**Q: Can CIPP notify you when your Apple certificate is about to expire?**
 
 **A:** Yes, you can create alerts in CIPP, including alerts for expiring Apple certificates.
 
 ***
 
-**Q:** Does a transport rule deployed to multiple tenants periodically overwrite changes made on a tenant-by-tenant basis?&#x20;
+**Q: Does a transport rule deployed to multiple tenants periodically overwrite changes made on a tenant-by-tenant basis?**&#x20;
 
 **A:** Using transport rules, deploying a single rule won't override anything. However, templates can force specific environments to match the template periodically.
 
 ***
 
-**Q:** Can two GDAP roles be mapped to the same partner tenant role?
+**Q: Can two GDAP roles be mapped to the same partner tenant role?**
 
 **A:** Yes, you can achieve this by using nested groups to assign roles based on group memberships.
 
 ***
 
-**Q:** Can you have two relationships with a tenant, one with auto-renewing non-global admin and another with global admin?
+**Q: Can you have two relationships with a tenant, one with auto-renewing non-global admin and another with global admin?**
 
 **A:** Yes, it's possible to have multiple relationships, but manually renewing the global admin relationship is required, and it's not recommended.
 
 ***
 
-**Q:** Are there plans for more granular permissions?
+**Q: Are there plans for more granular permissions?**
 
 **A:** There are no plans for more granular permissions, but you can create custom roles if needed.
 
 ***
 
-**Q:** Can CIPP send individual alerts to clients without notifying the CIPP owner?
+**Q: Can CIPP send individual alerts to clients without notifying the CIPP owner?**
 
 **A:** CIPP does not send individual client alerts, but you can explore other methods like using PSA or email features for client notifications.
 
 ***
 
-**Q:** Can PIM on the partner tenant be nested?
+**Q: Can PIM on the partner tenant be nested?**
 
 **A:** Yes, you can nest PIM groups, but ensure to enable the "intra AD role assignment" checkbox for it to work.
 
 ***
 
-**Q:** How can CIPP be made faster?
+**Q: How can CIPP be made faster?**
 
 **A:** Follow specific steps outlined in the documentation, and consider using the "run from package" mode to improve performance.
 
 ***
 
-**Q:** Does the caveat rule apply to hosted CIPP instances?
+**Q: Does the caveat rule apply to hosted CIPP instances?**
 
 **A:** Hosted CIPP instances have "run from package" enabled by default, and they are regularly monitored and updated for performance and security.
 
 ***
 
-**Q:** Is there a way to set exceptions on users from MFA reports?
+**Q: Is there a way to set exceptions on users from MFA reports?**
 
 **A:** No, CIPP does not allow exceptions, and service accounts should have MFA.
 
 ***
 
-**Q:** Can GDAP group settings be changed without reinviting everyone?
+**Q: Can GDAP group settings be changed without reinviting everyone?**
 
 **A:** Only the nested group needs the role assignment setting enabled; individual GDAP groups do not require it.
 
 ***
 
-**Q:** Can clients be alerted individually about their Apple certificate expiration?
+**Q: Can clients be alerted individually about their Apple certificate expiration?**
 
 **A:** CIPP does not support individual client alerts; it sends alerts to PSA, configured email, or webhooks.
 
 ***
 
-**Q:** Will CIPP support automatically mapping SharePoint sites and Explorer shortcuts?
+**Q: Will CIPP support automatically mapping SharePoint sites and Explorer shortcuts?**
 
 **A:** No, CIPP does not provide this functionality, but there will be a standard for mapping all accessible shortcuts.
 
 ***
 
-**Q:** Can CIPP support auto-removing users from a security group?
+**Q: Can CIPP support auto-removing users from a security group?**
 
 **A:** Yes, you can use the scheduler to add or remove users from groups based on a schedule.
 
 ***
 
-**Q:** Can you explain using standards in place of transport rules in CIPP?
+**Q: Can you explain using standards in place of transport rules in CIPP?**
 
 **A:** Standards can be used to create and deploy transport rules. Templates are for one-off deployments; they don't overwrite existing rules.
 
 ***
 
-**Q:** Why don't my SharePoint sites appear in the OneDrive shortcut list?
+**Q: Why don't my SharePoint sites appear in the OneDrive shortcut list?**
 
-**A:** This issue is a known Microsoft bug, and they are working on fixing it.
+**A:** This issue is a known Microsoft bug, and they are working on fixing it. Fix is expected by next week.
 
 ***
 
-**Q:** How does CIPP handle updates to Intune templates?
+**Q: How does CIPP handle updates to Intune templates?**
 
 **A:** Updates to Intune templates overwrite the previous deployment when using a standard.
 
 ***
 
-**Q:** Can I use CIPP for my dev tenant that's not a partner tenant?
+**Q: Can I use CIPP for my dev tenant that's not a partner tenant?**
 
 **A:** Using CIPP for a non-partner tenant in a dev environment is possible but requires a more complex setup.
 
 ***
 
-**Q:** When will the "add to OneDrive" list issue be fixed?
-
-**A:** The fix is expected by next week.
-
-***
-
-**Q:** Will CIPP support device filters and categories when assigning Intune templates?
+**Q: Will CIPP support device filters and categories when assigning Intune templates?**
 
 **A:** CIPP won't focus on adding device filters; it recommends using groups or dynamic groups for most cases.
 
 ***
 
-**Q:** Can CIPP groups support M 365 groups?
+**Q: Can CIPP groups support M365 groups?**
 
-**A:** Yes, CIPP supports M 365 groups without issues.
+**A:** Yes, CIPP supports M365 groups without issues.
 
 ***
 
