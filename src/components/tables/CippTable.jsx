@@ -185,7 +185,6 @@ export default function CippTable({
     (e) => {
       if (graphFilterFunction) {
         graphFilterFunction(e)
-        console.log(e)
       }
     },
     [graphFilterFunction],
@@ -746,6 +745,7 @@ export default function CippTable({
     columns,
     reportName,
     selectedRows,
+    filteredItems,
   ])
   const tablePageSize = useSelector((state) => state.app.tablePageSize)
 
