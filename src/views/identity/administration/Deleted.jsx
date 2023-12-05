@@ -40,7 +40,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             color: 'info',
             modal: true,
             modalUrl: `/api/ExecRestoreDeleted?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
-            modalMessage: 'Are you sure you want to create a Temporary Access Pass?',
+            modalMessage: 'Are you sure you want to restore the user?',
           },
         ]}
         placement="end"
