@@ -3,7 +3,7 @@ let newController = new AbortController()
 export const axiosQuery = async ({ path, method = 'get', params, data, hideToast }) => {
   try {
     const result = await axios({
-      signal: newController.signal,
+      signal: path === '/api/ListTenants' ? undefined : newController.signal,
       method,
       baseURL: window.location.origin,
       url: path,
