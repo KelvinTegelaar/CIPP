@@ -193,16 +193,19 @@ const ListAppliedStandards = () => {
   const allTenantsStandard = listStandardsAllTenants.find(
     (tenant) => tenant.displayName === 'AllTenants',
   )
+
   function getLabel(item) {
     const keys = item.name.split('.')
     let value = keys.reduce((prev, curr) => prev && prev[curr], allTenantsStandard)
     return value ? `* Enabled via All Tenants` : ''
   }
+
   const groupedStandards = allStandardsList.reduce((acc, obj) => {
     acc[obj.cat] = acc[obj.cat] || []
     acc[obj.cat].push(obj)
     return acc
   }, {})
+
   // Function to count enabled standards
   function countEnabledStandards(standards, type) {
     let count = 0
@@ -211,7 +214,7 @@ const ListAppliedStandards = () => {
       // Check if 'Enabled' exists and the specific type is true
       if (standard?.Enabled && standard?.Enabled[type]) {
         count++
-      } else if (standard[type]) {
+      } else if (standard && standard[type]) {
         // Check if the type exists directly under the standard
         count++
       }
@@ -260,8 +263,15 @@ const ListAppliedStandards = () => {
                           <CCol md={4}>
                             <CWidgetStatsB
                               className="mb-3"
-                              progress={{ color: 'info', value: enabledWarningsCount }}
-                              text={`Created by ${listStandardResults[0].appliedBy}`}
+                              progress={{
+                                color: 'info',
+                                value: enabledWarningsCount,
+                              }}
+                              text={
+                                listStandardResults[0].appliedBy
+                                  ? `Created by ${listStandardResults[0].appliedBy}`
+                                  : 'None'
+                              }
                               title={`${enabledWarningsCount} out of 64`}
                               value="Enabled Warnings"
                             />
@@ -269,8 +279,15 @@ const ListAppliedStandards = () => {
                           <CCol md={4}>
                             <CWidgetStatsB
                               className="mb-3"
-                              progress={{ color: 'info', value: enabledAlertsCount }}
-                              text={`Created by ${listStandardResults[0].appliedBy}`}
+                              progress={{
+                                color: 'info',
+                                value: enabledAlertsCount,
+                              }}
+                              text={
+                                listStandardResults[0].appliedBy
+                                  ? `Created by ${listStandardResults[0].appliedBy}`
+                                  : 'None'
+                              }
                               title={`${enabledAlertsCount} out of 64`}
                               value="Enabled Alerts"
                             />
@@ -278,8 +295,15 @@ const ListAppliedStandards = () => {
                           <CCol md={4}>
                             <CWidgetStatsB
                               className="mb-3"
-                              progress={{ color: 'info', value: enabledRemediationsCount }}
-                              text={`Created by ${listStandardResults[0].appliedBy}`}
+                              progress={{
+                                color: 'info',
+                                value: enabledRemediationsCount,
+                              }}
+                              text={
+                                listStandardResults[0].appliedBy
+                                  ? `Created by ${listStandardResults[0].appliedBy}`
+                                  : 'None'
+                              }
                               title={`${enabledRemediationsCount} out of 64`}
                               value="Enabled Remediations"
                             />
@@ -296,7 +320,18 @@ const ListAppliedStandards = () => {
                                 <CAccordionBody>
                                   <CRow className="mb-3">
                                     <CCol md={4}>
-                                      <h5>Do not apply All Tenants Standard to this tenant</h5>
+                                      <div
+                                        style={{
+                                          display: 'flex',
+                                          flexDirection: 'row',
+                                          justifyContent: 'space-between',
+                                        }}
+                                      >
+                                        <h5>Do not apply All Tenants Standard to this tenant</h5>
+                                        <div>
+                                          <CBadge color="info">Minimal Impact</CBadge>
+                                        </div>
+                                      </div>
                                       <p>
                                         <small>
                                           Enabling this feature excludes this tenant from any
@@ -306,7 +341,6 @@ const ListAppliedStandards = () => {
                                           standard will not be reverted.
                                         </small>
                                       </p>
-                                      <CBadge color="info">Minimal Impact</CBadge>
                                     </CCol>
                                     <CCol>
                                       <h5>Warn</h5>
@@ -354,11 +388,21 @@ const ListAppliedStandards = () => {
                                   {groupedStandards[cat].map((obj, index) => (
                                     <CRow key={`row-${catIndex}-${index}`} className="mb-3">
                                       <CCol md={4}>
-                                        <h5>{obj.label}</h5>
+                                        <div
+                                          style={{
+                                            display: 'flex',
+                                            flexDirection: 'row',
+                                            justifyContent: 'space-between',
+                                          }}
+                                        >
+                                          <h5>{obj.label}</h5>
+                                          <div>
+                                            <CBadge color={obj.impactColour}>{obj.impact}</CBadge>
+                                          </div>
+                                        </div>
                                         <p>
                                           <small>{obj.helpText}</small>
                                         </p>
-                                        <CBadge color={obj.impactColour}>{obj.impact}</CBadge>
                                       </CCol>
                                       <CCol>
                                         <h5>Warn</h5>
