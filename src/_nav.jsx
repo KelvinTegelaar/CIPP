@@ -139,6 +139,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'App Consent Requests',
+        to: '/tenant/administration/app-consent-requests',
+      },
+      {
+        component: CNavItem,
         name: 'Tenant Offboarding',
         to: '/tenant/administration/tenant-offboarding-wizard',
       },

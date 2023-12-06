@@ -10,11 +10,9 @@ import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
 import { cellDateFormatter, cellNullTextFormatter } from 'src/components/tables'
-import { CippActionsOffcanvas } from 'src/components/utilities'
+import { CippActionsOffcanvas, ModalService } from 'src/components/utilities'
 import GDAPRoles from 'src/data/GDAPRoles'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
-import { ModalService } from 'src/components/utilities'
-import { constants } from 'buffer'
 import Skeleton from 'react-loading-skeleton'
 
 const RefreshAction = () => {

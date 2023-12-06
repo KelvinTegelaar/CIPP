@@ -1,5 +1,18 @@
-import React from 'react'
-import { CButton, CCallout, CCol, CForm, CRow, CSpinner } from '@coreui/react'
+import React, { useState } from 'react'
+import {
+  CButton,
+  CCallout,
+  CCol,
+  CForm,
+  CRow,
+  CSpinner,
+  CAccordion,
+  CAccordionHeader,
+  CAccordionBody,
+  CAccordionItem,
+  CWidgetStatsB,
+  CBadge,
+} from '@coreui/react'
 import { Form } from 'react-final-form'
 import {
   Condition,
@@ -21,8 +34,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Skeleton from 'react-loading-skeleton'
 import { CippTable } from 'src/components/tables'
 import allStandardsList from 'src/data/standards'
-import { useState } from 'react'
 import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
+import GDAPRoles from 'src/data/GDAPRoles'
 
 const RefreshAction = () => {
   const [execStandards, execStandardsResults] = useLazyGenericGetRequestQuery()
@@ -75,9 +88,11 @@ const DeleteAction = () => {
         )}
         Delete Standard
       </CButton>
-      {execStandardsResults.isSuccess && (
-        <CCallout color="success">{execStandardsResults.data.Results}</CCallout>
-      )}
+      <>
+        {execStandardsResults.isSuccess && (
+          <CCallout color="success">{execStandardsResults.data.Results}</CCallout>
+        )}
+      </>
     </>
   )
 }
@@ -183,20 +198,46 @@ const ListAppliedStandards = () => {
     let value = keys.reduce((prev, curr) => prev && prev[curr], allTenantsStandard)
     return value ? `* Enabled via All Tenants` : ''
   }
+  const groupedStandards = allStandardsList.reduce((acc, obj) => {
+    acc[obj.cat] = acc[obj.cat] || []
+    acc[obj.cat].push(obj)
+    return acc
+  }, {})
+  // Function to count enabled standards
+  function countEnabledStandards(standards, type) {
+    let count = 0
+    Object.keys(standards).forEach((key) => {
+      const standard = standards[key]
+      // Check if 'Enabled' exists and the specific type is true
+      if (standard?.Enabled && standard?.Enabled[type]) {
+        count++
+      } else if (standard[type]) {
+        // Check if the type exists directly under the standard
+        count++
+      }
+    })
+    return count
+  }
+
+  // Assuming listStandardResults[0] contains your JSON object
+  const enabledStandards = listStandardResults[0] ? listStandardResults[0].standards : {}
+  const enabledAlertsCount = countEnabledStandards(enabledStandards, 'alert')
+  const enabledRemediationsCount = countEnabledStandards(enabledStandards, 'remediate')
+  const enabledWarningsCount = countEnabledStandards(enabledStandards, 'report')
 
   return (
     <CippPage title="Standards" tenantSelector={false}>
       <>
         {postResults.isSuccess && <CCallout color="success">{postResults.data?.Results}</CCallout>}
         <CRow>
-          <CCol lg={6} xs={12}>
+          <CCol lg={12} xs={12}>
             <CippContentCard
               button={
                 <>
                   <RefreshAction className="justify-content-end" key="refresh-action-button" />
                 </>
               }
-              title="List and edit standard"
+              title={`List and edit standard - ${tenantDomain}`}
             >
               {isFetching && <Skeleton count={20} />}
               {intuneTemplates.isUninitialized &&
@@ -215,411 +256,267 @@ const ListAppliedStandards = () => {
                   render={({ handleSubmit, submitting, values }) => {
                     return (
                       <CForm onSubmit={handleSubmit}>
-                        <hr />{' '}
-                        <CCol>
-                          {listStandardResults[0]?.appliedBy
-                            ? `This standard has been applied at ${new Date(
-                                listStandardResults[0].appliedAt + 'Z',
-                              ).toLocaleDateString(undefined, {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric',
-                              })} ${new Date(
-                                listStandardResults[0].appliedAt + 'Z',
-                              ).toLocaleTimeString(undefined, {
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                second: '2-digit',
-                                hour12: false,
-                              })} by ${listStandardResults[0].appliedBy}`
-                            : 'This tenant does not yet have a standard applied'}
-                        </CCol>
-                        {tenantDomain !== 'AllTenants' && (
-                          <>
-                            <hr />
-                            <h5>Standard Settings</h5>
-                            <hr />
-                            <CRow className="mb-3" xs={{ cols: 1 }}>
-                              <RFFCFormSwitch
-                                name="standards.OverrideAllTenants"
-                                label="Do not apply All Tenants standards to this tenant"
-                                helpText={
-                                  'Exclude this standard from the All Tenants standard. This will only apply explicitly set standards to this tenant.'
-                                }
-                              />
-                            </CRow>
-                          </>
-                        )}
-                        <hr />
-                        <h5>Global Standards</h5>
-                        <hr />
-                        <CRow className="mb-3" xs={{ cols: 2 }}>
-                          {allStandardsList
-                            .filter((obj) => obj.cat === 'Global')
-                            .map((item, key) => (
-                              <>
-                                <CCol>
-                                  <RFFCFormSwitch
-                                    key={key}
-                                    name={item.name}
-                                    label={item.label}
-                                    sublabel={getLabel(item)}
-                                    helpText={item.helpText}
-                                  />
-                                  {item.addedComponent && (
-                                    <Condition when={item.name} is={true}>
-                                      {item.addedComponent.type === 'Select' ? (
-                                        <RFFCFormSelect
-                                          name={item.addedComponent.name}
-                                          className="mb-3"
-                                          label={item.addedComponent.label}
-                                          values={item.addedComponent.values}
-                                        />
-                                      ) : (
-                                        <RFFCFormInput
-                                          type="text"
-                                          className="mb-3"
-                                          name={item.addedComponent.name}
-                                          label={item.addedComponent.label}
-                                        />
-                                      )}
-                                    </Condition>
-                                  )}
-                                </CCol>
-                              </>
-                            ))}
-                        </CRow>
-                        <hr />
-                        <h5>Entra ID Standards</h5>
-                        <hr />
-                        <CRow className="mb-3" xs={{ cols: 2 }}>
-                          {allStandardsList
-                            .filter((obj) => obj.cat === 'AAD')
-                            .map((item, key) => (
-                              <>
-                                <CCol>
-                                  <RFFCFormSwitch
-                                    key={key}
-                                    name={item.name}
-                                    label={item.label}
-                                    sublabel={getLabel(item)}
-                                    helpText={item.helpText}
-                                  />
-                                  {item.addedComponent && (
-                                    <Condition when={item.name} is={true}>
-                                      {item.addedComponent.type === 'Select' ? (
-                                        <RFFCFormSelect
-                                          name={item.addedComponent.name}
-                                          className="mb-3"
-                                          label={item.addedComponent.label}
-                                          values={item.addedComponent.values}
-                                        />
-                                      ) : (
-                                        <RFFCFormInput
-                                          type="text"
-                                          className="mb-3"
-                                          name={item.addedComponent.name}
-                                          label={item.addedComponent.label}
-                                        />
-                                      )}
-                                    </Condition>
-                                  )}
-                                </CCol>
-                              </>
-                            ))}
-                        </CRow>
-                        <hr />
-                        <h5>Exchange Standards</h5>
-                        <hr />
-                        <CRow className="mb-3" xs={{ cols: 2 }}>
-                          {allStandardsList
-                            .filter((obj) => obj.cat === 'Exchange')
-                            .map((item, key) => (
-                              <>
-                                <CCol>
-                                  <RFFCFormSwitch
-                                    key={key}
-                                    name={item.name}
-                                    label={item.label}
-                                    sublabel={getLabel(item)}
-                                    helpText={item.helpText}
-                                  />
-                                  {item.addedComponent && (
-                                    <Condition when={item.name} is={true}>
-                                      {item.addedComponent.type === 'Select' ? (
-                                        <RFFCFormSelect
-                                          name={item.addedComponent.name}
-                                          className="mb-3"
-                                          label={item.addedComponent.label}
-                                          values={item.addedComponent.values}
-                                        />
-                                      ) : (
-                                        <RFFCFormInput
-                                          type="text"
-                                          className="mb-3"
-                                          name={item.addedComponent.name}
-                                          label={item.addedComponent.label}
-                                        />
-                                      )}
-                                    </Condition>
-                                  )}
-                                </CCol>
-                              </>
-                            ))}
-                        </CRow>
-                        <hr />
-                        <h5>Intune Standards</h5>
-                        <hr />
-                        <CRow className="mb-3" xs={{ cols: 2 }}>
-                          {allStandardsList
-                            .filter((obj) => obj.cat === 'Intune')
-                            .map((item, key) => (
-                              <>
-                                <CCol>
-                                  <RFFCFormSwitch
-                                    key={key}
-                                    name={item.name}
-                                    label={item.label}
-                                    sublabel={getLabel(item)}
-                                    helpText={item.helpText}
-                                  />
-                                  {item.addedComponent && (
-                                    <Condition when={item.name} is={true}>
-                                      {item.addedComponent.type === 'Select' ? (
-                                        <RFFCFormSelect
-                                          name={item.addedComponent.name}
-                                          className="mb-3"
-                                          label={item.addedComponent.label}
-                                          values={item.addedComponent.values}
-                                        />
-                                      ) : (
-                                        <RFFCFormInput
-                                          type="text"
-                                          className="mb-3"
-                                          name={item.addedComponent.name}
-                                          label={item.addedComponent.label}
-                                        />
-                                      )}
-                                    </Condition>
-                                  )}
-                                </CCol>
-                              </>
-                            ))}
-                        </CRow>
-                        <hr />
-                        <h5>SharePoint Standards</h5>
-                        <hr />
-                        <CRow className="mb-3" xs={{ cols: 2 }}>
-                          {allStandardsList
-                            .filter((obj) => obj.cat === 'SharePoint')
-                            .map((item, key) => (
-                              <>
-                                <CCol>
-                                  <RFFCFormSwitch
-                                    key={key}
-                                    name={item.name}
-                                    label={item.label}
-                                    sublabel={getLabel(item)}
-                                    helpText={item.helpText}
-                                  />
-                                  {item.addedComponent && (
-                                    <Condition when={item.name} is={true}>
-                                      {item.addedComponent.type === 'Select' ? (
-                                        <RFFCFormSelect
-                                          name={item.addedComponent.name}
-                                          className="mb-3"
-                                          label={item.addedComponent.label}
-                                          values={item.addedComponent.values}
-                                        />
-                                      ) : (
-                                        <RFFCFormInput
-                                          type="text"
-                                          className="mb-3"
-                                          name={item.addedComponent.name}
-                                          label={item.addedComponent.label}
-                                        />
-                                      )}
-                                    </Condition>
-                                  )}
-                                </CCol>
-                              </>
-                            ))}
-                        </CRow>
-                        <hr />
-                        <h5>Templates</h5>
-                        <hr />
-                        <CRow className="mb-3" xs={{ cols: 2 }}>
-                          <CCol>
-                            <RFFCFormSwitch
-                              name="standards.IntuneTemplate.enabled"
-                              label="Deploy Intune Template"
-                            />
-
-                            <Condition when="standards.IntuneTemplate.enabled" is={true}>
-                              {intuneTemplates.isSuccess && (
-                                <RFFSelectSearch
-                                  name="standards.IntuneTemplate.TemplateList"
-                                  className="mb-3"
-                                  multi={true}
-                                  values={intuneTemplates.data?.map((template) => ({
-                                    value: template.GUID,
-                                    name: template.Displayname,
-                                  }))}
-                                  placeholder="Select a template"
-                                  label="Choose your Intune templates to apply"
-                                />
-                              )}
-                            </Condition>
-                          </CCol>
-                          <CCol>
-                            <RFFCFormSwitch
-                              name="standards.TransportRuleTemplate.enabled"
-                              label="Deploy Transport Rule Template"
-                            />
-
-                            <Condition when="standards.TransportRuleTemplate.enabled" is={true}>
-                              {transportTemplates.isSuccess && (
-                                <RFFSelectSearch
-                                  name="standards.TransportRuleTemplate.TemplateList"
-                                  className="mb-3"
-                                  multi={true}
-                                  values={transportTemplates.data?.map((template) => ({
-                                    value: template.GUID,
-                                    name: template.name,
-                                  }))}
-                                  placeholder="Select a template"
-                                  label="Choose your Transport Rule templates to apply"
-                                />
-                              )}
-                            </Condition>
-                          </CCol>
-                          <CCol>
-                            <RFFCFormSwitch
-                              name="standards.ConditionalAccess.enabled"
-                              label="Deploy Conditional Access Template"
-                            />
-
-                            <Condition when="standards.ConditionalAccess.enabled" is={true}>
-                              {caTemplates.isSuccess && (
-                                <RFFSelectSearch
-                                  name="standards.ConditionalAccess.TemplateList"
-                                  className="mb-3"
-                                  multi={true}
-                                  values={caTemplates.data?.map((template) => ({
-                                    value: template.GUID,
-                                    name: template.displayName,
-                                  }))}
-                                  placeholder="Select a template"
-                                  label="Choose your Conditional Access templates to apply"
-                                />
-                              )}
-                            </Condition>
-                          </CCol>
-                          <CCol>
-                            <RFFCFormSwitch
-                              name="standards.ExConnector.enabled"
-                              label="Deploy Exchange Connector Template"
-                            />
-
-                            <Condition when="standards.ExConnector.enabled" is={true}>
-                              {exConnectorTemplates.isSuccess && (
-                                <RFFSelectSearch
-                                  name="standards.ExConnector.TemplateList"
-                                  className="mb-3"
-                                  multi={true}
-                                  values={exConnectorTemplates.data?.map((template) => ({
-                                    value: template.GUID,
-                                    name: template.name,
-                                  }))}
-                                  placeholder="Select a template"
-                                  label="Choose your Exchange Connector templates to apply"
-                                />
-                              )}
-                            </Condition>
-                          </CCol>
-                          <CCol>
-                            <RFFCFormSwitch
-                              name="standards.GroupTemplate.enabled"
-                              label="Deploy Group Template"
-                            />
-                            <Condition when="standards.GroupTemplate.enabled" is={true}>
-                              {groupTemplates.isSuccess && (
-                                <RFFSelectSearch
-                                  name="standards.GroupTemplate.TemplateList"
-                                  className="mb-3"
-                                  multi={true}
-                                  values={groupTemplates.data?.map((template) => ({
-                                    value: template.GUID,
-                                    name: template.Displayname,
-                                  }))}
-                                  placeholder="Select a template"
-                                  label="Choose your Group templates to apply"
-                                />
-                              )}
-                            </Condition>
-                          </CCol>
-                        </CRow>
-                        <hr />
-                        <h5>Legacy Standards</h5>
-                        <hr />
-                        <CRow className="mb-3" xs={{ cols: 2 }}>
-                          {allStandardsList
-                            .filter((obj) => obj.cat === 'legacy')
-                            .map((item, key) => (
-                              <>
-                                <CCol>
-                                  <RFFCFormSwitch
-                                    key={key}
-                                    name={item.name}
-                                    label={item.label}
-                                    sublabel={getLabel(item)}
-                                    helpText={item.helpText}
-                                  />
-                                  {item.addedComponent && (
-                                    <Condition when={item.name} is={true}>
-                                      {item.addedComponent.type === 'Select' ? (
-                                        <RFFCFormSelect
-                                          name={item.addedComponent.name}
-                                          className="mb-3"
-                                          label={item.addedComponent.label}
-                                          values={item.addedComponent.values}
-                                        />
-                                      ) : (
-                                        <RFFCFormInput
-                                          type="text"
-                                          className="mb-3"
-                                          name={item.addedComponent.name}
-                                          label={item.addedComponent.label}
-                                        />
-                                      )}
-                                    </Condition>
-                                  )}
-                                </CCol>
-                              </>
-                            ))}
-                        </CRow>
-                        {postResults.isSuccess && (
-                          <CCallout color="success">{postResults.data.Results}</CCallout>
-                        )}
                         <CRow className="mb-3">
-                          <CCol md={3}>
-                            <CButton type="submit" disabled={submitting}>
-                              Save
-                              {postResults.isFetching && (
-                                <FontAwesomeIcon
-                                  icon={faCircleNotch}
-                                  spin
-                                  className="ms-2"
-                                  size="1x"
-                                />
-                              )}
-                            </CButton>
+                          <CCol md={4}>
+                            <CWidgetStatsB
+                              className="mb-3"
+                              progress={{ color: 'info', value: enabledWarningsCount }}
+                              text={`Created by ${listStandardResults[0].appliedBy}`}
+                              title={`${enabledWarningsCount} out of 64`}
+                              value="Enabled Warnings"
+                            />
                           </CCol>
-                          <CCol className="d-flex flex-row-reverse">
-                            {listStandardResults[0].appliedBy && (
-                              <DeleteAction key="deleteAction" />
+                          <CCol md={4}>
+                            <CWidgetStatsB
+                              className="mb-3"
+                              progress={{ color: 'info', value: enabledAlertsCount }}
+                              text={`Created by ${listStandardResults[0].appliedBy}`}
+                              title={`${enabledAlertsCount} out of 64`}
+                              value="Enabled Alerts"
+                            />
+                          </CCol>
+                          <CCol md={4}>
+                            <CWidgetStatsB
+                              className="mb-3"
+                              progress={{ color: 'info', value: enabledRemediationsCount }}
+                              text={`Created by ${listStandardResults[0].appliedBy}`}
+                              title={`${enabledRemediationsCount} out of 64`}
+                              value="Enabled Remediations"
+                            />
+                          </CCol>
+                          <CAccordion
+                            alwaysOpen
+                            activeItemKey={
+                              tenantDomain !== 'AllTenants' ? 'general-1' : 'standard-0'
+                            }
+                          >
+                            {tenantDomain !== 'AllTenants' && (
+                              <CAccordionItem itemKey={'general-1'} key={`general-1`}>
+                                <CAccordionHeader>General Standard Settings</CAccordionHeader>
+                                <CAccordionBody>
+                                  <CRow className="mb-3">
+                                    <CCol md={4}>
+                                      <h5>Do not apply All Tenants Standard to this tenant</h5>
+                                      <p>
+                                        <small>
+                                          Enabling this feature excludes this tenant from any
+                                          top-level "All Tenants" standard. This means that only the
+                                          standards you explicitly set for this tenant will be
+                                          applied. Standards previously applied by the "All Tenants"
+                                          standard will not be reverted.
+                                        </small>
+                                      </p>
+                                      <CBadge color="info">Minimal Impact</CBadge>
+                                    </CCol>
+                                    <CCol>
+                                      <h5>Warn</h5>
+                                      <RFFCFormSwitch
+                                        name="ignore.ignore1"
+                                        disabled={true}
+                                        helpText={
+                                          'Exclude this standard from the All Tenants standard. This will only apply explicitly set standards to this tenant.'
+                                        }
+                                      />
+                                    </CCol>
+                                    <CCol>
+                                      <h5>Alert</h5>
+                                      <RFFCFormSwitch
+                                        name="ignore.ignore2"
+                                        disabled={true}
+                                        helpText={
+                                          'Exclude this standard from the All Tenants standard. This will only apply explicitly set standards to this tenant.'
+                                        }
+                                      />
+                                    </CCol>
+                                    <CCol>
+                                      <h5>Remediate</h5>
+                                      <RFFCFormSwitch
+                                        name="standards.OverrideAllTenants.remediate"
+                                        helpText={
+                                          'Exclude this standard from the All Tenants standard. This will only apply explicitly set standards to this tenant.'
+                                        }
+                                      />
+                                    </CCol>
+                                    <CCol md={3}>
+                                      <h5>Optional Input</h5>
+                                    </CCol>
+                                  </CRow>
+                                </CAccordionBody>
+                              </CAccordionItem>
                             )}
-                          </CCol>
+                            {Object.keys(groupedStandards).map((cat, catIndex) => (
+                              <CAccordionItem
+                                itemKey={'standard-' + catIndex}
+                                key={`accordion-item-${catIndex}`}
+                              >
+                                <CAccordionHeader>{cat}</CAccordionHeader>
+                                <CAccordionBody>
+                                  {groupedStandards[cat].map((obj, index) => (
+                                    <CRow key={`row-${catIndex}-${index}`} className="mb-3">
+                                      <CCol md={4}>
+                                        <h5>{obj.label}</h5>
+                                        <p>
+                                          <small>{obj.helpText}</small>
+                                        </p>
+                                        <CBadge color={obj.impactColour}>{obj.impact}</CBadge>
+                                      </CCol>
+                                      <CCol>
+                                        <h5>Warn</h5>
+                                        <RFFCFormSwitch
+                                          name={`${obj.name}.report`}
+                                          helpText={obj.helpText}
+                                          sublabel={getLabel(obj)}
+                                        />
+                                      </CCol>
+                                      <CCol>
+                                        <h5>Alert</h5>
+                                        <RFFCFormSwitch
+                                          name={`${obj.name}.alert`}
+                                          helpText={obj.helpText}
+                                          sublabel={getLabel(obj)}
+                                        />
+                                      </CCol>
+                                      <CCol>
+                                        <h5>Remediate</h5>
+                                        <RFFCFormSwitch
+                                          name={`${obj.name}.remediate`}
+                                          helpText={obj.helpText}
+                                          sublabel={getLabel(obj)}
+                                        />
+                                      </CCol>
+                                      <CCol md={3}>
+                                        <h5>Optional Input</h5>
+                                        {(obj.addedComponent &&
+                                          obj.addedComponent.type === 'Select' && (
+                                            <RFFCFormSelect
+                                              name={obj.addedComponent.name}
+                                              className="mb-3"
+                                              label={obj.addedComponent.label}
+                                              values={obj.addedComponent.values}
+                                            />
+                                          )) ||
+                                          (obj.addedComponent &&
+                                            obj.addedComponent.type === 'input' && (
+                                              <RFFCFormInput
+                                                type="text"
+                                                className="mb-3"
+                                                name={obj.addedComponent.name}
+                                                label={obj.addedComponent.label}
+                                              />
+                                            )) ||
+                                          (obj.addedComponent &&
+                                            obj.addedComponent.type === 'AdminRolesMultiSelect' && (
+                                              <RFFSelectSearch
+                                                multi={true}
+                                                name={obj.addedComponent.name}
+                                                className="mb-3"
+                                                label={obj.addedComponent.label}
+                                                values={GDAPRoles.map((role) => ({
+                                                  value: role.ObjectId,
+                                                  name: role.Name,
+                                                }))}
+                                              />
+                                            ))}
+                                      </CCol>
+                                    </CRow>
+                                  ))}
+                                </CAccordionBody>
+                              </CAccordionItem>
+                            ))}
+                            <CAccordionItem>
+                              <CAccordionHeader>Templates Standard Deployment</CAccordionHeader>
+                              <CAccordionBody>
+                                {[
+                                  {
+                                    name: 'Intune Template',
+                                    switchName: 'standards.IntuneTemplate.enabled',
+                                    templates: intuneTemplates,
+                                  },
+                                  {
+                                    name: 'Transport Rule Template',
+                                    switchName: 'standards.TransportRuleTemplate.enabled',
+                                    templates: transportTemplates,
+                                  },
+                                  {
+                                    name: 'Conditional Access Template',
+                                    switchName: 'standards.ConditionalAccess.enabled',
+                                    templates: caTemplates,
+                                  },
+                                  {
+                                    name: 'Exchange Connector Template',
+                                    switchName: 'standards.ExConnector.enabled',
+                                    templates: exConnectorTemplates,
+                                  },
+                                  {
+                                    name: 'Group Template',
+                                    switchName: 'standards.GroupTemplate.enabled',
+                                    templates: groupTemplates,
+                                  },
+                                ].map((template, index) => (
+                                  <CRow key={`template-row-${index}`} className="mb-3">
+                                    <CCol md={4}>
+                                      <h5>{template.name}</h5>
+                                      <small>Deploy {template.name}</small>
+                                    </CCol>
+                                    <CCol>
+                                      <h5>Warn</h5>
+                                      <RFFCFormSwitch name="ignore.ignore1" disabled={true} />
+                                    </CCol>
+                                    <CCol>
+                                      <h5>Alert</h5>
+                                      <RFFCFormSwitch name="ignore.ignore2" disabled={true} />
+                                    </CCol>
+                                    <CCol>
+                                      <h5>Remediate</h5>
+                                      <RFFCFormSwitch name={template.switchName} />
+                                    </CCol>
+                                    <CCol md={3}>
+                                      <h5>Optional Input</h5>
+                                      {template.templates.isSuccess && (
+                                        <RFFSelectSearch
+                                          name={`${template.switchName}.TemplateList`}
+                                          className="mb-3"
+                                          multi={true}
+                                          values={template.templates.data?.map((t) => ({
+                                            value: t.GUID,
+                                            name: t.name || t.Displayname,
+                                          }))}
+                                          placeholder="Select a template"
+                                          label={`Choose your ${template.name}`}
+                                        />
+                                      )}
+                                    </CCol>
+                                  </CRow>
+                                ))}
+                              </CAccordionBody>
+                            </CAccordionItem>
+                          </CAccordion>
+                        </CRow>
+
+                        <CRow className="me-3">
+                          {postResults.isSuccess && (
+                            <CCallout color="success">{postResults.data.Results}</CCallout>
+                          )}
+                          <CRow className="mb-3">
+                            <CCol md={3}>
+                              <CButton type="submit" disabled={submitting}>
+                                Save
+                                {postResults.isFetching && (
+                                  <FontAwesomeIcon
+                                    icon={faCircleNotch}
+                                    spin
+                                    className="ms-2"
+                                    size="1x"
+                                  />
+                                )}
+                              </CButton>
+                            </CCol>
+                            <CCol className="d-flex flex-row-reverse">
+                              {listStandardResults[0].appliedBy && (
+                                <DeleteAction key="deleteAction" />
+                              )}
+                            </CCol>
+                          </CRow>
                         </CRow>
                       </CForm>
                     )
@@ -628,7 +525,7 @@ const ListAppliedStandards = () => {
               )}
             </CippContentCard>
           </CCol>
-          <CCol lg={6} xs={12}>
+          {/* <CCol lg={6} xs={12}>
             {listStandardsAllTenants && (
               <CippContentCard title="Currently Applied Standards">
                 {getResults.isLoading && <CSpinner size="sm" />}
@@ -642,7 +539,7 @@ const ListAppliedStandards = () => {
                 />
               </CippContentCard>
             )}
-          </CCol>
+          </CCol> */}
         </CRow>
       </>
     </CippPage>

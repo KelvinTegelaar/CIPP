@@ -21,12 +21,14 @@ function useInterval(callback, delay, state) {
     function tick() {
       savedCallback.current()
     }
+
     if (delay !== null) {
       let id = setInterval(tick, delay)
       return () => clearInterval(id)
     }
   }, [delay, state])
 }
+
 const Error = ({ name }) => (
   <Field
     name={name}
@@ -140,7 +142,7 @@ const Setup = () => {
                 <>
                   <CRow className="mb-3">
                     <CCol md={2} className="mb-3">
-                      <a target="_blank" href={`${getResults.data.refreshUrl}`}>
+                      <a target="_blank" rel="noreferrer" href={`${getResults.data.refreshUrl}`}>
                         <CButton color="primary">Refresh Graph Token</CButton>
                       </a>
                     </CCol>

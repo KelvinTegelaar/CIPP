@@ -29,6 +29,7 @@ import { CellDelegatedPrivilege } from 'src/components/tables/CellDelegatedPrivi
 import Portals from 'src/data/portals'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom'
+import { TableModalButton } from 'src/components/buttons'
 
 const Home = () => {
   const [visible, setVisible] = useState(false)
@@ -52,6 +53,15 @@ const Home = () => {
   } = useGenericGetRequestQuery({
     path: '/api/ListuserCounts',
     params: { tenantFilter: currentTenant.defaultDomainName },
+  })
+
+  const GlobalAdminList = useGenericGetRequestQuery({
+    path: '/api/ListGraphRequest',
+    params: {
+      tenantFilter: currentTenant.defaultDomainName,
+      Endpoint: "/directoryRoles(roleTemplateId='62e90394-69f5-4237-9190-012177145e10')/members",
+      $select: 'displayName,userPrincipalName,accountEnabled',
+    },
   })
 
   const {
@@ -138,10 +148,10 @@ const Home = () => {
       (p) => p.displayName === 'AllTenants' || p.displayName === currentTenant.defaultDomainName,
     )
     .flatMap((tenant) => {
-      return Object.keys(tenant.standards).map((standard) => {
+      return Object.keys(tenant.standards).map((standard, idx) => {
         const standardDisplayname = allStandardsList.filter((p) => p.name.includes(standard))
         return (
-          <li key={`${standard}-${tenant.displayName}`}>
+          <li key={`${standard}-${tenant.displayName}-${idx}`}>
             {standardDisplayname[0]?.label} ({tenant.displayName})
           </li>
         )
@@ -192,14 +202,20 @@ const Home = () => {
             </CCol>
             <CCol sm={12} md={6} xl={3} className="mb-3">
               <CippContentCard title="Global Admin Users" icon={faLaptopCode}>
-                <a
-                  href={`https://entra.microsoft.com/${currentTenant.customerId}/#view/Microsoft_AAD_IAM/RoleMenuBlade/~/RoleMembers/objectId/62e90394-69f5-4237-9190-012177145e10/roleName/Global%20Administrator/roleTemplateId/62e90394-69f5-4237-9190-012177145e10/adminUnitObjectId//customRole~/false/resourceScope/%2F?culture=en-us&country=us`}
-                  className="stretched-link"
-                  target="_blank"
-                />
-                <div>
-                  {issuccessUserCounts && !isFetchingUserCount ? dashboard?.Gas : <Skeleton />}
-                </div>
+                {GlobalAdminList.isSuccess ? (
+                  <>
+                    <TableModalButton
+                      className="stretched-link text-decoration-none"
+                      data={GlobalAdminList.data?.Results}
+                      countOnly={true}
+                      component="a"
+                      color="link"
+                      title="Global Admins"
+                    />
+                  </>
+                ) : (
+                  <Skeleton />
+                )}
               </CippContentCard>
             </CCol>
             <CCol sm={12} md={6} xl={3} className="mb-3">
@@ -251,7 +267,7 @@ const Home = () => {
                     {!isLoadingOrg && !isFetchingOrg && organization?.onPremisesSyncEnabled ? (
                       <>
                         <li>
-                          <span class="me-1">Directory Sync:</span>
+                          <span className="me-1">Directory Sync:</span>
                           {organization?.onPremisesLastSyncDateTime ? (
                             <ReactTimeAgo date={organization?.onPremisesLastSyncDateTime} />
                           ) : (
@@ -259,7 +275,7 @@ const Home = () => {
                           )}
                         </li>
                         <li>
-                          <span class="me-1">Password Sync:</span>
+                          <span className="me-1">Password Sync:</span>
                           {organization?.onPremisesLastPasswordSyncDateTime ? (
                             <ReactTimeAgo date={organization?.onPremisesLastPasswordSyncDateTime} />
                           ) : (
@@ -278,7 +294,9 @@ const Home = () => {
                     {(isLoadingOrg || isFetchingOrg) && <Skeleton />}
                     {!isFetchingOrg &&
                       issuccessOrg &&
-                      organization?.verifiedDomains?.map((item) => <li>{item.name}</li>)}
+                      organization?.verifiedDomains?.map((item, idx) => (
+                        <li key={idx}>{item.name}</li>
+                      ))}
                   </CCol>
                   <CCol sm={12} md={4} className="mb-3">
                     <p className="fw-lighter">Capabilities</p>
@@ -293,12 +311,12 @@ const Home = () => {
                           }
                           return plan
                         }, [])
-                        .map((plan) => (
-                          <>
+                        .map((plan, idx) => (
+                          <div key={idx}>
                             {plan === 'exchange' && <li>Exchange</li>}
                             {plan === 'AADPremiumService' && <li>AAD Premium</li>}
                             {plan === 'WindowsDefenderATP' && <li>Windows Defender</li>}
-                          </>
+                          </div>
                         ))}
                   </CCol>
                   <CCol sm={12} md={4} className="mb-3">
@@ -334,10 +352,10 @@ const Home = () => {
                     {(isLoadingPartners || isFetchingPartners) && <Skeleton />}
                     {issuccessPartners &&
                       !isFetchingPartners &&
-                      partners?.Results.map((partner) => {
+                      partners?.Results.map((partner, idx) => {
                         if (partner.TenantInfo) {
                           return (
-                            <li key={`${partner.tenantId}`}>
+                            <li key={`${partner.tenantId}-${idx}`}>
                               {partner.TenantInfo.displayName} (
                               {partner.TenantInfo.defaultDomainName})
                             </li>

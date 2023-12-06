@@ -18,8 +18,7 @@ import {
 import useQuery from 'src/hooks/useQuery'
 import { useDispatch } from 'react-redux'
 import { Form, Field } from 'react-final-form'
-import { RFFSelectSearch, RFFCFormSelect, RFFCFormCheck, RFFCFormInput } from 'src/components/forms'
-import { useListUsersQuery } from 'src/store/api/users'
+import { RFFSelectSearch, RFFCFormCheck, RFFCFormInput, RFFCFormSwitch } from 'src/components/forms'
 import { ModalService } from 'src/components/utilities'
 import {
   useLazyGenericPostRequestQuery,
@@ -28,17 +27,11 @@ import {
 } from 'src/store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
-import {
-  useListMailboxPermissionsQuery,
-  useListMailboxesQuery,
-  useListCalendarPermissionsQuery,
-} from 'src/store/api/mailbox'
-import { CippTable } from 'src/components/tables'
-import { useListMailboxDetailsQuery } from 'src/store/api/mailbox'
-import { CellBoolean } from 'src/components/tables'
+import { useListMailboxDetailsQuery, useListMailboxPermissionsQuery } from 'src/store/api/mailbox'
+import { CellBoolean, CippDatatable } from 'src/components/tables'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-import { RFFCFormSwitch } from 'src/components/forms'
+import PropTypes from 'prop-types'
 
 const formatter = (cell, warning = false, reverse = false, colourless = false) =>
   CellBoolean({ cell, warning, reverse, colourless })
@@ -55,17 +48,17 @@ function Lazy({ visible, children }) {
   return <div style={{ display: visible ? 'block' : 'none' }}>{children}</div>
 }
 
+Lazy.propTypes = {
+  visible: PropTypes.bool,
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
+}
+
 const MailboxSettings = () => {
   const dispatch = useDispatch()
   let query = useQuery()
   const userId = query.get('userId')
   const tenantDomain = query.get('tenantDomain')
   const [active, setActive] = useState(1)
-  const {
-    data: usercal = {},
-    isFetching: usercalIsFetching,
-    error: usercalError,
-  } = useListCalendarPermissionsQuery({ tenantDomain, userId })
   const columnsCal = [
     {
       name: 'User',
@@ -111,12 +104,6 @@ const MailboxSettings = () => {
       exportSelector: 'Permissions',
     },
   ]
-
-  const {
-    data: user = {},
-    isFetching: userIsFetching,
-    error: userError,
-  } = useListMailboxPermissionsQuery({ tenantDomain, userId })
 
   return (
     <CRow>
@@ -171,20 +158,20 @@ const MailboxSettings = () => {
           </CCardHeader>
           <CCardBody>
             {active === 1 && (
-              <>
-                {userIsFetching && <CSpinner />}
-                {!userIsFetching && (
-                  <CippTable reportName="UserPermissions" columns={columns} data={user} />
-                )}
-              </>
+              <CippDatatable
+                reportName="MailboxPermissions"
+                path="/api/ListMailboxPermissions"
+                params={{ userId, tenantFilter: tenantDomain }}
+                columns={columns}
+              />
             )}
             {active === 2 && (
-              <>
-                {usercalIsFetching && <CSpinner />}
-                {!usercalIsFetching && (
-                  <CippTable reportName="UserPermissions" columns={columnsCal} data={usercal} />
-                )}
-              </>
+              <CippDatatable
+                reportName="CalendarPermissions"
+                path="/api/ListCalendarPermissions"
+                params={{ userId, tenantFilter: tenantDomain }}
+                columns={columnsCal}
+              />
             )}
             {active === 3 && (
               <>
@@ -220,7 +207,15 @@ const MailboxPermissions = () => {
     data: users = [],
     isFetching: usersIsFetching,
     error: usersError,
-  } = useListUsersQuery({ tenantDomain })
+  } = useGenericGetRequestQuery({
+    path: '/api/ListGraphRequest',
+    params: {
+      Endpoint: 'users',
+      TenantFilter: tenantDomain,
+      $filter: 'assignedLicenses/$count ne 0 and accountEnabled eq true',
+      $count: true,
+    },
+  })
 
   useEffect(() => {
     if (!userId || !tenantDomain) {
@@ -279,7 +274,7 @@ const MailboxPermissions = () => {
                             multi={true}
                             label="Remove Full Access"
                             disabled={formDisabled}
-                            values={users?.map((user) => ({
+                            values={users?.Results?.map((user) => ({
                               value: user.mail,
                               name: `${user.displayName} - ${user.mail} `,
                             }))}
@@ -293,7 +288,7 @@ const MailboxPermissions = () => {
                             multi={true}
                             label="Add Full Access - Automapping Enabled"
                             disabled={formDisabled}
-                            values={users?.map((user) => ({
+                            values={users?.Results?.map((user) => ({
                               value: user.mail,
                               name: `${user.displayName} - ${user.mail} `,
                             }))}
@@ -307,7 +302,7 @@ const MailboxPermissions = () => {
                             multi={true}
                             label="Add Full Access - Automapping Disabled"
                             disabled={formDisabled}
-                            values={users?.map((user) => ({
+                            values={users?.Results?.map((user) => ({
                               value: user.mail,
                               name: `${user.displayName} - ${user.mail} `,
                             }))}
@@ -321,7 +316,7 @@ const MailboxPermissions = () => {
                             multi={true}
                             label="Add Send-as permissions"
                             disabled={formDisabled}
-                            values={users?.map((user) => ({
+                            values={users?.Results?.map((user) => ({
                               value: user.mail,
                               name: `${user.displayName} - ${user.mail} `,
                             }))}
@@ -335,7 +330,7 @@ const MailboxPermissions = () => {
                             multi={true}
                             label="Remove Send-as permissions"
                             disabled={formDisabled}
-                            values={users?.map((user) => ({
+                            values={users?.Results?.map((user) => ({
                               value: user.mail,
                               name: `${user.displayName} - ${user.mail} `,
                             }))}
@@ -349,7 +344,7 @@ const MailboxPermissions = () => {
                             multi={true}
                             label="Add Send On Behalf permissions"
                             disabled={formDisabled}
-                            values={users?.map((user) => ({
+                            values={users?.Results?.map((user) => ({
                               value: user.mail,
                               name: `${user.displayName} - ${user.mail} `,
                             }))}
@@ -363,7 +358,7 @@ const MailboxPermissions = () => {
                             multi={true}
                             label="Remove Send On Behalf permissions"
                             disabled={formDisabled}
-                            values={users?.map((user) => ({
+                            values={users?.Results?.map((user) => ({
                               value: user.mail,
                               name: `${user.displayName} - ${user.mail} `,
                             }))}
@@ -416,16 +411,22 @@ const CalendarPermissions = () => {
   const [queryError, setQueryError] = useState(false)
 
   const {
-    data: user = {},
+    data: user = [],
     isFetching: userIsFetching,
     error: userError,
-  } = useListCalendarPermissionsQuery({ tenantDomain, userId })
+  } = useGenericGetRequestQuery({
+    path: '/api/ListCalendarPermissions',
+    params: { TenantFilter: tenantDomain, UserId: userId },
+  })
 
   const {
     data: users = [],
     isFetching: usersIsFetching,
     error: usersError,
-  } = useListMailboxesQuery({ tenantDomain })
+  } = useGenericGetRequestQuery({
+    path: '/api/ListMailboxes',
+    params: { TenantFilter: tenantDomain, SkipLicense: true },
+  })
 
   useEffect(() => {
     if (!userId || !tenantDomain) {
@@ -464,21 +465,18 @@ const CalendarPermissions = () => {
 
   return (
     <>
+      {queryError && (
+        <CRow>
+          <CCol md={12}>
+            <CCallout color="danger">
+              {/* @todo add more descriptive help message here */}
+              Failed to load user
+            </CCallout>
+          </CCol>
+        </CRow>
+      )}
       {!queryError && (
         <>
-          {postResults.isSuccess && (
-            <CCallout color="success">{postResults.data?.Results}</CCallout>
-          )}
-          {queryError && (
-            <CRow>
-              <CCol md={12}>
-                <CCallout color="danger">
-                  {/* @todo add more descriptive help message here */}
-                  Failed to load user
-                </CCallout>
-              </CCol>
-            </CRow>
-          )}
           <CRow>
             <CCol>
               {userIsFetching && <CSpinner />}
@@ -520,10 +518,21 @@ const CalendarPermissions = () => {
                                 { value: 'Contributor', name: 'Contributor' },
                                 { value: 'Editor', name: 'Editor' },
                                 { value: 'Owner', name: 'Owner' },
-                                { value: 'NonEditingAuthor', name: 'Non Editing Author' },
-                                { value: 'PublishingAuthor', name: 'Publishing Author' },
-                                { value: 'PublishingEditor', name: 'Publishing Editor' },
+                                {
+                                  value: 'NonEditingAuthor',
+                                  name: 'Non Editing Author',
+                                },
+                                {
+                                  value: 'PublishingAuthor',
+                                  name: 'Publishing Author',
+                                },
+                                {
+                                  value: 'PublishingEditor',
+                                  name: 'Publishing Editor',
+                                },
                                 { value: 'Reviewer', name: 'Reviewer' },
+                                { value: 'LimitedDetails', name: 'Limited Details' },
+                                { value: 'AvailabilityOnly', name: 'Availability Only' },
                               ]}
                               placeholder="Select a permission level"
                               name="Permissions"
@@ -583,10 +592,18 @@ const MailboxForwarding = () => {
     data: users = [],
     isFetching: usersIsFetching,
     error: usersError,
-  } = useListUsersQuery({ tenantDomain })
-
+  } = useGenericGetRequestQuery({
+    path: '/api/ListGraphRequest',
+    params: {
+      Endpoint: 'users',
+      TenantFilter: tenantDomain,
+      $filter: 'assignedLicenses/$count ne 0 and accountEnabled eq true',
+      $count: true,
+    },
+  })
   useEffect(() => {
     if (postResults.isSuccess) {
+      // @TODO do something here?
     }
     if (!userId || !tenantDomain) {
       ModalService.open({
@@ -613,23 +630,6 @@ const MailboxForwarding = () => {
   const initialState = {
     ...user,
   }
-
-  const columns = [
-    {
-      name: 'User',
-      selector: (row) => row.User,
-      sortable: true,
-      wrap: true,
-      exportSelector: 'User',
-    },
-    {
-      name: 'Permissions',
-      selector: (row) => row['Permissions'],
-      sortable: true,
-      wrap: true,
-      exportSelector: 'Permissions',
-    },
-  ]
 
   const formDisabled = queryError === true
 
@@ -675,7 +675,7 @@ const MailboxForwarding = () => {
                               <RFFSelectSearch
                                 multi={true}
                                 disabled={formDisabled}
-                                values={users?.map((user) => ({
+                                values={users?.Results?.map((user) => ({
                                   value: user.mail,
                                   name: `${user.displayName} - ${user.mail} `,
                                 }))}
@@ -819,10 +819,18 @@ const OutOfOffice = () => {
     data: users = [],
     isFetching: usersIsFetching,
     error: usersError,
-  } = useListUsersQuery({ tenantDomain })
-
+  } = useGenericGetRequestQuery({
+    path: '/api/ListGraphRequest',
+    params: {
+      Endpoint: 'users',
+      TenantFilter: tenantDomain,
+      $filter: 'assignedLicenses/$count ne 0 and accountEnabled eq true',
+      $count: true,
+    },
+  })
   useEffect(() => {
     if (postResults.isSuccess) {
+      // @TODO do something here?
     }
     if (!userId || !tenantDomain) {
       ModalService.open({
@@ -947,11 +955,7 @@ const OutOfOffice = () => {
                           </CCol>
                         </CRow>
                         {postResults.isSuccess && (
-                          <CCallout color="success">
-                            {postResults.data.Results.map((result, idx) => (
-                              <li key={idx}>{result}</li>
-                            ))}
-                          </CCallout>
+                          <CCallout color="success">{postResults.data?.Results}</CCallout>
                         )}
                       </CForm>
                     )

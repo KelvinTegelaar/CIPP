@@ -196,6 +196,7 @@ const AddAPDevice = () => {
           </CCol>
           <CCol xs={'auto'} className="align-self-end">
             <FormSpy>
+              {/* eslint-disable react/prop-types */}
               {(props) => {
                 return (
                   <>

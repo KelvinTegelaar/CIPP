@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import {
   CCol,
   CRow,
@@ -23,10 +23,8 @@ import {
   RFFCFormInput,
   RFFCFormRadio,
   RFFCFormSelect,
-  RFFCFormSwitch,
 } from 'src/components/forms'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
-import { useRef } from 'react'
 import { OnChange } from 'react-final-form-listeners'
 
 const Error = ({ name }) => (
@@ -102,6 +100,11 @@ const AddWinGet = () => {
       )}
     </Field>
   )
+
+  WhenFieldChanges.propTypes = {
+    field: PropTypes.node,
+    set: PropTypes.string,
+  }
 
   return (
     <CippWizard
@@ -269,6 +272,7 @@ const AddWinGet = () => {
         <hr className="my-4" />
         {!postResults.isSuccess && (
           <FormSpy>
+            {/* eslint-disable react/prop-types */}
             {(props) => {
               return (
                 <>

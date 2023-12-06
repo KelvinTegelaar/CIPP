@@ -122,7 +122,10 @@ const TransportRulesList = () => {
       tenantSelector={true}
       titleButton={
         <>
-          <TitleButton href="/email/transport/deploy-rules" title="Deploy Transport Rule" />
+          <TitleButton
+            href={`/email/transport/deploy-rules?customerId=${tenant?.customerId}&tableFilter=${tenant?.defaultDomainName}`}
+            title="Deploy Transport Rule"
+          />
         </>
       }
       datatable={{

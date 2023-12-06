@@ -6,6 +6,7 @@ import { faEye } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippCodeBlock, CippOffcanvas } from 'src/components/utilities'
 import { CippPageList } from 'src/components/layout'
+import { TitleButton } from 'src/components/buttons'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const [visible, setVisible] = useState(false)
@@ -88,6 +89,14 @@ const AutopilotListProfiles = () => {
   return (
     <CippPageList
       title="Autopilot Profiles"
+      titleButton={
+        <>
+          <TitleButton
+            href={`/endpoint/autopilot/add-profile?customerId=${tenant?.customerId}&tableFilter=${tenant?.defaultDomainName}`}
+            title="Deploy Autopilot Profile"
+          />
+        </>
+      }
       tenantSelector={true}
       datatable={{
         reportName: `${tenant?.defaultDomainName}-AutopilotProfile-List`,

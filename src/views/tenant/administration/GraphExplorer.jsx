@@ -23,6 +23,7 @@ import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import { OnChange } from 'react-final-form-listeners'
 import { queryString } from 'src/helpers'
 import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
+import PropTypes from 'prop-types'
 
 const GraphExplorer = () => {
   let navigate = useNavigate()
@@ -79,7 +80,7 @@ const GraphExplorer = () => {
         disablePagination: disablePagination,
       },
     })
-  }, [endpoint, execGraphRequest, tenant.defaultDomainName, query])
+  }, [endpoint, execGraphRequest, tenant.defaultDomainName, query, disablePagination])
 
   const WhenFieldChanges = ({ field, set }) => (
     <Field name={set} subscription={{}}>
@@ -100,6 +101,11 @@ const GraphExplorer = () => {
       )}
     </Field>
   )
+
+  WhenFieldChanges.propTypes = {
+    field: PropTypes.node,
+    set: PropTypes.string,
+  }
 
   return (
     <>

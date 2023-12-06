@@ -5,10 +5,11 @@ import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 's
 
 import { Editor } from '@monaco-editor/react'
 import { useSelector } from 'react-redux'
+import PropTypes from 'prop-types'
 
 function CippCodeOffCanvas({
   row,
-  state,
+  state: visible,
   hideFunction,
   type,
   title = 'Template JSON',
@@ -27,13 +28,14 @@ function CippCodeOffCanvas({
       setInvalid(true)
     }
   }
+
   return (
     <>
       <CippOffcanvas
         title={title}
         addedClass="offcanvas-large"
         placement="end"
-        visible={state}
+        visible={visible}
         id={row.id}
         hideFunction={hideFunction}
       >
@@ -41,7 +43,7 @@ function CippCodeOffCanvas({
           className="mb-3"
           defaultLanguage="json"
           value={JSON.stringify(row, null, 2)}
-          theme={currentTheme == 'cyberdrain' ? 'vs-light' : 'vs-dark'}
+          theme={currentTheme === 'cyberdrain' ? 'vs-light' : 'vs-dark'}
           height="800px"
           onChange={handleEditorChange}
           options={{
@@ -72,6 +74,15 @@ function CippCodeOffCanvas({
       </CippOffcanvas>
     </>
   )
+}
+
+CippCodeOffCanvas.propTypes = {
+  row: PropTypes.object,
+  state: PropTypes.bool,
+  hideFunction: PropTypes.func,
+  type: PropTypes.string,
+  title: PropTypes.string,
+  hideButton: PropTypes.bool,
 }
 
 export default CippCodeOffCanvas

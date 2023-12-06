@@ -1,4 +1,4 @@
-import React, { useRef, useMemo, useState, useCallback } from 'react'
+import React, { useRef, useMemo, useState, useCallback, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { ExportCsvButton, ExportPDFButton } from 'src/components/buttons'
 import {
@@ -15,17 +15,28 @@ import {
   CModalTitle,
   CCallout,
   CFormSelect,
+  CAccordion,
+  CAccordionHeader,
+  CAccordionBody,
+  CAccordionItem,
 } from '@coreui/react'
 import DataTable, { createTheme } from 'react-data-table-component'
 import PropTypes from 'prop-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faColumns, faSearch, faSync, faTasks } from '@fortawesome/free-solid-svg-icons'
-import { useEffect } from 'react'
+import {
+  faCheck,
+  faColumns,
+  faFileCsv,
+  faFilePdf,
+  faSearch,
+  faSync,
+  faTasks,
+} from '@fortawesome/free-solid-svg-icons'
 import { cellGenericFormatter } from './CellGenericFormat'
 import { ModalService } from '../utilities'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { ConfirmModal } from '../utilities/SharedModal'
-import { debounce } from 'lodash'
+import { debounce } from 'lodash-es'
 import { useSearchParams } from 'react-router-dom'
 
 const FilterComponent = ({ filterText, onFilter, onClear, filterlist, onFilterPreset }) => (
@@ -144,46 +155,19 @@ export default function CippTable({
   const [genericGetRequest, getResults] = useLazyGenericGetRequestQuery()
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const [getDrowndownInfo, dropDownInfo] = useLazyGenericGetRequestQuery()
-  const [modalContent, setModalContent] = useState(null)
+  const [modalContent, setModalContent] = useState({})
   //get the search params called "tableFilter" and set the filter to that.
   const [searchParams, setSearchParams] = useSearchParams()
-  if (searchParams.get('tableFilter') && !filterviaURL && !isModal) {
+  if (
+    searchParams.get('tableFilter') &&
+    (!filterviaURL || searchParams.get('updateTableFilter')) &&
+    !isModal
+  ) {
     setFilterText(searchParams.get('tableFilter'))
     setFilterviaURL(true)
+    searchParams.delete('updateTableFilter')
   }
 
-  useEffect(() => {
-    if (dropDownInfo.isFetching) {
-      handleModal(
-        <CSpinner />,
-        modalContent.item.modalUrl,
-        modalContent.item.modalType,
-        modalContent.item.modalBody,
-        modalContent.item.modalInput,
-        modalContent.item.modalDropdown,
-      )
-    }
-    if (dropDownInfo.isSuccess) {
-      console.log(modalContent)
-      handleModal(
-        modalContent.item.modalMessage,
-        modalContent.item.modalUrl,
-        modalContent.item.modalType,
-        modalContent.item.modalBody,
-        modalContent.item.modalInput,
-        modalContent.item.modalDropdown,
-      )
-    } else if (dropDownInfo.isError) {
-      handleModal(
-        'Error connecting to the API.',
-        modalContent.item.modalUrl,
-        modalContent.item.modalType,
-        modalContent.item.modalBody,
-        modalContent.item.modalInput,
-        modalContent.item.modalDropdown,
-      )
-    }
-  }, [dropDownInfo])
   const handleSelectedChange = ({ selectedRows }) => {
     setSelectedRows(selectedRows)
     if (selectedRows.length < 1) {
@@ -191,21 +175,24 @@ export default function CippTable({
     }
   }
   const [resetPaginationToggle, setResetPaginationToggle] = React.useState(false)
+
   // Helper function to escape special characters in a string for regex
   function escapeRegExp(string) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
   }
 
-  const setGraphFilter = (e) => {
-    if (graphFilterFunction) {
-      graphFilterFunction(e)
-      console.log(e)
-    }
-  }
+  const setGraphFilter = useCallback(
+    (e) => {
+      if (graphFilterFunction) {
+        graphFilterFunction(e)
+      }
+    },
+    [graphFilterFunction],
+  )
 
   const debounceSetGraphFilter = useMemo(() => {
     return debounce(setGraphFilter, 1000)
-  }, [])
+  }, [setGraphFilter])
 
   const debounceSetSearchParams = useCallback(() => {
     const currentUrl = new URL(window.location.href)
@@ -250,7 +237,6 @@ export default function CippTable({
             //set the error message so the user understands the key is not found.
             console.error(`FilterError: Property "${property}" not found.`)
             return false // Keep the item if the property is not found
-          } else {
           }
 
           switch (operator) {
@@ -288,7 +274,7 @@ export default function CippTable({
     if (columns !== updatedColumns) {
       setUpdatedColumns(columns)
     }
-  }, [updatedColumns])
+  }, [columns, updatedColumns])
 
   createTheme(
     'cyberdrain',
@@ -334,95 +320,140 @@ export default function CippTable({
       },
     },
   }
-  const handleModal = (
-    modalMessage,
-    modalUrl,
-    modalType = 'GET',
-    modalBody,
-    modalInput,
-    modalDropdown,
-  ) => {
-    if (modalType === 'GET') {
-      ModalService.confirm({
-        body: (
-          <div style={{ overflow: 'visible' }}>
-            <div>{modalMessage}</div>
-          </div>
-        ),
-        title: 'Confirm',
-        onConfirm: async () => {
-          const resultsarr = []
-          for (const row of selectedRows) {
-            setLoopRunning(true)
-            const urlParams = new URLSearchParams(modalUrl.split('?')[1])
-            for (let [paramName, paramValue] of urlParams.entries()) {
-              if (paramValue.startsWith('!')) {
-                urlParams.set(paramName, row[paramValue.replace('!', '')])
+  const handleModal = useCallback(
+    (modalMessage, modalUrl, modalType = 'GET', modalBody, modalInput, modalDropdown) => {
+      if (modalType === 'GET') {
+        ModalService.confirm({
+          body: (
+            <div style={{ overflow: 'visible' }}>
+              <div>{modalMessage}</div>
+            </div>
+          ),
+          title: 'Confirm',
+          onConfirm: async () => {
+            const resultsarr = []
+            for (const row of selectedRows) {
+              setLoopRunning(true)
+              const urlParams = new URLSearchParams(modalUrl.split('?')[1])
+              for (let [paramName, paramValue] of urlParams.entries()) {
+                if (paramValue.startsWith('!')) {
+                  urlParams.set(paramName, row[paramValue.replace('!', '')])
+                }
               }
+              const NewModalUrl = `${modalUrl.split('?')[0]}?${urlParams.toString()}`
+              const results = await genericGetRequest({ path: NewModalUrl, refreshParam: row.id })
+              resultsarr.push(results)
+              setMassResults(resultsarr)
             }
-            const NewModalUrl = `${modalUrl.split('?')[0]}?${urlParams.toString()}`
-            const results = await genericGetRequest({ path: NewModalUrl, refreshParam: row.id })
-            resultsarr.push(results)
-            setMassResults(resultsarr)
-          }
-          setLoopRunning(false)
-        },
-      })
-    } else {
-      ModalService.confirm({
-        body: (
-          <div style={{ overflow: 'visible' }}>
-            {modalInput && (
-              <div>
-                <CFormInput ref={inputRef} type="text" />
-              </div>
-            )}
-            {modalDropdown && (
-              <div>
-                {dropDownInfo.isSuccess && (
-                  <CFormSelect
-                    ref={inputRef}
-                    options={dropDownInfo.data.map((data) => ({
-                      value: data[modalDropdown.valueField],
-                      label: data[modalDropdown.labelField],
-                    }))}
-                  />
-                )}
-              </div>
-            )}
-            <div>{modalMessage}</div>
-          </div>
-        ),
-        title: 'Confirm',
-        onConfirm: async () => {
-          const resultsarr = []
-          for (const row of selectedRows) {
-            setLoopRunning(true)
-            const urlParams = new URLSearchParams(modalUrl.split('?')[1])
-            for (let [paramName, paramValue] of urlParams.entries()) {
-              if (paramValue.toString().startsWith('!')) {
-                urlParams.set(paramName, row[paramValue.replace('!', '')])
+            setLoopRunning(false)
+          },
+        })
+      } else {
+        ModalService.confirm({
+          body: (
+            <div style={{ overflow: 'visible' }}>
+              {modalInput && (
+                <div>
+                  <CFormInput ref={inputRef} type="text" />
+                </div>
+              )}
+              {modalDropdown && (
+                <div>
+                  {dropDownInfo.isSuccess && (
+                    <CFormSelect
+                      ref={inputRef}
+                      options={dropDownInfo.data.map((data) => ({
+                        value: data[modalDropdown.valueField],
+                        label: data[modalDropdown.labelField],
+                      }))}
+                    />
+                  )}
+                </div>
+              )}
+              <div>{modalMessage}</div>
+            </div>
+          ),
+          title: 'Confirm',
+          onConfirm: async () => {
+            const resultsarr = []
+            for (const row of selectedRows) {
+              setLoopRunning(true)
+              const urlParams = new URLSearchParams(modalUrl.split('?')[1])
+              for (let [paramName, paramValue] of urlParams.entries()) {
+                if (paramValue.toString().startsWith('!')) {
+                  urlParams.set(paramName, row[paramValue.replace('!', '')])
+                }
               }
-            }
-            const newModalBody = {}
-            for (let [objName, objValue] of Object.entries(modalBody)) {
-              if (objValue.toString().startsWith('!')) {
-                newModalBody[objName] = row[objValue.replace('!', '')]
+              const newModalBody = {}
+              for (let [objName, objValue] of Object.entries(modalBody)) {
+                if (objValue.toString().startsWith('!')) {
+                  newModalBody[objName] = row[objValue.replace('!', '')]
+                }
               }
+              const NewModalUrl = `${modalUrl.split('?')[0]}?${urlParams.toString()}`
+              const results = await genericPostRequest({
+                path: NewModalUrl,
+                values: { ...modalBody, ...newModalBody, ...{ input: inputRef.current.value } },
+              })
+              resultsarr.push(results)
+              setMassResults(resultsarr)
             }
-            const NewModalUrl = `${modalUrl.split('?')[0]}?${urlParams.toString()}`
-            const results = await genericPostRequest({
-              path: NewModalUrl,
-              values: { ...modalBody, ...newModalBody, ...{ input: inputRef.current.value } },
-            })
-            resultsarr.push(results)
-            setMassResults(resultsarr)
-          }
-          setLoopRunning(false)
-        },
-      })
+            setLoopRunning(false)
+          },
+        })
+      }
+    },
+    [
+      dropDownInfo?.data,
+      dropDownInfo?.isSuccess,
+      genericGetRequest,
+      genericPostRequest,
+      selectedRows,
+    ],
+  )
+
+  useEffect(() => {
+    if (dropDownInfo.isFetching) {
+      handleModal(
+        <CSpinner />,
+        modalContent.item.modalUrl,
+        modalContent.item.modalType,
+        modalContent.item.modalBody,
+        modalContent.item.modalInput,
+        modalContent.item.modalDropdown,
+      )
     }
-  }
+    if (dropDownInfo.isSuccess) {
+      //console.log(modalContent)
+      handleModal(
+        modalContent.item.modalMessage,
+        modalContent.item.modalUrl,
+        modalContent.item.modalType,
+        modalContent.item.modalBody,
+        modalContent.item.modalInput,
+        modalContent.item.modalDropdown,
+      )
+    } else if (dropDownInfo.isError) {
+      handleModal(
+        'Error connecting to the API.',
+        modalContent.item.modalUrl,
+        modalContent.item.modalType,
+        modalContent.item.modalBody,
+        modalContent.item.modalInput,
+        modalContent.item.modalDropdown,
+      )
+    }
+  }, [
+    dropDownInfo,
+    handleModal,
+    modalContent.item?.modalBody,
+    modalContent.item?.modalDropdown,
+    modalContent.item?.modalInput,
+    modalContent.item?.modalMessage,
+    modalContent.item?.modalType,
+    modalContent.item?.modalUrl,
+  ])
+
   const subHeaderComponentMemo = React.useMemo(() => {
     const handleClear = () => {
       if (filterText) {
@@ -458,6 +489,7 @@ export default function CippTable({
     if (refreshFunction) {
       defaultActions.push([
         <CButton
+          key={'refresh-action'}
           onClick={() => {
             refreshFunction((Math.random() + 1).toString(36).substring(7))
           }}
@@ -492,9 +524,12 @@ export default function CippTable({
               keys.reduce((acc, curr) => {
                 const key = curr.split('/')
                 if (key.length > 1) {
-                  var property = obj
-                  for (var x = 0; x < key.length; x++) {
-                    if (property.hasOwnProperty(key[x]) && property[key[x]] !== null) {
+                  let property = obj
+                  for (let x = 0; x < key.length; x++) {
+                    if (
+                      Object.prototype.hasOwnProperty.call(property, key[x]) &&
+                      property[key[x]] !== null
+                    ) {
                       property = property[key[x]]
                     } else {
                       property = 'n/a'
@@ -557,7 +592,7 @@ export default function CippTable({
           }
 
           defaultActions.push([
-            <CDropdown className="me-2" variant="input-group">
+            <CDropdown key={'column-selector'} className="me-2" variant="input-group">
               <CDropdownToggle
                 className="btn btn-primary btn-sm m-1"
                 size="sm"
@@ -585,19 +620,71 @@ export default function CippTable({
         }
 
         defaultActions.push([
-          <ExportPDFButton
-            key="export-pdf-action"
-            pdfData={filtered}
-            pdfHeaders={columns}
-            pdfSize="A4"
-            reportName={reportName}
-          />,
+          <CDropdown key={'pdf-selector'} className="me-2" variant="input-group">
+            <CDropdownToggle
+              className="btn btn-primary btn-sm m-1"
+              size="sm"
+              style={{
+                backgroundColor: '#f88c1a',
+              }}
+            >
+              <FontAwesomeIcon icon={faFilePdf} />
+            </CDropdownToggle>
+            <CDropdownMenu>
+              {dataKeys() && (
+                <>
+                  <ExportPDFButton
+                    key="export-pdf-action-visible"
+                    pdfData={filtered}
+                    pdfHeaders={columns}
+                    pdfSize="A4"
+                    reportName={reportName}
+                    nameText="Export Visible Columns"
+                  />
+                </>
+              )}
+            </CDropdownMenu>
+          </CDropdown>,
         ])
       }
 
       if (!disableCSVExport) {
         defaultActions.push([
-          <ExportCsvButton key="export-csv-action" csvData={filtered} reportName={reportName} />,
+          <>
+            <CDropdown key={'csv-selector'} className="me-2" variant="input-group">
+              <CDropdownToggle
+                className="btn btn-primary btn-sm m-1"
+                size="sm"
+                style={{
+                  backgroundColor: '#f88c1a',
+                }}
+              >
+                <FontAwesomeIcon icon={faFileCsv} />
+              </CDropdownToggle>
+              <CDropdownMenu>
+                {dataKeys() && (
+                  <>
+                    <CDropdownItem>
+                      <ExportCsvButton
+                        key="export-csv-action-visible"
+                        csvData={filtered}
+                        reportName={reportName}
+                        nameText="Export Visible Columns"
+                      />
+                    </CDropdownItem>
+                    <CDropdownItem>
+                      <ExportCsvButton
+                        key="export-csv-action-all"
+                        csvData={data}
+                        reportName={reportName}
+                        nameText="Export All Columns"
+                      />
+                    </CDropdownItem>
+                  </>
+                )}
+              </CDropdownMenu>
+            </CDropdown>
+          </>,
         ])
       }
     }
@@ -634,6 +721,7 @@ export default function CippTable({
             <FilterComponent
               onFilter={(e) => setFilterText(e.target.value)}
               onFilterPreset={(e) => {
+                if (e === '') setGraphFilter('')
                 setFilterText(e)
               }}
               onClear={handleClear}
@@ -647,6 +735,7 @@ export default function CippTable({
     )
   }, [
     actions,
+    selectedRows,
     disablePDFExport,
     disableCSVExport,
     filterText,
@@ -655,8 +744,11 @@ export default function CippTable({
     data,
     columns,
     reportName,
+    selectedRows,
+    filteredItems,
   ])
   const tablePageSize = useSelector((state) => state.app.tablePageSize)
+
   return (
     <div className="ms-n3 me-n3 cipp-tablewrapper">
       {!isFetching && error && <CCallout color="info">Error loading data</CCallout>}
@@ -665,12 +757,41 @@ export default function CippTable({
           <>
             {(massResults.length >= 1 || loopRunning) && (
               <CCallout color="info">
-                {massResults.map((message, idx) => {
-                  const results = message.data?.Results
-                  const displayResults = Array.isArray(results) ? results.join(', ') : results
-
-                  return <li key={`message-${idx}`}>{displayResults}</li>
-                })}
+                {massResults[0]?.data?.Metadata?.Heading && (
+                  <CAccordion flush>
+                    {massResults.map((message, idx) => {
+                      const results = message.data?.Results
+                      const displayResults = Array.isArray(results)
+                        ? results.join('</li><li>')
+                        : results
+                      var iconName = 'info-circle'
+                      if (message.data?.Metadata?.Success === true) {
+                        iconName = 'check-circle'
+                      } else if (message.data?.Metadata?.Success === false) {
+                        iconName = 'times-circle'
+                      }
+                      return (
+                        <CAccordionItem key={`${idx}-message`}>
+                          <CAccordionHeader>
+                            <FontAwesomeIcon icon={iconName} className="me-2" />
+                            {message.data?.Metadata?.Heading}
+                          </CAccordionHeader>
+                          <CAccordionBody>
+                            {results.map((line, i) => {
+                              return <li key={i}>{line}</li>
+                            })}
+                          </CAccordionBody>
+                        </CAccordionItem>
+                      )
+                    })}
+                  </CAccordion>
+                )}
+                {!massResults[0]?.data?.Metadata?.Heading &&
+                  massResults.map((message, idx) => {
+                    const results = message.data?.Results
+                    const displayResults = Array.isArray(results) ? results.join(', ') : results
+                    return <li key={`message-${idx}`}>{displayResults}</li>
+                  })}
                 {loopRunning && (
                   <li>
                     <CSpinner size="sm" />
@@ -721,8 +842,34 @@ export default function CippTable({
 export const CippTablePropTypes = {
   reportName: PropTypes.string.isRequired,
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
-  keyField: PropTypes.string,
-  tableProps: PropTypes.object,
+  refreshFunction: PropTypes.func,
+  graphFilterFunction: PropTypes.func,
+  dynamicColumns: PropTypes.bool,
+  defaultFilterText: PropTypes.string,
+  isModal: PropTypes.bool,
+  exportFiltered: PropTypes.bool,
+  showFilter: PropTypes.bool,
+  tableProps: PropTypes.shape({
+    keyField: PropTypes.string,
+    theme: PropTypes.string,
+    pagination: PropTypes.bool,
+    responsive: PropTypes.bool,
+    dense: PropTypes.bool,
+    striped: PropTypes.bool,
+    subheader: PropTypes.bool,
+    // @TODO
+    // expandableRows,
+    // actionsList,
+    // expandableRowsComponent,
+    // expandableRowsHideExpander,
+    // expandOnRowClicked,
+    // selectableRows,
+    sortFunction: PropTypes.bool,
+    onSelectedRowsChange: PropTypes.func,
+    highlightOnHover: PropTypes.bool,
+    disableDefaultActions: PropTypes.bool,
+    actions: PropTypes.arrayOf(PropTypes.node),
+  }),
   data: PropTypes.array,
   isFetching: PropTypes.bool,
   disablePDFExport: PropTypes.bool,

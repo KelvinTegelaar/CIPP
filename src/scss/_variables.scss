@@ -86,10 +86,10 @@ $secondary-base: rgba(0, 48, 73) !default;
 $secondary-50: rgba(0, 47, 73, 0.479) !default;
 $secondary-25: rgba(0, 47, 73, 0.205) !default;
 
-$link-color: rgb(247, 247, 247) !default;
+//$link-color: var(--cui-link-color) !default;
 $link-decoration: underline !default;
 $link-shade-percentage: 20% !default;
-$link-hover-color: rgba($link-color, $link-shade-percentage) !default;
+//$link-hover-color: rgba($link-color, $link-shade-percentage) !default;
 $link-hover-decoration: null !default;
 
 $search-bg-color: #ffffff;
@@ -318,7 +318,7 @@ $enable-shadows: true;
 // $enable-rfs:                        true !default;
 // $enable-validation-icons:           true !default;
 $enable-negative-margins: true;
-// $enable-deprecation-messages:       true !default;
+$enable-deprecation-messages: false !default;
 // $enable-important-utilities:        true !default;
 // $enable-contrast-ratio-correction:  true !default;
 // $enable-contrast-ratio-warnings:    false !default;
@@ -1252,7 +1252,8 @@ $form-check-input-bg: var(--cyberdrain-light) !default;
 // $accordion-button-padding-y:              $accordion-padding-y !default;
 // $accordion-button-padding-x:              $accordion-padding-x !default;
 // $accordion-button-color:                  $accordion-color !default;
-// $accordion-button-bg:                     $accordion-bg !default;
+$accordion-button-bg: var(--cipp-accordion-button-bg) !default;
+
 // $accordion-transition:                    $btn-transition, border-radius .15s ease !default;
 // $accordion-button-active-bg:              tint-color($component-active-bg, 90%) !default;
 // $accordion-button-active-color:           shade-color($primary, 10%) !default;
@@ -1331,16 +1332,15 @@ $tooltip-color: var(--cyberdrain-light) !default;
 // $toast-padding-x:                   .75rem !default;
 // $toast-padding-y:                   .5rem !default;
 // $toast-font-size:                   .875rem !default;
-// $toast-color:                       unset !default;
-// $toast-background-color:            rgba($white, .85) !default;
+$toast-color: var(--cipp-toast-color) !default;
 // $toast-border-width:                1px !default;
 // $toast-border-color:                rgba(0, 0, 0, .1) !default;
 // $toast-border-radius:               $border-radius !default;
 // $toast-box-shadow:                  $box-shadow !default;
 // $toast-spacing:                     $container-padding-x !default;
-
-// $toast-header-color:                $gray-600 !default;
-// $toast-header-background-color:     rgba($white, .85) !default;
+$toast-background-color: var(--cipp-toast-bg);
+$toast-header-background-color: var(--cipp-toast-header-bg);
+$toast-header-color: var(--cipp-toast-color) !default;
 // $toast-header-border-color:         rgba(0, 0, 0, .05) !default;
 // scss-docs-end toast-variables
 

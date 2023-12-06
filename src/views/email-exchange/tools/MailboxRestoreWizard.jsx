@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { CCallout, CCol, CListGroup, CListGroupItem, CRow, CSpinner } from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -38,13 +38,18 @@ Error.propTypes = {
 
 const MailboxRestoreWizard = () => {
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
+  const [anrFilter, setAnrFilter] = useState('')
   const {
     data: sourceMailboxes = [],
     isFetching: sMailboxesIsFetching,
     error: sMailboxError,
   } = useGenericGetRequestQuery({
     path: '/api/ListMailboxes',
-    params: { TenantFilter: tenantDomain, SoftDeletedMailbox: true },
+    params: {
+      TenantFilter: tenantDomain,
+      SoftDeletedMailbox: true,
+      SkipLicense: true,
+    },
   })
   const {
     data: targetMailboxes = [],
@@ -52,7 +57,7 @@ const MailboxRestoreWizard = () => {
     error: tMailboxError,
   } = useGenericGetRequestQuery({
     path: '/api/ListMailboxes',
-    params: { TenantFilter: tenantDomain },
+    params: { TenantFilter: tenantDomain, Anr: anrFilter, SkipLicense: true },
   })
   const currentSettings = useSelector((state) => state.app)
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
@@ -104,6 +109,7 @@ const MailboxRestoreWizard = () => {
             }))}
             placeholder={!sMailboxesIsFetching ? 'Select mailbox' : 'Loading...'}
             name="SourceMailbox"
+            isLoading={sMailboxesIsFetching}
           />
           {sMailboxError && <span>Failed to load source mailboxes</span>}
         </div>
@@ -118,12 +124,14 @@ const MailboxRestoreWizard = () => {
         <div className="mb-2">
           <RFFSelectSearch
             label={'Mailboxes in ' + tenantDomain}
+            name="TargetMailbox"
             values={targetMailboxes?.map((mbx) => ({
               value: mbx.ExchangeGuid,
               name: `${mbx.displayName} <${mbx.UPN}>`,
             }))}
-            placeholder={!tMailboxesIsFetching ? 'Select mailbox' : 'Loading...'}
-            name="TargetMailbox"
+            retainInput={true}
+            onInputChange={setAnrFilter}
+            isLoading={tMailboxesIsFetching}
           />
           {sMailboxError && <span>Failed to load source mailboxes</span>}
         </div>
@@ -180,6 +188,7 @@ const MailboxRestoreWizard = () => {
           )}
           {!postResults.isSuccess && (
             <FormSpy>
+              {/* eslint-disable react/prop-types */}
               {(props) => (
                 <>
                   <CRow>

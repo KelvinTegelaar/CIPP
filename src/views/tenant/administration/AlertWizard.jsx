@@ -9,6 +9,7 @@ import PropTypes from 'prop-types'
 import { Condition, RFFCFormSelect, RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import countryList from 'src/data/countryList.json'
+
 const Error = ({ name }) => (
   <Field
     name={name}
@@ -253,6 +254,7 @@ const AlertWizard = () => {
         <hr className="my-4" />
         {!postResults.isSuccess && (
           <FormSpy>
+            {/* eslint-disable react/prop-types */}
             {(props) => {
               return (
                 <>

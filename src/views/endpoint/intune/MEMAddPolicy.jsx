@@ -79,6 +79,11 @@ const AddPolicy = () => {
     </Field>
   )
 
+  WhenFieldChanges.propTypes = {
+    field: PropTypes.node,
+    set: PropTypes.string,
+  }
+
   const formValues = {
     TemplateType: 'Admin',
   }
@@ -99,6 +104,7 @@ const AddPolicy = () => {
         </center>
         <hr className="my-4" />
         <Field name="selectedTenants" validate={requiredArray}>
+          {/* eslint-disable react/prop-types */}
           {(props) => (
             <WizardTableField
               reportName="Add-MEM-Policy-Tenant-Selector"

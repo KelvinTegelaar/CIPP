@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { CippCodeBlock, CippOffcanvas } from 'src/components/utilities'
 import { CellTip } from 'src/components/tables'
 import { CButton, CCallout, CCol, CRow, CSpinner } from '@coreui/react'
 import { faEye, faTrash } from '@fortawesome/free-solid-svg-icons'

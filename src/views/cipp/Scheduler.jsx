@@ -276,6 +276,7 @@ const Scheduler = () => {
                         </CCol>
                       </CRow>
                       <FormSpy>
+                        {/* eslint-disable react/prop-types */}
                         {(props) => {
                           const selectedCommand = availableCommands.find(
                             (cmd) => cmd.Function === props.values.command?.value,
@@ -289,6 +290,7 @@ const Scheduler = () => {
                       </FormSpy>
                       <CRow>
                         <FormSpy>
+                          {/* eslint-disable react/prop-types */}
                           {(props) => {
                             const selectedCommand = availableCommands.find(
                               (cmd) => cmd.Function === props.values.command?.value,
@@ -390,7 +392,10 @@ const Scheduler = () => {
           <CCol md={8}>
             <CippPageList
               key={refreshState}
-              capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
+              capabilities={{
+                allTenants: true,
+                helpContext: 'https://google.com',
+              }}
               title="Scheduled Tasks"
               tenantSelector={false}
               datatable={{
@@ -406,10 +411,22 @@ const Scheduler = () => {
                   ],
                 },
                 filterlist: [
-                  { filterName: 'Planned Jobs', filter: 'Complex: TaskState eq Planned' },
-                  { filterName: 'Completed Jobs', filter: 'Complex: TaskState eq Completed' },
-                  { filterName: 'Recurring Jobs', filter: 'Complex: Recurrence gt 0' },
-                  { filterName: 'One-time Jobs', filter: 'Complex: Recurrence eq 0' },
+                  {
+                    filterName: 'Planned Jobs',
+                    filter: 'Complex: TaskState eq Planned',
+                  },
+                  {
+                    filterName: 'Completed Jobs',
+                    filter: 'Complex: TaskState eq Completed',
+                  },
+                  {
+                    filterName: 'Recurring Jobs',
+                    filter: 'Complex: Recurrence gt 0',
+                  },
+                  {
+                    filterName: 'One-time Jobs',
+                    filter: 'Complex: Recurrence eq 0',
+                  },
                 ],
                 keyField: 'id',
                 columns,

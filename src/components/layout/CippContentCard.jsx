@@ -29,4 +29,5 @@ CippContentCard.propTypes = {
   button: PropTypes.element,
   bodyClass: PropTypes.string,
   className: PropTypes.string,
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 }

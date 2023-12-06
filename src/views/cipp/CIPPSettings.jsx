@@ -37,6 +37,7 @@ import {
 import {
   useExecAddExcludeTenantMutation,
   useExecRemoveExcludeTenantMutation,
+  useListTenantsQuery,
 } from 'src/store/api/tenants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -50,7 +51,6 @@ import {
   faScroll,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons'
-import { useListTenantsQuery } from 'src/store/api/tenants'
 import { useLazyEditDnsConfigQuery, useLazyGetDnsConfigQuery } from 'src/store/api/domains'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -78,14 +78,14 @@ import {
   TenantSelectorMultiple,
 } from 'src/components/utilities'
 import CippListOffcanvas from 'src/components/utilities/CippListOffcanvas'
-import { TitleButton } from 'src/components/buttons'
+import { TitleButton, TableModalButton } from 'src/components/buttons'
 import Skeleton from 'react-loading-skeleton'
 import { Buffer } from 'buffer'
 import Extensions from 'src/data/Extensions.json'
 import { CellDelegatedPrivilege } from 'src/components/tables/CellDelegatedPrivilege'
-import { TableModalButton } from 'src/components/buttons'
 import { cellTableFormatter } from 'src/components/tables/CellTable'
 import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
+import PropTypes from 'prop-types'
 
 function Lazy({ visible, children }) {
   const rendered = useRef(visible)
@@ -97,6 +97,11 @@ function Lazy({ visible, children }) {
   if (!rendered.current) return null
 
   return <div style={{ display: visible ? 'block' : 'none' }}>{children}</div>
+}
+
+Lazy.propTypes = {
+  visible: PropTypes.bool,
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 }
 
 const CIPPSettings = () => {
@@ -361,6 +366,7 @@ const GeneralSettings = () => {
           console.log(e)
           setShowExtendedInfo(!e.target.checked)
         }}
+        key={'Show Extended Info'}
       />,
     ],
   }
@@ -423,6 +429,7 @@ const GeneralSettings = () => {
                         documentation on how to add permissions{' '}
                         <a
                           target="_blank"
+                          rel="noreferrer"
                           href="https://docs.cipp.app/setup/installation/permissions#manual-permissions"
                         >
                           here
@@ -484,8 +491,14 @@ const GeneralSettings = () => {
                       columns={checkGDAPColumns}
                       data={GDAPResult.data.Results.GDAPIssues}
                       filterlist={[
-                        { filterName: 'Errors', filter: 'Complex: Type eq Error' },
-                        { filterName: 'Warnings', filter: 'Complex: Type eq Warning' },
+                        {
+                          filterName: 'Errors',
+                          filter: 'Complex: Type eq Error',
+                        },
+                        {
+                          filterName: 'Warnings',
+                          filter: 'Complex: Type eq Warning',
+                        },
                       ]}
                       defaultFilterText="Complex: Type eq Error"
                       isModal={true}
@@ -595,12 +608,14 @@ const ExcludedTenantsSettings = () => {
       onConfirm: () => removeExcludeTenant(domain),
     })
 
-  const handleCPVPermissions = (domain) =>
+  const handleCPVPermissions = (domain, resetsp = false) =>
     ModalService.confirm({
       title: 'Refresh Permissions',
       body: <div>Are you sure you want to refresh permissions for {domain.defaultDomainName}?</div>,
       onConfirm: () =>
-        refreshPermissions({ path: `/api/ExecCPVPermissions?TenantFilter=${domain.customerId}` }),
+        refreshPermissions({
+          path: `/api/ExecCPVPermissions?TenantFilter=${domain.customerId}&ResetSP=${resetsp}`,
+        }),
     })
   const handleConfirmExcludeTenant = (tenant) => {
     ModalService.confirm({
@@ -608,7 +623,6 @@ const ExcludedTenantsSettings = () => {
       body: <div>Are you sure you want to exclude this tenant?</div>,
       onConfirm: () => addExcludeTenant(tenant),
     })
-
       .unwrap()
       .then(() => {
         dispatch(setCurrentTenant({}))
@@ -637,6 +651,7 @@ const ExcludedTenantsSettings = () => {
       Add Excluded Tenant
     </CButton>
   )
+
   function StatusIcon(graphErrorCount) {
     if (graphErrorCount > 0) {
       return <FontAwesomeIcon icon={faExclamationTriangle} className="text-danger" />
@@ -681,7 +696,12 @@ const ExcludedTenantsSettings = () => {
           </CTooltip>
         )}
         <CTooltip content="CPV Refresh">
-          <CButton size="sm" variant="ghost" color="info" onClick={() => handleCPVPermissions(row)}>
+          <CButton
+            size="sm"
+            variant="ghost"
+            color="info"
+            onClick={() => handleCPVPermissions(row, false)}
+          >
             <FontAwesomeIcon icon={faRecycle} href="" />
           </CButton>
         </CTooltip>
@@ -799,12 +819,25 @@ const ExcludedTenantsSettings = () => {
                 modalMessage:
                   'Are you sure you want to refresh the CPV permissions for these tenants?',
               },
+              {
+                label: 'Reset CPV Permissions',
+                modal: true,
+                modalUrl: `/api/ExecCPVPermissions?TenantFilter=!customerId&ResetSP=true`,
+                modalMessage:
+                  'Are you sure you want to reset the CPV permissions for these tenants? (This will delete the Service Principal and re-add it.)',
+              },
             ],
           },
           isModal: true,
           filterlist: [
-            { filterName: 'Excluded Tenants', filter: 'Complex: Excluded eq true' },
-            { filterName: 'Included Tenants', filter: 'Complex: Excluded eq false' },
+            {
+              filterName: 'Excluded Tenants',
+              filter: 'Complex: Excluded eq true',
+            },
+            {
+              filterName: 'Included Tenants',
+              filter: 'Complex: Excluded eq false',
+            },
             {
               filterName: 'GDAP & DAP',
               filter:
@@ -1125,18 +1158,36 @@ const NotificationsSettings = () => {
                             { value: 'Updates', name: 'Updates Status' },
                             { value: 'Standards', name: 'All Standards' },
                             { value: 'TokensUpdater', name: 'Token Events' },
-                            { value: 'ExecDnsConfig', name: 'Changing DNS Settings' },
-                            { value: 'ExecExcludeLicenses', name: 'Adding excluded licenses' },
-                            { value: 'ExecExcludeTenant', name: 'Adding excluded tenants' },
+                            {
+                              value: 'ExecDnsConfig',
+                              name: 'Changing DNS Settings',
+                            },
+                            {
+                              value: 'ExecExcludeLicenses',
+                              name: 'Adding excluded licenses',
+                            },
+                            {
+                              value: 'ExecExcludeTenant',
+                              name: 'Adding excluded tenants',
+                            },
                             { value: 'EditUser', name: 'Editing a user' },
-                            { value: 'ChocoApp', name: 'Adding or deploying applications' },
-                            { value: 'AddAPDevice', name: 'Adding autopilot devices' },
+                            {
+                              value: 'ChocoApp',
+                              name: 'Adding or deploying applications',
+                            },
+                            {
+                              value: 'AddAPDevice',
+                              name: 'Adding autopilot devices',
+                            },
                             { value: 'EditTenant', name: 'Editing a tenant' },
                             { value: 'AddMSPApp', name: 'Adding an MSP app' },
                             { value: 'AddUser', name: 'Adding a user' },
                             { value: 'AddGroup', name: 'Adding a group' },
                             { value: 'NewTenant', name: 'Adding a tenant' },
-                            { value: 'ExecOffboardUser', name: 'Executing the offboard wizard' },
+                            {
+                              value: 'ExecOffboardUser',
+                              name: 'Executing the offboard wizard',
+                            },
                           ]}
                         />
                       </CCol>
@@ -1573,9 +1624,7 @@ const ExtensionsTab = () => {
               <CCardTitle>Results</CCardTitle>
             </CCardHeader>
             <CCardBody>
-              <>
-                <CCallout color="success">{listSyncExtensionResult.data.Results}</CCallout>
-              </>
+              <CCallout color="success">{listSyncExtensionResult.data.Results}</CCallout>
             </CCardBody>
           </CCard>
         )}
@@ -1605,8 +1654,8 @@ const ExtensionsTab = () => {
           </CCard>
         )}
         <CRow>
-          {Extensions.map((integration) => (
-            <CCol xs={12} lg={6} xl={6} className="mb-3">
+          {Extensions.map((integration, idx) => (
+            <CCol xs={12} lg={6} xl={6} className="mb-3" key={`${idx}-${integration.name}`}>
               <CCard className="d-flex flex-column h-100">
                 <CCardHeader>
                   <CCardTitle>{integration.name}</CCardTitle>
@@ -1622,9 +1671,9 @@ const ExtensionsTab = () => {
                           <CCardText>
                             <CCol className="mb-3">
                               {integration.SettingOptions.map(
-                                (integrationOptions) =>
+                                (integrationOptions, idx) =>
                                   integrationOptions.type === 'input' && (
-                                    <CCol>
+                                    <CCol key={`${idx}-${integrationOptions.name}`}>
                                       <RFFCFormInput
                                         type={integrationOptions.fieldtype}
                                         name={integrationOptions.name}
@@ -1635,9 +1684,9 @@ const ExtensionsTab = () => {
                                   ),
                               )}
                               {integration.SettingOptions.map(
-                                (integrationOptions) =>
+                                (integrationOptions, idx) =>
                                   integrationOptions.type === 'checkbox' && (
-                                    <CCol>
+                                    <CCol key={`${integrationOptions.name}-${idx}`}>
                                       <RFFCFormSwitch
                                         name={integrationOptions.name}
                                         label={integrationOptions.label}
@@ -1717,7 +1766,15 @@ const ExtensionsTab = () => {
 
 const MappingsTab = () => {
   const [listHaloBackend, listBackendHaloResult = []] = useLazyGenericGetRequestQuery()
+  const [listNinjaOrgsBackend, listBackendNinjaOrgsResult] = useLazyGenericGetRequestQuery()
+  const [listNinjaFieldsBackend, listBackendNinjaFieldsResult] = useLazyGenericGetRequestQuery()
   const [setHaloExtensionconfig, extensionHaloConfigResult = []] = useLazyGenericPostRequestQuery()
+  const [setNinjaOrgsExtensionconfig, extensionNinjaOrgsConfigResult] =
+    useLazyGenericPostRequestQuery()
+  const [setNinjaOrgsExtensionAutomap, extensionNinjaOrgsAutomapResult] =
+    useLazyGenericPostRequestQuery()
+  const [setNinjaFieldsExtensionconfig, extensionNinjaFieldsConfigResult] =
+    useLazyGenericPostRequestQuery()
 
   const onHaloSubmit = (values) => {
     setHaloExtensionconfig({
@@ -1725,10 +1782,38 @@ const MappingsTab = () => {
       values: { mappings: values },
     })
   }
+  const onNinjaOrgsSubmit = (values) => {
+    setNinjaOrgsExtensionconfig({
+      path: 'api/ExecExtensionMapping?AddMapping=NinjaOrgs',
+      values: { mappings: values },
+    })
+  }
+
+  const onNinjaOrgsAutomap = async (values) => {
+    await setNinjaOrgsExtensionAutomap({
+      path: 'api/ExecExtensionMapping?AutoMapping=NinjaOrgs',
+      values: { mappings: values },
+    })
+    await listNinjaOrgsBackend({
+      path: 'api/ExecExtensionMapping?List=NinjaOrgs',
+    })
+  }
+
+  const onNinjaFieldsSubmit = (values) => {
+    setNinjaFieldsExtensionconfig({
+      path: 'api/ExecExtensionMapping?AddMapping=NinjaFields',
+
+      values: { mappings: values },
+    })
+  }
   return (
     <div>
       {listBackendHaloResult.isUninitialized &&
         listHaloBackend({ path: 'api/ExecExtensionMapping?List=Halo' })}
+      {listBackendNinjaOrgsResult.isUninitialized &&
+        listNinjaOrgsBackend({ path: 'api/ExecExtensionMapping?List=NinjaOrgs' })}
+      {listBackendNinjaFieldsResult.isUninitialized &&
+        listNinjaFieldsBackend({ path: 'api/ExecExtensionMapping?List=NinjaFields' })}
       <>
         <CCard className="mb-3">
           <CCardHeader>
@@ -1771,6 +1856,154 @@ const MappingsTab = () => {
                           >
                             {extensionHaloConfigResult.isSuccess
                               ? extensionHaloConfigResult.data.Results
+                              : 'Error'}
+                          </CCallout>
+                        )}
+                      </CCol>
+                    </CForm>
+                  )
+                }}
+              />
+            )}
+          </CCardBody>
+        </CCard>
+        <CCard className="mb-3">
+          <CCardHeader>
+            <CCardTitle>NinjaOne Field Mapping Table</CCardTitle>
+          </CCardHeader>
+          <CCardBody>
+            {listBackendNinjaFieldsResult.isFetching ? (
+              <CSpinner color="primary" />
+            ) : (
+              <Form
+                onSubmit={onNinjaFieldsSubmit}
+                initialValues={listBackendNinjaFieldsResult.data?.Mappings}
+                render={({ handleSubmit, submitting, values }) => {
+                  return (
+                    <CForm onSubmit={handleSubmit}>
+                      <CCardText>
+                        <h5>Organization Global Custom Field Mapping</h5>
+                        <p>
+                          Use the table below to map your Organization Field to the correct NinjaOne
+                          Field
+                        </p>
+                        {listBackendNinjaFieldsResult.isSuccess &&
+                          listBackendNinjaFieldsResult.data.CIPPOrgFields.map((CIPPOrgFields) => (
+                            <RFFSelectSearch
+                              key={CIPPOrgFields.InternalName}
+                              name={CIPPOrgFields.InternalName}
+                              label={CIPPOrgFields.Type + ' - ' + CIPPOrgFields.Description}
+                              values={listBackendNinjaFieldsResult.data.NinjaOrgFields.filter(
+                                (item) => item.type === CIPPOrgFields.Type || item.type === 'unset',
+                              )}
+                              placeholder="Select a Field"
+                            />
+                          ))}
+                      </CCardText>
+                      <CCardText>
+                        <h5>Device Custom Field Mapping</h5>
+                        <p>
+                          Use the table below to map your Device field to the correct NinjaOne
+                          WYSIWYG Field
+                        </p>
+                        {listBackendNinjaFieldsResult.isSuccess &&
+                          listBackendNinjaFieldsResult.data.CIPPNodeFields.map((CIPPNodeFields) => (
+                            <RFFSelectSearch
+                              key={CIPPNodeFields.InternalName}
+                              name={CIPPNodeFields.InternalName}
+                              label={CIPPNodeFields.Type + ' - ' + CIPPNodeFields.Description}
+                              values={listBackendNinjaFieldsResult.data.NinjaNodeFields.filter(
+                                (item) =>
+                                  item.type === CIPPNodeFields.Type || item.type === 'unset',
+                              )}
+                              placeholder="Select a Field"
+                            />
+                          ))}
+                      </CCardText>
+                      <CCol className="me-2">
+                        <CButton className="me-2" type="submit">
+                          {extensionNinjaFieldsConfigResult.isFetching && (
+                            <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                          )}
+                          Set Mappings
+                        </CButton>
+                        {(extensionNinjaFieldsConfigResult.isSuccess ||
+                          extensionNinjaFieldsConfigResult.isError) && (
+                          <CCallout
+                            color={
+                              extensionNinjaFieldsConfigResult.isSuccess ? 'success' : 'danger'
+                            }
+                          >
+                            {extensionNinjaFieldsConfigResult.isSuccess
+                              ? extensionNinjaFieldsConfigResult.data.Results
+                              : 'Error'}
+                          </CCallout>
+                        )}
+                      </CCol>
+                    </CForm>
+                  )
+                }}
+              />
+            )}
+          </CCardBody>
+        </CCard>
+        <CCard className="mb-3">
+          <CCardHeader>
+            <CCardTitle>NinjaOne Organization Mapping Table</CCardTitle>
+          </CCardHeader>
+          <CCardBody>
+            {listBackendNinjaOrgsResult.isFetching ? (
+              <CSpinner color="primary" />
+            ) : (
+              <Form
+                onSubmit={onNinjaOrgsSubmit}
+                initialValues={listBackendNinjaOrgsResult.data?.Mappings}
+                render={({ handleSubmit, submitting, values }) => {
+                  return (
+                    <CForm onSubmit={handleSubmit}>
+                      <CCardText>
+                        Use the table below to map your client to the correct NinjaOne Organization
+                        {listBackendNinjaOrgsResult.isSuccess &&
+                          listBackendNinjaOrgsResult.data.Tenants.map((tenant) => (
+                            <RFFSelectSearch
+                              key={tenant.customerId}
+                              name={tenant.customerId}
+                              label={tenant.displayName}
+                              values={listBackendNinjaOrgsResult.data.NinjaOrgs}
+                              placeholder="Select an Organization"
+                            />
+                          ))}
+                      </CCardText>
+                      <CCol className="me-2">
+                        <CButton className="me-2" type="submit">
+                          {extensionNinjaOrgsConfigResult.isFetching && (
+                            <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                          )}
+                          Set Mappings
+                        </CButton>
+                        <CButton onClick={() => onNinjaOrgsAutomap()} className="me-2">
+                          {extensionNinjaOrgsAutomapResult.isFetching && (
+                            <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                          )}
+                          Automap NinjaOne Organizations
+                        </CButton>
+                        {(extensionNinjaOrgsConfigResult.isSuccess ||
+                          extensionNinjaOrgsConfigResult.isError) && (
+                          <CCallout
+                            color={extensionNinjaOrgsConfigResult.isSuccess ? 'success' : 'danger'}
+                          >
+                            {extensionNinjaOrgsConfigResult.isSuccess
+                              ? extensionNinjaOrgsConfigResult.data.Results
+                              : 'Error'}
+                          </CCallout>
+                        )}
+                        {(extensionNinjaOrgsAutomapResult.isSuccess ||
+                          extensionNinjaOrgsAutomapResult.isError) && (
+                          <CCallout
+                            color={extensionNinjaOrgsAutomapResult.isSuccess ? 'success' : 'danger'}
+                          >
+                            {extensionNinjaOrgsAutomapResult.isSuccess
+                              ? extensionNinjaOrgsAutomapResult.data.Results
                               : 'Error'}
                           </CCallout>
                         )}

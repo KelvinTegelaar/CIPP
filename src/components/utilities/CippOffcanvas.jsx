@@ -45,9 +45,10 @@ export const CippOffcanvasPropTypes = {
   placement: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   visible: PropTypes.bool,
-  id: PropTypes.string.isRequired,
+  id: PropTypes.string,
   hideFunction: PropTypes.func.isRequired,
   refreshFunction: PropTypes.func,
+  addedClass: PropTypes.string,
 }
 
 CippOffcanvas.propTypes = CippOffcanvasPropTypes

@@ -1,11 +1,10 @@
 import React from 'react'
 import { CButton } from '@coreui/react'
 import { ModalService } from '../utilities'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 import { cellGenericFormatter } from '../tables/CellGenericFormat'
+import PropTypes from 'prop-types'
 
-export default function TableModalButton({ data, title, className }) {
+export default function TableModalButton({ data, title, className, countOnly = false, ...input }) {
   const handleTable = (data) => {
     const QueryColumns = []
     const columns = Object.keys(data[0]).map((key) => {
@@ -31,10 +30,15 @@ export default function TableModalButton({ data, title, className }) {
   const buttonClass = 'btn ' + className
 
   return (
-    <CButton className={buttonClass} onClick={() => handleTable(data)}>
-      <>
-        {title} ({data.length})
-      </>
+    <CButton {...input} className={buttonClass} onClick={() => handleTable(data)}>
+      <>{countOnly === true ? data.length : `${title} (${data.length})`}</>
     </CButton>
   )
+}
+
+TableModalButton.propTypes = {
+  data: PropTypes.array,
+  title: PropTypes.string,
+  className: PropTypes.string,
+  countOnly: PropTypes.bool,
 }

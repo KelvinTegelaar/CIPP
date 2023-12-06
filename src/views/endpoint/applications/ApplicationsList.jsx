@@ -6,6 +6,7 @@ import { CippPageList } from 'src/components/layout'
 import { faEllipsisV, faGlobeEurope, faPager, faUser } from '@fortawesome/free-solid-svg-icons'
 import { CippActionsOffcanvas } from 'src/components/utilities'
 import { CellTip } from 'src/components/tables'
+import { TitleButton } from 'src/components/buttons'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -125,9 +126,39 @@ const columns = [
 const ApplicationsList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
+  const titleButtons = (
+    <div style={{ display: 'flex', alignItems: 'right' }}>
+      <div style={{ marginLeft: '10px' }}>
+        <TitleButton
+          href={`/endpoint/applications/add-choco-app?customerId=${tenant?.customerId}&tableFilter=${tenant?.defaultDomainName}`}
+          title="Add Choco app"
+        />
+      </div>
+      <div style={{ marginLeft: '10px' }}>
+        <TitleButton
+          href={`/endpoint/applications/add-winget-app?customerId=${tenant?.customerId}&tableFilter=${tenant?.defaultDomainName}`}
+          title="Add Store app"
+        />
+      </div>
+      <div style={{ marginLeft: '10px' }}>
+        <TitleButton
+          href={`/endpoint/applications/add-office-app?customerId=${tenant?.customerId}&tableFilter=${tenant?.defaultDomainName}`}
+          title="Add Office app"
+        />
+      </div>
+      <div style={{ marginLeft: '10px' }}>
+        <TitleButton
+          href={`/endpoint/applications/add-rmm-app?customerId=${tenant?.customerId}&tableFilter=${tenant?.defaultDomainName}`}
+          title="Add MSP app"
+        />
+      </div>
+    </div>
+  )
+
   return (
     <CippPageList
       title="Applications"
+      titleButton={titleButtons}
       datatable={{
         keyField: 'id',
         columns,

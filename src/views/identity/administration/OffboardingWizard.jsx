@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { CCallout, CCol, CListGroup, CListGroupItem, CRow, CSpinner } from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -15,8 +15,7 @@ import {
 } from 'src/components/forms'
 import { TenantSelector } from 'src/components/utilities'
 import { useListUsersQuery } from 'src/store/api/users'
-import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
-import { useState } from 'react'
+import { useGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
@@ -49,6 +48,13 @@ const OffboardingWizard = () => {
     isFetching: usersIsFetching,
     error: usersError,
   } = useListUsersQuery({ tenantDomain })
+
+  const {
+    data: recipients = [],
+    isFetching: recipientsIsFetching,
+    error: recipientsError,
+  } = useGenericGetRequestQuery({ path: `/api/ListRecipients?tenantFilter=${tenantDomain}` })
+
   const currentSettings = useSelector((state) => state.app)
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
@@ -74,8 +80,8 @@ const OffboardingWizard = () => {
       removeMobile: values.RemoveMobile,
       keepCopy: values.keepCopy,
       removePermissions: values.removePermissions,
-      Scheduled: values.Scheduled.enabled ? { enabled: true, date: unixTime } : { enabled: false },
-      PostExecution: values.Scheduled.enabled
+      Scheduled: values.Scheduled?.enabled ? { enabled: true, date: unixTime } : { enabled: false },
+      PostExecution: values.Scheduled?.enabled
         ? { webhook: values.webhook, psa: values.psa, email: values.email }
         : '',
     }
@@ -94,7 +100,6 @@ const OffboardingWizard = () => {
         title="Tenant Choice"
         description="Choose the tenant in which to offboard a user"
       >
-        {console.log(currentSettings.offboardingDefaults)}
         <center>
           <h3 className="text-primary">Step 1</h3>
           <h5 className="card-title mb-4">Choose a tenant</h5>
@@ -196,7 +201,7 @@ const OffboardingWizard = () => {
               />
               <RFFSelectSearch
                 label="Forward email to other user"
-                values={users
+                values={recipients
                   ?.filter((x) => x.mail)
                   .map((user) => ({
                     value: user.mail,
@@ -263,6 +268,7 @@ const OffboardingWizard = () => {
           )}
           {!postResults.isSuccess && (
             <FormSpy>
+              {/* eslint-disable react/prop-types */}
               {(props) => (
                 <>
                   <CRow>
