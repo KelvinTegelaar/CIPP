@@ -209,7 +209,7 @@ const ListAppliedStandards = () => {
     Object.keys(standards).forEach((key) => {
       const standard = standards[key]
       // Check if 'Enabled' exists and the specific type is true
-      if (standard.Enabled && standard.Enabled[type]) {
+      if (standard?.Enabled && standard?.Enabled[type]) {
         count++
       } else if (standard[type]) {
         // Check if the type exists directly under the standard
@@ -331,7 +331,7 @@ const ListAppliedStandards = () => {
                                     <CCol>
                                       <h5>Remediate</h5>
                                       <RFFCFormSwitch
-                                        name="standards.OverrideAllTenants"
+                                        name="standards.OverrideAllTenants.remediate"
                                         helpText={
                                           'Exclude this standard from the All Tenants standard. This will only apply explicitly set standards to this tenant.'
                                         }
