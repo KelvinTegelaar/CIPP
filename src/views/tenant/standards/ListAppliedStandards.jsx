@@ -211,7 +211,7 @@ const ListAppliedStandards = () => {
       // Check if 'Enabled' exists and the specific type is true
       if (standard?.Enabled && standard?.Enabled[type]) {
         count++
-      } else if (standard[type]) {
+      } else if (standard && standard[type]) {
         // Check if the type exists directly under the standard
         count++
       }
