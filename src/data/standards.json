@@ -331,20 +331,27 @@
     "impactColour": "info"
   },
   {
-    "name": "standards.SpoofWarn.enable",
+    "name": "standards.SpoofWarn",
     "cat": "Exchange Standards",
-    "helpText": "Adds indicators to e-mail messages received from external senders in Outlook. Works on all Outlook clients/OWA",
-    "addedComponent": [],
-    "label": "Enable Spoofing warnings for Outlook (This e-mail is external identifiers)",
-    "impact": "Low Impact",
-    "impactColour": "info"
-  },
-  {
-    "name": "standards.SpoofWarn.disable",
-    "cat": "Exchange Standards",
-    "helpText": "Disables spoof warnings from external senders in Outlook.",
-    "addedComponent": [],
-    "label": "Disable Spoofing warnings for Outlook (This e-mail is external identifiers)",
+    "helpText": "Adds or removes indicators to e-mail messages received from external senders in Outlook. Works on all Outlook clients/OWA",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Select value",
+        "name": "standards.SpoofWarn.state",
+        "values": [
+          {
+            "label": "Enabled",
+            "value": "enabled"
+          },
+          {
+            "label": "Disabled",
+            "value": "disabled"
+          }
+        ]
+      }
+    ],
+    "label": "Enable or disable 'external' warning in Outlook.",
     "impact": "Low Impact",
     "impactColour": "info"
   },
