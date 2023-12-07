@@ -39,8 +39,8 @@ import GDAPRoles from 'src/data/GDAPRoles'
 
 const RefreshAction = () => {
   const [execStandards, execStandardsResults] = useLazyGenericGetRequestQuery()
-
-  const showModal = () =>
+  const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
+  const showModal = (selectedTenant) =>
     ModalService.confirm({
       body: (
         <div>
@@ -48,7 +48,8 @@ const RefreshAction = () => {
           <i>Please note: this runs every three hours automatically.</i>
         </div>
       ),
-      onConfirm: () => execStandards({ path: 'api/Standards_OrchestrationStarter' }),
+      onConfirm: () =>
+        execStandards({ path: `api/ExecStandardsRun?Tenantfilter=${selectedTenant}` }),
     })
 
   return (
@@ -57,14 +58,24 @@ const RefreshAction = () => {
         'Already running. Please wait for the current instance to finish' && (
         <div> {execStandardsResults.data?.Results}</div>
       )}
-      <CButton onClick={showModal} size="sm" className="m-1">
-        {execStandardsResults.isLoading && <CSpinner size="sm" />}
-        {execStandardsResults.error && (
-          <FontAwesomeIcon icon={faExclamationTriangle} className="pe-1" />
-        )}
-        {execStandardsResults.isSuccess && <FontAwesomeIcon icon={faCheck} className="pe-1" />}
-        Run Standards Now
-      </CButton>
+      <p>
+        <CButton onClick={() => showModal('AllTenants')} size="sm" className="m-1">
+          {execStandardsResults.isLoading && <CSpinner size="sm" />}
+          {execStandardsResults.error && (
+            <FontAwesomeIcon icon={faExclamationTriangle} className="pe-1" />
+          )}
+          {execStandardsResults.isSuccess && <FontAwesomeIcon icon={faCheck} className="me-2" />}
+          Run Standards Now (All Tenants)
+        </CButton>
+        <CButton onClick={() => showModal(tenantDomain)} size="sm" className="m-1">
+          {execStandardsResults.isLoading && <CSpinner size="sm" />}
+          {execStandardsResults.error && (
+            <FontAwesomeIcon icon={faExclamationTriangle} className="pe-1" />
+          )}
+          {execStandardsResults.isSuccess && <FontAwesomeIcon icon={faCheck} className="me-2" />}
+          Run Standards Now (Selected Tenant)
+        </CButton>
+      </p>
     </>
   )
 }
