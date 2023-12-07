@@ -430,37 +430,39 @@ const ListAppliedStandards = () => {
                                       </CCol>
                                       <CCol md={3}>
                                         <h5>Optional Input</h5>
-                                        {(obj.addedComponent &&
-                                          obj.addedComponent.type === 'Select' && (
-                                            <RFFCFormSelect
-                                              name={obj.addedComponent.name}
-                                              className="mb-3"
-                                              label={obj.addedComponent.label}
-                                              values={obj.addedComponent.values}
-                                            />
-                                          )) ||
-                                          (obj.addedComponent &&
-                                            obj.addedComponent.type === 'input' && (
-                                              <RFFCFormInput
-                                                type="text"
-                                                className="mb-3"
-                                                name={obj.addedComponent.name}
-                                                label={obj.addedComponent.label}
-                                              />
-                                            )) ||
-                                          (obj.addedComponent &&
-                                            obj.addedComponent.type === 'AdminRolesMultiSelect' && (
-                                              <RFFSelectSearch
-                                                multi={true}
-                                                name={obj.addedComponent.name}
-                                                className="mb-3"
-                                                label={obj.addedComponent.label}
-                                                values={GDAPRoles.map((role) => ({
-                                                  value: role.ObjectId,
-                                                  name: role.Name,
-                                                }))}
-                                              />
-                                            ))}
+                                        {obj.addedComponent &&
+                                          obj.addedComponent.map((component) => (
+                                            <>
+                                              {component.type === 'Select' && (
+                                                <RFFCFormSelect
+                                                  name={component.name}
+                                                  className="mb-3"
+                                                  label={component.label}
+                                                  values={component.values}
+                                                />
+                                              )}
+                                              {component.type === 'input' && (
+                                                <RFFCFormInput
+                                                  type="text"
+                                                  className="mb-3"
+                                                  name={component.name}
+                                                  label={component.label}
+                                                />
+                                              )}
+                                              {component.type === 'AdminRolesMultiSelect' && (
+                                                <RFFSelectSearch
+                                                  multi={true}
+                                                  name={component.name}
+                                                  className="mb-3"
+                                                  label={component.label}
+                                                  values={GDAPRoles.map((role) => ({
+                                                    value: role.ObjectId,
+                                                    name: role.Name,
+                                                  }))}
+                                                />
+                                              )}
+                                            </>
+                                          ))}
                                       </CCol>
                                     </CRow>
                                   ))}
@@ -473,27 +475,27 @@ const ListAppliedStandards = () => {
                                 {[
                                   {
                                     name: 'Intune Template',
-                                    switchName: 'standards.IntuneTemplate.enabled',
+                                    switchName: 'standards.IntuneTemplate',
                                     templates: intuneTemplates,
                                   },
                                   {
                                     name: 'Transport Rule Template',
-                                    switchName: 'standards.TransportRuleTemplate.enabled',
+                                    switchName: 'standards.TransportRuleTemplate',
                                     templates: transportTemplates,
                                   },
                                   {
                                     name: 'Conditional Access Template',
-                                    switchName: 'standards.ConditionalAccess.enabled',
+                                    switchName: 'standards.ConditionalAccess',
                                     templates: caTemplates,
                                   },
                                   {
                                     name: 'Exchange Connector Template',
-                                    switchName: 'standards.ExConnector.enabled',
+                                    switchName: 'standards.ExConnector',
                                     templates: exConnectorTemplates,
                                   },
                                   {
                                     name: 'Group Template',
-                                    switchName: 'standards.GroupTemplate.enabled',
+                                    switchName: 'standards.GroupTemplate',
                                     templates: groupTemplates,
                                   },
                                 ].map((template, index) => (
