@@ -6,14 +6,18 @@ description: Setup access to my clients
 
 This section describes the best practices and recommended setup for CIPP, including account usage, multi factor authentication, and DAP/GDAP groups. This section also describes the recommended setup for Conditional Access Policies. When this document has not been implemented you could encounter issues with the CSP, Graph, or Exchange sections of CIPP.
 
-## Authorization best practices for CIPP
+{% hint style="danger" %}
+Failing to adhere precisely to these instructions may result in a malfunctioning CIPP instance. Do not deviate from these instructions and follow them to the letter.
+{% endhint %}
+
+## Authorization requirements
 
 to setup the Graph API, CSP, and Exchange integration CIPP requires a minimum level of permissions. We recommend to setup the account as follows
 
 1. Create a new account. Recommended to name this "CIPP Integration" and give it the username "CIPP@domain.tld" a. This account must be a Global Administrator while setting up the integration. These permissions may be removed after the integration has been setup.
 2. Add the account to the correct groups
 
-* The CIPP user must be added to the "AdminAgents" group and the groups you've assigned for GDAP. The minimum permissions CIPP needs to function are:
+* The CIPP user must be added to the **"AdminAgents**" group and the groups you've assigned for GDAP. The minimum permissions CIPP needs to function are:
   * Application Administrator
   * Authentication Policy Administrator
   * Cloud App Security Administrator
@@ -37,7 +41,7 @@ The account will be used for all actions performed from the CIPP portal.
 ## Executing the wizard
 
 {% hint style="danger" %}
-Make sure you are logged into CIPP under your own account (user@domain.com). The CIPP Wizard will prompt you to logon with the account for the integration used above. The wizard will not use SSO or automatically logon.
+Make sure you are logged into CIPP under your own account (user@domain.com). The CIPP SAM wizard will prompt you to logon, at this moment you use the CIPP Service Account(CIPP@domain.com).
 
 Your browser **MUST** allow cookies and have any ad-blocker disabled for the duration of the wizard. Do not use in-private mode.
 {% endhint %}
