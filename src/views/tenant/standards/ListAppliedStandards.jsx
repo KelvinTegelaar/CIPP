@@ -238,6 +238,7 @@ const ListAppliedStandards = () => {
   const enabledAlertsCount = countEnabledStandards(enabledStandards, 'alert')
   const enabledRemediationsCount = countEnabledStandards(enabledStandards, 'remediate')
   const enabledWarningsCount = countEnabledStandards(enabledStandards, 'report')
+  const totalAvailableStandards = allStandardsList.length
 
   return (
     <CippPage title="Standards" tenantSelector={false}>
@@ -276,14 +277,19 @@ const ListAppliedStandards = () => {
                               className="mb-3"
                               progress={{
                                 color: 'info',
-                                value: enabledWarningsCount,
+                                value:
+                                  totalAvailableStandards > 0
+                                    ? Math.round(
+                                        (enabledWarningsCount / totalAvailableStandards) * 1000,
+                                      ) / 10
+                                    : 0,
                               }}
                               text={
                                 listStandardResults[0].appliedBy
                                   ? `Created by ${listStandardResults[0].appliedBy}`
                                   : 'None'
                               }
-                              title={`${enabledWarningsCount} out of 64`}
+                              title={`${enabledWarningsCount} out of ${totalAvailableStandards}`}
                               value="Enabled Warnings"
                             />
                           </CCol>
@@ -292,14 +298,19 @@ const ListAppliedStandards = () => {
                               className="mb-3"
                               progress={{
                                 color: 'info',
-                                value: enabledAlertsCount,
+                                value:
+                                  totalAvailableStandards > 0
+                                    ? Math.round(
+                                        (enabledAlertsCount / totalAvailableStandards) * 1000,
+                                      ) / 10
+                                    : 0,
                               }}
                               text={
                                 listStandardResults[0].appliedBy
                                   ? `Created by ${listStandardResults[0].appliedBy}`
                                   : 'None'
                               }
-                              title={`${enabledAlertsCount} out of 64`}
+                              title={`${enabledAlertsCount} out of ${totalAvailableStandards}`}
                               value="Enabled Alerts"
                             />
                           </CCol>
@@ -308,14 +319,19 @@ const ListAppliedStandards = () => {
                               className="mb-3"
                               progress={{
                                 color: 'info',
-                                value: enabledRemediationsCount,
+                                value:
+                                  totalAvailableStandards > 0
+                                    ? Math.round(
+                                        (enabledRemediationsCount / totalAvailableStandards) * 1000,
+                                      ) / 10
+                                    : 0,
                               }}
                               text={
                                 listStandardResults[0].appliedBy
                                   ? `Created by ${listStandardResults[0].appliedBy}`
                                   : 'None'
                               }
-                              title={`${enabledRemediationsCount} out of 64`}
+                              title={`${enabledRemediationsCount} out of ${totalAvailableStandards}`}
                               value="Enabled Remediations"
                             />
                           </CCol>
