@@ -282,6 +282,11 @@
   {
     "cat": "Entra (AAD) Standards",
     "name": "standards.UndoOauth",
+    "disabledFeatures": {
+      "report": true,
+      "warn": true,
+      "remediate": false
+    },
     "helpText": "Disables App consent and set to Allow user consent for apps",
     "addedComponent": [],
     "label": "Undo App Consent Standard",
@@ -406,6 +411,11 @@
     "name": "standards.calDefault",
     "cat": "Exchange Standards",
     "helpText": "Sets the default sharing level for the default calendar, for all users",
+    "disabledFeatures": {
+      "report": true,
+      "warn": true,
+      "remediate": false
+    },
     "addedComponent": [
       {
         "type": "Select",
@@ -450,6 +460,11 @@
   {
     "name": "standards.SafeSendersDisable",
     "cat": "Exchange Standards",
+    "disabledFeatures": {
+      "report": true,
+      "warn": true,
+      "remediate": false
+    },
     "helpText": "Loops through all users and removes the Safe Senders list. This is to prevent SPF bypass attacks, as the Safe Senders list is not checked by SPF.",
     "addedComponent": [],
     "label": "Remove Safe Senders to prevent SPF bypass",
@@ -552,6 +567,11 @@
     "name": "standards.DisableAddShortcutsToOneDrive",
     "cat": "SharePoint Standards",
     "helpText": "When the feature is disabled the option Add shortcut to My files will be removed; any folders that have already been added will remain on the user's computer.",
+    "disabledFeatures": {
+      "report": true,
+      "warn": true,
+      "remediate": false
+    },
     "addedComponent": [],
     "label": "Disable Add Shortcuts To OneDrive",
     "impact": "Medium Impact",
