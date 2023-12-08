@@ -222,7 +222,7 @@ const ListAppliedStandards = () => {
     let count = 0
     Object.keys(standards).forEach((key) => {
       const standard = standards[key]
-      // Check if 'Enabled' exists and the specific type is true
+      // Check if 'Enabled' exists and the specific type is true, for non-v2 standards
       if (standard?.Enabled && standard?.Enabled[type]) {
         count++
       } else if (standard && standard[type]) {
@@ -354,12 +354,12 @@ const ListAppliedStandards = () => {
                                       </p>
                                     </CCol>
                                     <CCol>
-                                      <h5>Warn</h5>
+                                      <h5>Report</h5>
                                       <RFFCFormSwitch
                                         name="ignore.ignore1"
                                         disabled={true}
                                         helpText={
-                                          'Exclude this standard from the All Tenants standard. This will only apply explicitly set standards to this tenant.'
+                                          'Report stores the data in the database to use in custom BPA reports.'
                                         }
                                       />
                                     </CCol>
@@ -369,7 +369,7 @@ const ListAppliedStandards = () => {
                                         name="ignore.ignore2"
                                         disabled={true}
                                         helpText={
-                                          'Exclude this standard from the All Tenants standard. This will only apply explicitly set standards to this tenant.'
+                                          'Alert Generates an alert in the log, if remediate is enabled the log entry will also say if the remediation was successful.'
                                         }
                                       />
                                     </CCol>
@@ -377,9 +377,7 @@ const ListAppliedStandards = () => {
                                       <h5>Remediate</h5>
                                       <RFFCFormSwitch
                                         name="standards.OverrideAllTenants.remediate"
-                                        helpText={
-                                          'Exclude this standard from the All Tenants standard. This will only apply explicitly set standards to this tenant.'
-                                        }
+                                        helpText={'Remediate executes the fix for standard.'}
                                       />
                                     </CCol>
                                     <CCol md={3}>
@@ -416,10 +414,11 @@ const ListAppliedStandards = () => {
                                         </p>
                                       </CCol>
                                       <CCol>
-                                        <h5>Warn</h5>
+                                        <h5>Report</h5>
                                         <RFFCFormSwitch
                                           name={`${obj.name}.report`}
-                                          helpText={obj.helpText}
+                                          disabled={obj.disabledFeatures?.report}
+                                          helpText="Report stores the data in the database to use in custom BPA reports."
                                           sublabel={getLabel(obj)}
                                         />
                                       </CCol>
@@ -427,7 +426,8 @@ const ListAppliedStandards = () => {
                                         <h5>Alert</h5>
                                         <RFFCFormSwitch
                                           name={`${obj.name}.alert`}
-                                          helpText={obj.helpText}
+                                          disabled={obj.disabledFeatures?.warn}
+                                          helpText="Alert Generates an alert in the log, if remediate is enabled the log entry will also say if the remediation was successful."
                                           sublabel={getLabel(obj)}
                                         />
                                       </CCol>
@@ -435,7 +435,8 @@ const ListAppliedStandards = () => {
                                         <h5>Remediate</h5>
                                         <RFFCFormSwitch
                                           name={`${obj.name}.remediate`}
-                                          helpText={obj.helpText}
+                                          disabled={obj.disabledFeatures?.remediate}
+                                          helpText={'Remediate executes the fix for standard.'}
                                           sublabel={getLabel(obj)}
                                         />
                                       </CCol>
@@ -516,7 +517,7 @@ const ListAppliedStandards = () => {
                                       <small>Deploy {template.name}</small>
                                     </CCol>
                                     <CCol>
-                                      <h5>Warn</h5>
+                                      <h5>Report</h5>
                                       <RFFCFormSwitch name="ignore.ignore1" disabled={true} />
                                     </CCol>
                                     <CCol>
@@ -582,21 +583,6 @@ const ListAppliedStandards = () => {
               )}
             </CippContentCard>
           </CCol>
-          {/* <CCol lg={6} xs={12}>
-            {listStandardsAllTenants && (
-              <CippContentCard title="Currently Applied Standards">
-                {getResults.isLoading && <CSpinner size="sm" />}
-                {getResults.isSuccess && (
-                  <CCallout color="info">{getResults.data?.Results}</CCallout>
-                )}
-                <CippTable
-                  reportName={`Standards`}
-                  data={listStandardsAllTenants}
-                  columns={tableColumns}
-                />
-              </CippContentCard>
-            )}
-          </CCol> */}
         </CRow>
       </>
     </CippPage>

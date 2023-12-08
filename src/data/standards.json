@@ -3,6 +3,11 @@
     "name": "standards.MailContacts",
     "cat": "Global Standards",
     "helpText": "Defines the email address to receive general updates and information related to M365 subscriptions. Leave a contact field blank if you do not want to update the contact information.",
+    "disabledFeatures": {
+      "report": false,
+      "warn": false,
+      "remediate": false
+    },
     "addedComponent": [
       {
         "type": "input",
@@ -493,8 +498,8 @@
     "helpText": "Blocks login for all accounts that are marked as a shared mailbox. This is Microsoft best practice to prevent direct logons to shared mailboxes.",
     "addedComponent": [],
     "label": "Disable Shared Mailbox AAD accounts",
-    "impact": "High Impact",
-    "impactColour": "danger"
+    "impact": "Medium Impact",
+    "impactColour": "warning"
   },
   {
     "name": "standards.intuneDeviceRetirementDays",
