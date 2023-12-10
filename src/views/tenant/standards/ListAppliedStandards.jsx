@@ -107,7 +107,7 @@ const DeleteAction = () => {
     </>
   )
 }
-const ListAppliedStandards = () => {
+const ApplyNewStandard = () => {
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
 
   const Offcanvas = (row, rowIndex, formatExtraData) => {
@@ -605,4 +605,4 @@ const ListAppliedStandards = () => {
   )
 }
 
-export default ListAppliedStandards
+export default ApplyNewStandard

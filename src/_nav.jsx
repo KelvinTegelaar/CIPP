@@ -202,8 +202,8 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Standards Wizard',
-        to: '/tenant/standards/apply-standard',
+        name: 'List Standards',
+        to: '/tenant/standards/list-standards',
       },
       {
         component: CNavItem,
