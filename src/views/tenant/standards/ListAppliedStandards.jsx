@@ -17,6 +17,7 @@ import { Form } from 'react-final-form'
 import {
   Condition,
   RFFCFormInput,
+  RFFCFormRadio,
   RFFCFormSelect,
   RFFCFormSwitch,
   RFFSelectSearch,
@@ -512,6 +513,7 @@ const ApplyNewStandard = () => {
                                   {
                                     name: 'Intune Template',
                                     switchName: 'standards.IntuneTemplate',
+                                    assignable: true,
                                     templates: intuneTemplates,
                                   },
                                   {
@@ -550,7 +552,7 @@ const ApplyNewStandard = () => {
                                     </CCol>
                                     <CCol>
                                       <h5>Remediate</h5>
-                                      <RFFCFormSwitch name={template.switchName} />
+                                      <RFFCFormSwitch name={`${template.switchName}.remediate`} />
                                     </CCol>
                                     <CCol md={3}>
                                       <h5>Optional Input</h5>
@@ -566,6 +568,45 @@ const ApplyNewStandard = () => {
                                           placeholder="Select a template"
                                           label={`Choose your ${template.name}`}
                                         />
+                                      )}
+                                      {template.assignable && (
+                                        <>
+                                          <RFFCFormRadio
+                                            value=""
+                                            name={`${template.switchName}.AssignTo`}
+                                            label="Do not assign"
+                                          ></RFFCFormRadio>
+                                          <RFFCFormRadio
+                                            value="allLicensedUsers"
+                                            name={`${template.switchName}.AssignTo`}
+                                            label="Assign to all users"
+                                          ></RFFCFormRadio>
+                                          <RFFCFormRadio
+                                            value="AllDevices"
+                                            name={`${template.switchName}.AssignTo`}
+                                            label="Assign to all devices"
+                                          ></RFFCFormRadio>
+                                          <RFFCFormRadio
+                                            value="AllDevicesAndUsers"
+                                            name={`${template.switchName}.AssignTo`}
+                                            label="Assign to all users and devices"
+                                          ></RFFCFormRadio>
+                                          <RFFCFormRadio
+                                            value="customGroup"
+                                            name={`${template.switchName}.AssignTo`}
+                                            label="Assign to Custom Group"
+                                          ></RFFCFormRadio>
+                                          <Condition
+                                            when={`${template.switchName}.AssignTo`}
+                                            is="customGroup"
+                                          >
+                                            <RFFCFormInput
+                                              type="text"
+                                              name={`${template.switchName}.customGroup`}
+                                              label="Custom Group Names separated by comma. Wildcards (*) are allowed"
+                                            />
+                                          </Condition>
+                                        </>
                                       )}
                                     </CCol>
                                   </CRow>
