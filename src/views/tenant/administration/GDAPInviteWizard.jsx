@@ -8,6 +8,7 @@ import { WizardTableField } from 'src/components/tables'
 import { TitleButton } from 'src/components/buttons'
 import PropTypes from 'prop-types'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import { CippCodeBlock } from 'src/components/utilities'
 
 const Error = ({ name }) => (
   <Field
@@ -145,6 +146,12 @@ const GDAPInviteWizard = () => {
             {postResults.data.Results.map((message, idx) => {
               return <li key={idx}>{message}</li>
             })}
+            <CippCodeBlock
+              code={postResults.data.Invite.InviteUrl}
+              showLineNumbers={false}
+              wrapLongLines={true}
+              language="text"
+            />
           </CCallout>
         )}
         <hr className="my-4" />
