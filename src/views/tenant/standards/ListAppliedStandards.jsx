@@ -477,6 +477,14 @@ const ApplyNewStandard = () => {
                                                   label={component.label}
                                                 />
                                               )}
+                                              {component.type === 'number' && (
+                                                <RFFCFormInput
+                                                  type="number"
+                                                  className="mb-3"
+                                                  name={component.name}
+                                                  label={component.label}
+                                                />
+                                              )}
                                               {component.type === 'AdminRolesMultiSelect' && (
                                                 <RFFSelectSearch
                                                   multi={true}
