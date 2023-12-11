@@ -611,6 +611,179 @@ const ApplyNewStandard = () => {
                                     </CCol>
                                   </CRow>
                                 ))}
+                                <CRow key={`template-row-autopilotprofile`} className="mb-3">
+                                  <CCol md={4}>
+                                    <h5>Autopilot Profile</h5>
+                                    <small>Deploy Autopilot profile</small>
+                                  </CCol>
+                                  <CCol>
+                                    <h5>Report</h5>
+                                    <RFFCFormSwitch name="ignore.ignore1" disabled={true} />
+                                  </CCol>
+                                  <CCol>
+                                    <h5>Alert</h5>
+                                    <RFFCFormSwitch name="ignore.ignore2" disabled={true} />
+                                  </CCol>
+                                  <CCol>
+                                    <h5>Remediate</h5>
+                                    <RFFCFormSwitch name={`standards.APConfig.remediate`} />
+                                  </CCol>
+                                  <CCol md={3}>
+                                    <h5>Optional Input</h5>
+                                    <CRow>
+                                      <CCol md={12}>
+                                        <RFFCFormInput
+                                          type="text"
+                                          name="standards.APConfig.DisplayName"
+                                          label="Display name"
+                                          placeholder="Enter a profile name"
+                                        />
+                                      </CCol>
+                                    </CRow>
+                                    <CRow>
+                                      <CCol md={12}>
+                                        <RFFCFormInput
+                                          type="text"
+                                          name="standards.APConfig.Description"
+                                          label="Description"
+                                          placeholder="leave blank for none"
+                                        />
+                                      </CCol>
+                                    </CRow>
+                                    <CRow>
+                                      <CCol md={12}>
+                                        <RFFCFormInput
+                                          type="text"
+                                          name="standards.APConfig.DeviceNameTemplate"
+                                          label="Unique name template"
+                                          placeholder="leave blank for none"
+                                        />
+                                        <br></br>
+                                      </CCol>
+                                    </CRow>
+                                    <RFFCFormSwitch
+                                      value={true}
+                                      name="standards.APConfig.CollectHash"
+                                      label="Convert all targeted devices to Autopilot"
+                                    />
+                                    <RFFCFormSwitch
+                                      value={true}
+                                      name="standards.APConfig.Assignto"
+                                      label="Assign to all devices"
+                                    />
+                                    <RFFCFormSwitch
+                                      value={true}
+                                      name="standards.APConfig.DeploymentMode"
+                                      label="Self-deploying mode"
+                                    />
+                                    <RFFCFormSwitch
+                                      value={true}
+                                      name="standards.APConfig.HideTerms"
+                                      label="Hide Terms and conditions"
+                                    />
+                                    <RFFCFormSwitch
+                                      value={true}
+                                      name="standards.APConfig.HidePrivacy"
+                                      label="Hide Privacy Settings"
+                                    />
+                                    <RFFCFormSwitch
+                                      value={true}
+                                      name="standards.APConfig.HideChangeAccount"
+                                      label="Hide Change Account Options"
+                                    />
+                                    <RFFCFormSwitch
+                                      value={true}
+                                      name="standards.APConfig.NotLocalAdmin"
+                                      label="Setup user as standard user (Leave unchecked to setup user as local admin)"
+                                    />
+                                    <RFFCFormSwitch
+                                      value={true}
+                                      name="standards.APConfig.allowWhiteglove"
+                                      label="Allow White Glove OOBE"
+                                    />
+                                    <RFFCFormSwitch
+                                      value={true}
+                                      name="standards.APConfig.Autokeyboard"
+                                      label="Automatically configure keyboard"
+                                    />
+                                  </CCol>
+                                </CRow>
+                                <CRow key={`template-row-autopilotstatuspage`} className="mb-3">
+                                  <CCol md={4}>
+                                    <h5>Autopilot Status Page</h5>
+                                    <small>Deploy Autopilot Status Page</small>
+                                  </CCol>
+                                  <CCol>
+                                    <h5>Report</h5>
+                                    <RFFCFormSwitch name="ignore.ignore1" disabled={true} />
+                                  </CCol>
+                                  <CCol>
+                                    <h5>Alert</h5>
+                                    <RFFCFormSwitch name="ignore.ignore2" disabled={true} />
+                                  </CCol>
+                                  <CCol>
+                                    <h5>Remediate</h5>
+                                    <RFFCFormSwitch name={`standards.APESP.remediate`} />
+                                  </CCol>
+                                  <CCol md={3}>
+                                    <h5>Optional Input</h5>
+                                    <CRow>
+                                      <CCol>
+                                        <RFFCFormInput
+                                          type="number"
+                                          name="standards.APESP.TimeOutInMinutes"
+                                          label="Timeout in minutes"
+                                          placeholder="60"
+                                        />
+                                      </CCol>
+                                    </CRow>
+                                    <CRow>
+                                      <CCol md={12}>
+                                        <RFFCFormInput
+                                          type="text"
+                                          name="standards.APESP.ErrorMessage"
+                                          label="Custom Error Message"
+                                          placeholder="leave blank to not set."
+                                        />
+                                      </CCol>
+                                    </CRow>
+                                    <RFFCFormSwitch
+                                      value={true}
+                                      name="standards.APESP.ShowProgress"
+                                      label="Show progress to users"
+                                    />
+                                    <RFFCFormSwitch
+                                      value={true}
+                                      name="standards.APESP.EnableLog"
+                                      label="Turn on log collection"
+                                    />
+                                    <RFFCFormSwitch
+                                      value={true}
+                                      name="standards.APESP.OBEEOnly"
+                                      label="Show status page only with OOBE setup"
+                                    />
+                                    <RFFCFormSwitch
+                                      value={true}
+                                      name="standards.APESP.blockDevice"
+                                      label="Block device usage during setup"
+                                    />
+                                    <RFFCFormSwitch
+                                      value={true}
+                                      name="standards.APESP.Allowretry"
+                                      label="Allow retry"
+                                    />
+                                    <RFFCFormSwitch
+                                      value={true}
+                                      name="standards.APESP.AllowReset"
+                                      label="Allow reset"
+                                    />
+                                    <RFFCFormSwitch
+                                      value={true}
+                                      name="standards.APESP.AllowFail"
+                                      label="Allow users to use device if setup fails"
+                                    />
+                                  </CCol>
+                                </CRow>
                               </CAccordionBody>
                             </CAccordionItem>
                           </CAccordion>
