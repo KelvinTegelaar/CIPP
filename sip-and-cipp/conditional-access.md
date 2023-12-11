@@ -6,7 +6,9 @@ description: >-
 
 # Conditional Access
 
-View the video here: [https://youtu.be/PG6fN4J7VVY](https://youtu.be/PG6fN4J7VVY)
+{% hint style="success" %}
+**View the recording here:** [**https://youtu.be/PG6fN4J7VVY**](https://youtu.be/PG6fN4J7VVY)
+{% endhint %}
 
 ### Session Abstract
 
