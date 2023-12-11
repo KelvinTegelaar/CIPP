@@ -283,16 +283,6 @@ const _nav = [
         name: 'GDAP Roles',
         to: '/tenant/administration/gdap-roles',
       },
-      // {
-      //   component: CNavItem,
-      //   name: 'Migration Wizard',
-      //   to: '/tenant/administration/gdap',
-      // },
-      // {
-      //   component: CNavItem,
-      //   name: 'GDAP Migration Status',
-      //   to: '/tenant/administration/gdap-status',
-      // },
     ],
   },
   {
