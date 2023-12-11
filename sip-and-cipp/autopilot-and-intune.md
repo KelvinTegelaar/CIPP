@@ -6,7 +6,9 @@ description: >-
 
 # Autopilot & Intune
 
-### Video TBD
+{% hint style="success" %}
+**View the recording here:** [https://youtu.be/xNMSImgfQmQ](https://youtu.be/xNMSImgfQmQ)
+{% endhint %}
 
 ### Session Abstract
 
