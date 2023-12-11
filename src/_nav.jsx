@@ -197,7 +197,7 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'Edit Individual Standards',
+        name: 'Edit Standards',
         to: '/tenant/standards/list-applied-standards',
       },
       {
