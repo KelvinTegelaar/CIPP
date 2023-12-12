@@ -63,7 +63,7 @@ export default function CellBoolean({
     }
   }
 
-  if (cell === '' && !noDataIsFalse) {
+  if ((cell === '' && !noDataIsFalse) || cell === undefined) {
     return <CellBadge label="No Data" color="info" />
   } else if (colourless && warning && reverse) {
     return nocolour(colourless, normalized ? <IconWarning /> : <IconError />)
