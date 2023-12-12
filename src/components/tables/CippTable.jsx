@@ -23,7 +23,15 @@ import {
 import DataTable, { createTheme } from 'react-data-table-component'
 import PropTypes from 'prop-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faColumns, faSearch, faSync, faTasks } from '@fortawesome/free-solid-svg-icons'
+import {
+  faCheck,
+  faColumns,
+  faFileCsv,
+  faFilePdf,
+  faSearch,
+  faSync,
+  faTasks,
+} from '@fortawesome/free-solid-svg-icons'
 import { cellGenericFormatter } from './CellGenericFormat'
 import { ModalService } from '../utilities'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
@@ -177,7 +185,6 @@ export default function CippTable({
     (e) => {
       if (graphFilterFunction) {
         graphFilterFunction(e)
-        console.log(e)
       }
     },
     [graphFilterFunction],
@@ -613,19 +620,71 @@ export default function CippTable({
         }
 
         defaultActions.push([
-          <ExportPDFButton
-            key="export-pdf-action"
-            pdfData={filtered}
-            pdfHeaders={columns}
-            pdfSize="A4"
-            reportName={reportName}
-          />,
+          <CDropdown key={'pdf-selector'} className="me-2" variant="input-group">
+            <CDropdownToggle
+              className="btn btn-primary btn-sm m-1"
+              size="sm"
+              style={{
+                backgroundColor: '#f88c1a',
+              }}
+            >
+              <FontAwesomeIcon icon={faFilePdf} />
+            </CDropdownToggle>
+            <CDropdownMenu>
+              {dataKeys() && (
+                <>
+                  <ExportPDFButton
+                    key="export-pdf-action-visible"
+                    pdfData={filtered}
+                    pdfHeaders={columns}
+                    pdfSize="A4"
+                    reportName={reportName}
+                    nameText="Export Visible Columns"
+                  />
+                </>
+              )}
+            </CDropdownMenu>
+          </CDropdown>,
         ])
       }
 
       if (!disableCSVExport) {
         defaultActions.push([
-          <ExportCsvButton key="export-csv-action" csvData={filtered} reportName={reportName} />,
+          <>
+            <CDropdown key={'csv-selector'} className="me-2" variant="input-group">
+              <CDropdownToggle
+                className="btn btn-primary btn-sm m-1"
+                size="sm"
+                style={{
+                  backgroundColor: '#f88c1a',
+                }}
+              >
+                <FontAwesomeIcon icon={faFileCsv} />
+              </CDropdownToggle>
+              <CDropdownMenu>
+                {dataKeys() && (
+                  <>
+                    <CDropdownItem>
+                      <ExportCsvButton
+                        key="export-csv-action-visible"
+                        csvData={filtered}
+                        reportName={reportName}
+                        nameText="Export Visible Columns"
+                      />
+                    </CDropdownItem>
+                    <CDropdownItem>
+                      <ExportCsvButton
+                        key="export-csv-action-all"
+                        csvData={data}
+                        reportName={reportName}
+                        nameText="Export All Columns"
+                      />
+                    </CDropdownItem>
+                  </>
+                )}
+              </CDropdownMenu>
+            </CDropdown>
+          </>,
         ])
       }
     }
@@ -686,6 +745,7 @@ export default function CippTable({
     columns,
     reportName,
     selectedRows,
+    filteredItems,
   ])
   const tablePageSize = useSelector((state) => state.app.tablePageSize)
 

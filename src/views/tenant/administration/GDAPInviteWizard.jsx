@@ -1,5 +1,14 @@
-import React from 'react'
-import { CCol, CRow, CForm, CCallout, CSpinner, CButton } from '@coreui/react'
+import React, { useState } from 'react'
+import {
+  CCol,
+  CRow,
+  CForm,
+  CCallout,
+  CSpinner,
+  CFormInput,
+  CFormLabel,
+  CFormRange,
+} from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
@@ -8,6 +17,7 @@ import { WizardTableField } from 'src/components/tables'
 import { TitleButton } from 'src/components/buttons'
 import PropTypes from 'prop-types'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import { CippCodeBlock } from 'src/components/utilities'
 
 const Error = ({ name }) => (
   <Field
@@ -31,11 +41,21 @@ Error.propTypes = {
 const requiredArray = (value) => (value && value.length !== 0 ? undefined : 'Required')
 
 const GDAPInviteWizard = () => {
+  const [inviteCount, setInviteCount] = useState(1)
+  const [loopRunning, setLoopRunning] = React.useState(false)
+  const [massResults, setMassResults] = React.useState([])
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const [genericGetRequest, getResults] = useLazyGenericGetRequestQuery()
 
   const handleSubmit = async (values) => {
-    genericPostRequest({ path: '/api/ExecGDAPInvite', values: values })
+    const resultsarr = []
+    setLoopRunning(true)
+    for (var x = 0; x < inviteCount; x++) {
+      const results = await genericPostRequest({ path: '/api/ExecGDAPInvite', values: values })
+      resultsarr.push(results)
+      setMassResults(resultsarr)
+    }
+    setLoopRunning(false)
   }
 
   const formValues = {}
@@ -94,13 +114,40 @@ const GDAPInviteWizard = () => {
         </CForm>
         <hr className="my-4" />
       </CippWizard.Page>
-      <CippWizard.Page title="Review and Confirm" description="Confirm the settings to apply">
+      <CippWizard.Page title="Invite Options" description="Select options for the invite">
         <center>
           <h3 className="text-primary">Step 2</h3>
+          <h5 className="card-title mb-4">Invite Options</h5>
+        </center>
+        <hr className="my-4" />
+        <CFormLabel>Number of Invites</CFormLabel>
+        <CRow className="mb-3">
+          <CCol md={1} xs={6}>
+            <CFormInput
+              id="invite-count"
+              value={inviteCount}
+              onChange={(e) => setInviteCount(e.target.value)}
+            />
+          </CCol>
+          <CCol>
+            <CFormRange
+              className="mt-2"
+              min={1}
+              max={100}
+              defaultValue={1}
+              value={inviteCount}
+              onChange={(e) => setInviteCount(e.target.value)}
+            />
+          </CCol>
+        </CRow>
+      </CippWizard.Page>
+      <CippWizard.Page title="Review and Confirm" description="Confirm the settings to apply">
+        <center>
+          <h3 className="text-primary">Step 3</h3>
           <h5 className="card-title mb-4">Confirm and apply</h5>
         </center>
         <hr className="my-4" />
-        {!postResults.isSuccess && (
+        {massResults.length < 1 && (
           <FormSpy>
             {/* eslint-disable react/prop-types */}
             {(props) => {
@@ -135,17 +182,29 @@ const GDAPInviteWizard = () => {
             }}
           </FormSpy>
         )}
-        {postResults.isFetching && (
-          <CCallout color="info">
-            <CSpinner>Loading</CSpinner>
-          </CCallout>
-        )}
-        {postResults.isSuccess && (
-          <CCallout color="success">
-            {postResults.data.Results.map((message, idx) => {
-              return <li key={idx}>{message}</li>
-            })}
-          </CCallout>
+        {(massResults.length >= 1 || loopRunning) &&
+          massResults.map((message, idx) => {
+            const results = message?.data
+            const displayResults = Array.isArray(results) ? results.join(', ') : results
+            return (
+              <CCallout color="success" key={idx}>
+                {results.Results.map((message, idx) => {
+                  return <li key={idx}>{message}</li>
+                })}
+                <CippCodeBlock
+                  key={idx}
+                  code={results.Invite.InviteUrl}
+                  showLineNumbers={false}
+                  wrapLongLines={true}
+                  language="text"
+                />
+              </CCallout>
+            )
+          })}
+        {loopRunning && (
+          <li>
+            <CSpinner size="sm" />
+          </li>
         )}
         <hr className="my-4" />
       </CippWizard.Page>

@@ -413,6 +413,7 @@
   --text-medium-emphasis: rgba(255, 255, 255, 0.6);
   --cui-emphasis-color-rgb: rgba(255, 255, 255, 0.6);
   --cui-input-placeholder-color: rgba(255, 255, 255, 0.6);
+
   //--cui-tertiary-bg: var(--cyberdrain-dark);
   // Core UI Impact theme variables.
   --cui-header-hover-color: var(--cyberdrain-light);
@@ -566,7 +567,9 @@
     --cui-btn-disabled-color: #e55353;
     --cui-btn-shadow: rgb(229 83 83 / 50%);
   }
-
+  .accordion {
+    --cui-accordion-btn-icon: url('data:image/svg+xml,%3Cns0%3Asvg%20xmlns%3Ans0%3D%22http%3A%2F%2Fwww%2Ew3%2Eorg%2F2000%2Fsvg%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22%23FFFFFF%22%3E%3Cns0%3Apath%20fill-rule%3D%22evenodd%22%20d%3D%22M1%2E646%204%2E646a%2E5%2E5%200%200%201%20%2E708%200L8%2010%2E293l5%2E646-5%2E647a%2E5%2E5%200%200%201%20%2E708%2E708l-6%206a%2E5%2E5%200%200%201-%2E708%200l-6-6a%2E5%2E5%200%200%201%200-%2E708z%22%20%2F%3E%3C%2Fns0%3Asvg%3E');
+  }
   .list-group-content-card {
     --cui-list-group-border-color: var(--cyberdrain-accent-blue);
   }

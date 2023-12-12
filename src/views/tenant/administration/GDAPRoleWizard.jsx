@@ -168,8 +168,8 @@ const GDAPRoleWizard = () => {
                 return <li key={idx}>{message}</li>
               })}
             </CCallout>
-            <Link to="/tenant/administration/gdap">
-              <CButton>Start GDAP Migration</CButton>
+            <Link to="/tenant/administration/gdap-invite">
+              <CButton>Create GDAP Invite</CButton>
             </Link>
           </>
         )}
