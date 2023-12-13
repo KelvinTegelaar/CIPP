@@ -2,13 +2,14 @@
 
 ### Consenting to new clients
 
-CIPP Automatically connects to all tenants found either in your DAP Relationships or GDAP Relationships. For newly added Tenants CIPP must be granted permissions. This consent runs automatically every week on a Sunday night. \
+CIPP Automatically connects to all tenants found either in your GDAP Relationships List. You must add the[ correct roles](../gdap/recommended-roles.md) for CIPP to function to your GDAP relationship, if you do not, you will not be able to access the tenant and receive errors such as "invalid\_grant:AADSTS65001: The user or administrator has not consented to use the application" .
 
 
-To manually force the CPV permissions, and thus consent to the tenant being access you can use the following steps:
+
+After adding a relationship, you can perform a CPV refresh via the following instructions. This also runs automatically each night
 
 * Go to CIPP
-* Go to Settings
+* Go to Application Settings
 * Go to the Tenants tab
 * Click on the blue refresh button next to the tenant. This will process all required permissions to that tenant.
 
