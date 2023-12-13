@@ -2,6 +2,7 @@ import React from 'react'
 
 const Home = React.lazy(() => import('src/views/home/Home'))
 const Logs = React.lazy(() => import('src/views/cipp/Logs'))
+const Scheduler = React.lazy(() => import('src/views/cipp/Scheduler'))
 const Users = React.lazy(() => import('src/views/identity/administration/Users'))
 const DeletedItems = React.lazy(() => import('src/views/identity/administration/Deleted'))
 const ViewBEC = React.lazy(() => import('src/views/identity/administration/ViewBEC'))
@@ -11,6 +12,8 @@ const EditUser = React.lazy(() => import('src/views/identity/administration/Edit
 const ViewUser = React.lazy(() => import('src/views/identity/administration/ViewUser'))
 const Groups = React.lazy(() => import('src/views/identity/administration/Groups'))
 const AddGroup = React.lazy(() => import('src/views/identity/administration/AddGroup'))
+const UserSettings = React.lazy(() => import('src/views/cipp/UserSettings'))
+
 const AddGroupTemplates = React.lazy(() =>
   import('src/views/identity/administration/AddGroupTemplate'),
 )
@@ -20,6 +23,7 @@ const DeployGroupTemplates = React.lazy(() =>
 const GeoIPLookup = React.lazy(() => import('src/views/tenant/administration/GeoIPLookup'))
 
 const TenantLookup = React.lazy(() => import('src/views/tenant/administration/TenantLookup'))
+
 const GroupTemplates = React.lazy(() => import('src/views/identity/administration/GroupTemplates'))
 
 const EditGroup = React.lazy(() => import('src/views/identity/administration/EditGroup'))
@@ -222,11 +226,19 @@ const ServiceHealth = React.lazy(() => import('src/views/tenant/administration/S
 const EnterpriseApplications = React.lazy(() =>
   import('src/views/tenant/administration/ListEnterpriseApps'),
 )
+const AppConsentRequests = React.lazy(() =>
+  import('src/views/tenant/administration/ListAppConsentRequests'),
+)
+const MailboxRestoreWizard = React.lazy(() =>
+  import('src/views/email-exchange/tools/MailboxRestoreWizard'),
+)
+const MailboxRestores = React.lazy(() => import('src/views/email-exchange/tools/MailboxRestores'))
 
 const routes = [
   // { path: '/', exact: true, name: 'Home' },
   { path: '/home', name: 'Home', component: Home },
   { path: '/cipp/logs', name: 'Logs', component: Logs },
+  { path: '/cipp/scheduler', name: 'Scheduler', component: Scheduler },
 
   { path: '/cipp/404', name: 'Error', component: Page404 },
   { path: '/cipp/403', name: 'Error', component: Page403 },
@@ -314,6 +326,11 @@ const routes = [
     path: '/tenant/administration/enterprise-apps',
     name: 'Enterprise Applications',
     component: EnterpriseApplications,
+  },
+  {
+    path: '/tenant/administration/app-consent-requests',
+    name: 'App Consent Requests',
+    component: AppConsentRequests,
   },
   {
     path: '/tenant/conditional/list-policies',
@@ -541,6 +558,16 @@ const routes = [
     component: SpamFilterTemplate,
   },
   {
+    path: '/email/tools/mailbox-restore-wizard',
+    name: 'Mailbox Restore Wizard',
+    component: MailboxRestoreWizard,
+  },
+  {
+    path: '/email/tools/mailbox-restores',
+    name: 'Mailbox Restores',
+    component: MailboxRestores,
+  },
+  {
     path: '/email/spamfilter/add-template',
     name: 'Add Spamfilter Template',
     component: AddSpamFilterTemplate,
@@ -601,6 +628,8 @@ const routes = [
     component: MailboxClientAccessSettingsList,
   },
   { name: 'Message Trace', path: '/email/reports/message-trace', component: MessageTrace },
+  { path: '/cipp/user-settings', name: 'User Settings', component: UserSettings },
+
   {
     name: 'Phishing Policies',
     path: '/email/reports/phishing-policies',
