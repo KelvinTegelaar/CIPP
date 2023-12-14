@@ -132,16 +132,17 @@ const AppHeader = () => {
           </CNavItem>
         </CHeaderNav>
       </CHeader>
-
-      {dashboard &&
-        dashboard.length >= 1 &&
-        dashboard.map((item, index) => (
-          <div className="m-1" key={index}>
-            <CAlert className="m-3" key={index} color={item.type} dismissible>
-              {item.Alert} <CAlertLink href={item.link}>Link</CAlertLink>
-            </CAlert>
-          </div>
-        ))}
+      <div className="m-2">
+        {dashboard &&
+          dashboard.length >= 1 &&
+          dashboard.map((item, index) => (
+            <div className="m-1" key={index}>
+              <CAlert className="m-3" key={index} color={item.type} dismissible>
+                {item.Alert} <CAlertLink href={item.link}>Link</CAlertLink>
+              </CAlert>
+            </div>
+          ))}
+      </div>
     </>
   )
 }
