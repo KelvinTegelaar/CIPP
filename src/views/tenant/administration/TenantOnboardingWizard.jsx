@@ -7,9 +7,6 @@ import {
   CButton,
   CCallout,
   CCol,
-  CFormLabel,
-  CListGroup,
-  CListGroupItem,
   CRow,
   CSpinner,
 } from '@coreui/react'
@@ -29,6 +26,7 @@ import {
   cellNullTextFormatter,
 } from 'src/components/tables'
 import ReactTimeAgo from 'react-time-ago'
+import { TableModalButton } from 'src/components/buttons'
 
 const Error = ({ name }) => (
   <Field
@@ -37,7 +35,7 @@ const Error = ({ name }) => (
     render={({ meta: { touched, error } }) =>
       touched && error ? (
         <CCallout color="danger">
-          <FontAwesomeIcon icon={faExclamationTriangle} color="danger" />
+          <FontAwesomeIcon icon={faExclamationTriangle} color="danger" className="me-2" />
           {error}
         </CCallout>
       ) : null
@@ -70,7 +68,7 @@ function useInterval(callback, delay, state) {
   }, [delay, state])
 }
 
-const RelationshipOnboarding = ({ relationship, gdapRoles }) => {
+const RelationshipOnboarding = ({ relationship, gdapRoles, autoMapRoles, addMissingGroups }) => {
   const [relationshipReady, setRelationshipReady] = useState(false)
   const [refreshGuid, setRefreshGuid] = useState(false)
   const [getOnboardingStatus, onboardingStatus] = useLazyGenericPostRequestQuery()
@@ -155,22 +153,26 @@ const RelationshipOnboarding = ({ relationship, gdapRoles }) => {
         {onboardingStatus.isUninitialized &&
           getOnboardingStatus({
             path: '/api/ExecOnboardTenant',
-            values: { id: relationship.id, gdapRoles },
+            values: { id: relationship.id, gdapRoles, autoMapRoles, addMissingGroups },
           })}
         {onboardingStatus.isSuccess && (
           <>
-            {onboardingStatus.data?.Status == 'failed' && (
-              <CButton
-                onClick={() =>
-                  getOnboardingStatus({
-                    path: '/api/ExecOnboardTenant?Retry=True',
-                    values: { id: relationship.id, gdapRoles },
-                  })
-                }
-                className="mb-3"
-              >
-                Retry
-              </CButton>
+            {onboardingStatus.data?.Status != 'running' &&
+              onboardingStatus.data?.Status != 'queued' && (
+                <CButton
+                  onClick={() =>
+                    getOnboardingStatus({
+                      path: '/api/ExecOnboardTenant?Retry=True',
+                      values: { id: relationship.id, gdapRoles, autoMapRoles, addMissingGroups },
+                    })
+                  }
+                  className="mb-3 me-2"
+                >
+                  Retry
+                </CButton>
+              )}
+            {onboardingStatus.data?.Logs && (
+              <TableModalButton title="Logs" data={onboardingStatus.data?.Logs} className="mb-3" />
             )}
             <hr className="mb-3" />
             {onboardingStatus.data?.OnboardingSteps?.map((step, idx) => (
@@ -211,6 +213,7 @@ const TenantOnboardingWizard = () => {
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
   const currentSettings = useSelector((state) => state.app)
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
+  const requiredArray = (value) => (value && value.length !== 0 ? undefined : 'Required')
 
   const handleSubmit = async (values) => {}
   const columns = [
@@ -289,32 +292,38 @@ const TenantOnboardingWizard = () => {
           <h5 className="card-title mb-4">Choose a relationship</h5>
         </center>
         <hr className="my-4" />
-        <Field name="selectedRelationships">
+        <Field name="selectedRelationships" validate={requiredArray}>
           {(props) => (
-            <WizardTableField
-              reportName="Add-GDAP-Relationship"
-              keyField="id"
-              path="/api/ListGraphRequest"
-              params={{ Endpoint: 'tenantRelationships/delegatedAdminRelationships' }}
-              columns={columns}
-              filterlist={[
-                { filterName: 'Active Relationships', filter: 'Complex: status eq active' },
-                { filterName: 'Terminated Relationships', filter: 'Complex: status eq terminated' },
-                {
-                  filterName: 'Pending Relationships',
-                  filter: 'Complex: status eq approvalPending',
-                },
-                {
-                  filterName: 'Active with Auto Extend',
-                  filter: 'Complex: status eq active; autoExtendDuration ne PT0S',
-                },
-                {
-                  filterName: 'Active without Auto Extend',
-                  filter: 'Complex: status eq active; autoExtendDuration eq PT0S',
-                },
-              ]}
-              fieldProps={props}
-            />
+            <>
+              <WizardTableField
+                reportName="Add-GDAP-Relationship"
+                keyField="id"
+                path="/api/ListGraphRequest"
+                params={{ Endpoint: 'tenantRelationships/delegatedAdminRelationships' }}
+                columns={columns}
+                filterlist={[
+                  { filterName: 'Active Relationships', filter: 'Complex: status eq active' },
+                  {
+                    filterName: 'Terminated Relationships',
+                    filter: 'Complex: status eq terminated',
+                  },
+                  {
+                    filterName: 'Pending Relationships',
+                    filter: 'Complex: status eq approvalPending',
+                  },
+                  {
+                    filterName: 'Active with Auto Extend',
+                    filter: 'Complex: status eq active; autoExtendDuration ne PT0S',
+                  },
+                  {
+                    filterName: 'Active without Auto Extend',
+                    filter: 'Complex: status eq active; autoExtendDuration eq PT0S',
+                  },
+                ]}
+                fieldProps={props}
+              />
+              <Error name="selectedRelationships" />
+            </>
           )}
         </Field>
         <hr className="my-4" />
@@ -328,33 +337,48 @@ const TenantOnboardingWizard = () => {
           <h5 className="card-title mb-4">Tenant Onboarding Options</h5>
         </center>
         <hr className="my-4" />
-        <CFormLabel>
-          (Optional) Automatically map groups for relationships not created in CIPP. This will not
-          map groups that do not have a corresponding role in the relationship.
-        </CFormLabel>
-        <Field name="gdapRoles">
-          {(props) => (
-            <WizardTableField
-              reportName="gdaproles"
-              keyField="defaultDomainName"
-              path="/api/ListGDAPRoles"
-              columns={[
-                {
-                  name: 'Name',
-                  selector: (row) => row['RoleName'],
-                  sortable: true,
-                  exportselector: 'Name',
-                },
-                {
-                  name: 'Group',
-                  selector: (row) => row['GroupName'],
-                  sortable: true,
-                },
-              ]}
-              fieldProps={props}
-            />
-          )}
-        </Field>
+        <RFFCFormSwitch
+          name="autoMapRoles"
+          label="Automatically map Roles/Groups for relationships not created in CIPP"
+        />
+        <RFFCFormSwitch name="addMissingGroups" label="Add CIPP SAM user to missing groups" />
+        <FormSpy>
+          {/* eslint-disable react/prop-types */}
+          {(props) => {
+            return (
+              <>
+                {(props.values.autoMapRoles || props.values.addMissingGroups) && (
+                  <Field name="gdapRoles" validate={requiredArray}>
+                    {(props) => (
+                      <>
+                        <WizardTableField
+                          reportName="gdaproles"
+                          keyField="defaultDomainName"
+                          path="/api/ListGDAPRoles"
+                          columns={[
+                            {
+                              name: 'Name',
+                              selector: (row) => row['RoleName'],
+                              sortable: true,
+                              exportselector: 'Name',
+                            },
+                            {
+                              name: 'Group',
+                              selector: (row) => row['GroupName'],
+                              sortable: true,
+                            },
+                          ]}
+                          fieldProps={props}
+                        />
+                        <Error name="gdapRoles" />
+                      </>
+                    )}
+                  </Field>
+                )}
+              </>
+            )
+          }}
+        </FormSpy>
         <hr className="my-4" />
       </CippWizard.Page>
       <CippWizard.Page
@@ -382,6 +406,8 @@ const TenantOnboardingWizard = () => {
                           <RelationshipOnboarding
                             relationship={relationship}
                             gdapRoles={props.values.gdapRoles}
+                            autoMapRoles={props.values.autoMapRoles}
+                            addMissingGroups={props.values.addMissingGroups}
                             key={idx}
                           />
                         ))}
