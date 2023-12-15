@@ -168,11 +168,16 @@ const RelationshipOnboarding = ({ relationship, gdapRoles, autoMapRoles, addMiss
                   }
                   className="mb-3 me-2"
                 >
-                  Retry
+                  <FontAwesomeIcon icon="sync" /> Retry
                 </CButton>
               )}
             {onboardingStatus.data?.Logs && (
-              <TableModalButton title="Logs" data={onboardingStatus.data?.Logs} className="mb-3" />
+              <TableModalButton
+                title="Logs"
+                icon="book"
+                data={onboardingStatus.data?.Logs}
+                className="mb-3"
+              />
             )}
             <hr className="mb-3" />
             {onboardingStatus.data?.OnboardingSteps?.map((step, idx) => (
