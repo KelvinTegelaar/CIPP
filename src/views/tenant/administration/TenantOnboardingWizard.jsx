@@ -360,6 +360,7 @@ const TenantOnboardingWizard = () => {
                           reportName="gdaproles"
                           keyField="defaultDomainName"
                           path="/api/ListGDAPRoles"
+                          isModal={true}
                           columns={[
                             {
                               name: 'Name',
