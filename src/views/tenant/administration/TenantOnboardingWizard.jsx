@@ -26,7 +26,7 @@ import {
   cellNullTextFormatter,
 } from 'src/components/tables'
 import ReactTimeAgo from 'react-time-ago'
-import { TableModalButton } from 'src/components/buttons'
+import { TableModalButton, TitleButton } from 'src/components/buttons'
 
 const Error = ({ name }) => (
   <Field
@@ -297,6 +297,9 @@ const TenantOnboardingWizard = () => {
           <h5 className="card-title mb-4">Choose a relationship</h5>
         </center>
         <hr className="my-4" />
+        <div className="mb-2">
+          <TitleButton href="/tenant/administration/gdap-invite" title="Create GDAP Invite" />
+        </div>
         <Field name="selectedRelationships" validate={requiredArray}>
           {(props) => (
             <>
