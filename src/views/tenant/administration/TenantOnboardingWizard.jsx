@@ -347,7 +347,7 @@ const TenantOnboardingWizard = () => {
         <hr className="my-4" />
         <RFFCFormSwitch
           name="autoMapRoles"
-          label="Automatically map Roles/Groups for relationships not created in CIPP"
+          label="Automatically map missing groups to GDAP Roles"
         />
         <RFFCFormSwitch name="addMissingGroups" label="Add CIPP SAM user to missing groups" />
         <FormSpy>
