@@ -345,10 +345,7 @@ const TenantOnboardingWizard = () => {
           <h5 className="card-title mb-4">Tenant Onboarding Options</h5>
         </center>
         <hr className="my-4" />
-        <RFFCFormSwitch
-          name="autoMapRoles"
-          label="Automatically map missing groups to GDAP Roles"
-        />
+        <RFFCFormSwitch name="autoMapRoles" label="Map missing groups to GDAP Roles" />
         <RFFCFormSwitch name="addMissingGroups" label="Add CIPP SAM user to missing groups" />
         <FormSpy>
           {/* eslint-disable react/prop-types */}
