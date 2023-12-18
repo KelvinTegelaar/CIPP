@@ -847,8 +847,8 @@ const OutOfOffice = () => {
       user: userId,
       tenantFilter: tenantDomain,
       AutoReplyState: values.AutoReplyState ? 'Scheduled' : 'Disabled',
-      StartTime: startDate.toLocaleString(),
-      EndTime: endDate.toLocaleString(),
+      StartTime: startDate.toUTCString(),
+      EndTime: endDate.toUTCString(),
       InternalMessage: values.InternalMessage ? values.InternalMessage : '',
       ExternalMessage: values.ExternalMessage ? values.ExternalMessage : '',
     }
