@@ -144,6 +144,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Tenant Onboarding',
+        to: '/tenant/administration/tenant-onboarding-wizard',
+      },
+      {
+        component: CNavItem,
         name: 'Tenant Offboarding',
         to: '/tenant/administration/tenant-offboarding-wizard',
       },

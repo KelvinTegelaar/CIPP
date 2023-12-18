@@ -87,6 +87,7 @@ const GDAPInviteWizard = () => {
           <div className="mb-2">
             <TitleButton href="/tenant/administration/gdap-role-wizard" title="Map GDAP Roles" />
           </div>
+
           <Field name="gdapRoles" validate={requiredArray}>
             {(props) => (
               <WizardTableField
@@ -197,6 +198,14 @@ const GDAPInviteWizard = () => {
                   showLineNumbers={false}
                   wrapLongLines={true}
                   language="text"
+                />
+
+                <TitleButton
+                  href={
+                    '/tenant/administration/tenant-onboarding-wizard?tableFilter=Complex: id eq ' +
+                    results.Invite.RowKey
+                  }
+                  title="Start Onboarding"
                 />
               </CCallout>
             )
