@@ -5,10 +5,11 @@ import huntressLogo from 'src/assets/images/huntress_teal.png'
 import dattoLogo from 'src/assets/images/datto.png'
 import rewstLogo from 'src/assets/images/rewst.png'
 import netfriends from 'src/assets/images/netfriends.png'
+import ninjaLogo from 'src/assets/images/ninjaone.png'
 //todo: Add darkmode detection and change logos accordingly.
 const AppFooter = () => {
   return (
-    <CFooter className="d-flex justify-content-between align-items-center" position="sticky">
+    <CFooter className="d-flex justify-content-between align-items-center stickyfooter">
       <div className="sponsors">
         <p>
           This application is sponsored by{' '}
@@ -23,6 +24,9 @@ const AppFooter = () => {
           </CLink>{' '}
           <CLink href="https://netfriends.com">
             <CImage src={netfriends} alt="Netfriends" />
+          </CLink>
+          <CLink href="https://ninjaone.com">
+            <CImage src={ninjaLogo} alt="NinjaOne" />
           </CLink>
         </p>
       </div>
