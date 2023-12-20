@@ -67,6 +67,7 @@ const GDAPInviteWizard = () => {
       selector: (row) => row?.Invite?.RowKey,
       exportSelector: 'Invite/RowKey',
       sortable: true,
+      omit: true,
       cell: cellGenericFormatter(),
     },
     {
