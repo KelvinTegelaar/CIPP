@@ -232,7 +232,7 @@
         "vendorTenantId": "358a41ff-46d9-49d3-a297-370d894eae6a"
     },
     {
-        "vendorName": "5c7b2b48-9e8f-49ba-80d6-3432e39d596b",
-        "vendorTenantId": "SaaSAlerts"
+        "vendorName": "SaaSAlerts",
+        "vendorTenantId": "5c7b2b48-9e8f-49ba-80d6-3432e39d596b"
     }
 ]
