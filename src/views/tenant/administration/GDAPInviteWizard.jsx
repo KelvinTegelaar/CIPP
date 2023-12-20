@@ -83,6 +83,13 @@ const GDAPInviteWizard = () => {
       exportSelector: 'Invite/OnboardingUrl',
       cell: cellGenericFormatter(),
     },
+    {
+      name: 'Message',
+      sortable: true,
+      selector: (row) => row?.Message,
+      exportSelector: 'Message',
+      cell: cellGenericFormatter(),
+    },
   ]
 
   return (
