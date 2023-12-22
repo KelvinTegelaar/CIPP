@@ -16,6 +16,34 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { CippActionsOffcanvas, ModalService, TenantSelector } from 'src/components/utilities'
 import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
 import arrayMutators from 'final-form-arrays'
+const alertsList = [
+  { name: 'MFAAlertUsers', label: 'Alert on users without any form of MFA' },
+  { name: 'MFAAdmins', label: 'Alert on admins without any form of MFA' },
+  {
+    name: 'NoCAConfig',
+    label:
+      'Alert on tenants without a Conditional Access policy, while having Conditional Access licensing available.',
+  },
+  { name: 'AdminPassword', label: 'Alert on changed admin Passwords' },
+  { name: 'QuotaUsed', label: 'Alert on 90% mailbox quota used' },
+  { name: 'SharePointQuota', label: 'Alert on 90% SharePoint quota used' },
+  { name: 'ExpiringLicenses', label: 'Alert on licenses expiring in 30 days' },
+  { name: 'SecDefaultsUpsell', label: 'Alert on Security Defaults automatic enablement' },
+  {
+    name: 'DefenderStatus',
+    label: 'Alert if Defender is not running (Tenant must be on-boarded in Lighthouse)',
+  },
+  {
+    name: 'DefenderMalware',
+    label: 'Alert on Defender Malware found  (Tenant must be on-boarded in Lighthouse)',
+  },
+  { name: 'UnusedLicenses', label: 'Alert on unused licenses' },
+  { name: 'OverusedLicenses', label: 'Alert on overused licenses' },
+  { name: 'AppSecretExpiry', label: 'Alert on expiring application secrets' },
+  { name: 'ApnCertExpiry', label: 'Alert on expiring APN certificates' },
+  { name: 'VppTokenExpiry', label: 'Alert on expiring VPP tokens' },
+  { name: 'DepTokenExpiry', label: 'Alert on expiring DEP tokens' },
+]
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
@@ -125,6 +153,7 @@ const ListClassicAlerts = () => {
     },
   ]
   const initialValues = currentlySelectedAlerts.filter((x) => x.tenantName === tenantDomain)[0]
+
   return (
     <CippPage title={`Add Schedule`} tenantSelector={false}>
       <>
@@ -153,73 +182,11 @@ const ListClassicAlerts = () => {
                       </CRow>
                       <CRow>
                         <hr />
-                        <CCol>
-                          <RFFCFormSwitch
-                            value={true}
-                            name="MFAAlertUsers"
-                            label="Alert on users without any form of MFA"
-                          />
-                          <RFFCFormSwitch
-                            name="MFAAdmins"
-                            label="Alert on admins without any form of MFA"
-                          />
-                          <RFFCFormSwitch
-                            name="NoCAConfig"
-                            label="Alert on tenants without a Conditional Access policy, while having Conditional Access licensing available."
-                          />
-                          <RFFCFormSwitch
-                            name="AdminPassword"
-                            label="Alert on changed admin Passwords"
-                          />
-                          <RFFCFormSwitch
-                            name="QuotaUsed"
-                            label="Alert on 90% mailbox quota used"
-                          />
-                          <RFFCFormSwitch
-                            name="SharePointQuota"
-                            label="Alert on 90% SharePoint quota used"
-                          />
-
-                          <RFFCFormSwitch
-                            name="ExpiringLicenses"
-                            label="Alert on licenses expiring in 30 days"
-                          />
-                          <RFFCFormSwitch
-                            name="SecDefaultsUpsell"
-                            label="Alert on Security Defaults automatic enablement"
-                          />
-                        </CCol>
-                        <CCol>
-                          <RFFCFormSwitch
-                            name="DefenderStatus"
-                            label="Alert if Defender is not running (Tenant must be on-boarded in Lighthouse)"
-                          />
-                          <RFFCFormSwitch
-                            name="DefenderMalware"
-                            label="Alert on Defender Malware found  (Tenant must be on-boarded in Lighthouse)"
-                          />
-                          <RFFCFormSwitch name="UnusedLicenses" label="Alert on unused licenses" />
-                          <RFFCFormSwitch
-                            name="OverusedLicenses"
-                            label="Alert on overused licenses"
-                          />
-                          <RFFCFormSwitch
-                            name="AppSecretExpiry"
-                            label="Alert on expiring application secrets"
-                          />
-                          <RFFCFormSwitch
-                            name="ApnCertExpiry"
-                            label="Alert on expiring APN certificates"
-                          />
-                          <RFFCFormSwitch
-                            name="VppTokenExpiry"
-                            label="Alert on expiring VPP tokens"
-                          />
-                          <RFFCFormSwitch
-                            name="DepTokenExpiry"
-                            label="Alert on expiring DEP tokens"
-                          />
-                        </CCol>
+                        {alertsList.map((alert, index) => (
+                          <CCol key={alert.name} md="6">
+                            <RFFCFormSwitch name={alert.name} label={alert.label} />
+                          </CCol>
+                        ))}
                       </CRow>
                       <CRow>
                         <CCol md={6}>
