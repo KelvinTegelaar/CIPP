@@ -4,8 +4,10 @@ import useQuery from 'src/hooks/useQuery'
 import { useSelector } from 'react-redux'
 import { Field, Form, FormSpy } from 'react-final-form'
 import {
+  Condition,
   RFFCFormInput,
   RFFCFormInputArray,
+  RFFCFormSelect,
   RFFCFormSwitch,
   RFFSelectSearch,
 } from 'src/components/forms'
@@ -17,10 +19,8 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faEdit, faEye } from '@fortawesome/free-solid-svg-icons'
 import { CippContentCard, CippPage, CippPageList } from 'src/components/layout'
-import { password } from 'src/validators'
 import { cellBadgeFormatter, cellDateFormatter } from 'src/components/tables'
-import { CellTip, cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
-import DatePicker from 'react-datepicker'
+import { CellTip } from 'src/components/tables/CellGenericFormat'
 import 'react-datepicker/dist/react-datepicker.css'
 import TenantListSelector from 'src/components/utilities/TenantListSelector'
 import { ModalService, TenantSelector } from 'src/components/utilities'
@@ -81,10 +81,11 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
   )
 }
 
-const Scheduler = () => {
+const AlertRules = () => {
   const currentDate = new Date()
   const [startDate, setStartDate] = useState(currentDate)
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
+  const [isArr, setisArr] = useState([])
   const [refreshState, setRefreshState] = useState(false)
   const taskName = `Scheduled Task ${currentDate.toLocaleString()}`
   const { data: availableCommands = [], isLoading: isLoadingcmd } = useGenericGetRequestQuery({
@@ -111,7 +112,6 @@ const Scheduler = () => {
       setRefreshState(res.requestId)
     })
   }
-
   const columns = [
     {
       name: 'Name',
@@ -182,12 +182,221 @@ const Scheduler = () => {
       maxWidth: '80px',
     },
   ]
+
+  const ifvalues = [
+    { value: 'New-InboxRule', label: 'A new Inbox rule is created' },
+    { value: 'Set-InboxRule', label: 'A existing Inbox rule is created' },
+    {
+      value: 'Add member to role.',
+      label: 'A user has been added to an admin role',
+    },
+    {
+      value: 'Disable account.',
+      label: 'A user account has been disabled',
+    },
+    {
+      value: 'Enable account.',
+      label: 'A user account has been enabled',
+    },
+    {
+      value: 'Update StsRefreshTokenValidFrom Timestamp.',
+      label: 'A user sessions have been revoked',
+    },
+    {
+      value: 'Disable Strong Authentication.',
+      label: 'A users MFA has been disabled',
+    },
+    {
+      value: 'Remove Member from a role.',
+      label: 'A user has been removed from a role',
+    },
+    {
+      value: 'Reset user password.',
+      label: 'A user password has been reset',
+    },
+    {
+      value: 'UserLoggedInFromUnknownLocation',
+      label: 'A user has logged in from a location ',
+    },
+    {
+      value: 'Add service principal',
+      label: 'A service prinicipal has been created',
+    },
+    {
+      value: 'Remove service principal.',
+      label: 'A service principal has been removed',
+    },
+    {
+      value: 'ImpossibleTravel',
+      label: 'A user has logged in from an impossible location (Based on IP)',
+    },
+    {
+      value: 'badRepIP',
+      label: 'A user has logged in from a known bad-reputation IP',
+    },
+    { value: 'customField', label: 'Custom Log Query' },
+  ]
+  const dovalues = [
+    { value: 'cippcommand', label: 'Execute a CIPP Command' },
+    { value: 'becremediate', label: 'Execute a BEC Remediate' },
+    { value: 'disableuser', label: 'Disable the user in the log entry' },
+    { value: 'generatelog', label: 'Generate a log entry' },
+    { value: 'generatemail', label: 'Generate an email' },
+    { value: 'generatePSA', label: 'Generate a PSA ticket' },
+    { value: 'generateWebhook', label: 'Forward the log as webhook' },
+    {
+      value: 'store',
+      label: 'Store the log into an external Azure Storage Account',
+    },
+  ]
+
+  const [ifCount, setIfCount] = useState(1)
+  const [doCount, setDoCount] = useState(1)
+
+  const handleButtonIf = (operator) => {
+    if (operator === '+') {
+      if (ifCount < 3) {
+        setIfCount(ifCount + 1)
+      }
+    } else {
+      if (ifCount > 1) {
+        setIfCount(ifCount - 1)
+      }
+    }
+  }
+
+  const handleButtonDo = (operator) => {
+    if (operator === '+') {
+      if (doCount < 10) {
+        setDoCount(doCount + 1)
+      }
+    } else {
+      if (doCount > 1) {
+        setDoCount(doCount - 1)
+      }
+    }
+  }
+
+  const renderIfs = () => {
+    const ifs = []
+    for (let i = 0; i < ifCount; i++) {
+      ifs.push(
+        <>
+          {i === 0 ? 'If' : 'And'}
+          <CRow className="align-items-center" key={`if-${i}`}>
+            <CCol>
+              <RFFCFormSelect name={`ifs.${i}`} values={ifvalues} />
+            </CCol>
+            <CCol xs="auto">
+              {ifCount > 1 && (
+                <CButton
+                  className="circular-button mb-3"
+                  title={'-'}
+                  onClick={() => handleButtonIf('-')}
+                  disabled={doCount >= 10}
+                >
+                  <FontAwesomeIcon icon={'minus'} />
+                </CButton>
+              )}
+            </CCol>
+            <CCol xs="auto">
+              <CButton
+                className="circular-button mb-3"
+                title={'+'}
+                onClick={() => handleButtonIf('+')}
+                disabled={ifCount >= 3}
+              >
+                <FontAwesomeIcon icon={'plus'} />
+              </CButton>
+            </CCol>
+          </CRow>
+          <CRow className="mb-3">
+            <CCol>
+              <Condition when={`ifs.${i}`} is="customField">
+                <RFFCFormInput type="text" name="field" label="Query" />
+              </Condition>
+            </CCol>
+          </CRow>
+        </>,
+      )
+    }
+    return ifs
+  }
+
+  const renderDos = () => {
+    const dos = []
+
+    for (let i = 0; i < doCount; i++) {
+      dos.push(
+        <>
+          {i === 0 ? 'Execute this' : 'And'}
+          <CRow className="align-items-center mb-3" key={`do-${i}`}>
+            <CCol>
+              <RFFCFormSelect name={`do.${i}.execute`} values={dovalues} />
+            </CCol>
+            {doCount > 1 && (
+              <CCol xs="auto">
+                <CButton
+                  className="circular-button mb-3"
+                  title={'-'}
+                  onClick={() => handleButtonDo('-')}
+                  disabled={doCount >= 10}
+                >
+                  <FontAwesomeIcon icon={'minus'} />
+                </CButton>
+              </CCol>
+            )}
+            <CCol xs="auto">
+              <CButton
+                className="circular-button mb-3"
+                title={'+'}
+                onClick={() => handleButtonDo('+')}
+                disabled={doCount >= 10}
+              >
+                <FontAwesomeIcon icon={'plus'} />
+              </CButton>
+            </CCol>
+            <Condition when={`do.${i}.execute`} is="cippcommand">
+              <CRow className="mb-3">
+                <CCol>
+                  <RFFSelectSearch
+                    values={availableCommands.map((cmd) => ({
+                      value: cmd.Function,
+                      name: cmd.Function,
+                    }))}
+                    name={`command`}
+                    placeholder={
+                      isLoadingcmd ? (
+                        <CSpinner size="sm" />
+                      ) : (
+                        'Select a command or report to execute.'
+                      )
+                    }
+                    label="Command to execute"
+                  />
+                </CCol>
+              </CRow>
+            </Condition>
+            <Condition when={`do.${i}.execute`} is="store">
+              <CRow className="mb-3">
+                <CCol>
+                  <RFFCFormInput type="text" name="sasurl" label="Connection String" />
+                </CCol>
+              </CRow>
+            </Condition>
+          </CRow>
+        </>,
+      )
+    }
+    return dos
+  }
+
   return (
     <CippPage title={`Add Schedule`} tenantSelector={false}>
       <>
         <CRow>
           <CCol md={4}>
-            <CippContentCard title="Add Task" icon={faEdit}>
+            <CippContentCard title="Add Alert Rule" icon={faEdit}>
               <Form
                 onSubmit={onSubmit}
                 mutators={{
@@ -204,65 +413,9 @@ const Scheduler = () => {
                           <Field name="tenantFilter">{(props) => <TenantSelector />}</Field>
                         </CCol>
                       </CRow>
-                      <CRow>
-                        <CCol>
-                          <RFFCFormInput
-                            type="text"
-                            name="taskName"
-                            label="Task Name"
-                            firstValue={`Task ${currentDate.toLocaleString()}`}
-                          />
-                        </CCol>
-                      </CRow>
-                      <CRow>
-                        <CCol>
-                          <label>Scheduled Date</label>
-                          <DatePicker
-                            className="form-control mb-3"
-                            selected={startDate}
-                            showTimeSelect
-                            timeFormat="HH:mm"
-                            timeIntervals={15}
-                            dateFormat="Pp"
-                            onChange={(date) => setStartDate(date)}
-                          />
-                        </CCol>
-                      </CRow>
-                      <CRow className="mb-3">
-                        <CCol>
-                          <RFFSelectSearch
-                            values={[
-                              { value: '0', name: 'Only once' },
-                              { value: '1', name: 'Every 1 day' },
-                              { value: '7', name: 'Every 7 days' },
-                              { value: '30', name: 'Every 30 days' },
-                              { value: '365', name: 'Every 365 days' },
-                            ]}
-                            name="Recurrence"
-                            placeholder="Select a recurrence"
-                            label="Recurrence"
-                          />
-                        </CCol>
-                      </CRow>
-                      <CRow className="mb-3">
-                        <CCol>
-                          <RFFSelectSearch
-                            values={availableCommands.map((cmd) => ({
-                              value: cmd.Function,
-                              name: cmd.Function,
-                            }))}
-                            name="command"
-                            placeholder={
-                              isLoadingcmd ? (
-                                <CSpinner size="sm" />
-                              ) : (
-                                'Select a command or report to execute.'
-                              )
-                            }
-                            label="Command to execute"
-                          />
-                        </CCol>
-                      </CRow>
+                      {renderIfs()}
+                      {renderDos()}
+
                       <FormSpy>
                         {/* eslint-disable react/prop-types */}
                         {(props) => {
@@ -337,19 +490,6 @@ const Scheduler = () => {
                             return paramblock
                           }}
                         </FormSpy>
-                      </CRow>
-                      <CRow className="mb-3">
-                        <CCol>
-                          <RFFCFormInputArray name={`additional`} label="Additional Properties" />
-                        </CCol>
-                      </CRow>
-                      <CRow className="mb-3">
-                        <CCol>
-                          <label>Send results to</label>
-                          <RFFCFormSwitch name="webhook" label="Webhook" />
-                          <RFFCFormSwitch name="email" label="E-mail" />
-                          <RFFCFormSwitch name="psa" label="PSA" />
-                        </CCol>
                       </CRow>
                       <CRow className="mb-3">
                         <CCol md={6}>
@@ -429,4 +569,4 @@ const Scheduler = () => {
   )
 }
 
-export default Scheduler
+export default AlertRules
