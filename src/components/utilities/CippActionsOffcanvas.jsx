@@ -301,7 +301,7 @@ export default function CippActionsOffcanvas(props) {
             <FontAwesomeIcon icon={faGlobe} className="mx-2" /> Extended Information
           </CCardTitle>
         </CCardHeader>
-        <CCardBody> {extendedInfoContent}</CCardBody>
+        <CCardBody>{extendedInfoContent}</CCardBody>
       </CCard>
       {cardContent && cardContent}
       {<COffcanvasTitle>Actions</COffcanvasTitle>}
