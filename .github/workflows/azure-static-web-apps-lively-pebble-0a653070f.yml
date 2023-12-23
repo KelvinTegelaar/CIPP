@@ -1,0 +1,61 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "staticSites_cipp_swa_dte3z_name": {
+            "defaultValue": "cipp-swa-dte3z",
+            "type": "String"
+        },
+        "sites_cippdte3z_externalid": {
+            "defaultValue": "/subscriptions/d497a85f-201c-48f8-8916-b9e15cdcea47/resourceGroups/CIPP_ResourceGroup/providers/Microsoft.Web/sites/cippdte3z",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Web/staticSites",
+            "apiVersion": "2023-01-01",
+            "name": "[parameters('staticSites_cipp_swa_dte3z_name')]",
+            "location": "East US 2",
+            "sku": {
+                "name": "Standard",
+                "tier": "Standard"
+            },
+            "properties": {
+                "repositoryUrl": "https://github.com/CanteyDev/CIPP",
+                "branch": "main",
+                "stagingEnvironmentPolicy": "Enabled",
+                "allowConfigFileUpdates": true,
+                "provider": "GitHub",
+                "enterpriseGradeCdnStatus": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Web/staticSites/linkedBackends",
+            "apiVersion": "2023-01-01",
+            "name": "[concat(parameters('staticSites_cipp_swa_dte3z_name'), '/', parameters('staticSites_cipp_swa_dte3z_name'))]",
+            "location": "East US 2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/staticSites', parameters('staticSites_cipp_swa_dte3z_name'))]"
+            ],
+            "properties": {
+                "backendResourceId": "[parameters('sites_cippdte3z_externalid')]",
+                "region": "eastus2"
+            }
+        },
+        {
+            "type": "Microsoft.Web/staticSites/userProvidedFunctionApps",
+            "apiVersion": "2023-01-01",
+            "name": "[concat(parameters('staticSites_cipp_swa_dte3z_name'), '/', parameters('staticSites_cipp_swa_dte3z_name'))]",
+            "location": "East US 2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/staticSites', parameters('staticSites_cipp_swa_dte3z_name'))]"
+            ],
+            "properties": {
+                "functionAppResourceId": "[parameters('sites_cippdte3z_externalid')]",
+                "functionAppRegion": "eastus2"
+            }
+        }
+    ]
+}
