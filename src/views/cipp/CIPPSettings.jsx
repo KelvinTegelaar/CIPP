@@ -513,12 +513,6 @@ const GeneralSettings = () => {
                             filter: 'Complex: Type eq Warning',
                           },
                         ]}
-                        defaultFilterText={
-                          GDAPResult.data.Results.GDAPIssues.filter((e) => e.Type === 'Error')
-                            .length > 0
-                            ? 'Complex: Type eq Error'
-                            : 'Complex: Type eq Warning'
-                        }
                         isModal={true}
                       />
                     </>
