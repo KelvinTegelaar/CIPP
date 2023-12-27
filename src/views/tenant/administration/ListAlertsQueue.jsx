@@ -155,6 +155,17 @@ const ListClassicAlerts = () => {
     },
   ]
   const initialValues = currentlySelectedAlerts.filter((x) => x.tenantName === tenantDomain)[0]
+  const allTenantsAlert = currentlySelectedAlerts.find(
+    (tenant) => tenant.tenantName === 'AllTenants',
+  )
+  function getLabel(item) {
+    if (typeof allTenantsAlert === 'object' && allTenantsAlert !== null) {
+      if (allTenantsAlert[`${item}`]) {
+        return `* Enabled via All Tenants`
+      }
+    }
+    return ''
+  }
 
   return (
     <CippPage title={`Add Schedule`} tenantSelector={false}>
@@ -186,7 +197,11 @@ const ListClassicAlerts = () => {
                         <hr />
                         {alertsList.map((alert, index) => (
                           <CCol key={alert.name} md="6">
-                            <RFFCFormSwitch name={alert.name} label={alert.label} />
+                            <RFFCFormSwitch
+                              name={alert.name}
+                              label={alert.label}
+                              sublabel={getLabel(alert.name)}
+                            />
                           </CCol>
                         ))}
                       </CRow>
