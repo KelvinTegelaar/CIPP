@@ -10,6 +10,7 @@ const initialState = {
   currentTheme: 'default',
   tablePageSize: 25,
   pageSizes: [25, 50, 100, 200, 500],
+  TenantListSelector: false,
 }
 
 export const appSlice = createSlice({
@@ -37,6 +38,21 @@ export const appSlice = createSlice({
     setDefaultusageLocation: (state, action) => {
       state.usageLocation = action.payload?.usageLocation
     },
+    setReportImage: (state, action) => {
+      state.reportImage = action.payload?.reportImage
+    },
+    setTenantList: (state, action) => {
+      state.TenantListSelector = action.payload?.TenantListSelector
+    },
+    setOffboardingDefaults: (state, action) => {
+      state.offboardingDefaults = action.payload?.offboardingDefaults
+    },
+    setUserSettings: (state, action) => {
+      //foreach key in the userSettings, set the state key to the value of that setting
+      Object.keys(action.payload?.userSettings).forEach((key) => {
+        state[key] = action.payload?.userSettings[key]
+      })
+    },
   },
 })
 
@@ -44,10 +60,14 @@ export const {
   toggleSidebarShow,
   toggleSidebarUnfoldable,
   setCurrentTenant,
+  setTenantList,
   setCurrentPageSize,
   setCurrentTheme,
   setSidebarVisible,
   setDefaultusageLocation,
+  setReportImage,
+  setOffboardingDefaults,
+  setUserSettings,
 } = appSlice.actions
 
 export default persistReducer(

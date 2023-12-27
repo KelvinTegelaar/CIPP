@@ -20,6 +20,15 @@ export const appApi = baseApi.injectEndpoints({
         params: { localversion: localVersion },
       }),
     }),
+    loadAlertsDash: builder.query({
+      queryFn: (_args, _baseQueryApi, _options, baseQuery) =>
+        baseQuery({ path: '/version_latest.txt' }).then(({ data }) =>
+          baseQuery({
+            path: '/api/GetCippAlerts',
+            params: { localversion: data.replace(/(\r\n|\n|\r)/gm, '') },
+          }),
+        ),
+    }),
     loadDash: builder.query({
       query: (localVersion) => ({
         path: '/api/GetDashboard',
@@ -44,6 +53,11 @@ export const appApi = baseApi.injectEndpoints({
         addUser,
         addStandardsDeploy,
         addChocoApp,
+        onePerTenant,
+        sendtoIntegration,
+        includeTenantId,
+        logsToInclude,
+        Severity,
       }) => ({
         path: '/api/ExecNotificationConfig',
         data: {
@@ -56,6 +70,11 @@ export const appApi = baseApi.injectEndpoints({
           addUser: addUser,
           addStandardsDeploy: addStandardsDeploy,
           addChocoApp: addChocoApp,
+          onePerTenant: onePerTenant,
+          logsToInclude: logsToInclude,
+          Severity: Severity,
+          sendtoIntegration: sendtoIntegration,
+          includeTenantId: includeTenantId,
         },
         method: 'post',
       }),
@@ -108,6 +127,7 @@ export const {
   useLoadVersionRemoteQuery,
   useLoadVersionsQuery,
   useLoadDashQuery,
+  useLoadAlertsDashQuery,
   useExecPermissionsAccessCheckQuery,
   useLazyExecPermissionsAccessCheckQuery,
   useExecTenantsAccessCheckQuery,

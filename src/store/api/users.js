@@ -17,10 +17,18 @@ export const usersApi = baseApi.injectEndpoints({
         },
       }),
     }),
+    listContacts: builder.query({
+      query: ({ tenantDomain }) => ({
+        path: '/api/ListContacts',
+        params: {
+          TenantFilter: tenantDomain,
+        },
+      }),
+    }),
     listUser: builder.query({
-      query: ({ tenantDomain, userId }) => ({
+      query: ({ tenantDomain, userId, IncludeLogonDetails }) => ({
         path: '/api/ListUsers',
-        params: { userId, TenantFilter: tenantDomain },
+        params: { userId, TenantFilter: tenantDomain, IncludeLogonDetails },
       }),
       transformResponse: (response) => {
         if (response?.length > 0) {
@@ -51,7 +59,11 @@ export const usersApi = baseApi.injectEndpoints({
       queryFn: async (_args, _baseQueryApi, _options, baseQuery) => {
         const startRequest = await baseQuery({
           path: '/api/execBECCheck',
-          params: { userId: _args.userId, tenantFilter: _args.tenantFilter },
+          params: {
+            userId: _args.userId,
+            tenantFilter: _args.tenantFilter,
+            userName: _args.userName,
+          },
         })
         if (startRequest.error) {
           return { error: startRequest.error }
@@ -109,6 +121,7 @@ export const {
   useEditUserMutation,
   useListUsersQuery,
   useListUserQuery,
+  useListContactsQuery,
   useListUserConditionalAccessPoliciesQuery,
   useListUserSigninLogsQuery,
   useAddUserMutation,
