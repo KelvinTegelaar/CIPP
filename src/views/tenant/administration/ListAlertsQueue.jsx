@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { CButton, CCol, CForm, CRow, CSpinner, CTooltip } from '@coreui/react'
+import { CButton, CCallout, CCol, CForm, CRow, CSpinner, CTooltip } from '@coreui/react'
 import { useSelector } from 'react-redux'
 import { Field, Form } from 'react-final-form'
 import { RFFCFormSwitch } from 'src/components/forms'
@@ -124,7 +124,9 @@ const ListClassicAlerts = () => {
     })
     values['tenantFilter'] = tenantDomain
     values['SetAlerts'] = true
-    genericPostRequest({ path: '/api/AddAlert', values: values })
+    genericPostRequest({ path: '/api/AddAlert', values: values }).then((res) => {
+      setRefreshState(res.requestId)
+    })
   }
   const { data: currentlySelectedAlerts = [], isLoading: isLoadingCurrentAlerts } =
     useGenericGetRequestQuery({
@@ -203,6 +205,11 @@ const ListClassicAlerts = () => {
                           </CButton>
                         </CCol>
                       </CRow>
+                      {postResults.isSuccess && (
+                        <CCallout color="success">
+                          <li>{postResults.data.Results}</li>
+                        </CCallout>
+                      )}
                     </CForm>
                   )
                 }}
