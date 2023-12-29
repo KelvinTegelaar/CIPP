@@ -27,62 +27,62 @@ import { ModalService, TenantSelector } from 'src/components/utilities'
 import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
 import arrayMutators from 'final-form-arrays'
 
-const Offcanvas = (row, rowIndex, formatExtraData) => {
-  const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
-  const [ocVisible, setOCVisible] = useState(false)
-  const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
-
-  const handleDeleteSchedule = (apiurl, message) => {
-    ModalService.confirm({
-      title: 'Confirm',
-      body: <div>{message}</div>,
-      onConfirm: () => ExecuteGetRequest({ path: apiurl }),
-      confirmLabel: 'Continue',
-      cancelLabel: 'Cancel',
-    })
-  }
-  let jsonResults
-  try {
-    jsonResults = JSON.parse(row.Results)
-  } catch (error) {
-    jsonResults = row.Results
-  }
-
-  return (
-    <>
-      <CTooltip content="View Results">
-        <CButton size="sm" color="success" variant="ghost" onClick={() => setOCVisible(true)}>
-          <FontAwesomeIcon icon={'eye'} href="" />
-        </CButton>
-      </CTooltip>
-      <CTooltip content="Delete task">
-        <CButton
-          onClick={() =>
-            handleDeleteSchedule(
-              `/api/RemoveWebhookAlert?Tenantfilter=${tenantDomain}&ID=${row.RowKey}`,
-              'Do you want to delete this job?',
-            )
-          }
-          size="sm"
-          variant="ghost"
-          color="danger"
-        >
-          <FontAwesomeIcon icon={'trash'} href="" />
-        </CButton>
-      </CTooltip>
-      <CippCodeOffCanvas
-        hideButton
-        title="Results"
-        row={row}
-        state={ocVisible}
-        type="TemplateResults"
-        hideFunction={() => setOCVisible(false)}
-      />
-    </>
-  )
-}
-
 const AlertRules = () => {
+  const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
+
+  const Offcanvas = (row, rowIndex, formatExtraData) => {
+    const [ocVisible, setOCVisible] = useState(false)
+    const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
+
+    const handleDeleteSchedule = (apiurl, message) => {
+      ModalService.confirm({
+        title: 'Confirm',
+        body: <div>{message}</div>,
+        onConfirm: () => ExecuteGetRequest({ path: apiurl }),
+        confirmLabel: 'Continue',
+        cancelLabel: 'Cancel',
+      })
+    }
+    let jsonResults
+    try {
+      jsonResults = JSON.parse(row.Results)
+    } catch (error) {
+      jsonResults = row.Results
+    }
+
+    return (
+      <>
+        <CTooltip content="View Results">
+          <CButton size="sm" color="success" variant="ghost" onClick={() => setOCVisible(true)}>
+            <FontAwesomeIcon icon={'eye'} href="" />
+          </CButton>
+        </CTooltip>
+        <CTooltip content="Delete task">
+          <CButton
+            onClick={() =>
+              handleDeleteSchedule(
+                `/api/RemoveWebhookAlert?Tenantfilter=${tenantDomain}&ID=${row.RowKey}`,
+                'Do you want to delete this job?',
+              )
+            }
+            size="sm"
+            variant="ghost"
+            color="danger"
+          >
+            <FontAwesomeIcon icon={'trash'} href="" />
+          </CButton>
+        </CTooltip>
+        <CippCodeOffCanvas
+          hideButton
+          title="Results"
+          row={row}
+          state={ocVisible}
+          type="TemplateResults"
+          hideFunction={() => setOCVisible(false)}
+        />
+      </>
+    )
+  }
   const currentDate = new Date()
   const [startDate, setStartDate] = useState(currentDate)
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
@@ -453,6 +453,19 @@ const AlertRules = () => {
                       {postResults.isSuccess && (
                         <CCallout color="success">
                           <li>{postResults.data.Results}</li>
+                        </CCallout>
+                      )}
+                      {getResults.isFetching && (
+                        <CCallout color="info">
+                          <CSpinner>Loading</CSpinner>
+                        </CCallout>
+                      )}
+                      {getResults.isSuccess && (
+                        <CCallout color="info">{getResults.data?.Results}</CCallout>
+                      )}
+                      {getResults.isError && (
+                        <CCallout color="danger">
+                          Could not connect to API: {getResults.error.message}
                         </CCallout>
                       )}
                     </CForm>
