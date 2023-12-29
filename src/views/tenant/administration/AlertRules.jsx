@@ -30,6 +30,7 @@ import arrayMutators from 'final-form-arrays'
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
   const [ocVisible, setOCVisible] = useState(false)
+  const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
 
   const handleDeleteSchedule = (apiurl, message) => {
     ModalService.confirm({
@@ -58,7 +59,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
         <CButton
           onClick={() =>
             handleDeleteSchedule(
-              `/api/RemoveScheduledItem?&ID=${row.RowKey}`,
+              `/api/RemoveWebhookAlert?Tenantfilter=${tenantDomain}&ID=${row.RowKey}`,
               'Do you want to delete this job?',
             )
           }
@@ -72,7 +73,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
       <CippCodeOffCanvas
         hideButton
         title="Results"
-        row={jsonResults}
+        row={row}
         state={ocVisible}
         type="TemplateResults"
         hideFunction={() => setOCVisible(false)}
@@ -85,7 +86,6 @@ const AlertRules = () => {
   const currentDate = new Date()
   const [startDate, setStartDate] = useState(currentDate)
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
-  const [isArr, setisArr] = useState([])
   const [refreshState, setRefreshState] = useState(false)
   const taskName = `Scheduled Task ${currentDate.toLocaleString()}`
   const { data: availableCommands = [], isLoading: isLoadingcmd } = useGenericGetRequestQuery({
@@ -93,33 +93,12 @@ const AlertRules = () => {
   })
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const onSubmit = (values) => {
-    const unixTime = Math.floor(startDate.getTime() / 1000)
-    const shippedValues = {
-      TenantFilter: tenantDomain,
-      Name: values.taskName,
-      Command: values.command,
-      Parameters: values.parameters,
-      ScheduledTime: unixTime,
-      Recurrence: values.Recurrence,
-      AdditionalProperties: values.additional,
-      PostExecution: {
-        Webhook: values.webhook,
-        Email: values.email,
-        PSA: values.psa,
-      },
-    }
-    genericPostRequest({ path: '/api/AddScheduledItem', values: shippedValues }).then((res) => {
+    values['tenantfilter'] = tenantDomain
+    genericPostRequest({ path: '/api/AddAlert', values: values }).then((res) => {
       setRefreshState(res.requestId)
     })
   }
   const columns = [
-    {
-      name: 'Name',
-      selector: (row) => row['Name'],
-      sortable: true,
-      cell: (row) => CellTip(row['Name']),
-      exportSelector: 'Name',
-    },
     {
       name: 'Tenant',
       selector: (row) => row['Tenant'],
@@ -128,53 +107,18 @@ const AlertRules = () => {
       exportSelector: 'Tenant',
     },
     {
-      name: 'Task State',
-      selector: (row) => row['TaskState'],
+      name: 'If',
+      selector: (row) => row['if'],
       sortable: true,
       cell: cellBadgeFormatter(),
-      exportSelector: 'TaskState',
+      exportSelector: 'if',
     },
     {
-      name: 'Command',
-      selector: (row) => row['Command'],
+      name: 'Execute',
+      selector: (row) => row['execution'],
       sortable: true,
-      cell: (row) => CellTip(row['Command']),
-      exportSelector: 'Command',
-    },
-    {
-      name: 'Parameters',
-      selector: (row) => row['Parameters'],
-      sortable: true,
-      cell: (row) => CellTip(row['Parameters']),
-      exportSelector: 'Parameters',
-    },
-    {
-      name: 'Scheduled Time',
-      selector: (row) => row['ScheduledTime'],
-      sortable: true,
-      cell: cellDateFormatter({ format: 'relative' }),
-      exportSelector: 'ScheduledTime',
-    },
-    {
-      name: 'Last executed time',
-      selector: (row) => row['ExecutedTime'],
-      sortable: true,
-      cell: cellDateFormatter({ format: 'relative' }),
-      exportSelector: 'ExecutedTime',
-    },
-    {
-      name: 'Recurrence',
-      selector: (row) => row['Recurrence'],
-      sortable: true,
-      cell: (row) => CellTip(row['Recurrence']),
-      exportSelector: 'Recurrence',
-    },
-    {
-      name: 'Sending to',
-      selector: (row) => row['PostExecution'],
-      sortable: true,
-      cell: (row) => CellTip(row['PostExecution']),
-      exportSelector: 'PostExecution',
+      cell: (row) => CellTip(row['execution']),
+      exportSelector: 'execution',
     },
     {
       name: 'Actions',
@@ -185,7 +129,7 @@ const AlertRules = () => {
 
   const ifvalues = [
     { value: 'New-InboxRule', label: 'A new Inbox rule is created' },
-    { value: 'Set-InboxRule', label: 'A existing Inbox rule is created' },
+    { value: 'Set-InboxRule', label: 'A existing Inbox rule is edited' },
     {
       value: 'Add member to role.',
       label: 'A user has been added to an admin role',
@@ -220,7 +164,7 @@ const AlertRules = () => {
     },
     {
       value: 'Add service principal',
-      label: 'A service prinicipal has been created',
+      label: 'A service principal has been created',
     },
     {
       value: 'Remove service principal.',
@@ -285,7 +229,7 @@ const AlertRules = () => {
           {i === 0 ? 'If' : 'And'}
           <CRow className="align-items-center" key={`if-${i}`}>
             <CCol>
-              <RFFCFormSelect name={`ifs.${i}`} values={ifvalues} />
+              <RFFCFormSelect name={`ifs.${i}.selection`} values={ifvalues} />
             </CCol>
             <CCol xs="auto">
               {ifCount > 1 && (
@@ -312,8 +256,8 @@ const AlertRules = () => {
           </CRow>
           <CRow className="mb-3">
             <CCol>
-              <Condition when={`ifs.${i}`} is="customField">
-                <RFFCFormInput type="text" name="field" label="Query" />
+              <Condition when={`ifs.${i}.selection`} is="customField">
+                <RFFCFormInput type="text" name={`ifs.${i}.field`} label="Query" />
               </Condition>
             </CCol>
           </CRow>
@@ -524,7 +468,7 @@ const AlertRules = () => {
                 allTenants: true,
                 helpContext: 'https://google.com',
               }}
-              title="Scheduled Tasks"
+              title="Alert Rules"
               tenantSelector={false}
               datatable={{
                 tableProps: {
@@ -533,33 +477,15 @@ const AlertRules = () => {
                     {
                       label: 'Delete task',
                       modal: true,
-                      modalUrl: `/api/RemoveScheduledItem?&ID=!RowKey`,
+                      modalUrl: `/api/RemoveWebhookAlert?Tenantfiler=!Tenant&ID=!RowKey`,
                       modalMessage: 'Do you want to delete this job?',
                     },
                   ],
                 },
-                filterlist: [
-                  {
-                    filterName: 'Planned Jobs',
-                    filter: 'Complex: TaskState eq Planned',
-                  },
-                  {
-                    filterName: 'Completed Jobs',
-                    filter: 'Complex: TaskState eq Completed',
-                  },
-                  {
-                    filterName: 'Recurring Jobs',
-                    filter: 'Complex: Recurrence gt 0',
-                  },
-                  {
-                    filterName: 'One-time Jobs',
-                    filter: 'Complex: Recurrence eq 0',
-                  },
-                ],
                 keyField: 'id',
                 columns,
                 reportName: `Scheduled-Jobs`,
-                path: `/api/ListScheduledItems?RefreshGuid=${refreshState}`,
+                path: `/api/ListWebhookAlert?RefreshGuid=${refreshState}`,
               }}
             />
           </CCol>
