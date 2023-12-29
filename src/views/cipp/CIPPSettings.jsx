@@ -223,7 +223,7 @@ const GeneralSettings = () => {
     {
       name: 'Missing GDAP Roles',
       selector: (row) => row?.MissingRoles,
-      cell: cellTableFormatter('MissingRoles', true, false),
+      cell: cellTableFormatter('MissingRoles', true, false, true),
     },
     {
       name: 'Roles available',
