@@ -89,7 +89,7 @@
   ],
   "navigationFallback": {
     "rewrite": "index.html",
-    "exclude": ["/static/*.{png,jpg,gif}", "/css/*"]
+    "exclude": ["/static/*.{png,jpg,gif}", "/css/*","/static/css/*"]
   },
   "responseOverrides": {
     "401": {
