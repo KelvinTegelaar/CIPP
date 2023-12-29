@@ -45,73 +45,77 @@ const alertsList = [
   { name: 'DepTokenExpiry', label: 'Alert on expiring DEP tokens' },
 ]
 
-const Offcanvas = (row, rowIndex, formatExtraData) => {
-  const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
-  const [ocVisible, setOCVisible] = useState(false)
-
-  const handleDeleteSchedule = (apiurl, message) => {
-    ModalService.confirm({
-      title: 'Confirm',
-      body: <div>{message}</div>,
-      onConfirm: () => ExecuteGetRequest({ path: apiurl }),
-      confirmLabel: 'Continue',
-      cancelLabel: 'Cancel',
-    })
-  }
-  let jsonResults
-  try {
-    jsonResults = JSON.parse(row)
-  } catch (error) {
-    jsonResults = row
-  }
-
-  return (
-    <>
-      <CTooltip content="View Set Alerts">
-        <CButton size="sm" color="success" variant="ghost" onClick={() => setOCVisible(true)}>
-          <FontAwesomeIcon icon={'eye'} href="" />
-        </CButton>
-      </CTooltip>
-      <CTooltip content="Delete task">
-        <CButton
-          onClick={() =>
-            handleDeleteSchedule(
-              `/api/RemoveQueuedAlert?&ID=${row.tenantId}`,
-              'Do you want to delete the queued alert?',
-            )
-          }
-          size="sm"
-          variant="ghost"
-          color="danger"
-        >
-          <FontAwesomeIcon icon={'trash'} href="" />
-        </CButton>
-      </CTooltip>
-      <CippActionsOffcanvas
-        title="User Information"
-        extendedInfo={Object.keys(row).map((key) => ({
-          label: key,
-          value:
-            typeof row[key] === 'boolean' ? (
-              row[key] ? (
-                <FontAwesomeIcon icon={'check'} />
-              ) : (
-                <FontAwesomeIcon icon={'times'} />
-              )
-            ) : (
-              row[key]
-            ),
-        }))}
-        placement="end"
-        visible={ocVisible}
-        id={row.id}
-        hideFunction={() => setOCVisible(false)}
-      />
-    </>
-  )
-}
-
 const ListClassicAlerts = () => {
+  const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
+
+  const Offcanvas = (row, rowIndex, formatExtraData) => {
+    const [ocVisible, setOCVisible] = useState(false)
+
+    const handleDeleteSchedule = (apiurl, message) => {
+      ModalService.confirm({
+        title: 'Confirm',
+        body: <div>{message}</div>,
+        onConfirm: () =>
+          ExecuteGetRequest({ path: apiurl }).then((res) => {
+            setRefreshState(res.requestId)
+          }),
+        confirmLabel: 'Continue',
+        cancelLabel: 'Cancel',
+      })
+    }
+    let jsonResults
+    try {
+      jsonResults = JSON.parse(row)
+    } catch (error) {
+      jsonResults = row
+    }
+
+    return (
+      <>
+        <CTooltip content="View Set Alerts">
+          <CButton size="sm" color="success" variant="ghost" onClick={() => setOCVisible(true)}>
+            <FontAwesomeIcon icon={'eye'} href="" />
+          </CButton>
+        </CTooltip>
+        <CTooltip content="Delete task">
+          <CButton
+            onClick={() =>
+              handleDeleteSchedule(
+                `/api/RemoveQueuedAlert?&ID=${row.tenantId}`,
+                'Do you want to delete the queued alert?',
+              )
+            }
+            size="sm"
+            variant="ghost"
+            color="danger"
+          >
+            <FontAwesomeIcon icon={'trash'} href="" />
+          </CButton>
+        </CTooltip>
+        <CippActionsOffcanvas
+          title="User Information"
+          extendedInfo={Object.keys(row).map((key) => ({
+            label: key,
+            value:
+              typeof row[key] === 'boolean' ? (
+                row[key] ? (
+                  <FontAwesomeIcon icon={'check'} />
+                ) : (
+                  <FontAwesomeIcon icon={'times'} />
+                )
+              ) : (
+                row[key]
+              ),
+          }))}
+          placement="end"
+          visible={ocVisible}
+          id={row.id}
+          hideFunction={() => setOCVisible(false)}
+        />
+      </>
+    )
+  }
+
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
   const [refreshState, setRefreshState] = useState(false)
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
@@ -223,6 +227,19 @@ const ListClassicAlerts = () => {
                       {postResults.isSuccess && (
                         <CCallout color="success">
                           <li>{postResults.data.Results}</li>
+                        </CCallout>
+                      )}
+                      {getResults.isFetching && (
+                        <CCallout color="info">
+                          <CSpinner>Loading</CSpinner>
+                        </CCallout>
+                      )}
+                      {getResults.isSuccess && (
+                        <CCallout color="info">{getResults.data?.Results}</CCallout>
+                      )}
+                      {getResults.isError && (
+                        <CCallout color="danger">
+                          Could not connect to API: {getResults.error.message}
                         </CCallout>
                       )}
                     </CForm>
