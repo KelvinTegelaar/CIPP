@@ -176,7 +176,11 @@ const AlertRules = () => {
     },
     {
       value: 'badRepIP',
-      label: 'A user has logged in from a known bad-reputation IP',
+      label: 'A user has logged in a using a known VPN, Proxy, Or anonymizer',
+    },
+    {
+      value: 'HostedIP',
+      label: 'A user has logged in a using a known hosting provider IP',
     },
     { value: 'customField', label: 'Custom Log Query' },
     { value: 'anyAlert', label: 'Any alert has been received' },
