@@ -179,7 +179,10 @@ const AlertRules = () => {
       label: 'A user has logged in from a known bad-reputation IP',
     },
     { value: 'customField', label: 'Custom Log Query' },
+    { value: 'anyAlert', label: 'Any alert has been received' },
   ]
+
+  const customIfValues = [{ value: 'customField', label: 'Custom Log Query' }]
   const dovalues = [
     { value: 'cippcommand', label: 'Execute a CIPP Command' },
     { value: 'becremediate', label: 'Execute a BEC Remediate' },
@@ -229,7 +232,10 @@ const AlertRules = () => {
           {i === 0 ? 'If' : 'And'}
           <CRow className="align-items-center" key={`if-${i}`}>
             <CCol>
-              <RFFCFormSelect name={`ifs.${i}.selection`} values={ifvalues} />
+              <RFFCFormSelect
+                name={`ifs.${i}.selection`}
+                values={i === 0 ? ifvalues : customIfValues}
+              />
             </CCol>
             <CCol xs="auto">
               {ifCount > 1 && (
@@ -308,7 +314,8 @@ const AlertRules = () => {
                       value: cmd.Function,
                       name: cmd.Function,
                     }))}
-                    name={`command`}
+                    name={`do.${i}.command`}
+                    key={`do.${i}.command`}
                     placeholder={
                       isLoadingcmd ? (
                         <CSpinner size="sm" />
@@ -324,7 +331,11 @@ const AlertRules = () => {
             <Condition when={`do.${i}.execute`} is="store">
               <CRow className="mb-3">
                 <CCol>
-                  <RFFCFormInput type="text" name="sasurl" label="Connection String" />
+                  <RFFCFormInput
+                    type="text"
+                    name={`do.${i}.connectionstring`}
+                    label="Connection String"
+                  />
                 </CCol>
               </CRow>
             </Condition>
@@ -377,61 +388,64 @@ const AlertRules = () => {
                         <FormSpy>
                           {/* eslint-disable react/prop-types */}
                           {(props) => {
-                            const selectedCommand = availableCommands.find(
-                              (cmd) => cmd.Function === props.values.command?.value,
-                            )
-                            let paramblock = null
-                            if (selectedCommand) {
-                              //if the command parameter type is boolean we use <RFFCFormCheck /> else <RFFCFormInput />.
-                              const parameters = selectedCommand.Parameters
-                              if (parameters.length > 0) {
-                                paramblock = parameters.map((param, idx) => (
-                                  <CRow key={idx} className="mb-3">
-                                    <CTooltip
-                                      content={
-                                        param?.Description !== null
-                                          ? param.Description
-                                          : 'No Description'
-                                      }
-                                      placement="left"
-                                    >
-                                      <CCol>
-                                        {param.Type === 'System.Boolean' ||
-                                        param.Type ===
-                                          'System.Management.Automation.SwitchParameter' ? (
-                                          <>
-                                            <label>{param.Name}</label>
-                                            <RFFCFormSwitch
-                                              initialValue={false}
-                                              name={`parameters.${param.Name}`}
-                                              label={`True`}
-                                            />
-                                          </>
-                                        ) : (
-                                          <>
-                                            {param.Type === 'System.Collections.Hashtable' ? (
-                                              <RFFCFormInputArray
-                                                name={`parameters.${param.Name}`}
-                                                label={`${param.Name}`}
-                                                key={idx}
-                                              />
+                            return props.values.do?.map((command, commandIndex) => {
+                              const selectedCommand = availableCommands.find(
+                                (cmd) => cmd.Function === command.command?.value,
+                              )
+                              let paramblock = null
+                              if (selectedCommand) {
+                                const parameters = selectedCommand.Parameters
+                                if (parameters.length > 0) {
+                                  paramblock = parameters.map((param, idx) => (
+                                    <>
+                                      <CRow key={idx} className="mb-3">
+                                        <CTooltip
+                                          content={
+                                            param?.Description !== null
+                                              ? param.Description
+                                              : 'No Description'
+                                          }
+                                          placement="left"
+                                        >
+                                          <CCol>
+                                            {param.Type === 'System.Boolean' ||
+                                            param.Type ===
+                                              'System.Management.Automation.SwitchParameter' ? (
+                                              <>
+                                                <label>{param.Name}</label>
+                                                <RFFCFormSwitch
+                                                  initialValue={false}
+                                                  name={`do.${commandIndex}.parameters.${param.Name}`}
+                                                  label={`True`}
+                                                />
+                                              </>
                                             ) : (
-                                              <RFFCFormInput
-                                                type="text"
-                                                key={idx}
-                                                name={`parameters.${param.Name}`}
-                                                label={`${param.Name}`}
-                                              />
+                                              <>
+                                                {param.Type === 'System.Collections.Hashtable' ? (
+                                                  <RFFCFormInputArray
+                                                    name={`do.${commandIndex}.parameters.${param.Name}`}
+                                                    label={`${param.Name}`}
+                                                    key={idx}
+                                                  />
+                                                ) : (
+                                                  <RFFCFormInput
+                                                    type="text"
+                                                    key={idx}
+                                                    name={`do.${commandIndex}.parameters.${param.Name}`}
+                                                    label={`${param.Name}`}
+                                                  />
+                                                )}
+                                              </>
                                             )}
-                                          </>
-                                        )}
-                                      </CCol>
-                                    </CTooltip>
-                                  </CRow>
-                                ))
+                                          </CCol>
+                                        </CTooltip>
+                                      </CRow>
+                                    </>
+                                  ))
+                                }
                               }
-                            }
-                            return paramblock
+                              return paramblock
+                            })
                           }}
                         </FormSpy>
                       </CRow>
