@@ -26,6 +26,7 @@ import TenantListSelector from 'src/components/utilities/TenantListSelector'
 import { ModalService, TenantSelector } from 'src/components/utilities'
 import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
 import arrayMutators from 'final-form-arrays'
+import countryList from 'src/data/countryList.json'
 
 const AlertRules = () => {
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
@@ -160,7 +161,7 @@ const AlertRules = () => {
     },
     {
       value: 'UserLoggedInFromUnknownLocation',
-      label: 'A user has logged in from a location ',
+      label: 'A user has logged in from a location not in the allowed locations list',
     },
     {
       value: 'Add service principal',
@@ -268,6 +269,17 @@ const AlertRules = () => {
             <CCol>
               <Condition when={`ifs.${i}.selection`} is="customField">
                 <RFFCFormInput type="text" name={`ifs.${i}.field`} label="Query" />
+              </Condition>
+              <Condition when={`ifs.${i}.selection`} is="UserLoggedInFromUnknownLocation">
+                <RFFSelectSearch
+                  name={`ifs.${i}.allowedcountries`}
+                  label="Select the countries to not alert on logon from"
+                  multi
+                  values={countryList.map(({ Code, Name }) => ({
+                    value: Code,
+                    name: Name,
+                  }))}
+                />
               </Condition>
             </CCol>
           </CRow>
