@@ -62,7 +62,7 @@ const AlertRules = () => {
           <CButton
             onClick={() =>
               handleDeleteSchedule(
-                `/api/RemoveWebhookAlert?Tenantfilter=${tenantDomain}&ID=${row.RowKey}`,
+                `/api/RemoveWebhookAlert?Tenantfilter=${row.Tenant}&ID=${row.RowKey}`,
                 'Do you want to delete this job?',
               )
             }
@@ -520,7 +520,7 @@ const AlertRules = () => {
                     {
                       label: 'Delete task',
                       modal: true,
-                      modalUrl: `/api/RemoveWebhookAlert?Tenantfiler=!Tenant&ID=!RowKey`,
+                      modalUrl: `/api/RemoveWebhookAlert?Tenantfilter=!Tenant&ID=!RowKey`,
                       modalMessage: 'Do you want to delete this job?',
                     },
                   ],
