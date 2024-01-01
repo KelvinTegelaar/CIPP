@@ -7,6 +7,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { CBadge, CTooltip } from '@coreui/react'
 import CellBoolean from 'src/components/tables/CellBoolean.jsx'
+import cellTable from './CellTable'
 
 const IconWarning = () => <FontAwesomeIcon icon={faExclamationCircle} className="text-warning" />
 const IconError = () => <FontAwesomeIcon icon={faTimesCircle} className="text-danger" />
@@ -56,6 +57,7 @@ export const cellGenericFormatter =
       return <CBadge color="info">{CellTip(cell)}</CBadge>
     }
     if (Array.isArray(cell) || typeof cell === 'object') {
-      return CellTip(JSON.stringify(cell))
+      //return CellTip(JSON.stringify(cell))
+      return cellTable(row, cell)
     }
   }
