@@ -13,9 +13,23 @@ export default function cellTable(
   crossWhenZero = false,
   dangerButton = false, // Added 4th parameter for btn-danger class
 ) {
-  const handleTable = ({ row }) => {
+  var columnProp = ''
+  if (propertyName) {
+    columnProp = row[propertyName]
+  } else {
+    columnProp = column
+  }
+  if (!Array.isArray(columnProp) && typeof columnProp === 'object') {
+    columnProp = Object.entries(columnProp).map((row) => {
+      return { Name: row[0], Value: row[1] }
+    })
+  }
+  console.log(Array.isArray(columnProp))
+
+  const handleTable = ({ columnProp }) => {
     const QueryColumns = []
-    const columns = Object.keys(row[propertyName][0]).map((key) => {
+
+    const columns = Object.keys(columnProp[0]).map((key) => {
       QueryColumns.push({
         name: key,
         selector: (row) => row[key],
@@ -24,8 +38,9 @@ export default function cellTable(
         cell: cellGenericFormatter(),
       })
     })
+
     ModalService.open({
-      data: row[propertyName],
+      data: columnProp,
       componentType: 'table',
       componentProps: {
         columns: QueryColumns,
@@ -36,15 +51,15 @@ export default function cellTable(
     })
   }
 
-  if (typeof row[propertyName] === 'boolean') {
-    if (row[propertyName]) {
+  if (typeof columnProp === 'boolean') {
+    if (columnProp) {
       return <FontAwesomeIcon icon={faCheckCircle} className="text-success" />
     }
     return <FontAwesomeIcon icon={faTimesCircle} className="text-danger" />
   }
 
-  if (!row[propertyName] || !Array.isArray(row[propertyName]) || row[propertyName].length === 0) {
-    if (row[propertyName] === undefined) {
+  if (!columnProp || !Array.isArray(columnProp) || columnProp.length === 0) {
+    if (columnProp === undefined) {
       return <FontAwesomeIcon icon={faCheckCircle} className="text-success" />
     }
     if (checkWhenZero) {
@@ -60,8 +75,13 @@ export default function cellTable(
   const buttonClassName = dangerButton ? 'btn-danger' : ''
 
   return (
-    <CButton className={buttonClassName} key={row} size="sm" onClick={() => handleTable({ row })}>
-      {row[propertyName].length} Items
+    <CButton
+      className={buttonClassName}
+      key={row}
+      size="sm"
+      onClick={() => handleTable({ columnProp })}
+    >
+      {columnProp.length} Items
     </CButton>
   )
 }
