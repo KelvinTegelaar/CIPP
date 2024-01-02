@@ -20,11 +20,12 @@ export default function cellTable(
     columnProp = column
   }
 
+  console.log(Object.entries(columnProp))
   if (!Array.isArray(columnProp) && typeof columnProp === 'object') {
     columnProp = Object.entries(columnProp).map((row) => {
       return { Name: row[0], Value: row[1] }
     })
-  } else if (Array.isArray(columnProp) && Object.entries(columnProp).length === 1) {
+  } else if (Array.isArray(columnProp) && Object.entries(columnProp)[0].length === 2) {
     columnProp = columnProp.map((row) => {
       return {
         Value: row,
