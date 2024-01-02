@@ -171,10 +171,10 @@ const AlertRules = () => {
       value: 'Remove service principal.',
       label: 'A service principal has been removed',
     },
-    {
-      value: 'ImpossibleTravel',
-      label: 'A user has logged in from an impossible location (Based on IP)',
-    },
+    //  {
+    //    value: 'ImpossibleTravel',
+    //    label: 'A user has logged in from an impossible location (Based on IP)',
+    //  },
     {
       value: 'badRepIP',
       label: 'A user has logged in a using a known VPN, Proxy, Or anonymizer',
@@ -192,10 +192,10 @@ const AlertRules = () => {
     { value: 'cippcommand', label: 'Execute a CIPP Command' },
     { value: 'becremediate', label: 'Execute a BEC Remediate' },
     { value: 'disableuser', label: 'Disable the user in the log entry' },
-    { value: 'generatelog', label: 'Generate a log entry' },
+    // { value: 'generatelog', label: 'Generate a log entry' },
     { value: 'generatemail', label: 'Generate an email' },
     { value: 'generatePSA', label: 'Generate a PSA ticket' },
-    { value: 'generateWebhook', label: 'Forward the log as webhook' },
+    { value: 'generateWebhook', label: 'Generate a webhook' },
     {
       value: 'store',
       label: 'Store the log into an external Azure Storage Account',
