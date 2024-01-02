@@ -83,8 +83,10 @@ const GraphExplorer = () => {
       body: <div>{message}</div>,
       onConfirm: () => {
         execPostRequest({ path: '/api/ExecGraphExplorerPreset', values: params })
-        setRandom2((Math.random() + 1).toString(36).substring(7))
-        setAlertVisible(true)
+        setTimeout(() => {
+          setRandom2((Math.random() + 1).toString(36).substring(7))
+          setAlertVisible(true)
+        }, 500)
       },
       confirmLabel: action,
       cancelLabel: 'Cancel',
