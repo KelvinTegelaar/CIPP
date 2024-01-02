@@ -318,22 +318,24 @@ const GraphExplorer = () => {
                                 return (
                                   <>
                                     <div className="my-2">
-                                      {!preset[0]?.isBuiltin && preset[0]?.id && (
-                                        <CTooltip content="Save" placement="right">
-                                          <CButton
-                                            onClick={() =>
-                                              handleManagePreset({
-                                                action: 'Save',
-                                                message: 'Do you want to save this preset?',
-                                                values: props.values,
-                                              })
-                                            }
-                                            className="me-2"
-                                          >
-                                            <FontAwesomeIcon icon="save" />
-                                          </CButton>
-                                        </CTooltip>
-                                      )}
+                                      {!preset[0]?.isBuiltin &&
+                                        preset[0]?.id &&
+                                        preset[0]?.IsMyPreset && (
+                                          <CTooltip content="Save" placement="right">
+                                            <CButton
+                                              onClick={() =>
+                                                handleManagePreset({
+                                                  action: 'Save',
+                                                  message: 'Do you want to save this preset?',
+                                                  values: props.values,
+                                                })
+                                              }
+                                              className="me-2"
+                                            >
+                                              <FontAwesomeIcon icon="save" />
+                                            </CButton>
+                                          </CTooltip>
+                                        )}
                                       {preset[0]?.id !== '' && (
                                         <CTooltip content="Copy" placement="right">
                                           <CButton
@@ -350,22 +352,24 @@ const GraphExplorer = () => {
                                           </CButton>
                                         </CTooltip>
                                       )}
-                                      {!preset[0]?.isBuiltin && preset[0]?.id && (
-                                        <CTooltip content="Delete" placement="right">
-                                          <CButton
-                                            color="danger"
-                                            onClick={() =>
-                                              handleManagePreset({
-                                                action: 'Delete',
-                                                message: 'Do you want to delete this preset?',
-                                                values: props.values,
-                                              })
-                                            }
-                                          >
-                                            <FontAwesomeIcon icon="trash" />
-                                          </CButton>
-                                        </CTooltip>
-                                      )}
+                                      {!preset[0]?.isBuiltin &&
+                                        preset[0]?.id &&
+                                        preset[0]?.IsMyPreset && (
+                                          <CTooltip content="Delete" placement="right">
+                                            <CButton
+                                              color="danger"
+                                              onClick={() =>
+                                                handleManagePreset({
+                                                  action: 'Delete',
+                                                  message: 'Do you want to delete this preset?',
+                                                  values: props.values,
+                                                })
+                                              }
+                                            >
+                                              <FontAwesomeIcon icon="trash" />
+                                            </CButton>
+                                          </CTooltip>
+                                        )}
                                     </div>
                                     {postResults.isFetching && (
                                       <CCallout color="info">
@@ -374,7 +378,7 @@ const GraphExplorer = () => {
                                     )}
                                     {postResults.isSuccess && (
                                       <CAlert
-                                        color="success"
+                                        color={postResults.data?.Success ? 'success' : 'danger'}
                                         dismissible
                                         visible={alertVisible}
                                         onClose={() => setAlertVisible(false)}
