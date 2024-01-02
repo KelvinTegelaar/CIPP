@@ -19,12 +19,18 @@ export default function cellTable(
   } else {
     columnProp = column
   }
+
   if (!Array.isArray(columnProp) && typeof columnProp === 'object') {
     columnProp = Object.entries(columnProp).map((row) => {
       return { Name: row[0], Value: row[1] }
     })
+  } else if (Array.isArray(columnProp) && Object.entries(columnProp).length === 1) {
+    columnProp = columnProp.map((row) => {
+      return {
+        Value: row,
+      }
+    })
   }
-  console.log(Array.isArray(columnProp))
 
   const handleTable = ({ columnProp }) => {
     const QueryColumns = []
@@ -73,7 +79,6 @@ export default function cellTable(
 
   // Use dangerButton to determine button class
   const buttonClassName = dangerButton ? 'btn-danger' : ''
-
   return (
     <CButton
       className={buttonClassName}

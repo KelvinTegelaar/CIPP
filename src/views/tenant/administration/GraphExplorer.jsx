@@ -12,54 +12,39 @@ import {
 } from '@coreui/react'
 import useQuery from 'src/hooks/useQuery'
 import { Field, Form, FormSpy } from 'react-final-form'
-import { RFFCFormCheck, RFFCFormInput, RFFCFormSelect } from 'src/components/forms'
+import { RFFCFormInput, RFFCFormSelect, RFFCFormSwitch } from 'src/components/forms'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronRight, faChevronDown, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { CippTable } from 'src/components/tables'
 import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
 import { CippPage } from 'src/components/layout/CippPage'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import { OnChange } from 'react-final-form-listeners'
-import { queryString } from 'src/helpers'
 import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 import PropTypes from 'prop-types'
 
 const GraphExplorer = () => {
-  let navigate = useNavigate()
   const tenant = useSelector((state) => state.app.currentTenant)
   let query = useQuery()
-  const endpoint = query.get('endpoint')
-  const disablePagination = query.get('disablePagination')
-  const SearchNow = query.get('SearchNow')
+  const [params, setParams] = useState()
+  const [random, setRandom] = useState('')
+  const [searchNow, setSearchNow] = useState(false)
   const [visibleA, setVisibleA] = useState(true)
   const handleSubmit = async (values) => {
-    setVisibleA(false)
-
-    const shippedValues = {
-      tenantFilter: tenant.defaultDomainName,
-      SearchNow: true,
-      endpoint: encodeURIComponent(values.endpoint),
-      random: (Math.random() + 1).toString(36).substring(7),
-    }
-    var queryString = Object.keys(shippedValues)
-      .map((key) => key + '=' + shippedValues[key])
-      .join('&')
-
-    navigate(`?${queryString}`)
+    setParams(values)
+    setRandom((Math.random() + 1).toString(36).substring(7))
+    setSearchNow(true)
   }
   const [execGraphRequest, graphrequest] = useLazyGenericGetRequestQuery()
   const QueryColumns = { set: false, data: [] }
 
   if (graphrequest.isSuccess) {
-    if (graphrequest.data.length === 0) {
+    if (graphrequest.data.Results.length === 0) {
       graphrequest.data = [{ data: 'No Data Found' }]
     }
 
     //set columns
-
-    const flatObj = Object.keys(graphrequest.data[0]).flat(100)
-    flatObj.map((value) =>
+    Object.keys(graphrequest.data.Results[0]).map((value) =>
       QueryColumns.data.push({
         name: value,
         selector: (row) => row[`${value.toString()}`],
@@ -71,16 +56,109 @@ const GraphExplorer = () => {
     QueryColumns.set = true
   }
 
-  useEffect(() => {
-    execGraphRequest({
-      path: 'api/execGraphRequest',
+  const presets = [
+    {
+      label: 'All users with email addresses',
+      value: '6164e239-0c9a-4a27-9049-6250bf65a3e3',
+      params: { endpoint: '/users', $select: 'userprincipalname,mail,proxyAddresses', $filter: '' },
+    },
+    {
+      label: 'All Devices listing ID, Displayname, and registration status',
+      value: 'e7fdc49a-72a9-4a70-9dbf-a74152495d80',
       params: {
-        tenantFilter: tenant.defaultDomainName,
-        endpoint: endpoint,
-        disablePagination: disablePagination,
+        endpoint: '/devices',
+        $select: 'deviceId,DisplayName,profileType,registrationDateTime,trustType',
+        $filter: '',
       },
-    })
-  }, [endpoint, execGraphRequest, tenant.defaultDomainName, query, disablePagination])
+    },
+    {
+      label: 'All contacts and their mail addresses',
+      value: 'f1844e3d-cb3e-4611-9bab-f5f42169bcd0',
+      params: {
+        endpoint: '/contacts',
+        $select: 'CompanyName,DisplayName,Mail,ProxyAddresses',
+        $filter: '',
+      },
+    },
+    {
+      label: 'Outlook Agents used in last 90 days',
+      value: 'eea3cacb-ca95-4998-bcd9-ff1815a7a493',
+      params: {
+        endpoint: `reports/getEmailAppUsageUserDetail(period='D90')`,
+        $format: 'application/json',
+        $filter: '',
+        $select: '',
+      },
+    },
+    {
+      label: 'Activated M365 Subscription installations',
+      value: 'ccbe5b0d-ff0d-4262-a789-ccbd8f8d52e1',
+      params: {
+        endpoint: '/reports/getOffice365ActivationsUserDetail',
+        $format: 'application/json',
+        $filter: '',
+        $select: '',
+      },
+    },
+    {
+      label: 'Applications signed in in last 30 days',
+      value: 'a9ec9f2d-c102-4b4f-9b9d-c2bc57155990',
+      params: {
+        endpoint: `reports/getAzureADApplicationSignInSummary(period='D30')`,
+        $filter: '',
+        $select: '',
+      },
+    },
+    {
+      label: 'User Registration Report',
+      value: 'a00d251d-2743-484a-b8bb-8601199ceb68',
+      params: {
+        endpoint: '/reports/authenticationMethods/userRegistrationDetails',
+        $filter: '',
+        $select: '',
+      },
+    },
+    {
+      label: 'All Global Admins',
+      value: 'c73df2bb-08fe-4fb2-b112-97006bdcf0a8',
+      params: {
+        endpoint: 'directoryRoles/roleTemplateId=62e90394-69f5-4237-9190-012177145e10/members',
+        $filter: '',
+        $select: '',
+      },
+    },
+    {
+      label: 'Multifactor Authentication Report for Admins',
+      value: 'ae7b3dc4-822b-46b9-aa0a-0305b4c33632',
+      params: {
+        endpoint: '/reports/authenticationMethods/userRegistrationDetails',
+        $filter: 'IsAdmin eq true',
+        $select: '',
+      },
+    },
+    {
+      label: 'Secure Score with Current Score and Max Score',
+      value: 'bd6665e8-02c1-4cbf-bd3c-d2a52f17c2cf',
+      params: {
+        endpoint: 'security/secureScores',
+        $top: 90,
+        $select: 'currentscore,maxscore,activeusercount,enabledservices',
+        $filter: '',
+      },
+    },
+  ]
+
+  useEffect(() => {
+    if (params?.endpoint) {
+      execGraphRequest({
+        path: 'api/ListGraphRequest',
+        params: {
+          ...params,
+          random: random,
+        },
+      })
+    }
+  }, [params, execGraphRequest, tenant.defaultDomainName, random])
 
   const WhenFieldChanges = ({ field, set }) => (
     <Field name={set} subscription={{}}>
@@ -92,8 +170,10 @@ const GraphExplorer = () => {
           {({ form }) => (
             <OnChange name={field}>
               {(value) => {
-                let template = value
-                onChange(template)
+                let preset = presets.filter(function (obj) {
+                  return obj.value === value
+                })
+                onChange(preset[0]?.params[set])
               }}
             </OnChange>
           )}
@@ -101,7 +181,6 @@ const GraphExplorer = () => {
       )}
     </Field>
   )
-
   WhenFieldChanges.propTypes = {
     field: PropTypes.node,
     set: PropTypes.string,
@@ -131,85 +210,69 @@ const GraphExplorer = () => {
               <CCardHeader></CCardHeader>
               <CCardBody>
                 <Form
+                  keepDirtyOnReinitialize
                   initialValues={{
                     tenantFilter: tenant.defaultDomainName,
-                    endpoint: endpoint,
                   }}
                   onSubmit={handleSubmit}
                   render={({ handleSubmit, submitting, values }) => {
                     return (
                       <CForm onSubmit={handleSubmit}>
                         <CRow>
-                          <CCol>
+                          <CCol xs={12} md={4}>
                             <RFFCFormSelect
                               name="reportTemplate"
-                              label="Select a report"
+                              label="Select a report preset"
                               placeholder="Select a report"
-                              values={[
-                                {
-                                  label: 'All users with email addresses',
-                                  value: '/users?$select=userprincipalname,mail',
-                                },
-                                {
-                                  label:
-                                    'All Devices listing ID, Displayname, and registration status',
-                                  value:
-                                    '/devices?$select=deviceId,DisplayName,profileType,registrationDateTime,trustType',
-                                },
-                                {
-                                  label: 'All contacts and their mail addresses',
-                                  value:
-                                    '/contacts?$select=CompanyName,DisplayName,Mail,ProxyAddresses',
-                                },
-                                {
-                                  label: 'Outlook Agents used in last 90 days',
-                                  value: `reports/getEmailAppUsageUserDetail(period='D90')?$format=application/json`,
-                                },
-                                {
-                                  label: 'Activated M365 Subscription installations',
-                                  value:
-                                    '/reports/getOffice365ActivationsUserDetail?$format=application/json',
-                                },
-                                {
-                                  label: 'Applications signed in in last 30 days',
-                                  value: `reports/getAzureADApplicationSignInSummary(period='D30')`,
-                                },
-                                {
-                                  label: 'User Registration Report',
-                                  value: '/reports/authenticationMethods/userRegistrationDetails',
-                                },
-                                {
-                                  label: 'All Global Admins',
-                                  value:
-                                    'directoryRoles/roleTemplateId=62e90394-69f5-4237-9190-012177145e10/members',
-                                },
-                                {
-                                  label: 'Multifactor Authentication Report for Admins',
-                                  value:
-                                    '/reports/authenticationMethods/userRegistrationDetails?$filter=IsAdmin eq true',
-                                },
-                                {
-                                  label: 'Secure Score with Current Score and Max Score',
-                                  value:
-                                    'security/secureScores?$top=90&$select=currentscore,maxscore,activeusercount,enabledservices',
-                                },
-                              ]}
+                              values={presets}
                             />
+                            <RFFCFormSwitch name="NoPagination" label="Disable Pagination" />
+                            <RFFCFormSwitch name="$count" label="Use $count" />
+                            <RFFCFormInput
+                              type="text"
+                              name="$top"
+                              label="Top"
+                              placeholder="Select the number of rows to return"
+                            />
+                            <WhenFieldChanges field="reportTemplate" set="$top" />
                           </CCol>
-                        </CRow>
-                        <CRow>
                           <CCol>
                             <RFFCFormInput
                               type="text"
                               name="endpoint"
-                              label="Or enter an endpoint"
+                              label="Endpoint"
                               placeholder="Enter the Graph Endpoint you'd like to run the custom report for."
                             />
+                            <WhenFieldChanges field="reportTemplate" set="endpoint" />
+                            <RFFCFormInput
+                              type="text"
+                              name="$filter"
+                              label="Filter"
+                              placeholder="Enter the filter string for the Graph query"
+                            />
+                            <WhenFieldChanges field="reportTemplate" set="$filter" />
+                            <RFFCFormInput
+                              type="text"
+                              name="$select"
+                              label="Select"
+                              placeholder="Select the columns to use for this query"
+                            />
+                            <WhenFieldChanges field="reportTemplate" set="$select" />
+                            <RFFCFormInput
+                              type="text"
+                              name="$expand"
+                              label="Expand"
+                              placeholder="Select a column to expand"
+                            />
+                            <WhenFieldChanges field="reportTemplate" set="$expand" />
+                            <RFFCFormInput
+                              type="text"
+                              name="$search"
+                              label="Search"
+                              placeholder="Enter OData search query"
+                            />
+                            <WhenFieldChanges field="reportTemplate" set="$search" />
                           </CCol>
-                          <WhenFieldChanges field="reportTemplate" set="endpoint" />
-                        </CRow>
-                        <CRow>
-                          <RFFCFormCheck name="disablePagination" label="Disable Pagination" />
                         </CRow>
                         <CRow className="mb-3">
                           <CCol>
@@ -230,8 +293,8 @@ const GraphExplorer = () => {
       </CRow>
       <hr />
       <CippPage title="Report Results" tenantSelector={false}>
-        {!SearchNow && <span>Execute a search to get started.</span>}
-        {graphrequest.isSuccess && QueryColumns.set && SearchNow && (
+        {!searchNow && <span>Execute a search to get started.</span>}
+        {graphrequest.isSuccess && QueryColumns.set && searchNow && (
           <CCard className="content-card">
             <CCardHeader className="d-flex justify-content-between align-items-center">
               <CCardTitle>Results</CCardTitle>
@@ -241,7 +304,7 @@ const GraphExplorer = () => {
                 reportName="GraphExplorer"
                 dynamicColumns={false}
                 columns={QueryColumns.data}
-                data={graphrequest.data}
+                data={graphrequest.data.Results}
                 isFetching={graphrequest.isFetching}
               />
             </CCardBody>
