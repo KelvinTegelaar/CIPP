@@ -13,6 +13,7 @@ export default class WizardTableField extends React.Component {
     reportName: PropTypes.string.isRequired,
     keyField: PropTypes.string.isRequired,
     path: PropTypes.string.isRequired,
+    params: PropTypes.object,
     columns: PropTypes.array.isRequired,
     fieldProps: PropTypes.object,
   }
@@ -56,7 +57,7 @@ export default class WizardTableField extends React.Component {
   }
 
   render() {
-    const { reportName, keyField, columns, path } = this.props
+    const { reportName, keyField, columns, path, params, ...props } = this.props
     return (
       <CippDatatable
         reportName={reportName}
@@ -65,12 +66,14 @@ export default class WizardTableField extends React.Component {
         actions={false}
         striped
         path={path}
+        params={params}
         disablePDFExport={true}
         disableCSVExport={true}
         tableProps={{
           selectableRows: true,
           onSelectedRowsChange: this.handleSelect,
         }}
+        {...props}
       />
     )
   }
