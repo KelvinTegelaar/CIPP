@@ -144,6 +144,7 @@ const GraphExplorer = () => {
         $top: 90,
         $select: 'currentscore,maxscore,activeusercount,enabledservices',
         $filter: '',
+        NoPagination: true,
       },
     },
   ]
@@ -227,7 +228,9 @@ const GraphExplorer = () => {
                               values={presets}
                             />
                             <RFFCFormSwitch name="NoPagination" label="Disable Pagination" />
+                            <WhenFieldChanges field="reportTemplate" set="NoPagination" />
                             <RFFCFormSwitch name="$count" label="Use $count" />
+                            <WhenFieldChanges field="reportTemplate" set="$count" />
                             <RFFCFormInput
                               type="text"
                               name="$top"
