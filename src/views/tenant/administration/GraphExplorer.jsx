@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react'
 import {
+  CAlert,
   CButton,
+  CCallout,
   CCard,
   CCardBody,
   CCardHeader,
@@ -8,21 +10,13 @@ import {
   CCol,
   CCollapse,
   CForm,
-  CFormInput,
-  CFormLabel,
-  CFormSwitch,
-  CInputGroup,
   CRow,
+  CSpinner,
   CTooltip,
 } from '@coreui/react'
 import useQuery from 'src/hooks/useQuery'
 import { Field, Form, FormSpy } from 'react-final-form'
-import {
-  RFFCFormInput,
-  RFFCFormSelect,
-  RFFCFormSwitch,
-  RFFSelectSearch,
-} from 'src/components/forms'
+import { RFFCFormInput, RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronRight, faChevronDown, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { CippTable } from 'src/components/tables'
@@ -42,6 +36,7 @@ const GraphExplorer = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
   let query = useQuery()
   const [params, setParams] = useState()
+  const [alertVisible, setAlertVisible] = useState()
   const [random, setRandom] = useState('')
   const [random2, setRandom2] = useState('')
   const [searchNow, setSearchNow] = useState(false)
@@ -52,7 +47,7 @@ const GraphExplorer = () => {
     setSearchNow(true)
   }
   const [execGraphRequest, graphrequest] = useLazyGenericGetRequestQuery()
-  const [execPostRequest, postRequest] = useLazyGenericPostRequestQuery()
+  const [execPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const {
     data: customPresets = [],
     isFetching: presetsIsFetching,
@@ -86,7 +81,11 @@ const GraphExplorer = () => {
     ModalService.confirm({
       title: 'Confirm',
       body: <div>{message}</div>,
-      onConfirm: () => execPostRequest({ path: '/api/ExecGraphExplorerPreset', values: params }),
+      onConfirm: () => {
+        execPostRequest({ path: '/api/ExecGraphExplorerPreset', values: params })
+        setRandom2((Math.random() + 1).toString(36).substring(7))
+        setAlertVisible(true)
+      },
       confirmLabel: action,
       cancelLabel: 'Cancel',
     })
@@ -368,6 +367,21 @@ const GraphExplorer = () => {
                                         </CTooltip>
                                       )}
                                     </div>
+                                    {postResults.isFetching && (
+                                      <CCallout color="info">
+                                        <CSpinner>Loading</CSpinner>
+                                      </CCallout>
+                                    )}
+                                    {postResults.isSuccess && (
+                                      <CAlert
+                                        color="success"
+                                        dismissible
+                                        visible={alertVisible}
+                                        onClose={() => setAlertVisible(false)}
+                                      >
+                                        {postResults.data?.Results}
+                                      </CAlert>
+                                    )}
                                   </>
                                 )
                               }}
