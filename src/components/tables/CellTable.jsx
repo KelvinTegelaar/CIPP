@@ -20,7 +20,6 @@ export default function cellTable(
     columnProp = column
   }
 
-  console.log(Object.entries(columnProp))
   if (!Array.isArray(columnProp) && typeof columnProp === 'object') {
     columnProp = Object.entries(columnProp).map((row) => {
       return { Name: row[0], Value: row[1] }
