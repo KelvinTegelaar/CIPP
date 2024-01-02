@@ -563,7 +563,7 @@ const ApplyNewStandard = () => {
                                           multi={true}
                                           values={template.templates.data?.map((t) => ({
                                             value: t.GUID,
-                                            name: t.name || t.Displayname,
+                                            name: t.name || t.Displayname || t.displayName,
                                           }))}
                                           placeholder="Select a template"
                                           label={`Choose your ${template.name}`}
