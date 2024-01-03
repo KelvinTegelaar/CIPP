@@ -100,18 +100,9 @@
   {
     "cat": "Entra (AAD) Standards",
     "name": "standards.allowOTPTokens",
-    "helpText": "Allows you to use any OTP token generator",
+    "helpText": "Allows you to use MS authenticator OTP token generator",
     "addedComponent": [],
     "label": "Enable OTP via Authenticator.",
-    "impact": "Low Impact",
-    "impactColour": "info"
-  },
-  {
-    "cat": "Entra (AAD) Standards",
-    "name": "standards.allowOAuthTokens",
-    "helpText": "Allows you to use any software OAuth token generator",
-    "addedComponent": [],
-    "label": "Enable OTP Software oAuth tokens.",
     "impact": "Low Impact",
     "impactColour": "info"
   },
@@ -137,6 +128,33 @@
       }
     ],
     "label": "Set Authenticator Lite state",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
+    "cat": "Entra (AAD) Standards",
+    "name": "standards.EnableFIDO2",
+    "helpText": "Enables the FIDO2 authenticationMethod for the tenant",
+    "addedComponent": [],
+    "label": "Enable FIDO2 capabilities",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
+    "cat": "Entra (AAD) Standards",
+    "name": "standards.EnableHardwareOAuth",
+    "helpText": "Enables the HardwareOath authenticationMethod for the tenant. This allows you to use hardware tokens for generating 6 digit MFA codes.",
+    "addedComponent": [],
+    "label": "Enable Hardware OAuth tokens",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
+    "cat": "Entra (AAD) Standards",
+    "name": "standards.allowOAuthTokens",
+    "helpText": "Allows you to use any software OAuth token generator",
+    "addedComponent": [],
+    "label": "Enable OTP Software OAuth tokens",
     "impact": "Low Impact",
     "impactColour": "info"
   },
@@ -227,15 +245,6 @@
   },
   {
     "cat": "Entra (AAD) Standards",
-    "name": "standards.EnableFIDO2",
-    "helpText": "Enables the FIDO2 authenticationMethod for the tenant",
-    "addedComponent": [],
-    "label": "Enable FIDO2 capabilities",
-    "impact": "Low Impact",
-    "impactColour": "info"
-  },
-  {
-    "cat": "Entra (AAD) Standards",
     "name": "standards.DisableSecurityGroupUsers",
     "helpText": "Completely disables the creation of security groups by users. This also breaks the ability to manage groups themselves, or create Teams",
     "addedComponent": [],
@@ -272,29 +281,6 @@
   },
   {
     "cat": "Entra (AAD) Standards",
-    "name": "standards.SecurityDefaults",
-    "helpText": "Enables security defaults for the tenant, for newer tenants this is enabled by default. Do not enable this feature if you use Conditional Access.",
-    "addedComponent": [],
-    "label": "Enable Security Defaults",
-    "impact": "High Impact",
-    "impactColour": "danger"
-  },
-  {
-    "cat": "Entra (AAD) Standards",
-    "name": "standards.UndoOauth",
-    "disabledFeatures": {
-      "report": true,
-      "warn": true,
-      "remediate": false
-    },
-    "helpText": "Disables App consent and set to Allow user consent for apps",
-    "addedComponent": [],
-    "label": "Undo App Consent Standard",
-    "impact": "High Impact",
-    "impactColour": "danger"
-  },
-  {
-    "cat": "Entra (AAD) Standards",
     "name": "standards.OauthConsent",
     "helpText": "Disables users from being able to consent to applications, except for those specified in the field below",
     "addedComponent": [
@@ -315,6 +301,65 @@
     "label": "Allow users to consent to applications with low security risk (Prevent OAuth phishing. Lower impact, less secure.)",
     "impact": "Medium impact",
     "impactColour": "warning"
+  },
+  {
+    "cat": "Entra (AAD) Standards",
+    "name": "standards.UndoOauth",
+    "disabledFeatures": {
+      "report": true,
+      "warn": true,
+      "remediate": false
+    },
+    "helpText": "Disables App consent and set to Allow user consent for apps",
+    "addedComponent": [],
+    "label": "Undo App Consent Standard",
+    "impact": "High Impact",
+    "impactColour": "danger"
+  },
+  {
+    "cat": "Entra (AAD) Standards",
+    "name": "standards.SecurityDefaults",
+    "helpText": "Enables security defaults for the tenant, for newer tenants this is enabled by default. Do not enable this feature if you use Conditional Access.",
+    "addedComponent": [],
+    "label": "Enable Security Defaults",
+    "impact": "High Impact",
+    "impactColour": "danger"
+  },
+  {
+    "cat": "Entra (AAD) Standards",
+    "name": "standards.DisableSMS",
+    "helpText": "This blocks users from using SMS as an MFA method. If a user only has SMS as a MFA method, they will be unable to login.",
+    "addedComponent": [],
+    "label": "Disables SMS as an MFA method",
+    "impact": "High Impact",
+    "impactColour": "danger"
+  },
+  {
+    "cat": "Entra (AAD) Standards",
+    "name": "standards.DisableVoice",
+    "helpText": "This blocks users from using Voice call as an MFA method. If a user only has Voice as a MFA method, they will be unable to login.",
+    "addedComponent": [],
+    "label": "Disables Voice call as an MFA method",
+    "impact": "High Impact",
+    "impactColour": "danger"
+  },
+  {
+    "cat": "Entra (AAD) Standards",
+    "name": "standards.DisableEmail",
+    "helpText": "This blocks users from using email as an MFA method. This disables the email OTP option for guest users, and instead promts them to create a Microsoft account.",
+    "addedComponent": [],
+    "label": "Disables Email as an MFA method",
+    "impact": "High Impact",
+    "impactColour": "danger"
+  },
+  {
+    "cat": "Entra (AAD) Standards",
+    "name": "standards.Disablex509Certificate",
+    "helpText": "This blocks users from using Certificates as an MFA method.",
+    "addedComponent": [],
+    "label": "Disables Certificates as an MFA method",
+    "impact": "High Impact",
+    "impactColour": "danger"
   },
   {
     "name": "standards.OutBoundSpamAlert",
@@ -616,6 +661,24 @@
     "impactColour": "danger"
   },
   {
+    "name": "standards.DisableReshare",
+    "cat": "SharePoint Standards",
+    "helpText": "Disables the ability for external users to share files they don't own. Sharing links can only be made for People with existing access",
+    "addedComponent": [],
+    "label": "Disable Resharing by External Users",
+    "impact": "High Impact",
+    "impactColour": "danger"
+  },
+  {
+    "name": "standards.DisableUserSiteCreate",
+    "cat": "SharePoint Standards",
+    "helpText": "Disables users from creating new SharePoint sites",
+    "addedComponent": [],
+    "label": "Disable site creation by standard users",
+    "impact": "High Impact",
+    "impactColour": "danger"
+  },
+  {
     "name": "standards.ExcludedfileExt",
     "cat": "SharePoint Standards",
     "helpText": "Sets the file extensions that are excluded from syncing with OneDrive. These files will be blocked from upload.",
@@ -636,24 +699,6 @@
     "helpText": "Disables the ability for Mac devices to sync with OneDrive.",
     "addedComponent": [],
     "label": "Do not allow Mac devices to sync using OneDrive",
-    "impact": "High Impact",
-    "impactColour": "danger"
-  },
-  {
-    "name": "standards.DisableReshare",
-    "cat": "SharePoint Standards",
-    "helpText": "Disables the ability for external users to share files they don't own. Sharing links can only be made for People with existing access",
-    "addedComponent": [],
-    "label": "Disable Resharing by External Users",
-    "impact": "High Impact",
-    "impactColour": "danger"
-  },
-  {
-    "name": "standards.DisableUserSiteCreate",
-    "cat": "SharePoint Standards",
-    "helpText": "Disables users from creating new SharePoint sites",
-    "addedComponent": [],
-    "label": "Disable site creation by standard users",
     "impact": "High Impact",
     "impactColour": "danger"
   },

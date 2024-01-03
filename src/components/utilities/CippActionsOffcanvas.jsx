@@ -5,6 +5,7 @@ import {
   CCallout,
   CCard,
   CCardBody,
+  CCardHeader,
   CCardText,
   CCardTitle,
   CFormInput,
@@ -21,6 +22,8 @@ import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 's
 import { Link, useNavigate } from 'react-router-dom'
 import { stringCamelCase } from 'src/components/utilities/CippCamelCase'
 import ReactTimeAgo from 'react-time-ago'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faGlobe } from '@fortawesome/free-solid-svg-icons'
 
 export default function CippActionsOffcanvas(props) {
   const inputRef = useRef('')
@@ -292,9 +295,15 @@ export default function CippActionsOffcanvas(props) {
         <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
       )}
 
-      <COffcanvasTitle>Extended Information</COffcanvasTitle>
+      <CCard className="content-card">
+        <CCardHeader className="d-flex justify-content-between align-items-center">
+          <CCardTitle>
+            <FontAwesomeIcon icon={faGlobe} className="mx-2" /> Extended Information
+          </CCardTitle>
+        </CCardHeader>
+        <CCardBody>{extendedInfoContent}</CCardBody>
+      </CCard>
       {cardContent && cardContent}
-      {extendedInfoContent}
       {<COffcanvasTitle>Actions</COffcanvasTitle>}
       <CListGroup>
         {actionsContent}

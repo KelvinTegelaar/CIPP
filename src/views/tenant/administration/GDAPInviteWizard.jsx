@@ -8,16 +8,17 @@ import {
   CFormInput,
   CFormLabel,
   CFormRange,
+  CProgress,
 } from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { CippWizard } from 'src/components/layout'
-import { WizardTableField } from 'src/components/tables'
+import { CippTable, WizardTableField } from 'src/components/tables'
 import { TitleButton } from 'src/components/buttons'
 import PropTypes from 'prop-types'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
-import { CippCodeBlock } from 'src/components/utilities'
+import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 
 const Error = ({ name }) => (
   <Field
@@ -52,13 +53,45 @@ const GDAPInviteWizard = () => {
     setLoopRunning(true)
     for (var x = 0; x < inviteCount; x++) {
       const results = await genericPostRequest({ path: '/api/ExecGDAPInvite', values: values })
-      resultsarr.push(results)
+      resultsarr.push(results.data)
       setMassResults(resultsarr)
     }
     setLoopRunning(false)
   }
 
   const formValues = {}
+
+  const inviteColumns = [
+    {
+      name: 'Id',
+      selector: (row) => row?.Invite?.RowKey,
+      exportSelector: 'Invite/RowKey',
+      sortable: true,
+      omit: true,
+      cell: cellGenericFormatter(),
+    },
+    {
+      name: 'Invite Link',
+      sortable: true,
+      selector: (row) => row?.Invite?.InviteUrl,
+      exportSelector: 'Invite/InviteUrl',
+      cell: cellGenericFormatter(),
+    },
+    {
+      name: 'Onboarding Link',
+      sortable: true,
+      selector: (row) => row?.Invite?.OnboardingUrl,
+      exportSelector: 'Invite/OnboardingUrl',
+      cell: cellGenericFormatter(),
+    },
+    {
+      name: 'Message',
+      sortable: true,
+      selector: (row) => row?.Message,
+      exportSelector: 'Message',
+      cell: cellGenericFormatter(),
+    },
+  ]
 
   return (
     <CippWizard
@@ -87,6 +120,7 @@ const GDAPInviteWizard = () => {
           <div className="mb-2">
             <TitleButton href="/tenant/administration/gdap-role-wizard" title="Map GDAP Roles" />
           </div>
+
           <Field name="gdapRoles" validate={requiredArray}>
             {(props) => (
               <WizardTableField
@@ -182,29 +216,31 @@ const GDAPInviteWizard = () => {
             }}
           </FormSpy>
         )}
-        {(massResults.length >= 1 || loopRunning) &&
-          massResults.map((message, idx) => {
-            const results = message?.data
-            const displayResults = Array.isArray(results) ? results.join(', ') : results
-            return (
-              <CCallout color="success" key={idx}>
-                {results.Results.map((message, idx) => {
-                  return <li key={idx}>{message}</li>
-                })}
-                <CippCodeBlock
-                  key={idx}
-                  code={results.Invite.InviteUrl}
-                  showLineNumbers={false}
-                  wrapLongLines={true}
-                  language="text"
-                />
-              </CCallout>
-            )
-          })}
-        {loopRunning && (
-          <li>
-            <CSpinner size="sm" />
-          </li>
+        {(massResults.length >= 1 || loopRunning) && (
+          <>
+            <div style={{ width: '100%' }} className="mb-3">
+              {loopRunning ? (
+                <span>
+                  Generating Invites <CSpinner className="ms-2" size="sm" />
+                </span>
+              ) : (
+                <span>
+                  Generating Invites
+                  <FontAwesomeIcon className="ms-2" icon="check-circle" />
+                </span>
+              )}
+              <CProgress className="mt-2" value={(massResults.length / inviteCount) * 100}>
+                {massResults.length}/{inviteCount}
+              </CProgress>
+            </div>
+
+            <CippTable
+              reportName="gdap-invites"
+              data={massResults}
+              columns={inviteColumns}
+              disablePDFExport={true}
+            />
+          </>
         )}
         <hr className="my-4" />
       </CippWizard.Page>

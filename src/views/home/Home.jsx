@@ -33,7 +33,7 @@ import { TableModalButton } from 'src/components/buttons'
 
 const Home = () => {
   const [visible, setVisible] = useState(false)
-
+  const [domainVisible, setDomainVisible] = useState(false)
   const currentTenant = useSelector((state) => state.app.currentTenant)
   const {
     data: organization,
@@ -292,11 +292,31 @@ const Home = () => {
                   <CCol sm={12} md={4} className="mb-3">
                     <p className="fw-lighter">Domain(s)</p>
                     {(isLoadingOrg || isFetchingOrg) && <Skeleton />}
-                    {!isFetchingOrg &&
-                      issuccessOrg &&
-                      organization?.verifiedDomains?.map((item, idx) => (
-                        <li key={idx}>{item.name}</li>
-                      ))}
+                    <>
+                      {!isFetchingOrg && issuccessOrg && (
+                        <>
+                          {organization.verifiedDomains?.slice(0, 5).map((item, idx) => (
+                            <li key={idx}>{item.name}</li>
+                          ))}
+                          {organization.verifiedDomains?.length > 5 && (
+                            <>
+                              <CCollapse visible={domainVisible}>
+                                {organization.verifiedDomains?.slice(5).map((item, idx) => (
+                                  <li key={idx}>{item.name}</li>
+                                ))}
+                              </CCollapse>
+                              <CButton
+                                size="sm"
+                                className="mb-3"
+                                onClick={() => setDomainVisible(!domainVisible)}
+                              >
+                                {domainVisible ? 'See less' : 'See more...'}
+                              </CButton>
+                            </>
+                          )}
+                        </>
+                      )}
+                    </>
                   </CCol>
                   <CCol sm={12} md={4} className="mb-3">
                     <p className="fw-lighter">Capabilities</p>

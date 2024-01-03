@@ -1,0 +1,238 @@
+[
+    {
+        "vendorName": "Augmentt",
+        "vendorTenantId": "29f0611d-e8d3-4946-914c-677d2ad8065b"
+    },
+    {
+        "vendorName": "Rewst",
+        "vendorTenantId": "5a9dda56-5beb-4840-83e1-9afc1ada2388"
+    },
+    {
+        "vendorName": "Datto Backupify",
+        "vendorTenantId": "8ebde5a4-a587-497c-9881-8a5c272dd1c4"
+    },
+    {
+        "vendorName": "Eshgro Smarter365",
+        "vendorTenantId": "0a3132f8-cbcd-430f-a554-b0490bea8018"
+    },
+    {
+        "vendorName": "BitTitan",
+        "vendorTenantId": "6690473e-14f0-4f77-bf88-2ae5ade8746c"
+    },
+    {
+        "vendorName": "Ingram Micro CPV",
+        "vendorTenantId": "5abe7315-18a5-4ca1-8e51-99753bef0d96"
+    },
+    {
+        "vendorName": "CodeTwo",
+        "vendorTenantId": "d4fd5c8b-42b0-4e2d-b330-498809917d07"
+    },
+    {
+        "vendorName": "Anywhere365",
+        "vendorTenantId": "4179dd4d-e485-4535-9d45-b3539f584cad"
+    },
+    {
+        "vendorName": "Roger365",
+        "vendorTenantId": "3c59ec71-67c8-4f3d-b2bd-19152b2629e1"
+    },
+    {
+        "vendorName": "ESET",
+        "vendorTenantId": "01f7e0e8-c680-4293-8068-d572231a88f4"
+    },
+    {
+        "vendorName": "CyberTwice",
+        "vendorTenantId": "0c1fb16c-0190-47e0-b839-5ec8665eb699"
+    },
+    {
+        "vendorName": "CloudMore AB",
+        "vendorTenantId": "0cc4f6a9-d96a-4508-b938-32386e1c44cf"
+    },
+    {
+        "vendorName": "Google Workspace",
+        "vendorTenantId": "0f8cb250-b44f-4acd-b24e-2524ef9f85ac"
+    },
+    {
+        "vendorName": "Merill",
+        "vendorTenantId": "10407d69-1ba5-4bec-8ebe-9af2f0b9e06a"
+    },
+    {
+        "vendorName": "Citrix Cloud",
+        "vendorTenantId": "13d925d3-c1fe-4447-9600-bb8572753a33"
+    },
+    {
+        "vendorName": "Proofpoint",
+        "vendorTenantId": "1d308ae7-d771-4a4a-8857-409aee86644a"
+    },
+    {
+        "vendorName": "Datto RMM",
+        "vendorTenantId": "353488c3-d84b-48e4-95ba-2456645d67bf"
+    },
+    {
+        "vendorName": "Avepoint",
+        "vendorTenantId": "3ee8362e-4c3c-447b-9a9e-910eec5d89c8"
+    },
+    {
+        "vendorName": "SkyKick",
+        "vendorTenantId": "3f9cd7a0-127a-4ed4-bf06-2f830d5616b7"
+    },
+    {
+        "vendorName": "Carbonite",
+        "vendorTenantId": "4f0566c5-7c80-40a4-b3e8-7cfcb6c423ff"
+    },
+    {
+        "vendorName": "Hornet Security/Altaro",
+        "vendorTenantId": "58fba382-61c2-47f8-92b1-296e14787b85"
+    },
+    {
+        "vendorName": "N-able",
+        "vendorTenantId": "6324f4fb-86ee-4493-ba16-c819a916b487"
+    },
+    {
+        "vendorName": "Freshdesk",
+        "vendorTenantId": "6cdfee3a-1922-41c3-8e74-f4ae694fae8a"
+    },
+    {
+        "vendorName": "3CX",
+        "vendorTenantId": "6e2eadce-56c5-4116-a790-14d391b48eac"
+    },
+    {
+        "vendorName": "Pckgr",
+        "vendorTenantId": "6fd3fafe-81c9-41da-b84b-143ba2908cbb"
+    },
+    {
+        "vendorName": "AdminDroid",
+        "vendorTenantId": "7228f07f-efee-4159-9393-be6efb253fd0"
+    },
+    {
+        "vendorName": "Exclaimer",
+        "vendorTenantId": "74bebcc8-1c15-4717-b538-bf84dea9e50f"
+    },
+    {
+        "vendorName": "Bastion365",
+        "vendorTenantId": "7bfd6512-414b-4fb1-9529-3ac3f9e7ec26"
+    },
+    {
+        "vendorName": "Ricoh",
+        "vendorTenantId": "7e7a67d3-42f4-4a40-b8f0-f998ca7018ab"
+    },
+    {
+        "vendorName": "Hubspot",
+        "vendorTenantId": "8c6c4f2c-3b97-427e-ab0f-1b982441831a"
+    },
+    {
+        "vendorName": "TrendMicro",
+        "vendorTenantId": "8d3dd3ec-a7ee-4c65-8cea-01e3f1492f1b"
+    },
+    {
+        "vendorName": "Synology",
+        "vendorTenantId": "9ba572a0-0623-4ab6-96ad-74cf9f3631fe"
+    },
+    {
+        "vendorName": "Scappman",
+        "vendorTenantId": "b2de4365-2ff4-4021-ac3b-fd1d2abb8de7"
+    },
+    {
+        "vendorName": "Barracuda Networks",
+        "vendorTenantId": "b893e0b8-2743-4fa7-81eb-0155a9060350"
+    },
+    {
+        "vendorName": "Zivver",
+        "vendorTenantId": "c3ea126d-08dd-4b6a-a23a-4a513160c11e"
+    },
+    {
+        "vendorName": "HP",
+        "vendorTenantId": "ca7981a2-785a-463d-b82a-3db87dfc3ce6"
+    },
+    {
+        "vendorName": "ManageEngine",
+        "vendorTenantId": "dab88ba4-c480-4a0f-a42b-6d66fba460ff"
+    },
+    {
+        "vendorName": "Action1",
+        "vendorTenantId": "e1a62259-76ab-47a0-9e9d-b91f3b08cbd5"
+    },
+    {
+        "vendorName": "ShareGate",
+        "vendorTenantId": "eb39acb7-fae3-4bc3-974c-b765aa1d6355"
+    },
+    {
+        "vendorName": "Liquit",
+        "vendorTenantId": "2ea2a5a1-1e01-4ecc-ba61-12fb51c1c12d"
+    },
+    {
+        "vendorName": "Phished",
+        "vendorTenantId": "9f7b0cc1-2df8-442e-b902-84371e12af00"
+    },
+    {
+        "vendorName": "Octiga Security",
+        "vendorTenantId": "b7453564-2f58-4ad6-b7ba-c6e35e8de6bb"
+    },
+    {
+        "vendorName": "Printix",
+        "vendorTenantId": "2e5d89d1-0b98-45d8-b70f-c79db10feb54"
+    },
+    {
+        "vendorName": "Usecure",
+        "vendorTenantId": "7d88f9a5-1574-4b92-82e4-e05712338cf4"
+    },
+    {
+        "vendorName": "Redstor",
+        "vendorTenantId": "24ac53ae-15a7-4211-afef-61d8f34e2571"
+    },
+    {
+        "vendorName": "Axcient",
+        "vendorTenantId": "adc01291-a3ea-4fb8-8fa7-d8f6dd816182"
+    },
+    {
+        "vendorName": "NinjaOne",
+        "vendorTenantId": "0e0adb39-f83f-4576-9102-db1b902ca108"
+    },
+    {
+        "vendorName": "SuperVision (KPN)",
+        "vendorTenantId": "8edc1ef5-a81d-4229-badb-e2634a284461"
+    },
+    {
+        "vendorName": "MSPMagic",
+        "vendorTenantId": "74d3d0de-bbd7-433f-95c2-40cc5d185968"
+    },
+    {
+        "vendorName": "SimeonCloud",
+        "vendorTenantId": "3d945cb7-f7da-444c-8c9e-93c3226581ec"
+    },
+    {
+        "vendorName": "KeepIt",
+        "vendorTenantId": "55c67891-c2e6-4278-a07e-5391e269777e"
+    },
+    {
+        "vendorName": "Arrow Sphere",
+        "vendorTenantId": "0beb0c35-9cbb-4feb-99e5-589e415c7944"
+    },
+    {
+        "vendorName": "Auvik",
+        "vendorTenantId": "408f0e54-582e-46fa-8b7d-4068bb176500"
+    },
+    {
+        "vendorName": "Avanan",
+        "vendorTenantId": "5c37d5b5-54f7-46e7-bc09-2eaa1ef1b541"
+    },
+    {
+        "vendorName": "CloudRadial",
+        "vendorTenantId": "845fbb26-e9d0-465d-8d4f-40f490928179"
+    },
+    {
+        "vendorName": "Duo",
+        "vendorTenantId": "3c453cf7-43fe-4e45-a9b9-f168f480f0f8"
+    },
+    {
+        "vendorName": "Metallic",
+        "vendorTenantId": "da72dd62-58c6-4062-abf9-47be4e73c0f6"
+    },
+    {
+        "vendorName": "Sophos",
+        "vendorTenantId": "358a41ff-46d9-49d3-a297-370d894eae6a"
+    },
+    {
+        "vendorName": "SaaSAlerts",
+        "vendorTenantId": "5c7b2b48-9e8f-49ba-80d6-3432e39d596b"
+    }
+]

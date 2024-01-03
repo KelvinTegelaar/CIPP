@@ -14,6 +14,9 @@ const appapproval = React.lazy(() => import('src/views/cipp/AppApproval'))
 const TenantOffboardingWizard = React.lazy(() =>
   import('src/views/tenant/administration/TenantOffboardingWizard'),
 )
+const TenantOnboardingWizard = React.lazy(() =>
+  import('src/views/tenant/administration/TenantOnboardingWizard'),
+)
 
 const adminRoutes = [
   { path: '/cipp', name: 'CIPP' },
@@ -45,6 +48,11 @@ const adminRoutes = [
     path: '/tenant/administration/tenant-offboarding-wizard',
     name: 'Tenant Offboarding',
     component: TenantOffboardingWizard,
+  },
+  {
+    path: '/tenant/administration/tenant-onboarding-wizard',
+    name: 'Tenant Onboarding',
+    component: TenantOnboardingWizard,
   },
 ]
 

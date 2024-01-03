@@ -88,6 +88,13 @@ const Actions = (row, rowIndex, formatExtraData) => {
         extendedInfo={extendedInfo}
         actions={[
           {
+            label: 'Start Onboarding',
+            color: 'primary',
+            link:
+              '/tenant/administration/tenant-onboarding-wizard?tableFilter=Complex: id eq ' +
+              row.id,
+          },
+          {
             label: 'Enable automatic extension',
             color: 'info',
             modal: true,
