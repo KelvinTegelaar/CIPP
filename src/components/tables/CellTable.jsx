@@ -24,7 +24,7 @@ export default function cellTable(
     columnProp = Object.entries(columnProp).map((row) => {
       return { Name: row[0], Value: row[1] }
     })
-  } else if (Array.isArray(columnProp) && Object.entries(columnProp).length === 1) {
+  } else if (Array.isArray(columnProp) && typeof Object.entries(columnProp)[0][1] !== 'object') {
     columnProp = columnProp.map((row) => {
       return {
         Value: row,
