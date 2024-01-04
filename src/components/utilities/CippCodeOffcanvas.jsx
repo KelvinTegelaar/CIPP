@@ -36,7 +36,7 @@ function CippCodeOffCanvas({
         addedClass="offcanvas-large"
         placement="end"
         visible={visible}
-        id={row.id}
+        id={row}
         hideFunction={hideFunction}
       >
         <Editor
