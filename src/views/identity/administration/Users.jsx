@@ -449,7 +449,7 @@ const Users = (row) => {
               label: 'Enable Online Archive',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecEnableArchive?TenantFilter=!Tenant&ID=!id`,
+              modalUrl: `/api/ExecEnableArchive?TenantFilter=!Tenant&ID=!userPrincipalName`,
               modalMessage: 'Are you sure you want to enable the online archive for these users?',
             },
             {
