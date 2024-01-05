@@ -2,7 +2,7 @@ import React from 'react'
 import { CButton } from '@coreui/react'
 import { ModalService } from '../utilities'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
+import { faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons' // 1. Import the required FontAwesome icon
 import { cellGenericFormatter } from './CellGenericFormat'
 
 export default function cellTable(
@@ -11,31 +11,10 @@ export default function cellTable(
   propertyName,
   checkWhenZero = false,
   crossWhenZero = false,
-  dangerButton = false, // Added 4th parameter for btn-danger class
 ) {
-  var columnProp = ''
-  if (propertyName) {
-    columnProp = row[propertyName]
-  } else {
-    columnProp = column
-  }
-
-  if (!Array.isArray(columnProp) && typeof columnProp === 'object') {
-    columnProp = Object.entries(columnProp).map((row) => {
-      return { Name: row[0], Value: row[1] }
-    })
-  } else if (Array.isArray(columnProp) && typeof Object.entries(columnProp)[0][1] !== 'object') {
-    columnProp = columnProp.map((row) => {
-      return {
-        Value: row,
-      }
-    })
-  }
-
-  const handleTable = ({ columnProp }) => {
+  const handleTable = ({ row }) => {
     const QueryColumns = []
-
-    const columns = Object.keys(columnProp[0]).map((key) => {
+    const columns = Object.keys(row[propertyName][0]).map((key) => {
       QueryColumns.push({
         name: key,
         selector: (row) => row[key],
@@ -44,9 +23,8 @@ export default function cellTable(
         cell: cellGenericFormatter(),
       })
     })
-
     ModalService.open({
-      data: columnProp,
+      data: row[propertyName],
       componentType: 'table',
       componentProps: {
         columns: QueryColumns,
@@ -56,16 +34,16 @@ export default function cellTable(
       size: 'lg',
     })
   }
-
-  if (typeof columnProp === 'boolean') {
-    if (columnProp) {
+  //if the row propertyName is a bool, then return a check or cross
+  if (typeof row[propertyName] === 'boolean') {
+    if (row[propertyName]) {
       return <FontAwesomeIcon icon={faCheckCircle} className="text-success" />
     }
     return <FontAwesomeIcon icon={faTimesCircle} className="text-danger" />
   }
 
-  if (!columnProp || !Array.isArray(columnProp) || columnProp.length === 0) {
-    if (columnProp === undefined) {
+  if (!row[propertyName] || !Array.isArray(row[propertyName]) || row[propertyName].length === 0) {
+    if (row[propertyName] === undefined) {
       return <FontAwesomeIcon icon={faCheckCircle} className="text-success" />
     }
     if (checkWhenZero) {
@@ -77,22 +55,15 @@ export default function cellTable(
     return <FontAwesomeIcon icon={faCheckCircle} className="text-success" />
   }
 
-  // Use dangerButton to determine button class
-  const buttonClassName = dangerButton ? 'btn-danger' : ''
   return (
-    <CButton
-      className={buttonClassName}
-      key={row}
-      size="sm"
-      onClick={() => handleTable({ columnProp })}
-    >
-      {columnProp.length} Items
+    <CButton className="btn-danger" key={row} size="sm" onClick={() => handleTable({ row })}>
+      {row[propertyName].length} Items
     </CButton>
   )
 }
 
 export const cellTableFormatter =
-  (propertyName, checkWhenZero = false, crossWhenZero = false, dangerButton = false) =>
+  (propertyName, checkWhenZero = false, crossWhenZero = false) =>
   (row, index, column, id) => {
-    return cellTable(row, column, propertyName, checkWhenZero, crossWhenZero, dangerButton)
+    return cellTable(row, column, propertyName, checkWhenZero, crossWhenZero)
   }

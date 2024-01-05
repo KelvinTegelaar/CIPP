@@ -13,7 +13,6 @@ export default class CippWizard extends React.Component {
     onPageChange: PropTypes.func,
     nextPage: PropTypes.func,
     previousPage: PropTypes.func,
-    hideSubmit: PropTypes.bool,
   }
 
   static defaultProps = {
@@ -28,7 +27,6 @@ export default class CippWizard extends React.Component {
       page: 0,
       values: props.initialValues,
       wizardTitle: props.wizardTitle,
-      hideSubmit: props.hideSubmit,
     }
   }
 
@@ -66,7 +64,7 @@ export default class CippWizard extends React.Component {
 
   render() {
     const { children } = this.props
-    const { page, values, wizardTitle, hideSubmit } = this.state
+    const { page, values, wizardTitle } = this.state
     const activePage = React.Children.toArray(children)[page]
     const isLastPage = page === React.Children.count(children) - 1
 
@@ -106,7 +104,7 @@ export default class CippWizard extends React.Component {
                           Next »
                         </CButton>
                       )}
-                      {isLastPage && !hideSubmit && (
+                      {isLastPage && (
                         <>
                           <CButton type="submit" disabled={submitting}>
                             Submit

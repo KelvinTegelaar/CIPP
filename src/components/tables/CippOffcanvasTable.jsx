@@ -10,7 +10,7 @@ export default function CippOffcanvasTable({ rows }) {
     </CTableRow>
   ))
   return (
-    <CTable small borderless responsive align="top">
+    <CTable small borderless responsive align="top" className="cipp-offcanvastable">
       <CTableBody>{tableRows}</CTableBody>
     </CTable>
   )
