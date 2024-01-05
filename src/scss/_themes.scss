@@ -10,7 +10,7 @@
   --cyberdrain-light-rgb: rgb(244 245 246); // Cultured
   --cyberdrain-light-striped: #d2d6da; // Light Gray
   --cyberdrain-darker: #20262a; // Charleston Green
-  --cyberdrain-dark: #2e363a; // Gunmetal
+  --cyberdrain-dark: #121212; // Gunmetal
   --cyberdrain-dark-rgb: rgb(46 54 58); // Gunmetal
   --cyberdrain-dark-striped: #48555b; // Charcoal
   --cyberdrain-accent-blue: #3e5c66; // Deep Space Sparkle
@@ -400,7 +400,7 @@
 
 [data-theme='impact'] {
   // Custom Ian Color
-  --cui-color-gray: rgb(46, 54, 58);
+  --cui-color-gray: #1e1e1e;
   // --cui-color-gray1: rgb(15,15,15);
   // --cui-color-gray2: rgb(10, 10, 10);
   --cui-color-header-bar: rgba(40, 40, 40, 0.8);
@@ -409,10 +409,13 @@
   --cui-bgcolor-table-header: rgba(105, 105, 105, 0.973);
   --cui-color-orange: #f77f00;
   --cui-color-table-border: rgba(146, 154, 158, 0.8);
-  --cui-color-card-shadow: rgba(207, 192, 192, 0.2);
+  --cui-color-card-shadow: rgba(0, 0, 0, 0.8);
   --text-medium-emphasis: rgba(255, 255, 255, 0.6);
   --cui-emphasis-color-rgb: rgba(255, 255, 255, 0.6);
   --cui-input-placeholder-color: rgba(255, 255, 255, 0.6);
+  .form-control {
+    border: 1px solid #121212;
+  }
   //--cui-tertiary-bg: var(--cyberdrain-dark);
   // Core UI Impact theme variables.
   --cui-header-hover-color: var(--cyberdrain-light);
@@ -422,9 +425,8 @@
   --cui-body-color-rgb: var(--cyberdrain-light-rgb);
   --cui-body-bg-rgb: var(--cyberdrain-dark-rgb);
   --cui-btn-link-color: var(--cyberdrain-light);
-  --cui-card-bg: var(--cyberdrain-dark);
   --cui-card-border-color: var(--cyberdrain-accent-green);
-  --cui-card-color: var(--cyberdrain-light);
+  --cui-card-color: rgba(255, 255, 255, 0.87);
   --cui-options-card-border-color: var(--cyberdrain-accent-blue);
   --cui-dropdown-bg: var(--cyberdrain-dark);
   --cui-dropdown-color: var(--cyberdrain-light);
@@ -432,9 +434,9 @@
   --cui-dropdown-link-color: var(--cyberdrain-light);
   --cui-dropdown-link-hover-bg: var(--cyberdrain-accent-blue);
   --cui-dropdown-link-hover-color: var(--cyberdrain-light);
-  --cui-footer-bg: var(--cyberdrain-dark);
+  --cui-footer-bg: #242424;
   --cui-footer-color: var(--cyberdrain-light);
-  --cui-footer-border-color: var(--cyberdrain-accent-green);
+  --cui-footer-border-color: #121212;
   --cui-form-select-bg: var(--cyberdrain-dark);
   --cui-form-select-border-color: var(--cyberdrain-light);
   --cui-form-select-color: var(--cyberdrain-light);
@@ -443,8 +445,8 @@
   --cui-header-border-color: var(--cyberdrain-accent-green);
   --cui-header-color: var(--cyberdrain-light);
   --cui-header-divider-border-color: var(--cyberdrain-accent-green);
-  --cui-input-bg: var(--cyberdrain-dark);
-  --cui-input-border-colour: var(--cyberdrain-light);
+  --cui-input-bg: #2c2c2c;
+  --cui-input-border-colour: #121212;
   --cui-input-color: var(--cyberdrain-light);
   --cui-input-disabled-bg: var(--cyberdrain-darker);
   --cui-input-disabled-border-color: var(--cyberdrain-lighter);
@@ -566,13 +568,27 @@
     --cui-btn-disabled-color: #e55353;
     --cui-btn-shadow: rgb(229 83 83 / 50%);
   }
-
+  .accordion {
+    --cui-accordion-btn-icon: url('data:image/svg+xml,%3Cns0%3Asvg%20xmlns%3Ans0%3D%22http%3A%2F%2Fwww%2Ew3%2Eorg%2F2000%2Fsvg%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22%23FFFFFF%22%3E%3Cns0%3Apath%20fill-rule%3D%22evenodd%22%20d%3D%22M1%2E646%204%2E646a%2E5%2E5%200%200%201%20%2E708%200L8%2010%2E293l5%2E646-5%2E647a%2E5%2E5%200%200%201%20%2E708%2E708l-6%206a%2E5%2E5%200%200%201-%2E708%200l-6-6a%2E5%2E5%200%200%201%200-%2E708z%22%20%2F%3E%3C%2Fns0%3Asvg%3E');
+  }
   .list-group-content-card {
     --cui-list-group-border-color: var(--cyberdrain-accent-blue);
   }
 
+  .card {
+    --cui-card-bg: rgba(40, 40, 40, 0.8);
+  }
+  .react-datepicker__header {
+    background-color: var(--cui-bgcolor-table-header);
+  }
+  .react-datepicker {
+    background-color: var(--cui-bgcolor-table-header);
+  }
+  .react-datepicker__time-list {
+    background-color: var(--cui-bgcolor-table-header);
+  }
   .table {
-    --cui-table-bg: var(--cyberdrain-dark);
+    --cui-table-bg: rgba(40, 40, 40, 0.8);
     --cui-table-color: var(--cyberdrain-light);
     --cui-table-striped-bg: var(--cyberdrain-dark-striped);
     --cui-table-striped-color: var(--cyberdrain-light-striped);
