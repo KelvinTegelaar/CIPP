@@ -51,9 +51,10 @@ const DefaultLayout = () => {
       <FastSwitcherModal />
       <ModalRoot />
       <Toasts />
-      <AppHeader />
+
       <AppSidebar />
       <div className="wrapper d-flex flex-column min-vh-100">
+        <AppHeader />
         <div className="body flex-grow-1 px-xl-3">
           <CContainer fluid>
             <Suspense fallback={<FullScreenLoading />}>
