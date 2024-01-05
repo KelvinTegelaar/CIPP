@@ -299,6 +299,7 @@ export const RFFCFormSelect = ({
   className = 'mb-3',
   validate,
   disabled = false,
+  props,
 }) => {
   // handler for ignoring the first element ('the placeholder')
   const selectValidate = (value, allValues, meta) => {
@@ -320,10 +321,11 @@ export const RFFCFormSelect = ({
             valid={!meta.error && meta.touched}
             invalid={meta.error && meta.touched}
             disabled={disabled}
+            {...props}
           >
             <option value={placeholder}>{placeholder}</option>
-            {values.map(({ label, value }, idx) => (
-              <option key={`${idx}-${value}`} value={value}>
+            {values.map(({ label, value, ...props }, idx) => (
+              <option key={`${idx}-${value}`} value={value} {...props}>
                 {label}
               </option>
             ))}
@@ -383,11 +385,14 @@ export const RFFSelectSearch = ({
   disabled = false,
   retainInput = true,
   isLoading = false,
+  refreshFunction,
+  props,
 }) => {
   const [inputText, setInputText] = useState('')
   const selectSearchvalues = values.map((val) => ({
     value: val.value,
     label: val.name,
+    ...val.props,
   }))
 
   const debounceOnInputChange = useMemo(() => {
@@ -410,7 +415,16 @@ export const RFFSelectSearch = ({
       {({ meta, input }) => {
         return (
           <div>
-            <CFormLabel htmlFor={name}>{label}</CFormLabel>
+            <CFormLabel htmlFor={name}>
+              {label}
+              {refreshFunction && (
+                <CTooltip content="Refresh" placement="right">
+                  <CButton onClick={refreshFunction} variant="ghost" className="ms-1" size="sm">
+                    <FontAwesomeIcon icon="sync" />
+                  </CButton>
+                </CTooltip>
+              )}
+            </CFormLabel>
             {onChange && (
               <Select
                 className="react-select-container"
@@ -427,6 +441,7 @@ export const RFFSelectSearch = ({
                 onInputChange={debounceOnInputChange}
                 inputValue={inputText}
                 isLoading={isLoading}
+                {...props}
               />
             )}
             {!onChange && (
@@ -444,6 +459,7 @@ export const RFFSelectSearch = ({
                 isMulti={multi}
                 inputValue={inputText}
                 isLoading={isLoading}
+                {...props}
               />
             )}
             {meta.error && meta.touched && <span className="text-danger">{meta.error}</span>}
@@ -460,6 +476,7 @@ RFFSelectSearch.propTypes = {
   placeholder: PropTypes.string,
   onInputChange: PropTypes.func,
   isLoading: PropTypes.bool,
+  refreshFunction: PropTypes.func,
   values: PropTypes.arrayOf(PropTypes.shape({ value: PropTypes.string, name: PropTypes.string }))
     .isRequired,
 }
