@@ -508,6 +508,15 @@
     "impactColour": "info"
   },
   {
+    "name": "standards.DisableExternalCalendarSharing",
+    "cat": "Exchange Standards",
+    "helpText": "Disables the ability for users to share their calendar with external users. Only for the default policy, so exclusions can be made if needed.",
+    "addedComponent": [],
+    "label": "Disable external calendar sharing",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.SafeSendersDisable",
     "cat": "Exchange Standards",
     "disabledFeatures": {
