@@ -7,7 +7,7 @@ description: Setup access to my clients
 This section describes the best practices and recommended setup for CIPP, including account usage, multi factor authentication, and DAP/GDAP groups. This section also describes the recommended setup for Conditional Access Policies. When this document has not been implemented you could encounter issues with the CSP, Graph, or Exchange sections of CIPP.
 
 {% hint style="danger" %}
-Failing to adhere precisely to these instructions may result in a malfunctioning CIPP instance. Do not deviate from these instructions and follow them to the letter.
+Failing to adhere precisely to these instructions may result in a malfunctioning CIPP instance where features don't work as expected. Do not deviate from these instructions and follow them to the letter.&#x20;
 {% endhint %}
 
 ## Authorization requirements
@@ -30,6 +30,7 @@ to setup the Graph API, CSP, and Exchange integration CIPP requires a minimum le
   * Teams Administrator
   * User Administrator
   * Privileged Authentication Administrator
+* Do not over-assign GDAP groups. Too many permissions will stop GDAP functionality. For more information check out Microsoft's documentation [here](https://learn.microsoft.com/en-us/partner-center/gdap-faq)
 
 3. This account must have **Microsoft** multi-factor authentication enforced for each logon, either via Conditional Access when available or via [Per User MFA](https://account.activedirectory.windowsazure.com/UserManagement/MultifactorVerification.aspx) when Conditional Access is not available.
 
