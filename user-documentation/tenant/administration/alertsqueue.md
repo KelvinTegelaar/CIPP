@@ -16,7 +16,7 @@ Similar to [Tenant Standards](https://github.com/KelvinTegelaar/CIPP/blob/websit
 Alert email delivers to the email address or webhook provided in CIPP settings. Alerts are delivered as an HTML-formatted table. Alerts fire once per incident - for example, a full mailbox does not fire an alert every time it's checked).
 
 {% hint style="info" %}
-Classic Alert scans run every 15 minutes.
+Classic Alert scans run every hour
 {% endhint %}
 
 ### Available Alerts
