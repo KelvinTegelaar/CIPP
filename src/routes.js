@@ -39,6 +39,8 @@ const Page500 = React.lazy(() => import('src/views/pages/page500/Page500'))
 const MFAReport = React.lazy(() => import('src/views/identity/reports/MFAReport'))
 const Tenants = React.lazy(() => import('src/views/tenant/administration/Tenants'))
 const AlertWizard = React.lazy(() => import('src/views/tenant/administration/AlertWizard'))
+const AlertRules = React.lazy(() => import('src/views/tenant/administration/AlertRules'))
+
 const AlertsQueue = React.lazy(() => import('src/views/tenant/administration/ListAlertsQueue'))
 const GraphExplorer = React.lazy(() => import('src/views/tenant/administration/GraphExplorer'))
 
@@ -226,6 +228,9 @@ const ServiceHealth = React.lazy(() => import('src/views/tenant/administration/S
 const EnterpriseApplications = React.lazy(() =>
   import('src/views/tenant/administration/ListEnterpriseApps'),
 )
+const AppConsentRequests = React.lazy(() =>
+  import('src/views/tenant/administration/ListAppConsentRequests'),
+)
 const MailboxRestoreWizard = React.lazy(() =>
   import('src/views/email-exchange/tools/MailboxRestoreWizard'),
 )
@@ -308,6 +313,8 @@ const routes = [
   { path: '/tenant/administration/tenants/edit', name: 'Edit Tenant', component: EditTenant },
   { path: '/tenant/administration/domains', name: 'Domains', component: Domains },
   { path: '/tenant/administration/alertswizard', name: 'Alerts Wizard', component: AlertWizard },
+  { path: '/tenant/administration/alertrules', name: 'Alerts Wizard', component: AlertRules },
+
   { path: '/tenant/administration/alertsqueue', name: 'Alerts Queue', component: AlertsQueue },
   {
     path: '/tenant/administration/graph-explorer',
@@ -323,6 +330,11 @@ const routes = [
     path: '/tenant/administration/enterprise-apps',
     name: 'Enterprise Applications',
     component: EnterpriseApplications,
+  },
+  {
+    path: '/tenant/administration/app-consent-requests',
+    name: 'App Consent Requests',
+    component: AppConsentRequests,
   },
   {
     path: '/tenant/conditional/list-policies',
