@@ -70,7 +70,7 @@ const ListAppliedStandards = () => {
   ]
 
   return (
-    <CippPage title="Standards" tenantSelector={false}>
+    <CippPage title="Standars" tenantSelector={false}>
       <>
         <CRow>
           <CCol>
