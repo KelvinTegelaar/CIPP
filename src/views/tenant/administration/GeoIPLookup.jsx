@@ -115,26 +115,48 @@ const GeoIPLookup = () => {
                 {ip}
               </CCol>
               <CCol sm={12} md={4} className="mb-3">
-                <p className="fw-lighter">Range</p>
+                <p className="fw-lighter">AS</p>
                 {graphrequest.isFetching && <Skeleton />}
-                {graphrequest.data?.startaddress} - {graphrequest.data?.endAddress}
+                {graphrequest.data?.as}
               </CCol>
               <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Owner</p>
                 {graphrequest.isFetching && <Skeleton />}
-                {graphrequest.data?.OrgRef}
+                {graphrequest.data?.org}
               </CCol>
             </CRow>
             <CRow>
               <CCol sm={12} md={4} className="mb-3">
-                <p className="fw-lighter">Subnet Name</p>
+                <p className="fw-lighter">ISP</p>
                 {graphrequest.isFetching && <Skeleton />}
-                {graphrequest.data?.SubnetName}
+                {graphrequest.data?.isp}
               </CCol>
-              <CCol sm={8} md={8} className="mb-3">
+              <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Geo IP Location</p>
                 {graphrequest.isFetching && <Skeleton />}
-                {graphrequest.data?.location?.countryCode} - {graphrequest.data?.location?.cityName}
+                {graphrequest.data?.country} - {graphrequest.data?.city}
+              </CCol>
+              <CCol sm={12} md={4} className="mb-3">
+                <p className="fw-lighter">Lat/Lon</p>
+                {graphrequest.isFetching && <Skeleton />}
+                {graphrequest.data?.lat} - {graphrequest.data?.lon}
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol sm={12} md={4} className="mb-3">
+                <p className="fw-lighter">Hosting</p>
+                {graphrequest.isFetching && <Skeleton />}
+                {graphrequest.data?.hosting ? 'Yes' : 'No'}
+              </CCol>
+              <CCol sm={12} md={4} className="mb-3">
+                <p className="fw-lighter">Mobile</p>
+                {graphrequest.isFetching && <Skeleton />}
+                {graphrequest.data?.mobile ? 'Yes' : 'No'}
+              </CCol>
+              <CCol sm={12} md={4} className="mb-3">
+                <p className="fw-lighter">Proxy or Anonimizer</p>
+                {graphrequest.isFetching && <Skeleton />}
+                {graphrequest.data?.proxy ? 'Yes' : 'No'}
               </CCol>
             </CRow>
           </CippContentCard>
