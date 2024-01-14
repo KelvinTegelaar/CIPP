@@ -420,6 +420,22 @@
     "impactColour": "info"
   },
   {
+    "name": "standards.EnableMailTips",
+    "cat": "Exchange Standards",
+    "helpText": "Enables all MailTips in Outlook. MailTips are the notifications Outlook and Outlook on the web shows when an email you create, meets some requirements",
+    "addedComponent": [
+      {
+        "type": "number",
+        "name": "standards.EnableMailTips.MailTipsLargeAudienceThreshold",
+        "label": "Number of recipients to trigger the large audience MailTip (Default is 25)",
+        "placeholder": "Enter a profile name"
+      }
+    ],
+    "label": "Enable all MailTips",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.DisableViva",
     "cat": "Exchange Standards",
     "helpText": "Disables the daily viva reports for all users.",
@@ -463,12 +479,12 @@
       {
         "type": "number",
         "name": "standards.SendReceiveLimitTenant.SendLimit",
-        "label": "Send limit in MB"
+        "label": "Send limit in MB (Default is 35)"
       },
       {
         "type": "number",
         "name": "standards.SendReceiveLimitTenant.ReceiveLimit",
-        "label": "Receive Limit in MB"
+        "label": "Receive Limit in MB (Default is 36)"
       }
     ],
     "label": "Set send/receive size limits",
