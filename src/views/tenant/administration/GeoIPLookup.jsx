@@ -152,7 +152,7 @@ const GeoIPLookup = () => {
               <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Lat/Lon</p>
                 {graphrequest.isFetching && <Skeleton />}
-                {graphrequest.data?.lat} - {graphrequest.data?.lon}
+                {graphrequest.data?.lat} / {graphrequest.data?.lon}
               </CCol>
             </CRow>
             <CRow>
