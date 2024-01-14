@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import {
   CButton,
+  CCallout,
   CCard,
   CCardBody,
   CCardHeader,
@@ -57,6 +58,18 @@ const GeoIPLookup = () => {
       })
     }
   }, [execGraphRequest, tenant.defaultDomainName, query, ip])
+  const [execAddIp, iprequest] = useLazyGenericGetRequestQuery()
+
+  const addTrustedIP = (State) => {
+    execAddIp({
+      path: 'api/ExecAddTrustedIP',
+      params: {
+        IP: ip,
+        TenantFilter: tenant.defaultDomainName,
+        State: State,
+      },
+    })
+  }
 
   return (
     <CRow>
@@ -159,6 +172,27 @@ const GeoIPLookup = () => {
                 {graphrequest.data?.proxy ? 'Yes' : 'No'}
               </CCol>
             </CRow>
+            <CRow className="mb-3">
+              <CCol className="mb-3">
+                <CButton color="primary" onClick={() => addTrustedIP('Trusted')} className="me-3">
+                  Add as trusted IP for selected tenant
+                  {iprequest.isFetching && <CSpinner size="sm" />}
+                </CButton>
+                <CButton
+                  className="me-3"
+                  color="primary"
+                  onClick={() => addTrustedIP('NotTrusted')}
+                >
+                  Remove as trusted IP for selected tenant
+                  {iprequest.isFetching && <CSpinner size="sm" />}
+                </CButton>
+              </CCol>
+            </CRow>
+            {iprequest.data && (
+              <CCallout color="info" className="mt-3">
+                {iprequest.data?.results}
+              </CCallout>
+            )}
           </CippContentCard>
         </CCol>
       )}
