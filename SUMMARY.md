@@ -39,7 +39,6 @@
 * [Shared Features](user-documentation/shared-features/README.md)
   * [Tenant Select](user-documentation/shared-features/tenant-select.md)
   * [Filters](user-documentation/shared-features/filters.md)
-  * [User Profile](user-documentation/shared-features/user-profile.md)
 * [CIPP Dashboard](user-documentation/dashboard.md)
 * [Identity Management](user-documentation/identity/README.md)
   * [Administration](user-documentation/identity/administration/README.md)

@@ -2,7 +2,7 @@
 
 ### List Policies
 
-This page lists all the MEM policies on the selected account and provides the ability for you to view the raw JSON of the policy.
+This page lists all the MEM policies on the selected account and provides the ability for you to view the raw JSON of the policy. This information is useful for copy and pasting across systems or scripts.
 
 #### Details <a href="#listmempolicies-details" id="listmempolicies-details"></a>
 
@@ -18,6 +18,7 @@ This page lists all the MEM policies on the selected account and provides the ab
 * Edit Policy
 * View Policy
 * Delete Policy
+* Create Template from policy
 
 ### API Calls
 

@@ -2,19 +2,17 @@
 
 This page provides the ability for you to create a template policy you can deploy to many tenants at the same time, if so required.
 
-#### Details <a href="#addmempolicytemplate-details" id="addmempolicytemplate-details"></a>
+## Creating Templates
 
-To create a policy and get it's raw JSON information you must visit [Microsoft Endpoint Manager](https://endpoint.microsoft.com).
+Templates are based on the information inside of a policy. This is stored and communicated with Microsoft in a format called "JSON".  There's multiple ways of creating templates
 
-* Go to **Devices -> Configuration Profiles**
-* Create a new configuration profile
-* Choose "Windows 10 and later" as a platform
-* Choose "Templates" and then select any option.
-* Select all the settings you want, remember that there are both computer policies and user policies.
-* When you reach the Review and Create stage, don't select the "Create" button but press F12 on your keyboard to open the developer tools.
-* Now select "Create" and look for the "UpdateDefiniationValues" post request for administrative templates, or any other POST request for other templates.
-* Select "Payload" tab and scroll down to "request payload" this is the raw JSON payload. To copy it, select on "view source" and copy the entire text string.
-* You can now use CIPP to deploy this policy to all tenants.
+### Using the List Policies
+
+When listing policies within CIPP you can create a template by clicking on the three dots next to a policy and selecting the option "Create Template". This template pulls all the data from the Microsoft environment into a single condensed template to deploy
+
+### Using external sources
+
+you can also grab the template information by using exernal sources, such as a blog or repository. Another method is by using "Graph X-ray" - A tool made by Merrill Fernando to ease the use of getting this information.
 
 ### Feature Requests / Ideas
 
