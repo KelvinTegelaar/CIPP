@@ -163,7 +163,7 @@ This occurs when the app has exists for more than 2 years and requires a new cer
 
 </details>
 
-### My cost is very high or not responsive
+### My cost is very high or the application is not responsive
 
 this issue can occur when you have restarted the app during an important task. It's never recommended to restart the function app, and if you do unexpected results can happen. The Function Host uses something called durable functions, which when handled incorrectly can cause performance issues or increase costs due to looping tasks.
 
