@@ -18,6 +18,7 @@
   * [I want to manage my own tenant](setup/installation/owntenant.md)
   * [Updating](setup/installation/updating.md)
   * [Roles](setup/installation/roles.md)
+  * [Configuring Automatic Updates](setup/installation/configuring-automatic-updates.md)
   * [Permissions](setup/installation/permissions.md)
 * [GDAP Setup Guide](setup/gdap/README.md)
   * [What is GDAP](setup/gdap/what-is-gdap.md)
@@ -25,6 +26,13 @@
   * [GDAP Migration Setup](setup/gdap/index.md)
   * [GDAP Troubleshooting](setup/gdap/troubleshooting.md)
   * [Recommended Roles](setup/gdap/recommended-roles.md)
+* [Implementation Guide](setup/implementation-guide/README.md)
+  * [Recommended First Steps](setup/implementation-guide/recommended-first-steps.md)
+  * [Standards Setup](setup/implementation-guide/standards-setup.md)
+  * [Alerting Setup](setup/implementation-guide/alerting-setup.md)
+  * [Integration Setup](setup/implementation-guide/integration-setup.md)
+  * [Best Practices Analyser](setup/implementation-guide/best-practices-analyser.md)
+  * [Domain Analyser](setup/implementation-guide/domain-analyser.md)
 
 ## 🙋 User Documentation
 
