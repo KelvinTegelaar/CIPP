@@ -163,6 +163,22 @@ This occurs when the app has exists for more than 2 years and requires a new cer
 
 </details>
 
+### My cost is very high or not responsive
+
+this issue can occur when you have restarted the app during an important task. It's never recommended to restart the function app, and if you do unexpected results can happen. The Function Host uses something called durable functions, which when handled incorrectly can cause performance issues or increase costs due to looping tasks.
+
+1. **Log In to Azure Portal**: Sign in to your Azure account at [portal.azure.com](https://portal.azure.com/).
+2. **Navigate to Storage Account**: Go to 'Storage accounts' and select the storage account that starts with 'CIPP'
+3. **Access Queues**: Inside the storage account click on Storage Explorer,
+4. **Clear Data Individually**:
+   * Delete each queue. This will automatically be recreated when required.
+   * Delete all data in the "Blobs" section as well.
+5. Restart the function app.
+
+This procedure can also be used to safely restart the function app when required.
+
+
+
 #### Credits
 
 This troubleshooting document was created with the help of [Ashley Cooper](https://www.linkedin.com/in/adelnet/)
