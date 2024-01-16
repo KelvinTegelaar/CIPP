@@ -16,8 +16,9 @@ description: Configuring the HaloPSA integration
 7. Store the **Client ID** and **Client Secret** securely.
 8. Set the **Login Type** and **Agent to login as** appropriately.\
    _This setting will determine who appears to be responsible for these API calls. You may want to create a dedicated agent user for this purpose._
-9. Select the **Permissions** tab.
-10. Grant the application the permissions required for your purposes.\
+   _This agent needs to be an administrator in Halo, other roles maybe possible but have not been tested_
+10. Select the **Permissions** tab.
+11. Grant the application the permissions required for your purposes.\
     _Generally speaking you want to limit the API to only the permissions it needs. For CIPP this currently requires read:tickets, edit:tickets, read:customers, edit:customers._
 
 #### Enter credentials in CIPP
