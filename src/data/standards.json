@@ -37,7 +37,7 @@
   {
     "name": "standards.AuditLog",
     "cat": "Global Standards",
-    "helpText": "Enables the Unified Audit Log for tracking and auditing activities; also runs Enable-OrganizationCustomization if necessary.",
+    "helpText": "Enables the Unified Audit Log for tracking and auditing activities. Also runs Enable-OrganizationCustomization if necessary.",
     "addedComponent": [],
     "label": "Enable the Unified Audit Log",
     "impact": "Low Impact",
@@ -73,7 +73,7 @@
   {
     "name": "standards.DisableBasicAuthSMTP",
     "cat": "Global Standards",
-    "helpText": "Disables SMTP AUTH for the organization. This is the default for new tenants. Sets the entire tenant to no longer allow SMTP AUTH, and as such has no exclusions.",
+    "helpText": "Disables SMTP AUTH for the organization and all users. This is the default for new tenants. ",
     "addedComponent": [],
     "label": "Disable SMTP Basic Authentication",
     "impact": "Medium Impact",
@@ -93,7 +93,7 @@
     "cat": "Entra (AAD) Standards",
     "helpText": "Enables the tenant to use LAPS. You must still create a policy for LAPS to be active on all devices. Use the template standards to deploy this by default.",
     "addedComponent": [],
-    "label": "Enable LAPs on the tenant",
+    "label": "Enable LAPS on the tenant",
     "impact": "Low Impact",
     "impactColour": "info"
   },
@@ -111,7 +111,7 @@
     "name": "standards.allowOTPTokens",
     "helpText": "Allows you to use MS authenticator OTP token generator",
     "addedComponent": [],
-    "label": "Enable OTP via Authenticator.",
+    "label": "Enable OTP via Authenticator",
     "impact": "Low Impact",
     "impactColour": "info"
   },
@@ -230,7 +230,7 @@
     "name": "standards.NudgeMFA.enable",
     "helpText": "Enables registration campaign for the tenant",
     "addedComponent": [],
-    "label": "Request to setup Authenticator if not setup yet.",
+    "label": "Request to setup Authenticator if not setup yet",
     "impact": "Low Impact",
     "impactColour": "info"
   },
@@ -239,7 +239,7 @@
     "name": "standards.NudgeMFA.disable",
     "helpText": "Disables registration campaign for the tenant",
     "addedComponent": [],
-    "label": "Disables the request to setup Authenticator if setup.",
+    "label": "Disables the request to setup Authenticator if setup",
     "impact": "Low Impact",
     "impactColour": "info"
   },
@@ -299,16 +299,16 @@
         "label": "Allowed application IDs, comma separated"
       }
     ],
-    "label": "Require admin consent for applications (Prevent OAuth phishing.)",
-    "impact": "Medium impact",
+    "label": "Require admin consent for applications (Prevent OAuth phishing)",
+    "impact": "Medium Impact",
     "impactColour": "warning"
   },
   {
     "cat": "Entra (AAD) Standards",
     "name": "standards.OauthConsentLowSec",
     "helpText": "Sets the default oauth consent level so users can consent to applications that have low risks.",
-    "label": "Allow users to consent to applications with low security risk (Prevent OAuth phishing. Lower impact, less secure.)",
-    "impact": "Medium impact",
+    "label": "Allow users to consent to applications with low security risk (Prevent OAuth phishing. Lower impact, less secure)",
+    "impact": "Medium Impact",
     "impactColour": "warning"
   },
   {
@@ -373,7 +373,7 @@
   {
     "name": "standards.OutBoundSpamAlert",
     "cat": "Exchange Standards",
-    "helpText": "Set the Outbound Spam Alert e-mail address.",
+    "helpText": "Set the Outbound Spam Alert e-mail address",
     "addedComponent": [
       {
         "type": "input",
@@ -415,7 +415,7 @@
         ]
       }
     ],
-    "label": "Enable or disable 'external' warning in Outlook.",
+    "label": "Enable or disable 'external' warning in Outlook",
     "impact": "Low Impact",
     "impactColour": "info"
   },
@@ -659,7 +659,7 @@
   {
     "name": "standards.DisableAddShortcutsToOneDrive",
     "cat": "SharePoint Standards",
-    "helpText": "When the feature is disabled the option Add shortcut to My files will be removed; any folders that have already been added will remain on the user's computer.",
+    "helpText": "When the feature is disabled the option Add shortcut to OneDrive will be removed. Any folders that have already been added will remain on the user's computer.",
     "disabledFeatures": {
       "report": true,
       "warn": true,
