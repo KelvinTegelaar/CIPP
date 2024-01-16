@@ -384,7 +384,7 @@ const GeneralSettings = () => {
             <CCardHeader></CCardHeader>
             <CCardBody>
               <h3 className="underline mb-5">Permissions Check</h3>
-              <p>Click the button below to start a permissions check.</p>
+              <p>Click the button below to start a BrockIT SAM permissions check.</p>
               <CButton
                 onClick={() => checkPermissions()}
                 disabled={permissionsResult.isFetching}
