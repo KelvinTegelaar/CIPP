@@ -551,6 +551,15 @@
     "impactColour": "info"
   },
   {
+    "name": "standards.DisableAdditionalStorageProviders",
+    "cat": "Exchange Standards",
+    "helpText": "Disables the ability for users to open files in Outlook on the Web, from other providers such as Box, Dropbox, Facebook, Google Drive, OneDrive Personal, etc.",
+    "addedComponent": [],
+    "label": "Disable additional storage providers in OWA",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.SafeSendersDisable",
     "cat": "Exchange Standards",
     "disabledFeatures": {
