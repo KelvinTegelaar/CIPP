@@ -2,7 +2,7 @@
 description: Apply pre-defined standards to your Microsoft 365 CSP tenants.
 ---
 
-# Standards Wizard
+# Edit Standards
 
 {% hint style="danger" %}
 Configuration Changes A standard applies actual configuration to the selected tenant, not just monitoring.
@@ -69,6 +69,7 @@ Low Impact Changes which have no user-facing impact or minimal impact.
 | Set send/receive size limits                                      | Set-MailboxPlan                                                                          | Sets the maximum send and receive size for the tenant                                                                                                                                                                                                                                                                                |
 | Set Sharing Level for Default calendar                            | Set-MailboxFolderPermission                                                              | Sets the default sharing level for the default calendar for all users in the tenant. You can read about the different sharing levels [here.](https://learn.microsoft.com/en-us/powershell/module/exchange/set-mailboxfolderpermission?view=exchange-ps#-accessrights)                                                                |
 | Disable external calendar sharing                                 | Get-SharingPolicy \| Set-SharingPolicy -Enabled $False                                   | Disables external calendar sharing for the entire tenant. This is not a widely used feature, and it's therefore unlikely that this will impact users.                                                                                                                                                                                |
+| Disable additional storage providers in OWA                       | Get-OwaMailboxPolicy \| Set-OwaMailboxPolicy -AdditionalStorageProvidersEnabled $False   | Disables additional storage providers in OWA. This is to prevent users from using personal storage providers like Dropbox, Google Drive, etc. Usually this has little user impact.                                                                                                                                                   |
 | Set inactive device retirement days                               | Portal Only                                                                              | Sets the number of days before a device is considered inactive and removed from Intune.                                                                                                                                                                                                                                              |
 | Retain a deleted user OneDrive for 1 year                         | Portal Only                                                                              | When a OneDrive user gets deleted, the personal SharePoint site is saved for 1 year and data can be retrieved from it.                                                                                                                                                                                                               |
 
