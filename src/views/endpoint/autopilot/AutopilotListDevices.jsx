@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { CButton, CCallout, CSpinner } from '@coreui/react'
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faArrowCircleDown, faSyncAlt, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPageList } from 'src/components/layout'
 import { ModalService } from 'src/components/utilities'
@@ -102,9 +102,20 @@ const AutopilotListDevices = () => {
       <CippPageList
         title="Autopilot Devices"
         titleButton={
-          <>
+          <div style={{ display: 'flex', alignItems: 'right' }}>
             <TitleButton href={`/endpoint/autopilot/add-device`} title="Deploy Autopilot Device" />
-          </>
+            <div style={{ marginLeft: '10px' }}>
+              <TitleButton
+                icon={faSyncAlt}
+                onClick={() =>
+                  ExecuteGetRequest({
+                    path: `/api/ExecSyncAPDevices?tenantFilter=${tenant.defaultDomainName}`,
+                  })
+                }
+                title="Sync Devices"
+              />
+            </div>
+          </div>
         }
         datatable={{
           keyField: 'id',
