@@ -38,8 +38,8 @@ const AutopilotListDevices = () => {
           title="User Information"
           extendedInfo={[
             {
-              label: 'Created Date (UTC)',
-              value: `${row.createdDateTime ?? ' '}`,
+              label: 'Assigned User',
+              value: `${row.userPrincipalName ?? ' '}`,
             },
             { label: 'Windows PKID', value: `${row.productKey ?? ' '}` },
             { label: 'Serial', value: `${row.serialNumber ?? ' '}` },
