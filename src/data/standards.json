@@ -44,6 +44,15 @@
     "impactColour": "info"
   },
   {
+    "name": "standards.PhishProtection",
+    "cat": "Global Standards",
+    "helpText": "Adds branding to the logon page that only appears if the url is not login.microsoftonline.com. This potentially prevents AITM attacks via EvilNginx. (P1 or higher required)",
+    "addedComponent": [],
+    "label": "Enable Phishing Protection system via branding CSS",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.EnableCustomerLockbox",
     "cat": "Global Standards",
     "helpText": "Enables Customer Lockbox that offers an approval process for Microsoft support to access organization data",
