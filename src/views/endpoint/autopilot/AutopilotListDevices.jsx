@@ -20,15 +20,6 @@ const AutopilotListDevices = () => {
   const [ocVisible, setOCVisible] = useState(false)
 
   const Actions = (row, index, column) => {
-    const handleDeleteAPDevice = (apiurl, message) => {
-      ModalService.confirm({
-        title: 'Confirm',
-        body: <div>{message}</div>,
-        onConfirm: () => ExecuteGetRequest({ path: apiurl }),
-        confirmLabel: 'Continue',
-        cancelLabel: 'Cancel',
-      })
-    }
     return (
       <>
         <CButton size="sm" color="link" onClick={() => setOCVisible(true)}>
