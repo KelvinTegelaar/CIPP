@@ -223,7 +223,7 @@ const GeneralSettings = () => {
     {
       name: 'Missing GDAP Roles',
       selector: (row) => row?.MissingRoles,
-      cell: cellTableFormatter('MissingRoles', true, false),
+      cell: cellTableFormatter('MissingRoles', true, false, true),
     },
     {
       name: 'Roles available',
@@ -485,24 +485,37 @@ const GeneralSettings = () => {
               <CRow>
                 <CCol>
                   {GDAPResult.isSuccess && GDAPResult.data.Results.GDAPIssues?.length > 0 && (
-                    <CippTable
-                      showFilter={true}
-                      reportName="none"
-                      columns={checkGDAPColumns}
-                      data={GDAPResult.data.Results.GDAPIssues}
-                      filterlist={[
-                        {
-                          filterName: 'Errors',
-                          filter: 'Complex: Type eq Error',
-                        },
-                        {
-                          filterName: 'Warnings',
-                          filter: 'Complex: Type eq Warning',
-                        },
-                      ]}
-                      defaultFilterText="Complex: Type eq Error"
-                      isModal={true}
-                    />
+                    <>
+                      {GDAPResult.data.Results.GDAPIssues?.filter((e) => e.Type === 'Error')
+                        .length > 0 && (
+                        <CCallout color="danger">
+                          Relationship errors detected. Review the table below for more details.
+                        </CCallout>
+                      )}
+                      {GDAPResult.data.Results.GDAPIssues?.filter((e) => e.Type === 'Warning')
+                        .length > 0 && (
+                        <CCallout color="warning">
+                          Relationship warnings detected. Review the table below for more details.
+                        </CCallout>
+                      )}
+                      <CippTable
+                        showFilter={true}
+                        reportName="none"
+                        columns={checkGDAPColumns}
+                        data={GDAPResult.data.Results.GDAPIssues}
+                        filterlist={[
+                          {
+                            filterName: 'Errors',
+                            filter: 'Complex: Type eq Error',
+                          },
+                          {
+                            filterName: 'Warnings',
+                            filter: 'Complex: Type eq Warning',
+                          },
+                        ]}
+                        isModal={true}
+                      />
+                    </>
                   )}
                   {GDAPResult.isSuccess && GDAPResult.data.Results.GDAPIssues?.length === 0 && (
                     <CCallout color="success">
@@ -724,13 +737,6 @@ const ExcludedTenantsSettings = () => {
       exportSelector: 'defaultDomainName',
     },
     {
-      name: 'Relationship Type',
-      selector: (row) => row['delegatedPrivilegeStatus'],
-      sortable: true,
-      cell: (row) => CellDelegatedPrivilege({ cell: row['delegatedPrivilegeStatus'] }),
-      exportSelector: 'delegatedPrivilegeStatus',
-    },
-    {
       name: 'Excluded',
       selector: (row) => row['Excluded'],
       sortable: true,
@@ -837,15 +843,6 @@ const ExcludedTenantsSettings = () => {
             {
               filterName: 'Included Tenants',
               filter: 'Complex: Excluded eq false',
-            },
-            {
-              filterName: 'GDAP & DAP',
-              filter:
-                'Complex: delegatedPrivilegeStatus eq delegatedAndGranularDelegetedAdminPrivileges',
-            },
-            {
-              filterName: 'GDAP Only',
-              filter: 'Complex: delegatedPrivilegeStatus eq granularDelegatedAdminPrivileges',
             },
           ],
           keyField: 'id',
