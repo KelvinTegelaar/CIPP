@@ -89,11 +89,6 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             color: 'info',
           },
           {
-            label: 'Offboard User',
-            link: OffboardLink,
-            color: 'info',
-          },
-          {
             label: 'Create Temporary Access Password',
             color: 'info',
             modal: true,
@@ -139,6 +134,54 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
               valueField: 'URL',
             },
             modalMessage: 'Select the sharepoint site to create a shortcut for',
+          },
+          {
+            label: 'Add to group',
+            color: 'info',
+            modal: true,
+            modalType: 'POST',
+            modalBody: {
+              Addmember: {
+                value: row.userPrincipalName,
+              },
+              TenantId: tenant.defaultDomainName,
+            },
+            modalUrl: `/api/EditGroup`,
+            modalDropdown: {
+              url: `/api/listGroups?TenantFilter=${tenant.defaultDomainName}`,
+              labelField: 'displayName',
+              valueField: 'id',
+              addedField: {
+                groupId: 'id',
+                groupType: 'calculatedGroupType',
+                groupName: 'displayName',
+              },
+            },
+            modalMessage: 'Select the group to add the user to',
+          },
+          {
+            label: 'Remove from group',
+            color: 'info',
+            modal: true,
+            modalType: 'POST',
+            modalBody: {
+              Removemember: {
+                value: row.userPrincipalName,
+              },
+              TenantId: tenant.defaultDomainName,
+            },
+            modalUrl: `/api/EditGroup`,
+            modalDropdown: {
+              url: `/api/listGroups?TenantFilter=${tenant.defaultDomainName}`,
+              labelField: 'displayName',
+              valueField: 'id',
+              addedField: {
+                groupId: 'id',
+                groupType: 'calculatedGroupType',
+                groupName: 'displayName',
+              },
+            },
+            modalMessage: 'Select the group to add the user to',
           },
           {
             label: 'Enable Online Archive',
@@ -216,13 +259,6 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modal: true,
             modalUrl: `/api/ExecResetPass?MustChange=false&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}&displayName=${row.displayName}`,
             modalMessage: 'Are you sure you want to reset the password for this user?',
-          },
-          {
-            label: 'Clear ImmutableId',
-            color: 'warning',
-            modal: true,
-            modalUrl: `/api/ExecClrImmId?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
-            modalMessage: 'Are you sure you want to clear the ImmutableId for this user?',
           },
           {
             label: 'Revoke all user sessions',
@@ -449,7 +485,7 @@ const Users = (row) => {
               label: 'Enable Online Archive',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecEnableArchive?TenantFilter=!Tenant&ID=!id`,
+              modalUrl: `/api/ExecEnableArchive?TenantFilter=!Tenant&ID=!userPrincipalName`,
               modalMessage: 'Are you sure you want to enable the online archive for these users?',
             },
             {
