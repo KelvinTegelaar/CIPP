@@ -46,11 +46,16 @@
   {
     "name": "standards.PhishProtection",
     "cat": "Global Standards",
-    "helpText": "Adds branding to the logon page that only appears if the url is not login.microsoftonline.com. This potentially prevents AITM attacks via EvilNginx. This will also automatically generate alerts if a clone of your login page has been found. (P1 or higher required)",
+    "helpText": "Adds branding to the logon page that only appears if the url is not login.microsoftonline.com. This potentially prevents AITM attacks via EvilNginx. This will also automatically generate alerts if a clone of your login page has been found when set to Remediate.",
     "addedComponent": [],
     "label": "Enable Phishing Protection system via branding CSS",
     "impact": "Low Impact",
-    "impactColour": "info"
+    "impactColour": "info",
+    "disabledFeatures": {
+      "report": true,
+      "warn": true,
+      "remediate": false
+    }
   },
   {
     "name": "standards.EnableCustomerLockbox",
