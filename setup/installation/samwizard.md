@@ -41,7 +41,7 @@ The account will be used for all actions performed from the CIPP portal.
 
 ## Setup Video for SAM Service Account
 
-{% file src="../../.gitbook/assets/Setup the CIPP Service Account.mp4" %}
+{% embed url="https://app.guidde.com/share/playbooks/i9fztXsCUWjY3cr8mySvCX" %}
 
 ## Executing the wizard
 
