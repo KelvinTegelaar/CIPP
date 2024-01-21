@@ -39,6 +39,10 @@ to setup the Graph API, CSP, and Exchange integration CIPP requires a minimum le
 
 The account will be used for all actions performed from the CIPP portal.
 
+## Setup Video for SAM Service Account
+
+{% file src="../../.gitbook/assets/Setup the CIPP Service Account.mp4" %}
+
 ## Executing the wizard
 
 {% hint style="danger" %}
