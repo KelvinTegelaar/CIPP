@@ -285,7 +285,7 @@ const DomainsAnalyser = () => {
             filter: 'Complex: domain notlike onmicrosoft',
           },
         ],
-        path: `/api/DomainAnalyser_List`,
+        path: `/api/ListDomainAnalyser`,
         params: { tenantFilter: currentTenant.defaultDomainName },
         columns,
         reportName: 'Domains-Analyzer',
