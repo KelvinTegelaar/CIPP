@@ -5,6 +5,7 @@ import {
   CCallout,
   CCard,
   CCardBody,
+  CCardHeader,
   CCardText,
   CCardTitle,
   CFormInput,
@@ -21,6 +22,8 @@ import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 's
 import { Link, useNavigate } from 'react-router-dom'
 import { stringCamelCase } from 'src/components/utilities/CippCamelCase'
 import ReactTimeAgo from 'react-time-ago'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faGlobe } from '@fortawesome/free-solid-svg-icons'
 
 export default function CippActionsOffcanvas(props) {
   const inputRef = useRef('')
@@ -35,6 +38,34 @@ export default function CippActionsOffcanvas(props) {
   }
   const handleModal = useCallback(
     (modalMessage, modalUrl, modalType = 'GET', modalBody, modalInput, modalDropdown) => {
+      const handlePostConfirm = () => {
+        const selectedValue = inputRef.current.value
+        console.log(inputRef)
+        let additionalFields = {}
+
+        if (inputRef.current.nodeName === 'SELECT') {
+          const selectedItem = dropDownInfo.data.find(
+            (item) => item[modalDropdown.valueField] === selectedValue,
+          )
+          if (selectedItem && modalDropdown.addedField) {
+            Object.keys(modalDropdown.addedField).forEach((key) => {
+              additionalFields[key] = selectedItem[modalDropdown.addedField[key]]
+            })
+          }
+        }
+        const postRequestBody = {
+          ...modalBody,
+          ...additionalFields,
+          input: selectedValue,
+        }
+        // Send the POST request
+        genericPostRequest({
+          path: modalUrl,
+          values: postRequestBody,
+        })
+      }
+
+      // Modal setup for GET, codeblock, and other types
       if (modalType === 'GET') {
         ModalService.confirm({
           body: (
@@ -79,12 +110,7 @@ export default function CippActionsOffcanvas(props) {
             </div>
           ),
           title: 'Confirm',
-          onConfirm: () => [
-            genericPostRequest({
-              path: modalUrl,
-              values: { ...modalBody, ...{ input: inputRef.current.value } },
-            }),
-          ],
+          onConfirm: handlePostConfirm,
         })
       }
     },
@@ -96,7 +122,6 @@ export default function CippActionsOffcanvas(props) {
       modalContent,
     ],
   )
-
   useEffect(() => {
     if (dropDownInfo.isFetching) {
       handleModal(
@@ -292,9 +317,15 @@ export default function CippActionsOffcanvas(props) {
         <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
       )}
 
-      <COffcanvasTitle>Extended Information</COffcanvasTitle>
+      <CCard className="content-card">
+        <CCardHeader className="d-flex justify-content-between align-items-center">
+          <CCardTitle>
+            <FontAwesomeIcon icon={faGlobe} className="mx-2" /> Extended Information
+          </CCardTitle>
+        </CCardHeader>
+        <CCardBody>{extendedInfoContent}</CCardBody>
+      </CCard>
       {cardContent && cardContent}
-      {extendedInfoContent}
       {<COffcanvasTitle>Actions</COffcanvasTitle>}
       <CListGroup>
         {actionsContent}
