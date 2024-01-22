@@ -19,3 +19,5 @@ you must now follow the rest of these steps to allow yourself to access CIPP, an
 * Add the `admin` role for your user.
 
 After logging in succesfully, you may move on to the next part of setup by clicking the button below.
+
+{% hint style="info" %} It is completely normal to see errors when you first log into the portal. Please continue following the documentation step by step.  {% endhint %}
