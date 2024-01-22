@@ -40,6 +40,7 @@ import { CellTip, cellGenericFormatter } from 'src/components/tables/CellGeneric
 import { useExecBestPracticeAnalyserMutation } from 'src/store/api/reports'
 import { ModalService } from 'src/components/utilities'
 import { cellTableFormatter } from 'src/components/tables/CellTable'
+import { cellMathFormatter } from 'src/components/tables/CellMathFormatter'
 
 const RefreshAction = ({ singleTenant = false, refreshFunction = null }) => {
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
@@ -95,6 +96,7 @@ RefreshAction.propTypes = {
 const getsubcolumns = (data) => {
   const flatObj = data && data.length > 0 ? data : [{ data: 'No Data Found' }]
   const QueryColumns = []
+
   if (flatObj[0]) {
     Object.keys(flatObj[0]).map((key) => {
       QueryColumns.push({
@@ -186,6 +188,9 @@ const BestPracticeAnalyser = () => {
           case 'table':
             cellSelector = cellTableFormatter(col.value)
             break
+          case 'math':
+            cellSelector = cellMathFormatter({ col })
+            break
           default:
             cellSelector = cellGenericFormatter()
             break
@@ -226,7 +231,6 @@ const BestPracticeAnalyser = () => {
     tenant.customerId,
     SearchNow,
   ])
-
   return (
     <>
       <CRow>
@@ -342,40 +346,40 @@ const BestPracticeAnalyser = () => {
                           <CCardText>
                             {info.formatter === 'bool' && (
                               <CBadge
-                                color={graphrequest.data.Data[info.value] ? 'info' : 'danger'}
+                                color={graphrequest.data.Data[0][info.value] ? 'info' : 'danger'}
                               >
                                 <FontAwesomeIcon
-                                  icon={graphrequest.data.Data[info.value] ? faCheck : faTimes}
+                                  icon={graphrequest.data.Data[0][info.value] ? faCheck : faTimes}
                                   size="lg"
                                   className="me-1"
                                 />
-                                {graphrequest.data.Data[info.value] ? 'Yes' : 'No'}
+                                {graphrequest.data.Data[0][info.value] ? 'Yes' : 'No'}
                               </CBadge>
                             )}
                             {info.formatter === 'reverseBool' && (
                               <CBadge
-                                color={graphrequest.data.Data[info.value] ? 'danger' : 'info'}
+                                color={graphrequest.data.Data[0][info.value] ? 'danger' : 'info'}
                               >
                                 <FontAwesomeIcon
-                                  icon={graphrequest.data.Data[info.value] ? faTimes : faCheck}
+                                  icon={graphrequest.data.Data[0][info.value] ? faTimes : faCheck}
                                   size="lg"
                                   className="me-1"
                                 />
-                                {graphrequest.data.Data[info.value] ? 'No' : 'Yes'}
+                                {graphrequest.data.Data[0][info.value] ? 'No' : 'Yes'}
                               </CBadge>
                             )}
                             {info.formatter === 'warnBool' && (
                               <CBadge
-                                color={graphrequest.data.Data[info.value] ? 'info' : 'warning'}
+                                color={graphrequest.data.Data[0][info.value] ? 'info' : 'warning'}
                               >
                                 <FontAwesomeIcon
                                   icon={
-                                    graphrequest.data.Data[info.value] ? faCheck : faExclamation
+                                    graphrequest.data.Data[0][info.value] ? faCheck : faExclamation
                                   }
                                   size="lg"
                                   className="me-1"
                                 />
-                                {graphrequest.data.Data[info.value] ? 'Yes' : 'No'}
+                                {graphrequest.data.Data[0][info.value] ? 'Yes' : 'No'}
                               </CBadge>
                             )}
 
@@ -384,15 +388,15 @@ const BestPracticeAnalyser = () => {
                                 key={QueryColumns.data}
                                 reportName="BestPracticeAnalyser"
                                 dynamicColumns={false}
-                                columns={getsubcolumns(graphrequest.data.Data[info.value])}
-                                data={graphrequest.data.Data[info.value]}
+                                columns={getsubcolumns(graphrequest.data.Data[0][info.value])}
+                                data={graphrequest.data.Data[0][info.value]}
                                 isFetching={graphrequest.isFetching}
                               />
                             )}
 
                             {info.formatter === 'number' && (
                               <p className="fs-1 text-center">
-                                {getNestedValue(graphrequest.data.Data, info.value)}
+                                {getNestedValue(graphrequest.data.Data[0], info.value)}
                               </p>
                             )}
                           </CCardText>
