@@ -234,5 +234,37 @@
     {
         "vendorName": "SaaSAlerts",
         "vendorTenantId": "5c7b2b48-9e8f-49ba-80d6-3432e39d596b"
+    },
+    {
+        "vendorName": "BullPhish (Ciranda)",
+        "vendorTenantId": "5e4ab895-7a4c-4eea-bb39-75edca0421ad"
+    },
+    {
+        "vendorName": "Coreview",
+        "vendorTenantId": "73506dd6-2bc3-49c0-92f3-b2877bab00ba"
+    },
+    {
+        "vendorName": "Quickpass (CyberQP365)",
+        "vendorTenantId": "c9006408-eb26-4e50-9bd5-2c078e3dc844"
+    },
+    {
+        "vendorName": "Infima",
+        "vendorTenantId": "2bd37396-af18-448c-a391-dd7800364e6f"
+    },
+    {
+        "vendorName": "Immybot",
+        "vendorTenantId": "1dcfdedd-ec87-461d-9d55-6989a519d154"
+    },
+    {
+        "vendorName": "N-Able/Cove backup",
+        "vendorTenantId": "521c973d-080f-4861-a0cb-8939e59d3d39"
+    },
+    {
+        "vendorName": "Dropsuite",
+        "vendorTenantId": "5b8e57d8-5c8e-4b82-98a5-b003bbb26b31"
+    },
+    {
+        "vendorName": "Huntress",
+        "vendorTenantId": "19be9add-482a-4c98-ba76-4c2ef7f3bb13"
     }
 ]
