@@ -151,7 +151,7 @@ const ApplyStandard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Timeout: {props.values.TimeOutInMinutes}
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.TimeOutInMinutes ? faCheck : faTimes}
                           />
@@ -159,7 +159,7 @@ const ApplyStandard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Show Progress
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.ShowProgress ? faCheck : faTimes}
                           />
@@ -167,7 +167,7 @@ const ApplyStandard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Turn on log collection
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.EnableLog ? faCheck : faTimes}
                           />
@@ -175,7 +175,7 @@ const ApplyStandard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Show OOBE page
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.OBEEOnly ? faCheck : faTimes}
                           />
@@ -183,7 +183,7 @@ const ApplyStandard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Block during setup
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.blockDevice ? faCheck : faTimes}
                           />
@@ -191,7 +191,7 @@ const ApplyStandard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Allow retry
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.Allowretry ? faCheck : faTimes}
                           />
@@ -199,7 +199,7 @@ const ApplyStandard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Allow device reset
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.AllowReset ? faCheck : faTimes}
                           />
@@ -207,7 +207,7 @@ const ApplyStandard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Allow usage if failed
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.AllowFail ? faCheck : faTimes}
                           />

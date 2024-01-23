@@ -292,7 +292,7 @@ const OffboardingWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Revoke Sessions
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.RevokeSessions ? faCheck : faTimes}
                           />
@@ -300,7 +300,7 @@ const OffboardingWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Remove all mobile devices
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.RemoveMobile ? faCheck : faTimes}
                           />
@@ -308,7 +308,7 @@ const OffboardingWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Remove all mailbox rules
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.RemoveRules ? faCheck : faTimes}
                           />
@@ -316,7 +316,7 @@ const OffboardingWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Remove all mailbox permissions
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.removePermissions ? faCheck : faTimes}
                           />
@@ -324,7 +324,7 @@ const OffboardingWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Remove Licenses
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.RemoveLicenses ? faCheck : faTimes}
                           />
@@ -332,7 +332,7 @@ const OffboardingWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Convert to Shared
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.ConvertToShared ? faCheck : faTimes}
                           />
@@ -340,7 +340,7 @@ const OffboardingWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Disable Sign-in
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.DisableSignIn ? faCheck : faTimes}
                           />
@@ -348,7 +348,7 @@ const OffboardingWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Reset Password
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.ResetPass ? faCheck : faTimes}
                           />
@@ -356,7 +356,7 @@ const OffboardingWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Remove from all groups
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.RemoveGroups ? faCheck : faTimes}
                           />
@@ -364,7 +364,7 @@ const OffboardingWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Hide from Global Address List
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.HideFromGAL ? faCheck : faTimes}
                           />
@@ -372,7 +372,7 @@ const OffboardingWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Set Out of Office
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.OOO ? faCheck : faTimes}
                           />
@@ -380,7 +380,7 @@ const OffboardingWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Give another user access to the mailbox with automap
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.AccessAutomap ? faCheck : faTimes}
                           />
@@ -388,7 +388,7 @@ const OffboardingWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Give another user access to the mailbox without automap
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.AccessNoAutomap ? faCheck : faTimes}
                           />
@@ -396,7 +396,7 @@ const OffboardingWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Give another user access to OneDrive
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.OnedriveAccess ? faCheck : faTimes}
                           />
@@ -404,7 +404,7 @@ const OffboardingWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Forward all e-mail to another user
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.forward ? faCheck : faTimes}
                           />

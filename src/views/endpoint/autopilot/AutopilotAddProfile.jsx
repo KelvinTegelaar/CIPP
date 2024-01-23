@@ -179,7 +179,7 @@ const ApplyStandard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Display Name: {props.values.DisplayName}
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.DisplayName ? faCheck : faTimes}
                           />
@@ -187,7 +187,7 @@ const ApplyStandard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Naming template: {props.values.DeviceNameTemplate}
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.DeviceNameTemplate ? faCheck : faTimes}
                           />
@@ -195,7 +195,7 @@ const ApplyStandard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Self-Deploying
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.DeploymentMode ? faCheck : faTimes}
                           />
@@ -203,7 +203,7 @@ const ApplyStandard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Hide Terms
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.HideTerms ? faCheck : faTimes}
                           />
@@ -211,7 +211,7 @@ const ApplyStandard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Hide Privacy
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.HidePrivacy ? faCheck : faTimes}
                           />
@@ -219,7 +219,7 @@ const ApplyStandard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Convert to Autopilot device
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.CollectHash ? faCheck : faTimes}
                           />
@@ -227,7 +227,7 @@ const ApplyStandard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Standard Account
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.NotLocalAdmin ? faCheck : faTimes}
                           />
@@ -235,7 +235,7 @@ const ApplyStandard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Allow Whiteglove
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.allowWhiteglove ? faCheck : faTimes}
                           />
@@ -243,7 +243,7 @@ const ApplyStandard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Automatically setup keyboard
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.Autokeyboard ? faCheck : faTimes}
                           />
@@ -251,7 +251,7 @@ const ApplyStandard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Allow Whiteglove
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.HideChangeAccount ? faCheck : faTimes}
                           />

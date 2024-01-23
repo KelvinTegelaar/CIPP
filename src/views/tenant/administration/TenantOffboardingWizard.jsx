@@ -195,7 +195,7 @@ const TenantOffboardingWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Remove vendor applications
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.vendorApplications ? faCheck : faTimes}
                           />
@@ -204,7 +204,7 @@ const TenantOffboardingWizard = () => {
                           Remove all notification contacts originating from the CSP tenant
                           (technical,security,marketing notifications)
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.RemoveCSPnotificationContacts ? faCheck : faTimes}
                           />
@@ -212,7 +212,7 @@ const TenantOffboardingWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Remove all guest users originating from the CSP tenant
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.RemoveCSPGuestUsers ? faCheck : faTimes}
                           />
@@ -220,7 +220,7 @@ const TenantOffboardingWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Remove all multitenant applications originating from CSP tenant
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.RemoveMultitenantCSPApps ? faCheck : faTimes}
                           />
@@ -228,7 +228,7 @@ const TenantOffboardingWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Terminate all active GDAP relationships
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.TerminateGDAP ? faCheck : faTimes}
                           />
@@ -236,7 +236,7 @@ const TenantOffboardingWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Terminate contract relationship
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.TerminateContract ? faCheck : faTimes}
                           />

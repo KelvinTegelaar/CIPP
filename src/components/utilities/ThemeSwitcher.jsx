@@ -59,8 +59,8 @@ const ThemeSwitcher = () => {
               title={themeInfo(theme).description}
             >
               {theme === 'default' && 'D'}
-              {theme === 'cyberdrain' && <FontAwesomeIcon icon={'sun'} color="#f77f00" />}
-              {theme === 'impact' && <FontAwesomeIcon icon={'moon'} color="#f77f00" />}
+              {theme === 'cyberdrain' && <FontAwesomeIcon icon={'sun'} color="#0099cc" />}
+              {theme === 'impact' && <FontAwesomeIcon icon={'moon'} color="#0099cc" />}
             </CButton>
           ))}
         </CCol>

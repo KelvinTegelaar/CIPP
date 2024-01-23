@@ -281,7 +281,7 @@ const AddPolicy = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Display Name: {props.values.Displayname}
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.Displayname ? faCheck : faTimes}
                           />
@@ -289,7 +289,7 @@ const AddPolicy = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Description: {props.values.Description}
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.Description ? faCheck : faTimes}
                           />
@@ -297,7 +297,7 @@ const AddPolicy = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Type: {props.values.Type}
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.Type ? faCheck : faTimes}
                           />
@@ -305,7 +305,7 @@ const AddPolicy = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Assign to: {props.values.AssignTo}
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.AssignTo ? faCheck : faTimes}
                           />

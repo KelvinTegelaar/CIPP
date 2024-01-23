@@ -201,7 +201,7 @@ const AlertWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Alert on users without any form of MFA
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.MFAAlertUsers ? faCheck : faTimes}
                           />
@@ -209,7 +209,7 @@ const AlertWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Alert on admins without any form of MFA
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.MFAAdmins ? faCheck : faTimes}
                           />
@@ -217,7 +217,7 @@ const AlertWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Alert on new users added to any admin role
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.NewRole ? faCheck : faTimes}
                           />
@@ -225,7 +225,7 @@ const AlertWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Alert on changed admin Passwords
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.AdminPassword ? faCheck : faTimes}
                           />
@@ -233,7 +233,7 @@ const AlertWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Alert if Defender is not running
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.DefenderStatus ? faCheck : faTimes}
                           />
@@ -241,7 +241,7 @@ const AlertWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Alert on Defender Malware
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.DefenderMalware ? faCheck : faTimes}
                           />
@@ -249,7 +249,7 @@ const AlertWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Alert on 90% mailbox quota used
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.QuotaUsed ? faCheck : faTimes}
                           />
@@ -257,7 +257,7 @@ const AlertWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Alert on unused licenses
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.UnusedLicenses ? faCheck : faTimes}
                           />
@@ -265,7 +265,7 @@ const AlertWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Alert on overused licenses
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.OverusedLicenses ? faCheck : faTimes}
                           />
@@ -273,7 +273,7 @@ const AlertWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Alert on expiring application secrets
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.AppSecretExpiry ? faCheck : faTimes}
                           />
@@ -281,7 +281,7 @@ const AlertWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Alert on expiring APN certificates
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.ApnCertExpiry ? faCheck : faTimes}
                           />
@@ -289,7 +289,7 @@ const AlertWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Alert on expiring VPP tokens
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.VppTokenExpiry ? faCheck : faTimes}
                           />
@@ -297,7 +297,7 @@ const AlertWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Alert on expiring DEP tokens
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.DepTokenExpiry ? faCheck : faTimes}
                           />
@@ -305,7 +305,7 @@ const AlertWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Alert on no CA policies
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.NoCAConfig ? faCheck : faTimes}
                           />
@@ -313,7 +313,7 @@ const AlertWizard = () => {
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Alert on Security Defaults automatic enablement
                           <FontAwesomeIcon
-                            color="#f77f00"
+                            color="#0099cc"
                             size="lg"
                             icon={props.values.SecDefaultsUpsell ? faCheck : faTimes}
                           />
