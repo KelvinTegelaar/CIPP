@@ -181,7 +181,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
                 groupName: 'displayName',
               },
             },
-            modalMessage: 'Select the group to add the user to',
+            modalMessage: 'Select the group to remove the user from',
           },
           {
             label: 'Enable Online Archive',
