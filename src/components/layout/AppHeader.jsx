@@ -16,17 +16,8 @@ import {
 } from '@coreui/react'
 import { AppHeaderSearch } from 'src/components/header'
 import { TenantSelector } from '../utilities'
-import cyberdrainlogolight from 'src/assets/images/CIPP.png'
-import cyberdrainlogodark from 'src/assets/images/CIPP_Dark.png'
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faBars,
-  faCaretSquareLeft,
-  faCaretSquareRight,
-  faHamburger,
-  faStroopwafel,
-} from '@fortawesome/free-solid-svg-icons'
+import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { setCurrentTheme, setUserSettings, toggleSidebarShow } from 'src/store/features/app'
 import { useMediaPredicate } from 'react-media-hook'
 import { useGenericGetRequestQuery, useLoadAlertsDashQuery } from 'src/store/api/app'
