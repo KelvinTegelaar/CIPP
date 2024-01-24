@@ -14,6 +14,7 @@ import {
 } from 'src/components/forms'
 import countryList from 'src/data/countryList'
 import { useListUserQuery, useListUsersQuery } from 'src/store/api/users'
+import { useListGroupsQuery } from 'src/store/api/groups'
 import { useListDomainsQuery } from 'src/store/api/domains'
 import { useListLicensesQuery } from 'src/store/api/licenses'
 import { CippCodeBlock, ModalService } from 'src/components/utilities'
@@ -46,6 +47,12 @@ const EditUser = () => {
   } = useListUsersQuery({ tenantDomain })
 
   const {
+    data: groups = [],
+    isFetching: groupsIsFetching,
+    error: groupsError,
+  } = useListGroupsQuery({ tenantDomain })
+
+  const {
     data: domains = [],
     isFetching: domainsIsFetching,
     error: domainsError,
@@ -70,8 +77,10 @@ const EditUser = () => {
   }, [userId, tenantDomain, dispatch])
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const onSubmit = (values) => {
+    console.log(values.AddToGroups)
     const shippedValues = {
       AddedAliases: values.addedAliases,
+      AddToGroups: Array.isArray(values.AddToGroups) ? values.AddToGroups : [],
       BusinessPhone: values.businessPhones,
       RemoveAllLicenses: values.RemoveAllLicenses,
       City: values.city,
@@ -96,7 +105,7 @@ const EditUser = () => {
       mustchangepass: values.RequirePasswordChange,
       ...(values.licenses ? values.license : ''),
     }
-    //window.alert(JSON.stringify(shippedValues))
+    window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/EditUser', values: shippedValues })
   }
   const usageLocation = useSelector((state) => state.app.usageLocation)
@@ -370,6 +379,21 @@ const EditUser = () => {
                             </CCol>
                           </CRow>
                           <CRow className="mb-3">
+                            <CCol md={12}>
+                              <RFFSelectSearch
+                                multi={true}
+                                label="Add user to group"
+                                disabled={formDisabled}
+                                values={groups?.map((group) => ({
+                                  value: group.id,
+                                  name: `${group.displayName} - ${group.calculatedGroupType} `,
+                                  groupType: group.calculatedGroupType,
+                                }))}
+                                placeholder={!groupsIsFetching ? 'Select groups' : 'Loading...'}
+                                name="AddToGroups"
+                              />
+                              {groupsError && <span>Failed to load list of groups</span>}
+                            </CCol>
                             <CCol md={12}>
                               <RFFSelectSearch
                                 label="Copy group membership from other user"
