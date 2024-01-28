@@ -26,38 +26,25 @@ import Skeleton from 'react-loading-skeleton'
 import { domainsApi } from 'src/store/api/domains'
 
 const GeoIPLookup = () => {
-  let navigate = useNavigate()
   const tenant = useSelector((state) => state.app.currentTenant)
   let query = useQuery()
   const ip = query.get('ip')
-  const SearchNow = query.get('SearchNow')
-  const [visibleA, setVisibleA] = useState(true)
+  const [ipaddress, setIpaddress] = useState(ip)
   const handleSubmit = async (values) => {
-    setVisibleA(false)
-
-    const shippedValues = {
-      ip: values.domain,
-      SearchNow: true,
-      random: (Math.random() + 1).toString(36).substring(7),
-    }
-    var queryString = Object.keys(shippedValues)
-      .map((key) => key + '=' + shippedValues[key])
-      .join('&')
-
-    navigate(`?${queryString}`)
+    setIpaddress(values.domain)
   }
   const [execGraphRequest, graphrequest] = useLazyGenericGetRequestQuery()
 
   useEffect(() => {
-    if (ip) {
+    if (ipaddress) {
       execGraphRequest({
         path: 'api/ExecGeoIPLookup',
         params: {
-          IP: ip,
+          IP: ipaddress,
         },
       })
     }
-  }, [execGraphRequest, tenant.defaultDomainName, query, ip])
+  }, [execGraphRequest, tenant.defaultDomainName, query, ipaddress, ip])
   const [execAddIp, iprequest] = useLazyGenericGetRequestQuery()
 
   const addTrustedIP = (State) => {
@@ -118,14 +105,14 @@ const GeoIPLookup = () => {
           </CCardBody>
         </CCard>
       </CCol>
-      {ip && (
+      {ipaddress && (
         <CCol>
           <CippContentCard title="Current IP information" icon={faBook}>
             <CRow>
               <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">IP Address</p>
                 {graphrequest.isFetching && <Skeleton />}
-                {ip}
+                {ipaddress}
               </CCol>
               <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">AS</p>
@@ -150,9 +137,16 @@ const GeoIPLookup = () => {
                 {graphrequest.data?.country} - {graphrequest.data?.city}
               </CCol>
               <CCol sm={12} md={4} className="mb-3">
-                <p className="fw-lighter">Lat/Lon</p>
+                <p className="fw-lighter">Map Locat</p>
                 {graphrequest.isFetching && <Skeleton />}
-                {graphrequest.data?.lat} / {graphrequest.data?.lon}
+
+                <a
+                  target="_blank"
+                  rel="noreferrer"
+                  href={`https://www.google.com/maps/search/${graphrequest.data?.lat}+${graphrequest.data?.lon}`}
+                >
+                  {graphrequest.data?.lat} / {graphrequest.data?.lon}
+                </a>
               </CCol>
             </CRow>
             <CRow>
