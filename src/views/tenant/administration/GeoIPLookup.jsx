@@ -78,7 +78,7 @@ const GeoIPLookup = () => {
   return (
     <>
       <CRow>
-        <CCol xs={3} className="mb-3">
+        <CCol xs={6} className="mb-3">
           <CCard className="content-card">
             <CCardHeader>
               <CCardTitle>
