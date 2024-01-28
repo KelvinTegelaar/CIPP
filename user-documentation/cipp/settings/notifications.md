@@ -27,7 +27,7 @@ CIPP provides alert notifications for Tenants and CIPP actions, sent as one comb
 
 Enter a many email addresses as you need, separated by a comma.
 
-Email sends from the partner tenant Office 365 account used to generate CIPP application keys. The account must have a (shared) mailbox available. If you do not have a mailbox available on the account the log will state we could not send out the notifications.
+Email will be sent from the service account used for the SAM Wizard. The account must have a (shared) mailbox available. If you do not have a mailbox available on the account the log will state we could not send out the notifications.
 
 {% hint style="info" %}
 Sent Items Notification emails **do not save** to the CIPP account's _Sent Items_ folder.
@@ -43,6 +43,8 @@ Enter a webhook URL. Data is formatted based on the receiving server:
 | _slack.com_          | A separate markdown-formatted message for each alert. |
 | _discord.com_        | A basic HTML formatted table.                         |
 | All other services   | JSON array of data values.                            |
+
+
 
 {% hint style="info" %}
 Custom Webhook Formatting Need something different for your webhook? Can you write PowerShell? Submit a PR on this repo: [CIPP-API\Scheduler\_CIPPNotifications](https://github.com/KelvinTegelaar/CIPP-API/tree/dev/Scheduler\_CIPPNotifications).

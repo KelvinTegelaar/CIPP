@@ -19,3 +19,7 @@ you must now follow the rest of these steps to allow yourself to access CIPP, an
 * Add the `admin` role for your user.
 
 After logging in succesfully, you may move on to the next part of setup by clicking the button below.
+
+{% hint style="warning" %}
+If you choose to sponsor and use the CyberDrain hosted version, this step is done via the management portal.
+{% endhint %}

@@ -24,3 +24,7 @@ Hosted clients get set to Run From Package mode automatically.
 12. Click on "Add a worklow". Do not change any other settings.
 13. Click save at the top.
 14. Restart the Function App
+
+{% hint style="warning" %}
+If you choose to sponsor and use the CyberDrain hosted version, you can skip this step.
+{% endhint %}

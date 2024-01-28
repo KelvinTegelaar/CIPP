@@ -1,5 +1,9 @@
 # Configuring Automatic Updates
 
+{% hint style="warning" %}
+If you choose to sponsor and use the CyberDrain hosted version, you can skip this step.
+{% endhint %}
+
 If you would like CIPP to upgrade to the latest version fully automatic, you'll need to execute the following steps:
 
 * Browse to [https://github.com/apps/pull](https://github.com/apps/pull) and click "Install"
