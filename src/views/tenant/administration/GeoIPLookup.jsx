@@ -7,7 +7,6 @@ import {
   CCardHeader,
   CCardTitle,
   CCol,
-  CCollapse,
   CForm,
   CFormInput,
   CInputGroup,
@@ -19,11 +18,9 @@ import { Field, Form } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBook, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import { CippContentCard, CippPageList } from 'src/components/layout'
 import Skeleton from 'react-loading-skeleton'
-import { domainsApi } from 'src/store/api/domains'
 
 const GeoIPLookup = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -51,17 +48,37 @@ const GeoIPLookup = () => {
     execAddIp({
       path: 'api/ExecAddTrustedIP',
       params: {
-        IP: ip,
+        IP: ipaddress,
         TenantFilter: tenant.defaultDomainName,
         State: State,
       },
     })
   }
 
+  const columns = [
+    {
+      name: 'Tenant',
+      selector: (row) => row['PartitionKey'],
+      sortable: true,
+      exportSelector: 'PartitionKey',
+    },
+    {
+      name: 'IP',
+      selector: (row) => row['RowKey'],
+      sortable: true,
+      exportSelector: 'RowKey',
+    },
+    {
+      name: 'State',
+      selector: (row) => row.state,
+      sortable: true,
+      exportSelector: 'state',
+    },
+  ]
   return (
     <>
       <CRow>
-        <CCol xs={4} className="mb-3">
+        <CCol xs={3} className="mb-3">
           <CCard className="content-card">
             <CCardHeader>
               <CCardTitle>
@@ -106,8 +123,23 @@ const GeoIPLookup = () => {
             </CCardBody>
           </CCard>
         </CCol>
+      </CRow>
+      <CRow>
+        <CCol className="mb-3" xs={6}>
+          <CippPageList
+            capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
+            title="Whitelisted IPs"
+            tenantSelector={false}
+            showAllTenantSelector={false}
+            datatable={{
+              reportName: `${tenant?.defaultDomainName}-IP`,
+              path: '/api/ListIPWhitelist',
+              columns,
+            }}
+          />
+        </CCol>
         {ipaddress && (
-          <CCol>
+          <CCol xs={6} className="mb-3">
             <CippContentCard title="Current IP information" icon={faBook}>
               <CRow>
                 <CCol sm={12} md={4} className="mb-3">
@@ -173,6 +205,8 @@ const GeoIPLookup = () => {
                     Add as trusted IP for selected tenant
                     {iprequest.isFetching && <CSpinner size="sm" />}
                   </CButton>
+                </CCol>
+                <CCol className="mb-3">
                   <CButton
                     className="me-3"
                     color="primary"
