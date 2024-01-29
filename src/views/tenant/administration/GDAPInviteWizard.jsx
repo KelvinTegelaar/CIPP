@@ -1,13 +1,24 @@
-import React from 'react'
-import { CCol, CRow, CForm, CCallout, CSpinner, CButton } from '@coreui/react'
+import React, { useState } from 'react'
+import {
+  CCol,
+  CRow,
+  CForm,
+  CCallout,
+  CSpinner,
+  CFormInput,
+  CFormLabel,
+  CFormRange,
+  CProgress,
+} from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { CippWizard } from 'src/components/layout'
-import { WizardTableField } from 'src/components/tables'
+import { CippTable, WizardTableField } from 'src/components/tables'
 import { TitleButton } from 'src/components/buttons'
 import PropTypes from 'prop-types'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 
 const Error = ({ name }) => (
   <Field
@@ -31,14 +42,56 @@ Error.propTypes = {
 const requiredArray = (value) => (value && value.length !== 0 ? undefined : 'Required')
 
 const GDAPInviteWizard = () => {
+  const [inviteCount, setInviteCount] = useState(1)
+  const [loopRunning, setLoopRunning] = React.useState(false)
+  const [massResults, setMassResults] = React.useState([])
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const [genericGetRequest, getResults] = useLazyGenericGetRequestQuery()
 
   const handleSubmit = async (values) => {
-    genericPostRequest({ path: '/api/ExecGDAPInvite', values: values })
+    const resultsarr = []
+    setLoopRunning(true)
+    for (var x = 0; x < inviteCount; x++) {
+      const results = await genericPostRequest({ path: '/api/ExecGDAPInvite', values: values })
+      resultsarr.push(results.data)
+      setMassResults(resultsarr)
+    }
+    setLoopRunning(false)
   }
 
   const formValues = {}
+
+  const inviteColumns = [
+    {
+      name: 'Id',
+      selector: (row) => row?.Invite?.RowKey,
+      exportSelector: 'Invite/RowKey',
+      sortable: true,
+      omit: true,
+      cell: cellGenericFormatter(),
+    },
+    {
+      name: 'Invite Link',
+      sortable: true,
+      selector: (row) => row?.Invite?.InviteUrl,
+      exportSelector: 'Invite/InviteUrl',
+      cell: cellGenericFormatter(),
+    },
+    {
+      name: 'Onboarding Link',
+      sortable: true,
+      selector: (row) => row?.Invite?.OnboardingUrl,
+      exportSelector: 'Invite/OnboardingUrl',
+      cell: cellGenericFormatter(),
+    },
+    {
+      name: 'Message',
+      sortable: true,
+      selector: (row) => row?.Message,
+      exportSelector: 'Message',
+      cell: cellGenericFormatter(),
+    },
+  ]
 
   return (
     <CippWizard
@@ -67,6 +120,7 @@ const GDAPInviteWizard = () => {
           <div className="mb-2">
             <TitleButton href="/tenant/administration/gdap-role-wizard" title="Map GDAP Roles" />
           </div>
+
           <Field name="gdapRoles" validate={requiredArray}>
             {(props) => (
               <WizardTableField
@@ -94,13 +148,40 @@ const GDAPInviteWizard = () => {
         </CForm>
         <hr className="my-4" />
       </CippWizard.Page>
-      <CippWizard.Page title="Review and Confirm" description="Confirm the settings to apply">
+      <CippWizard.Page title="Invite Options" description="Select options for the invite">
         <center>
           <h3 className="text-primary">Step 2</h3>
+          <h5 className="card-title mb-4">Invite Options</h5>
+        </center>
+        <hr className="my-4" />
+        <CFormLabel>Number of Invites</CFormLabel>
+        <CRow className="mb-3">
+          <CCol md={1} xs={6}>
+            <CFormInput
+              id="invite-count"
+              value={inviteCount}
+              onChange={(e) => setInviteCount(e.target.value)}
+            />
+          </CCol>
+          <CCol>
+            <CFormRange
+              className="mt-2"
+              min={1}
+              max={100}
+              defaultValue={1}
+              value={inviteCount}
+              onChange={(e) => setInviteCount(e.target.value)}
+            />
+          </CCol>
+        </CRow>
+      </CippWizard.Page>
+      <CippWizard.Page title="Review and Confirm" description="Confirm the settings to apply">
+        <center>
+          <h3 className="text-primary">Step 3</h3>
           <h5 className="card-title mb-4">Confirm and apply</h5>
         </center>
         <hr className="my-4" />
-        {!postResults.isSuccess && (
+        {massResults.length < 1 && (
           <FormSpy>
             {/* eslint-disable react/prop-types */}
             {(props) => {
@@ -135,17 +216,31 @@ const GDAPInviteWizard = () => {
             }}
           </FormSpy>
         )}
-        {postResults.isFetching && (
-          <CCallout color="info">
-            <CSpinner>Loading</CSpinner>
-          </CCallout>
-        )}
-        {postResults.isSuccess && (
-          <CCallout color="success">
-            {postResults.data.Results.map((message, idx) => {
-              return <li key={idx}>{message}</li>
-            })}
-          </CCallout>
+        {(massResults.length >= 1 || loopRunning) && (
+          <>
+            <div style={{ width: '100%' }} className="mb-3">
+              {loopRunning ? (
+                <span>
+                  Generating Invites <CSpinner className="ms-2" size="sm" />
+                </span>
+              ) : (
+                <span>
+                  Generating Invites
+                  <FontAwesomeIcon className="ms-2" icon="check-circle" />
+                </span>
+              )}
+              <CProgress className="mt-2" value={(massResults.length / inviteCount) * 100}>
+                {massResults.length}/{inviteCount}
+              </CProgress>
+            </div>
+
+            <CippTable
+              reportName="gdap-invites"
+              data={massResults}
+              columns={inviteColumns}
+              disablePDFExport={true}
+            />
+          </>
         )}
         <hr className="my-4" />
       </CippWizard.Page>
