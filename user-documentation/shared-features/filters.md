@@ -31,7 +31,7 @@ To find all users with the name "Megan", type `Megan.`
 
 #### Syntax:
 
-To utilize advanced filtering, start with the `Complex:` prefix. The general structure is:
+To utilize advanced filtering, start with the `Complex:` prefix (case sensitive). The general structure is:
 
 ```vbnet
 Complex: [PROPERTY] [OPERATOR] [VALUE]; ...
