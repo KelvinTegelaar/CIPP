@@ -8,7 +8,7 @@ description: How to install CIPP
 If you choose to sponsor and use the CyberDrain hosted version, you can skip this step.
 {% endhint %}
 
-After you have completed the prerequisites in the [Prerequisites](https://github.com/KelvinTegelaar/CIPP/blob/website/docs/user/gettingstarted/prerequisites/README.md) section, select the button below to run the automated setup. This does most of the work for you. If you don't want to use the automated installer, use the manual installation instructions.
+After you have completed the prerequisites in the [Prerequisites](https://github.com/KelvinTegelaar/CIPP/blob/website/docs/user/gettingstarted/prerequisites/README.md) section, select the button below to run the automated setup.&#x20;
 
 {% hint style="warning" %}
 You **must replace** the preset "Github Repository" and "Github API Repository" fields with the URL's of **your own Github forks** of the CIPP and CIPP-API repositories.
