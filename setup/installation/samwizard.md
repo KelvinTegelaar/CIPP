@@ -56,3 +56,5 @@ To setup the connection to your tenants you'll need to run the Sam Wizard. The S
 When executing the Sam Wizard with "I'd like CIPP to create a SAM Application for me" you'll be presented with a button to start the Wizard. Do not navigate away from this page and execute all **5 steps** that this page will prompt you for.
 
 After completing the wizard 5 steps, you must [clear the token cache](https://cipp.app/docs/general/troubleshooting/#clear-token-cache).
+
+{% embed url="https://app.guidde.com/share/playbooks/cHS8iUw2JCAGwiJxSnp7sp?origin=IEPB08VSavefFaCa9OSp3Y87aGu1" %}
