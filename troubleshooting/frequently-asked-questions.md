@@ -51,7 +51,7 @@ Check the MFA Troubleshooting section in the Troubleshooting page for more infor
 
 <summary>My usernames or sites are GUIDs or blank?</summary>
 
-Please see the standard "Enable Usernames instead of pseudo anonymised names in reports" [here](https://cipp.app/docs/user/usingcipp/tenantadministration/standards/#meet-the-standards)
+Please see the standard "Enable Usernames instead of pseudo anonymised names in reports" [here](https://docs.cipp.app/user-documentation/tenant/standards/edit-standards#meet-the-standards)
 
 </details>
 
