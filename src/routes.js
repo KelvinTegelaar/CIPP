@@ -23,6 +23,7 @@ const DeployGroupTemplates = React.lazy(() =>
 const GeoIPLookup = React.lazy(() => import('src/views/tenant/administration/GeoIPLookup'))
 
 const TenantLookup = React.lazy(() => import('src/views/tenant/administration/TenantLookup'))
+
 const GroupTemplates = React.lazy(() => import('src/views/identity/administration/GroupTemplates'))
 
 const EditGroup = React.lazy(() => import('src/views/identity/administration/EditGroup'))
@@ -38,12 +39,15 @@ const Page500 = React.lazy(() => import('src/views/pages/page500/Page500'))
 const MFAReport = React.lazy(() => import('src/views/identity/reports/MFAReport'))
 const Tenants = React.lazy(() => import('src/views/tenant/administration/Tenants'))
 const AlertWizard = React.lazy(() => import('src/views/tenant/administration/AlertWizard'))
+const AlertRules = React.lazy(() => import('src/views/tenant/administration/AlertRules'))
+
 const AlertsQueue = React.lazy(() => import('src/views/tenant/administration/ListAlertsQueue'))
 const GraphExplorer = React.lazy(() => import('src/views/tenant/administration/GraphExplorer'))
 
 const Domains = React.lazy(() => import('src/views/tenant/administration/Domains'))
 const EditTenant = React.lazy(() => import('src/views/tenant/administration/EditTenant'))
 const ConditionalAccess = React.lazy(() => import('src/views/tenant/conditional/ConditionalAccess'))
+const DeployVacationCA = React.lazy(() => import('src/views/tenant/conditional/DeployVacation'))
 const NamedLocations = React.lazy(() => import('src/views/tenant/conditional/NamedLocations'))
 
 const ListConditionalTemplates = React.lazy(() =>
@@ -225,6 +229,13 @@ const ServiceHealth = React.lazy(() => import('src/views/tenant/administration/S
 const EnterpriseApplications = React.lazy(() =>
   import('src/views/tenant/administration/ListEnterpriseApps'),
 )
+const AppConsentRequests = React.lazy(() =>
+  import('src/views/tenant/administration/ListAppConsentRequests'),
+)
+const MailboxRestoreWizard = React.lazy(() =>
+  import('src/views/email-exchange/tools/MailboxRestoreWizard'),
+)
+const MailboxRestores = React.lazy(() => import('src/views/email-exchange/tools/MailboxRestores'))
 
 const routes = [
   // { path: '/', exact: true, name: 'Home' },
@@ -303,6 +314,8 @@ const routes = [
   { path: '/tenant/administration/tenants/edit', name: 'Edit Tenant', component: EditTenant },
   { path: '/tenant/administration/domains', name: 'Domains', component: Domains },
   { path: '/tenant/administration/alertswizard', name: 'Alerts Wizard', component: AlertWizard },
+  { path: '/tenant/administration/alertrules', name: 'Alerts Wizard', component: AlertRules },
+
   { path: '/tenant/administration/alertsqueue', name: 'Alerts Queue', component: AlertsQueue },
   {
     path: '/tenant/administration/graph-explorer',
@@ -320,9 +333,19 @@ const routes = [
     component: EnterpriseApplications,
   },
   {
+    path: '/tenant/administration/app-consent-requests',
+    name: 'App Consent Requests',
+    component: AppConsentRequests,
+  },
+  {
     path: '/tenant/conditional/list-policies',
     name: 'Conditional Access',
     component: ConditionalAccess,
+  },
+  {
+    path: '/tenant/conditional/deploy-vacation',
+    name: 'Deploy Vacation Mode',
+    component: DeployVacationCA,
   },
   {
     path: '/tenant/conditional/list-named-locations',
@@ -543,6 +566,16 @@ const routes = [
     path: '/email/spamfilter/list-templates',
     name: 'List Spamfilter Templates',
     component: SpamFilterTemplate,
+  },
+  {
+    path: '/email/tools/mailbox-restore-wizard',
+    name: 'Mailbox Restore Wizard',
+    component: MailboxRestoreWizard,
+  },
+  {
+    path: '/email/tools/mailbox-restores',
+    name: 'Mailbox Restores',
+    component: MailboxRestores,
   },
   {
     path: '/email/spamfilter/add-template',
