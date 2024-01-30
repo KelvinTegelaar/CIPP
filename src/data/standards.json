@@ -37,9 +37,32 @@
   {
     "name": "standards.AuditLog",
     "cat": "Global Standards",
-    "helpText": "Enables the Unified Audit Log for tracking and auditing activities; also runs Enable-OrganizationCustomization if necessary.",
+    "helpText": "Enables the Unified Audit Log for tracking and auditing activities. Also runs Enable-OrganizationCustomization if necessary.",
     "addedComponent": [],
     "label": "Enable the Unified Audit Log",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
+    "name": "standards.PhishProtection",
+    "cat": "Global Standards",
+    "helpText": "Adds branding to the logon page that only appears if the url is not login.microsoftonline.com. This potentially prevents AITM attacks via EvilNginx. This will also automatically generate alerts if a clone of your login page has been found when set to Remediate.",
+    "addedComponent": [],
+    "label": "Enable Phishing Protection system via branding CSS",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "disabledFeatures": {
+      "report": true,
+      "warn": true,
+      "remediate": false
+    }
+  },
+  {
+    "name": "standards.EnableCustomerLockbox",
+    "cat": "Global Standards",
+    "helpText": "Enables Customer Lockbox that offers an approval process for Microsoft support to access organization data",
+    "addedComponent": [],
+    "label": "Enable Customer Lockbox",
     "impact": "Low Impact",
     "impactColour": "info"
   },
@@ -55,7 +78,7 @@
   {
     "name": "standards.DisableGuestDirectory",
     "cat": "Global Standards",
-    "helpText": "Disables Guest access to enumerate directory objects. This prevents guest users from see other users or guests in the directory.",
+    "helpText": "Disables Guest access to enumerate directory objects. This prevents guest users from seeing other users or guests in the directory.",
     "addedComponent": [],
     "label": "Restrict guest user access to directory objects",
     "impact": "Low Impact",
@@ -64,7 +87,7 @@
   {
     "name": "standards.DisableBasicAuthSMTP",
     "cat": "Global Standards",
-    "helpText": "Disables SMTP AUTH for the organization. This is the default for new tenants. Sets the entire tenant to no longer allow SMTP AUTH, and as such has no exclusions.",
+    "helpText": "Disables SMTP AUTH for the organization and all users. This is the default for new tenants. ",
     "addedComponent": [],
     "label": "Disable SMTP Basic Authentication",
     "impact": "Medium Impact",
@@ -84,7 +107,7 @@
     "cat": "Entra (AAD) Standards",
     "helpText": "Enables the tenant to use LAPS. You must still create a policy for LAPS to be active on all devices. Use the template standards to deploy this by default.",
     "addedComponent": [],
-    "label": "Enable LAPs on the tenant",
+    "label": "Enable LAPS on the tenant",
     "impact": "Low Impact",
     "impactColour": "info"
   },
@@ -102,7 +125,7 @@
     "name": "standards.allowOTPTokens",
     "helpText": "Allows you to use MS authenticator OTP token generator",
     "addedComponent": [],
-    "label": "Enable OTP via Authenticator.",
+    "label": "Enable OTP via Authenticator",
     "impact": "Low Impact",
     "impactColour": "info"
   },
@@ -221,7 +244,7 @@
     "name": "standards.NudgeMFA.enable",
     "helpText": "Enables registration campaign for the tenant",
     "addedComponent": [],
-    "label": "Request to setup Authenticator if not setup yet.",
+    "label": "Request to setup Authenticator if not setup yet",
     "impact": "Low Impact",
     "impactColour": "info"
   },
@@ -230,7 +253,7 @@
     "name": "standards.NudgeMFA.disable",
     "helpText": "Disables registration campaign for the tenant",
     "addedComponent": [],
-    "label": "Disables the request to setup Authenticator if setup.",
+    "label": "Disables the request to setup Authenticator if setup",
     "impact": "Low Impact",
     "impactColour": "info"
   },
@@ -290,16 +313,16 @@
         "label": "Allowed application IDs, comma separated"
       }
     ],
-    "label": "Require admin consent for applications (Prevent OAuth phishing.)",
-    "impact": "Medium impact",
+    "label": "Require admin consent for applications (Prevent OAuth phishing)",
+    "impact": "Medium Impact",
     "impactColour": "warning"
   },
   {
     "cat": "Entra (AAD) Standards",
     "name": "standards.OauthConsentLowSec",
     "helpText": "Sets the default oauth consent level so users can consent to applications that have low risks.",
-    "label": "Allow users to consent to applications with low security risk (Prevent OAuth phishing. Lower impact, less secure.)",
-    "impact": "Medium impact",
+    "label": "Allow users to consent to applications with low security risk (Prevent OAuth phishing. Lower impact, less secure)",
+    "impact": "Medium Impact",
     "impactColour": "warning"
   },
   {
@@ -364,7 +387,7 @@
   {
     "name": "standards.OutBoundSpamAlert",
     "cat": "Exchange Standards",
-    "helpText": "Set the Outbound Spam Alert e-mail address.",
+    "helpText": "Set the Outbound Spam Alert e-mail address",
     "addedComponent": [
       {
         "type": "input",
@@ -406,7 +429,23 @@
         ]
       }
     ],
-    "label": "Enable or disable 'external' warning in Outlook.",
+    "label": "Enable or disable 'external' warning in Outlook",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
+    "name": "standards.EnableMailTips",
+    "cat": "Exchange Standards",
+    "helpText": "Enables all MailTips in Outlook. MailTips are the notifications Outlook and Outlook on the web shows when an email you create, meets some requirements",
+    "addedComponent": [
+      {
+        "type": "number",
+        "name": "standards.EnableMailTips.MailTipsLargeAudienceThreshold",
+        "label": "Number of recipients to trigger the large audience MailTip (Default is 25)",
+        "placeholder": "Enter a profile name"
+      }
+    ],
+    "label": "Enable all MailTips",
     "impact": "Low Impact",
     "impactColour": "info"
   },
@@ -438,19 +477,28 @@
     "impactColour": "info"
   },
   {
+    "name": "standards.EnableMailboxAuditing",
+    "cat": "Exchange Standards",
+    "helpText": "Enables Mailbox auditing for all mailboxes and on tenant level. By default Microsoft does not enable mailbox auditing for Resource Mailboxes, Public Folder Mailboxes and DiscoverySearch Mailboxes. Unified Audit Log needs to be enabled for this standard to function.",
+    "addedComponent": [],
+    "label": "Enable Mailbox auditing",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.SendReceiveLimitTenant",
     "cat": "Exchange Standards",
-    "helpText": "Sets the Send and Receive limits for new users. Valid values are 1KB to 150MB. Invalid values will be set to EXO standard of 35MB,36MB",
+    "helpText": "Sets the Send and Receive limits for new users. Valid values are 1MB to 150MB",
     "addedComponent": [
       {
         "type": "number",
         "name": "standards.SendReceiveLimitTenant.SendLimit",
-        "label": "Send limit in MB"
+        "label": "Send limit in MB (Default is 35)"
       },
       {
         "type": "number",
         "name": "standards.SendReceiveLimitTenant.ReceiveLimit",
-        "label": "Receive Limit in MB"
+        "label": "Receive Limit in MB (Default is 36)"
       }
     ],
     "label": "Set send/receive size limits",
@@ -504,6 +552,24 @@
       }
     ],
     "label": "Set Sharing Level for Default calendar",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
+    "name": "standards.DisableExternalCalendarSharing",
+    "cat": "Exchange Standards",
+    "helpText": "Disables the ability for users to share their calendar with external users. Only for the default policy, so exclusions can be made if needed.",
+    "addedComponent": [],
+    "label": "Disable external calendar sharing",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
+    "name": "standards.DisableAdditionalStorageProviders",
+    "cat": "Exchange Standards",
+    "helpText": "Disables the ability for users to open files in Outlook on the Web, from other providers such as Box, Dropbox, Facebook, Google Drive, OneDrive Personal, etc.",
+    "addedComponent": [],
+    "label": "Disable additional storage providers in OWA",
     "impact": "Low Impact",
     "impactColour": "info"
   },
@@ -616,7 +682,7 @@
   {
     "name": "standards.DisableAddShortcutsToOneDrive",
     "cat": "SharePoint Standards",
-    "helpText": "When the feature is disabled the option Add shortcut to My files will be removed; any folders that have already been added will remain on the user's computer.",
+    "helpText": "When the feature is disabled the option Add shortcut to OneDrive will be removed. Any folders that have already been added will remain on the user's computer.",
     "disabledFeatures": {
       "report": true,
       "warn": true,

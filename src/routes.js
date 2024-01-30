@@ -47,6 +47,7 @@ const GraphExplorer = React.lazy(() => import('src/views/tenant/administration/G
 const Domains = React.lazy(() => import('src/views/tenant/administration/Domains'))
 const EditTenant = React.lazy(() => import('src/views/tenant/administration/EditTenant'))
 const ConditionalAccess = React.lazy(() => import('src/views/tenant/conditional/ConditionalAccess'))
+const DeployVacationCA = React.lazy(() => import('src/views/tenant/conditional/DeployVacation'))
 const NamedLocations = React.lazy(() => import('src/views/tenant/conditional/NamedLocations'))
 
 const ListConditionalTemplates = React.lazy(() =>
@@ -340,6 +341,11 @@ const routes = [
     path: '/tenant/conditional/list-policies',
     name: 'Conditional Access',
     component: ConditionalAccess,
+  },
+  {
+    path: '/tenant/conditional/deploy-vacation',
+    name: 'Deploy Vacation Mode',
+    component: DeployVacationCA,
   },
   {
     path: '/tenant/conditional/list-named-locations',

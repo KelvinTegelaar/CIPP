@@ -40,6 +40,7 @@ import { CellTip, cellGenericFormatter } from 'src/components/tables/CellGeneric
 import { useExecBestPracticeAnalyserMutation } from 'src/store/api/reports'
 import { ModalService } from 'src/components/utilities'
 import { cellTableFormatter } from 'src/components/tables/CellTable'
+import { cellMathFormatter } from 'src/components/tables/CellMathFormatter'
 
 const RefreshAction = ({ singleTenant = false, refreshFunction = null }) => {
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
@@ -186,6 +187,9 @@ const BestPracticeAnalyser = () => {
             break
           case 'table':
             cellSelector = cellTableFormatter(col.value)
+            break
+          case 'math':
+            cellSelector = cellMathFormatter({ col })
             break
           default:
             cellSelector = cellGenericFormatter()

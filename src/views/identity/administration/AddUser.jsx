@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   CButton,
   CCard,
@@ -36,6 +36,7 @@ import { required } from 'src/validators'
 import useQuery from 'src/hooks/useQuery'
 import Select from 'react-select'
 import { useNavigate } from 'react-router-dom'
+import { OnChange } from 'react-final-form-listeners'
 
 const AddUser = () => {
   let navigate = useNavigate()
@@ -103,11 +104,7 @@ const AddUser = () => {
     genericPostRequest({ path: '/api/AddUser', values: shippedValues })
   }
   const usagelocation = useSelector((state) => state.app.usageLocation)
-  const initialState = {
-    Autopassword: false,
-    usageLocation: usagelocation,
-    ...allQueryObj,
-  }
+
   const copyUserVariables = (t) => {
     for (const [key, value] of Object.entries(t.value)) {
       query.delete(key)
@@ -117,6 +114,20 @@ const AddUser = () => {
       navigate(`?${query.toString()}`)
     }
   }
+
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [displayName, setDisplayName] = useState('')
+  const initialState = {
+    Autopassword: false,
+    usageLocation: usagelocation,
+    ...allQueryObj,
+  }
+  // Effect to update display name when first or last name changes
+  useEffect(() => {
+    setDisplayName(`${firstName} ${lastName}`)
+  }, [firstName, lastName, displayName])
+
   return (
     <CippPage title="Add User">
       {postResults.isSuccess && (
@@ -144,15 +155,25 @@ const AddUser = () => {
               <Form
                 initialValues={{ ...initialState }}
                 onSubmit={onSubmit}
-                render={({ handleSubmit, submitting, values }) => {
+                render={({ form, handleSubmit, submitting, values }) => {
                   return (
                     <CForm onSubmit={handleSubmit}>
                       <CRow>
                         <CCol md={6}>
-                          <RFFCFormInput type="text" name="givenName" label="First Name" />
+                          <RFFCFormInput
+                            type="text"
+                            name="givenName"
+                            label="First Name"
+                            onChange={(e) => setFirstName(e.target.value)}
+                          />
                         </CCol>
                         <CCol md={6}>
-                          <RFFCFormInput type="text" name="surname" label="Last Name" />
+                          <RFFCFormInput
+                            type="text"
+                            name="surname"
+                            label="Last Name"
+                            onChange={(e) => setLastName(e.target.value)}
+                          />
                         </CCol>
                       </CRow>
                       <CRow>
@@ -163,6 +184,16 @@ const AddUser = () => {
                             label="Display Name"
                             validate={required}
                           />
+                          <OnChange name="givenName">
+                            {(value) => {
+                              form.change('displayName', `${value} ${lastName}`)
+                            }}
+                          </OnChange>
+                          <OnChange name="surname">
+                            {(value) => {
+                              form.change('displayName', `${firstName} ${value} `)
+                            }}
+                          </OnChange>
                         </CCol>
                       </CRow>
                       <CRow>
