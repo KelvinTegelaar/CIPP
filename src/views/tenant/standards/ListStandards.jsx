@@ -5,7 +5,7 @@ import { CippContentCard, CippPage } from 'src/components/layout'
 import { useSelector } from 'react-redux'
 import { ModalService } from 'src/components/utilities'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { CippTable } from 'src/components/tables'
+import { CippTable, cellBooleanFormatter } from 'src/components/tables'
 import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
 
 const ListAppliedStandards = () => {
@@ -61,6 +61,18 @@ const ListAppliedStandards = () => {
       sortable: true,
       exportSelector: 'displayName',
       maxWidth: '280px',
+    },
+    {
+      name: 'Excluded from all tenants',
+      selector: (row) => row.standards.OverrideAllTenants?.remediate,
+      sortable: true,
+      cell: cellBooleanFormatter({
+        warning: false,
+        reverse: false,
+        colourless: true,
+        noDataIsFalse: true,
+      }),
+      exportSelector: 'row.standards.OverrideAllTenants.remediate',
     },
     {
       name: 'Actions',
