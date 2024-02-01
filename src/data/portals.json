@@ -38,7 +38,7 @@
   {
     "label": "Azure Portal",
     "name": "Azure_Portal",
-    "url": "https://portal.azure.com/defaultDomainName",
+    "url": "https://portal.azure.com",
     "variable": "defaultDomainName",
     "target": "_blank",
     "external": true,
