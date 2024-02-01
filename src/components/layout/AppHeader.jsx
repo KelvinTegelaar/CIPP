@@ -16,11 +16,8 @@ import {
 } from '@coreui/react'
 import { AppHeaderSearch } from 'src/components/header'
 import { TenantSelector } from '../utilities'
-import cyberdrainlogolight from 'src/assets/images/CIPP.png'
-import cyberdrainlogodark from 'src/assets/images/CIPP_Dark.png'
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCaretSquareLeft, faCaretSquareRight } from '@fortawesome/free-solid-svg-icons'
+import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { setCurrentTheme, setUserSettings, toggleSidebarShow } from 'src/store/features/app'
 import { useMediaPredicate } from 'react-media-hook'
 import { useGenericGetRequestQuery, useLoadAlertsDashQuery } from 'src/store/api/app'
@@ -75,29 +72,15 @@ const AppHeader = () => {
   return (
     <>
       <CHeader position="sticky">
-        <CSidebarBrand className="me-auto pt-xs-2 p-md-2" to="/">
-          <CImage
-            className="sidebar-brand-full me-2"
-            src={
-              currentTheme === 'cyberdrain' || preferredTheme === 'cyberdrain'
-                ? cyberdrainlogodark
-                : cyberdrainlogolight
-            }
-            height={80}
-          />
-          <CHeaderNav className="me-2 p-2">
-            <CHeaderToggler
-              className="me-2"
-              onClick={() => dispatch(toggleSidebarShow({ sidebarShow }))}
-            >
-              <FontAwesomeIcon
-                icon={sidebarShow ? faCaretSquareLeft : faCaretSquareRight}
-                size="lg"
-                className="me-2"
-              />
-            </CHeaderToggler>
-          </CHeaderNav>
-        </CSidebarBrand>
+        <CHeaderNav>
+          <CHeaderToggler
+            className="m-2"
+            onClick={() => dispatch(toggleSidebarShow({ sidebarShow }))}
+            style={{ marginInlineStart: '-50x' }}
+          >
+            <FontAwesomeIcon icon={faBars} size="lg" className="me-2" />
+          </CHeaderToggler>
+        </CHeaderNav>
         <CHeaderNav className="p-md-2 flex-grow-1">
           <TenantSelector NavSelector={true} />
           <CNavItem>
@@ -140,24 +123,17 @@ const AppHeader = () => {
           </CNavItem>
         </CHeaderNav>
       </CHeader>
-
-      {dashboard &&
-        dashboard.length >= 1 &&
-        dashboard.map((item, index) => (
-          <div
-            key={index}
-            className="mb-3"
-            style={{
-              zIndex: 10000,
-              paddingLeft: '20rem',
-              paddingRight: '3rem',
-            }}
-          >
-            <CAlert key={index} color={item.type} dismissible>
-              {item.Alert} <CAlertLink href={item.link}>Link</CAlertLink>
-            </CAlert>
-          </div>
-        ))}
+      <div className="m-2">
+        {dashboard &&
+          dashboard.length >= 1 &&
+          dashboard.map((item, index) => (
+            <div className="m-1" key={index}>
+              <CAlert className="m-3" key={index} color={item.type} dismissible>
+                {item.Alert} <CAlertLink href={item.link}>Link</CAlertLink>
+              </CAlert>
+            </div>
+          ))}
+      </div>
     </>
   )
 }
