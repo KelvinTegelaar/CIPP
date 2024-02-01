@@ -36,9 +36,18 @@
     "icon": "comments"
   },
   {
-    "label": "Azure Portal",
-    "name": "Azure_Portal",
+    "label": "Azure Lighthouse",
+    "name": "Azure_Lighthouse",
     "url": "https://portal.azure.com/#settings/directory",
+    "variable": "defaultDomainName",
+    "target": "_blank",
+    "external": true,
+    "icon": "server"
+  },
+  {
+    "label": "Azure Portal (Global Admin)",
+    "name": "Azure_Portal",
+    "url": "https://portal.azure.com/defaultDomainName",
     "variable": "defaultDomainName",
     "target": "_blank",
     "external": true,
