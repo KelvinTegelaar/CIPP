@@ -25,7 +25,9 @@ import PropTypes from 'prop-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faCheck,
+  faClipboard,
   faColumns,
+  faCopy,
   faFileCsv,
   faFilePdf,
   faSearch,
@@ -38,6 +40,7 @@ import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 's
 import { ConfirmModal } from '../utilities/SharedModal'
 import { debounce } from 'lodash-es'
 import { useSearchParams } from 'react-router-dom'
+import CopyToClipboard from 'react-copy-to-clipboard'
 
 const FilterComponent = ({ filterText, onFilter, onClear, filterlist, onFilterPreset }) => (
   <>
@@ -748,6 +751,12 @@ export default function CippTable({
     filteredItems,
   ])
   const tablePageSize = useSelector((state) => state.app.tablePageSize)
+  const [codeCopied, setCodeCopied] = useState(false)
+
+  const onCodeCopied = () => {
+    setCodeCopied(true)
+    setTimeout(() => setCodeCopied(false), 2000)
+  }
 
   return (
     <div className="ms-n3 me-n3 cipp-tablewrapper">
@@ -777,6 +786,20 @@ export default function CippTable({
                             {message.data?.Metadata?.Heading}
                           </CAccordionHeader>
                           <CAccordionBody>
+                            <CopyToClipboard text={results} onCopy={() => onCodeCopied()}>
+                              <CButton
+                                color={codeCopied ? 'success' : 'info'}
+                                className="cipp-code-copy-button"
+                                size="sm"
+                                variant="ghost"
+                              >
+                                {codeCopied ? (
+                                  <FontAwesomeIcon icon={faClipboard} />
+                                ) : (
+                                  <FontAwesomeIcon icon={faCopy} />
+                                )}
+                              </CButton>
+                            </CopyToClipboard>
                             {results.map((line, i) => {
                               return <li key={i}>{line}</li>
                             })}
@@ -790,7 +813,27 @@ export default function CippTable({
                   massResults.map((message, idx) => {
                     const results = message.data?.Results
                     const displayResults = Array.isArray(results) ? results.join(', ') : results
-                    return <li key={`message-${idx}`}>{displayResults}</li>
+                    return (
+                      <>
+                        <li key={`message-${idx}`}>
+                          {displayResults}
+                          <CopyToClipboard text={displayResults} onCopy={() => onCodeCopied()}>
+                            <CButton
+                              color={codeCopied ? 'success' : 'info'}
+                              className="cipp-code-copy-button"
+                              size="sm"
+                              variant="ghost"
+                            >
+                              {codeCopied ? (
+                                <FontAwesomeIcon icon={faClipboard} />
+                              ) : (
+                                <FontAwesomeIcon icon={faCopy} />
+                              )}
+                            </CButton>
+                          </CopyToClipboard>
+                        </li>
+                      </>
+                    )
                   })}
                 {loopRunning && (
                   <li>
