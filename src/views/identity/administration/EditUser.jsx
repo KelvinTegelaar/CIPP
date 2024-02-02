@@ -81,6 +81,7 @@ const EditUser = () => {
     const shippedValues = {
       AddedAliases: values.addedAliases,
       AddToGroups: Array.isArray(values.AddToGroups) ? values.AddToGroups : [],
+      RemoveFromGroups: Array.isArray(values.RemoveFromGroups) ? values.RemoveFromGroups : [],
       BusinessPhone: values.businessPhones,
       RemoveAllLicenses: values.RemoveAllLicenses,
       City: values.city,
@@ -89,6 +90,7 @@ const EditUser = () => {
       Country: values.country,
       Department: values.department,
       DisplayName: values.displayName,
+      userPrincipalName: values.userPrincipalName,
       Domain: values.primDomain,
       firstName: values.givenName,
       Jobtitle: values.jobTitle,
@@ -106,7 +108,7 @@ const EditUser = () => {
       addedAttributes: values.addedAttributes,
       ...(values.licenses ? values.license : ''),
     }
-    window.alert(JSON.stringify(shippedValues))
+    // window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/EditUser', values: shippedValues })
   }
   const usageLocation = useSelector((state) => state.app.usageLocation)
@@ -429,12 +431,33 @@ const EditUser = () => {
                                 label="Add user to group"
                                 disabled={formDisabled}
                                 values={groups?.map((group) => ({
-                                  value: group.id,
+                                  value: {
+                                    groupid: group.id,
+                                    groupType: group.calculatedGroupType,
+                                    groupName: group.displayName,
+                                  },
                                   name: `${group.displayName} - ${group.calculatedGroupType} `,
-                                  groupType: group.calculatedGroupType,
                                 }))}
                                 placeholder={!groupsIsFetching ? 'Select groups' : 'Loading...'}
                                 name="AddToGroups"
+                              />
+                              {groupsError && <span>Failed to load list of groups</span>}
+                            </CCol>
+                            <CCol md={12}>
+                              <RFFSelectSearch
+                                multi={true}
+                                label="Remove user from group"
+                                disabled={formDisabled}
+                                values={groups?.map((group) => ({
+                                  value: {
+                                    groupid: group.id,
+                                    groupType: group.calculatedGroupType,
+                                    groupName: group.displayName,
+                                  },
+                                  name: `${group.displayName} - ${group.calculatedGroupType} `,
+                                }))}
+                                placeholder={!groupsIsFetching ? 'Select groups' : 'Loading...'}
+                                name="RemoveFromGroups"
                               />
                               {groupsError && <span>Failed to load list of groups</span>}
                             </CCol>
