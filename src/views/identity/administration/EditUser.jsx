@@ -103,12 +103,15 @@ const EditUser = () => {
       streetAddress: values.streetAddress,
       tenantID: tenantDomain,
       mustchangepass: values.RequirePasswordChange,
+      addedAttributes: values.addedAttributes,
       ...(values.licenses ? values.license : ''),
     }
     window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/EditUser', values: shippedValues })
   }
   const usageLocation = useSelector((state) => state.app.usageLocation)
+  const [addedAttributes, setAddedAttribute] = React.useState(0)
+
   const precheckedLicenses = user.assignedLicenses
     ? user.assignedLicenses.reduce(
         (o, key) => Object.assign(o, { [`License_${key.skuId}`]: true }),
@@ -376,6 +379,47 @@ const EditUser = () => {
                                 type="text"
                                 disabled={formDisabled}
                               />
+                            </CCol>
+                          </CRow>
+                          <>
+                            {addedAttributes > 0 &&
+                              [...Array(addedAttributes)].map((e, i) => (
+                                <CRow key={i}>
+                                  <CCol md={6}>
+                                    <RFFCFormInput
+                                      name={`addedAttributes.${i}.Key`}
+                                      label="Attribute Name"
+                                      type="text"
+                                    />
+                                  </CCol>
+                                  <CCol md={6}>
+                                    <RFFCFormInput
+                                      name={`addedAttributes.${i}.Value`}
+                                      label="Attribute Value"
+                                      type="text"
+                                    />
+                                  </CCol>
+                                </CRow>
+                              ))}
+                          </>
+                          <CRow>
+                            <CCol className="mb-3" md={12}>
+                              {addedAttributes > 0 && (
+                                <CButton
+                                  onClick={() => setAddedAttribute(addedAttributes - 1)}
+                                  className={`circular-button`}
+                                  title={'-'}
+                                >
+                                  <FontAwesomeIcon icon={'minus'} />
+                                </CButton>
+                              )}
+                              <CButton
+                                onClick={() => setAddedAttribute(addedAttributes + 1)}
+                                className={`circular-button`}
+                                title={'+'}
+                              >
+                                <FontAwesomeIcon icon={'plus'} />
+                              </CButton>
                             </CCol>
                           </CRow>
                           <CRow className="mb-3">
