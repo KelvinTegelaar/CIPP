@@ -1,4 +1,13 @@
 [
+    {
+    "label": "PIM Request",
+    "name": "PIM_Portal",
+    "url": "https://portal.azure.com/#view/Microsoft_Azure_PIMCommon/ActivationMenuBlade/~/aadgroup",
+    "variable": "defaultDomainName",
+    "target": "_blank",
+    "external": true,
+    "icon": "shield-alt"
+  },
   {
     "label": "M365 Portal",
     "name": "M365_Portal",
