@@ -98,7 +98,11 @@ const AddSharedMailbox = () => {
                     </CCol>
                   </CRow>
                   {postResults.isSuccess && (
-                    <CCallout color="success">{postResults.data.Results}</CCallout>
+                    <CCallout color="success">
+                      {postResults.data.Results.map((message, idx) => {
+                        return <li key={idx}>{message}</li>
+                      })}
+                    </CCallout>
                   )}
                 </CForm>
               )
