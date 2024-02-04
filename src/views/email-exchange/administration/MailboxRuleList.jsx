@@ -25,6 +25,14 @@ const MailboxRuleList = () => {
       cell: cellGenericFormatter(),
     },
     {
+      selector: (row) => row?.Enabled,
+      name: 'Enabled',
+      sortable: true,
+      cell: cellGenericFormatter(),
+      exportSelector: 'Enabled',
+      maxWidth: '50px',
+    },
+    {
       selector: (row) => row?.Name,
       name: 'Display Name',
       sortable: true,
