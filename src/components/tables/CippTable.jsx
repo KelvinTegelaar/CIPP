@@ -573,6 +573,7 @@ export default function CippTable({
         return output
       }
       filtered = filtered.map((item) => flatten(item))
+      const dataFlat = data.map((item) => flatten(item))
 
       if (!disablePDFExport) {
         if (dynamicColumns === true) {
@@ -678,7 +679,7 @@ export default function CippTable({
                     <CDropdownItem>
                       <ExportCsvButton
                         key="export-csv-action-all"
-                        csvData={data}
+                        csvData={dataFlat}
                         reportName={reportName}
                         nameText="Export All Columns"
                       />
