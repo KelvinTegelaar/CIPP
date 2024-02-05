@@ -556,6 +556,9 @@ export default function CippTable({
         let output = {}
         for (let k in obj) {
           let val = obj[k]
+          if (val === null) {
+            val = ''
+          }
           const newKey = prefix ? prefix + '.' + k : k
           if (typeof val === 'object') {
             if (Array.isArray(val)) {
