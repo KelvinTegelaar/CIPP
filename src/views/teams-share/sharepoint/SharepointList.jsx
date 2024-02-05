@@ -29,6 +29,46 @@ const SharepointList = () => {
           ]}
           actions={[
             {
+              label: 'Add member',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                groupId: row.UPN,
+                TenantFilter: tenant.defaultDomainName,
+                add: true,
+                URL: row.URL,
+                SharePointType: row.Template,
+              },
+              modalUrl: `/api/ExecSetSharePointMember`,
+              modalDropdown: {
+                url: `/api/listUsers?TenantFilter=${tenant.defaultDomainName}`,
+                labelField: 'displayName',
+                valueField: 'userPrincipalName',
+              },
+              modalMessage: 'Select the User to add as a member.',
+            },
+            {
+              label: 'Remove member',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                groupId: row.UPN,
+                TenantFilter: tenant.defaultDomainName,
+                add: false,
+                URL: row.URL,
+                SharePointType: row.Template,
+              },
+              modalUrl: `/api/ExecSetSharePointMember`,
+              modalDropdown: {
+                url: `/api/listUsers?TenantFilter=${tenant.defaultDomainName}`,
+                labelField: 'displayName',
+                valueField: 'userPrincipalName',
+              },
+              modalMessage: 'Select the User to remove as a member.',
+            },
+            {
               label: 'Add Site Admin',
               color: 'info',
               modal: true,
