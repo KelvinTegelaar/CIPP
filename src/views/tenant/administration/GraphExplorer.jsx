@@ -56,20 +56,26 @@ const GraphExplorer = () => {
   const QueryColumns = { set: false, data: [] }
 
   if (graphrequest.isSuccess) {
-    if (graphrequest.data.Results.length === 0) {
-      graphrequest.data = [{ data: 'No Data Found' }]
-    }
-
-    //set columns
-    Object.keys(graphrequest.data.Results[0]).map((value) =>
+    if (graphrequest.data?.Results?.length > 0) {
+      //set columns
+      Object.keys(graphrequest.data?.Results[0]).map((value) =>
+        QueryColumns.data.push({
+          name: value,
+          selector: (row) => row[`${value.toString()}`],
+          sortable: true,
+          exportSelector: value,
+          cell: cellGenericFormatter(),
+        }),
+      )
+    } else {
       QueryColumns.data.push({
-        name: value,
-        selector: (row) => row[`${value.toString()}`],
+        name: 'data',
+        selector: (row) => row['data'],
         sortable: true,
-        exportSelector: value,
+        exportSelector: 'data',
         cell: cellGenericFormatter(),
-      }),
-    )
+      })
+    }
     QueryColumns.set = true
   }
 
@@ -253,6 +259,7 @@ const GraphExplorer = () => {
     field: PropTypes.node,
     set: PropTypes.string,
   }
+  console.log(graphrequest.data)
 
   return (
     <>
@@ -467,13 +474,18 @@ const GraphExplorer = () => {
               <CCardTitle>Results</CCardTitle>
             </CCardHeader>
             <CCardBody>
-              <CippTable
-                reportName="GraphExplorer"
-                dynamicColumns={false}
-                columns={QueryColumns.data}
-                data={graphrequest.data.Results}
-                isFetching={graphrequest.isFetching}
-              />
+              <>
+                {graphrequest?.data?.Metadata?.Queued && (
+                  <CCallout color="info">{graphrequest?.data?.Metadata?.QueueMessage}</CCallout>
+                )}
+                <CippTable
+                  reportName="GraphExplorer"
+                  dynamicColumns={false}
+                  columns={QueryColumns.data}
+                  data={graphrequest?.data?.Results}
+                  isFetching={graphrequest.isFetching}
+                />
+              </>
             </CCardBody>
           </CCard>
         )}
