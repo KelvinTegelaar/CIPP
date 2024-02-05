@@ -35,6 +35,7 @@ const OneDriveList = () => {
               modalBody: {
                 UPN: row.UPN,
                 TenantFilter: tenant.defaultDomainName,
+                RemovePermission: false,
               },
               modalUrl: `/api/ExecOneDrivePermission`,
               modalDropdown: {
@@ -43,6 +44,24 @@ const OneDriveList = () => {
                 valueField: 'userPrincipalName',
               },
               modalMessage: 'Select the User to add to this users OneDrive permissions',
+            },
+            {
+              label: 'Remove permissions from OneDrive',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                UPN: row.UPN,
+                TenantFilter: tenant.defaultDomainName,
+                RemovePermission: true,
+              },
+              modalUrl: `/api/ExecOneDrivePermission`,
+              modalDropdown: {
+                url: `/api/listUsers?TenantFilter=${tenant.defaultDomainName}`,
+                labelField: 'displayName',
+                valueField: 'userPrincipalName',
+              },
+              modalMessage: 'Select the User to remove from this users OneDrive permissions',
             },
           ]}
           placement="end"
