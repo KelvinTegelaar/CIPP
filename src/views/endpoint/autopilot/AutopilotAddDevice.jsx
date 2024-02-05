@@ -238,7 +238,7 @@ const AddAPDevice = () => {
         <hr className="my-4" />
       </CippWizard.Page>
       <CippWizard.Page
-        title="Autopilot Settings"
+        title="Offboarding Settings"
         description="Add a tag, group, or other info to this request"
       >
         <center>

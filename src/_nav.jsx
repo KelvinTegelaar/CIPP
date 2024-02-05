@@ -173,7 +173,7 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'IP Database',
+        name: 'Geo IP Lookup',
         to: '/tenant/tools/geoiplookup',
       },
       {

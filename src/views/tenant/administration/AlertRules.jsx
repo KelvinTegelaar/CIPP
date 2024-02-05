@@ -136,10 +136,6 @@ const AlertRules = () => {
       label: 'A user has been added to an admin role',
     },
     {
-      value: 'Add User.',
-      label: 'A user account was created',
-    },
-    {
       value: 'Disable account.',
       label: 'A user account has been disabled',
     },
@@ -168,7 +164,7 @@ const AlertRules = () => {
       label: 'A user has logged in from a location not in the allowed locations list',
     },
     {
-      value: 'Add service principal.',
+      value: 'Add service principal',
       label: 'A service principal has been created',
     },
     {

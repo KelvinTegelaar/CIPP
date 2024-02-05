@@ -13,10 +13,6 @@ export default function UserDetails({ tenantDomain, userId, className = null }) 
       body: user.accountEnabled ? 'Enabled' : 'Blocked',
     },
     {
-      heading: 'AD Synced',
-      body: user.onPremisesSyncEnabled ? 'Yes' : 'No',
-    },
-    {
       heading: 'First Name',
       body: user.givenName,
     },
