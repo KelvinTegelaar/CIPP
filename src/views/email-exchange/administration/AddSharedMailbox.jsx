@@ -12,7 +12,9 @@ import {
   CCardBody,
 } from '@coreui/react'
 import { Form } from 'react-final-form'
-import { RFFCFormInput, RFFCFormSelect } from 'src/components/forms'
+import { RFFCFormInput, RFFCFormSelect, RFFCFormTextarea } from 'src/components/forms'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import { CippPage } from 'src/components/layout/CippPage'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { useListDomainsQuery } from 'src/store/api/domains'
@@ -33,6 +35,7 @@ const AddSharedMailbox = () => {
       domain: values.domain,
       displayName: values.displayName,
       username: values.username,
+      addedAliases: values.addedAliases,
     }
     //window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/AddSharedMailbox', values: shippedValues })
@@ -74,16 +77,32 @@ const AddSharedMailbox = () => {
                       )}
                       {domainsError && <span>Failed to load list of domains</span>}
                     </CCol>
+                    <CCol xs={12}>
+                      <RFFCFormTextarea
+                        type="text"
+                        name="addedAliases"
+                        label="Aliases"
+                        placeholder="Enter one alias per line"
+                        disabled={submitting}
+                      />
+                    </CCol>
                   </CRow>
                   <CRow className="mb-3">
                     <CCol md={6}>
                       <CButton type="submit" disabled={submitting}>
                         Add Shared Mailbox
+                        {postResults.isFetching && (
+                          <FontAwesomeIcon icon={faCircleNotch} spin className="ms-2" size="1x" />
+                        )}
                       </CButton>
                     </CCol>
                   </CRow>
                   {postResults.isSuccess && (
-                    <CCallout color="success">{postResults.data.Results}</CCallout>
+                    <CCallout color="success">
+                      {postResults.data.Results.map((message, idx) => {
+                        return <li key={idx}>{message}</li>
+                      })}
+                    </CCallout>
                   )}
                 </CForm>
               )
