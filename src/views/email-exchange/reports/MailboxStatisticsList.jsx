@@ -75,6 +75,12 @@ const MailboxStatsList = () => {
       exportSelector: 'QuotaGB',
     },
     {
+      selector: (row) => Math.round((row.UsedGB / row.QuotaGB) * 100 * 10) / 10,
+      name: 'Quota Used(%)',
+      sortable: true,
+      exportSelector: 'QuotaUsed',
+    },
+    {
       selector: (row) => row['ItemCount'],
       name: 'Item Count (Total)',
       sortable: true,

@@ -113,6 +113,12 @@ const OneDriveList = () => {
       exportSelector: 'Allocated',
     },
     {
+      selector: (row) => Math.round((row.UsedGB / row.Allocated) * 100 * 10) / 10,
+      name: 'Quota Used(%)',
+      sortable: true,
+      exportSelector: 'QuotaUsed',
+    },
+    {
       name: 'URL',
       selector: (row) => row['url'],
       sortable: true,
