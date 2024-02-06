@@ -409,6 +409,15 @@
     "impactColour": "info"
   },
   {
+    "name": "standards.EnableOnlineArchiving",
+    "cat": "Exchange Standards",
+    "helpText": "Enables the In-Place Online Archive for all UserMailboxes with a valid license.",
+    "addedComponent": [],
+    "label": "Enable Online Archive for all users",
+    "impact": "Medium Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.SpoofWarn",
     "cat": "Exchange Standards",
     "helpText": "Adds or removes indicators to e-mail messages received from external senders in Outlook. Works on all Outlook clients/OWA",
