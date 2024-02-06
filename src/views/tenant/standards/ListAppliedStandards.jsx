@@ -33,7 +33,7 @@ import { useSelector } from 'react-redux'
 import { ModalService } from 'src/components/utilities'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Skeleton from 'react-loading-skeleton'
-import { CippTable } from 'src/components/tables'
+import { CippTable, cellBooleanFormatter } from 'src/components/tables'
 import allStandardsList from 'src/data/standards'
 import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
 import GDAPRoles from 'src/data/GDAPRoles'
@@ -184,6 +184,7 @@ const ApplyNewStandard = () => {
       sortable: true,
       exportSelector: 'displayName',
     },
+
     {
       name: 'Applied Standards',
       selector: (row) => row['StandardsExport'],
