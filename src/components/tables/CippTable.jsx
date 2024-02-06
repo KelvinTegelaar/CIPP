@@ -573,7 +573,11 @@ export default function CippTable({
         return output
       }
       filtered = filtered.map((item) => flatten(item))
-      const dataFlat = data.map((item) => flatten(item))
+      if (Array.isArray(data)) {
+        const dataFlat = data.map((item) => flatten(item))
+      } else {
+        const dataFlat = []
+      }
 
       if (!disablePDFExport) {
         if (dynamicColumns === true) {
