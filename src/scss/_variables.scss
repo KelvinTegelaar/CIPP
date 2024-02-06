@@ -37,10 +37,10 @@
 // fusv-enable
 
 // $high-emphasis:            rgba(shift-color($gray-base, +26), .95) !default;
-//$medium-emphasis: rgba(0 153 204) !default;
+//$medium-emphasis: rgba(0, 153, 204) !default;
 // $disabled:                 rgba(shift-color($gray-base, +26), .38) !default;
 
-//$high-emphasis-inverse: rgba(0 153 204) !default;
+//$high-emphasis-inverse: rgba(0, 153, 204) !default;
 // $medium-emphasis-inverse:  rgba($white, .6) !default;
 // $disabled-inverse:         rgba($white, .38) !default;
 
@@ -76,8 +76,8 @@
 // scss-docs-end colors-map
 
 // fusv-disable
-$primary-dark: rgb(0 153 204) !default;
-$primary-base: rgba(0 153 204) !default;
+$primary-dark: rgb(0, 153, 204) !default;
+$primary-base: rgba(0, 153, 204) !default;
 $primary-50: rgba(0, 153, 204, 0.514) !default;
 $primary-25: rgba(0, 153, 204, 0.219) !default;
 
@@ -1696,9 +1696,9 @@ $sidebar-nav-link-padding-x: 0.6rem !default;
 // $sidebar-nav-link-hover-bg:                rgba($white, .05) !default;
 // $sidebar-nav-link-hover-icon-color:        $high-emphasis-inverse !default;
 
-$sidebar-nav-link-active-color: rgba(0 153 204) !default;
+$sidebar-nav-link-active-color: rgba(0, 153, 204) !default;
 // $sidebar-nav-link-active-bg:               rgba($white, .05) !default;
-$sidebar-nav-link-active-icon-color: rgba(0 153 204) !default;
+$sidebar-nav-link-active-icon-color: rgba(0, 153, 204) !default;
 
 // $sidebar-nav-link-disabled-color:          $disabled-inverse !default;
 // $sidebar-nav-link-disabled-icon-color:     $sidebar-nav-link-icon-color !default;
