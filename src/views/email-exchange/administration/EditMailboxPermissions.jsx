@@ -531,6 +531,8 @@ const CalendarPermissions = () => {
                                   name: 'Publishing Editor',
                                 },
                                 { value: 'Reviewer', name: 'Reviewer' },
+                                { value: 'LimitedDetails', name: 'Limited Details' },
+                                { value: 'AvailabilityOnly', name: 'Availability Only' },
                               ]}
                               placeholder="Select a permission level"
                               name="Permissions"
@@ -595,8 +597,7 @@ const MailboxForwarding = () => {
     params: {
       Endpoint: 'users',
       TenantFilter: tenantDomain,
-      $filter: 'assignedLicenses/$count ne 0 and accountEnabled eq true',
-      $count: true,
+      $filter: "userType eq 'Member' and mail ge ' '", // filter out guests and users with no mailbox. #HACK "mail ne 'null'" does not work so this horrible hack is required
     },
   })
   useEffect(() => {
@@ -845,8 +846,8 @@ const OutOfOffice = () => {
       user: userId,
       tenantFilter: tenantDomain,
       AutoReplyState: values.AutoReplyState ? 'Scheduled' : 'Disabled',
-      StartTime: startDate.toLocaleString(),
-      EndTime: endDate.toLocaleString(),
+      StartTime: startDate.toUTCString(),
+      EndTime: endDate.toUTCString(),
       InternalMessage: values.InternalMessage ? values.InternalMessage : '',
       ExternalMessage: values.ExternalMessage ? values.ExternalMessage : '',
     }
@@ -953,11 +954,7 @@ const OutOfOffice = () => {
                           </CCol>
                         </CRow>
                         {postResults.isSuccess && (
-                          <CCallout color="success">
-                            {postResults.data.Results.map((result, idx) => (
-                              <li key={idx}>{result}</li>
-                            ))}
-                          </CCallout>
+                          <CCallout color="success">{postResults.data?.Results}</CCallout>
                         )}
                       </CForm>
                     )

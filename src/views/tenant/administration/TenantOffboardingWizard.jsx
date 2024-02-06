@@ -5,10 +5,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle, faTimes, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
 import { CippWizard } from 'src/components/layout'
+import vendors1 from 'src/data/vendorTenantList'
 import PropTypes from 'prop-types'
 import { RFFCFormCheck, RFFCFormInput, RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms'
 import { TenantSelector } from 'src/components/utilities'
-import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import { useGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 
 const Error = ({ name }) => (
   <Field
@@ -34,10 +35,32 @@ const TenantOffboardingWizard = () => {
   const currentSettings = useSelector((state) => state.app)
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
+  const filterParts = vendors1.map((vendor) => `appOwnerOrganizationId eq ${vendor.vendorTenantId}`)
+  const filter = filterParts.join(' or ')
+
+  const {
+    data: vendorApps = [],
+    vendorAppsIsFetching,
+    vendorAppsIsSuccess,
+  } = useGenericGetRequestQuery({
+    path: 'api/ListGraphRequest',
+    params: {
+      TenantFilter: tenantDomain,
+      Endpoint: 'servicePrincipals',
+      $filter: filter,
+      $select: 'appId,displayName,appOwnerOrganizationId',
+      $count: true,
+    },
+  })
+
   const handleSubmit = async (values) => {
     const shippedValues = {
       TenantFilter: tenantDomain,
+      RemoveVendorApps: values.vendorApplications ? values.vendorApplications : '',
       RemoveCSPGuestUsers: values.RemoveCSPGuestUsers ? values.RemoveCSPGuestUsers : '',
+      RemoveCSPnotificationContacts: values.RemoveCSPnotificationContacts
+        ? values.RemoveCSPnotificationContacts
+        : '',
       RemoveMultitenantCSPApps: values.RemoveMultitenantCSPApps
         ? values.RemoveMultitenantCSPApps
         : '',
@@ -77,22 +100,48 @@ const TenantOffboardingWizard = () => {
         <div className="mb-2">
           <CRow>
             <CCol className="mb-3" md={6}>
+              {vendorAppsIsFetching && <CSpinner />}
+              {!vendorAppsIsFetching && (
+                <RFFSelectSearch
+                  multi={true}
+                  name="vendorApplications"
+                  label="Vendor applications to remove:"
+                  placeholder={!vendorAppsIsFetching ? 'Select applications' : 'Loading...'}
+                  values={vendorApps.Results?.map((vendor) => ({
+                    value: vendor.appId,
+                    name: vendor.displayName,
+                  }))}
+                />
+              )}
+              <br />
               <RFFCFormSwitch
                 name="RemoveCSPGuestUsers"
                 label="Remove all guest users originating from the CSP tenant."
               />
               <RFFCFormSwitch
-                name="RemoveMultitenantCSPApps"
-                label="Remove all multitenant applications originating from CSP tenant (including CIPP-SAM)."
+                name="RemoveCSPnotificationContacts"
+                label="Remove all notification contacts originating from the CSP tenant (technical,security,marketing notifications)."
               />
-              <RFFCFormSwitch
-                name="TerminateGDAP"
-                label="Terminate all active GDAP relationships (will send email to tenant admins and contacts)."
-              />
-              <RFFCFormSwitch
-                name="TerminateContract"
-                label="Terminate contract relationship (reseller, etc)."
-              />
+            </CCol>
+            <CCol className="mb-3" md={6}>
+              <center>
+                <CCallout color="danger">
+                  These actions will terminate all delegated access to the customer tenant!
+                  <hr className="my-4" />
+                  <RFFCFormSwitch
+                    name="RemoveMultitenantCSPApps"
+                    label="Remove all multitenant applications originating from CSP tenant (including CIPP-SAM)."
+                  />
+                  <RFFCFormSwitch
+                    name="TerminateGDAP"
+                    label="Terminate all active GDAP relationships (will send email to tenant admins and contacts)."
+                  />
+                  <RFFCFormSwitch
+                    name="TerminateContract"
+                    label="Terminate contract relationship (reseller, etc)."
+                  />
+                </CCallout>
+              </center>
             </CCol>
           </CRow>
         </div>
@@ -131,10 +180,6 @@ const TenantOffboardingWizard = () => {
                 <>
                   <CRow>
                     <CCol md={{ span: 6, offset: 3 }}>
-                      <CCallout color="danger">
-                        <FontAwesomeIcon icon={faExclamationTriangle} color="danger" />
-                        These actions are irreversible!
-                      </CCallout>
                       <CListGroup flush>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
                           <h5 className="mb-0">Selected Tenant:</h5>
@@ -148,6 +193,23 @@ const TenantOffboardingWizard = () => {
                     <CCol md={{ span: 6, offset: 3 }}>
                       <CListGroup flush>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Remove vendor applications
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.vendorApplications ? faCheck : faTimes}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Remove all notification contacts originating from the CSP tenant
+                          (technical,security,marketing notifications)
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.RemoveCSPnotificationContacts ? faCheck : faTimes}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Remove all guest users originating from the CSP tenant
                           <FontAwesomeIcon
                             color="#f77f00"
@@ -160,7 +222,7 @@ const TenantOffboardingWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.RemoveMultitenantApps ? faCheck : faTimes}
+                            icon={props.values.RemoveMultitenantCSPApps ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
