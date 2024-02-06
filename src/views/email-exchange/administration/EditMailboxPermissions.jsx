@@ -597,8 +597,7 @@ const MailboxForwarding = () => {
     params: {
       Endpoint: 'users',
       TenantFilter: tenantDomain,
-      $filter: 'assignedLicenses/$count ne 0 and accountEnabled eq true',
-      $count: true,
+      $filter: "userType eq 'Member' and mail ge ' '", // filter out guests and users with no mailbox. #HACK "mail ne 'null'" does not work so this horrible hack is required
     },
   })
   useEffect(() => {
