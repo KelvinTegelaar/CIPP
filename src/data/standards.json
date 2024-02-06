@@ -531,7 +531,7 @@
     "name": "standards.EnableMailboxAuditing",
     "cat": "Exchange Standards",
     "tag": ["lowimpact", "CIS"],
-    "helpText": "Enables Mailbox auditing for all mailboxes and on tenant level. By default Microsoft does not enable mailbox auditing for Resource Mailboxes, Public Folder Mailboxes and DiscoverySearch Mailboxes. Unified Audit Log needs to be enabled for this standard to function.",
+    "helpText": "Enables Mailbox auditing for all mailboxes and on tenant level. Disables audit bypass on all mailboxes. Unified Audit Log needs to be enabled for this standard to function.",
     "addedComponent": [],
     "label": "Enable Mailbox auditing",
     "impact": "Low Impact",
