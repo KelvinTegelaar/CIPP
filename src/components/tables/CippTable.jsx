@@ -573,10 +573,13 @@ export default function CippTable({
         return output
       }
       filtered = filtered.map((item) => flatten(item))
+
+      let dataFlat
+
       if (Array.isArray(data)) {
-        const dataFlat = data.map((item) => flatten(item))
+        dataFlat = data.map((item) => flatten(item))
       } else {
-        const dataFlat = []
+        dataFlat = []
       }
 
       if (!disablePDFExport) {
