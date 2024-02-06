@@ -2,7 +2,7 @@
   // CyberDrain variables.
   //// If you want to change these variables please also update the _variables.scss file.
   --cyberdrain-primary: #0099cc; // Orange
-  --cyberdrain-primary-rgb: rgb(0, 153, 204); // Orange
+  --cyberdrain-primary-rgb: rgb(0 153 204); // Orange
   --cyberdrain-secondary: #003049; // Prussian Blue
   --cyberdrain-secondary-rgb: rgb(0 48 73); // Prussian Blue
   --cyberdrain-lighter: #fff; // White
@@ -129,7 +129,7 @@
     --cui-btn-active-border-color: #118ac7;
     --cui-btn-active-color: var(--cyberdrain-darker);
     --cui-btn-disabled-color: #1570f9;
-    --cui-btn-shadow: rgba(21, 142, 249, 0.5);
+    --cui-btn-shadow: rgba(21 142 249 / 50%);
   }
 
   .btn-ghost-danger {

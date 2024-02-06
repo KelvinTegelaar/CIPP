@@ -20,7 +20,7 @@ const AppFooter = () => {
     <CFooter className="d-flex justify-content-between align-items-center stickyfooter">
       <div className="sponsors">
         <p>
-          Quick Links: 
+          Quick Links - 
           <CLink className="me-2" href="https://www.huntress.com/">
             <CImage src={huntress} alt="Huntress" />
           </CLink>
