@@ -181,7 +181,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
                 groupName: 'displayName',
               },
             },
-            modalMessage: 'Select the group to add the user to',
+            modalMessage: 'Select the group to remove the user from',
           },
           {
             label: 'Enable Online Archive',
@@ -259,6 +259,13 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modal: true,
             modalUrl: `/api/ExecResetPass?MustChange=false&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}&displayName=${row.displayName}`,
             modalMessage: 'Are you sure you want to reset the password for this user?',
+          },
+          {
+            label: 'Clear ImmutableId',
+            color: 'warning',
+            modal: true,
+            modalUrl: `/api/ExecClrImmId?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalMessage: 'Are you sure you want to clear the ImmutableId for this user?',
           },
           {
             label: 'Revoke all user sessions',
