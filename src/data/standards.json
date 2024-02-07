@@ -414,7 +414,7 @@
     "helpText": "Enables the In-Place Online Archive for all UserMailboxes with a valid license.",
     "addedComponent": [],
     "label": "Enable Online Archive for all users",
-    "impact": "Medium Impact",
+    "impact": "Low Impact",
     "impactColour": "info"
   },
   {
@@ -583,6 +583,15 @@
     "impactColour": "info"
   },
   {
+    "name": "standards.DisableOutlookAddins",
+    "cat": "Exchange Standards",
+    "helpText": "Disables the ability for users to install add-ins in Outlook. This is to prevent users from installing malicious add-ins.",
+    "addedComponent": [],
+    "label": "Disable users from installing add-ins in Outlook",
+    "impact": "Medium Impact",
+    "impactColour": "warning"
+  },
+  {
     "name": "standards.SafeSendersDisable",
     "cat": "Exchange Standards",
     "disabledFeatures": {
@@ -699,6 +708,15 @@
     },
     "addedComponent": [],
     "label": "Disable Add Shortcuts To OneDrive",
+    "impact": "Medium Impact",
+    "impactColour": "warning"
+  },
+  {
+    "name": "standards.DisableSharePointLegacyAuth",
+    "cat": "SharePoint Standards",
+    "helpText": "Disables the ability to authenticate with SharePoint using legacy authentication methods. Any applications that use legacy authentication will need to be updated to use modern authentication.",
+    "addedComponent": [],
+    "label": "Disable legacy basic authentication for SharePoint",
     "impact": "Medium Impact",
     "impactColour": "warning"
   },
