@@ -222,7 +222,7 @@ const TenantOffboardingWizard = () => {
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.RemoveMultitenantApps ? faCheck : faTimes}
+                            icon={props.values.RemoveMultitenantCSPApps ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
