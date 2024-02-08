@@ -173,7 +173,7 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Geo IP Lookup',
+        name: 'IP Database',
         to: '/tenant/tools/geoiplookup',
       },
       {
@@ -238,6 +238,11 @@ const _nav = [
         component: CNavItem,
         name: 'Deploy CA Policies',
         to: '/tenant/conditional/deploy',
+      },
+      {
+        component: CNavItem,
+        name: 'CA Vacation Mode',
+        to: '/tenant/conditional/deploy-vacation',
       },
       {
         component: CNavItem,
