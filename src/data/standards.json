@@ -313,7 +313,7 @@
     "name": "standards.LegacyMFACleanup",
     "cat": "Entra (AAD) Standards",
     "tag": ["mediumimpact"],
-    "helpText": "Removes legacy Per-User MFA if the tenant has Security Defaults or an All Users Conditional Access rule enabled.",
+    "helpText": "This standard currently does not function and can be safely disabled",
     "addedComponent": [],
     "label": "Remove Legacy MFA if SD or CA is active",
     "impact": "Medium Impact",
