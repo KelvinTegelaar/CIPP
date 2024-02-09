@@ -370,11 +370,6 @@
     "tag": ["highimpact"],
     "helpText": "Disables App consent and set to Allow user consent for apps",
     "addedComponent": [],
-    "disabledFeatures": {
-      "report": true,
-      "warn": true,
-      "remediate": false
-    },
     "label": "Undo App Consent Standard",
     "impact": "High Impact",
     "impactColour": "danger"
