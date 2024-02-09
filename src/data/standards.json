@@ -259,22 +259,33 @@
     "impactColour": "info"
   },
   {
-    "name": "standards.NudgeMFA.enable",
+    "name": "standards.NudgeMFA",
     "cat": "Entra (AAD) Standards",
     "tag": ["lowimpact"],
-    "helpText": "Enables registration campaign for the tenant",
-    "addedComponent": [],
-    "label": "Request to setup Authenticator if not setup yet",
-    "impact": "Low Impact",
-    "impactColour": "info"
-  },
-  {
-    "name": "standards.NudgeMFA.disable",
-    "cat": "Entra (AAD) Standards",
-    "tag": ["lowimpact"],
-    "helpText": "Disables registration campaign for the tenant",
-    "addedComponent": [],
-    "label": "Disables the request to setup Authenticator if setup",
+    "helpText": "Sets the state of the registration campaign for the tenant",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Select value",
+        "name": "standards.NudgeMFA.state",
+        "values": [
+          {
+            "label": "Enabled",
+            "value": "enabled"
+          },
+          {
+            "label": "Disabled",
+            "value": "disabled"
+          }
+        ]
+      },
+      {
+        "type": "number",
+        "name": "standards.NudgeMFA.snoozeDurationInDays",
+        "label": "Number of days to allow users to skip registering Authenticator (0-14, default is 1)"
+      }
+    ],
+    "label": "Sets the state for the request to setup Authenticator",
     "impact": "Low Impact",
     "impactColour": "info"
   },
