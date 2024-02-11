@@ -681,22 +681,28 @@
     "impactColour": "warning"
   },
   {
-    "name": "standards.UserSubmissions.enable",
+    "name": "standards.UserSubmissions",
     "cat": "Exchange Standards",
     "tag": ["mediumimpact"],
-    "helpText": "Enables the spam submission button in Outlook",
-    "addedComponent": [],
-    "label": "Enable the built-in Report button in Outlook",
-    "impact": "Medium Impact",
-    "impactColour": "warning"
-  },
-  {
-    "name": "standards.UserSubmissions.disable",
-    "cat": "Exchange Standards",
-    "tag": ["mediumimpact"],
-    "helpText": "Disables the spam submission button in Outlook",
-    "addedComponent": [],
-    "label": "Disable the built-in Report button in Outlook",
+    "helpText": "Set the state of the spam submission button in Outlook",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Select value",
+        "name": "standards.UserSubmissions.state",
+        "values": [
+          {
+            "label": "Enabled",
+            "value": "enable"
+          },
+          {
+            "label": "Disabled",
+            "value": "disable"
+          }
+        ]
+      }
+    ],
+    "label": "Set the state of the built-in Report button in Outlook",
     "impact": "Medium Impact",
     "impactColour": "warning"
   },
