@@ -850,7 +850,7 @@
     "name": "standards.ExcludedfileExt",
     "cat": "SharePoint Standards",
     "tag": ["highimpact"],
-    "helpText": "Sets the file extensions that are excluded from syncing with OneDrive. These files will be blocked from upload.",
+    "helpText": "Sets the file extensions that are excluded from syncing with OneDrive. These files will be blocked from upload. '*.' is automatically added to the extension and can be omitted.",
     "addedComponent": [
       {
         "type": "input",
