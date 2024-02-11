@@ -723,7 +723,7 @@
     "helpText": "A value between 0 and 270 is supported. A value of 0 disables retirement, retired devices are removed from Intune after the specified number of days.",
     "addedComponent": [
       {
-        "type": "input",
+        "type": "number",
         "name": "standards.intuneDeviceRetirementDays.days",
         "label": "Maximum days (0 equals disabled)"
       }
@@ -739,7 +739,7 @@
     "helpText": "sets the maximum number of devices that can be registered by a user. A value of 0 disables device registration by users",
     "addedComponent": [
       {
-        "type": "input",
+        "type": "number",
         "name": "standards.intuneDeviceReg.max",
         "label": "Maximum devices (Enter 2147483647 for unlimited.)"
       }
