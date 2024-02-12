@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "baseUrl": "./",
+    "checkJs": false,
+    "moduleResolution": "node",
+    "jsx": "react"
+  },
+  "include": ["./src"],
+  "exclude": ["node_modules/"]
+}

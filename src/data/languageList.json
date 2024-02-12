@@ -1,0 +1,242 @@
+[
+  {
+    "language": "Arabic",
+    "Geographic area": "Saudi Arabia",
+    "tag": "ar-SA",
+    "LCID": "1025"
+  },
+  {
+    "language": "Bulgarian",
+    "Geographic area": "Bulgaria",
+    "tag": "bg-BG",
+    "LCID": "1026"
+  },
+  {
+    "language": "Chinese (Simplified)",
+    "Geographic area": "People's Republic of China",
+    "tag": "zh-CN",
+    "LCID": "2052"
+  },
+  {
+    "language": "Chinese",
+    "Geographic area": "Taiwan",
+    "tag": "zh-TW",
+    "LCID": "1028"
+  },
+  {
+    "language": "Croatian",
+    "Geographic area": "Croatia",
+    "tag": "hr-HR",
+    "LCID": "1050"
+  },
+  {
+    "language": "Czech",
+    "Geographic area": "Czech Republic",
+    "tag": "cs-CZ",
+    "LCID": "1029"
+  },
+  {
+    "language": "Danish",
+    "Geographic area": "Denmark",
+    "tag": "da-DK",
+    "LCID": "1030"
+  },
+  {
+    "language": "Dutch",
+    "Geographic area": "Netherlands",
+    "tag": "nl-NL",
+    "LCID": "1043"
+  },
+  {
+    "language": "English",
+    "Geographic area": "United States",
+    "tag": "en-US",
+    "LCID": "1033"
+  },
+  {
+    "language": "Estonian",
+    "Geographic area": "Estonia",
+    "tag": "et-EE",
+    "LCID": "1061"
+  },
+  {
+    "language": "Finnish",
+    "Geographic area": "Finland",
+    "tag": "fi-FI",
+    "LCID": "1035"
+  },
+  {
+    "language": "French",
+    "Geographic area": "France",
+    "tag": "fr-FR",
+    "LCID": "1036"
+  },
+  {
+    "language": "German",
+    "Geographic area": "Germany",
+    "tag": "de-DE",
+    "LCID": "1031"
+  },
+  {
+    "language": "Greek",
+    "Geographic area": "Greece",
+    "tag": "el-GR",
+    "LCID": "1032"
+  },
+  {
+    "language": "Hebrew",
+    "Geographic area": "Israel",
+    "tag": "he-IL",
+    "LCID": "1037"
+  },
+  {
+    "language": "Hindi",
+    "Geographic area": "India",
+    "tag": "hi-IN",
+    "LCID": "1081"
+  },
+  {
+    "language": "Hungarian",
+    "Geographic area": "Hungary",
+    "tag": "hu-HU",
+    "LCID": "1038"
+  },
+  {
+    "language": "Indonesian",
+    "Geographic area": "Indonesia",
+    "tag": "id-ID",
+    "LCID": "1057"
+  },
+  {
+    "language": "Italian",
+    "Geographic area": "Italy",
+    "tag": "it-IT",
+    "LCID": "1040"
+  },
+  {
+    "language": "Japanese",
+    "Geographic area": "Japan",
+    "tag": "ja-JP",
+    "LCID": "1041"
+  },
+  {
+    "language": "Kazakh",
+    "Geographic area": "Kazakhstan",
+    "tag": "kk-KZ",
+    "LCID": "1087"
+  },
+  {
+    "language": "Korean",
+    "Geographic area": "Korea",
+    "tag": "ko-KR",
+    "LCID": "1042"
+  },
+  {
+    "language": "Latvian",
+    "Geographic area": "Latvia",
+    "tag": "lv-LV",
+    "LCID": "1062"
+  },
+  {
+    "language": "Lithuanian",
+    "Geographic area": "Lithuania",
+    "tag": "lt-LT",
+    "LCID": "1063"
+  },
+  {
+    "language": "Malay",
+    "Geographic area": "Malaysia",
+    "tag": "ms-MY",
+    "LCID": "1086"
+  },
+  {
+    "language": "Norwegian (Bokmål)",
+    "Geographic area": "Norway",
+    "tag": "nb-NO",
+    "LCID": "1044"
+  },
+  {
+    "language": "Polish",
+    "Geographic area": "Poland",
+    "tag": "pl-PL",
+    "LCID": "1045"
+  },
+  {
+    "language": "Portuguese",
+    "Geographic area": "Brazil",
+    "tag": "pt-BR",
+    "LCID": "1046"
+  },
+  {
+    "language": "Portuguese",
+    "Geographic area": "Portugal",
+    "tag": "pt-PT",
+    "LCID": "2070"
+  },
+  {
+    "language": "Romanian",
+    "Geographic area": "Romania",
+    "tag": "ro-RO",
+    "LCID": "1048"
+  },
+  {
+    "language": "Russian",
+    "Geographic area": "Russia",
+    "tag": "ru-RU",
+    "LCID": "1049"
+  },
+  {
+    "language": "Serbian (Latin)",
+    "Geographic area": "Serbia",
+    "tag": "sr-latn-RS",
+    "LCID": "2074"
+  },
+  {
+    "language": "Slovak",
+    "Geographic area": "Slovakia",
+    "tag": "sk-SK",
+    "LCID": "1051"
+  },
+  {
+    "language": "Slovenian",
+    "Geographic area": "Slovenia",
+    "tag": "sl-SI",
+    "LCID": "1060"
+  },
+  {
+    "language": "Spanish",
+    "Geographic area": "Spain",
+    "tag": "es-ES",
+    "LCID": "3082"
+  },
+  {
+    "language": "Swedish",
+    "Geographic area": "Sweden",
+    "tag": "sv-SE",
+    "LCID": "1053"
+  },
+  {
+    "language": "Thai",
+    "Geographic area": "Thailand",
+    "tag": "th-TH",
+    "LCID": "1054"
+  },
+  {
+    "language": "Turkish",
+    "Geographic area": "Turkey",
+    "tag": "tr-TR",
+    "LCID": "1055"
+  },
+  {
+    "language": "Ukrainian",
+    "Geographic area": "Ukrainian",
+    "tag": "uk-UA",
+    "LCID": "1058"
+  },
+  {
+    "language": "Vietnamese",
+    "Geographic area": "Vietnam",
+    "tag": "vi-VN",
+    "LCID": "1066"
+  }
+]

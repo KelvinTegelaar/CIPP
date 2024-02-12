@@ -1,0 +1,233 @@
+{
+  "title": "BPA Field Builder",
+  "type": "object",
+  "required": ["name", "API", "StoreAs"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Field Name",
+      "description": "Identifier for each set or category of data."
+    },
+    "UseExistingInfo": {
+      "type": "boolean",
+      "title": "Use Existing Info?",
+      "default": false
+    },
+    "StoreAs": {
+      "type": "string",
+      "title": "Store As",
+      "description": "The format in which to store the fetched data.",
+      "anyOf": [
+        {
+          "const": "JSON",
+          "title": "JSON - For structured data"
+        },
+        {
+          "const": "bool",
+          "title": "Boolean - True/False values"
+        }
+      ]
+    },
+    "ExtractFields": {
+      "title": "Extract Fields",
+      "description": "Lists the attributes or fields to extract from the returned data.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "where": {
+      "title": "Where",
+      "description": "A conditional filter to determine which data gets displayed or processed. Use PowerShell's Where-Object Filterscript format.",
+      "type": "string"
+    },
+    "FrontendFields": {
+      "type": "array",
+      "title": "Frontend Fields",
+      "description": "Describes how each data attribute will be displayed in the report.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "title": "Name",
+            "description": "Label for the data in the report.",
+            "type": "string"
+          },
+          "value": {
+            "title": "Value",
+            "description": "Reference to the data's location or attribute.",
+            "type": "string"
+          },
+          "formatter": {
+            "title": "Formatter",
+            "description": "Specifies how the data will be formatted for display.",
+            "type": "string",
+            "anyOf": [
+              {
+                "const": "string",
+                "title": "Display as plain text"
+              },
+              {
+                "const": "bool",
+                "title": "Presents as True or False"
+              },
+              {
+                "const": "warnBool",
+                "title": "Shows boolean values with potential visual warnings"
+              },
+              {
+                "const": "reverseBool",
+                "title": "Inverts the boolean value for display"
+              },
+              {
+                "const": "table",
+                "title": "Represents the data in a table format"
+              },
+              {
+                "const": "number",
+                "title": "Displays as a numerical value"
+              },
+              {
+                "const": "math",
+                "title": "Displays as a calculated value"
+              }
+            ]
+          }
+        }
+      },
+      "minItems": 1,
+      "required": ["name", "value", "formatter"]
+    },
+    "desc": {
+      "title": "Field Description",
+      "description": "A description field shown on the end of the card on the tenant overview page",
+      "type": "string"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "UseExistingInfo": {
+            "enum": [false]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "API": {
+            "type": "string",
+            "title": "API",
+            "anyOf": [
+              {
+                "const": "Graph",
+                "title": "Graph"
+              },
+              {
+                "const": "Exchange",
+                "title": "Exchange"
+              },
+              {
+                "const": "CIPPFunction",
+                "title": "CIPP Function"
+              }
+            ],
+            "default": "Graph",
+            "description": "Defines the source or type of API to fetch the data."
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "API": {
+                  "enum": ["CIPPFunction"]
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "URL": {
+                  "type": "string",
+                  "description": "The endpoint for CIPP Function"
+                }
+              },
+              "required": ["URL"]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "API": {
+                  "enum": ["Exchange"]
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "command": {
+                  "type": "string",
+                  "title": "Command",
+                  "pattern": "^Get-",
+                  "description": "Command for Exchange (Get only)"
+                }
+              },
+              "required": ["command"]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "API": {
+                  "enum": ["Graph"]
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "parameters": {
+                  "type": "object",
+                  "title": "Parameters",
+                  "description": "Additional settings or parameters required for the API call.",
+                  "properties": {
+                    "asApp": {
+                      "title": "Use Application Permissions",
+                      "type": "boolean"
+                    }
+                  },
+                  "additionalProperties": true
+                },
+                "URL": {
+                  "type": "string",
+                  "pattern": "^https://graph.microsoft.com/",
+                  "description": "The endpoint for Graph"
+                }
+              },
+              "required": ["URL"]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "API": {
+                  "enum": ["Exchange", "CIPPFunction"]
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "parameters": {
+                  "type": "object",
+                  "title": "Parameters",
+                  "description": "Additional settings or parameters required for the API call.",
+                  "additionalProperties": true
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

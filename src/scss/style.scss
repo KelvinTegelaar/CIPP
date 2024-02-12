@@ -1,0 +1,14 @@
+// If you want to override variables do it here
+@import 'variables';
+
+$enable-ltr: true;
+$enable-rtl: true;
+@import 'tenantselector';
+// If you want to add custom CSS you can put it here.
+
+// Import CoreUI for React components library
+
+@import '@coreui/coreui/scss/coreui';
+@import 'layout';
+@import 'custom';
+@import 'themes';
