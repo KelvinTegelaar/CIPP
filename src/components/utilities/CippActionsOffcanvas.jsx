@@ -15,7 +15,7 @@ import {
   COffcanvasTitle,
   CSpinner,
 } from '@coreui/react'
-import { CippOffcanvas, ModalService } from 'src/components/utilities'
+import { CippCodeBlock, CippOffcanvas, ModalService } from 'src/components/utilities'
 import { CippOffcanvasPropTypes } from 'src/components/utilities/CippOffcanvas'
 import { CippOffcanvasTable } from 'src/components/tables'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
@@ -38,6 +38,34 @@ export default function CippActionsOffcanvas(props) {
   }
   const handleModal = useCallback(
     (modalMessage, modalUrl, modalType = 'GET', modalBody, modalInput, modalDropdown) => {
+      const handlePostConfirm = () => {
+        const selectedValue = inputRef.current.value
+        console.log(inputRef)
+        let additionalFields = {}
+
+        if (inputRef.current.nodeName === 'SELECT') {
+          const selectedItem = dropDownInfo.data.find(
+            (item) => item[modalDropdown.valueField] === selectedValue,
+          )
+          if (selectedItem && modalDropdown.addedField) {
+            Object.keys(modalDropdown.addedField).forEach((key) => {
+              additionalFields[key] = selectedItem[modalDropdown.addedField[key]]
+            })
+          }
+        }
+        const postRequestBody = {
+          ...modalBody,
+          ...additionalFields,
+          input: selectedValue,
+        }
+        // Send the POST request
+        genericPostRequest({
+          path: modalUrl,
+          values: postRequestBody,
+        })
+      }
+
+      // Modal setup for GET, codeblock, and other types
       if (modalType === 'GET') {
         ModalService.confirm({
           body: (
@@ -82,12 +110,7 @@ export default function CippActionsOffcanvas(props) {
             </div>
           ),
           title: 'Confirm',
-          onConfirm: () => [
-            genericPostRequest({
-              path: modalUrl,
-              values: { ...modalBody, ...{ input: inputRef.current.value } },
-            }),
-          ],
+          onConfirm: handlePostConfirm,
         })
       }
     },
@@ -99,7 +122,6 @@ export default function CippActionsOffcanvas(props) {
       modalContent,
     ],
   )
-
   useEffect(() => {
     if (dropDownInfo.isFetching) {
       handleModal(
@@ -282,14 +304,23 @@ export default function CippActionsOffcanvas(props) {
           <CSpinner>Loading</CSpinner>
         </CCallout>
       )}
-      {postResults.isSuccess && <CCallout color="info">{postResults.data?.Results}</CCallout>}
+      {postResults.isSuccess && (
+        <CippCodeBlock
+          code={postResults.data?.Results}
+          callout={true}
+          calloutCopyValue={getResults.data?.Results}
+        />
+      )}
       {postResults.isError && (
         <CCallout color="danger">Could not connect to API: {postResults.error.message}</CCallout>
       )}
       {getResults.isSuccess && (
-        <CCallout color={getResults.data?.colour ? getResults.data?.colour : 'info'}>
-          {getResults.data?.Results}
-        </CCallout>
+        <CippCodeBlock
+          code={getResults.data?.Results}
+          callout={true}
+          calloutColour={getResults.data?.colour ? getResults.data?.colour : 'info'}
+          calloutCopyValue={getResults.data?.Results}
+        />
       )}
       {getResults.isError && (
         <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
