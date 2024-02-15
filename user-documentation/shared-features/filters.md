@@ -41,6 +41,8 @@ Complex: [PROPERTY] [OPERATOR] [VALUE]; ...
 
 <table data-full-width="false"><thead><tr><th width="176.33333333333331">Operator</th><th>Description</th><th>Example Input</th><th data-hidden>Example Matched Entry</th></tr></thead><tbody><tr><td>eq</td><td>Equals</td><td>Complex: department eq Marketing</td><td><code>{ "displayName": "Megan Bowen", "department": "Marketing" }</code></td></tr><tr><td>ne</td><td>Not equals</td><td>Complex: city ne Pittsburgh</td><td><code>{ "displayName": "John Doe", "city": "New York" }</code></td></tr><tr><td>like</td><td>Contains the value</td><td>Complex: displayName like Megan</td><td><code>{ "displayName": "Megan Bowen" }</code></td></tr><tr><td>notlike</td><td>Does not contain the value</td><td>Complex: userType notlike Guest</td><td><code>{ "displayName": "Megan Bowen", "userType": "Member" }</code></td></tr><tr><td>gt</td><td>Greater than (for numerical values)</td><td>Complex: createdDateTime gt 2023-01-01</td><td><code>{ "displayName": "Megan Bowen", "createdDateTime": "2023-07-06T18:01:16Z" }</code></td></tr><tr><td>lt</td><td>Less than (for numerical values)</td><td>Complex: postalCode lt 20000</td><td><code>{ "displayName": "Megan Bowen", "postalCode": "15212" }</code></td></tr></tbody></table>
 
+
+
 * **PROPERTY**: Indicate the property name you wish to filter on. You can find the possible properties by using the column selector button.
 * **OPERATOR**: Use the operation you want to perform from the table above.
 * **VALUE**: Specify the value you want to compare the property against.
@@ -65,7 +67,7 @@ Complex: accountEnabled eq false; userType eq Member; userPrincipalName like die
 
 ### 4. Graph Filtering
 
-Select pages support Graph Filtering, which allow you to directly use a Graph filter Query.&#x20;
+Select pages support Graph Filtering, which allow you to directly use a Graph filter Query.
 
 #### Syntax:
 
@@ -82,3 +84,11 @@ Graph: assignedLicenses/$count ne 0
 ```
 
 For more information refer to the Microsoft documentation about Filtering [here](https://learn.microsoft.com/en-us/graph/filter-query-parameter?tabs=http)
+
+### 5. Alert rules Filter
+
+Alerts can be filtered using the same method as Complex filtering, allowing the same rules and operators except chaining statements together. For example to filter on logs that only have the userId 123:
+
+```vbnet
+UserId eq 123
+```
