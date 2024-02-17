@@ -259,22 +259,33 @@
     "impactColour": "info"
   },
   {
-    "name": "standards.NudgeMFA.enable",
+    "name": "standards.NudgeMFA",
     "cat": "Entra (AAD) Standards",
     "tag": ["lowimpact"],
-    "helpText": "Enables registration campaign for the tenant",
-    "addedComponent": [],
-    "label": "Request to setup Authenticator if not setup yet",
-    "impact": "Low Impact",
-    "impactColour": "info"
-  },
-  {
-    "name": "standards.NudgeMFA.disable",
-    "cat": "Entra (AAD) Standards",
-    "tag": ["lowimpact"],
-    "helpText": "Disables registration campaign for the tenant",
-    "addedComponent": [],
-    "label": "Disables the request to setup Authenticator if setup",
+    "helpText": "Sets the state of the registration campaign for the tenant",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Select value",
+        "name": "standards.NudgeMFA.state",
+        "values": [
+          {
+            "label": "Enabled",
+            "value": "enabled"
+          },
+          {
+            "label": "Disabled",
+            "value": "disabled"
+          }
+        ]
+      },
+      {
+        "type": "number",
+        "name": "standards.NudgeMFA.snoozeDurationInDays",
+        "label": "Number of days to allow users to skip registering Authenticator (0-14, default is 1)"
+      }
+    ],
+    "label": "Sets the state for the request to setup Authenticator",
     "impact": "Low Impact",
     "impactColour": "info"
   },
@@ -302,7 +313,7 @@
     "name": "standards.LegacyMFACleanup",
     "cat": "Entra (AAD) Standards",
     "tag": ["mediumimpact"],
-    "helpText": "Removes legacy Per-User MFA if the tenant has Security Defaults or an All Users Conditional Access rule enabled.",
+    "helpText": "This standard currently does not function and can be safely disabled",
     "addedComponent": [],
     "label": "Remove Legacy MFA if SD or CA is active",
     "impact": "Medium Impact",
@@ -359,11 +370,6 @@
     "tag": ["highimpact"],
     "helpText": "Disables App consent and set to Allow user consent for apps",
     "addedComponent": [],
-    "disabledFeatures": {
-      "report": true,
-      "warn": true,
-      "remediate": false
-    },
     "label": "Undo App Consent Standard",
     "impact": "High Impact",
     "impactColour": "danger"
@@ -675,22 +681,28 @@
     "impactColour": "warning"
   },
   {
-    "name": "standards.UserSubmissions.enable",
+    "name": "standards.UserSubmissions",
     "cat": "Exchange Standards",
     "tag": ["mediumimpact"],
-    "helpText": "Enables the spam submission button in Outlook",
-    "addedComponent": [],
-    "label": "Enable the built-in Report button in Outlook",
-    "impact": "Medium Impact",
-    "impactColour": "warning"
-  },
-  {
-    "name": "standards.UserSubmissions.disable",
-    "cat": "Exchange Standards",
-    "tag": ["mediumimpact"],
-    "helpText": "Disables the spam submission button in Outlook",
-    "addedComponent": [],
-    "label": "Disable the built-in Report button in Outlook",
+    "helpText": "Set the state of the spam submission button in Outlook",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Select value",
+        "name": "standards.UserSubmissions.state",
+        "values": [
+          {
+            "label": "Enabled",
+            "value": "enable"
+          },
+          {
+            "label": "Disabled",
+            "value": "disable"
+          }
+        ]
+      }
+    ],
+    "label": "Set the state of the built-in Report button in Outlook",
     "impact": "Medium Impact",
     "impactColour": "warning"
   },
@@ -711,7 +723,7 @@
     "helpText": "A value between 0 and 270 is supported. A value of 0 disables retirement, retired devices are removed from Intune after the specified number of days.",
     "addedComponent": [
       {
-        "type": "input",
+        "type": "number",
         "name": "standards.intuneDeviceRetirementDays.days",
         "label": "Maximum days (0 equals disabled)"
       }
@@ -727,7 +739,7 @@
     "helpText": "sets the maximum number of devices that can be registered by a user. A value of 0 disables device registration by users",
     "addedComponent": [
       {
-        "type": "input",
+        "type": "number",
         "name": "standards.intuneDeviceReg.max",
         "label": "Maximum devices (Enter 2147483647 for unlimited.)"
       }
@@ -838,7 +850,7 @@
     "name": "standards.ExcludedfileExt",
     "cat": "SharePoint Standards",
     "tag": ["highimpact"],
-    "helpText": "Sets the file extensions that are excluded from syncing with OneDrive. These files will be blocked from upload.",
+    "helpText": "Sets the file extensions that are excluded from syncing with OneDrive. These files will be blocked from upload. '*.' is automatically added to the extension and can be omitted.",
     "addedComponent": [
       {
         "type": "input",
