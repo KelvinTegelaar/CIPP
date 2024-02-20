@@ -137,10 +137,17 @@ export const RFFCFormInput = ({
   disabled = false,
   spellCheck = true,
   autoFocus = false,
+  onChange,
 }) => {
   return (
     <Field name={name} validate={validate}>
       {({ input, meta }) => {
+        const handleChange = onChange
+          ? (e) => {
+              input.onChange(e)
+              onChange(e)
+            }
+          : input.onChange
         return (
           <div className={className}>
             {label && <CFormLabel htmlFor={name}>{label}</CFormLabel>}
@@ -155,6 +162,7 @@ export const RFFCFormInput = ({
               placeholder={placeholder}
               spellCheck={spellCheck}
               autoFocus={autoFocus}
+              onChange={handleChange}
             />
             <RFFCFormFeedback meta={meta} />
           </div>
