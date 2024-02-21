@@ -6,6 +6,8 @@ import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 's
 import { Editor } from '@monaco-editor/react'
 import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import CopyToClipboard from 'react-copy-to-clipboard'
 
 function CippCodeOffCanvas({
   row,
@@ -14,6 +16,7 @@ function CippCodeOffCanvas({
   type,
   title = 'Template JSON',
   hideButton = false,
+  path = `/api/ExecEditTemplate?type=${type}`,
 }) {
   const [SaveTemplate, templateDetails] = useLazyGenericPostRequestQuery()
   const currentTheme = useSelector((state) => state.app.currentTheme)
@@ -53,18 +56,27 @@ function CippCodeOffCanvas({
         <CRow className="mb-3">
           <CCol>
             {!hideButton && (
-              <CButton
-                disabled={invalidJSON}
-                onClick={() =>
-                  SaveTemplate({
-                    path: `/api/ExecEditTemplate?type=${type}`,
-                    method: 'POST',
-                    values: templateData,
-                  })
-                }
-              >
-                Save changes {templateDetails.isFetching && <CSpinner size="sm" />}
-              </CButton>
+              <>
+                <CButton
+                  disabled={invalidJSON}
+                  onClick={() =>
+                    SaveTemplate({
+                      path: path,
+                      method: 'POST',
+                      values: templateData,
+                    })
+                  }
+                  className="me-2"
+                >
+                  <FontAwesomeIcon icon="save" className="me-2" /> Save changes
+                  {templateDetails.isFetching && <CSpinner size="sm" />}
+                </CButton>
+                <CopyToClipboard text={JSON.stringify(row, null, 2)}>
+                  <CButton disabled={invalidJSON}>
+                    <FontAwesomeIcon icon="clipboard" className="me-2" /> Copy to Clipboard
+                  </CButton>
+                </CopyToClipboard>
+              </>
             )}
           </CCol>
         </CRow>
@@ -83,6 +95,7 @@ CippCodeOffCanvas.propTypes = {
   type: PropTypes.string,
   title: PropTypes.string,
   hideButton: PropTypes.bool,
+  path: PropTypes.string,
 }
 
 export default CippCodeOffCanvas
