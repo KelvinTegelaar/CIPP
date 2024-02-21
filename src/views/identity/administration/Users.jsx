@@ -552,6 +552,58 @@ const Users = (row) => {
               },
             },
             {
+              label: 'Add to group',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                username: '!userPrincipalName',
+                userid: '!id',
+                TenantId: tenant.defaultDomainName,
+                Addmember: {
+                  value: '!userPrincipalName',
+                },
+              },
+              modalUrl: `/api/EditGroup`,
+              modalMessage: 'Select the group to add',
+              modalDropdown: {
+                url: `/api/listGroups?TenantFilter=${tenant.defaultDomainName}`,
+                labelField: 'displayName',
+                valueField: 'id',
+                addedField: {
+                  groupId: 'id',
+                  groupType: 'calculatedGroupType',
+                  groupName: 'displayName',
+                },
+              },
+            },
+            {
+              label: 'Remove from group',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                username: '!userPrincipalName',
+                userid: '!id',
+                TenantId: tenant.defaultDomainName,
+                RemoveMember: {
+                  value: '!userPrincipalName',
+                },
+              },
+              modalUrl: `/api/EditGroup`,
+              modalMessage: 'Select the group to remove',
+              modalDropdown: {
+                url: `/api/listGroups?TenantFilter=${tenant.defaultDomainName}`,
+                labelField: 'displayName',
+                valueField: 'id',
+                addedField: {
+                  groupId: 'id',
+                  groupType: 'calculatedGroupType',
+                  groupName: 'displayName',
+                },
+              },
+            },
+            {
               label: 'Set Out of Office',
               color: 'info',
               modal: true,
