@@ -83,7 +83,7 @@ const GraphExplorer = () => {
   const handleManagePreset = ({ values, action, message }) => {
     var params = {
       action: action,
-      values: values,
+      preset: values,
     }
     ModalService.confirm({
       title: 'Confirm',
@@ -260,6 +260,15 @@ const GraphExplorer = () => {
     field: PropTypes.node,
     set: PropTypes.string,
   }
+
+  function getPresetProps(values) {
+    var newvals = Object.assign({}, values)
+    delete newvals['reportTemplate']
+    delete newvals['tenantFilter']
+    delete newvals['IsShared']
+    return newvals
+  }
+
   console.log(graphrequest.data)
 
   return (
@@ -301,6 +310,7 @@ const GraphExplorer = () => {
                                 name="reportTemplate"
                                 label="Select a report preset"
                                 placeholder="Select a report"
+                                retainInput={false}
                                 multi={false}
                                 values={presets.map((preset) => {
                                   return {
@@ -411,8 +421,7 @@ const GraphExplorer = () => {
                                     <CippCodeOffCanvas
                                       title="Preset Import / Export"
                                       row={{
-                                        action: 'Copy',
-                                        values: props.values,
+                                        preset: getPresetProps(props.values),
                                       }}
                                       state={ocVisible}
                                       path="api/ExecGraphExplorerPreset"
