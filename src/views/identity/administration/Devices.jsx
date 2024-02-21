@@ -2,11 +2,55 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { CellTip, cellBooleanFormatter } from 'src/components/tables'
 import { CippPageList } from 'src/components/layout'
+import { Link } from 'react-router-dom'
+import { CButton } from '@coreui/react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEdit, faEllipsisV } from '@fortawesome/free-solid-svg-icons'
+import { CippActionsOffcanvas } from 'src/components/utilities'
 
 const DevicesList = () => {
   const [tenantColumnSet, setTenantColumn] = useState(true)
   const tenant = useSelector((state) => state.app.currentTenant)
-
+  const Offcanvas = (row, rowIndex, formatExtraData) => {
+    const tenant = useSelector((state) => state.app.currentTenant)
+    const [ocVisible, setOCVisible] = useState(false)
+    const editLink = `/identity/administration/groups/edit?groupId=${row.id}&tenantDomain=${tenant.defaultDomainName}`
+    return (
+      <>
+        <CButton size="sm" color="link" onClick={() => setOCVisible(true)}>
+          <FontAwesomeIcon icon={faEllipsisV} />
+        </CButton>
+        <CippActionsOffcanvas
+          title="Group Information"
+          extendedInfo={[
+            { label: 'Created Date (UTC)', value: `${row.createdDateTime ?? ' '}` },
+            { label: 'Display Name', value: `${row.displayName ?? ' '}` },
+            { label: 'Unique ID', value: `${row.id ?? ' '}` },
+          ]}
+          actions={[
+            {
+              label: 'Disable Device',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecDeviceDelete?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}&Action=Disable`,
+              modalMessage: 'Are you sure you want to disable this device.',
+            },
+            {
+              label: 'Delete Device',
+              color: 'warning',
+              modal: true,
+              modalUrl: `/api/ExecGroupsDelete?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}&Action=Enable`,
+              modalMessage: 'Are you sure you want to delete this device.',
+            },
+          ]}
+          placement="end"
+          visible={ocVisible}
+          id={row.id}
+          hideFunction={() => setOCVisible(false)}
+        />
+      </>
+    )
+  }
   const columns = [
     {
       name: 'Tenant',
@@ -73,6 +117,11 @@ const DevicesList = () => {
       name: 'Profile Type',
       sortable: true,
       exportSelector: 'profileType',
+    },
+    {
+      name: 'Actions',
+      cell: Offcanvas,
+      maxWidth: '20px',
     },
   ]
   useEffect(() => {
