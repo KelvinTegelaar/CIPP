@@ -129,7 +129,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             },
             modalUrl: `/api/ExecOneDriveShortCut`,
             modalDropdown: {
-              url: `/api/listSites?TenantFilter=${tenant.defaultDomainName}&type=SharePointSiteUsage`,
+              url: `/api/listSites?TenantFilter=${tenant.defaultDomainName}&type=SharePointSiteUsage?URLOnly=true`,
               labelField: 'URL',
               valueField: 'URL',
             },
