@@ -73,8 +73,12 @@ function CippCodeOffCanvas({
                   }
                   className="me-2"
                 >
-                  <FontAwesomeIcon icon="save" className="me-2" /> Save changes
-                  {templateDetails.isFetching && <CSpinner size="sm" />}
+                  {templateDetails.isFetching ? (
+                    <CSpinner size="sm" className="me-2" />
+                  ) : (
+                    <FontAwesomeIcon icon="save" className="me-2" />
+                  )}
+                  Save changes
                 </CButton>
                 <CopyToClipboard text={JSON.stringify(row, null, 2)} onCopy={() => setCopied(true)}>
                   <CButton disabled={invalidJSON}>
