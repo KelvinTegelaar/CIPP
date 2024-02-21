@@ -22,6 +22,7 @@ function CippCodeOffCanvas({
   const currentTheme = useSelector((state) => state.app.currentTheme)
   const [templateData, setFormData] = useState(row)
   const [invalidJSON, setInvalid] = useState(false)
+  const [copied, setCopied] = useState(false)
 
   function handleEditorChange(value, event) {
     try {
@@ -71,9 +72,10 @@ function CippCodeOffCanvas({
                   <FontAwesomeIcon icon="save" className="me-2" /> Save changes
                   {templateDetails.isFetching && <CSpinner size="sm" />}
                 </CButton>
-                <CopyToClipboard text={JSON.stringify(row, null, 2)}>
+                <CopyToClipboard text={JSON.stringify(row, null, 2)} onCopy={() => setCopied(true)}>
                   <CButton disabled={invalidJSON}>
-                    <FontAwesomeIcon icon="clipboard" className="me-2" /> Copy to Clipboard
+                    <FontAwesomeIcon icon={copied ? 'check' : 'clipboard'} className="me-2" /> Copy
+                    to Clipboard
                   </CButton>
                 </CopyToClipboard>
               </>
