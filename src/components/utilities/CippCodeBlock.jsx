@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-import { CButton } from '@coreui/react'
+import { CButton, CCallout } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCopy, faClipboard } from '@fortawesome/free-regular-svg-icons'
 import SyntaxHighlighter from 'react-syntax-highlighter'
@@ -13,6 +13,9 @@ function CippCodeBlock({
   showLineNumbers = true,
   startingLineNumber,
   wrapLongLines = true,
+  callout = false,
+  calloutColour = 'info',
+  calloutCopyValue = false,
 }) {
   const [codeCopied, setCodeCopied] = useState(false)
 
@@ -23,7 +26,7 @@ function CippCodeBlock({
 
   return (
     <div className="cipp-code">
-      <CopyToClipboard text={code} onCopy={() => onCodeCopied()}>
+      <CopyToClipboard text={calloutCopyValue || code} onCopy={() => onCodeCopied()}>
         <CButton
           color={codeCopied ? 'success' : 'info'}
           className="cipp-code-copy-button"
@@ -33,18 +36,20 @@ function CippCodeBlock({
           {codeCopied ? <FontAwesomeIcon icon={faClipboard} /> : <FontAwesomeIcon icon={faCopy} />}
         </CButton>
       </CopyToClipboard>
-
-      <SyntaxHighlighter
-        language={language}
-        showLineNumbers={showLineNumbers}
-        startingLineNumber={startingLineNumber}
-        wrapLongLines={wrapLongLines}
-        wrapLines={wrapLongLines}
-        style={atomOneDark}
-        className="cipp-code-block"
-      >
-        {code}
-      </SyntaxHighlighter>
+      {callout && <CCallout color={calloutColour}>{code}</CCallout>}
+      {!callout && (
+        <SyntaxHighlighter
+          language={language}
+          showLineNumbers={showLineNumbers}
+          startingLineNumber={startingLineNumber}
+          wrapLongLines={wrapLongLines}
+          wrapLines={wrapLongLines}
+          style={atomOneDark}
+          className="cipp-code-block"
+        >
+          {code}
+        </SyntaxHighlighter>
+      )}
     </div>
   )
 }

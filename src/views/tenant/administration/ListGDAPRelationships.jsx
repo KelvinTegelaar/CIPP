@@ -95,6 +95,16 @@ const Actions = (row, rowIndex, formatExtraData) => {
               row.id,
           },
           {
+            label: 'Open Relationship in Partner Center',
+            color: 'info',
+            link:
+              'https://partner.microsoft.com/en-us/dashboard/commerce2/customers/' +
+              row?.customer?.tenantId +
+              '/adminrelationships/' +
+              row.id,
+            external: true,
+          },
+          {
             label: 'Enable automatic extension',
             color: 'info',
             modal: true,

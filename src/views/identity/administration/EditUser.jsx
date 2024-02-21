@@ -14,6 +14,7 @@ import {
 } from 'src/components/forms'
 import countryList from 'src/data/countryList'
 import { useListUserQuery, useListUsersQuery } from 'src/store/api/users'
+import { useListGroupsQuery } from 'src/store/api/groups'
 import { useListDomainsQuery } from 'src/store/api/domains'
 import { useListLicensesQuery } from 'src/store/api/licenses'
 import { CippCodeBlock, ModalService } from 'src/components/utilities'
@@ -46,6 +47,12 @@ const EditUser = () => {
   } = useListUsersQuery({ tenantDomain })
 
   const {
+    data: groups = [],
+    isFetching: groupsIsFetching,
+    error: groupsError,
+  } = useListGroupsQuery({ tenantDomain })
+
+  const {
     data: domains = [],
     isFetching: domainsIsFetching,
     error: domainsError,
@@ -70,8 +77,11 @@ const EditUser = () => {
   }, [userId, tenantDomain, dispatch])
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const onSubmit = (values) => {
+    console.log(values.AddToGroups)
     const shippedValues = {
       AddedAliases: values.addedAliases,
+      AddToGroups: Array.isArray(values.AddToGroups) ? values.AddToGroups : [],
+      RemoveFromGroups: Array.isArray(values.RemoveFromGroups) ? values.RemoveFromGroups : [],
       BusinessPhone: values.businessPhones,
       RemoveAllLicenses: values.RemoveAllLicenses,
       City: values.city,
@@ -80,6 +90,7 @@ const EditUser = () => {
       Country: values.country,
       Department: values.department,
       DisplayName: values.displayName,
+      userPrincipalName: values.userPrincipalName,
       Domain: values.primDomain,
       firstName: values.givenName,
       Jobtitle: values.jobTitle,
@@ -94,12 +105,15 @@ const EditUser = () => {
       streetAddress: values.streetAddress,
       tenantID: tenantDomain,
       mustchangepass: values.RequirePasswordChange,
+      addedAttributes: values.addedAttributes,
       ...(values.licenses ? values.license : ''),
     }
-    //window.alert(JSON.stringify(shippedValues))
+    // window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/EditUser', values: shippedValues })
   }
   const usageLocation = useSelector((state) => state.app.usageLocation)
+  const [addedAttributes, setAddedAttribute] = React.useState(0)
+
   const precheckedLicenses = user.assignedLicenses
     ? user.assignedLicenses.reduce(
         (o, key) => Object.assign(o, { [`License_${key.skuId}`]: true }),
@@ -369,7 +383,84 @@ const EditUser = () => {
                               />
                             </CCol>
                           </CRow>
+                          <>
+                            {addedAttributes > 0 &&
+                              [...Array(addedAttributes)].map((e, i) => (
+                                <CRow key={i}>
+                                  <CCol md={6}>
+                                    <RFFCFormInput
+                                      name={`addedAttributes.${i}.Key`}
+                                      label="Attribute Name"
+                                      type="text"
+                                    />
+                                  </CCol>
+                                  <CCol md={6}>
+                                    <RFFCFormInput
+                                      name={`addedAttributes.${i}.Value`}
+                                      label="Attribute Value"
+                                      type="text"
+                                    />
+                                  </CCol>
+                                </CRow>
+                              ))}
+                          </>
+                          <CRow>
+                            <CCol className="mb-3" md={12}>
+                              {addedAttributes > 0 && (
+                                <CButton
+                                  onClick={() => setAddedAttribute(addedAttributes - 1)}
+                                  className={`circular-button`}
+                                  title={'-'}
+                                >
+                                  <FontAwesomeIcon icon={'minus'} />
+                                </CButton>
+                              )}
+                              <CButton
+                                onClick={() => setAddedAttribute(addedAttributes + 1)}
+                                className={`circular-button`}
+                                title={'+'}
+                              >
+                                <FontAwesomeIcon icon={'plus'} />
+                              </CButton>
+                            </CCol>
+                          </CRow>
                           <CRow className="mb-3">
+                            <CCol md={12}>
+                              <RFFSelectSearch
+                                multi={true}
+                                label="Add user to group"
+                                disabled={formDisabled}
+                                values={groups?.map((group) => ({
+                                  value: {
+                                    groupid: group.id,
+                                    groupType: group.calculatedGroupType,
+                                    groupName: group.displayName,
+                                  },
+                                  name: `${group.displayName} - ${group.calculatedGroupType} `,
+                                }))}
+                                placeholder={!groupsIsFetching ? 'Select groups' : 'Loading...'}
+                                name="AddToGroups"
+                              />
+                              {groupsError && <span>Failed to load list of groups</span>}
+                            </CCol>
+                            <CCol md={12}>
+                              <RFFSelectSearch
+                                multi={true}
+                                label="Remove user from group"
+                                disabled={formDisabled}
+                                values={groups?.map((group) => ({
+                                  value: {
+                                    groupid: group.id,
+                                    groupType: group.calculatedGroupType,
+                                    groupName: group.displayName,
+                                  },
+                                  name: `${group.displayName} - ${group.calculatedGroupType} `,
+                                }))}
+                                placeholder={!groupsIsFetching ? 'Select groups' : 'Loading...'}
+                                name="RemoveFromGroups"
+                              />
+                              {groupsError && <span>Failed to load list of groups</span>}
+                            </CCol>
                             <CCol md={12}>
                               <RFFSelectSearch
                                 label="Copy group membership from other user"

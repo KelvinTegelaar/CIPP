@@ -105,6 +105,16 @@ const Setup = () => {
         This wizard will guide you through setting up CIPPs access to your client tenants. If this
         is your first time setting up CIPP you will want to choose the option "I would like CIPP to
         create an application for me".
+        <CCallout color="warning">
+          To successfully finish setup you must follow the instructions{' '}
+          <a
+            href="https://docs.cipp.app/setup/installation/samwizard"
+            rel="noreferrer"
+            target="_blank"
+          >
+            here.
+          </a>
+        </CCallout>
         <CRow className="mt-3">
           <RFFCFormRadio
             value="CreateSAM"
