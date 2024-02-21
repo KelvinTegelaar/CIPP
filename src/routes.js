@@ -30,6 +30,8 @@ const EditGroup = React.lazy(() => import('src/views/identity/administration/Edi
 const ViewGroup = React.lazy(() => import('src/views/identity/administration/ViewGroup'))
 const Roles = React.lazy(() => import('src/views/identity/administration/Roles'))
 const Devices = React.lazy(() => import('src/views/endpoint/intune/Devices'))
+const allDevices = React.lazy(() => import('src/views/identity/administration/Devices'))
+
 const PageLogOut = React.lazy(() => import('src/views/pages/LogoutRedirect/PageLogOut'))
 
 const Page404 = React.lazy(() => import('src/views/pages/page404/Page404'))
@@ -258,6 +260,8 @@ const routes = [
   { path: '/identity/administration/ViewBec', name: 'View BEC', component: ViewBEC },
   { path: '/identity/administration', name: 'Administration' },
   { path: '/identity/administration/users', name: 'Users', component: Users },
+  { path: '/identity/administration/devices', name: 'Devices', component: allDevices },
+
   { path: '/identity/administration/groups/add', name: 'Add Group', component: AddGroup },
   {
     path: '/identity/administration/group-templates',
