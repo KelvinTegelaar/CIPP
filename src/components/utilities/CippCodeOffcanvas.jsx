@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { CButton, CCallout, CCol, CRow, CSpinner } from '@coreui/react'
 import { CippOffcanvas } from 'src/components/utilities'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
@@ -32,6 +32,10 @@ function CippCodeOffCanvas({
       setInvalid(true)
     }
   }
+
+  useEffect(() => {
+    setCopied(false)
+  }, [setCopied, templateData])
 
   return (
     <>
