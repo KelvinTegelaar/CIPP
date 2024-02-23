@@ -19,7 +19,7 @@ const OneDriveList = () => {
           <FontAwesomeIcon icon={faEllipsisV} />
         </CButton>
         <CippActionsOffcanvas
-          title="User Information"
+          title="Extended Information"
           extendedInfo={[
             {
               label: 'User Principal Name',

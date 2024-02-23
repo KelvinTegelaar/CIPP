@@ -441,6 +441,16 @@
     "impactColour": "info"
   },
   {
+    "name": "standards.MessageExpiration",
+    "cat": "Exchange Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Sets the transport message configuration to timeout a message at 12 hours.",
+    "addedComponent": [],
+    "label": "Lower Transport Message Expiration to 12 hours",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.AutoExpandArchive",
     "cat": "Exchange Standards",
     "tag": ["lowimpact"],
