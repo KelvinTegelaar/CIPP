@@ -30,7 +30,7 @@ import {
 import { OnChange } from 'react-final-form-listeners'
 import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 import PropTypes from 'prop-types'
-import { ModalService } from 'src/components/utilities'
+import { CippCodeOffCanvas, ModalService } from 'src/components/utilities'
 
 const GraphExplorer = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -39,6 +39,7 @@ const GraphExplorer = () => {
   const [alertVisible, setAlertVisible] = useState()
   const [random, setRandom] = useState('')
   const [random2, setRandom2] = useState('')
+  const [ocVisible, setOCVisible] = useState(false)
   const [searchNow, setSearchNow] = useState(false)
   const [visibleA, setVisibleA] = useState(true)
   const handleSubmit = async (values) => {
@@ -82,7 +83,7 @@ const GraphExplorer = () => {
   const handleManagePreset = ({ values, action, message }) => {
     var params = {
       action: action,
-      values: values,
+      preset: values,
     }
     ModalService.confirm({
       title: 'Confirm',
@@ -259,6 +260,15 @@ const GraphExplorer = () => {
     field: PropTypes.node,
     set: PropTypes.string,
   }
+
+  function getPresetProps(values) {
+    var newvals = Object.assign({}, values)
+    delete newvals['reportTemplate']
+    delete newvals['tenantFilter']
+    delete newvals['IsShared']
+    return newvals
+  }
+
   console.log(graphrequest.data)
 
   return (
@@ -300,6 +310,7 @@ const GraphExplorer = () => {
                                 name="reportTemplate"
                                 label="Select a report preset"
                                 placeholder="Select a report"
+                                retainInput={false}
                                 multi={false}
                                 values={presets.map((preset) => {
                                   return {
@@ -316,7 +327,11 @@ const GraphExplorer = () => {
                             </div>
                             <RFFCFormInput type="text" name="name" label="Preset Name" />
                             <WhenFieldChanges field="reportTemplate" set="name" />
-                            <RFFCFormSwitch name="IsShared" label="Share Preset" />
+                            <CTooltip content="Share this preset with other users?">
+                              <span>
+                                <RFFCFormSwitch name="IsShared" label="Share Preset" />
+                              </span>
+                            </CTooltip>
                             <WhenFieldChanges field="reportTemplate" set="IsShared" />
                             <FormSpy>
                               {(props) => {
@@ -326,6 +341,14 @@ const GraphExplorer = () => {
                                 return (
                                   <>
                                     <div className="my-2">
+                                      <CTooltip content="Import / Export" placement="right">
+                                        <CButton
+                                          onClick={() => setOCVisible(true)}
+                                          className="me-2"
+                                        >
+                                          <FontAwesomeIcon icon="exchange-alt" />
+                                        </CButton>
+                                      </CTooltip>
                                       {!preset[0]?.isBuiltin &&
                                         preset[0]?.id &&
                                         preset[0]?.IsMyPreset && (
@@ -373,6 +396,7 @@ const GraphExplorer = () => {
                                                   values: props.values,
                                                 })
                                               }
+                                              className="me-2"
                                             >
                                               <FontAwesomeIcon icon="trash" />
                                             </CButton>
@@ -394,6 +418,18 @@ const GraphExplorer = () => {
                                         {postResults.data?.Results}
                                       </CAlert>
                                     )}
+                                    <CippCodeOffCanvas
+                                      title="Preset Import / Export"
+                                      row={{
+                                        preset: getPresetProps(props.values),
+                                      }}
+                                      state={ocVisible}
+                                      path="api/ExecGraphExplorerPreset"
+                                      hideFunction={() => {
+                                        setOCVisible(false)
+                                        setRandom2((Math.random() + 1).toString(36).substring(7))
+                                      }}
+                                    />
                                   </>
                                 )
                               }}
