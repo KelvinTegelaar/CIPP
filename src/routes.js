@@ -3,6 +3,7 @@ import React from 'react'
 const Home = React.lazy(() => import('src/views/home/Home'))
 const Logs = React.lazy(() => import('src/views/cipp/Logs'))
 const Scheduler = React.lazy(() => import('src/views/cipp/Scheduler'))
+const Statistics = React.lazy(() => import('src/views/cipp/Statistics'))
 const Users = React.lazy(() => import('src/views/identity/administration/Users'))
 const DeletedItems = React.lazy(() => import('src/views/identity/administration/Deleted'))
 const ViewBEC = React.lazy(() => import('src/views/identity/administration/ViewBEC'))
@@ -244,7 +245,7 @@ const routes = [
   { path: '/home', name: 'Home', component: Home },
   { path: '/cipp/logs', name: 'Logs', component: Logs },
   { path: '/cipp/scheduler', name: 'Scheduler', component: Scheduler },
-
+  { path: '/cipp/statistics', name: 'Statistics', component: Statistics },
   { path: '/cipp/404', name: 'Error', component: Page404 },
   { path: '/cipp/403', name: 'Error', component: Page403 },
   { path: '/cipp/500', name: 'Error', component: Page500 },
