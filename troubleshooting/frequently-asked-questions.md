@@ -113,8 +113,7 @@ This permits users the ability to grant consent when access CIPP now.
 
 <summary>Can I replace the default branding with my own in CIPP?</summary>
 
-While currently technically possible, this is not recommended. CIPP is moving those towards compiled files instead of static ones, and having changed logo will very likely break your instance when that change occurs.  
-Additionally the branding isn't just a decorative feature, it plays a role in helping maintain visibility and community growth.  
+No, CIPP's branding is compiled into the code. Additionally the branding isn't just a decorative feature, it plays a role in helping maintain visibility and community growth.  
 However, a custom logo can be added to reports. This can be done in the [User Settings page](/user-documentation/cipp/user-settings.md#user-settings).
 
 </details>
