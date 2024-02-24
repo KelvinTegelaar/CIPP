@@ -26,7 +26,7 @@ Yes. CIPP can use IP whitelisting. This feature is in preview at Azure and might
 
 To add Conditional Access to CIPP, follow the below steps:
 
-1. Go to your [Conditional Access Policies](https://portal.azure.com/#blade/Microsoft\_AAD\_IAM/ConditionalAccessBlade/Policies)
+1. Go to your [Conditional Access Policies](https://portal.azure.com/#blade/Microsoft_AAD_IAM/ConditionalAccessBlade/Policies)
 2. Select which users to apply the policy to, default suggestion is _"All Users"_
 3. Select **Azure Static Web Apps** as the included app under "Cloud Apps or actions"
 4. Configure any condition you want. For example Trusted Locations, specific IPs, specific platforms.
@@ -101,10 +101,20 @@ CIPP is now no longer available publicly over the internet.
 
 If your Azure Tenant requires admin approval for user apps, add consent by following the below steps:
 
-1. Go to [Azure Enterprise Applications](https://portal.azure.com/#blade/Microsoft\_AAD\_IAM/StartboardApplicationsMenuBlade/AllApps)
+1. Go to [Azure Enterprise Applications](https://portal.azure.com/#blade/Microsoft_AAD_IAM/StartboardApplicationsMenuBlade/AllApps)
 2. Find _Azure Static Websites_
 3. Grant Admin Consent for all
 
 This permits users the ability to grant consent when access CIPP now.
+
+</details>
+
+<details>
+
+<summary>Can I replace the default branding with my own in CIPP?</summary>
+
+While currently technically possible, this is not recommended. CIPP is moving those towards compiled files instead of static ones, and having changed logo will very likely break your instance when that change occurs.  
+Additionally the branding isn't just a decorative feature, it plays a role in helping maintain visibility and community growth.  
+However, a custom logo can be added to reports. This can be done in the [User Settings page](/user-documentation/cipp/user-settings.md#user-settings).
 
 </details>
