@@ -40,7 +40,6 @@ const GraphExplorer = () => {
   const [alertVisible, setAlertVisible] = useState()
   const [random, setRandom] = useState('')
   const [random2, setRandom2] = useState('')
-  const [random3, setRandom3] = useState('')
   const [ocVisible, setOCVisible] = useState(false)
   const [searchNow, setSearchNow] = useState(false)
   const [visibleA, setVisibleA] = useState(true)
@@ -59,21 +58,21 @@ const GraphExplorer = () => {
   } = useGenericGetRequestQuery({ path: '/api/ListGraphExplorerPresets', params: { random2 } })
   const QueryColumns = { set: false, data: [] }
 
-  function endpointChange(value) {
-    execPropRequest({
-      path: '/api/ListGraphRequest',
-      params: {
-        Endpoint: value,
-        ListProperties: true,
-        TenantFilter: tenant.defaultDomainName,
-        IgnoreErrors: true,
-        random: (Math.random() + 1).toString(36).substring(7),
-      },
-    })
-  }
   const debounceEndpointChange = useMemo(() => {
+    function endpointChange(value) {
+      execPropRequest({
+        path: '/api/ListGraphRequest',
+        params: {
+          Endpoint: value,
+          ListProperties: true,
+          TenantFilter: tenant.defaultDomainName,
+          IgnoreErrors: true,
+          random: (Math.random() + 1).toString(36).substring(7),
+        },
+      })
+    }
     return debounce(endpointChange, 1000)
-  }, [endpointChange])
+  }, [])
 
   if (graphrequest.isSuccess) {
     if (graphrequest.data?.Results?.length > 0) {
@@ -529,9 +528,6 @@ const GraphExplorer = () => {
                                     : []
                                 }
                                 allowCreate={true}
-                                refreshFunction={() =>
-                                  setRandom3((Math.random() + 1).toString(36).substring(7))
-                                }
                                 isLoading={availableProperties.isFetching}
                               />
                             </div>
@@ -572,7 +568,7 @@ const GraphExplorer = () => {
       <hr />
       <CippPage title="Report Results" tenantSelector={false}>
         {!searchNow && <span>Execute a search to get started.</span>}
-        {graphrequest.isFetching && (
+        {graphrequest.isFetching && !QueryColumns.set && (
           <div className="my-2">
             <CSpinner className="me-2" /> Loading Data
           </div>
