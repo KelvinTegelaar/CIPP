@@ -134,10 +134,10 @@ const MFAList = () => {
       datatable={{
         filterlist: [
           { filterName: 'Enabled users', filter: '"accountEnabled":true' },
-          { filterName: 'No guest users', filter: 'Complex: UPN notlike #EXT#' },
+          { filterName: 'Non-guest users', filter: 'Complex: UPN notlike #EXT#' },
           { filterName: 'Licensed users', filter: 'Complex: IsLicensed eq true' },
           {
-            filterName: 'Enabled, licensed users missing MFA',
+            filterName: 'Enabled, licensed non-guest users missing MFA',
             filter:
               'Complex: UPN notlike #EXT#; IsLicensed eq true; accountEnabled eq true; MFARegistration eq false',
           },
