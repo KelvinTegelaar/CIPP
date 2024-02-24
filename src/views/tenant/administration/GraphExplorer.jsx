@@ -482,6 +482,7 @@ const GraphExplorer = () => {
                                 )
                               }}
                             </FormSpy>
+                            <hr />
                             <RFFCFormSwitch name="$count" label="Use $count" />
                             <WhenFieldChanges field="reportTemplate" set="$count" />
                             <RFFCFormSwitch name="NoPagination" label="Disable Pagination" />
@@ -503,13 +504,6 @@ const GraphExplorer = () => {
                             />
                             <WhenFieldChanges field="reportTemplate" set="endpoint" />
                             <WhenFieldChanges field="endpoint" set="endpoint" />
-                            <RFFCFormInput
-                              type="text"
-                              name="$filter"
-                              label="Filter"
-                              placeholder="Enter the filter string for the Graph query"
-                            />
-                            <WhenFieldChanges field="reportTemplate" set="$filter" />
                             <div className="mb-3">
                               <RFFSelectSearch
                                 name="$select"
@@ -531,6 +525,13 @@ const GraphExplorer = () => {
                                 isLoading={availableProperties.isFetching}
                               />
                             </div>
+                            <RFFCFormInput
+                              type="text"
+                              name="$filter"
+                              label="Filter"
+                              placeholder="Enter the filter string for the Graph query"
+                            />
+                            <WhenFieldChanges field="reportTemplate" set="$filter" />
                             <WhenFieldChanges field="reportTemplate" set="$select" />
                             <RFFCFormInput
                               type="text"
