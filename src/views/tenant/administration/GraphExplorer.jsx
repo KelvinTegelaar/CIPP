@@ -590,6 +590,7 @@ const GraphExplorer = () => {
                   columns={QueryColumns.data}
                   data={graphrequest?.data?.Results}
                   isFetching={graphrequest.isFetching}
+                  refreshFunction={() => setRandom((Math.random() + 1).toString(36).substring(7))}
                 />
               </>
             </CCardBody>
