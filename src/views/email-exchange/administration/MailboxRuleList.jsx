@@ -2,44 +2,65 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
 import { CellTip } from 'src/components/tables'
+import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 
 const MailboxRuleList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   const columns = [
     {
-      selector: (row) => row['Tenant'],
+      selector: (row) => row?.Tenant,
       name: 'Tenant',
       sortable: true,
       exportSelector: 'Tenant',
-      cell: (row) => CellTip(row['Tenant']),
+      maxWidth: '150px',
+      cell: cellGenericFormatter(),
     },
     {
-      selector: (row) => row['Name'],
+      selector: (row) => row?.UserPrincipalName,
+      name: 'User Principal Name',
+      sortable: true,
+      exportSelector: 'UserPrincipalName',
+      maxWidth: '200px',
+      cell: cellGenericFormatter(),
+    },
+    {
+      selector: (row) => row?.Enabled,
+      name: 'Enabled',
+      sortable: true,
+      cell: cellGenericFormatter(),
+      exportSelector: 'Enabled',
+      maxWidth: '50px',
+    },
+    {
+      selector: (row) => row?.Name,
       name: 'Display Name',
       sortable: true,
-      cell: (row) => CellTip(row['Name']),
+      cell: cellGenericFormatter(),
+      maxWidth: '200px',
       exportSelector: 'Name',
     },
     {
-      selector: (row) => row['Description'],
+      selector: (row) => row?.Description,
       name: 'Description',
       sortable: true,
-      cell: (row) => CellTip(row['Description']),
+      cell: cellGenericFormatter(),
       exportSelector: 'Description',
     },
     {
-      selector: (row) => row['MailboxOwnerId'],
+      selector: (row) => row?.MailboxOwnerId,
       name: 'Mailbox',
       sortable: true,
       exportSelector: 'MailboxOwnerId',
       maxWidth: '150px',
+      cell: cellGenericFormatter(),
     },
     {
-      selector: (row) => row['ForwardTo'],
+      selector: (row) => row?.ForwardTo,
       name: 'Forwards To',
       sortable: true,
       exportSelector: 'ForwardTo',
+      cell: cellGenericFormatter(),
     },
   ]
 
