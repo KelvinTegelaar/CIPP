@@ -207,10 +207,16 @@ const ApplyNewStandard = () => {
     (tenant) => tenant.displayName === 'AllTenants',
   )
 
-  function getLabel(item) {
+  function getLabel(item, type) {
+    if (!item || !item.name) {
+      return ''
+    }
     const keys = item.name.split('.')
     let value = keys.reduce((prev, curr) => prev && prev[curr], allTenantsStandard)
-    return value ? `* Enabled via All Tenants` : ''
+    if (!value || !value[type]) {
+      return ''
+    }
+    return `* Enabled via All Tenants`
   }
 
   const groupedStandards = allStandardsList.reduce((acc, obj) => {
@@ -437,7 +443,7 @@ const ApplyNewStandard = () => {
                                           name={`${obj.name}.report`}
                                           disabled={obj.disabledFeatures?.report}
                                           helpText="Report stores the data in the database to use in custom BPA reports."
-                                          sublabel={getLabel(obj)}
+                                          sublabel={getLabel(obj, 'report')}
                                         />
                                       </CCol>
                                       <CCol>
@@ -446,7 +452,7 @@ const ApplyNewStandard = () => {
                                           name={`${obj.name}.alert`}
                                           disabled={obj.disabledFeatures?.warn}
                                           helpText="Alert Generates an alert in the log, if remediate is enabled the log entry will also say if the remediation was successful."
-                                          sublabel={getLabel(obj)}
+                                          sublabel={getLabel(obj, 'alert')}
                                         />
                                       </CCol>
                                       <CCol>
@@ -455,7 +461,7 @@ const ApplyNewStandard = () => {
                                           name={`${obj.name}.remediate`}
                                           disabled={obj.disabledFeatures?.remediate}
                                           helpText={'Remediate executes the fix for standard.'}
-                                          sublabel={getLabel(obj)}
+                                          sublabel={getLabel(obj, 'remediate')}
                                         />
                                       </CCol>
                                       <CCol md={3}>
