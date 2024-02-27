@@ -12,10 +12,6 @@
         "vendorTenantId": "8ebde5a4-a587-497c-9881-8a5c272dd1c4"
     },
     {
-        "vendorName": "Eshgro Smarter365",
-        "vendorTenantId": "0a3132f8-cbcd-430f-a554-b0490bea8018"
-    },
-    {
         "vendorName": "BitTitan",
         "vendorTenantId": "6690473e-14f0-4f77-bf88-2ae5ade8746c"
     },
@@ -46,14 +42,6 @@
     {
         "vendorName": "CloudMore AB",
         "vendorTenantId": "0cc4f6a9-d96a-4508-b938-32386e1c44cf"
-    },
-    {
-        "vendorName": "Google Workspace",
-        "vendorTenantId": "0f8cb250-b44f-4acd-b24e-2524ef9f85ac"
-    },
-    {
-        "vendorName": "Merill",
-        "vendorTenantId": "10407d69-1ba5-4bec-8ebe-9af2f0b9e06a"
     },
     {
         "vendorName": "Citrix Cloud",
@@ -192,10 +180,6 @@
         "vendorTenantId": "8edc1ef5-a81d-4229-badb-e2634a284461"
     },
     {
-        "vendorName": "MSPMagic",
-        "vendorTenantId": "74d3d0de-bbd7-433f-95c2-40cc5d185968"
-    },
-    {
         "vendorName": "SimeonCloud",
         "vendorTenantId": "3d945cb7-f7da-444c-8c9e-93c3226581ec"
     },
@@ -234,5 +218,37 @@
     {
         "vendorName": "SaaSAlerts",
         "vendorTenantId": "5c7b2b48-9e8f-49ba-80d6-3432e39d596b"
+    },
+    {
+        "vendorName": "BullPhish (Ciranda)",
+        "vendorTenantId": "5e4ab895-7a4c-4eea-bb39-75edca0421ad"
+    },
+    {
+        "vendorName": "Coreview",
+        "vendorTenantId": "73506dd6-2bc3-49c0-92f3-b2877bab00ba"
+    },
+    {
+        "vendorName": "Quickpass (CyberQP365)",
+        "vendorTenantId": "c9006408-eb26-4e50-9bd5-2c078e3dc844"
+    },
+    {
+        "vendorName": "Infima",
+        "vendorTenantId": "2bd37396-af18-448c-a391-dd7800364e6f"
+    },
+    {
+        "vendorName": "Immybot",
+        "vendorTenantId": "1dcfdedd-ec87-461d-9d55-6989a519d154"
+    },
+    {
+        "vendorName": "N-Able/Cove backup",
+        "vendorTenantId": "521c973d-080f-4861-a0cb-8939e59d3d39"
+    },
+    {
+        "vendorName": "Dropsuite",
+        "vendorTenantId": "5b8e57d8-5c8e-4b82-98a5-b003bbb26b31"
+    },
+    {
+        "vendorName": "Huntress",
+        "vendorTenantId": "19be9add-482a-4c98-ba76-4c2ef7f3bb13"
     }
 ]
