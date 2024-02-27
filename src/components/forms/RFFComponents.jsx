@@ -11,6 +11,7 @@ import {
   CTooltip,
 } from '@coreui/react'
 import Select from 'react-select'
+import Creatable, { useCreatable } from 'react-select/creatable'
 import { Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
 import React, { useState, useMemo, useRef } from 'react'
@@ -393,6 +394,7 @@ export const RFFSelectSearch = ({
   disabled = false,
   retainInput = true,
   isLoading = false,
+  allowCreate = false,
   refreshFunction,
   props,
 }) => {
@@ -433,7 +435,7 @@ export const RFFSelectSearch = ({
                 </CTooltip>
               )}
             </CFormLabel>
-            {onChange && (
+            {!allowCreate && onChange && (
               <Select
                 className="react-select-container"
                 classNamePrefix="react-select"
@@ -452,8 +454,45 @@ export const RFFSelectSearch = ({
                 {...props}
               />
             )}
-            {!onChange && (
+            {!allowCreate && !onChange && (
               <Select
+                className="react-select-container"
+                classNamePrefix="react-select"
+                {...input}
+                isClearable={true}
+                name={name}
+                id={name}
+                disabled={disabled}
+                options={selectSearchvalues}
+                placeholder={placeholder}
+                onInputChange={setOnInputChange}
+                isMulti={multi}
+                inputValue={inputText}
+                isLoading={isLoading}
+                {...props}
+              />
+            )}
+            {allowCreate && onChange && (
+              <Creatable
+                className="react-select-container"
+                classNamePrefix="react-select"
+                {...input}
+                isClearable={false}
+                name={name}
+                id={name}
+                disabled={disabled}
+                options={selectSearchvalues}
+                placeholder={placeholder}
+                isMulti={multi}
+                onChange={onChange}
+                onInputChange={debounceOnInputChange}
+                inputValue={inputText}
+                isLoading={isLoading}
+                {...props}
+              />
+            )}
+            {allowCreate && !onChange && (
+              <Creatable
                 className="react-select-container"
                 classNamePrefix="react-select"
                 {...input}
