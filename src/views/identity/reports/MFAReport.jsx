@@ -26,17 +26,18 @@ const columns = [
     exportSelector: 'isLicensed',
   },
   {
-    selector: (row) => row['PerUser'],
-    name: 'Per user MFA Status',
-    sortable: true,
-    exportSelector: 'PerUser',
-  },
-  {
     selector: (row) => row['MFARegistration'],
     name: 'Registered for Conditional MFA',
     sortable: true,
     cell: cellBooleanFormatter(),
     exportSelector: 'MFARegistration',
+  },
+  {
+    selector: (row) => row['CoveredBySD'],
+    name: 'Enforced via Security Defaults',
+    sortable: true,
+    cell: cellBooleanFormatter({ colourless: true }),
+    exportSelector: 'CoveredBySD',
   },
   {
     selector: (row) => row['CoveredByCA'],
@@ -46,11 +47,10 @@ const columns = [
     exportSelector: 'CoveredByCA',
   },
   {
-    selector: (row) => row['CoveredBySD'],
-    name: 'Enforced via Security Defaults',
+    selector: (row) => row['PerUser'],
+    name: 'Per user MFA Status',
     sortable: true,
-    cell: cellBooleanFormatter({ colourless: true }),
-    exportSelector: 'CoveredBySD',
+    exportSelector: 'PerUser',
   },
 ]
 
@@ -134,7 +134,17 @@ const MFAList = () => {
       datatable={{
         filterlist: [
           { filterName: 'Enabled users', filter: '"accountEnabled":true' },
+          { filterName: 'Non-guest users', filter: 'Complex: UPN notlike #EXT#' },
           { filterName: 'Licensed users', filter: 'Complex: IsLicensed eq true' },
+          {
+            filterName: 'Enabled, licensed non-guest users missing MFA',
+            filter:
+              'Complex: UPN notlike #EXT#; IsLicensed eq true; accountEnabled eq true; MFARegistration eq false',
+          },
+          {
+            filterName: 'No MFA methods registered',
+            filter: 'Complex: MFARegistration eq false',
+          },
         ],
         columns: tenant.defaultDomainName === 'AllTenants' ? Altcolumns : columns,
         path: '/api/ListMFAUsers',

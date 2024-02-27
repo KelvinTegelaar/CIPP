@@ -18,7 +18,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
         <FontAwesomeIcon icon={faEllipsisV} />
       </CButton>
       <CippActionsOffcanvas
-        title="User Information"
+        title="Extended Information"
         extendedInfo={[
           {
             label: 'Increase spam score with image links',
