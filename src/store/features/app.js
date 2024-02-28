@@ -11,6 +11,7 @@ const initialState = {
   tablePageSize: 25,
   pageSizes: [25, 50, 100, 200, 500],
   TenantListSelector: false,
+  defaultColumns: {},
 }
 
 export const appSlice = createSlice({
@@ -47,6 +48,9 @@ export const appSlice = createSlice({
     setOffboardingDefaults: (state, action) => {
       state.offboardingDefaults = action.payload?.offboardingDefaults
     },
+    setDefaultColumns: (state, action) => {
+      state.defaultColumns[action.payload.endpoint] = action.payload?.columns
+    },
     setUserSettings: (state, action) => {
       //foreach key in the userSettings, set the state key to the value of that setting
       Object.keys(action.payload?.userSettings).forEach((key) => {
@@ -68,6 +72,7 @@ export const {
   setReportImage,
   setOffboardingDefaults,
   setUserSettings,
+  setDefaultColumns,
 } = appSlice.actions
 
 export default persistReducer(
