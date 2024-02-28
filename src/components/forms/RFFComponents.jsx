@@ -429,7 +429,12 @@ export const RFFSelectSearch = ({
               {label}
               {refreshFunction && (
                 <CTooltip content="Refresh" placement="right">
-                  <CButton onClick={refreshFunction} variant="ghost" className="ms-1" size="sm">
+                  <CButton
+                    onClick={refreshFunction}
+                    variant="ghost"
+                    className="ms-1 py-0 border-0"
+                    size="sm"
+                  >
                     <FontAwesomeIcon icon="sync" />
                   </CButton>
                 </CTooltip>
