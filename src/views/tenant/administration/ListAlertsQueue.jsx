@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { CButton, CCallout, CCol, CForm, CRow, CSpinner, CTooltip } from '@coreui/react'
 import { useSelector } from 'react-redux'
-import { Field, Form } from 'react-final-form'
+import { Field, Form, FormSpy } from 'react-final-form'
 import { RFFCFormSwitch } from 'src/components/forms'
 import {
   useGenericGetRequestQuery,
@@ -25,8 +25,19 @@ const alertsList = [
       'Alert on tenants without a Conditional Access policy, while having Conditional Access licensing available.',
   },
   { name: 'AdminPassword', label: 'Alert on changed admin Passwords' },
-  { name: 'QuotaUsed', label: 'Alert on 90% mailbox quota used' },
-  { name: 'SharePointQuota', label: 'Alert on 90% SharePoint quota used' },
+  {
+    name: 'QuotaUsed',
+    label: 'Alert on % mailbox quota used',
+    requiresInput: true,
+    inputLabel: 'Enter quota percentage',
+    defaultValue: 90,
+  },
+  {
+    name: 'SharePointQuota',
+    label: 'Alert on % SharePoint quota used',
+    requiresInput: true,
+    inputLabel: 'Enter quota percentage',
+  },
   { name: 'ExpiringLicenses', label: 'Alert on licenses expiring in 30 days' },
   { name: 'SecDefaultsUpsell', label: 'Alert on Security Defaults automatic enablement' },
   {
@@ -121,7 +132,7 @@ const ListClassicAlerts = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const onSubmit = (values) => {
     Object.keys(values).filter(function (x) {
-      if (values[x] === null) {
+      if (values[x] === null || values[x] === 0) {
         delete values[x]
       }
       return null
@@ -201,11 +212,27 @@ const ListClassicAlerts = () => {
                         <hr />
                         {alertsList.map((alert, index) => (
                           <CCol key={alert.name} md="6">
-                            <RFFCFormSwitch
-                              name={alert.name}
-                              label={alert.label}
-                              sublabel={getLabel(alert.name)}
-                            />
+                            <RFFCFormSwitch name={alert.name} label={alert.label} />
+                            {alert.requiresInput && (
+                              <FormSpy subscription={{ values: true }}>
+                                {({ values }) => {
+                                  // Check if the switch for this alert is turned on before showing the input
+                                  if (values[alert.name]) {
+                                    return (
+                                      <Field
+                                        name={`${alert.name}Quota`} // Unique name for the input field
+                                        component="input"
+                                        type="number"
+                                        placeholder={alert.inputLabel}
+                                        initialValue={alert.defaultValue} // Set the initial value
+                                        parse={(value) => Number(value)} // Ensure value is a number
+                                      />
+                                    )
+                                  }
+                                  return null
+                                }}
+                              </FormSpy>
+                            )}
                           </CCol>
                         ))}
                       </CRow>
