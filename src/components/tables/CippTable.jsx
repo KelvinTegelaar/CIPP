@@ -204,7 +204,9 @@ export default function CippTable({
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const addColumn = (columnname) => {
-    let alreadyInArray = updatedColumns.some((o) => o.exportSelector === columnname)
+    let alreadyInArray = updatedColumns.some(
+      (o) => o.exportSelector === columnname && o?.omit !== true,
+    )
     let newColumns = [...updatedColumns]
     const actionsColumn = newColumns.length > 0 ? newColumns.pop() : null
 
