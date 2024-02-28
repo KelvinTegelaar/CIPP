@@ -23,6 +23,7 @@ export default function CippDatatable({ path, params, ...rest }) {
       {data?.Metadata?.Queued && <CCallout color="info">{data?.Metadata?.QueueMessage}</CCallout>}
       <CippTable
         {...rest}
+        endpointName={path}
         data={Array.isArray(data?.Results) ? data?.Results : data}
         isFetching={isFetching}
         error={error}
