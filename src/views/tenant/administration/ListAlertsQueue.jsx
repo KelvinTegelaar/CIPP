@@ -30,7 +30,6 @@ const alertsList = [
     label: 'Alert on % mailbox quota used',
     requiresInput: true,
     inputLabel: 'Enter quota percentage',
-    defaultValue: 90,
   },
   {
     name: 'SharePointQuota',
