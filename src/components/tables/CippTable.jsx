@@ -163,7 +163,7 @@ export default function CippTable({
     let tempColumns = actionsColumn ? columns.slice(0, -1) : [...columns]
 
     defaultColumnsArray.forEach((columnName) => {
-      if (!tempColumns.find((c) => c.exportSelector === columnName)) {
+      if (!tempColumns.find((c) => c.exportSelector === columnName && c?.omit !== true)) {
         tempColumns.push({
           name: columnName,
           selector: (row) => row[columnName],
@@ -713,9 +713,9 @@ export default function CippTable({
                   dataKeys().map((item, idx) => {
                     return (
                       <CDropdownItem key={idx} onClick={() => addColumn(item)}>
-                        {updatedColumns.find((o) => o.exportSelector === item) && (
-                          <FontAwesomeIcon icon={faCheck} />
-                        )}{' '}
+                        {updatedColumns.find(
+                          (o) => o.exportSelector === item && o?.omit !== true,
+                        ) && <FontAwesomeIcon icon={faCheck} />}{' '}
                         {item}
                       </CDropdownItem>
                     )
