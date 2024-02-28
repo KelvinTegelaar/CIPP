@@ -183,7 +183,7 @@
 * [Security reports](security/security-reports.md)
 * [CIPP Community Vulnerability Disclosure Policy](security/cipp-community-vulnerability-disclosure-policy.md)
 
-## 👩💻 👩💻 Dev Documentation
+## 👩‍💻 👩💻 Dev Documentation
 
 * [CIPP Dev Guide](dev-documentation/cipp-dev-guide/README.md)
   * [Setting Up for Local Development](dev-documentation/cipp-dev-guide/setting-up-for-local-development.md)
@@ -193,7 +193,7 @@
 * [Contributing to the Code](dev-documentation/contributing-to-the-code.md)
 * [Contributing to the Documentation](dev-documentation/contributing-to-the-documentation.md)
 
-## ⚙ API Documentation
+## ⚙️ API Documentation
 
 * [Setup & Authentication](api-documentation/setup-and-authentication.md)
 * [Endpoints](api-documentation/endpoints.md)
