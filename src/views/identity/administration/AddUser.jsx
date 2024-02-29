@@ -98,7 +98,6 @@ const AddUser = () => {
       MustChangePass: values.MustChangePass,
       tenantID: tenantDomain,
       addedAttributes: values.addedAttributes,
-      setManager: values.setManager,
       ...values.license,
     }
     //window.alert(JSON.stringify(shippedValues))
@@ -362,18 +361,6 @@ const AddUser = () => {
                         </CCol>
                       </CRow>
                       <CRow className="mb-3">
-                        <CCol md={12}>
-                          <RFFSelectSearch
-                            label="Set Manager"
-                            values={users?.map((user) => ({
-                              value: user.id,
-                              name: user.displayName,
-                            }))}
-                            placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
-                            name="setManager"
-                          />
-                          {usersError && <span>Failed to load list of users</span>}
-                        </CCol>
                         <CCol md={12}>
                           <RFFSelectSearch
                             label="Copy group membership from other user"

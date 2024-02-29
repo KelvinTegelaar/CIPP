@@ -52,11 +52,6 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Devices',
-        to: '/identity/administration/devices',
-      },
-      {
-        component: CNavItem,
         name: 'Deploy Group Template',
         to: '/identity/administration/deploy-group-template',
       },
@@ -741,11 +736,6 @@ const _nav = [
         component: CNavItem,
         name: 'Logbook',
         to: '/cipp/logs',
-      },
-      {
-        component: CNavItem,
-        name: 'Statistics',
-        to: '/cipp/statistics',
       },
       {
         component: CNavItem,

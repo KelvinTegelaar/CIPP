@@ -20,7 +20,7 @@ const SharepointList = () => {
           <FontAwesomeIcon icon={faEllipsisV} />
         </CButton>
         <CippActionsOffcanvas
-          title="Extended Information"
+          title="User Information"
           extendedInfo={[
             {
               label: 'Site URL',

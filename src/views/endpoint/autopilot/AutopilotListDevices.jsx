@@ -26,7 +26,7 @@ const AutopilotListDevices = () => {
           <FontAwesomeIcon icon={faEllipsisV} />
         </CButton>
         <CippActionsOffcanvas
-          title="ExtendedInformation"
+          title="User Information"
           extendedInfo={[
             {
               label: 'Assigned User',

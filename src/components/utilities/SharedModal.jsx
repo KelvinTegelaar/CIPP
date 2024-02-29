@@ -29,7 +29,7 @@ function mapBodyComponent({ componentType, data, componentProps }) {
 }
 
 const sharedProps = {
-  componentType: PropTypes.oneOf(['table', 'list', 'text', 'confirm', 'codeblock']),
+  componentType: PropTypes.oneOf(['table', 'list', 'text', 'confirm']),
   componentProps: PropTypes.object,
   body: PropTypes.oneOfType([PropTypes.node, PropTypes.element]),
   data: PropTypes.any,

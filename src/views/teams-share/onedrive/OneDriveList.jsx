@@ -19,7 +19,7 @@ const OneDriveList = () => {
           <FontAwesomeIcon icon={faEllipsisV} />
         </CButton>
         <CippActionsOffcanvas
-          title="Extended Information"
+          title="User Information"
           extendedInfo={[
             {
               label: 'User Principal Name',
@@ -111,12 +111,6 @@ const OneDriveList = () => {
       selector: (row) => row['Allocated'],
       sortable: true,
       exportSelector: 'Allocated',
-    },
-    {
-      selector: (row) => Math.round((row.UsedGB / row.Allocated) * 100 * 10) / 10,
-      name: 'Quota Used(%)',
-      sortable: true,
-      exportSelector: 'QuotaUsed',
     },
     {
       name: 'URL',

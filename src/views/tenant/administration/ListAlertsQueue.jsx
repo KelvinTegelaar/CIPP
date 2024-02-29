@@ -93,7 +93,7 @@ const ListClassicAlerts = () => {
           </CButton>
         </CTooltip>
         <CippActionsOffcanvas
-          title="Extended Information"
+          title="User Information"
           extendedInfo={Object.keys(row).map((key) => ({
             label: key,
             value:

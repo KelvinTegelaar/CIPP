@@ -36,11 +36,11 @@ const MailboxStatsList = () => {
       omit: tenantColumnSet,
     },
     {
-      selector: (row) => row['userPrincipalName'],
+      selector: (row) => row['UPN'],
       name: 'User Prinicipal Name',
       sortable: true,
-      cell: (row) => CellTip(row['userPrincipalName']),
-      exportSelector: 'userPrincipalName',
+      cell: (row) => CellTip(row['UPN']),
+      exportSelector: 'UPN',
       minWidth: '200px',
     },
     {
@@ -51,49 +51,41 @@ const MailboxStatsList = () => {
       exportSelector: 'displayName',
     },
     {
-      selector: (row) => row[' recipientType'],
+      selector: (row) => row['MailboxType'],
       name: 'Mailbox Type',
       sortable: true,
-      cell: (row) => CellTip(row['recipientType']),
-      exportSelector: 'recipientType',
+      exportSelector: 'MailboxType',
     },
     {
-      selector: (row) => row['lastActivityDate'],
+      selector: (row) => row['LastActive'],
       name: 'Last Active',
       sortable: true,
-      exportSelector: 'lastActivityDate',
+      exportSelector: 'LastActive',
     },
     {
-      selector: (row) => (row['storageUsedInBytes'] / 1024 ** 3).toFixed(2),
-      name: 'Used Space (GB)',
+      selector: (row) => row['UsedGB'],
+      name: 'Used Space(GB)',
       sortable: true,
-      exportSelector: 'storageUsedInBytes',
+      exportSelector: 'UsedGB',
     },
     {
-      selector: (row) => (row['prohibitSendReceiveQuotaInBytes'] / 1024 ** 3).toFixed(2),
+      selector: (row) => row['QuotaGB'],
       name: 'Quota (GB)',
       sortable: true,
       exportSelector: 'QuotaGB',
     },
     {
-      selector: (row) =>
-        Math.round((row.storageUsedInBytes / row.prohibitSendReceiveQuotaInBytes) * 100 * 10) / 10,
-      name: 'Quota Used(%)',
-      sortable: true,
-      exportSelector: 'QuotaUsed',
-    },
-    {
-      selector: (row) => row['itemCount'],
+      selector: (row) => row['ItemCount'],
       name: 'Item Count (Total)',
       sortable: true,
-      exportSelector: 'itemCount',
+      exportSelector: 'ItemCount',
     },
     {
-      selector: (row) => row['hasArchive'],
+      selector: (row) => row['HasArchive'],
       name: 'Archiving Enabled',
       sortable: true,
       cell: cellBooleanFormatter({ colourless: true }),
-      exportSelector: 'hasArchive',
+      exportSelector: 'HasArchive',
     },
   ]
   useEffect(() => {
@@ -111,13 +103,9 @@ const MailboxStatsList = () => {
       datatable={{
         keyField: 'id',
         reportName: `${tenant?.defaultDomainName}-MailboxStatistics-List`,
-        path: '/api/ListGraphRequest',
-        params: {
-          TenantFilter: tenant?.defaultDomainName,
-          Endpoint: "reports/getMailboxUsageDetail(period='D7')",
-          $format: 'application/json',
-        },
+        path: '/api/ListMailboxStatistics',
         columns,
+        params: { TenantFilter: tenant?.defaultDomainName },
         tableProps: {
           conditionalRowStyles: conditionalRowStyles,
         },
