@@ -47,6 +47,9 @@ export const appSlice = createSlice({
     setOffboardingDefaults: (state, action) => {
       state.offboardingDefaults = action.payload?.offboardingDefaults
     },
+    setNewUserDefaults: (state, action) => {
+      state.setNewUserDefaults = action.payload?.setNewUserDefaults
+    },
     setUserSettings: (state, action) => {
       //foreach key in the userSettings, set the state key to the value of that setting
       Object.keys(action.payload?.userSettings).forEach((key) => {
@@ -67,6 +70,7 @@ export const {
   setDefaultusageLocation,
   setReportImage,
   setOffboardingDefaults,
+  setNewUserDefaults,
   setUserSettings,
 } = appSlice.actions
 
