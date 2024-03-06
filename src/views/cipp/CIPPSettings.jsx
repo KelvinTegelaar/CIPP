@@ -230,12 +230,14 @@ const GeneralSettings = () => {
       selector: (row) => row?.GDAPRoles,
       cell: cellTableFormatter('GDAPRoles', false, true),
       omit: showExtendedInfo,
+      exportSelector: 'GDAPRoles',
     },
     {
       name: 'SAM User Roles',
       selector: (row) => row?.SAMUserRoles,
       cell: cellTableFormatter('SAMUserRoles', false, true),
       omit: showExtendedInfo,
+      exportSelector: 'SAMUserRoles',
     },
   ]
 

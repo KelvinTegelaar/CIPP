@@ -6,13 +6,13 @@ import { CippTablePropTypes } from 'src/components/tables/CippTable'
 import { CCallout } from '@coreui/react'
 
 export default function CippDatatable({ path, params, ...rest }) {
-  const [refreshGuid, setRefreshGuid] = React.useState('')
   const [graphFilter, setGraphFilter] = React.useState(params?.Parameters?.$filter)
   const {
     data = [],
     isFetching,
     error,
-  } = useListDatatableQuery({ path, params: { refreshGuid, $filter: graphFilter, ...params } })
+    refetch,
+  } = useListDatatableQuery({ path, params: { $filter: graphFilter, ...params } })
 
   var defaultFilterText = ''
   if (params?.Parameters?.$filter) {
@@ -23,11 +23,12 @@ export default function CippDatatable({ path, params, ...rest }) {
       {data?.Metadata?.Queued && <CCallout color="info">{data?.Metadata?.QueueMessage}</CCallout>}
       <CippTable
         {...rest}
+        endpointName={path}
         data={Array.isArray(data?.Results) ? data?.Results : data}
         isFetching={isFetching}
         error={error}
         defaultFilterText={defaultFilterText}
-        refreshFunction={setRefreshGuid}
+        refreshFunction={() => refetch()}
         graphFilterFunction={setGraphFilter}
       />
     </>

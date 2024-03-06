@@ -101,6 +101,7 @@ const columns = [
     selector: (row) => row['id'],
     name: 'id',
     omit: true,
+    exportSelector: 'id',
   },
   {
     name: 'Actions',
