@@ -50,7 +50,7 @@ This is a list of all our endpoints, under the user documentation you'll find th
 [openapicipp.json](../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
-{% swagger src="../.gitbook/assets/openapicipp.json" path="/BestPracticeAnalyser_All" method="get" %}
+{% swagger src="../.gitbook/assets/openapicipp.json" path="/listBPA" method="get" %}
 [openapicipp.json](../.gitbook/assets/openapicipp.json)
 {% endswagger %}
 
