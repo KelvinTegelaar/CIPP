@@ -152,6 +152,19 @@ const EditUser = () => {
     >
       {!queryError && (
         <>
+          {user?.userPrincipalName !== user?.mail && (
+            <CCallout color="warning">
+              Warning: The userPrincipalName and mail property do not match. This is no longer
+              supported by Microsoft. See
+              <a
+                className="m-1"
+                href="https://learn.microsoft.com/en-us/windows-server/identity/ad-fs/operations/configuring-alternate-login-id"
+              >
+                this
+              </a>
+              link for more information.
+            </CCallout>
+          )}
           {postResults.isSuccess && (
             <CCallout color="success">{postResults.data?.Results}</CCallout>
           )}
