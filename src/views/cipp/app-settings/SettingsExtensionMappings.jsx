@@ -16,6 +16,7 @@ import { RFFSelectSearch } from 'src/components/forms/index.js'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import React from 'react'
+import { CippCallout } from 'src/components/layout/index.js'
 
 /**
  * Retrieves and sets the extension mappings for HaloPSA and NinjaOne.
@@ -108,15 +109,18 @@ export function SettingsExtensionMappings() {
                           Set Mappings
                         </CButton>
                         {(extensionHaloConfigResult.isSuccess ||
-                          extensionHaloConfigResult.isError) && (
-                          <CCallout
-                            color={extensionHaloConfigResult.isSuccess ? 'success' : 'danger'}
-                          >
-                            {extensionHaloConfigResult.isSuccess
-                              ? extensionHaloConfigResult.data.Results
-                              : 'Error'}
-                          </CCallout>
-                        )}
+                          extensionHaloConfigResult.isError) &&
+                          !extensionHaloConfigResult.isFetching && (
+                            <CippCallout
+                              color={extensionHaloConfigResult.isSuccess ? 'success' : 'danger'}
+                              dismissible
+                              style={{ marginTop: '16px' }}
+                            >
+                              {extensionHaloConfigResult.isSuccess
+                                ? extensionHaloConfigResult.data.Results
+                                : 'Error'}
+                            </CippCallout>
+                          )}
                       </CCol>
                     </CForm>
                   )
@@ -186,17 +190,20 @@ export function SettingsExtensionMappings() {
                           Set Mappings
                         </CButton>
                         {(extensionNinjaFieldsConfigResult.isSuccess ||
-                          extensionNinjaFieldsConfigResult.isError) && (
-                          <CCallout
-                            color={
-                              extensionNinjaFieldsConfigResult.isSuccess ? 'success' : 'danger'
-                            }
-                          >
-                            {extensionNinjaFieldsConfigResult.isSuccess
-                              ? extensionNinjaFieldsConfigResult.data.Results
-                              : 'Error'}
-                          </CCallout>
-                        )}
+                          extensionNinjaFieldsConfigResult.isError) &&
+                          !extensionNinjaFieldsConfigResult.isFetching && (
+                            <CippCallout
+                              color={
+                                extensionNinjaFieldsConfigResult.isSuccess ? 'success' : 'danger'
+                              }
+                              dismissible
+                              style={{ marginTop: '16px' }}
+                            >
+                              {extensionNinjaFieldsConfigResult.isSuccess
+                                ? extensionNinjaFieldsConfigResult.data.Results
+                                : 'Error'}
+                            </CippCallout>
+                          )}
                       </CCol>
                     </CForm>
                   )
@@ -246,15 +253,20 @@ export function SettingsExtensionMappings() {
                           Automap NinjaOne Organizations
                         </CButton>
                         {(extensionNinjaOrgsConfigResult.isSuccess ||
-                          extensionNinjaOrgsConfigResult.isError) && (
-                          <CCallout
-                            color={extensionNinjaOrgsConfigResult.isSuccess ? 'success' : 'danger'}
-                          >
-                            {extensionNinjaOrgsConfigResult.isSuccess
-                              ? extensionNinjaOrgsConfigResult.data.Results
-                              : 'Error'}
-                          </CCallout>
-                        )}
+                          extensionNinjaOrgsConfigResult.isError) &&
+                          !extensionNinjaFieldsConfigResult.isFetching && (
+                            <CippCallout
+                              color={
+                                extensionNinjaOrgsConfigResult.isSuccess ? 'success' : 'danger'
+                              }
+                              dismissible
+                              style={{ marginTop: '16px' }}
+                            >
+                              {extensionNinjaOrgsConfigResult.isSuccess
+                                ? extensionNinjaOrgsConfigResult.data.Results
+                                : 'Error'}
+                            </CippCallout>
+                          )}
                         {(extensionNinjaOrgsAutomapResult.isSuccess ||
                           extensionNinjaOrgsAutomapResult.isError) && (
                           <CCallout

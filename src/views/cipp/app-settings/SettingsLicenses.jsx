@@ -7,7 +7,7 @@ import { TitleButton } from 'src/components/buttons/index.js'
 import { CButton, CCallout, CSpinner } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
-import { CippPageList } from 'src/components/layout/index.js'
+import { CippCallout, CippPageList } from 'src/components/layout/index.js'
 
 /**
  * SettingsLicenses component is used to manage excluded licenses in a settings page.
@@ -47,14 +47,14 @@ export function SettingsLicenses() {
   }
 
   const titleButton = <TitleButton onClick={handleAddLicense} title="Add Excluded License" />
-  const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
+  const [executeGetRequest, getResults] = useLazyGenericGetRequestQuery()
 
   const Offcanvas = (row, rowIndex, formatExtraData) => {
     const handleDeleteIntuneTemplate = (apiurl, message) => {
       ModalService.confirm({
         title: 'Confirm',
         body: <div>{message}</div>,
-        onConfirm: () => ExecuteGetRequest({ path: apiurl }),
+        onConfirm: () => executeGetRequest({ path: apiurl }),
         confirmLabel: 'Continue',
         cancelLabel: 'Cancel',
       })
@@ -102,22 +102,30 @@ export function SettingsLicenses() {
     <>
       {setExclusionResults.isFetching ||
         (getResults.isFetching && (
-          <CCallout color="info">
+          <CippCallout color="info">
             <CSpinner>Loading</CSpinner>
-          </CCallout>
+          </CippCallout>
         ))}
-      {setExclusionResults.isSuccess && (
-        <CCallout color="info">{setExclusionResults.data?.Results}</CCallout>
+      {setExclusionResults.isSuccess && !setExclusionResults.isFetching && (
+        <CippCallout color="info" dismissible>
+          {setExclusionResults.data?.Results}
+        </CippCallout>
       )}
-      {setExclusionResults.isError && (
-        <CCallout color="danger">
+      {setExclusionResults.isError && !setExclusionResults.isFetching && (
+        <CippCallout color="danger" dismissible>
           Could not connect to API: {setExclusionResults.error.message}
-        </CCallout>
+        </CippCallout>
       )}
-      {getResults.isError && (
-        <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
+      {getResults.isError && !getResults.isFetching && (
+        <CippCallout color="danger" dismissible>
+          Could not connect to API: {getResults.error.message}
+        </CippCallout>
       )}
-      {getResults.isSuccess && <CCallout color="info">{getResults.data?.Results}</CCallout>}
+      {getResults.isSuccess && !getResults.isFetching && (
+        <CippCallout color="info" dismissible>
+          {getResults.data?.Results}
+        </CippCallout>
+      )}
       <CippPageList
         capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
         title="Excluded Licenses"

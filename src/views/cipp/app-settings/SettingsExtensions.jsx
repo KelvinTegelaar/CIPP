@@ -1,6 +1,7 @@
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app.js'
 import React, { useRef } from 'react'
 import {
+  CAlert,
   CButton,
   CCallout,
   CCard,
@@ -18,7 +19,7 @@ import { Form } from 'react-final-form'
 import { RFFCFormInput, RFFCFormSwitch } from 'src/components/forms/index.js'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
-import CippCallout from 'src/components/utilities/CippCallout.jsx'
+import { CippCallout } from 'src/components/layout/index.js'
 
 /**
  * Executes various operations related to settings and extensions.
@@ -51,45 +52,24 @@ export function SettingsExtensions() {
           extensionConfigResult.isFetching ||
           listExtensionTestResult.isFetching ||
           listSyncExtensionResult.isFetching) && (
-          <CippCallout color="primary">
-            <CSpinner color="primary" />
+          <CippCallout color="success">
+            <CSpinner />
           </CippCallout>
         )}
-        {listSyncExtensionResult.isSuccess && (
-          <CCard className="mb-3">
-            <CCardHeader>
-              <CCardTitle>Results</CCardTitle>
-            </CCardHeader>
-            <CCardBody>
-              <CippCallout color="success" dismissible>
-                {listSyncExtensionResult.data.Results}
-              </CippCallout>
-            </CCardBody>
-          </CCard>
+        {listSyncExtensionResult.isSuccess && !listSyncExtensionResult.isFetching && (
+          <CippCallout color="success" dismissible>
+            {listSyncExtensionResult.data.Results}
+          </CippCallout>
         )}
-        {listExtensionTestResult.isSuccess && (
-          <CCard className="mb-3">
-            <CCardHeader>
-              <CCardTitle>Results</CCardTitle>
-            </CCardHeader>
-            <CCardBody>
-              <CippCallout color="success" dismissible>
-                {listExtensionTestResult.data.Results}
-              </CippCallout>
-            </CCardBody>
-          </CCard>
+        {listExtensionTestResult.isSuccess && !listExtensionTestResult.isFetching && (
+          <CippCallout color="success" dismissible>
+            {listExtensionTestResult.data.Results}
+          </CippCallout>
         )}
-        {extensionConfigResult.isSuccess && (
-          <CCard className="mb-3">
-            <CCardHeader>
-              <CCardTitle>Results</CCardTitle>
-            </CCardHeader>
-            <CCardBody>
-              <CippCallout color="success" dismissible>
-                {extensionConfigResult.data.Results}
-              </CippCallout>
-            </CCardBody>
-          </CCard>
+        {extensionConfigResult.isSuccess && !extensionConfigResult.isFetching && (
+          <CippCallout color="success" dismissible>
+            {extensionConfigResult.data.Results}
+          </CippCallout>
         )}
         <CRow>
           {Extensions.map((integration, idx) => (

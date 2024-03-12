@@ -17,14 +17,13 @@ import {
   faRecycle,
 } from '@fortawesome/free-solid-svg-icons'
 import { cellBooleanFormatter, CellTip } from 'src/components/tables/index.js'
-import { CippPageList } from 'src/components/layout/index.js'
-import CippCallout from 'src/components/utilities/CippCallout.jsx'
+import { CippCallout, CippPageList } from 'src/components/layout/index.js'
 
 /**
  * The SettingsTenants method is used to manage the tenants in the application. It allows the user to add or
  * remove exclusions, refresh permissions for a tenant, and view the list of excluded tenants.
  *
- * @return {ReactElement} The rendered component for managing the excluded tenants.
+ * @return {JSXElement} The rendered component for managing the excluded tenants.
  */
 export function SettingsTenants() {
   const dispatch = useDispatch()
@@ -203,13 +202,14 @@ export function SettingsTenants() {
           <CSpinner />
         </CippCallout>
       )}
-      {removeExcludeTenantResult.isSuccess && (
+      {removeExcludeTenantResult.isSuccess && !removeExcludeTenantResult.isFetching && (
         <CippCallout color="success" dismissible>
           {removeExcludeTenantResult.data?.Results}
         </CippCallout>
       )}
       {refreshPermissionsResults.isSuccess &&
       refreshPermissionsResults.data?.Results &&
+      !refreshPermissionsResults.isFetching &&
       Array.isArray(refreshPermissionsResults.data.Results) ? (
         <CippCallout color="success" dismissible>
           {refreshPermissionsResults.data.Results.map((result, idx) => (
@@ -217,7 +217,7 @@ export function SettingsTenants() {
           ))}
         </CippCallout>
       ) : null}
-      {addExcludeTenantResult.isSuccess && (
+      {addExcludeTenantResult.isSuccess && !addExcludeTenantResult.isFetching && (
         <CippCallout color="success" dismissible>
           {addExcludeTenantResult.data?.Results}
         </CippCallout>

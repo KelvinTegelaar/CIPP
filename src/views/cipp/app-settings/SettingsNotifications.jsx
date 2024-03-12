@@ -15,9 +15,10 @@ import {
   CForm,
   CSpinner,
 } from '@coreui/react'
-import { Form } from 'react-final-form'
+import { Form, useForm } from 'react-final-form'
 import { RFFCFormInput, RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms/index.js'
 import React from 'react'
+import { CippCallout } from 'src/components/layout/index.js'
 
 /**
  * Sets the notification settings.
@@ -26,6 +27,7 @@ import React from 'react'
 export function SettingsNotifications() {
   const [configNotifications, notificationConfigResult] = useLazyExecNotificationConfigQuery()
   const [listNotification, notificationListResult] = useLazyListNotificationConfigQuery()
+
   const onSubmit = (values) => {
     configNotifications(values)
   }
@@ -36,7 +38,7 @@ export function SettingsNotifications() {
         <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
       )}
       {!notificationListResult.isFetching && notificationListResult.error && (
-        <span>Error loading data</span>
+        <CippCallout color="danger">Error loading data</CippCallout>
       )}
       {notificationListResult.isSuccess && (
         <CCard className="h-100 w-50">
@@ -62,17 +64,19 @@ export function SettingsNotifications() {
                 return (
                   <CForm onSubmit={handleSubmit}>
                     {notificationConfigResult.isFetching && (
-                      <CCallout color="info">
+                      <CippCallout color="success">
                         <CSpinner>Loading</CSpinner>
-                      </CCallout>
+                      </CippCallout>
                     )}
-                    {notificationConfigResult.isSuccess && (
-                      <CCallout color="info">{notificationConfigResult.data?.Results}</CCallout>
+                    {notificationConfigResult.isSuccess && !notificationConfigResult.isFetching && (
+                      <CippCallout color="success" dismissible>
+                        {notificationConfigResult.data?.Results}
+                      </CippCallout>
                     )}
-                    {notificationConfigResult.isError && (
-                      <CCallout color="danger">
+                    {notificationConfigResult.isError && !notificationConfigResult.isFetching && (
+                      <CippCallout color="danger">
                         Could not connect to API: {notificationConfigResult.error.message}
-                      </CCallout>
+                      </CippCallout>
                     )}
                     <CCol>
                       <CCol>

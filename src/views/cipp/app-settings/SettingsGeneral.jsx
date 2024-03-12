@@ -27,10 +27,10 @@ import CippListOffcanvas from 'src/components/utilities/CippListOffcanvas.jsx'
 import { TableModalButton } from 'src/components/buttons/index.js'
 import { CippTable } from 'src/components/tables/index.js'
 import { TenantSelectorMultiple } from 'src/components/utilities/index.js'
-import { SettingsDNS } from 'src/views/cipp/app-settings/components/SettingsDNS.jsx'
+import { SettingsGeneralRow } from 'src/views/cipp/app-settings/components/SettingsGeneralRow.jsx'
 
 /**
- * SettingsGeneral method.
+ * SettingsGeneral component.
  * This method is responsible for managing general settings.
  * @returns {JSX.Element}
  */
@@ -215,7 +215,6 @@ export function SettingsGeneral() {
     pagination: false,
     actions: [
       <CFormSwitch
-        size="sm"
         label="Show Extended Info"
         onChange={(e) => {
           console.log(e)
@@ -230,7 +229,7 @@ export function SettingsGeneral() {
     <div>
       <CRow className="mb-3">
         <CCol>
-          <SettingsDNS />
+          <SettingsGeneralRow />
         </CCol>
       </CRow>
       <CRow className="mb-3">

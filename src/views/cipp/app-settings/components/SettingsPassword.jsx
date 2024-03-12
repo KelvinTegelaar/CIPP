@@ -1,6 +1,7 @@
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app.js'
 import React, { useState } from 'react'
 import { CButton, CButtonGroup, CCallout } from '@coreui/react'
+import { CippCallout } from 'src/components/layout/index.js'
 
 /**
  * This method is responsible for handling password settings in the application.
@@ -17,18 +18,18 @@ import { CButton, CButtonGroup, CCallout } from '@coreui/react'
  * The resolver that matches the current password configuration is highlighted with a primary color button.
  * By clicking on a resolver button, the switchResolver function is called to update the password configuration and show the password alert.
  *
- * @returns {React.Element} The rendered password settings component with the password style section and password alert section.
+ * @returns {JSXElement} The rendered password settings component with the password style section and password alert section.
  */
 export function SettingsPassword() {
   const [getPasswordConfig, getPasswordConfigResult] = useLazyGenericGetRequestQuery()
   const [editPasswordConfig, editPasswordConfigResult] = useLazyGenericPostRequestQuery()
 
-  const [passAlertVisible, setPassAlertVisible] = useState(false)
-
-  const switchResolver = (resolver) => {
-    editPasswordConfig({ path: '/api/ExecPasswordconfig', values: { passwordType: resolver } })
-    getPasswordConfig()
-    setPassAlertVisible(true)
+  const switchResolver = async (resolver) => {
+    await editPasswordConfig({
+      path: '/api/ExecPasswordConfig',
+      values: { passwordType: resolver },
+    })
+    await getPasswordConfig({ path: '/api/ExecPasswordConfig', params: { list: true } })
   }
 
   const resolvers = ['Classic', 'Correct-Battery-Horse']
@@ -51,16 +52,17 @@ export function SettingsPassword() {
           </CButton>
         ))}
       </CButtonGroup>
-      {(editPasswordConfigResult.isSuccess || editPasswordConfigResult.isError) && (
-        <CCallout
-          color={editPasswordConfigResult.isSuccess ? 'success' : 'danger'}
-          visible={passAlertVisible}
-        >
-          {editPasswordConfigResult.isSuccess
-            ? editPasswordConfigResult.data.Results
-            : 'Error setting password style'}
-        </CCallout>
-      )}
+      {(editPasswordConfigResult.isSuccess || editPasswordConfigResult.isError) &&
+        !editPasswordConfigResult.isFetching && (
+          <CippCallout
+            color={editPasswordConfigResult.isSuccess ? 'success' : 'danger'}
+            dismissible
+          >
+            {editPasswordConfigResult.isSuccess
+              ? editPasswordConfigResult.data.Results
+              : 'Error setting password style'}
+          </CippCallout>
+        )}
     </>
   )
 }
