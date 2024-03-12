@@ -14,15 +14,16 @@ export default function CippDatatable({ path, params, ...rest }) {
     refetch,
   } = useListDatatableQuery({ path, params: { $filter: graphFilter, ...params } })
 
-  //Check if data[0].userPrincipalName OR data[0].UPN OR data.Results[0].upn OR data.Results[0].userPrincipalName
-  // follows this regex pattern ^[A-Z0-9]+$. If it does, set the let 'anonimized' to true.
-  let anonimized = false
-  if (Array.isArray(data?.Results)) {
-    anonimized =
-      data?.Results[0]?.userPrincipalName?.match(/^[A-Z0-9]+$/) ||
-      data?.Results[0]?.UPN?.match(/^[A-Z0-9]+$/)
-  } else {
-    anonimized = data?.userPrincipalName?.match(/^[A-Z0-9]+$/) || data?.UPN?.match(/^[A-Z0-9]+$/)
+  let anonimized = false // Assuming default value is false
+  const regex = new RegExp('^[A-Z0-9]+$')
+  const principalNameOrUPN =
+    data[0]?.userPrincipalName ??
+    data[0]?.UPN ??
+    data.Results?.[0]?.upn ??
+    data.Results?.[0]?.userPrincipalName
+
+  if (principalNameOrUPN && regex.test(principalNameOrUPN)) {
+    anonimized = true
   }
 
   var defaultFilterText = ''
@@ -32,7 +33,7 @@ export default function CippDatatable({ path, params, ...rest }) {
   return (
     <>
       {anonimized && (
-        <CCallout color="warning">
+        <CCallout color="info">
           This table might contain anonymized data. Please check this
           <a
             className="m-1"
