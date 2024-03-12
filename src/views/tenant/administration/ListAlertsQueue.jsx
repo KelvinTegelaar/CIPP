@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { CButton, CCallout, CCol, CForm, CRow, CSpinner, CTooltip } from '@coreui/react'
 import { useSelector } from 'react-redux'
 import { Field, Form, FormSpy } from 'react-final-form'
-import { RFFCFormSwitch } from 'src/components/forms'
+import { RFFCFormInput, RFFCFormSwitch } from 'src/components/forms'
 import {
   useGenericGetRequestQuery,
   useLazyGenericGetRequestQuery,
@@ -14,7 +14,6 @@ import { CippContentCard, CippPage, CippPageList } from 'src/components/layout'
 import { CellTip } from 'src/components/tables/CellGenericFormat'
 import 'react-datepicker/dist/react-datepicker.css'
 import { CippActionsOffcanvas, ModalService, TenantSelector } from 'src/components/utilities'
-import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
 import arrayMutators from 'final-form-arrays'
 const alertsList = [
   { name: 'MFAAlertUsers', label: 'Alert on users without any form of MFA' },
@@ -30,12 +29,14 @@ const alertsList = [
     label: 'Alert on % mailbox quota used',
     requiresInput: true,
     inputLabel: 'Enter quota percentage',
+    inputName: 'QuotaUsedQuota',
   },
   {
     name: 'SharePointQuota',
     label: 'Alert on % SharePoint quota used',
     requiresInput: true,
     inputLabel: 'Enter quota percentage',
+    inputName: 'SharePointQuotaQuota',
   },
   { name: 'ExpiringLicenses', label: 'Alert on licenses expiring in 30 days' },
   { name: 'SecDefaultsUpsell', label: 'Alert on Security Defaults automatic enablement' },
@@ -215,16 +216,13 @@ const ListClassicAlerts = () => {
                             {alert.requiresInput && (
                               <FormSpy subscription={{ values: true }}>
                                 {({ values }) => {
-                                  // Check if the switch for this alert is turned on before showing the input
                                   if (values[alert.name]) {
                                     return (
-                                      <Field
-                                        name={`${alert.name}Quota`} // Unique name for the input field
-                                        component="input"
-                                        type="number"
+                                      <RFFCFormInput
+                                        name={`${alert.inputName}`}
                                         placeholder={alert.inputLabel}
                                         initialValue={alert.defaultValue} // Set the initial value
-                                        parse={(value) => Number(value)} // Ensure value is a number
+                                        type="number"
                                       />
                                     )
                                   }
