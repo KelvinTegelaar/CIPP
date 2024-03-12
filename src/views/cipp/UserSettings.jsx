@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import {
-  CBadge,
   CButton,
   CCallout,
   CCard,
@@ -11,86 +10,21 @@ import {
   CForm,
   CRow,
   CSpinner,
-  CTooltip,
 } from '@coreui/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Form } from 'react-final-form'
 import { RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms'
 
-import {
-  useGenericGetRequestQuery,
-  useLazyGenericGetRequestQuery,
-  useLazyGenericPostRequestQuery,
-} from 'src/store/api/app'
+import { useGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import 'react-datepicker/dist/react-datepicker.css'
 import TenantListSelector from 'src/components/utilities/TenantListSelector'
-import {
-  ModalService,
-  PageSizeSwitcher,
-  ThemeSwitcher,
-  UsageLocation,
-} from 'src/components/utilities'
-import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
+import { PageSizeSwitcher, ThemeSwitcher, UsageLocation } from 'src/components/utilities'
 import ReportImage from 'src/components/utilities/ReportImage'
 import { useLoadClientPrincipalQuery } from 'src/store/api/auth'
 import { setUserSettingsDefaults } from 'src/store/features/app'
 import { CippCallout } from 'src/components/layout'
-
-const Offcanvas = (row, rowIndex, formatExtraData) => {
-  const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
-  const [ocVisible, setOCVisible] = useState(false)
-
-  const handleDeleteSchedule = (apiurl, message) => {
-    ModalService.confirm({
-      title: 'Confirm',
-      body: <div>{message}</div>,
-      onConfirm: () => ExecuteGetRequest({ path: apiurl }),
-      confirmLabel: 'Continue',
-      cancelLabel: 'Cancel',
-    })
-  }
-  let jsonResults
-  try {
-    jsonResults = JSON.parse(row.Results)
-  } catch (error) {
-    jsonResults = row.Results
-  }
-
-  return (
-    <>
-      <CTooltip content="View Results">
-        <CButton size="sm" color="success" variant="ghost" onClick={() => setOCVisible(true)}>
-          <FontAwesomeIcon icon={'eye'} href="" />
-        </CButton>
-      </CTooltip>
-      <CTooltip content="Delete task">
-        <CButton
-          onClick={() =>
-            handleDeleteSchedule(
-              `/api/RemoveScheduledItem?&ID=${row.RowKey}`,
-              'Do you want to delete this job?',
-            )
-          }
-          size="sm"
-          variant="ghost"
-          color="danger"
-        >
-          <FontAwesomeIcon icon={'trash'} href="" />
-        </CButton>
-      </CTooltip>
-      <CippCodeOffCanvas
-        hideButton
-        title="Results"
-        row={jsonResults}
-        state={ocVisible}
-        type="TemplateResults"
-        hideFunction={() => setOCVisible(false)}
-      />
-    </>
-  )
-}
 
 const UserSettings = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
