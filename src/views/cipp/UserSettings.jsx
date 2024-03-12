@@ -65,7 +65,7 @@ import {
 import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
 import ReportImage from 'src/components/utilities/ReportImage'
 import { useLoadClientPrincipalQuery } from 'src/store/api/auth'
-import { setOffboardingDefaults } from 'src/store/features/app'
+import { setOffboardingDefaults, setNewUserDefaults } from 'src/store/features/app'
 
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
@@ -122,6 +122,80 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
 }
 
 const UserSettings = () => {
+  const tenant = useSelector((state) => state.app.currentTenant)
+  const [addedAttributes, setAddedAttribute] = React.useState(0)
+  const [random3, setRandom3] = useState('')
+  const availableProperties = useGenericGetRequestQuery({
+    path: '/api/ListGraphRequest',
+    params: {
+      Endpoint: 'users',
+      ListProperties: true,
+      TenantFilter: tenant.defaultDomainName,
+      IgnoreErrors: true,
+    },
+  })
+  const exclusionList = [
+    'id',
+    'accountEnabled',
+    'deletedDateTime',
+    'ageGroup',
+    'businessPhones',
+    'city',
+    'createdDateTime',
+    'creationType',
+    'companyName',
+    'country',
+    'department',
+    'displayName',
+    'givenName',
+    'imAddresses',
+    'infoCatalogs',
+    'isLicenseReconciliationNeeded',
+    'isManagementRestricted',
+    'isResourceAccount',
+    'jobTitle',
+    'mail',
+    'mailNickname',
+    'mobilePhone',
+    'onPremisesDistinguishedName',
+    'onPremisesDomainName',
+    'onPremisesImmutableId',
+    'onPremisesLastSyncDateTime',
+    'onPremisesObjectIdentifier',
+    'onPremisesSecurityIdentifier',
+    'onPremisesSamAccountName',
+    'onPremisesSyncEnabled',
+    'onPremisesUserPrincipalName',
+    'passwordPolicies',
+    'postalCode',
+    'preferredDataLocation',
+    'preferredLanguage',
+    'proxyAddresses',
+    'refreshTokensValidFromDateTime',
+    'securityIdentifier',
+    'signInSessionsValidFromDateTime',
+    'streetAddress',
+    'surname',
+    'usageLocation',
+    'userPrincipalName',
+    'externalUserConvertedOn',
+    'externalUserState',
+    'externalUserStateChangeDateTime',
+    'userType',
+    'employeeOrgData',
+    'assignedLicenses',
+    'assignedPlans',
+    'authorizationInfo',
+    'cloudRealtimeCommunicationInfo',
+    'deviceKeys',
+    'identities',
+    'onPremisesExtensionAttributes',
+    'onPremisesProvisioningErrors',
+    'onPremisesSipInfo',
+    'passwordProfile',
+    'provisionedPlans',
+    'serviceProvisioningErrors',
+  ]
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const { data: profile, isFetching, isLoading } = useLoadClientPrincipalQuery()
   const dispatch = useDispatch()
@@ -129,6 +203,7 @@ const UserSettings = () => {
 
   const onSubmit = (values) => {
     dispatch(setOffboardingDefaults({ offboardingDefaults: values }))
+    dispatch(setNewUserDefaults({ NewUserDefaults: values.name }))
     const shippedvalues = {
       user: values.user,
       currentSettings: currentSettings,
@@ -200,6 +275,51 @@ const UserSettings = () => {
                             label="Keep copy of forwarded mail in source mailbox"
                           />
                         </CCol>
+                      </CRow>
+                      <CRow className="mb-3">
+                        <h3 className="underline mb-5">New User Attribute Defaults</h3>
+                        <div className="mb-3">
+                          <RFFSelectSearch
+                            name="Attribute Name"
+                            label="Select the attributes you want to use"
+                            placeholder="Select the attributes you want to use"
+                            retainInput={true}
+                            multi={true}
+                            values={
+                              availableProperties?.data?.Results?.filter(
+                                (prop) => !exclusionList.includes(prop),
+                              )?.map((prop) => ({
+                                name: prop,
+                                value: prop,
+                              })) ?? []
+                            }
+                            allowCreate={true}
+                            refreshFunction={() =>
+                              setRandom3((Math.random() + 1).toString(36).substring(7))
+                            }
+                            isLoading={availableProperties.isFetching}
+                          />
+                        </div>
+                        <CRow>
+                          <CCol className="mb-3" md={12}>
+                            {addedAttributes > 0 && (
+                              <CButton
+                                onClick={() => setAddedAttribute(addedAttributes - 1)}
+                                className={`circular-button`}
+                                title={'-'}
+                              >
+                                <FontAwesomeIcon icon={'minus'} />
+                              </CButton>
+                            )}
+                            <CButton
+                              onClick={() => setAddedAttribute(addedAttributes + 1)}
+                              className={`circular-button`}
+                              title={'+'}
+                            >
+                              <FontAwesomeIcon icon={'plus'} />
+                            </CButton>
+                          </CCol>
+                        </CRow>
                       </CRow>
                       <CRow className="mb-3">
                         <CCol className="mb-3" md={6}>
