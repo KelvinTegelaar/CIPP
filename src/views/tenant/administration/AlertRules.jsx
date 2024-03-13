@@ -20,13 +20,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faEdit, faEye } from '@fortawesome/free-solid-svg-icons'
 import { CippContentCard, CippPage, CippPageList } from 'src/components/layout'
 import { cellBadgeFormatter, cellDateFormatter } from 'src/components/tables'
-import { CellTip } from 'src/components/tables/CellGenericFormat'
+import { CellTip, cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 import 'react-datepicker/dist/react-datepicker.css'
 import TenantListSelector from 'src/components/utilities/TenantListSelector'
-import { ModalService, TenantSelector } from 'src/components/utilities'
+import { CippCodeBlock, ModalService, TenantSelector } from 'src/components/utilities'
 import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
+import CippTableOffcanvas from 'src/components/utilities/CippTableOffcanvas'
 import arrayMutators from 'final-form-arrays'
 import countryList from 'src/data/countryList.json'
+import { TitleButton } from 'src/components/buttons'
 
 const AlertRules = () => {
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
@@ -88,6 +90,7 @@ const AlertRules = () => {
   const [startDate, setStartDate] = useState(currentDate)
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
   const [refreshState, setRefreshState] = useState(false)
+  const [showPending, setShowPending] = useState(false)
   const taskName = `Scheduled Task ${currentDate.toLocaleString()}`
   const { data: availableCommands = [], isLoading: isLoadingcmd } = useGenericGetRequestQuery({
     path: 'api/ListFunctionParameters?Module=CIPPCore',
@@ -292,6 +295,11 @@ const AlertRules = () => {
     }
     return ifs
   }
+
+  const ExpandedComponent = ({ data }) => (
+    // eslint-disable-next-line react/prop-types
+    <CippCodeBlock language="json" code={JSON.stringify(data?.Data, null, 2)} />
+  )
 
   const renderDos = () => {
     const dos = []
@@ -517,6 +525,13 @@ const AlertRules = () => {
               }}
               title="Alert Rules"
               tenantSelector={false}
+              titleButton={
+                <TitleButton
+                  icon={'scroll'}
+                  onClick={() => setShowPending(true)}
+                  title="Pending Webhooks"
+                />
+              }
               datatable={{
                 tableProps: {
                   selectableRows: true,
@@ -533,6 +548,33 @@ const AlertRules = () => {
                 columns,
                 reportName: `Scheduled-Jobs`,
                 path: `/api/ListWebhookAlert?RefreshGuid=${refreshState}`,
+              }}
+            />
+            <CippTableOffcanvas
+              path="/api/ListPendingWebhooks"
+              title="Pending Webhooks"
+              state={showPending}
+              hideFunction={() => setShowPending(false)}
+              columns={[
+                {
+                  name: 'Tenant',
+                  selector: (row) => row?.TenantFilter,
+                  sortable: true,
+                  cell: cellGenericFormatter(),
+                  exportSelector: 'TenantFilter',
+                },
+                {
+                  name: 'Type',
+                  selector: (row) => row?.Type,
+                  sortable: true,
+                  cell: cellGenericFormatter(),
+                  exportSelector: 'Type',
+                },
+              ]}
+              tableProps={{
+                expandableRows: true,
+                expandableRowsComponent: ExpandedComponent,
+                expandOnRowClicked: true,
               }}
             />
           </CCol>

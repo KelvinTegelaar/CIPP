@@ -17,11 +17,13 @@ import ThemeSwitcher from 'src/components/utilities/ThemeSwitcher'
 import PageSizeSwitcher from 'src/components/utilities/PageSizeSwitcher'
 import Toasts from 'src/components/utilities/Toasts'
 import UsageLocation from 'src/components/utilities/UsageLocation'
+import CippTableOffcanvas from './CippTableOffcanvas'
 
 export {
   CippActionsOffcanvas,
   CippCodeBlock,
   CippCodeOffCanvas,
+  CippTableOffcanvas,
   CippLazy,
   CippOffcanvas,
   CippProfile,
