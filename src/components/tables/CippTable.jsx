@@ -180,6 +180,8 @@ export default function CippTable({
     let newColumns = tempColumns.filter(
       (column) => defaultColumnsArray.includes(column.exportSelector) || column === actionsColumn,
     )
+    setUpdatedColumns(newColumns)
+    setDefaultColumnsSet(true)
   }
   if (!endpointName && defaultColumnsSet === false) {
     setUpdatedColumns(columns)
