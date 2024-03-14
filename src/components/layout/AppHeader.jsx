@@ -151,8 +151,8 @@ const AppHeader = () => {
             <AppHeaderSearch />
           </CNavItem>
           <CNavItem>
-            <CButton variant="ghost" onClick={() => loadCippQueue()}>
-              <FontAwesomeIcon icon={'history'} className="me-2" />
+            <CButton variant="ghost" onClick={() => loadCippQueue()} className="me-1">
+              <FontAwesomeIcon icon={'history'} size="lg" />
             </CButton>
           </CNavItem>
           <CNavItem>
