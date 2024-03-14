@@ -307,7 +307,6 @@ const GraphExplorer = () => {
 
   function getPresetProps(values) {
     var newvals = Object.assign({}, values)
-    console.log(newvals)
     if (newvals?.$select !== undefined && Array.isArray(newvals?.$select)) {
       newvals.$select = newvals?.$select.map((p) => p.value).join(',')
     }
@@ -316,8 +315,6 @@ const GraphExplorer = () => {
     delete newvals['IsShared']
     return newvals
   }
-
-  console.log(graphrequest.data)
 
   return (
     <>

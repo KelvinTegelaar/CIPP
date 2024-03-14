@@ -342,10 +342,12 @@ export default function CippTable({
   useEffect(() => {
     if (columns.length !== updatedColumns.length) {
       setUpdatedColumns(updatedColumns)
-      setColumnDefaultLayout(
-        endpointName,
-        updatedColumns.map((column) => column.exportSelector).join(','),
-      )
+      if (endpointName) {
+        setColumnDefaultLayout(
+          endpointName,
+          updatedColumns.map((column) => column.exportSelector).join(','),
+        )
+      }
     }
   }, [
     columns,
@@ -971,7 +973,7 @@ export default function CippTable({
               responsive={responsive}
               dense={dense}
               striped={striped}
-              columns={updatedColumns}
+              columns={dynamicColumns ? updatedColumns : columns}
               data={filteredItems}
               expandableRows={expandableRows}
               expandableRowsComponent={expandableRowsComponent}
