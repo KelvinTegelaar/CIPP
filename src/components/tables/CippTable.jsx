@@ -155,7 +155,7 @@ export default function CippTable({
   const [filterviaURL, setFilterviaURL] = React.useState(false)
   const [originalColumns, setOrginalColumns] = React.useState(columns)
   const [updatedColumns, setUpdatedColumns] = React.useState(columns)
-  if (defaultColumns && defaultColumnsSet === false) {
+  if (defaultColumns && defaultColumnsSet === false && endpointName) {
     const defaultColumnsArray = defaultColumns.split(',').filter((item) => item)
 
     const actionsColumn = columns.length > 0 ? columns[columns.length - 1] : null
@@ -180,11 +180,11 @@ export default function CippTable({
     let newColumns = tempColumns.filter(
       (column) => defaultColumnsArray.includes(column.exportSelector) || column === actionsColumn,
     )
-
-    setUpdatedColumns(newColumns)
+  }
+  if (!endpointName && defaultColumnsSet === false) {
+    setUpdatedColumns(columns)
     setDefaultColumnsSet(true)
   }
-
   const [selectedRows, setSelectedRows] = React.useState(false)
   const [genericGetRequest, getResults] = useLazyGenericGetRequestQuery()
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
