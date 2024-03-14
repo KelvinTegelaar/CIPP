@@ -375,7 +375,7 @@ const AlertRules = () => {
   }
 
   return (
-    <CippPage title={`Add Schedule`} tenantSelector={false}>
+    <CippPage title={`Add Rule`} tenantSelector={false}>
       <>
         <CRow>
           <CCol md={4}>
@@ -480,7 +480,7 @@ const AlertRules = () => {
                       <CRow className="mb-3">
                         <CCol md={6}>
                           <CButton type="submit" disabled={submitting}>
-                            Add Schedule
+                            Add Rule
                             {postResults.isFetching && (
                               <FontAwesomeIcon
                                 icon={faCircleNotch}
