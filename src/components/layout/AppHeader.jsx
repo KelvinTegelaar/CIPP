@@ -3,17 +3,13 @@ import { useSelector, useDispatch } from 'react-redux'
 import {
   CAlert,
   CAlertLink,
-  CContainer,
-  CCollapse,
   CHeader,
   CHeaderNav,
   CNavItem,
   CHeaderToggler,
-  CImage,
-  CSidebarBrand,
   CButton,
   CFormSwitch,
-  CLink,
+  CTooltip,
 } from '@coreui/react'
 import { AppHeaderSearch } from 'src/components/header'
 import { CippActionsOffcanvas, TenantSelector } from '../utilities'
@@ -142,18 +138,22 @@ const AppHeader = () => {
               target="_blank"
               href={`https://docs.cipp.app/user-documentation${location.pathname}`}
             >
-              <CButton variant="ghost">
-                <FontAwesomeIcon icon={'question'} size="lg" />
-              </CButton>
+              <CTooltip content="Documentation" placement="bottom">
+                <CButton variant="ghost">
+                  <FontAwesomeIcon icon={'question'} size="lg" />
+                </CButton>
+              </CTooltip>
             </a>
           </CNavItem>
           <CNavItem>
             <AppHeaderSearch />
           </CNavItem>
           <CNavItem>
-            <CButton variant="ghost" onClick={() => loadCippQueue()}>
-              <FontAwesomeIcon icon={'history'} className="me-2" />
-            </CButton>
+            <CTooltip content="Recent Jobs" placement="bottom">
+              <CButton variant="ghost" onClick={() => loadCippQueue()} className="me-1">
+                <FontAwesomeIcon icon={'history'} size="lg" />
+              </CButton>
+            </CTooltip>
           </CNavItem>
           <CNavItem>
             <div className="custom-switch-wrapper primary">
