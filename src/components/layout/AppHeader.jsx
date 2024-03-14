@@ -3,17 +3,12 @@ import { useSelector, useDispatch } from 'react-redux'
 import {
   CAlert,
   CAlertLink,
-  CContainer,
-  CCollapse,
   CHeader,
   CHeaderNav,
   CNavItem,
   CHeaderToggler,
-  CImage,
-  CSidebarBrand,
   CButton,
   CFormSwitch,
-  CLink,
 } from '@coreui/react'
 import { AppHeaderSearch } from 'src/components/header'
 import { CippActionsOffcanvas, TenantSelector } from '../utilities'
