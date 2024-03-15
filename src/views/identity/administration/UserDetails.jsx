@@ -58,7 +58,7 @@ export default function UserDetails({ tenantDomain, userId, className = null }) 
     },
     {
       heading: 'Postcode',
-      dataField: user.postalCode,
+      body: user.postalCode,
     },
     {
       heading: 'Country',
