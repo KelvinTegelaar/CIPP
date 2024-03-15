@@ -1,5 +1,6 @@
 import React from 'react'
-const CIPPSettings = React.lazy(() => import('src/views/cipp/CIPPSettings'))
+
+const CIPPSettings = React.lazy(() => import('src/views/cipp/app-settings/CIPPSettings'))
 const Setup = React.lazy(() => import('src/views/cipp/Setup'))
 const ApplyStandard = React.lazy(() => import('src/views/tenant/standards/ListStandards'))
 const GDAPStatus = React.lazy(() => import('src/views/tenant/administration/ListGDAPQueue'))
@@ -25,7 +26,11 @@ const adminRoutes = [
   { path: '/cipp/setup', name: 'Setup', component: Setup },
 
   { path: '/tenant/administration/gdap', name: 'GDAP Wizard', component: GDAP },
-  { path: '/tenant/administration/gdap-invite', name: 'GDAP Invite Wizard', component: GDAPInvite },
+  {
+    path: '/tenant/administration/gdap-invite',
+    name: 'GDAP Invite Wizard',
+    component: GDAPInvite,
+  },
   {
     path: '/tenant/administration/gdap-role-wizard',
     name: 'GDAP Role Wizard',
@@ -41,9 +46,21 @@ const adminRoutes = [
     name: 'GDAP Relationships',
     component: GDAPRelationships,
   },
-  { path: '/tenant/administration/appapproval', name: 'App Approval', component: appapproval },
-  { path: '/tenant/administration/gdap-status', name: 'GDAP Status', component: GDAPStatus },
-  { path: '/tenant/standards/list-standards', name: 'List Standard', component: ApplyStandard },
+  {
+    path: '/tenant/administration/appapproval',
+    name: 'App Approval',
+    component: appapproval,
+  },
+  {
+    path: '/tenant/administration/gdap-status',
+    name: 'GDAP Status',
+    component: GDAPStatus,
+  },
+  {
+    path: '/tenant/standards/list-standards',
+    name: 'List Standard',
+    component: ApplyStandard,
+  },
   {
     path: '/tenant/administration/tenant-offboarding-wizard',
     name: 'Tenant Offboarding',
