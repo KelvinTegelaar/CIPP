@@ -77,7 +77,13 @@ const EditUser = () => {
   }, [userId, tenantDomain, dispatch])
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const onSubmit = (values) => {
-    console.log(values.AddToGroups)
+    if (values.defaultAttributes) {
+      //map default attributes to the addedAttributes array. If addedAttributes is not present, create it.
+      values.addedAttributes = values.addedAttributes ? values.addedAttributes : []
+      Object.keys(values.defaultAttributes).forEach((key) => {
+        values.addedAttributes.push({ Key: key, Value: values.defaultAttributes[key].Value })
+      })
+    }
     const shippedValues = {
       AddedAliases: values.addedAliases,
       AddToGroups: Array.isArray(values.AddToGroups) ? values.AddToGroups : [],
@@ -114,6 +120,7 @@ const EditUser = () => {
   }
   const usageLocation = useSelector((state) => state.app.usageLocation)
   const [addedAttributes, setAddedAttribute] = React.useState(0)
+  const currentSettings = useSelector((state) => state.app)
 
   const precheckedLicenses = user.assignedLicenses
     ? user.assignedLicenses.reduce(
@@ -129,6 +136,11 @@ const EditUser = () => {
       label: user.usageLocation ? user.usageLocation : usageLocation?.label,
     },
     license: precheckedLicenses,
+    //if currentSettings.defaultAttributes exists. Set each of the keys inside of currentSettings.defaultAttributes.label to the value of the user attribute found in the user object.
+    defaultAttributes: currentSettings.userSettingsDefaults.defaultAttributes.reduce(
+      (o, key) => Object.assign(o, { [key.label]: { Value: user[key.label] } }),
+      {},
+    ),
   }
 
   const formDisabled = queryError === true || !!userError || !user || Object.keys(user).length === 0
@@ -140,6 +152,19 @@ const EditUser = () => {
     >
       {!queryError && (
         <>
+          {user?.userPrincipalName !== user?.mail && (
+            <CCallout color="warning">
+              Warning: The userPrincipalName and mail property do not match. This is no longer
+              supported by Microsoft. See
+              <a
+                className="m-1"
+                href="https://learn.microsoft.com/en-us/windows-server/identity/ad-fs/operations/configuring-alternate-login-id"
+              >
+                this
+              </a>
+              link for more information.
+            </CCallout>
+          )}
           {postResults.isSuccess && (
             <CCallout color="success">{postResults.data?.Results}</CCallout>
           )}
@@ -385,6 +410,19 @@ const EditUser = () => {
                             </CCol>
                           </CRow>
                           <>
+                            {currentSettings.userSettingsDefaults.defaultAttributes.map(
+                              (attribute, idx) => (
+                                <CRow key={idx}>
+                                  <CCol>
+                                    <RFFCFormInput
+                                      name={`defaultAttributes.${attribute.label}.Value`}
+                                      label={attribute.label}
+                                      type="text"
+                                    />
+                                  </CCol>
+                                </CRow>
+                              ),
+                            )}
                             {addedAttributes > 0 &&
                               [...Array(addedAttributes)].map((e, i) => (
                                 <CRow key={i}>
