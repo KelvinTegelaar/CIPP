@@ -74,7 +74,7 @@ const TenantOffboardingWizard = () => {
 
   return (
     <CippWizard
-      initialValues={currentSettings.userSettingsDefaults}
+      initialValues={currentSettings?.userSettingsDefaults}
       onSubmit={handleSubmit}
       wizardTitle="Tenant Offboarding Wizard"
     >
@@ -88,7 +88,7 @@ const TenantOffboardingWizard = () => {
         <hr className="my-4" />
       </CippWizard.Page>
       <CippWizard.Page
-        initialvalues={currentSettings.tenantuserSettingsDefaults}
+        initialvalues={currentSettings?.tenantuserSettingsDefaults}
         title="Tenant Offboarding Settings"
         description="Select the tenant offboarding actions you wish to take."
       >
