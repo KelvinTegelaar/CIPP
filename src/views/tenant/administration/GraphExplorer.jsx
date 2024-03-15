@@ -218,6 +218,15 @@ const GraphExplorer = () => {
       },
       isBuiltin: true,
     },
+    {
+      name: 'Organization Branding',
+      id: '2ed236e2-268e-461b-9d37-98b123010667',
+      params: {
+        endpoint: 'organization/%tenantid%/branding',
+        NoPagination: true,
+      },
+      isBuiltin: true,
+    },
   ]
 
   if (customPresets?.Results?.length > 0) {
