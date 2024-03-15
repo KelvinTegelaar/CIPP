@@ -92,7 +92,7 @@ const OffboardingWizard = () => {
 
   return (
     <CippWizard
-      initialValues={currentSettings.userSettingsDefaults}
+      initialValues={currentSettings?.userSettingsDefaults}
       onSubmit={handleSubmit}
       wizardTitle="Offboarding Wizard"
     >
@@ -132,7 +132,7 @@ const OffboardingWizard = () => {
         <hr className="my-4" />
       </CippWizard.Page>
       <CippWizard.Page
-        initialvalues={currentSettings.userSettingsDefaults}
+        initialvalues={currentSettings?.userSettingsDefaults}
         title="Offboarding Settings"
         description="Select the offboarding options."
       >
