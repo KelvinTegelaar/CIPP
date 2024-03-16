@@ -1,0 +1,28 @@
+.cipp-callout {
+  --cui-callout-padding-x: 1rem;
+  --cui-callout-padding-y: 1rem;
+  --cui-callout-border-width: var(--cui-border-width);
+  --cui-callout-border-color: var(--cui-border-color);
+  --cui-callout-border-left-width: calc(var(--cui-border-width) * 4);
+  --cui-callout-border-radius: var(--cui-border-radius);
+  border: var(--cui-callout-border-width) solid var(--cui-callout-border-color);
+  border-radius: var(--cui-callout-border-radius);
+  margin-bottom: 16px;
+  padding: var(--cui-callout-padding-y) var(--cui-callout-padding-x);
+}
+
+html:not([dir=rtl]) .cipp-callout {
+  border-left-color: var(--cui-callout-border-left-color);
+}
+
+html:not([dir=rtl]) .cipp-callout {
+  border-left-width: var(--cui-callout-border-left-width);
+}
+
+html:not([dir=rtl]) .cipp-callout-dismissible .btn {
+  right: 0;
+}
+
+.cipp-callout-dismissible .btn {
+  cursor: pointer;
+}
