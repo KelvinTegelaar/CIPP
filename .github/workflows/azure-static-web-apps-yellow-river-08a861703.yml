@@ -1,37 +1,4 @@
 # File: .github/workflows/workflow.yml
-
-name: Run Azure Login with OIDC
-on: [push]
-
-permissions:
-      id-token: write
-      contents: read
-jobs: 
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Azure login
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          enable-AzPSSession: true
-  
-      - name: Azure CLI script
-        uses: azure/CLI@v1
-        with:
-          azcliversion: latest
-          inlineScript: |
-            az account show
-
-      - name: Azure PowerShell script
-        uses: azure/powershell@v1
-        with:
-          azPSVersion: "latest"
-          inlineScript: |
-            Get-AzContext
-
 name: Azure Static Web Apps CI/CD
 
 on:
@@ -49,6 +16,9 @@ jobs:
         with:
           submodules: true
           lfs: false
+      - name: Azure Login
+        uses: Azure/login@v2.0.0
+            
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
