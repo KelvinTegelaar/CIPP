@@ -138,10 +138,11 @@ export const RFFCFormInput = ({
   disabled = false,
   spellCheck = true,
   autoFocus = false,
+  hiddenValue,
   onChange,
 }) => {
   return (
-    <Field name={name} validate={validate}>
+    <Field initialValue={hiddenValue} name={name} validate={validate}>
       {({ input, meta }) => {
         const handleChange = onChange
           ? (e) => {

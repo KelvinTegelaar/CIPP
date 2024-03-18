@@ -218,6 +218,15 @@ const GraphExplorer = () => {
       },
       isBuiltin: true,
     },
+    {
+      name: 'Organization Branding',
+      id: '2ed236e2-268e-461b-9d37-98b123010667',
+      params: {
+        endpoint: 'organization/%tenantid%/branding',
+        NoPagination: true,
+      },
+      isBuiltin: true,
+    },
   ]
 
   if (customPresets?.Results?.length > 0) {
@@ -307,7 +316,6 @@ const GraphExplorer = () => {
 
   function getPresetProps(values) {
     var newvals = Object.assign({}, values)
-    console.log(newvals)
     if (newvals?.$select !== undefined && Array.isArray(newvals?.$select)) {
       newvals.$select = newvals?.$select.map((p) => p.value).join(',')
     }
@@ -316,8 +324,6 @@ const GraphExplorer = () => {
     delete newvals['IsShared']
     return newvals
   }
-
-  console.log(graphrequest.data)
 
   return (
     <>
