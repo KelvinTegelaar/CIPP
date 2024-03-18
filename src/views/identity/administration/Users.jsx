@@ -129,7 +129,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             },
             modalUrl: `/api/ExecOneDriveShortCut`,
             modalDropdown: {
-              url: `/api/listSites?TenantFilter=${tenant.defaultDomainName}&type=SharePointSiteUsage`,
+              url: `/api/listSites?TenantFilter=${tenant.defaultDomainName}&type=SharePointSiteUsage&URLOnly=true`,
               labelField: 'URL',
               valueField: 'URL',
             },
@@ -181,7 +181,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
                 groupName: 'displayName',
               },
             },
-            modalMessage: 'Select the group to add the user to',
+            modalMessage: 'Select the group to remove the user from',
           },
           {
             label: 'Enable Online Archive',
@@ -259,6 +259,13 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modal: true,
             modalUrl: `/api/ExecResetPass?MustChange=false&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}&displayName=${row.displayName}`,
             modalMessage: 'Are you sure you want to reset the password for this user?',
+          },
+          {
+            label: 'Clear ImmutableId',
+            color: 'warning',
+            modal: true,
+            modalUrl: `/api/ExecClrImmId?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalMessage: 'Are you sure you want to clear the ImmutableId for this user?',
           },
           {
             label: 'Revoke all user sessions',
@@ -392,6 +399,7 @@ const Users = (row) => {
       name: 'id',
       selector: (row) => row['id'],
       omit: true,
+      exportSelector: 'id',
     },
     {
       name: 'Actions',
@@ -542,6 +550,58 @@ const Users = (row) => {
                 url: `/api/listSites?TenantFilter=${tenant.defaultDomainName}&type=SharePointSiteUsage`,
                 labelField: 'URL',
                 valueField: 'URL',
+              },
+            },
+            {
+              label: 'Add to group',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                username: '!userPrincipalName',
+                userid: '!id',
+                TenantId: tenant.defaultDomainName,
+                Addmember: {
+                  value: '!userPrincipalName',
+                },
+              },
+              modalUrl: `/api/EditGroup`,
+              modalMessage: 'Select the group to add',
+              modalDropdown: {
+                url: `/api/listGroups?TenantFilter=${tenant.defaultDomainName}`,
+                labelField: 'displayName',
+                valueField: 'id',
+                addedField: {
+                  groupId: 'id',
+                  groupType: 'calculatedGroupType',
+                  groupName: 'displayName',
+                },
+              },
+            },
+            {
+              label: 'Remove from group',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                username: '!userPrincipalName',
+                userid: '!id',
+                TenantId: tenant.defaultDomainName,
+                RemoveMember: {
+                  value: '!userPrincipalName',
+                },
+              },
+              modalUrl: `/api/EditGroup`,
+              modalMessage: 'Select the group to remove',
+              modalDropdown: {
+                url: `/api/listGroups?TenantFilter=${tenant.defaultDomainName}`,
+                labelField: 'displayName',
+                valueField: 'id',
+                addedField: {
+                  groupId: 'id',
+                  groupType: 'calculatedGroupType',
+                  groupName: 'displayName',
+                },
               },
             },
             {
