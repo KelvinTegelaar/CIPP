@@ -16,8 +16,6 @@ jobs:
         with:
           submodules: true
           lfs: false
-      - name: Azure Login
-        uses: Azure/login@v2.0.0
             
       - name: Build And Deploy
         id: builddeploy
