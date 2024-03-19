@@ -1,10 +1,15 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { CButton, CCallout, CSpinner } from '@coreui/react'
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import {
+  faArrowCircleDown,
+  faEllipsisV,
+  faSyncAlt,
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPageList } from 'src/components/layout'
-import { ModalService } from 'src/components/utilities'
+import { CippActionsOffcanvas, ModalService } from 'src/components/utilities'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import { CellTip } from 'src/components/tables'
 import { TitleButton } from 'src/components/buttons'
@@ -12,30 +17,66 @@ import { TitleButton } from 'src/components/buttons'
 const AutopilotListDevices = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
+  const [ocVisible, setOCVisible] = useState(false)
+
   const Actions = (row, index, column) => {
-    const handleDeleteAPDevice = (apiurl, message) => {
-      ModalService.confirm({
-        title: 'Confirm',
-        body: <div>{message}</div>,
-        onConfirm: () => ExecuteGetRequest({ path: apiurl }),
-        confirmLabel: 'Continue',
-        cancelLabel: 'Cancel',
-      })
-    }
     return (
-      <CButton
-        size="sm"
-        variant="ghost"
-        color="danger"
-        onClick={() =>
-          handleDeleteAPDevice(
-            `api/RemoveAPDevice?ID=${row.id}&tenantFilter=${tenant.defaultDomainName}`,
-            'Do you want to delete the Autopilot Device?',
-          )
-        }
-      >
-        <FontAwesomeIcon icon={faTrash} href="" />
-      </CButton>
+      <>
+        <CButton size="sm" color="link" onClick={() => setOCVisible(true)}>
+          <FontAwesomeIcon icon={faEllipsisV} />
+        </CButton>
+        <CippActionsOffcanvas
+          title="ExtendedInformation"
+          extendedInfo={[
+            {
+              label: 'Assigned User',
+              value: `${row.userPrincipalName ?? ' '}`,
+            },
+            { label: 'Windows PKID', value: `${row.productKey ?? ' '}` },
+            { label: 'Serial', value: `${row.serialNumber ?? ' '}` },
+            { label: 'Model', value: `${row.model ?? ' '}` },
+            { label: 'Manufacturer', value: `${row.manufacturer ?? ' '}` },
+          ]}
+          actions={[
+            {
+              label: 'Assign device',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                username: row.userPrincipalName,
+                userid: row.id,
+                TenantFilter: tenant.defaultDomainName,
+                message: row.message,
+                Device: row.id,
+              },
+              modalUrl: `/api/ExecAssignAPDevice`,
+              modalDropdown: {
+                url: `/api/listUsers?TenantFilter=${tenant.defaultDomainName}`,
+                labelField: 'userPrincipalName',
+                valueField: 'id',
+                addedField: {
+                  userPrincipalName: 'userPrincipalName',
+                  addressableUserName: 'displayName',
+                  groupName: 'displayName',
+                },
+              },
+              modalMessage: 'Select the user to assign',
+            },
+            {
+              label: 'Delete Device',
+              color: 'danger',
+              modal: true,
+              modalUrl: `/api/RemoveAPDevice?ID=${row.id}&tenantFilter=${tenant.defaultDomainName}`,
+              modalMessage: 'Are you sure you want to delete this device?',
+            },
+          ]}
+          placement="end"
+          visible={ocVisible}
+          id={row.id}
+          hideFunction={() => setOCVisible(false)}
+        />
+      </>
     )
   }
 
@@ -102,9 +143,20 @@ const AutopilotListDevices = () => {
       <CippPageList
         title="Autopilot Devices"
         titleButton={
-          <>
+          <div style={{ display: 'flex', alignItems: 'right' }}>
             <TitleButton href={`/endpoint/autopilot/add-device`} title="Deploy Autopilot Device" />
-          </>
+            <div style={{ marginLeft: '10px' }}>
+              <TitleButton
+                icon={faSyncAlt}
+                onClick={() =>
+                  ExecuteGetRequest({
+                    path: `/api/ExecSyncAPDevices?tenantFilter=${tenant.defaultDomainName}`,
+                  })
+                }
+                title="Sync Devices"
+              />
+            </div>
+          </div>
         }
         datatable={{
           keyField: 'id',
