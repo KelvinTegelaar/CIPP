@@ -43,18 +43,6 @@ For more details on these settings, please refer to the [Group Templates page](g
 
 In this step, you review your input and confirm to apply. The application sends a POST request to the `AddGroup` endpoint listed below with your input as values.
 
-### API Calls
-
-The following APIs are called on this page:
-
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ListGroupTemplates" method="get" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
-
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/AddGroup" method="post" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
-
 ### Feature Requests / Ideas
 
 We value your feedback and ideas. If you have any feature requests or ideas to improve the Deploy Group Templates page, please raise them on our [GitHub issues page](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=\&template=feature\_request.md\&title=FEATURE+REQUEST%3A+).

@@ -18,13 +18,7 @@ You can add Office applications to deploy through Microsoft Endpoint Manager.
 | Remove other versions          | Whether the install removes other versions of Office.    |
 | Accept License                 | Whether the install accepts the Office EULA license.     |
 
-### API Calls
 
-The following APIs are called on this page:
-
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/AddMSPApp" method="post" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
 
 ### Feature Requests / Ideas
 

@@ -32,12 +32,6 @@ operation eq CustomLogEntry
 
 You can find all possible keys in the Microsoft documentation, however as this documentation can get quite complex we recommend setting up an alert on "Any" log to a webhook or email, so you can easily find the fields you want to filter on without needing to read all of the Microsoft Documentation.
 
-## API Calls
-
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ListAlertsQueue" method="get" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
-
 ### Feature Requests / Ideas
 
 Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

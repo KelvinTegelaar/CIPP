@@ -1,12 +1,8 @@
 # Vulnerabilities
 
-### API Calls
+### [john](https://app.gitbook.com/u/LqxnmoEUSlN5hrfNXx2f5zhRCIf2 "mention") please document this
 
-The following APIs are called on this page:
 
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ListDefenderTVM" method="get" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
 
 ### Feature Requests / Ideas
 

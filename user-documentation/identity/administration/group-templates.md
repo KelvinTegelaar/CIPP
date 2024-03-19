@@ -25,22 +25,6 @@ On the Group Templates page, the following actions can be performed:
 * **View**: Click the "View" button next to a group template to display its details in JSON format.
 * **Delete**: Click the "Trash" icon next to a group template to delete it. This action triggers a modal that asks for confirmation before deleting the template. Once confirmed, this action calls the `RemoveGroupTemplate` API endpoint.
 
-### API Calls
-
-The following APIs are called on this page:
-
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ListGroupTemplates" method="get" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
-
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/AddGroupTemplate" method="post" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
-
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/RemoveGroupTemplate" method="get" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
-
 ### Feature Requests / Ideas
 
 We value your feedback and ideas. If you have any feature requests or ideas to improve the Group Templates page, please raise them on our [GitHub issues page](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=\&template=feature\_request.md\&title=FEATURE+REQUEST%3A+).

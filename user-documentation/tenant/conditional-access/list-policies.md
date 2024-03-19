@@ -27,13 +27,7 @@ This page lists all the Conditional Access Policies on the selected tenant. This
 | Control Operator     | The operator used to combine the filters.             |
 | Built-in Controls    | Any built-in controls applied.                        |
 
-### API Calls
 
-The following APIs are called on this page:
-
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ListConditionalAccessPolicies" method="get" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
 
 ### Feature Requests / Ideas
 

@@ -34,13 +34,7 @@ You can assign the application to All Users / All Devices from the more button.
 * Assign Globally (All Users / All Devices)
 * Delete Application
 
-### API Calls
 
-The following APIs are called on this page:
-
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ListApps" method="get" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
 
 ### Feature Requests / Ideas
 

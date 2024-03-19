@@ -19,18 +19,6 @@ The summary provides a count of the active alerts broken down into the following
 
 Below the summary is a list of the alerts found for all your tenants with more detailed information.
 
-### API Calls
-
-The following APIs are called on this page:
-
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ExecIncidentsList" method="get" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
-
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ExecAlertsList" method="get" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
-
 ### Feature Requests / Ideas
 
 Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

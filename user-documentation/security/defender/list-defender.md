@@ -21,13 +21,7 @@ This page lists the defender status for all enrolled devices in a tenant. This i
 | Reboot Required            | Whether the device requires a restart.                  |
 | Attention Required         | Whether the device requires attention.                  |
 
-### API Calls
 
-The following APIs are called on this page:
-
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ListDefenderState" method="get" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
 
 ### Feature Requests / Ideas
 

@@ -17,13 +17,7 @@ As CIPP is an application that touches many parts of M365 selecting the roles mi
 * Privileged Role Administrator
 * Privileged Authentication Administrator (Only required if you want to be able to delete global admins within tenants from CIPP)
 
-### API Calls
 
-The following APIs are called on this page:
-
-{% swagger src="../../.gitbook/assets/openapicipp.json" path="/ExecAddGDAPRole" method="post" %}
-[openapicipp.json](../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
 
 ### Feature Requests / Ideas
 

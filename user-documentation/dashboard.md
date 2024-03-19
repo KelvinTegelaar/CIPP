@@ -17,22 +17,3 @@ The Home page includes the following sections:
 * Portals: Contains links to various Microsoft 365 administration centers.
 * CIPP Actions: Contains links to various CIPP actions like editing the tenant, listing users, groups, and devices, and creating users and groups.
 
-### API Calls
-
-The following APIs are called on this page:
-
-{% swagger src="../.gitbook/assets/openapicipp.json" path="/ListUserCounts" method="get" %}
-[openapicipp.json](../.gitbook/assets/openapicipp.json)
-{% endswagger %}
-
-{% swagger src="../.gitbook/assets/openapicipp.json" path="/ListOrg" method="get" %}
-[openapicipp.json](../.gitbook/assets/openapicipp.json)
-{% endswagger %}
-
-{% swagger src="../.gitbook/assets/openapicipp.json" path="/ListSharepointQuota" method="get" %}
-[openapicipp.json](../.gitbook/assets/openapicipp.json)
-{% endswagger %}
-
-{% swagger src="../.gitbook/assets/openapicipp.json" path="/ListStandards" method="get" %}
-[openapicipp.json](../.gitbook/assets/openapicipp.json)
-{% endswagger %}

@@ -1,12 +1,6 @@
 # Geo IP lookup
 
-### API Calls
-
-The following APIs are called on this page:
-
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ListExternalTenantInfo" method="get" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
+### [john](https://app.gitbook.com/u/LqxnmoEUSlN5hrfNXx2f5zhRCIf2 "mention") please document
 
 ### Feature Requests / Ideas
 

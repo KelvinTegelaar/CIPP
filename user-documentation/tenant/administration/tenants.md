@@ -33,17 +33,7 @@ This _only_ affects what's shown in the Partner Center (and tenant list in CIPP)
 By default Microsoft only picks up this information when you create a new relationship, and never updates this after.
 {% endhint %}
 
-### API Calls
 
-The following APIs are called on this page:
-
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ListTenantDetails" method="get" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
-
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ListTenants" method="get" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
 
 ### Feature Requests / Ideas
 

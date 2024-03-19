@@ -39,22 +39,6 @@ You can switch providers to either Google, Cloudflare or Quad9 for your domain a
 
 You can get the URLs to access backend features directly in the Azure AD portal from the Security tab.
 
-### API Calls
-
-The following APIs are called on this page:
-
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ExecDnsConfig" method="get" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
-
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ExecPasswordConfig" method="get" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
-
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ExecPasswordConfig" method="post" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
-
 ### Feature Requests / Ideas
 
 Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

@@ -22,17 +22,7 @@ As a partner, you can register devices to Windows Autopilot using any one of the
 
 This API does not directly return data to CIPP, and thus can incorrectly report the upload has failed.
 
-### API Calls
-
-The following APIs are called on this page:
-
-### API Calls
-
-The following APIs are called on this page:
-
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/AddAPDevice" method="post" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
+###
 
 ### Feature Requests / Ideas
 

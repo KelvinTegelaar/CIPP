@@ -5,7 +5,7 @@ description: Apply pre-defined standards to your Microsoft 365 CSP tenants.
 # Edit Standards
 
 {% hint style="danger" %}
-Configuration Changes A standard applies actual configuration to the selected tenant, not just monitoring.
+A standard with Remediate applies actual configuration to the selected tenant, not just monitoring.
 
 Note that by default, Standards aren't applied to any tenants upon setup / configuration of CIPP. Applying any standard should only be undertaken with full understanding of the effects of the standard, detailed below.
 {% endhint %}
@@ -116,30 +116,8 @@ High Impact Changes which should require thought and planning. Should ideally co
 | Do not allow Mac devices to sync using OneDrive           | Update-MgAdminSharepointSetting                                                                                                                                                                      | Disabled syncing via OneDrive                                                                                                                                                                       |
 | Only allow users to sync OneDrive from AAD joined devices | Update-MgAdminSharepointSetting                                                                                                                                                                      | Only allow AAD joined devices to sync using the onedrive client. Users without will receive an error.                                                                                               |
 
-### API Calls
 
-The following APIs are called on this page:
-
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ListGroupTemplates" method="get" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
-
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ListIntuneTemplates" method="get" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
-
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ListCAtemplates" method="get" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
-
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ListTransportRulesTemplates" method="get" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
-
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ListExConnectorTemplates" method="get" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
 
 ### Feature Requests / Ideas
 
-Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=enhancement%2Cno-priority&projects=&template=feature.yml&title=%5BFeature+Request%5D%3A+) on GitHub.
+Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.

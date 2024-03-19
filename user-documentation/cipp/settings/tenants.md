@@ -56,18 +56,3 @@ Administrators can refresh a tenant's permissions by:
 
 The Tenants page also provides export and filter functionalities. The 'Export' button allows you to download a CSV file of the tenant table for offline use or analysis. The 'Filter' dropdown lets you filter the tenants displayed in the table based on whether they are excluded or included.
 
-### API Endpoints
-
-The page interacts with the following API endpoints:
-
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ExecCPVPermissions" method="get" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
-
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ExecExcludeTenant" method="get" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
-
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/ExecExcludeTenant" method="post" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}

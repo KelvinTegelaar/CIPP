@@ -1,8 +1,6 @@
 # Add Template
 
-### API Calls
 
-The following APIs are called on this page:
 
 ### Feature Requests / Ideas
 

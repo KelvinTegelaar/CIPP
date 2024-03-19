@@ -100,13 +100,7 @@ Check that your permissions are correct by navigating to **CIPP Settings > Confi
 
 Make sure both CIPP-API and CIPP are fully up-to-date. There is extensive logging in the log files in the CIPP-API Function App.
 
-### API Calls
 
-The following APIs are called on this page:
-
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/DomainAnalyser_List" method="get" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
 
 ### Feature Requests / Ideas
 

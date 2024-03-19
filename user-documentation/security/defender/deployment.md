@@ -1,12 +1,6 @@
 # Defender Deployment
 
-### API Calls
-
-The following APIs are called on this page:
-
-{% swagger src="../../../.gitbook/assets/openapicipp.json" path="/AddDefenderDeployment" method="post" %}
-[openapicipp.json](../../../.gitbook/assets/openapicipp.json)
-{% endswagger %}
+[john](https://app.gitbook.com/u/LqxnmoEUSlN5hrfNXx2f5zhRCIf2 "mention") Please document this
 
 ### Feature Requests / Ideas
 
