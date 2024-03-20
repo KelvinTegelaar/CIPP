@@ -1,6 +1,6 @@
 # Geo IP lookup
 
-### [john](https://app.gitbook.com/u/LqxnmoEUSlN5hrfNXx2f5zhRCIf2 "mention") please document
+###
 
 ### Feature Requests / Ideas
 

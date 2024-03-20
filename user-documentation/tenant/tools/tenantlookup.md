@@ -1,6 +1,6 @@
 # Tenant Lookup
 
-[john](https://app.gitbook.com/u/LqxnmoEUSlN5hrfNXx2f5zhRCIf2 "mention") Please document this
+
 
 ### Feature Requests / Ideas
 
