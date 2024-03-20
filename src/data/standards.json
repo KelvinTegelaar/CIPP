@@ -737,6 +737,80 @@
     "impactColour": "warning"
   },
   {
+    "name": "standards.SafeLinksPolicy",
+    "cat": "Defender Standards",
+    "tag": ["lowimpact", "CIS"],
+    "helpText": "Creates a SafeLinks Policy",
+    "addedComponent": [
+      {
+        "type": "input",
+        "name": "standards.SafeLinksPolicy.Name",
+        "label": "SafeLink Policy Name"
+      },
+      {
+        "type": "boolean",
+        "label": "EnableSafeLinksForEmail",
+        "name": "standards.SafeLinksPolicy.EnableSafeLinksForEmail",
+        "default": true
+      },
+      {
+        "type": "boolean",
+        "label": "EnableSafeLinksForTeams",
+        "name": "standards.SafeLinksPolicy.EnableSafeLinksForTeams",
+        "default": true
+      },
+      {
+        "type": "boolean",
+        "label": "EnableSafeLinksForOffice",
+        "name": "standards.SafeLinksPolicy.EnableSafeLinksForOffice",
+        "default": true
+      },
+      {
+        "type": "boolean",
+        "label": "TrackClicks",
+        "name": "standards.SafeLinksPolicy.TrackClicks",
+        "default": true
+      },
+      {
+        "type": "boolean",
+        "label": "ScanUrls",
+        "name": "standards.SafeLinksPolicy.ScanUrls",
+        "default": true
+      },
+      {
+        "type": "boolean",
+        "label": "EnableForInternalSenders",
+        "name": "standards.SafeLinksPolicy.EnableForInternalSenders",
+        "default": true
+      },
+      {
+        "type": "boolean",
+        "label": "DeliverMessageAfterScan",
+        "name": "standards.SafeLinksPolicy.DeliverMessageAfterScan",
+        "default": true
+      },
+      {
+        "type": "boolean",
+        "label": "AllowClickThrough",
+        "name": "standards.SafeLinksPolicy.AllowClickThrough",
+        "default": false
+      },
+      {
+        "type": "boolean",
+        "label": "DisableUrlRewrite",
+        "name": "standards.SafeLinksPolicy.DisableUrlRewrite"
+      },
+      {
+        "type": "boolean",
+        "label": "EnableOrganizationBranding",
+        "name": "standards.SafeLinksPolicy.EnableOrganizationBranding"
+      }
+    ],
+    "label": "SafeLinks Policy",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.intuneDeviceRetirementDays",
     "cat": "Intune Standards",
     "tag": ["lowimpact"],
