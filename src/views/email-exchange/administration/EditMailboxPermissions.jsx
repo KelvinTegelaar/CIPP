@@ -19,7 +19,7 @@ import useQuery from 'src/hooks/useQuery'
 import { useDispatch } from 'react-redux'
 import { Form, Field } from 'react-final-form'
 import { RFFSelectSearch, RFFCFormCheck, RFFCFormInput, RFFCFormSwitch } from 'src/components/forms'
-import { ModalService } from 'src/components/utilities'
+import { CippLazy, ModalService } from 'src/components/utilities'
 import {
   useLazyGenericPostRequestQuery,
   useLazyGenericGetRequestQuery,
@@ -35,23 +35,6 @@ import PropTypes from 'prop-types'
 
 const formatter = (cell, warning = false, reverse = false, colourless = false) =>
   CellBoolean({ cell, warning, reverse, colourless })
-
-function Lazy({ visible, children }) {
-  const rendered = useRef(visible)
-
-  if (visible && !rendered.current) {
-    rendered.current = true
-  }
-
-  if (!rendered.current) return null
-
-  return <div style={{ display: visible ? 'block' : 'none' }}>{children}</div>
-}
-
-Lazy.propTypes = {
-  visible: PropTypes.bool,
-  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
-}
 
 const MailboxSettings = () => {
   const dispatch = useDispatch()
@@ -128,24 +111,24 @@ const MailboxSettings = () => {
           <CCardBody>
             <CTabContent>
               <CTabPane visible={active === 1} className="mt-3">
-                <Lazy visible={active === 1}>
+                <CippLazy visible={active === 1}>
                   <MailboxPermissions />
-                </Lazy>
+                </CippLazy>
               </CTabPane>
               <CTabPane visible={active === 2} className="mt-3">
-                <Lazy visible={active === 2}>
+                <CippLazy visible={active === 2}>
                   <CalendarPermissions />
-                </Lazy>
+                </CippLazy>
               </CTabPane>
               <CTabPane visible={active === 3} className="mt-3">
-                <Lazy visible={active === 3}>
+                <CippLazy visible={active === 3}>
                   <MailboxForwarding />
-                </Lazy>
+                </CippLazy>
               </CTabPane>
               <CTabPane visible={active === 4} className="mt-3">
-                <Lazy visible={active === 4}>
+                <CippLazy visible={active === 4}>
                   <OutOfOffice />
-                </Lazy>
+                </CippLazy>
               </CTabPane>
             </CTabContent>
           </CCardBody>
@@ -531,8 +514,14 @@ const CalendarPermissions = () => {
                                   name: 'Publishing Editor',
                                 },
                                 { value: 'Reviewer', name: 'Reviewer' },
-                                { value: 'LimitedDetails', name: 'Limited Details' },
-                                { value: 'AvailabilityOnly', name: 'Availability Only' },
+                                {
+                                  value: 'LimitedDetails',
+                                  name: 'Limited Details',
+                                },
+                                {
+                                  value: 'AvailabilityOnly',
+                                  name: 'Availability Only',
+                                },
                               ]}
                               placeholder="Select a permission level"
                               name="Permissions"
@@ -597,8 +586,7 @@ const MailboxForwarding = () => {
     params: {
       Endpoint: 'users',
       TenantFilter: tenantDomain,
-      $filter: 'assignedLicenses/$count ne 0 and accountEnabled eq true',
-      $count: true,
+      $filter: "userType eq 'Member' and mail ge ' '", // filter out guests and users with no mailbox. #HACK "mail ne 'null'" does not work so this horrible hack is required
     },
   })
   useEffect(() => {

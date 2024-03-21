@@ -3,27 +3,25 @@ import { useSelector, useDispatch } from 'react-redux'
 import {
   CAlert,
   CAlertLink,
-  CContainer,
-  CCollapse,
   CHeader,
   CHeaderNav,
   CNavItem,
   CHeaderToggler,
-  CImage,
-  CSidebarBrand,
   CButton,
   CFormSwitch,
+  CTooltip,
 } from '@coreui/react'
 import { AppHeaderSearch } from 'src/components/header'
-import { TenantSelector } from '../utilities'
-import cyberdrainlogolight from 'src/assets/images/CIPP.png'
-import cyberdrainlogodark from 'src/assets/images/CIPP_Dark.png'
-
+import { CippActionsOffcanvas, TenantSelector } from '../utilities'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCaretSquareLeft, faCaretSquareRight } from '@fortawesome/free-solid-svg-icons'
+import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { setCurrentTheme, setUserSettings, toggleSidebarShow } from 'src/store/features/app'
 import { useMediaPredicate } from 'react-media-hook'
-import { useGenericGetRequestQuery, useLoadAlertsDashQuery } from 'src/store/api/app'
+import {
+  useGenericGetRequestQuery,
+  useLazyGenericGetRequestQuery,
+  useLoadAlertsDashQuery,
+} from 'src/store/api/app'
 import { useLocation } from 'react-router-dom'
 
 const AppHeader = () => {
@@ -34,6 +32,11 @@ const AppHeader = () => {
   const sidebarShow = useSelector((state) => state.app.sidebarShow)
   const currentTheme = useSelector((state) => state.app.currentTheme)
   const preferredTheme = useMediaPredicate('(prefers-color-scheme: dark)') ? 'impact' : 'cyberdrain'
+  const [cippQueueExtendedInfo, setCippQueueExtendedInfo] = useState([])
+  const [cippQueueVisible, setCippQueueVisible] = useState(false)
+  const [cippQueueRefresh, setCippQueueRefresh] = useState(
+    (Math.random() + 1).toString(36).substring(7),
+  )
   const { data: dashboard } = useLoadAlertsDashQuery()
   const {
     data: userSettings,
@@ -57,6 +60,49 @@ const AppHeader = () => {
     userSettings,
   ])
 
+  const [getCippQueueList, cippQueueList] = useLazyGenericGetRequestQuery()
+
+  function loadCippQueue() {
+    setCippQueueVisible(true)
+    getCippQueueList({ path: 'api/ListCippQueue', params: { refresh: cippQueueRefresh } })
+  }
+
+  function refreshCippQueue() {
+    setCippQueueRefresh((Math.random() + 1).toString(36).substring(7))
+    loadCippQueue()
+  }
+
+  useEffect(() => {
+    if (cippQueueList.isFetching || cippQueueList.isLoading) {
+      setCippQueueExtendedInfo([
+        {
+          label: 'Fetching recent jobs',
+          value: 'Please wait',
+          timestamp: Date(),
+          link: '#',
+        },
+      ])
+    }
+    if (
+      cippQueueList.isSuccess &&
+      Array.isArray(cippQueueList.data) &&
+      cippQueueList.data.length > 0
+    ) {
+      setCippQueueExtendedInfo(
+        cippQueueList.data?.map((job) => ({
+          label: `${job.Name}`,
+          value: job.Status,
+          link: job.Link,
+          timestamp: job.Timestamp,
+        })),
+      )
+    } else {
+      setCippQueueExtendedInfo([
+        { label: 'No jobs to display', value: '', timpestamp: Date(), link: '#' },
+      ])
+    }
+  }, [cippQueueList])
+
   const SwitchTheme = () => {
     let targetTheme = preferredTheme
     if (isDark) {
@@ -75,29 +121,15 @@ const AppHeader = () => {
   return (
     <>
       <CHeader position="sticky">
-        <CSidebarBrand className="me-auto pt-xs-2 p-md-2" to="/">
-          <CImage
-            className="sidebar-brand-full me-2"
-            src={
-              currentTheme === 'cyberdrain' || preferredTheme === 'cyberdrain'
-                ? cyberdrainlogodark
-                : cyberdrainlogolight
-            }
-            height={80}
-          />
-          <CHeaderNav className="me-2 p-2">
-            <CHeaderToggler
-              className="me-2"
-              onClick={() => dispatch(toggleSidebarShow({ sidebarShow }))}
-            >
-              <FontAwesomeIcon
-                icon={sidebarShow ? faCaretSquareLeft : faCaretSquareRight}
-                size="lg"
-                className="me-2"
-              />
-            </CHeaderToggler>
-          </CHeaderNav>
-        </CSidebarBrand>
+        <CHeaderNav>
+          <CHeaderToggler
+            className="m-2"
+            onClick={() => dispatch(toggleSidebarShow({ sidebarShow }))}
+            style={{ marginInlineStart: '-50x' }}
+          >
+            <FontAwesomeIcon icon={faBars} size="lg" className="me-2" />
+          </CHeaderToggler>
+        </CHeaderNav>
         <CHeaderNav className="p-md-2 flex-grow-1">
           <TenantSelector NavSelector={true} />
           <CNavItem>
@@ -106,13 +138,22 @@ const AppHeader = () => {
               target="_blank"
               href={`https://docs.cipp.app/user-documentation${location.pathname}`}
             >
-              <CButton variant="ghost">
-                <FontAwesomeIcon icon={'question'} size="lg" />
-              </CButton>
+              <CTooltip content="Documentation" placement="bottom">
+                <CButton variant="ghost">
+                  <FontAwesomeIcon icon={'question'} size="lg" />
+                </CButton>
+              </CTooltip>
             </a>
           </CNavItem>
           <CNavItem>
             <AppHeaderSearch />
+          </CNavItem>
+          <CNavItem>
+            <CTooltip content="Recent Jobs" placement="bottom">
+              <CButton variant="ghost" onClick={() => loadCippQueue()} className="me-1">
+                <FontAwesomeIcon icon={'history'} size="lg" />
+              </CButton>
+            </CTooltip>
           </CNavItem>
           <CNavItem>
             <div className="custom-switch-wrapper primary">
@@ -140,24 +181,37 @@ const AppHeader = () => {
           </CNavItem>
         </CHeaderNav>
       </CHeader>
-
-      {dashboard &&
-        dashboard.length >= 1 &&
-        dashboard.map((item, index) => (
-          <div
-            key={index}
-            className="mb-3"
-            style={{
-              zIndex: 10000,
-              paddingLeft: '20rem',
-              paddingRight: '3rem',
-            }}
-          >
-            <CAlert key={index} color={item.type} dismissible>
-              {item.Alert} <CAlertLink href={item.link}>Link</CAlertLink>
-            </CAlert>
-          </div>
-        ))}
+      <div className="m-2">
+        {dashboard &&
+          dashboard.length >= 1 &&
+          dashboard.map((item, index) => (
+            <div className="m-1" key={index}>
+              <CAlert className="m-3" key={index} color={item.type} dismissible>
+                {item.Alert} <CAlertLink href={item.link}>Link</CAlertLink>
+              </CAlert>
+            </div>
+          ))}
+      </div>
+      <CippActionsOffcanvas
+        title="Recent Jobs"
+        extendedInfo={[]}
+        cards={cippQueueExtendedInfo}
+        refreshFunction={refreshCippQueue}
+        actions={[
+          {
+            label: 'Clear History',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/RemoveCippQueue`,
+            modalMessage: 'Are you sure you want clear the history?',
+            icon: <FontAwesomeIcon icon="trash" className="me-2" />,
+          },
+        ]}
+        placement="end"
+        visible={cippQueueVisible}
+        id="cipp-queue"
+        hideFunction={() => setCippQueueVisible(false)}
+      />
     </>
   )
 }

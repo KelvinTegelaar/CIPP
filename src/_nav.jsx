@@ -52,6 +52,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Devices',
+        to: '/identity/administration/devices',
+      },
+      {
+        component: CNavItem,
         name: 'Deploy Group Template',
         to: '/identity/administration/deploy-group-template',
       },
@@ -124,13 +129,13 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Alerts Wizard',
-        to: '/tenant/administration/alertswizard',
+        name: 'Alerts (Classic)',
+        to: '/tenant/administration/alertsqueue',
       },
       {
         component: CNavItem,
-        name: 'Alerts Configuration',
-        to: '/tenant/administration/alertsqueue',
+        name: 'Alert Rules',
+        to: '/tenant/administration/AlertRules',
       },
       {
         component: CNavItem,
@@ -141,6 +146,11 @@ const _nav = [
         component: CNavItem,
         name: 'App Consent Requests',
         to: '/tenant/administration/app-consent-requests',
+      },
+      {
+        component: CNavItem,
+        name: 'Tenant Onboarding',
+        to: '/tenant/administration/tenant-onboarding-wizard',
       },
       {
         component: CNavItem,
@@ -168,7 +178,7 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Geo IP Lookup',
+        name: 'IP Database',
         to: '/tenant/tools/geoiplookup',
       },
       {
@@ -233,6 +243,11 @@ const _nav = [
         component: CNavItem,
         name: 'Deploy CA Policies',
         to: '/tenant/conditional/deploy',
+      },
+      {
+        component: CNavItem,
+        name: 'CA Vacation Mode',
+        to: '/tenant/conditional/deploy-vacation',
       },
       {
         component: CNavItem,
@@ -726,6 +741,11 @@ const _nav = [
         component: CNavItem,
         name: 'Logbook',
         to: '/cipp/logs',
+      },
+      {
+        component: CNavItem,
+        name: 'Statistics',
+        to: '/cipp/statistics',
       },
       {
         component: CNavItem,
