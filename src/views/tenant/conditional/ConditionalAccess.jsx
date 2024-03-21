@@ -206,7 +206,6 @@ const columns = [
     name: 'rawjson',
     selector: (row) => row['rawjson'],
     omit: true,
-    exportSelector: 'rawjson',
   },
   {
     name: 'Actions',

@@ -7,7 +7,6 @@ import { CButton } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 import { CippActionsOffcanvas } from 'src/components/utilities'
-import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 
 const DevicesList = () => {
   const [tenantColumnSet, setTenantColumn] = useState(true)
@@ -30,13 +29,6 @@ const DevicesList = () => {
           ]}
           actions={[
             {
-              label: 'Enable Device',
-              color: 'info',
-              modal: true,
-              modalUrl: `/api/ExecDeviceDelete?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}&Action=Enable`,
-              modalMessage: 'Are you sure you want to enable this device.',
-            },
-            {
               label: 'Disable Device',
               color: 'info',
               modal: true,
@@ -47,7 +39,7 @@ const DevicesList = () => {
               label: 'Delete Device',
               color: 'warning',
               modal: true,
-              modalUrl: `/api/ExecDeviceDelete?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}&Action=Delete`,
+              modalUrl: `/api/ExecGroupsDelete?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}&Action=Enable`,
               modalMessage: 'Are you sure you want to delete this device.',
             },
           ]}
@@ -82,13 +74,6 @@ const DevicesList = () => {
       sortable: true,
       cell: (row) => CellTip(row['displayName']),
       exportSelector: 'displayName',
-    },
-    {
-      selector: (row) => row['accountEnabled'],
-      name: 'Enabled',
-      sortable: true,
-      cell: cellGenericFormatter(),
-      exportSelector: 'accountEnabled',
     },
     {
       selector: (row) => row['deviceOwnership'],
@@ -161,29 +146,6 @@ const DevicesList = () => {
           $format: 'application/json',
         },
         columns,
-        tableProps: {
-          selectableRows: true,
-          actionsList: [
-            {
-              label: 'Enable Device',
-              modal: true,
-              modalUrl: `/api/ExecDeviceDelete?TenantFilter=!Tenant&ID=!id&Action=Enable`,
-              modalMessage: 'Are you sure you want to enable this device?',
-            },
-            {
-              label: 'Disable Device',
-              modal: true,
-              modalUrl: `/api/ExecDeviceDelete?TenantFilter=!Tenant&ID=!id&Action=Disable`,
-              modalMessage: 'Are you sure you want to disable this device?',
-            },
-            {
-              label: 'Delete Device',
-              modal: true,
-              modalUrl: `/api/ExecDeviceDelete?TenantFilter=!Tenant&ID=!id&Action=Delete`,
-              modalMessage: 'Are you sure you want to delete this device?',
-            },
-          ],
-        },
       }}
     />
   )

@@ -13,7 +13,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPageList } from 'src/components/layout'
 import { Link } from 'react-router-dom'
-import { CippActionsOffcanvas, CippCodeBlock } from 'src/components/utilities'
+import { CippActionsOffcanvas } from 'src/components/utilities'
 import { TitleButton } from 'src/components/buttons'
 
 const Actions = (row, rowIndex, formatExtraData) => {
@@ -101,7 +101,6 @@ const columns = [
     selector: (row) => row['id'],
     name: 'id',
     omit: true,
-    exportSelector: 'id',
   },
   {
     name: 'Actions',
@@ -116,7 +115,7 @@ const IntuneList = () => {
   // eslint-disable-next-line react/prop-types
   const ExpandedComponent = ({ data }) => (
     // eslint-disable-next-line react/prop-types
-    <CippCodeBlock code={JSON.stringify(data, null, 2)} language="json" />
+    <pre>{JSON.stringify(data, null, 2)}</pre>
   )
 
   return (

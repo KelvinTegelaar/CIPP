@@ -15,7 +15,6 @@ import {
   faTrash,
 } from '@fortawesome/free-solid-svg-icons'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
-import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 
 const RefreshAction = () => {
   const [execDomainsAnalyser, { isLoading, isSuccess, error }] = useExecDomainsAnalyserMutation()
@@ -257,14 +256,6 @@ const DomainsAnalyser = () => {
         }
         return <CellBadge color="warning">No Data</CellBadge>
       },
-    },
-    {
-      name: 'DKIM Records',
-      selector: (row) => row['DKIMRecords'],
-      exportSelector: 'DKIMRecords',
-      sortable: true,
-      cell: cellGenericFormatter(),
-      omit: true,
     },
     {
       name: 'More Info',

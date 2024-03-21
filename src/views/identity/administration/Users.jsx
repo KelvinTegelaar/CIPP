@@ -399,7 +399,6 @@ const Users = (row) => {
       name: 'id',
       selector: (row) => row['id'],
       omit: true,
-      exportSelector: 'id',
     },
     {
       name: 'Actions',

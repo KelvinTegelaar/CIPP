@@ -40,6 +40,7 @@ const GraphExplorer = () => {
   const [alertVisible, setAlertVisible] = useState()
   const [random, setRandom] = useState('')
   const [random2, setRandom2] = useState('')
+  const [random3, setRandom3] = useState('')
   const [ocVisible, setOCVisible] = useState(false)
   const [searchNow, setSearchNow] = useState(false)
   const [visibleA, setVisibleA] = useState(true)
@@ -58,21 +59,21 @@ const GraphExplorer = () => {
   } = useGenericGetRequestQuery({ path: '/api/ListGraphExplorerPresets', params: { random2 } })
   const QueryColumns = { set: false, data: [] }
 
+  function endpointChange(value) {
+    execPropRequest({
+      path: '/api/ListGraphRequest',
+      params: {
+        Endpoint: value,
+        ListProperties: true,
+        TenantFilter: tenant.defaultDomainName,
+        IgnoreErrors: true,
+        random: (Math.random() + 1).toString(36).substring(7),
+      },
+    })
+  }
   const debounceEndpointChange = useMemo(() => {
-    function endpointChange(value) {
-      execPropRequest({
-        path: '/api/ListGraphRequest',
-        params: {
-          Endpoint: value,
-          ListProperties: true,
-          TenantFilter: tenant.defaultDomainName,
-          IgnoreErrors: true,
-          random: (Math.random() + 1).toString(36).substring(7),
-        },
-      })
-    }
     return debounce(endpointChange, 1000)
-  }, [])
+  }, [endpointChange])
 
   if (graphrequest.isSuccess) {
     if (graphrequest.data?.Results?.length > 0) {
@@ -218,15 +219,6 @@ const GraphExplorer = () => {
       },
       isBuiltin: true,
     },
-    {
-      name: 'Organization Branding',
-      id: '2ed236e2-268e-461b-9d37-98b123010667',
-      params: {
-        endpoint: 'organization/%tenantid%/branding',
-        NoPagination: true,
-      },
-      isBuiltin: true,
-    },
   ]
 
   if (customPresets?.Results?.length > 0) {
@@ -316,6 +308,7 @@ const GraphExplorer = () => {
 
   function getPresetProps(values) {
     var newvals = Object.assign({}, values)
+    console.log(newvals)
     if (newvals?.$select !== undefined && Array.isArray(newvals?.$select)) {
       newvals.$select = newvals?.$select.map((p) => p.value).join(',')
     }
@@ -324,6 +317,8 @@ const GraphExplorer = () => {
     delete newvals['IsShared']
     return newvals
   }
+
+  console.log(graphrequest.data)
 
   return (
     <>
@@ -488,7 +483,6 @@ const GraphExplorer = () => {
                                 )
                               }}
                             </FormSpy>
-                            <hr />
                             <RFFCFormSwitch name="$count" label="Use $count" />
                             <WhenFieldChanges field="reportTemplate" set="$count" />
                             <RFFCFormSwitch name="NoPagination" label="Disable Pagination" />
@@ -510,6 +504,13 @@ const GraphExplorer = () => {
                             />
                             <WhenFieldChanges field="reportTemplate" set="endpoint" />
                             <WhenFieldChanges field="endpoint" set="endpoint" />
+                            <RFFCFormInput
+                              type="text"
+                              name="$filter"
+                              label="Filter"
+                              placeholder="Enter the filter string for the Graph query"
+                            />
+                            <WhenFieldChanges field="reportTemplate" set="$filter" />
                             <div className="mb-3">
                               <RFFSelectSearch
                                 name="$select"
@@ -528,16 +529,12 @@ const GraphExplorer = () => {
                                     : []
                                 }
                                 allowCreate={true}
+                                refreshFunction={() =>
+                                  setRandom3((Math.random() + 1).toString(36).substring(7))
+                                }
                                 isLoading={availableProperties.isFetching}
                               />
                             </div>
-                            <RFFCFormInput
-                              type="text"
-                              name="$filter"
-                              label="Filter"
-                              placeholder="Enter the filter string for the Graph query"
-                            />
-                            <WhenFieldChanges field="reportTemplate" set="$filter" />
                             <WhenFieldChanges field="reportTemplate" set="$select" />
                             <RFFCFormInput
                               type="text"
@@ -575,7 +572,7 @@ const GraphExplorer = () => {
       <hr />
       <CippPage title="Report Results" tenantSelector={false}>
         {!searchNow && <span>Execute a search to get started.</span>}
-        {graphrequest.isFetching && !QueryColumns.set && (
+        {graphrequest.isFetching && (
           <div className="my-2">
             <CSpinner className="me-2" /> Loading Data
           </div>
@@ -596,7 +593,6 @@ const GraphExplorer = () => {
                   columns={QueryColumns.data}
                   data={graphrequest?.data?.Results}
                   isFetching={graphrequest.isFetching}
-                  refreshFunction={() => setRandom((Math.random() + 1).toString(36).substring(7))}
                 />
               </>
             </CCardBody>

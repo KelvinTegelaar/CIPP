@@ -100,13 +100,11 @@ const columns = [
     name: 'description',
     selector: (row) => row['Description'],
     omit: true,
-    exportSelector: 'Description',
   },
   {
     name: 'GUID',
     selector: (row) => row['Guid'],
     omit: true,
-    exportSelector: 'Guid',
   },
   {
     name: 'Actions',

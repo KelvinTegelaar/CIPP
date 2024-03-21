@@ -11,7 +11,7 @@ export default function cellTable(
   propertyName,
   checkWhenZero = false,
   crossWhenZero = false,
-  dangerButton = false,
+  dangerButton = false, // Added 4th parameter for btn-danger class
 ) {
   var columnProp = ''
   if (propertyName) {
@@ -21,10 +21,10 @@ export default function cellTable(
   }
 
   if (!Array.isArray(columnProp) && typeof columnProp === 'object') {
-    columnProp = [columnProp]
-  }
-
-  if (Array.isArray(columnProp) && typeof columnProp[0] !== 'object') {
+    columnProp = Object.entries(columnProp).map((row) => {
+      return { Name: row[0], Value: row[1] }
+    })
+  } else if (Array.isArray(columnProp) && typeof Object.entries(columnProp)[0][1] !== 'object') {
     columnProp = columnProp.map((row) => {
       return {
         Value: row,
@@ -77,6 +77,7 @@ export default function cellTable(
     return <FontAwesomeIcon icon={faCheckCircle} className="text-success" />
   }
 
+  // Use dangerButton to determine button class
   const buttonClassName = dangerButton ? 'btn-danger' : ''
   return (
     <CButton
