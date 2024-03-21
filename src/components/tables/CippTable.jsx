@@ -1,5 +1,5 @@
 import React, { useRef, useMemo, useState, useCallback, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { ExportCsvButton, ExportPDFButton } from 'src/components/buttons'
 import {
   CSpinner,
@@ -10,9 +10,6 @@ import {
   CDropdownMenu,
   CDropdownItem,
   CButton,
-  CModal,
-  CModalBody,
-  CModalTitle,
   CCallout,
   CFormSelect,
   CAccordion,
@@ -32,15 +29,15 @@ import {
   faFilePdf,
   faSearch,
   faSync,
-  faTasks,
 } from '@fortawesome/free-solid-svg-icons'
 import { cellGenericFormatter } from './CellGenericFormat'
 import { ModalService } from '../utilities'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
-import { ConfirmModal } from '../utilities/SharedModal'
-import { debounce } from 'lodash-es'
+import { debounce, update } from 'lodash-es'
 import { useSearchParams } from 'react-router-dom'
 import CopyToClipboard from 'react-copy-to-clipboard'
+import { setDefaultColumns } from 'src/store/features/app'
+import { end } from '@popperjs/core'
 
 const FilterComponent = ({ filterText, onFilter, onClear, filterlist, onFilterPreset }) => (
   <>
@@ -126,6 +123,7 @@ export default function CippTable({
   exportFiltered = false,
   filterlist,
   showFilter = true,
+  endpointName,
   tableProps: {
     keyField = 'id',
     theme = 'cyberdrain',
@@ -150,10 +148,45 @@ export default function CippTable({
 }) {
   const inputRef = useRef('')
   const [loopRunning, setLoopRunning] = React.useState(false)
+  const defaultColumns = useSelector((state) => state.app.defaultColumns[endpointName])
+  const [defaultColumnsSet, setDefaultColumnsSet] = React.useState(false)
   const [massResults, setMassResults] = React.useState([])
   const [filterText, setFilterText] = React.useState(defaultFilterText)
   const [filterviaURL, setFilterviaURL] = React.useState(false)
+  const [originalColumns, setOrginalColumns] = React.useState(columns)
   const [updatedColumns, setUpdatedColumns] = React.useState(columns)
+  if (defaultColumns && defaultColumnsSet === false && endpointName) {
+    const defaultColumnsArray = defaultColumns.split(',').filter((item) => item)
+
+    const actionsColumn = columns.length > 0 ? columns[columns.length - 1] : null
+
+    let tempColumns = actionsColumn ? columns.slice(0, -1) : [...columns]
+
+    defaultColumnsArray.forEach((columnName) => {
+      if (!tempColumns.find((c) => c.exportSelector === columnName && c?.omit !== true)) {
+        tempColumns.push({
+          name: columnName,
+          selector: (row) => row[columnName],
+          sortable: true,
+          exportSelector: columnName,
+          cell: cellGenericFormatter(),
+        })
+      }
+    })
+
+    if (actionsColumn) {
+      tempColumns.push(actionsColumn)
+    }
+    let newColumns = tempColumns.filter(
+      (column) => defaultColumnsArray.includes(column.exportSelector) || column === actionsColumn,
+    )
+    setUpdatedColumns(newColumns)
+    setDefaultColumnsSet(true)
+  }
+  if (!endpointName && defaultColumnsSet === false) {
+    setUpdatedColumns(columns)
+    setDefaultColumnsSet(true)
+  }
   const [selectedRows, setSelectedRows] = React.useState(false)
   const [genericGetRequest, getResults] = useLazyGenericGetRequestQuery()
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
@@ -169,6 +202,32 @@ export default function CippTable({
     setFilterText(searchParams.get('tableFilter'))
     setFilterviaURL(true)
     searchParams.delete('updateTableFilter')
+  }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const addColumn = (columnname) => {
+    let alreadyInArray = updatedColumns.some(
+      (o) => o.exportSelector === columnname && o?.omit !== true,
+    )
+    let newColumns = [...updatedColumns]
+    const actionsColumn = newColumns.length > 0 ? newColumns.pop() : null
+
+    if (!alreadyInArray) {
+      const newColumn = {
+        name: columnname,
+        selector: (row) => row[columnname],
+        sortable: true,
+        exportSelector: columnname,
+        cell: cellGenericFormatter(),
+      }
+      newColumns.push(newColumn)
+    } else {
+      newColumns = newColumns.filter((o) => o.exportSelector !== columnname)
+    }
+    if (actionsColumn) {
+      newColumns.push(actionsColumn)
+    }
+    setUpdatedColumns(newColumns)
   }
 
   const handleSelectedChange = ({ selectedRows }) => {
@@ -272,12 +331,36 @@ export default function CippTable({
   const applyFilter = (e) => {
     setFilterText(e.target.value)
   }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const setColumnDefaultLayout = (endpoint, columns) => {
+    dispatch(setDefaultColumns({ endpoint, columns }))
+  }
 
+  const resetDropdown = () => {
+    setUpdatedColumns(originalColumns)
+    setColumnDefaultLayout(endpointName, null)
+  }
+  const dispatch = useDispatch()
   useEffect(() => {
-    if (columns !== updatedColumns) {
-      setUpdatedColumns(columns)
+    if (columns.length !== updatedColumns.length) {
+      setUpdatedColumns(updatedColumns)
+      if (endpointName) {
+        setColumnDefaultLayout(
+          endpointName,
+          updatedColumns.map((column) => column.exportSelector).join(','),
+        )
+      }
     }
-  }, [columns, updatedColumns])
+  }, [
+    columns,
+    defaultColumns,
+    dispatch,
+    dynamicColumns,
+    originalColumns,
+    endpointName,
+    setColumnDefaultLayout,
+    updatedColumns,
+  ])
 
   createTheme(
     'cyberdrain',
@@ -495,7 +578,7 @@ export default function CippTable({
     }
 
     const executeselectedAction = (item) => {
-      console.log(item)
+      //  console.log(item)
       setModalContent({
         item,
       })
@@ -617,24 +700,6 @@ export default function CippTable({
 
       if (!disablePDFExport) {
         if (dynamicColumns === true) {
-          const addColumn = (columnname) => {
-            var index = columns.length - 1
-            let alreadyInArray = columns.find((o) => o.exportSelector === columnname)
-            if (!alreadyInArray) {
-              columns.splice(index, 0, {
-                name: columnname,
-                selector: (row) => row[columnname],
-                sortable: true,
-                exportSelector: columnname,
-                cell: cellGenericFormatter(),
-              })
-            } else {
-              let indexOfExisting = columns.findIndex((o) => o.exportSelector === columnname)
-              columns = columns.splice(indexOfExisting, 1)
-            }
-            setUpdatedColumns(Date())
-          }
-
           defaultActions.push([
             <CDropdown key={'column-selector'} className="me-2" variant="input-group">
               <CDropdownToggle
@@ -647,13 +712,14 @@ export default function CippTable({
                 <FontAwesomeIcon icon={faColumns} />
               </CDropdownToggle>
               <CDropdownMenu>
+                <CDropdownItem onClick={() => resetDropdown()}>Reset to default</CDropdownItem>
                 {dataKeys() &&
                   dataKeys().map((item, idx) => {
                     return (
                       <CDropdownItem key={idx} onClick={() => addColumn(item)}>
-                        {columns.find((o) => o.exportSelector === item) && (
-                          <FontAwesomeIcon icon={faCheck} />
-                        )}{' '}
+                        {updatedColumns.find(
+                          (o) => o.exportSelector === item && o?.omit !== true,
+                        ) && <FontAwesomeIcon icon={faCheck} />}{' '}
                         {item}
                       </CDropdownItem>
                     )
@@ -778,18 +844,27 @@ export default function CippTable({
       </>
     )
   }, [
+    refreshFunction,
     actions,
-    selectedRows,
     disablePDFExport,
     disableCSVExport,
+    selectedRows,
+    actionsList,
+    showFilter,
     filterText,
     filterlist,
     resetPaginationToggle,
-    data,
-    columns,
-    reportName,
-    selectedRows,
+    handleModal,
+    getDrowndownInfo,
     filteredItems,
+    columns,
+    data,
+    dynamicColumns,
+    reportName,
+    resetDropdown,
+    updatedColumns,
+    addColumn,
+    setGraphFilter,
   ])
   const tablePageSize = useSelector((state) => state.app.tablePageSize)
   const [codeCopied, setCodeCopied] = useState(false)
@@ -803,7 +878,7 @@ export default function CippTable({
     <div className="ms-n3 me-n3 cipp-tablewrapper">
       {!isFetching && error && <CCallout color="info">Error loading data</CCallout>}
       <div>
-        {(columns.length === updatedColumns.length || !dynamicColumns) && (
+        {(updatedColumns || !dynamicColumns) && (
           <>
             {(massResults.length >= 1 || loopRunning) && (
               <CCallout color="info">
@@ -900,7 +975,7 @@ export default function CippTable({
               responsive={responsive}
               dense={dense}
               striped={striped}
-              columns={columns}
+              columns={dynamicColumns ? updatedColumns : columns}
               data={filteredItems}
               expandableRows={expandableRows}
               expandableRowsComponent={expandableRowsComponent}
