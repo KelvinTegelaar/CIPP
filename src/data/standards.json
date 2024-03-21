@@ -737,6 +737,88 @@
     "impactColour": "warning"
   },
   {
+    "name": "standards.MalwareFilterPolicy",
+    "cat": "Defender Standards",
+    "tag": ["lowimpact", "CIS"],
+    "helpText": "Creates a Malware Filter Policy",
+    "addedComponent": [
+      {
+        "type": "input",
+        "name": "standards.MalwareFilterPolicy.Name",
+        "label": "Malware Filter Policy Name"
+      },
+      {
+        "type": "boolean",
+        "label": "EnableFileFilter",
+        "name": "standards.MalwareFilterPolicy.EnableFileFilter",
+        "default": true
+      },
+      {
+        "type": "Select",
+        "label": "FileTypeAction",
+        "name": "standards.MalwareFilterPolicy.FileTypeAction",
+        "values": [
+          {
+            "label": "Reject",
+            "value": "Reject"
+          },
+          {
+            "label": "Quarantine the message",
+            "value": "Quarantine"
+          }
+        ]
+      },
+      {
+        "type": "boolean",
+        "label": "Zero-hour auto purge for malware",
+        "name": "standards.MalwareFilterPolicy.ZapEnabled",
+        "default": true
+      },
+      {
+        "type": "Select",
+        "label": "QuarantineTag",
+        "name": "standards.MalwareFilterPolicy.QuarantineTag",
+        "values": [
+          {
+            "label": "AdminOnlyAccessPolicy",
+            "value": "AdminOnlyAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessPolicy",
+            "value": "DefaultFullAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessWithNotificationPolicy",
+            "value": "DefaultFullAccessWithNotificationPolicy"
+          }
+        ]
+      },
+      {
+        "type": "boolean",
+        "label": "Enable Internal Sender Admin Notifications",
+        "name": "standards.MalwareFilterPolicy.EnableInternalSenderAdminNotifications"
+      },
+      {
+        "type": "input",
+        "name": "standards.MalwareFilterPolicy.InternalSenderAdminAddress",
+        "label": "Internal Sender Admin Address"
+      },
+      {
+        "type": "boolean",
+        "label": "Enable Internal Sender Admin Notifications",
+        "name": "standards.MalwareFilterPolicy.EnableExternalSenderAdminNotifications"
+      },
+      {
+        "type": "input",
+        "name": "standards.MalwareFilterPolicy.ExternalSenderAdminAddress",
+        "label": "External Sender Admin Address"
+      }
+    ],
+    "label": "Malware Filter Policy",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.intuneDeviceRetirementDays",
     "cat": "Intune Standards",
     "tag": ["lowimpact"],
