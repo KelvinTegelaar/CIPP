@@ -737,6 +737,35 @@
     "impactColour": "warning"
   },
   {
+    "name": "standards.AtpPolicyForO365",
+    "cat": "Defender Standards",
+    "tag": ["lowimpact", "CIS"],
+    "helpText": "Safe Attachments for SharePoint, OneDrive, and Microsoft Teams",
+    "addedComponent": [
+      {
+        "type": "boolean",
+        "label": "Defender for Office 365 for SharePoint, OneDrive, and Microsoft Teams",
+        "name": "standards.AtpPolicyForO365.EnableATPForSPOTeamsODB",
+        "default": true
+      },
+      {
+        "type": "boolean",
+        "label": "Safe Documents for Office clients.",
+        "name": "standards.AtpPolicyForO365.EnableSafeDocs",
+        "default": true
+      },
+      {
+        "type": "boolean",
+        "label": "Allow people to click through Protected View even if Safe Documents identified the file as malicious",
+        "name": "standards.AtpPolicyForO365.AllowSafeDocsOpen",
+        "default": false
+      }
+    ],
+    "label": "Atp Policy For O365",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.intuneDeviceRetirementDays",
     "cat": "Intune Standards",
     "tag": ["lowimpact"],
