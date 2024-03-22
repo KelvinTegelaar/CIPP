@@ -745,7 +745,7 @@
       {
         "type": "input",
         "name": "standards.SafeLinksPolicy.Name",
-        "label": "SafeLink Policy Name"
+        "label": "Policy Name"
       },
       {
         "type": "boolean",
