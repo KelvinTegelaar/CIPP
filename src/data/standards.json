@@ -737,6 +737,76 @@
     "impactColour": "warning"
   },
   {
+    "name": "standards.SafeAttachmentPolicy",
+    "cat": "Defender Standards",
+    "tag": ["lowimpact", "CIS"],
+    "helpText": "Creates a Safe Attachment Policy",
+    "addedComponent": [
+      {
+        "type": "input",
+        "name": "standards.SafeAttachmentPolicy.Name",
+        "label": "Safe Attachment Policy Name"
+      },
+      {
+        "type": "boolean",
+        "label": "Enable",
+        "name": "standards.SafeAttachmentPolicy.Enable",
+        "default": true
+      },
+      {
+        "type": "Select",
+        "label": "Action",
+        "name": "standards.SafeAttachmentPolicy.Action",
+        "values": [
+          {
+            "label": "Allow",
+            "value": "Allow"
+          },
+          {
+            "label": "Block",
+            "value": "Block"
+          },
+          {
+            "label": "DynamicDelivery",
+            "value": "DynamicDelivery"
+          }
+        ]
+      },
+      {
+        "type": "Select",
+        "label": "QuarantineTag",
+        "name": "standards.SafeAttachmentPolicy.QuarantineTag",
+        "values": [
+          {
+            "label": "AdminOnlyAccessPolicy",
+            "value": "AdminOnlyAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessPolicy",
+            "value": "DefaultFullAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessWithNotificationPolicy",
+            "value": "DefaultFullAccessWithNotificationPolicy"
+          }
+        ]
+      },
+      {
+        "type": "boolean",
+        "label": "Redirect",
+        "name": "standards.SafeAttachmentPolicy.Redirect"
+      },
+      {
+        "type": "input",
+        "name": "standards.SafeAttachmentPolicy.RedirectAddress",
+        "label": "Redirect Address"
+      }
+    ],
+    "label": "Safe Attachment Policy",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.intuneDeviceRetirementDays",
     "cat": "Intune Standards",
     "tag": ["lowimpact"],
