@@ -11,6 +11,7 @@ import {
   CTooltip,
 } from '@coreui/react'
 import Select from 'react-select'
+import Creatable, { useCreatable } from 'react-select/creatable'
 import { Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
 import React, { useState, useMemo, useRef } from 'react'
@@ -137,10 +138,18 @@ export const RFFCFormInput = ({
   disabled = false,
   spellCheck = true,
   autoFocus = false,
+  hiddenValue,
+  onChange,
 }) => {
   return (
-    <Field name={name} validate={validate}>
+    <Field initialValue={hiddenValue} name={name} validate={validate}>
       {({ input, meta }) => {
+        const handleChange = onChange
+          ? (e) => {
+              input.onChange(e)
+              onChange(e)
+            }
+          : input.onChange
         return (
           <div className={className}>
             {label && <CFormLabel htmlFor={name}>{label}</CFormLabel>}
@@ -155,6 +164,7 @@ export const RFFCFormInput = ({
               placeholder={placeholder}
               spellCheck={spellCheck}
               autoFocus={autoFocus}
+              onChange={handleChange}
             />
             <RFFCFormFeedback meta={meta} />
           </div>
@@ -299,6 +309,7 @@ export const RFFCFormSelect = ({
   className = 'mb-3',
   validate,
   disabled = false,
+  props,
 }) => {
   // handler for ignoring the first element ('the placeholder')
   const selectValidate = (value, allValues, meta) => {
@@ -320,10 +331,11 @@ export const RFFCFormSelect = ({
             valid={!meta.error && meta.touched}
             invalid={meta.error && meta.touched}
             disabled={disabled}
+            {...props}
           >
             <option value={placeholder}>{placeholder}</option>
-            {values.map(({ label, value }, idx) => (
-              <option key={`${idx}-${value}`} value={value}>
+            {values.map(({ label, value, ...props }, idx) => (
+              <option key={`${idx}-${value}`} value={value} {...props}>
                 {label}
               </option>
             ))}
@@ -383,11 +395,15 @@ export const RFFSelectSearch = ({
   disabled = false,
   retainInput = true,
   isLoading = false,
+  allowCreate = false,
+  refreshFunction,
+  props,
 }) => {
   const [inputText, setInputText] = useState('')
   const selectSearchvalues = values.map((val) => ({
     value: val.value,
     label: val.name,
+    ...val.props,
   }))
 
   const debounceOnInputChange = useMemo(() => {
@@ -410,8 +426,22 @@ export const RFFSelectSearch = ({
       {({ meta, input }) => {
         return (
           <div>
-            <CFormLabel htmlFor={name}>{label}</CFormLabel>
-            {onChange && (
+            <CFormLabel htmlFor={name}>
+              {label}
+              {refreshFunction && (
+                <CTooltip content="Refresh" placement="right">
+                  <CButton
+                    onClick={refreshFunction}
+                    variant="ghost"
+                    className="ms-1 py-0 border-0"
+                    size="sm"
+                  >
+                    <FontAwesomeIcon icon="sync" />
+                  </CButton>
+                </CTooltip>
+              )}
+            </CFormLabel>
+            {!allowCreate && onChange && (
               <Select
                 className="react-select-container"
                 classNamePrefix="react-select"
@@ -427,9 +457,10 @@ export const RFFSelectSearch = ({
                 onInputChange={debounceOnInputChange}
                 inputValue={inputText}
                 isLoading={isLoading}
+                {...props}
               />
             )}
-            {!onChange && (
+            {!allowCreate && !onChange && (
               <Select
                 className="react-select-container"
                 classNamePrefix="react-select"
@@ -444,6 +475,44 @@ export const RFFSelectSearch = ({
                 isMulti={multi}
                 inputValue={inputText}
                 isLoading={isLoading}
+                {...props}
+              />
+            )}
+            {allowCreate && onChange && (
+              <Creatable
+                className="react-select-container"
+                classNamePrefix="react-select"
+                {...input}
+                isClearable={false}
+                name={name}
+                id={name}
+                disabled={disabled}
+                options={selectSearchvalues}
+                placeholder={placeholder}
+                isMulti={multi}
+                onChange={onChange}
+                onInputChange={debounceOnInputChange}
+                inputValue={inputText}
+                isLoading={isLoading}
+                {...props}
+              />
+            )}
+            {allowCreate && !onChange && (
+              <Creatable
+                className="react-select-container"
+                classNamePrefix="react-select"
+                {...input}
+                isClearable={true}
+                name={name}
+                id={name}
+                disabled={disabled}
+                options={selectSearchvalues}
+                placeholder={placeholder}
+                onInputChange={setOnInputChange}
+                isMulti={multi}
+                inputValue={inputText}
+                isLoading={isLoading}
+                {...props}
               />
             )}
             {meta.error && meta.touched && <span className="text-danger">{meta.error}</span>}
@@ -460,6 +529,7 @@ RFFSelectSearch.propTypes = {
   placeholder: PropTypes.string,
   onInputChange: PropTypes.func,
   isLoading: PropTypes.bool,
+  refreshFunction: PropTypes.func,
   values: PropTypes.arrayOf(PropTypes.shape({ value: PropTypes.string, name: PropTypes.string }))
     .isRequired,
 }

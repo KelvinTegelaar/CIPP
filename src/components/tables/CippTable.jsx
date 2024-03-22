@@ -1,5 +1,5 @@
 import React, { useRef, useMemo, useState, useCallback, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { ExportCsvButton, ExportPDFButton } from 'src/components/buttons'
 import {
   CSpinner,
@@ -10,9 +10,6 @@ import {
   CDropdownMenu,
   CDropdownItem,
   CButton,
-  CModal,
-  CModalBody,
-  CModalTitle,
   CCallout,
   CFormSelect,
   CAccordion,
@@ -23,13 +20,24 @@ import {
 import DataTable, { createTheme } from 'react-data-table-component'
 import PropTypes from 'prop-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faColumns, faSearch, faSync, faTasks } from '@fortawesome/free-solid-svg-icons'
+import {
+  faCheck,
+  faClipboard,
+  faColumns,
+  faCopy,
+  faFileCsv,
+  faFilePdf,
+  faSearch,
+  faSync,
+} from '@fortawesome/free-solid-svg-icons'
 import { cellGenericFormatter } from './CellGenericFormat'
 import { ModalService } from '../utilities'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
-import { ConfirmModal } from '../utilities/SharedModal'
-import { debounce } from 'lodash-es'
+import { debounce, update } from 'lodash-es'
 import { useSearchParams } from 'react-router-dom'
+import CopyToClipboard from 'react-copy-to-clipboard'
+import { setDefaultColumns } from 'src/store/features/app'
+import { end } from '@popperjs/core'
 
 const FilterComponent = ({ filterText, onFilter, onClear, filterlist, onFilterPreset }) => (
   <>
@@ -115,6 +123,7 @@ export default function CippTable({
   exportFiltered = false,
   filterlist,
   showFilter = true,
+  endpointName,
   tableProps: {
     keyField = 'id',
     theme = 'cyberdrain',
@@ -139,10 +148,45 @@ export default function CippTable({
 }) {
   const inputRef = useRef('')
   const [loopRunning, setLoopRunning] = React.useState(false)
+  const defaultColumns = useSelector((state) => state.app.defaultColumns[endpointName])
+  const [defaultColumnsSet, setDefaultColumnsSet] = React.useState(false)
   const [massResults, setMassResults] = React.useState([])
   const [filterText, setFilterText] = React.useState(defaultFilterText)
   const [filterviaURL, setFilterviaURL] = React.useState(false)
+  const [originalColumns, setOrginalColumns] = React.useState(columns)
   const [updatedColumns, setUpdatedColumns] = React.useState(columns)
+  if (defaultColumns && defaultColumnsSet === false && endpointName) {
+    const defaultColumnsArray = defaultColumns.split(',').filter((item) => item)
+
+    const actionsColumn = columns.length > 0 ? columns[columns.length - 1] : null
+
+    let tempColumns = actionsColumn ? columns.slice(0, -1) : [...columns]
+
+    defaultColumnsArray.forEach((columnName) => {
+      if (!tempColumns.find((c) => c.exportSelector === columnName && c?.omit !== true)) {
+        tempColumns.push({
+          name: columnName,
+          selector: (row) => row[columnName],
+          sortable: true,
+          exportSelector: columnName,
+          cell: cellGenericFormatter(),
+        })
+      }
+    })
+
+    if (actionsColumn) {
+      tempColumns.push(actionsColumn)
+    }
+    let newColumns = tempColumns.filter(
+      (column) => defaultColumnsArray.includes(column.exportSelector) || column === actionsColumn,
+    )
+    setUpdatedColumns(newColumns)
+    setDefaultColumnsSet(true)
+  }
+  if (!endpointName && defaultColumnsSet === false) {
+    setUpdatedColumns(columns)
+    setDefaultColumnsSet(true)
+  }
   const [selectedRows, setSelectedRows] = React.useState(false)
   const [genericGetRequest, getResults] = useLazyGenericGetRequestQuery()
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
@@ -158,6 +202,32 @@ export default function CippTable({
     setFilterText(searchParams.get('tableFilter'))
     setFilterviaURL(true)
     searchParams.delete('updateTableFilter')
+  }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const addColumn = (columnname) => {
+    let alreadyInArray = updatedColumns.some(
+      (o) => o.exportSelector === columnname && o?.omit !== true,
+    )
+    let newColumns = [...updatedColumns]
+    const actionsColumn = newColumns.length > 0 ? newColumns.pop() : null
+
+    if (!alreadyInArray) {
+      const newColumn = {
+        name: columnname,
+        selector: (row) => row[columnname],
+        sortable: true,
+        exportSelector: columnname,
+        cell: cellGenericFormatter(),
+      }
+      newColumns.push(newColumn)
+    } else {
+      newColumns = newColumns.filter((o) => o.exportSelector !== columnname)
+    }
+    if (actionsColumn) {
+      newColumns.push(actionsColumn)
+    }
+    setUpdatedColumns(newColumns)
   }
 
   const handleSelectedChange = ({ selectedRows }) => {
@@ -177,7 +247,6 @@ export default function CippTable({
     (e) => {
       if (graphFilterFunction) {
         graphFilterFunction(e)
-        console.log(e)
       }
     },
     [graphFilterFunction],
@@ -262,12 +331,36 @@ export default function CippTable({
   const applyFilter = (e) => {
     setFilterText(e.target.value)
   }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const setColumnDefaultLayout = (endpoint, columns) => {
+    dispatch(setDefaultColumns({ endpoint, columns }))
+  }
 
+  const resetDropdown = () => {
+    setUpdatedColumns(originalColumns)
+    setColumnDefaultLayout(endpointName, null)
+  }
+  const dispatch = useDispatch()
   useEffect(() => {
-    if (columns !== updatedColumns) {
-      setUpdatedColumns(columns)
+    if (columns.length !== updatedColumns.length) {
+      setUpdatedColumns(updatedColumns)
+      if (endpointName) {
+        setColumnDefaultLayout(
+          endpointName,
+          updatedColumns.map((column) => column.exportSelector).join(','),
+        )
+      }
     }
-  }, [columns, updatedColumns])
+  }, [
+    columns,
+    defaultColumns,
+    dispatch,
+    dynamicColumns,
+    originalColumns,
+    endpointName,
+    setColumnDefaultLayout,
+    updatedColumns,
+  ])
 
   createTheme(
     'cyberdrain',
@@ -379,14 +472,43 @@ export default function CippTable({
               }
               const newModalBody = {}
               for (let [objName, objValue] of Object.entries(modalBody)) {
-                if (objValue.toString().startsWith('!')) {
+                if (typeof objValue === 'object' && objValue !== null) {
+                  newModalBody[objName] = {}
+                  for (let [nestedObjName, nestedObjValue] of Object.entries(objValue)) {
+                    if (typeof nestedObjValue === 'string' && nestedObjValue.startsWith('!')) {
+                      newModalBody[objName][nestedObjName] = row[nestedObjValue.replace('!', '')]
+                    } else {
+                      newModalBody[objName][nestedObjName] = nestedObjValue
+                    }
+                  }
+                } else if (typeof objValue === 'string' && objValue.startsWith('!')) {
                   newModalBody[objName] = row[objValue.replace('!', '')]
+                } else {
+                  newModalBody[objName] = objValue
                 }
               }
               const NewModalUrl = `${modalUrl.split('?')[0]}?${urlParams.toString()}`
+              const selectedValue = inputRef.current.value
+              let additionalFields = {}
+              if (inputRef.current.nodeName === 'SELECT') {
+                const selectedItem = dropDownInfo.data.find(
+                  (item) => item[modalDropdown.valueField] === selectedValue,
+                )
+                if (selectedItem && modalDropdown.addedField) {
+                  Object.keys(modalDropdown.addedField).forEach((key) => {
+                    additionalFields[key] = selectedItem[modalDropdown.addedField[key]]
+                  })
+                }
+              }
+
               const results = await genericPostRequest({
                 path: NewModalUrl,
-                values: { ...modalBody, ...newModalBody, ...{ input: inputRef.current.value } },
+                values: {
+                  ...modalBody,
+                  ...newModalBody,
+                  ...additionalFields,
+                  ...{ input: inputRef.current.value },
+                },
               })
               resultsarr.push(results)
               setMassResults(resultsarr)
@@ -456,6 +578,7 @@ export default function CippTable({
     }
 
     const executeselectedAction = (item) => {
+      //  console.log(item)
       setModalContent({
         item,
       })
@@ -546,6 +669,9 @@ export default function CippTable({
         let output = {}
         for (let k in obj) {
           let val = obj[k]
+          if (val === null) {
+            val = ''
+          }
           const newKey = prefix ? prefix + '.' + k : k
           if (typeof val === 'object') {
             if (Array.isArray(val)) {
@@ -564,26 +690,16 @@ export default function CippTable({
       }
       filtered = filtered.map((item) => flatten(item))
 
+      let dataFlat
+
+      if (Array.isArray(data)) {
+        dataFlat = data.map((item) => flatten(item))
+      } else {
+        dataFlat = []
+      }
+
       if (!disablePDFExport) {
         if (dynamicColumns === true) {
-          const addColumn = (columnname) => {
-            var index = columns.length - 1
-            let alreadyInArray = columns.find((o) => o.exportSelector === columnname)
-            if (!alreadyInArray) {
-              columns.splice(index, 0, {
-                name: columnname,
-                selector: (row) => row[columnname],
-                sortable: true,
-                exportSelector: columnname,
-                cell: cellGenericFormatter(),
-              })
-            } else {
-              let indexOfExisting = columns.findIndex((o) => o.exportSelector === columnname)
-              columns = columns.splice(indexOfExisting, 1)
-            }
-            setUpdatedColumns(Date())
-          }
-
           defaultActions.push([
             <CDropdown key={'column-selector'} className="me-2" variant="input-group">
               <CDropdownToggle
@@ -596,13 +712,14 @@ export default function CippTable({
                 <FontAwesomeIcon icon={faColumns} />
               </CDropdownToggle>
               <CDropdownMenu>
+                <CDropdownItem onClick={() => resetDropdown()}>Reset to default</CDropdownItem>
                 {dataKeys() &&
                   dataKeys().map((item, idx) => {
                     return (
                       <CDropdownItem key={idx} onClick={() => addColumn(item)}>
-                        {columns.find((o) => o.exportSelector === item) && (
-                          <FontAwesomeIcon icon={faCheck} />
-                        )}{' '}
+                        {updatedColumns.find(
+                          (o) => o.exportSelector === item && o?.omit !== true,
+                        ) && <FontAwesomeIcon icon={faCheck} />}{' '}
                         {item}
                       </CDropdownItem>
                     )
@@ -613,19 +730,71 @@ export default function CippTable({
         }
 
         defaultActions.push([
-          <ExportPDFButton
-            key="export-pdf-action"
-            pdfData={filtered}
-            pdfHeaders={columns}
-            pdfSize="A4"
-            reportName={reportName}
-          />,
+          <CDropdown key={'pdf-selector'} className="me-2" variant="input-group">
+            <CDropdownToggle
+              className="btn btn-primary btn-sm m-1"
+              size="sm"
+              style={{
+                backgroundColor: '#f88c1a',
+              }}
+            >
+              <FontAwesomeIcon icon={faFilePdf} />
+            </CDropdownToggle>
+            <CDropdownMenu>
+              {dataKeys() && (
+                <>
+                  <ExportPDFButton
+                    key="export-pdf-action-visible"
+                    pdfData={filtered}
+                    pdfHeaders={columns}
+                    pdfSize="A4"
+                    reportName={reportName}
+                    nameText="Export Visible Columns"
+                  />
+                </>
+              )}
+            </CDropdownMenu>
+          </CDropdown>,
         ])
       }
 
       if (!disableCSVExport) {
         defaultActions.push([
-          <ExportCsvButton key="export-csv-action" csvData={filtered} reportName={reportName} />,
+          <>
+            <CDropdown key={'csv-selector'} className="me-2" variant="input-group">
+              <CDropdownToggle
+                className="btn btn-primary btn-sm m-1"
+                size="sm"
+                style={{
+                  backgroundColor: '#f88c1a',
+                }}
+              >
+                <FontAwesomeIcon icon={faFileCsv} />
+              </CDropdownToggle>
+              <CDropdownMenu>
+                {dataKeys() && (
+                  <>
+                    <CDropdownItem>
+                      <ExportCsvButton
+                        key="export-csv-action-visible"
+                        csvData={filtered}
+                        reportName={reportName}
+                        nameText="Export Visible Columns"
+                      />
+                    </CDropdownItem>
+                    <CDropdownItem>
+                      <ExportCsvButton
+                        key="export-csv-action-all"
+                        csvData={dataFlat}
+                        reportName={reportName}
+                        nameText="Export All Columns"
+                      />
+                    </CDropdownItem>
+                  </>
+                )}
+              </CDropdownMenu>
+            </CDropdown>
+          </>,
         ])
       }
     }
@@ -675,25 +844,41 @@ export default function CippTable({
       </>
     )
   }, [
+    refreshFunction,
     actions,
-    selectedRows,
     disablePDFExport,
     disableCSVExport,
+    selectedRows,
+    actionsList,
+    showFilter,
     filterText,
     filterlist,
     resetPaginationToggle,
-    data,
+    handleModal,
+    getDrowndownInfo,
+    filteredItems,
     columns,
+    data,
+    dynamicColumns,
     reportName,
-    selectedRows,
+    resetDropdown,
+    updatedColumns,
+    addColumn,
+    setGraphFilter,
   ])
   const tablePageSize = useSelector((state) => state.app.tablePageSize)
+  const [codeCopied, setCodeCopied] = useState(false)
+
+  const onCodeCopied = () => {
+    setCodeCopied(true)
+    setTimeout(() => setCodeCopied(false), 2000)
+  }
 
   return (
     <div className="ms-n3 me-n3 cipp-tablewrapper">
       {!isFetching && error && <CCallout color="info">Error loading data</CCallout>}
       <div>
-        {(columns.length === updatedColumns.length || !dynamicColumns) && (
+        {(updatedColumns || !dynamicColumns) && (
           <>
             {(massResults.length >= 1 || loopRunning) && (
               <CCallout color="info">
@@ -717,6 +902,20 @@ export default function CippTable({
                             {message.data?.Metadata?.Heading}
                           </CAccordionHeader>
                           <CAccordionBody>
+                            <CopyToClipboard text={results} onCopy={() => onCodeCopied()}>
+                              <CButton
+                                color={codeCopied ? 'success' : 'info'}
+                                className="cipp-code-copy-button"
+                                size="sm"
+                                variant="ghost"
+                              >
+                                {codeCopied ? (
+                                  <FontAwesomeIcon icon={faClipboard} />
+                                ) : (
+                                  <FontAwesomeIcon icon={faCopy} />
+                                )}
+                              </CButton>
+                            </CopyToClipboard>
                             {results.map((line, i) => {
                               return <li key={i}>{line}</li>
                             })}
@@ -730,7 +929,27 @@ export default function CippTable({
                   massResults.map((message, idx) => {
                     const results = message.data?.Results
                     const displayResults = Array.isArray(results) ? results.join(', ') : results
-                    return <li key={`message-${idx}`}>{displayResults}</li>
+                    return (
+                      <>
+                        <li key={`message-${idx}`}>
+                          {displayResults}
+                          <CopyToClipboard text={displayResults} onCopy={() => onCodeCopied()}>
+                            <CButton
+                              color={codeCopied ? 'success' : 'info'}
+                              className="cipp-code-copy-button"
+                              size="sm"
+                              variant="ghost"
+                            >
+                              {codeCopied ? (
+                                <FontAwesomeIcon icon={faClipboard} />
+                              ) : (
+                                <FontAwesomeIcon icon={faCopy} />
+                              )}
+                            </CButton>
+                          </CopyToClipboard>
+                        </li>
+                      </>
+                    )
                   })}
                 {loopRunning && (
                   <li>
@@ -756,7 +975,7 @@ export default function CippTable({
               responsive={responsive}
               dense={dense}
               striped={striped}
-              columns={columns}
+              columns={dynamicColumns ? updatedColumns : columns}
               data={filteredItems}
               expandableRows={expandableRows}
               expandableRowsComponent={expandableRowsComponent}

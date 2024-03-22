@@ -15,7 +15,7 @@ import {
 } from 'src/components/forms'
 import { TenantSelector } from 'src/components/utilities'
 import { useListUsersQuery } from 'src/store/api/users'
-import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import { useGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
@@ -48,6 +48,13 @@ const OffboardingWizard = () => {
     isFetching: usersIsFetching,
     error: usersError,
   } = useListUsersQuery({ tenantDomain })
+
+  const {
+    data: recipients = [],
+    isFetching: recipientsIsFetching,
+    error: recipientsError,
+  } = useGenericGetRequestQuery({ path: `/api/ListRecipients?tenantFilter=${tenantDomain}` })
+
   const currentSettings = useSelector((state) => state.app)
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
@@ -85,7 +92,7 @@ const OffboardingWizard = () => {
 
   return (
     <CippWizard
-      initialValues={currentSettings.offboardingDefaults}
+      initialValues={currentSettings?.userSettingsDefaults}
       onSubmit={handleSubmit}
       wizardTitle="Offboarding Wizard"
     >
@@ -125,7 +132,7 @@ const OffboardingWizard = () => {
         <hr className="my-4" />
       </CippWizard.Page>
       <CippWizard.Page
-        initialvalues={currentSettings.offboardingDefaults}
+        initialvalues={currentSettings?.userSettingsDefaults}
         title="Offboarding Settings"
         description="Select the offboarding options."
       >
@@ -194,7 +201,7 @@ const OffboardingWizard = () => {
               />
               <RFFSelectSearch
                 label="Forward email to other user"
-                values={users
+                values={recipients
                   ?.filter((x) => x.mail)
                   .map((user) => ({
                     value: user.mail,
