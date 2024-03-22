@@ -88,6 +88,23 @@ const Actions = (row, rowIndex, formatExtraData) => {
         extendedInfo={extendedInfo}
         actions={[
           {
+            label: 'Start Onboarding',
+            color: 'primary',
+            link:
+              '/tenant/administration/tenant-onboarding-wizard?tableFilter=Complex: id eq ' +
+              row.id,
+          },
+          {
+            label: 'Open Relationship in Partner Center',
+            color: 'info',
+            link:
+              'https://partner.microsoft.com/en-us/dashboard/commerce2/customers/' +
+              row?.customer?.tenantId +
+              '/adminrelationships/' +
+              row.id,
+            external: true,
+          },
+          {
             label: 'Enable automatic extension',
             color: 'info',
             modal: true,
