@@ -737,6 +737,120 @@
     "impactColour": "warning"
   },
   {
+    "name": "standards.AntiPhishPolicy",
+    "cat": "Defender Standards",
+    "tag": ["lowimpact", "CIS"],
+    "helpText": "Updates the Default Anti-Phishing Policy",
+    "addedComponent": [
+      {
+        "type": "boolean",
+        "label": "Enabled",
+        "name": "standards.AntiPhishPolicy.Enabled",
+        "default": true
+      },
+      {
+        "type": "number",
+        "label": "Phishing email threshold. (Default 1)",
+        "name": "standards.AntiPhishPolicy.PhishThresholdLevel"
+      },
+      {
+        "type": "boolean",
+        "label": "Enable Mailbox Intelligence",
+        "name": "standards.AntiPhishPolicy.EnableMailboxIntelligence",
+        "default": true
+      },
+      {
+        "type": "boolean",
+        "label": "Enable Mailbox Intelligence Protection",
+        "name": "standards.AntiPhishPolicy.EnableMailboxIntelligenceProtection",
+        "default": true
+      },
+      {
+        "type": "boolean",
+        "label": "Enable Spoof Intelligence",
+        "name": "standards.AntiPhishPolicy.EnableSpoofIntelligence",
+        "default": true
+      },
+      {
+        "type": "boolean",
+        "label": "Show first contact safety tip",
+        "name": "standards.AntiPhishPolicy.EnableFirstContactSafetyTips",
+        "default": true
+      },
+      {
+        "type": "boolean",
+        "label": "Show user impersonation safety tip",
+        "name": "standards.AntiPhishPolicy.EnableSimilarUsersSafetyTips",
+        "default": true
+      },
+      {
+        "type": "boolean",
+        "label": "Show domain impersonation safety tip",
+        "name": "standards.AntiPhishPolicy.EnableSimilarDomainsSafetyTips",
+        "default": true
+      },
+      {
+        "type": "boolean",
+        "label": "Show user impersonation unusual characters safety tip",
+        "name": "standards.AntiPhishPolicy.EnableUnusualCharactersSafetyTips",
+        "default": true
+      },
+      {
+        "type": "boolean",
+        "label": "Show ? for unauthenticated senders for spoof",
+        "name": "standards.AntiPhishPolicy.EnableUnauthenticatedSender",
+        "default": true
+      },
+      {
+        "type": "boolean",
+        "label": "Enable Via Tag",
+        "name": "standards.AntiPhishPolicy.EnableViaTag",
+        "default": true
+      },
+      {
+        "type": "Select",
+        "label": "If Mailbox Intelligence detects an impersonated user",
+        "name": "standards.AntiPhishPolicy.MailboxIntelligenceProtectionAction",
+        "values": [
+          {
+            "label": "Move to Junk Folder",
+            "value": "MoveToJmf"
+          },
+          {
+            "label": "Delete the message before its delivered",
+            "value": "Delete"
+          },
+          {
+            "label": "Quarantine the message",
+            "value": "Quarantine"
+          }
+        ]
+      },
+      {
+        "type": "Select",
+        "label": "Apply quarantine policy",
+        "name": "standards.AntiPhishPolicy.MailboxIntelligenceQuarantineTag",
+        "values": [
+          {
+            "label": "AdminOnlyAccessPolicy",
+            "value": "AdminOnlyAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessPolicy",
+            "value": "DefaultFullAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessWithNotificationPolicy",
+            "value": "DefaultFullAccessWithNotificationPolicy"
+          }
+        ]
+      }
+    ],
+    "label": "Anti-Phishing Policy",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.intuneDeviceRetirementDays",
     "cat": "Intune Standards",
     "tag": ["lowimpact"],
