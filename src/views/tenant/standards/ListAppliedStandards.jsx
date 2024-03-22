@@ -493,6 +493,13 @@ const ApplyNewStandard = () => {
                                                   label={component.label}
                                                 />
                                               )}
+                                              {component.type === 'boolean' && (
+                                                <RFFCFormSwitch
+                                                  name={component.name}
+                                                  label={component.label}
+                                                  initialValue={component.default}
+                                                />
+                                              )}
                                               {component.type === 'AdminRolesMultiSelect' && (
                                                 <RFFSelectSearch
                                                   multi={true}
