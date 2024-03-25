@@ -740,19 +740,8 @@
     "name": "standards.MalwareFilterPolicy",
     "cat": "Defender Standards",
     "tag": ["lowimpact", "CIS"],
-    "helpText": "Creates a Malware Filter Policy",
+    "helpText": "This creates a Malware filter policy that enables the default File filter and Zero-hour auto purge for malware.",
     "addedComponent": [
-      {
-        "type": "input",
-        "name": "standards.MalwareFilterPolicy.Name",
-        "label": "Malware Filter Policy Name"
-      },
-      {
-        "type": "boolean",
-        "label": "EnableFileFilter",
-        "name": "standards.MalwareFilterPolicy.EnableFileFilter",
-        "default": true
-      },
       {
         "type": "Select",
         "label": "FileTypeAction",
@@ -767,12 +756,6 @@
             "value": "Quarantine"
           }
         ]
-      },
-      {
-        "type": "boolean",
-        "label": "Zero-hour auto purge for malware",
-        "name": "standards.MalwareFilterPolicy.ZapEnabled",
-        "default": true
       },
       {
         "type": "Select",
@@ -814,7 +797,7 @@
         "label": "External Sender Admin Address"
       }
     ],
-    "label": "Malware Filter Policy",
+    "label": "Default Malware Filter Policy",
     "impact": "Low Impact",
     "impactColour": "info"
   },
