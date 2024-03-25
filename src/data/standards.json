@@ -737,6 +737,32 @@
     "impactColour": "warning"
   },
   {
+    "name": "standards.SafeLinksPolicy",
+    "cat": "Defender Standards",
+    "tag": ["lowimpact", "CIS"],
+    "helpText": "This creates a safelink policy that automatically scans, tracks, and and enables safe links for Email, Office, and Teams for both external and internal senders",
+    "addedComponent": [
+      {
+        "type": "boolean",
+        "label": "AllowClickThrough",
+        "name": "standards.SafeLinksPolicy.AllowClickThrough"
+      },
+      {
+        "type": "boolean",
+        "label": "DisableUrlRewrite",
+        "name": "standards.SafeLinksPolicy.DisableUrlRewrite"
+      },
+      {
+        "type": "boolean",
+        "label": "EnableOrganizationBranding",
+        "name": "standards.SafeLinksPolicy.EnableOrganizationBranding"
+      }
+    ],
+    "label": "Default SafeLinks Policy",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.intuneDeviceRetirementDays",
     "cat": "Intune Standards",
     "tag": ["lowimpact"],
