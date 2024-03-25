@@ -300,6 +300,16 @@
     "impactColour": "info"
   },
   {
+    "name": "standards.DisableAppCreation",
+    "cat": "Entra (AAD) Standards",
+    "tag": ["lowimpact", "CIS"],
+    "helpText": "Disables the ability for users to create App registrations in the tenant.",
+    "addedComponent": [],
+    "label": "Disable App creation by users",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.DisableSecurityGroupUsers",
     "cat": "Entra (AAD) Standards",
     "tag": ["mediumimpact"],
