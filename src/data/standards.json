@@ -737,6 +737,23 @@
     "impactColour": "warning"
   },
   {
+    "name": "standards.AtpPolicyForO365",
+    "cat": "Defender Standards",
+    "tag": ["lowimpact", "CIS"],
+    "helpText": "This creates a Atp policy that enables Defender for Office 365 for Sharepoint, OneDrive and Microsoft Teams.",
+    "addedComponent": [
+      {
+        "type": "boolean",
+        "label": "Allow people to click through Protected View even if Safe Documents identified the file as malicious",
+        "name": "standards.AtpPolicyForO365.AllowSafeDocsOpen",
+        "default": false
+      }
+    ],
+    "label": "Default Atp Policy For O365",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.intuneDeviceRetirementDays",
     "cat": "Intune Standards",
     "tag": ["lowimpact"],
