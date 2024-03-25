@@ -491,6 +491,7 @@ const ApplyNewStandard = () => {
                                                   className="mb-3"
                                                   name={component.name}
                                                   label={component.label}
+                                                  hiddenValue={component.default ?? 0}
                                                 />
                                               )}
                                               {component.type === 'boolean' && (
