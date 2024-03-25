@@ -8,6 +8,8 @@ const Users = React.lazy(() => import('src/views/identity/administration/Users')
 const DeletedItems = React.lazy(() => import('src/views/identity/administration/Deleted'))
 const ViewBEC = React.lazy(() => import('src/views/identity/administration/ViewBEC'))
 const AddUser = React.lazy(() => import('src/views/identity/administration/AddUser'))
+const AddUserBulk = React.lazy(() => import('src/views/identity/administration/AddUserBulk'))
+
 const InviteGuest = React.lazy(() => import('src/views/identity/administration/InviteGuest'))
 const EditUser = React.lazy(() => import('src/views/identity/administration/EditUser'))
 const ViewUser = React.lazy(() => import('src/views/identity/administration/ViewUser'))
@@ -251,6 +253,12 @@ const routes = [
   { path: '/cipp/500', name: 'Error', component: Page500 },
   { path: '/identity', name: 'Identity' },
   { path: '/identity/administration/users/add', name: 'Add User', component: AddUser },
+  {
+    path: '/identity/administration/users/addbulk',
+    name: 'Add User Bulk',
+    component: AddUserBulk,
+  },
+
   { path: '/identity/administration/users/edit', name: 'Edit User', component: EditUser },
   { path: '/identity/administration/users/view', name: 'View User', component: ViewUser },
   {
