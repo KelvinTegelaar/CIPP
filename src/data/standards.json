@@ -740,19 +740,8 @@
     "name": "standards.SafeAttachmentPolicy",
     "cat": "Defender Standards",
     "tag": ["lowimpact", "CIS"],
-    "helpText": "Creates a Safe Attachment Policy",
+    "helpText": "This creates a Safe Attachment policy",
     "addedComponent": [
-      {
-        "type": "input",
-        "name": "standards.SafeAttachmentPolicy.Name",
-        "label": "Safe Attachment Policy Name"
-      },
-      {
-        "type": "boolean",
-        "label": "Enable",
-        "name": "standards.SafeAttachmentPolicy.Enable",
-        "default": true
-      },
       {
         "type": "Select",
         "label": "Action",
@@ -802,7 +791,7 @@
         "label": "Redirect Address"
       }
     ],
-    "label": "Safe Attachment Policy",
+    "label": "Default Safe Attachment Policy",
     "impact": "Low Impact",
     "impactColour": "info"
   },
