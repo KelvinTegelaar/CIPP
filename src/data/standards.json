@@ -758,7 +758,7 @@
         "name": "standards.SafeLinksPolicy.EnableOrganizationBranding"
       }
     ],
-    "label": "SafeLinks Policy",
+    "label": "Default SafeLinks Policy",
     "impact": "Low Impact",
     "impactColour": "info"
   },
