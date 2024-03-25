@@ -740,36 +740,13 @@
     "name": "standards.AntiPhishPolicy",
     "cat": "Defender Standards",
     "tag": ["lowimpact", "CIS"],
-    "helpText": "Updates the Default Anti-Phishing Policy",
+    "helpText": "This creates a Anti-Phishing policy that automatically enables Mailbox Intelligence and spoofing, optional switches for Mailtips.",
     "addedComponent": [
-      {
-        "type": "boolean",
-        "label": "Enabled",
-        "name": "standards.AntiPhishPolicy.Enabled",
-        "default": true
-      },
       {
         "type": "number",
         "label": "Phishing email threshold. (Default 1)",
-        "name": "standards.AntiPhishPolicy.PhishThresholdLevel"
-      },
-      {
-        "type": "boolean",
-        "label": "Enable Mailbox Intelligence",
-        "name": "standards.AntiPhishPolicy.EnableMailboxIntelligence",
-        "default": true
-      },
-      {
-        "type": "boolean",
-        "label": "Enable Mailbox Intelligence Protection",
-        "name": "standards.AntiPhishPolicy.EnableMailboxIntelligenceProtection",
-        "default": true
-      },
-      {
-        "type": "boolean",
-        "label": "Enable Spoof Intelligence",
-        "name": "standards.AntiPhishPolicy.EnableSpoofIntelligence",
-        "default": true
+        "name": "standards.AntiPhishPolicy.PhishThresholdLevel",
+        "default": 1
       },
       {
         "type": "boolean",
@@ -793,18 +770,6 @@
         "type": "boolean",
         "label": "Show user impersonation unusual characters safety tip",
         "name": "standards.AntiPhishPolicy.EnableUnusualCharactersSafetyTips",
-        "default": true
-      },
-      {
-        "type": "boolean",
-        "label": "Show ? for unauthenticated senders for spoof",
-        "name": "standards.AntiPhishPolicy.EnableUnauthenticatedSender",
-        "default": true
-      },
-      {
-        "type": "boolean",
-        "label": "Enable Via Tag",
-        "name": "standards.AntiPhishPolicy.EnableViaTag",
         "default": true
       },
       {
@@ -846,7 +811,7 @@
         ]
       }
     ],
-    "label": "Anti-Phishing Policy",
+    "label": "Default Anti-Phishing Policy",
     "impact": "Low Impact",
     "impactColour": "info"
   },
