@@ -486,6 +486,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Compliance Policies',
+        to: '/endpoint/MEM/list-compliance-policies',
+      },
+      {
+        component: CNavItem,
         name: 'Protection Policies',
         to: '/endpoint/MEM/list-appprotection-policies',
       },
