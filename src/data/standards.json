@@ -233,6 +233,32 @@
     "impactColour": "info"
   },
   {
+    "name": "standards.ExternalMFATrusted",
+    "cat": "Entra (AAD) Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Sets the state of the Cross-tenant access setting to trust external MFA. This allows guest users to use their home tenant MFA to access your tenant.",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Select value",
+        "name": "standards.ExternalMFATrusted.state",
+        "values": [
+          {
+            "label": "Enabled",
+            "value": "true"
+          },
+          {
+            "label": "Disabled",
+            "value": "false"
+          }
+        ]
+      }
+    ],
+    "label": "Sets the Cross-tenant access setting to trust external MFA",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.DisableTenantCreation",
     "cat": "Entra (AAD) Standards",
     "tag": ["lowimpact", "CIS"],
