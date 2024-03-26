@@ -15,9 +15,12 @@ import CippGraphUserFilter from 'src/components/utilities/CippGraphUserFilter'
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
   const [ocVisible, setOCVisible] = useState(false)
-  const viewLink = `/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}&userEmail=${row.userPrincipalName}`
-  const editLink = `/identity/administration/users/edit?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`
-  const OffboardLink = `/identity/administration/offboarding-wizard?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`
+  const viewLink = row?.tenant
+    ? `/identity/administration/users/view?userId=${row.id}&tenantDomain=${row.Tenant}&userEmail=${row.userPrincipalName}`
+    : `/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}&userEmail=${row.userPrincipalName}`
+  const editLink = row?.tenant
+    ? `/identity/administration/users/edit?userId=${row.id}&tenantDomain=${row.Tenant}`
+    : `/identity/administration/users/edit?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`
   const entraLink = `https://entra.microsoft.com/${tenant.defaultDomainName}/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/UserAuthMethods/userId/${row.id}/hidePreviewBanner~/true`
 
   let licenses = []
@@ -31,7 +34,6 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
   })
   var licJoined = licenses.join(', ')
 
-  //console.log(row)
   return (
     <>
       <Link to={viewLink}>
