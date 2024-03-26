@@ -170,6 +170,7 @@ const AddPolicy = () => {
                 { label: 'Administrative Template', value: 'Admin' },
                 { label: 'Settings Catalog', value: 'Catalog' },
                 { label: 'Custom Configuration', value: 'Device' },
+                { label: 'App Protection or Configuration Policy', value: 'AppProtection' },
               ]}
             />
           </CCol>

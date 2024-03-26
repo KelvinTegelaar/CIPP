@@ -130,6 +130,10 @@ const AutopilotListStatusPages = React.lazy(() =>
   import('src/views/endpoint/autopilot/AutopilotListStatusPages'),
 )
 const IntuneListPolicies = React.lazy(() => import('src/views/endpoint/intune/MEMListPolicies'))
+const IntuneListAppProtection = React.lazy(() =>
+  import('src/views/endpoint/intune/MEMListAppProtection'),
+)
+
 const MEMEditPolicy = React.lazy(() => import('src/views/endpoint/intune/MEMEditPolicy'))
 
 const IntuneCAPolicies = React.lazy(() => import('src/views/endpoint/intune/MEMCAPolicies'))
@@ -481,7 +485,17 @@ const routes = [
     component: AutopilotListStatusPages,
   },
   { path: '/endpoint/MEM', name: 'MEM' },
-  { path: '/endpoint/MEM/list-policies', name: 'List MEM Policies', component: IntuneListPolicies },
+  {
+    path: '/endpoint/MEM/list-policies',
+    name: 'List Intune Policies',
+    component: IntuneListPolicies,
+  },
+  {
+    path: '/endpoint/MEM/list-appprotection-policies',
+    name: 'List App Protection Policies',
+    component: IntuneListAppProtection,
+  },
+
   { path: '/endpoint/MEM/edit-policy', name: 'Edit MEM Policy', component: MEMEditPolicy },
   { path: '/endpoint/MEM/ca-policies', name: 'List Status Pages', component: IntuneCAPolicies },
   { path: '/endpoint/MEM/add-policy', name: 'Add Intune Policy', component: IntuneAddPolicy },
