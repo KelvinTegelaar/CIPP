@@ -4,7 +4,7 @@
     "type": "CIPP-API",
     "cat": "API",
     "forceSyncButton": false,
-    "helpText": "This integration allows you to use to enable API access outside of CIPP usage. Requires Global Administrator permissions inside your tenant for activation of the API. These credentials will only be shown once.",
+    "helpText": "This integration allows you to enable CIPP-API access outside of CIPP. Requires Global Administrator permissions inside your tenant for activation of the API. The API credentials will only be shown once.",
     "SettingOptions": [
       {
         "type": "checkbox",
@@ -77,7 +77,14 @@
         "fieldtype": "input",
         "name": "HaloPSA.Tenant",
         "label": "HaloPSA Tenant",
-        "placeholder": "Enter your HaloPSA Tenant"
+        "placeholder": "Enter your HaloPSA Tenant (Leave blank if self-hosted"
+      },
+      {
+        "type": "input",
+        "fieldtype": "input",
+        "name": "HaloPSA.TicketType",
+        "label": "HaloPSA Ticket Type ID",
+        "placeholder": "Enter your HaloPSA ticket type to use for CIPP Tickets. Leave blank for default."
       },
       {
         "type": "input",
@@ -96,6 +103,56 @@
       {
         "type": "checkbox",
         "name": "HaloPSA.Enabled",
+        "label": "Enable Integration"
+      }
+    ]
+  },
+  {
+    "name": "NinjaOne Integration",
+    "type": "NinjaOne",
+    "cat": "Documentation & Monitoring",
+    "forceSyncButton": true,
+    "helpText": "NOTE: This integration requires version 5.6 of NinjaOne, which rolls out regionally between the end of November and mid-December. This integration allows you to populate custom fields with Tenant information, monitor device compliance state, document other items and generate relationships inside NinjaOne.",
+    "SettingOptions": [
+      {
+        "type": "input",
+        "fieldtype": "input",
+        "name": "NinjaOne.Instance",
+        "label": "Please enter your NinjaOne Instance",
+        "placeholder": "app.ninjarmm.com, eu.ninjarmm.com, oc.ninjarmm.com, ca.ninjarmm.com, us2.ninjarmm.com"
+      },
+      {
+        "type": "input",
+        "fieldtype": "password",
+        "name": "NinjaOne.ClientID",
+        "label": "NinjaOne API Client ID",
+        "placeholder": "Enter your NinjaOne API Client ID"
+      },
+      {
+        "type": "input",
+        "fieldtype": "password",
+        "name": "NinjaOne.APIKey",
+        "label": "NinjaOne API Client Secret",
+        "placeholder": "Enter your NinjaOne API Client Secret"
+      },
+      {
+        "type": "checkbox",
+        "name": "NinjaOne.UserDocumentsEnabled",
+        "label": "Synchronize Detailed User Information (Requires NinjaOne Documentation)"
+      },
+      {
+        "type": "checkbox",
+        "name": "NinjaOne.LicenseDocumentsEnabled",
+        "label": "Synchronize Detailed License Information (Requires NinjaOne Documentation)"
+      },
+      {
+        "type": "checkbox",
+        "name": "NinjaOne.LicensedOnly",
+        "label": "Only Synchronize Licensed Users"
+      },
+      {
+        "type": "checkbox",
+        "name": "NinjaOne.Enabled",
         "label": "Enable Integration"
       }
     ]
