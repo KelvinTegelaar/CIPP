@@ -11,5 +11,5 @@ Make sure you assign the correct groups to the CIPP service account. For more in
 
 ### Auto Extend
 
-Auto Extend is only available for relationships without the Global Administrator role. If your relationship contains the Global Administrator role you cannot enable this feature. this measn that you will need to renew the relationship by reinviting the tenant every 2 years.
+Auto Extend is only available for relationships without the Global Administrator role. If your relationship contains the Global Administrator role you cannot enable this feature. This means that you will need to renew the relationship by reinviting the tenant every 2 years.
 
