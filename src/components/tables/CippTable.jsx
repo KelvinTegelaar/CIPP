@@ -38,6 +38,7 @@ import { useSearchParams } from 'react-router-dom'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { setDefaultColumns } from 'src/store/features/app'
 import { end } from '@popperjs/core'
+import { current } from '@reduxjs/toolkit'
 
 const FilterComponent = ({ filterText, onFilter, onClear, filterlist, onFilterPreset }) => (
   <>
@@ -630,74 +631,64 @@ export default function CippTable({
         return null
       })
 
-      var exportData = filteredItems
+      // Define the flatten function
+      const flatten = (obj, prefix = '') => {
+        return Object.keys(obj).reduce((output, key) => {
+          const newKey = prefix ? `${prefix}.${key}` : key
+          const value = obj[key] === null ? '' : obj[key]
 
-      var filtered =
-        Array.isArray(exportData) && exportData.length > 0
-          ? exportData.map((obj) =>
-              // eslint-disable-next-line no-sequences
-              /* keys.reduce((acc, curr) => ((acc[curr] = obj[curr]), acc), {}),*/
-              keys.reduce((acc, curr) => {
-                const key = curr.split('/')
-                if (key.length > 1) {
-                  let property = obj
-                  for (let x = 0; x < key.length; x++) {
-                    if (
-                      Object.prototype.hasOwnProperty.call(property, key[x]) &&
-                      property[key[x]] !== null
-                    ) {
-                      property = property[key[x]]
-                    } else {
-                      property = 'n/a'
-                      break
-                    }
-                  }
-                  acc[curr] = property
-                } else {
-                  if (typeof exportFormatter[curr] === 'function') {
-                    acc[curr] = exportFormatter[curr]({ cell: obj[curr] })
-                  } else {
-                    acc[curr] = obj[curr]
-                  }
-                }
-                return acc
-              }, {}),
-            )
-          : []
-
-      const flatten = (obj, prefix) => {
-        let output = {}
-        for (let k in obj) {
-          let val = obj[k]
-          if (val === null) {
-            val = ''
-          }
-          const newKey = prefix ? prefix + '.' + k : k
-          if (typeof val === 'object') {
-            if (Array.isArray(val)) {
-              const { ...arrToObj } = val
-              const newObj = flatten(arrToObj, newKey)
-              output = { ...output, ...newObj }
-            } else {
-              const newObj = flatten(val, newKey)
-              output = { ...output, ...newObj }
-            }
+          if (typeof value === 'object' && !Array.isArray(value)) {
+            Object.assign(output, flatten(value, newKey))
           } else {
-            output = { ...output, [newKey]: val }
+            output[newKey] = value
           }
-        }
-        return output
-      }
-      filtered = filtered.map((item) => flatten(item))
-
-      let dataFlat
-
-      if (Array.isArray(data)) {
-        dataFlat = data.map((item) => flatten(item))
-      } else {
-        dataFlat = []
+          return output
+        }, {})
       }
 
+      // Define the applyFormatter function
+      const applyFormatter = (obj) => {
+        return Object.keys(obj).reduce((acc, key) => {
+          const formatter = exportFormatter[key]
+          // Since the keys after flattening will be dot-separated, we need to adjust this to support nested keys if necessary.
+          const keyParts = key.split('.')
+          const finalKeyPart = keyParts[keyParts.length - 1]
+          const formattedValue =
+            typeof formatter === 'function' ? formatter({ cell: obj[key] }) : obj[key]
+          acc[key] = formattedValue
+          return acc
+        }, {})
+      }
+
+      // Process exportData function
+      const processExportData = (exportData, selectedColumns) => {
+        //filter out the columns that are not selected via selectedColumns
+        exportData = exportData.map((item) => {
+          return Object.keys(item)
+            .filter((key) => selectedColumns.find((o) => o.exportSelector === key))
+            .reduce((obj, key) => {
+              obj[key] = item[key]
+              return obj
+            }, {})
+        })
+        return Array.isArray(exportData) && exportData.length > 0
+          ? exportData.map((obj) => {
+              const flattenedObj = flatten(obj)
+              return applyFormatter(flattenedObj)
+            })
+          : []
+      }
+
+      // Applying the processExportData function to both filteredItems and data
+      var filtered = processExportData(filteredItems, updatedColumns)
+
+      // Adjusted dataFlat processing to include formatting
+      let dataFlat = Array.isArray(data)
+        ? data.map((item) => {
+            const flattenedItem = flatten(item)
+            return applyFormatter(flattenedItem)
+          })
+        : []
       if (!disablePDFExport) {
         if (dynamicColumns === true) {
           defaultActions.push([
