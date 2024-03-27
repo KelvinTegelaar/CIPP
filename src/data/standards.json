@@ -789,6 +789,226 @@
     "impactColour": "info"
   },
   {
+    "name": "standards.AntiPhishPolicy",
+    "cat": "Defender Standards",
+    "tag": ["lowimpact", "CIS"],
+    "helpText": "This creates a Anti-Phishing policy that automatically enables Mailbox Intelligence and spoofing, optional switches for Mailtips.",
+    "addedComponent": [
+      {
+        "type": "number",
+        "label": "Phishing email threshold. (Default 1)",
+        "name": "standards.AntiPhishPolicy.PhishThresholdLevel",
+        "default": 1
+      },
+      {
+        "type": "boolean",
+        "label": "Show first contact safety tip",
+        "name": "standards.AntiPhishPolicy.EnableFirstContactSafetyTips",
+        "default": true
+      },
+      {
+        "type": "boolean",
+        "label": "Show user impersonation safety tip",
+        "name": "standards.AntiPhishPolicy.EnableSimilarUsersSafetyTips",
+        "default": true
+      },
+      {
+        "type": "boolean",
+        "label": "Show domain impersonation safety tip",
+        "name": "standards.AntiPhishPolicy.EnableSimilarDomainsSafetyTips",
+        "default": true
+      },
+      {
+        "type": "boolean",
+        "label": "Show user impersonation unusual characters safety tip",
+        "name": "standards.AntiPhishPolicy.EnableUnusualCharactersSafetyTips",
+        "default": true
+      },
+      {
+        "type": "Select",
+        "label": "If Mailbox Intelligence detects an impersonated user",
+        "name": "standards.AntiPhishPolicy.MailboxIntelligenceProtectionAction",
+        "values": [
+          {
+            "label": "Move to Junk Folder",
+            "value": "MoveToJmf"
+          },
+          {
+            "label": "Delete the message before its delivered",
+            "value": "Delete"
+          },
+          {
+            "label": "Quarantine the message",
+            "value": "Quarantine"
+          }
+        ]
+      },
+      {
+        "type": "Select",
+        "label": "Apply quarantine policy",
+        "name": "standards.AntiPhishPolicy.MailboxIntelligenceQuarantineTag",
+        "values": [
+          {
+            "label": "AdminOnlyAccessPolicy",
+            "value": "AdminOnlyAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessPolicy",
+            "value": "DefaultFullAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessWithNotificationPolicy",
+            "value": "DefaultFullAccessWithNotificationPolicy"
+          }
+        ]
+      }
+    ],
+    "label": "Default Anti-Phishing Policy",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
+    "name": "standards.SafeAttachmentPolicy",
+    "cat": "Defender Standards",
+    "tag": ["lowimpact", "CIS"],
+    "helpText": "This creates a Safe Attachment policy",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Action",
+        "name": "standards.SafeAttachmentPolicy.Action",
+        "values": [
+          {
+            "label": "Allow",
+            "value": "Allow"
+          },
+          {
+            "label": "Block",
+            "value": "Block"
+          },
+          {
+            "label": "DynamicDelivery",
+            "value": "DynamicDelivery"
+          }
+        ]
+      },
+      {
+        "type": "Select",
+        "label": "QuarantineTag",
+        "name": "standards.SafeAttachmentPolicy.QuarantineTag",
+        "values": [
+          {
+            "label": "AdminOnlyAccessPolicy",
+            "value": "AdminOnlyAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessPolicy",
+            "value": "DefaultFullAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessWithNotificationPolicy",
+            "value": "DefaultFullAccessWithNotificationPolicy"
+          }
+        ]
+      },
+      {
+        "type": "boolean",
+        "label": "Redirect",
+        "name": "standards.SafeAttachmentPolicy.Redirect"
+      },
+      {
+        "type": "input",
+        "name": "standards.SafeAttachmentPolicy.RedirectAddress",
+        "label": "Redirect Address"
+      }
+    ],
+    "label": "Default Safe Attachment Policy",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
+    "name": "standards.AtpPolicyForO365",
+    "cat": "Defender Standards",
+    "tag": ["lowimpact", "CIS"],
+    "helpText": "This creates a Atp policy that enables Defender for Office 365 for Sharepoint, OneDrive and Microsoft Teams.",
+    "addedComponent": [
+      {
+        "type": "boolean",
+        "label": "Allow people to click through Protected View even if Safe Documents identified the file as malicious",
+        "name": "standards.AtpPolicyForO365.AllowSafeDocsOpen",
+        "default": false
+      }
+    ],
+    "label": "Default Atp Policy For O365",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
+    "name": "standards.MalwareFilterPolicy",
+    "cat": "Defender Standards",
+    "tag": ["lowimpact", "CIS"],
+    "helpText": "This creates a Malware filter policy that enables the default File filter and Zero-hour auto purge for malware.",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "FileTypeAction",
+        "name": "standards.MalwareFilterPolicy.FileTypeAction",
+        "values": [
+          {
+            "label": "Reject",
+            "value": "Reject"
+          },
+          {
+            "label": "Quarantine the message",
+            "value": "Quarantine"
+          }
+        ]
+      },
+      {
+        "type": "Select",
+        "label": "QuarantineTag",
+        "name": "standards.MalwareFilterPolicy.QuarantineTag",
+        "values": [
+          {
+            "label": "AdminOnlyAccessPolicy",
+            "value": "AdminOnlyAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessPolicy",
+            "value": "DefaultFullAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessWithNotificationPolicy",
+            "value": "DefaultFullAccessWithNotificationPolicy"
+          }
+        ]
+      },
+      {
+        "type": "boolean",
+        "label": "Enable Internal Sender Admin Notifications",
+        "name": "standards.MalwareFilterPolicy.EnableInternalSenderAdminNotifications"
+      },
+      {
+        "type": "input",
+        "name": "standards.MalwareFilterPolicy.InternalSenderAdminAddress",
+        "label": "Internal Sender Admin Address"
+      },
+      {
+        "type": "boolean",
+        "label": "Enable Internal Sender Admin Notifications",
+        "name": "standards.MalwareFilterPolicy.EnableExternalSenderAdminNotifications"
+      },
+      {
+        "type": "input",
+        "name": "standards.MalwareFilterPolicy.ExternalSenderAdminAddress",
+        "label": "External Sender Admin Address"
+      }
+    ],
+    "label": "Default Malware Filter Policy",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.intuneDeviceRetirementDays",
     "cat": "Intune Standards",
     "tag": ["lowimpact"],
