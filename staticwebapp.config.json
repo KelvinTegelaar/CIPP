@@ -86,6 +86,10 @@
       "route": "*",
       "allowedRoles": ["admin", "editor", "readonly", "reader"]
     }
+    {
+      "route": "/api/AddSharedMailbox",
+      "allowedRoles": ["SharedMailboxAdmins","admins","editors"]
+    }
   ],
   "navigationFallback": {
     "rewrite": "index.html",
