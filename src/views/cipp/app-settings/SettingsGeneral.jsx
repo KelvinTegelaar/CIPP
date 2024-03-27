@@ -439,6 +439,7 @@ export function SettingsGeneral() {
                       columns={checkAccessColumns}
                       tableProps={tableProps}
                       data={accessCheckResult.data.Results}
+                      dynamicColumns={false}
                     />
                   )}
                 </CCol>
