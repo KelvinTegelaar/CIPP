@@ -15,7 +15,7 @@ import {
   COffcanvasTitle,
   CSpinner,
 } from '@coreui/react'
-import { CippOffcanvas, ModalService } from 'src/components/utilities'
+import { CippCodeBlock, CippOffcanvas, ModalService } from 'src/components/utilities'
 import { CippOffcanvasPropTypes } from 'src/components/utilities/CippOffcanvas'
 import { CippOffcanvasTable } from 'src/components/tables'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
@@ -215,8 +215,10 @@ export default function CippActionsOffcanvas(props) {
     cardContent = props.cards.map((action, index) => (
       <>
         <CCard key={index} className="border-top-dark border-top-3 mb-3">
-          <CCardBody>
+          <CCardHeader className="d-flex justify-content-between align-items-center">
             <CCardTitle>Report Name: {action.label}</CCardTitle>
+          </CCardHeader>
+          <CCardBody>
             <CCardText>
               {action.value && <Link to={action.link}>Status: {action.value}</Link>}
             </CCardText>
@@ -304,27 +306,37 @@ export default function CippActionsOffcanvas(props) {
           <CSpinner>Loading</CSpinner>
         </CCallout>
       )}
-      {postResults.isSuccess && <CCallout color="info">{postResults.data?.Results}</CCallout>}
+      {postResults.isSuccess && (
+        <CippCodeBlock
+          code={postResults.data?.Results}
+          callout={true}
+          calloutCopyValue={getResults.data?.Results}
+        />
+      )}
       {postResults.isError && (
         <CCallout color="danger">Could not connect to API: {postResults.error.message}</CCallout>
       )}
       {getResults.isSuccess && (
-        <CCallout color={getResults.data?.colour ? getResults.data?.colour : 'info'}>
-          {getResults.data?.Results}
-        </CCallout>
+        <CippCodeBlock
+          code={getResults.data?.Results}
+          callout={true}
+          calloutColour={getResults.data?.colour ? getResults.data?.colour : 'info'}
+          calloutCopyValue={getResults.data?.Results}
+        />
       )}
       {getResults.isError && (
         <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
       )}
-
-      <CCard className="content-card">
-        <CCardHeader className="d-flex justify-content-between align-items-center">
-          <CCardTitle>
-            <FontAwesomeIcon icon={faGlobe} className="mx-2" /> Extended Information
-          </CCardTitle>
-        </CCardHeader>
-        <CCardBody>{extendedInfoContent}</CCardBody>
-      </CCard>
+      {!cardContent && (
+        <CCard className="content-card">
+          <CCardHeader className="d-flex justify-content-between align-items-center">
+            <CCardTitle>
+              <FontAwesomeIcon icon={faGlobe} className="mx-2" /> Extended Information
+            </CCardTitle>
+          </CCardHeader>
+          <CCardBody>{extendedInfoContent}</CCardBody>
+        </CCard>
+      )}
       {cardContent && cardContent}
       {<COffcanvasTitle>Actions</COffcanvasTitle>}
       <CListGroup>
