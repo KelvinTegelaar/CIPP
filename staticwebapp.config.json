@@ -87,11 +87,11 @@
       "allowedRoles": ["admin", "editor", "readonly", "reader"]
     },
 	  {
-		  "route": "/api/RemoveUser"
+		  "route": "/api/RemoveUser",
 		"  allowedRoles": ["admin", "editor", "readonly", "reader", "authenticated", "helpdesk"]
 	  },
 	  {
-		  "route": "/api/AddUser"
+		  "route": "/api/AddUser",
 		  "allowedRoles": ["admin", "editor", "readonly", "reader", "authenticated", "helpdesk"]
 	  }
   ],
