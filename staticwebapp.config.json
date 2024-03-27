@@ -82,13 +82,13 @@
       "route": "/api/Public*",
       "allowedRoles": ["admin", "editor", "readonly", "reader", "authenticated", "anonymous"]
     },
+      {
+      "route": "/api/AddSharedMailbox*",
+      "allowedRoles": ["SharedMailboxAdmins","admins","editors"]
+    },
     {
       "route": "*",
       "allowedRoles": ["admin", "editor", "readonly", "reader"]
-    },
-    {
-      "route": "/api/AddSharedMailbox",
-      "allowedRoles": ["SharedMailboxAdmins","admins","editors"]
     }
   ],
   "navigationFallback": {
