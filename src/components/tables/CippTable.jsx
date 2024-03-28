@@ -33,12 +33,11 @@ import {
 import { cellGenericFormatter } from './CellGenericFormat'
 import { ModalService } from '../utilities'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
-import { debounce, update } from 'lodash-es'
+import { debounce } from 'lodash-es'
 import { useSearchParams } from 'react-router-dom'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { setDefaultColumns } from 'src/store/features/app'
-import { end } from '@popperjs/core'
-import { current } from '@reduxjs/toolkit'
+import M365Licenses from 'src/data/M365Licenses'
 
 const FilterComponent = ({ filterText, onFilter, onClear, filterlist, onFilterPreset }) => (
   <>
