@@ -137,7 +137,7 @@ const EditUser = () => {
     },
     license: precheckedLicenses,
     //if currentSettings.defaultAttributes exists. Set each of the keys inside of currentSettings.defaultAttributes.label to the value of the user attribute found in the user object.
-    defaultAttributes: currentSettings.userSettingsDefaults.defaultAttributes.reduce(
+    defaultAttributes: currentSettings?.userSettingsDefaults?.defaultAttributes.reduce(
       (o, key) => Object.assign(o, { [key.label]: { Value: user[key.label] } }),
       {},
     ),
@@ -410,7 +410,7 @@ const EditUser = () => {
                             </CCol>
                           </CRow>
                           <>
-                            {currentSettings.userSettingsDefaults.defaultAttributes.map(
+                            {currentSettings?.userSettingsDefaults?.defaultAttributes.map(
                               (attribute, idx) => (
                                 <CRow key={idx}>
                                   <CCol>
