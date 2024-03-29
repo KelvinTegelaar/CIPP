@@ -1,4 +1,5 @@
 import React from 'react'
+import MailTest from 'src/views/email-exchange/tools/MailTest'
 
 const Home = React.lazy(() => import('src/views/home/Home'))
 const Logs = React.lazy(() => import('src/views/cipp/Logs'))
@@ -247,6 +248,7 @@ const MailboxRestoreWizard = React.lazy(() =>
   import('src/views/email-exchange/tools/MailboxRestoreWizard'),
 )
 const MailboxRestores = React.lazy(() => import('src/views/email-exchange/tools/MailboxRestores'))
+const Mailtest = React.lazy(() => import('src/views/email-exchange/tools/MailTest'))
 
 const routes = [
   // { path: '/', exact: true, name: 'Home' },
@@ -610,6 +612,11 @@ const routes = [
     path: '/email/tools/mailbox-restores',
     name: 'Mailbox Restores',
     component: MailboxRestores,
+  },
+  {
+    path: '/email/tools/mail-test',
+    name: 'Mail Test',
+    component: MailTest,
   },
   {
     path: '/email/spamfilter/add-template',

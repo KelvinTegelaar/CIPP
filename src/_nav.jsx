@@ -622,6 +622,11 @@ const _nav = [
         name: 'Mailbox Restores',
         to: '/email/tools/mailbox-restores',
       },
+      {
+        component: CNavItem,
+        name: 'Mail Test',
+        to: '/email/tools/mail-test',
+      },
     ],
   },
   {
