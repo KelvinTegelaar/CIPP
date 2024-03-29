@@ -1,4 +1,5 @@
 import { CButton, CSpinner } from '@coreui/react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 import { CippCallout, CippPageList } from 'src/components/layout'
 import { cellBooleanFormatter, cellDateFormatter } from 'src/components/tables'
@@ -96,8 +97,8 @@ const MailTest = () => {
           {configQuery.data?.HasMailRead == false && (
             <>
               Permission Check: {configQuery.data?.Message}{' '}
-              <CButton size="sm" onClick={() => handleConfigRetry()}>
-                Retry
+              <CButton size="sm" className="ms-2" onClick={() => handleConfigRetry()}>
+                {configQuery.isLoading ? <CSpinner /> : <FontAwesomeIcon icon="sync" />} Retry
               </CButton>
             </>
           )}
