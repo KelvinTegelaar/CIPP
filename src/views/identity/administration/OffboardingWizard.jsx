@@ -129,6 +129,17 @@ const OffboardingWizard = () => {
             name="User"
           />
           {usersError && <span>Failed to load list of users</span>}
+          <FormSpy>
+            {/* eslint-disable react/prop-types */}
+            {(props) => (
+              <>
+                {console.log(props.values)}
+                {props.values.User?.length >= 3 && (
+                  <CCallout color="warning">A maximum of three users is recommend.</CCallout>
+                )}
+              </>
+            )}
+          </FormSpy>
         </div>
         <hr className="my-4" />
       </CippWizard.Page>
