@@ -74,7 +74,7 @@ const OffboardingWizard = () => {
       RemoveLicenses: values.RemoveLicenses,
       ResetPass: values.ResetPass,
       RevokeSessions: values.RevokeSessions,
-      user: values.User.value,
+      user: values.User,
       deleteuser: values.DeleteUser,
       removeRules: values.RemoveRules,
       removeMobile: values.RemoveMobile,
@@ -119,6 +119,7 @@ const OffboardingWizard = () => {
         <hr className="my-4" />
         <div className="mb-2">
           <RFFSelectSearch
+            multi
             label={'Users in ' + tenantDomain}
             values={users?.map((user) => ({
               value: user.userPrincipalName,
@@ -278,10 +279,16 @@ const OffboardingWizard = () => {
                           <h5 className="mb-0">Selected Tenant:</h5>
                           {tenantDomain}
                         </CListGroupItem>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          <h5 className="mb-0">Selected User:</h5>
-                          {props.values.User.value}
-                        </CListGroupItem>
+
+                        {props.values.User.map((user) => (
+                          <CListGroupItem
+                            key={user.value}
+                            className="d-flex justify-content-between align-items-center"
+                          >
+                            <h5 className="mb-0">Selected User:</h5>
+                            {user.value}
+                          </CListGroupItem>
+                        ))}
                       </CListGroup>
                       <hr />
                     </CCol>
