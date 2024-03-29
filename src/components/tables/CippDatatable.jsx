@@ -6,13 +6,25 @@ import { CippTablePropTypes } from 'src/components/tables/CippTable'
 import { CCallout } from '@coreui/react'
 
 export default function CippDatatable({ path, params, ...rest }) {
-  const [refreshGuid, setRefreshGuid] = React.useState('')
   const [graphFilter, setGraphFilter] = React.useState(params?.Parameters?.$filter)
   const {
     data = [],
     isFetching,
     error,
-  } = useListDatatableQuery({ path, params: { refreshGuid, $filter: graphFilter, ...params } })
+    refetch,
+  } = useListDatatableQuery({ path, params: { $filter: graphFilter, ...params } })
+
+  let anonimized = false // Assuming default value is false
+  const regex = new RegExp('^[A-Z0-9]+$')
+  const principalNameOrUPN =
+    data[0]?.userPrincipalName ??
+    data[0]?.UPN ??
+    data.Results?.[0]?.upn ??
+    data.Results?.[0]?.userPrincipalName
+
+  if (principalNameOrUPN && regex.test(principalNameOrUPN)) {
+    anonimized = true
+  }
 
   var defaultFilterText = ''
   if (params?.Parameters?.$filter) {
@@ -20,14 +32,27 @@ export default function CippDatatable({ path, params, ...rest }) {
   }
   return (
     <>
+      {anonimized && (
+        <CCallout color="info">
+          This table might contain anonymized data. Please check this
+          <a
+            className="m-1"
+            href="https://docs.cipp.app/troubleshooting/frequently-asked-questions#my-usernames-or-sites-are-guids-or-blank"
+          >
+            documentation link
+          </a>
+          to resolve this.
+        </CCallout>
+      )}
       {data?.Metadata?.Queued && <CCallout color="info">{data?.Metadata?.QueueMessage}</CCallout>}
       <CippTable
         {...rest}
+        endpointName={path}
         data={Array.isArray(data?.Results) ? data?.Results : data}
         isFetching={isFetching}
         error={error}
         defaultFilterText={defaultFilterText}
-        refreshFunction={setRefreshGuid}
+        refreshFunction={() => refetch()}
         graphFilterFunction={setGraphFilter}
       />
     </>
