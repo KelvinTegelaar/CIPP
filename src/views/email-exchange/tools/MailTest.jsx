@@ -1,3 +1,4 @@
+import { CButton, CSpinner } from '@coreui/react'
 import React from 'react'
 import { CippCallout, CippPageList } from 'src/components/layout'
 import { cellBooleanFormatter, cellDateFormatter } from 'src/components/tables'
@@ -5,10 +6,14 @@ import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 import { useGenericGetRequestQuery } from 'src/store/api/app'
 
 const MailTest = () => {
-  const { data: config, isSuccess } = useGenericGetRequestQuery({
+  const configQuery = useGenericGetRequestQuery({
     path: '/api/ExecMailTest',
     params: { Action: 'CheckConfig' },
   })
+
+  function handleConfigRetry() {
+    configQuery.refetch()
+  }
 
   const columns = [
     {
@@ -73,14 +78,33 @@ const MailTest = () => {
   ]
   return (
     <div>
-      {isSuccess && (
-        <CippCallout color={config?.HasMailRead ? 'info' : 'warning'} dismissible={true}>
-          {config?.HasMailRead &&
-            'Mail Test Email: ' + config?.MailAddresses.filter((x) => x?.IsPrimary)[0]?.Address}
-          {config?.HasMailRead == false && 'Permission Check: ' + config?.Message}
+      {configQuery.isSuccess && (
+        <CippCallout color={configQuery.data?.HasMailRead ? 'info' : 'warning'} dismissible={true}>
+          {configQuery.data?.HasMailRead && (
+            <>
+              <b>Mail test email: </b>
+              <a
+                href={
+                  'mailto:' +
+                  configQuery.data?.MailAddresses.filter((x) => x?.IsPrimary)[0]?.Address
+                }
+              >
+                {configQuery.data?.MailAddresses.filter((x) => x?.IsPrimary)[0]?.Address}
+              </a>
+            </>
+          )}
+          {configQuery.data?.HasMailRead == false && (
+            <>
+              Permission Check: {configQuery.data?.Message}{' '}
+              <CButton size="sm" onClick={() => handleConfigRetry()}>
+                Retry
+              </CButton>
+            </>
+          )}
         </CippCallout>
       )}
-      {isSuccess && config?.HasMailRead === true && (
+      {configQuery.isLoading && <CSpinner />}
+      {configQuery.isSuccess && configQuery.data?.HasMailRead === true && (
         <CippPageList
           capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
           title="Mail Test"
