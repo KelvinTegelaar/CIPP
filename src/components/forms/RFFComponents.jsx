@@ -14,7 +14,7 @@ import Select from 'react-select'
 import Creatable, { useCreatable } from 'react-select/creatable'
 import { Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
-import React, { useState, useMemo, useRef } from 'react'
+import React, { useState, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { debounce } from 'lodash-es'
@@ -37,6 +37,7 @@ const sharedPropTypes = {
       error: PropTypes.any,
     }),
   }),
+  onClick: PropTypes.func,
 }
 
 export const RFFCFormFeedback = ({ meta }) => {
@@ -54,7 +55,14 @@ RFFCFormFeedback.propTypes = {
   }),
 }
 
-export const RFFCFormCheck = ({ name, label, className = 'mb-3', validate, disabled = false }) => {
+export const RFFCFormCheck = ({
+  name,
+  label,
+  className = 'mb-3',
+  validate,
+  disabled = false,
+  onClick,
+}) => {
   return (
     <Field name={name} type="checkbox" validate={validate}>
       {({ input, meta }) => (
@@ -67,6 +75,7 @@ export const RFFCFormCheck = ({ name, label, className = 'mb-3', validate, disab
             disabled={disabled}
             id={name}
             label={label}
+            onClick={onClick}
           />
           <RFFCFormFeedback meta={meta} />
         </div>
@@ -92,6 +101,7 @@ export const RFFCFormSwitch = ({
   validate,
   disabled = false,
   initialValue,
+  onClick,
 }) => {
   return (
     <Field initialValue={initialValue} name={name} type="checkbox" validate={validate}>
@@ -113,6 +123,7 @@ export const RFFCFormSwitch = ({
               disabled={disabled}
               id={name}
               label={label}
+              onClick={onClick}
             />
             {input.value && <RFFCFormFeedback meta={meta} />}
             <sub>{sublabel}</sub>
@@ -239,6 +250,7 @@ export const RFFCFormRadio = ({
   className = 'mb-3',
   validate,
   disabled = false,
+  onClick,
 }) => {
   return (
     <Field name={name} type="radio" value={value} validate={validate}>
@@ -252,6 +264,7 @@ export const RFFCFormRadio = ({
             type="radio"
             name={name}
             label={label}
+            onClick={onClick}
           />
           <RFFCFormFeedback meta={meta} />
         </div>
