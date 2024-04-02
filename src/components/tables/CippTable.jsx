@@ -33,12 +33,11 @@ import {
 import { cellGenericFormatter } from './CellGenericFormat'
 import { ModalService } from '../utilities'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
-import { debounce, update } from 'lodash-es'
+import { debounce } from 'lodash-es'
 import { useSearchParams } from 'react-router-dom'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { setDefaultColumns } from 'src/store/features/app'
-import { end } from '@popperjs/core'
-import { current } from '@reduxjs/toolkit'
+import M365Licenses from 'src/data/M365Licenses'
 
 const FilterComponent = ({ filterText, onFilter, onClear, filterlist, onFilterPreset }) => (
   <>
@@ -278,28 +277,29 @@ export default function CippTable({
       debounceSetGraphFilter(query)
       return data
     } else if (filterText.startsWith('Complex:')) {
-      const conditions = filterText.slice(9).split(';')
+      // Split conditions by ';' and 'or', and trim spaces
+      const conditions = filterText
+        .slice(9)
+        .split(/\s*or\s*|\s*;\s*/i) // Split by 'or' or ';', case insensitive, with optional spaces
+        .map((condition) => condition.trim())
 
-      return conditions.reduce((filteredData, condition) => {
-        const match = condition.trim().match(/(\w+)\s*(eq|ne|like|notlike|gt|lt)\s*(.+)/)
+      return data.filter((item) => {
+        // Check if any condition is met for the item
+        return conditions.some((condition) => {
+          const match = condition.match(/(\w+)\s*(eq|ne|like|notlike|gt|lt)\s*(.+)/)
 
-        if (!match) {
-          return filteredData // Keep the current filtered data as is
-        }
+          if (!match) return false
 
-        let [property, operator, value] = match.slice(1)
-        value = escapeRegExp(value) // Escape special characters
+          let [property, operator, value] = match.slice(1)
+          value = escapeRegExp(value) // Escape special characters
 
-        return filteredData.filter((item) => {
-          // Find the actual key in the item that matches the property (case insensitive)
           const actualKey = Object.keys(item).find(
             (key) => key.toLowerCase() === property.toLowerCase(),
           )
 
           if (!actualKey) {
-            //set the error message so the user understands the key is not found.
             console.error(`FilterError: Property "${property}" not found.`)
-            return false // Keep the item if the property is not found
+            return false
           }
 
           switch (operator) {
@@ -316,10 +316,10 @@ export default function CippTable({
             case 'lt':
               return parseFloat(item[actualKey]) < parseFloat(value)
             default:
-              return true
+              return false // Should not reach here normally
           }
         })
-      }, data)
+      })
     } else {
       return data.filter(
         (item) => JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !== -1,
@@ -327,6 +327,8 @@ export default function CippTable({
     }
   }
 
+  // Helper functions like `debounce` and `escapeRegExp` should be defined somewhere in your code
+  // For example, a simple escapeRegExp function could be:
   const filteredItems = Array.isArray(data) ? filterData(data, filterText) : []
 
   const applyFilter = (e) => {

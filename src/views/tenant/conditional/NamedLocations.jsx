@@ -58,7 +58,6 @@ const columns = [
     name: 'Last Modified (Local)',
     selector: (row) => DateNotNull(row['modifiedDateTime']),
     sortable: true,
-    cell: cellDateFormatter(),
     exportSelector: 'modifiedDateTime',
     maxWidth: '150px',
   },
