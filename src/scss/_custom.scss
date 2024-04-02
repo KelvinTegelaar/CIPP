@@ -1,5 +1,106 @@
 @use 'sass:color';
+.custom-switch-wrapper {
+  position: relative;
+  display: inline-block;
+}
+body {
+  overflow-y: scroll; // Always show vertical scrollbar
+}
+.image-upload-container {
+  position: relative;
+  width: 100px; /* Adjusted to match the image */
+  height: 120px; /* Adjusted to match the image */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
+.upload-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  object-fit: cover; /* Ensures the image covers the area without stretching */
+}
+
+.image-upload-overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  transition: 0.5s ease;
+  background-color: var(--cyberdrain-secondary);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.image-upload-container:hover .image-upload-overlay {
+  opacity: 0.8;
+}
+
+.overlay-text {
+  color: white;
+  font-size: 20px;
+}
+
+.circular-button {
+  border-radius: 50% !important;
+  width: 35px;
+  height: 35px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-right: 1rem;
+}
+
+.round-focus {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(0, 0, 21, 0.075),
+    0 0 0 0.25rem var(--cui-btn-shadow);
+}
+
+.circular-button.active {
+  background-color: #4caf50;
+  color: #ffffff;
+}
+.circular-button.default {
+  background-color: var(--cui-primary);
+  color: var(--text-primary);
+}
+
+.circular-button.cyberdrain {
+  background-color: var(--cyberdrain-accent-beige);
+  color: var(--text-primary);
+}
+
+.circular-button.impact {
+  background-color: var(--cyberdrain-secondary);
+  color: var(--text-primary);
+}
+
+h3.underline:after {
+  background: none repeat scroll 0 0 var(--cipp-table-context-bg);
+  bottom: -13px;
+  content: '';
+  display: block;
+  height: 5px;
+  position: relative;
+  width: 2.5rem;
+}
+
+.switch-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none; /* Ensures the icon doesn't interfere with the switch toggle */
+  z-index: 1; /* Place the icon above the switch */
+}
 .sr-only {
   border: 0 !important;
   clip: rect(1px, 1px, 1px, 1px) !important;
@@ -200,10 +301,6 @@
   }
 }
 
-.cipp-offcanvastable {
-  font-size: smaller;
-}
-
 .dropdown-item {
   a {
     color: var(--cui-dropdown-link-color);
@@ -365,11 +462,12 @@
 }
 
 /* Footer */
+
 .footer {
   p {
     margin-bottom: 0;
   }
-
+  background: var(--cui-body-bg);
   img {
     max-height: 2rem;
   }
@@ -448,11 +546,9 @@
 }
 
 .wrapper.d-flex.flex-column.min-vh-100 {
+  //full width -20px for scrollbar bouncing
   background-color: var(--cui-color-gray-1) !important;
-  padding-top: 30px;
-  min-height: calc(100vh - 84px) !important;
   z-index: 2;
-
   // .body.flex-grow-1.px-xl-3>.container-fluid>div>div{
   //   background: var(--cui-color-white) !important;
   //   padding: 20px 30px;
@@ -546,15 +642,9 @@
 .sidebar-brand {
   background: none;
   .sidebar-brand-full {
-    margin-left: 30px;
-    height: 50px;
+    margin: 15px;
     transform: scale(1.5);
   }
-}
-
-.sidebar.sidebar-fixed {
-  margin-top: 69px;
-  height: calc(100vh - 69px);
 }
 .wrapper.d-flex.flex-column.min-vh-100 .card {
   margin-bottom: 0px;
