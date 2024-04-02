@@ -23,6 +23,7 @@ export const useNavFavouriteCheck = (navigation) => {
           }
         }),
       },
+      { component: CNavTitle, name: 'Dashboard' },
       ...navigation,
     ]
     return newNavigation
