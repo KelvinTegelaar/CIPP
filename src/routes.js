@@ -1,12 +1,16 @@
 import React from 'react'
+import MailTest from 'src/views/email-exchange/tools/MailTest'
 
 const Home = React.lazy(() => import('src/views/home/Home'))
 const Logs = React.lazy(() => import('src/views/cipp/Logs'))
 const Scheduler = React.lazy(() => import('src/views/cipp/Scheduler'))
+const Statistics = React.lazy(() => import('src/views/cipp/Statistics'))
 const Users = React.lazy(() => import('src/views/identity/administration/Users'))
 const DeletedItems = React.lazy(() => import('src/views/identity/administration/Deleted'))
 const ViewBEC = React.lazy(() => import('src/views/identity/administration/ViewBEC'))
 const AddUser = React.lazy(() => import('src/views/identity/administration/AddUser'))
+const AddUserBulk = React.lazy(() => import('src/views/identity/administration/AddUserBulk'))
+
 const InviteGuest = React.lazy(() => import('src/views/identity/administration/InviteGuest'))
 const EditUser = React.lazy(() => import('src/views/identity/administration/EditUser'))
 const ViewUser = React.lazy(() => import('src/views/identity/administration/ViewUser'))
@@ -30,6 +34,8 @@ const EditGroup = React.lazy(() => import('src/views/identity/administration/Edi
 const ViewGroup = React.lazy(() => import('src/views/identity/administration/ViewGroup'))
 const Roles = React.lazy(() => import('src/views/identity/administration/Roles'))
 const Devices = React.lazy(() => import('src/views/endpoint/intune/Devices'))
+const allDevices = React.lazy(() => import('src/views/identity/administration/Devices'))
+
 const PageLogOut = React.lazy(() => import('src/views/pages/LogoutRedirect/PageLogOut'))
 
 const Page404 = React.lazy(() => import('src/views/pages/page404/Page404'))
@@ -125,6 +131,12 @@ const AutopilotListStatusPages = React.lazy(() =>
   import('src/views/endpoint/autopilot/AutopilotListStatusPages'),
 )
 const IntuneListPolicies = React.lazy(() => import('src/views/endpoint/intune/MEMListPolicies'))
+const IntuneListCompliance = React.lazy(() => import('src/views/endpoint/intune/MEMListCompliance'))
+
+const IntuneListAppProtection = React.lazy(() =>
+  import('src/views/endpoint/intune/MEMListAppProtection'),
+)
+
 const MEMEditPolicy = React.lazy(() => import('src/views/endpoint/intune/MEMEditPolicy'))
 
 const IntuneCAPolicies = React.lazy(() => import('src/views/endpoint/intune/MEMCAPolicies'))
@@ -236,18 +248,25 @@ const MailboxRestoreWizard = React.lazy(() =>
   import('src/views/email-exchange/tools/MailboxRestoreWizard'),
 )
 const MailboxRestores = React.lazy(() => import('src/views/email-exchange/tools/MailboxRestores'))
+const Mailtest = React.lazy(() => import('src/views/email-exchange/tools/MailTest'))
 
 const routes = [
   // { path: '/', exact: true, name: 'Home' },
   { path: '/home', name: 'Home', component: Home },
   { path: '/cipp/logs', name: 'Logs', component: Logs },
   { path: '/cipp/scheduler', name: 'Scheduler', component: Scheduler },
-
+  { path: '/cipp/statistics', name: 'Statistics', component: Statistics },
   { path: '/cipp/404', name: 'Error', component: Page404 },
   { path: '/cipp/403', name: 'Error', component: Page403 },
   { path: '/cipp/500', name: 'Error', component: Page500 },
   { path: '/identity', name: 'Identity' },
   { path: '/identity/administration/users/add', name: 'Add User', component: AddUser },
+  {
+    path: '/identity/administration/users/addbulk',
+    name: 'Add User Bulk',
+    component: AddUserBulk,
+  },
+
   { path: '/identity/administration/users/edit', name: 'Edit User', component: EditUser },
   { path: '/identity/administration/users/view', name: 'View User', component: ViewUser },
   {
@@ -258,6 +277,8 @@ const routes = [
   { path: '/identity/administration/ViewBec', name: 'View BEC', component: ViewBEC },
   { path: '/identity/administration', name: 'Administration' },
   { path: '/identity/administration/users', name: 'Users', component: Users },
+  { path: '/identity/administration/devices', name: 'Devices', component: allDevices },
+
   { path: '/identity/administration/groups/add', name: 'Add Group', component: AddGroup },
   {
     path: '/identity/administration/group-templates',
@@ -468,7 +489,22 @@ const routes = [
     component: AutopilotListStatusPages,
   },
   { path: '/endpoint/MEM', name: 'MEM' },
-  { path: '/endpoint/MEM/list-policies', name: 'List MEM Policies', component: IntuneListPolicies },
+  {
+    path: '/endpoint/MEM/list-policies',
+    name: 'List Intune Policies',
+    component: IntuneListPolicies,
+  },
+  {
+    path: '/endpoint/MEM/list-compliance-policies',
+    name: 'List Intune Compliance Policies',
+    component: IntuneListCompliance,
+  },
+  {
+    path: '/endpoint/MEM/list-appprotection-policies',
+    name: 'List App Protection Policies',
+    component: IntuneListAppProtection,
+  },
+
   { path: '/endpoint/MEM/edit-policy', name: 'Edit MEM Policy', component: MEMEditPolicy },
   { path: '/endpoint/MEM/ca-policies', name: 'List Status Pages', component: IntuneCAPolicies },
   { path: '/endpoint/MEM/add-policy', name: 'Add Intune Policy', component: IntuneAddPolicy },
@@ -576,6 +612,11 @@ const routes = [
     path: '/email/tools/mailbox-restores',
     name: 'Mailbox Restores',
     component: MailboxRestores,
+  },
+  {
+    path: '/email/tools/mail-test',
+    name: 'Mail Test',
+    component: MailTest,
   },
   {
     path: '/email/spamfilter/add-template',
