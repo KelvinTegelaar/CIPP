@@ -21,7 +21,11 @@ export default function cellTable(
   }
 
   if (!Array.isArray(columnProp) && typeof columnProp === 'object') {
-    columnProp = [columnProp]
+    columnProp = Object.keys(columnProp).map((key) => {
+      return {
+        [key]: columnProp[key],
+      }
+    })
   }
 
   if (Array.isArray(columnProp) && typeof columnProp[0] !== 'object') {
