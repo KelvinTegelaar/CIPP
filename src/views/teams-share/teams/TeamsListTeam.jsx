@@ -62,6 +62,7 @@ const TeamsList = () => {
       name: 'ID',
       selector: (row) => row['id'],
       omit: true,
+      exportSelector: 'id',
     },
     {
       name: 'Actions',

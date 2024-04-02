@@ -7,6 +7,7 @@ import CippContentCard from 'src/components/layout/CippContentCard'
 import { CippMasonry, CippMasonryItem } from 'src/components/layout/CippMasonry'
 import { CippPage, CippPageList } from 'src/components/layout/CippPage'
 import CippWizard from 'src/components/layout/CippWizard'
+import { CippCallout } from 'src/components/layout/CippCallout.jsx'
 
 export {
   AppBreadcrumb,
@@ -19,5 +20,6 @@ export {
   CippMasonryItem,
   CippPage,
   CippPageList,
+  CippCallout,
   CippWizard,
 }

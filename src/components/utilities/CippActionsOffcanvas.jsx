@@ -215,8 +215,10 @@ export default function CippActionsOffcanvas(props) {
     cardContent = props.cards.map((action, index) => (
       <>
         <CCard key={index} className="border-top-dark border-top-3 mb-3">
-          <CCardBody>
+          <CCardHeader className="d-flex justify-content-between align-items-center">
             <CCardTitle>Report Name: {action.label}</CCardTitle>
+          </CCardHeader>
+          <CCardBody>
             <CCardText>
               {action.value && <Link to={action.link}>Status: {action.value}</Link>}
             </CCardText>
@@ -325,15 +327,16 @@ export default function CippActionsOffcanvas(props) {
       {getResults.isError && (
         <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
       )}
-
-      <CCard className="content-card">
-        <CCardHeader className="d-flex justify-content-between align-items-center">
-          <CCardTitle>
-            <FontAwesomeIcon icon={faGlobe} className="mx-2" /> Extended Information
-          </CCardTitle>
-        </CCardHeader>
-        <CCardBody>{extendedInfoContent}</CCardBody>
-      </CCard>
+      {!cardContent && (
+        <CCard className="content-card">
+          <CCardHeader className="d-flex justify-content-between align-items-center">
+            <CCardTitle>
+              <FontAwesomeIcon icon={faGlobe} className="mx-2" /> Extended Information
+            </CCardTitle>
+          </CCardHeader>
+          <CCardBody>{extendedInfoContent}</CCardBody>
+        </CCard>
+      )}
       {cardContent && cardContent}
       {<COffcanvasTitle>Actions</COffcanvasTitle>}
       <CListGroup>

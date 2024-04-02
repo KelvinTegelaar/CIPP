@@ -68,7 +68,7 @@ const Statistics = () => {
   const { data, isFetching, error, isSuccess } = useGenericGetRequestQuery({
     path: '/api/ListFunctionStats',
     params: {
-      FunctionType: 'Queue',
+      FunctionType: 'Durable',
       Interval: interval,
       Time: time,
       TenantFilter: tenant?.defaultDomainName,

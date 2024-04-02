@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import {
-  CBadge,
   CButton,
   CCallout,
   CCard,
@@ -8,127 +7,107 @@ import {
   CCardHeader,
   CCardTitle,
   CCol,
-  CDropdown,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
   CForm,
-  CFormLabel,
-  CListGroup,
-  CListGroupItem,
-  CProgress,
   CRow,
   CSpinner,
-  CTooltip,
 } from '@coreui/react'
-import useQuery from 'src/hooks/useQuery'
 import { useDispatch, useSelector } from 'react-redux'
-import { Field, Form, FormSpy } from 'react-final-form'
-import {
-  Condition,
-  RFFCFormCheck,
-  RFFCFormInput,
-  RFFCFormRadio,
-  RFFCFormSwitch,
-  RFFCFormTextarea,
-  RFFSelectSearch,
-} from 'src/components/forms'
-import countryList from 'src/data/countryList'
+import { Form } from 'react-final-form'
+import { RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms'
 
-import {
-  useGenericGetRequestQuery,
-  useLazyGenericGetRequestQuery,
-  useLazyGenericPostRequestQuery,
-} from 'src/store/api/app'
+import { useGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleNotch, faEdit, faEye } from '@fortawesome/free-solid-svg-icons'
-import { CippContentCard, CippPage, CippPageList } from 'src/components/layout'
-import { password } from 'src/validators'
-import {
-  CellDate,
-  CellDelegatedPrivilege,
-  cellBadgeFormatter,
-  cellBooleanFormatter,
-  cellDateFormatter,
-} from 'src/components/tables'
-import { CellTip, cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
-import DatePicker from 'react-datepicker'
+
 import 'react-datepicker/dist/react-datepicker.css'
 import TenantListSelector from 'src/components/utilities/TenantListSelector'
-import {
-  ModalService,
-  PageSizeSwitcher,
-  TenantSelector,
-  ThemeSwitcher,
-  UsageLocation,
-} from 'src/components/utilities'
-import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
+import { PageSizeSwitcher, ThemeSwitcher, UsageLocation } from 'src/components/utilities'
 import ReportImage from 'src/components/utilities/ReportImage'
 import { useLoadClientPrincipalQuery } from 'src/store/api/auth'
-import { setOffboardingDefaults } from 'src/store/features/app'
-
-const Offcanvas = (row, rowIndex, formatExtraData) => {
-  const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
-  const [ocVisible, setOCVisible] = useState(false)
-
-  const handleDeleteSchedule = (apiurl, message) => {
-    ModalService.confirm({
-      title: 'Confirm',
-      body: <div>{message}</div>,
-      onConfirm: () => ExecuteGetRequest({ path: apiurl }),
-      confirmLabel: 'Continue',
-      cancelLabel: 'Cancel',
-    })
-  }
-  let jsonResults
-  try {
-    jsonResults = JSON.parse(row.Results)
-  } catch (error) {
-    jsonResults = row.Results
-  }
-
-  return (
-    <>
-      <CTooltip content="View Results">
-        <CButton size="sm" color="success" variant="ghost" onClick={() => setOCVisible(true)}>
-          <FontAwesomeIcon icon={'eye'} href="" />
-        </CButton>
-      </CTooltip>
-      <CTooltip content="Delete task">
-        <CButton
-          onClick={() =>
-            handleDeleteSchedule(
-              `/api/RemoveScheduledItem?&ID=${row.RowKey}`,
-              'Do you want to delete this job?',
-            )
-          }
-          size="sm"
-          variant="ghost"
-          color="danger"
-        >
-          <FontAwesomeIcon icon={'trash'} href="" />
-        </CButton>
-      </CTooltip>
-      <CippCodeOffCanvas
-        hideButton
-        title="Results"
-        row={jsonResults}
-        state={ocVisible}
-        type="TemplateResults"
-        hideFunction={() => setOCVisible(false)}
-      />
-    </>
-  )
-}
+import { setUserSettingsDefaults } from 'src/store/features/app'
+import { CippCallout } from 'src/components/layout'
 
 const UserSettings = () => {
+  const tenant = useSelector((state) => state.app.currentTenant)
+  const [addedAttributes, setAddedAttribute] = React.useState(0)
+  const [random3, setRandom3] = useState('')
+  const availableProperties = useGenericGetRequestQuery({
+    path: '/api/ListGraphRequest',
+    params: {
+      Endpoint: 'users',
+      ListProperties: true,
+      TenantFilter: tenant.defaultDomainName,
+      IgnoreErrors: true,
+    },
+  })
+  const exclusionList = [
+    'id',
+    'accountEnabled',
+    'deletedDateTime',
+    'ageGroup',
+    'businessPhones',
+    'city',
+    'createdDateTime',
+    'creationType',
+    'companyName',
+    'country',
+    'department',
+    'displayName',
+    'givenName',
+    'imAddresses',
+    'infoCatalogs',
+    'isLicenseReconciliationNeeded',
+    'isManagementRestricted',
+    'isResourceAccount',
+    'jobTitle',
+    'mail',
+    'mailNickname',
+    'mobilePhone',
+    'onPremisesDistinguishedName',
+    'onPremisesDomainName',
+    'onPremisesImmutableId',
+    'onPremisesLastSyncDateTime',
+    'onPremisesObjectIdentifier',
+    'onPremisesSecurityIdentifier',
+    'onPremisesSamAccountName',
+    'onPremisesSyncEnabled',
+    'onPremisesUserPrincipalName',
+    'passwordPolicies',
+    'postalCode',
+    'preferredDataLocation',
+    'preferredLanguage',
+    'proxyAddresses',
+    'refreshTokensValidFromDateTime',
+    'securityIdentifier',
+    'signInSessionsValidFromDateTime',
+    'streetAddress',
+    'surname',
+    'usageLocation',
+    'userPrincipalName',
+    'externalUserConvertedOn',
+    'externalUserState',
+    'externalUserStateChangeDateTime',
+    'userType',
+    'employeeOrgData',
+    'assignedLicenses',
+    'assignedPlans',
+    'authorizationInfo',
+    'cloudRealtimeCommunicationInfo',
+    'deviceKeys',
+    'identities',
+    'onPremisesExtensionAttributes',
+    'onPremisesProvisioningErrors',
+    'onPremisesSipInfo',
+    'passwordProfile',
+    'provisionedPlans',
+    'serviceProvisioningErrors',
+  ]
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const { data: profile, isFetching, isLoading } = useLoadClientPrincipalQuery()
   const dispatch = useDispatch()
   const currentSettings = useSelector((state) => state.app)
 
   const onSubmit = (values) => {
-    dispatch(setOffboardingDefaults({ offboardingDefaults: values }))
+    dispatch(setUserSettingsDefaults({ userSettingsDefaults: values }))
     const shippedvalues = {
       user: values.user,
       currentSettings: currentSettings,
@@ -152,7 +131,7 @@ const UserSettings = () => {
             </CCardHeader>
             <CCardBody>
               <Form
-                initialValues={{ ...currentSettings.offboardingDefaults }}
+                initialValues={{ ...currentSettings.userSettingsDefaults }}
                 onSubmit={onSubmit}
                 render={({ handleSubmit, form, submitting, values }) => {
                   return (
@@ -202,6 +181,51 @@ const UserSettings = () => {
                         </CCol>
                       </CRow>
                       <CRow className="mb-3">
+                        <h3 className="underline mb-5">New User Attribute Defaults</h3>
+                        <div className="mb-3">
+                          <RFFSelectSearch
+                            name="defaultAttributes"
+                            label="Select the attributes you want as defaults on the Add User or Edit User forms"
+                            placeholder="Select Attributes"
+                            retainInput={true}
+                            multi={true}
+                            values={
+                              availableProperties?.data?.Results?.filter(
+                                (prop) => !exclusionList.includes(prop),
+                              )?.map((prop) => ({
+                                name: prop,
+                                value: prop,
+                              })) ?? []
+                            }
+                            allowCreate={true}
+                            refreshFunction={() =>
+                              setRandom3((Math.random() + 1).toString(36).substring(7))
+                            }
+                            isLoading={availableProperties.isFetching}
+                          />
+                        </div>
+                        <CRow>
+                          <CCol className="mb-3" md={12}>
+                            {addedAttributes > 0 && (
+                              <CButton
+                                onClick={() => setAddedAttribute(addedAttributes - 1)}
+                                className={`circular-button`}
+                                title={'-'}
+                              >
+                                <FontAwesomeIcon icon={'minus'} />
+                              </CButton>
+                            )}
+                            <CButton
+                              onClick={() => setAddedAttribute(addedAttributes + 1)}
+                              className={`circular-button`}
+                              title={'+'}
+                            >
+                              <FontAwesomeIcon icon={'plus'} />
+                            </CButton>
+                          </CCol>
+                        </CRow>
+                      </CRow>
+                      <CRow className="mb-3">
                         <CCol className="mb-3" md={6}>
                           <CButton
                             onClick={() => {
@@ -211,7 +235,8 @@ const UserSettings = () => {
                             name="singleuser"
                             type="submit"
                           >
-                            Save Settings {submitting && <CSpinner size="sm" color="primary" />}
+                            Save Settings
+                            {postResults.isFetching && <CSpinner size="sm" />}
                           </CButton>
                           {
                             //if the role contains admin, show the all user button. //
@@ -225,12 +250,21 @@ const UserSettings = () => {
                                 type="submit"
                               >
                                 Save for all users
-                                {submitting && <CSpinner size="sm" color="primary" />}
+                                {postResults.isFetching && <CSpinner size="sm" />}
                               </CButton>
                             )
                           }
                         </CCol>
                       </CRow>
+                      {postResults.isError && (
+                        <CCallout color="danger">
+                          <h4>Error</h4>
+                          <p>{postResults.error.message}</p>
+                        </CCallout>
+                      )}
+                      {postResults.isSuccess && (
+                        <CippCallout color="success">{postResults.data[0]?.Results}</CippCallout>
+                      )}
                     </CForm>
                   )
                 }}
