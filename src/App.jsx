@@ -13,7 +13,7 @@ import routes from 'src/routes'
 import { useAuthCheck } from './components/utilities/CippauthCheck'
 
 library.add(fas)
-const dynamicImport = (path) => React.lazy(() => import(`./${path}`))
+const dynamicImport = (path) => React.lazy(() => import(`./${path}.jsx`))
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
 const Page401 = React.lazy(() => import('./views/pages/page401/Page401'))
 const Page403 = React.lazy(() => import('./views/pages/page403/Page403'))
