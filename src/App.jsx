@@ -13,7 +13,8 @@ import routes from 'src/routes'
 import { useAuthCheck } from './components/utilities/CippauthCheck'
 
 library.add(fas)
-const dynamicImport = (path) => React.lazy(() => import(`./${path}.jsx`))
+
+const dynamicImport = (path) => React.lazy(() => import(`./${path}`))
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
 const Page401 = React.lazy(() => import('./views/pages/page401/Page401'))
 const Page403 = React.lazy(() => import('./views/pages/page403/Page403'))
@@ -22,6 +23,14 @@ const Page500 = React.lazy(() => import('./views/pages/page500/Page500'))
 const PageLogOut = React.lazy(() => import('src/views/pages/LogoutRedirect/PageLogOut'))
 const Login = React.lazy(() => import('./views/pages/login/Login'))
 const Logout = React.lazy(() => import('./views/pages/login/Logout'))
+//we loop through the routes array, dynamicly create the component by using dynamicImport, add the component to the route array as 'component' key.
+
+routes.forEach((route) => {
+  if (route.component) {
+    route['component'] = dynamicImport(route.component)
+  }
+})
+
 const App = () => {
   return (
     <BrowserRouter>
@@ -46,10 +55,9 @@ const App = () => {
             }
           >
             {routes.map((route, idx) => {
-              const Component = dynamicImport(route.component)
               const allowedRoles = route.allowedRoles
               return (
-                Component && (
+                route.component && (
                   <Route
                     key={`route-${idx}`}
                     path={route.path}
@@ -62,7 +70,7 @@ const App = () => {
                             <title>CIPP - {route.name}</title>
                           </Helmet>
                           <ErrorBoundary key={route.name}>
-                            <Component />
+                            <route.component />
                           </ErrorBoundary>
                         </Suspense>
                       </PrivateRoute>
