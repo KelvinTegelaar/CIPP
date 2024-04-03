@@ -20,8 +20,17 @@ export default function cellTable(
     columnProp = column
   }
 
-  if (!Array.isArray(columnProp) && typeof columnProp === 'object') {
-    columnProp = [columnProp]
+  if (
+    !Array.isArray(columnProp) &&
+    typeof columnProp === 'object' &&
+    columnProp !== undefined &&
+    columnProp !== null
+  ) {
+    columnProp = Object.keys(columnProp).map((key) => {
+      return {
+        [key]: columnProp[key],
+      }
+    })
   }
 
   if (Array.isArray(columnProp) && typeof columnProp[0] !== 'object') {
