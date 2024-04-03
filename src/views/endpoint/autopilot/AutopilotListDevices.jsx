@@ -14,71 +14,73 @@ import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import { CellTip } from 'src/components/tables'
 import { TitleButton } from 'src/components/buttons'
 
-const AutopilotListDevices = () => {
+const OffCanvas = (row, index, column) => {
   const tenant = useSelector((state) => state.app.currentTenant)
-  const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
+
   const [ocVisible, setOCVisible] = useState(false)
 
-  const Actions = (row, index, column) => {
-    return (
-      <>
-        <CButton size="sm" color="link" onClick={() => setOCVisible(true)}>
-          <FontAwesomeIcon icon={faEllipsisV} />
-        </CButton>
-        <CippActionsOffcanvas
-          title="ExtendedInformation"
-          extendedInfo={[
-            {
-              label: 'Assigned User',
-              value: `${row.userPrincipalName ?? ' '}`,
+  return (
+    <>
+      <CButton size="sm" color="link" onClick={() => setOCVisible(true)}>
+        <FontAwesomeIcon icon={faEllipsisV} />
+      </CButton>
+      <CippActionsOffcanvas
+        title="ExtendedInformation"
+        extendedInfo={[
+          {
+            label: 'Assigned User',
+            value: `${row.userPrincipalName ?? ' '}`,
+          },
+          { label: 'Windows PKID', value: `${row.productKey ?? ' '}` },
+          { label: 'Serial', value: `${row.serialNumber ?? ' '}` },
+          { label: 'Model', value: `${row.model ?? ' '}` },
+          { label: 'Manufacturer', value: `${row.manufacturer ?? ' '}` },
+        ]}
+        actions={[
+          {
+            label: 'Assign device',
+            color: 'info',
+            modal: true,
+            modalType: 'POST',
+            modalBody: {
+              username: row.userPrincipalName,
+              userid: row.id,
+              TenantFilter: tenant.defaultDomainName,
+              message: row.message,
+              Device: row.id,
             },
-            { label: 'Windows PKID', value: `${row.productKey ?? ' '}` },
-            { label: 'Serial', value: `${row.serialNumber ?? ' '}` },
-            { label: 'Model', value: `${row.model ?? ' '}` },
-            { label: 'Manufacturer', value: `${row.manufacturer ?? ' '}` },
-          ]}
-          actions={[
-            {
-              label: 'Assign device',
-              color: 'info',
-              modal: true,
-              modalType: 'POST',
-              modalBody: {
-                username: row.userPrincipalName,
-                userid: row.id,
-                TenantFilter: tenant.defaultDomainName,
-                message: row.message,
-                Device: row.id,
+            modalUrl: `/api/ExecAssignAPDevice`,
+            modalDropdown: {
+              url: `/api/listUsers?TenantFilter=${tenant.defaultDomainName}`,
+              labelField: 'userPrincipalName',
+              valueField: 'id',
+              addedField: {
+                userPrincipalName: 'userPrincipalName',
+                addressableUserName: 'displayName',
+                groupName: 'displayName',
               },
-              modalUrl: `/api/ExecAssignAPDevice`,
-              modalDropdown: {
-                url: `/api/listUsers?TenantFilter=${tenant.defaultDomainName}`,
-                labelField: 'userPrincipalName',
-                valueField: 'id',
-                addedField: {
-                  userPrincipalName: 'userPrincipalName',
-                  addressableUserName: 'displayName',
-                  groupName: 'displayName',
-                },
-              },
-              modalMessage: 'Select the user to assign',
             },
-            {
-              label: 'Delete Device',
-              color: 'danger',
-              modal: true,
-              modalUrl: `/api/RemoveAPDevice?ID=${row.id}&tenantFilter=${tenant.defaultDomainName}`,
-              modalMessage: 'Are you sure you want to delete this device?',
-            },
-          ]}
-          placement="end"
-          visible={ocVisible}
-          id={row.id}
-          hideFunction={() => setOCVisible(false)}
-        />
-      </>
-    )
-  }
+            modalMessage: 'Select the user to assign',
+          },
+          {
+            label: 'Delete Device',
+            color: 'danger',
+            modal: true,
+            modalUrl: `/api/RemoveAPDevice?ID=${row.id}&tenantFilter=${tenant.defaultDomainName}`,
+            modalMessage: 'Are you sure you want to delete this device?',
+          },
+        ]}
+        placement="end"
+        visible={ocVisible}
+        id={row.id}
+        hideFunction={() => setOCVisible(false)}
+      />
+    </>
+  )
+}
+const AutopilotListDevices = () => {
+  const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
+  const tenant = useSelector((state) => state.app.currentTenant)
 
   const columns = [
     {
@@ -124,8 +126,8 @@ const AutopilotListDevices = () => {
       exportSelector: 'enrollmentState',
     },
     {
-      name: (row) => row['Actions'],
-      cell: Actions,
+      name: 'Actions',
+      cell: OffCanvas,
     },
   ]
 
