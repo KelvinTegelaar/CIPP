@@ -14,6 +14,7 @@
   "license": "AGPL-3.0",
   "author": "CIPP Contributors",
   "scripts": {
+    "prebuild": "node Generate-Import-Map.js",
     "build": "echo react-scripts build && vite build",
     "changelog": "auto-changelog --starting-version 3.0.0 --commit-limit false --hide-credit",
     "lint": "eslint \"src/**/*.js\"",
