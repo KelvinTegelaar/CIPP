@@ -491,6 +491,14 @@ const ApplyNewStandard = () => {
                                                   className="mb-3"
                                                   name={component.name}
                                                   label={component.label}
+                                                  defaultValue={component.default}
+                                                />
+                                              )}
+                                              {component.type === 'boolean' && (
+                                                <RFFCFormSwitch
+                                                  name={component.name}
+                                                  label={component.label}
+                                                  initialValue={component.default}
                                                 />
                                               )}
                                               {component.type === 'AdminRolesMultiSelect' && (
