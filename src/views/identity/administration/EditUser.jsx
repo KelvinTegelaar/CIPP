@@ -107,7 +107,7 @@ const EditUser = () => {
       PostalCode: values.postalCode,
       usageLocation: values.usageLocation ? values.usageLocation.value : '',
       UserID: userId,
-      Username: values.mailNickname,
+      Username: values.username,
       streetAddress: values.streetAddress,
       tenantID: tenantDomain,
       mustchangepass: values.RequirePasswordChange,
@@ -222,7 +222,7 @@ const EditUser = () => {
                             <CCol lg={6} xs={12}>
                               <RFFCFormInput
                                 type="text"
-                                name="mailNickname"
+                                name="username"
                                 label="Edit Username"
                                 disabled={formDisabled}
                               />
