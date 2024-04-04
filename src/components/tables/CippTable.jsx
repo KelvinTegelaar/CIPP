@@ -33,11 +33,11 @@ import {
 import { cellGenericFormatter } from './CellGenericFormat'
 import { ModalService } from '../utilities'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
-import { debounce, update } from 'lodash-es'
+import { debounce } from 'lodash-es'
 import { useSearchParams } from 'react-router-dom'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { setDefaultColumns } from 'src/store/features/app'
-import { end } from '@popperjs/core'
+import M365Licenses from 'src/data/M365Licenses'
 
 const FilterComponent = ({ filterText, onFilter, onClear, filterlist, onFilterPreset }) => (
   <>
@@ -277,28 +277,29 @@ export default function CippTable({
       debounceSetGraphFilter(query)
       return data
     } else if (filterText.startsWith('Complex:')) {
-      const conditions = filterText.slice(9).split(';')
+      // Split conditions by ';' and 'or', and trim spaces
+      const conditions = filterText
+        .slice(9)
+        .split(/\s*or\s*|\s*;\s*/i) // Split by 'or' or ';', case insensitive, with optional spaces
+        .map((condition) => condition.trim())
 
-      return conditions.reduce((filteredData, condition) => {
-        const match = condition.trim().match(/(\w+)\s*(eq|ne|like|notlike|gt|lt)\s*(.+)/)
+      return data.filter((item) => {
+        // Check if any condition is met for the item
+        return conditions.some((condition) => {
+          const match = condition.match(/(\w+)\s*(eq|ne|like|notlike|gt|lt)\s*(.+)/)
 
-        if (!match) {
-          return filteredData // Keep the current filtered data as is
-        }
+          if (!match) return false
 
-        let [property, operator, value] = match.slice(1)
-        value = escapeRegExp(value) // Escape special characters
+          let [property, operator, value] = match.slice(1)
+          value = escapeRegExp(value) // Escape special characters
 
-        return filteredData.filter((item) => {
-          // Find the actual key in the item that matches the property (case insensitive)
           const actualKey = Object.keys(item).find(
             (key) => key.toLowerCase() === property.toLowerCase(),
           )
 
           if (!actualKey) {
-            //set the error message so the user understands the key is not found.
             console.error(`FilterError: Property "${property}" not found.`)
-            return false // Keep the item if the property is not found
+            return false
           }
 
           switch (operator) {
@@ -315,10 +316,10 @@ export default function CippTable({
             case 'lt':
               return parseFloat(item[actualKey]) < parseFloat(value)
             default:
-              return true
+              return false // Should not reach here normally
           }
         })
-      }, data)
+      })
     } else {
       return data.filter(
         (item) => JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !== -1,
@@ -326,6 +327,8 @@ export default function CippTable({
     }
   }
 
+  // Helper functions like `debounce` and `escapeRegExp` should be defined somewhere in your code
+  // For example, a simple escapeRegExp function could be:
   const filteredItems = Array.isArray(data) ? filterData(data, filterText) : []
 
   const applyFilter = (e) => {
@@ -630,74 +633,64 @@ export default function CippTable({
         return null
       })
 
-      var exportData = filteredItems
+      // Define the flatten function
+      const flatten = (obj, prefix = '') => {
+        return Object.keys(obj).reduce((output, key) => {
+          const newKey = prefix ? `${prefix}.${key}` : key
+          const value = obj[key] === null ? '' : obj[key]
 
-      var filtered =
-        Array.isArray(exportData) && exportData.length > 0
-          ? exportData.map((obj) =>
-              // eslint-disable-next-line no-sequences
-              /* keys.reduce((acc, curr) => ((acc[curr] = obj[curr]), acc), {}),*/
-              keys.reduce((acc, curr) => {
-                const key = curr.split('/')
-                if (key.length > 1) {
-                  let property = obj
-                  for (let x = 0; x < key.length; x++) {
-                    if (
-                      Object.prototype.hasOwnProperty.call(property, key[x]) &&
-                      property[key[x]] !== null
-                    ) {
-                      property = property[key[x]]
-                    } else {
-                      property = 'n/a'
-                      break
-                    }
-                  }
-                  acc[curr] = property
-                } else {
-                  if (typeof exportFormatter[curr] === 'function') {
-                    acc[curr] = exportFormatter[curr]({ cell: obj[curr] })
-                  } else {
-                    acc[curr] = obj[curr]
-                  }
-                }
-                return acc
-              }, {}),
-            )
-          : []
-
-      const flatten = (obj, prefix) => {
-        let output = {}
-        for (let k in obj) {
-          let val = obj[k]
-          if (val === null) {
-            val = ''
-          }
-          const newKey = prefix ? prefix + '.' + k : k
-          if (typeof val === 'object') {
-            if (Array.isArray(val)) {
-              const { ...arrToObj } = val
-              const newObj = flatten(arrToObj, newKey)
-              output = { ...output, ...newObj }
-            } else {
-              const newObj = flatten(val, newKey)
-              output = { ...output, ...newObj }
-            }
+          if (typeof value === 'object' && !Array.isArray(value)) {
+            Object.assign(output, flatten(value, newKey))
           } else {
-            output = { ...output, [newKey]: val }
+            output[newKey] = value
           }
-        }
-        return output
-      }
-      filtered = filtered.map((item) => flatten(item))
-
-      let dataFlat
-
-      if (Array.isArray(data)) {
-        dataFlat = data.map((item) => flatten(item))
-      } else {
-        dataFlat = []
+          return output
+        }, {})
       }
 
+      // Define the applyFormatter function
+      const applyFormatter = (obj) => {
+        return Object.keys(obj).reduce((acc, key) => {
+          const formatter = exportFormatter[key]
+          // Since the keys after flattening will be dot-separated, we need to adjust this to support nested keys if necessary.
+          const keyParts = key.split('.')
+          const finalKeyPart = keyParts[keyParts.length - 1]
+          const formattedValue =
+            typeof formatter === 'function' ? formatter({ cell: obj[key] }) : obj[key]
+          acc[key] = formattedValue
+          return acc
+        }, {})
+      }
+
+      // Process exportData function
+      const processExportData = (exportData, selectedColumns) => {
+        //filter out the columns that are not selected via selectedColumns
+        exportData = exportData.map((item) => {
+          return Object.keys(item)
+            .filter((key) => selectedColumns.find((o) => o.exportSelector === key))
+            .reduce((obj, key) => {
+              obj[key] = item[key]
+              return obj
+            }, {})
+        })
+        return Array.isArray(exportData) && exportData.length > 0
+          ? exportData.map((obj) => {
+              const flattenedObj = flatten(obj)
+              return applyFormatter(flattenedObj)
+            })
+          : []
+      }
+
+      // Applying the processExportData function to both filteredItems and data
+      var filtered = processExportData(filteredItems, updatedColumns)
+
+      // Adjusted dataFlat processing to include formatting
+      let dataFlat = Array.isArray(data)
+        ? data.map((item) => {
+            const flattenedItem = flatten(item)
+            return applyFormatter(flattenedItem)
+          })
+        : []
       if (!disablePDFExport) {
         if (dynamicColumns === true) {
           defaultActions.push([
