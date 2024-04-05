@@ -73,6 +73,7 @@ export default class WizardTableField extends React.Component {
           selectableRows: true,
           onSelectedRowsChange: this.handleSelect,
         }}
+        dynamicColumns={false}
         {...props}
       />
     )

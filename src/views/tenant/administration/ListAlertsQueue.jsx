@@ -39,6 +39,8 @@ const alertsList = [
     inputName: 'SharePointQuotaQuota',
   },
   { name: 'ExpiringLicenses', label: 'Alert on licenses expiring in 30 days' },
+  { name: 'NewAppApproval', label: 'Alert on new apps in the application approval list' },
+
   { name: 'SecDefaultsUpsell', label: 'Alert on Security Defaults automatic enablement' },
   {
     name: 'DefenderStatus',
@@ -221,7 +223,6 @@ const ListClassicAlerts = () => {
                                       <RFFCFormInput
                                         name={`${alert.inputName}`}
                                         placeholder={alert.inputLabel}
-                                        initialValue={alert.defaultValue} // Set the initial value
                                         type="number"
                                       />
                                     )
