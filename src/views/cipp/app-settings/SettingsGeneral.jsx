@@ -85,13 +85,6 @@ export function SettingsGeneral() {
       omit: showExtendedInfo,
       exportSelector: 'GDAPRoles',
     },
-    {
-      name: 'SAM User Roles',
-      selector: (row) => row?.SAMUserRoles,
-      cell: cellTableFormatter('SAMUserRoles', false, true),
-      omit: showExtendedInfo,
-      exportSelector: 'SAMUserRoles',
-    },
   ]
 
   const checkGDAPColumns = [
@@ -439,6 +432,7 @@ export function SettingsGeneral() {
                       columns={checkAccessColumns}
                       tableProps={tableProps}
                       data={accessCheckResult.data.Results}
+                      dynamicColumns={false}
                     />
                   )}
                 </CCol>
