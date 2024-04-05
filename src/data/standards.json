@@ -767,6 +767,16 @@
     "impactColour": "warning"
   },
   {
+    "name": "standards.EnableExchangeOnlineModernAuth",
+    "cat": "Exchange Standards",
+    "tag": ["lowimpact", "CIS"],
+    "helpText": "Users of older email clients, such as Outlook 2013 and Outlook 2016, will no longer be able to authenticate to Exchange using Basic Authentication, which will necessitate migration to modern authentication practices. (Default: Enabled)",
+    "addedComponent": [],
+    "label": "Ensure modern authentication for Exchange Online is enabled",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.SafeLinksPolicy",
     "cat": "Defender Standards",
     "tag": ["lowimpact", "CIS"],
