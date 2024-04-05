@@ -42,11 +42,6 @@ const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = fa
     const Paramcount = Array.from(searchParams).length
     if (Paramcount <= 1) {
       const customerId = searchParams.get('customerId')
-      const tableFilter = searchParams.get('tableFilter')
-      var newSearchParams = {}
-      if (tableFilter) {
-        newSearchParams.tableFilter = tableFilter
-      }
       if (customerId && isSuccess) {
         const currentTenant = tenants.filter((tenant) => tenant.customerId === customerId)
         if (currentTenant.length > 0) {
@@ -54,8 +49,7 @@ const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = fa
         }
       }
       if (!customerId && Object.keys(currentTenant).length > 0) {
-        newSearchParams.customerId = currentTenant?.customerId
-        updateSearchParams(newSearchParams)
+        updateSearchParams({ customerId: currentTenant?.customerId })
       }
     }
   }, [dispatch, isSuccess, searchParams, currentTenant, tenants, updateSearchParams])
