@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { CButton, CCallout, CCol, CForm, CRow, CSpinner, CTooltip } from '@coreui/react'
 import { useSelector } from 'react-redux'
-import { Field, Form } from 'react-final-form'
-import { RFFCFormSwitch } from 'src/components/forms'
+import { Field, Form, FormSpy } from 'react-final-form'
+import { RFFCFormInput, RFFCFormSwitch } from 'src/components/forms'
 import {
   useGenericGetRequestQuery,
   useLazyGenericGetRequestQuery,
@@ -14,7 +14,6 @@ import { CippContentCard, CippPage, CippPageList } from 'src/components/layout'
 import { CellTip } from 'src/components/tables/CellGenericFormat'
 import 'react-datepicker/dist/react-datepicker.css'
 import { CippActionsOffcanvas, ModalService, TenantSelector } from 'src/components/utilities'
-import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
 import arrayMutators from 'final-form-arrays'
 const alertsList = [
   { name: 'MFAAlertUsers', label: 'Alert on users without any form of MFA' },
@@ -25,9 +24,23 @@ const alertsList = [
       'Alert on tenants without a Conditional Access policy, while having Conditional Access licensing available.',
   },
   { name: 'AdminPassword', label: 'Alert on changed admin Passwords' },
-  { name: 'QuotaUsed', label: 'Alert on 90% mailbox quota used' },
-  { name: 'SharePointQuota', label: 'Alert on 90% SharePoint quota used' },
+  {
+    name: 'QuotaUsed',
+    label: 'Alert on % mailbox quota used',
+    requiresInput: true,
+    inputLabel: 'Enter quota percentage',
+    inputName: 'QuotaUsedQuota',
+  },
+  {
+    name: 'SharePointQuota',
+    label: 'Alert on % SharePoint quota used',
+    requiresInput: true,
+    inputLabel: 'Enter quota percentage',
+    inputName: 'SharePointQuotaQuota',
+  },
   { name: 'ExpiringLicenses', label: 'Alert on licenses expiring in 30 days' },
+  { name: 'NewAppApproval', label: 'Alert on new apps in the application approval list' },
+
   { name: 'SecDefaultsUpsell', label: 'Alert on Security Defaults automatic enablement' },
   {
     name: 'DefenderStatus',
@@ -93,7 +106,7 @@ const ListClassicAlerts = () => {
           </CButton>
         </CTooltip>
         <CippActionsOffcanvas
-          title="User Information"
+          title="Extended Information"
           extendedInfo={Object.keys(row).map((key) => ({
             label: key,
             value:
@@ -121,7 +134,7 @@ const ListClassicAlerts = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const onSubmit = (values) => {
     Object.keys(values).filter(function (x) {
-      if (values[x] === null) {
+      if (values[x] === null || values[x] === 0) {
         delete values[x]
       }
       return null
@@ -201,11 +214,23 @@ const ListClassicAlerts = () => {
                         <hr />
                         {alertsList.map((alert, index) => (
                           <CCol key={alert.name} md="6">
-                            <RFFCFormSwitch
-                              name={alert.name}
-                              label={alert.label}
-                              sublabel={getLabel(alert.name)}
-                            />
+                            <RFFCFormSwitch name={alert.name} label={alert.label} />
+                            {alert.requiresInput && (
+                              <FormSpy subscription={{ values: true }}>
+                                {({ values }) => {
+                                  if (values[alert.name]) {
+                                    return (
+                                      <RFFCFormInput
+                                        name={`${alert.inputName}`}
+                                        placeholder={alert.inputLabel}
+                                        type="number"
+                                      />
+                                    )
+                                  }
+                                  return null
+                                }}
+                              </FormSpy>
+                            )}
                           </CCol>
                         ))}
                       </CRow>
