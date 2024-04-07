@@ -149,7 +149,7 @@ const Scheduler = () => {
       name: 'Parameters',
       selector: (row) => row['Parameters'],
       sortable: true,
-      cell: (row) => CellTip(row['Parameters']),
+      cell: cellGenericFormatter(),
       exportSelector: 'Parameters',
     },
     {
