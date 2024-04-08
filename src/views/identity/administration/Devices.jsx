@@ -159,6 +159,7 @@ const DevicesList = () => {
           TenantFilter: tenant?.defaultDomainName,
           Endpoint: 'devices',
           $format: 'application/json',
+          sort: 'displayName',
         },
         columns,
         tableProps: {
