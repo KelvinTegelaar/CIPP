@@ -428,6 +428,13 @@ const Users = (row) => {
           title="Invite Guest"
         />
       </div>
+      <div style={{ marginLeft: '10px' }}>
+        <TitleButton
+          key="Invite-Bulk"
+          href="/identity/administration/users/addbulk"
+          title="Bulk Add"
+        />
+      </div>
     </div>
   )
 
