@@ -15,9 +15,12 @@ import CippGraphUserFilter from 'src/components/utilities/CippGraphUserFilter'
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
   const [ocVisible, setOCVisible] = useState(false)
-  const viewLink = `/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}&userEmail=${row.userPrincipalName}`
-  const editLink = `/identity/administration/users/edit?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`
-  const OffboardLink = `/identity/administration/offboarding-wizard?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`
+  const viewLink = row?.tenant
+    ? `/identity/administration/users/view?userId=${row.id}&tenantDomain=${row.Tenant}&userEmail=${row.userPrincipalName}`
+    : `/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}&userEmail=${row.userPrincipalName}`
+  const editLink = row?.tenant
+    ? `/identity/administration/users/edit?userId=${row.id}&tenantDomain=${row.Tenant}`
+    : `/identity/administration/users/edit?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`
   const entraLink = `https://entra.microsoft.com/${tenant.defaultDomainName}/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/UserAuthMethods/userId/${row.id}/hidePreviewBanner~/true`
 
   let licenses = []
@@ -31,7 +34,6 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
   })
   var licJoined = licenses.join(', ')
 
-  //console.log(row)
   return (
     <>
       <Link to={viewLink}>
@@ -89,11 +91,6 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             color: 'info',
           },
           {
-            label: 'Offboard User',
-            link: OffboardLink,
-            color: 'info',
-          },
-          {
             label: 'Create Temporary Access Password',
             color: 'info',
             modal: true,
@@ -134,11 +131,59 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             },
             modalUrl: `/api/ExecOneDriveShortCut`,
             modalDropdown: {
-              url: `/api/listSites?TenantFilter=${tenant.defaultDomainName}&type=SharePointSiteUsage`,
+              url: `/api/listSites?TenantFilter=${tenant.defaultDomainName}&type=SharePointSiteUsage&URLOnly=true`,
               labelField: 'URL',
               valueField: 'URL',
             },
             modalMessage: 'Select the sharepoint site to create a shortcut for',
+          },
+          {
+            label: 'Add to group',
+            color: 'info',
+            modal: true,
+            modalType: 'POST',
+            modalBody: {
+              Addmember: {
+                value: row.userPrincipalName,
+              },
+              TenantId: tenant.defaultDomainName,
+            },
+            modalUrl: `/api/EditGroup`,
+            modalDropdown: {
+              url: `/api/listGroups?TenantFilter=${tenant.defaultDomainName}`,
+              labelField: 'displayName',
+              valueField: 'id',
+              addedField: {
+                groupId: 'id',
+                groupType: 'calculatedGroupType',
+                groupName: 'displayName',
+              },
+            },
+            modalMessage: 'Select the group to add the user to',
+          },
+          {
+            label: 'Remove from group',
+            color: 'info',
+            modal: true,
+            modalType: 'POST',
+            modalBody: {
+              Removemember: {
+                value: row.userPrincipalName,
+              },
+              TenantId: tenant.defaultDomainName,
+            },
+            modalUrl: `/api/EditGroup`,
+            modalDropdown: {
+              url: `/api/listGroups?TenantFilter=${tenant.defaultDomainName}`,
+              labelField: 'displayName',
+              valueField: 'id',
+              addedField: {
+                groupId: 'id',
+                groupType: 'calculatedGroupType',
+                groupName: 'displayName',
+              },
+            },
+            modalMessage: 'Select the group to remove the user from',
           },
           {
             label: 'Enable Online Archive',
@@ -356,6 +401,7 @@ const Users = (row) => {
       name: 'id',
       selector: (row) => row['id'],
       omit: true,
+      exportSelector: 'id',
     },
     {
       name: 'Actions',
@@ -380,6 +426,13 @@ const Users = (row) => {
           key="Invite-Guest"
           href="/identity/administration/users/InviteGuest"
           title="Invite Guest"
+        />
+      </div>
+      <div style={{ marginLeft: '10px' }}>
+        <TitleButton
+          key="Invite-Bulk"
+          href="/identity/administration/users/addbulk"
+          title="Bulk Add"
         />
       </div>
     </div>
@@ -449,7 +502,7 @@ const Users = (row) => {
               label: 'Enable Online Archive',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecEnableArchive?TenantFilter=!Tenant&ID=!id`,
+              modalUrl: `/api/ExecEnableArchive?TenantFilter=!Tenant&ID=!userPrincipalName`,
               modalMessage: 'Are you sure you want to enable the online archive for these users?',
             },
             {
@@ -506,6 +559,58 @@ const Users = (row) => {
                 url: `/api/listSites?TenantFilter=${tenant.defaultDomainName}&type=SharePointSiteUsage`,
                 labelField: 'URL',
                 valueField: 'URL',
+              },
+            },
+            {
+              label: 'Add to group',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                username: '!userPrincipalName',
+                userid: '!id',
+                TenantId: tenant.defaultDomainName,
+                Addmember: {
+                  value: '!userPrincipalName',
+                },
+              },
+              modalUrl: `/api/EditGroup`,
+              modalMessage: 'Select the group to add',
+              modalDropdown: {
+                url: `/api/listGroups?TenantFilter=${tenant.defaultDomainName}`,
+                labelField: 'displayName',
+                valueField: 'id',
+                addedField: {
+                  groupId: 'id',
+                  groupType: 'calculatedGroupType',
+                  groupName: 'displayName',
+                },
+              },
+            },
+            {
+              label: 'Remove from group',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                username: '!userPrincipalName',
+                userid: '!id',
+                TenantId: tenant.defaultDomainName,
+                RemoveMember: {
+                  value: '!userPrincipalName',
+                },
+              },
+              modalUrl: `/api/EditGroup`,
+              modalMessage: 'Select the group to remove',
+              modalDropdown: {
+                url: `/api/listGroups?TenantFilter=${tenant.defaultDomainName}`,
+                labelField: 'displayName',
+                valueField: 'id',
+                addedField: {
+                  groupId: 'id',
+                  groupType: 'calculatedGroupType',
+                  groupName: 'displayName',
+                },
               },
             },
             {
