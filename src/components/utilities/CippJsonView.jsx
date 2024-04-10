@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
+import JsonView from '@uiw/react-json-view'
 import { useSelector } from 'react-redux'
 import { useMediaPredicate } from 'react-media-hook'
-import JsonView from '@uiw/react-json-view'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import translator from 'src/data/translator.json'
 import {
   CAccordion,
   CAccordionBody,
@@ -14,9 +14,14 @@ import {
   CCardTitle,
   CCol,
   CFormSwitch,
+  CListGroup,
+  CListGroupItem,
+  CNav,
+  CNavItem,
+  CNavLink,
   CRow,
 } from '@coreui/react'
-import translator from 'src/data/translator.json' // Ensure the path to your translator.json is correct
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const githubLightTheme = {
   '--w-rjv-font-family': 'monospace',
@@ -79,10 +84,10 @@ export const githubDarkTheme = {
   '--w-rjv-type-nan-color': '#859900',
   '--w-rjv-type-undefined-color': '#79c0ff',
 }
-
 const matchPattern = (key, patterns) => {
   return patterns.some((pattern) => {
     if (pattern.includes('*')) {
+      // Replace * with regex that matches any character sequence and create a RegExp object
       const regex = new RegExp(`^${pattern.replace(/\*/g, '.*')}$`, 'i')
       return regex.test(key)
     }
@@ -92,93 +97,90 @@ const matchPattern = (key, patterns) => {
 
 const removeNullOrEmpty = (obj) => {
   if (Array.isArray(obj)) {
+    // Filter out null or undefined items and apply recursively
     const filteredArray = obj.filter((item) => item != null).map(removeNullOrEmpty)
+    // Additionally, remove empty arrays
     return filteredArray.length > 0 ? filteredArray : null
   } else if (typeof obj === 'object' && obj !== null) {
     const result = Object.entries(obj).reduce((acc, [key, value]) => {
       const processedValue = removeNullOrEmpty(value)
       if (processedValue != null) {
+        // Checks for both null and undefined
         acc[key] = processedValue
       }
       return acc
     }, {})
+    // Additionally, remove empty objects
     return Object.keys(result).length > 0 ? result : null
   }
   return obj
 }
 
 const translateAndRemoveKeys = (obj, removePatterns = []) => {
-  obj = removeNullOrEmpty(obj)
+  obj = removeNullOrEmpty(obj) // Clean the object first
   if (Array.isArray(obj)) {
     return obj.map((item) => translateAndRemoveKeys(item, removePatterns))
   } else if (typeof obj === 'object' && obj !== null) {
     return Object.entries(obj).reduce((acc, [key, value]) => {
+      // Check if the key matches any removal pattern
       if (!matchPattern(key, removePatterns)) {
         const translatedKey =
           translator[key.toLowerCase()] ||
           key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase())
-        acc[translatedKey] = translateAndRemoveKeys(value, removePatterns)
+        acc[translatedKey] = translateAndRemoveKeys(value, removePatterns) // Recursively process
       }
       return acc
     }, {})
   }
   return obj
 }
-function renderObjectAsColumns(object, level = 0, maxLevel = 4) {
-  const content = []
-  let nextLevelObject = null
-
-  for (const [key, value] of Object.entries(object)) {
-    if (level < maxLevel && typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      nextLevelObject = value // Prepare the next level's object for rendering
-      continue // Skip to avoid rendering this as a separate card
-    }
-
-    // Render current level key-value pairs
-    content.push(
-      <CCol key={`${key}-${level}`}>
-        <CCard>
-          <CCardHeader>{key}</CCardHeader>
-          <CCardBody>{JSON.stringify(value, null, 2)}</CCardBody>
-        </CCard>
-      </CCol>,
-    )
-  }
-
-  return (
-    <>
-      {content}
-      {nextLevelObject && renderObjectAsColumns(nextLevelObject, level + 1, maxLevel)}
-    </>
-  )
-}
-
 function CippJsonView({
-  jsonData = { 'No Data Selected': 'No Data Selected' },
-  removeKeys = ['*@odata*', 'id', 'guid', 'createdDateTime', '*modified*', 'deletedDateTime'],
+  object = { 'No Data Selected': 'No Data Selected' },
+  removeKeys = ['*@odata*', 'created*', '*modified*', 'id', 'guid'],
 }) {
-  const [showRawJson, setShowRawJson] = useState(false)
+  const currentTheme = useSelector((state) => state.app.currentTheme)
+  const preferredTheme = useMediaPredicate('(prefers-color-scheme: dark)') ? 'impact' : 'cyberdrain'
   const theme =
-    useSelector((state) => state.app.currentTheme) === 'dark' ? githubDarkTheme : githubLightTheme
-  const cleanedJsonData = translateAndRemoveKeys(jsonData, removeKeys)
-
+    currentTheme === 'impact' || (currentTheme === preferredTheme) === 'impact'
+      ? githubDarkTheme
+      : githubLightTheme
+  const translatedObject = translateAndRemoveKeys(object, removeKeys)
+  const [switchRef, setSwitchRef] = useState(false)
+  console.log(translatedObject)
   return (
     <div className="mb-3">
       <CAccordion alwaysOpen>
-        <CAccordionItem itemKey="general-1">
-          <CAccordionHeader>Settings</CAccordionHeader>
+        <CAccordionItem itemKey={'general-1'} key={`general-1`}>
+          <CAccordionHeader>
+            {object.displayName ? `${object.displayName} Settings` : 'Settings'}
+          </CAccordionHeader>
           <CAccordionBody>
-            <CFormSwitch label="View as code" onChange={() => setShowRawJson(!showRawJson)} />
-            {showRawJson ? (
+            <CFormSwitch label="View as code" onClick={() => setSwitchRef(!switchRef)} />
+            {switchRef ? (
               <JsonView
-                value={jsonData}
+                value={object}
                 collapsed={1}
                 displayDataTypes={false}
                 displayObjectSize={false}
                 style={{ ...theme }}
               />
             ) : (
-              <CRow>{renderObjectAsColumns(cleanedJsonData)}</CRow>
+              <CRow>
+                {translatedObject &&
+                  Object.keys(translatedObject).map((key) => (
+                    <CCol xs={4} key={key}>
+                      <CCard className={`content-card mb-3`}>
+                        <CCardHeader className="d-flex justify-content-between align-items-center">
+                          <CCardTitle>{key}</CCardTitle>
+                          <FontAwesomeIcon icon={'cog'} />
+                        </CCardHeader>
+                        <CCardBody>
+                          <pre>{JSON.stringify(translatedObject[key], null, 2)}</pre>
+                        </CCardBody>
+                      </CCard>
+                    </CCol>
+                  ))}
+              </CRow>
             )}
           </CAccordionBody>
         </CAccordionItem>
