@@ -31,7 +31,7 @@ import {
 import { faCheck, faCircleNotch, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { CippContentCard, CippPage } from 'src/components/layout'
 import { useSelector } from 'react-redux'
-import { ModalService } from 'src/components/utilities'
+import { ModalService, validateAlphabeticalSort } from 'src/components/utilities'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Skeleton from 'react-loading-skeleton'
 import { CippTable, cellBooleanFormatter } from 'src/components/tables'
@@ -613,7 +613,10 @@ const ApplyNewStandard = () => {
                                           name={`${template.switchName}.TemplateList`}
                                           className="mb-3"
                                           multi={true}
-                                          values={template.templates.data?.map((t) => ({
+                                          values={validateAlphabeticalSort(
+                                            template.templates.data,
+                                            ['Displayname', 'name'],
+                                          )?.map((t) => ({
                                             value: t.GUID,
                                             name: t.name || t.Displayname || t.displayName,
                                           }))}
