@@ -15,7 +15,7 @@ export const useNavFavouriteCheck = (navigation) => {
         to: '/favorites',
         icon: <FontAwesomeIcon icon={'star'} className="nav-icon" />,
         items: favourites.map((item) => {
-          console.log(item)
+          //console.log(item)
           return {
             name: item.value.name,
             to: item.value.to,

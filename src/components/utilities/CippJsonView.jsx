@@ -1,8 +1,23 @@
-import React from 'react'
-import JsonView from '@uiw/react-json-view'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useMediaPredicate } from 'react-media-hook'
-import translator from 'src/data/translator.json'
+import JsonView from '@uiw/react-json-view'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  CAccordion,
+  CAccordionBody,
+  CAccordionHeader,
+  CAccordionItem,
+  CCard,
+  CCardBody,
+  CCardHeader,
+  CCardTitle,
+  CCol,
+  CFormSwitch,
+  CRow,
+} from '@coreui/react'
+import translator from 'src/data/translator.json' // Ensure the path to your translator.json is correct
+
 const githubLightTheme = {
   '--w-rjv-font-family': 'monospace',
   '--w-rjv-color': '#6f42c1',
@@ -64,10 +79,10 @@ export const githubDarkTheme = {
   '--w-rjv-type-nan-color': '#859900',
   '--w-rjv-type-undefined-color': '#79c0ff',
 }
+
 const matchPattern = (key, patterns) => {
   return patterns.some((pattern) => {
     if (pattern.includes('*')) {
-      // Replace * with regex that matches any character sequence and create a RegExp object
       const regex = new RegExp(`^${pattern.replace(/\*/g, '.*')}$`, 'i')
       return regex.test(key)
     }
@@ -75,42 +90,100 @@ const matchPattern = (key, patterns) => {
   })
 }
 
+const removeNullOrEmpty = (obj) => {
+  if (Array.isArray(obj)) {
+    const filteredArray = obj.filter((item) => item != null).map(removeNullOrEmpty)
+    return filteredArray.length > 0 ? filteredArray : null
+  } else if (typeof obj === 'object' && obj !== null) {
+    const result = Object.entries(obj).reduce((acc, [key, value]) => {
+      const processedValue = removeNullOrEmpty(value)
+      if (processedValue != null) {
+        acc[key] = processedValue
+      }
+      return acc
+    }, {})
+    return Object.keys(result).length > 0 ? result : null
+  }
+  return obj
+}
+
 const translateAndRemoveKeys = (obj, removePatterns = []) => {
+  obj = removeNullOrEmpty(obj)
   if (Array.isArray(obj)) {
     return obj.map((item) => translateAndRemoveKeys(item, removePatterns))
-  } else if (obj !== null && typeof obj === 'object') {
+  } else if (typeof obj === 'object' && obj !== null) {
     return Object.entries(obj).reduce((acc, [key, value]) => {
-      // Check if the key matches any removal pattern
       if (!matchPattern(key, removePatterns)) {
         const translatedKey =
           translator[key.toLowerCase()] ||
           key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase())
-        acc[translatedKey] = translateAndRemoveKeys(value, removePatterns) // Recursively process
+        acc[translatedKey] = translateAndRemoveKeys(value, removePatterns)
       }
       return acc
     }, {})
   }
   return obj
 }
+function renderObjectAsColumns(object, level = 0, maxLevel = 4) {
+  const content = []
+  let nextLevelObject = null
 
-function CippJsonView({ object, removeKeys = ['*@odata*'] }) {
-  const currentTheme = useSelector((state) => state.app.currentTheme)
-  const preferredTheme = useMediaPredicate('(prefers-color-scheme: dark)') ? 'impact' : 'cyberdrain'
-  const theme =
-    currentTheme === 'impact' || (currentTheme === preferredTheme) === 'impact'
-      ? githubDarkTheme
-      : githubLightTheme
-  const translatedObject = translateAndRemoveKeys(object, removeKeys)
-  console.log('translatedObject', translatedObject)
+  for (const [key, value] of Object.entries(object)) {
+    if (level < maxLevel && typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      nextLevelObject = value // Prepare the next level's object for rendering
+      continue // Skip to avoid rendering this as a separate card
+    }
+
+    // Render current level key-value pairs
+    content.push(
+      <CCol key={`${key}-${level}`}>
+        <CCard>
+          <CCardHeader>{key}</CCardHeader>
+          <CCardBody>{JSON.stringify(value, null, 2)}</CCardBody>
+        </CCard>
+      </CCol>,
+    )
+  }
 
   return (
-    <JsonView
-      value={translatedObject}
-      collapsed={1}
-      displayDataTypes={false}
-      displayObjectSize={false}
-      style={{ ...theme }}
-    />
+    <>
+      {content}
+      {nextLevelObject && renderObjectAsColumns(nextLevelObject, level + 1, maxLevel)}
+    </>
+  )
+}
+
+function CippJsonView({
+  jsonData = { 'No Data Selected': 'No Data Selected' },
+  removeKeys = ['*@odata*', 'id', 'guid', 'createdDateTime', '*modified*', 'deletedDateTime'],
+}) {
+  const [showRawJson, setShowRawJson] = useState(false)
+  const theme =
+    useSelector((state) => state.app.currentTheme) === 'dark' ? githubDarkTheme : githubLightTheme
+  const cleanedJsonData = translateAndRemoveKeys(jsonData, removeKeys)
+
+  return (
+    <div className="mb-3">
+      <CAccordion alwaysOpen>
+        <CAccordionItem itemKey="general-1">
+          <CAccordionHeader>Settings</CAccordionHeader>
+          <CAccordionBody>
+            <CFormSwitch label="View as code" onChange={() => setShowRawJson(!showRawJson)} />
+            {showRawJson ? (
+              <JsonView
+                value={jsonData}
+                collapsed={1}
+                displayDataTypes={false}
+                displayObjectSize={false}
+                style={{ ...theme }}
+              />
+            ) : (
+              <CRow>{renderObjectAsColumns(cleanedJsonData)}</CRow>
+            )}
+          </CAccordionBody>
+        </CAccordionItem>
+      </CAccordion>
+    </div>
   )
 }
 
