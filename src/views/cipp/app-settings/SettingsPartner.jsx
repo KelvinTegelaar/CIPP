@@ -1,6 +1,9 @@
-import { useGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app.js'
+import {
+  useGenericGetRequestQuery,
+  useLazyGenericGetRequestQuery,
+  useLazyGenericPostRequestQuery,
+} from 'src/store/api/app.js'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import {
   CBadge,
   CButton,
@@ -11,12 +14,13 @@ import {
   CCardTitle,
   CCol,
   CForm,
+  CLink,
   CRow,
   CSpinner,
 } from '@coreui/react'
-import { Form, useForm } from 'react-final-form'
-import { RFFCFormInput, RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms/index.js'
-import React, { useEffect, useState } from 'react'
+import { Form } from 'react-final-form'
+import { RFFSelectSearch } from 'src/components/forms/index.js'
+import React, { useEffect } from 'react'
 import { CippCallout } from 'src/components/layout/index.js'
 import { CippCodeBlock } from 'src/components/utilities'
 import { CellDate } from 'src/components/tables'
@@ -35,6 +39,8 @@ export function SettingsPartner() {
     params: { Action: 'ListEventTypes' },
   })
   const [submitWebhook, webhookCreateResult] = useLazyGenericPostRequestQuery()
+  const [sendTest, sendTestResult] = useLazyGenericGetRequestQuery()
+  const [checkTest, checkTestResult] = useLazyGenericGetRequestQuery()
 
   const onSubmit = (values) => {
     const shippedValues = {
@@ -47,6 +53,25 @@ export function SettingsPartner() {
       webhookConfig.refetch()
     })
   }
+
+  useEffect(() => {
+    if (
+      sendTestResult.isSuccess &&
+      sendTestResult?.data?.Results?.correlationId &&
+      !checkTestResult?.data?.Results?.results
+    ) {
+      setTimeout(
+        checkTest({
+          path: '/api/ExecPartnerWebhook',
+          params: {
+            Action: 'ValidateTest',
+            CorrelationId: sendTestResult?.data?.Results?.correlationId,
+          },
+        }),
+        1000,
+      )
+    }
+  }, [sendTestResult, checkTest, checkTestResult])
 
   return (
     <CCard className="h-100">
@@ -78,10 +103,24 @@ export function SettingsPartner() {
             <>
               <h3 className="underline mb-5"> Webhook Configuration</h3>
               <CRow>
+                <CCol sm={12} md={6} lg={8} className="mb-3">
+                  Subscribe to Microsoft Partner center webhooks to enable automatic tenant
+                  onboarding and alerting. Updating the settings will replace any existing webhook
+                  subscription with one pointing to CIPP. Refer to the{' '}
+                  <CLink
+                    href="https://learn.microsoft.com/en-us/partner-center/developer/partner-center-webhooks"
+                    target="_blank"
+                  >
+                    Microsoft Partner Center documentation
+                  </CLink>{' '}
+                  for more information on the webhook types.
+                </CCol>
+              </CRow>
+              <CRow>
                 <CCol sm={12} md={6} className="mb-3">
                   <p className="fw-lighter">Webhook URL</p>
                   <CippCodeBlock
-                    code={webhookConfig?.data?.Results?.webhookUrl}
+                    code={webhookConfig?.data?.Results?.webhookUrl ?? 'No webhook URL found'}
                     language="plain"
                     showLineNumbers={false}
                   />
@@ -93,7 +132,7 @@ export function SettingsPartner() {
                     format="short"
                   />
                 </CCol>
-                <CCol sm={12} md={6} className="mb-3">
+                <CCol sm={12} md={12} className="mb-3">
                   <p className="fw-lighter">Subscribed Events</p>
                   <Form
                     onSubmit={onSubmit}
@@ -120,7 +159,7 @@ export function SettingsPartner() {
                           <CButton
                             type="submit"
                             color="primary"
-                            className="my-2"
+                            className="my-3"
                             disabled={webhookCreateResult.isFetching}
                           >
                             {webhookCreateResult.isFetching ? (
@@ -142,6 +181,82 @@ export function SettingsPartner() {
                     </CippCallout>
                   )}
                 </CCol>
+              </CRow>
+              <h3 className="underline mb-5">Webhook Test</h3>
+              <CRow>
+                <CCol sm={12} md={12} className="mb-3">
+                  <CButton
+                    className="me-3"
+                    onClick={() =>
+                      sendTest({
+                        path: '/api/ExecPartnerWebhook',
+                        params: { Action: 'SendTest' },
+                      })
+                    }
+                  >
+                    {sendTestResult.isFetching ? (
+                      <>
+                        <CSpinner size="sm" className="me-2" />
+                        Running Test...
+                      </>
+                    ) : (
+                      'Start Test'
+                    )}
+                  </CButton>
+                  {checkTestResult.isFetching && !checkTestResult?.data?.Results?.result && (
+                    <>
+                      <CSpinner size="sm" className="me-2" /> Waiting for results
+                    </>
+                  )}
+                </CCol>
+              </CRow>
+              <CRow>
+                {checkTestResult.isSuccess && (
+                  <>
+                    <CCol sm={12} md={4} className="mb-3">
+                      <p className="fw-lighter">Status</p>
+                      {checkTestResult?.data?.Results.status}
+                    </CCol>
+                    {Array.isArray(checkTestResult?.data?.Results?.results) && (
+                      <>
+                        <CCol sm={12} md={4} className="mb-3">
+                          <p className="fw-lighter">Status Code</p>
+                          <FontAwesomeIcon
+                            icon={
+                              checkTestResult?.data?.Results?.results[0].responseCode == 200
+                                ? 'check-circle'
+                                : 'times-circle'
+                            }
+                            color={
+                              checkTestResult?.data?.Results?.results[0].responseCode == 200
+                                ? 'green'
+                                : 'red'
+                            }
+                            className="me-2"
+                          />
+                          {checkTestResult?.data?.Results?.results[0].responseCode}
+                        </CCol>
+                        {checkTestResult?.data?.Results?.results[0].responseMessage !== '' && (
+                          <CCol sm={12} md={4} className="mb-3">
+                            <p className="fw-lighter">Response Message</p>
+                            {checkTestResult.data.Results.results[0].responseMessage}
+                          </CCol>
+                        )}
+                        <CCol sm={12} md={4} className="mb-3">
+                          <p className="fw-lighter">Date/Time</p>
+                          <CellDate
+                            cell={Date(
+                              Date.parse(
+                                checkTestResult?.data?.Results?.results[0].dateTimeUtc + 'Z',
+                              ),
+                            ).toLocaleString()}
+                            format="short"
+                          />
+                        </CCol>
+                      </>
+                    )}
+                  </>
+                )}
               </CRow>
             </>
           )}
