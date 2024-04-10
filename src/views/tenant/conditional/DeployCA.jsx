@@ -6,9 +6,10 @@ import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { CippWizard } from 'src/components/layout'
 import { WizardTableField } from 'src/components/tables'
 import PropTypes from 'prop-types'
-import { RFFCFormRadio, RFFCFormSelect, RFFCFormTextarea } from 'src/components/forms'
+import { Condition, RFFCFormRadio, RFFCFormSelect, RFFCFormTextarea } from 'src/components/forms'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { OnChange } from 'react-final-form-listeners'
+import CippJsonView from 'src/components/utilities/CippJsonView'
 
 const Error = ({ name }) => (
   <Field
@@ -135,45 +136,95 @@ const AddPolicy = () => {
                   label: template.displayName,
                 }))}
                 placeholder="Select a template"
-                label="Please choose a template to apply, or enter the information manually."
+                label="Please choose a template to apply."
               />
             )}
           </CCol>
         </CRow>
         <CRow>
+          {/* always hide the textarea */}
+          <Condition when="number1" is="number2">
+            <CCol>
+              <RFFCFormTextarea
+                name="rawjson"
+                label="Conditional Access Parameters"
+                placeholder={
+                  'Enter the JSON information to use as parameters, or select from a template'
+                }
+              />
+            </CCol>
+          </Condition>
+        </CRow>
+        <CRow>
           <CCol>
-            <RFFCFormTextarea
-              name="rawjson"
-              label="Conditional Access Parameters"
-              placeholder={
-                'Enter the JSON information to use as parameters, or select from a template'
-              }
-            />
+            <label className="mb-3">Policy settings</label>
+            <FormSpy>
+              {/* eslint-disable react/prop-types */}
+              {(props) => {
+                const json = props.values?.rawjson ? JSON.parse(props.values.rawjson) : {}
+                return (
+                  <>
+                    <CippJsonView object={json} />
+                  </>
+                )
+              }}
+            </FormSpy>
           </CCol>
         </CRow>
-        <RFFCFormRadio
-          value="donotchange"
-          name="newstate"
-          label="Do not change state - Template contains the state information"
-          validate={false}
-        ></RFFCFormRadio>
-        <RFFCFormRadio
-          value="Enabled"
-          name="newstate"
-          label="Enabled"
-          validate={false}
-        ></RFFCFormRadio>
-        <RFFCFormRadio
-          value="Disabled"
-          name="newstate"
-          label="Disabled"
-          validate={false}
-        ></RFFCFormRadio>
-        <RFFCFormRadio
-          value="enabledForReportingButNotEnforced"
-          name="newstate"
-          label="Report only"
-        ></RFFCFormRadio>
+        <CRow>
+          <CCol>
+            <label className="mb-3">
+              If your policy has groups or users, how should they be handled?
+            </label>
+            <RFFCFormRadio
+              value="leave"
+              name="replacename"
+              label="Leave the groups and users in the policy - Their IDs exist in this tenant"
+              validate={false}
+            ></RFFCFormRadio>
+            <RFFCFormRadio
+              value="AllUsers"
+              name="replacename"
+              label="Remove the groups and users from the policy - Apply to all users"
+              validate={false}
+            ></RFFCFormRadio>
+            <RFFCFormRadio
+              value="displayName"
+              name="replacename"
+              label="Replace the group and users with the same groups and users based on their display name"
+              validate={false}
+            ></RFFCFormRadio>
+          </CCol>
+        </CRow>
+        <CRow className="mb-3">
+          <CCol>
+            <label className="mb-3">How would you like to handle your policy state</label>
+            <RFFCFormRadio
+              value="donotchange"
+              name="newstate"
+              label="Do not change state - Template contains the state information"
+              validate={false}
+            ></RFFCFormRadio>
+            <RFFCFormRadio
+              value="Enabled"
+              name="newstate"
+              label="Set to enabled"
+              validate={false}
+            ></RFFCFormRadio>
+            <RFFCFormRadio
+              value="Disabled"
+              name="newstate"
+              label="Set to disabled"
+              validate={false}
+            ></RFFCFormRadio>
+            <RFFCFormRadio
+              value="enabledForReportingButNotEnforced"
+              name="newstate"
+              label="Set to report only"
+            ></RFFCFormRadio>
+          </CCol>
+        </CRow>
+
         <hr className="my-4" />
         <WhenFieldChanges field="TemplateList" set="rawjson" />
       </CippWizard.Page>

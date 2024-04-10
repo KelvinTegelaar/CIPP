@@ -256,11 +256,6 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Add CA Template',
-        to: '/tenant/conditional/add-template',
-      },
-      {
-        component: CNavItem,
         name: 'Named Locations',
         to: '/tenant/conditional/list-named-locations',
       },
