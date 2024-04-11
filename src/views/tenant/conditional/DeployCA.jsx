@@ -6,7 +6,13 @@ import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { CippWizard } from 'src/components/layout'
 import { WizardTableField } from 'src/components/tables'
 import PropTypes from 'prop-types'
-import { Condition, RFFCFormRadio, RFFCFormSelect, RFFCFormTextarea } from 'src/components/forms'
+import {
+  Condition,
+  RFFCFormRadio,
+  RFFCFormSelect,
+  RFFCFormSwitch,
+  RFFCFormTextarea,
+} from 'src/components/forms'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { OnChange } from 'react-final-form-listeners'
 import CippJsonView from 'src/components/utilities/CippJsonView'
@@ -174,18 +180,13 @@ const AddPolicy = () => {
         <CRow>
           <CCol>
             <label className="mb-3">
-              If your policy has groups or users, how should they be handled?
+              If your policy has groups or users, how should they be handled? Excluded roles will
+              not be affected.
             </label>
             <RFFCFormRadio
               value="leave"
               name="replacename"
-              label="Leave the groups and users in the policy - Their IDs exist in this tenant"
-              validate={false}
-            ></RFFCFormRadio>
-            <RFFCFormRadio
-              value="AllUsers"
-              name="replacename"
-              label="Remove the groups and users from the policy - Apply to all users"
+              label="Leave the groups and users in the policy as is"
               validate={false}
             ></RFFCFormRadio>
             <RFFCFormRadio
@@ -194,6 +195,22 @@ const AddPolicy = () => {
               label="Replace the group and users with the same groups and users based on their display name"
               validate={false}
             ></RFFCFormRadio>
+            <RFFCFormRadio
+              value="AllUsers"
+              name="replacename"
+              label="Remove the groups and users from the policy - Apply to all users. Remove all exclusions"
+              validate={false}
+            ></RFFCFormRadio>
+            <Condition when="replacename" is="AllUsers">
+              <CCallout color="warning">
+                <FontAwesomeIcon icon={faExclamationTriangle} color="warning" />
+                <span>
+                  Warning: This will remove all exclusions and apply to all users. You might be
+                  locked out of your tenant if you have not not excluded any roles. Please make sure
+                  this is the action you want to perform.
+                </span>
+              </CCallout>
+            </Condition>
           </CCol>
         </CRow>
         <CRow className="mb-3">
@@ -224,7 +241,11 @@ const AddPolicy = () => {
             ></RFFCFormRadio>
           </CCol>
         </CRow>
-
+        <CRow>
+          <CCol>
+            <RFFCFormSwitch label="Overwrite Existing policy" name="overwrite" />
+          </CCol>
+        </CRow>
         <hr className="my-4" />
         <WhenFieldChanges field="TemplateList" set="rawjson" />
       </CippWizard.Page>
