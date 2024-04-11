@@ -3,7 +3,11 @@ import { CButton, CCallout, CCol, CForm, CRow, CSpinner, CTooltip } from '@coreu
 import { useSelector } from 'react-redux'
 import { Field, Form } from 'react-final-form'
 import { RFFCFormInput, RFFSelectSearch } from 'src/components/forms'
-import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import {
+  useGenericGetRequestQuery,
+  useLazyGenericGetRequestQuery,
+  useLazyGenericPostRequestQuery,
+} from 'src/store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faEdit, faEye } from '@fortawesome/free-solid-svg-icons'
 import { CippContentCard, CippPage, CippPageList } from 'src/components/layout'
@@ -20,9 +24,6 @@ import countryList from 'src/data/countryList'
 const TestCAPolicy = () => {
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
   const currentDate = new Date()
-  const [startDate, setStartDate] = useState(currentDate)
-  const [endDate, setEndDate] = useState(currentDate)
-
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
   const [refreshState, setRefreshState] = useState(false)
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
@@ -42,11 +43,15 @@ const TestCAPolicy = () => {
     error: usersError,
   } = useListUsersQuery({ tenantDomain })
 
-  const {
-    data: caPolicies = [],
-    isFetching: caIsFetching,
-    error: caError,
-  } = useListConditionalAccessPoliciesQuery({ domain: tenantDomain })
+  const applications = useGenericGetRequestQuery({
+    path: '/api/ListGraphRequest',
+    params: {
+      Endpoint: 'servicePrincipals',
+      TenantFilter: tenantDomain,
+      IgnoreErrors: true,
+      $top: 999,
+    },
+  })
   const columns = [
     {
       name: 'Display Name',
@@ -122,11 +127,13 @@ const TestCAPolicy = () => {
                         <CCol>
                           <RFFSelectSearch
                             label={'Select the application to test.'}
-                            values={caPolicies?.map((ca) => ({
-                              value: ca.id,
+                            values={applications?.data?.Results?.map((ca) => ({
+                              value: ca.appId,
                               name: `${ca.displayName}`,
                             }))}
-                            placeholder={!caIsFetching ? 'Select Application' : 'Loading...'}
+                            placeholder={
+                              !applications.isFetching ? 'Select Application' : 'Loading...'
+                            }
                             name="includeApplications"
                           />
                         </CCol>
@@ -168,7 +175,7 @@ const TestCAPolicy = () => {
                               { value: 'MacOS', name: 'MacOS' },
                               { value: 'Linux', name: 'Linux' },
                             ]}
-                            placeholder={!caIsFetching ? 'Select platform' : 'Loading...'}
+                            placeholder={'Select platform'}
                             name="devicePlatform"
                           />
                         </CCol>
@@ -188,7 +195,7 @@ const TestCAPolicy = () => {
                               { value: 'easSupported', name: 'EAS supported' },
                               { value: 'other', name: 'Other clients' },
                             ]}
-                            placeholder={!caIsFetching ? 'Select client application' : 'Loading...'}
+                            placeholder={'Select client application'}
                             name="clientAppType"
                           />
                         </CCol>
@@ -203,7 +210,7 @@ const TestCAPolicy = () => {
                               { value: 'high', name: 'High' },
                               { value: 'none', name: 'None' },
                             ]}
-                            placeholder={!caIsFetching ? 'Select Sign-in risk' : 'Loading...'}
+                            placeholder={'Select Sign-in risk'}
                             name="SignInRiskLevel"
                           />
                         </CCol>
@@ -218,7 +225,7 @@ const TestCAPolicy = () => {
                               { value: 'high', name: 'High' },
                               { value: 'none', name: 'None' },
                             ]}
-                            placeholder={!caIsFetching ? 'Select User Risk' : 'Loading...'}
+                            placeholder={'Select User Risk'}
                             name="userRiskLevel"
                           />
                         </CCol>
