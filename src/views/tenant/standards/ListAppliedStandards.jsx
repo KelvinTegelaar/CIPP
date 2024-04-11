@@ -235,26 +235,6 @@ const ApplyNewStandard = () => {
       values: { tenant: tenantDomain, ...values.standards },
     })
   }
-  const tableColumns = [
-    {
-      name: 'Tenant',
-      selector: (row) => row['displayName'],
-      sortable: true,
-      exportSelector: 'displayName',
-    },
-
-    {
-      name: 'Applied Standards',
-      selector: (row) => row['StandardsExport'],
-      sortable: true,
-      exportSelector: 'StandardsExport',
-    },
-    {
-      name: 'Actions',
-      cell: Offcanvas,
-      maxWidth: '80px',
-    },
-  ]
   const [intuneGetRequest, intuneTemplates] = useLazyGenericGetRequestQuery()
   const [transportGetRequest, transportTemplates] = useLazyGenericGetRequestQuery()
   const [exConnectorGetRequest, exConnectorTemplates] = useLazyGenericGetRequestQuery()
