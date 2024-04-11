@@ -283,6 +283,12 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/tenant/conditional/test-policy",
+    "name": "Test Conditional Access Policy",
+    "component": "views/tenant/conditional/TestCAPolicy",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/tenant/conditional/list-named-locations",
     "name": "Named Locations",
     "component": "views/tenant/conditional/NamedLocations",
