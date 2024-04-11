@@ -151,10 +151,31 @@ function CippJsonView({
   const [switchRef, setSwitchRef] = useState(false)
   // Adjusting the expanded state to track selections for up to 4 levels
   const [expansionPath, setExpansionPath] = useState([{ object: translatedObject }])
-  console.log(object)
 
   useEffect(() => {
-    const newTranslatedObject = translateAndRemoveKeys(object, removeKeys)
+    const sortObject = (obj) => {
+      const order = ['displayName', 'name', 'state'] // Define the desired order
+      const sortedKeys = Object.keys(obj).sort((a, b) => {
+        const indexA = order.indexOf(a)
+        const indexB = order.indexOf(b)
+        if (indexA === -1 && indexB === -1) {
+          return 0 // If both keys are not in the order array, maintain the original order
+        } else if (indexA === -1) {
+          return 1 // If only key A is not in the order array, move key B to a higher position
+        } else if (indexB === -1) {
+          return -1 // If only key B is not in the order array, move key A to a higher position
+        } else {
+          return indexA - indexB // Sort based on the index in the order array
+        }
+      })
+      const sortedObject = {}
+      sortedKeys.forEach((key) => {
+        sortedObject[key] = obj[key]
+      })
+      return sortedObject
+    }
+
+    const newTranslatedObject = sortObject(translateAndRemoveKeys(sortObject(object), removeKeys))
     setTranslatedObject(newTranslatedObject)
     setExpansionPath([{ object: newTranslatedObject }]) // Reset the expansion path with the new object
     // eslint-disable-next-line react-hooks/exhaustive-deps
