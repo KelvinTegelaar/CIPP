@@ -161,7 +161,7 @@ const AddPolicy = () => {
             <FormSpy>
               {/* eslint-disable react/prop-types */}
               {(props) => {
-                const json = props.values?.rawjson ? JSON.parse(props.values.rawjson) : {}
+                const json = props.values?.rawjson ? JSON.parse(props.values.rawjson) : undefined
                 return (
                   <>
                     <CippJsonView object={json} />
@@ -238,6 +238,8 @@ const AddPolicy = () => {
           <FormSpy>
             {/* eslint-disable react/prop-types */}
             {(props) => {
+              const json = props.values?.rawjson ? JSON.parse(props.values.rawjson) : undefined
+
               return (
                 <>
                   <CRow>
@@ -251,8 +253,8 @@ const AddPolicy = () => {
                           </li>
                         ))}
                       </CCallout>
-                      <h5 className="mb-0">Rule Settings</h5>
-                      <CCallout color="info">{props.values.rawjson}</CCallout>
+                      <h5 className="mb-3">Rule Settings</h5>
+                      <CippJsonView object={json} />
                     </CCol>
                   </CRow>
                 </>

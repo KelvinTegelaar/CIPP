@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import JsonView from '@uiw/react-json-view'
 import { useSelector } from 'react-redux'
 import { useMediaPredicate } from 'react-media-hook'
@@ -8,6 +8,7 @@ import {
   CAccordionBody,
   CAccordionHeader,
   CAccordionItem,
+  CButton,
   CCard,
   CCardBody,
   CCardHeader,
@@ -144,13 +145,60 @@ function CippJsonView({
     currentTheme === 'impact' || (currentTheme === preferredTheme) === 'impact'
       ? githubDarkTheme
       : githubLightTheme
-  const translatedObject = translateAndRemoveKeys(object, removeKeys)
+  const [translatedObject, setTranslatedObject] = useState(() =>
+    translateAndRemoveKeys(object, removeKeys),
+  )
   const [switchRef, setSwitchRef] = useState(false)
-  console.log(translatedObject)
+  // Adjusting the expanded state to track selections for up to 4 levels
+  const [expansionPath, setExpansionPath] = useState([{ object: translatedObject }])
+  console.log(object)
+
+  useEffect(() => {
+    const newTranslatedObject = translateAndRemoveKeys(object, removeKeys)
+    setTranslatedObject(newTranslatedObject)
+    setExpansionPath([{ object: newTranslatedObject }]) // Reset the expansion path with the new object
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(object), JSON.stringify(removeKeys)])
+
+  // Updated to handle deeper level expansions
+  const handleExpand = (level, content) => {
+    const newPath = expansionPath.slice(0, level)
+    newPath.push({ object: content })
+    setExpansionPath(newPath)
+  }
+  const renderContent = (content, level = 0) => {
+    if (Array.isArray(content)) {
+      return (
+        <ul>
+          {content.map((item, index) => (
+            <li key={index}>{JSON.stringify(item, null, 2)}</li>
+          ))}
+        </ul>
+      )
+    } else if (typeof content === 'object') {
+      return Object.entries(content).map(([key, value]) => (
+        <div key={key}>
+          {key}:
+          {typeof value === 'object' ? (
+            <CButton onClick={() => handleExpand(level + 1, value)} variant="ghost">
+              <FontAwesomeIcon className="me-1" icon={'expand'} />
+              Show More
+            </CButton>
+          ) : (
+            ` ${value}`
+          )}
+        </div>
+      ))
+    } else if (typeof content === 'string') {
+      return content.replace(/(^"|"$)/g, '') // Remove quotes
+    }
+    return String(content)
+  }
+
   return (
     <div className="mb-3">
       <CAccordion alwaysOpen>
-        <CAccordionItem itemKey={'general-1'} key={`general-1`}>
+        <CAccordionItem itemKey="general-1">
           <CAccordionHeader>
             {object.displayName ? `${object.displayName} Settings` : 'Settings'}
           </CAccordionHeader>
@@ -166,20 +214,19 @@ function CippJsonView({
               />
             ) : (
               <CRow>
-                {translatedObject &&
-                  Object.keys(translatedObject).map((key) => (
-                    <CCol xs={4} key={key}>
-                      <CCard className={`content-card mb-3`}>
+                {expansionPath.map((expansion, index) => (
+                  <CCol key={index} xs={3}>
+                    {Object.entries(expansion.object).map(([key, value]) => (
+                      <CCard key={key} className="content-card mb-3">
                         <CCardHeader className="d-flex justify-content-between align-items-center">
                           <CCardTitle>{key}</CCardTitle>
-                          <FontAwesomeIcon icon={'cog'} />
+                          <FontAwesomeIcon icon="cog" />
                         </CCardHeader>
-                        <CCardBody>
-                          <pre>{JSON.stringify(translatedObject[key], null, 2)}</pre>
-                        </CCardBody>
+                        <CCardBody>{renderContent(value, index)}</CCardBody>
                       </CCard>
-                    </CCol>
-                  ))}
+                    ))}
+                  </CCol>
+                ))}
               </CRow>
             )}
           </CAccordionBody>
