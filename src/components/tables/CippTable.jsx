@@ -1,5 +1,5 @@
 import React, { useRef, useMemo, useState, useCallback, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { ExportCsvButton, ExportPDFButton } from 'src/components/buttons'
 import {
   CSpinner,
@@ -10,9 +10,6 @@ import {
   CDropdownMenu,
   CDropdownItem,
   CButton,
-  CModal,
-  CModalBody,
-  CModalTitle,
   CCallout,
   CFormSelect,
   CAccordion,
@@ -32,15 +29,15 @@ import {
   faFilePdf,
   faSearch,
   faSync,
-  faTasks,
 } from '@fortawesome/free-solid-svg-icons'
 import { cellGenericFormatter } from './CellGenericFormat'
 import { ModalService } from '../utilities'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
-import { ConfirmModal } from '../utilities/SharedModal'
 import { debounce } from 'lodash-es'
 import { useSearchParams } from 'react-router-dom'
 import CopyToClipboard from 'react-copy-to-clipboard'
+import { setDefaultColumns } from 'src/store/features/app'
+import M365Licenses from 'src/data/M365Licenses'
 
 const FilterComponent = ({ filterText, onFilter, onClear, filterlist, onFilterPreset }) => (
   <>
@@ -126,6 +123,7 @@ export default function CippTable({
   exportFiltered = false,
   filterlist,
   showFilter = true,
+  endpointName,
   tableProps: {
     keyField = 'id',
     theme = 'cyberdrain',
@@ -150,10 +148,45 @@ export default function CippTable({
 }) {
   const inputRef = useRef('')
   const [loopRunning, setLoopRunning] = React.useState(false)
+  const defaultColumns = useSelector((state) => state.app.defaultColumns[endpointName])
+  const [defaultColumnsSet, setDefaultColumnsSet] = React.useState(false)
   const [massResults, setMassResults] = React.useState([])
   const [filterText, setFilterText] = React.useState(defaultFilterText)
   const [filterviaURL, setFilterviaURL] = React.useState(false)
+  const [originalColumns, setOrginalColumns] = React.useState(columns)
   const [updatedColumns, setUpdatedColumns] = React.useState(columns)
+  if (defaultColumns && defaultColumnsSet === false && endpointName) {
+    const defaultColumnsArray = defaultColumns.split(',').filter((item) => item)
+
+    const actionsColumn = columns.length > 0 ? columns[columns.length - 1] : null
+
+    let tempColumns = actionsColumn ? columns.slice(0, -1) : [...columns]
+
+    defaultColumnsArray.forEach((columnName) => {
+      if (!tempColumns.find((c) => c.exportSelector === columnName && c?.omit !== true)) {
+        tempColumns.push({
+          name: columnName,
+          selector: (row) => row[columnName],
+          sortable: true,
+          exportSelector: columnName,
+          cell: cellGenericFormatter(),
+        })
+      }
+    })
+
+    if (actionsColumn) {
+      tempColumns.push(actionsColumn)
+    }
+    let newColumns = tempColumns.filter(
+      (column) => defaultColumnsArray.includes(column.exportSelector) || column === actionsColumn,
+    )
+    setUpdatedColumns(newColumns)
+    setDefaultColumnsSet(true)
+  }
+  if (!endpointName && defaultColumnsSet === false) {
+    setUpdatedColumns(columns)
+    setDefaultColumnsSet(true)
+  }
   const [selectedRows, setSelectedRows] = React.useState(false)
   const [genericGetRequest, getResults] = useLazyGenericGetRequestQuery()
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
@@ -169,6 +202,32 @@ export default function CippTable({
     setFilterText(searchParams.get('tableFilter'))
     setFilterviaURL(true)
     searchParams.delete('updateTableFilter')
+  }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const addColumn = (columnname) => {
+    let alreadyInArray = updatedColumns.some(
+      (o) => o.exportSelector === columnname && o?.omit !== true,
+    )
+    let newColumns = [...updatedColumns]
+    const actionsColumn = newColumns.length > 0 ? newColumns.pop() : null
+
+    if (!alreadyInArray) {
+      const newColumn = {
+        name: columnname,
+        selector: (row) => row[columnname],
+        sortable: true,
+        exportSelector: columnname,
+        cell: cellGenericFormatter(),
+      }
+      newColumns.push(newColumn)
+    } else {
+      newColumns = newColumns.filter((o) => o.exportSelector !== columnname)
+    }
+    if (actionsColumn) {
+      newColumns.push(actionsColumn)
+    }
+    setUpdatedColumns(newColumns)
   }
 
   const handleSelectedChange = ({ selectedRows }) => {
@@ -218,28 +277,29 @@ export default function CippTable({
       debounceSetGraphFilter(query)
       return data
     } else if (filterText.startsWith('Complex:')) {
-      const conditions = filterText.slice(9).split(';')
+      // Split conditions by ';' and 'or', and trim spaces
+      const conditions = filterText
+        .slice(9)
+        .split(/\s*or\s*|\s*;\s*/i) // Split by 'or' or ';', case insensitive, with optional spaces
+        .map((condition) => condition.trim())
 
-      return conditions.reduce((filteredData, condition) => {
-        const match = condition.trim().match(/(\w+)\s*(eq|ne|like|notlike|gt|lt)\s*(.+)/)
+      return data.filter((item) => {
+        // Check if any condition is met for the item
+        return conditions.some((condition) => {
+          const match = condition.match(/(\w+)\s*(eq|ne|like|notlike|gt|lt)\s*(.+)/)
 
-        if (!match) {
-          return filteredData // Keep the current filtered data as is
-        }
+          if (!match) return false
 
-        let [property, operator, value] = match.slice(1)
-        value = escapeRegExp(value) // Escape special characters
+          let [property, operator, value] = match.slice(1)
+          value = escapeRegExp(value) // Escape special characters
 
-        return filteredData.filter((item) => {
-          // Find the actual key in the item that matches the property (case insensitive)
           const actualKey = Object.keys(item).find(
             (key) => key.toLowerCase() === property.toLowerCase(),
           )
 
           if (!actualKey) {
-            //set the error message so the user understands the key is not found.
             console.error(`FilterError: Property "${property}" not found.`)
-            return false // Keep the item if the property is not found
+            return false
           }
 
           switch (operator) {
@@ -256,10 +316,10 @@ export default function CippTable({
             case 'lt':
               return parseFloat(item[actualKey]) < parseFloat(value)
             default:
-              return true
+              return false // Should not reach here normally
           }
         })
-      }, data)
+      })
     } else {
       return data.filter(
         (item) => JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !== -1,
@@ -267,17 +327,43 @@ export default function CippTable({
     }
   }
 
+  // Helper functions like `debounce` and `escapeRegExp` should be defined somewhere in your code
+  // For example, a simple escapeRegExp function could be:
   const filteredItems = Array.isArray(data) ? filterData(data, filterText) : []
 
   const applyFilter = (e) => {
     setFilterText(e.target.value)
   }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const setColumnDefaultLayout = (endpoint, columns) => {
+    dispatch(setDefaultColumns({ endpoint, columns }))
+  }
 
+  const resetDropdown = () => {
+    setUpdatedColumns(originalColumns)
+    setColumnDefaultLayout(endpointName, null)
+  }
+  const dispatch = useDispatch()
   useEffect(() => {
-    if (columns !== updatedColumns) {
-      setUpdatedColumns(columns)
+    if (columns.length !== updatedColumns.length) {
+      setUpdatedColumns(updatedColumns)
+      if (endpointName) {
+        setColumnDefaultLayout(
+          endpointName,
+          updatedColumns.map((column) => column.exportSelector).join(','),
+        )
+      }
     }
-  }, [columns, updatedColumns])
+  }, [
+    columns,
+    defaultColumns,
+    dispatch,
+    dynamicColumns,
+    originalColumns,
+    endpointName,
+    setColumnDefaultLayout,
+    updatedColumns,
+  ])
 
   createTheme(
     'cyberdrain',
@@ -389,14 +475,43 @@ export default function CippTable({
               }
               const newModalBody = {}
               for (let [objName, objValue] of Object.entries(modalBody)) {
-                if (objValue.toString().startsWith('!')) {
+                if (typeof objValue === 'object' && objValue !== null) {
+                  newModalBody[objName] = {}
+                  for (let [nestedObjName, nestedObjValue] of Object.entries(objValue)) {
+                    if (typeof nestedObjValue === 'string' && nestedObjValue.startsWith('!')) {
+                      newModalBody[objName][nestedObjName] = row[nestedObjValue.replace('!', '')]
+                    } else {
+                      newModalBody[objName][nestedObjName] = nestedObjValue
+                    }
+                  }
+                } else if (typeof objValue === 'string' && objValue.startsWith('!')) {
                   newModalBody[objName] = row[objValue.replace('!', '')]
+                } else {
+                  newModalBody[objName] = objValue
                 }
               }
               const NewModalUrl = `${modalUrl.split('?')[0]}?${urlParams.toString()}`
+              const selectedValue = inputRef.current.value
+              let additionalFields = {}
+              if (inputRef.current.nodeName === 'SELECT') {
+                const selectedItem = dropDownInfo.data.find(
+                  (item) => item[modalDropdown.valueField] === selectedValue,
+                )
+                if (selectedItem && modalDropdown.addedField) {
+                  Object.keys(modalDropdown.addedField).forEach((key) => {
+                    additionalFields[key] = selectedItem[modalDropdown.addedField[key]]
+                  })
+                }
+              }
+
               const results = await genericPostRequest({
                 path: NewModalUrl,
-                values: { ...modalBody, ...newModalBody, ...{ input: inputRef.current.value } },
+                values: {
+                  ...modalBody,
+                  ...newModalBody,
+                  ...additionalFields,
+                  ...{ input: inputRef.current.value },
+                },
               })
               resultsarr.push(results)
               setMassResults(resultsarr)
@@ -466,6 +581,7 @@ export default function CippTable({
     }
 
     const executeselectedAction = (item) => {
+      //  console.log(item)
       setModalContent({
         item,
       })
@@ -517,91 +633,66 @@ export default function CippTable({
         return null
       })
 
-      var exportData = filteredItems
+      // Define the flatten function
+      const flatten = (obj, prefix = '') => {
+        return Object.keys(obj).reduce((output, key) => {
+          const newKey = prefix ? `${prefix}.${key}` : key
+          const value = obj[key] === null ? '' : obj[key]
 
-      var filtered =
-        Array.isArray(exportData) && exportData.length > 0
-          ? exportData.map((obj) =>
-              // eslint-disable-next-line no-sequences
-              /* keys.reduce((acc, curr) => ((acc[curr] = obj[curr]), acc), {}),*/
-              keys.reduce((acc, curr) => {
-                const key = curr.split('/')
-                if (key.length > 1) {
-                  let property = obj
-                  for (let x = 0; x < key.length; x++) {
-                    if (
-                      Object.prototype.hasOwnProperty.call(property, key[x]) &&
-                      property[key[x]] !== null
-                    ) {
-                      property = property[key[x]]
-                    } else {
-                      property = 'n/a'
-                      break
-                    }
-                  }
-                  acc[curr] = property
-                } else {
-                  if (typeof exportFormatter[curr] === 'function') {
-                    acc[curr] = exportFormatter[curr]({ cell: obj[curr] })
-                  } else {
-                    acc[curr] = obj[curr]
-                  }
-                }
-                return acc
-              }, {}),
-            )
-          : []
-
-      const flatten = (obj, prefix) => {
-        let output = {}
-        for (let k in obj) {
-          let val = obj[k]
-          const newKey = prefix ? prefix + '.' + k : k
-          if (typeof val === 'object') {
-            if (Array.isArray(val)) {
-              const { ...arrToObj } = val
-              const newObj = flatten(arrToObj, newKey)
-              output = { ...output, ...newObj }
-            } else {
-              const newObj = flatten(val, newKey)
-              output = { ...output, ...newObj }
-            }
+          if (typeof value === 'object' && !Array.isArray(value)) {
+            Object.assign(output, flatten(value, newKey))
           } else {
-            output = { ...output, [newKey]: val }
+            output[newKey] = value
           }
-        }
-        return output
-      }
-      filtered = filtered.map((item) => flatten(item))
-
-      let dataFlat
-
-      if (Array.isArray(data)) {
-        dataFlat = data.map((item) => flatten(item))
-      } else {
-        dataFlat = []
+          return output
+        }, {})
       }
 
+      // Define the applyFormatter function
+      const applyFormatter = (obj) => {
+        return Object.keys(obj).reduce((acc, key) => {
+          const formatter = exportFormatter[key]
+          // Since the keys after flattening will be dot-separated, we need to adjust this to support nested keys if necessary.
+          const keyParts = key.split('.')
+          const finalKeyPart = keyParts[keyParts.length - 1]
+          const formattedValue =
+            typeof formatter === 'function' ? formatter({ cell: obj[key] }) : obj[key]
+          acc[key] = formattedValue
+          return acc
+        }, {})
+      }
+
+      // Process exportData function
+      const processExportData = (exportData, selectedColumns) => {
+        //filter out the columns that are not selected via selectedColumns
+        exportData = exportData.map((item) => {
+          return Object.keys(item)
+            .filter((key) => selectedColumns.find((o) => o.exportSelector === key))
+            .reduce((obj, key) => {
+              obj[key] = item[key]
+              return obj
+            }, {})
+        })
+        return Array.isArray(exportData) && exportData.length > 0
+          ? exportData.map((obj) => {
+              const flattenedObj = flatten(obj)
+              return applyFormatter(flattenedObj)
+            })
+          : []
+      }
+
+      // Applying the processExportData function to both filteredItems and data
+      var filtered = processExportData(filteredItems, updatedColumns)
+
+      // Adjusted dataFlat processing to include formatting
+      let dataFlat = Array.isArray(data)
+        ? data.map((item) => {
+            const flattenedItem = flatten(item)
+            return applyFormatter(flattenedItem)
+          })
+        : []
       if (!disablePDFExport) {
         if (dynamicColumns === true) {
-          const addColumn = (columnname) => {
-            var index = columns.length - 1
-            let alreadyInArray = columns.find((o) => o.exportSelector === columnname)
-            if (!alreadyInArray) {
-              columns.splice(index, 0, {
-                name: columnname,
-                selector: (row) => row[columnname],
-                sortable: true,
-                exportSelector: columnname,
-                cell: cellGenericFormatter(),
-              })
-            } else {
-              let indexOfExisting = columns.findIndex((o) => o.exportSelector === columnname)
-              columns = columns.splice(indexOfExisting, 1)
-            }
-            setUpdatedColumns(Date())
-          }
-
           defaultActions.push([
             <CDropdown key={'column-selector'} className="me-2" variant="input-group">
               <CDropdownToggle
@@ -614,13 +705,14 @@ export default function CippTable({
                 <FontAwesomeIcon icon={faColumns} />
               </CDropdownToggle>
               <CDropdownMenu>
+                <CDropdownItem onClick={() => resetDropdown()}>Reset to default</CDropdownItem>
                 {dataKeys() &&
                   dataKeys().map((item, idx) => {
                     return (
                       <CDropdownItem key={idx} onClick={() => addColumn(item)}>
-                        {columns.find((o) => o.exportSelector === item) && (
-                          <FontAwesomeIcon icon={faCheck} />
-                        )}{' '}
+                        {updatedColumns.find(
+                          (o) => o.exportSelector === item && o?.omit !== true,
+                        ) && <FontAwesomeIcon icon={faCheck} />}{' '}
                         {item}
                       </CDropdownItem>
                     )
@@ -745,18 +837,27 @@ export default function CippTable({
       </>
     )
   }, [
+    refreshFunction,
     actions,
-    selectedRows,
     disablePDFExport,
     disableCSVExport,
+    selectedRows,
+    actionsList,
+    showFilter,
     filterText,
     filterlist,
     resetPaginationToggle,
-    data,
-    columns,
-    reportName,
-    selectedRows,
+    handleModal,
+    getDrowndownInfo,
     filteredItems,
+    columns,
+    data,
+    dynamicColumns,
+    reportName,
+    resetDropdown,
+    updatedColumns,
+    addColumn,
+    setGraphFilter,
   ])
   const tablePageSize = useSelector((state) => state.app.tablePageSize)
   const [codeCopied, setCodeCopied] = useState(false)
@@ -770,7 +871,7 @@ export default function CippTable({
     <div className="ms-n3 me-n3 cipp-tablewrapper">
       {!isFetching && error && <CCallout color="info">Error loading data</CCallout>}
       <div>
-        {(columns.length === updatedColumns.length || !dynamicColumns) && (
+        {(updatedColumns || !dynamicColumns) && (
           <>
             {(massResults.length >= 1 || loopRunning) && (
               <CCallout color="info">
@@ -867,7 +968,7 @@ export default function CippTable({
               responsive={responsive}
               dense={dense}
               striped={striped}
-              columns={columns}
+              columns={dynamicColumns ? updatedColumns : columns}
               data={filteredItems}
               expandableRows={expandableRows}
               expandableRowsComponent={expandableRowsComponent}
