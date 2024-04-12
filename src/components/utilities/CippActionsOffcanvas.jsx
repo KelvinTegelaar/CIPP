@@ -40,7 +40,7 @@ export default function CippActionsOffcanvas(props) {
     (modalMessage, modalUrl, modalType = 'GET', modalBody, modalInput, modalDropdown) => {
       const handlePostConfirm = () => {
         const selectedValue = inputRef.current.value
-        console.log(inputRef)
+        //console.log(inputRef)
         let additionalFields = {}
 
         if (inputRef.current.nodeName === 'SELECT') {
