@@ -10,9 +10,15 @@ TimeAgo.addDefaultLocale(en)
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import routes from 'src/routes'
+import { useAuthCheck } from './components/utilities/CippauthCheck'
+import importsMap from './importsMap'
+
 library.add(fas)
 
-const dynamicImport = (path) => React.lazy(() => import(`./${path}`))
+const dynamicImport = (path) => {
+  return importsMap[path] || null
+}
+
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
 const Page401 = React.lazy(() => import('./views/pages/page401/Page401'))
 const Page403 = React.lazy(() => import('./views/pages/page403/Page403'))
@@ -22,12 +28,6 @@ const PageLogOut = React.lazy(() => import('src/views/pages/LogoutRedirect/PageL
 const Login = React.lazy(() => import('./views/pages/login/Login'))
 const Logout = React.lazy(() => import('./views/pages/login/Logout'))
 //we loop through the routes array, dynamicly create the component by using dynamicImport, add the component to the route array as 'component' key.
-
-routes.forEach((route) => {
-  if (route.component) {
-    route['component'] = dynamicImport(route.component)
-  }
-})
 
 const App = () => {
   return (
@@ -54,6 +54,9 @@ const App = () => {
           >
             {routes.map((route, idx) => {
               const allowedRoles = route.allowedRoles
+              const Routecomponent = dynamicImport(route.path)
+              console.log('route', route)
+              console.log('Routecomponent', Routecomponent)
               return (
                 route.component && (
                   <Route
@@ -68,7 +71,7 @@ const App = () => {
                             <title>CIPP - {route.name}</title>
                           </Helmet>
                           <ErrorBoundary key={route.name}>
-                            <route.component />
+                            <Routecomponent />
                           </ErrorBoundary>
                         </Suspense>
                       </PrivateRoute>
