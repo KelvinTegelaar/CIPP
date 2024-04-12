@@ -2,7 +2,9 @@ import React, { Suspense } from 'react'
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
 import { PrivateRoute, FullScreenLoading, ErrorBoundary } from 'src/components/utilities'
 import 'src/scss/style.scss'
+import routes from 'src/routes'
 import { Helmet } from 'react-helmet-async'
+import adminRoutes from './adminRoutes'
 import Skeleton from 'react-loading-skeleton'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en.json'
@@ -20,6 +22,8 @@ const dynamicImport = (path) => {
 }
 
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
+
+// Pages
 const Page401 = React.lazy(() => import('./views/pages/page401/Page401'))
 const Page403 = React.lazy(() => import('./views/pages/page403/Page403'))
 const Page404 = React.lazy(() => import('./views/pages/page404/Page404'))
@@ -59,13 +63,14 @@ const App = () => {
               console.log('Routecomponent', Routecomponent)
               return (
                 route.component && (
+                route.component && (
                   <Route
                     key={`route-${idx}`}
                     path={route.path}
                     exact={route.exact}
                     name={route.name}
                     element={
-                      <PrivateRoute allowedRoles={allowedRoles}>
+                      <PrivateRoute routeType="admin">
                         <Suspense fallback={<Skeleton />}>
                           <Helmet>
                             <title>CIPP - {route.name}</title>

@@ -14,9 +14,9 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import { Form } from 'react-final-form'
 import { RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms'
-import _nav from 'src/_nav'
 
 import { useGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import 'react-datepicker/dist/react-datepicker.css'
 import TenantListSelector from 'src/components/utilities/TenantListSelector'
