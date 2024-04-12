@@ -24,15 +24,15 @@
     },
     {
       "route": "/api/ExecSAMSetup",
-      "allowedRoles": ["admin", "editor", "readonly", "authenticated", "anonymous" , "Projecten"]
+      "allowedRoles": ["admin", "editor", "readonly", "authenticated", "anonymous" , "projecten"]
     },
     {
       "route": "/api/AddStandardsDeploy",
-      "allowedRoles": ["admin", "Projecten"]
+      "allowedRoles": ["admin", "projecten"]
     },
     {
       "route": "/LogoutRedirect",
-      "allowedRoles": ["admin", "editor", "readonly", "authenticated", "anonymous", "Projecten"]
+      "allowedRoles": ["admin", "editor", "readonly", "authenticated", "anonymous", "projecten"]
     },
     {
       "route": "/404",
@@ -40,19 +40,19 @@
     },
     {
       "route": "/api/RemoveStandard",
-      "allowedRoles": ["admin", "Projecten"]
+      "allowedRoles": ["admin", "projecten"]
     },
     {
       "route": "/api/add*",
-      "allowedRoles": ["admin", "editor", "Projecten"]
+      "allowedRoles": ["admin", "editor", "projecten"]
     },
     {
       "route": "/api/edit*",
-      "allowedRoles": ["admin", "editor", "Projecten"]
+      "allowedRoles": ["admin", "editor", "projecten"]
     },
     {
       "route": "/api/ExecSendPush",
-      "allowedRoles": ["admin", "editor", "readonly", "Projecten"]
+      "allowedRoles": ["admin", "editor", "readonly", "projecten"]
     },
     {
       "route": "/api/ExecExcludeTenant",
@@ -60,11 +60,11 @@
     },
     {
       "route": "/api/Exec*",
-      "allowedRoles": ["admin", "editor", "Projecten"]
+      "allowedRoles": ["admin", "editor", "projecten"]
     },
     {
       "route": "/api/Remove*",
-      "allowedRoles": ["admin", "editor", "Projecten"]
+      "allowedRoles": ["admin", "editor", "projecten"]
     },
     {
       "route": "/cipp/*",
@@ -72,19 +72,19 @@
     },
     {
       "route": "/tenant/standards/*",
-      "allowedRoles": ["admin", "Projecten"]
+      "allowedRoles": ["admin", "projecten"]
     },
     {
       "route": "/",
-      "allowedRoles": ["admin", "editor", "readonly", "reader", "authenticated", "anonymous", "Projecten"]
+      "allowedRoles": ["admin", "editor", "readonly", "reader", "authenticated", "anonymous", "projecten"]
     },
     {
       "route": "/api/Public*",
-      "allowedRoles": ["admin", "editor", "readonly", "reader", "authenticated", "anonymous", "Projecten"]
+      "allowedRoles": ["admin", "editor", "readonly", "reader", "authenticated", "anonymous", "projecten"]
     },
     {
       "route": "*",
-      "allowedRoles": ["admin", "editor", "readonly", "reader", "Projecten"]
+      "allowedRoles": ["admin", "editor", "readonly", "reader", "projecten"]
     }
   ],
   "navigationFallback": {
