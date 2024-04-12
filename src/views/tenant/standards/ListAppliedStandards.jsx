@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import {
   CButton,
   CCallout,
@@ -12,8 +12,9 @@ import {
   CAccordionItem,
   CWidgetStatsB,
   CBadge,
+  CFormInput,
 } from '@coreui/react'
-import { Form } from 'react-final-form'
+import { Form, FormSpy } from 'react-final-form'
 import {
   Condition,
   RFFCFormInput,
@@ -37,54 +38,12 @@ import { CippTable, cellBooleanFormatter } from 'src/components/tables'
 import allStandardsList from 'src/data/standards'
 import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
 import GDAPRoles from 'src/data/GDAPRoles'
+import Select from 'react-select'
 
-const RefreshAction = () => {
-  const [execStandards, execStandardsResults] = useLazyGenericGetRequestQuery()
-  const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
-  const showModal = (selectedTenant) =>
-    ModalService.confirm({
-      body: (
-        <div>
-          Are you sure you want to run the standards now? <br />
-          <i>Please note: this runs every three hours automatically.</i>
-        </div>
-      ),
-      onConfirm: () =>
-        execStandards({ path: `api/ExecStandardsRun?Tenantfilter=${selectedTenant}` }),
-    })
-
-  return (
-    <>
-      {execStandardsResults.data?.Results ===
-        'Already running. Please wait for the current instance to finish' && (
-        <div> {execStandardsResults.data?.Results}</div>
-      )}
-      <p>
-        <CButton onClick={() => showModal('AllTenants')} size="sm" className="m-1">
-          {execStandardsResults.isLoading && <CSpinner size="sm" />}
-          {execStandardsResults.error && (
-            <FontAwesomeIcon icon={faExclamationTriangle} className="pe-1" />
-          )}
-          {execStandardsResults.isSuccess && <FontAwesomeIcon icon={faCheck} className="me-2" />}
-          Run Standards Now (All Tenants)
-        </CButton>
-        <CButton onClick={() => showModal(tenantDomain)} size="sm" className="m-1">
-          {execStandardsResults.isLoading && <CSpinner size="sm" />}
-          {execStandardsResults.error && (
-            <FontAwesomeIcon icon={faExclamationTriangle} className="pe-1" />
-          )}
-          {execStandardsResults.isSuccess && <FontAwesomeIcon icon={faCheck} className="me-2" />}
-          Run Standards Now (Selected Tenant)
-        </CButton>
-      </p>
-    </>
-  )
-}
 const DeleteAction = () => {
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
 
   const [execStandards, execStandardsResults] = useLazyGenericGetRequestQuery()
-
   const showModal = () =>
     ModalService.confirm({
       body: <div>Are you sure you want to delete this standard?</div>,
@@ -109,8 +68,107 @@ const DeleteAction = () => {
   )
 }
 const ApplyNewStandard = () => {
+  const [templateStandard, setTemplateStandard] = useState()
+  console.log(templateStandard)
+  const RefreshAction = () => {
+    const [execStandards, execStandardsResults] = useLazyGenericGetRequestQuery()
+    const {
+      data: listStandardTemplates = [],
+      isFetching,
+      isSuccess,
+      isError,
+    } = useGenericGetRequestQuery({
+      path: 'api/listStandardTemplates',
+    })
+    const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
+    const showModal = (selectedTenant) =>
+      ModalService.confirm({
+        body: (
+          <div>
+            Are you sure you want to run the standards now? <br />
+            <i>Please note: this runs every three hours automatically.</i>
+          </div>
+        ),
+        onConfirm: () =>
+          execStandards({ path: `api/ExecStandardsRun?Tenantfilter=${selectedTenant}` }),
+      })
+    const ourRef = useRef()
+    const TemplateModal = () =>
+      ModalService.open({
+        body: (
+          <div>
+            {isFetching && <CSpinner />}
+            {isError && 'Something went wrong loading your templates'}
+            {isSuccess && (
+              <Select
+                ref={ourRef}
+                className="react-select-container me-3"
+                classNamePrefix="react-select"
+                options={listStandardTemplates?.map((user) => ({
+                  value: user,
+                  label: `${user.name}`,
+                }))}
+                isClearable={true}
+                name="usageLocation"
+                placeholder="Type to search..."
+                label="Copy properties from other user"
+                onChange={(current) => setTemplateStandard(current)}
+              />
+            )}
+          </div>
+        ),
+      })
+    return (
+      <>
+        {execStandardsResults.data?.Results ===
+          'Already running. Please wait for the current instance to finish' && (
+          <div> {execStandardsResults.data?.Results}</div>
+        )}
+        <p>
+          <CButton onClick={() => TemplateModal('Load')} size="sm" className="m-1">
+            {execStandardsResults.isLoading && <CSpinner size="sm" />}
+            {execStandardsResults.error && (
+              <FontAwesomeIcon icon={faExclamationTriangle} className="pe-1" />
+            )}
+            {execStandardsResults.isSuccess && <FontAwesomeIcon icon={faCheck} className="me-2" />}
+            Load Template
+          </CButton>
+          <CButton onClick={() => showModal('AllTenants')} size="sm" className="m-1">
+            {execStandardsResults.isLoading && <CSpinner size="sm" />}
+            {execStandardsResults.error && (
+              <FontAwesomeIcon icon={faExclamationTriangle} className="pe-1" />
+            )}
+            {execStandardsResults.isSuccess && <FontAwesomeIcon icon={faCheck} className="me-2" />}
+            Run Standards Now (All Tenants)
+          </CButton>
+          <CButton onClick={() => showModal(tenantDomain)} size="sm" className="m-1">
+            {execStandardsResults.isLoading && <CSpinner size="sm" />}
+            {execStandardsResults.error && (
+              <FontAwesomeIcon icon={faExclamationTriangle} className="pe-1" />
+            )}
+            {execStandardsResults.isSuccess && <FontAwesomeIcon icon={faCheck} className="me-2" />}
+            Run Standards Now (Selected Tenant)
+          </CButton>
+        </p>
+      </>
+    )
+  }
+  const ourRef = useRef()
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
-
+  const [execTemplateSave, execSaveResults] = useLazyGenericPostRequestQuery()
+  const templateSave = (templateValues) =>
+    ModalService.confirm({
+      body: (
+        <div>
+          <CFormInput type="text" name="name" label="Template Name" ref={ourRef} />
+        </div>
+      ),
+      onConfirm: () =>
+        execTemplateSave({
+          path: `api/AddStandardsTemplate`,
+          values: { name: ourRef.current?.value, ...templateValues },
+        }),
+    })
   const Offcanvas = (row, rowIndex, formatExtraData) => {
     const [ocVisible, setOCVisible] = useState(false)
     const handleDeleteIntuneTemplate = (apiurl, message) => {
@@ -164,7 +222,6 @@ const ApplyNewStandard = () => {
   })
 
   const handleSubmit = async (values) => {
-    // @todo: clean this up api sided so we don't need to perform weird tricks.
     Object.keys(values.standards).filter(function (x) {
       if (values.standards[x] === false) {
         delete values.standards[x]
@@ -172,37 +229,18 @@ const ApplyNewStandard = () => {
       return null
     })
 
-    values.standards[`Select_${tenantDomain}`] = tenantDomain
-
     //filter on only objects that are 'true'
-    genericPostRequest({ path: '/api/AddStandardsDeploy', values: values.standards })
+    genericPostRequest({
+      path: '/api/AddStandardsDeploy',
+      values: { tenant: tenantDomain, ...values.standards },
+    })
   }
-  const tableColumns = [
-    {
-      name: 'Tenant',
-      selector: (row) => row['displayName'],
-      sortable: true,
-      exportSelector: 'displayName',
-    },
-
-    {
-      name: 'Applied Standards',
-      selector: (row) => row['StandardsExport'],
-      sortable: true,
-      exportSelector: 'StandardsExport',
-    },
-    {
-      name: 'Actions',
-      cell: Offcanvas,
-      maxWidth: '80px',
-    },
-  ]
   const [intuneGetRequest, intuneTemplates] = useLazyGenericGetRequestQuery()
   const [transportGetRequest, transportTemplates] = useLazyGenericGetRequestQuery()
   const [exConnectorGetRequest, exConnectorTemplates] = useLazyGenericGetRequestQuery()
   const [caGetRequest, caTemplates] = useLazyGenericGetRequestQuery()
   const [groupGetRequest, groupTemplates] = useLazyGenericGetRequestQuery()
-  const initialValues = listStandardResults[0]
+  const initialValues = templateStandard ? templateStandard.value : listStandardResults[0]
   const allTenantsStandard = listStandardsAllTenants.find(
     (tenant) => tenant.displayName === 'AllTenants',
   )
@@ -497,7 +535,7 @@ const ApplyNewStandard = () => {
                                                 <RFFCFormSwitch
                                                   name={component.name}
                                                   label={component.label}
-                                                  initialValue={component.default}
+                                                  defaultValue={component.default}
                                                 />
                                               )}
                                               {component.type === 'AdminRolesMultiSelect' && (
@@ -809,13 +847,13 @@ const ApplyNewStandard = () => {
                           )}
                           <CRow className="mb-3">
                             <CCol md={3}>
-                              <CButton type="submit" disabled={submitting}>
+                              <CButton className="me-1" type="submit" disabled={submitting}>
                                 Save
                                 {postResults.isFetching && (
                                   <FontAwesomeIcon
                                     icon={faCircleNotch}
                                     spin
-                                    className="ms-2"
+                                    className="m-2"
                                     size="1x"
                                   />
                                 )}
@@ -825,6 +863,23 @@ const ApplyNewStandard = () => {
                               {listStandardResults[0].appliedBy && (
                                 <DeleteAction key="deleteAction" />
                               )}
+                              <FormSpy>
+                                {/* eslint-disable react/prop-types */}
+                                {(props) => {
+                                  return (
+                                    <>
+                                      <CButton
+                                        className="me-3"
+                                        type="submit"
+                                        onClick={() => templateSave(props.values)}
+                                        disabled={submitting}
+                                      >
+                                        Save as template
+                                      </CButton>
+                                    </>
+                                  )
+                                }}
+                              </FormSpy>
                             </CCol>
                           </CRow>
                         </CRow>
