@@ -31,13 +31,13 @@ const AppFooter = () => {
             <CImage src={rewst} alt="Rewst" />
           </CLink>
           <CLink
-            className="me-2"
+            className="me-1"
             href="https://www.augmentt.com/?utm_source=cipp&utm_medium=referral&utm_campaign=2024"
             target="_blank"
           >
             <CImage src={augmentt} alt="Augmentt" />
           </CLink>
-          <CLink className="me-2" href="https://ninjaone.com" target="_blank">
+          <CLink className="me-1" href="https://ninjaone.com" target="_blank">
             <CImage src={ninjaone} alt="NinjaOne" />
           </CLink>
         </p>
