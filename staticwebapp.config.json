@@ -36,7 +36,7 @@
     },
     {
       "route": "/404",
-      "allowedRoles": ["admin", "editor", "readonly", "authenticated", "anonymous"]
+      "allowedRoles": ["admin", "editor", "readonly", "authenticated", "anonymous", "projecten"]
     },
     {
       "route": "/api/RemoveStandard",
