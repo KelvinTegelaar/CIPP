@@ -21,7 +21,7 @@ export const useRouteNavCompare = (navigation) => {
         ) {
           return true
         } else {
-          console.log('Removing route', item)
+          //console.log('Removing route', item)
           return false
         }
       })
