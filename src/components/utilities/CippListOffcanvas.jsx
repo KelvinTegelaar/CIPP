@@ -39,7 +39,7 @@ CippListOffcanvas.propTypes = {
 }
 
 export function OffcanvasListSection({ title, items }) {
-  console.log(items)
+  //console.log(items)
   const mappedItems = items.map((item, key) => ({ value: item.content, label: item.heading }))
   return (
     <>
