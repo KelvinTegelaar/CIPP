@@ -330,7 +330,7 @@ const AddUser = () => {
                         </CCol>
                       </CRow>
                       <>
-                        {currentSettings?.userSettingsDefaults?.defaultAttributes.map(
+                        {currentSettings?.userSettingsDefaults?.defaultAttributes?.map(
                           (attribute, idx) => (
                             <CRow key={idx}>
                               <CCol>
