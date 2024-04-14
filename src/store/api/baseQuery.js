@@ -1,5 +1,7 @@
 import axios from 'axios'
 
+let newController = new AbortController() // Controller for managing abortion of requests
+
 const retryDelays = [1000, 2000, 3000] // Delays in milliseconds for retries
 
 export const axiosQuery = async ({ path, method = 'get', params, data, hideToast }) => {
@@ -8,6 +10,7 @@ export const axiosQuery = async ({ path, method = 'get', params, data, hideToast
   while (attempt <= retryDelays.length) {
     try {
       const result = await axios({
+        signal: newController.signal,
         method,
         baseURL: window.location.origin,
         url: path,
@@ -36,12 +39,18 @@ export const axiosQuery = async ({ path, method = 'get', params, data, hideToast
 const shouldRetry = (error, path) => {
   // Check if the path starts with 'List', error qualifies for a retry, and payload message is 'Backend call failure'
   return (
-    path.toLower().startsWith('/list') &&
-    (!error.response || error.response.status >= 500) &&
-    error.response?.data === 'Backend call failure'
+    path.startsWith('/List') &&
+    error.response &&
+    error.response.status >= 500 &&
+    error.response.data === 'Backend call failure'
   )
 }
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
+export function abortRequestSafe() {
+  newController.abort() // Abort any ongoing request
+  newController = new AbortController() // Reset the controller for new requests
+}
 
 export const baseQuery = ({ baseUrl } = { baseUrl: '' }) => axiosQuery
