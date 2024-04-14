@@ -19,6 +19,8 @@ export const axiosQuery = async ({ path, method = 'get', params, data, hideToast
       })
       return { data: result.data } // Successful response
     } catch (error) {
+      console.log('error', error)
+      console.log('path', path)
       if (attempt === retryDelays.length || !shouldRetry(error, path)) {
         return {
           // Max retries reached or error should not trigger a retry
@@ -39,14 +41,12 @@ export const axiosQuery = async ({ path, method = 'get', params, data, hideToast
 const shouldRetry = (error, path) => {
   // Check if the path starts with 'List', error qualifies for a retry, and payload message is 'Backend call failure'
   return (
-    console.log(path),
-    path.startsWith('api/list') &&
-      error.response &&
-      error.response.status >= 500 &&
-      error.response.data === 'Backend call failure'
+    path.toLower().startsWith('api/list') &&
+    error.response &&
+    error.response.status >= 500 &&
+    error.response.data === 'Backend call failure'
   )
 }
-
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 export function abortRequestSafe() {
