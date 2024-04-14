@@ -43,6 +43,7 @@ import React from 'react'
   "/tenant/administration/app-consent-requests": React.lazy(() => import('./views/tenant/administration/ListAppConsentRequests')), 
   "/tenant/conditional/list-policies": React.lazy(() => import('./views/tenant/conditional/ConditionalAccess')), 
   "/tenant/conditional/deploy-vacation": React.lazy(() => import('./views/tenant/conditional/DeployVacation')), 
+  "/tenant/conditional/test-policy": React.lazy(() => import('./views/tenant/conditional/TestCAPolicy')), 
   "/tenant/conditional/list-named-locations": React.lazy(() => import('./views/tenant/conditional/NamedLocations')), 
   "/tenant/conditional/deploy": React.lazy(() => import('./views/tenant/conditional/DeployCA')), 
   "/tenant/conditional/deploy-named-location": React.lazy(() => import('./views/tenant/conditional/DeployNamedLocation')), 
