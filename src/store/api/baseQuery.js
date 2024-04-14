@@ -43,3 +43,5 @@ const shouldRetry = (error, path) => {
 }
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
+export const baseQuery = ({ baseUrl } = { baseUrl: '' }) => axiosQuery
