@@ -41,7 +41,7 @@ export const axiosQuery = async ({ path, method = 'get', params, data, hideToast
 const shouldRetry = (error, path) => {
   // Check if the path starts with 'List', error qualifies for a retry, and payload message is 'Backend call failure'
   return (
-    path.toLower().startsWith('api/list') &&
+    path.toLowerCase().startsWith('api/list') &&
     error.response &&
     error.response.status >= 500 &&
     error.response.data === 'Backend call failure'
