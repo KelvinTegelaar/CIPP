@@ -2,7 +2,7 @@ import axios from 'axios'
 
 let newController = new AbortController() // Controller for managing abortion of requests
 
-const retryDelays = [1000, 2000, 3000] // Delays in milliseconds for retries
+const retryDelays = [100, 200, 300] // Delays in milliseconds for retries
 
 export const axiosQuery = async ({ path, method = 'get', params, data, hideToast }) => {
   let attempt = 0
@@ -41,7 +41,7 @@ export const axiosQuery = async ({ path, method = 'get', params, data, hideToast
 const shouldRetry = (error, path) => {
   // Check if the path starts with 'List', error qualifies for a retry, and payload message is 'Backend call failure'
   return (
-    path.toLowerCase().startsWith('api/list') &&
+    path.toLowerCase().startsWith('/api/list') &&
     error.response &&
     error.response.status >= 500 &&
     error.response.data === 'Backend call failure'
