@@ -14,9 +14,9 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import { Form } from 'react-final-form'
 import { RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms'
+import _nav from 'src/_nav'
 
 import { useGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import 'react-datepicker/dist/react-datepicker.css'
 import TenantListSelector from 'src/components/utilities/TenantListSelector'
@@ -204,26 +204,32 @@ const UserSettings = () => {
                             isLoading={availableProperties.isFetching}
                           />
                         </div>
-                        <CRow>
-                          <CCol className="mb-3" md={12}>
-                            {addedAttributes > 0 && (
-                              <CButton
-                                onClick={() => setAddedAttribute(addedAttributes - 1)}
-                                className={`circular-button`}
-                                title={'-'}
-                              >
-                                <FontAwesomeIcon icon={'minus'} />
-                              </CButton>
-                            )}
-                            <CButton
-                              onClick={() => setAddedAttribute(addedAttributes + 1)}
-                              className={`circular-button`}
-                              title={'+'}
-                            >
-                              <FontAwesomeIcon icon={'plus'} />
-                            </CButton>
-                          </CCol>
-                        </CRow>
+                      </CRow>
+                      <CRow className="mb-3">
+                        <h3 className="underline mb-5">Favourite Menu Items</h3>
+                        <div className="mb-3">
+                          <RFFSelectSearch
+                            name="favourites"
+                            label="Select the menu items you'd like as favourites"
+                            placeholder="Select items"
+                            retainInput={true}
+                            multi={true}
+                            values={_nav
+                              .reduce((acc, val) => acc.concat(val.items), [])
+                              .map((item) =>
+                                // console.log(item),
+                                ({
+                                  name: item?.name,
+                                  value: { to: item?.to, name: item?.name },
+                                }),
+                              )}
+                            allowCreate={false}
+                            refreshFunction={() =>
+                              setRandom3((Math.random() + 1).toString(36).substring(7))
+                            }
+                            isLoading={availableProperties.isFetching}
+                          />
+                        </div>
                       </CRow>
                       <CRow className="mb-3">
                         <CCol className="mb-3" md={6}>
