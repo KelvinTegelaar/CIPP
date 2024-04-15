@@ -36,7 +36,7 @@ const Actions = (row, rowIndex, formatExtraData) => {
         ]}
         actions={[
           {
-            label: 'Create template based on policy (beta)',
+            label: 'Create template based on policy ',
             color: 'info',
             modal: true,
             icon: <FontAwesomeIcon icon={faBook} className="me-2" />,
