@@ -216,6 +216,8 @@ const UserSettings = () => {
                             multi={true}
                             values={_nav
                               .reduce((acc, val) => acc.concat(val.items), [])
+                              //only map if 'name' property is not null
+                              .filter((item) => item?.name)
                               .map((item) =>
                                 // console.log(item),
                                 ({
