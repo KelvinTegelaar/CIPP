@@ -24,7 +24,7 @@
     },
     {
       "route": "/api/ExecSAMSetup",
-      "allowedRoles": ["admin", "editor", "readonly", "authenticated", "anonymous", "SharedMailboxAdmins"]
+      "allowedRoles": ["admin", "editor", "readonly", "authenticated", "anonymous", "sharedmailboxadmins"]
     },
     {
       "route": "/api/AddStandardsDeploy",
@@ -32,11 +32,11 @@
     },
     {
       "route": "/LogoutRedirect",
-      "allowedRoles": ["admin", "editor", "readonly", "authenticated", "anonymous", "SharedMailboxAdmins"]
+      "allowedRoles": ["admin", "editor", "readonly", "authenticated", "anonymous", "sharedmailboxadmins"]
     },
     {
       "route": "/404",
-      "allowedRoles": ["admin", "editor", "readonly", "authenticated", "anonymous", "SharedMailboxAdmins"]
+      "allowedRoles": ["admin", "editor", "readonly", "authenticated", "anonymous", "sharedmailboxadmins"]
     },
     {
       "route": "/api/RemoveStandard",
@@ -76,15 +76,15 @@
     },
     {
       "route": "/",
-      "allowedRoles": ["admin", "editor", "readonly", "reader", "authenticated", "anonymous", "SharedMailboxAdmins"]
+      "allowedRoles": ["admin", "editor", "readonly", "reader", "authenticated", "anonymous", "sharedmailboxadmins"]
     },
     {
       "route": "/api/Public*",
-      "allowedRoles": ["admin", "editor", "readonly", "reader", "authenticated", "anonymous", "SharedMailboxAdmins"]
+      "allowedRoles": ["admin", "editor", "readonly", "reader", "authenticated", "anonymous", "sharedmailboxadmins"]
     },
       {
       "route": "/api/AddSharedMailbox",
-      "allowedRoles": ["SharedMailboxAdmins","admins","editors"]
+      "allowedRoles": ["sharedmailboxadmins","admins","editors"]
     },
     {
       "route": "*",
