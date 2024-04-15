@@ -277,47 +277,45 @@ export default function CippTable({
       debounceSetGraphFilter(query)
       return data
     } else if (filterText.startsWith('Complex:')) {
-      // Split conditions by ';' and 'or', and trim spaces
-      const conditions = filterText
+      // Split conditions by ';' for AND
+      const conditionGroups = filterText
         .slice(9)
-        .split(/\s*or\s*|\s*;\s*/i) // Split by 'or' or ';', case insensitive, with optional spaces
-        .map((condition) => condition.trim())
+        .split(/\s*;\s*/)
+        .map((group) => group.trim().split(/\s+or\s+/i)) // Split each group by 'or' for OR
 
       return data.filter((item) => {
-        // Check if any condition is met for the item
-        return conditions.some((condition) => {
-          const match = condition.match(/(\w+)\s*(eq|ne|like|notlike|gt|lt)\s*(.+)/)
-
-          if (!match) return false
-
-          let [property, operator, value] = match.slice(1)
-          value = escapeRegExp(value) // Escape special characters
-
-          const actualKey = Object.keys(item).find(
-            (key) => key.toLowerCase() === property.toLowerCase(),
-          )
-
-          if (!actualKey) {
-            console.error(`FilterError: Property "${property}" not found.`)
-            return false
-          }
-
-          switch (operator) {
-            case 'eq':
-              return String(item[actualKey]).toLowerCase() === value.toLowerCase()
-            case 'ne':
-              return String(item[actualKey]).toLowerCase() !== value.toLowerCase()
-            case 'like':
-              return String(item[actualKey]).toLowerCase().includes(value.toLowerCase())
-            case 'notlike':
-              return !String(item[actualKey]).toLowerCase().includes(value.toLowerCase())
-            case 'gt':
-              return parseFloat(item[actualKey]) > parseFloat(value)
-            case 'lt':
-              return parseFloat(item[actualKey]) < parseFloat(value)
-            default:
-              return false // Should not reach here normally
-          }
+        // Check if all condition groups are met for the item (AND logic)
+        return conditionGroups.every((conditions) => {
+          // Check if any condition within a group is met for the item (OR logic)
+          return conditions.some((condition) => {
+            const match = condition.match(/(\w+)\s*(eq|ne|like|notlike|gt|lt)\s*(.+)/)
+            if (!match) return false
+            let [property, operator, value] = match.slice(1)
+            value = escapeRegExp(value) // Escape special characters
+            const actualKey = Object.keys(item).find(
+              (key) => key.toLowerCase() === property.toLowerCase(),
+            )
+            if (!actualKey) {
+              console.error(`FilterError: Property "${property}" not found.`)
+              return false
+            }
+            switch (operator) {
+              case 'eq':
+                return String(item[actualKey]).toLowerCase() === value.toLowerCase()
+              case 'ne':
+                return String(item[actualKey]).toLowerCase() !== value.toLowerCase()
+              case 'like':
+                return String(item[actualKey]).toLowerCase().includes(value.toLowerCase())
+              case 'notlike':
+                return !String(item[actualKey]).toLowerCase().includes(value.toLowerCase())
+              case 'gt':
+                return parseFloat(item[actualKey]) > parseFloat(value)
+              case 'lt':
+                return parseFloat(item[actualKey]) < parseFloat(value)
+              default:
+                return false // Should not reach here normally
+            }
+          })
         })
       })
     } else {
