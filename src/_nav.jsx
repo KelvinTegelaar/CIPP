@@ -246,11 +246,6 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'CA Policy Tester',
-        to: '/tenant/conditional/test-policy',
-      },
-      {
-        component: CNavItem,
         name: 'CA Vacation Mode',
         to: '/tenant/conditional/deploy-vacation',
       },
@@ -258,6 +253,11 @@ const _nav = [
         component: CNavItem,
         name: 'CA Templates',
         to: '/tenant/conditional/list-template',
+      },
+      {
+        component: CNavItem,
+        name: 'Add CA Template',
+        to: '/tenant/conditional/add-template',
       },
       {
         component: CNavItem,

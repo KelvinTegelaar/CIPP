@@ -157,19 +157,20 @@ const RelationshipOnboarding = ({ relationship, gdapRoles, autoMapRoles, addMiss
           })}
         {onboardingStatus.isSuccess && (
           <>
-            {onboardingStatus.data?.Status != 'queued' && (
-              <CButton
-                onClick={() =>
-                  getOnboardingStatus({
-                    path: '/api/ExecOnboardTenant?Retry=True',
-                    values: { id: relationship.id, gdapRoles, autoMapRoles, addMissingGroups },
-                  })
-                }
-                className="mb-3 me-2"
-              >
-                <FontAwesomeIcon icon="sync" /> Retry
-              </CButton>
-            )}
+            {onboardingStatus.data?.Status != 'running' &&
+              onboardingStatus.data?.Status != 'queued' && (
+                <CButton
+                  onClick={() =>
+                    getOnboardingStatus({
+                      path: '/api/ExecOnboardTenant?Retry=True',
+                      values: { id: relationship.id, gdapRoles, autoMapRoles, addMissingGroups },
+                    })
+                  }
+                  className="mb-3 me-2"
+                >
+                  <FontAwesomeIcon icon="sync" /> Retry
+                </CButton>
+              )}
             {onboardingStatus.data?.Logs && (
               <TableModalButton
                 title="Logs"
@@ -211,12 +212,6 @@ const RelationshipOnboarding = ({ relationship, gdapRoles, autoMapRoles, addMiss
       </CAccordionBody>
     </CAccordionItem>
   )
-}
-RelationshipOnboarding.propTypes = {
-  relationship: PropTypes.object.isRequired,
-  gdapRoles: PropTypes.array,
-  autoMapRoles: PropTypes.bool,
-  addMissingGroups: PropTypes.bool,
 }
 
 const TenantOnboardingWizard = () => {

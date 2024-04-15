@@ -102,16 +102,9 @@ export const RFFCFormSwitch = ({
   disabled = false,
   initialValue,
   onClick,
-  defaultValue,
 }) => {
   return (
-    <Field
-      defaultValue={defaultValue}
-      initialValue={initialValue}
-      name={name}
-      type="checkbox"
-      validate={validate}
-    >
+    <Field initialValue={initialValue} name={name} type="checkbox" validate={validate}>
       {({ meta, input }) => (
         <ConditionWrapper
           condition={helpText}

@@ -295,7 +295,7 @@ const DomainsAnalyser = () => {
           },
         ],
         path: `/api/ListDomainAnalyser`,
-        params: { tenantFilter: currentTenant.customerId },
+        params: { tenantFilter: currentTenant.defaultDomainName },
         columns,
         reportName: 'Domains-Analyzer',
         tableProps: {

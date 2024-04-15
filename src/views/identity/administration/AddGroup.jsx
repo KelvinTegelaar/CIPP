@@ -141,7 +141,7 @@ const AddGroup = () => {
                     <RFFCFormRadio name="groupType" label="Dynamic Group" value="dynamic" />
                     <RFFCFormRadio
                       name="groupType"
-                      label="Dynamic Distribution Group "
+                      label="Dynamic Distribution Group (Beta)"
                       value="dynamicdistribution"
                     />
 

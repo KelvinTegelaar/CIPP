@@ -23,18 +23,17 @@ export default function cellTable(
   if (!Array.isArray(columnProp) && typeof columnProp === 'object') {
     columnProp = Object.keys(columnProp).map((key) => {
       return {
-        Key: key,
-        Value: columnProp[key],
+        [key]: columnProp[key],
       }
     })
-  } else {
-    if (Array.isArray(columnProp) && typeof columnProp[0] !== 'object') {
-      columnProp = columnProp.map((row) => {
-        return {
-          Value: row,
-        }
-      })
-    }
+  }
+
+  if (Array.isArray(columnProp) && typeof columnProp[0] !== 'object') {
+    columnProp = columnProp.map((row) => {
+      return {
+        Value: row,
+      }
+    })
   }
 
   const handleTable = ({ columnProp }) => {
