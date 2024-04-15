@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { CNav, CNavItem, CTabContent, CTabPane } from '@coreui/react'
 import { CippPage } from 'src/components/layout'
 import { CippLazy } from 'src/components/utilities'
-
+import { useNavigate } from 'react-router-dom'
 import { SettingsGeneral } from './SettingsGeneral.jsx'
 import { SettingsTenants } from 'src/views/cipp/app-settings/SettingsTenants.jsx'
 import { SettingsBackend } from 'src/views/cipp/app-settings/SettingsBackend.jsx'
@@ -12,6 +12,7 @@ import { SettingsExtensions } from 'src/views/cipp/app-settings/SettingsExtensio
 import { SettingsMaintenance } from 'src/views/cipp/app-settings/SettingsMaintenance.jsx'
 import { SettingsExtensionMappings } from 'src/views/cipp/app-settings/SettingsExtensionMappings.jsx'
 import { SettingsPartner } from 'src/views/cipp/app-settings/SettingsPartner.jsx'
+import useQuery from 'src/hooks/useQuery.jsx'
 
 /**
  * This function returns the settings page content for CIPP.
@@ -19,7 +20,18 @@ import { SettingsPartner } from 'src/views/cipp/app-settings/SettingsPartner.jsx
  * @returns {JSX.Element} The settings page content.
  */
 export default function CIPPSettings() {
-  const [active, setActive] = useState(1)
+  const queryString = useQuery()
+  const navigate = useNavigate()
+
+  const tab = queryString.get('tab')
+  const [active, setActiveTab] = useState(tab ? parseInt(tab) : 1)
+
+  const setActive = (tab) => {
+    setActiveTab(tab)
+    queryString.set('tab', tab.toString())
+    navigate(`${location.pathname}?${queryString}`)
+  }
+
   return (
     <CippPage title="Settings" tenantSelector={false}>
       <CNav variant="tabs" role="tablist">
