@@ -13,6 +13,8 @@ import { SettingsMaintenance } from 'src/views/cipp/app-settings/SettingsMainten
 import { SettingsExtensionMappings } from 'src/views/cipp/app-settings/SettingsExtensionMappings.jsx'
 import { SettingsPartner } from 'src/views/cipp/app-settings/SettingsPartner.jsx'
 import useQuery from 'src/hooks/useQuery.jsx'
+import { SettingsSuperAdmin } from './SettingsSuperAdmin.jsx'
+import { useLoadClientPrincipalQuery } from 'src/store/api/auth.js'
 
 /**
  * This function returns the settings page content for CIPP.
@@ -25,13 +27,13 @@ export default function CIPPSettings() {
 
   const tab = queryString.get('tab')
   const [active, setActiveTab] = useState(tab ? parseInt(tab) : 1)
-
+  const { data: profile, isFetching } = useLoadClientPrincipalQuery()
   const setActive = (tab) => {
     setActiveTab(tab)
     queryString.set('tab', tab.toString())
     navigate(`${location.pathname}?${queryString}`)
   }
-
+  const superAdmin = profile?.clientPrincipal?.userRoles?.includes('superadmin')
   return (
     <CippPage title="Settings" tenantSelector={false}>
       <CNav variant="tabs" role="tablist">
@@ -62,6 +64,11 @@ export default function CIPPSettings() {
         <CNavItem active={active === 9} onClick={() => setActive(9)} href="#">
           Extension Mappings
         </CNavItem>
+        {superAdmin && (
+          <CNavItem active={active === 10} onClick={() => setActive(10)} href="#">
+            SuperAdmin Settings
+          </CNavItem>
+        )}
       </CNav>
       <CTabContent>
         <CTabPane visible={active === 1} className="mt-3">
@@ -105,6 +112,11 @@ export default function CIPPSettings() {
         <CTabPane visible={active === 9} className="mt-3">
           <CippLazy visible={active === 9}>
             <SettingsExtensionMappings />
+          </CippLazy>
+        </CTabPane>
+        <CTabPane visible={active === 10} className="mt-3">
+          <CippLazy visible={active === 10}>
+            <SettingsSuperAdmin />
           </CippLazy>
         </CTabPane>
       </CTabContent>
