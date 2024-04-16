@@ -13,7 +13,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CippPageList } from 'src/components/layout'
 import { Link } from 'react-router-dom'
-import { CippActionsOffcanvas } from 'src/components/utilities'
+import { CippActionsOffcanvas, CippCodeBlock } from 'src/components/utilities'
 import { TitleButton } from 'src/components/buttons'
 
 const Actions = (row, rowIndex, formatExtraData) => {
@@ -35,7 +35,7 @@ const Actions = (row, rowIndex, formatExtraData) => {
         ]}
         actions={[
           {
-            label: 'Create template based on policy (beta)',
+            label: 'Create template based on policy ',
             color: 'info',
             modal: true,
             icon: <FontAwesomeIcon icon={faBook} className="me-2" />,
@@ -47,7 +47,7 @@ const Actions = (row, rowIndex, formatExtraData) => {
             label: ' Assign to All Users',
             color: 'info',
             modal: true,
-            modalUrl: `/api/ExecAssignPolicy?AssignTo=allLicensedUsers&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalUrl: `/api/ExecAssignPolicy?AssignTo=allLicensedUsers&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}&type=${row.URLName}`,
             modalMessage: `Are you sure you want to assign ${row.displayName} to all users?`,
           },
           {
@@ -55,7 +55,7 @@ const Actions = (row, rowIndex, formatExtraData) => {
             label: ' Assign to All Devices',
             color: 'info',
             modal: true,
-            modalUrl: `/api/ExecAssignPolicy?AssignTo=AllDevices&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalUrl: `/api/ExecAssignPolicy?AssignTo=AllDevices&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}&type=${row.URLName}`,
             modalMessage: `Are you sure you want to assign ${row.displayName} to all devices?`,
           },
           {
@@ -63,7 +63,7 @@ const Actions = (row, rowIndex, formatExtraData) => {
             label: ' Assign Globally (All Users / All Devices)',
             color: 'info',
             modal: true,
-            modalUrl: `/api/ExecAssignPolicy?AssignTo=AllDevicesAndUsers&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalUrl: `/api/ExecAssignPolicy?AssignTo=AllDevicesAndUsers&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}&type=${row.URLName}`,
             modalMessage: `Are you sure you want to assign ${row.displayName} to all users and devices?`,
           },
           {
@@ -101,6 +101,7 @@ const columns = [
     selector: (row) => row['id'],
     name: 'id',
     omit: true,
+    exportSelector: 'id',
   },
   {
     name: 'Actions',
@@ -115,12 +116,12 @@ const IntuneList = () => {
   // eslint-disable-next-line react/prop-types
   const ExpandedComponent = ({ data }) => (
     // eslint-disable-next-line react/prop-types
-    <pre>{JSON.stringify(data, null, 2)}</pre>
+    <CippCodeBlock code={JSON.stringify(data, null, 2)} language="json" />
   )
 
   return (
     <CippPageList
-      title="MEM Policies"
+      title="Configuration Policies"
       titleButton={
         <>
           <TitleButton
