@@ -20,6 +20,7 @@
   * [Roles](setup/installation/roles.md)
   * [Configuring Automatic Updates](setup/installation/configuring-automatic-updates.md)
   * [Permissions](setup/installation/permissions.md)
+  * [Migrating to hosted CIPP](setup/installation/migrating-to-hosted-cipp.md)
 * [GDAP Setup Guide](setup/gdap/README.md)
   * [What is GDAP](setup/gdap/what-is-gdap.md)
   * [GDAP Invite Wizard](setup/gdap/gdap-invite-wizard.md)
