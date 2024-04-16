@@ -23,7 +23,7 @@ export default function CippOffcanvas(props) {
               color="link"
               size="lg"
               onClick={() => {
-                console.log('refresh')
+                //console.log('refresh')
                 props.refreshFunction()
               }}
             >
