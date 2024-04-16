@@ -9,7 +9,7 @@ At this point you should have completed all the steps in the installation guide 
 you must now follow the rest of these steps to allow yourself to access CIPP, and finish setup.
 
 {% hint style="info" %}
-Hosted clients can use the backend management system at [management.cipp.app](https://management.cipp.app) to add and remove users
+Hosted clients can use the backend management system at [management.cipp.app](https://management.cipp.app) to add and remove users. Instructions below are for self-hosted clients only.
 {% endhint %}
 
 ### Add yourself as a user
