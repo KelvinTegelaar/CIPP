@@ -4,21 +4,24 @@ description: I want to manage my own tenant
 
 # I want to manage my own tenant
 
-If you want to manage your own tenant, or if you are not a Microsoft Partner but still want to use CIPP you can set a flag in the configuration for this.
+If you want to manage your own tenant, or if you are not a Microsoft Partner but still want to use CIPP you can perform the setup and enable access to the partner tenant, or enable Single Tenant Mode.
+
+## Limitations Single Tenant Mode
+
+When using Single Tenant Mode CIPP runs in a somewhat more limited state - You are not able to add any other tenant to CIPP and it only works for the configured tenant.&#x20;
+
+## Limitations Partner Tenant Enabled
+
+When using Partner Tenant Enabled mode you can see your partner tenant inside of CIPP. There will be no permissions applied to whom can see this tenant and control it.
 
 {% hint style="danger" %}
-Unsupported configuration This configuration option is not officially supported. Configuring this means you are on your own for any bugs that occur on your instance. It is advised to not add the Partner Tenant inside a CSP environment and to really use this as a 'Single Tenant' mode.
-
-If you enable this setting, any user with access to CIPP will be able to make any change to your internal tenant, including changing permissions to mailboxes, security groups, and all the aspects that CIPP manages. When running on the hosted environment we ask you to confirm you've read this statement before enabling the feature.
+It is highly recommended to not use this configuration if multiple users have access to your CIPP instances. All users with access to CIPP will be able to manage your tenant.
 {% endhint %}
-
-It is not recommended to use this functionality, and this might break at any point in time.
 
 To set the flag follow these steps:
 
-1. Go to your CIPP instance
-2. Go the the settings menu
-3. Go to the Backend tab.
-4. Go to Function App (Configuration)
-5. Add a new variable called "PartnerTenantAvailable" and set this to "True"
-6. Clear the tenant cache. Users of CIPP now have access to the CSP Partner tenant.
+1. Add the role 'superadmin' to your admin user. (See [roles.md](roles.md "mention") for more information This role will allow you access to the menu to change this setting.
+2. Go the the Application Settings menu
+3. Go to the SuperAdmin tab
+4. Select one of the three modes. The default mode is "Multi Tenant - GDAP Mode"
+5. Clear the tenant cache. Users of CIPP now have access to the CSP Partner tenant, or to the single tenant it's been configured for.
