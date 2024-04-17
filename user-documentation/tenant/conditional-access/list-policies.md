@@ -27,7 +27,15 @@ This page lists all the Conditional Access Policies on the selected tenant. This
 | Control Operator     | The operator used to combine the filters.             |
 | Built-in Controls    | Any built-in controls applied.                        |
 
+## Actions
 
+Under the three dots for Conditional Access policies you'll find these actions:
+
+* Create template based on rule - Creates a CIPP template based on this rule to deploy to any other tenant.
+* Enable Rule - Enables the rule
+* Disable Rule - Disables the rule
+* Set rule to report only - Sets the rule to report only
+* Delete Rule - Deletes the rule. This cannot be undone.
 
 ### Feature Requests / Ideas
 
