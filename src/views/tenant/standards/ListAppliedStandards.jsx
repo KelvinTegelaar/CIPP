@@ -509,6 +509,7 @@ const ApplyNewStandard = () => {
                                             <>
                                               {component.type === 'Select' && (
                                                 <RFFCFormSelect
+                                                  placeholder="Select a value"
                                                   name={component.name}
                                                   className="mb-3"
                                                   label={component.label}
