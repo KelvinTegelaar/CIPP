@@ -193,7 +193,7 @@ export const RFFCFormInput = ({
 }
 RFFCFormInput.propTypes = {
   ...sharedPropTypes,
-  type: PropTypes.oneOf(['color', 'file', 'text', 'password']),
+  type: PropTypes.oneOf(['color', 'file', 'text', 'password', 'number']),
   placeholder: PropTypes.string,
 }
 
