@@ -210,7 +210,7 @@ export function SettingsGeneral() {
       <CFormSwitch
         label="Show Extended Info"
         onChange={(e) => {
-          console.log(e)
+          //console.log(e)
           setShowExtendedInfo(!e.target.checked)
         }}
         key={'Show Extended Info'}
