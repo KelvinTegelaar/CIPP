@@ -739,8 +739,8 @@ export default function CippTable({
                   <ExportPDFButton
                     key="export-pdf-action-visible"
                     pdfData={filtered}
-                    pdfHeaders={columns}
-                    pdfSize="A4"
+                    pdfHeaders={updatedColumns}
+                    pdfSize="A3"
                     reportName={reportName}
                     nameText="Export Visible Columns"
                   />
