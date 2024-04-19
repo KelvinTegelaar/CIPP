@@ -20,6 +20,7 @@ import { CippDatatable, cellDateFormatter, CellTip } from 'src/components/tables
 import { useNavigate } from 'react-router-dom'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 const reverseSort = (rowA, rowB) => {
   const a = rowA.DateTime.toLowerCase()
   const b = rowB.DateTime.toLowerCase()
@@ -96,6 +97,11 @@ const columns = [
     exportSelector: 'Severity',
     minWidth: '145px',
     maxWidth: '145px',
+  },
+  {
+    name: 'Data',
+    selector: (row) => row?.LogData,
+    cell: cellGenericFormatter(),
   },
 ]
 

@@ -153,7 +153,7 @@ const ApplyGroupTemplate = () => {
               placeholder="Select a group type"
               values={[
                 { label: 'Dynamic Group', value: 'dynamic' },
-                { label: 'Dynamic Distribution Group (Beta)', value: 'dynamicdistribution' },
+                { label: 'Dynamic Distribution Group ', value: 'dynamicdistribution' },
 
                 { label: 'Security Group', value: 'generic' },
                 { label: 'Distribution group', value: 'distribution' },

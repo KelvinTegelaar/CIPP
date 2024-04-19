@@ -15,6 +15,7 @@ import {
 } from 'src/components/forms'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { OnChange } from 'react-final-form-listeners'
+import CippJsonView from 'src/components/utilities/CippJsonView'
 
 const Error = ({ name }) => (
   <Field
@@ -134,13 +135,7 @@ const AddPolicy = () => {
       <CippWizard.Page title="Select Options" description="Select which options you want to apply.">
         <center>
           <h3 className="text-primary">Step 2</h3>
-          <h5 className="card-title mb-4">
-            Enter the raw JSON for this policy. See{' '}
-            <a href="https://docs.cipp.app/user-documentation/endpoint/mem/add-policy-template">
-              this
-            </a>{' '}
-            information.
-          </h5>
+          <h5 className="card-title mb-4">Enter the information for this policy</h5>
         </center>
         <hr className="my-4" />
         <CRow>
@@ -155,25 +150,27 @@ const AddPolicy = () => {
                   label: template.Displayname,
                 }))}
                 placeholder="Select a template"
-                label="Please choose a template to apply, or enter the information manually."
+                label="Please choose a template to apply."
               />
             )}
           </CCol>
         </CRow>
         <CRow>
           <CCol>
-            <RFFCFormSelect
-              name="Type"
-              label="Select Policy Type"
-              placeholder="Select a template type"
-              values={[
-                { label: 'Administrative Template', value: 'Admin' },
-                { label: 'Settings Catalog', value: 'Catalog' },
-                { label: 'Custom Configuration', value: 'Device' },
-                { label: 'App Protection or Configuration Policy', value: 'AppProtection' },
-                { label: 'Compliance Policy', value: 'deviceCompliancePolicies' },
-              ]}
-            />
+            <Condition when="RAWJson" regex="%.*%">
+              <RFFCFormSelect
+                name="Type"
+                label="Select Policy Type"
+                placeholder="Select a template type"
+                values={[
+                  { label: 'Administrative Template', value: 'Admin' },
+                  { label: 'Settings Catalog', value: 'Catalog' },
+                  { label: 'Custom Configuration', value: 'Device' },
+                  { label: 'App Protection or Configuration Policy', value: 'AppProtection' },
+                  { label: 'Compliance Policy', value: 'deviceCompliancePolicies' },
+                ]}
+              />
+            </Condition>
           </CCol>
         </CRow>
         <CRow>
@@ -198,18 +195,23 @@ const AddPolicy = () => {
         </CRow>
         <CRow>
           <CCol md={12}>
-            <RFFCFormTextarea
-              type="text"
-              name="RAWJson"
-              label="Raw JSON"
-              placeholder="Enter RAW JSON information"
-            />
+            <Condition when="RAWJson" regex="%.*%">
+              <RFFCFormTextarea
+                type="text"
+                name="RAWJson"
+                label="Raw JSON"
+                placeholder="Enter RAW JSON information"
+              />
+            </Condition>
           </CCol>
         </CRow>
         <FormSpy>
           {(props) => {
+            console.log(props.values.RAWJson)
+            const json = props.values?.RAWJson ? JSON.parse(props.values.RAWJson) : undefined
             return (
               <>
+                <CippJsonView object={json} />
                 <Condition when="RAWJson" regex="%.*%">
                   <CRow>
                     {props.values.RAWJson?.match('%.*%') &&

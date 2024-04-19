@@ -88,10 +88,10 @@ const AddWinGet = () => {
             <OnChange name={field}>
               {(value) => {
                 let template = foundPackages.data.filter(function (obj) {
-                  console.log(value)
+                  // console.log(value)
                   return obj.packagename === value
                 })
-                console.log(template[0])
+                //console.log(template[0])
                 onChange(template[0][set])
               }}
             </OnChange>

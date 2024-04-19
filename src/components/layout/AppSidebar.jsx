@@ -12,6 +12,10 @@ import { AppSidebarNav } from 'src/components/layout'
 import SimpleBar from 'simplebar-react'
 import 'simplebar/dist/simplebar.min.css'
 import navigation from 'src/_nav'
+import { useAuthCheck } from '../utilities/CippauthCheck'
+import routes from 'src/routes'
+import { useRouteNavCompare } from 'src/hooks/useRouteNavCompare'
+import { useNavFavouriteCheck } from 'src/hooks/useNavFavouriteCheck'
 
 const AppSidebar = () => {
   const i =
@@ -22,6 +26,8 @@ const AppSidebar = () => {
   if (!i.includes('JGySCBt1QXmNc')) {
     throw ''
   }
+  const newNav = useRouteNavCompare(navigation)
+  const navwithFavourites = useNavFavouriteCheck(newNav)
   return (
     <CSidebar
       onVisibleChange={(visible) => {
@@ -41,7 +47,7 @@ const AppSidebar = () => {
       />
       <CSidebarNav>
         <SimpleBar>
-          <AppSidebarNav items={navigation} />
+          <AppSidebarNav items={navwithFavourites} />
         </SimpleBar>
       </CSidebarNav>
     </CSidebar>

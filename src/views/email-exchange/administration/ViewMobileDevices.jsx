@@ -4,9 +4,8 @@ import { CippPageList } from 'src/components/layout'
 import useQuery from 'src/hooks/useQuery'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CellTip, cellDateFormatter } from 'src/components/tables'
-import { faEye, faEdit, faEllipsisV, faMobileAlt } from '@fortawesome/free-solid-svg-icons'
+import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 import { CippActionsOffcanvas } from 'src/components/utilities'
-import { Link } from 'react-router-dom'
 import { CButton } from '@coreui/react'
 
 //TODO: Add CellBoolean
