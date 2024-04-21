@@ -865,6 +865,12 @@
     "allowedRoles": ["admin"]
   },
   {
+    "path": "/tenant/administration/securescore",
+    "name": "Secure Score Management",
+    "component": "views/tenant/administration/SecureScore",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/tenant/administration/gdap",
     "name": "GDAP Wizard",
     "component": "views/tenant/administration/GDAPWizard",
