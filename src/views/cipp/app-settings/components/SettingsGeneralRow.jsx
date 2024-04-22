@@ -14,6 +14,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import { SettingsPassword } from 'src/views/cipp/app-settings/components/SettingsPassword.jsx'
 import { SettingsDNSResolver } from 'src/views/cipp/app-settings/components/SettingsDNSResolver.jsx'
+import CippButtonCard from 'src/components/contentcards/CippButtonCard'
 
 /**
  * Fetches and maintains DNS configuration settings for the application.
@@ -26,7 +27,11 @@ export function SettingsGeneralRow() {
 
   const inputRef = useRef(null)
   const [clearCache, clearCacheResult] = useLazyExecClearCacheQuery()
-  const { data: versions, isSuccess: isSuccessVersion } = useLoadVersionsQuery()
+  const {
+    data: versions,
+    isSuccess: isSuccessVersion,
+    refetch: RefechVersion,
+  } = useLoadVersionsQuery()
 
   const downloadTxtFile = (data) => {
     const txtdata = [JSON.stringify(RunBackupResult.data.backup)]
@@ -59,120 +64,158 @@ export function SettingsGeneralRow() {
       clearCache({ tenantsOnly: true })
     },
   })
+  const refreshVersionButton = (
+    <CButton onClick={() => RefechVersion()}>Check version update</CButton>
+  )
 
+  const cacheButton = (
+    <>
+      <CButton
+        className="me-2"
+        onClick={() => handleClearCache()}
+        disabled={clearCacheResult.isFetching}
+      >
+        {clearCacheResult.isFetching && (
+          <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+        )}
+        Clear All Cache
+      </CButton>
+      <CButton
+        className="me-2"
+        onClick={() => handleClearCacheTenant()}
+        disabled={clearCacheResult.isFetching}
+      >
+        {clearCacheResult.isFetching && (
+          <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+        )}
+        Clear Tenant Cache
+      </CButton>
+    </>
+  )
+  const backupButton = (
+    <>
+      <CButton
+        className="me-2"
+        onClick={() => runBackup({ path: '/api/ExecRunBackup' })}
+        disabled={RunBackupResult.isFetching}
+      >
+        {RunBackupResult.isFetching && (
+          <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+        )}
+        Run backup
+      </CButton>
+      <CButton
+        className="me-2"
+        name="file"
+        onClick={() => inputRef.current.click()}
+        disabled={restoreBackupResult.isFetching}
+      >
+        {restoreBackupResult.isFetching && (
+          <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+        )}
+        Restore backup
+      </CButton>
+    </>
+  )
   return (
     <>
-      <CCard className="h-100">
-        <CCardHeader></CCardHeader>
-        <CCardBody>
-          <CRow>
-            <CCol xl={4} md={12}>
-              <SettingsPassword />
-            </CCol>
-            <CCol xl={4} md={12}>
-              <SettingsDNSResolver />
-            </CCol>
-            <CCol xl={4} md={12}>
-              <h3 className="underline mb-5">Frontend Version</h3>
-              <StatusIcon
-                type="negatedboolean"
-                status={isSuccessVersion && versions.OutOfDateCIPP}
-              />
+      <CRow className="mb-3">
+        <CCol classname="mb-3" xl={4} md={12}>
+          <SettingsPassword />
+        </CCol>
+        <CCol classname="mb-3" xl={4} md={12}>
+          <SettingsDNSResolver />
+        </CCol>
+        <CCol classname="mb-3" xl={4} md={12}>
+          <CippButtonCard
+            title="Frontend Version"
+            titleType="big"
+            isFetching={!isSuccessVersion}
+            CardButton={refreshVersionButton}
+          >
+            <StatusIcon type="negatedboolean" status={isSuccessVersion && versions.OutOfDateCIPP} />
+            <small>
               <div>Latest: {isSuccessVersion ? versions.RemoteCIPPVersion : <Skeleton />}</div>
-              <div className="mb-3">
-                Current: {isSuccessVersion ? versions.LocalCIPPVersion : <Skeleton />}
-              </div>
-            </CCol>
-            <CCol xl={4} md={12} className="mb-3">
-              <h3 className="underline mb-5">Clear Caches</h3>
-              <CButton
-                className="me-2 mb-2"
-                onClick={() => handleClearCache()}
-                disabled={clearCacheResult.isFetching}
+              <div>Current: {isSuccessVersion ? versions.LocalCIPPVersion : <Skeleton />}</div>
+            </small>
+          </CippButtonCard>
+        </CCol>
+      </CRow>
+      <CRow className="mb-3">
+        <CCol xl={4} md={12}>
+          <CippButtonCard
+            title="Cache"
+            titleType="big"
+            isFetching={clearCacheResult.isFetching}
+            CardButton={cacheButton}
+          >
+            <small>
+              Use this button to clear the caches used by CIPP. This will slow down some aspects of
+              the application, and should only be used when instructed to do so by support.
+            </small>
+            {clearCacheResult.isSuccess && !clearCacheResult.isFetching && (
+              <CippCallout
+                dismissible
+                color={clearCacheResult.isSuccess ? 'success' : 'danger'}
+                className="me-3"
               >
-                {clearCacheResult.isFetching && (
-                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-                )}
-                Clear All Cache
-              </CButton>
-              <CButton
-                className="me-2 mb-2"
-                onClick={() => handleClearCacheTenant()}
-                disabled={clearCacheResult.isFetching}
-              >
-                {clearCacheResult.isFetching && (
-                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-                )}
-                Clear Tenant Cache
-              </CButton>
-              {clearCacheResult.isSuccess && !clearCacheResult.isFetching && (
-                <CippCallout
-                  dismissible
-                  color={clearCacheResult.isSuccess ? 'success' : 'danger'}
-                  className="me-3"
-                >
-                  {clearCacheResult.data?.Results}
-                </CippCallout>
-              )}
-            </CCol>
-            <CCol xl={4} md={12} className="mb-3">
-              <h3 className="underline mb-5">Settings Backup</h3>
-              <CButton
-                className="me-2 mb-2"
-                onClick={() => runBackup({ path: '/api/ExecRunBackup' })}
-                disabled={RunBackupResult.isFetching}
-              >
-                {RunBackupResult.isFetching && (
-                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-                )}
-                Run backup
-              </CButton>
-              <input
-                ref={inputRef}
-                type="file"
-                accept="json/*"
-                style={{ display: 'none' }}
-                id="contained-button-file"
-                onChange={(e) => handleChange(e)}
-              />
-              <CButton
-                className="me-2 mb-2"
-                name="file"
-                onClick={() => inputRef.current.click()}
-                disabled={restoreBackupResult.isFetching}
-              >
-                {restoreBackupResult.isFetching && (
-                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-                )}
-                Restore backup
-              </CButton>
-              {restoreBackupResult.isSuccess && !restoreBackupResult.isFetching && (
-                <CippCallout color="success" dismissible>
-                  {restoreBackupResult.data.Results}
-                </CippCallout>
-              )}
-              {RunBackupResult.isSuccess && !restoreBackupResult.isFetching && (
-                <CippCallout color="success" dismissible>
-                  <CButton onClick={() => downloadTxtFile(RunBackupResult.data.backup)}>
-                    Download Backup
-                  </CButton>
-                </CippCallout>
-              )}
-            </CCol>
-            <CCol xl={4} md={12}>
-              <h3 className="underline mb-5">Backend API Version</h3>
-              <StatusIcon
-                type="negatedboolean"
-                status={isSuccessVersion && versions.OutOfDateCIPPAPI}
-              />
+                {clearCacheResult.data?.Results}
+              </CippCallout>
+            )}
+          </CippButtonCard>
+        </CCol>
+        <CCol xl={4} md={12}>
+          <CippButtonCard
+            title="Backup"
+            titleType="big"
+            isFetching={clearCacheResult.isFetching}
+            CardButton={backupButton}
+          >
+            <input
+              ref={inputRef}
+              type="file"
+              accept="json/*"
+              style={{ display: 'none' }}
+              id="contained-button-file"
+              onChange={(e) => handleChange(e)}
+            />
+            <small>
+              Use this button to backup the system configuration for CIPP. This will not include
+              authentication information or extension configuration.
+            </small>
+
+            {restoreBackupResult.isSuccess && !restoreBackupResult.isFetching && (
+              <CippCallout color="success" dismissible>
+                {restoreBackupResult.data.Results}
+              </CippCallout>
+            )}
+            {RunBackupResult.isSuccess && !restoreBackupResult.isFetching && (
+              <CippCallout color="success" dismissible>
+                <CButton onClick={() => downloadTxtFile(RunBackupResult.data.backup)}>
+                  Download Backup
+                </CButton>
+              </CippCallout>
+            )}
+          </CippButtonCard>
+        </CCol>
+        <CCol xl={4} md={12}>
+          <CippButtonCard
+            title="Backend Version"
+            titleType="big"
+            isFetching={!isSuccessVersion}
+            CardButton={refreshVersionButton}
+          >
+            <StatusIcon
+              type="negatedboolean"
+              status={isSuccessVersion && versions.OutOfDateCIPPAPI}
+            />
+            <small>
               <div>Latest: {isSuccessVersion ? versions.RemoteCIPPAPIVersion : <Skeleton />}</div>
-              <div className="mb-3">
-                Current: {isSuccessVersion ? versions.LocalCIPPAPIVersion : <Skeleton />}
-              </div>
-            </CCol>
-          </CRow>
-        </CCardBody>
-      </CCard>
+              <div>Current: {isSuccessVersion ? versions.LocalCIPPAPIVersion : <Skeleton />}</div>
+            </small>
+          </CippButtonCard>
+        </CCol>
+      </CRow>
     </>
   )
 }

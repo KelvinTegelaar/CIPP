@@ -2,6 +2,7 @@ import { CAlert, CButton, CButtonGroup } from '@coreui/react'
 import React, { useState } from 'react'
 import { useLazyEditDnsConfigQuery, useLazyGetDnsConfigQuery } from 'src/store/api/domains.js'
 import { CippCallout } from 'src/components/layout/index.js'
+import CippButtonCard from 'src/components/contentcards/CippButtonCard'
 
 /**
  * Sets the DNS resolver based on user selection.
@@ -17,34 +18,48 @@ export function SettingsDNSResolver() {
     await editDnsConfig({ resolver })
     await getDnsConfig()
   }
-
+  const cardbuttonGroup = (
+    <CButtonGroup role="group" aria-label="Resolver">
+      {resolvers.map((resolver, index) => (
+        <CButton
+          onClick={() => switchResolver(resolver)}
+          color={resolver === getDnsConfigResult.data?.Resolver ? 'primary' : 'secondary'}
+          key={index}
+        >
+          {resolver}
+        </CButton>
+      ))}
+    </CButtonGroup>
+  )
   return (
     <>
-      {getDnsConfigResult.isUninitialized && getDnsConfig()}
-      {getDnsConfigResult.isSuccess && (
-        <>
-          <h3 className="underline mb-5">DNS Resolver</h3>
-          <CButtonGroup role="group" aria-label="Resolver" className="my-3">
-            {resolvers.map((resolver, index) => (
-              <CButton
-                onClick={() => switchResolver(resolver)}
-                color={resolver === getDnsConfigResult.data.Resolver ? 'primary' : 'secondary'}
-                key={index}
-              >
-                {resolver}
-              </CButton>
-            ))}
-          </CButtonGroup>
-          {(editDnsConfigResult.isSuccess || editDnsConfigResult.isError) &&
-            !editDnsConfigResult.isFetching && (
-              <CippCallout dismissible color={editDnsConfigResult.isSuccess ? 'success' : 'danger'}>
-                {editDnsConfigResult.isSuccess
-                  ? editDnsConfigResult.data.Results
-                  : 'Error setting resolver'}
-              </CippCallout>
-            )}
-        </>
-      )}
+      <CippButtonCard
+        title="DNS Resolver"
+        titleType="big"
+        isFetching={getDnsConfigResult.isFetching}
+        CardButton={cardbuttonGroup}
+      >
+        {getDnsConfigResult.isUninitialized && getDnsConfig()}
+        {getDnsConfigResult.isSuccess && (
+          <>
+            <small>
+              Select your DNS Resolver. The DNS resolve is used for the domain analyser only, and
+              not for generic DNS resolution.
+            </small>
+            {(editDnsConfigResult.isSuccess || editDnsConfigResult.isError) &&
+              !editDnsConfigResult.isFetching && (
+                <CippCallout
+                  dismissible
+                  color={editDnsConfigResult.isSuccess ? 'success' : 'danger'}
+                >
+                  {editDnsConfigResult.isSuccess
+                    ? editDnsConfigResult.data.Results
+                    : 'Error setting resolver'}
+                </CippCallout>
+              )}
+          </>
+        )}
+      </CippButtonCard>
     </>
   )
 }
