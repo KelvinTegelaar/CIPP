@@ -25,6 +25,7 @@ import standards from 'src/data/standards'
 import { useNavigate } from 'react-router-dom'
 import { ModalService } from 'src/components/utilities'
 import { CellTip, cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
+import { CippCallout } from 'src/components/layout'
 
 const SecureScore = () => {
   const textRef = useRef()
@@ -34,13 +35,13 @@ const SecureScore = () => {
   const [translateData, setTranslatedData] = React.useState([])
   const [translateState, setTranslateSuccess] = React.useState(false)
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
-  const [sortBy, setSortBy] = React.useState()
+  const [refreshCode, setRefresh] = React.useState(null)
   const {
     data: securescore = [],
     isFetching,
     isSuccess,
   } = useGenericGetRequestQuery({
-    path: '/api/ListGraphRequest',
+    path: '/api/ListGraphRequest?refresh=' + refreshCode,
     params: {
       tenantFilter: currentTenant.defaultDomainName,
       Endpoint: 'security/secureScores',
@@ -49,16 +50,19 @@ const SecureScore = () => {
     },
   })
 
-  const { data: securescoreTranslation = [], isSuccess: isSuccessTranslation } =
-    useGenericGetRequestQuery({
-      path: '/api/ListGraphRequest',
-      params: {
-        tenantFilter: currentTenant.defaultDomainName,
-        Endpoint: 'security/secureScoreControlProfiles',
-        $top: 999,
-        NoPagination: true,
-      },
-    })
+  const {
+    data: securescoreTranslation = [],
+    isSuccess: isSuccessTranslation,
+    isFetching: isFetchingTranslation,
+  } = useGenericGetRequestQuery({
+    path: '/api/ListGraphRequest?refresh=' + refreshCode,
+    params: {
+      tenantFilter: currentTenant.defaultDomainName,
+      Endpoint: 'security/secureScoreControlProfiles',
+      $top: 999,
+      NoPagination: true,
+    },
+  })
 
   useEffect(() => {
     if (isSuccess) {
@@ -104,8 +108,7 @@ const SecureScore = () => {
         controlScores: updatedControlScores,
       }))
     }
-  }, [isSuccess, isSuccessTranslation, securescoreTranslation.Results])
-  //create open function, if remediation starts with https, open in new tab. Else, use router to navigate to the remediation page.
+  }, [isSuccess, isSuccessTranslation, securescoreTranslation.Results, refreshCode])
   const navigate = useNavigate()
 
   const openRemediation = (url) => {
@@ -139,6 +142,10 @@ const SecureScore = () => {
                   value: 'Ignored',
                   label: 'Ignored / Risk Accepted (Mark as completed, do not receive points)',
                 },
+                {
+                  value: 'Default',
+                  label: 'Mark as default (Receive points if Microsoft detects as completed)',
+                },
               ]}
               label="Resolution Type"
             />
@@ -156,6 +163,8 @@ const SecureScore = () => {
             tenantFilter: currentTenant.defaultDomainName,
             vendorinformation: control.vendorInformation,
           },
+        }).then(() => {
+          setRefresh(Math.random())
         }),
     })
   }
@@ -186,6 +195,17 @@ const SecureScore = () => {
 
   return (
     <>
+      {postResults.isFetching && <Skeleton />}
+      {postResults.isSuccess && (
+        <CippCallout dismissible title="Success" color="success">
+          {postResults.data.Results}
+        </CippCallout>
+      )}
+      {postResults.isError && (
+        <CippCallout dismissible title="Error" color="danger">
+          {postResults.error.message}
+        </CippCallout>
+      )}
       <CRow>
         <CCol xs={3} className="mb-3">
           <CCard className="content-card h-100">
@@ -306,7 +326,7 @@ const SecureScore = () => {
             </CCardBody>
           </CCard>
         )}
-        {translateState && !viewMode && (
+        {translateState && !viewMode && !isFetching && (
           <>
             <CRow>
               {translateData?.controlScores?.map((info, idx) => (
