@@ -144,6 +144,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Secure Score',
+        to: '/tenant/administration/securescore',
+      },
+      {
+        component: CNavItem,
         name: 'App Consent Requests',
         to: '/tenant/administration/app-consent-requests',
       },
