@@ -16,6 +16,7 @@ function CippCodeBlock({
   callout = false,
   calloutColour = 'info',
   calloutCopyValue = false,
+  dismissable = false,
 }) {
   const [codeCopied, setCodeCopied] = useState(false)
 
@@ -36,7 +37,11 @@ function CippCodeBlock({
           {codeCopied ? <FontAwesomeIcon icon={faClipboard} /> : <FontAwesomeIcon icon={faCopy} />}
         </CButton>
       </CopyToClipboard>
-      {callout && <CCallout color={calloutColour}>{code}</CCallout>}
+      {callout && (
+        <CCallout color={calloutColour} dismissable={dismissable}>
+          {code}
+        </CCallout>
+      )}
       {!callout && (
         <SyntaxHighlighter
           language={language}
@@ -62,4 +67,8 @@ CippCodeBlock.propTypes = {
   showLineNumbers: PropTypes.bool,
   startingLineNumber: PropTypes.number,
   wrapLongLines: PropTypes.bool,
+  callout: PropTypes.bool,
+  calloutColour: PropTypes.string,
+  calloutCopyValue: PropTypes.string,
+  dismissable: PropTypes.bool,
 }
