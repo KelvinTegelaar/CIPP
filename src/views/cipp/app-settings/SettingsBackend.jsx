@@ -79,6 +79,7 @@ export function SettingsBackend() {
           <CCol className="mb-3" md={4} key={index}>
             <CippButtonCard
               title={card.title}
+              titleType="big"
               isFetching={listBackendResult.isFetching}
               CardButton={generateButton(card.title, card.link)}
             >
