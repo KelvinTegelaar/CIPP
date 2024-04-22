@@ -33,7 +33,7 @@ export function SettingsNotifications() {
     configNotifications(values)
   }
   return (
-    <>
+    <CCol xs={6}>
       <CippButtonCard
         title="Notification Settings"
         titleType="big"
@@ -183,6 +183,6 @@ export function SettingsNotifications() {
           />
         )}
       </CippButtonCard>
-    </>
+    </CCol>
   )
 }
