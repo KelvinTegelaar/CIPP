@@ -4,17 +4,7 @@ import {
 } from 'src/store/api/app.js'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
-import {
-  CButton,
-  CCallout,
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCardTitle,
-  CCol,
-  CForm,
-  CSpinner,
-} from '@coreui/react'
+import { CButton, CCol, CForm, CSpinner } from '@coreui/react'
 import { Form, useForm } from 'react-final-form'
 import { RFFCFormInput, RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms/index.js'
 import React from 'react'
