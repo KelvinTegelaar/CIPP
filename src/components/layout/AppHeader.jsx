@@ -94,11 +94,13 @@ const AppHeader = () => {
           value: job.Status,
           link: job.Link,
           timestamp: job.Timestamp,
+          percent: job.PercentComplete,
+          progressText: `${job.PercentComplete}%`,
         })),
       )
     } else {
       setCippQueueExtendedInfo([
-        { label: 'No jobs to display', value: '', timpestamp: Date(), link: '#' },
+        { label: 'No jobs to display', value: '', timestamp: Date(), link: '#' },
       ])
     }
   }, [cippQueueList])
@@ -197,6 +199,7 @@ const AppHeader = () => {
         extendedInfo={[]}
         cards={cippQueueExtendedInfo}
         refreshFunction={refreshCippQueue}
+        isRefreshing={cippQueueList.isFetching || cippQueueList.isLoading}
         actions={[
           {
             label: 'Clear History',
