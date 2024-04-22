@@ -88,29 +88,34 @@ export function SettingsBackend() {
           </CCol>
         ))}
         <CCol md={4}>
-          <CCard className="h-100">
-            <CCardHeader>
-              <CCardTitle>Cloud Shell</CCardTitle>
-            </CCardHeader>
-            <CCardBody>
-              <p>Launch an Azure Cloud Shell Window</p>
-              <CLink
-                onClick={() =>
-                  window.open(
-                    'https://shell.azure.com/powershell',
-                    '_blank',
-                    'toolbar=no,scrollbars=yes,resizable=yes,menubar=no,location=no,status=no',
-                  )
-                }
-                rel="noreferrer"
-              >
-                <CButton className="mb-3 me-3">Cloud Shell</CButton>
-              </CLink>
-              <CButton onClick={() => setVisible(true)} className="mb-3">
-                Command Reference
-              </CButton>
-            </CCardBody>
-          </CCard>
+          <CippButtonCard
+            title={'Cloud Shell'}
+            titleType="big"
+            isFetching={listBackendResult.isFetching}
+            CardButton={
+              <>
+                {' '}
+                <CLink
+                  className="me-2"
+                  onClick={() =>
+                    window.open(
+                      'https://shell.azure.com/powershell',
+                      '_blank',
+                      'toolbar=no,scrollbars=yes,resizable=yes,menubar=no,location=no,status=no',
+                    )
+                  }
+                  rel="noreferrer"
+                >
+                  <CButton>Cloud Shell</CButton>
+                </CLink>
+                <CButton onClick={() => setVisible(true)} className="me-2">
+                  Command Reference
+                </CButton>
+              </>
+            }
+          >
+            <p>Launch an Azure Cloud Shell Window</p>
+          </CippButtonCard>
         </CCol>
       </CRow>
       <CippOffcanvas
