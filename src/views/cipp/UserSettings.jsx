@@ -218,13 +218,10 @@ const UserSettings = () => {
                               .reduce((acc, val) => acc.concat(val.items), [])
                               //only map if 'name' property is not null
                               .filter((item) => item?.name)
-                              .map((item) =>
-                                // console.log(item),
-                                ({
-                                  name: item?.name,
-                                  value: { to: item?.to, name: item?.name },
-                                }),
-                              )}
+                              .map((item) => ({
+                                name: item?.name,
+                                value: { to: item?.to, name: item?.name },
+                              }))}
                             allowCreate={false}
                             refreshFunction={() =>
                               setRandom3((Math.random() + 1).toString(36).substring(7))

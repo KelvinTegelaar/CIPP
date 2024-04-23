@@ -74,7 +74,6 @@ export function SettingsExtensionMappings() {
   }
 
   const onHaloAutomap = (values) => {
-    console.log('starting automap')
     //check for a match between the tenant and the halo client based on the tenants displayName property, if so, create the mapping and add to the array.
     const newMappings = listBackendHaloResult.data?.Tenants.map(
       (tenant) => {
@@ -82,8 +81,6 @@ export function SettingsExtensionMappings() {
           (client) => client.name === tenant.displayName,
         )
         if (haloClient) {
-          console.log(haloClient)
-          console.log(tenant)
           return {
             Tenant: tenant.customerId,
             haloName: haloClient.label,
