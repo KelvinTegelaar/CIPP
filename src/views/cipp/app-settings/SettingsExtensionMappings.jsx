@@ -246,8 +246,9 @@ export function SettingsExtensionMappings() {
                           )}
                       </CCol>
                       <small>
+                        <FontAwesomeIcon icon={'triangle-exclamation'} className="me-2" />
                         After editing the mappings you must click Save Mappings for the changes to
-                        take effect.
+                        take effect. The table will be saved exactly as presented.
                       </small>
                     </CForm>
                   )
