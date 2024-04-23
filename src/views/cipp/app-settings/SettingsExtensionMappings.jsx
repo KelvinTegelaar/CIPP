@@ -83,7 +83,7 @@ export function SettingsExtensionMappings() {
           console.log(haloClient)
           console.log(tenant)
           return {
-            Tenant: tenant.customerId,
+            Tenant: tenant,
             haloName: haloClient.name,
             haloId: haloClient.value,
           }
