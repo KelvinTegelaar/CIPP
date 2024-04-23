@@ -4,7 +4,7 @@ import { Form } from 'react-final-form'
 import { RFFSelectSearch } from 'src/components/forms/index.js'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { CippCallout } from 'src/components/layout/index.js'
 import CippButtonCard from 'src/components/contentcards/CippButtonCard'
 import { CippTable } from 'src/components/tables'
@@ -16,6 +16,10 @@ import { CellTip } from 'src/components/tables/CellGenericFormat'
  * @returns {JSX.Element} - JSX component representing the settings extension mappings.
  */
 export function SettingsExtensionMappings() {
+  const [addedAttributes, setAddedAttribute] = React.useState(1)
+  const [mappingArray, setMappingArray] = React.useState('defaultMapping')
+  const [mappingValue, setMappingValue] = React.useState({})
+  const [haloMappingsArray, setHaloMappingsArray] = React.useState([])
   const [listHaloBackend, listBackendHaloResult = []] = useLazyGenericGetRequestQuery()
   const [listNinjaOrgsBackend, listBackendNinjaOrgsResult] = useLazyGenericGetRequestQuery()
   const [listNinjaFieldsBackend, listBackendNinjaFieldsResult] = useLazyGenericGetRequestQuery()
@@ -27,10 +31,15 @@ export function SettingsExtensionMappings() {
   const [setNinjaFieldsExtensionconfig, extensionNinjaFieldsConfigResult] =
     useLazyGenericPostRequestQuery()
 
-  const onHaloSubmit = (values) => {
+  const onHaloSubmit = () => {
+    console.log(haloMappingsArray)
+    const originalFormat = haloMappingsArray.reduce((acc, item) => {
+      acc[item.Tenant?.customerId] = { label: item.haloName, value: item.haloId }
+      return acc
+    }, {})
     setHaloExtensionconfig({
       path: 'api/ExecExtensionMapping?AddMapping=Halo',
-      values: { mappings: values },
+      values: { mappings: originalFormat },
     })
   }
   const onNinjaOrgsSubmit = (values) => {
@@ -58,8 +67,17 @@ export function SettingsExtensionMappings() {
     })
   }
 
-  const [addedAttributes, setAddedAttribute] = React.useState(1)
-  const [mappingArray, setMappingArray] = React.useState('defaultMapping')
+  useEffect(() => {
+    if (listBackendHaloResult.isSuccess) {
+      setHaloMappingsArray(
+        Object.keys(listBackendHaloResult.data?.Mappings).map((key) => ({
+          Tenant: listBackendHaloResult.data?.Tenants.find((tenant) => tenant.customerId === key),
+          haloName: listBackendHaloResult.data?.Mappings[key].label,
+          haloId: listBackendHaloResult.data?.Mappings[key].value,
+        })),
+      )
+    }
+  }, [listBackendHaloResult.isSuccess])
 
   const Offcanvas = (row, rowIndex, formatExtraData) => {
     return (
@@ -69,7 +87,11 @@ export function SettingsExtensionMappings() {
             size="sm"
             variant="ghost"
             color="danger"
-            onClick={() => console.log('Remove Mapping')}
+            onClick={() =>
+              setHaloMappingsArray((currentHaloMappings) =>
+                currentHaloMappings.filter((item) => item !== row),
+              )
+            }
           >
             <FontAwesomeIcon icon={'trash'} href="" />
           </CButton>
@@ -80,10 +102,17 @@ export function SettingsExtensionMappings() {
   const columns = [
     {
       name: 'Tenant',
-      selector: (row) => row['Tenant'],
+      selector: (row) => row.Tenant?.displayName,
       sortable: true,
-      cell: (row) => CellTip(row['Tenant']),
+      cell: (row) => CellTip(row.Tenant?.displayName),
       exportSelector: 'Tenant',
+    },
+    {
+      name: 'TenantId',
+      selector: (row) => row.Tenant?.customerId,
+      sortable: true,
+      exportSelector: 'Tenant/customerId',
+      omit: true,
     },
     {
       name: 'Halo Client Name',
@@ -147,13 +176,7 @@ export function SettingsExtensionMappings() {
                               showFilter={true}
                               reportName="none"
                               columns={columns}
-                              data={Object.keys(listBackendHaloResult.data?.Mappings).map(
-                                (key) => ({
-                                  Tenant: key,
-                                  haloName: listBackendHaloResult.data?.Mappings[key].label,
-                                  haloId: listBackendHaloResult.data?.Mappings[key].value,
-                                }),
-                              )}
+                              data={haloMappingsArray}
                               isModal={true}
                             />
                           )
@@ -167,7 +190,6 @@ export function SettingsExtensionMappings() {
                                 name: tenant.displayName,
                                 value: tenant.customerId,
                               }))}
-                              //set the name of the other field, to the value of this field by using mappingArray, each time we add a new row, we add a new object to the array.
                               onChange={(e) => {
                                 setMappingArray(e.value)
                               }}
@@ -183,11 +205,24 @@ export function SettingsExtensionMappings() {
                                 name: client.name,
                                 value: client.value,
                               }))}
+                              onChange={(e) => setMappingValue(e)}
                               placeholder="Select a HaloPSA Client"
                             />
                           </CCol>
                           <CButton
-                            onClick={() => setAddedAttribute(addedAttributes + 1)}
+                            onClick={() =>
+                              //set the new mapping in the array
+                              setHaloMappingsArray([
+                                ...haloMappingsArray,
+                                {
+                                  Tenant: listBackendHaloResult.data?.Tenants.find(
+                                    (tenant) => tenant.customerId === mappingArray,
+                                  ),
+                                  haloName: mappingValue.label,
+                                  haloId: mappingValue.value,
+                                },
+                              ])
+                            }
                             className={`my-4 circular-button`}
                             title={'+'}
                           >
@@ -211,9 +246,89 @@ export function SettingsExtensionMappings() {
                           )}
                       </CCol>
                       <small>
+                        <FontAwesomeIcon icon={'triangle-exclamation'} className="me-2" />
                         After editing the mappings you must click Save Mappings for the changes to
-                        take effect.
+                        take effect. The table will be saved exactly as presented.
                       </small>
+                    </CForm>
+                  )
+                }}
+              />
+            )}
+          </CippButtonCard>
+        </CCol>
+        <CCol className="mb-3" xs={6}>
+          {' '}
+          <CippButtonCard
+            title={'NinjaOne Organization Mapping'}
+            titleType="big"
+            isFetching={listBackendNinjaOrgsResult.isFetching}
+            CardButton={
+              <>
+                <CButton form="NinjaOrgs" className="me-2" type="submit">
+                  {extensionNinjaOrgsConfigResult.isFetching && (
+                    <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                  )}
+                  Set Mappings
+                </CButton>
+                <CButton onClick={() => onNinjaOrgsAutomap()} className="me-2">
+                  {extensionNinjaOrgsAutomapResult.isFetching && (
+                    <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                  )}
+                  Automap NinjaOne Organizations
+                </CButton>
+              </>
+            }
+          >
+            {listBackendNinjaOrgsResult.isFetching ? (
+              <CSpinner color="primary" />
+            ) : (
+              <Form
+                onSubmit={onNinjaOrgsSubmit}
+                initialValues={listBackendNinjaOrgsResult.data?.Mappings}
+                render={({ handleSubmit, submitting, values }) => {
+                  return (
+                    <CForm id="NinjaOrgs" onSubmit={handleSubmit}>
+                      <CCardText>
+                        Use the table below to map your client to the correct NinjaOne Organization
+                        {listBackendNinjaOrgsResult.isSuccess &&
+                          listBackendNinjaOrgsResult.data.Tenants.map((tenant) => (
+                            <RFFSelectSearch
+                              key={tenant.customerId}
+                              name={tenant.customerId}
+                              label={tenant.displayName}
+                              values={listBackendNinjaOrgsResult.data.NinjaOrgs}
+                              placeholder="Select an Organization"
+                            />
+                          ))}
+                      </CCardText>
+                      <CCol className="me-2">
+                        {(extensionNinjaOrgsConfigResult.isSuccess ||
+                          extensionNinjaOrgsConfigResult.isError) &&
+                          !extensionNinjaFieldsConfigResult.isFetching && (
+                            <CippCallout
+                              color={
+                                extensionNinjaOrgsConfigResult.isSuccess ? 'success' : 'danger'
+                              }
+                              dismissible
+                              style={{ marginTop: '16px' }}
+                            >
+                              {extensionNinjaOrgsConfigResult.isSuccess
+                                ? extensionNinjaOrgsConfigResult.data.Results
+                                : 'Error'}
+                            </CippCallout>
+                          )}
+                        {(extensionNinjaOrgsAutomapResult.isSuccess ||
+                          extensionNinjaOrgsAutomapResult.isError) && (
+                          <CCallout
+                            color={extensionNinjaOrgsAutomapResult.isSuccess ? 'success' : 'danger'}
+                          >
+                            {extensionNinjaOrgsAutomapResult.isSuccess
+                              ? extensionNinjaOrgsAutomapResult.data.Results
+                              : 'Error'}
+                          </CCallout>
+                        )}
+                      </CCol>
                     </CForm>
                   )
                 }}
@@ -299,84 +414,6 @@ export function SettingsExtensionMappings() {
                                 : 'Error'}
                             </CippCallout>
                           )}
-                      </CCol>
-                    </CForm>
-                  )
-                }}
-              />
-            )}
-          </CippButtonCard>
-        </CCol>
-        <CCol className="mb-3" xs={6}>
-          <CippButtonCard
-            title={'NinjaOne Organization Mapping'}
-            titleType="big"
-            isFetching={listBackendNinjaOrgsResult.isFetching}
-            CardButton={
-              <>
-                <CButton form="NinjaOrgs" className="me-2" type="submit">
-                  {extensionNinjaOrgsConfigResult.isFetching && (
-                    <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-                  )}
-                  Set Mappings
-                </CButton>
-                <CButton onClick={() => onNinjaOrgsAutomap()} className="me-2">
-                  {extensionNinjaOrgsAutomapResult.isFetching && (
-                    <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-                  )}
-                  Automap NinjaOne Organizations
-                </CButton>
-              </>
-            }
-          >
-            {listBackendNinjaOrgsResult.isFetching ? (
-              <CSpinner color="primary" />
-            ) : (
-              <Form
-                onSubmit={onNinjaOrgsSubmit}
-                initialValues={listBackendNinjaOrgsResult.data?.Mappings}
-                render={({ handleSubmit, submitting, values }) => {
-                  return (
-                    <CForm id="NinjaOrgs" onSubmit={handleSubmit}>
-                      <CCardText>
-                        Use the table below to map your client to the correct NinjaOne Organization
-                        {listBackendNinjaOrgsResult.isSuccess &&
-                          listBackendNinjaOrgsResult.data.Tenants.map((tenant) => (
-                            <RFFSelectSearch
-                              key={tenant.customerId}
-                              name={tenant.customerId}
-                              label={tenant.displayName}
-                              values={listBackendNinjaOrgsResult.data.NinjaOrgs}
-                              placeholder="Select an Organization"
-                            />
-                          ))}
-                      </CCardText>
-                      <CCol className="me-2">
-                        {(extensionNinjaOrgsConfigResult.isSuccess ||
-                          extensionNinjaOrgsConfigResult.isError) &&
-                          !extensionNinjaFieldsConfigResult.isFetching && (
-                            <CippCallout
-                              color={
-                                extensionNinjaOrgsConfigResult.isSuccess ? 'success' : 'danger'
-                              }
-                              dismissible
-                              style={{ marginTop: '16px' }}
-                            >
-                              {extensionNinjaOrgsConfigResult.isSuccess
-                                ? extensionNinjaOrgsConfigResult.data.Results
-                                : 'Error'}
-                            </CippCallout>
-                          )}
-                        {(extensionNinjaOrgsAutomapResult.isSuccess ||
-                          extensionNinjaOrgsAutomapResult.isError) && (
-                          <CCallout
-                            color={extensionNinjaOrgsAutomapResult.isSuccess ? 'success' : 'danger'}
-                          >
-                            {extensionNinjaOrgsAutomapResult.isSuccess
-                              ? extensionNinjaOrgsAutomapResult.data.Results
-                              : 'Error'}
-                          </CCallout>
-                        )}
                       </CCol>
                     </CForm>
                   )
