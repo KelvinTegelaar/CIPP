@@ -73,6 +73,27 @@ export function SettingsExtensionMappings() {
     })
   }
 
+  const onHaloAutomap = (values) => {
+    console.log('starting automap')
+    //check for a match between the tenant and the halo client based on the tenants displayName property, if so, create the mapping and add to the array.
+    const newMappings = listBackendHaloResult.data?.Tenants.map(
+      (tenant) => {
+        const haloClient = listBackendHaloResult.data?.HaloClients.find(
+          (client) => client.name === tenant.displayName,
+        )
+        if (haloClient) {
+          return {
+            tenant: tenant.customerId,
+            haloClient: haloClient.label,
+            haloId: haloClient.value,
+          }
+        }
+      },
+      //filter out any undefined values
+    ).filter((item) => item !== undefined)
+    setHaloMappingsArray((currentHaloMappings) => [...currentHaloMappings, ...newMappings])
+  }
+
   useEffect(() => {
     if (listBackendHaloResult.isSuccess) {
       setHaloMappingsArray(
@@ -214,12 +235,20 @@ export function SettingsExtensionMappings() {
             titleType="big"
             isFetching={listHaloBackend.isFetching}
             CardButton={
-              <CButton form="haloform" className="me-2" type="submit">
-                {extensionHaloConfigResult.isFetching && (
-                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-                )}
-                Save Mappings
-              </CButton>
+              <>
+                <CButton form="haloform" className="me-2" type="submit">
+                  {extensionHaloConfigResult.isFetching && (
+                    <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                  )}
+                  Save Mappings
+                </CButton>
+                <CButton onClick={() => onHaloAutomap()} className="me-2">
+                  {extensionNinjaOrgsAutomapResult.isFetching && (
+                    <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                  )}
+                  Automap HaloPSA Clients
+                </CButton>
+              </>
             }
           >
             {listBackendHaloResult.isFetching ? (
