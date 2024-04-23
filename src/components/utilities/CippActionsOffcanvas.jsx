@@ -231,7 +231,7 @@ export default function CippActionsOffcanvas(props) {
           </CCardBody>
           <CCardFooter className="text-end">
             <CRow>
-              {action.percent && (
+              {action?.percent > 0 && (
                 <CCol xs="8">
                   <div className="mt-1">
                     <CProgress>
