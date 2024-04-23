@@ -45,7 +45,7 @@ export function SettingsExtensionMappings() {
   }
   const onNinjaOrgsSubmit = () => {
     const originalFormat = ninjaMappingsArray.reduce((acc, item) => {
-      acc[item.Tenant?.customerId] = { label: item.haloName, value: item.haloId }
+      acc[item.Tenant?.customerId] = { label: item.ninjaName, value: item.ninjaId }
       return acc
     }, {})
 
