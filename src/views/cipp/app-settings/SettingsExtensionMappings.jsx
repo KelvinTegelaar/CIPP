@@ -43,14 +43,15 @@ export function SettingsExtensionMappings() {
       values: { mappings: originalFormat },
     })
   }
-  const onNinjaOrgsSubmit = (values) => {
+  const onNinjaOrgsSubmit = () => {
     const originalFormat = ninjaMappingsArray.reduce((acc, item) => {
       acc[item.Tenant?.customerId] = { label: item.haloName, value: item.haloId }
       return acc
     }, {})
+
     setNinjaOrgsExtensionconfig({
       path: 'api/ExecExtensionMapping?AddMapping=NinjaOrgs',
-      values: { mappings: values },
+      values: { mappings: originalFormat },
     })
   }
 
