@@ -33,6 +33,7 @@ import React from 'react'
   "/identity/reports/azure-ad-connect-report": React.lazy(() => import('./views/identity/reports/AzureADConnectReport')), 
   "/tenant/administration/tenants": React.lazy(() => import('./views/tenant/administration/Tenants')), 
   "/tenant/administration/tenants/edit": React.lazy(() => import('./views/tenant/administration/EditTenant')), 
+  "/tenant/administration/partner-relationships": React.lazy(() => import('./views/tenant/administration/PartnerRelationships')), 
   "/tenant/administration/domains": React.lazy(() => import('./views/tenant/administration/Domains')), 
   "/tenant/administration/alertswizard": React.lazy(() => import('./views/tenant/administration/AlertWizard')), 
   "/tenant/administration/alertrules": React.lazy(() => import('./views/tenant/administration/AlertRules')), 

@@ -162,6 +162,11 @@ const _nav = [
         name: 'Tenant Offboarding',
         to: '/tenant/administration/tenant-offboarding-wizard',
       },
+      {
+        component: CNavItem,
+        name: 'Partner Relationships',
+        to: '/tenant/administration/partner-relationships',
+      },
     ],
   },
   {
