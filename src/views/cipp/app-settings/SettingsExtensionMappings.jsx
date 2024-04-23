@@ -21,7 +21,7 @@ export function SettingsExtensionMappings() {
   const [mappingValue, setMappingValue] = React.useState({})
   const [haloMappingsArray, setHaloMappingsArray] = React.useState([])
   const [ninjaMappingsArray, setNinjaMappingsArray] = React.useState([])
-
+  const [HaloAutoMap, setHaloAutoMap] = React.useState(false)
   const [listHaloBackend, listBackendHaloResult = []] = useLazyGenericGetRequestQuery()
   const [listNinjaOrgsBackend, listBackendNinjaOrgsResult] = useLazyGenericGetRequestQuery()
   const [listNinjaFieldsBackend, listBackendNinjaFieldsResult] = useLazyGenericGetRequestQuery()
@@ -73,8 +73,8 @@ export function SettingsExtensionMappings() {
     })
   }
 
-  const onHaloAutomap = (values) => {
-    //check for a match between the tenant and the halo client based on the tenants displayName property, if so, create the mapping and add to the array.
+  const onHaloAutomap = () => {
+    setHaloAutoMap(true)
     const newMappings = listBackendHaloResult.data?.Tenants.map(
       (tenant) => {
         const haloClient = listBackendHaloResult.data?.HaloClients.find(
@@ -323,6 +323,12 @@ export function SettingsExtensionMappings() {
                         </CRow>
                       </CCardText>
                       <CCol className="me-2">
+                        {HaloAutoMap && (
+                          <CCallout dismissible color="success">
+                            Automapping has been executed. Remember to check the changes and save
+                            them.
+                          </CCallout>
+                        )}
                         {(extensionHaloConfigResult.isSuccess ||
                           extensionHaloConfigResult.isError) &&
                           !extensionHaloConfigResult.isFetching && (
