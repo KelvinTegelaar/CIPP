@@ -74,16 +74,17 @@ export function SettingsExtensionMappings() {
   }
 
   const onHaloAutomap = () => {
-    setHaloAutoMap(true)
     const newMappings = listBackendHaloResult.data?.Tenants.map(
       (tenant) => {
         const haloClient = listBackendHaloResult.data?.HaloClients.find(
           (client) => client.name === tenant.displayName,
         )
         if (haloClient) {
+          console.log(haloClient)
+          console.log(tenant)
           return {
             Tenant: tenant.customerId,
-            haloName: haloClient.label,
+            haloName: haloClient.name,
             haloId: haloClient.value,
           }
         }
@@ -91,6 +92,8 @@ export function SettingsExtensionMappings() {
       //filter out any undefined values
     ).filter((item) => item !== undefined)
     setHaloMappingsArray((currentHaloMappings) => [...currentHaloMappings, ...newMappings])
+
+    setHaloAutoMap(true)
   }
 
   useEffect(() => {
