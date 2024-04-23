@@ -258,6 +258,85 @@ export function SettingsExtensionMappings() {
           </CippButtonCard>
         </CCol>
         <CCol className="mb-3" xs={6}>
+          {' '}
+          <CippButtonCard
+            title={'NinjaOne Organization Mapping'}
+            titleType="big"
+            isFetching={listBackendNinjaOrgsResult.isFetching}
+            CardButton={
+              <>
+                <CButton form="NinjaOrgs" className="me-2" type="submit">
+                  {extensionNinjaOrgsConfigResult.isFetching && (
+                    <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                  )}
+                  Set Mappings
+                </CButton>
+                <CButton onClick={() => onNinjaOrgsAutomap()} className="me-2">
+                  {extensionNinjaOrgsAutomapResult.isFetching && (
+                    <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                  )}
+                  Automap NinjaOne Organizations
+                </CButton>
+              </>
+            }
+          >
+            {listBackendNinjaOrgsResult.isFetching ? (
+              <CSpinner color="primary" />
+            ) : (
+              <Form
+                onSubmit={onNinjaOrgsSubmit}
+                initialValues={listBackendNinjaOrgsResult.data?.Mappings}
+                render={({ handleSubmit, submitting, values }) => {
+                  return (
+                    <CForm id="NinjaOrgs" onSubmit={handleSubmit}>
+                      <CCardText>
+                        Use the table below to map your client to the correct NinjaOne Organization
+                        {listBackendNinjaOrgsResult.isSuccess &&
+                          listBackendNinjaOrgsResult.data.Tenants.map((tenant) => (
+                            <RFFSelectSearch
+                              key={tenant.customerId}
+                              name={tenant.customerId}
+                              label={tenant.displayName}
+                              values={listBackendNinjaOrgsResult.data.NinjaOrgs}
+                              placeholder="Select an Organization"
+                            />
+                          ))}
+                      </CCardText>
+                      <CCol className="me-2">
+                        {(extensionNinjaOrgsConfigResult.isSuccess ||
+                          extensionNinjaOrgsConfigResult.isError) &&
+                          !extensionNinjaFieldsConfigResult.isFetching && (
+                            <CippCallout
+                              color={
+                                extensionNinjaOrgsConfigResult.isSuccess ? 'success' : 'danger'
+                              }
+                              dismissible
+                              style={{ marginTop: '16px' }}
+                            >
+                              {extensionNinjaOrgsConfigResult.isSuccess
+                                ? extensionNinjaOrgsConfigResult.data.Results
+                                : 'Error'}
+                            </CippCallout>
+                          )}
+                        {(extensionNinjaOrgsAutomapResult.isSuccess ||
+                          extensionNinjaOrgsAutomapResult.isError) && (
+                          <CCallout
+                            color={extensionNinjaOrgsAutomapResult.isSuccess ? 'success' : 'danger'}
+                          >
+                            {extensionNinjaOrgsAutomapResult.isSuccess
+                              ? extensionNinjaOrgsAutomapResult.data.Results
+                              : 'Error'}
+                          </CCallout>
+                        )}
+                      </CCol>
+                    </CForm>
+                  )
+                }}
+              />
+            )}
+          </CippButtonCard>
+        </CCol>
+        <CCol className="mb-3" xs={6}>
           <CippButtonCard
             title={'Ninjaone Field Mapping'}
             titleType="big"
@@ -335,84 +414,6 @@ export function SettingsExtensionMappings() {
                                 : 'Error'}
                             </CippCallout>
                           )}
-                      </CCol>
-                    </CForm>
-                  )
-                }}
-              />
-            )}
-          </CippButtonCard>
-        </CCol>
-        <CCol className="mb-3" xs={6}>
-          <CippButtonCard
-            title={'NinjaOne Organization Mapping'}
-            titleType="big"
-            isFetching={listBackendNinjaOrgsResult.isFetching}
-            CardButton={
-              <>
-                <CButton form="NinjaOrgs" className="me-2" type="submit">
-                  {extensionNinjaOrgsConfigResult.isFetching && (
-                    <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-                  )}
-                  Set Mappings
-                </CButton>
-                <CButton onClick={() => onNinjaOrgsAutomap()} className="me-2">
-                  {extensionNinjaOrgsAutomapResult.isFetching && (
-                    <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-                  )}
-                  Automap NinjaOne Organizations
-                </CButton>
-              </>
-            }
-          >
-            {listBackendNinjaOrgsResult.isFetching ? (
-              <CSpinner color="primary" />
-            ) : (
-              <Form
-                onSubmit={onNinjaOrgsSubmit}
-                initialValues={listBackendNinjaOrgsResult.data?.Mappings}
-                render={({ handleSubmit, submitting, values }) => {
-                  return (
-                    <CForm id="NinjaOrgs" onSubmit={handleSubmit}>
-                      <CCardText>
-                        Use the table below to map your client to the correct NinjaOne Organization
-                        {listBackendNinjaOrgsResult.isSuccess &&
-                          listBackendNinjaOrgsResult.data.Tenants.map((tenant) => (
-                            <RFFSelectSearch
-                              key={tenant.customerId}
-                              name={tenant.customerId}
-                              label={tenant.displayName}
-                              values={listBackendNinjaOrgsResult.data.NinjaOrgs}
-                              placeholder="Select an Organization"
-                            />
-                          ))}
-                      </CCardText>
-                      <CCol className="me-2">
-                        {(extensionNinjaOrgsConfigResult.isSuccess ||
-                          extensionNinjaOrgsConfigResult.isError) &&
-                          !extensionNinjaFieldsConfigResult.isFetching && (
-                            <CippCallout
-                              color={
-                                extensionNinjaOrgsConfigResult.isSuccess ? 'success' : 'danger'
-                              }
-                              dismissible
-                              style={{ marginTop: '16px' }}
-                            >
-                              {extensionNinjaOrgsConfigResult.isSuccess
-                                ? extensionNinjaOrgsConfigResult.data.Results
-                                : 'Error'}
-                            </CippCallout>
-                          )}
-                        {(extensionNinjaOrgsAutomapResult.isSuccess ||
-                          extensionNinjaOrgsAutomapResult.isError) && (
-                          <CCallout
-                            color={extensionNinjaOrgsAutomapResult.isSuccess ? 'success' : 'danger'}
-                          >
-                            {extensionNinjaOrgsAutomapResult.isSuccess
-                              ? extensionNinjaOrgsAutomapResult.data.Results
-                              : 'Error'}
-                          </CCallout>
-                        )}
                       </CCol>
                     </CForm>
                   )
