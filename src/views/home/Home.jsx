@@ -146,7 +146,8 @@ const Home = () => {
   const filteredStandards = standards
     ?.filter((p) => p.Settings.remediate === true)
     .map((standard, idx) => {
-      return <li key={`${standard.Standard}-${idx}`}>{standard.Standard}</li>
+      const standardDisplayname = allStandardsList.filter((p) => p.name.includes(standard.Standard))
+      return <li key={`${standard.Standard}-${idx}`}>{standardDisplayname[0].label}</li>
     })
   return (
     <>
