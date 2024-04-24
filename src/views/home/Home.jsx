@@ -81,7 +81,7 @@ const Home = () => {
     isFetching: isFetchingStandards,
   } = useGenericGetRequestQuery({
     path: '/api/ListStandards',
-    params: {},
+    params: { ShowConsolidated: true, TenantFilter: currentTenant.defaultDomainName },
   })
 
   const {
@@ -144,18 +144,9 @@ const Home = () => {
   ]
 
   const filteredStandards = standards
-    .filter(
-      (p) => p.displayName === 'AllTenants' || p.displayName === currentTenant.defaultDomainName,
-    )
-    .flatMap((tenant) => {
-      return Object.keys(tenant.standards).map((standard, idx) => {
-        const standardDisplayname = allStandardsList.filter((p) => p.name.includes(standard))
-        return (
-          <li key={`${standard}-${tenant.displayName}-${idx}`}>
-            {standardDisplayname[0]?.label} ({tenant.displayName})
-          </li>
-        )
-      })
+    ?.filter((p) => p.Settings.remediate === true)
+    .map((standard, idx) => {
+      return <li key={`${standard.Standard}-${idx}`}>{standard.Standard}</li>
     })
   return (
     <>
