@@ -13,6 +13,7 @@ import {
   CWidgetStatsB,
   CBadge,
   CFormInput,
+  CTooltip,
 } from '@coreui/react'
 import { Form, FormSpy } from 'react-final-form'
 import {
@@ -29,7 +30,7 @@ import {
   useLazyGenericPostRequestQuery,
 } from 'src/store/api/app'
 import { faCheck, faCircleNotch, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
-import { CippContentCard, CippPage } from 'src/components/layout'
+import { CippCallout, CippContentCard, CippPage } from 'src/components/layout'
 import { useSelector } from 'react-redux'
 import { ModalService, validateAlphabeticalSort } from 'src/components/utilities'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -39,6 +40,7 @@ import allStandardsList from 'src/data/standards'
 import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
 import GDAPRoles from 'src/data/GDAPRoles'
 import Select from 'react-select'
+import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 
 const DeleteAction = () => {
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
@@ -91,32 +93,78 @@ const ApplyNewStandard = () => {
         onConfirm: () =>
           execStandards({ path: `api/ExecStandardsRun?Tenantfilter=${selectedTenant}` }),
       })
-    const ourRef = useRef()
-    const TemplateModal = () =>
+
+    const Offcanvas = (row, rowIndex, formatExtraData) => {
+      const handleDeleteIntuneTemplate = (apiurl, message) => {
+        ModalService.confirm({
+          title: 'Confirm',
+          body: <div>{message}</div>,
+          onConfirm: () => ExecuteGetRequest({ path: apiurl }).then(() => refetchStandards()),
+          confirmLabel: 'Continue',
+          cancelLabel: 'Cancel',
+        })
+      }
+      return (
+        <>
+          <CTooltip content="Load this template">
+            <CButton
+              size="sm"
+              color="success"
+              variant="ghost"
+              onClick={() => setTemplateStandard(row)}
+            >
+              <FontAwesomeIcon icon={'check'} />
+            </CButton>
+          </CTooltip>
+          <CButton
+            size="sm"
+            variant="ghost"
+            color="danger"
+            onClick={() =>
+              handleDeleteIntuneTemplate(
+                `/api/RemoveStandardTemplate?ID=${row.GUID}`,
+                'Do you want to delete the template?',
+              )
+            }
+          >
+            <FontAwesomeIcon icon={'trash'} href="" />
+          </CButton>
+        </>
+      )
+    }
+    const TemplateModal = () => {
+      const columns = [
+        {
+          name: 'name',
+          selector: (row) => row['name'],
+          sortable: true,
+          exportSelector: 'name',
+          cell: cellGenericFormatter(),
+        },
+        {
+          name: 'GUID',
+          selector: (row) => row['GUID'],
+          sortable: true,
+          exportSelector: 'GUID',
+          omit: true,
+        },
+        {
+          name: 'Actions',
+          cell: Offcanvas,
+          maxWidth: '80px',
+        },
+      ]
+
       ModalService.open({
-        body: (
-          <div>
-            {isFetching && <CSpinner />}
-            {isError && 'Something went wrong loading your templates'}
-            {isSuccess && (
-              <Select
-                ref={ourRef}
-                className="react-select-container me-3"
-                classNamePrefix="react-select"
-                options={listStandardTemplates?.map((user) => ({
-                  value: user,
-                  label: `${user.name}`,
-                }))}
-                isClearable={true}
-                name="usageLocation"
-                placeholder="Type to search..."
-                label="Copy properties from other user"
-                onChange={(current) => setTemplateStandard(current)}
-              />
-            )}
-          </div>
-        ),
+        data: listStandardTemplates,
+        componentType: 'table',
+        componentProps: {
+          columns: columns,
+          keyField: 'SKU',
+        },
+        title: `Data`,
       })
+    }
     return (
       <>
         {execStandardsResults.data?.Results ===
@@ -168,41 +216,7 @@ const ApplyNewStandard = () => {
           values: { name: ourRef.current?.value, ...templateValues },
         }),
     })
-  const Offcanvas = (row, rowIndex, formatExtraData) => {
-    const [ocVisible, setOCVisible] = useState(false)
-    const handleDeleteIntuneTemplate = (apiurl, message) => {
-      ModalService.confirm({
-        title: 'Confirm',
-        body: <div>{message}</div>,
-        onConfirm: () => ExecuteGetRequest({ path: apiurl }),
-        confirmLabel: 'Continue',
-        cancelLabel: 'Cancel',
-      })
-    }
-    return (
-      <>
-        <CButton
-          size="sm"
-          variant="ghost"
-          color="danger"
-          onClick={() =>
-            handleDeleteIntuneTemplate(
-              `api/RemoveStandard?ID=${row.displayName}`,
-              'Do you want to delete this standard?',
-            )
-          }
-        >
-          <FontAwesomeIcon icon={'trash'} href="" />
-        </CButton>
-        <CippCodeOffCanvas
-          row={row}
-          state={ocVisible}
-          type="CATemplate"
-          hideFunction={() => setOCVisible(false)}
-        />
-      </>
-    )
-  }
+
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
 
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
@@ -215,6 +229,7 @@ const ApplyNewStandard = () => {
     data: listStandardResults = [],
     isFetching,
     isSuccess,
+    refetch: refetchStandards,
   } = useGenericGetRequestQuery({
     path: 'api/listStandards',
     params: { TenantFilter: tenantDomain },
@@ -239,7 +254,7 @@ const ApplyNewStandard = () => {
   const [exConnectorGetRequest, exConnectorTemplates] = useLazyGenericGetRequestQuery()
   const [caGetRequest, caTemplates] = useLazyGenericGetRequestQuery()
   const [groupGetRequest, groupTemplates] = useLazyGenericGetRequestQuery()
-  const initialValues = templateStandard ? templateStandard.value : listStandardResults[0]
+  const initialValues = templateStandard ? templateStandard : listStandardResults[0]
   const allTenantsStandard = listStandardsAllTenants.find(
     (tenant) => tenant.displayName === 'AllTenants',
   )
@@ -291,6 +306,16 @@ const ApplyNewStandard = () => {
         {postResults.isSuccess && <CCallout color="success">{postResults.data?.Results}</CCallout>}
         <CRow>
           <CCol lg={12} xs={12}>
+            {getResults.isSuccess && (
+              <CippCallout dismissible color="success">
+                {getResults.data?.Results}
+              </CippCallout>
+            )}
+            {getResults.isError && (
+              <CippCallout dismissible color="danger">
+                {getResults.error.message}
+              </CippCallout>
+            )}
             <CippContentCard
               button={
                 <>
@@ -873,7 +898,6 @@ const ApplyNewStandard = () => {
                                     <>
                                       <CButton
                                         className="me-3"
-                                        type="submit"
                                         onClick={() => templateSave(props.values)}
                                         disabled={submitting}
                                       >
