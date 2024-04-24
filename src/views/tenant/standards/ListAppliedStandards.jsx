@@ -71,6 +71,9 @@ const DeleteAction = () => {
 }
 const ApplyNewStandard = () => {
   const [templateStandard, setTemplateStandard] = useState()
+  const [loadedTemplate, setLoadedTemplate] = useState(false)
+  const [loadingTemplate, setLoadingTemplate] = useState(false)
+
   const { data: listStandardTemplates = [], refetch: refetchStandardsTemplates } =
     useGenericGetRequestQuery({
       path: 'api/listStandardTemplates',
@@ -90,13 +93,20 @@ const ApplyNewStandard = () => {
         onConfirm: () =>
           execStandards({ path: `api/ExecStandardsRun?Tenantfilter=${selectedTenant}` }),
       })
+    const templateStandardSet = (template) => {
+      setLoadingTemplate(true)
+      setTemplateStandard(template)
+      setLoadedTemplate(true)
+      setLoadingTemplate(false)
+    }
 
     const Offcanvas = (row, rowIndex, formatExtraData) => {
       const handleDeleteIntuneTemplate = (apiurl, message) => {
         ModalService.confirm({
           title: 'Confirm',
           body: <div>{message}</div>,
-          onConfirm: () => ExecuteGetRequest({ path: apiurl }).then(() => refetchStandards()),
+          onConfirm: () =>
+            ExecuteGetRequest({ path: apiurl }).then(() => refetchStandardsTemplates()),
           confirmLabel: 'Continue',
           cancelLabel: 'Cancel',
         })
@@ -108,7 +118,7 @@ const ApplyNewStandard = () => {
               size="sm"
               color="success"
               variant="ghost"
-              onClick={() => setTemplateStandard(row)}
+              onClick={() => templateStandardSet(row)}
             >
               <FontAwesomeIcon icon={'check'} />
             </CButton>
@@ -139,6 +149,30 @@ const ApplyNewStandard = () => {
           cell: cellGenericFormatter(),
         },
         {
+          name: 'Remediate',
+          selector: (row) =>
+            Object.keys(row.standards).filter((key) => row.standards[key].remediate === true),
+          sortable: true,
+          exportSelector: 'name',
+          cell: cellGenericFormatter(),
+        },
+        {
+          name: 'Alert',
+          selector: (row) =>
+            Object.keys(row.standards).filter((key) => row.standards[key].alert === true),
+          sortable: true,
+          exportSelector: 'name',
+          cell: cellGenericFormatter(),
+        },
+        {
+          name: 'Report',
+          selector: (row) =>
+            Object.keys(row.standards).filter((key) => row.standards[key].report === true),
+          sortable: true,
+          exportSelector: 'name',
+          cell: cellGenericFormatter(),
+        },
+        {
           name: 'GUID',
           selector: (row) => row['GUID'],
           sortable: true,
@@ -161,6 +195,7 @@ const ApplyNewStandard = () => {
           keyField: 'SKU',
         },
         title: `Data`,
+        size: 'lg',
       })
     }
     return (
@@ -304,6 +339,18 @@ const ApplyNewStandard = () => {
         {postResults.isSuccess && <CCallout color="success">{postResults.data?.Results}</CCallout>}
         <CRow>
           <CCol lg={12} xs={12}>
+            {loadedTemplate && (
+              <CippCallout dismissible color="success">
+                Loaded data from template
+              </CippCallout>
+            )}
+
+            {getResults.isLoading ||
+              (loadingTemplate && (
+                <CippCallout dismissible color="info">
+                  <CSpinner size="sm" />
+                </CippCallout>
+              ))}
             {getResults.isSuccess && (
               <CippCallout dismissible color="success">
                 {getResults.data?.Results}
@@ -899,6 +946,15 @@ const ApplyNewStandard = () => {
                                         onClick={() => templateSave(props.values)}
                                         disabled={submitting}
                                       >
+                                        {execSaveResults.isFetching && (
+                                          <FontAwesomeIcon icon={faCircleNotch} spin size="sm" />
+                                        )}
+                                        {execSaveResults.error && (
+                                          <FontAwesomeIcon icon={faExclamationTriangle} />
+                                        )}
+                                        {execSaveResults.isSuccess && (
+                                          <FontAwesomeIcon icon={faCheck} />
+                                        )}
                                         Save as template
                                       </CButton>
                                     </>
