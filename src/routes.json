@@ -223,6 +223,12 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/tenant/administration/partner-relationships",
+    "name": "Partner Relationships",
+    "component": "views/tenant/administration/PartnerRelationships",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/tenant/administration/domains",
     "name": "Domains",
     "component": "views/tenant/administration/Domains",
