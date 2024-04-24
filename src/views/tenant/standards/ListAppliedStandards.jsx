@@ -71,16 +71,13 @@ const DeleteAction = () => {
 }
 const ApplyNewStandard = () => {
   const [templateStandard, setTemplateStandard] = useState()
-  const RefreshAction = () => {
-    const [execStandards, execStandardsResults] = useLazyGenericGetRequestQuery()
-    const {
-      data: listStandardTemplates = [],
-      isFetching,
-      isSuccess,
-      isError,
-    } = useGenericGetRequestQuery({
+  const { data: listStandardTemplates = [], refetch: refetchStandardsTemplates } =
+    useGenericGetRequestQuery({
       path: 'api/listStandardTemplates',
     })
+  const RefreshAction = () => {
+    const [execStandards, execStandardsResults] = useLazyGenericGetRequestQuery()
+
     const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
     const showModal = (selectedTenant) =>
       ModalService.confirm({
@@ -156,6 +153,7 @@ const ApplyNewStandard = () => {
       ]
 
       ModalService.open({
+        getData: () => listStandardTemplates,
         data: listStandardTemplates,
         componentType: 'table',
         componentProps: {
@@ -214,7 +212,7 @@ const ApplyNewStandard = () => {
         execTemplateSave({
           path: `api/AddStandardsTemplate`,
           values: { name: ourRef.current?.value, ...templateValues },
-        }),
+        }).then(() => refetchStandardsTemplates()),
     })
 
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
