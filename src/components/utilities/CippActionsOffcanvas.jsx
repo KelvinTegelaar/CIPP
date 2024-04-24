@@ -5,14 +5,20 @@ import {
   CCallout,
   CCard,
   CCardBody,
+  CCardFooter,
   CCardHeader,
   CCardText,
   CCardTitle,
+  CCol,
   CFormInput,
   CFormSelect,
   CListGroup,
   CListGroupItem,
   COffcanvasTitle,
+  CProgress,
+  CProgressBar,
+  CProgressStacked,
+  CRow,
   CSpinner,
 } from '@coreui/react'
 import { CippCodeBlock, CippOffcanvas, ModalService } from 'src/components/utilities'
@@ -222,8 +228,23 @@ export default function CippActionsOffcanvas(props) {
             <CCardText>
               {action.value && <Link to={action.link}>Status: {action.value}</Link>}
             </CCardText>
-            <small>{action.timestamp && <ReactTimeAgo date={action.timestamp} />}</small>
           </CCardBody>
+          <CCardFooter className="text-end">
+            <CRow>
+              {action?.percent > 0 && (
+                <CCol xs="8">
+                  <div className="mt-1">
+                    <CProgress>
+                      <CProgressBar value={action.percent}>{action?.progressText}</CProgressBar>
+                    </CProgress>
+                  </div>
+                </CCol>
+              )}
+              <CCol xs={action?.percent ? '4' : '12'}>
+                <small>{action.timestamp && <ReactTimeAgo date={action.timestamp} />}</small>
+              </CCol>
+            </CRow>
+          </CCardFooter>
         </CCard>
       </>
     ))
@@ -295,6 +316,7 @@ export default function CippActionsOffcanvas(props) {
       id={props.id}
       hideFunction={props.hideFunction}
       refreshFunction={props.refreshFunction}
+      isRefreshing={props.isRefreshing}
     >
       {getResults.isFetching && (
         <CCallout color="info">
@@ -310,6 +332,7 @@ export default function CippActionsOffcanvas(props) {
         <CippCodeBlock
           code={postResults.data?.Results}
           callout={true}
+          dismissable={true}
           calloutCopyValue={getResults.data?.Results}
         />
       )}
