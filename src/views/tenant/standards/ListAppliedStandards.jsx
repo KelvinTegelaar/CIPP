@@ -69,7 +69,6 @@ const DeleteAction = () => {
 }
 const ApplyNewStandard = () => {
   const [templateStandard, setTemplateStandard] = useState()
-  console.log(templateStandard)
   const RefreshAction = () => {
     const [execStandards, execStandardsResults] = useLazyGenericGetRequestQuery()
     const {

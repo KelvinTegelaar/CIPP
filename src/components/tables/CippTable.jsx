@@ -580,7 +580,6 @@ export default function CippTable({
     }
 
     const executeselectedAction = (item) => {
-      //  console.log(item)
       setModalContent({
         item,
       })

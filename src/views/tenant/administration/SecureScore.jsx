@@ -334,7 +334,6 @@ const SecureScore = () => {
                   <CCard className="h-100">
                     <CCardHeader>
                       <CCardTitle>{info.title}</CCardTitle>
-                      {console.log(info)}
                     </CCardHeader>
                     <CCardBody>
                       <CCardText>

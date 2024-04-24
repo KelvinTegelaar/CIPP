@@ -19,8 +19,6 @@ export const axiosQuery = async ({ path, method = 'get', params, data, hideToast
       })
       return { data: result.data } // Successful response
     } catch (error) {
-      console.log('error', error)
-      console.log('path', path)
       if (attempt === retryDelays.length || !shouldRetry(error, path)) {
         return {
           // Max retries reached or error should not trigger a retry
