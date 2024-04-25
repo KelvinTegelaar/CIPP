@@ -10,7 +10,6 @@
   * [Post-Install Configuration](setup/installation/addyourself.md)
   * [Run From Package Mode](setup/installation/runfrompackage.md)
   * [Connecting to your tenants](setup/installation/samwizard.md)
-  * [Clear Token Cache](setup/installation/cleartokencache.md)
   * [Conditional Access best practices](setup/installation/conditionalaccess.md)
   * [Adding users to CIPP](setup/installation/addingusers.md)
   * [Adding a custom domain name](setup/installation/customdomain.md)
