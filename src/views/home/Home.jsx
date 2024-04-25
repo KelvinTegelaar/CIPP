@@ -169,67 +169,6 @@ const Home = () => {
       </CRow>
       {currentTenant?.customerId !== 'AllTenants' ? (
         <>
-          <CRow>
-            <CCol sm={12} md={6} xl={3} className="mb-3">
-              <CippContentCard title="Total Users" icon={faUsers}>
-                <Link
-                  to={'/identity/administration/users?customerId=' + currentTenant.customerId}
-                  className="stretched-link"
-                />
-                <div>
-                  {issuccessUserCounts && !isFetchingUserCount ? dashboard?.Users : <Skeleton />}
-                </div>
-              </CippContentCard>
-            </CCol>
-            <CCol sm={12} md={6} xl={3} className="mb-3">
-              <CippContentCard title="Total Licensed users" icon={faUsers}>
-                <Link
-                  to={
-                    '/identity/administration/users?customerId=' +
-                    currentTenant.customerId +
-                    '&tableFilter=Graph%3A+assignedLicenses%2F%24count+ne+0'
-                  }
-                  className="stretched-link"
-                />
-                <div>
-                  {issuccessUserCounts && !isFetchingUserCount ? dashboard?.LicUsers : <Skeleton />}
-                </div>
-              </CippContentCard>
-            </CCol>
-            <CCol sm={12} md={6} xl={3} className="mb-3">
-              <CippContentCard title="Global Admin Users" icon={faLaptopCode}>
-                {GlobalAdminList.isSuccess ? (
-                  <>
-                    <TableModalButton
-                      className="stretched-link text-decoration-none"
-                      data={GlobalAdminList.data?.Results}
-                      countOnly={true}
-                      component="a"
-                      color="link"
-                      title="Global Admins"
-                    />
-                  </>
-                ) : (
-                  <Skeleton />
-                )}
-              </CippContentCard>
-            </CCol>
-            <CCol sm={12} md={6} xl={3} className="mb-3">
-              <CippContentCard title="Total Guests" icon={faHotel}>
-                <Link
-                  to={
-                    '/identity/administration/users?customerId=' +
-                    currentTenant.customerId +
-                    '&tableFilter=Graph%3A+usertype+eq+%27guest%27'
-                  }
-                  className="stretched-link"
-                />
-                <div>
-                  {issuccessUserCounts && !isFetchingUserCount ? dashboard?.Guests : <Skeleton />}
-                </div>
-              </CippContentCard>
-            </CCol>
-          </CRow>
           <CRow className="mb-3">
             <CCol>
               <CRow>
@@ -324,7 +263,7 @@ const Home = () => {
                 <CCol sm={12} md={4} className="mb-3">
                   <CippContentCard title="Users">
                     {(!issuccessUserCounts || isFetchingUserCount) && <Skeleton />}
-                    {issuccessUserCounts && (
+                    {issuccessUserCounts && !isFetchingUserCount && (
                       <CChart
                         type="pie"
                         data={{
