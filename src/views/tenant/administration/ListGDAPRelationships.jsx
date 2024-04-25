@@ -128,7 +128,6 @@ const Actions = (row, rowIndex, formatExtraData) => {
     </>
   )
 }
-
 const GDAPRelationships = () => {
   const columns = [
     {
