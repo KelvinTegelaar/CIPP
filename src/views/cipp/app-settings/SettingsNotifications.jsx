@@ -1,5 +1,6 @@
 import {
   useLazyExecNotificationConfigQuery,
+  useLazyGenericPostRequestQuery,
   useLazyListNotificationConfigQuery,
 } from 'src/store/api/app.js'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -18,6 +19,10 @@ import CippButtonCard from 'src/components/contentcards/CippButtonCard'
 export function SettingsNotifications() {
   const [configNotifications, notificationConfigResult] = useLazyExecNotificationConfigQuery()
   const [listNotification, notificationListResult] = useLazyListNotificationConfigQuery()
+  const [generateAlert, generateAlertResult] = useLazyGenericPostRequestQuery()
+  const generateTestAlert = (values) => {
+    generateAlert({ path: 'api/ExecAddAlert', values: values })
+  }
 
   const onSubmit = (values) => {
     configNotifications(values)
@@ -28,20 +33,33 @@ export function SettingsNotifications() {
         title="Notification Settings"
         titleType="big"
         CardButton={
-          <CButton
-            form="notificationform"
-            disabled={notificationConfigResult.isFetching}
-            type="submit"
-          >
-            Set Notification Settings
-          </CButton>
+          <>
+            <CButton
+              className="me-2"
+              form="notificationform"
+              disabled={notificationConfigResult.isFetching}
+              type="submit"
+            >
+              Set Notification Settings
+            </CButton>
+            <CButton
+              className="me-2"
+              onClick={() => generateTestAlert({ text: 'Test Alert', Severity: 'Alert' })}
+              disabled={generateAlertResult.isFetching}
+            >
+              {generateAlertResult.isFetching && <CSpinner size="sm" className="me-2" />}
+              {generateAlertResult.isSuccess && <FontAwesomeIcon icon={'check'} className="me-2" />}
+              Generate Test Alert
+            </CButton>
+          </>
         }
         isFetching={notificationListResult.isFetching}
       >
         {notificationListResult.isUninitialized && listNotification()}
-        {notificationListResult.isFetching && (
-          <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-        )}
+        {notificationListResult.isFetching ||
+          (generateAlertResult.isFetching && (
+            <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+          ))}
         {!notificationListResult.isFetching && notificationListResult.error && (
           <CippCallout color="danger">Error loading data</CippCallout>
         )}
@@ -172,6 +190,10 @@ export function SettingsNotifications() {
             }}
           />
         )}
+        <small>
+          Use the button below to save the changes, or generate a test alert. The test alert will be
+          processed in a batch with other alerts
+        </small>
       </CippButtonCard>
     </CCol>
   )
