@@ -117,6 +117,7 @@ const AppHeader = () => {
             timestamp: job.Timestamp,
             percent: job.PercentComplete,
             progressText: `${job.PercentComplete}%`,
+            detailsObject: job.Tasks,
           })),
         )
       } else {

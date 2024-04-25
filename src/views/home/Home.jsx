@@ -27,7 +27,6 @@ import allStandardsList from 'src/data/standards'
 import ReactTimeAgo from 'react-time-ago'
 import { CellDelegatedPrivilege } from 'src/components/tables/CellDelegatedPrivilege'
 import Portals from 'src/data/portals'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom'
 import { TableModalButton } from 'src/components/buttons'
 
@@ -81,7 +80,7 @@ const Home = () => {
     isFetching: isFetchingStandards,
   } = useGenericGetRequestQuery({
     path: '/api/ListStandards',
-    params: {},
+    params: { ShowConsolidated: true, TenantFilter: currentTenant.defaultDomainName },
   })
 
   const {
@@ -144,18 +143,14 @@ const Home = () => {
   ]
 
   const filteredStandards = standards
-    .filter(
-      (p) => p.displayName === 'AllTenants' || p.displayName === currentTenant.defaultDomainName,
-    )
-    .flatMap((tenant) => {
-      return Object.keys(tenant.standards).map((standard, idx) => {
-        const standardDisplayname = allStandardsList.filter((p) => p.name.includes(standard))
-        return (
-          <li key={`${standard}-${tenant.displayName}-${idx}`}>
-            {standardDisplayname[0]?.label} ({tenant.displayName})
-          </li>
-        )
-      })
+    ?.filter((p) => p.Settings.remediate === true)
+    .map((standard, idx) => {
+      const standardDisplayname = allStandardsList.filter((p) => p.name.includes(standard.Standard))
+      return (
+        <li key={`${standard.Standard}-${idx}`}>
+          {standardDisplayname[0]?.label ? standardDisplayname[0].label : standard.Standard}
+        </li>
+      )
     })
   return (
     <>
