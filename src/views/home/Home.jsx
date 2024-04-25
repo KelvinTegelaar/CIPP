@@ -27,7 +27,6 @@ import allStandardsList from 'src/data/standards'
 import ReactTimeAgo from 'react-time-ago'
 import { CellDelegatedPrivilege } from 'src/components/tables/CellDelegatedPrivilege'
 import Portals from 'src/data/portals'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom'
 import { TableModalButton } from 'src/components/buttons'
 
@@ -147,7 +146,11 @@ const Home = () => {
     ?.filter((p) => p.Settings.remediate === true)
     .map((standard, idx) => {
       const standardDisplayname = allStandardsList.filter((p) => p.name.includes(standard.Standard))
-      return <li key={`${standard.Standard}-${idx}`}>{standardDisplayname[0].label}</li>
+      return (
+        <li key={`${standard.Standard}-${idx}`}>
+          {standardDisplayname[0]?.label ? standardDisplayname[0].label : standard.Standard}
+        </li>
+      )
     })
   return (
     <>
