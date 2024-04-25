@@ -310,7 +310,7 @@ const SecureScore = () => {
         </CCol>
       </CRow>
       <CippPage title="Report Results" tenantSelector={false}>
-        {viewMode && translateData.controlScores.length > 1 && (
+        {viewMode && translateData.controlScores.length > 1 && isSuccess && isSuccessTranslation && (
           <CCard className="content-card">
             <CCardHeader className="d-flex justify-content-between align-items-center">
               <CCardTitle>Best Practice Report</CCardTitle>
@@ -326,107 +326,111 @@ const SecureScore = () => {
             </CCardBody>
           </CCard>
         )}
-        {translateState && !viewMode && !isFetching && (
-          <>
-            <CRow>
-              {translateData?.controlScores?.map((info, idx) => (
-                <CCol md={12} xl={4} className="mb-3" key={`${info.name}-${idx}`}>
-                  <CCard className="h-100">
-                    <CCardHeader>
-                      <CCardTitle>{info.title}</CCardTitle>
-                    </CCardHeader>
-                    <CCardBody>
-                      <CCardText>
-                        <CBadge color={info.scoreInPercentage === 100 ? 'info' : 'danger'}>
-                          <FontAwesomeIcon
-                            icon={info.scoreInPercentage === 100 ? faCheck : faTimes}
-                            size="lg"
-                            className="me-1"
-                          />
-                          {info.scoreInPercentage === 100
-                            ? `100% ${
-                                info.controlStateUpdates?.length > 0 &&
-                                info.controlStateUpdates[0].state !== 'Default'
-                                  ? `(${info?.controlStateUpdates[0]?.state})`
-                                  : ''
-                              }`
-                            : `${info.scoreInPercentage}% ${
-                                info.controlStateUpdates?.length > 0 &&
-                                info.controlStateUpdates[0].state !== 'Default'
-                                  ? `(${info?.controlStateUpdates[0]?.state})`
-                                  : ''
-                              }
-                            `}
-                        </CBadge>
-                      </CCardText>
-
-                      <CCardText>
-                        <h5>Description</h5>
-                        <small className="text-medium-emphasis">
-                          <div
-                            dangerouslySetInnerHTML={{
-                              __html: `${info.description} ${info.implementationStatus}`,
-                            }}
-                          />
-                        </small>
-                      </CCardText>
-                      {info.scoreInPercentage !== 100 && (
+        {translateState &&
+          !viewMode &&
+          translateData.controlScores.length > 1 &&
+          isSuccess &&
+          isSuccessTranslation && (
+            <>
+              <CRow>
+                {translateData?.controlScores?.map((info, idx) => (
+                  <CCol md={12} xl={4} className="mb-3" key={`${info.name}-${idx}`}>
+                    <CCard className="h-100">
+                      <CCardHeader>
+                        <CCardTitle>{info.title}</CCardTitle>
+                      </CCardHeader>
+                      <CCardBody>
                         <CCardText>
-                          <h5>Remediation Recommendation</h5>
-                          <small className="mb-3 text-medium-emphasis">
-                            {
-                              <div
-                                className="mb-3"
-                                dangerouslySetInnerHTML={{ __html: info.remediation }}
-                              />
-                            }
+                          <CBadge color={info.scoreInPercentage === 100 ? 'info' : 'danger'}>
+                            <FontAwesomeIcon
+                              icon={info.scoreInPercentage === 100 ? faCheck : faTimes}
+                              size="lg"
+                              className="me-1"
+                            />
+                            {info.scoreInPercentage === 100
+                              ? `100% ${
+                                  info.controlStateUpdates?.length > 0 &&
+                                  info.controlStateUpdates[0].state !== 'Default'
+                                    ? `(${info?.controlStateUpdates[0]?.state})`
+                                    : ''
+                                }`
+                              : `${info.scoreInPercentage}% ${
+                                  info.controlStateUpdates?.length > 0 &&
+                                  info.controlStateUpdates[0].state !== 'Default'
+                                    ? `(${info?.controlStateUpdates[0]?.state})`
+                                    : ''
+                                }
+                            `}
+                          </CBadge>
+                        </CCardText>
+
+                        <CCardText>
+                          <h5>Description</h5>
+                          <small className="text-medium-emphasis">
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html: `${info.description} ${info.implementationStatus}`,
+                              }}
+                            />
                           </small>
                         </CCardText>
-                      )}
-                      <CCardText>
-                        {info.threats?.length > 0 && (
-                          <>
-                            <h5>Threats</h5>
-                            {info.threats?.map((threat, idx) => (
-                              <CBadge color="info" key={`${threat}-${idx}`} className="me-3">
-                                {threat}
-                              </CBadge>
-                            ))}
-                          </>
+                        {info.scoreInPercentage !== 100 && (
+                          <CCardText>
+                            <h5>Remediation Recommendation</h5>
+                            <small className="mb-3 text-medium-emphasis">
+                              {
+                                <div
+                                  className="mb-3"
+                                  dangerouslySetInnerHTML={{ __html: info.remediation }}
+                                />
+                              }
+                            </small>
+                          </CCardText>
                         )}
-                      </CCardText>
-                      <CCardText>
-                        {info.complianceInformation > 0 && (
-                          <>
-                            <h5>Compliance Frameworks</h5>
-                            {info.complianceInformation?.map((framework, idx) => (
-                              <CBadge color="info" key={`${framework}-${idx}`} className="me-3">
-                                {framework.certificationName} -{' '}
-                                {framework.certificationControls[0]?.name}
-                              </CBadge>
-                            ))}
-                          </>
-                        )}
-                      </CCardText>
-                    </CCardBody>
-                    <CCardFooter>
-                      <CButton
-                        disabled={info.scoreInPercentage === 100}
-                        onClick={() => openRemediation(info.actionUrl)}
-                        className="me-3"
-                      >
-                        Remediate
-                      </CButton>
-                      <CButton onClick={() => openResolution(info)} className="me-3">
-                        Change Status
-                      </CButton>
-                    </CCardFooter>
-                  </CCard>
-                </CCol>
-              ))}
-            </CRow>
-          </>
-        )}
+                        <CCardText>
+                          {info.threats?.length > 0 && (
+                            <>
+                              <h5>Threats</h5>
+                              {info.threats?.map((threat, idx) => (
+                                <CBadge color="info" key={`${threat}-${idx}`} className="me-3">
+                                  {threat}
+                                </CBadge>
+                              ))}
+                            </>
+                          )}
+                        </CCardText>
+                        <CCardText>
+                          {info.complianceInformation > 0 && (
+                            <>
+                              <h5>Compliance Frameworks</h5>
+                              {info.complianceInformation?.map((framework, idx) => (
+                                <CBadge color="info" key={`${framework}-${idx}`} className="me-3">
+                                  {framework.certificationName} -{' '}
+                                  {framework.certificationControls[0]?.name}
+                                </CBadge>
+                              ))}
+                            </>
+                          )}
+                        </CCardText>
+                      </CCardBody>
+                      <CCardFooter>
+                        <CButton
+                          disabled={info.scoreInPercentage === 100}
+                          onClick={() => openRemediation(info.actionUrl)}
+                          className="me-3"
+                        >
+                          Remediate
+                        </CButton>
+                        <CButton onClick={() => openResolution(info)} className="me-3">
+                          Change Status
+                        </CButton>
+                      </CCardFooter>
+                    </CCard>
+                  </CCol>
+                ))}
+              </CRow>
+            </>
+          )}
       </CippPage>
     </>
   )
