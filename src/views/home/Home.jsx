@@ -254,23 +254,95 @@ const Home = () => {
               </CRow>
               <CRow>
                 <CCol sm={12} md={4} className="mb-3">
-                  <CippContentCard title="SharePoint Quota">
-                    {(isLoadingSPQuota || isFetchingSPQuota) && <Skeleton />}
-                    {issuccessSPQuota &&
-                      sharepoint.GeoUsedStorageMB === null &&
-                      'No SharePoint Information available'}
-                    {sharepoint && !isFetchingSPQuota && sharepoint.GeoUsedStorageMB && (
+                  <CippContentCard title="Domain Names" icon={faBook}>
+                    {!isFetchingOrg && issuccessOrg && (
+                      <>
+                        {organization.verifiedDomains?.slice(0, 3).map((item, idx) => (
+                          <li key={idx}>{item.name}</li>
+                        ))}
+                        {organization.verifiedDomains?.length > 5 && (
+                          <>
+                            <CCollapse visible={domainVisible}>
+                              {organization.verifiedDomains?.slice(3).map((item, idx) => (
+                                <li key={idx}>{item.name}</li>
+                              ))}
+                            </CCollapse>
+                            <CButton
+                              size="sm"
+                              className="mb-3"
+                              onClick={() => setDomainVisible(!domainVisible)}
+                            >
+                              {domainVisible ? 'See less' : 'See more...'}
+                            </CButton>
+                          </>
+                        )}
+                      </>
+                    )}
+                  </CippContentCard>
+                </CCol>
+                <CCol sm={12} md={4} className="mb-3">
+                  <CippContentCard title="Partner Relationships" icon={faBook}>
+                    {(isLoadingPartners || isFetchingPartners) && <Skeleton />}
+                    {issuccessPartners &&
+                      !isFetchingPartners &&
+                      partners?.Results.map((partner, idx) => {
+                        if (partner.TenantInfo) {
+                          return (
+                            <li key={`${partner.tenantId}-${idx}`}>
+                              {partner.TenantInfo.displayName} (
+                              {partner.TenantInfo.defaultDomainName})
+                            </li>
+                          )
+                        }
+                      })}
+                  </CippContentCard>
+                </CCol>
+                <CCol sm={12} md={4} className="mb-3">
+                  <CippContentCard title="Tenant Capabilities" icon={faBook}>
+                    {(isLoadingOrg || isFetchingOrg) && <Skeleton />}
+                    {!isFetchingOrg &&
+                      issuccessOrg &&
+                      organization?.assignedPlans
+                        ?.filter((p) => p.capabilityStatus == 'Enabled')
+                        .reduce((plan, curr) => {
+                          if (!plan.includes(curr.service)) {
+                            plan.push(curr.service)
+                          }
+                          return plan
+                        }, [])
+                        .map((plan, idx) => (
+                          <div key={idx}>
+                            {plan === 'exchange' && <li>Exchange</li>}
+                            {plan === 'AADPremiumService' && <li>AAD Premium</li>}
+                            {plan === 'WindowsDefenderATP' && <li>Windows Defender</li>}
+                          </div>
+                        ))}
+                  </CippContentCard>
+                </CCol>
+              </CRow>
+              <CRow>
+                <CCol sm={12} md={4} className="mb-3">
+                  <CippContentCard title="Users">
+                    {(!issuccessUserCounts || isFetchingUserCount) && <Skeleton />}
+                    {issuccessUserCounts && (
                       <CChart
                         type="doughnut"
                         data={{
-                          labels: ['Used', 'Free'],
+                          labels: ['Total Users', 'Licensed Users', 'Guests', 'Global Admins'],
                           datasets: [
                             {
                               backgroundColor: [
                                 getStyle('--cyberdrain-warning'),
                                 getStyle('--cyberdrain-info'),
+                                getStyle('--cyberdrain-success'),
+                                getStyle('--cyberdrain-danger'),
                               ],
-                              data: [sharepoint.GeoUsedStorageMB, sharepoint.TenantStorageMB],
+                              data: [
+                                dashboard?.Users,
+                                dashboard.LicUsers,
+                                dashboard?.Guests,
+                                GlobalAdminList.data?.Results.length || 0,
+                              ],
                             },
                           ],
                         }}
@@ -360,73 +432,38 @@ const Home = () => {
                   </CippContentCard>
                 </CCol>
                 <CCol sm={12} md={4} className="mb-3">
-                  <CippContentCard title="Extra Tenant Information">
-                    <p className="fw-lighter">Domain(s)</p>
-                    {(isLoadingOrg || isFetchingOrg) && <Skeleton />}
-                    <>
-                      {!isFetchingOrg && issuccessOrg && (
-                        <>
-                          <CRow className="mb-3">
-                            {organization.verifiedDomains?.slice(0, 3).map((item, idx) => (
-                              <li key={idx}>{item.name}</li>
-                            ))}
-                            {organization.verifiedDomains?.length > 5 && (
-                              <>
-                                <CCollapse visible={domainVisible}>
-                                  {organization.verifiedDomains?.slice(3).map((item, idx) => (
-                                    <li key={idx}>{item.name}</li>
-                                  ))}
-                                </CCollapse>
-                                <CButton
-                                  size="sm"
-                                  className="mb-3"
-                                  onClick={() => setDomainVisible(!domainVisible)}
-                                >
-                                  {domainVisible ? 'See less' : 'See more...'}
-                                </CButton>
-                              </>
-                            )}
-                          </CRow>
-                          <CRow className="mb-3">
-                            <p className="mb-3 fw-lighter">Partner Relationships</p>
-                            {(isLoadingPartners || isFetchingPartners) && <Skeleton />}
-                            {issuccessPartners &&
-                              !isFetchingPartners &&
-                              partners?.Results.map((partner, idx) => {
-                                if (partner.TenantInfo) {
-                                  return (
-                                    <li key={`${partner.tenantId}-${idx}`}>
-                                      {partner.TenantInfo.displayName} (
-                                      {partner.TenantInfo.defaultDomainName})
-                                    </li>
-                                  )
-                                }
-                              })}
-                          </CRow>
-                          <CRow className="mb-3">
-                            <p className="mb-3 fw-lighter">Capabilities</p>
-                            {(isLoadingOrg || isFetchingOrg) && <Skeleton />}
-                            {!isFetchingOrg &&
-                              issuccessOrg &&
-                              organization?.assignedPlans
-                                ?.filter((p) => p.capabilityStatus == 'Enabled')
-                                .reduce((plan, curr) => {
-                                  if (!plan.includes(curr.service)) {
-                                    plan.push(curr.service)
-                                  }
-                                  return plan
-                                }, [])
-                                .map((plan, idx) => (
-                                  <div key={idx}>
-                                    {plan === 'exchange' && <li>Exchange</li>}
-                                    {plan === 'AADPremiumService' && <li>AAD Premium</li>}
-                                    {plan === 'WindowsDefenderATP' && <li>Windows Defender</li>}
-                                  </div>
-                                ))}
-                          </CRow>
-                        </>
-                      )}
-                    </>
+                  <CippContentCard title="SharePoint Quota">
+                    {(isLoadingSPQuota || isFetchingSPQuota) && <Skeleton />}
+                    {issuccessSPQuota &&
+                      sharepoint.GeoUsedStorageMB === null &&
+                      'No SharePoint Information available'}
+                    {sharepoint && !isFetchingSPQuota && sharepoint.GeoUsedStorageMB && (
+                      <CChart
+                        type="doughnut"
+                        data={{
+                          labels: ['Used', 'Free'],
+                          datasets: [
+                            {
+                              backgroundColor: [
+                                getStyle('--cyberdrain-warning'),
+                                getStyle('--cyberdrain-info'),
+                              ],
+                              data: [sharepoint.GeoUsedStorageMB, sharepoint.TenantStorageMB],
+                            },
+                          ],
+                        }}
+                        options={{
+                          plugins: {
+                            legend: {
+                              position: 'bottom',
+                              labels: {
+                                color: getStyle('--cui-body-color'),
+                              },
+                            },
+                          },
+                        }}
+                      />
+                    )}
                   </CippContentCard>
                 </CCol>
               </CRow>
