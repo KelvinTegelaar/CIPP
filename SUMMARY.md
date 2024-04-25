@@ -9,7 +9,7 @@
   * [Installation](setup/installation/install.md)
   * [Post-Install Configuration](setup/installation/addyourself.md)
   * [Run From Package Mode](setup/installation/runfrompackage.md)
-  * [SAM Setup](setup/installation/samwizard.md)
+  * [Connecting to your tenants](setup/installation/samwizard.md)
   * [Clear Token Cache](setup/installation/cleartokencache.md)
   * [Conditional Access best practices](setup/installation/conditionalaccess.md)
   * [Adding users to CIPP](setup/installation/addingusers.md)

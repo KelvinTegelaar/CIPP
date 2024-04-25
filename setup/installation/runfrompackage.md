@@ -8,6 +8,12 @@ description: Enable Run From Package for lower costs
 Hosted clients get set to Run From Package mode automatically.
 {% endhint %}
 
+{% hint style="warning" %}
+If you choose to sponsor and use the CyberDrain hosted version, you can skip this step.
+{% endhint %}
+
+
+
 
 
 1. Go to Settings -> Backend
