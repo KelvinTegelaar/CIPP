@@ -367,6 +367,7 @@ const Home = () => {
                     {issuccessStandards && !isFetchingStandards && (
                       <>
                         <CChart
+                          className="mb-3"
                           type="bar"
                           data={{
                             labels: ['Remediation', 'Alert', 'Report', 'Total Available'],
