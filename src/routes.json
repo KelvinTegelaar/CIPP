@@ -691,6 +691,18 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/rooms/management/list-rooms",
+    "name": "Rooms",
+    "component": "views/rooms/management/ListRooms",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/rooms/management/room-lists",
+    "name": "Room Lists",
+    "component": "views/rooms/management/ListRoomLists",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/email/tools/mailbox-restore-wizard",
     "name": "Mailbox Restore Wizard",
     "component": "views/email-exchange/tools/MailboxRestoreWizard",
