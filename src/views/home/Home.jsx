@@ -326,7 +326,7 @@ const Home = () => {
                     {(!issuccessUserCounts || isFetchingUserCount) && <Skeleton />}
                     {issuccessUserCounts && (
                       <CChart
-                        type="doughnut"
+                        type="pie"
                         data={{
                           labels: ['Total Users', 'Licensed Users', 'Guests', 'Global Admins'],
                           datasets: [
@@ -343,6 +343,7 @@ const Home = () => {
                                 dashboard?.Guests,
                                 GlobalAdminList.data?.Results.length || 0,
                               ],
+                              borderWidth: 3,
                             },
                           ],
                         }}
@@ -449,6 +450,7 @@ const Home = () => {
                                 getStyle('--cyberdrain-info'),
                               ],
                               data: [sharepoint.GeoUsedStorageMB, sharepoint.TenantStorageMB],
+                              borderWidth: 3,
                             },
                           ],
                         }}
