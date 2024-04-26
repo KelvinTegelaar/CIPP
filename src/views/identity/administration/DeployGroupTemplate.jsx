@@ -60,7 +60,6 @@ const ApplyGroupTemplate = () => {
                 let template = intuneTemplates.data.filter(function (obj) {
                   return obj.GUID === value
                 })
-                // console.log(template[0][set])
                 onChange(template[0][set])
               }}
             </OnChange>
@@ -153,7 +152,7 @@ const ApplyGroupTemplate = () => {
               placeholder="Select a group type"
               values={[
                 { label: 'Dynamic Group', value: 'dynamic' },
-                { label: 'Dynamic Distribution Group (Beta)', value: 'dynamicdistribution' },
+                { label: 'Dynamic Distribution Group ', value: 'dynamicdistribution' },
 
                 { label: 'Security Group', value: 'generic' },
                 { label: 'Distribution group', value: 'distribution' },

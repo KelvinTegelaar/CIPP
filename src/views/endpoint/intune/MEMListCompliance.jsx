@@ -19,7 +19,6 @@ import { cellBooleanFormatter, cellDateFormatter } from 'src/components/tables'
 
 const Actions = (row, rowIndex, formatExtraData) => {
   const [ocVisible, setOCVisible] = useState(false)
-  console.log(row)
   const tenant = useSelector((state) => state.app.currentTenant)
   return (
     <>
@@ -36,7 +35,7 @@ const Actions = (row, rowIndex, formatExtraData) => {
         ]}
         actions={[
           {
-            label: 'Create template based on policy (beta)',
+            label: 'Create template based on policy ',
             color: 'info',
             modal: true,
             icon: <FontAwesomeIcon icon={faBook} className="me-2" />,
