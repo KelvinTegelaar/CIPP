@@ -112,7 +112,7 @@
     "type": "NinjaOne",
     "cat": "Documentation & Monitoring",
     "forceSyncButton": true,
-    "helpText": "NOTE: This integration requires version 5.6 of NinjaOne, which rolls out regionally between the end of November and mid-December. This integration allows you to populate custom fields with Tenant information, monitor device compliance state, document other items and generate relationships inside NinjaOne.",
+    "helpText": "This integration allows you to populate custom fields with Tenant information, monitor device compliance state, document other items and generate relationships inside NinjaOne.",
     "SettingOptions": [
       {
         "type": "input",
