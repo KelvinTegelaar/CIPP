@@ -2,22 +2,24 @@ import React, { Suspense } from 'react'
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
 import { PrivateRoute, FullScreenLoading, ErrorBoundary } from 'src/components/utilities'
 import 'src/scss/style.scss'
-import routes from 'src/routes'
 import { Helmet } from 'react-helmet-async'
-import adminRoutes from './adminRoutes'
 import Skeleton from 'react-loading-skeleton'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en.json'
 TimeAgo.addDefaultLocale(en)
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
+import routes from 'src/routes'
+import { useAuthCheck } from './components/utilities/CippauthCheck'
+import importsMap from './importsMap'
 
 library.add(fas)
 
-// Containers
-const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
+const dynamicImport = (path) => {
+  return importsMap[path] || null
+}
 
-// Pages
+const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
 const Page401 = React.lazy(() => import('./views/pages/page401/Page401'))
 const Page403 = React.lazy(() => import('./views/pages/page403/Page403'))
 const Page404 = React.lazy(() => import('./views/pages/page404/Page404'))
@@ -25,6 +27,7 @@ const Page500 = React.lazy(() => import('./views/pages/page500/Page500'))
 const PageLogOut = React.lazy(() => import('src/views/pages/LogoutRedirect/PageLogOut'))
 const Login = React.lazy(() => import('./views/pages/login/Login'))
 const Logout = React.lazy(() => import('./views/pages/login/Logout'))
+//we loop through the routes array, dynamicly create the component by using dynamicImport, add the component to the route array as 'component' key.
 
 const App = () => {
   return (
@@ -50,6 +53,10 @@ const App = () => {
             }
           >
             {routes.map((route, idx) => {
+              const allowedRoles = route.allowedRoles
+              const Routecomponent = dynamicImport(route.path)
+              console.log('route', route)
+              console.log('Routecomponent', Routecomponent)
               return (
                 route.component && (
                   <Route
@@ -58,35 +65,13 @@ const App = () => {
                     exact={route.exact}
                     name={route.name}
                     element={
-                      <Suspense fallback={<Skeleton />}>
-                        <Helmet>
-                          <title>CIPP - {route.name}</title>
-                        </Helmet>
-                        <ErrorBoundary key={route.name}>
-                          <route.component />
-                        </ErrorBoundary>
-                      </Suspense>
-                    }
-                  />
-                )
-              )
-            })}
-            {adminRoutes.map((route, idx) => {
-              return (
-                route.component && (
-                  <Route
-                    key={`route-${idx}`}
-                    path={route.path}
-                    exact={route.exact}
-                    name={route.name}
-                    element={
-                      <PrivateRoute routeType="admin">
+                      <PrivateRoute allowedRoles={allowedRoles}>
                         <Suspense fallback={<Skeleton />}>
                           <Helmet>
                             <title>CIPP - {route.name}</title>
                           </Helmet>
                           <ErrorBoundary key={route.name}>
-                            <route.component />
+                            <Routecomponent />
                           </ErrorBoundary>
                         </Suspense>
                       </PrivateRoute>
