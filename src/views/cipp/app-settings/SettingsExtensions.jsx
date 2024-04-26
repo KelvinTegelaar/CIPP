@@ -20,6 +20,7 @@ import { RFFCFormInput, RFFCFormSwitch } from 'src/components/forms/index.js'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import { CippCallout } from 'src/components/layout/index.js'
+import CippButtonCard from 'src/components/contentcards/CippButtonCard'
 
 /**
  * Executes various operations related to settings and extensions.
@@ -44,6 +45,39 @@ export function SettingsExtensions() {
       values: values,
     })
   }
+
+  const ButtonGenerate = (integrationType, forceSync) => (
+    <>
+      <CButton className="me-2" form={integrationType} type="submit">
+        {extensionConfigResult.isFetching && (
+          <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+        )}
+        Set Extension Settings
+      </CButton>
+      <CButton onClick={() => onSubmitTest(integrationType)} className="me-2">
+        {listExtensionTestResult.isFetching && (
+          <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+        )}
+        Test Extension
+      </CButton>
+      {forceSync && (
+        <CButton
+          onClick={() =>
+            execSyncExtension({
+              path: 'api/ExecExtensionSync?Extension=' + integrationType,
+            })
+          }
+          className="me-2"
+        >
+          {listSyncExtensionResult.isFetching && (
+            <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+          )}
+          Force Sync
+        </CButton>
+      )}
+    </>
+  )
+
   return (
     <div>
       {listBackendResult.isUninitialized && listBackend({ path: 'api/ListExtensionsConfig' })}
@@ -74,106 +108,59 @@ export function SettingsExtensions() {
         <CRow>
           {Extensions.map((integration, idx) => (
             <CCol xs={12} lg={6} xl={6} className="mb-3" key={`${idx}-${integration.name}`}>
-              <CCard className="d-flex flex-column h-100">
-                <CCardHeader>
-                  <CCardTitle>{integration.name}</CCardTitle>
-                </CCardHeader>
-                <CCardBody>
-                  <p>{integration.helpText}</p>
-                  <Form
-                    onSubmit={onSubmit}
-                    initialValues={listBackendResult.data}
-                    render={({ handleSubmit, submitting, values }) => {
-                      return (
-                        <CForm onSubmit={handleSubmit}>
-                          <CCardText>
-                            <CCol className="mb-3">
-                              {integration.SettingOptions.map(
-                                (integrationOptions, idx) =>
-                                  integrationOptions.type === 'input' && (
-                                    <CCol key={`${idx}-${integrationOptions.name}`}>
-                                      <RFFCFormInput
-                                        type={integrationOptions.fieldtype}
-                                        name={integrationOptions.name}
-                                        label={integrationOptions.label}
-                                        placeholder={integrationOptions.placeholder}
-                                      />
-                                    </CCol>
-                                  ),
-                              )}
-                              {integration.SettingOptions.map(
-                                (integrationOptions, idx) =>
-                                  integrationOptions.type === 'checkbox' && (
-                                    <CCol key={`${integrationOptions.name}-${idx}`}>
-                                      <RFFCFormSwitch
-                                        name={integrationOptions.name}
-                                        label={integrationOptions.label}
-                                        value={false}
-                                      />
-                                    </CCol>
-                                  ),
-                              )}
-                              <input
-                                ref={inputRef}
-                                type="hidden"
-                                name="type"
-                                value={integration.type}
-                              />
-                            </CCol>
-                          </CCardText>
-                          <CCol className="me-2">
-                            <CButton className="me-2" type="submit">
-                              {extensionConfigResult.isFetching && (
-                                <FontAwesomeIcon
-                                  icon={faCircleNotch}
-                                  spin
-                                  className="me-2"
-                                  size="1x"
-                                />
-                              )}
-                              Set Extension Settings
-                            </CButton>
-                            <CButton
-                              onClick={() => onSubmitTest(integration.type)}
-                              className="me-2"
-                            >
-                              {listExtensionTestResult.isFetching && (
-                                <FontAwesomeIcon
-                                  icon={faCircleNotch}
-                                  spin
-                                  className="me-2"
-                                  size="1x"
-                                />
-                              )}
-                              Test Extension
-                            </CButton>
-                            {integration.forceSyncButton && (
-                              <CButton
-                                onClick={() =>
-                                  execSyncExtension({
-                                    path: 'api/ExecExtensionSync?Extension=' + integration.type,
-                                  })
-                                }
-                                className="me-2"
-                              >
-                                {listSyncExtensionResult.isFetching && (
-                                  <FontAwesomeIcon
-                                    icon={faCircleNotch}
-                                    spin
-                                    className="me-2"
-                                    size="1x"
-                                  />
-                                )}
-                                Force Sync
-                              </CButton>
+              <CippButtonCard
+                title={integration.name}
+                titleType="big"
+                isFetching={listBackendResult.isFetching}
+                CardButton={ButtonGenerate(integration.type, integration.forceSync)}
+              >
+                <p>{integration.helpText}</p>
+                <Form
+                  onSubmit={onSubmit}
+                  initialValues={listBackendResult.data}
+                  render={({ handleSubmit, submitting, values }) => {
+                    return (
+                      <CForm id={integration.type} onSubmit={handleSubmit}>
+                        <CCardText>
+                          <CCol className="mb-3">
+                            {integration.SettingOptions.map(
+                              (integrationOptions, idx) =>
+                                integrationOptions.type === 'input' && (
+                                  <CCol key={`${idx}-${integrationOptions.name}`}>
+                                    <RFFCFormInput
+                                      type={integrationOptions.fieldtype}
+                                      name={integrationOptions.name}
+                                      label={integrationOptions.label}
+                                      placeholder={integrationOptions.placeholder}
+                                    />
+                                  </CCol>
+                                ),
                             )}
+                            {integration.SettingOptions.map(
+                              (integrationOptions, idx) =>
+                                integrationOptions.type === 'checkbox' && (
+                                  <CCol key={`${integrationOptions.name}-${idx}`}>
+                                    <RFFCFormSwitch
+                                      name={integrationOptions.name}
+                                      label={integrationOptions.label}
+                                      value={false}
+                                    />
+                                  </CCol>
+                                ),
+                            )}
+                            <input
+                              ref={inputRef}
+                              type="hidden"
+                              name="type"
+                              value={integration.type}
+                            />
                           </CCol>
-                        </CForm>
-                      )
-                    }}
-                  />
-                </CCardBody>
-              </CCard>
+                        </CCardText>
+                      </CForm>
+                    )
+                  }}
+                />
+              </CippButtonCard>
             </CCol>
           ))}
         </CRow>
