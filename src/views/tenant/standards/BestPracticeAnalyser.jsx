@@ -164,7 +164,17 @@ const BestPracticeAnalyser = () => {
       },
     ],
   }
-
+  const normalizeTableData = (value) => {
+    if (Array.isArray(value)) {
+      return value
+    } else if (value === null) {
+      return null
+    } else if (typeof value === 'object') {
+      return [value]
+    } else {
+      return value
+    }
+  }
   if (graphrequest.isSuccess) {
     if (graphrequest.data.length === 0) {
       graphrequest.data = [{ data: 'No Data Found' }]
@@ -384,14 +394,36 @@ const BestPracticeAnalyser = () => {
                             )}
 
                             {info.formatter === 'table' && (
-                              <CippTable
-                                key={QueryColumns.data}
-                                reportName="BestPracticeAnalyser"
-                                dynamicColumns={false}
-                                columns={getsubcolumns(graphrequest.data.Data[0][info.value])}
-                                data={graphrequest.data.Data[0][info.value]}
-                                isFetching={graphrequest.isFetching}
-                              />
+                              <>
+                                <CippTable
+                                  key={QueryColumns.data}
+                                  reportName="BestPracticeAnalyser"
+                                  dynamicColumns={false}
+                                  columns={getsubcolumns(
+                                    Array.isArray(graphrequest.data.Data[0][info.value])
+                                      ? graphrequest.data.Data[0][info.value]
+                                      : typeof graphrequest.data.Data[0][info.value] === 'object'
+                                      ? [graphrequest.data.Data[0][info.value]]
+                                      : graphrequest.data.Data[0][info.value] === 'FAILED'
+                                      ? [{ data: 'Failed to retrieve data' }]
+                                      : [graphrequest.data.Data[0][info.value]],
+                                  )}
+                                  data={
+                                    Array.isArray(graphrequest.data.Data[0][info.value])
+                                      ? graphrequest.data.Data[0][info.value]
+                                      : typeof graphrequest.data.Data[0][info.value] === 'object'
+                                      ? [graphrequest.data.Data[0][info.value]]
+                                      : graphrequest.data.Data[0][info.value] === 'FAILED'
+                                      ? [
+                                          {
+                                            data: 'Failed to retrieve data - Please check your report settings',
+                                          },
+                                        ]
+                                      : [graphrequest.data.Data[0][info.value]]
+                                  }
+                                  isFetching={graphrequest.isFetching}
+                                />
+                              </>
                             )}
 
                             {info.formatter === 'number' && (
