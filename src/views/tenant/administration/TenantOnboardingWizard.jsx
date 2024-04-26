@@ -157,20 +157,19 @@ const RelationshipOnboarding = ({ relationship, gdapRoles, autoMapRoles, addMiss
           })}
         {onboardingStatus.isSuccess && (
           <>
-            {onboardingStatus.data?.Status != 'running' &&
-              onboardingStatus.data?.Status != 'queued' && (
-                <CButton
-                  onClick={() =>
-                    getOnboardingStatus({
-                      path: '/api/ExecOnboardTenant?Retry=True',
-                      values: { id: relationship.id, gdapRoles, autoMapRoles, addMissingGroups },
-                    })
-                  }
-                  className="mb-3 me-2"
-                >
-                  <FontAwesomeIcon icon="sync" /> Retry
-                </CButton>
-              )}
+            {onboardingStatus.data?.Status != 'queued' && (
+              <CButton
+                onClick={() =>
+                  getOnboardingStatus({
+                    path: '/api/ExecOnboardTenant?Retry=True',
+                    values: { id: relationship.id, gdapRoles, autoMapRoles, addMissingGroups },
+                  })
+                }
+                className="mb-3 me-2"
+              >
+                <FontAwesomeIcon icon="sync" /> Retry
+              </CButton>
+            )}
             {onboardingStatus.data?.Logs && (
               <TableModalButton
                 title="Logs"
@@ -212,6 +211,12 @@ const RelationshipOnboarding = ({ relationship, gdapRoles, autoMapRoles, addMiss
       </CAccordionBody>
     </CAccordionItem>
   )
+}
+RelationshipOnboarding.propTypes = {
+  relationship: PropTypes.object.isRequired,
+  gdapRoles: PropTypes.array,
+  autoMapRoles: PropTypes.bool,
+  addMissingGroups: PropTypes.bool,
 }
 
 const TenantOnboardingWizard = () => {
@@ -307,14 +312,14 @@ const TenantOnboardingWizard = () => {
                 reportName="Add-GDAP-Relationship"
                 keyField="id"
                 path="/api/ListGraphRequest"
-                params={{ Endpoint: 'tenantRelationships/delegatedAdminRelationships' }}
+                params={{
+                  Endpoint: 'tenantRelationships/delegatedAdminRelationships',
+                  $filter:
+                    "(status eq 'active' or status eq 'approvalPending') and not startsWith(displayName,'MLT_')",
+                }}
                 columns={columns}
                 filterlist={[
                   { filterName: 'Active Relationships', filter: 'Complex: status eq active' },
-                  {
-                    filterName: 'Terminated Relationships',
-                    filter: 'Complex: status eq terminated',
-                  },
                   {
                     filterName: 'Pending Relationships',
                     filter: 'Complex: status eq approvalPending',
