@@ -151,7 +151,7 @@ const ApplyNewStandard = () => {
         {
           name: 'Remediate',
           selector: (row) =>
-            Object.keys(row.standards).filter((key) => row.standards[key].remediate === true),
+            Object.keys(row.standards).filter((key) => row.standards?.[key]?.remediate === true),
           sortable: true,
           exportSelector: 'name',
           cell: cellGenericFormatter(),
@@ -159,7 +159,7 @@ const ApplyNewStandard = () => {
         {
           name: 'Alert',
           selector: (row) =>
-            Object.keys(row.standards).filter((key) => row.standards[key].alert === true),
+            Object.keys(row.standards).filter((key) => row.standards?.[key]?.alert === true),
           sortable: true,
           exportSelector: 'name',
           cell: cellGenericFormatter(),
@@ -167,7 +167,7 @@ const ApplyNewStandard = () => {
         {
           name: 'Report',
           selector: (row) =>
-            Object.keys(row.standards).filter((key) => row.standards[key].report === true),
+            Object.keys(row.standards).filter((key) => row.standards?.[key]?.report === true),
           sortable: true,
           exportSelector: 'name',
           cell: cellGenericFormatter(),
