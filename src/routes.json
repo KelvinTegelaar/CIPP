@@ -771,7 +771,7 @@
   {
     "name": "List Tenant Allow/Block Lists",
     "path": "/email/administration/tenant-allow-block-lists",
-    "component": "views/email-exchange/administration/TenantAllowBlockLists",
+    "component": "views/email-exchange/administration/ListTenantAllowBlockList",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {

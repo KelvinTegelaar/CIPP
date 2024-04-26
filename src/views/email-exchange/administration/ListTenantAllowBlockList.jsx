@@ -85,7 +85,7 @@ const AllowBlockList = () => {
       title="Tenant Allow/Block Lists"
       datatable={{
         columns,
-        path: '/api/TenantAllowBlockList',
+        path: '/api/ListTenantAllowBlockList',
         reportName: `${tenant?.defaultDomainName}-TenantAllowBlockList`,
         params: { TenantFilter: tenant?.defaultDomainName },
       }}
