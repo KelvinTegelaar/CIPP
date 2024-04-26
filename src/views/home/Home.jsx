@@ -218,19 +218,19 @@ const TenantDashboard = () => {
         <CCol>
           <CRow>
             <CCol sm={12} md={4} className="mb-3">
-              <CippContentCard title="Tenant Name" icon={faBook}>
+              <CippContentCard title="Tenant Name" titleType="big">
                 {currentTenant?.displayName}
                 <CippCopyToClipboard text={currentTenant?.displayName} />
               </CippContentCard>
             </CCol>
             <CCol sm={12} md={4} className="mb-3">
-              <CippContentCard title="Tenant ID" icon={faBook}>
+              <CippContentCard title="Tenant ID" titleType="big">
                 {currentTenant?.customerId}
                 <CippCopyToClipboard text={currentTenant?.customerId} />
               </CippContentCard>
             </CCol>
             <CCol sm={12} md={4} className="mb-3">
-              <CippContentCard title="Default Domain Name" icon={faBook}>
+              <CippContentCard title="Default Domain Name" titleType="big">
                 {currentTenant?.defaultDomainName}
                 <CippCopyToClipboard text={currentTenant?.defaultDomainName} />
               </CippContentCard>
@@ -238,7 +238,7 @@ const TenantDashboard = () => {
           </CRow>
           <CRow>
             <CCol sm={12} md={4} className="mb-3">
-              <CippContentCard title="Domain Names" icon={faBook}>
+              <CippContentCard title="Domain Names" titleType="big">
                 {!isFetchingOrg && issuccessOrg && (
                   <>
                     {organization.verifiedDomains?.slice(0, 3).map((item, idx) => (
@@ -265,7 +265,7 @@ const TenantDashboard = () => {
               </CippContentCard>
             </CCol>
             <CCol sm={12} md={4} className="mb-3">
-              <CippContentCard title="Partner Relationships" icon={faBook}>
+              <CippContentCard title="Partner Relationships" titleType="big">
                 {(isLoadingPartners || isFetchingPartners) && <Skeleton />}
                 {issuccessPartners &&
                   !isFetchingPartners &&
@@ -281,7 +281,7 @@ const TenantDashboard = () => {
               </CippContentCard>
             </CCol>
             <CCol sm={12} md={4} className="mb-3">
-              <CippContentCard title="Tenant Capabilities" icon={faBook}>
+              <CippContentCard title="Tenant Capabilities" titleType="big">
                 {(isLoadingOrg || isFetchingOrg) && <Skeleton />}
                 {!isFetchingOrg &&
                   issuccessOrg &&
@@ -305,7 +305,7 @@ const TenantDashboard = () => {
           </CRow>
           <CRow>
             <CCol sm={12} md={4} className="mb-3">
-              <CippContentCard title="Users">
+              <CippContentCard title="Users" titleType="big">
                 {(!issuccessUserCounts || isFetchingUserCount) && <Skeleton />}
                 {issuccessUserCounts && !isFetchingUserCount && (
                   <CChart
@@ -345,7 +345,7 @@ const TenantDashboard = () => {
               </CippContentCard>
             </CCol>
             <CCol sm={12} md={4} className="mb-3">
-              <CippContentCard title="Standards set">
+              <CippContentCard title="Standards set" titleType="big">
                 {(isLoadingStandards || isFetchingStandards) && <Skeleton />}
                 {issuccessStandards && !isFetchingStandards && (
                   <>
@@ -413,7 +413,7 @@ const TenantDashboard = () => {
               </CippContentCard>
             </CCol>
             <CCol sm={12} md={4} className="mb-3">
-              <CippContentCard title="SharePoint Quota">
+              <CippContentCard title="SharePoint Quota" titleType="big">
                 {(isLoadingSPQuota || isFetchingSPQuota) && <Skeleton />}
                 {issuccessSPQuota &&
                   sharepoint.GeoUsedStorageMB === null &&
@@ -462,7 +462,7 @@ const Home = () => {
     <>
       <CRow className="mb-3">
         <CCol>
-          <CippContentCard className="h-100" title="Lighthouse Search" icon={faSearch}>
+          <CippContentCard className="h-100" title="Lighthouse Search" titleType="big">
             <CRow className="mb-3"></CRow>
             <CRow className="mb-3">
               <CCol>
