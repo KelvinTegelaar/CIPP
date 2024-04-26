@@ -93,7 +93,6 @@ const AddAPDevice = () => {
       }
     })
     setAutopilotdata([...autopilotData, ...importdata])
-    // console.log(importdata)
   }
 
   const handleOnError = (err, file, inputElem, reason) => {
