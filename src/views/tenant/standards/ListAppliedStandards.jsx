@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   CButton,
   CCallout,
@@ -118,7 +118,7 @@ const ApplyNewStandard = () => {
               size="sm"
               color="success"
               variant="ghost"
-              onClick={() => templateStandardSet(row)}
+              onClick={() => templateStandardSet(row.standards)}
             >
               <FontAwesomeIcon icon={'check'} />
             </CButton>
@@ -177,6 +177,13 @@ const ApplyNewStandard = () => {
           selector: (row) => row['GUID'],
           sortable: true,
           exportSelector: 'GUID',
+          omit: true,
+        },
+        {
+          name: 'standards',
+          selector: (row) => row['standards'],
+          sortable: true,
+          exportSelector: 'standards',
           omit: true,
         },
         {
@@ -251,7 +258,7 @@ const ApplyNewStandard = () => {
     })
 
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
-
+  console.log('tenantDomain', tenantDomain)
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
   const { data: listStandardsAllTenants = [] } = useGenericGetRequestQuery({
@@ -279,7 +286,7 @@ const ApplyNewStandard = () => {
     //filter on only objects that are 'true'
     genericPostRequest({
       path: '/api/AddStandardsDeploy',
-      values: { tenant: tenantDomain, ...values.standards },
+      values: { ...values.standards, tenant: tenantDomain },
     })
   }
   const [intuneGetRequest, intuneTemplates] = useLazyGenericGetRequestQuery()
@@ -287,7 +294,6 @@ const ApplyNewStandard = () => {
   const [exConnectorGetRequest, exConnectorTemplates] = useLazyGenericGetRequestQuery()
   const [caGetRequest, caTemplates] = useLazyGenericGetRequestQuery()
   const [groupGetRequest, groupTemplates] = useLazyGenericGetRequestQuery()
-  const initialValues = templateStandard ? templateStandard : listStandardResults[0]
   const allTenantsStandard = listStandardsAllTenants.find(
     (tenant) => tenant.displayName === 'AllTenants',
   )
@@ -381,7 +387,13 @@ const ApplyNewStandard = () => {
                 groupGetRequest({ path: 'api/ListGroupTemplates' })}
               {isSuccess && !isFetching && (
                 <Form
-                  initialValues={initialValues}
+                  initialValues={{
+                    ...listStandardResults[0],
+                    standards: {
+                      ...listStandardResults[0].standards,
+                      ...templateStandard,
+                    },
+                  }}
                   onSubmit={handleSubmit}
                   render={({ handleSubmit, submitting, values }) => {
                     return (
