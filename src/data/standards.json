@@ -487,6 +487,42 @@
     "impactColour": "info"
   },
   {
+    "name": "standards.DisableTNEF",
+    "cat": "Exchange Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Disables Transport Neutral Encapsulation Format (TNEF)/winmail.dat for the tenant. TNEF can cause issues if the recipient is not using a client supporting TNEF.",
+    "addedComponent": [],
+    "label": "Disable TNEF/winmail.dat",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
+    "name": "standards.FocusedInbox",
+    "cat": "Exchange Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Sets the default Focused Inbox state for the tenant. This can be overridden by the user.",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Select value",
+        "name": "standards.FocusedInbox.state",
+        "values": [
+          {
+            "label": "Enabled",
+            "value": "enabled"
+          },
+          {
+            "label": "Disabled",
+            "value": "disabled"
+          }
+        ]
+      }
+    ],
+    "label": "Set Focused Inbox state",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.AutoExpandArchive",
     "cat": "Exchange Standards",
     "tag": ["lowimpact"],
