@@ -208,6 +208,13 @@ export function SettingsPartner() {
                       <CSpinner size="sm" className="me-2" /> Waiting for results
                     </>
                   )}
+                  {sendTestResult.isSuccess && sendTestResult?.data?.Results?.code && (
+                    <>
+                      <FontAwesomeIcon icon="times-circle" color="red" className="me-2" /> Error{' '}
+                      {sendTestResult?.data?.Results?.code} -{' '}
+                      {sendTestResult?.data?.Results?.description}
+                    </>
+                  )}
                 </CCol>
               </CRow>
               <CRow>
