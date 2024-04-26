@@ -312,14 +312,14 @@ const TenantOnboardingWizard = () => {
                 reportName="Add-GDAP-Relationship"
                 keyField="id"
                 path="/api/ListGraphRequest"
-                params={{ Endpoint: 'tenantRelationships/delegatedAdminRelationships' }}
+                params={{
+                  Endpoint: 'tenantRelationships/delegatedAdminRelationships',
+                  $filter:
+                    "(status eq 'active' or status eq 'approvalPending') and not startsWith(displayName,'MLT_')",
+                }}
                 columns={columns}
                 filterlist={[
                   { filterName: 'Active Relationships', filter: 'Complex: status eq active' },
-                  {
-                    filterName: 'Terminated Relationships',
-                    filter: 'Complex: status eq terminated',
-                  },
                   {
                     filterName: 'Pending Relationships',
                     filter: 'Complex: status eq approvalPending',
