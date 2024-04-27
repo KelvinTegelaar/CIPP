@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { CButton } from '@coreui/react'
-import { faEye, faEdit } from '@fortawesome/free-solid-svg-icons'
+import { faEdit } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom'
 import { CippPageList } from 'src/components/layout'
@@ -22,7 +22,7 @@ const AllowBlockList = () => {
         to={`/email/administration/delete-tenant-allow-block-lists?tenantDomain=${tenant.defaultDomainName}?Entry=${row.value}?ListType=${row.ListType}`}
       >
         <CButton size="sm" variant="ghost" color="danger">
-          <FontAwesomeIcon icon={faTrash} />
+          <FontAwesomeIcon icon={'trash'} />
         </CButton>
       </Link>
     </>
