@@ -67,6 +67,7 @@ const CippOffcanvasCard = ({ action, key }) => {
               title={`${action.label} - Details`}
               state={offcanvasVisible}
               hideFunction={() => setOffcanvasVisible(false)}
+              modal={true}
             />
           )}
         </CCardBody>
