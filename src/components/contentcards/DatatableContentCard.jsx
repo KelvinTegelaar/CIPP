@@ -27,6 +27,7 @@ export default function DatatableContentCard({
           path={path}
           columns={columns}
           params={params}
+          sortable
           {...rest}
         />
       )}
