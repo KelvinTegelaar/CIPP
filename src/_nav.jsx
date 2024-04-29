@@ -613,6 +613,11 @@ const _nav = [
         name: 'Quarantine',
         to: '/email/administration/quarantine',
       },
+      {
+        component: CNavItem,
+        name: 'Tenant Allow/Block Lists',
+        to: '/email/administration/tenant-allow-block-lists',
+      },
     ],
   },
   {
