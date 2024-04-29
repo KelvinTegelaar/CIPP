@@ -215,7 +215,6 @@ const AddPolicy = () => {
         </CRow>
         <FormSpy>
           {(props) => {
-            console.log(props.values.RAWJson)
             const json = props.values?.RAWJson ? JSON.parse(props.values.RAWJson) : undefined
             return (
               <>
