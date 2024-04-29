@@ -519,7 +519,7 @@ export function SettingsExtensionMappings() {
                 initialValues={listBackendNinjaFieldsResult.data?.Mappings}
                 render={({ handleSubmit, submitting, values }) => {
                   return (
-                    <CForm id="NinjaFields" onSubmit={handleSubmit}>
+                    <CForm id="ninjaFields" onSubmit={handleSubmit}>
                       <CCardText>
                         <h5>Organization Global Custom Field Mapping</h5>
                         <p>
