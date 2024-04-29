@@ -420,7 +420,7 @@ const TenantDashboard = () => {
                   'No SharePoint Information available'}
                 {sharepoint && !isFetchingSPQuota && sharepoint.GeoUsedStorageMB && (
                   <CChart
-                    type="doughnut"
+                    type="pie"
                     data={{
                       labels: ['Used', 'Free'],
                       datasets: [
