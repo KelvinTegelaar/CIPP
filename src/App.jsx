@@ -55,8 +55,8 @@ const App = () => {
             {routes.map((route, idx) => {
               const allowedRoles = route.allowedRoles
               const Routecomponent = dynamicImport(route.path)
-              console.log('route', route)
-              console.log('Routecomponent', Routecomponent)
+              //console.log('route', route)
+              //console.log('Routecomponent', Routecomponent)
               return (
                 route.component && (
                   <Route
