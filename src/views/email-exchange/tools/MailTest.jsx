@@ -40,22 +40,22 @@ const MailTest = () => {
     },
     {
       name: 'SPF',
-      selector: (row) => row?.AuthResult.filter((x) => x?.Name === 'spf')[0].Status == 'pass',
+      selector: (row) => row?.AuthResult.filter((x) => x?.Name === 'spf')[0]?.Status == 'pass',
       cell: cellBooleanFormatter(),
     },
     {
       name: 'DKIM',
-      selector: (row) => row?.AuthResult.filter((x) => x?.Name === 'dkim')[0].Status == 'pass',
+      selector: (row) => row?.AuthResult.filter((x) => x?.Name === 'dkim')[0]?.Status == 'pass',
       cell: cellBooleanFormatter(),
     },
     {
       name: 'DMARC',
-      selector: (row) => row?.AuthResult.filter((x) => x?.Name === 'dmarc')[0].Status == 'pass',
+      selector: (row) => row?.AuthResult.filter((x) => x?.Name === 'dmarc')[0]?.Status == 'pass',
       cell: cellBooleanFormatter(),
     },
     {
       name: 'Comp Auth',
-      selector: (row) => row?.AuthResult.filter((x) => x?.Name === 'compauth')[0].Status == 'pass',
+      selector: (row) => row?.AuthResult.filter((x) => x?.Name === 'compauth')[0]?.Status == 'pass',
       cell: cellBooleanFormatter(),
     },
     {
