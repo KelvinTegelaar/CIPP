@@ -5,17 +5,28 @@ import {
   CCallout,
   CCard,
   CCardBody,
+  CCardFooter,
   CCardHeader,
   CCardText,
   CCardTitle,
+  CCol,
   CFormInput,
   CFormSelect,
   CListGroup,
   CListGroupItem,
   COffcanvasTitle,
+  CProgress,
+  CProgressBar,
+  CProgressStacked,
+  CRow,
   CSpinner,
 } from '@coreui/react'
-import { CippCodeBlock, CippOffcanvas, ModalService } from 'src/components/utilities'
+import {
+  CippCodeBlock,
+  CippOffcanvas,
+  CippTableOffcanvas,
+  ModalService,
+} from 'src/components/utilities'
 import { CippOffcanvasPropTypes } from 'src/components/utilities/CippOffcanvas'
 import { CippOffcanvasTable } from 'src/components/tables'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
@@ -24,6 +35,66 @@ import { stringCamelCase } from 'src/components/utilities/CippCamelCase'
 import ReactTimeAgo from 'react-time-ago'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGlobe } from '@fortawesome/free-solid-svg-icons'
+
+const CippOffcanvasCard = ({ action, key }) => {
+  const [offcanvasVisible, setOffcanvasVisible] = useState(false)
+  return (
+    <>
+      <CCard key={key} className="border-top-dark border-top-3 mb-3">
+        <CCardHeader className="d-flex justify-content-between align-items-center">
+          <CCardTitle>Report Name: {action.label}</CCardTitle>
+        </CCardHeader>
+        <CCardBody>
+          <CCardText>
+            {action.value && (
+              <>
+                {action?.link ? (
+                  <Link to={action.link}>Status: {action.value}</Link>
+                ) : (
+                  <span>Status: {action.value}</span>
+                )}
+              </>
+            )}
+          </CCardText>
+          {Array.isArray(action?.detailsObject) && (
+            <CButton size="sm" onClick={() => setOffcanvasVisible(true)}>
+              Details
+            </CButton>
+          )}
+          {Array.isArray(action?.detailsObject) && (
+            <CippTableOffcanvas
+              data={action.detailsObject}
+              title={`${action.label} - Details`}
+              state={offcanvasVisible}
+              hideFunction={() => setOffcanvasVisible(false)}
+              modal={true}
+            />
+          )}
+        </CCardBody>
+        <CCardFooter className="text-end">
+          <CRow>
+            {action?.percent > 0 && (
+              <CCol xs="8">
+                <div className="mt-1">
+                  <CProgress>
+                    <CProgressBar value={action.percent}>{action?.progressText}</CProgressBar>
+                  </CProgress>
+                </div>
+              </CCol>
+            )}
+            <CCol xs={action?.percent ? '4' : '12'}>
+              <small>{action.timestamp && <ReactTimeAgo date={action.timestamp} />}</small>
+            </CCol>
+          </CRow>
+        </CCardFooter>
+      </CCard>
+    </>
+  )
+}
+CippOffcanvasCard.propTypes = {
+  action: PropTypes.object,
+  key: PropTypes.object,
+}
 
 export default function CippActionsOffcanvas(props) {
   const inputRef = useRef('')
@@ -40,7 +111,7 @@ export default function CippActionsOffcanvas(props) {
     (modalMessage, modalUrl, modalType = 'GET', modalBody, modalInput, modalDropdown) => {
       const handlePostConfirm = () => {
         const selectedValue = inputRef.current.value
-        console.log(inputRef)
+        //console.log(inputRef)
         let additionalFields = {}
 
         if (inputRef.current.nodeName === 'SELECT') {
@@ -213,17 +284,7 @@ export default function CippActionsOffcanvas(props) {
   let cardContent
   try {
     cardContent = props.cards.map((action, index) => (
-      <>
-        <CCard key={index} className="border-top-dark border-top-3 mb-3">
-          <CCardBody>
-            <CCardTitle>Report Name: {action.label}</CCardTitle>
-            <CCardText>
-              {action.value && <Link to={action.link}>Status: {action.value}</Link>}
-            </CCardText>
-            <small>{action.timestamp && <ReactTimeAgo date={action.timestamp} />}</small>
-          </CCardBody>
-        </CCard>
-      </>
+      <CippOffcanvasCard action={action} key={index} />
     ))
   } catch (error) {
     // swallow error
@@ -293,6 +354,7 @@ export default function CippActionsOffcanvas(props) {
       id={props.id}
       hideFunction={props.hideFunction}
       refreshFunction={props.refreshFunction}
+      isRefreshing={props.isRefreshing}
     >
       {getResults.isFetching && (
         <CCallout color="info">
@@ -308,6 +370,7 @@ export default function CippActionsOffcanvas(props) {
         <CippCodeBlock
           code={postResults.data?.Results}
           callout={true}
+          dismissable={true}
           calloutCopyValue={getResults.data?.Results}
         />
       )}
@@ -318,6 +381,7 @@ export default function CippActionsOffcanvas(props) {
         <CippCodeBlock
           code={getResults.data?.Results}
           callout={true}
+          calloutDismissible={true}
           calloutColour={getResults.data?.colour ? getResults.data?.colour : 'info'}
           calloutCopyValue={getResults.data?.Results}
         />
@@ -325,15 +389,16 @@ export default function CippActionsOffcanvas(props) {
       {getResults.isError && (
         <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
       )}
-
-      <CCard className="content-card">
-        <CCardHeader className="d-flex justify-content-between align-items-center">
-          <CCardTitle>
-            <FontAwesomeIcon icon={faGlobe} className="mx-2" /> Extended Information
-          </CCardTitle>
-        </CCardHeader>
-        <CCardBody>{extendedInfoContent}</CCardBody>
-      </CCard>
+      {!cardContent && (
+        <CCard className="content-card">
+          <CCardHeader className="d-flex justify-content-between align-items-center">
+            <CCardTitle>
+              <FontAwesomeIcon icon={faGlobe} className="mx-2" /> Extended Information
+            </CCardTitle>
+          </CCardHeader>
+          <CCardBody>{extendedInfoContent}</CCardBody>
+        </CCard>
+      )}
       {cardContent && cardContent}
       {<COffcanvasTitle>Actions</COffcanvasTitle>}
       <CListGroup>
