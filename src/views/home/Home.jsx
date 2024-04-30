@@ -37,7 +37,7 @@ import { CChart } from '@coreui/react-chartjs'
 import { getStyle } from '@coreui/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom'
-import { useMediaPredicate } from 'react-media-hook'
+import CippPrettyCard from 'src/components/contentcards/CippPrettyCard'
 
 const TenantDashboard = () => {
   const [visible, setVisible] = useState(false)
@@ -333,7 +333,7 @@ const TenantDashboard = () => {
                     options={{
                       plugins: {
                         legend: {
-                          position: 'bottom',
+                          position: 'left',
                           labels: {
                             color: getStyle('--cui-body-color'),
                           },
