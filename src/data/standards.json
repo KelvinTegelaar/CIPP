@@ -308,7 +308,8 @@
       {
         "type": "number",
         "name": "standards.NudgeMFA.snoozeDurationInDays",
-        "label": "Number of days to allow users to skip registering Authenticator (0-14, default is 1)"
+        "label": "Number of days to allow users to skip registering Authenticator (0-14, default is 1)",
+        "default": 1
       }
     ],
     "label": "Sets the state for the request to setup Authenticator",
@@ -578,7 +579,8 @@
         "type": "number",
         "name": "standards.EnableMailTips.MailTipsLargeAudienceThreshold",
         "label": "Number of recipients to trigger the large audience MailTip (Default is 25)",
-        "placeholder": "Enter a profile name"
+        "placeholder": "Enter a profile name",
+        "default": 25
       }
     ],
     "label": "Enable all MailTips",
@@ -634,12 +636,14 @@
       {
         "type": "number",
         "name": "standards.SendReceiveLimitTenant.SendLimit",
-        "label": "Send limit in MB (Default is 35)"
+        "label": "Send limit in MB (Default is 35)",
+        "default": 35
       },
       {
         "type": "number",
         "name": "standards.SendReceiveLimitTenant.ReceiveLimit",
-        "label": "Receive Limit in MB (Default is 36)"
+        "label": "Receive Limit in MB (Default is 36)",
+        "default": 36
       }
     ],
     "label": "Set send/receive size limits",
