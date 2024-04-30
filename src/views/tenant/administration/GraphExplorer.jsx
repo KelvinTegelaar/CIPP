@@ -280,7 +280,7 @@ const GraphExplorer = () => {
         select = params.$select.map((p) => p.value).join(',')
       }
       if (params?.name) {
-        params.QueueNameOverride = params.name
+        params.QueueNameOverride = 'Graph Explorer - ' + params.name
       }
       execGraphRequest({
         path: 'api/ListGraphRequest',
