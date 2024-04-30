@@ -157,10 +157,11 @@ export const RFFCFormInput = ({
   spellCheck = true,
   autoFocus = false,
   hiddenValue,
+  defaultValue,
   onChange,
 }) => {
   return (
-    <Field initialValue={hiddenValue} name={name} validate={validate}>
+    <Field defaultValue={defaultValue} initialValue={hiddenValue} name={name} validate={validate}>
       {({ input, meta }) => {
         const handleChange = onChange
           ? (e) => {
@@ -193,7 +194,7 @@ export const RFFCFormInput = ({
 }
 RFFCFormInput.propTypes = {
   ...sharedPropTypes,
-  type: PropTypes.oneOf(['color', 'file', 'text', 'password']),
+  type: PropTypes.oneOf(['color', 'file', 'text', 'password', 'number']),
   placeholder: PropTypes.string,
 }
 
@@ -444,6 +445,12 @@ export const RFFSelectSearch = ({
   return (
     <Field name={name} validate={validate}>
       {({ meta, input }) => {
+        const handleChange = onChange
+          ? (e) => {
+              input.onChange(e)
+              onChange(e)
+            }
+          : input.onChange
         return (
           <div>
             <CFormLabel htmlFor={name}>
@@ -473,7 +480,7 @@ export const RFFSelectSearch = ({
                 options={selectSearchvalues}
                 placeholder={placeholder}
                 isMulti={multi}
-                onChange={onChange}
+                onChange={handleChange}
                 onInputChange={debounceOnInputChange}
                 inputValue={inputText}
                 isLoading={isLoading}
@@ -510,7 +517,7 @@ export const RFFSelectSearch = ({
                 options={selectSearchvalues}
                 placeholder={placeholder}
                 isMulti={multi}
-                onChange={onChange}
+                onChange={handleChange}
                 onInputChange={debounceOnInputChange}
                 inputValue={inputText}
                 isLoading={isLoading}
