@@ -320,7 +320,7 @@
   },
   {
     "path": "/tenant/conditional/add-template",
-    "name": "Conditional Access Add Template",
+    "name": "Add CA Template",
     "component": "views/tenant/conditional/AddCATemplate",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
