@@ -6,7 +6,7 @@ import { RFFCFormTextarea } from 'src/components/forms'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { validJson } from 'src/validators'
 
-const MEMAddPolicyTemplate = () => {
+const AddCATemplate = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
   const handleSubmit = async (values) => {
@@ -60,4 +60,4 @@ const MEMAddPolicyTemplate = () => {
   )
 }
 
-export default MEMAddPolicyTemplate
+export default AddCATemplate

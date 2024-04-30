@@ -279,6 +279,11 @@ const _nav = [
         name: 'Deploy Named Locations',
         to: '/tenant/conditional/deploy-named-location',
       },
+      {
+        component: CNavItem,
+        name: 'Add CA Template',
+        to: '/tenant/conditional/add-template',
+      },
     ],
   },
   {
