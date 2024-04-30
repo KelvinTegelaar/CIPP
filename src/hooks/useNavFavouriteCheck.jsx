@@ -28,7 +28,7 @@ export const useNavFavouriteCheck = (navigation) => {
     var items = []
 
     recentPages.map((path) => {
-      const item = routes.find((route) => route.path === path)
+      const item = routes.find((route) => route.path.toLowerCase() === path.toLowerCase())
       if (item?.path) {
         items.push({
           name: item.name,
