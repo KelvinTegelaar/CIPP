@@ -8,6 +8,8 @@ import { toggleSwitcher } from 'src/store/features/switcher'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useMediaPredicate } from 'react-media-hook'
 import { setRecentPages } from 'src/store/features/app'
+import routes from 'src/routes'
+import { Helmet } from 'react-helmet-async'
 
 const DefaultLayout = () => {
   const preferredTheme = useMediaPredicate('(prefers-color-scheme: dark)') ? 'impact' : 'cyberdrain'
@@ -16,6 +18,15 @@ const DefaultLayout = () => {
   const [lastPage, setLastPage] = useState('')
   const dispatch = useDispatch()
   const location = useLocation()
+
+  const [title, setTitle] = useState('CIPP')
+  useEffect(() => {
+    let route = routes.find((route) => route.path.toLowerCase() === location.pathname.toLowerCase())
+    if (route?.name) {
+      console.log(route)
+      setTitle(route.name)
+    }
+  }, [setTitle, location.pathname])
 
   let theme
   if (themePreference === 'default') {
@@ -70,24 +81,29 @@ const DefaultLayout = () => {
   )
 
   return (
-    <div>
-      <FastSwitcherModal />
-      <ModalRoot />
-      <Toasts />
+    <>
+      <Helmet>
+        <title>CIPP - {title}</title>
+      </Helmet>
+      <div>
+        <FastSwitcherModal />
+        <ModalRoot />
+        <Toasts />
 
-      <AppSidebar />
-      <div className="wrapper d-flex flex-column min-vh-100">
-        <AppHeader />
-        <div className="body flex-grow-1 px-xl-3">
-          <CContainer fluid>
-            <Suspense fallback={<FullScreenLoading />}>
-              <Outlet />
-            </Suspense>
-          </CContainer>
+        <AppSidebar />
+        <div className="wrapper d-flex flex-column min-vh-100">
+          <AppHeader />
+          <div className="body flex-grow-1 px-xl-3">
+            <CContainer fluid>
+              <Suspense fallback={<FullScreenLoading />}>
+                <Outlet />
+              </Suspense>
+            </CContainer>
+          </div>
+          <AppFooter />
         </div>
-        <AppFooter />
       </div>
-    </div>
+    </>
   )
 }
 
