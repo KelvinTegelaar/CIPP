@@ -16,6 +16,7 @@ import {
   CAccordionHeader,
   CAccordionBody,
   CAccordionItem,
+  CTooltip,
 } from '@coreui/react'
 import DataTable, { createTheme } from 'react-data-table-component'
 import PropTypes from 'prop-types'
@@ -31,13 +32,12 @@ import {
   faSync,
 } from '@fortawesome/free-solid-svg-icons'
 import { cellGenericFormatter } from './CellGenericFormat'
-import { ModalService } from '../utilities'
+import { CippCodeOffCanvas, ModalService } from '../utilities'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { debounce } from 'lodash-es'
 import { useSearchParams } from 'react-router-dom'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { setDefaultColumns } from 'src/store/features/app'
-import M365Licenses from 'src/data/M365Licenses'
 
 const FilterComponent = ({ filterText, onFilter, onClear, filterlist, onFilterPreset }) => (
   <>
@@ -155,6 +155,7 @@ export default function CippTable({
   const [filterviaURL, setFilterviaURL] = React.useState(false)
   const [originalColumns, setOrginalColumns] = React.useState(columns)
   const [updatedColumns, setUpdatedColumns] = React.useState(columns)
+  const [codeOffcanvasVisible, setCodeOffcanvasVisible] = useState(false)
   if (defaultColumns && defaultColumnsSet === false && endpointName) {
     const defaultColumnsArray = defaultColumns.split(',').filter((item) => item)
 
@@ -277,47 +278,45 @@ export default function CippTable({
       debounceSetGraphFilter(query)
       return data
     } else if (filterText.startsWith('Complex:')) {
-      // Split conditions by ';' and 'or', and trim spaces
-      const conditions = filterText
+      // Split conditions by ';' for AND
+      const conditionGroups = filterText
         .slice(9)
-        .split(/\s*or\s*|\s*;\s*/i) // Split by 'or' or ';', case insensitive, with optional spaces
-        .map((condition) => condition.trim())
+        .split(/\s*;\s*/)
+        .map((group) => group.trim().split(/\s+or\s+/i)) // Split each group by 'or' for OR
 
       return data.filter((item) => {
-        // Check if any condition is met for the item
-        return conditions.some((condition) => {
-          const match = condition.match(/(\w+)\s*(eq|ne|like|notlike|gt|lt)\s*(.+)/)
-
-          if (!match) return false
-
-          let [property, operator, value] = match.slice(1)
-          value = escapeRegExp(value) // Escape special characters
-
-          const actualKey = Object.keys(item).find(
-            (key) => key.toLowerCase() === property.toLowerCase(),
-          )
-
-          if (!actualKey) {
-            console.error(`FilterError: Property "${property}" not found.`)
-            return false
-          }
-
-          switch (operator) {
-            case 'eq':
-              return String(item[actualKey]).toLowerCase() === value.toLowerCase()
-            case 'ne':
-              return String(item[actualKey]).toLowerCase() !== value.toLowerCase()
-            case 'like':
-              return String(item[actualKey]).toLowerCase().includes(value.toLowerCase())
-            case 'notlike':
-              return !String(item[actualKey]).toLowerCase().includes(value.toLowerCase())
-            case 'gt':
-              return parseFloat(item[actualKey]) > parseFloat(value)
-            case 'lt':
-              return parseFloat(item[actualKey]) < parseFloat(value)
-            default:
-              return false // Should not reach here normally
-          }
+        // Check if all condition groups are met for the item (AND logic)
+        return conditionGroups.every((conditions) => {
+          // Check if any condition within a group is met for the item (OR logic)
+          return conditions.some((condition) => {
+            const match = condition.match(/(\w+)\s*(eq|ne|like|notlike|gt|lt)\s*(.+)/)
+            if (!match) return false
+            let [property, operator, value] = match.slice(1)
+            value = escapeRegExp(value) // Escape special characters
+            const actualKey = Object.keys(item).find(
+              (key) => key.toLowerCase() === property.toLowerCase(),
+            )
+            if (!actualKey) {
+              console.error(`FilterError: Property "${property}" not found.`)
+              return false
+            }
+            switch (operator) {
+              case 'eq':
+                return String(item[actualKey]).toLowerCase() === value.toLowerCase()
+              case 'ne':
+                return String(item[actualKey]).toLowerCase() !== value.toLowerCase()
+              case 'like':
+                return String(item[actualKey]).toLowerCase().includes(value.toLowerCase())
+              case 'notlike':
+                return !String(item[actualKey]).toLowerCase().includes(value.toLowerCase())
+              case 'gt':
+                return parseFloat(item[actualKey]) > parseFloat(value)
+              case 'lt':
+                return parseFloat(item[actualKey]) < parseFloat(value)
+              default:
+                return false // Should not reach here normally
+            }
+          })
         })
       })
     } else {
@@ -581,7 +580,6 @@ export default function CippTable({
     }
 
     const executeselectedAction = (item) => {
-      //  console.log(item)
       setModalContent({
         item,
       })
@@ -607,16 +605,18 @@ export default function CippTable({
     }
     if (refreshFunction) {
       defaultActions.push([
-        <CButton
-          key={'refresh-action'}
-          onClick={() => {
-            refreshFunction((Math.random() + 1).toString(36).substring(7))
-          }}
-          className="m-1"
-          size="sm"
-        >
-          <FontAwesomeIcon icon={faSync} />
-        </CButton>,
+        <CTooltip key={'refresh-tooltip'} content="Refresh" placement="top">
+          <CButton
+            key={'refresh-action'}
+            onClick={() => {
+              refreshFunction((Math.random() + 1).toString(36).substring(7))
+            }}
+            className="m-1"
+            size="sm"
+          >
+            <FontAwesomeIcon icon={faSync} />
+          </CButton>
+        </CTooltip>,
       ])
     }
 
@@ -817,6 +817,20 @@ export default function CippTable({
         </>,
       ])
     }
+    defaultActions.push([
+      <CTooltip key={'code-tooltip'} content="View API Response" placement="top">
+        <CButton
+          key={'code-action'}
+          onClick={() => {
+            setCodeOffcanvasVisible(true)
+          }}
+          className="m-1"
+          size="sm"
+        >
+          <FontAwesomeIcon icon="code" />
+        </CButton>
+      </CTooltip>,
+    ])
     return (
       <>
         <div className="w-100 d-flex justify-content-start">
@@ -984,6 +998,13 @@ export default function CippTable({
               {...rest}
             />
             {selectedRows.length >= 1 && <CCallout>Selected {selectedRows.length} items</CCallout>}
+            <CippCodeOffCanvas
+              row={data}
+              hideButton={true}
+              state={codeOffcanvasVisible}
+              hideFunction={() => setCodeOffcanvasVisible(false)}
+              title="API Response"
+            />
           </>
         )}
       </div>
