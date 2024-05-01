@@ -141,6 +141,12 @@ const AddGroup = () => {
                     <RFFCFormRadio name="groupType" label="Dynamic Group" value="dynamic" />
                     <RFFCFormRadio
                       name="groupType"
+                      label="Dynamic Distribution Group "
+                      value="dynamicdistribution"
+                    />
+
+                    <RFFCFormRadio
+                      name="groupType"
                       label="Distribution List"
                       value="distribution"
                     />
@@ -156,6 +162,15 @@ const AddGroup = () => {
                       />
                     </Condition>
                     <Condition when="groupType" is="dynamic">
+                      <RFFCFormTextarea
+                        name="membershipRules"
+                        label="Dynamic Group Parameters"
+                        placeholder={
+                          'Enter the dynamic group parameters syntax. e.g: (user.userPrincipalName -notContains `"#EXT#@`") -and (user.userType -ne `"Guest`")'
+                        }
+                      />
+                    </Condition>
+                    <Condition when="groupType" is="dynamicdistribution">
                       <RFFCFormTextarea
                         name="membershipRules"
                         label="Dynamic Group Parameters"

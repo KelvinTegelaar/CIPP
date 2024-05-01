@@ -21,20 +21,24 @@ export default function cellTable(
   }
 
   if (!Array.isArray(columnProp) && typeof columnProp === 'object') {
-    columnProp = [columnProp]
-  }
-
-  if (Array.isArray(columnProp) && typeof columnProp[0] !== 'object') {
-    columnProp = columnProp.map((row) => {
+    columnProp = Object.keys(columnProp).map((key) => {
       return {
-        Value: row,
+        Key: key,
+        Value: columnProp[key],
       }
     })
+  } else {
+    if (Array.isArray(columnProp) && typeof columnProp[0] !== 'object') {
+      columnProp = columnProp.map((row) => {
+        return {
+          Value: row,
+        }
+      })
+    }
   }
 
   const handleTable = ({ columnProp }) => {
     const QueryColumns = []
-
     const columns = Object.keys(columnProp[0]).map((key) => {
       QueryColumns.push({
         name: key,
