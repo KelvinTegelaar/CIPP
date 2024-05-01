@@ -769,6 +769,12 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "name": "List Tenant Allow/Block Lists",
+    "path": "/email/administration/tenant-allow-block-lists",
+    "component": "views/email-exchange/administration/ListTenantAllowBlockList",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "name": "Email Reports",
     "path": "/email/reports",
     "allowedRoles": ["admin", "editor", "readonly"]
