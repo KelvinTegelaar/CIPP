@@ -15,8 +15,8 @@ export const store = configureStore({
 })
 
 // enable redux module hot reload
-if (process.env.NODE_ENV !== 'production' && module.hot) {
-  module.hot.accept('./root', () => store.replaceReducer(rootReducer))
+if (import.meta.env.NODE_ENV !== 'production' && import.meta.hot) {
+  import.meta.hot.accept('./root', () => store.replaceReducer(rootReducer))
 }
 
 export const persistor = persistStore(store)
