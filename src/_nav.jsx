@@ -144,6 +144,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Secure Score',
+        to: '/tenant/administration/securescore',
+      },
+      {
+        component: CNavItem,
         name: 'App Consent Requests',
         to: '/tenant/administration/app-consent-requests',
       },
@@ -156,6 +161,11 @@ const _nav = [
         component: CNavItem,
         name: 'Tenant Offboarding',
         to: '/tenant/administration/tenant-offboarding-wizard',
+      },
+      {
+        component: CNavItem,
+        name: 'Partner Relationships',
+        to: '/tenant/administration/partner-relationships',
       },
     ],
   },
@@ -246,6 +256,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'CA Policy Tester',
+        to: '/tenant/conditional/test-policy',
+      },
+      {
+        component: CNavItem,
         name: 'CA Vacation Mode',
         to: '/tenant/conditional/deploy-vacation',
       },
@@ -253,11 +268,6 @@ const _nav = [
         component: CNavItem,
         name: 'CA Templates',
         to: '/tenant/conditional/list-template',
-      },
-      {
-        component: CNavItem,
-        name: 'Add CA Template',
-        to: '/tenant/conditional/add-template',
       },
       {
         component: CNavItem,
@@ -602,6 +612,11 @@ const _nav = [
         component: CNavItem,
         name: 'Quarantine',
         to: '/email/administration/quarantine',
+      },
+      {
+        component: CNavItem,
+        name: 'Tenant Allow/Block Lists',
+        to: '/email/administration/tenant-allow-block-lists',
       },
     ],
   },
