@@ -39,7 +39,6 @@ export default function cellTable(
 
   const handleTable = ({ columnProp }) => {
     const QueryColumns = []
-
     const columns = Object.keys(columnProp[0]).map((key) => {
       QueryColumns.push({
         name: key,

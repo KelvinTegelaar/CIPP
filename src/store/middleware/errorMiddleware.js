@@ -39,7 +39,7 @@ export const errorMiddleware =
 
       dispatch(
         showToast({
-          title: 'An Error Has Occurred',
+          title: 'An error has occurred',
           message: message,
           toastError,
         }),
