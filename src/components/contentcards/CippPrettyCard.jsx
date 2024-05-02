@@ -25,14 +25,16 @@ export default function CippPrettyCard({
         {!isFetching && (
           <CRow>
             <CCol>
-              <CircularProgressbar
-                styles={{ width: '50%', path: { stroke: ringcolor }, text: { fill: ringcolor } }}
-                strokeWidth={3}
-                value={percentage}
-                text={`${percentage}%`}
-              />
+              <div style={{ width: '50%', height: '50%' }}>
+                <CircularProgressbar
+                  styles={{ path: { stroke: ringcolor }, text: { fill: ringcolor } }}
+                  strokeWidth={3}
+                  value={percentage}
+                  text={`${percentage}%`}
+                />
+              </div>
             </CCol>
-            <CCol className="my-5">
+            <CCol className="m-2">
               <h4>{topLabel}</h4>
               <small className="text-medium-emphasis">{smallLabel}</small>
             </CCol>
