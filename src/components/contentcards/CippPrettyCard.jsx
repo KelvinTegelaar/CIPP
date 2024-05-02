@@ -6,7 +6,7 @@ import 'react-circular-progressbar/dist/styles.css'
 
 export default function CippPrettyCard({
   title,
-  titleType = 'big',
+  titleType = 'normal',
   percentage,
   topLabel,
   smallLabel,

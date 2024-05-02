@@ -232,68 +232,38 @@ const SecureScore = () => {
           />
         </CCol>
         <CCol xs={3} className="mb-3">
-          <CCard className="content-card h-100">
-            <CCardHeader className="d-flex justify-content-between align-items-center">
-              <CCardTitle>Compared Score (Similiar sized business)</CCardTitle>
-            </CCardHeader>
-            <CCardBody>
-              <CCardText>
-                {isFetching && <Skeleton />}
-                {translateState && (
-                  <>
-                    <h3>
-                      {
-                        //calculate percentage, round to 1 dec.
-                        Math.round(
-                          (translateData?.averageComparativeScores[1]?.averageScore /
-                            translateData?.maxScore) *
-                            100 *
-                            10,
-                        ) / 10
-                      }
-                      %
-                    </h3>
-                    <small className="text-medium-emphasis">
-                      {translateData?.averageComparativeScores[1]?.averageScore} of{' '}
-                      {translateData?.maxScore} points
-                    </small>
-                  </>
-                )}
-              </CCardText>
-            </CCardBody>
-          </CCard>
+          <CippPrettyCard
+            title="Compared Score (Similiar sized business)"
+            percentage={
+              //calculate percentage, round to 1 dec.
+              Math.round(
+                (translateData?.averageComparativeScores[1]?.averageScore /
+                  translateData?.maxScore) *
+                  100 *
+                  10,
+              ) / 10
+            }
+            topLabel={translateData?.averageComparativeScores[1]?.averageScore}
+            smallLabel={`of ${translateData?.maxScore} points`}
+            isFetching={isFetching}
+          />
         </CCol>
         <CCol xs={3} className="mb-3">
-          <CCard className="content-card h-100">
-            <CCardHeader className="d-flex justify-content-between align-items-center">
-              <CCardTitle>Compared Score (All businesses)</CCardTitle>
-            </CCardHeader>
-            <CCardBody>
-              <CCardText>
-                {isFetching && <Skeleton />}
-                {translateState && (
-                  <>
-                    <h3>
-                      {
-                        //calculate percentage, round to 1 dec.
-                        Math.round(
-                          (translateData?.averageComparativeScores[0]?.averageScore /
-                            translateData?.maxScore) *
-                            100 *
-                            10,
-                        ) / 10
-                      }
-                      %
-                    </h3>
-                    <small className="text-medium-emphasis">
-                      {translateData?.averageComparativeScores[0]?.averageScore} of{' '}
-                      {translateData?.maxScore} points
-                    </small>
-                  </>
-                )}
-              </CCardText>
-            </CCardBody>
-          </CCard>
+          <CippPrettyCard
+            title="Compared Score (Similiar sized business)"
+            percentage={
+              //calculate percentage, round to 1 dec.
+              Math.round(
+                (translateData?.averageComparativeScores[0]?.averageScore /
+                  translateData?.maxScore) *
+                  100 *
+                  10,
+              ) / 10
+            }
+            topLabel={translateData?.averageComparativeScores[0]?.averageScore}
+            smallLabel={`of ${translateData?.maxScore} points`}
+            isFetching={isFetching}
+          />
         </CCol>
       </CRow>
       <CippPage title="Report Results" tenantSelector={false}>
