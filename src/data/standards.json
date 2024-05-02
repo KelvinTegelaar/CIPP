@@ -38,7 +38,7 @@
   {
     "name": "standards.AuditLog",
     "cat": "Global Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": ["lowimpact", "CIS", "mip_search_auditlog"],
     "helpText": "Enables the Unified Audit Log for tracking and auditing activities. Also runs Enable-OrganizationCustomization if necessary.",
     "addedComponent": [],
     "label": "Enable the Unified Audit Log",
@@ -63,7 +63,7 @@
   {
     "name": "standards.EnableCustomerLockbox",
     "cat": "Global Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": ["lowimpact", "CIS", "CustomerLockBoxEnabled"],
     "helpText": "Enables Customer Lockbox that offers an approval process for Microsoft support to access organization data",
     "addedComponent": [],
     "label": "Enable Customer Lockbox",
@@ -103,7 +103,7 @@
   {
     "name": "standards.ActivityBasedTimeout",
     "cat": "Global Standards",
-    "tag": ["mediumimpact", "CIS"],
+    "tag": ["mediumimpact", "CIS", "spo_idle_session_timeout"],
     "helpText": "Enables and sets Idle session timeout for Microsoft 365 to 1 hour. This policy affects most M365 web apps",
     "addedComponent": [],
     "label": "Enable 1 hour Activity based Timeout",
@@ -225,7 +225,7 @@
   {
     "name": "standards.PasswordExpireDisabled",
     "cat": "Entra (AAD) Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": ["lowimpact", "CIS", "PWAgePolicyNew"],
     "helpText": "Disables the expiration of passwords for the tenant by setting the password expiration policy to never expire for any user.",
     "addedComponent": [],
     "label": "Do not expire passwords",
@@ -308,7 +308,8 @@
       {
         "type": "number",
         "name": "standards.NudgeMFA.snoozeDurationInDays",
-        "label": "Number of days to allow users to skip registering Authenticator (0-14, default is 1)"
+        "label": "Number of days to allow users to skip registering Authenticator (0-14, default is 1)",
+        "default": 1
       }
     ],
     "label": "Sets the state for the request to setup Authenticator",
@@ -487,6 +488,42 @@
     "impactColour": "info"
   },
   {
+    "name": "standards.DisableTNEF",
+    "cat": "Exchange Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Disables Transport Neutral Encapsulation Format (TNEF)/winmail.dat for the tenant. TNEF can cause issues if the recipient is not using a client supporting TNEF.",
+    "addedComponent": [],
+    "label": "Disable TNEF/winmail.dat",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
+    "name": "standards.FocusedInbox",
+    "cat": "Exchange Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Sets the default Focused Inbox state for the tenant. This can be overridden by the user.",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Select value",
+        "name": "standards.FocusedInbox.state",
+        "values": [
+          {
+            "label": "Enabled",
+            "value": "enabled"
+          },
+          {
+            "label": "Disabled",
+            "value": "disabled"
+          }
+        ]
+      }
+    ],
+    "label": "Set Focused Inbox state",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.AutoExpandArchive",
     "cat": "Exchange Standards",
     "tag": ["lowimpact"],
@@ -535,14 +572,15 @@
   {
     "name": "standards.EnableMailTips",
     "cat": "Exchange Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": ["lowimpact", "CIS", "exo_mailtipsenabled"],
     "helpText": "Enables all MailTips in Outlook. MailTips are the notifications Outlook and Outlook on the web shows when an email you create, meets some requirements",
     "addedComponent": [
       {
         "type": "number",
         "name": "standards.EnableMailTips.MailTipsLargeAudienceThreshold",
         "label": "Number of recipients to trigger the large audience MailTip (Default is 25)",
-        "placeholder": "Enter a profile name"
+        "placeholder": "Enter a profile name",
+        "default": 25
       }
     ],
     "label": "Enable all MailTips",
@@ -582,7 +620,7 @@
   {
     "name": "standards.EnableMailboxAuditing",
     "cat": "Exchange Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": ["lowimpact", "CIS", "exo_mailboxaudit"],
     "helpText": "Enables Mailbox auditing for all mailboxes and on tenant level. Disables audit bypass on all mailboxes. Unified Audit Log needs to be enabled for this standard to function.",
     "addedComponent": [],
     "label": "Enable Mailbox auditing",
@@ -598,12 +636,14 @@
       {
         "type": "number",
         "name": "standards.SendReceiveLimitTenant.SendLimit",
-        "label": "Send limit in MB (Default is 35)"
+        "label": "Send limit in MB (Default is 35)",
+        "default": 35
       },
       {
         "type": "number",
         "name": "standards.SendReceiveLimitTenant.ReceiveLimit",
-        "label": "Receive Limit in MB (Default is 36)"
+        "label": "Receive Limit in MB (Default is 36)",
+        "default": 36
       }
     ],
     "label": "Set send/receive size limits",
@@ -664,7 +704,7 @@
   {
     "name": "standards.DisableExternalCalendarSharing",
     "cat": "Exchange Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": ["lowimpact", "CIS", "exo_individualsharing"],
     "helpText": "Disables the ability for users to share their calendar with external users. Only for the default policy, so exclusions can be made if needed.",
     "addedComponent": [],
     "label": "Disable external calendar sharing",
@@ -674,7 +714,7 @@
   {
     "name": "standards.DisableAdditionalStorageProviders",
     "cat": "Exchange Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": ["lowimpact", "CIS", "exo_storageproviderrestricted"],
     "helpText": "Disables the ability for users to open files in Outlook on the Web, from other providers such as Box, Dropbox, Facebook, Google Drive, OneDrive Personal, etc.",
     "addedComponent": [],
     "label": "Disable additional storage providers in OWA",
@@ -684,7 +724,7 @@
   {
     "name": "standards.DisableOutlookAddins",
     "cat": "Exchange Standards",
-    "tag": ["mediumimpact", "CIS"],
+    "tag": ["mediumimpact", "CIS", "exo_outlookaddins"],
     "helpText": "Disables the ability for users to install add-ins in Outlook. This is to prevent users from installing malicious add-ins.",
     "addedComponent": [],
     "label": "Disable users from installing add-ins in Outlook",
@@ -765,7 +805,7 @@
   {
     "name": "standards.SafeLinksPolicy",
     "cat": "Defender Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": ["lowimpact", "CIS", "mdo_safelinksforemail", "mdo_safelinksforOfficeApps"],
     "helpText": "This creates a safelink policy that automatically scans, tracks, and and enables safe links for Email, Office, and Teams for both external and internal senders",
     "addedComponent": [
       {
@@ -791,7 +831,16 @@
   {
     "name": "standards.AntiPhishPolicy",
     "cat": "Defender Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": [
+      "lowimpact",
+      "CIS",
+      "mdo_safeattachments",
+      "mdo_highconfidencespamaction",
+      "mdo_highconfidencephishaction",
+      "mdo_phisspamacation",
+      "mdo_spam_notifications_only_for_admins",
+      "mdo_antiphishingpolicies"
+    ],
     "helpText": "This creates a Anti-Phishing policy that automatically enables Mailbox Intelligence and spoofing, optional switches for Mailtips.",
     "addedComponent": [
       {
@@ -870,7 +919,13 @@
   {
     "name": "standards.SafeAttachmentPolicy",
     "cat": "Defender Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": [
+      "lowimpact",
+      "CIS",
+      "mdo_safedocuments",
+      "mdo_commonattachmentsfilter",
+      "mdo_safeattachmentpolicy"
+    ],
     "helpText": "This creates a Safe Attachment policy",
     "addedComponent": [
       {
@@ -946,7 +1001,7 @@
   {
     "name": "standards.MalwareFilterPolicy",
     "cat": "Defender Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": ["lowimpact", "CIS", "mdo_zapspam", "mdo_zapphish", "mdo_zapmalware"],
     "helpText": "This creates a Malware filter policy that enables the default File filter and Zero-hour auto purge for malware.",
     "addedComponent": [
       {
@@ -1173,5 +1228,21 @@
     "label": "Only allow users to sync OneDrive from AAD joined devices",
     "impact": "High Impact",
     "impactColour": "danger"
+  },
+  {
+    "name": "standards.TenantDefaultTimezone",
+    "cat": "SharePoint Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Sets the default timezone for the tenant. This will be used for all new users and sites.",
+    "addedComponent": [
+      {
+        "type": "input",
+        "name": "standards.TenantDefaultTimezone.Timezone",
+        "label": "Timezone"
+      }
+    ],
+    "label": "Set Default Timezone for Tenant",
+    "impact": "Low Impact",
+    "impactColour": "info"
   }
 ]

@@ -19,7 +19,6 @@ import { cellBooleanFormatter, cellDateFormatter } from 'src/components/tables'
 
 const Actions = (row, rowIndex, formatExtraData) => {
   const [ocVisible, setOCVisible] = useState(false)
-  console.log(row)
   const tenant = useSelector((state) => state.app.currentTenant)
   return (
     <>

@@ -3,20 +3,27 @@ import {
   faBook,
   faCog,
   faEllipsisH,
-  faHotel,
   faLaptopCode,
   faMailBulk,
   faSearch,
-  faShieldAlt,
-  faSync,
   faUser,
-  faUserAlt,
   faUserFriends,
   faUserPlus,
   faUsers,
-  faServer,
 } from '@fortawesome/free-solid-svg-icons'
-import { CButton, CCol, CCollapse, CRow } from '@coreui/react'
+import {
+  CButton,
+  CCol,
+  CCollapse,
+  CDropdown,
+  CDropdownHeader,
+  CDropdownItem,
+  CDropdownMenu,
+  CDropdownToggle,
+  CLink,
+  CNav,
+  CRow,
+} from '@coreui/react'
 import { useGenericGetRequestQuery } from 'src/store/api/app'
 import { CippContentCard } from 'src/components/layout'
 import Skeleton from 'react-loading-skeleton'
@@ -24,17 +31,28 @@ import { UniversalSearch } from 'src/components/utilities/UniversalSearch'
 import { ActionContentCard } from 'src/components/contentcards'
 import { useSelector } from 'react-redux'
 import allStandardsList from 'src/data/standards'
-import ReactTimeAgo from 'react-time-ago'
-import { CellDelegatedPrivilege } from 'src/components/tables/CellDelegatedPrivilege'
 import Portals from 'src/data/portals'
+import CippCopyToClipboard from 'src/components/utilities/CippCopyToClipboard'
+import { CChart } from '@coreui/react-chartjs'
+import { getStyle } from '@coreui/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom'
-import { TableModalButton } from 'src/components/buttons'
+import { useMediaPredicate } from 'react-media-hook'
 
-const Home = () => {
+const TenantDashboard = () => {
   const [visible, setVisible] = useState(false)
   const [domainVisible, setDomainVisible] = useState(false)
+
   const currentTenant = useSelector((state) => state.app.currentTenant)
+  const theme = useSelector((state) => state.app.currentTheme)
+
+  var buttonColor = ''
+  if (theme === 'impact') {
+    buttonColor = 'secondary'
+  } else {
+    buttonColor = 'primary'
+  }
+
   const {
     data: organization,
     isLoading: isLoadingOrg,
@@ -81,7 +99,7 @@ const Home = () => {
     isFetching: isFetchingStandards,
   } = useGenericGetRequestQuery({
     path: '/api/ListStandards',
-    params: {},
+    params: { ShowConsolidated: true, TenantFilter: currentTenant.defaultDomainName },
   })
 
   const {
@@ -142,26 +160,309 @@ const Home = () => {
       icon: faUserFriends,
     },
   ]
-
-  const filteredStandards = standards
-    .filter(
-      (p) => p.displayName === 'AllTenants' || p.displayName === currentTenant.defaultDomainName,
-    )
-    .flatMap((tenant) => {
-      return Object.keys(tenant.standards).map((standard, idx) => {
-        const standardDisplayname = allStandardsList.filter((p) => p.name.includes(standard))
-        return (
-          <li key={`${standard}-${tenant.displayName}-${idx}`}>
-            {standardDisplayname[0]?.label} ({tenant.displayName})
-          </li>
-        )
-      })
+  const filteredStandards = (count, type) => {
+    const filteredStandards = standards?.filter((standard) => standard.Settings[type] === true)
+    if (count) {
+      return filteredStandards.length
+    }
+    return filteredStandards.map((standard, idx) => {
+      const standardDisplayname = allStandardsList.find((p) => p.name.includes(standard.Standard))
+      return (
+        <li key={`${standard.Standard}-${idx}`}>
+          {standardDisplayname?.label || standard.Standard}
+        </li>
+      )
     })
+  }
+  return (
+    <>
+      <CRow className="mb-3">
+        <CCol sm={12}>
+          <CDropdown variant="btn-group" className="me-2">
+            <CDropdownToggle color={buttonColor}>
+              <FontAwesomeIcon icon="external-link" className="me-2" />
+              Portals
+            </CDropdownToggle>
+            <CDropdownMenu>
+              {actions1.map((item, idx) => (
+                <CLink
+                  className="dropdown-item"
+                  key={idx}
+                  href={item.link}
+                  target={item.target ?? ''}
+                  onClick={item.onClick}
+                >
+                  {item.icon && <FontAwesomeIcon icon={item.icon} className="me-2" fixedWidth />}
+                  {item.label}
+                </CLink>
+              ))}
+            </CDropdownMenu>
+          </CDropdown>
+          <CDropdown variant="btn-group">
+            <CDropdownToggle color={buttonColor}>
+              <FontAwesomeIcon icon="external-link" className="me-2" />
+              CIPP Actions
+            </CDropdownToggle>
+            <CDropdownMenu>
+              {actions2.map((item, idx) => (
+                <Link className="dropdown-item" key={idx} to={item.link} onClick={item.onClick}>
+                  {item.icon && <FontAwesomeIcon icon={item.icon} className="me-2" fixedWidth />}
+                  {item.label}
+                </Link>
+              ))}
+            </CDropdownMenu>
+          </CDropdown>
+        </CCol>
+      </CRow>
+      <CRow className="mb-3">
+        <CCol>
+          <CRow>
+            <CCol sm={12} md={4} className="mb-3">
+              <CippContentCard title="Tenant Name" titleType="big">
+                {currentTenant?.displayName}
+                <CippCopyToClipboard text={currentTenant?.displayName} />
+              </CippContentCard>
+            </CCol>
+            <CCol sm={12} md={4} className="mb-3">
+              <CippContentCard title="Tenant ID" titleType="big">
+                {currentTenant?.customerId}
+                <CippCopyToClipboard text={currentTenant?.customerId} />
+              </CippContentCard>
+            </CCol>
+            <CCol sm={12} md={4} className="mb-3">
+              <CippContentCard title="Default Domain Name" titleType="big">
+                {currentTenant?.defaultDomainName}
+                <CippCopyToClipboard text={currentTenant?.defaultDomainName} />
+              </CippContentCard>
+            </CCol>
+          </CRow>
+          <CRow>
+            <CCol sm={12} md={4} className="mb-3">
+              <CippContentCard title="Domain Names" titleType="big">
+                {!isFetchingOrg && issuccessOrg && (
+                  <>
+                    {organization.verifiedDomains?.slice(0, 3).map((item, idx) => (
+                      <li key={idx}>{item.name}</li>
+                    ))}
+                    {organization.verifiedDomains?.length > 5 && (
+                      <>
+                        <CCollapse visible={domainVisible}>
+                          {organization.verifiedDomains?.slice(3).map((item, idx) => (
+                            <li key={idx}>{item.name}</li>
+                          ))}
+                        </CCollapse>
+                        <CButton
+                          size="sm"
+                          className="mb-3"
+                          onClick={() => setDomainVisible(!domainVisible)}
+                        >
+                          {domainVisible ? 'See less' : 'See more...'}
+                        </CButton>
+                      </>
+                    )}
+                  </>
+                )}
+              </CippContentCard>
+            </CCol>
+            <CCol sm={12} md={4} className="mb-3">
+              <CippContentCard title="Partner Relationships" titleType="big">
+                {(isLoadingPartners || isFetchingPartners) && <Skeleton />}
+                {issuccessPartners &&
+                  !isFetchingPartners &&
+                  partners?.Results.map((partner, idx) => {
+                    if (partner.TenantInfo) {
+                      return (
+                        <li key={`${partner.tenantId}-${idx}`}>
+                          {partner.TenantInfo.displayName} ({partner.TenantInfo.defaultDomainName})
+                        </li>
+                      )
+                    }
+                  })}
+              </CippContentCard>
+            </CCol>
+            <CCol sm={12} md={4} className="mb-3">
+              <CippContentCard title="Tenant Capabilities" titleType="big">
+                {(isLoadingOrg || isFetchingOrg) && <Skeleton />}
+                {!isFetchingOrg &&
+                  issuccessOrg &&
+                  organization?.assignedPlans
+                    ?.filter((p) => p.capabilityStatus == 'Enabled')
+                    .reduce((plan, curr) => {
+                      if (!plan.includes(curr.service)) {
+                        plan.push(curr.service)
+                      }
+                      return plan
+                    }, [])
+                    .map((plan, idx) => (
+                      <div key={idx}>
+                        {plan === 'exchange' && <li>Exchange</li>}
+                        {plan === 'AADPremiumService' && <li>AAD Premium</li>}
+                        {plan === 'WindowsDefenderATP' && <li>Windows Defender</li>}
+                      </div>
+                    ))}
+              </CippContentCard>
+            </CCol>
+          </CRow>
+          <CRow>
+            <CCol sm={12} md={4} className="mb-3">
+              <CippContentCard title="Users" titleType="big">
+                {(!issuccessUserCounts || isFetchingUserCount) && <Skeleton />}
+                {issuccessUserCounts && !isFetchingUserCount && (
+                  <CChart
+                    type="pie"
+                    data={{
+                      labels: ['Total Users', 'Licensed Users', 'Guests', 'Global Admins'],
+                      datasets: [
+                        {
+                          backgroundColor: [
+                            getStyle('--cyberdrain-warning'),
+                            getStyle('--cyberdrain-info'),
+                            getStyle('--cyberdrain-success'),
+                            getStyle('--cyberdrain-danger'),
+                          ],
+                          data: [
+                            dashboard?.Users,
+                            dashboard.LicUsers,
+                            dashboard?.Guests,
+                            GlobalAdminList.data?.Results.length || 0,
+                          ],
+                          borderWidth: 3,
+                        },
+                      ],
+                    }}
+                    options={{
+                      plugins: {
+                        legend: {
+                          position: 'bottom',
+                          labels: {
+                            color: getStyle('--cui-body-color'),
+                          },
+                        },
+                      },
+                    }}
+                  />
+                )}
+              </CippContentCard>
+            </CCol>
+            <CCol sm={12} md={4} className="mb-3">
+              <CippContentCard title="Standards set" titleType="big">
+                {(isLoadingStandards || isFetchingStandards) && <Skeleton />}
+                {issuccessStandards && !isFetchingStandards && (
+                  <>
+                    <CChart
+                      className="mb-3"
+                      type="bar"
+                      data={{
+                        labels: ['Remediation', 'Alert', 'Report', 'Total Available'],
+                        datasets: [
+                          {
+                            label: 'Active Standards',
+                            backgroundColor: getStyle('--cyberdrain-info'),
+                            data: [
+                              filteredStandards(true, 'remediate'),
+                              filteredStandards(true, 'alert'),
+                              filteredStandards(true, 'report'),
+                              allStandardsList.length,
+                            ],
+                          },
+                        ],
+                      }}
+                      labels="standards"
+                      options={{
+                        plugins: {
+                          legend: {
+                            labels: {
+                              color: getStyle('--cui-body-color'),
+                            },
+                          },
+                        },
+                        scales: {
+                          x: {
+                            grid: {
+                              display: false,
+                            },
+                            ticks: {
+                              color: getStyle('--cui-body-color'),
+                            },
+                          },
+                          y: {
+                            grid: {
+                              display: false,
+                            },
+                            ticks: {
+                              color: getStyle('--cui-body-color'),
+                            },
+                          },
+                        },
+                      }}
+                    />
+                    Remediation Standards:
+                    <small>{filteredStandards(false, 'remediate').slice(0, 5)}</small>
+                    {filteredStandards(false, 'remediate').length > 5 && (
+                      <>
+                        <CCollapse visible={visible}>
+                          <small> {filteredStandards(false, 'remediate').slice(5)}</small>
+                        </CCollapse>
+                        <CButton size="sm" className="mb-3" onClick={() => setVisible(!visible)}>
+                          {visible ? 'See less' : 'See more...'}
+                        </CButton>
+                      </>
+                    )}
+                  </>
+                )}
+              </CippContentCard>
+            </CCol>
+            <CCol sm={12} md={4} className="mb-3">
+              <CippContentCard title="SharePoint Quota" titleType="big">
+                {(isLoadingSPQuota || isFetchingSPQuota) && <Skeleton />}
+                {issuccessSPQuota &&
+                  sharepoint.GeoUsedStorageMB === null &&
+                  'No SharePoint Information available'}
+                {sharepoint && !isFetchingSPQuota && sharepoint.GeoUsedStorageMB && (
+                  <CChart
+                    type="pie"
+                    data={{
+                      labels: ['Used', 'Free'],
+                      datasets: [
+                        {
+                          backgroundColor: [
+                            getStyle('--cyberdrain-warning'),
+                            getStyle('--cyberdrain-info'),
+                          ],
+                          data: [sharepoint.GeoUsedStorageMB, sharepoint.TenantStorageMB],
+                          borderWidth: 3,
+                        },
+                      ],
+                    }}
+                    options={{
+                      plugins: {
+                        legend: {
+                          position: 'bottom',
+                          labels: {
+                            color: getStyle('--cui-body-color'),
+                          },
+                        },
+                      },
+                    }}
+                  />
+                )}
+              </CippContentCard>
+            </CCol>
+          </CRow>
+        </CCol>
+      </CRow>
+    </>
+  )
+}
+
+const Home = () => {
+  const currentTenant = useSelector((state) => state.app.currentTenant)
+
   return (
     <>
       <CRow className="mb-3">
         <CCol>
-          <CippContentCard className="h-100" title="Lighthouse Search" icon={faSearch}>
+          <CippContentCard className="h-100" title="Lighthouse Search" titleType="big">
             <CRow className="mb-3"></CRow>
             <CRow className="mb-3">
               <CCol>
@@ -172,230 +473,7 @@ const Home = () => {
         </CCol>
       </CRow>
       {currentTenant?.customerId !== 'AllTenants' ? (
-        <>
-          <CRow>
-            <CCol sm={12} md={6} xl={3} className="mb-3">
-              <CippContentCard title="Total Users" icon={faUsers}>
-                <Link
-                  to={'/identity/administration/users?customerId=' + currentTenant.customerId}
-                  className="stretched-link"
-                />
-                <div>
-                  {issuccessUserCounts && !isFetchingUserCount ? dashboard?.Users : <Skeleton />}
-                </div>
-              </CippContentCard>
-            </CCol>
-            <CCol sm={12} md={6} xl={3} className="mb-3">
-              <CippContentCard title="Total Licensed users" icon={faUsers}>
-                <Link
-                  to={
-                    '/identity/administration/users?customerId=' +
-                    currentTenant.customerId +
-                    '&tableFilter=Graph%3A+assignedLicenses%2F%24count+ne+0'
-                  }
-                  className="stretched-link"
-                />
-                <div>
-                  {issuccessUserCounts && !isFetchingUserCount ? dashboard?.LicUsers : <Skeleton />}
-                </div>
-              </CippContentCard>
-            </CCol>
-            <CCol sm={12} md={6} xl={3} className="mb-3">
-              <CippContentCard title="Global Admin Users" icon={faLaptopCode}>
-                {GlobalAdminList.isSuccess ? (
-                  <>
-                    <TableModalButton
-                      className="stretched-link text-decoration-none"
-                      data={GlobalAdminList.data?.Results}
-                      countOnly={true}
-                      component="a"
-                      color="link"
-                      title="Global Admins"
-                    />
-                  </>
-                ) : (
-                  <Skeleton />
-                )}
-              </CippContentCard>
-            </CCol>
-            <CCol sm={12} md={6} xl={3} className="mb-3">
-              <CippContentCard title="Total Guests" icon={faHotel}>
-                <Link
-                  to={
-                    '/identity/administration/users?customerId=' +
-                    currentTenant.customerId +
-                    '&tableFilter=Graph%3A+usertype+eq+%27guest%27'
-                  }
-                  className="stretched-link"
-                />
-                <div>
-                  {issuccessUserCounts && !isFetchingUserCount ? dashboard?.Guests : <Skeleton />}
-                </div>
-              </CippContentCard>
-            </CCol>
-          </CRow>
-          <CRow className="mb-3">
-            <CCol>
-              <CippContentCard title="Current Tenant" icon={faBook}>
-                <CRow>
-                  <CCol sm={12} md={4} className="mb-3">
-                    <p className="fw-lighter">Tenant Name</p>
-                    {currentTenant?.displayName}
-                  </CCol>
-                  <CCol sm={12} md={4} className="mb-3">
-                    <p className="fw-lighter">Tenant ID</p>
-                    {currentTenant?.customerId}
-                  </CCol>
-                  <CCol sm={12} md={4} className="mb-3">
-                    <p className="fw-lighter">Default Domain Name</p>
-                    {currentTenant?.defaultDomainName}
-                  </CCol>
-                </CRow>
-                <CRow>
-                  <CCol sm={12} md={4} className="mb-3">
-                    <p className="fw-lighter">Tenant Status</p>
-                    <CellDelegatedPrivilege cell={currentTenant?.delegatedPrivilegeStatus} />
-                  </CCol>
-                  <CCol sm={12} md={4} className="mb-3">
-                    <p className="fw-lighter">Creation Date</p>
-                    {(isLoadingOrg || isFetchingOrg) && <Skeleton />}
-                    {organization && !isFetchingOrg && organization?.createdDateTime}
-                  </CCol>
-                  <CCol sm={12} md={4} className="mb-3">
-                    <p className="fw-lighter">AD Connect Status</p>
-                    {(isLoadingOrg || isFetchingOrg) && <Skeleton />}
-                    {!isLoadingOrg && !isFetchingOrg && organization?.onPremisesSyncEnabled ? (
-                      <>
-                        <li>
-                          <span className="me-1">Directory Sync:</span>
-                          {organization?.onPremisesLastSyncDateTime ? (
-                            <ReactTimeAgo date={organization?.onPremisesLastSyncDateTime} />
-                          ) : (
-                            'Never'
-                          )}
-                        </li>
-                        <li>
-                          <span className="me-1">Password Sync:</span>
-                          {organization?.onPremisesLastPasswordSyncDateTime ? (
-                            <ReactTimeAgo date={organization?.onPremisesLastPasswordSyncDateTime} />
-                          ) : (
-                            'Never'
-                          )}
-                        </li>
-                      </>
-                    ) : (
-                      'Disabled'
-                    )}
-                  </CCol>
-                </CRow>
-                <CRow>
-                  <CCol sm={12} md={4} className="mb-3">
-                    <p className="fw-lighter">Domain(s)</p>
-                    {(isLoadingOrg || isFetchingOrg) && <Skeleton />}
-                    <>
-                      {!isFetchingOrg && issuccessOrg && (
-                        <>
-                          {organization.verifiedDomains?.slice(0, 5).map((item, idx) => (
-                            <li key={idx}>{item.name}</li>
-                          ))}
-                          {organization.verifiedDomains?.length > 5 && (
-                            <>
-                              <CCollapse visible={domainVisible}>
-                                {organization.verifiedDomains?.slice(5).map((item, idx) => (
-                                  <li key={idx}>{item.name}</li>
-                                ))}
-                              </CCollapse>
-                              <CButton
-                                size="sm"
-                                className="mb-3"
-                                onClick={() => setDomainVisible(!domainVisible)}
-                              >
-                                {domainVisible ? 'See less' : 'See more...'}
-                              </CButton>
-                            </>
-                          )}
-                        </>
-                      )}
-                    </>
-                  </CCol>
-                  <CCol sm={12} md={4} className="mb-3">
-                    <p className="fw-lighter">Capabilities</p>
-                    {(isLoadingOrg || isFetchingOrg) && <Skeleton />}
-                    {!isFetchingOrg &&
-                      issuccessOrg &&
-                      organization?.assignedPlans
-                        ?.filter((p) => p.capabilityStatus == 'Enabled')
-                        .reduce((plan, curr) => {
-                          if (!plan.includes(curr.service)) {
-                            plan.push(curr.service)
-                          }
-                          return plan
-                        }, [])
-                        .map((plan, idx) => (
-                          <div key={idx}>
-                            {plan === 'exchange' && <li>Exchange</li>}
-                            {plan === 'AADPremiumService' && <li>AAD Premium</li>}
-                            {plan === 'WindowsDefenderATP' && <li>Windows Defender</li>}
-                          </div>
-                        ))}
-                  </CCol>
-                  <CCol sm={12} md={4} className="mb-3">
-                    <p className="fw-lighter">Sharepoint Quota</p>
-                    {(isLoadingSPQuota || isFetchingSPQuota) && <Skeleton />}
-                    {sharepoint && !isFetchingSPQuota && sharepoint?.Dashboard}
-                  </CCol>
-                  <CCol sm={12} md={4} className="mb-3">
-                    <p className="fw-lighter">Applied Standards</p>
-                    {(isLoadingStandards || isFetchingStandards) && <Skeleton />}
-
-                    {issuccessStandards && !isFetchingStandards && (
-                      <>
-                        {filteredStandards.slice(0, 5)}
-
-                        {filteredStandards.length > 5 && (
-                          <>
-                            <CCollapse visible={visible}>{filteredStandards.slice(5)}</CCollapse>
-                            <CButton
-                              size="sm"
-                              className="mb-3"
-                              onClick={() => setVisible(!visible)}
-                            >
-                              {visible ? 'See less' : 'See more...'}
-                            </CButton>
-                          </>
-                        )}
-                      </>
-                    )}
-                  </CCol>
-                  <CCol sm={12} md={4} className="mb-3">
-                    <p className="fw-lighter">Partner Relationships</p>
-                    {(isLoadingPartners || isFetchingPartners) && <Skeleton />}
-                    {issuccessPartners &&
-                      !isFetchingPartners &&
-                      partners?.Results.map((partner, idx) => {
-                        if (partner.TenantInfo) {
-                          return (
-                            <li key={`${partner.tenantId}-${idx}`}>
-                              {partner.TenantInfo.displayName} (
-                              {partner.TenantInfo.defaultDomainName})
-                            </li>
-                          )
-                        }
-                      })}
-                  </CCol>
-                </CRow>
-              </CippContentCard>
-            </CCol>
-          </CRow>
-          <CRow className="mb-3">
-            <CCol className="mb-3">
-              <ActionContentCard title="Portals" icon={faEllipsisH} content={actions1} />
-            </CCol>
-            <CCol className="mb-3">
-              <ActionContentCard title="CIPP Actions" icon={faEllipsisH} content={actions2} />
-            </CCol>
-          </CRow>
-        </>
+        <TenantDashboard />
       ) : (
         <CRow className="mb-3">
           <CCol sm={12}>

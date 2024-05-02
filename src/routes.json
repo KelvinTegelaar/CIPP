@@ -223,6 +223,12 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/tenant/administration/partner-relationships",
+    "name": "Partner Relationships",
+    "component": "views/tenant/administration/PartnerRelationships",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/tenant/administration/domains",
     "name": "Domains",
     "component": "views/tenant/administration/Domains",
@@ -763,6 +769,12 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "name": "List Tenant Allow/Block Lists",
+    "path": "/email/administration/tenant-allow-block-lists",
+    "component": "views/email-exchange/administration/ListTenantAllowBlockList",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "name": "Email Reports",
     "path": "/email/reports",
     "allowedRoles": ["admin", "editor", "readonly"]
@@ -863,6 +875,12 @@
     "name": "Setup",
     "component": "views/cipp/Setup",
     "allowedRoles": ["admin"]
+  },
+  {
+    "path": "/tenant/administration/securescore",
+    "name": "Secure Score Management",
+    "component": "views/tenant/administration/SecureScore",
+    "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
     "path": "/tenant/administration/gdap",

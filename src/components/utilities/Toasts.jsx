@@ -3,8 +3,9 @@ import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import { CToast, CToastBody, CToaster, CToastHeader, CCollapse, CButton } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExpandAlt, faCompressAlt, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { closeToast } from 'src/store/features/toasts'
+import ReactTimeAgo from 'react-time-ago'
 
 const Toasts = () => {
   const dispatch = useDispatch()
@@ -32,15 +33,18 @@ const Toast = ({ message, title, onClose, error }) => {
 
   return (
     <CToast
-      autohide={true}
-      delay={3000}
+      autohide={false}
+      delay={5000}
       visible={true}
       className="align-items-center"
       onClose={onClose}
     >
-      <CToastHeader className="d-flex justify-content-between">
-        <div>{title}</div>
-        <FontAwesomeIcon size="2x" icon={faTimes} onClick={onClose} />
+      <CToastHeader>
+        <div className="fw-bold me-auto">{title}</div>
+        <small className="me-3">Just Now</small>
+        <div className="me-3">
+          <FontAwesomeIcon size="2x" icon={faTimes} onClick={onClose} />
+        </div>
       </CToastHeader>
       <CToastBody>
         <div className="d-flex justify-content-between align-items-center text-danger">

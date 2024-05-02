@@ -500,6 +500,11 @@ const GraphExplorer = () => {
                               placeholder="Select the number of rows to return"
                             />
                             <WhenFieldChanges field="reportTemplate" set="$top" />
+                            <RFFCFormSwitch
+                              name="ReverseTenantLookup"
+                              label="Reverse Tenant Lookup"
+                            />
+                            <WhenFieldChanges field="reportTemplate" set="ReverseTenantLookup" />
                           </CCol>
                           <CCol>
                             <RFFCFormInput
@@ -553,6 +558,16 @@ const GraphExplorer = () => {
                               placeholder="Enter OData search query"
                             />
                             <WhenFieldChanges field="reportTemplate" set="$search" />
+                            <RFFCFormInput
+                              type="text"
+                              name="ReverseTenantLookupProperty"
+                              label="Reverse Tenant Lookup Property"
+                              placeholder="Default tenantId"
+                            />
+                            <WhenFieldChanges
+                              field="reportTemplate"
+                              set="ReverseTenantLookupProperty"
+                            />
                           </CCol>
                         </CRow>
                         <CRow className="mb-3">

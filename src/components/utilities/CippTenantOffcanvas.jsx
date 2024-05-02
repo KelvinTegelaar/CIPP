@@ -59,6 +59,10 @@ function CippTenantOffcanvas({ tenant, buildingIcon = false }) {
             value: tenantProperty(tenantDetails, 'displayName'),
           },
           {
+            label: 'Tenant ID',
+            value: tenantProperty(tenantDetails, 'id'),
+          },
+          {
             label: 'Business Phones',
             value: tenantProperty(tenantDetails, 'businessPhones'),
           },

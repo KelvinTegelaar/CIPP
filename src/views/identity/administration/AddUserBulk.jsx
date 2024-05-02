@@ -93,7 +93,6 @@ const AddUserBulk = () => {
       return item.data
     })
     setBulkUser([...BulkUser, ...importdata])
-    // console.log(importdata)
   }
 
   const handleOnError = (err, file, inputElem, reason) => {
