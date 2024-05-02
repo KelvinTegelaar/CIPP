@@ -422,14 +422,20 @@ const TenantDashboard = () => {
                   <CChart
                     type="pie"
                     data={{
-                      labels: ['Used', 'Free'],
+                      labels: [
+                        `Used (${sharepoint.GeoUsedStorageMB}MB)`,
+                        `Free (${sharepoint.TenantStorageMB - sharepoint.GeoUsedStorageMB}MB)`,
+                      ],
                       datasets: [
                         {
                           backgroundColor: [
                             getStyle('--cyberdrain-warning'),
                             getStyle('--cyberdrain-info'),
                           ],
-                          data: [sharepoint.GeoUsedStorageMB, sharepoint.TenantStorageMB],
+                          data: [
+                            sharepoint.GeoUsedStorageMB,
+                            sharepoint.TenantStorageMB - sharepoint.GeoUsedStorageMB,
+                          ],
                           borderWidth: 3,
                         },
                       ],

@@ -539,6 +539,13 @@ const GraphExplorer = () => {
                               label="Reverse Tenant Lookup"
                             />
                             <WhenFieldChanges field="reportTemplate" set="ReverseTenantLookup" />
+                            <RFFCFormInput
+                              type="text"
+                              name="$format"
+                              label="Format"
+                              placeholder="Optional format to return (e.g. application/json)"
+                            />
+                            <WhenFieldChanges field="reportTemplate" set="$format" />
                           </CCol>
                           <CCol>
                             <RFFCFormInput
