@@ -1,11 +1,12 @@
 ---
 name: Check for Version Update
-on:  # yamllint disable-line rule:truthy
+on:
   pull_request:
     branches: [master, main]
   workflow_dispatch:
 jobs:
   build:
+    if: github.repository_owner == 'KelvinTegelaar'
     name: 'Check for Version Update'
     runs-on: ubuntu-latest
     steps:
