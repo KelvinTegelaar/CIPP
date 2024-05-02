@@ -488,6 +488,36 @@
     "impactColour": "info"
   },
   {
+    "name": "standards.GlobalQuarantineNotifications",
+    "cat": "Exchange Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Sets the Global Quarantine Notification Interval to the selected value. Determines how often the quarantine notification is sent to users.",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Select value",
+        "name": "standards.GlobalQuarantineNotifications.NotificationInterval",
+        "values": [
+          {
+            "label": "4 hours",
+            "value": "04:00:00"
+          },
+          {
+            "label": "1 day/Daily",
+            "value": "1.00:00:00"
+          },
+          {
+            "label": "7 days/Weekly",
+            "value": "7.00:00:00"
+          }
+        ]
+      }
+    ],
+    "label": "Set Global Quarantine Notification Interval",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.DisableTNEF",
     "cat": "Exchange Standards",
     "tag": ["lowimpact"],
