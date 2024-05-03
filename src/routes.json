@@ -1,0 +1,945 @@
+[
+  {
+    "path": "/home",
+    "name": "Home",
+    "component": "views/home/Home",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/cipp/logs",
+    "name": "Logs",
+    "component": "views/cipp/Logs",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/cipp/scheduler",
+    "name": "Scheduler",
+    "component": "views/cipp/Scheduler",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/cipp/statistics",
+    "name": "Statistics",
+    "component": "views/cipp/Statistics",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/cipp/404",
+    "name": "Error",
+    "component": "views/pages/page404/Page404",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/cipp/403",
+    "name": "Error",
+    "component": "views/pages/page403/Page403",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/cipp/500",
+    "name": "Error",
+    "component": "views/pages/page500/Page500",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity",
+    "name": "Identity",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/administration/users/add",
+    "name": "Add User",
+    "component": "views/identity/administration/AddUser",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/administration/users/addbulk",
+    "name": "Add User Bulk",
+    "component": "views/identity/administration/AddUserBulk",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/administration/users/edit",
+    "name": "Edit User",
+    "component": "views/identity/administration/EditUser",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/administration/users/view",
+    "name": "View User",
+    "component": "views/identity/administration/ViewUser",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/administration/users/InviteGuest",
+    "name": "Invite Guest",
+    "component": "views/identity/administration/InviteGuest",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/administration/ViewBec",
+    "name": "View BEC",
+    "component": "views/identity/administration/ViewBEC",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/administration",
+    "name": "Administration",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/administration/users",
+    "name": "Users",
+    "component": "views/identity/administration/Users",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/administration/devices",
+    "name": "Devices",
+    "component": "views/identity/administration/Devices",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/administration/groups/add",
+    "name": "Add Group",
+    "component": "views/identity/administration/AddGroup",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/administration/group-templates",
+    "name": "Group Templates",
+    "component": "views/identity/administration/GroupTemplates",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/administration/group-add-template",
+    "name": "Add Group Template",
+    "component": "views/identity/administration/AddGroupTemplate",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/administration/deploy-group-template",
+    "name": "Deploy Group Template",
+    "component": "views/identity/administration/DeployGroupTemplate",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/administration/groups/edit",
+    "name": "Edit Group",
+    "component": "views/identity/administration/EditGroup",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/administration/groups/view",
+    "name": "View Group",
+    "component": "views/identity/administration/ViewGroup",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/administration/groups",
+    "name": "Groups",
+    "component": "views/identity/administration/Groups",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/administration/roles",
+    "name": "Roles",
+    "component": "views/identity/administration/Roles",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/administration/deleted-items",
+    "name": "Deleted Items",
+    "component": "views/identity/administration/Deleted",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/teams-share/teams/business-voice",
+    "name": "BusinessVoice",
+    "component": "views/teams-share/teams/BusinessVoice",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/administration/offboarding-wizard",
+    "name": "Offboarding Wizard",
+    "component": "views/identity/administration/OffboardingWizard",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/reports",
+    "name": "Reports",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/endpoint/reports/devices",
+    "name": "Devices",
+    "component": "views/endpoint/intune/Devices",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/reports/mfa-report",
+    "name": "MFA Report",
+    "component": "views/identity/reports/MFAReport",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/reports/inactive-users-report",
+    "name": "Inactive Users Report",
+    "component": "views/identity/reports/InactiveUsers",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/reports/Signin-report",
+    "name": "Sign-In Report",
+    "component": "views/identity/reports/SignIns",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/reports/azure-ad-connect-report",
+    "name": "AAD Connect Report",
+    "component": "views/identity/reports/AzureADConnectReport",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant",
+    "name": "Tenant",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/administration",
+    "name": "Administration",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/administration/tenants",
+    "name": "Tenants",
+    "component": "views/tenant/administration/Tenants",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/administration/tenants/edit",
+    "name": "Edit Tenant",
+    "component": "views/tenant/administration/EditTenant",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/administration/partner-relationships",
+    "name": "Partner Relationships",
+    "component": "views/tenant/administration/PartnerRelationships",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/administration/domains",
+    "name": "Domains",
+    "component": "views/tenant/administration/Domains",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/administration/alertswizard",
+    "name": "Alerts Wizard",
+    "component": "views/tenant/administration/AlertWizard",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/administration/alertrules",
+    "name": "Alerts Wizard",
+    "component": "views/tenant/administration/AlertRules",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/administration/alertsqueue",
+    "name": "Alerts Queue",
+    "component": "views/tenant/administration/ListAlertsQueue",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/administration/graph-explorer",
+    "name": "Graph Explorer",
+    "component": "views/tenant/administration/GraphExplorer",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/administration/service-health",
+    "name": "Service Health",
+    "component": "views/tenant/administration/ServiceHealth",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/administration/enterprise-apps",
+    "name": "Enterprise Applications",
+    "component": "views/tenant/administration/ListEnterpriseApps",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/administration/app-consent-requests",
+    "name": "App Consent Requests",
+    "component": "views/tenant/administration/ListAppConsentRequests",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/conditional/list-policies",
+    "name": "Conditional Access",
+    "component": "views/tenant/conditional/ConditionalAccess",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/conditional/deploy-vacation",
+    "name": "Deploy Vacation Mode",
+    "component": "views/tenant/conditional/DeployVacation",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/conditional/test-policy",
+    "name": "Test Conditional Access Policy",
+    "component": "views/tenant/conditional/TestCAPolicy",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/conditional/list-named-locations",
+    "name": "Named Locations",
+    "component": "views/tenant/conditional/NamedLocations",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/conditional/deploy",
+    "name": "Deploy Conditional Access",
+    "component": "views/tenant/conditional/DeployCA",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/conditional/deploy-named-location",
+    "name": "Deploy Named Locations",
+    "component": "views/tenant/conditional/DeployNamedLocation",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/conditional/list-template",
+    "name": "Conditional Access Templates",
+    "component": "views/tenant/conditional/ListCATemplates",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/conditional/add-template",
+    "name": "Conditional Access Add Template",
+    "component": "views/tenant/conditional/AddCATemplate",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/administration/list-licenses",
+    "name": "List Licenses",
+    "component": "views/tenant/administration/ListLicences",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/administration/application-consent",
+    "name": "Consented Applications",
+    "component": "views/tenant/administration/ListOauthApps",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/standards",
+    "name": "Standards",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/standards/list-applied-standards",
+    "name": "List Applied Standards",
+    "component": "views/tenant/standards/ListAppliedStandards",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/standards/bpa-report",
+    "name": "Best Practice Report",
+    "component": "views/tenant/standards/BestPracticeAnalyser",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/standards/domains-analyser",
+    "name": "Domains Analyser",
+    "component": "views/tenant/standards/DomainsAnalyser",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/standards/individual-domains",
+    "name": "Individual Domain Check",
+    "component": "views/tenant/standards/IndividualDomain",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/administration/tenantlookup",
+    "name": "Tenant Lookup",
+    "component": "views/tenant/administration/TenantLookup",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/tools/geoiplookup",
+    "name": "Geo IP Lookup",
+    "component": "views/tenant/administration/GeoIPLookup",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/tools/bpa-report-builder",
+    "name": "BPA Report Builder",
+    "component": "views/tenant/standards/BPAReportBuilder",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/standards/alert-list",
+    "name": "Alert List (Alpha)",
+    "component": "views/security/incidents/ListAlerts",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/endpoint",
+    "name": "Endpoint",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/endpoint/applications",
+    "name": "Applications",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/endpoint/applications/list",
+    "name": "List Applications",
+    "component": "views/endpoint/applications/ApplicationsList",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/endpoint/applications/queue",
+    "name": "Application Queue",
+    "component": "views/endpoint/applications/ListApplicationQueue",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/endpoint/applications/add-choco-app",
+    "name": "Add Choco App",
+    "component": "views/endpoint/applications/ApplicationsAddChocoApp",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/endpoint/applications/add-winget-app",
+    "name": "Add Store App",
+    "component": "views/endpoint/applications/ApplicationsAddWinGet",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/endpoint/applications/add-office-app",
+    "name": "Add Office App",
+    "component": "views/endpoint/applications/ApplicationsAddOffice",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/endpoint/applications/add-rmm-app",
+    "name": "Add RMM App",
+    "component": "views/endpoint/applications/ApplicationsAddRMM",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/endpoint/autopilot",
+    "name": "Autopilot",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/endpoint/autopilot/add-device",
+    "name": "Add Device",
+    "component": "views/endpoint/autopilot/AutopilotAddDevice",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/endpoint/autopilot/add-profile",
+    "name": "Add Profile",
+    "component": "views/endpoint/autopilot/AutopilotAddProfile",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/endpoint/autopilot/add-status-page",
+    "name": "Add Status Page",
+    "component": "views/endpoint/autopilot/AutopilotAddStatusPage",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/endpoint/autopilot/list-devices",
+    "name": "List Devices",
+    "component": "views/endpoint/autopilot/AutopilotListDevices",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/endpoint/autopilot/list-profiles",
+    "name": "List Profiles",
+    "component": "views/endpoint/autopilot/AutopilotListProfiles",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/endpoint/autopilot/list-status-pages",
+    "name": "List Status Pages",
+    "component": "views/endpoint/autopilot/AutopilotListStatusPages",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/endpoint/MEM",
+    "name": "MEM",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/endpoint/MEM/list-policies",
+    "name": "List Intune Policies",
+    "component": "views/endpoint/intune/MEMListPolicies",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/endpoint/MEM/list-compliance-policies",
+    "name": "List Intune Compliance Policies",
+    "component": "views/endpoint/intune/MEMListCompliance",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/endpoint/MEM/list-appprotection-policies",
+    "name": "List App Protection Policies",
+    "component": "views/endpoint/intune/MEMListAppProtection",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/endpoint/MEM/edit-policy",
+    "name": "Edit MEM Policy",
+    "component": "views/endpoint/intune/MEMEditPolicy",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/endpoint/MEM/ca-policies",
+    "name": "List Status Pages",
+    "component": "views/endpoint/intune/MEMCAPolicies",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/endpoint/MEM/add-policy",
+    "name": "Add Intune Policy",
+    "component": "views/endpoint/intune/MEMAddPolicy",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/endpoint/MEM/add-policy-template",
+    "name": "Add Endpoint Manager Policy Template",
+    "component": "views/endpoint/intune/MEMAddPolicyTemplate",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/endpoint/MEM/list-templates",
+    "name": "List Intune Policy Template",
+    "component": "views/endpoint/intune/MEMListPolicyTemplates",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/security/defender",
+    "name": "Defender",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/security/defender/deployment",
+    "name": "Deploy Defender",
+    "component": "views/security/defender/DeployDefender",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/security/defender/list-defender",
+    "name": "List Defender",
+    "component": "views/security/defender/ListDefender",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/security/defender/list-defender-tvm",
+    "name": "List Vulnerabilities",
+    "component": "views/security/defender/ListVuln",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/teams-share",
+    "name": "Teams & SharePoint",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/teams-share/onedrive",
+    "name": "OneDrive",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/teams-share/onedrive/list",
+    "name": "List OneDrive",
+    "component": "views/teams-share/onedrive/OneDriveList",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/teams-share/sharepoint",
+    "name": "SharePoint",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/teams-share/sharepoint/list-sharepoint",
+    "name": "List SharePoint",
+    "component": "views/teams-share/sharepoint/SharepointList",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/teams-share/teams",
+    "name": "Teams",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/teams-share/teams/list-team",
+    "name": "List Teams",
+    "component": "views/teams-share/teams/TeamsListTeam",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/teams-share/teams/view-team-settings",
+    "name": "View Team Settings",
+    "component": "views/teams-share/teams/ViewTeamSettings",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/teams-share/teams/add-team",
+    "name": "Add Team",
+    "component": "views/teams-share/teams/TeamsAddTeam",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/teams-share/teams/teams-activity",
+    "name": "Teams Activity",
+    "component": "views/teams-share/teams/TeamsActivity",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "Email & Exchange",
+    "path": "/email",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "Email Administration",
+    "path": "/email/administration",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "List Contacts",
+    "path": "/email/administration/contacts",
+    "component": "views/email-exchange/administration/ContactsList",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/email/connectors/list-connectors",
+    "name": "List Connectors",
+    "component": "views/email-exchange/connectors/ConnectorList",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/email/connectors/deploy-connector",
+    "name": "Deploy Connectors",
+    "component": "views/email-exchange/connectors/DeployConnector",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/email/connectors/add-connector-templates",
+    "name": "Add Connectors Templates",
+    "component": "views/email-exchange/connectors/AddConnectorTemplate",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/email/connectors/list-connector-templates",
+    "name": "List Connectors Templates",
+    "component": "views/email-exchange/connectors/ListConnectorTemplates",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/email/transport/list-rules",
+    "name": "List Transport Rules",
+    "component": "views/email-exchange/transport/TransportRules",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/email/transport/deploy-rules",
+    "name": "Deploy Transport Rule",
+    "component": "views/email-exchange/transport/DeployTransport",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/email/transport/list-templates",
+    "name": "Transport Rule Templates",
+    "component": "views/email-exchange/transport/ListTransportTemplates",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/email/transport/add-template",
+    "name": "Transport Rule Add Temmplate",
+    "component": "views/email-exchange/transport/AddTransportTemplate",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/email/spamfilter/list-spamfilter",
+    "name": "List Spamfilter",
+    "component": "views/email-exchange/spamfilter/Spamfilter",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/email/spamfilter/deploy",
+    "name": "Deploy Spamfilter",
+    "component": "views/email-exchange/spamfilter/DeploySpamfilter",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/email/spamfilter/list-templates",
+    "name": "List Spamfilter Templates",
+    "component": "views/email-exchange/spamfilter/ListSpamfilterTemplates",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/email/tools/mailbox-restore-wizard",
+    "name": "Mailbox Restore Wizard",
+    "component": "views/email-exchange/tools/MailboxRestoreWizard",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/email/tools/mailbox-restores",
+    "name": "Mailbox Restores",
+    "component": "views/email-exchange/tools/MailboxRestores",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/email/tools/mail-test",
+    "name": "Mail Test",
+    "component": "views/email-exchange/tools/MailTest",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/email/spamfilter/add-template",
+    "name": "Add Spamfilter Template",
+    "component": "views/email-exchange/spamfilter/AddSpamfilterTemplate",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "Edit Mailbox Permissions",
+    "path": "/email/administration/edit-mailbox-permissions",
+    "component": "views/email-exchange/administration/EditMailboxPermissions",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "Add Shared Mailbox",
+    "path": "/email/administration/add-shared-mailbox",
+    "component": "views/email-exchange/administration/AddSharedMailbox",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "Edit Contact",
+    "path": "/email/administration/add-contact",
+    "component": "views/email-exchange/administration/AddContact",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "Edit Calendar Permissions",
+    "path": "/email/administration/edit-calendar-permissions",
+    "component": "views/email-exchange/administration/EditCalendarPermissions",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "View Mobile Devices",
+    "path": "/email/administration/view-mobile-devices",
+    "component": "views/email-exchange/administration/ViewMobileDevices",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "Edit Contact",
+    "path": "/email/administration/edit-contact",
+    "component": "views/email-exchange/administration/EditContact",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "List Mailboxes",
+    "path": "/email/administration/mailboxes",
+    "component": "views/email-exchange/administration/MailboxesList",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "List Mailbox Rules",
+    "path": "/email/administration/mailbox-rules",
+    "component": "views/email-exchange/administration/MailboxRuleList",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "List Quarantine",
+    "path": "/email/administration/Quarantine",
+    "component": "views/email-exchange/administration/QuarantineList",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "List Tenant Allow/Block Lists",
+    "path": "/email/administration/tenant-allow-block-lists",
+    "component": "views/email-exchange/administration/ListTenantAllowBlockList",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "Email Reports",
+    "path": "/email/reports",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "Mailbox Statistics",
+    "path": "/email/reports/mailbox-statistics",
+    "component": "views/email-exchange/reports/MailboxStatisticsList",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "Shared Mailbox Enabled Account",
+    "path": "/email/reports/SharedMailboxEnabledAccount",
+    "component": "views/email-exchange/reports/SharedMailboxEnabledAccount",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "Mailbox Client Access Settings",
+    "path": "/email/reports/mailbox-cas-settings",
+    "component": "views/email-exchange/reports/MailboxClientAccessSettingsList",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "Message Trace",
+    "path": "/email/reports/message-trace",
+    "component": "views/email-exchange/reports/MessageTrace",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/cipp/user-settings",
+    "name": "User Settings",
+    "component": "views/cipp/UserSettings",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "Phishing Policies",
+    "path": "/email/reports/phishing-policies",
+    "component": "views/email-exchange/reports/PhishingPoliciesList",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "Security & Compliance",
+    "path": "/security",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "Security Administration",
+    "path": "/security/administration",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "Security Reports",
+    "path": "/security/reports",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "List Alerts",
+    "path": "/security/incidents/list-alerts",
+    "component": "views/security/incidents/ListAlerts",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "List Incidents",
+    "path": "/security/incidents/list-incidents",
+    "component": "views/security/incidents/ListIncidents",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "List Device Compliance Report",
+    "path": "/security/reports/list-device-compliance",
+    "component": "views/security/reports/ListDeviceComplianceReport",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "License",
+    "path": "/license",
+    "component": "views/pages/license/License",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/cipp",
+    "name": "CIPP",
+    "allowedRoles": ["admin"]
+  },
+  {
+    "path": "/cipp/cipp",
+    "name": "CIPP",
+    "allowedRoles": ["admin"]
+  },
+  {
+    "path": "/cipp/settings",
+    "name": "Settings",
+    "component": "views/cipp/app-settings/CIPPSettings",
+    "allowedRoles": ["admin"]
+  },
+  {
+    "path": "/cipp/setup",
+    "name": "Setup",
+    "component": "views/cipp/Setup",
+    "allowedRoles": ["admin"]
+  },
+  {
+    "path": "/tenant/administration/securescore",
+    "name": "Secure Score Management",
+    "component": "views/tenant/administration/SecureScore",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/administration/gdap",
+    "name": "GDAP Wizard",
+    "component": "views/tenant/administration/GDAPWizard",
+    "allowedRoles": ["admin"]
+  },
+  {
+    "path": "/tenant/administration/gdap-invite",
+    "name": "GDAP Invite Wizard",
+    "component": "views/tenant/administration/GDAPInviteWizard",
+    "allowedRoles": ["admin"]
+  },
+  {
+    "path": "/tenant/administration/gdap-role-wizard",
+    "name": "GDAP Role Wizard",
+    "component": "views/tenant/administration/GDAPRoleWizard",
+    "allowedRoles": ["admin"]
+  },
+  {
+    "path": "/tenant/administration/gdap-roles",
+    "name": "GDAP Roles",
+    "component": "views/tenant/administration/ListGDAPRoles",
+    "allowedRoles": ["admin"]
+  },
+  {
+    "path": "/tenant/administration/gdap-relationships",
+    "name": "GDAP Relationships",
+    "component": "./views/tenant/administration/ListGDAPRelationships",
+    "allowedRoles": ["admin"]
+  },
+  {
+    "path": "/tenant/administration/appapproval",
+    "name": "App Approval",
+    "component": "views/cipp/AppApproval",
+    "allowedRoles": ["admin"]
+  },
+  {
+    "path": "/tenant/administration/gdap-status",
+    "name": "GDAP Status",
+    "component": "views/tenant/administration/ListGDAPQueue",
+    "allowedRoles": ["admin"]
+  },
+  {
+    "path": "/tenant/standards/list-standards",
+    "name": "List Standard",
+    "component": "views/tenant/standards/ListStandards",
+    "allowedRoles": ["admin"]
+  },
+  {
+    "path": "/tenant/administration/tenant-offboarding-wizard",
+    "name": "Tenant Offboarding",
+    "component": "views/tenant/administration/TenantOffboardingWizard",
+    "allowedRoles": ["admin"]
+  },
+  {
+    "path": "/tenant/administration/tenant-onboarding-wizard",
+    "name": "Tenant Onboarding",
+    "component": "views/tenant/administration/TenantOnboardingWizard",
+    "allowedRoles": ["admin"]
+  }
+]

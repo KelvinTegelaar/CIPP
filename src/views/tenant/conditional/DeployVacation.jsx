@@ -107,7 +107,7 @@ const ListClassicAlerts = () => {
                               value: ca.id,
                               name: `${ca.displayName}`,
                             }))}
-                            placeholder={!caIsFetching ? 'Select user' : 'Loading...'}
+                            placeholder={!caIsFetching ? 'Select policy' : 'Loading...'}
                             name="PolicyId"
                           />
                         </CCol>

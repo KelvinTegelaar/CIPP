@@ -93,7 +93,6 @@ const AddAPDevice = () => {
       }
     })
     setAutopilotdata([...autopilotData, ...importdata])
-    // console.log(importdata)
   }
 
   const handleOnError = (err, file, inputElem, reason) => {
@@ -238,7 +237,7 @@ const AddAPDevice = () => {
         <hr className="my-4" />
       </CippWizard.Page>
       <CippWizard.Page
-        title="Offboarding Settings"
+        title="Autopilot Settings"
         description="Add a tag, group, or other info to this request"
       >
         <center>

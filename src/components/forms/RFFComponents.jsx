@@ -11,9 +11,10 @@ import {
   CTooltip,
 } from '@coreui/react'
 import Select from 'react-select'
+import Creatable, { useCreatable } from 'react-select/creatable'
 import { Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
-import React, { useState, useMemo, useRef } from 'react'
+import React, { useState, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { debounce } from 'lodash-es'
@@ -36,6 +37,7 @@ const sharedPropTypes = {
       error: PropTypes.any,
     }),
   }),
+  onClick: PropTypes.func,
 }
 
 export const RFFCFormFeedback = ({ meta }) => {
@@ -53,7 +55,14 @@ RFFCFormFeedback.propTypes = {
   }),
 }
 
-export const RFFCFormCheck = ({ name, label, className = 'mb-3', validate, disabled = false }) => {
+export const RFFCFormCheck = ({
+  name,
+  label,
+  className = 'mb-3',
+  validate,
+  disabled = false,
+  onClick,
+}) => {
   return (
     <Field name={name} type="checkbox" validate={validate}>
       {({ input, meta }) => (
@@ -66,6 +75,7 @@ export const RFFCFormCheck = ({ name, label, className = 'mb-3', validate, disab
             disabled={disabled}
             id={name}
             label={label}
+            onClick={onClick}
           />
           <RFFCFormFeedback meta={meta} />
         </div>
@@ -91,9 +101,17 @@ export const RFFCFormSwitch = ({
   validate,
   disabled = false,
   initialValue,
+  onClick,
+  defaultValue,
 }) => {
   return (
-    <Field initialValue={initialValue} name={name} type="checkbox" validate={validate}>
+    <Field
+      defaultValue={defaultValue}
+      initialValue={initialValue}
+      name={name}
+      type="checkbox"
+      validate={validate}
+    >
       {({ meta, input }) => (
         <ConditionWrapper
           condition={helpText}
@@ -112,6 +130,7 @@ export const RFFCFormSwitch = ({
               disabled={disabled}
               id={name}
               label={label}
+              onClick={onClick}
             />
             {input.value && <RFFCFormFeedback meta={meta} />}
             <sub>{sublabel}</sub>
@@ -137,10 +156,12 @@ export const RFFCFormInput = ({
   disabled = false,
   spellCheck = true,
   autoFocus = false,
+  hiddenValue,
+  defaultValue,
   onChange,
 }) => {
   return (
-    <Field name={name} validate={validate}>
+    <Field defaultValue={defaultValue} initialValue={hiddenValue} name={name} validate={validate}>
       {({ input, meta }) => {
         const handleChange = onChange
           ? (e) => {
@@ -173,7 +194,7 @@ export const RFFCFormInput = ({
 }
 RFFCFormInput.propTypes = {
   ...sharedPropTypes,
-  type: PropTypes.oneOf(['color', 'file', 'text', 'password']),
+  type: PropTypes.oneOf(['color', 'file', 'text', 'password', 'number']),
   placeholder: PropTypes.string,
 }
 
@@ -237,6 +258,7 @@ export const RFFCFormRadio = ({
   className = 'mb-3',
   validate,
   disabled = false,
+  onClick,
 }) => {
   return (
     <Field name={name} type="radio" value={value} validate={validate}>
@@ -250,6 +272,7 @@ export const RFFCFormRadio = ({
             type="radio"
             name={name}
             label={label}
+            onClick={onClick}
           />
           <RFFCFormFeedback meta={meta} />
         </div>
@@ -393,6 +416,7 @@ export const RFFSelectSearch = ({
   disabled = false,
   retainInput = true,
   isLoading = false,
+  allowCreate = false,
   refreshFunction,
   props,
 }) => {
@@ -421,19 +445,30 @@ export const RFFSelectSearch = ({
   return (
     <Field name={name} validate={validate}>
       {({ meta, input }) => {
+        const handleChange = onChange
+          ? (e) => {
+              input.onChange(e)
+              onChange(e)
+            }
+          : input.onChange
         return (
           <div>
             <CFormLabel htmlFor={name}>
               {label}
               {refreshFunction && (
                 <CTooltip content="Refresh" placement="right">
-                  <CButton onClick={refreshFunction} variant="ghost" className="ms-1" size="sm">
+                  <CButton
+                    onClick={refreshFunction}
+                    variant="ghost"
+                    className="ms-1 py-0 border-0"
+                    size="sm"
+                  >
                     <FontAwesomeIcon icon="sync" />
                   </CButton>
                 </CTooltip>
               )}
             </CFormLabel>
-            {onChange && (
+            {!allowCreate && onChange && (
               <Select
                 className="react-select-container"
                 classNamePrefix="react-select"
@@ -445,15 +480,52 @@ export const RFFSelectSearch = ({
                 options={selectSearchvalues}
                 placeholder={placeholder}
                 isMulti={multi}
-                onChange={onChange}
+                onChange={handleChange}
                 onInputChange={debounceOnInputChange}
                 inputValue={inputText}
                 isLoading={isLoading}
                 {...props}
               />
             )}
-            {!onChange && (
+            {!allowCreate && !onChange && (
               <Select
+                className="react-select-container"
+                classNamePrefix="react-select"
+                {...input}
+                isClearable={true}
+                name={name}
+                id={name}
+                disabled={disabled}
+                options={selectSearchvalues}
+                placeholder={placeholder}
+                onInputChange={setOnInputChange}
+                isMulti={multi}
+                inputValue={inputText}
+                isLoading={isLoading}
+                {...props}
+              />
+            )}
+            {allowCreate && onChange && (
+              <Creatable
+                className="react-select-container"
+                classNamePrefix="react-select"
+                {...input}
+                isClearable={false}
+                name={name}
+                id={name}
+                disabled={disabled}
+                options={selectSearchvalues}
+                placeholder={placeholder}
+                isMulti={multi}
+                onChange={handleChange}
+                onInputChange={debounceOnInputChange}
+                inputValue={inputText}
+                isLoading={isLoading}
+                {...props}
+              />
+            )}
+            {allowCreate && !onChange && (
+              <Creatable
                 className="react-select-container"
                 classNamePrefix="react-select"
                 {...input}
