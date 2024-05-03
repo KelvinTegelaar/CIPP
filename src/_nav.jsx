@@ -723,8 +723,8 @@ const _nav = [
         component: CNavItem,
         name: 'Room Lists',
         to: '/rooms/management/room-lists',
-      }
-    ]
+      },
+    ],
   },
   {
     component: CNavGroup,
