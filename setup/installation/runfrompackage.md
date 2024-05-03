@@ -12,11 +12,9 @@ Hosted clients get set to Run From Package mode automatically.
 If you choose to sponsor and use the CyberDrain hosted version, you can skip this step.
 {% endhint %}
 
+In the CIPP Application
 
-
-
-
-1. Go to Settings -> Backend
+1. Go to CIPP -> Application Settings -> TAB Backend
 2. Click on "Function app Configuration"
 3. Click on "New Application Setting"
 4. Add an application setting with the name "WEBSITE\_RUN\_FROM\_PACKAGE" and the value "1"
