@@ -787,6 +787,12 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "name": "Add Tenant Allow/Block List",
+    "path": "/email/administration/add-tenant-allow-block-list",
+    "component": "views/email-exchange/administration/AddTenantAllowBlockList",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "name": "Email Reports",
     "path": "/email/reports",
     "allowedRoles": ["admin", "editor", "readonly"]

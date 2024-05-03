@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom'
 import { CippPageList } from 'src/components/layout'
 import { CellTip } from 'src/components/tables'
+import { TitleButton } from 'src/components/buttons'
 
 const AllowBlockList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -82,6 +83,7 @@ const AllowBlockList = () => {
 
   return (
     <CippPageList
+      titleButton={<TitleButton href="/email/administration/add-tenant-allow-block-list" title="New entry" />}
       title="Tenant Allow/Block Lists"
       datatable={{
         columns,
