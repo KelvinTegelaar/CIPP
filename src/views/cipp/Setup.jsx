@@ -7,6 +7,7 @@ import { CippWizard } from 'src/components/layout'
 import PropTypes from 'prop-types'
 import { Condition, RFFCFormInput, RFFCFormRadio } from 'src/components/forms'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import { Link } from 'react-router-dom'
 
 function useInterval(callback, delay, state) {
   const savedCallback = useRef()
@@ -220,6 +221,13 @@ const Setup = () => {
                 </>
               )}
             </CCol>
+            {getResults.data?.step === 5 && (
+              <CCallout color="success">
+                <FontAwesomeIcon icon={faCheck} color="success" />
+                Setup complete. We suggest running a Permissions Check in our{' '}
+                <Link to="/cipp/settings">Application Settings</Link> page.
+              </CCallout>
+            )}
           </CRow>
         </Condition>
         <Condition when="SetupType" is="ExistingSAM">
