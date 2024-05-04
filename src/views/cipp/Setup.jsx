@@ -86,10 +86,9 @@ const Setup = () => {
 
   const stepsDetails = [
     { id: 1, text: 'Step 1 - First Login' },
-    { id: 2, text: 'Step 2 - Creating Application' },
-    { id: 3, text: 'Step 3 - Application Approval' },
-    { id: 4, text: 'Step 4 - Receiving Token' },
-    { id: 5, text: 'Step 5 - Finishing Setup' },
+    { id: 2, text: 'Step 2 - Creating Application & Approving Application' },
+    { id: 3, text: 'Step 3 - Receiving Token' },
+    { id: 4, text: 'Step 4 - Finishing Setup' },
   ]
   const RenderSteps = ({ currentStep = 0 }) => (
     <>
@@ -221,7 +220,7 @@ const Setup = () => {
                 </>
               )}
             </CCol>
-            {getResults.data?.step === 5 && (
+            {getResults.data?.step === 4 && (
               <CCallout color="success">
                 <FontAwesomeIcon icon={faCheck} color="success" />
                 Setup complete. We suggest running a Permissions Check in our{' '}
