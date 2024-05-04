@@ -92,11 +92,12 @@ const Setup = () => {
   ]
   const RenderSteps = ({ currentStep = 0 }) => (
     <>
-      {stepsDetails.slice(0, currentStep - 1).map((step) => (
-        <div key={step.id}>
-          <FontAwesomeIcon icon={faCheck} /> {step.text} - Completed
-        </div>
-      ))}
+      {currentStep > 0 &&
+        stepsDetails.slice(0, currentStep - 1).map((step) => (
+          <div key={step.id}>
+            <FontAwesomeIcon icon={faCheck} /> {step.text} - Completed
+          </div>
+        ))}
     </>
   )
   return (
