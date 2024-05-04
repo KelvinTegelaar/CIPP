@@ -208,7 +208,7 @@ const Setup = () => {
                   {getResults.data?.step < 5 && getResults.data?.step > 0 && (
                     <CSpinner size="sm"></CSpinner>
                   )}
-                  {getResults.data?.step > 0 && (
+                  {getResults.data?.step > 0 && getResults.data?.step < 5 && (
                     <>
                       Step {getResults.data?.step} - {getResults.data.message}{' '}
                       {getResults.data.url && (
@@ -221,7 +221,7 @@ const Setup = () => {
                 </>
               )}
             </CCol>
-            {getResults.data?.step === 4 && (
+            {getResults.data?.step === 5 && (
               <CCallout color="success">
                 <FontAwesomeIcon icon={faCheck} color="success" />
                 Setup complete. We suggest running a Permissions Check in our{' '}
