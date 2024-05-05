@@ -101,6 +101,8 @@ import React from 'react'
   "/email/spamfilter/list-spamfilter": React.lazy(() => import('./views/email-exchange/spamfilter/Spamfilter')),
   "/email/spamfilter/deploy": React.lazy(() => import('./views/email-exchange/spamfilter/DeploySpamfilter')),
   "/email/spamfilter/list-templates": React.lazy(() => import('./views/email-exchange/spamfilter/ListSpamfilterTemplates')),
+  "/rooms/management/list-rooms": React.lazy(() => import('./views/rooms/management/ListRooms')),
+  "/rooms/management/room-lists": React.lazy(() => import('./views/rooms/management/ListRoomLists')),
   "/email/tools/mailbox-restore-wizard": React.lazy(() => import('./views/email-exchange/tools/MailboxRestoreWizard')),
   "/email/tools/mailbox-restores": React.lazy(() => import('./views/email-exchange/tools/MailboxRestores')),
   "/email/tools/mail-test": React.lazy(() => import('./views/email-exchange/tools/MailTest')),
