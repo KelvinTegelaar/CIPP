@@ -246,7 +246,7 @@ const Setup = () => {
               <p>
                 {permissionsResult.isFetching && <CSpinner />} Authentication has been received.
                 Checking if all prerequisites are met to connect to your tenants.
-                {checkPermissions()}
+                {permissionsResult.isUninitialized && checkPermissions()}
               </p>
             )}
             <CRow>
