@@ -6,15 +6,21 @@ The invite wizard allows you to create an invite that has the roles you need def
 * Click on GDAP management
 * Click on Role Wizard
 * Select the roles you would like to use in your relationship. To see the minimum roles check out our role documentation [here](https://docs.cipp.app/setup/gdap/recommended-roles)
-  * Selecting the Company Administrator (Global Admin) role is not advised. Relationships will have to be manually added every two years if you do.
+
+{% hint style="warning" %}
+Selecting the Company Administrator (Global Admin) role is not advised. Relationships will have to be manually added every two years if you do.
+{% endhint %}
+
 * After creating the roles use the side menu to click on Invite Wizard
-* Select the roles to include in the invite, and click next, then submit. This generates a unique, per tenant URL. **You have to create a new invite link for each tenant you invite.**
-* Open this URL as the Global Administrator of your client, and accept the invite.
-  * Do this for each tenant you want to have added under your GDAP relationship.
-* Go back to GDAP Management
-* Go to GDAP Relationships
-* Click the button "Map Recently Approved Relationships" which will finish the GDAP setup.
-* Wait 1 hour and perform a Tenant Cache Clear. The Tenant will now be visible inside of CIPP after a refresh of the page.&#x20;
+* Select the roles to include in the invite, and click next, then submit. You will receive two URLS:
+
+## Invite Link
+
+Open this URL as the Global Administrator of your client, and accept the invite.
+
+## Onboarding Link
+
+This link finishes the onboarding process immediately and is only to be used by a CIPP admin. Do not open this link under a client account.
 
 {% hint style="danger" %}
 You must add your CIPP service account user to the groups created in **your** Azure Active Directory after executing the invite wizard for the first time. These groups will be in your Azure Active Directory with the name "M365 GDAP {Role Name}"
