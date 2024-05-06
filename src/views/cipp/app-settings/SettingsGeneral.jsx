@@ -212,10 +212,6 @@ export function SettingsGeneral() {
               <>
                 {permissionsResult.data.Results?.AccessTokenDetails?.Name !== '' && (
                   <>
-                    {console.log(permissionsResult.data.Results)}
-                    {
-                      //create a small table, headers: Name,UserPrinicipalName, AuthMethods
-                    }
                     <CTable>
                       <thead>
                         <tr>
@@ -258,7 +254,7 @@ export function SettingsGeneral() {
                   </CCol>
                   <CCol>
                     <CCallout color="danger">
-                      {permissionsResult.data.Results?.ErrorMessages && (
+                      {permissionsResult.data.Results?.ErrorMessages.length >= 1 && (
                         <>
                           {permissionsResult.data.Results?.ErrorMessages?.map((m, idx) => (
                             <div key={idx}>{m}</div>
