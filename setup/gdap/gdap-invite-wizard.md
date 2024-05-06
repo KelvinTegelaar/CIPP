@@ -8,8 +8,8 @@ The invite wizard allows you to create an invite that has the roles you need def
 * Select the roles you would like to use in your relationship. To see the minimum roles check out our role documentation [here](https://docs.cipp.app/setup/gdap/recommended-roles)
   * Selecting the Company Administrator (Global Admin) role is not advised. Relationships will have to be manually added every two years if you do.
 * After creating the roles use the side menu to click on Invite Wizard
-* Select the roles to include in the invite, and click next, then submit. This generates a unique, per tenant URL. **You have to create a new invite link for each tenant you invite.**
-* Open this URL as the Global Administrator of your client, and accept the invite.
+* Select the roles to include in the invite, and click next, then submit. This generates a unique, per tenant URL. **You have to create a new invite link (and onboarding link) for each tenant you invite.**
+* Open this URL as the Global Administrator of your client, and accept the invite. (Open a different browser, log in with the Global Admin of the Tenant you want to enroll and then copy/paste/enter the Invite Link and the onboarding link) 
   * Do this for each tenant you want to have added under your GDAP relationship.
 * Go back to GDAP Management
 * Go to GDAP Relationships
