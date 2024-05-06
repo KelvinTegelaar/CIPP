@@ -250,28 +250,32 @@ const Setup = () => {
               </p>
             )}
             <CRow>
-              <CCol>
-                <CCallout color="success">
-                  {permissionsResult.data.Results?.Messages && (
-                    <>
-                      {permissionsResult.data.Results?.Messages?.map((m, idx) => (
-                        <div key={idx}>{m}</div>
-                      ))}
-                    </>
-                  )}
-                </CCallout>
-              </CCol>
-              <CCol>
-                <CCallout color="danger">
-                  {permissionsResult.data.Results?.ErrorMessages && (
-                    <>
-                      {permissionsResult.data.Results?.ErrorMessages?.map((m, idx) => (
-                        <div key={idx}>{m}</div>
-                      ))}
-                    </>
-                  )}
-                </CCallout>
-              </CCol>
+              {permissionsResult.data?.Results && (
+                <>
+                  <CCol>
+                    <CCallout color="success">
+                      {permissionsResult.data.Results?.Messages && (
+                        <>
+                          {permissionsResult.data.Results?.Messages?.map((m, idx) => (
+                            <div key={idx}>{m}</div>
+                          ))}
+                        </>
+                      )}
+                    </CCallout>
+                  </CCol>
+                  <CCol>
+                    <CCallout color="danger">
+                      {permissionsResult.data.Results?.ErrorMessages && (
+                        <>
+                          {permissionsResult.data.Results?.ErrorMessages?.map((m, idx) => (
+                            <div key={idx}>{m}</div>
+                          ))}
+                        </>
+                      )}
+                    </CCallout>
+                  </CCol>
+                </>
+              )}
             </CRow>
           </CRow>
         </Condition>
