@@ -20,6 +20,7 @@ import {
   CListGroup,
   CListGroupItem,
   CRow,
+  CTable,
 } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
@@ -29,6 +30,7 @@ import { CippTable } from 'src/components/tables/index.js'
 import { TenantSelectorMultiple } from 'src/components/utilities/index.js'
 import { SettingsGeneralRow } from 'src/views/cipp/app-settings/components/SettingsGeneralRow.jsx'
 import CippButtonCard from 'src/components/contentcards/CippButtonCard'
+import { ListGroupContentCard } from 'src/components/contentcards'
 
 /**
  * SettingsGeneral component.
@@ -139,72 +141,6 @@ export function SettingsGeneral() {
     checkAccess({ tenantDomains: AllTenantSelector })
   }
 
-  function getTokenOffcanvasProps({ tokenResults }) {
-    let tokenDetails = tokenResults.AccessTokenDetails
-    let helpLinks = tokenResults.Links
-    let tokenOffcanvasGroups = []
-    if (tokenDetails?.Name !== '') {
-      let tokenItems = []
-      let tokenOffcanvasGroup = {}
-      tokenItems.push({
-        heading: 'User',
-        content: tokenDetails?.Name,
-      })
-      tokenItems.push({
-        heading: 'UPN',
-        content: tokenDetails?.UserPrincipalName,
-      })
-      tokenItems.push({
-        heading: 'App Registration',
-        content: (
-          <CLink
-            href={`https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/Overview/appId/${tokenDetails?.AppId}/isMSAApp/`}
-            target="_blank"
-          >
-            {tokenDetails?.AppName}
-          </CLink>
-        ),
-      })
-      tokenItems.push({
-        heading: 'IP Address',
-        content: tokenDetails?.IPAddress,
-      })
-      tokenItems.push({
-        heading: 'Auth Methods',
-        content: tokenDetails?.AuthMethods.join(', '),
-      })
-      tokenItems.push({
-        heading: 'Tenant ID',
-        content: tokenDetails?.TenantId,
-      })
-      tokenOffcanvasGroup.items = tokenItems
-      tokenOffcanvasGroup.title = 'Claims'
-      tokenOffcanvasGroups.push(tokenOffcanvasGroup)
-    }
-
-    if (helpLinks.length > 0) {
-      let linkItems = []
-      let linkItemGroup = {}
-      helpLinks.map((link, idx) =>
-        linkItems.push({
-          heading: '',
-          content: (
-            <CLink href={link.Href} target="_blank" key={idx}>
-              {link.Text}
-            </CLink>
-          ),
-        }),
-      )
-      linkItemGroup.title = 'Help Links'
-      linkItemGroup.items = linkItems
-      if (linkItemGroup.items.length > 0) {
-        tokenOffcanvasGroups.push(linkItemGroup)
-      }
-    }
-
-    return tokenOffcanvasGroups
-  }
-
   const tableProps = {
     pagination: false,
     actions: [
@@ -276,18 +212,36 @@ export function SettingsGeneral() {
               <>
                 {permissionsResult.data.Results?.AccessTokenDetails?.Name !== '' && (
                   <>
-                    <CButton className="mb-3" onClick={() => setTokenOffcanvasVisible(true)}>
-                      Details
-                    </CButton>
-                    <CippListOffcanvas
-                      title="Details"
-                      placement="end"
-                      visible={tokenOffcanvasVisible}
-                      groups={getTokenOffcanvasProps({
-                        tokenResults: permissionsResult.data.Results,
-                      })}
-                      hideFunction={() => setTokenOffcanvasVisible(false)}
-                    />
+                    {console.log(permissionsResult.data.Results)}
+                    {
+                      //create a small table, headers: Name,UserPrinicipalName, AuthMethods
+                    }
+                    <CTable>
+                      <thead>
+                        <tr>
+                          <th>Authentication User</th>
+                          <th>Authentication IP</th>
+                          <th>Application</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>
+                            {permissionsResult.data.Results?.AccessTokenDetails?.UserPrincipalName}
+                          </td>
+                          <td>{permissionsResult.data.Results?.AccessTokenDetails?.IPAddress}</td>
+                          <td>
+                            <a
+                              target="_blank"
+                              href={`https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/Overview/appId/${permissionsResult.data.Results?.AccessTokenDetails?.AppId}/isMSAApp/`}
+                              rel="noreferrer"
+                            >
+                              Link
+                            </a>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </CTable>
                   </>
                 )}
                 <CRow>
