@@ -244,11 +244,35 @@ const Setup = () => {
             </CCol>
             {getResults.data?.step === 5 && (
               <p>
-                {permissionsResult.isFetching && <CSpinner />} Authentication setup has been
-                finished. We are now checking your access to your tenants.
+                {permissionsResult.isFetching && <CSpinner />} Authentication has been received.
+                Checking if all prerequisites are met to connect to your tenants.
                 {checkPermissions()}
               </p>
             )}
+            <CRow>
+              <CCol>
+                <CCallout color="success">
+                  {permissionsResult.data.Results?.Messages && (
+                    <>
+                      {permissionsResult.data.Results?.Messages?.map((m, idx) => (
+                        <div key={idx}>{m}</div>
+                      ))}
+                    </>
+                  )}
+                </CCallout>
+              </CCol>
+              <CCol>
+                <CCallout color="danger">
+                  {permissionsResult.data.Results?.ErrorMessages && (
+                    <>
+                      {permissionsResult.data.Results?.ErrorMessages?.map((m, idx) => (
+                        <div key={idx}>{m}</div>
+                      ))}
+                    </>
+                  )}
+                </CCallout>
+              </CCol>
+            </CRow>
           </CRow>
         </Condition>
         <Condition when="SetupType" is="ExistingSAM">
