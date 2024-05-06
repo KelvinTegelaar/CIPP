@@ -264,15 +264,13 @@ const Setup = () => {
                     </CCallout>
                   </CCol>
                   <CCol>
-                    <CCallout color="danger">
-                      {permissionsResult.data.Results?.ErrorMessages?.length >= 1 && (
-                        <>
-                          {permissionsResult.data.Results?.ErrorMessages?.map((m, idx) => (
-                            <div key={idx}>{m}</div>
-                          ))}
-                        </>
-                      )}
-                    </CCallout>
+                    {permissionsResult.data.Results?.ErrorMessages?.length >= 1 && (
+                      <CCallout color="danger">
+                        {permissionsResult.data.Results?.ErrorMessages?.map((m, idx) => (
+                          <div key={idx}>{m}</div>
+                        ))}
+                      </CCallout>
+                    )}
                   </CCol>
                 </>
               )}

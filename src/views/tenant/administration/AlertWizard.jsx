@@ -61,7 +61,10 @@ const AlertWizard = () => {
         <>
           <CRow className="mb-3">
             <CCol md={2}>
-              <CippPrettyCard title="Audit Log Alert" titleType="big" percentage={10} />
+              <CippButtonCard title="Audit Log Alert">
+                Select this option if you'd like to create an alert based on a received Microsoft
+                Audit log.
+              </CippButtonCard>
             </CCol>
             <CCol md={2}>
               <CippPrettyCard title="CIPP Alert" titleType="big" percentage={10} />
