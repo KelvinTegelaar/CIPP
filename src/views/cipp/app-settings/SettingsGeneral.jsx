@@ -254,7 +254,7 @@ export function SettingsGeneral() {
                   </CCol>
                   <CCol>
                     <CCallout color="danger">
-                      {permissionsResult.data.Results?.ErrorMessages.length >= 1 && (
+                      {permissionsResult.data.Results?.ErrorMessages?.length >= 1 && (
                         <>
                           {permissionsResult.data.Results?.ErrorMessages?.map((m, idx) => (
                             <div key={idx}>{m}</div>
