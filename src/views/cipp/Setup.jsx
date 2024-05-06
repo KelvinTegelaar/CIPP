@@ -6,7 +6,11 @@ import { faCheck, faExclamationTriangle } from '@fortawesome/free-solid-svg-icon
 import { CippWizard } from 'src/components/layout'
 import PropTypes from 'prop-types'
 import { Condition, RFFCFormInput, RFFCFormRadio } from 'src/components/forms'
-import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import {
+  useLazyExecPermissionsAccessCheckQuery,
+  useLazyGenericGetRequestQuery,
+  useLazyGenericPostRequestQuery,
+} from 'src/store/api/app'
 import { Link } from 'react-router-dom'
 
 function useInterval(callback, delay, state) {
@@ -50,6 +54,7 @@ Error.propTypes = {
 }
 
 const Setup = () => {
+  const [checkPermissions, permissionsResult] = useLazyExecPermissionsAccessCheckQuery()
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const [genericGetRequest, getResults] = useLazyGenericGetRequestQuery()
   const onSubmit = (values) => {
@@ -88,7 +93,7 @@ const Setup = () => {
     { id: 1, text: 'Step 1 - First Login' },
     { id: 2, text: 'Step 2 - Creating Application & Approving Application' },
     { id: 3, text: 'Step 3 - Receiving Token' },
-    { id: 4, text: 'Step 4 - Finishing Setup' },
+    { id: 4, text: 'Step 4 - Finishing Authentication Setup' },
   ]
   const RenderSteps = ({ currentStep = 0 }) => (
     <>
@@ -159,8 +164,8 @@ const Setup = () => {
           <CRow className="mb-3">
             <CCol md={6} className="mb-3">
               Click the buttons below to refresh your token.
-              <br /> Remember to login under a account that has been added to the correct GDAP
-              groups and the group 'AdminAgents'.
+              <br /> Remember to login under a service account that has been added to the correct
+              GDAP groups and the group 'AdminAgents'.
               <br />
             </CCol>
             {getResults.isUninitialized && genericGetRequest({ path: 'api/ExecListAppId' })}
@@ -184,8 +189,24 @@ const Setup = () => {
         <Condition when="SetupType" is="CreateSAM">
           <CRow>
             <p>
-              Click the button below to start the setup wizard, remember to check the SAM Wizard
-              documentation before starting the wizard.
+              Click the button below to start the setup wizard. You will need the following
+              prerequisites:
+              <li>
+                A CIPP Service Account. For more information on how to create a service account
+                click{' '}
+                <a
+                  href="https://docs.cipp.app/setup/installation/samwizard"
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  here
+                </a>
+              </li>
+              <li>(Temporary) Global Administrator permissions for the CIPP Service Account</li>
+              <li>
+                Multi-factor authentication enabled for the CIPP Service Account, with no trusted
+                locations or other exclusions.
+              </li>
             </p>
             <CCol md={12}>
               <Field
@@ -222,11 +243,11 @@ const Setup = () => {
               )}
             </CCol>
             {getResults.data?.step === 5 && (
-              <CCallout color="success">
-                <FontAwesomeIcon icon={faCheck} color="success" />
-                Setup complete. We suggest running a Permissions Check in our{' '}
-                <Link to="/cipp/settings">Application Settings</Link> page.
-              </CCallout>
+              <p>
+                {permissionsResult.isFetching && <CSpinner />} Authentication setup has been
+                finished. We are now checking your access to your tenants.
+                {checkPermissions()}
+              </p>
             )}
           </CRow>
         </Condition>
