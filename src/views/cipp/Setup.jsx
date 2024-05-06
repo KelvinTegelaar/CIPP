@@ -216,7 +216,7 @@ const Setup = () => {
                 type="button"
                 onClick={() => startCIPPSetup(true)}
               >
-                Start Setup Wizard
+                {getResults.isFetching && <CSpinner size="sm" />} Start Setup Wizard
               </Field>
             </CCol>
             <hr className="my-4" />
@@ -246,7 +246,7 @@ const Setup = () => {
               <p>
                 {permissionsResult.isFetching && <CSpinner />} Authentication has been received.
                 Checking if all prerequisites are met to connect to your tenants.
-                {permissionsResult.isUninitialized && checkPermissions()}
+                {getResults.data?.step === 5 && checkPermissions()}
               </p>
             )}
             <CRow>
