@@ -67,7 +67,9 @@ const AlertWizard = () => {
               </CippButtonCard>
             </CCol>
             <CCol md={2}>
-              <CippPrettyCard title="CIPP Alert" titleType="big" percentage={10} />
+              <CippButtonCard title="Scripted CIPP Alert">
+                Select this option if you'd like to setup an alert based on data processed by CIPP
+              </CippButtonCard>
             </CCol>
           </CRow>
           <CRow className="mb-3">
