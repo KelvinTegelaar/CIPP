@@ -1,0 +1,80 @@
+{
+  "Common": [
+    {
+      "Id": "Combination GUID",
+      "RecordType": "AuditLogRecordType",
+      "CreationTime": "Edm.Date",
+      "Operation": "Edm.String",
+      "OrganizationId": "Edm.Guid",
+      "UserType": "UserType",
+      "UserKey": "Edm.String",
+      "Workload": "Edm.String",
+      "ResultStatus": "Edm.String",
+      "ObjectId": "Edm.String",
+      "UserId": "Edm.String",
+      "ClientIP": "Edm.String",
+      "Scope": "AuditLogScope",
+      "AppAccessContext": ["AppAccessContext"],
+      "IPDetectedbyCIPP": "Edm.String",
+      "Username": "Edm.String",
+      "CippGeoLocation": "Edm.String"
+    }
+  ],
+  "Exchange": [
+    {
+      "Id": "Combination GUID",
+      "RecordType": "AuditLogRecordType",
+      "CreationTime": "Edm.Date",
+      "Operation": "Edm.String",
+      "OrganizationId": "Edm.Guid",
+      "UserType": "UserType",
+      "UserKey": "Edm.String",
+      "Workload": "Edm.String",
+      "ResultStatus": "Edm.String",
+      "ObjectId": "Edm.String",
+      "UserId": "Edm.String",
+      "ClientIP": "Edm.String",
+      "Scope": "AuditLogScope",
+      "AppAccessContext": ["AppAccessContext"],
+      "ModifiedObjectResolvedName": "Edm.String",
+      "Parameters": ["Common.NameValuePair"],
+      "ModifiedProperties": ["Common.ModifiedProperty"],
+      "ExternalAccess": "Edm.Boolean",
+      "OriginatingServer": "Edm.String",
+      "OrganizationName": "Edm.String",
+      "LogonType": "LogonType",
+      "InternalLogonType": "LogonType",
+      "MailboxGuid": "Edm.String",
+      "MailboxOwnerUPN": "Edm.String",
+      "MailboxOwnerSid": "Edm.String",
+      "MailboxOwnerMasterAccountSid": "Edm.String",
+      "LogonUserSid": "Edm.String",
+      "LogonUserDisplayName": "Edm.String",
+      "ClientInfoString": "Edm.String",
+      "ClientIPAddress": "Edm.String",
+      "ClientMachineName": "Edm.String",
+      "ClientProcessName": "Edm.String",
+      "ClientVersion": "Edm.String"
+    }
+  ],
+  "AzureAD": [
+    {
+      "AzureActiveDirectoryEventType": "AzureActiveDirectoryEventType",
+      "ExtendedProperties": ["Common.NameValuePair"],
+      "ModifiedProperties": ["Common.ModifiedProperty"],
+      "Actor": ["IdentityTypeValuePair"],
+      "ActorContextId": "Edm.String",
+      "ActorIpAddress": "Edm.String",
+      "InterSystemsId": "Edm.String",
+      "IntraSystemsId": "Edm.String",
+      "SupportTicketId": "Edm.String",
+      "Target": ["IdentityTypeValuePair"],
+      "TargetContextId": "Edm.String",
+      "ApplicationId": "Edm.String",
+      "Client": "Edm.String",
+      "DeviceProperties": ["Common.NameValuePair"],
+      "ErrorCode": "Edm.String",
+      "LogonError": "Edm.String"
+    }
+  ]
+}
