@@ -191,7 +191,7 @@ const AlertWizard = () => {
             <>
               <CRow className="mb-3">
                 <CCol md={8}>
-                  <CippButtonCard title="Tenant Selector" titleType="big" percentage={10}>
+                  <CippButtonCard title="Tenant Selector" titleType="big">
                     Select the tenants you want to include in this Alert.
                     <TenantSelectorMultiple />
                   </CippButtonCard>
@@ -202,10 +202,18 @@ const AlertWizard = () => {
                 initialValues={{ ...initialValues }}
                 render={({ handleSubmit, submitting, values }) => {
                   return (
-                    <CForm id="alertForm" onSubmit={handleSubmit}>
+                    <CForm id="auditAlertForm" onSubmit={handleSubmit}>
                       <CRow className="mb-3">
                         <CCol md={8}>
-                          <CippButtonCard title="Alert Criteria" titleType="big" percentage={10}>
+                          <CippButtonCard
+                            title="Alert Criteria"
+                            titleType="big"
+                            CardButton={
+                              <CButton type="submit" form="auditAlertForm">
+                                Save Alert
+                              </CButton>
+                            }
+                          >
                             <CRow className="mb-3">
                               <CCol>
                                 <RFFSelectSearch
@@ -337,7 +345,7 @@ const AlertWizard = () => {
             <>
               <CRow className="mb-3">
                 <CCol md={8}>
-                  <CippButtonCard title="Tenant Selector" titleType="big" percentage={10}>
+                  <CippButtonCard title="Tenant Selector" titleType="big">
                     <p className="mb-3">Select the tenants you want to include in this Alert.</p>
                     <TenantSelectorMultiple />
                   </CippButtonCard>
@@ -350,7 +358,7 @@ const AlertWizard = () => {
                     titleType="big"
                     CardButton={
                       <CButton type="submit" form="alertForm">
-                        Add Schedule
+                        Save Alert
                         {postResults.isFetching && (
                           <FontAwesomeIcon icon={faCircleNotch} spin className="ms-2" size="1x" />
                         )}
