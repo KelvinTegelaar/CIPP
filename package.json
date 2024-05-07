@@ -1,6 +1,6 @@
 {
   "name": "cipp",
-  "version": "5.6.1",
+  "version": "5.6.2",
   "description": "The CyberDrain Improved Partner Portal is a portal to help manage administration for Microsoft Partners.",
   "homepage": "https://cipp.app/",
   "bugs": {
@@ -64,6 +64,7 @@
     "react": "^18.2.0",
     "react-app-polyfill": "^2.0.0",
     "react-bootstrap": "^1.6.5",
+    "react-circular-progressbar": "^2.1.0",
     "react-copy-to-clipboard": "^5.1.0",
     "react-data-table-component": "^7.4.5",
     "react-datepicker": "^4.10.0",

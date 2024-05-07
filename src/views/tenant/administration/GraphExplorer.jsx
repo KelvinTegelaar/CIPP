@@ -75,7 +75,38 @@ const GraphExplorer = () => {
   }, [])
 
   if (graphrequest.isSuccess) {
-    if (graphrequest.data?.Results?.length > 0) {
+    if (
+      graphrequest.data?.Metadata?.Parameters?.$select !== undefined &&
+      graphrequest.data?.Metadata?.Parameters?.$select !== '' &&
+      graphrequest.data?.Metadata?.Parameters?.$select !== null
+    ) {
+      //set columns
+      if (graphrequest.data?.Metadata?.TenantFilter === 'AllTenants') {
+        QueryColumns.data.push({
+          name: 'Tenant',
+          selector: (row) => row['Tenant'],
+          sortable: true,
+          exportSelector: 'Tenant',
+          cell: cellGenericFormatter(),
+        })
+        QueryColumns.data.push({
+          name: 'CippStatus',
+          selector: (row) => row['CippStatus'],
+          sortable: true,
+          exportSelector: 'CippStatus',
+          cell: cellGenericFormatter(),
+        })
+      }
+      graphrequest.data?.Metadata?.Parameters?.$select.split(',')?.map((value) =>
+        QueryColumns.data.push({
+          name: value,
+          selector: (row) => row[`${value.toString()}`],
+          sortable: true,
+          exportSelector: value,
+          cell: cellGenericFormatter(),
+        }),
+      )
+    } else if (graphrequest.data?.Results?.length > 0) {
       //set columns
       Object.keys(graphrequest.data?.Results[0]).map((value) =>
         QueryColumns.data.push({
@@ -121,7 +152,7 @@ const GraphExplorer = () => {
     {
       name: 'All users with email addresses',
       id: '6164e239-0c9a-4a27-9049-6250bf65a3e3',
-      params: { endpoint: '/users', $select: 'userprincipalname,mail,proxyAddresses', $filter: '' },
+      params: { endpoint: '/users', $select: 'userPrincipalName,mail,proxyAddresses', $filter: '' },
       isBuiltin: true,
     },
     {
@@ -247,6 +278,9 @@ const GraphExplorer = () => {
       var select = ''
       if (params?.$select) {
         select = params.$select.map((p) => p.value).join(',')
+      }
+      if (params?.name) {
+        params.QueueNameOverride = 'Graph Explorer - ' + params.name
       }
       execGraphRequest({
         path: 'api/ListGraphRequest',
@@ -505,6 +539,13 @@ const GraphExplorer = () => {
                               label="Reverse Tenant Lookup"
                             />
                             <WhenFieldChanges field="reportTemplate" set="ReverseTenantLookup" />
+                            <RFFCFormInput
+                              type="text"
+                              name="$format"
+                              label="Format"
+                              placeholder="Optional format to return (e.g. application/json)"
+                            />
+                            <WhenFieldChanges field="reportTemplate" set="$format" />
                           </CCol>
                           <CCol>
                             <RFFCFormInput

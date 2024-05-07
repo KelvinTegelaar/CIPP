@@ -20,20 +20,24 @@ export default function cellTable(
     columnProp = column
   }
 
-  if (!Array.isArray(columnProp) && typeof columnProp === 'object') {
-    columnProp = Object.keys(columnProp).map((key) => {
-      return {
-        Key: key,
-        Value: columnProp[key],
-      }
-    })
+  if (columnProp === undefined || columnProp === null) {
+    columnProp = []
   } else {
-    if (Array.isArray(columnProp) && typeof columnProp[0] !== 'object') {
-      columnProp = columnProp.map((row) => {
+    if (!Array.isArray(columnProp) && typeof columnProp === 'object') {
+      columnProp = Object.keys(columnProp).map((key) => {
         return {
-          Value: row,
+          Key: key,
+          Value: columnProp[key],
         }
       })
+    } else {
+      if (Array.isArray(columnProp) && typeof columnProp[0] !== 'object') {
+        columnProp = columnProp.map((row) => {
+          return {
+            Value: row,
+          }
+        })
+      }
     }
   }
 
