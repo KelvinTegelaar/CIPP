@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import {
+  CBadge,
   CButton,
   CCallout,
   CCard,
@@ -20,6 +21,7 @@ import { TenantSelector, TenantSelectorMultiple } from 'src/components/utilities
 import {
   Condition,
   RFFCFormInput,
+  RFFCFormRadio,
   RFFCFormSwitch,
   RFFSelectSearch,
 } from 'src/components/forms/RFFComponents'
@@ -29,6 +31,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import CippButtonCard from 'src/components/contentcards/CippButtonCard'
 import alertList from 'src/data/alerts.json'
+import auditLogSchema from 'src/data/AuditLogSchema.json'
 
 const AlertWizard = () => {
   const dispatch = useDispatch()
@@ -135,6 +138,32 @@ const AlertWizard = () => {
     },
   ]
 
+  const getAuditLogSchema = (logbook) => {
+    const common = auditLogSchema.Common
+    const log = auditLogSchema[logbook]
+    const combined = { ...common, ...log }
+    return Object.keys(combined).map((key) => ({
+      name: key,
+      value: combined[key],
+    }))
+  }
+  const [addedEvent, setAddedEvent] = React.useState(1)
+
+  const getAuditLogSchemaList = (objectName, logbook) => {
+    //get auditLogSchema[logbook][objectName]. return the following object { type: {objectnames value}, data: {if there is a auditLogSchema[logbook][objectnames value], else null} }
+    console.log(objectName)
+    console.log(logbook)
+    const common = auditLogSchema.Common
+    const log = auditLogSchema[logbook]
+    const combined = { ...common, ...log }
+    const object = combined[objectName]
+    if (object) {
+      console.log(object)
+      return { type: object, data: auditLogSchema[logbook][object] }
+    }
+    return { type: 'string', data: null }
+  }
+
   return (
     <CippPage title="Tenant Details" tenantSelector={false}>
       {!queryError && (
@@ -161,7 +190,7 @@ const AlertWizard = () => {
           {alertType === 'audit' && (
             <>
               <CRow className="mb-3">
-                <CCol md={6}>
+                <CCol md={8}>
                   <CippButtonCard title="Tenant Selector" titleType="big" percentage={10}>
                     Select the tenants you want to include in this Alert.
                     <TenantSelectorMultiple />
@@ -175,7 +204,7 @@ const AlertWizard = () => {
                   return (
                     <CForm id="alertForm" onSubmit={handleSubmit}>
                       <CRow className="mb-3">
-                        <CCol md={6}>
+                        <CCol md={8}>
                           <CippButtonCard title="Alert Criteria" titleType="big" percentage={10}>
                             <CRow className="mb-3">
                               <CCol>
@@ -200,42 +229,99 @@ const AlertWizard = () => {
                                 />
                               </CCol>
                             </CRow>
-                            <CRow className="mb-3">
-                              <CCol>
-                                <RFFSelectSearch
-                                  values={[
-                                    { value: 'Exchange', name: 'Prop1' },
-                                    { value: 'SharePoint', name: 'Prop2' },
-                                    { value: 'Azure', name: 'Prop3' },
-                                  ]}
-                                  name="property"
-                                  placeholder={'Select a property to alert on'}
-                                  label="When property"
-                                />
-                              </CCol>
-                              <CCol>
-                                <RFFSelectSearch
-                                  values={[
-                                    { value: 'eq', name: 'Equals' },
-                                    { value: 'like', name: 'Like' },
-                                    { value: 'ne', name: 'Not Equals' },
-                                    { value: 'notmatch', name: 'Does not match' },
-                                    { value: 'gt', name: 'Greater than' },
-                                    { value: 'lt', name: 'Less than' },
-                                    { value: 'in', name: 'In' },
-                                    { value: 'notIn', name: 'Not In' },
-                                  ]}
-                                  name="Operator"
-                                  placeholder={'Select a command'}
-                                  label="Operator"
-                                />
-                              </CCol>
-                              <CCol>
-                                <RFFCFormInput
-                                  name="Input"
-                                  placeholder={'Select a command'}
-                                  label="Input"
-                                />
+                            {addedEvent > 0 &&
+                              [...Array(addedEvent)].map((e, i) => (
+                                <CRow key={i} className="mb-3">
+                                  <CRow>
+                                    <CCol className="mb-3">
+                                      <CBadge color="info">AND</CBadge>
+                                    </CCol>
+                                  </CRow>
+                                  <CCol>
+                                    <FormSpy>
+                                      {(props) => {
+                                        return (
+                                          <RFFSelectSearch
+                                            values={getAuditLogSchema(props.values?.logbook?.value)}
+                                            name={`conditions.${i}.property`}
+                                            placeholder={'Select a property to alert on'}
+                                            label="When property"
+                                          />
+                                        )
+                                      }}
+                                    </FormSpy>
+                                  </CCol>
+                                  <CCol>
+                                    <RFFSelectSearch
+                                      values={[
+                                        { value: 'eq', name: 'Equals' },
+                                        { value: 'like', name: 'Like' },
+                                        { value: 'ne', name: 'Not Equals' },
+                                        { value: 'notmatch', name: 'Does not match' },
+                                        { value: 'gt', name: 'Greater than' },
+                                        { value: 'lt', name: 'Less than' },
+                                        { value: 'in', name: 'In' },
+                                        { value: 'notIn', name: 'Not In' },
+                                      ]}
+                                      name={`conditions.${i}.Operator`}
+                                      placeholder={'Select a command'}
+                                      label="is"
+                                    />
+                                  </CCol>
+                                  <CCol>
+                                    <FormSpy>
+                                      {(props) => {
+                                        return (
+                                          <>
+                                            {props.values?.conditions?.[i]?.property?.value ===
+                                              'String' && (
+                                              <RFFCFormInput
+                                                name={`conditions.${i}.Input`}
+                                                placeholder={'Select a command'}
+                                                label={`Input`}
+                                              />
+                                            )}
+                                            {props.values?.conditions?.[
+                                              i
+                                            ]?.property?.value.startsWith('List:') && (
+                                              <RFFSelectSearch
+                                                values={
+                                                  auditLogSchema[
+                                                    props.values?.conditions?.[i]?.property?.value
+                                                  ]
+                                                }
+                                                name={`conditions.${i}.Input`}
+                                                placeholder={'Select an input from the list'}
+                                                label="Input"
+                                              />
+                                            )}
+                                          </>
+                                        )
+                                      }}
+                                    </FormSpy>
+                                  </CCol>
+                                </CRow>
+                              ))}
+                            <CRow>
+                              <CCol className="mb-3" md={12}>
+                                {addedEvent > 0 && (
+                                  <CButton
+                                    onClick={() => setAddedEvent(addedEvent - 1)}
+                                    className={`circular-button`}
+                                    title={'-'}
+                                  >
+                                    <FontAwesomeIcon icon={'minus'} />
+                                  </CButton>
+                                )}
+                                {addedEvent < 4 && (
+                                  <CButton
+                                    onClick={() => setAddedEvent(addedEvent + 1)}
+                                    className={`circular-button`}
+                                    title={'+'}
+                                  >
+                                    <FontAwesomeIcon icon={'plus'} />
+                                  </CButton>
+                                )}
                               </CCol>
                             </CRow>
                           </CippButtonCard>
@@ -250,7 +336,7 @@ const AlertWizard = () => {
           {alertType === 'script' && (
             <>
               <CRow className="mb-3">
-                <CCol md={6}>
+                <CCol md={8}>
                   <CippButtonCard title="Tenant Selector" titleType="big" percentage={10}>
                     <p className="mb-3">Select the tenants you want to include in this Alert.</p>
                     <TenantSelectorMultiple />
@@ -258,7 +344,7 @@ const AlertWizard = () => {
                 </CCol>
               </CRow>
               <CRow className="mb-3">
-                <CCol md={6}>
+                <CCol md={8}>
                   <CippButtonCard
                     title="Alert Criteria"
                     titleType="big"
