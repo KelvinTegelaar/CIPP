@@ -1,7 +1,6 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { CButton, CCard, CCardBody, CCardFooter, CCardHeader, CCardTitle } from '@coreui/react'
-import Skeleton from 'react-loading-skeleton'
+import { CButton, CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
 import { CChart } from '@coreui/react-chartjs'
 import { getStyle } from '@coreui/utils'
 import PropTypes from 'prop-types'
@@ -21,20 +20,24 @@ export default function CippChartCard({
       <CCardHeader>
         <CCardTitle>
           {titleType === 'big' ? <h3 className="underline mb-3">{title}</h3> : title}
-          {refreshFunction && (
+          {refreshFunction ? (
             <CButton
               className="position-absolute top-0 end-0 mt-2 me-2"
               variant="ghost"
               onClick={refreshFunction}
+              disabled={isFetching}
             >
-              <FontAwesomeIcon icon="sync" />
+              <FontAwesomeIcon icon="sync" spin={isFetching} />
+            </CButton>
+          ) : (
+            <CButton className="position-absolute top-0 end-0 mt-2 me-2" variant="ghost" disabled>
+              <FontAwesomeIcon icon="sync" spin={isFetching} />
             </CButton>
           )}
         </CCardTitle>
       </CCardHeader>
       <CCardBody>
-        {isFetching && <Skeleton />}
-        {!isFetching && (
+        {ChartData && (
           <CChart
             type={ChartType}
             data={{

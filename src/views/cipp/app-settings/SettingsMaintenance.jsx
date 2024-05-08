@@ -26,14 +26,21 @@ export function SettingsMaintenance() {
 
   const [resetDurables, resetDurableStatus] = useLazyGenericGetRequestQuery()
 
-  const handleResetDurables = () => {
+  const handleResetDurables = (action) => {
+    var actionText = ''
+    if (action === 'ResetDurables') {
+      actionText = 'clear Durable Queues? This will stop all queued functions from executing.'
+    } else if (action === 'PurgeOrchestrators') {
+      actionText =
+        'purge Orchestrator Instances and History? This will also remove the largemessages blob container.'
+    }
     ModalService.confirm({
-      title: 'Confirm',
-      body: <div>Are you sure you want to reset all Durable Orchestrators?</div>,
+      title: 'Danger Zone',
+      body: <div>Are you sure you want to {actionText}</div>,
       onConfirm: () =>
         resetDurables({
           path: '/api/ExecDurableFunctions',
-          params: { Action: 'ResetDurables' },
+          params: { Action: action },
         }).then(() => {
           orchestrators.refetch()
           durableStats.refetch()
@@ -44,9 +51,24 @@ export function SettingsMaintenance() {
   }
 
   const ResetButton = (
-    <CButton onClick={handleResetDurables} color="danger">
-      <FontAwesomeIcon icon="trash" /> Reset Durables
-    </CButton>
+    <>
+      <CButton
+        size="sm"
+        onClick={() => handleResetDurables('ResetDurables')}
+        color="danger"
+        className="me-2"
+      >
+        <FontAwesomeIcon icon="eraser" /> Clear Durable Queues
+      </CButton>
+      <CButton
+        size="sm"
+        onClick={() => handleResetDurables('PurgeOrchestrators')}
+        color="danger"
+        className="me-2"
+      >
+        <FontAwesomeIcon icon="trash" /> Purge Orchestrators
+      </CButton>
+    </>
   )
 
   return (
@@ -54,7 +76,7 @@ export function SettingsMaintenance() {
       <CRow className="mb-3">
         <CCol sm={12} md={5} className="mh-25">
           <CippChartCard
-            title="Durable Functions"
+            title="Durable Queues"
             titleType="big"
             ChartType="bar"
             ChartLabels={durableStats.data?.Queues?.map((queue) => {
@@ -63,7 +85,7 @@ export function SettingsMaintenance() {
             ChartData={durableStats.data?.Queues?.map((queue) => {
               return queue?.ApproximateMessageCount
             })}
-            isFetching={durableStats.isLoading}
+            isFetching={durableStats.isFetching}
             refreshFunction={() => durableStats.refetch()}
           />
         </CCol>
@@ -78,7 +100,7 @@ export function SettingsMaintenance() {
             ChartData={durableStats?.data?.Orchestrators?.map((status) => {
               return status.Count
             })}
-            isFetching={durableStats.isLoading}
+            isFetching={durableStats.isFetching}
             refreshFunction={() => durableStats.refetch()}
           />
         </CCol>

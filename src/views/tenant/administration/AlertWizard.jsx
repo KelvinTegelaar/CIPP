@@ -31,7 +31,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import CippButtonCard from 'src/components/contentcards/CippButtonCard'
 import alertList from 'src/data/alerts.json'
-import auditLogSchema from 'src/data/AuditLogSchema.json'
+import auditLogSchema from 'src/data/auditlogschema.json'
 
 const AlertWizard = () => {
   const dispatch = useDispatch()
