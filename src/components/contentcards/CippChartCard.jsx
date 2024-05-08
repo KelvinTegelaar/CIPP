@@ -1,7 +1,6 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { CButton, CCard, CCardBody, CCardFooter, CCardHeader, CCardTitle } from '@coreui/react'
-import Skeleton from 'react-loading-skeleton'
+import { CButton, CCard, CCardBody, CCardHeader, CCardTitle } from '@coreui/react'
 import { CChart } from '@coreui/react-chartjs'
 import { getStyle } from '@coreui/utils'
 import PropTypes from 'prop-types'
