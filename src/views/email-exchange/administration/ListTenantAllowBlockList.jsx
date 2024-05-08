@@ -95,11 +95,11 @@ const columns = [
     cell: (row) => CellTip(row['ExpirationDate']),
     exportSelector: 'ExpirationDate',
   },
-  {
+  /*{
     name: 'Actions',
     cell: Actions,
     maxWidth: '80px',
-  },
+  },*/
 ]
 
 const AllowBlockList = () => {
