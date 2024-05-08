@@ -4,7 +4,7 @@ env:
   # Required, URL to upstream (fork base)
   UPSTREAM_URL: "https://github.com/KelvinTegelaar/CIPP.git"
   # Required, token to authenticate bot, we use a PAT instead to authenticate workflow file changes.
-  WORKFLOW_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   # Optional, defaults to main
   UPSTREAM_BRANCH: "main"
   # Optional, defaults to UPSTREAM_BRANCH
@@ -16,17 +16,17 @@ env:
   # Optional push arguments
   PUSH_ARGS: ""
   # Optional toggle to spawn time logs (keeps action active) 
-  SPAWN_LOGS: "true" # "true" or "false"
+  SPAWN_LOGS: "false" # "true" or "false"
 
 # This runs every day at 03:49
 on:
   schedule:
     - cron: '49 3 * * *'
-  # Allows manual workflow run (must in default branch to work)
+  # Allows manual workflow run (must be in default branch to work)
   workflow_dispatch:
 
 jobs:
-  build:
+  sync-repo:
     runs-on: ubuntu-latest
     steps:
       - name: Sync the upstream from Kelvin
@@ -35,7 +35,7 @@ jobs:
           upstream_repo: ${{ env.UPSTREAM_URL }}
           upstream_branch: ${{ env.UPSTREAM_BRANCH }}
           downstream_branch: ${{ env.DOWNSTREAM_BRANCH }}
-          token: ${{ env.WORKFLOW_TOKEN }}
+          token: ${{ env.GITHUB_TOKEN }}
           fetch_args: ${{ env.FETCH_ARGS }}
           merge_args: ${{ env.MERGE_ARGS }}
           push_args: ${{ env.PUSH_ARGS }}
