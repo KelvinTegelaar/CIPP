@@ -26,8 +26,9 @@ export default function CippChartCard({
               className="position-absolute top-0 end-0 mt-2 me-2"
               variant="ghost"
               onClick={refreshFunction}
+              disabled={isFetching}
             >
-              <FontAwesomeIcon icon="sync" />
+              <FontAwesomeIcon icon="sync" spin={isFetching} />
             </CButton>
           ) : (
             <CButton className="position-absolute top-0 end-0 mt-2 me-2" variant="ghost" disabled>
@@ -37,7 +38,7 @@ export default function CippChartCard({
         </CCardTitle>
       </CCardHeader>
       <CCardBody>
-        {ChartData.length > 0 && (
+        {ChartData && (
           <CChart
             type={ChartType}
             data={{
