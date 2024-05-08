@@ -614,7 +614,7 @@ export default function CippTable({
             className="m-1"
             size="sm"
           >
-            <FontAwesomeIcon icon={faSync} />
+            <FontAwesomeIcon icon={faSync} spin={isFetching} />
           </CButton>
         </CTooltip>,
       ])
