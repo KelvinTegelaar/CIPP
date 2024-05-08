@@ -7,7 +7,7 @@ import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 import { CippCallout, CippContentCard } from 'src/components/layout'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import CippButtonCard from 'src/components/contentcards/CippButtonCard'
-import { ModalService } from 'src/components/utilities'
+import { CippActionsOffcanvas, ModalService } from 'src/components/utilities'
 
 /**
  * Performs maintenance operations on settings.
@@ -48,6 +48,54 @@ export function SettingsMaintenance() {
       confirmLabel: 'Reset',
       cancelLabel: 'Cancel',
     })
+  }
+
+  const Actions = (row, rowIndex, formatExtraData) => {
+    const [ocVisible, setOCVisible] = useState(false)
+    const [getOrchestratorHistory, orchestratorHistory] = useLazyGenericGetRequestQuery()
+
+    function loadOffCanvasDetails(id) {
+      setOCVisible(true)
+      getOrchestratorHistory({
+        path: 'api/ExecDurableFunctions',
+        params: { Action: 'ListOrchestratorHistory', PartitionKey: id },
+      })
+    }
+    var actions = [
+      {
+        label: 'View History',
+        color: 'info',
+        modal: true,
+        modalType: 'table',
+        modalBody: orchestratorHistory?.data?.Results ? orchestratorHistory?.data?.Results : '',
+      },
+      {
+        label: 'Purge Orchestrator',
+        color: 'danger',
+        modal: true,
+        icon: <FontAwesomeIcon icon="trash" className="me-2" />,
+        modalUrl: `/api/ExecDurableFunctions?Action=PurgeOrchestrators&PartitionKey=${row.PartitionKey}`,
+        modalMessage:
+          'Are you sure you want to purge this orchestrator instance and related history?',
+      },
+    ]
+
+    return (
+      <>
+        <CButton size="sm" color="link" onClick={() => loadOffCanvasDetails(row.PartitionKey)}>
+          <FontAwesomeIcon icon="ellipsis-v" />
+        </CButton>
+        <CippActionsOffcanvas
+          title={'History - ' + row?.PartitionKey}
+          actions={actions}
+          extendedInfo={[]}
+          placement="end"
+          visible={ocVisible}
+          id={row.id}
+          hideFunction={() => setOCVisible(false)}
+        />
+      </>
+    )
   }
 
   const ResetButton = (
@@ -127,35 +175,58 @@ export function SettingsMaintenance() {
           <CippContentCard title="Orchestrators" titleType="big">
             <CippTable
               data={orchestrators?.data?.Orchestrators}
+              tableProps={{
+                selectableRows: true,
+                actionsList: [
+                  {
+                    label: 'Purge Orchestrator',
+                    color: 'danger',
+                    modal: true,
+                    icon: <FontAwesomeIcon icon="trash" className="me-2" />,
+                    modalUrl: `/api/ExecDurableFunctions?Action=PurgeOrchestrators&PartitionKey=!PartitionKey`,
+                    modalMessage:
+                      'Are you sure you want to purge the selected orchestrator instances and related history?',
+                  },
+                ],
+              }}
               columns={[
                 {
                   name: 'Created',
                   selector: (row) => row['CreatedTime'],
                   sortable: true,
+                  exportSelector: 'CreatedTime',
                   cell: cellDateFormatter({ format: 'short' }),
                 },
                 {
                   name: 'Completed',
                   selector: (row) => row?.CompletedTime,
                   sortable: true,
+                  exportSelector: 'CompletedTime',
                   cell: cellDateFormatter({ format: 'short' }),
                 },
                 {
                   name: 'Name',
                   selector: (row) => row['Name'],
                   sortable: true,
+                  exportSelector: 'Name',
                   cell: cellGenericFormatter(),
                 },
                 {
                   name: 'Status',
                   selector: (row) => row['RuntimeStatus'],
                   sortable: true,
+                  exportSelector: 'RuntimeStatus',
                   cell: cellGenericFormatter(),
                 },
                 {
                   name: 'Input',
                   selector: (row) => row['Input'],
                   cell: cellGenericFormatter(),
+                },
+                {
+                  name: 'Actions',
+                  cell: Actions,
+                  maxWidth: '100px',
                 },
               ]}
               filterlist={[
