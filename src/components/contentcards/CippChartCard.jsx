@@ -21,7 +21,7 @@ export default function CippChartCard({
       <CCardHeader>
         <CCardTitle>
           {titleType === 'big' ? <h3 className="underline mb-3">{title}</h3> : title}
-          {refreshFunction && (
+          {refreshFunction ? (
             <CButton
               className="position-absolute top-0 end-0 mt-2 me-2"
               variant="ghost"
@@ -29,12 +29,15 @@ export default function CippChartCard({
             >
               <FontAwesomeIcon icon="sync" />
             </CButton>
+          ) : (
+            <CButton className="position-absolute top-0 end-0 mt-2 me-2" variant="ghost" disabled>
+              <FontAwesomeIcon icon="sync" spin={isFetching} />
+            </CButton>
           )}
         </CCardTitle>
       </CCardHeader>
       <CCardBody>
-        {isFetching && <Skeleton />}
-        {!isFetching && (
+        {ChartData.length > 0 && (
           <CChart
             type={ChartType}
             data={{

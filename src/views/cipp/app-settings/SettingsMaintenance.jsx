@@ -63,7 +63,7 @@ export function SettingsMaintenance() {
             ChartData={durableStats.data?.Queues?.map((queue) => {
               return queue?.ApproximateMessageCount
             })}
-            isFetching={durableStats.isLoading}
+            isFetching={durableStats.isFetching}
             refreshFunction={() => durableStats.refetch()}
           />
         </CCol>
@@ -78,7 +78,7 @@ export function SettingsMaintenance() {
             ChartData={durableStats?.data?.Orchestrators?.map((status) => {
               return status.Count
             })}
-            isFetching={durableStats.isLoading}
+            isFetching={durableStats.isFetching}
             refreshFunction={() => durableStats.refetch()}
           />
         </CCol>
