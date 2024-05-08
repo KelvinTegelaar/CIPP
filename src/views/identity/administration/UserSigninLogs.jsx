@@ -129,6 +129,7 @@ export default function UserSigninLogs({ userId, tenantDomain, className = null 
       name: 'Date (Local)',
       selector: (row) => FixDate(row['Date']),
       exportSelector: 'Date',
+      sortable: true,
       minWidth: '145px',
       cell: cellDateFormatter(),
     },
@@ -138,6 +139,7 @@ export default function UserSigninLogs({ userId, tenantDomain, className = null 
       exportSelector: 'Application',
       cell: (row) => CellTip(row['Application']),
       minWidth: '230px',
+      sortable: true,
     },
     {
       name: 'Login Status',
@@ -145,58 +147,75 @@ export default function UserSigninLogs({ userId, tenantDomain, className = null 
       exportSelector: 'LoginStatus',
       cell: (row) => CellTip(ConvertErrorCode(row)),
       minWidth: '230px',
+      sortable: true,
     },
     {
       name: 'Conditional Access Status',
       selector: (row) => row['ConditionalAccessStatus'],
       exportSelector: 'ConditionalAccessStatus',
+      sortable: true,
     },
     {
       name: 'Overall Login Status',
       selector: (row) => row['OverallLoginStatus'],
+      sortable: true,
+
       exportSelector: 'OverallLoginStatus',
     },
     {
       name: 'IP Address',
       selector: (row) => row['IPAddress'],
+      sortable: true,
+
       exportSelector: 'IPAddress',
     },
     {
       name: 'Town',
       selector: (row) => row['Town'],
+      sortable: true,
+
       exportSelector: 'Town',
       cell: (row) => CellTip(row['Town']),
     },
     {
       name: 'State',
       selector: (row) => row['State'],
+      sortable: true,
+
       exportSelector: 'State',
       cell: (row) => CellTip(row['State']),
     },
     {
       name: 'Country',
       selector: (row) => row['Country'],
+      sortable: true,
+
       exportSelector: 'Country',
     },
     {
       name: 'Device',
       selector: (row) => row['Device'],
       exportSelector: 'Device',
+      sortable: true,
     },
     {
       name: 'Device Compliant',
       selector: (row) => row['DeviceCompliant'],
       cell: cellBooleanFormatter(),
       exportSelector: 'DeviceCompliant',
+      sortable: true,
     },
     {
       name: 'OS',
       selector: (row) => row['OS'],
+      sortable: true,
+
       exportSelector: 'OS',
     },
     {
       name: 'Browser',
       selector: (row) => row['Browser'],
+      sortable: true,
       exportSelector: 'Browser',
       cell: (row) => CellTip(row['Browser']),
     },
