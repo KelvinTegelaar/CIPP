@@ -117,6 +117,7 @@ import React from 'react'
   "/email/administration/mailbox-rules": React.lazy(() => import('./views/email-exchange/administration/MailboxRuleList')),
   "/email/administration/Quarantine": React.lazy(() => import('./views/email-exchange/administration/QuarantineList')),
   "/email/administration/tenant-allow-block-lists": React.lazy(() => import('./views/email-exchange/administration/ListTenantAllowBlockList')),
+  "/email/administration/add-tenant-allow-block-list": React.lazy(() => import('./views/email-exchange/administration/AddTenantAllowBlockList')),
   "/email/reports/mailbox-statistics": React.lazy(() => import('./views/email-exchange/reports/MailboxStatisticsList')),
   "/email/reports/SharedMailboxEnabledAccount": React.lazy(() => import('./views/email-exchange/reports/SharedMailboxEnabledAccount')),
   "/email/reports/mailbox-cas-settings": React.lazy(() => import('./views/email-exchange/reports/MailboxClientAccessSettingsList')),
