@@ -1,7 +1,7 @@
 import React from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { CCard, CCardBody, CCardFooter, CCardHeader, CCardTitle } from '@coreui/react'
 import Skeleton from 'react-loading-skeleton'
+import PropTypes from 'prop-types'
 
 export default function CippButtonCard({
   title,
@@ -24,4 +24,12 @@ export default function CippButtonCard({
       <CCardFooter>{CardButton}</CCardFooter>
     </CCard>
   )
+}
+
+CippButtonCard.propTypes = {
+  title: PropTypes.string.isRequired,
+  titleType: PropTypes.string,
+  CardButton: PropTypes.element.isRequired,
+  children: PropTypes.element.isRequired,
+  isFetching: PropTypes.bool.isRequired,
 }
