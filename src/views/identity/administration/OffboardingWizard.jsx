@@ -133,7 +133,6 @@ const OffboardingWizard = () => {
             {/* eslint-disable react/prop-types */}
             {(props) => (
               <>
-                {console.log(props.values)}
                 {props.values.User?.length >= 3 && (
                   <CCallout color="warning">A maximum of three users is recommend.</CCallout>
                 )}
