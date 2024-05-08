@@ -14,7 +14,7 @@ import {
   CWidgetStatsA,
 } from '@coreui/react'
 import useQuery from 'src/hooks/useQuery'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Field, Form, FormSpy } from 'react-final-form'
 import { CippPage } from 'src/components/layout'
 import { TenantSelector, TenantSelectorMultiple } from 'src/components/utilities'
@@ -31,12 +31,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import CippButtonCard from 'src/components/contentcards/CippButtonCard'
 import alertList from 'src/data/alerts.json'
-import auditLogSchema from 'src/data/auditlogschema.json'
+import auditLogSchema from 'src/data/AuditLogSchema.json'
 
 const AlertWizard = () => {
   const dispatch = useDispatch()
   let query = useQuery()
-  const tenantDomain = query.get('tenantFilter')
+  const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
   const customerId = query.get('customerId')
   const [queryError, setQueryError] = useState(false)
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
@@ -48,15 +48,27 @@ const AlertWizard = () => {
     isSuccess,
   } = useListTenantQuery(tenantDomain, customerId)
 
-  const onSubmit = (values) => {
+  const onSubmitScript = (values) => {
+    const startDate = new Date()
+    const unixTime = Math.floor(startDate.getTime() / 1000)
     const shippedValues = {
-      tenantid: tenantDomain,
-      displayName: values.displayName,
-      defaultDomainName: values.defaultDomainName,
-      customerId: customerId,
+      TenantFilter: tenantDomain,
+      Name: `${values.command.label} for ${tenantDomain}`,
+      Command: { value: `Get-CIPPAlert${values.command.value.name}` },
+      Parameters: { input: values.input },
+      ScheduledTime: unixTime,
+      Recurrence: values.Recurrence,
+      PostExecution: {
+        Webhook: values.webhook,
+        Email: values.email,
+        PSA: values.psa,
+      },
     }
-    genericPostRequest({ path: '/api/AlertWizard', values: shippedValues })
+    genericPostRequest({ path: '/api/AddScheduledItem?hidden=true', values: shippedValues }).then(
+      (res) => {},
+    )
   }
+
   const initialValues = {
     ...tenant[0],
   }
@@ -149,21 +161,6 @@ const AlertWizard = () => {
   }
   const [addedEvent, setAddedEvent] = React.useState(1)
 
-  const getAuditLogSchemaList = (objectName, logbook) => {
-    //get auditLogSchema[logbook][objectName]. return the following object { type: {objectnames value}, data: {if there is a auditLogSchema[logbook][objectnames value], else null} }
-    console.log(objectName)
-    console.log(logbook)
-    const common = auditLogSchema.Common
-    const log = auditLogSchema[logbook]
-    const combined = { ...common, ...log }
-    const object = combined[objectName]
-    if (object) {
-      console.log(object)
-      return { type: object, data: auditLogSchema[logbook][object] }
-    }
-    return { type: 'string', data: null }
-  }
-
   return (
     <CippPage title="Tenant Details" tenantSelector={false}>
       {!queryError && (
@@ -191,21 +188,29 @@ const AlertWizard = () => {
             <>
               <CRow className="mb-3">
                 <CCol md={8}>
-                  <CippButtonCard title="Tenant Selector" titleType="big" percentage={10}>
+                  <CippButtonCard title="Tenant Selector" titleType="big">
                     Select the tenants you want to include in this Alert.
                     <TenantSelectorMultiple />
                   </CippButtonCard>
                 </CCol>
               </CRow>
               <Form
-                onSubmit={onSubmit}
+                onSubmit={onSubmitScript}
                 initialValues={{ ...initialValues }}
                 render={({ handleSubmit, submitting, values }) => {
                   return (
-                    <CForm id="alertForm" onSubmit={handleSubmit}>
+                    <CForm id="auditAlertForm" onSubmit={handleSubmit}>
                       <CRow className="mb-3">
                         <CCol md={8}>
-                          <CippButtonCard title="Alert Criteria" titleType="big" percentage={10}>
+                          <CippButtonCard
+                            title="Alert Criteria"
+                            titleType="big"
+                            CardButton={
+                              <CButton type="submit" form="auditAlertForm">
+                                Save Alert
+                              </CButton>
+                            }
+                          >
                             <CRow className="mb-3">
                               <CCol>
                                 <RFFSelectSearch
@@ -337,9 +342,9 @@ const AlertWizard = () => {
             <>
               <CRow className="mb-3">
                 <CCol md={8}>
-                  <CippButtonCard title="Tenant Selector" titleType="big" percentage={10}>
+                  <CippButtonCard title="Tenant Selector" titleType="big">
                     <p className="mb-3">Select the tenants you want to include in this Alert.</p>
-                    <TenantSelectorMultiple />
+                    <TenantSelector />
                   </CippButtonCard>
                 </CCol>
               </CRow>
@@ -350,7 +355,7 @@ const AlertWizard = () => {
                     titleType="big"
                     CardButton={
                       <CButton type="submit" form="alertForm">
-                        Add Schedule
+                        Save Alert
                         {postResults.isFetching && (
                           <FontAwesomeIcon icon={faCircleNotch} spin className="ms-2" size="1x" />
                         )}
@@ -358,7 +363,7 @@ const AlertWizard = () => {
                     }
                   >
                     <Form
-                      onSubmit={onSubmit}
+                      onSubmit={onSubmitScript}
                       initialValues={{ ...initialValues }}
                       render={({ handleSubmit, submitting, values }) => {
                         return (
@@ -384,7 +389,7 @@ const AlertWizard = () => {
                                       return (
                                         <RFFCFormInput
                                           type="text"
-                                          name={props.values.command.value.inputName}
+                                          name="input"
                                           label={props.values.command.value.inputLabel}
                                           placeholder="Enter a value"
                                         />
