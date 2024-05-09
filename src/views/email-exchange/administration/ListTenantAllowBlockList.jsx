@@ -107,7 +107,9 @@ const AllowBlockList = () => {
 
   return (
     <CippPageList
-      titleButton={<TitleButton href="/email/administration/add-tenant-allow-block-list" title="New Entry" />}
+      titleButton={
+        <TitleButton href="/email/administration/add-tenant-allow-block-list" title="New Entry" />
+      }
       title="Tenant Allow/Block Lists"
       datatable={{
         keyField: 'id',

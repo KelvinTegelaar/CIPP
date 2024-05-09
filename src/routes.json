@@ -693,13 +693,13 @@
   {
     "path": "/rooms/management/list-rooms",
     "name": "Rooms",
-    "component": "views/rooms/management/ListRooms",
+    "component": "views/email-exchange/rooms/ListRooms",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
     "path": "/rooms/management/room-lists",
     "name": "Room Lists",
-    "component": "views/rooms/management/ListRoomLists",
+    "component": "views/email-exchange/rooms/ListRoomLists",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
