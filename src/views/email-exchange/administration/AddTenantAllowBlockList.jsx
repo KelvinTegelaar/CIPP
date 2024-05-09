@@ -77,16 +77,20 @@ const AddTenantAllowBlockList = () => {
                   </CRow>
                   <CRow>
                     <CCol md={4}>
-                      <RFFCFormSelect name="listMethod" label="Block or Allow Entry" values={[
-                        {
-                          value: 'Block',
-                          label: 'Block',
-                        },
-                        {
-                          value: 'Allow',
-                          label: 'Allow',
-                        },
-                      ]} />
+                      <RFFCFormSelect
+                        name="listMethod"
+                        label="Block or Allow Entry"
+                        values={[
+                          {
+                            value: 'Block',
+                            label: 'Block',
+                          },
+                          {
+                            value: 'Allow',
+                            label: 'Allow',
+                          },
+                        ]}
+                      />
                     </CCol>
                   </CRow>
                   <CRow>
