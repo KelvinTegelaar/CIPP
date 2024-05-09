@@ -80,7 +80,7 @@ const DeployJITAdmin = () => {
                       </p>
                       <CRow className="mb-3">
                         <CCol>
-                          <label>Tenant</label>
+                          <label className="mb-2">Tenant</label>
                           <Field name="tenantFilter">{(props) => <TenantSelector />}</Field>
                         </CCol>
                       </CRow>
@@ -92,11 +92,12 @@ const DeployJITAdmin = () => {
                           <RFFCFormRadioList
                             name="useraction"
                             options={[
-                              { value: 'create', label: 'Create User' },
-                              { value: 'select', label: 'Select User' },
+                              { value: 'create', label: 'New User' },
+                              { value: 'select', label: 'Existing User' },
                             ]}
                             validate={false}
                             inline={true}
+                            className=""
                           />
                         </CCol>
                       </CRow>
@@ -141,7 +142,7 @@ const DeployJITAdmin = () => {
                         <CCol>
                           <label>Scheduled Start Date</label>
                           <DatePicker
-                            className="form-control mb-3"
+                            className="form-control"
                             selected={startDate}
                             showTimeSelect
                             timeFormat="HH:mm"
@@ -153,7 +154,7 @@ const DeployJITAdmin = () => {
                         <CCol>
                           <label>Scheduled End Date</label>
                           <DatePicker
-                            className="form-control mb-3"
+                            className="form-control"
                             selected={endDate}
                             showTimeSelect
                             timeFormat="HH:mm"
@@ -177,7 +178,7 @@ const DeployJITAdmin = () => {
                           />
                         </CCol>
                       </CRow>
-                      <CRow>
+                      <CRow className="mb-3">
                         <CCol md={6}>
                           <CButton type="submit" disabled={submitting}>
                             Add JIT Admin
