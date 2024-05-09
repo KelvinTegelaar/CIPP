@@ -2,7 +2,14 @@ import React, { useState } from 'react'
 import { CButton, CCallout, CCol, CForm, CRow, CSpinner, CTooltip } from '@coreui/react'
 import { useSelector } from 'react-redux'
 import { Field, Form, FormSpy } from 'react-final-form'
-import { Condition, RFFCFormRadio, RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms'
+import {
+  Condition,
+  RFFCFormInput,
+  RFFCFormRadio,
+  RFFCFormRadioList,
+  RFFCFormSwitch,
+  RFFSelectSearch,
+} from 'src/components/forms'
 import {
   useGenericGetRequestQuery,
   useLazyGenericGetRequestQuery,
@@ -82,35 +89,40 @@ const DeployJITAdmin = () => {
                       </CRow>
                       <CRow className="mb-3">
                         <CCol>
-                          <RFFCFormRadio
-                            value="create"
+                          <RFFCFormRadioList
                             name="useraction"
-                            label="Create User"
+                            options={[
+                              { value: 'create', label: 'Create User' },
+                              { value: 'select', label: 'Select User' },
+                            ]}
                             validate={false}
-                          />
-                          <RFFCFormRadio
-                            value="select"
-                            name="useraction"
-                            label="Select User"
-                            validate={false}
+                            inline={true}
                           />
                         </CCol>
                       </CRow>
-                      <CRow className="mb-3">
-                        <CCol>
-                          
-                          <RFFSelectSearch
-                            label={'Users in ' + tenantDomain}
-                            values={users?.map((user) => ({
-                              value: user.id,
-                              name: `${user.displayName} <${user.userPrincipalName}>`,
-                            }))}
-                            placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
-                            name="UserId"
-                            isLoading={usersIsFetching}
-                          />
-                        </CCol>
-                      </CRow>
+                      <Condition when="useraction" is="create">
+                        <CRow className="mb-3">
+                          <CCol>
+                            <RFFCFormInput label="User Principal Name" name="UserPrincipalName" />
+                          </CCol>
+                        </CRow>
+                      </Condition>
+                      <Condition when="useraction" is="select">
+                        <CRow className="mb-3">
+                          <CCol>
+                            <RFFSelectSearch
+                              label={'Users in ' + tenantDomain}
+                              values={users?.map((user) => ({
+                                value: user.id,
+                                name: `${user.displayName} <${user.userPrincipalName}>`,
+                              }))}
+                              placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
+                              name="UserId"
+                              isLoading={usersIsFetching}
+                            />
+                          </CCol>
+                        </CRow>
+                      </Condition>
                       <CRow className="mb-3">
                         <CCol>
                           <RFFSelectSearch
