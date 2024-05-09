@@ -77,6 +77,12 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/identity/administration/users/jit-admin",
+    "name": "JIT Admin",
+    "component": "views/identity/administration/DeployJITAdmin",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/identity/administration/ViewBec",
     "name": "View BEC",
     "component": "views/identity/administration/ViewBEC",
