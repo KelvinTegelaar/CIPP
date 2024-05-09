@@ -39,6 +39,7 @@ import { CippTable, cellBooleanFormatter } from 'src/components/tables'
 import allStandardsList from 'src/data/standards'
 import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
 import GDAPRoles from 'src/data/GDAPRoles'
+import timezoneList from 'src/data/timezoneList'
 import Select from 'react-select'
 import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 
@@ -630,6 +631,17 @@ const ApplyNewStandard = () => {
                                                   values={GDAPRoles.map((role) => ({
                                                     value: role.ObjectId,
                                                     name: role.Name,
+                                                  }))}
+                                                />
+                                              )}
+                                              {component.type === 'TimezoneSelect' && (
+                                                <RFFSelectSearch
+                                                  name={component.name}
+                                                  className="mb-3"
+                                                  label={component.label}
+                                                  values={timezoneList.map((tz) => ({
+                                                    value: tz.timezone,
+                                                    name: tz.timezone,
                                                   }))}
                                                 />
                                               )}
