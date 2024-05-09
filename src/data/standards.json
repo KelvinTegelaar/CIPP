@@ -1266,7 +1266,7 @@
     "helpText": "Sets the default timezone for the tenant. This will be used for all new users and sites.",
     "addedComponent": [
       {
-        "type": "input",
+        "type": "TimezoneSelect",
         "name": "standards.TenantDefaultTimezone.Timezone",
         "label": "Timezone"
       }
