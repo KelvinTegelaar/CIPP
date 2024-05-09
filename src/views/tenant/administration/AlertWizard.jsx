@@ -49,8 +49,11 @@ const AlertWizard = () => {
   } = useListTenantQuery(tenantDomain, customerId)
 
   const onSubmitScript = (values) => {
+    //get current time as startDate, to the closest 15 minutes in the future
     const startDate = new Date()
-    const unixTime = Math.floor(startDate.getTime() / 1000)
+    startDate.setMinutes(startDate.getMinutes() + 15 - (startDate.getMinutes() % 15))
+    //unix time, minus a couple of seconds to ensure it runs after the current time
+    const unixTime = Math.floor(startDate.getTime() / 1000) - 45
     const shippedValues = {
       TenantFilter: tenantDomain,
       Name: `${values.command.label} for ${tenantDomain}`,
