@@ -288,7 +288,7 @@ const ApplyNewStandard = () => {
     genericPostRequest({
       path: '/api/AddStandardsDeploy',
       values: { ...values.standards, tenant: tenantDomain },
-    })
+    }).then(() => refetchStandards())
   }
   const [intuneGetRequest, intuneTemplates] = useLazyGenericGetRequestQuery()
   const [transportGetRequest, transportTemplates] = useLazyGenericGetRequestQuery()
@@ -376,7 +376,7 @@ const ApplyNewStandard = () => {
               }
               title={`List and edit standard - ${tenantDomain}`}
             >
-              {isFetching && <Skeleton count={20} />}
+              {isFetching && <Skeleton count={1} />}
               {intuneTemplates.isUninitialized &&
                 intuneGetRequest({ path: 'api/ListIntuneTemplates' })}
               {transportTemplates.isUninitialized &&
