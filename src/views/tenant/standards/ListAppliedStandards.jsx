@@ -74,6 +74,9 @@ const ApplyNewStandard = () => {
   const [templateStandard, setTemplateStandard] = useState()
   const [loadedTemplate, setLoadedTemplate] = useState(false)
   const [loadingTemplate, setLoadingTemplate] = useState(false)
+  const [enabledAlertsCount, setEnabledAlertsCount] = useState(0)
+  const [enabledRemediationsCount, setEnabledRemediationsCount] = useState(0)
+  const [enabledWarningsCount, setEnabledWarningsCount] = useState(0)
 
   const { data: listStandardTemplates = [], refetch: refetchStandardsTemplates } =
     useGenericGetRequestQuery({
@@ -265,6 +268,11 @@ const ApplyNewStandard = () => {
   const { data: listStandardsAllTenants = [] } = useGenericGetRequestQuery({
     path: 'api/listStandards',
   })
+  const { data: consolidatedStandards = [], isSuccess: consolidatedSuccess } =
+    useGenericGetRequestQuery({
+      path: 'api/listStandards',
+      params: { TenantFilter: tenantDomain, ShowConsolidated: true },
+    })
 
   const {
     data: listStandardResults = [],
@@ -305,10 +313,29 @@ const ApplyNewStandard = () => {
     }
     const keys = item.name.split('.')
     let value = keys.reduce((prev, curr) => prev && prev[curr], allTenantsStandard)
-    if (!value || !value[type]) {
+    if (
+      !value ||
+      !value[type] ||
+      listStandardResults[0]?.standards?.OverrideAllTenants?.remediate === true
+    ) {
       return ''
     }
     return `* Enabled via All Tenants`
+  }
+  function isAllTenantEnabled(item, type) {
+    if (!item || !item.name) {
+      return ''
+    }
+    const keys = item.name.split('.')
+    let value = keys.reduce((prev, curr) => prev && prev[curr], allTenantsStandard)
+    if (
+      !value ||
+      !value[type] ||
+      listStandardResults[0]?.standards?.OverrideAllTenants?.remediate === true
+    ) {
+      return false
+    }
+    return true
   }
 
   const groupedStandards = allStandardsList.reduce((acc, obj) => {
@@ -320,25 +347,58 @@ const ApplyNewStandard = () => {
   // Function to count enabled standards
   function countEnabledStandards(standards, type) {
     let count = 0
-    Object.keys(standards).forEach((key) => {
-      const standard = standards[key]
-      // Check if 'Enabled' exists and the specific type is true, for non-v2 standards
-      if (standard?.Enabled && standard?.Enabled[type]) {
-        count++
-      } else if (standard && standard[type]) {
-        // Check if the type exists directly under the standard
-        count++
-      }
-    })
+    if (standards.length > 0) {
+      Object.keys(standards).forEach((standard) => {
+        var setting = standard?.Settings
+        if (setting) {
+          if (type in Object.keys(setting) && setting[type] === true) {
+            count++
+          }
+        }
+      })
+    }
     return count
   }
 
   // Assuming listStandardResults[0] contains your JSON object
-  const enabledStandards = listStandardResults[0] ? listStandardResults[0].standards : {}
-  const enabledAlertsCount = countEnabledStandards(enabledStandards, 'alert')
+  //console.log(consolidatedStandards)
+  const enabledStandards = consolidatedStandards ? consolidatedStandards : []
+  /*const enabledAlertsCount = countEnabledStandards(enabledStandards, 'alert')
   const enabledRemediationsCount = countEnabledStandards(enabledStandards, 'remediate')
-  const enabledWarningsCount = countEnabledStandards(enabledStandards, 'report')
+  const enabledWarningsCount = countEnabledStandards(enabledStandards, 'report') */
   const totalAvailableStandards = allStandardsList.length
+
+  useEffect(() => {
+    if (consolidatedSuccess && consolidatedStandards.length > 0) {
+      var actions = ['alert', 'remediate', 'report']
+      var enabledCounts = {
+        alert: 0,
+        remediate: 0,
+        report: 0,
+      }
+      consolidatedStandards.map((standard) => {
+        console.log(standard.Standard)
+        if (standard?.Settings) {
+          actions.map((action) => {
+            if (standard?.Settings[action] === true) {
+              enabledCounts[action]++
+            }
+          })
+        }
+      })
+      console.log(enabledCounts)
+
+      setEnabledAlertsCount(enabledCounts['alert'])
+      setEnabledRemediationsCount(enabledCounts['remediate'])
+      setEnabledWarningsCount(enabledCounts['report'])
+    }
+  }, [
+    consolidatedStandards,
+    consolidatedSuccess,
+    setEnabledAlertsCount,
+    setEnabledRemediationsCount,
+    setEnabledWarningsCount,
+  ])
 
   return (
     <CippPage title="Standards" tenantSelector={false}>
@@ -385,7 +445,7 @@ const ApplyNewStandard = () => {
                       : 'None'
                   }
                   title={`${enabledWarningsCount} out of ${totalAvailableStandards}`}
-                  value="Enabled Warnings"
+                  value="Enabled Reports"
                 />
               </CCol>
               <CCol md={4}>
@@ -558,7 +618,10 @@ const ApplyNewStandard = () => {
                                         <h5>Report</h5>
                                         <RFFCFormSwitch
                                           name={`${obj.name}.report`}
-                                          disabled={obj.disabledFeatures?.report}
+                                          disabled={
+                                            obj.disabledFeatures?.report ||
+                                            isAllTenantEnabled(obj, 'report')
+                                          }
                                           helpText="Report stores the data in the database to use in custom BPA reports."
                                           sublabel={getLabel(obj, 'report')}
                                         />
@@ -567,7 +630,10 @@ const ApplyNewStandard = () => {
                                         <h5>Alert</h5>
                                         <RFFCFormSwitch
                                           name={`${obj.name}.alert`}
-                                          disabled={obj.disabledFeatures?.warn}
+                                          disabled={
+                                            obj.disabledFeatures?.warn ||
+                                            isAllTenantEnabled(obj, 'alert')
+                                          }
                                           helpText="Alert Generates an alert in the log, if remediate is enabled the log entry will also say if the remediation was successful."
                                           sublabel={getLabel(obj, 'alert')}
                                         />
@@ -576,7 +642,10 @@ const ApplyNewStandard = () => {
                                         <h5>Remediate</h5>
                                         <RFFCFormSwitch
                                           name={`${obj.name}.remediate`}
-                                          disabled={obj.disabledFeatures?.remediate}
+                                          disabled={
+                                            obj.disabledFeatures?.remediate ||
+                                            isAllTenantEnabled(obj, 'remediate')
+                                          }
                                           helpText={'Remediate executes the fix for standard.'}
                                           sublabel={getLabel(obj, 'remediate')}
                                         />
