@@ -12,7 +12,6 @@ import React from 'react'
   "/identity/administration/users/edit": React.lazy(() => import('./views/identity/administration/EditUser')), 
   "/identity/administration/users/view": React.lazy(() => import('./views/identity/administration/ViewUser')), 
   "/identity/administration/users/InviteGuest": React.lazy(() => import('./views/identity/administration/InviteGuest')), 
-  "/identity/administration/users/jit-admin": React.lazy(() => import('./views/identity/administration/DeployJITAdmin')), 
   "/identity/administration/ViewBec": React.lazy(() => import('./views/identity/administration/ViewBEC')), 
   "/identity/administration/users": React.lazy(() => import('./views/identity/administration/Users')), 
   "/identity/administration/devices": React.lazy(() => import('./views/identity/administration/Devices')), 

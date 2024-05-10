@@ -77,11 +77,6 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'JIT Admin',
-        to: '/identity/administration/users/jit-admin',
-      },
-      {
-        component: CNavItem,
         name: 'Offboarding Wizard',
         to: '/identity/administration/offboarding-wizard',
       },
