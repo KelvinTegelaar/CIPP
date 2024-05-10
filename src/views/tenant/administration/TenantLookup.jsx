@@ -122,7 +122,9 @@ const GraphExplorer = () => {
               <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Tenant Name</p>
                 {graphrequest.isFetching && <Skeleton />}
-                {graphrequest.data?.GraphRequest?.displayName}
+                {graphrequest.data?.GraphRequest?.displayName
+                  ? graphrequest.data?.GraphRequest?.displayName
+                  : 'Could not find tenant - Is this a M365 domain name?'}
               </CCol>
               <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Tenant ID</p>
