@@ -307,21 +307,6 @@ const ApplyNewStandard = () => {
     (tenant) => tenant.displayName === 'AllTenants',
   )
 
-  function getLabel(item, type) {
-    if (!item || !item.name) {
-      return ''
-    }
-    const keys = item.name.split('.')
-    let value = keys.reduce((prev, curr) => prev && prev[curr], allTenantsStandard)
-    if (
-      !value ||
-      !value[type] ||
-      listStandardResults[0]?.standards?.OverrideAllTenants?.remediate === true
-    ) {
-      return ''
-    }
-    return `* Enabled via All Tenants`
-  }
   function isAllTenantEnabled(item, type) {
     if (!item || !item.name) {
       return ''
@@ -344,28 +329,6 @@ const ApplyNewStandard = () => {
     return acc
   }, {})
 
-  // Function to count enabled standards
-  function countEnabledStandards(standards, type) {
-    let count = 0
-    if (standards.length > 0) {
-      Object.keys(standards).forEach((standard) => {
-        var setting = standard?.Settings
-        if (setting) {
-          if (type in Object.keys(setting) && setting[type] === true) {
-            count++
-          }
-        }
-      })
-    }
-    return count
-  }
-
-  // Assuming listStandardResults[0] contains your JSON object
-  //console.log(consolidatedStandards)
-  const enabledStandards = consolidatedStandards ? consolidatedStandards : []
-  /*const enabledAlertsCount = countEnabledStandards(enabledStandards, 'alert')
-  const enabledRemediationsCount = countEnabledStandards(enabledStandards, 'remediate')
-  const enabledWarningsCount = countEnabledStandards(enabledStandards, 'report') */
   const totalAvailableStandards = allStandardsList.length
 
   useEffect(() => {
@@ -386,8 +349,6 @@ const ApplyNewStandard = () => {
           })
         }
       })
-      console.log(enabledCounts)
-
       setEnabledAlertsCount(enabledCounts['alert'])
       setEnabledRemediationsCount(enabledCounts['remediate'])
       setEnabledWarningsCount(enabledCounts['report'])
@@ -588,137 +549,181 @@ const ApplyNewStandard = () => {
                                 </CAccordionBody>
                               </CAccordionItem>
                             )}
-                            {Object.keys(groupedStandards).map((cat, catIndex) => (
-                              <CAccordionItem
-                                itemKey={'standard-' + catIndex}
-                                key={`accordion-item-${catIndex}`}
-                              >
-                                <CAccordionHeader>{cat}</CAccordionHeader>
-                                <CAccordionBody>
-                                  {groupedStandards[cat].map((obj, index) => (
-                                    <CRow key={`row-${catIndex}-${index}`} className="mb-3">
-                                      <CCol md={4}>
-                                        <div
-                                          style={{
-                                            display: 'flex',
-                                            flexDirection: 'row',
-                                            justifyContent: 'space-between',
-                                          }}
-                                        >
-                                          <h5>{obj.label}</h5>
-                                          <div>
-                                            <CBadge color={obj.impactColour}>{obj.impact}</CBadge>
-                                          </div>
-                                        </div>
-                                        <p>
-                                          <small>{obj.helpText}</small>
-                                        </p>
-                                      </CCol>
-                                      <CCol>
-                                        <h5>Report</h5>
-                                        <RFFCFormSwitch
-                                          name={`${obj.name}.report`}
-                                          disabled={
-                                            obj.disabledFeatures?.report ||
-                                            isAllTenantEnabled(obj, 'report')
-                                          }
-                                          helpText="Report stores the data in the database to use in custom BPA reports."
-                                          sublabel={getLabel(obj, 'report')}
-                                        />
-                                      </CCol>
-                                      <CCol>
-                                        <h5>Alert</h5>
-                                        <RFFCFormSwitch
-                                          name={`${obj.name}.alert`}
-                                          disabled={
-                                            obj.disabledFeatures?.warn ||
-                                            isAllTenantEnabled(obj, 'alert')
-                                          }
-                                          helpText="Alert Generates an alert in the log, if remediate is enabled the log entry will also say if the remediation was successful."
-                                          sublabel={getLabel(obj, 'alert')}
-                                        />
-                                      </CCol>
-                                      <CCol>
-                                        <h5>Remediate</h5>
-                                        <RFFCFormSwitch
-                                          name={`${obj.name}.remediate`}
-                                          disabled={
-                                            obj.disabledFeatures?.remediate ||
-                                            isAllTenantEnabled(obj, 'remediate')
-                                          }
-                                          helpText={'Remediate executes the fix for standard.'}
-                                          sublabel={getLabel(obj, 'remediate')}
-                                        />
-                                      </CCol>
-                                      <CCol md={3}>
-                                        <h5>Optional Input</h5>
-                                        {obj.addedComponent &&
-                                          obj.addedComponent.map((component) => (
-                                            <>
-                                              {component.type === 'Select' && (
-                                                <RFFCFormSelect
-                                                  placeholder="Select a value"
-                                                  name={component.name}
-                                                  className="mb-3"
-                                                  label={component.label}
-                                                  values={component.values}
-                                                />
-                                              )}
-                                              {component.type === 'input' && (
-                                                <RFFCFormInput
-                                                  type="text"
-                                                  className="mb-3"
-                                                  name={component.name}
-                                                  label={component.label}
-                                                />
-                                              )}
-                                              {component.type === 'number' && (
-                                                <RFFCFormInput
-                                                  type="number"
-                                                  className="mb-3"
-                                                  name={component.name}
-                                                  label={component.label}
-                                                  defaultValue={component.default}
-                                                />
-                                              )}
-                                              {component.type === 'boolean' && (
+                            <FormSpy>
+                              {/* eslint-disable react/prop-types */}
+                              {(props) => {
+                                return (
+                                  <>
+                                    {Object.keys(groupedStandards).map((cat, catIndex) => (
+                                      <CAccordionItem
+                                        itemKey={'standard-' + catIndex}
+                                        key={`accordion-item-${catIndex}`}
+                                      >
+                                        <CAccordionHeader>{cat}</CAccordionHeader>
+                                        <CAccordionBody>
+                                          {groupedStandards[cat].map((obj, index) => (
+                                            <CRow key={`row-${catIndex}-${index}`} className="mb-3">
+                                              <CCol md={4}>
+                                                <div
+                                                  style={{
+                                                    display: 'flex',
+                                                    flexDirection: 'row',
+                                                    justifyContent: 'space-between',
+                                                  }}
+                                                >
+                                                  <h5>{obj.label}</h5>
+                                                  <div>
+                                                    <CBadge color={obj.impactColour}>
+                                                      {obj.impact}
+                                                    </CBadge>
+                                                  </div>
+                                                </div>
+                                                <p>
+                                                  <small>{obj.helpText}</small>
+                                                </p>
+                                              </CCol>
+                                              <CCol>
+                                                <h5>Report</h5>
                                                 <RFFCFormSwitch
-                                                  name={component.name}
-                                                  label={component.label}
-                                                  defaultValue={component.default}
+                                                  name={`${obj.name}.report`}
+                                                  disabled={
+                                                    obj.disabledFeatures?.report ||
+                                                    (isAllTenantEnabled(obj, 'report') &&
+                                                      tenantDomain !== 'AllTenants' &&
+                                                      props.values.standards?.OverrideAllTenants
+                                                        ?.remediate !== true)
+                                                  }
+                                                  helpText="Report stores the data in the database to use in custom BPA reports."
+                                                  sublabel={
+                                                    isAllTenantEnabled(obj, 'report') &&
+                                                    tenantDomain !== 'AllTenants' &&
+                                                    props.values.standards?.OverrideAllTenants
+                                                      ?.remediate !== true
+                                                      ? '* Enabled via All Tenants'
+                                                      : ''
+                                                  }
                                                 />
-                                              )}
-                                              {component.type === 'AdminRolesMultiSelect' && (
-                                                <RFFSelectSearch
-                                                  multi={true}
-                                                  name={component.name}
-                                                  className="mb-3"
-                                                  label={component.label}
-                                                  values={GDAPRoles.map((role) => ({
-                                                    value: role.ObjectId,
-                                                    name: role.Name,
-                                                  }))}
+                                              </CCol>
+                                              <CCol>
+                                                <h5>Alert</h5>
+                                                <RFFCFormSwitch
+                                                  name={`${obj.name}.alert`}
+                                                  disabled={
+                                                    obj.disabledFeatures?.warn ||
+                                                    (isAllTenantEnabled(obj, 'alert') &&
+                                                      tenantDomain !== 'AllTenants' &&
+                                                      props.values.standards?.OverrideAllTenants
+                                                        ?.remediate !== true)
+                                                  }
+                                                  helpText="Alert Generates an alert in the log, if remediate is enabled the log entry will also say if the remediation was successful."
+                                                  sublabel={
+                                                    isAllTenantEnabled(obj, 'alert') &&
+                                                    tenantDomain !== 'AllTenants' &&
+                                                    props.values.standards?.OverrideAllTenants
+                                                      ?.remediate !== true
+                                                      ? '* Enabled via All Tenants'
+                                                      : ''
+                                                  }
                                                 />
-                                              )}
-                                              {component.type === 'TimezoneSelect' && (
-                                                <RFFSelectSearch
-                                                  name={component.name}
-                                                  className="mb-3"
-                                                  label={component.label}
-                                                  values={timezoneList.map((tz) => ({
-                                                    value: tz.timezone,
-                                                    name: tz.timezone,
-                                                  }))}
+                                              </CCol>
+                                              <CCol>
+                                                <h5>Remediate</h5>
+                                                <RFFCFormSwitch
+                                                  name={`${obj.name}.remediate`}
+                                                  disabled={
+                                                    obj.disabledFeatures?.remediate ||
+                                                    (isAllTenantEnabled(obj, 'remediate') &&
+                                                      tenantDomain !== 'AllTenants' &&
+                                                      props.standards?.OverrideAllTenants
+                                                        ?.remediate !== true)
+                                                  }
+                                                  helpText={
+                                                    'Remediate executes the fix for standard.'
+                                                  }
+                                                  sublabel={
+                                                    isAllTenantEnabled(obj, 'remediate') &&
+                                                    tenantDomain !== 'AllTenants' &&
+                                                    props.standards?.OverrideAllTenants
+                                                      ?.remediate !== true
+                                                      ? '* Enabled via All Tenants'
+                                                      : ''
+                                                  }
                                                 />
-                                              )}
-                                            </>
+                                              </CCol>
+                                              <CCol md={3}>
+                                                <h5>Optional Input</h5>
+                                                {obj.addedComponent &&
+                                                  obj.addedComponent.map((component) => (
+                                                    <>
+                                                      {component.type === 'Select' && (
+                                                        <RFFCFormSelect
+                                                          placeholder="Select a value"
+                                                          name={component.name}
+                                                          className="mb-3"
+                                                          label={component.label}
+                                                          values={component.values}
+                                                        />
+                                                      )}
+                                                      {component.type === 'input' && (
+                                                        <RFFCFormInput
+                                                          type="text"
+                                                          className="mb-3"
+                                                          name={component.name}
+                                                          label={component.label}
+                                                        />
+                                                      )}
+                                                      {component.type === 'number' && (
+                                                        <RFFCFormInput
+                                                          type="number"
+                                                          className="mb-3"
+                                                          name={component.name}
+                                                          label={component.label}
+                                                          defaultValue={component.default}
+                                                        />
+                                                      )}
+                                                      {component.type === 'boolean' && (
+                                                        <RFFCFormSwitch
+                                                          name={component.name}
+                                                          label={component.label}
+                                                          defaultValue={component.default}
+                                                        />
+                                                      )}
+                                                      {component.type ===
+                                                        'AdminRolesMultiSelect' && (
+                                                        <RFFSelectSearch
+                                                          multi={true}
+                                                          name={component.name}
+                                                          className="mb-3"
+                                                          label={component.label}
+                                                          values={GDAPRoles.map((role) => ({
+                                                            value: role.ObjectId,
+                                                            name: role.Name,
+                                                          }))}
+                                                        />
+                                                      )}
+                                                      {component.type === 'TimezoneSelect' && (
+                                                        <RFFSelectSearch
+                                                          name={component.name}
+                                                          className="mb-3"
+                                                          label={component.label}
+                                                          values={timezoneList.map((tz) => ({
+                                                            value: tz.timezone,
+                                                            name: tz.timezone,
+                                                          }))}
+                                                        />
+                                                      )}
+                                                    </>
+                                                  ))}
+                                              </CCol>
+                                            </CRow>
                                           ))}
-                                      </CCol>
-                                    </CRow>
-                                  ))}
-                                </CAccordionBody>
-                              </CAccordionItem>
-                            ))}
+                                        </CAccordionBody>
+                                      </CAccordionItem>
+                                    ))}
+                                  </>
+                                )
+                              }}
+                            </FormSpy>
                             <CAccordionItem>
                               <CAccordionHeader>Templates Standard Deployment</CAccordionHeader>
                               <CAccordionBody>
