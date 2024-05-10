@@ -262,7 +262,7 @@ const ApplyNewStandard = () => {
     })
 
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
-  console.log('tenantDomain', tenantDomain)
+  //console.log('tenantDomain', tenantDomain)
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
   const { data: listStandardsAllTenants = [] } = useGenericGetRequestQuery({
@@ -340,7 +340,7 @@ const ApplyNewStandard = () => {
         report: 0,
       }
       consolidatedStandards.map((standard) => {
-        console.log(standard.Standard)
+        //console.log(standard.Standard)
         if (standard?.Settings) {
           actions.map((action) => {
             if (standard?.Settings[action] === true) {
@@ -634,7 +634,7 @@ const ApplyNewStandard = () => {
                                                     obj.disabledFeatures?.remediate ||
                                                     (isAllTenantEnabled(obj, 'remediate') &&
                                                       tenantDomain !== 'AllTenants' &&
-                                                      props.standards?.OverrideAllTenants
+                                                      props.values.standards?.OverrideAllTenants
                                                         ?.remediate !== true)
                                                   }
                                                   helpText={
@@ -643,7 +643,7 @@ const ApplyNewStandard = () => {
                                                   sublabel={
                                                     isAllTenantEnabled(obj, 'remediate') &&
                                                     tenantDomain !== 'AllTenants' &&
-                                                    props.standards?.OverrideAllTenants
+                                                    props.values.standards?.OverrideAllTenants
                                                       ?.remediate !== true
                                                       ? '* Enabled via All Tenants'
                                                       : ''
