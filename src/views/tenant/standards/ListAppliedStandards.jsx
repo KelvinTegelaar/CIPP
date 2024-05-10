@@ -368,6 +368,66 @@ const ApplyNewStandard = () => {
                 {getResults.error.message}
               </CippCallout>
             )}
+            <CRow>
+              <CCol md={4}>
+                <CWidgetStatsB
+                  className="mb-3"
+                  progress={{
+                    color: 'info',
+                    value:
+                      totalAvailableStandards > 0
+                        ? Math.round((enabledWarningsCount / totalAvailableStandards) * 1000) / 10
+                        : 0,
+                  }}
+                  text={
+                    listStandardResults.length > 0 && listStandardResults[0].appliedBy
+                      ? `Created by ${listStandardResults[0].appliedBy}`
+                      : 'None'
+                  }
+                  title={`${enabledWarningsCount} out of ${totalAvailableStandards}`}
+                  value="Enabled Warnings"
+                />
+              </CCol>
+              <CCol md={4}>
+                <CWidgetStatsB
+                  className="mb-3"
+                  progress={{
+                    color: 'info',
+                    value:
+                      totalAvailableStandards > 0
+                        ? Math.round((enabledAlertsCount / totalAvailableStandards) * 1000) / 10
+                        : 0,
+                  }}
+                  text={
+                    listStandardResults.length > 0 && listStandardResults[0].appliedBy
+                      ? `Created by ${listStandardResults[0].appliedBy}`
+                      : 'None'
+                  }
+                  title={`${enabledAlertsCount} out of ${totalAvailableStandards}`}
+                  value="Enabled Alerts"
+                />
+              </CCol>
+              <CCol md={4}>
+                <CWidgetStatsB
+                  className="mb-3"
+                  progress={{
+                    color: 'info',
+                    value:
+                      totalAvailableStandards > 0
+                        ? Math.round((enabledRemediationsCount / totalAvailableStandards) * 1000) /
+                          10
+                        : 0,
+                  }}
+                  text={
+                    listStandardResults.length > 0 && listStandardResults[0].appliedBy
+                      ? `Created by ${listStandardResults[0].appliedBy}`
+                      : 'None'
+                  }
+                  title={`${enabledRemediationsCount} out of ${totalAvailableStandards}`}
+                  value="Enabled Remediations"
+                />
+              </CCol>
+            </CRow>
             <CippContentCard
               button={
                 <>
@@ -400,69 +460,6 @@ const ApplyNewStandard = () => {
                     return (
                       <CForm onSubmit={handleSubmit}>
                         <CRow className="mb-3">
-                          <CCol md={4}>
-                            <CWidgetStatsB
-                              className="mb-3"
-                              progress={{
-                                color: 'info',
-                                value:
-                                  totalAvailableStandards > 0
-                                    ? Math.round(
-                                        (enabledWarningsCount / totalAvailableStandards) * 1000,
-                                      ) / 10
-                                    : 0,
-                              }}
-                              text={
-                                listStandardResults[0].appliedBy
-                                  ? `Created by ${listStandardResults[0].appliedBy}`
-                                  : 'None'
-                              }
-                              title={`${enabledWarningsCount} out of ${totalAvailableStandards}`}
-                              value="Enabled Warnings"
-                            />
-                          </CCol>
-                          <CCol md={4}>
-                            <CWidgetStatsB
-                              className="mb-3"
-                              progress={{
-                                color: 'info',
-                                value:
-                                  totalAvailableStandards > 0
-                                    ? Math.round(
-                                        (enabledAlertsCount / totalAvailableStandards) * 1000,
-                                      ) / 10
-                                    : 0,
-                              }}
-                              text={
-                                listStandardResults[0].appliedBy
-                                  ? `Created by ${listStandardResults[0].appliedBy}`
-                                  : 'None'
-                              }
-                              title={`${enabledAlertsCount} out of ${totalAvailableStandards}`}
-                              value="Enabled Alerts"
-                            />
-                          </CCol>
-                          <CCol md={4}>
-                            <CWidgetStatsB
-                              className="mb-3"
-                              progress={{
-                                color: 'info',
-                                value:
-                                  totalAvailableStandards > 0
-                                    ? Math.round(
-                                        (enabledRemediationsCount / totalAvailableStandards) * 1000,
-                                      ) / 10
-                                    : 0,
-                              }}
-                              text={
-                                listStandardResults[0].appliedBy
-                                  ? `Created by ${listStandardResults[0].appliedBy}`
-                                  : 'None'
-                              }
-                              title={`${enabledRemediationsCount} out of ${totalAvailableStandards}`}
-                              value="Enabled Remediations"
-                            />
-                          </CCol>
                           <CAccordion
                             alwaysOpen
                             activeItemKey={
