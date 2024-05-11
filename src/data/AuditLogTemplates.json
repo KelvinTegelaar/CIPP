@@ -1,0 +1,96 @@
+[
+  {
+    "value": "New-InboxRule",
+    "name": "A new Inbox rule is created",
+    "template": {
+      "logbook": { "value": "Audit.Exchange", "name": "Exchange" },
+      "conditions": [
+        {
+          "property": "Operation",
+          "operator": "eq",
+          "Input": { "value": "new-inboxrule", "name": "created new inbox rule in outlook web app" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "New-InboxRule",
+    "name": "A new Inbox rule is created that forwards e-mails to the RSS feeds folder",
+    "template": []
+  },
+  {
+    "value": "Set-InboxRule",
+    "name": "A existing Inbox rule is edited",
+    "template": []
+  },
+  {
+    "value": "Set-InboxRule",
+    "name": "A existing Inbox rule is edited that forwards e-mails to the RSS feeds folder",
+    "template": []
+  },
+  {
+    "value": "Add member to role.",
+    "name": "A user has been added to an admin role",
+    "template": []
+  },
+  {
+    "value": "Add User.",
+    "name": "A user account was created",
+    "template": []
+  },
+  {
+    "value": "Disable account.",
+    "name": "A user account has been disabled",
+    "template": []
+  },
+  {
+    "value": "Enable account.",
+    "name": "A user account has been enabled",
+    "template": []
+  },
+  {
+    "value": "Update StsRefreshTokenValidFrom Timestamp.",
+    "name": "A user sessions have been revoked",
+    "template": []
+  },
+  {
+    "value": "Disable Strong Authentication.",
+    "name": "A users MFA has been disabled",
+    "template": []
+  },
+  {
+    "value": "Remove Member from a role.",
+    "name": "A user has been removed from a role",
+    "template": []
+  },
+  {
+    "value": "Reset user password.",
+    "name": "A user password has been reset",
+    "template": []
+  },
+  {
+    "value": "UserLoggedInFromUnknownLocation",
+    "name": "A user has logged in from a location not in the allowed locations list",
+    "template": []
+  },
+  {
+    "value": "Add service principal.",
+    "name": "A service principal has been created",
+    "template": []
+  },
+  {
+    "value": "Remove service principal.",
+    "name": "A service principal has been removed",
+    "template": []
+  },
+  {
+    "value": "badRepIP",
+    "name": "A user has logged in a using a known VPN, Proxy, Or anonymizer",
+    "template": []
+  },
+  {
+    "value": "HostedIP",
+    "name": "A user has logged in a using a known hosting provider IP",
+    "template": []
+  }
+]

@@ -32,6 +32,7 @@ import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import CippButtonCard from 'src/components/contentcards/CippButtonCard'
 import alertList from 'src/data/alerts.json'
 import auditLogSchema from 'src/data/AuditLogSchema.json'
+import auditLogTemplates from 'src/data/AuditLogTemplates.json'
 
 const AlertWizard = () => {
   const dispatch = useDispatch()
@@ -49,6 +50,11 @@ const AlertWizard = () => {
     error,
     isSuccess,
   } = useListTenantQuery(tenantDomain, customerId)
+
+  const onSubmitAudit = (values) => {
+    console.log(values)
+    genericPostRequest({ path: '/api/addAuditLogMonitor', values }).then((res) => {})
+  }
 
   const onSubmitScript = (values) => {
     //get current time as startDate, to the closest 15 minutes in the future
@@ -79,7 +85,11 @@ const AlertWizard = () => {
     ...currentFormState?.values,
     ...recommendedRecurrence,
   }
+  const [auditFormState, setauditFormState] = useState()
 
+  const initialValuesAudit = {
+    ...auditFormState,
+  }
   const recurrenceOptions = [
     { value: '30m', name: 'Every 30 minutes' },
     { value: '1h', name: 'Every hour' },
@@ -90,72 +100,7 @@ const AlertWizard = () => {
     { value: '365d', name: 'Every 365 days' },
   ]
 
-  const presetValues = [
-    { value: 'New-InboxRule', name: 'A new Inbox rule is created' },
-    {
-      value: 'New-InboxRule',
-      name: 'A new Inbox rule is created that forwards e-mails to the RSS feeds folder',
-    },
-
-    { value: 'Set-InboxRule', name: 'A existing Inbox rule is edited' },
-    {
-      value: 'Set-InboxRule',
-      name: 'A existing Inbox rule is edited that forwards e-mails to the RSS feeds folder',
-    },
-
-    {
-      value: 'Add member to role.',
-      name: 'A user has been added to an admin role',
-    },
-    {
-      value: 'Add User.',
-      name: 'A user account was created',
-    },
-    {
-      value: 'Disable account.',
-      name: 'A user account has been disabled',
-    },
-    {
-      value: 'Enable account.',
-      name: 'A user account has been enabled',
-    },
-    {
-      value: 'Update StsRefreshTokenValidFrom Timestamp.',
-      name: 'A user sessions have been revoked',
-    },
-    {
-      value: 'Disable Strong Authentication.',
-      name: 'A users MFA has been disabled',
-    },
-    {
-      value: 'Remove Member from a role.',
-      name: 'A user has been removed from a role',
-    },
-    {
-      value: 'Reset user password.',
-      name: 'A user password has been reset',
-    },
-    {
-      value: 'UserLoggedInFromUnknownLocation',
-      name: 'A user has logged in from a location not in the allowed locations list',
-    },
-    {
-      value: 'Add service principal.',
-      name: 'A service principal has been created',
-    },
-    {
-      value: 'Remove service principal.',
-      name: 'A service principal has been removed',
-    },
-    {
-      value: 'badRepIP',
-      name: 'A user has logged in a using a known VPN, Proxy, Or anonymizer',
-    },
-    {
-      value: 'HostedIP',
-      name: 'A user has logged in a using a known hosting provider IP',
-    },
-  ]
+  const presetValues = auditLogTemplates
 
   const getAuditLogSchema = (logbook) => {
     const common = auditLogSchema.Common
@@ -222,8 +167,8 @@ const AlertWizard = () => {
                 </CCol>
               </CRow>
               <Form
-                onSubmit={onSubmitScript}
-                initialValues={{ ...initialValues }}
+                onSubmit={onSubmitAudit}
+                initialValues={{ ...initialValuesAudit }}
                 render={({ handleSubmit, submitting, values }) => {
                   return (
                     <CForm id="auditAlertForm" onSubmit={handleSubmit}>
@@ -242,7 +187,7 @@ const AlertWizard = () => {
                               <CCol>
                                 <RFFSelectSearch
                                   values={presetValues}
-                                  name="command"
+                                  name="preset"
                                   placeholder={'Select a preset'}
                                   label="Select an alert preset, or customize your own"
                                 />
