@@ -85,7 +85,7 @@ const AlertWizard = () => {
     ...currentFormState?.values,
     ...recommendedRecurrence,
   }
-  const [auditFormState, setauditFormState] = useState()
+  const [auditFormState, setAuditFormState] = useState()
 
   const initialValuesAudit = {
     ...auditFormState,
@@ -131,6 +131,11 @@ const AlertWizard = () => {
       }
       return updatedRecurrenceOptions
     }
+  }
+
+  const setAuditForm = (e) => {
+    const preset = presetValues.find((p) => p.value === e.value)
+    setAuditFormState(preset.template)
   }
 
   return (
@@ -190,6 +195,7 @@ const AlertWizard = () => {
                                   name="preset"
                                   placeholder={'Select a preset'}
                                   label="Select an alert preset, or customize your own"
+                                  onChange={(e) => setAuditForm(e)}
                                 />
                               </CCol>
                             </CRow>
@@ -220,7 +226,7 @@ const AlertWizard = () => {
                                         return (
                                           <RFFSelectSearch
                                             values={getAuditLogSchema(props.values?.logbook?.value)}
-                                            name={`conditions.${i}.property`}
+                                            name={`conditions.${i}.Property`}
                                             placeholder={'Select a property to alert on'}
                                             label="When property"
                                           />
@@ -250,7 +256,7 @@ const AlertWizard = () => {
                                       {(props) => {
                                         return (
                                           <>
-                                            {props.values?.conditions?.[i]?.property?.value ===
+                                            {props.values?.conditions?.[i]?.Property?.value ===
                                               'String' && (
                                               <RFFCFormInput
                                                 name={`conditions.${i}.Input`}
@@ -260,11 +266,11 @@ const AlertWizard = () => {
                                             )}
                                             {props.values?.conditions?.[
                                               i
-                                            ]?.property?.value.startsWith('List:') && (
+                                            ]?.Property?.value.startsWith('List:') && (
                                               <RFFSelectSearch
                                                 values={
                                                   auditLogSchema[
-                                                    props.values?.conditions?.[i]?.property?.value
+                                                    props.values?.conditions?.[i]?.Property?.value
                                                   ]
                                                 }
                                                 name={`conditions.${i}.Input`}

@@ -3,12 +3,16 @@
     "value": "New-InboxRule",
     "name": "A new Inbox rule is created",
     "template": {
-      "logbook": { "value": "Audit.Exchange", "name": "Exchange" },
+      "preset": { "value": "New-InboxRule", "label": "A new Inbox rule is created" },
+      "logbook": { "value": "Audit.Exchange", "label": "Exchange" },
       "conditions": [
         {
-          "property": "Operation",
-          "operator": "eq",
-          "Input": { "value": "new-inboxrule", "name": "created new inbox rule in outlook web app" }
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals" },
+          "Input": {
+            "value": "new-inboxrule",
+            "label": "created new inbox rule in outlook web app"
+          }
         }
       ]
     }
