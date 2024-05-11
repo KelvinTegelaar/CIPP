@@ -41,6 +41,8 @@ const AlertWizard = () => {
   const [queryError, setQueryError] = useState(false)
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const [alertType, setAlertType] = useState(false)
+  const [recommendedRecurrence, setRecommendedRecurrence] = useState()
+  const [currentFormState, setCurrentFormState] = useState()
   const {
     data: tenant = {},
     isFetching,
@@ -74,6 +76,8 @@ const AlertWizard = () => {
 
   const initialValues = {
     ...tenant[0],
+    ...currentFormState?.values,
+    ...recommendedRecurrence,
   }
 
   const recurrenceOptions = [
@@ -163,6 +167,26 @@ const AlertWizard = () => {
     }))
   }
   const [addedEvent, setAddedEvent] = React.useState(1)
+
+  const getRecurrenceOptions = () => {
+    const values = currentFormState?.values
+    if (values) {
+      //console.log(currentFormState)
+      const updatedRecurrenceOptions = recurrenceOptions.map((opt) => ({
+        ...opt,
+        name: opt.name.replace(' (Recommended)', ''),
+      }))
+      const recommendedValue = values.command?.value?.recommendedRunInterval
+      const option = updatedRecurrenceOptions.find((opt) => opt.value === recommendedValue)
+      if (option) {
+        option.name += ' (Recommended)'
+        if (option.value !== recommendedRecurrence?.Recurrence.value) {
+          setRecommendedRecurrence({ Recurrence: { value: option.value, label: option.name } })
+        }
+      }
+      return updatedRecurrenceOptions
+    }
+  }
 
   return (
     <CippPage title="Tenant Details" tenantSelector={false}>
@@ -404,32 +428,15 @@ const AlertWizard = () => {
                             </Condition>
                             <CRow className="mb-3">
                               <CCol>
-                                <FormSpy>
-                                  {(props) => {
-                                    const updatedRecurrenceOptions = recurrenceOptions.map(
-                                      (opt) => ({
-                                        ...opt,
-                                        name: opt.name.replace(' (Recommended)', ''),
-                                      }),
-                                    )
-                                    const recommendedValue =
-                                      props.values.command?.value?.recommendedRunInterval
-                                    const option = updatedRecurrenceOptions.find(
-                                      (opt) => opt.value === recommendedValue,
-                                    )
-                                    if (option) {
-                                      option.name += ' (Recommended)'
-                                    }
-                                    return (
-                                      <RFFSelectSearch
-                                        values={updatedRecurrenceOptions}
-                                        name="Recurrence"
-                                        placeholder="Select when this alert should run"
-                                        label="When should the alert run"
-                                      />
-                                    )
-                                  }}
-                                </FormSpy>
+                                <FormSpy
+                                  onChange={(formvalues) => setCurrentFormState(formvalues)}
+                                />
+                                <RFFSelectSearch
+                                  values={getRecurrenceOptions()}
+                                  name="Recurrence"
+                                  placeholder="Select when this alert should run"
+                                  label="When should the alert run"
+                                />
                               </CCol>
                             </CRow>
                             <CRow className="mb-3">
