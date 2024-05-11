@@ -44,6 +44,7 @@ const AlertWizard = () => {
   const [alertType, setAlertType] = useState(false)
   const [recommendedRecurrence, setRecommendedRecurrence] = useState()
   const [currentFormState, setCurrentFormState] = useState()
+  const [selectedTenant, setSelectedTenant] = useState([])
   const {
     data: tenant = {},
     isFetching,
@@ -52,8 +53,7 @@ const AlertWizard = () => {
   } = useListTenantQuery(tenantDomain, customerId)
 
   const onSubmitAudit = (values) => {
-    console.log(values)
-    genericPostRequest({ path: '/api/addAuditLogMonitor', values }).then((res) => {})
+    genericPostRequest({ path: '/api/addAlert', values }).then((res) => {})
   }
 
   const onSubmitScript = (values) => {
@@ -88,6 +88,7 @@ const AlertWizard = () => {
   const [auditFormState, setAuditFormState] = useState()
 
   const initialValuesAudit = {
+    tenantFilter: [...selectedTenant],
     ...auditFormState,
   }
   const recurrenceOptions = [
@@ -168,7 +169,11 @@ const AlertWizard = () => {
                 <CCol md={8}>
                   <CippButtonCard title="Tenant Selector" titleType="big">
                     Select the tenants you want to include in this Alert.
-                    <TenantSelectorMultiple />
+                    <TenantSelectorMultiple
+                      onChange={(e) => setSelectedTenant(e)}
+                      AllTenants={true}
+                      valueisDomain={true}
+                    />
                   </CippButtonCard>
                 </CCol>
               </CRow>
@@ -307,6 +312,11 @@ const AlertWizard = () => {
                                   </CButton>
                                 )}
                               </CCol>
+                              {postResults.isSuccess && (
+                                <CCallout color="success">
+                                  <li>{postResults.data.Results}</li>
+                                </CCallout>
+                              )}
                             </CRow>
                           </CippButtonCard>
                         </CCol>
