@@ -136,6 +136,7 @@ const AlertWizard = () => {
   const setAuditForm = (e) => {
     const preset = presetValues.find((p) => p.value === e.value)
     setAuditFormState(preset.template)
+    setAddedEvent(preset.template.conditions.length)
   }
 
   return (

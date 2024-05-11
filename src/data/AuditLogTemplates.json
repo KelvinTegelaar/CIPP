@@ -18,9 +18,30 @@
     }
   },
   {
-    "value": "New-InboxRule",
+    "value": "New-InboxRuleRSS",
     "name": "A new Inbox rule is created that forwards e-mails to the RSS feeds folder",
-    "template": []
+    "template": {
+      "preset": {
+        "value": "New-InboxRuleRSS",
+        "label": "A new Inbox rule is created that forwards e-mails to the RSS feeds folder"
+      },
+      "logbook": { "value": "Audit.Exchange", "label": "Exchange" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals" },
+          "Input": {
+            "value": "new-inboxrule",
+            "label": "created new inbox rule in outlook web app"
+          }
+        },
+        {
+          "Property": { "value": "String", "label": "Path" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": "*RSS*"
+        }
+      ]
+    }
   },
   {
     "value": "Set-InboxRule",
