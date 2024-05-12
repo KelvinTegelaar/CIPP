@@ -140,6 +140,16 @@ const AlertWizard = () => {
     setAddedEvent(preset.template.conditions.length)
   }
 
+  const dovalues = [
+    //{ value: 'cippcommand', label: 'Execute a CIPP Command' },
+    { value: 'becremediate', name: 'Execute a BEC Remediate' },
+    { value: 'disableuser', name: 'Disable the user in the log entry' },
+    // { value: 'generatelog', label: 'Generate a log entry' },
+    { value: 'generatemail', name: 'Generate an email' },
+    { value: 'generatePSA', name: 'Generate a PSA ticket' },
+    { value: 'generateWebhook', name: 'Generate a webhook' },
+  ]
+
   return (
     <CippPage title="Tenant Details" tenantSelector={false}>
       {!queryError && (
@@ -320,6 +330,17 @@ const AlertWizard = () => {
                                   <li>{postResults.data.Results}</li>
                                 </CCallout>
                               )}
+                            </CRow>
+                            <CRow className="mb-3">
+                              <CCol>
+                                <RFFSelectSearch
+                                  values={dovalues}
+                                  multi={true}
+                                  name={`actions`}
+                                  placeholder={'Select one action or multple actions from the list'}
+                                  label="Then perform the following action(s)"
+                                />
+                              </CCol>
                             </CRow>
                           </CippButtonCard>
                         </CCol>
