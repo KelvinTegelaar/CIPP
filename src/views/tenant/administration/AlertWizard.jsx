@@ -1,18 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import {
-  CBadge,
-  CButton,
-  CCallout,
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCardTitle,
-  CCol,
-  CForm,
-  CRow,
-  CSpinner,
-  CWidgetStatsA,
-} from '@coreui/react'
+import React, { useState } from 'react'
+import { CBadge, CButton, CCallout, CCol, CForm, CRow, CSpinner } from '@coreui/react'
 import useQuery from 'src/hooks/useQuery'
 import { useDispatch, useSelector } from 'react-redux'
 import { Field, Form, FormSpy } from 'react-final-form'
@@ -21,7 +8,6 @@ import { TenantSelector, TenantSelectorMultiple } from 'src/components/utilities
 import {
   Condition,
   RFFCFormInput,
-  RFFCFormRadio,
   RFFCFormSwitch,
   RFFSelectSearch,
 } from 'src/components/forms/RFFComponents'
@@ -33,24 +19,16 @@ import CippButtonCard from 'src/components/contentcards/CippButtonCard'
 import alertList from 'src/data/alerts.json'
 import auditLogSchema from 'src/data/AuditLogSchema.json'
 import auditLogTemplates from 'src/data/AuditLogTemplates.json'
+import Skeleton from 'react-loading-skeleton'
 
 const AlertWizard = () => {
-  const dispatch = useDispatch()
-  let query = useQuery()
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
-  const customerId = query.get('customerId')
-  const [queryError, setQueryError] = useState(false)
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const [alertType, setAlertType] = useState(false)
   const [recommendedRecurrence, setRecommendedRecurrence] = useState()
   const [currentFormState, setCurrentFormState] = useState()
   const [selectedTenant, setSelectedTenant] = useState([])
-  const {
-    data: tenant = {},
-    isFetching,
-    error,
-    isSuccess,
-  } = useListTenantQuery(tenantDomain, customerId)
+  const { data: tenant = {}, isFetching, error, isSuccess } = useListTenantQuery(tenantDomain)
 
   const onSubmitAudit = (values) => {
     genericPostRequest({ path: '/api/addAlert', values }).then((res) => {})
@@ -152,7 +130,8 @@ const AlertWizard = () => {
 
   return (
     <CippPage title="Tenant Details" tenantSelector={false}>
-      {!queryError && (
+      {isFetching && <Skeleton />}
+      {!isFetching && (
         <>
           <CRow className="mb-3">
             <CCol md={3}>
@@ -200,7 +179,7 @@ const AlertWizard = () => {
                             titleType="big"
                             CardButton={
                               <CButton type="submit" form="auditAlertForm">
-                                Save Alert
+                                {postResults.isFetching && <CSpinner size="sm" />} Save Alert
                               </CButton>
                             }
                           >
@@ -325,22 +304,24 @@ const AlertWizard = () => {
                                   </CButton>
                                 )}
                               </CCol>
+                              <CRow className="mb-3">
+                                <CCol>
+                                  <RFFSelectSearch
+                                    values={dovalues}
+                                    multi={true}
+                                    name={`actions`}
+                                    placeholder={
+                                      'Select one action or multple actions from the list'
+                                    }
+                                    label="Then perform the following action(s)"
+                                  />
+                                </CCol>
+                              </CRow>
                               {postResults.isSuccess && (
                                 <CCallout color="success">
                                   <li>{postResults.data.Results}</li>
                                 </CCallout>
                               )}
-                            </CRow>
-                            <CRow className="mb-3">
-                              <CCol>
-                                <RFFSelectSearch
-                                  values={dovalues}
-                                  multi={true}
-                                  name={`actions`}
-                                  placeholder={'Select one action or multple actions from the list'}
-                                  label="Then perform the following action(s)"
-                                />
-                              </CCol>
                             </CRow>
                           </CippButtonCard>
                         </CCol>
