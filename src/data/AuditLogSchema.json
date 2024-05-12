@@ -69,6 +69,7 @@
     "LogonError": "String"
   },
   "List:Operation": [
+    { "value": "UserLoggedIn", "name": "A user logged in" },
     { "value": "accessed mailbox items", "name": "accessed mailbox items" },
     { "value": "add delegation entry.", "name": "added delegation entry" },
     { "value": "add domain to company.", "name": "added domain to company" },

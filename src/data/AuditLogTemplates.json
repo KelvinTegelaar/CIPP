@@ -152,6 +152,14 @@
       "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
       "conditions": [
         {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals" },
+          "Input": {
+            "value": "UserLoggedIn",
+            "label": "A user logged in"
+          }
+        },
+        {
           "Property": { "value": "List:countryList", "label": "CIPPGeoLocation", "multi": true },
           "Operator": { "value": "NotIn", "label": "Not In" }
         }
@@ -179,6 +187,14 @@
       "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
       "conditions": [
         {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals" },
+          "Input": {
+            "value": "UserLoggedIn",
+            "label": "A user logged in"
+          }
+        },
+        {
           "Property": { "value": "String", "label": "CIPPBadRepIP" },
           "Operator": { "value": "EQ", "label": "Equals" },
           "Input": {
@@ -199,6 +215,14 @@
       },
       "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
       "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals" },
+          "Input": {
+            "value": "UserLoggedIn",
+            "label": "A user logged in"
+          }
+        },
         {
           "Property": { "value": "String", "label": "CIPPHostedIP" },
           "Operator": { "value": "EQ", "label": "Equals" },
