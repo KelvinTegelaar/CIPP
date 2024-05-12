@@ -265,7 +265,7 @@ const AlertWizard = () => {
                                             {props.values?.conditions?.[i]?.Property?.value ===
                                               'String' && (
                                               <RFFCFormInput
-                                                name={`conditions.${i}.Input`}
+                                                name={`conditions.${i}.Input.value`}
                                                 placeholder={'Select a command'}
                                                 label={`Input`}
                                               />

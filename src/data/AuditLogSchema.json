@@ -12,11 +12,11 @@
     "ObjectId": "String",
     "UserId": "String",
     "ClientIP": "String",
-    "IPDetectedbyCIPP": "String",
     "Username": "String",
     "CIPPGeoLocation": "List:countryList",
     "CIPPBadRepIP": "String",
-    "CIPPHostedIP": "String"
+    "CIPPHostedIP": "String",
+    "CIPPIPDetected": "String"
   },
   "Audit.Exchange": {
     "Id": "Combination GUID",
