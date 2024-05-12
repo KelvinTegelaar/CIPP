@@ -49,12 +49,12 @@
     "ClientIPAddress": "String",
     "ClientMachinename": "String",
     "ClientProcessname": "String",
-    "ClientVersion": "String"
+    "ClientVersion": "String",
+    "MoveToFolder": "String"
   },
   "Audit.AzureActiveDirectory": {
     "AzureActiveDirectoryEventType": "List:AzureActiveDirectoryEventType",
-    "ExtendedProperties": "Common.namevaluePair",
-    "ModifiedProperties": "Common.ModifiedProperty",
+    "AccountEnabled": "String",
     "Actor": "List:IdentityTypevaluePair",
     "ActorContextId": "String",
     "ActorIpAddress": "String",
@@ -143,7 +143,11 @@
     { "value": "updatefolderpermissions", "name": "modified folder permission" },
     { "value": "updateinboxrules", "name": "updated inbox rules from outlook client" },
     { "value": "verify domain.", "name": "verified domain" },
-    { "value": "verify email verified domain.", "name": "verified email verified domain" }
+    { "value": "verify email verified domain.", "name": "verified email verified domain" },
+    {
+      "value": "Update StsRefreshTokenValidFrom Timestamp.",
+      "name": "Update StsRefreshTokenValidFrom Timestamp."
+    }
   ],
   "List:LogonType": [
     { "value": 0, "Membername": "Owner", "name": "The mailbox owner." },

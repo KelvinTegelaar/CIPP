@@ -279,6 +279,9 @@ const AlertWizard = () => {
                                                     props.values?.conditions?.[i]?.Property?.value
                                                   ]
                                                 }
+                                                multi={
+                                                  props.values?.conditions?.[i]?.Property?.multi
+                                                }
                                                 name={`conditions.${i}.Input`}
                                                 placeholder={'Select an input from the list'}
                                                 label="Input"

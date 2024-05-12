@@ -36,9 +36,9 @@
           }
         },
         {
-          "Property": { "value": "String", "label": "Path" },
+          "Property": { "value": "String", "label": "MoveToFolder" },
           "Operator": { "value": "like", "label": "Like" },
-          "Input": "*RSS*"
+          "Input": { "value": "*RSS*" }
         }
       ]
     }
@@ -46,12 +46,43 @@
   {
     "value": "Set-InboxRule",
     "name": "A existing Inbox rule is edited",
-    "template": []
+    "template": {
+      "preset": { "value": "Set-InboxRule", "label": "A existing Inbox rule is edited" },
+      "logbook": { "value": "Audit.Exchange", "label": "Exchange" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals" },
+          "Input": {
+            "value": "set-inboxrule",
+            "label": "Updated inbox rule in outlook web app"
+          }
+        }
+      ]
+    }
   },
   {
-    "value": "Set-InboxRule",
+    "value": "Set-InboxRuleRSS",
     "name": "A existing Inbox rule is edited that forwards e-mails to the RSS feeds folder",
-    "template": []
+    "template": {
+      "preset": { "value": "Set-InboxRuleRSS", "label": "A existing Inbox rule is edited" },
+      "logbook": { "value": "Audit.Exchange", "label": "Exchange" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals" },
+          "Input": {
+            "value": "set-inboxrule",
+            "label": "Updated inbox rule in outlook web app"
+          }
+        },
+        {
+          "Property": { "value": "String", "label": "MoveToFolder" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "*RSS*" }
+        }
+      ]
+    }
   },
   {
     "value": "Add member to role.",
@@ -59,24 +90,25 @@
     "template": []
   },
   {
-    "value": "Add User.",
-    "name": "A user account was created",
-    "template": []
-  },
-  {
-    "value": "Disable account.",
-    "name": "A user account has been disabled",
-    "template": []
-  },
-  {
-    "value": "Enable account.",
-    "name": "A user account has been enabled",
-    "template": []
-  },
-  {
     "value": "Update StsRefreshTokenValidFrom Timestamp.",
     "name": "A user sessions have been revoked",
-    "template": []
+    "template": {
+      "preset": {
+        "value": "Update StsRefreshTokenValidFrom Timestamp.",
+        "label": "A user sessions have been revoked"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals" },
+          "Input": {
+            "value": "Update StsRefreshTokenValidFrom Timestamp.",
+            "label": "Update StsRefreshTokenValidFrom Timestamp."
+          }
+        }
+      ]
+    }
   },
   {
     "value": "Disable Strong Authentication.",
@@ -91,12 +123,40 @@
   {
     "value": "Reset user password.",
     "name": "A user password has been reset",
-    "template": []
+    "template": {
+      "preset": {
+        "value": "A user password has been reset",
+        "label": "Reset user password."
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals" },
+          "Input": {
+            "value": "Reset user password.",
+            "label": "Reset user password."
+          }
+        }
+      ]
+    }
   },
   {
     "value": "UserLoggedInFromUnknownLocation",
-    "name": "A user has logged in from a location not in the allowed locations list",
-    "template": []
+    "name": "A user has logged in from a location not in the input list",
+    "template": {
+      "preset": {
+        "value": "UserLoggedInFromUnknownLocation",
+        "label": "A user has logged in from a location not in the input list"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:countryList", "label": "CIPPGeoLocation", "multi": true },
+          "Operator": { "value": "NotIn", "label": "Not In" }
+        }
+      ]
+    }
   },
   {
     "value": "Add service principal.",
@@ -111,11 +171,43 @@
   {
     "value": "badRepIP",
     "name": "A user has logged in a using a known VPN, Proxy, Or anonymizer",
-    "template": []
+    "template": {
+      "preset": {
+        "value": "badRepIP",
+        "label": "A user has logged in a using a known VPN, Proxy, Or anonymizer"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "String", "label": "CIPPBadRepIP" },
+          "Operator": { "value": "EQ", "label": "Equals" },
+          "Input": {
+            "value": "true",
+            "label": "true"
+          }
+        }
+      ]
+    }
   },
   {
     "value": "HostedIP",
     "name": "A user has logged in a using a known hosting provider IP",
-    "template": []
+    "template": {
+      "preset": {
+        "value": "HostedIP",
+        "label": "A user has logged in a using a known hosting provider IP"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "String", "label": "CIPPHostedIP" },
+          "Operator": { "value": "EQ", "label": "Equals" },
+          "Input": {
+            "value": "true",
+            "label": "true"
+          }
+        }
+      ]
+    }
   }
 ]
