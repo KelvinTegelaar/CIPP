@@ -52,7 +52,7 @@
     },
     {
       "route": "/api/ExecSendPush",
-      "allowedRoles": ["admin", "editor", "readonly"]
+      "allowedRoles": ["admin", "editor", "readonly", "sharedmailboxadmins"]
     },
     {
       "route": "/api/ExecExcludeTenant",
