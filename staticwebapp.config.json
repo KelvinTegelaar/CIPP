@@ -75,6 +75,10 @@
       "allowedRoles": ["admin"]
     },
     {
+      "route": "/api/AddSharedMailbox",
+      "allowedRoles": ["readonly","admin","editor"]
+    },
+    {
       "route": "/",
       "allowedRoles": ["admin", "editor", "readonly", "reader", "authenticated", "anonymous", "sharedmailboxadmins"]
     },
