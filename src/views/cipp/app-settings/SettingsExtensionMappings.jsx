@@ -41,6 +41,9 @@ export function SettingsExtensionMappings() {
     setHaloExtensionconfig({
       path: 'api/ExecExtensionMapping?AddMapping=Halo',
       values: { mappings: originalFormat },
+    }).then(() => {
+      listHaloBackend({ path: 'api/ExecExtensionMapping?List=Halo' })
+      setMappingValue({})
     })
   }
   const onNinjaOrgsSubmit = () => {
@@ -52,6 +55,9 @@ export function SettingsExtensionMappings() {
     setNinjaOrgsExtensionconfig({
       path: 'api/ExecExtensionMapping?AddMapping=NinjaOrgs',
       values: { mappings: originalFormat },
+    }).then(() => {
+      listNinjaOrgsBackend({ path: 'api/ExecExtensionMapping?List=NinjaOrgs' })
+      setMappingValue({})
     })
   }
 
@@ -68,7 +74,6 @@ export function SettingsExtensionMappings() {
   const onNinjaFieldsSubmit = (values) => {
     setNinjaFieldsExtensionconfig({
       path: 'api/ExecExtensionMapping?AddMapping=NinjaFields',
-
       values: { mappings: values },
     })
   }
@@ -91,8 +96,11 @@ export function SettingsExtensionMappings() {
       },
       //filter out any undefined values
     ).filter((item) => item !== undefined)
-    setHaloMappingsArray((currentHaloMappings) => [...currentHaloMappings, ...newMappings])
-
+    setHaloMappingsArray((currentHaloMappings) => [...currentHaloMappings, ...newMappings]).then(
+      () => {
+        listHaloBackend({ path: 'api/ExecExtensionMapping?List=Halo' })
+      },
+    )
     setHaloAutoMap(true)
   }
 
@@ -235,7 +243,7 @@ export function SettingsExtensionMappings() {
           <CippButtonCard
             title={'HaloPSA Mapping'}
             titleType="big"
-            isFetching={listHaloBackend.isFetching}
+            isFetching={listBackendHaloResult.isFetching}
             CardButton={
               <>
                 <CButton form="haloform" className="me-2" type="submit">
@@ -253,7 +261,7 @@ export function SettingsExtensionMappings() {
               </>
             }
           >
-            {listBackendHaloResult.isFetching ? (
+            {listBackendHaloResult.isFetching && listBackendHaloResult.isUninitialized ? (
               <CSpinner color="primary" />
             ) : (
               <Form
@@ -281,13 +289,18 @@ export function SettingsExtensionMappings() {
                             <RFFSelectSearch
                               placeholder="Select a Tenant"
                               name={`tenant_selector`}
-                              values={listBackendHaloResult.data?.Tenants.map((tenant) => ({
+                              values={listBackendHaloResult.data?.Tenants.filter((tenant) => {
+                                return !Object.keys(listBackendHaloResult.data?.Mappings).includes(
+                                  tenant.customerId,
+                                )
+                              }).map((tenant) => ({
                                 name: tenant.displayName,
                                 value: tenant.customerId,
                               }))}
                               onChange={(e) => {
                                 setMappingArray(e.value)
                               }}
+                              isLoading={listBackendHaloResult.isFetching}
                             />
                           </CCol>
                           <CCol xs="1" className="d-flex justify-content-center align-items-center">
@@ -295,29 +308,43 @@ export function SettingsExtensionMappings() {
                           </CCol>
                           <CCol xs="5">
                             <RFFSelectSearch
-                              name={mappingArray}
-                              values={listBackendHaloResult.data?.HaloClients.map((client) => ({
+                              name="halo_client"
+                              values={listBackendHaloResult.data?.HaloClients.filter((client) => {
+                                return !Object.values(listBackendHaloResult.data?.Mappings)
+                                  .map((value) => {
+                                    return value.value
+                                  })
+                                  .includes(client.value)
+                              }).map((client) => ({
                                 name: client.name,
                                 value: client.value,
                               }))}
                               onChange={(e) => setMappingValue(e)}
                               placeholder="Select a HaloPSA Client"
+                              isLoading={listBackendHaloResult.isFetching}
                             />
                           </CCol>
                           <CButton
-                            onClick={() =>
-                              //set the new mapping in the array
-                              setHaloMappingsArray([
-                                ...haloMappingsArray,
-                                {
-                                  Tenant: listBackendHaloResult.data?.Tenants.find(
-                                    (tenant) => tenant.customerId === mappingArray,
-                                  ),
-                                  haloName: mappingValue.label,
-                                  haloId: mappingValue.value,
-                                },
-                              ])
-                            }
+                            onClick={() => {
+                              if (
+                                mappingValue.value !== undefined &&
+                                Object.values(haloMappingsArray)
+                                  .map((item) => item.haloId)
+                                  .includes(mappingValue.value) === false
+                              ) {
+                                //set the new mapping in the array
+                                setHaloMappingsArray([
+                                  ...haloMappingsArray,
+                                  {
+                                    Tenant: listBackendHaloResult.data?.Tenants.find(
+                                      (tenant) => tenant.customerId === mappingArray,
+                                    ),
+                                    haloName: mappingValue.label,
+                                    haloId: mappingValue.value,
+                                  },
+                                ])
+                              }
+                            }}
                             className={`my-4 circular-button`}
                             title={'+'}
                           >
@@ -381,7 +408,7 @@ export function SettingsExtensionMappings() {
               </>
             }
           >
-            {listBackendNinjaOrgsResult.isFetching ? (
+            {listBackendNinjaOrgsResult.isFetching && listBackendNinjaOrgsResult.isUninitialized ? (
               <CSpinner color="primary" />
             ) : (
               <Form
@@ -409,13 +436,18 @@ export function SettingsExtensionMappings() {
                             <RFFSelectSearch
                               placeholder="Select a Tenant"
                               name={`tenant_selector`}
-                              values={listBackendNinjaOrgsResult.data?.Tenants.map((tenant) => ({
+                              values={listBackendNinjaOrgsResult.data?.Tenants.filter((tenant) => {
+                                return !Object.keys(
+                                  listBackendNinjaOrgsResult.data?.Mappings,
+                                ).includes(tenant.customerId)
+                              }).map((tenant) => ({
                                 name: tenant.displayName,
                                 value: tenant.customerId,
                               }))}
                               onChange={(e) => {
                                 setMappingArray(e.value)
                               }}
+                              isLoading={listBackendNinjaOrgsResult.isFetching}
                             />
                           </CCol>
                           <CCol xs="1" className="d-flex justify-content-center align-items-center">
@@ -423,29 +455,45 @@ export function SettingsExtensionMappings() {
                           </CCol>
                           <CCol xs="5">
                             <RFFSelectSearch
-                              name={mappingArray}
-                              values={listBackendNinjaOrgsResult.data?.NinjaOrgs.map((client) => ({
+                              name="ninja_org"
+                              values={listBackendNinjaOrgsResult.data?.NinjaOrgs.filter(
+                                (client) => {
+                                  return !Object.values(listBackendNinjaOrgsResult.data?.Mappings)
+                                    .map((value) => {
+                                      return value.value
+                                    })
+                                    .includes(client.value.toString())
+                                },
+                              ).map((client) => ({
                                 name: client.name,
                                 value: client.value,
                               }))}
                               onChange={(e) => setMappingValue(e)}
                               placeholder="Select a NinjaOne Organization"
+                              isLoading={listBackendNinjaOrgsResult.isFetching}
                             />
                           </CCol>
                           <CButton
-                            onClick={() =>
+                            onClick={() => {
                               //set the new mapping in the array
-                              setNinjaMappingsArray([
-                                ...ninjaMappingsArray,
-                                {
-                                  Tenant: listBackendNinjaOrgsResult.data?.Tenants.find(
-                                    (tenant) => tenant.customerId === mappingArray,
-                                  ),
-                                  ninjaName: mappingValue.label,
-                                  ninjaId: mappingValue.value,
-                                },
-                              ])
-                            }
+                              if (
+                                mappingValue.value !== undefined &&
+                                Object.values(ninjaMappingsArray)
+                                  .map((item) => item.ninjaId)
+                                  .includes(mappingValue.value) === false
+                              ) {
+                                setNinjaMappingsArray([
+                                  ...ninjaMappingsArray,
+                                  {
+                                    Tenant: listBackendNinjaOrgsResult.data?.Tenants.find(
+                                      (tenant) => tenant.customerId === mappingArray,
+                                    ),
+                                    ninjaName: mappingValue.label,
+                                    ninjaId: mappingValue.value,
+                                  },
+                                ])
+                              }
+                            }}
                             className={`my-4 circular-button`}
                             title={'+'}
                           >
