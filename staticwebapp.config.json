@@ -76,7 +76,7 @@
     },
     {
       "route": "/api/AddUser*",
-      "allowedRoles": ["readonly","admins","editors"]
+      "allowedRoles": ["reader","admins","editors"]
     },
     {
       "route": "/",
