@@ -61,6 +61,57 @@
     }
   },
   {
+    "name": "standards.Branding",
+    "cat": "Global Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Sets the branding for the tenant. This includes the login page, and the Office 365 portal.",
+    "addedComponent": [
+      {
+        "type": "input",
+        "name": "standards.Branding.signInPageText",
+        "label": "Sign-in page text"
+      },
+      {
+        "type": "input",
+        "name": "standards.Branding.usernameHintText",
+        "label": "Username hint Text"
+      },
+      {
+        "type": "boolean",
+        "name": "standards.Branding.hideAccountResetCredentials",
+        "label": "Hide self-service password reset"
+      },
+      {
+        "type": "Select",
+        "label": "Visual Template",
+        "name": "standards.Branding.layoutTemplateType",
+        "values": [
+          {
+            "label": "Full-screen background",
+            "value": "default"
+          },
+          {
+            "label": "Parial-screen background",
+            "value": "verticalSplit"
+          }
+        ]
+      },
+      {
+        "type": "boolean",
+        "name": "standards.Branding.isHeaderShown",
+        "label": "Show header"
+      },
+      {
+        "type":"boolean",
+        "name":"standards.Branding.isFooterShown",
+        "label":"Show footer"
+      }
+    ],
+    "label": "Set branding for the tenant",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.EnableCustomerLockbox",
     "cat": "Global Standards",
     "tag": ["lowimpact", "CIS", "CustomerLockBoxEnabled"],
