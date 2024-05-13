@@ -39,6 +39,13 @@ const ListClassicAlerts = () => {
       exportSelector: 'Actions',
     },
     {
+      name: 'Repeats every',
+      selector: (row) => row['RepeatsEvery'],
+      sortable: true,
+      cell: (row) => CellTip(row['RepeatsEvery']),
+      exportSelector: 'RepeatsEvery',
+    },
+    {
       name: 'Event Type',
       selector: (row) => row['EventType'],
       sortable: true,
