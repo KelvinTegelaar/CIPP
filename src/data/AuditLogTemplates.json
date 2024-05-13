@@ -8,7 +8,7 @@
       "conditions": [
         {
           "Property": { "value": "List:Operation", "label": "Operation" },
-          "Operator": { "value": "EQ", "label": "Equals" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
           "Input": {
             "value": "new-inboxrule",
             "label": "created new inbox rule in outlook web app"
@@ -29,7 +29,7 @@
       "conditions": [
         {
           "Property": { "value": "List:Operation", "label": "Operation" },
-          "Operator": { "value": "EQ", "label": "Equals" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
           "Input": {
             "value": "new-inboxrule",
             "label": "created new inbox rule in outlook web app"
@@ -52,7 +52,7 @@
       "conditions": [
         {
           "Property": { "value": "List:Operation", "label": "Operation" },
-          "Operator": { "value": "EQ", "label": "Equals" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
           "Input": {
             "value": "set-inboxrule",
             "label": "Updated inbox rule in outlook web app"
@@ -70,7 +70,7 @@
       "conditions": [
         {
           "Property": { "value": "List:Operation", "label": "Operation" },
-          "Operator": { "value": "EQ", "label": "Equals" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
           "Input": {
             "value": "set-inboxrule",
             "label": "Updated inbox rule in outlook web app"
@@ -101,7 +101,7 @@
       "conditions": [
         {
           "Property": { "value": "List:Operation", "label": "Operation" },
-          "Operator": { "value": "EQ", "label": "Equals" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
           "Input": {
             "value": "Update StsRefreshTokenValidFrom Timestamp.",
             "label": "Update StsRefreshTokenValidFrom Timestamp."
@@ -132,7 +132,7 @@
       "conditions": [
         {
           "Property": { "value": "List:Operation", "label": "Operation" },
-          "Operator": { "value": "EQ", "label": "Equals" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
           "Input": {
             "value": "Reset user password.",
             "label": "Reset user password."
@@ -153,7 +153,7 @@
       "conditions": [
         {
           "Property": { "value": "List:Operation", "label": "Operation" },
-          "Operator": { "value": "EQ", "label": "Equals" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
           "Input": {
             "value": "UserLoggedIn",
             "label": "A user logged in"
@@ -188,7 +188,7 @@
       "conditions": [
         {
           "Property": { "value": "List:Operation", "label": "Operation" },
-          "Operator": { "value": "EQ", "label": "Equals" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
           "Input": {
             "value": "UserLoggedIn",
             "label": "A user logged in"
@@ -196,7 +196,7 @@
         },
         {
           "Property": { "value": "String", "label": "CIPPBadRepIP" },
-          "Operator": { "value": "EQ", "label": "Equals" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
           "Input": {
             "value": "true",
             "label": "true"
@@ -217,7 +217,7 @@
       "conditions": [
         {
           "Property": { "value": "List:Operation", "label": "Operation" },
-          "Operator": { "value": "EQ", "label": "Equals" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
           "Input": {
             "value": "UserLoggedIn",
             "label": "A user logged in"
@@ -225,7 +225,7 @@
         },
         {
           "Property": { "value": "String", "label": "CIPPHostedIP" },
-          "Operator": { "value": "EQ", "label": "Equals" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
           "Input": {
             "value": "true",
             "label": "true"
