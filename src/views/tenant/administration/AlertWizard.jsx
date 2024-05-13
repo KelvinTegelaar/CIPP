@@ -20,6 +20,7 @@ import alertList from 'src/data/alerts.json'
 import auditLogSchema from 'src/data/AuditLogSchema.json'
 import auditLogTemplates from 'src/data/AuditLogTemplates.json'
 import Skeleton from 'react-loading-skeleton'
+import { required } from 'src/validators'
 
 const AlertWizard = () => {
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
@@ -204,6 +205,7 @@ const AlertWizard = () => {
                                   name="logbook"
                                   placeholder={'Select a log source'}
                                   label="Select the log you which to receive the alert for"
+                                  validate={required}
                                 />
                               </CCol>
                             </CRow>
@@ -224,6 +226,7 @@ const AlertWizard = () => {
                                             name={`conditions.${i}.Property`}
                                             placeholder={'Select a property to alert on'}
                                             label="When property"
+                                            validate={required}
                                           />
                                         )
                                       }}
@@ -232,9 +235,9 @@ const AlertWizard = () => {
                                   <CCol>
                                     <RFFSelectSearch
                                       values={[
-                                        { value: 'eq', name: 'Equals' },
+                                        { value: 'eq', name: 'Equals to' },
                                         { value: 'like', name: 'Like' },
-                                        { value: 'ne', name: 'Not Equals' },
+                                        { value: 'ne', name: 'Not Equals to' },
                                         { value: 'notmatch', name: 'Does not match' },
                                         { value: 'gt', name: 'Greater than' },
                                         { value: 'lt', name: 'Less than' },
@@ -244,6 +247,7 @@ const AlertWizard = () => {
                                       name={`conditions.${i}.Operator`}
                                       placeholder={'Select a command'}
                                       label="is"
+                                      validate={required}
                                     />
                                   </CCol>
                                   <CCol>
@@ -257,6 +261,7 @@ const AlertWizard = () => {
                                                 name={`conditions.${i}.Input.value`}
                                                 placeholder={'Select a command'}
                                                 label={`Input`}
+                                                validate={required}
                                               />
                                             )}
                                             {props.values?.conditions?.[
@@ -274,6 +279,7 @@ const AlertWizard = () => {
                                                 name={`conditions.${i}.Input`}
                                                 placeholder={'Select an input from the list'}
                                                 label="Input"
+                                                validate={required}
                                               />
                                             )}
                                           </>
@@ -372,6 +378,7 @@ const AlertWizard = () => {
                                   name="command"
                                   placeholder={'Select a command'}
                                   label="What alerting script should run"
+                                  validate={required}
                                 />
                               </CCol>
                             </CRow>
@@ -386,6 +393,7 @@ const AlertWizard = () => {
                                           name="input"
                                           label={props.values.command.value.inputLabel}
                                           placeholder="Enter a value"
+                                          validate={required}
                                         />
                                       )
                                     }}
