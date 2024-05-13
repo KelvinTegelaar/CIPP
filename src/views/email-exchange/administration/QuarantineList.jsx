@@ -161,9 +161,10 @@ const QuarantineList = () => {
               color: 'info',
               modal: true,
               modalUrl: `/api/ExecQuarantineManagement?TenantFilter=${tenant.defaultDomainName}&ID=!Identity&Type=Release&AllowSender=true`,
-              modalMessage: 'Are you sure you want to release these messages, and add the senders to the whitelist?',
+              modalMessage:
+                'Are you sure you want to release these messages, and add the senders to the whitelist?',
             },
-          ]
+          ],
         },
         params: { TenantFilter: tenant?.defaultDomainName },
       }}
