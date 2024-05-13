@@ -44,11 +44,20 @@ export function SettingsNotifications() {
             </CButton>
             <CButton
               className="me-2"
-              onClick={() => generateTestAlert({ text: 'Test Alert', Severity: 'Alert' })}
+              onClick={() =>
+                generateTestAlert({ text: 'Manually Generated Test Alert', Severity: 'Alert' })
+              }
               disabled={generateAlertResult.isFetching}
             >
-              {generateAlertResult.isFetching && <CSpinner size="sm" className="me-2" />}
-              {generateAlertResult.isSuccess && <FontAwesomeIcon icon={'check'} className="me-2" />}
+              {generateAlertResult.isFetching ? (
+                <CSpinner size="sm" className="me-2" />
+              ) : (
+                <>
+                  {generateAlertResult.isSuccess && (
+                    <FontAwesomeIcon icon={'check'} className="me-2" />
+                  )}
+                </>
+              )}
               Generate Test Alert
             </CButton>
           </>
