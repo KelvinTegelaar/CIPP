@@ -156,8 +156,14 @@ const ConnectorList = () => {
           { filterName: 'Disabled connectors', filter: 'Complex: Enabled eq false' },
           { filterName: 'Inbound connectors', filter: 'Complex: cippconnectortype eq inbound' },
           { filterName: 'Outbound connectors', filter: 'Complex: cippconnectortype eq outbound' },
-          { filterName: 'Transport rule connectors', filter: 'Complex: IsTransportRuleScoped eq true' },
-          { filterName: 'Non-transport rule connectors', filter: 'Complex: IsTransportRuleScoped eq false' },
+          {
+            filterName: 'Transport rule connectors',
+            filter: 'Complex: IsTransportRuleScoped eq true',
+          },
+          {
+            filterName: 'Non-transport rule connectors',
+            filter: 'Complex: IsTransportRuleScoped eq false',
+          },
         ],
         reportName: `${tenant?.defaultDomainName}-connectors-list`,
         path: '/api/ListExchangeConnectors',
