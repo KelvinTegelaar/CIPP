@@ -955,6 +955,12 @@
     "allowedRoles": ["admin"]
   },
   {
+    "path": "/tenant/administration/tenant-onboarding",
+    "name": "Tenant Onboarding",
+    "component": "views/tenant/administration/TenantOnboarding",
+    "allowedRoles": ["admin"]
+  },
+  {
     "path": "/tenant/administration/tenant-onboarding-wizard",
     "name": "Tenant Onboarding",
     "component": "views/tenant/administration/TenantOnboardingWizard",

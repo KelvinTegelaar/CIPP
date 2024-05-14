@@ -125,6 +125,7 @@ export default function CippTable({
   filterlist,
   showFilter = true,
   endpointName,
+  defaultSortAsc = true,
   tableProps: {
     keyField = 'id',
     theme = 'cyberdrain',
@@ -989,7 +990,7 @@ export default function CippTable({
               expandableRowsComponent={expandableRowsComponent}
               highlightOnHover={highlightOnHover}
               expandOnRowClicked={expandOnRowClicked}
-              defaultSortAsc
+              defaultSortAsc={defaultSortAsc}
               defaultSortFieldId={1}
               sortFunction={customSort}
               paginationPerPage={tablePageSize}
@@ -1050,6 +1051,7 @@ export const CippTablePropTypes = {
   disableCSVExport: PropTypes.bool,
   error: PropTypes.object,
   filterlist: PropTypes.arrayOf(PropTypes.object),
+  defaultSortAsc: PropTypes.bool,
 }
 
 CippTable.propTypes = CippTablePropTypes
