@@ -183,6 +183,15 @@ const TenantOnboardingWizard = () => {
           <h5 className="card-title mb-4">Tenant Onboarding Options</h5>
         </center>
         <hr className="my-4" />
+        <h5>Standards</h5>
+        <RFFCFormSwitch
+          name="standardsExcludeAllTenants"
+          helpText='Enabling this feature excludes this tenant from any top-level
+                                      "All Tenants" standard. This means that only the standards you
+                                      explicitly set for this tenant will be applied.'
+          label="Exclude this tenant from top-level standards"
+          className="mb-4"
+        />
         <h5>Optional Settings</h5>
         <p>
           Use these options for relationships created outside of the CIPP Invite Wizard or if the
@@ -257,6 +266,7 @@ const TenantOnboardingWizard = () => {
                             gdapRoles={props.values.gdapRoles}
                             autoMapRoles={props.values.autoMapRoles}
                             addMissingGroups={props.values.addMissingGroups}
+                            standardsExcludeAllTenants={props.values.standardsExcludeAllTenants}
                             key={idx}
                           />
                         ))}

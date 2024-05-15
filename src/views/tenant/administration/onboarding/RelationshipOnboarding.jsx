@@ -40,11 +40,14 @@ function useInterval(callback, delay, state) {
   }, [delay, state])
 }
 
-const RelationshipOnboarding = ({ relationship, gdapRoles, autoMapRoles, addMissingGroups }) => {
-  const [relationshipReady, setRelationshipReady] = useState(false)
-  const [refreshGuid, setRefreshGuid] = useState(false)
+const RelationshipOnboarding = ({
+  relationship,
+  gdapRoles,
+  autoMapRoles,
+  addMissingGroups,
+  standardsExcludeAllTenants,
+}) => {
   const [getOnboardingStatus, onboardingStatus] = useLazyGenericPostRequestQuery()
-  var headerIcon = relationshipReady ? 'check-circle' : 'question-circle'
 
   useInterval(
     async () => {
@@ -58,6 +61,7 @@ const RelationshipOnboarding = ({ relationship, gdapRoles, autoMapRoles, addMiss
     5000,
     onboardingStatus.data,
   )
+  console.log(standardsExcludeAllTenants)
 
   return (
     <CAccordionItem>
@@ -125,7 +129,13 @@ const RelationshipOnboarding = ({ relationship, gdapRoles, autoMapRoles, addMiss
         {onboardingStatus.isUninitialized &&
           getOnboardingStatus({
             path: '/api/ExecOnboardTenant',
-            values: { id: relationship.id, gdapRoles, autoMapRoles, addMissingGroups },
+            values: {
+              id: relationship.id,
+              gdapRoles,
+              autoMapRoles,
+              addMissingGroups,
+              standardsExcludeAllTenants,
+            },
           })}
         {onboardingStatus.isSuccess && (
           <>
@@ -134,7 +144,13 @@ const RelationshipOnboarding = ({ relationship, gdapRoles, autoMapRoles, addMiss
                 onClick={() =>
                   getOnboardingStatus({
                     path: '/api/ExecOnboardTenant?Retry=True',
-                    values: { id: relationship.id, gdapRoles, autoMapRoles, addMissingGroups },
+                    values: {
+                      id: relationship.id,
+                      gdapRoles,
+                      autoMapRoles,
+                      addMissingGroups,
+                      standardsExcludeAllTenants,
+                    },
                   })
                 }
                 className="mb-3 me-2"
@@ -190,6 +206,7 @@ RelationshipOnboarding.propTypes = {
   autoMapRoles: PropTypes.bool,
   addMissingGroups: PropTypes.bool,
   statusOnly: PropTypes.bool,
+  standardsExcludeAllTenants: PropTypes.bool,
 }
 
 export default RelationshipOnboarding
