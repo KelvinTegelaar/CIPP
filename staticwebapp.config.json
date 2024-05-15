@@ -89,7 +89,7 @@
     {
       "route": "/api/Modules/CIPPCore/Public/Get-CIPPLicenseOverview*"
       "allowedRoles": ["sales"]
-    }
+    },
   ],
   "navigationFallback": {
     "rewrite": "index.html",
