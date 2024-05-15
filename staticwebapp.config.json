@@ -32,11 +32,11 @@
     },
     {
       "route": "/LogoutRedirect",
-      "allowedRoles": ["admin", "editor", "readonly", "authenticated", "anonymous", "sales"]
+      "allowedRoles": ["admin", "editor", "readonly", "authenticated", "anonymous"]
     },
     {
       "route": "/404",
-      "allowedRoles": ["admin", "editor", "readonly", "authenticated", "anonymous", "sales"]
+      "allowedRoles": ["admin", "editor", "readonly", "authenticated", "anonymous"]
     },
     {
       "route": "/api/RemoveStandard",
@@ -85,11 +85,7 @@
     {
       "route": "*",
       "allowedRoles": ["admin", "editor", "readonly", "reader"]
-    },
-    {
-      "route": "/api/Modules/CIPPCore/Public/Get-CIPPLicenseOverview*"
-      "allowedRoles": ["sales"]
-    },
+    }
   ],
   "navigationFallback": {
     "rewrite": "index.html",
