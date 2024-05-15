@@ -100,6 +100,9 @@
     { "value": "remove delegation entry.", "name": "removed delegation entry" },
     { "value": "remove domain from company.", "name": "removed domain from company" },
     { "value": "remove member from group.", "name": "removed member from group" },
+    { "value": "remove member from a role.", "name": "remove member from a role" },
+    { "value": "Disable Strong Authentication.", "name": "Disable Strong Authentication." },
+
     {
       "value": "remove service principal.",
       "name": "removed a service principal from the directory"
