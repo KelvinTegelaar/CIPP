@@ -85,6 +85,10 @@
     {
       "route": "*",
       "allowedRoles": ["admin", "editor", "readonly", "reader"]
+    },
+    {
+      "route": "/api/Modules/CIPPCore/Public/Get-CIPPLicenseOverview*"
+      "allowedRoles": ["sales"]
     }
   ],
   "navigationFallback": {
