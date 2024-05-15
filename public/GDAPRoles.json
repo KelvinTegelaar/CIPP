@@ -673,6 +673,22 @@
   },
   {
     "ExtensionData": {},
+    "Description": "Manage and configure all aspects of Microsoft Viva Goals.",
+    "IsEnabled": true,
+    "IsSystem": true,
+    "Name": "Viva Goals Administrator",
+    "ObjectId": "92b086b3-e367-4ef2-b869-1de128fb986e"
+  },
+  {
+    "ExtensionData": {},
+    "Description": "Can manage all settings for Microsoft Viva Pulse app.",
+    "IsEnabled": true,
+    "IsSystem": true,
+    "Name": "Viva Pulse Administrator",
+    "ObjectId": "87761b17-1ed2-4af3-9acd-92a150038160"
+  },
+  {
+    "ExtensionData": {},
     "Description": "Can provision and manage all aspects of Cloud PCs.",
     "IsEnabled": true,
     "IsSystem": true,
