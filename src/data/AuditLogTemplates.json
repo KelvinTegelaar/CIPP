@@ -87,7 +87,23 @@
   {
     "value": "Add member to role.",
     "name": "A user has been added to an admin role",
-    "template": []
+    "template": {
+      "preset": {
+        "value": "Add member to role.",
+        "label": "A user has been added to an admin role"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Add member to role.",
+            "label": "Add member to role."
+          }
+        }
+      ]
+    }
   },
   {
     "value": "Update StsRefreshTokenValidFrom Timestamp.",
