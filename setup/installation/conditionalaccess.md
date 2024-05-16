@@ -10,7 +10,7 @@ To make sure CIPP is able to access your tenants securely we recommend the usage
 
 1. Browse to the [Conditional Access Policies](https://portal.azure.com/#view/Microsoft\_AAD\_ConditionalAccess/ConditionalAccessBlade/\~/Policies) blade in Azure.
 2. Exclude the CIPP service account from **each** existing policy, this way we have a dedicated policy for the CIPP service account
-3. Create a new policy and include the CIPP user. Enforce Azure Multi-factor Authentication for each logon each logon, do not add any exclusions or trusted locations.
+3. Create a new policy and include the CIPP user. Enforce Azure Multi-factor Authentication for each logon (set sign in frequency under session to every time) and for all cloud applications, do not add any exclusions or trusted locations.
    1. If you have trusted locations under the classic MFA portal you must always remove those.
 4. Save this policy under the name "CIPP Service Account Conditional Access Policy"
 
