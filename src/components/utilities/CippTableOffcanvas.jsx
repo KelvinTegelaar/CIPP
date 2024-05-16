@@ -14,7 +14,7 @@ function CippTableOffcanvas({
   tableProps,
   data = null,
 }) {
-  if (data !== null && data !== undefined) {
+  if (Array.isArray(data) && data !== null && data !== undefined && data?.length > 0) {
     if (!Array.isArray(data) && typeof data === 'object') {
       data = Object.keys(data).map((key) => {
         return {
@@ -53,7 +53,7 @@ function CippTableOffcanvas({
         hideFunction={hideFunction}
       >
         <>
-          {data !== null && data !== undefined ? (
+          {Array.isArray(data) && data !== null && data !== undefined ? (
             <CippTable data={data} columns={columns} />
           ) : (
             <CippDatatable path={path} params={params} columns={columns} tableProps={tableProps} />
