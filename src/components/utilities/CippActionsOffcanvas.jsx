@@ -35,6 +35,7 @@ import { stringCamelCase } from 'src/components/utilities/CippCamelCase'
 import ReactTimeAgo from 'react-time-ago'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGlobe } from '@fortawesome/free-solid-svg-icons'
+import { cellGenericFormatter } from '../tables/CellGenericFormat'
 
 const CippOffcanvasCard = ({ action, key }) => {
   const [offcanvasVisible, setOffcanvasVisible] = useState(false)
@@ -151,6 +152,28 @@ export default function CippActionsOffcanvas(props) {
         ModalService.open({
           data: modalBody,
           componentType: 'codeblock',
+          title: 'Info',
+          size: 'lg',
+        })
+      } else if (modalType === 'table') {
+        const QueryColumns = []
+        const columns = Object.keys(modalBody[0]).map((key) => {
+          QueryColumns.push({
+            name: key,
+            selector: (row) => row[key],
+            sortable: true,
+            exportSelector: key,
+            cell: cellGenericFormatter(),
+          })
+        })
+
+        ModalService.open({
+          data: modalBody,
+          componentType: 'table',
+          componentProps: {
+            columns: QueryColumns,
+            keyField: 'SKU',
+          },
           title: 'Info',
           size: 'lg',
         })
@@ -389,7 +412,7 @@ export default function CippActionsOffcanvas(props) {
       {getResults.isError && (
         <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
       )}
-      {!cardContent && (
+      {!cardContent && props?.extendedInfo && props?.extendedInfo?.length > 0 && (
         <CCard className="content-card">
           <CCardHeader className="d-flex justify-content-between align-items-center">
             <CCardTitle>

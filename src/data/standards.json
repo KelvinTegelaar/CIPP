@@ -61,6 +61,57 @@
     }
   },
   {
+    "name": "standards.Branding",
+    "cat": "Global Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Sets the branding for the tenant. This includes the login page, and the Office 365 portal.",
+    "addedComponent": [
+      {
+        "type": "input",
+        "name": "standards.Branding.signInPageText",
+        "label": "Sign-in page text"
+      },
+      {
+        "type": "input",
+        "name": "standards.Branding.usernameHintText",
+        "label": "Username hint Text"
+      },
+      {
+        "type": "boolean",
+        "name": "standards.Branding.hideAccountResetCredentials",
+        "label": "Hide self-service password reset"
+      },
+      {
+        "type": "Select",
+        "label": "Visual Template",
+        "name": "standards.Branding.layoutTemplateType",
+        "values": [
+          {
+            "label": "Full-screen background",
+            "value": "default"
+          },
+          {
+            "label": "Parial-screen background",
+            "value": "verticalSplit"
+          }
+        ]
+      },
+      {
+        "type": "boolean",
+        "name": "standards.Branding.isHeaderShown",
+        "label": "Show header"
+      },
+      {
+        "type":"boolean",
+        "name":"standards.Branding.isFooterShown",
+        "label":"Show footer"
+      }
+    ],
+    "label": "Set branding for the tenant",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.EnableCustomerLockbox",
     "cat": "Global Standards",
     "tag": ["lowimpact", "CIS", "CustomerLockBoxEnabled"],
@@ -484,6 +535,36 @@
     "helpText": "Sets the transport message configuration to timeout a message at 12 hours.",
     "addedComponent": [],
     "label": "Lower Transport Message Expiration to 12 hours",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
+    "name": "standards.GlobalQuarantineNotifications",
+    "cat": "Exchange Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Sets the Global Quarantine Notification Interval to the selected value. Determines how often the quarantine notification is sent to users.",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Select value",
+        "name": "standards.GlobalQuarantineNotifications.NotificationInterval",
+        "values": [
+          {
+            "label": "4 hours",
+            "value": "04:00:00"
+          },
+          {
+            "label": "1 day/Daily",
+            "value": "1.00:00:00"
+          },
+          {
+            "label": "7 days/Weekly",
+            "value": "7.00:00:00"
+          }
+        ]
+      }
+    ],
+    "label": "Set Global Quarantine Notification Interval",
     "impact": "Low Impact",
     "impactColour": "info"
   },
@@ -1236,7 +1317,7 @@
     "helpText": "Sets the default timezone for the tenant. This will be used for all new users and sites.",
     "addedComponent": [
       {
-        "type": "input",
+        "type": "TimezoneSelect",
         "name": "standards.TenantDefaultTimezone.Timezone",
         "label": "Timezone"
       }

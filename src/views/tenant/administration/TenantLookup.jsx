@@ -122,25 +122,27 @@ const GraphExplorer = () => {
               <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Tenant Name</p>
                 {graphrequest.isFetching && <Skeleton />}
-                {graphrequest.data?.GraphRequest.displayName}
+                {graphrequest.data?.GraphRequest?.displayName
+                  ? graphrequest.data?.GraphRequest?.displayName
+                  : 'Could not find tenant - Is this a M365 domain name?'}
               </CCol>
               <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Tenant ID</p>
                 {graphrequest.isFetching && <Skeleton />}
-                {graphrequest.data?.GraphRequest.tenantId}
+                {graphrequest.data?.GraphRequest?.tenantId}
               </CCol>
               <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Default Domain Name</p>
                 {graphrequest.isFetching && <Skeleton />}
-                {graphrequest.data?.GraphRequest.defaultDomainName}
+                {graphrequest.data?.GraphRequest?.defaultDomainName}
               </CCol>
             </CRow>
             <CRow>
               <CCol sm={12} md={4} className="mb-3">
                 <p className="fw-lighter">Tenant Brand Name</p>
                 {graphrequest.isFetching && <Skeleton />}
-                {graphrequest.data?.GraphRequest.federationBrandName}
-                {graphrequest.data?.GraphRequest.federationBrandName === null &&
+                {graphrequest.data?.GraphRequest?.federationBrandName}
+                {graphrequest.data?.GraphRequest?.federationBrandName === null &&
                   'No brand name set'}
               </CCol>
               <CCol sm={8} md={8} className="mb-3">

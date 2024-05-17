@@ -236,14 +236,20 @@ const SecureScore = () => {
             title="Compared Score (Similiar sized business)"
             percentage={
               //calculate percentage, round to 1 dec.
-              Math.round(
-                (translateData?.averageComparativeScores[1]?.averageScore /
-                  translateData?.maxScore) *
-                  100 *
-                  10,
-              ) / 10
+              translateData?.averageComparativeScores
+                ? Math.round(
+                    (translateData?.averageComparativeScores[1]?.averageScore /
+                      translateData?.maxScore) *
+                      100 *
+                      10,
+                  ) / 10
+                : 0
             }
-            topLabel={translateData?.averageComparativeScores[1]?.averageScore}
+            topLabel={
+              translateData?.averageComparativeScores
+                ? translateData?.averageComparativeScores[1]?.averageScore
+                : 0
+            }
             smallLabel={`of ${translateData?.maxScore} points`}
             isFetching={isFetching}
           />
@@ -252,15 +258,20 @@ const SecureScore = () => {
           <CippPrettyCard
             title="Compared Score (Similiar sized business)"
             percentage={
-              //calculate percentage, round to 1 dec.
-              Math.round(
-                (translateData?.averageComparativeScores[0]?.averageScore /
-                  translateData?.maxScore) *
-                  100 *
-                  10,
-              ) / 10
+              translateData?.averageComparativeScores
+                ? Math.round(
+                    (translateData?.averageComparativeScores[0]?.averageScore /
+                      translateData?.maxScore) *
+                      100 *
+                      10,
+                  ) / 10
+                : 0
             }
-            topLabel={translateData?.averageComparativeScores[0]?.averageScore}
+            topLabel={
+              translateData?.averageComparativeScores
+                ? translateData?.averageComparativeScores[0]?.averageScore
+                : 0
+            }
             smallLabel={`of ${translateData?.maxScore} points`}
             isFetching={isFetching}
           />
