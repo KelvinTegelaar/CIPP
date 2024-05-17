@@ -14,7 +14,7 @@ function CippTableOffcanvas({
   tableProps,
   data = null,
 }) {
-  if (Array.isArray(data) && data !== null && data !== undefined) {
+  if (Array.isArray(data) && data !== null && data !== undefined && data?.length > 0) {
     if (!Array.isArray(data) && typeof data === 'object') {
       data = Object.keys(data).map((key) => {
         return {

@@ -87,7 +87,23 @@
   {
     "value": "Add member to role.",
     "name": "A user has been added to an admin role",
-    "template": []
+    "template": {
+      "preset": {
+        "value": "Add member to role.",
+        "label": "A user has been added to an admin role"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Add member to role.",
+            "label": "Add member to role."
+          }
+        }
+      ]
+    }
   },
   {
     "value": "Update StsRefreshTokenValidFrom Timestamp.",
@@ -113,12 +129,44 @@
   {
     "value": "Disable Strong Authentication.",
     "name": "A users MFA has been disabled",
-    "template": []
+    "template": {
+      "preset": {
+        "value": "Disable Strong Authentication.",
+        "label": "A users MFA has been disabled"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Disable Strong Authentication.",
+            "label": "Disable Strong Authentication."
+          }
+        }
+      ]
+    }
   },
   {
     "value": "Remove Member from a role.",
     "name": "A user has been removed from a role",
-    "template": []
+    "template": {
+      "preset": {
+        "value": "Remove Member from a role.",
+        "label": "A user has been removed from a role"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Remove Member from a role.",
+            "label": "Remove Member from a role."
+          }
+        }
+      ]
+    }
   },
   {
     "value": "Reset user password.",
@@ -169,12 +217,44 @@
   {
     "value": "Add service principal.",
     "name": "A service principal has been created",
-    "template": []
+    "template": {
+      "preset": {
+        "value": "Add service principal.",
+        "label": "A service principal has been created"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Add service principal.",
+            "label": "Add service principal."
+          }
+        }
+      ]
+    }
   },
   {
     "value": "Remove service principal.",
     "name": "A service principal has been removed",
-    "template": []
+    "template": {
+      "preset": {
+        "value": "Remove service principal.",
+        "label": "A service principal has been removed"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Remove service principal.",
+            "label": "Remove service principal."
+          }
+        }
+      ]
+    }
   },
   {
     "value": "badRepIP",

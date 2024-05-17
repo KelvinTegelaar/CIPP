@@ -140,6 +140,7 @@ import React from 'react'
   "/tenant/administration/gdap-status": React.lazy(() => import('./views/tenant/administration/ListGDAPQueue')), 
   "/tenant/standards/list-standards": React.lazy(() => import('./views/tenant/standards/ListStandards')), 
   "/tenant/administration/tenant-offboarding-wizard": React.lazy(() => import('./views/tenant/administration/TenantOffboardingWizard')), 
+  "/tenant/administration/tenant-onboarding": React.lazy(() => import('./views/tenant/administration/TenantOnboarding')), 
   "/tenant/administration/tenant-onboarding-wizard": React.lazy(() => import('./views/tenant/administration/TenantOnboardingWizard')), 
 }
 export default importsMap
