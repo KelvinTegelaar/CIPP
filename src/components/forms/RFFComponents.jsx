@@ -102,9 +102,16 @@ export const RFFCFormSwitch = ({
   disabled = false,
   initialValue,
   onClick,
+  defaultValue,
 }) => {
   return (
-    <Field initialValue={initialValue} name={name} type="checkbox" validate={validate}>
+    <Field
+      defaultValue={defaultValue}
+      initialValue={initialValue}
+      name={name}
+      type="checkbox"
+      validate={validate}
+    >
       {({ meta, input }) => (
         <ConditionWrapper
           condition={helpText}
@@ -116,7 +123,9 @@ export const RFFCFormSwitch = ({
         >
           <div className={className}>
             <CFormSwitch
-              {...input}
+              onChange={input.onChange}
+              checked={input.checked}
+              value={input.value}
               // @todo revisit this, only shows green when checked
               valid={!meta.error && meta.touched && validate}
               invalid={meta.error && meta.touched && validate}
@@ -150,10 +159,11 @@ export const RFFCFormInput = ({
   spellCheck = true,
   autoFocus = false,
   hiddenValue,
+  defaultValue,
   onChange,
 }) => {
   return (
-    <Field initialValue={hiddenValue} name={name} validate={validate}>
+    <Field defaultValue={defaultValue} initialValue={hiddenValue} name={name} validate={validate}>
       {({ input, meta }) => {
         const handleChange = onChange
           ? (e) => {
@@ -186,7 +196,7 @@ export const RFFCFormInput = ({
 }
 RFFCFormInput.propTypes = {
   ...sharedPropTypes,
-  type: PropTypes.oneOf(['color', 'file', 'text', 'password']),
+  type: PropTypes.oneOf(['color', 'file', 'text', 'password', 'number']),
   placeholder: PropTypes.string,
 }
 
@@ -257,7 +267,9 @@ export const RFFCFormRadio = ({
       {({ meta, input }) => (
         <div className={className}>
           <CFormCheck
-            {...input}
+            onChange={input.onChange}
+            checked={input.checked}
+            value={input.value}
             valid={!meta.error && meta.touched}
             invalid={meta.error && meta.touched}
             disabled={disabled}
@@ -275,6 +287,49 @@ export const RFFCFormRadio = ({
 
 RFFCFormRadio.propTypes = {
   ...sharedPropTypes,
+}
+
+export const RFFCFormRadioList = ({
+  name,
+  options,
+  className = 'mb-3',
+  disabled = false,
+  onClick,
+  inline = false,
+}) => {
+  return (
+    <>
+      <div className={className}>
+        {options?.map((option, key) => {
+          return (
+            <Field name={name} type="radio" value={option.value} key={key}>
+              {({ input }) => {
+                return (
+                  <>
+                    <CFormCheck
+                      name={input.name}
+                      checked={input.checked}
+                      onChange={input.onChange}
+                      type="radio"
+                      {...option}
+                      disabled={disabled}
+                      onClick={onClick}
+                      inline={inline}
+                    />
+                  </>
+                )
+              }}
+            </Field>
+          )
+        })}
+      </div>
+    </>
+  )
+}
+
+RFFCFormRadioList.propTypes = {
+  ...sharedPropTypes,
+  inline: PropTypes.bool,
 }
 
 export const RFFCFormTextarea = ({
@@ -437,6 +492,12 @@ export const RFFSelectSearch = ({
   return (
     <Field name={name} validate={validate}>
       {({ meta, input }) => {
+        const handleChange = onChange
+          ? (e) => {
+              input.onChange(e)
+              onChange(e)
+            }
+          : input.onChange
         return (
           <div>
             <CFormLabel htmlFor={name}>
@@ -466,7 +527,7 @@ export const RFFSelectSearch = ({
                 options={selectSearchvalues}
                 placeholder={placeholder}
                 isMulti={multi}
-                onChange={onChange}
+                onChange={handleChange}
                 onInputChange={debounceOnInputChange}
                 inputValue={inputText}
                 isLoading={isLoading}
@@ -503,7 +564,7 @@ export const RFFSelectSearch = ({
                 options={selectSearchvalues}
                 placeholder={placeholder}
                 isMulti={multi}
-                onChange={onChange}
+                onChange={handleChange}
                 onInputChange={debounceOnInputChange}
                 inputValue={inputText}
                 isLoading={isLoading}
