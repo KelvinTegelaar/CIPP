@@ -2,10 +2,8 @@ import React, { useState } from 'react'
 import {
   faBook,
   faCog,
-  faEllipsisH,
   faLaptopCode,
   faMailBulk,
-  faSearch,
   faUser,
   faUserFriends,
   faUserPlus,
@@ -16,19 +14,15 @@ import {
   CCol,
   CCollapse,
   CDropdown,
-  CDropdownHeader,
-  CDropdownItem,
   CDropdownMenu,
   CDropdownToggle,
   CLink,
-  CNav,
   CRow,
 } from '@coreui/react'
 import { useGenericGetRequestQuery } from 'src/store/api/app'
 import { CippContentCard } from 'src/components/layout'
 import Skeleton from 'react-loading-skeleton'
 import { UniversalSearch } from 'src/components/utilities/UniversalSearch'
-import { ActionContentCard } from 'src/components/contentcards'
 import { useSelector } from 'react-redux'
 import allStandardsList from 'src/data/standards'
 import Portals from 'src/data/portals'
@@ -37,11 +31,14 @@ import { CChart } from '@coreui/react-chartjs'
 import { getStyle } from '@coreui/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom'
-import CippPrettyCard from 'src/components/contentcards/CippPrettyCard'
+import { useNavigate } from 'react-router-dom'
+import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
+import { ModalService } from 'src/components/utilities'
 
 const TenantDashboard = () => {
   const [visible, setVisible] = useState(false)
   const [domainVisible, setDomainVisible] = useState(false)
+  const navigate = useNavigate()
 
   const currentTenant = useSelector((state) => state.app.currentTenant)
   const theme = useSelector((state) => state.app.currentTheme)
@@ -174,6 +171,55 @@ const TenantDashboard = () => {
       )
     })
   }
+
+  const handleTable = (data, title) => {
+    const QueryColumns = []
+    const columns = Object.keys(data[0]).map((key) => {
+      QueryColumns.push({
+        name: key,
+        selector: (row) => row[key], // Accessing the property using the key
+        sortable: true,
+        exportSelector: key,
+        cell: cellGenericFormatter(),
+      })
+    })
+    ModalService.open({
+      data: data,
+      componentType: 'table',
+      componentProps: {
+        columns: QueryColumns,
+        keyField: 'id',
+      },
+      title: title,
+      size: 'lg',
+    })
+  }
+
+  const userChartLegendClickHandler = function (e, legendItem, legend) {
+    switch (legendItem.text) {
+      case 'Total Users':
+        navigate('/identity/administration/users?customerId=' + currentTenant.customerId)
+        break
+      case 'Licensed Users':
+        navigate(
+          '/identity/administration/users?customerId=' +
+            currentTenant.customerId +
+            '&tableFilter=Graph%3A+assignedLicenses%2F%24count+ne+0',
+        )
+        break
+      case 'Guests':
+        navigate(
+          '/identity/administration/users?customerId=' +
+            currentTenant.customerId +
+            '&tableFilter=Graph%3A+usertype+eq+%27guest%27',
+        )
+        break
+      case 'Global Admins':
+        handleTable(GlobalAdminList.data?.Results, 'Global Admins')
+        break
+    }
+  }
+
   return (
     <>
       <CRow className="mb-3">
@@ -336,6 +382,13 @@ const TenantDashboard = () => {
                           position: 'left',
                           labels: {
                             color: getStyle('--cui-body-color'),
+                          },
+                          onClick: userChartLegendClickHandler,
+                          onHover: (event) => {
+                            event.native.target.style.cursor = 'pointer'
+                          },
+                          onLeave: (event) => {
+                            event.native.target.style.cursor = 'default'
                           },
                         },
                       },
