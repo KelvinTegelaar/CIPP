@@ -14,7 +14,7 @@ import Select from 'react-select'
 import Creatable, { useCreatable } from 'react-select/creatable'
 import { Field } from 'react-final-form'
 import { FieldArray } from 'react-final-form-arrays'
-import React, { useState, useMemo, useRef } from 'react'
+import React, { useState, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { debounce } from 'lodash-es'
@@ -37,6 +37,7 @@ const sharedPropTypes = {
       error: PropTypes.any,
     }),
   }),
+  onClick: PropTypes.func,
 }
 
 export const RFFCFormFeedback = ({ meta }) => {
@@ -54,7 +55,14 @@ RFFCFormFeedback.propTypes = {
   }),
 }
 
-export const RFFCFormCheck = ({ name, label, className = 'mb-3', validate, disabled = false }) => {
+export const RFFCFormCheck = ({
+  name,
+  label,
+  className = 'mb-3',
+  validate,
+  disabled = false,
+  onClick,
+}) => {
   return (
     <Field name={name} type="checkbox" validate={validate}>
       {({ input, meta }) => (
@@ -67,6 +75,7 @@ export const RFFCFormCheck = ({ name, label, className = 'mb-3', validate, disab
             disabled={disabled}
             id={name}
             label={label}
+            onClick={onClick}
           />
           <RFFCFormFeedback meta={meta} />
         </div>
@@ -92,9 +101,17 @@ export const RFFCFormSwitch = ({
   validate,
   disabled = false,
   initialValue,
+  onClick,
+  defaultValue,
 }) => {
   return (
-    <Field initialValue={initialValue} name={name} type="checkbox" validate={validate}>
+    <Field
+      defaultValue={defaultValue}
+      initialValue={initialValue}
+      name={name}
+      type="checkbox"
+      validate={validate}
+    >
       {({ meta, input }) => (
         <ConditionWrapper
           condition={helpText}
@@ -106,13 +123,16 @@ export const RFFCFormSwitch = ({
         >
           <div className={className}>
             <CFormSwitch
-              {...input}
+              onChange={input.onChange}
+              checked={input.checked}
+              value={input.value}
               // @todo revisit this, only shows green when checked
               valid={!meta.error && meta.touched && validate}
               invalid={meta.error && meta.touched && validate}
               disabled={disabled}
               id={name}
               label={label}
+              onClick={onClick}
             />
             {input.value && <RFFCFormFeedback meta={meta} />}
             <sub>{sublabel}</sub>
@@ -139,10 +159,11 @@ export const RFFCFormInput = ({
   spellCheck = true,
   autoFocus = false,
   hiddenValue,
+  defaultValue,
   onChange,
 }) => {
   return (
-    <Field initialValue={hiddenValue} name={name} validate={validate}>
+    <Field defaultValue={defaultValue} initialValue={hiddenValue} name={name} validate={validate}>
       {({ input, meta }) => {
         const handleChange = onChange
           ? (e) => {
@@ -175,7 +196,7 @@ export const RFFCFormInput = ({
 }
 RFFCFormInput.propTypes = {
   ...sharedPropTypes,
-  type: PropTypes.oneOf(['color', 'file', 'text', 'password']),
+  type: PropTypes.oneOf(['color', 'file', 'text', 'password', 'number']),
   placeholder: PropTypes.string,
 }
 
@@ -239,19 +260,23 @@ export const RFFCFormRadio = ({
   className = 'mb-3',
   validate,
   disabled = false,
+  onClick,
 }) => {
   return (
     <Field name={name} type="radio" value={value} validate={validate}>
       {({ meta, input }) => (
         <div className={className}>
           <CFormCheck
-            {...input}
+            onChange={input.onChange}
+            checked={input.checked}
+            value={input.value}
             valid={!meta.error && meta.touched}
             invalid={meta.error && meta.touched}
             disabled={disabled}
             type="radio"
             name={name}
             label={label}
+            onClick={onClick}
           />
           <RFFCFormFeedback meta={meta} />
         </div>
@@ -262,6 +287,49 @@ export const RFFCFormRadio = ({
 
 RFFCFormRadio.propTypes = {
   ...sharedPropTypes,
+}
+
+export const RFFCFormRadioList = ({
+  name,
+  options,
+  className = 'mb-3',
+  disabled = false,
+  onClick,
+  inline = false,
+}) => {
+  return (
+    <>
+      <div className={className}>
+        {options?.map((option, key) => {
+          return (
+            <Field name={name} type="radio" value={option.value} key={key}>
+              {({ input }) => {
+                return (
+                  <>
+                    <CFormCheck
+                      name={input.name}
+                      checked={input.checked}
+                      onChange={input.onChange}
+                      type="radio"
+                      {...option}
+                      disabled={disabled}
+                      onClick={onClick}
+                      inline={inline}
+                    />
+                  </>
+                )
+              }}
+            </Field>
+          )
+        })}
+      </div>
+    </>
+  )
+}
+
+RFFCFormRadioList.propTypes = {
+  ...sharedPropTypes,
+  inline: PropTypes.bool,
 }
 
 export const RFFCFormTextarea = ({
@@ -424,6 +492,12 @@ export const RFFSelectSearch = ({
   return (
     <Field name={name} validate={validate}>
       {({ meta, input }) => {
+        const handleChange = onChange
+          ? (e) => {
+              input.onChange(e)
+              onChange(e)
+            }
+          : input.onChange
         return (
           <div>
             <CFormLabel htmlFor={name}>
@@ -453,7 +527,7 @@ export const RFFSelectSearch = ({
                 options={selectSearchvalues}
                 placeholder={placeholder}
                 isMulti={multi}
-                onChange={onChange}
+                onChange={handleChange}
                 onInputChange={debounceOnInputChange}
                 inputValue={inputText}
                 isLoading={isLoading}
@@ -490,7 +564,7 @@ export const RFFSelectSearch = ({
                 options={selectSearchvalues}
                 placeholder={placeholder}
                 isMulti={multi}
-                onChange={onChange}
+                onChange={handleChange}
                 onInputChange={debounceOnInputChange}
                 inputValue={inputText}
                 isLoading={isLoading}
