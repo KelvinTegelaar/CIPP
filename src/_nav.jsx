@@ -114,6 +114,11 @@ const _nav = [
         name: 'AAD Connect Report',
         to: '/identity/reports/azure-ad-connect-report',
       },
+      {
+        component: CNavItem,
+        name: 'Risky Sign-ins',
+        to: '/identity/reports/risky-signins',
+      },
     ],
   },
   {

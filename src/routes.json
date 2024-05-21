@@ -207,6 +207,12 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/identity/reports/risky-signins",
+    "name": "Risky Sign-Ins",
+    "component": "views/identity/reports/RiskySignIns",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/tenant",
     "name": "Tenant",
     "allowedRoles": ["admin", "editor", "readonly"]
