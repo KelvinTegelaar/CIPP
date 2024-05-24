@@ -52,6 +52,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Devices',
+        to: '/identity/administration/devices',
+      },
+      {
+        component: CNavItem,
         name: 'Deploy Group Template',
         to: '/identity/administration/deploy-group-template',
       },
@@ -124,18 +129,18 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Alerts (Classic)',
+        name: 'Alerts',
         to: '/tenant/administration/alertsqueue',
-      },
-      {
-        component: CNavItem,
-        name: 'Alert Rules',
-        to: '/tenant/administration/AlertRules',
       },
       {
         component: CNavItem,
         name: 'Enterprise Applications',
         to: '/tenant/administration/enterprise-apps',
+      },
+      {
+        component: CNavItem,
+        name: 'Secure Score',
+        to: '/tenant/administration/securescore',
       },
       {
         component: CNavItem,
@@ -145,12 +150,17 @@ const _nav = [
       {
         component: CNavItem,
         name: 'Tenant Onboarding',
-        to: '/tenant/administration/tenant-onboarding-wizard',
+        to: '/tenant/administration/tenant-onboarding',
       },
       {
         component: CNavItem,
         name: 'Tenant Offboarding',
         to: '/tenant/administration/tenant-offboarding-wizard',
+      },
+      {
+        component: CNavItem,
+        name: 'Partner Relationships',
+        to: '/tenant/administration/partner-relationships',
       },
     ],
   },
@@ -241,6 +251,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'CA Policy Tester',
+        to: '/tenant/conditional/test-policy',
+      },
+      {
+        component: CNavItem,
         name: 'CA Vacation Mode',
         to: '/tenant/conditional/deploy-vacation',
       },
@@ -248,11 +263,6 @@ const _nav = [
         component: CNavItem,
         name: 'CA Templates',
         to: '/tenant/conditional/list-template',
-      },
-      {
-        component: CNavItem,
-        name: 'Add CA Template',
-        to: '/tenant/conditional/add-template',
       },
       {
         component: CNavItem,
@@ -476,8 +486,18 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'MEM Policies',
+        name: 'Configuration Policies',
         to: '/endpoint/MEM/list-policies',
+      },
+      {
+        component: CNavItem,
+        name: 'Compliance Policies',
+        to: '/endpoint/MEM/list-compliance-policies',
+      },
+      {
+        component: CNavItem,
+        name: 'Protection Policies',
+        to: '/endpoint/MEM/list-appprotection-policies',
       },
       {
         component: CNavItem,
@@ -588,6 +608,11 @@ const _nav = [
         name: 'Quarantine',
         to: '/email/administration/quarantine',
       },
+      {
+        component: CNavItem,
+        name: 'Tenant Allow/Block Lists',
+        to: '/email/administration/tenant-allow-block-lists',
+      },
     ],
   },
   {
@@ -606,6 +631,11 @@ const _nav = [
         component: CNavItem,
         name: 'Mailbox Restores',
         to: '/email/tools/mailbox-restores',
+      },
+      {
+        component: CNavItem,
+        name: 'Mail Test',
+        to: '/email/tools/mail-test',
       },
     ],
   },
@@ -674,6 +704,25 @@ const _nav = [
   },
   {
     component: CNavGroup,
+    name: ' Room Management',
+    section: 'Email & Exchange',
+    to: '/rooms/management',
+    icon: <FontAwesomeIcon icon={faToolbox} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Rooms',
+        to: '/rooms/management/list-rooms',
+      },
+      {
+        component: CNavItem,
+        name: 'Room Lists',
+        to: '/rooms/management/room-lists',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
     name: 'Reports',
     section: 'Email & Exchange',
     to: '/email/reports',
@@ -736,6 +785,11 @@ const _nav = [
         component: CNavItem,
         name: 'Logbook',
         to: '/cipp/logs',
+      },
+      {
+        component: CNavItem,
+        name: 'Statistics',
+        to: '/cipp/statistics',
       },
       {
         component: CNavItem,

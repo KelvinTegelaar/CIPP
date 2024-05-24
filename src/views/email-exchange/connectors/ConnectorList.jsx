@@ -18,7 +18,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
         <FontAwesomeIcon icon={faEllipsisV} />
       </CButton>
       <CippActionsOffcanvas
-        title="User Information"
+        title="Extended Information"
         extendedInfo={[
           { label: 'Created by', value: `${row.CreatedBy}` },
           { label: 'Last edit by', value: `${row.LastModifiedBy}` },
@@ -151,6 +151,20 @@ const ConnectorList = () => {
       }
       tenantSelector={true}
       datatable={{
+        filterlist: [
+          { filterName: 'Enabled connectors', filter: 'Complex: Enabled eq true' },
+          { filterName: 'Disabled connectors', filter: 'Complex: Enabled eq false' },
+          { filterName: 'Inbound connectors', filter: 'Complex: cippconnectortype eq inbound' },
+          { filterName: 'Outbound connectors', filter: 'Complex: cippconnectortype eq outbound' },
+          {
+            filterName: 'Transport rule connectors',
+            filter: 'Complex: IsTransportRuleScoped eq true',
+          },
+          {
+            filterName: 'Non-transport rule connectors',
+            filter: 'Complex: IsTransportRuleScoped eq false',
+          },
+        ],
         reportName: `${tenant?.defaultDomainName}-connectors-list`,
         path: '/api/ListExchangeConnectors',
         params: { TenantFilter: tenant?.defaultDomainName },

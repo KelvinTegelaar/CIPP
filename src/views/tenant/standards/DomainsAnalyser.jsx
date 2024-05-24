@@ -15,6 +15,7 @@ import {
   faTrash,
 } from '@fortawesome/free-solid-svg-icons'
 import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
+import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 
 const RefreshAction = () => {
   const [execDomainsAnalyser, { isLoading, isSuccess, error }] = useExecDomainsAnalyserMutation()
@@ -258,6 +259,14 @@ const DomainsAnalyser = () => {
       },
     },
     {
+      name: 'DKIM Records',
+      selector: (row) => row['DKIMRecords'],
+      exportSelector: 'DKIMRecords',
+      sortable: true,
+      cell: cellGenericFormatter(),
+      omit: true,
+    },
+    {
       name: 'More Info',
       dataField: 'moreInfo',
       isDummyField: true,
@@ -286,7 +295,7 @@ const DomainsAnalyser = () => {
           },
         ],
         path: `/api/ListDomainAnalyser`,
-        params: { tenantFilter: currentTenant.defaultDomainName },
+        params: { tenantFilter: currentTenant.customerId },
         columns,
         reportName: 'Domains-Analyzer',
         tableProps: {

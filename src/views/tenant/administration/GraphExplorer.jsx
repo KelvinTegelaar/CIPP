@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useMemo } from 'react'
 import {
   CAlert,
   CButton,
@@ -30,7 +30,8 @@ import {
 import { OnChange } from 'react-final-form-listeners'
 import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 import PropTypes from 'prop-types'
-import { ModalService } from 'src/components/utilities'
+import { CippCodeOffCanvas, ModalService } from 'src/components/utilities'
+import { debounce } from 'lodash-es'
 
 const GraphExplorer = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -39,6 +40,7 @@ const GraphExplorer = () => {
   const [alertVisible, setAlertVisible] = useState()
   const [random, setRandom] = useState('')
   const [random2, setRandom2] = useState('')
+  const [ocVisible, setOCVisible] = useState(false)
   const [searchNow, setSearchNow] = useState(false)
   const [visibleA, setVisibleA] = useState(true)
   const handleSubmit = async (values) => {
@@ -48,6 +50,7 @@ const GraphExplorer = () => {
   }
   const [execGraphRequest, graphrequest] = useLazyGenericGetRequestQuery()
   const [execPostRequest, postResults] = useLazyGenericPostRequestQuery()
+  const [execPropRequest, availableProperties] = useLazyGenericGetRequestQuery()
   const {
     data: customPresets = [],
     isFetching: presetsIsFetching,
@@ -55,8 +58,55 @@ const GraphExplorer = () => {
   } = useGenericGetRequestQuery({ path: '/api/ListGraphExplorerPresets', params: { random2 } })
   const QueryColumns = { set: false, data: [] }
 
+  const debounceEndpointChange = useMemo(() => {
+    function endpointChange(value) {
+      execPropRequest({
+        path: '/api/ListGraphRequest',
+        params: {
+          Endpoint: value,
+          ListProperties: true,
+          TenantFilter: tenant.defaultDomainName,
+          IgnoreErrors: true,
+          random: (Math.random() + 1).toString(36).substring(7),
+        },
+      })
+    }
+    return debounce(endpointChange, 1000)
+  }, [])
+
   if (graphrequest.isSuccess) {
-    if (graphrequest.data?.Results?.length > 0) {
+    if (
+      graphrequest.data?.Metadata?.Parameters?.$select !== undefined &&
+      graphrequest.data?.Metadata?.Parameters?.$select !== '' &&
+      graphrequest.data?.Metadata?.Parameters?.$select !== null
+    ) {
+      //set columns
+      if (graphrequest.data?.Metadata?.TenantFilter === 'AllTenants') {
+        QueryColumns.data.push({
+          name: 'Tenant',
+          selector: (row) => row['Tenant'],
+          sortable: true,
+          exportSelector: 'Tenant',
+          cell: cellGenericFormatter(),
+        })
+        QueryColumns.data.push({
+          name: 'CippStatus',
+          selector: (row) => row['CippStatus'],
+          sortable: true,
+          exportSelector: 'CippStatus',
+          cell: cellGenericFormatter(),
+        })
+      }
+      graphrequest.data?.Metadata?.Parameters?.$select.split(',')?.map((value) =>
+        QueryColumns.data.push({
+          name: value,
+          selector: (row) => row[`${value.toString()}`],
+          sortable: true,
+          exportSelector: value,
+          cell: cellGenericFormatter(),
+        }),
+      )
+    } else if (graphrequest.data?.Results?.length > 0) {
       //set columns
       Object.keys(graphrequest.data?.Results[0]).map((value) =>
         QueryColumns.data.push({
@@ -82,7 +132,7 @@ const GraphExplorer = () => {
   const handleManagePreset = ({ values, action, message }) => {
     var params = {
       action: action,
-      values: values,
+      preset: values,
     }
     ModalService.confirm({
       title: 'Confirm',
@@ -102,7 +152,7 @@ const GraphExplorer = () => {
     {
       name: 'All users with email addresses',
       id: '6164e239-0c9a-4a27-9049-6250bf65a3e3',
-      params: { endpoint: '/users', $select: 'userprincipalname,mail,proxyAddresses', $filter: '' },
+      params: { endpoint: '/users', $select: 'userPrincipalName,mail,proxyAddresses', $filter: '' },
       isBuiltin: true,
     },
     {
@@ -199,6 +249,15 @@ const GraphExplorer = () => {
       },
       isBuiltin: true,
     },
+    {
+      name: 'Organization Branding',
+      id: '2ed236e2-268e-461b-9d37-98b123010667',
+      params: {
+        endpoint: 'organization/%tenantid%/branding',
+        NoPagination: true,
+      },
+      isBuiltin: true,
+    },
   ]
 
   if (customPresets?.Results?.length > 0) {
@@ -216,10 +275,18 @@ const GraphExplorer = () => {
 
   useEffect(() => {
     if (params?.endpoint) {
+      var select = ''
+      if (params?.$select) {
+        select = params.$select.map((p) => p.value).join(',')
+      }
+      if (params?.name) {
+        params.QueueNameOverride = 'Graph Explorer - ' + params.name
+      }
       execGraphRequest({
         path: 'api/ListGraphRequest',
         params: {
           ...params,
+          $select: select,
           random: random,
         },
       })
@@ -236,15 +303,36 @@ const GraphExplorer = () => {
           {({ form }) => (
             <OnChange name={field}>
               {(value) => {
+                if (field == 'endpoint') {
+                  debounceEndpointChange(value)
+                }
                 if (value?.value) {
                   let preset = presets.filter(function (obj) {
                     return obj.id === value.value
                   })
                   if (preset[0]?.id !== '') {
-                    if (preset[0]?.params[set]) {
-                      onChange(preset[0]?.params[set])
+                    if (set == 'endpoint') {
+                      debounceEndpointChange(preset[0]?.params[set])
+                    }
+                    if (set == '$select') {
+                      if (preset[0]?.params[set]) {
+                        var properties = preset[0].params[set].split(',')
+                        var selectedProps = properties.map((prop) => {
+                          return {
+                            label: prop,
+                            value: prop,
+                          }
+                        })
+                        onChange(selectedProps)
+                      } else {
+                        onChange('')
+                      }
                     } else {
-                      onChange(preset[0][set])
+                      if (preset[0]?.params[set]) {
+                        onChange(preset[0]?.params[set])
+                      } else {
+                        onChange(preset[0][set])
+                      }
                     }
                   }
                 }
@@ -259,7 +347,17 @@ const GraphExplorer = () => {
     field: PropTypes.node,
     set: PropTypes.string,
   }
-  console.log(graphrequest.data)
+
+  function getPresetProps(values) {
+    var newvals = Object.assign({}, values)
+    if (newvals?.$select !== undefined && Array.isArray(newvals?.$select)) {
+      newvals.$select = newvals?.$select.map((p) => p.value).join(',')
+    }
+    delete newvals['reportTemplate']
+    delete newvals['tenantFilter']
+    delete newvals['IsShared']
+    return newvals
+  }
 
   return (
     <>
@@ -300,6 +398,7 @@ const GraphExplorer = () => {
                                 name="reportTemplate"
                                 label="Select a report preset"
                                 placeholder="Select a report"
+                                retainInput={false}
                                 multi={false}
                                 values={presets.map((preset) => {
                                   return {
@@ -316,7 +415,11 @@ const GraphExplorer = () => {
                             </div>
                             <RFFCFormInput type="text" name="name" label="Preset Name" />
                             <WhenFieldChanges field="reportTemplate" set="name" />
-                            <RFFCFormSwitch name="IsShared" label="Share Preset" />
+                            <CTooltip content="Share this preset with other users?">
+                              <span>
+                                <RFFCFormSwitch name="IsShared" label="Share Preset" />
+                              </span>
+                            </CTooltip>
                             <WhenFieldChanges field="reportTemplate" set="IsShared" />
                             <FormSpy>
                               {(props) => {
@@ -326,6 +429,14 @@ const GraphExplorer = () => {
                                 return (
                                   <>
                                     <div className="my-2">
+                                      <CTooltip content="Import / Export" placement="right">
+                                        <CButton
+                                          onClick={() => setOCVisible(true)}
+                                          className="me-2"
+                                        >
+                                          <FontAwesomeIcon icon="exchange-alt" />
+                                        </CButton>
+                                      </CTooltip>
                                       {!preset[0]?.isBuiltin &&
                                         preset[0]?.id &&
                                         preset[0]?.IsMyPreset && (
@@ -373,6 +484,7 @@ const GraphExplorer = () => {
                                                   values: props.values,
                                                 })
                                               }
+                                              className="me-2"
                                             >
                                               <FontAwesomeIcon icon="trash" />
                                             </CButton>
@@ -394,10 +506,23 @@ const GraphExplorer = () => {
                                         {postResults.data?.Results}
                                       </CAlert>
                                     )}
+                                    <CippCodeOffCanvas
+                                      title="Preset Import / Export"
+                                      row={{
+                                        preset: getPresetProps(props.values),
+                                      }}
+                                      state={ocVisible}
+                                      path="api/ExecGraphExplorerPreset"
+                                      hideFunction={() => {
+                                        setOCVisible(false)
+                                        setRandom2((Math.random() + 1).toString(36).substring(7))
+                                      }}
+                                    />
                                   </>
                                 )
                               }}
                             </FormSpy>
+                            <hr />
                             <RFFCFormSwitch name="$count" label="Use $count" />
                             <WhenFieldChanges field="reportTemplate" set="$count" />
                             <RFFCFormSwitch name="NoPagination" label="Disable Pagination" />
@@ -409,6 +534,18 @@ const GraphExplorer = () => {
                               placeholder="Select the number of rows to return"
                             />
                             <WhenFieldChanges field="reportTemplate" set="$top" />
+                            <RFFCFormSwitch
+                              name="ReverseTenantLookup"
+                              label="Reverse Tenant Lookup"
+                            />
+                            <WhenFieldChanges field="reportTemplate" set="ReverseTenantLookup" />
+                            <RFFCFormInput
+                              type="text"
+                              name="$format"
+                              label="Format"
+                              placeholder="Optional format to return (e.g. application/json)"
+                            />
+                            <WhenFieldChanges field="reportTemplate" set="$format" />
                           </CCol>
                           <CCol>
                             <RFFCFormInput
@@ -418,6 +555,28 @@ const GraphExplorer = () => {
                               placeholder="Enter the Graph Endpoint you'd like to run the custom report for."
                             />
                             <WhenFieldChanges field="reportTemplate" set="endpoint" />
+                            <WhenFieldChanges field="endpoint" set="endpoint" />
+                            <div className="mb-3">
+                              <RFFSelectSearch
+                                name="$select"
+                                label="Select"
+                                placeholder="Select the columns to use for this query"
+                                retainInput={true}
+                                multi={true}
+                                values={
+                                  availableProperties?.data?.Results
+                                    ? availableProperties?.data?.Results.map((prop) => {
+                                        return {
+                                          name: prop,
+                                          value: prop,
+                                        }
+                                      })
+                                    : []
+                                }
+                                allowCreate={true}
+                                isLoading={availableProperties.isFetching}
+                              />
+                            </div>
                             <RFFCFormInput
                               type="text"
                               name="$filter"
@@ -425,12 +584,6 @@ const GraphExplorer = () => {
                               placeholder="Enter the filter string for the Graph query"
                             />
                             <WhenFieldChanges field="reportTemplate" set="$filter" />
-                            <RFFCFormInput
-                              type="text"
-                              name="$select"
-                              label="Select"
-                              placeholder="Select the columns to use for this query"
-                            />
                             <WhenFieldChanges field="reportTemplate" set="$select" />
                             <RFFCFormInput
                               type="text"
@@ -446,6 +599,16 @@ const GraphExplorer = () => {
                               placeholder="Enter OData search query"
                             />
                             <WhenFieldChanges field="reportTemplate" set="$search" />
+                            <RFFCFormInput
+                              type="text"
+                              name="ReverseTenantLookupProperty"
+                              label="Reverse Tenant Lookup Property"
+                              placeholder="Default tenantId"
+                            />
+                            <WhenFieldChanges
+                              field="reportTemplate"
+                              set="ReverseTenantLookupProperty"
+                            />
                           </CCol>
                         </CRow>
                         <CRow className="mb-3">
@@ -468,6 +631,11 @@ const GraphExplorer = () => {
       <hr />
       <CippPage title="Report Results" tenantSelector={false}>
         {!searchNow && <span>Execute a search to get started.</span>}
+        {graphrequest.isFetching && !QueryColumns.set && (
+          <div className="my-2">
+            <CSpinner className="me-2" /> Loading Data
+          </div>
+        )}
         {graphrequest.isSuccess && QueryColumns.set && searchNow && (
           <CCard className="content-card">
             <CCardHeader className="d-flex justify-content-between align-items-center">
@@ -484,6 +652,7 @@ const GraphExplorer = () => {
                   columns={QueryColumns.data}
                   data={graphrequest?.data?.Results}
                   isFetching={graphrequest.isFetching}
+                  refreshFunction={() => setRandom((Math.random() + 1).toString(36).substring(7))}
                 />
               </>
             </CCardBody>
