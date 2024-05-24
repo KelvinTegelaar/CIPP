@@ -2,9 +2,15 @@ import React, { useState } from 'react'
 import { CCol, CRow, CListGroup, CListGroupItem, CCallout, CSpinner } from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faExclamationTriangle, faTimes } from '@fortawesome/free-solid-svg-icons'
+import {
+  faCheck,
+  faExclamationTriangle,
+  faFunnelDollar,
+  faTimes,
+} from '@fortawesome/free-solid-svg-icons'
 import { CippWizard } from 'src/components/layout'
 import { WizardTableField } from 'src/components/tables'
+import { validateAlphabeticalSort } from 'src/components/utilities'
 import PropTypes from 'prop-types'
 import {
   Condition,
@@ -16,6 +22,7 @@ import {
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { OnChange } from 'react-final-form-listeners'
 import CippJsonView from 'src/components/utilities/CippJsonView'
+import { value } from 'lodash-es'
 
 const Error = ({ name }) => (
   <Field
@@ -70,7 +77,6 @@ const AddPolicy = () => {
                 let template = intuneTemplates.data.filter(function (obj) {
                   return obj.GUID === value
                 })
-                // console.log(template[0][set])
                 onChange(template[0][set])
               }}
             </OnChange>
@@ -145,10 +151,12 @@ const AddPolicy = () => {
             {intuneTemplates.isSuccess && (
               <RFFCFormSelect
                 name="TemplateList"
-                values={intuneTemplates.data?.map((template) => ({
-                  value: template.GUID,
-                  label: template.Displayname,
-                }))}
+                values={validateAlphabeticalSort(intuneTemplates.data, ['Displayname'])?.map(
+                  (template) => ({
+                    value: template.GUID,
+                    label: template.Displayname,
+                  }),
+                )}
                 placeholder="Select a template"
                 label="Please choose a template to apply."
               />
@@ -207,7 +215,6 @@ const AddPolicy = () => {
         </CRow>
         <FormSpy>
           {(props) => {
-            console.log(props.values.RAWJson)
             const json = props.values?.RAWJson ? JSON.parse(props.values.RAWJson) : undefined
             return (
               <>

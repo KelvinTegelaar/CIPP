@@ -223,6 +223,12 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/tenant/administration/partner-relationships",
+    "name": "Partner Relationships",
+    "component": "views/tenant/administration/PartnerRelationships",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/tenant/administration/domains",
     "name": "Domains",
     "component": "views/tenant/administration/Domains",
@@ -685,6 +691,18 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/rooms/management/list-rooms",
+    "name": "Rooms",
+    "component": "views/email-exchange/rooms/ListRooms",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/rooms/management/room-lists",
+    "name": "Room Lists",
+    "component": "views/email-exchange/rooms/ListRoomLists",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/email/tools/mailbox-restore-wizard",
     "name": "Mailbox Restore Wizard",
     "component": "views/email-exchange/tools/MailboxRestoreWizard",
@@ -760,6 +778,18 @@
     "name": "List Quarantine",
     "path": "/email/administration/Quarantine",
     "component": "views/email-exchange/administration/QuarantineList",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "List Tenant Allow/Block Lists",
+    "path": "/email/administration/tenant-allow-block-lists",
+    "component": "views/email-exchange/administration/ListTenantAllowBlockList",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "Add Tenant Allow/Block List",
+    "path": "/email/administration/add-tenant-allow-block-list",
+    "component": "views/email-exchange/administration/AddTenantAllowBlockList",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
@@ -865,6 +895,12 @@
     "allowedRoles": ["admin"]
   },
   {
+    "path": "/tenant/administration/securescore",
+    "name": "Secure Score Management",
+    "component": "views/tenant/administration/SecureScore",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/tenant/administration/gdap",
     "name": "GDAP Wizard",
     "component": "views/tenant/administration/GDAPWizard",
@@ -916,6 +952,12 @@
     "path": "/tenant/administration/tenant-offboarding-wizard",
     "name": "Tenant Offboarding",
     "component": "views/tenant/administration/TenantOffboardingWizard",
+    "allowedRoles": ["admin"]
+  },
+  {
+    "path": "/tenant/administration/tenant-onboarding",
+    "name": "Tenant Onboarding",
+    "component": "views/tenant/administration/TenantOnboarding",
     "allowedRoles": ["admin"]
   },
   {
