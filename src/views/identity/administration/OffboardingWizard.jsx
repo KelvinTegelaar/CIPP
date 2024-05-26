@@ -47,7 +47,18 @@ const OffboardingWizard = () => {
     data: users = [],
     isFetching: usersIsFetching,
     error: usersError,
-  } = useListUsersQuery({ tenantDomain })
+  } = useGenericGetRequestQuery({
+    path: `/api/ListGraphRequest`,
+    params: {
+      TenantFilter: tenantDomain,
+      Endpoint: 'users',
+      $select:
+        'id,displayName,givenName,mail,mailNickname,proxyAddresses,usageLocation,userPrincipalName,userType,assignedLicenses,onPremisesSyncEnabled',
+      $count: true,
+      $orderby: 'displayName',
+      $top: 999,
+    },
+  })
 
   const {
     data: recipients = [],
@@ -121,7 +132,7 @@ const OffboardingWizard = () => {
           <RFFSelectSearch
             multi
             label={'Users in ' + tenantDomain}
-            values={users?.map((user) => ({
+            values={users?.Results?.map((user) => ({
               value: user.userPrincipalName,
               name: `${user.displayName} <${user.userPrincipalName}>`,
             }))}
@@ -177,36 +188,30 @@ const OffboardingWizard = () => {
               <RFFSelectSearch
                 label="Give other user full access on mailbox without automapping"
                 multi
-                values={users
-                  ?.filter((x) => x.mail)
-                  .map((user) => ({
-                    value: user.mail,
-                    name: `${user.displayName} <${user.mail}>`,
-                  }))}
+                values={users.Results?.filter((x) => x.mail).map((user) => ({
+                  value: user.mail,
+                  name: `${user.displayName} <${user.mail}>`,
+                }))}
                 placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                 name="AccessNoAutomap"
               />
               <RFFSelectSearch
                 label="Give other user full access on mailbox with automapping"
                 multi
-                values={users
-                  ?.filter((x) => x.mail)
-                  .map((user) => ({
-                    value: user.mail,
-                    name: `${user.displayName} <${user.mail}>`,
-                  }))}
+                values={users.Results?.filter((x) => x.mail).map((user) => ({
+                  value: user.mail,
+                  name: `${user.displayName} <${user.mail}>`,
+                }))}
                 placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                 name="AccessAutomap"
               />
               <RFFSelectSearch
                 label="Give other user full access on Onedrive"
                 multi
-                values={users
-                  ?.filter((x) => x.mail)
-                  .map((user) => ({
-                    value: user.mail,
-                    name: `${user.displayName} <${user.mail}>`,
-                  }))}
+                values={users.Results?.filter((x) => x.mail).map((user) => ({
+                  value: user.mail,
+                  name: `${user.displayName} <${user.mail}>`,
+                }))}
                 placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                 name="OnedriveAccess"
               />
