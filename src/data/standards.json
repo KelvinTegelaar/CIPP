@@ -831,6 +831,48 @@
     "impactColour": "info"
   },
   {
+    "name": "standards.ShortenMeetings",
+    "cat": "Exchange Standards",
+    "tag": ["mediumimpact"],
+    "helpText": "Sets the shorten meetings settings on a tenant level. This will shorten meetings by the selected amount of minutes. Valid values are 0 to 29. Short meetings are under 60 minutes, long meetings are over 60 minutes.",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Select value",
+        "name": "standards.ShortenMeetings.ShortenEventScopeDefault",
+        "values": [
+          {
+            "label": "Disabled/None",
+            "value": "None"
+          },
+          {
+            "label": "End early",
+            "value": "EndEarly"
+          },
+          {
+            "label": "Start late",
+            "value": "StartLate"
+          }
+        ]
+      },
+      {
+        "type": "number",
+        "name": "standards.ShortenMeetings.DefaultMinutesToReduceShortEventsBy",
+        "label": "Minutes to reduce short calendar events by (Default is 5)",
+        "default": 5
+      },
+      {
+        "type": "number",
+        "name": "standards.ShortenMeetings.DefaultMinutesToReduceLongEventsBy",
+        "label": "Minutes to reduce long calendar events by (Default is 10)",
+        "default": 10
+      }
+    ],
+    "label": "Set shorten meetings state",
+    "impact": "Medium Impact",
+    "impactColour": "warning"
+  },
+  {
     "name": "standards.DisableOutlookAddins",
     "cat": "Exchange Standards",
     "tag": ["mediumimpact", "CIS", "exo_outlookaddins"],
