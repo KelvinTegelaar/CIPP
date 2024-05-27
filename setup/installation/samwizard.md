@@ -8,13 +8,11 @@ description: Setup access to my clients using the SAM Wizard
 Failing to adhere precisely to these instructions may result in a malfunctioning CIPP instance where features don't work as expected. Do not deviate from these instructions and follow them to the letter.&#x20;
 {% endhint %}
 
-## Setup Video for SAM Service Account
+## Setup Video for the CIPP Service Account
 
 {% embed url="https://app.guidde.com/share/playbooks/i9fztXsCUWjY3cr8mySvCX" fullWidth="false" %}
 
-## Authorization requirements
-
-to setup the Graph API, CSP, and Exchange integration CIPP requires a minimum level of permissions. We recommend to setup the account as follows
+## CIPP Service Account Setup
 
 1. Create a new account. We recommend to name this account something obvious such as "CIPP Integration" and give it the username "CIPP@domain.tld"
    1. This account must be a Global Administrator while setting up the integration. These permissions may be removed after the integration has been setup.
@@ -33,7 +31,9 @@ to setup the Graph API, CSP, and Exchange integration CIPP requires a minimum le
   * Teams Administrator
   * User Administrator
   * Privileged Authentication Administrator
-* These groups are **not roles in your own tenant.** These must be the GDAP assigned **groups.**
+
+These groups are **not roles in your own tenant.** These must be the GDAP assigned **groups.**
+
 * Do not over-assign GDAP groups. Too many permissions will stop GDAP functionality. For more information check out Microsoft's documentation [here](https://learn.microsoft.com/en-us/partner-center/gdap-faq)
 
 3. This account must have **Microsoft** multi-factor authentication enforced for each logon, either via Conditional Access when available or via [Per User MFA](https://account.activedirectory.windowsazure.com/UserManagement/MultifactorVerification.aspx) when Conditional Access is not available.
@@ -44,14 +44,14 @@ The account will be used for all actions performed from the CIPP portal.
 
 ## Executing the wizard
 
-{% hint style="danger" %}
-Make sure you are logged into CIPP under your own account (user@domain.com). The CIPP SAM wizard will prompt you to logon, at this moment you use the CIPP Service Account(CIPP@domain.com).
+The SAM Wizard only needs to be run once to connect to your tenant, including all partner tenants.
 
+{% hint style="danger" %}
 Your browser **MUST** allow cookies and have any ad-blocker disabled for the duration of the wizard. Do not use in-private mode.
 {% endhint %}
 
-To setup the connection to your tenants you'll need to run the Sam Wizard. The Sam Wizard can be found under Settings -> SAM Setup Wizard. The Wizard will present you with multiple options. If this is your first setup it is recommended to choose "I'd like CIPP to create a SAM Application for me".
+To setup the connection to your tenants you'll need to run the Sam Wizard. The Sam Wizard can be found under CIPP -> SAM Setup Wizard.&#x20;
 
-When executing the Sam Wizard with "I'd like CIPP to create a SAM Application for me" you'll be presented with a button to start the Wizard. Do not navigate away from this page and execute all **5 steps** that this page will prompt you for.
+The Wizard will present you with multiple options. If this is your first setup it is recommended to choose "I'd like CIPP to create a SAM Application for me".
 
 {% embed url="https://app.guidde.com/share/playbooks/cHS8iUw2JCAGwiJxSnp7sp?origin=IEPB08VSavefFaCa9OSp3Y87aGu1" %}
