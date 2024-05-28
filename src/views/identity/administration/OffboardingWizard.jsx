@@ -302,7 +302,7 @@ const OffboardingWizard = () => {
                           >
                             <h5 className="mb-0">Selected User:</h5>
                             <span>
-                              {users.find((x) => x.userPrincipalName === user.value)
+                              {users.Results?.find((x) => x.userPrincipalName === user.value)
                                 .onPremisesSyncEnabled === true ? (
                                 <CTooltip content="This user is AD sync enabled, offboarding will fail for some steps">
                                   <FontAwesomeIcon
