@@ -188,10 +188,11 @@ const SettingsCustomRoles = () => {
         <CippOffcanvas
           visible={offcanvasVisible}
           hideFunction={() => setOffcanvasVisible(false)}
-          title={`${cat}.${obj}`}
+          title="Permission Info"
           placement="end"
           size="lg"
         >
+          <h4 className="mt-2">{`${cat}.${obj}`}</h4>
           <p>
             Listed below are the available API endpoints based on permission level, ReadWrite level
             includes endpoints under Read.
@@ -222,7 +223,8 @@ const SettingsCustomRoles = () => {
       <>
         <p className="me-1">
           Custom roles can be used to restrict permissions for users with the 'editor' or 'readonly'
-          roles in CIPP. They can be limited to a subset of tenants and API permissions.
+          roles in CIPP. They can be limited to a subset of tenants and API permissions. To restrict
+          direct API access, create a role with the name 'CIPP-API'.
         </p>
         <p className="small">
           NOTE: The custom role must be added to the user in SWA in conjunction with the base role.
