@@ -70,6 +70,9 @@ export default function CippScheduleOffcanvas({
     }
     genericPostRequest({ path: '/api/AddScheduledItem', values: shippedValues }).then((res) => {
       setRefreshState(res.requestId)
+      if (props.submitFunction) {
+        props.submitFunction()
+      }
     })
   }
 
