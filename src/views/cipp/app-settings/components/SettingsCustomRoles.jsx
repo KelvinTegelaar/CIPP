@@ -21,6 +21,7 @@ import PropTypes from 'prop-types'
 import { OnChange } from 'react-final-form-listeners'
 import { useListTenantsQuery } from 'src/store/api/tenants'
 import CippListOffcanvas, { OffcanvasListSection } from 'src/components/utilities/CippListOffcanvas'
+import CippButtonCard from 'src/components/contentcards/CippButtonCard'
 
 const SettingsCustomRoles = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
@@ -219,7 +220,7 @@ const SettingsCustomRoles = () => {
   }
 
   return (
-    <CippPage title="Custom Roles" tenantSelector={false}>
+    <CippButtonCard title="Custom Roles" titleType="big" isFetching={isFetching || tenantsFetching}>
       <>
         <p className="me-1">
           Custom roles can be used to restrict permissions for users with the 'editor' or 'readonly'
@@ -231,7 +232,6 @@ const SettingsCustomRoles = () => {
           beta and should be treated as such. The custom role must be added to the user in SWA in
           conjunction with the base role. (e.g. editor,mycustomrole)
         </p>
-        {(isFetching || tenantsFetching) && <Skeleton count={1} />}
         {isSuccess && !isFetching && !tenantsFetching && (
           <Form
             onSubmit={handleSubmit}
@@ -325,6 +325,7 @@ const SettingsCustomRoles = () => {
                         </>
                       </CAccordion>
                     </CCol>
+
                     <CCol xl={4} md={12}>
                       <FormSpy subscription={{ values: true }}>
                         {({ values }) => {
@@ -402,7 +403,7 @@ const SettingsCustomRoles = () => {
           />
         )}
       </>
-    </CippPage>
+    </CippButtonCard>
   )
 }
 
