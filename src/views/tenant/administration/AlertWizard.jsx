@@ -96,7 +96,6 @@ const AlertWizard = () => {
   const getRecurrenceOptions = () => {
     const values = currentFormState?.values
     if (values) {
-      //console.log(currentFormState)
       const updatedRecurrenceOptions = recurrenceOptions.map((opt) => ({
         ...opt,
         name: opt.name.replace(' (Recommended)', ''),
@@ -382,7 +381,7 @@ const AlertWizard = () => {
                                 />
                               </CCol>
                             </CRow>
-                            <Condition when="command?.value?.requiresInput" is={true}>
+                            <Condition when="command.value.requiresInput" is={true}>
                               <CRow className="mb-3">
                                 <CCol>
                                   <FormSpy>
