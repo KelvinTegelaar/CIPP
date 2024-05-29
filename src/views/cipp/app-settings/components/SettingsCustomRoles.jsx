@@ -16,10 +16,11 @@ import { useGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/s
 import { CippPage } from 'src/components/layout'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Skeleton from 'react-loading-skeleton'
-import { TenantSelectorMultiple, ModalService } from 'src/components/utilities'
+import { TenantSelectorMultiple, ModalService, CippOffcanvas } from 'src/components/utilities'
 import PropTypes from 'prop-types'
 import { OnChange } from 'react-final-form-listeners'
 import { useListTenantsQuery } from 'src/store/api/tenants'
+import CippListOffcanvas, { OffcanvasListSection } from 'src/components/utilities/CippListOffcanvas'
 
 const SettingsCustomRoles = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
@@ -137,6 +138,85 @@ const SettingsCustomRoles = () => {
     field: PropTypes.node,
     set: PropTypes.string,
   }
+
+  const ApiPermissionRow = ({ obj, cat }) => {
+    const [offcanvasVisible, setOffcanvasVisible] = useState(false)
+
+    var items = []
+    for (var key in apiPermissions[cat][obj])
+      for (var key2 in apiPermissions[cat][obj][key]) {
+        items.push({ heading: '', content: apiPermissions[cat][obj][key][key2] })
+      }
+    var group = [{ items: items }]
+
+    return (
+      <>
+        <CCol md={4}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}
+          >
+            <h5>{obj}</h5>
+          </div>
+        </CCol>
+        <CCol xl={2}>
+          <CButton onClick={() => setOffcanvasVisible(true)} variant="ghost" size="sm" color="info">
+            <FontAwesomeIcon icon="info-circle" />
+          </CButton>
+        </CCol>
+        <CCol>
+          <RFFCFormRadioList
+            name={`Permissions.${cat}${obj}`}
+            options={[
+              {
+                label: 'None',
+                value: `${cat}.${obj}.None`,
+                disabled: cat === 'CIPP' && obj === 'Core',
+              },
+              { label: 'Read', value: `${cat}.${obj}.Read` },
+              {
+                label: 'Read / Write',
+                value: `${cat}.${obj}.ReadWrite`,
+              },
+            ]}
+            inline={true}
+          />
+        </CCol>
+        <CippOffcanvas
+          visible={offcanvasVisible}
+          hideFunction={() => setOffcanvasVisible(false)}
+          title={`${cat}.${obj}`}
+          placement="end"
+          size="lg"
+        >
+          <p>
+            Listed below are the available API endpoints based on permission level, ReadWrite level
+            includes endpoints under Read.
+          </p>
+          {[apiPermissions[cat][obj]].map((permissions, key) => {
+            var sections = Object.keys(permissions).map((type) => {
+              var items = []
+              for (var api in permissions[type]) {
+                items.push({ heading: '', content: permissions[type][api] })
+              }
+              return (
+                <OffcanvasListSection items={items} key={key} title={type} showCardTitle={false} />
+              )
+            })
+            return sections
+          })}
+        </CippOffcanvas>
+      </>
+    )
+  }
+  ApiPermissionRow.propTypes = {
+    obj: PropTypes.node,
+    cat: PropTypes.node,
+  }
+
   return (
     <CippPage title="Custom Roles" tenantSelector={false}>
       <>
@@ -196,6 +276,7 @@ const SettingsCustomRoles = () => {
                             <h5>Set All Permissions</h5>
                           </div>
                         </CCol>
+                        <CCol xl={2}></CCol>
                         <CCol>
                           <RFFCFormRadioList
                             name="Defaults"
@@ -228,39 +309,13 @@ const SettingsCustomRoles = () => {
                                 <CAccordionBody>
                                   {Object.keys(apiPermissions[cat])
                                     .sort()
-                                    .map((obj, index) => (
-                                      <CRow key={`row-${catIndex}-${index}`} className="mb-3">
-                                        <CCol md={4}>
-                                          <div
-                                            style={{
-                                              display: 'flex',
-                                              flexDirection: 'row',
-                                              justifyContent: 'space-between',
-                                            }}
-                                          >
-                                            <h5>{obj}</h5>
-                                          </div>
-                                        </CCol>
-                                        <CCol>
-                                          <RFFCFormRadioList
-                                            name={`Permissions.${cat}${obj}`}
-                                            options={[
-                                              {
-                                                label: 'None',
-                                                value: `${cat}.${obj}.None`,
-                                                disabled: cat === 'CIPP' && obj === 'Core',
-                                              },
-                                              { label: 'Read', value: `${cat}.${obj}.Read` },
-                                              {
-                                                label: 'Read / Write',
-                                                value: `${cat}.${obj}.ReadWrite`,
-                                              },
-                                            ]}
-                                            inline={true}
-                                          />
-                                        </CCol>
-                                      </CRow>
-                                    ))}
+                                    .map((obj, index) => {
+                                      return (
+                                        <CRow key={`row-${catIndex}-${index}`} className="mb-3">
+                                          <ApiPermissionRow obj={obj} cat={cat} />
+                                        </CRow>
+                                      )
+                                    })}
                                 </CAccordionBody>
                               </CAccordionItem>
                             ))}
