@@ -23,7 +23,7 @@ const DefaultLayout = () => {
   useEffect(() => {
     let route = routes.find((route) => route.path.toLowerCase() === location.pathname.toLowerCase())
     if (route?.name) {
-      console.log(route)
+      //console.log(route)
       setTitle(route.name)
     }
   }, [setTitle, location.pathname])
