@@ -337,6 +337,7 @@ export function SettingsExtensionMappings() {
                           onClick={() => {
                             if (
                               mappingValue.value !== undefined &&
+                              mappingValue.value !== '-1' &&
                               Object.values(haloMappingsArray)
                                 .map((item) => item.haloId)
                                 .includes(mappingValue.value) === false
@@ -481,6 +482,7 @@ export function SettingsExtensionMappings() {
                             //set the new mapping in the array
                             if (
                               mappingValue.value !== undefined &&
+                              mappingValue.value !== '-1' &&
                               Object.values(ninjaMappingsArray)
                                 .map((item) => item.ninjaId)
                                 .includes(mappingValue.value) === false

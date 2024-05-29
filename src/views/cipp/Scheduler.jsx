@@ -157,7 +157,6 @@ const Scheduler = () => {
       if (typeof row?.Parameters[key] === 'object') {
         var nestedParamList = []
         Object.keys(row?.Parameters[key]).forEach((nestedKey) => {
-          console.log(nestedKey)
           nestedParamList.push({
             Key: nestedKey,
             Value: row?.Parameters[key][nestedKey],
