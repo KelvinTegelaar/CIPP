@@ -227,8 +227,9 @@ const SettingsCustomRoles = () => {
           direct API access, create a role with the name 'CIPP-API'.
         </p>
         <p className="small">
-          NOTE: The custom role must be added to the user in SWA in conjunction with the base role.
-          (e.g. editor,mycustomrole)
+          <FontAwesomeIcon icon="triangle-exclamation" className="me-2" /> This functionality is in
+          beta and should be treated as such. The custom role must be added to the user in SWA in
+          conjunction with the base role. (e.g. editor,mycustomrole)
         </p>
         {(isFetching || tenantsFetching) && <Skeleton count={1} />}
         {isSuccess && !isFetching && !tenantsFetching && (

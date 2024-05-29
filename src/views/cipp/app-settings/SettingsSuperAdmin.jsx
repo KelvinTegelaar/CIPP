@@ -103,7 +103,7 @@ export function SettingsSuperAdmin() {
           </>
         </>
       </CippAccordionItem>
-      <CippAccordionItem title="Custom Roles" titleType="big">
+      <CippAccordionItem title="Custom Roles (beta)" titleType="big">
         <SettingsCustomRoles />
       </CippAccordionItem>
     </CAccordion>
