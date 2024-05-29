@@ -317,7 +317,7 @@ const AlertWizard = () => {
                                     multi={true}
                                     name={`actions`}
                                     placeholder={
-                                      'Select one action or multple actions from the list'
+                                      'Select one action or multiple actions from the list'
                                     }
                                     label="Then perform the following action(s)"
                                   />
@@ -382,7 +382,7 @@ const AlertWizard = () => {
                                 />
                               </CCol>
                             </CRow>
-                            <Condition when="command.value.requiresInput" is={true}>
+                            <Condition when="command?.value?.requiresInput" is={true}>
                               <CRow className="mb-3">
                                 <CCol>
                                   <FormSpy>
