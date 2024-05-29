@@ -293,7 +293,6 @@ export const RFFCFormRadioList = ({
   name,
   options,
   className = 'mb-3',
-  disabled = false,
   onClick,
   inline = false,
 }) => {
@@ -312,7 +311,6 @@ export const RFFCFormRadioList = ({
                       onChange={input.onChange}
                       type="radio"
                       {...option}
-                      disabled={disabled}
                       onClick={onClick}
                       inline={inline}
                     />
