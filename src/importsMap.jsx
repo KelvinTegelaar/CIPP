@@ -12,7 +12,6 @@ import React from 'react'
   "/identity/administration/users/edit": React.lazy(() => import('./views/identity/administration/EditUser')), 
   "/identity/administration/users/view": React.lazy(() => import('./views/identity/administration/ViewUser')), 
   "/identity/administration/users/InviteGuest": React.lazy(() => import('./views/identity/administration/InviteGuest')), 
-  "/identity/administration/users/jit-admin": React.lazy(() => import('./views/identity/administration/DeployJITAdmin')), 
   "/identity/administration/ViewBec": React.lazy(() => import('./views/identity/administration/ViewBEC')), 
   "/identity/administration/users": React.lazy(() => import('./views/identity/administration/Users')), 
   "/identity/administration/devices": React.lazy(() => import('./views/identity/administration/Devices')), 
@@ -130,6 +129,7 @@ import React from 'react'
   "/security/reports/list-device-compliance": React.lazy(() => import('./views/security/reports/ListDeviceComplianceReport')), 
   "/license": React.lazy(() => import('./views/pages/license/License')), 
   "/cipp/settings": React.lazy(() => import('./views/cipp/app-settings/CIPPSettings')), 
+  "/cipp/extensions": React.lazy(() => import('./views/cipp/Extensions')), 
   "/cipp/setup": React.lazy(() => import('./views/cipp/Setup')), 
   "/tenant/administration/securescore": React.lazy(() => import('./views/tenant/administration/SecureScore')), 
   "/tenant/administration/gdap": React.lazy(() => import('./views/tenant/administration/GDAPWizard')), 
@@ -141,6 +141,7 @@ import React from 'react'
   "/tenant/administration/gdap-status": React.lazy(() => import('./views/tenant/administration/ListGDAPQueue')), 
   "/tenant/standards/list-standards": React.lazy(() => import('./views/tenant/standards/ListStandards')), 
   "/tenant/administration/tenant-offboarding-wizard": React.lazy(() => import('./views/tenant/administration/TenantOffboardingWizard')), 
+  "/tenant/administration/tenant-onboarding": React.lazy(() => import('./views/tenant/administration/TenantOnboarding')), 
   "/tenant/administration/tenant-onboarding-wizard": React.lazy(() => import('./views/tenant/administration/TenantOnboardingWizard')), 
 }
 export default importsMap

@@ -61,6 +61,57 @@
     }
   },
   {
+    "name": "standards.Branding",
+    "cat": "Global Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Sets the branding for the tenant. This includes the login page, and the Office 365 portal.",
+    "addedComponent": [
+      {
+        "type": "input",
+        "name": "standards.Branding.signInPageText",
+        "label": "Sign-in page text"
+      },
+      {
+        "type": "input",
+        "name": "standards.Branding.usernameHintText",
+        "label": "Username hint Text"
+      },
+      {
+        "type": "boolean",
+        "name": "standards.Branding.hideAccountResetCredentials",
+        "label": "Hide self-service password reset"
+      },
+      {
+        "type": "Select",
+        "label": "Visual Template",
+        "name": "standards.Branding.layoutTemplateType",
+        "values": [
+          {
+            "label": "Full-screen background",
+            "value": "default"
+          },
+          {
+            "label": "Parial-screen background",
+            "value": "verticalSplit"
+          }
+        ]
+      },
+      {
+        "type": "boolean",
+        "name": "standards.Branding.isHeaderShown",
+        "label": "Show header"
+      },
+      {
+        "type": "boolean",
+        "name": "standards.Branding.isFooterShown",
+        "label": "Show footer"
+      }
+    ],
+    "label": "Set branding for the tenant",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.EnableCustomerLockbox",
     "cat": "Global Standards",
     "tag": ["lowimpact", "CIS", "CustomerLockBoxEnabled"],
@@ -105,8 +156,36 @@
     "cat": "Global Standards",
     "tag": ["mediumimpact", "CIS", "spo_idle_session_timeout"],
     "helpText": "Enables and sets Idle session timeout for Microsoft 365 to 1 hour. This policy affects most M365 web apps",
-    "addedComponent": [],
-    "label": "Enable 1 hour Activity based Timeout",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Select value",
+        "name": "standards.ActivityBasedTimeout.timeout",
+        "values": [
+          {
+            "label": "1 Hour",
+            "value": "01:00:00"
+          },
+          {
+            "label": "3 Hours",
+            "value": "03:00:00"
+          },
+          {
+            "label": "6 Hours",
+            "value": "06:00:00"
+          },
+          {
+            "label": "12 Hours",
+            "value": "12:00:00"
+          },
+          {
+            "label": "24 Hours",
+            "value": "1.00:00:00"
+          }
+        ]
+      }
+    ],
+    "label": "Enable Activity based Timeout",
     "impact": "Medium Impact",
     "impactColour": "warning"
   },
@@ -750,6 +829,48 @@
     "label": "Disable additional storage providers in OWA",
     "impact": "Low Impact",
     "impactColour": "info"
+  },
+  {
+    "name": "standards.ShortenMeetings",
+    "cat": "Exchange Standards",
+    "tag": ["mediumimpact"],
+    "helpText": "Sets the shorten meetings settings on a tenant level. This will shorten meetings by the selected amount of minutes. Valid values are 0 to 29. Short meetings are under 60 minutes, long meetings are over 60 minutes.",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Select value",
+        "name": "standards.ShortenMeetings.ShortenEventScopeDefault",
+        "values": [
+          {
+            "label": "Disabled/None",
+            "value": "None"
+          },
+          {
+            "label": "End early",
+            "value": "EndEarly"
+          },
+          {
+            "label": "Start late",
+            "value": "StartLate"
+          }
+        ]
+      },
+      {
+        "type": "number",
+        "name": "standards.ShortenMeetings.DefaultMinutesToReduceShortEventsBy",
+        "label": "Minutes to reduce short calendar events by (Default is 5)",
+        "default": 5
+      },
+      {
+        "type": "number",
+        "name": "standards.ShortenMeetings.DefaultMinutesToReduceLongEventsBy",
+        "label": "Minutes to reduce long calendar events by (Default is 10)",
+        "default": 10
+      }
+    ],
+    "label": "Set shorten meetings state",
+    "impact": "Medium Impact",
+    "impactColour": "warning"
   },
   {
     "name": "standards.DisableOutlookAddins",

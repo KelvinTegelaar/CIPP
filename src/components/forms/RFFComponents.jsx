@@ -293,7 +293,6 @@ export const RFFCFormRadioList = ({
   name,
   options,
   className = 'mb-3',
-  disabled = false,
   onClick,
   inline = false,
 }) => {
@@ -312,7 +311,6 @@ export const RFFCFormRadioList = ({
                       onChange={input.onChange}
                       type="radio"
                       {...option}
-                      disabled={disabled}
                       onClick={onClick}
                       inline={inline}
                     />
@@ -589,7 +587,11 @@ export const RFFSelectSearch = ({
                 {...props}
               />
             )}
-            {meta.error && meta.touched && <span className="text-danger">{meta.error}</span>}
+            {meta.error && meta.touched && (
+              <span className="text-danger">
+                {typeof meta.error === 'object' ? Object.values(meta.error).join('') : meta.error}
+              </span>
+            )}
           </div>
         )
       }}

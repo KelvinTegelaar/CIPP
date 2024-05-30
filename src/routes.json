@@ -77,12 +77,6 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
-    "path": "/identity/administration/users/jit-admin",
-    "name": "JIT Admin",
-    "component": "views/identity/administration/DeployJITAdmin",
-    "allowedRoles": ["admin", "editor", "readonly"]
-  },
-  {
     "path": "/identity/administration/ViewBec",
     "name": "View BEC",
     "component": "views/identity/administration/ViewBEC",
@@ -895,6 +889,12 @@
     "allowedRoles": ["admin"]
   },
   {
+    "path": "/cipp/extensions",
+    "name": "Extensions Settings",
+    "component": "views/cipp/Extensions",
+    "allowedRoles": ["admin"]
+  },
+  {
     "path": "/cipp/setup",
     "name": "Setup",
     "component": "views/cipp/Setup",
@@ -958,6 +958,12 @@
     "path": "/tenant/administration/tenant-offboarding-wizard",
     "name": "Tenant Offboarding",
     "component": "views/tenant/administration/TenantOffboardingWizard",
+    "allowedRoles": ["admin"]
+  },
+  {
+    "path": "/tenant/administration/tenant-onboarding",
+    "name": "Tenant Onboarding",
+    "component": "views/tenant/administration/TenantOnboarding",
     "allowedRoles": ["admin"]
   },
   {

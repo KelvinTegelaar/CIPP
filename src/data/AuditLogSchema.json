@@ -3,7 +3,7 @@
     "Id": "String",
     "RecordType": "List:AuditLogRecordType",
     "CreationTime": "String",
-    "Operation": "String",
+    "Operation": "List:Operation",
     "OrganizationId": "String",
     "UserType": "List:UserType",
     "UserKey": "String",
@@ -12,17 +12,17 @@
     "ObjectId": "String",
     "UserId": "String",
     "ClientIP": "String",
-    "IPDetectedbyCIPP": "String",
     "Username": "String",
     "CIPPGeoLocation": "List:countryList",
     "CIPPBadRepIP": "String",
-    "CIPPHostedIP": "String"
+    "CIPPHostedIP": "String",
+    "CIPPIPDetected": "String"
   },
   "Audit.Exchange": {
     "Id": "Combination GUID",
     "RecordType": "List:AuditLogRecordType",
     "CreationTime": "String",
-    "Operation": "String",
+    "Operation": "List:Operation",
     "OrganizationId": "Guid",
     "UserType": "List:UserType",
     "UserKey": "String",
@@ -49,12 +49,12 @@
     "ClientIPAddress": "String",
     "ClientMachinename": "String",
     "ClientProcessname": "String",
-    "ClientVersion": "String"
+    "ClientVersion": "String",
+    "MoveToFolder": "String"
   },
   "Audit.AzureActiveDirectory": {
     "AzureActiveDirectoryEventType": "List:AzureActiveDirectoryEventType",
-    "ExtendedProperties": "Common.namevaluePair",
-    "ModifiedProperties": "Common.ModifiedProperty",
+    "AccountEnabled": "String",
     "Actor": "List:IdentityTypevaluePair",
     "ActorContextId": "String",
     "ActorIpAddress": "String",
@@ -68,6 +68,91 @@
     "Errorvalue": "String",
     "LogonError": "String"
   },
+  "List:Operation": [
+    { "value": "UserLoggedIn", "name": "A user logged in" },
+    { "value": "accessed mailbox items", "name": "accessed mailbox items" },
+    { "value": "add delegation entry.", "name": "added delegation entry" },
+    { "value": "add domain to company.", "name": "added domain to company" },
+    { "value": "add group.", "name": "added group" },
+    { "value": "add member to group.", "name": "added member to group" },
+    { "value": "add mailboxpermission", "name": "added delegate mailbox permissions" },
+    { "value": "add member to role.", "name": "added member to role" },
+    { "value": "add partner to company.", "name": "added a partner to the directory" },
+    { "value": "add service principal.", "name": "added service principal" },
+    {
+      "value": "add service principal credentials.",
+      "name": "added credentials to a service principal"
+    },
+    { "value": "add user.", "name": "added user" },
+    { "value": "addfolderpermissions", "name": "added permissions to folder" },
+    { "value": "applyrecordlabel", "name": "labeled message as a record" },
+    { "value": "change user license.", "name": "changed user license" },
+    { "value": "change user password.", "name": "changed user password" },
+    { "value": "copy", "name": "copied messages to another folder" },
+    { "value": "create", "name": "created mailbox item" },
+    { "value": "delete group.", "name": "deleted group" },
+    { "value": "delete user.", "name": "deleted user" },
+    { "value": "harddelete", "name": "purged messages from the mailbox" },
+    { "value": "mailboxlogin", "name": "user signed in to mailbox" },
+    { "value": "move", "name": "moved messages to another folder" },
+    { "value": "movetodeleteditems", "name": "moved messages to deleted items folder" },
+    { "value": "new-inboxrule", "name": "created new inbox rule in outlook web app" },
+    { "value": "remove delegation entry.", "name": "removed delegation entry" },
+    { "value": "remove domain from company.", "name": "removed domain from company" },
+    { "value": "remove member from group.", "name": "removed member from group" },
+    { "value": "remove member from a role.", "name": "remove member from a role" },
+    { "value": "Disable Strong Authentication.", "name": "Disable Strong Authentication." },
+
+    {
+      "value": "remove service principal.",
+      "name": "removed a service principal from the directory"
+    },
+    {
+      "value": "remove service principal credentials.",
+      "name": "removed credentials from a service principal"
+    },
+    { "value": "remove mailboxpermission", "name": "removed delegate mailbox permissions" },
+    { "value": "remove member from role.", "name": "removed a user from a directory role" },
+    { "value": "remove partner from company.", "name": "removed a partner from the directory" },
+    { "value": "removefolderpermissions", "name": "removed permissions from folder" },
+    { "value": "reset user password.", "name": "reset user password" },
+    { "value": "send", "name": "sent message" },
+    { "value": "sendas", "name": "sent message using send as permissions" },
+    { "value": "sendonbehalf", "name": "sent message using send on behalf permissions" },
+    { "value": "set company contact information.", "name": "set company contact information" },
+    { "value": "set company information.", "name": "set company information" },
+    { "value": "set delegation entry.", "name": "set delegation entry" },
+    { "value": "set dirsyncenabled flag.", "name": "turned on azure ad sync" },
+    { "value": "set domain authentication.", "name": "set domain authentication" },
+    {
+      "value": "set federation settings on domain.",
+      "name": "updated the federation settings for a domain"
+    },
+    {
+      "value": "set force change user password.",
+      "name": "set property that forces user to change password"
+    },
+    { "value": "set inboxrule", "name": "modified inbox rule from outlook web app" },
+    { "value": "set license properties.", "name": "set license properties" },
+    { "value": "set password policy.", "name": "set password policy" },
+    { "value": "softdelete", "name": "deleted messages from deleted items folder" },
+    { "value": "update", "name": "updated message" },
+    { "value": "update user.", "name": "updated user" },
+    { "value": "update group.", "name": "updated group" },
+    { "value": "update domain.", "name": "updated domain" },
+    {
+      "value": "updatecalendardelegation",
+      "name": "added or removed user with delegate access to calendar folder"
+    },
+    { "value": "updatefolderpermissions", "name": "modified folder permission" },
+    { "value": "updateinboxrules", "name": "updated inbox rules from outlook client" },
+    { "value": "verify domain.", "name": "verified domain" },
+    { "value": "verify email verified domain.", "name": "verified email verified domain" },
+    {
+      "value": "Update StsRefreshTokenValidFrom Timestamp.",
+      "name": "Update StsRefreshTokenValidFrom Timestamp."
+    }
+  ],
   "List:LogonType": [
     { "value": 0, "Membername": "Owner", "name": "The mailbox owner." },
     {
