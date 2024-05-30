@@ -30,6 +30,8 @@ const SettingsCustomRoles = () => {
   const { data: tenants = [], tenantsFetching } = useListTenantsQuery({
     showAllTenantSelector: true,
   })
+  const [allTenantSelected, setAllTenantSelected] = useState(false)
+  const [cippApiRoleSelected, setCippApiRoleSelected] = useState(false)
 
   const {
     data: apiPermissions = [],
@@ -48,6 +50,20 @@ const SettingsCustomRoles = () => {
     path: 'api/ExecCustomRole',
   })
 
+  const handleTenantChange = (e) => {
+    var alltenant = false
+    e.map((tenant) => {
+      if (tenant.value === 'AllTenants') {
+        alltenant = true
+      }
+    })
+    if (alltenant) {
+      setAllTenantSelected(true)
+    } else {
+      setAllTenantSelected(false)
+    }
+    setSelectedTenant(e)
+  }
   const handleSubmit = async (values) => {
     //filter on only objects that are 'true'
     genericPostRequest({
@@ -92,6 +108,12 @@ const SettingsCustomRoles = () => {
                   let customRole = customRoleList.filter(function (obj) {
                     return obj.RowKey === value.value
                   })
+                  if (customRole[0].RowKey === 'CIPP-API') {
+                    setCippApiRoleSelected(true)
+                  } else {
+                    setCippApiRoleSelected(false)
+                  }
+
                   if (customRole === undefined || customRole === null || customRole.length === 0) {
                     return false
                   } else {
@@ -255,6 +277,12 @@ const SettingsCustomRoles = () => {
                         />
                         <WhenFieldChanges field="RoleName" set="Permissions" />
                         <WhenFieldChanges field="RoleName" set="AllowedTenants" />
+                        {cippApiRoleSelected && (
+                          <CCallout color="info">
+                            This role will limit access for the CIPP-API integration. It is not
+                            intended to be used for users.
+                          </CCallout>
+                        )}
                       </div>
                       <div className="mb-3">
                         <h5>Allowed Tenants</h5>
@@ -263,8 +291,13 @@ const SettingsCustomRoles = () => {
                           values={selectedTenant}
                           AllTenants={true}
                           valueIsDomain={true}
-                          onChange={(e) => setSelectedTenant(e)}
+                          onChange={(e) => handleTenantChange(e)}
                         />
+                        {allTenantSelected && (
+                          <CCallout color="warning">
+                            All tenants selected, no tenant restrictions will be applied.
+                          </CCallout>
+                        )}
                       </div>
                       <h5>API Permissions</h5>
                       <CRow className="mt-4 px-2">
