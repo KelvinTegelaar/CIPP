@@ -108,7 +108,7 @@ const SettingsCustomRoles = () => {
                   let customRole = customRoleList.filter(function (obj) {
                     return obj.RowKey === value.value
                   })
-                  if (customRole[0].RowKey === 'CIPP-API') {
+                  if (customRole[0]?.RowKey === 'CIPP-API') {
                     setCippApiRoleSelected(true)
                   } else {
                     setCippApiRoleSelected(false)
