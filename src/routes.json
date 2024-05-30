@@ -889,6 +889,12 @@
     "allowedRoles": ["admin"]
   },
   {
+    "path": "/cipp/extensions",
+    "name": "Extensions Settings",
+    "component": "views/cipp/Extensions",
+    "allowedRoles": ["admin"]
+  },
+  {
     "path": "/cipp/setup",
     "name": "Setup",
     "component": "views/cipp/Setup",

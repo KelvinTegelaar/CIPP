@@ -773,6 +773,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Extensions Settings',
+        to: '/cipp/extensions',
+      },
+      {
+        component: CNavItem,
         name: 'User Settings',
         to: '/cipp/user-settings',
       },
