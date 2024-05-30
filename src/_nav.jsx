@@ -78,7 +78,7 @@ const _nav = [
       {
         component: CNavItem,
         name: 'JIT Admin',
-        to: '/identity/administration/users/jit-admin',
+        to: '/identity/administration/jit-admin',
       },
       {
         component: CNavItem,
