@@ -101,6 +101,8 @@ import React from 'react'
   "/email/spamfilter/list-spamfilter": React.lazy(() => import('./views/email-exchange/spamfilter/Spamfilter')), 
   "/email/spamfilter/deploy": React.lazy(() => import('./views/email-exchange/spamfilter/DeploySpamfilter')), 
   "/email/spamfilter/list-templates": React.lazy(() => import('./views/email-exchange/spamfilter/ListSpamfilterTemplates')), 
+  "/rooms/management/list-rooms": React.lazy(() => import('./views/email-exchange/rooms/ListRooms')), 
+  "/rooms/management/room-lists": React.lazy(() => import('./views/email-exchange/rooms/ListRoomLists')), 
   "/email/tools/mailbox-restore-wizard": React.lazy(() => import('./views/email-exchange/tools/MailboxRestoreWizard')), 
   "/email/tools/mailbox-restores": React.lazy(() => import('./views/email-exchange/tools/MailboxRestores')), 
   "/email/tools/mail-test": React.lazy(() => import('./views/email-exchange/tools/MailTest')), 
@@ -114,6 +116,8 @@ import React from 'react'
   "/email/administration/mailboxes": React.lazy(() => import('./views/email-exchange/administration/MailboxesList')), 
   "/email/administration/mailbox-rules": React.lazy(() => import('./views/email-exchange/administration/MailboxRuleList')), 
   "/email/administration/Quarantine": React.lazy(() => import('./views/email-exchange/administration/QuarantineList')), 
+  "/email/administration/tenant-allow-block-lists": React.lazy(() => import('./views/email-exchange/administration/ListTenantAllowBlockList')), 
+  "/email/administration/add-tenant-allow-block-list": React.lazy(() => import('./views/email-exchange/administration/AddTenantAllowBlockList')), 
   "/email/reports/mailbox-statistics": React.lazy(() => import('./views/email-exchange/reports/MailboxStatisticsList')), 
   "/email/reports/SharedMailboxEnabledAccount": React.lazy(() => import('./views/email-exchange/reports/SharedMailboxEnabledAccount')), 
   "/email/reports/mailbox-cas-settings": React.lazy(() => import('./views/email-exchange/reports/MailboxClientAccessSettingsList')), 
@@ -136,6 +140,7 @@ import React from 'react'
   "/tenant/administration/gdap-status": React.lazy(() => import('./views/tenant/administration/ListGDAPQueue')), 
   "/tenant/standards/list-standards": React.lazy(() => import('./views/tenant/standards/ListStandards')), 
   "/tenant/administration/tenant-offboarding-wizard": React.lazy(() => import('./views/tenant/administration/TenantOffboardingWizard')), 
+  "/tenant/administration/tenant-onboarding": React.lazy(() => import('./views/tenant/administration/TenantOnboarding')), 
   "/tenant/administration/tenant-onboarding-wizard": React.lazy(() => import('./views/tenant/administration/TenantOnboardingWizard')), 
 }
 export default importsMap
