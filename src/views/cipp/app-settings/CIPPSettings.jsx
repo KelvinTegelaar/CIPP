@@ -59,7 +59,7 @@ export default function CIPPSettings() {
           Maintenance
         </CNavItem>
         {superAdmin && (
-          <CNavItem active={active === 10} onClick={() => setActive(10)} href="#">
+          <CNavItem active={active === 8} onClick={() => setActive(8)} href="#">
             SuperAdmin Settings
           </CNavItem>
         )}
@@ -98,8 +98,8 @@ export default function CIPPSettings() {
             <SettingsMaintenance />
           </CippLazy>
         </CTabPane>
-        <CTabPane visible={active === 10} className="mt-3">
-          <CippLazy visible={active === 10}>
+        <CTabPane visible={active === 8} className="mt-3">
+          <CippLazy visible={active === 8}>
             <SettingsSuperAdmin />
           </CippLazy>
         </CTabPane>
