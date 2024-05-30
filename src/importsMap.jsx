@@ -129,6 +129,7 @@ import React from 'react'
   "/security/reports/list-device-compliance": React.lazy(() => import('./views/security/reports/ListDeviceComplianceReport')), 
   "/license": React.lazy(() => import('./views/pages/license/License')), 
   "/cipp/settings": React.lazy(() => import('./views/cipp/app-settings/CIPPSettings')), 
+  "/cipp/extensions": React.lazy(() => import('./views/cipp/Extensions')), 
   "/cipp/setup": React.lazy(() => import('./views/cipp/Setup')), 
   "/tenant/administration/securescore": React.lazy(() => import('./views/tenant/administration/SecureScore')), 
   "/tenant/administration/gdap": React.lazy(() => import('./views/tenant/administration/GDAPWizard')), 
