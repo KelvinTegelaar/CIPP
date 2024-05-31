@@ -633,6 +633,32 @@
     "impactColour": "info"
   },
   {
+    "name": "standards.CloudMessageRecall",
+    "cat": "Exchange Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Sets the Cloud Message Recall state for the tenant. This allows users to recall messages from the cloud.",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Select value",
+        "name": "standards.CloudMessageRecall.state",
+        "values": [
+          {
+            "label": "Enabled",
+            "value": "true"
+          },
+          {
+            "label": "Disabled",
+            "value": "false"
+          }
+        ]
+      }
+    ],
+    "label": "Set Cloud Message Recall state",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.AutoExpandArchive",
     "cat": "Exchange Standards",
     "tag": ["lowimpact"],
