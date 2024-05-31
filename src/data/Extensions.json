@@ -16,7 +16,8 @@
         "name": "cippapi.Enabled",
         "label": "Enable Integration"
       }
-    ]
+    ],
+    "mappingRequired": false
   },
   {
     "name": "Gradient Integration",
@@ -49,7 +50,8 @@
         "name": "Gradient.Enabled",
         "label": "Enable Integration"
       }
-    ]
+    ],
+    "mappingRequired": false
   },
   {
     "name": "Halo PSA Ticketing Integration",
@@ -105,7 +107,8 @@
         "name": "HaloPSA.Enabled",
         "label": "Enable Integration"
       }
-    ]
+    ],
+    "mappingRequired": true
   },
   {
     "name": "NinjaOne Integration",
@@ -155,6 +158,7 @@
         "name": "NinjaOne.Enabled",
         "label": "Enable Integration"
       }
-    ]
+    ],
+    "mappingRequired": true
   }
 ]

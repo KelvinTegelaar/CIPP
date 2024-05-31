@@ -587,7 +587,11 @@ export const RFFSelectSearch = ({
                 {...props}
               />
             )}
-            {meta.error && meta.touched && <span className="text-danger">{meta.error}</span>}
+            {meta.error && meta.touched && (
+              <span className="text-danger">
+                {typeof meta.error === 'object' ? Object.values(meta.error).join('') : meta.error}
+              </span>
+            )}
           </div>
         )
       }}

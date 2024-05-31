@@ -6,6 +6,7 @@ import React from 'react'
 import { CippCallout } from 'src/components/layout/index.js'
 import CippAccordionItem from 'src/components/contentcards/CippAccordionItem'
 import SettingsCustomRoles from 'src/views/cipp/app-settings/components/SettingsCustomRoles'
+import CippButtonCard from 'src/components/contentcards/CippButtonCard'
 
 export function SettingsSuperAdmin() {
   const partnerConfig = useGenericGetRequestQuery({
@@ -39,8 +40,8 @@ export function SettingsSuperAdmin() {
   )
 
   return (
-    <CAccordion>
-      <CippAccordionItem
+    <>
+      <CippButtonCard
         title="Tenant Mode"
         titleType="big"
         isFetching={partnerConfig.isFetching}
@@ -102,10 +103,8 @@ export function SettingsSuperAdmin() {
             </CRow>
           </>
         </>
-      </CippAccordionItem>
-      <CippAccordionItem title="Custom Roles" titleType="big">
-        <SettingsCustomRoles />
-      </CippAccordionItem>
-    </CAccordion>
+      </CippButtonCard>
+      <SettingsCustomRoles />
+    </>
   )
 }

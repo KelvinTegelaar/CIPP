@@ -21,6 +21,7 @@ import PropTypes from 'prop-types'
 import { OnChange } from 'react-final-form-listeners'
 import { useListTenantsQuery } from 'src/store/api/tenants'
 import CippListOffcanvas, { OffcanvasListSection } from 'src/components/utilities/CippListOffcanvas'
+import CippButtonCard from 'src/components/contentcards/CippButtonCard'
 
 const SettingsCustomRoles = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
@@ -29,6 +30,8 @@ const SettingsCustomRoles = () => {
   const { data: tenants = [], tenantsFetching } = useListTenantsQuery({
     showAllTenantSelector: true,
   })
+  const [allTenantSelected, setAllTenantSelected] = useState(false)
+  const [cippApiRoleSelected, setCippApiRoleSelected] = useState(false)
 
   const {
     data: apiPermissions = [],
@@ -47,6 +50,20 @@ const SettingsCustomRoles = () => {
     path: 'api/ExecCustomRole',
   })
 
+  const handleTenantChange = (e) => {
+    var alltenant = false
+    e.map((tenant) => {
+      if (tenant.value === 'AllTenants') {
+        alltenant = true
+      }
+    })
+    if (alltenant) {
+      setAllTenantSelected(true)
+    } else {
+      setAllTenantSelected(false)
+    }
+    setSelectedTenant(e)
+  }
   const handleSubmit = async (values) => {
     //filter on only objects that are 'true'
     genericPostRequest({
@@ -91,6 +108,12 @@ const SettingsCustomRoles = () => {
                   let customRole = customRoleList.filter(function (obj) {
                     return obj.RowKey === value.value
                   })
+                  if (customRole[0]?.RowKey === 'CIPP-API') {
+                    setCippApiRoleSelected(true)
+                  } else {
+                    setCippApiRoleSelected(false)
+                  }
+
                   if (customRole === undefined || customRole === null || customRole.length === 0) {
                     return false
                   } else {
@@ -219,7 +242,7 @@ const SettingsCustomRoles = () => {
   }
 
   return (
-    <CippPage title="Custom Roles" tenantSelector={false}>
+    <CippButtonCard title="Custom Roles" titleType="big" isFetching={isFetching || tenantsFetching}>
       <>
         <p className="me-1">
           Custom roles can be used to restrict permissions for users with the 'editor' or 'readonly'
@@ -227,10 +250,10 @@ const SettingsCustomRoles = () => {
           direct API access, create a role with the name 'CIPP-API'.
         </p>
         <p className="small">
-          NOTE: The custom role must be added to the user in SWA in conjunction with the base role.
-          (e.g. editor,mycustomrole)
+          <FontAwesomeIcon icon="triangle-exclamation" className="me-2" /> This functionality is in
+          beta and should be treated as such. The custom role must be added to the user in SWA in
+          conjunction with the base role. (e.g. editor,mycustomrole)
         </p>
-        {(isFetching || tenantsFetching) && <Skeleton count={1} />}
         {isSuccess && !isFetching && !tenantsFetching && (
           <Form
             onSubmit={handleSubmit}
@@ -254,6 +277,12 @@ const SettingsCustomRoles = () => {
                         />
                         <WhenFieldChanges field="RoleName" set="Permissions" />
                         <WhenFieldChanges field="RoleName" set="AllowedTenants" />
+                        {cippApiRoleSelected && (
+                          <CCallout color="info">
+                            This role will limit access for the CIPP-API integration. It is not
+                            intended to be used for users.
+                          </CCallout>
+                        )}
                       </div>
                       <div className="mb-3">
                         <h5>Allowed Tenants</h5>
@@ -262,8 +291,13 @@ const SettingsCustomRoles = () => {
                           values={selectedTenant}
                           AllTenants={true}
                           valueIsDomain={true}
-                          onChange={(e) => setSelectedTenant(e)}
+                          onChange={(e) => handleTenantChange(e)}
                         />
+                        {allTenantSelected && (
+                          <CCallout color="warning">
+                            All tenants selected, no tenant restrictions will be applied.
+                          </CCallout>
+                        )}
                       </div>
                       <h5>API Permissions</h5>
                       <CRow className="mt-4 px-2">
@@ -324,6 +358,7 @@ const SettingsCustomRoles = () => {
                         </>
                       </CAccordion>
                     </CCol>
+
                     <CCol xl={4} md={12}>
                       <FormSpy subscription={{ values: true }}>
                         {({ values }) => {
@@ -401,7 +436,7 @@ const SettingsCustomRoles = () => {
           />
         )}
       </>
-    </CippPage>
+    </CippButtonCard>
   )
 }
 
