@@ -925,6 +925,32 @@
     "impactColour": "warning"
   },
   {
+    "name": "standards.Bookings",
+    "cat": "Exchange Standards",
+    "tag": ["mediumimpact"],
+    "helpText": "Sets the state of Bookings on the tenant. Bookings is a scheduling tool that allows users to book appointments with others both internal and external.",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Select value",
+        "name": "standards.Bookings.state",
+        "values": [
+          {
+            "label": "Enabled",
+            "value": "true"
+          },
+          {
+            "label": "Disabled",
+            "value": "false"
+          }
+        ]
+      }
+    ],
+    "label": "Set Bookings state",
+    "impact": "Medium Impact",
+    "impactColour": "warning"
+  },
+  {
     "name": "standards.DisableOutlookAddins",
     "cat": "Exchange Standards",
     "tag": ["mediumimpact", "CIS", "exo_outlookaddins"],
