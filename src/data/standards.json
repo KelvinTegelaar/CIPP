@@ -723,6 +723,32 @@
     "impactColour": "info"
   },
   {
+    "name": "standards.TeamsMeetingsByDefault",
+    "cat": "Exchange Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Sets the default state for automatically turning meetings into Teams meetings for the tenant. This can be overridden by the user in Outlook.",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Select value",
+        "name": "standards.TeamsMeetingsByDefault.state",
+        "values": [
+          {
+            "label": "Enabled",
+            "value": "true"
+          },
+          {
+            "label": "Disabled",
+            "value": "false"
+          }
+        ]
+      }
+    ],
+    "label": "Set Teams Meetings by default state",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.DisableViva",
     "cat": "Exchange Standards",
     "tag": ["lowimpact"],
