@@ -97,7 +97,7 @@ This error occurs when CIPP cannot write to the errors table - Clear your tenant
 
 ### AADSTS7000222: The provided client secret keys for app {appid} are expired.
 
-This occurs when the app has exists for more than 2 years and requires a new certificate or secret, or when a secret has been expired manually.
+This occurs when the app has existed for more than 2 years and requires a new certificate or secret, or when a secret has been expired manually.
 
 1. [Go to Azure Portal](https://portal.azure.com/#view/Microsoft\_AAD\_IAM/ActiveDirectoryMenuBlade/\~/RegisteredApps)
 2. Find and click on your app
@@ -163,9 +163,9 @@ This occurs when the app has exists for more than 2 years and requires a new cer
 
 </details>
 
-### My cost is very high or the application is not responsive
+### My costs are very high or the application is not responsive
 
-this issue can occur when you have restarted the app during an important task. It's never recommended to restart the function app, and if you do unexpected results can happen. The Function Host uses something called durable functions, which when handled incorrectly can cause performance issues or increase costs due to looping tasks.
+This issue can occur when you restart the app during an important task. It's never recommended to restart the function app, and if you do unexpected results can happen. The Function Host uses something called durable functions, which when handled incorrectly can cause performance issues or increase costs due to looping tasks.
 
 1. **Log In to Azure Portal**: Sign in to your Azure account at [portal.azure.com](https://portal.azure.com/).
 2. **Navigate to Storage Account**: Go to 'Storage accounts' and select the storage account that starts with 'CIPP'
