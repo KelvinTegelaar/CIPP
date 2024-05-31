@@ -90,6 +90,11 @@ const EnterpriseApplications = () => {
               filter:
                 "Graph: tags/any(t:t eq 'WindowsAzureActiveDirectoryGalleryApplicationPrimaryV1')",
             },
+            {
+              filterName: 'All non-Microsoft Enterprise Apps',
+              filter:
+                'Complex: appOwnerOrganizationId notlike f8cdef31-a31e-4b4a-93e4-5f571e91255a',
+            },
           ],
           tableProps: {
             selectableRows: true,
