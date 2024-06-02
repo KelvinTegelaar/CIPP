@@ -1,31 +1,19 @@
 import React, { useState } from 'react'
 import { CButton, CCallout, CCol, CForm, CRow, CSpinner, CTooltip } from '@coreui/react'
 import { useSelector } from 'react-redux'
-import { Field, Form, FormSpy } from 'react-final-form'
-import {
-  Condition,
-  RFFCFormInput,
-  RFFCFormRadio,
-  RFFCFormRadioList,
-  RFFCFormSwitch,
-  RFFSelectSearch,
-} from 'src/components/forms'
-import {
-  useGenericGetRequestQuery,
-  useLazyGenericGetRequestQuery,
-  useLazyGenericPostRequestQuery,
-} from 'src/store/api/app'
+import { Field, Form } from 'react-final-form'
+import { Condition, RFFCFormInput, RFFCFormRadioList, RFFSelectSearch } from 'src/components/forms'
+import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faEdit, faEye } from '@fortawesome/free-solid-svg-icons'
 import { CippContentCard, CippPage, CippPageList } from 'src/components/layout'
 import { CellTip } from 'src/components/tables/CellGenericFormat'
 import 'react-datepicker/dist/react-datepicker.css'
-import { CippActionsOffcanvas, ModalService, TenantSelector } from 'src/components/utilities'
+import { TenantSelector } from 'src/components/utilities'
 import arrayMutators from 'final-form-arrays'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { useListUsersQuery } from 'src/store/api/users'
-import { useListConditionalAccessPoliciesQuery } from 'src/store/api/tenants'
 import GDAPRoles from 'src/data/GDAPRoles'
 
 const DeployJITAdmin = () => {
