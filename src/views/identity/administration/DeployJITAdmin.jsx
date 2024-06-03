@@ -7,7 +7,7 @@ import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 's
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faEdit, faEye } from '@fortawesome/free-solid-svg-icons'
 import { CippContentCard, CippPage, CippPageList } from 'src/components/layout'
-import { CellTip } from 'src/components/tables/CellGenericFormat'
+import { CellTip, cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 import 'react-datepicker/dist/react-datepicker.css'
 import { TenantSelector } from 'src/components/utilities'
 import arrayMutators from 'final-form-arrays'
@@ -15,6 +15,7 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { useListUsersQuery } from 'src/store/api/users'
 import GDAPRoles from 'src/data/GDAPRoles'
+import { CippDatatable, cellDateFormatter } from 'src/components/tables'
 
 const DeployJITAdmin = () => {
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
@@ -30,12 +31,13 @@ const DeployJITAdmin = () => {
     const startTime = Math.floor(startDate.getTime() / 1000)
     const endTime = Math.floor(endDate.getTime() / 1000)
     const shippedValues = {
-      tenantFilter: tenantDomain,
+      TenantFilter: tenantDomain,
       UserId: values.UserId?.value,
-      PolicyId: values.PolicyId?.value,
+      useraction: values.useraction,
+      AdminRoles: values.AdminRoles?.map((role) => role.value),
       StartDate: startTime,
       EndDate: endTime,
-      ExpireAction: values?.expireAction ?? 'delete',
+      ExpireAction: values.expireAction.value,
     }
     genericPostRequest({ path: '/api/ExecJITAdmin', values: shippedValues }).then((res) => {
       setRefreshState(res.requestId)
@@ -51,8 +53,8 @@ const DeployJITAdmin = () => {
   return (
     <CippPage title={`Add JIT Admin`} tenantSelector={false}>
       <>
-        <CRow>
-          <CCol md={4}>
+        <CRow className="mb-3">
+          <CCol lg={4} md={12}>
             <CippContentCard title="Add JIT Admin" icon={faEdit}>
               <Form
                 onSubmit={onSubmit}
@@ -69,7 +71,9 @@ const DeployJITAdmin = () => {
                       <CRow className="mb-3">
                         <CCol>
                           <label className="mb-2">Tenant</label>
-                          <Field name="tenantFilter">{(props) => <TenantSelector />}</Field>
+                          <Field name="tenantFilter">
+                            {(props) => <TenantSelector showAllTenantSelector={false} />}
+                          </Field>
                         </CCol>
                       </CRow>
                       <CRow>
@@ -90,7 +94,17 @@ const DeployJITAdmin = () => {
                         </CCol>
                       </CRow>
                       <Condition when="useraction" is="create">
-                        <CRow className="mb-3">
+                        <CRow>
+                          <CCol>
+                            <RFFCFormInput label="First Name" name="FirstName" />
+                          </CCol>
+                        </CRow>
+                        <CRow>
+                          <CCol>
+                            <RFFCFormInput label="Last Name" name="LastName" />
+                          </CCol>
+                        </CRow>
+                        <CRow>
                           <CCol>
                             <RFFCFormInput label="User Principal Name" name="UserPrincipalName" />
                           </CCol>
@@ -112,6 +126,7 @@ const DeployJITAdmin = () => {
                           </CCol>
                         </CRow>
                       </Condition>
+                      <hr />
                       <CRow className="mb-3">
                         <CCol>
                           <RFFSelectSearch
@@ -202,6 +217,45 @@ const DeployJITAdmin = () => {
                     </CForm>
                   )
                 }}
+              />
+            </CippContentCard>
+          </CCol>
+          <CCol lg={8} md={12}>
+            <CippContentCard title="JIT Admins" icon="user-shield">
+              <CippDatatable
+                title="JIT Admins"
+                path="/api/ExecJITAdmin?Action=List"
+                params={{ TenantFilter: tenantDomain }}
+                columns={[
+                  {
+                    name: 'User',
+                    selector: (row) => row['userPrincipalName'],
+                    sortable: true,
+                    cell: cellGenericFormatter(),
+                    exportSelector: 'userPrincipalName',
+                  },
+                  {
+                    name: 'JIT Enabled',
+                    selector: (row) => row['jitAdminEnabled'],
+                    sortable: true,
+                    cell: cellGenericFormatter(),
+                    exportSelector: 'jitAdminEnabled',
+                  },
+                  {
+                    name: 'JIT Expires',
+                    selector: (row) => row['jitAdminExpiration'],
+                    sortable: true,
+                    cell: cellDateFormatter({ format: 'short' }),
+                    exportSelector: 'jitAdminExpiration',
+                  },
+                  {
+                    name: 'Admin Roles',
+                    selector: (row) => row['memberOf'],
+                    sortable: false,
+                    cell: cellGenericFormatter(),
+                    exportSelector: 'memberOf',
+                  },
+                ]}
               />
             </CippContentCard>
           </CCol>
