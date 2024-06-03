@@ -172,9 +172,9 @@ const DeployJITAdmin = () => {
                           <RFFSelectSearch
                             label="Expiration Action"
                             values={[
-                              { value: 'removeroles', name: 'Remove Admin Roles' },
-                              { value: 'disable', name: 'Disable' },
-                              { value: 'delete', name: 'Delete' },
+                              { value: 'RemoveRoles', name: 'Remove Admin Roles' },
+                              { value: 'DisableUser', name: 'Disable User' },
+                              { value: 'DeleteUser', name: 'Delete User' },
                             ]}
                             placeholder="Select action for when JIT expires"
                             name="expireAction"
@@ -198,7 +198,9 @@ const DeployJITAdmin = () => {
                       </CRow>
                       {postResults.isSuccess && (
                         <CCallout color="success">
-                          <li>{postResults.data.Results}</li>
+                          {postResults.data?.Results.map((result, idx) => (
+                            <li key={idx}>{result}</li>
+                          ))}
                         </CCallout>
                       )}
                       {getResults.isFetching && (
