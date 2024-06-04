@@ -2,7 +2,13 @@ import React, { useState } from 'react'
 import { CButton, CCallout, CCol, CForm, CRow, CSpinner, CTooltip } from '@coreui/react'
 import { useSelector } from 'react-redux'
 import { Field, Form } from 'react-final-form'
-import { Condition, RFFCFormInput, RFFCFormRadioList, RFFSelectSearch } from 'src/components/forms'
+import {
+  Condition,
+  RFFCFormInput,
+  RFFCFormRadioList,
+  RFFCFormSwitch,
+  RFFSelectSearch,
+} from 'src/components/forms'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faEdit, faEye } from '@fortawesome/free-solid-svg-icons'
@@ -33,11 +39,19 @@ const DeployJITAdmin = () => {
     const shippedValues = {
       TenantFilter: tenantDomain,
       UserId: values.UserId?.value,
+      UserPrincipalName: values.UserPrincipalName,
+      FirstName: values.FirstName,
+      LastName: values.LastName,
       useraction: values.useraction,
       AdminRoles: values.AdminRoles?.map((role) => role.value),
       StartDate: startTime,
       EndDate: endTime,
       ExpireAction: values.expireAction.value,
+      PostExecution: {
+        Webhook: values.webhook,
+        Email: values.email,
+        PSA: values.psa,
+      },
     }
     genericPostRequest({ path: '/api/ExecJITAdmin', values: shippedValues }).then((res) => {
       setRefreshState(res.requestId)
@@ -182,6 +196,14 @@ const DeployJITAdmin = () => {
                         </CCol>
                       </CRow>
                       <CRow className="mb-3">
+                        <CCol>
+                          <label>Send results to</label>
+                          <RFFCFormSwitch name="webhook" label="Webhook" />
+                          <RFFCFormSwitch name="email" label="E-mail" />
+                          <RFFCFormSwitch name="psa" label="PSA" />
+                        </CCol>
+                      </CRow>
+                      <CRow className="mb-3">
                         <CCol md={6}>
                           <CButton type="submit" disabled={submitting}>
                             Add JIT Admin
@@ -227,7 +249,7 @@ const DeployJITAdmin = () => {
               <CippDatatable
                 title="JIT Admins"
                 path="/api/ExecJITAdmin?Action=List"
-                params={{ TenantFilter: tenantDomain }}
+                params={{ TenantFilter: tenantDomain, refreshState }}
                 columns={[
                   {
                     name: 'User',
