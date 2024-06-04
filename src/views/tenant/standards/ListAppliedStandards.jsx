@@ -634,20 +634,13 @@ const ApplyNewStandard = () => {
                                             <h5>Remediate</h5>
                                             <RFFCFormSwitch
                                               name={`${obj.name}.remediate`}
-                                              disabled={
-                                                obj.disabledFeatures?.remediate ||
-                                                (isAllTenantEnabled(obj, 'remediate') &&
-                                                  tenantDomain !== 'AllTenants' &&
-                                                  props.values.standards?.OverrideAllTenants
-                                                    ?.remediate !== true)
-                                              }
                                               helpText={'Remediate executes the fix for standard.'}
                                               sublabel={
                                                 isAllTenantEnabled(obj, 'remediate') &&
                                                 tenantDomain !== 'AllTenants' &&
                                                 props.values.standards?.OverrideAllTenants
                                                   ?.remediate !== true
-                                                  ? '* Enabled via All Tenants'
+                                                  ? '* Enabled via All Tenants, toggle to override input'
                                                   : ''
                                               }
                                             />
