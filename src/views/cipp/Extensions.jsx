@@ -10,7 +10,7 @@ import {
   CTabContent,
   CTabPane,
 } from '@coreui/react'
-import { CippPage } from 'src/components/layout'
+import { CippCallout, CippPage } from 'src/components/layout'
 import { CippLazy } from 'src/components/utilities'
 import { useNavigate } from 'react-router-dom'
 import useQuery from 'src/hooks/useQuery.jsx'
@@ -104,7 +104,7 @@ export default function CIPPExtensions() {
           <CTabPane key={`pane-${idx}`} visible={active === idx} className="mt-3">
             <CippLazy visible={active === idx}>
               <CRow className="mb-3">
-                <CCol md={4}>
+                <CCol sm={12} md={integration.mappingRequired ? 4 : 12} className="mb-3">
                   <CippButtonCard
                     title={integration.name}
                     titleType="big"
@@ -158,9 +158,29 @@ export default function CIPPExtensions() {
                         )
                       }}
                     />
+                    {extensionConfigResult?.data?.Results && (
+                      <CippCallout color={extensionConfigResult.isSuccess ? 'success' : 'danger'}>
+                        {extensionConfigResult?.data?.Results}
+                      </CippCallout>
+                    )}
+                    {listExtensionTestResult?.data?.Results && (
+                      <CippCallout color={listExtensionTestResult.isSuccess ? 'success' : 'danger'}>
+                        {listExtensionTestResult?.data?.Results}
+                        {listExtensionTestResult?.data?.Link && (
+                          <a
+                            href={listExtensionTestResult?.data?.Link}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="ms-2"
+                          >
+                            Link
+                          </a>
+                        )}
+                      </CippCallout>
+                    )}
                   </CippButtonCard>
                 </CCol>
-                <CCol md={8}>
+                <CCol sm={12} md={8}>
                   <SettingsExtensionMappings type={integration.type} />
                 </CCol>
               </CRow>
