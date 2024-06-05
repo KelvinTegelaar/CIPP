@@ -122,6 +122,16 @@
     "impactColour": "info"
   },
   {
+    "name": "standards.EnablePronouns",
+    "cat": "Global Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Enables the Pronouns feature for the tenant. This allows users to set their pronouns in their profile.",
+    "addedComponent": [],
+    "label": "Enable Pronouns",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.AnonReportDisable",
     "cat": "Global Standards",
     "tag": ["lowimpact"],
