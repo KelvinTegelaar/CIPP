@@ -190,7 +190,7 @@
       {
         "type": "input",
         "fieldtype": "password",
-        "name": "PWPush.ApiKey",
+        "name": "PWPush.APIKey",
         "label": "PWPush API Key",
         "placeholder": "Enter your PWPush API Key. (optional)"
       },
