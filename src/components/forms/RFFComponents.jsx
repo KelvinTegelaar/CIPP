@@ -253,6 +253,54 @@ RFFCFormInputArray.propTypes = {
   ...sharedPropTypes,
 }
 
+export const RFFCFormInputList = ({ name, label, className = 'mb-3' }) => {
+  return (
+    <>
+      <FieldArray name={name}>
+        {({ fields }) => (
+          <div>
+            <div className="mb-2">
+              {label && (
+                <CFormLabel className="me-2" htmlFor={name}>
+                  {label}
+                </CFormLabel>
+              )}
+              <CButton
+                onClick={() => fields.push({ Key: '', Value: '' })}
+                className="circular-button"
+                title={'+'}
+              >
+                <FontAwesomeIcon icon={'plus'} />
+              </CButton>
+            </div>
+            {fields.map((name, index) => (
+              <div key={name} className={className}>
+                <div>
+                  <Field name={`${name}`} component="input">
+                    {({ input, meta }) => {
+                      return <CFormInput placeholder="Value" {...input} className="mb-2" />
+                    }}
+                  </Field>
+                </div>
+                <CButton
+                  onClick={() => fields.remove(index)}
+                  className={`circular-button`}
+                  title={'-'}
+                >
+                  <FontAwesomeIcon icon={'minus'} />
+                </CButton>
+              </div>
+            ))}
+          </div>
+        )}
+      </FieldArray>
+    </>
+  )
+}
+RFFCFormInputList.propTypes = {
+  ...sharedPropTypes,
+}
+
 export const RFFCFormRadio = ({
   name,
   label,
