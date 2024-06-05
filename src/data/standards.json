@@ -1104,6 +1104,44 @@
       },
       {
         "type": "Select",
+        "label": "If a message is detected as user impersonation",
+        "name": "standards.AntiPhishPolicy.TargetedUserProtectionAction",
+        "values": [
+          {
+            "label": "Move to Junk Folder",
+            "value": "MoveToJmf"
+          },
+          {
+            "label": "Delete the message before its delivered",
+            "value": "Delete"
+          },
+          {
+            "label": "Quarantine the message",
+            "value": "Quarantine"
+          }
+        ]
+      },
+      {
+        "type": "Select",
+        "label": "If a message is detected as domain impersonation",
+        "name": "standards.AntiPhishPolicy.TargetedDomainProtectionAction",
+        "values": [
+          {
+            "label": "Move to Junk Folder",
+            "value": "MoveToJmf"
+          },
+          {
+            "label": "Delete the message before its delivered",
+            "value": "Delete"
+          },
+          {
+            "label": "Quarantine the message",
+            "value": "Quarantine"
+          }
+        ]
+      },
+      {
+        "type": "Select",
         "label": "If Mailbox Intelligence detects an impersonated user",
         "name": "standards.AntiPhishPolicy.MailboxIntelligenceProtectionAction",
         "values": [
