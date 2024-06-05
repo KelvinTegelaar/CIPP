@@ -150,9 +150,8 @@ const SettingsCustomRoles = () => {
                           })
                         }
                       })
-                      if (blockedTenantSelectorRef?.current) {
-                        blockedTenantSelectorRef.current.setValue(blockedTenantList)
-                      }
+
+                      blockedTenantSelectorRef.current.setValue(blockedTenantList)
                     } else {
                       onChange(customRole[0][set])
                     }
@@ -323,18 +322,17 @@ const SettingsCustomRoles = () => {
                           </CCallout>
                         )}
                       </div>
-                      {selectedTenant.find((tenant) => tenant.value === 'AllTenants') && (
-                        <div className="mb-3">
-                          <h5>Blocked Tenants</h5>
-                          <TenantSelectorMultiple
-                            ref={blockedTenantSelectorRef}
-                            values={blockedTenants}
-                            AllTenants={false}
-                            valueIsDomain={true}
-                            onChange={(e) => handleBlockedTenantChange(e)}
-                          />
-                        </div>
-                      )}
+                      <div className="mb-3">
+                        <h5>Blocked Tenants</h5>
+                        <TenantSelectorMultiple
+                          ref={blockedTenantSelectorRef}
+                          values={blockedTenants}
+                          AllTenants={false}
+                          valueIsDomain={true}
+                          onChange={(e) => handleBlockedTenantChange(e)}
+                        />
+                      </div>
+
                       <h5>API Permissions</h5>
                       <CRow className="mt-4 px-2">
                         <CCol md={4}>
