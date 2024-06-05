@@ -128,30 +128,31 @@ const SettingsCustomRoles = () => {
                   } else {
                     if (set === 'AllowedTenants') {
                       setSelectedTenant(customRole[0][set])
-                      var selectedTenants = []
+                      var selectedTenantList = []
                       tenants.map((tenant) => {
                         if (customRole[0][set].includes(tenant.customerId)) {
-                          selectedTenants.push({
+                          selectedTenantList.push({
                             label: tenant.displayName,
                             value: tenant.customerId,
                           })
                         }
                       })
 
-                      tenantSelectorRef.current.setValue(selectedTenants)
+                      tenantSelectorRef.current.setValue(selectedTenantList)
                     } else if (set === 'BlockedTenants') {
                       setBlockedTenants(customRole[0][set])
-                      var blockedTenants = []
+                      var blockedTenantList = []
                       tenants.map((tenant) => {
                         if (customRole[0][set].includes(tenant.customerId)) {
-                          blockedTenants.push({
+                          blockedTenantList.push({
                             label: tenant.displayName,
                             value: tenant.customerId,
                           })
                         }
                       })
-
-                      blockedTenantSelectorRef.current.setValue(blockedTenants)
+                      if (blockedTenantSelectorRef?.current) {
+                        blockedTenantSelectorRef.current.setValue(blockedTenantList)
+                      }
                     } else {
                       onChange(customRole[0][set])
                     }
@@ -424,13 +425,15 @@ const SettingsCustomRoles = () => {
                                   <h5>Selected Permissions</h5>
                                   <ul>
                                     {values['Permissions'] &&
-                                      Object.keys(values['Permissions'])?.map((cat, idx) => (
-                                        <>
-                                          {!values['Permissions'][cat].includes('None') && (
-                                            <li key={idx}>{values['Permissions'][cat]}</li>
-                                          )}
-                                        </>
-                                      ))}
+                                      Object.keys(values['Permissions'])
+                                        ?.sort()
+                                        .map((cat, idx) => (
+                                          <>
+                                            {!values['Permissions'][cat].includes('None') && (
+                                              <li key={idx}>{values['Permissions'][cat]}</li>
+                                            )}
+                                          </>
+                                        ))}
                                   </ul>
                                 </>
                               )}
