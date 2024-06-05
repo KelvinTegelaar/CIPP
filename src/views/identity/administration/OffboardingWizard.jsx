@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { CCallout, CCol, CListGroup, CListGroupItem, CRow, CSpinner } from '@coreui/react'
+import { CCallout, CCol, CListGroup, CListGroupItem, CRow, CSpinner, CTooltip } from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle, faTimes, faCheck } from '@fortawesome/free-solid-svg-icons'
@@ -133,7 +133,6 @@ const OffboardingWizard = () => {
             {/* eslint-disable react/prop-types */}
             {(props) => (
               <>
-                {console.log(props.values)}
                 {props.values.User?.length >= 3 && (
                   <CCallout color="warning">A maximum of three users is recommend.</CCallout>
                 )}
@@ -297,7 +296,21 @@ const OffboardingWizard = () => {
                             className="d-flex justify-content-between align-items-center"
                           >
                             <h5 className="mb-0">Selected User:</h5>
-                            {user.value}
+                            <span>
+                              {users.find((x) => x.userPrincipalName === user.value)
+                                .onPremisesSyncEnabled === true ? (
+                                <CTooltip content="This user is AD sync enabled, offboarding will fail for some steps">
+                                  <FontAwesomeIcon
+                                    icon="triangle-exclamation"
+                                    color="yellow"
+                                    className="me-2"
+                                  />
+                                </CTooltip>
+                              ) : (
+                                ''
+                              )}
+                              {user.value}
+                            </span>
                           </CListGroupItem>
                         ))}
                       </CListGroup>
