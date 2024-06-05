@@ -11,7 +11,7 @@ The invite wizard allows you to create an invite that has the roles you need def
 Selecting the Company Administrator (Global Admin) role is not advised. Relationships will have to be manually added every two years if you do.
 {% endhint %}
 
-* After creating the roles use the side menu to click on Invite Wizard
+* After creating the roles use the side menu to click on **Invite Wizard**
 * Select the roles to include in the invite, and click next, then submit. You will receive two URLS:
 
 ## Invite Link
