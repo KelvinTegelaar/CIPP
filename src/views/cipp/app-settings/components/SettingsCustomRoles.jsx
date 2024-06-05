@@ -424,13 +424,15 @@ const SettingsCustomRoles = () => {
                                   <h5>Selected Permissions</h5>
                                   <ul>
                                     {values['Permissions'] &&
-                                      Object.keys(values['Permissions'])?.map((cat, idx) => (
-                                        <>
-                                          {!values['Permissions'][cat].includes('None') && (
-                                            <li key={idx}>{values['Permissions'][cat]}</li>
-                                          )}
-                                        </>
-                                      ))}
+                                      Object.keys(values['Permissions'])
+                                        ?.sort()
+                                        .map((cat, idx) => (
+                                          <>
+                                            {!values['Permissions'][cat].includes('None') && (
+                                              <li key={idx}>{values['Permissions'][cat]}</li>
+                                            )}
+                                          </>
+                                        ))}
                                   </ul>
                                 </>
                               )}
