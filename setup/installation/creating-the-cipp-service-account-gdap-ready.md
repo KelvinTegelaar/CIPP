@@ -32,3 +32,7 @@ These groups are **not roles in your own tenant.** These must be the GDAP assign
 
 * You may not use any other authentication provider than Microsoft for this account. Duo or other providers will not work. For more information on this see [this](https://learn.microsoft.com/en-us/partner-center/partner-security-requirements-mandating-mfa#supported-mfa-options)
 
+## Execute the SAM Wizard
+
+When the account is prepared, move over to [executing-the-sam-setup-wizard.md](executing-the-sam-setup-wizard.md "mention").
+
