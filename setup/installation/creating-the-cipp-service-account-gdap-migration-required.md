@@ -18,7 +18,5 @@ Execute the steps in [executing-the-sam-setup-wizard.md](executing-the-sam-setup
 
 ## Migrating to GDAP
 
-Before you'll be able to use CIPP you will need to perform a GDAP migration for each of your tenants, for those steps.
-
-[invite-wizard.md](../../user-documentation/gdap-migration/invite-wizard.md "mention")
+Before you'll be able to use CIPP you will need to perform a GDAP migration for each of your tenants, for those steps follow the instructions in[invite-wizard.md](../../user-documentation/gdap-migration/invite-wizard.md "mention").
 
