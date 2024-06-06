@@ -16,7 +16,6 @@ function CippfuzzySearch(options) {
       return options
     }
     const search = fuse.search(value)
-    console.log(search)
     return search.map((_ref) => {
       let { item } = _ref
       return item
