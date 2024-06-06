@@ -34,17 +34,20 @@ To assign a role to a user you would follow these steps:
 
 ## Custom Roles
 
-While CIPP only supplies these roles by default, you can create your own roles and permissions by editing the staticwebapp.config.json file. To create a custom role you can do the following instructions. Note that you cannot change any of the default roles as these are required for the application to function.
+While CIPP only supplies the above roles by default, you can create your own Custom Roles and apply them to your users with 'editor' or 'readonly' rights, admin users are unaffected by custom roles. Set up Custom Roles by following these steps:
 
-* Get your copy of the [configuration file](https://github.com/KelvinTegelaar/CIPP/blob/main/staticwebapp.config.json)
-* List the CIPP-API respository([https://github.com/KelvinTegelaar/CIPP-API](https://github.com/KelvinTegelaar/CIPP-API))
-* Each folder in this list is the name of the API that's called.&#x20;
-* For each API you want to secure, create a route entry. For example if you only want shared mailboxes to be created by the custom role SharedMailboxAdmins, admins, and editors you add the following section in the route property:
-  * ```json
-    {
-      "route": "/api/AddSharedMailbox",
-      "allowedRoles": ["SharedMailboxAdmins","admins","editors"]
-    }
-    ```
+* Go to CIPP.
+* Go to Application Settings > SuperAdmin > Custom Roles.
+* Select a Custom Role from the list or start typing to create a new one if you do not yet have any.
+* For Allowed Tenants select a subset of tenants to manage or AllTenants.
+  * If AllTenants is selected, you can block a subset of tenants using Blocked Tenants.
+* Select the API permission from the listed categories and choose from None, Read or Read/Write.
+  * To find out which API endpoints are affected by these selections, click on the Info button.
+ 
+{% hint style="warning" %}
+Please note that this functionality is in beta and not officially supported. Removing permissions will result in an error message on affected endpoints. The error message will note which permission is missing.
+{% endhint %}
 
-If you are a hosted client, Custom Roles are supported by sending your configuration file to our helpdesk.&#x20;
+If you are a hosted client, you can add custom roles to your users from the Management App. Just start typing the role name in the select box and add it when prompted. Make sure that your users have the 'editor' or 'readonly' role selected as well.
+
+If you set up Custom Roles by modifying staticwebapp.config.json, you should revert those changes and migrate to the new Custom Role management. 
