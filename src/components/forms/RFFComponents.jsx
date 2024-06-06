@@ -546,7 +546,6 @@ export const RFFSelectSearch = ({
         }
 
         const selectProps = {
-          className: 'react-select-container',
           classNamePrefix: 'react-select',
           ...input,
           name,
@@ -560,6 +559,10 @@ export const RFFSelectSearch = ({
           onChange: handleChange,
           onInputChange: setOnInputChange,
           ...props,
+          //merge className from props into the default className
+          className: props.className
+            ? `${props.className} react-select-container`
+            : 'react-select-container',
         }
 
         return (
