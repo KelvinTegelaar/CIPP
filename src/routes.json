@@ -77,6 +77,12 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/identity/administration/jit-admin",
+    "name": "JIT Admin",
+    "component": "views/identity/administration/DeployJITAdmin",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/identity/administration/ViewBec",
     "name": "View BEC",
     "component": "views/identity/administration/ViewBEC",
@@ -886,6 +892,12 @@
     "path": "/cipp/settings",
     "name": "Settings",
     "component": "views/cipp/app-settings/CIPPSettings",
+    "allowedRoles": ["admin"]
+  },
+  {
+    "path": "/cipp/extensions",
+    "name": "Extensions Settings",
+    "component": "views/cipp/Extensions",
     "allowedRoles": ["admin"]
   },
   {
