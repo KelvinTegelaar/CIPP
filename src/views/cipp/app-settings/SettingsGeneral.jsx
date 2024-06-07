@@ -253,37 +253,37 @@ export function SettingsGeneral() {
                     </CCallout>
                   </CCol>
                   <CCol>
-                    {permissionsResult.data.Results?.ErrorMessages?.length > 0 ||
-                      (permissionsResult.data.Results?.MissingPermissions.length > 0 && (
-                        <CCallout color="danger">
+                    {(permissionsResult.data.Results?.ErrorMessages?.length > 0 ||
+                      permissionsResult.data.Results?.MissingPermissions.length > 0) && (
+                      <CCallout color="danger">
+                        <>
+                          {permissionsResult.data.Results?.ErrorMessages?.map((m, idx) => (
+                            <div key={idx}>{m}</div>
+                          ))}
+                        </>
+                        {permissionsResult.data.Results?.MissingPermissions.length > 0 && (
                           <>
-                            {permissionsResult.data.Results?.ErrorMessages?.map((m, idx) => (
-                              <div key={idx}>{m}</div>
-                            ))}
+                            Your Secure Application Model is missing the following permissions. See
+                            the documentation on how to add permissions{' '}
+                            <a
+                              target="_blank"
+                              rel="noreferrer"
+                              href="https://docs.cipp.app/setup/installation/permissions#manual-permissions"
+                            >
+                              here
+                            </a>
+                            .
+                            <CListGroup flush>
+                              {permissionsResult.data.Results?.MissingPermissions?.map(
+                                (r, index) => (
+                                  <CListGroupItem key={index}>{r}</CListGroupItem>
+                                ),
+                              )}
+                            </CListGroup>
                           </>
-                          {permissionsResult.data.Results?.MissingPermissions.length > 0 && (
-                            <>
-                              Your Secure Application Model is missing the following permissions.
-                              See the documentation on how to add permissions{' '}
-                              <a
-                                target="_blank"
-                                rel="noreferrer"
-                                href="https://docs.cipp.app/setup/installation/permissions#manual-permissions"
-                              >
-                                here
-                              </a>
-                              .
-                              <CListGroup flush>
-                                {permissionsResult.data.Results?.MissingPermissions?.map(
-                                  (r, index) => (
-                                    <CListGroupItem key={index}>{r}</CListGroupItem>
-                                  ),
-                                )}
-                              </CListGroup>
-                            </>
-                          )}
-                        </CCallout>
-                      ))}
+                        )}
+                      </CCallout>
+                    )}
                   </CCol>
                 </CRow>
               </>
