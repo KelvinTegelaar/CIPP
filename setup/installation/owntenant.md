@@ -20,7 +20,7 @@ It is highly recommended to not use this configuration if multiple users have ac
 
 To set the flag follow these steps:
 
-1. Add the role 'superadmin' to your admin user. (See [roles.md](roles.md "mention") for more information This role will allow you access to the menu to change this setting.
+1. Add the role 'superadmin' to your admin user as an additional role. Ensure that the 'admin' role isn't accidentally removed in the process (See [roles.md](roles.md "mention") for more information). This role will allow you access to the menu to change this setting.
 2. Go the the Application Settings menu
 3. Go to the SuperAdmin tab
 4. Select one of the three modes. The default mode is "Multi Tenant - GDAP Mode"
