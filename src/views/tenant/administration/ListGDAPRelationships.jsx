@@ -251,7 +251,7 @@ const GDAPRelationships = () => {
           columns,
           reportName: `GDAP-Relationships`,
           path: '/api/ListGraphRequest',
-          params: { Endpoint: 'tenantRelationships/delegatedAdminRelationships' },
+          params: { Endpoint: 'tenantRelationships/delegatedAdminRelationships', $top: 300 },
         }}
       />
     </div>
