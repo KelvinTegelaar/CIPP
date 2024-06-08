@@ -42,6 +42,7 @@ import GDAPRoles from 'src/data/GDAPRoles'
 import timezoneList from 'src/data/timezoneList'
 import Select from 'react-select'
 import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
+import langaugeList from 'src/data/languageList'
 
 const DeleteAction = () => {
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
@@ -875,6 +876,19 @@ const ApplyNewStandard = () => {
                                     />
                                     <br></br>
                                   </CCol>
+                                  <CRow>
+                                    <CCol md={12} className="mb-2">
+                                      <RFFSelectSearch
+                                        values={langaugeList.map(({ language, tag }) => ({
+                                          value: tag,
+                                          name: language,
+                                        }))}
+                                        name="standards.APConfig.languages"
+                                        multi={false}
+                                        label="Languages"
+                                      />
+                                    </CCol>
+                                  </CRow>
                                 </CRow>
                                 <RFFCFormSwitch
                                   value={true}
