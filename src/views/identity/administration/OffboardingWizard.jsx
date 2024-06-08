@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { CCallout, CCol, CListGroup, CListGroupItem, CRow, CSpinner } from '@coreui/react'
+import { CCallout, CCol, CListGroup, CListGroupItem, CRow, CSpinner, CTooltip } from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle, faTimes, faCheck } from '@fortawesome/free-solid-svg-icons'
@@ -47,7 +47,18 @@ const OffboardingWizard = () => {
     data: users = [],
     isFetching: usersIsFetching,
     error: usersError,
-  } = useListUsersQuery({ tenantDomain })
+  } = useGenericGetRequestQuery({
+    path: `/api/ListGraphRequest`,
+    params: {
+      TenantFilter: tenantDomain,
+      Endpoint: 'users',
+      $select:
+        'id,displayName,givenName,mail,mailNickname,proxyAddresses,usageLocation,userPrincipalName,userType,assignedLicenses,onPremisesSyncEnabled',
+      $count: true,
+      $orderby: 'displayName',
+      $top: 999,
+    },
+  })
 
   const {
     data: recipients = [],
@@ -121,7 +132,7 @@ const OffboardingWizard = () => {
           <RFFSelectSearch
             multi
             label={'Users in ' + tenantDomain}
-            values={users?.map((user) => ({
+            values={users?.Results?.map((user) => ({
               value: user.userPrincipalName,
               name: `${user.displayName} <${user.userPrincipalName}>`,
             }))}
@@ -133,7 +144,6 @@ const OffboardingWizard = () => {
             {/* eslint-disable react/prop-types */}
             {(props) => (
               <>
-                {console.log(props.values)}
                 {props.values.User?.length >= 3 && (
                   <CCallout color="warning">A maximum of three users is recommend.</CCallout>
                 )}
@@ -178,36 +188,30 @@ const OffboardingWizard = () => {
               <RFFSelectSearch
                 label="Give other user full access on mailbox without automapping"
                 multi
-                values={users
-                  ?.filter((x) => x.mail)
-                  .map((user) => ({
-                    value: user.mail,
-                    name: `${user.displayName} <${user.mail}>`,
-                  }))}
+                values={users.Results?.filter((x) => x.mail).map((user) => ({
+                  value: user.mail,
+                  name: `${user.displayName} <${user.mail}>`,
+                }))}
                 placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                 name="AccessNoAutomap"
               />
               <RFFSelectSearch
                 label="Give other user full access on mailbox with automapping"
                 multi
-                values={users
-                  ?.filter((x) => x.mail)
-                  .map((user) => ({
-                    value: user.mail,
-                    name: `${user.displayName} <${user.mail}>`,
-                  }))}
+                values={users.Results?.filter((x) => x.mail).map((user) => ({
+                  value: user.mail,
+                  name: `${user.displayName} <${user.mail}>`,
+                }))}
                 placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                 name="AccessAutomap"
               />
               <RFFSelectSearch
                 label="Give other user full access on Onedrive"
                 multi
-                values={users
-                  ?.filter((x) => x.mail)
-                  .map((user) => ({
-                    value: user.mail,
-                    name: `${user.displayName} <${user.mail}>`,
-                  }))}
+                values={users.Results?.filter((x) => x.mail).map((user) => ({
+                  value: user.mail,
+                  name: `${user.displayName} <${user.mail}>`,
+                }))}
                 placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                 name="OnedriveAccess"
               />
@@ -297,7 +301,21 @@ const OffboardingWizard = () => {
                             className="d-flex justify-content-between align-items-center"
                           >
                             <h5 className="mb-0">Selected User:</h5>
-                            {user.value}
+                            <span>
+                              {users.Results?.find((x) => x.userPrincipalName === user.value)
+                                .onPremisesSyncEnabled === true ? (
+                                <CTooltip content="This user is AD sync enabled, offboarding will fail for some steps">
+                                  <FontAwesomeIcon
+                                    icon="triangle-exclamation"
+                                    color="yellow"
+                                    className="me-2"
+                                  />
+                                </CTooltip>
+                              ) : (
+                                ''
+                              )}
+                              {user.value}
+                            </span>
                           </CListGroupItem>
                         ))}
                       </CListGroup>

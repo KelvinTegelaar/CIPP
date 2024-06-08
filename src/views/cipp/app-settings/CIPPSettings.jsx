@@ -2,15 +2,17 @@ import React, { useState } from 'react'
 import { CNav, CNavItem, CTabContent, CTabPane } from '@coreui/react'
 import { CippPage } from 'src/components/layout'
 import { CippLazy } from 'src/components/utilities'
-
+import { useNavigate } from 'react-router-dom'
 import { SettingsGeneral } from './SettingsGeneral.jsx'
 import { SettingsTenants } from 'src/views/cipp/app-settings/SettingsTenants.jsx'
 import { SettingsBackend } from 'src/views/cipp/app-settings/SettingsBackend.jsx'
 import { SettingsNotifications } from 'src/views/cipp/app-settings/SettingsNotifications.jsx'
 import { SettingsLicenses } from 'src/views/cipp/app-settings/SettingsLicenses.jsx'
-import { SettingsExtensions } from 'src/views/cipp/app-settings/SettingsExtensions.jsx'
 import { SettingsMaintenance } from 'src/views/cipp/app-settings/SettingsMaintenance.jsx'
-import { SettingsExtensionMappings } from 'src/views/cipp/app-settings/SettingsExtensionMappings.jsx'
+import { SettingsPartner } from 'src/views/cipp/app-settings/SettingsPartner.jsx'
+import useQuery from 'src/hooks/useQuery.jsx'
+import { SettingsSuperAdmin } from './SettingsSuperAdmin.jsx'
+import { useLoadClientPrincipalQuery } from 'src/store/api/auth.js'
 
 /**
  * This function returns the settings page content for CIPP.
@@ -18,7 +20,18 @@ import { SettingsExtensionMappings } from 'src/views/cipp/app-settings/SettingsE
  * @returns {JSX.Element} The settings page content.
  */
 export default function CIPPSettings() {
-  const [active, setActive] = useState(1)
+  const queryString = useQuery()
+  const navigate = useNavigate()
+
+  const tab = queryString.get('tab')
+  const [active, setActiveTab] = useState(tab ? parseInt(tab) : 1)
+  const { data: profile, isFetching } = useLoadClientPrincipalQuery()
+  const setActive = (tab) => {
+    setActiveTab(tab)
+    queryString.set('tab', tab.toString())
+    navigate(`${location.pathname}?${queryString}`)
+  }
+  const superAdmin = profile?.clientPrincipal?.userRoles?.includes('superadmin')
   return (
     <CippPage title="Settings" tenantSelector={false}>
       <CNav variant="tabs" role="tablist">
@@ -35,17 +48,19 @@ export default function CIPPSettings() {
           Notifications
         </CNavItem>
         <CNavItem active={active === 5} onClick={() => setActive(5)} href="#">
-          Licenses
+          Partner Webhooks
         </CNavItem>
         <CNavItem active={active === 6} onClick={() => setActive(6)} href="#">
-          Maintenance
+          Licenses
         </CNavItem>
         <CNavItem active={active === 7} onClick={() => setActive(7)} href="#">
-          Extensions
+          Maintenance
         </CNavItem>
-        <CNavItem active={active === 8} onClick={() => setActive(8)} href="#">
-          Extension Mappings
-        </CNavItem>
+        {superAdmin && (
+          <CNavItem active={active === 8} onClick={() => setActive(8)} href="#">
+            SuperAdmin Settings
+          </CNavItem>
+        )}
       </CNav>
       <CTabContent>
         <CTabPane visible={active === 1} className="mt-3">
@@ -68,23 +83,22 @@ export default function CIPPSettings() {
           <SettingsNotifications />
         </CTabPane>
         <CTabPane visible={active === 5} className="mt-3">
-          <CippLazy visible={active === 5}>
-            <SettingsLicenses />
-          </CippLazy>
+          <CippLazy visible={active === 5}></CippLazy>
+          <SettingsPartner />
         </CTabPane>
         <CTabPane visible={active === 6} className="mt-3">
           <CippLazy visible={active === 6}>
-            <SettingsMaintenance />
+            <SettingsLicenses />
           </CippLazy>
         </CTabPane>
         <CTabPane visible={active === 7} className="mt-3">
           <CippLazy visible={active === 7}>
-            <SettingsExtensions />
+            <SettingsMaintenance />
           </CippLazy>
         </CTabPane>
         <CTabPane visible={active === 8} className="mt-3">
           <CippLazy visible={active === 8}>
-            <SettingsExtensionMappings />
+            <SettingsSuperAdmin />
           </CippLazy>
         </CTabPane>
       </CTabContent>
