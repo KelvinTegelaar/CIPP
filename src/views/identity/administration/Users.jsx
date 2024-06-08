@@ -447,11 +447,12 @@ const Users = (row) => {
         filterlist: [
           { filterName: 'Enabled users', filter: '"accountEnabled":true' },
           { filterName: 'Disabled users', filter: '"accountEnabled":false' },
-          { filterName: 'AAD users', filter: '"onPremisesSyncEnabled":false' },
+          { filterName: 'AAD users', filter: 'Complex: onPremisesSyncEnabled ne True' },
           {
             filterName: 'Synced users',
             filter: '"onPremisesSyncEnabled":true',
           },
+          { filterName: 'Non-guest users', filter: 'Complex: usertype ne Guest' },
           { filterName: 'Guest users', filter: '"usertype":"guest"' },
           {
             filterName: 'Users with a license',
