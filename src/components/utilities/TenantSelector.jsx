@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import { useListTenantsQuery } from 'src/store/api/tenants'
 import { setCurrentTenant } from 'src/store/features/app'
-import { CButton, CDropdown, CDropdownMenu, CDropdownToggle } from '@coreui/react'
+import { CButton } from '@coreui/react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { queryString } from 'src/helpers'
 import { faBuilding } from '@fortawesome/free-solid-svg-icons'
@@ -13,6 +13,7 @@ import CippTenantOffcanvas from './CippTenantOffcanvas'
 import CippfuzzySearch from './CippFuzzySearch'
 
 const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = false }) => {
+  const [refreshState, setRefreshState] = React.useState(false)
   const currentTenant = useSelector((state) => state.app.currentTenant)
   const {
     data: tenants = [
@@ -23,9 +24,10 @@ const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = fa
       },
     ],
     isLoading,
+    isFetching,
     isSuccess,
     error,
-  } = useListTenantsQuery({ showAllTenantSelector })
+  } = useListTenantsQuery({ showAllTenantSelector, Refresh: refreshState })
 
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -42,6 +44,11 @@ const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = fa
     const Paramcount = Array.from(searchParams).length
     if (Paramcount <= 1) {
       const customerId = searchParams.get('customerId')
+      const tableFilter = searchParams.get('tableFilter')
+      var newSearchParams = {}
+      if (tableFilter) {
+        newSearchParams.tableFilter = tableFilter
+      }
       if (customerId && isSuccess) {
         const currentTenant = tenants.filter((tenant) => tenant.customerId === customerId)
         if (currentTenant.length > 0) {
@@ -49,7 +56,8 @@ const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = fa
         }
       }
       if (!customerId && Object.keys(currentTenant).length > 0) {
-        updateSearchParams({ customerId: currentTenant?.customerId })
+        newSearchParams.customerId = currentTenant?.customerId
+        updateSearchParams(newSearchParams)
       }
     }
   }, [dispatch, isSuccess, searchParams, currentTenant, tenants, updateSearchParams])
@@ -84,10 +92,10 @@ const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = fa
               <FontAwesomeIcon icon={faBuilding} />
             </CButton>
           )}
-          <div className="flex-grow-1 my-auto mx-2">
+          <div className="flex-grow-1 my-auto d-flex align-items-center">
             <SelectSearch
               search
-              className={'select-search tenantDropdown'}
+              className="select-search tenantDropdown"
               onChange={activated}
               filterOptions={CippfuzzySearch}
               placeholder={placeholder}
@@ -98,6 +106,16 @@ const TenantSelector = ({ action, showAllTenantSelector = true, NavSelector = fa
                 name: `${displayName} (${defaultDomainName})`,
               }))}
             />
+            <CButton
+              onClick={() =>
+                //set a random number to force a refresh
+                setRefreshState(Math.random())
+              }
+              variant="ghost"
+              className="ml-2"
+            >
+              <FontAwesomeIcon icon={'refresh'} spin={isFetching} />
+            </CButton>
           </div>
         </>
       )}
