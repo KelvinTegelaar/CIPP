@@ -1,20 +1,6 @@
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app.js'
 import React, { useRef } from 'react'
-import {
-  CAccordion,
-  CAlert,
-  CButton,
-  CCallout,
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCardText,
-  CCardTitle,
-  CCol,
-  CForm,
-  CRow,
-  CSpinner,
-} from '@coreui/react'
+import { CAccordion, CButton, CCardText, CCol, CForm, CSpinner } from '@coreui/react'
 import Extensions from 'src/data/Extensions.json'
 import { Form } from 'react-final-form'
 import { RFFCFormInput, RFFCFormSwitch } from 'src/components/forms/index.js'
