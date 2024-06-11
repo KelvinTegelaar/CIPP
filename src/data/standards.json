@@ -1392,6 +1392,22 @@
     "impactColour": "info"
   },
   {
+    "name": "standards.TenantDefaultTimezone",
+    "cat": "SharePoint Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Sets the default timezone for the tenant. This will be used for all new users and sites.",
+    "addedComponent": [
+      {
+        "type": "TimezoneSelect",
+        "name": "standards.TenantDefaultTimezone.Timezone",
+        "label": "Timezone"
+      }
+    ],
+    "label": "Set Default Timezone for Tenant",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.DisableAddShortcutsToOneDrive",
     "cat": "SharePoint Standards",
     "tag": ["mediumimpact"],
@@ -1505,21 +1521,5 @@
     "label": "Only allow users to sync OneDrive from AAD joined devices",
     "impact": "High Impact",
     "impactColour": "danger"
-  },
-  {
-    "name": "standards.TenantDefaultTimezone",
-    "cat": "SharePoint Standards",
-    "tag": ["lowimpact"],
-    "helpText": "Sets the default timezone for the tenant. This will be used for all new users and sites.",
-    "addedComponent": [
-      {
-        "type": "TimezoneSelect",
-        "name": "standards.TenantDefaultTimezone.Timezone",
-        "label": "Timezone"
-      }
-    ],
-    "label": "Set Default Timezone for Tenant",
-    "impact": "Low Impact",
-    "impactColour": "info"
   }
 ]
