@@ -77,6 +77,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'JIT Admin',
+        to: '/identity/administration/jit-admin',
+      },
+      {
+        component: CNavItem,
         name: 'Offboarding Wizard',
         to: '/identity/administration/offboarding-wizard',
       },
@@ -129,13 +134,8 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Alerts (Classic)',
+        name: 'Alerts',
         to: '/tenant/administration/alertsqueue',
-      },
-      {
-        component: CNavItem,
-        name: 'Alert Rules',
-        to: '/tenant/administration/AlertRules',
       },
       {
         component: CNavItem,
@@ -155,7 +155,7 @@ const _nav = [
       {
         component: CNavItem,
         name: 'Tenant Onboarding',
-        to: '/tenant/administration/tenant-onboarding-wizard',
+        to: '/tenant/administration/tenant-onboarding',
       },
       {
         component: CNavItem,
@@ -613,6 +613,11 @@ const _nav = [
         name: 'Quarantine',
         to: '/email/administration/quarantine',
       },
+      {
+        component: CNavItem,
+        name: 'Tenant Allow/Block Lists',
+        to: '/email/administration/tenant-allow-block-lists',
+      },
     ],
   },
   {
@@ -704,6 +709,25 @@ const _nav = [
   },
   {
     component: CNavGroup,
+    name: ' Room Management',
+    section: 'Email & Exchange',
+    to: '/rooms/management',
+    icon: <FontAwesomeIcon icon={faToolbox} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Rooms',
+        to: '/rooms/management/list-rooms',
+      },
+      {
+        component: CNavItem,
+        name: 'Room Lists',
+        to: '/rooms/management/room-lists',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
     name: 'Reports',
     section: 'Email & Exchange',
     to: '/email/reports',
@@ -751,6 +775,11 @@ const _nav = [
         component: CNavItem,
         name: 'Application Settings',
         to: '/cipp/settings',
+      },
+      {
+        component: CNavItem,
+        name: 'Extensions Settings',
+        to: '/cipp/extensions',
       },
       {
         component: CNavItem,
