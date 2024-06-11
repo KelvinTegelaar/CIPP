@@ -1327,7 +1327,7 @@
       },
       {
         "type": "boolean",
-        "label": "Enable Internal Sender Admin Notifications",
+        "label": "Enable External Sender Admin Notifications",
         "name": "standards.MalwareFilterPolicy.EnableExternalSenderAdminNotifications"
       },
       {
