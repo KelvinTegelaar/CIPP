@@ -56,9 +56,11 @@ Multiple Potential Causes:
 * User account from identity provider does not exist in tenant and cannot access the application in that tenant. The account needs to be added as an external user in the tenant first. Sign out and sign in again with a different Azure Active Directory user account.
 {% endhint %}
 
-### _Request invalid or malformed_
+### _"Request invalid or malformed" or "Request is malformed or invalid"_
 
 You have not finished the SAM Setup wizard - CIPP cannot connect to the API with the current credentials.
+
+NOTE: If you are receiving this during the SAM Setup wizard, copy the complete URL from the address bar in your browser and paste it into a new tab. 
 
 ### AADSTS650051
 
