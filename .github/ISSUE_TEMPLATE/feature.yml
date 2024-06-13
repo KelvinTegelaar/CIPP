@@ -11,7 +11,7 @@ body:
       
       - Please search the existing feature request to see if there has been a similar issue filed.
       
-      - If a feature has been filed before, but not followed up by a contributor, you can develop the feature yourself by checking the development documentation [here](https://cipp.app/docs/dev/).
+      - If a feature has been filed before, but not followed up by a contributor, you can develop the feature yourself by checking the development documentation [here](https://docs.cipp.app/dev-documentation/cipp-dev-guide/setting-up-for-local-development).
       
       - Repeat feature requests are allowed if the previous request has been closed for more than 30 days
       
