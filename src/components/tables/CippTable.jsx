@@ -38,6 +38,7 @@ import { debounce } from 'lodash-es'
 import { useSearchParams } from 'react-router-dom'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { setDefaultColumns } from 'src/store/features/app'
+import { CippCallout } from '../layout'
 
 const FilterComponent = ({ filterText, onFilter, onClear, filterlist, onFilterPreset }) => (
   <>
@@ -124,6 +125,7 @@ export default function CippTable({
   filterlist,
   showFilter = true,
   endpointName,
+  defaultSortAsc = true,
   tableProps: {
     keyField = 'id',
     theme = 'cyberdrain',
@@ -412,6 +414,7 @@ export default function CippTable({
     (modalMessage, modalUrl, modalType = 'GET', modalBody, modalInput, modalDropdown) => {
       if (modalType === 'GET') {
         ModalService.confirm({
+          getData: () => inputRef.current?.value,
           body: (
             <div style={{ overflow: 'visible' }}>
               <div>{modalMessage}</div>
@@ -464,6 +467,18 @@ export default function CippTable({
           title: 'Confirm',
           onConfirm: async () => {
             const resultsarr = []
+            const selectedValue = inputRef.current.value
+            let additionalFields = {}
+            if (inputRef.current.nodeName === 'SELECT') {
+              const selectedItem = dropDownInfo.data.find(
+                (item) => item[modalDropdown.valueField] === selectedValue,
+              )
+              if (selectedItem && modalDropdown.addedField) {
+                Object.keys(modalDropdown.addedField).forEach((key) => {
+                  additionalFields[key] = selectedItem[modalDropdown.addedField[key]]
+                })
+              }
+            }
             for (const row of selectedRows) {
               setLoopRunning(true)
               const urlParams = new URLSearchParams(modalUrl.split('?')[1])
@@ -490,26 +505,13 @@ export default function CippTable({
                 }
               }
               const NewModalUrl = `${modalUrl.split('?')[0]}?${urlParams.toString()}`
-              const selectedValue = inputRef.current.value
-              let additionalFields = {}
-              if (inputRef.current.nodeName === 'SELECT') {
-                const selectedItem = dropDownInfo.data.find(
-                  (item) => item[modalDropdown.valueField] === selectedValue,
-                )
-                if (selectedItem && modalDropdown.addedField) {
-                  Object.keys(modalDropdown.addedField).forEach((key) => {
-                    additionalFields[key] = selectedItem[modalDropdown.addedField[key]]
-                  })
-                }
-              }
-
               const results = await genericPostRequest({
                 path: NewModalUrl,
                 values: {
                   ...modalBody,
                   ...newModalBody,
                   ...additionalFields,
-                  ...{ input: inputRef.current.value },
+                  ...{ input: selectedValue },
                 },
               })
               resultsarr.push(results)
@@ -614,7 +616,7 @@ export default function CippTable({
             className="m-1"
             size="sm"
           >
-            <FontAwesomeIcon icon={faSync} />
+            <FontAwesomeIcon icon={faSync} spin={isFetching} />
           </CButton>
         </CTooltip>,
       ])
@@ -888,7 +890,7 @@ export default function CippTable({
         {(updatedColumns || !dynamicColumns) && (
           <>
             {(massResults.length >= 1 || loopRunning) && (
-              <CCallout color="info">
+              <CippCallout color="info" dismissible>
                 {massResults[0]?.data?.Metadata?.Heading && (
                   <CAccordion flush>
                     {massResults.map((message, idx) => {
@@ -963,7 +965,7 @@ export default function CippTable({
                     <CSpinner size="sm" />
                   </li>
                 )}
-              </CCallout>
+              </CippCallout>
             )}
             <DataTable
               customStyles={customStyles}
@@ -988,7 +990,7 @@ export default function CippTable({
               expandableRowsComponent={expandableRowsComponent}
               highlightOnHover={highlightOnHover}
               expandOnRowClicked={expandOnRowClicked}
-              defaultSortAsc
+              defaultSortAsc={defaultSortAsc}
               defaultSortFieldId={1}
               sortFunction={customSort}
               paginationPerPage={tablePageSize}
@@ -1049,6 +1051,7 @@ export const CippTablePropTypes = {
   disableCSVExport: PropTypes.bool,
   error: PropTypes.object,
   filterlist: PropTypes.arrayOf(PropTypes.object),
+  defaultSortAsc: PropTypes.bool,
 }
 
 CippTable.propTypes = CippTablePropTypes
