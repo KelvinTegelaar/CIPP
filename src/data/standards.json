@@ -102,9 +102,9 @@
         "label": "Show header"
       },
       {
-        "type":"boolean",
-        "name":"standards.Branding.isFooterShown",
-        "label":"Show footer"
+        "type": "boolean",
+        "name": "standards.Branding.isFooterShown",
+        "label": "Show footer"
       }
     ],
     "label": "Set branding for the tenant",
@@ -118,6 +118,16 @@
     "helpText": "Enables Customer Lockbox that offers an approval process for Microsoft support to access organization data",
     "addedComponent": [],
     "label": "Enable Customer Lockbox",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
+    "name": "standards.EnablePronouns",
+    "cat": "Global Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Enables the Pronouns feature for the tenant. This allows users to set their pronouns in their profile.",
+    "addedComponent": [],
+    "label": "Enable Pronouns",
     "impact": "Low Impact",
     "impactColour": "info"
   },
@@ -156,8 +166,36 @@
     "cat": "Global Standards",
     "tag": ["mediumimpact", "CIS", "spo_idle_session_timeout"],
     "helpText": "Enables and sets Idle session timeout for Microsoft 365 to 1 hour. This policy affects most M365 web apps",
-    "addedComponent": [],
-    "label": "Enable 1 hour Activity based Timeout",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Select value",
+        "name": "standards.ActivityBasedTimeout.timeout",
+        "values": [
+          {
+            "label": "1 Hour",
+            "value": "01:00:00"
+          },
+          {
+            "label": "3 Hours",
+            "value": "03:00:00"
+          },
+          {
+            "label": "6 Hours",
+            "value": "06:00:00"
+          },
+          {
+            "label": "12 Hours",
+            "value": "12:00:00"
+          },
+          {
+            "label": "24 Hours",
+            "value": "1.00:00:00"
+          }
+        ]
+      }
+    ],
+    "label": "Enable Activity based Timeout",
     "impact": "Medium Impact",
     "impactColour": "warning"
   },
@@ -605,6 +643,32 @@
     "impactColour": "info"
   },
   {
+    "name": "standards.CloudMessageRecall",
+    "cat": "Exchange Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Sets the Cloud Message Recall state for the tenant. This allows users to recall messages from the cloud.",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Select value",
+        "name": "standards.CloudMessageRecall.state",
+        "values": [
+          {
+            "label": "Enabled",
+            "value": "true"
+          },
+          {
+            "label": "Disabled",
+            "value": "false"
+          }
+        ]
+      }
+    ],
+    "label": "Set Cloud Message Recall state",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.AutoExpandArchive",
     "cat": "Exchange Standards",
     "tag": ["lowimpact"],
@@ -665,6 +729,32 @@
       }
     ],
     "label": "Enable all MailTips",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
+    "name": "standards.TeamsMeetingsByDefault",
+    "cat": "Exchange Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Sets the default state for automatically turning meetings into Teams meetings for the tenant. This can be overridden by the user in Outlook.",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Select value",
+        "name": "standards.TeamsMeetingsByDefault.state",
+        "values": [
+          {
+            "label": "Enabled",
+            "value": "true"
+          },
+          {
+            "label": "Disabled",
+            "value": "false"
+          }
+        ]
+      }
+    ],
+    "label": "Set Teams Meetings by default state",
     "impact": "Low Impact",
     "impactColour": "info"
   },
@@ -801,6 +891,74 @@
     "label": "Disable additional storage providers in OWA",
     "impact": "Low Impact",
     "impactColour": "info"
+  },
+  {
+    "name": "standards.ShortenMeetings",
+    "cat": "Exchange Standards",
+    "tag": ["mediumimpact"],
+    "helpText": "Sets the shorten meetings settings on a tenant level. This will shorten meetings by the selected amount of minutes. Valid values are 0 to 29. Short meetings are under 60 minutes, long meetings are over 60 minutes.",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Select value",
+        "name": "standards.ShortenMeetings.ShortenEventScopeDefault",
+        "values": [
+          {
+            "label": "Disabled/None",
+            "value": "None"
+          },
+          {
+            "label": "End early",
+            "value": "EndEarly"
+          },
+          {
+            "label": "Start late",
+            "value": "StartLate"
+          }
+        ]
+      },
+      {
+        "type": "number",
+        "name": "standards.ShortenMeetings.DefaultMinutesToReduceShortEventsBy",
+        "label": "Minutes to reduce short calendar events by (Default is 5)",
+        "default": 5
+      },
+      {
+        "type": "number",
+        "name": "standards.ShortenMeetings.DefaultMinutesToReduceLongEventsBy",
+        "label": "Minutes to reduce long calendar events by (Default is 10)",
+        "default": 10
+      }
+    ],
+    "label": "Set shorten meetings state",
+    "impact": "Medium Impact",
+    "impactColour": "warning"
+  },
+  {
+    "name": "standards.Bookings",
+    "cat": "Exchange Standards",
+    "tag": ["mediumimpact"],
+    "helpText": "Sets the state of Bookings on the tenant. Bookings is a scheduling tool that allows users to book appointments with others both internal and external.",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Select value",
+        "name": "standards.Bookings.state",
+        "values": [
+          {
+            "label": "Enabled",
+            "value": "true"
+          },
+          {
+            "label": "Disabled",
+            "value": "false"
+          }
+        ]
+      }
+    ],
+    "label": "Set Bookings state",
+    "impact": "Medium Impact",
+    "impactColour": "warning"
   },
   {
     "name": "standards.DisableOutlookAddins",
@@ -953,6 +1111,44 @@
         "label": "Show user impersonation unusual characters safety tip",
         "name": "standards.AntiPhishPolicy.EnableUnusualCharactersSafetyTips",
         "default": true
+      },
+      {
+        "type": "Select",
+        "label": "If a message is detected as user impersonation",
+        "name": "standards.AntiPhishPolicy.TargetedUserProtectionAction",
+        "values": [
+          {
+            "label": "Move to Junk Folder",
+            "value": "MoveToJmf"
+          },
+          {
+            "label": "Delete the message before its delivered",
+            "value": "Delete"
+          },
+          {
+            "label": "Quarantine the message",
+            "value": "Quarantine"
+          }
+        ]
+      },
+      {
+        "type": "Select",
+        "label": "If a message is detected as domain impersonation",
+        "name": "standards.AntiPhishPolicy.TargetedDomainProtectionAction",
+        "values": [
+          {
+            "label": "Move to Junk Folder",
+            "value": "MoveToJmf"
+          },
+          {
+            "label": "Delete the message before its delivered",
+            "value": "Delete"
+          },
+          {
+            "label": "Quarantine the message",
+            "value": "Quarantine"
+          }
+        ]
       },
       {
         "type": "Select",
