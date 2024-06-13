@@ -1507,6 +1507,41 @@
     "impactColour": "danger"
   },
   {
+    "name": "standards.sharingDomainRestriction",
+    "cat": "SharePoint Standards",
+    "tag": ["highimpact", "CIS"],
+    "helpText": "Restricts sharing to only users with the specified domain. This is useful for organizations that only want to share with their own domain.",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "name": "standards.sharingDomainRestriction.Mode",
+        "label": "Limit external sharing by domains",
+        "values": [
+          {
+            "label": "Off",
+            "value": "none"
+          },
+          {
+            "label": "Restirct sharing to specific domains",
+            "value": "allowList"
+          },
+          {
+            "label": "Block sharing to specific domains",
+            "value": "blockList"
+          }
+        ]
+      },
+      {
+        "type": "input",
+        "name": "standards.sharingDomainRestriction.Domains",
+        "label": "Domains to allow/block, comma separated"
+      }
+    ],
+    "label": "Restrict sharing to a specific domain",
+    "impact": "High Impact",
+    "impactColour": "danger"
+  },
+  {
     "name": "standards.TenantDefaultTimezone",
     "cat": "SharePoint Standards",
     "tag": ["lowimpact"],
