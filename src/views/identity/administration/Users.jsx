@@ -112,6 +112,26 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modalMessage: 'Are you sure you want to send a MFA request?',
           },
           {
+            label: 'Set Per-User MFA',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecPerUserMFA`,
+            modalType: 'POST',
+            modalBody: {
+              TenantFilter: tenant.defaultDomainName,
+              userId: `${row.userPrincipalName}`,
+            },
+            modalMessage: 'Are you sure you want to set per-user MFA for these users?',
+            modalDropdown: {
+              url: '/MFAStates.json',
+              labelField: 'label',
+              valueField: 'value',
+              addedField: {
+                State: 'value',
+              },
+            },
+          },
+          {
             label: 'Convert to Shared Mailbox',
             color: 'info',
             modal: true,
@@ -499,6 +519,26 @@ const Users = (row) => {
               modal: true,
               modalUrl: `/api/ExecResetMFA?TenantFilter=!Tenant&ID=!id`,
               modalMessage: 'Are you sure you want to enable MFA for these users?',
+            },
+            {
+              label: 'Set Per-User MFA',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecPerUserMFA`,
+              modalType: 'POST',
+              modalBody: {
+                TenantFilter: tenant.defaultDomainName,
+                userId: '!userPrincipalName',
+              },
+              modalMessage: 'Are you sure you want to set per-user MFA for these users?',
+              modalDropdown: {
+                url: '/MFAStates.json',
+                labelField: 'label',
+                valueField: 'value',
+                addedField: {
+                  State: 'value',
+                },
+              },
             },
             {
               label: 'Enable Online Archive',
