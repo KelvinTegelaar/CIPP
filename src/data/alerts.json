@@ -1,0 +1,93 @@
+[
+  {
+    "name": "MFAAlertUsers",
+    "label": "Alert on users without any form of MFA",
+    "recommendedRunInterval": "1d"
+  },
+  {
+    "name": "MFAAdmins",
+    "label": "Alert on admins without any form of MFA",
+    "recommendedRunInterval": "1d"
+  },
+  {
+    "name": "NoCAConfig",
+    "label": "Alert on tenants without a Conditional Access policy, while having Conditional Access licensing available.",
+    "recommendedRunInterval": "1d"
+  },
+  {
+    "name": "AdminPassword",
+    "label": "Alert on changed admin Passwords",
+    "recommendedRunInterval": "30m"
+  },
+  {
+    "name": "QuotaUsed",
+    "label": "Alert on % mailbox quota used",
+    "requiresInput": true,
+    "inputLabel": "Enter quota percentage",
+    "inputName": "QuotaUsedQuota",
+    "recommendedRunInterval": "4h"
+  },
+  {
+    "name": "SharePointQuota",
+    "label": "Alert on % SharePoint quota used",
+    "requiresInput": true,
+    "inputLabel": "Enter quota percentage",
+    "inputName": "SharePointQuotaQuota",
+    "recommendedRunInterval": "4h"
+  },
+  {
+    "name": "ExpiringLicenses",
+    "label": "Alert on licenses expiring in 30 days",
+    "recommendedRunInterval": "7d"
+  },
+  {
+    "name": "NewAppApproval",
+    "label": "Alert on new apps in the application approval list",
+    "recommendedRunInterval": "30m"
+  },
+  {
+    "name": "SecDefaultsUpsell",
+    "label": "Alert on Security Defaults automatic enablement",
+    "recommendedRunInterval": "1d"
+  },
+  {
+    "name": "DefenderStatus",
+    "label": "Alert if Defender is not running (Tenant must be on-boarded in Lighthouse)",
+    "recommendedRunInterval": "4h"
+  },
+  {
+    "name": "DefenderMalware",
+    "label": "Alert on Defender Malware found  (Tenant must be on-boarded in Lighthouse)",
+    "recommendedRunInterval": "4h"
+  },
+  {
+    "name": "UnusedLicenses",
+    "label": "Alert on unused licenses",
+    "recommendedRunInterval": "1d"
+  },
+  {
+    "name": "OverusedLicenses",
+    "label": "Alert on overused licenses",
+    "recommendedRunInterval": "7d"
+  },
+  {
+    "name": "AppSecretExpiry",
+    "label": "Alert on expiring application secrets",
+    "recommendedRunInterval": "1d"
+  },
+  {
+    "name": "ApnCertExpiry",
+    "label": "Alert on expiring APN certificates",
+    "recommendedRunInterval": "1d"
+  },
+  {
+    "name": "VppTokenExpiry",
+    "label": "Alert on expiring VPP tokens",
+    "recommendedRunInterval": "1d"
+  },
+  {
+    "name": "DepTokenExpiry",
+    "label": "Alert on expiring DEP tokens",
+    "recommendedRunInterval": "1d"
+  }
+]
