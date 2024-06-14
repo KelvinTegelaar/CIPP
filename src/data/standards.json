@@ -551,7 +551,7 @@
     "impactColour": "danger"
   },
   {
-    "name": "standards.perUserMFA",
+    "name": "standards.PerUserMFA",
     "cat": "Entra (AAD) Standards",
     "tag": ["highimpact"],
     "helpText": "Enables per user MFA for all users.",
