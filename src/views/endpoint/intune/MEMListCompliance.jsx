@@ -151,7 +151,7 @@ const ComplianceList = () => {
               label: 'Delete Policy',
               modal: true,
               modalUrl: `api/RemovePolicy?TenantFilter=${tenant?.defaultDomainName}&ID=!id&URLName=deviceCompliancePolicies`,
-              modalMessage: 'Are you sure you want to convert these users to a shared mailbox?',
+              modalMessage: 'Are you sure you want to delete these policies?',
             },
           ],
         },
