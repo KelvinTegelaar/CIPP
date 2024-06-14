@@ -551,6 +551,16 @@
     "impactColour": "danger"
   },
   {
+    "name": "standards.PerUserMFA",
+    "cat": "Entra (AAD) Standards",
+    "tag": ["highimpact"],
+    "helpText": "Enables per user MFA for all users.",
+    "addedComponent": [],
+    "label": "Enables per user MFA for all users.",
+    "impact": "High Impact",
+    "impactColour": "danger"
+  },
+  {
     "name": "standards.OutBoundSpamAlert",
     "cat": "Exchange Standards",
     "tag": ["lowimpact", "CIS"],
@@ -1327,7 +1337,7 @@
       },
       {
         "type": "boolean",
-        "label": "Enable Internal Sender Admin Notifications",
+        "label": "Enable External Sender Admin Notifications",
         "name": "standards.MalwareFilterPolicy.EnableExternalSenderAdminNotifications"
       },
       {
