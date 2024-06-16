@@ -346,99 +346,115 @@ const BestPracticeAnalyser = () => {
                       refreshFunction={setRefreshValue}
                     />
                   </div>
-                  {graphrequest.data.Columns.map((info, idx) => (
-                    <CCol md={12} xl={4} className="mb-3" key={`${info.name}-${idx}`}>
-                      <CCard className="h-100">
-                        <CCardHeader>
-                          <CCardTitle>{info.name}</CCardTitle>
-                        </CCardHeader>
-                        <CCardBody>
-                          <CCardText>
-                            {info.formatter === 'bool' && (
-                              <CBadge
-                                color={graphrequest.data.Data[0][info.value] ? 'info' : 'danger'}
-                              >
-                                <FontAwesomeIcon
-                                  icon={graphrequest.data.Data[0][info.value] ? faCheck : faTimes}
-                                  size="lg"
-                                  className="me-1"
-                                />
-                                {graphrequest.data.Data[0][info.value] ? 'Yes' : 'No'}
-                              </CBadge>
-                            )}
-                            {info.formatter === 'reverseBool' && (
-                              <CBadge
-                                color={graphrequest.data.Data[0][info.value] ? 'danger' : 'info'}
-                              >
-                                <FontAwesomeIcon
-                                  icon={graphrequest.data.Data[0][info.value] ? faTimes : faCheck}
-                                  size="lg"
-                                  className="me-1"
-                                />
-                                {graphrequest.data.Data[0][info.value] ? 'No' : 'Yes'}
-                              </CBadge>
-                            )}
-                            {info.formatter === 'warnBool' && (
-                              <CBadge
-                                color={graphrequest.data.Data[0][info.value] ? 'info' : 'warning'}
-                              >
-                                <FontAwesomeIcon
-                                  icon={
-                                    graphrequest.data.Data[0][info.value] ? faCheck : faExclamation
-                                  }
-                                  size="lg"
-                                  className="me-1"
-                                />
-                                {graphrequest.data.Data[0][info.value] ? 'Yes' : 'No'}
-                              </CBadge>
-                            )}
+                  {graphrequest.data?.Data[0] &&
+                  Object.keys(graphrequest.data.Data[0]).length === 0 ? (
+                    <CCard className="content-card">
+                      <CCardHeader className="d-flex justify-content-between align-items-center">
+                        <CCardTitle>Best Practice Report</CCardTitle>
+                      </CCardHeader>
+                      <CCardBody>
+                        <CCardText>
+                          No Data Found for this tenant. Please refresh the tenant data.
+                        </CCardText>
+                      </CCardBody>
+                    </CCard>
+                  ) : (
+                    graphrequest.data.Columns.map((info, idx) => (
+                      <CCol md={12} xl={4} className="mb-3" key={`${info.name}-${idx}`}>
+                        <CCard className="h-100">
+                          <CCardHeader>
+                            <CCardTitle>{info.name}</CCardTitle>
+                          </CCardHeader>
+                          <CCardBody>
+                            <CCardText>
+                              {info.formatter === 'bool' && (
+                                <CBadge
+                                  color={graphrequest.data.Data[0][info.value] ? 'info' : 'danger'}
+                                >
+                                  <FontAwesomeIcon
+                                    icon={graphrequest.data.Data[0][info.value] ? faCheck : faTimes}
+                                    size="lg"
+                                    className="me-1"
+                                  />
+                                  {graphrequest.data.Data[0][info.value] ? 'Yes' : 'No'}
+                                </CBadge>
+                              )}
+                              {info.formatter === 'reverseBool' && (
+                                <CBadge
+                                  color={graphrequest.data.Data[0][info.value] ? 'danger' : 'info'}
+                                >
+                                  <FontAwesomeIcon
+                                    icon={graphrequest.data.Data[0][info.value] ? faTimes : faCheck}
+                                    size="lg"
+                                    className="me-1"
+                                  />
+                                  {graphrequest.data.Data[0][info.value] ? 'No' : 'Yes'}
+                                </CBadge>
+                              )}
+                              {info.formatter === 'warnBool' && (
+                                <CBadge
+                                  color={graphrequest.data.Data[0][info.value] ? 'info' : 'warning'}
+                                >
+                                  <FontAwesomeIcon
+                                    icon={
+                                      graphrequest.data.Data[0][info.value]
+                                        ? faCheck
+                                        : faExclamation
+                                    }
+                                    size="lg"
+                                    className="me-1"
+                                  />
+                                  {graphrequest.data.Data[0][info.value] ? 'Yes' : 'No'}
+                                </CBadge>
+                              )}
 
-                            {info.formatter === 'table' && (
-                              <>
-                                <CippTable
-                                  key={QueryColumns.data}
-                                  reportName="BestPracticeAnalyser"
-                                  dynamicColumns={false}
-                                  columns={getsubcolumns(
-                                    Array.isArray(graphrequest.data.Data[0][info.value])
-                                      ? graphrequest.data.Data[0][info.value]
-                                      : typeof graphrequest.data.Data[0][info.value] === 'object'
-                                      ? [graphrequest.data.Data[0][info.value]]
-                                      : graphrequest.data.Data[0][info.value] === 'FAILED'
-                                      ? [{ data: 'Failed to retrieve data' }]
-                                      : [graphrequest.data.Data[0][info.value]],
-                                  )}
-                                  data={
-                                    Array.isArray(graphrequest.data.Data[0][info.value])
-                                      ? graphrequest.data.Data[0][info.value]
-                                      : typeof graphrequest.data.Data[0][info.value] === 'object'
-                                      ? [graphrequest.data.Data[0][info.value]]
-                                      : graphrequest.data.Data[0][info.value] === 'FAILED'
-                                      ? [
-                                          {
-                                            data: 'Failed to retrieve data - Please check your report settings',
-                                          },
-                                        ]
-                                      : [graphrequest.data.Data[0][info.value]]
-                                  }
-                                  isFetching={graphrequest.isFetching}
-                                />
-                              </>
-                            )}
+                              {info.formatter === 'table' && (
+                                <>
+                                  <CippTable
+                                    key={QueryColumns.data}
+                                    reportName="BestPracticeAnalyser"
+                                    dynamicColumns={false}
+                                    columns={getsubcolumns(
+                                      Array.isArray(graphrequest.data.Data[0][info.value])
+                                        ? graphrequest.data.Data[0][info.value]
+                                        : typeof graphrequest.data.Data[0][info.value] === 'object'
+                                        ? [graphrequest.data.Data[0][info.value]]
+                                        : graphrequest.data.Data[0][info.value] === 'FAILED'
+                                        ? [{ data: 'Failed to retrieve data' }]
+                                        : [graphrequest.data.Data[0][info.value]],
+                                    )}
+                                    data={
+                                      Array.isArray(graphrequest.data.Data[0][info.value])
+                                        ? graphrequest.data.Data[0][info.value]
+                                        : typeof graphrequest.data.Data[0][info.value] === 'object'
+                                        ? [graphrequest.data.Data[0][info.value]]
+                                        : graphrequest.data.Data[0][info.value] === 'FAILED'
+                                        ? [
+                                            {
+                                              data: 'Failed to retrieve data - Please check your report settings',
+                                            },
+                                          ]
+                                        : [graphrequest.data.Data[0][info.value]]
+                                    }
+                                    isFetching={graphrequest.isFetching}
+                                  />
+                                </>
+                              )}
 
-                            {info.formatter === 'number' && (
-                              <p className="fs-1 text-center">
-                                {getNestedValue(graphrequest.data.Data[0], info.value)}
-                              </p>
-                            )}
-                          </CCardText>
-                          <CCardText>
-                            <small className="text-medium-emphasis">{info.desc}</small>
-                          </CCardText>
-                        </CCardBody>
-                      </CCard>
-                    </CCol>
-                  ))}
+                              {info.formatter === 'number' && (
+                                <p className="fs-1 text-center">
+                                  {getNestedValue(graphrequest.data.Data[0], info.value)}
+                                </p>
+                              )}
+                            </CCardText>
+                            <CCardText>
+                              <small className="text-medium-emphasis">{info.desc}</small>
+                            </CCardText>
+                          </CCardBody>
+                        </CCard>
+                      </CCol>
+                    ))
+                  )}
                 </CRow>
               </>
             )}
