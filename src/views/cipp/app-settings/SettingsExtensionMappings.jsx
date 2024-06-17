@@ -19,13 +19,14 @@ import { CippCallout } from 'src/components/layout/index.js'
 import CippAccordionItem from 'src/components/contentcards/CippAccordionItem'
 import { CippTable } from 'src/components/tables'
 import { CellTip } from 'src/components/tables/CellGenericFormat'
+import CippButtonCard from 'src/components/contentcards/CippButtonCard'
 
 /**
  * Retrieves and sets the extension mappings for HaloPSA and NinjaOne.
  *
  * @returns {JSX.Element} - JSX component representing the settings extension mappings.
  */
-export function SettingsExtensionMappings() {
+export function SettingsExtensionMappings({ type }) {
   const [addedAttributes, setAddedAttribute] = React.useState(1)
   const [mappingArray, setMappingArray] = React.useState('defaultMapping')
   const [mappingValue, setMappingValue] = React.useState({})
@@ -242,308 +243,326 @@ export function SettingsExtensionMappings() {
 
   return (
     <CRow>
-      {listBackendHaloResult.isUninitialized &&
-        listHaloBackend({ path: 'api/ExecExtensionMapping?List=Halo' })}
-      {listBackendNinjaOrgsResult.isUninitialized &&
-        listNinjaOrgsBackend({ path: 'api/ExecExtensionMapping?List=NinjaOrgs' })}
-      {listBackendNinjaFieldsResult.isUninitialized &&
-        listNinjaFieldsBackend({ path: 'api/ExecExtensionMapping?List=NinjaFields' })}
-      <CAccordion>
-        <CippAccordionItem
-          title={'HaloPSA Mapping'}
-          titleType="big"
-          isFetching={listBackendHaloResult.isFetching}
-          CardButton={
-            <>
-              <CButton form="haloform" className="me-2" type="submit">
-                {extensionHaloConfigResult.isFetching && (
-                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-                )}
-                Save Mappings
-              </CButton>
-              <CButton onClick={() => onHaloAutomap()} className="me-2">
-                {extensionNinjaOrgsAutomapResult.isFetching && (
-                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-                )}
-                Automap HaloPSA Clients
-              </CButton>
-            </>
-          }
-        >
-          {listBackendHaloResult.isFetching && listBackendHaloResult.isUninitialized ? (
-            <CSpinner color="primary" />
-          ) : (
-            <Form
-              onSubmit={onHaloSubmit}
-              initialValues={listBackendHaloResult.data?.Mappings}
-              render={({ handleSubmit, submitting, values }) => {
-                return (
-                  <CForm id="haloform" onSubmit={handleSubmit}>
-                    <CCardText>
-                      Use the table below to map your client to the correct PSA client.
-                      {
-                        //load all the existing mappings and show them first in a table.
-                        listBackendHaloResult.isSuccess && (
-                          <CippTable
-                            showFilter={true}
-                            reportName="none"
-                            columns={halocolumns}
-                            data={haloMappingsArray}
-                            isModal={true}
-                          />
-                        )
-                      }
-                      <CRow>
-                        <CCol xs={5}>
-                          <RFFSelectSearch
-                            placeholder="Select a Tenant"
-                            name={`tenant_selector`}
-                            values={listBackendHaloResult.data?.Tenants.filter((tenant) => {
-                              return !Object.keys(listBackendHaloResult.data?.Mappings).includes(
-                                tenant.customerId,
-                              )
-                            }).map((tenant) => ({
-                              name: tenant.displayName,
-                              value: tenant.customerId,
-                            }))}
-                            onChange={(e) => {
-                              setMappingArray(e.value)
+      {type === 'HaloPSA' && (
+        <>
+          {listBackendHaloResult.isUninitialized &&
+            listHaloBackend({ path: 'api/ExecExtensionMapping?List=Halo' })}
+
+          <CippButtonCard
+            title={'HaloPSA Mapping'}
+            titleType="big"
+            isFetching={listBackendHaloResult.isFetching}
+            CardButton={
+              <>
+                <CButton form="haloform" className="me-2" type="submit">
+                  {extensionHaloConfigResult.isFetching && (
+                    <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                  )}
+                  Save Mappings
+                </CButton>
+                <CButton onClick={() => onHaloAutomap()} className="me-2">
+                  {extensionNinjaOrgsAutomapResult.isFetching && (
+                    <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                  )}
+                  Automap HaloPSA Clients
+                </CButton>
+              </>
+            }
+          >
+            {listBackendHaloResult.isFetching && listBackendHaloResult.isUninitialized ? (
+              <CSpinner color="primary" />
+            ) : (
+              <Form
+                onSubmit={onHaloSubmit}
+                initialValues={listBackendHaloResult.data?.Mappings}
+                render={({ handleSubmit, submitting, values }) => {
+                  return (
+                    <CForm id="haloform" onSubmit={handleSubmit}>
+                      <CCardText>
+                        Use the table below to map your client to the correct PSA client.
+                        {
+                          //load all the existing mappings and show them first in a table.
+                          listBackendHaloResult.isSuccess && (
+                            <CippTable
+                              showFilter={true}
+                              reportName="none"
+                              columns={halocolumns}
+                              data={haloMappingsArray}
+                              isModal={true}
+                            />
+                          )
+                        }
+                        <CRow>
+                          <CCol xs={5}>
+                            <RFFSelectSearch
+                              placeholder="Select a Tenant"
+                              name={`tenant_selector`}
+                              values={listBackendHaloResult.data?.Tenants.filter((tenant) => {
+                                return !Object.keys(listBackendHaloResult.data?.Mappings).includes(
+                                  tenant.customerId,
+                                )
+                              }).map((tenant) => ({
+                                name: tenant.displayName,
+                                value: tenant.customerId,
+                              }))}
+                              onChange={(e) => {
+                                setMappingArray(e.value)
+                              }}
+                              isLoading={listBackendHaloResult.isFetching}
+                            />
+                          </CCol>
+                          <CCol xs="1" className="d-flex justify-content-center align-items-center">
+                            <FontAwesomeIcon icon={'link'} size="xl" className="my-4" />
+                          </CCol>
+                          <CCol xs="5">
+                            <RFFSelectSearch
+                              name="halo_client"
+                              values={listBackendHaloResult.data?.HaloClients.filter((client) => {
+                                return !Object.values(listBackendHaloResult.data?.Mappings)
+                                  .map((value) => {
+                                    return value.value
+                                  })
+                                  .includes(client.value)
+                              }).map((client) => ({
+                                name: client.name,
+                                value: client.value,
+                              }))}
+                              onChange={(e) => setMappingValue(e)}
+                              placeholder="Select a HaloPSA Client"
+                              isLoading={listBackendHaloResult.isFetching}
+                            />
+                          </CCol>
+                          <CButton
+                            onClick={() => {
+                              if (
+                                mappingValue.value !== undefined &&
+                                mappingValue.value !== '-1' &&
+                                Object.values(haloMappingsArray)
+                                  .map((item) => item.haloId)
+                                  .includes(mappingValue.value) === false
+                              ) {
+                                //set the new mapping in the array
+                                setHaloMappingsArray([
+                                  ...haloMappingsArray,
+                                  {
+                                    Tenant: listBackendHaloResult.data?.Tenants.find(
+                                      (tenant) => tenant.customerId === mappingArray,
+                                    ),
+                                    haloName: mappingValue.label,
+                                    haloId: mappingValue.value,
+                                  },
+                                ])
+                              }
                             }}
-                            isLoading={listBackendHaloResult.isFetching}
-                          />
-                        </CCol>
-                        <CCol xs="1" className="d-flex justify-content-center align-items-center">
-                          <FontAwesomeIcon icon={'link'} size="xl" className="my-4" />
-                        </CCol>
-                        <CCol xs="5">
-                          <RFFSelectSearch
-                            name="halo_client"
-                            values={listBackendHaloResult.data?.HaloClients.filter((client) => {
-                              return !Object.values(listBackendHaloResult.data?.Mappings)
-                                .map((value) => {
-                                  return value.value
-                                })
-                                .includes(client.value)
-                            }).map((client) => ({
-                              name: client.name,
-                              value: client.value,
-                            }))}
-                            onChange={(e) => setMappingValue(e)}
-                            placeholder="Select a HaloPSA Client"
-                            isLoading={listBackendHaloResult.isFetching}
-                          />
-                        </CCol>
-                        <CButton
-                          onClick={() => {
-                            if (
-                              mappingValue.value !== undefined &&
-                              Object.values(haloMappingsArray)
-                                .map((item) => item.haloId)
-                                .includes(mappingValue.value) === false
-                            ) {
+                            className={`my-4 circular-button`}
+                            title={'+'}
+                          >
+                            <FontAwesomeIcon icon={'plus'} />
+                          </CButton>
+                        </CRow>
+                      </CCardText>
+                      <CCol className="me-2">
+                        {HaloAutoMap && (
+                          <CCallout dismissible color="success">
+                            Automapping has been executed. Remember to check the changes and save
+                            them.
+                          </CCallout>
+                        )}
+                        {(extensionHaloConfigResult.isSuccess ||
+                          extensionHaloConfigResult.isError) &&
+                          !extensionHaloConfigResult.isFetching && (
+                            <CippCallout
+                              color={extensionHaloConfigResult.isSuccess ? 'success' : 'danger'}
+                              dismissible
+                              style={{ marginTop: '16px' }}
+                            >
+                              {extensionHaloConfigResult.isSuccess
+                                ? extensionHaloConfigResult.data.Results
+                                : 'Error'}
+                            </CippCallout>
+                          )}
+                      </CCol>
+                      <small>
+                        <FontAwesomeIcon icon={'triangle-exclamation'} className="me-2" />
+                        After editing the mappings you must click Save Mappings for the changes to
+                        take effect. The table will be saved exactly as presented.
+                      </small>
+                    </CForm>
+                  )
+                }}
+              />
+            )}
+          </CippButtonCard>
+        </>
+      )}
+      {type === 'NinjaOne' && (
+        <>
+          {listBackendNinjaOrgsResult.isUninitialized &&
+            listNinjaOrgsBackend({ path: 'api/ExecExtensionMapping?List=NinjaOrgs' })}
+          {listBackendNinjaFieldsResult.isUninitialized &&
+            listNinjaFieldsBackend({ path: 'api/ExecExtensionMapping?List=NinjaFields' })}
+          <CippButtonCard
+            title={'NinjaOne Organization Mapping'}
+            titleType="big"
+            isFetching={listBackendNinjaOrgsResult.isFetching}
+            CardButton={
+              <>
+                <CButton form="NinjaOrgs" className="me-2" type="submit">
+                  {extensionNinjaOrgsConfigResult.isFetching && (
+                    <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                  )}
+                  Set Mappings
+                </CButton>
+                <CButton onClick={() => onNinjaOrgsAutomap()} className="me-2">
+                  {extensionNinjaOrgsAutomapResult.isFetching && (
+                    <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+                  )}
+                  Automap NinjaOne Organizations
+                </CButton>
+              </>
+            }
+          >
+            {listBackendNinjaOrgsResult.isFetching && listBackendNinjaOrgsResult.isUninitialized ? (
+              <CSpinner color="primary" />
+            ) : (
+              <Form
+                onSubmit={onNinjaOrgsSubmit}
+                initialValues={listBackendHaloResult.data?.Mappings}
+                render={({ handleSubmit, submitting, values }) => {
+                  return (
+                    <CForm id="NinjaOrgs" onSubmit={handleSubmit}>
+                      <CCardText>
+                        Use the table below to map your client to the correct NinjaOne Organization.
+                        {
+                          //load all the existing mappings and show them first in a table.
+                          listBackendNinjaOrgsResult.isSuccess && (
+                            <CippTable
+                              showFilter={true}
+                              reportName="none"
+                              columns={ninjacolumns}
+                              data={ninjaMappingsArray}
+                              isModal={true}
+                            />
+                          )
+                        }
+                        <CRow>
+                          <CCol xs={5}>
+                            <RFFSelectSearch
+                              placeholder="Select a Tenant"
+                              name={`tenant_selector`}
+                              values={listBackendNinjaOrgsResult.data?.Tenants.filter((tenant) => {
+                                return !Object.keys(
+                                  listBackendNinjaOrgsResult.data?.Mappings,
+                                ).includes(tenant.customerId)
+                              }).map((tenant) => ({
+                                name: tenant.displayName,
+                                value: tenant.customerId,
+                              }))}
+                              onChange={(e) => {
+                                setMappingArray(e.value)
+                              }}
+                              isLoading={listBackendNinjaOrgsResult.isFetching}
+                            />
+                          </CCol>
+                          <CCol xs="1" className="d-flex justify-content-center align-items-center">
+                            <FontAwesomeIcon icon={'link'} size="xl" className="my-4" />
+                          </CCol>
+                          <CCol xs="5">
+                            <RFFSelectSearch
+                              name="ninja_org"
+                              values={listBackendNinjaOrgsResult.data?.NinjaOrgs.filter(
+                                (client) => {
+                                  return !Object.values(listBackendNinjaOrgsResult.data?.Mappings)
+                                    .map((value) => {
+                                      return value.value
+                                    })
+                                    .includes(client.value.toString())
+                                },
+                              ).map((client) => ({
+                                name: client.name,
+                                value: client.value,
+                              }))}
+                              onChange={(e) => setMappingValue(e)}
+                              placeholder="Select a NinjaOne Organization"
+                              isLoading={listBackendNinjaOrgsResult.isFetching}
+                            />
+                          </CCol>
+                          <CButton
+                            onClick={() => {
                               //set the new mapping in the array
-                              setHaloMappingsArray([
-                                ...haloMappingsArray,
-                                {
-                                  Tenant: listBackendHaloResult.data?.Tenants.find(
-                                    (tenant) => tenant.customerId === mappingArray,
-                                  ),
-                                  haloName: mappingValue.label,
-                                  haloId: mappingValue.value,
-                                },
-                              ])
-                            }
-                          }}
-                          className={`my-4 circular-button`}
-                          title={'+'}
-                        >
-                          <FontAwesomeIcon icon={'plus'} />
-                        </CButton>
-                      </CRow>
-                    </CCardText>
-                    <CCol className="me-2">
-                      {HaloAutoMap && (
-                        <CCallout dismissible color="success">
-                          Automapping has been executed. Remember to check the changes and save
-                          them.
-                        </CCallout>
-                      )}
-                      {(extensionHaloConfigResult.isSuccess || extensionHaloConfigResult.isError) &&
-                        !extensionHaloConfigResult.isFetching && (
-                          <CippCallout
-                            color={extensionHaloConfigResult.isSuccess ? 'success' : 'danger'}
-                            dismissible
-                            style={{ marginTop: '16px' }}
-                          >
-                            {extensionHaloConfigResult.isSuccess
-                              ? extensionHaloConfigResult.data.Results
-                              : 'Error'}
-                          </CippCallout>
-                        )}
-                    </CCol>
-                    <small>
-                      <FontAwesomeIcon icon={'triangle-exclamation'} className="me-2" />
-                      After editing the mappings you must click Save Mappings for the changes to
-                      take effect. The table will be saved exactly as presented.
-                    </small>
-                  </CForm>
-                )
-              }}
-            />
-          )}
-        </CippAccordionItem>
-        <CippAccordionItem
-          title={'NinjaOne Organization Mapping'}
-          titleType="big"
-          isFetching={listBackendNinjaOrgsResult.isFetching}
-          CardButton={
-            <>
-              <CButton form="NinjaOrgs" className="me-2" type="submit">
-                {extensionNinjaOrgsConfigResult.isFetching && (
-                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-                )}
-                Set Mappings
-              </CButton>
-              <CButton onClick={() => onNinjaOrgsAutomap()} className="me-2">
-                {extensionNinjaOrgsAutomapResult.isFetching && (
-                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-                )}
-                Automap NinjaOne Organizations
-              </CButton>
-            </>
-          }
-        >
-          {listBackendNinjaOrgsResult.isFetching && listBackendNinjaOrgsResult.isUninitialized ? (
-            <CSpinner color="primary" />
-          ) : (
-            <Form
-              onSubmit={onNinjaOrgsSubmit}
-              initialValues={listBackendHaloResult.data?.Mappings}
-              render={({ handleSubmit, submitting, values }) => {
-                return (
-                  <CForm id="NinjaOrgs" onSubmit={handleSubmit}>
-                    <CCardText>
-                      Use the table below to map your client to the correct NinjaOne Organization.
-                      {
-                        //load all the existing mappings and show them first in a table.
-                        listBackendNinjaOrgsResult.isSuccess && (
-                          <CippTable
-                            showFilter={true}
-                            reportName="none"
-                            columns={ninjacolumns}
-                            data={ninjaMappingsArray}
-                            isModal={true}
-                          />
-                        )
-                      }
-                      <CRow>
-                        <CCol xs={5}>
-                          <RFFSelectSearch
-                            placeholder="Select a Tenant"
-                            name={`tenant_selector`}
-                            values={listBackendNinjaOrgsResult.data?.Tenants.filter((tenant) => {
-                              return !Object.keys(
-                                listBackendNinjaOrgsResult.data?.Mappings,
-                              ).includes(tenant.customerId)
-                            }).map((tenant) => ({
-                              name: tenant.displayName,
-                              value: tenant.customerId,
-                            }))}
-                            onChange={(e) => {
-                              setMappingArray(e.value)
+                              if (
+                                mappingValue.value !== undefined &&
+                                mappingValue.value !== '-1' &&
+                                Object.values(ninjaMappingsArray)
+                                  .map((item) => item.ninjaId)
+                                  .includes(mappingValue.value) === false
+                              ) {
+                                setNinjaMappingsArray([
+                                  ...ninjaMappingsArray,
+                                  {
+                                    Tenant: listBackendNinjaOrgsResult.data?.Tenants.find(
+                                      (tenant) => tenant.customerId === mappingArray,
+                                    ),
+                                    ninjaName: mappingValue.label,
+                                    ninjaId: mappingValue.value,
+                                  },
+                                ])
+                              }
                             }}
-                            isLoading={listBackendNinjaOrgsResult.isFetching}
-                          />
-                        </CCol>
-                        <CCol xs="1" className="d-flex justify-content-center align-items-center">
-                          <FontAwesomeIcon icon={'link'} size="xl" className="my-4" />
-                        </CCol>
-                        <CCol xs="5">
-                          <RFFSelectSearch
-                            name="ninja_org"
-                            values={listBackendNinjaOrgsResult.data?.NinjaOrgs.filter((client) => {
-                              return !Object.values(listBackendNinjaOrgsResult.data?.Mappings)
-                                .map((value) => {
-                                  return value.value
-                                })
-                                .includes(client.value.toString())
-                            }).map((client) => ({
-                              name: client.name,
-                              value: client.value,
-                            }))}
-                            onChange={(e) => setMappingValue(e)}
-                            placeholder="Select a NinjaOne Organization"
-                            isLoading={listBackendNinjaOrgsResult.isFetching}
-                          />
-                        </CCol>
-                        <CButton
-                          onClick={() => {
-                            //set the new mapping in the array
-                            if (
-                              mappingValue.value !== undefined &&
-                              Object.values(ninjaMappingsArray)
-                                .map((item) => item.ninjaId)
-                                .includes(mappingValue.value) === false
-                            ) {
-                              setNinjaMappingsArray([
-                                ...ninjaMappingsArray,
-                                {
-                                  Tenant: listBackendNinjaOrgsResult.data?.Tenants.find(
-                                    (tenant) => tenant.customerId === mappingArray,
-                                  ),
-                                  ninjaName: mappingValue.label,
-                                  ninjaId: mappingValue.value,
-                                },
-                              ])
-                            }
-                          }}
-                          className={`my-4 circular-button`}
-                          title={'+'}
-                        >
-                          <FontAwesomeIcon icon={'plus'} />
-                        </CButton>
-                      </CRow>
-                    </CCardText>
-                    <CCol className="me-2">
-                      {(extensionNinjaOrgsAutomapResult.isSuccess ||
-                        extensionNinjaOrgsAutomapResult.isError) &&
-                        !extensionNinjaOrgsAutomapResult.isFetching && (
-                          <CippCallout
-                            color={extensionNinjaOrgsAutomapResult.isSuccess ? 'success' : 'danger'}
-                            dismissible
-                            style={{ marginTop: '16px' }}
+                            className={`my-4 circular-button`}
+                            title={'+'}
                           >
-                            {extensionNinjaOrgsAutomapResult.isSuccess
-                              ? extensionNinjaOrgsAutomapResult.data.Results
-                              : 'Error'}
-                          </CippCallout>
-                        )}
-                      {(extensionNinjaOrgsConfigResult.isSuccess ||
-                        extensionNinjaOrgsConfigResult.isError) &&
-                        !extensionNinjaOrgsConfigResult.isFetching && (
-                          <CippCallout
-                            color={extensionNinjaOrgsConfigResult.isSuccess ? 'success' : 'danger'}
-                            dismissible
-                            style={{ marginTop: '16px' }}
-                          >
-                            {extensionNinjaOrgsConfigResult.isSuccess
-                              ? extensionNinjaOrgsConfigResult.data.Results
-                              : 'Error'}
-                          </CippCallout>
-                        )}
-                    </CCol>
-                    <small>
-                      <FontAwesomeIcon icon={'triangle-exclamation'} className="me-2" />
-                      After editing the mappings you must click Save Mappings for the changes to
-                      take effect. The table will be saved exactly as presented.
-                    </small>
-                  </CForm>
-                )
-              }}
-            />
-          )}
-        </CippAccordionItem>
-        <CippAccordionItem
+                            <FontAwesomeIcon icon={'plus'} />
+                          </CButton>
+                        </CRow>
+                      </CCardText>
+                      <CCol className="me-2">
+                        {(extensionNinjaOrgsAutomapResult.isSuccess ||
+                          extensionNinjaOrgsAutomapResult.isError) &&
+                          !extensionNinjaOrgsAutomapResult.isFetching && (
+                            <CippCallout
+                              color={
+                                extensionNinjaOrgsAutomapResult.isSuccess ? 'success' : 'danger'
+                              }
+                              dismissible
+                              style={{ marginTop: '16px' }}
+                            >
+                              {extensionNinjaOrgsAutomapResult.isSuccess
+                                ? extensionNinjaOrgsAutomapResult.data.Results
+                                : 'Error'}
+                            </CippCallout>
+                          )}
+                        {(extensionNinjaOrgsConfigResult.isSuccess ||
+                          extensionNinjaOrgsConfigResult.isError) &&
+                          !extensionNinjaOrgsConfigResult.isFetching && (
+                            <CippCallout
+                              color={
+                                extensionNinjaOrgsConfigResult.isSuccess ? 'success' : 'danger'
+                              }
+                              dismissible
+                              style={{ marginTop: '16px' }}
+                            >
+                              {extensionNinjaOrgsConfigResult.isSuccess
+                                ? extensionNinjaOrgsConfigResult.data.Results
+                                : 'Error'}
+                            </CippCallout>
+                          )}
+                      </CCol>
+                      <small>
+                        <FontAwesomeIcon icon={'triangle-exclamation'} className="me-2" />
+                        After editing the mappings you must click Save Mappings for the changes to
+                        take effect. The table will be saved exactly as presented.
+                      </small>
+                    </CForm>
+                  )
+                }}
+              />
+            )}
+          </CippButtonCard>
+        </>
+      )}
+      {type === 'NinjaOne' && (
+        <CippButtonCard
           title={'Ninjaone Field Mapping'}
           titleType="big"
           isFetching={listBackendNinjaFieldsResult.isFetching}
@@ -625,8 +644,8 @@ export function SettingsExtensionMappings() {
               }}
             />
           )}
-        </CippAccordionItem>
-      </CAccordion>
+        </CippButtonCard>
+      )}
     </CRow>
   )
 }

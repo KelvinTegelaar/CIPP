@@ -77,6 +77,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'JIT Admin',
+        to: '/identity/administration/jit-admin',
+      },
+      {
+        component: CNavItem,
         name: 'Offboarding Wizard',
         to: '/identity/administration/offboarding-wizard',
       },
@@ -770,6 +775,11 @@ const _nav = [
         component: CNavItem,
         name: 'Application Settings',
         to: '/cipp/settings',
+      },
+      {
+        component: CNavItem,
+        name: 'Extensions Settings',
+        to: '/cipp/extensions',
       },
       {
         component: CNavItem,

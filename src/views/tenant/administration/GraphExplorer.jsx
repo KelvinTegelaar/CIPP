@@ -32,6 +32,7 @@ import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 import PropTypes from 'prop-types'
 import { CippCodeOffCanvas, ModalService } from 'src/components/utilities'
 import { debounce } from 'lodash-es'
+import CippScheduleOffcanvas from 'src/components/utilities/CippScheduleOffcanvas'
 
 const GraphExplorer = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -57,6 +58,8 @@ const GraphExplorer = () => {
     error: presetsError,
   } = useGenericGetRequestQuery({ path: '/api/ListGraphExplorerPresets', params: { random2 } })
   const QueryColumns = { set: false, data: [] }
+  const [scheduleVisible, setScheduleVisible] = useState(false)
+  const [scheduleValues, setScheduleValues] = useState({})
 
   const debounceEndpointChange = useMemo(() => {
     function endpointChange(value) {
@@ -146,6 +149,36 @@ const GraphExplorer = () => {
       confirmLabel: action,
       cancelLabel: 'Cancel',
     })
+  }
+
+  function handleSchedule(values) {
+    var graphParameters = []
+    const paramNames = ['$filter', '$format', '$search', '$select', '$top']
+    paramNames.map((param) => {
+      if (values[param]) {
+        if (Array.isArray(values[param])) {
+          graphParameters.push({ Key: param, Value: values[param].map((p) => p.value).join(',') })
+        } else {
+          graphParameters.push({ Key: param, Value: values[param] })
+        }
+      }
+    })
+
+    const reportName = values.name ?? 'Graph Explorer'
+    const shippedValues = {
+      taskName: reportName + ' - ' + tenant.displayName,
+      command: { label: 'Get-GraphRequestList', value: 'Get-GraphRequestList' },
+      parameters: {
+        Parameters: graphParameters,
+        NoPagination: values.NoPagination,
+        ReverseTenantLookup: values.ReverseTenantLookup,
+        ReverseTenantLookupProperty: values.ReverseTenantLookupProperty,
+        Endpoint: values.endpoint,
+        SkipCache: true,
+      },
+    }
+    setScheduleValues(shippedValues)
+    setScheduleVisible(true)
   }
 
   const presets = [
@@ -617,6 +650,19 @@ const GraphExplorer = () => {
                               <FontAwesomeIcon className="me-2" icon={faSearch} />
                               Query
                             </CButton>
+                            <FormSpy>
+                              {(props) => {
+                                return (
+                                  <CButton
+                                    onClick={() => handleSchedule(props.values)}
+                                    className="ms-2"
+                                  >
+                                    <FontAwesomeIcon className="me-2" icon="calendar-alt" />
+                                    Schedule Report
+                                  </CButton>
+                                )
+                              }}
+                            </FormSpy>
                           </CCol>
                         </CRow>
                       </CForm>
@@ -628,6 +674,13 @@ const GraphExplorer = () => {
           </CCollapse>
         </CCol>
       </CRow>
+      <CippScheduleOffcanvas
+        title="Schedule Report"
+        state={scheduleVisible}
+        placement="end"
+        hideFunction={() => setScheduleVisible(false)}
+        initialValues={scheduleValues}
+      />
       <hr />
       <CippPage title="Report Results" tenantSelector={false}>
         {!searchNow && <span>Execute a search to get started.</span>}

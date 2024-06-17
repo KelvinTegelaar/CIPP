@@ -5,6 +5,7 @@ import { Field, Form, FormSpy } from 'react-final-form'
 import {
   RFFCFormInput,
   RFFCFormInputArray,
+  RFFCFormInputList,
   RFFCFormSwitch,
   RFFSelectSearch,
 } from 'src/components/forms'
@@ -157,11 +158,14 @@ const Scheduler = () => {
       if (typeof row?.Parameters[key] === 'object') {
         var nestedParamList = []
         Object.keys(row?.Parameters[key]).forEach((nestedKey) => {
-          console.log(nestedKey)
-          nestedParamList.push({
-            Key: nestedKey,
-            Value: row?.Parameters[key][nestedKey],
-          })
+          if (nestedKey >= 0) {
+            nestedParamList.push(row?.Parameters[key][nestedKey])
+          } else {
+            nestedParamList.push({
+              Key: nestedKey,
+              Value: row?.Parameters[key][nestedKey],
+            })
+          }
         })
         parameters[key] = nestedParamList
       } else {
@@ -179,6 +183,10 @@ const Scheduler = () => {
         Value: additionalProps[key],
       })
     })
+
+    if (!recurrence) {
+      recurrence = { name: 'Only once', value: '0' }
+    }
 
     // Set initial values
     var formValues = {
@@ -414,12 +422,22 @@ const Scheduler = () => {
                                                 key={idx}
                                               />
                                             ) : (
-                                              <RFFCFormInput
-                                                type="text"
-                                                key={idx}
-                                                name={`parameters.${param.Name}`}
-                                                label={`${param.Name}`}
-                                              />
+                                              <>
+                                                {param.Type === 'System.String[]' ? (
+                                                  <RFFCFormInputList
+                                                    name={`parameters.${param.Name}[]`}
+                                                    label={`${param.Name}`}
+                                                    key={idx}
+                                                  />
+                                                ) : (
+                                                  <RFFCFormInput
+                                                    type="text"
+                                                    key={idx}
+                                                    name={`parameters.${param.Name}`}
+                                                    label={`${param.Name}`}
+                                                  />
+                                                )}
+                                              </>
                                             )}
                                           </>
                                         )}
