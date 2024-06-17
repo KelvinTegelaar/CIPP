@@ -1,19 +1,6 @@
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app.js'
 import React, { useRef } from 'react'
-import {
-  CAlert,
-  CButton,
-  CCallout,
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCardText,
-  CCardTitle,
-  CCol,
-  CForm,
-  CRow,
-  CSpinner,
-} from '@coreui/react'
+import { CAccordion, CButton, CCardText, CCol, CForm, CSpinner } from '@coreui/react'
 import Extensions from 'src/data/Extensions.json'
 import { Form } from 'react-final-form'
 import { RFFCFormInput, RFFCFormSwitch } from 'src/components/forms/index.js'
@@ -21,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import { CippCallout } from 'src/components/layout/index.js'
 import CippButtonCard from 'src/components/contentcards/CippButtonCard'
+import CippAccordionItem from 'src/components/contentcards/CippAccordionItem'
 
 /**
  * Executes various operations related to settings and extensions.
@@ -105,65 +93,64 @@ export function SettingsExtensions() {
             {extensionConfigResult.data.Results}
           </CippCallout>
         )}
-        <CRow>
+        <CAccordion>
           {Extensions.map((integration, idx) => (
-            <CCol xs={12} lg={6} xl={6} className="mb-3" key={`${idx}-${integration.name}`}>
-              <CippButtonCard
-                title={integration.name}
-                titleType="big"
-                isFetching={listBackendResult.isFetching}
-                CardButton={ButtonGenerate(integration.type, integration.forceSync)}
-              >
-                <p>{integration.helpText}</p>
-                <Form
-                  onSubmit={onSubmit}
-                  initialValues={listBackendResult.data}
-                  render={({ handleSubmit, submitting, values }) => {
-                    return (
-                      <CForm id={integration.type} onSubmit={handleSubmit}>
-                        <CCardText>
-                          <CCol className="mb-3">
-                            {integration.SettingOptions.map(
-                              (integrationOptions, idx) =>
-                                integrationOptions.type === 'input' && (
-                                  <CCol key={`${idx}-${integrationOptions.name}`}>
-                                    <RFFCFormInput
-                                      type={integrationOptions.fieldtype}
-                                      name={integrationOptions.name}
-                                      label={integrationOptions.label}
-                                      placeholder={integrationOptions.placeholder}
-                                    />
-                                  </CCol>
-                                ),
-                            )}
-                            {integration.SettingOptions.map(
-                              (integrationOptions, idx) =>
-                                integrationOptions.type === 'checkbox' && (
-                                  <CCol key={`${integrationOptions.name}-${idx}`}>
-                                    <RFFCFormSwitch
-                                      name={integrationOptions.name}
-                                      label={integrationOptions.label}
-                                      value={false}
-                                    />
-                                  </CCol>
-                                ),
-                            )}
-                            <input
-                              ref={inputRef}
-                              type="hidden"
-                              name="type"
-                              value={integration.type}
-                            />
-                          </CCol>
-                        </CCardText>
-                      </CForm>
-                    )
-                  }}
-                />
-              </CippButtonCard>
-            </CCol>
+            <CippAccordionItem
+              title={integration.name}
+              titleType="big"
+              isFetching={listBackendResult.isFetching}
+              CardButton={ButtonGenerate(integration.type, integration.forceSync)}
+              key={idx}
+            >
+              <p>{integration.helpText}</p>
+              <Form
+                onSubmit={onSubmit}
+                initialValues={listBackendResult.data}
+                render={({ handleSubmit, submitting, values }) => {
+                  return (
+                    <CForm id={integration.type} onSubmit={handleSubmit}>
+                      <CCardText>
+                        <CCol className="mb-3">
+                          {integration.SettingOptions.map(
+                            (integrationOptions, idx) =>
+                              integrationOptions.type === 'input' && (
+                                <CCol key={`${idx}-${integrationOptions.name}`}>
+                                  <RFFCFormInput
+                                    type={integrationOptions.fieldtype}
+                                    name={integrationOptions.name}
+                                    label={integrationOptions.label}
+                                    placeholder={integrationOptions.placeholder}
+                                  />
+                                </CCol>
+                              ),
+                          )}
+                          {integration.SettingOptions.map(
+                            (integrationOptions, idx) =>
+                              integrationOptions.type === 'checkbox' && (
+                                <CCol key={`${integrationOptions.name}-${idx}`}>
+                                  <RFFCFormSwitch
+                                    name={integrationOptions.name}
+                                    label={integrationOptions.label}
+                                    value={false}
+                                  />
+                                </CCol>
+                              ),
+                          )}
+                          <input
+                            ref={inputRef}
+                            type="hidden"
+                            name="type"
+                            value={integration.type}
+                          />
+                        </CCol>
+                      </CCardText>
+                    </CForm>
+                  )
+                }}
+              />
+            </CippAccordionItem>
           ))}
-        </CRow>
+        </CAccordion>
       </>
     </div>
   )
