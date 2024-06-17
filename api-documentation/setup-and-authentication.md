@@ -63,3 +63,27 @@ The API actions have a maximum timeout of 10 minutes. There are no active rateli
 ## Endpoint documentation
 
 Each page in the user documentation has a list of the endpoints used to load or create data on that specific page
+
+## CIPP API Powershell Module
+
+You can install the CIPP API Powershell module using PowerShell 7.x. The module takes care of all the authentication for you.
+
+```powershell
+Install-Module -Name CIPPAPIModule
+```
+
+You will first need to set your CIPP API Details using the following command: 
+
+```powershell
+Set-CIPPAPIDetails -CIPPClientID "YourClientIDGoesHere" -CIPPClientSecret "YourClientSecretGoesHere" -CIPPAPIUrl "https://your.cipp.apiurl" -TenantID "YourTenantID"
+```
+
+You can then test its working
+
+```powershell
+Get-CIPPLogs
+```
+
+Further documentation for the module and each of its available functions can be found [here](https://github.com/BNWEIN/CIPPAPIModule/)
+
+
