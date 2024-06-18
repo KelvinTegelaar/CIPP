@@ -16,7 +16,8 @@
         "name": "cippapi.Enabled",
         "label": "Enable Integration"
       }
-    ]
+    ],
+    "mappingRequired": false
   },
   {
     "name": "Gradient Integration",
@@ -49,7 +50,8 @@
         "name": "Gradient.Enabled",
         "label": "Enable Integration"
       }
-    ]
+    ],
+    "mappingRequired": false
   },
   {
     "name": "Halo PSA Ticketing Integration",
@@ -105,7 +107,8 @@
         "name": "HaloPSA.Enabled",
         "label": "Enable Integration"
       }
-    ]
+    ],
+    "mappingRequired": true
   },
   {
     "name": "NinjaOne Integration",
@@ -155,6 +158,67 @@
         "name": "NinjaOne.Enabled",
         "label": "Enable Integration"
       }
-    ]
+    ],
+    "mappingRequired": true
+  },
+  {
+    "name": "PasswordPusher",
+    "type": "PWPush",
+    "cat": "Passwords",
+    "forceSyncButton": false,
+    "helpText": "This integration allows you to generate password links instead of plain text passwords. Visit https://pwpush.com/ or https://github.com/pglombardo/PasswordPusher for more information.",
+    "SettingOptions": [
+      {
+        "type": "checkbox",
+        "name": "PWPush.Enabled",
+        "label": "Replace generated passwords with PWPush links"
+      },
+      {
+        "type": "input",
+        "fieldtype": "text",
+        "name": "PWPush.BaseUrl",
+        "label": "PWPush URL",
+        "placeholder": "Enter your PWPush URL. (default: https://pwpush.com)"
+      },
+      {
+        "type": "input",
+        "fieldtype": "text",
+        "name": "PWPush.EmailAddress",
+        "label": "PWPush email address",
+        "placeholder": "Enter your email address for PWPush. (optional)"
+      },
+      {
+        "type": "input",
+        "fieldtype": "password",
+        "name": "PWPush.APIKey",
+        "label": "PWPush API Key",
+        "placeholder": "Enter your PWPush API Key. (optional)"
+      },
+      {
+        "type": "checkbox",
+        "name": "PWPush.RetrievalStep",
+        "label": "Click to retrieve password (recommended)"
+      },
+      {
+        "type": "input",
+        "fieldtype": "number",
+        "name": "PWPush.ExpireAfterDays",
+        "label": "Expiration in Days",
+        "placeholder": "Expiration time in days. (optional)"
+      },
+      {
+        "type": "input",
+        "fieldtype": "number",
+        "name": "PWPush.ExpireAfterViews",
+        "label": "Expiration after views",
+        "placeholder": "Expiration after views. (optional)"
+      },
+      {
+        "type": "checkbox",
+        "name": "PWPush.DeletableByViewer",
+        "label": "Allow deletion of passwords"
+      }
+    ],
+    "mappingRequired": false
   }
 ]
