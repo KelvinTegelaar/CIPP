@@ -32,6 +32,7 @@ import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 import PropTypes from 'prop-types'
 import { CippCodeOffCanvas, ModalService } from 'src/components/utilities'
 import { debounce } from 'lodash-es'
+import CippScheduleOffcanvas from 'src/components/utilities/CippScheduleOffcanvas'
 
 const GraphExplorer = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -40,7 +41,6 @@ const GraphExplorer = () => {
   const [alertVisible, setAlertVisible] = useState()
   const [random, setRandom] = useState('')
   const [random2, setRandom2] = useState('')
-  const [random3, setRandom3] = useState('')
   const [ocVisible, setOCVisible] = useState(false)
   const [searchNow, setSearchNow] = useState(false)
   const [visibleA, setVisibleA] = useState(true)
@@ -58,25 +58,58 @@ const GraphExplorer = () => {
     error: presetsError,
   } = useGenericGetRequestQuery({ path: '/api/ListGraphExplorerPresets', params: { random2 } })
   const QueryColumns = { set: false, data: [] }
+  const [scheduleVisible, setScheduleVisible] = useState(false)
+  const [scheduleValues, setScheduleValues] = useState({})
 
-  function endpointChange(value) {
-    execPropRequest({
-      path: '/api/ListGraphRequest',
-      params: {
-        Endpoint: value,
-        ListProperties: true,
-        TenantFilter: tenant.defaultDomainName,
-        IgnoreErrors: true,
-        random: (Math.random() + 1).toString(36).substring(7),
-      },
-    })
-  }
   const debounceEndpointChange = useMemo(() => {
+    function endpointChange(value) {
+      execPropRequest({
+        path: '/api/ListGraphRequest',
+        params: {
+          Endpoint: value,
+          ListProperties: true,
+          TenantFilter: tenant.defaultDomainName,
+          IgnoreErrors: true,
+          random: (Math.random() + 1).toString(36).substring(7),
+        },
+      })
+    }
     return debounce(endpointChange, 1000)
-  }, [endpointChange])
+  }, [])
 
   if (graphrequest.isSuccess) {
-    if (graphrequest.data?.Results?.length > 0) {
+    if (
+      graphrequest.data?.Metadata?.Parameters?.$select !== undefined &&
+      graphrequest.data?.Metadata?.Parameters?.$select !== '' &&
+      graphrequest.data?.Metadata?.Parameters?.$select !== null
+    ) {
+      //set columns
+      if (graphrequest.data?.Metadata?.TenantFilter === 'AllTenants') {
+        QueryColumns.data.push({
+          name: 'Tenant',
+          selector: (row) => row['Tenant'],
+          sortable: true,
+          exportSelector: 'Tenant',
+          cell: cellGenericFormatter(),
+        })
+        QueryColumns.data.push({
+          name: 'CippStatus',
+          selector: (row) => row['CippStatus'],
+          sortable: true,
+          exportSelector: 'CippStatus',
+          cell: cellGenericFormatter(),
+        })
+      }
+      graphrequest.data?.Metadata?.Parameters?.$select.split(',')?.map((value) =>
+        QueryColumns.data.push({
+          name: value,
+          selector: (row) => row[`${value.toString()}`],
+          sortable: true,
+          exportSelector: value,
+          cell: cellGenericFormatter(),
+        }),
+      )
+    } else if (graphrequest.data?.Results?.length > 0) {
       //set columns
       Object.keys(graphrequest.data?.Results[0]).map((value) =>
         QueryColumns.data.push({
@@ -118,11 +151,41 @@ const GraphExplorer = () => {
     })
   }
 
+  function handleSchedule(values) {
+    var graphParameters = []
+    const paramNames = ['$filter', '$format', '$search', '$select', '$top']
+    paramNames.map((param) => {
+      if (values[param]) {
+        if (Array.isArray(values[param])) {
+          graphParameters.push({ Key: param, Value: values[param].map((p) => p.value).join(',') })
+        } else {
+          graphParameters.push({ Key: param, Value: values[param] })
+        }
+      }
+    })
+
+    const reportName = values.name ?? 'Graph Explorer'
+    const shippedValues = {
+      taskName: reportName + ' - ' + tenant.displayName,
+      command: { label: 'Get-GraphRequestList', value: 'Get-GraphRequestList' },
+      parameters: {
+        Parameters: graphParameters,
+        NoPagination: values.NoPagination,
+        ReverseTenantLookup: values.ReverseTenantLookup,
+        ReverseTenantLookupProperty: values.ReverseTenantLookupProperty,
+        Endpoint: values.endpoint,
+        SkipCache: true,
+      },
+    }
+    setScheduleValues(shippedValues)
+    setScheduleVisible(true)
+  }
+
   const presets = [
     {
       name: 'All users with email addresses',
       id: '6164e239-0c9a-4a27-9049-6250bf65a3e3',
-      params: { endpoint: '/users', $select: 'userprincipalname,mail,proxyAddresses', $filter: '' },
+      params: { endpoint: '/users', $select: 'userPrincipalName,mail,proxyAddresses', $filter: '' },
       isBuiltin: true,
     },
     {
@@ -219,6 +282,15 @@ const GraphExplorer = () => {
       },
       isBuiltin: true,
     },
+    {
+      name: 'Organization Branding',
+      id: '2ed236e2-268e-461b-9d37-98b123010667',
+      params: {
+        endpoint: 'organization/%tenantid%/branding',
+        NoPagination: true,
+      },
+      isBuiltin: true,
+    },
   ]
 
   if (customPresets?.Results?.length > 0) {
@@ -239,6 +311,9 @@ const GraphExplorer = () => {
       var select = ''
       if (params?.$select) {
         select = params.$select.map((p) => p.value).join(',')
+      }
+      if (params?.name) {
+        params.QueueNameOverride = 'Graph Explorer - ' + params.name
       }
       execGraphRequest({
         path: 'api/ListGraphRequest',
@@ -308,7 +383,6 @@ const GraphExplorer = () => {
 
   function getPresetProps(values) {
     var newvals = Object.assign({}, values)
-    console.log(newvals)
     if (newvals?.$select !== undefined && Array.isArray(newvals?.$select)) {
       newvals.$select = newvals?.$select.map((p) => p.value).join(',')
     }
@@ -317,8 +391,6 @@ const GraphExplorer = () => {
     delete newvals['IsShared']
     return newvals
   }
-
-  console.log(graphrequest.data)
 
   return (
     <>
@@ -483,6 +555,7 @@ const GraphExplorer = () => {
                                 )
                               }}
                             </FormSpy>
+                            <hr />
                             <RFFCFormSwitch name="$count" label="Use $count" />
                             <WhenFieldChanges field="reportTemplate" set="$count" />
                             <RFFCFormSwitch name="NoPagination" label="Disable Pagination" />
@@ -494,6 +567,18 @@ const GraphExplorer = () => {
                               placeholder="Select the number of rows to return"
                             />
                             <WhenFieldChanges field="reportTemplate" set="$top" />
+                            <RFFCFormSwitch
+                              name="ReverseTenantLookup"
+                              label="Reverse Tenant Lookup"
+                            />
+                            <WhenFieldChanges field="reportTemplate" set="ReverseTenantLookup" />
+                            <RFFCFormInput
+                              type="text"
+                              name="$format"
+                              label="Format"
+                              placeholder="Optional format to return (e.g. application/json)"
+                            />
+                            <WhenFieldChanges field="reportTemplate" set="$format" />
                           </CCol>
                           <CCol>
                             <RFFCFormInput
@@ -504,13 +589,6 @@ const GraphExplorer = () => {
                             />
                             <WhenFieldChanges field="reportTemplate" set="endpoint" />
                             <WhenFieldChanges field="endpoint" set="endpoint" />
-                            <RFFCFormInput
-                              type="text"
-                              name="$filter"
-                              label="Filter"
-                              placeholder="Enter the filter string for the Graph query"
-                            />
-                            <WhenFieldChanges field="reportTemplate" set="$filter" />
                             <div className="mb-3">
                               <RFFSelectSearch
                                 name="$select"
@@ -529,12 +607,16 @@ const GraphExplorer = () => {
                                     : []
                                 }
                                 allowCreate={true}
-                                refreshFunction={() =>
-                                  setRandom3((Math.random() + 1).toString(36).substring(7))
-                                }
                                 isLoading={availableProperties.isFetching}
                               />
                             </div>
+                            <RFFCFormInput
+                              type="text"
+                              name="$filter"
+                              label="Filter"
+                              placeholder="Enter the filter string for the Graph query"
+                            />
+                            <WhenFieldChanges field="reportTemplate" set="$filter" />
                             <WhenFieldChanges field="reportTemplate" set="$select" />
                             <RFFCFormInput
                               type="text"
@@ -550,6 +632,16 @@ const GraphExplorer = () => {
                               placeholder="Enter OData search query"
                             />
                             <WhenFieldChanges field="reportTemplate" set="$search" />
+                            <RFFCFormInput
+                              type="text"
+                              name="ReverseTenantLookupProperty"
+                              label="Reverse Tenant Lookup Property"
+                              placeholder="Default tenantId"
+                            />
+                            <WhenFieldChanges
+                              field="reportTemplate"
+                              set="ReverseTenantLookupProperty"
+                            />
                           </CCol>
                         </CRow>
                         <CRow className="mb-3">
@@ -558,6 +650,19 @@ const GraphExplorer = () => {
                               <FontAwesomeIcon className="me-2" icon={faSearch} />
                               Query
                             </CButton>
+                            <FormSpy>
+                              {(props) => {
+                                return (
+                                  <CButton
+                                    onClick={() => handleSchedule(props.values)}
+                                    className="ms-2"
+                                  >
+                                    <FontAwesomeIcon className="me-2" icon="calendar-alt" />
+                                    Schedule Report
+                                  </CButton>
+                                )
+                              }}
+                            </FormSpy>
                           </CCol>
                         </CRow>
                       </CForm>
@@ -569,10 +674,17 @@ const GraphExplorer = () => {
           </CCollapse>
         </CCol>
       </CRow>
+      <CippScheduleOffcanvas
+        title="Schedule Report"
+        state={scheduleVisible}
+        placement="end"
+        hideFunction={() => setScheduleVisible(false)}
+        initialValues={scheduleValues}
+      />
       <hr />
       <CippPage title="Report Results" tenantSelector={false}>
         {!searchNow && <span>Execute a search to get started.</span>}
-        {graphrequest.isFetching && (
+        {graphrequest.isFetching && !QueryColumns.set && (
           <div className="my-2">
             <CSpinner className="me-2" /> Loading Data
           </div>
@@ -593,6 +705,7 @@ const GraphExplorer = () => {
                   columns={QueryColumns.data}
                   data={graphrequest?.data?.Results}
                   isFetching={graphrequest.isFetching}
+                  refreshFunction={() => setRandom((Math.random() + 1).toString(36).substring(7))}
                 />
               </>
             </CCardBody>
