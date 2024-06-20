@@ -140,17 +140,15 @@ const DeployJITAdmin = () => {
                             />
                             <FormSpy subscription={{ values: true }}>
                               {({ values }) => {
-                                users.map((user, key) => {
+                                return users.map((user, key) => {
                                   if (
-                                    user.id === values.UserId?.value &&
+                                    user.id === values?.UserId?.value &&
                                     user.accountEnabled === false
                                   ) {
                                     return (
-                                      <CCallout color="warning" key={key}>
-                                        <CellTip
-                                          icon={faEye}
-                                          text="This user is currently disabled, they will automatically be enabled when JIT is executed."
-                                        />
+                                      <CCallout color="warning" key={key} className="mt-3">
+                                        This user is currently disabled, they will automatically be
+                                        enabled when JIT is executed.
                                       </CCallout>
                                     )
                                   }
