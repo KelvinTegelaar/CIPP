@@ -12,9 +12,10 @@ Please note that any relationship that contains the "Global Administrator"/"Comp
 * Cloud Device Administrator
 * Exchange Administrator
 * Intune Administrator
+* Privileged Authentication Administrator
 * Privileged Role Administrator
 * Security Administrator
 * SharePoint Administrator
 * Teams Administrator
 * User Administrator
-* Privileged Authentication Administrator
+
