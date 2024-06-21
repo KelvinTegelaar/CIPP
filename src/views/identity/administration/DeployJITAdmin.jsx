@@ -75,6 +75,7 @@ const DeployJITAdmin = () => {
       $select: 'id,displayName,userPrincipalName,accountEnabled',
       $count: true,
       $top: 999,
+      $orderby: 'displayName',
     },
   })
 
