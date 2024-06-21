@@ -856,20 +856,36 @@
             "value": "PublishingEditor"
           },
           {
+            "label": "Editor - The user can create items in the folder. The contents of the folder do not appear.",
+            "value": "Editor"
+          },
+          {
+            "label": "Publishing Author.  The user can read, create all items/subfolders. Can modify and delete only items they create.",
+            "value": "PublishingAuthor"
+          },
+          {
+            "label": "Author - The user can create and read items, and modify and delete items that they create.",
+            "value": "Author"
+          },
+          {
+            "label": "Non Editing Author - The user has full read access and create items. Can can delete only own items.",
+            "value": "NonEditingAuthor"
+          },
+          {
             "label": "Reviewer - The user can read all items in the folder.",
             "value": "Reviewer"
           },
           {
-            "label": "Editor - The user can create items in the folder. The contents of the folder do not appear.",
+            "label": "Contributor - The user can create items and folders.",
             "value": "Contributor"
-          },
-          {
-            "label": "Limited Details - The user can view free/busy time within the calendar and the subject and location of appointments.",
-            "value": "LimitedDetails"
           },
           {
             "label": "Availability Only - Indicates that the user can view only free/busy time within the calendar.",
             "value": "AvailabilityOnly"
+          },
+          {
+            "label": "Limited Details - The user can view free/busy time within the calendar and the subject and location of appointments.",
+            "value": "LimitedDetails"
           },
           {
             "label": "None - The user has no permissions on the folder.",
@@ -1367,6 +1383,67 @@
     "impactColour": "info"
   },
   {
+    "name": "standards.intuneBrandingProfile",
+    "cat": "Intune Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Sets the branding profile for the Intune Company Portal app. This is a tenant wide setting and overrules any settings set on the app level.",
+    "addedComponent": [
+      {
+        "type": "input",
+        "name": "standards.intuneBrandingProfile.displayName",
+        "label": "Organization name"
+      },
+      {
+        "type": "boolean",
+        "name": "standards.intuneBrandingProfile.showLogo",
+        "label": "Show logo"
+      },
+      {
+        "type": "boolean",
+        "name": "standards.intuneBrandingProfile.showDisplayNameNextToLogo",
+        "label": "Show organization name next to logo"
+      },
+      {
+        "type": "input",
+        "name": "standards.intuneBrandingProfile.contactITName",
+        "label": "Contact IT name"
+      },
+      {
+        "type": "input",
+        "name": "standards.intuneBrandingProfile.contactITPhoneNumber",
+        "label": "Contact IT phone number"
+      },
+      {
+        "type": "input",
+        "name": "standards.intuneBrandingProfile.contactITEmailAddress",
+        "label": "Contact IT email address"
+      },
+      {
+        "type": "input",
+        "name": "standards.intuneBrandingProfile.contactITNotes",
+        "label": "Contact IT notes"
+      },
+      {
+        "type": "input",
+        "name": "standards.intuneBrandingProfile.onlineSupportSiteName",
+        "label": "Online support site name"
+      },
+      {
+        "type": "input",
+        "name": "standards.intuneBrandingProfile.onlineSupportSiteUrl",
+        "label": "Online support site URL"
+      },
+      {
+        "type": "input",
+        "name": "standards.intuneBrandingProfile.privacyUrl",
+        "label": "Privacy statement URL"
+      }
+    ],
+    "label": "Set Intune Company Portal branding profile",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.intuneDeviceReg",
     "cat": "Intune Standards",
     "tag": ["mediumimpact"],
@@ -1513,6 +1590,41 @@
     "helpText": "This standard will only allow devices that are AD joined, or AAD joined to sync with OneDrive",
     "addedComponent": [],
     "label": "Only allow users to sync OneDrive from AAD joined devices",
+    "impact": "High Impact",
+    "impactColour": "danger"
+  },
+  {
+    "name": "standards.sharingDomainRestriction",
+    "cat": "SharePoint Standards",
+    "tag": ["highimpact", "CIS"],
+    "helpText": "Restricts sharing to only users with the specified domain. This is useful for organizations that only want to share with their own domain.",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "name": "standards.sharingDomainRestriction.Mode",
+        "label": "Limit external sharing by domains",
+        "values": [
+          {
+            "label": "Off",
+            "value": "none"
+          },
+          {
+            "label": "Restirct sharing to specific domains",
+            "value": "allowList"
+          },
+          {
+            "label": "Block sharing to specific domains",
+            "value": "blockList"
+          }
+        ]
+      },
+      {
+        "type": "input",
+        "name": "standards.sharingDomainRestriction.Domains",
+        "label": "Domains to allow/block, comma separated"
+      }
+    ],
+    "label": "Restrict sharing to a specific domain",
     "impact": "High Impact",
     "impactColour": "danger"
   },
