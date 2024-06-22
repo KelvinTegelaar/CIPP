@@ -11,11 +11,15 @@ export const errorMiddleware =
     const { getState } = store
     const state = getState()
     const setupCompleted = state.app?.setupCompleted
+    let SamWizardError = false
+    if (action?.meta?.arg?.originalArgs?.path === '/api/ExecSamSetup') {
+      SamWizardError = true
+    }
     if (
       isRejectedWithValue(action) &&
       !action.error?.hideToastError &&
       action.payload.message !== 'canceled' &&
-      setupCompleted
+      (setupCompleted || SamWizardError)
     ) {
       if (action.payload.data === 'Backend call failure') {
         action.payload.data =
