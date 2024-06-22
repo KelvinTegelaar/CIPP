@@ -2,17 +2,21 @@
 // set action.hideToastError to `true` to ignore this middleware
 import { showToast } from 'src/store/features/toasts'
 import { isRejectedWithValue } from '@reduxjs/toolkit'
+import { store } from '../store'
 
 export const errorMiddleware =
   ({ dispatch }) =>
   (next) =>
   (action) => {
+    const { getState } = store
+    const state = getState()
+    const setupCompleted = state.app?.setupCompleted
     if (
       isRejectedWithValue(action) &&
       !action.error?.hideToastError &&
-      action.payload.message !== 'canceled'
+      action.payload.message !== 'canceled' &&
+      setupCompleted
     ) {
-      console.error(action)
       if (action.payload.data === 'Backend call failure') {
         action.payload.data =
           'The Azure Function has taken too long to respond. Try selecting a different report or a single tenant instead'
