@@ -201,6 +201,12 @@ const SignInsReport = () => {
         title="Sign Ins Report"
         capabilities={{ allTenants: false, helpContext: 'https://google.com' }}
         datatable={{
+          filterlists: [
+            {
+              filterName: 'Risky sign-ins',
+              filter: 'Complex: riskState ne none',
+            },
+          ],
           columns: columns,
           path: `/api/ListSignIns`,
           reportName: `${tenant?.defaultDomainName}-SignIns-Report`,
