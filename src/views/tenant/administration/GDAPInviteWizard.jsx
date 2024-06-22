@@ -193,7 +193,7 @@ const GDAPInviteWizard = () => {
         </center>
         <hr className="my-4" />
         <CForm onSubmit={handleSubmit}>
-          <RFFCFormSwitch name="easyMode" label="Use CIPP Recommended roles and settings" />
+          <RFFCFormSwitch name="easyMode" label="Use CIPP recommended roles and settings" />
           <Condition when="easyMode" is={true}>
             <CCallout color="info">
               <p>
@@ -349,6 +349,7 @@ const GDAPInviteWizard = () => {
                         </>
                       )}
                       {easyModeProgress && <CCallout color="danger">{easyModeProgress}</CCallout>}
+                      {getResults.isFetching && <CSpinner />}
                     </CCol>
                   </CRow>
                 </>
