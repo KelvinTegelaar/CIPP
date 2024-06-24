@@ -15,6 +15,7 @@ import React from 'react'
   "/identity/administration/jit-admin": React.lazy(() => import('./views/identity/administration/DeployJITAdmin')), 
   "/identity/administration/ViewBec": React.lazy(() => import('./views/identity/administration/ViewBEC')), 
   "/identity/administration/users": React.lazy(() => import('./views/identity/administration/Users')), 
+  "/identity/administration/risky-users": React.lazy(() => import('./views/identity/administration/RiskyUsers')), 
   "/identity/administration/devices": React.lazy(() => import('./views/identity/administration/Devices')), 
   "/identity/administration/groups/add": React.lazy(() => import('./views/identity/administration/AddGroup')), 
   "/identity/administration/group-templates": React.lazy(() => import('./views/identity/administration/GroupTemplates')), 
