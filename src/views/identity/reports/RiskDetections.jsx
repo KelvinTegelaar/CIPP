@@ -17,10 +17,10 @@ const columns = [
   },
   {
     name: 'Location',
-    selector: (row) => `${row.location.city} - ${row.location.countryOrRegion}`,
+    selector: (row) => `${row.location?.city} - ${row.location?.countryOrRegion}`,
     sortable: true,
-    exportSelector: 'locationcipp',
-    cell: (row) => CellTip(`${row.location.city} - ${row.location.countryOrRegion}`),
+    exportSelector: 'Location',
+    cell: (row) => CellTip(`${row.location?.city} - ${row.location?.countryOrRegion}`),
   },
   {
     name: 'IP Address',
