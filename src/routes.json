@@ -100,6 +100,12 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/identity/administration/risky-users",
+    "name": "Risky Users",
+    "component": "views/identity/administration/RiskyUsers",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/identity/administration/devices",
     "name": "Devices",
     "component": "views/identity/administration/Devices",

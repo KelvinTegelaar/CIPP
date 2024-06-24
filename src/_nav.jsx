@@ -47,6 +47,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Risky Users',
+        to: '/identity/administration/risky-users',
+      },
+      {
+        component: CNavItem,
         name: 'Groups',
         to: '/identity/administration/groups',
       },
