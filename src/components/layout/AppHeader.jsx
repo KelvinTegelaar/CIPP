@@ -102,10 +102,13 @@ const AppHeader = () => {
   //if none is found, set the setupCompleted state to true
   useEffect(() => {
     if (dashboard && dashboard.length >= 1) {
+      console.log('Finding if setup is completed.')
       const setupCompleted = dashboard.find((alert) => alert.setupCompleted === false)
       if (setupCompleted) {
+        console.log("Setup isn't completed yet, we found a match with false.")
         dispatch(setSetupCompleted({ setupCompleted: false }))
       } else {
+        console.log('Setup is completed.')
         dispatch(setSetupCompleted({ setupCompleted: true }))
       }
     }
