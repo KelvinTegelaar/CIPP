@@ -470,19 +470,25 @@ RFFCFormSelect.propTypes = {
 export function Condition({ when, is, children, like, regex }) {
   return (
     <>
-      {is && (
+      {is !== undefined && (
         <Field name={when} subscription={{ value: true }}>
-          {({ input: { value } }) => (value === is ? children : null)}
+          {({ input: { value } }) => {
+            return value === is ? children : null
+          }}
         </Field>
       )}
-      {like && (
+      {like !== undefined && (
         <Field name={when} subscription={{ value: true }}>
-          {({ input: { value } }) => (value.includes(like) ? children : null)}
+          {({ input: { value } }) => {
+            return value.includes(like) ? children : null
+          }}
         </Field>
       )}
-      {regex && (
+      {regex !== undefined && (
         <Field name={when} subscription={{ value: true }}>
-          {({ input: { value } }) => (value.match(regex) ? children : null)}
+          {({ input: { value } }) => {
+            return value.match(regex) ? children : null
+          }}
         </Field>
       )}
     </>
