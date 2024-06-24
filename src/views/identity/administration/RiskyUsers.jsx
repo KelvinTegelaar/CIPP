@@ -53,7 +53,7 @@ const RiskyUsers = () => {
     <>
       <CippPageList
         title="Risky Users"
-        capabilities={{ allTenants: false, helpContext: 'https://google.com' }}
+        capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
         datatable={{
           filterlist: [
             {
@@ -86,9 +86,14 @@ const RiskyUsers = () => {
             },
           ],
           columns: columns,
-          path: `/api/ListRiskyUsers`,
+          path: `api/ListGraphRequest`,
           reportName: `${tenant?.defaultDomainName}-ListRiskyUsers`,
-          params: { TenantFilter: tenant?.defaultDomainName },
+          params: {
+            TenantFilter: tenant?.defaultDomainName,
+            Endpoint: `identityProtection/riskyUsers`,
+            $count: true,
+            $orderby: 'riskLastUpdatedDateTime',
+          },
         }}
       />
     </>

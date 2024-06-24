@@ -17,10 +17,10 @@ const columns = [
   },
   {
     name: 'Location',
-    selector: (row) => row.locationcipp,
+    selector: (row) => `${row.location.city} - ${row.location.countryOrRegion}`,
     sortable: true,
     exportSelector: 'locationcipp',
-    cell: (row) => CellTip(row['locationcipp']),
+    cell: (row) => CellTip(`${row.location.city} - ${row.location.countryOrRegion}`),
   },
   {
     name: 'IP Address',
@@ -79,7 +79,7 @@ const RiskDetections = () => {
     <>
       <CippPageList
         title="Risk Detection Report"
-        capabilities={{ allTenants: false, helpContext: 'https://google.com' }}
+        capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
         datatable={{
           filterlist: [
             {
@@ -108,9 +108,14 @@ const RiskDetections = () => {
             },
           ],
           columns: columns,
-          path: `/api/ListRiskDetections`,
+          path: `api/ListGraphRequest`,
           reportName: `${tenant?.defaultDomainName}-RiskDetections-Report`,
-          params: { TenantFilter: tenant?.defaultDomainName },
+          params: {
+            TenantFilter: tenant?.defaultDomainName,
+            Endpoint: `identityProtection/riskDetections`,
+            $count: true,
+            $orderby: 'detectedDateTime',
+          },
         }}
       />
     </>
