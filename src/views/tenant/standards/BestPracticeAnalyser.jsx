@@ -179,9 +179,12 @@ const BestPracticeAnalyser = () => {
     if (graphrequest.data.length === 0) {
       graphrequest.data = [{ data: 'No Data Found' }]
     }
-    const flatObj = graphrequest.data.Columns ? graphrequest.data.Columns : []
+    const flatObj = graphrequest.data.Columns.length >= 0 ? graphrequest.data.Columns : []
 
     flatObj.map((col) => {
+      if (col === null) {
+        return
+      }
       // Determine the cell selector based on the 'formatter' property
       let cellSelector
       if (col.formatter) {
