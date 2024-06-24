@@ -207,9 +207,9 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
-    "path": "/identity/reports/risky-signins",
-    "name": "Risky Sign-Ins",
-    "component": "views/identity/reports/RiskySignIns",
+    "path": "/identity/reports/risk-detections",
+    "name": "Risk Detections",
+    "component": "views/identity/reports/RiskDetections",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {

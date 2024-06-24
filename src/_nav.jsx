@@ -116,8 +116,8 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Risky Sign-ins',
-        to: '/identity/reports/risky-signins',
+        name: 'Risk Detections',
+        to: '/identity/reports/risk-detections',
       },
     ],
   },

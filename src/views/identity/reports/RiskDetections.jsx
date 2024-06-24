@@ -4,10 +4,10 @@ import { CellTip } from 'src/components/tables'
 
 const columns = [
   {
-    name: 'Date',
-    selector: (row) => row['createdDateTime'],
+    name: 'Detected Date',
+    selector: (row) => row['detectedDateTime'],
     sortable: true,
-    exportSelector: 'createdDateTime',
+    exportSelector: 'detectedDateTime',
   },
   {
     name: 'User Principal Name',
@@ -41,51 +41,44 @@ const columns = [
     exportSelector: 'riskDetail',
   },
   {
-    name: 'Risk Level Aggregated',
-    selector: (row) => row['riskLevelAggregated'],
+    name: 'Risk Level',
+    selector: (row) => row['riskLevel'],
     sortable: true,
-    exportSelector: 'riskLevelAggregated',
+    exportSelector: 'riskLevel',
   },
   {
-    name: 'Risk Level During Sign-In',
-    selector: (row) => row['riskLevelDuringSignIn'],
+    name: 'Risk Type',
+    selector: (row) => row['riskType'],
     sortable: true,
-    exportSelector: 'riskLevelDuringSignIn',
+    exportSelector: 'riskType',
   },
   {
     name: 'Risk Event Type',
-    selector: (row) => row['riskEventTypes_v2'],
+    selector: (row) => row['riskEventType'],
     sortable: true,
-    exportSelector: 'riskEventTypes_v2',
+    exportSelector: 'riskEventType',
   },
   {
-    name: 'Application Name',
-    selector: (row) => row['clientAppUsed'],
+    name: 'Detection Type',
+    selector: (row) => row['detectionTimingType'],
     sortable: true,
-    exportSelector: 'clientAppUsed',
+    exportSelector: 'detectionTimingType',
   },
   {
-    name: 'Authentication Requirements',
-    selector: (row) => row['authenticationRequirement'],
+    name: 'Activity',
+    selector: (row) => row['activity'],
     sortable: true,
-    exportSelector: 'authenticationRequirement',
-  },
-  {
-    name: 'Additional Details',
-    selector: (row) => row.additionalDetails,
-    sortable: true,
-    exportSelector: 'additionalDetails',
-    cell: (row) => CellTip(row['additionalDetails']),
+    exportSelector: 'activity',
   },
 ]
 
-const RiskySignInsReport = () => {
+const RiskDetections = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   return (
     <>
       <CippPageList
-        title="Risky Sign Ins Report"
+        title="Risk Detection Report"
         capabilities={{ allTenants: false, helpContext: 'https://google.com' }}
         datatable={{
           filterlist: [
@@ -115,8 +108,8 @@ const RiskySignInsReport = () => {
             },
           ],
           columns: columns,
-          path: `/api/ListRiskySignIns`,
-          reportName: `${tenant?.defaultDomainName}-RiskySignIns-Report`,
+          path: `/api/ListRiskDetections`,
+          reportName: `${tenant?.defaultDomainName}-RiskDetections-Report`,
           params: { TenantFilter: tenant?.defaultDomainName },
         }}
       />
@@ -124,4 +117,4 @@ const RiskySignInsReport = () => {
   )
 }
 
-export default RiskySignInsReport
+export default RiskDetections

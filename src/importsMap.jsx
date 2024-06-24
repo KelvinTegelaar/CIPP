@@ -32,7 +32,7 @@ import React from 'react'
   "/identity/reports/inactive-users-report": React.lazy(() => import('./views/identity/reports/InactiveUsers')), 
   "/identity/reports/Signin-report": React.lazy(() => import('./views/identity/reports/SignIns')), 
   "/identity/reports/azure-ad-connect-report": React.lazy(() => import('./views/identity/reports/AzureADConnectReport')), 
-  "/identity/reports/risky-signins": React.lazy(() => import('./views/identity/reports/RiskySignIns')), 
+  "/identity/reports/risk-detections": React.lazy(() => import('./views/identity/reports/RiskDetections')), 
   "/tenant/administration/tenants": React.lazy(() => import('./views/tenant/administration/Tenants')), 
   "/tenant/administration/tenants/edit": React.lazy(() => import('./views/tenant/administration/EditTenant')), 
   "/tenant/administration/partner-relationships": React.lazy(() => import('./views/tenant/administration/PartnerRelationships')), 
