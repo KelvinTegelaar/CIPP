@@ -293,7 +293,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             label: 'Revoke all user sessions',
             color: 'danger',
             modal: true,
-            modalUrl: `/api/ExecRevokeSessions?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalUrl: `/api/ExecRevokeSessions?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}&Username=${row.userPrincipalName}`,
             modalMessage: 'Are you sure you want to revoke this users sessions?',
           },
           {
