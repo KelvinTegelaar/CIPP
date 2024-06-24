@@ -42,6 +42,7 @@ import GDAPRoles from 'src/data/GDAPRoles'
 import timezoneList from 'src/data/timezoneList'
 import Select from 'react-select'
 import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
+import langaugeList from 'src/data/languageList'
 
 const DeleteAction = () => {
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
@@ -547,7 +548,7 @@ const ApplyNewStandard = () => {
                                   />
                                 </CCol>
                                 <CCol md={3}>
-                                  <h5>Optional Input</h5>
+                                  <h5>Settings</h5>
                                 </CCol>
                               </CRow>
                             </CAccordionBody>
@@ -634,26 +635,19 @@ const ApplyNewStandard = () => {
                                             <h5>Remediate</h5>
                                             <RFFCFormSwitch
                                               name={`${obj.name}.remediate`}
-                                              disabled={
-                                                obj.disabledFeatures?.remediate ||
-                                                (isAllTenantEnabled(obj, 'remediate') &&
-                                                  tenantDomain !== 'AllTenants' &&
-                                                  props.values.standards?.OverrideAllTenants
-                                                    ?.remediate !== true)
-                                              }
                                               helpText={'Remediate executes the fix for standard.'}
                                               sublabel={
                                                 isAllTenantEnabled(obj, 'remediate') &&
                                                 tenantDomain !== 'AllTenants' &&
                                                 props.values.standards?.OverrideAllTenants
                                                   ?.remediate !== true
-                                                  ? '* Enabled via All Tenants'
+                                                  ? '* Enabled via All Tenants, toggle to override input'
                                                   : ''
                                               }
                                             />
                                           </CCol>
                                           <CCol md={3}>
-                                            <h5>Optional Input</h5>
+                                            <h5>Settings</h5>
                                             {obj.addedComponent &&
                                               obj.addedComponent.map((component) => (
                                                 <>
@@ -774,7 +768,7 @@ const ApplyNewStandard = () => {
                                   <RFFCFormSwitch name={`${template.switchName}.remediate`} />
                                 </CCol>
                                 <CCol md={3}>
-                                  <h5>Optional Input</h5>
+                                  <h5>Settings</h5>
                                   {template.templates.isSuccess && (
                                     <RFFSelectSearch
                                       name={`${template.switchName}.TemplateList`}
@@ -851,7 +845,7 @@ const ApplyNewStandard = () => {
                                 <RFFCFormSwitch name={`standards.APConfig.remediate`} />
                               </CCol>
                               <CCol md={3}>
-                                <h5>Optional Input</h5>
+                                <h5>Settings</h5>
                                 <CRow>
                                   <CCol md={12}>
                                     <RFFCFormInput
@@ -882,6 +876,19 @@ const ApplyNewStandard = () => {
                                     />
                                     <br></br>
                                   </CCol>
+                                  <CRow>
+                                    <CCol md={12} className="mb-2">
+                                      <RFFSelectSearch
+                                        values={langaugeList.map(({ language, tag }) => ({
+                                          value: tag,
+                                          name: language,
+                                        }))}
+                                        name="standards.APConfig.languages"
+                                        multi={false}
+                                        label="Languages"
+                                      />
+                                    </CCol>
+                                  </CRow>
                                 </CRow>
                                 <RFFCFormSwitch
                                   value={true}
@@ -948,7 +955,7 @@ const ApplyNewStandard = () => {
                                 <RFFCFormSwitch name={`standards.APESP.remediate`} />
                               </CCol>
                               <CCol md={3}>
-                                <h5>Optional Input</h5>
+                                <h5>Settings</h5>
                                 <CRow>
                                   <CCol>
                                     <RFFCFormInput

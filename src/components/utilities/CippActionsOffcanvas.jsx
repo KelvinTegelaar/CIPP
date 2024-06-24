@@ -345,7 +345,7 @@ export default function CippActionsOffcanvas(props) {
   }
   let actionsSelectorsContent
   try {
-    actionsSelectorsContent = props.actionsSelect.map((action, index) => (
+    actionsSelectorsContent = props?.actionsSelect?.map((action, index) => (
       <CListGroupItem className="" component="label" color={action.color} key={index}>
         {action.label}
         <CListGroupItem
