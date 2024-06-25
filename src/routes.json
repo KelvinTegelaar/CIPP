@@ -77,6 +77,12 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/identity/administration/jit-admin",
+    "name": "JIT Admin",
+    "component": "views/identity/administration/DeployJITAdmin",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/identity/administration/ViewBec",
     "name": "View BEC",
     "component": "views/identity/administration/ViewBEC",
@@ -91,6 +97,12 @@
     "path": "/identity/administration/users",
     "name": "Users",
     "component": "views/identity/administration/Users",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/administration/risky-users",
+    "name": "Risky Users",
+    "component": "views/identity/administration/RiskyUsers",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
@@ -198,6 +210,12 @@
     "path": "/identity/reports/azure-ad-connect-report",
     "name": "AAD Connect Report",
     "component": "views/identity/reports/AzureADConnectReport",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/reports/risk-detections",
+    "name": "Risk Detections",
+    "component": "views/identity/reports/RiskDetections",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
@@ -886,6 +904,12 @@
     "path": "/cipp/settings",
     "name": "Settings",
     "component": "views/cipp/app-settings/CIPPSettings",
+    "allowedRoles": ["admin"]
+  },
+  {
+    "path": "/cipp/extensions",
+    "name": "Extensions Settings",
+    "component": "views/cipp/Extensions",
     "allowedRoles": ["admin"]
   },
   {
