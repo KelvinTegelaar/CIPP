@@ -645,9 +645,13 @@ export default function CippTable({
             Object.assign(output, flatten(value, newKey))
           } else {
             if (Array.isArray(value)) {
-              value.map((item, idx) => {
-                Object.assign(output, flatten(item, `${newKey}[${idx}]`))
-              })
+              if (typeof value[0] === 'object') {
+                value.map((item, idx) => {
+                  Object.assign(output, flatten(item, `${newKey}[${idx}]`))
+                })
+              } else {
+                output[newKey] = value
+              }
             } else {
               output[newKey] = value
             }
