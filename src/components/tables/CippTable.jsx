@@ -683,8 +683,7 @@ export default function CippTable({
         })
         return Array.isArray(exportData) && exportData.length > 0
           ? exportData.map((obj) => {
-              const flattenedObj = flatten(obj)
-              return applyFormatter(flattenedObj)
+              return flatten(applyFormatter(obj))
             })
           : []
       }
@@ -695,8 +694,7 @@ export default function CippTable({
       // Adjusted dataFlat processing to include formatting
       let dataFlat = Array.isArray(data)
         ? data.map((item) => {
-            const flattenedItem = flatten(item)
-            return applyFormatter(flattenedItem)
+            return flatten(applyFormatter(item))
           })
         : []
       if (!disablePDFExport) {
