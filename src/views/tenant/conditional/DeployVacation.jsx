@@ -1,36 +1,33 @@
 import React, { useState } from 'react'
-import { CButton, CCallout, CCol, CForm, CRow, CSpinner, CTooltip } from '@coreui/react'
+import { CButton, CCallout, CCol, CForm, CRow, CSpinner } from '@coreui/react'
 import { useSelector } from 'react-redux'
 import { Field, Form } from 'react-final-form'
-import { Condition, RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms'
-import {
-  useGenericGetRequestQuery,
-  useLazyGenericGetRequestQuery,
-  useLazyGenericPostRequestQuery,
-} from 'src/store/api/app'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleNotch, faEdit, faEye } from '@fortawesome/free-solid-svg-icons'
-import { CippContentCard, CippPage, CippPageList } from 'src/components/layout'
-import { CellTip } from 'src/components/tables/CellGenericFormat'
-import 'react-datepicker/dist/react-datepicker.css'
-import { CippActionsOffcanvas, ModalService, TenantSelector } from 'src/components/utilities'
-import arrayMutators from 'final-form-arrays'
+import { RFFSelectSearch } from 'src/components/forms'
+import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import { faCircleNotch, faEdit } from '@fortawesome/free-solid-svg-icons'
+import { CippContentCard, CippPage } from 'src/components/layout'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-import { useListUsersQuery } from 'src/store/api/users'
-import { useListConditionalAccessPoliciesQuery } from 'src/store/api/tenants'
+import { useGenericGetRequestQuery, useListConditionalAccessPoliciesQuery } from 'src/store/api/users'
 
 const ListClassicAlerts = () => {
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
   const currentDate = new Date()
   const [startDate, setStartDate] = useState(currentDate)
   const [endDate, setEndDate] = useState(currentDate)
+  const [errorMessage, setErrorMessage] = useState('')
 
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
   const [refreshState, setRefreshState] = useState(false)
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
   const onSubmit = (values) => {
+    if (startDate.getTime() === endDate.getTime()) {
+      setErrorMessage('Start and end times cannot be the same.')
+      return
+    }
+
+    setErrorMessage('')
     const startTime = Math.floor(startDate.getTime() / 1000)
     const endTime = Math.floor(endDate.getTime() / 1000)
     const shippedValues = {
@@ -76,9 +73,6 @@ const ListClassicAlerts = () => {
             <CippContentCard title="Add Vacation Mode" icon={faEdit}>
               <Form
                 onSubmit={onSubmit}
-                mutators={{
-                  ...arrayMutators,
-                }}
                 render={({ handleSubmit, submitting, values }) => {
                   return (
                     <CForm onSubmit={handleSubmit}>
@@ -87,6 +81,11 @@ const ListClassicAlerts = () => {
                         exclusions for a specific period of time. Select the CA policy and the date
                         range.
                       </p>
+                      {errorMessage && (
+                        <CCallout color="danger">
+                          {errorMessage}
+                        </CCallout>
+                      )}
                       <CRow className="mb-3">
                         <CCol>
                           <label>Tenant</label>
