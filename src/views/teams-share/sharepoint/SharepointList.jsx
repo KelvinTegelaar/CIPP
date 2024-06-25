@@ -79,7 +79,7 @@ const SharepointList = () => {
                 RemovePermission: false,
                 URL: row.URL,
               },
-              modalUrl: `/api/ExecSharePointOwner`,
+              modalUrl: `/api/ExecSharePointPerms`,
               modalDropdown: {
                 url: `/api/listUsers?TenantFilter=${tenant.defaultDomainName}`,
                 labelField: 'displayName',
@@ -98,7 +98,7 @@ const SharepointList = () => {
                 RemovePermission: true,
                 URL: row.URL,
               },
-              modalUrl: `/api/ExecSharePointOwner`,
+              modalUrl: `/api/ExecSharePointPerms`,
               modalDropdown: {
                 url: `/api/listUsers?TenantFilter=${tenant.defaultDomainName}`,
                 labelField: 'displayName',
