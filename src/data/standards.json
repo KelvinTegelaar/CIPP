@@ -699,6 +699,16 @@
     "impactColour": "info"
   },
   {
+  "name": "standards.EnableLitigationHold",
+  "cat": "Exchange Standards",
+  "tag": ["lowimpact"],
+  "helpText": "Enables litigation hold for all UserMailboxes with a valid license.",
+  "addedComponent": [],
+  "label": "Enable Litigation Hold for all users",
+  "impact": "Low Impact",
+  "impactColour": "info"
+  },
+  {
     "name": "standards.SpoofWarn",
     "cat": "Exchange Standards",
     "tag": ["lowimpact", "CIS"],
