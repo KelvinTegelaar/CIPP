@@ -100,6 +100,12 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/identity/administration/risky-users",
+    "name": "Risky Users",
+    "component": "views/identity/administration/RiskyUsers",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/identity/administration/devices",
     "name": "Devices",
     "component": "views/identity/administration/Devices",
@@ -204,6 +210,12 @@
     "path": "/identity/reports/azure-ad-connect-report",
     "name": "AAD Connect Report",
     "component": "views/identity/reports/AzureADConnectReport",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/reports/risk-detections",
+    "name": "Risk Detections",
+    "component": "views/identity/reports/RiskDetections",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
