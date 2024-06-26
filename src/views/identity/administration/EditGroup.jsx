@@ -76,7 +76,6 @@ const EditGroup = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
   const [roleInfo, setroleInfo] = React.useState([])
-  const [allowExternal, setAllowExternal] = useState(false)
   useEffect(() => {
     if (ownersIsSuccess && membersIsSuccess) {
       const ownerWithRole = owners.map((owner) => {
@@ -106,12 +105,6 @@ const EditGroup = () => {
       setQueryError(true)
     }
   }, [groupId, tenantDomain, dispatch])
-
-  useEffect(() => {
-    if (SenderAuthIsSuccess) {
-      setAllowExternal(!SenderAuth) // If SenderAuth is true, setAllowExternal to false, and vice versa
-    }
-  }, [SenderAuthIsSuccess, SenderAuth])
 
   const onSubmit = (values) => {
     const shippedValues = {
@@ -170,7 +163,12 @@ const EditGroup = () => {
                   {isSuccess && (
                     <Form
                       onSubmit={onSubmit}
-                      initialValues={{ allowExternal }}
+                      initialValues={{
+                        ...(group[0].calculatedGroupType === 'Microsoft 365' ||
+                        group[0].calculatedGroupType === 'Distribution List'
+                          ? { allowExternal: !SenderAuth.enabled }
+                          : {}),
+                      }}
                       render={({ handleSubmit, submitting, values }) => {
                         return (
                           <CForm onSubmit={handleSubmit}>
