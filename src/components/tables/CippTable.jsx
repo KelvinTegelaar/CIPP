@@ -637,6 +637,7 @@ export default function CippTable({
 
       // Define the flatten function
       const flatten = (obj, prefix = '') => {
+        if (obj === null) return {}
         return Object.keys(obj).reduce((output, key) => {
           const newKey = prefix ? `${prefix}.${key}` : key
           const value = obj[key] === null ? '' : obj[key]
