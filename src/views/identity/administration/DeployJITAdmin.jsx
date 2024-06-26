@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { CButton, CCallout, CCol, CForm, CRow, CSpinner, CTooltip } from '@coreui/react'
 import { useSelector } from 'react-redux'
-import { Field, Form } from 'react-final-form'
+import { Field, Form, FormSpy } from 'react-final-form'
 import {
   Condition,
   RFFCFormInput,
@@ -9,7 +9,11 @@ import {
   RFFCFormSwitch,
   RFFSelectSearch,
 } from 'src/components/forms'
-import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import {
+  useGenericGetRequestQuery,
+  useLazyGenericGetRequestQuery,
+  useLazyGenericPostRequestQuery,
+} from 'src/store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faEdit, faEye } from '@fortawesome/free-solid-svg-icons'
 import { CippContentCard, CippPage, CippPageList } from 'src/components/layout'
@@ -45,6 +49,7 @@ const DeployJITAdmin = () => {
       useraction: values.useraction,
       AdminRoles: values.AdminRoles?.map((role) => role.value),
       StartDate: startTime,
+      UseTAP: values.useTap,
       EndDate: endTime,
       ExpireAction: values.expireAction.value,
       PostExecution: {
@@ -62,7 +67,17 @@ const DeployJITAdmin = () => {
     data: users = [],
     isFetching: usersIsFetching,
     error: usersError,
-  } = useListUsersQuery({ tenantDomain })
+  } = useGenericGetRequestQuery({
+    path: '/api/ListGraphRequest',
+    params: {
+      TenantFilter: tenantDomain,
+      Endpoint: 'users',
+      $select: 'id,displayName,userPrincipalName,accountEnabled',
+      $count: true,
+      $top: 999,
+      $orderby: 'displayName',
+    },
+  })
 
   return (
     <CippPage title={`Add JIT Admin`} tenantSelector={false}>
@@ -129,7 +144,7 @@ const DeployJITAdmin = () => {
                           <CCol>
                             <RFFSelectSearch
                               label={'Users in ' + tenantDomain}
-                              values={users?.map((user) => ({
+                              values={users?.Results?.map((user) => ({
                                 value: user.id,
                                 name: `${user.displayName} <${user.userPrincipalName}>`,
                               }))}
@@ -137,6 +152,23 @@ const DeployJITAdmin = () => {
                               name="UserId"
                               isLoading={usersIsFetching}
                             />
+                            <FormSpy subscription={{ values: true }}>
+                              {({ values }) => {
+                                return users?.Results?.map((user, key) => {
+                                  if (
+                                    user.id === values?.UserId?.value &&
+                                    user.accountEnabled === false
+                                  ) {
+                                    return (
+                                      <CCallout color="warning" key={key} className="mt-3">
+                                        This user is currently disabled, they will automatically be
+                                        enabled when JIT is executed.
+                                      </CCallout>
+                                    )
+                                  }
+                                })
+                              }}
+                            </FormSpy>
                           </CCol>
                         </CRow>
                       </Condition>
@@ -193,6 +225,15 @@ const DeployJITAdmin = () => {
                             placeholder="Select action for when JIT expires"
                             name="expireAction"
                           />
+                        </CCol>
+                      </CRow>
+                      <CRow className="mb-3">
+                        <CCol>
+                          <CTooltip content="Generate a Temporary Access Password for the JIT Admin account if enabled for the tenant. This applies to both New and Existing users. The start time coincides with the scheduled time.">
+                            <div>
+                              <RFFCFormSwitch name="useTap" label="Generate TAP" />
+                            </div>
+                          </CTooltip>
                         </CCol>
                       </CRow>
                       <CRow className="mb-3">
@@ -257,6 +298,13 @@ const DeployJITAdmin = () => {
                     sortable: true,
                     cell: cellGenericFormatter(),
                     exportSelector: 'userPrincipalName',
+                  },
+                  {
+                    name: 'Account Enabled',
+                    selector: (row) => row['accountEnabled'],
+                    sortable: true,
+                    cell: cellGenericFormatter(),
+                    exportSelector: 'accountEnabled',
                   },
                   {
                     name: 'JIT Enabled',
