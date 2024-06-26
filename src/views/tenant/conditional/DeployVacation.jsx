@@ -15,19 +15,24 @@ const ListClassicAlerts = () => {
   const currentDate = new Date()
   const [startDate, setStartDate] = useState(currentDate)
   const [endDate, setEndDate] = useState(currentDate)
-  const [errorMessage, setErrorMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState('') // Added state for error message
 
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
   const [refreshState, setRefreshState] = useState(false)
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
   const onSubmit = (values) => {
-    if (startDate.getTime() === endDate.getTime()) {
+    if (startDate.getTime() === endDate.getTime()) { // Added validation
       setErrorMessage('Start and end times cannot be the same.')
       return
     }
+    
+    if (endDate.getTime() < startDate.getTime()) { // Added validation for end date
+      setErrorMessage('End time cannot be before start time.')
+      return
+    }
 
-    setErrorMessage('')
+    setErrorMessage('') // Clear error message if validation passes
     const startTime = Math.floor(startDate.getTime() / 1000)
     const endTime = Math.floor(endDate.getTime() / 1000)
     const shippedValues = {
@@ -81,7 +86,7 @@ const ListClassicAlerts = () => {
                         exclusions for a specific period of time. Select the CA policy and the date
                         range.
                       </p>
-                      {errorMessage && (
+                      {errorMessage && ( // Added error message display
                         <CCallout color="danger">
                           {errorMessage}
                         </CCallout>
