@@ -1,53 +1,65 @@
 import React, { useState } from 'react'
-import { CButton, CCallout, CCol, CForm, CRow, CSpinner } from '@coreui/react'
+import { CButton, CCallout, CCol, CForm, CRow, CSpinner, CTooltip } from '@coreui/react'
 import { useSelector } from 'react-redux'
 import { Field, Form } from 'react-final-form'
-import { RFFSelectSearch } from 'src/components/forms'
-import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
-import { faCircleNotch, faEdit } from '@fortawesome/free-solid-svg-icons'
-import { CippContentCard, CippPage } from 'src/components/layout'
+import { Condition, RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms'
+import {
+  useGenericGetRequestQuery,
+  useLazyGenericGetRequestQuery,
+  useLazyGenericPostRequestQuery,
+} from 'src/store/api/app'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleNotch, faEdit, faEye } from '@fortawesome/free-solid-svg-icons'
+import { CippContentCard, CippPage, CippPageList } from 'src/components/layout'
+import { CellTip } from 'src/components/tables/CellGenericFormat'
+import 'react-datepicker/dist/react-datepicker.css'
+import { CippActionsOffcanvas, ModalService, TenantSelector } from 'src/components/utilities'
+import arrayMutators from 'final-form-arrays'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-import { useGenericGetRequestQuery, useListConditionalAccessPoliciesQuery } from 'src/store/api/users'
+import { useListUsersQuery } from 'src/store/api/users'
+import { useListConditionalAccessPoliciesQuery } from 'src/store/api/tenants'
 
 const ListClassicAlerts = () => {
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
   const currentDate = new Date()
   const [startDate, setStartDate] = useState(currentDate)
   const [endDate, setEndDate] = useState(currentDate)
-  const [errorMessage, setErrorMessage] = useState('') // Added state for error message
 
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
   const [refreshState, setRefreshState] = useState(false)
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
-  const onSubmit = (values) => {
-    if (startDate.getTime() === endDate.getTime()) { // Added validation
-      setErrorMessage('Start and end times cannot be the same.')
-      return
-    }
-    
-    if (endDate.getTime() < startDate.getTime()) { // Added validation for end date
-      setErrorMessage('End time cannot be before start time.')
-      return
-    }
+const onSubmit = (values) => {
+  const startTime = Math.floor(startDate.getTime() / 1000);
+  const endTime = Math.floor(endDate.getTime() / 1000);
 
-    setErrorMessage('') // Clear error message if validation passes
-    const startTime = Math.floor(startDate.getTime() / 1000)
-    const endTime = Math.floor(endDate.getTime() / 1000)
-    const shippedValues = {
-      tenantFilter: tenantDomain,
-      UserId: values.UserId?.value,
-      PolicyId: values.PolicyId?.value,
-      StartDate: startTime,
-      EndDate: endTime,
-      vacation: true,
-    }
-    genericPostRequest({ path: '/api/ExecCAExclusion', values: shippedValues }).then((res) => {
-      setRefreshState(res.requestId)
-    })
+  // fixes the issue with where end date and time is not the same as start date and time
+  if (endTime <= startTime) {
+    alert('End date and time must be after start date and time.');
+    return;
   }
 
+  // fixes the issue where data and time cannot be  earlier than current date and time
+  const currentDateTime = Math.floor(Date.now() / 1000);
+  if (endTime < currentDateTime) {
+    alert('End date and time cannot be in the past.');
+    return;
+  }
+
+  const shippedValues = {
+    tenantFilter: tenantDomain,
+    UserId: values.UserId?.value,
+    PolicyId: values.PolicyId?.value,
+    StartDate: startTime,
+    EndDate: endTime,
+    vacation: true,
+  };
+
+  genericPostRequest({ path: '/api/ExecCAExclusion', values: shippedValues }).then((res) => {
+    setRefreshState(res.requestId);
+  });
+};
   const {
     data: users = [],
     isFetching: usersIsFetching,
@@ -78,6 +90,9 @@ const ListClassicAlerts = () => {
             <CippContentCard title="Add Vacation Mode" icon={faEdit}>
               <Form
                 onSubmit={onSubmit}
+                mutators={{
+                  ...arrayMutators,
+                }}
                 render={({ handleSubmit, submitting, values }) => {
                   return (
                     <CForm onSubmit={handleSubmit}>
@@ -86,11 +101,6 @@ const ListClassicAlerts = () => {
                         exclusions for a specific period of time. Select the CA policy and the date
                         range.
                       </p>
-                      {errorMessage && ( // Added error message display
-                        <CCallout color="danger">
-                          {errorMessage}
-                        </CCallout>
-                      )}
                       <CRow className="mb-3">
                         <CCol>
                           <label>Tenant</label>
