@@ -20,7 +20,7 @@ const SharepointList = () => {
           <FontAwesomeIcon icon={faEllipsisV} />
         </CButton>
         <CippActionsOffcanvas
-          title="User Information"
+          title="Extended Information"
           extendedInfo={[
             {
               label: 'Site URL',
@@ -79,7 +79,7 @@ const SharepointList = () => {
                 RemovePermission: false,
                 URL: row.URL,
               },
-              modalUrl: `/api/ExecSharePointOwner`,
+              modalUrl: `/api/ExecSharePointPerms`,
               modalDropdown: {
                 url: `/api/listUsers?TenantFilter=${tenant.defaultDomainName}`,
                 labelField: 'displayName',
@@ -98,7 +98,7 @@ const SharepointList = () => {
                 RemovePermission: true,
                 URL: row.URL,
               },
-              modalUrl: `/api/ExecSharePointOwner`,
+              modalUrl: `/api/ExecSharePointPerms`,
               modalDropdown: {
                 url: `/api/listUsers?TenantFilter=${tenant.defaultDomainName}`,
                 labelField: 'displayName',
