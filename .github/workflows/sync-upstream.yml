@@ -29,7 +29,7 @@ jobs:
   sync-repo:
     runs-on: ubuntu-latest
     steps:
-      - name: Sync the upstream from Kelvin
+      - name: Sync the upstream from Kelvin to local
         uses: dabreadman/sync-upstream-repo@v1.3.0
         with: 
           upstream_repo: ${{ env.UPSTREAM_URL }}
