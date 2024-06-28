@@ -36,6 +36,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
           { label: 'Exchange Guid', value: `${row.ExchangeGuid}` },
           { label: 'Archive Guid', value: `${row.ArchiveGuid}` },
           { label: 'Id', value: `${row.Id}` },
+          { label: 'Date Deleted', value: `${row.WhenSoftDeleted}` },
         ]}
         actions={[
           {
@@ -86,6 +87,12 @@ const columns = [
     sortable: true,
     exportSelector: 'primarySmtpAddress',
     minWidth: '350px',
+  },
+  {
+    name: 'Date Deleted',
+    selector: (row) => row['WhenSoftDeleted'],
+    sortable: true,
+    exportSelector: 'WhenSoftDeleted',
   },
   {
     name: 'Recipient Type',
