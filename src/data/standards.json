@@ -1170,12 +1170,12 @@
         "name": "standards.AntiPhishPolicy.AuthenticationFailAction",
         "values": [
           {
-            "label": "Move to Junk Folder",
-            "value": "MoveToJmf"
-          },
-          {
             "label": "Quarantine the message",
             "value": "Quarantine"
+          },
+          {
+            "label": "Move to Junk Folder",
+            "value": "MoveToJmf"
           }
         ]
       },
@@ -1185,16 +1185,16 @@
         "name": "standards.AntiPhishPolicy.SpoofQuarantineTag",
         "values": [
           {
+            "label": "AdminOnlyAccessPolicy",
+            "value": "AdminOnlyAccessPolicy"
+          },
+          {
             "label": "DefaultFullAccessPolicy",
             "value": "DefaultFullAccessPolicy"
           },
           {
             "label": "DefaultFullAccessWithNotificationPolicy",
             "value": "DefaultFullAccessWithNotificationPolicy"
-          },
-          {
-            "label": "AdminOnlyAccessPolicy",
-            "value": "AdminOnlyAccessPolicy"
           }
         ]
       },
@@ -1223,16 +1223,16 @@
         "name": "standards.AntiPhishPolicy.TargetedUserQuarantineTag",
         "values": [
           {
+            "label": "AdminOnlyAccessPolicy",
+            "value": "AdminOnlyAccessPolicy"
+          },
+          {
             "label": "DefaultFullAccessPolicy",
             "value": "DefaultFullAccessPolicy"
           },
           {
             "label": "DefaultFullAccessWithNotificationPolicy",
             "value": "DefaultFullAccessWithNotificationPolicy"
-          },
-          {
-            "label": "AdminOnlyAccessPolicy",
-            "value": "AdminOnlyAccessPolicy"
           }
         ]
       },
@@ -1261,16 +1261,16 @@
         "name": "standards.AntiPhishPolicy.TargetedDomainQuarantineTag",
         "values": [
           {
-            "label": "DefaultFullAccessPolicy",
-            "value": "DefaultFullAccessPolicy"
-          },
-          {
             "label": "DefaultFullAccessWithNotificationPolicy",
             "value": "DefaultFullAccessWithNotificationPolicy"
           },
           {
             "label": "AdminOnlyAccessPolicy",
             "value": "AdminOnlyAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessPolicy",
+            "value": "DefaultFullAccessPolicy"
           }
         ]
       },
