@@ -1069,7 +1069,7 @@
         "label": "Destination email address"
       }
     ],
-    "label": "Set the destination email for user reported phishing emails",
+    "label": "Set the destination email for user reported emails",
     "impact": "Medium Impact",
     "impactColour": "warning"
   },
