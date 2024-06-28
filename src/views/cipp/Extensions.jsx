@@ -112,7 +112,6 @@ export default function CIPPExtensions() {
                       clients.
                     </CippCallout>
                   )}
-                  <CippCallout color="info">{integration.description}</CippCallout>
                   <CippButtonCard
                     title={integration.name}
                     titleType="big"
