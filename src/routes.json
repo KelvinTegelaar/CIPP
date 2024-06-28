@@ -787,6 +787,12 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "name": "Deleted Mailboxes",
+    "path": "/email/administration/deleted-mailboxes",
+    "component": "views/email-exchange/administration/DeletedMailboxes",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "name": "List Mailbox Rules",
     "path": "/email/administration/mailbox-rules",
     "component": "views/email-exchange/administration/MailboxRuleList",
