@@ -1058,6 +1058,22 @@
     "impactColour": "warning"
   },
   {
+    "name": "standards.UserReportDestinationEmail",
+    "cat": "Exchange Standards",
+    "tag": ["mediumimpact"],
+    "helpText": "Sets the destination for email when users report them as spam or phishing. Works well together with the 'Set the state of the built-in Report button in Outlook standard'.",
+    "addedComponent": [
+      {
+        "type": "input",
+        "name": "standards.UserReportDestinationEmail.Email",
+        "label": "Destination email address"
+      }
+    ],
+    "label": "Set the destination email for user reported phishing emails",
+    "impact": "Medium Impact",
+    "impactColour": "warning"
+  },
+  {
     "name": "standards.DisableSharedMailbox",
     "cat": "Exchange Standards",
     "tag": ["mediumimpact", "CIS"],
