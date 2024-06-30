@@ -98,7 +98,7 @@ const QuarantineList = () => {
       name: 'Reason',
       sortable: true,
       exportSelector: 'Type',
-      maxWidth: '150px',
+      maxWidth: '200px',
     },
     {
       selector: (row) => row['ReceivedTime'],
@@ -126,7 +126,7 @@ const QuarantineList = () => {
     {
       name: 'Actions',
       cell: Offcanvas,
-      maxWidth: '150px',
+      maxWidth: '100px',
     },
   ]
 
@@ -135,10 +135,51 @@ const QuarantineList = () => {
       capabilities={{ allTenants: false, helpContext: 'https://google.com' }}
       title="Quarantine Management"
       datatable={{
+        filterlist: [
+          { filterName: 'Status: Not Released', filter: '"ReleaseStatus":"NotReleased"' },
+          { filterName: 'Status: Released', filter: '"ReleaseStatus":"Released"' },
+          { filterName: 'Status: Denied', filter: '"ReleaseStatus":"Denied"' },
+          {
+            filterName: 'Reason: High Confidence Phishing',
+            filter: '"QuarantineTypes":"HighConfPhish"',
+          },
+          { filterName: 'Reason: Phishing', filter: '"QuarantineTypes":"Phish"' },
+          { filterName: 'Reason: Spam', filter: '"QuarantineTypes":"Spam"' },
+          { filterName: 'Reason: Malware', filter: '"QuarantineTypes":"Malware"' },
+          { filterName: 'Reason: FileTypeBlock', filter: '"QuarantineTypes":"FileTypeBlock"' },
+          { filterName: 'Reason: Bulk', filter: '"QuarantineTypes":"Bulk"' },
+        ],
         keyField: 'id',
         reportName: `${tenant?.defaultDomainName}-Mailbox-Quarantine`,
         path: '/api/ListMailQuarantine',
         columns,
+        tableProps: {
+          selectableRows: true,
+          actionsList: [
+            {
+              label: 'Release',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecQuarantineManagement?TenantFilter=${tenant.defaultDomainName}&ID=!Identity&Type=Release`,
+              modalMessage: 'Are you sure you want to release these messages?',
+            },
+            {
+              label: 'Deny',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecQuarantineManagement?TenantFilter=${tenant.defaultDomainName}&ID=!Identity&Type=Deny`,
+              modalMessage: 'Are you sure you want to deny these messages?',
+            },
+            {
+              label: 'Release & Allow Sender',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecQuarantineManagement?TenantFilter=${tenant.defaultDomainName}&ID=!Identity&Type=Release&AllowSender=true`,
+              modalMessage:
+                'Are you sure you want to release these messages, and add the senders to the whitelist?',
+            },
+          ],
+        },
         params: { TenantFilter: tenant?.defaultDomainName },
       }}
     />

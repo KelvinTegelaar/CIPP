@@ -77,6 +77,12 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/identity/administration/jit-admin",
+    "name": "JIT Admin",
+    "component": "views/identity/administration/DeployJITAdmin",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/identity/administration/ViewBec",
     "name": "View BEC",
     "component": "views/identity/administration/ViewBEC",
@@ -91,6 +97,12 @@
     "path": "/identity/administration/users",
     "name": "Users",
     "component": "views/identity/administration/Users",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/administration/risky-users",
+    "name": "Risky Users",
+    "component": "views/identity/administration/RiskyUsers",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
@@ -198,6 +210,12 @@
     "path": "/identity/reports/azure-ad-connect-report",
     "name": "AAD Connect Report",
     "component": "views/identity/reports/AzureADConnectReport",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/reports/risk-detections",
+    "name": "Risk Detections",
+    "component": "views/identity/reports/RiskDetections",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
@@ -691,6 +709,18 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/rooms/management/list-rooms",
+    "name": "Rooms",
+    "component": "views/email-exchange/rooms/ListRooms",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/rooms/management/room-lists",
+    "name": "Room Lists",
+    "component": "views/email-exchange/rooms/ListRoomLists",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/email/tools/mailbox-restore-wizard",
     "name": "Mailbox Restore Wizard",
     "component": "views/email-exchange/tools/MailboxRestoreWizard",
@@ -772,6 +802,12 @@
     "name": "List Tenant Allow/Block Lists",
     "path": "/email/administration/tenant-allow-block-lists",
     "component": "views/email-exchange/administration/ListTenantAllowBlockList",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "Add Tenant Allow/Block List",
+    "path": "/email/administration/add-tenant-allow-block-list",
+    "component": "views/email-exchange/administration/AddTenantAllowBlockList",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
@@ -871,6 +907,12 @@
     "allowedRoles": ["admin"]
   },
   {
+    "path": "/cipp/extensions",
+    "name": "Extensions Settings",
+    "component": "views/cipp/Extensions",
+    "allowedRoles": ["admin"]
+  },
+  {
     "path": "/cipp/setup",
     "name": "Setup",
     "component": "views/cipp/Setup",
@@ -934,6 +976,12 @@
     "path": "/tenant/administration/tenant-offboarding-wizard",
     "name": "Tenant Offboarding",
     "component": "views/tenant/administration/TenantOffboardingWizard",
+    "allowedRoles": ["admin"]
+  },
+  {
+    "path": "/tenant/administration/tenant-onboarding",
+    "name": "Tenant Onboarding",
+    "component": "views/tenant/administration/TenantOnboarding",
     "allowedRoles": ["admin"]
   },
   {
