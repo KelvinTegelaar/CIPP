@@ -548,7 +548,7 @@ const ApplyNewStandard = () => {
                                   />
                                 </CCol>
                                 <CCol md={3}>
-                                  <h5>Optional Input</h5>
+                                  <h5>Settings</h5>
                                 </CCol>
                               </CRow>
                             </CAccordionBody>
@@ -647,7 +647,7 @@ const ApplyNewStandard = () => {
                                             />
                                           </CCol>
                                           <CCol md={3}>
-                                            <h5>Optional Input</h5>
+                                            <h5>Settings</h5>
                                             {obj.addedComponent &&
                                               obj.addedComponent.map((component) => (
                                                 <>
@@ -768,7 +768,7 @@ const ApplyNewStandard = () => {
                                   <RFFCFormSwitch name={`${template.switchName}.remediate`} />
                                 </CCol>
                                 <CCol md={3}>
-                                  <h5>Optional Input</h5>
+                                  <h5>Settings</h5>
                                   {template.templates.isSuccess && (
                                     <RFFSelectSearch
                                       name={`${template.switchName}.TemplateList`}
@@ -845,7 +845,7 @@ const ApplyNewStandard = () => {
                                 <RFFCFormSwitch name={`standards.APConfig.remediate`} />
                               </CCol>
                               <CCol md={3}>
-                                <h5>Optional Input</h5>
+                                <h5>Settings</h5>
                                 <CRow>
                                   <CCol md={12}>
                                     <RFFCFormInput
@@ -955,7 +955,7 @@ const ApplyNewStandard = () => {
                                 <RFFCFormSwitch name={`standards.APESP.remediate`} />
                               </CCol>
                               <CCol md={3}>
-                                <h5>Optional Input</h5>
+                                <h5>Settings</h5>
                                 <CRow>
                                   <CCol>
                                     <RFFCFormInput

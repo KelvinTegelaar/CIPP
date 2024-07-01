@@ -15,7 +15,12 @@ import { AppHeaderSearch } from 'src/components/header'
 import { CippActionsOffcanvas, TenantSelector } from '../utilities'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
-import { setCurrentTheme, setUserSettings, toggleSidebarShow } from 'src/store/features/app'
+import {
+  setCurrentTheme,
+  setSetupCompleted,
+  setUserSettings,
+  toggleSidebarShow,
+} from 'src/store/features/app'
 import { useMediaPredicate } from 'react-media-hook'
 import {
   useGenericGetRequestQuery,
@@ -92,6 +97,25 @@ const AppHeader = () => {
       }
     }, [delay, state])
   }
+  //useEffect to check if any of the dashboard alerts contained the key "setupCompleted" and if so,
+  //check if the value of this key is false. If so, set the setupCompleted state to false
+  //if none is found, set the setupCompleted state to true
+  useEffect(() => {
+    if (dashboard && Array.isArray(dashboard) && dashboard.length >= 1) {
+      console.log('Finding if setup is completed.')
+      const setupCompleted = dashboard.find((alert) => alert && alert.setupCompleted === false)
+      if (setupCompleted) {
+        console.log("Setup isn't completed yet, we found a match with false.")
+        dispatch(setSetupCompleted({ setupCompleted: false }))
+      } else {
+        console.log('Setup is completed.')
+        dispatch(setSetupCompleted({ setupCompleted: true }))
+      }
+    } else {
+      console.log('Setup is completed.')
+      dispatch(setSetupCompleted({ setupCompleted: true }))
+    }
+  }, [dashboard, dispatch])
 
   useEffect(() => {
     if (cippQueueList.isUninitialized && (cippQueueList.isFetching || cippQueueList.isLoading)) {

@@ -135,6 +135,20 @@ const QuarantineList = () => {
       capabilities={{ allTenants: false, helpContext: 'https://google.com' }}
       title="Quarantine Management"
       datatable={{
+        filterlist: [
+          { filterName: 'Status: Not Released', filter: '"ReleaseStatus":"NotReleased"' },
+          { filterName: 'Status: Released', filter: '"ReleaseStatus":"Released"' },
+          { filterName: 'Status: Denied', filter: '"ReleaseStatus":"Denied"' },
+          {
+            filterName: 'Reason: High Confidence Phishing',
+            filter: '"QuarantineTypes":"HighConfPhish"',
+          },
+          { filterName: 'Reason: Phishing', filter: '"QuarantineTypes":"Phish"' },
+          { filterName: 'Reason: Spam', filter: '"QuarantineTypes":"Spam"' },
+          { filterName: 'Reason: Malware', filter: '"QuarantineTypes":"Malware"' },
+          { filterName: 'Reason: FileTypeBlock', filter: '"QuarantineTypes":"FileTypeBlock"' },
+          { filterName: 'Reason: Bulk', filter: '"QuarantineTypes":"Bulk"' },
+        ],
         keyField: 'id',
         reportName: `${tenant?.defaultDomainName}-Mailbox-Quarantine`,
         path: '/api/ListMailQuarantine',

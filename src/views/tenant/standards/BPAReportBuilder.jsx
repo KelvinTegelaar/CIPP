@@ -157,6 +157,12 @@ const BPAReportBuilder = () => {
     newBPATemplate({ path: '/api/AddBPATemplate', values: data })
   }
 
+  const handleDelete = async (event) => {
+    event.preventDefault()
+    const data = formData.name
+    newBPATemplate({ path: `/api/RemoveBPATemplate?TemplateName=${data}` })
+  }
+
   const options = {
     wordWrap: true,
   }
@@ -228,17 +234,21 @@ const BPAReportBuilder = () => {
                         </CCol>
                       </CRow>
                       <CRow className="mb-1">
-                        <CTooltip
-                          placement="left"
-                          content="Click here to create a new BPA template. To overwrite an existing template, enter the name of the existing template."
-                        >
-                          <CCol>
-                            <CButton form="publishForm" type="submit">
+                        <CCol>
+                          <CTooltip
+                            placement="left"
+                            content="Click here to create a new BPA template. To overwrite an existing template, enter the name of the existing template."
+                          >
+                            <CButton className="me-2" form="publishForm" type="submit">
                               <FontAwesomeIcon className="me-2" icon="upload" />
                               Publish
                             </CButton>
-                          </CCol>
-                        </CTooltip>
+                          </CTooltip>
+                          <CButton className="me-2" color="danger" onClick={(e) => handleDelete(e)}>
+                            <FontAwesomeIcon className="me-2" icon="remove" />
+                            Delete
+                          </CButton>
+                        </CCol>
                       </CRow>
                       {newTemplateResult.isFetching && <CSpinner />}
                       {newTemplateResult.isSuccess && (
