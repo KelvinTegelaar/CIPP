@@ -13,6 +13,8 @@ const initialState = {
   TenantListSelector: false,
   defaultColumns: {},
   newUserDefaults: {},
+  recentPages: [],
+  setupCompleted: false,
 }
 
 export const appSlice = createSlice({
@@ -58,6 +60,12 @@ export const appSlice = createSlice({
         state[key] = action.payload?.userSettings[key]
       })
     },
+    setRecentPages: (state, action) => {
+      state.recentPages = action.payload?.recentPages
+    },
+    setSetupCompleted: (state, action) => {
+      state.setupCompleted = action.payload?.setupCompleted
+    },
   },
 })
 
@@ -75,6 +83,8 @@ export const {
   setUserSettings,
   setDefaultColumns,
   setNewUserDefaults,
+  setRecentPages,
+  setSetupCompleted,
 } = appSlice.actions
 
 export default persistReducer(

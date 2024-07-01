@@ -38,7 +38,7 @@
   {
     "name": "standards.AuditLog",
     "cat": "Global Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": ["lowimpact", "CIS", "mip_search_auditlog"],
     "helpText": "Enables the Unified Audit Log for tracking and auditing activities. Also runs Enable-OrganizationCustomization if necessary.",
     "addedComponent": [],
     "label": "Enable the Unified Audit Log",
@@ -61,12 +61,73 @@
     }
   },
   {
+    "name": "standards.Branding",
+    "cat": "Global Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Sets the branding for the tenant. This includes the login page, and the Office 365 portal.",
+    "addedComponent": [
+      {
+        "type": "input",
+        "name": "standards.Branding.signInPageText",
+        "label": "Sign-in page text"
+      },
+      {
+        "type": "input",
+        "name": "standards.Branding.usernameHintText",
+        "label": "Username hint Text"
+      },
+      {
+        "type": "boolean",
+        "name": "standards.Branding.hideAccountResetCredentials",
+        "label": "Hide self-service password reset"
+      },
+      {
+        "type": "Select",
+        "label": "Visual Template",
+        "name": "standards.Branding.layoutTemplateType",
+        "values": [
+          {
+            "label": "Full-screen background",
+            "value": "default"
+          },
+          {
+            "label": "Parial-screen background",
+            "value": "verticalSplit"
+          }
+        ]
+      },
+      {
+        "type": "boolean",
+        "name": "standards.Branding.isHeaderShown",
+        "label": "Show header"
+      },
+      {
+        "type": "boolean",
+        "name": "standards.Branding.isFooterShown",
+        "label": "Show footer"
+      }
+    ],
+    "label": "Set branding for the tenant",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
     "name": "standards.EnableCustomerLockbox",
     "cat": "Global Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": ["lowimpact", "CIS", "CustomerLockBoxEnabled"],
     "helpText": "Enables Customer Lockbox that offers an approval process for Microsoft support to access organization data",
     "addedComponent": [],
     "label": "Enable Customer Lockbox",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
+    "name": "standards.EnablePronouns",
+    "cat": "Global Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Enables the Pronouns feature for the tenant. This allows users to set their pronouns in their profile.",
+    "addedComponent": [],
+    "label": "Enable Pronouns",
     "impact": "Low Impact",
     "impactColour": "info"
   },
@@ -103,10 +164,38 @@
   {
     "name": "standards.ActivityBasedTimeout",
     "cat": "Global Standards",
-    "tag": ["mediumimpact", "CIS"],
+    "tag": ["mediumimpact", "CIS", "spo_idle_session_timeout"],
     "helpText": "Enables and sets Idle session timeout for Microsoft 365 to 1 hour. This policy affects most M365 web apps",
-    "addedComponent": [],
-    "label": "Enable 1 hour Activity based Timeout",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Select value",
+        "name": "standards.ActivityBasedTimeout.timeout",
+        "values": [
+          {
+            "label": "1 Hour",
+            "value": "01:00:00"
+          },
+          {
+            "label": "3 Hours",
+            "value": "03:00:00"
+          },
+          {
+            "label": "6 Hours",
+            "value": "06:00:00"
+          },
+          {
+            "label": "12 Hours",
+            "value": "12:00:00"
+          },
+          {
+            "label": "24 Hours",
+            "value": "1.00:00:00"
+          }
+        ]
+      }
+    ],
+    "label": "Enable Activity based Timeout",
     "impact": "Medium Impact",
     "impactColour": "warning"
   },
@@ -225,7 +314,7 @@
   {
     "name": "standards.PasswordExpireDisabled",
     "cat": "Entra (AAD) Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": ["lowimpact", "CIS", "PWAgePolicyNew"],
     "helpText": "Disables the expiration of passwords for the tenant by setting the password expiration policy to never expire for any user.",
     "addedComponent": [],
     "label": "Do not expire passwords",
@@ -308,7 +397,8 @@
       {
         "type": "number",
         "name": "standards.NudgeMFA.snoozeDurationInDays",
-        "label": "Number of days to allow users to skip registering Authenticator (0-14, default is 1)"
+        "label": "Number of days to allow users to skip registering Authenticator (0-14, default is 1)",
+        "default": 1
       }
     ],
     "label": "Sets the state for the request to setup Authenticator",
@@ -461,6 +551,16 @@
     "impactColour": "danger"
   },
   {
+    "name": "standards.PerUserMFA",
+    "cat": "Entra (AAD) Standards",
+    "tag": ["highimpact"],
+    "helpText": "Enables per user MFA for all users.",
+    "addedComponent": [],
+    "label": "Enables per user MFA for all users.",
+    "impact": "High Impact",
+    "impactColour": "danger"
+  },
+  {
     "name": "standards.OutBoundSpamAlert",
     "cat": "Exchange Standards",
     "tag": ["lowimpact", "CIS"],
@@ -483,6 +583,98 @@
     "helpText": "Sets the transport message configuration to timeout a message at 12 hours.",
     "addedComponent": [],
     "label": "Lower Transport Message Expiration to 12 hours",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
+    "name": "standards.GlobalQuarantineNotifications",
+    "cat": "Exchange Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Sets the Global Quarantine Notification Interval to the selected value. Determines how often the quarantine notification is sent to users.",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Select value",
+        "name": "standards.GlobalQuarantineNotifications.NotificationInterval",
+        "values": [
+          {
+            "label": "4 hours",
+            "value": "04:00:00"
+          },
+          {
+            "label": "1 day/Daily",
+            "value": "1.00:00:00"
+          },
+          {
+            "label": "7 days/Weekly",
+            "value": "7.00:00:00"
+          }
+        ]
+      }
+    ],
+    "label": "Set Global Quarantine Notification Interval",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
+    "name": "standards.DisableTNEF",
+    "cat": "Exchange Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Disables Transport Neutral Encapsulation Format (TNEF)/winmail.dat for the tenant. TNEF can cause issues if the recipient is not using a client supporting TNEF.",
+    "addedComponent": [],
+    "label": "Disable TNEF/winmail.dat",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
+    "name": "standards.FocusedInbox",
+    "cat": "Exchange Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Sets the default Focused Inbox state for the tenant. This can be overridden by the user.",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Select value",
+        "name": "standards.FocusedInbox.state",
+        "values": [
+          {
+            "label": "Enabled",
+            "value": "enabled"
+          },
+          {
+            "label": "Disabled",
+            "value": "disabled"
+          }
+        ]
+      }
+    ],
+    "label": "Set Focused Inbox state",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
+    "name": "standards.CloudMessageRecall",
+    "cat": "Exchange Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Sets the Cloud Message Recall state for the tenant. This allows users to recall messages from the cloud.",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Select value",
+        "name": "standards.CloudMessageRecall.state",
+        "values": [
+          {
+            "label": "Enabled",
+            "value": "true"
+          },
+          {
+            "label": "Disabled",
+            "value": "false"
+          }
+        ]
+      }
+    ],
+    "label": "Set Cloud Message Recall state",
     "impact": "Low Impact",
     "impactColour": "info"
   },
@@ -535,17 +727,44 @@
   {
     "name": "standards.EnableMailTips",
     "cat": "Exchange Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": ["lowimpact", "CIS", "exo_mailtipsenabled"],
     "helpText": "Enables all MailTips in Outlook. MailTips are the notifications Outlook and Outlook on the web shows when an email you create, meets some requirements",
     "addedComponent": [
       {
         "type": "number",
         "name": "standards.EnableMailTips.MailTipsLargeAudienceThreshold",
         "label": "Number of recipients to trigger the large audience MailTip (Default is 25)",
-        "placeholder": "Enter a profile name"
+        "placeholder": "Enter a profile name",
+        "default": 25
       }
     ],
     "label": "Enable all MailTips",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
+    "name": "standards.TeamsMeetingsByDefault",
+    "cat": "Exchange Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Sets the default state for automatically turning meetings into Teams meetings for the tenant. This can be overridden by the user in Outlook.",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Select value",
+        "name": "standards.TeamsMeetingsByDefault.state",
+        "values": [
+          {
+            "label": "Enabled",
+            "value": "true"
+          },
+          {
+            "label": "Disabled",
+            "value": "false"
+          }
+        ]
+      }
+    ],
+    "label": "Set Teams Meetings by default state",
     "impact": "Low Impact",
     "impactColour": "info"
   },
@@ -582,7 +801,7 @@
   {
     "name": "standards.EnableMailboxAuditing",
     "cat": "Exchange Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": ["lowimpact", "CIS", "exo_mailboxaudit"],
     "helpText": "Enables Mailbox auditing for all mailboxes and on tenant level. Disables audit bypass on all mailboxes. Unified Audit Log needs to be enabled for this standard to function.",
     "addedComponent": [],
     "label": "Enable Mailbox auditing",
@@ -598,12 +817,14 @@
       {
         "type": "number",
         "name": "standards.SendReceiveLimitTenant.SendLimit",
-        "label": "Send limit in MB (Default is 35)"
+        "label": "Send limit in MB (Default is 35)",
+        "default": 35
       },
       {
         "type": "number",
         "name": "standards.SendReceiveLimitTenant.ReceiveLimit",
-        "label": "Receive Limit in MB (Default is 36)"
+        "label": "Receive Limit in MB (Default is 36)",
+        "default": 36
       }
     ],
     "label": "Set send/receive size limits",
@@ -635,20 +856,36 @@
             "value": "PublishingEditor"
           },
           {
+            "label": "Editor - The user can create items in the folder. The contents of the folder do not appear.",
+            "value": "Editor"
+          },
+          {
+            "label": "Publishing Author.  The user can read, create all items/subfolders. Can modify and delete only items they create.",
+            "value": "PublishingAuthor"
+          },
+          {
+            "label": "Author - The user can create and read items, and modify and delete items that they create.",
+            "value": "Author"
+          },
+          {
+            "label": "Non Editing Author - The user has full read access and create items. Can can delete only own items.",
+            "value": "NonEditingAuthor"
+          },
+          {
             "label": "Reviewer - The user can read all items in the folder.",
             "value": "Reviewer"
           },
           {
-            "label": "Editor - The user can create items in the folder. The contents of the folder do not appear.",
+            "label": "Contributor - The user can create items and folders.",
             "value": "Contributor"
-          },
-          {
-            "label": "Limited Details - The user can view free/busy time within the calendar and the subject and location of appointments.",
-            "value": "LimitedDetails"
           },
           {
             "label": "Availability Only - Indicates that the user can view only free/busy time within the calendar.",
             "value": "AvailabilityOnly"
+          },
+          {
+            "label": "Limited Details - The user can view free/busy time within the calendar and the subject and location of appointments.",
+            "value": "LimitedDetails"
           },
           {
             "label": "None - The user has no permissions on the folder.",
@@ -664,7 +901,7 @@
   {
     "name": "standards.DisableExternalCalendarSharing",
     "cat": "Exchange Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": ["lowimpact", "CIS", "exo_individualsharing"],
     "helpText": "Disables the ability for users to share their calendar with external users. Only for the default policy, so exclusions can be made if needed.",
     "addedComponent": [],
     "label": "Disable external calendar sharing",
@@ -674,7 +911,7 @@
   {
     "name": "standards.DisableAdditionalStorageProviders",
     "cat": "Exchange Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": ["lowimpact", "CIS", "exo_storageproviderrestricted"],
     "helpText": "Disables the ability for users to open files in Outlook on the Web, from other providers such as Box, Dropbox, Facebook, Google Drive, OneDrive Personal, etc.",
     "addedComponent": [],
     "label": "Disable additional storage providers in OWA",
@@ -682,9 +919,77 @@
     "impactColour": "info"
   },
   {
+    "name": "standards.ShortenMeetings",
+    "cat": "Exchange Standards",
+    "tag": ["mediumimpact"],
+    "helpText": "Sets the shorten meetings settings on a tenant level. This will shorten meetings by the selected amount of minutes. Valid values are 0 to 29. Short meetings are under 60 minutes, long meetings are over 60 minutes.",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Select value",
+        "name": "standards.ShortenMeetings.ShortenEventScopeDefault",
+        "values": [
+          {
+            "label": "Disabled/None",
+            "value": "None"
+          },
+          {
+            "label": "End early",
+            "value": "EndEarly"
+          },
+          {
+            "label": "Start late",
+            "value": "StartLate"
+          }
+        ]
+      },
+      {
+        "type": "number",
+        "name": "standards.ShortenMeetings.DefaultMinutesToReduceShortEventsBy",
+        "label": "Minutes to reduce short calendar events by (Default is 5)",
+        "default": 5
+      },
+      {
+        "type": "number",
+        "name": "standards.ShortenMeetings.DefaultMinutesToReduceLongEventsBy",
+        "label": "Minutes to reduce long calendar events by (Default is 10)",
+        "default": 10
+      }
+    ],
+    "label": "Set shorten meetings state",
+    "impact": "Medium Impact",
+    "impactColour": "warning"
+  },
+  {
+    "name": "standards.Bookings",
+    "cat": "Exchange Standards",
+    "tag": ["mediumimpact"],
+    "helpText": "Sets the state of Bookings on the tenant. Bookings is a scheduling tool that allows users to book appointments with others both internal and external.",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Select value",
+        "name": "standards.Bookings.state",
+        "values": [
+          {
+            "label": "Enabled",
+            "value": "true"
+          },
+          {
+            "label": "Disabled",
+            "value": "false"
+          }
+        ]
+      }
+    ],
+    "label": "Set Bookings state",
+    "impact": "Medium Impact",
+    "impactColour": "warning"
+  },
+  {
     "name": "standards.DisableOutlookAddins",
     "cat": "Exchange Standards",
-    "tag": ["mediumimpact", "CIS"],
+    "tag": ["mediumimpact", "CIS", "exo_outlookaddins"],
     "helpText": "Disables the ability for users to install add-ins in Outlook. This is to prevent users from installing malicious add-ins.",
     "addedComponent": [],
     "label": "Disable users from installing add-ins in Outlook",
@@ -765,7 +1070,7 @@
   {
     "name": "standards.SafeLinksPolicy",
     "cat": "Defender Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": ["lowimpact", "CIS", "mdo_safelinksforemail", "mdo_safelinksforOfficeApps"],
     "helpText": "This creates a safelink policy that automatically scans, tracks, and and enables safe links for Email, Office, and Teams for both external and internal senders",
     "addedComponent": [
       {
@@ -791,7 +1096,16 @@
   {
     "name": "standards.AntiPhishPolicy",
     "cat": "Defender Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": [
+      "lowimpact",
+      "CIS",
+      "mdo_safeattachments",
+      "mdo_highconfidencespamaction",
+      "mdo_highconfidencephishaction",
+      "mdo_phisspamacation",
+      "mdo_spam_notifications_only_for_admins",
+      "mdo_antiphishingpolicies"
+    ],
     "helpText": "This creates a Anti-Phishing policy that automatically enables Mailbox Intelligence and spoofing, optional switches for Mailtips.",
     "addedComponent": [
       {
@@ -823,6 +1137,44 @@
         "label": "Show user impersonation unusual characters safety tip",
         "name": "standards.AntiPhishPolicy.EnableUnusualCharactersSafetyTips",
         "default": true
+      },
+      {
+        "type": "Select",
+        "label": "If a message is detected as user impersonation",
+        "name": "standards.AntiPhishPolicy.TargetedUserProtectionAction",
+        "values": [
+          {
+            "label": "Move to Junk Folder",
+            "value": "MoveToJmf"
+          },
+          {
+            "label": "Delete the message before its delivered",
+            "value": "Delete"
+          },
+          {
+            "label": "Quarantine the message",
+            "value": "Quarantine"
+          }
+        ]
+      },
+      {
+        "type": "Select",
+        "label": "If a message is detected as domain impersonation",
+        "name": "standards.AntiPhishPolicy.TargetedDomainProtectionAction",
+        "values": [
+          {
+            "label": "Move to Junk Folder",
+            "value": "MoveToJmf"
+          },
+          {
+            "label": "Delete the message before its delivered",
+            "value": "Delete"
+          },
+          {
+            "label": "Quarantine the message",
+            "value": "Quarantine"
+          }
+        ]
       },
       {
         "type": "Select",
@@ -870,7 +1222,13 @@
   {
     "name": "standards.SafeAttachmentPolicy",
     "cat": "Defender Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": [
+      "lowimpact",
+      "CIS",
+      "mdo_safedocuments",
+      "mdo_commonattachmentsfilter",
+      "mdo_safeattachmentpolicy"
+    ],
     "helpText": "This creates a Safe Attachment policy",
     "addedComponent": [
       {
@@ -946,7 +1304,7 @@
   {
     "name": "standards.MalwareFilterPolicy",
     "cat": "Defender Standards",
-    "tag": ["lowimpact", "CIS"],
+    "tag": ["lowimpact", "CIS", "mdo_zapspam", "mdo_zapphish", "mdo_zapmalware"],
     "helpText": "This creates a Malware filter policy that enables the default File filter and Zero-hour auto purge for malware.",
     "addedComponent": [
       {
@@ -995,7 +1353,7 @@
       },
       {
         "type": "boolean",
-        "label": "Enable Internal Sender Admin Notifications",
+        "label": "Enable External Sender Admin Notifications",
         "name": "standards.MalwareFilterPolicy.EnableExternalSenderAdminNotifications"
       },
       {
@@ -1021,6 +1379,67 @@
       }
     ],
     "label": "Set inactive device retirement days",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
+    "name": "standards.intuneBrandingProfile",
+    "cat": "Intune Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Sets the branding profile for the Intune Company Portal app. This is a tenant wide setting and overrules any settings set on the app level.",
+    "addedComponent": [
+      {
+        "type": "input",
+        "name": "standards.intuneBrandingProfile.displayName",
+        "label": "Organization name"
+      },
+      {
+        "type": "boolean",
+        "name": "standards.intuneBrandingProfile.showLogo",
+        "label": "Show logo"
+      },
+      {
+        "type": "boolean",
+        "name": "standards.intuneBrandingProfile.showDisplayNameNextToLogo",
+        "label": "Show organization name next to logo"
+      },
+      {
+        "type": "input",
+        "name": "standards.intuneBrandingProfile.contactITName",
+        "label": "Contact IT name"
+      },
+      {
+        "type": "input",
+        "name": "standards.intuneBrandingProfile.contactITPhoneNumber",
+        "label": "Contact IT phone number"
+      },
+      {
+        "type": "input",
+        "name": "standards.intuneBrandingProfile.contactITEmailAddress",
+        "label": "Contact IT email address"
+      },
+      {
+        "type": "input",
+        "name": "standards.intuneBrandingProfile.contactITNotes",
+        "label": "Contact IT notes"
+      },
+      {
+        "type": "input",
+        "name": "standards.intuneBrandingProfile.onlineSupportSiteName",
+        "label": "Online support site name"
+      },
+      {
+        "type": "input",
+        "name": "standards.intuneBrandingProfile.onlineSupportSiteUrl",
+        "label": "Online support site URL"
+      },
+      {
+        "type": "input",
+        "name": "standards.intuneBrandingProfile.privacyUrl",
+        "label": "Privacy statement URL"
+      }
+    ],
+    "label": "Set Intune Company Portal branding profile",
     "impact": "Low Impact",
     "impactColour": "info"
   },
@@ -1056,6 +1475,22 @@
     "helpText": "Sets the retention period for deleted users OneDrive to 1 year/365 days",
     "addedComponent": [],
     "label": "Retain a deleted user OneDrive for 1 year",
+    "impact": "Low Impact",
+    "impactColour": "info"
+  },
+  {
+    "name": "standards.TenantDefaultTimezone",
+    "cat": "SharePoint Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Sets the default timezone for the tenant. This will be used for all new users and sites.",
+    "addedComponent": [
+      {
+        "type": "TimezoneSelect",
+        "name": "standards.TenantDefaultTimezone.Timezone",
+        "label": "Timezone"
+      }
+    ],
+    "label": "Set Default Timezone for Tenant",
     "impact": "Low Impact",
     "impactColour": "info"
   },
@@ -1171,6 +1606,41 @@
     "helpText": "This standard will only allow devices that are AD joined, or AAD joined to sync with OneDrive",
     "addedComponent": [],
     "label": "Only allow users to sync OneDrive from AAD joined devices",
+    "impact": "High Impact",
+    "impactColour": "danger"
+  },
+  {
+    "name": "standards.sharingDomainRestriction",
+    "cat": "SharePoint Standards",
+    "tag": ["highimpact", "CIS"],
+    "helpText": "Restricts sharing to only users with the specified domain. This is useful for organizations that only want to share with their own domain.",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "name": "standards.sharingDomainRestriction.Mode",
+        "label": "Limit external sharing by domains",
+        "values": [
+          {
+            "label": "Off",
+            "value": "none"
+          },
+          {
+            "label": "Restirct sharing to specific domains",
+            "value": "allowList"
+          },
+          {
+            "label": "Block sharing to specific domains",
+            "value": "blockList"
+          }
+        ]
+      },
+      {
+        "type": "input",
+        "name": "standards.sharingDomainRestriction.Domains",
+        "label": "Domains to allow/block, comma separated"
+      }
+    ],
+    "label": "Restrict sharing to a specific domain",
     "impact": "High Impact",
     "impactColour": "danger"
   }

@@ -112,6 +112,26 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modalMessage: 'Are you sure you want to send a MFA request?',
           },
           {
+            label: 'Set Per-User MFA',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecPerUserMFA`,
+            modalType: 'POST',
+            modalBody: {
+              TenantFilter: tenant.defaultDomainName,
+              userId: `${row.userPrincipalName}`,
+            },
+            modalMessage: 'Are you sure you want to set per-user MFA for these users?',
+            modalDropdown: {
+              url: '/MFAStates.json',
+              labelField: 'label',
+              valueField: 'value',
+              addedField: {
+                State: 'value',
+              },
+            },
+          },
+          {
             label: 'Convert to Shared Mailbox',
             color: 'info',
             modal: true,
@@ -273,7 +293,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             label: 'Revoke all user sessions',
             color: 'danger',
             modal: true,
-            modalUrl: `/api/ExecRevokeSessions?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalUrl: `/api/ExecRevokeSessions?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}&Username=${row.userPrincipalName}`,
             modalMessage: 'Are you sure you want to revoke this users sessions?',
           },
           {
@@ -447,11 +467,12 @@ const Users = (row) => {
         filterlist: [
           { filterName: 'Enabled users', filter: '"accountEnabled":true' },
           { filterName: 'Disabled users', filter: '"accountEnabled":false' },
-          { filterName: 'AAD users', filter: '"onPremisesSyncEnabled":false' },
+          { filterName: 'AAD users', filter: 'Complex: onPremisesSyncEnabled ne True' },
           {
             filterName: 'Synced users',
             filter: '"onPremisesSyncEnabled":true',
           },
+          { filterName: 'Non-guest users', filter: 'Complex: usertype ne Guest' },
           { filterName: 'Guest users', filter: '"usertype":"guest"' },
           {
             filterName: 'Users with a license',
@@ -480,6 +501,7 @@ const Users = (row) => {
             'id,accountEnabled,businessPhones,city,createdDateTime,companyName,country,department,displayName,faxNumber,givenName,isResourceAccount,jobTitle,mail,mailNickname,mobilePhone,onPremisesDistinguishedName,officeLocation,onPremisesLastSyncDateTime,otherMails,postalCode,preferredDataLocation,preferredLanguage,proxyAddresses,showInAddressList,state,streetAddress,surname,usageLocation,userPrincipalName,userType,assignedLicenses,onPremisesSyncEnabled',
           $count: true,
           $orderby: 'displayName',
+          $top: 999,
         },
         tableProps: {
           keyField: 'id',
@@ -497,6 +519,26 @@ const Users = (row) => {
               modal: true,
               modalUrl: `/api/ExecResetMFA?TenantFilter=!Tenant&ID=!id`,
               modalMessage: 'Are you sure you want to enable MFA for these users?',
+            },
+            {
+              label: 'Set Per-User MFA',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecPerUserMFA`,
+              modalType: 'POST',
+              modalBody: {
+                TenantFilter: tenant.defaultDomainName,
+                userId: '!userPrincipalName',
+              },
+              modalMessage: 'Are you sure you want to set per-user MFA for these users?',
+              modalDropdown: {
+                url: '/MFAStates.json',
+                labelField: 'label',
+                valueField: 'value',
+                addedField: {
+                  State: 'value',
+                },
+              },
             },
             {
               label: 'Enable Online Archive',
