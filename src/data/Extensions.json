@@ -4,6 +4,7 @@
     "type": "CIPP-API",
     "cat": "API",
     "forceSyncButton": false,
+    "disableWhenhosted": true,
     "helpText": "This integration allows you to enable CIPP-API access outside of CIPP. Requires Global Administrator permissions inside your tenant for activation of the API. The API credentials will only be shown once.",
     "SettingOptions": [
       {

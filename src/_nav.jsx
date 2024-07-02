@@ -610,6 +610,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Deleted Mailboxes',
+        to: '/email/administration/deleted-mailboxes',
+      },
+      {
+        component: CNavItem,
         name: 'Mailbox Rules',
         to: '/email/administration/mailbox-rules',
       },

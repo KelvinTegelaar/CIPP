@@ -699,6 +699,16 @@
     "impactColour": "info"
   },
   {
+  "name": "standards.EnableLitigationHold",
+  "cat": "Exchange Standards",
+  "tag": ["lowimpact"],
+  "helpText": "Enables litigation hold for all UserMailboxes with a valid license.",
+  "addedComponent": [],
+  "label": "Enable Litigation Hold for all users",
+  "impact": "Low Impact",
+  "impactColour": "info"
+  },
+  {
     "name": "standards.SpoofWarn",
     "cat": "Exchange Standards",
     "tag": ["lowimpact", "CIS"],
@@ -1058,6 +1068,22 @@
     "impactColour": "warning"
   },
   {
+    "name": "standards.UserReportDestinationEmail",
+    "cat": "Exchange Standards",
+    "tag": ["mediumimpact"],
+    "helpText": "Sets the destination for email when users report them as spam or phishing. Works well together with the 'Set the state of the built-in Report button in Outlook standard'.",
+    "addedComponent": [
+      {
+        "type": "input",
+        "name": "standards.UserReportDestinationEmail.Email",
+        "label": "Destination email address"
+      }
+    ],
+    "label": "Set the destination email for user reported emails",
+    "impact": "Medium Impact",
+    "impactColour": "warning"
+  },
+  {
     "name": "standards.DisableSharedMailbox",
     "cat": "Exchange Standards",
     "tag": ["mediumimpact", "CIS"],
@@ -1140,6 +1166,40 @@
       },
       {
         "type": "Select",
+        "label": "If the message is detected as spoof by spoof intelligence",
+        "name": "standards.AntiPhishPolicy.AuthenticationFailAction",
+        "values": [
+          {
+            "label": "Quarantine the message",
+            "value": "Quarantine"
+          },
+          {
+            "label": "Move to Junk Folder",
+            "value": "MoveToJmf"
+          }
+        ]
+      },
+      {
+        "type": "Select",
+        "label": "Quarantine policy for Spoof",
+        "name": "standards.AntiPhishPolicy.SpoofQuarantineTag",
+        "values": [
+          {
+            "label": "AdminOnlyAccessPolicy",
+            "value": "AdminOnlyAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessPolicy",
+            "value": "DefaultFullAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessWithNotificationPolicy",
+            "value": "DefaultFullAccessWithNotificationPolicy"
+          }
+        ]
+      },
+      {
+        "type": "Select",
         "label": "If a message is detected as user impersonation",
         "name": "standards.AntiPhishPolicy.TargetedUserProtectionAction",
         "values": [
@@ -1159,6 +1219,25 @@
       },
       {
         "type": "Select",
+        "label": "Quarantine policy for user impersonation",
+        "name": "standards.AntiPhishPolicy.TargetedUserQuarantineTag",
+        "values": [
+          {
+            "label": "AdminOnlyAccessPolicy",
+            "value": "AdminOnlyAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessPolicy",
+            "value": "DefaultFullAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessWithNotificationPolicy",
+            "value": "DefaultFullAccessWithNotificationPolicy"
+          }
+        ]
+      },
+      {
+        "type": "Select",
         "label": "If a message is detected as domain impersonation",
         "name": "standards.AntiPhishPolicy.TargetedDomainProtectionAction",
         "values": [
@@ -1173,6 +1252,25 @@
           {
             "label": "Quarantine the message",
             "value": "Quarantine"
+          }
+        ]
+      },
+      {
+        "type": "Select",
+        "label": "Quarantine policy for domain impersonation",
+        "name": "standards.AntiPhishPolicy.TargetedDomainQuarantineTag",
+        "values": [
+          {
+            "label": "DefaultFullAccessWithNotificationPolicy",
+            "value": "DefaultFullAccessWithNotificationPolicy"
+          },
+          {
+            "label": "AdminOnlyAccessPolicy",
+            "value": "AdminOnlyAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessPolicy",
+            "value": "DefaultFullAccessPolicy"
           }
         ]
       },
