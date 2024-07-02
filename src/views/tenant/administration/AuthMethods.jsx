@@ -10,6 +10,66 @@ import { useGenericGetRequestQuery } from 'src/store/api/app'
 import { CippTable, cellBooleanFormatter } from 'src/components/tables'
 import { CellTip, cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 
+const Offcanvas = (row, rowIndex, formatExtraData) => {
+  const tenant = useSelector((state) => state.app.currentTenant)
+  const [ocVisible, setOCVisible] = useState(false)
+  const formatTargets = (targets) => {
+    if (Array.isArray(targets)) {
+      return targets.map((target) => JSON.stringify(target)).join(', ')
+    }
+    return targets
+  }
+
+  return (
+    <>
+      <CButton size="sm" color="link" onClick={() => setOCVisible(true)}>
+        <FontAwesomeIcon icon={faEllipsisV} />
+      </CButton>
+      <CippActionsOffcanvas
+        title="Extended Information"
+        extendedInfo={[
+          { label: 'id', value: `${row.id}` },
+          { label: 'state', value: `${row.state}` },
+          { label: 'includeTargets', value: formatTargets(row.includeTargets) },
+          { label: 'excludeTargets', value: formatTargets(row.excludeTargets) },
+        ]}
+        actions={[
+          {
+            label: 'Enable Policy',
+            color: 'info',
+            modal: true,
+            modalType: 'POST',
+            modalBody: {
+              id: row.id,
+              state: 'enabled',
+              TenantFilter: tenant.defaultDomainName,
+            },
+            modalUrl: `/api/SetAuthMethod`,
+            modalMessage: 'Are you sure you want to enable this policy?',
+          },
+          {
+            label: 'Disable Policy',
+            color: 'info',
+            modal: true,
+            modalType: 'POST',
+            modalBody: {
+              id: row.id,
+              state: 'disabled',
+              TenantFilter: tenant.defaultDomainName,
+            },
+            modalUrl: `/api/SetAuthMethod`,
+            modalMessage: 'Are you sure you want to enable this policy?',
+          },
+        ]}
+        placement="end"
+        visible={ocVisible}
+        id={row.id}
+        hideFunction={() => setOCVisible(false)}
+      />
+    </>
+  )
+}
+
 const columns = [
   {
     name: 'id',
@@ -38,6 +98,10 @@ const columns = [
     sortable: true,
     cell: cellGenericFormatter(),
     exportSelector: 'excludeTargets',
+  },
+  {
+    name: 'Actions',
+    cell: Offcanvas,
   },
 ]
 
