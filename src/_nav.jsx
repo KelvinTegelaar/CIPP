@@ -164,6 +164,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Authentication Methods',
+        to: '/tenant/administration/authentication-methods',
+      },
+      {
+        component: CNavItem,
         name: 'Tenant Onboarding',
         to: '/tenant/administration/tenant-onboarding',
       },

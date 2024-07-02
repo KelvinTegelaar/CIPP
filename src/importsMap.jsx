@@ -53,6 +53,7 @@ import React from 'react'
   "/tenant/conditional/deploy-named-location": React.lazy(() => import('./views/tenant/conditional/DeployNamedLocation')), 
   "/tenant/conditional/list-template": React.lazy(() => import('./views/tenant/conditional/ListCATemplates')), 
   "/tenant/conditional/add-template": React.lazy(() => import('./views/tenant/conditional/AddCATemplate')), 
+  "/tenant/administration/authentication-methods": React.lazy(() => import('./views/tenant/administration/AuthMethods')),  
   "/tenant/administration/list-licenses": React.lazy(() => import('./views/tenant/administration/ListLicences')), 
   "/tenant/administration/application-consent": React.lazy(() => import('./views/tenant/administration/ListOauthApps')), 
   "/tenant/standards/list-applied-standards": React.lazy(() => import('./views/tenant/standards/ListAppliedStandards')), 
