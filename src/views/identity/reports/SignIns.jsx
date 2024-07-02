@@ -16,7 +16,7 @@ import React, { useState } from 'react'
 import { Form } from 'react-final-form'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { RFFCFormCheck, RFFCFormInput } from 'src/components/forms'
+import { Condition, RFFCFormCheck, RFFCFormInput } from 'src/components/forms'
 import { CippPageList } from 'src/components/layout'
 import { CellTip } from 'src/components/tables'
 import useQuery from 'src/hooks/useQuery'
@@ -95,11 +95,10 @@ const columns = [
 
 const SignInsReport = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
-  let navigate = useNavigate()
   let query = useQuery()
   const filter = query.get('filter')
   const DateFilter = query.get('DateFilter')
-  const searchparams = query.toString()
+  const [searchParams, setSearchParams] = useState({})
   const [visibleA, setVisibleA] = useState(true)
 
   const handleSubmit = async (values) => {
@@ -113,11 +112,7 @@ const SignInsReport = () => {
       SearchNow: true,
       ...values,
     }
-    var queryString = Object.keys(shippedValues)
-      .map((key) => key + '=' + shippedValues[key])
-      .join('&')
-
-    navigate(`?${queryString}`)
+    setSearchParams(shippedValues)
   }
 
   return (
@@ -154,6 +149,11 @@ const SignInsReport = () => {
                       <CForm onSubmit={handleSubmit}>
                         <CRow>
                           <CCol>
+                            <RFFCFormInput type="number" name="Days" label="Days" placeholder="7" />
+                          </CCol>
+                        </CRow>
+                        <CRow>
+                          <CCol>
                             <RFFCFormInput
                               type="text"
                               name="filter"
@@ -167,6 +167,18 @@ const SignInsReport = () => {
                             <RFFCFormCheck label="Failed Logons Only" name="failedLogonsOnly" />
                           </CCol>
                         </CRow>
+                        <Condition when="failedLogonsOnly" is={true}>
+                          <CRow>
+                            <CCol>
+                              <RFFCFormInput
+                                label="Failure Threshold"
+                                type="number"
+                                name="FailureThreshold"
+                                placeholder="0"
+                              />
+                            </CCol>
+                          </CRow>
+                        </Condition>
                         <CRow className="mb-3">
                           <CCol>
                             <CButton type="submit" disabled={submitting}>
@@ -189,10 +201,16 @@ const SignInsReport = () => {
         title="Sign Ins Report"
         capabilities={{ allTenants: false, helpContext: 'https://google.com' }}
         datatable={{
+          filterlist: [
+            {
+              filterName: 'Risky sign-ins',
+              filter: 'Complex: riskState ne none',
+            },
+          ],
           columns: columns,
-          path: `/api/ListSignIns?${searchparams}`,
+          path: `/api/ListSignIns`,
           reportName: `${tenant?.defaultDomainName}-SignIns-Report`,
-          params: { TenantFilter: tenant?.defaultDomainName },
+          params: { TenantFilter: tenant?.defaultDomainName, ...searchParams },
         }}
       />
     </>
