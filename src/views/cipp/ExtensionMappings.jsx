@@ -378,7 +378,8 @@ export default function ExtensionMappings({ type, fieldMappings = false, autoMap
                             name={field.FieldName}
                             label={field.FieldLabel}
                             values={listFieldsBackendResult.data.IntegrationFields.filter(
-                              (item) => item.FieldType === field.FieldType || item.type === 'unset',
+                              (item) =>
+                                item?.FieldType === field.FieldType || item?.type === 'unset',
                             )}
                             placeholder="Select a Field"
                           />
