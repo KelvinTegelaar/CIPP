@@ -6,10 +6,9 @@ description: Deploy MSP RMM applications.
 
 You can add MSP RMM applications to deploy through Microsoft Endpoint Manager. Below you will find the settings required for each RMM:
 
-### Details
+## Details
 
-<details>
-<summary>ConnectWise Automate</summary>
+### ConnectWise Automate
   
 | Field                             | Description                                              |
 | --------------------------------- | -------------------------------------------------------- |
@@ -18,28 +17,24 @@ You can add MSP RMM applications to deploy through Microsoft Endpoint Manager. B
 | Automate Server (including HTTPS) | FQDN of your Automate server                             |
 | Location ID                       | Automate site ID                                         |
 
-Generating an installer token:
-  See this [community script](https://forums.mspgeek.org/files/file/50-generate-agent-installertoken/) for how to create a token to use in installation.
-</details>
-<details>
-<summary>ConnectWise RMM (formerly Command/Continuum)</summary>
+Generating an installer token: See this [community script](https://forums.mspgeek.org/files/file/50-generate-agent-installertoken/) for how to create a token to use in installation.
+
+### ConnectWise RMM (formerly Command/Continuum)
   
 | Field                             | Description                                              |
 | --------------------------------- | -------------------------------------------------------- |
 | Intune Application Display Name   | Name the application will appear as in MEM               |
 | Client URL                        | Full URL path to download of installer for site          |
-</details>
-<details>
-<summary>Datto RMM</summary>
+
+### Datto RMM
   
 | Field                             | Description                                              |
 | --------------------------------- | -------------------------------------------------------- |
 | Intune Application Display Name   | Name the application will appear as in MEM               |
 | Server URL                        | FQDN including https://                                  |
 | Datto ID                          | Datto site ID                                            | 
-</details>
-<details>
-<summary>Huntress</summary>
+
+### Huntress
   
 | Field                             | Description                                              |
 | --------------------------------- | -------------------------------------------------------- |
@@ -48,9 +43,8 @@ Generating an installer token:
 | Organization Key                  | Identifier for the client organization in Huntress       |
 
 Huntress documentation on specifics of how to name organization keys can be found [here](https://support.huntress.io/hc/en-us/articles/4404012734227-Using-Account-Keys-Organization-Keys-and-Agent-Tags).
-</details>
-<details>
-<summary>ImmyBot</summary>
+
+### ImmyBot
   
 | Field                             | Description                                              |
 | --------------------------------- | -------------------------------------------------------- |
@@ -58,18 +52,15 @@ Huntress documentation on specifics of how to name organization keys can be foun
 | Client URL                        | Full path to ImmyBot agent installer for your account    |
 
 ImmyBot recommends having all newly installed agents land into their holding area before being assigned to groups for onboarding, etc.
-</details>
-<details>
-<summary>Syncro RMM</summary>
+
+### Syncro RMM
   
 | Field                             | Description                                              |
 | --------------------------------- | -------------------------------------------------------- |
 | Intune Application Display Name   | Name the application will appear as in MEM               |
 | Client URL                        | Full path to agent installer for your account            |
 
-</details>
-
-### Assignment Options
+## Assignment Options
 | Field                             | Description                                              |
 | --------------------------------- | -------------------------------------------------------- |
 | Do not assign                     | Adds application to MEM but does not deploy              |
