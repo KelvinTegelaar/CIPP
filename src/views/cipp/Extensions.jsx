@@ -21,7 +21,7 @@ import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import CippButtonCard from 'src/components/contentcards/CippButtonCard.jsx'
 import { RFFCFormInput, RFFCFormSwitch } from 'src/components/forms/RFFComponents.jsx'
 import { Form } from 'react-final-form'
-import { SettingsExtensionMappings } from './app-settings/SettingsExtensionMappings'
+import ExtensionMappings from 'src/views/cipp/ExtensionMappings.jsx'
 
 export default function CIPPExtensions() {
   const [listBackend, listBackendResult] = useLazyGenericGetRequestQuery()
@@ -191,9 +191,15 @@ export default function CIPPExtensions() {
                     )}
                   </CippButtonCard>
                 </CCol>
-                <CCol sm={12} md={8}>
-                  <SettingsExtensionMappings type={integration.type} />
-                </CCol>
+                {integration.mappingRequired && (
+                  <CCol sm={12} md={8}>
+                    <ExtensionMappings
+                      type={integration.type}
+                      fieldMappings={integration.fieldMapping ?? false}
+                      autoMapSyncApi={integration.autoMapSyncApi ?? false}
+                    />
+                  </CCol>
+                )}
               </CRow>
             </CippLazy>
           </CTabPane>
