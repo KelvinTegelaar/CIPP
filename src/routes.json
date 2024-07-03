@@ -301,6 +301,12 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/tenant/administration/authentication-methods",
+    "name": "Authentication Methods",
+    "component": "views/tenant/administration/AuthMethods",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/tenant/conditional/deploy-vacation",
     "name": "Deploy Vacation Mode",
     "component": "views/tenant/conditional/DeployVacation",
