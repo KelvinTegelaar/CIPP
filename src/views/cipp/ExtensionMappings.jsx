@@ -40,20 +40,6 @@ export default function ExtensionMappings({ type, fieldMappings = false, autoMap
       setMappingValue({})
     })
   }
-  /*const onNinjaOrgsSubmit = () => {
-    const originalFormat = ninjaMappingsArray.reduce((acc, item) => {
-      acc[item.Tenant?.customerId] = { label: item.ninjaName, value: item.ninjaId }
-      return acc
-    }, {})
-
-    setNinjaOrgsExtensionconfig({
-      path: 'api/ExecExtensionMapping?AddMapping=NinjaOrgs',
-      values: { mappings: originalFormat },
-    }).then(() => {
-      listNinjaOrgsBackend({ path: 'api/ExecExtensionMapping?List=NinjaOrgs' })
-      setMappingValue({})
-    })
-  }*/
 
   const onOrgsAutomap = async (values) => {
     if (autoMapSyncApi) {
@@ -88,32 +74,6 @@ export default function ExtensionMappings({ type, fieldMappings = false, autoMap
       values: { mappings: values },
     })
   }
-
-  /*const onHaloAutomap = () => {
-    const newMappings = listBackendHaloResult.data?.Tenants.map(
-      (tenant) => {
-        const haloClient = listBackendHaloResult.data?.HaloClients.find(
-          (client) => client.name === tenant.displayName,
-        )
-        if (haloClient) {
-          console.log(haloClient)
-          console.log(tenant)
-          return {
-            Tenant: tenant,
-            haloName: haloClient.name,
-            haloId: haloClient.value,
-          }
-        }
-      },
-      //filter out any undefined values
-    ).filter((item) => item !== undefined)
-    setHaloMappingsArray((currentHaloMappings) => [...currentHaloMappings, ...newMappings]).then(
-      () => {
-        listHaloBackend({ path: 'api/ExecExtensionMapping?List=Halo' })
-      },
-    )
-    setHaloAutoMap(true)
-  }*/
 
   useEffect(() => {
     if (listMappingBackendResult.isSuccess) {
@@ -232,6 +192,9 @@ export default function ExtensionMappings({ type, fieldMappings = false, autoMap
                             columns={columns}
                             data={mappingArray}
                             isModal={true}
+                            refreshFunction={() =>
+                              listMappingBackend({ path: `api/ExecExtensionMapping?List=${type}` })
+                            }
                           />
                         )
                       }
