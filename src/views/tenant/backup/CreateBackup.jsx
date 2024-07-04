@@ -31,16 +31,15 @@ const CreateBackup = () => {
 
   const onSubmit = (values) => {
     const startDate = new Date()
-    startDate.setHours(0, 0, 0, 0)
     //decrease by 45 seconds to ensure the task runs after the current time
     const unixTime = Math.floor(startDate.getTime() / 1000) - 45
     const shippedValues = {
       TenantFilter: tenantDomain,
       Name: `CIPP Backup ${tenantDomain}`,
       Command: { value: `New-CIPPBackup` },
-      Parameters: { ...values },
+      Parameters: { backupType: 'Scheduled', ScheduledBackupValues: { ...values } },
       ScheduledTime: unixTime,
-      Recurrence: '1d',
+      Recurrence: { value: '1d' },
     }
     genericPostRequest({ path: '/api/AddScheduledItem?hidden=true', values: shippedValues }).then(
       (res) => {
