@@ -1817,6 +1817,20 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.SPAzureB2B",
+    "cat": "SharePoint Standards",
+    "tag": ["lowimpact", "CIS"],
+    "helpText": "Ensure SharePoint and OneDrive integration with Azure AD B2B is enabled",
+    "addedComponent": [],
+    "label": "Enable SharePoint and OneDrive integration with Azure AD B2B",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "powershellEquivalent": "Set-SPOTenant -EnableAzureADB2BIntegration $true",
+    "recommendedBy": [
+      "CIS 3.0"
+    ]
+  },
+  {
     "name": "standards.DisableAddShortcutsToOneDrive",
     "cat": "SharePoint Standards",
     "tag": ["mediumimpact"],
