@@ -522,8 +522,14 @@
     "name": "standards.DisableSelfServiceLicenses",
     "cat": "Entra (AAD) Standards",
     "tag": ["mediumimpact"],
-    "helpText": "This standard currently does not function and can be safely disabled",
-    "addedComponent": [],
+    "helpText": "This standard disables all self service licenses and enables all exclusions",
+    "addedComponent": [
+      {
+        "type": "input",
+        "name": "standards.DisableSelfServiceLicenses.Exclusions",
+        "label": "License Ids to exclude from this standard"
+      }
+    ],
     "label": "Disable Self Service Licensing",
     "impact": "Medium Impact",
     "impactColour": "warning",
