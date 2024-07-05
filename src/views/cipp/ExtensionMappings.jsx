@@ -40,20 +40,6 @@ export default function ExtensionMappings({ type, fieldMappings = false, autoMap
       setMappingValue({})
     })
   }
-  /*const onNinjaOrgsSubmit = () => {
-    const originalFormat = ninjaMappingsArray.reduce((acc, item) => {
-      acc[item.Tenant?.customerId] = { label: item.ninjaName, value: item.ninjaId }
-      return acc
-    }, {})
-
-    setNinjaOrgsExtensionconfig({
-      path: 'api/ExecExtensionMapping?AddMapping=NinjaOrgs',
-      values: { mappings: originalFormat },
-    }).then(() => {
-      listNinjaOrgsBackend({ path: 'api/ExecExtensionMapping?List=NinjaOrgs' })
-      setMappingValue({})
-    })
-  }*/
 
   const onOrgsAutomap = async (values) => {
     if (autoMapSyncApi) {
@@ -66,16 +52,17 @@ export default function ExtensionMappings({ type, fieldMappings = false, autoMap
       })
     }
 
-    const newMappings = listMappingBackendResult.data?.Tenants.map((tenant) => {
+    var newMappings = []
+    listMappingBackendResult.data?.Tenants.map((tenant) => {
       const company = listMappingBackendResult.data?.Companies.find(
         (client) => client.name === tenant.displayName,
       )
-      if (company) {
-        return {
+      if (company !== undefined && !mappingArray.find((item) => item.companyId === company.value)) {
+        newMappings.push({
           Tenant: tenant,
           companyName: company.name,
           companyId: company.value,
-        }
+        })
       }
     })
     setMappingArray((currentMappings) => [...currentMappings, ...newMappings])
@@ -89,32 +76,6 @@ export default function ExtensionMappings({ type, fieldMappings = false, autoMap
     })
   }
 
-  /*const onHaloAutomap = () => {
-    const newMappings = listBackendHaloResult.data?.Tenants.map(
-      (tenant) => {
-        const haloClient = listBackendHaloResult.data?.HaloClients.find(
-          (client) => client.name === tenant.displayName,
-        )
-        if (haloClient) {
-          console.log(haloClient)
-          console.log(tenant)
-          return {
-            Tenant: tenant,
-            haloName: haloClient.name,
-            haloId: haloClient.value,
-          }
-        }
-      },
-      //filter out any undefined values
-    ).filter((item) => item !== undefined)
-    setHaloMappingsArray((currentHaloMappings) => [...currentHaloMappings, ...newMappings]).then(
-      () => {
-        listHaloBackend({ path: 'api/ExecExtensionMapping?List=Halo' })
-      },
-    )
-    setHaloAutoMap(true)
-  }*/
-
   useEffect(() => {
     if (listMappingBackendResult.isSuccess) {
       setMappingArray(
@@ -127,7 +88,7 @@ export default function ExtensionMappings({ type, fieldMappings = false, autoMap
         })),
       )
     }
-  }, [listMappingBackendResult])
+  }, [listMappingBackendResult, setMappingArray])
 
   const Actions = (row, rowIndex, formatExtraData) => {
     return (
@@ -232,6 +193,9 @@ export default function ExtensionMappings({ type, fieldMappings = false, autoMap
                             columns={columns}
                             data={mappingArray}
                             isModal={true}
+                            refreshFunction={() =>
+                              listMappingBackend({ path: `api/ExecExtensionMapping?List=${type}` })
+                            }
                           />
                         )
                       }
