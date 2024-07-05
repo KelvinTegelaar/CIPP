@@ -37,7 +37,7 @@ const OffboardingWizard = () => {
     isFetching: currentBackupsIsFetching,
     error: currentBackupsError,
   } = useGenericGetRequestQuery({
-    path: `/api/ExecListBackup?TenantFilter=${tenantDomain}`,
+    path: `/api/ExecListBackup?TenantFilter=${tenantDomain}&Type=Scheduled`,
   })
 
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
@@ -98,7 +98,7 @@ const OffboardingWizard = () => {
             label={'Backups for ' + tenantDomain}
             values={currentBackups?.map((backup) => ({
               value: backup.RowKey,
-              name: `${backup.BackupDate}`,
+              name: `${backup.RowKey}`,
             }))}
             placeholder={!currentBackupsIsFetching ? 'Select a backup' : 'Loading...'}
             name="User"
