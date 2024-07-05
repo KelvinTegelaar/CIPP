@@ -445,6 +445,14 @@ const OffboardingWizard = () => {
                             icon={props.values.forward ? faCheck : faTimes}
                           />
                         </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Delete User
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.DeleteUser ? faCheck : faTimes}
+                          />
+                        </CListGroupItem>
                       </CListGroup>
                     </CCol>
                   </CRow>

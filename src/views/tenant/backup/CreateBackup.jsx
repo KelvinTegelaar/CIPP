@@ -21,10 +21,6 @@ import { cellBadgeFormatter, cellDateFormatter } from 'src/components/tables'
 
 const CreateBackup = () => {
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
-  const currentDate = new Date()
-  const [startDate, setStartDate] = useState(currentDate)
-  const [endDate, setEndDate] = useState(currentDate)
-
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
   const [refreshState, setRefreshState] = useState(false)
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
