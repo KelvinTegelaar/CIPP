@@ -43,13 +43,6 @@ const EditGroup = () => {
   } = useListGroupQuery({ tenantDomain, groupId })
 
   const {
-    data: SenderAuth = {},
-    isFetching: SenderAuthisFetching,
-    error: SenderAuthError,
-    isSuccess: SenderAuthIsSuccess,
-  } = useListGroupSenderAuthQuery({ tenantDomain, groupId })
-
-  const {
     data: members = [],
     isFetching: membersisFetching,
     error: membersError,
@@ -95,6 +88,13 @@ const EditGroup = () => {
       setroleInfo(ownerWithRole.concat(memberwithRole))
     }
   }, [owners, members, ownersIsSuccess, membersIsSuccess, postResults])
+
+  const {
+    data: SenderAuth = {},
+    isFetching: SenderAuthisFetching,
+    error: SenderAuthError,
+    isSuccess: SenderAuthIsSuccess,
+  } = useListGroupSenderAuthQuery({ tenantDomain, groupId, type: group?.[0]?.calculatedGroupType })
 
   useEffect(() => {
     if (!groupId || !tenantDomain) {
@@ -166,7 +166,7 @@ const EditGroup = () => {
                       initialValues={{
                         ...(group[0].calculatedGroupType === 'Microsoft 365' ||
                         group[0].calculatedGroupType === 'Distribution List'
-                          ? { allowExternal: !SenderAuth.enabled }
+                          ? { allowExternal: SenderAuth.allowedToReceiveExternal }
                           : {}),
                       }}
                       render={({ handleSubmit, submitting, values }) => {
@@ -322,14 +322,6 @@ const EditGroup = () => {
                       <div>
                         This is the (raw) information for this group.
                         <pre>{JSON.stringify(group, null, 2)}</pre>
-                      </div>
-                      <div>
-                        This is the (raw) information for SenderAuth.
-                        {SenderAuthisFetching && <CSpinner />}
-                        {SenderAuthIsSuccess && <pre>{JSON.stringify(SenderAuth, null, 2)}</pre>}
-                        {SenderAuthError && (
-                          <div>Error fetching SenderAuth data: {SenderAuthError.message}</div>
-                        )}
                       </div>
                     </>
                   )}
