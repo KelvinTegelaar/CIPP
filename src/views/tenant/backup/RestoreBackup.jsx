@@ -4,19 +4,11 @@ import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle, faTimes, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
-import { CippWizard } from 'src/components/layout'
+import { CippCallout, CippWizard } from 'src/components/layout'
 import PropTypes from 'prop-types'
-import {
-  Condition,
-  RFFCFormCheck,
-  RFFCFormInput,
-  RFFCFormSwitch,
-  RFFSelectSearch,
-} from 'src/components/forms'
+import { Condition, RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms'
 import { TenantSelector } from 'src/components/utilities'
-import { useListUsersQuery } from 'src/store/api/users'
 import { useGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
-import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
 const Error = ({ name }) => (
@@ -39,38 +31,18 @@ Error.propTypes = {
 }
 
 const OffboardingWizard = () => {
-  const currentDate = new Date()
-  const [startDate, setStartDate] = useState(currentDate)
-
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
   const {
-    data: users = [],
-    isFetching: usersIsFetching,
-    error: usersError,
+    data: currentBackups = [],
+    isFetching: currentBackupsIsFetching,
+    error: currentBackupsError,
   } = useGenericGetRequestQuery({
-    path: `/api/ListGraphRequest`,
-    params: {
-      TenantFilter: tenantDomain,
-      Endpoint: 'users',
-      $select:
-        'id,displayName,givenName,mail,mailNickname,proxyAddresses,usageLocation,userPrincipalName,userType,assignedLicenses,onPremisesSyncEnabled',
-      $count: true,
-      $orderby: 'displayName',
-      $top: 999,
-    },
+    path: `/api/ExecListBackup?TenantFilter=${tenantDomain}&Type=Scheduled`,
   })
 
-  const {
-    data: recipients = [],
-    isFetching: recipientsIsFetching,
-    error: recipientsError,
-  } = useGenericGetRequestQuery({ path: `/api/ListRecipients?tenantFilter=${tenantDomain}` })
-
-  const currentSettings = useSelector((state) => state.app)
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
   const handleSubmit = async (values) => {
-    const unixTime = Math.floor(startDate.getTime() / 1000)
     const shippedValues = {
       TenantFilter: tenantDomain,
       OOO: values.OOO ? values.OOO : '',
@@ -91,7 +63,6 @@ const OffboardingWizard = () => {
       removeMobile: values.RemoveMobile,
       keepCopy: values.keepCopy,
       removePermissions: values.removePermissions,
-      Scheduled: values.Scheduled?.enabled ? { enabled: true, date: unixTime } : { enabled: false },
       PostExecution: values.Scheduled?.enabled
         ? { webhook: values.webhook, psa: values.psa, email: values.email }
         : '',
@@ -102,14 +73,10 @@ const OffboardingWizard = () => {
   }
 
   return (
-    <CippWizard
-      initialValues={currentSettings?.userSettingsDefaults}
-      onSubmit={handleSubmit}
-      wizardTitle="Offboarding Wizard"
-    >
+    <CippWizard onSubmit={handleSubmit} wizardTitle="Backup Restore Wizard">
       <CippWizard.Page
         title="Tenant Choice"
-        description="Choose the tenant in which to offboard a user"
+        description="Choose the tenant to restore a backup for"
       >
         <center>
           <h3 className="text-primary">Step 1</h3>
@@ -119,147 +86,75 @@ const OffboardingWizard = () => {
         <Field name="tenantFilter">{(props) => <TenantSelector />}</Field>
         <hr className="my-4" />
       </CippWizard.Page>
-      <CippWizard.Page
-        title="Select User"
-        description="Select the user to offboard from the tenant."
-      >
+      <CippWizard.Page title="Select Backup" description="Select the backup to restore">
         <center>
           <h3 className="text-primary">Step 2</h3>
-          <h5>Select the user that will be offboarded</h5>
+          <h5>Select the backup to restore</h5>
         </center>
         <hr className="my-4" />
         <div className="mb-2">
           <RFFSelectSearch
-            multi
-            label={'Users in ' + tenantDomain}
-            values={users?.Results?.map((user) => ({
-              value: user.userPrincipalName,
-              name: `${user.displayName} <${user.userPrincipalName}>`,
+            multi={false}
+            label={'Backups for ' + tenantDomain}
+            values={currentBackups?.Results?.map((backup) => ({
+              value: backup.RowKey,
+              name: `${backup.BackupDate}`,
             }))}
-            placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
+            placeholder={!currentBackupsIsFetching ? 'Select a backup' : 'Loading...'}
             name="User"
           />
-          {usersError && <span>Failed to load list of users</span>}
-          <FormSpy>
-            {/* eslint-disable react/prop-types */}
-            {(props) => (
-              <>
-                {props.values.User?.length >= 3 && (
-                  <CCallout color="warning">A maximum of three users is recommend.</CCallout>
-                )}
-              </>
-            )}
-          </FormSpy>
+          {currentBackupsError && <span>Failed to load list of Current Backups</span>}
         </div>
         <hr className="my-4" />
       </CippWizard.Page>
-      <CippWizard.Page
-        initialvalues={currentSettings?.userSettingsDefaults}
-        title="Offboarding Settings"
-        description="Select the offboarding options."
-      >
+      <CippWizard.Page title="Restore Settings" description="Select the items to restore">
         <center>
           <h3 className="text-primary">Step 3</h3>
-          <h5>Choose offboarding options</h5>
+          <h5>Choose restore options</h5>
         </center>
         <hr className="my-4" />
         <div className="mb-2">
           <CRow>
-            <CCol className="mb-3" md={6}>
-              <RFFCFormSwitch name="RevokeSessions" label="Revoke all sessions" />
-              <RFFCFormSwitch name="RemoveMobile" label="Remove all Mobile Devices" />
-              <RFFCFormSwitch name="RemoveRules" label="Remove all Rules" />
-              <RFFCFormSwitch name="RemoveLicenses" label="Remove Licenses" />
-              <RFFCFormSwitch name="removePermissions" label="Remove users mailbox permissions" />
-              <RFFCFormSwitch name="ConvertToShared" label="Convert to Shared Mailbox" />
-              <RFFCFormSwitch name="DisableSignIn" label="Disable Sign in" />
-              <RFFCFormSwitch name="ResetPass" label="Reset Password" />
-              <RFFCFormSwitch name="RemoveGroups" label="Remove from all groups" />
-              <RFFCFormSwitch name="HideFromGAL" label="Hide from Global Address List" />
-              <RFFCFormSwitch name="DeleteUser" label="Delete user" />
+            <CCol>
+              <h3 className="underline mb-4">Identity</h3>
+              <RFFCFormSwitch label="User List" />
+              <RFFCFormSwitch label="Groups" />
+              <h3 className="underline mb-4">Conditional Access</h3>
+              <RFFCFormSwitch label="Conditional Access" />
+              <RFFCFormSwitch label="Named Locations" />
+              <RFFCFormSwitch label="Authentication Strengths" />
             </CCol>
-            <CCol className="mb-3" md={6}>
-              <RFFCFormInput
-                name="OOO"
-                label="Out of Office"
-                type="text"
-                placeholder="leave blank to not set"
-              />
-              <RFFSelectSearch
-                label="Give other user full access on mailbox without automapping"
-                multi
-                values={users.Results?.filter((x) => x.mail).map((user) => ({
-                  value: user.mail,
-                  name: `${user.displayName} <${user.mail}>`,
-                }))}
-                placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
-                name="AccessNoAutomap"
-              />
-              <RFFSelectSearch
-                label="Give other user full access on mailbox with automapping"
-                multi
-                values={users.Results?.filter((x) => x.mail).map((user) => ({
-                  value: user.mail,
-                  name: `${user.displayName} <${user.mail}>`,
-                }))}
-                placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
-                name="AccessAutomap"
-              />
-              <RFFSelectSearch
-                label="Give other user full access on Onedrive"
-                multi
-                values={users.Results?.filter((x) => x.mail).map((user) => ({
-                  value: user.mail,
-                  name: `${user.displayName} <${user.mail}>`,
-                }))}
-                placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
-                name="OnedriveAccess"
-              />
-              <RFFSelectSearch
-                label="Forward email to other user"
-                values={recipients
-                  ?.filter((x) => x.mail)
-                  .map((user) => ({
-                    value: user.mail,
-                    name: `${user.displayName} <${user.mail}>`,
-                  }))}
-                placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
-                name="forward"
-              />
-              <RFFCFormCheck
-                name="keepCopy"
-                label="Keep a copy of the forwarded mail in the source mailbox"
-              />
+            <CCol>
+              <h3 className="underline mb-4">Intune</h3>
+              <RFFCFormSwitch label="Intune Configuration Policies" />
+              <RFFCFormSwitch label="Intune Compliance Policies" />
+              <RFFCFormSwitch label="Intune Protection Policies" />
+              <h3 className="underline mb-4">CIPP</h3>
+              <RFFCFormSwitch label="Alerts Configuration" />
+              <RFFCFormSwitch label="Standards Configuration" />
             </CCol>
           </CRow>
           <hr className="my-4" />
           <CRow>
             <CCol>
-              <RFFCFormSwitch name="Scheduled.enabled" label="Schedule this offboarding" />
+              <RFFCFormSwitch name="overwrite" label="Overwrite existing entries" />
             </CCol>
           </CRow>
-          <CRow>
-            <Condition when="Scheduled.enabled" is={true}>
-              <CCol xs={2}>
-                <label>Scheduled Offboarding Date</label>
-                <DatePicker
-                  className="form-control mb-3"
-                  selected={startDate}
-                  showTimeSelect
-                  timeFormat="HH:mm"
-                  timeIntervals={15}
-                  dateFormat="Pp"
-                  onChange={(date) => setStartDate(date)}
-                />
-              </CCol>
-              <CCol>
-                <label>Send results to</label>
-                <RFFCFormSwitch name="webhook" label="Webhook" />
-                <RFFCFormSwitch name="email" label="E-mail" />
-                <RFFCFormSwitch name="psa" label="PSA" />
-              </CCol>
-            </Condition>
-          </CRow>
+          <Condition when="overwrite" is={true}>
+            <CippCallout color="warning">
+              <h5>Warning</h5>
+              <p>
+                Overwriting existing entries will remove the current settings and replace them with
+                the backup settings. If you have selected to restore users, all properties will be
+                overwritten with the backup settings.
+              </p>
+
+              <p>
+                To prevent and skip already existing entries, deselect the setting from the list
+                above, or disable overwrite.
+              </p>
+            </CippCallout>
+          </Condition>
         </div>
         <hr className="my-4" />
       </CippWizard.Page>
@@ -294,30 +189,6 @@ const OffboardingWizard = () => {
                           <h5 className="mb-0">Selected Tenant:</h5>
                           {tenantDomain}
                         </CListGroupItem>
-
-                        {props.values.User.map((user) => (
-                          <CListGroupItem
-                            key={user.value}
-                            className="d-flex justify-content-between align-items-center"
-                          >
-                            <h5 className="mb-0">Selected User:</h5>
-                            <span>
-                              {users.Results?.find((x) => x.userPrincipalName === user.value)
-                                .onPremisesSyncEnabled === true ? (
-                                <CTooltip content="This user is AD sync enabled, offboarding will fail for some steps">
-                                  <FontAwesomeIcon
-                                    icon="triangle-exclamation"
-                                    color="yellow"
-                                    className="me-2"
-                                  />
-                                </CTooltip>
-                              ) : (
-                                ''
-                              )}
-                              {user.value}
-                            </span>
-                          </CListGroupItem>
-                        ))}
                       </CListGroup>
                       <hr />
                     </CCol>
@@ -443,14 +314,6 @@ const OffboardingWizard = () => {
                             color="#f77f00"
                             size="lg"
                             icon={props.values.forward ? faCheck : faTimes}
-                          />
-                        </CListGroupItem>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Delete User
-                          <FontAwesomeIcon
-                            color="#f77f00"
-                            size="lg"
-                            icon={props.values.DeleteUser ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                       </CListGroup>
