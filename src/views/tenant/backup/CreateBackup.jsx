@@ -27,7 +27,7 @@ const CreateBackup = () => {
 
   const onSubmit = (values) => {
     const startDate = new Date()
-    //decrease by 45 seconds to ensure the task runs after the current time
+    startDate.setHours(0, 0, 0, 0)
     const unixTime = Math.floor(startDate.getTime() / 1000) - 45
     const shippedValues = {
       TenantFilter: tenantDomain,
