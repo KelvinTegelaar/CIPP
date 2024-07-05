@@ -1831,6 +1831,20 @@
     ]
   },
   {
+    "name": "standards.SPDirectSharing",
+    "cat": "SharePoint Standards",
+    "tag": ["mediumimpact", "CIS"],
+    "helpText": "Ensure default link sharing is set to Direct in SharePoint and OneDrive",
+    "addedComponent": [],
+    "label": "Default sharing to Direct users",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "powershellEquivalent": "Set-SPOTenant -DefaultSharingLinkType Direct",
+    "recommendedBy": [
+      "CIS 3.0"
+    ]
+  },
+  {
     "name": "standards.DisableAddShortcutsToOneDrive",
     "cat": "SharePoint Standards",
     "tag": ["mediumimpact"],
