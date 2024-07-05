@@ -175,7 +175,7 @@ const SharepointList = () => {
       sortable: true,
       cell: cellCopyButtonFormatter(),
       exportSelector: 'AutoMapUrl',
-      maxWidth: '70px',
+      maxWidth: '170px',
     },
     {
       name: 'Actions',
