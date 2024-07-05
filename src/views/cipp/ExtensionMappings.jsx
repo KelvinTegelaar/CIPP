@@ -52,16 +52,17 @@ export default function ExtensionMappings({ type, fieldMappings = false, autoMap
       })
     }
 
-    const newMappings = listMappingBackendResult.data?.Tenants.map((tenant) => {
+    var newMappings = []
+    listMappingBackendResult.data?.Tenants.map((tenant) => {
       const company = listMappingBackendResult.data?.Companies.find(
         (client) => client.name === tenant.displayName,
       )
-      if (company) {
-        return {
+      if (company !== undefined && !mappingArray.find((item) => item.companyId === company.value)) {
+        newMappings.push({
           Tenant: tenant,
           companyName: company.name,
           companyId: company.value,
-        }
+        })
       }
     })
     setMappingArray((currentMappings) => [...currentMappings, ...newMappings])
@@ -87,7 +88,7 @@ export default function ExtensionMappings({ type, fieldMappings = false, autoMap
         })),
       )
     }
-  }, [listMappingBackendResult])
+  }, [listMappingBackendResult, setMappingArray])
 
   const Actions = (row, rowIndex, formatExtraData) => {
     return (
