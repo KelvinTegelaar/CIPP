@@ -130,6 +130,7 @@ export default function CIPPExtensions() {
                         false,
                     )}
                     key={idx}
+                    className=""
                   >
                     <p>{integration.helpText}</p>
                     <Form

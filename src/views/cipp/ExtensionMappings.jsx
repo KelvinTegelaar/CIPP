@@ -156,6 +156,7 @@ export default function ExtensionMappings({ type, fieldMappings = false, autoMap
           title={`${type} Organization Mapping`}
           titleType="big"
           isFetching={listMappingBackendResult.isFetching}
+          className="px-0"
           CardButton={
             <>
               <CButton
@@ -324,6 +325,7 @@ export default function ExtensionMappings({ type, fieldMappings = false, autoMap
           title={`${type} Field Mapping`}
           titleType="big"
           isFetching={listFieldsBackendResult.isFetching}
+          className="px-0"
           CardButton={
             <CButton form={`${type}Fields`} className="me-2" type="submit">
               <FontAwesomeIcon
