@@ -158,16 +158,29 @@ export default function ExtensionMappings({ type, fieldMappings = false, autoMap
           isFetching={listMappingBackendResult.isFetching}
           CardButton={
             <>
-              <CButton form={`${type}Org`} className="me-2" type="submit">
-                {extensionConfigResult.isFetching && (
-                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-                )}
-                Set Mappings
+              <CButton
+                form={`${type}Org`}
+                className="me-2"
+                type="submit"
+                disabled={listMappingBackendResult.isFetching}
+              >
+                <FontAwesomeIcon
+                  icon={extensionConfigResult.isFetching ? 'circle-notch' : 'save'}
+                  spin={extensionConfigResult.isFetching}
+                  className="me-2"
+                />
+                Save Mappings
               </CButton>
-              <CButton onClick={() => onOrgsAutomap()} className="me-2">
-                {extensionAutomapResult.isFetching && (
-                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-                )}
+              <CButton
+                onClick={() => onOrgsAutomap()}
+                className="me-2"
+                disabled={listMappingBackendResult.isFetching}
+              >
+                <FontAwesomeIcon
+                  icon={extensionAutomapResult.isFetching ? 'circle-notch' : 'wand-magic-sparkles'}
+                  spin={extensionAutomapResult.isFetching}
+                  className="me-2"
+                />
                 Automap {type} Organizations
               </CButton>
             </>
@@ -313,10 +326,13 @@ export default function ExtensionMappings({ type, fieldMappings = false, autoMap
           isFetching={listFieldsBackendResult.isFetching}
           CardButton={
             <CButton form={`${type}Fields`} className="me-2" type="submit">
-              {extensionFieldsConfigResult.isFetching && (
-                <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-              )}
-              Set Mappings
+              <FontAwesomeIcon
+                icon={extensionFieldsConfigResult.isFetching ? 'circle-notch' : 'save'}
+                spin={extensionFieldsConfigResult.isFetching}
+                className="me-2"
+                disabled={extensionFieldsConfigResult.isFetching}
+              />
+              Save Mappings
             </CButton>
           }
         >
