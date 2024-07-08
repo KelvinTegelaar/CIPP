@@ -13,6 +13,21 @@ We get it. GDAP can be confusing, but setting up CIPP doesn't have to be painful
 
 ***
 
+## **How to Get Started**
+
+1. [**Fill out the form**](professional-onboarding-services.md#sign-up-here-https-go.cyberdrain.com-onboarding): Provide your name, email, service interest, and company name.
+2. **Check your email**: You'll receive a link with more information and a link to sign up.
+3. **Complete the payment**: Follow the link to our payment page and submit your information.
+4. **Sit back and wait:** Your dedicated CIPP onboarding expert will reach out to book your session.
+
+## Sign up now: [https://go.cyberdrain.com/onboarding](https://go.cyberdrain.com/onboarding)
+
+{% hint style="info" %}
+**Note:** Sponsorship is required to access these services, whether hosted or self-hosted. Ensure you have completed the [sponsorship process](https://github.com/sponsors/KelvinTegelaar/sponsorships?sponsor=KelvinTegelaar\&tier\_id=101398) to take full advantage of our support.
+{% endhint %}
+
+***
+
 ## **Scope & Objectives**
 
 For a one-time fee of $750 USD, you will receive up to 90 minutes with a CIPP expert and recordings of your sessions for future reference, which will address the following objectives:
@@ -27,23 +42,6 @@ For a one-time fee of $750 USD, you will receive up to 90 minutes with a CIPP ex
 
 {% hint style="warning" %}
 This scope ensures you learn the essential steps and can replicate them for additional customers on your own. If you have specific needs, have already completed some steps, or need to focus on specific areas, discuss this with your CIPP expert prior to the scheduling of your first session. The focus will be on the listed objectives, and any unique requirements must be communicated upfront to be addressed within the allotted time.
-{% endhint %}
-
-***
-
-## **How to Get Started**
-
-1. [**Fill out the form**](professional-onboarding-services.md#sign-up-here-https-go.cyberdrain.com-onboarding): Provide your name, email, service interest, and company name.
-2. **Check your email**: You'll receive a link with more information and a link to sign up.
-3. **Complete the payment**: Follow the link to our payment page and submit your information.
-4. **Sit back and wait:** Your dedicated CIPP onboarding expert will reach out to book your session.
-
-***
-
-## Sign up here: [https://go.cyberdrain.com/onboarding](https://go.cyberdrain.com/onboarding)
-
-{% hint style="info" %}
-**Note:** Sponsorship is required to access these services, whether hosted or self-hosted. Ensure you have completed the [sponsorship process](https://github.com/sponsors/KelvinTegelaar/sponsorships?sponsor=KelvinTegelaar\&tier\_id=101398) to take full advantage of our support.
 {% endhint %}
 
 ***
