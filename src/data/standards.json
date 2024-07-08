@@ -1845,6 +1845,26 @@
     ]
   },
   {
+    "name": "standards.SPExternalUserExpiration",
+    "cat": "SharePoint Standards",
+    "tag": ["mediumimpact", "CIS"],
+    "helpText": "Ensure guest access to a site or OneDrive will expire automatically",
+    "addedComponent": [
+      {
+        "type": "number",
+        "name": "standards.SPExternalUserExpiration.Days",
+        "label": "Days until expiration (Default 60)"
+      }
+    ],
+    "label": "Set guest access to expire automatically",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "powershellEquivalent": "Set-SPOTenant -ExternalUserExpireInDays 30 -ExternalUserExpirationRequired $True",
+    "recommendedBy": [
+      "CIS 3.0"
+    ]
+  },
+  {
     "name": "standards.DisableAddShortcutsToOneDrive",
     "cat": "SharePoint Standards",
     "tag": ["mediumimpact"],
