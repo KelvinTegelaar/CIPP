@@ -47,6 +47,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Risky Users',
+        to: '/identity/administration/risky-users',
+      },
+      {
+        component: CNavItem,
         name: 'Groups',
         to: '/identity/administration/groups',
       },
@@ -74,6 +79,11 @@ const _nav = [
         component: CNavItem,
         name: 'Roles',
         to: '/identity/administration/roles',
+      },
+      {
+        component: CNavItem,
+        name: 'JIT Admin',
+        to: '/identity/administration/jit-admin',
       },
       {
         component: CNavItem,
@@ -109,6 +119,11 @@ const _nav = [
         name: 'AAD Connect Report',
         to: '/identity/reports/azure-ad-connect-report',
       },
+      {
+        component: CNavItem,
+        name: 'Risk Detections',
+        to: '/identity/reports/risk-detections',
+      },
     ],
   },
   {
@@ -129,18 +144,18 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Alerts (Classic)',
+        name: 'Alerts',
         to: '/tenant/administration/alertsqueue',
-      },
-      {
-        component: CNavItem,
-        name: 'Alert Rules',
-        to: '/tenant/administration/AlertRules',
       },
       {
         component: CNavItem,
         name: 'Enterprise Applications',
         to: '/tenant/administration/enterprise-apps',
+      },
+      {
+        component: CNavItem,
+        name: 'Secure Score',
+        to: '/tenant/administration/securescore',
       },
       {
         component: CNavItem,
@@ -150,12 +165,17 @@ const _nav = [
       {
         component: CNavItem,
         name: 'Tenant Onboarding',
-        to: '/tenant/administration/tenant-onboarding-wizard',
+        to: '/tenant/administration/tenant-onboarding',
       },
       {
         component: CNavItem,
         name: 'Tenant Offboarding',
         to: '/tenant/administration/tenant-offboarding-wizard',
+      },
+      {
+        component: CNavItem,
+        name: 'Partner Relationships',
+        to: '/tenant/administration/partner-relationships',
       },
     ],
   },
@@ -603,6 +623,11 @@ const _nav = [
         name: 'Quarantine',
         to: '/email/administration/quarantine',
       },
+      {
+        component: CNavItem,
+        name: 'Tenant Allow/Block Lists',
+        to: '/email/administration/tenant-allow-block-lists',
+      },
     ],
   },
   {
@@ -694,6 +719,25 @@ const _nav = [
   },
   {
     component: CNavGroup,
+    name: ' Room Management',
+    section: 'Email & Exchange',
+    to: '/rooms/management',
+    icon: <FontAwesomeIcon icon={faToolbox} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Rooms',
+        to: '/rooms/management/list-rooms',
+      },
+      {
+        component: CNavItem,
+        name: 'Room Lists',
+        to: '/rooms/management/room-lists',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
     name: 'Reports',
     section: 'Email & Exchange',
     to: '/email/reports',
@@ -741,6 +785,11 @@ const _nav = [
         component: CNavItem,
         name: 'Application Settings',
         to: '/cipp/settings',
+      },
+      {
+        component: CNavItem,
+        name: 'Extensions Settings',
+        to: '/cipp/extensions',
       },
       {
         component: CNavItem,

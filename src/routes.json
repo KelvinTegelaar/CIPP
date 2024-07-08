@@ -77,6 +77,12 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/identity/administration/jit-admin",
+    "name": "JIT Admin",
+    "component": "views/identity/administration/DeployJITAdmin",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/identity/administration/ViewBec",
     "name": "View BEC",
     "component": "views/identity/administration/ViewBEC",
@@ -91,6 +97,12 @@
     "path": "/identity/administration/users",
     "name": "Users",
     "component": "views/identity/administration/Users",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/administration/risky-users",
+    "name": "Risky Users",
+    "component": "views/identity/administration/RiskyUsers",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
@@ -201,6 +213,12 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/identity/reports/risk-detections",
+    "name": "Risk Detections",
+    "component": "views/identity/reports/RiskDetections",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/tenant",
     "name": "Tenant",
     "allowedRoles": ["admin", "editor", "readonly"]
@@ -220,6 +238,12 @@
     "path": "/tenant/administration/tenants/edit",
     "name": "Edit Tenant",
     "component": "views/tenant/administration/EditTenant",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/administration/partner-relationships",
+    "name": "Partner Relationships",
+    "component": "views/tenant/administration/PartnerRelationships",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
@@ -685,6 +709,18 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/rooms/management/list-rooms",
+    "name": "Rooms",
+    "component": "views/email-exchange/rooms/ListRooms",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/rooms/management/room-lists",
+    "name": "Room Lists",
+    "component": "views/email-exchange/rooms/ListRoomLists",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/email/tools/mailbox-restore-wizard",
     "name": "Mailbox Restore Wizard",
     "component": "views/email-exchange/tools/MailboxRestoreWizard",
@@ -760,6 +796,18 @@
     "name": "List Quarantine",
     "path": "/email/administration/Quarantine",
     "component": "views/email-exchange/administration/QuarantineList",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "List Tenant Allow/Block Lists",
+    "path": "/email/administration/tenant-allow-block-lists",
+    "component": "views/email-exchange/administration/ListTenantAllowBlockList",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "Add Tenant Allow/Block List",
+    "path": "/email/administration/add-tenant-allow-block-list",
+    "component": "views/email-exchange/administration/AddTenantAllowBlockList",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
@@ -859,10 +907,22 @@
     "allowedRoles": ["admin"]
   },
   {
+    "path": "/cipp/extensions",
+    "name": "Extensions Settings",
+    "component": "views/cipp/Extensions",
+    "allowedRoles": ["admin"]
+  },
+  {
     "path": "/cipp/setup",
     "name": "Setup",
     "component": "views/cipp/Setup",
     "allowedRoles": ["admin"]
+  },
+  {
+    "path": "/tenant/administration/securescore",
+    "name": "Secure Score Management",
+    "component": "views/tenant/administration/SecureScore",
+    "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
     "path": "/tenant/administration/gdap",
@@ -916,6 +976,12 @@
     "path": "/tenant/administration/tenant-offboarding-wizard",
     "name": "Tenant Offboarding",
     "component": "views/tenant/administration/TenantOffboardingWizard",
+    "allowedRoles": ["admin"]
+  },
+  {
+    "path": "/tenant/administration/tenant-onboarding",
+    "name": "Tenant Onboarding",
+    "component": "views/tenant/administration/TenantOnboarding",
     "allowedRoles": ["admin"]
   },
   {
