@@ -42,34 +42,22 @@ const OffboardingWizard = () => {
 
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = (values) => {
+    const startDate = new Date()
+    const unixTime = Math.floor(startDate.getTime() / 1000) - 45
     const shippedValues = {
       TenantFilter: tenantDomain,
-      OOO: values.OOO ? values.OOO : '',
-      forward: values.forward ? values.forward.value : '',
-      OnedriveAccess: values.OnedriveAccess ? values.OnedriveAccess : '',
-      AccessNoAutomap: values.AccessNoAutomap ? values.AccessNoAutomap : '',
-      AccessAutomap: values.AccessAutomap ? values.AccessAutomap : '',
-      ConvertToShared: values.ConvertToShared,
-      HideFromGAL: values.HideFromGAL,
-      DisableSignIn: values.DisableSignIn,
-      RemoveGroups: values.RemoveGroups,
-      RemoveLicenses: values.RemoveLicenses,
-      ResetPass: values.ResetPass,
-      RevokeSessions: values.RevokeSessions,
-      user: values.User,
-      deleteuser: values.DeleteUser,
-      removeRules: values.RemoveRules,
-      removeMobile: values.RemoveMobile,
-      keepCopy: values.keepCopy,
-      removePermissions: values.removePermissions,
-      PostExecution: values.Scheduled?.enabled
-        ? { webhook: values.webhook, psa: values.psa, email: values.email }
-        : '',
+      Name: `CIPP Restore ${tenantDomain}`,
+      Command: { value: `New-CIPPRestore` },
+      Parameters: { Type: 'Scheduled', ScheduledBackupValues: { ...values } },
+      ScheduledTime: unixTime,
+      PostExecution: {
+        Webhook: values.webhook,
+        Email: values.email,
+        PSA: values.psa,
+      },
     }
-
-    //alert(JSON.stringify(values, null, 2))
-    genericPostRequest({ path: '/api/ExecOffboardUser', values: shippedValues })
+    genericPostRequest({ path: '/api/AddScheduledItem', values: shippedValues }).then((res) => {})
   }
 
   return (
@@ -101,7 +89,7 @@ const OffboardingWizard = () => {
               name: `${backup.RowKey}`,
             }))}
             placeholder={!currentBackupsIsFetching ? 'Select a backup' : 'Loading...'}
-            name="User"
+            name="backup"
           />
           {currentBackupsError && <span>Failed to load list of Current Backups</span>}
         </div>
@@ -117,21 +105,21 @@ const OffboardingWizard = () => {
           <CRow>
             <CCol>
               <h3 className="underline mb-4">Identity</h3>
-              <RFFCFormSwitch label="User List" />
-              <RFFCFormSwitch label="Groups" />
+              <RFFCFormSwitch name="users" label="User List" />
+              <RFFCFormSwitch name="groups" label="Groups" />
               <h3 className="underline mb-4">Conditional Access</h3>
-              <RFFCFormSwitch label="Conditional Access" />
-              <RFFCFormSwitch label="Named Locations" />
-              <RFFCFormSwitch label="Authentication Strengths" />
+              <RFFCFormSwitch name="ca" label="Conditional Access" />
+              <RFFCFormSwitch name="namedlocations" label="Named Locations" />
+              <RFFCFormSwitch name="authstrengths" label="Authentication Strengths" />
             </CCol>
             <CCol>
               <h3 className="underline mb-4">Intune</h3>
-              <RFFCFormSwitch label="Intune Configuration Policies" />
-              <RFFCFormSwitch label="Intune Compliance Policies" />
-              <RFFCFormSwitch label="Intune Protection Policies" />
+              <RFFCFormSwitch name="intuneconfig" label="Intune Configuration Policies" />
+              <RFFCFormSwitch name="intunecompliance" label="Intune Compliance Policies" />
+              <RFFCFormSwitch name="intuneprotection" label="Intune Protection Policies" />
               <h3 className="underline mb-4">CIPP</h3>
-              <RFFCFormSwitch label="Alerts Configuration" />
-              <RFFCFormSwitch label="Standards Configuration" />
+              <RFFCFormSwitch name="CippAlerts" label="Alerts Configuration" />
+              <RFFCFormSwitch name="CippStandards" label="Standards Configuration" />
             </CCol>
           </CRow>
           <hr className="my-4" />
@@ -139,22 +127,31 @@ const OffboardingWizard = () => {
             <CCol>
               <RFFCFormSwitch name="overwrite" label="Overwrite existing entries" />
             </CCol>
-          </CRow>
-          <Condition when="overwrite" is={true}>
-            <CippCallout color="warning">
-              <h5>Warning</h5>
-              <p>
-                Overwriting existing entries will remove the current settings and replace them with
-                the backup settings. If you have selected to restore users, all properties will be
-                overwritten with the backup settings.
-              </p>
+            <Condition when="overwrite" is={true}>
+              <CippCallout color="warning">
+                <h5>Warning</h5>
+                <p>
+                  Overwriting existing entries will remove the current settings and replace them
+                  with the backup settings. If you have selected to restore users, all properties
+                  will be overwritten with the backup settings.
+                </p>
 
-              <p>
-                To prevent and skip already existing entries, deselect the setting from the list
-                above, or disable overwrite.
-              </p>
-            </CippCallout>
-          </Condition>
+                <p>
+                  To prevent and skip already existing entries, deselect the setting from the list
+                  above, or disable overwrite.
+                </p>
+              </CippCallout>
+            </Condition>
+          </CRow>
+          <hr className="my-4" />
+          <CRow>
+            <CCol>
+              <label>Send Restore results to:</label>
+              <RFFCFormSwitch name="webhook" label="Webhook" />
+              <RFFCFormSwitch name="email" label="E-mail" />
+              <RFFCFormSwitch name="psa" label="PSA" />
+            </CCol>
+          </CRow>
         </div>
         <hr className="my-4" />
       </CippWizard.Page>
@@ -170,13 +167,7 @@ const OffboardingWizard = () => {
               <CSpinner>Loading</CSpinner>
             </CCallout>
           )}
-          {postResults.isSuccess && (
-            <CCallout color="success">
-              {postResults.data.Results.map((message, idx) => {
-                return <li key={idx}>{message}</li>
-              })}
-            </CCallout>
-          )}
+          {postResults.isSuccess && <CCallout color="success">{postResults.data.Results}</CCallout>}
           {!postResults.isSuccess && (
             <FormSpy>
               {/* eslint-disable react/prop-types */}
@@ -189,6 +180,10 @@ const OffboardingWizard = () => {
                           <h5 className="mb-0">Selected Tenant:</h5>
                           {tenantDomain}
                         </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          <h5 className="mb-0">Selected Backup:</h5>
+                          {props.values.backup.value}
+                        </CListGroupItem>
                       </CListGroup>
                       <hr />
                     </CCol>
@@ -197,123 +192,35 @@ const OffboardingWizard = () => {
                     <CCol md={{ span: 6, offset: 3 }}>
                       <CListGroup flush>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Revoke Sessions
+                          Overwrite existing configuration
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.RevokeSessions ? faCheck : faTimes}
+                            icon={props.values.overwrite ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Remove all mobile devices
+                          Send results to Webhook
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.RemoveMobile ? faCheck : faTimes}
+                            icon={props.values.webhook ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Remove all mailbox rules
+                          Send results to E-Mail
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.RemoveRules ? faCheck : faTimes}
+                            icon={props.values.email ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Remove all mailbox permissions
+                          Send results to PSA
                           <FontAwesomeIcon
                             color="#f77f00"
                             size="lg"
-                            icon={props.values.removePermissions ? faCheck : faTimes}
-                          />
-                        </CListGroupItem>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Remove Licenses
-                          <FontAwesomeIcon
-                            color="#f77f00"
-                            size="lg"
-                            icon={props.values.RemoveLicenses ? faCheck : faTimes}
-                          />
-                        </CListGroupItem>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Convert to Shared
-                          <FontAwesomeIcon
-                            color="#f77f00"
-                            size="lg"
-                            icon={props.values.ConvertToShared ? faCheck : faTimes}
-                          />
-                        </CListGroupItem>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Disable Sign-in
-                          <FontAwesomeIcon
-                            color="#f77f00"
-                            size="lg"
-                            icon={props.values.DisableSignIn ? faCheck : faTimes}
-                          />
-                        </CListGroupItem>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Reset Password
-                          <FontAwesomeIcon
-                            color="#f77f00"
-                            size="lg"
-                            icon={props.values.ResetPass ? faCheck : faTimes}
-                          />
-                        </CListGroupItem>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Remove from all groups
-                          <FontAwesomeIcon
-                            color="#f77f00"
-                            size="lg"
-                            icon={props.values.RemoveGroups ? faCheck : faTimes}
-                          />
-                        </CListGroupItem>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Hide from Global Address List
-                          <FontAwesomeIcon
-                            color="#f77f00"
-                            size="lg"
-                            icon={props.values.HideFromGAL ? faCheck : faTimes}
-                          />
-                        </CListGroupItem>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Set Out of Office
-                          <FontAwesomeIcon
-                            color="#f77f00"
-                            size="lg"
-                            icon={props.values.OOO ? faCheck : faTimes}
-                          />
-                        </CListGroupItem>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Give another user access to the mailbox with automap
-                          <FontAwesomeIcon
-                            color="#f77f00"
-                            size="lg"
-                            icon={props.values.AccessAutomap ? faCheck : faTimes}
-                          />
-                        </CListGroupItem>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Give another user access to the mailbox without automap
-                          <FontAwesomeIcon
-                            color="#f77f00"
-                            size="lg"
-                            icon={props.values.AccessNoAutomap ? faCheck : faTimes}
-                          />
-                        </CListGroupItem>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Give another user access to OneDrive
-                          <FontAwesomeIcon
-                            color="#f77f00"
-                            size="lg"
-                            icon={props.values.OnedriveAccess ? faCheck : faTimes}
-                          />
-                        </CListGroupItem>
-                        <CListGroupItem className="d-flex justify-content-between align-items-center">
-                          Forward all e-mail to another user
-                          <FontAwesomeIcon
-                            color="#f77f00"
-                            size="lg"
-                            icon={props.values.forward ? faCheck : faTimes}
+                            icon={props.values.psa ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                       </CListGroup>
