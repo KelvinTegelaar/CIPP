@@ -15,7 +15,7 @@ We get it. GDAP can be confusing, but setting up CIPP doesn't have to be painful
 
 ## **How to Get Started**
 
-1. [**Fill out the form**](professional-onboarding-services.md#sign-up-here-https-go.cyberdrain.com-onboarding): Provide your name, email, service interest, and company name.
+1. [**Fill out the form**](professional-onboarding-services.md#sign-up-here-https-go.cyberdrain.com-onboarding): Provide your name, email, company name and deployment status.
 2. **Check your email**: You'll receive a link with more information and a link to sign up.
 3. **Complete the payment**: Follow the link to our payment page and submit your information.
 4. **Sit back and wait:** Your dedicated CIPP onboarding expert will reach out to book your session.
