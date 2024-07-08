@@ -225,6 +225,25 @@
     "recommendedBy": ["CIS"]
   },
   {
+    "name": "standards.AppDeploy",
+    "cat": "Entra (AAD) Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Deploys selected applications to the tenant. Use a comma separated list of application IDs to deploy multiple applications. Permissions will be copied from the source application.",
+    "docsDescription": "Uses the CIPP functionality that deploys applications across an entire tenant base as a standard.",
+    "addedComponent": [
+      {
+        "type": "input",
+        "name": "standards.AppDeploy.appids",
+        "label": "Application IDs, comma separated"
+      }
+    ],
+    "label": "Deploy Application",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "powershellEquivalent": "Portal or Graph API",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.laps",
     "cat": "Entra (AAD) Standards",
     "tag": ["lowimpact"],
@@ -522,8 +541,14 @@
     "name": "standards.DisableSelfServiceLicenses",
     "cat": "Entra (AAD) Standards",
     "tag": ["mediumimpact"],
-    "helpText": "This standard currently does not function and can be safely disabled",
-    "addedComponent": [],
+    "helpText": "This standard disables all self service licenses and enables all exclusions",
+    "addedComponent": [
+      {
+        "type": "input",
+        "name": "standards.DisableSelfServiceLicenses.Exclusions",
+        "label": "License Ids to exclude from this standard"
+      }
+    ],
     "label": "Disable Self Service Licensing",
     "impact": "Medium Impact",
     "impactColour": "warning",

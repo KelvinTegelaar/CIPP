@@ -40,20 +40,6 @@ export default function ExtensionMappings({ type, fieldMappings = false, autoMap
       setMappingValue({})
     })
   }
-  /*const onNinjaOrgsSubmit = () => {
-    const originalFormat = ninjaMappingsArray.reduce((acc, item) => {
-      acc[item.Tenant?.customerId] = { label: item.ninjaName, value: item.ninjaId }
-      return acc
-    }, {})
-
-    setNinjaOrgsExtensionconfig({
-      path: 'api/ExecExtensionMapping?AddMapping=NinjaOrgs',
-      values: { mappings: originalFormat },
-    }).then(() => {
-      listNinjaOrgsBackend({ path: 'api/ExecExtensionMapping?List=NinjaOrgs' })
-      setMappingValue({})
-    })
-  }*/
 
   const onOrgsAutomap = async (values) => {
     if (autoMapSyncApi) {
@@ -66,16 +52,17 @@ export default function ExtensionMappings({ type, fieldMappings = false, autoMap
       })
     }
 
-    const newMappings = listMappingBackendResult.data?.Tenants.map((tenant) => {
+    var newMappings = []
+    listMappingBackendResult.data?.Tenants.map((tenant) => {
       const company = listMappingBackendResult.data?.Companies.find(
         (client) => client.name === tenant.displayName,
       )
-      if (company) {
-        return {
+      if (company !== undefined && !mappingArray.find((item) => item.companyId === company.value)) {
+        newMappings.push({
           Tenant: tenant,
           companyName: company.name,
           companyId: company.value,
-        }
+        })
       }
     })
     setMappingArray((currentMappings) => [...currentMappings, ...newMappings])
@@ -89,32 +76,6 @@ export default function ExtensionMappings({ type, fieldMappings = false, autoMap
     })
   }
 
-  /*const onHaloAutomap = () => {
-    const newMappings = listBackendHaloResult.data?.Tenants.map(
-      (tenant) => {
-        const haloClient = listBackendHaloResult.data?.HaloClients.find(
-          (client) => client.name === tenant.displayName,
-        )
-        if (haloClient) {
-          console.log(haloClient)
-          console.log(tenant)
-          return {
-            Tenant: tenant,
-            haloName: haloClient.name,
-            haloId: haloClient.value,
-          }
-        }
-      },
-      //filter out any undefined values
-    ).filter((item) => item !== undefined)
-    setHaloMappingsArray((currentHaloMappings) => [...currentHaloMappings, ...newMappings]).then(
-      () => {
-        listHaloBackend({ path: 'api/ExecExtensionMapping?List=Halo' })
-      },
-    )
-    setHaloAutoMap(true)
-  }*/
-
   useEffect(() => {
     if (listMappingBackendResult.isSuccess) {
       setMappingArray(
@@ -127,7 +88,7 @@ export default function ExtensionMappings({ type, fieldMappings = false, autoMap
         })),
       )
     }
-  }, [listMappingBackendResult])
+  }, [listMappingBackendResult, setMappingArray])
 
   const Actions = (row, rowIndex, formatExtraData) => {
     return (
@@ -195,18 +156,32 @@ export default function ExtensionMappings({ type, fieldMappings = false, autoMap
           title={`${type} Organization Mapping`}
           titleType="big"
           isFetching={listMappingBackendResult.isFetching}
+          className="px-0"
           CardButton={
             <>
-              <CButton form={`${type}Org`} className="me-2" type="submit">
-                {extensionConfigResult.isFetching && (
-                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-                )}
-                Set Mappings
+              <CButton
+                form={`${type}Org`}
+                className="me-2"
+                type="submit"
+                disabled={listMappingBackendResult.isFetching}
+              >
+                <FontAwesomeIcon
+                  icon={extensionConfigResult.isFetching ? 'circle-notch' : 'save'}
+                  spin={extensionConfigResult.isFetching}
+                  className="me-2"
+                />
+                Save Mappings
               </CButton>
-              <CButton onClick={() => onOrgsAutomap()} className="me-2">
-                {extensionAutomapResult.isFetching && (
-                  <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-                )}
+              <CButton
+                onClick={() => onOrgsAutomap()}
+                className="me-2"
+                disabled={listMappingBackendResult.isFetching}
+              >
+                <FontAwesomeIcon
+                  icon={extensionAutomapResult.isFetching ? 'circle-notch' : 'wand-magic-sparkles'}
+                  spin={extensionAutomapResult.isFetching}
+                  className="me-2"
+                />
                 Automap {type} Organizations
               </CButton>
             </>
@@ -232,6 +207,9 @@ export default function ExtensionMappings({ type, fieldMappings = false, autoMap
                             columns={columns}
                             data={mappingArray}
                             isModal={true}
+                            refreshFunction={() =>
+                              listMappingBackend({ path: `api/ExecExtensionMapping?List=${type}` })
+                            }
                           />
                         )
                       }
@@ -347,12 +325,16 @@ export default function ExtensionMappings({ type, fieldMappings = false, autoMap
           title={`${type} Field Mapping`}
           titleType="big"
           isFetching={listFieldsBackendResult.isFetching}
+          className="px-0"
           CardButton={
             <CButton form={`${type}Fields`} className="me-2" type="submit">
-              {extensionFieldsConfigResult.isFetching && (
-                <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-              )}
-              Set Mappings
+              <FontAwesomeIcon
+                icon={extensionFieldsConfigResult.isFetching ? 'circle-notch' : 'save'}
+                spin={extensionFieldsConfigResult.isFetching}
+                className="me-2"
+                disabled={extensionFieldsConfigResult.isFetching}
+              />
+              Save Mappings
             </CButton>
           }
         >

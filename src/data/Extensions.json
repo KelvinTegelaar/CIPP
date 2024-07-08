@@ -122,7 +122,7 @@
         "type": "input",
         "fieldtype": "input",
         "name": "NinjaOne.Instance",
-        "label": "Please enter your NinjaOne Instance",
+        "label": "Please enter your NinjaOne Instance hostname",
         "placeholder": "app.ninjarmm.com, eu.ninjarmm.com, oc.ninjarmm.com, ca.ninjarmm.com, us2.ninjarmm.com"
       },
       {
@@ -162,7 +162,8 @@
     ],
     "mappingRequired": true,
     "fieldMapping": true,
-    "autoMapSyncApi": true
+    "autoMapSyncApi": true,
+    "showSyncButton": true
   },
   {
     "name": "Hudu",
@@ -187,8 +188,13 @@
       },
       {
         "type": "checkbox",
-        "name": "Hudu.LicensedUsersOnly",
-        "label": "Only Sync Licensed Users"
+        "name": "Hudu.CreateMissingUsers",
+        "label": "Create missing users in Hudu"
+      },
+      {
+        "type": "checkbox",
+        "name": "Hudu.CreateMissingDevices",
+        "label": "Create missing devices in Hudu"
       },
       {
         "type": "checkbox",
@@ -197,7 +203,8 @@
       }
     ],
     "mappingRequired": true,
-    "fieldMapping": true
+    "fieldMapping": true,
+    "showSyncButton": true
   },
   {
     "name": "PasswordPusher",
