@@ -9,7 +9,7 @@ description: >-
 
 ## Introduction
 
-We get it. GDAP can be confusing, but it doesn't have to be painful. Let our experts show you the ropes. They've been through this and know all the tips and tricks to help you get up to speed. Stop banging your head against the wall and start benefiting from all the time-saving features that CIPP can bring you once it's set up correctly.
+We get it. GDAP can be confusing, but setting up CIPP doesn't have to be painful! Let our experts show you the ropes. They've been through this and know all the tips and tricks to help you get up to speed. Stop banging your head against the wall and start benefiting from all the time-saving features that CIPP can bring you once it's set up correctly.
 
 ***
 
@@ -33,17 +33,17 @@ This scope ensures you learn the essential steps and can replicate them for addi
 
 ## **How to Get Started**
 
-1. **Fill out the form**: Provide your name, email, service interest, and company name.
+1. [**Fill out the form**](professional-onboarding-services.md#sign-up-here-https-go.cyberdrain.com-onboarding): Provide your name, email, service interest, and company name.
 2. **Check your email**: You'll receive a link with more information and a link to sign up.
 3. **Complete the payment**: Follow the link to our payment page and submit your information.
 4. **Sit back and wait:** Your dedicated CIPP onboarding expert will reach out to book your session.
 
-{% hint style="info" %}
-**Note:** Sponsorship is required to access these services, whether hosted or self-hosted. Ensure you have completed the [sponsorship process](https://github.com/sponsors/KelvinTegelaar/sponsorships?sponsor=KelvinTegelaar\&tier\_id=101398) to take full advantage of our support.
-{% endhint %}
-
 ***
 
 ## Sign up here: [https://go.cyberdrain.com/onboarding](https://go.cyberdrain.com/onboarding)
+
+{% hint style="info" %}
+**Note:** Sponsorship is required to access these services, whether hosted or self-hosted. Ensure you have completed the [sponsorship process](https://github.com/sponsors/KelvinTegelaar/sponsorships?sponsor=KelvinTegelaar\&tier\_id=101398) to take full advantage of our support.
+{% endhint %}
 
 ***
