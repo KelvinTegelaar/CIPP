@@ -20,9 +20,9 @@ We get it. GDAP can be confusing, but setting up CIPP doesn't have to be painful
 3. **Complete the payment**: Follow the link to our payment page and submit your information.
 4. **Sit back and wait:** Your dedicated CIPP onboarding expert will reach out to book your session.
 
-## Sign up now: [https://go.cyberdrain.com/onboarding](https://go.cyberdrain.com/onboarding)
-
 {% hint style="info" %}
+### Sign up now at [https://go.cyberdrain.com/onboarding](https://go.cyberdrain.com/onboarding)
+
 **Note:** Sponsorship is required to access these services, whether hosted or self-hosted. Ensure you have completed the [sponsorship process](https://github.com/sponsors/KelvinTegelaar/sponsorships?sponsor=KelvinTegelaar\&tier\_id=101398) to take full advantage of our support.
 {% endhint %}
 
