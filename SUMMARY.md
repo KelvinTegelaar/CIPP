@@ -36,6 +36,7 @@
   * [Integration Setup](setup/implementation-guide/integration-setup.md)
   * [Best Practices Analyser](setup/implementation-guide/best-practices-analyser.md)
   * [Domain Analyser](setup/implementation-guide/domain-analyser.md)
+* [Professional Onboarding Services](setup/professional-onboarding-services.md)
 
 ## 🙋 User Documentation
 
