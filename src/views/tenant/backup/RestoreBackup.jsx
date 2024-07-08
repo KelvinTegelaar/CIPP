@@ -49,7 +49,7 @@ const OffboardingWizard = () => {
       TenantFilter: tenantDomain,
       Name: `CIPP Restore ${tenantDomain}`,
       Command: { value: `New-CIPPRestore` },
-      Parameters: { Type: 'Scheduled', ScheduledBackupValues: { ...values } },
+      Parameters: { Type: 'Scheduled', RestoreValues: { ...values } },
       ScheduledTime: unixTime,
       PostExecution: {
         Webhook: values.webhook,
