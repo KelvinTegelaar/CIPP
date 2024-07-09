@@ -70,12 +70,12 @@
   },
   "List:Operation": [
     { "value": "UserLoggedIn", "name": "A user logged in" },
-    { "value": "accessed mailbox items", "name": "accessed mailbox items" },
+    { "value": "mailitemsaccessed", "name": "accessed mailbox items" },
     { "value": "add delegation entry.", "name": "added delegation entry" },
     { "value": "add domain to company.", "name": "added domain to company" },
     { "value": "add group.", "name": "added group" },
     { "value": "add member to group.", "name": "added member to group" },
-    { "value": "add mailboxpermission", "name": "added delegate mailbox permissions" },
+    { "value": "add-mailboxpermission", "name": "added delegate mailbox permissions" },
     { "value": "add member to role.", "name": "added member to role" },
     { "value": "add partner to company.", "name": "added a partner to the directory" },
     { "value": "add service principal.", "name": "added service principal" },
@@ -111,7 +111,7 @@
       "value": "remove service principal credentials.",
       "name": "removed credentials from a service principal"
     },
-    { "value": "remove mailboxpermission", "name": "removed delegate mailbox permissions" },
+    { "value": "remove-mailboxpermission", "name": "removed delegate mailbox permissions" },
     { "value": "remove member from role.", "name": "removed a user from a directory role" },
     { "value": "remove partner from company.", "name": "removed a partner from the directory" },
     { "value": "removefolderpermissions", "name": "removed permissions from folder" },
@@ -132,7 +132,7 @@
       "value": "set force change user password.",
       "name": "set property that forces user to change password"
     },
-    { "value": "set inboxrule", "name": "modified inbox rule from outlook web app" },
+    { "value": "set-inboxrule", "name": "modified inbox rule from outlook web app" },
     { "value": "set license properties.", "name": "set license properties" },
     { "value": "set password policy.", "name": "set password policy" },
     { "value": "softdelete", "name": "deleted messages from deleted items folder" },
