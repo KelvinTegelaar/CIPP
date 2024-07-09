@@ -67,6 +67,7 @@ export default function CIPPExtensions() {
               path: 'api/ExecExtensionSync?Extension=' + integrationType,
             })
           }
+          disabled={disabled}
           className="me-2"
         >
           <FontAwesomeIcon
@@ -196,6 +197,11 @@ export default function CIPPExtensions() {
                             Link
                           </a>
                         )}
+                      </CippCallout>
+                    )}
+                    {listSyncExtensionResult?.data?.Results && (
+                      <CippCallout color={listSyncExtensionResult.isSuccess ? 'success' : 'danger'}>
+                        {listSyncExtensionResult?.data?.Results}
                       </CippCallout>
                     )}
                   </CippButtonCard>
