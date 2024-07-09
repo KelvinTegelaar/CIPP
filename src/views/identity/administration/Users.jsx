@@ -247,11 +247,13 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modal: true,
             modalType: 'POST',
             modalBody: {
-              user: row.userPrincipalName,
+              username: row.userPrincipalName,
+              userid: row.userPrincipalName,
               TenantFilter: tenant.defaultDomainName,
+              DisableForwarding: true,
               message: row.message,
             },
-            modalUrl: `/api/ExecDisableEmailForward`,
+            modalUrl: `/api/ExecEmailForward`,
             modalMessage: 'Are you sure you want to disable forwarding of this users emails?',
           },
           {
@@ -688,10 +690,12 @@ const Users = (row) => {
               modal: true,
               modalType: 'POST',
               modalBody: {
-                user: '!userPrincipalName',
+                username: '!userPrincipalName',
+                userid: '!userPrincipalName',
                 TenantFilter: tenant.defaultDomainName,
+                DisableForwarding: true,
               },
-              modalUrl: `/api/ExecDisableEmailForward`,
+              modalUrl: `/api/ExecEmailForward`,
               modalMessage: 'Are you sure you want to disable forwarding of these users emails?',
             },
             {
