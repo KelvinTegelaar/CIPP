@@ -1,0 +1,45 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "PowerShell: Execute current file",
+      "type": "PowerShell",
+      "request": "launch",
+      "script": "${file}",
+      "cwd": "${file}"
+    },
+    {
+      "command": "npm run start-swa",
+      "name": "Run Emulator",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+    {
+      "command": "npm start",
+      "name": "Run Frontend",
+      "request": "launch",
+      "type": "node-terminal",
+      "preLaunchTask": "Run All Tasks",
+      "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"]
+    },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Launch Chrome Debugger",
+      "url": "http://localhost:4280"
+    },
+    {
+      "type": "PowerShell",
+      "name": "Launch in Windows Terminal",
+      "request": "launch",
+      "cwd": "${cwd}",
+      "script": ". '${cwd}\\Tools\\Start-CippDevEmulators.ps1'"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Launch it all 🚀",
+      "configurations": ["Run Frontend", "Run Emulator"]
+    }
+  ]
+}
