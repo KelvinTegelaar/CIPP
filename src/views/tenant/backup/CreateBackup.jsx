@@ -37,11 +37,12 @@ const CreateBackup = () => {
       ScheduledTime: unixTime,
       Recurrence: { value: '1d' },
     }
-    genericPostRequest({ path: '/api/AddScheduledItem?hidden=true', values: shippedValues }).then(
-      (res) => {
-        setRefreshState(res.requestId)
-      },
-    )
+    genericPostRequest({
+      path: '/api/AddScheduledItem?hidden=true&DisallowDuplicateName=true',
+      values: shippedValues,
+    }).then((res) => {
+      setRefreshState(res.requestId)
+    })
   }
   const Offcanvas = (row, rowIndex, formatExtraData) => {
     const handleDeleteSchedule = (apiurl, message) => {
