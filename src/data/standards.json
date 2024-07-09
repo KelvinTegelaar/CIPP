@@ -1789,10 +1789,58 @@
     "name": "standards.DeletedUserRentention",
     "cat": "SharePoint Standards",
     "tag": ["lowimpact"],
-    "helpText": "Sets the retention period for deleted users OneDrive to 1 year/365 days",
-    "docsDescription": "When a OneDrive user gets deleted, the personal SharePoint site is saved for 1 year and data can be retrieved from it.",
-    "addedComponent": [],
-    "label": "Retain a deleted user OneDrive for 1 year",
+    "helpText": "Sets the retention period for deleted users OneDrive to the specified number of years. The default is 1 year.",
+    "docsDescription": "When a OneDrive user gets deleted, the personal SharePoint site is saved for selected time in years and data can be retrieved from it.",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "name": "standards.DeletedUserRentention.Days",
+        "label": "Retention in years (Default 1)",
+        "values": [
+          {
+            "label": "1 year",
+            "value": "365"
+          },
+          {
+            "label": "2 years",
+            "value": "730"
+          },
+          {
+            "label": "3 years",
+            "value": "1095"
+          },
+          {
+            "label": "4 years",
+            "value": "1460"
+          },
+          {
+            "label": "5 years",
+            "value": "1825"
+          },
+          {
+            "label": "6 years",
+            "value": "2190"
+          },
+          {
+            "label": "7 years",
+            "value": "2555"
+          },
+          {
+            "label": "8 years",
+            "value": "2920"
+          },
+          {
+            "label": "9 years",
+            "value": "3285"
+          },
+          {
+            "label": "10 years",
+            "value": "3650"
+          }
+        ]
+      }
+    ],
+    "label": "Set deleted user retention time in OneDrive",
     "impact": "Low Impact",
     "impactColour": "info",
     "powershellEquivalent": "Update-MgBetaAdminSharepointSetting",
@@ -1826,9 +1874,7 @@
     "impact": "Low Impact",
     "impactColour": "info",
     "powershellEquivalent": "Set-SPOTenant -EnableAzureADB2BIntegration $true",
-    "recommendedBy": [
-      "CIS 3.0"
-    ]
+    "recommendedBy": ["CIS 3.0"]
   },
   {
     "name": "standards.SPDisallowInfectedFiles",
@@ -1840,9 +1886,7 @@
     "impact": "Low Impact",
     "impactColour": "info",
     "powershellEquivalent": "Set-SPOTenant -DisallowInfectedFileDownload $true",
-    "recommendedBy": [
-      "CIS 3.0"
-    ]
+    "recommendedBy": ["CIS 3.0"]
   },
   {
     "name": "standards.SPDirectSharing",
@@ -1854,9 +1898,7 @@
     "impact": "Medium Impact",
     "impactColour": "warning",
     "powershellEquivalent": "Set-SPOTenant -DefaultSharingLinkType Direct",
-    "recommendedBy": [
-      "CIS 3.0"
-    ]
+    "recommendedBy": ["CIS 3.0"]
   },
   {
     "name": "standards.SPExternalUserExpiration",
@@ -1874,9 +1916,7 @@
     "impact": "Medium Impact",
     "impactColour": "warning",
     "powershellEquivalent": "Set-SPOTenant -ExternalUserExpireInDays 30 -ExternalUserExpirationRequired $True",
-    "recommendedBy": [
-      "CIS 3.0"
-    ]
+    "recommendedBy": ["CIS 3.0"]
   },
   {
     "name": "standards.SPEmailAttestation",
@@ -1894,9 +1934,7 @@
     "impact": "Medium Impact",
     "impactColour": "warning",
     "powershellEquivalent": "Set-SPOTenant -EmailAttestationRequired $true -EmailAttestationReAuthDays 15",
-    "recommendedBy": [
-      "CIS 3.0"
-    ]
+    "recommendedBy": ["CIS 3.0"]
   },
   {
     "name": "standards.DisableAddShortcutsToOneDrive",
