@@ -118,7 +118,8 @@ const OffboardingWizard = () => {
               <RFFCFormSwitch name="intunecompliance" label="Intune Compliance Policies" />
               <RFFCFormSwitch name="intuneprotection" label="Intune Protection Policies" />
               <h3 className="underline mb-4">CIPP</h3>
-              <RFFCFormSwitch name="CippAlerts" label="Alerts Configuration" />
+              <RFFCFormSwitch name="CippWebhookAlerts" label="Webhook Alerts Configuration" />
+              <RFFCFormSwitch name="CippScriptedAlerts" label="Scripted Alerts Configuration" />
               <RFFCFormSwitch name="CippStandards" label="Standards Configuration" />
             </CCol>
           </CRow>

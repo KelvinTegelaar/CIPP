@@ -179,9 +179,7 @@ const CreateBackup = () => {
                           <RFFCFormSwitch name="users" label="User List" />
                           <RFFCFormSwitch name="groups" label="Groups" />
                           <h3 className="underline mb-4">Conditional Access</h3>
-                          <RFFCFormSwitch name="ca" label="Conditional Access" />
-                          <RFFCFormSwitch name="namedlocations" label="Named Locations" />
-                          <RFFCFormSwitch name="authstrengths" label="Authentication Strengths" />
+                          <RFFCFormSwitch name="ca" label="Conditional Access Configuration" />
                           <h3 className="underline mb-4">Intune</h3>
                           <RFFCFormSwitch
                             name="intuneconfig"
@@ -196,7 +194,14 @@ const CreateBackup = () => {
                             label="Intune Protection Policies"
                           />
                           <h3 className="underline mb-4">CIPP</h3>
-                          <RFFCFormSwitch name="CippAlerts" label="Alerts Configuration" />
+                          <RFFCFormSwitch
+                            name="CippWebhookAlerts"
+                            label="Webhook Alerts Configuration"
+                          />
+                          <RFFCFormSwitch
+                            name="CippScriptedAlerts"
+                            label="Scripted Alerts Configuration"
+                          />
                           <RFFCFormSwitch name="CippStandards" label="Standards Configuration" />
                         </CCol>
                       </CRow>
