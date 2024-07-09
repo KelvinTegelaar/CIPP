@@ -108,9 +108,7 @@ const OffboardingWizard = () => {
               <RFFCFormSwitch name="users" label="User List" />
               <RFFCFormSwitch name="groups" label="Groups" />
               <h3 className="underline mb-4">Conditional Access</h3>
-              <RFFCFormSwitch name="ca" label="Conditional Access" />
-              <RFFCFormSwitch name="namedlocations" label="Named Locations" />
-              <RFFCFormSwitch name="authstrengths" label="Authentication Strengths" />
+              <RFFCFormSwitch name="ca" label="Conditional Access Configuration" />
             </CCol>
             <CCol>
               <h3 className="underline mb-4">Intune</h3>
