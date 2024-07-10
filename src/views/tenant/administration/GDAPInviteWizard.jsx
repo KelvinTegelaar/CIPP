@@ -114,6 +114,12 @@ const GDAPInviteWizard = () => {
           const filteredResults = results.data.filter((role) =>
             defaultRolesArray.some((defaultRole) => defaultRole.ObjectId === role.roleDefinitionId),
           )
+          const uniqueFilteredResults = filteredResults.filter(
+            (role, index, self) =>
+              index === self.findIndex((t) => t.roleDefinitionId === role.roleDefinitionId),
+          )
+          filteredResults.length = 0
+          Array.prototype.push.apply(filteredResults, uniqueFilteredResults)
           setEasyMode(true)
           const resultsarr = []
           setLoopRunning(true)
