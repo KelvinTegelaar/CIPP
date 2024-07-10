@@ -226,9 +226,7 @@ export default function ExtensionMappings({ type, fieldMappings = false, autoMap
                               name: tenant.displayName,
                               value: tenant.customerId,
                             }))}
-                            onChange={(e) => {
-                              setMappingArray(e.value)
-                            }}
+                            onChange={(e) => setTenantMappingsArray(e.value)}
                             isLoading={listMappingBackendResult.isFetching}
                           />
                         </CCol>
@@ -267,7 +265,7 @@ export default function ExtensionMappings({ type, fieldMappings = false, autoMap
                                 ...mappingArray,
                                 {
                                   Tenant: listMappingBackendResult.data?.Tenants.find(
-                                    (tenant) => tenant.customerId === mappingArray,
+                                    (tenant) => tenant.customerId === tenantMappingArray,
                                   ),
                                   companyName: mappingValue.label,
                                   companyId: mappingValue.value,
