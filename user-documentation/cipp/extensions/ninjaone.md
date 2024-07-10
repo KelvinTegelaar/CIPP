@@ -65,14 +65,14 @@ To add the custom fields:
 
 You should now be ready to configure settings inside CIPP
 
-1. Inside CIPP browse to **Settings** -> **CIPP** -> **Application Settings**
-2. Select the **Extensions** tab.
-3. In the NinjaOne Integration section please enter the instance name you use to connect to NinjaOne:
-   * app.ninjarmm.com
-   * eu.ninjarmm.com
-   * oc.ninjarmm.com
-   * ca.ninjarmm.com
-   * us2.ninjarmm.com
+1. Inside CIPP browse to **Settings** -> **CIPP** -> **Extension Settings**
+2. Select the **NinjaOne** tab.
+3. Please enter the instance name you use to connect to NinjaOne:
+   - app.ninjarmm.com
+   - eu.ninjarmm.com
+   - oc.ninjarmm.com
+   - ca.ninjarmm.com
+   - us2.ninjarmm.com
 4. Enter the Client ID you created in NinjaOne Client ID
 5. Enter the Client Secret in NinjaOne API Client Secret.
 6. If you have **NinjaOne Documentation** enabled you can choose to Synchronize detailed User information and License information. This will use Documentation Templates and Apps and Services Documents to create a document for each user and license in a tenant.
@@ -85,25 +85,24 @@ You should now be ready to configure settings inside CIPP
 
 After the API settings are set you can now map NinjaOne items to Microsoft 365 / CIPP Items.
 
-1. Inside CIPP select the **Extension Mappings** tab under **Settings** -> **CIPP** -> **Application Settings**
+**Organization Mapping**
+
+1. Go to the **NinjaOne Organization Mapping Table.**
+2. You have two options for mapping organizations
+   - Manually pick the NinjaOne Organization from the dropdown lists and match them to the Microsoft 365 tenants. Then click the Set Mappings button.
+   - Select the **Automap NinjaOne Organizations** button.
+     - This will first try to match Microsoft 365 tenants where the name exactly matches in both.
+     - After that it will download the devices from both Intune and NinjaOne and match based on devices which have the same serial numbers in both.
+     - **NOTE:** Automapping runs in the background and can take some time. The page will need to be refreshed to see completed matches.
+     - Please check the CIPP Logbook to see when this completes.
+3. Click Save Mappings
 
 **Field Mapping**
 
 1. Scroll down to the **NinjaOne Field Mapping Table.**
 2. For each field you wish to populate in NinjaOne select the custom field from the dropdown menu.
 3. If the field is not displayed, make sure you have configured the correct API Permissions, Definition Scope and Type in NinjaOne.
-4. Click Set Mappings
-
-**Organization Mapping**
-
-1. Scroll down to the **NinjaOne Organization Mapping Table.**
-2. You have two options for mapping organizations
-   * Manually pick the NinjaOne Organization from the dropdown lists and match them to the Microsoft 365 tenants. Then click the Set Mappings button.
-   * Select the **Automap NinjaOne Organizations** button.
-     * This will first try to match Microsoft 365 tenants where the name exactly matches in both.
-     * After that it will download the devices from both Intune and NinjaOne and match based on devices which have the same serial numbers in both.
-     * **NOTE:** Automapping runs in the background and can take some time. The page will need to be refreshed to see completed matches.
-     * Please check the CIPP Logbook to see when this completes.
+4. Click Save Mappings
 
 #### Support
 
