@@ -70,127 +70,160 @@ export function SettingsBackend() {
       <CButton className="me-3">{title}</CButton>
     </CLink>
   )
+  const hostedMetaContent = document.querySelector('meta[name="hosted"]')?.getAttribute('content')
 
   return (
     <>
-      {listBackendResult.isUninitialized && listBackend({ path: 'api/ExecBackendURLs' })}
-      <CRow className="mb-3">
-        {BackendCardList.map((card, index) => (
-          <CCol className="mb-3" md={4} key={index}>
-            <CippButtonCard
-              title={card.title}
-              titleType="big"
-              isFetching={listBackendResult.isFetching}
-              CardButton={generateButton(card.title, card.link)}
-            >
-              <small>{card.description}</small>
-            </CippButtonCard>
-          </CCol>
-        ))}
-        <CCol md={4}>
+      {hostedMetaContent === 'true' ? (
+        <>
           <CippButtonCard
-            title={'Cloud Shell'}
+            title={'Management Portal'}
             titleType="big"
-            isFetching={listBackendResult.isFetching}
+            isFetching={false}
             CardButton={
               <>
-                {' '}
                 <CLink
                   className="me-2"
                   onClick={() =>
                     window.open(
-                      'https://shell.azure.com/powershell',
+                      'https://management.cipp.app',
                       '_blank',
                       'toolbar=no,scrollbars=yes,resizable=yes,menubar=no,location=no,status=no',
                     )
                   }
                   rel="noreferrer"
                 >
-                  <CButton>Cloud Shell</CButton>
+                  <CButton>Management Portal</CButton>
                 </CLink>
-                <CButton onClick={() => setVisible(true)} className="me-2">
-                  Command Reference
-                </CButton>
               </>
             }
           >
-            <p>Launch an Azure Cloud Shell Window</p>
+            The Management Portal allows you to manage your CIPP resources for the hosted
+            environment.
           </CippButtonCard>
-        </CCol>
-      </CRow>
-      <CippOffcanvas
-        id="command-offcanvas"
-        visible={visible}
-        placement="end"
-        className="cipp-offcanvas"
-        hideFunction={() => setVisible(false)}
-        title="Command Reference"
-      >
-        <h5 className="my-3">Function App Config</h5>
-        <CippCodeBlock
-          language="powershell"
-          code={
-            '$Function = Get-AzFunctionApp -ResourceGroupName ' +
-            listBackendResult.data?.Results?.RGName +
-            ' -Name ' +
-            listBackendResult.data?.Results?.FunctionName +
-            '; $Function | select Name, Status, Location, Runtime, ApplicationSettings'
-          }
-          showLineNumbers={false}
-          wrapLongLines={true}
-        />
-        <h5 className="my-3">Function App Deployment</h5>
-        <CippCodeBlock
-          language="powershell"
-          code={
-            '$FunctionDeployment = az webapp deployment source show --resource-group ' +
-            listBackendResult.data?.Results?.RGName +
-            ' --name ' +
-            listBackendResult.data?.Results?.FunctionName +
-            ' | ConvertFrom-Json; $FunctionDeployment | Select-Object repoUrl, branch, isGitHubAction, isManualIntegration, githubActionConfiguration'
-          }
-          showLineNumbers={false}
-          wrapLongLines={true}
-        />
-        <h5 className="my-3">Watch Function Logs</h5>
-        <CippCodeBlock
-          language="powershell"
-          code={
-            'az webapp log tail --resource-group ' +
-            listBackendResult.data?.Results?.RGName +
-            ' --name ' +
-            listBackendResult.data?.Results?.FunctionName
-          }
-          showLineNumbers={false}
-          wrapLongLines={true}
-        />
-        <h5 className="my-3">Static Web App Config</h5>
-        <CippCodeBlock
-          language="powershell"
-          code={
-            '$StaticWebApp = Get-AzStaticWebApp -ResourceGroupName ' +
-            listBackendResult.data?.Results?.RGName +
-            ' -Name ' +
-            listBackendResult.data?.Results?.SWAName +
-            '; $StaticWebApp | Select-Object Name, CustomDomain, DefaultHostname, RepositoryUrl'
-          }
-          showLineNumbers={false}
-          wrapLongLines={true}
-        />
-        <h5 className="my-3">List CIPP Users</h5>
-        <CippCodeBlock
-          language="powershell"
-          code={
-            'Get-AzStaticWebAppUser -ResourceGroupName ' +
-            listBackendResult.data?.Results?.RGName +
-            ' -Name ' +
-            listBackendResult.data?.Results?.SWAName +
-            ' -AuthProvider all | Select-Object DisplayName, Role'
-          }
-          showLineNumbers={false}
-          wrapLongLines={true}
-        />
-      </CippOffcanvas>
+        </>
+      ) : (
+        <>
+          {listBackendResult.isUninitialized && listBackend({ path: 'api/ExecBackendURLs' })}
+          <CRow className="mb-3">
+            {BackendCardList.map((card, index) => (
+              <CCol className="mb-3" md={4} key={index}>
+                <CippButtonCard
+                  title={card.title}
+                  titleType="big"
+                  isFetching={listBackendResult.isFetching}
+                  CardButton={generateButton(card.title, card.link)}
+                >
+                  <small>{card.description}</small>
+                </CippButtonCard>
+              </CCol>
+            ))}
+            <CCol md={4}>
+              <CippButtonCard
+                title={'Cloud Shell'}
+                titleType="big"
+                isFetching={listBackendResult.isFetching}
+                CardButton={
+                  <>
+                    {' '}
+                    <CLink
+                      className="me-2"
+                      onClick={() =>
+                        window.open(
+                          'https://shell.azure.com/powershell',
+                          '_blank',
+                          'toolbar=no,scrollbars=yes,resizable=yes,menubar=no,location=no,status=no',
+                        )
+                      }
+                      rel="noreferrer"
+                    >
+                      <CButton>Cloud Shell</CButton>
+                    </CLink>
+                    <CButton onClick={() => setVisible(true)} className="me-2">
+                      Command Reference
+                    </CButton>
+                  </>
+                }
+              >
+                <p>Launch an Azure Cloud Shell Window</p>
+              </CippButtonCard>
+            </CCol>
+          </CRow>
+          <CippOffcanvas
+            id="command-offcanvas"
+            visible={visible}
+            placement="end"
+            className="cipp-offcanvas"
+            hideFunction={() => setVisible(false)}
+            title="Command Reference"
+          >
+            <h5 className="my-3">Function App Config</h5>
+            <CippCodeBlock
+              language="powershell"
+              code={
+                '$Function = Get-AzFunctionApp -ResourceGroupName ' +
+                listBackendResult.data?.Results?.RGName +
+                ' -Name ' +
+                listBackendResult.data?.Results?.FunctionName +
+                '; $Function | select Name, Status, Location, Runtime, ApplicationSettings'
+              }
+              showLineNumbers={false}
+              wrapLongLines={true}
+            />
+            <h5 className="my-3">Function App Deployment</h5>
+            <CippCodeBlock
+              language="powershell"
+              code={
+                '$FunctionDeployment = az webapp deployment source show --resource-group ' +
+                listBackendResult.data?.Results?.RGName +
+                ' --name ' +
+                listBackendResult.data?.Results?.FunctionName +
+                ' | ConvertFrom-Json; $FunctionDeployment | Select-Object repoUrl, branch, isGitHubAction, isManualIntegration, githubActionConfiguration'
+              }
+              showLineNumbers={false}
+              wrapLongLines={true}
+            />
+            <h5 className="my-3">Watch Function Logs</h5>
+            <CippCodeBlock
+              language="powershell"
+              code={
+                'az webapp log tail --resource-group ' +
+                listBackendResult.data?.Results?.RGName +
+                ' --name ' +
+                listBackendResult.data?.Results?.FunctionName
+              }
+              showLineNumbers={false}
+              wrapLongLines={true}
+            />
+            <h5 className="my-3">Static Web App Config</h5>
+            <CippCodeBlock
+              language="powershell"
+              code={
+                '$StaticWebApp = Get-AzStaticWebApp -ResourceGroupName ' +
+                listBackendResult.data?.Results?.RGName +
+                ' -Name ' +
+                listBackendResult.data?.Results?.SWAName +
+                '; $StaticWebApp | Select-Object Name, CustomDomain, DefaultHostname, RepositoryUrl'
+              }
+              showLineNumbers={false}
+              wrapLongLines={true}
+            />
+            <h5 className="my-3">List CIPP Users</h5>
+            <CippCodeBlock
+              language="powershell"
+              code={
+                'Get-AzStaticWebAppUser -ResourceGroupName ' +
+                listBackendResult.data?.Results?.RGName +
+                ' -Name ' +
+                listBackendResult.data?.Results?.SWAName +
+                ' -AuthProvider all | Select-Object DisplayName, Role'
+              }
+              showLineNumbers={false}
+              wrapLongLines={true}
+            />
+          </CippOffcanvas>
+        </>
+      )}
     </>
   )
 }
