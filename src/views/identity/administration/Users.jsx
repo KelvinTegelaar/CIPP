@@ -112,6 +112,26 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modalMessage: 'Are you sure you want to send a MFA request?',
           },
           {
+            label: 'Set Per-User MFA',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecPerUserMFA`,
+            modalType: 'POST',
+            modalBody: {
+              TenantFilter: tenant.defaultDomainName,
+              userId: `${row.userPrincipalName}`,
+            },
+            modalMessage: 'Are you sure you want to set per-user MFA for these users?',
+            modalDropdown: {
+              url: '/MFAStates.json',
+              labelField: 'label',
+              valueField: 'value',
+              addedField: {
+                State: 'value',
+              },
+            },
+          },
+          {
             label: 'Convert to Shared Mailbox',
             color: 'info',
             modal: true,
@@ -227,11 +247,13 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modal: true,
             modalType: 'POST',
             modalBody: {
-              user: row.userPrincipalName,
+              username: row.userPrincipalName,
+              userid: row.userPrincipalName,
               TenantFilter: tenant.defaultDomainName,
+              DisableForwarding: true,
               message: row.message,
             },
-            modalUrl: `/api/ExecDisableEmailForward`,
+            modalUrl: `/api/ExecEmailForward`,
             modalMessage: 'Are you sure you want to disable forwarding of this users emails?',
           },
           {
@@ -273,7 +295,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             label: 'Revoke all user sessions',
             color: 'danger',
             modal: true,
-            modalUrl: `/api/ExecRevokeSessions?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalUrl: `/api/ExecRevokeSessions?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}&Username=${row.userPrincipalName}`,
             modalMessage: 'Are you sure you want to revoke this users sessions?',
           },
           {
@@ -501,6 +523,26 @@ const Users = (row) => {
               modalMessage: 'Are you sure you want to enable MFA for these users?',
             },
             {
+              label: 'Set Per-User MFA',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecPerUserMFA`,
+              modalType: 'POST',
+              modalBody: {
+                TenantFilter: tenant.defaultDomainName,
+                userId: '!userPrincipalName',
+              },
+              modalMessage: 'Are you sure you want to set per-user MFA for these users?',
+              modalDropdown: {
+                url: '/MFAStates.json',
+                labelField: 'label',
+                valueField: 'value',
+                addedField: {
+                  State: 'value',
+                },
+              },
+            },
+            {
               label: 'Enable Online Archive',
               color: 'info',
               modal: true,
@@ -648,10 +690,12 @@ const Users = (row) => {
               modal: true,
               modalType: 'POST',
               modalBody: {
-                user: '!userPrincipalName',
+                username: '!userPrincipalName',
+                userid: '!userPrincipalName',
                 TenantFilter: tenant.defaultDomainName,
+                DisableForwarding: true,
               },
-              modalUrl: `/api/ExecDisableEmailForward`,
+              modalUrl: `/api/ExecEmailForward`,
               modalMessage: 'Are you sure you want to disable forwarding of these users emails?',
             },
             {
