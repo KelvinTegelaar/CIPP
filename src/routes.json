@@ -229,6 +229,20 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/tenant/backup/backup-wizard",
+    "name": "Backup",
+    "component": "views/tenant/backup/CreateBackup",
+
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/backup/restore-wizard",
+    "name": "Restore Backup",
+    "component": "views/tenant/backup/RestoreBackup",
+
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/tenant/administration/tenants",
     "name": "Tenants",
     "component": "views/tenant/administration/Tenants",
@@ -298,6 +312,12 @@
     "path": "/tenant/conditional/list-policies",
     "name": "Conditional Access",
     "component": "views/tenant/conditional/ConditionalAccess",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/administration/authentication-methods",
+    "name": "Authentication Methods",
+    "component": "views/tenant/administration/AuthMethods",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
@@ -784,6 +804,12 @@
     "name": "List Mailboxes",
     "path": "/email/administration/mailboxes",
     "component": "views/email-exchange/administration/MailboxesList",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "Deleted Mailboxes",
+    "path": "/email/administration/deleted-mailboxes",
+    "component": "views/email-exchange/administration/DeletedMailboxes",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
