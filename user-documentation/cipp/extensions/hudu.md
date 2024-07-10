@@ -1,6 +1,6 @@
 # Hudu
 
-The NinjaOne integration provides several different options to give you control over what is synchronised from CIPP to NinjaOne.
+The Hudu integration provides several different options to give you control over what is synchronised from CIPP to Hudu.
 
 Data is synchronized automatically once every 24 hours from Microsoft 365 / CIPP to Hudu. This is scheduled once you save the extension and map your tenants.
 
@@ -42,7 +42,7 @@ After the API settings are set you can now map Hudu Assets to Microsoft 365 / CI
 
 1. Go to the **Hudu Organization Mapping Table.**
 2. You have two options for mapping organizations
-   - Manually pick the NinjaOne Organization from the dropdown lists and match them to the Microsoft 365 tenants. Then click the Set Mappings button.
+   - Manually pick the Hudu Company from the dropdown lists and match them to the Microsoft 365 tenants. Then click the Set Mappings button.
    - Select the **Automap Hudu Organizations** button.
      - This will try to match Microsoft 365 tenants where the name exactly matches in both.
 3. Click Save Mappings.
