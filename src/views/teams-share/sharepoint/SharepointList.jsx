@@ -5,7 +5,9 @@ import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
 import { CellTip } from 'src/components/tables'
+import { cellCopyButtonFormatter } from 'src/components/tables/CellCopyButton'
 import { CippActionsOffcanvas } from 'src/components/utilities'
+import CippCopyToClipboard from 'src/components/utilities/CippCopyToClipboard'
 
 const SharepointList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
@@ -166,6 +168,14 @@ const SharepointList = () => {
       cell: (row) => CellTip(row['Template']),
       exportSelector: 'Template',
       maxWidth: '200px',
+    },
+    {
+      name: 'Automapping URL',
+      selector: (row) => row['AutoMapUrl'],
+      sortable: true,
+      cell: cellCopyButtonFormatter(),
+      exportSelector: 'AutoMapUrl',
+      maxWidth: '170px',
     },
     {
       name: 'Actions',
