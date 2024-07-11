@@ -1,9 +1,10 @@
 [
   {
-    "name": "CIPP-API Integration",
+    "name": "CIPP-API",
     "type": "CIPP-API",
     "cat": "API",
     "forceSyncButton": false,
+    "disableWhenhosted": true,
     "helpText": "This integration allows you to enable CIPP-API access outside of CIPP. Requires Global Administrator permissions inside your tenant for activation of the API. The API credentials will only be shown once.",
     "SettingOptions": [
       {
@@ -20,7 +21,7 @@
     "mappingRequired": false
   },
   {
-    "name": "Gradient Integration",
+    "name": "Gradient",
     "type": "Gradient",
     "cat": "Billing & Invoicing",
     "forceSyncButton": true,
@@ -54,7 +55,7 @@
     "mappingRequired": false
   },
   {
-    "name": "Halo PSA Ticketing Integration",
+    "name": "Halo PSA Ticketing",
     "type": "HaloPSA",
     "cat": "Ticketing",
     "forceSyncButton": false,
@@ -111,7 +112,7 @@
     "mappingRequired": true
   },
   {
-    "name": "NinjaOne Integration",
+    "name": "NinjaOne",
     "type": "NinjaOne",
     "cat": "Documentation & Monitoring",
     "forceSyncButton": true,
@@ -121,7 +122,7 @@
         "type": "input",
         "fieldtype": "input",
         "name": "NinjaOne.Instance",
-        "label": "Please enter your NinjaOne Instance",
+        "label": "Please enter your NinjaOne Instance hostname",
         "placeholder": "app.ninjarmm.com, eu.ninjarmm.com, oc.ninjarmm.com, ca.ninjarmm.com, us2.ninjarmm.com"
       },
       {
@@ -140,18 +141,18 @@
       },
       {
         "type": "checkbox",
-        "name": "NinjaOne.UserDocumentsEnabled",
-        "label": "Synchronize Detailed User Information (Requires NinjaOne Documentation)"
+        "name": "NinjaOne.LicenseDocumentsEnabled",
+        "label": "Sync Licenses (Requires NinjaOne Documentation)"
       },
       {
         "type": "checkbox",
-        "name": "NinjaOne.LicenseDocumentsEnabled",
-        "label": "Synchronize Detailed License Information (Requires NinjaOne Documentation)"
+        "name": "NinjaOne.UserDocumentsEnabled",
+        "label": "Sync Users (Requires NinjaOne Documentation)"
       },
       {
         "type": "checkbox",
         "name": "NinjaOne.LicensedOnly",
-        "label": "Only Synchronize Licensed Users"
+        "label": "Only Sync Licensed Users (Requires NinjaOne Documentation)"
       },
       {
         "type": "checkbox",
@@ -159,7 +160,51 @@
         "label": "Enable Integration"
       }
     ],
-    "mappingRequired": true
+    "mappingRequired": true,
+    "fieldMapping": true,
+    "autoMapSyncApi": true,
+    "showSyncButton": true
+  },
+  {
+    "name": "Hudu",
+    "type": "Hudu",
+    "cat": "Documentation",
+    "forceSyncButton": true,
+    "helpText": "This integration allows you to populate custom asset layouts with Tenant information, monitor device compliance state, document other items and generate relationships inside Hudu.",
+    "SettingOptions": [
+      {
+        "type": "input",
+        "fieldtype": "input",
+        "name": "Hudu.BaseUrl",
+        "label": "Please enter your Hudu URL",
+        "placeholder": "https://yourcompany.huducloud.com"
+      },
+      {
+        "type": "input",
+        "fieldtype": "password",
+        "name": "Hudu.APIKey",
+        "label": "Hudu API Key",
+        "placeholder": "Enter your Hudu API Key"
+      },
+      {
+        "type": "checkbox",
+        "name": "Hudu.CreateMissingUsers",
+        "label": "Create missing users in Hudu"
+      },
+      {
+        "type": "checkbox",
+        "name": "Hudu.CreateMissingDevices",
+        "label": "Create missing devices in Hudu"
+      },
+      {
+        "type": "checkbox",
+        "name": "Hudu.Enabled",
+        "label": "Enable Integration"
+      }
+    ],
+    "mappingRequired": true,
+    "fieldMapping": true,
+    "showSyncButton": true
   },
   {
     "name": "PasswordPusher",
