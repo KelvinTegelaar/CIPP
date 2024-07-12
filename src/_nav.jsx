@@ -823,11 +823,6 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Extension Sync',
-        to: '/cipp/extension-sync',
-      },
-      {
-        component: CNavItem,
         name: 'User Settings',
         to: '/cipp/user-settings',
       },

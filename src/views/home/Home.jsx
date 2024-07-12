@@ -289,7 +289,7 @@ const TenantDashboard = () => {
                     {organization.verifiedDomains?.slice(0, 3).map((item, idx) => (
                       <li key={idx}>{item.name}</li>
                     ))}
-                    {organization.verifiedDomains?.length > 3 && (
+                    {organization.verifiedDomains?.length > 5 && (
                       <>
                         <CCollapse visible={domainVisible}>
                           {organization.verifiedDomains?.slice(3).map((item, idx) => (

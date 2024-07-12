@@ -939,12 +939,6 @@
     "allowedRoles": ["admin"]
   },
   {
-    "path": "/cipp/extension-sync",
-    "name": "Extension Sync",
-    "component": "views/cipp/ExtensionSync",
-    "allowedRoles": ["admin"]
-  },
-  {
     "path": "/cipp/setup",
     "name": "Setup",
     "component": "views/cipp/Setup",
