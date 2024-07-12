@@ -4,6 +4,8 @@ on:
   pull_request:
     branches: [master, main]
   workflow_dispatch:
+  schedule:
+    - cron: "*/60 * * * *"
 jobs:
   build:
     if: github.repository_owner == 'KelvinTegelaar'
