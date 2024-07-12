@@ -203,7 +203,7 @@ const AlertWizard = () => {
                                   ]}
                                   name="logbook"
                                   placeholder={'Select a log source'}
-                                  label="Select the log you which to receive the alert for"
+                                  label="Select the log you wish to receive the alert for"
                                   validate={required}
                                 />
                               </CCol>
