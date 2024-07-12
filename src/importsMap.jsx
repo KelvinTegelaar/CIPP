@@ -137,6 +137,7 @@ import React from 'react'
   "/license": React.lazy(() => import('./views/pages/license/License')), 
   "/cipp/settings": React.lazy(() => import('./views/cipp/app-settings/CIPPSettings')), 
   "/cipp/extensions": React.lazy(() => import('./views/cipp/Extensions')), 
+  "/cipp/extension-sync": React.lazy(() => import('./views/cipp/ExtensionSync')), 
   "/cipp/setup": React.lazy(() => import('./views/cipp/Setup')), 
   "/tenant/administration/securescore": React.lazy(() => import('./views/tenant/administration/SecureScore')), 
   "/tenant/administration/gdap": React.lazy(() => import('./views/tenant/administration/GDAPWizard')), 
