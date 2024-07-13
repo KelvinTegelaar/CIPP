@@ -77,7 +77,7 @@
 
 // fusv-disable
 $primary-dark: rgb(226, 92, 9) !default;
-$primary-base: rgba(247, 127, 0) !default;
+$primary-base: #CA2027 !default;
 $primary-50: rgba(247, 128, 0, 0.514) !default;
 $primary-25: rgba(247, 128, 0, 0.219) !default;
 
@@ -102,7 +102,7 @@ $search-selected-option-highlight-color: #ffffff;
 $search-group-header-bg: #eeeeee;
 
 // If you want to change these variables please also update the _themes.scss file.
-$cyberdrain-primary: #f77f00; // Orange
+$cyberdrain-primary: #003E9F; // Orange
 $cyberdrain-secondary: #003049; // Prussian Blue
 $cyberdrain-secondary-rgb: rgb(0 48 73); // Prussian Blue
 $cyberdrain-lighter: #fff; // White
