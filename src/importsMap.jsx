@@ -18,8 +18,6 @@ import React from 'react'
   "/identity/administration/risky-users": React.lazy(() => import('./views/identity/administration/RiskyUsers')), 
   "/identity/administration/devices": React.lazy(() => import('./views/identity/administration/Devices')), 
   "/identity/administration/groups/add": React.lazy(() => import('./views/identity/administration/AddGroup')), 
-  "/teams-share/sharepoint/Folders/add": React.lazy(() => import('./views/teams-share/sharepoint/AddFolder')), 
-
   "/identity/administration/group-templates": React.lazy(() => import('./views/identity/administration/GroupTemplates')), 
   "/identity/administration/group-add-template": React.lazy(() => import('./views/identity/administration/AddGroupTemplate')), 
   "/identity/administration/deploy-group-template": React.lazy(() => import('./views/identity/administration/DeployGroupTemplate')), 
@@ -93,8 +91,6 @@ import React from 'react'
   "/security/defender/list-defender-tvm": React.lazy(() => import('./views/security/defender/ListVuln')), 
   "/teams-share/onedrive/list": React.lazy(() => import('./views/teams-share/onedrive/OneDriveList')), 
   "/teams-share/sharepoint/list-sharepoint": React.lazy(() => import('./views/teams-share/sharepoint/SharepointList')), 
-  "/teams-share/sharepoint/sharepointFolders": React.lazy(() => import('./views/teams-share/sharepoint/Folders')), 
-
   "/teams-share/teams/list-team": React.lazy(() => import('./views/teams-share/teams/TeamsListTeam')), 
   "/teams-share/teams/view-team-settings": React.lazy(() => import('./views/teams-share/teams/ViewTeamSettings')), 
   "/teams-share/teams/add-team": React.lazy(() => import('./views/teams-share/teams/TeamsAddTeam')), 

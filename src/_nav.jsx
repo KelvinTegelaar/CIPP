@@ -586,11 +586,6 @@ const _nav = [
         name: 'SharePoint',
         to: '/teams-share/sharepoint/list-sharepoint',
       },
-      {
-        component: CNavItem,
-        name: 'Sharepoint Folders',
-        to: '/teams-share/sharepoint/Folders',
-      },
     ],
   },
   {

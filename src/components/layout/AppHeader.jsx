@@ -234,7 +234,7 @@ const AppHeader = () => {
                   style={{ marginLeft: '0.3em', marginTop: '0.3em' }}
                   className="switch-icon"
                   icon={'sun'}
-                  color="#003E9F"
+                  color="#f77f00"
                 />
               )}
             </div>

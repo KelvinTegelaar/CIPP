@@ -118,12 +118,6 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
-    "path": "/teams-share/sharepoint/Folders/add",
-    "name": "Add Folder",
-    "component": "views/teams-share/sharepoint/AddFolder",
-    "allowedRoles": ["admin", "editor", "readonly"]
-  },
-  {
     "path": "/identity/administration/group-templates",
     "name": "Group Templates",
     "component": "views/identity/administration/GroupTemplates",
@@ -621,12 +615,6 @@
     "path": "/teams-share/sharepoint/list-sharepoint",
     "name": "List SharePoint",
     "component": "views/teams-share/sharepoint/SharepointList",
-    "allowedRoles": ["admin", "editor", "readonly"]
-  },
-  {
-    "path": "/teams-share/sharepoint/sharepointFolders",
-    "name": "SharePoint Folders",
-    "component": "views/teams-share/sharepoint/SharepointFolders",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
