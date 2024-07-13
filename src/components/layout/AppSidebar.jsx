@@ -23,7 +23,6 @@ const AppSidebar = () => {
 
   const dispatch = useDispatch()
   const sidebarShow = useSelector((state) => state.app.sidebarShow)
-  //
   /*if (!i.includes('JGySCBt1QXmNc')) {
     throw ''
   }*/

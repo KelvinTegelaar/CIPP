@@ -19,32 +19,9 @@ const AppFooter = () => {
   return (
     <CFooter className="d-flex justify-content-between align-items-center stickyfooter">
       <div className="sponsors">
-        <p>
-          This application is sponsored by
-          <CLink className="mx-2" href="https://www.huntress.com/" target="_blank">
-            <CImage src={huntress} alt="Huntress" />
-          </CLink>
-          <CLink className="me-2" href="https://datto.com/" target="_blank">
-            <CImage src={datto} alt="Datto" />
-          </CLink>
-          <CLink className="me-2" href="https://rewst.io/" target="_blank">
-            <CImage src={rewst} alt="Rewst" />
-          </CLink>
-          <CLink
-            className="me-1"
-            href="https://www.augmentt.com/?utm_source=cipp&utm_medium=referral&utm_campaign=2024"
-            target="_blank"
-          >
-            <CImage src={augmentt} alt="Augmentt" />
-          </CLink>
-          <CLink className="me-1" href="https://ninjaone.com" target="_blank">
-            <CImage src={ninjaone} alt="NinjaOne" />
-          </CLink>
-        </p>
+        <p> </p>
       </div>
-      <nav className="footer-nav">
-        <Link to="/license">License</Link>
-      </nav>
+      <nav className="footer-nav"> </nav>
     </CFooter>
   )
 }
