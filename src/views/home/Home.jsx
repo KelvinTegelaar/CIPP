@@ -155,6 +155,11 @@ const TenantDashboard = () => {
       link: `/identity/administration/groups/add?customerId=${currentTenant.customerId}`,
       icon: faUserFriends,
     },
+    {
+      label: 'Add Folder',
+      link: `/teams-share/sharepoint/SharepointFolders/add`,
+      icon: faUserFriends,
+    },
   ]
   const filteredStandards = (count, type) => {
     const filteredStandards = standards?.filter((standard) => standard.Settings[type] === true)
