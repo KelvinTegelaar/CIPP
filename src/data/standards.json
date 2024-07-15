@@ -1889,6 +1889,18 @@
     "recommendedBy": ["CIS 3.0"]
   },
   {
+    "name": "standards.SPDisableLegacyWorkflows",
+    "cat": "SharePoint Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Disables the creation of new SharePoint 2010 and 2013 classic workflows and removes the 'Return to classic SharePoint' link on modern SharePoint list and library pages.",
+    "addedComponent": [],
+    "label": "Disable Legacy Workflows",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "powershellEquivalent": "Set-SPOTenant -DisableWorkflow2010 $true -DisableWorkflow2013 $true -DisableBackToClassic $true",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.SPDirectSharing",
     "cat": "SharePoint Standards",
     "tag": ["mediumimpact", "CIS"],
