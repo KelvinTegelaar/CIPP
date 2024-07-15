@@ -109,6 +109,17 @@ const ContactList = () => {
         reportName: `${tenant?.defaultDomainName}-Contacts-List`,
         path: '/api/ListContacts',
         columns,
+        tableProps: {
+          selectableRows: true,
+          actionsList: [
+            {
+              label: 'Remove selected Contacts',
+              color: 'danger',
+              modal: true,
+              modalUrl: `/api/RemoveContact?TenantFilter=${tenant.defaultDomainName}&GUID=!id`,
+            },
+          ],
+        },
         params: { TenantFilter: tenant?.defaultDomainName },
       }}
     />
