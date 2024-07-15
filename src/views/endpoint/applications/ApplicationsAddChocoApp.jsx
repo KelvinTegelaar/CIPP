@@ -87,7 +87,7 @@ const ApplyStandard = () => {
             <OnChange name={field}>
               {(value) => {
                 let template = foundPackages.data.Results.filter(function (obj) {
-                  console.log(value)
+                  //console.log(value)
                   return obj.packagename === value
                 })
                 onChange(template[0][set])
