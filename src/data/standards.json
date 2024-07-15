@@ -1676,6 +1676,129 @@
     "recommendedBy": ["CIS"]
   },
   {
+    "name": "standards.SpamFilterPolicy",
+    "cat": "Defender Standards",
+    "tag": ["mediumimpact"],
+    "helpText": "This standard creates a Spam filter policy similar to the default strict policy.",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Spam Action",
+        "name": "standards.SpamFilterPolicy.SpamAction",
+        "values": [
+          {
+            "label": "Move message to Junk Email folder",
+            "value": "MoveToJmf"
+          },
+          {
+            "label": "Quarantine the message",
+            "value": "Quarantine"
+          }
+        ]
+      },
+      {
+        "type": "Select",
+        "label": "Spam Quarantine Tag",
+        "name": "standards.SpamFilterPolicy.SpamQuarantineTag",
+        "values": [
+          {
+            "label": "AdminOnlyAccessPolicy",
+            "value": "AdminOnlyAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessPolicy",
+            "value": "DefaultFullAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessWithNotificationPolicy",
+            "value": "DefaultFullAccessWithNotificationPolicy"
+          }
+        ]
+      },
+      {
+        "type": "Select",
+        "label": "High Confidence Spam Quarantine Tag",
+        "name": "standards.SpamFilterPolicy.HighConfidenceSpamQuarantineTag",
+        "values": [
+          {
+            "label": "AdminOnlyAccessPolicy",
+            "value": "AdminOnlyAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessPolicy",
+            "value": "DefaultFullAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessWithNotificationPolicy",
+            "value": "DefaultFullAccessWithNotificationPolicy"
+          }
+        ]
+      },
+      {
+        "type": "Select",
+        "label": "Bulk Quarantine Tag",
+        "name": "standards.SpamFilterPolicy.BulkQuarantineTag",
+        "values": [
+          {
+            "label": "AdminOnlyAccessPolicy",
+            "value": "AdminOnlyAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessPolicy",
+            "value": "DefaultFullAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessWithNotificationPolicy",
+            "value": "DefaultFullAccessWithNotificationPolicy"
+          }
+        ]
+      },
+      {
+        "type": "Select",
+        "label": "Phish Quarantine Tag",
+        "name": "standards.SpamFilterPolicy.PhishQuarantineTag",
+        "values": [
+          {
+            "label": "AdminOnlyAccessPolicy",
+            "value": "AdminOnlyAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessPolicy",
+            "value": "DefaultFullAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessWithNotificationPolicy",
+            "value": "DefaultFullAccessWithNotificationPolicy"
+          }
+        ]
+      },
+      {
+        "type": "Select",
+        "label": "High Confidence Phish Quarantine Tag",
+        "name": "standards.SpamFilterPolicy.HighConfidencePhishQuarantineTag",
+        "values": [
+          {
+            "label": "AdminOnlyAccessPolicy",
+            "value": "AdminOnlyAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessPolicy",
+            "value": "DefaultFullAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessWithNotificationPolicy",
+            "value": "DefaultFullAccessWithNotificationPolicy"
+          }
+        ]
+      }
+    ],
+    "label": "Default Spam Filter Policy",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "powershellEquivalent": "New-HostedContentFilterPolicy or Set-HostedContentFilterPolicy",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.intuneDeviceRetirementDays",
     "cat": "Intune Standards",
     "tag": ["lowimpact"],
