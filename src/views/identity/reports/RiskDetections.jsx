@@ -114,7 +114,7 @@ const RiskDetections = () => {
             TenantFilter: tenant?.defaultDomainName,
             Endpoint: `identityProtection/riskDetections`,
             $count: true,
-            $orderby: 'detectedDateTime',
+            $orderby: 'detectedDateTime desc',
           },
         }}
       />
