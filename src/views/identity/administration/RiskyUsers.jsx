@@ -92,7 +92,7 @@ const RiskyUsers = () => {
             TenantFilter: tenant?.defaultDomainName,
             Endpoint: `identityProtection/riskyUsers`,
             $count: true,
-            $orderby: 'riskLastUpdatedDateTime',
+            $orderby: 'riskLastUpdatedDateTime desc',
           },
         }}
       />
