@@ -47,7 +47,18 @@ const OffboardingWizard = () => {
     data: users = [],
     isFetching: usersIsFetching,
     error: usersError,
-  } = useListUsersQuery({ tenantDomain })
+  } = useGenericGetRequestQuery({
+    path: `/api/ListGraphRequest`,
+    params: {
+      TenantFilter: tenantDomain,
+      Endpoint: 'users',
+      $select:
+        'id,displayName,givenName,mail,mailNickname,proxyAddresses,usageLocation,userPrincipalName,userType,assignedLicenses,onPremisesSyncEnabled',
+      $count: true,
+      $orderby: 'displayName',
+      $top: 999,
+    },
+  })
 
   const {
     data: recipients = [],
@@ -71,6 +82,7 @@ const OffboardingWizard = () => {
       HideFromGAL: values.HideFromGAL,
       DisableSignIn: values.DisableSignIn,
       RemoveGroups: values.RemoveGroups,
+      removeCalendarInvites: values.removeCalendarInvites,
       RemoveLicenses: values.RemoveLicenses,
       ResetPass: values.ResetPass,
       RevokeSessions: values.RevokeSessions,
@@ -121,7 +133,7 @@ const OffboardingWizard = () => {
           <RFFSelectSearch
             multi
             label={'Users in ' + tenantDomain}
-            values={users?.map((user) => ({
+            values={users?.Results?.map((user) => ({
               value: user.userPrincipalName,
               name: `${user.displayName} <${user.userPrincipalName}>`,
             }))}
@@ -164,6 +176,7 @@ const OffboardingWizard = () => {
               <RFFCFormSwitch name="DisableSignIn" label="Disable Sign in" />
               <RFFCFormSwitch name="ResetPass" label="Reset Password" />
               <RFFCFormSwitch name="RemoveGroups" label="Remove from all groups" />
+              <RFFCFormSwitch name="removeCalendarInvites" label="Cancel all calendar invites" />
               <RFFCFormSwitch name="HideFromGAL" label="Hide from Global Address List" />
               <RFFCFormSwitch name="DeleteUser" label="Delete user" />
             </CCol>
@@ -177,36 +190,30 @@ const OffboardingWizard = () => {
               <RFFSelectSearch
                 label="Give other user full access on mailbox without automapping"
                 multi
-                values={users
-                  ?.filter((x) => x.mail)
-                  .map((user) => ({
-                    value: user.mail,
-                    name: `${user.displayName} <${user.mail}>`,
-                  }))}
+                values={users.Results?.filter((x) => x.mail).map((user) => ({
+                  value: user.mail,
+                  name: `${user.displayName} <${user.mail}>`,
+                }))}
                 placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                 name="AccessNoAutomap"
               />
               <RFFSelectSearch
                 label="Give other user full access on mailbox with automapping"
                 multi
-                values={users
-                  ?.filter((x) => x.mail)
-                  .map((user) => ({
-                    value: user.mail,
-                    name: `${user.displayName} <${user.mail}>`,
-                  }))}
+                values={users.Results?.filter((x) => x.mail).map((user) => ({
+                  value: user.mail,
+                  name: `${user.displayName} <${user.mail}>`,
+                }))}
                 placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                 name="AccessAutomap"
               />
               <RFFSelectSearch
                 label="Give other user full access on Onedrive"
                 multi
-                values={users
-                  ?.filter((x) => x.mail)
-                  .map((user) => ({
-                    value: user.mail,
-                    name: `${user.displayName} <${user.mail}>`,
-                  }))}
+                values={users.Results?.filter((x) => x.mail).map((user) => ({
+                  value: user.mail,
+                  name: `${user.displayName} <${user.mail}>`,
+                }))}
                 placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                 name="OnedriveAccess"
               />
@@ -297,7 +304,7 @@ const OffboardingWizard = () => {
                           >
                             <h5 className="mb-0">Selected User:</h5>
                             <span>
-                              {users.find((x) => x.userPrincipalName === user.value)
+                              {users.Results?.find((x) => x.userPrincipalName === user.value)
                                 .onPremisesSyncEnabled === true ? (
                                 <CTooltip content="This user is AD sync enabled, offboarding will fail for some steps">
                                   <FontAwesomeIcon
@@ -393,6 +400,14 @@ const OffboardingWizard = () => {
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Cancel all calendar invites
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.removeCalendarInvites ? faCheck : faTimes}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Hide from Global Address List
                           <FontAwesomeIcon
                             color="#f77f00"
@@ -438,6 +453,14 @@ const OffboardingWizard = () => {
                             color="#f77f00"
                             size="lg"
                             icon={props.values.forward ? faCheck : faTimes}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Delete User
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.DeleteUser ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                       </CListGroup>
