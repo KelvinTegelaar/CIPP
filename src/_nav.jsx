@@ -749,7 +749,7 @@ const _nav = [
   },
   {
     component: CNavGroup,
-    name: ' Room Management',
+    name: 'Room Management',
     section: 'Email & Exchange',
     to: '/rooms/management',
     icon: <FontAwesomeIcon icon={faToolbox} className="nav-icon" />,
