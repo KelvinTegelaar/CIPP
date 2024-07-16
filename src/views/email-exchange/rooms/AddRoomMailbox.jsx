@@ -41,6 +41,8 @@ const AddRoomMailbox = () => {
     // window.alert(JSON.stringify(shippedValues))
     genericPostRequest({ path: '/api/AddRoomMailbox', values: shippedValues })
   }
+
+  // TODO: Add functionality to set location, office, floor and other things here
   return (
     <CippPage title="Add Room">
       <CCard className="content-card">
