@@ -741,6 +741,12 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/rooms/management/add-room",
+    "name": "Add Room",
+    "component": "views/email-exchange/rooms/AddRoomMailbox",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/email/tools/mailbox-restore-wizard",
     "name": "Mailbox Restore Wizard",
     "component": "views/email-exchange/tools/MailboxRestoreWizard",
