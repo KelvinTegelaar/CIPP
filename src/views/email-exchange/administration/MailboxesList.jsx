@@ -244,7 +244,7 @@ const MailboxList = () => {
         <TitleButton href="/email/administration/add-shared-mailbox" title="Add Shared Mailbox" />
       </div>
       <div style={{ marginLeft: '10px' }}>
-        <TitleButton href="/rooms/management/add-room" title="Add Room" />
+        <TitleButton href="/resources/management/add-room" title="Add Room" />
       </div>
     </div>
   )

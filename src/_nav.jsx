@@ -749,20 +749,20 @@ const _nav = [
   },
   {
     component: CNavGroup,
-    name: 'Room Management',
+    name: 'Resource Management',
     section: 'Email & Exchange',
-    to: '/rooms/management',
+    to: '/resources/management',
     icon: <FontAwesomeIcon icon={faToolbox} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
         name: 'Rooms',
-        to: '/rooms/management/list-rooms',
+        to: '/resources/management/list-rooms',
       },
       {
         component: CNavItem,
         name: 'Room Lists',
-        to: '/rooms/management/room-lists',
+        to: '/resources/management/room-lists',
       },
     ],
   },
