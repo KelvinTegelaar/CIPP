@@ -19,6 +19,7 @@ import {
   faUserShield,
   faEnvelope,
   faToolbox,
+  faDownload,
 } from '@fortawesome/free-solid-svg-icons'
 
 const _nav = [
@@ -44,6 +45,11 @@ const _nav = [
         component: CNavItem,
         name: 'Users',
         to: '/identity/administration/users',
+      },
+      {
+        component: CNavItem,
+        name: 'Risky Users',
+        to: '/identity/administration/risky-users',
       },
       {
         component: CNavItem,
@@ -114,6 +120,11 @@ const _nav = [
         name: 'AAD Connect Report',
         to: '/identity/reports/azure-ad-connect-report',
       },
+      {
+        component: CNavItem,
+        name: 'Risk Detections',
+        to: '/identity/reports/risk-detections',
+      },
     ],
   },
   {
@@ -154,6 +165,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Authentication Methods',
+        to: '/tenant/administration/authentication-methods',
+      },
+      {
+        component: CNavItem,
         name: 'Tenant Onboarding',
         to: '/tenant/administration/tenant-onboarding',
       },
@@ -166,6 +182,25 @@ const _nav = [
         component: CNavItem,
         name: 'Partner Relationships',
         to: '/tenant/administration/partner-relationships',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
+    name: 'Configuration Backup',
+    section: 'Tenant Administration',
+    to: '/cipp/gdap',
+    icon: <FontAwesomeIcon icon={faDownload} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Backup Wizard',
+        to: '/tenant/backup/backup-wizard',
+      },
+      {
+        component: CNavItem,
+        name: 'Restore Wizard',
+        to: '/tenant/backup/restore-wizard',
       },
     ],
   },
@@ -600,6 +635,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Deleted Mailboxes',
+        to: '/email/administration/deleted-mailboxes',
+      },
+      {
+        component: CNavItem,
         name: 'Mailbox Rules',
         to: '/email/administration/mailbox-rules',
       },
@@ -780,6 +820,11 @@ const _nav = [
         component: CNavItem,
         name: 'Extensions Settings',
         to: '/cipp/extensions',
+      },
+      {
+        component: CNavItem,
+        name: 'Extension Sync',
+        to: '/cipp/extension-sync',
       },
       {
         component: CNavItem,
