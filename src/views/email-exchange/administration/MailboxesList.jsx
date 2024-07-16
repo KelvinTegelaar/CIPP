@@ -237,14 +237,22 @@ const MailboxList = () => {
       maxWidth: '150px',
     },
   ]
-  const titleButton = (
-    <TitleButton href="/email/administration/add-shared-mailbox" title="Add Shared Mailbox" />
+
+  const titleButtons = (
+    <div style={{ display: 'flex', alignItems: 'right' }}>
+      <div style={{ marginLeft: '10px' }}>
+        <TitleButton href="/email/administration/add-shared-mailbox" title="Add Shared Mailbox" />
+      </div>
+      <div style={{ marginLeft: '10px' }}>
+        <TitleButton href="/rooms/management/add-room" title="Add Room" />
+      </div>
+    </div>
   )
 
   return (
     <CippPageList
       capabilities={{ allTenants: false, helpContext: 'https://google.com' }}
-      titleButton={titleButton}
+      titleButton={titleButtons}
       title="Mailboxes"
       datatable={{
         keyField: 'id',
