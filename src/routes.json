@@ -618,6 +618,18 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/teams-share/sharepoint/addsite",
+    "name": "Add SharePoint Site",
+    "component": "views/teams-share/sharepoint/AddSite",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/teams-share/sharepoint/addsitebulk",
+    "name": "Add SharePoint Site Bulk",
+    "component": "views/teams-share/sharepoint/AddSiteBulk",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/teams-share/teams",
     "name": "Teams",
     "allowedRoles": ["admin", "editor", "readonly"]
