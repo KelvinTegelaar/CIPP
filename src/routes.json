@@ -229,6 +229,20 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/tenant/backup/backup-wizard",
+    "name": "Backup",
+    "component": "views/tenant/backup/CreateBackup",
+
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/backup/restore-wizard",
+    "name": "Restore Backup",
+    "component": "views/tenant/backup/RestoreBackup",
+
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/tenant/administration/tenants",
     "name": "Tenants",
     "component": "views/tenant/administration/Tenants",
@@ -922,6 +936,12 @@
     "path": "/cipp/extensions",
     "name": "Extensions Settings",
     "component": "views/cipp/Extensions",
+    "allowedRoles": ["admin"]
+  },
+  {
+    "path": "/cipp/extension-sync",
+    "name": "Extension Sync",
+    "component": "views/cipp/ExtensionSync",
     "allowedRoles": ["admin"]
   },
   {
