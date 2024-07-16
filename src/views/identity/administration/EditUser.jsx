@@ -169,7 +169,7 @@ const EditUser = () => {
           )}
           {user?.onPremisesSyncEnabled === true && (
             <CCallout color="warning">
-              Warning! This user Active Directory sync enabled. Edits should be made from a Domain
+              Warning! This user is Active Directory sync enabled. Edits should be made from a Domain
               Controller.
             </CCallout>
           )}
