@@ -89,5 +89,10 @@
     "name": "DepTokenExpiry",
     "label": "Alert on expiring DEP tokens",
     "recommendedRunInterval": "1d"
+  },
+  {
+    "name": "SoftDeletedMailboxes",
+    "label": "Alert on soft deleted mailboxes",
+    "recommendedRunInterval": "1d"
   }
 ]

@@ -247,11 +247,13 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modal: true,
             modalType: 'POST',
             modalBody: {
-              user: row.userPrincipalName,
+              username: row.userPrincipalName,
+              userid: row.userPrincipalName,
               TenantFilter: tenant.defaultDomainName,
+              DisableForwarding: true,
               message: row.message,
             },
-            modalUrl: `/api/ExecDisableEmailForward`,
+            modalUrl: `/api/ExecEmailForward`,
             modalMessage: 'Are you sure you want to disable forwarding of this users emails?',
           },
           {
@@ -293,7 +295,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             label: 'Revoke all user sessions',
             color: 'danger',
             modal: true,
-            modalUrl: `/api/ExecRevokeSessions?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalUrl: `/api/ExecRevokeSessions?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}&Username=${row.userPrincipalName}`,
             modalMessage: 'Are you sure you want to revoke this users sessions?',
           },
           {
@@ -688,10 +690,12 @@ const Users = (row) => {
               modal: true,
               modalType: 'POST',
               modalBody: {
-                user: '!userPrincipalName',
+                username: '!userPrincipalName',
+                userid: '!userPrincipalName',
                 TenantFilter: tenant.defaultDomainName,
+                DisableForwarding: true,
               },
-              modalUrl: `/api/ExecDisableEmailForward`,
+              modalUrl: `/api/ExecEmailForward`,
               modalMessage: 'Are you sure you want to disable forwarding of these users emails?',
             },
             {
