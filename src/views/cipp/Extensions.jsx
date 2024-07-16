@@ -21,7 +21,7 @@ import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import CippButtonCard from 'src/components/contentcards/CippButtonCard.jsx'
 import { RFFCFormInput, RFFCFormSwitch } from 'src/components/forms/RFFComponents.jsx'
 import { Form } from 'react-final-form'
-import { SettingsExtensionMappings } from './app-settings/SettingsExtensionMappings'
+import ExtensionMappings from 'src/views/cipp/ExtensionMappings.jsx'
 
 export default function CIPPExtensions() {
   const [listBackend, listBackendResult] = useLazyGenericGetRequestQuery()
@@ -42,19 +42,23 @@ export default function CIPPExtensions() {
     })
   }
 
-  const ButtonGenerate = (integrationType, forceSync) => (
+  const ButtonGenerate = (integrationType, forceSync, disabled) => (
     <>
-      <CButton className="me-2" form={integrationType} type="submit">
-        {extensionConfigResult.isFetching && (
-          <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-        )}
-        Set Extension Settings
+      <CButton disabled={disabled} className="me-2" form={integrationType} type="submit">
+        <FontAwesomeIcon
+          icon={extensionConfigResult.isFetching ? 'circle-notch' : 'save'}
+          spin={extensionConfigResult.isFetching}
+          className="me-2"
+        />
+        Save
       </CButton>
-      <CButton onClick={() => onSubmitTest(integrationType)} className="me-2">
-        {listExtensionTestResult.isFetching && (
-          <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-        )}
-        Test Extension
+      <CButton disabled={disabled} onClick={() => onSubmitTest(integrationType)} className="me-2">
+        <FontAwesomeIcon
+          icon={listExtensionTestResult.isFetching ? 'circle-notch' : 'flask'}
+          spin={listExtensionTestResult.isFetching}
+          className="me-2"
+        />
+        Test
       </CButton>
       {forceSync && (
         <CButton
@@ -63,11 +67,14 @@ export default function CIPPExtensions() {
               path: 'api/ExecExtensionSync?Extension=' + integrationType,
             })
           }
+          disabled={disabled}
           className="me-2"
         >
-          {listSyncExtensionResult.isFetching && (
-            <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-          )}
+          <FontAwesomeIcon
+            icon={listSyncExtensionResult.isFetching ? 'circle-notch' : 'sync'}
+            spin={listSyncExtensionResult.isFetching}
+            className="me-2"
+          />
           Force Sync
         </CButton>
       )}
@@ -83,6 +90,7 @@ export default function CIPPExtensions() {
     queryString.set('tab', tab.toString())
     navigate(`${location.pathname}?${queryString}`)
   }
+  const hostedMetaContent = document.querySelector('meta[name="hosted"]')?.getAttribute('content')
 
   return (
     <CippPage title="Settings" tenantSelector={false}>
@@ -105,12 +113,25 @@ export default function CIPPExtensions() {
             <CippLazy visible={active === idx}>
               <CRow className="mb-3">
                 <CCol sm={12} md={integration.mappingRequired ? 4 : 12} className="mb-3">
+                  {hostedMetaContent === 'true' && integration.disableWhenhosted && (
+                    <CippCallout color="warning">
+                      This extension requires activation in the management portal for hosted
+                      clients.
+                    </CippCallout>
+                  )}
                   <CippButtonCard
                     title={integration.name}
                     titleType="big"
                     isFetching={listBackendResult.isFetching}
-                    CardButton={ButtonGenerate(integration.type, integration.forceSync)}
+                    CardButton={ButtonGenerate(
+                      integration.type,
+                      integration.forceSyncButton,
+                      (hostedMetaContent === 'true' && integration.disableWhenhosted) ||
+                        listBackendResult.isFetching ||
+                        false,
+                    )}
                     key={idx}
+                    className=""
                   >
                     <p>{integration.helpText}</p>
                     <Form
@@ -178,11 +199,22 @@ export default function CIPPExtensions() {
                         )}
                       </CippCallout>
                     )}
+                    {listSyncExtensionResult?.data?.Results && (
+                      <CippCallout color={listSyncExtensionResult.isSuccess ? 'success' : 'danger'}>
+                        {listSyncExtensionResult?.data?.Results}
+                      </CippCallout>
+                    )}
                   </CippButtonCard>
                 </CCol>
-                <CCol sm={12} md={8}>
-                  <SettingsExtensionMappings type={integration.type} />
-                </CCol>
+                {integration.mappingRequired && (
+                  <CCol sm={12} md={8}>
+                    <ExtensionMappings
+                      type={integration.type}
+                      fieldMappings={integration.fieldMapping ?? false}
+                      autoMapSyncApi={integration.autoMapSyncApi ?? false}
+                    />
+                  </CCol>
+                )}
               </CRow>
             </CippLazy>
           </CTabPane>
