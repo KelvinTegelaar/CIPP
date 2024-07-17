@@ -127,6 +127,14 @@ const MailboxList = () => {
                 'Are you sure you want to unhide this mailbox from the global address list? Remember this will not work if the user is AD Synched.',
             },
             {
+              label: 'Start Managed Folder Assistant',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecStartManagedFolderAssistant?TenantFilter=${tenant.defaultDomainName}&ID=${row.UPN}`,
+              modalMessage:
+                'Are you sure you want to start the managed folder assistant for the user?',
+            },
+            {
               label: 'Set Send Quota',
               color: 'info',
               modal: true,
@@ -278,6 +286,14 @@ const MailboxList = () => {
               modalUrl: `/api/ExecHideFromGAL?TenantFilter=${tenant.defaultDomainName}&ID=!UPN`,
               modalMessage:
                 'Are you sure you want to unhide this mailbox from the global address list? Remember this will not work if the user is AD Synched.',
+            },
+            {
+              label: 'Start Managed Folder Assistant',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecStartManagedFolderAssistant?TenantFilter=${tenant.defaultDomainName}&ID=!UPN`,
+              modalMessage:
+                'Are you sure you want to start the managed folder assistant for these users?',
             },
             {
               label: 'Set Send Quota',
