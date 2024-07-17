@@ -91,6 +91,8 @@ import React from 'react'
   "/security/defender/list-defender-tvm": React.lazy(() => import('./views/security/defender/ListVuln')), 
   "/teams-share/onedrive/list": React.lazy(() => import('./views/teams-share/onedrive/OneDriveList')), 
   "/teams-share/sharepoint/list-sharepoint": React.lazy(() => import('./views/teams-share/sharepoint/SharepointList')), 
+  "/teams-share/sharepoint/addsite": React.lazy(() => import('./views/teams-share/sharepoint/AddSite')), 
+  "/teams-share/sharepoint/addsitebulk": React.lazy(() => import('./views/teams-share/sharepoint/AddSiteBulk')), 
   "/teams-share/teams/list-team": React.lazy(() => import('./views/teams-share/teams/TeamsListTeam')), 
   "/teams-share/teams/view-team-settings": React.lazy(() => import('./views/teams-share/teams/ViewTeamSettings')), 
   "/teams-share/teams/add-team": React.lazy(() => import('./views/teams-share/teams/TeamsAddTeam')), 
