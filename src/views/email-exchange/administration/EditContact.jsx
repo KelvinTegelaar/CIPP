@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { CButton, CCallout, CCol, CForm, CRow, CSpinner } from '@coreui/react'
+import countryList from 'src/data/countryList'
 import useQuery from 'src/hooks/useQuery'
 import { useDispatch, useSelector } from 'react-redux'
 import { Form } from 'react-final-form'
-import { RFFCFormInput } from 'src/components/forms'
+import { RFFCFormInput, RFFSelectSearch } from 'src/components/forms'
 import { useListContactsQuery } from 'src/store/api/users'
 import { CippCodeBlock, ModalService } from 'src/components/utilities'
 import { useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faEdit, faEye } from '@fortawesome/free-solid-svg-icons'
 import { CippContentCard, CippPage } from 'src/components/layout'
+import { required } from 'src/validators'
 
 const EditContact = () => {
   const dispatch = useDispatch()
@@ -45,11 +47,13 @@ const EditContact = () => {
         values.addedAttributes.push({ Key: key, Value: values.defaultAttributes[key].Value })
       })
     }
+    const countryValue = values.country ? values.country.value : ''
+
     const shippedValues = {
       BusinessPhone: values.businessPhones,
       City: values.city,
       CompanyName: values.companyName,
-      Country: values.country,
+      Country: countryValue,
       mail: values.mail,
       DisplayName: values.displayName,
       firstName: values.givenName,
@@ -66,6 +70,7 @@ const EditContact = () => {
   }
   const [addedAttributes, setAddedAttribute] = React.useState(0)
   const currentSettings = useSelector((state) => state.app)
+  const country = useSelector((state) => state.app.usageLocation)
 
   // Extract the first contact from the array
   const contactData = Contact.length > 0 ? Contact[0] : {}
@@ -88,7 +93,10 @@ const EditContact = () => {
     streetAddress: address.street || '',
     postalCode: address.postalCode || '',
     city: address.city || '',
-    country: address.countryOrRegion || '',
+    country: {
+      value: address.countryOrRegion ? address.countryOrRegion : country?.value,
+      label: address.countryOrRegion ? address.countryOrRegion : country?.label,
+    },
     mobilePhone: mobilePhone ? mobilePhone.number : '',
     businessPhones: businessPhones || '',
   }
@@ -204,11 +212,15 @@ const EditContact = () => {
                               />
                             </CCol>
                             <CCol md={6}>
-                              <RFFCFormInput
+                              <RFFSelectSearch
+                                values={countryList.map(({ Code, Name }) => ({
+                                  value: Code,
+                                  name: Name,
+                                }))}
                                 name="country"
+                                placeholder="Type to search..."
                                 label="Country"
-                                type="text"
-                                disabled={formDisabled}
+                                validate={required}
                               />
                             </CCol>
                           </CRow>
