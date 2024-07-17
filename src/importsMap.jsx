@@ -118,7 +118,7 @@ import React from 'react'
   "/email/administration/add-contact": React.lazy(() => import('./views/email-exchange/administration/AddContact')), 
   "/email/administration/edit-calendar-permissions": React.lazy(() => import('./views/email-exchange/administration/EditCalendarPermissions')), 
   "/email/administration/view-mobile-devices": React.lazy(() => import('./views/email-exchange/administration/ViewMobileDevices')), 
-  "/email/administration/edit-contact": React.lazy(() => import('./views/email-exchange/administration/EditContact.jsx')),
+  "/email/administration/edit-contact": React.lazy(() => import('./views/email-exchange/administration/EditContact')),
   "/email/administration/mailboxes": React.lazy(() => import('./views/email-exchange/administration/MailboxesList')), 
   "/email/administration/deleted-mailboxes": React.lazy(() => import('./views/email-exchange/administration/DeletedMailboxes')), 
   "/email/administration/mailbox-rules": React.lazy(() => import('./views/email-exchange/administration/MailboxRuleList')), 
