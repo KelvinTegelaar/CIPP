@@ -2,7 +2,11 @@ name: Azure Static Web Apps CI/CD
 
 on:
   workflow_dispatch:
- 
+  
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - Dev
 jobs:
   build_and_deploy_job:
     runs-on: ubuntu-latest
@@ -27,6 +31,7 @@ jobs:
           ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
     runs-on: ubuntu-latest
     name: Close Pull Request Job
     steps:
