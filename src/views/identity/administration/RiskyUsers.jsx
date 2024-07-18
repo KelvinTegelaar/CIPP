@@ -3,16 +3,23 @@ import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
 import { CButton } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEllipsisV, faMinusCircle, faPaperPlane } from '@fortawesome/free-solid-svg-icons'
+import { faEllipsisV, faMinusCircle, faPaperPlane, faEye } from '@fortawesome/free-solid-svg-icons'
 import { CippActionsOffcanvas } from 'src/components/utilities'
+import { Link, useSearchParams } from 'react-router-dom'
 
 const RiskyUsers = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
 
   const Offcanvas = (row, rowIndex, formatExtraData) => {
     const [ocVisible, setOCVisible] = useState(false)
+    const viewLink = `/identity/administration/ViewBec?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}&ID=${row.userPrincipalName}`
     return (
       <>
+        <Link to={viewLink}>
+          <CButton size="sm" variant="ghost" color="success">
+            <FontAwesomeIcon icon={faEye} />
+          </CButton>
+        </Link>
         <CButton size="sm" color="link" onClick={() => setOCVisible(true)}>
           <FontAwesomeIcon icon={faEllipsisV} />
         </CButton>
@@ -57,6 +64,11 @@ const RiskyUsers = () => {
             },
           ]}
           actions={[
+            {
+              label: 'Research Compromised Account',
+              link: `/identity/administration/ViewBec?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}&ID=${row.userPrincipalName}`,
+              color: 'info',
+            },
             {
               label: 'Dismiss User Risk',
               color: 'info',
