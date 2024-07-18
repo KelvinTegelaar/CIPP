@@ -42,7 +42,7 @@ Audit Log Alerts are processed in near real-time.
 - Alert on expiring APN certificates
 - Alert on expiring VPP tokens
 - Alert on expiring DEP tokens
-- Alert on soft deleted mailboxes'
+- Alert on soft deleted mailboxes
 
 ### Available Template Audit Log Alerts
 

@@ -3,7 +3,7 @@
 ### Generating Invites
 
 {% hint style="info" %}
-**Please note:** For a smooth onboarding process, it is recommended to use the Tenant Onboading Wizard.  
+**Please note:** For a smooth onboarding process, it is recommended to use the [Tenant Onboarding Wizard](tenant-onboarding.md).  
 This will ensure that the correct roles are mapped to the GDAP relationship, and test that the CIPP-SAM application is correctly pushed to the tenant.  
 The invite wizard is part of the Tenant Onboarding flow, unless an already existing pending invite is selected.
 {% endhint %}
