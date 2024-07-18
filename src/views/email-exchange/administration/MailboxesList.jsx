@@ -86,15 +86,21 @@ const MailboxList = () => {
               color: 'info',
               modal: true,
               modalUrl: `/api/ExecConvertToSharedMailbox?TenantFilter=${tenant.defaultDomainName}&ID=${row.UPN}`,
-              modalMessage: 'Are you sure you want to convert this user to a shared mailbox?',
+              modalMessage: 'Are you sure you want to convert this mailbox to a shared mailbox?',
             },
             {
               label: 'Convert to User Mailbox',
               color: 'info',
               modal: true,
               modalUrl: `/api/ExecConvertToSharedMailbox?TenantFilter=${tenant.defaultDomainName}&ID=${row.UPN}&ConvertToUser=true`,
-              modalMessage:
-                'Are you sure you want to convert this shared mailbox to a user mailbox?',
+              modalMessage: 'Are you sure you want to convert this mailbox to a user mailbox?',
+            },
+            {
+              label: 'Convert to Room Mailbox',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecConvertToRoomMailbox?TenantFilter=${tenant.defaultDomainName}&ID=${row.UPN}`,
+              modalMessage: 'Are you sure you want to convert this mailbox to a Room mailbox?',
             },
             {
               label: 'Copy Sent Items to Shared Mailbox',
@@ -125,6 +131,14 @@ const MailboxList = () => {
               modalUrl: `/api/ExecHideFromGAL?TenantFilter=${tenant.defaultDomainName}&ID=${row.UPN}`,
               modalMessage:
                 'Are you sure you want to unhide this mailbox from the global address list? Remember this will not work if the user is AD Synched.',
+            },
+            {
+              label: 'Start Managed Folder Assistant',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecStartManagedFolderAssistant?TenantFilter=${tenant.defaultDomainName}&ID=${row.UPN}`,
+              modalMessage:
+                'Are you sure you want to start the managed folder assistant for the user?',
             },
             {
               label: 'Set Send Quota',
@@ -231,14 +245,22 @@ const MailboxList = () => {
       maxWidth: '150px',
     },
   ]
-  const titleButton = (
-    <TitleButton href="/email/administration/add-shared-mailbox" title="Add Shared Mailbox" />
+
+  const titleButtons = (
+    <div style={{ display: 'flex', alignItems: 'right' }}>
+      <div style={{ marginLeft: '10px' }}>
+        <TitleButton href="/email/administration/add-shared-mailbox" title="Add Shared Mailbox" />
+      </div>
+      <div style={{ marginLeft: '10px' }}>
+        <TitleButton href="/resources/management/add-room" title="Add Room" />
+      </div>
+    </div>
   )
 
   return (
     <CippPageList
       capabilities={{ allTenants: false, helpContext: 'https://google.com' }}
-      titleButton={titleButton}
+      titleButton={titleButtons}
       title="Mailboxes"
       datatable={{
         keyField: 'id',
@@ -253,15 +275,21 @@ const MailboxList = () => {
               color: 'info',
               modal: true,
               modalUrl: `/api/ExecConvertToSharedMailbox?TenantFilter=${tenant.defaultDomainName}&ID=!UPN`,
-              modalMessage: 'Are you sure you want to convert this user to a shared mailbox?',
+              modalMessage: 'Are you sure you want to convert these mailboxes to shared mailboxes?',
             },
             {
               label: 'Convert to User Mailbox',
               color: 'info',
               modal: true,
               modalUrl: `/api/ExecConvertToSharedMailbox?TenantFilter=${tenant.defaultDomainName}&ID=!UPN&ConvertToUser=true`,
-              modalMessage:
-                'Are you sure you want to convert this shared mailbox to a user mailbox?',
+              modalMessage: 'Are you sure you want to convert these mailboxes to user mailboxes?',
+            },
+            {
+              label: 'Convert to Room Mailbox',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecConvertToRoomMailbox?TenantFilter=${tenant.defaultDomainName}&ID=!UPN`,
+              modalMessage: 'Are you sure you want to convert these mailboxes to Room mailboxes?',
             },
             {
               label: 'Hide from Global Address List',
@@ -278,6 +306,14 @@ const MailboxList = () => {
               modalUrl: `/api/ExecHideFromGAL?TenantFilter=${tenant.defaultDomainName}&ID=!UPN`,
               modalMessage:
                 'Are you sure you want to unhide this mailbox from the global address list? Remember this will not work if the user is AD Synched.',
+            },
+            {
+              label: 'Start Managed Folder Assistant',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecStartManagedFolderAssistant?TenantFilter=${tenant.defaultDomainName}&ID=!UPN`,
+              modalMessage:
+                'Are you sure you want to start the managed folder assistant for these users?',
             },
             {
               label: 'Set Send Quota',
@@ -334,6 +370,7 @@ const MailboxList = () => {
             filter: '"SharedMailboxWithLicense":true',
           },
           { filterName: 'Shared Mailboxes', filter: '"recipientTypeDetails":"SharedMailbox"' },
+          { filterName: 'Room mailboxes', filter: '"recipientTypeDetails":"RoomMailbox"' },
           { filterName: 'Has an alias', filter: '"AdditionalEmailAddresses":"' },
         ],
       }}

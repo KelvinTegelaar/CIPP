@@ -235,8 +235,9 @@ const AlertWizard = () => {
                                     <RFFSelectSearch
                                       values={[
                                         { value: 'eq', name: 'Equals to' },
-                                        { value: 'like', name: 'Like' },
                                         { value: 'ne', name: 'Not Equals to' },
+                                        { value: 'like', name: 'Like' },
+                                        { value: 'notlike', name: 'Not like' },
                                         { value: 'notmatch', name: 'Does not match' },
                                         { value: 'gt', name: 'Greater than' },
                                         { value: 'lt', name: 'Less than' },

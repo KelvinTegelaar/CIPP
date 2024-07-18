@@ -741,15 +741,21 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
-    "path": "/rooms/management/list-rooms",
+    "path": "/resources/management/list-rooms",
     "name": "Rooms",
     "component": "views/email-exchange/rooms/ListRooms",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
-    "path": "/rooms/management/room-lists",
+    "path": "/resources/management/room-lists",
     "name": "Room Lists",
     "component": "views/email-exchange/rooms/ListRoomLists",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/resources/management/add-room",
+    "name": "Add Room",
+    "component": "views/email-exchange/rooms/AddRoomMailbox",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
