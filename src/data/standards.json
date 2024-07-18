@@ -1255,30 +1255,17 @@
             "value": "disable"
           }
         ]
+      },
+      {
+        "type": "input",
+        "name": "standards.UserSubmissions.email",
+        "label": "Destination email address"
       }
     ],
     "label": "Set the state of the built-in Report button in Outlook",
     "impact": "Medium Impact",
     "impactColour": "warning",
-    "powershellEquivalent": "New-ReportSubmissionPolicy or Set-ReportSubmissionPolicy",
-    "recommendedBy": []
-  },
-  {
-    "name": "standards.UserReportDestinationEmail",
-    "cat": "Exchange Standards",
-    "tag": ["mediumimpact"],
-    "helpText": "Sets the destination for email when users report them as spam or phishing. Works well together with the 'Set the state of the built-in Report button in Outlook standard'.",
-    "addedComponent": [
-      {
-        "type": "input",
-        "name": "standards.UserReportDestinationEmail.Email",
-        "label": "Destination email address"
-      }
-    ],
-    "label": "Set the destination email for user reported emails",
-    "impact": "Medium Impact",
-    "impactColour": "warning",
-    "powershellEquivalent": "New-ReportSubmissionRule or Set-ReportSubmissionRule",
+    "powershellEquivalent": "New-ReportSubmissionPolicy or Set-ReportSubmissionPolicy and New-ReportSubmissionRule or Set-ReportSubmissionRule",
     "recommendedBy": []
   },
   {
