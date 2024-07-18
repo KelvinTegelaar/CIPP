@@ -562,8 +562,7 @@ const Users = (row) => {
               color: 'info',
               modal: true,
               modalUrl: `/api/ExecResetPass?MustChange=false&TenantFilter=!Tenant&ID=!userPrincipalName&displayName=!displayName`,
-              modalMessage:
-                'Are you sure you want to reset the password for these users? The users must change their password at next logon.',
+              modalMessage: 'Are you sure you want to reset the password for these users?',
             },
             {
               label: 'Block signin',
