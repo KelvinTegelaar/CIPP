@@ -8,12 +8,20 @@ The Home page provides a comprehensive overview of the current tenant's details 
 
 The Home page includes the following sections:
 
-* Lighthouse Search: This is a universal search bar that allows you to quickly find the information you need.
-* Total Users: Displays the total number of users in the current tenant.
-* Total Licensed Users: Displays the total number of licensed users in the current tenant.
-* Global Admin Users: Shows the number of users with Global Admin rights.
-* Total Guests: Shows the total number of guest users in the current tenant.
-* Current Tenant: Displays various details about the current tenant, including name, ID, default domain name, status, creation date, AD Connect status, domains, capabilities, Sharepoint quota, applied standards, and partner relationships.
-* Portals: Contains links to various Microsoft 365 administration centers.
-* CIPP Actions: Contains links to various CIPP actions like editing the tenant, listing users, groups, and devices, and creating users and groups.
+- Portals: Contains links to various Microsoft 365 administration centers.
+- CIPP Actions: Contains links to various CIPP actions like editing the tenant, listing users, groups, and devices, and creating users and groups.
+- Lighthouse Search: This is a universal search bar that allows you to quickly find the information you need.
+- Current Tenant: Displays various details about the current tenant:
+  - Tenant Name
+  - Tenant ID
+  - Default Domain Name
+  - Domain Names
+  - Partner Relationships
+  - Tenant Capabilities
+  - Users: Total, Licensed, Guests and Global Admins. **Note:** The chart names are clickable.
+  - Standards set: Shows the applied Remediation, Alert and Report standards set.
+  - SharePoint Quota
 
+### Feature Requests / Ideas
+
+Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=enhancement%2Cno-priority&projects=&template=feature.yml&title=%5BFeature+Request%5D%3A+) on GitHub.

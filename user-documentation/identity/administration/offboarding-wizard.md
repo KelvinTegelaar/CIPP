@@ -21,10 +21,25 @@ The Offboarding Wizard includes the following steps:
 
 The Offboarding Wizard offers a range of tasks that can be performed during the offboarding process. These tasks include:
 
-<table><thead><tr><th width="267">Task</th><th>Description</th></tr></thead><tbody><tr><td>Revoke all sessions</td><td>Revokes all active sessions of the user</td></tr><tr><td>Remove all Mobile Devices</td><td>Removes all mobile devices associated with the user</td></tr><tr><td>Remove all Rules</td><td>Removes all rules associated with the user</td></tr><tr><td>Remove Licenses</td><td>Removes all licenses associated with the user</td></tr><tr><td>Convert to Shared Mailbox</td><td>Converts the user's mailbox to a shared mailbox</td></tr><tr><td>Disable Sign-In</td><td>Disables the user's ability to sign in</td></tr><tr><td>Reset Password</td><td>Resets the user's password</td></tr><tr><td>Remove from all Groups</td><td>Removes the user from all groups</td></tr><tr><td>Hide from Global Address List</td><td>Hides the user from the Global Address List</td></tr><tr><td>Set Out of Office</td><td>Sets an out of office message for the user</td></tr><tr><td>Give another user access to the mailbox (without auto mapping)</td><td>Gives another user full access to the offboarded user's mailbox without auto mapping</td></tr><tr><td>Give another user access to the mailbox (with auto mapping)</td><td>Gives another user full access to the offboarded user's mailbox with auto mapping</td></tr><tr><td>Give another user access to OneDrive</td><td>Gives another user full access to the offboarded user's OneDrive</td></tr><tr><td>Forward all e-mail to another user</td><td>Forwards all e-mails of the offboarded user to another user</td></tr><tr><td>Keep a copy of the forwarded mail in the source mailbox</td><td>Keeps a copy of the forwarded mail in the offboarded user's mailbox</td></tr><tr><td>Delete User</td><td>Deletes the user from the tenant</td></tr></tbody></table>
-
-
+| Task                                                           | Description                                                                          |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Revoke all sessions                                            | Revokes all active sessions of the user                                              |
+| Remove all Mobile Devices                                      | Removes all mobile devices associated with the user                                  |
+| Remove all Rules                                               | Removes all rules associated with the user                                           |
+| Remove Licenses                                                | Removes all licenses associated with the user                                        |
+| Convert to Shared Mailbox                                      | Converts the user's mailbox to a shared mailbox                                      |
+| Disable Sign-In                                                | Disables the user's ability to sign in                                               |
+| Reset Password                                                 | Resets the user's password                                                           |
+| Remove from all Groups                                         | Removes the user from all groups                                                     |
+| Hide from Global Address List                                  | Hides the user from the Global Address List                                          |
+| Set Out of Office                                              | Sets an out of office message for the user                                           |
+| Give another user access to the mailbox (without auto mapping) | Gives another user full access to the offboarded user's mailbox without auto mapping |
+| Give another user access to the mailbox (with auto mapping)    | Gives another user full access to the offboarded user's mailbox with auto mapping    |
+| Give another user access to OneDrive                           | Gives another user full access to the offboarded user's OneDrive                     |
+| Forward all e-mail to another user                             | Forwards all e-mails of the offboarded user to another user                          |
+| Keep a copy of the forwarded mail in the source mailbox        | Keeps a copy of the forwarded mail in the offboarded user's mailbox                  |
+| Delete User                                                    | Deletes the user from the tenant                                                     |
 
 ### Feature Requests / Ideas
 
-We value your feedback and ideas. If you have any feature requests or ideas to improve the Offboarding Wizard page, please raise them on our [GitHub issues page](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=\&template=feature\_request.md\&title=FEATURE+REQUEST%3A+).
+Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=&labels=enhancement%2Cno-priority&projects=&template=feature.yml&title=%5BFeature+Request%5D%3A+) on GitHub.
