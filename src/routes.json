@@ -923,6 +923,12 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "name": "Event Log Collection",
+    "path": "/security/incidents/Event-Log-Collection",
+    "component": "views/security/incidents/EventLogCollection",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "name": "List Device Compliance Report",
     "path": "/security/reports/list-device-compliance",
     "component": "views/security/reports/ListDeviceComplianceReport",

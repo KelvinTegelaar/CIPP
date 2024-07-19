@@ -390,6 +390,11 @@ const _nav = [
         name: 'Alerts',
         to: '/security/incidents/list-alerts',
       },
+      {
+        component: CNavItem,
+        name: 'Event Log Collection',
+        to: '/security/incidents/Event-Log-Collection',
+      },
     ],
   },
   {
