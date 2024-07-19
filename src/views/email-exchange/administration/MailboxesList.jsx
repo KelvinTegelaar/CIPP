@@ -141,6 +141,20 @@ const MailboxList = () => {
                 'Are you sure you want to start the managed folder assistant for the user?',
             },
             {
+              label: 'Set mailbox locale',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                user: row.UPN,
+                TenantFilter: tenant.defaultDomainName,
+                ProhibitSendQuota: true,
+              },
+              modalUrl: `/api/ExecSetMailboxLocale`,
+              modalInput: true,
+              modalMessage: 'Enter a locale, e.g. en-US',
+            },
+            {
               label: 'Set Send Quota',
               color: 'info',
               modal: true,
