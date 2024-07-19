@@ -896,6 +896,12 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/email/reports/malware-filters",
+    "name": "Malware Filters",
+    "component": "views/email-exchange/reports/MalwareFilters",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "name": "Security & Compliance",
     "path": "/security",
     "allowedRoles": ["admin", "editor", "readonly"]

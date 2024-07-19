@@ -795,6 +795,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Malware Filters',
+        to: '/email/reports/malware-filters',
+      },
+      {
+        component: CNavItem,
         name: 'Shared Mailbox with Enabled Account',
         to: '/email/reports/SharedMailboxEnabledAccount',
       },

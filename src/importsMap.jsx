@@ -134,6 +134,7 @@ import React from 'react'
   "/email/reports/message-trace": React.lazy(() => import('./views/email-exchange/reports/MessageTrace')), 
   "/cipp/user-settings": React.lazy(() => import('./views/cipp/UserSettings')), 
   "/email/reports/phishing-policies": React.lazy(() => import('./views/email-exchange/reports/PhishingPoliciesList')), 
+  "/email/reports/malware-filters": React.lazy(() => import('./views/email-exchange/reports/MalwareFilters')), 
   "/security/incidents/list-alerts": React.lazy(() => import('./views/security/incidents/ListAlerts')), 
   "/security/incidents/list-incidents": React.lazy(() => import('./views/security/incidents/ListIncidents')), 
   "/security/reports/list-device-compliance": React.lazy(() => import('./views/security/reports/ListDeviceComplianceReport')), 
