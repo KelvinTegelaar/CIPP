@@ -618,6 +618,18 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/teams-share/sharepoint/addsite",
+    "name": "Add SharePoint Site",
+    "component": "views/teams-share/sharepoint/AddSite",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/teams-share/sharepoint/addsitebulk",
+    "name": "Add SharePoint Site Bulk",
+    "component": "views/teams-share/sharepoint/AddSiteBulk",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/teams-share/teams",
     "name": "Teams",
     "allowedRoles": ["admin", "editor", "readonly"]
@@ -729,15 +741,21 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
-    "path": "/rooms/management/list-rooms",
+    "path": "/resources/management/list-rooms",
     "name": "Rooms",
     "component": "views/email-exchange/rooms/ListRooms",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
-    "path": "/rooms/management/room-lists",
+    "path": "/resources/management/room-lists",
     "name": "Room Lists",
     "component": "views/email-exchange/rooms/ListRoomLists",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/resources/management/add-room",
+    "name": "Add Room",
+    "component": "views/email-exchange/rooms/AddRoomMailbox",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {

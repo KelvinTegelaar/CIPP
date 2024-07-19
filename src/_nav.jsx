@@ -625,7 +625,7 @@ const _nav = [
     component: CNavGroup,
     name: 'Administration',
     section: 'Email & Exchange',
-    to: '/email/exchange',
+    to: '/email/Administration',
     icon: <FontAwesomeIcon icon={faWrench} className="nav-icon" />,
     items: [
       {
@@ -688,7 +688,7 @@ const _nav = [
     component: CNavGroup,
     name: 'Transport',
     section: 'Email & Exchange',
-    to: '/tenant/administration',
+    to: '/email/Transport',
     icon: <FontAwesomeIcon icon={faBus} className="nav-icon" />,
     items: [
       {
@@ -727,7 +727,7 @@ const _nav = [
     component: CNavGroup,
     name: 'Spamfilter',
     section: 'Email & Exchange',
-    to: '/tenant/administration',
+    to: '/email/spamfilter',
     icon: <FontAwesomeIcon icon={faEnvelope} className="nav-icon" />,
     items: [
       {
@@ -749,20 +749,20 @@ const _nav = [
   },
   {
     component: CNavGroup,
-    name: ' Room Management',
+    name: 'Resource Management',
     section: 'Email & Exchange',
-    to: '/rooms/management',
+    to: '/resources/management',
     icon: <FontAwesomeIcon icon={faToolbox} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
         name: 'Rooms',
-        to: '/rooms/management/list-rooms',
+        to: '/resources/management/list-rooms',
       },
       {
         component: CNavItem,
         name: 'Room Lists',
-        to: '/rooms/management/room-lists',
+        to: '/resources/management/room-lists',
       },
     ],
   },
