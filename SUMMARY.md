@@ -88,7 +88,7 @@
   - [GDAP Management](user-documentation/tenant/gdap/README.md)
     - [Invite Wizard](user-documentation/tenant/gdap/gdap-invite.md)
     - [GDAP Relationships](user-documentation/tenant/gdap/gdap-relationships.md)
-    - [Role Wizard](user-documentation/tenant/gdap/role-wizard.md)
+    - [Role Wizard](user-documentation/tenant/gdap/gdap-role-wizard.md)
     - [GDAP Roles](user-documentation/tenant/gdap/gdap-roles.md)
   - [Reports](user-documentation/tenant/reports/README.md)
     - [License Report](user-documentation/tenant/reports/list-licenses.md)
