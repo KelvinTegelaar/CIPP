@@ -285,6 +285,13 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modalMessage: 'Are you sure you want to reset the password for this user?',
           },
           {
+            label: 'Preprovision OneDrive',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecOneDriveProvision?TenantFilter=${tenant.defaultDomainName}&UserPrincipalName=${row.userPrincipalName}`,
+            modalMessage: 'Are you sure you want to preprovision onedrive for this user??',
+          },
+          {
             label: 'Clear ImmutableId',
             color: 'warning',
             modal: true,
@@ -697,6 +704,14 @@ const Users = (row) => {
               modalUrl: `/api/ExecEmailForward`,
               modalMessage: 'Are you sure you want to disable forwarding of these users emails?',
             },
+            {
+              label: 'Preprovision OneDrive',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecOneDriveProvision?TenantFilter=!Tenant&UserPrincipalName=!userPrincipalName`,
+              modalMessage: 'Are you sure you want to preprovision onedrive for this user?',
+            },
+
             {
               label: 'Delete User',
               color: 'danger',
