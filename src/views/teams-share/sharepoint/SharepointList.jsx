@@ -3,6 +3,7 @@ import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
+import { TitleButton } from 'src/components/buttons'
 import { CippPageList } from 'src/components/layout'
 import { CellTip } from 'src/components/tables'
 import { cellCopyButtonFormatter } from 'src/components/tables/CellCopyButton'
@@ -182,9 +183,24 @@ const SharepointList = () => {
       cell: Offcanvas,
     },
   ]
+  const titleButtons = (
+    <div style={{ display: 'flex', alignItems: 'right' }}>
+      <div style={{ marginLeft: '10px' }}>
+        <TitleButton key="Invite-Guest" href="/teams-share/sharepoint/addsite" title="Add Site" />
+      </div>
+      <div style={{ marginLeft: '10px' }}>
+        <TitleButton
+          key="Invite-Bulk"
+          href="/teams-share/sharepoint/addsitebulk"
+          title="Bulk Add Sites"
+        />
+      </div>
+    </div>
+  )
   return (
     <CippPageList
       title="SharePoint List"
+      titleButton={titleButtons}
       datatable={{
         columns,
         path: '/api/ListSites?type=SharePointSiteUsage',
