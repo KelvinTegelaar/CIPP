@@ -50,7 +50,9 @@
     "ClientMachinename": "String",
     "ClientProcessname": "String",
     "ClientVersion": "String",
-    "MoveToFolder": "String"
+    "MoveToFolder": "String",
+    "ForwardTo": "String",
+    "RedirectTo": "String"
   },
   "Audit.AzureActiveDirectory": {
     "AzureActiveDirectoryEventType": "List:AzureActiveDirectoryEventType",
