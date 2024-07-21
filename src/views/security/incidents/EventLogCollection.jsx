@@ -290,7 +290,7 @@ const EventLogCollection = () => {
       <CCard className="content-card">
         <CCardHeader>
           <CCardTitle className="d-flex justify-content-between">
-            Event Log Collection List
+            Event Log Collection
             <CButton
               size="sm"
               onClick={() => execIncidentsList({ tenantFilter: tenant.defaultDomainName })}
