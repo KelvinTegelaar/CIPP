@@ -138,6 +138,7 @@ const AddGroup = () => {
                   <CRow>
                     <RFFCFormRadio name="groupType" label="Azure Role Group" value="azurerole" />
                     <RFFCFormRadio name="groupType" label="Security Group" value="generic" />
+                    <RFFCFormRadio name="groupType" label="Microsoft 365 Group" value="m365" />
                     <RFFCFormRadio name="groupType" label="Dynamic Group" value="dynamic" />
                     <RFFCFormRadio
                       name="groupType"
