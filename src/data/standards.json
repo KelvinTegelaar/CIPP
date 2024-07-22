@@ -5,11 +5,6 @@
     "tag": ["lowimpact"],
     "helpText": "Defines the email address to receive general updates and information related to M365 subscriptions. Leave a contact field blank if you do not want to update the contact information.",
     "docsDescription": "",
-    "disabledFeatures": {
-      "report": false,
-      "warn": false,
-      "remediate": false
-    },
     "addedComponent": [
       {
         "type": "input",
@@ -645,7 +640,9 @@
     "addedComponent": [],
     "label": "Disables Voice call as an MFA method",
     "impact": "High Impact",
-    "impactColour": "danger"
+    "impactColour": "danger",
+    "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
+    "recommendedBy": []
   },
   {
     "name": "standards.DisableEmail",
