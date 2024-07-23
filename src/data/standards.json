@@ -1255,30 +1255,17 @@
             "value": "disable"
           }
         ]
+      },
+      {
+        "type": "input",
+        "name": "standards.UserSubmissions.email",
+        "label": "Destination email address"
       }
     ],
     "label": "Set the state of the built-in Report button in Outlook",
     "impact": "Medium Impact",
     "impactColour": "warning",
-    "powershellEquivalent": "New-ReportSubmissionPolicy or Set-ReportSubmissionPolicy",
-    "recommendedBy": []
-  },
-  {
-    "name": "standards.UserReportDestinationEmail",
-    "cat": "Exchange Standards",
-    "tag": ["mediumimpact"],
-    "helpText": "Sets the destination for email when users report them as spam or phishing. Works well together with the 'Set the state of the built-in Report button in Outlook standard'.",
-    "addedComponent": [
-      {
-        "type": "input",
-        "name": "standards.UserReportDestinationEmail.Email",
-        "label": "Destination email address"
-      }
-    ],
-    "label": "Set the destination email for user reported emails",
-    "impact": "Medium Impact",
-    "impactColour": "warning",
-    "powershellEquivalent": "New-ReportSubmissionRule or Set-ReportSubmissionRule",
+    "powershellEquivalent": "New-ReportSubmissionPolicy or Set-ReportSubmissionPolicy and New-ReportSubmissionRule or Set-ReportSubmissionRule",
     "recommendedBy": []
   },
   {
@@ -1293,6 +1280,25 @@
     "impactColour": "warning",
     "powershellEquivalent": "Get-Mailbox & Update-MgUser",
     "recommendedBy": ["CIS"]
+  },
+  {
+    "name": "standards.QuarantineRequestAlert",
+    "cat": "Defender Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Sets a e-mail address to alert when a User requests to release a quarantined message.",
+    "docsDescription": "Sets a e-mail address to alert when a User requests to release a quarantined message. This is useful for monitoring and ensuring that the correct messages are released.",
+    "addedComponent": [
+      {
+        "type": "input",
+        "name": "standards.QuarantineRequestAlert.NotifyUser",
+        "label": "E-mail to receive the alert"
+      }
+    ],
+    "label": "Quarantine Release Request Alert",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "powershellEquivalent": "New-ProtectionAlert and Set-ProtectionAlert",
+    "recommendedBy": []
   },
   {
     "name": "standards.SafeLinksPolicy",
@@ -1676,6 +1682,129 @@
     "recommendedBy": ["CIS"]
   },
   {
+    "name": "standards.SpamFilterPolicy",
+    "cat": "Defender Standards",
+    "tag": ["mediumimpact"],
+    "helpText": "This standard creates a Spam filter policy similar to the default strict policy.",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Spam Action",
+        "name": "standards.SpamFilterPolicy.SpamAction",
+        "values": [
+          {
+            "label": "Move message to Junk Email folder",
+            "value": "MoveToJmf"
+          },
+          {
+            "label": "Quarantine the message",
+            "value": "Quarantine"
+          }
+        ]
+      },
+      {
+        "type": "Select",
+        "label": "Spam Quarantine Tag",
+        "name": "standards.SpamFilterPolicy.SpamQuarantineTag",
+        "values": [
+          {
+            "label": "AdminOnlyAccessPolicy",
+            "value": "AdminOnlyAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessPolicy",
+            "value": "DefaultFullAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessWithNotificationPolicy",
+            "value": "DefaultFullAccessWithNotificationPolicy"
+          }
+        ]
+      },
+      {
+        "type": "Select",
+        "label": "High Confidence Spam Quarantine Tag",
+        "name": "standards.SpamFilterPolicy.HighConfidenceSpamQuarantineTag",
+        "values": [
+          {
+            "label": "AdminOnlyAccessPolicy",
+            "value": "AdminOnlyAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessPolicy",
+            "value": "DefaultFullAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessWithNotificationPolicy",
+            "value": "DefaultFullAccessWithNotificationPolicy"
+          }
+        ]
+      },
+      {
+        "type": "Select",
+        "label": "Bulk Quarantine Tag",
+        "name": "standards.SpamFilterPolicy.BulkQuarantineTag",
+        "values": [
+          {
+            "label": "AdminOnlyAccessPolicy",
+            "value": "AdminOnlyAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessPolicy",
+            "value": "DefaultFullAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessWithNotificationPolicy",
+            "value": "DefaultFullAccessWithNotificationPolicy"
+          }
+        ]
+      },
+      {
+        "type": "Select",
+        "label": "Phish Quarantine Tag",
+        "name": "standards.SpamFilterPolicy.PhishQuarantineTag",
+        "values": [
+          {
+            "label": "AdminOnlyAccessPolicy",
+            "value": "AdminOnlyAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessPolicy",
+            "value": "DefaultFullAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessWithNotificationPolicy",
+            "value": "DefaultFullAccessWithNotificationPolicy"
+          }
+        ]
+      },
+      {
+        "type": "Select",
+        "label": "High Confidence Phish Quarantine Tag",
+        "name": "standards.SpamFilterPolicy.HighConfidencePhishQuarantineTag",
+        "values": [
+          {
+            "label": "AdminOnlyAccessPolicy",
+            "value": "AdminOnlyAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessPolicy",
+            "value": "DefaultFullAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessWithNotificationPolicy",
+            "value": "DefaultFullAccessWithNotificationPolicy"
+          }
+        ]
+      }
+    ],
+    "label": "Default Spam Filter Policy",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "powershellEquivalent": "New-HostedContentFilterPolicy or Set-HostedContentFilterPolicy",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.intuneDeviceRetirementDays",
     "cat": "Intune Standards",
     "tag": ["lowimpact"],
@@ -1887,6 +2016,18 @@
     "impactColour": "info",
     "powershellEquivalent": "Set-SPOTenant -DisallowInfectedFileDownload $true",
     "recommendedBy": ["CIS 3.0"]
+  },
+  {
+    "name": "standards.SPDisableLegacyWorkflows",
+    "cat": "SharePoint Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Disables the creation of new SharePoint 2010 and 2013 classic workflows and removes the 'Return to classic SharePoint' link on modern SharePoint list and library pages.",
+    "addedComponent": [],
+    "label": "Disable Legacy Workflows",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "powershellEquivalent": "Set-SPOTenant -DisableWorkflow2010 $true -DisableWorkflow2013 $true -DisableBackToClassic $true",
+    "recommendedBy": []
   },
   {
     "name": "standards.SPDirectSharing",
