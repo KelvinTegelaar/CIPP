@@ -31,30 +31,17 @@ Error.propTypes = {
   name: PropTypes.string.isRequired,
 }
 
-const AddUserBulk = () => {
+const AddSiteBulk = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
-  const [BulkUser, setBulkUser] = useState([])
+  const [BulkSite, setBulkSite] = useState([])
   const currentSettings = useSelector((state) => state.app)
-  const addedFields = currentSettings?.userSettingsDefaults?.defaultAttributes
-    ? //if we have default attributes, add the label object to the fields array
-      currentSettings.userSettingsDefaults.defaultAttributes.map((item) => item.label)
-    : []
   const fields = [
-    'givenName',
-    'surName',
-    'displayName',
-    'mailNickName',
-    'domain',
-    'usageLocation',
-    'JobTitle',
-    'streetAddress',
-    'PostalCode',
-    'City',
-    'State',
-    'Department',
-    'MobilePhone',
-    'businessPhones',
-    ...addedFields,
+    'SiteName',
+    'siteDescription',
+    'siteOwner',
+    'TemplateName',
+    'siteDesign',
+    'sensitivityLabel',
   ]
   const columns = fields.map((field) => {
     return {
@@ -79,12 +66,11 @@ const AddUserBulk = () => {
     },
   ]
   const valbutton = (value) =>
-    BulkUser.length
+    BulkSite.length
       ? undefined
-      : 'You must add at least one user. Did you forget to click add or upload the CSV?'
+      : 'You must add at least one site. Did you forget to click add or upload the CSV?'
   const handleOnDrop = (data) => {
     const importdata = data.map((item) => {
-      //find any keys that have a null or blank string value, and remove them
       Object.keys(item.data).forEach((key) => {
         if (item.data[key] === null || item.data[key] === '') {
           delete item.data[key]
@@ -92,7 +78,7 @@ const AddUserBulk = () => {
       })
       return item.data
     })
-    setBulkUser([...BulkUser, ...importdata])
+    setBulkSite([...BulkSite, ...importdata])
   }
 
   const handleOnError = (err, file, inputElem, reason) => {
@@ -103,14 +89,14 @@ const AddUserBulk = () => {
   const handleSubmit = async (values) => {
     const shippedValues = {
       TenantFilter: tenantDomain,
-      BulkUser,
+      BulkSite,
       ...values,
     }
     //alert(JSON.stringify(values, null, 2))
-    genericPostRequest({ path: '/api/AddUserBulk', values: shippedValues })
+    genericPostRequest({ path: '/api/AddSiteBulk', values: shippedValues })
   }
   const addRowtoData = (values) => {
-    setBulkUser((prevState) => {
+    setBulkSite((prevState) => {
       if (prevState) {
         return [values, ...prevState]
       } else {
@@ -119,14 +105,14 @@ const AddUserBulk = () => {
     })
   }
   const handleRemove = async (itemindex) => {
-    let RemovedItems = BulkUser.filter((item) => item !== itemindex)
-    setBulkUser((prevState) => {
+    let RemovedItems = BulkSite.filter((item) => item !== itemindex)
+    setBulkSite((prevState) => {
       return RemovedItems
     })
   }
   return (
-    <CippWizard onSubmit={handleSubmit} wizardTitle="Add Bulk User Wizard">
-      <CippWizard.Page title="Tenant Choice" description="Choose the tenant to add users to">
+    <CippWizard onSubmit={handleSubmit} wizardTitle="Add Bulk site Wizard">
+      <CippWizard.Page title="Tenant Choice" description="Choose the tenant to add sites to">
         <center>
           <h3 className="text-primary">Step 1</h3>
           <h5 className="card-title mb-4">Choose a tenant</h5>
@@ -136,10 +122,10 @@ const AddUserBulk = () => {
         <Error name="selectedTenants" />
         <hr className="my-4" />
       </CippWizard.Page>
-      <CippWizard.Page title="Enter User Information" description="Enter the information">
+      <CippWizard.Page title="Enter Site Information" description="Enter the site information">
         <center>
           <h3 className="text-primary">Step 2</h3>
-          <h5>Enter user information</h5>
+          <h5>Enter site information</h5>
         </center>
         <hr className="my-4" />
         <div className="mb-2">
@@ -149,7 +135,7 @@ const AddUserBulk = () => {
               href={`data:text/csv;charset=utf-8,%EF%BB%BF${encodeURIComponent(
                 fields.join(',') + '\n',
               )}`}
-              download="BulkUserAdd.csv"
+              download="BulkSiteAdd.csv"
             >
               Example CSV
             </a>
@@ -193,7 +179,7 @@ const AddUserBulk = () => {
             </FormSpy>
           </CCol>
           <Field
-            key={BulkUser}
+            key={BulkSite}
             name="BlockNext"
             component="hidden"
             type="hidden"
@@ -203,11 +189,11 @@ const AddUserBulk = () => {
         </CRow>
         <CRow>
           <CCol>
-            {BulkUser && (
+            {BulkSite && (
               <CippTable
                 reportName="none"
                 tableProps={{ subheader: false }}
-                data={BulkUser}
+                data={BulkSite}
                 columns={tableColumns}
               />
             )}
@@ -229,19 +215,19 @@ const AddUserBulk = () => {
           <p>
             {postResults.isSuccess && (
               <CippCodeBlock
-                code={postResults.data?.map((item) => {
-                  return <li key={item.Results}>{item.Results}</li>
+                code={postResults.data?.Results.map((item) => {
+                  return <li key={item}>{item}</li>
                 })}
                 callout={true}
                 calloutCopyValue={postResults.data?.Results}
               />
             )}
           </p>
-          {BulkUser && (
+          {BulkSite && (
             <CippTable
               reportName="none"
               tableProps={{ subheader: false }}
-              data={BulkUser}
+              data={BulkSite}
               columns={tableColumns}
             />
           )}
@@ -252,4 +238,4 @@ const AddUserBulk = () => {
   )
 }
 
-export default AddUserBulk
+export default AddSiteBulk
