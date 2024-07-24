@@ -629,14 +629,17 @@ export default function CippTable({
     if (!disablePDFExport || !disableCSVExport) {
       const keys = []
       const exportFormatter = {}
+      const exportFormatterArgs = {}
       columns.map((col) => {
         if (col.exportSelector) keys.push(col.exportSelector)
         if (col.exportFormatter) exportFormatter[col.exportSelector] = col.exportFormatter
+        if (col.exportFormatterArgs)
+          exportFormatterArgs[col.exportSelector] = col.exportFormatterArgs
         return null
       })
-
       // Define the flatten function
       const flatten = (obj, prefix = '') => {
+        if (obj === null) return {}
         return Object.keys(obj).reduce((output, key) => {
           const newKey = prefix ? `${prefix}.${key}` : key
           const value = obj[key] === null ? '' : obj[key]
@@ -645,9 +648,13 @@ export default function CippTable({
             Object.assign(output, flatten(value, newKey))
           } else {
             if (Array.isArray(value)) {
-              value.map((item, idx) => {
-                Object.assign(output, flatten(item, `${newKey}[${idx}]`))
-              })
+              if (typeof value[0] === 'object') {
+                value.map((item, idx) => {
+                  Object.assign(output, flatten(item, `${newKey}[${idx}]`))
+                })
+              } else {
+                output[newKey] = value
+              }
             } else {
               output[newKey] = value
             }
@@ -659,18 +666,18 @@ export default function CippTable({
       // Define the applyFormatter function
       const applyFormatter = (obj) => {
         return Object.keys(obj).reduce((acc, key) => {
+          const formatterArgs = exportFormatterArgs[key]
           const formatter = exportFormatter[key]
-          // Since the keys after flattening will be dot-separated, we need to adjust this to support nested keys if necessary.
           const keyParts = key.split('.')
           const finalKeyPart = keyParts[keyParts.length - 1]
           const formattedValue =
-            typeof formatter === 'function' ? formatter({ cell: obj[key] }) : obj[key]
+            typeof formatter === 'function'
+              ? formatter({ row: obj, cell: obj[key], ...formatterArgs })
+              : obj[key]
           acc[key] = formattedValue
           return acc
         }, {})
       }
-
-      // Process exportData function
       const processExportData = (exportData, selectedColumns) => {
         //filter out the columns that are not selected via selectedColumns
         exportData = exportData.map((item) => {
@@ -683,8 +690,7 @@ export default function CippTable({
         })
         return Array.isArray(exportData) && exportData.length > 0
           ? exportData.map((obj) => {
-              const flattenedObj = flatten(obj)
-              return applyFormatter(flattenedObj)
+              return flatten(applyFormatter(obj))
             })
           : []
       }
@@ -695,8 +701,7 @@ export default function CippTable({
       // Adjusted dataFlat processing to include formatting
       let dataFlat = Array.isArray(data)
         ? data.map((item) => {
-            const flattenedItem = flatten(item)
-            return applyFormatter(flattenedItem)
+            return flatten(applyFormatter(item))
           })
         : []
       if (!disablePDFExport) {
