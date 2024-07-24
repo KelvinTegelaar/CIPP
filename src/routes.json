@@ -77,6 +77,12 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/identity/administration/jit-admin",
+    "name": "JIT Admin",
+    "component": "views/identity/administration/DeployJITAdmin",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/identity/administration/ViewBec",
     "name": "View BEC",
     "component": "views/identity/administration/ViewBEC",
@@ -91,6 +97,12 @@
     "path": "/identity/administration/users",
     "name": "Users",
     "component": "views/identity/administration/Users",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/identity/administration/risky-users",
+    "name": "Risky Users",
+    "component": "views/identity/administration/RiskyUsers",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
@@ -201,6 +213,12 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/identity/reports/risk-detections",
+    "name": "Risk Detections",
+    "component": "views/identity/reports/RiskDetections",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/tenant",
     "name": "Tenant",
     "allowedRoles": ["admin", "editor", "readonly"]
@@ -208,6 +226,20 @@
   {
     "path": "/tenant/administration",
     "name": "Administration",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/backup/backup-wizard",
+    "name": "Backup",
+    "component": "views/tenant/backup/CreateBackup",
+
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/backup/restore-wizard",
+    "name": "Restore Backup",
+    "component": "views/tenant/backup/RestoreBackup",
+
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
@@ -280,6 +312,12 @@
     "path": "/tenant/conditional/list-policies",
     "name": "Conditional Access",
     "component": "views/tenant/conditional/ConditionalAccess",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/administration/authentication-methods",
+    "name": "Authentication Methods",
+    "component": "views/tenant/administration/AuthMethods",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
@@ -580,6 +618,18 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/teams-share/sharepoint/addsite",
+    "name": "Add SharePoint Site",
+    "component": "views/teams-share/sharepoint/AddSite",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/teams-share/sharepoint/addsitebulk",
+    "name": "Add SharePoint Site Bulk",
+    "component": "views/teams-share/sharepoint/AddSiteBulk",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/teams-share/teams",
     "name": "Teams",
     "allowedRoles": ["admin", "editor", "readonly"]
@@ -691,15 +741,21 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
-    "path": "/rooms/management/list-rooms",
+    "path": "/resources/management/list-rooms",
     "name": "Rooms",
     "component": "views/email-exchange/rooms/ListRooms",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
-    "path": "/rooms/management/room-lists",
+    "path": "/resources/management/room-lists",
     "name": "Room Lists",
     "component": "views/email-exchange/rooms/ListRoomLists",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/resources/management/add-room",
+    "name": "Add Room",
+    "component": "views/email-exchange/rooms/AddRoomMailbox",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
@@ -766,6 +822,12 @@
     "name": "List Mailboxes",
     "path": "/email/administration/mailboxes",
     "component": "views/email-exchange/administration/MailboxesList",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "name": "Deleted Mailboxes",
+    "path": "/email/administration/deleted-mailboxes",
+    "component": "views/email-exchange/administration/DeletedMailboxes",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
@@ -886,6 +948,18 @@
     "path": "/cipp/settings",
     "name": "Settings",
     "component": "views/cipp/app-settings/CIPPSettings",
+    "allowedRoles": ["admin"]
+  },
+  {
+    "path": "/cipp/extensions",
+    "name": "Extensions Settings",
+    "component": "views/cipp/Extensions",
+    "allowedRoles": ["admin"]
+  },
+  {
+    "path": "/cipp/extension-sync",
+    "name": "Extension Sync",
+    "component": "views/cipp/ExtensionSync",
     "allowedRoles": ["admin"]
   },
   {
