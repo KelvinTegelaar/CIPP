@@ -19,6 +19,7 @@ import {
   faUserShield,
   faEnvelope,
   faToolbox,
+  faDownload,
 } from '@fortawesome/free-solid-svg-icons'
 
 const _nav = [
@@ -44,6 +45,11 @@ const _nav = [
         component: CNavItem,
         name: 'Users',
         to: '/identity/administration/users',
+      },
+      {
+        component: CNavItem,
+        name: 'Risky Users',
+        to: '/identity/administration/risky-users',
       },
       {
         component: CNavItem,
@@ -74,6 +80,11 @@ const _nav = [
         component: CNavItem,
         name: 'Roles',
         to: '/identity/administration/roles',
+      },
+      {
+        component: CNavItem,
+        name: 'JIT Admin',
+        to: '/identity/administration/jit-admin',
       },
       {
         component: CNavItem,
@@ -108,6 +119,11 @@ const _nav = [
         component: CNavItem,
         name: 'AAD Connect Report',
         to: '/identity/reports/azure-ad-connect-report',
+      },
+      {
+        component: CNavItem,
+        name: 'Risk Detections',
+        to: '/identity/reports/risk-detections',
       },
     ],
   },
@@ -149,6 +165,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Authentication Methods',
+        to: '/tenant/administration/authentication-methods',
+      },
+      {
+        component: CNavItem,
         name: 'Tenant Onboarding',
         to: '/tenant/administration/tenant-onboarding',
       },
@@ -161,6 +182,25 @@ const _nav = [
         component: CNavItem,
         name: 'Partner Relationships',
         to: '/tenant/administration/partner-relationships',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
+    name: 'Configuration Backup',
+    section: 'Tenant Administration',
+    to: '/cipp/gdap',
+    icon: <FontAwesomeIcon icon={faDownload} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Backup Wizard',
+        to: '/tenant/backup/backup-wizard',
+      },
+      {
+        component: CNavItem,
+        name: 'Restore Wizard',
+        to: '/tenant/backup/restore-wizard',
       },
     ],
   },
@@ -585,13 +625,18 @@ const _nav = [
     component: CNavGroup,
     name: 'Administration',
     section: 'Email & Exchange',
-    to: '/email/exchange',
+    to: '/email/Administration',
     icon: <FontAwesomeIcon icon={faWrench} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
         name: 'Mailboxes',
         to: '/email/administration/mailboxes',
+      },
+      {
+        component: CNavItem,
+        name: 'Deleted Mailboxes',
+        to: '/email/administration/deleted-mailboxes',
       },
       {
         component: CNavItem,
@@ -643,7 +688,7 @@ const _nav = [
     component: CNavGroup,
     name: 'Transport',
     section: 'Email & Exchange',
-    to: '/tenant/administration',
+    to: '/email/Transport',
     icon: <FontAwesomeIcon icon={faBus} className="nav-icon" />,
     items: [
       {
@@ -682,7 +727,7 @@ const _nav = [
     component: CNavGroup,
     name: 'Spamfilter',
     section: 'Email & Exchange',
-    to: '/tenant/administration',
+    to: '/email/spamfilter',
     icon: <FontAwesomeIcon icon={faEnvelope} className="nav-icon" />,
     items: [
       {
@@ -704,20 +749,20 @@ const _nav = [
   },
   {
     component: CNavGroup,
-    name: ' Room Management',
+    name: 'Resource Management',
     section: 'Email & Exchange',
-    to: '/rooms/management',
+    to: '/resources/management',
     icon: <FontAwesomeIcon icon={faToolbox} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
         name: 'Rooms',
-        to: '/rooms/management/list-rooms',
+        to: '/resources/management/list-rooms',
       },
       {
         component: CNavItem,
         name: 'Room Lists',
-        to: '/rooms/management/room-lists',
+        to: '/resources/management/room-lists',
       },
     ],
   },
@@ -770,6 +815,16 @@ const _nav = [
         component: CNavItem,
         name: 'Application Settings',
         to: '/cipp/settings',
+      },
+      {
+        component: CNavItem,
+        name: 'Extensions Settings',
+        to: '/cipp/extensions',
+      },
+      {
+        component: CNavItem,
+        name: 'Extension Sync',
+        to: '/cipp/extension-sync',
       },
       {
         component: CNavItem,
