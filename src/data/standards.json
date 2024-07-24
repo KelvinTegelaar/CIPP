@@ -2092,6 +2092,34 @@
     "recommendedBy": []
   },
   {
+    "name": "standards.SPSyncButtonState",
+    "cat": "SharePoint Standards",
+    "tag": ["mediumimpact"],
+    "helpText": "If disabled users in the tenant will no longer be able to use the Sync button to sync SharePoint content. However, existing synced content will remain functional on the user's computer.",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "SharePoint Sync Button state",
+        "name": "standards.SPSyncButtonState.state",
+        "values": [
+          {
+            "label": "Disabled",
+            "value": "true"
+          },
+          {
+            "label": "Enabled",
+            "value": "false"
+          }
+        ]
+      }
+    ],
+    "label": "Set SharePoint sync button state",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "powershellEquivalent": "Set-SPOTenant -HideSyncButtonOnTeamSite:$true or $false",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.DisableSharePointLegacyAuth",
     "cat": "SharePoint Standards",
     "tag": ["mediumimpact", "CIS"],
