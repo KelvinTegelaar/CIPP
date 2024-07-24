@@ -902,6 +902,12 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/email/reports/safelinks-filters",
+    "name": "Safe Links Filters",
+    "component": "views/email-exchange/reports/SafeLinksFilters",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "name": "Security & Compliance",
     "path": "/security",
     "allowedRoles": ["admin", "editor", "readonly"]

@@ -800,6 +800,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Safe Links Filters',
+        to: '/email/reports/safelinks-filters',
+      },
+      {
+        component: CNavItem,
         name: 'Shared Mailbox with Enabled Account',
         to: '/email/reports/SharedMailboxEnabledAccount',
       },
