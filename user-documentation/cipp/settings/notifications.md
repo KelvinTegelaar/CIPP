@@ -27,7 +27,7 @@ CIPP provides alert notifications for Tenants and CIPP actions, sent as one comb
 
 Enter a many email addresses as you need, separated by a comma.
 
-Email will be sent from the service account used for the SAM Wizard. The account must have a (shared) mailbox available. If you do not have a mailbox available on the account the log will state we could not send out the notifications.
+Email will be sent from the service account used for the SAM Wizard. The service account must have a mailbox available. This can be accomplished by either assigning a license with Exchange to the service account permanently or temporarily and converting the service account's mailbox to a shared mailbox. If you do not have a mailbox available on the account the log will state we could not send out the notifications.
 
 {% hint style="info" %}
 Sent Items Notification emails **do not save** to the CIPP account's _Sent Items_ folder.
