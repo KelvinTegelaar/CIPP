@@ -890,9 +890,9 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
-    "name": "Phishing Policies",
-    "path": "/email/reports/phishing-policies",
-    "component": "views/email-exchange/reports/PhishingPoliciesList",
+    "path": "/email/reports/antiphishing-filters",
+    "name": "Anti Phishing Filters",
+    "component": "views/email-exchange/reports/AntiPhishingFilters",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {

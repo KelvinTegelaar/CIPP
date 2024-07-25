@@ -133,7 +133,7 @@ import React from 'react'
   "/email/reports/mailbox-cas-settings": React.lazy(() => import('./views/email-exchange/reports/MailboxClientAccessSettingsList')), 
   "/email/reports/message-trace": React.lazy(() => import('./views/email-exchange/reports/MessageTrace')), 
   "/cipp/user-settings": React.lazy(() => import('./views/cipp/UserSettings')), 
-  "/email/reports/phishing-policies": React.lazy(() => import('./views/email-exchange/reports/PhishingPoliciesList')), 
+  "/email/reports/antiphishing-filters": React.lazy(() => import('./views/email-exchange/reports/AntiPhishingFilters')), 
   "/email/reports/malware-filters": React.lazy(() => import('./views/email-exchange/reports/MalwareFilters')), 
   "/email/reports/safelinks-filters": React.lazy(() => import('./views/email-exchange/reports/SafeLinksFilters')), 
   "/email/reports/safeattachments-filters": React.lazy(() => import('./views/email-exchange/reports/SafeAttachmentsFilters')), 
