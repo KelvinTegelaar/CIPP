@@ -19,6 +19,7 @@ import {
   faUserShield,
   faEnvelope,
   faToolbox,
+  faDownload,
 } from '@fortawesome/free-solid-svg-icons'
 
 const _nav = [
@@ -47,8 +48,18 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Risky Users',
+        to: '/identity/administration/risky-users',
+      },
+      {
+        component: CNavItem,
         name: 'Groups',
         to: '/identity/administration/groups',
+      },
+      {
+        component: CNavItem,
+        name: 'Devices',
+        to: '/identity/administration/devices',
       },
       {
         component: CNavItem,
@@ -69,6 +80,11 @@ const _nav = [
         component: CNavItem,
         name: 'Roles',
         to: '/identity/administration/roles',
+      },
+      {
+        component: CNavItem,
+        name: 'JIT Admin',
+        to: '/identity/administration/jit-admin',
       },
       {
         component: CNavItem,
@@ -104,6 +120,11 @@ const _nav = [
         name: 'AAD Connect Report',
         to: '/identity/reports/azure-ad-connect-report',
       },
+      {
+        component: CNavItem,
+        name: 'Risk Detections',
+        to: '/identity/reports/risk-detections',
+      },
     ],
   },
   {
@@ -124,12 +145,7 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Alerts Wizard',
-        to: '/tenant/administration/alertswizard',
-      },
-      {
-        component: CNavItem,
-        name: 'Alerts Configuration',
+        name: 'Alerts',
         to: '/tenant/administration/alertsqueue',
       },
       {
@@ -139,13 +155,52 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Secure Score',
+        to: '/tenant/administration/securescore',
+      },
+      {
+        component: CNavItem,
         name: 'App Consent Requests',
         to: '/tenant/administration/app-consent-requests',
       },
       {
         component: CNavItem,
+        name: 'Authentication Methods',
+        to: '/tenant/administration/authentication-methods',
+      },
+      {
+        component: CNavItem,
+        name: 'Tenant Onboarding',
+        to: '/tenant/administration/tenant-onboarding',
+      },
+      {
+        component: CNavItem,
         name: 'Tenant Offboarding',
         to: '/tenant/administration/tenant-offboarding-wizard',
+      },
+      {
+        component: CNavItem,
+        name: 'Partner Relationships',
+        to: '/tenant/administration/partner-relationships',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
+    name: 'Configuration Backup',
+    section: 'Tenant Administration',
+    to: '/cipp/gdap',
+    icon: <FontAwesomeIcon icon={faDownload} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Backup Wizard',
+        to: '/tenant/backup/backup-wizard',
+      },
+      {
+        component: CNavItem,
+        name: 'Restore Wizard',
+        to: '/tenant/backup/restore-wizard',
       },
     ],
   },
@@ -168,7 +223,7 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Geo IP Lookup',
+        name: 'IP Database',
         to: '/tenant/tools/geoiplookup',
       },
       {
@@ -236,13 +291,18 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'CA Templates',
-        to: '/tenant/conditional/list-template',
+        name: 'CA Policy Tester',
+        to: '/tenant/conditional/test-policy',
       },
       {
         component: CNavItem,
-        name: 'Add CA Template',
-        to: '/tenant/conditional/add-template',
+        name: 'CA Vacation Mode',
+        to: '/tenant/conditional/deploy-vacation',
+      },
+      {
+        component: CNavItem,
+        name: 'CA Templates',
+        to: '/tenant/conditional/list-template',
       },
       {
         component: CNavItem,
@@ -466,8 +526,18 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'MEM Policies',
+        name: 'Configuration Policies',
         to: '/endpoint/MEM/list-policies',
+      },
+      {
+        component: CNavItem,
+        name: 'Compliance Policies',
+        to: '/endpoint/MEM/list-compliance-policies',
+      },
+      {
+        component: CNavItem,
+        name: 'Protection Policies',
+        to: '/endpoint/MEM/list-appprotection-policies',
       },
       {
         component: CNavItem,
@@ -555,13 +625,18 @@ const _nav = [
     component: CNavGroup,
     name: 'Administration',
     section: 'Email & Exchange',
-    to: '/email/exchange',
+    to: '/email/Administration',
     icon: <FontAwesomeIcon icon={faWrench} className="nav-icon" />,
     items: [
       {
         component: CNavItem,
         name: 'Mailboxes',
         to: '/email/administration/mailboxes',
+      },
+      {
+        component: CNavItem,
+        name: 'Deleted Mailboxes',
+        to: '/email/administration/deleted-mailboxes',
       },
       {
         component: CNavItem,
@@ -577,6 +652,11 @@ const _nav = [
         component: CNavItem,
         name: 'Quarantine',
         to: '/email/administration/quarantine',
+      },
+      {
+        component: CNavItem,
+        name: 'Tenant Allow/Block Lists',
+        to: '/email/administration/tenant-allow-block-lists',
       },
     ],
   },
@@ -597,13 +677,18 @@ const _nav = [
         name: 'Mailbox Restores',
         to: '/email/tools/mailbox-restores',
       },
+      {
+        component: CNavItem,
+        name: 'Mail Test',
+        to: '/email/tools/mail-test',
+      },
     ],
   },
   {
     component: CNavGroup,
     name: 'Transport',
     section: 'Email & Exchange',
-    to: '/tenant/administration',
+    to: '/email/Transport',
     icon: <FontAwesomeIcon icon={faBus} className="nav-icon" />,
     items: [
       {
@@ -642,7 +727,7 @@ const _nav = [
     component: CNavGroup,
     name: 'Spamfilter',
     section: 'Email & Exchange',
-    to: '/tenant/administration',
+    to: '/email/spamfilter',
     icon: <FontAwesomeIcon icon={faEnvelope} className="nav-icon" />,
     items: [
       {
@@ -659,6 +744,25 @@ const _nav = [
         component: CNavItem,
         name: 'Templates',
         to: '/email/spamfilter/list-templates',
+      },
+    ],
+  },
+  {
+    component: CNavGroup,
+    name: 'Resource Management',
+    section: 'Email & Exchange',
+    to: '/resources/management',
+    icon: <FontAwesomeIcon icon={faToolbox} className="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Rooms',
+        to: '/resources/management/list-rooms',
+      },
+      {
+        component: CNavItem,
+        name: 'Room Lists',
+        to: '/resources/management/room-lists',
       },
     ],
   },
@@ -714,6 +818,16 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Extensions Settings',
+        to: '/cipp/extensions',
+      },
+      {
+        component: CNavItem,
+        name: 'Extension Sync',
+        to: '/cipp/extension-sync',
+      },
+      {
+        component: CNavItem,
         name: 'User Settings',
         to: '/cipp/user-settings',
       },
@@ -726,6 +840,11 @@ const _nav = [
         component: CNavItem,
         name: 'Logbook',
         to: '/cipp/logs',
+      },
+      {
+        component: CNavItem,
+        name: 'Statistics',
+        to: '/cipp/statistics',
       },
       {
         component: CNavItem,
