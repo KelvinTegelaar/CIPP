@@ -40,10 +40,10 @@ Sometimes, a manual CPV refresh might be needed in the following scenarios:
 * **Permission Notifications:** Pay close attention to the permissions that the system indicates have been applied. This is especially crucial if the tenant does not have a specific license available.
 {% endhint %}
 
-## What Happens During the Refresh?
+## What Happens During the Refresh / Reset?
 
 Upon initiating a CPV refresh, CIPP sends a request to the tenant to add the CIPP application and its associated permissions. This process includes:
 
-* **Service Principal Management:** The system checks and potentially resets the service principal if needed.
+* **Service Principal Management (CPV Reset Only):** The system checks and resets the service principal by removing and re-adding it.
 * **Application Permissions Update:** Necessary application permissions are added to ensure CIPP can perform its required functions.
 * **Delegated Permissions Update:** Delegated permissions are updated to align with the current needs of the tenant.

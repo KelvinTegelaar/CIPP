@@ -18,6 +18,15 @@ The main table on this page displays the following columns:
 
 ## Features and Actions
 
+### Actions List on the Tenants Tab
+
+The actions available in the "Actions" column for each tenant include:
+
+* **Exclude Tenants:** Excludes selected tenants from display and actions.
+* **Include Tenants:** Includes selected tenants back into the management list.
+* **Refresh CPV Permissions:** Refreshes the CPV permissions for the selected tenants.
+* **Reset CPV Permissions:** Resets the CPV permissions for the selected tenants by deleting the Service Principal and re-adding it.
+
 ### Tenant Exclusion Control
 
 {% hint style="info" %}
@@ -42,10 +51,36 @@ Administrators can remove a tenant's exclusion status by:
 
 CIPP works using the Control Panel Vendor API - Also known as the CPV API. The CPV API is used to add the CIPP application to your managed tenants and allows CIPP to execute actions within these tenants. Each night at 00:00 UTC the permissions are refreshed for all tenants. This makes sure that the application always has the latest set of required access.
 
-Pressing the CPV Refresh button might be required when a new tenant is added, or a new GDAP permission is applied to the CIPP-SAM service account.
+Sometimes, pressing the CPV Refresh button might be required when a new tenant is added or a new GDAP permission is applied to the CIPP-SAM service account. Administrators can refresh a tenant's permissions by:
 
-Administrators can see more about this on the [Refreshing a Tenants Permission](tenants.md#refreshing-a-tenants-permissions) section of our troubleshooting documentation.
+1. Finding the tenant's row in the table.
+2. Clicking on the blue refresh icon in the "Actions" column.
+3. Confirming the action to initiate the permissions refresh process.
+
+For more details, see more about this on the [Refreshing a Tenants Permission](tenants.md#refreshing-a-tenants-permissions) section of our troubleshooting documentation.
+
+### Resetting a Tenant's CPV Permissions
+
+{% hint style="warning" %}
+**Note:** The CPV Reset is a powerful tool and should be used only if you cannot manage permissions at all. This action will delete the Service Principal and re-add it, which may be necessary if there are issues with the existing permissions setup.
+{% endhint %}
+
+**To reset a tenant's CPV permissions:**
+
+1. Select the tenant(s) for which you need to reset permissions.
+2. Go to the bulk actions menu and choose "CPV Reset".
+3. Confirm the action to reset the CPV permissions, which will delete and re-add the Service Principal.
+
+## Filtering Tenants
+
+You can filter tenants based on their exclusion status:
+
+* **Excluded Tenants:** Filtered by the condition "Excluded eq true."
+* **Included Tenants:** Filtered by the condition "Excluded eq false."
 
 ## Additional Functionality
 
-The Tenants page also provides export and filter functionalities. The 'Export' button allows you to download a CSV file of the tenant table for offline use or analysis. The 'Filter' dropdown lets you filter the tenants displayed in the table based on whether they are excluded or included.
+The Tenants page also provides export and filter functionalities:
+
+* **Export:** Download a CSV file of the tenant table for offline use or analysis.
+* **Filter:** Use the 'Filter' dropdown to display tenants based on whether they are excluded or included.
