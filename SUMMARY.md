@@ -192,9 +192,10 @@
 
 ## 📂 Troubleshooting
 
-- [Error codes](troubleshooting/troubleshooting.md)
-- [Troubleshooting instructions](troubleshooting/troubleshooting-instructions.md)
-- [Frequently Asked Questions](troubleshooting/frequently-asked-questions.md)
+* [Error codes](troubleshooting/troubleshooting.md)
+* [Troubleshooting instructions](troubleshooting/troubleshooting-instructions/README.md)
+  * [Refreshing a Specific Tenant's Permissions via CPV API](troubleshooting/troubleshooting-instructions/refreshing-a-specific-tenants-permissions-via-cpv-api.md)
+* [Frequently Asked Questions](troubleshooting/frequently-asked-questions.md)
 
 ## 🔐 Security
 
