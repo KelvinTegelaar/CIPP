@@ -2,6 +2,8 @@
 
 On this page you can find a list of frequently asked questions about the CyberDrain Improved Partner Portal (CIPP). If you're having specific issues with CIPP please also check the Troubleshooting page.
 
+
+
 <details>
 
 <summary>How much does CIPP cost to run?</summary>
@@ -305,3 +307,16 @@ For more details, refer to the [Lighthouse sign-up guide](https://learn.microsof
 
 </details>
 
+<details>
+
+<summary>Applying New Standards to a Tenant</summary>
+
+**Q: How long does it typically take for new standards to be applied to a tenant?**
+
+**A:** It usually takes between 0 to 3 hours for new standards to be applied to a tenant. This timeframe depends on the scheduling of a cron job that automatically initiates the application of standards.
+
+**Q: Can I apply standards immediately instead of waiting for the cron job?**
+
+**A:** Yes, you can apply standards immediately by clicking the "Run Now" buttons located in the top right corner of the interface. This action bypasses the scheduled cron job and applies the standards right away.
+
+</details>
