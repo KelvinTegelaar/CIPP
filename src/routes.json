@@ -908,6 +908,12 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/email/reports/safeattachments-filters",
+    "name": "Safe Attachment Filters",
+    "component": "views/email-exchange/reports/SafeAttachmentsFilters",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "name": "Security & Compliance",
     "path": "/security",
     "allowedRoles": ["admin", "editor", "readonly"]

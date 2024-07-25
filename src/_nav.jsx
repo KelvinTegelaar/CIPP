@@ -805,6 +805,11 @@ const _nav = [
       },
       {
         component: CNavItem,
+        name: 'Safe Attachments Filters',
+        to: '/email/reports/safeattachments-filters',
+      },
+      {
+        component: CNavItem,
         name: 'Shared Mailbox with Enabled Account',
         to: '/email/reports/SharedMailboxEnabledAccount',
       },
