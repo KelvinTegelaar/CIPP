@@ -188,7 +188,7 @@
 
 * [Error codes](troubleshooting/troubleshooting.md)
 * [Troubleshooting instructions](troubleshooting/troubleshooting-instructions/README.md)
-  * [Refreshing a Specific Tenant's Permissions](troubleshooting/troubleshooting-instructions/refreshing-a-specific-tenants-permissions.md)
+  * [Refreshing a Specific Tenant's Permissions via CPV API](troubleshooting/troubleshooting-instructions/refreshing-a-specific-tenants-permissions-via-cpv-api.md)
 * [Frequently Asked Questions](troubleshooting/frequently-asked-questions.md)
 
 ## 🔐 Security

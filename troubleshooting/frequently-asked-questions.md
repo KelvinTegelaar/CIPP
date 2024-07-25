@@ -79,7 +79,7 @@ Check the [MFA Troubleshooting](troubleshooting.md#multi-factor-authentication-t
    1. Navigate to CIPP -> Application Settings -> Access Check.
    2. Select the relevant tenant and click "Run access check".
 
-Complete all checks for effective troubleshooting. If you still have issues or for detailed instructions, refer to the[refreshing-a-specific-tenants-permissions.md](troubleshooting-instructions/refreshing-a-specific-tenants-permissions.md "mention") page, the [troubleshooting instructions](https://docs.cipp.app/troubleshooting/troubleshooting-instructions) page, and the relevant sections on our [**Error Codes**](https://docs.cipp.app/troubleshooting/troubleshooting) page.
+Complete all checks for effective troubleshooting. If you still have issues or for detailed instructions, refer to the[refreshing-a-specific-tenants-permissions-via-cpv-api.md](troubleshooting-instructions/refreshing-a-specific-tenants-permissions-via-cpv-api.md "mention") page, the [troubleshooting instructions](https://docs.cipp.app/troubleshooting/troubleshooting-instructions) page, and the relevant sections on our [**Error Codes**](https://docs.cipp.app/troubleshooting/troubleshooting) page.
 
 </details>
 
