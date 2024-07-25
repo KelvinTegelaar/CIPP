@@ -9,9 +9,10 @@ export default function CippButtonCard({
   CardButton,
   children,
   isFetching,
+  className = 'h-100',
 }) {
   return (
-    <CCard className="h-100 mb-3">
+    <CCard className={`${className} mb-3`}>
       <CCardHeader>
         <CCardTitle>
           {titleType === 'big' ? <h3 className="underline mb-3">{title}</h3> : title}
@@ -32,4 +33,5 @@ CippButtonCard.propTypes = {
   CardButton: PropTypes.element.isRequired,
   children: PropTypes.element.isRequired,
   isFetching: PropTypes.bool.isRequired,
+  className: PropTypes.string,
 }
