@@ -1,3 +1,8 @@
+import { CButton } from '@coreui/react'
+import { faBan, faBook, faCheck, faEllipsisV, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import React, { useState } from 'react'
+import { CippActionsOffcanvas } from 'src/components/utilities'
 import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
 import { cellDateFormatter, cellBooleanFormatter, CellTip } from 'src/components/tables'
@@ -147,6 +152,11 @@ const ListSafeAttachmentsFilters = () => {
       exportSelector: 'WhenChanged',
       cell: cellDateFormatter(),
       maxWidth: '150px',
+    },
+    {
+      name: 'Actions',
+      cell: Offcanvas,
+      maxWidth: '80px',
     },
   ]
 
