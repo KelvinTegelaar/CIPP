@@ -29,7 +29,7 @@ export function SettingsWebhookSubscriptions() {
       selector: (row) => row['Status'],
       exportSelector: 'Status',
       sortable: true,
-      cell: cellBadgeFormatter(),
+      cell: cellBadgeFormatter({ color: 'info' }),
     },
     {
       name: 'Last Update',
