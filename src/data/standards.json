@@ -1634,6 +1634,11 @@
         ]
       },
       {
+        "type": "input",
+        "name": "standards.MalwareFilterPolicy.OptionalFileTypes",
+        "label": "Optional File Types, Comma separated"
+      },
+      {
         "type": "Select",
         "label": "QuarantineTag",
         "name": "standards.MalwareFilterPolicy.QuarantineTag",
