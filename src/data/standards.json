@@ -1279,6 +1279,19 @@
     "recommendedBy": ["CIS"]
   },
   {
+    "name": "standards.EXODisableAutoForwarding",
+    "cat": "Exchange Standards",
+    "tag": ["highimpact", "CIS", "mdo_autoforwardingmode", "mdo_blockmailforward"],
+    "helpText": "Disables the ability for users to automatically forward e-mails to external recipients.",
+    "docsDescription": "Disables the ability for users to automatically forward e-mails to external recipients. This is to prevent data exfiltration. Please check if there are any legitimate use cases for this feature before implementing, like forwarding invoices and such.",
+    "addedComponent": [],
+    "label": "Disable automatic forwarding to external recipients",
+    "impact": "High Impact",
+    "impactColour": "danger",
+    "powershellEquivalent": "Set-HostedOutboundSpamFilterPolicy -AutoForwardingMode 'Off'",
+    "recommendedBy": ["CIS"]
+  },
+  {
     "name": "standards.QuarantineRequestAlert",
     "cat": "Defender Standards",
     "tag": ["lowimpact"],
