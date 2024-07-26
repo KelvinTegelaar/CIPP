@@ -6130,7 +6130,7 @@
             },
             "in": "query",
             "name": "tenantfilter",
-            "required": true
+            "required": false
           }
         ],
         "operationId": "getliststandards",
