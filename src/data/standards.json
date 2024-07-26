@@ -2079,17 +2079,56 @@
     "name": "standards.DisableAddShortcutsToOneDrive",
     "cat": "SharePoint Standards",
     "tag": ["mediumimpact"],
-    "helpText": "When the feature is disabled the option Add shortcut to OneDrive will be removed. Any folders that have already been added will remain on the user's computer.",
-    "disabledFeatures": {
-      "report": true,
-      "warn": true,
-      "remediate": false
-    },
-    "addedComponent": [],
-    "label": "Disable Add Shortcuts To OneDrive",
+    "helpText": "If disabled, the button Add shortcut to OneDrive will be removed and users in the tenant will no longer be able to add new shortcuts to their OneDrive. Existing shortcuts will remain functional",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Add Shortcuts To OneDrive button state",
+        "name": "standards.DisableAddShortcutsToOneDrive.state",
+        "values": [
+          {
+            "label": "Disabled",
+            "value": "true"
+          },
+          {
+            "label": "Enabled",
+            "value": "false"
+          }
+        ]
+      }
+    ],
+    "label": "Set Add Shortcuts To OneDrive button state",
     "impact": "Medium Impact",
     "impactColour": "warning",
-    "powershellEquivalent": "Graph API or Portal",
+    "powershellEquivalent": "Set-SPOTenant -DisableAddShortcutsToOneDrive $true or $false",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.SPSyncButtonState",
+    "cat": "SharePoint Standards",
+    "tag": ["mediumimpact"],
+    "helpText": "If disabled, users in the tenant will no longer be able to use the Sync button to sync SharePoint content on all sites. However, existing synced content will remain functional on the user's computer.",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "SharePoint Sync Button state",
+        "name": "standards.SPSyncButtonState.state",
+        "values": [
+          {
+            "label": "Disabled",
+            "value": "true"
+          },
+          {
+            "label": "Enabled",
+            "value": "false"
+          }
+        ]
+      }
+    ],
+    "label": "Set SharePoint sync button state",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "powershellEquivalent": "Set-SPOTenant -HideSyncButtonOnTeamSite $true or $false",
     "recommendedBy": []
   },
   {
