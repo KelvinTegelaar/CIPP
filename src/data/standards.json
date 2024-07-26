@@ -584,7 +584,7 @@
   {
     "name": "standards.OauthConsentLowSec",
     "cat": "Entra (AAD) Standards",
-    "tag": ["mediumimpact"],
+    "tag": ["mediumimpact", "IntegratedApps"],
     "helpText": "Sets the default oauth consent level so users can consent to applications that have low risks.",
     "docsDescription": "Allows users to consent to applications with low assigned risk.",
     "label": "Allow users to consent to applications with low security risk (Prevent OAuth phishing. Lower impact, less secure)",
@@ -1336,7 +1336,8 @@
       "mdo_highconfidencephishaction",
       "mdo_phisspamacation",
       "mdo_spam_notifications_only_for_admins",
-      "mdo_antiphishingpolicies"
+      "mdo_antiphishingpolicies",
+      "mdo_phishthresholdlevel"
     ],
     "helpText": "This creates a Anti-Phishing policy that automatically enables Mailbox Intelligence and spoofing, optional switches for Mailtips.",
     "addedComponent": [
@@ -2094,7 +2095,7 @@
   {
     "name": "standards.DisableSharePointLegacyAuth",
     "cat": "SharePoint Standards",
-    "tag": ["mediumimpact", "CIS"],
+    "tag": ["mediumimpact", "CIS", "spo_legacy_auth"],
     "helpText": "Disables the ability to authenticate with SharePoint using legacy authentication methods. Any applications that use legacy authentication will need to be updated to use modern authentication.",
     "docsDescription": "Disables the ability for users and applications to access SharePoint via legacy basic authentication. This will likely not have any user impact, but will block systems/applications depending on basic auth or the SharePointOnlineCredentials class.",
     "addedComponent": [],
