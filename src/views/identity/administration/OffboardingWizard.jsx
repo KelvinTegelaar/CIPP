@@ -167,17 +167,17 @@ const OffboardingWizard = () => {
         <div className="mb-2">
           <CRow>
             <CCol className="mb-3" md={6}>
-              <RFFCFormSwitch name="RevokeSessions" label="Revoke all sessions" />
-              <RFFCFormSwitch name="RemoveMobile" label="Remove all Mobile Devices" />
-              <RFFCFormSwitch name="RemoveRules" label="Remove all Rules" />
-              <RFFCFormSwitch name="RemoveLicenses" label="Remove Licenses" />
-              <RFFCFormSwitch name="removePermissions" label="Remove users mailbox permissions" />
               <RFFCFormSwitch name="ConvertToShared" label="Convert to Shared Mailbox" />
+              <RFFCFormSwitch name="HideFromGAL" label="Hide from Global Address List" />
+              <RFFCFormSwitch name="removeCalendarInvites" label="Cancel all calendar invites" />
+              <RFFCFormSwitch name="removePermissions" label="Remove users mailbox permissions" />
+              <RFFCFormSwitch name="RemoveRules" label="Remove all Rules" />
+              <RFFCFormSwitch name="RemoveMobile" label="Remove all Mobile Devices" />
+              <RFFCFormSwitch name="RemoveGroups" label="Remove from all groups" />
+              <RFFCFormSwitch name="RemoveLicenses" label="Remove Licenses" />
+              <RFFCFormSwitch name="RevokeSessions" label="Revoke all sessions" />
               <RFFCFormSwitch name="DisableSignIn" label="Disable Sign in" />
               <RFFCFormSwitch name="ResetPass" label="Reset Password" />
-              <RFFCFormSwitch name="RemoveGroups" label="Remove from all groups" />
-              <RFFCFormSwitch name="removeCalendarInvites" label="Cancel all calendar invites" />
-              <RFFCFormSwitch name="HideFromGAL" label="Hide from Global Address List" />
               <RFFCFormSwitch name="DeleteUser" label="Delete user" />
             </CCol>
             <CCol className="mb-3" md={6}>
