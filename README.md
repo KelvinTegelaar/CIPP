@@ -1,8 +1,12 @@
+---
+description: Welcome to the CyberDrain Improved Partner Portal (CIPP) User Documentation
+---
+
 # ☕ CIPP Documentation
 
-## Welcome to the CyberDrain Improved Partner Portal (CIPP) User Documentation
+## Introduction
 
-Welcome to the CIPP User Documentation! CIPP (pronounced "sip") is the CyberDrain Improved Partner Portal, a powerful Microsoft 365 multitenant management system designed to help managed services providers (MSPs) streamline their clients' Microsoft 365 administration tasks. Created by Kelvin Tegelaar in 2021, CIPP aims to fill the gaps left by existing multi-tenant management solutions, making it easy and efficient for MSPs to manage multiple clients.
+Welcome to the CIPP User Documentation! CIPP (pronounced "sip") is the CyberDrain Improved Partner Portal, a powerful Microsoft 365 multitenant management system designed to help MSPs streamline their clients' Microsoft 365 administration tasks. Created by Kelvin Tegelaar in 2021, CIPP aims to fill the gaps left by existing multi-tenant management solutions, making it easy and efficient to manage multiple clients from one centralized portal experience.
 
 CIPP consists of two main components: the CIPP UI and the CIPP API. The frontend is built using React and Core UI, while the API is built with PowerShell. The system leverages Azure Functions and Azure Static Web Apps to provide a fast, responsive, and maintainable solution.
 
@@ -16,15 +20,15 @@ CIPP consists of two main components: the CIPP UI and the CIPP API. The frontend
 
 The documentation is organized into the following components:
 
-1. **Setup Documentation**: This section covers the initial setup process, including system requirements, installation, and configuration.
-2. **User Documentation**: Here, you'll find detailed guides and tutorials on how to use CIPP to manage your clients' Microsoft 365 tenants.
+1. **Setup Documentation**: This section covers the initial setup process of deploying your own instance of CIPP, including system requirements, installation, and configuration.
+2. **User Documentation**: Here, you'll find detailed guides and tutorials on how to use the CIPP platform once it's been deployed to manage your clients' Microsoft 365 tenants.
 3. **Developer Documentation**: If you're looking to extend the functionality of CIPP or integrate it with other tools and services, the Developer Documentation provides API documentation, custom scripting, and other advanced topics for developers.
 
 In addition to the core documentation components, we also provide a **Troubleshooting Guide** and an **FAQ** section to help you quickly resolve common issues and find answers to frequently asked questions.
 
-CIPP is an open-source project, and we encourage users to review the code and contribute to its ongoing development. For more information about the project, its contributors, and funding, please refer to the provided documentation.
+CIPP is an open-source project, and we encourage users to review the code and contribute to its ongoing development. For more information about the project, its contributors, and funding, please refer to the documentation in the relevant sections.
 
-We hope this documentation serves as a valuable resource as you explore and utilize the CyberDrain Improved Partner Portal. If you have any questions or need further assistance, please don't hesitate to reach via our [discord](https://discord.gg/cyberdrain)
+We hope this documentation serves as a valuable resource as you explore and utilize the CyberDrain Improved Partner Portal. If you have any questions or need further assistance, please don't hesitate to check us out in [discord](https://discord.gg/cyberdrain).
 
 ## Our Sponsors
 

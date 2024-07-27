@@ -25,3 +25,7 @@ This link finishes the onboarding process immediately and is only to be used by 
 {% hint style="danger" %}
 You must add your CIPP service account user to the groups created in **your** Azure Active Directory after executing the invite wizard for the first time. These groups will be in your Azure Active Directory with the name "M365 GDAP {Role Name}"
 {% endhint %}
+
+### Use the Invite Wizard
+
+See the instructions for using the invite Wizard [here](broken-reference). This tooling requires that you, or a global administrator accepts the invite under the tenant you are inviting.

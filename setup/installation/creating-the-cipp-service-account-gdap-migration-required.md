@@ -1,22 +1,29 @@
-# Creating the CIPP Service Account (GDAP Migration Required)
+# GDAP Migration Required
 
-## Setup Video for the CIPP Service Account
+## What is GDAP
 
-{% embed url="https://app.guidde.com/share/playbooks/i9fztXsCUWjY3cr8mySvCX" fullWidth="false" %}
+GDAP allows you to access your clients tenants according to the role you've set. This mean you are able to give one employee "helpdesk" access, and another employee "security" access.
 
-## CIPP Service Account Setup
+GDAP requires a mapping between roles and security groups in your partner tenant. CIPP creates these groups and mappings for you. Do not select all roles. This is not supported by Microsoft and CIPP. Selecting all roles(or most roles) will guarantee unexpected results. Carefully consider which roles are required for your deployment.
 
-1. Create a new account. We recommend to name this account something obvious such as "CIPP Integration" and give it the username "CIPP@domain.tld"
-   1. This account must be a Global Administrator while setting up the integration. These permissions may be removed after the integration has been setup.
-2. Add the account to the AdminAgent group. This group is required to be able to perform a GDAP migration.
-3. This account must have **Microsoft** multi-factor authentication enforced for each logon, either via Conditional Access when available or via [Per User MFA](https://account.activedirectory.windowsazure.com/UserManagement/MultifactorVerification.aspx) when Conditional Access is not available
-   * You may not use any other authentication provider than Microsoft for this account. Duo or other providers will not work. For more information on this see [this](https://learn.microsoft.com/en-us/partner-center/partner-security-requirements-mandating-mfa#supported-mfa-options)
+GDAP relationships have a maximum age, but may auto-renew if setup correctly.
 
-## Setup the SAM Wizard
+## So what do I need to do?
 
-Execute the steps in [executing-the-sam-setup-wizard.md](executing-the-sam-setup-wizard.md "mention") and return to this page.
+If you did not perform GDAP migration of your tenants via CIPP or believe you will need to setup new GDAP relationships with your clients, you will have a few extra steps you will need to perform. To start will, you will still want to create the CIPP Service Account and execute the SAM Wizard. You will then need to go through the process of generating invite links to accept within your client environments using the GDAP Invite Wizard.
 
-## Migrating to GDAP
+### 1. Create the CIPP Service Account
 
-Before you'll be able to use CIPP you will need to perform a GDAP migration for each of your tenants, for those steps follow the instructions in [gdap-invite-wizard.md](../gdap/gdap-invite-wizard.md "mention")
+* For video and walkthrough steps of this process, check out the details on the [creating-the-cipp-service-account-gdap-ready.md](creating-the-cipp-service-account-gdap-ready.md "mention") page, and come back here once you're done.
 
+### 2. Setup the SAM Wizard
+
+* Execute the steps in [executing-the-sam-setup-wizard.md](executing-the-sam-setup-wizard.md "mention") and return to this page.
+
+### 3. Migrating to GDAP
+
+* Before you'll be able to use CIPP you will need to perform a GDAP migration for each of your tenants, for those steps follow the instructions in [gdap-invite-wizard.md](../gdap/gdap-invite-wizard.md "mention")
+
+### 4. Onboard your Tenants
+
+* Once CIPP is successfully able to connect to your GDAP relationships, you will want to onboard these tenants into CIPP by following the instructions on the [adding-tenants-and-consenting-the-cipp-sam-application.md](adding-tenants-and-consenting-the-cipp-sam-application.md "mention") page.

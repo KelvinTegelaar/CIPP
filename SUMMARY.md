@@ -10,8 +10,8 @@
   * [Post-Install Configuration](setup/installation/addyourself.md)
   * [Run From Package Mode](setup/installation/runfrompackage.md)
   * [Connecting to your tenants](setup/installation/samwizard.md)
-  * [Creating the CIPP Service Account (GDAP Ready)](setup/installation/creating-the-cipp-service-account-gdap-ready.md)
-  * [Creating the CIPP Service Account (GDAP Migration Required)](setup/installation/creating-the-cipp-service-account-gdap-migration-required.md)
+  * [GDAP Migration Required](setup/installation/creating-the-cipp-service-account-gdap-migration-required.md)
+  * [Creating the CIPP Service Account](setup/installation/creating-the-cipp-service-account-gdap-ready.md)
   * [Executing the SAM Setup Wizard](setup/installation/executing-the-sam-setup-wizard.md)
   * [Adding Tenants & Consenting the CIPP-SAM Application](setup/installation/adding-tenants-and-consenting-the-cipp-sam-application.md)
   * [Conditional Access best practices](setup/installation/conditionalaccess.md)
@@ -24,9 +24,7 @@
   * [Permissions](setup/installation/permissions.md)
   * [Migrating to hosted CIPP](setup/installation/migrating-to-hosted-cipp.md)
 * [GDAP Setup Guide](setup/gdap/README.md)
-  * [What is GDAP](setup/gdap/what-is-gdap.md)
   * [GDAP Invite Wizard](setup/gdap/gdap-invite-wizard.md)
-  * [GDAP Migration Setup](setup/gdap/index.md)
   * [GDAP Troubleshooting](setup/gdap/troubleshooting.md)
   * [Recommended Roles](setup/gdap/recommended-roles.md)
 * [Implementation Guide](setup/implementation-guide/README.md)
@@ -36,6 +34,7 @@
   * [Integration Setup](setup/implementation-guide/integration-setup.md)
   * [Best Practices Analyser](setup/implementation-guide/best-practices-analyser.md)
   * [Domain Analyser](setup/implementation-guide/domain-analyser.md)
+* [Sponsor Quick Start](setup/sponsor-quick-start.md)
 * [Professional Onboarding Services](setup/professional-onboarding-services.md)
 
 ## 🙋 User Documentation
