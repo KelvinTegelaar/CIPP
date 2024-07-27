@@ -214,10 +214,12 @@ const RiskDetections = () => {
           path: `api/ListGraphRequest`,
           reportName: `${tenant?.defaultDomainName}-RiskDetections-Report`,
           params: {
-            TenantFilter: tenant?.defaultDomainName,
+            TenantFilter: tenant.defaultDomainName,
             Endpoint: `identityProtection/riskDetections`,
             $count: true,
             $orderby: 'detectedDateTime desc',
+            NoPagination: true,
+            $top: 500,
           },
         }}
       />
