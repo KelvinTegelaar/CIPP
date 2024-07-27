@@ -2475,5 +2475,57 @@
     "impactColour": "warning",
     "powershellEquivalent": "Set-CsExternalAccessPolicy",
     "recommendedBy": []
+  },
+  {
+    "name": "standards.TeamsFederationConfiguration",
+    "cat": "Teams Standards",
+    "tag": ["mediumimpact"],
+    "helpText": "Sets the properties of the Global federation configuration.",
+    "docsDescription": "Sets the properties of the Global federation configuration. Federation configuration settings determine whether or not your users can communicate with users who have SIP accounts with a federated organization.",
+    "addedComponent": [
+      {
+        "type": "boolean",
+        "name": "standards.TeamsFederationConfiguration.AllowTeamsConsumer",
+        "label": "Allow users to communicate with other organizations"
+      },
+      {
+        "type": "boolean",
+        "name": "standards.TeamsFederationConfiguration.AllowPublicUsers",
+        "label": "Allow users to communicate with Skype Users"
+      },
+      {
+        "type": "Select",
+        "name": "standards.TeamsFederationConfiguration.DomainControl",
+        "label": "Communication Mode",
+        "values": [
+          {
+            "label": "Allow all external domains",
+            "value": "AllowAllExternal"
+          },
+          {
+            "label": "Block all external domains",
+            "value": "BlockAllExternal"
+          },
+          {
+            "label": "Allow specific external domains",
+            "value": "AllowSpecificExternal"
+          },
+          {
+            "label": "Block specific external domains",
+            "value": "BlockSpecificExternal"
+          }
+        ]
+      },
+      {
+        "type": "input",
+        "name": "standards.TeamsFederationConfiguration.DomainList",
+        "label": "Domains, Comma separated"
+      }
+    ],
+    "label": "Federation Configuration for Microsoft Teams",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "powershellEquivalent": "Set-CsTenantFederationConfiguration",
+    "recommendedBy": []
   }
 ]
