@@ -790,8 +790,23 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Phishing Policies',
-        to: '/email/reports/phishing-policies',
+        name: 'Anti-Phishing Filters',
+        to: '/email/reports/antiphishing-filters',
+      },
+      {
+        component: CNavItem,
+        name: 'Malware Filters',
+        to: '/email/reports/malware-filters',
+      },
+      {
+        component: CNavItem,
+        name: 'Safe Links Filters',
+        to: '/email/reports/safelinks-filters',
+      },
+      {
+        component: CNavItem,
+        name: 'Safe Attachments Filters',
+        to: '/email/reports/safeattachments-filters',
       },
       {
         component: CNavItem,
