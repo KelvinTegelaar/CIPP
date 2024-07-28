@@ -2302,5 +2302,41 @@
     "impactColour": "danger",
     "powershellEquivalent": "Update-MgAdminSharepointSetting",
     "recommendedBy": []
+  },
+  {
+    "name": "standards.TeamsGlobalMeetingPolicy",
+    "cat": "Teams Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Defines the CIS recommended global meeting policy for Teams. This includes AllowAnonymousUsersToJoinMeeting, AllowAnonymousUsersToStartMeeting, AutoAdmittedUsers, AllowPSTNUsersToBypassLobby, MeetingChatEnabledType, DesignatedPresenterRoleMode, AllowExternalParticipantGiveRequestControl",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "name": "standards.TeamsGlobalMeetingPolicy.DesignatedPresenterRoleMode",
+        "label": "Default value of the `Who can present?`",
+        "values": [
+          {
+            "label": "EveryoneUserOverride",
+            "value": "EveryoneUserOverride"
+          },
+          {
+            "label": "EveryoneInCompanyUserOverride",
+            "value": "EveryoneInCompanyUserOverride"
+          },
+          {
+            "label": "EveryoneInSameAndFederatedCompanyUserOverride",
+            "value": "EveryoneInSameAndFederatedCompanyUserOverride"
+          },
+          {
+            "label": "OrganizerOnlyUserOverride",
+            "value": "OrganizerOnlyUserOverride"
+          }
+        ]
+      }
+    ],
+    "label": "Define Global Meeting Policy for Teams",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "powershellEquivalent": "Set-CsTeamsMeetingPolicy -AllowAnonymousUsersToJoinMeeting $false -AllowAnonymousUsersToStartMeeting $false -AutoAdmittedUsers EveryoneInCompanyExcludingGuests -AllowPSTNUsersToBypassLobby $false -MeetingChatEnabledType EnabledExceptAnonymous -DesignatedPresenterRoleMode $DesignatedPresenterRoleMode -AllowExternalParticipantGiveRequestControl $false",
+    "recommendedBy": ["CIS 3.0"]
   }
 ]
