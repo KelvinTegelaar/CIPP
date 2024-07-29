@@ -15,7 +15,7 @@ import {
   CRow,
 } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faTimes, faExclamation } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { CippTable } from 'src/components/tables'
 import { CippPage } from 'src/components/layout/CippPage'
 import { useGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
@@ -27,6 +27,7 @@ import { ModalService } from 'src/components/utilities'
 import { CellTip, cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 import { CippCallout } from 'src/components/layout'
 import CippPrettyCard from 'src/components/contentcards/CippPrettyCard'
+import { TableModalButton } from 'src/components/buttons'
 
 const SecureScore = () => {
   const textRef = useRef()
@@ -192,6 +193,11 @@ const SecureScore = () => {
       cell: cellGenericFormatter(),
       exportSelector: 'actionUrl',
     },
+    {
+      name: 'Updates',
+      selector: (row) => row?.controlStateUpdates,
+      cell: cellGenericFormatter(),
+    },
   ]
 
   return (
@@ -278,7 +284,7 @@ const SecureScore = () => {
         </CCol>
       </CRow>
       <CippPage title="Report Results" tenantSelector={false}>
-        {viewMode && translateData.controlScores.length > 1 && isSuccess && isSuccessTranslation && (
+        {viewMode && translateData.controlScores?.length > 1 && isSuccess && isSuccessTranslation && (
           <CCard className="content-card">
             <CCardHeader className="d-flex justify-content-between align-items-center">
               <CCardTitle>Best Practice Report</CCardTitle>
@@ -286,7 +292,7 @@ const SecureScore = () => {
             <CCardBody>
               <CippTable
                 reportName="SecureScore"
-                dynamicColumns={false}
+                dynamicColumns={true}
                 columns={columns}
                 data={translateData.controlScores}
                 isFetching={isFetching}
@@ -392,6 +398,12 @@ const SecureScore = () => {
                         <CButton onClick={() => openResolution(info)} className="me-3">
                           Change Status
                         </CButton>
+
+                        <TableModalButton
+                          title="Updates"
+                          data={info?.controlStateUpdates ?? []}
+                          className="me-3"
+                        />
                       </CCardFooter>
                     </CCard>
                   </CCol>
