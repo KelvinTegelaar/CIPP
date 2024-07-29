@@ -1704,6 +1704,12 @@
     "helpText": "This standard creates a Spam filter policy similar to the default strict policy.",
     "addedComponent": [
       {
+        "type": "number",
+        "label": "Bulk email threshold (Default 7)",
+        "name": "standards.SpamFilterPolicy.BulkThreshold",
+        "default": 7
+      },
+      {
         "type": "Select",
         "label": "Spam Action",
         "name": "standards.SpamFilterPolicy.SpamAction",
@@ -1739,6 +1745,21 @@
       },
       {
         "type": "Select",
+        "label": "High Confidence Spam Action",
+        "name": "standards.SpamFilterPolicy.HighConfidenceSpamAction",
+        "values": [
+          {
+            "label": "Quarantine the message",
+            "value": "Quarantine"
+          },
+          {
+            "label": "Move message to Junk Email folder",
+            "value": "MoveToJmf"
+          }
+        ]
+      },
+      {
+        "type": "Select",
         "label": "High Confidence Spam Quarantine Tag",
         "name": "standards.SpamFilterPolicy.HighConfidenceSpamQuarantineTag",
         "values": [
@@ -1758,6 +1779,21 @@
       },
       {
         "type": "Select",
+        "label": "Bulk Spam Action",
+        "name": "standards.SpamFilterPolicy.BulkSpamAction",
+        "values": [
+          {
+            "label": "Move message to Junk Email folder",
+            "value": "MoveToJmf"
+          },
+          {
+            "label": "Quarantine the message",
+            "value": "Quarantine"
+          }
+        ]
+      },
+      {
+        "type": "Select",
         "label": "Bulk Quarantine Tag",
         "name": "standards.SpamFilterPolicy.BulkQuarantineTag",
         "values": [
@@ -1772,6 +1808,21 @@
           {
             "label": "DefaultFullAccessWithNotificationPolicy",
             "value": "DefaultFullAccessWithNotificationPolicy"
+          }
+        ]
+      },
+      {
+        "type": "Select",
+        "label": "Phish Spam Action",
+        "name": "standards.SpamFilterPolicy.PhishSpamAction",
+        "values": [
+          {
+            "label": "Quarantine the message",
+            "value": "Quarantine"
+          },
+          {
+            "label": "Move message to Junk Email folder",
+            "value": "MoveToJmf"
           }
         ]
       },
