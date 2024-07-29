@@ -1715,12 +1715,12 @@
         "name": "standards.SpamFilterPolicy.SpamAction",
         "values": [
           {
-            "label": "Move message to Junk Email folder",
-            "value": "MoveToJmf"
-          },
-          {
             "label": "Quarantine the message",
             "value": "Quarantine"
+          },
+          {
+            "label": "Move message to Junk Email folder",
+            "value": "MoveToJmf"
           }
         ]
       },
@@ -1783,12 +1783,12 @@
         "name": "standards.SpamFilterPolicy.BulkSpamAction",
         "values": [
           {
-            "label": "Move message to Junk Email folder",
-            "value": "MoveToJmf"
-          },
-          {
             "label": "Quarantine the message",
             "value": "Quarantine"
+          },
+          {
+            "label": "Move message to Junk Email folder",
+            "value": "MoveToJmf"
           }
         ]
       },
