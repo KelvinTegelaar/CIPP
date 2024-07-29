@@ -7,7 +7,7 @@ import { useLazyGenericGetRequestQuery } from 'src/store/api/app.js'
 import React, { useEffect, useRef } from 'react'
 import { ModalService, TenantSelectorMultiple } from 'src/components/utilities/index.js'
 import { setCurrentTenant } from 'src/store/features/app.js'
-import { CAlert, CButton, CCallout, CSpinner, CTooltip } from '@coreui/react'
+import { CButton, CSpinner, CTooltip } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faCheckCircle,
@@ -260,6 +260,16 @@ export function SettingsTenants() {
                 modalUrl: `/api/ExecCPVPermissions?TenantFilter=!customerId&ResetSP=true`,
                 modalMessage:
                   'Are you sure you want to reset the CPV permissions for these tenants? (This will delete the Service Principal and re-add it.)',
+              },
+              {
+                label: 'Remove Tenant',
+                modal: true,
+                modalType: 'POST',
+                modalUrl: `/api/ExecRemoveTenant`,
+                modalBody: {
+                  TenantID: '!customerId',
+                },
+                modalMessage: 'Are you sure you want to remove this tenant?',
               },
             ],
           },
