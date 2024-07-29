@@ -188,6 +188,11 @@
       },
       {
         "type": "checkbox",
+        "name": "Hudu.Enabled",
+        "label": "Enable Integration"
+      },
+      {
+        "type": "checkbox",
         "name": "Hudu.CreateMissingUsers",
         "label": "Create missing users in Hudu"
       },
@@ -197,9 +202,19 @@
         "label": "Create missing devices in Hudu"
       },
       {
+        "type": "text",
+        "name": "Hudu.ExcludeSerials",
+        "label": "Exclude device serials (comma separated)"
+      },
+      {
         "type": "checkbox",
-        "name": "Hudu.Enabled",
-        "label": "Enable Integration"
+        "name": "Hudu.ImportDomains",
+        "label": "Import domains from M365"
+      },
+      {
+        "type": "checkbox",
+        "name": "Hudu.MonitorDomains",
+        "label": "Monitor domains in Hudu"
       }
     ],
     "mappingRequired": true,
