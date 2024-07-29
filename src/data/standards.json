@@ -2302,5 +2302,79 @@
     "impactColour": "danger",
     "powershellEquivalent": "Update-MgAdminSharepointSetting",
     "recommendedBy": []
+  },
+  {
+    "name": "standards.TeamsGlobalMeetingPolicy",
+    "cat": "Teams Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Defines the CIS recommended global meeting policy for Teams. This includes AllowAnonymousUsersToJoinMeeting, AllowAnonymousUsersToStartMeeting, AutoAdmittedUsers, AllowPSTNUsersToBypassLobby, MeetingChatEnabledType, DesignatedPresenterRoleMode, AllowExternalParticipantGiveRequestControl",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "name": "standards.TeamsGlobalMeetingPolicy.DesignatedPresenterRoleMode",
+        "label": "Default value of the `Who can present?`",
+        "values": [
+          {
+            "label": "EveryoneUserOverride",
+            "value": "EveryoneUserOverride"
+          },
+          {
+            "label": "EveryoneInCompanyUserOverride",
+            "value": "EveryoneInCompanyUserOverride"
+          },
+          {
+            "label": "EveryoneInSameAndFederatedCompanyUserOverride",
+            "value": "EveryoneInSameAndFederatedCompanyUserOverride"
+          },
+          {
+            "label": "OrganizerOnlyUserOverride",
+            "value": "OrganizerOnlyUserOverride"
+          }
+        ]
+      }
+    ],
+    "label": "Define Global Meeting Policy for Teams",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "powershellEquivalent": "Set-CsTeamsMeetingPolicy -AllowAnonymousUsersToJoinMeeting $false -AllowAnonymousUsersToStartMeeting $false -AutoAdmittedUsers EveryoneInCompanyExcludingGuests -AllowPSTNUsersToBypassLobby $false -MeetingChatEnabledType EnabledExceptAnonymous -DesignatedPresenterRoleMode $DesignatedPresenterRoleMode -AllowExternalParticipantGiveRequestControl $false",
+    "recommendedBy": ["CIS 3.0"]
+  },
+  {
+    "name": "standards.TeamsExternalFileSharing",
+    "cat": "Teams Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Ensure external file sharing in Teams is enabled for only approved cloud storage services.",
+    "addedComponent": [
+      {
+        "type": "boolean",
+        "name": "standards.TeamsExternalFileSharing.AllowGoogleDrive",
+        "label": "Allow Google Drive"
+      },
+      {
+        "type": "boolean",
+        "name": "standards.TeamsExternalFileSharing.AllowShareFile",
+        "label": "Allow ShareFile"
+      },
+      {
+        "type": "boolean",
+        "name": "standards.TeamsExternalFileSharing.AllowBox",
+        "label": "Allow Box"
+      },
+      {
+        "type": "boolean",
+        "name": "standards.TeamsExternalFileSharing.AllowDropBox",
+        "label": "Allow Dropbox"
+      },
+      {
+        "type": "boolean",
+        "name": "standards.TeamsExternalFileSharing.AllowEgnyte",
+        "label": "Allow Egnyte"
+      }
+    ],
+    "label": "Define approved cloud storage services for external file sharing in Teams",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "powershellEquivalent": "Set-CsTeamsClientConfiguration -AllowGoogleDrive $false -AllowShareFile $false -AllowBox $false -AllowDropBox $false -AllowEgnyte $false",
+    "recommendedBy": ["CIS 3.0"]
   }
 ]
