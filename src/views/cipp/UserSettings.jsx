@@ -156,28 +156,36 @@ const UserSettings = () => {
                       <CRow className="mb-3">
                         <h3 className="underline mb-5">Offboarding Defaults</h3>
                         <CCol>
-                          <RFFCFormSwitch name="RevokeSessions" label="Revoke all sessions" />
-                          <RFFCFormSwitch name="RemoveMobile" label="Remove all Mobile Devices" />
-                          <RFFCFormSwitch name="RemoveRules" label="Remove all Rules" />
-                          <RFFCFormSwitch name="RemoveLicenses" label="Remove Licenses" />
-                          <RFFCFormSwitch
-                            name="HideFromGAL"
-                            label="Hide from Global Address List"
-                          />
-                        </CCol>
-                        <CCol>
                           <RFFCFormSwitch
                             name="ConvertToShared"
                             label="Convert to Shared Mailbox"
                           />
-                          <RFFCFormSwitch name="DisableSignIn" label="Disable Sign in" />
-                          <RFFCFormSwitch name="ResetPass" label="Reset Password" />
-                          <RFFCFormSwitch name="RemoveGroups" label="Remove from all groups" />
-
+                          <RFFCFormSwitch
+                            name="HideFromGAL"
+                            label="Hide from Global Address List"
+                          />
+                          <RFFCFormSwitch
+                            name="removeCalendarInvites"
+                            label="Cancel all calendar invites"
+                          />
+                          <RFFCFormSwitch
+                            name="removePermissions"
+                            label="Remove users mailbox permissions"
+                          />
+                          <RFFCFormSwitch name="RemoveRules" label="Remove all Rules" />
                           <RFFCFormSwitch
                             name="keepCopy"
                             label="Keep copy of forwarded mail in source mailbox"
                           />
+                          <RFFCFormSwitch name="RemoveMobile" label="Remove all Mobile Devices" />
+                        </CCol>
+                        <CCol>
+                          <RFFCFormSwitch name="RemoveGroups" label="Remove from all groups" />
+                          <RFFCFormSwitch name="RemoveLicenses" label="Remove Licenses" />
+                          <RFFCFormSwitch name="RevokeSessions" label="Revoke all sessions" />
+                          <RFFCFormSwitch name="DisableSignIn" label="Disable Sign in" />
+                          <RFFCFormSwitch name="ResetPass" label="Reset Password" />
+                          <RFFCFormSwitch name="DeleteUser" label="Delete user" />
                         </CCol>
                       </CRow>
                       <CRow className="mb-3">
