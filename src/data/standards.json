@@ -2340,6 +2340,25 @@
     "recommendedBy": ["CIS 3.0"]
   },
   {
+    "name": "standards.TeamsEmailIntegration",
+    "cat": "Teams Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Should users be allowed to send emails directly to a channel email addresses?",
+    "docsDescription": "Teams channel email addresses are an optional feature that allows users to email the Teams channel directly.",
+    "addedComponent": [
+      {
+        "type": "boolean",
+        "name": "standards.TeamsEmailIntegration.AllowEmailIntoChannel",
+        "label": "Allow channel emails"
+      }
+    ],
+    "label": "Disallow emails to be sent to channel email addresses",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "powershellEquivalent": "Set-CsTeamsClientConfiguration -AllowEmailIntoChannel $false",
+    "recommendedBy": ["CIS 3.0"]
+  },
+  {
     "name": "standards.TeamsExternalFileSharing",
     "cat": "Teams Standards",
     "tag": ["lowimpact"],
