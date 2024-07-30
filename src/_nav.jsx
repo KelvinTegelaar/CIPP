@@ -326,7 +326,12 @@ const _nav = [
       {
         component: CNavItem,
         name: 'Invite Wizard',
-        to: '/tenant/administration/gdap-invite',
+        to: '/tenant/administration/gdap-invite-wizard',
+      },
+      {
+        component: CNavItem,
+        name: 'Invite List',
+        to: '/tenant/administration/gdap-invites',
       },
       {
         component: CNavItem,

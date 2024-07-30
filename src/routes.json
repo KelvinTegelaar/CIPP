@@ -999,9 +999,15 @@
     "allowedRoles": ["admin"]
   },
   {
-    "path": "/tenant/administration/gdap-invite",
+    "path": "/tenant/administration/gdap-invite-wizard",
     "name": "GDAP Invite Wizard",
     "component": "views/tenant/administration/GDAPInviteWizard",
+    "allowedRoles": ["admin"]
+  },
+  {
+    "path": "/tenant/administration/gdap-invites",
+    "name": "GDAP Invites",
+    "component": "views/tenant/administration/ListGDAPInvites",
     "allowedRoles": ["admin"]
   },
   {
