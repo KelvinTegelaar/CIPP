@@ -46,18 +46,20 @@ const requiredArray = (value) => {
     const duplicateRoles = value
       .map((item) => item.roleDefinitionId)
       .filter((item, index, self) => index !== self.indexOf(item))
-    console.log(duplicateRoles)
 
     if (duplicateRoles.length > 0) {
       var duplicates = value.filter((item) => duplicateRoles.includes(item.roleDefinitionId))
       /// get unique list of duplicate roles
+
       duplicates = duplicates
         .filter(
           (role, index, self) =>
             index === self.findIndex((t) => t.roleDefinitionId === role.roleDefinitionId),
         )
         .map((role) => role.RoleName)
-      return `Duplicate GDAP Roles selected, remove one of the mapped groups for the listed roles to continue: ${duplicates}`
+      return `Duplicate GDAP Roles selected, ensure there is only one group mapping for the listed roles to continue: ${duplicates.join(
+        ', ',
+      )}`
     } else {
       return undefined
     }
