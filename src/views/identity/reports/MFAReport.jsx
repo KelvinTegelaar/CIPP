@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 import { cellBooleanFormatter, CellTip } from 'src/components/tables'
 import { CippPageList } from 'src/components/layout'
 import { Row } from 'react-bootstrap'
-import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 
 const columns = [
   {
@@ -58,22 +57,8 @@ const columns = [
     selector: (row) => row['CoveredByCA'],
     name: 'Enforced via Conditional Access',
     sortable: true,
-    cell: cellGenericFormatter(),
+    cell: (row) => CellTip(row['CoveredByCA']),
     exportSelector: 'CoveredByCA',
-  },
-  {
-    selector: (row) => row['MFAMethods'],
-    name: 'MFA Methods',
-    sortable: true,
-    cell: cellGenericFormatter(),
-    exportSelector: 'MFAMethods',
-  },
-  {
-    selector: (row) => row['CAPolicies'],
-    name: 'CA Policies',
-    sortable: true,
-    cell: cellGenericFormatter(),
-    exportSelector: 'CAPolicies',
   },
 ]
 
