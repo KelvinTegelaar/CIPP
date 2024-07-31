@@ -890,9 +890,27 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
-    "name": "Phishing Policies",
-    "path": "/email/reports/phishing-policies",
-    "component": "views/email-exchange/reports/PhishingPoliciesList",
+    "path": "/email/reports/antiphishing-filters",
+    "name": "Anti Phishing Filters",
+    "component": "views/email-exchange/reports/AntiPhishingFilters",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/email/reports/malware-filters",
+    "name": "Malware Filters",
+    "component": "views/email-exchange/reports/MalwareFilters",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/email/reports/safelinks-filters",
+    "name": "Safe Links Filters",
+    "component": "views/email-exchange/reports/SafeLinksFilters",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/email/reports/safeattachments-filters",
+    "name": "Safe Attachment Filters",
+    "component": "views/email-exchange/reports/SafeAttachmentsFilters",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
