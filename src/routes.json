@@ -777,6 +777,12 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/email/tools/message-viewer",
+    "name": "Message Viewer",
+    "component": "views/email-exchange/tools/MessageViewer",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/email/spamfilter/add-template",
     "name": "Add Spamfilter Template",
     "component": "views/email-exchange/spamfilter/AddSpamfilterTemplate",

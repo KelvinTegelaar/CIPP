@@ -115,6 +115,7 @@ import React from 'react'
   "/email/tools/mailbox-restore-wizard": React.lazy(() => import('./views/email-exchange/tools/MailboxRestoreWizard')), 
   "/email/tools/mailbox-restores": React.lazy(() => import('./views/email-exchange/tools/MailboxRestores')), 
   "/email/tools/mail-test": React.lazy(() => import('./views/email-exchange/tools/MailTest')), 
+  "/email/tools/message-viewer": React.lazy(() => import('./views/email-exchange/tools/MessageViewer')), 
   "/email/spamfilter/add-template": React.lazy(() => import('./views/email-exchange/spamfilter/AddSpamfilterTemplate')), 
   "/email/administration/edit-mailbox-permissions": React.lazy(() => import('./views/email-exchange/administration/EditMailboxPermissions')), 
   "/email/administration/add-shared-mailbox": React.lazy(() => import('./views/email-exchange/administration/AddSharedMailbox')), 
