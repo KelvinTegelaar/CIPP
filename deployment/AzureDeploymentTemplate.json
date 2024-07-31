@@ -36,7 +36,6 @@
     "funcAppName": "[toLower(concat(parameters('baseName'), variables('suffix')))]",
     "funcStorageName": "[tolower(concat(substring(parameters('baseName'), 0, min(length(parameters('baseName')),16)), 'stg', variables('suffix')))]",
     "serverFarmName": "[concat(substring(parameters('baseName'), 0, min(length(parameters('baseName')),14)), '-srv-', variables('suffix'))]",
-    "repoURL": "https://github.com/KelvinTegelaar/AzValidate.git",
     "uniqueResourceNameBase": "[toLower(concat(parameters('baseName'), variables('suffix')))]",
     "swaName": "[toLower(concat(parameters('baseName'), '-swa-', variables('suffix')))]"
   },
@@ -115,18 +114,6 @@
           "dependsOn": [
             "[resourceId('Microsoft.KeyVault/vaults', variables('uniqueResourceNameBase'))]"
           ]
-        },
-        {
-          "type": "secrets",
-          "name": "exchangerefreshtoken",
-          "apiVersion": "2015-06-01",
-          "properties": {
-            "contentType": "text/plain",
-            "value": "ExchangeRefreshToken"
-          },
-          "dependsOn": [
-            "[resourceId('Microsoft.KeyVault/vaults', variables('uniqueResourceNameBase'))]"
-          ]
         }
       ],
       "dependsOn": ["[resourceId('Microsoft.Web/sites', variables('funcAppName'))]"]
@@ -177,10 +164,6 @@
             {
               "name": "RefreshToken",
               "value": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('uniqueResourceNameBase'), '.vault.azure.net/secrets/RefreshToken)')]"
-            },
-            {
-              "name": "ExchangeRefreshtoken",
-              "value": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('uniqueResourceNameBase'), '.vault.azure.net/secrets/ExchangeRefreshToken)')]"
             },
             {
               "name": "TenantID",

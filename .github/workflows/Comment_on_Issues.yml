@@ -1,39 +1,30 @@
 ---
 name: Add Comment
-on:  # yamllint disable-line rule:truthy
+on:
   issues:
     types:
       - labeled
 jobs:
   add-comment_bug:
-    if: github.event.label.name == 'unconfirmed-by-user'
+    if: github.repository_owner == 'KelvinTegelaar' && github.event.label.name == 'unconfirmed-by-user'
     runs-on: ubuntu-latest
     permissions:
       issues: write
     steps:
       - name: Add Comment
-        uses: peter-evans/create-or-update-comment@a35cf36e5301d70b76f316e867e7788a55a31dae
+        uses: peter-evans/create-or-update-comment@v3
         with:
           issue-number: ${{ github.event.issue.number }}
           body: |
-            Thank you for creating a bug. Please make sure your bug is indeed a unique case by checking current and past issues, and reading the complete documentation at https://kelvintegelaar.github.io/CIPP
-            If your bug is a known documentation issue, it will be closed without notice by a contributor. To confirm that this is not a bug found in the documentation, please copy and paste the following comment: "I confirm that I have checked the documentation thoroughly and believe this to be an actual bug.".
+            Thank you for creating a bug. Please make sure your bug is indeed a unique case by checking current and past issues, and reading the complete documentation at https://docs.cipp.app/
+            If your bug is a known documentation issue, it will be closed without notice by a contributor. To confirm that this is not a bug found in the documentation, please copy and paste the following comment: "I confirm that I have checked the documentation thoroughly and believe this to be an actual bug."
 
             Without confirming, your report will be closed in 24 hours. If you'd like this bug to be assigned to you, please comment "I would like to work on this please!".
   add-comment_fr:
-    if: github.event.label.name == 'enhancement'
+    if: github.repository_owner == 'KelvinTegelaar' && github.event.label.name == 'enhancement'
     runs-on: ubuntu-latest
     permissions:
       issues: write
     steps:
       - name: Add Comment
-        uses: peter-evans/create-or-update-comment@a35cf36e5301d70b76f316e867e7788a55a31dae
-        with:
-          issue-number: ${{ github.event.issue.number }}
-          body: |
-            Thank you for creating a feature request!
-            Your current priority is set to "No Priority". No Priority Feature requests automatically get closed in two days if a contributor does not accept the FR.
-            
-            If you are a sponsor you can request an upgrade of priority. To upgrade the priority type "I would like to upgrade the priority". 
-            If you want this feature to be integrated you can always do this yourself by checking out our contributions guide at https://cipp.app/docs/dev/. Contributors to the CIPP project reserve the right to close feature requests at will.
-            If you'd like this feature request to be assigned to you, please comment "I would like to work on this please!".
+        uses: peter-evans/create-or-update@v3
