@@ -23,9 +23,8 @@ import DOMPurify from 'dompurify'
 import ReactHtmlParser from 'react-html-parser'
 import CippDropzone from 'src/components/utilities/CippDropzone'
 
-const MessageViewer = ({ emlFile }) => {
+const MessageViewer = ({ emailSource }) => {
   const [emlContent, setEmlContent] = useState(null)
-  const [emailSource, setEmailSource] = useState(emlFile)
   const [emlError, setEmlError] = useState(false)
   const [messageHtml, setMessageHtml] = useState('')
 
@@ -63,39 +62,57 @@ const MessageViewer = ({ emlFile }) => {
   }
 
   const downloadAttachment = (attachment, newTab = false) => {
-    if (attachment?.data) {
-      var contentType = attachment?.contentType?.split(';')[0] ?? 'text/plain'
-      var fileBytes = attachment.data
-      var fileName = attachment.name
-      downloadFileBytes(fileName, fileBytes, contentType, newTab)
-    } else {
-      downloadFile(attachment.name, attachment.data64)
+    var contentType = attachment?.contentType?.split(';')[0] ?? 'text/plain'
+    var fileBytes = attachment.data
+    if (fileBytes instanceof Uint8Array && attachment?.data64) {
+      fileBytes = new Uint8Array(
+        atob(attachment.data64)
+          .split('')
+          .map((c) => c.charCodeAt(0)),
+      )
     }
-  }
-
-  const downloadFile = (fileName, base64Content, newTab) => {
-    const link = document.createElement('a')
-    link.href = `data:application/octet-stream;base64,${base64Content}`
-    link.download = fileName
-    link.click()
-  }
-
-  const downloadFileBytes = (fileName, fileBytes, contentType, newTab = false) => {
+    var fileName = attachment.name
     const blob = new Blob([fileBytes], { type: contentType ?? 'application/octet-stream' })
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
     if (newTab) {
       if (contentType.includes('rfc822')) {
         var content = fileBytes
-        const nestedMessage = <MessageViewer emlFile={content} />
+        const nestedMessage = <MessageViewer emailSource={content} />
         ModalService.open({
           body: nestedMessage,
           title: fileName,
           size: 'lg',
         })
+      } else if (contentType.includes('pdf')) {
+        const embeddedPdf = <object data={url} type="application/pdf" width="100%" height="600px" />
+        ModalService.open({
+          body: embeddedPdf,
+          title: fileName,
+          size: 'lg',
+        })
+      } else if (contentType.includes('image')) {
+        const embeddedImage = <img src={url} alt={fileName} style={{ maxWidth: '100%' }} />
+        ModalService.open({
+          body: embeddedImage,
+          title: fileName,
+          size: 'lg',
+        })
+      } else if (contentType.includes('text')) {
+        const textContent = fileBytes
+        ModalService.open({
+          data: textContent,
+          componentType: 'codeblock',
+          title: fileName,
+          size: 'lg',
+        })
+        setTimeout(() => {
+          URL.revokeObjectURL(url)
+        }, 1000)
       } else {
         const newWindow = window.open()
         newWindow.location.href = url
+        URL.revokeObjectURL(url)
       }
     } else {
       link.href = url
@@ -145,7 +162,7 @@ const MessageViewer = ({ emlFile }) => {
         }
       }
     })
-  }, [emailSource, setMessageHtml, setEmailSource, setEmlError, setEmlContent])
+  }, [emailSource, setMessageHtml, setEmlError, setEmlContent])
 
   var buttons = EmailButtons(emailSource)
 
@@ -238,7 +255,7 @@ const MessageViewer = ({ emlFile }) => {
                             className="dropdown-item"
                             onClick={() => downloadAttachment(attachment, true)}
                           >
-                            <FontAwesomeIcon icon="file-alt" className="me-2" />
+                            <FontAwesomeIcon icon="eye" className="me-2" />
                             View
                           </CLink>
                         )}
@@ -274,7 +291,7 @@ const MessageViewer = ({ emlFile }) => {
 }
 
 MessageViewer.propTypes = {
-  emlFile: PropTypes.string,
+  emailSource: PropTypes.string,
 }
 
 const MessageViewerPage = () => {
@@ -282,7 +299,6 @@ const MessageViewerPage = () => {
   const onDrop = useCallback((acceptedFiles) => {
     acceptedFiles.forEach((file) => {
       const reader = new FileReader()
-
       reader.onabort = () => console.log('file reading was aborted')
       reader.onerror = () => console.log('file reading has failed')
       reader.onload = () => {
@@ -302,7 +318,7 @@ const MessageViewerPage = () => {
         dropMessage="Drag an EML file or click to add"
         maxFiles={1}
       />
-      {emlFile && <MessageViewer emlFile={emlFile} />}
+      {emlFile && <MessageViewer emailSource={emlFile} />}
     </CippPage>
   )
 }
