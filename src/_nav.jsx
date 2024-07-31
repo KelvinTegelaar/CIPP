@@ -687,6 +687,11 @@ const _nav = [
         name: 'Mail Test',
         to: '/email/tools/mail-test',
       },
+      {
+        component: CNavItem,
+        name: 'Message Viewer',
+        to: '/email/tools/message-viewer',
+      },
     ],
   },
   {
