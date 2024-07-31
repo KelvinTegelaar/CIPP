@@ -247,11 +247,13 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modal: true,
             modalType: 'POST',
             modalBody: {
-              user: row.userPrincipalName,
+              username: row.userPrincipalName,
+              userid: row.userPrincipalName,
               TenantFilter: tenant.defaultDomainName,
+              DisableForwarding: true,
               message: row.message,
             },
-            modalUrl: `/api/ExecDisableEmailForward`,
+            modalUrl: `/api/ExecEmailForward`,
             modalMessage: 'Are you sure you want to disable forwarding of this users emails?',
           },
           {
@@ -281,6 +283,13 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modal: true,
             modalUrl: `/api/ExecResetPass?MustChange=false&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}&displayName=${row.displayName}`,
             modalMessage: 'Are you sure you want to reset the password for this user?',
+          },
+          {
+            label: 'Preprovision OneDrive',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecOneDriveProvision?TenantFilter=${tenant.defaultDomainName}&UserPrincipalName=${row.userPrincipalName}`,
+            modalMessage: 'Are you sure you want to preprovision onedrive for this user??',
           },
           {
             label: 'Clear ImmutableId',
@@ -560,8 +569,7 @@ const Users = (row) => {
               color: 'info',
               modal: true,
               modalUrl: `/api/ExecResetPass?MustChange=false&TenantFilter=!Tenant&ID=!userPrincipalName&displayName=!displayName`,
-              modalMessage:
-                'Are you sure you want to reset the password for these users? The users must change their password at next logon.',
+              modalMessage: 'Are you sure you want to reset the password for these users?',
             },
             {
               label: 'Block signin',
@@ -688,12 +696,22 @@ const Users = (row) => {
               modal: true,
               modalType: 'POST',
               modalBody: {
-                user: '!userPrincipalName',
+                username: '!userPrincipalName',
+                userid: '!userPrincipalName',
                 TenantFilter: tenant.defaultDomainName,
+                DisableForwarding: true,
               },
-              modalUrl: `/api/ExecDisableEmailForward`,
+              modalUrl: `/api/ExecEmailForward`,
               modalMessage: 'Are you sure you want to disable forwarding of these users emails?',
             },
+            {
+              label: 'Preprovision OneDrive',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecOneDriveProvision?TenantFilter=!Tenant&UserPrincipalName=!userPrincipalName`,
+              modalMessage: 'Are you sure you want to preprovision onedrive for this user?',
+            },
+
             {
               label: 'Delete User',
               color: 'danger',
