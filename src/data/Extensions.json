@@ -1,9 +1,10 @@
 [
   {
-    "name": "CIPP-API Integration",
+    "name": "CIPP-API",
     "type": "CIPP-API",
     "cat": "API",
     "forceSyncButton": false,
+    "disableWhenhosted": true,
     "helpText": "This integration allows you to enable CIPP-API access outside of CIPP. Requires Global Administrator permissions inside your tenant for activation of the API. The API credentials will only be shown once.",
     "SettingOptions": [
       {
@@ -16,10 +17,11 @@
         "name": "cippapi.Enabled",
         "label": "Enable Integration"
       }
-    ]
+    ],
+    "mappingRequired": false
   },
   {
-    "name": "Gradient Integration",
+    "name": "Gradient",
     "type": "Gradient",
     "cat": "Billing & Invoicing",
     "forceSyncButton": true,
@@ -49,10 +51,11 @@
         "name": "Gradient.Enabled",
         "label": "Enable Integration"
       }
-    ]
+    ],
+    "mappingRequired": false
   },
   {
-    "name": "Halo PSA Ticketing Integration",
+    "name": "Halo PSA Ticketing",
     "type": "HaloPSA",
     "cat": "Ticketing",
     "forceSyncButton": false,
@@ -105,10 +108,11 @@
         "name": "HaloPSA.Enabled",
         "label": "Enable Integration"
       }
-    ]
+    ],
+    "mappingRequired": true
   },
   {
-    "name": "NinjaOne Integration",
+    "name": "NinjaOne",
     "type": "NinjaOne",
     "cat": "Documentation & Monitoring",
     "forceSyncButton": true,
@@ -118,7 +122,7 @@
         "type": "input",
         "fieldtype": "input",
         "name": "NinjaOne.Instance",
-        "label": "Please enter your NinjaOne Instance",
+        "label": "Please enter your NinjaOne Instance hostname",
         "placeholder": "app.ninjarmm.com, eu.ninjarmm.com, oc.ninjarmm.com, ca.ninjarmm.com, us2.ninjarmm.com"
       },
       {
@@ -137,24 +141,144 @@
       },
       {
         "type": "checkbox",
-        "name": "NinjaOne.UserDocumentsEnabled",
-        "label": "Synchronize Detailed User Information (Requires NinjaOne Documentation)"
+        "name": "NinjaOne.LicenseDocumentsEnabled",
+        "label": "Sync Licenses (Requires NinjaOne Documentation)"
       },
       {
         "type": "checkbox",
-        "name": "NinjaOne.LicenseDocumentsEnabled",
-        "label": "Synchronize Detailed License Information (Requires NinjaOne Documentation)"
+        "name": "NinjaOne.UserDocumentsEnabled",
+        "label": "Sync Users (Requires NinjaOne Documentation)"
       },
       {
         "type": "checkbox",
         "name": "NinjaOne.LicensedOnly",
-        "label": "Only Synchronize Licensed Users"
+        "label": "Only Sync Licensed Users (Requires NinjaOne Documentation)"
       },
       {
         "type": "checkbox",
         "name": "NinjaOne.Enabled",
         "label": "Enable Integration"
       }
-    ]
+    ],
+    "mappingRequired": true,
+    "fieldMapping": true,
+    "autoMapSyncApi": true,
+    "showSyncButton": true
+  },
+  {
+    "name": "Hudu",
+    "type": "Hudu",
+    "cat": "Documentation",
+    "forceSyncButton": true,
+    "helpText": "This integration allows you to populate custom asset layouts with Tenant information, monitor device compliance state, document other items and generate relationships inside Hudu.",
+    "SettingOptions": [
+      {
+        "type": "input",
+        "fieldtype": "input",
+        "name": "Hudu.BaseUrl",
+        "label": "Please enter your Hudu URL",
+        "placeholder": "https://yourcompany.huducloud.com"
+      },
+      {
+        "type": "input",
+        "fieldtype": "password",
+        "name": "Hudu.APIKey",
+        "label": "Hudu API Key",
+        "placeholder": "Enter your Hudu API Key"
+      },
+      {
+        "type": "checkbox",
+        "name": "Hudu.Enabled",
+        "label": "Enable Integration"
+      },
+      {
+        "type": "checkbox",
+        "name": "Hudu.CreateMissingUsers",
+        "label": "Create missing users in Hudu"
+      },
+      {
+        "type": "checkbox",
+        "name": "Hudu.CreateMissingDevices",
+        "label": "Create missing devices in Hudu"
+      },
+      {
+        "type": "text",
+        "name": "Hudu.ExcludeSerials",
+        "label": "Exclude device serials (comma separated)"
+      },
+      {
+        "type": "checkbox",
+        "name": "Hudu.ImportDomains",
+        "label": "Import domains from M365"
+      },
+      {
+        "type": "checkbox",
+        "name": "Hudu.MonitorDomains",
+        "label": "Monitor domains in Hudu"
+      }
+    ],
+    "mappingRequired": true,
+    "fieldMapping": true,
+    "showSyncButton": true
+  },
+  {
+    "name": "PasswordPusher",
+    "type": "PWPush",
+    "cat": "Passwords",
+    "forceSyncButton": false,
+    "helpText": "This integration allows you to generate password links instead of plain text passwords. Visit https://pwpush.com/ or https://github.com/pglombardo/PasswordPusher for more information.",
+    "SettingOptions": [
+      {
+        "type": "checkbox",
+        "name": "PWPush.Enabled",
+        "label": "Replace generated passwords with PWPush links"
+      },
+      {
+        "type": "input",
+        "fieldtype": "text",
+        "name": "PWPush.BaseUrl",
+        "label": "PWPush URL",
+        "placeholder": "Enter your PWPush URL. (default: https://pwpush.com)"
+      },
+      {
+        "type": "input",
+        "fieldtype": "text",
+        "name": "PWPush.EmailAddress",
+        "label": "PWPush email address",
+        "placeholder": "Enter your email address for PWPush. (optional)"
+      },
+      {
+        "type": "input",
+        "fieldtype": "password",
+        "name": "PWPush.APIKey",
+        "label": "PWPush API Key",
+        "placeholder": "Enter your PWPush API Key. (optional)"
+      },
+      {
+        "type": "checkbox",
+        "name": "PWPush.RetrievalStep",
+        "label": "Click to retrieve password (recommended)"
+      },
+      {
+        "type": "input",
+        "fieldtype": "number",
+        "name": "PWPush.ExpireAfterDays",
+        "label": "Expiration in Days",
+        "placeholder": "Expiration time in days. (optional)"
+      },
+      {
+        "type": "input",
+        "fieldtype": "number",
+        "name": "PWPush.ExpireAfterViews",
+        "label": "Expiration after views",
+        "placeholder": "Expiration after views. (optional)"
+      },
+      {
+        "type": "checkbox",
+        "name": "PWPush.DeletableByViewer",
+        "label": "Allow deletion of passwords"
+      }
+    ],
+    "mappingRequired": false
   }
 ]
