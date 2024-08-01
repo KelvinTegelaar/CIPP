@@ -28,6 +28,8 @@ import { CellTip, cellGenericFormatter } from 'src/components/tables/CellGeneric
 import { CippCallout } from 'src/components/layout'
 import CippPrettyCard from 'src/components/contentcards/CippPrettyCard'
 import { TableModalButton } from 'src/components/buttons'
+import DOMPurify from 'dompurify'
+import ReactHtmlParser from 'react-html-parser'
 
 const SecureScore = () => {
   const textRef = useRef()
@@ -65,6 +67,12 @@ const SecureScore = () => {
       NoPagination: true,
     },
   })
+
+  const sanitizeHtml = (html) => {
+    var sanitizedHtml = DOMPurify.sanitize(html)
+    var parsedHtml = ReactHtmlParser(sanitizedHtml)
+    return parsedHtml
+  }
 
   useEffect(() => {
     if (isSuccess) {
@@ -341,23 +349,16 @@ const SecureScore = () => {
                         <CCardText>
                           <h5>Description</h5>
                           <small className="text-medium-emphasis">
-                            <div
-                              dangerouslySetInnerHTML={{
-                                __html: `${info.description} ${info.implementationStatus}`,
-                              }}
-                            />
+                            <div>
+                              {sanitizeHtml(`${info.description} ${info.implementationStatus}`)}
+                            </div>
                           </small>
                         </CCardText>
                         {info.scoreInPercentage !== 100 && (
                           <CCardText>
                             <h5>Remediation Recommendation</h5>
                             <small className="mb-3 text-medium-emphasis">
-                              {
-                                <div
-                                  className="mb-3"
-                                  dangerouslySetInnerHTML={{ __html: info.remediation }}
-                                />
-                              }
+                              {<div className="mb-3">{sanitizeHtml(info.remediation)}</div>}
                             </small>
                           </CCardText>
                         )}
