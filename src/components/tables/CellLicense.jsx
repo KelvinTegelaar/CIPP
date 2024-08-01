@@ -8,6 +8,8 @@ export function CellLicense({ cell }) {
       if (licenseAssignment.skuId == M365Licenses[x].GUID) {
         licenses.push(M365Licenses[x].Product_Display_Name)
         break
+      } else {
+        licenses.push(licenseAssignment.skuId)
       }
     }
   })
