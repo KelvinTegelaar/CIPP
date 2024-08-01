@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   CButton,
   CCallout,
@@ -26,7 +26,11 @@ const SettingsSAMRoles = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const [selectedTenant, setSelectedTenant] = useState([])
   const tenantSelectorRef = useRef()
-  const { data: tenants = [], tenantsFetching } = useListTenantsQuery({
+  const {
+    data: tenants = [],
+    isFetching: tenantsFetching,
+    isSuccess: tenantSuccess,
+  } = useListTenantsQuery({
     showAllTenantSelector: true,
   })
 
@@ -56,8 +60,20 @@ const SettingsSAMRoles = () => {
     })
   }
 
+  useEffect(() => {
+    if (roleListSuccess && cippSAMRoles.Tenants.length > 0) {
+      var selectedTenants = []
+      tenants.map((tenant) => {
+        if (cippSAMRoles.Tenants.includes(tenant.customerId)) {
+          selectedTenants.push({ label: tenant.displayName, value: tenant.customerId })
+        }
+      })
+      tenantSelectorRef.current.setValue(selectedTenants)
+    }
+  }, [cippSAMRoles, roleListSuccess, tenantSuccess, tenantSelectorRef, tenants])
+
   return (
-    <CippButtonCard title="CIPP-SAM Roles" titleType="big">
+    <CippButtonCard title="CIPP-SAM Roles" titleType="big" isFetching={roleListFetching}>
       <>
         <p className="me-1">
           Add your CIPP-SAM application Service Principal directly to Admin Roles in the tenant.
@@ -70,61 +86,62 @@ const SettingsSAMRoles = () => {
           or a CPV refresh.
         </p>
 
-        <Form
-          onSubmit={handleSubmit}
-          initialValues={cippSAMRoles}
-          render={({ handleSubmit, submitting, values }) => {
-            return (
-              <CForm onSubmit={handleSubmit}>
-                <CRow className="mb-3">
-                  <CCol xl={8} md={12} className="mb-3">
-                    <div className="mb-3">
-                      <RFFSelectSearch
-                        name="Roles"
-                        label="Admin Roles"
-                        values={GDAPRoles.map((role) => ({
-                          name: role.Name,
-                          value: role.ObjectId,
-                        }))}
-                        isLoading={roleListFetching}
-                        multi={true}
-                        refreshFunction={() => refetchRoleList()}
-                        placeholder="Select admin roles"
-                      />
-                    </div>
-                    <div className="mb-3">
-                      <h5>Selected Tenants</h5>
-                      <TenantSelectorMultiple
-                        ref={tenantSelectorRef}
-                        values={selectedTenant}
-                        AllTenants={true}
-                        valueIsDomain={true}
-                        onChange={(e) => handleTenantChange(e)}
-                      />
-                    </div>
-                  </CCol>
-                </CRow>
-                <CRow className="me-3">
-                  {postResults.isSuccess && (
-                    <CCallout color="success">{postResults.data.Results}</CCallout>
-                  )}
+        {roleListSuccess && (
+          <Form
+            onSubmit={handleSubmit}
+            initialValues={cippSAMRoles}
+            render={({ handleSubmit, submitting, values }) => {
+              return (
+                <CForm onSubmit={handleSubmit}>
                   <CRow className="mb-3">
-                    <CCol xl={4} md={12}>
-                      <CButton className="me-2" type="submit" disabled={submitting}>
-                        <FontAwesomeIcon
-                          icon={postResults.isFetching ? 'circle-notch' : 'save'}
-                          spin={postResults.isFetching}
-                          className="me-2"
+                    <CCol xl={8} md={12} className="mb-3">
+                      <div className="mb-3">
+                        <RFFSelectSearch
+                          name="Roles"
+                          label="Admin Roles"
+                          values={GDAPRoles.map((role) => ({
+                            name: role.Name,
+                            value: role.ObjectId,
+                          }))}
+                          multi={true}
+                          refreshFunction={() => refetchRoleList()}
+                          placeholder="Select admin roles"
                         />
-                        Save
-                      </CButton>
+                      </div>
+                      <div className="mb-3">
+                        <h5>Selected Tenants</h5>
+                        <TenantSelectorMultiple
+                          ref={tenantSelectorRef}
+                          values={selectedTenant}
+                          AllTenants={true}
+                          valueIsDomain={true}
+                          onChange={(e) => handleTenantChange(e)}
+                        />
+                      </div>
                     </CCol>
                   </CRow>
-                </CRow>
-              </CForm>
-            )
-          }}
-        />
+                  <CRow className="me-3">
+                    {postResults.isSuccess && (
+                      <CCallout color="success">{postResults.data.Results}</CCallout>
+                    )}
+                    <CRow className="mb-3">
+                      <CCol xl={4} md={12}>
+                        <CButton className="me-2" type="submit" disabled={submitting}>
+                          <FontAwesomeIcon
+                            icon={postResults.isFetching ? 'circle-notch' : 'save'}
+                            spin={postResults.isFetching}
+                            className="me-2"
+                          />
+                          Save
+                        </CButton>
+                      </CCol>
+                    </CRow>
+                  </CRow>
+                </CForm>
+              )
+            }}
+          />
+        )}
       </>
     </CippButtonCard>
   )
