@@ -93,14 +93,14 @@ const RiskyUsers = () => {
       selector: (row) => row['Tenant'],
       sortable: true,
       exportSelector: 'Tenant',
-      omit: tenant.defaultDomainName === 'allTenants' ? false : true,
+      omit: tenant.defaultDomainName === 'AllTenants' ? false : true,
     },
     {
       name: 'Status',
       selector: (row) => row['CippStatus'],
       sortable: true,
       exportSelector: 'CippStatus',
-      omit: tenant.defaultDomainName === 'allTenants' ? false : true,
+      omit: tenant.defaultDomainName === 'AllTenants' ? false : true,
     },
     {
       name: 'Risk Last Updated Date',
