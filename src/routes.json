@@ -279,9 +279,15 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
-    "path": "/tenant/administration/alertsqueue",
-    "name": "Alerts Queue",
+    "path": "/tenant/administration/alert-configuration",
+    "name": "Alert Configuration",
     "component": "views/tenant/administration/ListAlertsQueue",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/administration/audit-logs",
+    "name": "Audit Logs",
+    "component": "views/tenant/administration/ListAuditLogs",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
