@@ -218,7 +218,11 @@ export default function ExtensionMappings({ type, fieldMappings = false, autoMap
                           <RFFSelectSearch
                             placeholder="Select a Tenant"
                             name={`tenant_selector`}
-                            values={listMappingBackendResult.data?.Tenants.map((tenant) => ({
+                            values={listMappingBackendResult.data?.Tenants.filter((tenant) => {
+                              return !Object.keys(listMappingBackendResult.data?.Mappings).includes(
+                                tenant.customerId,
+                              )
+                            }).map((tenant) => ({
                               name: tenant.displayName,
                               value: tenant.customerId,
                             }))}
@@ -247,9 +251,7 @@ export default function ExtensionMappings({ type, fieldMappings = false, autoMap
                             if (
                               mappingValue.value !== undefined &&
                               mappingValue.value !== '-1' &&
-                              Object.values(mappingArray)
-                                .map((item) => item.companyId)
-                                .includes(mappingValue.value) === false
+                              Object.values(mappingArray).map((item) => item.companyId)
                             ) {
                               setMappingArray([
                                 ...mappingArray,
