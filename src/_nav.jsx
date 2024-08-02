@@ -145,8 +145,13 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Alerts',
-        to: '/tenant/administration/alertsqueue',
+        name: 'Alert Configuration',
+        to: '/tenant/administration/alert-configuration',
+      },
+      {
+        component: CNavItem,
+        name: 'Audit Logs',
+        to: '/tenant/administration/audit-logs',
       },
       {
         component: CNavItem,
@@ -326,7 +331,12 @@ const _nav = [
       {
         component: CNavItem,
         name: 'Invite Wizard',
-        to: '/tenant/administration/gdap-invite',
+        to: '/tenant/administration/gdap-invite-wizard',
+      },
+      {
+        component: CNavItem,
+        name: 'Invite List',
+        to: '/tenant/administration/gdap-invites',
       },
       {
         component: CNavItem,
@@ -681,6 +691,11 @@ const _nav = [
         component: CNavItem,
         name: 'Mail Test',
         to: '/email/tools/mail-test',
+      },
+      {
+        component: CNavItem,
+        name: 'Message Viewer',
+        to: '/email/tools/message-viewer',
       },
     ],
   },
