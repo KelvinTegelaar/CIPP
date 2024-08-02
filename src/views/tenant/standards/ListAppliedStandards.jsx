@@ -751,23 +751,15 @@ const ApplyNewStandard = () => {
                               },
                             ].map((template, index) => (
                               <CRow key={`template-row-${index}`} className="mb-3">
-                                <CCol md={4}>
+                                <CCol md={2}>
                                   <h5>{template.name}</h5>
                                   <small>Deploy {template.name}</small>
-                                </CCol>
-                                <CCol>
-                                  <h5>Report</h5>
-                                  <RFFCFormSwitch name="ignore.ignore1" disabled={true} />
-                                </CCol>
-                                <CCol>
-                                  <h5>Alert</h5>
-                                  <RFFCFormSwitch name="ignore.ignore2" disabled={true} />
                                 </CCol>
                                 <CCol>
                                   <h5>Remediate</h5>
                                   <RFFCFormSwitch name={`${template.switchName}.remediate`} />
                                 </CCol>
-                                <CCol md={3}>
+                                <CCol md={8}>
                                   <h5>Settings</h5>
                                   {template.templates.isSuccess && (
                                     <RFFSelectSearch
@@ -828,23 +820,15 @@ const ApplyNewStandard = () => {
                               </CRow>
                             ))}
                             <CRow key={`template-row-autopilotprofile`} className="mb-3">
-                              <CCol md={4}>
+                              <CCol md={2}>
                                 <h5>Autopilot Profile</h5>
                                 <small>Deploy Autopilot profile</small>
-                              </CCol>
-                              <CCol>
-                                <h5>Report</h5>
-                                <RFFCFormSwitch name="ignore.ignore1" disabled={true} />
-                              </CCol>
-                              <CCol>
-                                <h5>Alert</h5>
-                                <RFFCFormSwitch name="ignore.ignore2" disabled={true} />
                               </CCol>
                               <CCol>
                                 <h5>Remediate</h5>
                                 <RFFCFormSwitch name={`standards.APConfig.remediate`} />
                               </CCol>
-                              <CCol md={3}>
+                              <CCol md={8}>
                                 <h5>Settings</h5>
                                 <CRow>
                                   <CCol md={12}>
@@ -938,23 +922,15 @@ const ApplyNewStandard = () => {
                               </CCol>
                             </CRow>
                             <CRow key={`template-row-autopilotstatuspage`} className="mb-3">
-                              <CCol md={4}>
+                              <CCol md={2}>
                                 <h5>Autopilot Status Page</h5>
                                 <small>Deploy Autopilot Status Page</small>
-                              </CCol>
-                              <CCol>
-                                <h5>Report</h5>
-                                <RFFCFormSwitch name="ignore.ignore1" disabled={true} />
-                              </CCol>
-                              <CCol>
-                                <h5>Alert</h5>
-                                <RFFCFormSwitch name="ignore.ignore2" disabled={true} />
                               </CCol>
                               <CCol>
                                 <h5>Remediate</h5>
                                 <RFFCFormSwitch name={`standards.APESP.remediate`} />
                               </CCol>
-                              <CCol md={3}>
+                              <CCol md={8}>
                                 <h5>Settings</h5>
                                 <CRow>
                                   <CCol>
