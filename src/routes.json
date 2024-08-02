@@ -12,6 +12,12 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/cipp/template-library",
+    "name": "Logs",
+    "component": "views/cipp/TemplateLibrary",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/cipp/scheduler",
     "name": "Scheduler",
     "component": "views/cipp/Scheduler",

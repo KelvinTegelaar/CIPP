@@ -2,6 +2,7 @@ import React from 'react'
  export const importsMap = {
   "/home": React.lazy(() => import('./views/home/Home')), 
   "/cipp/logs": React.lazy(() => import('./views/cipp/Logs')), 
+  "/cipp/template-library": React.lazy(() => import('./views/cipp/TemplateLibrary')), 
   "/cipp/scheduler": React.lazy(() => import('./views/cipp/Scheduler')), 
   "/cipp/statistics": React.lazy(() => import('./views/cipp/Statistics')), 
   "/cipp/404": React.lazy(() => import('./views/pages/page404/Page404')), 
