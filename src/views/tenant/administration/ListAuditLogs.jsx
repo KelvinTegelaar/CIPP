@@ -26,8 +26,13 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Condition, RFFCFormInput, RFFCFormRadioList } from 'src/components/forms'
 import { Field, Form } from 'react-final-form'
+import { useSearchParams } from 'react-router-dom'
+import { CippCodeBlock, CippOffcanvas } from 'src/components/utilities'
 
 const ListAuditLogs = () => {
+  // get query parameters
+  const [searchParams, setSearchParams] = useSearchParams()
+  const logId = searchParams.get('LogId')
   const [interval, setInterval] = React.useState('d')
   const [time, setTime] = React.useState(1)
   const [relativeTime, setRelativeTime] = React.useState('1d')
@@ -59,13 +64,58 @@ const ListAuditLogs = () => {
     setVisibleA(false)
   }
 
-  const Actions = () => {
+  const Actions = (row) => {
+    const [visible, setVisible] = React.useState(false)
     return (
-      <CLink variant="ghost" color="primary" className="me-2">
-        <CTooltip content="View">
-          <FontAwesomeIcon icon="eye" />
-        </CTooltip>
-      </CLink>
+      <>
+        <CLink variant="ghost" color="primary" className="me-2" onClick={() => setVisible(true)}>
+          <CTooltip content="View">
+            <FontAwesomeIcon icon="eye" />
+          </CTooltip>
+        </CLink>
+        <CippOffcanvas
+          title={row?.Data?.Title ?? 'Log Details'}
+          hideFunction={() => setVisible(false)}
+          visible={visible}
+          addedClass="offcanvas-large"
+          placement="end"
+        >
+          <CCard>
+            <CCardHeader>
+              <CCardTitle>
+                <h3>Log Details</h3>
+              </CCardTitle>
+            </CCardHeader>
+            <CCardBody>
+              {row?.Data?.ActionText && (
+                <CRow className="mb-3">
+                  <CCol>
+                    <CButton
+                      color="primary"
+                      className="me-2"
+                      href={row?.Data?.ActionUrl}
+                      target="_blank"
+                    >
+                      <FontAwesomeIcon icon="external-link-alt" className="me-2" />
+                      {row?.Data?.ActionText}
+                    </CButton>
+                  </CCol>
+                </CRow>
+              )}
+              <CRow>
+                <CCol>
+                  <h4>Raw Log</h4>
+                  <CippCodeBlock
+                    language="json"
+                    code={JSON.stringify(row?.Data, null, 2)}
+                    showLineNumbers={false}
+                  />
+                </CCol>
+              </CRow>
+            </CCardBody>
+          </CCard>
+        </CippOffcanvas>
+      </>
     )
   }
 
@@ -219,6 +269,7 @@ const ListAuditLogs = () => {
             RelativeTime: relativeTime,
             StartDate: startDate,
             EndDate: endDate,
+            LogId: logId,
           },
           tableProps: {
             selectableRows: true,
