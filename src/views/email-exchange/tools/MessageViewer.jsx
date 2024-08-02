@@ -27,6 +27,7 @@ const MessageViewer = ({ emailSource }) => {
   const [emlContent, setEmlContent] = useState(null)
   const [emlError, setEmlError] = useState(false)
   const [messageHtml, setMessageHtml] = useState('')
+  const [emlHeaders, setEmlHeaders] = useState(null)
 
   const getAttachmentIcon = (contentType) => {
     if (contentType.includes('image')) {
@@ -126,21 +127,32 @@ const MessageViewer = ({ emailSource }) => {
     return d instanceof Date && !isNaN(d)
   }
 
-  const showEmailModal = (emailSource) => {
+  const showEmailModal = (emailSource, title = 'Email Source') => {
     ModalService.open({
       data: emailSource,
       componentType: 'codeblock',
-      title: 'Email Source',
+      title: title,
       size: 'lg',
     })
   }
 
-  const EmailButtons = (emailSource) => {
+  const EmailButtons = (emailHeaders, emailSource) => {
+    const emailSourceBytes = new TextEncoder().encode(emailSource)
+    const blob = new Blob([emailSourceBytes], { type: 'message/rfc822' })
+    const url = URL.createObjectURL(blob)
     return (
-      <CButton onClick={() => showEmailModal(emailSource)}>
-        <FontAwesomeIcon icon="file-code" className="me-2" />
-        View Source
-      </CButton>
+      <span>
+        {emailHeaders && (
+          <CButton onClick={() => showEmailModal(emailHeaders, 'Email Headers')} className="me-2">
+            <FontAwesomeIcon icon="file-code" className="me-2" />
+            View Headers
+          </CButton>
+        )}
+        <CButton onClick={() => showEmailModal(emailSource)}>
+          <FontAwesomeIcon icon="envelope" className="me-2" />
+          View Source
+        </CButton>
+      </span>
     )
   }
 
@@ -150,6 +162,7 @@ const MessageViewer = ({ emailSource }) => {
         setEmlError(true)
         setEmlContent(null)
         setMessageHtml(null)
+        setEmlHeaders(null)
       } else {
         setEmlContent(ReadEmlJson)
         setEmlError(false)
@@ -160,11 +173,14 @@ const MessageViewer = ({ emailSource }) => {
         } else {
           setMessageHtml(null)
         }
+        const header_regex = /(?:^[\w-]+:\s?.*(?:\r?\n[ \t].*)*\r?\n?)+/gm
+        const headers = emailSource.match(header_regex)
+        setEmlHeaders(headers ? headers[0] : null)
       }
     })
-  }, [emailSource, setMessageHtml, setEmlError, setEmlContent])
+  }, [emailSource, setMessageHtml, setEmlError, setEmlContent, setEmlHeaders])
 
-  var buttons = EmailButtons(emailSource)
+  var buttons = EmailButtons(emlHeaders, emailSource)
 
   return (
     <>
