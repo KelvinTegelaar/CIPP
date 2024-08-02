@@ -12,6 +12,12 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/cipp/template-library",
+    "name": "Logs",
+    "component": "views/cipp/TemplateLibrary",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/cipp/scheduler",
     "name": "Scheduler",
     "component": "views/cipp/Scheduler",
@@ -279,9 +285,15 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
-    "path": "/tenant/administration/alertsqueue",
-    "name": "Alerts Queue",
+    "path": "/tenant/administration/alert-configuration",
+    "name": "Alert Configuration",
     "component": "views/tenant/administration/ListAlertsQueue",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
+    "path": "/tenant/administration/audit-logs",
+    "name": "Audit Logs",
+    "component": "views/tenant/administration/ListAuditLogs",
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
@@ -777,6 +789,12 @@
     "allowedRoles": ["admin", "editor", "readonly"]
   },
   {
+    "path": "/email/tools/message-viewer",
+    "name": "Message Viewer",
+    "component": "views/email-exchange/tools/MessageViewer",
+    "allowedRoles": ["admin", "editor", "readonly"]
+  },
+  {
     "path": "/email/spamfilter/add-template",
     "name": "Add Spamfilter Template",
     "component": "views/email-exchange/spamfilter/AddSpamfilterTemplate",
@@ -999,9 +1017,15 @@
     "allowedRoles": ["admin"]
   },
   {
-    "path": "/tenant/administration/gdap-invite",
+    "path": "/tenant/administration/gdap-invite-wizard",
     "name": "GDAP Invite Wizard",
     "component": "views/tenant/administration/GDAPInviteWizard",
+    "allowedRoles": ["admin"]
+  },
+  {
+    "path": "/tenant/administration/gdap-invites",
+    "name": "GDAP Invites",
+    "component": "views/tenant/administration/ListGDAPInvites",
     "allowedRoles": ["admin"]
   },
   {
