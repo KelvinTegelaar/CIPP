@@ -1,0 +1,424 @@
+[
+  {
+    "value": "New-InboxRule",
+    "name": "A new Inbox rule is created",
+    "template": {
+      "preset": { "value": "New-InboxRule", "label": "A new Inbox rule is created" },
+      "logbook": { "value": "Audit.Exchange", "label": "Exchange" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "New-InboxRule",
+            "label": "created new inbox rule in outlook web app"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "value": "New-InboxRuleRSS",
+    "name": "A new Inbox rule is created that forwards e-mails to the RSS feeds folder",
+    "template": {
+      "preset": {
+        "value": "New-InboxRuleRSS",
+        "label": "A new Inbox rule is created that forwards e-mails to the RSS feeds folder"
+      },
+      "logbook": { "value": "Audit.Exchange", "label": "Exchange" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "New-InboxRule",
+            "label": "created new inbox rule in outlook web app"
+          }
+        },
+        {
+          "Property": { "value": "String", "label": "MoveToFolder" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "*RSS*" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "New-InboxRuleForward",
+    "name": "A new Inbox rule is created that forwards e-mails to a different email address",
+    "template": {
+      "preset": {
+        "value": "New-InboxRuleForward",
+        "label": "A new Inbox rule is created that forwards e-mails to a different email address"
+      },
+      "logbook": { "value": "Audit.Exchange", "label": "Exchange" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "New-InboxRule",
+            "label": "created new inbox rule in outlook web app"
+          }
+        },
+        {
+          "Property": { "value": "String", "label": "ForwardTo" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "*@*" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "New-InboxRuleRedirect",
+    "name": "A new Inbox rule is created that redirects e-mails to a different email address",
+    "template": {
+      "preset": {
+        "value": "New-InboxRuleRedirect",
+        "label": "A new Inbox rule is created that redirects e-mails to a different email address"
+      },
+      "logbook": { "value": "Audit.Exchange", "label": "Exchange" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "New-InboxRule",
+            "label": "created new inbox rule in outlook web app"
+          }
+        },
+        {
+          "Property": { "value": "String", "label": "RedirectTo" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "*@*" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "Set-InboxRule",
+    "name": "A existing Inbox rule is edited",
+    "template": {
+      "preset": { "value": "Set-InboxRule", "label": "A existing Inbox rule is edited" },
+      "logbook": { "value": "Audit.Exchange", "label": "Exchange" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Set-InboxRule",
+            "label": "Updated inbox rule in outlook web app"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "value": "Set-InboxRuleRSS",
+    "name": "A existing Inbox rule is edited that forwards e-mails to the RSS feeds folder",
+    "template": {
+      "preset": {
+        "value": "Set-InboxRuleRSS",
+        "label": "A existing Inbox rule is edited that forwards e-mails to the RSS feeds folder"
+      },
+      "logbook": { "value": "Audit.Exchange", "label": "Exchange" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Set-InboxRule",
+            "label": "Updated inbox rule in outlook web app"
+          }
+        },
+        {
+          "Property": { "value": "String", "label": "MoveToFolder" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "*RSS*" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "Set-InboxRuleForward",
+    "name": "A existing Inbox rule is edited that forwards e-mails to a different email address",
+    "template": {
+      "preset": {
+        "value": "Set-InboxRuleForward",
+        "label": "A existing Inbox rule is edited that forwards e-mails to a different email address"
+      },
+      "logbook": { "value": "Audit.Exchange", "label": "Exchange" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Set-InboxRule",
+            "label": "Updated inbox rule in outlook web app"
+          }
+        },
+        {
+          "Property": { "value": "String", "label": "ForwardTo" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "*@*" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "Set-InboxRuleRedirect",
+    "name": "A existing Inbox rule is edited that redirects e-mails to a different email address",
+    "template": {
+      "preset": {
+        "value": "Set-InboxRuleRedirect",
+        "label": "A existing Inbox rule is edited that redirects e-mails to a different email address"
+      },
+      "logbook": { "value": "Audit.Exchange", "label": "Exchange" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Set-InboxRule",
+            "label": "Updated inbox rule in outlook web app"
+          }
+        },
+        {
+          "Property": { "value": "String", "label": "RedirectTo" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "*@*" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "Add member to role.",
+    "name": "A user has been added to an admin role",
+    "template": {
+      "preset": {
+        "value": "Add member to role.",
+        "label": "A user has been added to an admin role"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Add member to role.",
+            "label": "Add member to role."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "value": "Update StsRefreshTokenValidFrom Timestamp.",
+    "name": "A user sessions have been revoked",
+    "template": {
+      "preset": {
+        "value": "Update StsRefreshTokenValidFrom Timestamp.",
+        "label": "A user sessions have been revoked"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Update StsRefreshTokenValidFrom Timestamp.",
+            "label": "Update StsRefreshTokenValidFrom Timestamp."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "value": "Disable Strong Authentication.",
+    "name": "A users MFA has been disabled",
+    "template": {
+      "preset": {
+        "value": "Disable Strong Authentication.",
+        "label": "A users MFA has been disabled"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Disable Strong Authentication.",
+            "label": "Disable Strong Authentication."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "value": "Remove Member from a role.",
+    "name": "A user has been removed from a role",
+    "template": {
+      "preset": {
+        "value": "Remove Member from a role.",
+        "label": "A user has been removed from a role"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Remove Member from a role.",
+            "label": "Remove Member from a role."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "value": "Reset user password.",
+    "name": "A user password has been reset",
+    "template": {
+      "preset": {
+        "value": "A user password has been reset",
+        "label": "Reset user password."
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Reset user password.",
+            "label": "Reset user password."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "value": "UserLoggedInFromUnknownLocation",
+    "name": "A user has logged in from a location not in the input list",
+    "template": {
+      "preset": {
+        "value": "UserLoggedInFromUnknownLocation",
+        "label": "A user has logged in from a location not in the input list"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "UserLoggedIn",
+            "label": "A user logged in"
+          }
+        },
+        {
+          "Property": { "value": "List:countryList", "label": "CIPPGeoLocation", "multi": true },
+          "Operator": { "value": "NotIn", "label": "Not In" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "Add service principal.",
+    "name": "A service principal has been created",
+    "template": {
+      "preset": {
+        "value": "Add service principal.",
+        "label": "A service principal has been created"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Add service principal.",
+            "label": "Add service principal."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "value": "Remove service principal.",
+    "name": "A service principal has been removed",
+    "template": {
+      "preset": {
+        "value": "Remove service principal.",
+        "label": "A service principal has been removed"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Remove service principal.",
+            "label": "Remove service principal."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "value": "badRepIP",
+    "name": "A user has logged in a using a known VPN, Proxy, Or anonymizer",
+    "template": {
+      "preset": {
+        "value": "badRepIP",
+        "label": "A user has logged in a using a known VPN, Proxy, Or anonymizer"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "UserLoggedIn",
+            "label": "A user logged in"
+          }
+        },
+        {
+          "Property": { "value": "String", "label": "CIPPBadRepIP" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "true",
+            "label": "true"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "value": "HostedIP",
+    "name": "A user has logged in a using a known hosting provider IP",
+    "template": {
+      "preset": {
+        "value": "HostedIP",
+        "label": "A user has logged in a using a known hosting provider IP"
+      },
+      "logbook": { "value": "Audit.AzureActiveDirectory", "label": "Azure AD" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "UserLoggedIn",
+            "label": "A user logged in"
+          }
+        },
+        {
+          "Property": { "value": "String", "label": "CIPPHostedIP" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "true",
+            "label": "true"
+          }
+        }
+      ]
+    }
+  }
+]
