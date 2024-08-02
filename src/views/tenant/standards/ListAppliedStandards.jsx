@@ -385,7 +385,7 @@ const ApplyNewStandard = () => {
     }
     const originalTemplates = formvalues.standards?.IntuneTemplate?.TemplateList || []
     const updatedTemplateList = [...originalTemplates, newTemplate]
-
+    form.change('standards.IntuneTemplate.AssignTo', undefined)
     form.change('standards.IntuneTemplate.TemplateList', updatedTemplateList)
     form.change('intunedataList', undefined)
     form.change('intuneAssignTo', undefined)
