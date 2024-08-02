@@ -39,6 +39,8 @@ export default function CIPPExtensions() {
     setExtensionconfig({
       path: 'api/ExecExtensionsConfig',
       values: values,
+    }).then((res) => {
+      listBackend({ path: 'api/ListExtensionsConfig' })
     })
   }
 
