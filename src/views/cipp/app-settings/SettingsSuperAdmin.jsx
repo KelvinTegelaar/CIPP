@@ -7,6 +7,7 @@ import { CippCallout } from 'src/components/layout/index.js'
 import CippAccordionItem from 'src/components/contentcards/CippAccordionItem'
 import SettingsCustomRoles from 'src/views/cipp/app-settings/components/SettingsCustomRoles'
 import CippButtonCard from 'src/components/contentcards/CippButtonCard'
+import SettingsSAMRoles from './components/SettingsSAMRoles'
 
 export function SettingsSuperAdmin() {
   const partnerConfig = useGenericGetRequestQuery({
@@ -65,46 +66,11 @@ export function SettingsSuperAdmin() {
                 </p>
               </CCol>
             </CRow>
-            <CRow>
-              <CCol sm={12} md={12} className="mb-3">
-                <p className="fw-lighter">Tenant Mode</p>
-                <Form
-                  onSubmit={onSubmit}
-                  initialValues={partnerConfig.data}
-                  render={({ handleSubmit }) => (
-                    <>
-                      {partnerConfig.isFetching && <CSpinner size="sm" className="me-2" />}
-                      <CForm id="submitForm" onSubmit={handleSubmit}>
-                        <RFFCFormRadio
-                          name="TenantMode"
-                          label="Multi Tenant - GDAP Mode"
-                          value="default"
-                        />
-                        <RFFCFormRadio
-                          name="TenantMode"
-                          label="Multi Tenant - Add Partner Tenant"
-                          value="PartnerTenantAvailable"
-                        />
-                        <RFFCFormRadio
-                          name="TenantMode"
-                          label="Single Tenant - Own Tenant Mode"
-                          value="owntenant"
-                        />
-                      </CForm>
-                    </>
-                  )}
-                />
-                {webhookCreateResult.isSuccess && (
-                  <CippCallout color="info" dismissible>
-                    {webhookCreateResult?.data?.results}
-                  </CippCallout>
-                )}
-              </CCol>
-            </CRow>
           </>
         </>
       </CippButtonCard>
       <SettingsCustomRoles />
+      <SettingsSAMRoles />
     </>
   )
 }
