@@ -1704,17 +1704,23 @@
     "helpText": "This standard creates a Spam filter policy similar to the default strict policy.",
     "addedComponent": [
       {
+        "type": "number",
+        "label": "Bulk email threshold (Default 7)",
+        "name": "standards.SpamFilterPolicy.BulkThreshold",
+        "default": 7
+      },
+      {
         "type": "Select",
         "label": "Spam Action",
         "name": "standards.SpamFilterPolicy.SpamAction",
         "values": [
           {
-            "label": "Move message to Junk Email folder",
-            "value": "MoveToJmf"
-          },
-          {
             "label": "Quarantine the message",
             "value": "Quarantine"
+          },
+          {
+            "label": "Move message to Junk Email folder",
+            "value": "MoveToJmf"
           }
         ]
       },
@@ -1739,6 +1745,21 @@
       },
       {
         "type": "Select",
+        "label": "High Confidence Spam Action",
+        "name": "standards.SpamFilterPolicy.HighConfidenceSpamAction",
+        "values": [
+          {
+            "label": "Quarantine the message",
+            "value": "Quarantine"
+          },
+          {
+            "label": "Move message to Junk Email folder",
+            "value": "MoveToJmf"
+          }
+        ]
+      },
+      {
+        "type": "Select",
         "label": "High Confidence Spam Quarantine Tag",
         "name": "standards.SpamFilterPolicy.HighConfidenceSpamQuarantineTag",
         "values": [
@@ -1758,6 +1779,21 @@
       },
       {
         "type": "Select",
+        "label": "Bulk Spam Action",
+        "name": "standards.SpamFilterPolicy.BulkSpamAction",
+        "values": [
+          {
+            "label": "Quarantine the message",
+            "value": "Quarantine"
+          },
+          {
+            "label": "Move message to Junk Email folder",
+            "value": "MoveToJmf"
+          }
+        ]
+      },
+      {
+        "type": "Select",
         "label": "Bulk Quarantine Tag",
         "name": "standards.SpamFilterPolicy.BulkQuarantineTag",
         "values": [
@@ -1772,6 +1808,21 @@
           {
             "label": "DefaultFullAccessWithNotificationPolicy",
             "value": "DefaultFullAccessWithNotificationPolicy"
+          }
+        ]
+      },
+      {
+        "type": "Select",
+        "label": "Phish Spam Action",
+        "name": "standards.SpamFilterPolicy.PhishSpamAction",
+        "values": [
+          {
+            "label": "Quarantine the message",
+            "value": "Quarantine"
+          },
+          {
+            "label": "Move message to Junk Email folder",
+            "value": "MoveToJmf"
           }
         ]
       },
@@ -2301,6 +2352,180 @@
     "impact": "High Impact",
     "impactColour": "danger",
     "powershellEquivalent": "Update-MgAdminSharepointSetting",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.TeamsGlobalMeetingPolicy",
+    "cat": "Teams Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Defines the CIS recommended global meeting policy for Teams. This includes AllowAnonymousUsersToJoinMeeting, AllowAnonymousUsersToStartMeeting, AutoAdmittedUsers, AllowPSTNUsersToBypassLobby, MeetingChatEnabledType, DesignatedPresenterRoleMode, AllowExternalParticipantGiveRequestControl",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "name": "standards.TeamsGlobalMeetingPolicy.DesignatedPresenterRoleMode",
+        "label": "Default value of the `Who can present?`",
+        "values": [
+          {
+            "label": "EveryoneUserOverride",
+            "value": "EveryoneUserOverride"
+          },
+          {
+            "label": "EveryoneInCompanyUserOverride",
+            "value": "EveryoneInCompanyUserOverride"
+          },
+          {
+            "label": "EveryoneInSameAndFederatedCompanyUserOverride",
+            "value": "EveryoneInSameAndFederatedCompanyUserOverride"
+          },
+          {
+            "label": "OrganizerOnlyUserOverride",
+            "value": "OrganizerOnlyUserOverride"
+          }
+        ]
+      }
+    ],
+    "label": "Define Global Meeting Policy for Teams",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "powershellEquivalent": "Set-CsTeamsMeetingPolicy -AllowAnonymousUsersToJoinMeeting $false -AllowAnonymousUsersToStartMeeting $false -AutoAdmittedUsers EveryoneInCompanyExcludingGuests -AllowPSTNUsersToBypassLobby $false -MeetingChatEnabledType EnabledExceptAnonymous -DesignatedPresenterRoleMode $DesignatedPresenterRoleMode -AllowExternalParticipantGiveRequestControl $false",
+    "recommendedBy": ["CIS 3.0"]
+  },
+  {
+    "name": "standards.TeamsEmailIntegration",
+    "cat": "Teams Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Should users be allowed to send emails directly to a channel email addresses?",
+    "docsDescription": "Teams channel email addresses are an optional feature that allows users to email the Teams channel directly.",
+    "addedComponent": [
+      {
+        "type": "boolean",
+        "name": "standards.TeamsEmailIntegration.AllowEmailIntoChannel",
+        "label": "Allow channel emails"
+      }
+    ],
+    "label": "Disallow emails to be sent to channel email addresses",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "powershellEquivalent": "Set-CsTeamsClientConfiguration -AllowEmailIntoChannel $false",
+    "recommendedBy": ["CIS 3.0"]
+  },
+  {
+    "name": "standards.TeamsExternalFileSharing",
+    "cat": "Teams Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Ensure external file sharing in Teams is enabled for only approved cloud storage services.",
+    "addedComponent": [
+      {
+        "type": "boolean",
+        "name": "standards.TeamsExternalFileSharing.AllowGoogleDrive",
+        "label": "Allow Google Drive"
+      },
+      {
+        "type": "boolean",
+        "name": "standards.TeamsExternalFileSharing.AllowShareFile",
+        "label": "Allow ShareFile"
+      },
+      {
+        "type": "boolean",
+        "name": "standards.TeamsExternalFileSharing.AllowBox",
+        "label": "Allow Box"
+      },
+      {
+        "type": "boolean",
+        "name": "standards.TeamsExternalFileSharing.AllowDropBox",
+        "label": "Allow Dropbox"
+      },
+      {
+        "type": "boolean",
+        "name": "standards.TeamsExternalFileSharing.AllowEgnyte",
+        "label": "Allow Egnyte"
+      }
+    ],
+    "label": "Define approved cloud storage services for external file sharing in Teams",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "powershellEquivalent": "Set-CsTeamsClientConfiguration -AllowGoogleDrive $false -AllowShareFile $false -AllowBox $false -AllowDropBox $false -AllowEgnyte $false",
+    "recommendedBy": ["CIS 3.0"]
+  },
+  {
+    "name": "standards.TeamsExternalAccessPolicy",
+    "cat": "Teams Standards",
+    "tag": ["mediumimpact"],
+    "helpText": "Sets the properties of the Global external access policy.",
+    "docsDescription": "Sets the properties of the Global external access policy. External access policies determine whether or not your users can: 1) communicate with users who have Session Initiation Protocol (SIP) accounts with a federated organization; 2) communicate with users who are using custom applications built with Azure Communication Services; 3) access Skype for Business Server over the Internet, without having to log on to your internal network; 4) communicate with users who have SIP accounts with a public instant messaging (IM) provider such as Skype; and, 5) communicate with people who are using Teams with an account that's not managed by an organization.",
+    "addedComponent": [
+      {
+        "type": "boolean",
+        "name": "standards.TeamsExternalAccessPolicy.EnableFederationAccess",
+        "label": "Allow communication from trusted organizations"
+      },
+      {
+        "type": "boolean",
+        "name": "standards.TeamsExternalAccessPolicy.EnablePublicCloudAccess",
+        "label": "Allow user to communicate with Skype users"
+      },
+      {
+        "type": "boolean",
+        "name": "standards.TeamsExternalAccessPolicy.EnableTeamsConsumerAccess",
+        "label": "Allow communication with unmanaged Teams accounts"
+      }
+    ],
+    "label": "External Access Settings for Microsoft Teams",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "powershellEquivalent": "Set-CsExternalAccessPolicy",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.TeamsFederationConfiguration",
+    "cat": "Teams Standards",
+    "tag": ["mediumimpact"],
+    "helpText": "Sets the properties of the Global federation configuration.",
+    "docsDescription": "Sets the properties of the Global federation configuration. Federation configuration settings determine whether or not your users can communicate with users who have SIP accounts with a federated organization.",
+    "addedComponent": [
+      {
+        "type": "boolean",
+        "name": "standards.TeamsFederationConfiguration.AllowTeamsConsumer",
+        "label": "Allow users to communicate with other organizations"
+      },
+      {
+        "type": "boolean",
+        "name": "standards.TeamsFederationConfiguration.AllowPublicUsers",
+        "label": "Allow users to communicate with Skype Users"
+      },
+      {
+        "type": "Select",
+        "name": "standards.TeamsFederationConfiguration.DomainControl",
+        "label": "Communication Mode",
+        "values": [
+          {
+            "label": "Allow all external domains",
+            "value": "AllowAllExternal"
+          },
+          {
+            "label": "Block all external domains",
+            "value": "BlockAllExternal"
+          },
+          {
+            "label": "Allow specific external domains",
+            "value": "AllowSpecificExternal"
+          },
+          {
+            "label": "Block specific external domains",
+            "value": "BlockSpecificExternal"
+          }
+        ]
+      },
+      {
+        "type": "input",
+        "name": "standards.TeamsFederationConfiguration.DomainList",
+        "label": "Domains, Comma separated"
+      }
+    ],
+    "label": "Federation Configuration for Microsoft Teams",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "powershellEquivalent": "Set-CsTenantFederationConfiguration",
     "recommendedBy": []
   }
 ]
