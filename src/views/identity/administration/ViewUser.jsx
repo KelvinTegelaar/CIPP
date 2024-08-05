@@ -91,7 +91,11 @@ const ViewUser = (props) => {
             <UserSigninLogs userId={userId} tenantDomain={tenantDomain} />
           </CippMasonryItem>
           <CippMasonryItem size="triple">
-            <UserMailboxRuleList userId={userId} tenantDomain={tenantDomain} />
+            <UserMailboxRuleList
+              userId={userId}
+              tenantDomain={tenantDomain}
+              userEmail={userEmail}
+            />
           </CippMasonryItem>
         </CippMasonry>
       )}
