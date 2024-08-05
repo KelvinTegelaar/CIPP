@@ -589,7 +589,7 @@ const Users = (row) => {
               label: 'Revoke sessions',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecRevokeSessions?Enable=true&TenantFilter=!Tenant&ID=!userPrincipalName`,
+              modalUrl: `/api/ExecRevokeSessions?Enable=true&TenantFilter=!Tenant&ID=!id&Username=!userPrincipalName`,
               modalMessage: 'Are you sure you want to revoke all sessions for these users?',
             },
             {
