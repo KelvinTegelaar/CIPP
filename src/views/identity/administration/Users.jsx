@@ -285,6 +285,13 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modalMessage: 'Are you sure you want to reset the password for this user?',
           },
           {
+            label: 'Preprovision OneDrive',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecOneDriveProvision?TenantFilter=${tenant.defaultDomainName}&UserPrincipalName=${row.userPrincipalName}`,
+            modalMessage: 'Are you sure you want to preprovision onedrive for this user??',
+          },
+          {
             label: 'Clear ImmutableId',
             color: 'warning',
             modal: true,
@@ -562,8 +569,7 @@ const Users = (row) => {
               color: 'info',
               modal: true,
               modalUrl: `/api/ExecResetPass?MustChange=false&TenantFilter=!Tenant&ID=!userPrincipalName&displayName=!displayName`,
-              modalMessage:
-                'Are you sure you want to reset the password for these users? The users must change their password at next logon.',
+              modalMessage: 'Are you sure you want to reset the password for these users?',
             },
             {
               label: 'Block signin',
@@ -583,7 +589,7 @@ const Users = (row) => {
               label: 'Revoke sessions',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecRevokeSessions?Enable=true&TenantFilter=!Tenant&ID=!userPrincipalName`,
+              modalUrl: `/api/ExecRevokeSessions?Enable=true&TenantFilter=!Tenant&ID=!id&Username=!userPrincipalName`,
               modalMessage: 'Are you sure you want to revoke all sessions for these users?',
             },
             {
@@ -698,6 +704,14 @@ const Users = (row) => {
               modalUrl: `/api/ExecEmailForward`,
               modalMessage: 'Are you sure you want to disable forwarding of these users emails?',
             },
+            {
+              label: 'Preprovision OneDrive',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecOneDriveProvision?TenantFilter=!Tenant&UserPrincipalName=!userPrincipalName`,
+              modalMessage: 'Are you sure you want to preprovision onedrive for this user?',
+            },
+
             {
               label: 'Delete User',
               color: 'danger',
