@@ -6,7 +6,12 @@ import { faCheck, faExclamationTriangle } from '@fortawesome/free-solid-svg-icon
 import { CippWizard } from 'src/components/layout'
 import PropTypes from 'prop-types'
 import { Condition, RFFCFormInput, RFFCFormRadio } from 'src/components/forms'
-import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import {
+  useLazyExecPermissionsAccessCheckQuery,
+  useLazyGenericGetRequestQuery,
+  useLazyGenericPostRequestQuery,
+} from 'src/store/api/app'
+import { Link } from 'react-router-dom'
 
 function useInterval(callback, delay, state) {
   const savedCallback = useRef()
@@ -49,11 +54,7 @@ Error.propTypes = {
 }
 
 const Setup = () => {
-  const [setupDone, setSetupdone] = useState(false)
-  const valbutton = (value) =>
-    getResults.data?.step < 5
-      ? undefined
-      : `You do not have to click next. Finish the wizard via the setup button below. After it says "Setup Completed" you may browse away from this page.`
+  const [checkPermissions, permissionsResult] = useLazyExecPermissionsAccessCheckQuery()
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const [genericGetRequest, getResults] = useLazyGenericGetRequestQuery()
   const onSubmit = (values) => {
@@ -72,7 +73,6 @@ const Setup = () => {
       path: 'api/ExecSAMSetup',
       params: { CreateSAM: true, partnersetup: true },
     })
-    setSetupdone(false)
   }
 
   useInterval(
@@ -82,19 +82,35 @@ const Setup = () => {
           path: 'api/ExecSAMSetup',
           params: { CheckSetupProcess: true, step: getResults.data?.step },
         })
-      } else {
-        setSetupdone(true)
       }
     },
     10000,
     getResults.data,
   )
   const formValues = {}
+
+  const stepsDetails = [
+    { id: 1, text: 'Step 1 - First Login' },
+    { id: 2, text: 'Step 2 - Creating Application & Approving Application' },
+    { id: 3, text: 'Step 3 - Receiving Token' },
+    { id: 4, text: 'Step 4 - Finishing Authentication Setup' },
+  ]
+  const RenderSteps = ({ currentStep = 0 }) => (
+    <>
+      {currentStep > 0 &&
+        stepsDetails.slice(0, currentStep - 1).map((step) => (
+          <div key={step.id}>
+            <FontAwesomeIcon icon={faCheck} /> {step.text} - Completed
+          </div>
+        ))}
+    </>
+  )
   return (
     <CippWizard
       onSubmit={onSubmit}
       initialValues={{ ...formValues }}
       wizardTitle="Secure Application Model Setup Wizard"
+      hideSubmit={true}
     >
       <CippWizard.Page title="Step one" description="Choose the type of deployment.">
         <center>
@@ -105,6 +121,16 @@ const Setup = () => {
         This wizard will guide you through setting up CIPPs access to your client tenants. If this
         is your first time setting up CIPP you will want to choose the option "I would like CIPP to
         create an application for me".
+        <CCallout color="warning">
+          To successfully finish setup you must follow the instructions{' '}
+          <a
+            href="https://docs.cipp.app/setup/installation/samwizard"
+            rel="noreferrer"
+            target="_blank"
+          >
+            here
+          </a>
+        </CCallout>
         <CRow className="mt-3">
           <RFFCFormRadio
             value="CreateSAM"
@@ -124,7 +150,11 @@ const Setup = () => {
         </CRow>
         <hr className="my-4" />
       </CippWizard.Page>
-      <CippWizard.Page title="Select Options" description="Select which options you want to apply.">
+      <CippWizard.Page
+        hideSubmit={true}
+        title="Perform setup"
+        description="Perform setup to allow CIPP access to your M365 environment"
+      >
         <center>
           <h3 className="text-primary">Step 2</h3>
           <h5 className="card-title mb-4">Enter the secure application model credentials.</h5>
@@ -134,32 +164,49 @@ const Setup = () => {
           <CRow className="mb-3">
             <CCol md={6} className="mb-3">
               Click the buttons below to refresh your token.
-              <br /> Remember to login under a account that has been added to the correct GDAP
-              groups and the group 'AdminAgents'.
+              <br /> Remember to login under a service account that has been added to the correct
+              GDAP groups and the group 'AdminAgents'.
               <br />
-              {getResults.isUninitialized && genericGetRequest({ path: 'api/ExecListAppId' })}
-              {getResults.isSuccess && (
-                <>
-                  <CRow className="mb-3">
-                    <CCol md={2} className="mb-3">
-                      <a target="_blank" rel="noreferrer" href={`${getResults.data.refreshUrl}`}>
-                        <CButton color="primary">Refresh Graph Token</CButton>
-                      </a>
-                    </CCol>
-                  </CRow>
-                  <CRow></CRow>
-                </>
-              )}
             </CCol>
+            {getResults.isUninitialized && genericGetRequest({ path: 'api/ExecListAppId' })}
+            {getResults.isSuccess && (
+              <>
+                <CRow className="mb-3">
+                  <CCol md={2} className="mb-3">
+                    <a target="_blank" rel="noreferrer" href={`${getResults.data.refreshUrl}`}>
+                      <CButton className="mb-3" color="primary">
+                        Refresh Graph Token
+                      </CButton>
+                    </a>
+                  </CCol>
+                </CRow>
+                <CRow></CRow>
+              </>
+            )}
             <CCol md={2}></CCol>
           </CRow>
         </Condition>
         <Condition when="SetupType" is="CreateSAM">
           <CRow>
             <p>
-              When clicking the button below, the setup wizard starts. This is a 5 step process.
-              Please use a Global Administrator to perform these tasks. You can restart the process
-              at any time, by clicking on the start button once more.
+              Click the button below to start the setup wizard. You will need the following
+              prerequisites:
+              <li>
+                A CIPP Service Account. For more information on how to create a service account
+                click{' '}
+                <a
+                  href="https://docs.cipp.app/setup/installation/samwizard"
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  here
+                </a>
+              </li>
+              <li>(Temporary) Global Administrator permissions for the CIPP Service Account</li>
+              <li>
+                Multi-factor authentication enabled for the CIPP Service Account, with no trusted
+                locations or other exclusions.
+              </li>
             </p>
             <CCol md={12}>
               <Field
@@ -168,34 +215,66 @@ const Setup = () => {
                 className="btn btn-primary"
                 type="button"
                 onClick={() => startCIPPSetup(true)}
-                validate={() => valbutton()}
               >
-                Start Setup Wizard
+                {getResults.isFetching && <CSpinner size="sm" />} Start Setup Wizard
               </Field>
-              <Field name="BlockNext" component="hidden" type="hidden" validate={valbutton}></Field>
-              <Error name="start" />
             </CCol>
             <hr className="my-4" />
           </CRow>
           <CRow>
             <CCol md={12}>
-              {getResults.isFetching && <CSpinner size="sm">Loading</CSpinner>}
               {getResults.isSuccess && (
                 <>
-                  {getResults.data?.step < 5 ? (
+                  <RenderSteps currentStep={getResults.data?.step} />
+                  {getResults.data?.step < 5 && getResults.data?.step > 0 && (
                     <CSpinner size="sm"></CSpinner>
-                  ) : (
-                    <FontAwesomeIcon icon={faCheck}></FontAwesomeIcon>
                   )}
-                  Step {getResults.data?.step} - {getResults.data.message}{' '}
-                  {getResults.data.url && (
-                    <a target="_blank" rel="noopener noreferrer" href={getResults.data?.url}>
-                      HERE
-                    </a>
+                  {getResults.data?.step > 0 && getResults.data?.step < 5 && (
+                    <>
+                      Step {getResults.data?.step} - {getResults.data.message}{' '}
+                      {getResults.data.url && (
+                        <a target="_blank" rel="noopener noreferrer" href={getResults.data?.url}>
+                          HERE
+                        </a>
+                      )}
+                    </>
                   )}
                 </>
               )}
             </CCol>
+            {getResults.data?.step === 5 && (
+              <p>
+                {permissionsResult.isFetching && <CSpinner />} Authentication has been received.
+                Checking if all prerequisites are met to connect to your tenants.
+                {permissionsResult.isUninitialized && checkPermissions()}
+              </p>
+            )}
+            <CRow>
+              {permissionsResult.data?.Results && (
+                <>
+                  <CCol>
+                    <CCallout color="success">
+                      {permissionsResult.data.Results?.Messages && (
+                        <>
+                          {permissionsResult.data.Results?.Messages?.map((m, idx) => (
+                            <div key={idx}>{m}</div>
+                          ))}
+                        </>
+                      )}
+                    </CCallout>
+                  </CCol>
+                  <CCol>
+                    {permissionsResult.data.Results?.ErrorMessages?.length >= 1 && (
+                      <CCallout color="danger">
+                        {permissionsResult.data.Results?.ErrorMessages?.map((m, idx) => (
+                          <div key={idx}>{m}</div>
+                        ))}
+                      </CCallout>
+                    )}
+                  </CCol>
+                </>
+              )}
+            </CRow>
           </CRow>
         </Condition>
         <Condition when="SetupType" is="ExistingSAM">
@@ -207,7 +286,7 @@ const Setup = () => {
                 type="text"
                 name="TenantID"
                 label="Tenant ID"
-                placeholder="Enter the Tenant ID. e.g. mymsp.onmicrosoft.com. Leave blank to retain a previous key if this exists."
+                placeholder="Enter the Tenant ID. e.g. 1111-1111-1111-1111-11111. Leave blank to retain a previous key if this exists."
               />
             </CCol>
           </CRow>
@@ -241,40 +320,29 @@ const Setup = () => {
               />
             </CCol>
           </CRow>
+          <CRow>
+            <CCol md={12}>
+              <div className="d-flex justify-content-end">
+                <CButton type="submit">Submit info</CButton>
+              </div>
+            </CCol>
+          </CRow>
+          {postResults.isFetching && (
+            <CCallout color="info">
+              <CSpinner>Loading</CSpinner>
+            </CCallout>
+          )}
+          {postResults.isSuccess && <CCallout color="success">{postResults.data.Results}</CCallout>}
         </Condition>
-        <hr className="my-4" />
-      </CippWizard.Page>
-      <CippWizard.Page title="Review and Confirm" description="Confirm the settings to apply">
-        <center>
-          <h3 className="text-primary">Step 3</h3>
-          <h5 className="card-title mb-4">Confirm and apply</h5>
-        </center>
-        <hr className="my-4" />
-        {!postResults.isSuccess && (
-          <FormSpy>
-            {(props) => {
-              return (
-                <>
-                  <CRow>
-                    <CCol md={3}></CCol>
-                    <CCol md={6}>
-                      {usedWizard &&
-                        'You have used the setup wizard. You can close this screen. Setup has been completed.'}
-                      {!usedWizard &&
-                        'You are sending your own Secure Application Model setup to the Keyvault. For security reasons we do not show the keys. Please make sure you have entered the keys correctly.'}
-                    </CCol>
-                  </CRow>
-                </>
-              )
-            }}
-          </FormSpy>
-        )}
-        {postResults.isFetching && (
-          <CCallout color="info">
-            <CSpinner>Loading</CSpinner>
-          </CCallout>
-        )}
-        {postResults.isSuccess && <CCallout color="success">{postResults.data.Results}</CCallout>}
+        <FormSpy>
+          {(props) => {
+            if (props.values.SetupType === 'ExistingSAM') {
+              setNoSubmit(false)
+            } else {
+              setNoSubmit(true)
+            }
+          }}
+        </FormSpy>
         <hr className="my-4" />
       </CippWizard.Page>
     </CippWizard>

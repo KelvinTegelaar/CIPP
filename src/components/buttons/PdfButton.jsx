@@ -1,5 +1,5 @@
 import React from 'react'
-import { CButton } from '@coreui/react'
+import { CButton, CDropdownItem } from '@coreui/react'
 import jsPDF from 'jspdf'
 import 'jspdf-autotable'
 import PropTypes from 'prop-types'
@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux'
 
 function ExportPDFButton(props) {
   const base64 = useSelector((state) => state.app.reportImage)
-  const exportPDF = (pdfData, pdfHeaders, pdfSize = 'A4', reportName = 'report') => {
+  const exportPDF = (pdfData, pdfHeaders, pdfSize = 'A3', reportName = 'report') => {
     const unit = 'pt'
     const size = pdfSize // Use A1, A2, A3 or A4
     const orientation = 'landscape' // portrait or landscape
@@ -39,13 +39,12 @@ function ExportPDFButton(props) {
   }
 
   return (
-    <CButton
-      size="sm"
-      className="m-1"
+    <CDropdownItem
       onClick={() => exportPDF(props.pdfData, props.pdfHeaders, props.pdfSize, props.reportName)}
     >
-      <FontAwesomeIcon icon={faFilePdf} size="lg" />
-    </CButton>
+      <FontAwesomeIcon className="me-2" icon={faFilePdf} />
+      {props.nameText}
+    </CDropdownItem>
   )
 }
 export default ExportPDFButton
@@ -55,4 +54,5 @@ ExportPDFButton.propTypes = {
   pdfHeaders: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   pdfSize: PropTypes.oneOf(['A1', 'A2', 'A3', 'A4']),
   reportName: PropTypes.oneOfType([PropTypes.element, PropTypes.string, PropTypes.number]),
+  nameText: PropTypes.string,
 }
