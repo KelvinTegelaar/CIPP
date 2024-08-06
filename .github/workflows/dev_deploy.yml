@@ -4,6 +4,17 @@ on:
   push:
     branches:
       - dev
+  workflow_dispatch:
+    inputs:
+      loglevel:
+        description: 'Log Level'
+        required: true
+        default: 'warning'
+        type: choice
+        options:
+        - info
+        - warning
+        - debug
 
 jobs:
   build_and_deploy_job:
