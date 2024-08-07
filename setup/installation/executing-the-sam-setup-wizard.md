@@ -15,7 +15,7 @@
 
 * You're using a chromium based browser. It **MUST** allow cookies and have any ad-blocker disabled for the duration of the wizard. Do not use in-private mode.
 * When you're asked to authenticate during the SAM Setup Wizard, **remember to use to the CIPP service account credentials**. If you do not have a service account prepared you can do so now by going to the [Creating the CIPP Service Account](creating-the-cipp-service-account-gdap-ready.md) page and following the instructions there.
-* The SAM Wizard only needs to be run **once** to connect to your tenant, including all partner tenants, but there may be situations
+* The SAM Wizard only needs to be run **once** to connect to your tenant, including all partner tenants, but there may be situations where you need to reinitialize the process.
 {% endhint %}
 
 This guide walks you through the process from the video of executing the SAM Wizard inside CIPP for the first time, and has 3 options based on what you're looking to accomplish. In this example, we use the first-time setup option, but more details on additional options can be found in the sections below.
