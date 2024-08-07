@@ -7,6 +7,7 @@ import { CippCallout } from 'src/components/layout/index.js'
 import CippAccordionItem from 'src/components/contentcards/CippAccordionItem'
 import SettingsCustomRoles from 'src/views/cipp/app-settings/components/SettingsCustomRoles'
 import CippButtonCard from 'src/components/contentcards/CippButtonCard'
+import SettingsSAMRoles from './components/SettingsSAMRoles'
 
 export function SettingsSuperAdmin() {
   const partnerConfig = useGenericGetRequestQuery({
@@ -105,6 +106,7 @@ export function SettingsSuperAdmin() {
         </>
       </CippButtonCard>
       <SettingsCustomRoles />
+      <SettingsSAMRoles />
     </>
   )
 }
