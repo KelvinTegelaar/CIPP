@@ -17,7 +17,7 @@ Hosted clients can use the backend management system to add and remove users.
 3. Enter the UPN for the user in the **Email** field. Ensure this matches the user's M365 UPN.
 4. Assign the appropriate roles for the user.
 
-### Adding Users via Azure for Self Hosted Deployments
+## Adding Users via Azure for Self Hosted Deployments
 
 After deployment you'll need to give each user access. To generate an invite for a user follow these steps:
 
