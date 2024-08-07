@@ -91,6 +91,7 @@
     * [Deploy Named Locations](user-documentation/tenant/conditional/deploy-named-location.md)
     * [Add Template](user-documentation/tenant/conditional/add-template.md)
     * [Templates](user-documentation/tenant/conditional/list-template.md)
+    * [CA Vacation Mode](user-documentation/tenant/conditional/deploy-vacation.md)
   * [GDAP Management](user-documentation/tenant/gdap-management/README.md)
     * [Invite Wizard](user-documentation/tenant/gdap/gdap-invite.md)
     * [GDAP Invites](user-documentation/tenant/gdap-management/gdap-invites.md)
