@@ -5,11 +5,6 @@
     "tag": ["lowimpact"],
     "helpText": "Defines the email address to receive general updates and information related to M365 subscriptions. Leave a contact field blank if you do not want to update the contact information.",
     "docsDescription": "",
-    "disabledFeatures": {
-      "report": false,
-      "warn": false,
-      "remediate": false
-    },
     "addedComponent": [
       {
         "type": "input",
@@ -589,7 +584,7 @@
   {
     "name": "standards.OauthConsentLowSec",
     "cat": "Entra (AAD) Standards",
-    "tag": ["mediumimpact"],
+    "tag": ["mediumimpact", "IntegratedApps"],
     "helpText": "Sets the default oauth consent level so users can consent to applications that have low risks.",
     "docsDescription": "Allows users to consent to applications with low assigned risk.",
     "label": "Allow users to consent to applications with low security risk (Prevent OAuth phishing. Lower impact, less secure)",
@@ -645,7 +640,9 @@
     "addedComponent": [],
     "label": "Disables Voice call as an MFA method",
     "impact": "High Impact",
-    "impactColour": "danger"
+    "impactColour": "danger",
+    "powershellEquivalent": "Update-MgBetaPolicyAuthenticationMethodPolicyAuthenticationMethodConfiguration",
+    "recommendedBy": []
   },
   {
     "name": "standards.DisableEmail",
@@ -1255,30 +1252,17 @@
             "value": "disable"
           }
         ]
+      },
+      {
+        "type": "input",
+        "name": "standards.UserSubmissions.email",
+        "label": "Destination email address"
       }
     ],
     "label": "Set the state of the built-in Report button in Outlook",
     "impact": "Medium Impact",
     "impactColour": "warning",
-    "powershellEquivalent": "New-ReportSubmissionPolicy or Set-ReportSubmissionPolicy",
-    "recommendedBy": []
-  },
-  {
-    "name": "standards.UserReportDestinationEmail",
-    "cat": "Exchange Standards",
-    "tag": ["mediumimpact"],
-    "helpText": "Sets the destination for email when users report them as spam or phishing. Works well together with the 'Set the state of the built-in Report button in Outlook standard'.",
-    "addedComponent": [
-      {
-        "type": "input",
-        "name": "standards.UserReportDestinationEmail.Email",
-        "label": "Destination email address"
-      }
-    ],
-    "label": "Set the destination email for user reported emails",
-    "impact": "Medium Impact",
-    "impactColour": "warning",
-    "powershellEquivalent": "New-ReportSubmissionRule or Set-ReportSubmissionRule",
+    "powershellEquivalent": "New-ReportSubmissionPolicy or Set-ReportSubmissionPolicy and New-ReportSubmissionRule or Set-ReportSubmissionRule",
     "recommendedBy": []
   },
   {
@@ -1293,6 +1277,38 @@
     "impactColour": "warning",
     "powershellEquivalent": "Get-Mailbox & Update-MgUser",
     "recommendedBy": ["CIS"]
+  },
+  {
+    "name": "standards.EXODisableAutoForwarding",
+    "cat": "Exchange Standards",
+    "tag": ["highimpact", "CIS", "mdo_autoforwardingmode", "mdo_blockmailforward"],
+    "helpText": "Disables the ability for users to automatically forward e-mails to external recipients.",
+    "docsDescription": "Disables the ability for users to automatically forward e-mails to external recipients. This is to prevent data exfiltration. Please check if there are any legitimate use cases for this feature before implementing, like forwarding invoices and such.",
+    "addedComponent": [],
+    "label": "Disable automatic forwarding to external recipients",
+    "impact": "High Impact",
+    "impactColour": "danger",
+    "powershellEquivalent": "Set-HostedOutboundSpamFilterPolicy -AutoForwardingMode 'Off'",
+    "recommendedBy": ["CIS"]
+  },
+  {
+    "name": "standards.QuarantineRequestAlert",
+    "cat": "Defender Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Sets a e-mail address to alert when a User requests to release a quarantined message.",
+    "docsDescription": "Sets a e-mail address to alert when a User requests to release a quarantined message. This is useful for monitoring and ensuring that the correct messages are released.",
+    "addedComponent": [
+      {
+        "type": "input",
+        "name": "standards.QuarantineRequestAlert.NotifyUser",
+        "label": "E-mail to receive the alert"
+      }
+    ],
+    "label": "Quarantine Release Request Alert",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "powershellEquivalent": "New-ProtectionAlert and Set-ProtectionAlert",
+    "recommendedBy": []
   },
   {
     "name": "standards.SafeLinksPolicy",
@@ -1333,7 +1349,8 @@
       "mdo_highconfidencephishaction",
       "mdo_phisspamacation",
       "mdo_spam_notifications_only_for_admins",
-      "mdo_antiphishingpolicies"
+      "mdo_antiphishingpolicies",
+      "mdo_phishthresholdlevel"
     ],
     "helpText": "This creates a Anti-Phishing policy that automatically enables Mailbox Intelligence and spoofing, optional switches for Mailtips.",
     "addedComponent": [
@@ -1630,6 +1647,11 @@
         ]
       },
       {
+        "type": "input",
+        "name": "standards.MalwareFilterPolicy.OptionalFileTypes",
+        "label": "Optional File Types, Comma separated"
+      },
+      {
         "type": "Select",
         "label": "QuarantineTag",
         "name": "standards.MalwareFilterPolicy.QuarantineTag",
@@ -1674,6 +1696,180 @@
     "impactColour": "info",
     "powershellEquivalent": "Set-MalwareFilterPolicy or New-MalwareFilterPolicy",
     "recommendedBy": ["CIS"]
+  },
+  {
+    "name": "standards.SpamFilterPolicy",
+    "cat": "Defender Standards",
+    "tag": ["mediumimpact"],
+    "helpText": "This standard creates a Spam filter policy similar to the default strict policy.",
+    "addedComponent": [
+      {
+        "type": "number",
+        "label": "Bulk email threshold (Default 7)",
+        "name": "standards.SpamFilterPolicy.BulkThreshold",
+        "default": 7
+      },
+      {
+        "type": "Select",
+        "label": "Spam Action",
+        "name": "standards.SpamFilterPolicy.SpamAction",
+        "values": [
+          {
+            "label": "Quarantine the message",
+            "value": "Quarantine"
+          },
+          {
+            "label": "Move message to Junk Email folder",
+            "value": "MoveToJmf"
+          }
+        ]
+      },
+      {
+        "type": "Select",
+        "label": "Spam Quarantine Tag",
+        "name": "standards.SpamFilterPolicy.SpamQuarantineTag",
+        "values": [
+          {
+            "label": "AdminOnlyAccessPolicy",
+            "value": "AdminOnlyAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessPolicy",
+            "value": "DefaultFullAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessWithNotificationPolicy",
+            "value": "DefaultFullAccessWithNotificationPolicy"
+          }
+        ]
+      },
+      {
+        "type": "Select",
+        "label": "High Confidence Spam Action",
+        "name": "standards.SpamFilterPolicy.HighConfidenceSpamAction",
+        "values": [
+          {
+            "label": "Quarantine the message",
+            "value": "Quarantine"
+          },
+          {
+            "label": "Move message to Junk Email folder",
+            "value": "MoveToJmf"
+          }
+        ]
+      },
+      {
+        "type": "Select",
+        "label": "High Confidence Spam Quarantine Tag",
+        "name": "standards.SpamFilterPolicy.HighConfidenceSpamQuarantineTag",
+        "values": [
+          {
+            "label": "AdminOnlyAccessPolicy",
+            "value": "AdminOnlyAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessPolicy",
+            "value": "DefaultFullAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessWithNotificationPolicy",
+            "value": "DefaultFullAccessWithNotificationPolicy"
+          }
+        ]
+      },
+      {
+        "type": "Select",
+        "label": "Bulk Spam Action",
+        "name": "standards.SpamFilterPolicy.BulkSpamAction",
+        "values": [
+          {
+            "label": "Quarantine the message",
+            "value": "Quarantine"
+          },
+          {
+            "label": "Move message to Junk Email folder",
+            "value": "MoveToJmf"
+          }
+        ]
+      },
+      {
+        "type": "Select",
+        "label": "Bulk Quarantine Tag",
+        "name": "standards.SpamFilterPolicy.BulkQuarantineTag",
+        "values": [
+          {
+            "label": "AdminOnlyAccessPolicy",
+            "value": "AdminOnlyAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessPolicy",
+            "value": "DefaultFullAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessWithNotificationPolicy",
+            "value": "DefaultFullAccessWithNotificationPolicy"
+          }
+        ]
+      },
+      {
+        "type": "Select",
+        "label": "Phish Spam Action",
+        "name": "standards.SpamFilterPolicy.PhishSpamAction",
+        "values": [
+          {
+            "label": "Quarantine the message",
+            "value": "Quarantine"
+          },
+          {
+            "label": "Move message to Junk Email folder",
+            "value": "MoveToJmf"
+          }
+        ]
+      },
+      {
+        "type": "Select",
+        "label": "Phish Quarantine Tag",
+        "name": "standards.SpamFilterPolicy.PhishQuarantineTag",
+        "values": [
+          {
+            "label": "AdminOnlyAccessPolicy",
+            "value": "AdminOnlyAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessPolicy",
+            "value": "DefaultFullAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessWithNotificationPolicy",
+            "value": "DefaultFullAccessWithNotificationPolicy"
+          }
+        ]
+      },
+      {
+        "type": "Select",
+        "label": "High Confidence Phish Quarantine Tag",
+        "name": "standards.SpamFilterPolicy.HighConfidencePhishQuarantineTag",
+        "values": [
+          {
+            "label": "AdminOnlyAccessPolicy",
+            "value": "AdminOnlyAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessPolicy",
+            "value": "DefaultFullAccessPolicy"
+          },
+          {
+            "label": "DefaultFullAccessWithNotificationPolicy",
+            "value": "DefaultFullAccessWithNotificationPolicy"
+          }
+        ]
+      }
+    ],
+    "label": "Default Spam Filter Policy",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "powershellEquivalent": "New-HostedContentFilterPolicy or Set-HostedContentFilterPolicy",
+    "recommendedBy": []
   },
   {
     "name": "standards.intuneDeviceRetirementDays",
@@ -1889,6 +2085,18 @@
     "recommendedBy": ["CIS 3.0"]
   },
   {
+    "name": "standards.SPDisableLegacyWorkflows",
+    "cat": "SharePoint Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Disables the creation of new SharePoint 2010 and 2013 classic workflows and removes the 'Return to classic SharePoint' link on modern SharePoint list and library pages.",
+    "addedComponent": [],
+    "label": "Disable Legacy Workflows",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "powershellEquivalent": "Set-SPOTenant -DisableWorkflow2010 $true -DisableWorkflow2013 $true -DisableBackToClassic $true",
+    "recommendedBy": []
+  },
+  {
     "name": "standards.SPDirectSharing",
     "cat": "SharePoint Standards",
     "tag": ["mediumimpact", "CIS"],
@@ -1940,23 +2148,62 @@
     "name": "standards.DisableAddShortcutsToOneDrive",
     "cat": "SharePoint Standards",
     "tag": ["mediumimpact"],
-    "helpText": "When the feature is disabled the option Add shortcut to OneDrive will be removed. Any folders that have already been added will remain on the user's computer.",
-    "disabledFeatures": {
-      "report": true,
-      "warn": true,
-      "remediate": false
-    },
-    "addedComponent": [],
-    "label": "Disable Add Shortcuts To OneDrive",
+    "helpText": "If disabled, the button Add shortcut to OneDrive will be removed and users in the tenant will no longer be able to add new shortcuts to their OneDrive. Existing shortcuts will remain functional",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "Add Shortcuts To OneDrive button state",
+        "name": "standards.DisableAddShortcutsToOneDrive.state",
+        "values": [
+          {
+            "label": "Disabled",
+            "value": "true"
+          },
+          {
+            "label": "Enabled",
+            "value": "false"
+          }
+        ]
+      }
+    ],
+    "label": "Set Add Shortcuts To OneDrive button state",
     "impact": "Medium Impact",
     "impactColour": "warning",
-    "powershellEquivalent": "Graph API or Portal",
+    "powershellEquivalent": "Set-SPOTenant -DisableAddShortcutsToOneDrive $true or $false",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.SPSyncButtonState",
+    "cat": "SharePoint Standards",
+    "tag": ["mediumimpact"],
+    "helpText": "If disabled, users in the tenant will no longer be able to use the Sync button to sync SharePoint content on all sites. However, existing synced content will remain functional on the user's computer.",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "label": "SharePoint Sync Button state",
+        "name": "standards.SPSyncButtonState.state",
+        "values": [
+          {
+            "label": "Disabled",
+            "value": "true"
+          },
+          {
+            "label": "Enabled",
+            "value": "false"
+          }
+        ]
+      }
+    ],
+    "label": "Set SharePoint sync button state",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "powershellEquivalent": "Set-SPOTenant -HideSyncButtonOnTeamSite $true or $false",
     "recommendedBy": []
   },
   {
     "name": "standards.DisableSharePointLegacyAuth",
     "cat": "SharePoint Standards",
-    "tag": ["mediumimpact", "CIS"],
+    "tag": ["mediumimpact", "CIS", "spo_legacy_auth"],
     "helpText": "Disables the ability to authenticate with SharePoint using legacy authentication methods. Any applications that use legacy authentication will need to be updated to use modern authentication.",
     "docsDescription": "Disables the ability for users and applications to access SharePoint via legacy basic authentication. This will likely not have any user impact, but will block systems/applications depending on basic auth or the SharePointOnlineCredentials class.",
     "addedComponent": [],
@@ -2105,6 +2352,180 @@
     "impact": "High Impact",
     "impactColour": "danger",
     "powershellEquivalent": "Update-MgAdminSharepointSetting",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.TeamsGlobalMeetingPolicy",
+    "cat": "Teams Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Defines the CIS recommended global meeting policy for Teams. This includes AllowAnonymousUsersToJoinMeeting, AllowAnonymousUsersToStartMeeting, AutoAdmittedUsers, AllowPSTNUsersToBypassLobby, MeetingChatEnabledType, DesignatedPresenterRoleMode, AllowExternalParticipantGiveRequestControl",
+    "addedComponent": [
+      {
+        "type": "Select",
+        "name": "standards.TeamsGlobalMeetingPolicy.DesignatedPresenterRoleMode",
+        "label": "Default value of the `Who can present?`",
+        "values": [
+          {
+            "label": "EveryoneUserOverride",
+            "value": "EveryoneUserOverride"
+          },
+          {
+            "label": "EveryoneInCompanyUserOverride",
+            "value": "EveryoneInCompanyUserOverride"
+          },
+          {
+            "label": "EveryoneInSameAndFederatedCompanyUserOverride",
+            "value": "EveryoneInSameAndFederatedCompanyUserOverride"
+          },
+          {
+            "label": "OrganizerOnlyUserOverride",
+            "value": "OrganizerOnlyUserOverride"
+          }
+        ]
+      }
+    ],
+    "label": "Define Global Meeting Policy for Teams",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "powershellEquivalent": "Set-CsTeamsMeetingPolicy -AllowAnonymousUsersToJoinMeeting $false -AllowAnonymousUsersToStartMeeting $false -AutoAdmittedUsers EveryoneInCompanyExcludingGuests -AllowPSTNUsersToBypassLobby $false -MeetingChatEnabledType EnabledExceptAnonymous -DesignatedPresenterRoleMode $DesignatedPresenterRoleMode -AllowExternalParticipantGiveRequestControl $false",
+    "recommendedBy": ["CIS 3.0"]
+  },
+  {
+    "name": "standards.TeamsEmailIntegration",
+    "cat": "Teams Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Should users be allowed to send emails directly to a channel email addresses?",
+    "docsDescription": "Teams channel email addresses are an optional feature that allows users to email the Teams channel directly.",
+    "addedComponent": [
+      {
+        "type": "boolean",
+        "name": "standards.TeamsEmailIntegration.AllowEmailIntoChannel",
+        "label": "Allow channel emails"
+      }
+    ],
+    "label": "Disallow emails to be sent to channel email addresses",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "powershellEquivalent": "Set-CsTeamsClientConfiguration -AllowEmailIntoChannel $false",
+    "recommendedBy": ["CIS 3.0"]
+  },
+  {
+    "name": "standards.TeamsExternalFileSharing",
+    "cat": "Teams Standards",
+    "tag": ["lowimpact"],
+    "helpText": "Ensure external file sharing in Teams is enabled for only approved cloud storage services.",
+    "addedComponent": [
+      {
+        "type": "boolean",
+        "name": "standards.TeamsExternalFileSharing.AllowGoogleDrive",
+        "label": "Allow Google Drive"
+      },
+      {
+        "type": "boolean",
+        "name": "standards.TeamsExternalFileSharing.AllowShareFile",
+        "label": "Allow ShareFile"
+      },
+      {
+        "type": "boolean",
+        "name": "standards.TeamsExternalFileSharing.AllowBox",
+        "label": "Allow Box"
+      },
+      {
+        "type": "boolean",
+        "name": "standards.TeamsExternalFileSharing.AllowDropBox",
+        "label": "Allow Dropbox"
+      },
+      {
+        "type": "boolean",
+        "name": "standards.TeamsExternalFileSharing.AllowEgnyte",
+        "label": "Allow Egnyte"
+      }
+    ],
+    "label": "Define approved cloud storage services for external file sharing in Teams",
+    "impact": "Low Impact",
+    "impactColour": "info",
+    "powershellEquivalent": "Set-CsTeamsClientConfiguration -AllowGoogleDrive $false -AllowShareFile $false -AllowBox $false -AllowDropBox $false -AllowEgnyte $false",
+    "recommendedBy": ["CIS 3.0"]
+  },
+  {
+    "name": "standards.TeamsExternalAccessPolicy",
+    "cat": "Teams Standards",
+    "tag": ["mediumimpact"],
+    "helpText": "Sets the properties of the Global external access policy.",
+    "docsDescription": "Sets the properties of the Global external access policy. External access policies determine whether or not your users can: 1) communicate with users who have Session Initiation Protocol (SIP) accounts with a federated organization; 2) communicate with users who are using custom applications built with Azure Communication Services; 3) access Skype for Business Server over the Internet, without having to log on to your internal network; 4) communicate with users who have SIP accounts with a public instant messaging (IM) provider such as Skype; and, 5) communicate with people who are using Teams with an account that's not managed by an organization.",
+    "addedComponent": [
+      {
+        "type": "boolean",
+        "name": "standards.TeamsExternalAccessPolicy.EnableFederationAccess",
+        "label": "Allow communication from trusted organizations"
+      },
+      {
+        "type": "boolean",
+        "name": "standards.TeamsExternalAccessPolicy.EnablePublicCloudAccess",
+        "label": "Allow user to communicate with Skype users"
+      },
+      {
+        "type": "boolean",
+        "name": "standards.TeamsExternalAccessPolicy.EnableTeamsConsumerAccess",
+        "label": "Allow communication with unmanaged Teams accounts"
+      }
+    ],
+    "label": "External Access Settings for Microsoft Teams",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "powershellEquivalent": "Set-CsExternalAccessPolicy",
+    "recommendedBy": []
+  },
+  {
+    "name": "standards.TeamsFederationConfiguration",
+    "cat": "Teams Standards",
+    "tag": ["mediumimpact"],
+    "helpText": "Sets the properties of the Global federation configuration.",
+    "docsDescription": "Sets the properties of the Global federation configuration. Federation configuration settings determine whether or not your users can communicate with users who have SIP accounts with a federated organization.",
+    "addedComponent": [
+      {
+        "type": "boolean",
+        "name": "standards.TeamsFederationConfiguration.AllowTeamsConsumer",
+        "label": "Allow users to communicate with other organizations"
+      },
+      {
+        "type": "boolean",
+        "name": "standards.TeamsFederationConfiguration.AllowPublicUsers",
+        "label": "Allow users to communicate with Skype Users"
+      },
+      {
+        "type": "Select",
+        "name": "standards.TeamsFederationConfiguration.DomainControl",
+        "label": "Communication Mode",
+        "values": [
+          {
+            "label": "Allow all external domains",
+            "value": "AllowAllExternal"
+          },
+          {
+            "label": "Block all external domains",
+            "value": "BlockAllExternal"
+          },
+          {
+            "label": "Allow specific external domains",
+            "value": "AllowSpecificExternal"
+          },
+          {
+            "label": "Block specific external domains",
+            "value": "BlockSpecificExternal"
+          }
+        ]
+      },
+      {
+        "type": "input",
+        "name": "standards.TeamsFederationConfiguration.DomainList",
+        "label": "Domains, Comma separated"
+      }
+    ],
+    "label": "Federation Configuration for Microsoft Teams",
+    "impact": "Medium Impact",
+    "impactColour": "warning",
+    "powershellEquivalent": "Set-CsTenantFederationConfiguration",
     "recommendedBy": []
   }
 ]
