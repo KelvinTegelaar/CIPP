@@ -16,6 +16,8 @@ CIPP requires its Service Account user to be a member of the specific security g
 If these roles are missing or the groups haven't been applied to the CIPP user, CIPP will not be able to access the tenant, resulting in errors such as: `invalid_grant:AADSTS65001: The user or administrator has not consented to use the application.`
 {% endhint %}
 
+***
+
 ## Using the Tenant Onboarding Wizard
 
 Navigate to `Tenant Administration` -> `Administration` -> `Tenant Onboarding` and click `Start Tenant Onboarding` to initiate the wizard.
@@ -25,16 +27,24 @@ Navigate to `Tenant Administration` -> `Administration` -> `Tenant Onboarding` a
 * Choose the GDAP relationship(s) to onboard.
 * Filter and select from the list of active relationships.
 
+***
+
 ### Step 2: Onboarding Options
 
-* Toggle on **Exclude this tenant from top-level standards** if needed.
+* Toggle on **Exclude this tenant from top-level standards** if needed. This means that only the standards you explicitly set for this tenant will be applied.
 * Toggle on **Map missing groups to GDAP Roles**.
 * Toggle on **Add CIPP SAM user to missing groups** if any required GDAP groups are missing.
+
+<figure><img src="../../.gitbook/assets/image (2).png" alt=""><figcaption></figcaption></figure>
+
+***
 
 ### Step 3: Tenant Onboarding
 
 * Click **Next** and wait for the wizard to complete the onboarding steps.
 * Review the onboarding status and logs to ensure successful completion of each step.
+
+<figure><img src="../../.gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
 
 {% hint style="info" %}
 To automate this process even further, enable Partner Webhooks in Application Settings and newly invited tenants will automatically onboard once accepted.
