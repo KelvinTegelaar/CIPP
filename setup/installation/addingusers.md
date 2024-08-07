@@ -1,16 +1,23 @@
----
-description: Adding users
----
-
 # Adding users to CIPP
 
-### Hosted Clients
+## User Roles within CIPP
 
-{% hint style="info" %}
-Hosted clients can use the backend management system at [management.cipp.app](https://management.cipp.app) to add and remove users
+CIPP supports three default roles for typical day-to-day permissions: `readonly`, `editor`, and `admin`. When adding yourself, `admin` is suitable for any tenant management you need to perform  outside of [managing your own partner tenant](owntenant.md).&#x20;
+
+{% hint style="danger" %}
+`superadmin` and `custom` roles are reserved for specific situations and should not be assigned to users by default unless you are certain of the implications. More information on native and custom roles can found on the [Roles](https://docs.cipp.app/setup/installation/roles) page.
 {% endhint %}
 
-### Adding Users
+## Adding Users via the Management App for Hosted Deployments
+
+Hosted clients can use the backend management system to add and remove users.
+
+1. Go to management.cipp.app.
+2. Navigate to the **User Management** tab.
+3. Enter the UPN for the user in the **Email** field. Ensure this matches the user's M365 UPN.
+4. Assign the appropriate roles for the user.
+
+### Adding Users via Azure for Self Hosted Deployments
 
 After deployment you'll need to give each user access. To generate an invite for a user follow these steps:
 
@@ -22,4 +29,3 @@ After deployment you'll need to give each user access. To generate an invite for
 * Enter the UPN for the user. It is important to make sure that this matches the M365 UPN.
 * Add the roles for the user.
 
-Currently CIPP supports three roles, `readonly`, `editor`, and `admin`. Further information on the roles and how to assign these is on the [Roles](https://docs.cipp.app/setup/installation/roles) page.

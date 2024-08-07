@@ -7,12 +7,14 @@
 {% embed url="https://app.guidde.com/share/playbooks/i9fztXsCUWjY3cr8mySvCX" fullWidth="false" %}
 
 {% hint style="info" %}
-**When creating a new service account, it's important to remember the following:**
+**When creating your new CIPP Service Account, it's important to remember the following:**
 
-* Must be a **Global Administrator** while setting up the integration. These permissions may be removed after the integration has been setup.
-* Must be added to the **AdminAgents** group. This group is required for connection to the Microsoft Partner API.
-* Must be added to your GDAP Groups. If you did the migration through CIPP, these would start with `M365 GDAP`.  These groups are **not roles in your own tenant.** These must be the **GDAP assigned** **groups.** For the latest, check the [recommended-roles.md](../gdap/recommended-roles.md "mention")
-* Must have **Microsoft** multi-factor authentication enforced for each logon, either via [Conditional Access](conditionalaccess.md) when available or via [Per User MFA](https://account.activedirectory.windowsazure.com/UserManagement/MultifactorVerification.aspx) when Conditional Access is not available.
+* **Must be a Global Administrator while setting up the integration.** These permissions may be removed after the integration has been setup.
+* **Must be added to the AdminAgents group.** This group is required for connection to the Microsoft Partner API.
+* Must have **Microsoft** multi-factor authentication setup prior to being ready for [executing the SAM Wizard](executing-the-sam-setup-wizard.md) either via [Conditional Access](conditionalaccess.md) when available or via [Per User MFA](https://account.activedirectory.windowsazure.com/UserManagement/MultifactorVerification.aspx) when Conditional Access is not available.
+* **You may not use any other authentication provider other than Microsoft for this account.** Duo or other providers will not work. See the [Supported MFA section](https://learn.microsoft.com/en-us/partner-center/partner-security-requirements-mandating-mfa#supported-mfa-options) of Microsoft's partner tenant security guidelines for further details.
+* **Don't over-assign GDAP roles.** Too many permissions will stop GDAP functionality. Review Microsoft's [GDAP frequently asked questions ](https://learn.microsoft.com/en-us/partner-center/gdap-faq)page for more information.
+* **Must be added to your GDAP Groups.** If you're going through the invite process in CIPP, these will be created for you. If you did the migration previously through CIPP, these would start with `M365 GDAP`.  These groups are **not roles in your own tenant.** These must be the **GDAP assigned** **groups.** For the latest, check the [recommended-roles.md](../gdap/recommended-roles.md "mention")
 {% endhint %}
 
 ## Setup Walkthrough for the CIPP Service Account
@@ -78,9 +80,3 @@ Find the Global Admin role. This role is required for the CIPP-SAM application c
 13. Click on "Create". This creates the account.
 
 ![preview](https://storage.app.guidde.com/v0/b/guidde-production.appspot.com/o/quickguiddeScreenshots%2FIEPB08VSavefFaCa9OSp3Y87aGu1%2Fi9fztXsCUWjY3cr8mySvCX%2FdBdzTWoKBR8LRgmQYnAWFK\_doc.png?alt=media\&token=2fb657ce-f9c5-47bc-8dfc-d6e71a4f11a3\&time=Fri%20Jul%2026%202024%2021:58:02%20GMT-0400%20\(Eastern%20Daylight%20Time\))
-
-## Important Notes
-
-* Do not over-assign GDAP groups. Too many permissions will stop GDAP functionality. For more information check out Microsoft's documentation [here](https://learn.microsoft.com/en-us/partner-center/gdap-faq)
-* You must enforce multi-factor authentication prior to being ready for [executing-the-sam-setup-wizard.md](executing-the-sam-setup-wizard.md "mention").
-* You may not use any other authentication provider than Microsoft for this account. Duo or other providers will not work. For more information on this see [this](https://learn.microsoft.com/en-us/partner-center/partner-security-requirements-mandating-mfa#supported-mfa-options)

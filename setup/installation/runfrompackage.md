@@ -5,11 +5,9 @@ description: Enable Run From Package for lower costs
 # Run From Package Mode
 
 {% hint style="info" %}
-Hosted clients get set to Run From Package mode automatically.
-{% endhint %}
+**Hosted clients get set to Run From Package mode automatically.**
 
-{% hint style="warning" %}
-If you choose to sponsor and use the CyberDrain hosted version, you can skip this step.
+If you choose to sponsor and use the CyberDrain hosted version, you can skip this step.&#x20;
 {% endhint %}
 
 In the CIPP Application
@@ -28,7 +26,3 @@ In the CIPP Application
 12. Click on "Add a worklow". Do not change any other settings.
 13. Click save at the top.
 14. Restart the Function App
-
-{% hint style="warning" %}
-If you choose to sponsor and use the CyberDrain hosted version, you can skip this step.
-{% endhint %}

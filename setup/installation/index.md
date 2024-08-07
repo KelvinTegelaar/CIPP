@@ -4,7 +4,7 @@ description: How to prepare to install an instance of CIPP for your organisation
 
 # Prerequisites
 
-{% hint style="warning" %}
+{% hint style="info" %}
 If you choose to sponsor and use the CyberDrain hosted version, you can skip over these steps, and jump over to our [Sponsor Quick Start](../sponsor-quick-start.md) guide for further direction.
 {% endhint %}
 
