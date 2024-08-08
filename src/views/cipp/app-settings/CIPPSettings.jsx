@@ -8,10 +8,9 @@ import { SettingsTenants } from 'src/views/cipp/app-settings/SettingsTenants.jsx
 import { SettingsBackend } from 'src/views/cipp/app-settings/SettingsBackend.jsx'
 import { SettingsNotifications } from 'src/views/cipp/app-settings/SettingsNotifications.jsx'
 import { SettingsLicenses } from 'src/views/cipp/app-settings/SettingsLicenses.jsx'
-import { SettingsExtensions } from 'src/views/cipp/app-settings/SettingsExtensions.jsx'
 import { SettingsMaintenance } from 'src/views/cipp/app-settings/SettingsMaintenance.jsx'
-import { SettingsExtensionMappings } from 'src/views/cipp/app-settings/SettingsExtensionMappings.jsx'
 import { SettingsPartner } from 'src/views/cipp/app-settings/SettingsPartner.jsx'
+import { SettingsWebhookSubscriptions } from 'src/views/cipp/app-settings/SettingsWebhookSubscriptions.jsx'
 import useQuery from 'src/hooks/useQuery.jsx'
 import { SettingsSuperAdmin } from './SettingsSuperAdmin.jsx'
 import { useLoadClientPrincipalQuery } from 'src/store/api/auth.js'
@@ -50,22 +49,19 @@ export default function CIPPSettings() {
           Notifications
         </CNavItem>
         <CNavItem active={active === 5} onClick={() => setActive(5)} href="#">
-          Partner Webhooks
+          Log Subscriptions
         </CNavItem>
         <CNavItem active={active === 6} onClick={() => setActive(6)} href="#">
-          Licenses
+          Partner Webhooks
         </CNavItem>
         <CNavItem active={active === 7} onClick={() => setActive(7)} href="#">
-          Maintenance
+          Licenses
         </CNavItem>
         <CNavItem active={active === 8} onClick={() => setActive(8)} href="#">
-          Extensions
-        </CNavItem>
-        <CNavItem active={active === 9} onClick={() => setActive(9)} href="#">
-          Extension Mappings
+          Maintenance
         </CNavItem>
         {superAdmin && (
-          <CNavItem active={active === 10} onClick={() => setActive(10)} href="#">
+          <CNavItem active={active === 9} onClick={() => setActive(9)} href="#">
             SuperAdmin Settings
           </CNavItem>
         )}
@@ -92,33 +88,29 @@ export default function CIPPSettings() {
         </CTabPane>
         <CTabPane visible={active === 5} className="mt-3">
           <CippLazy visible={active === 5}></CippLazy>
-          <SettingsPartner />
+          <SettingsWebhookSubscriptions />
         </CTabPane>
         <CTabPane visible={active === 6} className="mt-3">
-          <CippLazy visible={active === 6}>
-            <SettingsLicenses />
-          </CippLazy>
+          <CippLazy visible={active === 6}></CippLazy>
+          <SettingsPartner />
         </CTabPane>
         <CTabPane visible={active === 7} className="mt-3">
           <CippLazy visible={active === 7}>
-            <SettingsMaintenance />
+            <SettingsLicenses />
           </CippLazy>
         </CTabPane>
         <CTabPane visible={active === 8} className="mt-3">
           <CippLazy visible={active === 8}>
-            <SettingsExtensions />
+            <SettingsMaintenance />
           </CippLazy>
         </CTabPane>
-        <CTabPane visible={active === 9} className="mt-3">
-          <CippLazy visible={active === 9}>
-            <SettingsExtensionMappings />
-          </CippLazy>
-        </CTabPane>
-        <CTabPane visible={active === 10} className="mt-3">
-          <CippLazy visible={active === 10}>
-            <SettingsSuperAdmin />
-          </CippLazy>
-        </CTabPane>
+        {superAdmin && (
+          <CTabPane visible={active === 9} className="mt-3">
+            <CippLazy visible={active === 9}>
+              <SettingsSuperAdmin />
+            </CippLazy>
+          </CTabPane>
+        )}
       </CTabContent>
     </CippPage>
   )
