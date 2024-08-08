@@ -10,7 +10,7 @@ description: >-
 
 The Standards page provides the ability for you to apply or reapply specific standards to your entire client base. Standards are collections of configuration items applied to your M365 tenants. The standards in CIPP make sure your tenant is in a specific baseline by reapplying the setting every 3 hours. This prevents admins from making an accidental change that could impact security. Some of the standards are explained below.
 
-{% hint style="warning" %}
+{% hint style="danger" %}
 **Important Points on Standards Configuration:**
 
 * **Companion Policies:** Some standards require companion policies in Microsoft Intune to be effective. Ensure all necessary policies are set up to achieve the desired results.
