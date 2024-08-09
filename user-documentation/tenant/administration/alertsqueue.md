@@ -65,6 +65,21 @@ Audit Log Alerts are processed in near real-time.
 * A user has logged in a using a known VPN, Proxy, Or anonymizer
 * A user has logged in a using a known hosting provider IP
 
+  ### Example Usage
+You might want to be alerted when a particular account logs into one of your tenants. For example Global Admins or break glass accounts. This is relatively simple if you have consistent naming across your tenants i.e. mylovelybreakglassaccount@tentantdomains.com
+
+* Create an Audit log alert
+* In the tenant selector, select All Tenants
+* Select Azure AD as the log source
+* Select "Operation" as the When property
+* Select "Equals To" as the is property
+* In the unput field select "A user logged in"
+* Add an extra set of variables
+* Select "Username" as the When property
+* Select Like as the is property
+* Enter the username to test for across all tenants i.e. mylovelybreakglassaccount@* (Note the * after the @ to match all domains)
+* Choose the action(s) you want and save the alert.
+
 ### Feature Requests / Ideas
 
 Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
