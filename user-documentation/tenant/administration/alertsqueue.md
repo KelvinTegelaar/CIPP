@@ -65,7 +65,7 @@ Audit Log Alerts are processed in near real-time.
 * A user has logged in a using a known VPN, Proxy, Or anonymizer
 * A user has logged in a using a known hosting provider IP
 
-  ### Example Usage
+### Example Usage
 You might want to be alerted when a particular account logs into one of your tenants. For example Global Admins or break glass accounts. This is relatively simple if you have consistent naming across your tenants i.e. mylovelybreakglassaccount@tentantdomains.com
 
 * Create an Audit log alert
