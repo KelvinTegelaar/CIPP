@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { CButton, COffcanvas, COffcanvasHeader, COffcanvasBody } from '@coreui/react'
+import { CButton, COffcanvas, COffcanvasHeader, COffcanvasBody, CSpinner } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 
@@ -23,11 +23,10 @@ export default function CippOffcanvas(props) {
               color="link"
               size="lg"
               onClick={() => {
-                console.log('refresh')
                 props.refreshFunction()
               }}
             >
-              <FontAwesomeIcon icon="sync" />
+              {props.isRefreshing ? <CSpinner size="sm" /> : <FontAwesomeIcon icon="sync" />}
             </CButton>
           )}
           <CButton className="cipp-offcanvas-close" color="link" onClick={props.hideFunction}>
@@ -48,6 +47,7 @@ export const CippOffcanvasPropTypes = {
   id: PropTypes.string,
   hideFunction: PropTypes.func.isRequired,
   refreshFunction: PropTypes.func,
+  isRefreshing: PropTypes.bool,
   addedClass: PropTypes.string,
 }
 

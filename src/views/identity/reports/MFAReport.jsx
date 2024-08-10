@@ -2,6 +2,8 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { cellBooleanFormatter, CellTip } from 'src/components/tables'
 import { CippPageList } from 'src/components/layout'
+import { Row } from 'react-bootstrap'
+import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 
 const columns = [
   {
@@ -9,7 +11,8 @@ const columns = [
     name: 'User Principal Name',
     sortable: true,
     exportSelector: 'UPN',
-    grow: 2,
+    cell: (row) => CellTip(row['UPN']),
+    maxWidth: '400px',
   },
   {
     selector: (row) => row['AccountEnabled'],
@@ -17,6 +20,7 @@ const columns = [
     sortable: true,
     cell: cellBooleanFormatter({ colourless: true }),
     exportSelector: 'AccountEnabled',
+    maxWidth: '200px',
   },
   {
     selector: (row) => row['isLicensed'],
@@ -24,6 +28,7 @@ const columns = [
     sortable: true,
     cell: cellBooleanFormatter({ colourless: true }),
     exportSelector: 'isLicensed',
+    maxWidth: '200px',
   },
   {
     selector: (row) => row['MFARegistration'],
@@ -31,26 +36,44 @@ const columns = [
     sortable: true,
     cell: cellBooleanFormatter(),
     exportSelector: 'MFARegistration',
-  },
-  {
-    selector: (row) => row['CoveredBySD'],
-    name: 'Enforced via Security Defaults',
-    sortable: true,
-    cell: cellBooleanFormatter({ colourless: true }),
-    exportSelector: 'CoveredBySD',
-  },
-  {
-    selector: (row) => row['CoveredByCA'],
-    name: 'Enforced via Conditional Access',
-    sortable: true,
-    cell: (row) => CellTip(row['CoveredByCA']),
-    exportSelector: 'CoveredByCA',
+    maxWidth: '200px',
   },
   {
     selector: (row) => row['PerUser'],
     name: 'Per user MFA Status',
     sortable: true,
+    cell: cellBooleanFormatter(),
     exportSelector: 'PerUser',
+    maxWidth: '200px',
+  },
+  {
+    selector: (row) => row['CoveredBySD'],
+    name: 'Enforced via Security Defaults',
+    sortable: true,
+    cell: cellBooleanFormatter(),
+    exportSelector: 'CoveredBySD',
+    maxWidth: '200px',
+  },
+  {
+    selector: (row) => row['CoveredByCA'],
+    name: 'Enforced via Conditional Access',
+    sortable: true,
+    cell: cellGenericFormatter(),
+    exportSelector: 'CoveredByCA',
+  },
+  {
+    selector: (row) => row['MFAMethods'],
+    name: 'MFA Methods',
+    sortable: true,
+    cell: cellGenericFormatter(),
+    exportSelector: 'MFAMethods',
+  },
+  {
+    selector: (row) => row['CAPolicies'],
+    name: 'CA Policies',
+    sortable: true,
+    cell: cellGenericFormatter(),
+    exportSelector: 'CAPolicies',
   },
 ]
 
@@ -139,11 +162,15 @@ const MFAList = () => {
           {
             filterName: 'Enabled, licensed non-guest users missing MFA',
             filter:
-              'Complex: UPN notlike #EXT#; IsLicensed eq true; accountEnabled eq true; MFARegistration eq false',
+              'Complex: UPN notlike #EXT#; IsLicensed eq true; accountEnabled eq true; MFARegistration ne true',
           },
           {
             filterName: 'No MFA methods registered',
-            filter: 'Complex: MFARegistration eq false',
+            filter: 'Complex: MFARegistration ne true',
+          },
+          {
+            filterName: 'MFA methods registered',
+            filter: 'Complex: MFARegistration eq true',
           },
         ],
         columns: tenant.defaultDomainName === 'AllTenants' ? Altcolumns : columns,
