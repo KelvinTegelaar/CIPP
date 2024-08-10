@@ -136,7 +136,10 @@ const TenantOnboardingWizard = () => {
         </center>
         <hr className="my-4" />
         <div className="mb-2">
-          <TitleButton href="/tenant/administration/gdap-invite" title="Create GDAP Invite" />
+          <TitleButton
+            href="/tenant/administration/gdap-invite-wizard"
+            title="Create GDAP Invite"
+          />
         </div>
         <Field name="selectedRelationships" validate={requiredArray}>
           {(props) => (
