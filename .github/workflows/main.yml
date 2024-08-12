@@ -11,22 +11,16 @@ jobs:
 
     steps:
     - name: Checkout the repository
-      uses: actions/checkout@v4  # Updated to the latest version
-
-    - name: Debug Info - Show Current Directory
-      run: pwd
-
-    - name: Debug Info - List Files
-      run: ls -alh
+      uses: actions/checkout@v4  # Using the latest version
 
     - name: Add upstream remote
-      run: git remote add upstream https://github.com/KelvinTegelaar/CIPP.git
+      run: git remote add upstream https://github.com/KelvinTegelaar/cipp.git
 
     - name: Fetch upstream changes
       run: git fetch upstream
 
     - name: Merge upstream changes
-      run: git merge upstream/main
+      run: git merge upstream/main --allow-unrelated-histories
 
     - name: Push changes to fork
       run: |
