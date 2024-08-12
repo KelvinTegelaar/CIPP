@@ -93,7 +93,7 @@
             "value": "default"
           },
           {
-            "label": "Parial-screen background",
+            "label": "Partial-screen background",
             "value": "verticalSplit"
           }
         ]
@@ -1985,14 +1985,22 @@
     "name": "standards.DeletedUserRentention",
     "cat": "SharePoint Standards",
     "tag": ["lowimpact"],
-    "helpText": "Sets the retention period for deleted users OneDrive to the specified number of years. The default is 1 year.",
-    "docsDescription": "When a OneDrive user gets deleted, the personal SharePoint site is saved for selected time in years and data can be retrieved from it.",
+    "helpText": "Sets the retention period for deleted users OneDrive to the specified period of time. The default is 30 days.",
+    "docsDescription": "When a OneDrive user gets deleted, the personal SharePoint site is saved for selected amount of time that data can be retrieved from it.",
     "addedComponent": [
       {
         "type": "Select",
         "name": "standards.DeletedUserRentention.Days",
-        "label": "Retention in years (Default 1)",
+        "label": "Retention time (Default 30 days)",
         "values": [
+          {
+            "label": "30 days",
+            "value": "30"
+          },
+          {
+            "label": "90 days",
+            "value": "90"
+          },
           {
             "label": "1 year",
             "value": "365"
@@ -2333,7 +2341,7 @@
             "value": "none"
           },
           {
-            "label": "Restirct sharing to specific domains",
+            "label": "Restrict sharing to specific domains",
             "value": "allowList"
           },
           {
