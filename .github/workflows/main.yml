@@ -1,0 +1,31 @@
+name: Sync Fork with Upstream
+
+# Controls when the action will run
+on:
+  schedule:
+    - cron: '0 * * * *'  # Runs every hour on the hour
+  workflow_dispatch:  # Allows you to manually trigger the workflow
+
+# The job that syncs the fork
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout the repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Add upstream remote
+      run: git remote add upstream https://github.com/KelvinTegelaar/cipp.git
+
+    - name: Fetch upstream changes
+      run: git fetch upstream
+
+    - name: Merge upstream changes
+      run: git merge upstream/main
+
+    - name: Push changes to fork
+      run: |
+        git push origin main
