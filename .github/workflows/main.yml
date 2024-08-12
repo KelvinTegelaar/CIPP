@@ -19,6 +19,11 @@ jobs:
     - name: Fetch upstream changes
       run: git fetch upstream
 
+    - name: Set up Git user
+      run: |
+        git config user.name "GitHub Action"
+        git config user.email "action@github.com"
+
     - name: Merge upstream changes
       run: git merge upstream/main --allow-unrelated-histories
 
