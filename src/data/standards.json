@@ -2341,7 +2341,7 @@
             "value": "none"
           },
           {
-            "label": "Restirct sharing to specific domains",
+            "label": "Restrict sharing to specific domains",
             "value": "allowList"
           },
           {
