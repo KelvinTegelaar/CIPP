@@ -189,7 +189,7 @@ Please see the standard "Enable Usernames instead of pseudo anonymized names in 
 
 <summary>Why can't I install CIPP using the "Deploy to Azure" button?</summary>
 
-If you're experiencing issues with installation please report these in `#cipp-issues` on the [CIPP Discord](https://discord.gg/cyberdrain)
+If you're experiencing issues with installation please report these in `#cipp-community-help` on the [CIPP Discord](https://discord.gg/cyberdrain)
 
 </details>
 
