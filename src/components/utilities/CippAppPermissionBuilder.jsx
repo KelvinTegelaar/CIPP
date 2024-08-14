@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useCallback } from 'react'
 import {
   CButton,
   CCallout,
@@ -15,7 +15,12 @@ import { Field, Form, FormSpy } from 'react-final-form'
 import { RFFCFormRadioList, RFFSelectSearch } from 'src/components/forms'
 import { useGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { TenantSelectorMultiple, ModalService } from 'src/components/utilities'
+import {
+  TenantSelectorMultiple,
+  ModalService,
+  CippOffcanvas,
+  CippCodeBlock,
+} from 'src/components/utilities'
 import PropTypes from 'prop-types'
 import { OnChange } from 'react-final-form-listeners'
 import { useListTenantsQuery } from 'src/store/api/tenants'
@@ -24,11 +29,19 @@ import { CippTable } from '../tables'
 import { Row } from 'react-bootstrap'
 import { cellGenericFormatter } from '../tables/CellGenericFormat'
 import Skeleton from 'react-loading-skeleton'
+import CippDropzone from './CippDropzone'
+import { Editor } from '@monaco-editor/react'
+import { useSelector } from 'react-redux'
+import { CippCallout } from '../layout'
 
 const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitting }) => {
   const [selectedApp, setSelectedApp] = useState([])
   const [permissionsImported, setPermissionsImported] = useState(false)
   const [newPermissions, setNewPermissions] = useState({})
+  const [importedManifest, setImportedManifest] = useState(null)
+  const [manifestVisible, setManifestVisible] = useState(false)
+  const currentTheme = useSelector((state) => state.app.currentTheme)
+  const [calloutMessage, setCalloutMessage] = useState(null)
 
   const {
     data: servicePrincipals = [],
@@ -63,6 +76,8 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
       onConfirm: () => {
         setSelectedApp([])
         setPermissionsImported(false)
+        setManifestVisible(false)
+        setCalloutMessage('Permissions reset to default.')
       },
     })
   }
@@ -161,26 +176,30 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
           resourceAppId: sp.appId,
           resourceAccess: [],
         }
-        appRoles.map((role) => {
-          requiredResourceAccess.resourceAccess.push({
-            id: role.id,
-            type: 'Role',
-          })
-        })
-        delegatedPermissions.map((perm) => {
-          // permission not a guid skip
-          if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(perm.id)) {
+        if (appRoles) {
+          appRoles.map((role) => {
             requiredResourceAccess.resourceAccess.push({
-              id: perm.id,
-              type: 'Scope',
+              id: role.id,
+              type: 'Role',
             })
-          } else {
-            additionalRequiredResourceAccess.resourceAccess.push({
-              id: perm.id,
-              type: 'Scope',
-            })
-          }
-        })
+          })
+        }
+        if (delegatedPermissions) {
+          delegatedPermissions.map((perm) => {
+            // permission not a guid skip
+            if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(perm.id)) {
+              requiredResourceAccess.resourceAccess.push({
+                id: perm.id,
+                type: 'Scope',
+              })
+            } else {
+              additionalRequiredResourceAccess.resourceAccess.push({
+                id: perm.id,
+                type: 'Scope',
+              })
+            }
+          })
+        }
         if (requiredResourceAccess.resourceAccess.length > 0) {
           manifest.requiredResourceAccess.push(requiredResourceAccess)
         }
@@ -223,7 +242,69 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
     }
   }
 
-  const importManifest = () => {}
+  const importManifest = () => {
+    var updatedPermissions = { Permissions: {} }
+    var manifest = importedManifest
+    var requiredResourceAccess = manifest.requiredResourceAccess
+    var selectedServicePrincipals = []
+
+    requiredResourceAccess.map((resourceAccess) => {
+      var sp = servicePrincipals?.Results?.find((sp) => sp.appId === resourceAccess.resourceAppId)
+      if (sp) {
+        var appRoles = []
+        var delegatedPermissions = []
+        selectedServicePrincipals.push(sp)
+        resourceAccess.resourceAccess.map((access) => {
+          if (access.type === 'Role') {
+            var role = sp.appRoles.find((role) => role.id === access.id)
+            if (role) {
+              appRoles.push({
+                id: role.id,
+                value: role.value,
+              })
+            }
+          } else if (access.type === 'Scope') {
+            var scope = sp.publishedPermissionScopes.find((scope) => scope.id === access.id)
+            if (scope) {
+              delegatedPermissions.push({
+                id: scope.id,
+                value: scope.value,
+              })
+            }
+          }
+        })
+        updatedPermissions.Permissions[sp.appId] = {
+          applicationPermissions: appRoles,
+          delegatedPermissions: delegatedPermissions,
+        }
+      }
+    })
+    setNewPermissions(updatedPermissions)
+    setSelectedApp(selectedServicePrincipals)
+    setImportedManifest(null)
+    setPermissionsImported(true)
+    setManifestVisible(false)
+    setCalloutMessage('Manifest imported successfully.')
+  }
+
+  const onManifestImport = useCallback((acceptedFiles) => {
+    acceptedFiles.forEach((file) => {
+      const reader = new FileReader()
+      reader.onabort = () => console.log('file reading was aborted')
+      reader.onerror = () => console.log('file reading has failed')
+      reader.onload = () => {
+        console.log(reader.result)
+        try {
+          var manifest = JSON.parse(reader.result)
+          setImportedManifest(manifest)
+          console.log(importedManifest)
+        } catch {
+          console.log('invalid manifest')
+        }
+      }
+      reader.readAsText(file)
+    })
+  }, [])
 
   useEffect(() => {
     try {
@@ -658,7 +739,7 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
                         <CTooltip content="Import Manifest">
                           <CButton
                             onClick={() => {
-                              importManifest()
+                              setManifestVisible(true)
                             }}
                             className={`circular-button`}
                             title={'+'}
@@ -668,7 +749,67 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
                         </CTooltip>
                       </CCol>
                     </CRow>
-
+                    <CippOffcanvas
+                      title="Import Manifest"
+                      id="importManifest"
+                      visible={manifestVisible}
+                      onHide={() => {
+                        setManifestVisible(false)
+                      }}
+                      addedClass="offcanvas-large"
+                      placement="end"
+                    >
+                      <CRow>
+                        <CCol xl={12}>
+                          <p>
+                            Import a JSON application manifest to set permissions. This will
+                            overwrite any existing permissions.
+                          </p>
+                        </CCol>
+                      </CRow>
+                      <CRow>
+                        <CCol xl={12}>
+                          <CippDropzone
+                            onDrop={onManifestImport}
+                            accept={{ 'application/json': ['.json'] }}
+                            dropMessage="Drag a JSON app manifest here, or click to select one."
+                            maxFiles={1}
+                            returnCard={false}
+                          />
+                        </CCol>
+                      </CRow>
+                      {importedManifest && (
+                        <>
+                          <CRow className="mt-4">
+                            <CCol xl={12}>
+                              <CButton onClick={() => importManifest()}>
+                                <FontAwesomeIcon icon="save" className="me-2" /> Import
+                              </CButton>
+                            </CCol>
+                          </CRow>
+                          <CRow className="mt-3">
+                            <CCol xl={12}>
+                              <h4>Preview</h4>
+                              <CippCodeBlock
+                                code={JSON.stringify(importedManifest, null, 2)}
+                                language="json"
+                                showLineNumbers={false}
+                              />
+                            </CCol>
+                          </CRow>
+                        </>
+                      )}
+                    </CippOffcanvas>
+                    {calloutMessage && (
+                      <CRow>
+                        <CCol>
+                          <CippCallout dismissible={true} color="info">
+                            <FontAwesomeIcon icon="info-circle" className="me-2" />
+                            {calloutMessage}
+                          </CippCallout>
+                        </CCol>
+                      </CRow>
+                    )}
                     <CAccordion>
                       <>
                         {selectedApp?.length > 0 &&
