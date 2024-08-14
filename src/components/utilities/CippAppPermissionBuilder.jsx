@@ -821,6 +821,85 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
                         </CCol>
                       </CRow>
                     )}
+
+                    {newPermissions?.MissingPermissions &&
+                      newPermissions?.Type === 'Table' &&
+                      Object.keys(newPermissions?.MissingPermissions).length > 0 && (
+                        <CRow>
+                          <CCol>
+                            <CCallout color="warning">
+                              <CRow>
+                                <CCol xl={10} sm={12}>
+                                  <FontAwesomeIcon icon="exclamation-triangle" className="me-2" />
+                                  <b>New Permissions Available</b>
+                                  {Object.keys(newPermissions?.MissingPermissions).map((perm) => {
+                                    // translate appid to display name
+                                    var sp = servicePrincipals?.Results?.find(
+                                      (sp) => sp.appId === perm,
+                                    )
+                                    return (
+                                      <div key={`missing-${perm}`}>
+                                        {sp?.displayName}:{' '}
+                                        {Object.keys(newPermissions?.MissingPermissions[perm]).map(
+                                          (type) => {
+                                            return (
+                                              <>
+                                                {newPermissions?.MissingPermissions[perm][type]
+                                                  .length > 0 && (
+                                                  <span key={`missing-${perm}-${type}`}>
+                                                    {type == 'applicationPermissions'
+                                                      ? 'Application'
+                                                      : 'Delegated'}{' '}
+                                                    -{' '}
+                                                    {newPermissions?.MissingPermissions[perm][type]
+                                                      .map((p) => {
+                                                        return p.value
+                                                      })
+                                                      .join(', ')}
+                                                  </span>
+                                                )}
+                                              </>
+                                            )
+                                          },
+                                        )}
+                                      </div>
+                                    )
+                                  })}
+                                </CCol>
+                                <CCol xl={2} sm={12} className="my-auto">
+                                  <CTooltip content="Add Missing Permissions">
+                                    <CButton
+                                      onClick={() => {
+                                        var updatedPermissions = JSON.parse(
+                                          JSON.stringify(newPermissions),
+                                        )
+                                        Object.keys(newPermissions?.MissingPermissions).map(
+                                          (perm) => {
+                                            Object.keys(
+                                              newPermissions?.MissingPermissions[perm],
+                                            ).map((type) => {
+                                              newPermissions?.MissingPermissions[perm][type].map(
+                                                (p) => {
+                                                  updatedPermissions.Permissions[perm][type].push(p)
+                                                },
+                                              )
+                                            })
+                                          },
+                                        )
+                                        updatedPermissions.MissingPermissions = {}
+                                        setNewPermissions(updatedPermissions)
+                                      }}
+                                      className={`circular-button float-end`}
+                                    >
+                                      <FontAwesomeIcon icon="wrench" />
+                                    </CButton>
+                                  </CTooltip>
+                                </CCol>
+                              </CRow>
+                            </CCallout>
+                          </CCol>
+                        </CRow>
+                      )}
                     <CAccordion>
                       <>
                         {selectedApp?.length > 0 &&
