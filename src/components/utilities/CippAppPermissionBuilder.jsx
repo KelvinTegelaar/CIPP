@@ -15,17 +15,15 @@ import { Field, Form, FormSpy } from 'react-final-form'
 import { RFFCFormRadioList, RFFSelectSearch } from 'src/components/forms'
 import { useGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { TenantSelectorMultiple, ModalService, CippOffcanvas } from 'src/components/utilities'
+import { TenantSelectorMultiple, ModalService } from 'src/components/utilities'
 import PropTypes from 'prop-types'
 import { OnChange } from 'react-final-form-listeners'
 import { useListTenantsQuery } from 'src/store/api/tenants'
-import { OffcanvasListSection } from 'src/components/utilities/CippListOffcanvas'
 import CippButtonCard from 'src/components/contentcards/CippButtonCard'
 import { CippTable } from '../tables'
 import { Row } from 'react-bootstrap'
 import { cellGenericFormatter } from '../tables/CellGenericFormat'
 import Skeleton from 'react-loading-skeleton'
-import { uniqueId } from 'lodash-es'
 
 const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitting }) => {
   const [selectedApp, setSelectedApp] = useState([])
@@ -91,7 +89,7 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
     var newPermission = []
     if (currentPermission) {
       currentPermission.map((perm) => {
-        if (perm.id.lower() !== permission.value.lower()) {
+        if (perm.id !== permission.value) {
           newPermission.push(perm)
         }
       })
@@ -150,10 +148,16 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
         requiredResourceAccess: [],
       }
 
+      var additionalPermissions = []
+
       selectedApp.map((sp) => {
         var appRoles = newPermissions?.Permissions[sp.appId]?.applicationPermissions
         var delegatedPermissions = newPermissions?.Permissions[sp.appId]?.delegatedPermissions
         var requiredResourceAccess = {
+          resourceAppId: sp.appId,
+          resourceAccess: [],
+        }
+        var additionalRequiredResourceAccess = {
           resourceAppId: sp.appId,
           resourceAccess: [],
         }
@@ -170,10 +174,18 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
               id: perm.id,
               type: 'Scope',
             })
+          } else {
+            additionalRequiredResourceAccess.resourceAccess.push({
+              id: perm.id,
+              type: 'Scope',
+            })
           }
         })
         if (requiredResourceAccess.resourceAccess.length > 0) {
           manifest.requiredResourceAccess.push(requiredResourceAccess)
+        }
+        if (additionalRequiredResourceAccess.resourceAccess.length > 0) {
+          additionalPermissions.push(additionalRequiredResourceAccess)
         }
       })
 
@@ -186,8 +198,28 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
       var url = URL.createObjectURL(blob)
       var a = document.createElement('a')
       a.href = url
-      a.download = `${fileName}.json`
+      a.download = `${fileName}`
       a.click()
+      URL.revokeObjectURL(url)
+
+      if (additionalPermissions.length > 0) {
+        ModalService.confirm({
+          title: 'Additional Permissions',
+          body: 'Some permissions are not supported in the manifest. Would you like to download them?',
+          confirmLabel: 'Download',
+          onConfirm: () => {
+            var additionalBlob = new Blob([JSON.stringify(additionalPermissions, null, 2)], {
+              type: 'application/json',
+            })
+            var additionalUrl = URL.createObjectURL(additionalBlob)
+            var additionalA = document.createElement('a')
+            additionalA.href = additionalUrl
+            additionalA.download = 'AdditionalPermissions.json'
+            additionalA.click()
+            URL.revokeObjectURL(additionalUrl)
+          },
+        })
+      }
     }
   }
 
@@ -213,7 +245,6 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
           },
         },
       })
-      setPermissionsImported(true)
     } else if (spSuccess && initialAppIds.length > 0 && permissionsImported == false) {
       var newApps = []
       initialAppIds?.map((appId) => {
@@ -241,7 +272,6 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
   ])
 
   const ApiPermissionRow = ({ servicePrincipal = null }) => {
-    const [offcanvasVisible, setOffcanvasVisible] = useState(false)
     return (
       <>
         {spSuccess && servicePrincipal !== null && (
@@ -336,6 +366,7 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
                       </CRow>
                       <div className="px-4">
                         <CippTable
+                          reportName={`${servicePrincipal.displayName} Application Permissions`}
                           data={
                             newPermissions?.Permissions[servicePrincipal?.appId]
                               ?.applicationPermissions ?? []
@@ -475,6 +506,7 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
 
                   <div className="px-4 mb-3">
                     <CippTable
+                      reportName={`${servicePrincipal.displayName} Delegated Permissions`}
                       data={
                         newPermissions?.Permissions[servicePrincipal?.appId]
                           ?.delegatedPermissions ?? []
@@ -648,7 +680,10 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
                               <CAccordionHeader>{sp.displayName}</CAccordionHeader>
                               <CAccordionBody>
                                 <CRow>
-                                  <ApiPermissionRow servicePrincipal={sp} />
+                                  <ApiPermissionRow
+                                    servicePrincipal={sp}
+                                    key={`apirow-${spIndex}`}
+                                  />
                                 </CRow>
                               </CAccordionBody>
                             </CAccordionItem>
