@@ -77,6 +77,13 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
 
   const addPermissionRow = (servicePrincipal, permissionType, permission) => {
     var updatedPermissions = JSON.parse(JSON.stringify(newPermissions))
+
+    if (!updatedPermissions?.Permissions[servicePrincipal]) {
+      updatedPermissions.Permissions[servicePrincipal] = {
+        applicationPermissions: [],
+        delegatedPermissions: [],
+      }
+    }
     var currentPermission = updatedPermissions?.Permissions[servicePrincipal][permissionType]
     var newPermission = []
     if (currentPermission) {
@@ -126,6 +133,15 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
         (sp) => sp?.appId === '00000003-0000-0000-c000-000000000000',
       )
       setSelectedApp([microsoftGraph])
+      setNewPermissions({
+        Permissions: {
+          '00000003-0000-0000-c000-000000000000': {
+            applicationPermissions: [],
+            delegatedPermissions: [],
+          },
+        },
+      })
+      setPermissionsImported(true)
     } else if (spSuccess && initialAppIds.length > 0 && permissionsImported == false) {
       var newApps = []
       initialAppIds?.map((appId) => {
