@@ -51,6 +51,9 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
       body: `Are you sure you want to remove ${servicePrincipal.displayName}?`,
       onConfirm: () => {
         setSelectedApp(newServicePrincipals)
+        var updatedPermissions = JSON.parse(JSON.stringify(newPermissions))
+        delete updatedPermissions.Permissions[appId]
+        setNewPermissions(updatedPermissions)
       },
     })
   }
@@ -77,6 +80,13 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
 
   const addPermissionRow = (servicePrincipal, permissionType, permission) => {
     var updatedPermissions = JSON.parse(JSON.stringify(newPermissions))
+
+    if (!updatedPermissions?.Permissions[servicePrincipal]) {
+      updatedPermissions.Permissions[servicePrincipal] = {
+        applicationPermissions: [],
+        delegatedPermissions: [],
+      }
+    }
     var currentPermission = updatedPermissions?.Permissions[servicePrincipal][permissionType]
     var newPermission = []
     if (currentPermission) {
@@ -114,6 +124,75 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
     })
   }
 
+  const generateManifest = (appDisplayName = 'CIPP-SAM', prompt = false) => {
+    if (prompt) {
+      // modal input form for appDisplayName
+      ModalService.prompt({
+        title: 'Generate Manifest',
+        body: 'Please enter the display name for the application.',
+        onConfirm: (value) => {
+          generateManifest({ appDisplayName: value })
+        },
+      })
+    } else {
+      var manifest = {
+        isFallbackPublicClient: true,
+        signInAudience: 'AzureADMultipleOrgs',
+        displayName: appDisplayName,
+        web: {
+          redirectUris: [
+            'https://login.microsoftonline.com/common/oauth2/nativeclient',
+            'https://localhost',
+            'http://localhost',
+            'http://localhost:8400',
+          ],
+        },
+        requiredResourceAccess: [],
+      }
+
+      selectedApp.map((sp) => {
+        var appRoles = newPermissions?.Permissions[sp.appId]?.applicationPermissions
+        var delegatedPermissions = newPermissions?.Permissions[sp.appId]?.delegatedPermissions
+        var requiredResourceAccess = {
+          resourceAppId: sp.appId,
+          resourceAccess: [],
+        }
+        appRoles.map((role) => {
+          requiredResourceAccess.resourceAccess.push({
+            id: role.id,
+            type: 'Role',
+          })
+        })
+        delegatedPermissions.map((perm) => {
+          // permission not a guid skip
+          if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(perm.id)) {
+            requiredResourceAccess.resourceAccess.push({
+              id: perm.id,
+              type: 'Scope',
+            })
+          }
+        })
+        if (requiredResourceAccess.resourceAccess.length > 0) {
+          manifest.requiredResourceAccess.push(requiredResourceAccess)
+        }
+      })
+
+      var fileName = `${appDisplayName.replace(' ', '-')}.json`
+      if (appDisplayName === 'CIPP-SAM') {
+        fileName = 'SAMManifest.json'
+      }
+
+      var blob = new Blob([JSON.stringify(manifest, null, 2)], { type: 'application/json' })
+      var url = URL.createObjectURL(blob)
+      var a = document.createElement('a')
+      a.href = url
+      a.download = `${fileName}.json`
+      a.click()
+    }
+  }
+
+  const importManifest = () => {}
+
   useEffect(() => {
     try {
       var initialAppIds = Object.keys(currentPermissions?.Permissions)
@@ -126,6 +205,15 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
         (sp) => sp?.appId === '00000003-0000-0000-c000-000000000000',
       )
       setSelectedApp([microsoftGraph])
+      setNewPermissions({
+        Permissions: {
+          '00000003-0000-0000-c000-000000000000': {
+            applicationPermissions: [],
+            delegatedPermissions: [],
+          },
+        },
+      })
+      setPermissionsImported(true)
     } else if (spSuccess && initialAppIds.length > 0 && permissionsImported == false) {
       var newApps = []
       initialAppIds?.map((appId) => {
@@ -521,6 +609,29 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
                             title={'+'}
                           >
                             <FontAwesomeIcon icon="rotate-left" />
+                          </CButton>
+                        </CTooltip>
+                        <CTooltip content="Download Manifest">
+                          <CButton
+                            onClick={() => {
+                              generateManifest()
+                            }}
+                            className={`circular-button`}
+                            title={'+'}
+                          >
+                            <FontAwesomeIcon icon="download" />
+                          </CButton>
+                        </CTooltip>
+
+                        <CTooltip content="Import Manifest">
+                          <CButton
+                            onClick={() => {
+                              importManifest()
+                            }}
+                            className={`circular-button`}
+                            title={'+'}
+                          >
+                            <FontAwesomeIcon icon="upload" />
                           </CButton>
                         </CTooltip>
                       </CCol>
