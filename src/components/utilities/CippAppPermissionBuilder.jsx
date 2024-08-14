@@ -13,7 +13,7 @@ import {
 } from '@coreui/react'
 import { Field, Form, FormSpy } from 'react-final-form'
 import { RFFCFormRadioList, RFFSelectSearch } from 'src/components/forms'
-import { useGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
+import { useGenericGetRequestQuery, useLazyGenericGetRequestQuery } from 'src/store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   TenantSelectorMultiple,
@@ -53,6 +53,8 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
     path: 'api/ExecServicePrincipals',
   })
 
+  const [createServicePrincipal, createResult] = useLazyGenericGetRequestQuery()
+
   const removeServicePrincipal = (appId) => {
     var servicePrincipal = selectedApp.find((sp) => sp?.appId === appId)
     var newServicePrincipals = selectedApp.filter((sp) => sp?.appId !== appId)
@@ -89,6 +91,15 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
       }
       onSubmit(postBody)
     }
+  }
+
+  const onCreateServicePrincipal = (appId) => {
+    createServicePrincipal({
+      path: 'api/ExecServicePrincipals?Action=Create&AppId=' + appId,
+    }).then(() => {
+      refetchSpList()
+      setCalloutMessage(createResult?.data?.Results)
+    })
   }
 
   const addPermissionRow = (servicePrincipal, permissionType, permission) => {
@@ -683,7 +694,7 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
                             refreshFunction={() => refetchSpList()}
                             allowCreate={true}
                             onCreateOption={(newSp) => {
-                              console.log(newSp)
+                              onCreateServicePrincipal(newSp)
                             }}
                             placeholder="(Advanced) Select a Service Principal"
                           />
