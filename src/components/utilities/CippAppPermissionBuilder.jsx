@@ -124,6 +124,75 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
     })
   }
 
+  const generateManifest = (appDisplayName = 'CIPP-SAM', prompt = false) => {
+    if (prompt) {
+      // modal input form for appDisplayName
+      ModalService.prompt({
+        title: 'Generate Manifest',
+        body: 'Please enter the display name for the application.',
+        onConfirm: (value) => {
+          generateManifest({ appDisplayName: value })
+        },
+      })
+    } else {
+      var manifest = {
+        isFallbackPublicClient: true,
+        signInAudience: 'AzureADMultipleOrgs',
+        displayName: appDisplayName,
+        web: {
+          redirectUris: [
+            'https://login.microsoftonline.com/common/oauth2/nativeclient',
+            'https://localhost',
+            'http://localhost',
+            'http://localhost:8400',
+          ],
+        },
+        requiredResourceAccess: [],
+      }
+
+      selectedApp.map((sp) => {
+        var appRoles = newPermissions?.Permissions[sp.appId]?.applicationPermissions
+        var delegatedPermissions = newPermissions?.Permissions[sp.appId]?.delegatedPermissions
+        var requiredResourceAccess = {
+          resourceAppId: sp.appId,
+          resourceAccess: [],
+        }
+        appRoles.map((role) => {
+          requiredResourceAccess.resourceAccess.push({
+            id: role.id,
+            type: 'Role',
+          })
+        })
+        delegatedPermissions.map((perm) => {
+          // permission not a guid skip
+          if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(perm.id)) {
+            requiredResourceAccess.resourceAccess.push({
+              id: perm.id,
+              type: 'Scope',
+            })
+          }
+        })
+        if (requiredResourceAccess.resourceAccess.length > 0) {
+          manifest.requiredResourceAccess.push(requiredResourceAccess)
+        }
+      })
+
+      var fileName = `${appDisplayName.replace(' ', '-')}.json`
+      if (appDisplayName === 'CIPP-SAM') {
+        fileName = 'SAMManifest.json'
+      }
+
+      var blob = new Blob([JSON.stringify(manifest, null, 2)], { type: 'application/json' })
+      var url = URL.createObjectURL(blob)
+      var a = document.createElement('a')
+      a.href = url
+      a.download = `${fileName}.json`
+      a.click()
+    }
+  }
+
+  const importManifest = () => {}
+
   useEffect(() => {
     try {
       var initialAppIds = Object.keys(currentPermissions?.Permissions)
@@ -540,6 +609,29 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
                             title={'+'}
                           >
                             <FontAwesomeIcon icon="rotate-left" />
+                          </CButton>
+                        </CTooltip>
+                        <CTooltip content="Download Manifest">
+                          <CButton
+                            onClick={() => {
+                              generateManifest()
+                            }}
+                            className={`circular-button`}
+                            title={'+'}
+                          >
+                            <FontAwesomeIcon icon="download" />
+                          </CButton>
+                        </CTooltip>
+
+                        <CTooltip content="Import Manifest">
+                          <CButton
+                            onClick={() => {
+                              importManifest()
+                            }}
+                            className={`circular-button`}
+                            title={'+'}
+                          >
+                            <FontAwesomeIcon icon="upload" />
                           </CButton>
                         </CTooltip>
                       </CCol>
