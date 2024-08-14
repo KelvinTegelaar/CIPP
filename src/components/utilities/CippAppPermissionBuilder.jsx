@@ -51,6 +51,9 @@ const CippAppPermissionBuilder = ({ onSubmit, currentPermissions = {}, isSubmitt
       body: `Are you sure you want to remove ${servicePrincipal.displayName}?`,
       onConfirm: () => {
         setSelectedApp(newServicePrincipals)
+        var updatedPermissions = JSON.parse(JSON.stringify(newPermissions))
+        delete updatedPermissions.Permissions[appId]
+        setNewPermissions(updatedPermissions)
       },
     })
   }
