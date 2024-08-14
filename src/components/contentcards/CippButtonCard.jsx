@@ -8,7 +8,7 @@ export default function CippButtonCard({
   titleType = 'normal',
   CardButton,
   children,
-  isFetching,
+  isFetching = false,
   className = 'h-100',
 }) {
   return (
@@ -32,6 +32,6 @@ CippButtonCard.propTypes = {
   titleType: PropTypes.string,
   CardButton: PropTypes.element.isRequired,
   children: PropTypes.element.isRequired,
-  isFetching: PropTypes.bool.isRequired,
+  isFetching: PropTypes.bool,
   className: PropTypes.string,
 }
