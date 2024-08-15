@@ -4,12 +4,12 @@ description: How to configure CIPP after you've completed installation.
 
 # Post-Install Configuration
 
-{% hint style="info" %}
-**Instructions below are for self-hosted clients only.**
+{% hint style="warning" %}
+Hosted clients
 
 If you choose to sponsor and use the CyberDrain hosted version, you can login to the backend management system at [**management.cipp.app**](https://management.cipp.app) to add and remove users.
 
-Using the Management Portal you can click on 'Invite User' which will return the invite link to your directly. You must share this link with the user.
+Using the Management Portal you can click on 'Invite User' which will return the invite link to your directly. You must share this link with the user. This link is not e-mailed or sent to the user in any way.
 {% endhint %}
 
 At this point you should have completed all the steps in the installation guide and your deployment has succeeded. Any Red cross means your deployment has failed and you will need to delete the resource group and try deployment again.
