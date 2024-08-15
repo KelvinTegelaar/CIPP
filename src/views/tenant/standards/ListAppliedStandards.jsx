@@ -76,6 +76,7 @@ const DeleteAction = () => {
     </>
   )
 }
+
 const ApplyNewStandard = () => {
   const [templateStandard, setTemplateStandard] = useState()
   const [loadedTemplate, setLoadedTemplate] = useState(false)
@@ -268,6 +269,7 @@ const ApplyNewStandard = () => {
     })
 
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
+  const tenantDisplayName = useSelector((state) => state.app.currentTenant.displayName)
   //console.log('tenantDomain', tenantDomain)
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
@@ -294,20 +296,27 @@ const ApplyNewStandard = () => {
   })
 
   const handleSubmit = async (values) => {
-    Object.keys(values.standards).filter(function (x) {
-      if (values.standards[x] === false) {
-        delete values.standards[x]
-      }
-      return null
-    })
-
-    //filter on only objects that are 'true'
-    genericPostRequest({
-      path: '/api/AddStandardsDeploy',
-      values: { ...values.standards, tenant: tenantDomain },
-    }).then(() => {
-      refetchStandards()
-      refetchConsolidated()
+    ModalService.confirm({
+      title: 'Save Standards',
+      body: (
+        <div>
+          <p>
+            Are you sure you want to save these standards to {tenantDisplayName}? This will apply
+            all Remediate options on the next run.
+          </p>
+        </div>
+      ),
+      confirmLabel: 'Save',
+      cancelLabel: 'Cancel',
+      onConfirm: () => {
+        genericPostRequest({
+          path: '/api/AddStandardsDeploy',
+          values: { ...values.standards, tenant: tenantDomain },
+        }).then(() => {
+          refetchStandards()
+          refetchConsolidated()
+        })
+      },
     })
   }
   const [intuneGetRequest, intuneTemplates] = useLazyGenericGetRequestQuery()
