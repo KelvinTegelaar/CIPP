@@ -199,7 +199,8 @@ const BusinessVoice = () => {
         filterlist: [
           {
             filterName: 'Unassigned User Numbers',
-            filter: 'Complex: AssignmentStatus eq Unassigned; AcquiredCapabilities like UserAssignment',
+            filter:
+              'Complex: AssignmentStatus eq Unassigned; AcquiredCapabilities like UserAssignment',
           },
         ],
         columns,
