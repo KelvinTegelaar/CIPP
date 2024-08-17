@@ -8,7 +8,7 @@ If you want to manage your own tenant, or if you are not a Microsoft Partner but
 
 ## Limitations Single Tenant Mode
 
-When using Single Tenant Mode CIPP runs in a somewhat more limited state - You are not able to add any other tenant to CIPP and it only works for the configured tenant.&#x20;
+When using Single Tenant Mode CIPP runs in a somewhat more limited state - You are not able to add any other tenant to CIPP and it only works for the configured tenant. GDAP permissions will not apply and you must directly assigned roles such as Global Admin to the service account.
 
 ## Limitations Partner Tenant Enabled
 
@@ -17,6 +17,8 @@ When using Partner Tenant Enabled mode you can see your partner tenant inside of
 {% hint style="danger" %}
 It is highly recommended to use a custom role if multiple users have access to your CIPP instances. This can help ensure not all users have access to manage your partner tenant. If you do not, its important to note that all your users will have access to edit/configure your partner tenant.
 {% endhint %}
+
+GDAP permissions will not apply and you must directly assigned roles such as Global Admin to the service account.
 
 To set the flag follow these steps:
 
