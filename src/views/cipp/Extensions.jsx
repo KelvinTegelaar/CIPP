@@ -22,6 +22,7 @@ import CippButtonCard from 'src/components/contentcards/CippButtonCard.jsx'
 import { RFFCFormInput, RFFCFormSwitch } from 'src/components/forms/RFFComponents.jsx'
 import { Form } from 'react-final-form'
 import ExtensionMappings from 'src/views/cipp/ExtensionMappings.jsx'
+import ReactHtmlParser from 'react-html-parser'
 
 export default function CIPPExtensions() {
   const [listBackend, listBackendResult] = useLazyGenericGetRequestQuery()
@@ -119,6 +120,12 @@ export default function CIPPExtensions() {
                     <CippCallout color="warning">
                       This extension requires activation in the management portal for hosted
                       clients.
+                    </CippCallout>
+                  )}
+                  {integration?.callToAction && (
+                    <CippCallout color="info">
+                      <FontAwesomeIcon icon="info-circle" className="me-2" />
+                      {ReactHtmlParser(integration.callToAction)}
                     </CippCallout>
                   )}
                   <CippButtonCard
