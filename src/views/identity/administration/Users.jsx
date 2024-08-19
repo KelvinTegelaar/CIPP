@@ -99,10 +99,10 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
           },
           {
             label: 'Rerequire MFA registration',
-            link: entraLink,
             color: 'info',
-            target: '_blank',
-            external: true,
+            modal: true,
+            modalUrl: `/api/ExecResetMFA?TenantFilter=${tenant.defaultDomainName}&ID=${row.userPrincipalName}`,
+            modalMessage: 'Are you sure you want to reset MFA for this user?',
           },
           {
             label: 'Send MFA Push',
@@ -527,8 +527,8 @@ const Users = (row) => {
             {
               label: 'Rerequire MFA registration',
               modal: true,
-              modalUrl: `/api/ExecResetMFA?TenantFilter=!Tenant&ID=!id`,
-              modalMessage: 'Are you sure you want to enable MFA for these users?',
+              modalUrl: `/api/ExecResetMFA?TenantFilter=!Tenant&ID=!userPrincipalName`,
+              modalMessage: 'Are you sure you want to reset MFA for these users?',
             },
             {
               label: 'Set Per-User MFA',
