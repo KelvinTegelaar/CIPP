@@ -1,30 +1,29 @@
-import Head from 'next/head'
-import { Toaster } from 'react-hot-toast'
-import { Provider as ReduxProvider } from 'react-redux'
-import { CacheProvider } from '@emotion/react'
-import { ThemeProvider } from '@mui/material/styles'
-import CssBaseline from '@mui/material/CssBaseline'
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
-import { SettingsConsumer, SettingsProvider } from '../contexts/settings-context'
-import { RTL } from '../components/rtl'
-import { store } from '../store'
-import { createTheme } from '../theme'
-import { createEmotionCache } from '../utils/create-emotion-cache'
-import '../libs/nprogress'
+import Head from "next/head";
+import { Toaster } from "react-hot-toast";
+import { Provider as ReduxProvider } from "react-redux";
+import { CacheProvider } from "@emotion/react";
+import { ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { SettingsConsumer, SettingsProvider } from "../contexts/settings-context";
+import { RTL } from "../components/rtl";
+import { store } from "../store";
+import { createTheme } from "../theme";
+import { createEmotionCache } from "../utils/create-emotion-cache";
+import "../libs/nprogress";
 // Remove if locales are not used
-import '../i18n'
-import Toasts from '../components/toaster'
-import { PrivateRoute } from '../components/PrivateRoute'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import Toasts from "../components/toaster";
+import { PrivateRoute } from "../components/PrivateRoute";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-const queryClient = new QueryClient()
-const clientSideEmotionCache = createEmotionCache()
+const queryClient = new QueryClient();
+const clientSideEmotionCache = createEmotionCache();
 
 const App = (props) => {
-  const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
+  const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
 
-  const getLayout = Component.getLayout ?? ((page) => page)
+  const getLayout = Component.getLayout ?? ((page) => page);
 
   return (
     <CacheProvider value={emotionCache}>
@@ -44,11 +43,11 @@ const App = (props) => {
                     // return null;
                   }
                   const theme = createTheme({
-                    colorPreset: 'green',
+                    colorPreset: "green",
                     direction: settings.direction,
                     paletteMode: settings.paletteMode,
-                    contrast: 'high',
-                  })
+                    contrast: "high",
+                  });
 
                   return (
                     <ThemeProvider theme={theme}>
@@ -58,7 +57,7 @@ const App = (props) => {
                         <Toaster position="top-center" />
                       </RTL>
                     </ThemeProvider>
-                  )
+                  );
                 }}
               </SettingsConsumer>
             </SettingsProvider>
@@ -66,7 +65,7 @@ const App = (props) => {
         </QueryClientProvider>
       </ReduxProvider>
     </CacheProvider>
-  )
-}
+  );
+};
 
-export default App
+export default App;
