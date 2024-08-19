@@ -31,7 +31,7 @@ export const blue = withAlphas({
   contrastText: "#FFFFFF",
 });
 
-export const green = withAlphas({
+export const orange = withAlphas({
   light: "#F77F00",
   main: "#F77F00",
   dark: "#F77F00",

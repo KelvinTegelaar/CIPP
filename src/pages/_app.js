@@ -43,7 +43,7 @@ const App = (props) => {
                     // return null;
                   }
                   const theme = createTheme({
-                    colorPreset: "green",
+                    colorPreset: "orange",
                     direction: settings.direction,
                     paletteMode: settings.paletteMode,
                     contrast: "high",
