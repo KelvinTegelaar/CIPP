@@ -28,13 +28,18 @@ const SettingsAppPermissions = () => {
     genericPostRequest({
       path: 'api/ExecSAMAppPermissions?Action=Update',
       values: values,
+    }).then(() => {
+      refetchSam()
     })
   }
 
-  const { data: samAppPermissions = [], isFetching: samAppPermissionsFetching } =
-    useGenericGetRequestQuery({
-      path: 'api/ExecSAMAppPermissions',
-    })
+  const {
+    data: samAppPermissions = [],
+    isFetching: samAppPermissionsFetching,
+    refetch: refetchSam,
+  } = useGenericGetRequestQuery({
+    path: 'api/ExecSAMAppPermissions',
+  })
 
   return (
     <CippButtonCard title="CIPP-SAM API Permissions" titleType="big">
