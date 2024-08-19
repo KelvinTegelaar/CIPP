@@ -4,10 +4,10 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
-    branches:
-      - main
+## Removed for Auto updates per https://docs.cipp.app/setup/installation/configuring-automatic-updates ##   pull_request:
+## Removed for Auto updates per https://docs.cipp.app/setup/installation/configuring-automatic-updates ##     types: [opened, synchronize, reopened, closed]
+## Removed for Auto updates per https://docs.cipp.app/setup/installation/configuring-automatic-updates ##     branches:
+## Removed for Auto updates per https://docs.cipp.app/setup/installation/configuring-automatic-updates ##       - main
 
 jobs:
   build_and_deploy_job:
