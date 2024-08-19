@@ -5,9 +5,9 @@ import Bars3Icon from "@heroicons/react/24/outline/Bars3Icon";
 import MoonIcon from "@heroicons/react/24/outline/MoonIcon";
 import SunIcon from "@heroicons/react/24/outline/SunIcon";
 import { Box, Divider, IconButton, Stack, SvgIcon, useMediaQuery } from "@mui/material";
-import { Logo } from "../../components/logo";
-import { useSettings } from "../../hooks/use-settings";
-import { paths } from "../../paths";
+import { Logo } from "../components/logo";
+import { useSettings } from "../hooks/use-settings";
+import { paths } from "../paths";
 import { AccountPopover } from "./account-popover";
 const TOP_NAV_HEIGHT = 64;
 

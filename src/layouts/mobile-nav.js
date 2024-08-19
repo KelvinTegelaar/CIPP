@@ -1,22 +1,26 @@
-import NextLink from 'next/link';
-import { usePathname } from 'next/navigation';
-import PropTypes from 'prop-types';
-import { Box, Drawer, Stack } from '@mui/material';
-import { Logo } from '../../components/logo';
-import { Scrollbar } from '../../components/scrollbar';
-import { paths } from '../../paths';
-import { items } from './config';
-import { MobileNavItem } from './mobile-nav-item';
+import NextLink from "next/link";
+import { usePathname } from "next/navigation";
+import PropTypes from "prop-types";
+import { Box, Drawer, Stack } from "@mui/material";
+import { Logo } from "../components/logo";
+import { Scrollbar } from "../components/scrollbar";
+import { paths } from "../paths";
+import { items } from "./config";
+import { MobileNavItem } from "./mobile-nav-item";
 
 const MOBILE_NAV_WIDTH = 280;
 
-const renderItems = ({ depth = 0, items, pathname }) => items.reduce((acc,
-  item) => reduceChildRoutes({
-  acc,
-  depth,
-  item,
-  pathname
-}), []);
+const renderItems = ({ depth = 0, items, pathname }) =>
+  items.reduce(
+    (acc, item) =>
+      reduceChildRoutes({
+        acc,
+        depth,
+        item,
+        pathname,
+      }),
+    []
+  );
 
 const reduceChildRoutes = ({ acc, depth, item, pathname }) => {
   const checkPath = !!(item.path && pathname);
@@ -39,15 +43,15 @@ const reduceChildRoutes = ({ acc, depth, item, pathname }) => {
           component="ul"
           spacing={0.5}
           sx={{
-            listStyle: 'none',
+            listStyle: "none",
             m: 0,
-            p: 0
+            p: 0,
           }}
         >
           {renderItems({
             depth: depth + 1,
             items: item.items,
-            pathname
+            pathname,
           })}
         </Stack>
       </MobileNavItem>
@@ -80,32 +84,32 @@ export const MobileNav = (props) => {
       open={open}
       PaperProps={{
         sx: {
-          width: MOBILE_NAV_WIDTH
-        }
+          width: MOBILE_NAV_WIDTH,
+        },
       }}
       variant="temporary"
     >
       <Scrollbar
         sx={{
-          height: '100%',
-          '& .simplebar-content': {
-            height: '100%'
-          }
+          height: "100%",
+          "& .simplebar-content": {
+            height: "100%",
+          },
         }}
       >
         <Box
           sx={{
             pt: 2,
-            px: 2
+            px: 2,
           }}
         >
           <Box
             component={NextLink}
             href={paths.index}
             sx={{
-              display: 'inline-flex',
+              display: "inline-flex",
               height: 24,
-              width: 24
+              width: 24,
             }}
           >
             <Logo />
@@ -114,25 +118,25 @@ export const MobileNav = (props) => {
         <Box
           component="nav"
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            height: '100%',
-            p: 2
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+            p: 2,
           }}
         >
           <Box
             component="ul"
             sx={{
               flexGrow: 1,
-              listStyle: 'none',
+              listStyle: "none",
               m: 0,
-              p: 0
+              p: 0,
             }}
           >
             {renderItems({
               depth: 0,
               items,
-              pathname
+              pathname,
             })}
           </Box>
         </Box>
@@ -143,5 +147,5 @@ export const MobileNav = (props) => {
 
 MobileNav.propTypes = {
   onClose: PropTypes.func,
-  open: PropTypes.bool
+  open: PropTypes.bool,
 };

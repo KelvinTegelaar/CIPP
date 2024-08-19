@@ -11,23 +11,21 @@ import {
   DialogContent,
   DialogTitle,
   Divider,
-  Icon,
   IconButton,
   Stack,
   SvgIcon,
   Switch,
   TextField,
   Tooltip,
-  Typography,
 } from "@mui/material";
 import { useDialog } from "../hooks/use-dialog";
-import { Layout as DashboardLayout } from "../layouts/dashboard";
+import { Layout as DashboardLayout } from "../layouts/index.js";
 import { CippDataTable } from "../components/CippTable/CippDataTable";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { CopyAll, Delete, Update } from "@mui/icons-material";
 import { CippAutoComplete } from "../components/CippComponents/CippAutocomplete";
 import { ApiPostCall } from "../api/ApiCall";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
 
 const Page = () => {

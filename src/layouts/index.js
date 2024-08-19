@@ -3,7 +3,7 @@ import { usePathname } from "next/navigation";
 import PropTypes from "prop-types";
 import { useMediaQuery } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { useSettings } from "../../hooks/use-settings";
+import { useSettings } from "../hooks/use-settings";
 import { Footer } from "./footer";
 import { MobileNav } from "./mobile-nav";
 import { SideNav } from "./side-nav";

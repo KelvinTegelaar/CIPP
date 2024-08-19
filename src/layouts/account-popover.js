@@ -3,31 +3,26 @@ import PropTypes from "prop-types";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import ArrowRightOnRectangleIcon from "@heroicons/react/24/outline/ArrowRightOnRectangleIcon";
-import BuildingOfficeIcon from "@heroicons/react/24/outline/BuildingOfficeIcon";
 import ChevronDownIcon from "@heroicons/react/24/outline/ChevronDownIcon";
 import UserIcon from "@heroicons/react/24/outline/UserIcon";
 import {
-  Avatar,
   Box,
   FormControlLabel,
   List,
   ListItem,
-  ListItemAvatar,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  ListSubheader,
   Popover,
-  Select,
   Stack,
   SvgIcon,
   Switch,
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import { usePopover } from "../../hooks/use-popover";
-import { paths } from "../../paths";
-import { ApiGetCall } from "../../api/ApiCall";
+import { usePopover } from "../hooks/use-popover";
+import { paths } from "../paths";
+import { ApiGetCall } from "../api/ApiCall";
 
 export const AccountPopover = (props) => {
   const {

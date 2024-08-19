@@ -1,7 +1,7 @@
 import { SvgIcon } from "@mui/material";
-import { paths } from "../../paths";
-import GraphIcon from "../../icons/iconly/bulk/graph";
-import SettingsIcon from "../../icons/iconly/bulk/settings";
+import { paths } from "../paths";
+import GraphIcon from "../icons/iconly/bulk/graph";
+import SettingsIcon from "../icons/iconly/bulk/settings";
 import { UserIcon } from "@heroicons/react/24/outline";
 import { Domain } from "@mui/icons-material";
 

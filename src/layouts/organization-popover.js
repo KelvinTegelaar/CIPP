@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { common } from "@mui/material/colors";
 import { alpha } from "@mui/material/styles";
-import { usePopover } from "../../hooks/use-popover";
+import { usePopover } from "../hooks/use-popover";
 
 export const OrganizationPopover = (props) => {
   const { onOrganizationSwitch, organizationId, organizations = [] } = props;

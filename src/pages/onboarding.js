@@ -1,16 +1,9 @@
 import Head from "next/head";
 import { Box, Container, Stack, Typography } from "@mui/material";
-import { Layout as DashboardLayout } from "../layouts/dashboard";
+import { Layout as DashboardLayout } from "../layouts/index.js";
 import { CippWizard } from "../components/CippWizard/CippWizard";
-import {
-  BuildingOfficeIcon,
-  CloudIcon,
-  CpuChipIcon,
-  NewspaperIcon,
-} from "@heroicons/react/24/outline";
-import { Api, BackupTable, Key } from "@mui/icons-material";
-import { CippPSACredentialsStep } from "../components/CippWizard/CippPSACredentialsStep";
-import { CippPSASyncOptions } from "../components/CippWizard/CippPSASyncOptions";
+import { NewspaperIcon } from "@heroicons/react/24/outline";
+import { Api, Key } from "@mui/icons-material";
 import { CippWizardConfirmation } from "../components/CippWizard/CippWizardConfirmation";
 import { CippWizardOptionsList } from "../components/CippWizard/CippWizardOptionsList";
 import { CippDeploymentStep } from "../components/CippWizard/CIPPDeploymentStep";
