@@ -8,7 +8,7 @@ export default function CippButtonCard({
   titleType = 'normal',
   CardButton,
   children,
-  isFetching,
+  isFetching = false,
   className = 'h-100',
 }) {
   return (
@@ -22,7 +22,7 @@ export default function CippButtonCard({
         {isFetching && <Skeleton />}
         {children}
       </CCardBody>
-      <CCardFooter>{CardButton}</CCardFooter>
+      {CardButton && <CCardFooter>{CardButton}</CCardFooter>}
     </CCard>
   )
 }
@@ -30,8 +30,8 @@ export default function CippButtonCard({
 CippButtonCard.propTypes = {
   title: PropTypes.string.isRequired,
   titleType: PropTypes.string,
-  CardButton: PropTypes.element.isRequired,
+  CardButton: PropTypes.element,
   children: PropTypes.element.isRequired,
-  isFetching: PropTypes.bool.isRequired,
+  isFetching: PropTypes.bool,
   className: PropTypes.string,
 }
