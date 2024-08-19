@@ -1,10 +1,6 @@
-import { combineReducers } from "@reduxjs/toolkit";
-import { baseApi } from "./api/baseApi";
-import { toastsSlice } from "./toasts";
-
-export const apiMiddleware = [baseApi.middleware];
+import { combineReducers } from '@reduxjs/toolkit'
+import { toastsSlice } from './toasts'
 
 export const rootReducer = combineReducers({
-  [baseApi.reducerPath]: baseApi.reducer,
   [toastsSlice.name]: toastsSlice.reducer,
-});
+})
