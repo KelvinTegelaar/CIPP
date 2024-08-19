@@ -45,7 +45,7 @@
     "@rjsf/utils": "^5.12.1",
     "@rjsf/validator-ajv8": "^5.12.1",
     "@uiw/react-json-view": "^2.0.0-alpha.23",
-    "axios": "^1.6.2",
+    "axios": "^1.7.4",
     "buffer": "^6.0.3",
     "chart.js": "^3.5.1",
     "classnames": "^2.3.1",
