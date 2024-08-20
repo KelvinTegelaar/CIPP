@@ -1,10 +1,10 @@
-import { useCallback, useState } from 'react';
-import NextLink from 'next/link';
-import PropTypes from 'prop-types';
-import ChevronRightIcon from '@heroicons/react/24/outline/ChevronRightIcon';
-import ChevronDownIcon from '@heroicons/react/24/outline/ChevronDownIcon';
-import ArrowTopRightOnSquareIcon from '@heroicons/react/24/outline/ArrowTopRightOnSquareIcon';
-import { Box, ButtonBase, Collapse, SvgIcon } from '@mui/material';
+import { useCallback, useState } from "react";
+import NextLink from "next/link";
+import PropTypes from "prop-types";
+import ChevronRightIcon from "@heroicons/react/24/outline/ChevronRightIcon";
+import ChevronDownIcon from "@heroicons/react/24/outline/ChevronDownIcon";
+import ArrowTopRightOnSquareIcon from "@heroicons/react/24/outline/ArrowTopRightOnSquareIcon";
+import { Box, ButtonBase, Collapse, SvgIcon } from "@mui/material";
 
 export const SideNavItem = (props) => {
   const {
@@ -16,7 +16,8 @@ export const SideNavItem = (props) => {
     icon,
     openImmediately = false,
     path,
-    title
+    title,
+    type = "item",
   } = props;
   const [open, setOpen] = useState(openImmediately);
 
@@ -32,70 +33,79 @@ export const SideNavItem = (props) => {
         <ButtonBase
           onClick={handleToggle}
           sx={{
-            alignItems: 'center',
+            alignItems: "center",
             borderRadius: 1,
-            display: 'flex',
+            display: "flex",
             fontFamily: (theme) => theme.typography.fontFamily,
             fontSize: 14,
             fontWeight: 500,
-            justifyContent: 'flex-start',
-            px: '6px',
-            py: '12px',
-            textAlign: 'left',
-            whiteSpace: 'nowrap',
-            width: '100%'
+            justifyContent: "flex-start",
+            px: "6px",
+            py: "12px",
+            textAlign: "left",
+            whiteSpace: "nowrap",
+            width: "100%",
           }}
         >
-          <Box
-            component="span"
-            sx={{
-              alignItems: 'center',
-              color: 'neutral.400',
-              display: 'inline-flex',
-              flexGrow: 0,
-              flexShrink: 0,
-              height: 24,
-              justifyContent: 'center',
-              width: 24
-            }}
-          >
-            {icon}
-          </Box>
-          <Box
-            component="span"
-            sx={{
-              color: depth === 0 ? 'text.primary' : 'text.secondary',
-              flexGrow: 1,
-              fontSize: 14,
-              mx: '12px',
-              transition: 'opacity 250ms ease-in-out',
-              ...(active && {
-                color: 'primary.main'
-              }),
-              ...(collapse && {
-                opacity: 0
-              })
-            }}
-          >
-            {title}
-          </Box>
-          <SvgIcon
-            sx={{
-              color: 'neutral.500',
-              fontSize: 16,
-              transition: 'opacity 250ms ease-in-out',
-              ...(collapse && {
-                opacity: 0
-              })
-            }}
-          >
-            {open ? <ChevronDownIcon /> : <ChevronRightIcon />}
-          </SvgIcon>
+          {type === "header" ? (
+            <>
+              <Box
+                sx={{ color: "neutral.400", fontSize: 12, fontWeight: 500, px: "6px", py: "12px" }}
+              >
+                {title}
+              </Box>
+            </>
+          ) : (
+            <>
+              <Box
+                component="span"
+                sx={{
+                  alignItems: "center",
+                  color: "neutral.400",
+                  display: "inline-flex",
+                  flexGrow: 0,
+                  flexShrink: 0,
+                  height: 24,
+                  justifyContent: "center",
+                  width: 24,
+                }}
+              >
+                {icon}
+              </Box>
+              <Box
+                component="span"
+                sx={{
+                  color: depth === 0 ? "text.primary" : "text.secondary",
+                  flexGrow: 1,
+                  fontSize: 14,
+                  mx: "12px",
+                  transition: "opacity 250ms ease-in-out",
+                  ...(active && {
+                    color: "primary.main",
+                  }),
+                  ...(collapse && {
+                    opacity: 0,
+                  }),
+                }}
+              >
+                {title}
+              </Box>
+              <SvgIcon
+                sx={{
+                  color: "neutral.500",
+                  fontSize: 16,
+                  transition: "opacity 250ms ease-in-out",
+                  ...(collapse && {
+                    opacity: 0,
+                  }),
+                }}
+              >
+                {open ? <ChevronDownIcon /> : <ChevronRightIcon />}
+              </SvgIcon>
+            </>
+          )}
         </ButtonBase>
-        <Collapse
-          in={!collapse && open}
-          unmountOnExit
-        >
+        <Collapse in={type === "header" || (!collapse && open)} unmountOnExit>
           {children}
         </Collapse>
       </li>
@@ -107,45 +117,46 @@ export const SideNavItem = (props) => {
   const linkProps = path
     ? external
       ? {
-        component: 'a',
-        href: path,
-        target: '_blank'
-      }
+          component: "a",
+          href: path,
+          target: "_blank",
+        }
       : {
-        component: NextLink,
-        href: path
-      }
+          component: NextLink,
+          href: path,
+        }
     : {};
 
   return (
     <li>
       <ButtonBase
         sx={{
-          alignItems: 'center',
+          alignItems: "center",
           borderRadius: 1,
-          display: 'flex',
+          display: "flex",
           fontFamily: (theme) => theme.typography.fontFamily,
           fontSize: 14,
           fontWeight: 500,
-          justifyContent: 'flex-start',
-          px: '6px',
-          py: '12px',
-          textAlign: 'left',
-          whiteSpace: 'nowrap',
-          width: '100%'
+          justifyContent: "flex-start",
+          px: "6px",
+          py: "12px",
+          textAlign: "left",
+          whiteSpace: "nowrap",
+          width: "100%",
         }}
-        {...linkProps}>
+        {...linkProps}
+      >
         <Box
           component="span"
           sx={{
-            alignItems: 'center',
-            color: 'neutral.400',
-            display: 'inline-flex',
+            alignItems: "center",
+            color: "neutral.400",
+            display: "inline-flex",
             flexGrow: 0,
             flexShrink: 0,
             height: 24,
-            justifyContent: 'center',
-            width: 24
+            justifyContent: "center",
+            width: 24,
           }}
         >
           {icon}
@@ -153,16 +164,16 @@ export const SideNavItem = (props) => {
         <Box
           component="span"
           sx={{
-            color: depth === 0 ? 'text.primary' : 'text.secondary',
+            color: depth === 0 ? "text.primary" : "text.secondary",
             flexGrow: 1,
-            mx: '12px',
-            transition: 'opacity 250ms ease-in-out',
+            mx: "12px",
+            transition: "opacity 250ms ease-in-out",
             ...(active && {
-              color: 'primary.main'
+              color: "primary.main",
             }),
             ...(collapse && {
-              opacity: 0
-            })
+              opacity: 0,
+            }),
           }}
         >
           {title}
@@ -170,12 +181,12 @@ export const SideNavItem = (props) => {
         {external && (
           <SvgIcon
             sx={{
-              color: 'neutral.500',
+              color: "neutral.500",
               fontSize: 18,
-              transition: 'opacity 250ms ease-in-out',
+              transition: "opacity 250ms ease-in-out",
               ...(collapse && {
-                opacity: 0
-              })
+                opacity: 0,
+              }),
             }}
           >
             <ArrowTopRightOnSquareIcon />
@@ -195,5 +206,6 @@ SideNavItem.propTypes = {
   icon: PropTypes.any,
   openImmediately: PropTypes.bool,
   path: PropTypes.string,
-  title: PropTypes.string.isRequired
+  title: PropTypes.string.isRequired,
+  type: PropTypes.string,
 };

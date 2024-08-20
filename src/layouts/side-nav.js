@@ -42,6 +42,7 @@ const reduceChildRoutes = ({ acc, collapse, depth, item, pathname }) => {
         openImmediately={partialMatch}
         path={item.path}
         title={item.title}
+        type={item.type}
       >
         <Stack
           component="ul"

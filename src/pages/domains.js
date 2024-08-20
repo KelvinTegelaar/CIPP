@@ -17,7 +17,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useDialog } from "../hooks/use-dialog";
-import { Layout as DashboardLayout } from "../layouts/dashboard";
+import { Layout as DashboardLayout } from "../layouts/index.js";
 import { CippDataTable } from "../components/CippTable/CippDataTable";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { TrashIcon } from "@heroicons/react/24/outline";
