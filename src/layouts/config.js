@@ -1,6 +1,5 @@
 import {
   BuildingLibraryIcon,
-  BuildingOfficeIcon,
   EnvelopeOpenIcon,
   ExclamationTriangleIcon,
   HomeIcon,
@@ -51,7 +50,7 @@ export const items = [
           </SvgIcon>
         ),
         items: [
-          { title: "Users", path: "/identity/administration/users" },
+          { title: "Users", path: "/users" },
           { title: "Risky Users", path: "/identity/administration/risky-users" },
           { title: "Groups", path: "/identity/administration/groups" },
           { title: "Devices", path: "/identity/administration/devices" },

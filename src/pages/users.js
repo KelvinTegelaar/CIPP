@@ -101,7 +101,7 @@ const Page = () => {
         }}
       >
         <ReactQueryDevtools />
-        <Container maxWidth="xl" sx={{ height: "100%" }}>
+        <Container maxWidth={false} sx={{ height: "100%" }}>
           <Stack spacing={4} sx={{ height: "100%" }}>
             <Card
               sx={{

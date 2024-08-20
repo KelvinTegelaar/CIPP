@@ -27,7 +27,7 @@ const Page = () => {
           py: 4,
         }}
       >
-        <Container maxWidth="xl">
+        <Container maxWidth={false}>
           <Stack spacing={6}>
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
@@ -50,51 +50,49 @@ const Page = () => {
                 />
               </Grid>
               <Grid item xs={12} md={6}>
-                {deviceData.data?.deployed === true && (
-                  <CippPropertyListCard
-                    title="Deployment Status"
-                    isFetching={deviceData.isFetching}
-                    propertyItems={[
-                      {
-                        label: "Deployment Status",
-                        value: deviceData.data?.status,
-                      },
-                      {
-                        label: "URL",
-                        value: deviceData.data?.url,
-                      },
-                      {
-                        label: "Instance Name",
-                        value: deviceData.data?.resourceGroup,
-                      },
-                      {
-                        label: "Outbound IPs",
-                        value: deviceData.data?.outboundIps,
-                      },
-                      {
-                        label: "API Enabled",
-                        value: deviceData.data?.apiEnabled,
-                      },
-                    ]}
-                    actionItems={[
-                      // {
-                      //   label: "Enable API",
-                      //   icon: <LockOpen />,
-                      //   link: paths.onboarding,
-                      // },
-                      {
-                        label: "Add User",
-                        icon: <UserPlusIcon />,
-                        link: paths.users,
-                      },
-                      {
-                        label: "Add Domain",
-                        icon: <DomainAdd />,
-                        link: paths.domains,
-                      },
-                    ]}
-                  />
-                )}
+                <CippPropertyListCard
+                  title="Deployment Status"
+                  isFetching={deviceData.isFetching}
+                  propertyItems={[
+                    {
+                      label: "Deployment Status",
+                      value: deviceData.data?.status,
+                    },
+                    {
+                      label: "URL",
+                      value: deviceData.data?.url,
+                    },
+                    {
+                      label: "Instance Name",
+                      value: deviceData.data?.resourceGroup,
+                    },
+                    {
+                      label: "Outbound IPs",
+                      value: deviceData.data?.outboundIps,
+                    },
+                    {
+                      label: "API Enabled",
+                      value: deviceData.data?.apiEnabled,
+                    },
+                  ]}
+                  actionItems={[
+                    // {
+                    //   label: "Enable API",
+                    //   icon: <LockOpen />,
+                    //   link: paths.onboarding,
+                    // },
+                    {
+                      label: "Add User",
+                      icon: <UserPlusIcon />,
+                      link: paths.users,
+                    },
+                    {
+                      label: "Add Domain",
+                      icon: <DomainAdd />,
+                      link: paths.domains,
+                    },
+                  ]}
+                />
               </Grid>
             </Grid>
           </Stack>

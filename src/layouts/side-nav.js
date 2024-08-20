@@ -144,13 +144,6 @@ export const SideNav = (props) => {
             })}
           </Box>
           <Divider />
-          <Box sx={{ pt: 1 }}>
-            <IconButton onClick={onPin}>
-              <SvgIcon fontSize="small">
-                {pinned ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-              </SvgIcon>
-            </IconButton>
-          </Box>
         </Box>
       </Scrollbar>
     </Drawer>
