@@ -9,21 +9,10 @@ import { Logo } from "../components/logo";
 import { useSettings } from "../hooks/use-settings";
 import { paths } from "../paths";
 import { AccountPopover } from "./account-popover";
-import { OrganizationPopover } from "./organization-popover";
 import { CippTenantSelector } from "../components/CippComponents/CippTenantSelector";
 const TOP_NAV_HEIGHT = 64;
 
 export const TopNav = (props) => {
-  const organizations = [
-    {
-      id: "60cffc5da77cd8d2b12246e9",
-      label: "Contoso",
-    },
-    {
-      id: "22ac644657adeaa97c33562b",
-      label: "CyberDrain M365 Test Development Placeholder",
-    },
-  ];
   const { onNavOpen } = props;
   const settings = useSettings();
   const mdDown = useMediaQuery((theme) => theme.breakpoints.down("md"));

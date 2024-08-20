@@ -18,13 +18,13 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
-import { useDialog } from "../hooks/use-dialog";
-import { Layout as DashboardLayout } from "../layouts/index.js";
-import { CippDataTable } from "../components/CippTable/CippDataTable";
+import { useDialog } from "../../../../hooks/use-dialog.js";
+import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippDataTable } from "../../../../components/CippTable/CippDataTable.js";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { CopyAll, Delete, Update } from "@mui/icons-material";
-import { CippAutoComplete } from "../components/CippComponents/CippAutocomplete";
-import { ApiPostCall } from "../api/ApiCall";
+import { CippAutoComplete } from "../../../../components/CippComponents/CippAutocomplete.jsx";
+import { ApiPostCall } from "../../../../api/ApiCall.jsx";
 import { useState } from "react";
 import CopyToClipboard from "react-copy-to-clipboard";
 

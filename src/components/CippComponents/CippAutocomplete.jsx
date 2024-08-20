@@ -15,7 +15,6 @@ export const CippAutoComplete = (props) => {
     ...other
   } = props;
   const filter = createFilterOptions();
-  console.log("is fetching?");
   return (
     <Autocomplete
       popupIcon={
