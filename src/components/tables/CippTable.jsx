@@ -63,7 +63,7 @@ const FilterComponent = ({ filterText, onFilter, onClear, filterlist, onFilterPr
           {filterlist &&
             filterlist.map((item, idx) => {
               return (
-                <CDropdownItem key={idx} onClick={() => onFilterPreset(item.filter)}>
+                <CDropdownItem key={`filter-${idx}`} onClick={() => onFilterPreset(item.filter)}>
                   {item.filterName}
                 </CDropdownItem>
               )
@@ -722,7 +722,7 @@ export default function CippTable({
                 {dataKeys() &&
                   dataKeys().map((item, idx) => {
                     return (
-                      <CDropdownItem key={idx} onClick={() => addColumn(item)}>
+                      <CDropdownItem key={`select-${idx}`} onClick={() => addColumn(item)}>
                         {updatedColumns.find(
                           (o) => o.exportSelector === item && o?.omit !== true,
                         ) && <FontAwesomeIcon icon={faCheck} />}{' '}
@@ -820,7 +820,7 @@ export default function CippTable({
             <CDropdownMenu>
               {actionsList.map((item, idx) => {
                 return (
-                  <CDropdownItem key={idx} onClick={() => executeselectedAction(item)}>
+                  <CDropdownItem key={`actions-${idx}`} onClick={() => executeselectedAction(item)}>
                     {item.label}
                   </CDropdownItem>
                 )
@@ -885,6 +885,7 @@ export default function CippTable({
     updatedColumns,
     addColumn,
     setGraphFilter,
+    isFetching,
   ])
   const tablePageSize = useSelector((state) => state.app.tablePageSize)
   const [codeCopied, setCodeCopied] = useState(false)
@@ -950,8 +951,8 @@ export default function CippTable({
                     const results = message.data?.Results
                     const displayResults = Array.isArray(results) ? results.join(', ') : results
                     return (
-                      <>
-                        <li key={`message-${idx}`}>
+                      <React.Fragment key={`message-${idx}`}>
+                        <li>
                           {displayResults}
                           <CopyToClipboard text={displayResults} onCopy={() => onCodeCopied()}>
                             <CButton
@@ -968,7 +969,7 @@ export default function CippTable({
                             </CButton>
                           </CopyToClipboard>
                         </li>
-                      </>
+                      </React.Fragment>
                     )
                   })}
                 {loopRunning && (
@@ -1008,11 +1009,12 @@ export default function CippTable({
               progressPending={isFetching}
               progressComponent={<CSpinner color="info" component="div" />}
               paginationRowsPerPageOptions={[25, 50, 100, 200, 500]}
+              keyField={keyField}
               {...rest}
             />
             {selectedRows.length >= 1 && <CCallout>Selected {selectedRows.length} items</CCallout>}
             <CippCodeOffCanvas
-              row={data}
+              row={data ?? {}}
               hideButton={true}
               state={codeOffcanvasVisible}
               hideFunction={() => setCodeOffcanvasVisible(false)}
