@@ -20,6 +20,8 @@ As a partner, you can register devices to Windows Autopilot using any one of the
 
 #### Known Issues / Limitations <a href="#adddevice-knownissues" id="adddevice-knownissues"></a>
 
+{% hint style="warning" %} A Reseller Relationship with the customer tenant may be required in addition to GDAP in order to add Autopilot devices. {% endhint %}
+
 This API does not directly return data to CIPP, and thus can incorrectly report the upload has failed.
 
 ###
