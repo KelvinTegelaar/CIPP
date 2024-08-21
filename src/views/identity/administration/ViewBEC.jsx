@@ -239,6 +239,7 @@ const ViewBec = () => {
                   execBecView({
                     tenantFilter: tenantDomain,
                     userId: userId,
+                    userName: userName,
                     overwrite: true,
                   })
                 }
