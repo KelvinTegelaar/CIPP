@@ -13,7 +13,9 @@ export const CippOffCanvas = (props) => {
 
   return (
     <Drawer
-      variant="temporary"
+      PaperProps={{
+        sx: { width: 400 },
+      }}
       ModalProps={{
         keepMounted: false,
       }}

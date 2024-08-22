@@ -13,12 +13,13 @@ const Page = () => {
     },
   ];
   const offCanvas = {
-    extendedInfo: [
+    extendedInfoFields: [
       "displayName",
-      "userprincipalname",
+      "userPrincipalName",
+      "id",
       "mail",
-      "mobilephone",
-      "officephone",
+      "mobilePhone",
+      "officePhone",
       "jobtitle",
       "department",
       "city",

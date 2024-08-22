@@ -18,6 +18,7 @@ export const CippTablePage = (props) => {
     name,
     options,
     onChange,
+    offCanvas,
     ...other
   } = props;
   const router = useRouter();
@@ -51,6 +52,7 @@ export const CippTablePage = (props) => {
                 api={{ url: apiUrl, data: { tenantFilter: tenant, ...apiData } }}
                 columns={columns}
                 columnsFromApi={columnsFromApi}
+                offCanvas={offCanvas}
                 {...other}
               />
             </Card>

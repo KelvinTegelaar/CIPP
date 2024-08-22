@@ -53,8 +53,3 @@ export const CippPropertyListCard = (props) => {
     </>
   );
 };
-
-CippPropertyListCard.propTypes = {
-  customer: PropTypes.object.isRequired,
-  onEdit: PropTypes.func,
-};

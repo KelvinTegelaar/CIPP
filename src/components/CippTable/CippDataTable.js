@@ -19,7 +19,8 @@ import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { utilTableMode } from "./util-tablemode";
 import { utilColumnsFromAPI } from "./util-columnsFromAPI";
 import { CIPPTableToptoolbar } from "./CIPPTableToptoolbar";
-import { Close } from "@mui/icons-material";
+import { Close, More } from "@mui/icons-material";
+import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 
 export const CippDataTable = (props) => {
   const {
@@ -43,6 +44,7 @@ export const CippDataTable = (props) => {
     title = "Report",
     simple = false,
     cardButton,
+    offCanvas = false,
   } = props;
   //start get data from API logic
   const getRequestData = ApiGetCall({
@@ -52,6 +54,8 @@ export const CippDataTable = (props) => {
   });
   //end get data from API logic
   const [usedData, setUsedData] = useState(data);
+  const [offcanvasVisble, setOffcanvasVisible] = useState(false);
+  const [offCanvasData, setOffCanvasData] = useState({});
 
   useEffect(() => {
     if (getRequestData.isSuccess) {
@@ -149,8 +153,35 @@ export const CippDataTable = (props) => {
               {action.label}
             </MenuItem>
           )),
+          offCanvas && (
+            <MenuItem
+              onClick={() => {
+                closeMenu();
+                setOffCanvasData(row.original);
+                setOffcanvasVisible(true);
+              }}
+            >
+              <ListItemIcon>
+                <More fontSize="small" />
+              </ListItemIcon>
+              More Info
+            </MenuItem>
+          ),
         ]
-      : null,
+      : offCanvas && (
+          <MenuItem
+            onClick={() => {
+              closeMenu();
+              setOffCanvasData(row.original);
+              setOffcanvasVisible(true);
+            }}
+          >
+            <ListItemIcon>
+              <More fontSize="small" />
+            </ListItemIcon>
+            More Info
+          </MenuItem>
+        ),
     renderTopToolbar: ({ table }) => {
       return (
         <>
@@ -268,6 +299,15 @@ export const CippDataTable = (props) => {
           ) : null}
         </Scrollbar>
       </CardContent>
+      <CippOffCanvas
+        isFetching={getRequestData.isFetching}
+        visible={offcanvasVisble}
+        onClose={() => setOffcanvasVisible(false)}
+        extendedData={offCanvasData}
+        extendedInfoFields={offCanvas?.extendedInfoFields}
+        actions={actions}
+      />
+      ,
     </Card>
   );
 };

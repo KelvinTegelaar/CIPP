@@ -25,8 +25,7 @@ export const utilTableMode = (columnVisibility, mode, actions) => {
         },
         sorting: [
           {
-            id: "clientName",
-            desc: true,
+            //default sorts can go here.
           },
         ],
       },
