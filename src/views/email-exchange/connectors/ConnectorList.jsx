@@ -57,7 +57,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modal: true,
             icon: <FontAwesomeIcon icon={faTrash} className="me-2" />,
             modalUrl: `/api/RemoveExConnector?TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}&Type=${row.cippconnectortype}`,
-            modalMessage: 'Are you sure you want to disable this rule?',
+            modalMessage: 'Are you sure you want to delete this rule?',
           },
         ]}
         placement="end"

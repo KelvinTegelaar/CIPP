@@ -516,6 +516,7 @@ export const RFFSelectSearch = ({
   retainInput = true,
   isLoading = false,
   allowCreate = false,
+  onCreateOption,
   refreshFunction,
   ...props
 }) => {
@@ -589,7 +590,7 @@ export const RFFSelectSearch = ({
               )}
             </CFormLabel>
             {allowCreate ? (
-              <Creatable {...selectProps} isClearable={true} />
+              <Creatable {...selectProps} isClearable={true} onCreateOption={onCreateOption} />
             ) : (
               <Select {...selectProps} isClearable={!onChange} />
             )}
@@ -612,6 +613,9 @@ RFFSelectSearch.propTypes = {
   onInputChange: PropTypes.func,
   isLoading: PropTypes.bool,
   refreshFunction: PropTypes.func,
+  allowCreate: PropTypes.bool,
+  onCreateOption: PropTypes.func,
+  retainInput: PropTypes.bool,
   values: PropTypes.arrayOf(PropTypes.shape({ value: PropTypes.string, name: PropTypes.string }))
     .isRequired,
 }

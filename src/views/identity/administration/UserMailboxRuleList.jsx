@@ -10,7 +10,7 @@ const rowStyle = (row, rowIndex) => {
   return style
 }
 
-export default function UserMailboxRuleList({ userId, tenantDomain, className = null }) {
+export default function UserMailboxRuleList({ userId, userEmail, tenantDomain, className = null }) {
   const formatter = (cell) => CellBoolean({ cell })
   const columns = [
     {
@@ -79,7 +79,7 @@ export default function UserMailboxRuleList({ userId, tenantDomain, className = 
       datatable={{
         reportName: 'ListUserMailboxRules',
         path: '/api/ListUserMailboxRules',
-        params: { tenantFilter: tenantDomain, userId },
+        params: { tenantFilter: tenantDomain, userId, userEmail },
         columns,
         keyField: 'id',
         responsive: true,
@@ -93,6 +93,7 @@ export default function UserMailboxRuleList({ userId, tenantDomain, className = 
 
 UserMailboxRuleList.propTypes = {
   userId: PropTypes.string.isRequired,
+  userEmail: PropTypes.string,
   tenantDomain: PropTypes.string.isRequired,
   className: PropTypes.string,
 }

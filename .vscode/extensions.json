@@ -5,6 +5,7 @@
     "eg2.vscode-npm-script",
     "christian-kohler.npm-intellisense",
     "esbenp.prettier-vscode",
-    "stylelint.vscode-stylelint"
+    "stylelint.vscode-stylelint",
+    "editorconfig.editorconfig"
   ]
 }

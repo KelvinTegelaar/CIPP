@@ -10,7 +10,7 @@
           "Property": { "value": "List:Operation", "label": "Operation" },
           "Operator": { "value": "EQ", "label": "Equals to" },
           "Input": {
-            "value": "new-inboxrule",
+            "value": "New-InboxRule",
             "label": "created new inbox rule in outlook web app"
           }
         }
@@ -31,7 +31,7 @@
           "Property": { "value": "List:Operation", "label": "Operation" },
           "Operator": { "value": "EQ", "label": "Equals to" },
           "Input": {
-            "value": "new-inboxrule",
+            "value": "New-InboxRule",
             "label": "created new inbox rule in outlook web app"
           }
         },
@@ -39,6 +39,58 @@
           "Property": { "value": "String", "label": "MoveToFolder" },
           "Operator": { "value": "like", "label": "Like" },
           "Input": { "value": "*RSS*" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "New-InboxRuleForward",
+    "name": "A new Inbox rule is created that forwards e-mails to a different email address",
+    "template": {
+      "preset": {
+        "value": "New-InboxRuleForward",
+        "label": "A new Inbox rule is created that forwards e-mails to a different email address"
+      },
+      "logbook": { "value": "Audit.Exchange", "label": "Exchange" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "New-InboxRule",
+            "label": "created new inbox rule in outlook web app"
+          }
+        },
+        {
+          "Property": { "value": "String", "label": "ForwardTo" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "*@*" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "New-InboxRuleRedirect",
+    "name": "A new Inbox rule is created that redirects e-mails to a different email address",
+    "template": {
+      "preset": {
+        "value": "New-InboxRuleRedirect",
+        "label": "A new Inbox rule is created that redirects e-mails to a different email address"
+      },
+      "logbook": { "value": "Audit.Exchange", "label": "Exchange" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "New-InboxRule",
+            "label": "created new inbox rule in outlook web app"
+          }
+        },
+        {
+          "Property": { "value": "String", "label": "RedirectTo" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "*@*" }
         }
       ]
     }
@@ -54,7 +106,7 @@
           "Property": { "value": "List:Operation", "label": "Operation" },
           "Operator": { "value": "EQ", "label": "Equals to" },
           "Input": {
-            "value": "set-inboxrule",
+            "value": "Set-InboxRule",
             "label": "Updated inbox rule in outlook web app"
           }
         }
@@ -65,14 +117,17 @@
     "value": "Set-InboxRuleRSS",
     "name": "A existing Inbox rule is edited that forwards e-mails to the RSS feeds folder",
     "template": {
-      "preset": { "value": "Set-InboxRuleRSS", "label": "A existing Inbox rule is edited" },
+      "preset": {
+        "value": "Set-InboxRuleRSS",
+        "label": "A existing Inbox rule is edited that forwards e-mails to the RSS feeds folder"
+      },
       "logbook": { "value": "Audit.Exchange", "label": "Exchange" },
       "conditions": [
         {
           "Property": { "value": "List:Operation", "label": "Operation" },
           "Operator": { "value": "EQ", "label": "Equals to" },
           "Input": {
-            "value": "set-inboxrule",
+            "value": "Set-InboxRule",
             "label": "Updated inbox rule in outlook web app"
           }
         },
@@ -80,6 +135,58 @@
           "Property": { "value": "String", "label": "MoveToFolder" },
           "Operator": { "value": "like", "label": "Like" },
           "Input": { "value": "*RSS*" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "Set-InboxRuleForward",
+    "name": "A existing Inbox rule is edited that forwards e-mails to a different email address",
+    "template": {
+      "preset": {
+        "value": "Set-InboxRuleForward",
+        "label": "A existing Inbox rule is edited that forwards e-mails to a different email address"
+      },
+      "logbook": { "value": "Audit.Exchange", "label": "Exchange" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Set-InboxRule",
+            "label": "Updated inbox rule in outlook web app"
+          }
+        },
+        {
+          "Property": { "value": "String", "label": "ForwardTo" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "*@*" }
+        }
+      ]
+    }
+  },
+  {
+    "value": "Set-InboxRuleRedirect",
+    "name": "A existing Inbox rule is edited that redirects e-mails to a different email address",
+    "template": {
+      "preset": {
+        "value": "Set-InboxRuleRedirect",
+        "label": "A existing Inbox rule is edited that redirects e-mails to a different email address"
+      },
+      "logbook": { "value": "Audit.Exchange", "label": "Exchange" },
+      "conditions": [
+        {
+          "Property": { "value": "List:Operation", "label": "Operation" },
+          "Operator": { "value": "EQ", "label": "Equals to" },
+          "Input": {
+            "value": "Set-InboxRule",
+            "label": "Updated inbox rule in outlook web app"
+          }
+        },
+        {
+          "Property": { "value": "String", "label": "RedirectTo" },
+          "Operator": { "value": "like", "label": "Like" },
+          "Input": { "value": "*@*" }
         }
       ]
     }

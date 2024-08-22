@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { CButton } from '@coreui/react'
 import { CippPageList } from 'src/components/layout'
 import { CellTip, cellBooleanFormatter } from 'src/components/tables'
+import { Link, useSearchParams } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 import { TitleButton } from 'src/components/buttons'
@@ -11,16 +12,16 @@ import { CippActionsOffcanvas } from 'src/components/utilities'
 const Actions = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
   const [ocVisible, setOCVisible] = useState(false)
+  const editLink = row?.tenant
+    ? `/email/administration/edit-contact?ContactID=${row.id}&tenantDomain=${row.Tenant}`
+    : `/email/administration/edit-contact?ContactID=${row.id}&tenantDomain=${tenant.defaultDomainName}`
   return (
     <>
-      <CButton size="sm" variant="ghost" color="warning">
-        <a
-          rel={'noreferrer'}
-          target={'_blank'}
-          href={`https://outlook.office365.com/ecp/@${tenant.defaultDomainName}/UsersGroups/EditContact.aspx?exsvurl=1&realm=${tenant.customerId}&mkt=en-US&id=${row.id}`}
-        ></a>
-        <FontAwesomeIcon icon={faEdit} />
-      </CButton>
+      <Link to={editLink}>
+        <CButton size="sm" variant="ghost" color="warning">
+          <FontAwesomeIcon icon={faEdit} />
+        </CButton>
+      </Link>
       <CButton size="sm" color="link" onClick={() => setOCVisible(true)}>
         <FontAwesomeIcon icon={faEllipsisV} />
       </CButton>
@@ -109,6 +110,17 @@ const ContactList = () => {
         reportName: `${tenant?.defaultDomainName}-Contacts-List`,
         path: '/api/ListContacts',
         columns,
+        tableProps: {
+          selectableRows: true,
+          actionsList: [
+            {
+              label: 'Remove selected Contacts',
+              color: 'danger',
+              modal: true,
+              modalUrl: `/api/RemoveContact?TenantFilter=${tenant.defaultDomainName}&GUID=!id`,
+            },
+          ],
+        },
         params: { TenantFilter: tenant?.defaultDomainName },
       }}
     />

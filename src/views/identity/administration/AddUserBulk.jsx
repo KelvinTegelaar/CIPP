@@ -229,8 +229,8 @@ const AddUserBulk = () => {
           <p>
             {postResults.isSuccess && (
               <CippCodeBlock
-                code={postResults.data?.Results.map((item) => {
-                  return <li key={item}>{item}</li>
+                code={postResults.data?.map((item) => {
+                  return <li key={item.Results}>{item.Results}</li>
                 })}
                 callout={true}
                 calloutCopyValue={postResults.data?.Results}

@@ -501,6 +501,7 @@ h3.underline:after {
   .react-select__menu {
     background-color: var(--cipp-search-bg);
     border: 1px solid var(--cipp-search-border-color);
+    z-index: 1000;
   }
 
   .react-select__option {
@@ -654,6 +655,11 @@ h3.underline:after {
   display: inline-block;
   white-space: nowrap;
   overflow: hidden;
+}
+.celltip-content {
+  display: inline-block;
+  white-space: normal;
+  overflow: ellipsis;
 }
 
 .select-width {

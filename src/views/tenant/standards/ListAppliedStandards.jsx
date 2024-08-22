@@ -29,7 +29,12 @@ import {
   useLazyGenericGetRequestQuery,
   useLazyGenericPostRequestQuery,
 } from 'src/store/api/app'
-import { faCheck, faCircleNotch, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
+import {
+  faCheck,
+  faCircleNotch,
+  faExclamationTriangle,
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons'
 import { CippCallout, CippContentCard, CippPage } from 'src/components/layout'
 import { useSelector } from 'react-redux'
 import { ModalService, validateAlphabeticalSort } from 'src/components/utilities'
@@ -71,6 +76,7 @@ const DeleteAction = () => {
     </>
   )
 }
+
 const ApplyNewStandard = () => {
   const [templateStandard, setTemplateStandard] = useState()
   const [loadedTemplate, setLoadedTemplate] = useState(false)
@@ -263,6 +269,7 @@ const ApplyNewStandard = () => {
     })
 
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
+  const tenantDisplayName = useSelector((state) => state.app.currentTenant.displayName)
   //console.log('tenantDomain', tenantDomain)
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
 
@@ -289,20 +296,27 @@ const ApplyNewStandard = () => {
   })
 
   const handleSubmit = async (values) => {
-    Object.keys(values.standards).filter(function (x) {
-      if (values.standards[x] === false) {
-        delete values.standards[x]
-      }
-      return null
-    })
-
-    //filter on only objects that are 'true'
-    genericPostRequest({
-      path: '/api/AddStandardsDeploy',
-      values: { ...values.standards, tenant: tenantDomain },
-    }).then(() => {
-      refetchStandards()
-      refetchConsolidated()
+    ModalService.confirm({
+      title: 'Save Standards',
+      body: (
+        <div>
+          <p>
+            Are you sure you want to save these standards to {tenantDisplayName}? This will apply
+            all Remediate options on the next run.
+          </p>
+        </div>
+      ),
+      confirmLabel: 'Save',
+      cancelLabel: 'Cancel',
+      onConfirm: () => {
+        genericPostRequest({
+          path: '/api/AddStandardsDeploy',
+          values: { ...values.standards, tenant: tenantDomain },
+        }).then(() => {
+          refetchStandards()
+          refetchConsolidated()
+        })
+      },
     })
   }
   const [intuneGetRequest, intuneTemplates] = useLazyGenericGetRequestQuery()
@@ -368,6 +382,32 @@ const ApplyNewStandard = () => {
     setEnabledWarningsCount,
   ])
 
+  const handleAddIntuneTemplate = (form) => {
+    const formvalues = form.getState().values
+    const newTemplate = {
+      label: formvalues.intunedataList.label,
+      value: formvalues.intunedataList.value,
+      AssignedTo:
+        formvalues.IntuneAssignto === 'customGroup'
+          ? formvalues.customGroup
+          : formvalues.IntuneAssignto,
+    }
+    const originalTemplates = formvalues.standards?.IntuneTemplate?.TemplateList || []
+    const updatedTemplateList = [...originalTemplates, newTemplate]
+    form.change('standards.IntuneTemplate.AssignTo', undefined)
+    form.change('standards.IntuneTemplate.TemplateList', updatedTemplateList)
+    form.change('intunedataList', undefined)
+    form.change('intuneAssignTo', undefined)
+    form.change('customGroup', undefined)
+  }
+  const handleRemoveDeployedTemplate = (form, row) => {
+    console.log(row)
+    const formvalues = form.getState().values
+    const updatedTemplateList = formvalues.standards.IntuneTemplate.TemplateList.filter(
+      (template) => template.value !== row.value,
+    )
+    form.change('standards.IntuneTemplate.TemplateList', updatedTemplateList)
+  }
   return (
     <CippPage title="Standards" tenantSelector={false}>
       <>
@@ -484,7 +524,7 @@ const ApplyNewStandard = () => {
                 },
               }}
               onSubmit={handleSubmit}
-              render={({ handleSubmit, submitting, values }) => {
+              render={({ handleSubmit, submitting, values, form }) => {
                 return (
                   <CForm onSubmit={handleSubmit}>
                     <CRow className="mb-3">
@@ -728,6 +768,7 @@ const ApplyNewStandard = () => {
                                 switchName: 'standards.IntuneTemplate',
                                 assignable: true,
                                 templates: intuneTemplates,
+                                table: true,
                               },
                               {
                                 name: 'Transport Rule Template',
@@ -751,29 +792,63 @@ const ApplyNewStandard = () => {
                               },
                             ].map((template, index) => (
                               <CRow key={`template-row-${index}`} className="mb-3">
-                                <CCol md={4}>
+                                <CCol md={2}>
                                   <h5>{template.name}</h5>
                                   <small>Deploy {template.name}</small>
-                                </CCol>
-                                <CCol>
-                                  <h5>Report</h5>
-                                  <RFFCFormSwitch name="ignore.ignore1" disabled={true} />
-                                </CCol>
-                                <CCol>
-                                  <h5>Alert</h5>
-                                  <RFFCFormSwitch name="ignore.ignore2" disabled={true} />
                                 </CCol>
                                 <CCol>
                                   <h5>Remediate</h5>
                                   <RFFCFormSwitch name={`${template.switchName}.remediate`} />
                                 </CCol>
-                                <CCol md={3}>
+                                <CCol md={8}>
                                   <h5>Settings</h5>
+                                  {template.table && (
+                                    <CippTable
+                                      data={
+                                        form.getState().values.standards?.IntuneTemplate
+                                          ?.TemplateList
+                                      }
+                                      columns={[
+                                        {
+                                          name: 'Label',
+                                          selector: (row) => row['label'],
+                                          sortable: true,
+                                          exportSelector: 'name',
+                                          cell: cellGenericFormatter(),
+                                        },
+                                        {
+                                          name: 'Assigned to',
+                                          selector: (row) => row['AssignedTo'],
+                                          sortable: true,
+                                          exportSelector: 'GUID',
+                                        },
+                                        {
+                                          name: 'Actions',
+                                          cell: (row) => (
+                                            <CButton
+                                              size="sm"
+                                              color="danger"
+                                              variant="ghost"
+                                              onClick={() =>
+                                                handleRemoveDeployedTemplate(form, row)
+                                              }
+                                            >
+                                              <FontAwesomeIcon icon={faTrash} />
+                                            </CButton>
+                                          ),
+                                        },
+                                      ]}
+                                    />
+                                  )}
                                   {template.templates.isSuccess && (
                                     <RFFSelectSearch
-                                      name={`${template.switchName}.TemplateList`}
+                                      name={
+                                        template.table
+                                          ? 'intunedataList'
+                                          : `${template.switchName}.TemplateList`
+                                      }
                                       className="mb-3"
-                                      multi={true}
+                                      multi={template.table ? false : true}
                                       values={validateAlphabeticalSort(template.templates.data, [
                                         'Displayname',
                                         'name',
@@ -789,62 +864,81 @@ const ApplyNewStandard = () => {
                                     <>
                                       <RFFCFormRadio
                                         value=""
-                                        name={`${template.switchName}.AssignTo`}
+                                        name={
+                                          template.table
+                                            ? 'IntuneAssignto'
+                                            : `${template.switchName}.AssignTo`
+                                        }
                                         label="Do not assign"
                                       ></RFFCFormRadio>
                                       <RFFCFormRadio
                                         value="allLicensedUsers"
-                                        name={`${template.switchName}.AssignTo`}
+                                        name={
+                                          template.table
+                                            ? 'IntuneAssignto'
+                                            : `${template.switchName}.AssignTo`
+                                        }
                                         label="Assign to all users"
                                       ></RFFCFormRadio>
                                       <RFFCFormRadio
                                         value="AllDevices"
-                                        name={`${template.switchName}.AssignTo`}
+                                        name={
+                                          template.table
+                                            ? 'IntuneAssignto'
+                                            : `${template.switchName}.AssignTo`
+                                        }
                                         label="Assign to all devices"
                                       ></RFFCFormRadio>
                                       <RFFCFormRadio
                                         value="AllDevicesAndUsers"
-                                        name={`${template.switchName}.AssignTo`}
+                                        name={
+                                          template.table
+                                            ? 'IntuneAssignto'
+                                            : `${template.switchName}.AssignTo`
+                                        }
                                         label="Assign to all users and devices"
                                       ></RFFCFormRadio>
                                       <RFFCFormRadio
                                         value="customGroup"
-                                        name={`${template.switchName}.AssignTo`}
+                                        name={
+                                          template.table
+                                            ? 'IntuneAssignto'
+                                            : `${template.switchName}.AssignTo`
+                                        }
                                         label="Assign to Custom Group"
                                       ></RFFCFormRadio>
                                       <Condition
-                                        when={`${template.switchName}.AssignTo`}
+                                        when={
+                                          template.table
+                                            ? 'IntuneAssignto'
+                                            : `${template.switchName}.AssignTo`
+                                        }
                                         is="customGroup"
                                       >
                                         <RFFCFormInput
                                           type="text"
-                                          name={`${template.switchName}.customGroup`}
+                                          name={`customGroup`}
                                           label="Custom Group Names separated by comma. Wildcards (*) are allowed"
                                         />
                                       </Condition>
+                                      <CButton onClick={() => handleAddIntuneTemplate(form)}>
+                                        Add to deployment
+                                      </CButton>
                                     </>
                                   )}
                                 </CCol>
                               </CRow>
                             ))}
                             <CRow key={`template-row-autopilotprofile`} className="mb-3">
-                              <CCol md={4}>
+                              <CCol md={2}>
                                 <h5>Autopilot Profile</h5>
                                 <small>Deploy Autopilot profile</small>
-                              </CCol>
-                              <CCol>
-                                <h5>Report</h5>
-                                <RFFCFormSwitch name="ignore.ignore1" disabled={true} />
-                              </CCol>
-                              <CCol>
-                                <h5>Alert</h5>
-                                <RFFCFormSwitch name="ignore.ignore2" disabled={true} />
                               </CCol>
                               <CCol>
                                 <h5>Remediate</h5>
                                 <RFFCFormSwitch name={`standards.APConfig.remediate`} />
                               </CCol>
-                              <CCol md={3}>
+                              <CCol md={8}>
                                 <h5>Settings</h5>
                                 <CRow>
                                   <CCol md={12}>
@@ -938,23 +1032,15 @@ const ApplyNewStandard = () => {
                               </CCol>
                             </CRow>
                             <CRow key={`template-row-autopilotstatuspage`} className="mb-3">
-                              <CCol md={4}>
+                              <CCol md={2}>
                                 <h5>Autopilot Status Page</h5>
                                 <small>Deploy Autopilot Status Page</small>
-                              </CCol>
-                              <CCol>
-                                <h5>Report</h5>
-                                <RFFCFormSwitch name="ignore.ignore1" disabled={true} />
-                              </CCol>
-                              <CCol>
-                                <h5>Alert</h5>
-                                <RFFCFormSwitch name="ignore.ignore2" disabled={true} />
                               </CCol>
                               <CCol>
                                 <h5>Remediate</h5>
                                 <RFFCFormSwitch name={`standards.APESP.remediate`} />
                               </CCol>
-                              <CCol md={3}>
+                              <CCol md={8}>
                                 <h5>Settings</h5>
                                 <CRow>
                                   <CCol>

@@ -12,7 +12,7 @@ const RoomLists = () => {
   /* const Actions = (row, rowIndex, formatExtraData) => (
     <>
       <Link
-        to={`/rooms/management/list-rooms?tenantDomain=${tenant.defaultDomainName}`}
+        to={`/resources/management/list-rooms?tenantDomain=${tenant.defaultDomainName}`}
       >
         <CButton size="sm" variant="ghost" color="success">
           <FontAwesomeIcon icon={faEye} />
