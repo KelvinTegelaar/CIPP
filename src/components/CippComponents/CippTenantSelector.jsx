@@ -79,7 +79,7 @@ export const CippTenantSelector = (props) => {
         options={
           tenantList.isSuccess &&
           tenantList.data.map(({ customerId, displayName, defaultDomainName }) => ({
-            value: customerId,
+            value: defaultDomainName,
             label: `${displayName} (${defaultDomainName})`,
           }))
         }
