@@ -721,7 +721,7 @@
   {
     "name": "standards.TAP",
     "cat": "Entra (AAD) Standards",
-    "tag": ["ZTNA21845", "ZTNA21846", "EIDSCAAT01", "EIDSCAAT02"],
+    "tag": ["lowimpact"],
     "helpText": "Enables TAP and sets the default TAP lifetime to 1 hour. This configuration also allows you to select if a TAP is single use or multi-logon.",
     "docsDescription": "Enables Temporary Password generation for the tenant.",
     "executiveText": "Enables temporary access passwords that IT administrators can generate for employees who are locked out or need emergency access to systems. These time-limited passwords provide a secure way to restore access without compromising long-term security policies.",
@@ -1248,9 +1248,8 @@
   {
     "name": "standards.DisableEmail",
     "cat": "Entra (AAD) Standards",
-    "tag": ["CIS M365 5.0 (2.3.5)", "NIST CSF 2.0 (PR.AA-03)"],
+    "tag": ["highimpact"],
     "helpText": "This blocks users from using email as an MFA method. This disables the email OTP option for guest users, and instead prompts them to create a Microsoft account.",
-    "executiveText": "Disables email-based authentication codes due to security concerns with email interception and account compromise. This forces users to adopt more secure authentication methods, particularly affecting guest users who must use stronger verification methods.",
     "addedComponent": [],
     "label": "Disables Email as an MFA method",
     "impact": "High Impact",
