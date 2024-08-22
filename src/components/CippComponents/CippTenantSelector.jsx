@@ -87,6 +87,7 @@ export const CippTenantSelector = (props) => {
       {refreshButton && (
         <IconButton
           aria-label="refresh"
+          disabled={tenantList.isFetching}
           color="inherit"
           size="small"
           onClick={() => {
