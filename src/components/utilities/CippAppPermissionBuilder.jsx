@@ -807,7 +807,7 @@ const CippAppPermissionBuilder = ({
                       title="Import Manifest"
                       id="importManifest"
                       visible={manifestVisible}
-                      onHide={() => {
+                      hideFunction={() => {
                         setManifestVisible(false)
                       }}
                       addedClass="offcanvas-large"
