@@ -15,7 +15,7 @@ CIPP features a role management system which utilises the [Roles feature of Azur
 | readonly   | Only allowed to read and list items and send push messages to users.                                                                                                  |
 | editor     | Allowed to perform everything, except editing tenants, exclusions, and standards.                                                                                     |
 | admin      | Allowed to perform everything.                                                                                                                                        |
-| superadmin | A role that is only allowed to access the settings menu for specific high-privledge settings, such as setting up the [owntenant.md](owntenant.md "mention") settings. |
+| superadmin | A role that is only allowed to access the settings menu for specific high-privilege settings, such as setting up the [owntenant.md](owntenant.md "mention") settings. This role must be combined with 'admin' |
 
 You can assign these roles to users using the [Role Management system of Azure Static Web Apps](https://docs.microsoft.com/en-us/azure/static-web-apps/authentication-authorization?tabs=invitations#role-management)
 
