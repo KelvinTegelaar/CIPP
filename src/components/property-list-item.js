@@ -1,9 +1,29 @@
 import PropTypes from "prop-types";
-import { Box, Button, ListItem, ListItemText, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  IconButton,
+  ListItem,
+  ListItemText,
+  SvgIcon,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { useState } from "react";
+import CopyToClipboard from "react-copy-to-clipboard";
+import { CopyAll } from "@mui/icons-material";
 
 export const PropertyListItem = (props) => {
-  const { align = "vertical", children, component, label, value = "", type, ...other } = props;
+  const {
+    align = "vertical",
+    children,
+    component,
+    label,
+    value = "",
+    type,
+    copyItems,
+    ...other
+  } = props;
   const [showPassword, setShowPassword] = useState(false);
   return (
     <ListItem
@@ -18,7 +38,7 @@ export const PropertyListItem = (props) => {
       <ListItemText
         disableTypography
         primary={
-          <Typography sx={{ minWidth: align === "vertical" ? "inherit" : 180 }} variant="subtitle2">
+          <Typography sx={{ minWidth: align === "vertical" ? "inherit" : 180 }} variant="subtitle3">
             {label}
           </Typography>
         }
@@ -30,7 +50,7 @@ export const PropertyListItem = (props) => {
             }}
           >
             {children || (
-              <Typography color="text.secondary" variant="body2">
+              <Typography color="text.secondary" variant="body3">
                 {type !== "password" &&
                   (value === true ? "Yes" : value === false || value === null ? "No" : value)}
                 {type === "password" && (
@@ -41,6 +61,17 @@ export const PropertyListItem = (props) => {
                       <Button onClick={() => setShowPassword(true)}>Show Password</Button>
                     )}
                   </>
+                )}
+                {copyItems && (
+                  <CopyToClipboard text={value}>
+                    <Tooltip title="Copy to clipboard">
+                      <IconButton size="small">
+                        <SvgIcon fontSize="5px">
+                          <CopyAll fontSize="small" />
+                        </SvgIcon>
+                      </IconButton>
+                    </Tooltip>
+                  </CopyToClipboard>
                 )}
               </Typography>
             )}

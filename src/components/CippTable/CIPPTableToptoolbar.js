@@ -48,11 +48,9 @@ export const CIPPTableToptoolbar = ({
             <IconButton
               className="MuiIconButton"
               onClick={() => getRequestData.refetch()}
-              disabled={getRequestData.isLoading}
+              disabled={getRequestData.isLoading || getRequestData.isFetching}
             >
-              <SvgIcon fontSize="small">
-                {getRequestData.isFetching ? <CircularProgress color="primary" /> : <Sync />}
-              </SvgIcon>
+              <SvgIcon fontSize="small">{getRequestData.isFetching ? <Sync /> : <Sync />}</SvgIcon>
             </IconButton>
             <MRT_GlobalFilterTextField table={table} />
             <MRT_ToggleFiltersButton table={table} />

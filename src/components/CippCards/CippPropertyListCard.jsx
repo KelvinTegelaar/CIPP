@@ -1,7 +1,5 @@
 import PropTypes from "prop-types";
-import EyeIcon from "@heroicons/react/24/outline/EyeIcon";
-import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
-import { Button, Card, CardHeader, Divider, Skeleton, SvgIcon } from "@mui/material";
+import { Card, CardHeader, Divider, Skeleton, SvgIcon } from "@mui/material";
 import { ActionList } from "../../components/action-list";
 import { ActionListItem } from "../../components/action-list-item";
 import { PropertyList } from "../../components/property-list";
@@ -9,7 +7,16 @@ import { PropertyListItem } from "../../components/property-list-item";
 import { useRouter } from "next/router";
 
 export const CippPropertyListCard = (props) => {
-  const { actionItems = [], propertyItems = [], isFetching, title, actionButton, ...other } = props;
+  const {
+    align = "vertical",
+    actionItems = [],
+    propertyItems = [],
+    isFetching,
+    title,
+    actionButton,
+    copyItems = false,
+    ...other
+  } = props;
   const router = useRouter();
 
   return (
@@ -19,9 +26,13 @@ export const CippPropertyListCard = (props) => {
         <Divider />
         <PropertyList>
           {isFetching ? (
-            <Skeleton variant="rectangular" height={200} />
+            <>
+              <PropertyListItem align={align} label="Loading" value={<Skeleton width={280} />} />
+            </>
           ) : (
-            propertyItems.map((item, index) => <PropertyListItem divider key={index} {...item} />)
+            propertyItems.map((item, index) => (
+              <PropertyListItem align={align} copyItems divider key={index} {...item} />
+            ))
           )}
         </PropertyList>
         <Divider />
@@ -32,8 +43,8 @@ export const CippPropertyListCard = (props) => {
               icon={<SvgIcon fontSize="small">{item.icon}</SvgIcon>}
               label={item.label}
               onClick={
-                //if item.link is set, go to that path using the nextjs.
-                item.link ? () => router.push(item.link) : item.onClick
+                //if item.link is set, browse there in a new tab
+                item.link ? () => window.open(item.link, "_blank") : item.onClick
               }
             />
           ))}

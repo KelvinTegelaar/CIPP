@@ -47,6 +47,7 @@ export const CippDataTable = (props) => {
   //start get data from API logic
   const getRequestData = ApiGetCall({
     url: api.url,
+    data: api.data,
     queryKey: title,
   });
   //end get data from API logic
@@ -69,7 +70,8 @@ export const CippDataTable = (props) => {
     if (columnsFromApi && Array.isArray(usedData) && typeof usedData[0] === "object") {
       const newColumns = utilColumnsFromAPI(usedData[0]);
       setUsedColumns([...newColumns]);
-    } else {
+    }
+    if (!columnsFromApi) {
       setUsedColumns([...columns]);
     }
   }, [columns, columnsFromApi, usedData]);
