@@ -77,15 +77,6 @@ const RiskyUsers = () => {
               modalMessage: 'Are you sure you want to dismiss this users risk?',
               icon: <FontAwesomeIcon icon={faPaperPlane} className="me-2" />,
             },
-            /* TODO Add action for Compromised
-            {
-              label: 'Confirm Compromised',
-              color: 'info',
-              modal: true,
-              modalUrl: `/api/ExecBECRemediate?TenantFilter=${tenant.defaultDomainName}&userid=${row.id}`,
-              modalMessage: 'Are you sure you want to confirm this user as compromised?',
-              icon: <FontAwesomeIcon icon={faMinusCircle} className="me-2" />,
-            },*/
           ]}
           placement="end"
           visible={ocVisible}
@@ -97,6 +88,20 @@ const RiskyUsers = () => {
   }
 
   const columns = [
+    {
+      name: 'Tenant',
+      selector: (row) => row['Tenant'],
+      sortable: true,
+      exportSelector: 'Tenant',
+      omit: tenant.defaultDomainName === 'AllTenants' ? false : true,
+    },
+    {
+      name: 'Status',
+      selector: (row) => row['CippStatus'],
+      sortable: true,
+      exportSelector: 'CippStatus',
+      omit: tenant.defaultDomainName === 'AllTenants' ? false : true,
+    },
     {
       name: 'Risk Last Updated Date',
       selector: (row) => row['riskLastUpdatedDateTime'],
@@ -186,10 +191,12 @@ const RiskyUsers = () => {
           path: `api/ListGraphRequest`,
           reportName: `${tenant?.defaultDomainName}-ListRiskyUsers`,
           params: {
-            TenantFilter: tenant?.defaultDomainName,
+            TenantFilter: tenant.defaultDomainName,
             Endpoint: `identityProtection/riskyUsers`,
             $count: true,
             $orderby: 'riskLastUpdatedDateTime desc',
+            NoPagination: true,
+            $top: 500,
           },
           tableProps: {
             selectableRows: true,
@@ -200,13 +207,6 @@ const RiskyUsers = () => {
                 model: true,
                 modalUrl: `/api/ExecDismissRiskyUser?TenantFilter=${tenant.defaultDomainName}&userid=!id&userDisplayName=!userDisplayName`,
               },
-              /* TODO Add action for Compromised
-              {
-                label: 'Confirm Compromised',
-                color: 'danger',
-                model: true,
-                modalUrl: `/api/ExecBECRemediate?TenantFilter=${tenant.defaultDomainName}&userid=!id`,
-              },*/
             ],
           },
         }}
