@@ -18,7 +18,7 @@ When using Partner Tenant Enabled mode you can see your partner tenant inside of
 It is highly recommended to use a custom role if multiple users have access to your CIPP instances. This can help ensure not all users have access to manage your partner tenant. If you do not, its important to note that all your users will have access to edit/configure your partner tenant.
 {% endhint %}
 
-GDAP permissions will not apply and you must directly assigned roles such as Global Admin to the service account.
+GDAP permissions will not apply and you must directly assign roles to the service account in the Entra portal (e.g. User Administrator, Exchange Administrator, etc).
 
 To set the flag follow these steps:
 
