@@ -14,6 +14,10 @@ The Tenant Onboarding Wizard further simplifies the process of getting setup in 
 CIPP requires its Service Account user to be a member of the specific security groups with the [recommended roles](../gdap/recommended-roles.md) assigned for proper functionality within your GDAP relationship. This step is completed during the [SAM Setup Wizard execution](../../user-documentation/cipp/sam-setup-wizard.md) prior to tenant onboarding.
 
 If these roles are missing or the groups haven't been applied to the CIPP user, CIPP will not be able to access the tenant, resulting in errors such as: `invalid_grant:AADSTS65001: The user or administrator has not consented to use the application.`
+
+`or`
+
+`Send an interactive authorization request for this user and resource`
 {% endhint %}
 
 ***

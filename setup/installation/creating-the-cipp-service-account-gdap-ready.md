@@ -6,7 +6,7 @@
 
 {% embed url="https://app.guidde.com/share/playbooks/i9fztXsCUWjY3cr8mySvCX" fullWidth="false" %}
 
-{% hint style="info" %}
+{% hint style="danger" %}
 **When creating your new CIPP Service Account, it's important to remember the following:**
 
 * **Must be a Global Administrator while setting up the integration.** These permissions may be removed after the integration has been setup.
