@@ -108,6 +108,8 @@ const MailboxRuleList = () => {
   ]
 
   return (
+    // TODO: Add support for displaying the result of the delete operation. Currently, the delete operation is performed but the result is not displayed anywhere but the networking tab of the dev tools in the browser.
+    // All API code is in place and should return the needed HTTP status information. -Bobby
     <CippPageList
       capabilities={{ allTenants: true, helpContext: 'https://google.com' }}
       title="Mailbox Rules"
