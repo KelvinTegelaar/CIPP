@@ -307,7 +307,6 @@ export const CippDataTable = (props) => {
         extendedInfoFields={offCanvas?.extendedInfoFields}
         actions={actions}
       />
-      ,
     </Card>
   );
 };

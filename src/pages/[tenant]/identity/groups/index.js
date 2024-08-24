@@ -1,4 +1,4 @@
-import { CippTablePage } from "../../../../components/CippComponents/CippTablepage.jsx";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 
 const Page = () => {
@@ -9,6 +9,7 @@ const Page = () => {
       type: "POST",
       url: "api/DeleteUser",
       data: { email: "DisplayName" },
+      confirmText: "Are you sure you want to delete this user?",
       multiPost: false,
     },
   ];
