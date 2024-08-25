@@ -5,6 +5,7 @@ import { PropertyList } from "../../components/property-list";
 import { PropertyListItem } from "../../components/property-list-item";
 import { useDialog } from "../../hooks/use-dialog";
 import { CippApiDialog } from "../CippComponents/CippApiDialog";
+import { useState } from "react";
 
 export const CippPropertyListCard = (props) => {
   const {
@@ -19,7 +20,7 @@ export const CippPropertyListCard = (props) => {
     ...other
   } = props;
   const createDialog = useDialog();
-
+  const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
   return (
     <>
       <Card sx={{ width: "100%" }} {...other}>
@@ -46,19 +47,30 @@ export const CippPropertyListCard = (props) => {
                 label={item.label}
                 onClick={
                   //if item.link is set, browse there in a new tab
-                  item.link ? () => window.open(item.link, "_blank") : createDialog.handleOpen
+                  item.link
+                    ? () => window.open(item.link, "_blank")
+                    : () => {
+                        setActionData({
+                          data: data,
+                          action: item,
+                          ready: true,
+                        });
+                        createDialog.handleOpen();
+                      }
                 }
-              />
-              <CippApiDialog
-                createDialog={createDialog}
-                title="Confirmation"
-                fields={{ type: "textField", name: "input" }}
-                api={item}
-                row={data}
               />
             </>
           ))}
         </ActionList>
+        {actionData.ready && (
+          <CippApiDialog
+            createDialog={createDialog}
+            title="Confirmation"
+            fields={actionData.action?.fields}
+            api={actionData.action}
+            row={actionData.data}
+          />
+        )}
       </Card>
     </>
   );
