@@ -1,12 +1,5 @@
 import { Close } from "@mui/icons-material";
-import {
-  Alert,
-  CircularProgress,
-  Collapse,
-  DialogContent,
-  IconButton,
-  Typography,
-} from "@mui/material";
+import { Alert, CircularProgress, Collapse, IconButton, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
 export const CippApiResults = (props) => {

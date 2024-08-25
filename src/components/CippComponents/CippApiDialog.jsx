@@ -1,4 +1,11 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+} from "@mui/material";
 import { Stack } from "@mui/system";
 import { CippApiResults } from "./CippAPIResults";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
@@ -61,20 +68,50 @@ export const CippApiDialog = (props) => {
           <Stack spacing={3}>{api.confirmText}</Stack>
         </DialogContent>
         <DialogContent>
-          <Controller
-            name="autocomplete"
-            control={formHook.control}
-            render={({ field }) => (
-              <CippAutoComplete
-                required
-                creatable={false}
-                multiple={false}
-                defaultValue={"Select a bla"}
-                options={["one", "two", "three"]}
-                onChange={(e, nv) => field.onChange(nv)}
-              />
-            )}
-          />
+          {fields &&
+            fields.map((field, index) => {
+              switch (field.type) {
+                case "autoComplete":
+                  return (
+                    <Controller
+                      key={index}
+                      name={field.name}
+                      control={formHook.control}
+                      render={({ field }) => (
+                        <CippAutoComplete
+                          required
+                          creatable={false}
+                          multiple={false}
+                          defaultValue={"Select a bla"}
+                          options={["one", "two", "three"]}
+                          onChange={(e, nv) => field.onChange(nv)}
+                        />
+                      )}
+                    />
+                  );
+                case "textField":
+                  return (
+                    <TextField
+                      key={index}
+                      multiline={false}
+                      name={field.name}
+                      {...formHook.register(field.name)}
+                    />
+                  );
+                case "textArea":
+                  return (
+                    <TextField
+                      key={index}
+                      multiline
+                      rows={4}
+                      {...field}
+                      {...formHook.register(field.name)}
+                    />
+                  );
+                default:
+                  return null;
+              }
+            })}
         </DialogContent>
         <DialogContent>
           <>

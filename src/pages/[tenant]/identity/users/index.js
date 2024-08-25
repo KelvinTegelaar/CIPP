@@ -9,6 +9,7 @@ const Page = () => {
       type: "POST",
       url: "/api/ListUsers",
       data: { email: "userPrincipalName", displayName: "displayName" },
+      fields: [{ type: "autoComplete", name: "displayName" }],
       confirmText: "Are you sure you want to delete this user?",
       multiPost: false,
     },
