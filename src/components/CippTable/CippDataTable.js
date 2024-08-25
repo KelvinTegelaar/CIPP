@@ -1,12 +1,9 @@
 import { MaterialReactTable, useMaterialReactTable } from "material-react-table";
 import {
-  Alert,
   Card,
   CardContent,
   CardHeader,
-  Collapse,
   Divider,
-  IconButton,
   ListItemIcon,
   MenuItem,
   Skeleton,
@@ -19,8 +16,9 @@ import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { utilTableMode } from "./util-tablemode";
 import { utilColumnsFromAPI } from "./util-columnsFromAPI";
 import { CIPPTableToptoolbar } from "./CIPPTableToptoolbar";
-import { Close, More } from "@mui/icons-material";
+import { More } from "@mui/icons-material";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
+import { CippApiResults } from "../CippComponents/CippAPIResults";
 
 export const CippDataTable = (props) => {
   const {
@@ -82,7 +80,7 @@ export const CippDataTable = (props) => {
   //End columnsFromAPI logic
 
   const modeInfo = utilTableMode(columnVisibility, simple, actions);
-  //handleActionslogic logic
+
   const actionPostRequest = ApiPostCall({
     urlFromData: true,
     relatedQueryKeys: title,
@@ -97,9 +95,14 @@ export const CippDataTable = (props) => {
     ...getRequestInfo,
   });
 
-  const handleActionClick = (row, action, table) => {
-    setAlertVisible(true);
-
+  const handleActionClick = (
+    row,
+    action,
+    table,
+    actionPostRequest,
+    actionGetRequest,
+    setGetRequestInfo
+  ) => {
     const data = {};
     if (action.multiPost && Array.isArray(row)) {
       Object.keys(action.data).forEach((key) => {
@@ -124,12 +127,10 @@ export const CippDataTable = (props) => {
         url: action.url,
         waiting: true,
         queryKey: Date.now(),
-        data, // Include the data in the GET request
+        data,
       });
     }
   };
-
-  //end handleActionClick logic
 
   const table = useMaterialReactTable({
     mrtTheme: (theme) => ({
@@ -196,65 +197,8 @@ export const CippDataTable = (props) => {
                 exportEnabled={exportEnabled}
                 handleActionClick={handleActionClick}
               />
-              {actionPostRequest.isError && (
-                <Alert variant="outlined" severity="error">
-                  {console.log(actionPostRequest.error)}
-                  {actionPostRequest.error.response?.data?.result
-                    ? actionPostRequest.error.response?.data.result
-                    : actionPostRequest.error.message}
-                </Alert>
-              )}
-              {actionPostRequest.isSuccess && (
-                <Collapse in={alertVisible}>
-                  <Alert
-                    variant="outlined"
-                    action={
-                      <IconButton
-                        aria-label="close"
-                        color="inherit"
-                        size="small"
-                        onClick={() => {
-                          setAlertVisible((prev) => !prev);
-                        }}
-                      >
-                        <Close fontSize="inherit" />
-                      </IconButton>
-                    }
-                    severity="success"
-                  >
-                    {actionPostRequest.data?.data?.result}
-                  </Alert>
-                </Collapse>
-              )}
-              {actionGetRequest.isError && (
-                <Alert variant="outlined" severity="error">
-                  {actionGetRequest.error.data
-                    ? actionGetRequest.error.data.result
-                    : actionGetRequest.error.message}
-                </Alert>
-              )}
-              {actionGetRequest.isSuccess && (
-                <Collapse in={alertVisible}>
-                  <Alert
-                    variant="outlined"
-                    action={
-                      <IconButton
-                        aria-label="close"
-                        color="inherit"
-                        size="small"
-                        onClick={() => {
-                          setAlertVisible((prev) => !prev);
-                        }}
-                      >
-                        <Close fontSize="inherit" />
-                      </IconButton>
-                    }
-                    severity="success"
-                  >
-                    {actionGetRequest.data?.result}
-                  </Alert>
-                </Collapse>
-              )}
+              <CippApiResults apiObject={actionGetRequest} />
+              <CippApiResults apiObject={actionPostRequest} />
             </>
           )}
         </>

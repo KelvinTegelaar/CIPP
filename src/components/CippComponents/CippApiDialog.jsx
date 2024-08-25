@@ -1,17 +1,6 @@
-import {
-  Alert,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  SvgIcon,
-  Tooltip,
-} from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import { Stack } from "@mui/system";
-import CopyToClipboard from "react-copy-to-clipboard";
-import { CopyAll } from "@mui/icons-material";
+import { CippApiResults } from "./CippAPIResults";
 
 export const CippApiDialog = (props) => {
   const { createDialog, title, fields, api, ...other } = props;
@@ -25,18 +14,7 @@ export const CippApiDialog = (props) => {
         </DialogContent>
         <DialogContent>
           <>
-            <Alert severity="success">
-              This alert box should only show on success
-              <CopyToClipboard text={"hi my text here"}>
-                <Tooltip title="Copy to clipboard">
-                  <IconButton size="small">
-                    <SvgIcon>
-                      <CopyAll />
-                    </SvgIcon>
-                  </IconButton>
-                </Tooltip>
-              </CopyToClipboard>
-            </Alert>
+            <CippApiResults apiObject={api.apiObject} />
           </>
         </DialogContent>
         <DialogActions>

@@ -5,10 +5,10 @@ const Page = () => {
   const pageTitle = "Users";
   const actions = [
     {
-      label: "Delete User",
+      label: "User",
       type: "POST",
-      url: "api/DeleteUser",
-      data: { email: "DisplayName" },
+      url: "/api/ListUsers",
+      data: { email: "userPrincipalName" },
       confirmText: "Are you sure you want to delete this user?",
       multiPost: false,
     },
