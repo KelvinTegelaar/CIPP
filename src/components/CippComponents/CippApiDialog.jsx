@@ -30,6 +30,8 @@ export const CippApiDialog = (props) => {
   });
 
   const handleActionClick = (row, action, formData) => {
+    //this needs support for when row is an array and multupost is not set, in that case, we need to execute each request sequentially, like old cipp bulk commands.
+    //
     const data = {};
     if (action.multiPost && Array.isArray(row)) {
       Object.keys(action.data).forEach((key) => {
