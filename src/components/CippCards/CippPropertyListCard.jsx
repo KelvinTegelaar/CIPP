@@ -1,18 +1,4 @@
-import {
-  Alert,
-  Button,
-  Card,
-  CardHeader,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Divider,
-  IconButton,
-  Skeleton,
-  SvgIcon,
-  Tooltip,
-} from "@mui/material";
+import { Card, CardHeader, Divider, Skeleton, SvgIcon } from "@mui/material";
 import { ActionList } from "../../components/action-list";
 import { ActionListItem } from "../../components/action-list-item";
 import { PropertyList } from "../../components/property-list";

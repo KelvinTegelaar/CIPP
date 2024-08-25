@@ -12,6 +12,7 @@ export const CippAutoComplete = (props) => {
     name,
     options,
     onChange,
+    required = false,
     ...other
   } = props;
   const filter = createFilterOptions();
@@ -38,7 +39,7 @@ export const CippAutoComplete = (props) => {
       options={options}
       getOptionLabel={(option) => option.label || option}
       {...other}
-      renderInput={(params) => <TextField label={label} {...params} />}
+      renderInput={(params) => <TextField required={required} label={label} {...params} />}
     />
   );
 };

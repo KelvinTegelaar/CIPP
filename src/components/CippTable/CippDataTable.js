@@ -95,14 +95,7 @@ export const CippDataTable = (props) => {
     ...getRequestInfo,
   });
 
-  const handleActionClick = (
-    row,
-    action,
-    table,
-    actionPostRequest,
-    actionGetRequest,
-    setGetRequestInfo
-  ) => {
+  const handleActionClick = (row, action, table) => {
     const data = {};
     if (action.multiPost && Array.isArray(row)) {
       Object.keys(action.data).forEach((key) => {

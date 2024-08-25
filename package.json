@@ -53,6 +53,7 @@
     "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "18.2.0",
     "react-dropzone": "14.2.3",
+    "react-hook-form": "^7.53.0",
     "react-hot-toast": "2.4.0",
     "react-i18next": "12.1.4",
     "react-markdown": "8.0.5",

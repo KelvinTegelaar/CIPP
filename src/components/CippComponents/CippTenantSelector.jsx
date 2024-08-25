@@ -74,7 +74,7 @@ export const CippTenantSelector = (props) => {
         creatable={false}
         multiple={multiple}
         sx={{ width: 400 }}
-        defaultValue={tenantList.isError ? "Failed to retrieve tenants" : "Select a Tenant"}
+        defaultValue={tenantList.isError ? "Failed to retrieve tenants" : "Select a tenant"}
         onChange={(e, nv) => setSelectedTenant(nv)}
         options={
           tenantList.isSuccess &&
