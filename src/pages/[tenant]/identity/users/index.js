@@ -6,7 +6,7 @@ const Page = () => {
   const actions = [
     {
       label: "Magical test",
-      type: "POST",
+      type: "GET",
       url: "/api/ListUsers",
       data: { email: "userPrincipalName", displayName: "displayName" },
       fields: [{ type: "autoComplete", name: "displayName" }],
@@ -30,7 +30,7 @@ const Page = () => {
       "mail",
       "mobilePhone",
       "officePhone",
-      "jobtitle",
+      "jobTitle",
       "department",
       "city",
     ],

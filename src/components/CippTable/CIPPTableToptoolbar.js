@@ -1,7 +1,6 @@
 import { Sync } from "@mui/icons-material";
 import {
   Button,
-  CircularProgress,
   IconButton,
   ListItemIcon,
   ListItemText,
@@ -21,6 +20,9 @@ import { PDFExportButton } from "../pdfExportButton";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { usePopover } from "../../hooks/use-popover";
 import { CSVExportButton } from "../csvExportButton";
+import { useDialog } from "../../hooks/use-dialog";
+import { useState } from "react";
+import { CippApiDialog } from "../CippComponents/CippApiDialog";
 
 export const CIPPTableToptoolbar = ({
   table,
@@ -31,6 +33,8 @@ export const CIPPTableToptoolbar = ({
   exportEnabled,
 }) => {
   const popover = usePopover();
+  const createDialog = useDialog();
+  const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
 
   return (
     <>
@@ -106,10 +110,14 @@ export const CIPPTableToptoolbar = ({
                 >
                   {actions.map((action, index) => (
                     <MenuItem
-                      i
                       key={index}
                       onClick={() => {
-                        //handleActionClick(action);
+                        setActionData({
+                          data: table.getSelectedRowModel().rows.map((row) => row.original),
+                          action: action,
+                          ready: true,
+                        });
+                        createDialog.handleOpen();
                         popover.handleClose();
                       }}
                     >
@@ -124,6 +132,15 @@ export const CIPPTableToptoolbar = ({
         </Box>
       </Box>
       <Box>
+        {actionData.ready && (
+          <CippApiDialog
+            createDialog={createDialog}
+            title="Confirmation"
+            fields={actionData.action?.fields}
+            api={actionData.action}
+            row={actionData.data}
+          />
+        )}
         <MRT_ToolbarAlertBanner stackAlertBanner table={table} />
       </Box>
     </>
