@@ -1,7 +1,3 @@
----
-description: Enable Run From Package for lower costs
----
-
 # Run From Package Mode
 
 {% hint style="info" %}
