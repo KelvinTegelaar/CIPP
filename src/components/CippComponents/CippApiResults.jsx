@@ -17,7 +17,6 @@ export const CippApiResults = (props) => {
   const [fetchingVisible, setFetchingVisible] = useState(false);
 
   useEffect(() => {
-    console.log(apiObject);
     if (apiObject.isError) {
       setErrorVisible(true);
     }

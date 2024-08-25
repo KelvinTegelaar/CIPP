@@ -3,7 +3,6 @@ import { ActionList } from "../../components/action-list";
 import { ActionListItem } from "../../components/action-list-item";
 import { PropertyList } from "../../components/property-list";
 import { PropertyListItem } from "../../components/property-list-item";
-import { useRouter } from "next/router";
 import { useDialog } from "../../hooks/use-dialog";
 import { CippApiDialog } from "../CippComponents/CippApiDialog";
 
@@ -16,9 +15,9 @@ export const CippPropertyListCard = (props) => {
     title,
     actionButton,
     copyItems = false,
+    data,
     ...other
   } = props;
-  const router = useRouter();
   const createDialog = useDialog();
 
   return (
@@ -55,6 +54,7 @@ export const CippPropertyListCard = (props) => {
                 title="Confirmation"
                 fields={{ type: "textField", name: "input" }}
                 api={item}
+                row={data}
               />
             </>
           ))}

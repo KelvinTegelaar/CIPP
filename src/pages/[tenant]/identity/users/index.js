@@ -5,11 +5,19 @@ const Page = () => {
   const pageTitle = "Users";
   const actions = [
     {
-      label: "User",
+      label: "Magical test",
+      type: "POST",
+      url: "/api/ListUsers",
+      data: { email: "userPrincipalName", displayName: "displayName" },
+      confirmText: "Are you sure you want to delete this user?",
+      multiPost: false,
+    },
+    {
+      label: "dance test",
       type: "POST",
       url: "/api/ListUsers",
       data: { email: "userPrincipalName" },
-      confirmText: "Are you sure you want to delete this user?",
+      confirmText: "Are you sure you want to dance with this user?",
       multiPost: false,
     },
   ];

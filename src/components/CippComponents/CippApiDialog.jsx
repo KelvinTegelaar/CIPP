@@ -7,7 +7,7 @@ import { Controller, useForm } from "react-hook-form";
 import { CippAutoComplete } from "./CippAutocomplete";
 
 export const CippApiDialog = (props) => {
-  const { createDialog, title, fields, api, ...other } = props;
+  const { createDialog, title, fields, api, row, ...other } = props;
   const actionPostRequest = ApiPostCall({
     urlFromData: true,
     relatedQueryKeys: title,
@@ -22,7 +22,7 @@ export const CippApiDialog = (props) => {
     ...getRequestInfo,
   });
 
-  const handleActionClick = (row, action) => {
+  const handleActionClick = (row, action, formData) => {
     const data = {};
     if (action.multiPost && Array.isArray(row)) {
       Object.keys(action.data).forEach((key) => {
@@ -39,7 +39,7 @@ export const CippApiDialog = (props) => {
     }
 
     if (action.type === "POST") {
-      actionPostRequest.mutate({ url: action.url, ...data });
+      actionPostRequest.mutate({ url: action.url, ...data, ...formData });
     }
 
     if (action.type === "GET") {
@@ -52,12 +52,11 @@ export const CippApiDialog = (props) => {
     }
   };
   const formHook = useForm();
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = (data) => handleActionClick(row, api, data);
   return (
     <Dialog fullWidth maxWidth="sm" onClose={createDialog.handleClose} open={createDialog.open}>
       <form onSubmit={formHook.handleSubmit(onSubmit)}>
         <DialogTitle>{title}</DialogTitle>
-
         <DialogContent>
           <Stack spacing={3}>{api.confirmText}</Stack>
         </DialogContent>

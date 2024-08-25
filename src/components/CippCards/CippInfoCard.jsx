@@ -35,7 +35,6 @@ export const CippInfoCard = (props) => {
           <Typography variant="h6">{isFetching ? <Skeleton width={200} /> : value}</Typography>
         </div>
       </Stack>
-      {console.log(actionLink)}
       {actionLink && (
         <>
           <Divider />

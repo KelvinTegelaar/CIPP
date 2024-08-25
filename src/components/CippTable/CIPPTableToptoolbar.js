@@ -29,7 +29,6 @@ export const CIPPTableToptoolbar = ({
   title,
   actions,
   exportEnabled,
-  handleActionClick,
 }) => {
   const popover = usePopover();
 
@@ -110,17 +109,7 @@ export const CIPPTableToptoolbar = ({
                       i
                       key={index}
                       onClick={() => {
-                        //if actions.multipost is set, then use multipost.data to send the correct data.
-                        if (action.multiPost) {
-                          const selectedRows = table
-                            .getSelectedRowModel()
-                            .rows.map((row) => row.original);
-                          handleActionClick(selectedRows, action, table);
-                        } else {
-                          table.getSelectedRowModel().rows.forEach((row) => {
-                            handleActionClick(row.original, action, table);
-                          });
-                        }
+                        //handleActionClick(action);
                         popover.handleClose();
                       }}
                     >

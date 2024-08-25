@@ -12,13 +12,14 @@ import { ResourceUnavailable } from "../resource-unavailable";
 import { ResourceError } from "../resource-error";
 import { Scrollbar } from "../scrollbar";
 import { useEffect, useState } from "react";
-import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
+import { ApiGetCall } from "../../api/ApiCall";
 import { utilTableMode } from "./util-tablemode";
 import { utilColumnsFromAPI } from "./util-columnsFromAPI";
 import { CIPPTableToptoolbar } from "./CIPPTableToptoolbar";
 import { More } from "@mui/icons-material";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
-import { CippApiResults } from "../CippComponents/CippAPIResults";
+import { useDialog } from "../../hooks/use-dialog";
+import { CippApiDialog } from "../CippComponents/CippApiDialog";
 
 export const CippDataTable = (props) => {
   const {
@@ -54,6 +55,7 @@ export const CippDataTable = (props) => {
   const [usedData, setUsedData] = useState(data);
   const [offcanvasVisble, setOffcanvasVisible] = useState(false);
   const [offCanvasData, setOffCanvasData] = useState({});
+  const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
 
   useEffect(() => {
     if (getRequestData.isSuccess) {
@@ -65,8 +67,6 @@ export const CippDataTable = (props) => {
     }
   }, [getRequestData.isSuccess, getRequestData.data]);
   const [usedColumns, setUsedColumns] = useState(columns);
-  const [alertVisible, setAlertVisible] = useState(true);
-
   //Start columnsFromAPI logic
   useEffect(() => {
     if (columnsFromApi && Array.isArray(usedData) && typeof usedData[0] === "object") {
@@ -80,50 +80,7 @@ export const CippDataTable = (props) => {
   //End columnsFromAPI logic
 
   const modeInfo = utilTableMode(columnVisibility, simple, actions);
-
-  const actionPostRequest = ApiPostCall({
-    urlFromData: true,
-    relatedQueryKeys: title,
-  });
-  const [getRequestInfo, setGetRequestInfo] = useState({
-    url: "",
-    waiting: false,
-    queryKey: "",
-  });
-
-  const actionGetRequest = ApiGetCall({
-    ...getRequestInfo,
-  });
-
-  const handleActionClick = (row, action, table) => {
-    const data = {};
-    if (action.multiPost && Array.isArray(row)) {
-      Object.keys(action.data).forEach((key) => {
-        data[key] = row.map((singleRow) => {
-          const value = singleRow[action.data[key]];
-          return value !== undefined ? value : action.data[key];
-        });
-      });
-    } else {
-      Object.keys(action.data).forEach((key) => {
-        const value = row[action.data[key]];
-        data[key] = value !== undefined ? value : action.data[key];
-      });
-    }
-
-    if (action.type === "POST") {
-      actionPostRequest.mutate({ url: action.url, ...data });
-    }
-
-    if (action.type === "GET") {
-      setGetRequestInfo({
-        url: action.url,
-        waiting: true,
-        queryKey: Date.now(),
-        data,
-      });
-    }
-  };
+  const createDialog = useDialog();
 
   const table = useMaterialReactTable({
     mrtTheme: (theme) => ({
@@ -139,7 +96,12 @@ export const CippDataTable = (props) => {
             <MenuItem
               key={index}
               onClick={() => {
-                handleActionClick(row.original, action, table, actionGetRequest, actionPostRequest);
+                setActionData({
+                  data: row.original,
+                  action: action,
+                  ready: true,
+                });
+                createDialog.handleOpen();
                 closeMenu();
               }}
             >
@@ -188,10 +150,7 @@ export const CippDataTable = (props) => {
                 title={title}
                 actions={actions}
                 exportEnabled={exportEnabled}
-                handleActionClick={handleActionClick}
               />
-              <CippApiResults apiObject={actionGetRequest} />
-              <CippApiResults apiObject={actionPostRequest} />
             </>
           )}
         </>
@@ -244,6 +203,15 @@ export const CippDataTable = (props) => {
         extendedInfoFields={offCanvas?.extendedInfoFields}
         actions={actions}
       />
+      {actionData.ready && (
+        <CippApiDialog
+          createDialog={createDialog}
+          title="Confirmation"
+          fields={actionData.action?.fields}
+          api={actionData.action}
+          row={actionData.data}
+        />
+      )}
     </Card>
   );
 };

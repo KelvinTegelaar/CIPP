@@ -6,7 +6,6 @@ import { ApiPostCall } from "../api/ApiCall";
 
 export const BulkActionsMenu = (props) => {
   const { disabled, onArchive, onDelete, selectedCount = 0, sx, row, actions, ...other } = props;
-  console.log(row);
   const popover = usePopover();
   const deleteRequest = ApiPostCall({
     url: "/api/DeleteDevices",
