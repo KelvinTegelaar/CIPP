@@ -37,7 +37,7 @@ const OneDriveList = () => {
                 TenantFilter: tenant.defaultDomainName,
                 RemovePermission: false,
               },
-              modalUrl: `/api/ExecSharePointOwner`,
+              modalUrl: `/api/ExecSharePointPerms`,
               modalDropdown: {
                 url: `/api/listUsers?TenantFilter=${tenant.defaultDomainName}`,
                 labelField: 'displayName',
@@ -55,7 +55,7 @@ const OneDriveList = () => {
                 TenantFilter: tenant.defaultDomainName,
                 RemovePermission: true,
               },
-              modalUrl: `/api/ExecSharePointOwner`,
+              modalUrl: `/api/ExecSharePointPerms`,
               modalDropdown: {
                 url: `/api/listUsers?TenantFilter=${tenant.defaultDomainName}`,
                 labelField: 'displayName',
