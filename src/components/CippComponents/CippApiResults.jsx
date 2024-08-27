@@ -8,20 +8,39 @@ export const CippApiResults = (props) => {
   const [errorVisible, setErrorVisible] = useState(false);
   const [successVisible, setSuccessVisible] = useState(false);
   const [fetchingVisible, setFetchingVisible] = useState(false);
+  const [partialResults, setPartialResults] = useState([]);
 
   useEffect(() => {
     if (apiObject.isError) {
       setErrorVisible(true);
+    } else {
+      setErrorVisible(false);
     }
-    if (apiObject.isSuccess) {
-      setSuccessVisible(true);
-    }
+
     if (apiObject.isFetching || (apiObject.isIdle === false && apiObject.isPending === true)) {
       setFetchingVisible(true);
     } else {
       setFetchingVisible(false);
     }
-  }, [apiObject.isError, apiObject.isSuccess, apiObject.isFetching, apiObject.isPending]);
+
+    if (apiObject.isSuccess || partialResults.length > 0) {
+      setSuccessVisible(true);
+    } else {
+      setSuccessVisible(false);
+    }
+  }, [
+    apiObject.isError,
+    apiObject.isSuccess,
+    apiObject.isFetching,
+    apiObject.isPending,
+    partialResults.length,
+  ]);
+
+  useEffect(() => {
+    if (apiObject.data && Array.isArray(apiObject.data)) {
+      setPartialResults(apiObject.data); // Simply set the new array
+    }
+  }, [apiObject.data]);
 
   return (
     <>
@@ -40,7 +59,7 @@ export const CippApiResults = (props) => {
             </IconButton>
           }
           variant="outlined"
-          severity="success"
+          severity="info"
         >
           <Typography variant="body2">
             <CircularProgress size={20} /> Loading...
@@ -72,7 +91,7 @@ export const CippApiResults = (props) => {
         )}
       </Collapse>
       <Collapse in={successVisible}>
-        {apiObject.isSuccess && (
+        {apiObject.data && (
           <Alert
             variant="filled"
             severity="success"
@@ -89,7 +108,14 @@ export const CippApiResults = (props) => {
               </IconButton>
             }
           >
-            {apiObject.data?.data?.result}
+            <ul>
+              {partialResults.map((result, index) => (
+                <li key={index}>
+                  {result.Results} THIS API IS CURRENTLY RETURNING A SINGLE OBJECT MESSAGE AND NEEDS
+                  TO BE CHANGED TO RETURN AN ARRAY WITH OBJECTS: results, copyInfo
+                </li>
+              ))}
+            </ul>
           </Alert>
         )}
       </Collapse>

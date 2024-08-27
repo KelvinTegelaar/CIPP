@@ -6,10 +6,10 @@ const Page = () => {
   const actions = [
     {
       label: "Magical test",
-      type: "GET",
-      url: "/api/ListUsers",
-      data: { email: "userPrincipalName", displayName: "displayName" },
-      fields: [{ type: "autoComplete", name: "displayName" }],
+      type: "POST",
+      url: "/api/ExecSetOOO",
+      data: { User: "userPrincipalName", AutoReplyState: "Enabled" },
+      fields: [{ type: "textArea", name: "input" }],
       confirmText: "Are you sure you want to delete this user?",
       multiPost: false,
     },

@@ -15,53 +15,93 @@ import { CippAutoComplete } from "./CippAutocomplete";
 
 export const CippApiDialog = (props) => {
   const { createDialog, title, fields, api, row, ...other } = props;
-  const actionPostRequest = ApiPostCall({
-    urlFromData: true,
-    relatedQueryKeys: title,
-  });
+
+  const [partialResults, setPartialResults] = useState([]);
   const [getRequestInfo, setGetRequestInfo] = useState({
     url: "",
     waiting: false,
     queryKey: "",
   });
 
+  const actionPostRequest = ApiPostCall({
+    urlFromData: true,
+    relatedQueryKeys: title,
+    bulkRequest: api.multiPost === false,
+    onResult: (result) => {
+      setPartialResults((prevResults) => [...prevResults, result]);
+    },
+  });
+
   const actionGetRequest = ApiGetCall({
     ...getRequestInfo,
+    onResult: (result) => {
+      setPartialResults((prevResults) => [...prevResults, result]);
+    },
   });
 
   const handleActionClick = (row, action, formData) => {
-    //this needs support for when row is an array and multupost is not set, in that case, we need to execute each request sequentially, like old cipp bulk commands.
-    //
     const data = {};
-    if (action.multiPost && Array.isArray(row)) {
-      Object.keys(action.data).forEach((key) => {
-        data[key] = row.map((singleRow) => {
+
+    if (Array.isArray(row) && action.multiPost === false) {
+      // Handle bulk requests when row is an array and multiPost is false
+      const bulkData = row.map((singleRow) => {
+        const elementData = {};
+        Object.keys(action.data).forEach((key) => {
           const value = singleRow[action.data[key]];
-          return value !== undefined ? value : action.data[key];
+          elementData[key] = value !== undefined ? value : action.data[key];
         });
+        return { ...elementData, ...formData };
       });
+
+      if (action.type === "POST") {
+        actionPostRequest.mutate({
+          url: action.url,
+          bulkRequest: true,
+          data: bulkData,
+        });
+      } else if (action.type === "GET") {
+        setGetRequestInfo({
+          url: action.url,
+          waiting: true,
+          queryKey: Date.now(),
+          data: bulkData,
+          bulkRequest: true,
+        });
+      }
     } else {
+      // Original handling for single request or when multiPost is true
       Object.keys(action.data).forEach((key) => {
-        const value = row[action.data[key]];
-        data[key] = value !== undefined ? value : action.data[key];
+        if (Array.isArray(row) && action.multiPost) {
+          data[key] = row.map((singleRow) => {
+            const value = singleRow[action.data[key]];
+            return value !== undefined ? value : action.data[key];
+          });
+        } else {
+          const value = row[action.data[key]];
+          data[key] = value !== undefined ? value : action.data[key];
+        }
       });
-    }
 
-    if (action.type === "POST") {
-      actionPostRequest.mutate({ url: action.url, ...data, ...formData });
-    }
-
-    if (action.type === "GET") {
-      setGetRequestInfo({
-        url: action.url,
-        waiting: true,
-        queryKey: Date.now(),
-        data,
-      });
+      if (action.type === "POST") {
+        actionPostRequest.mutate({
+          url: action.url,
+          data: { ...data, ...formData },
+        });
+      } else if (action.type === "GET") {
+        setGetRequestInfo({
+          url: action.url,
+          waiting: true,
+          queryKey: Date.now(),
+          data: { ...data, ...formData },
+          bulkRequest: action.multiPost,
+        });
+      }
     }
   };
+
   const formHook = useForm();
   const onSubmit = (data) => handleActionClick(row, api, data);
+  const selectedType = api.type === "POST" ? actionPostRequest : actionGetRequest;
   return (
     <Dialog fullWidth maxWidth="sm" onClose={createDialog.handleClose} open={createDialog.open}>
       <form onSubmit={formHook.handleSubmit(onSubmit)}>
@@ -96,6 +136,7 @@ export const CippApiDialog = (props) => {
                     <TextField
                       key={index}
                       multiline={false}
+                      fullWidth
                       name={field.name}
                       {...formHook.register(field.name)}
                     />
@@ -105,6 +146,7 @@ export const CippApiDialog = (props) => {
                     <TextField
                       key={index}
                       multiline
+                      fullWidth
                       rows={4}
                       {...field}
                       {...formHook.register(field.name)}
@@ -117,8 +159,7 @@ export const CippApiDialog = (props) => {
         </DialogContent>
         <DialogContent>
           <>
-            <CippApiResults apiObject={actionPostRequest} />
-            <CippApiResults apiObject={actionGetRequest} />
+            <CippApiResults apiObject={{ ...selectedType, data: partialResults }} />
           </>
         </DialogContent>
         <DialogActions>

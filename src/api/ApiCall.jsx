@@ -1,49 +1,92 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
-export function ApiGetCall({ url, queryKey, waiting = true, retry = 3, data }) {
-  //Todo: add errorMiddleware toast popup, but only after last retry has failed.
+export function ApiGetCall({
+  url,
+  queryKey,
+  waiting = true,
+  retry = 3,
+  data,
+  bulkRequest = false,
+  onResult, // Add a callback to handle each result as it arrives
+}) {
   const queryInfo = useQuery({
     enabled: waiting,
     queryKey: [queryKey],
     queryFn: async ({ signal }) => {
-      const response = await axios.get(url, {
-        signal: url === "/api/tenantFilter" ? null : signal,
-        params: data,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        retry: retry,
-      });
-      return response.data;
+      if (bulkRequest && Array.isArray(data)) {
+        const results = [];
+        for (let i = 0; i < data.length; i++) {
+          const element = data[i];
+          const response = await axios.get(url, {
+            signal: signal,
+            params: element,
+            headers: {
+              "Content-Type": "application/json",
+            },
+            retry: retry,
+          });
+          results.push(response.data);
+          if (onResult) {
+            onResult(response.data); // Emit each result as it arrives
+          }
+        }
+        return results;
+      } else {
+        const response = await axios.get(url, {
+          signal: url === "/api/tenantFilter" ? null : signal,
+          params: data,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          retry: retry,
+        });
+        return response.data;
+      }
     },
-    //set staletime to 10 minutes for all get queries.
-    staleTime: 600000,
+    staleTime: 600000, // 10 minutes
     refetchOnWindowFocus: false,
     retry: retry,
   });
+
   return queryInfo;
 }
 
-export function ApiPostCall({ url, relatedQueryKeys, urlFromData = false }) {
-  //Todo: add errorMiddleware toast popup.
+export function ApiPostCall({
+  relatedQueryKeys,
+  onResult, // Add a callback to handle each result as it arrives
+}) {
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: async (data) => {
-      if (urlFromData) {
-        url = data.url;
-        delete data.url;
+    mutationFn: async ({ url, bulkRequest, data }) => {
+      if (bulkRequest && Array.isArray(data)) {
+        const results = [];
+        for (let i = 0; i < data.length; i++) {
+          let element = data[i];
+          const response = await axios.post(url, element);
+          results.push(response);
+          if (onResult) {
+            onResult(response.data); // Emit each result as it arrives
+          }
+        }
+        return results;
+      } else {
+        const response = await axios.post(url, data);
+        if (onResult) {
+          onResult(response.data); // Emit each result as it arrives
+        }
+        return response;
       }
-      return axios.post(url, data);
     },
     onSuccess: () => {
       if (relatedQueryKeys) {
-        //take a one second break to let the API finish, then clear related caches.
+        // Take a one-second break to let the API finish, then clear related caches.
         setTimeout(() => {
           queryClient.invalidateQueries({ queryKey: [relatedQueryKeys] });
         }, 1000);
       }
     },
   });
+
   return mutation;
 }
