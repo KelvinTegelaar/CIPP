@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { CippAutoComplete } from "../CippComponents/CippAutocomplete";
 import { ApiGetCall } from "../../api/ApiCall";
-import { IconButton, SvgIcon, Tooltip } from "@mui/material";
+import { IconButton, SvgIcon, Tooltip, Box } from "@mui/material";
 import { FilePresent, Laptop, Mail, Refresh, Share, Shield, ShieldMoon } from "@mui/icons-material";
 import {
   BuildingOfficeIcon,
@@ -57,58 +57,68 @@ export const CippTenantSelector = (props) => {
 
   return (
     <>
-      {tenantButton && (
-        <IconButton
-          aria-label="tenantOffCanvas"
-          color="inherit"
-          size="small"
-          onClick={() => {
-            setOffcanvasVisible(true);
-          }}
-        >
-          <Tooltip title="Show Tenant Information">
-            <SvgIcon>
-              <BuildingOfficeIcon fontSize="inherit" />
-            </SvgIcon>
-          </Tooltip>
-        </IconButton>
-      )}
-      <CippAutoComplete
-        disabled={tenantList.isFetching || tenantList.isError}
-        isFetching={tenantList.isFetching}
-        disableClearable={true}
-        creatable={false}
-        multiple={multiple}
-        sx={{ width: 400 }}
-        placeholder="Select a tenant"
-        defaultValue={currentTenant.label}
-        onChange={(e, nv) => setSelectedTenant(nv)}
-        options={
-          tenantList.isSuccess
-            ? tenantList.data.map(({ customerId, displayName, defaultDomainName }) => ({
-                value: defaultDomainName,
-                label: `${displayName} (${defaultDomainName})`,
-              }))
-            : []
-        }
-      />
-      {refreshButton && (
-        <IconButton
-          aria-label="refresh"
-          disabled={tenantList.isFetching}
-          color="inherit"
-          size="small"
-          onClick={() => {
-            tenantList.refetch();
-          }}
-        >
-          <Tooltip title="Refresh tenant list">
-            <SvgIcon>
-              <Refresh fontSize="inherit" />
-            </SvgIcon>
-          </Tooltip>
-        </IconButton>
-      )}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          "& > *": {
+            mx: "1px", // 1px margin between the elements
+          },
+        }}
+      >
+        {tenantButton && (
+          <IconButton
+            aria-label="tenantOffCanvas"
+            color="inherit"
+            size="small"
+            onClick={() => {
+              setOffcanvasVisible(true);
+            }}
+          >
+            <Tooltip title="Show Tenant Information">
+              <SvgIcon>
+                <BuildingOfficeIcon fontSize="inherit" />
+              </SvgIcon>
+            </Tooltip>
+          </IconButton>
+        )}
+        <CippAutoComplete
+          disabled={tenantList.isFetching || tenantList.isError}
+          isFetching={tenantList.isFetching}
+          disableClearable={true}
+          creatable={false}
+          multiple={multiple}
+          sx={{ width: 400 }}
+          placeholder="Select a tenant"
+          defaultValue={currentTenant.label}
+          onChange={(e, nv) => setSelectedTenant(nv)}
+          options={
+            tenantList.isSuccess
+              ? tenantList.data.map(({ customerId, displayName, defaultDomainName }) => ({
+                  value: defaultDomainName,
+                  label: `${displayName} (${defaultDomainName})`,
+                }))
+              : []
+          }
+        />
+        {refreshButton && (
+          <IconButton
+            aria-label="refresh"
+            disabled={tenantList.isFetching}
+            color="inherit"
+            size="small"
+            onClick={() => {
+              tenantList.refetch();
+            }}
+          >
+            <Tooltip title="Refresh tenant list">
+              <SvgIcon>
+                <Refresh fontSize="inherit" />
+              </SvgIcon>
+            </Tooltip>
+          </IconButton>
+        )}
+      </Box>
       <CippOffCanvas
         isFetching={tenantDetails.isFetching}
         visible={offcanvasVisble}
@@ -179,4 +189,6 @@ export const CippTenantSelector = (props) => {
 CippTenantSelector.propTypes = {
   allTenants: PropTypes.bool,
   multiple: PropTypes.bool,
+  refreshButton: PropTypes.bool,
+  tenantButton: PropTypes.bool,
 };

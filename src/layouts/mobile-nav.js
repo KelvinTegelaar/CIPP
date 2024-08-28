@@ -7,6 +7,7 @@ import { Scrollbar } from "../components/scrollbar";
 import { paths } from "../paths";
 import { items } from "./config";
 import { MobileNavItem } from "./mobile-nav-item";
+import { CippTenantSelector } from "../components/CippComponents/CippTenantSelector";
 
 const MOBILE_NAV_WIDTH = 280;
 
@@ -115,6 +116,8 @@ export const MobileNav = (props) => {
             <Logo />
           </Box>
         </Box>
+        <CippTenantSelector refreshButton={true} tenantButton={false} />
+
         <Box
           component="nav"
           sx={{

@@ -12,7 +12,7 @@ export const PDFExportButton = (props) => {
     const size = "A3"; // Use A1, A2, A3 or A4
     const orientation = "landscape"; // portrait or landscape
     const doc = new jsPDF(orientation, unit, size);
-    const tableData = rows.map((row) => console.log(row.original));
+    const tableData = rows.map((row) => row.original);
     const exportColumns = columns.map((c) => ({ header: c.header, dataKey: c.accessorKey }));
     let content = {
       startY: 100,
@@ -23,7 +23,7 @@ export const PDFExportButton = (props) => {
     };
     autoTable(doc, content);
 
-    doc.save(reportName);
+    doc.save(`${reportName}.pdf`);
   };
   return (
     <Tooltip title="Export to PDF">

@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import PropTypes from "prop-types";
-import ChevronLeftIcon from "@heroicons/react/24/outline/ChevronLeftIcon";
-import ChevronRightIcon from "@heroicons/react/24/outline/ChevronRightIcon";
-import { Box, Divider, Drawer, IconButton, Stack, SvgIcon } from "@mui/material";
+import { Box, Divider, Drawer, Stack } from "@mui/material";
 import { Scrollbar } from "../components/scrollbar";
 import { items } from "./config";
 import { SideNavItem } from "./side-nav-item";
