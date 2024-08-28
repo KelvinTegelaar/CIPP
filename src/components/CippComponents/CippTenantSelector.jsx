@@ -23,7 +23,13 @@ export const CippTenantSelector = (props) => {
 
   const router = useRouter();
   const { tenant } = router.query; // Destructure to get the slug
-  const [currentTenant, setSelectedTenant] = useState({ value: tenant });
+  const [currentTenant, setSelectedTenant] = useState({
+    value: tenant,
+    label: tenantList.isSuccess
+      ? tenantList.data.find(({ defaultDomainName }) => defaultDomainName === tenant)?.displayName +
+        ` (${tenant})`
+      : tenant,
+  });
   const [offcanvasVisble, setOffcanvasVisible] = useState(false);
 
   const tenantDetails = ApiGetCall({
@@ -74,14 +80,16 @@ export const CippTenantSelector = (props) => {
         creatable={false}
         multiple={multiple}
         sx={{ width: 400 }}
-        defaultValue={tenantList.isError ? "Failed to retrieve tenants" : "Select a tenant"}
+        placeholder="Select a tenant"
+        defaultValue={currentTenant.label}
         onChange={(e, nv) => setSelectedTenant(nv)}
         options={
-          tenantList.isSuccess &&
-          tenantList.data.map(({ customerId, displayName, defaultDomainName }) => ({
-            value: defaultDomainName,
-            label: `${displayName} (${defaultDomainName})`,
-          }))
+          tenantList.isSuccess
+            ? tenantList.data.map(({ customerId, displayName, defaultDomainName }) => ({
+                value: defaultDomainName,
+                label: `${displayName} (${defaultDomainName})`,
+              }))
+            : []
         }
       />
       {refreshButton && (

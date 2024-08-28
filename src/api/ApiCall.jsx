@@ -10,6 +10,8 @@ export function ApiGetCall({
   bulkRequest = false,
   onResult, // Add a callback to handle each result as it arrives
 }) {
+  //todo: errorToasts when enabled.
+  //todo: load first page, inject other data with later load, invisible pagiantion.
   const queryInfo = useQuery({
     enabled: waiting,
     queryKey: [queryKey],

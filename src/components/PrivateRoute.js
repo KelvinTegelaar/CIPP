@@ -1,5 +1,6 @@
-import { ApiGetCall } from '../api/ApiCall.jsx'
-import UnauthenticatedPage from '../pages/unauthenticated.js'
+import { ApiGetCall } from "../api/ApiCall.jsx";
+import FullPageLoading from "../pages/fullPageLoading.js";
+import UnauthenticatedPage from "../pages/unauthenticated.js";
 
 export const PrivateRoute = ({ children, routeType }) => {
   const {
@@ -7,28 +8,28 @@ export const PrivateRoute = ({ children, routeType }) => {
     error,
     isFetching,
   } = ApiGetCall({
-    url: '/.auth/me',
-    queryKey: 'authmecipp',
-  })
+    url: "/.auth/me",
+    queryKey: "authmecipp",
+  });
   if (isFetching) {
-    return 'Loading...'
+    return <FullPageLoading />;
   }
 
-  let roles = null
+  let roles = null;
   if (null !== profile?.clientPrincipal) {
-    roles = profile?.clientPrincipal.userRoles
+    roles = profile?.clientPrincipal.userRoles;
   } else if (null === profile?.clientPrincipal) {
-    return <UnauthenticatedPage />
+    return <UnauthenticatedPage />;
   }
   if (null === roles) {
-    return <UnauthenticatedPage />
+    return <UnauthenticatedPage />;
   } else {
-    const isAuthenticated = roles.includes('authenticated') && !error
-    const isAdmin = roles.includes('admin')
-    if (routeType === 'admin') {
-      return !isAdmin ? <UnauthenticatedPage /> : children
+    const isAuthenticated = roles.includes("authenticated") && !error;
+    const isAdmin = roles.includes("admin");
+    if (routeType === "admin") {
+      return !isAdmin ? <UnauthenticatedPage /> : children;
     } else {
-      return !isAuthenticated ? <UnauthenticatedPage /> : children
+      return !isAuthenticated ? <UnauthenticatedPage /> : children;
     }
   }
-}
+};

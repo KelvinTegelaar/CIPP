@@ -94,7 +94,7 @@ export const CippDataTable = (props) => {
       ? ({ closeMenu, row, table }) => [
           actions.map((action, index) => (
             <MenuItem
-              key={index}
+              key={`actions-list-row-${index}`}
               onClick={() => {
                 setActionData({
                   data: row.original,
@@ -111,6 +111,7 @@ export const CippDataTable = (props) => {
           )),
           offCanvas && (
             <MenuItem
+              key={`actions-list-row-more`}
               onClick={() => {
                 closeMenu();
                 setOffCanvasData(row.original);
