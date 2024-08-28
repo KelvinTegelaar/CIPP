@@ -49,21 +49,40 @@ const Container = styled.div`
   transition: border 0.24s ease-in-out;
 `
 
-const CippDropzone = ({ title, onDrop, dropMessage, accept, maxFiles = 1, ...props }) => {
+const CippDropzone = ({
+  title,
+  onDrop,
+  dropMessage,
+  accept,
+  maxFiles = 1,
+  returnCard = true,
+  ...props
+}) => {
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } = useDropzone({
     onDrop,
     accept: accept,
     maxFiles: maxFiles,
   })
   return (
-    <CippContentCard title={title} {...props}>
-      <div className="container my-2">
-        <Container {...getRootProps({ isFocused, isDragAccept, isDragReject })}>
-          <input {...getInputProps()} />
-          <span>{dropMessage}</span>
-        </Container>
-      </div>
-    </CippContentCard>
+    <>
+      {returnCard ? (
+        <CippContentCard title={title} {...props}>
+          <div className="container my-2">
+            <Container {...getRootProps({ isFocused, isDragAccept, isDragReject })}>
+              <input {...getInputProps()} />
+              <span>{dropMessage}</span>
+            </Container>
+          </div>
+        </CippContentCard>
+      ) : (
+        <div className="container my-2">
+          <Container {...getRootProps({ isFocused, isDragAccept, isDragReject })}>
+            <input {...getInputProps()} />
+            <span>{dropMessage}</span>
+          </Container>
+        </div>
+      )}
+    </>
   )
 }
 
@@ -73,6 +92,7 @@ CippDropzone.propTypes = {
   dropMessage: PropTypes.string,
   accept: PropTypes.object,
   maxFiles: PropTypes.number,
+  returnCard: PropTypes.bool,
 }
 
 export default CippDropzone
