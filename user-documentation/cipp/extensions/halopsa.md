@@ -27,6 +27,14 @@ Enter the information found in **Settings** > **CIPP** > **Extensions Settings**
 
 After entering the credentials, click **Test Extension.** If the test is successful Alerts will automatically become a HaloPSA ticket.
 
+#### Ticket Type
+To get the Ticket Type ID, follow these steps:
+1. Navigate to Configuration -> Tickets -> Ticket Type
+2. Click on the desired ticket type and then the URL will display the ticket type ID.
+
+Example:
+https://{halo instance url}/config/tickets/tickettype?id=**1**
+
 ### Feature Requests / Ideas
 
 Please raise any [feature requests](https://github.com/KelvinTegelaar/CIPP/issues/new?assignees=\&labels=enhancement%2Cno-priority\&projects=\&template=feature.yml\&title=%5BFeature+Request%5D%3A+) on GitHub.
