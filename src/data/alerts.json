@@ -32,19 +32,6 @@
   {
     "name": "InactiveLicensedUsers",
     "label": "Alert on licensed users that have not logged in for 90 days",
-    "requiresInput": true,
-    "inputType": "switch",
-    "inputLabel": "Exclude disabled users?",
-    "inputName": "InactiveLicensedUsersExcludeDisabled",
-    "recommendedRunInterval": "1d"
-  },
-  {
-    "name": "EntraConnectSyncStatus",
-    "label": "Alert if Entra Connect sync is enabled and has not run in the last X hours",
-    "requiresInput": true,
-    "inputType": "number",
-    "inputLabel": "Hours(Default:72)",
-    "inputName": "EntraConnectSyncStatusHours",
     "recommendedRunInterval": "1d"
   },
   {
