@@ -195,7 +195,7 @@ const MailboxPermissions = () => {
     params: {
       Endpoint: 'users',
       TenantFilter: tenantDomain,
-      $filter: 'assignedLicenses/$count ne 0 and accountEnabled eq true',
+      $filter: "assignedLicenses/$count ne 0 and accountEnabled eq true and userType eq 'Member'",
       $count: true,
     },
   })
@@ -586,7 +586,7 @@ const MailboxForwarding = () => {
     params: {
       Endpoint: 'users',
       TenantFilter: tenantDomain,
-      $filter: "userType eq 'Member' and mail ge ' '", // filter out guests and users with no mailbox. #HACK "mail ne 'null'" does not work so this horrible hack is required
+      $filter: "userType eq 'Member' and proxyAddresses/$count ne 0",
     },
   })
   useEffect(() => {
@@ -803,19 +803,6 @@ const OutOfOffice = () => {
     error: userError,
   } = useListMailboxPermissionsQuery({ tenantDomain, userId })
 
-  const {
-    data: users = [],
-    isFetching: usersIsFetching,
-    error: usersError,
-  } = useGenericGetRequestQuery({
-    path: '/api/ListGraphRequest',
-    params: {
-      Endpoint: 'users',
-      TenantFilter: tenantDomain,
-      $filter: 'assignedLicenses/$count ne 0 and accountEnabled eq true',
-      $count: true,
-    },
-  })
   useEffect(() => {
     if (postResults.isSuccess) {
       // @TODO do something here?
@@ -865,9 +852,9 @@ const OutOfOffice = () => {
           )}
           <CRow>
             <CCol className="mb-3">
-              {usersIsFetching && <CSpinner />}
+              {userIsFetching && <CSpinner />}
               {userError && <span>Error loading user</span>}
-              {!usersIsFetching && (
+              {!userIsFetching && (
                 <Form
                   initialValues={{ ...initialState }}
                   onSubmit={onSubmit}
