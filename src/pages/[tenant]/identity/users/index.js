@@ -39,16 +39,6 @@ const Page = () => {
   return (
     <CippTablePage
       title={pageTitle}
-      columns={[
-        {
-          header: "Display Name",
-          accessorKey: "displayName",
-        },
-        {
-          header: "userPrincipalName",
-          accessorKey: "userPrincipalName",
-        },
-      ]}
       apiUrl="/api/ListUsers"
       actions={actions}
       offCanvas={offCanvas}

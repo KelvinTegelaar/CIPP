@@ -8,6 +8,7 @@ export const CippAutoComplete = (props) => {
     multiple = true,
     creatable = true,
     defaultValue,
+    value,
     placeholder,
     disableClearable,
     name,
@@ -20,9 +21,11 @@ export const CippAutoComplete = (props) => {
   const filter = createFilterOptions();
   return (
     <Autocomplete
+      key={defaultValue}
       popupIcon={
         props.isFetching ? <CircularProgress color="inherit" size={20} /> : <ArrowDropDown />
       }
+      value={value}
       filterSelectedOptions
       disableClearable={disableClearable}
       multiple={multiple}

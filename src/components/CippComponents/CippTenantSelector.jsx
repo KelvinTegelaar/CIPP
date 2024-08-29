@@ -90,7 +90,7 @@ export const CippTenantSelector = (props) => {
           multiple={multiple}
           sx={{ width: 400 }}
           placeholder="Select a tenant"
-          defaultValue={currentTenant.label}
+          value={currentTenant.label ? currentTenant : "Select a tenant"}
           onChange={(e, nv) => setSelectedTenant(nv)}
           options={
             tenantList.isSuccess

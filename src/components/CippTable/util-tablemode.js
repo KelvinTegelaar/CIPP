@@ -14,6 +14,7 @@ export const utilTableMode = (columnVisibility, mode, actions) => {
       enableRowSelection: true,
       enableRowActions: actions ? true : false,
       enableSelectAll: true,
+      enableStickyHeader: true,
       selectAllMode: "all",
       initialState: {
         columnVisibility: { ...columnVisibility },
@@ -23,11 +24,6 @@ export const utilTableMode = (columnVisibility, mode, actions) => {
           left: ["mrt-row-select"],
           right: ["mrt-row-actions"],
         },
-        sorting: [
-          {
-            //default sorts can go here.
-          },
-        ],
       },
     };
   }

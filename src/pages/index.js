@@ -9,8 +9,6 @@ import { DomainAdd } from "@mui/icons-material";
 import { UserPlusIcon } from "@heroicons/react/24/outline";
 import { Box, Container, Stack } from "@mui/system";
 
-const now = new Date();
-
 const Page = () => {
   const deviceData = ApiGetCall({
     url: "/api/deploymentstatus",

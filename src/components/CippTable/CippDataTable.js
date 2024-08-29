@@ -27,7 +27,7 @@ export const CippDataTable = (props) => {
     columns = [],
     api = {},
     isFetching = false,
-    columnVisibility = {
+    columnVisibility: initialColumnVisibility = {
       id: false,
       RowKey: false,
       ETag: false,
@@ -35,7 +35,6 @@ export const CippDataTable = (props) => {
       Timestamp: false,
       TableTimestamp: false,
     },
-    columnsFromApi = false,
     exportEnabled = true,
     noDataButton = {},
     actions,
@@ -45,53 +44,83 @@ export const CippDataTable = (props) => {
     cardButton,
     offCanvas = false,
   } = props;
-  //start get data from API logic
+
+  const [columnVisibility, setColumnVisibility] = useState(initialColumnVisibility);
+  const [usedData, setUsedData] = useState(data);
+  const [usedColumns, setUsedColumns] = useState([]);
+  const [offcanvasVisible, setOffcanvasVisible] = useState(false);
+  const [offCanvasData, setOffCanvasData] = useState({});
+  const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
+
+  // Fetch data from API
   const getRequestData = ApiGetCall({
     url: api.url,
     data: api.data,
     queryKey: title,
   });
-  //end get data from API logic
-  const [usedData, setUsedData] = useState(data);
-  const [offcanvasVisble, setOffcanvasVisible] = useState(false);
-  const [offCanvasData, setOffCanvasData] = useState({});
-  const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
 
   useEffect(() => {
     if (getRequestData.isSuccess) {
-      if (api.dataKey) {
-        setUsedData(getRequestData.data[api.dataKey]);
-      } else {
-        setUsedData(getRequestData.data);
+      const fetchedData = api.dataKey ? getRequestData.data[api.dataKey] : getRequestData.data;
+      setUsedData(fetchedData || []);
+    }
+  }, [getRequestData.isSuccess, getRequestData.data, api.dataKey]);
+
+  useEffect(() => {
+    if (Array.isArray(usedData) && usedData.length > 0 && typeof usedData[0] === "object") {
+      const apiColumns = utilColumnsFromAPI(usedData[0]);
+
+      // If columns is empty, only set columns once
+      if (columns.length === 0 && usedColumns.length === 0) {
+        setUsedColumns(apiColumns);
+
+        // Update visibility for new columns, but avoid unnecessary updates
+        const newVisibility = { ...columnVisibility };
+        apiColumns.forEach((col) => {
+          if (!columnVisibility.hasOwnProperty(col.accessorKey)) {
+            newVisibility[col.accessorKey] = true; // show by default when columns is empty
+          }
+        });
+        setColumnVisibility(newVisibility);
+      } else if (columns.length > 0) {
+        // Only update if columns prop is provided
+        const existingColumnKeys = new Set(columns.map((col) => col.accessorKey || col.header));
+        const finalColumns = [
+          ...columns,
+          ...apiColumns.filter((col) => !existingColumnKeys.has(col.accessorKey)),
+        ];
+        setUsedColumns(finalColumns);
+
+        setColumnVisibility((prevVisibility) => {
+          const newVisibility = { ...prevVisibility };
+          finalColumns.forEach((col) => {
+            if (!prevVisibility.hasOwnProperty(col.accessorKey)) {
+              newVisibility[col.accessorKey] = false; // hide new columns by default
+            }
+          });
+          return newVisibility;
+        });
       }
     }
-  }, [getRequestData.isSuccess, getRequestData.data]);
-  const [usedColumns, setUsedColumns] = useState(columns);
-  //Start columnsFromAPI logic
-  useEffect(() => {
-    if (columnsFromApi && Array.isArray(usedData) && typeof usedData[0] === "object") {
-      const newColumns = utilColumnsFromAPI(usedData[0]);
-      setUsedColumns([...newColumns]);
-    }
-    if (!columnsFromApi) {
-      setUsedColumns([...columns]);
-    }
-  }, [columns, columnsFromApi, usedData]);
-  //End columnsFromAPI logic
+  }, [columns, usedData, usedColumns.length]); // Added usedColumns.length as a dependency to avoid looping
 
-  const modeInfo = utilTableMode(columnVisibility, simple, actions);
   const createDialog = useDialog();
+
+  // Apply the modeInfo directly
+  const modeInfo = utilTableMode(columnVisibility, simple, actions);
 
   const table = useMaterialReactTable({
     mrtTheme: (theme) => ({
-      baseBackgroundColor: theme.palette.mode === "dark" ? theme.palette.neutral[900] : "#FFFFFF", //change default background color
+      baseBackgroundColor: theme.palette.mode === "dark" ? theme.palette.neutral[900] : "#FFFFFF",
     }),
-    columns: usedColumns ? usedColumns : [],
-    data: usedData ? usedData : [],
+    columns: usedColumns,
+    data: usedData,
+    state: { columnVisibility },
+    onColumnVisibilityChange: setColumnVisibility, // Ensure this correctly updates visibility
     ...modeInfo,
 
     renderRowActionMenuItems: actions
-      ? ({ closeMenu, row, table }) => [
+      ? ({ closeMenu, row }) => [
           actions.map((action, index) => (
             <MenuItem
               key={`actions-list-row-${index}`}
@@ -142,17 +171,15 @@ export const CippDataTable = (props) => {
     renderTopToolbar: ({ table }) => {
       return (
         <>
-          {simple === false && (
-            <>
-              <CIPPTableToptoolbar
-                table={table}
-                getRequestData={getRequestData}
-                usedColumns={usedColumns}
-                title={title}
-                actions={actions}
-                exportEnabled={exportEnabled}
-              />
-            </>
+          {!simple && (
+            <CIPPTableToptoolbar
+              table={table}
+              getRequestData={getRequestData}
+              usedColumns={usedColumns}
+              title={title}
+              actions={actions}
+              exportEnabled={exportEnabled}
+            />
           )}
         </>
       );
@@ -198,7 +225,7 @@ export const CippDataTable = (props) => {
       </CardContent>
       <CippOffCanvas
         isFetching={getRequestData.isFetching}
-        visible={offcanvasVisble}
+        visible={offcanvasVisible}
         onClose={() => setOffcanvasVisible(false)}
         extendedData={offCanvasData}
         extendedInfoFields={offCanvas?.extendedInfoFields}
