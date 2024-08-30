@@ -46,6 +46,8 @@ const MailboxSettings = () => {
   const userId = query.get('userId')
   const tenantDomain = query.get('tenantDomain')
   const [active, setActive] = useState(1)
+  const [forwardingRefresh, setForwardingRefresh] = useState('0')
+  const [oooRefresh, setOooRefresh] = useState('0')
   const columnsCal = [
     {
       name: 'User',
@@ -126,12 +128,20 @@ const MailboxSettings = () => {
               </CTabPane>
               <CTabPane visible={active === 3} className="mt-3">
                 <CippLazy visible={active === 3}>
-                  <MailboxForwarding />
+                  <MailboxForwarding
+                    refreshFunction={() =>
+                      setForwardingRefresh((Math.random() + 1).toString(36).substring(7))
+                    }
+                  />
                 </CippLazy>
               </CTabPane>
               <CTabPane visible={active === 4} className="mt-3">
                 <CippLazy visible={active === 4}>
-                  <OutOfOffice />
+                  <OutOfOffice
+                    refreshFunction={() =>
+                      setOooRefresh((Math.random() + 1).toString(36).substring(7))
+                    }
+                  />
                 </CippLazy>
               </CTabPane>
             </CTabContent>
@@ -162,12 +172,20 @@ const MailboxSettings = () => {
             )}
             {active === 3 && (
               <>
-                <ForwardingSettings userId={userId} tenantDomain={tenantDomain} />
+                <ForwardingSettings
+                  userId={userId}
+                  tenantDomain={tenantDomain}
+                  refresh={forwardingRefresh}
+                />
               </>
             )}
             {active === 4 && (
               <>
-                <OutOfOfficeSettings userId={userId} tenantDomain={tenantDomain} />
+                <OutOfOfficeSettings
+                  userId={userId}
+                  tenantDomain={tenantDomain}
+                  refresh={oooRefresh}
+                />
               </>
             )}
           </CCardBody>
@@ -566,7 +584,7 @@ const CalendarPermissions = () => {
   )
 }
 
-const MailboxForwarding = () => {
+const MailboxForwarding = ({ refreshFunction }) => {
   const dispatch = useDispatch()
   let query = useQuery()
   const userId = query.get('userId')
@@ -622,7 +640,9 @@ const MailboxForwarding = () => {
       disableForwarding: values.forwardOption === 'disabled',
     }
     //window.alert(JSON.stringify(shippedValues))
-    genericPostRequest({ path: '/api/ExecEmailForward', values: shippedValues })
+    genericPostRequest({ path: '/api/ExecEmailForward', values: shippedValues }).then(() => {
+      refreshFunction()
+    })
   }
   const initialState = {
     ...user,
@@ -670,7 +690,6 @@ const MailboxForwarding = () => {
                             </div>
                             {values.forwardOption === 'internalAddress' && (
                               <RFFSelectSearch
-                                multi={true}
                                 disabled={formDisabled}
                                 values={users?.Results?.map((user) => ({
                                   value: user.userPrincipalName,
@@ -763,19 +782,24 @@ const MailboxForwarding = () => {
     </>
   )
 }
+MailboxForwarding.propTypes = {
+  refreshFunction: PropTypes.func,
+}
 
-const ForwardingSettings = () => {
+const ForwardingSettings = ({ refresh }) => {
   const query = useQuery()
   const userId = query.get('userId')
   const tenantDomain = query.get('tenantDomain')
   const [content, setContent] = useState([])
+  const [showLoading, setShowLoading] = useState(false)
+  const [currentRefresh, setCurrentRefresh] = useState('')
   const {
     data: details,
     isFetching,
     isSuccess,
     error,
   } = useGenericPostRequestQuery({
-    path: `/api/ListExoRequest?Cmdlet=Get-Mailbox&TenantFilter=${tenantDomain}&Select=ForwardingAddress,ForwardingSmtpAddress,DeliverToMailboxAndForward`,
+    path: `/api/ListExoRequest?Cmdlet=Get-Mailbox&TenantFilter=${tenantDomain}&Select=ForwardingAddress,ForwardingSmtpAddress,DeliverToMailboxAndForward&refresh=${refresh}`,
     values: { Identity: userId },
   })
 
@@ -796,8 +820,13 @@ const ForwardingSettings = () => {
   })
 
   useEffect(() => {
+    if (refresh !== currentRefresh) {
+      setShowLoading(false)
+      setCurrentRefresh(refresh)
+    }
+
     if (usersSuccess && isSuccess) {
-      if (details?.Results?.ForwardingAddress) {
+      if (details?.Results?.ForwardingAddress !== null) {
         var user = null
         if (
           details?.Results?.ForwardingAddress.match(
@@ -844,7 +873,7 @@ const ForwardingSettings = () => {
             },
           ])
         }
-      } else if (details?.Results?.ForwardingSmtpAddress) {
+      } else if (details?.Results?.ForwardingSmtpAddress !== null) {
         var smtpAddress = details?.Results?.ForwardingSmtpAddress.replace('smtp:', '')
         setContent([
           {
@@ -863,8 +892,19 @@ const ForwardingSettings = () => {
             ),
           },
         ])
+      } else {
+        setContent([
+          {
+            heading: 'Forward and Deliver',
+            body: formatter(details?.Results?.DeliverToMailboxAndForward, false, false, true),
+          },
+          {
+            heading: 'Forwarding Address',
+            body: 'N/A',
+          },
+        ])
       }
-    } else if (usersIsFetching || isFetching) {
+    } else if ((isFetching || usersIsFetching) && showLoading === false) {
       setContent([
         {
           heading: 'Forward and Deliver',
@@ -875,8 +915,19 @@ const ForwardingSettings = () => {
           body: <Skeleton />,
         },
       ])
+      setShowLoading(true)
     }
-  }, [users, details, usersSuccess, isSuccess])
+  }, [
+    refresh,
+    currentRefresh,
+    users,
+    details,
+    usersSuccess,
+    isSuccess,
+    isFetching,
+    usersIsFetching,
+    showLoading,
+  ])
 
   return (
     <CRow>
@@ -888,11 +939,24 @@ const ForwardingSettings = () => {
           </div>
         ))}
       </CCol>
+      <CCol md={6}>
+        <CButton
+          onClick={() => setCurrentRefresh((Math.random() + 1).toString(36).substring(7))}
+          color="primary"
+          variant="ghost"
+          className="float-end"
+        >
+          <FontAwesomeIcon icon="sync" spin={isFetching || usersIsFetching} />
+        </CButton>
+      </CCol>
     </CRow>
   )
 }
+ForwardingSettings.propTypes = {
+  refresh: PropTypes.string,
+}
 
-const OutOfOffice = () => {
+const OutOfOffice = ({ refreshFunction }) => {
   const dispatch = useDispatch()
   let query = useQuery()
   const userId = query.get('userId')
@@ -932,7 +996,9 @@ const OutOfOffice = () => {
       ExternalMessage: values.ExternalMessage ? values.ExternalMessage : '',
     }
     //window.alert(JSON.stringify(shippedValues))
-    genericPostRequest({ path: '/api/ExecSetOoO', values: shippedValues })
+    genericPostRequest({ path: '/api/ExecSetOoO', values: shippedValues }).then(() => {
+      refreshFunction()
+    })
   }
   const initialState = {
     ...user,
@@ -1049,18 +1115,26 @@ const OutOfOffice = () => {
   )
 }
 
-const OutOfOfficeSettings = () => {
+const OutOfOfficeSettings = ({ refresh }) => {
   const query = useQuery()
   const userId = query.get('userId')
   const tenantDomain = query.get('tenantDomain')
   const tenantFilter = tenantDomain
+  const [currentRefresh, setCurrentRefresh] = useState('')
+
+  useEffect(() => {
+    if (refresh !== currentRefresh) {
+      setCurrentRefresh(refresh)
+    }
+  }, [refresh, currentRefresh, setCurrentRefresh])
+
   const {
     data: details,
     isFetching,
     error,
   } = useGenericGetRequestQuery({
     path: '/api/ListOoO',
-    params: { userId, tenantFilter },
+    params: { userId, tenantFilter, currentRefresh },
   })
   const combinedRegex = /(<([^>]+)>)|&#65279;|&nbsp;/gi
   const content = [
@@ -1087,22 +1161,42 @@ const OutOfOfficeSettings = () => {
   ]
   return (
     <CRow>
-      {isFetching && (
-        <CCallout color="info">
-          <CSpinner>Loading</CSpinner>
-        </CCallout>
-      )}
-      {!isFetching && (
-        <CCol className="mb-3">
-          {content.map((item, index) => (
-            <div key={index}>
-              <h5>{item.heading}</h5>
-              <p>{item.body}</p>
-            </div>
-          ))}
-        </CCol>
-      )}
-      {error && <CCallout color="danger">Could not connect to API: {error.message}</CCallout>}
+      <CCol className="mb-3" md={8}>
+        {isFetching && (
+          <>
+            {content.map((item, index) => (
+              <div key={index}>
+                <h5>{item.heading}</h5>
+                <p>
+                  <Skeleton />
+                </p>
+              </div>
+            ))}
+          </>
+        )}
+        {!isFetching && (
+          <>
+            {content.map((item, index) => (
+              <div key={index}>
+                <h5>{item.heading}</h5>
+                <p>{item.body}</p>
+              </div>
+            ))}
+          </>
+        )}
+
+        {error && <CCallout color="danger">Could not connect to API: {error.message}</CCallout>}
+      </CCol>
+      <CCol md={4}>
+        <CButton
+          onClick={() => setCurrentRefresh((Math.random() + 1).toString(36).substring(7))}
+          color="primary"
+          variant="ghost"
+          className="float-end"
+        >
+          <FontAwesomeIcon icon="sync" spin={isFetching} />
+        </CButton>
+      </CCol>
     </CRow>
   )
 }
