@@ -798,8 +798,14 @@ const ForwardingSettings = ({ refresh }) => {
     isSuccess,
     error,
   } = useGenericPostRequestQuery({
-    path: `/api/ListExoRequest?Cmdlet=Get-Mailbox&TenantFilter=${tenantDomain}&Select=ForwardingAddress,ForwardingSmtpAddress,DeliverToMailboxAndForward&refresh=${currentRefresh}`,
-    values: { Identity: userId },
+    path: `/api/ListExoRequest`,
+    values: {
+      TenantFilter: tenantDomain,
+      Cmdlet: 'Get-Mailbox',
+      cmdParams: { Identity: userId },
+      Select: 'ForwardingAddress,ForwardingSmtpAddress,DeliverToMailboxAndForward',
+      refresh: currentRefresh,
+    },
   })
 
   const {
