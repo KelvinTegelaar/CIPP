@@ -791,7 +791,6 @@ const ForwardingSettings = ({ refresh }) => {
   const userId = query.get('userId')
   const tenantDomain = query.get('tenantDomain')
   const [content, setContent] = useState([])
-  const [showLoading, setShowLoading] = useState(false)
   const [currentRefresh, setCurrentRefresh] = useState('')
   const {
     data: details,
@@ -799,7 +798,7 @@ const ForwardingSettings = ({ refresh }) => {
     isSuccess,
     error,
   } = useGenericPostRequestQuery({
-    path: `/api/ListExoRequest?Cmdlet=Get-Mailbox&TenantFilter=${tenantDomain}&Select=ForwardingAddress,ForwardingSmtpAddress,DeliverToMailboxAndForward&refresh=${refresh}`,
+    path: `/api/ListExoRequest?Cmdlet=Get-Mailbox&TenantFilter=${tenantDomain}&Select=ForwardingAddress,ForwardingSmtpAddress,DeliverToMailboxAndForward&refresh=${currentRefresh}`,
     values: { Identity: userId },
   })
 
@@ -821,7 +820,6 @@ const ForwardingSettings = ({ refresh }) => {
 
   useEffect(() => {
     if (refresh !== currentRefresh) {
-      setShowLoading(false)
       setCurrentRefresh(refresh)
     }
 
@@ -904,42 +902,39 @@ const ForwardingSettings = ({ refresh }) => {
           },
         ])
       }
-    } else if ((isFetching || usersIsFetching) && showLoading === false) {
-      setContent([
-        {
-          heading: 'Forward and Deliver',
-          body: <Skeleton />,
-        },
-        {
-          heading: 'Forwarding Address',
-          body: <Skeleton />,
-        },
-      ])
-      setShowLoading(true)
     }
-  }, [
-    refresh,
-    currentRefresh,
-    users,
-    details,
-    usersSuccess,
-    isSuccess,
-    isFetching,
-    usersIsFetching,
-    showLoading,
-  ])
+  }, [refresh, currentRefresh, users, details, usersSuccess, isSuccess])
 
   return (
     <CRow>
-      <CCol md={6}>
-        {content.map((item, index) => (
-          <div key={index}>
-            <h5>{item.heading}</h5>
-            <p>{item.body}</p>
-          </div>
-        ))}
+      <CCol md={8}>
+        {isFetching || usersIsFetching ? (
+          <>
+            <div>
+              <h5>Forward and Deliver</h5>
+              <p>
+                <Skeleton />
+              </p>
+            </div>
+            <div>
+              <h5>Forwarding Address</h5>
+              <p>
+                <Skeleton />
+              </p>
+            </div>
+          </>
+        ) : (
+          <>
+            {content.map((item, index) => (
+              <div key={index}>
+                <h5>{item.heading}</h5>
+                <p>{item.body}</p>
+              </div>
+            ))}
+          </>
+        )}
       </CCol>
-      <CCol md={6}>
+      <CCol md={4}>
         <CButton
           onClick={() => setCurrentRefresh((Math.random() + 1).toString(36).substring(7))}
           color="primary"
