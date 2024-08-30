@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import { CButton, CCallout, CCol, CRow, CSpinner } from '@coreui/react'
 import { useGenericGetRequestQuery, useLazyGenericGetRequestQuery } from 'src/store/api/app'
-import { CippContentCard, CippPage } from 'src/components/layout'
+import { CippContentCard, CippPage, CippPageList } from 'src/components/layout'
 import { useSelector } from 'react-redux'
 import { ModalService } from 'src/components/utilities'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { CippTable } from 'src/components/tables'
+import { CippTable, cellBooleanFormatter } from 'src/components/tables'
 import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
+import { cellTableFormatter } from 'src/components/tables/CellTable'
 
 const ListAppliedStandards = () => {
   const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
@@ -51,9 +52,6 @@ const ListAppliedStandards = () => {
     )
   }
 
-  const { data: listStandardsAllTenants = [] } = useGenericGetRequestQuery({
-    path: 'api/listStandards',
-  })
   const tableColumns = [
     {
       name: 'Tenant',
@@ -61,6 +59,25 @@ const ListAppliedStandards = () => {
       sortable: true,
       exportSelector: 'displayName',
       maxWidth: '280px',
+    },
+    {
+      name: 'Excluded from all tenants',
+      selector: (row) => row.standards.OverrideAllTenants?.remediate,
+      sortable: true,
+      cell: cellBooleanFormatter({
+        warning: false,
+        reverse: false,
+        colourless: true,
+        noDataIsFalse: true,
+      }),
+      exportSelector: 'row.standards.OverrideAllTenants.remediate',
+    },
+    {
+      name: 'Standards',
+      selector: (row) => row['standards'],
+      sortable: true,
+      exportSelector: 'standards',
+      cell: cellTableFormatter('standards'),
     },
     {
       name: 'Actions',
@@ -74,19 +91,21 @@ const ListAppliedStandards = () => {
       <>
         <CRow>
           <CCol>
-            {listStandardsAllTenants && (
-              <CippContentCard title="Currently Applied Standards">
-                {getResults.isLoading && <CSpinner size="sm" />}
-                {getResults.isSuccess && (
-                  <CCallout color="info">{getResults.data?.Results}</CCallout>
-                )}
-                <CippTable
-                  reportName={`Standards`}
-                  data={listStandardsAllTenants}
-                  columns={tableColumns}
-                />
-              </CippContentCard>
-            )}
+            {getResults.isLoading && <CSpinner size="sm" />}
+            {getResults.isSuccess && <CCallout color="info">{getResults.data?.Results}</CCallout>}
+            <CippPageList
+              capabilities={{
+                allTenants: true,
+                helpContext: 'https://google.com',
+              }}
+              title="Current Tenant Standards"
+              tenantSelector={false}
+              datatable={{
+                columns: tableColumns,
+                reportName: `Standards`,
+                path: `api/listStandards`,
+              }}
+            />
           </CCol>
         </CRow>
       </>
