@@ -14,9 +14,9 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import { Form } from 'react-final-form'
 import { RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms'
+import _nav from 'src/_nav'
 
 import { useGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import 'react-datepicker/dist/react-datepicker.css'
 import TenantListSelector from 'src/components/utilities/TenantListSelector'
@@ -156,28 +156,36 @@ const UserSettings = () => {
                       <CRow className="mb-3">
                         <h3 className="underline mb-5">Offboarding Defaults</h3>
                         <CCol>
-                          <RFFCFormSwitch name="RevokeSessions" label="Revoke all sessions" />
-                          <RFFCFormSwitch name="RemoveMobile" label="Remove all Mobile Devices" />
-                          <RFFCFormSwitch name="RemoveRules" label="Remove all Rules" />
-                          <RFFCFormSwitch name="RemoveLicenses" label="Remove Licenses" />
-                          <RFFCFormSwitch
-                            name="HideFromGAL"
-                            label="Hide from Global Address List"
-                          />
-                        </CCol>
-                        <CCol>
                           <RFFCFormSwitch
                             name="ConvertToShared"
                             label="Convert to Shared Mailbox"
                           />
-                          <RFFCFormSwitch name="DisableSignIn" label="Disable Sign in" />
-                          <RFFCFormSwitch name="ResetPass" label="Reset Password" />
-                          <RFFCFormSwitch name="RemoveGroups" label="Remove from all groups" />
-
+                          <RFFCFormSwitch
+                            name="HideFromGAL"
+                            label="Hide from Global Address List"
+                          />
+                          <RFFCFormSwitch
+                            name="removeCalendarInvites"
+                            label="Cancel all calendar invites"
+                          />
+                          <RFFCFormSwitch
+                            name="removePermissions"
+                            label="Remove users mailbox permissions"
+                          />
+                          <RFFCFormSwitch name="RemoveRules" label="Remove all Rules" />
                           <RFFCFormSwitch
                             name="keepCopy"
                             label="Keep copy of forwarded mail in source mailbox"
                           />
+                          <RFFCFormSwitch name="RemoveMobile" label="Remove all Mobile Devices" />
+                        </CCol>
+                        <CCol>
+                          <RFFCFormSwitch name="RemoveGroups" label="Remove from all groups" />
+                          <RFFCFormSwitch name="RemoveLicenses" label="Remove Licenses" />
+                          <RFFCFormSwitch name="RevokeSessions" label="Revoke all sessions" />
+                          <RFFCFormSwitch name="DisableSignIn" label="Disable Sign in" />
+                          <RFFCFormSwitch name="ResetPass" label="Reset Password" />
+                          <RFFCFormSwitch name="DeleteUser" label="Delete user" />
                         </CCol>
                       </CRow>
                       <CRow className="mb-3">
@@ -204,26 +212,31 @@ const UserSettings = () => {
                             isLoading={availableProperties.isFetching}
                           />
                         </div>
-                        <CRow>
-                          <CCol className="mb-3" md={12}>
-                            {addedAttributes > 0 && (
-                              <CButton
-                                onClick={() => setAddedAttribute(addedAttributes - 1)}
-                                className={`circular-button`}
-                                title={'-'}
-                              >
-                                <FontAwesomeIcon icon={'minus'} />
-                              </CButton>
-                            )}
-                            <CButton
-                              onClick={() => setAddedAttribute(addedAttributes + 1)}
-                              className={`circular-button`}
-                              title={'+'}
-                            >
-                              <FontAwesomeIcon icon={'plus'} />
-                            </CButton>
-                          </CCol>
-                        </CRow>
+                      </CRow>
+                      <CRow className="mb-3">
+                        <h3 className="underline mb-5">Favourite Menu Items</h3>
+                        <div className="mb-3">
+                          <RFFSelectSearch
+                            name="favourites"
+                            label="Select the menu items you'd like as favourites"
+                            placeholder="Select items"
+                            retainInput={true}
+                            multi={true}
+                            values={_nav
+                              .reduce((acc, val) => acc.concat(val.items), [])
+                              //only map if 'name' property is not null
+                              .filter((item) => item?.name)
+                              .map((item) => ({
+                                name: item?.name,
+                                value: { to: item?.to, name: item?.name },
+                              }))}
+                            allowCreate={false}
+                            refreshFunction={() =>
+                              setRandom3((Math.random() + 1).toString(36).substring(7))
+                            }
+                            isLoading={availableProperties.isFetching}
+                          />
+                        </div>
                       </CRow>
                       <CRow className="mb-3">
                         <CCol className="mb-3" md={6}>

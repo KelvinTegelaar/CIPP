@@ -107,7 +107,7 @@ const EditUser = () => {
       PostalCode: values.postalCode,
       usageLocation: values.usageLocation ? values.usageLocation.value : '',
       UserID: userId,
-      Username: values.mailNickname,
+      Username: values.username,
       streetAddress: values.streetAddress,
       tenantID: tenantDomain,
       mustchangepass: values.RequirePasswordChange,
@@ -137,10 +137,12 @@ const EditUser = () => {
     },
     license: precheckedLicenses,
     //if currentSettings.defaultAttributes exists. Set each of the keys inside of currentSettings.defaultAttributes.label to the value of the user attribute found in the user object.
-    defaultAttributes: currentSettings?.userSettingsDefaults?.defaultAttributes.reduce(
-      (o, key) => Object.assign(o, { [key.label]: { Value: user[key.label] } }),
-      {},
-    ),
+    defaultAttributes: currentSettings?.userSettingsDefaults?.defaultAttributes
+      ? currentSettings?.userSettingsDefaults?.defaultAttributes.reduce(
+          (o, key) => Object.assign(o, { [key.label]: { Value: user[key.label] } }),
+          {},
+        )
+      : [],
   }
 
   const formDisabled = queryError === true || !!userError || !user || Object.keys(user).length === 0
@@ -165,6 +167,12 @@ const EditUser = () => {
               link for more information.
             </CCallout>
           )}
+          {user?.onPremisesSyncEnabled === true && (
+            <CCallout color="warning">
+              Warning! This user is Active Directory sync enabled. Edits should be made from a
+              Domain Controller.
+            </CCallout>
+          )}
           {postResults.isSuccess && (
             <CCallout color="success">{postResults.data?.Results}</CCallout>
           )}
@@ -178,7 +186,7 @@ const EditUser = () => {
               </CCol>
             </CRow>
           )}
-          <CRow>
+          <CRow className="mb-3">
             <CCol lg={6} xs={12}>
               <CippContentCard title="Account Details" icon={faEdit}>
                 {userIsFetching && <CSpinner />}
@@ -222,7 +230,7 @@ const EditUser = () => {
                             <CCol lg={6} xs={12}>
                               <RFFCFormInput
                                 type="text"
-                                name="mailNickname"
+                                name="username"
                                 label="Edit Username"
                                 disabled={formDisabled}
                               />
@@ -410,7 +418,7 @@ const EditUser = () => {
                             </CCol>
                           </CRow>
                           <>
-                            {currentSettings?.userSettingsDefaults?.defaultAttributes.map(
+                            {currentSettings?.userSettingsDefaults?.defaultAttributes?.map(
                               (attribute, idx) => (
                                 <CRow key={idx}>
                                   <CCol>
