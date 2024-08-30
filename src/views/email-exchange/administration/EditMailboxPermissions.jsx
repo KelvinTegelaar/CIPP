@@ -14,6 +14,8 @@ import {
   CForm,
   CRow,
   CSpinner,
+  CLink,
+  CBadge,
 } from '@coreui/react'
 import useQuery from 'src/hooks/useQuery'
 import { useDispatch } from 'react-redux'
@@ -24,14 +26,16 @@ import {
   useLazyGenericPostRequestQuery,
   useLazyGenericGetRequestQuery,
   useGenericGetRequestQuery,
+  useGenericPostRequestQuery,
 } from 'src/store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import { useListMailboxDetailsQuery, useListMailboxPermissionsQuery } from 'src/store/api/mailbox'
-import { CellBoolean, CippDatatable } from 'src/components/tables'
+import { CellBadge, CellBoolean, CippDatatable } from 'src/components/tables'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import PropTypes from 'prop-types'
+import Skeleton from 'react-loading-skeleton'
 
 const formatter = (cell, warning = false, reverse = false, colourless = false) =>
   CellBoolean({ cell, warning, reverse, colourless })
@@ -196,7 +200,9 @@ const MailboxPermissions = () => {
       Endpoint: 'users',
       TenantFilter: tenantDomain,
       $filter: "assignedLicenses/$count ne 0 and accountEnabled eq true and userType eq 'Member'",
+      $select: 'id,displayName,userPrincipalName',
       $count: true,
+      $orderby: 'displayName',
     },
   })
 
@@ -258,8 +264,8 @@ const MailboxPermissions = () => {
                             label="Remove Full Access"
                             disabled={formDisabled}
                             values={users?.Results?.map((user) => ({
-                              value: user.mail,
-                              name: `${user.displayName} - ${user.mail} `,
+                              value: user.userPrincipalName,
+                              name: `${user.displayName} - ${user.userPrincipalName} `,
                             }))}
                             placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                             name="RemoveFullAccess"
@@ -272,8 +278,8 @@ const MailboxPermissions = () => {
                             label="Add Full Access - Automapping Enabled"
                             disabled={formDisabled}
                             values={users?.Results?.map((user) => ({
-                              value: user.mail,
-                              name: `${user.displayName} - ${user.mail} `,
+                              value: user.userPrincipalName,
+                              name: `${user.displayName} - ${user.userPrincipalName} `,
                             }))}
                             placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                             name="AddFullAccess"
@@ -286,8 +292,8 @@ const MailboxPermissions = () => {
                             label="Add Full Access - Automapping Disabled"
                             disabled={formDisabled}
                             values={users?.Results?.map((user) => ({
-                              value: user.mail,
-                              name: `${user.displayName} - ${user.mail} `,
+                              value: user.userPrincipalName,
+                              name: `${user.displayName} - ${user.userPrincipalName} `,
                             }))}
                             placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                             name="AddFullAccessNoAutoMap"
@@ -300,8 +306,8 @@ const MailboxPermissions = () => {
                             label="Add Send-as permissions"
                             disabled={formDisabled}
                             values={users?.Results?.map((user) => ({
-                              value: user.mail,
-                              name: `${user.displayName} - ${user.mail} `,
+                              value: user.userPrincipalName,
+                              name: `${user.displayName} - ${user.userPrincipalName} `,
                             }))}
                             placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                             name="AddSendAs"
@@ -314,8 +320,8 @@ const MailboxPermissions = () => {
                             label="Remove Send-as permissions"
                             disabled={formDisabled}
                             values={users?.Results?.map((user) => ({
-                              value: user.mail,
-                              name: `${user.displayName} - ${user.mail} `,
+                              value: user.userPrincipalName,
+                              name: `${user.displayName} - ${user.userPrincipalName} `,
                             }))}
                             placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                             name="RemoveSendAs"
@@ -328,8 +334,8 @@ const MailboxPermissions = () => {
                             label="Add Send On Behalf permissions"
                             disabled={formDisabled}
                             values={users?.Results?.map((user) => ({
-                              value: user.mail,
-                              name: `${user.displayName} - ${user.mail} `,
+                              value: user.userPrincipalName,
+                              name: `${user.displayName} - ${user.userPrincipalName} `,
                             }))}
                             placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                             name="AddSendOnBehalf"
@@ -342,8 +348,8 @@ const MailboxPermissions = () => {
                             label="Remove Send On Behalf permissions"
                             disabled={formDisabled}
                             values={users?.Results?.map((user) => ({
-                              value: user.mail,
-                              name: `${user.displayName} - ${user.mail} `,
+                              value: user.userPrincipalName,
+                              name: `${user.displayName} - ${user.userPrincipalName} `,
                             }))}
                             placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                             name="RemoveSendOnBehalf"
@@ -587,6 +593,9 @@ const MailboxForwarding = () => {
       Endpoint: 'users',
       TenantFilter: tenantDomain,
       $filter: "userType eq 'Member' and proxyAddresses/$count ne 0",
+      $select: 'id,displayName,userPrincipalName',
+      $count: true,
+      $orderby: 'displayName',
     },
   })
   useEffect(() => {
@@ -664,8 +673,8 @@ const MailboxForwarding = () => {
                                 multi={true}
                                 disabled={formDisabled}
                                 values={users?.Results?.map((user) => ({
-                                  value: user.mail,
-                                  name: `${user.displayName} - ${user.mail} `,
+                                  value: user.userPrincipalName,
+                                  name: `${user.displayName} - ${user.userPrincipalName} `,
                                 }))}
                                 placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                                 name="ForwardInternal"
@@ -759,31 +768,126 @@ const ForwardingSettings = () => {
   const query = useQuery()
   const userId = query.get('userId')
   const tenantDomain = query.get('tenantDomain')
-  const { data: details, isFetching, error } = useListMailboxDetailsQuery({ userId, tenantDomain })
-  const content = [
-    {
-      heading: 'Forward and Deliver',
-      body: formatter(details?.ForwardAndDeliver, false, false, true),
+  const [content, setContent] = useState([])
+  const {
+    data: details,
+    isFetching,
+    isSuccess,
+    error,
+  } = useGenericPostRequestQuery({
+    path: `/api/ListExoRequest?Cmdlet=Get-Mailbox&TenantFilter=${tenantDomain}&Select=ForwardingAddress,ForwardingSmtpAddress,DeliverToMailboxAndForward`,
+    values: { Identity: userId },
+  })
+
+  const {
+    data: users = [],
+    isFetching: usersIsFetching,
+    isSuccess: usersSuccess,
+    error: usersError,
+  } = useGenericGetRequestQuery({
+    path: '/api/ListGraphRequest',
+    params: {
+      Endpoint: 'users',
+      TenantFilter: tenantDomain,
+      $filter: "userType eq 'Member' and proxyAddresses/$count ne 0",
+      $select: 'id,displayName,userPrincipalName',
+      $count: true,
     },
-    {
-      heading: 'Forwarding Address',
-      body: details?.ForwardingAddress ? details?.ForwardingAddress : 'N/A',
-    },
-  ]
+  })
+
+  useEffect(() => {
+    if (usersSuccess && isSuccess) {
+      if (details?.Results?.ForwardingAddress) {
+        var user = null
+        if (
+          details?.Results?.ForwardingAddress.match(
+            /^[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}$/,
+          )
+        ) {
+          const userId = details?.Results?.ForwardingAddress
+          user = users?.Results?.find((u) => u.id === userId)
+        }
+        if (user) {
+          setContent([
+            {
+              heading: 'Forward and Deliver',
+              body: formatter(details?.Results?.DeliverToMailboxAndForward, false, false, true),
+            },
+            {
+              heading: 'Forwarding Address',
+              body: (
+                <>
+                  <CBadge color="info" className="me-2">
+                    <FontAwesomeIcon icon="envelope" /> Internal
+                  </CBadge>
+                  <CLink href={`mailto:${user.userPrincipalName}`}>{user.displayName}</CLink>
+                </>
+              ),
+            },
+          ])
+        } else {
+          setContent([
+            {
+              heading: 'Forward and Deliver',
+              body: formatter(details?.Results?.DeliverToMailboxAndForward, false, false, true),
+            },
+            {
+              heading: 'Forwarding Address',
+              body: (
+                <>
+                  <CBadge color="info" className="me-2">
+                    <FontAwesomeIcon icon="envelope" /> Internal
+                  </CBadge>
+                  {details?.Results?.ForwardingAddress}
+                </>
+              ),
+            },
+          ])
+        }
+      } else if (details?.Results?.ForwardingSmtpAddress) {
+        var smtpAddress = details?.Results?.ForwardingSmtpAddress.replace('smtp:', '')
+        setContent([
+          {
+            heading: 'Forward and Deliver',
+            body: formatter(details?.Results?.DeliverToMailboxAndForward, false, false, true),
+          },
+          {
+            heading: 'Forwarding Address',
+            body: (
+              <>
+                <CBadge color="warning" className="me-2">
+                  <FontAwesomeIcon icon="warning" /> External
+                </CBadge>
+                <CLink href={`mailto: ${smtpAddress}`}>{smtpAddress}</CLink>
+              </>
+            ),
+          },
+        ])
+      }
+    } else if (usersIsFetching || isFetching) {
+      setContent([
+        {
+          heading: 'Forward and Deliver',
+          body: <Skeleton />,
+        },
+        {
+          heading: 'Forwarding Address',
+          body: <Skeleton />,
+        },
+      ])
+    }
+  }, [users, details, usersSuccess, isSuccess])
 
   return (
     <CRow>
-      {isFetching && <CSpinner />}
-      {!isFetching && (
-        <CCol md={6}>
-          {content.map((item, index) => (
-            <div key={index}>
-              <h5>{item.heading}</h5>
-              <p>{item.body}</p>
-            </div>
-          ))}
-        </CCol>
-      )}
+      <CCol md={6}>
+        {content.map((item, index) => (
+          <div key={index}>
+            <h5>{item.heading}</h5>
+            <p>{item.body}</p>
+          </div>
+        ))}
+      </CCol>
     </CRow>
   )
 }
