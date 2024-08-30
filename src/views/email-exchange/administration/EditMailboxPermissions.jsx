@@ -1109,6 +1109,9 @@ const OutOfOffice = ({ refreshFunction }) => {
     </>
   )
 }
+OutOfOffice.propTypes = {
+  refreshFunction: PropTypes.func,
+}
 
 const OutOfOfficeSettings = ({ refresh }) => {
   const query = useQuery()
@@ -1194,4 +1197,7 @@ const OutOfOfficeSettings = ({ refresh }) => {
       </CCol>
     </CRow>
   )
+}
+OutOfOfficeSettings.propTypes = {
+  refresh: PropTypes.string,
 }
