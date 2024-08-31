@@ -325,7 +325,7 @@ const AddRMM = () => {
             <RFFCFormInput
               type="text"
               name="customGroup"
-              label="Custom Group Names seperated by comma. Wildcards (*) are allowed"
+              label="Custom Group Names separated by comma. Wildcards (*) are allowed"
             />
           </Condition>
         </CForm>
