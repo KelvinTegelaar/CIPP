@@ -118,9 +118,10 @@ export const CippDataTable = (props) => {
     state: { columnVisibility },
     enableColumnPinning: true,
     enableStickyHeader: true,
-
-    layoutMode: "grid-no-grow",
-    onColumnVisibilityChange: setColumnVisibility, // Ensure this correctly updates visibility
+    muiTableContainerProps: {
+      sx: { maxHeight: `calc(100vh - 380px)` },
+    },
+    onColumnVisibilityChange: setColumnVisibility,
     ...modeInfo,
 
     renderRowActionMenuItems: actions
