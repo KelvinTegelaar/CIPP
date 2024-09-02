@@ -12,17 +12,17 @@ It's recommended that you have the following installed on the computer you're us
   - [npm Intellisense](https://marketplace.visualstudio.com/items?itemName=christian-kohler.npm-intellisense)
   - [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
   - [Stylelint](https://marketplace.visualstudio.com/items?itemName=stylelint.vscode-stylelint)
-- [PowerShell 7](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.2) `winget install --exact PowerShell`
-- [git](https://git-scm.com/download/win) `winget install --exact git`
-- [node.js V18.X LTS](https://nodejs.org/en/download/releases)
-- [.NET Core 3.1](https://dotnet.microsoft.com/en-us/download/dotnet/3.1)
-- [.NET SDK 5](https://dotnet.microsoft.com/en-us/download/dotnet/5.0)
+- [PowerShell 7](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.4) `winget install --exact PowerShell`
+- [git](https://git-scm.com/download/win) `winget install --exact Git.Git`
+- [node.js V18.X LTS](https://nodejs.org/en/download/releases) `winget install --exact OpenJS.NodeJS.LTS --version 18.20.4`
+- [.NET Core 3.1](https://dotnet.microsoft.com/en-us/download/dotnet/3.1) 
+- [.NET SDK 5](https://dotnet.microsoft.com/en-us/download/dotnet/5.0) `winget install --exact Microsoft.DotNet.SDK.5`
 - [.NET SDK 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) `winget install --exact Microsoft.DotNet.SDK.6`
 
 {% hint style="info" %}
 This page guides you through getting setup to develop for CIPP using the command line to perform operations with `git` and `npm`. There are graphical user interfaces for these tools but they won't be covered in this documentation. The commands below are broadly OS agnostic.
 {% endhint %}
-
+<
 Using `npm` which is included with `nodejs` you're going to install the _Azure Static Web Apps CLI_, the _Azure Functions Core Tools_ and the _Azurite_ storage emulator globally.
 
 {% hint style="warning" %}
