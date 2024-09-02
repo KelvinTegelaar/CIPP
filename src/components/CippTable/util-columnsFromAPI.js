@@ -12,7 +12,6 @@ export const utilColumnsFromAPI = (dataSample) => {
         return {
           header: getCippTranslation(accessorKey),
           accessorKey: accessorKey,
-          // Custom Cell renderer for handling objects or complex data types
           Cell: ({ cell }) => {
             const value = cell.getValue();
             return typeof value === "object" && value !== null

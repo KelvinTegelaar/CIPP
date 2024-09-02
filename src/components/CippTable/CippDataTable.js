@@ -171,6 +171,7 @@ export const CippDataTable = (props) => {
           {!simple && (
             <CIPPTableToptoolbar
               table={table}
+              columnVisibility={columnVisibility}
               getRequestData={getRequestData}
               usedColumns={usedColumns}
               title={title}

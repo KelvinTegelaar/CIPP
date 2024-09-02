@@ -29,6 +29,7 @@ export const CIPPTableToptoolbar = ({
   table,
   getRequestData,
   usedColumns,
+  columnVisibility,
   title,
   actions,
   exportEnabled,
@@ -73,9 +74,11 @@ export const CIPPTableToptoolbar = ({
                   rows={table.getFilteredRowModel().rows}
                   columns={usedColumns}
                   reportName={title}
+                  columnVisibility={columnVisibility}
                 />
                 <CSVExportButton
                   reportName={title}
+                  columnVisibility={columnVisibility}
                   rows={table.getFilteredRowModel().rows}
                   columns={usedColumns}
                 />

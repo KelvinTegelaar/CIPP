@@ -8,11 +8,14 @@ const csvConfig = mkConfig({
 });
 
 export const CSVExportButton = (props) => {
-  const { rows, columns, reportName } = props;
+  const { rows, columns, reportName, columnVisibility } = props;
 
   const handleExportRows = (rows) => {
     const rowData = rows.map((row) => row.original);
-    const columnKeys = columns.map((c) => c.accessorKey);
+    //only lsit columnKeys that are visible
+    const columnKeys = columns
+      .filter((c) => columnVisibility[c.accessorKey])
+      .map((c) => c.accessorKey);
     rowData.forEach((row) => {
       Object.keys(row).forEach((key) => {
         if (!columnKeys.includes(key)) {
@@ -21,7 +24,7 @@ export const CSVExportButton = (props) => {
       });
     });
     const csv = generateCsv(csvConfig)(rowData);
-    csvConfig["filename"] = `${reportName}.csv`;
+    csvConfig["filename"] = `${reportName}`;
     download(csvConfig)(csv);
   };
   return (

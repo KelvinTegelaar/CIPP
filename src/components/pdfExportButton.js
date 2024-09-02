@@ -5,7 +5,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
 export const PDFExportButton = (props) => {
-  const { rows, columns, reportName } = props;
+  const { rows, columns, reportName, columnVisibility } = props;
 
   const handleExportRows = (rows) => {
     const unit = "pt";
@@ -13,7 +13,10 @@ export const PDFExportButton = (props) => {
     const orientation = "landscape"; // portrait or landscape
     const doc = new jsPDF(orientation, unit, size);
     const tableData = rows.map((row) => row.original);
-    const exportColumns = columns.map((c) => ({ header: c.header, dataKey: c.accessorKey }));
+    //only export coluymns that are visible
+    const exportColumns = columns
+      .filter((c) => columnVisibility[c.accessorKey])
+      .map((c) => ({ header: c.header, dataKey: c.accessorKey }));
     let content = {
       startY: 100,
       columns: exportColumns,
