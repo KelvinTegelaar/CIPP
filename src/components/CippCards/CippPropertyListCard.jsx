@@ -29,37 +29,46 @@ export const CippPropertyListCard = (props) => {
         <PropertyList>
           {isFetching ? (
             <>
-              <PropertyListItem align={align} label="Loading" value={<Skeleton width={280} />} />
+              <PropertyListItem
+                key={"loading-bar"}
+                align={align}
+                label="Loading"
+                value={<Skeleton width={280} />}
+              />
             </>
           ) : (
             propertyItems.map((item, index) => (
-              <PropertyListItem align={align} copyItems divider key={index} {...item} />
+              <PropertyListItem
+                align={align}
+                copyItems
+                divider
+                key={`${index}-index-PropertyListOffCanvas`}
+                {...item}
+              />
             ))
           )}
         </PropertyList>
         <Divider />
         <ActionList>
           {actionItems.map((item, index) => (
-            <>
-              <ActionListItem
-                key={index}
-                icon={<SvgIcon fontSize="small">{item.icon}</SvgIcon>}
-                label={item.label}
-                onClick={
-                  //if item.link is set, browse there in a new tab
-                  item.link
-                    ? () => window.open(item.link, "_blank")
-                    : () => {
-                        setActionData({
-                          data: data,
-                          action: item,
-                          ready: true,
-                        });
-                        createDialog.handleOpen();
-                      }
-                }
-              />
-            </>
+            <ActionListItem
+              key={`${item.label}-index-ActionList-OffCanvas`}
+              icon={<SvgIcon fontSize="small">{item.icon}</SvgIcon>}
+              label={item.label}
+              onClick={
+                //if item.link is set, browse there in a new tab
+                item.link
+                  ? () => window.open(item.link, "_blank")
+                  : () => {
+                      setActionData({
+                        data: data,
+                        action: item,
+                        ready: true,
+                      });
+                      createDialog.handleOpen();
+                    }
+              }
+            />
           ))}
         </ActionList>
         {actionData.ready && (
