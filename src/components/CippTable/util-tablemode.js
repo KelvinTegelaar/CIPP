@@ -4,9 +4,22 @@ export const utilTableMode = (columnVisibility, mode, actions) => {
       enableRowSelection: false,
       enableRowActions: false,
       enableSelectAll: false,
+      enableColumnPinning: true,
+      enableStickyHeader: true,
+      muiTableContainerProps: {
+        sx: { maxHeight: `calc(100vh - 380px)` },
+      },
       initialState: {
         columnVisibility: { ...columnVisibility },
         density: "compact",
+      },
+      displayColumnDefOptions: {
+        "mrt-row-actions": {
+          visibleInShowHideMenu: false,
+        },
+        "mrt-row-select": {
+          visibleInShowHideMenu: false,
+        },
       },
     };
   } else {
@@ -16,6 +29,19 @@ export const utilTableMode = (columnVisibility, mode, actions) => {
       enableSelectAll: true,
       enableStickyHeader: true,
       selectAllMode: "all",
+      enableColumnPinning: true,
+      enableStickyHeader: true,
+      muiTableContainerProps: {
+        sx: { maxHeight: `calc(100vh - 380px)` },
+      },
+      displayColumnDefOptions: {
+        "mrt-row-actions": {
+          visibleInShowHideMenu: false,
+        },
+        "mrt-row-select": {
+          visibleInShowHideMenu: false,
+        },
+      },
       initialState: {
         columnVisibility: { ...columnVisibility },
         showGlobalFilter: true,

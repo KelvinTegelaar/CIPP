@@ -36,6 +36,7 @@ export const CippDataTable = (props) => {
       TableTimestamp: false,
     },
     exportEnabled = true,
+    simpleColumns = [],
     noDataButton = {},
     actions,
     noDataText = "No data found.",
@@ -58,51 +59,46 @@ export const CippDataTable = (props) => {
     data: api.data,
     queryKey: title,
   });
-
+  // logic to update the usedData state when the data is fetched.
   useEffect(() => {
     if (getRequestData.isSuccess) {
       const fetchedData = api.dataKey ? getRequestData.data[api.dataKey] : getRequestData.data;
       setUsedData(fetchedData || []);
     }
   }, [getRequestData.isSuccess, getRequestData.data, api.dataKey]);
-
+  //logic to select the right colums
   useEffect(() => {
-    if (Array.isArray(usedData) && usedData.length > 0 && typeof usedData[0] === "object") {
-      const apiColumns = utilColumnsFromAPI(usedData[0]);
-
-      // If columns is empty, only set columns once
-      if (columns.length === 0 && usedColumns.length === 0) {
-        setUsedColumns(apiColumns);
-
-        // Update visibility for new columns, but avoid unnecessary updates
-        const newVisibility = { ...columnVisibility };
-        apiColumns.forEach((col) => {
-          if (!columnVisibility.hasOwnProperty(col.accessorKey)) {
-            newVisibility[col.accessorKey] = true; // show by default when columns is empty
-          }
-        });
-        setColumnVisibility(newVisibility);
-      } else if (columns.length > 0) {
-        // Only update if columns prop is provided
-        const existingColumnKeys = new Set(columns.map((col) => col.accessorKey || col.header));
-        const finalColumns = [
-          ...columns,
-          ...apiColumns.filter((col) => !existingColumnKeys.has(col.accessorKey)),
-        ];
-        setUsedColumns(finalColumns);
-
-        setColumnVisibility((prevVisibility) => {
-          const newVisibility = { ...prevVisibility };
-          finalColumns.forEach((col) => {
-            if (!prevVisibility.hasOwnProperty(col.accessorKey)) {
-              newVisibility[col.accessorKey] = false; // hide new columns by default
-            }
-          });
-          return newVisibility;
-        });
-      }
+    if (!Array.isArray(usedData) || usedData.length === 0 || typeof usedData[0] !== "object") {
+      return;
     }
-  }, [columns, usedData, usedColumns.length]); // Added usedColumns.length as a dependency to avoid looping
+    const apiColumns = utilColumnsFromAPI(usedData[0]);
+    let finalColumns = [];
+    let newVisibility = { ...columnVisibility };
+
+    if (columns.length === 0 && simpleColumns.length === 0) {
+      finalColumns = apiColumns;
+      apiColumns.forEach((col) => {
+        newVisibility[col.accessorKey] = true;
+      });
+    } else if (simpleColumns.length > 0) {
+      finalColumns = apiColumns.map((col) => {
+        newVisibility[col.accessorKey] = simpleColumns.includes(col.accessorKey);
+        return col;
+      });
+    } else {
+      const providedColumnKeys = new Set(columns.map((col) => col.accessorKey || col.header));
+      finalColumns = [
+        ...columns,
+        ...apiColumns.filter((col) => !providedColumnKeys.has(col.accessorKey)),
+      ];
+      finalColumns.forEach((col) => {
+        newVisibility[col.accessorKey] = providedColumnKeys.has(col.accessorKey);
+      });
+    }
+
+    setUsedColumns(finalColumns);
+    setColumnVisibility(newVisibility);
+  }, [columns.length, simpleColumns, usedData.length]);
 
   const createDialog = useDialog();
 
@@ -116,11 +112,7 @@ export const CippDataTable = (props) => {
     columns: usedColumns,
     data: usedData,
     state: { columnVisibility },
-    enableColumnPinning: true,
-    enableStickyHeader: true,
-    muiTableContainerProps: {
-      sx: { maxHeight: `calc(100vh - 380px)` },
-    },
+
     onColumnVisibilityChange: setColumnVisibility,
     ...modeInfo,
 

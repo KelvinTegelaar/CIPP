@@ -62,6 +62,9 @@ export const CIPPTableToptoolbar = ({
             </Tooltip>
             <MRT_GlobalFilterTextField table={table} />
             <MRT_ToggleFiltersButton table={table} />
+            {
+              //this one is hideous, replace with custom component.
+            }
             <MRT_ShowHideColumnsButton table={table} />
             <MRT_ToggleDensePaddingButton table={table} />
             {exportEnabled && (

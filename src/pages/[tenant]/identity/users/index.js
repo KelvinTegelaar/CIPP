@@ -42,6 +42,7 @@ const Page = () => {
       apiUrl="/api/ListUsers"
       actions={actions}
       offCanvas={offCanvas}
+      simpleColumns={["userPrincipalName", "displayName", "mail", "mobilePhone", "officePhone"]}
     />
   );
 };
