@@ -220,7 +220,16 @@ export const CippDataTable = (props) => {
               )}
             </>
           )}
-          {getRequestData.isError && <ResourceError message="Error loading data" />}
+          {getRequestData.isError && (
+            <ResourceError
+              onReload={() => getRequestData.refetch()}
+              message={`Error Loading data:  ${
+                apiObject.error.response?.data?.result
+                  ? apiObject.error.response?.data.result
+                  : apiObject.error.message
+              }`}
+            />
+          )}
           {isFetching || (getRequestData.isFetching && !getRequestData.data) ? (
             <>
               <Skeleton />

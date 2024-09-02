@@ -7,6 +7,7 @@ import {
   Menu,
   MenuItem,
   SvgIcon,
+  Tooltip,
 } from "@mui/material";
 import { Box } from "@mui/system";
 import {
@@ -48,13 +49,17 @@ export const CIPPTableToptoolbar = ({
       >
         <Box sx={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
           <>
-            <IconButton
-              className="MuiIconButton"
-              onClick={() => getRequestData.refetch()}
-              disabled={getRequestData.isLoading || getRequestData.isFetching}
-            >
-              <SvgIcon fontSize="small">{getRequestData.isFetching ? <Sync /> : <Sync />}</SvgIcon>
-            </IconButton>
+            <Tooltip title="Refresh Data">
+              <IconButton
+                className="MuiIconButton"
+                onClick={() => getRequestData.refetch()}
+                disabled={getRequestData.isLoading || getRequestData.isFetching}
+              >
+                <SvgIcon fontSize="small">
+                  {getRequestData.isFetching ? <Sync /> : <Sync />}
+                </SvgIcon>
+              </IconButton>
+            </Tooltip>
             <MRT_GlobalFilterTextField table={table} />
             <MRT_ToggleFiltersButton table={table} />
             <MRT_ShowHideColumnsButton table={table} />
