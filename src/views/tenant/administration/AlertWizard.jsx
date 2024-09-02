@@ -21,6 +21,7 @@ import auditLogSchema from 'src/data/AuditLogSchema.json'
 import auditLogTemplates from 'src/data/AuditLogTemplates.json'
 import Skeleton from 'react-loading-skeleton'
 import { required } from 'src/validators'
+import HtmlParser from 'react-html-parser'
 
 const AlertWizard = () => {
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
@@ -96,7 +97,6 @@ const AlertWizard = () => {
   const getRecurrenceOptions = () => {
     const values = currentFormState?.values
     if (values) {
-      //console.log(currentFormState)
       const updatedRecurrenceOptions = recurrenceOptions.map((opt) => ({
         ...opt,
         name: opt.name.replace(' (Recommended)', ''),
@@ -110,6 +110,18 @@ const AlertWizard = () => {
         }
       }
       return updatedRecurrenceOptions
+    }
+  }
+
+  const getScriptDescription = () => {
+    const values = currentFormState?.values
+    if (values) {
+      const command = values.command?.value
+      if (command?.description) {
+        return HtmlParser(command.description)
+      } else {
+        return null
+      }
     }
   }
 
@@ -204,7 +216,7 @@ const AlertWizard = () => {
                                   ]}
                                   name="logbook"
                                   placeholder={'Select a log source'}
-                                  label="Select the log you which to receive the alert for"
+                                  label="Select the log you wish to receive the alert for"
                                   validate={required}
                                 />
                               </CCol>
@@ -236,8 +248,9 @@ const AlertWizard = () => {
                                     <RFFSelectSearch
                                       values={[
                                         { value: 'eq', name: 'Equals to' },
-                                        { value: 'like', name: 'Like' },
                                         { value: 'ne', name: 'Not Equals to' },
+                                        { value: 'like', name: 'Like' },
+                                        { value: 'notlike', name: 'Not like' },
                                         { value: 'notmatch', name: 'Does not match' },
                                         { value: 'gt', name: 'Greater than' },
                                         { value: 'lt', name: 'Less than' },
@@ -317,7 +330,7 @@ const AlertWizard = () => {
                                     multi={true}
                                     name={`actions`}
                                     placeholder={
-                                      'Select one action or multple actions from the list'
+                                      'Select one action or multiple actions from the list'
                                     }
                                     label="Then perform the following action(s)"
                                   />
@@ -368,6 +381,16 @@ const AlertWizard = () => {
                       render={({ handleSubmit, submitting, values }) => {
                         return (
                           <CForm id="alertForm" onSubmit={handleSubmit}>
+                            {getScriptDescription() && (
+                              <CRow className="mb-3">
+                                <CCol>
+                                  <CCallout color="info">
+                                    <FontAwesomeIcon icon="info-circle" className="me-2" />
+                                    {getScriptDescription()}
+                                  </CCallout>
+                                </CCol>
+                              </CRow>
+                            )}
                             <CRow className="mb-3">
                               <CCol>
                                 <RFFSelectSearch
@@ -382,6 +405,7 @@ const AlertWizard = () => {
                                 />
                               </CCol>
                             </CRow>
+
                             <Condition when="command.value.requiresInput" is={true}>
                               <CRow className="mb-3">
                                 <CCol>

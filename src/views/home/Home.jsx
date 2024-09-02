@@ -30,8 +30,7 @@ import CippCopyToClipboard from 'src/components/utilities/CippCopyToClipboard'
 import { CChart } from '@coreui/react-chartjs'
 import { getStyle } from '@coreui/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Link } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 import { ModalService } from 'src/components/utilities'
 
@@ -290,7 +289,7 @@ const TenantDashboard = () => {
                     {organization.verifiedDomains?.slice(0, 3).map((item, idx) => (
                       <li key={idx}>{item.name}</li>
                     ))}
-                    {organization.verifiedDomains?.length > 5 && (
+                    {organization.verifiedDomains?.length > 3 && (
                       <>
                         <CCollapse visible={domainVisible}>
                           {organization.verifiedDomains?.slice(3).map((item, idx) => (
