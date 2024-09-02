@@ -116,6 +116,10 @@ export const CippDataTable = (props) => {
     columns: usedColumns,
     data: usedData,
     state: { columnVisibility },
+    enableColumnPinning: true,
+    enableStickyHeader: true,
+
+    layoutMode: "grid-no-grow",
     onColumnVisibilityChange: setColumnVisibility, // Ensure this correctly updates visibility
     ...modeInfo,
 
