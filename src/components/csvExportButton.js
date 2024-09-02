@@ -12,7 +12,6 @@ export const CSVExportButton = (props) => {
 
   const handleExportRows = (rows) => {
     const rowData = rows.map((row) => row.original);
-    //only lsit columnKeys that are visible
     const columnKeys = columns
       .filter((c) => columnVisibility[c.accessorKey])
       .map((c) => c.accessorKey);
