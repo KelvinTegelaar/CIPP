@@ -21,6 +21,7 @@ import { useListTenantsQuery } from 'src/store/api/tenants'
 import { OffcanvasListSection } from 'src/components/utilities/CippListOffcanvas'
 import CippButtonCard from 'src/components/contentcards/CippButtonCard'
 import CippAppPermissionBuilder from 'src/components/utilities/CippAppPermissionBuilder'
+import Skeleton from 'react-loading-skeleton'
 
 const SettingsAppPermissions = () => {
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
@@ -28,13 +29,19 @@ const SettingsAppPermissions = () => {
     genericPostRequest({
       path: 'api/ExecSAMAppPermissions?Action=Update',
       values: values,
+    }).then(() => {
+      refetchSam()
     })
   }
 
-  const { data: samAppPermissions = [], isFetching: samAppPermissionsFetching } =
-    useGenericGetRequestQuery({
-      path: 'api/ExecSAMAppPermissions',
-    })
+  const {
+    data: samAppPermissions = [],
+    isFetching: samAppPermissionsFetching,
+    isSuccess: samAppPermissionsSuccess,
+    refetch: refetchSam,
+  } = useGenericGetRequestQuery({
+    path: 'api/ExecSAMAppPermissions',
+  })
 
   return (
     <CippButtonCard title="CIPP-SAM API Permissions" titleType="big">
@@ -46,11 +53,14 @@ const SettingsAppPermissions = () => {
           advised.
         </p>
 
-        <CippAppPermissionBuilder
-          onSubmit={handleSubmit}
-          currentPermissions={samAppPermissions}
-          isSubmitting={postResults.isFetching}
-        />
+        {samAppPermissionsFetching && <Skeleton />}
+        {samAppPermissionsSuccess && (
+          <CippAppPermissionBuilder
+            onSubmit={handleSubmit}
+            currentPermissions={samAppPermissions}
+            isSubmitting={postResults.isFetching}
+          />
+        )}
 
         {postResults.data && (
           <CCallout color="success" className="mt-3">
