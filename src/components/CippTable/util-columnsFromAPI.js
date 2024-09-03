@@ -1,3 +1,4 @@
+import { getCippFormatting } from "../../utils/get-cipp-formatting";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 
 export const utilColumnsFromAPI = (dataSample) => {
@@ -14,9 +15,7 @@ export const utilColumnsFromAPI = (dataSample) => {
           accessorKey: accessorKey,
           Cell: ({ cell }) => {
             const value = cell.getValue();
-            return typeof value === "object" && value !== null
-              ? JSON.stringify(value) // TODO: is temporary and needs to be replaced with a generic object renderer.
-              : value;
+            return getCippFormatting(value, accessorKey);
           },
         };
       })

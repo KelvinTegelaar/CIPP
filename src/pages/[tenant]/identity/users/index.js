@@ -42,7 +42,15 @@ const Page = () => {
       apiUrl="/api/ListUsers"
       actions={actions}
       offCanvas={offCanvas}
-      simpleColumns={["userPrincipalName", "displayName", "mail", "mobilePhone", "officePhone"]}
+      simpleColumns={[
+        "accountEnabled",
+        "userPrincipalName",
+        "displayName",
+        "mail",
+        "businessPhones",
+        "proxyAddresses",
+        "assignedLicenses",
+      ]}
     />
   );
 };
