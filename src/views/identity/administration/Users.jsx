@@ -607,7 +607,7 @@ const Users = (row) => {
               modalMessage:
                 'Select a SharePoint URL to create a OneDrive shortcut for and press continue.',
               modalDropdown: {
-                url: `/api/listSites?TenantFilter=${tenant.defaultDomainName}&type=SharePointSiteUsage`,
+                url: `/api/listSites?TenantFilter=${tenant.defaultDomainName}&type=SharePointSiteUsage&URLOnly=true`,
                 labelField: 'URL',
                 valueField: 'URL',
               },
