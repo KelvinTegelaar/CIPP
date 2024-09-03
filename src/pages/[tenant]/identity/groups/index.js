@@ -2,7 +2,7 @@ import { CippTablePage } from "../../../../components/CippComponents/CippTablePa
 import { Layout as DashboardLayout } from "../../../../layouts/index.js";
 
 const Page = () => {
-  const pageTitle = "Users";
+  const pageTitle = "Groups";
   const actions = [
     {
       label: "Delete User",
@@ -30,19 +30,34 @@ const Page = () => {
   return (
     <CippTablePage
       title={pageTitle}
-      columns={[
-        {
-          header: "Display Name",
-          accessorKey: "displayName",
-        },
-        {
-          header: "userPrincipalName",
-          accessorKey: "userPrincipalName",
-        },
-      ]}
-      apiUrl="/api/ListUsers"
+      apiUrl="/api/ListGraphRequest"
+      apiData={{
+        Endpoint: "groups",
+        $select:
+          "id,createdDateTime,displayName,description,mail,mailEnabled,mailNickname,resourceProvisioningOptions,securityEnabled,visibility,organizationId,onPremisesSamAccountName,membershipRule,grouptypes,onPremisesSyncEnabled,resourceProvisioningOptions,userPrincipalName",
+        $expand: "members($select=userPrincipalName)",
+        $count: true,
+      }}
+      apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
+      simpleColumns={[
+        "displayName",
+        "description",
+        "mail",
+        "mailEnabled",
+        "mailNickname",
+        "resourceProvisioningOptions",
+        "securityEnabled",
+        "visibility",
+        "organizationId",
+        "onPremisesSamAccountName",
+        "membershipRule",
+        "grouptypes",
+        "onPremisesSyncEnabled",
+        "resourceProvisioningOptions",
+        "userPrincipalName",
+      ]}
     />
   );
 };

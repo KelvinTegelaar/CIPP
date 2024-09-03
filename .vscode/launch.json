@@ -33,7 +33,7 @@
       "name": "Launch in Windows Terminal",
       "request": "launch",
       "cwd": "${cwd}",
-      "script": ". '${cwd}\\Tools\\Start-CowDevEmulators.ps1'"
+      "script": ". '${cwd}\\Tools\\Start-CIPPDevEmulators.ps1'"
     }
   ],
   "compounds": [
