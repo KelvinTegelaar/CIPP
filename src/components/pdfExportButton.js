@@ -1,8 +1,8 @@
-import PropTypes from "prop-types";
-import { Button, IconButton, Tooltip } from "@mui/material";
+import { IconButton, Tooltip } from "@mui/material";
 import { PictureAsPdf } from "@mui/icons-material";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { getCippFormatting } from "../utils/get-cipp-formatting";
 
 export const PDFExportButton = (props) => {
   const { rows, columns, reportName, columnVisibility } = props;
@@ -17,10 +17,20 @@ export const PDFExportButton = (props) => {
     const exportColumns = columns
       .filter((c) => columnVisibility[c.accessorKey])
       .map((c) => ({ header: c.header, dataKey: c.accessorKey }));
+
+    //for every existing row, get the valid formatting using getCippFormatting.
+    const formattedData = tableData.map((row) => {
+      const formattedRow = {};
+      Object.keys(row).forEach((key) => {
+        formattedRow[key] = getCippFormatting(row[key], key, "text");
+      });
+      return formattedRow;
+    });
+
     let content = {
       startY: 100,
       columns: exportColumns,
-      body: tableData,
+      body: formattedData,
       theme: "striped",
       headStyles: { fillColor: [247, 127, 0] },
     };

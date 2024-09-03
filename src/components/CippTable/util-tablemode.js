@@ -4,8 +4,8 @@ export const utilTableMode = (columnVisibility, mode, actions) => {
       enableRowSelection: false,
       enableRowActions: false,
       enableSelectAll: false,
-      enableColumnPinning: true,
-      enableStickyHeader: true,
+      enableColumnPinning: false,
+      enableStickyHeader: false,
       muiTableContainerProps: {
         sx: { maxHeight: `calc(100vh - 380px)` },
       },

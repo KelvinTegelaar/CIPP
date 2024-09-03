@@ -1,6 +1,7 @@
 import { BackupTableTwoTone } from "@mui/icons-material";
 import { IconButton, Tooltip } from "@mui/material";
 import { mkConfig, generateCsv, download } from "export-to-csv";
+import { getCippFormatting } from "../utils/get-cipp-formatting";
 const csvConfig = mkConfig({
   fieldSeparator: ",",
   decimalSeparator: ".",
@@ -22,7 +23,17 @@ export const CSVExportButton = (props) => {
         }
       });
     });
-    const csv = generateCsv(csvConfig)(rowData);
+
+    //for every existing row, get the valid formatting using getCippFormatting.
+    const formattedData = rowData.map((row) => {
+      const formattedRow = {};
+      Object.keys(row).forEach((key) => {
+        formattedRow[key] = getCippFormatting(row[key], key, "text");
+      });
+      return formattedRow;
+    });
+
+    const csv = generateCsv(csvConfig)(formattedData);
     csvConfig["filename"] = `${reportName}`;
     download(csvConfig)(csv);
   };
