@@ -18,7 +18,7 @@ import { ApiGetCall } from "../../api/ApiCall";
 import { utilTableMode } from "./util-tablemode";
 import { utilColumnsFromAPI } from "./util-columnsFromAPI";
 import { CIPPTableToptoolbar } from "./CIPPTableToptoolbar";
-import { Delete, More, MoreHoriz } from "@mui/icons-material";
+import { More, MoreHoriz } from "@mui/icons-material";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { useDialog } from "../../hooks/use-dialog";
 import { CippApiDialog } from "../CippComponents/CippApiDialog";
@@ -106,7 +106,7 @@ export const CippDataTable = (props) => {
 
   const table = useMaterialReactTable({
     mrtTheme: (theme) => ({
-      baseBackgroundColor: theme.palette.mode === "dark" ? theme.palette.neutral[900] : "#FFFFFF",
+      baseBackgroundColor: theme.palette.background.paper,
     }),
     columns: usedColumns,
     data: usedData,
@@ -189,7 +189,7 @@ export const CippDataTable = (props) => {
   return (
     <Card style={{ width: "100%" }}>
       <CardHeader action={cardButton} title={title} /> <Divider />
-      <CardContent>
+      <CardContent sx={{ padding: "1rem" }}>
         <Scrollbar>
           {!Array.isArray(usedData) && usedData ? (
             <ResourceUnavailable message="Data not in correct format" />
