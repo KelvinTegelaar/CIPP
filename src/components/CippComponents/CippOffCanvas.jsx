@@ -1,4 +1,4 @@
-import { Drawer } from "@mui/material";
+import { Drawer, Box } from "@mui/material";
 import { CippPropertyListCard } from "../CippCards/CippPropertyListCard";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
@@ -25,17 +25,19 @@ export const CippOffCanvas = (props) => {
         open={visible}
         onClose={onClose}
       >
-        {extendedInfo && (
-          <CippPropertyListCard
-            isFetching={isFetching}
-            align="vertical"
-            title="Extended Info"
-            propertyItems={extendedInfo}
-            copyItems={true}
-            actionItems={actions}
-            data={extendedData}
-          />
-        )}
+        <Box sx={{ overflowY: "auto", maxHeight: "100%" }}>
+          {extendedInfo && (
+            <CippPropertyListCard
+              isFetching={isFetching}
+              align="vertical"
+              title="Extended Info"
+              propertyItems={extendedInfo}
+              copyItems={true}
+              actionItems={actions}
+              data={extendedData}
+            />
+          )}
+        </Box>
       </Drawer>
     </>
   );

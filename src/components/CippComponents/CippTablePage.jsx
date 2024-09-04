@@ -13,6 +13,7 @@ export const CippTablePage = (props) => {
     actions,
     apiUrl,
     apiData,
+    apiDataKey,
     columns,
     columnsFromApi,
     name,
@@ -49,7 +50,11 @@ export const CippTablePage = (props) => {
                 noDataButton={noDataButton}
                 actions={actions}
                 simple={false}
-                api={{ url: apiUrl, data: { tenantFilter: tenant, ...apiData } }}
+                api={{
+                  url: apiUrl,
+                  data: { tenantFilter: tenant, ...apiData },
+                  dataKey: apiDataKey,
+                }}
                 columns={columns}
                 columnsFromApi={columnsFromApi}
                 offCanvas={offCanvas}
