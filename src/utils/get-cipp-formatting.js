@@ -9,11 +9,7 @@ export const getCippFormatting = (data, cellName, type) => {
   const cellNameLower = cellName.toLowerCase();
   // Handle date formatting
   if (cellNameLower.includes("date")) {
-    return isText ? (
-      new Date(data).toLocaleString()
-    ) : (
-      <span>{new Date(data).toLocaleString()}</span>
-    );
+    return isText ? new Date(data).toLocaleString : <span>{new Date(data).toLocaleString()}</span>;
   }
 
   // Handle null or undefined data

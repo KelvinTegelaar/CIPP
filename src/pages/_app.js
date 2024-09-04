@@ -15,6 +15,7 @@ import "../libs/nprogress";
 import Toasts from "../components/toaster";
 import { PrivateRoute } from "../components/PrivateRoute";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { GlobalStyles } from "@mui/system";
 
 const queryClient = new QueryClient();
 const clientSideEmotionCache = createEmotionCache();
@@ -52,6 +53,29 @@ const App = (props) => {
                     <ThemeProvider theme={theme}>
                       <RTL direction={settings.direction}>
                         <CssBaseline />
+                        <GlobalStyles
+                          styles={{
+                            "*::-webkit-scrollbar": {
+                              width: "20px",
+                            },
+                            "*::-webkit-scrollbar-track": {
+                              backgroundColor: "transparent",
+                            },
+                            "*::-webkit-scrollbar-thumb": {
+                              backgroundClip: "content-box",
+                              backgroundColor: "#d6dee1",
+                              border: "6px solid transparent",
+                              borderRadius: "20px",
+                            },
+                            "*::-webkit-scrollbar-thumb:hover": {
+                              backgroundColor: "#a8bbbf",
+                            },
+                            "*": {
+                              scrollbarWidth: "thin" /* Firefox */,
+                              scrollbarColor: "#d6dee1 transparent" /* Firefox */,
+                            },
+                          }}
+                        />
                         <PrivateRoute>{getLayout(<Component {...pageProps} />)}</PrivateRoute>
                         <Toaster position="top-center" />
                       </RTL>

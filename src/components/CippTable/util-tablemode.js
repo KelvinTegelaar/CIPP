@@ -6,12 +6,17 @@ export const utilTableMode = (columnVisibility, mode, actions) => {
       enableSelectAll: false,
       enableColumnPinning: false,
       enableStickyHeader: false,
+      muiPaginationProps: {
+        rowsPerPageOptions: [25, 50, 100, 250, 500],
+      },
       muiTableContainerProps: {
         sx: { maxHeight: `calc(100vh - 380px)` },
       },
       initialState: {
         columnVisibility: { ...columnVisibility },
         density: "compact",
+        //TODO: page size should come from user settings state in the future.
+        pagination: { pageSize: 25 },
       },
       displayColumnDefOptions: {
         "mrt-row-actions": {
@@ -31,8 +36,10 @@ export const utilTableMode = (columnVisibility, mode, actions) => {
       enableStickyHeader: true,
       selectAllMode: "all",
       enableColumnPinning: true,
-      columnFilterDisplayMode: "popover",
       enableStickyHeader: true,
+      muiPaginationProps: {
+        rowsPerPageOptions: [25, 50, 100, 250, 500],
+      },
       muiTableContainerProps: {
         sx: { maxHeight: `calc(100vh - 380px)` },
       },
@@ -44,10 +51,12 @@ export const utilTableMode = (columnVisibility, mode, actions) => {
           visibleInShowHideMenu: false,
         },
       },
+      //TODO: page size should come from user settings state in the future.
       initialState: {
         columnVisibility: { ...columnVisibility },
         showGlobalFilter: true,
         density: "compact",
+        pagination: { pageSize: 25 },
         columnPinning: {
           left: ["mrt-row-select"],
           right: ["mrt-row-actions"],

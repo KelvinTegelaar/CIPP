@@ -5,8 +5,10 @@ import {
   CardHeader,
   Divider,
   ListItemIcon,
+  ListItemText,
   MenuItem,
   Skeleton,
+  SvgIcon,
 } from "@mui/material";
 import { ResourceUnavailable } from "../resource-unavailable";
 import { ResourceError } from "../resource-error";
@@ -16,7 +18,7 @@ import { ApiGetCall } from "../../api/ApiCall";
 import { utilTableMode } from "./util-tablemode";
 import { utilColumnsFromAPI } from "./util-columnsFromAPI";
 import { CIPPTableToptoolbar } from "./CIPPTableToptoolbar";
-import { More } from "@mui/icons-material";
+import { Delete, More, MoreHoriz } from "@mui/icons-material";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { useDialog } from "../../hooks/use-dialog";
 import { CippApiDialog } from "../CippComponents/CippApiDialog";
@@ -117,6 +119,7 @@ export const CippDataTable = (props) => {
       ? ({ closeMenu, row }) => [
           actions.map((action, index) => (
             <MenuItem
+              sx={{ color: action.color }}
               key={`actions-list-row-${index}`}
               onClick={() => {
                 setActionData({
@@ -128,8 +131,10 @@ export const CippDataTable = (props) => {
                 closeMenu();
               }}
             >
-              <ListItemIcon>{action.icon}</ListItemIcon>
-              {action.label}
+              <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
+                {action.icon}
+              </SvgIcon>
+              <ListItemText>{action.label}</ListItemText>
             </MenuItem>
           )),
           offCanvas && (
@@ -141,9 +146,9 @@ export const CippDataTable = (props) => {
                 setOffcanvasVisible(true);
               }}
             >
-              <ListItemIcon>
-                <More fontSize="small" />
-              </ListItemIcon>
+              <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
+                <MoreHoriz />
+              </SvgIcon>
               More Info
             </MenuItem>
           ),

@@ -1,41 +1,192 @@
+import { EyeIcon } from "@heroicons/react/24/outline";
 import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { Edit } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Users";
+
   const actions = [
     {
-      label: "Magical test",
+      label: "View User",
+      link: "/[tenant]/identity/users/[id]",
+      multiPost: false,
+      icon: <EyeIcon />,
+      color: "success",
+    },
+    {
+      label: "Edit User",
+      type: "GET",
+      url: "/identity/administration/users/edit?userId=userId&tenantDomain=tenantDomain",
+      multiPost: false,
+      icon: <Edit />,
+      color: "info",
+    },
+    {
+      label: "Research Compromised Account",
+      type: "GET",
+      url: "/identity/administration/ViewBec?userId=userId&tenantDomain=tenantDomain&ID=userPrincipalName",
+      confirmText: "Are you sure you want to research this compromised account?",
+      multiPost: false,
+    },
+    {
+      label: "Create Temporary Access Password",
       type: "POST",
-      url: "/api/ExecSetOOO",
-      data: { User: "userPrincipalName", AutoReplyState: "Enabled" },
-      fields: [{ type: "textArea", name: "input" }],
+      url: "/api/ExecCreateTAP",
+      data: { TenantFilter: "TenantFilter", ID: "userPrincipalName" },
+      confirmText: "Are you sure you want to create a Temporary Access Password?",
+      multiPost: false,
+    },
+    {
+      label: "Rerequire MFA registration",
+      type: "POST",
+      url: "/api/ExecResetMFA",
+      data: { TenantFilter: "tenantDomain", ID: "userPrincipalName" },
+      confirmText: "Are you sure you want to reset MFA for this user?",
+      multiPost: false,
+    },
+    {
+      label: "Send MFA Push",
+      type: "POST",
+      url: "/api/ExecSendPush",
+      data: { TenantFilter: "tenantDomain", UserEmail: "userPrincipalName" },
+      confirmText: "Are you sure you want to send an MFA request?",
+      multiPost: false,
+    },
+    {
+      label: "Set Per-User MFA",
+      type: "POST",
+      url: "/api/ExecPerUserMFA",
+      data: { TenantFilter: "tenantDomain", userId: "userPrincipalName" },
+      confirmText: "Are you sure you want to set per-user MFA for these users?",
+      multiPost: false,
+    },
+    {
+      label: "Convert to Shared Mailbox",
+      type: "POST",
+      url: "/api/ExecConvertToSharedMailbox",
+      data: { TenantFilter: "tenantDomain", ID: "userPrincipalName" },
+      confirmText: "Are you sure you want to convert this user to a shared mailbox?",
+      multiPost: false,
+    },
+    {
+      label: "Enable Online Archive",
+      type: "POST",
+      url: "/api/ExecEnableArchive",
+      data: { TenantFilter: "tenantDomain", ID: "userPrincipalName" },
+      confirmText: "Are you sure you want to enable the online archive for this user?",
+      multiPost: false,
+    },
+    {
+      label: "Set Out of Office",
+      type: "POST",
+      url: "/api/ExecSetOoO",
+      data: { user: "userPrincipalName", TenantFilter: "tenantDomain", AutoReplyState: "Enabled" },
+      fields: [{ type: "textArea", name: "message", label: "Out of Office Message" }],
+      confirmText: "Are you sure you want to set the out of office?",
+      multiPost: false,
+    },
+    {
+      label: "Disable Out of Office",
+      type: "POST",
+      url: "/api/ExecSetOoO",
+      data: { user: "userPrincipalName", TenantFilter: "tenantDomain", AutoReplyState: "Disabled" },
+      confirmText: "Are you sure you want to disable the out of office?",
+      multiPost: false,
+    },
+    {
+      label: "Disable Email Forwarding",
+      type: "POST",
+      url: "/api/ExecEmailForward",
+      data: {
+        username: "userPrincipalName",
+        userid: "userPrincipalName",
+        TenantFilter: "tenantDomain",
+        DisableForwarding: true,
+      },
+      confirmText: "Are you sure you want to disable forwarding of this user's emails?",
+      multiPost: false,
+    },
+    {
+      label: "Block Sign In",
+      type: "POST",
+      url: "/api/ExecDisableUser",
+      data: { TenantFilter: "tenantDomain", ID: "id" },
+      confirmText: "Are you sure you want to block the sign-in for this user?",
+      multiPost: false,
+    },
+    {
+      label: "Unblock Sign In",
+      type: "POST",
+      url: "/api/ExecDisableUser",
+      data: { TenantFilter: "tenantDomain", ID: "id", Enable: true },
+      confirmText: "Are you sure you want to unblock sign-in for this user?",
+      multiPost: false,
+    },
+    {
+      label: "Reset Password (Must Change)",
+      type: "POST",
+      url: "/api/ExecResetPass",
+      data: {
+        MustChange: true,
+        TenantFilter: "tenantDomain",
+        ID: "id",
+        displayName: "displayName",
+      },
+      confirmText:
+        "Are you sure you want to reset the password for this user? The user must change their password at next logon.",
+      multiPost: false,
+    },
+    {
+      label: "Reset Password",
+      type: "POST",
+      url: "/api/ExecResetPass",
+      data: {
+        MustChange: false,
+        TenantFilter: "tenantDomain",
+        ID: "id",
+        displayName: "displayName",
+      },
+      confirmText: "Are you sure you want to reset the password for this user?",
+      multiPost: false,
+    },
+    {
+      label: "Revoke all user sessions",
+      type: "POST",
+      url: "/api/ExecRevokeSessions",
+      data: { TenantFilter: "tenantDomain", ID: "id", Username: "userPrincipalName" },
+      confirmText: "Are you sure you want to revoke all sessions for this user?",
+      multiPost: false,
+    },
+    {
+      label: "Delete User",
+      type: "POST",
+      url: "/api/RemoveUser",
+      data: { TenantFilter: "tenantDomain", ID: "id" },
       confirmText: "Are you sure you want to delete this user?",
       multiPost: false,
     },
-    {
-      label: "dance test",
-      type: "POST",
-      url: "/api/ListUsers",
-      data: { email: "userPrincipalName" },
-      confirmText: "Are you sure you want to dance with this user?",
-      multiPost: false,
-    },
   ];
+
   const offCanvas = {
     extendedInfoFields: [
-      "displayName",
-      "userPrincipalName",
-      "id",
-      "mail",
-      "mobilePhone",
-      "officePhone",
-      "jobTitle",
-      "department",
-      "city",
+      "createdDateTime", // Created Date (UTC)
+      "userPrincipalName", // UPN
+      "givenName", // Given Name
+      "surname", // Surname
+      "jobTitle", // Job Title
+      "assignedLicenses", // Licenses
+      "businessPhones", // Business Phone
+      "mobilePhone", // Mobile Phone
+      "mail", // Mail
+      "city", // City
+      "department", // Department
+      "onPremisesLastSyncDateTime", // OnPrem Last Sync
+      "id", // Unique ID
     ],
     actions: actions,
   };
+
   return (
     <CippTablePage
       title={pageTitle}

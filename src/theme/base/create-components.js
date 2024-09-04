@@ -1,4 +1,4 @@
-import XCircleIcon from '@heroicons/react/24/outline/XCircleIcon';
+import XCircleIcon from "@heroicons/react/24/outline/XCircleIcon";
 import {
   createTheme,
   filledInputClasses,
@@ -7,8 +7,8 @@ import {
   inputLabelClasses,
   SvgIcon,
   switchClasses,
-  tableCellClasses
-} from '@mui/material';
+  tableCellClasses,
+} from "@mui/material";
 
 // Used only to create transitions
 const muiTheme = createTheme();
@@ -19,53 +19,53 @@ export const createComponents = () => {
       styleOverrides: {
         root: {
           [`& .${filledInputClasses.root}`]: {
-            paddingTop: 6
-          }
+            paddingTop: 6,
+          },
         },
         noOptions: {
           fontSize: 14,
           letterSpacing: 0.15,
-          lineHeight: 1.6
+          lineHeight: 1.6,
         },
         option: {
           fontSize: 14,
           letterSpacing: 0.15,
-          lineHeight: 1.6
-        }
-      }
+          lineHeight: 1.6,
+        },
+      },
     },
     MuiAvatar: {
       styleOverrides: {
         root: {
           fontSize: 14,
           fontWeight: 600,
-          letterSpacing: 0
-        }
-      }
+          letterSpacing: 0,
+        },
+      },
     },
     MuiButton: {
       defaultProps: {
-        disableRipple: true
+        disableRipple: true,
       },
       styleOverrides: {
         root: {
-          fontWeight: 600
+          fontWeight: 600,
         },
         sizeLarge: {
-          fontSize: 15
+          fontSize: 15,
         },
         sizeMedium: {
-          fontSize: 14
+          fontSize: 14,
         },
         sizeSmall: {
-          fontSize: 13
-        }
-      }
+          fontSize: 13,
+        },
+      },
     },
     MuiButtonGroup: {
       defaultProps: {
-        disableRipple: true
-      }
+        disableRipple: true,
+      },
     },
     MuiCardActions: {
       styleOverrides: {
@@ -73,9 +73,9 @@ export const createComponents = () => {
           paddingBottom: 16,
           paddingLeft: 24,
           paddingRight: 24,
-          paddingTop: 16
-        }
-      }
+          paddingTop: 16,
+        },
+      },
     },
     MuiCardContent: {
       styleOverrides: {
@@ -83,9 +83,9 @@ export const createComponents = () => {
           paddingBottom: 20,
           paddingLeft: 24,
           paddingRight: 24,
-          paddingTop: 20
-        }
-      }
+          paddingTop: 20,
+        },
+      },
     },
     MuiCardHeader: {
       styleOverrides: {
@@ -93,24 +93,24 @@ export const createComponents = () => {
           paddingBottom: 16,
           paddingLeft: 24,
           paddingRight: 24,
-          paddingTop: 16
+          paddingTop: 16,
         },
         subheader: {
-          fontSize: 14
+          fontSize: 14,
         },
         title: {
-          fontSize: 16
-        }
-      }
+          fontSize: 16,
+        },
+      },
     },
     MuiCheckbox: {
       styleOverrides: {
         root: {
-          '&:hover': {
-            backgroundColor: 'transparent'
-          }
-        }
-      }
+          "&:hover": {
+            backgroundColor: "transparent",
+          },
+        },
+      },
     },
     MuiChip: {
       defaultProps: {
@@ -118,59 +118,59 @@ export const createComponents = () => {
           <SvgIcon>
             <XCircleIcon />
           </SvgIcon>
-        )
+        ),
       },
       styleOverrides: {
         avatar: {
-          borderRadius: 6
+          borderRadius: 6,
         },
         root: {
           borderRadius: 6,
           fontWeight: 400,
-          letterSpacing: 0
-        }
-      }
+          letterSpacing: 0,
+        },
+      },
     },
     MuiCssBaseline: {
       styleOverrides: {
-        '*': {
-          boxSizing: 'border-box'
+        "*": {
+          boxSizing: "border-box",
         },
         html: {
-          MozOsxFontSmoothing: 'grayscale',
-          WebkitFontSmoothing: 'antialiased',
-          display: 'flex',
-          flexDirection: 'column',
-          minHeight: '100%',
-          width: '100%'
+          MozOsxFontSmoothing: "grayscale",
+          WebkitFontSmoothing: "antialiased",
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "100%",
+          width: "100%",
         },
         body: {
-          display: 'flex',
-          flex: '1 1 auto',
-          flexDirection: 'column',
-          minHeight: '100%',
-          width: '100%'
+          display: "flex",
+          flex: "1 1 auto",
+          flexDirection: "column",
+          minHeight: "100%",
+          width: "100%",
         },
-        '#__next': {
-          display: 'flex',
-          flex: '1 1 auto',
-          flexDirection: 'column',
-          height: '100%',
-          width: '100%'
+        "#__next": {
+          display: "flex",
+          flex: "1 1 auto",
+          flexDirection: "column",
+          height: "100%",
+          width: "100%",
         },
-        '#nprogress': {
-          pointerEvents: 'none'
+        "#nprogress": {
+          pointerEvents: "none",
         },
-        '#nprogress .bar': {
-          backgroundColor: '#12B76A',
+        "#nprogress .bar": {
+          backgroundColor: "#12B76A",
           height: 3,
           left: 0,
-          position: 'fixed',
+          position: "fixed",
           top: 0,
-          width: '100%',
-          zIndex: 2000
-        }
-      }
+          width: "100%",
+          zIndex: 2000,
+        },
+      },
     },
     MuiDialogActions: {
       styleOverrides: {
@@ -179,11 +179,11 @@ export const createComponents = () => {
           paddingLeft: 32,
           paddingRight: 32,
           paddingTop: 24,
-          '&>:not(:first-of-type)': {
-            marginLeft: 16
-          }
-        }
-      }
+          "&>:not(:first-of-type)": {
+            marginLeft: 16,
+          },
+        },
+      },
     },
     MuiDialogContent: {
       styleOverrides: {
@@ -191,9 +191,9 @@ export const createComponents = () => {
           paddingBottom: 8,
           paddingLeft: 32,
           paddingRight: 32,
-          paddingTop: 8
-        }
-      }
+          paddingTop: 8,
+        },
+      },
     },
     MuiDialogTitle: {
       styleOverrides: {
@@ -203,89 +203,86 @@ export const createComponents = () => {
           paddingBottom: 24,
           paddingLeft: 32,
           paddingRight: 32,
-          paddingTop: 32
-        }
-      }
+          paddingTop: 32,
+        },
+      },
     },
     MuiFormControlLabel: {
       styleOverrides: {
         label: {
           fontSize: 14,
           letterSpacing: 0.15,
-          lineHeight: 1.43
-        }
-      }
+          lineHeight: 1.43,
+        },
+      },
     },
     MuiIcon: {
       styleOverrides: {
         fontSizeLarge: {
-          fontSize: 32
-        }
-      }
+          fontSize: 32,
+        },
+      },
     },
     MuiIconButton: {
       styleOverrides: {
         root: {
           borderRadius: 6,
-          padding: 8
+          padding: 8,
         },
         sizeSmall: {
-          padding: 4
-        }
-      }
+          padding: 4,
+        },
+      },
     },
     MuiInputAdornment: {
       styleOverrides: {
         root: {
           [`&.${inputAdornmentClasses.positionStart}.${inputAdornmentClasses.filled}`]: {
-            '&:not(.MuiInputAdornment-hiddenLabel)': {
-              marginTop: 0
-            }
-          }
-        }
-      }
+            "&:not(.MuiInputAdornment-hiddenLabel)": {
+              marginTop: 0,
+            },
+          },
+        },
+      },
     },
     MuiInputBase: {
       styleOverrides: {
         input: {
-          '&::placeholder': {
-            opacity: 1
+          "&::placeholder": {
+            opacity: 1,
           },
           [`label[data-shrink=false] + .${inputBaseClasses.formControl} &`]: {
-            '&::placeholder': {
-              opacity: 1 + '!important'
-            }
-          }
-        }
-      }
+            "&::placeholder": {
+              opacity: 1 + "!important",
+            },
+          },
+        },
+      },
     },
     MuiFilledInput: {
       styleOverrides: {
         root: {
           borderRadius: 6,
-          borderStyle: 'solid',
+          borderStyle: "solid",
           borderWidth: 1,
-          overflow: 'hidden',
-          padding: '6px 12px',
-          transition: muiTheme.transitions.create([
-            'border-color',
-            'box-shadow'
-          ]),
-          '&:before': {
-            display: 'none'
+          overflow: "hidden",
+          padding: "6px 12px",
+          transition: muiTheme.transitions.create(["border-color", "box-shadow"]),
+          "&:before": {
+            display: "none",
           },
-          '&:after': {
-            display: 'none'
-          }
+          "&:after": {
+            display: "none",
+          },
         },
         input: {
           padding: 0,
-          height: 'unset',
+          height: "unset",
           fontSize: 14,
           fontWeight: 500,
-          lineHeight: 1.6
-        }
-      }
+          lineHeight: 1.6,
+        },
+      },
     },
     MuiFormLabel: {
       styleOverrides: {
@@ -294,62 +291,62 @@ export const createComponents = () => {
           fontWeight: 500,
           [`&.${inputLabelClasses.filled}`]: {
             marginBottom: 8,
-            position: 'relative',
-            transform: 'none'
-          }
-        }
-      }
+            position: "relative",
+            transform: "none",
+          },
+        },
+      },
     },
     MuiListItemIcon: {
       styleOverrides: {
         root: {
-          marginRight: '16px',
-          minWidth: 'unset'
-        }
-      }
+          marginRight: "16px",
+          minWidth: "unset",
+        },
+      },
     },
     MuiPaper: {
       styleOverrides: {
         root: {
-          backgroundImage: 'none'
-        }
-      }
+          backgroundImage: "none",
+        },
+      },
     },
     MuiRadio: {
       styleOverrides: {
         root: {
-          transition: 'color 250ms',
-          '&:hover': {
-            backgroundColor: 'transparent'
-          }
-        }
-      }
+          transition: "color 250ms",
+          "&:hover": {
+            backgroundColor: "transparent",
+          },
+        },
+      },
     },
     MuiSelect: {
       defaultProps: {
-        variant: 'filled'
+        variant: "filled",
       },
       styleOverrides: {
         filled: {
-          '&:focus': {
-            backgroundColor: 'transparent'
-          }
-        }
-      }
+          "&:focus": {
+            backgroundColor: "transparent",
+          },
+        },
+      },
     },
     MuiSkeleton: {
       styleOverrides: {
         root: {
-          borderRadius: 4
-        }
-      }
+          borderRadius: 4,
+        },
+      },
     },
     MuiSvgIcon: {
       styleOverrides: {
         fontSizeLarge: {
-          fontSize: 32
-        }
-      }
+          fontSize: 32,
+        },
+      },
     },
     MuiSwitch: {
       styleOverrides: {
@@ -361,43 +358,43 @@ export const createComponents = () => {
           marginRight: 8,
           marginTop: 8,
           padding: 0,
-          width: 44
+          width: 44,
         },
         switchBase: {
           padding: 4,
-          '&:hover': {
-            backgroundColor: 'transparent'
+          "&:hover": {
+            backgroundColor: "transparent",
           },
           [`&.${switchClasses.checked}+.${switchClasses.track}`]: {
-            opacity: 1
+            opacity: 1,
           },
           [`&.${switchClasses.disabled}+.${switchClasses.track}`]: {
-            opacity: 1
+            opacity: 1,
           },
           [`&.${switchClasses.checked}.${switchClasses.disabled}+.${switchClasses.track}`]: {
-            opacity: 0.5
-          }
+            opacity: 0.5,
+          },
         },
         track: {
-          opacity: 1
+          opacity: 1,
         },
         thumb: {
           height: 16,
-          width: 16
-        }
-      }
+          width: 16,
+        },
+      },
     },
     MuiTab: {
       defaultProps: {
-        disableRipple: true
+        disableRipple: true,
       },
       styleOverrides: {
         root: {
           fontSize: 14,
           letterSpacing: 0.15,
-          lineHeight: 1.71
-        }
-      }
+          lineHeight: 1.71,
+        },
+      },
     },
     MuiTableHead: {
       styleOverrides: {
@@ -405,24 +402,24 @@ export const createComponents = () => {
           [`&.${tableCellClasses.root}`]: {
             fontSize: 11,
             fontWeight: 600,
-            textTransform: 'uppercase'
-          }
-        }
-      }
+            textTransform: "uppercase",
+          },
+        },
+      },
     },
     MuiTableRow: {
       styleOverrides: {
         root: {
           [`&:last-of-type .${tableCellClasses.root}`]: {
-            borderWidth: 0
-          }
-        }
-      }
+            borderWidth: 0,
+          },
+        },
+      },
     },
     MuiTextField: {
       defaultProps: {
-        variant: 'filled'
-      }
-    }
+        variant: "filled",
+      },
+    },
   };
 };
