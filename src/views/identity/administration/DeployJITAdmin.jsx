@@ -23,7 +23,6 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { TenantSelector } from 'src/components/utilities'
 import arrayMutators from 'final-form-arrays'
 import DatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
 import { useListUsersQuery } from 'src/store/api/users'
 import GDAPRoles from 'src/data/GDAPRoles'
 import { CippDatatable, cellDateFormatter } from 'src/components/tables'
@@ -47,10 +46,13 @@ const DeployJITAdmin = () => {
   const onSubmit = (values) => {
     const startTime = Math.floor(startDate.getTime() / 1000)
     const endTime = Math.floor(endDate.getTime() / 1000)
+
     const shippedValues = {
       TenantFilter: tenantDomain,
-      UserId: values.UserId?.value,
-      UserPrincipalName: `${values.username}@${values.domain}`,
+      UserId: values.UserId?.value.id,
+      UserPrincipalName: values.username
+        ? `${values.username}@${values.domain}`
+        : values.UserId?.value.userPrincipalName,
       FirstName: values.FirstName,
       LastName: values.LastName,
       useraction: values.useraction,
@@ -168,7 +170,7 @@ const DeployJITAdmin = () => {
                             <RFFSelectSearch
                               label={'Users in ' + tenantDomain}
                               values={users?.Results?.map((user) => ({
-                                value: user.id,
+                                value: { userPrincipalName: user.userPrincipalName, id: user.id },
                                 name: `${user.displayName} <${user.userPrincipalName}>`,
                               }))}
                               placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
