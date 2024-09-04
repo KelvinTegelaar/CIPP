@@ -37,6 +37,13 @@ const DevicesList = () => {
               modalMessage: 'Are you sure you want to enable this device.',
             },
             {
+              label: 'Retrieve Bitlocker Keys',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecGetRecoveryKey?TenantFilter=${tenant.defaultDomainName}&GUID=${row.id}`,
+              modalMessage: 'Are you sure you want to retrieve the Bitlocker keys?',
+            },
+            {
               label: 'Disable Device',
               color: 'info',
               modal: true,
