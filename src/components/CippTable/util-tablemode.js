@@ -27,9 +27,11 @@ export const utilTableMode = (columnVisibility, mode, actions) => {
       enableRowSelection: true,
       enableRowActions: actions ? true : false,
       enableSelectAll: true,
+      enableFacetedValues: true,
       enableStickyHeader: true,
       selectAllMode: "all",
       enableColumnPinning: true,
+      columnFilterDisplayMode: "popover",
       enableStickyHeader: true,
       muiTableContainerProps: {
         sx: { maxHeight: `calc(100vh - 380px)` },

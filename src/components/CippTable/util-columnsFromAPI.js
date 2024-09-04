@@ -1,3 +1,4 @@
+import { getCippFilterVariant } from "../../utils/get-cipp-filter-variant";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 import { getCippTranslation } from "../../utils/get-cipp-translation";
 
@@ -12,10 +13,11 @@ export const utilColumnsFromAPI = (dataSample) => {
 
         return {
           header: getCippTranslation(accessorKey),
-          accessorKey: accessorKey,
-          Cell: ({ cell }) => {
-            const value = cell.getValue();
-            return getCippFormatting(value, accessorKey);
+          id: accessorKey,
+          accessorFn: (row) => getCippFormatting(row[accessorKey], accessorKey, "text"),
+          ...getCippFilterVariant(key),
+          Cell: ({ row }) => {
+            return getCippFormatting(row.original[accessorKey], accessorKey);
           },
         };
       })

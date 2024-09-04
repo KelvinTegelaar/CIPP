@@ -78,21 +78,18 @@ export const CippDataTable = (props) => {
     if (columns.length === 0 && simpleColumns.length === 0) {
       finalColumns = apiColumns;
       apiColumns.forEach((col) => {
-        newVisibility[col.accessorKey] = true;
+        newVisibility[col.id] = true;
       });
     } else if (simpleColumns.length > 0) {
       finalColumns = apiColumns.map((col) => {
-        newVisibility[col.accessorKey] = simpleColumns.includes(col.accessorKey);
+        newVisibility[col.id] = simpleColumns.includes(col.id);
         return col;
       });
     } else {
-      const providedColumnKeys = new Set(columns.map((col) => col.accessorKey || col.header));
-      finalColumns = [
-        ...columns,
-        ...apiColumns.filter((col) => !providedColumnKeys.has(col.accessorKey)),
-      ];
+      const providedColumnKeys = new Set(columns.map((col) => col.id || col.header));
+      finalColumns = [...columns, ...apiColumns.filter((col) => !providedColumnKeys.has(col.id))];
       finalColumns.forEach((col) => {
-        newVisibility[col.accessorKey] = providedColumnKeys.has(col.accessorKey);
+        newVisibility[col.accessorKey] = providedColumnKeys.has(col.id);
       });
     }
 
@@ -217,9 +214,9 @@ export const CippDataTable = (props) => {
             <ResourceError
               onReload={() => getRequestData.refetch()}
               message={`Error Loading data:  ${
-                apiObject.error.response?.data?.result
-                  ? apiObject.error.response?.data.result
-                  : apiObject.error.message
+                getRequestData.error.response?.data?.result
+                  ? getRequestData.error.response?.data.result
+                  : getRequestData.error.message
               }`}
             />
           )}

@@ -7,13 +7,23 @@ import { getCippLicenseTranslation } from "./get-cipp-license-translation";
 export const getCippFormatting = (data, cellName, type) => {
   const isText = type === "text";
   const cellNameLower = cellName.toLowerCase();
-
   // Handle date formatting
   if (cellNameLower.includes("date")) {
     return isText ? (
       new Date(data).toLocaleString()
     ) : (
       <span>{new Date(data).toLocaleString()}</span>
+    );
+  }
+
+  // Handle null or undefined data
+  if (data === null || data === undefined) {
+    return isText ? (
+      "No data"
+    ) : (
+      <Box component="span">
+        <Chip variant="outlined" label="No data" size="small" color="info" />
+      </Box>
     );
   }
 
