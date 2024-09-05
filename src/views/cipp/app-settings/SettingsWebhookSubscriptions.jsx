@@ -49,6 +49,7 @@ export function SettingsWebhookSubscriptions() {
           path: 'api/ExecWebhookSubscriptions',
           reportName: `Log Subscriptions`,
           tableProps: {
+            keyField: 'RowKey',
             selectableRows: true,
             actionsList: [
               {
