@@ -5,17 +5,28 @@ import {
   CCallout,
   CCard,
   CCardBody,
+  CCardFooter,
   CCardHeader,
   CCardText,
   CCardTitle,
+  CCol,
   CFormInput,
   CFormSelect,
   CListGroup,
   CListGroupItem,
   COffcanvasTitle,
+  CProgress,
+  CProgressBar,
+  CProgressStacked,
+  CRow,
   CSpinner,
 } from '@coreui/react'
-import { CippOffcanvas, ModalService } from 'src/components/utilities'
+import {
+  CippCodeBlock,
+  CippOffcanvas,
+  CippTableOffcanvas,
+  ModalService,
+} from 'src/components/utilities'
 import { CippOffcanvasPropTypes } from 'src/components/utilities/CippOffcanvas'
 import { CippOffcanvasTable } from 'src/components/tables'
 import { useLazyGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
@@ -24,6 +35,67 @@ import { stringCamelCase } from 'src/components/utilities/CippCamelCase'
 import ReactTimeAgo from 'react-time-ago'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGlobe } from '@fortawesome/free-solid-svg-icons'
+import { cellGenericFormatter } from '../tables/CellGenericFormat'
+import ReactSelect from 'react-select'
+
+const CippOffcanvasCard = ({ action }) => {
+  const [offcanvasVisible, setOffcanvasVisible] = useState(false)
+  return (
+    <>
+      <CCard className="border-top-dark border-top-3 mb-3">
+        <CCardHeader className="d-flex justify-content-between align-items-center">
+          <CCardTitle>Report Name: {action.label}</CCardTitle>
+        </CCardHeader>
+        <CCardBody>
+          <CCardText>
+            {action.value && (
+              <>
+                {action?.link ? (
+                  <Link to={action.link}>Status: {action.value}</Link>
+                ) : (
+                  <span>Status: {action.value}</span>
+                )}
+              </>
+            )}
+          </CCardText>
+          {Array.isArray(action?.detailsObject) && (
+            <CButton size="sm" onClick={() => setOffcanvasVisible(true)}>
+              Details
+            </CButton>
+          )}
+          {Array.isArray(action?.detailsObject) && (
+            <CippTableOffcanvas
+              data={action.detailsObject}
+              title={`${action.label} - Details`}
+              state={offcanvasVisible}
+              hideFunction={() => setOffcanvasVisible(false)}
+              modal={true}
+            />
+          )}
+        </CCardBody>
+        <CCardFooter className="text-end">
+          <CRow>
+            {action?.percent > 0 && (
+              <CCol xs="8">
+                <div className="mt-1">
+                  <CProgress>
+                    <CProgressBar value={action.percent}>{action?.progressText}</CProgressBar>
+                  </CProgress>
+                </div>
+              </CCol>
+            )}
+            <CCol xs={action?.percent ? '4' : '12'}>
+              <small>{action.timestamp && <ReactTimeAgo date={action.timestamp} />}</small>
+            </CCol>
+          </CRow>
+        </CCardFooter>
+      </CCard>
+    </>
+  )
+}
+CippOffcanvasCard.propTypes = {
+  action: PropTypes.object,
+}
 
 export default function CippActionsOffcanvas(props) {
   const inputRef = useRef('')
@@ -38,6 +110,37 @@ export default function CippActionsOffcanvas(props) {
   }
   const handleModal = useCallback(
     (modalMessage, modalUrl, modalType = 'GET', modalBody, modalInput, modalDropdown) => {
+      const handlePostConfirm = () => {
+        console.log(inputRef)
+        const selectedValue = inputRef.current.props?.id
+          ? inputRef.current.props.value.value
+          : inputRef.current.value
+        //console.log(inputRef)
+        let additionalFields = {}
+
+        if (inputRef.current.props?.id) {
+          const selectedItem = dropDownInfo.data.find(
+            (item) => item[modalDropdown.valueField] === selectedValue,
+          )
+          if (selectedItem && modalDropdown.addedField) {
+            Object.keys(modalDropdown.addedField).forEach((key) => {
+              additionalFields[key] = selectedItem[modalDropdown.addedField[key]]
+            })
+          }
+        }
+        const postRequestBody = {
+          ...modalBody,
+          ...additionalFields,
+          input: selectedValue,
+        }
+        // Send the POST request
+        genericPostRequest({
+          path: modalUrl,
+          values: postRequestBody,
+        })
+      }
+
+      // Modal setup for GET, codeblock, and other types
       if (modalType === 'GET') {
         ModalService.confirm({
           body: (
@@ -55,6 +158,28 @@ export default function CippActionsOffcanvas(props) {
           title: 'Info',
           size: 'lg',
         })
+      } else if (modalType === 'table') {
+        const QueryColumns = []
+        const columns = Object.keys(modalBody[0]).map((key) => {
+          QueryColumns.push({
+            name: key,
+            selector: (row) => row[key],
+            sortable: true,
+            exportSelector: key,
+            cell: cellGenericFormatter(),
+          })
+        })
+
+        ModalService.open({
+          data: modalBody,
+          componentType: 'table',
+          componentProps: {
+            columns: QueryColumns,
+            keyField: 'SKU',
+          },
+          title: 'Info',
+          size: 'lg',
+        })
       } else {
         ModalService.confirm({
           key: modalContent,
@@ -68,7 +193,10 @@ export default function CippActionsOffcanvas(props) {
               {modalDropdown && (
                 <div>
                   {dropDownInfo.isSuccess && (
-                    <CFormSelect
+                    <ReactSelect
+                      id="react-select-offcanvas"
+                      classNamePrefix="react-select"
+                      className="react-select-container"
                       ref={inputRef}
                       options={dropDownInfo.data.map((data) => ({
                         value: data[modalDropdown.valueField],
@@ -82,12 +210,7 @@ export default function CippActionsOffcanvas(props) {
             </div>
           ),
           title: 'Confirm',
-          onConfirm: () => [
-            genericPostRequest({
-              path: modalUrl,
-              values: { ...modalBody, ...{ input: inputRef.current.value } },
-            }),
-          ],
+          onConfirm: handlePostConfirm,
         })
       }
     },
@@ -99,7 +222,6 @@ export default function CippActionsOffcanvas(props) {
       modalContent,
     ],
   )
-
   useEffect(() => {
     if (dropDownInfo.isFetching) {
       handleModal(
@@ -191,17 +313,7 @@ export default function CippActionsOffcanvas(props) {
   let cardContent
   try {
     cardContent = props.cards.map((action, index) => (
-      <>
-        <CCard key={index} className="border-top-dark border-top-3 mb-3">
-          <CCardBody>
-            <CCardTitle>Report Name: {action.label}</CCardTitle>
-            <CCardText>
-              {action.value && <Link to={action.link}>Status: {action.value}</Link>}
-            </CCardText>
-            <small>{action.timestamp && <ReactTimeAgo date={action.timestamp} />}</small>
-          </CCardBody>
-        </CCard>
-      </>
+      <CippOffcanvasCard action={action} key={index} />
     ))
   } catch (error) {
     // swallow error
@@ -239,7 +351,7 @@ export default function CippActionsOffcanvas(props) {
   }
   let actionsSelectorsContent
   try {
-    actionsSelectorsContent = props.actionsSelect.map((action, index) => (
+    actionsSelectorsContent = props?.actionsSelect?.map((action, index) => (
       <CListGroupItem className="" component="label" color={action.color} key={index}>
         {action.label}
         <CListGroupItem
@@ -271,6 +383,7 @@ export default function CippActionsOffcanvas(props) {
       id={props.id}
       hideFunction={props.hideFunction}
       refreshFunction={props.refreshFunction}
+      isRefreshing={props.isRefreshing}
     >
       {getResults.isFetching && (
         <CCallout color="info">
@@ -282,27 +395,39 @@ export default function CippActionsOffcanvas(props) {
           <CSpinner>Loading</CSpinner>
         </CCallout>
       )}
-      {postResults.isSuccess && <CCallout color="info">{postResults.data?.Results}</CCallout>}
+      {postResults.isSuccess && (
+        <CippCodeBlock
+          code={postResults.data?.Results}
+          callout={true}
+          dismissable={true}
+          calloutCopyValue={getResults.data?.Results}
+        />
+      )}
       {postResults.isError && (
         <CCallout color="danger">Could not connect to API: {postResults.error.message}</CCallout>
       )}
       {getResults.isSuccess && (
-        <CCallout color={getResults.data?.colour ? getResults.data?.colour : 'info'}>
-          {getResults.data?.Results}
-        </CCallout>
+        <CippCodeBlock
+          code={getResults.data?.Results}
+          callout={true}
+          calloutDismissible={true}
+          calloutColour={getResults.data?.colour ? getResults.data?.colour : 'info'}
+          calloutCopyValue={getResults.data?.Results}
+        />
       )}
       {getResults.isError && (
         <CCallout color="danger">Could not connect to API: {getResults.error.message}</CCallout>
       )}
-
-      <CCard className="content-card">
-        <CCardHeader className="d-flex justify-content-between align-items-center">
-          <CCardTitle>
-            <FontAwesomeIcon icon={faGlobe} className="mx-2" /> Extended Information
-          </CCardTitle>
-        </CCardHeader>
-        <CCardBody>{extendedInfoContent}</CCardBody>
-      </CCard>
+      {!cardContent && props?.extendedInfo && props?.extendedInfo?.length > 0 && (
+        <CCard className="content-card">
+          <CCardHeader className="d-flex justify-content-between align-items-center">
+            <CCardTitle>
+              <FontAwesomeIcon icon={faGlobe} className="mx-2" /> Extended Information
+            </CCardTitle>
+          </CCardHeader>
+          <CCardBody>{extendedInfoContent}</CCardBody>
+        </CCard>
+      )}
       {cardContent && cardContent}
       {<COffcanvasTitle>Actions</COffcanvasTitle>}
       <CListGroup>

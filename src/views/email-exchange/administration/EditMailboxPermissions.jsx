@@ -14,44 +14,31 @@ import {
   CForm,
   CRow,
   CSpinner,
+  CLink,
+  CBadge,
 } from '@coreui/react'
 import useQuery from 'src/hooks/useQuery'
 import { useDispatch } from 'react-redux'
 import { Form, Field } from 'react-final-form'
 import { RFFSelectSearch, RFFCFormCheck, RFFCFormInput, RFFCFormSwitch } from 'src/components/forms'
-import { ModalService } from 'src/components/utilities'
+import { CippLazy, ModalService } from 'src/components/utilities'
 import {
   useLazyGenericPostRequestQuery,
   useLazyGenericGetRequestQuery,
   useGenericGetRequestQuery,
+  useGenericPostRequestQuery,
 } from 'src/store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import { useListMailboxDetailsQuery, useListMailboxPermissionsQuery } from 'src/store/api/mailbox'
-import { CellBoolean, CippDatatable } from 'src/components/tables'
+import { CellBadge, CellBoolean, CippDatatable } from 'src/components/tables'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import PropTypes from 'prop-types'
+import Skeleton from 'react-loading-skeleton'
 
 const formatter = (cell, warning = false, reverse = false, colourless = false) =>
   CellBoolean({ cell, warning, reverse, colourless })
-
-function Lazy({ visible, children }) {
-  const rendered = useRef(visible)
-
-  if (visible && !rendered.current) {
-    rendered.current = true
-  }
-
-  if (!rendered.current) return null
-
-  return <div style={{ display: visible ? 'block' : 'none' }}>{children}</div>
-}
-
-Lazy.propTypes = {
-  visible: PropTypes.bool,
-  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
-}
 
 const MailboxSettings = () => {
   const dispatch = useDispatch()
@@ -59,6 +46,8 @@ const MailboxSettings = () => {
   const userId = query.get('userId')
   const tenantDomain = query.get('tenantDomain')
   const [active, setActive] = useState(1)
+  const [forwardingRefresh, setForwardingRefresh] = useState('0')
+  const [oooRefresh, setOooRefresh] = useState('0')
   const columnsCal = [
     {
       name: 'User',
@@ -128,24 +117,32 @@ const MailboxSettings = () => {
           <CCardBody>
             <CTabContent>
               <CTabPane visible={active === 1} className="mt-3">
-                <Lazy visible={active === 1}>
+                <CippLazy visible={active === 1}>
                   <MailboxPermissions />
-                </Lazy>
+                </CippLazy>
               </CTabPane>
               <CTabPane visible={active === 2} className="mt-3">
-                <Lazy visible={active === 2}>
+                <CippLazy visible={active === 2}>
                   <CalendarPermissions />
-                </Lazy>
+                </CippLazy>
               </CTabPane>
               <CTabPane visible={active === 3} className="mt-3">
-                <Lazy visible={active === 3}>
-                  <MailboxForwarding />
-                </Lazy>
+                <CippLazy visible={active === 3}>
+                  <MailboxForwarding
+                    refreshFunction={() =>
+                      setForwardingRefresh((Math.random() + 1).toString(36).substring(7))
+                    }
+                  />
+                </CippLazy>
               </CTabPane>
               <CTabPane visible={active === 4} className="mt-3">
-                <Lazy visible={active === 4}>
-                  <OutOfOffice />
-                </Lazy>
+                <CippLazy visible={active === 4}>
+                  <OutOfOffice
+                    refreshFunction={() =>
+                      setOooRefresh((Math.random() + 1).toString(36).substring(7))
+                    }
+                  />
+                </CippLazy>
               </CTabPane>
             </CTabContent>
           </CCardBody>
@@ -175,12 +172,20 @@ const MailboxSettings = () => {
             )}
             {active === 3 && (
               <>
-                <ForwardingSettings userId={userId} tenantDomain={tenantDomain} />
+                <ForwardingSettings
+                  userId={userId}
+                  tenantDomain={tenantDomain}
+                  refresh={forwardingRefresh}
+                />
               </>
             )}
             {active === 4 && (
               <>
-                <OutOfOfficeSettings userId={userId} tenantDomain={tenantDomain} />
+                <OutOfOfficeSettings
+                  userId={userId}
+                  tenantDomain={tenantDomain}
+                  refresh={oooRefresh}
+                />
               </>
             )}
           </CCardBody>
@@ -212,8 +217,10 @@ const MailboxPermissions = () => {
     params: {
       Endpoint: 'users',
       TenantFilter: tenantDomain,
-      $filter: 'assignedLicenses/$count ne 0 and accountEnabled eq true',
+      $filter: "assignedLicenses/$count ne 0 and accountEnabled eq true and userType eq 'Member'",
+      $select: 'id,displayName,userPrincipalName',
       $count: true,
+      $orderby: 'displayName',
     },
   })
 
@@ -275,8 +282,8 @@ const MailboxPermissions = () => {
                             label="Remove Full Access"
                             disabled={formDisabled}
                             values={users?.Results?.map((user) => ({
-                              value: user.mail,
-                              name: `${user.displayName} - ${user.mail} `,
+                              value: user.userPrincipalName,
+                              name: `${user.displayName} - ${user.userPrincipalName} `,
                             }))}
                             placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                             name="RemoveFullAccess"
@@ -289,8 +296,8 @@ const MailboxPermissions = () => {
                             label="Add Full Access - Automapping Enabled"
                             disabled={formDisabled}
                             values={users?.Results?.map((user) => ({
-                              value: user.mail,
-                              name: `${user.displayName} - ${user.mail} `,
+                              value: user.userPrincipalName,
+                              name: `${user.displayName} - ${user.userPrincipalName} `,
                             }))}
                             placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                             name="AddFullAccess"
@@ -303,8 +310,8 @@ const MailboxPermissions = () => {
                             label="Add Full Access - Automapping Disabled"
                             disabled={formDisabled}
                             values={users?.Results?.map((user) => ({
-                              value: user.mail,
-                              name: `${user.displayName} - ${user.mail} `,
+                              value: user.userPrincipalName,
+                              name: `${user.displayName} - ${user.userPrincipalName} `,
                             }))}
                             placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                             name="AddFullAccessNoAutoMap"
@@ -317,8 +324,8 @@ const MailboxPermissions = () => {
                             label="Add Send-as permissions"
                             disabled={formDisabled}
                             values={users?.Results?.map((user) => ({
-                              value: user.mail,
-                              name: `${user.displayName} - ${user.mail} `,
+                              value: user.userPrincipalName,
+                              name: `${user.displayName} - ${user.userPrincipalName} `,
                             }))}
                             placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                             name="AddSendAs"
@@ -331,8 +338,8 @@ const MailboxPermissions = () => {
                             label="Remove Send-as permissions"
                             disabled={formDisabled}
                             values={users?.Results?.map((user) => ({
-                              value: user.mail,
-                              name: `${user.displayName} - ${user.mail} `,
+                              value: user.userPrincipalName,
+                              name: `${user.displayName} - ${user.userPrincipalName} `,
                             }))}
                             placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                             name="RemoveSendAs"
@@ -345,8 +352,8 @@ const MailboxPermissions = () => {
                             label="Add Send On Behalf permissions"
                             disabled={formDisabled}
                             values={users?.Results?.map((user) => ({
-                              value: user.mail,
-                              name: `${user.displayName} - ${user.mail} `,
+                              value: user.userPrincipalName,
+                              name: `${user.displayName} - ${user.userPrincipalName} `,
                             }))}
                             placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                             name="AddSendOnBehalf"
@@ -359,8 +366,8 @@ const MailboxPermissions = () => {
                             label="Remove Send On Behalf permissions"
                             disabled={formDisabled}
                             values={users?.Results?.map((user) => ({
-                              value: user.mail,
-                              name: `${user.displayName} - ${user.mail} `,
+                              value: user.userPrincipalName,
+                              name: `${user.displayName} - ${user.userPrincipalName} `,
                             }))}
                             placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                             name="RemoveSendOnBehalf"
@@ -531,8 +538,14 @@ const CalendarPermissions = () => {
                                   name: 'Publishing Editor',
                                 },
                                 { value: 'Reviewer', name: 'Reviewer' },
-                                { value: 'LimitedDetails', name: 'Limited Details' },
-                                { value: 'AvailabilityOnly', name: 'Availability Only' },
+                                {
+                                  value: 'LimitedDetails',
+                                  name: 'Limited Details',
+                                },
+                                {
+                                  value: 'AvailabilityOnly',
+                                  name: 'Availability Only',
+                                },
                               ]}
                               placeholder="Select a permission level"
                               name="Permissions"
@@ -571,7 +584,7 @@ const CalendarPermissions = () => {
   )
 }
 
-const MailboxForwarding = () => {
+const MailboxForwarding = ({ refreshFunction }) => {
   const dispatch = useDispatch()
   let query = useQuery()
   const userId = query.get('userId')
@@ -597,8 +610,10 @@ const MailboxForwarding = () => {
     params: {
       Endpoint: 'users',
       TenantFilter: tenantDomain,
-      $filter: 'assignedLicenses/$count ne 0 and accountEnabled eq true',
+      $filter: "userType eq 'Member' and proxyAddresses/$count ne 0",
+      $select: 'id,displayName,userPrincipalName',
       $count: true,
+      $orderby: 'displayName',
     },
   })
   useEffect(() => {
@@ -625,7 +640,9 @@ const MailboxForwarding = () => {
       disableForwarding: values.forwardOption === 'disabled',
     }
     //window.alert(JSON.stringify(shippedValues))
-    genericPostRequest({ path: '/api/ExecEmailForward', values: shippedValues })
+    genericPostRequest({ path: '/api/ExecEmailForward', values: shippedValues }).then(() => {
+      refreshFunction()
+    })
   }
   const initialState = {
     ...user,
@@ -673,11 +690,10 @@ const MailboxForwarding = () => {
                             </div>
                             {values.forwardOption === 'internalAddress' && (
                               <RFFSelectSearch
-                                multi={true}
                                 disabled={formDisabled}
                                 values={users?.Results?.map((user) => ({
-                                  value: user.mail,
-                                  name: `${user.displayName} - ${user.mail} `,
+                                  value: user.userPrincipalName,
+                                  name: `${user.displayName} - ${user.userPrincipalName} `,
                                 }))}
                                 placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                                 name="ForwardInternal"
@@ -766,41 +782,182 @@ const MailboxForwarding = () => {
     </>
   )
 }
+MailboxForwarding.propTypes = {
+  refreshFunction: PropTypes.func,
+}
 
-const ForwardingSettings = () => {
+const ForwardingSettings = ({ refresh }) => {
   const query = useQuery()
   const userId = query.get('userId')
   const tenantDomain = query.get('tenantDomain')
-  const { data: details, isFetching, error } = useListMailboxDetailsQuery({ userId, tenantDomain })
-  const content = [
-    {
-      heading: 'Forward and Deliver',
-      body: formatter(details?.ForwardAndDeliver, false, false, true),
+  const [content, setContent] = useState([])
+  const [currentRefresh, setCurrentRefresh] = useState('')
+  const {
+    data: details,
+    isFetching,
+    isSuccess,
+    error,
+  } = useGenericPostRequestQuery({
+    path: `/api/ListExoRequest`,
+    values: {
+      TenantFilter: tenantDomain,
+      Cmdlet: 'Get-Mailbox',
+      cmdParams: { Identity: userId },
+      Select: 'ForwardingAddress,ForwardingSmtpAddress,DeliverToMailboxAndForward',
+      refresh: currentRefresh,
     },
-    {
-      heading: 'Forwarding Address',
-      body: details?.ForwardingAddress ? details?.ForwardingAddress : 'N/A',
+  })
+
+  const {
+    data: users = [],
+    isFetching: usersIsFetching,
+    isSuccess: usersSuccess,
+    error: usersError,
+  } = useGenericGetRequestQuery({
+    path: '/api/ListGraphRequest',
+    params: {
+      Endpoint: 'users',
+      TenantFilter: tenantDomain,
+      $filter: "userType eq 'Member' and proxyAddresses/$count ne 0",
+      $select: 'id,displayName,userPrincipalName',
+      $count: true,
     },
-  ]
+  })
+
+  useEffect(() => {
+    if (refresh !== currentRefresh) {
+      setCurrentRefresh(refresh)
+    }
+
+    if (usersSuccess && isSuccess) {
+      if (details?.Results?.ForwardingAddress !== null) {
+        var user = null
+        if (
+          details?.Results?.ForwardingAddress.match(
+            /^[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}$/,
+          )
+        ) {
+          const userId = details?.Results?.ForwardingAddress
+          user = users?.Results?.find((u) => u.id === userId)
+        }
+        if (user) {
+          setContent([
+            {
+              heading: 'Forward and Deliver',
+              body: formatter(details?.Results?.DeliverToMailboxAndForward, false, false, true),
+            },
+            {
+              heading: 'Forwarding Address',
+              body: (
+                <>
+                  <CBadge color="info" className="me-2">
+                    <FontAwesomeIcon icon="envelope" /> Internal
+                  </CBadge>
+                  <CLink href={`mailto:${user.userPrincipalName}`}>{user.displayName}</CLink>
+                </>
+              ),
+            },
+          ])
+        } else {
+          setContent([
+            {
+              heading: 'Forward and Deliver',
+              body: formatter(details?.Results?.DeliverToMailboxAndForward, false, false, true),
+            },
+            {
+              heading: 'Forwarding Address',
+              body: (
+                <>
+                  <CBadge color="info" className="me-2">
+                    <FontAwesomeIcon icon="envelope" /> Internal
+                  </CBadge>
+                  {details?.Results?.ForwardingAddress}
+                </>
+              ),
+            },
+          ])
+        }
+      } else if (details?.Results?.ForwardingSmtpAddress !== null) {
+        var smtpAddress = details?.Results?.ForwardingSmtpAddress.replace('smtp:', '')
+        setContent([
+          {
+            heading: 'Forward and Deliver',
+            body: formatter(details?.Results?.DeliverToMailboxAndForward, false, false, true),
+          },
+          {
+            heading: 'Forwarding Address',
+            body: (
+              <>
+                <CBadge color="warning" className="me-2">
+                  <FontAwesomeIcon icon="warning" /> External
+                </CBadge>
+                <CLink href={`mailto: ${smtpAddress}`}>{smtpAddress}</CLink>
+              </>
+            ),
+          },
+        ])
+      } else {
+        setContent([
+          {
+            heading: 'Forward and Deliver',
+            body: formatter(details?.Results?.DeliverToMailboxAndForward, false, false, true),
+          },
+          {
+            heading: 'Forwarding Address',
+            body: 'N/A',
+          },
+        ])
+      }
+    }
+  }, [refresh, currentRefresh, users, details, usersSuccess, isSuccess])
 
   return (
     <CRow>
-      {isFetching && <CSpinner />}
-      {!isFetching && (
-        <CCol md={6}>
-          {content.map((item, index) => (
-            <div key={index}>
-              <h5>{item.heading}</h5>
-              <p>{item.body}</p>
+      <CCol md={8}>
+        {isFetching || usersIsFetching ? (
+          <>
+            <div>
+              <h5>Forward and Deliver</h5>
+              <p>
+                <Skeleton />
+              </p>
             </div>
-          ))}
-        </CCol>
-      )}
+            <div>
+              <h5>Forwarding Address</h5>
+              <p>
+                <Skeleton />
+              </p>
+            </div>
+          </>
+        ) : (
+          <>
+            {content.map((item, index) => (
+              <div key={index}>
+                <h5>{item.heading}</h5>
+                <p>{item.body}</p>
+              </div>
+            ))}
+          </>
+        )}
+      </CCol>
+      <CCol md={4}>
+        <CButton
+          onClick={() => setCurrentRefresh((Math.random() + 1).toString(36).substring(7))}
+          color="primary"
+          variant="ghost"
+          className="float-end"
+        >
+          <FontAwesomeIcon icon="sync" spin={isFetching || usersIsFetching} />
+        </CButton>
+      </CCol>
     </CRow>
   )
 }
+ForwardingSettings.propTypes = {
+  refresh: PropTypes.string,
+}
 
-const OutOfOffice = () => {
+const OutOfOffice = ({ refreshFunction }) => {
   const dispatch = useDispatch()
   let query = useQuery()
   const userId = query.get('userId')
@@ -815,19 +972,6 @@ const OutOfOffice = () => {
     error: userError,
   } = useListMailboxPermissionsQuery({ tenantDomain, userId })
 
-  const {
-    data: users = [],
-    isFetching: usersIsFetching,
-    error: usersError,
-  } = useGenericGetRequestQuery({
-    path: '/api/ListGraphRequest',
-    params: {
-      Endpoint: 'users',
-      TenantFilter: tenantDomain,
-      $filter: 'assignedLicenses/$count ne 0 and accountEnabled eq true',
-      $count: true,
-    },
-  })
   useEffect(() => {
     if (postResults.isSuccess) {
       // @TODO do something here?
@@ -853,7 +997,9 @@ const OutOfOffice = () => {
       ExternalMessage: values.ExternalMessage ? values.ExternalMessage : '',
     }
     //window.alert(JSON.stringify(shippedValues))
-    genericPostRequest({ path: '/api/ExecSetOoO', values: shippedValues })
+    genericPostRequest({ path: '/api/ExecSetOoO', values: shippedValues }).then(() => {
+      refreshFunction()
+    })
   }
   const initialState = {
     ...user,
@@ -877,9 +1023,9 @@ const OutOfOffice = () => {
           )}
           <CRow>
             <CCol className="mb-3">
-              {usersIsFetching && <CSpinner />}
+              {userIsFetching && <CSpinner />}
               {userError && <span>Error loading user</span>}
-              {!usersIsFetching && (
+              {!userIsFetching && (
                 <Form
                   initialValues={{ ...initialState }}
                   onSubmit={onSubmit}
@@ -969,19 +1115,30 @@ const OutOfOffice = () => {
     </>
   )
 }
+OutOfOffice.propTypes = {
+  refreshFunction: PropTypes.func,
+}
 
-const OutOfOfficeSettings = () => {
+const OutOfOfficeSettings = ({ refresh }) => {
   const query = useQuery()
   const userId = query.get('userId')
   const tenantDomain = query.get('tenantDomain')
   const tenantFilter = tenantDomain
+  const [currentRefresh, setCurrentRefresh] = useState('')
+
+  useEffect(() => {
+    if (refresh !== currentRefresh) {
+      setCurrentRefresh(refresh)
+    }
+  }, [refresh, currentRefresh, setCurrentRefresh])
+
   const {
     data: details,
     isFetching,
     error,
   } = useGenericGetRequestQuery({
     path: '/api/ListOoO',
-    params: { userId, tenantFilter },
+    params: { userId, tenantFilter, currentRefresh },
   })
   const combinedRegex = /(<([^>]+)>)|&#65279;|&nbsp;/gi
   const content = [
@@ -1008,22 +1165,45 @@ const OutOfOfficeSettings = () => {
   ]
   return (
     <CRow>
-      {isFetching && (
-        <CCallout color="info">
-          <CSpinner>Loading</CSpinner>
-        </CCallout>
-      )}
-      {!isFetching && (
-        <CCol className="mb-3">
-          {content.map((item, index) => (
-            <div key={index}>
-              <h5>{item.heading}</h5>
-              <p>{item.body}</p>
-            </div>
-          ))}
-        </CCol>
-      )}
-      {error && <CCallout color="danger">Could not connect to API: {error.message}</CCallout>}
+      <CCol className="mb-3" md={8}>
+        {isFetching && (
+          <>
+            {content.map((item, index) => (
+              <div key={index}>
+                <h5>{item.heading}</h5>
+                <p>
+                  <Skeleton />
+                </p>
+              </div>
+            ))}
+          </>
+        )}
+        {!isFetching && (
+          <>
+            {content.map((item, index) => (
+              <div key={index}>
+                <h5>{item.heading}</h5>
+                <p>{item.body}</p>
+              </div>
+            ))}
+          </>
+        )}
+
+        {error && <CCallout color="danger">Could not connect to API: {error.message}</CCallout>}
+      </CCol>
+      <CCol md={4}>
+        <CButton
+          onClick={() => setCurrentRefresh((Math.random() + 1).toString(36).substring(7))}
+          color="primary"
+          variant="ghost"
+          className="float-end"
+        >
+          <FontAwesomeIcon icon="sync" spin={isFetching} />
+        </CButton>
+      </CCol>
     </CRow>
   )
+}
+OutOfOfficeSettings.propTypes = {
+  refresh: PropTypes.string,
 }

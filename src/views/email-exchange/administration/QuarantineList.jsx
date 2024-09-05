@@ -1,22 +1,45 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { CippPageList } from 'src/components/layout'
-import { CButton } from '@coreui/react'
+import { CButton, CSpinner, CTooltip } from '@coreui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEllipsisV, faMinusCircle, faPaperPlane } from '@fortawesome/free-solid-svg-icons'
-import { CippActionsOffcanvas } from 'src/components/utilities'
+import { CippActionsOffcanvas, CippOffcanvas } from 'src/components/utilities'
 import { cellDateFormatter, CellTip } from 'src/components/tables'
+import { MessageViewer } from 'src/views/email-exchange/tools/MessageViewer'
+import { ModalService } from 'src/components/utilities'
+import { useLazyGenericGetRequestQuery } from 'src/store/api/app'
+import PropTypes from 'prop-types'
+import Skeleton from 'react-loading-skeleton'
 
 const QuarantineList = () => {
   const tenant = useSelector((state) => state.app.currentTenant)
-
   const Offcanvas = (row, rowIndex, formatExtraData) => {
     const [ocVisible, setOCVisible] = useState(false)
+    const [msgOcVisible, setMsgOcVisible] = useState(false)
+    const [getQuarantineMessage, quarantineMessage] = useLazyGenericGetRequestQuery()
     return (
       <>
-        <CButton size="sm" color="link" onClick={() => setOCVisible(true)}>
-          <FontAwesomeIcon icon={faEllipsisV} />
-        </CButton>
+        <CTooltip content="View Message">
+          <CButton
+            size="sm"
+            color="link"
+            onClick={() => {
+              setMsgOcVisible(true)
+              getQuarantineMessage({
+                path: `/api/ListMailQuarantineMessage`,
+                params: { TenantFilter: tenant.defaultDomainName, Identity: row?.Identity },
+              })
+            }}
+          >
+            <FontAwesomeIcon icon="eye" />
+          </CButton>
+        </CTooltip>
+        <CTooltip content="Actions">
+          <CButton size="sm" color="link" onClick={() => setOCVisible(true)}>
+            <FontAwesomeIcon icon={faEllipsisV} />
+          </CButton>
+        </CTooltip>
         <CippActionsOffcanvas
           title="Extended Information"
           extendedInfo={[
@@ -65,6 +88,20 @@ const QuarantineList = () => {
           id={row.id}
           hideFunction={() => setOCVisible(false)}
         />
+        <CippOffcanvas
+          title="Quarantined Message"
+          addedClass="offcanvas-large"
+          hideFunction={() => setMsgOcVisible(false)}
+          visible={msgOcVisible}
+          placement="end"
+        >
+          <>
+            {quarantineMessage.isLoading && <Skeleton count={10} height={30} />}
+            {quarantineMessage.isSuccess && (
+              <MessageViewer emailSource={quarantineMessage?.data?.Message} />
+            )}
+          </>
+        </CippOffcanvas>
       </>
     )
   }
@@ -98,7 +135,7 @@ const QuarantineList = () => {
       name: 'Reason',
       sortable: true,
       exportSelector: 'Type',
-      maxWidth: '150px',
+      maxWidth: '200px',
     },
     {
       selector: (row) => row['ReceivedTime'],
@@ -126,7 +163,7 @@ const QuarantineList = () => {
     {
       name: 'Actions',
       cell: Offcanvas,
-      maxWidth: '150px',
+      maxWidth: '100px',
     },
   ]
 
@@ -135,10 +172,51 @@ const QuarantineList = () => {
       capabilities={{ allTenants: false, helpContext: 'https://google.com' }}
       title="Quarantine Management"
       datatable={{
+        filterlist: [
+          { filterName: 'Status: Not Released', filter: '"ReleaseStatus":"NotReleased"' },
+          { filterName: 'Status: Released', filter: '"ReleaseStatus":"Released"' },
+          { filterName: 'Status: Denied', filter: '"ReleaseStatus":"Denied"' },
+          {
+            filterName: 'Reason: High Confidence Phishing',
+            filter: '"QuarantineTypes":"HighConfPhish"',
+          },
+          { filterName: 'Reason: Phishing', filter: '"QuarantineTypes":"Phish"' },
+          { filterName: 'Reason: Spam', filter: '"QuarantineTypes":"Spam"' },
+          { filterName: 'Reason: Malware', filter: '"QuarantineTypes":"Malware"' },
+          { filterName: 'Reason: FileTypeBlock', filter: '"QuarantineTypes":"FileTypeBlock"' },
+          { filterName: 'Reason: Bulk', filter: '"QuarantineTypes":"Bulk"' },
+        ],
         keyField: 'id',
         reportName: `${tenant?.defaultDomainName}-Mailbox-Quarantine`,
         path: '/api/ListMailQuarantine',
         columns,
+        tableProps: {
+          selectableRows: true,
+          actionsList: [
+            {
+              label: 'Release',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecQuarantineManagement?TenantFilter=${tenant.defaultDomainName}&ID=!Identity&Type=Release`,
+              modalMessage: 'Are you sure you want to release these messages?',
+            },
+            {
+              label: 'Deny',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecQuarantineManagement?TenantFilter=${tenant.defaultDomainName}&ID=!Identity&Type=Deny`,
+              modalMessage: 'Are you sure you want to deny these messages?',
+            },
+            {
+              label: 'Release & Allow Sender',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecQuarantineManagement?TenantFilter=${tenant.defaultDomainName}&ID=!Identity&Type=Release&AllowSender=true`,
+              modalMessage:
+                'Are you sure you want to release these messages, and add the senders to the whitelist?',
+            },
+          ],
+        },
         params: { TenantFilter: tenant?.defaultDomainName },
       }}
     />

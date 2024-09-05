@@ -1,6 +1,7 @@
 import CippActionsOffcanvas from 'src/components/utilities/CippActionsOffcanvas'
 import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas.jsx'
 import CippCodeBlock from 'src/components/utilities/CippCodeBlock'
+import { CippLazy } from 'src/components/utilities/CippLazy'
 import CippOffcanvas from 'src/components/utilities/CippOffcanvas'
 import CippProfile from 'src/components/utilities/CippProfile'
 import ErrorBoundary from 'src/components/utilities/ErrorBoundary'
@@ -16,11 +17,15 @@ import ThemeSwitcher from 'src/components/utilities/ThemeSwitcher'
 import PageSizeSwitcher from 'src/components/utilities/PageSizeSwitcher'
 import Toasts from 'src/components/utilities/Toasts'
 import UsageLocation from 'src/components/utilities/UsageLocation'
+import CippTableOffcanvas from './CippTableOffcanvas'
+import validateAlphabeticalSort from './validateAlphabeticalSort'
 
 export {
   CippActionsOffcanvas,
   CippCodeBlock,
   CippCodeOffCanvas,
+  CippTableOffcanvas,
+  CippLazy,
   CippOffcanvas,
   CippProfile,
   ErrorBoundary,
@@ -39,4 +44,5 @@ export {
   PageSizeSwitcher,
   Toasts,
   UsageLocation,
+  validateAlphabeticalSort,
 }
