@@ -20,7 +20,6 @@ export const CippTenantSelector = (props) => {
     data: { allTenants: allTenants },
     queryKey: "TenantSelector",
   });
-
   const router = useRouter();
   const { tenant } = router.query; // Destructure to get the slug
   const [currentTenant, setSelectedTenant] = useState({

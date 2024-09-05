@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios, { isAxiosError } from "axios";
 import { useDispatch } from "react-redux";
 import { showToast } from "../store/toasts";
@@ -115,4 +115,54 @@ export function ApiPostCall({
   });
 
   return mutation;
+}
+
+export function ApiGetCallWithPagination({ url, queryKey, retry = 3, data, toast = false }) {
+  const dispatch = useDispatch();
+  const MAX_RETRIES = retry;
+  const HTTP_STATUS_TO_NOT_RETRY = [401, 403, 404];
+
+  const retryFn = (failureCount, error) => {
+    let returnRetry = true;
+    if (failureCount >= MAX_RETRIES) {
+      returnRetry = false;
+    }
+    if (isAxiosError(error) && HTTP_STATUS_TO_NOT_RETRY.includes(error.response?.status ?? 0)) {
+      returnRetry = false;
+    }
+
+    if (returnRetry === false && toast) {
+      dispatch(
+        showToast({
+          message: getCippError(error),
+          title: "Error",
+          toastError: error,
+        })
+      );
+    }
+    return returnRetry;
+  };
+
+  const queryInfo = useInfiniteQuery({
+    queryKey: [queryKey],
+    queryFn: async ({ pageParam = null, signal }) => {
+      const response = await axios.get(url, {
+        signal: signal,
+        params: { ...data, ...pageParam },
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      return response.data;
+    },
+    getNextPageParam: (lastPage) => {
+      // Check if there's a nextLink in the last page's metadata
+      return lastPage?.Metadata?.nextLink ? { nextLink: lastPage.Metadata.nextLink } : undefined;
+    },
+    staleTime: 600000, // 10 minutes
+    refetchOnWindowFocus: false,
+    retry: retryFn,
+  });
+
+  return queryInfo;
 }

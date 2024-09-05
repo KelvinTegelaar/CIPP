@@ -190,7 +190,17 @@ const Page = () => {
   return (
     <CippTablePage
       title={pageTitle}
-      apiUrl="/api/ListUsers"
+      apiUrl="/api/ListGraphRequest"
+      apiData={{
+        Endpoint: "users",
+        manualPagination: true,
+        $select:
+          "id,accountEnabled,businessPhones,city,createdDateTime,companyName,country,department,displayName,faxNumber,givenName,isResourceAccount,jobTitle,mail,mailNickname,mobilePhone,onPremisesDistinguishedName,officeLocation,onPremisesLastSyncDateTime,otherMails,postalCode,preferredDataLocation,preferredLanguage,proxyAddresses,showInAddressList,state,streetAddress,surname,usageLocation,userPrincipalName,userType,assignedLicenses,onPremisesSyncEnabled",
+        $count: true,
+        $orderby: "displayName",
+        $top: 500,
+      }}
+      apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
       simpleColumns={[

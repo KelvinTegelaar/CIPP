@@ -14,7 +14,7 @@ import { ResourceUnavailable } from "../resource-unavailable";
 import { ResourceError } from "../resource-error";
 import { Scrollbar } from "../scrollbar";
 import { useEffect, useState } from "react";
-import { ApiGetCall } from "../../api/ApiCall";
+import { ApiGetCallWithPagination } from "../../api/ApiCall";
 import { utilTableMode } from "./util-tablemode";
 import { utilColumnsFromAPI } from "./util-columnsFromAPI";
 import { CIPPTableToptoolbar } from "./CIPPTableToptoolbar";
@@ -55,20 +55,37 @@ export const CippDataTable = (props) => {
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
   const [offCanvasData, setOffCanvasData] = useState({});
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
-  const [firstPage, setFirstPage] = useState(true);
   // Fetch data from API
-  const getRequestData = ApiGetCall({
+  const getRequestData = ApiGetCallWithPagination({
     url: api.url,
-    data: { ...api.data, firstPage: firstPage },
+    data: { ...api.data },
     queryKey: title,
+    waiting: !!api.url,
   });
-  // logic to update the usedData state when the data is fetched.
+
+  useEffect(() => {
+    if (getRequestData.isSuccess && !getRequestData.isFetching) {
+      const lastPage = getRequestData.data?.pages[getRequestData.data.pages.length - 1];
+      const nextLinkExists = lastPage?.Metadata?.nextLink;
+
+      // If nextLink exists, trigger fetching the next page
+      if (nextLinkExists) {
+        getRequestData.fetchNextPage();
+      }
+    }
+  }, [getRequestData.data?.pages?.length, getRequestData.isFetching]);
+
   useEffect(() => {
     if (getRequestData.isSuccess) {
-      const fetchedData = api.dataKey ? getRequestData.data[api.dataKey] : getRequestData.data;
-      setUsedData(fetchedData || []);
+      const allPages = getRequestData.data.pages;
+      const combinedResults = allPages.flatMap((page) => {
+        return page[api.dataKey] || page;
+      });
+
+      setUsedData(combinedResults || []);
     }
   }, [getRequestData.isSuccess, getRequestData.data, api.dataKey]);
+
   //logic to select the right colums
   useEffect(() => {
     if (!Array.isArray(usedData) || usedData.length === 0 || typeof usedData[0] !== "object") {
