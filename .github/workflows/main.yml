@@ -11,60 +11,22 @@ jobs:
 
     steps:
     - name: Checkout the repository
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0  # Fetch all history for all branches and tags
+      uses: actions/checkout@v4  # Using the latest version
 
     - name: Add upstream remote
       run: git remote add upstream https://github.com/KelvinTegelaar/cipp.git
 
-    - name: Fetch upstream changes
-      run: git fetch upstream --all
+    - name: Fetch all branches from upstream
+      run: git fetch upstream
 
     - name: Set up Git user
       run: |
         git config user.name "GitHub Action"
         git config user.email "action@github.com"
 
-    - name: Ensure clean working directory
+    - name: Check for changes
       run: |
-        git status
-        git reset --hard HEAD
-        git clean -fdx
-
-    - name: Merge upstream changes
-      run: |
-        git merge upstream/main --allow-unrelated-histories
-      continue-on-error: true
-
-    - name: Check for conflicts
-      run: |
-        if git status | grep -q 'You have unmerged paths'; then
-          echo "Merge conflict detected. Aborting merge."
-          git merge --abort
-          exit 1
-        fi
-      continue-on-error: true
-
-    - name: Check merge status
-      run: |
-        if [ $? -ne 0 ]; then
-          echo "Merge failed. Checking git status:"
-          git status
-          exit 1
-        fi
+        git diff --quiet upstream/main || git merge upstream/main
 
     - name: Push changes to fork
-      run: |
-        git push https://${{ secrets.PAT_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git main
-
-    # Alternative: Use a dedicated sync action
-    # Uncomment the following step if you prefer to use a dedicated action instead of manual git commands
-    # - name: Sync fork with upstream
-    #   uses: aormsby/Fork-Sync-With-Upstream-action@v3.4.1
-    #   with:
-    #     target_sync_branch: main
-    #     target_repo_token: ${{ secrets.GITHUB_TOKEN }}
-    #     upstream_sync_branch: main
-    #     upstream_sync_repo: KelvinTegelaar/cipp
-    #     upstream_repo_access_token: ${{ secrets.PAT_TOKEN }}
+      run: git push origin main
