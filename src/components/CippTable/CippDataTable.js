@@ -22,6 +22,7 @@ import { More, MoreHoriz } from "@mui/icons-material";
 import { CippOffCanvas } from "../CippComponents/CippOffCanvas";
 import { useDialog } from "../../hooks/use-dialog";
 import { CippApiDialog } from "../CippComponents/CippApiDialog";
+import { getCippError } from "../../utils/get-cipp-error";
 
 export const CippDataTable = (props) => {
   const {
@@ -54,11 +55,11 @@ export const CippDataTable = (props) => {
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
   const [offCanvasData, setOffCanvasData] = useState({});
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
-
+  const [firstPage, setFirstPage] = useState(true);
   // Fetch data from API
   const getRequestData = ApiGetCall({
     url: api.url,
-    data: api.data,
+    data: { ...api.data, firstPage: firstPage },
     queryKey: title,
   });
   // logic to update the usedData state when the data is fetched.
@@ -218,11 +219,7 @@ export const CippDataTable = (props) => {
           {getRequestData.isError && (
             <ResourceError
               onReload={() => getRequestData.refetch()}
-              message={`Error Loading data:  ${
-                getRequestData.error.response?.data?.result
-                  ? getRequestData.error.response?.data.result
-                  : getRequestData.error.message
-              }`}
+              message={`Error Loading data:  ${getCippError(getRequestData.error)}`}
             />
           )}
           {isFetching || (getRequestData.isFetching && !getRequestData.data) ? (

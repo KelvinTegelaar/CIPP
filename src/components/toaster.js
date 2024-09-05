@@ -13,6 +13,7 @@ const Toasts = () => {
       {[
         toasts.map((toast) => (
           <Snackbar
+            sx={{ maxWidth: "20%" }}
             anchorOrigin={{ vertical: "top", horizontal: "right" }}
             key={toast.index}
             open={true}

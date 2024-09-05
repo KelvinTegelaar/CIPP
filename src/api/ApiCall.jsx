@@ -1,5 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
+import { useDispatch } from "react-redux";
+import { showToast } from "../store/toasts";
+import { getCippError } from "../utils/get-cipp-error";
 
 export function ApiGetCall({
   url,
@@ -8,10 +11,33 @@ export function ApiGetCall({
   retry = 3,
   data,
   bulkRequest = false,
+  toast = false,
   onResult, // Add a callback to handle each result as it arrives
 }) {
-  //todo: errorToasts when enabled.
-  //todo: load first page, inject other data with later load, invisible pagiantion.
+  const dispatch = useDispatch();
+  const MAX_RETRIES = retry;
+  const HTTP_STATUS_TO_NOT_RETRY = [401, 403, 404];
+  const retryFn = (failureCount, error) => {
+    let returnRetry = true;
+    if (failureCount >= MAX_RETRIES) {
+      returnRetry = false;
+    }
+    if (isAxiosError(error) && HTTP_STATUS_TO_NOT_RETRY.includes(error.response?.status ?? 0)) {
+      returnRetry = false;
+    }
+
+    if (returnRetry === false && toast) {
+      dispatch(
+        showToast({
+          message: getCippError(error),
+          title: "Error",
+          toastError: error,
+        })
+      );
+    }
+    return returnRetry;
+  };
+
   const queryInfo = useQuery({
     enabled: waiting,
     queryKey: [queryKey],
@@ -26,7 +52,6 @@ export function ApiGetCall({
             headers: {
               "Content-Type": "application/json",
             },
-            retry: retry,
           });
           results.push(response.data);
           if (onResult) {
@@ -41,14 +66,13 @@ export function ApiGetCall({
           headers: {
             "Content-Type": "application/json",
           },
-          retry: retry,
         });
         return response.data;
       }
     },
     staleTime: 600000, // 10 minutes
     refetchOnWindowFocus: false,
-    retry: retry,
+    retry: retryFn,
   });
 
   return queryInfo;
