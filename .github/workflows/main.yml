@@ -24,9 +24,9 @@ jobs:
         git config user.name "GitHub Action"
         git config user.email "action@github.com"
 
-    - name: Check for changes
+    - name: Check for changes and merge
       run: |
-        git diff --quiet upstream/main || git merge upstream/main
+        git diff --quiet upstream/main || git merge upstream/main --allow-unrelated-histories
 
     - name: Push changes to fork
       run: git push origin main
