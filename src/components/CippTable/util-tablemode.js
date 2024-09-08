@@ -1,4 +1,4 @@
-export const utilTableMode = (columnVisibility, mode, actions) => {
+export const utilTableMode = (columnVisibility, mode, actions, simpleColumns) => {
   if (mode === true) {
     return {
       enableRowSelection: false,
@@ -13,6 +13,7 @@ export const utilTableMode = (columnVisibility, mode, actions) => {
         sx: { maxHeight: `calc(100vh - 380px)` },
       },
       initialState: {
+        columnOrder: [...simpleColumns],
         columnVisibility: { ...columnVisibility },
         density: "compact",
         //TODO: page size should come from user settings state in the future.
@@ -53,6 +54,7 @@ export const utilTableMode = (columnVisibility, mode, actions) => {
       },
       //TODO: page size should come from user settings state in the future.
       initialState: {
+        columnOrder: [...simpleColumns],
         columnVisibility: { ...columnVisibility },
         showGlobalFilter: true,
         density: "compact",

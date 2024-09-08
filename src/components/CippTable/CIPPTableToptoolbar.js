@@ -54,31 +54,35 @@ export const CIPPTableToptoolbar = ({
               title={
                 getRequestData.isFetchNextPageError
                   ? "Could not retrieve all data. Click to try again."
-                  : "Refresh Data"
+                  : getRequestData.isFetching
+                  ? "Retrieving more data..."
+                  : "Refresh data"
               }
             >
-              <IconButton
-                className="MuiIconButton"
-                onClick={() => getRequestData.refetch()}
-                disabled={getRequestData.isLoading || getRequestData.isFetching}
-              >
-                <SvgIcon
-                  fontSize="small"
-                  sx={{
-                    animation: getRequestData.isFetching ? "spin 1s linear infinite" : "none",
-                    "@keyframes spin": {
-                      "0%": { transform: "rotate(0deg)" },
-                      "100%": { transform: "rotate(360deg)" },
-                    },
-                  }}
+              <span>
+                <IconButton
+                  className="MuiIconButton"
+                  onClick={() => getRequestData.refetch()}
+                  disabled={getRequestData.isLoading || getRequestData.isFetching}
                 >
-                  {getRequestData.isFetchNextPageError ? (
-                    <ExclamationCircleIcon color="red" />
-                  ) : (
-                    <Sync />
-                  )}
-                </SvgIcon>
-              </IconButton>
+                  <SvgIcon
+                    fontSize="small"
+                    sx={{
+                      animation: getRequestData.isFetching ? "spin 1s linear infinite" : "none",
+                      "@keyframes spin": {
+                        "0%": { transform: "rotate(0deg)" },
+                        "100%": { transform: "rotate(360deg)" },
+                      },
+                    }}
+                  >
+                    {getRequestData.isFetchNextPageError ? (
+                      <ExclamationCircleIcon color="red" />
+                    ) : (
+                      <Sync />
+                    )}
+                  </SvgIcon>
+                </IconButton>
+              </span>
             </Tooltip>
             <MRT_GlobalFilterTextField table={table} />
             <MRT_ToggleFiltersButton table={table} />
@@ -159,7 +163,9 @@ export const CIPPTableToptoolbar = ({
                         popover.handleClose();
                       }}
                     >
-                      <ListItemIcon>{action.icon}</ListItemIcon>
+                      <SvgIcon fontSize="small" sx={{ minWidth: "30px" }}>
+                        {action.icon}
+                      </SvgIcon>
                       <ListItemText>{action.label}</ListItemText>
                     </MenuItem>
                   ))}

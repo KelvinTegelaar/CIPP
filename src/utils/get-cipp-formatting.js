@@ -9,7 +9,11 @@ export const getCippFormatting = (data, cellName, type) => {
   const cellNameLower = cellName.toLowerCase();
   // Handle date formatting
   if (cellNameLower.includes("date")) {
-    return isText ? new Date(data).toLocaleString : <span>{new Date(data).toLocaleString()}</span>;
+    return isText ? (
+      new Date(data).toLocaleString()
+    ) : (
+      <span>{new Date(data).toLocaleString()}</span>
+    );
   }
 
   // Handle null or undefined data
@@ -29,11 +33,6 @@ export const getCippFormatting = (data, cellName, type) => {
     return isText
       ? emails.join(", ")
       : emails.map((email) => <CippCopyToClipBoard key={email} text={email} type="chip" />);
-  }
-
-  // Handle mail-related fields
-  if (cellNameLower.includes("mail") && data) {
-    return isText ? data : <CippCopyToClipBoard text={data} type="chip" />;
   }
 
   // Handle assigned licenses
@@ -67,6 +66,7 @@ export const getCippFormatting = (data, cellName, type) => {
 
   // Handle arrays of strings
   if (Array.isArray(data) && data.every((item) => typeof item === "string")) {
+    //if the array is empty, return "No data"
     return isText
       ? data.join(", ")
       : data.map((item) => <CippCopyToClipBoard key={item} text={item} type="chip" />);
