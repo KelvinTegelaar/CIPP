@@ -4,8 +4,6 @@ import { Provider as ReduxProvider } from "react-redux";
 import { CacheProvider } from "@emotion/react";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { SettingsConsumer, SettingsProvider } from "../contexts/settings-context";
 import { RTL } from "../components/rtl";
 import { store } from "../store";
@@ -33,34 +31,32 @@ const App = (props) => {
       <ReduxProvider store={store}>
         <QueryClientProvider client={queryClient}>
           <Toasts />
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <SettingsProvider>
-              <SettingsConsumer>
-                {(settings) => {
-                  // Prevent theme flicker when restoring custom settings from browser storage
-                  if (!settings.isInitialized) {
-                    // return null;
-                  }
-                  const theme = createTheme({
-                    colorPreset: "orange",
-                    direction: settings.direction,
-                    paletteMode: settings.paletteMode,
-                    contrast: "high",
-                  });
+          <SettingsProvider>
+            <SettingsConsumer>
+              {(settings) => {
+                // Prevent theme flicker when restoring custom settings from browser storage
+                if (!settings.isInitialized) {
+                  // return null;
+                }
+                const theme = createTheme({
+                  colorPreset: "orange",
+                  direction: settings.direction,
+                  paletteMode: settings.paletteMode,
+                  contrast: "high",
+                });
 
-                  return (
-                    <ThemeProvider theme={theme}>
-                      <RTL direction={settings.direction}>
-                        <CssBaseline />
-                        <PrivateRoute>{getLayout(<Component {...pageProps} />)}</PrivateRoute>
-                        <Toaster position="top-center" />
-                      </RTL>
-                    </ThemeProvider>
-                  );
-                }}
-              </SettingsConsumer>
-            </SettingsProvider>
-          </LocalizationProvider>
+                return (
+                  <ThemeProvider theme={theme}>
+                    <RTL direction={settings.direction}>
+                      <CssBaseline />
+                      <PrivateRoute>{getLayout(<Component {...pageProps} />)}</PrivateRoute>
+                      <Toaster position="top-center" />
+                    </RTL>
+                  </ThemeProvider>
+                );
+              }}
+            </SettingsConsumer>
+          </SettingsProvider>
         </QueryClientProvider>
       </ReduxProvider>
     </CacheProvider>
