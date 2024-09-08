@@ -55,20 +55,16 @@ export const CippDataTable = (props) => {
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
   const [offCanvasData, setOffCanvasData] = useState({});
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
-  // Fetch data from API
   const getRequestData = ApiGetCallWithPagination({
     url: api.url,
     data: { ...api.data },
     queryKey: title,
     waiting: !!api.url,
   });
-
   useEffect(() => {
     if (getRequestData.isSuccess && !getRequestData.isFetching) {
       const lastPage = getRequestData.data?.pages[getRequestData.data.pages.length - 1];
       const nextLinkExists = lastPage?.Metadata?.nextLink;
-
-      // If nextLink exists, trigger fetching the next page
       if (nextLinkExists) {
         getRequestData.fetchNextPage();
       }
@@ -224,7 +220,7 @@ export const CippDataTable = (props) => {
                   target={noDataButton.target}
                 />
               )}
-              {getRequestData.isSuccess && usedData.length > 0 && (
+              {(getRequestData.isSuccess || getRequestData.data?.pages.length >= 0) && (
                 <MaterialReactTable
                   enableRowVirtualization
                   enableColumnVirtualization
@@ -233,7 +229,7 @@ export const CippDataTable = (props) => {
               )}
             </>
           )}
-          {getRequestData.isError && (
+          {getRequestData.isError && !getRequestData.isFetchNextPageError && (
             <ResourceError
               onReload={() => getRequestData.refetch()}
               message={`Error Loading data:  ${getCippError(getRequestData.error)}`}

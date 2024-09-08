@@ -18,7 +18,7 @@ import {
   MRT_ToolbarAlertBanner,
 } from "material-react-table";
 import { PDFExportButton } from "../pdfExportButton";
-import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import { ChevronDownIcon, ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { usePopover } from "../../hooks/use-popover";
 import { CSVExportButton } from "../csvExportButton";
 import { useDialog } from "../../hooks/use-dialog";
@@ -50,14 +50,33 @@ export const CIPPTableToptoolbar = ({
       >
         <Box sx={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
           <>
-            <Tooltip title="Refresh Data">
+            <Tooltip
+              title={
+                getRequestData.isFetchNextPageError
+                  ? "Could not retrieve all data. Click to try again."
+                  : "Refresh Data"
+              }
+            >
               <IconButton
                 className="MuiIconButton"
                 onClick={() => getRequestData.refetch()}
                 disabled={getRequestData.isLoading || getRequestData.isFetching}
               >
-                <SvgIcon fontSize="small">
-                  {getRequestData.isFetching ? <Sync /> : <Sync />}
+                <SvgIcon
+                  fontSize="small"
+                  sx={{
+                    animation: getRequestData.isFetching ? "spin 1s linear infinite" : "none",
+                    "@keyframes spin": {
+                      "0%": { transform: "rotate(0deg)" },
+                      "100%": { transform: "rotate(360deg)" },
+                    },
+                  }}
+                >
+                  {getRequestData.isFetchNextPageError ? (
+                    <ExclamationCircleIcon color="red" />
+                  ) : (
+                    <Sync />
+                  )}
                 </SvgIcon>
               </IconButton>
             </Tooltip>

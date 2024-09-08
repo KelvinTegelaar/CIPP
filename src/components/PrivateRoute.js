@@ -11,8 +11,9 @@ export const PrivateRoute = ({ children, routeType }) => {
     url: "/.auth/me",
     queryKey: "authmecipp",
   });
+  
   if (isFetching) {
-    return <FullPageLoading />;
+    return "Loading...";
   }
 
   let roles = null;
