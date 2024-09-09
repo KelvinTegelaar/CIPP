@@ -15,42 +15,60 @@ import { CippOffCanvas } from "./CippOffCanvas";
 
 export const CippTenantSelector = (props) => {
   const { allTenants = false, multiple = false, refreshButton, tenantButton } = props;
+  const router = useRouter();
+  const { tenant } = router.query; // Destructure to get the slug
+
+  // Fetch tenant list
   const tenantList = ApiGetCall({
     url: "/api/listTenants",
     data: { allTenants: allTenants },
     queryKey: "TenantSelector",
   });
-  const router = useRouter();
-  const { tenant } = router.query; // Destructure to get the slug
-  const [currentTenant, setSelectedTenant] = useState({
-    value: tenant,
-    label: tenantList.isSuccess
-      ? tenantList.data.find(({ defaultDomainName }) => defaultDomainName === tenant)?.displayName +
-        ` (${tenant})`
-      : tenant,
-  });
-  const [offcanvasVisble, setOffcanvasVisible] = useState(false);
 
+  const [currentTenant, setSelectedTenant] = useState(null);
+  const [offcanvasVisible, setOffcanvasVisible] = useState(false);
+
+  // Fetch tenant details based on the current tenant
   const tenantDetails = ApiGetCall({
     url: "/api/listTenantDetails",
-    data: { tenantFilter: currentTenant.value },
-    queryKey: `TenantDetails-${currentTenant.value}`,
+    data: { tenantFilter: currentTenant?.value },
+    queryKey: `TenantDetails-${currentTenant?.value}`,
     waiting: false,
   });
 
+  // When URL tenant changes, update the selected tenant
   useEffect(() => {
-    if (tenant) {
+    if (tenant && tenantList.isSuccess) {
+      const matchingTenant = tenantList.data.find(
+        ({ defaultDomainName }) => defaultDomainName === tenant
+      );
+      setSelectedTenant(
+        matchingTenant
+          ? {
+              value: tenant,
+              label: `${matchingTenant.displayName} (${tenant})`,
+            }
+          : {
+              value: tenant,
+              label: tenant, // In case tenant is not in the list, we still set it
+            }
+      );
+    }
+  }, [tenant, tenantList.isSuccess]);
+
+  // Refetch tenant details when tenant or offcanvas visibility changes
+  useEffect(() => {
+    if (tenant && currentTenant?.value) {
       tenantDetails.refetch();
     }
-  }, [offcanvasVisble]);
+  }, [tenant, offcanvasVisible]);
 
+  // Update URL when selected tenant changes
   useEffect(() => {
-    if (tenant) {
-      if (currentTenant.value && tenant !== currentTenant.value) {
-        const newSlug = currentTenant.value;
-        const newPath = router.asPath.replace(`${tenant}`, `${newSlug}`);
-        router.replace(newPath, undefined, { shallow: true }); // Update the URL with shallow routing
-      }
+    if (tenant && currentTenant?.value && tenant !== currentTenant.value) {
+      const newSlug = currentTenant.value;
+      const newPath = router.asPath.replace(`${tenant}`, `${newSlug}`);
+      router.replace(newPath, undefined, { shallow: true });
     }
   }, [tenant, router, currentTenant]);
 
@@ -89,7 +107,7 @@ export const CippTenantSelector = (props) => {
           multiple={multiple}
           sx={{ width: 400 }}
           placeholder="Select a tenant"
-          value={currentTenant.label ? currentTenant : "Select a tenant"}
+          value={currentTenant}
           onChange={(e, nv) => setSelectedTenant(nv)}
           options={
             tenantList.isSuccess
@@ -98,6 +116,10 @@ export const CippTenantSelector = (props) => {
                   label: `${displayName} (${defaultDomainName})`,
                 }))
               : []
+          }
+          getOptionLabel={(option) => option?.label || ""} // Ensure label is correctly extracted
+          isOptionEqualToValue={
+            (option, value) => option.value === value.value // Custom equality test to compare the tenant by value
           }
         />
         {refreshButton && (
@@ -120,7 +142,7 @@ export const CippTenantSelector = (props) => {
       </Box>
       <CippOffCanvas
         isFetching={tenantDetails.isFetching}
-        visible={offcanvasVisble}
+        visible={offcanvasVisible}
         onClose={() => setOffcanvasVisible(false)}
         extendedData={tenantDetails.data}
         extendedInfoFields={[
@@ -136,47 +158,47 @@ export const CippTenantSelector = (props) => {
         actions={[
           {
             label: "M365 Admin Portal",
-            link: `https://admin.microsoft.com/Partner/BeginClientSession.aspx?CTID=${currentTenant.value}&CSDEST=o365admincenter`,
+            link: `https://admin.microsoft.com/Partner/BeginClientSession.aspx?CTID=${currentTenant?.value}&CSDEST=o365admincenter`,
             icon: <GlobeAltIcon />,
           },
           {
             label: "Exchange Portal",
-            link: `https://admin.microsoft.com/Partner/BeginClientSession.aspx?CTID=${currentTenant.value}&CSDEST=o365admincenter`,
+            link: `https://admin.microsoft.com/Partner/BeginClientSession.aspx?CTID=${currentTenant?.value}&CSDEST=o365admincenter`,
             icon: <Mail />,
           },
           {
             label: "Entra Portal",
-            link: `https://admin.microsoft.com/Partner/BeginClientSession.aspx?CTID=${currentTenant.value}&CSDEST=o365admincenter`,
+            link: `https://admin.microsoft.com/Partner/BeginClientSession.aspx?CTID=${currentTenant?.value}&CSDEST=o365admincenter`,
             icon: <UsersIcon />,
           },
           {
             label: "Teams Portal",
-            link: `https://admin.microsoft.com/Partner/BeginClientSession.aspx?CTID=${currentTenant.value}&CSDEST=o365admincenter`,
+            link: `https://admin.microsoft.com/Partner/BeginClientSession.aspx?CTID=${currentTenant?.value}&CSDEST=o365admincenter`,
             icon: <FilePresent />,
           },
           {
             label: "Azure Portal",
-            link: `https://admin.microsoft.com/Partner/BeginClientSession.aspx?CTID=${currentTenant.value}&CSDEST=o365admincenter`,
+            link: `https://admin.microsoft.com/Partner/BeginClientSession.aspx?CTID=${currentTenant?.value}&CSDEST=o365admincenter`,
             icon: <ServerIcon />,
           },
           {
             label: "Intune Portal",
-            link: `https://admin.microsoft.com/Partner/BeginClientSession.aspx?CTID=${currentTenant.value}&CSDEST=o365admincenter`,
+            link: `https://admin.microsoft.com/Partner/BeginClientSession.aspx?CTID=${currentTenant?.value}&CSDEST=o365admincenter`,
             icon: <Laptop />,
           },
           {
             label: "Sharepoint Portal",
-            link: `https://admin.microsoft.com/Partner/BeginClientSession.aspx?CTID=${currentTenant.value}&CSDEST=o365admincenter`,
+            link: `https://admin.microsoft.com/Partner/BeginClientSession.aspx?CTID=${currentTenant?.value}&CSDEST=o365admincenter`,
             icon: <Share />,
           },
           {
             label: "Security Portal",
-            link: `https://admin.microsoft.com/Partner/BeginClientSession.aspx?CTID=${currentTenant.value}&CSDEST=o365admincenter`,
+            link: `https://admin.microsoft.com/Partner/BeginClientSession.aspx?CTID=${currentTenant?.value}&CSDEST=o365admincenter`,
             icon: <Shield />,
           },
           {
             label: "Compliance Portal",
-            link: `https://admin.microsoft.com/Partner/BeginClientSession.aspx?CTID=${currentTenant.value}&CSDEST=o365admincenter`,
+            link: `https://admin.microsoft.com/Partner/BeginClientSession.aspx?CTID=${currentTenant?.value}&CSDEST=o365admincenter`,
             icon: <ShieldMoon />,
           },
         ]}
