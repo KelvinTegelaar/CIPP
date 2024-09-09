@@ -75,7 +75,7 @@
       "allowedRoles": ["admin", "editor", "readonly", "reader", "authenticated", "anonymous"]
     },
     {
-      "route": "/*/identity/Users",
+      "route": "/*/identity/users",
       "rewrite": "/[tenant]/identity/users/index.html"
     },
     {
