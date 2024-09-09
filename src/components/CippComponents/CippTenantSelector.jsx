@@ -16,7 +16,7 @@ import { CippOffCanvas } from "./CippOffCanvas";
 export const CippTenantSelector = (props) => {
   const { allTenants = false, multiple = false, refreshButton, tenantButton } = props;
   const router = useRouter();
-  const { tenant } = router.query; // Destructure to get the slug
+  const { tenant } = router.query; // Destructure to get the slug.
 
   // Fetch tenant list
   const tenantList = ApiGetCall({
