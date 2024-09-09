@@ -7,7 +7,7 @@ import {
   TextField,
 } from "@mui/material";
 import { Stack } from "@mui/system";
-import { CippApiResults } from "./CippAPIResults";
+import { CippApiResults } from "./CippApiResults";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
