@@ -1,6 +1,6 @@
 import { EyeIcon } from "@heroicons/react/24/outline";
-import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
 import { Edit } from "@mui/icons-material";
 
 const Page = () => {
@@ -9,7 +9,7 @@ const Page = () => {
   const actions = [
     {
       label: "View User",
-      link: "/[tenant]/identity/users/[id]",
+      link: "/identity/users/[id]",
       multiPost: false,
       icon: <EyeIcon />,
       color: "success",

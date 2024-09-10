@@ -1,8 +1,8 @@
-import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
-import PropTypes from 'prop-types';
-import isEqual from 'lodash.isequal';
+import { createContext, useCallback, useEffect, useMemo, useState } from "react";
+import PropTypes from "prop-types";
+import isEqual from "lodash.isequal";
 
-const STORAGE_KEY = 'app.settings';
+const STORAGE_KEY = "app.settings";
 
 let storage;
 
@@ -37,7 +37,7 @@ class MemoryStorage {
 try {
   storage = globalThis.localStorage;
 } catch (err) {
-  console.error('[Settings Context] Local storage is not available', err);
+  console.error("[Settings Context] Local storage is not available", err);
   storage = new MemoryStorage();
 }
 
@@ -68,21 +68,22 @@ const storeSettings = (value) => {
 };
 
 const initialSettings = {
-  direction: 'ltr',
-  paletteMode: 'light',
-  pinNav: true
+  direction: "ltr",
+  paletteMode: "light",
+  pinNav: true,
+  currentTenant: null,
 };
 
 const initialState = {
   ...initialSettings,
-  isInitialized: false
+  isInitialized: false,
 };
 
 export const SettingsContext = createContext({
   ...initialState,
-  handleReset: () => { },
-  handleUpdate: () => { },
-  isCustom: false
+  handleReset: () => {},
+  handleUpdate: () => {},
+  isCustom: false,
 });
 
 export const SettingsProvider = (props) => {
@@ -96,7 +97,7 @@ export const SettingsProvider = (props) => {
       setState((prevState) => ({
         ...prevState,
         ...restored,
-        isInitialized: true
+        isInitialized: true,
       }));
     }
   }, []);
@@ -105,22 +106,20 @@ export const SettingsProvider = (props) => {
     deleteSettings();
     setState((prevState) => ({
       ...prevState,
-      ...initialSettings
+      ...initialSettings,
     }));
   }, []);
 
   const handleUpdate = useCallback((settings) => {
     setState((prevState) => {
       storeSettings({
-        direction: prevState.direction,
-        paletteMode: prevState.paletteMode,
-        pinNav: prevState.pinNav,
-        ...settings
+        ...prevState,
+        ...settings,
       });
 
       return {
         ...prevState,
-        ...settings
+        ...settings,
       };
     });
   }, []);
@@ -129,7 +128,7 @@ export const SettingsProvider = (props) => {
     return !isEqual(initialSettings, {
       direction: state.direction,
       paletteMode: state.paletteMode,
-      pinNav: state.pinNav
+      pinNav: state.pinNav,
     });
   }, [state]);
 
@@ -139,7 +138,7 @@ export const SettingsProvider = (props) => {
         ...state,
         handleReset,
         handleUpdate,
-        isCustom
+        isCustom,
       }}
     >
       {children}
@@ -148,7 +147,7 @@ export const SettingsProvider = (props) => {
 };
 
 SettingsProvider.propTypes = {
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
 };
 
 export const SettingsConsumer = SettingsContext.Consumer;

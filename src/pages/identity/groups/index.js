@@ -1,5 +1,5 @@
-import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
-import { Layout as DashboardLayout } from "../../../../layouts/index.js";
+import { CippTablePage } from "../../../components/CippComponents/CippTablePage.jsx";
+import { Layout as DashboardLayout } from "../../../layouts/index.js";
 
 const Page = () => {
   const pageTitle = "Groups";

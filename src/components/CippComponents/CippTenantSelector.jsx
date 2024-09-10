@@ -12,12 +12,14 @@ import {
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { CippOffCanvas } from "./CippOffCanvas";
+import { useSettings } from "../../hooks/use-settings";
 
 export const CippTenantSelector = (props) => {
   const { allTenants = false, multiple = false, refreshButton, tenantButton } = props;
+  //get the current tenant from SearchParams called 'tenantFilter'
   const router = useRouter();
-  const { tenant } = router.query; // Destructure to get the slug.
-
+  const settings = useSettings();
+  const tenant = router.query.tenantFilter;
   // Fetch tenant list
   const tenantList = ApiGetCall({
     url: "/api/listTenants",
@@ -36,7 +38,35 @@ export const CippTenantSelector = (props) => {
     waiting: false,
   });
 
-  // When URL tenant changes, update the selected tenant
+  useEffect(() => {
+    if (currentTenant?.value) {
+      const query = { ...router.query };
+
+      if (query.tenantFilter !== currentTenant.value) {
+        query.tenantFilter = currentTenant.value;
+        router.replace(
+          {
+            pathname: router.pathname,
+            query: query,
+          },
+          undefined,
+          { shallow: true }
+        );
+      }
+      settings.handleUpdate({
+        currentTenant: currentTenant.value,
+      });
+    }
+  }, [currentTenant, router]);
+
+  // Refetch tenant details when tenant or offcanvas visibility changes
+  useEffect(() => {
+    if (tenant && currentTenant?.value) {
+      tenantDetails.refetch();
+    }
+  }, [tenant, offcanvasVisible]);
+
+  // Update URL when selected tenant changes
   useEffect(() => {
     if (tenant && tenantList.isSuccess) {
       const matchingTenant = tenantList.data.find(
@@ -49,29 +79,12 @@ export const CippTenantSelector = (props) => {
               label: `${matchingTenant.displayName} (${tenant})`,
             }
           : {
-              value: tenant,
-              label: tenant, // In case tenant is not in the list, we still set it
+              value: null,
+              label: "Invalid Tenant",
             }
       );
     }
   }, [tenant, tenantList.isSuccess]);
-
-  // Refetch tenant details when tenant or offcanvas visibility changes
-  useEffect(() => {
-    if (tenant && currentTenant?.value) {
-      tenantDetails.refetch();
-    }
-  }, [tenant, offcanvasVisible]);
-
-  // Update URL when selected tenant changes
-  useEffect(() => {
-    if (tenant && currentTenant?.value && tenant !== currentTenant.value) {
-      const newSlug = currentTenant.value;
-      const newPath = router.asPath.replace(`${tenant}`, `${newSlug}`);
-      router.replace(newPath, undefined, { shallow: true });
-    }
-  }, [tenant, router, currentTenant]);
-
   return (
     <>
       <Box

@@ -4,6 +4,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Head from "next/head";
 import { CippDataTable } from "../CippTable/CippDataTable";
 import { useRouter } from "next/router";
+import { useSettings } from "../../hooks/use-settings";
 
 export const CippTablePage = (props) => {
   const {
@@ -22,8 +23,7 @@ export const CippTablePage = (props) => {
     offCanvas,
     ...other
   } = props;
-  const router = useRouter();
-  const { tenant } = router.query;
+  const tenant = useSettings().currentTenant;
   return (
     <>
       <Head>
