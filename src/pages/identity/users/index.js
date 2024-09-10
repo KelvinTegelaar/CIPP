@@ -94,16 +94,20 @@ const Page = () => {
       fields: [
         {
           type: "autoComplete",
-          name: "input",
+          name: "groupId",
           label: "Select a user",
           api: {
-            url: "/api/Listusers",
-            labelKey: "displayName",
-            valueKey: "userPrincipalName",
+            url: "/api/ListGroups",
+            labelField: "displayName",
+            valueField: "id",
+            addedField: {
+              groupType: "calculatedGroupType",
+              groupName: "displayName",
+            },
           },
         },
       ],
-      confirmText: "Are you sure you want to set the out of office?",
+      confirmText: "Are you sure you want to add the user to this group?",
       multiPost: false,
     },
     {

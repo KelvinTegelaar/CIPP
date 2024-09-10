@@ -15,7 +15,7 @@ import { CippAutoComplete } from "./CippAutocomplete";
 
 export const CippApiDialog = (props) => {
   const { createDialog, title, fields, api, row, ...other } = props;
-
+  const [addedFieldData, setAddedFieldData] = useState({});
   const [partialResults, setPartialResults] = useState([]);
   const [getRequestInfo, setGetRequestInfo] = useState({
     url: "",
@@ -40,7 +40,7 @@ export const CippApiDialog = (props) => {
   });
 
   const handleActionClick = (row, action, formData) => {
-    const data = {};
+    const data = { ...formData, ...addedFieldData };
 
     if (Array.isArray(row) && action.multiPost === false) {
       // Handle bulk requests when row is an array and multiPost is false
@@ -119,7 +119,7 @@ export const CippApiDialog = (props) => {
                       key={index}
                       name={fieldProps.name}
                       control={formHook.control}
-                      render={({ field }) => (
+                      render={({ field, formState }) => (
                         <CippAutoComplete
                           required
                           api={fieldProps.api}
@@ -127,7 +127,10 @@ export const CippApiDialog = (props) => {
                           multiple={false}
                           defaultValue={fieldProps.label}
                           options={fieldProps.options}
-                          onChange={(e, nv) => field.onChange(nv.value)}
+                          onChange={(value, addedFields) => {
+                            field.onChange(value);
+                            setAddedFieldData((prev) => ({ ...prev, ...addedFields }));
+                          }}
                         />
                       )}
                     />

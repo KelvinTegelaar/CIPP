@@ -25,14 +25,18 @@ export const CippAutoComplete = (props) => {
   } = props;
   const filter = createFilterOptions();
   const [usedOptions, setUsedOptions] = useState(options);
+  const [partialResults, setPartialResults] = useState([]);
   const [getRequestInfo, setGetRequestInfo] = useState({ url: "", waiting: false, queryKey: "" });
+
   const actionGetRequest = ApiGetCall({
     ...getRequestInfo,
     onResult: (result) => {
       setPartialResults((prevResults) => [...prevResults, result]);
     },
   });
+
   const currentTenant = useSettings().currentTenant;
+
   useEffect(() => {
     if (api) {
       setGetRequestInfo({
@@ -42,12 +46,26 @@ export const CippAutoComplete = (props) => {
         queryKey: api.queryKey,
       });
     }
+
     if (actionGetRequest.isSuccess) {
       const convertedOptions = actionGetRequest.data?.map((option) => {
-        return { label: option[api.labelKey], value: option[api.valueKey] };
+        // Store the addedField values here
+        const addedFields = {};
+        if (api.addedField) {
+          Object.keys(api.addedField).forEach((key) => {
+            addedFields[key] = option[api.addedField[key]];
+          });
+        }
+        return {
+          label: option[api.labelField],
+          value: option[api.valueField],
+          addedFields: addedFields, // Pass the added fields along with the value
+        };
       });
+
       setUsedOptions(convertedOptions);
     }
+
     if (actionGetRequest.isError) {
       setUsedOptions({ label: "Error", value: getCippError(actionGetRequest.error) });
     }
@@ -78,7 +96,11 @@ export const CippAutoComplete = (props) => {
       size="small"
       defaultValue={defaultValue}
       name={name}
-      onChange={onChange}
+      onChange={(event, newValue) => {
+        if (newValue && typeof onChange === "function") {
+          onChange(newValue.value, newValue.addedFields);
+        }
+      }}
       options={api ? usedOptions : options}
       getOptionLabel={(option) => option.label || option}
       sx={sx}
