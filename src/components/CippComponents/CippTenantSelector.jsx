@@ -19,7 +19,7 @@ export const CippTenantSelector = (props) => {
   //get the current tenant from SearchParams called 'tenantFilter'
   const router = useRouter();
   const settings = useSettings();
-  const tenant = router.query.tenantFilter;
+  const tenant = router.query.tenantFilter ? router.query.tenantFilter : settings.currentTenant;
   // Fetch tenant list
   const tenantList = ApiGetCall({
     url: "/api/listTenants",
@@ -66,7 +66,6 @@ export const CippTenantSelector = (props) => {
     }
   }, [tenant, offcanvasVisible]);
 
-  // Update URL when selected tenant changes
   useEffect(() => {
     if (tenant && tenantList.isSuccess) {
       const matchingTenant = tenantList.data.find(
