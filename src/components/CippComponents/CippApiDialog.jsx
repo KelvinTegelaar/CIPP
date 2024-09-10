@@ -39,16 +39,31 @@ export const CippApiDialog = (props) => {
     },
   });
 
-  const handleActionClick = (row, action, formData) => {
-    const data = { ...formData, ...addedFieldData };
+  const processActionData = (dataObject, row) => {
+    const newData = {};
+    Object.keys(dataObject).forEach((key) => {
+      const value = dataObject[key];
 
+      if (typeof value === "string" && row[value] !== undefined) {
+        newData[key] = row[value];
+      } else if (typeof value === "object" && value !== null) {
+        newData[key] = processActionData(value, row);
+      } else {
+        newData[key] = value;
+      }
+    });
+    return newData;
+  };
+
+  const handleActionClick = (row, action, formData) => {
+    let data = { ...formData, ...addedFieldData };
+    const processedActionData = processActionData(action.data, row);
     if (Array.isArray(row) && action.multiPost === false) {
-      // Handle bulk requests when row is an array and multiPost is false
       const bulkData = row.map((singleRow) => {
         const elementData = {};
-        Object.keys(action.data).forEach((key) => {
-          const value = singleRow[action.data[key]];
-          elementData[key] = value !== undefined ? value : action.data[key];
+        Object.keys(processedActionData).forEach((key) => {
+          const value = singleRow[processedActionData[key]];
+          elementData[key] = value !== undefined ? value : processedActionData[key];
         });
         return { ...elementData, ...formData };
       });
@@ -69,16 +84,15 @@ export const CippApiDialog = (props) => {
         });
       }
     } else {
-      // Original handling for single request or when multiPost is true
-      Object.keys(action.data).forEach((key) => {
+      Object.keys(processedActionData).forEach((key) => {
         if (Array.isArray(row) && action.multiPost) {
           data[key] = row.map((singleRow) => {
-            const value = singleRow[action.data[key]];
-            return value !== undefined ? value : action.data[key];
+            const value = singleRow[processedActionData[key]];
+            return value !== undefined ? value : processedActionData[key];
           });
         } else {
-          const value = row[action.data[key]];
-          data[key] = value !== undefined ? value : action.data[key];
+          const value = row[processedActionData[key]];
+          data[key] = value !== undefined ? value : processedActionData[key];
         }
       });
 
@@ -102,6 +116,7 @@ export const CippApiDialog = (props) => {
   const formHook = useForm();
   const onSubmit = (data) => handleActionClick(row, api, data);
   const selectedType = api.type === "POST" ? actionPostRequest : actionGetRequest;
+
   return (
     <Dialog fullWidth maxWidth="sm" onClose={createDialog.handleClose} open={createDialog.open}>
       <form onSubmit={formHook.handleSubmit(onSubmit)}>

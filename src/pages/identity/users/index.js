@@ -95,7 +95,7 @@ const Page = () => {
         {
           type: "autoComplete",
           name: "groupId",
-          label: "Select a user",
+          label: "Select a group to add the user to",
           api: {
             url: "/api/ListGroups",
             labelField: "displayName",
