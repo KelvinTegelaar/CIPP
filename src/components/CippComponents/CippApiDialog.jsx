@@ -111,22 +111,23 @@ export const CippApiDialog = (props) => {
         </DialogContent>
         <DialogContent>
           {fields &&
-            fields.map((field, index) => {
-              switch (field.type) {
+            fields.map((fieldProps, index) => {
+              switch (fieldProps.type) {
                 case "autoComplete":
                   return (
                     <Controller
                       key={index}
-                      name={field.name}
+                      name={fieldProps.name}
                       control={formHook.control}
                       render={({ field }) => (
                         <CippAutoComplete
                           required
+                          api={fieldProps.api}
                           creatable={false}
                           multiple={false}
-                          defaultValue={"Select a bla"}
-                          options={["one", "two", "three"]}
-                          onChange={(e, nv) => field.onChange(nv)}
+                          defaultValue={fieldProps.label}
+                          options={fieldProps.options}
+                          onChange={(e, nv) => field.onChange(nv.value)}
                         />
                       )}
                     />

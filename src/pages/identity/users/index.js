@@ -87,6 +87,26 @@ const Page = () => {
       multiPost: false,
     },
     {
+      label: "Add to Group",
+      type: "POST",
+      url: "/api/EditGroup",
+      data: { addMember: { value: "userPrincipalName" }, TenantId: "Tenant" },
+      fields: [
+        {
+          type: "autoComplete",
+          name: "input",
+          label: "Select a user",
+          api: {
+            url: "/api/Listusers",
+            labelKey: "displayName",
+            valueKey: "userPrincipalName",
+          },
+        },
+      ],
+      confirmText: "Are you sure you want to set the out of office?",
+      multiPost: false,
+    },
+    {
       label: "Disable Out of Office",
       type: "POST",
       url: "/api/ExecSetOoO",
