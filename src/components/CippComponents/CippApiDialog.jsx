@@ -140,7 +140,7 @@ export const CippApiDialog = (props) => {
                           api={fieldProps.api}
                           creatable={false}
                           multiple={false}
-                          defaultValue={fieldProps.label}
+                          placeholder={fieldProps.label}
                           options={fieldProps.options}
                           onChange={(value, addedFields) => {
                             field.onChange(value);
