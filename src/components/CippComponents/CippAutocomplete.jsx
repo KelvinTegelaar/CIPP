@@ -25,14 +25,10 @@ export const CippAutoComplete = (props) => {
   } = props;
   const filter = createFilterOptions();
   const [usedOptions, setUsedOptions] = useState(options);
-  const [partialResults, setPartialResults] = useState([]);
   const [getRequestInfo, setGetRequestInfo] = useState({ url: "", waiting: false, queryKey: "" });
 
   const actionGetRequest = ApiGetCall({
     ...getRequestInfo,
-    onResult: (result) => {
-      setPartialResults((prevResults) => [...prevResults, result]);
-    },
   });
 
   const currentTenant = useSettings().currentTenant;
@@ -96,11 +92,15 @@ export const CippAutoComplete = (props) => {
       size="small"
       defaultValue={defaultValue}
       name={name}
-      onChange={(event, newValue) => {
-        if (newValue && typeof onChange === "function") {
-          onChange(newValue.value, newValue.addedFields);
-        }
-      }}
+      onChange={
+        onChange
+          ? (event, newValue) => {
+              if (onChange) {
+                onChange(newValue, newValue.addedFields);
+              }
+            }
+          : undefined
+      }
       options={api ? usedOptions : options}
       getOptionLabel={(option) => option.label || option}
       sx={sx}

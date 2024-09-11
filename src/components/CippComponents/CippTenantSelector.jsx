@@ -120,7 +120,7 @@ export const CippTenantSelector = (props) => {
           sx={{ width: 400 }}
           placeholder="Select a tenant"
           value={currentTenant}
-          onChange={(e, nv) => setSelectedTenant(nv)}
+          onChange={(nv) => setSelectedTenant(nv)}
           options={
             tenantList.isSuccess && tenantList.data && tenantList.data.length > 0
               ? tenantList.data.map(({ customerId, displayName, defaultDomainName }) => ({
