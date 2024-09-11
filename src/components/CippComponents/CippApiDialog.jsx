@@ -116,7 +116,10 @@ export const CippApiDialog = (props) => {
   const formHook = useForm();
   const onSubmit = (data) => handleActionClick(row, api, data);
   const selectedType = api.type === "POST" ? actionPostRequest : actionGetRequest;
-
+  if (api.link) {
+    window.open(api.link, "_blank");
+    return null;
+  }
   return (
     <Dialog fullWidth maxWidth="sm" onClose={createDialog.handleClose} open={createDialog.open}>
       <form onSubmit={formHook.handleSubmit(onSubmit)}>
