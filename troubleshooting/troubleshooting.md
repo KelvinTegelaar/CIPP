@@ -80,12 +80,17 @@ The user that authorized the CSP or Graph API connection has had their password 
 
 ### AADSTS50076: Due to a configuration change made by your administrator, or because you moved to a new location, you must use multi-factor authentication to access
 
-This error can have two causes.
+This error can have three causes.
 
 1. The user has not had MFA set up when performing authorization.
 2. The client has Conditional Access policies blocking CIPP's access. See the chapter about [Conditional Access](/setup/installation/conditionalaccess.md) to resolve.
+3. The CIPP-SAM application in the customer tenant is disabled for login. This can be remediated by doing the following:
+    1. Navigate to the customer tenant and log in either via the partner relationship or an customer admin account.
+    2. Locate the CIPP-SAM app under Enterprise Application by removing the Application type filter.
+    3. Under the properties tab, set "Enabled for users to sign-in?" to "Yes"
+    4. Wait a few minutes and run a tenant access check.
 
-### presented multi-factor authentication has expired to the policies configured by your administrator, you must refresh your multi-factor authentication to access
+### Presented multi-factor authentication has expired to the policies configured by your administrator, you must refresh your multi-factor authentication to access
 
 This error occurs when a Conditional Access Policy has set the maximum lifetime. Suggested is to change the Conditional Access Policy to exclude "Service Provider users". See the chapter about how to resolve this under Conditional Access.
 
