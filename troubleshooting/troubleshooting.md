@@ -6,7 +6,7 @@ Below are error codes that can occur in CIPP. Use this page to troubleshoot your
 
 1. The account you use to generate your SAM tokens for CIPP must have Microsoft (Azure AD) MFA enabled, it can't use third-party MFA.
 2. You can't have the `Allow users to remember multi-factor authentication on devices they trust` option enabled in the [classic MFA admin portal](https://account.activedirectory.windowsazure.com/UserManagement/MfaSettings.aspx) in the partner tenant.
-3. Check our section on [Conditional Access](https://cipp.app/docs/user/gettingstarted/postinstall/conditionalaccess/) on how to handle Conditional Access issues.
+3. Check our section on [Conditional Access](/setup/installation/conditionalaccess.md) on how to handle Conditional Access issues.
 
 ### Request not applicable to target tenant.
 
@@ -24,7 +24,7 @@ Error 400 occurred. There is an issue with the request. Most likely an incorrect
 
 This occurs when GDAP has been deployed, but the user is not in any of the GDAP groups.
 
-### subscription within the tenant has lapsed
+### Subscription within the tenant has lapsed
 
 There is no Exchange subscription available, so exchange connections are no longer possible.
 
@@ -78,12 +78,12 @@ When executing the first authorization for CIPP, a trusted device was used. This
 
 The user that authorized the CSP or Graph API connection has had their password changed, sessions revoked, or account disabled. Reauthorization is required by using the SAM Wizard "I'd like to refresh my tokens" option.
 
-### Due to a configuration change made by your administrator, or because you moved to a new location, you must use multi-factor authentication to access
+### AADSTS50076: Due to a configuration change made by your administrator, or because you moved to a new location, you must use multi-factor authentication to access
 
 This error can have two causes.
 
 1. The user has not had MFA set up when performing authorization.
-2. The client has Conditional Access policies blocking CIPP's access. See the chapter about Conditional Access to resolve.
+2. The client has Conditional Access policies blocking CIPP's access. See the chapter about [Conditional Access](/setup/installation/conditionalaccess.md) to resolve.
 
 ### presented multi-factor authentication has expired to the policies configured by your administrator, you must refresh your multi-factor authentication to access
 
