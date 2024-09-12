@@ -1,12 +1,10 @@
-import Head from "next/head";
-import { Box, Container, Stack, Typography } from "@mui/material";
 import { Layout as DashboardLayout } from "../layouts/index.js";
-import { CippWizard } from "../components/CippWizard/CippWizard";
-import { NewspaperIcon } from "@heroicons/react/24/outline";
-import { Api, Key } from "@mui/icons-material";
+import { Key, Refresh } from "@mui/icons-material";
 import { CippWizardConfirmation } from "../components/CippWizard/CippWizardConfirmation";
 import { CippWizardOptionsList } from "../components/CippWizard/CippWizardOptionsList";
 import { CippDeploymentStep } from "../components/CippWizard/CIPPDeploymentStep";
+import CippWizardPage from "../components/CippWizard/CippWizardPage.jsx";
+import { Cog8ToothIcon } from "@heroicons/react/24/outline";
 
 const Page = () => {
   const steps = [
@@ -20,22 +18,24 @@ const Page = () => {
         valuesKey: "Option",
         options: [
           {
-            description: "I want to deploy my instance for the first time.",
-            icon: <NewspaperIcon />,
-            label: "Deploy my Instance",
-            value: "Deploy",
+            description: "This is my first time using CIPP, or I need to create a new application.",
+            icon: <Cog8ToothIcon />,
+            label: "I would like CIPP to create an application for me",
+            value: "samwizard",
           },
           {
-            description: "I want to deploy API Access for my instance.",
-            icon: <Api />,
-            label: "API Setup",
-            value: "Api",
+            description:
+              "I would like to refresh my token or replace the user I've used for my previous token.",
+            icon: <Refresh />,
+            label: "Refresh my authentication",
+            value: "refreshTokens",
           },
           {
-            description: "I want to see my API credentials",
+            description:
+              "I have an existing application and would like to manually enter my token, or update them.",
             icon: <Key />,
-            label: "API Credentials",
-            value: "Creds",
+            label: "I have my tokens to enter",
+            value: "ownTokens",
           },
         ],
       },
@@ -54,29 +54,7 @@ const Page = () => {
 
   return (
     <>
-      <Head>
-        <title>CyberDrain Onboarding</title>
-      </Head>
-      <Box
-        sx={{
-          backgroundColor: "background.default",
-          flexGrow: 1,
-          py: 4,
-        }}
-      >
-        <Container maxWidth="xl">
-          <Stack spacing={6}>
-            <div>
-              <Typography variant="h4">Onboarding</Typography>
-            </div>
-            <Stack spacing={5}>
-              <Stack spacing={1}>
-                <CippWizard orientation="horizontal" steps={steps} />
-              </Stack>
-            </Stack>
-          </Stack>
-        </Container>
-      </Box>
+      <CippWizardPage steps={steps} wizardTitle="Onboarding" />
     </>
   );
 };
