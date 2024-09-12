@@ -20,6 +20,11 @@
     "recommendedRunInterval": "30m"
   },
   {
+    "name": "InactiveLicensedUsers",
+    "label": "Alert on licensed users that have not logged in for 90 days",
+    "recommendedRunInterval": "1d"
+  },
+  {
     "name": "QuotaUsed",
     "label": "Alert on % mailbox quota used",
     "requiresInput": true,
@@ -99,5 +104,11 @@
     "name": "DeviceCompliance",
     "label": "Alert on device compliance issues",
     "recommendedRunInterval": "4h"
+  },
+  {
+    "name": "HuntressRogueApps",
+    "label": "Alert on Huntress Rogue Apps detected",
+    "recommendedRunInterval": "4h",
+    "description": "Huntress has provided a repository of known rogue apps that are commonly used in BEC, data exfiltration and other Microsoft 365 attacks. This alert will notify you if any of these apps are detected in the selected tenant(s). For more information, see <a href='https://huntresslabs.github.io/rogueapps/' target='_blank'>https://huntresslabs.github.io/rogueapps/</a>."
   }
 ]
