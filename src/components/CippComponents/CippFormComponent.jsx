@@ -1,4 +1,5 @@
 import { Radio, Switch, TextField } from "@mui/material";
+import { CippAutoComplete } from "./CippAutocomplete";
 
 export const CippFormComponent = (props) => {
   const { formControl, type = "textField", ...other } = props;
@@ -13,7 +14,7 @@ export const CippFormComponent = (props) => {
     case "radio":
       return <Radio {...other} {...formControl.register(other.name)} />;
     case "autoComplete":
-      return <Radio {...other} {...formControl.register(other.name)} />;
+      return <CippAutoComplete {...other} {...formControl.register(other.name)} />;
     default:
       return <TextField {...other} {...formControl.register(other.name)} />;
   }
