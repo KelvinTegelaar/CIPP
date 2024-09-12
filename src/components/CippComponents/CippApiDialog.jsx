@@ -43,7 +43,6 @@ export const CippApiDialog = (props) => {
     const newData = {};
     Object.keys(dataObject).forEach((key) => {
       const value = dataObject[key];
-
       if (typeof value === "string" && row[value] !== undefined) {
         newData[key] = row[value];
       } else if (typeof value === "object" && value !== null) {
