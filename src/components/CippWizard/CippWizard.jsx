@@ -14,7 +14,7 @@ export const CippWizard = (props) => {
   const handleNext = useCallback(() => {
     setActiveStep((prevState) => (prevState < steps.length - 1 ? prevState + 1 : prevState));
   }, []);
-  const formControl = useForm();
+  const formControl = useForm({ mode: "onChange" });
   const content = useMemo(() => {
     const StepComponent = steps[activeStep].component;
     return (
@@ -22,6 +22,7 @@ export const CippWizard = (props) => {
         onNextStep={handleNext}
         onPreviousStep={handleBack}
         formControl={formControl}
+        currentStep={activeStep}
         options={steps[activeStep].componentProps?.options}
         title={steps[activeStep].componentProps?.title}
         subtext={steps[activeStep].componentProps?.subtext}

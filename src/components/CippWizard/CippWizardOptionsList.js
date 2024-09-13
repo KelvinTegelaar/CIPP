@@ -1,10 +1,22 @@
-import PropTypes from "prop-types";
-import { Avatar, Button, Card, CardContent, Stack, SvgIcon, Typography } from "@mui/material";
-import { useState } from "react";
+import { Avatar, Card, CardContent, Stack, SvgIcon, Typography } from "@mui/material";
+import { useState, useEffect } from "react";
+import { CippWizardStepButtons } from "./CippWizardStepButtons";
 
 export const CippWizardOptionsList = (props) => {
-  const { onNextStep, options, title, subtext, valuesKey, formControl } = props;
+  const { onNextStep, options, title, subtext, formControl, currentStep, onPreviousStep } = props;
   const [selectedOption, setSelectedOption] = useState(null);
+
+  // Register the "selectedOption" field in react-hook-form
+  formControl.register("selectedOption", {
+    required: true,
+  });
+
+  const handleOptionClick = (value) => {
+    setSelectedOption(value); // Visually select the option
+    formControl.setValue("selectedOption", value); // Update form value in React Hook Form
+    formControl.trigger();
+  };
+
   return (
     <Stack spacing={3}>
       <Stack spacing={1}>
@@ -15,14 +27,12 @@ export const CippWizardOptionsList = (props) => {
       </Stack>
       <Stack spacing={2}>
         {options.map((option) => {
-          const isSelected = selectedOption === option.value;
+          const isSelected = selectedOption === option.value; // Check if the option is selected
+
           return (
             <Card
               key={option.value}
-              onClick={() => {
-                setSelectedOption(option.value);
-                formControl.setValue("selectedOption", option.value);
-              }}
+              onClick={() => handleOptionClick(option.value)} // Handle option click
               variant="outlined"
               sx={{
                 cursor: "pointer",
@@ -30,9 +40,7 @@ export const CippWizardOptionsList = (props) => {
                   boxShadow: (theme) => `0px 0px 0px 2px ${theme.palette.primary.main}`,
                 }),
                 "&:hover": {
-                  ...(!isSelected && {
-                    boxShadow: 8,
-                  }),
+                  ...(isSelected ? {} : { boxShadow: 8 }), // Hover effect
                 },
               }}
             >
@@ -59,16 +67,12 @@ export const CippWizardOptionsList = (props) => {
           );
         })}
       </Stack>
-      <Stack alignItems="center" direction="row" justifyContent="flex-end" spacing={2}>
-        <Button onClick={onNextStep} size="large" type="submit" variant="contained">
-          Next Step
-        </Button>
-      </Stack>
+      <CippWizardStepButtons
+        currentStep={currentStep}
+        onPreviousStep={onPreviousStep}
+        onNextStep={onNextStep}
+        formControl={formControl}
+      />
     </Stack>
   );
-};
-
-CippWizardOptionsList.propTypes = {
-  onNextStep: PropTypes.func,
-  values: PropTypes.object.isRequired,
 };

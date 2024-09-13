@@ -1,7 +1,8 @@
 import { Button, MenuItem, Stack, TextField } from "@mui/material";
 import CippFormComponent from "../CippComponents/CippFormComponent";
+import { CippWizardStepButtons } from "./CippWizardStepButtons";
 export const CippDeploymentStep = (props) => {
-  const { formControl, onPreviousStep, onNextStep } = props;
+  const { formControl, onPreviousStep, onNextStep, currentStep } = props;
   const values = formControl.getValues();
   return (
     <Stack spacing={3}>
@@ -12,7 +13,7 @@ export const CippDeploymentStep = (props) => {
             formControl={formControl}
             type="textField"
             fullWidth
-            required
+            validators={{ required: true }}
             label="First Name"
             name="firstName"
           />
@@ -45,20 +46,12 @@ export const CippDeploymentStep = (props) => {
           </TextField>
         </>
       </Stack>
-      <Stack
-        alignItems="center"
-        direction="row"
-        justifyContent="flex-end"
-        spacing={2}
-        sx={{ mt: 3 }}
-      >
-        <Button color="inherit" onClick={onPreviousStep} size="large" type="button">
-          Back
-        </Button>
-        <Button size="large" onClick={onNextStep} type="submit" variant="contained">
-          Next Step
-        </Button>
-      </Stack>
+      <CippWizardStepButtons
+        currentStep={currentStep}
+        onPreviousStep={onPreviousStep}
+        onNextStep={onNextStep}
+        formControl={formControl}
+      />
     </Stack>
   );
 };
