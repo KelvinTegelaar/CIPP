@@ -1,4 +1,4 @@
-import { CippTablePage } from "../../../components/CippComponents/CippTablePage.jsx";
+import { CippTablePage } from "../../../../components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "../../../../layouts/index.js"; // had to add an extra path here because I added an extra folder structure. We should switch to absolute pathing so we dont have to deal with relative.
 
 const Page = () => {
@@ -55,11 +55,7 @@ const Page = () => {
   ];
 
   const offCanvas = {
-    extendedInfoFields: [
-      "createdDateTime",
-      "displayName",
-      "id",
-    ],
+    extendedInfoFields: ["createdDateTime", "displayName", "id"],
     actions: actions,
   };
 
@@ -68,7 +64,6 @@ const Page = () => {
       title={pageTitle}
       apiUrl="/api/ListGraphRequest"
       apiData={{
-        TenantFilter: tenant?.defaultDomainName,
         Endpoint: "devices",
         $format: "application/json",
         $orderby: "displayName",
@@ -77,17 +72,19 @@ const Page = () => {
       apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
-      simpleColumns={['Tenant',
-'CippStatus',
-'displayName',
-'accountEnabled',
-'recipientType',
-'enrollmentType',
-'manufacturer',
-'model',
-'operatingSystem',
-'operatingSystemVersion',
-'profileType']}
+      simpleColumns={[
+        "Tenant",
+        "CippStatus",
+        "displayName",
+        "accountEnabled",
+        "recipientType",
+        "enrollmentType",
+        "manufacturer",
+        "model",
+        "operatingSystem",
+        "operatingSystemVersion",
+        "profileType",
+      ]}
     />
   );
 };
