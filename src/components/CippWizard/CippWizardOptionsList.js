@@ -1,5 +1,5 @@
 import { Avatar, Card, CardContent, Stack, SvgIcon, Typography } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { CippWizardStepButtons } from "./CippWizardStepButtons";
 
 export const CippWizardOptionsList = (props) => {
