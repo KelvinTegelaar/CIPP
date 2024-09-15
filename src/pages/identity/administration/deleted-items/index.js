@@ -4,7 +4,6 @@ import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx"
 const Page = () => {
   const pageTitle = "Deleted Items";
 
-  // Actions formatted based on your request
   const actions = [
     {
       label: "Restore Object",
@@ -16,7 +15,6 @@ const Page = () => {
     },
   ];
 
-  // Offcanvas extended info fields
   const offCanvas = {
     extendedInfoFields: [
       "createdDateTime", // Created on
@@ -36,7 +34,6 @@ const Page = () => {
     actions: actions,
   };
 
-  // Columns for the table
   const columns = [
     "displayName", // Display Name
     "TargetType", // Type
@@ -49,15 +46,6 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListDeletedItems"
-      apiData={{
-        Endpoint: "deletedItems",
-        manualPagination: true,
-        $select:
-          "id,displayName,TargetType,userPrincipalName,deletedDateTime,onPremisesSyncEnabled,createdDateTime,givenName,surname,jobTitle,LicJoined,businessPhones,mobilePhone,mail,city,department,onPremisesLastSyncDateTime",
-        $count: true,
-        $orderby: "deletedDateTime desc",
-        $top: 500,
-      }}
       apiDataKey="Results"
       actions={actions}
       offCanvas={offCanvas}
