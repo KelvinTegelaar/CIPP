@@ -50,7 +50,7 @@ export const items = [
           </SvgIcon>
         ),
         items: [
-          { title: "Users", path: "/identity/users" },
+          { title: "Users", path: "/identity/administration/users" },
           { title: "Risky Users", path: "/identity/administration/risky-users" },
           { title: "Groups", path: "/identity/administration/groups" },
           { title: "Devices", path: "/identity/administration/devices" },
