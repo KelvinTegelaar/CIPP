@@ -91,6 +91,9 @@ const ViewUser = (props) => {
             <UserSigninLogs userId={userId} tenantDomain={tenantDomain} />
           </CippMasonryItem>
           <CippMasonryItem size="triple">
+            {/* // TODO: Add support for displaying the result of the delete operation. Currently, the delete operation is performed but the result is not displayed anywhere but the networking tab of the dev tools in the browser.
+            All API code is in place and should return the needed HTTP status information.
+            Possibly even remove the row in the table if the delete operation was successful? -Bobby */}
             <UserMailboxRuleList
               userId={userId}
               tenantDomain={tenantDomain}

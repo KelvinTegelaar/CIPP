@@ -200,7 +200,7 @@
       "name": "[variables('funcStorageName')]",
       "location": "[resourceGroup().location]",
       "tags": {
-        "displayName": "funStorageName"
+        "displayName": "funcStorageName"
       },
       "sku": {
         "name": "Standard_LRS"

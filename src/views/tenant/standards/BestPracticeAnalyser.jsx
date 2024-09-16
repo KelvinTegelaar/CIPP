@@ -61,7 +61,7 @@ const RefreshAction = ({ singleTenant = false, refreshFunction = null }) => {
       ),
       onConfirm: () =>
         execBestPracticeAnalyser({
-          path: 'api/BestPracticeAnalyser_OrchestrationStarter',
+          path: 'api/ExecBPA',
           params: params,
         }),
     })

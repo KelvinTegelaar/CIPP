@@ -139,4 +139,5 @@ export const {
   useLazyGenericPostRequestQuery,
   useLazyGenericGetRequestQuery,
   useGenericGetRequestQuery,
+  useGenericPostRequestQuery,
 } = appApi

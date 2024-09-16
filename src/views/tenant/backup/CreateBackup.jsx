@@ -194,6 +194,9 @@ const CreateBackup = () => {
                             name="intuneprotection"
                             label="Intune Protection Policies"
                           />
+                          <h3 className="underline mb-4">Email Security</h3>
+                          <RFFCFormSwitch name="antispam" label="Anti-Spam Policies" />
+                          <RFFCFormSwitch name="antiphishing" label="Anti-Phishing Policies" />
                           <h3 className="underline mb-4">CIPP</h3>
                           <RFFCFormSwitch
                             name="CippWebhookAlerts"

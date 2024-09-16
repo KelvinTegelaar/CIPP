@@ -15,6 +15,7 @@ import { CippPageList } from 'src/components/layout'
 import { Link } from 'react-router-dom'
 import { CippActionsOffcanvas, CippCodeBlock } from 'src/components/utilities'
 import { TitleButton } from 'src/components/buttons'
+import { cellBooleanFormatter, cellDateFormatter } from 'src/components/tables'
 
 const Actions = (row, rowIndex, formatExtraData) => {
   const [ocVisible, setOCVisible] = useState(false)
@@ -90,12 +91,43 @@ const columns = [
     name: 'Name',
     sortable: true,
     exportSelector: 'displayName',
+    maxWidth: 'auto',
   },
   {
     selector: (row) => row['PolicyTypeName'],
     name: 'Profile Type',
     sortable: true,
     exportSelector: 'PolicyTypeName',
+    maxWidth: '300px',
+  },
+  {
+    selector: (row) => row['PolicyAssignment'],
+    name: 'Assigned',
+    sortable: true,
+    exportSelector: 'PolicyAssignment',
+    maxWidth: '300px',
+  },
+  {
+    selector: (row) => row['PolicyExclude'],
+    name: 'Excluded',
+    sortable: true,
+    exportSelector: 'PolicyExclude',
+    maxWidth: '300px',
+  },
+  {
+    selector: (row) => row['description'],
+    name: 'Description',
+    sortable: true,
+    exportSelector: 'description',
+    maxWidth: 'auto',
+  },
+  {
+    selector: (row) => row['lastModifiedDateTime'],
+    name: 'Last Modified',
+    sortable: true,
+    exportSelector: 'lastModifiedDateTime',
+    cell: cellDateFormatter({ format: 'relative' }),
+    maxWidth: '150px',
   },
   {
     selector: (row) => row['id'],

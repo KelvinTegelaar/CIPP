@@ -349,7 +349,7 @@
     "name": "standards.TAP",
     "cat": "Entra (AAD) Standards",
     "tag": ["lowimpact"],
-    "helpText": "Enables TAP and sets the default TAP lifetime to 1 hour. This configuration also allows you to select is a TAP is single use or multi-logon.",
+    "helpText": "Enables TAP and sets the default TAP lifetime to 1 hour. This configuration also allows you to select if a TAP is single use or multi-logon.",
     "docsDescription": "Enables Temporary Password generation for the tenant.",
     "addedComponent": [
       {
@@ -648,7 +648,7 @@
     "name": "standards.DisableEmail",
     "cat": "Entra (AAD) Standards",
     "tag": ["highimpact"],
-    "helpText": "This blocks users from using email as an MFA method. This disables the email OTP option for guest users, and instead promts them to create a Microsoft account.",
+    "helpText": "This blocks users from using email as an MFA method. This disables the email OTP option for guest users, and instead prompts them to create a Microsoft account.",
     "addedComponent": [],
     "label": "Disables Email as an MFA method",
     "impact": "High Impact",
