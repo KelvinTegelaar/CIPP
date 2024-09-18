@@ -10,7 +10,7 @@
       }
     },
     "GithubRepository": {
-      "defaultValue": "https://github.com/KelvinTegelaar/CIPP",
+      "defaultValue": "https://github.com/MonitoroSistemistica/CIPP",
       "type": "string",
       "metadata": {
         "description": "URL to your Github Frontend fork."
@@ -24,7 +24,7 @@
       }
     },
     "GithubAPIRepository": {
-      "defaultValue": "https://github.com/KelvinTegelaar/CIPP-API",
+      "defaultValue": "https://github.com/MonitoroSistemistica/CIPP-API",
       "type": "string",
       "metadata": {
         "description": "URL to your Github backend fork."
