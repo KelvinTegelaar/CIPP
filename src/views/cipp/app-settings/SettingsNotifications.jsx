@@ -1,24 +1,16 @@
 import {
   useLazyExecNotificationConfigQuery,
+  useLazyGenericPostRequestQuery,
   useLazyListNotificationConfigQuery,
 } from 'src/store/api/app.js'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
-import {
-  CButton,
-  CCallout,
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCardTitle,
-  CCol,
-  CForm,
-  CSpinner,
-} from '@coreui/react'
+import { CButton, CCol, CForm, CSpinner } from '@coreui/react'
 import { Form, useForm } from 'react-final-form'
 import { RFFCFormInput, RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms/index.js'
 import React from 'react'
 import { CippCallout } from 'src/components/layout/index.js'
+import CippButtonCard from 'src/components/contentcards/CippButtonCard'
 
 /**
  * Sets the notification settings.
@@ -27,25 +19,61 @@ import { CippCallout } from 'src/components/layout/index.js'
 export function SettingsNotifications() {
   const [configNotifications, notificationConfigResult] = useLazyExecNotificationConfigQuery()
   const [listNotification, notificationListResult] = useLazyListNotificationConfigQuery()
+  const [generateAlert, generateAlertResult] = useLazyGenericPostRequestQuery()
+  const generateTestAlert = (values) => {
+    generateAlert({ path: 'api/ExecAddAlert', values: values })
+  }
 
   const onSubmit = (values) => {
     configNotifications(values)
   }
   return (
-    <>
-      {notificationListResult.isUninitialized && listNotification()}
-      {notificationListResult.isFetching && (
-        <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
-      )}
-      {!notificationListResult.isFetching && notificationListResult.error && (
-        <CippCallout color="danger">Error loading data</CippCallout>
-      )}
-      {notificationListResult.isSuccess && (
-        <CCard className="h-100 w-50">
-          <CCardHeader>
-            <CCardTitle>Notifications</CCardTitle>
-          </CCardHeader>
-          <CCardBody>
+    <CCol xs={6}>
+      <CippButtonCard
+        title="Notification Settings"
+        titleType="big"
+        CardButton={
+          <>
+            <CButton
+              className="me-2"
+              form="notificationform"
+              disabled={notificationConfigResult.isFetching}
+              type="submit"
+            >
+              Set Notification Settings
+            </CButton>
+            <CButton
+              className="me-2"
+              onClick={() =>
+                generateTestAlert({ text: 'Manually Generated Test Alert', Severity: 'Alert' })
+              }
+              disabled={generateAlertResult.isFetching}
+            >
+              {generateAlertResult.isFetching ? (
+                <CSpinner size="sm" className="me-2" />
+              ) : (
+                <>
+                  {generateAlertResult.isSuccess && (
+                    <FontAwesomeIcon icon={'check'} className="me-2" />
+                  )}
+                </>
+              )}
+              Generate Test Alert
+            </CButton>
+          </>
+        }
+        isFetching={notificationListResult.isFetching}
+      >
+        <>
+          {notificationListResult.isUninitialized && listNotification()}
+          {notificationListResult.isFetching ||
+            (generateAlertResult.isFetching && (
+              <FontAwesomeIcon icon={faCircleNotch} spin className="me-2" size="1x" />
+            ))}
+          {!notificationListResult.isFetching && notificationListResult.error && (
+            <CippCallout color="danger">Error loading data</CippCallout>
+          )}
+          {notificationListResult.isSuccess && (
             <Form
               initialValuesEqual={() => true}
               initialValues={{
@@ -62,7 +90,7 @@ export function SettingsNotifications() {
               onSubmit={onSubmit}
               render={({ handleSubmit, submitting, values }) => {
                 return (
-                  <CForm onSubmit={handleSubmit}>
+                  <CForm id="notificationform" onSubmit={handleSubmit}>
                     {notificationConfigResult.isFetching && (
                       <CippCallout color="success">
                         <CSpinner>Loading</CSpinner>
@@ -166,17 +194,18 @@ export function SettingsNotifications() {
                           value={false}
                         />
                       </CCol>
-                      <CButton disabled={notificationConfigResult.isFetching} type="submit">
-                        Set Notification Settings
-                      </CButton>
                     </CCol>
                   </CForm>
                 )
               }}
             />
-          </CCardBody>
-        </CCard>
-      )}
-    </>
+          )}
+          <small>
+            Use the button below to save the changes, or generate a test alert. The test alert will
+            be processed in a batch with other alerts
+          </small>
+        </>
+      </CippButtonCard>
+    </CCol>
   )
 }
