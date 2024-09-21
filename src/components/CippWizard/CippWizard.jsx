@@ -27,6 +27,7 @@ export const CippWizard = (props) => {
         title={steps[activeStep].componentProps?.title}
         subtext={steps[activeStep].componentProps?.subtext}
         valuesKey={steps[activeStep].componentProps?.valuesKey}
+        {...steps[activeStep].componentProps}
       />
     );
   }, [activeStep, handleNext, handleBack, steps, formControl]);

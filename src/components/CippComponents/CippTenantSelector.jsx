@@ -15,7 +15,7 @@ import { CippOffCanvas } from "./CippOffCanvas";
 import { useSettings } from "../../hooks/use-settings";
 
 export const CippTenantSelector = (props) => {
-  const { allTenants = false, multiple = false, refreshButton, tenantButton } = props;
+  const { width, allTenants = false, multiple = false, refreshButton, tenantButton } = props;
   //get the current tenant from SearchParams called 'tenantFilter'
   const router = useRouter();
   const settings = useSettings();
@@ -117,7 +117,7 @@ export const CippTenantSelector = (props) => {
           disableClearable={true}
           creatable={false}
           multiple={multiple}
-          sx={{ width: 400 }}
+          sx={{ width: width ? width : "400px" }}
           placeholder="Select a tenant"
           value={currentTenant}
           onChange={(nv) => setSelectedTenant(nv)}
