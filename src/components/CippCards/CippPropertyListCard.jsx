@@ -1,4 +1,4 @@
-import { Card, CardHeader, Divider, Skeleton, SvgIcon } from "@mui/material";
+import { Card, CardHeader, Divider, Skeleton, SvgIcon, Stack } from "@mui/material";
 import { ActionList } from "../../components/action-list";
 import { ActionListItem } from "../../components/action-list-item";
 import { PropertyList } from "../../components/property-list";
@@ -17,38 +17,96 @@ export const CippPropertyListCard = (props) => {
     actionButton,
     copyItems = false,
     data,
+    layout = "single",
+    showDivider = true,
     ...other
   } = props;
   const createDialog = useDialog();
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
+
+  const half = Math.ceil(propertyItems.length / 2);
+  const firstHalf = propertyItems.slice(0, half);
+  const secondHalf = propertyItems.slice(half, propertyItems.length);
+
   return (
     <>
       <Card sx={{ width: "100%" }} {...other}>
         <CardHeader action={actionButton} title={title} />
         <Divider />
-        <PropertyList>
-          {isFetching ? (
-            <>
+
+        {layout === "single" ? (
+          <PropertyList>
+            {isFetching ? (
               <PropertyListItem
                 key={"loading-bar"}
                 align={align}
                 label="Loading"
                 value={<Skeleton width={280} />}
               />
-            </>
-          ) : (
-            propertyItems.map((item, index) => (
-              <PropertyListItem
-                align={align}
-                copyItems
-                divider
-                key={`${index}-index-PropertyListOffCanvas`}
-                {...item}
-              />
-            ))
-          )}
-        </PropertyList>
-        <Divider />
+            ) : (
+              propertyItems.map((item, index) => (
+                <PropertyListItem
+                  align={align}
+                  divider={showDivider}
+                  copyItems={copyItems}
+                  key={`${index}-index-PropertyListOffCanvas`}
+                  {...item}
+                />
+              ))
+            )}
+          </PropertyList>
+        ) : (
+          // Two-column layout
+          <Stack
+            direction={{
+              xs: "column",
+              md: "row",
+            }}
+            sx={{
+              "& > *": {
+                width: {
+                  md: "50%",
+                },
+              },
+            }}
+          >
+            <PropertyList>
+              {isFetching ? (
+                <PropertyListItem
+                  key={"loading-bar"}
+                  align={align}
+                  divider={showDivider}
+                  label="Loading"
+                  value={<Skeleton width={280} />}
+                />
+              ) : (
+                firstHalf.map((item, index) => (
+                  <PropertyListItem
+                    align={align}
+                    divider={showDivider}
+                    copyItems={copyItems}
+                    key={`${index}-index-PropertyListOffCanvas`}
+                    {...item}
+                  />
+                ))
+              )}
+            </PropertyList>
+            <PropertyList>
+              {secondHalf.map((item, index) => (
+                <PropertyListItem
+                  align={align}
+                  divider={showDivider}
+                  copyItems={copyItems}
+                  key={`${index}-index-PropertyListOffCanvas`}
+                  {...item}
+                />
+              ))}
+            </PropertyList>
+          </Stack>
+        )}
+
+        {showDivider && <Divider />}
+
         <ActionList>
           {actionItems.map((item, index) => (
             <ActionListItem
@@ -56,7 +114,6 @@ export const CippPropertyListCard = (props) => {
               icon={<SvgIcon fontSize="small">{item.icon}</SvgIcon>}
               label={item.label}
               onClick={
-                //if item.link is set, browse there in a new tab
                 item.link
                   ? () => window.open(item.link, "_blank")
                   : () => {
@@ -71,6 +128,7 @@ export const CippPropertyListCard = (props) => {
             />
           ))}
         </ActionList>
+
         {actionData.ready && (
           <CippApiDialog
             createDialog={createDialog}

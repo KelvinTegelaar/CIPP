@@ -3,7 +3,6 @@ import { Box, Container, Stack } from "@mui/system";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Head from "next/head";
 import { CippDataTable } from "../CippTable/CippDataTable";
-import { useRouter } from "next/router";
 import { useSettings } from "../../hooks/use-settings";
 
 export const CippTablePage = (props) => {

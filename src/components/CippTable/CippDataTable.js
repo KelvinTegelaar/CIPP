@@ -209,17 +209,6 @@ export const CippDataTable = (props) => {
             <ResourceUnavailable message="Data not in correct format" />
           ) : (
             <>
-              {getRequestData.isSuccess && usedData.length === 0 && (
-                <ResourceUnavailable
-                  message={noDataText}
-                  createButtonText={noDataButton.createText}
-                  onCreate={() =>
-                    noDataButton.createFunction ? noDataButton.createFunction() : null
-                  }
-                  type={noDataButton.type}
-                  target={noDataButton.target}
-                />
-              )}
               {(getRequestData.isSuccess || getRequestData.data?.pages.length >= 0) && (
                 <MaterialReactTable
                   enableRowVirtualization
