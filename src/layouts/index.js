@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import PropTypes from "prop-types";
-import { useMediaQuery } from "@mui/material";
+import { Alert, Box, Collapse, IconButton, Link, Typography, useMediaQuery } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useSettings } from "../hooks/use-settings";
 import { Footer } from "./footer";
 import { MobileNav } from "./mobile-nav";
 import { SideNav } from "./side-nav";
 import { TopNav } from "./top-nav";
+import { ApiGetCall } from "../api/ApiCall";
+import { Close } from "@mui/icons-material";
 
 const SIDE_NAV_WIDTH = 270;
 const SIDE_NAV_PINNED_WIDTH = 50;
@@ -69,6 +70,8 @@ export const Layout = (props) => {
   const mdDown = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const settings = useSettings();
   const mobileNav = useMobileNav();
+  const [userSettingsComplete, setUserSettingsComplete] = useState(false);
+  const [fetchingVisible, setFetchingVisible] = useState([]);
 
   const handleNavPin = useCallback(() => {
     settings.handleUpdate({
@@ -77,6 +80,44 @@ export const Layout = (props) => {
   }, [settings]);
 
   const offset = settings.pinNav ? SIDE_NAV_WIDTH : SIDE_NAV_PINNED_WIDTH;
+
+  const userSettingsAPI = ApiGetCall({
+    url: "/api/ListUserSettings",
+    queryKey: "userSettings",
+  });
+
+  useEffect(() => {
+    if (userSettingsAPI.isSuccess && !userSettingsAPI.isFetching && !userSettingsComplete) {
+      settings.handleUpdate(userSettingsAPI.data);
+      setUserSettingsComplete(true);
+    }
+  }, [
+    userSettingsAPI.isSuccess,
+    userSettingsAPI.data,
+    userSettingsAPI.isFetching,
+    userSettingsComplete,
+    settings,
+  ]);
+
+  const alertsAPI = ApiGetCall({
+    url: "/api/GetCippAlerts",
+    queryKey: "alertsDashboard",
+  });
+
+  useEffect(() => {
+    if (alertsAPI.isSuccess && !alertsAPI.isFetching) {
+      setFetchingVisible(new Array(alertsAPI.data.length).fill(true));
+    }
+  }, [alertsAPI.isSuccess, alertsAPI.data, alertsAPI.isFetching]);
+
+  const handleAlertClose = (index) => {
+    setFetchingVisible((prevState) =>
+      prevState.map((visible, idx) => (idx === index ? !visible : visible))
+    );
+  };
+
+  // Determine if there are any undismissed alerts
+  const hasUndismissedAlerts = fetchingVisible.some((visible) => visible);
 
   return (
     <>
@@ -91,14 +132,40 @@ export const Layout = (props) => {
         }}
       >
         <LayoutContainer>
+          {alertsAPI.isSuccess && !alertsAPI.isFetching && hasUndismissedAlerts && (
+            <Box sx={{ paddingTop: "1rem" }}>
+              {alertsAPI.isSuccess &&
+                !alertsAPI.isFetching &&
+                alertsAPI.data.map((alert, idx) => (
+                  <Collapse key={idx} in={fetchingVisible[idx]} sx={{ padding: "0.5rem" }}>
+                    <Alert
+                      action={
+                        <IconButton
+                          aria-label="close"
+                          color="inherit"
+                          size="small"
+                          onClick={() => handleAlertClose(idx)}
+                        >
+                          <Close fontSize="inherit" />
+                        </IconButton>
+                      }
+                      severity={alert.type}
+                    >
+                      <Typography variant="body2">
+                        {alert.Alert}{" "}
+                        <Link target="_blank" href={alert.link}>
+                          link
+                        </Link>
+                      </Typography>
+                    </Alert>
+                  </Collapse>
+                ))}
+            </Box>
+          )}
           {children}
           <Footer />
         </LayoutContainer>
       </LayoutRoot>
     </>
   );
-};
-
-Layout.propTypes = {
-  children: PropTypes.node,
 };

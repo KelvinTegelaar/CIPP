@@ -3,8 +3,34 @@ import { Box, Container, Stack, Unstable_Grid2 as Grid, Switch, Select } from "@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { OrderQuickActions } from "../../../sections/dashboard/orders/order-quick-actions";
 import { CippPropertyListCard } from "../../../components/CippCards/CippPropertyListCard";
+import CippFormComponent from "../../../components/CippComponents/CippFormComponent";
+import { useForm } from "react-hook-form";
+import { useSettings } from "../../../hooks/use-settings";
 
 const Page = () => {
+  const settings = useSettings();
+  const formcontrol = useForm({ defaultValues: settings });
+  const addedAttributes = [
+    { value: "consentProvidedForMinor", label: "consentProvidedForMinor" },
+    { value: "employeeId", label: "employeeId" },
+    { value: "employeeHireDate", label: "employeeHireDate" },
+    { value: "employeeLeaveDateTime", label: "employeeLeaveDateTime" },
+    { value: "employeeType", label: "employeeType" },
+    { value: "faxNumber", label: "faxNumber" },
+    { value: "legalAgeGroupClassification", label: "legalAgeGroupClassification" },
+    { value: "officeLocation", label: "officeLocation" },
+    { value: "otherMails", label: "otherMails" },
+    { value: "showInAddressList", label: "showInAddressList" },
+    { value: "state", label: "state" },
+  ];
+
+  const pageSizes = [
+    { value: "25", label: "25" },
+    { value: "50", label: "50" },
+    { value: "100", label: "100" },
+    { value: "250", label: "250" },
+  ];
+
   return (
     <>
       <Head>
@@ -36,52 +62,235 @@ const Page = () => {
                       title="General Settings"
                       propertyItems={[
                         {
-                          label: "Show Compressed Tenant List in overview",
-                          value: <Switch />,
+                          label: "Tenant Overview Page",
+                          value: (
+                            <CippFormComponent
+                              type="autoComplete"
+                              sx={{ width: "250px" }}
+                              disableClearable={true}
+                              name="TenantListSelector"
+                              formControl={formcontrol}
+                              multiple={false}
+                              options={[
+                                { value: "full", label: "Show the full page" },
+                                { value: "compressed", label: "Show the compressed page" },
+                              ]}
+                            />
+                          ),
                         },
 
                         {
                           label: "Default Theme",
-                          value: <Select />,
+                          value: (
+                            <CippFormComponent
+                              type="autoComplete"
+                              sx={{ width: "250px" }}
+                              disableClearable={true}
+                              defaultValue={{ value: "browser", label: "Let the browser choose" }}
+                              name="currentTheme"
+                              formControl={formcontrol}
+                              multiple={false}
+                              options={[
+                                { value: "light", label: "Light" },
+                                { value: "dark", label: "Dark" },
+                                { value: "browser", label: "Let the browser choose" },
+                              ]}
+                            />
+                          ),
                         },
                         {
-                          label: "Default Page Size",
-                          value: <Select />,
+                          label: "Added Attributes when creating a new user",
+                          value: (
+                            <CippFormComponent
+                              type="autoComplete"
+                              options={addedAttributes}
+                              sx={{ width: "250px" }}
+                              name="userAttributes"
+                              formControl={formcontrol}
+                              multiple={true}
+                            />
+                          ),
                         },
                         {
                           label: "Default new user usage location",
-                          value: <Switch />,
+                          value: (
+                            <CippFormComponent
+                              type="autoComplete"
+                              sx={{ width: "250px" }}
+                              disableClearable={true}
+                              defaultValue={{ value: "25", label: "25" }}
+                              name="usageLocation"
+                              formControl={formcontrol}
+                              multiple={false}
+                              options={[
+                                { value: "25", label: "25" },
+                                { value: "50", label: "50" },
+                                { value: "100", label: "100" },
+                                { value: "250", label: "250" },
+                              ]}
+                            />
+                          ),
                         },
                         {
-                          label: "Default user attributes",
-                          value: <Select />,
+                          label: "Default Page Size",
+                          value: (
+                            <CippFormComponent
+                              type="autoComplete"
+                              sx={{ width: "250px" }}
+                              disableClearable={true}
+                              defaultValue={{ value: "25", label: "25" }}
+                              name="tablePageSize"
+                              formControl={formcontrol}
+                              multiple={false}
+                              options={pageSizes}
+                            />
+                          ),
                         },
                         {
                           label: "Menu Favourites",
-                          value: <Select />,
+                          value: (
+                            <CippFormComponent
+                              type="autoComplete"
+                              sx={{ width: "250px" }}
+                              disableClearable={true}
+                              name="userSettingsDefaults.favourites"
+                              formControl={formcontrol}
+                              multiple={false}
+                              options={[
+                                { value: "25", label: "25" },
+                                { value: "50", label: "50" },
+                                { value: "100", label: "100" },
+                                { value: "250", label: "250" },
+                              ]}
+                            />
+                          ),
                         },
                       ]}
                     />
                     <CippPropertyListCard
                       layout="two"
                       showDivider={false}
-                      title="Offboarding Settings"
+                      title="Offboarding Default Settings"
                       propertyItems={[
                         {
-                          label: "Show Compressed Tenant List in overview",
-                          value: <Switch />,
+                          label: "Convert to Shared Mailbox",
+                          value: (
+                            <CippFormComponent
+                              type="switch"
+                              name="offboardingDefaults.ConvertToShared"
+                              formControl={formcontrol}
+                            />
+                          ),
                         },
                         {
-                          label: "Default new user usage location",
-                          value: <Switch />,
+                          label: "Remove from all groups",
+                          value: (
+                            <CippFormComponent
+                              type="switch"
+                              name="offboardingDefaults.RemoveGroups"
+                              formControl={formcontrol}
+                            />
+                          ),
                         },
                         {
-                          label: "Default Theme",
-                          value: <Select />,
+                          label: "Hide from Global Address List",
+                          value: (
+                            <CippFormComponent
+                              type="switch"
+                              name="offboardingDefaults.HideFromGAL"
+                              formControl={formcontrol}
+                            />
+                          ),
                         },
                         {
-                          label: "Default Page Size",
-                          value: <Select />,
+                          label: "Remove Licenses",
+                          value: (
+                            <CippFormComponent
+                              type="switch"
+                              name="offboardingDefaults.RemoveLicenses"
+                              formControl={formcontrol}
+                            />
+                          ),
+                        },
+                        {
+                          label: "Cancel all calendar invites",
+                          value: (
+                            <CippFormComponent
+                              type="switch"
+                              name="offboardingDefaults.removeCalendarInvites"
+                              formControl={formcontrol}
+                            />
+                          ),
+                        },
+                        {
+                          label: "Revoke all sessions",
+                          value: (
+                            <CippFormComponent
+                              type="switch"
+                              name="offboardingDefaults.RevokeSessions"
+                              formControl={formcontrol}
+                            />
+                          ),
+                        },
+                        {
+                          label: "Remove users mailbox permissions",
+                          value: (
+                            <CippFormComponent
+                              type="switch"
+                              name="offboardingDefaults.removePermissions"
+                              formControl={formcontrol}
+                            />
+                          ),
+                        },
+                        {
+                          label: "Remove all Rules",
+                          value: (
+                            <CippFormComponent
+                              type="switch"
+                              name="offboardingDefaults.RemoveRules"
+                              formControl={formcontrol}
+                            />
+                          ),
+                        },
+                        {
+                          label: "Reset Password",
+                          value: (
+                            <CippFormComponent
+                              type="switch"
+                              name="offboardingDefaults.ResetPass"
+                              formControl={formcontrol}
+                            />
+                          ),
+                        },
+                        {
+                          label: "Keep copy of forwarded mail in source mailbox",
+                          value: (
+                            <CippFormComponent
+                              type="switch"
+                              name="offboardingDefaults.keepCopy"
+                              formControl={formcontrol}
+                            />
+                          ),
+                        },
+                        {
+                          label: "Delete user",
+                          value: (
+                            <CippFormComponent
+                              type="switch"
+                              name="offboardingDefaults.DeleteUser"
+                              formControl={formcontrol}
+                            />
+                          ),
+                        },
+                        {
+                          label: "Remove all Mobile Devices",
+                          value: (
+                            <CippFormComponent
+                              type="switch"
+                              name="offboardingDefaults.RemoveMobile"
+                              formControl={formcontrol}
+                            />
+                          ),
                         },
                       ]}
                     />

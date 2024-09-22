@@ -1,5 +1,4 @@
 import { ApiGetCall } from "../api/ApiCall.jsx";
-import FullPageLoading from "../pages/fullPageLoading.js";
 import UnauthenticatedPage from "../pages/unauthenticated.js";
 
 export const PrivateRoute = ({ children, routeType }) => {
@@ -11,7 +10,7 @@ export const PrivateRoute = ({ children, routeType }) => {
     url: "/.auth/me",
     queryKey: "authmecipp",
   });
-  
+
   if (isFetching) {
     return "Loading...";
   }
