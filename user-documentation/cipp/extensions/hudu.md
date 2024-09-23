@@ -50,7 +50,7 @@ After the API settings are set you can now map Hudu Assets to Microsoft 365 / CI
 **Field Mapping**
 
 1. Scroll down to the **Hudu Field Mapping Table.**
-2. For each field you wish to populate in Hudu select the asset layout from the dropdown menu. For users it is recommended to use the "People" template to prevent syncronisation issues.
+2. For each field you wish to populate in Hudu select the asset layout from the dropdown menu. For users it is recommended to use the "People" template to prevent synchronisation issues.
 3. Click Save Mappings
 
 
