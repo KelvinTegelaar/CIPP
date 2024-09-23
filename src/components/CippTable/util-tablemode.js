@@ -1,4 +1,7 @@
+import { useSettings } from "../../hooks/use-settings";
+
 export const utilTableMode = (columnVisibility, mode, actions, simpleColumns) => {
+  const settings = useSettings();
   if (mode === true) {
     return {
       enableRowSelection: false,
@@ -16,8 +19,7 @@ export const utilTableMode = (columnVisibility, mode, actions, simpleColumns) =>
         columnOrder: [...simpleColumns],
         columnVisibility: { ...columnVisibility },
         density: "compact",
-        //TODO: page size should come from user settings state in the future.
-        pagination: { pageSize: 25 },
+        pagination: { pageSize: settings?.tablePageSize?.value || 25 },
       },
       displayColumnDefOptions: {
         "mrt-row-actions": {
@@ -58,7 +60,7 @@ export const utilTableMode = (columnVisibility, mode, actions, simpleColumns) =>
         columnVisibility: { ...columnVisibility },
         showGlobalFilter: true,
         density: "compact",
-        pagination: { pageSize: 25 },
+        pagination: { pageSize: settings?.tablePageSize?.value || 25 },
         columnPinning: {
           left: ["mrt-row-select"],
           right: ["mrt-row-actions"],

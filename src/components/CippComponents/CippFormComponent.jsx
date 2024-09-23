@@ -10,7 +10,19 @@ export const CippFormComponent = (props) => {
     case "textField":
       return <TextField {...other} {...formControl.register(name, { ...validators })} />;
     case "switch":
-      return <Switch {...other} {...formControl.register(name, { ...validators })} />;
+      return (
+        <Controller
+          name={name}
+          control={formControl.control}
+          render={({ field }) => (
+            <Switch
+              checked={field.value}
+              {...other}
+              {...formControl.register(name, { ...validators })}
+            />
+          )}
+        />
+      );
     case "checkbox":
       return <Checkbox {...other} {...formControl.register(name, { ...validators })} />;
     case "radio":
@@ -24,6 +36,7 @@ export const CippFormComponent = (props) => {
           render={({ field }) => (
             <CippAutoComplete
               {...other}
+              defaultValue={field.value}
               onChange={(value) => {
                 field.onChange(value);
               }}

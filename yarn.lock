@@ -5038,6 +5038,11 @@ react-markdown@8.0.5:
     unist-util-visit "^4.0.0"
     vfile "^5.0.0"
 
+react-media-hook@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/react-media-hook/-/react-media-hook-0.5.0.tgz#f830231f31ea80049f8cbaf8058da90ab71e7150"
+  integrity sha512-OupDgOSCjUUWPiXq3HMoRwpsQry4cGf4vKzh2E984Xtm4I01ZFbq8JwCG/RPqXB9h0qxgzoYLbABC+LIZH8deQ==
+
 react-papaparse@^4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/react-papaparse/-/react-papaparse-4.4.0.tgz#754b18c62240782d9b3b0bbc132b08ed6ec8ca13"

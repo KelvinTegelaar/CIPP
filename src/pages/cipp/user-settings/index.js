@@ -1,15 +1,18 @@
 import Head from "next/head";
-import { Box, Container, Stack, Unstable_Grid2 as Grid, Switch, Select } from "@mui/material";
+import { Box, Container, Stack, Unstable_Grid2 as Grid } from "@mui/material";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
-import { OrderQuickActions } from "../../../sections/dashboard/orders/order-quick-actions";
 import { CippPropertyListCard } from "../../../components/CippCards/CippPropertyListCard";
 import CippFormComponent from "../../../components/CippComponents/CippFormComponent";
 import { useForm } from "react-hook-form";
 import { useSettings } from "../../../hooks/use-settings";
+import languageList from "../../../data/languageList.json";
+import { CippSettingsSideBar } from "../../../components/CippComponents/CippSettingsSideBar";
+import { useEffect } from "react";
 
 const Page = () => {
   const settings = useSettings();
   const formcontrol = useForm({ defaultValues: settings });
+
   const addedAttributes = [
     { value: "consentProvidedForMinor", label: "consentProvidedForMinor" },
     { value: "employeeId", label: "employeeId" },
@@ -30,6 +33,9 @@ const Page = () => {
     { value: "100", label: "100" },
     { value: "250", label: "250" },
   ];
+  const languageListOptions = languageList.map((language) => {
+    return { value: language.tag, label: `${language["Geographic area"]} (${language.language})` };
+  });
 
   return (
     <>
@@ -86,7 +92,6 @@ const Page = () => {
                               type="autoComplete"
                               sx={{ width: "250px" }}
                               disableClearable={true}
-                              defaultValue={{ value: "browser", label: "Let the browser choose" }}
                               name="currentTheme"
                               formControl={formcontrol}
                               multiple={false}
@@ -116,18 +121,13 @@ const Page = () => {
                           value: (
                             <CippFormComponent
                               type="autoComplete"
+                              creatable={false}
                               sx={{ width: "250px" }}
                               disableClearable={true}
-                              defaultValue={{ value: "25", label: "25" }}
                               name="usageLocation"
                               formControl={formcontrol}
                               multiple={false}
-                              options={[
-                                { value: "25", label: "25" },
-                                { value: "50", label: "50" },
-                                { value: "100", label: "100" },
-                                { value: "250", label: "250" },
-                              ]}
+                              options={languageListOptions}
                             />
                           ),
                         },
@@ -297,7 +297,7 @@ const Page = () => {
                   </Stack>
                 </Grid>
                 <Grid xs={12} lg={4}>
-                  <OrderQuickActions />
+                  <CippSettingsSideBar formcontrol={formcontrol} />
                 </Grid>
               </Grid>
             </div>

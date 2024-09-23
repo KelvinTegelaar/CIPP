@@ -13,14 +13,14 @@ import "../libs/nprogress";
 import Toasts from "../components/toaster";
 import { PrivateRoute } from "../components/PrivateRoute";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useMediaPredicate } from "react-media-hook";
 
 const queryClient = new QueryClient();
 const clientSideEmotionCache = createEmotionCache();
-
 const App = (props) => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
-
   const getLayout = Component.getLayout ?? ((page) => page);
+  const preferredTheme = useMediaPredicate("(prefers-color-scheme: dark)") ? "dark" : "light";
 
   return (
     <CacheProvider value={emotionCache}>
@@ -34,14 +34,15 @@ const App = (props) => {
           <SettingsProvider>
             <SettingsConsumer>
               {(settings) => {
-                // Prevent theme flicker when restoring custom settings from browser storage
                 if (!settings.isInitialized) {
-                  // return null;
                 }
                 const theme = createTheme({
                   colorPreset: "orange",
                   direction: settings.direction,
-                  paletteMode: settings.paletteMode,
+                  paletteMode:
+                    settings.currentTheme?.value !== "browser"
+                      ? settings.currentTheme?.value
+                      : preferredTheme,
                   contrast: "high",
                 });
 

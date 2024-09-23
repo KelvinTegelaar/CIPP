@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import {
   Box,
   Button,
@@ -86,12 +85,4 @@ export const PropertyListItem = (props) => {
       />
     </ListItem>
   );
-};
-
-PropertyListItem.propTypes = {
-  align: PropTypes.string,
-  children: PropTypes.node,
-  component: PropTypes.any,
-  label: PropTypes.string.isRequired,
-  value: PropTypes.string,
 };
