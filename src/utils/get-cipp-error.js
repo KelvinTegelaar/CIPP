@@ -9,12 +9,12 @@ export const getCippError = (data) => {
   if (data.response?.data.message) {
     return data.response.data.message;
   }
-  if (data.response?.data) {
-    return data.response.data;
-  }
-
   if (data.response?.data.includes("<!DOCTYPE html>")) {
     return data.message;
+  }
+
+  if (data.response?.data) {
+    return data.response.data;
   }
 
   if (data.message) {
