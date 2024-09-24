@@ -13,6 +13,12 @@
       }
     },
     {
+      "route": "/assets/*",
+      "headers": {
+        "cache-control": "must-revalidate, max-age=15770000"
+      }
+    },
+    {
       "route": "/login",
       "rewrite": "/.auth/login/aad"
     },
