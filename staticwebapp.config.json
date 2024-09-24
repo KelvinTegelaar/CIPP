@@ -89,7 +89,16 @@
   ],
   "navigationFallback": {
     "rewrite": "index.html",
-    "exclude": ["_next/static/*", "/css/*", "public/*"]
+    "exclude": [
+      "_next/static/*",
+      "/css/*",
+      "public/*",
+      "assets",
+      "favicon.ico",
+      "robots.txt",
+      "sitemap.xml",
+      "manifest.json"
+    ]
   },
   "responseOverrides": {
     "401": {
