@@ -1,4 +1,4 @@
-import { TabbedLayout } from "../../../layouts/tabbedLayout";
+import { TabbedLayout } from "/src/layouts/tabbedLayout";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import tabOptions from "./tabOptions";
 const Page = () => {
