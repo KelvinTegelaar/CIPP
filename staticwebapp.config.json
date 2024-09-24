@@ -7,6 +7,12 @@
       }
     },
     {
+      "route": "assets/*",
+      "headers": {
+        "cache-control": "must-revalidate, max-age=15770000"
+      }
+    },
+    {
       "route": "/login",
       "rewrite": "/.auth/login/aad"
     },
@@ -93,7 +99,7 @@
       "_next/static/*",
       "/css/*",
       "public/*",
-      "assets",
+      "assets/*",
       "favicon.ico",
       "robots.txt",
       "sitemap.xml",
