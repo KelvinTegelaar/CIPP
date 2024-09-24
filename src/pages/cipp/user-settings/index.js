@@ -5,9 +5,8 @@ import { CippPropertyListCard } from "../../../components/CippCards/CippProperty
 import CippFormComponent from "../../../components/CippComponents/CippFormComponent";
 import { useForm } from "react-hook-form";
 import { useSettings } from "../../../hooks/use-settings";
-import languageList from "../../../data/languageList.json";
+import countryList from "../../../data/countryList.json";
 import { CippSettingsSideBar } from "../../../components/CippComponents/CippSettingsSideBar";
-import { useEffect } from "react";
 
 const Page = () => {
   const settings = useSettings();
@@ -33,8 +32,8 @@ const Page = () => {
     { value: "100", label: "100" },
     { value: "250", label: "250" },
   ];
-  const languageListOptions = languageList.map((language) => {
-    return { value: language.tag, label: `${language["Geographic area"]} (${language.language})` };
+  const languageListOptions = countryList.map((language) => {
+    return { value: language.Code, label: language.Name };
   });
 
   return (
