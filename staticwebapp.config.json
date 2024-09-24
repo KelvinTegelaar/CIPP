@@ -67,6 +67,14 @@
       "allowedRoles": ["admin", "editor"]
     },
     {
+      "route": "/cipp/*",
+      "allowedRoles": ["admin"]
+    },
+    {
+      "route": "/tenant/standards/*",
+      "allowedRoles": ["admin"]
+    },
+    {
       "route": "/",
       "allowedRoles": ["admin", "editor", "readonly", "reader", "authenticated", "anonymous"]
     },
