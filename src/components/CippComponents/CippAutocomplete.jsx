@@ -16,6 +16,7 @@ export const CippAutoComplete = (props) => {
     value,
     placeholder,
     disableClearable,
+    disabled,
     name,
     options = [],
     onChange,
@@ -70,6 +71,7 @@ export const CippAutoComplete = (props) => {
   return (
     <Autocomplete
       key={defaultValue}
+      disabled={disabled}
       popupIcon={
         props.isFetching || actionGetRequest.isFetching ? (
           <CircularProgress color="inherit" size={20} />

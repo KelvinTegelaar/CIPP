@@ -118,7 +118,13 @@ export const CippTenantSelector = (props) => {
           creatable={false}
           multiple={multiple}
           sx={{ width: width ? width : "400px" }}
-          placeholder="Select a tenant"
+          placeholder={
+            tenantList.isFetching
+              ? "Loading Tenants..."
+              : tenantList.isError
+              ? "Error loading Tenants"
+              : "Select a Tenant"
+          }
           value={currentTenant}
           onChange={(nv) => setSelectedTenant(nv)}
           options={
