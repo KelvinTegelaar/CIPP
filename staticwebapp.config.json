@@ -7,6 +7,30 @@
       }
     },
     {
+      "route": "favicon.ico",
+      "headers": {
+        "cache-control": "must-revalidate, max-age=15770000"
+      }
+    },
+    {
+      "route": "robots.txt",
+      "headers": {
+        "cache-control": "must-revalidate, max-age=15770000"
+      }
+    },
+    {
+      "route": "sitemap.xml",
+      "headers": {
+        "cache-control": "must-revalidate, max-age=15770000"
+      }
+    },
+    {
+      "route": "manifest.json",
+      "headers": {
+        "cache-control": "must-revalidate, max-age=15770000"
+      }
+    },
+    {
       "route": "assets/*",
       "headers": {
         "cache-control": "must-revalidate, max-age=15770000"
