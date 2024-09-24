@@ -7,35 +7,12 @@
       }
     },
     {
-      "route": "favicon.ico",
+      "route": "{*.png,*.jpg,*.jpeg,*.gif,*.svg,*.ico,*.webp,*.css,*.js,*.json,*.xml,*.webmanifest,*.map,*.txt,*.ttf,*.woff,*.woff2,*.otf,*.eot}",
       "headers": {
         "cache-control": "must-revalidate, max-age=15770000"
       }
     },
-    {
-      "route": "robots.txt",
-      "headers": {
-        "cache-control": "must-revalidate, max-age=15770000"
-      }
-    },
-    {
-      "route": "sitemap.xml",
-      "headers": {
-        "cache-control": "must-revalidate, max-age=15770000"
-      }
-    },
-    {
-      "route": "manifest.json",
-      "headers": {
-        "cache-control": "must-revalidate, max-age=15770000"
-      }
-    },
-    {
-      "route": "assets/*",
-      "headers": {
-        "cache-control": "must-revalidate, max-age=15770000"
-      }
-    },
+
     {
       "route": "/login",
       "rewrite": "/.auth/login/aad"
