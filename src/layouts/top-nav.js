@@ -16,9 +16,9 @@ export const TopNav = (props) => {
   const { onNavOpen } = props;
   const settings = useSettings();
   const mdDown = useMediaQuery((theme) => theme.breakpoints.down("md"));
-  const preferredTheme = settings.currentTheme.value;
+  const preferredTheme = settings.currentTheme?.value;
   const handleThemeSwitch = useCallback(() => {
-    const themeName = settings.currentTheme.value === "light" ? "dark" : "light";
+    const themeName = settings.currentTheme?.value === "light" ? "dark" : "light";
     settings.handleUpdate({
       currentTheme: { value: themeName, label: themeName },
     });
