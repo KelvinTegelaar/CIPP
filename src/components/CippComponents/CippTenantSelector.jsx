@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { CippOffCanvas } from "./CippOffCanvas";
 import { useSettings } from "../../hooks/use-settings";
+import { getCippError } from "../../utils/get-cipp-error";
 
 export const CippTenantSelector = (props) => {
   const { width, allTenants = false, multiple = false, refreshButton, tenantButton } = props;
@@ -122,7 +123,7 @@ export const CippTenantSelector = (props) => {
             tenantList.isFetching
               ? "Loading Tenants..."
               : tenantList.isError
-              ? "Error loading Tenants"
+              ? `Error loading Tenants: ${getCippError(tenantList.error)}`
               : "Select a Tenant"
           }
           value={currentTenant}
