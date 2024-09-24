@@ -75,10 +75,6 @@
       "allowedRoles": ["admin", "editor", "readonly", "reader", "authenticated", "anonymous"]
     },
     {
-      "route": "/*/identity/*",
-      "rewrite": "/*/identity/*"
-    },
-    {
       "route": "*",
       "allowedRoles": ["admin", "editor", "readonly", "reader"]
     }
