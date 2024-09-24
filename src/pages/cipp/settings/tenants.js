@@ -1,6 +1,6 @@
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import tabOptions from "./tabOptions";
-import { TabbedLayout } from "../../../layouts/tabbedLayout";
+import { TabbedLayout } from "/src/layouts/TabbedLayout";
 const Page = () => {
   const pageTitle = "Settings";
 
