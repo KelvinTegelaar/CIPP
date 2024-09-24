@@ -1,7 +1,7 @@
 {
   "routes": [
     {
-      "route": "/static/*",
+      "route": "_next/static/*",
       "headers": {
         "cache-control": "must-revalidate, max-age=15770000"
       }
@@ -89,7 +89,7 @@
   ],
   "navigationFallback": {
     "rewrite": "index.html",
-    "exclude": ["/static/*.{png,jpg,gif}", "/css/*"]
+    "exclude": ["_next/static/*.{png,jpg,gif}", "/css/*"]
   },
   "responseOverrides": {
     "401": {
