@@ -7,12 +7,11 @@
       }
     },
     {
-      "route": "{*.png,*.jpg,*.jpeg,*.gif,*.svg,*.ico,*.webp,*.css,*.js,*.json,*.xml,*.webmanifest,*.map,*.txt,*.ttf,*.woff,*.woff2,*.otf,*.eot}",
+      "route": "*.{png,jpg,gif,json,xml,ico,css,js}",
       "headers": {
         "cache-control": "must-revalidate, max-age=15770000"
       }
     },
-
     {
       "route": "/login",
       "rewrite": "/.auth/login/aad"
