@@ -11,6 +11,7 @@ export const CippImageCard = ({
   maxstep,
   linkText,
   link,
+  onButtonClick,
 }) => (
   <Stack
     alignItems="center"
@@ -49,18 +50,33 @@ export const CippImageCard = ({
           </>
         )}
       </Stack>
-      <Button
-        component={NextLink}
-        endIcon={
-          <SvgIcon fontSize="small">
-            <ArrowRightIcon />
-          </SvgIcon>
-        }
-        href={link}
-        variant="contained"
-      >
-        {linkText}
-      </Button>
+      {link && (
+        <Button
+          component={NextLink}
+          endIcon={
+            <SvgIcon fontSize="small">
+              <ArrowRightIcon />
+            </SvgIcon>
+          }
+          href={link}
+          variant="contained"
+        >
+          {linkText}
+        </Button>
+      )}
+      {onButtonClick && (
+        <Button
+          endIcon={
+            <SvgIcon fontSize="small">
+              <ArrowRightIcon />
+            </SvgIcon>
+          }
+          onClick={onButtonClick}
+          variant="contained"
+        >
+          {linkText}
+        </Button>
+      )}
     </div>
     <Box
       sx={{

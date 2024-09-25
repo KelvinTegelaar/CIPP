@@ -14,6 +14,8 @@ import Toasts from "../components/toaster";
 import { PrivateRoute } from "../components/PrivateRoute";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useMediaPredicate } from "react-media-hook";
+import Error500 from "./500";
+import { ErrorBoundary } from "react-error-boundary";
 
 const queryClient = new QueryClient();
 const clientSideEmotionCache = createEmotionCache();
@@ -50,7 +52,9 @@ const App = (props) => {
                   <ThemeProvider theme={theme}>
                     <RTL direction={settings.direction}>
                       <CssBaseline />
-                      <PrivateRoute>{getLayout(<Component {...pageProps} />)}</PrivateRoute>
+                      <ErrorBoundary FallbackComponent={Error500}>
+                        <PrivateRoute>{getLayout(<Component {...pageProps} />)}</PrivateRoute>
+                      </ErrorBoundary>
                       <Toaster position="top-center" />
                     </RTL>
                   </ThemeProvider>

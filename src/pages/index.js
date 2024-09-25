@@ -32,7 +32,7 @@ const Page = () => {
                 <CippImageCard
                   isFetching={deviceData.isFetching}
                   text={
-                    deviceData.data?.status === "Ready"
+                    deviceData.data.status === "Ready"
                       ? "Your instance is ready for deployment. Please click the button below to start the onboarding process."
                       : deviceData.data?.status
                   }
