@@ -1,14 +1,26 @@
-import { Radio, Switch, TextField } from "@mui/material";
+import { Radio, Switch, TextField, Typography } from "@mui/material";
 import { CippAutoComplete } from "./CippAutocomplete";
-import { Controller } from "react-hook-form";
+import { Controller, useFormState } from "react-hook-form";
 
 export const CippFormComponent = (props) => {
   const { validators, formControl, type = "textField", name, ...other } = props;
+  const { errors } = useFormState({ control: formControl.control });
   switch (type) {
     case "hidden":
       return <input type="hidden" {...other} {...formControl.register(name, { ...validators })} />;
     case "textField":
-      return <TextField {...other} {...formControl.register(name, { ...validators })} />;
+      return (
+        <>
+          <div>
+            <TextField {...other} {...formControl.register(name, { ...validators })} />
+          </div>
+          <Typography variant="subtitle3" color={"error"}>
+            {name.includes(".")
+              ? errors[name.split(".")[0]]?.[name.split(".")[1]]?.message
+              : errors[name]?.message}
+          </Typography>
+        </>
+      );
     case "switch":
       return (
         <Controller
@@ -44,8 +56,6 @@ export const CippFormComponent = (props) => {
           )}
         />
       );
-    default:
-      return <TextField {...other} {...formControl.register(name, { ...validators })} />;
   }
 };
 

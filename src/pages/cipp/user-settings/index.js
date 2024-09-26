@@ -10,7 +10,7 @@ import { CippSettingsSideBar } from "../../../components/CippComponents/CippSett
 
 const Page = () => {
   const settings = useSettings();
-  const formcontrol = useForm({ defaultValues: settings });
+  const formcontrol = useForm({ mode: "onChange", defaultValues: settings });
 
   const addedAttributes = [
     { value: "consentProvidedForMinor", label: "consentProvidedForMinor" },
@@ -76,12 +76,12 @@ const Page = () => {
                               name="TenantListSelector"
                               formControl={formcontrol}
                               multiple={false}
+                              validators={{ required: "This field is required" }}
                               options={[
                                 { value: "full", label: "Show the full page" },
                                 { value: "compressed", label: "Show the compressed page" },
                               ]}
                             />
-                            
                           ),
                         },
 
@@ -113,6 +113,7 @@ const Page = () => {
                               name="userAttributes"
                               formControl={formcontrol}
                               multiple={true}
+                              validators={{ required: "This field is required" }}
                             />
                           ),
                         },
@@ -150,12 +151,15 @@ const Page = () => {
                           label: "Menu Favourites",
                           value: (
                             <CippFormComponent
-                              type="autoComplete"
+                              type="textField"
                               sx={{ width: "250px" }}
                               disableClearable={true}
                               name="userSettingsDefaults.favourites"
                               formControl={formcontrol}
                               multiple={false}
+                              validators={{
+                                required: { value: true, message: "This field is required" },
+                              }}
                               options={[
                                 { value: "25", label: "25" },
                                 { value: "50", label: "50" },

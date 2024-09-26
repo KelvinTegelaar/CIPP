@@ -12,9 +12,12 @@ import {
 import CippFormComponent from "./CippFormComponent";
 import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { getCippError } from "../../utils/get-cipp-error";
+import { useFormState } from "react-hook-form";
 
 export const CippSettingsSideBar = (props) => {
   const { formcontrol, ...others } = props;
+  const { isDirty, isValid } = useFormState({ control: formcontrol.control });
+
   const currentUser = ApiGetCall({
     url: "/.auth/me",
   });
@@ -57,7 +60,7 @@ export const CippSettingsSideBar = (props) => {
               ]}
             />
             <div>
-              <Button variant="contained" onClick={() => handleSaveChanges()}>
+              <Button variant="contained" disabled={!isValid} onClick={() => handleSaveChanges()}>
                 Save Changes
                 {saveSettingsPost.isPending && <CircularProgress color="info" size={20} />}
               </Button>
