@@ -81,6 +81,7 @@ const Page = () => {
                                 { value: "compressed", label: "Show the compressed page" },
                               ]}
                             />
+                            
                           ),
                         },
 

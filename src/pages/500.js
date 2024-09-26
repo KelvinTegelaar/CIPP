@@ -2,10 +2,19 @@ import { Box, Container, Grid, Stack, Typography } from "@mui/material";
 import Head from "next/head";
 import { CippImageCard } from "../components/CippCards/CippImageCard.jsx";
 import { Layout as DashboardLayout } from "../layouts/index.js";
-import { Editor } from "@monaco-editor/react";
+import { useEffect } from "react";
+import { useRouter } from "next/router.js";
 
 const Error500 = (props) => {
-  console.log(props);
+  //when we browse away from the page we want to reset the error boundary
+  //this will prevent the error from showing on other pages
+  const router = useRouter();
+  useEffect(() => {
+    return () => {
+      props.resetErrorBoundary();
+    };
+  }, [router]);
+
   return (
     <>
       <DashboardLayout>
