@@ -23,38 +23,78 @@ export const CippFormComponent = (props) => {
       );
     case "switch":
       return (
-        <Controller
-          name={name}
-          control={formControl.control}
-          render={({ field }) => (
-            <Switch
-              checked={field.value}
-              {...other}
-              {...formControl.register(name, { ...validators })}
+        <>
+          <div>
+            <Controller
+              name={name}
+              control={formControl.control}
+              render={({ field }) => (
+                <Switch
+                  checked={field.value}
+                  {...other}
+                  {...formControl.register(name, { ...validators })}
+                />
+              )}
             />
-          )}
-        />
+          </div>
+          <Typography variant="subtitle3" color={"error"}>
+            {name.includes(".")
+              ? errors[name.split(".")[0]]?.[name.split(".")[1]]?.message
+              : errors[name]?.message}
+          </Typography>
+        </>
       );
     case "checkbox":
-      return <Checkbox {...other} {...formControl.register(name, { ...validators })} />;
+      return (
+        <>
+          <div>
+            <Checkbox {...other} {...formControl.register(name, { ...validators })} />
+          </div>
+          <Typography variant="subtitle3" color={"error"}>
+            {name.includes(".")
+              ? errors[name.split(".")[0]]?.[name.split(".")[1]]?.message
+              : errors[name]?.message}
+          </Typography>
+        </>
+      );
     case "radio":
-      return <Radio {...other} {...formControl.register(name, { ...validators })} />;
+      return (
+        <>
+          <div>
+            <Radio {...other} {...formControl.register(name, { ...validators })} />
+          </div>
+          <Typography variant="subtitle3" color={"error"}>
+            {name.includes(".")
+              ? errors[name.split(".")[0]]?.[name.split(".")[1]]?.message
+              : errors[name]?.message}
+          </Typography>
+        </>
+      );
     case "autoComplete":
       //for autoComplete we need to use Controller from react-hook-form as it does not pass the synthetic event
       return (
-        <Controller
-          name={name}
-          control={formControl.control}
-          render={({ field }) => (
-            <CippAutoComplete
-              {...other}
-              defaultValue={field.value}
-              onChange={(value) => {
-                field.onChange(value);
-              }}
+        <>
+          <div>
+            <Controller
+              name={name}
+              control={formControl.control}
+              render={({ field }) => (
+                <CippAutoComplete
+                  {...other}
+                  defaultValue={field.value}
+                  onChange={(value) => {
+                    field.onChange(value);
+                  }}
+                />
+              )}
             />
-          )}
-        />
+          </div>
+          <Typography variant="subtitle3" color={"error"}>
+            {name.includes(".")
+              ? errors[name.split(".")[0]]?.[name.split(".")[1]]?.message
+              : errors[name]?.message}
+          </Typography>
+        </>
       );
   }
 };

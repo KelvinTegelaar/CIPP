@@ -76,7 +76,9 @@ const Page = () => {
                               name="TenantListSelector"
                               formControl={formcontrol}
                               multiple={false}
-                              validators={{ required: "This field is required" }}
+                              validators={{
+                                required: { value: true, message: "This field is required" },
+                              }}
                               options={[
                                 { value: "full", label: "Show the full page" },
                                 { value: "compressed", label: "Show the compressed page" },
@@ -95,6 +97,9 @@ const Page = () => {
                               name="currentTheme"
                               formControl={formcontrol}
                               multiple={false}
+                              validators={{
+                                required: { value: true, message: "This field is required" },
+                              }}
                               options={[
                                 { value: "light", label: "Light" },
                                 { value: "dark", label: "Dark" },
@@ -113,7 +118,6 @@ const Page = () => {
                               name="userAttributes"
                               formControl={formcontrol}
                               multiple={true}
-                              validators={{ required: "This field is required" }}
                             />
                           ),
                         },
@@ -129,6 +133,9 @@ const Page = () => {
                               formControl={formcontrol}
                               multiple={false}
                               options={languageListOptions}
+                              validators={{
+                                required: { value: true, message: "This field is required" },
+                              }}
                             />
                           ),
                         },
@@ -144,6 +151,9 @@ const Page = () => {
                               formControl={formcontrol}
                               multiple={false}
                               options={pageSizes}
+                              validators={{
+                                required: { value: true, message: "This field is required" },
+                              }}
                             />
                           ),
                         },
@@ -151,15 +161,12 @@ const Page = () => {
                           label: "Menu Favourites",
                           value: (
                             <CippFormComponent
-                              type="textField"
+                              type="autoComplete"
                               sx={{ width: "250px" }}
                               disableClearable={true}
                               name="userSettingsDefaults.favourites"
                               formControl={formcontrol}
                               multiple={false}
-                              validators={{
-                                required: { value: true, message: "This field is required" },
-                              }}
                               options={[
                                 { value: "25", label: "25" },
                                 { value: "50", label: "50" },
