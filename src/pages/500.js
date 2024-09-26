@@ -25,7 +25,7 @@ const Error500 = (props) => {
           sx={{
             flexGrow: 1,
             py: 4,
-            height: "100vh",
+            height: "80vh",
           }}
         >
           <Container maxWidth={false}>
