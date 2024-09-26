@@ -1,26 +1,32 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   CAlert,
   CAlertLink,
-  CContainer,
-  CCollapse,
   CHeader,
   CHeaderNav,
   CNavItem,
   CHeaderToggler,
-  CImage,
-  CSidebarBrand,
   CButton,
   CFormSwitch,
+  CTooltip,
 } from '@coreui/react'
 import { AppHeaderSearch } from 'src/components/header'
-import { TenantSelector } from '../utilities'
+import { CippActionsOffcanvas, TenantSelector } from '../utilities'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
-import { setCurrentTheme, setUserSettings, toggleSidebarShow } from 'src/store/features/app'
+import {
+  setCurrentTheme,
+  setSetupCompleted,
+  setUserSettings,
+  toggleSidebarShow,
+} from 'src/store/features/app'
 import { useMediaPredicate } from 'react-media-hook'
-import { useGenericGetRequestQuery, useLoadAlertsDashQuery } from 'src/store/api/app'
+import {
+  useGenericGetRequestQuery,
+  useLazyGenericGetRequestQuery,
+  useLoadAlertsDashQuery,
+} from 'src/store/api/app'
 import { useLocation } from 'react-router-dom'
 
 const AppHeader = () => {
@@ -31,6 +37,11 @@ const AppHeader = () => {
   const sidebarShow = useSelector((state) => state.app.sidebarShow)
   const currentTheme = useSelector((state) => state.app.currentTheme)
   const preferredTheme = useMediaPredicate('(prefers-color-scheme: dark)') ? 'impact' : 'cyberdrain'
+  const [cippQueueExtendedInfo, setCippQueueExtendedInfo] = useState([])
+  const [cippQueueVisible, setCippQueueVisible] = useState(false)
+  const [cippQueueRefresh, setCippQueueRefresh] = useState(
+    (Math.random() + 1).toString(36).substring(7),
+  )
   const { data: dashboard } = useLoadAlertsDashQuery()
   const {
     data: userSettings,
@@ -53,6 +64,104 @@ const AppHeader = () => {
     dispatch,
     userSettings,
   ])
+
+  const [getCippQueueList, cippQueueList] = useLazyGenericGetRequestQuery()
+
+  function loadCippQueue() {
+    setCippQueueVisible(true)
+    getCippQueueList({ path: 'api/ListCippQueue', params: { refresh: cippQueueRefresh } })
+  }
+
+  function refreshCippQueue() {
+    setCippQueueRefresh((Math.random() + 1).toString(36).substring(7))
+    loadCippQueue()
+  }
+
+  function useInterval(callback, delay, state) {
+    const savedCallback = useRef()
+
+    // Remember the latest callback.
+    useEffect(() => {
+      savedCallback.current = callback
+    })
+
+    // Set up the interval.
+    useEffect(() => {
+      function tick() {
+        savedCallback.current()
+      }
+
+      if (delay !== null) {
+        let id = setInterval(tick, delay)
+        return () => clearInterval(id)
+      }
+    }, [delay, state])
+  }
+  //useEffect to check if any of the dashboard alerts contained the key "setupCompleted" and if so,
+  //check if the value of this key is false. If so, set the setupCompleted state to false
+  //if none is found, set the setupCompleted state to true
+  useEffect(() => {
+    if (dashboard && Array.isArray(dashboard) && dashboard.length >= 1) {
+      console.log('Finding if setup is completed.')
+      const setupCompleted = dashboard.find((alert) => alert && alert.setupCompleted === false)
+      if (setupCompleted) {
+        console.log("Setup isn't completed yet, we found a match with false.")
+        dispatch(setSetupCompleted({ setupCompleted: false }))
+      } else {
+        console.log('Setup is completed.')
+        dispatch(setSetupCompleted({ setupCompleted: true }))
+      }
+    } else {
+      console.log('Setup is completed.')
+      dispatch(setSetupCompleted({ setupCompleted: true }))
+    }
+  }, [dashboard, dispatch])
+
+  useEffect(() => {
+    if (cippQueueList.isUninitialized && (cippQueueList.isFetching || cippQueueList.isLoading)) {
+      setCippQueueExtendedInfo([
+        {
+          label: 'Fetching recent jobs',
+          value: 'Please wait',
+          timestamp: Date(),
+          link: '#',
+        },
+      ])
+    } else {
+      if (
+        cippQueueList.isSuccess &&
+        Array.isArray(cippQueueList.data) &&
+        cippQueueList.data.length > 0
+      ) {
+        setCippQueueExtendedInfo(
+          cippQueueList.data?.map((job) => ({
+            label: `${job.Name}`,
+            value: job.Status,
+            link: job.Link,
+            timestamp: job.Timestamp,
+            percent: job.PercentComplete,
+            progressText: `${job.PercentComplete}%`,
+            detailsObject: job.Tasks,
+          })),
+        )
+      } else {
+        setCippQueueExtendedInfo([
+          { label: 'No jobs to display', value: '', timestamp: Date(), link: '#' },
+        ])
+      }
+    }
+  }, [cippQueueList, setCippQueueExtendedInfo])
+
+  useInterval(
+    async () => {
+      if (cippQueueVisible) {
+        setCippQueueRefresh((Math.random() + 1).toString(36).substring(7))
+        getCippQueueList({ path: 'api/ListCippQueue', params: { refresh: cippQueueRefresh } })
+      }
+    },
+    5000,
+    cippQueueVisible,
+  )
 
   const SwitchTheme = () => {
     let targetTheme = preferredTheme
@@ -89,13 +198,22 @@ const AppHeader = () => {
               target="_blank"
               href={`https://docs.cipp.app/user-documentation${location.pathname}`}
             >
-              <CButton variant="ghost">
-                <FontAwesomeIcon icon={'question'} size="lg" />
-              </CButton>
+              <CTooltip content="Documentation" placement="bottom">
+                <CButton variant="ghost">
+                  <FontAwesomeIcon icon={'question'} size="lg" />
+                </CButton>
+              </CTooltip>
             </a>
           </CNavItem>
           <CNavItem>
             <AppHeaderSearch />
+          </CNavItem>
+          <CNavItem>
+            <CTooltip content="Recent Jobs" placement="bottom">
+              <CButton variant="ghost" onClick={() => loadCippQueue()} className="me-1">
+                <FontAwesomeIcon icon={'history'} size="lg" />
+              </CButton>
+            </CTooltip>
           </CNavItem>
           <CNavItem>
             <div className="custom-switch-wrapper primary">
@@ -134,6 +252,27 @@ const AppHeader = () => {
             </div>
           ))}
       </div>
+      <CippActionsOffcanvas
+        title="Recent Jobs"
+        extendedInfo={[]}
+        cards={cippQueueExtendedInfo}
+        refreshFunction={refreshCippQueue}
+        isRefreshing={cippQueueList.isFetching || cippQueueList.isLoading}
+        actions={[
+          {
+            label: 'Clear History',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/RemoveCippQueue`,
+            modalMessage: 'Are you sure you want clear the history?',
+            icon: <FontAwesomeIcon icon="trash" className="me-2" />,
+          },
+        ]}
+        placement="end"
+        visible={cippQueueVisible}
+        id="cipp-queue"
+        hideFunction={() => setCippQueueVisible(false)}
+      />
     </>
   )
 }
