@@ -158,8 +158,8 @@ export const CippApiDialog = (props) => {
                       key={index}
                       multiline={false}
                       fullWidth
-                      name={field.name}
-                      {...formHook.register(field.name)}
+                      name={fieldProps.name}
+                      {...formHook.register(fieldProps.name)}
                     />
                   );
                 case "textArea":
@@ -169,8 +169,8 @@ export const CippApiDialog = (props) => {
                       multiline
                       fullWidth
                       rows={4}
-                      {...field}
-                      {...formHook.register(field.name)}
+                      {...fieldProps}
+                      {...formHook.register(fieldProps.name)}
                     />
                   );
                 default:

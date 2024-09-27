@@ -12,7 +12,7 @@ const Page = () => {
       component: CippTenantStep,
       componentProps: {
         allTenants: true,
-        type: "select",
+        type: "single",
       },
     },
     {

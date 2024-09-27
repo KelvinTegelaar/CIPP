@@ -32,21 +32,32 @@ export const CippAutoComplete = (props) => {
     ...getRequestInfo,
   });
 
-  const currentTenant = useSettings().currentTenant;
-
+  const currentTenant = api?.tenantFilter ? api.tenantFilter : useSettings().currentTenant;
   useEffect(() => {
     if (api) {
       setGetRequestInfo({
         url: api.url,
-        data: { tenantFilter: currentTenant, ...api.data },
+        data: {
+          ...(!api.excludeTenantFilter ? { TenantFilter: currentTenant } : null),
+          ...api.data,
+        },
         waiting: true,
         queryKey: api.queryKey,
       });
     }
 
     if (actionGetRequest.isSuccess) {
-      const convertedOptions = actionGetRequest.data?.map((option) => {
-        // Store the addedField values here
+      const dataToMap = api.dataKey ? actionGetRequest.data?.[api.dataKey] : actionGetRequest.data;
+      if (!Array.isArray(dataToMap)) {
+        setUsedOptions([
+          {
+            label: "Error: The API returned data we cannot map to this field",
+            value: "Error: The API returned data we cannot map to this field",
+          },
+        ]);
+        return;
+      }
+      const convertedOptions = dataToMap.map((option) => {
         const addedFields = {};
         if (api.addedField) {
           Object.keys(api.addedField).forEach((key) => {
@@ -54,17 +65,16 @@ export const CippAutoComplete = (props) => {
           });
         }
         return {
-          label: option[api.labelField],
+          label:
+            typeof api.labelField === "function" ? api.labelField(option) : option[api.labelField],
           value: option[api.valueField],
-          addedFields: addedFields, // Pass the added fields along with the value
+          addedFields: addedFields,
         };
       });
-
       setUsedOptions(convertedOptions);
     }
-
     if (actionGetRequest.isError) {
-      setUsedOptions({ label: "Error", value: getCippError(actionGetRequest.error) });
+      setUsedOptions([{ label: getCippError(actionGetRequest.error), value: "error" }]);
     }
   }, [api, actionGetRequest.data]);
 
@@ -79,6 +89,7 @@ export const CippAutoComplete = (props) => {
           <ArrowDropDown />
         )
       }
+      isOptionEqualToValue={(option, value) => option.value === value.value}
       value={value}
       filterSelectedOptions
       disableClearable={disableClearable}

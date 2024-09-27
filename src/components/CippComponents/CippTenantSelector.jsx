@@ -24,7 +24,7 @@ export const CippTenantSelector = (props) => {
   // Fetch tenant list
   const tenantList = ApiGetCall({
     url: "/api/listTenants",
-    data: { allTenants: allTenants },
+    data: { AllTenantSelector: true },
     queryKey: "TenantSelector",
   });
 
@@ -136,7 +136,7 @@ export const CippTenantSelector = (props) => {
                 }))
               : []
           }
-          getOptionLabel={(option) => option?.label || ""} // Ensure label is correctly extracted
+          getOptionLabel={(option) => option?.label || ""}
           isOptionEqualToValue={
             (option, value) => option.value === value.value // Custom equality test to compare the tenant by value
           }

@@ -2,29 +2,34 @@ import { Stack } from "@mui/material";
 import { CippWizardStepButtons } from "./CippWizardStepButtons";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 
-export const CippTenantStep = (props) => {
+export const CippWizardAutoComplete = (props) => {
   const {
-    allTenants,
+    title,
     type = "single",
+    name,
+    placeholder,
+    api,
     onNextStep,
     formControl,
     currentStep,
     onPreviousStep,
   } = props;
+
+  const currentTenant = formControl.watch("tenantFilter");
+
   return (
     <Stack spacing={3}>
-      <label>Select a tenant</label>
+      <label>{title}</label>
       <CippFormComponent
+        key={currentTenant ? currentTenant.value : "default"}
         type="autoComplete"
-        name="tenantFilter"
+        name={name}
         formControl={formControl}
-        placeholder="Select a tenant"
+        placeholder={placeholder}
         api={{
-          excludeTenantFilter: true,
-          url: allTenants ? "/api/ListTenants" : "/api/ListTenants?AllTenantSelector=true",
-          queryKey: "ListTenants",
-          labelField: (option) => `${option.displayName} (${option.defaultDomainName})`,
-          valueField: "customerId",
+          ...api,
+          tenantFilter: currentTenant ? currentTenant.value : undefined,
+          queryKey: `${api.url}-${currentTenant ? currentTenant.value : "default"}`,
         }}
         multiple={type === "single" ? false : true}
         disableClearable={true}
