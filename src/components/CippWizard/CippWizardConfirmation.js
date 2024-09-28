@@ -8,8 +8,6 @@ import { getCippFormatting } from "../../utils/get-cipp-formatting";
 export const CippWizardConfirmation = (props) => {
   const { lastStep, formControl, onPreviousStep, onNextStep, currentStep } = props;
   const formvalues = formControl.getValues();
-  console.log(formvalues);
-
   const formEntries = Object.entries(formvalues);
   const halfIndex = Math.ceil(formEntries.length / 2);
   const firstHalf = formEntries.slice(0, halfIndex);
