@@ -16,6 +16,10 @@ export const getCippFormatting = (data, cellName, type) => {
     );
   }
 
+  if (data?.label) {
+    return data.label;
+  }
+
   // Handle null or undefined data
   if (data === null || data === undefined) {
     return isText ? (

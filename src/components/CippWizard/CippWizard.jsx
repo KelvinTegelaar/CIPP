@@ -22,6 +22,7 @@ export const CippWizard = (props) => {
         onNextStep={handleNext}
         onPreviousStep={handleBack}
         formControl={formControl}
+        lastStep={steps.length - 1}
         currentStep={activeStep}
         options={steps[activeStep].componentProps?.options}
         title={steps[activeStep].componentProps?.title}
@@ -50,7 +51,7 @@ export const CippWizard = (props) => {
           <Stack spacing={6}>
             <WizardSteps activeStep={activeStep} orientation={orientation} steps={steps} />
             <div>
-              <Container maxWidth="sm">{content}</Container>
+              <Container maxWidth="md">{content}</Container>
             </div>
           </Stack>
         </CardContent>

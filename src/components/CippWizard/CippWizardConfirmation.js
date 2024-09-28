@@ -1,29 +1,47 @@
-import { Alert, Card, Stack, Typography } from "@mui/material";
+import { Card, Stack, Grid } from "@mui/material";
 import { PropertyList } from "../property-list";
-import { ApiPostCall } from "../../api/ApiCall";
-import { ResourceError } from "../resource-error";
 import CippWizardStepButtons from "./CippWizardStepButtons";
+import { PropertyListItem } from "../property-list-item";
+import { getCippTranslation } from "../../utils/get-cipp-translation";
+import { getCippFormatting } from "../../utils/get-cipp-formatting";
 
 export const CippWizardConfirmation = (props) => {
-  const { formControl, onPreviousStep, onNextStep, currentStep } = props;
+  const { lastStep, formControl, onPreviousStep, onNextStep, currentStep } = props;
+  const formvalues = formControl.getValues();
+  console.log(formvalues);
 
-  const postRequest = ApiPostCall({ urlFromData: true });
+  const formEntries = Object.entries(formvalues);
+  const halfIndex = Math.ceil(formEntries.length / 2);
+  const firstHalf = formEntries.slice(0, halfIndex);
+  const secondHalf = formEntries.slice(halfIndex);
 
   return (
     <Stack spacing={3}>
-      <div>
-        <Typography variant="h6">Step 4. Confirmation</Typography>
-      </div>
       <Card variant="outlined">
-        <PropertyList>//confirmation list here</PropertyList>
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={6}>
+            <PropertyList>
+              {firstHalf.map(([key, value]) => {
+                const formattedValue = getCippFormatting(value, key);
+                const label = getCippTranslation(key);
+                return <PropertyListItem key={key} label={label} value={formattedValue} />;
+              })}
+            </PropertyList>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <PropertyList>
+              {secondHalf.map(([key, value]) => {
+                const formattedValue = getCippFormatting(value, key);
+                const label = getCippTranslation(key);
+                return <PropertyListItem key={key} label={label} value={formattedValue} />;
+              })}
+            </PropertyList>
+          </Grid>
+        </Grid>
       </Card>
-      {postRequest.data?.data && (
-        <Alert severity={postRequest.data?.data?.success ? "success" : "warning"}>
-          {postRequest.data?.data?.result}
-        </Alert>
-      )}
-      {postRequest.isError && <ResourceError message={postRequest.error.message} />}
+
       <CippWizardStepButtons
+        lastStep={lastStep}
         currentStep={currentStep}
         onPreviousStep={onPreviousStep}
         onNextStep={onNextStep}
@@ -32,3 +50,5 @@ export const CippWizardConfirmation = (props) => {
     </Stack>
   );
 };
+
+export default CippWizardConfirmation;

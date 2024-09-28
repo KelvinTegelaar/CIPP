@@ -3,6 +3,7 @@ import { CippWizardConfirmation } from "/src/components/CippWizard/CippWizardCon
 import CippWizardPage from "/src/components/CippWizard/CippWizardPage.jsx";
 import { CippTenantStep } from "/src/components/CippWizard/CippTenantStep.jsx";
 import { CippWizardAutoComplete } from "../../../../components/CippWizard/CippWizardAutoComplete";
+import { CippWizardOffboarding } from "../../../../components/CippWizard/CippWizardOffboarding";
 
 const Page = () => {
   const steps = [
@@ -42,7 +43,7 @@ const Page = () => {
     {
       title: "Step 3",
       description: "Offboarding Options",
-      component: CippWizardConfirmation,
+      component: CippWizardOffboarding,
     },
     {
       title: "Step 4",
