@@ -99,10 +99,10 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
           },
           {
             label: 'Rerequire MFA registration',
+            link: entraLink,
             color: 'info',
-            modal: true,
-            modalUrl: `/api/ExecResetMFA?TenantFilter=${tenant.defaultDomainName}&ID=${row.userPrincipalName}`,
-            modalMessage: 'Are you sure you want to reset MFA for this user?',
+            target: '_blank',
+            external: true,
           },
           {
             label: 'Send MFA Push',
@@ -275,8 +275,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             color: 'info',
             modal: true,
             modalUrl: `/api/ExecResetPass?MustChange=true&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}&displayName=${row.displayName}`,
-            modalMessage:
-              'Are you sure you want to reset the password for this user? The user must change their password at next logon.',
+            modalMessage: 'Are you sure you want to reset the password for this user?',
           },
           {
             label: 'Reset Password',
@@ -286,11 +285,11 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modalMessage: 'Are you sure you want to reset the password for this user?',
           },
           {
-            label: 'Pre-provision OneDrive',
+            label: 'Preprovision OneDrive',
             color: 'info',
             modal: true,
             modalUrl: `/api/ExecOneDriveProvision?TenantFilter=${tenant.defaultDomainName}&UserPrincipalName=${row.userPrincipalName}`,
-            modalMessage: 'Are you sure you want to pre-provision OneDrive for this user??',
+            modalMessage: 'Are you sure you want to preprovision onedrive for this user??',
           },
           {
             label: 'Clear ImmutableId',
@@ -527,8 +526,8 @@ const Users = (row) => {
             {
               label: 'Rerequire MFA registration',
               modal: true,
-              modalUrl: `/api/ExecResetMFA?TenantFilter=!Tenant&ID=!userPrincipalName`,
-              modalMessage: 'Are you sure you want to reset MFA for these users?',
+              modalUrl: `/api/ExecResetMFA?TenantFilter=!Tenant&ID=!id`,
+              modalMessage: 'Are you sure you want to enable MFA for these users?',
             },
             {
               label: 'Set Per-User MFA',

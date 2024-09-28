@@ -23,11 +23,11 @@ export const CellTipButton = (value, display) => {
   )
 }
 
-export const CellTip = (value, wrap = false) => {
+export const CellTip = (value, overflow = false) => {
   if (!value) {
     return <div />
   }
-  if (!wrap) {
+  if (!overflow) {
     return (
       <CTooltip content={value}>
         <div className="celltip-content-nowrap">{String(value)}</div>

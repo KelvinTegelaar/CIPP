@@ -24,7 +24,6 @@ import React, { useEffect } from 'react'
 import { CippCallout } from 'src/components/layout/index.js'
 import { CippCodeBlock } from 'src/components/utilities'
 import { CellDate } from 'src/components/tables'
-import Skeleton from 'react-loading-skeleton'
 
 /**
  * Sets the notification settings.
@@ -149,21 +148,17 @@ export function SettingsPartner() {
                     render={({ handleSubmit }) => (
                       <>
                         <CForm onSubmit={handleSubmit}>
-                          {webhookEvents.isSuccess ? (
-                            <RFFSelectSearch
-                              name="EventType"
-                              label="Event Types"
-                              values={webhookEvents.data?.Results?.map((event) => ({
-                                name: event,
-                                value: event,
-                              }))}
-                              multi={true}
-                              refreshFunction={() => webhookEvents.refetch()}
-                              helpText="Select the events you want to receive notifications for."
-                            />
-                          ) : (
-                            <Skeleton />
-                          )}
+                          <RFFSelectSearch
+                            name="EventType"
+                            label="Event Types"
+                            values={webhookEvents.data?.Results?.map((event) => ({
+                              name: event,
+                              value: event,
+                            }))}
+                            multi={true}
+                            refreshFunction={() => webhookEvents.refetch()}
+                            helpText="Select the events you want to receive notifications for."
+                          />
                           <RFFCFormSwitch
                             name="standardsExcludeAllTenants"
                             helpText='Enabling this feature excludes tenants from any top-level

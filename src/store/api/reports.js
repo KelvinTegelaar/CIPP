@@ -6,10 +6,10 @@ export const reportsApi = baseApi.injectEndpoints({
       query: () => ({ path: '/api/BestPracticeAnalyser_List' }),
     }),
     execBestPracticeAnalyser: builder.mutation({
-      query: () => ({ path: '/api/ExecBPA' }),
+      query: () => ({ path: '/api/BestPracticeAnalyser_OrchestrationStarter' }),
     }),
     execDomainsAnalyser: builder.mutation({
-      query: () => ({ path: '/api/ExecDomainAnalyser' }),
+      query: () => ({ path: '/api/DomainAnalyser_OrchestrationStarter' }),
     }),
   }),
 })

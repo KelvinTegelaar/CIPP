@@ -20,46 +20,44 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
       <CippActionsOffcanvas
         title="Extended Information"
         extendedInfo={[
-          { label: 'Name', value: `${row.Name}` },
-          { label: 'Comment', value: `${row.Comment}` },
-          { label: 'State', value: `${row.Enabled}` },
-          { label: 'Direction', value: `${row.cippconnectortype}` },
-          { label: 'Connector Type', value: `${row.ConnectorType}` },
+          { label: 'Created by', value: `${row.CreatedBy}` },
+          { label: 'Last edit by', value: `${row.LastModifiedBy}` },
+          { label: 'Description', value: `${row.Description}` },
         ]}
         actions={[
           {
-            label: 'Create template based on connector',
+            label: 'Create template based on rule',
             color: 'info',
             modal: true,
             icon: <FontAwesomeIcon icon={faBook} className="me-2" />,
             modalBody: row,
             modalType: 'POST',
             modalUrl: `/api/AddExConnectorTemplate`,
-            modalMessage: 'Are you sure you want to create a template based on this connector?',
+            modalMessage: 'Are you sure you want to create a template based on this rule?',
           },
           {
-            label: 'Enable Connector',
+            label: 'Enable Rule',
             color: 'info',
             icon: <FontAwesomeIcon icon={faCheck} className="me-2" />,
             modal: true,
             modalUrl: `/api/EditExConnector?State=Enable&TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}&Type=${row.cippconnectortype}`,
-            modalMessage: 'Are you sure you want to enable this connector?',
+            modalMessage: 'Are you sure you want to enable this rule?',
           },
           {
-            label: 'Disable Connector',
+            label: 'Disable Rule',
             color: 'info',
             icon: <FontAwesomeIcon icon={faBan} className="me-2" />,
             modal: true,
             modalUrl: `/api/EditExConnector?State=Disable&TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}&Type=${row.cippconnectortype}`,
-            modalMessage: 'Are you sure you want to disable this connector?',
+            modalMessage: 'Are you sure you want to disable this rule?',
           },
           {
-            label: 'Delete Connector',
+            label: 'Delete Rule',
             color: 'danger',
             modal: true,
             icon: <FontAwesomeIcon icon={faTrash} className="me-2" />,
             modalUrl: `/api/RemoveExConnector?TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}&Type=${row.cippconnectortype}`,
-            modalMessage: 'Are you sure you want to delete this connector?',
+            modalMessage: 'Are you sure you want to disable this rule?',
           },
         ]}
         placement="end"

@@ -24,17 +24,13 @@ function nocolour(iscolourless, content) {
 export function CellTip(cell, overflow = false) {
   return (
     <CTooltip content={String(cell)}>
-      {overflow ? (
-        <div className="celltip-content">{String(cell)}</div>
-      ) : (
-        <div className="celltip-content-nowrap">{String(cell)}</div>
-      )}
+      <div className="celltip-content-nowrap">{String(cell)}</div>
     </CTooltip>
   )
 }
 
 export const cellGenericFormatter =
-  ({ warning = false, reverse = false, colourless = true, noDataIsFalse, wrap = false } = {}) =>
+  ({ warning = false, reverse = false, colourless = true, noDataIsFalse } = {}) =>
   // eslint-disable-next-line react/display-name
   (row, index, column, id) => {
     const cell = column.selector(row)
@@ -54,10 +50,6 @@ export const cellGenericFormatter =
             URL
           </a>
         )
-      }
-
-      if (wrap) {
-        return CellTip(cell, true)
       }
       return CellTip(cell)
     }
