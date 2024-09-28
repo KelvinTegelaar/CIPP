@@ -4,8 +4,10 @@ import CippWizardPage from "/src/components/CippWizard/CippWizardPage.jsx";
 import { CippTenantStep } from "/src/components/CippWizard/CippTenantStep.jsx";
 import { CippWizardAutoComplete } from "../../../../components/CippWizard/CippWizardAutoComplete";
 import { CippWizardOffboarding } from "../../../../components/CippWizard/CippWizardOffboarding";
+import { useSettings } from "../../../../hooks/use-settings";
 
 const Page = () => {
+  const initialState = useSettings();
   const steps = [
     {
       title: "Step 1",
@@ -36,7 +38,7 @@ const Page = () => {
             $top: 999,
           },
           labelField: (option) => `${option.displayName} (${option.userPrincipalName})`,
-          valueField: "id",
+          valueField: "userPrincipalName",
         },
       },
     },
@@ -54,7 +56,12 @@ const Page = () => {
 
   return (
     <>
-      <CippWizardPage steps={steps} wizardTitle="User Offboarding Wizard" />
+      <CippWizardPage
+        initialState={initialState.offboardingDefaults}
+        steps={steps}
+        postUrl="/api/ExecOffboardUser"
+        wizardTitle="User Offboarding Wizard"
+      />
     </>
   );
 };

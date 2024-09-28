@@ -3,7 +3,14 @@ import { Box, Container, Stack } from "@mui/material";
 import { CippWizard } from "./CippWizard";
 
 const CippWizardPage = (props) => {
-  const { steps, wizardTitle, wizardOrientation = "horizontal", ...other } = props;
+  const {
+    postUrl,
+    initialState,
+    steps,
+    wizardTitle,
+    wizardOrientation = "horizontal",
+    ...other
+  } = props;
   return (
     <>
       <Head>
@@ -20,7 +27,12 @@ const CippWizardPage = (props) => {
           <Stack spacing={6}>
             <Stack spacing={5}>
               <Stack spacing={1}>
-                <CippWizard orientation={wizardOrientation} steps={steps} />
+                <CippWizard
+                  postUrl={postUrl}
+                  initialState={initialState}
+                  orientation={wizardOrientation}
+                  steps={steps}
+                />
               </Stack>
             </Stack>
           </Stack>

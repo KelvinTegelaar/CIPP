@@ -16,6 +16,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useMediaPredicate } from "react-media-hook";
 import Error500 from "./500";
 import { ErrorBoundary } from "react-error-boundary";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 const queryClient = new QueryClient();
 const clientSideEmotionCache = createEmotionCache();
@@ -34,33 +36,35 @@ const App = (props) => {
         <QueryClientProvider client={queryClient}>
           <Toasts />
           <SettingsProvider>
-            <SettingsConsumer>
-              {(settings) => {
-                if (!settings.isInitialized) {
-                }
-                const theme = createTheme({
-                  colorPreset: "orange",
-                  direction: settings.direction,
-                  paletteMode:
-                    settings.currentTheme?.value !== "browser"
-                      ? settings.currentTheme?.value
-                      : preferredTheme,
-                  contrast: "high",
-                });
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <SettingsConsumer>
+                {(settings) => {
+                  if (!settings.isInitialized) {
+                  }
+                  const theme = createTheme({
+                    colorPreset: "orange",
+                    direction: settings.direction,
+                    paletteMode:
+                      settings.currentTheme?.value !== "browser"
+                        ? settings.currentTheme?.value
+                        : preferredTheme,
+                    contrast: "high",
+                  });
 
-                return (
-                  <ThemeProvider theme={theme}>
-                    <RTL direction={settings.direction}>
-                      <CssBaseline />
-                      <ErrorBoundary FallbackComponent={Error500}>
-                        <PrivateRoute>{getLayout(<Component {...pageProps} />)}</PrivateRoute>
-                      </ErrorBoundary>
-                      <Toaster position="top-center" />
-                    </RTL>
-                  </ThemeProvider>
-                );
-              }}
-            </SettingsConsumer>
+                  return (
+                    <ThemeProvider theme={theme}>
+                      <RTL direction={settings.direction}>
+                        <CssBaseline />
+                        <ErrorBoundary FallbackComponent={Error500}>
+                          <PrivateRoute>{getLayout(<Component {...pageProps} />)}</PrivateRoute>
+                        </ErrorBoundary>
+                        <Toaster position="top-center" />
+                      </RTL>
+                    </ThemeProvider>
+                  );
+                }}
+              </SettingsConsumer>
+            </LocalizationProvider>
           </SettingsProvider>
         </QueryClientProvider>
       </ReduxProvider>

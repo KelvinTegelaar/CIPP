@@ -1,6 +1,8 @@
 import { Radio, Switch, TextField, Typography, Checkbox, FormControlLabel } from "@mui/material";
 import { CippAutoComplete } from "./CippAutocomplete";
 import { Controller, useFormState } from "react-hook-form";
+import { DateTimePicker } from "@mui/x-date-pickers"; // Make sure to install @mui/x-date-pickers
+import { Scrollbar } from "../scrollbar";
 
 export const CippFormComponent = (props) => {
   const {
@@ -134,6 +136,45 @@ export const CippFormComponent = (props) => {
             {name.includes(".")
               ? errors[name.split(".")[0]]?.[name.split(".")[1]]?.message
               : errors[name]?.message}
+          </Typography>
+        </>
+      );
+
+    // Add case for datePicker
+    case "datePicker":
+      return (
+        <>
+          <div>
+            <Controller
+              name={name}
+              control={formControl.control}
+              render={({ field }) => (
+                <Scrollbar>
+                  <DateTimePicker
+                    views={["year", "month", "day", "hours", "minutes"]}
+                    label={label}
+                    value={field.value || null}
+                    onChange={(date) => field.onChange(date)}
+                    ampm={false}
+                    minutesStep={15}
+                    
+                    format="yyyy/MM/dd HH:mm"
+                    renderInput={(inputProps) => (
+                      <TextField
+                        {...inputProps}
+                        {...other}
+                        error={!!errors[name]}
+                        helperText={errors[name]?.message}
+                        fullWidth
+                      />
+                    )}
+                  />
+                </Scrollbar>
+              )}
+            />
+          </div>
+          <Typography variant="subtitle3" color="error">
+            {errors[name]?.message}
           </Typography>
         </>
       );

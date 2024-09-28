@@ -6,12 +6,33 @@ import { getCippTranslation } from "../../utils/get-cipp-translation";
 import { getCippFormatting } from "../../utils/get-cipp-formatting";
 
 export const CippWizardConfirmation = (props) => {
-  const { lastStep, formControl, onPreviousStep, onNextStep, currentStep } = props;
-  const formvalues = formControl.getValues();
-  const formEntries = Object.entries(formvalues);
-  const halfIndex = Math.ceil(formEntries.length / 2);
-  const firstHalf = formEntries.slice(0, halfIndex);
-  const secondHalf = formEntries.slice(halfIndex);
+  const { postUrl, lastStep, formControl, onPreviousStep, onNextStep, currentStep } = props;
+  const formValues = formControl.getValues();
+  const formEntries = Object.entries(formValues);
+
+  const tenantEntry = formEntries.find(([key]) => key === "tenantFilter" || key === "tenant");
+  const userEntry = formEntries.find(([key]) =>
+    ["user", "userPrincipalName", "username"].includes(key)
+  );
+
+  const filteredEntries = formEntries.filter(
+    ([key]) =>
+      key !== "tenantFilter" &&
+      key !== "tenant" &&
+      !["user", "userPrincipalName", "username"].includes(key)
+  );
+
+  const halfIndex = Math.ceil(filteredEntries.length / 2);
+  const firstHalf = filteredEntries.slice(0, halfIndex);
+  const secondHalf = filteredEntries.slice(halfIndex);
+
+  if (tenantEntry) {
+    firstHalf.unshift(tenantEntry);
+  }
+
+  if (userEntry) {
+    secondHalf.unshift(userEntry);
+  }
 
   return (
     <Stack spacing={3}>
@@ -39,6 +60,7 @@ export const CippWizardConfirmation = (props) => {
       </Card>
 
       <CippWizardStepButtons
+        postUrl={postUrl}
         lastStep={lastStep}
         currentStep={currentStep}
         onPreviousStep={onPreviousStep}

@@ -4,9 +4,8 @@ import { WizardSteps } from "./wizard-steps";
 import { useForm } from "react-hook-form";
 
 export const CippWizard = (props) => {
-  const { orientation = "horizontal", steps } = props;
+  const { postUrl, orientation = "horizontal", steps } = props;
   const [activeStep, setActiveStep] = useState(0);
-
   const handleBack = useCallback(() => {
     setActiveStep((prevState) => (prevState > 0 ? prevState - 1 : prevState));
   }, []);
@@ -14,7 +13,7 @@ export const CippWizard = (props) => {
   const handleNext = useCallback(() => {
     setActiveStep((prevState) => (prevState < steps.length - 1 ? prevState + 1 : prevState));
   }, []);
-  const formControl = useForm({ mode: "onChange" });
+  const formControl = useForm({ mode: "onChange", defaultValues: props.initialState });
   const content = useMemo(() => {
     const StepComponent = steps[activeStep].component;
     return (
@@ -24,6 +23,7 @@ export const CippWizard = (props) => {
         formControl={formControl}
         lastStep={steps.length - 1}
         currentStep={activeStep}
+        postUrl={postUrl}
         options={steps[activeStep].componentProps?.options}
         title={steps[activeStep].componentProps?.title}
         subtext={steps[activeStep].componentProps?.subtext}
@@ -39,7 +39,12 @@ export const CippWizard = (props) => {
         <CardContent>
           <Grid container spacing={3}>
             <Grid xs={12} md={4}>
-              <WizardSteps activeStep={activeStep} orientation={orientation} steps={steps} />
+              <WizardSteps
+                postUrl={postUrl}
+                activeStep={activeStep}
+                orientation={orientation}
+                steps={steps}
+              />
             </Grid>
             <Grid xs={12} md={8}>
               {content}
@@ -49,7 +54,12 @@ export const CippWizard = (props) => {
       ) : (
         <CardContent>
           <Stack spacing={6}>
-            <WizardSteps activeStep={activeStep} orientation={orientation} steps={steps} />
+            <WizardSteps
+              postUrl={postUrl}
+              activeStep={activeStep}
+              orientation={orientation}
+              steps={steps}
+            />
             <div>
               <Container maxWidth="md">{content}</Container>
             </div>

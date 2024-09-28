@@ -3,8 +3,9 @@ import CippWizardStepButtons from "./CippWizardStepButtons";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 
 export const CippWizardOffboarding = (props) => {
-  const { formControl, onPreviousStep, onNextStep, currentStep } = props;
+  const { postUrl, formControl, onPreviousStep, onNextStep, currentStep } = props;
   const Scheduled = formControl.watch("Scheduled.enabled");
+
   return (
     <Stack spacing={3}>
       <>
@@ -208,12 +209,17 @@ export const CippWizardOffboarding = (props) => {
 
           {Scheduled && (
             <>
-              <Grid item xs={2}>
+              <Grid item>
                 <Typography>Scheduled Offboarding Date</Typography>
-                datepicker goes here
+                <CippFormComponent
+                  name="Scheduled.date"
+                  type="datePicker"
+                  formControl={formControl}
+                  fullWidth
+                />
               </Grid>
 
-              <Grid item xs={10}>
+              <Grid item>
                 <Typography>Send results to</Typography>
                 <CippFormComponent
                   name="webhook"
@@ -234,6 +240,7 @@ export const CippWizardOffboarding = (props) => {
         </Grid>
       </>
       <CippWizardStepButtons
+        postUrl={postUrl}
         currentStep={currentStep}
         onPreviousStep={onPreviousStep}
         onNextStep={onNextStep}
