@@ -44,7 +44,7 @@ function CippCodeOffCanvas({
         addedClass="offcanvas-large"
         placement="end"
         visible={visible}
-        id={crypto.randomUUID()}
+        id={row}
         hideFunction={hideFunction}
       >
         <Editor
@@ -99,7 +99,7 @@ function CippCodeOffCanvas({
 }
 
 CippCodeOffCanvas.propTypes = {
-  row: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  row: PropTypes.object,
   state: PropTypes.bool,
   hideFunction: PropTypes.func,
   type: PropTypes.string,

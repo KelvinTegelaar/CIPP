@@ -38,11 +38,11 @@ import { faGlobe } from '@fortawesome/free-solid-svg-icons'
 import { cellGenericFormatter } from '../tables/CellGenericFormat'
 import ReactSelect from 'react-select'
 
-const CippOffcanvasCard = ({ action }) => {
+const CippOffcanvasCard = ({ action, key }) => {
   const [offcanvasVisible, setOffcanvasVisible] = useState(false)
   return (
     <>
-      <CCard className="border-top-dark border-top-3 mb-3">
+      <CCard key={key} className="border-top-dark border-top-3 mb-3">
         <CCardHeader className="d-flex justify-content-between align-items-center">
           <CCardTitle>Report Name: {action.label}</CCardTitle>
         </CCardHeader>
@@ -95,6 +95,7 @@ const CippOffcanvasCard = ({ action }) => {
 }
 CippOffcanvasCard.propTypes = {
   action: PropTypes.object,
+  key: PropTypes.object,
 }
 
 export default function CippActionsOffcanvas(props) {

@@ -23,15 +23,6 @@ export default function cellTable(
   if (columnProp === undefined || columnProp === null) {
     columnProp = []
   } else {
-    var objectLength = 1
-    var lengthText = 'Item'
-    if (columnProp instanceof Array) {
-      objectLength = columnProp.length
-      if (objectLength > 1) {
-        lengthText = 'Items'
-      }
-    }
-
     if (!Array.isArray(columnProp) && typeof columnProp === 'object') {
       columnProp = Object.keys(columnProp).map((key) => {
         return {
@@ -102,7 +93,7 @@ export default function cellTable(
       size="sm"
       onClick={() => handleTable({ columnProp })}
     >
-      {objectLength} {lengthText}
+      {columnProp.length} Items
     </CButton>
   )
 }

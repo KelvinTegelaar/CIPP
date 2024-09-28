@@ -138,7 +138,6 @@ const ComplianceList = () => {
           Endpoint: 'deviceManagement/deviceCompliancePolicies',
           $orderby: 'displayName',
           $count: true,
-          $expand: 'assignments',
         },
         columns,
         reportName: `${tenant?.defaultDomainName}-MEMPolicies-List`,

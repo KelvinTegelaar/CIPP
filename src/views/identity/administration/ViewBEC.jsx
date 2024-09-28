@@ -22,7 +22,6 @@ import { CippContentCard, CippMasonry, CippMasonryItem, CippPage } from 'src/com
 import 'react-loading-skeleton/dist/skeleton.css'
 import Skeleton from 'react-loading-skeleton'
 import useConfirmModal from 'src/hooks/useConfirmModal'
-import { cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 
 const ViewBec = () => {
   let query = useQuery()
@@ -86,33 +85,28 @@ const ViewBec = () => {
   const logonColumns = [
     {
       name: 'App',
-      selector: (row) => row['appDisplayName'],
+      selector: (row) => row['AppDisplayName'],
       sortable: true,
-      cell: cellGenericFormatter(),
     },
     {
       name: 'Date Time',
-      selector: (row) => row['createdDateTime'],
+      selector: (row) => row['CreatedDateTime'],
       sortable: true,
-      cell: cellGenericFormatter(),
     },
     {
       name: 'Error code',
       selector: (row) => row.id,
       sortable: true,
-      cell: cellGenericFormatter(),
     },
     {
       name: 'Details',
       selector: (row) => row.Status,
       sortable: true,
-      cell: cellGenericFormatter(),
     },
     {
       name: 'IP',
       selector: (row) => row.IPAddress,
       sortable: true,
-      cell: cellGenericFormatter(),
     },
   ]
 
@@ -121,25 +115,21 @@ const ViewBec = () => {
       name: 'IP',
       selector: (row) => row['IPAddress'],
       sortable: true,
-      cell: cellGenericFormatter(),
     },
     {
       name: 'User',
       selector: (row) => row['userPrincipalName'],
       sortable: true,
-      cell: cellGenericFormatter(),
     },
     {
       name: 'Application',
       selector: (row) => row['AppDisplayName'],
       sortable: true,
-      cell: cellGenericFormatter(),
     },
     {
       name: 'Result',
       selector: (row) => row['Status'],
       sortable: true,
-      cell: cellGenericFormatter(),
     },
   ]
   const newUserColumns = [
@@ -147,19 +137,16 @@ const ViewBec = () => {
       name: 'DisplayName',
       selector: (row) => row['displayName'],
       sortable: true,
-      cell: cellGenericFormatter(),
     },
     {
       name: 'Username',
       selector: (row) => row['userPrincipalName'],
       sortable: true,
-      cell: cellGenericFormatter(),
     },
     {
       name: 'Date',
-      selector: (row) => row['createdDateTime'],
+      selector: (row) => row['CreatedDateTime'],
       sortable: true,
-      cell: cellGenericFormatter(),
     },
   ]
 
@@ -168,19 +155,16 @@ const ViewBec = () => {
       name: 'displayName',
       selector: (row) => row['displayName'],
       sortable: true,
-      cell: cellGenericFormatter(),
     },
     {
       name: 'Username',
       selector: (row) => row['userPrincipalName'],
       sortable: true,
-      cell: cellGenericFormatter(),
     },
     {
       name: 'Date',
       selector: (row) => row['lastPasswordChangeDateTime'],
       sortable: true,
-      cell: cellGenericFormatter(),
     },
   ]
 
@@ -189,46 +173,44 @@ const ViewBec = () => {
       name: 'Operation',
       selector: (row) => row['Operation'],
       sortable: true,
-      cell: cellGenericFormatter(),
     },
     {
       name: 'Executed by',
       selector: (row) => row['UserKey'],
       sortable: true,
-      cell: cellGenericFormatter(),
     },
     {
       name: 'Executed on',
       selector: (row) => row['ObjectId'],
       sortable: true,
-      cell: cellGenericFormatter(),
     },
     {
       name: 'Permissions',
       selector: (row) => row['Permissions'],
       sortable: true,
-      cell: cellGenericFormatter(),
     },
   ]
 
   const appColumns = [
     {
+      name: 'Type',
+      selector: (row) => row['Operation'],
+      sortable: true,
+    },
+    {
+      name: 'User',
+      selector: (row) => row['UserId'],
+      sortable: true,
+    },
+    {
       name: 'Application',
-      selector: (row) => row['appDisplayName'],
+      selector: (row) => row['ObjectId'],
       sortable: true,
-      cell: cellGenericFormatter(),
     },
     {
-      name: 'Application ID',
-      selector: (row) => row['appId'],
+      name: 'Result',
+      selector: (row) => row['ResultStatus'],
       sortable: true,
-      cell: cellGenericFormatter(),
-    },
-    {
-      name: 'Created',
-      selector: (row) => row['createdDateTime'],
-      sortable: true,
-      cell: cellGenericFormatter(),
     },
   ]
   const handleReMediate = useConfirmModal({
@@ -257,7 +239,6 @@ const ViewBec = () => {
                   execBecView({
                     tenantFilter: tenantDomain,
                     userId: userId,
-                    userName: userName,
                     overwrite: true,
                   })
                 }
@@ -322,9 +303,9 @@ const ViewBec = () => {
                 data={alerts.SuspectUserDevices}
                 striped
                 responsive={true}
-                isModal={true}
+                tableProps={{ subHeaderComponent: false, pagination: false }}
                 wrapperClasses="table-responsive"
-                reportName="bec-user-devices"
+                reportName="none"
               />
             )}
           </CippContentCard>
@@ -340,8 +321,8 @@ const ViewBec = () => {
                 data={alerts.NewRules}
                 striped
                 responsive={true}
-                isModal={true}
-                reportName="bec-inbox-rules"
+                tableProps={{ subHeaderComponent: false }}
+                reportName="none"
               />
             )}
           </CippContentCard>
@@ -356,8 +337,8 @@ const ViewBec = () => {
                 data={alerts.LastSuspectUserLogon}
                 striped
                 responsive={true}
-                isModal={true}
-                reportName="bec-suspect-user-logons"
+                tableProps={{ subHeaderComponent: false }}
+                reportName="none"
               />
             )}
           </CippContentCard>
@@ -373,9 +354,9 @@ const ViewBec = () => {
                 data={alerts.NewUsers}
                 striped
                 responsive={true}
-                isModal={true}
+                tableProps={{ subHeaderComponent: false }}
                 wrapperClasses="table-responsive"
-                reportName="bec-new-users"
+                reportName="none"
               />
             )}
           </CippContentCard>
@@ -391,9 +372,9 @@ const ViewBec = () => {
                 data={alerts.ChangedPasswords}
                 striped
                 responsive={true}
-                isModal={true}
+                tableProps={{ subHeaderComponent: false }}
                 wrapperClasses="table-responsive"
-                reportName="bec-changed-passwords"
+                reportName="none"
               />
             )}
           </CippContentCard>
@@ -409,9 +390,9 @@ const ViewBec = () => {
                 data={alerts.MailboxPermissionChanges}
                 striped
                 responsive={true}
-                isModal={true}
+                tableProps={{ subHeaderComponent: false }}
                 wrapperClasses="table-responsive"
-                reportName="bec-mailbox-permission-changes"
+                reportName="none"
               />
             )}
           </CippContentCard>
@@ -427,9 +408,9 @@ const ViewBec = () => {
                 data={alerts.AddedApps}
                 striped
                 responsive={true}
+                tableProps={{ subHeaderComponent: false }}
                 wrapperClasses="table-responsive"
-                isModal={true}
-                reportName="bec-added-apps"
+                reportName="none"
               />
             )}
           </CippContentCard>
@@ -445,7 +426,7 @@ const ViewBec = () => {
                 data={alerts.SuspectUserMailboxLogons}
                 striped
                 responsive={true}
-                isModal={true}
+                tableProps={{ subHeaderComponent: false }}
                 wrapperClasses="table-responsive"
                 reportName="none"
               />

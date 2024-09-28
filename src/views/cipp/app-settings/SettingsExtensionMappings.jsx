@@ -169,7 +169,7 @@ export function SettingsExtensionMappings({ type }) {
       </>
     )
   }
-  const haloColumns = [
+  const halocolumns = [
     {
       name: 'Tenant',
       selector: (row) => row.Tenant?.displayName,
@@ -205,7 +205,7 @@ export function SettingsExtensionMappings({ type }) {
     },
   ]
 
-  const ninjaColumns = [
+  const ninjacolumns = [
     {
       name: 'Tenant',
       selector: (row) => row.Tenant?.displayName,
@@ -286,7 +286,7 @@ export function SettingsExtensionMappings({ type }) {
                             <CippTable
                               showFilter={true}
                               reportName="none"
-                              columns={haloColumns}
+                              columns={halocolumns}
                               data={haloMappingsArray}
                               isModal={true}
                             />
@@ -439,7 +439,7 @@ export function SettingsExtensionMappings({ type }) {
                             <CippTable
                               showFilter={true}
                               reportName="none"
-                              columns={ninjaColumns}
+                              columns={ninjacolumns}
                               data={ninjaMappingsArray}
                               isModal={true}
                             />
