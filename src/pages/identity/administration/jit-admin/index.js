@@ -7,7 +7,7 @@ const Page = () => {
   return (
     <div>
       <h1>{pageTitle}</h1>
-      <p>This is a placeholder page for the jit admin section.</p>
+      
     </div>
   );
 };

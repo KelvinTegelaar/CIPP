@@ -1,14 +1,11 @@
-import PropTypes from "prop-types";
 import ArrowRightIcon from "@heroicons/react/24/outline/ArrowRightIcon";
 import CubeIcon from "@heroicons/react/24/outline/CubeIcon";
 import UsersIcon from "@heroicons/react/24/outline/UsersIcon";
-import CurrencyDollarIcon from "@heroicons/react/24/outline/CurrencyDollarIcon";
 import {
   Box,
   Button,
   Card,
   CardHeader,
-  CircularProgress,
   Divider,
   IconButton,
   List,

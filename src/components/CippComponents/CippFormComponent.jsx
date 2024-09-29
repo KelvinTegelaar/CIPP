@@ -153,12 +153,18 @@ export const CippFormComponent = (props) => {
                   <DateTimePicker
                     views={["year", "month", "day", "hours", "minutes"]}
                     label={label}
-                    value={field.value || null}
-                    onChange={(date) => field.onChange(date)}
+                    value={field.value ? new Date(field.value * 1000) : null} // Convert Unix timestamp to Date object
+                    onChange={(date) => {
+                      if (date) {
+                        const unixTimestamp = Math.floor(date.getTime() / 1000); // Convert to Unix timestamp
+                        field.onChange(unixTimestamp); // Pass the Unix timestamp to the form
+                      } else {
+                        field.onChange(null); // Handle the case where no date is selected
+                      }
+                    }}
                     ampm={false}
                     minutesStep={15}
-                    
-                    format="yyyy/MM/dd HH:mm"
+                    inputFormat="yyyy/MM/dd HH:mm" // Display format
                     renderInput={(inputProps) => (
                       <TextField
                         {...inputProps}
