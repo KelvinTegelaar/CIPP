@@ -1,11 +1,10 @@
 import { Grid, Stack, Typography } from "@mui/material";
 import CippWizardStepButtons from "./CippWizardStepButtons";
 import CippFormComponent from "../CippComponents/CippFormComponent";
+import { CippFormCondition } from "../CippComponents/CippFormCondition";
 
 export const CippWizardOffboarding = (props) => {
   const { postUrl, formControl, onPreviousStep, onNextStep, currentStep } = props;
-  const Scheduled = formControl.watch("Scheduled.enabled");
-
   return (
     <Stack spacing={3}>
       <>
@@ -207,36 +206,39 @@ export const CippWizardOffboarding = (props) => {
             />
           </Grid>
 
-          {Scheduled && (
-            <>
-              <Grid item>
-                <Typography>Scheduled Offboarding Date</Typography>
-                <CippFormComponent
-                  name="Scheduled.date"
-                  type="datePicker"
-                  formControl={formControl}
-                  fullWidth
-                />
-              </Grid>
+          <CippFormCondition
+            formControl={formControl}
+            field={"Scheduled.enabled"}
+            compareType="is"
+            compareValue={true}
+          >
+            <Grid item>
+              <Typography>Scheduled Offboarding Date</Typography>
+              <CippFormComponent
+                name="Scheduled.date"
+                type="datePicker"
+                formControl={formControl}
+                fullWidth
+              />
+            </Grid>
 
-              <Grid item>
-                <Typography>Send results to</Typography>
-                <CippFormComponent
-                  name="webhook"
-                  label="Webhook"
-                  type="switch"
-                  formControl={formControl}
-                />
-                <CippFormComponent
-                  name="email"
-                  label="E-mail"
-                  type="switch"
-                  formControl={formControl}
-                />
-                <CippFormComponent name="psa" label="PSA" type="switch" formControl={formControl} />
-              </Grid>
-            </>
-          )}
+            <Grid item>
+              <Typography>Send results to</Typography>
+              <CippFormComponent
+                name="webhook"
+                label="Webhook"
+                type="switch"
+                formControl={formControl}
+              />
+              <CippFormComponent
+                name="email"
+                label="E-mail"
+                type="switch"
+                formControl={formControl}
+              />
+              <CippFormComponent name="psa" label="PSA" type="switch" formControl={formControl} />
+            </Grid>
+          </CippFormCondition>
         </Grid>
       </>
       <CippWizardStepButtons

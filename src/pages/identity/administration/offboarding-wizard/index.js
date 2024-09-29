@@ -57,7 +57,7 @@ const Page = () => {
   return (
     <>
       <CippWizardPage
-        initialState={initialState.offboardingDefaults}
+        initialState={{ ...initialState.offboardingDefaults, ...{ Scheduled: { enabled: false } } }}
         steps={steps}
         postUrl="/api/ExecOffboardUser"
         wizardTitle="User Offboarding Wizard"
