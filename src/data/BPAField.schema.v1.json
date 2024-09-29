@@ -87,6 +87,10 @@
               {
                 "const": "number",
                 "title": "Displays as a numerical value"
+              },
+              {
+                "const": "math",
+                "title": "Displays as a calculated value"
               }
             ]
           }

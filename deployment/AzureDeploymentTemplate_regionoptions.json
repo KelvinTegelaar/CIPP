@@ -6,7 +6,7 @@
       "defaultValue": "CIPP",
       "type": "string",
       "metadata": {
-        "description": "Name use as base-template to named the resources deployed in Azure."
+        "description": "Name used as base-template to name the resources deployed in Azure."
       }
     },
     "GithubRepository": {
@@ -20,7 +20,7 @@
       "defaultValue": "GeneratedPassword",
       "type": "string",
       "metadata": {
-        "description": "Your Github Repository token (see https://docs.microsoft.com/en-us/azure/static-web-apps/publish-azure-resource-manager?tabs=azure-cli#create-a-github-personal-access-token"
+        "description": "Your Github Repository token (see https://docs.microsoft.com/en-us/azure/static-web-apps/publish-azure-resource-manager?tabs=azure-cli#create-a-github-personal-access-token)"
       }
     },
     "GithubAPIRepository": {
@@ -197,7 +197,7 @@
       "name": "[variables('funcStorageName')]",
       "location": "[resourceGroup().location]",
       "tags": {
-        "displayName": "funStorageName"
+        "displayName": "funcStorageName"
       },
       "sku": {
         "name": "Standard_LRS"

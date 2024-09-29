@@ -1,7 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { CListGroup, CListGroupItem } from '@coreui/react'
+import {
+  CCard,
+  CCardBody,
+  CCardHeader,
+  CCardTitle,
+  CListGroup,
+  CListGroupItem,
+} from '@coreui/react'
 import { CippOffcanvas } from '.'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faGlobe } from '@fortawesome/free-solid-svg-icons'
+import { CippOffcanvasTable } from '../tables'
 
 export default function CippListOffcanvas(props) {
   return (
@@ -13,7 +23,7 @@ export default function CippListOffcanvas(props) {
       hideFunction={props.hideFunction}
     >
       {props.groups.map((group, key) => (
-        <OffcanvasListSection title={group.title} items={group.items} key={key} />
+        <OffcanvasListSection items={group.items} key={key} />
       ))}
     </CippOffcanvas>
   )
@@ -28,19 +38,27 @@ CippListOffcanvas.propTypes = {
   hideFunction: PropTypes.func.isRequired,
 }
 
-export function OffcanvasListSection({ title, items }) {
+export function OffcanvasListSection({ title, items, showCardTitle = true }) {
+  //console.log(items)
+  const mappedItems = items.map((item, key) => ({ value: item.content, label: item.heading }))
   return (
     <>
       <h4 className="mt-4">{title}</h4>
       {items.length > 0 && (
-        <CListGroup className="my-3">
-          {items.map((item, key) => (
-            <CListGroupItem className="d-flex justify-content-between align-items-center" key={key}>
-              {item.heading && <h6 className="w-50 mb-0">{item.heading}</h6>}
-              {item.content}
-            </CListGroupItem>
-          ))}
-        </CListGroup>
+        <CCard className="content-card">
+          <CCardHeader className="d-flex justify-content-between align-items-center">
+            <CCardTitle>
+              {showCardTitle && (
+                <>
+                  <FontAwesomeIcon icon={faGlobe} className="mx-2" /> Extended Information
+                </>
+              )}
+            </CCardTitle>
+          </CCardHeader>
+          <CCardBody>
+            <CippOffcanvasTable rows={mappedItems} />
+          </CCardBody>
+        </CCard>
       )}
     </>
   )
@@ -48,4 +66,5 @@ export function OffcanvasListSection({ title, items }) {
 OffcanvasListSection.propTypes = {
   title: PropTypes.string,
   items: PropTypes.array,
+  showCardTitle: PropTypes.bool,
 }
