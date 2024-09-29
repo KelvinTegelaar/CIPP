@@ -5,6 +5,8 @@ import { CippFormCondition } from "../CippComponents/CippFormCondition";
 
 export const CippWizardOffboarding = (props) => {
   const { postUrl, formControl, onPreviousStep, onNextStep, currentStep } = props;
+  const currentTenant = formControl.watch("tenantFilter");
+
   return (
     <Stack spacing={3}>
       <>
@@ -102,6 +104,7 @@ export const CippWizardOffboarding = (props) => {
               formControl={formControl}
               multi
               api={{
+                tenantFilter: currentTenant ? currentTenant.value : undefined,
                 url: "/api/ListGraphRequest",
                 dataKey: "Results",
                 labelField: (option) => `${option.displayName} (${option.userPrincipalName})`,
@@ -129,6 +132,7 @@ export const CippWizardOffboarding = (props) => {
                 valueField: "id",
                 url: "/api/ListGraphRequest",
                 dataKey: "Results",
+                tenantFilter: currentTenant ? currentTenant.value : undefined,
                 data: {
                   Endpoint: "users",
                   manualPagination: true,
@@ -148,6 +152,7 @@ export const CippWizardOffboarding = (props) => {
               formControl={formControl}
               multi
               api={{
+                tenantFilter: currentTenant ? currentTenant.value : undefined,
                 labelField: (option) => `${option.displayName} (${option.userPrincipalName})`,
                 valueField: "id",
                 url: "/api/ListGraphRequest",
@@ -169,7 +174,9 @@ export const CippWizardOffboarding = (props) => {
               type="autoComplete"
               placeholder="leave blank to not forward"
               formControl={formControl}
+              multiple={false}
               api={{
+                tenantFilter: currentTenant ? currentTenant.value : undefined,
                 labelField: (option) => `${option.displayName} (${option.userPrincipalName})`,
                 valueField: "id",
                 url: "/api/ListGraphRequest",
