@@ -19,6 +19,12 @@ export const getCippFormatting = (data, cellName, type) => {
   if (data?.label) {
     return data.label;
   }
+  console.log(data);
+  if (data?.enabled === true && data?.date) {
+    return isText
+      ? `Yes, Scheduled for ${new Date(data.date).toLocaleString()}`
+      : `Yes, Scheduled for ${new Date(data.date).toLocaleString()}`;
+  }
 
   // Handle null or undefined data
   if (data === null || data === undefined) {
