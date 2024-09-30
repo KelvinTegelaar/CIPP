@@ -470,19 +470,25 @@ RFFCFormSelect.propTypes = {
 export function Condition({ when, is, children, like, regex }) {
   return (
     <>
-      {is && (
+      {is !== undefined && (
         <Field name={when} subscription={{ value: true }}>
-          {({ input: { value } }) => (value === is ? children : null)}
+          {({ input: { value } }) => {
+            return value === is ? children : null
+          }}
         </Field>
       )}
-      {like && (
+      {like !== undefined && (
         <Field name={when} subscription={{ value: true }}>
-          {({ input: { value } }) => (value.includes(like) ? children : null)}
+          {({ input: { value } }) => {
+            return value.includes(like) ? children : null
+          }}
         </Field>
       )}
-      {regex && (
+      {regex !== undefined && (
         <Field name={when} subscription={{ value: true }}>
-          {({ input: { value } }) => (value.match(regex) ? children : null)}
+          {({ input: { value } }) => {
+            return value.match(regex) ? children : null
+          }}
         </Field>
       )}
     </>
@@ -510,6 +516,7 @@ export const RFFSelectSearch = ({
   retainInput = true,
   isLoading = false,
   allowCreate = false,
+  onCreateOption,
   refreshFunction,
   ...props
 }) => {
@@ -583,7 +590,7 @@ export const RFFSelectSearch = ({
               )}
             </CFormLabel>
             {allowCreate ? (
-              <Creatable {...selectProps} isClearable={true} />
+              <Creatable {...selectProps} isClearable={true} onCreateOption={onCreateOption} />
             ) : (
               <Select {...selectProps} isClearable={!onChange} />
             )}
@@ -606,6 +613,9 @@ RFFSelectSearch.propTypes = {
   onInputChange: PropTypes.func,
   isLoading: PropTypes.bool,
   refreshFunction: PropTypes.func,
+  allowCreate: PropTypes.bool,
+  onCreateOption: PropTypes.func,
+  retainInput: PropTypes.bool,
   values: PropTypes.arrayOf(PropTypes.shape({ value: PropTypes.string, name: PropTypes.string }))
     .isRequired,
 }
