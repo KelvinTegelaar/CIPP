@@ -18,46 +18,48 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
         <FontAwesomeIcon icon={faEllipsisV} />
       </CButton>
       <CippActionsOffcanvas
-        title="User Information"
+        title="Extended Information"
         extendedInfo={[
-          { label: 'Created by', value: `${row.CreatedBy}` },
-          { label: 'Last edit by', value: `${row.LastModifiedBy}` },
-          { label: 'Description', value: `${row.Description}` },
+          { label: 'Name', value: `${row.Name}` },
+          { label: 'Comment', value: `${row.Comment}` },
+          { label: 'State', value: `${row.Enabled}` },
+          { label: 'Direction', value: `${row.cippconnectortype}` },
+          { label: 'Connector Type', value: `${row.ConnectorType}` },
         ]}
         actions={[
           {
-            label: 'Create template based on rule',
+            label: 'Create template based on connector',
             color: 'info',
             modal: true,
             icon: <FontAwesomeIcon icon={faBook} className="me-2" />,
             modalBody: row,
             modalType: 'POST',
             modalUrl: `/api/AddExConnectorTemplate`,
-            modalMessage: 'Are you sure you want to create a template based on this rule?',
+            modalMessage: 'Are you sure you want to create a template based on this connector?',
           },
           {
-            label: 'Enable Rule',
+            label: 'Enable Connector',
             color: 'info',
             icon: <FontAwesomeIcon icon={faCheck} className="me-2" />,
             modal: true,
             modalUrl: `/api/EditExConnector?State=Enable&TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}&Type=${row.cippconnectortype}`,
-            modalMessage: 'Are you sure you want to enable this rule?',
+            modalMessage: 'Are you sure you want to enable this connector?',
           },
           {
-            label: 'Disable Rule',
+            label: 'Disable Connector',
             color: 'info',
             icon: <FontAwesomeIcon icon={faBan} className="me-2" />,
             modal: true,
             modalUrl: `/api/EditExConnector?State=Disable&TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}&Type=${row.cippconnectortype}`,
-            modalMessage: 'Are you sure you want to disable this rule?',
+            modalMessage: 'Are you sure you want to disable this connector?',
           },
           {
-            label: 'Delete Rule',
+            label: 'Delete Connector',
             color: 'danger',
             modal: true,
             icon: <FontAwesomeIcon icon={faTrash} className="me-2" />,
             modalUrl: `/api/RemoveExConnector?TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}&Type=${row.cippconnectortype}`,
-            modalMessage: 'Are you sure you want to disable this rule?',
+            modalMessage: 'Are you sure you want to delete this connector?',
           },
         ]}
         placement="end"
@@ -151,6 +153,20 @@ const ConnectorList = () => {
       }
       tenantSelector={true}
       datatable={{
+        filterlist: [
+          { filterName: 'Enabled connectors', filter: 'Complex: Enabled eq true' },
+          { filterName: 'Disabled connectors', filter: 'Complex: Enabled eq false' },
+          { filterName: 'Inbound connectors', filter: 'Complex: cippconnectortype eq inbound' },
+          { filterName: 'Outbound connectors', filter: 'Complex: cippconnectortype eq outbound' },
+          {
+            filterName: 'Transport rule connectors',
+            filter: 'Complex: IsTransportRuleScoped eq true',
+          },
+          {
+            filterName: 'Non-transport rule connectors',
+            filter: 'Complex: IsTransportRuleScoped eq false',
+          },
+        ],
         reportName: `${tenant?.defaultDomainName}-connectors-list`,
         path: '/api/ListExchangeConnectors',
         params: { TenantFilter: tenant?.defaultDomainName },

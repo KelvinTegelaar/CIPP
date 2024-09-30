@@ -174,6 +174,8 @@ const EditCalendarPermission = () => {
                                     { value: 'PublishingAuthor', name: 'Publishing Author' },
                                     { value: 'PublishingEditor', name: 'Publishing Editor' },
                                     { value: 'Reviewer', name: 'Reviewer' },
+                                    { value: 'LimitedDetails', name: 'Limited Details' },
+                                    { value: 'AvailabilityOnly', name: 'Availability Only' },
                                   ]}
                                   placeholder="Select a permission level"
                                   name="Permissions"

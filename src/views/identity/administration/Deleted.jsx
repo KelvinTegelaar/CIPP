@@ -18,7 +18,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
         <FontAwesomeIcon icon={faEllipsisV} />
       </CButton>
       <CippActionsOffcanvas
-        title="User Information"
+        title="Extended Information"
         extendedInfo={[
           { label: 'Created on', value: `${row.createdDateTime}` },
           { label: 'UPN', value: `${row.userPrincipalName}` },
@@ -40,7 +40,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             color: 'info',
             modal: true,
             modalUrl: `/api/ExecRestoreDeleted?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
-            modalMessage: 'Are you sure you want to create a Temporary Access Pass?',
+            modalMessage: 'Are you sure you want to restore the user?',
           },
         ]}
         placement="end"
@@ -93,6 +93,7 @@ const columns = [
     name: 'id',
     selector: (row) => row['id'],
     omit: true,
+    exportSelector: 'id',
   },
   {
     name: 'Actions',

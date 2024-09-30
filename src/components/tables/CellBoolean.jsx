@@ -47,6 +47,7 @@ export default function CellBoolean({
     if (
       cell.toLowerCase() === 'success' ||
       cell.toLowerCase() === 'enabled' ||
+      cell.toLowerCase() === 'enforced' ||
       cell.toLowerCase() === 'pass' ||
       cell.toLowerCase() === 'true' ||
       cell.toLowerCase() === 'compliant'
@@ -63,7 +64,7 @@ export default function CellBoolean({
     }
   }
 
-  if (cell === '' && !noDataIsFalse) {
+  if ((cell === '' && !noDataIsFalse) || cell === undefined) {
     return <CellBadge label="No Data" color="info" />
   } else if (colourless && warning && reverse) {
     return nocolour(colourless, normalized ? <IconWarning /> : <IconError />)
