@@ -1,0 +1,974 @@
+{
+  "Common": {
+    "Id": "String",
+    "RecordType": "List:AuditLogRecordType",
+    "CreationTime": "String",
+    "Operation": "List:Operation",
+    "OrganizationId": "String",
+    "UserType": "List:UserType",
+    "UserKey": "String",
+    "Workload": "String",
+    "ResultStatus": "String",
+    "ObjectId": "String",
+    "UserId": "String",
+    "ClientIP": "String",
+    "Username": "String",
+    "CIPPGeoLocation": "List:countryList",
+    "CIPPBadRepIP": "String",
+    "CIPPHostedIP": "String",
+    "CIPPIPDetected": "String"
+  },
+  "Audit.Exchange": {
+    "Id": "Combination GUID",
+    "RecordType": "List:AuditLogRecordType",
+    "CreationTime": "String",
+    "Operation": "List:Operation",
+    "OrganizationId": "Guid",
+    "UserType": "List:UserType",
+    "UserKey": "String",
+    "Workload": "String",
+    "ResultStatus": "String",
+    "ObjectId": "String",
+    "UserId": "String",
+    "ClientIP": "String",
+    "Scope": "List:AuditLogScope",
+    "ModifiedObjectResolvedname": "String",
+    "Parameters": "Common.namevaluePair",
+    "ExternalAccess": "Boolean",
+    "OriginatingServer": "String",
+    "Organizationname": "String",
+    "LogonType": "LogonType",
+    "InternalLogonType": "List:LogonType",
+    "MailboxGuid": "String",
+    "MailboxOwnerUPN": "String",
+    "MailboxOwnerSid": "String",
+    "MailboxOwnerMasterAccountSid": "String",
+    "LogonUserSid": "String",
+    "LogonUserDisplayname": "String",
+    "ClientInfoString": "String",
+    "ClientIPAddress": "String",
+    "ClientMachinename": "String",
+    "ClientProcessname": "String",
+    "ClientVersion": "String",
+    "MoveToFolder": "String",
+    "ForwardTo": "String",
+    "RedirectTo": "String"
+  },
+  "Audit.AzureActiveDirectory": {
+    "AzureActiveDirectoryEventType": "List:AzureActiveDirectoryEventType",
+    "AccountEnabled": "String",
+    "Actor": "List:IdentityTypevaluePair",
+    "ActorContextId": "String",
+    "ActorIpAddress": "String",
+    "InterSystemsId": "String",
+    "IntraSystemsId": "String",
+    "SupportTicketId": "String",
+    "Target": "List:IdentityTypevaluePair",
+    "TargetContextId": "String",
+    "ApplicationId": "String",
+    "Client": "String",
+    "Errorvalue": "String",
+    "LogonError": "String"
+  },
+  "List:Operation": [
+    { "value": "UserLoggedIn", "name": "A user logged in" },
+    { "value": "mailitemsaccessed", "name": "accessed mailbox items" },
+    { "value": "add delegation entry.", "name": "added delegation entry" },
+    { "value": "add domain to company.", "name": "added domain to company" },
+    { "value": "add group.", "name": "added group" },
+    { "value": "add member to group.", "name": "added member to group" },
+    { "value": "add-mailboxpermission", "name": "added delegate mailbox permissions" },
+    { "value": "add member to role.", "name": "added member to role" },
+    { "value": "add partner to company.", "name": "added a partner to the directory" },
+    { "value": "add service principal.", "name": "added service principal" },
+    {
+      "value": "add service principal credentials.",
+      "name": "added credentials to a service principal"
+    },
+    { "value": "add user.", "name": "added user" },
+    { "value": "addfolderpermissions", "name": "added permissions to folder" },
+    { "value": "applyrecordlabel", "name": "labeled message as a record" },
+    { "value": "change user license.", "name": "changed user license" },
+    { "value": "change user password.", "name": "changed user password" },
+    { "value": "copy", "name": "copied messages to another folder" },
+    { "value": "create", "name": "created mailbox item" },
+    { "value": "delete group.", "name": "deleted group" },
+    { "value": "delete user.", "name": "deleted user" },
+    { "value": "harddelete", "name": "purged messages from the mailbox" },
+    { "value": "mailboxlogin", "name": "user signed in to mailbox" },
+    { "value": "move", "name": "moved messages to another folder" },
+    { "value": "movetodeleteditems", "name": "moved messages to deleted items folder" },
+    { "value": "new-inboxrule", "name": "created new inbox rule in outlook web app" },
+    { "value": "remove delegation entry.", "name": "removed delegation entry" },
+    { "value": "remove domain from company.", "name": "removed domain from company" },
+    { "value": "remove member from group.", "name": "removed member from group" },
+    { "value": "remove member from a role.", "name": "remove member from a role" },
+    { "value": "Disable Strong Authentication.", "name": "Disable Strong Authentication." },
+
+    {
+      "value": "remove service principal.",
+      "name": "removed a service principal from the directory"
+    },
+    {
+      "value": "remove service principal credentials.",
+      "name": "removed credentials from a service principal"
+    },
+    { "value": "remove-mailboxpermission", "name": "removed delegate mailbox permissions" },
+    { "value": "remove member from role.", "name": "removed a user from a directory role" },
+    { "value": "remove partner from company.", "name": "removed a partner from the directory" },
+    { "value": "removefolderpermissions", "name": "removed permissions from folder" },
+    { "value": "reset user password.", "name": "reset user password" },
+    { "value": "send", "name": "sent message" },
+    { "value": "sendas", "name": "sent message using send as permissions" },
+    { "value": "sendonbehalf", "name": "sent message using send on behalf permissions" },
+    { "value": "set company contact information.", "name": "set company contact information" },
+    { "value": "set company information.", "name": "set company information" },
+    { "value": "set delegation entry.", "name": "set delegation entry" },
+    { "value": "set dirsyncenabled flag.", "name": "turned on azure ad sync" },
+    { "value": "set domain authentication.", "name": "set domain authentication" },
+    {
+      "value": "set federation settings on domain.",
+      "name": "updated the federation settings for a domain"
+    },
+    {
+      "value": "set force change user password.",
+      "name": "set property that forces user to change password"
+    },
+    { "value": "set-inboxrule", "name": "modified inbox rule from outlook web app" },
+    { "value": "set license properties.", "name": "set license properties" },
+    { "value": "set password policy.", "name": "set password policy" },
+    { "value": "softdelete", "name": "deleted messages from deleted items folder" },
+    { "value": "update", "name": "updated message" },
+    { "value": "update user.", "name": "updated user" },
+    { "value": "update group.", "name": "updated group" },
+    { "value": "update domain.", "name": "updated domain" },
+    {
+      "value": "updatecalendardelegation",
+      "name": "added or removed user with delegate access to calendar folder"
+    },
+    { "value": "updatefolderpermissions", "name": "modified folder permission" },
+    { "value": "updateinboxrules", "name": "updated inbox rules from outlook client" },
+    { "value": "verify domain.", "name": "verified domain" },
+    { "value": "verify email verified domain.", "name": "verified email verified domain" },
+    {
+      "value": "Update StsRefreshTokenValidFrom Timestamp.",
+      "name": "Update StsRefreshTokenValidFrom Timestamp."
+    }
+  ],
+  "List:LogonType": [
+    { "value": 0, "Membername": "Owner", "name": "The mailbox owner." },
+    {
+      "value": 1,
+      "Membername": "Admin",
+      "name": "A person with administrative privileges for someone's mailbox."
+    },
+    {
+      "value": 2,
+      "Membername": "Delegated",
+      "name": "A person with delegate privileges for someone's mailbox."
+    },
+    {
+      "value": 3,
+      "Membername": "Transport",
+      "name": "A transport service in the Microsoft datacenter."
+    },
+    {
+      "value": 4,
+      "Membername": "SystemService",
+      "name": "A service account in the Microsoft datacenter"
+    },
+    { "value": 5, "Membername": "BestAccess", "name": "Reserved for internal use." },
+    { "value": 6, "Membername": "DelegatedAdmin", "name": "A delegated administrator." }
+  ],
+  "List:UserType": [
+    { "value": 0, "Membername": "Regular", "name": "A regular user." },
+    { "value": 1, "Membername": "Reserved", "name": "A reserved user." },
+    { "value": 2, "Membername": "Admin", "name": "An administrator." },
+    { "value": 3, "Membername": "DcAdmin", "name": "A Microsoft datacenter operator." },
+    { "value": 4, "Membername": "System", "name": "A system account." },
+    { "value": 5, "Membername": "Application", "name": "An application." },
+    { "value": 6, "Membername": "ServicePrincipal", "name": "A service principal." },
+    { "value": 7, "Membername": "CustomPolicy", "name": "A custom policy." },
+    { "value": 8, "Membername": "SystemPolicy", "name": "A system policy." }
+  ],
+  "List:AuditLogRecordType": [
+    {
+      "value": 1,
+      "Membername": "ExchangeAdmin",
+      "name": "Events from the Exchange admin audit log."
+    },
+    {
+      "value": 2,
+      "Membername": "ExchangeItem",
+      "name": "Events from an Exchange mailbox audit log for actions that are performed on a single item, such as creating or receiving an email message."
+    },
+    {
+      "value": 3,
+      "Membername": "ExchangeItemGroup",
+      "name": "Events from an Exchange mailbox audit log for actions that can be performed on multiple items, such as moving or deleted one or more email messages."
+    },
+    { "value": 4, "Membername": "SharePoint", "name": "SharePoint events." },
+    {
+      "value": 6,
+      "Membername": "SharePointFileOperation",
+      "name": "SharePoint file operation events."
+    },
+    { "value": 7, "Membername": "OneDrive", "name": "OneDrive for Business events." },
+    {
+      "value": 8,
+      "Membername": "AzureActiveDirectory",
+      "name": "Microsoft Entra ID events."
+    },
+    {
+      "value": 9,
+      "Membername": "AzureActiveDirectoryAccountLogon",
+      "name": "Microsoft Entra ID OrgId logon events (deprecated)."
+    },
+    {
+      "value": 10,
+      "Membername": "DataCenterSecurityCmdlet",
+      "name": "Data Center security cmdlet events."
+    },
+    {
+      "value": 11,
+      "Membername": "ComplianceDLPSharePoint",
+      "name": "Data loss protection (DLP) events in SharePoint and OneDrive for Business."
+    },
+    {
+      "value": 13,
+      "Membername": "ComplianceDLPExchange",
+      "name": "Data loss protection (DLP) events in Exchange, when configured via Unified DLP Policy. DLP events based on Exchange Transport Rules are not supported."
+    },
+    {
+      "value": 14,
+      "Membername": "SharePointSharingOperation",
+      "name": "SharePoint sharing events."
+    },
+    {
+      "value": 15,
+      "Membername": "AzureActiveDirectoryStsLogon",
+      "name": "Secure Token Service (STS) logon events in Microsoft Entra ID."
+    },
+    {
+      "value": 16,
+      "Membername": "SkypeForBusinessPSTNUsage",
+      "name": "Public Switched Telephone Network (PSTN) events from Skype for Business."
+    },
+    {
+      "value": 17,
+      "Membername": "SkypeForBusinessUsersBlocked",
+      "name": "Blocked user events from Skype for Business."
+    },
+    {
+      "value": 18,
+      "Membername": "SecurityComplianceCenterEOPCmdlet",
+      "name": "Admin actions from the Security & Compliance Center."
+    },
+    {
+      "value": 19,
+      "Membername": "ExchangeAggregatedOperation",
+      "name": "Aggregated Exchange mailbox auditing events."
+    },
+    { "value": 20, "Membername": "PowerBIAudit", "name": "Power BI events." },
+    { "value": 21, "Membername": "CRM", "name": "Dynamics 365 events." },
+    { "value": 22, "Membername": "Yammer", "name": "Yammer events." },
+    {
+      "value": 23,
+      "Membername": "SkypeForBusinessCmdlets",
+      "name": "Skype for Business events."
+    },
+    {
+      "value": 24,
+      "Membername": "Discovery",
+      "name": "Events for eDiscovery activities performed by running content searches and managing eDiscovery cases in the Security & Compliance Center."
+    },
+    { "value": 25, "Membername": "MicrosoftTeams", "name": "Events from Microsoft Teams." },
+    {
+      "value": 28,
+      "Membername": "ThreatIntelligence",
+      "name": "Phishing and malware events from Exchange Online Protection and Microsoft Defender for Office 365."
+    },
+    {
+      "value": 29,
+      "Membername": "MailSubmission",
+      "name": "Submission events from Exchange Online Protection and Microsoft Defender for Office 365."
+    },
+    {
+      "value": 30,
+      "Membername": "MicrosoftFlow",
+      "name": "Microsoft Power Automate (formerly called Microsoft Flow) events."
+    },
+    { "value": 31, "Membername": "AeD", "name": "Advanced eDiscovery events." },
+    { "value": 32, "Membername": "MicrosoftStream", "name": "Microsoft Stream events." },
+    {
+      "value": 33,
+      "Membername": "ComplianceDLPSharePointClassification",
+      "name": "Events related to DLP classification in SharePoint."
+    },
+    {
+      "value": 34,
+      "Membername": "ThreatFinder",
+      "name": "Campaign-related events from Microsoft Defender for Office 365."
+    },
+    { "value": 35, "Membername": "Project", "name": "Microsoft Project events." },
+    {
+      "value": 36,
+      "Membername": "SharePointListOperation",
+      "name": "SharePoint List events."
+    },
+    {
+      "value": 37,
+      "Membername": "SharePointCommentOperation",
+      "name": "SharePoint comment events."
+    },
+    {
+      "value": 38,
+      "Membername": "DataGovernance",
+      "name": "Events related to retention policies and retention labels in the Security & Compliance Center"
+    },
+    { "value": 39, "Membername": "Kaizala", "name": "Kaizala events." },
+    {
+      "value": 40,
+      "Membername": "SecurityComplianceAlerts",
+      "name": "Security and compliance alert signals."
+    },
+    {
+      "value": 41,
+      "Membername": "ThreatIntelligenceUrl",
+      "name": "Safe links time-of-block and block override events from Microsoft Defender for Office 365."
+    },
+    {
+      "value": 42,
+      "Membername": "SecurityComplianceInsights",
+      "name": "Events related to insights and reports in the Office 365 security and compliance center."
+    },
+    {
+      "value": 43,
+      "Membername": "MIPLabel",
+      "name": "Events related to the detection in the Transport pipeline of email messages that have been tagged (manually or automatically) with sensitivity labels."
+    },
+    {
+      "value": 44,
+      "Membername": "WorkplaceAnalytics",
+      "name": "Workplace Analytics events."
+    },
+    { "value": 45, "Membername": "PowerAppsApp", "name": "Power Apps events." },
+    {
+      "value": 46,
+      "Membername": "PowerAppsPlan",
+      "name": "Subscription plan events for Power Apps."
+    },
+    {
+      "value": 47,
+      "Membername": "ThreatIntelligenceAtpContent",
+      "name": "Phishing and malware events for files in SharePoint, OneDrive for Business, and Microsoft Teams from Microsoft Defender for Office 365."
+    },
+    {
+      "value": 48,
+      "Membername": "LabelContentExplorer",
+      "name": "Events related to data classification content explorer."
+    },
+    {
+      "value": 49,
+      "Membername": "TeamsHealthcare",
+      "name": "Events related to the Patients application in Microsoft Teams for Healthcare."
+    },
+    {
+      "value": 50,
+      "Membername": "ExchangeItemAggregated",
+      "name": "Events related to the MailItemsAccessed mailbox auditing action."
+    },
+    {
+      "value": 51,
+      "Membername": "HygieneEvent",
+      "name": "Events related to outbound spam protection."
+    },
+    {
+      "value": 52,
+      "Membername": "DataInsightsRestApiAudit",
+      "name": "Data Insights REST API events."
+    },
+    {
+      "value": 53,
+      "Membername": "InformationBarrierPolicyApplication",
+      "name": "Events related to the application of information barrier policies."
+    },
+    {
+      "value": 54,
+      "Membername": "SharePointListItemOperation",
+      "name": "SharePoint list item events."
+    },
+    {
+      "value": 55,
+      "Membername": "SharePointContentTypeOperation",
+      "name": "SharePoint list content type events."
+    },
+    {
+      "value": 56,
+      "Membername": "SharePointFieldOperation",
+      "name": "SharePoint list field events."
+    },
+    { "value": 57, "Membername": "MicrosoftTeamsAdmin", "name": "Teams admin events." },
+    {
+      "value": 58,
+      "Membername": "HRSignal",
+      "name": "Events related to HR data signals that support the Insider risk management solution."
+    },
+    { "value": 59, "Membername": "MicrosoftTeamsDevice", "name": "Teams device events." },
+    {
+      "value": 60,
+      "Membername": "MicrosoftTeamsAnalytics",
+      "name": "Teams analytics events."
+    },
+    {
+      "value": 61,
+      "Membername": "InformationWorkerProtection",
+      "name": "Events related to compromised user alerts."
+    },
+    {
+      "value": 62,
+      "Membername": "Campaign",
+      "name": "Email campaign events from Microsoft Defender for Office 365."
+    },
+    { "value": 63, "Membername": "DLPEndpoint", "name": "Endpoint DLP events." },
+    {
+      "value": 64,
+      "Membername": "AirInvestigation",
+      "name": "Automated incident response (AIR) events."
+    },
+    { "value": 65, "Membername": "Quarantine", "name": "Quarantine events." },
+    { "value": 66, "Membername": "MicrosoftForms", "name": "Microsoft Forms events." },
+    { "value": 67, "Membername": "ApplicationAudit", "name": "Application audit events." },
+    {
+      "value": 68,
+      "Membername": "ComplianceSupervisionExchange",
+      "name": "Events tracked by the Communication compliance offensive language model."
+    },
+    {
+      "value": 69,
+      "Membername": "CustomerKeyServiceEncryption",
+      "name": "Events related to the customer key encryption service."
+    },
+    {
+      "value": 70,
+      "Membername": "OfficeNative",
+      "name": "Events related to sensitivity labels applied to Office documents."
+    },
+    {
+      "value": 71,
+      "Membername": "MipAutoLabelSharePointItem",
+      "name": "Auto-labeling events in SharePoint."
+    },
+    {
+      "value": 72,
+      "Membername": "MipAutoLabelSharePointPolicyLocation",
+      "name": "Auto-labeling policy events in SharePoint."
+    },
+    { "value": 73, "Membername": "MicrosoftTeamsShifts", "name": "Teams Shifts events." },
+    {
+      "value": 75,
+      "Membername": "MipAutoLabelExchangeItem",
+      "name": "Auto-labeling events in Exchange."
+    },
+    { "value": 76, "Membername": "CortanaBriefing", "name": "Briefing email events." },
+    {
+      "value": 78,
+      "Membername": "WDATPAlerts",
+      "name": "Events related to alerts generated by Windows Defender for Endpoint."
+    },
+    {
+      "value": 82,
+      "Membername": "SensitivityLabelPolicyMatch",
+      "name": "Events generated when the file labeled with a sensitivity label is opened or renamed."
+    },
+    {
+      "value": 83,
+      "Membername": "SensitivityLabelAction",
+      "name": "Event generated when sensitivity labels are applied, upStringd, or removed from a file."
+    },
+    {
+      "value": 84,
+      "Membername": "SensitivityLabeledFileAction",
+      "name": "Events generated when a file labeled with a sensitivity label is opened or renamed."
+    },
+    {
+      "value": 85,
+      "Membername": "AttackSim",
+      "name": "Events related to user activities in Attack Simulation & Training in Microsoft Defender for Office 365."
+    },
+    {
+      "value": 86,
+      "Membername": "AirManualInvestigation",
+      "name": "Events related to manual investigations in Automated investigation and response (AIR)."
+    },
+    {
+      "value": 87,
+      "Membername": "SecurityComplianceRBAC",
+      "name": "Security and compliance RBAC events."
+    },
+    {
+      "value": 88,
+      "Membername": "UserTraining",
+      "name": "Events related to user training in Attack Simulation & Training in Microsoft Defender for Office 365."
+    },
+    {
+      "value": 89,
+      "Membername": "AirAdminActionInvestigation",
+      "name": "Events related to admin actions in Automated investigation and response (AIR)."
+    },
+    {
+      "value": 90,
+      "Membername": "MSTIC",
+      "name": "Threat intelligence events in Microsoft Defender for Office 365."
+    },
+    {
+      "value": 91,
+      "Membername": "PhysicalBadgingSignal",
+      "name": "Events related to physical badging signals that support the Insider risk management solution."
+    },
+    { "value": 93, "Membername": "AipDiscover", "name": "AIP scanner events" },
+    {
+      "value": 94,
+      "Membername": "AipSensitivityLabelAction",
+      "name": "AIP sensitivity label events"
+    },
+    { "value": 95, "Membername": "AipProtectionAction", "name": "AIP protection events" },
+    { "value": 96, "Membername": "AipFileDeleted", "name": "AIP file deletion events" },
+    { "value": 97, "Membername": "AipHeartBeat", "name": "AIP heartbeat events" },
+    {
+      "value": 98,
+      "Membername": "MCASAlerts",
+      "name": "Events corresponding to alerts triggered by Microsoft Cloud App Security."
+    },
+    {
+      "value": 99,
+      "Membername": "OnPremisesFileShareScannerDlp",
+      "name": "Events related to scanning for sensitive data on file shares."
+    },
+    {
+      "value": 100,
+      "Membername": "OnPremisesSharePointScannerDlp",
+      "name": "Events related to scanning for sensitive data in SharePoint."
+    },
+    {
+      "value": 101,
+      "Membername": "ExchangeSearch",
+      "name": "Events related to using Outlook on the web (OWA) to search for mailbox items."
+    },
+    {
+      "value": 102,
+      "Membername": "SharePointSearch",
+      "name": "Events related to searching an organization's SharePoint home site."
+    },
+    { "value": 103, "Membername": "PrivacyInsights", "name": "Privacy insight events." },
+    { "value": 105, "Membername": "MyAnalyticsSettings", "name": "MyAnalytics events." },
+    {
+      "value": 106,
+      "Membername": "SecurityComplianceUserChange",
+      "name": "Events related to modifying or deleting a user."
+    },
+    {
+      "value": 107,
+      "Membername": "ComplianceDLPExchangeClassification",
+      "name": "Exchange DLP classification events."
+    },
+    {
+      "value": 109,
+      "Membername": "MipExactDataMatch",
+      "name": "Exact Data Match (EDM) classification events."
+    },
+    {
+      "value": 113,
+      "Membername": "MS365DCustomDetection",
+      "name": "Events related to custom detection actions in Microsoft 365 Defender."
+    },
+    {
+      "value": 147,
+      "Membername": "CoreReportingSettings",
+      "name": "Reports settings events."
+    },
+    {
+      "value": 148,
+      "Membername": "ComplianceConnector",
+      "name": "Events related to importing non-Microsoft data using data connectors in the Microsoft Purview compliance portal."
+    },
+    {
+      "value": 154,
+      "Membername": "OMEPortal",
+      "name": "Encrypted message portal event logs generated by external recipients."
+    },
+    {
+      "value": 174,
+      "Membername": "DataShareOperation",
+      "name": "Events related to sharing of data ingested via SystemSync."
+    },
+    {
+      "value": 181,
+      "Membername": "EduDataLakeDownloadOperation",
+      "name": "Events related to the export of SystemSync ingested data from the lake."
+    },
+    {
+      "value": 183,
+      "Membername": "MicrosoftGraphDataConnectOperation",
+      "name": "Events related to extractions done by Microsoft Graph Data Connect."
+    },
+    {
+      "value": 186,
+      "Membername": "PowerPagesSite",
+      "name": "Activities related to Power Pages site."
+    },
+    { "value": 188, "Membername": "PlannerPlan", "name": "Microsoft Planner plan events." },
+    {
+      "value": 189,
+      "Membername": "PlannerCopyPlan",
+      "name": "Microsoft Planner copy plan events."
+    },
+    { "value": 190, "Membername": "PlannerTask", "name": "Microsoft Planner task events." },
+    {
+      "value": 191,
+      "Membername": "PlannerRoster",
+      "name": "Microsoft Planner roster and roster membership events."
+    },
+    {
+      "value": 192,
+      "Membername": "PlannerPlanList",
+      "name": "Microsoft Planner plan list events."
+    },
+    {
+      "value": 193,
+      "Membername": "PlannerTaskList",
+      "name": "Microsoft Planner task list events."
+    },
+    {
+      "value": 194,
+      "Membername": "PlannerTenantSettings",
+      "name": "Microsoft Planner tenant settings events."
+    },
+    {
+      "value": 195,
+      "Membername": "ProjectForThewebProject",
+      "name": "Microsoft Project for the web project events."
+    },
+    {
+      "value": 196,
+      "Membername": "ProjectForThewebTask",
+      "name": "Microsoft Project for the web task events."
+    },
+    {
+      "value": 197,
+      "Membername": "ProjectForThewebRoadmap",
+      "name": "Microsoft Project for the web roadmap events."
+    },
+    {
+      "value": 198,
+      "Membername": "ProjectForThewebRoadmapItem",
+      "name": "Microsoft Project for the web roadmap item events."
+    },
+    {
+      "value": 199,
+      "Membername": "ProjectForThewebProjectSettings",
+      "name": "Microsoft Project for the web project tenant settings events."
+    },
+    {
+      "value": 200,
+      "Membername": "ProjectForThewebRoadmapSettings",
+      "name": "Microsoft Project for the web roadmap tenant settings events."
+    },
+    { "value": 216, "Membername": "Viva Goals", "name": "Viva Goals events." },
+    {
+      "value": 217,
+      "Membername": "MicrosoftGraphDataConnectConsent",
+      "name": "Events for consent actions performed by tenant admins for Microsoft Graph Data Connect applications."
+    },
+    {
+      "value": 218,
+      "Membername": "AttackSimAdmin",
+      "name": "Events related to admin activities in Attack Simulation & Training in Microsoft Defender for Office 365."
+    },
+    { "value": 230, "Membername": "TeamsUpStrings", "name": "Teams UpStrings App Events." },
+    {
+      "value": 231,
+      "Membername": "PlannerRosterSensitivityLabel",
+      "name": "Microsoft Planner roster sensitivity label events."
+    },
+    {
+      "value": 237,
+      "Membername": "DefenderExpertsforXDRAdmin",
+      "name": "Microsoft Defender Experts Administrator action events."
+    },
+    {
+      "value": 251,
+      "Membername": "VfamCreatePolicy",
+      "name": "Viva Access Management policy create events."
+    },
+    {
+      "value": 252,
+      "Membername": "VfamUpStringPolicy",
+      "name": "Viva Access Management policy upString events."
+    },
+    {
+      "value": 253,
+      "Membername": "VfamDeletePolicy",
+      "name": "Viva Access Management policy delete events."
+    },
+    {
+      "value": 261,
+      "Membername": "CopilotInteraction",
+      "name": "Copilot interaction events."
+    }
+  ],
+  "List:countryList": [
+    { "value": "AF", "name": "Afghanistan" },
+    { "value": "AX", "name": "\u00c5land Islands" },
+    { "value": "AL", "name": "Albania" },
+    { "value": "DZ", "name": "Algeria" },
+    { "value": "AS", "name": "American Samoa" },
+    { "value": "AD", "name": "Andorra" },
+    { "value": "AO", "name": "Angola" },
+    { "value": "AI", "name": "Anguilla" },
+    { "value": "AQ", "name": "Antarctica" },
+    { "value": "AG", "name": "Antigua and Barbuda" },
+    { "value": "AR", "name": "Argentina" },
+    { "value": "AM", "name": "Armenia" },
+    { "value": "AW", "name": "Aruba" },
+    { "value": "AC", "name": "Ascension Island" },
+    { "value": "AU", "name": "Australia" },
+    { "value": "AT", "name": "Austria" },
+    { "value": "AZ", "name": "Azerbaijan" },
+    { "value": "BS", "name": "Bahamas" },
+    { "value": "BH", "name": "Bahrain" },
+    { "value": "BD", "name": "Bangladesh" },
+    { "value": "BB", "name": "Barbados" },
+    { "value": "BY", "name": "Belarus" },
+    { "value": "BE", "name": "Belgium" },
+    { "value": "BZ", "name": "Belize" },
+    { "value": "BJ", "name": "Benin" },
+    { "value": "BM", "name": "Bermuda" },
+    { "value": "BT", "name": "Bhutan" },
+    { "value": "BO", "name": "Bolivia, Plurinational State of" },
+    { "value": "BQ", "name": "Bonaire, Sint Eustatius and Saba" },
+    { "value": "BA", "name": "Bosnia and Herzegovina" },
+    { "value": "BW", "name": "Botswana" },
+    { "value": "BV", "name": "Bouvet Island" },
+    { "value": "BR", "name": "Brazil" },
+    { "value": "IO", "name": "British Indian Ocean Territory" },
+    { "value": "BN", "name": "Brunei Darussalam" },
+    { "value": "BG", "name": "Bulgaria" },
+    { "value": "BF", "name": "Burkina Faso" },
+    { "value": "BI", "name": "Burundi" },
+    { "value": "KH", "name": "Cambodia" },
+    { "value": "CM", "name": "Cameroon" },
+    { "value": "CA", "name": "Canada" },
+    { "value": "CV", "name": "Cape Verde" },
+    { "value": "KY", "name": "Cayman Islands" },
+    { "value": "CF", "name": "Central African Republic" },
+    { "value": "TD", "name": "Chad" },
+    { "value": "CL", "name": "Chile" },
+    { "value": "CN", "name": "China" },
+    { "value": "CX", "name": "Christmas Island" },
+    { "value": "CC", "name": "Cocos (Keeling) Islands" },
+    { "value": "CO", "name": "Colombia" },
+    { "value": "KM", "name": "Comoros" },
+    { "value": "CG", "name": "Congo" },
+    { "value": "CD", "name": "Congo, the Democratic Republic of the" },
+    { "value": "CK", "name": "Cook Islands" },
+    { "value": "CR", "name": "Costa Rica" },
+    { "value": "CI", "name": "C\u00f4te d'Ivoire" },
+    { "value": "HR", "name": "Croatia" },
+    { "value": "CU", "name": "Cuba" },
+    { "value": "CW", "name": "Cura\u00e7ao" },
+    { "value": "CY", "name": "Cyprus" },
+    { "value": "CZ", "name": "Czech Republic" },
+    { "value": "DK", "name": "Denmark" },
+    { "value": "DG", "name": "Diego Garcia" },
+    { "value": "DJ", "name": "Djibouti" },
+    { "value": "DM", "name": "Dominica" },
+    { "value": "DO", "name": "Dominican Republic" },
+    { "value": "EC", "name": "Ecuador" },
+    { "value": "EG", "name": "Egypt" },
+    { "value": "SV", "name": "El Salvador" },
+    { "value": "GQ", "name": "Equatorial Guinea" },
+    { "value": "ER", "name": "Eritrea" },
+    { "value": "EE", "name": "Estonia" },
+    { "value": "ET", "name": "Ethiopia" },
+    { "value": "FK", "name": "Falkland Islands (Malvinas)" },
+    { "value": "FO", "name": "Faroe Islands" },
+    { "value": "FJ", "name": "Fiji" },
+    { "value": "FI", "name": "Finland" },
+    { "value": "FR", "name": "France" },
+    { "value": "GF", "name": "French Guiana" },
+    { "value": "PF", "name": "French Polynesia" },
+    { "value": "TF", "name": "French Southern Territories" },
+    { "value": "GA", "name": "Gabon" },
+    { "value": "GM", "name": "Gambia" },
+    { "value": "GE", "name": "Georgia" },
+    { "value": "DE", "name": "Germany" },
+    { "value": "GH", "name": "Ghana" },
+    { "value": "GI", "name": "Gibraltar" },
+    { "value": "GR", "name": "Greece" },
+    { "value": "GL", "name": "Greenland" },
+    { "value": "GD", "name": "Grenada" },
+    { "value": "GP", "name": "Guadeloupe" },
+    { "value": "GU", "name": "Guam" },
+    { "value": "GT", "name": "Guatemala" },
+    { "value": "GG", "name": "Guernsey" },
+    { "value": "GN", "name": "Guinea" },
+    { "value": "GW", "name": "Guinea-Bissau" },
+    { "value": "GY", "name": "Guyana" },
+    { "value": "HT", "name": "Haiti" },
+    { "value": "HM", "name": "Heard Island and McDonald Islands" },
+    { "value": "VA", "name": "Holy See (Vatican City State)" },
+    { "value": "HN", "name": "Honduras" },
+    { "value": "HK", "name": "Hong Kong" },
+    { "value": "HU", "name": "Hungary" },
+    { "value": "IS", "name": "Iceland" },
+    { "value": "IN", "name": "India" },
+    { "value": "ID", "name": "Indonesia" },
+    { "value": "IR", "name": "Iran, Islamic Republic of" },
+    { "value": "IQ", "name": "Iraq" },
+    { "value": "IE", "name": "Ireland" },
+    { "value": "IM", "name": "Isle of Man" },
+    { "value": "IL", "name": "Israel" },
+    { "value": "IT", "name": "Italy" },
+    { "value": "JM", "name": "Jamaica" },
+    { "value": "JP", "name": "Japan" },
+    { "value": "JE", "name": "Jersey" },
+    { "value": "JO", "name": "Jordan" },
+    { "value": "KZ", "name": "Kazakhstan" },
+    { "value": "KE", "name": "Kenya" },
+    { "value": "KI", "name": "Kiribati" },
+    { "value": "KP", "name": "Korea, Democratic People's Republic of" },
+    { "value": "KR", "name": "Korea, Republic of" },
+    { "value": "XK", "name": "Kosovo" },
+    { "value": "KW", "name": "Kuwait" },
+    { "value": "KG", "name": "Kyrgyzstan" },
+    { "value": "LA", "name": "Lao People's Democratic Republic" },
+    { "value": "LV", "name": "Latvia" },
+    { "value": "LB", "name": "Lebanon" },
+    { "value": "LS", "name": "Lesotho" },
+    { "value": "LR", "name": "Liberia" },
+    { "value": "LY", "name": "Libya" },
+    { "value": "LI", "name": "Liechtenstein" },
+    { "value": "LT", "name": "Lithuania" },
+    { "value": "LU", "name": "Luxembourg" },
+    { "value": "MO", "name": "Macao" },
+    { "value": "MK", "name": "Macedonia, the Former Yugoslav Republic of" },
+    { "value": "MG", "name": "Madagascar" },
+    { "value": "MW", "name": "Malawi" },
+    { "value": "MY", "name": "Malaysia" },
+    { "value": "MV", "name": "Maldives" },
+    { "value": "ML", "name": "Mali" },
+    { "value": "MT", "name": "Malta" },
+    { "value": "MH", "name": "Marshall Islands" },
+    { "value": "MQ", "name": "Martinique" },
+    { "value": "MR", "name": "Mauritania" },
+    { "value": "MU", "name": "Mauritius" },
+    { "value": "YT", "name": "Mayotte" },
+    { "value": "MX", "name": "Mexico" },
+    { "value": "FM", "name": "Micronesia, Federated States of" },
+    { "value": "MD", "name": "Moldova, Republic of" },
+    { "value": "MC", "name": "Monaco" },
+    { "value": "MN", "name": "Mongolia" },
+    { "value": "ME", "name": "Montenegro" },
+    { "value": "MS", "name": "Montserrat" },
+    { "value": "MA", "name": "Morocco" },
+    { "value": "MZ", "name": "Mozambique" },
+    { "value": "MM", "name": "Myanmar" },
+    { "value": "NA", "name": "Namibia" },
+    { "value": "NR", "name": "Nauru" },
+    { "value": "NP", "name": "Nepal" },
+    { "value": "NL", "name": "Netherlands" },
+    { "value": "NC", "name": "New Caledonia" },
+    { "value": "NZ", "name": "New Zealand" },
+    { "value": "NI", "name": "Nicaragua" },
+    { "value": "NE", "name": "Niger" },
+    { "value": "NG", "name": "Nigeria" },
+    { "value": "NU", "name": "Niue" },
+    { "value": "NF", "name": "Norfolk Island" },
+    { "value": "MP", "name": "Northern Mariana Islands" },
+    { "value": "NO", "name": "Norway" },
+    { "value": "OM", "name": "Oman" },
+    { "value": "PK", "name": "Pakistan" },
+    { "value": "PW", "name": "Palau" },
+    { "value": "PS", "name": "Palestine, State of" },
+    { "value": "PA", "name": "Panama" },
+    { "value": "PG", "name": "Papua New Guinea" },
+    { "value": "PY", "name": "Paraguay" },
+    { "value": "PE", "name": "Peru" },
+    { "value": "PH", "name": "Philippines" },
+    { "value": "PN", "name": "Pitcairn" },
+    { "value": "PL", "name": "Poland" },
+    { "value": "PT", "name": "Portugal" },
+    { "value": "PR", "name": "Puerto Rico" },
+    { "value": "QA", "name": "Qatar" },
+    { "value": "RE", "name": "R\u00e9union" },
+    { "value": "RO", "name": "Romania" },
+    { "value": "RU", "name": "Russian Federation" },
+    { "value": "RW", "name": "Rwanda" },
+    { "value": "BL", "name": "Saint Barth\u00e9lemy" },
+    { "value": "SH", "name": "Saint Helena, Ascension and Tristan da Cunha" },
+    { "value": "KN", "name": "Saint Kitts and Nevis" },
+    { "value": "LC", "name": "Saint Lucia" },
+    { "value": "MF", "name": "Saint Martin (French part)" },
+    { "value": "PM", "name": "Saint Pierre and Miquelon" },
+    { "value": "VC", "name": "Saint Vincent and the Grenadines" },
+    { "value": "WS", "name": "Samoa" },
+    { "value": "SM", "name": "San Marino" },
+    { "value": "ST", "name": "Sao Tome and Principe" },
+    { "value": "SA", "name": "Saudi Arabia" },
+    { "value": "SN", "name": "Senegal" },
+    { "value": "RS", "name": "Serbia" },
+    { "value": "SC", "name": "Seychelles" },
+    { "value": "SL", "name": "Sierra Leone" },
+    { "value": "SG", "name": "Singapore" },
+    { "value": "SX", "name": "Sint Maarten (Dutch part)" },
+    { "value": "SK", "name": "Slovakia" },
+    { "value": "SI", "name": "Slovenia" },
+    { "value": "SB", "name": "Solomon Islands" },
+    { "value": "SO", "name": "Somalia" },
+    { "value": "ZA", "name": "South Africa" },
+    { "value": "GS", "name": "South Georgia and the South Sandwich Islands" },
+    { "value": "SS", "name": "South Sudan" },
+    { "value": "ES", "name": "Spain" },
+    { "value": "LK", "name": "Sri Lanka" },
+    { "value": "SD", "name": "Sudan" },
+    { "value": "SR", "name": "Suriname" },
+    { "value": "SJ", "name": "Svalbard and Jan Mayen" },
+    { "value": "SZ", "name": "Swaziland" },
+    { "value": "SE", "name": "Sweden" },
+    { "value": "CH", "name": "Switzerland" },
+    { "value": "SY", "name": "Syrian Arab Republic" },
+    { "value": "TW", "name": "Taiwan, Province of China" },
+    { "value": "TJ", "name": "Tajikistan" },
+    { "value": "TZ", "name": "Tanzania, United Republic of" },
+    { "value": "TH", "name": "Thailand" },
+    { "value": "TL", "name": "Timor-Leste" },
+    { "value": "TG", "name": "Togo" },
+    { "value": "TK", "name": "Tokelau" },
+    { "value": "TO", "name": "Tonga" },
+    { "value": "TT", "name": "Trinidad and Tobago" },
+    { "value": "TN", "name": "Tunisia" },
+    { "value": "TR", "name": "Turkey" },
+    { "value": "TM", "name": "Turkmenistan" },
+    { "value": "TC", "name": "Turks and Caicos Islands" },
+    { "value": "TV", "name": "Tuvalu" },
+    { "value": "UG", "name": "Uganda" },
+    { "value": "UA", "name": "Ukraine" },
+    { "value": "AE", "name": "United Arab Emirates" },
+    { "value": "GB", "name": "United Kingdom" },
+    { "value": "US", "name": "United States" },
+    { "value": "UM", "name": "United States Minor Outlying Islands" },
+    { "value": "UY", "name": "Uruguay" },
+    { "value": "UZ", "name": "Uzbekistan" },
+    { "value": "VU", "name": "Vanuatu" },
+    { "value": "VE", "name": "Venezuela, Bolivarian Republic of" },
+    { "value": "VN", "name": "Viet Nam" },
+    { "value": "VG", "name": "Virgin Islands, British" },
+    { "value": "VI", "name": "Virgin Islands, U.S." },
+    { "value": "WF", "name": "Wallis and Futuna" },
+    { "value": "EH", "name": "Western Sahara" },
+    { "value": "YE", "name": "Yemen" },
+    { "value": "ZM", "name": "Zambia" },
+    { "value": "ZW", "name": "Zimbabwe" }
+  ]
+}

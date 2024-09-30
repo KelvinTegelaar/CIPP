@@ -434,6 +434,7 @@
   --cui-dropdown-link-color: var(--cyberdrain-light);
   --cui-dropdown-link-hover-bg: var(--cyberdrain-accent-blue);
   --cui-dropdown-link-hover-color: var(--cyberdrain-light);
+  --cui-dropdown-zindex: 990;
   --cui-footer-bg: #242424;
   --cui-footer-color: var(--cyberdrain-light);
   --cui-footer-border-color: #121212;
@@ -479,7 +480,7 @@
   --cui-toast-color: var(--cui-color-black);
   --cui-toast-header-color: var(--cui-color-black);
   --cui-card-cap-color: var(--cyberdrain-white);
-  --cui-card-cap-bg: var(--cui-color-dark);
+  --cui-card-cap-bg: var(--cui-color-gray-hover);
   --cui-tertiary-bg: var(--cui-bgcolor-table-header);
   // CIPP Impact theme variables.
   --cipp-toast-bg: var(--cui-color-header-bar);
