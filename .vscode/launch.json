@@ -27,6 +27,13 @@
       "request": "launch",
       "name": "Launch Chrome Debugger",
       "url": "http://localhost:4280"
+    },
+    {
+      "type": "PowerShell",
+      "name": "Launch in Windows Terminal",
+      "request": "launch",
+      "cwd": "${cwd}",
+      "script": ". '${cwd}\\Tools\\Start-CippDevEmulators.ps1'"
     }
   ],
   "compounds": [

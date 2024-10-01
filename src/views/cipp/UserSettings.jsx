@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import {
-  CBadge,
   CButton,
   CCallout,
   CCard,
@@ -8,127 +7,107 @@ import {
   CCardHeader,
   CCardTitle,
   CCol,
-  CDropdown,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
   CForm,
-  CFormLabel,
-  CListGroup,
-  CListGroupItem,
-  CProgress,
   CRow,
   CSpinner,
-  CTooltip,
 } from '@coreui/react'
-import useQuery from 'src/hooks/useQuery'
 import { useDispatch, useSelector } from 'react-redux'
-import { Field, Form, FormSpy } from 'react-final-form'
-import {
-  Condition,
-  RFFCFormCheck,
-  RFFCFormInput,
-  RFFCFormRadio,
-  RFFCFormSwitch,
-  RFFCFormTextarea,
-  RFFSelectSearch,
-} from 'src/components/forms'
-import countryList from 'src/data/countryList'
+import { Form } from 'react-final-form'
+import { RFFCFormSwitch, RFFSelectSearch } from 'src/components/forms'
+import _nav from 'src/_nav'
 
-import {
-  useGenericGetRequestQuery,
-  useLazyGenericGetRequestQuery,
-  useLazyGenericPostRequestQuery,
-} from 'src/store/api/app'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleNotch, faEdit, faEye } from '@fortawesome/free-solid-svg-icons'
-import { CippContentCard, CippPage, CippPageList } from 'src/components/layout'
-import { password } from 'src/validators'
-import {
-  CellDate,
-  CellDelegatedPrivilege,
-  cellBadgeFormatter,
-  cellBooleanFormatter,
-  cellDateFormatter,
-} from 'src/components/tables'
-import { CellTip, cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
-import DatePicker from 'react-datepicker'
+import { useGenericGetRequestQuery, useLazyGenericPostRequestQuery } from 'src/store/api/app'
+
 import 'react-datepicker/dist/react-datepicker.css'
 import TenantListSelector from 'src/components/utilities/TenantListSelector'
-import {
-  ModalService,
-  PageSizeSwitcher,
-  TenantSelector,
-  ThemeSwitcher,
-  UsageLocation,
-} from 'src/components/utilities'
-import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
+import { PageSizeSwitcher, ThemeSwitcher, UsageLocation } from 'src/components/utilities'
 import ReportImage from 'src/components/utilities/ReportImage'
 import { useLoadClientPrincipalQuery } from 'src/store/api/auth'
-import { setOffboardingDefaults } from 'src/store/features/app'
-
-const Offcanvas = (row, rowIndex, formatExtraData) => {
-  const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
-  const [ocVisible, setOCVisible] = useState(false)
-
-  const handleDeleteSchedule = (apiurl, message) => {
-    ModalService.confirm({
-      title: 'Confirm',
-      body: <div>{message}</div>,
-      onConfirm: () => ExecuteGetRequest({ path: apiurl }),
-      confirmLabel: 'Continue',
-      cancelLabel: 'Cancel',
-    })
-  }
-  let jsonResults
-  try {
-    jsonResults = JSON.parse(row.Results)
-  } catch (error) {
-    jsonResults = row.Results
-  }
-
-  return (
-    <>
-      <CTooltip content="View Results">
-        <CButton size="sm" color="success" variant="ghost" onClick={() => setOCVisible(true)}>
-          <FontAwesomeIcon icon={'eye'} href="" />
-        </CButton>
-      </CTooltip>
-      <CTooltip content="Delete task">
-        <CButton
-          onClick={() =>
-            handleDeleteSchedule(
-              `/api/RemoveScheduledItem?&ID=${row.RowKey}`,
-              'Do you want to delete this job?',
-            )
-          }
-          size="sm"
-          variant="ghost"
-          color="danger"
-        >
-          <FontAwesomeIcon icon={'trash'} href="" />
-        </CButton>
-      </CTooltip>
-      <CippCodeOffCanvas
-        hideButton
-        title="Results"
-        row={jsonResults}
-        state={ocVisible}
-        type="TemplateResults"
-        hideFunction={() => setOCVisible(false)}
-      />
-    </>
-  )
-}
+import { setUserSettingsDefaults } from 'src/store/features/app'
+import { CippCallout } from 'src/components/layout'
 
 const UserSettings = () => {
+  const tenant = useSelector((state) => state.app.currentTenant)
+  const [addedAttributes, setAddedAttribute] = React.useState(0)
+  const [random3, setRandom3] = useState('')
+  const availableProperties = useGenericGetRequestQuery({
+    path: '/api/ListGraphRequest',
+    params: {
+      Endpoint: 'users',
+      ListProperties: true,
+      TenantFilter: tenant.defaultDomainName,
+      IgnoreErrors: true,
+    },
+  })
+  const exclusionList = [
+    'id',
+    'accountEnabled',
+    'deletedDateTime',
+    'ageGroup',
+    'businessPhones',
+    'city',
+    'createdDateTime',
+    'creationType',
+    'companyName',
+    'country',
+    'department',
+    'displayName',
+    'givenName',
+    'imAddresses',
+    'infoCatalogs',
+    'isLicenseReconciliationNeeded',
+    'isManagementRestricted',
+    'isResourceAccount',
+    'jobTitle',
+    'mail',
+    'mailNickname',
+    'mobilePhone',
+    'onPremisesDistinguishedName',
+    'onPremisesDomainName',
+    'onPremisesImmutableId',
+    'onPremisesLastSyncDateTime',
+    'onPremisesObjectIdentifier',
+    'onPremisesSecurityIdentifier',
+    'onPremisesSamAccountName',
+    'onPremisesSyncEnabled',
+    'onPremisesUserPrincipalName',
+    'passwordPolicies',
+    'postalCode',
+    'preferredDataLocation',
+    'preferredLanguage',
+    'proxyAddresses',
+    'refreshTokensValidFromDateTime',
+    'securityIdentifier',
+    'signInSessionsValidFromDateTime',
+    'streetAddress',
+    'surname',
+    'usageLocation',
+    'userPrincipalName',
+    'externalUserConvertedOn',
+    'externalUserState',
+    'externalUserStateChangeDateTime',
+    'userType',
+    'employeeOrgData',
+    'assignedLicenses',
+    'assignedPlans',
+    'authorizationInfo',
+    'cloudRealtimeCommunicationInfo',
+    'deviceKeys',
+    'identities',
+    'onPremisesExtensionAttributes',
+    'onPremisesProvisioningErrors',
+    'onPremisesSipInfo',
+    'passwordProfile',
+    'provisionedPlans',
+    'serviceProvisioningErrors',
+  ]
   const [genericPostRequest, postResults] = useLazyGenericPostRequestQuery()
   const { data: profile, isFetching, isLoading } = useLoadClientPrincipalQuery()
   const dispatch = useDispatch()
   const currentSettings = useSelector((state) => state.app)
 
   const onSubmit = (values) => {
-    dispatch(setOffboardingDefaults({ offboardingDefaults: values }))
+    dispatch(setUserSettingsDefaults({ userSettingsDefaults: values }))
     const shippedvalues = {
       user: values.user,
       currentSettings: currentSettings,
@@ -152,7 +131,7 @@ const UserSettings = () => {
             </CCardHeader>
             <CCardBody>
               <Form
-                initialValues={{ ...currentSettings.offboardingDefaults }}
+                initialValues={{ ...currentSettings.userSettingsDefaults }}
                 onSubmit={onSubmit}
                 render={({ handleSubmit, form, submitting, values }) => {
                   return (
@@ -177,29 +156,87 @@ const UserSettings = () => {
                       <CRow className="mb-3">
                         <h3 className="underline mb-5">Offboarding Defaults</h3>
                         <CCol>
-                          <RFFCFormSwitch name="RevokeSessions" label="Revoke all sessions" />
-                          <RFFCFormSwitch name="RemoveMobile" label="Remove all Mobile Devices" />
-                          <RFFCFormSwitch name="RemoveRules" label="Remove all Rules" />
-                          <RFFCFormSwitch name="RemoveLicenses" label="Remove Licenses" />
-                          <RFFCFormSwitch
-                            name="HideFromGAL"
-                            label="Hide from Global Address List"
-                          />
-                        </CCol>
-                        <CCol>
                           <RFFCFormSwitch
                             name="ConvertToShared"
                             label="Convert to Shared Mailbox"
                           />
-                          <RFFCFormSwitch name="DisableSignIn" label="Disable Sign in" />
-                          <RFFCFormSwitch name="ResetPass" label="Reset Password" />
-                          <RFFCFormSwitch name="RemoveGroups" label="Remove from all groups" />
-
+                          <RFFCFormSwitch
+                            name="HideFromGAL"
+                            label="Hide from Global Address List"
+                          />
+                          <RFFCFormSwitch
+                            name="removeCalendarInvites"
+                            label="Cancel all calendar invites"
+                          />
+                          <RFFCFormSwitch
+                            name="removePermissions"
+                            label="Remove users mailbox permissions"
+                          />
+                          <RFFCFormSwitch name="RemoveRules" label="Remove all Rules" />
                           <RFFCFormSwitch
                             name="keepCopy"
                             label="Keep copy of forwarded mail in source mailbox"
                           />
+                          <RFFCFormSwitch name="RemoveMobile" label="Remove all Mobile Devices" />
                         </CCol>
+                        <CCol>
+                          <RFFCFormSwitch name="RemoveGroups" label="Remove from all groups" />
+                          <RFFCFormSwitch name="RemoveLicenses" label="Remove Licenses" />
+                          <RFFCFormSwitch name="RevokeSessions" label="Revoke all sessions" />
+                          <RFFCFormSwitch name="DisableSignIn" label="Disable Sign in" />
+                          <RFFCFormSwitch name="ResetPass" label="Reset Password" />
+                          <RFFCFormSwitch name="DeleteUser" label="Delete user" />
+                        </CCol>
+                      </CRow>
+                      <CRow className="mb-3">
+                        <h3 className="underline mb-5">New User Attribute Defaults</h3>
+                        <div className="mb-3">
+                          <RFFSelectSearch
+                            name="defaultAttributes"
+                            label="Select the attributes you want as defaults on the Add User or Edit User forms"
+                            placeholder="Select Attributes"
+                            retainInput={true}
+                            multi={true}
+                            values={
+                              availableProperties?.data?.Results?.filter(
+                                (prop) => !exclusionList.includes(prop),
+                              )?.map((prop) => ({
+                                name: prop,
+                                value: prop,
+                              })) ?? []
+                            }
+                            allowCreate={true}
+                            refreshFunction={() =>
+                              setRandom3((Math.random() + 1).toString(36).substring(7))
+                            }
+                            isLoading={availableProperties.isFetching}
+                          />
+                        </div>
+                      </CRow>
+                      <CRow className="mb-3">
+                        <h3 className="underline mb-5">Favourite Menu Items</h3>
+                        <div className="mb-3">
+                          <RFFSelectSearch
+                            name="favourites"
+                            label="Select the menu items you'd like as favourites"
+                            placeholder="Select items"
+                            retainInput={true}
+                            multi={true}
+                            values={_nav
+                              .reduce((acc, val) => acc.concat(val.items), [])
+                              //only map if 'name' property is not null
+                              .filter((item) => item?.name)
+                              .map((item) => ({
+                                name: item?.name,
+                                value: { to: item?.to, name: item?.name },
+                              }))}
+                            allowCreate={false}
+                            refreshFunction={() =>
+                              setRandom3((Math.random() + 1).toString(36).substring(7))
+                            }
+                            isLoading={availableProperties.isFetching}
+                          />
+                        </div>
                       </CRow>
                       <CRow className="mb-3">
                         <CCol className="mb-3" md={6}>
@@ -211,7 +248,8 @@ const UserSettings = () => {
                             name="singleuser"
                             type="submit"
                           >
-                            Save Settings {submitting && <CSpinner size="sm" color="primary" />}
+                            Save Settings
+                            {postResults.isFetching && <CSpinner size="sm" />}
                           </CButton>
                           {
                             //if the role contains admin, show the all user button. //
@@ -225,12 +263,21 @@ const UserSettings = () => {
                                 type="submit"
                               >
                                 Save for all users
-                                {submitting && <CSpinner size="sm" color="primary" />}
+                                {postResults.isFetching && <CSpinner size="sm" />}
                               </CButton>
                             )
                           }
                         </CCol>
                       </CRow>
+                      {postResults.isError && (
+                        <CCallout color="danger">
+                          <h4>Error</h4>
+                          <p>{postResults.error.message}</p>
+                        </CCallout>
+                      )}
+                      {postResults.isSuccess && (
+                        <CippCallout color="success">{postResults.data[0]?.Results}</CippCallout>
+                      )}
                     </CForm>
                   )
                 }}

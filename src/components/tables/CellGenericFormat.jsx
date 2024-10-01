@@ -7,6 +7,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { CBadge, CTooltip } from '@coreui/react'
 import CellBoolean from 'src/components/tables/CellBoolean.jsx'
+import cellTable from './CellTable'
 
 const IconWarning = () => <FontAwesomeIcon icon={faExclamationCircle} className="text-warning" />
 const IconError = () => <FontAwesomeIcon icon={faTimesCircle} className="text-danger" />
@@ -23,13 +24,17 @@ function nocolour(iscolourless, content) {
 export function CellTip(cell, overflow = false) {
   return (
     <CTooltip content={String(cell)}>
-      <div className="celltip-content-nowrap">{String(cell)}</div>
+      {overflow ? (
+        <div className="celltip-content">{String(cell)}</div>
+      ) : (
+        <div className="celltip-content-nowrap">{String(cell)}</div>
+      )}
     </CTooltip>
   )
 }
 
 export const cellGenericFormatter =
-  ({ warning = false, reverse = false, colourless = true, noDataIsFalse } = {}) =>
+  ({ warning = false, reverse = false, colourless = true, noDataIsFalse, wrap = false } = {}) =>
   // eslint-disable-next-line react/display-name
   (row, index, column, id) => {
     const cell = column.selector(row)
@@ -44,7 +49,15 @@ export const cellGenericFormatter =
         return <CBadge color="danger">{CellTip('Failed to retrieve from API')}</CBadge>
       }
       if (cell.toLowerCase().startsWith('http')) {
-        return <a href={`${cell}`}>URL</a>
+        return (
+          <a href={`${cell}`} target="_blank" rel="noreferrer">
+            URL
+          </a>
+        )
+      }
+
+      if (wrap) {
+        return CellTip(cell, true)
       }
       return CellTip(cell)
     }
@@ -52,6 +65,7 @@ export const cellGenericFormatter =
       return <CBadge color="info">{CellTip(cell)}</CBadge>
     }
     if (Array.isArray(cell) || typeof cell === 'object') {
-      return CellTip(JSON.stringify(cell))
+      //return CellTip(JSON.stringify(cell))
+      return cellTable(row, cell)
     }
   }

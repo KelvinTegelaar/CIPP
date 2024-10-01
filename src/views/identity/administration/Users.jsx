@@ -15,9 +15,12 @@ import CippGraphUserFilter from 'src/components/utilities/CippGraphUserFilter'
 const Offcanvas = (row, rowIndex, formatExtraData) => {
   const tenant = useSelector((state) => state.app.currentTenant)
   const [ocVisible, setOCVisible] = useState(false)
-  const viewLink = `/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}&userEmail=${row.userPrincipalName}`
-  const editLink = `/identity/administration/users/edit?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`
-  const OffboardLink = `/identity/administration/offboarding-wizard?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`
+  const viewLink = row?.tenant
+    ? `/identity/administration/users/view?userId=${row.id}&tenantDomain=${row.Tenant}&userEmail=${row.userPrincipalName}`
+    : `/identity/administration/users/view?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}&userEmail=${row.userPrincipalName}`
+  const editLink = row?.tenant
+    ? `/identity/administration/users/edit?userId=${row.id}&tenantDomain=${row.Tenant}`
+    : `/identity/administration/users/edit?userId=${row.id}&tenantDomain=${tenant.defaultDomainName}`
   const entraLink = `https://entra.microsoft.com/${tenant.defaultDomainName}/#view/Microsoft_AAD_UsersAndTenants/UserProfileMenuBlade/~/UserAuthMethods/userId/${row.id}/hidePreviewBanner~/true`
 
   let licenses = []
@@ -31,7 +34,6 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
   })
   var licJoined = licenses.join(', ')
 
-  //console.log(row)
   return (
     <>
       <Link to={viewLink}>
@@ -89,11 +91,6 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             color: 'info',
           },
           {
-            label: 'Offboard User',
-            link: OffboardLink,
-            color: 'info',
-          },
-          {
             label: 'Create Temporary Access Password',
             color: 'info',
             modal: true,
@@ -102,10 +99,10 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
           },
           {
             label: 'Rerequire MFA registration',
-            link: entraLink,
             color: 'info',
-            target: '_blank',
-            external: true,
+            modal: true,
+            modalUrl: `/api/ExecResetMFA?TenantFilter=${tenant.defaultDomainName}&ID=${row.userPrincipalName}`,
+            modalMessage: 'Are you sure you want to reset MFA for this user?',
           },
           {
             label: 'Send MFA Push',
@@ -113,6 +110,26 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modal: true,
             modalUrl: `/api/ExecSendPush?TenantFilter=${tenant.defaultDomainName}&UserEmail=${row.userPrincipalName}`,
             modalMessage: 'Are you sure you want to send a MFA request?',
+          },
+          {
+            label: 'Set Per-User MFA',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecPerUserMFA`,
+            modalType: 'POST',
+            modalBody: {
+              TenantFilter: tenant.defaultDomainName,
+              userId: `${row.userPrincipalName}`,
+            },
+            modalMessage: 'Are you sure you want to set per-user MFA for these users?',
+            modalDropdown: {
+              url: '/MFAStates.json',
+              labelField: 'label',
+              valueField: 'value',
+              addedField: {
+                State: 'value',
+              },
+            },
           },
           {
             label: 'Convert to Shared Mailbox',
@@ -134,11 +151,59 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             },
             modalUrl: `/api/ExecOneDriveShortCut`,
             modalDropdown: {
-              url: `/api/listSites?TenantFilter=${tenant.defaultDomainName}&type=SharePointSiteUsage`,
+              url: `/api/listSites?TenantFilter=${tenant.defaultDomainName}&type=SharePointSiteUsage&URLOnly=true`,
               labelField: 'URL',
               valueField: 'URL',
             },
             modalMessage: 'Select the sharepoint site to create a shortcut for',
+          },
+          {
+            label: 'Add to group',
+            color: 'info',
+            modal: true,
+            modalType: 'POST',
+            modalBody: {
+              Addmember: {
+                value: row.userPrincipalName,
+              },
+              TenantId: tenant.defaultDomainName,
+            },
+            modalUrl: `/api/EditGroup`,
+            modalDropdown: {
+              url: `/api/listGroups?TenantFilter=${tenant.defaultDomainName}`,
+              labelField: 'displayName',
+              valueField: 'id',
+              addedField: {
+                groupId: 'id',
+                groupType: 'calculatedGroupType',
+                groupName: 'displayName',
+              },
+            },
+            modalMessage: 'Select the group to add the user to',
+          },
+          {
+            label: 'Remove from group',
+            color: 'info',
+            modal: true,
+            modalType: 'POST',
+            modalBody: {
+              Removemember: {
+                value: row.userPrincipalName,
+              },
+              TenantId: tenant.defaultDomainName,
+            },
+            modalUrl: `/api/EditGroup`,
+            modalDropdown: {
+              url: `/api/listGroups?TenantFilter=${tenant.defaultDomainName}`,
+              labelField: 'displayName',
+              valueField: 'id',
+              addedField: {
+                groupId: 'id',
+                groupType: 'calculatedGroupType',
+                groupName: 'displayName',
+              },
+            },
+            modalMessage: 'Select the group to remove the user from',
           },
           {
             label: 'Enable Online Archive',
@@ -182,11 +247,13 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modal: true,
             modalType: 'POST',
             modalBody: {
-              user: row.userPrincipalName,
+              username: row.userPrincipalName,
+              userid: row.userPrincipalName,
               TenantFilter: tenant.defaultDomainName,
+              DisableForwarding: true,
               message: row.message,
             },
-            modalUrl: `/api/ExecDisableEmailForward`,
+            modalUrl: `/api/ExecEmailForward`,
             modalMessage: 'Are you sure you want to disable forwarding of this users emails?',
           },
           {
@@ -208,7 +275,8 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             color: 'info',
             modal: true,
             modalUrl: `/api/ExecResetPass?MustChange=true&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}&displayName=${row.displayName}`,
-            modalMessage: 'Are you sure you want to reset the password for this user?',
+            modalMessage:
+              'Are you sure you want to reset the password for this user? The user must change their password at next logon.',
           },
           {
             label: 'Reset Password',
@@ -216,6 +284,13 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modal: true,
             modalUrl: `/api/ExecResetPass?MustChange=false&TenantFilter=${tenant.defaultDomainName}&ID=${row.id}&displayName=${row.displayName}`,
             modalMessage: 'Are you sure you want to reset the password for this user?',
+          },
+          {
+            label: 'Pre-provision OneDrive',
+            color: 'info',
+            modal: true,
+            modalUrl: `/api/ExecOneDriveProvision?TenantFilter=${tenant.defaultDomainName}&UserPrincipalName=${row.userPrincipalName}`,
+            modalMessage: 'Are you sure you want to pre-provision OneDrive for this user??',
           },
           {
             label: 'Clear ImmutableId',
@@ -228,7 +303,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             label: 'Revoke all user sessions',
             color: 'danger',
             modal: true,
-            modalUrl: `/api/ExecRevokeSessions?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}`,
+            modalUrl: `/api/ExecRevokeSessions?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}&Username=${row.userPrincipalName}`,
             modalMessage: 'Are you sure you want to revoke this users sessions?',
           },
           {
@@ -356,6 +431,7 @@ const Users = (row) => {
       name: 'id',
       selector: (row) => row['id'],
       omit: true,
+      exportSelector: 'id',
     },
     {
       name: 'Actions',
@@ -382,6 +458,13 @@ const Users = (row) => {
           title="Invite Guest"
         />
       </div>
+      <div style={{ marginLeft: '10px' }}>
+        <TitleButton
+          key="Invite-Bulk"
+          href="/identity/administration/users/addbulk"
+          title="Bulk Add"
+        />
+      </div>
     </div>
   )
 
@@ -394,11 +477,12 @@ const Users = (row) => {
         filterlist: [
           { filterName: 'Enabled users', filter: '"accountEnabled":true' },
           { filterName: 'Disabled users', filter: '"accountEnabled":false' },
-          { filterName: 'AAD users', filter: '"onPremisesSyncEnabled":false' },
+          { filterName: 'AAD users', filter: 'Complex: onPremisesSyncEnabled ne True' },
           {
             filterName: 'Synced users',
             filter: '"onPremisesSyncEnabled":true',
           },
+          { filterName: 'Non-guest users', filter: 'Complex: usertype ne Guest' },
           { filterName: 'Guest users', filter: '"usertype":"guest"' },
           {
             filterName: 'Users with a license',
@@ -427,6 +511,7 @@ const Users = (row) => {
             'id,accountEnabled,businessPhones,city,createdDateTime,companyName,country,department,displayName,faxNumber,givenName,isResourceAccount,jobTitle,mail,mailNickname,mobilePhone,onPremisesDistinguishedName,officeLocation,onPremisesLastSyncDateTime,otherMails,postalCode,preferredDataLocation,preferredLanguage,proxyAddresses,showInAddressList,state,streetAddress,surname,usageLocation,userPrincipalName,userType,assignedLicenses,onPremisesSyncEnabled',
           $count: true,
           $orderby: 'displayName',
+          $top: 999,
         },
         tableProps: {
           keyField: 'id',
@@ -442,14 +527,34 @@ const Users = (row) => {
             {
               label: 'Rerequire MFA registration',
               modal: true,
-              modalUrl: `/api/ExecResetMFA?TenantFilter=!Tenant&ID=!id`,
-              modalMessage: 'Are you sure you want to enable MFA for these users?',
+              modalUrl: `/api/ExecResetMFA?TenantFilter=!Tenant&ID=!userPrincipalName`,
+              modalMessage: 'Are you sure you want to reset MFA for these users?',
+            },
+            {
+              label: 'Set Per-User MFA',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecPerUserMFA`,
+              modalType: 'POST',
+              modalBody: {
+                TenantFilter: tenant.defaultDomainName,
+                userId: '!userPrincipalName',
+              },
+              modalMessage: 'Are you sure you want to set per-user MFA for these users?',
+              modalDropdown: {
+                url: '/MFAStates.json',
+                labelField: 'label',
+                valueField: 'value',
+                addedField: {
+                  State: 'value',
+                },
+              },
             },
             {
               label: 'Enable Online Archive',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecEnableArchive?TenantFilter=!Tenant&ID=!id`,
+              modalUrl: `/api/ExecEnableArchive?TenantFilter=!Tenant&ID=!userPrincipalName`,
               modalMessage: 'Are you sure you want to enable the online archive for these users?',
             },
             {
@@ -465,8 +570,7 @@ const Users = (row) => {
               color: 'info',
               modal: true,
               modalUrl: `/api/ExecResetPass?MustChange=false&TenantFilter=!Tenant&ID=!userPrincipalName&displayName=!displayName`,
-              modalMessage:
-                'Are you sure you want to reset the password for these users? The users must change their password at next logon.',
+              modalMessage: 'Are you sure you want to reset the password for these users?',
             },
             {
               label: 'Block signin',
@@ -486,7 +590,7 @@ const Users = (row) => {
               label: 'Revoke sessions',
               color: 'info',
               modal: true,
-              modalUrl: `/api/ExecRevokeSessions?Enable=true&TenantFilter=!Tenant&ID=!userPrincipalName`,
+              modalUrl: `/api/ExecRevokeSessions?Enable=true&TenantFilter=!Tenant&ID=!id&Username=!userPrincipalName`,
               modalMessage: 'Are you sure you want to revoke all sessions for these users?',
             },
             {
@@ -506,6 +610,58 @@ const Users = (row) => {
                 url: `/api/listSites?TenantFilter=${tenant.defaultDomainName}&type=SharePointSiteUsage`,
                 labelField: 'URL',
                 valueField: 'URL',
+              },
+            },
+            {
+              label: 'Add to group',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                username: '!userPrincipalName',
+                userid: '!id',
+                TenantId: tenant.defaultDomainName,
+                Addmember: {
+                  value: '!userPrincipalName',
+                },
+              },
+              modalUrl: `/api/EditGroup`,
+              modalMessage: 'Select the group to add',
+              modalDropdown: {
+                url: `/api/listGroups?TenantFilter=${tenant.defaultDomainName}`,
+                labelField: 'displayName',
+                valueField: 'id',
+                addedField: {
+                  groupId: 'id',
+                  groupType: 'calculatedGroupType',
+                  groupName: 'displayName',
+                },
+              },
+            },
+            {
+              label: 'Remove from group',
+              color: 'info',
+              modal: true,
+              modalType: 'POST',
+              modalBody: {
+                username: '!userPrincipalName',
+                userid: '!id',
+                TenantId: tenant.defaultDomainName,
+                RemoveMember: {
+                  value: '!userPrincipalName',
+                },
+              },
+              modalUrl: `/api/EditGroup`,
+              modalMessage: 'Select the group to remove',
+              modalDropdown: {
+                url: `/api/listGroups?TenantFilter=${tenant.defaultDomainName}`,
+                labelField: 'displayName',
+                valueField: 'id',
+                addedField: {
+                  groupId: 'id',
+                  groupType: 'calculatedGroupType',
+                  groupName: 'displayName',
+                },
               },
             },
             {
@@ -541,12 +697,22 @@ const Users = (row) => {
               modal: true,
               modalType: 'POST',
               modalBody: {
-                user: '!userPrincipalName',
+                username: '!userPrincipalName',
+                userid: '!userPrincipalName',
                 TenantFilter: tenant.defaultDomainName,
+                DisableForwarding: true,
               },
-              modalUrl: `/api/ExecDisableEmailForward`,
+              modalUrl: `/api/ExecEmailForward`,
               modalMessage: 'Are you sure you want to disable forwarding of these users emails?',
             },
+            {
+              label: 'Preprovision OneDrive',
+              color: 'info',
+              modal: true,
+              modalUrl: `/api/ExecOneDriveProvision?TenantFilter=!Tenant&UserPrincipalName=!userPrincipalName`,
+              modalMessage: 'Are you sure you want to preprovision onedrive for this user?',
+            },
+
             {
               label: 'Delete User',
               color: 'danger',

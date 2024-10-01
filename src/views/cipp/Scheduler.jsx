@@ -1,99 +1,121 @@
-import React, { useEffect, useState } from 'react'
-import { CButton, CCallout, CCol, CForm, CFormLabel, CRow, CSpinner, CTooltip } from '@coreui/react'
-import useQuery from 'src/hooks/useQuery'
+import React, { useCallback, useEffect, useState } from 'react'
+import { CButton, CCallout, CCol, CForm, CRow, CSpinner, CTooltip } from '@coreui/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Field, Form, FormSpy } from 'react-final-form'
 import {
-  Condition,
-  RFFCFormCheck,
   RFFCFormInput,
   RFFCFormInputArray,
-  RFFCFormRadio,
+  RFFCFormInputList,
   RFFCFormSwitch,
-  RFFCFormTextarea,
   RFFSelectSearch,
 } from 'src/components/forms'
-import countryList from 'src/data/countryList'
-
 import {
   useGenericGetRequestQuery,
   useLazyGenericGetRequestQuery,
   useLazyGenericPostRequestQuery,
 } from 'src/store/api/app'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleNotch, faEdit, faEye } from '@fortawesome/free-solid-svg-icons'
+import { faCircleNotch, faEdit } from '@fortawesome/free-solid-svg-icons'
 import { CippContentCard, CippPage, CippPageList } from 'src/components/layout'
-import { password } from 'src/validators'
-import {
-  CellDate,
-  CellDelegatedPrivilege,
-  cellBadgeFormatter,
-  cellBooleanFormatter,
-  cellDateFormatter,
-} from 'src/components/tables'
+import { cellBadgeFormatter, cellDateFormatter } from 'src/components/tables'
 import { CellTip, cellGenericFormatter } from 'src/components/tables/CellGenericFormat'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-import TenantListSelector from 'src/components/utilities/TenantListSelector'
 import { ModalService, TenantSelector } from 'src/components/utilities'
 import CippCodeOffCanvas from 'src/components/utilities/CippCodeOffcanvas'
 import arrayMutators from 'final-form-arrays'
-
-const Offcanvas = (row, rowIndex, formatExtraData) => {
-  const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
-  const [ocVisible, setOCVisible] = useState(false)
-
-  const handleDeleteSchedule = (apiurl, message) => {
-    ModalService.confirm({
-      title: 'Confirm',
-      body: <div>{message}</div>,
-      onConfirm: () => ExecuteGetRequest({ path: apiurl }),
-      confirmLabel: 'Continue',
-      cancelLabel: 'Cancel',
-    })
-  }
-  let jsonResults
-  try {
-    jsonResults = JSON.parse(row.Results)
-  } catch (error) {
-    jsonResults = row.Results
-  }
-
-  return (
-    <>
-      <CTooltip content="View Results">
-        <CButton size="sm" color="success" variant="ghost" onClick={() => setOCVisible(true)}>
-          <FontAwesomeIcon icon={'eye'} href="" />
-        </CButton>
-      </CTooltip>
-      <CTooltip content="Delete task">
-        <CButton
-          onClick={() =>
-            handleDeleteSchedule(
-              `/api/RemoveScheduledItem?&ID=${row.RowKey}`,
-              'Do you want to delete this job?',
-            )
-          }
-          size="sm"
-          variant="ghost"
-          color="danger"
-        >
-          <FontAwesomeIcon icon={'trash'} href="" />
-        </CButton>
-      </CTooltip>
-      <CippCodeOffCanvas
-        hideButton
-        title="Results"
-        row={jsonResults}
-        state={ocVisible}
-        type="TemplateResults"
-        hideFunction={() => setOCVisible(false)}
-      />
-    </>
-  )
-}
+import { useListTenantsQuery } from 'src/store/api/tenants'
+import { setCurrentTenant } from 'src/store/features/app'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { queryString } from 'src/helpers'
 
 const Scheduler = () => {
+  const [initialValues, setInitialValues] = useState({})
+  const [selectedTenant, setSelectedTenant] = useState('')
+  const [ExecuteGetRequest, getResults] = useLazyGenericGetRequestQuery()
+  const { data: tenants, isSuccess: tenantSuccess } = useListTenantsQuery({
+    showAllTenantSelector: true,
+  })
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const updateSearchParams = useCallback(
+    (params) => {
+      navigate(`${queryString(params)}`, { replace: true })
+    },
+    [navigate],
+  )
+
+  const recurrenceOptions = [
+    { value: '0', name: 'Only once' },
+    { value: '1', name: 'Every 1 day' },
+    { value: '7', name: 'Every 7 days' },
+    { value: '30', name: 'Every 30 days' },
+    { value: '365', name: 'Every 365 days' },
+  ]
+
+  const Offcanvas = (row, rowIndex, formatExtraData) => {
+    const [ocVisible, setOCVisible] = useState(false)
+
+    const handleDeleteSchedule = (apiurl, message) => {
+      ModalService.confirm({
+        title: 'Confirm',
+        body: <div>{message}</div>,
+        onConfirm: () =>
+          ExecuteGetRequest({ path: apiurl }).then((res) => {
+            setRefreshState(res.requestId)
+          }),
+        confirmLabel: 'Continue',
+        cancelLabel: 'Cancel',
+      })
+    }
+    let jsonResults
+    try {
+      jsonResults = JSON.parse(row.Results)
+    } catch (error) {
+      jsonResults = row.Results
+    }
+
+    return (
+      <>
+        <CTooltip content="View Results">
+          <CButton size="sm" color="success" variant="ghost" onClick={() => setOCVisible(true)}>
+            <FontAwesomeIcon icon={'eye'} href="" />
+          </CButton>
+        </CTooltip>
+        <CTooltip content="Copy Task">
+          <CButton size="sm" color="warning" variant="ghost" onClick={() => onCopy(row)}>
+            <FontAwesomeIcon icon="copy" href="" />
+          </CButton>
+        </CTooltip>
+        <CTooltip content="Delete task">
+          <CButton
+            onClick={() =>
+              handleDeleteSchedule(
+                `/api/RemoveScheduledItem?&ID=${row.RowKey}`,
+                'Do you want to delete this job?',
+              )
+            }
+            size="sm"
+            variant="ghost"
+            color="danger"
+          >
+            <FontAwesomeIcon icon={'trash'} href="" />
+          </CButton>
+        </CTooltip>
+        <CippCodeOffCanvas
+          hideButton
+          title="Results"
+          row={jsonResults}
+          state={ocVisible}
+          type="TemplateResults"
+          hideFunction={() => setOCVisible(false)}
+        />
+      </>
+    )
+  }
+
   const currentDate = new Date()
   const [startDate, setStartDate] = useState(currentDate)
   const tenantDomain = useSelector((state) => state.app.currentTenant.defaultDomainName)
@@ -123,6 +145,82 @@ const Scheduler = () => {
       setRefreshState(res.requestId)
     })
   }
+
+  const onCopy = (row) => {
+    // Get post execution options
+    var postExecActions = row.PostExecution.split(',')
+    // Get recurrence object
+    var recurrence = recurrenceOptions.filter((rec) => rec.value === row.Recurrence)[0]
+
+    // Convert parameters into form object
+    var parameters = {}
+    Object.keys(row?.Parameters).forEach((key) => {
+      if (typeof row?.Parameters[key] === 'object') {
+        var nestedParamList = []
+        Object.keys(row?.Parameters[key]).forEach((nestedKey) => {
+          if (nestedKey >= 0) {
+            nestedParamList.push(row?.Parameters[key][nestedKey])
+          } else {
+            nestedParamList.push({
+              Key: nestedKey,
+              Value: row?.Parameters[key][nestedKey],
+            })
+          }
+        })
+        parameters[key] = nestedParamList
+      } else {
+        parameters[key] = row?.Parameters[key]
+      }
+    })
+
+    // Convert additional properties into form object
+    var additional = []
+    var additionalProps = JSON.parse(row?.AdditionalProperties)
+    Object.keys(additionalProps).forEach((key) => {
+      console.log(key)
+      additional.push({
+        Key: key,
+        Value: additionalProps[key],
+      })
+    })
+
+    if (!recurrence) {
+      recurrence = { name: 'Only once', value: '0' }
+    }
+
+    // Set initial values
+    var formValues = {
+      taskName: row.Name,
+      command: { label: row.Command, value: row.Command },
+      Recurrence: { label: recurrence.name, value: recurrence.value },
+      additional: additional,
+      parameters: parameters,
+      webhook: postExecActions.includes('Webhook'),
+      email: postExecActions.includes('Email'),
+      psa: postExecActions.includes('PSA'),
+    }
+    setInitialValues(formValues)
+    setSelectedTenant(row.Tenant)
+  }
+
+  // Update tenant selector on copy
+  useEffect(() => {
+    if (selectedTenant !== '' && tenantSuccess) {
+      const customerId = searchParams.get('customerId')
+      const tableFilter = searchParams.get('tableFilter')
+      var newSearchParams = {}
+      if (tableFilter) {
+        newSearchParams.tableFilter = tableFilter
+      }
+      const tenant = tenants.filter((t) => t.defaultDomainName === selectedTenant)
+      if (tenant.length > 0) {
+        dispatch(setCurrentTenant({ tenant: tenant[0] }))
+        newSearchParams.customerId = tenant[0]?.customerId
+        updateSearchParams(newSearchParams)
+        setSelectedTenant('')
+      }
+    }
+  }, [selectedTenant, tenantSuccess, tenants, dispatch, searchParams, updateSearchParams])
 
   const columns = [
     {
@@ -157,7 +255,7 @@ const Scheduler = () => {
       name: 'Parameters',
       selector: (row) => row['Parameters'],
       sortable: true,
-      cell: (row) => CellTip(row['Parameters']),
+      cell: cellGenericFormatter(),
       exportSelector: 'Parameters',
     },
     {
@@ -191,7 +289,7 @@ const Scheduler = () => {
     {
       name: 'Actions',
       cell: Offcanvas,
-      maxWidth: '80px',
+      maxWidth: '100px',
     },
   ]
   return (
@@ -205,8 +303,7 @@ const Scheduler = () => {
                 mutators={{
                   ...arrayMutators,
                 }}
-                initialValues={{ taskName }}
-                initialValuesEqual={() => true}
+                initialValues={{ ...initialValues }}
                 render={({ handleSubmit, submitting, values }) => {
                   return (
                     <CForm onSubmit={handleSubmit}>
@@ -243,13 +340,7 @@ const Scheduler = () => {
                       <CRow className="mb-3">
                         <CCol>
                           <RFFSelectSearch
-                            values={[
-                              { value: '0', name: 'Only once' },
-                              { value: '1', name: 'Every 1 day' },
-                              { value: '7', name: 'Every 7 days' },
-                              { value: '30', name: 'Every 30 days' },
-                              { value: '365', name: 'Every 365 days' },
-                            ]}
+                            values={recurrenceOptions}
                             name="Recurrence"
                             placeholder="Select a recurrence"
                             label="Recurrence"
@@ -331,12 +422,22 @@ const Scheduler = () => {
                                                 key={idx}
                                               />
                                             ) : (
-                                              <RFFCFormInput
-                                                type="text"
-                                                key={idx}
-                                                name={`parameters.${param.Name}`}
-                                                label={`${param.Name}`}
-                                              />
+                                              <>
+                                                {param.Type === 'System.String[]' ? (
+                                                  <RFFCFormInputList
+                                                    name={`parameters.${param.Name}[]`}
+                                                    label={`${param.Name}`}
+                                                    key={idx}
+                                                  />
+                                                ) : (
+                                                  <RFFCFormInput
+                                                    type="text"
+                                                    key={idx}
+                                                    name={`parameters.${param.Name}`}
+                                                    label={`${param.Name}`}
+                                                  />
+                                                )}
+                                              </>
                                             )}
                                           </>
                                         )}
@@ -381,6 +482,19 @@ const Scheduler = () => {
                       {postResults.isSuccess && (
                         <CCallout color="success">
                           <li>{postResults.data.Results}</li>
+                        </CCallout>
+                      )}
+                      {getResults.isFetching && (
+                        <CCallout color="info">
+                          <CSpinner>Loading</CSpinner>
+                        </CCallout>
+                      )}
+                      {getResults.isSuccess && (
+                        <CCallout color="info">{getResults.data?.Results}</CCallout>
+                      )}
+                      {getResults.isError && (
+                        <CCallout color="danger">
+                          Could not connect to API: {getResults.error.message}
                         </CCallout>
                       )}
                     </CForm>
