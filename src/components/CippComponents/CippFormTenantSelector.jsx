@@ -1,7 +1,12 @@
 import React from "react";
 import { CippFormComponent } from "./CippFormComponent";
 
-export const CippFormTenantSelector = ({ formControl, allTenants = false, type = "multiple" }) => {
+export const CippFormTenantSelector = ({
+  formControl,
+  allTenants = false,
+  type = "multiple",
+  ...other
+}) => {
   return (
     <CippFormComponent
       type="autoComplete"
@@ -20,6 +25,7 @@ export const CippFormTenantSelector = ({ formControl, allTenants = false, type =
       validators={{
         required: { value: true, message: "This field is required" },
       }}
+      {...other}
     />
   );
 };

@@ -1,14 +1,23 @@
-
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import CippTablePage from "/src/components/CippComponents/CippTablePage";
+import { Button } from "@mui/material";
+import Link from "next/link";
 
 const Page = () => {
-  const pageTitle = "JIT Admin";
-
   return (
-    <div>
-      <h1>{pageTitle}</h1>
-      
-    </div>
+    <CippTablePage
+      cardButton={
+        <>
+          <Button component={Link} href="jit-admin/add">
+            Add JIT Admin
+          </Button>
+        </>
+      }
+      title="JIT Admin Table"
+      apiUrl="/api/ExecJITAdmin?Action=List"
+      apiDataKey="Results"
+      simpleColumns={[]}
+    />
   );
 };
 

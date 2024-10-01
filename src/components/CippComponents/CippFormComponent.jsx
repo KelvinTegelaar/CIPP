@@ -1,4 +1,14 @@
-import { Radio, Switch, TextField, Typography, Checkbox, FormControlLabel } from "@mui/material";
+import {
+  Radio,
+  Switch,
+  TextField,
+  Typography,
+  Checkbox,
+  FormControlLabel,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+} from "@mui/material";
 import { CippAutoComplete } from "./CippAutocomplete";
 import { Controller, useFormState } from "react-hook-form";
 import { DateTimePicker } from "@mui/x-date-pickers"; // Make sure to install @mui/x-date-pickers
@@ -104,9 +114,23 @@ export const CippFormComponent = (props) => {
     case "radio":
       return (
         <>
-          <div>
-            <Radio {...other} {...formControl.register(name, { ...validators })} label={label} />
-          </div>
+          <FormControl>
+            <FormLabel>{label}</FormLabel>
+            <RadioGroup {...other}>
+              {props.options.map((option, idx) => {
+                return (
+                  <FormControlLabel
+                    key={`${option.value}-${idx}`}
+                    value={option.value}
+                    defaultValue={option.value}
+                    control={<Radio />}
+                    label={option.label}
+                    {...formControl.register(name, { ...validators })}
+                  />
+                );
+              })}
+            </RadioGroup>
+          </FormControl>
           <Typography variant="subtitle3" color="error">
             {name.includes(".")
               ? errors[name.split(".")[0]]?.[name.split(".")[1]]?.message
