@@ -12,15 +12,42 @@ import {
 } from "@mui/material";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import Head from "next/head";
+import { ApiPostCall } from "../../api/ApiCall";
 
 const CippFormPage = (props) => {
-  const { title, backButtonTitle, formPageType = "Add", children, formControl, ...other } = props;
+  const {
+    title,
+    backButtonTitle,
+    formPageType = "Add",
+    children,
+    queryKey,
+    formControl,
+    postUrl,
+    customDataformatter,
+    ...other
+  } = props;
   const router = useRouter();
+
+  const postCall = ApiPostCall({
+    datafromUrl: true,
+  });
 
   const handleBackClick = () => {
     router.back(); // Navigate to the previous page when the button is clicked
   };
 
+  const handleSubmit = () => {
+    const values = formControl.getValues();
+    if (customDataformatter) {
+      customDataformatter(values);
+    }
+    console.log(values);
+    postCall.mutate({
+      url: postUrl,
+      data: values,
+      queryKey: queryKey,
+    });
+  };
   return (
     <>
       <Head>
@@ -57,7 +84,11 @@ const CippFormPage = (props) => {
             <Card>
               <CardContent>{children}</CardContent>
               <CardActions sx={{ justifyContent: "flex-end" }}>
-                <Button type="submit" variant="contained">
+                <Button
+                  onClick={formControl.handleSubmit(handleSubmit)}
+                  type="submit"
+                  variant="contained"
+                >
                   Submit
                 </Button>
               </CardActions>

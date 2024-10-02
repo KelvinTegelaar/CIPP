@@ -1,4 +1,4 @@
-import { Box, Divider, Grid, TextField } from "@mui/material";
+import { Box, Divider, Grid } from "@mui/material";
 import CippFormPage from "../../../../components/CippFormPages/CippFormPage";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippFormTenantSelector } from "../../../../components/CippComponents/CippFormTenantSelector";
@@ -12,7 +12,13 @@ const Page = () => {
   const formControl = useForm({ Mode: "onChange" });
   return (
     <>
-      <CippFormPage formControl={formControl} title="JIT Admin" backButtonTitle="JIT Admin">
+      <CippFormPage
+        queryKey={"JIT Admin Table"}
+        formControl={formControl}
+        title="JIT Admin"
+        backButtonTitle="JIT Admin"
+        postUrl="/api/ExecJitAdmin"
+      >
         <Box sx={{ my: 2 }}>
           <Grid container spacing={2}>
             <Grid item xs={12} md={12}>
@@ -28,30 +34,48 @@ const Page = () => {
               <CippFormComponent
                 type="radio"
                 label="Would you like to create a new user or assign permissions to an existing user?"
-                name="userType"
+                name="userAction"
                 row
                 formControl={formControl}
                 options={[
-                  { label: "New User", value: "NewUser" },
-                  { label: "Existing User", value: "existing" },
+                  { label: "New User", value: "create" },
+                  { label: "Existing User", value: "select" },
                 ]}
               />
               <Divider sx={{ my: 2 }} />
             </Grid>
             <CippFormCondition
               formControl={formControl}
-              field="userType"
+              field="userAction"
               compareType="is"
-              compareValue="NewUser"
+              compareValue="create"
             >
               <Grid item xs={12} md={6}>
-                <TextField fullWidth label="First Name" name="customerName" />
+                <CippFormComponent
+                  type="textField"
+                  fullWidth
+                  label="First Name"
+                  name="firstName"
+                  formControl={formControl}
+                />
               </Grid>
               <Grid item xs={12} md={6}>
-                <TextField fullWidth label="Last Name" name="customerEmail" type="email" />
+                <CippFormComponent
+                  type="textField"
+                  fullWidth
+                  label="Last Name"
+                  name="lastName"
+                  formControl={formControl}
+                />
               </Grid>
               <Grid item xs={12} md={6}>
-                <TextField fullWidth label="Username" name="Username" />
+                <CippFormComponent
+                  type="textField"
+                  fullWidth
+                  label="Username"
+                  name="userName"
+                  formControl={formControl}
+                />
               </Grid>
               <Grid item xs={12} md={6}>
                 <CippFormDomainSelector
@@ -66,9 +90,9 @@ const Page = () => {
             </CippFormCondition>
             <CippFormCondition
               formControl={formControl}
-              field="userType"
+              field="userAction"
               compareType="is"
-              compareValue="existing"
+              compareValue="select"
             >
               <Grid item xs={12} md={12}>
                 <Grid item xs={12} md={12}>
@@ -109,6 +133,14 @@ const Page = () => {
                 formControl={formControl}
               />
             </Grid>
+            <Grid item xs={12} md={12}>
+              <CippFormComponent
+                type="switch"
+                label="Generate TAP"
+                name="UseTAP"
+                formControl={formControl}
+              />
+            </Grid>
             <Grid item xs={12} md={6}>
               <CippFormComponent
                 type="autoComplete"
@@ -120,6 +152,21 @@ const Page = () => {
                   { label: "Delete User", value: "delete" },
                   { label: "Disable User", value: "disable" },
                   { label: "Remove Roles", value: "removeRoles" },
+                ]}
+                formControl={formControl}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <CippFormComponent
+                type="autoComplete"
+                fullWidth
+                label="Notification Action"
+                name="postExecution"
+                multiple={true}
+                options={[
+                  { label: "Webhook", value: "Webhook" },
+                  { label: "Email", value: "email" },
+                  { label: "PSA", value: "PSA" },
                 ]}
                 formControl={formControl}
               />
