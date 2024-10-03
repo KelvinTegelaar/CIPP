@@ -18,6 +18,7 @@ const Page = () => {
   const formControl = useForm({
     mode: "onChange",
     defaultValues: {
+      tenantFilter: userSettingsDefaults.currentTenant,
       usageLocation: userSettingsDefaults.usageLocation,
     },
   });
@@ -38,16 +39,17 @@ const Page = () => {
       if (usageLocation) {
         newFields.usageLocation = { label: usageLocation, value: usageLocation };
       }
+      newFields.tenantFilter = userSettingsDefaults.currentTenant;
       formControl.reset(newFields);
     }
   }, [formValues]);
   return (
     <>
       <CippFormPage
-        queryKey={"JIT Admin Table"}
+        queryKey={`Users-${userSettingsDefaults.currentTenant}`}
         formControl={formControl}
-        title="JIT Admin"
-        backButtonTitle="JIT Admin"
+        title="User"
+        backButtonTitle="User Overview"
         postUrl="/api/ExecJitAdmin"
       >
         <Box sx={{ my: 2 }}>

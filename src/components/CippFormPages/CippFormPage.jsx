@@ -14,6 +14,7 @@ import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import Head from "next/head";
 import { ApiPostCall } from "../../api/ApiCall";
 import { CippApiResults } from "../CippComponents/CippApiResults";
+import { useEffect } from "react";
 
 const CippFormPage = (props) => {
   const {
@@ -36,6 +37,12 @@ const CippFormPage = (props) => {
   const handleBackClick = () => {
     router.back(); // Navigate to the previous page when the button is clicked
   };
+
+  useEffect(() => {
+    if (postCall.isSuccess) {
+      formControl.reset();
+    }
+  }, [postCall.isSuccess]);
 
   const handleSubmit = () => {
     const values = formControl.getValues();
@@ -90,6 +97,7 @@ const CippFormPage = (props) => {
 
               <CardActions sx={{ justifyContent: "flex-end" }}>
                 <Button
+                  disabled={postCall.isPending}
                   onClick={formControl.handleSubmit(handleSubmit)}
                   type="submit"
                   variant="contained"

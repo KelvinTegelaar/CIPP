@@ -1,6 +1,7 @@
 import { Close } from "@mui/icons-material";
 import { Alert, CircularProgress, Collapse, IconButton, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
+import { getCippError } from "../../utils/get-cipp-error";
 
 export const CippApiResults = (props) => {
   const { apiObject } = props;
@@ -84,9 +85,7 @@ export const CippApiResults = (props) => {
               </IconButton>
             }
           >
-            {apiObject.error.response?.data?.result
-              ? apiObject.error.response?.data.result
-              : apiObject.error.message}
+            {getCippError(apiObject.error)}
           </Alert>
         )}
       </Collapse>

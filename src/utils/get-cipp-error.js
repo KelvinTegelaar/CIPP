@@ -1,5 +1,4 @@
 export const getCippError = (data) => {
-  //if type is 'text' return the error message as a string, this still needs be expanded to handle all cases.
   if (data.response?.data.result) {
     return data.response.data.result;
   }
