@@ -1,14 +1,13 @@
 import React from "react";
 import { CippFormComponent } from "./CippFormComponent";
 import { useWatch } from "react-hook-form";
+import { getCippLicenseTranslation } from "../../utils/get-cipp-license-translation";
 
-export const CippFormUserSelector = ({
+export const CippFormLicenseSelector = ({
   formControl,
   name,
   label,
-  allTenants = false,
-  multiple = false,
-  type = "multiple",
+  multiple = true,
   select,
   addedField,
   ...other
@@ -26,16 +25,15 @@ export const CippFormUserSelector = ({
         tenantFilter: currentTenant ? currentTenant.value : undefined,
         url: "/api/ListGraphRequest",
         dataKey: "Results",
-        labelField: (option) => `${option.displayName} (${option.userPrincipalName})`,
+        labelField: (option) =>
+          `${getCippLicenseTranslation([option])} (${
+            option.prepaidUnits.enabled - option.consumedUnits
+          } available)`,
         valueField: "id",
-        queryKey: `ListUsers-${currentTenant?.value}`,
+        queryKey: `ListLicenses-${currentTenant?.value}`,
         data: {
-          Endpoint: "users",
-          manualPagination: true,
-          $select: select ? select : "id,userPrincipalName,displayName",
+          Endpoint: "subscribedSkus",
           $count: true,
-          $orderby: "displayName",
-          $top: 999,
         },
       }}
     />

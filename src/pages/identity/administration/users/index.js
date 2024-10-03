@@ -2,6 +2,8 @@ import { EyeIcon } from "@heroicons/react/24/outline";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { Edit } from "@mui/icons-material";
+import { Button } from "@mui/material";
+import Link from "next/link";
 
 const Page = () => {
   const pageTitle = "Users";
@@ -215,6 +217,16 @@ const Page = () => {
     <CippTablePage
       title={pageTitle}
       apiUrl="/api/ListGraphRequest"
+      cardButton={
+        <>
+          <Button component={Link} href="users/bulk-add">
+            Bulk Add Users
+          </Button>
+          <Button component={Link} href="users/add">
+            Add User
+          </Button>
+        </>
+      }
       apiData={{
         Endpoint: "users",
         manualPagination: true,

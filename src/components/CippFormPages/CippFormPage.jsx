@@ -13,6 +13,7 @@ import {
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import Head from "next/head";
 import { ApiPostCall } from "../../api/ApiCall";
+import { CippApiResults } from "../CippComponents/CippApiResults";
 
 const CippFormPage = (props) => {
   const {
@@ -82,7 +83,11 @@ const CippFormPage = (props) => {
               </div>
             </Stack>
             <Card>
-              <CardContent>{children}</CardContent>
+              <CardContent>
+                {children}
+                <CippApiResults apiObject={postCall} />
+              </CardContent>
+
               <CardActions sx={{ justifyContent: "flex-end" }}>
                 <Button
                   onClick={formControl.handleSubmit(handleSubmit)}
