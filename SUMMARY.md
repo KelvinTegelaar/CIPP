@@ -182,7 +182,7 @@
     * [Maintenance](user-documentation/cipp/settings/maintenance.md)
     * [Notifications](user-documentation/cipp/settings/notifications.md)
     * [Super Admin](user-documentation/cipp/settings/superadmin/README.md)
-      * [Function Offloading](user-documentation/cipp/settings/superadmin/)
+      * [Function Offloading](user-documentation/cipp/settings/superadmin/function-offloading.md)
   * [Extension Settings](user-documentation/cipp/extensions/README.md)
     * [NinjaOne](user-documentation/cipp/extensions/ninjaone.md)
     * [Gradient](user-documentation/cipp/extensions/gradient.md)
