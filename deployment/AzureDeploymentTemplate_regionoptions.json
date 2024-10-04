@@ -22,13 +22,6 @@
       "metadata": {
         "description": "Your Github Repository token (see https://docs.microsoft.com/en-us/azure/static-web-apps/publish-azure-resource-manager?tabs=azure-cli#create-a-github-personal-access-token)"
       }
-    },
-    "GithubAPIRepository": {
-      "defaultValue": "https://github.com/KelvinTegelaar/CIPP-API",
-      "type": "string",
-      "metadata": {
-        "description": "URL to your Github backend fork."
-      }
     }
   },
   "variables": {
