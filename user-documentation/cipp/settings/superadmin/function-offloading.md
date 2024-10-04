@@ -43,6 +43,7 @@ Before starting, ensure you have the following:
   },
   "variables": {
     "suffix": "[substring(toLower(uniqueString(resourceGroup().id, resourceGroup().location)),0,5)]",
+    "mainFuncAppName": "[toLower(concat('cipp', variables('suffix')))]",
     "funcAppName": "[toLower(concat('cipp', variables('suffix'),'-',parameters('backendFuncType')))]",
     "funcStorageName": "[tolower(concat('cippstg', variables('suffix')))]",
     "serverFarmName": "[concat('cipp-srv-', variables('suffix'),parameters('backendFuncType'))]"
@@ -137,7 +138,7 @@ Before starting, ensure you have the following:
     },
     {
       "type": "Microsoft.KeyVault/vaults/accessPolicies",
-      "name": "[concat(parameters('funcAppName'), '/add')]",
+      "name": "[concat(variables('mainFuncAppName'), '/add')]",
       "apiVersion": "2019-09-01",
       "location": "[resourceGroup().location]",
       "dependsOn": [
