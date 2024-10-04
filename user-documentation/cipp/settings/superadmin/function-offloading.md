@@ -8,6 +8,10 @@ description: Deploying multiple function apps to increase performance
 This is an advanced configuration of CIPP currently in beta. Please proceed with caution.
 {% endhint %}
 
+{% hint style="info" %}
+Hosted CIPP users can request this deployment via the helpdesk. Once deployed, proceed to the "Enabling Function Offloading" section of this page.
+{% endhint %}
+
 ## Deploying Additional CIPP Function Apps to a Resource Group Using an ARM Template
 
 This guide explains how to deploy additional function apps for CyberDrain Improved Partner Portal (CIPP) to an existing resource group using the provided ARM template.
