@@ -4,7 +4,7 @@ description: Deploying multiple function apps to increase performance
 
 # Function Offloading
 
-{% hint style="warning" %}
+{% hint style="danger" %}
 This is an advanced configuration of CIPP currently in beta. Please proceed with caution.
 {% endhint %}
 
