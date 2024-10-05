@@ -93,7 +93,6 @@ const AddUserBulk = () => {
       return item.data
     })
     setBulkUser([...BulkUser, ...importdata])
-    // console.log(importdata)
   }
 
   const handleOnError = (err, file, inputElem, reason) => {
@@ -230,8 +229,8 @@ const AddUserBulk = () => {
           <p>
             {postResults.isSuccess && (
               <CippCodeBlock
-                code={postResults.data?.Results.map((item) => {
-                  return <li key={item}>{item}</li>
+                code={postResults.data?.map((item) => {
+                  return <li key={item.Results}>{item.Results}</li>
                 })}
                 callout={true}
                 calloutCopyValue={postResults.data?.Results}

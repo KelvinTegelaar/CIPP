@@ -57,7 +57,7 @@ const Offcanvas = (row, rowIndex, formatExtraData) => {
             modal: true,
             icon: <FontAwesomeIcon icon={faTrash} className="me-2" />,
             modalUrl: `/api/RemoveTransportRule?TenantFilter=${tenant.defaultDomainName}&GUID=${row.Guid}`,
-            modalMessage: 'Are you sure you want to disable this rule?',
+            modalMessage: 'Are you sure you want to delete this rule?',
           },
         ]}
         placement="end"
@@ -131,6 +131,10 @@ const TransportRulesList = () => {
         </>
       }
       datatable={{
+        filterlist: [
+          { filterName: 'Enabled rules', filter: 'Complex: State eq Enabled' },
+          { filterName: 'Disabled rules', filter: 'Complex: State eq Disabled' },
+        ],
         reportName: `${tenant?.defaultDomainName}-transport-rules-list`,
         path: '/api/ListTransportRules',
         params: { TenantFilter: tenant?.defaultDomainName },

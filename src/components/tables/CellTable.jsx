@@ -20,25 +20,38 @@ export default function cellTable(
     columnProp = column
   }
 
-  if (!Array.isArray(columnProp) && typeof columnProp === 'object') {
-    columnProp = Object.keys(columnProp).map((key) => {
-      return {
-        [key]: columnProp[key],
+  if (columnProp === undefined || columnProp === null) {
+    columnProp = []
+  } else {
+    var objectLength = 1
+    var lengthText = 'Item'
+    if (columnProp instanceof Array) {
+      objectLength = columnProp.length
+      if (objectLength > 1) {
+        lengthText = 'Items'
       }
-    })
-  }
+    }
 
-  if (Array.isArray(columnProp) && typeof columnProp[0] !== 'object') {
-    columnProp = columnProp.map((row) => {
-      return {
-        Value: row,
+    if (!Array.isArray(columnProp) && typeof columnProp === 'object') {
+      columnProp = Object.keys(columnProp).map((key) => {
+        return {
+          Key: key,
+          Value: columnProp[key],
+        }
+      })
+    } else {
+      if (Array.isArray(columnProp) && typeof columnProp[0] !== 'object') {
+        columnProp = columnProp.map((row) => {
+          return {
+            Value: row,
+          }
+        })
       }
-    })
+    }
   }
 
   const handleTable = ({ columnProp }) => {
     const QueryColumns = []
-
     const columns = Object.keys(columnProp[0]).map((key) => {
       QueryColumns.push({
         name: key,
@@ -89,7 +102,7 @@ export default function cellTable(
       size="sm"
       onClick={() => handleTable({ columnProp })}
     >
-      {columnProp.length} Items
+      {objectLength} {lengthText}
     </CButton>
   )
 }

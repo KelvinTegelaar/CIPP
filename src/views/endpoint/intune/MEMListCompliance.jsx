@@ -19,7 +19,6 @@ import { cellBooleanFormatter, cellDateFormatter } from 'src/components/tables'
 
 const Actions = (row, rowIndex, formatExtraData) => {
   const [ocVisible, setOCVisible] = useState(false)
-  console.log(row)
   const tenant = useSelector((state) => state.app.currentTenant)
   return (
     <>
@@ -36,7 +35,7 @@ const Actions = (row, rowIndex, formatExtraData) => {
         ]}
         actions={[
           {
-            label: 'Create template based on policy (beta)',
+            label: 'Create template based on policy ',
             color: 'info',
             modal: true,
             icon: <FontAwesomeIcon icon={faBook} className="me-2" />,
@@ -72,7 +71,7 @@ const Actions = (row, rowIndex, formatExtraData) => {
             color: 'danger',
             modal: true,
             icon: <FontAwesomeIcon icon={faTrashAlt} className="me-2" />,
-            modalUrl: `/api/RemovePolicy?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}&URLName=${row.URLName}`,
+            modalUrl: `/api/RemovePolicy?TenantFilter=${tenant.defaultDomainName}&ID=${row.id}&URLName=deviceCompliancePolicies`,
             modalMessage: 'Are you sure you want to delete this policy?',
           },
         ]}
@@ -139,6 +138,7 @@ const ComplianceList = () => {
           Endpoint: 'deviceManagement/deviceCompliancePolicies',
           $orderby: 'displayName',
           $count: true,
+          $expand: 'assignments',
         },
         columns,
         reportName: `${tenant?.defaultDomainName}-MEMPolicies-List`,
@@ -146,6 +146,15 @@ const ComplianceList = () => {
           expandableRows: true,
           expandableRowsComponent: ExpandedComponent,
           expandOnRowClicked: true,
+          selectableRows: true,
+          actionsList: [
+            {
+              label: 'Delete Policy',
+              modal: true,
+              modalUrl: `api/RemovePolicy?TenantFilter=${tenant?.defaultDomainName}&ID=!id&URLName=deviceCompliancePolicies`,
+              modalMessage: 'Are you sure you want to delete these policies?',
+            },
+          ],
         },
       }}
     />

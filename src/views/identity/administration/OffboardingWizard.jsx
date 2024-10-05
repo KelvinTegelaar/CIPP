@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { CCallout, CCol, CListGroup, CListGroupItem, CRow, CSpinner } from '@coreui/react'
+import { CCallout, CCol, CListGroup, CListGroupItem, CRow, CSpinner, CTooltip } from '@coreui/react'
 import { Field, FormSpy } from 'react-final-form'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle, faTimes, faCheck } from '@fortawesome/free-solid-svg-icons'
@@ -47,7 +47,18 @@ const OffboardingWizard = () => {
     data: users = [],
     isFetching: usersIsFetching,
     error: usersError,
-  } = useListUsersQuery({ tenantDomain })
+  } = useGenericGetRequestQuery({
+    path: `/api/ListGraphRequest`,
+    params: {
+      TenantFilter: tenantDomain,
+      Endpoint: 'users',
+      $select:
+        'id,displayName,givenName,mail,mailNickname,proxyAddresses,usageLocation,userPrincipalName,userType,assignedLicenses,onPremisesSyncEnabled',
+      $count: true,
+      $orderby: 'displayName',
+      $top: 999,
+    },
+  })
 
   const {
     data: recipients = [],
@@ -71,6 +82,7 @@ const OffboardingWizard = () => {
       HideFromGAL: values.HideFromGAL,
       DisableSignIn: values.DisableSignIn,
       RemoveGroups: values.RemoveGroups,
+      removeCalendarInvites: values.removeCalendarInvites,
       RemoveLicenses: values.RemoveLicenses,
       ResetPass: values.ResetPass,
       RevokeSessions: values.RevokeSessions,
@@ -121,7 +133,7 @@ const OffboardingWizard = () => {
           <RFFSelectSearch
             multi
             label={'Users in ' + tenantDomain}
-            values={users?.map((user) => ({
+            values={users?.Results?.map((user) => ({
               value: user.userPrincipalName,
               name: `${user.displayName} <${user.userPrincipalName}>`,
             }))}
@@ -133,7 +145,6 @@ const OffboardingWizard = () => {
             {/* eslint-disable react/prop-types */}
             {(props) => (
               <>
-                {console.log(props.values)}
                 {props.values.User?.length >= 3 && (
                   <CCallout color="warning">A maximum of three users is recommend.</CCallout>
                 )}
@@ -156,16 +167,17 @@ const OffboardingWizard = () => {
         <div className="mb-2">
           <CRow>
             <CCol className="mb-3" md={6}>
-              <RFFCFormSwitch name="RevokeSessions" label="Revoke all sessions" />
-              <RFFCFormSwitch name="RemoveMobile" label="Remove all Mobile Devices" />
-              <RFFCFormSwitch name="RemoveRules" label="Remove all Rules" />
-              <RFFCFormSwitch name="RemoveLicenses" label="Remove Licenses" />
-              <RFFCFormSwitch name="removePermissions" label="Remove users mailbox permissions" />
               <RFFCFormSwitch name="ConvertToShared" label="Convert to Shared Mailbox" />
+              <RFFCFormSwitch name="HideFromGAL" label="Hide from Global Address List" />
+              <RFFCFormSwitch name="removeCalendarInvites" label="Cancel all calendar invites" />
+              <RFFCFormSwitch name="removePermissions" label="Remove users mailbox permissions" />
+              <RFFCFormSwitch name="RemoveRules" label="Remove all Rules" />
+              <RFFCFormSwitch name="RemoveMobile" label="Remove all Mobile Devices" />
+              <RFFCFormSwitch name="RemoveGroups" label="Remove from all groups" />
+              <RFFCFormSwitch name="RemoveLicenses" label="Remove Licenses" />
+              <RFFCFormSwitch name="RevokeSessions" label="Revoke all sessions" />
               <RFFCFormSwitch name="DisableSignIn" label="Disable Sign in" />
               <RFFCFormSwitch name="ResetPass" label="Reset Password" />
-              <RFFCFormSwitch name="RemoveGroups" label="Remove from all groups" />
-              <RFFCFormSwitch name="HideFromGAL" label="Hide from Global Address List" />
               <RFFCFormSwitch name="DeleteUser" label="Delete user" />
             </CCol>
             <CCol className="mb-3" md={6}>
@@ -178,36 +190,30 @@ const OffboardingWizard = () => {
               <RFFSelectSearch
                 label="Give other user full access on mailbox without automapping"
                 multi
-                values={users
-                  ?.filter((x) => x.mail)
-                  .map((user) => ({
-                    value: user.mail,
-                    name: `${user.displayName} <${user.mail}>`,
-                  }))}
+                values={users.Results?.filter((x) => x.mail).map((user) => ({
+                  value: user.mail,
+                  name: `${user.displayName} <${user.mail}>`,
+                }))}
                 placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                 name="AccessNoAutomap"
               />
               <RFFSelectSearch
                 label="Give other user full access on mailbox with automapping"
                 multi
-                values={users
-                  ?.filter((x) => x.mail)
-                  .map((user) => ({
-                    value: user.mail,
-                    name: `${user.displayName} <${user.mail}>`,
-                  }))}
+                values={users.Results?.filter((x) => x.mail).map((user) => ({
+                  value: user.mail,
+                  name: `${user.displayName} <${user.mail}>`,
+                }))}
                 placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                 name="AccessAutomap"
               />
               <RFFSelectSearch
                 label="Give other user full access on Onedrive"
                 multi
-                values={users
-                  ?.filter((x) => x.mail)
-                  .map((user) => ({
-                    value: user.mail,
-                    name: `${user.displayName} <${user.mail}>`,
-                  }))}
+                values={users.Results?.filter((x) => x.mail).map((user) => ({
+                  value: user.mail,
+                  name: `${user.displayName} <${user.mail}>`,
+                }))}
                 placeholder={!usersIsFetching ? 'Select user' : 'Loading...'}
                 name="OnedriveAccess"
               />
@@ -297,7 +303,21 @@ const OffboardingWizard = () => {
                             className="d-flex justify-content-between align-items-center"
                           >
                             <h5 className="mb-0">Selected User:</h5>
-                            {user.value}
+                            <span>
+                              {users.Results?.find((x) => x.userPrincipalName === user.value)
+                                .onPremisesSyncEnabled === true ? (
+                                <CTooltip content="This user is AD sync enabled, offboarding will fail for some steps">
+                                  <FontAwesomeIcon
+                                    icon="triangle-exclamation"
+                                    color="yellow"
+                                    className="me-2"
+                                  />
+                                </CTooltip>
+                              ) : (
+                                ''
+                              )}
+                              {user.value}
+                            </span>
                           </CListGroupItem>
                         ))}
                       </CListGroup>
@@ -380,6 +400,14 @@ const OffboardingWizard = () => {
                           />
                         </CListGroupItem>
                         <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Cancel all calendar invites
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.removeCalendarInvites ? faCheck : faTimes}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
                           Hide from Global Address List
                           <FontAwesomeIcon
                             color="#f77f00"
@@ -425,6 +453,14 @@ const OffboardingWizard = () => {
                             color="#f77f00"
                             size="lg"
                             icon={props.values.forward ? faCheck : faTimes}
+                          />
+                        </CListGroupItem>
+                        <CListGroupItem className="d-flex justify-content-between align-items-center">
+                          Delete User
+                          <FontAwesomeIcon
+                            color="#f77f00"
+                            size="lg"
+                            icon={props.values.DeleteUser ? faCheck : faTimes}
                           />
                         </CListGroupItem>
                       </CListGroup>
