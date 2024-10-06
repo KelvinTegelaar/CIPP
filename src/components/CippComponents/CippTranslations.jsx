@@ -6,6 +6,7 @@ export const CippTranslations = {
   officePhone: "Office Phone",
   jobTitle: "Job Title",
   department: "Department",
+  surName: "Surname",
   city: "City",
   tenant: "Tenant",
   tenantFilter: "Tenant",

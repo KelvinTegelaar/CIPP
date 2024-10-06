@@ -2,9 +2,9 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { CippWizardConfirmation } from "/src/components/CippWizard/CippWizardConfirmation";
 import CippWizardPage from "/src/components/CippWizard/CippWizardPage.jsx";
 import { CippTenantStep } from "/src/components/CippWizard/CippTenantStep.jsx";
-import { CippWizardOffboarding } from "../../../../components/CippWizard/CippWizardOffboarding";
 import { useSettings } from "../../../../hooks/use-settings";
 import { CippWizardCSVImport } from "../../../../components/CippWizard/CippWizardCSVImport";
+import { CippWizardBulkOptions } from "../../../../components/CippWizard/CippWizardBulkOptions";
 
 const Page = () => {
   const initialState = useSettings();
@@ -34,7 +34,6 @@ const Page = () => {
           "displayName",
           "mailNickName",
           "domain",
-          "usageLocation",
           "JobTitle",
           "streetAddress",
           "PostalCode",
@@ -50,7 +49,7 @@ const Page = () => {
     {
       title: "Step 3",
       description: "Extra Options",
-      component: CippWizardOffboarding,
+      component: CippWizardBulkOptions,
     },
     {
       title: "Step 4",
@@ -62,7 +61,7 @@ const Page = () => {
   return (
     <>
       <CippWizardPage
-        initialState={{ ...initialState.offboardingDefaults, ...{ Scheduled: { enabled: false } } }}
+        initialState={{ usageLocation: initialState.usageLocation, bulkUser: [] }}
         steps={steps}
         postUrl="/api/ExecBulkAdd"
         wizardTitle="Bulk Add User Wizard"

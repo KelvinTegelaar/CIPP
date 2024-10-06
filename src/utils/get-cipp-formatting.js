@@ -15,6 +15,19 @@ export const getCippFormatting = (data, cellName, type) => {
       <span>{new Date(data).toLocaleString()}</span>
     );
   }
+  if (cellName === "addrow") {
+    return isText ? (
+      "No data"
+    ) : (
+      <Box component="span">
+        <Chip variant="outlined" label="No data" size="small" color="info" />
+      </Box>
+    );
+  }
+
+  if (cellName === "bulkUser") {
+    return isText ? `${data.length} new users to create` : `${data.length} new users to create`;
+  }
 
   if (data?.label) {
     return data.label;
