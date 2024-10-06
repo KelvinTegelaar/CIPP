@@ -13,6 +13,7 @@ import { CippAutoComplete } from "./CippAutocomplete";
 import { Controller, useFormState } from "react-hook-form";
 import { DateTimePicker } from "@mui/x-date-pickers"; // Make sure to install @mui/x-date-pickers
 import { Scrollbar } from "../scrollbar";
+import CSVReader from "../CSVReader";
 
 export const CippFormComponent = (props) => {
   const {
@@ -163,7 +164,36 @@ export const CippFormComponent = (props) => {
           </Typography>
         </>
       );
-
+    case "CSVReader":
+      return (
+        <>
+          <div>
+            <Controller
+              name={name}
+              control={formControl.control}
+              render={({ field }) => (
+                <>
+                  <CSVReader
+                    config={{ header: true, skipEmptyLines: true }}
+                    onFileLoaded={(data) => {
+                      field.onChange(data);
+                    }}
+                    onDrop={(data) => {
+                      field.onChange(data);
+                    }}
+                    {...other}
+                  >
+                    {label}
+                  </CSVReader>
+                </>
+              )}
+            />
+          </div>
+          <Typography variant="subtitle3" color="error">
+            {errors[name]?.message}
+          </Typography>
+        </>
+      );
     // Add case for datePicker
     case "datePicker":
       return (

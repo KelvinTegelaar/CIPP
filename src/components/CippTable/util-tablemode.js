@@ -32,7 +32,7 @@ export const utilTableMode = (columnVisibility, mode, actions, simpleColumns) =>
     };
   } else {
     return {
-      enableRowSelection: true,
+      enableRowSelection: actions ? true : false,
       enableRowActions: actions ? true : false,
       enableSelectAll: true,
       enableFacetedValues: true,

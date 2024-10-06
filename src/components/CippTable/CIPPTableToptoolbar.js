@@ -150,7 +150,7 @@ export const CIPPTableToptoolbar = ({
                     vertical: "top",
                   }}
                 >
-                  {actions.map((action, index) => (
+                  {actions?.map((action, index) => (
                     <MenuItem
                       key={index}
                       onClick={() => {

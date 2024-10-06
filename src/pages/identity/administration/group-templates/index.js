@@ -1,5 +1,7 @@
+import { Button } from "@mui/material";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import Link from "next/link";
 
 const Page = () => {
   const pageTitle = "Group Templates";
@@ -10,7 +12,7 @@ const Page = () => {
       type: "OFFCANVAS",
       offCanvasType: "GroupTemplate",
       data: {
-        GUID: "GUID", // Pass the GUID dynamically
+        GUID: "GUID",
       },
     },
     {
@@ -36,12 +38,18 @@ const Page = () => {
       apiUrl="/api/ListGroupTemplates"
       apiDataKey="Results"
       actions={actions}
+      cardButton={
+        <>
+          <Button component={Link} href="group-templates/add">
+            Add Group Template
+          </Button>
+          <Button component={Link} href="group-templates/deploy">
+            Deploy Group Template
+          </Button>
+        </>
+      }
       offCanvas={offCanvas}
       simpleColumns={["Displayname", "Description", "groupType", "GUID"]}
-      titleButton={{
-        href: "/identity/administration/group-add-template", // Add Group Template Button
-        title: "Add Group Template",
-      }}
     />
   );
 };

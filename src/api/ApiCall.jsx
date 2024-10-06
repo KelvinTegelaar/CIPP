@@ -117,7 +117,14 @@ export function ApiPostCall({
   return mutation;
 }
 
-export function ApiGetCallWithPagination({ url, queryKey, retry = 3, data, toast = false }) {
+export function ApiGetCallWithPagination({
+  url,
+  queryKey,
+  retry = 3,
+  data,
+  toast = false,
+  waiting = true,
+}) {
   const dispatch = useDispatch();
   const MAX_RETRIES = retry;
   const HTTP_STATUS_TO_NOT_RETRY = [401, 403, 404];
@@ -145,6 +152,7 @@ export function ApiGetCallWithPagination({ url, queryKey, retry = 3, data, toast
 
   const queryInfo = useInfiniteQuery({
     queryKey: [queryKey],
+    enabled: waiting,
     queryFn: async ({ pageParam = null, signal }) => {
       const response = await axios.get(url, {
         signal: signal,

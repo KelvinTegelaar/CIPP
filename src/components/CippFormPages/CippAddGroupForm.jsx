@@ -52,7 +52,7 @@ const CippAddGroupForm = (props) => {
           name="owners"
           label="Owners"
           multiple={false}
-          select={"id,userPrincipalName"}
+          select={"id,userPrincipalName,displayName"}
         />
       </Grid>
 
@@ -63,8 +63,8 @@ const CippAddGroupForm = (props) => {
           name="members"
           label="Members"
           multiple={false}
-          select={"id,userPrincipalName"}
-        />{" "}
+          select={"id,userPrincipalName,displayName"}
+        />
       </Grid>
       <Grid item xs={12}>
         <CippFormComponent
@@ -100,7 +100,7 @@ const CippAddGroupForm = (props) => {
       <CippFormCondition
         formControl={formControl}
         field="groupType"
-        compareType="is"
+        compareType="contains"
         compareValue="dynamic"
       >
         <Grid item xs={12}>

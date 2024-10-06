@@ -53,12 +53,22 @@ export const CippDataTable = (props) => {
   const [offcanvasVisible, setOffcanvasVisible] = useState(false);
   const [offCanvasData, setOffCanvasData] = useState({});
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
+  const waitingBool = api?.url ? true : false;
   const getRequestData = ApiGetCallWithPagination({
     url: api.url,
     data: { ...api.data },
     queryKey: title,
-    waiting: !!api.url,
+    waiting: waitingBool,
   });
+
+  useEffect(() => {
+    if (data) {
+      if (JSON.stringify(data) !== JSON.stringify(usedData) && data.length > 0) {
+        setUsedData(data);
+      }
+    }
+  }, [data]);
+
   useEffect(() => {
     if (getRequestData.isSuccess && !getRequestData.isFetching) {
       const lastPage = getRequestData.data?.pages[getRequestData.data.pages.length - 1];
@@ -207,7 +217,9 @@ export const CippDataTable = (props) => {
             <ResourceUnavailable message="Data not in correct format" />
           ) : (
             <>
-              {(getRequestData.isSuccess || getRequestData.data?.pages.length >= 0) && (
+              {(getRequestData.isSuccess ||
+                getRequestData.data?.pages.length >= 0 ||
+                data.length >= 1) && (
                 <MaterialReactTable
                   enableRowVirtualization
                   enableColumnVirtualization

@@ -55,6 +55,11 @@ export const CippApiDialog = (props) => {
   };
 
   const handleActionClick = (row, action, formData) => {
+    if (api.customFunction) {
+      action.customFunction(row);
+      createDialog.handleClose();
+      return;
+    }
     let data = { ...formData, ...addedFieldData };
     const processedActionData = processActionData(action.data, row);
     if (Array.isArray(row) && action.multiPost === false) {
@@ -119,6 +124,7 @@ export const CippApiDialog = (props) => {
     window.open(api.link, "_blank");
     return null;
   }
+
   return (
     <Dialog fullWidth maxWidth="sm" onClose={createDialog.handleClose} open={createDialog.open}>
       <form onSubmit={formHook.handleSubmit(onSubmit)}>
