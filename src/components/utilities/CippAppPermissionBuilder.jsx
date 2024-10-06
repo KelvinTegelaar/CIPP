@@ -60,7 +60,6 @@ const CippAppPermissionBuilder = ({
   } = useGenericGetRequestQuery({
     path: 'api/ExecServicePrincipals',
   })
-
   const [createServicePrincipal, createResult] = useLazyGenericGetRequestQuery()
 
   const removeServicePrincipal = (appId) => {
@@ -407,9 +406,17 @@ const CippAppPermissionBuilder = ({
   ])
 
   const ApiPermissionRow = ({ servicePrincipal = null }) => {
+    const {
+      data: servicePrincipalData = [],
+      isFetching: spFetching,
+      isSuccess: spIdSuccess,
+    } = useGenericGetRequestQuery({
+      path: 'api/ExecServicePrincipals?Id=' + servicePrincipal.id,
+    })
+
     return (
       <>
-        {spSuccess && servicePrincipal !== null && (
+        {spSuccess && servicePrincipal !== null && spIdSuccess && (
           <CRow>
             <CCol xl={12}>
               <CRow>
@@ -457,7 +464,7 @@ const CippAppPermissionBuilder = ({
                                       '.applicationPermissions'
                                     }
                                     label="Application Permissions"
-                                    values={servicePrincipal?.appRoles
+                                    values={servicePrincipalData?.Results?.appRoles
                                       ?.filter((role) => {
                                         return newPermissions?.Permissions[
                                           servicePrincipal.appId
@@ -524,8 +531,9 @@ const CippAppPermissionBuilder = ({
                             },
                             {
                               selector: (row) =>
-                                servicePrincipal.appRoles.find((role) => role.id === row.id)
-                                  .description,
+                                servicePrincipalData?.Results?.appRoles.find(
+                                  (role) => role.id === row.id,
+                                ).description,
                               name: 'Description',
                               cell: cellGenericFormatter({ wrap: true }),
                               maxWidth: '60%',
@@ -577,7 +585,7 @@ const CippAppPermissionBuilder = ({
               </CRow>
               <CRow>
                 <CCol xl={12}>
-                  {servicePrincipal?.publishedPermissionScopes?.length == 0 && (
+                  {servicePrincipalData?.Results?.publishedPermissionScopes?.length == 0 && (
                     <CCallout color="warning">
                       <FontAwesomeIcon icon="exclamation-triangle" className="me-2" />
                       No Published Delegated Permissions found.
@@ -594,8 +602,8 @@ const CippAppPermissionBuilder = ({
                               }
                               label="Delegated Permissions"
                               values={
-                                servicePrincipal?.publishedPermissionScopes?.length > 0
-                                  ? servicePrincipal?.publishedPermissionScopes
+                                servicePrincipalData?.Results?.publishedPermissionScopes?.length > 0
+                                  ? servicePrincipalData?.Results?.publishedPermissionScopes
                                       .filter((scopes) => {
                                         return newPermissions?.Permissions[
                                           servicePrincipal.appId
@@ -664,7 +672,7 @@ const CippAppPermissionBuilder = ({
                         },
                         {
                           selector: (row) =>
-                            servicePrincipal.publishedPermissionScopes.find(
+                            servicePrincipalData?.Results?.publishedPermissionScopes.find(
                               (scope) => scope?.id === row?.id,
                             )?.userConsentDescription ?? 'No Description',
                           name: 'Description',
@@ -921,6 +929,9 @@ const CippAppPermissionBuilder = ({
                                             Object.keys(
                                               newPermissions?.MissingPermissions[perm],
                                             ).map((type) => {
+                                              if (!updatedPermissions.Permissions[perm][type]) {
+                                                updatedPermissions.Permissions[perm][type] = []
+                                              }
                                               newPermissions?.MissingPermissions[perm][type].map(
                                                 (p) => {
                                                   updatedPermissions.Permissions[perm][type].push(p)
