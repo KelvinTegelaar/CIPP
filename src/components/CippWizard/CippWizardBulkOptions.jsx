@@ -2,6 +2,7 @@ import { Grid, Stack } from "@mui/material";
 import CippWizardStepButtons from "./CippWizardStepButtons";
 import CippFormComponent from "../CippComponents/CippFormComponent";
 import countryList from "/src/data/CountryList.json";
+import { CippFormLicenseSelector } from "../CippComponents/CippFormLicenseSelector";
 export const CippWizardBulkOptions = (props) => {
   const { postUrl, formControl, onPreviousStep, onNextStep, currentStep } = props;
 
@@ -21,6 +22,14 @@ export const CippWizardBulkOptions = (props) => {
                 label: Name,
                 value: Code,
               }))}
+              formControl={formControl}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <CippFormLicenseSelector
+              fullWidth
+              label="Assign License - We will attempt to assign the license to the user if it is available"
+              name="licenses"
               formControl={formControl}
             />
           </Grid>
