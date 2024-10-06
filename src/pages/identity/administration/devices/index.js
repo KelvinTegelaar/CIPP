@@ -66,7 +66,6 @@ const Page = () => {
       apiData={{
         Endpoint: "devices",
         $format: "application/json",
-        $orderby: "displayName",
         $count: true,
       }}
       apiDataKey="Results"

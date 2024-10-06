@@ -222,6 +222,9 @@ const Page = () => {
           <Button component={Link} href="users/bulk-add">
             Bulk Add Users
           </Button>
+          <Button component={Link} href="users/invite">
+            Invite Guest
+          </Button>
           <Button component={Link} href="users/add">
             Add User
           </Button>

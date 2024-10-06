@@ -7,6 +7,7 @@ import CippAddEditUser from "/src/components/CippFormPages/CippAddEditUser";
 import { useRouter } from "next/router";
 import { ApiGetCall } from "/src/api/ApiCall";
 import { useEffect } from "react";
+import CippFormSkeleton from "../../../../components/CippFormPages/CippFormSkeleton";
 const Page = () => {
   const userSettingsDefaults = useSettings();
   const router = useRouter();
@@ -48,10 +49,10 @@ const Page = () => {
         }
         backButtonTitle="User Overview"
         formPageType="Edit"
-        postUrl="/api/AddUser"
+        postUrl="/api/EditUser"
       >
         <Box sx={{ my: 2 }}>
-          {userRequest.isLoading && <Skeleton variant="rectangular" />}
+          {userRequest.isLoading && <CippFormSkeleton layout={[2, 1, 2, 1, 1, 1, 2, 2, 2, 2, 3]} />}
           {userRequest.isSuccess && (
             <CippAddEditUser
               formControl={formControl}

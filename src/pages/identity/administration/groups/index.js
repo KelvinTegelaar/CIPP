@@ -1,5 +1,7 @@
+import { Button } from "@mui/material";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
+import Link from "next/link";
 
 const Page = () => {
   const pageTitle = "Groups";
@@ -97,6 +99,13 @@ const Page = () => {
   return (
     <CippTablePage
       title={pageTitle}
+      cardButton={
+        <>
+          <Button component={Link} href="groups/add">
+            Add Group
+          </Button>
+        </>
+      }
       apiUrl="/api/ListGraphRequest"
       apiData={{
         Endpoint: "groups",
