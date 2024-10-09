@@ -123,6 +123,10 @@ Before starting, ensure you have the following:
             {
               "name": "CIPP_PROCESSOR",
               "value": "true"
+            },
+            {
+              "name": "AzureFunctionsWebHost__hostid",
+              "value": "[variables('funcAppName')]"
             }
           ]
         }
