@@ -61,7 +61,10 @@ const Page = () => {
   return (
     <>
       <CippWizardPage
-        initialState={{ usageLocation: initialState.usageLocation, bulkUser: [] }}
+        initialState={{
+          usageLocation: initialState.usageLocation,
+          tenantFilter: initialState.currentTenant,
+        }}
         steps={steps}
         postUrl="/api/ExecBulkAdd"
         wizardTitle="Bulk Add User Wizard"
