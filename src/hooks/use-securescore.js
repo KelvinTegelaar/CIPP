@@ -67,7 +67,9 @@ export function useSecureScore() {
           tier: translation?.tier,
           userImpact: translation?.userImpact,
           vendorInformation: translation?.vendorInformation,
-          controlStateUpdates: translation?.controlStateUpdates || [],
+          controlStateUpdates: translation?.controlStateUpdates //remove each controlStateUpdate that has the state 'default' as it is not relevant.
+            ? translation.controlStateUpdates.filter((update) => update.state !== "Default")
+            : [],
         };
       });
       updatedControlScores.sort((a, b) => b.scoreInPercentage - a.scoreInPercentage);

@@ -4,6 +4,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Grid,
   TextField,
 } from "@mui/material";
 import { Stack } from "@mui/system";
@@ -12,6 +13,7 @@ import { ApiGetCall, ApiPostCall } from "../../api/ApiCall";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { CippAutoComplete } from "./CippAutocomplete";
+import { useSettings } from "../../hooks/use-settings";
 
 export const CippApiDialog = (props) => {
   const { createDialog, title, fields, api, row, ...other } = props;
@@ -53,14 +55,14 @@ export const CippApiDialog = (props) => {
     });
     return newData;
   };
-
+  const tenantFilter = useSettings().currentTenant;
   const handleActionClick = (row, action, formData) => {
     if (api.customFunction) {
       action.customFunction(row);
       createDialog.handleClose();
       return;
     }
-    let data = { ...formData, ...addedFieldData };
+    let data = { ...{ tenantFilter: tenantFilter }, ...formData, ...addedFieldData };
     const processedActionData = processActionData(action.data, row);
     if (Array.isArray(row) && action.multiPost === false) {
       const bulkData = row.map((singleRow) => {
@@ -133,56 +135,66 @@ export const CippApiDialog = (props) => {
           <Stack spacing={3}>{api.confirmText}</Stack>
         </DialogContent>
         <DialogContent>
-          {fields &&
-            fields.map((fieldProps, index) => {
-              switch (fieldProps.type) {
-                case "autoComplete":
-                  return (
-                    <Controller
-                      key={index}
-                      name={fieldProps.name}
-                      control={formHook.control}
-                      render={({ field, formState }) => (
-                        <CippAutoComplete
-                          required
-                          api={fieldProps.api}
-                          creatable={false}
-                          multiple={false}
-                          placeholder={fieldProps.label}
-                          options={fieldProps.options}
-                          onChange={(value, addedFields) => {
-                            field.onChange(value.value);
-                            setAddedFieldData((prev) => ({ ...prev, ...addedFields }));
-                          }}
+          <Grid container spacing={2}>
+            {fields &&
+              fields.map((fieldProps, index) => {
+                switch (fieldProps.type) {
+                  case "autoComplete":
+                    return (
+                      <Grid item xs={12} md={12} key={index}>
+                        <Controller
+                          key={index}
+                          name={fieldProps.name}
+                          control={formHook.control}
+                          render={({ field, formState }) => (
+                            <CippAutoComplete
+                              label={fieldProps.label}
+                              required
+                              api={fieldProps.api}
+                              creatable={false}
+                              multiple={false}
+                              placeholder={fieldProps.label}
+                              options={fieldProps.options}
+                              onChange={(value, addedFields) => {
+                                field.onChange(value.value);
+                                setAddedFieldData((prev) => ({ ...prev, ...addedFields }));
+                              }}
+                            />
+                          )}
                         />
-                      )}
-                    />
-                  );
-                case "textField":
-                  return (
-                    <TextField
-                      key={index}
-                      multiline={false}
-                      fullWidth
-                      name={fieldProps.name}
-                      {...formHook.register(fieldProps.name)}
-                    />
-                  );
-                case "textArea":
-                  return (
-                    <TextField
-                      key={index}
-                      multiline
-                      fullWidth
-                      rows={4}
-                      {...fieldProps}
-                      {...formHook.register(fieldProps.name)}
-                    />
-                  );
-                default:
-                  return null;
-              }
-            })}
+                      </Grid>
+                    );
+                  case "textField":
+                    return (
+                      <Grid item xs={12} md={12} key={index}>
+                        <TextField
+                          label={fieldProps.label}
+                          key={index}
+                          multiline={false}
+                          fullWidth
+                          name={fieldProps.name}
+                          {...formHook.register(fieldProps.name)}
+                        />
+                      </Grid>
+                    );
+                  case "textArea":
+                    return (
+                      <Grid item xs={12} md={12} key={index}>
+                        <TextField
+                          key={index}
+                          multiline
+                          fullWidth
+                          rows={4}
+                          {...fieldProps}
+                          {...formHook.register(fieldProps.name)}
+                        />
+                      </Grid>
+                    );
+                  default:
+                    return null;
+                }
+              })}
+          </Grid>
         </DialogContent>
         <DialogContent>
           <>
