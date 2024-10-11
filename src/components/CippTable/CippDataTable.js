@@ -46,7 +46,6 @@ export const CippDataTable = (props) => {
     cardButton,
     offCanvas = false,
   } = props;
-
   const [columnVisibility, setColumnVisibility] = useState(initialColumnVisibility);
   const [usedData, setUsedData] = useState(data);
   const [usedColumns, setUsedColumns] = useState([]);
@@ -67,7 +66,7 @@ export const CippDataTable = (props) => {
         setUsedData(data);
       }
     }
-  }, [data]);
+  }, [data, JSON.stringify(data)]);
 
   useEffect(() => {
     if (getRequestData.isSuccess && !getRequestData.isFetching) {
@@ -139,7 +138,6 @@ export const CippDataTable = (props) => {
 
   // Apply the modeInfo directly
   const modeInfo = utilTableMode(columnVisibility, simple, actions, simpleColumns);
-
   const table = useMaterialReactTable({
     mrtTheme: (theme) => ({
       baseBackgroundColor: theme.palette.background.paper,

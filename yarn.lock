@@ -4248,9 +4248,9 @@ lru-cache@^5.1.1:
     yallist "^3.0.2"
 
 material-react-table@^2.13.0:
-  version "2.13.2"
-  resolved "https://registry.yarnpkg.com/material-react-table/-/material-react-table-2.13.2.tgz#d2da400c62d724e68f61694ea3c01ddc4d8a8c16"
-  integrity sha512-8q2Jq723rqCNNxZ9yKZOBU9A2EzcdjT/6IQIXoigRZO2IUROEhcv5bvg8Sqojz+Au5bNQJ8f7RNzSP1UOzirNA==
+  version "2.13.3"
+  resolved "https://registry.yarnpkg.com/material-react-table/-/material-react-table-2.13.3.tgz#c61de4105efb3eb09697ed5fc2544d174675de31"
+  integrity sha512-xeyAEG6UYG3qgBIo17epAP5zsWT1pH0uCEkaUxvhki9sGcP35OqfOMSZJNhISvmqEqXKYHdqKbZI6iOwsg1sYA==
   dependencies:
     "@tanstack/match-sorter-utils" "8.19.4"
     "@tanstack/react-table" "8.20.5"

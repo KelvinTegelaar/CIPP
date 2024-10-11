@@ -14,15 +14,17 @@ import DOMPurify from "dompurify";
 import { CippApiDialog } from "../../../../components/CippComponents/CippApiDialog";
 import { useDialog } from "../../../../hooks/use-dialog";
 import { useState } from "react";
+import { CippTableDialog } from "../../../../components/CippComponents/CippTableDialog";
 
 const Page = () => {
   const createDialog = useDialog();
   const secureScore = useSecureScore();
   const [actionData, setActionData] = useState({ data: {}, action: {}, ready: false });
+  const [updatesData, setUpdatesData] = useState({ data: {}, ready: false });
+  const cippTableDialog = useDialog();
 
   TimeAgo.addLocale(en);
   const timeAgo = new TimeAgo("en-US");
-  console.log(secureScore);
   return (
     <Container
       sx={{
@@ -104,7 +106,16 @@ const Page = () => {
                     </Button>
                     <Button variant="outlined">Remediate</Button>
                     {secureScoreControl.controlStateUpdates?.length > 0 && (
-                      <Button variant="outlined">
+                      <Button
+                        onClick={() => {
+                          setUpdatesData({
+                            data: secureScoreControl,
+                            ready: true,
+                          });
+                          cippTableDialog.handleOpen();
+                        }}
+                        variant="outlined"
+                      >
                         Updates {`(${secureScoreControl.controlStateUpdates?.length})`}
                       </Button>
                     )}
@@ -201,6 +212,14 @@ const Page = () => {
               </CippButtonCard>
             </Grid>
           ))}
+        {updatesData.ready && (
+          <CippTableDialog
+            createDialog={cippTableDialog}
+            title={`Updates for ${updatesData.data.title}`}
+            data={updatesData.data.controlStateUpdates}
+            simpleColumns={["state", "assignedTo", "comment", "updatedBy", "updatedDateTime"]}
+          />
+        )}
         <CippApiDialog
           createDialog={createDialog}
           title="Confirmation"

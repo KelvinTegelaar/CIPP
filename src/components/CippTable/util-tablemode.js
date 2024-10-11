@@ -19,7 +19,12 @@ export const utilTableMode = (columnVisibility, mode, actions, simpleColumns) =>
         columnOrder: [...simpleColumns],
         columnVisibility: { ...columnVisibility },
         density: "compact",
-        pagination: { pageSize: settings?.tablePageSize?.value || 25 },
+        pagination: {
+          pageSize: settings?.tablePageSize?.value
+            ? parseInt(settings?.tablePageSize?.value, 10)
+            : 25,
+          pageIndex: 0,
+        },
       },
       displayColumnDefOptions: {
         "mrt-row-actions": {
@@ -54,13 +59,17 @@ export const utilTableMode = (columnVisibility, mode, actions, simpleColumns) =>
           visibleInShowHideMenu: false,
         },
       },
-      //TODO: page size should come from user settings state in the future.
       initialState: {
         columnOrder: [...simpleColumns],
         columnVisibility: { ...columnVisibility },
         showGlobalFilter: true,
         density: "compact",
-        pagination: { pageSize: settings?.tablePageSize?.value || 25 },
+        pagination: {
+          pageSize: settings?.tablePageSize?.value
+            ? parseInt(settings?.tablePageSize?.value, 10)
+            : 25,
+          pageIndex: 0,
+        },
         columnPinning: {
           left: ["mrt-row-select"],
           right: ["mrt-row-actions"],
