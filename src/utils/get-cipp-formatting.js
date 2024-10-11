@@ -3,18 +3,17 @@ import { Chip, Link } from "@mui/material";
 import { Box } from "@mui/system";
 import { CippCopyToClipBoard } from "../components/CippComponents/CippCopyToClipboard";
 import { getCippLicenseTranslation } from "./get-cipp-license-translation";
+import ReactTimeAgo from "react-time-ago";
 
 export const getCippFormatting = (data, cellName, type) => {
   const isText = type === "text";
   const cellNameLower = cellName.toLowerCase();
-  // Handle date formatting
-  if (cellNameLower.includes("date")) {
-    return isText ? (
-      new Date(data).toLocaleString()
-    ) : (
-      <span>{new Date(data).toLocaleString()}</span>
-    );
+  // if data is a data object, return a formatted date
+
+  if (cellName.includes("Date")) {
+    return isText ? new Date(data).toLocaleString() : <ReactTimeAgo date={new Date(data)} />;
   }
+
   if (cellName === "addrow") {
     return isText ? (
       "No data"
