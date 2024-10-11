@@ -39,15 +39,16 @@ While CIPP only supplies the above roles by default, you can create your own Cus
 * Go to CIPP.
 * Go to Application Settings > SuperAdmin > Custom Roles.
 * Select a Custom Role from the list or start typing to create a new one if you do not yet have any.
+  * Please ensure that your custom role is entirely in lowercase and does not contain spaces or special characters.
 * For Allowed Tenants select a subset of tenants to manage or AllTenants.
   * If AllTenants is selected, you can block a subset of tenants using Blocked Tenants.
 * Select the API permission from the listed categories and choose from None, Read or Read/Write.
   * To find out which API endpoints are affected by these selections, click on the Info button.
- 
+
 {% hint style="warning" %}
 Please note that this functionality is in beta and not officially supported. Removing permissions will result in an error message on affected endpoints. The error message will note which permission is missing.
 {% endhint %}
 
 If you are a hosted client, you can add custom roles to your users from the Management App. Just start typing the role name in the select box and add it when prompted. Make sure that your users have the 'editor' or 'readonly' role selected as well.
 
-If you set up Custom Roles by modifying staticwebapp.config.json, you should revert those changes and migrate to the new Custom Role management. 
+If you set up Custom Roles by modifying staticwebapp.config.json, you should revert those changes and migrate to the new Custom Role management.
