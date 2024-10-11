@@ -13,12 +13,24 @@ import { useTheme } from "@mui/material/styles";
 import { ActionsMenu } from "../actions-menu";
 import { Chart } from "../chart";
 
-const useChartOptions = (labels) => {
+const useChartOptions = (labels, chartType) => {
   const theme = useTheme();
 
   return {
     chart: {
       background: "transparent",
+      toolbar: {
+        show: true,
+        tools: {
+          download: true,
+          selection: false,
+          zoom: false,
+          zoomin: false,
+          zoomout: false,
+          pan: false,
+          reset: true | '<img src="/static/icons/reset.png" width="20">',
+        },
+      },
     },
     colors: [
       theme.palette.success.main,
@@ -28,6 +40,16 @@ const useChartOptions = (labels) => {
     ],
     dataLabels: {
       enabled: false,
+    },
+
+    xaxis: {
+      labels: {
+        rotate: 0,
+        style: {
+          fontSize: "12px",
+        },
+      },
+      tickPlacement: "on",
     },
     labels,
     legend: {
@@ -51,7 +73,7 @@ const useChartOptions = (labels) => {
       },
     },
     stroke: {
-      width: 0,
+      width: chartType === "line" ? 2 : 1,
     },
     theme: {
       mode: theme.palette.mode,
@@ -71,7 +93,7 @@ export const CippChartCard = ({
   actions,
 }) => {
   const [range, setRange] = useState("Last 7 days");
-  const chartOptions = useChartOptions(labels);
+  const chartOptions = useChartOptions(labels, chartType);
 
   const total = chartSeries.reduce((acc, value) => acc + value, 0);
 
@@ -105,41 +127,49 @@ export const CippChartCard = ({
           spacing={1}
           sx={{ py: 1 }}
         >
-          <Typography variant="h5">Total</Typography>
-          <Typography variant="h5">{isFetching ? "0" : total}</Typography>
+          {labels.length > 0 && (
+            <>
+              <Typography variant="h5">Total</Typography>
+              <Typography variant="h5">{isFetching ? "0" : total}</Typography>
+            </>
+          )}
         </Stack>
         <Stack spacing={1}>
           {isFetching ? (
             <Skeleton height={30} />
           ) : (
             <>
-              {chartSeries.map((item, index) => (
-                <Stack
-                  alignItems="center"
-                  direction="row"
-                  justifyContent="space-between"
-                  key={labels[index]}
-                  spacing={1}
-                  sx={{ py: 1 }}
-                >
-                  <Stack alignItems="center" direction="row" spacing={1} sx={{ flexGrow: 1 }}>
-                    <Box
-                      sx={{
-                        backgroundColor: chartOptions.colors[index],
-                        borderRadius: "50%",
-                        height: 8,
-                        width: 8,
-                      }}
-                    />
-                    <Typography color="text.secondary" variant="body2">
-                      {labels[index]}
-                    </Typography>
-                  </Stack>
-                  <Typography color="text.secondary" variant="body2">
-                    {item}
-                  </Typography>
-                </Stack>
-              ))}
+              {
+                //only show the labels if there are labels
+                labels.length > 0 &&
+                  chartSeries.map((item, index) => (
+                    <Stack
+                      alignItems="center"
+                      direction="row"
+                      justifyContent="space-between"
+                      key={labels[index]}
+                      spacing={1}
+                      sx={{ py: 1 }}
+                    >
+                      <Stack alignItems="center" direction="row" spacing={1} sx={{ flexGrow: 1 }}>
+                        <Box
+                          sx={{
+                            backgroundColor: chartOptions.colors[index],
+                            borderRadius: "50%",
+                            height: 8,
+                            width: 8,
+                          }}
+                        />
+                        <Typography color="text.secondary" variant="body2">
+                          {labels[index]}
+                        </Typography>
+                      </Stack>
+                      <Typography color="text.secondary" variant="body2">
+                        {item}
+                      </Typography>
+                    </Stack>
+                  ))
+              }
             </>
           )}
         </Stack>

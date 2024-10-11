@@ -27,7 +27,7 @@ export function useSecureScore() {
       tenantFilter: currentTenant,
       $count: true,
       noPagination: true,
-      $top: 1,
+      $top: 7,
     },
     queryKey: `secureScore-${currentTenant}`,
   });
