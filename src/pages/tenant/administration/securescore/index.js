@@ -7,9 +7,14 @@ import { Container, Grid } from "@mui/material";
 import { CheckCircleIcon, GlobeAltIcon } from "@heroicons/react/24/outline";
 import { Map, Score } from "@mui/icons-material";
 import { CippChartCard } from "../../../../components/CippCards/CippChartCard";
+import TimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en.json";
+
 const Page = () => {
   const secureScore = useSecureScore();
-  console.log(secureScore);
+  TimeAgo.addLocale(en);
+  const timeAgo = new TimeAgo("en-US");
+
   return (
     <Container
       sx={{
@@ -59,7 +64,8 @@ const Page = () => {
                       name: "Secure Score",
                       //reverse the order as it is returned in descending order
                       data: secureScore.secureScore.data.Results.map((data) => ({
-                        x: data.createdDateTime,
+                        //ISO8601 time, convert to just the date.
+                        x: timeAgo.format(new Date(data.createdDateTime)),
                         y: data.currentScore,
                       })).reverse(),
                     },

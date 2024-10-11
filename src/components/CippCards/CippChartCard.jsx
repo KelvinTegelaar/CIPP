@@ -20,7 +20,7 @@ const useChartOptions = (labels, chartType) => {
     chart: {
       background: "transparent",
       toolbar: {
-        show: true,
+        show: false,
         tools: {
           download: true,
           selection: false,
@@ -44,6 +44,7 @@ const useChartOptions = (labels, chartType) => {
 
     xaxis: {
       labels: {
+        show: true,
         rotate: 0,
         style: {
           fontSize: "12px",

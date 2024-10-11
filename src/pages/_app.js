@@ -18,6 +18,9 @@ import Error500 from "./500";
 import { ErrorBoundary } from "react-error-boundary";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import TimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en.json";
+TimeAgo.addDefaultLocale(en);
 
 const queryClient = new QueryClient();
 const clientSideEmotionCache = createEmotionCache();
