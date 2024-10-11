@@ -1,5 +1,5 @@
 import { Cancel, Check } from "@mui/icons-material";
-import { Chip } from "@mui/material";
+import { Chip, Link } from "@mui/material";
 import { Box } from "@mui/system";
 import { CippCopyToClipBoard } from "../components/CippComponents/CippCopyToClipboard";
 import { getCippLicenseTranslation } from "./get-cipp-license-translation";
@@ -96,6 +96,17 @@ export const getCippFormatting = (data, cellName, type) => {
       <Box component="span">
         <Chip variant="outlined" label="No data" size="small" color="info" />
       </Box>
+    );
+  }
+
+  //if string starts with http, return a link
+  if (typeof data === "string" && data.toLowerCase().startsWith("http")) {
+    return isText ? (
+      data
+    ) : (
+      <Link href={data} target="_blank" rel="noreferrer">
+        URL
+      </Link>
     );
   }
 

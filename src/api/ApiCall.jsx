@@ -164,7 +164,9 @@ export function ApiGetCallWithPagination({
       return response.data;
     },
     getNextPageParam: (lastPage) => {
-      // Check if there's a nextLink in the last page's metadata
+      if (data?.noPagination || data?.manualPagination === false) {
+        return undefined;
+      }
       return lastPage?.Metadata?.nextLink ? { nextLink: lastPage.Metadata.nextLink } : undefined;
     },
     staleTime: 600000, // 10 minutes

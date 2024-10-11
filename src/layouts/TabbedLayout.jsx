@@ -19,21 +19,17 @@ export const TabbedLayout = (props) => {
         py: 4,
       }}
     >
-      <Container maxWidth="xl">
-        <Stack spacing={4}>
-          <Stack spacing={2}>
-            <div>
-              <Tabs onChange={handleTabsChange} value={currentTab?.path} variant="scrollable">
-                {tabOptions.map((option) => (
-                  <Tab key={option.path} label={option.label} value={option.path} />
-                ))}
-              </Tabs>
-              <Divider />
-            </div>
-          </Stack>
-          {children}
-        </Stack>
-      </Container>
+      <Stack spacing={2}>
+        <div>
+          <Tabs onChange={handleTabsChange} value={currentTab?.path} variant="scrollable">
+            {tabOptions.map((option) => (
+              <Tab key={option.path} label={option.label} value={option.path} />
+            ))}
+          </Tabs>
+          <Divider />
+        </div>
+      </Stack>
+      {children}
     </Box>
   );
 };

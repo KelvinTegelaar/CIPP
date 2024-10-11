@@ -82,15 +82,29 @@ export const CippDataTable = (props) => {
   useEffect(() => {
     if (getRequestData.isSuccess) {
       const allPages = getRequestData.data.pages;
+      const getNestedValue = (obj, path) => {
+        const keys = path?.split(".");
+        let result = obj;
+
+        for (const key of keys) {
+          if (result && result[key] !== undefined) {
+            result = result[key];
+          } else {
+            return undefined;
+          }
+        }
+        return result;
+      };
+
       const combinedResults = allPages.flatMap((page) => {
-        return page[api.dataKey] || page;
+        const nestedData = getNestedValue(page, api.dataKey);
+        return nestedData !== undefined ? nestedData : [];
       });
 
       setUsedData(combinedResults || []);
     }
   }, [getRequestData.isSuccess, getRequestData.data, api.dataKey]);
 
-  //logic to select the right colums
   useEffect(() => {
     if (!Array.isArray(usedData) || usedData.length === 0 || typeof usedData[0] !== "object") {
       return;

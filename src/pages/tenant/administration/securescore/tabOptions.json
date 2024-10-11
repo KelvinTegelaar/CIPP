@@ -1,0 +1,10 @@
+[
+  {
+    "label": "Tenant Overview",
+    "path": "/tenant/administration/securescore"
+  },
+  {
+    "label": "Table Overview",
+    "path": "/tenant/administration/securescore/table"
+  }
+]
