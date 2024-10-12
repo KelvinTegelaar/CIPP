@@ -71,8 +71,8 @@ const Page = () => {
   ];
 
   const steps = [
-    "Named Template",
-    "Added Standard to Template",
+    "Set a name for the Template",
+    "Added Standards to Template",
     "Configured all Standards",
     "Assigned Template to Tenants",
   ];

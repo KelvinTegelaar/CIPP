@@ -5,18 +5,19 @@ export const CippFormTenantSelector = ({
   formControl,
   allTenants = false,
   type = "multiple",
+  name = "tenantFilter",
   ...other
 }) => {
   return (
     <CippFormComponent
       type="autoComplete"
-      name="tenantFilter"
+      name={name}
       formControl={formControl}
       placeholder="Select a tenant"
       api={{
         excludeTenantFilter: true,
-        url: allTenants ? "/api/ListTenants" : "/api/ListTenants?AllTenantSelector=true",
-        queryKey: "ListTenants",
+        url: allTenants ? "/api/ListTenants?AllTenantSelector=true" : "/api/ListTenants",
+        queryKey: allTenants ? "ListTenants-AllTenantSelector" : "ListTenants-notAllTenants",
         labelField: (option) => `${option.displayName} (${option.defaultDomainName})`,
         valueField: "customerId",
       }}

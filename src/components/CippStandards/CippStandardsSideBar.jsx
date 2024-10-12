@@ -1,15 +1,5 @@
 import PropTypes from "prop-types";
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  Stack,
-  SvgIcon,
-  Typography,
-} from "@mui/material";
+import { Card, CardContent, CardHeader, Divider, Stack, SvgIcon, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import {
   Timeline,
@@ -27,6 +17,7 @@ import { useWatch } from "react-hook-form";
 import { useEffect, useState } from "react";
 import _ from "lodash"; // For safely accessing dot notation
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
+import { CippFormTenantSelector } from "../CippComponents/CippFormTenantSelector";
 
 const StyledTimelineDot = (props) => {
   const { complete } = props;
@@ -111,9 +102,6 @@ const CippStandardsSideBar = ({ title, subtitle, steps, actions, updatedAt, form
       <Divider />
       <CardContent>
         <Stack spacing={2}>
-          <Typography variant="subtitle2" sx={{ mb: 2 }}>
-            {subtitle}
-          </Typography>
           <CippFormComponent
             type="textField"
             name="templateName"
@@ -122,6 +110,23 @@ const CippStandardsSideBar = ({ title, subtitle, steps, actions, updatedAt, form
             placeholder="Enter a name for the template"
             fullWidth
           />
+          <Divider />
+          <CippFormTenantSelector
+            allTenants={true}
+            label="Included Tenants"
+            formControl={formControl}
+          />
+          {watchForm.tenantFilter?.some((tenant) => tenant.value === "AllTenants") && (
+            <>
+              <Divider />
+              <CippFormTenantSelector
+                label="Excluded Tenants"
+                name="excludedTenants"
+                allTenants={false}
+                formControl={formControl}
+              />
+            </>
+          )}
           {updatedAt && (
             <Typography
               sx={{
