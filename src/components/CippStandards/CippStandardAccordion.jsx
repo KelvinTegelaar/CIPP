@@ -135,7 +135,6 @@ const CippStandardAccordion = ({
                           name={`${standardName}.${component.name}`}
                           label={component.label}
                           formControl={formControl}
-                          fullWidth
                           {...component}
                         />
                       </Grid>

@@ -13,10 +13,10 @@ import {
 import { ActionList } from "/src/components/action-list";
 import { ActionListItem } from "/src/components/action-list-item";
 import CheckIcon from "@heroicons/react/24/outline/CheckIcon";
-import CloseIcon from "@mui/icons-material/Close"; // Import CloseIcon for red X
+import CloseIcon from "@mui/icons-material/Close";
 import { useWatch } from "react-hook-form";
 import { useEffect, useState } from "react";
-import _ from "lodash"; // For safely accessing dot notation
+import _ from "lodash";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { CippFormTenantSelector } from "../CippComponents/CippFormTenantSelector";
 
@@ -63,44 +63,39 @@ const CippStandardsSideBar = ({
 }) => {
   const [currentStep, setCurrentStep] = useState(0);
 
-  // Watch the template name and selected standards from the form
   const watchForm = useWatch({ control: formControl.control });
 
-  // Monitor standards configuration state
-
   useEffect(() => {
-    const allStandardsConfigured = Object.keys(selectedStandards).every((standardName) => {
-      const standardValues = _.get(watchForm, `${standardName}`, {});
-      return standardValues.action;
-    });
+    const stepsStatus = {
+      step1: !!watchForm.templateName, // Step 1: Template name is filled
+      step2: Object.keys(selectedStandards).length > 0, // Step 2: Standards added
+      step3:
+        watchForm.standards &&
+        Object.keys(selectedStandards).length > 0 &&
+        Object.keys(selectedStandards).every((standardName) => {
+          const standardValues = _.get(watchForm, `${standardName}`, {});
+          return standardValues.action;
+        }), // Step 3: All standards configured
+      step4: watchForm.tenantFilter && watchForm.tenantFilter.length > 0, // Step 4: Tenants selected
+    };
 
-    let newStep = 0;
-
-    // Step 1: Check if template name is filled
-    if (watchForm.templateName) {
-      newStep = 1;
-    }
-    // Step 2: Check if any standard has been added
-    if (Object.keys(selectedStandards).length > 0) {
-      newStep = 2;
-    }
-
-    // Step 3: Check if all standards are configured,
-    if (
-      watchForm.standards &&
-      allStandardsConfigured &&
-      Object.keys(watchForm.standards).length > 0
-    ) {
-      newStep = 3;
-    }
-
-    // Step 4: Check if tenants are selected
-    if (watchForm.tenantFilter && watchForm.tenantFilter.length > 0) {
-      newStep = 4;
-    }
-
-    setCurrentStep(newStep);
+    const completedSteps = Object.values(stepsStatus).filter(Boolean).length;
+    setCurrentStep(completedSteps);
   }, [selectedStandards, watchForm]);
+
+  // Define stepsStatus outside of useEffect for use in rendering the Timeline
+  const stepsStatus = {
+    step1: !!watchForm.templateName,
+    step2: Object.keys(selectedStandards).length > 0,
+    step3:
+      watchForm.standards &&
+      Object.keys(selectedStandards).length > 0 &&
+      Object.keys(selectedStandards).every((standardName) => {
+        const standardValues = _.get(watchForm, `${standardName}`, {});
+        return standardValues.action;
+      }),
+    step4: watchForm.tenantFilter && watchForm.tenantFilter.length > 0,
+  };
 
   return (
     <Card>
@@ -159,7 +154,7 @@ const CippStandardsSideBar = ({
           {steps.map((step, index) => (
             <TimelineItem key={index}>
               <TimelineSeparator>
-                <StyledTimelineDot complete={index < currentStep} />
+                <StyledTimelineDot complete={stepsStatus[`step${index + 1}`]} />
                 {index < steps.length - 1 && <StyledTimelineConnector />}
               </TimelineSeparator>
               <StyledTimelineContent>{step}</StyledTimelineContent>

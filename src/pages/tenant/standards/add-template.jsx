@@ -14,7 +14,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 const Page = () => {
   const router = useRouter();
-  const formControl = useForm({ mode: "onChange" });
+  const formControl = useForm({ mode: "onBlur" });
   const [dialogOpen, setDialogOpen] = useState(false);
   const [expanded, setExpanded] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -110,8 +110,8 @@ const Page = () => {
             {/* Left Column for Accordions */}
             <Grid item xs={12} lg={4}>
               <CippStandardsSideBar
-                title="Template Setup"
-                subtitle="Follow the steps to configure the template"
+                title="Standard Template Setup"
+                subtitle="Follow the steps to configure the Standard"
                 steps={steps}
                 templateName={templateName}
                 setTemplateName={setTemplateName}

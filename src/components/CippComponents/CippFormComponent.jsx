@@ -59,6 +59,7 @@ export const CippFormComponent = (props) => {
         <>
           <div>
             <TextField
+              fullWidth
               {...other}
               {...formControl.register(name, { ...validators })}
               label={label}
@@ -240,11 +241,11 @@ export const CippFormComponent = (props) => {
                     inputFormat="yyyy/MM/dd HH:mm" // Display format
                     renderInput={(inputProps) => (
                       <TextField
+                        fullWidth
                         {...inputProps}
                         {...other}
                         error={!!errors[name]}
                         helperText={errors[name]?.message}
-                        fullWidth
                       />
                     )}
                   />
