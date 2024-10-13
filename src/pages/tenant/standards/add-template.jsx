@@ -10,6 +10,7 @@ import CippStandardDialog from "../../../components/CippStandards/CippStandardDi
 import CippStandardsSideBar from "../../../components/CippStandards/CippStandardsSideBar";
 import { ArrowLeftIcon } from "@mui/x-date-pickers";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { useDialog } from "../../../hooks/use-dialog";
 
 const Page = () => {
   const router = useRouter();
@@ -82,10 +83,11 @@ const Page = () => {
   const actions = [
     {
       label: "Save Template",
-      handler: () => console.log("Mark as complete"),
+      handler: () => createDialog.handleOpen(),
       icon: <CheckCircleIcon />,
     },
   ];
+  const createDialog = useDialog();
 
   const steps = [
     "Set a name for the Template",
@@ -135,6 +137,7 @@ const Page = () => {
               <CippStandardsSideBar
                 title="Standard Template Setup"
                 subtitle="Follow the steps to configure the Standard"
+                createDialog={createDialog}
                 steps={steps}
                 templateName={templateName}
                 setTemplateName={setTemplateName}

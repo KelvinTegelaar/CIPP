@@ -19,6 +19,8 @@ import { useEffect, useState } from "react";
 import _ from "lodash";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { CippFormTenantSelector } from "../CippComponents/CippFormTenantSelector";
+import { CippApiDialog } from "../CippComponents/CippApiDialog";
+import { useDialog } from "../../hooks/use-dialog";
 
 const StyledTimelineDot = (props) => {
   const { complete } = props;
@@ -60,6 +62,7 @@ const CippStandardsSideBar = ({
   actions,
   updatedAt,
   formControl,
+  createDialog,
 }) => {
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -96,7 +99,6 @@ const CippStandardsSideBar = ({
       }),
     step4: watchForm.tenantFilter && watchForm.tenantFilter.length > 0,
   };
-
   return (
     <Card>
       <CardHeader title={title} />
@@ -173,6 +175,25 @@ const CippStandardsSideBar = ({
           />
         ))}
       </ActionList>
+      <Divider />
+      <CippApiDialog
+        createDialog={createDialog}
+        title="Add Standard"
+        api={{
+          confirmText:
+            "Are you sure you want to add this standard? This will apply the template and run every 3 hours.",
+          url: "/api/ExecAddStandard",
+          type: "POST",
+          data: {
+            tenantFilter: "tenantFilter",
+            templateName: "templateName",
+            standards: "standards",
+          },
+        }}
+        row={formControl.getValues()}
+        formControl={formControl}
+      />
+      {console.log(formControl.getValues())}
     </Card>
   );
 };

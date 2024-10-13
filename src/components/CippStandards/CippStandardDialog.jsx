@@ -15,7 +15,6 @@ import {
   Button,
   IconButton,
 } from "@mui/material";
-import PropTypes from "prop-types";
 import { Add } from "@mui/icons-material";
 import { useState } from "react";
 
@@ -27,18 +26,17 @@ const CippStandardDialog = ({
   categories,
   filterStandards,
   selectedStandards,
-  handleToggleSingleStandard, // Renaming for clarity
+  handleToggleSingleStandard,
   handleAddMultipleStandard,
 }) => {
   const [isButtonDisabled, setButtonDisabled] = useState(false);
 
-  // Helper function to handle the + button logic
   const handleAddClick = (standardName) => {
-    setButtonDisabled(true); // Disable button briefly
+    setButtonDisabled(true);
     handleAddMultipleStandard(standardName);
 
     setTimeout(() => {
-      setButtonDisabled(false); // Re-enable after 100ms
+      setButtonDisabled(false);
     }, 100); // 100ms delay to show the effect
   };
 
@@ -132,7 +130,6 @@ const CippStandardDialog = ({
 
                   <CardContent>
                     {standard.multiple ? (
-                      // Show + button for standards with `multiple: true`
                       <IconButton
                         color="primary"
                         disabled={isButtonDisabled}
@@ -141,12 +138,11 @@ const CippStandardDialog = ({
                         <Add />
                       </IconButton>
                     ) : (
-                      // Show Switch for single standards
                       <FormControlLabel
                         control={
                           <Switch
-                            checked={!!selectedStandards[standard.name]} // Ensure a single value toggle
-                            onChange={() => handleToggleSingleStandard(standard.name)} // Handle single standard toggle
+                            checked={!!selectedStandards[standard.name]}
+                            onChange={() => handleToggleSingleStandard(standard.name)}
                           />
                         }
                         label="Add this standard to the template"
@@ -171,18 +167,6 @@ const CippStandardDialog = ({
       </DialogActions>
     </Dialog>
   );
-};
-
-CippStandardDialog.propTypes = {
-  dialogOpen: PropTypes.bool.isRequired,
-  handleCloseDialog: PropTypes.func.isRequired,
-  searchQuery: PropTypes.string.isRequired,
-  setSearchQuery: PropTypes.func.isRequired,
-  categories: PropTypes.object.isRequired,
-  filterStandards: PropTypes.func.isRequired,
-  selectedStandards: PropTypes.object.isRequired,
-  handleToggleSingleStandard: PropTypes.func.isRequired, // Updated PropType for single toggle
-  handleAddMultipleStandard: PropTypes.func.isRequired,
 };
 
 export default CippStandardDialog;
