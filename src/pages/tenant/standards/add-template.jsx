@@ -10,7 +10,6 @@ import CippStandardDialog from "../../../components/CippStandards/CippStandardDi
 import CippStandardsSideBar from "../../../components/CippStandards/CippStandardsSideBar";
 import { ArrowLeftIcon } from "@mui/x-date-pickers";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import DeleteIcon from "@mui/icons-material/Delete";
 
 const Page = () => {
   const router = useRouter();
@@ -21,6 +20,7 @@ const Page = () => {
   const [selectedStandards, setSelectedStandards] = useState({});
   const [templateName, setTemplateName] = useState("");
 
+  // Categorize standards by their category (cat)
   const categories = standards.reduce((acc, standard) => {
     const { cat } = standard;
     if (!acc[cat]) {
@@ -30,8 +30,11 @@ const Page = () => {
     return acc;
   }, {});
 
+  // Open and close dialog
   const handleOpenDialog = () => setDialogOpen(true);
   const handleCloseDialog = () => setDialogOpen(false);
+
+  // Filter standards based on search query
   const filterStandards = (standardsList) =>
     standardsList.filter(
       (standard) =>
@@ -39,19 +42,39 @@ const Page = () => {
         standard.helpText.toLowerCase().includes(searchQuery) ||
         (standard.tag && standard.tag.some((tag) => tag.toLowerCase().includes(searchQuery)))
     );
+
+  // Handle single standard toggle (not multiple)
   const handleToggleStandard = (standardName) => {
     setSelectedStandards((prev) => ({
       ...prev,
-      [standardName]: !prev[standardName],
+      [standardName]: !prev[standardName], // Toggle single standard presence
     }));
   };
+
+  // Add multiple instances of a standard using the + button
+  const handleAddMultipleStandard = (standardName) => {
+    setSelectedStandards((prev) => {
+      const existingInstances = Object.keys(prev).filter((name) => name.startsWith(standardName));
+      const newIndex = existingInstances.length;
+
+      // Add the new instance with an incremented index
+      return {
+        ...prev,
+        [`${standardName}[${newIndex}]`]: true, // New instance with incremental index
+      };
+    });
+  };
+
+  // Remove a standard instance
   const handleRemoveStandard = (standardName) => {
     setSelectedStandards((prev) => {
       const newSelected = { ...prev };
-      delete newSelected[standardName];
+      delete newSelected[standardName]; // Remove the specific instance
       return newSelected;
     });
   };
+
+  // Toggle accordion open or closed
   const handleAccordionToggle = (standardName) => {
     setExpanded((prev) => (prev === standardName ? null : standardName));
   };
@@ -128,6 +151,7 @@ const Page = () => {
                   expanded={expanded}
                   handleAccordionToggle={handleAccordionToggle}
                   handleRemoveStandard={handleRemoveStandard}
+                  handleAddMultipleStandard={handleAddMultipleStandard} // Pass the handler for adding multiple
                   formControl={formControl}
                 />
               </Stack>
@@ -143,7 +167,8 @@ const Page = () => {
           categories={categories}
           filterStandards={filterStandards}
           selectedStandards={selectedStandards}
-          handleToggleStandard={handleToggleStandard}
+          handleToggleSingleStandard={handleToggleStandard} // Single standard toggle handler
+          handleAddMultipleStandard={handleAddMultipleStandard} // Pass the handler for adding multiple
         />
       </Container>
     </Box>

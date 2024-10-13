@@ -10,13 +10,13 @@ import {
   Typography,
   Chip,
   Box,
-  IconButton,
-  Button,
   FormControlLabel,
   Switch,
+  Button,
+  IconButton,
 } from "@mui/material";
-import { Add as AddIcon, Check as CheckIcon } from "@mui/icons-material";
 import PropTypes from "prop-types";
+import { Add } from "@mui/icons-material";
 import { useState } from "react";
 
 const CippStandardDialog = ({
@@ -27,23 +27,19 @@ const CippStandardDialog = ({
   categories,
   filterStandards,
   selectedStandards,
-  handleToggleStandard,
+  handleToggleSingleStandard, // Renaming for clarity
+  handleAddMultipleStandard,
 }) => {
-  // Temporary state to manage button color when adding multiple standards
-  const [buttonState, setButtonState] = useState({});
+  const [isButtonDisabled, setButtonDisabled] = useState(false);
 
-  // Function to handle button click for standards with "multiple"
-  const handleAddMultipleStandard = (standardName) => {
-    // Set the button to "active" (green) state
-    setButtonState((prev) => ({ ...prev, [standardName]: true }));
+  // Helper function to handle the + button logic
+  const handleAddClick = (standardName) => {
+    setButtonDisabled(true); // Disable button briefly
+    handleAddMultipleStandard(standardName);
 
-    // After 100ms, reset the button state to normal
     setTimeout(() => {
-      setButtonState((prev) => ({ ...prev, [standardName]: false }));
-    }, 100);
-
-    // Call the toggle handler to actually add the standard
-    handleToggleStandard(standardName);
+      setButtonDisabled(false); // Re-enable after 100ms
+    }, 100); // 100ms delay to show the effect
   };
 
   return (
@@ -133,29 +129,24 @@ const CippStandardDialog = ({
                       </>
                     )}
                   </CardContent>
+
                   <CardContent>
                     {standard.multiple ? (
-                      <Box sx={{ display: "flex" }}>
-                        <IconButton
-                          variant="contained"
-                          sx={{
-                            backgroundColor: buttonState[standard.name]
-                              ? "success.main"
-                              : "default",
-                            color: buttonState[standard.name] ? "white" : "inherit",
-                            transition: "background-color 0.1s ease-in-out",
-                          }}
-                          onClick={() => handleAddMultipleStandard(standard.name)}
-                        >
-                          {buttonState[standard.name] ? <CheckIcon /> : <AddIcon />}
-                        </IconButton>
-                      </Box>
+                      // Show + button for standards with `multiple: true`
+                      <IconButton
+                        color="primary"
+                        disabled={isButtonDisabled}
+                        onClick={() => handleAddClick(standard.name)}
+                      >
+                        <Add />
+                      </IconButton>
                     ) : (
+                      // Show Switch for single standards
                       <FormControlLabel
                         control={
                           <Switch
-                            checked={selectedStandards[standard.name] || false}
-                            onChange={() => handleToggleStandard(standard.name)}
+                            checked={!!selectedStandards[standard.name]} // Ensure a single value toggle
+                            onChange={() => handleToggleSingleStandard(standard.name)} // Handle single standard toggle
                           />
                         }
                         label="Add this standard to the template"
@@ -190,7 +181,8 @@ CippStandardDialog.propTypes = {
   categories: PropTypes.object.isRequired,
   filterStandards: PropTypes.func.isRequired,
   selectedStandards: PropTypes.object.isRequired,
-  handleToggleStandard: PropTypes.func.isRequired,
+  handleToggleSingleStandard: PropTypes.func.isRequired, // Updated PropType for single toggle
+  handleAddMultipleStandard: PropTypes.func.isRequired,
 };
 
 export default CippStandardDialog;

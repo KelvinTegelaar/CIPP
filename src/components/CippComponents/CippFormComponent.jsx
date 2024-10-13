@@ -15,17 +15,24 @@ import { DateTimePicker } from "@mui/x-date-pickers"; // Make sure to install @m
 import { Scrollbar } from "../scrollbar";
 import CSVReader from "../CSVReader";
 
+// Helper function to convert bracket notation to dot notation
+const convertBracketsToDots = (name) => {
+  return name.replace(/\[(\d+)\]/g, ".$1"); // Replace [0] with .0
+};
+
 export const CippFormComponent = (props) => {
   const {
     validators,
     formControl,
     type = "textField",
-    name,
+    name, // The name that may have bracket notation
     label,
     labelLocation = "behind", // Default location for switches
     ...other
   } = props;
   const { errors } = useFormState({ control: formControl.control });
+  // Convert the name from bracket notation to dot notation
+  const convertedName = convertBracketsToDots(name);
 
   const renderSwitchWithLabel = (element) => {
     if (!label) return element; // No label for the switch if label prop is not provided
@@ -52,7 +59,13 @@ export const CippFormComponent = (props) => {
 
   switch (type) {
     case "hidden":
-      return <input type="hidden" {...other} {...formControl.register(name, { ...validators })} />;
+      return (
+        <input
+          type="hidden"
+          {...other}
+          {...formControl.register(convertedName, { ...validators })}
+        />
+      );
 
     case "textField":
       return (
@@ -61,14 +74,14 @@ export const CippFormComponent = (props) => {
             <TextField
               fullWidth
               {...other}
-              {...formControl.register(name, { ...validators })}
+              {...formControl.register(convertedName, { ...validators })}
               label={label}
             />
           </div>
           <Typography variant="subtitle3" color="error">
-            {name.includes(".")
-              ? errors[name.split(".")[0]]?.[name.split(".")[1]]?.message
-              : errors[name]?.message}
+            {convertedName.includes(".")
+              ? errors[convertedName.split(".")[0]]?.[convertedName.split(".")[1]]?.message
+              : errors[convertedName]?.message}
           </Typography>
         </>
       );
@@ -80,14 +93,14 @@ export const CippFormComponent = (props) => {
             <TextField
               type="number"
               {...other}
-              {...formControl.register(name, { ...validators })}
+              {...formControl.register(convertedName, { ...validators })}
               label={label}
             />
           </div>
           <Typography variant="subtitle3" color="error">
-            {name.includes(".")
-              ? errors[name.split(".")[0]]?.[name.split(".")[1]]?.message
-              : errors[name]?.message}
+            {convertedName.includes(".")
+              ? errors[convertedName.split(".")[0]]?.[convertedName.split(".")[1]]?.message
+              : errors[convertedName]?.message}
           </Typography>
         </>
       );
@@ -97,23 +110,23 @@ export const CippFormComponent = (props) => {
         <>
           <div>
             <Controller
-              name={name}
+              name={convertedName}
               control={formControl.control}
               render={({ field }) =>
                 renderSwitchWithLabel(
                   <Switch
                     checked={field.value}
                     {...other}
-                    {...formControl.register(name, { ...validators })}
+                    {...formControl.register(convertedName, { ...validators })}
                   />
                 )
               }
             />
           </div>
           <Typography variant="subtitle3" color="error">
-            {name.includes(".")
-              ? errors[name.split(".")[0]]?.[name.split(".")[1]]?.message
-              : errors[name]?.message}
+            {convertedName.includes(".")
+              ? errors[convertedName.split(".")[0]]?.[convertedName.split(".")[1]]?.message
+              : errors[convertedName]?.message}
           </Typography>
         </>
       );
@@ -122,12 +135,16 @@ export const CippFormComponent = (props) => {
       return (
         <>
           <div>
-            <Checkbox {...other} {...formControl.register(name, { ...validators })} label={label} />
+            <Checkbox
+              {...other}
+              {...formControl.register(convertedName, { ...validators })}
+              label={label}
+            />
           </div>
           <Typography variant="subtitle3" color="error">
-            {name.includes(".")
-              ? errors[name.split(".")[0]]?.[name.split(".")[1]]?.message
-              : errors[name]?.message}
+            {convertedName.includes(".")
+              ? errors[convertedName.split(".")[0]]?.[convertedName.split(".")[1]]?.message
+              : errors[convertedName]?.message}
           </Typography>
         </>
       );
@@ -146,16 +163,16 @@ export const CippFormComponent = (props) => {
                     defaultValue={option.value}
                     control={<Radio />}
                     label={option.label}
-                    {...formControl.register(name, { ...validators })}
+                    {...formControl.register(convertedName, { ...validators })}
                   />
                 );
               })}
             </RadioGroup>
           </FormControl>
           <Typography variant="subtitle3" color="error">
-            {name.includes(".")
-              ? errors[name.split(".")[0]]?.[name.split(".")[1]]?.message
-              : errors[name]?.message}
+            {convertedName.includes(".")
+              ? errors[convertedName.split(".")[0]]?.[convertedName.split(".")[1]]?.message
+              : errors[convertedName]?.message}
           </Typography>
         </>
       );
@@ -165,7 +182,7 @@ export const CippFormComponent = (props) => {
         <>
           <div>
             <Controller
-              name={name}
+              name={convertedName}
               control={formControl.control}
               render={({ field }) => (
                 <CippAutoComplete
@@ -178,18 +195,19 @@ export const CippFormComponent = (props) => {
             />
           </div>
           <Typography variant="subtitle3" color="error">
-            {name.includes(".")
-              ? errors[name.split(".")[0]]?.[name.split(".")[1]]?.message
-              : errors[name]?.message}
+            {convertedName.includes(".")
+              ? errors[convertedName.split(".")[0]]?.[convertedName.split(".")[1]]?.message
+              : errors[convertedName]?.message}
           </Typography>
         </>
       );
+
     case "CSVReader":
       return (
         <>
           <div>
             <Controller
-              name={name}
+              name={convertedName}
               control={formControl.control}
               render={({ field }) => (
                 <>
@@ -210,17 +228,17 @@ export const CippFormComponent = (props) => {
             />
           </div>
           <Typography variant="subtitle3" color="error">
-            {errors[name]?.message}
+            {errors[convertedName]?.message}
           </Typography>
         </>
       );
-    // Add case for datePicker
+
     case "datePicker":
       return (
         <>
           <div>
             <Controller
-              name={name}
+              name={convertedName}
               control={formControl.control}
               render={({ field }) => (
                 <Scrollbar>
@@ -244,8 +262,8 @@ export const CippFormComponent = (props) => {
                         fullWidth
                         {...inputProps}
                         {...other}
-                        error={!!errors[name]}
-                        helperText={errors[name]?.message}
+                        error={!!errors[convertedName]}
+                        helperText={errors[convertedName]?.message}
                       />
                     )}
                   />
@@ -254,7 +272,7 @@ export const CippFormComponent = (props) => {
             />
           </div>
           <Typography variant="subtitle3" color="error">
-            {errors[name]?.message}
+            {errors[convertedName]?.message}
           </Typography>
         </>
       );

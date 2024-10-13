@@ -2815,6 +2815,7 @@
       {
         "type": "autoComplete",
         "name": "caTemplate",
+        "multiple": false,
         "label": "Select Conditional Access Template",
         "api": {
           "url": "/api/ListCATemplates",
@@ -2838,7 +2839,7 @@
       },
       {
         "name": "state",
-        "label": "If your policy has groups or users, how should they be handled? Excluded roles will not be affected.",
+        "label": "What state should we deploy this template in?",
         "type": "radio",
         "options": [
           {

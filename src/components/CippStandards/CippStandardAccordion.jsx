@@ -10,7 +10,7 @@ import {
   Divider,
   Grid,
 } from "@mui/material";
-import { ExpandMore as ExpandMoreIcon, Delete, Public } from "@mui/icons-material";
+import { ExpandMore as ExpandMoreIcon, Delete, Add, Public } from "@mui/icons-material"; // Import Add icon for multiple
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import PropTypes from "prop-types";
 import { useWatch } from "react-hook-form";
@@ -23,6 +23,7 @@ const CippStandardAccordion = ({
   expanded,
   handleAccordionToggle,
   handleRemoveStandard,
+  handleAddMultipleStandard, // Add this prop for the "+" button
   formControl,
 }) => {
   const [configuredState, setConfiguredState] = useState({});
@@ -35,7 +36,7 @@ const CippStandardAccordion = ({
   useEffect(() => {
     // Loop through selected standards and update configured status
     Object.keys(selectedStandards).forEach((standardName) => {
-      const standard = standards.find((s) => s.name === standardName);
+      const standard = standards.find((s) => s.name === standardName.split("[")[0]); // handle index for multiple
       if (standard) {
         const actionFilled = !!_.get(watchedValues, `${standardName}.action`);
         const addedComponentsFilled =
@@ -58,13 +59,11 @@ const CippStandardAccordion = ({
       { label: "Alert", value: "warn" },
       { label: "Remediate", value: "Remediate" },
     ];
-
     // Filter out disabled features from the actions list
     return allActions.filter((action) => !disabledFeatures?.[action.value.toLowerCase()]);
   };
-
   return Object.keys(selectedStandards).map((standardName) => {
-    const standard = standards.find((s) => s.name === standardName);
+    const standard = standards.find((s) => s.name === standardName.split("[")[0]); // Adjust to handle array notation
 
     if (!standard) return null;
 
@@ -75,6 +74,14 @@ const CippStandardAccordion = ({
     // Get the disabledFeatures from the standard, or default to an empty object
     const disabledFeatures = standard.disabledFeatures || {};
 
+    // Get the selected template name dynamically from watchedValues
+    //the first addedComponent name is the name we need to use. example: `${standardName}.${standard.addedComponent[0].name}`
+    const selectedTemplateName =
+      _.get(watchedValues, `${standardName}.${standard.addedComponent[0].name}`) || ""; // Update based on correct field
+    const accordionTitle = selectedTemplateName
+      ? `${standard.label} - ${selectedTemplateName.label}` // Dynamic title with selected name
+      : standard.label;
+
     return (
       <Card key={standardName} sx={{ mb: 2 }}>
         <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ p: 3 }}>
@@ -83,7 +90,7 @@ const CippStandardAccordion = ({
               <Public />
             </Avatar>
             <Box>
-              <Typography variant="h6">{standard.label}</Typography>
+              <Typography variant="h6">{accordionTitle}</Typography> {/* Dynamic title */}
               <Typography variant="body2" color="textSecondary">
                 {standard.helpText}
               </Typography>
@@ -104,6 +111,14 @@ const CippStandardAccordion = ({
                 component={ExpandMoreIcon}
                 sx={{ transform: isExpanded ? "rotate(180deg)" : "rotate(0)" }}
               />
+            </IconButton>
+            {standard.multiple && (
+              <IconButton onClick={() => handleAddMultipleStandard(standardName)}>
+                <SvgIcon component={Add} />
+              </IconButton>
+            )}
+            <IconButton color="error" onClick={() => handleRemoveStandard(standardName)}>
+              <Delete />
             </IconButton>
           </Stack>
         </Stack>
@@ -132,10 +147,10 @@ const CippStandardAccordion = ({
                       <Grid key={idx} item xs={6}>
                         <CippFormComponent
                           type={component.type}
-                          name={`${standardName}.${component.name}`}
                           label={component.label}
                           formControl={formControl}
                           {...component}
+                          name={`${standardName}.${component.name}`}
                         />
                       </Grid>
                     ))}
@@ -143,14 +158,6 @@ const CippStandardAccordion = ({
                 </Grid>
               )}
             </Grid>
-          </Box>
-
-          {/* Divider and Remove Button */}
-          <Divider sx={{ mt: 2 }} />
-          <Box sx={{ display: "flex", justifyContent: "flex-end", p: 2 }}>
-            <IconButton color="error" onClick={() => handleRemoveStandard(standardName)}>
-              <Delete />
-            </IconButton>
           </Box>
         </Collapse>
       </Card>
@@ -164,6 +171,7 @@ CippStandardAccordion.propTypes = {
   expanded: PropTypes.string,
   handleAccordionToggle: PropTypes.func.isRequired,
   handleRemoveStandard: PropTypes.func.isRequired,
+  handleAddMultipleStandard: PropTypes.func.isRequired, // Add this to propTypes
   formControl: PropTypes.object.isRequired,
 };
 
