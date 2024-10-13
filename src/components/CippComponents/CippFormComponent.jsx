@@ -72,6 +72,25 @@ export const CippFormComponent = (props) => {
         </>
       );
 
+    case "number":
+      return (
+        <>
+          <div>
+            <TextField
+              type="number"
+              {...other}
+              {...formControl.register(name, { ...validators })}
+              label={label}
+            />
+          </div>
+          <Typography variant="subtitle3" color="error">
+            {name.includes(".")
+              ? errors[name.split(".")[0]]?.[name.split(".")[1]]?.message
+              : errors[name]?.message}
+          </Typography>
+        </>
+      );
+
     case "switch":
       return (
         <>
@@ -141,6 +160,7 @@ export const CippFormComponent = (props) => {
       );
 
     case "autoComplete":
+      console.log("received props", { ...other });
       return (
         <>
           <div>

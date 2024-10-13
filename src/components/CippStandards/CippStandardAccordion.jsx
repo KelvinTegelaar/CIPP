@@ -37,7 +37,6 @@ const CippStandardAccordion = ({
     Object.keys(selectedStandards).forEach((standardName) => {
       const standard = standards.find((s) => s.name === standardName);
       if (standard) {
-        // Use lodash to safely access values, as standard names may contain dot notation
         const actionFilled = !!_.get(watchedValues, `${standardName}.action`);
         const addedComponentsFilled =
           standard.addedComponent?.every(
@@ -53,6 +52,17 @@ const CippStandardAccordion = ({
     });
   }, [watchedValues, standards, selectedStandards]);
 
+  const getAvailableActions = (disabledFeatures) => {
+    const allActions = [
+      { label: "Report", value: "Report" },
+      { label: "Alert", value: "warn" },
+      { label: "Remediate", value: "Remediate" },
+    ];
+
+    // Filter out disabled features from the actions list
+    return allActions.filter((action) => !disabledFeatures?.[action.value.toLowerCase()]);
+  };
+
   return Object.keys(selectedStandards).map((standardName) => {
     const standard = standards.find((s) => s.name === standardName);
 
@@ -61,6 +71,9 @@ const CippStandardAccordion = ({
     const isExpanded = expanded === standardName;
     const hasAddedComponents = standard.addedComponent && standard.addedComponent.length > 0;
     const isConfigured = configuredState[standardName];
+
+    // Get the disabledFeatures from the standard, or default to an empty object
+    const disabledFeatures = standard.disabledFeatures || {};
 
     return (
       <Card key={standardName} sx={{ mb: 2 }}>
@@ -99,18 +112,14 @@ const CippStandardAccordion = ({
           <Divider />
           <Box sx={{ p: 3 }}>
             <Grid container spacing={2}>
-              {/* First Row - Static Components */}
+              {/* First Row - Dynamic Action Autocomplete with disabled features logic */}
               <Grid item xs={4}>
                 <CippFormComponent
                   type="autoComplete"
                   name={`${standardName}.action`}
                   formControl={formControl}
                   label="Action"
-                  options={[
-                    { label: "Report", value: "Report" },
-                    { label: "Alert", value: "Alert" },
-                    { label: "Remediate", value: "Remediate" },
-                  ]}
+                  options={getAvailableActions(disabledFeatures)}
                   fullWidth
                 />
               </Grid>
@@ -122,11 +131,12 @@ const CippStandardAccordion = ({
                     {standard.addedComponent.map((component, idx) => (
                       <Grid key={idx} item xs={6}>
                         <CippFormComponent
-                          type={"textField"}
+                          type={component.type}
                           name={`${standardName}.${component.name}`}
                           label={component.label}
                           formControl={formControl}
                           fullWidth
+                          {...component}
                         />
                       </Grid>
                     ))}
