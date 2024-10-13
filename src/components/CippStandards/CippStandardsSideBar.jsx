@@ -13,6 +13,7 @@ import {
 import { ActionList } from "/src/components/action-list";
 import { ActionListItem } from "/src/components/action-list-item";
 import CheckIcon from "@heroicons/react/24/outline/CheckIcon";
+import CloseIcon from "@mui/icons-material/Close"; // Import CloseIcon for red X
 import { useWatch } from "react-hook-form";
 import { useEffect, useState } from "react";
 import _ from "lodash"; // For safely accessing dot notation
@@ -31,19 +32,12 @@ const StyledTimelineDot = (props) => {
         height: 36,
         justifyContent: "center",
         width: 36,
-        backgroundColor: (theme) => (theme.palette.mode === "dark" ? "neutral.800" : "neutral.200"),
-        borderColor: (theme) => (theme.palette.mode === "dark" ? "neutral.800" : "neutral.200"),
-        color: "text.secondary",
-        ...(complete && {
-          backgroundColor: "success.main",
-          borderColor: "success.main",
-          color: "success.contrastText",
-        }),
+        backgroundColor: complete ? "success.main" : "error.main",
+        borderColor: complete ? "success.main" : "error.main",
+        color: complete ? "success.contrastText" : "error.contrastText",
       }}
     >
-      <SvgIcon fontSize="small">
-        <CheckIcon />
-      </SvgIcon>
+      <SvgIcon fontSize="small">{complete ? <CheckIcon /> : <CloseIcon />}</SvgIcon>
     </TimelineDot>
   );
 };
@@ -59,28 +53,35 @@ const StyledTimelineContent = styled(TimelineContent)(({ theme }) => ({
   ...theme.typography.overline,
 }));
 
-const CippStandardsSideBar = ({ title, subtitle, steps, actions, updatedAt, formControl }) => {
+const CippStandardsSideBar = ({
+  title,
+  selectedStandards,
+  steps,
+  actions,
+  updatedAt,
+  formControl,
+}) => {
   const [currentStep, setCurrentStep] = useState(0);
 
   // Watch the template name and selected standards from the form
   const watchForm = useWatch({ control: formControl.control });
-  const { templateName, selectedStandards = {} } = watchForm;
 
   // Monitor standards configuration state
-  const allStandardsConfigured = Object.keys(selectedStandards).every((standardName) => {
-    const standardValues = _.get(watchForm, `standards.${standardName}`, {});
-    return standardValues.action && standardValues.configured;
-  });
 
   useEffect(() => {
+    const allStandardsConfigured = Object.keys(selectedStandards).every((standardName) => {
+      const standardValues = _.get(watchForm, `${standardName}`, {});
+      return standardValues.action;
+    });
+
     let newStep = 0;
 
     // Step 1: Check if template name is filled
-    if (templateName) {
+    if (watchForm.templateName) {
       newStep = 1;
     }
     // Step 2: Check if any standard has been added
-    if (watchForm.standards && Object.keys(watchForm.standards).length > 0) {
+    if (Object.keys(selectedStandards).length > 0) {
       newStep = 2;
     }
 
@@ -93,8 +94,13 @@ const CippStandardsSideBar = ({ title, subtitle, steps, actions, updatedAt, form
       newStep = 3;
     }
 
+    // Step 4: Check if tenants are selected
+    if (watchForm.tenantFilter && watchForm.tenantFilter.length > 0) {
+      newStep = 4;
+    }
+
     setCurrentStep(newStep);
-  }, [templateName, selectedStandards, allStandardsConfigured, watchForm]);
+  }, [selectedStandards, watchForm]);
 
   return (
     <Card>

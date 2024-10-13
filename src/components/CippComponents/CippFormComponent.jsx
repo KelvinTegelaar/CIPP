@@ -160,7 +160,6 @@ export const CippFormComponent = (props) => {
       );
 
     case "autoComplete":
-      console.log("received props", { ...other });
       return (
         <>
           <div>

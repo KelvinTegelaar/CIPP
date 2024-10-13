@@ -32,7 +32,6 @@ const Page = () => {
 
   const handleOpenDialog = () => setDialogOpen(true);
   const handleCloseDialog = () => setDialogOpen(false);
-  const handleSearch = (event) => setSearchQuery(event.target.value.toLowerCase());
   const filterStandards = (standardsList) =>
     standardsList.filter(
       (standard) =>
@@ -59,14 +58,9 @@ const Page = () => {
 
   const actions = [
     {
-      label: "Mark as Complete",
+      label: "Save Template",
       handler: () => console.log("Mark as complete"),
       icon: <CheckCircleIcon />,
-    },
-    {
-      label: "Delete Template",
-      handler: () => console.log("Delete Template"),
-      icon: <DeleteIcon />,
     },
   ];
 
@@ -123,6 +117,7 @@ const Page = () => {
                 setTemplateName={setTemplateName}
                 actions={actions}
                 formControl={formControl}
+                selectedStandards={selectedStandards}
               />
             </Grid>
             <Grid item xs={12} lg={8}>

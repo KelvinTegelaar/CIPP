@@ -27,10 +27,8 @@ const CippStandardDialog = ({
   handleToggleStandard,
 }) => {
   return (
-    <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="xxl" fullWidth>
-      <DialogTitle>
-        <Typography variant="h6">Select a Standard to Add</Typography>
-      </DialogTitle>
+    <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="xxl">
+      <DialogTitle>Select a Standard to Add</DialogTitle>
       <DialogContent sx={{ backgroundColor: "background.default" }}>
         <TextField
           label="Filter Standards"
