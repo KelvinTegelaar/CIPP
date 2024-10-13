@@ -10,11 +10,14 @@ import {
   Typography,
   Chip,
   Box,
+  IconButton,
+  Button,
   FormControlLabel,
   Switch,
-  Button,
 } from "@mui/material";
+import { Add as AddIcon, Check as CheckIcon } from "@mui/icons-material";
 import PropTypes from "prop-types";
+import { useState } from "react";
 
 const CippStandardDialog = ({
   dialogOpen,
@@ -26,6 +29,23 @@ const CippStandardDialog = ({
   selectedStandards,
   handleToggleStandard,
 }) => {
+  // Temporary state to manage button color when adding multiple standards
+  const [buttonState, setButtonState] = useState({});
+
+  // Function to handle button click for standards with "multiple"
+  const handleAddMultipleStandard = (standardName) => {
+    // Set the button to "active" (green) state
+    setButtonState((prev) => ({ ...prev, [standardName]: true }));
+
+    // After 100ms, reset the button state to normal
+    setTimeout(() => {
+      setButtonState((prev) => ({ ...prev, [standardName]: false }));
+    }, 100);
+
+    // Call the toggle handler to actually add the standard
+    handleToggleStandard(standardName);
+  };
+
   return (
     <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="xxl">
       <DialogTitle>Select a Standard to Add</DialogTitle>
@@ -114,15 +134,33 @@ const CippStandardDialog = ({
                     )}
                   </CardContent>
                   <CardContent>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={selectedStandards[standard.name] || false}
-                          onChange={() => handleToggleStandard(standard.name)}
-                        />
-                      }
-                      label="Add this standard to the template"
-                    />
+                    {standard.multiple ? (
+                      <Box sx={{ display: "flex" }}>
+                        <IconButton
+                          variant="contained"
+                          sx={{
+                            backgroundColor: buttonState[standard.name]
+                              ? "success.main"
+                              : "default",
+                            color: buttonState[standard.name] ? "white" : "inherit",
+                            transition: "background-color 0.1s ease-in-out",
+                          }}
+                          onClick={() => handleAddMultipleStandard(standard.name)}
+                        >
+                          {buttonState[standard.name] ? <CheckIcon /> : <AddIcon />}
+                        </IconButton>
+                      </Box>
+                    ) : (
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={selectedStandards[standard.name] || false}
+                            onChange={() => handleToggleStandard(standard.name)}
+                          />
+                        }
+                        label="Add this standard to the template"
+                      />
+                    )}
                   </CardContent>
                 </Card>
               </Grid>
@@ -131,14 +169,13 @@ const CippStandardDialog = ({
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleCloseDialog}>Cancel</Button>
         <Button
           variant="contained"
           onClick={() => {
             handleCloseDialog();
           }}
         >
-          Select
+          Close
         </Button>
       </DialogActions>
     </Dialog>

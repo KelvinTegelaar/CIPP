@@ -2751,6 +2751,7 @@
     "name": "standards.IntuneTemplate",
     "cat": "Templates",
     "label": "Intune Template",
+    "multiple": true,
     "disabledFeatures": {
       "report": true,
       "warn": true,
@@ -2802,6 +2803,7 @@
     "name": "standards.ConditionalAccessTemplate",
     "label": "Conditional Access Template",
     "cat": "Templates",
+    "multiple": true,
     "disabledFeatures": {
       "report": true,
       "warn": true,
@@ -2820,6 +2822,42 @@
           "valueField": "GUID",
           "queryKey": "ListCATemplates"
         }
+      },
+      {
+        "name": "userReplacement",
+        "label": "If your policy has groups or users, how should they be handled? Excluded roles will not be affected.",
+        "type": "radio",
+        "row": true,
+        "options": [
+          { "label": "Leave the groups and users in the policy as is", "value": "option1" },
+          {
+            "label": "Replace the group and users with the same groups and users based on their display name",
+            "value": "option2"
+          }
+        ]
+      },
+      {
+        "name": "state",
+        "label": "If your policy has groups or users, how should they be handled? Excluded roles will not be affected.",
+        "type": "radio",
+        "options": [
+          {
+            "label": "Do not change state - Template contains the state information",
+            "value": "option1"
+          },
+          {
+            "label": "Set to Enabled",
+            "value": "option2"
+          },
+          {
+            "label": "Set to Disabled",
+            "value": "option3"
+          },
+          {
+            "label": "Set to Report Only",
+            "value": "option2"
+          }
+        ]
       }
     ]
   },
