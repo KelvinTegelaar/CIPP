@@ -85,7 +85,25 @@ export const CippFormComponent = (props) => {
           </Typography>
         </>
       );
-
+    case "password":
+      return (
+        <>
+          <div>
+            <TextField
+              type="password"
+              fullWidth
+              {...other}
+              {...formControl.register(convertedName, { ...validators })}
+              label={label}
+            />
+          </div>
+          <Typography variant="subtitle3" color="error">
+            {convertedName.includes(".")
+              ? errors[convertedName.split(".")[0]]?.[convertedName.split(".")[1]]?.message
+              : errors[convertedName]?.message}
+          </Typography>
+        </>
+      );
     case "number":
       return (
         <>
