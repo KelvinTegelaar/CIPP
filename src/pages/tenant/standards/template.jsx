@@ -1,4 +1,4 @@
-import { Box, Button, Container, Stack, Typography, SvgIcon, Grid } from "@mui/material";
+import { Box, Button, Container, Stack, Typography, SvgIcon, Grid, Skeleton } from "@mui/material";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
@@ -21,7 +21,6 @@ const Page = () => {
   const [expanded, setExpanded] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStandards, setSelectedStandards] = useState({});
-  const [templateName, setTemplateName] = useState("");
 
   const existingTemplate = ApiGetCall({
     url: `/api/listStandardTemplates`,
@@ -38,6 +37,10 @@ const Page = () => {
       formControl.reset(existingTemplate.data?.[0]);
       const apiData = existingTemplate.data?.[0];
       formControl.reset(apiData);
+      if (router.query.clone) {
+        formControl.setValue("templateName", `${apiData.templateName} (Clone)`);
+        formControl.setValue("GUID", "");
+      }
 
       // Transform standards from the API to match the format for selectedStandards
       const standardsFromApi = apiData.standards;
@@ -82,7 +85,7 @@ const Page = () => {
   const handleToggleStandard = (standardName) => {
     setSelectedStandards((prev) => ({
       ...prev,
-      [standardName]: !prev[standardName], // Toggle single standard presence
+      [standardName]: !prev[standardName],
     }));
   };
 
@@ -98,17 +101,26 @@ const Page = () => {
     });
   };
 
-  // Remove a standard instance
   const handleRemoveStandard = (standardName) => {
     setSelectedStandards((prev) => {
       const newSelected = { ...prev };
-      delete newSelected[standardName]; // Remove the specific instance
+      delete newSelected[standardName];
       return newSelected;
     });
-    formControl;
+
+    const arrayPattern = /(.*)\[(\d+)\]$/;
+    const match = standardName.match(arrayPattern);
+
+    if (match) {
+      const [_, baseName, index] = match;
+      const currentArray = formControl.getValues(baseName) || [];
+      const updatedArray = currentArray.filter((_, i) => i !== parseInt(index));
+      formControl.setValue(baseName, updatedArray);
+    } else {
+      formControl.unregister(standardName);
+    }
   };
 
-  // Toggle accordion open or closed
   const handleAccordionToggle = (standardName) => {
     setExpanded((prev) => (prev === standardName ? null : standardName));
   };
@@ -174,7 +186,6 @@ const Page = () => {
                 subtitle="Follow the steps to configure the Standard"
                 createDialog={createDialog}
                 steps={steps}
-                templateName={templateName}
                 actions={actions}
                 formControl={formControl}
                 selectedStandards={selectedStandards}
@@ -183,6 +194,7 @@ const Page = () => {
             </Grid>
             <Grid item xs={12} lg={8}>
               <Stack spacing={3}>
+                {existingTemplate.isLoading && <Skeleton />}
                 {/* Show accordions based on selectedStandards (which is populated by API when editing) */}
                 <CippStandardAccordion
                   standards={standards}

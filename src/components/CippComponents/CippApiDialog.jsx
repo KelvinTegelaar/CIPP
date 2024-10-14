@@ -1,3 +1,4 @@
+import { useRouter } from "next/router"; // Import Next.js router
 import {
   Button,
   Dialog,
@@ -17,6 +18,7 @@ import { useSettings } from "../../hooks/use-settings";
 
 export const CippApiDialog = (props) => {
   const { createDialog, title, fields, api, row, relatedQueryKeys, ...other } = props;
+  const router = useRouter(); // Use the Next.js router
   const [addedFieldData, setAddedFieldData] = useState({});
   const [partialResults, setPartialResults] = useState([]);
   const [getRequestInfo, setGetRequestInfo] = useState({
@@ -24,7 +26,7 @@ export const CippApiDialog = (props) => {
     waiting: false,
     queryKey: "",
   });
-  console.log(api.relatedQueryKeys);
+
   const actionPostRequest = ApiPostCall({
     urlFromData: true,
     relatedQueryKeys: relatedQueryKeys ? relatedQueryKeys : title,
@@ -41,18 +43,35 @@ export const CippApiDialog = (props) => {
     },
   });
 
-  const processActionData = (dataObject, row) => {
+  const processActionData = (dataObject, row, replacementBehaviour) => {
     const newData = {};
     Object.keys(dataObject).forEach((key) => {
       const value = dataObject[key];
-      if (typeof value === "string" && row[value] !== undefined) {
+      // If the key starts with "!", do not replace, just pass the string as is
+      if (typeof value === "string" && value.startsWith("!")) {
+        newData[key] = value.slice(1); // Remove "!" and pass the key as-is
+      }
+      // If the value exists in row, replace it with the row value
+      else if (typeof value === "string" && row[value] !== undefined) {
         newData[key] = row[value];
-      } else if (typeof value === "object" && value !== null) {
-        newData[key] = processActionData(value, row);
-      } else {
+      }
+      // If the value is an object, recursively process it
+      else if (typeof value === "object" && value !== null) {
+        const processedValue = processActionData(value, row, replacementBehaviour);
+        if (replacementBehaviour !== "removeNulls" || Object.keys(processedValue).length > 0) {
+          newData[key] = processedValue;
+        }
+      }
+      // If replacementBehaviour is not "removeNulls", or value exists in row, add it to newData
+      else if (replacementBehaviour !== "removeNulls") {
         newData[key] = value;
       }
+      // If replacementBehaviour is "removeNulls", only add the key if it exists in row
+      else if (row[value] !== undefined) {
+        newData[key] = row[value];
+      }
     });
+
     return newData;
   };
   const tenantFilter = useSettings().currentTenant;
@@ -63,7 +82,7 @@ export const CippApiDialog = (props) => {
       return;
     }
     let data = { ...{ tenantFilter: tenantFilter }, ...formData, ...addedFieldData };
-    const processedActionData = processActionData(action.data, row);
+    const processedActionData = processActionData(action.data, row, action.replacementBehaviour);
     if (Array.isArray(row) && action.multiPost === false) {
       const bulkData = row.map((singleRow) => {
         const elementData = {};
@@ -122,8 +141,25 @@ export const CippApiDialog = (props) => {
   const formHook = useForm();
   const onSubmit = (data) => handleActionClick(row, api, data);
   const selectedType = api.type === "POST" ? actionPostRequest : actionGetRequest;
+
+  // Handling link navigation
   if (api.link) {
-    window.open(api.link, "_blank");
+    const getNestedValue = (obj, path) => {
+      return path
+        .split(".")
+        .reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : undefined), obj);
+    };
+
+    const linkWithRowData = api.link.replace(/\[([^\]]+)\]/g, (_, key) => {
+      return getNestedValue(row, key) || `[${key}]`;
+    });
+
+    if (linkWithRowData.startsWith("/")) {
+      router.push(linkWithRowData, undefined, { shallow: true });
+    } else {
+      window.open(linkWithRowData, api.target || "_blank");
+    }
+
     return null;
   }
 
@@ -197,9 +233,7 @@ export const CippApiDialog = (props) => {
           </Grid>
         </DialogContent>
         <DialogContent>
-          <>
-            <CippApiResults apiObject={{ ...selectedType, data: partialResults }} />
-          </>
+          <CippApiResults apiObject={{ ...selectedType, data: partialResults }} />
         </DialogContent>
         <DialogActions>
           <Button color="inherit" onClick={createDialog.handleClose}>

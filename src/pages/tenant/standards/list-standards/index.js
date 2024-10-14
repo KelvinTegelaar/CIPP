@@ -2,36 +2,32 @@ import { Button } from "@mui/material";
 import { CippTablePage } from "/src/components/CippComponents/CippTablePage.jsx";
 import { Layout as DashboardLayout } from "/src/layouts/index.js"; // had to add an extra path here because I added an extra folder structure. We should switch to absolute pathing so we dont have to deal with relative.
 import Link from "next/link";
+import { EyeIcon } from "@heroicons/react/24/outline";
+import { CopyAll, Delete } from "@mui/icons-material";
 
 const Page = () => {
   const pageTitle = "Standard Templates";
   const actions = [
     {
       label: "Edit Template",
-      type: "POST",
-      url: "/api/ExecGetRecoveryKey",
-      data: {
-        TenantFilter: "TenantFilter",
-        GUID: "ID",
-      },
-      confirmText: "Are you sure you want to retrieve the Bitlocker keys?",
-      multiPost: false,
+      //when using a link it must always be the full path /identity/administration/users/[id] for example.
+      link: "/tenant/standards/template?id=[GUID]",
+      icon: <EyeIcon />,
+      color: "success",
+      target: "_self",
     },
     {
-      label: "Clone Template",
-      type: "POST",
-      url: "/api/ExecGetRecoveryKey",
-      data: {
-        TenantFilter: "TenantFilter",
-        GUID: "ID",
-      },
-      confirmText: "Are you sure you want to retrieve the Bitlocker keys?",
-      multiPost: false,
+      label: "Clone & Edit Template",
+      link: "/tenant/standards/template?id=[GUID]&clone=true",
+      icon: <EyeIcon />,
+      color: "success",
+      target: "_self",
     },
     {
       label: "Delete Template",
       type: "POST",
       url: "/api/RemoveStandardTemplate",
+      icon: <Delete />,
       data: {
         ID: "GUID",
       },

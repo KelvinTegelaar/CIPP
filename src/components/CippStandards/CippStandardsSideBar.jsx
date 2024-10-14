@@ -171,6 +171,9 @@ const CippStandardsSideBar = ({
             icon={<SvgIcon fontSize="small">{action.icon}</SvgIcon>}
             label={action.label}
             onClick={action.handler}
+            disabled={
+              !stepsStatus[`step${index + 1}`] || currentStep < 3 || action.disabled || false
+            }
           />
         ))}
       </ActionList>
@@ -183,6 +186,7 @@ const CippStandardsSideBar = ({
             "Are you sure you want to apply this standard? This will apply the template and run every 3 hours.",
           url: "/api/AddStandardsTemplate",
           type: "POST",
+          replacementBehaviour: "removeNulls",
           data: {
             tenantFilter: "tenantFilter",
             excludedTenants: "excludedTenants",
