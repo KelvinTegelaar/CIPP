@@ -6,7 +6,7 @@
       "defaultValue": "CIPPDev",
       "type": "string",
       "metadata": {
-        "description": "Name use as base-template to named the resources deployed in Azure."
+        "description": "Name used as base-template to name the resources deployed in Azure."
       }
     },
     "TenantID": {
@@ -37,13 +37,6 @@
         "description": "The Refresh token for your Secure Application Model."
       }
     },
-    "ExchangeRefreshToken": {
-      "defaultValue": "LongRefreshtoken",
-      "type": "string",
-      "metadata": {
-        "description": "The Exchange Refresh token for your Secure Application Model."
-      }
-    },
     "GithubRepository": {
       "defaultValue": "https://github.com/KelvinTegelaar/CIPP",
       "type": "string",
@@ -55,7 +48,7 @@
       "defaultValue": "GeneratedPassword",
       "type": "string",
       "metadata": {
-        "description": "Your Github Repository token (see https://docs.microsoft.com/en-us/azure/static-web-apps/publish-azure-resource-manager?tabs=azure-cli#create-a-github-personal-access-token"
+        "description": "Your Github Repository token (see https://docs.microsoft.com/en-us/azure/static-web-apps/publish-azure-resource-manager?tabs=azure-cli#create-a-github-personal-access-token)"
       }
     },
     "GithubAPIRepository": {
@@ -71,7 +64,6 @@
     "funcAppName": "[toLower(concat(parameters('baseName'), variables('suffix')))]",
     "funcStorageName": "[tolower(concat(substring(parameters('baseName'), 0, min(length(parameters('baseName')),16)), 'stg', variables('suffix')))]",
     "serverFarmName": "[concat(substring(parameters('baseName'), 0, min(length(parameters('baseName')),14)), '-srv-', variables('suffix'))]",
-    "repoURL": "https://github.com/KelvinTegelaar/AzValidate.git",
     "uniqueResourceNameBase": "[toLower(concat(parameters('baseName'), variables('suffix')))]",
     "swaName": "[toLower(concat(parameters('baseName'), '-swa-', variables('suffix')))]"
   },
@@ -150,18 +142,6 @@
           "dependsOn": [
             "[resourceId('Microsoft.KeyVault/vaults', variables('uniqueResourceNameBase'))]"
           ]
-        },
-        {
-          "type": "secrets",
-          "name": "exchangerefreshtoken",
-          "apiVersion": "2015-06-01",
-          "properties": {
-            "contentType": "text/plain",
-            "value": "[parameters('exchangerefreshtoken')]"
-          },
-          "dependsOn": [
-            "[resourceId('Microsoft.KeyVault/vaults', variables('uniqueResourceNameBase'))]"
-          ]
         }
       ],
       "dependsOn": ["[resourceId('Microsoft.Web/sites', variables('funcAppName'))]"]
@@ -212,10 +192,6 @@
             {
               "name": "RefreshToken",
               "value": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('uniqueResourceNameBase'), '.vault.azure.net/secrets/RefreshToken)')]"
-            },
-            {
-              "name": "ExchangeRefreshtoken",
-              "value": "[concat('@Microsoft.KeyVault(SecretUri=https://',variables('uniqueResourceNameBase'), '.vault.azure.net/secrets/ExchangeRefreshToken)')]"
             },
             {
               "name": "TenantID",
@@ -274,7 +250,7 @@
       "name": "[variables('funcStorageName')]",
       "location": "[resourceGroup().location]",
       "tags": {
-        "displayName": "funStorageName"
+        "displayName": "funcStorageName"
       },
       "sku": {
         "name": "Standard_LRS"

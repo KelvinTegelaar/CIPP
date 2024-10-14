@@ -18,10 +18,11 @@ export const usersApi = baseApi.injectEndpoints({
       }),
     }),
     listContacts: builder.query({
-      query: ({ tenantDomain }) => ({
+      query: ({ tenantDomain, ContactID }) => ({
         path: '/api/ListContacts',
         params: {
           TenantFilter: tenantDomain,
+          ContactID,
         },
       }),
     }),
@@ -59,7 +60,12 @@ export const usersApi = baseApi.injectEndpoints({
       queryFn: async (_args, _baseQueryApi, _options, baseQuery) => {
         const startRequest = await baseQuery({
           path: '/api/execBECCheck',
-          params: { userId: _args.userId, tenantFilter: _args.tenantFilter },
+          params: {
+            userId: _args.userId,
+            tenantFilter: _args.tenantFilter,
+            userName: _args.userName,
+            overwrite: _args.overwrite,
+          },
         })
         if (startRequest.error) {
           return { error: startRequest.error }
