@@ -33,6 +33,12 @@
     "forceSyncButton": true,
     "description": "Enable the Gradient integration to send license counts and create tickets.",
     "helpText": "This integration allows you to send your license counts to Gradient for billing purposes, and create tickets if your PSA supports ticket creation by Gradient.",
+    "links": [
+      {
+        "name": "Gradient Documentation",
+        "url": "https://support.meetgradient.com/cipp"
+      }
+    ],
     "SettingOptions": [
       {
         "type": "textField",
@@ -68,6 +74,12 @@
     "forceSyncButton": false,
     "description": "Enable the HaloPSA integration to send alerts to your ticketing system.",
     "helpText": "This integration allows you to send alerts to your ticketing system.",
+    "links": [
+      {
+        "name": "HaloPSA Documentation",
+        "url": "https://halopsa.com/guides/"
+      }
+    ],
     "SettingOptions": [
       {
         "type": "textField",
@@ -123,6 +135,12 @@
     "forceSyncButton": true,
     "description": "Enable the NinjaOne integration to sync documentation and monitor device compliance.",
     "helpText": "This integration allows you to populate custom fields with Tenant information, monitor device compliance state, document other items and generate relationships inside NinjaOne.",
+    "links": [
+      {
+        "name": "NinjaOne Documentation",
+        "url": "https://www.ninjaone.com/integrations/cyberdrain/"
+      }
+    ],
     "SettingOptions": [
       {
         "type": "textField",
@@ -178,6 +196,12 @@
     "forceSyncButton": true,
     "description": "Enable the Hudu integration to sync documentation",
     "helpText": "This integration allows you to populate custom asset layouts with Tenant information, monitor device compliance state, document other items and generate relationships inside Hudu.",
+    "links": [
+      {
+        "name": "Hudu Documentation",
+        "url": "https://support.hudu.com/hc/en-us/articles/24970807130391-CIPP#h_01J3NTF188BX3P64RKX3H52P3W"
+      }
+    ],
     "SettingOptions": [
       {
         "type": "textField",
