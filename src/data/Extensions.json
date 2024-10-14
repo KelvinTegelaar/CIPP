@@ -1,0 +1,288 @@
+[
+  {
+    "name": "CIPP-API",
+    "id": "CIPP-API",
+    "type": "CIPP-API",
+    "cat": "API",
+    "logo": "/assets/integrations/cipp-api.png",
+    "forceSyncButton": false,
+    "disableWhenhosted": true,
+    "description": "Enable the CIPP API to access CIPP data outside of CIPP using a RESTful API.",
+    "helpText": "This integration allows you to enable CIPP-API access outside of CIPP. Requires Global Administrator permissions inside your tenant for activation of the API. The API credentials will only be shown once.",
+    "SettingOptions": [
+      {
+        "type": "switch",
+        "name": "cippapi.ResetPassword",
+        "label": "Reset application secret - this will invalidate all existing API tokens"
+      },
+      {
+        "type": "switch",
+        "name": "cippapi.Enabled",
+        "label": "Enable Integration"
+      }
+    ],
+    "mappingRequired": false
+  },
+  {
+    "name": "Gradient",
+    "id": "Gradient",
+    "type": "Gradient",
+    "cat": "Billing & Invoicing",
+    "logo": "/assets/integrations/gradient.png",
+    "logoDark": "/assets/integrations/gradient_dark.png",
+    "forceSyncButton": true,
+    "description": "Enable the Gradient integration to send license counts and create tickets.",
+    "helpText": "This integration allows you to send your license counts to Gradient for billing purposes, and create tickets if your PSA supports ticket creation by Gradient.",
+    "SettingOptions": [
+      {
+        "type": "textField",
+        "name": "Gradient.VendorKey",
+        "label": "Gradient Vendor API Key",
+        "placeholder": "Enter your Gradient Vendor Key."
+      },
+      {
+        "type": "password",
+        "name": "Gradient.APIKey",
+        "label": "Gradient Partner API Key",
+        "placeholder": "Enter your Gradient Partner Key. Leave blank to keep your current key."
+      },
+      {
+        "type": "switch",
+        "name": "Gradient.BillingEnabled",
+        "label": "Enable sending all license information to Gradient"
+      },
+      {
+        "type": "switch",
+        "name": "Gradient.Enabled",
+        "label": "Enable Integration"
+      }
+    ],
+    "mappingRequired": false
+  },
+  {
+    "name": "Halo PSA Ticketing",
+    "id": "HaloPSA",
+    "type": "HaloPSA",
+    "cat": "Ticketing",
+    "logo": "/assets/integrations/halo.png",
+    "forceSyncButton": false,
+    "description": "Enable the HaloPSA integration to send alerts to your ticketing system.",
+    "helpText": "This integration allows you to send alerts to your ticketing system.",
+    "SettingOptions": [
+      {
+        "type": "textField",
+        "name": "HaloPSA.ResourceURL",
+        "label": "HaloPSA Resource Server URL",
+        "placeholder": "Enter your HaloPSA Resource Server URL."
+      },
+      {
+        "type": "textField",
+        "name": "HaloPSA.AuthURL",
+        "label": "HaloPSA Authorisation Endpoint URL",
+        "placeholder": "Enter your HaloPSA Authorisation Endpoint URL."
+      },
+      {
+        "type": "textField",
+        "name": "HaloPSA.Tenant",
+        "label": "HaloPSA Tenant",
+        "placeholder": "Enter your HaloPSA Tenant (Leave blank if self-hosted"
+      },
+      {
+        "type": "textField",
+        "name": "HaloPSA.TicketType",
+        "label": "HaloPSA Ticket Type ID",
+        "placeholder": "Enter your HaloPSA ticket type to use for CIPP Tickets. Leave blank for default."
+      },
+      {
+        "type": "textField",
+        "name": "HaloPSA.ClientID",
+        "label": "HaloPSA Client ID",
+        "placeholder": "Enter your HaloPSA Client ID"
+      },
+      {
+        "type": "password",
+        "name": "HaloPSA.APIKey",
+        "label": "HaloPSA Client Secret",
+        "placeholder": "Enter your client Secret. Leave blank to keep your current key."
+      },
+      {
+        "type": "switch",
+        "name": "HaloPSA.Enabled",
+        "label": "Enable Integration"
+      }
+    ],
+    "mappingRequired": true
+  },
+  {
+    "name": "NinjaOne",
+    "id": "NinjaOne",
+    "type": "NinjaOne",
+    "cat": "Documentation & Monitoring",
+    "logo": "/assets/integrations/ninjaone.png",
+    "logoDark": "/assets/integrations/ninjaone_dark.png",
+    "forceSyncButton": true,
+    "description": "Enable the NinjaOne integration to sync documentation and monitor device compliance.",
+    "helpText": "This integration allows you to populate custom fields with Tenant information, monitor device compliance state, document other items and generate relationships inside NinjaOne.",
+    "SettingOptions": [
+      {
+        "type": "textField",
+        "name": "NinjaOne.Instance",
+        "label": "Please enter your NinjaOne Instance hostname",
+        "placeholder": "app.ninjarmm.com, eu.ninjarmm.com, oc.ninjarmm.com, ca.ninjarmm.com, us2.ninjarmm.com"
+      },
+      {
+        "type": "textField",
+        "name": "NinjaOne.ClientID",
+        "label": "NinjaOne API Client ID",
+        "placeholder": "Enter your NinjaOne API Client ID"
+      },
+      {
+        "type": "password",
+        "name": "NinjaOne.APIKey",
+        "label": "NinjaOne API Client Secret",
+        "placeholder": "Enter your NinjaOne API Client Secret"
+      },
+      {
+        "type": "switch",
+        "name": "NinjaOne.LicenseDocumentsEnabled",
+        "label": "Sync Licenses (Requires NinjaOne Documentation)"
+      },
+      {
+        "type": "switch",
+        "name": "NinjaOne.UserDocumentsEnabled",
+        "label": "Sync Users (Requires NinjaOne Documentation)"
+      },
+      {
+        "type": "switch",
+        "name": "NinjaOne.LicensedOnly",
+        "label": "Only Sync Licensed Users (Requires NinjaOne Documentation)"
+      },
+      {
+        "type": "switch",
+        "name": "NinjaOne.Enabled",
+        "label": "Enable Integration"
+      }
+    ],
+    "mappingRequired": true,
+    "fieldMapping": true,
+    "autoMapSyncApi": true,
+    "showSyncButton": true
+  },
+  {
+    "name": "Hudu",
+    "id": "Hudu",
+    "type": "Hudu",
+    "cat": "Documentation",
+    "logo": "/assets/integrations/hudu.png",
+    "logoDark": "/assets/integrations/hudu_dark.png",
+    "forceSyncButton": true,
+    "description": "Enable the Hudu integration to sync documentation",
+    "helpText": "This integration allows you to populate custom asset layouts with Tenant information, monitor device compliance state, document other items and generate relationships inside Hudu.",
+    "SettingOptions": [
+      {
+        "type": "textField",
+        "name": "Hudu.BaseUrl",
+        "label": "Please enter your Hudu URL",
+        "placeholder": "https://yourcompany.huducloud.com"
+      },
+      {
+        "type": "password",
+        "name": "Hudu.APIKey",
+        "label": "Hudu API Key",
+        "placeholder": "Enter your Hudu API Key"
+      },
+      {
+        "type": "switch",
+        "name": "Hudu.Enabled",
+        "label": "Enable Integration"
+      },
+      {
+        "type": "switch",
+        "name": "Hudu.CreateMissingUsers",
+        "label": "Create missing users in Hudu"
+      },
+      {
+        "type": "switch",
+        "name": "Hudu.CreateMissingDevices",
+        "label": "Create missing devices in Hudu"
+      },
+      {
+        "type": "textField",
+        "name": "Hudu.ExcludeSerials",
+        "label": "Exclude device serials (comma separated)"
+      },
+      {
+        "type": "switch",
+        "name": "Hudu.ImportDomains",
+        "label": "Import domains from M365"
+      },
+      {
+        "type": "switch",
+        "name": "Hudu.MonitorDomains",
+        "label": "Monitor domains in Hudu"
+      }
+    ],
+    "mappingRequired": true,
+    "fieldMapping": true,
+    "showSyncButton": true
+  },
+  {
+    "name": "PasswordPusher",
+    "id": "PWPush",
+    "type": "PWPush",
+    "cat": "Passwords",
+    "logo": "/assets/integrations/pwpush_light.png",
+    "logoDark": "/assets/integrations/pwpush_dark.png",
+    "forceSyncButton": false,
+    "description": "Enable the PasswordPusher integration to generate password links instead of plain text passwords.",
+    "helpText": "This integration allows you to generate password links instead of plain text passwords. Visit https://pwpush.com/ or https://github.com/pglombardo/PasswordPusher for more information.",
+    "SettingOptions": [
+      {
+        "type": "switch",
+        "name": "PWPush.Enabled",
+        "label": "Replace generated passwords with PWPush links"
+      },
+      {
+        "type": "textField",
+        "name": "PWPush.BaseUrl",
+        "label": "PWPush URL",
+        "placeholder": "Enter your PWPush URL. (default: https://pwpush.com)"
+      },
+      {
+        "type": "textField",
+        "name": "PWPush.EmailAddress",
+        "label": "PWPush email address",
+        "placeholder": "Enter your email address for PWPush. (optional)"
+      },
+      {
+        "type": "password",
+        "name": "PWPush.APIKey",
+        "label": "PWPush API Key",
+        "placeholder": "Enter your PWPush API Key. (optional)"
+      },
+      {
+        "type": "switch",
+        "name": "PWPush.RetrievalStep",
+        "label": "Click to retrieve password (recommended)"
+      },
+      {
+        "type": "number",
+        "name": "PWPush.ExpireAfterDays",
+        "label": "Expiration in Days",
+        "placeholder": "Expiration time in days. (optional)"
+      },
+      {
+        "type": "number",
+        "name": "PWPush.ExpireAfterViews",
+        "label": "Expiration after views",
+        "placeholder": "Expiration after views. (optional)"
+      },
+      {
+        "type": "switch",
+        "name": "PWPush.DeletableByViewer",
+        "label": "Allow deletion of passwords"
+      }
+    ],
+    "mappingRequired": false
+  }
+]
