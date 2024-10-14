@@ -240,7 +240,7 @@
       {
         "type": "switch",
         "name": "PWPush.Enabled",
-        "label": "Replace generated passwords with PWPush links"
+        "label": "Enable Integration - Replace passwords with PWPush links"
       },
       {
         "type": "textField",
