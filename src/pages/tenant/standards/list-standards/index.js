@@ -35,7 +35,6 @@ const Page = () => {
       data: {
         ID: "GUID",
       },
-      relatedQueryKeys: "listStandardTemplates",
       confirmText: "Are you sure you want to delete this template?",
       multiPost: false,
     },
@@ -52,6 +51,7 @@ const Page = () => {
       }
       actions={actions}
       simpleColumns={["templateName", "tenantFilter", "excludedTenants", "standards"]}
+      queryKey="listStandardTemplates"
     />
   );
 };

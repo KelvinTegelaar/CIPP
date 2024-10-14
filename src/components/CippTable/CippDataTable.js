@@ -26,6 +26,7 @@ import { getCippError } from "../../utils/get-cipp-error";
 
 export const CippDataTable = (props) => {
   const {
+    queryKey,
     data = [],
     columns = [],
     api = {},
@@ -56,7 +57,7 @@ export const CippDataTable = (props) => {
   const getRequestData = ApiGetCallWithPagination({
     url: api.url,
     data: { ...api.data },
-    queryKey: title,
+    queryKey: queryKey ? queryKey : title,
     waiting: waitingBool,
   });
 
@@ -272,6 +273,7 @@ export const CippDataTable = (props) => {
           fields={actionData.action?.fields}
           api={actionData.action}
           row={actionData.data}
+          relatedQueryKeys={queryKey ? queryKey : title}
         />
       )}
     </Card>

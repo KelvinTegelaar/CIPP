@@ -20,6 +20,7 @@ export const CippTablePage = (props) => {
     options,
     onChange,
     offCanvas,
+    queryKey,
     ...other
   } = props;
   const tenant = useSettings().currentTenant;
@@ -44,6 +45,7 @@ export const CippTablePage = (props) => {
             >
               <Divider />
               <CippDataTable
+                queryKey={queryKey}
                 cardButton={cardButton}
                 title={`${title} - ${tenant}`}
                 noDataButton={noDataButton}

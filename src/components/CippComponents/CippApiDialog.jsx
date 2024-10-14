@@ -16,7 +16,7 @@ import { CippAutoComplete } from "./CippAutocomplete";
 import { useSettings } from "../../hooks/use-settings";
 
 export const CippApiDialog = (props) => {
-  const { createDialog, title, fields, api, row, ...other } = props;
+  const { createDialog, title, fields, api, row, relatedQueryKeys, ...other } = props;
   const [addedFieldData, setAddedFieldData] = useState({});
   const [partialResults, setPartialResults] = useState([]);
   const [getRequestInfo, setGetRequestInfo] = useState({
@@ -24,10 +24,10 @@ export const CippApiDialog = (props) => {
     waiting: false,
     queryKey: "",
   });
-
+  console.log(api.relatedQueryKeys);
   const actionPostRequest = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: api.relatedQueryKeys ? api.relatedQueryKeys : title,
+    relatedQueryKeys: relatedQueryKeys ? relatedQueryKeys : title,
     bulkRequest: api.multiPost === false,
     onResult: (result) => {
       setPartialResults((prevResults) => [...prevResults, result]);

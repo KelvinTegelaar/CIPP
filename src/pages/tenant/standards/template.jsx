@@ -97,7 +97,7 @@ const Page = () => {
       };
     });
   };
- 
+
   // Remove a standard instance
   const handleRemoveStandard = (standardName) => {
     setSelectedStandards((prev) => {
@@ -105,7 +105,7 @@ const Page = () => {
       delete newSelected[standardName]; // Remove the specific instance
       return newSelected;
     });
-    formControl
+    formControl;
   };
 
   // Toggle accordion open or closed
@@ -178,6 +178,7 @@ const Page = () => {
                 actions={actions}
                 formControl={formControl}
                 selectedStandards={selectedStandards}
+                edit={editMode}
               />
             </Grid>
             <Grid item xs={12} lg={8}>

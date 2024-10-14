@@ -20,7 +20,6 @@ import _ from "lodash";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { CippFormTenantSelector } from "../CippComponents/CippFormTenantSelector";
 import { CippApiDialog } from "../CippComponents/CippApiDialog";
-import { useDialog } from "../../hooks/use-dialog";
 
 const StyledTimelineDot = (props) => {
   const { complete } = props;
@@ -63,6 +62,7 @@ const CippStandardsSideBar = ({
   updatedAt,
   formControl,
   createDialog,
+  edit,
 }) => {
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -175,7 +175,6 @@ const CippStandardsSideBar = ({
         ))}
       </ActionList>
       <Divider />
-      {console.log(formControl.getValues())}
       <CippApiDialog
         createDialog={createDialog}
         title="Add Standard"
@@ -186,13 +185,15 @@ const CippStandardsSideBar = ({
           type: "POST",
           data: {
             tenantFilter: "tenantFilter",
+            excludedTenants: "excludedTenants",
             templateName: "templateName",
             standards: "standards",
-            GUID: "GUID",
+            ...(edit ? { GUID: "GUID" } : {}),
           },
         }}
         row={formControl.getValues()}
         formControl={formControl}
+        relatedQueryKeys={"listStandardTemplates"}
       />
     </Card>
   );
