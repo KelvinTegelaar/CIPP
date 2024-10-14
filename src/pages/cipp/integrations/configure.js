@@ -41,7 +41,7 @@ const Page = () => {
 
   return (
     <>
-      {extension ? (
+      {integrations.isSuccess && extension ? (
         <CippFormPage
           queryKey={"Integrations"}
           formControl={formControl}
@@ -60,19 +60,25 @@ const Page = () => {
                   label={setting.label}
                   options={setting.options}
                   formControl={formControl}
+                  placeholder={setting?.placeholder}
                 />
               </Box>
             ))}
           </Box>
         </CippFormPage>
       ) : (
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <Box sx={{ p: 3 }}>
-              <Box sx={{ textAlign: "center" }}>Extension not found</Box>
-            </Box>
-          </Grid>
-        </Grid>
+        <>
+          {integrations.isLoading && <Box>Loading...</Box>}
+          {integrations.isSuccess && !extension && (
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <Box sx={{ p: 3 }}>
+                  <Box sx={{ textAlign: "center" }}>Extension not found</Box>
+                </Box>
+              </Grid>
+            </Grid>
+          )}
+        </>
       )}
     </>
   );
