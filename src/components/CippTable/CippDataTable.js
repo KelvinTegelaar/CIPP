@@ -82,11 +82,15 @@ export const CippDataTable = (props) => {
     if (getRequestData.isSuccess) {
       const allPages = getRequestData.data.pages;
       const getNestedValue = (obj, path) => {
-        const keys = path?.split(".");
-        let result = obj;
+        // If path is undefined or empty, return the root object itself
+        if (!path) {
+          return obj;
+        }
 
+        const keys = path.split(".");
+        let result = obj;
         for (const key of keys) {
-          if (result && result[key] !== undefined) {
+          if (result && typeof result === "object" && key in result) {
             result = result[key];
           } else {
             return undefined;

@@ -37,7 +37,7 @@ const CippStandardDialog = ({
 
     setTimeout(() => {
       setButtonDisabled(false);
-    }, 100); // 100ms delay to show the effect
+    }, 100);
   };
 
   return (

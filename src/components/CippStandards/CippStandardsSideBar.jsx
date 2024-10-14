@@ -70,23 +70,22 @@ const CippStandardsSideBar = ({
 
   useEffect(() => {
     const stepsStatus = {
-      step1: !!watchForm.templateName, // Step 1: Template name is filled
-      step2: Object.keys(selectedStandards).length > 0, // Step 2: Standards added
+      step1: !!watchForm.templateName,
+      step2: Object.keys(selectedStandards).length > 0,
       step3:
         watchForm.standards &&
         Object.keys(selectedStandards).length > 0 &&
         Object.keys(selectedStandards).every((standardName) => {
           const standardValues = _.get(watchForm, `${standardName}`, {});
           return standardValues.action;
-        }), // Step 3: All standards configured
-      step4: watchForm.tenantFilter && watchForm.tenantFilter.length > 0, // Step 4: Tenants selected
+        }),
+      step4: watchForm.tenantFilter && watchForm.tenantFilter.length > 0,
     };
 
     const completedSteps = Object.values(stepsStatus).filter(Boolean).length;
     setCurrentStep(completedSteps);
   }, [selectedStandards, watchForm]);
 
-  // Define stepsStatus outside of useEffect for use in rendering the Timeline
   const stepsStatus = {
     step1: !!watchForm.templateName,
     step2: Object.keys(selectedStandards).length > 0,
@@ -176,24 +175,25 @@ const CippStandardsSideBar = ({
         ))}
       </ActionList>
       <Divider />
+      {console.log(formControl.getValues())}
       <CippApiDialog
         createDialog={createDialog}
         title="Add Standard"
         api={{
           confirmText:
-            "Are you sure you want to add this standard? This will apply the template and run every 3 hours.",
-          url: "/api/ExecAddStandard",
+            "Are you sure you want to apply this standard? This will apply the template and run every 3 hours.",
+          url: "/api/AddStandardsTemplate",
           type: "POST",
           data: {
             tenantFilter: "tenantFilter",
             templateName: "templateName",
             standards: "standards",
+            GUID: "GUID",
           },
         }}
         row={formControl.getValues()}
         formControl={formControl}
       />
-      {console.log(formControl.getValues())}
     </Card>
   );
 };

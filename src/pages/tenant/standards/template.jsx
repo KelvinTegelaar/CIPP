@@ -3,7 +3,7 @@ import { Layout as DashboardLayout } from "/src/layouts/index.js";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import { Add } from "@mui/icons-material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import standards from "/src/data/standards";
 import CippStandardAccordion from "../../../components/CippStandards/CippStandardAccordion";
 import CippStandardDialog from "../../../components/CippStandards/CippStandardDialog";
@@ -11,9 +11,11 @@ import CippStandardsSideBar from "../../../components/CippStandards/CippStandard
 import { ArrowLeftIcon } from "@mui/x-date-pickers";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useDialog } from "../../../hooks/use-dialog";
+import { ApiGetCall } from "../../../api/ApiCall";
 
 const Page = () => {
   const router = useRouter();
+  const [editMode, setEditMode] = useState(false);
   const formControl = useForm({ mode: "onBlur" });
   const [dialogOpen, setDialogOpen] = useState(false);
   const [expanded, setExpanded] = useState(null);
@@ -21,7 +23,42 @@ const Page = () => {
   const [selectedStandards, setSelectedStandards] = useState({});
   const [templateName, setTemplateName] = useState("");
 
-  // Categorize standards by their category (cat)
+  const existingTemplate = ApiGetCall({
+    url: `/api/listStandardTemplates`,
+    data: { id: router.query.id },
+    queryKey: `listStandardTemplates-${router.query.id}`,
+    waiting: editMode,
+  });
+  useEffect(() => {
+    if (router.query.id) {
+      setEditMode(true);
+    }
+
+    if (existingTemplate.isSuccess) {
+      formControl.reset(existingTemplate.data?.[0]);
+      const apiData = existingTemplate.data?.[0];
+      formControl.reset(apiData);
+
+      // Transform standards from the API to match the format for selectedStandards
+      const standardsFromApi = apiData.standards;
+      const transformedStandards = {};
+
+      Object.keys(standardsFromApi).forEach((key) => {
+        if (Array.isArray(standardsFromApi[key])) {
+          // Handle array standards, like ConditionalAccessTemplate
+          standardsFromApi[key].forEach((_, index) => {
+            transformedStandards[`standards.${key}[${index}]`] = true;
+          });
+        } else {
+          // Handle object standards or simple key-value pairs
+          transformedStandards[`standards.${key}`] = true;
+        }
+      });
+
+      setSelectedStandards(transformedStandards);
+    }
+  }, [existingTemplate.isSuccess, router]);
+
   const categories = standards.reduce((acc, standard) => {
     const { cat } = standard;
     if (!acc[cat]) {
@@ -31,11 +68,9 @@ const Page = () => {
     return acc;
   }, {});
 
-  // Open and close dialog
   const handleOpenDialog = () => setDialogOpen(true);
   const handleCloseDialog = () => setDialogOpen(false);
 
-  // Filter standards based on search query
   const filterStandards = (standardsList) =>
     standardsList.filter(
       (standard) =>
@@ -44,7 +79,6 @@ const Page = () => {
         (standard.tag && standard.tag.some((tag) => tag.toLowerCase().includes(searchQuery)))
     );
 
-  // Handle single standard toggle (not multiple)
   const handleToggleStandard = (standardName) => {
     setSelectedStandards((prev) => ({
       ...prev,
@@ -52,20 +86,18 @@ const Page = () => {
     }));
   };
 
-  // Add multiple instances of a standard using the + button
   const handleAddMultipleStandard = (standardName) => {
     setSelectedStandards((prev) => {
       const existingInstances = Object.keys(prev).filter((name) => name.startsWith(standardName));
       const newIndex = existingInstances.length;
 
-      // Add the new instance with an incremented index
       return {
         ...prev,
-        [`${standardName}[${newIndex}]`]: true, // New instance with incremental index
+        [`${standardName}[${newIndex}]`]: true,
       };
     });
   };
-
+ 
   // Remove a standard instance
   const handleRemoveStandard = (standardName) => {
     setSelectedStandards((prev) => {
@@ -73,6 +105,7 @@ const Page = () => {
       delete newSelected[standardName]; // Remove the specific instance
       return newSelected;
     });
+    formControl
   };
 
   // Toggle accordion open or closed
@@ -120,7 +153,9 @@ const Page = () => {
             spacing={4}
             sx={{ mb: 3 }}
           >
-            <Typography variant="h4">Add Standards Template</Typography>
+            <Typography variant="h4">
+              {editMode ? "Edit Standards Template" : "Add Standards Template"}
+            </Typography>
             <Button
               variant="contained"
               color="primary"
@@ -140,7 +175,6 @@ const Page = () => {
                 createDialog={createDialog}
                 steps={steps}
                 templateName={templateName}
-                setTemplateName={setTemplateName}
                 actions={actions}
                 formControl={formControl}
                 selectedStandards={selectedStandards}
@@ -148,9 +182,10 @@ const Page = () => {
             </Grid>
             <Grid item xs={12} lg={8}>
               <Stack spacing={3}>
+                {/* Show accordions based on selectedStandards (which is populated by API when editing) */}
                 <CippStandardAccordion
                   standards={standards}
-                  selectedStandards={selectedStandards}
+                  selectedStandards={selectedStandards} // Render only the relevant standards
                   expanded={expanded}
                   handleAccordionToggle={handleAccordionToggle}
                   handleRemoveStandard={handleRemoveStandard}

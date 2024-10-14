@@ -27,7 +27,7 @@ export const CippApiDialog = (props) => {
 
   const actionPostRequest = ApiPostCall({
     urlFromData: true,
-    relatedQueryKeys: title,
+    relatedQueryKeys: api.relatedQueryKeys ? api.relatedQueryKeys : title,
     bulkRequest: api.multiPost === false,
     onResult: (result) => {
       setPartialResults((prevResults) => [...prevResults, result]);

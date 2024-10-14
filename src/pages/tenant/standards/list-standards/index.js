@@ -31,13 +31,12 @@ const Page = () => {
     {
       label: "Delete Template",
       type: "POST",
-      url: "/api/ExecDeviceDelete",
+      url: "/api/RemoveStandardTemplate",
       data: {
-        TenantFilter: "TenantFilter",
-        ID: "ID",
-        Action: "Delete",
+        ID: "GUID",
       },
-      confirmText: "Are you sure you want to delete this device?",
+      relatedQueryKeys: "listStandardTemplates",
+      confirmText: "Are you sure you want to delete this template?",
       multiPost: false,
     },
   ];
@@ -45,20 +44,14 @@ const Page = () => {
   return (
     <CippTablePage
       title={pageTitle}
-      apiUrl="/api/ListGraphRequest"
-      apiData={{
-        Endpoint: "devices",
-        $format: "application/json",
-        $count: true,
-      }}
+      apiUrl="/api/listStandardTemplates"
       cardButton={
-        <Button component={Link} href="add-template">
+        <Button component={Link} href="template">
           Add Template
         </Button>
       }
-      apiDataKey="Results"
       actions={actions}
-      simpleColumns={["templateName", "templateDescription", "Tenants", "includedStandards"]}
+      simpleColumns={["templateName", "tenantFilter", "excludedTenants", "standards"]}
     />
   );
 };

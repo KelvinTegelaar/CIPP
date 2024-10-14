@@ -74,8 +74,9 @@ const CippStandardAccordion = ({
 
     const disabledFeatures = standard.disabledFeatures || {};
 
-    const selectedTemplateName =
-      _.get(watchedValues, `${standardName}.${standard.addedComponent?.[0]?.name}`) || "";
+    const selectedTemplateName = standard.multiple
+      ? _.get(watchedValues, `${standardName}.${standard.addedComponent?.[0]?.name}`)
+      : "";
     const accordionTitle = selectedTemplateName
       ? `${standard.label} - ${selectedTemplateName.label}`
       : standard.label;

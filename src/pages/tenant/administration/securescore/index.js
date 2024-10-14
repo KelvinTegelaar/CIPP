@@ -53,7 +53,7 @@ const Page = () => {
               {
                 icon: <Map />,
                 data: secureScore.translatedData.percentageVsSimilar + "%",
-                name: "Compared score (Similar Tenants)",
+                  name: "Compared score (Similar Tenants)",
               },
               {
                 icon: <Score />,
