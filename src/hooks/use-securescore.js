@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { ApiGetCall } from "../api/ApiCall";
 import { useSettings } from "./use-settings";
 import standards from "/src/data/standards.json";
-import { useIsFetching } from "@tanstack/react-query";
 
 export function useSecureScore() {
   const currentTenant = useSettings().currentTenant;
@@ -48,7 +47,7 @@ export function useSecureScore() {
           (controlTranslation) => controlTranslation.id === control.controlName
         );
         const remediation = standards.find((standard) =>
-          standard.tag.includes(control.controlName)
+          standard.tag?.includes(control.controlName)
         );
         return {
           ...control,
