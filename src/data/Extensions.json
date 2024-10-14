@@ -235,7 +235,17 @@
     "logoDark": "/assets/integrations/pwpush_dark.png",
     "forceSyncButton": false,
     "description": "Enable the PasswordPusher integration to generate password links instead of plain text passwords.",
-    "helpText": "This integration allows you to generate password links instead of plain text passwords. Visit https://pwpush.com/ or https://github.com/pglombardo/PasswordPusher for more information.",
+    "helpText": "This integration allows you to generate password links instead of plain text passwords. Configure authentication and expiration settings that will apply to all generated passwords.",
+    "links": [
+      {
+        "name": "PWPush Documentation",
+        "url": "https://docs.pwpush.com"
+      },
+      {
+        "name": "GitHub Project",
+        "url": "https://github.com/pglombardo/PasswordPusher"
+      }
+    ],
     "SettingOptions": [
       {
         "type": "switch",

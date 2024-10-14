@@ -1,4 +1,4 @@
-import { Box, Grid, TextField, Checkbox, FormControlLabel, Select, MenuItem } from "@mui/material";
+import { Box, Button, Grid, Typography } from "@mui/material";
 import CippFormPage from "/src/components/CippFormPages/CippFormPage";
 import CippFormComponent from "/src/components/CippComponents/CippFormComponent";
 import { Layout as DashboardLayout } from "/src/layouts/index.js";
@@ -8,6 +8,8 @@ import { ApiGetCall } from "/src/api/ApiCall";
 import { useRouter } from "next/router";
 import extensions from "/src/data/Extensions.json";
 import { useEffect } from "react";
+import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
+import { SvgIcon } from "@mui/material";
 
 const Page = () => {
   const router = useRouter();
@@ -51,6 +53,21 @@ const Page = () => {
           postUrl="/api/ExecExtensionsConfig"
         >
           <Box component="img" src={logo} sx={{ mx: "auto", display: "block", width: "50%" }} />
+          <Typography variant="body2" paragraph style={{ marginTop: "1em" }}>
+            {extension.helpText}
+          </Typography>
+          {extension?.links && (
+            <>
+              {extension.links.map((link, index) => (
+                <Button href={link.url} target="_blank" rel="noreferrer" color="inherit">
+                  <SvgIcon fontSize="small" style={{ marginRight: "8" }}>
+                    <ArrowTopRightOnSquareIcon />
+                  </SvgIcon>
+                  {link.name}
+                </Button>
+              ))}
+            </>
+          )}
           <Box sx={{ my: 2 }}>
             {extension.SettingOptions.map((setting, index) => (
               <Box key={index} sx={{ mb: 2 }}>
